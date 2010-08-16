@@ -1,0 +1,108 @@
+D:\PhD Work\Project\dotNetRDFStore\obj\Debug\ResolveAssemblyReference.cache
+D:\PhD Work\Project\dotNetRDFStore\obj\Debug\dotNetRDFStore.Properties.Resources.resources
+D:\PhD Work\Project\dotNetRDFStore\obj\Debug\dotNetRDFStore.csproj.GenerateResource.Cache
+D:\PhD Work\Project\dotNetRDFStore\bin\Debug\ReleaseNotes.txt
+D:\PhD Work\Project\dotNetRDFStore\bin\Debug\dotNetRDFStore.exe
+D:\PhD Work\Project\dotNetRDFStore\bin\Debug\dotNetRDFStore.pdb
+D:\PhD Work\Project\dotNetRDFStore\bin\Debug\dotNetRDF.dll
+D:\PhD Work\Project\dotNetRDFStore\bin\Debug\Newtonsoft.Json.dll
+D:\PhD Work\Project\dotNetRDFStore\bin\Debug\Newtonsoft.Json.pdb
+D:\PhD Work\Project\dotNetRDFStore\bin\Debug\Newtonsoft.Json.xml
+D:\PhD Work\Project\dotNetRDFStore\bin\Debug\dotNetRDF.pdb
+D:\PhD Work\Project\dotNetRDFStore\bin\Debug\dotNetRDF.xml
+D:\PhD Work\Project\dotNetRDFStore\obj\Debug\dotNetRDFStore.exe
+D:\PhD Work\Project\dotNetRDFStore\obj\Debug\dotNetRDFStore.pdb
+D:\PhD Work\Project\dotNetRDFStore\bin\Debug\MySql.Data.dll
+D:\PhD Work\Project\dotNetRDFStore\obj\Debug\dotNetRDFStore.fclsManager.resources
+D:\PhD Work\Project\dotNetRDFStore\obj\Debug\dotNetRDFStore.fclsAddTriples.resources
+D:\PhD Work\Project\dotNetRDFStore\obj\Debug\dotNetRDFStore.fclsCreateTriple.resources
+D:\PhD Work\Project\dotNetRDFStore\obj\Debug\dotNetRDFStore.fclsExportGraph.resources
+E:\Southampton Work\dotnetrdf\utilities\storemanager\obj\Debug\dotNetRDFStore.exe
+E:\Southampton Work\dotnetrdf\utilities\storemanager\obj\Debug\dotNetRDFStore.pdb
+D:\PhD Work\Project\dotNetRDFStore\obj\Debug\dotNetRDFStore.fclsGenericStoreConnection.resources
+D:\PhD Work\Project\dotNetRDFStore\obj\Debug\dotNetRDFStore.fclsGenericStoreManager.resources
+D:\PhD Work\Project\dotNetRDFStore\obj\Debug\dotNetRDFStore.fclsSQLGraphManager.resources
+D:\PhD Work\Project\dotNetRDFStore\obj\Debug\dotNetRDFStore.fclsSQLStoreManager.resources
+D:\PhD Work\Project\dotNetRDFStore\obj\Debug\dotNetRDFStore.fclsGraphViewer.resources
+D:\PhD Work\Project\dotNetRDFStore\obj\Debug\dotNetRDFStore.fclsPleaseWait.resources
+C:\Documents and Settings\rav08r\My Documents\dotnetrdf\utilities\storemanager\bin\Debug\ReleaseNotes.txt
+C:\Documents and Settings\rav08r\My Documents\dotnetrdf\utilities\storemanager\bin\Debug\dotNetRDFStore.exe
+C:\Documents and Settings\rav08r\My Documents\dotnetrdf\utilities\storemanager\bin\Debug\dotNetRDFStore.pdb
+C:\Documents and Settings\rav08r\My Documents\dotnetrdf\utilities\storemanager\bin\Debug\dotNetRDF.dll
+C:\Documents and Settings\rav08r\My Documents\dotnetrdf\utilities\storemanager\bin\Debug\HtmlAgilityPack.dll
+C:\Documents and Settings\rav08r\My Documents\dotnetrdf\utilities\storemanager\bin\Debug\Newtonsoft.Json.dll
+C:\Documents and Settings\rav08r\My Documents\dotnetrdf\utilities\storemanager\bin\Debug\virtado3.dll
+C:\Documents and Settings\rav08r\My Documents\dotnetrdf\utilities\storemanager\bin\Debug\HtmlAgilityPack.xml
+C:\Documents and Settings\rav08r\My Documents\dotnetrdf\utilities\storemanager\bin\Debug\Newtonsoft.Json.xml
+C:\Documents and Settings\rav08r\My Documents\dotnetrdf\utilities\storemanager\bin\Debug\dotNetRDF.pdb
+C:\Documents and Settings\rav08r\My Documents\dotnetrdf\utilities\storemanager\bin\Debug\dotNetRDF.xml
+C:\Documents and Settings\rav08r\My Documents\dotnetrdf\utilities\storemanager\obj\Debug\ResolveAssemblyReference.cache
+C:\Documents and Settings\rav08r\My Documents\dotnetrdf\utilities\storemanager\obj\Debug\dotNetRDFStore.fclsGraphViewer.resources
+C:\Documents and Settings\rav08r\My Documents\dotnetrdf\utilities\storemanager\obj\Debug\dotNetRDFStore.fclsAddTriples.resources
+C:\Documents and Settings\rav08r\My Documents\dotnetrdf\utilities\storemanager\obj\Debug\dotNetRDFStore.fclsCreateTriple.resources
+C:\Documents and Settings\rav08r\My Documents\dotnetrdf\utilities\storemanager\obj\Debug\dotNetRDFStore.fclsExportGraph.resources
+C:\Documents and Settings\rav08r\My Documents\dotnetrdf\utilities\storemanager\obj\Debug\dotNetRDFStore.fclsGenericStoreConnection.resources
+C:\Documents and Settings\rav08r\My Documents\dotnetrdf\utilities\storemanager\obj\Debug\dotNetRDFStore.fclsGenericStoreManager.resources
+C:\Documents and Settings\rav08r\My Documents\dotnetrdf\utilities\storemanager\obj\Debug\dotNetRDFStore.fclsSQLGraphManager.resources
+C:\Documents and Settings\rav08r\My Documents\dotnetrdf\utilities\storemanager\obj\Debug\dotNetRDFStore.fclsManager.resources
+C:\Documents and Settings\rav08r\My Documents\dotnetrdf\utilities\storemanager\obj\Debug\dotNetRDFStore.fclsSQLStoreManager.resources
+C:\Documents and Settings\rav08r\My Documents\dotnetrdf\utilities\storemanager\obj\Debug\dotNetRDFStore.Properties.Resources.resources
+C:\Documents and Settings\rav08r\My Documents\dotnetrdf\utilities\storemanager\obj\Debug\dotNetRDFStore.fclsVisualiseGraph.resources
+C:\Documents and Settings\rav08r\My Documents\dotnetrdf\utilities\storemanager\obj\Debug\dotNetRDFStore.fclsPleaseWait.resources
+C:\Documents and Settings\rav08r\My Documents\dotnetrdf\utilities\storemanager\obj\Debug\dotNetRDFStore.csproj.GenerateResource.Cache
+C:\Documents and Settings\rav08r\My Documents\dotnetrdf\utilities\storemanager\obj\Debug\dotNetRDFStore.exe
+C:\Documents and Settings\rav08r\My Documents\dotnetrdf\utilities\storemanager\obj\Debug\dotNetRDFStore.pdb
+D:\PhD Work\dotNetRDF\utilities\storemanager\bin\Debug\ReleaseNotes.txt
+D:\PhD Work\dotNetRDF\utilities\storemanager\bin\Debug\dotNetRDFStore.exe
+D:\PhD Work\dotNetRDF\utilities\storemanager\bin\Debug\dotNetRDFStore.pdb
+D:\PhD Work\dotNetRDF\utilities\storemanager\bin\Debug\dotNetRDF.dll
+D:\PhD Work\dotNetRDF\utilities\storemanager\bin\Debug\MySql.Data.dll
+D:\PhD Work\dotNetRDF\utilities\storemanager\bin\Debug\HtmlAgilityPack.dll
+D:\PhD Work\dotNetRDF\utilities\storemanager\bin\Debug\Newtonsoft.Json.dll
+D:\PhD Work\dotNetRDF\utilities\storemanager\bin\Debug\virtado3.dll
+D:\PhD Work\dotNetRDF\utilities\storemanager\bin\Debug\HtmlAgilityPack.xml
+D:\PhD Work\dotNetRDF\utilities\storemanager\bin\Debug\Newtonsoft.Json.xml
+D:\PhD Work\dotNetRDF\utilities\storemanager\bin\Debug\dotNetRDF.pdb
+D:\PhD Work\dotNetRDF\utilities\storemanager\bin\Debug\dotNetRDF.xml
+D:\PhD Work\dotNetRDF\utilities\storemanager\obj\Debug\ResolveAssemblyReference.cache
+D:\PhD Work\dotNetRDF\utilities\storemanager\obj\Debug\dotNetRDFStore.fclsGraphViewer.resources
+D:\PhD Work\dotNetRDF\utilities\storemanager\obj\Debug\dotNetRDFStore.fclsAddTriples.resources
+D:\PhD Work\dotNetRDF\utilities\storemanager\obj\Debug\dotNetRDFStore.fclsCreateTriple.resources
+D:\PhD Work\dotNetRDF\utilities\storemanager\obj\Debug\dotNetRDFStore.fclsExportGraph.resources
+D:\PhD Work\dotNetRDF\utilities\storemanager\obj\Debug\dotNetRDFStore.fclsGenericStoreConnection.resources
+D:\PhD Work\dotNetRDF\utilities\storemanager\obj\Debug\dotNetRDFStore.fclsGenericStoreManager.resources
+D:\PhD Work\dotNetRDF\utilities\storemanager\obj\Debug\dotNetRDFStore.fclsSQLGraphManager.resources
+D:\PhD Work\dotNetRDF\utilities\storemanager\obj\Debug\dotNetRDFStore.fclsManager.resources
+D:\PhD Work\dotNetRDF\utilities\storemanager\obj\Debug\dotNetRDFStore.fclsSQLStoreManager.resources
+D:\PhD Work\dotNetRDF\utilities\storemanager\obj\Debug\dotNetRDFStore.Properties.Resources.resources
+D:\PhD Work\dotNetRDF\utilities\storemanager\obj\Debug\dotNetRDFStore.fclsVisualiseGraph.resources
+D:\PhD Work\dotNetRDF\utilities\storemanager\obj\Debug\dotNetRDFStore.fclsPleaseWait.resources
+D:\PhD Work\dotNetRDF\utilities\storemanager\obj\Debug\dotNetRDFStore.csproj.GenerateResource.Cache
+D:\PhD Work\dotNetRDF\utilities\storemanager\obj\Debug\dotNetRDFStore.exe
+D:\PhD Work\dotNetRDF\utilities\storemanager\obj\Debug\dotNetRDFStore.pdb
+E:\Southampton Work\dotnetrdf\utilities\storemanager\obj\Debug\ResolveAssemblyReference.cache
+E:\Southampton Work\dotnetrdf\utilities\storemanager\obj\Debug\dotNetRDFStore.fclsGraphViewer.resources
+E:\Southampton Work\dotnetrdf\utilities\storemanager\obj\Debug\dotNetRDFStore.fclsAddTriples.resources
+E:\Southampton Work\dotnetrdf\utilities\storemanager\obj\Debug\dotNetRDFStore.fclsCreateTriple.resources
+E:\Southampton Work\dotnetrdf\utilities\storemanager\obj\Debug\dotNetRDFStore.fclsExportGraph.resources
+E:\Southampton Work\dotnetrdf\utilities\storemanager\obj\Debug\dotNetRDFStore.fclsGenericStoreConnection.resources
+E:\Southampton Work\dotnetrdf\utilities\storemanager\obj\Debug\dotNetRDFStore.fclsGenericStoreManager.resources
+E:\Southampton Work\dotnetrdf\utilities\storemanager\obj\Debug\dotNetRDFStore.fclsSQLGraphManager.resources
+E:\Southampton Work\dotnetrdf\utilities\storemanager\obj\Debug\dotNetRDFStore.fclsManager.resources
+E:\Southampton Work\dotnetrdf\utilities\storemanager\obj\Debug\dotNetRDFStore.fclsSQLStoreManager.resources
+E:\Southampton Work\dotnetrdf\utilities\storemanager\obj\Debug\dotNetRDFStore.Properties.Resources.resources
+E:\Southampton Work\dotnetrdf\utilities\storemanager\obj\Debug\dotNetRDFStore.fclsVisualiseGraph.resources
+E:\Southampton Work\dotnetrdf\utilities\storemanager\obj\Debug\dotNetRDFStore.fclsPleaseWait.resources
+E:\Southampton Work\dotnetrdf\utilities\storemanager\obj\Debug\dotNetRDFStore.csproj.GenerateResource.Cache
+E:\Southampton Work\dotnetrdf\utilities\storemanager\bin\Debug\ReleaseNotes.txt
+E:\Southampton Work\dotnetrdf\utilities\storemanager\bin\Debug\dotNetRDFStore.exe
+E:\Southampton Work\dotnetrdf\utilities\storemanager\bin\Debug\dotNetRDFStore.pdb
+E:\Southampton Work\dotnetrdf\utilities\storemanager\bin\Debug\dotNetRDF.dll
+E:\Southampton Work\dotnetrdf\utilities\storemanager\bin\Debug\HtmlAgilityPack.dll
+E:\Southampton Work\dotnetrdf\utilities\storemanager\bin\Debug\Newtonsoft.Json.dll
+E:\Southampton Work\dotnetrdf\utilities\storemanager\bin\Debug\virtado3.dll
+E:\Southampton Work\dotnetrdf\utilities\storemanager\bin\Debug\dotNetRDF.pdb
+E:\Southampton Work\dotnetrdf\utilities\storemanager\bin\Debug\dotNetRDF.xml
+E:\Southampton Work\dotnetrdf\utilities\storemanager\bin\Debug\HtmlAgilityPack.xml
+E:\Southampton Work\dotnetrdf\utilities\storemanager\bin\Debug\Newtonsoft.Json.xml
+D:\PhD Work\dotNetRDF\utilities\storemanager\obj\Debug\dotNetRDFStore.fclsOpenConnection.resources

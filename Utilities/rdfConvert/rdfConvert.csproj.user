@@ -1,0 +1,5 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <StartArguments>-uri:http://www.wurvoc.org/vocabularies/om-1.6/Kelvin_scale -out:test.ttl -debug -overwrite -nocache -warnings</StartArguments>
+  </PropertyGroup>
+</Project>

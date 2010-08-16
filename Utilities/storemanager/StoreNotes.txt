@@ -1,0 +1,40 @@
+﻿dotNetRDF Store
+===============
+
+Management Tool for managing dotNetRDF stores which are a database format that can be used with
+Microsoft SQL Server, MySQL Server and Virtual Databases in Virtuoso Universal Server.
+
+The tool allows you to perform admin tasks on databases such as creating and deleting stores as well
+as viewing and editing their contents.
+
+Note - This Tool is a work in progress and not all features are fully implemented or debugged yet.
+
+Version 0.1.1 Alpha
+
+Robert Vesse 2009
+rvesse@vdesign-studios.com
+
+Usage
+-----
+
+Run the dotNetRDFStore.exe program and then connect to your chosen database.  Use the Database Tools tab
+of the Store Manager form to create/delete a Store in that database as required.
+
+Release History
+---------------
+
+25/09/2009 - First public release of the dotNetRDF Store Manager tool (0.1.1 Alpha) to conincide with the
+			 0.1.1 Alpha release of the dotNetRDF Library
+			 
+Acknowledgements
+----------------
+
+Uses code (3rd Party Libraries) from the following sources
+-MySQL Connector.Net from MySQL AB http://www.mysql.org
+-JSON.Net from James Newton-King http://james.newtonking.com
+
+Thanks to the following people who have helped in the development process or whose suggestions have led to 
+improvements in the code:
+-Eamon Nerbonne for the BlockingStreamReader fix (http://eamon.nerbonne.org/) which is much nicer than the
+ alternative of pre-caching in a MemoryStream
+
