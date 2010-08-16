@@ -1,0 +1,8 @@
+﻿@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix : <http://example.org/> .
+
+:a foaf:knows :b .
+:a foaf:knows :c .
+:b foaf:knows :d .
+:c foaf:knows :d .
+
