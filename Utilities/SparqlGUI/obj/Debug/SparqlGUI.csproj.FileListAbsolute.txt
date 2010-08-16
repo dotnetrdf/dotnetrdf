@@ -98,3 +98,22 @@ D:\PhD\dotnetrdf\utilities\SparqlGUI\obj\Debug\SparqlGUI.exe
 D:\PhD\dotnetrdf\utilities\SparqlGUI\obj\Debug\SparqlGUI.pdb
 E:\Southampton Work\dotnetrdf\utilities\SparqlGUI\bin\Debug\HtmlAgilityPack.xml
 E:\Southampton Work\dotnetrdf\utilities\SparqlGUI\bin\Debug\Newtonsoft.Json.xml
+D:\PhD Work\dotNetRDF\Trunk\Utilities\SparqlGUI\bin\Debug\ReleaseNotes.txt
+D:\PhD Work\dotNetRDF\Trunk\Utilities\SparqlGUI\bin\Debug\default.rq
+D:\PhD Work\dotNetRDF\Trunk\Utilities\SparqlGUI\bin\Debug\SparqlGUI.exe
+D:\PhD Work\dotNetRDF\Trunk\Utilities\SparqlGUI\bin\Debug\SparqlGUI.pdb
+D:\PhD Work\dotNetRDF\Trunk\Utilities\SparqlGUI\bin\Debug\dotNetRDF.dll
+D:\PhD Work\dotNetRDF\Trunk\Utilities\SparqlGUI\bin\Debug\HtmlAgilityPack.dll
+D:\PhD Work\dotNetRDF\Trunk\Utilities\SparqlGUI\bin\Debug\Newtonsoft.Json.dll
+D:\PhD Work\dotNetRDF\Trunk\Utilities\SparqlGUI\bin\Debug\HtmlAgilityPack.xml
+D:\PhD Work\dotNetRDF\Trunk\Utilities\SparqlGUI\bin\Debug\Newtonsoft.Json.xml
+D:\PhD Work\dotNetRDF\Trunk\Utilities\SparqlGUI\bin\Debug\dotNetRDF.pdb
+D:\PhD Work\dotNetRDF\Trunk\Utilities\SparqlGUI\bin\Debug\dotNetRDF.xml
+D:\PhD Work\dotNetRDF\Trunk\Utilities\SparqlGUI\obj\Debug\ResolveAssemblyReference.cache
+D:\PhD Work\dotNetRDF\Trunk\Utilities\SparqlGUI\obj\Debug\SparqlGUI.fclsInspect.resources
+D:\PhD Work\dotNetRDF\Trunk\Utilities\SparqlGUI\obj\Debug\SparqlGUI.fclsSparqlGui.resources
+D:\PhD Work\dotNetRDF\Trunk\Utilities\SparqlGUI\obj\Debug\SparqlGUI.fclsStylesheetPicker.resources
+D:\PhD Work\dotNetRDF\Trunk\Utilities\SparqlGUI\obj\Debug\SparqlGUI.Properties.Resources.resources
+D:\PhD Work\dotNetRDF\Trunk\Utilities\SparqlGUI\obj\Debug\SparqlGUI.csproj.GenerateResource.Cache
+D:\PhD Work\dotNetRDF\Trunk\Utilities\SparqlGUI\obj\Debug\SparqlGUI.exe
+D:\PhD Work\dotNetRDF\Trunk\Utilities\SparqlGUI\obj\Debug\SparqlGUI.pdb

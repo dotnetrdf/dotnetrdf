@@ -76,11 +76,11 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\library\dotNetRDF.csproj">
+    <ProjectReference Include="..\..\Libraries\core\dotNetRDF.csproj">
       <Project>{BFBAC159-1E60-4D03-8ACA-D34E31EB83BF}</Project>
       <Name>dotNetRDF</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\linkeddata\dotNetRDF.LinkedData.csproj">
+    <ProjectReference Include="..\..\Libraries\linkeddata\dotNetRDF.LinkedData.csproj">
       <Project>{D3674418-0210-4B0A-91F9-1A272C75A6D1}</Project>
       <Name>dotNetRDF.LinkedData</Name>
     </ProjectReference>
