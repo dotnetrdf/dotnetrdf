@@ -1,0 +1,1 @@
+﻿This SPARQL Endpoints queries over a Remote Endpoint provided by DBPedia

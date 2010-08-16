@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE rdf:RDF[
+	<!ENTITY rdf 'http://www.w3.org/1999/02/22-rdf-syntax-ns#'>
+	<!ENTITY rdfs 'http://www.w3.org/2000/01/rdf-schema#'>
+	<!ENTITY xsd 'http://www.w3.org/2001/XMLSchema#'>
+	<!ENTITY ex 'http://example.org/'>
+]>
+<rdf:RDF xmlns:rdf="&rdf;" xmlns:rdfs="&rdfs;" xmlns:xsd="&xsd;" xmlns:ex="&ex;">
+	<rdf:Description rdf:about="&ex;Bob">
+		<rdf:type rdf:resource="&ex;Monkey" />
+	</rdf:Description>
+</rdf:RDF>
