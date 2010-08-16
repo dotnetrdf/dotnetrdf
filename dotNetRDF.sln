@@ -39,6 +39,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rdfQuery", "Utilities\rdfQu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rdfWebDeploy", "Utilities\rdfWebDeploy\rdfWebDeploy.csproj", "{20AB4681-8D42-459E-84C4-729A9E72BF94}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.Silverlight", "Libraries\silverlight\dotNetRDF.Silverlight.csproj", "{854A789B-BA35-4A1B-9449-CAD40953F0E5}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = dotNetRDF1.vsmdi
@@ -112,6 +114,10 @@ Global
 		{20AB4681-8D42-459E-84C4-729A9E72BF94}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{20AB4681-8D42-459E-84C4-729A9E72BF94}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{20AB4681-8D42-459E-84C4-729A9E72BF94}.Release|Any CPU.Build.0 = Release|Any CPU
+		{854A789B-BA35-4A1B-9449-CAD40953F0E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{854A789B-BA35-4A1B-9449-CAD40953F0E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{854A789B-BA35-4A1B-9449-CAD40953F0E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{854A789B-BA35-4A1B-9449-CAD40953F0E5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
