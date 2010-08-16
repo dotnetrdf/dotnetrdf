@@ -1,0 +1,73 @@
+﻿# Talis Platform Test Graph
+# Slightly cut down version of InferenceTest.ttl
+
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix eg: <http://example.org/vehicles/>.
+
+# Vehicles are a Class with GroundVehicle and AirVehicle being its subclasses
+eg:Vehicle rdf:type rdfs:Class.
+eg:GroundVehicle rdfs:subClassOf eg:Vehicle.
+eg:AirVehicle rdfs:subClassOf eg:Vehicle.
+
+# Vehicles have a Weight, Speed and PassengerCapacity
+eg:Weight rdf:type rdf:Property;
+		  rdfs:range eg:Vehicle;
+		  rdfs:domain xsd:Integer.
+eg:Speed rdf:type rdf:Property;
+		 rdfs:range eg:Vehicle;
+		 rdfs:domain xsd:Integer.
+eg:PassengerCapacity rdf:type rdf:Property;
+					 rdfs:range eg:Vehicle;
+					 rdfs:domain xsd:Integer.
+					 
+eg:GroundSpeed rdfs:subPropertyOf eg:Speed;
+			   rdfs:range eg:AirVehicle;
+			   rdfs:domain xsd:Integer.
+eg:AirSpeed rdfs:subPropertyOf eg:Speed;
+			rdfs:range eg:AirVehicle;
+			rdfs:domain xsd:Integer.
+			
+# Cars, Vans and Lorries are GroundVehicle
+eg:Car rdfs:subClassOf eg:GroundVehicle.
+eg:Van rdfs:subClassOf eg:GroundVehicle.
+eg:Lorry rdfs:subClassOf eg:GroundVehicle.
+
+# Sports Cars and People Carriers are Cars
+eg:SportsCar rdfs:subClassOf eg:Car.
+eg:PeopleCarrier rdfs:subClassOf eg:Car.
+
+# Planes and Helicopters are AirVehicles
+eg:Plane rdfs:subClassOf eg:AirVehicle.
+eg:Helicopter rdfs:subClassOf eg:AirVehicle.
+
+# Fighter Jets and Jumbo Jets are Planes
+eg:FighterJet rdfs:subClassOf eg:Plane.
+eg:JumboJet rdfs:subClassOf eg:Plane.
+
+# Now some instances
+eg:Bike rdf:type eg:GroundVehicle.
+eg:FordFiesta rdf:type eg:Car;
+			  eg:Speed 140;
+			  eg:PassengerCapacity 5 .
+eg:VauxhallAstra rdf:type eg:Car;
+				 eg:Speed 150 .
+eg:MiniCooper rdf:type eg:Car;
+			  eg:PassengerCapacity 4 .
+eg:LotusElise rdf:type eg:SportsCar.
+eg:RenaultEspace rdf:type eg:PeopleCarrier.
+eg:FordTransit rdf:type eg:Van.
+eg:RenualtTwingo rdf:type eg:Van.
+eg:VauxhallMovano rdf:type eg:Van.
+eg:EddieStobartTruck rdf:type eg:Lorry.
+eg:Cessna172 rdf:type eg:Plane.
+eg:Spitfire rdf:type eg:Plane.
+eg:Boeing747 rdf:type eg:JumboJet;
+			  eg:GroundSpeed 20 .
+eg:AirbusA380 rdf:type eg:JumboJet;
+			  eg:AirSpeed 634;
+			  eg:GroundSpeed 25 .
+eg:HarrierJumpJet rdf:type eg:FighterJet;
+				  eg:Speed 700 .
+eg:Chinook rdf:type eg:Helicopter.

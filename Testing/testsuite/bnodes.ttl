@@ -1,0 +1,5 @@
+﻿@prefix : <http://example.org/>.
+
+[] a :BlankNode ;
+   :firstProperty :a ;
+   :secondProperty :b .

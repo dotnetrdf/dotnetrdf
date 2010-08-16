@@ -1,0 +1,88 @@
+﻿@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
+
+<dotnetrdf:sparqlDB> a dnr:SqlIOManager ;
+					 dnr:type "VDS.RDF.Storage.MicrosoftSqlStoreManager" ;
+					 dnr:server "localhost" ;
+					 dnr:database "dotnetrdf_experimental" ;
+					 dnr:user "example" ;
+					 dnr:password "password" .
+					 
+<dotnetrdf:talisNasa> a dnr:GenericIOManager ;
+					  dnr:type "VDS.RDF.Storage.TalisPlatformConnector" ;
+					  dnr:storeID "space" .
+					 					 
+_:a a dnr:Graph ;
+    dnr:type "VDS.RDF.Graph" ;
+    dnr:fromFile "sample-config.ttl" ;
+    dnr:fromFile "InferenceTest.ttl" ;
+    dnr:assignUri <http://example.org/assignedBaseUri> .
+    
+_:b a dnr:Graph ;
+	dnr:type "VDS.RDF.ThreadSafeGraph" ;
+	dnr:fromUri <http://www.w3.org/2004/02/skos/core#> .
+	
+_:c a dnr:Graph ;
+	dnr:type "VDS.RDF.QueryableGraph" ;
+	dnr:fromGraph _:a .
+	
+_:d a dnr:Graph ;
+	dnr:type "VDS.RDF.Graph" ;
+	dnr:fromGraph _:e .
+	
+_:e a dnr:Graph ;
+	dnr:type "VDS.RDF.Graph" ;
+	dnr:fromGraph _:d .
+	
+_:f a dnr:Graph ;
+	dnr:type "VDS.RDF.Graph" ;
+	dnr:fromFile "InferenceTest.ttl" ;
+	dnr:reasoner _:reasoner .
+	
+_:g a dnr:Graph ;
+	dnr:type "VDS.RDF.Graph" ;
+	dnr:reasoner _:pellet .
+	
+_:store1 a dnr:TripleStore ;
+		 dnr:type "VDS.RDF.TripleStore" ;
+		 dnr:usingGraph _:a ;
+		 dnr:usingGraph _:b ;
+		 dnr:reasoner _:reasoner .
+		 
+_:store2 a dnr:TripleStore ;
+		 dnr:type "VDS.RDF.SqlTripleStore" ;
+		 dnr:sqlManager <dotnetrdf:sparqlDB> .
+		 
+_:store3 a dnr:TripleStore ;
+	     dnr:type "VDS.RDF.NativeTripleStore" ;
+	     dnr:genericManager <dotnetrdf:talisNasa> .
+	     
+_:qproc a dnr:SparqlQueryProcessor ;
+		dnr:type "VDS.RDF.Query.LeviathanQueryProcessor" ;
+		dnr:usingStore _:store1 .
+		
+_:uproc a dnr:SparqlUpdateProcessor ;
+		dnr:type "VDS.RDF.Update.LeviathanUpdateProcessor" ;
+		dnr:usingStore _:store1 .
+		
+_:hproc a dnr:SparqlHttpProtocolProcessor ;
+		dnr:type "VDS.RDF.Update.Protocol.ProtocolToUpdateProcessor" ;
+		dnr:usingStore _:store1 .
+		
+_:reasoner a dnr:Reasoner ;
+		   dnr:type "VDS.RDF.Query.Inference.RdfsReasoner" .
+		   
+_:pellet a dnr:Reasoner ;
+		 dnr:type "VDS.RDF.Query.Inference.OwlReasonerWrapper" ;
+		 dnr:owlReasoner _:wine .
+		 
+_:wine a dnr:OwlReasoner ; 
+	   dnr:type "VDS.RDF.Query.Inference.PelletReasoner" ; 
+	   dnr:server "http://ps.clarkparsia.com" ; 
+	   dnr:storeID "wine" .
+	   
+_:proxyTest a dnr:SparqlEndpoint ;
+			dnr:type "VDS.RDF.Query.SparqlRemoteEndpoint" ;
+			dnr:endpointUri <http://dbpedia.org/sparql> ;
+			dnr:useCredentialsForProxy true ;
+			dnr:proxy [a dnr:Proxy ; dnr:server "http://proxy.example.org" ; dnr:user "proxyUser" ; dnr:password "proxyPassword" ] ;
+			dnr:credentials [a dnr:User ; dnr:user "user" ; dnr:password "password" ] .

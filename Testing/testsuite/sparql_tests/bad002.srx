@@ -1,0 +1,11 @@
+﻿<?xml version="1.0"?>
+<!-- Missing Namespace definition -->
+<sparql>
+
+  <head>
+    <link href="example2.rq" />
+  </head>
+
+  <boolean>true</boolean>
+
+</sparql>

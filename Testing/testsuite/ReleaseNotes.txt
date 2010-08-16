@@ -1,0 +1,15 @@
+﻿dotNetRDF Test Suite
+====================
+
+A Test Suite for the dotNetRDF Library for RDF manipulation and parsing in .Net using C# 3.0
+
+Includes the various parser Test Suites for different RDF syntaxes and a variety of our own tests for the API
+
+Robert Vesse 2009
+rvesse@vdesign-studios.com
+
+Usage
+-----
+
+Load the project in Visual Studio and edit the TestSuite.cs file to uncomment the Tests you wish to run.  Then
+compile and run either in debug more or direct from the Command Line.
