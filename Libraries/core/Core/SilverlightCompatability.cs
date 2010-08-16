@@ -1,0 +1,208 @@
+﻿/*
+
+Copyright Robert Vesse 2009-10
+rvesse@vdesign-studios.com
+
+------------------------------------------------------------------------
+
+This file is part of dotNetRDF.
+
+dotNetRDF is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+dotNetRDF is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with dotNetRDF.  If not, see <http://www.gnu.org/licenses/>.
+
+------------------------------------------------------------------------
+
+dotNetRDF may alternatively be used under the LGPL or MIT License
+
+http://www.gnu.org/licenses/lgpl.html
+http://www.opensource.org/licenses/mit-license.php
+
+If these licenses are not suitable for your intended use please contact
+us at the above stated email address to discuss alternative
+terms.
+
+*/
+
+//Uncomment the following while developing the code to get proper Intellisense
+//#define SILVERLIGHT
+
+#if SILVERLIGHT
+
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Text;
+using System.Threading;
+using HtmlAgilityPack;
+
+namespace VDS.RDF
+{
+
+    /// <summary>
+    /// Extension Methods for the Silverlight build to avoid having to do lots of #if SILVERLIGHT blocks
+    /// </summary>
+    public static class SilverlightExtensions
+    {
+        /// <summary>
+        /// Splits a String
+        /// </summary>
+        /// <param name="value">String to split</param>
+        /// <param name="chars">Separator</param>
+        /// <param name="count">Maximum number of results</param>
+        /// <returns></returns>
+        public static string[] Split(this string value, char[] chars, int count)
+        {
+            String[] items = value.Split(chars);
+            return items.Length > count ? items.Take(count-1).Concat(String.Join(new String(chars), items, count, items.Length-(count-1)).AsEnumerable()).ToArray() : items;
+        }
+
+        /// <summary>
+        /// Copies the characters in a specified substring to a character array
+        /// </summary>
+        /// <param name="value">String</param>
+        /// <param name="startIndex">Start Index</param>
+        /// <param name="count">Number of characters to copy</param>
+        /// <returns></returns>
+        public static char[] ToCharArray(this string value, int startIndex, int count)
+        {
+            char[] result = new char[count];
+            for (int i = 0; i < count; i++)
+            {
+                result[i] = value[startIndex + i];
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Gets whether a URI is a file:/// URI
+        /// </summary>
+        /// <param name="u">URI</param>
+        /// <returns></returns>
+        public static bool IsFile(this Uri u)
+        {
+            return u.Scheme.Equals(Uri.UriSchemeFile);
+        }
+
+        /// <summary>
+        /// Gets the Segments of the URI
+        /// </summary>
+        /// <param name="u">URI</param>
+        /// <returns></returns>
+        public static String[] Segments(this Uri u)
+        {
+            String path = u.AbsolutePath;
+            if (path.Equals("/"))
+            {
+                return new String[] { "/" };
+            }
+            else
+            {
+                String[] segments = path.Split('/');
+                for (int i = 0; i < segments.Length - 1; i++)
+                {
+                    segments[i] += "/";
+                }
+                return segments;
+            }
+        }
+
+        /// <summary>
+        /// Gets the HTTP Response asychronously for compatability with Silverlight
+        /// </summary>
+        /// <param name="request">HTTP Request</param>
+        /// <returns>HTTP Response</returns>
+        public static HttpWebResponse GetResponse(this HttpWebRequest request)
+        {
+            AutoResetEvent syncRequest = new AutoResetEvent(false);
+            HttpWebResponse response = null;
+
+            //Wait for Server Response
+            request.BeginGetResponse(result =>
+                {
+                response = (HttpWebResponse)request.EndGetResponse(result);
+                syncRequest.Set();
+
+                },
+            null);
+
+            syncRequest.WaitOne();
+            return response;
+        }
+
+        /// <summary>
+        /// Gets the HTTP Request Stream asynchronously for compatability with Silverlight
+        /// </summary>
+        /// <param name="request">HTTP Request</param>
+        /// <returns>Request Stream</returns>
+        public static Stream GetRequestStream(this HttpWebRequest request)
+        {
+            AutoResetEvent syncRequest = new AutoResetEvent(false);
+            Stream stream = null;
+
+            //Get the Request Stream
+            request.BeginGetRequestStream(result =>
+                {
+                    stream = request.EndGetRequestStream(result);
+                },
+            null);
+
+            syncRequest.WaitOne();
+            return stream;
+        }
+
+        /// <summary>
+        /// Removes all items from a List which return true for the given function
+        /// </summary>
+        /// <typeparam name="T">Type</typeparam>
+        /// <param name="l">List</param>
+        /// <param name="func">Function</param>
+        public static void RemoveAll<T>(this List<T> l, Func<T,bool> func)
+        {
+            for (int i = 0; i < l.Count; i++)
+            {
+                if (func(l[i]))
+                {
+                    l.RemoveAt(i);
+                    i--;
+                }
+            }
+        }
+
+        public static HtmlNode SelectSingleNode(this HtmlNode node, String xpath)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static HtmlNodeCollection SelectNodes(this HtmlNode node, String xpath)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public static class HttpUtility
+    {
+        public static String HtmlDecode(String value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static String HtmlEncode(String value)
+        {
+            throw new NotImplementedException();
+        }
+    }
+}
+
+#endif

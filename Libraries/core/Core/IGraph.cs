@@ -1,0 +1,478 @@
+﻿/*
+
+Copyright Robert Vesse 2009-10
+rvesse@vdesign-studios.com
+
+------------------------------------------------------------------------
+
+This file is part of dotNetRDF.
+
+dotNetRDF is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+dotNetRDF is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with dotNetRDF.  If not, see <http://www.gnu.org/licenses/>.
+
+------------------------------------------------------------------------
+
+dotNetRDF may alternatively be used under the LGPL or MIT License
+
+http://www.gnu.org/licenses/lgpl.html
+http://www.opensource.org/licenses/mit-license.php
+
+If these licenses are not suitable for your intended use please contact
+us at the above stated email address to discuss alternative
+terms.
+
+*/
+
+
+using System;
+using System.Collections.Generic;
+
+namespace VDS.RDF
+{
+    /// <summary>
+    /// Interface for RDF Graphs
+    /// </summary>
+    public interface IGraph : IDisposable
+    {
+        #region Properties
+
+        /// <summary>
+        /// Gets/Sets the Base Uri for the Graph
+        /// </summary>
+        Uri BaseUri 
+        { 
+            get; 
+            set; 
+        }
+
+        /// <summary>
+        /// Gets whether a Graph is Empty
+        /// </summary>
+        bool IsEmpty 
+        { 
+            get; 
+        }
+
+        /// <summary>
+        /// Gets the Namespace Map for the Graph
+        /// </summary>
+        NamespaceMapper NamespaceMap 
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Gets the Node Collection for the Graph
+        /// </summary>
+        BaseNodeCollection Nodes 
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Gets the Triple Collection for the Graph
+        /// </summary>
+        BaseTripleCollection Triples 
+        { 
+            get; 
+        }
+
+        #endregion
+
+        #region Assertion & Retraction
+
+        /// <summary>
+        /// Asserts a List of Triples in the Graph
+        /// </summary>
+        /// <param name="ts">List of Triples</param>
+        void Assert(List<Triple> ts);
+
+        /// <summary>
+        /// Asserts an array of Triples in the Graph
+        /// </summary>
+        /// <param name="ts">Array of Triples</param>
+        void Assert(Triple[] ts);
+
+        /// <summary>
+        /// Asserts a Triple in the Graph
+        /// </summary>
+        /// <param name="t">A Triple</param>
+        void Assert(Triple t);
+
+        /// <summary>
+        /// Asserts an Enumerable of Triples in the Graph
+        /// </summary>
+        /// <param name="ts">An Enumerable of Triples</param>
+        void Assert(IEnumerable<Triple> ts);
+
+        /// <summary>
+        /// Retracts an Array of Triples from the Graph
+        /// </summary>
+        /// <param name="ts">Array of Triples</param>
+        void Retract(Triple[] ts);
+
+        /// <summary>
+        /// Retracts a Triple from the Graph
+        /// </summary>
+        /// <param name="t">A Triple</param>
+        void Retract(Triple t);
+
+        /// <summary>
+        /// Retracts a List of Triples from the Graph
+        /// </summary>
+        /// <param name="ts">List of Triples</param>
+        void Retract(List<Triple> ts);
+
+        /// <summary>
+        /// Retracts an Enumerable of Triples from the Graph
+        /// </summary>
+        /// <param name="ts">Enumerable of Triples</param>
+        void Retract(IEnumerable<Triple> ts);
+
+        /// <summary>
+        /// Retracts all Triples from the Graph
+        /// </summary>
+        void Clear();
+
+        #endregion
+
+        #region Node Creation
+
+        /// <summary>
+        /// Creates a Blank Node with the given Node ID
+        /// </summary>
+        /// <param name="nodeId">Node ID</param>
+        /// <returns></returns>
+        BlankNode CreateBlankNode(string nodeId);
+
+        /// <summary>
+        /// Creates a Blank Node with a new automatically generated ID
+        /// </summary>
+        /// <returns></returns>
+        BlankNode CreateBlankNode();
+
+        /// <summary>
+        /// Gets the next available auto-assigned Blank Node ID
+        /// </summary>
+        /// <returns></returns>
+        String GetNextBlankNodeID();
+
+        /// <summary>
+        /// Creates a Graph Literal Node which represents the given Subgraph
+        /// </summary>
+        /// <param name="subgraph">Subgraph</param>
+        /// <returns></returns>
+        GraphLiteralNode CreateGraphLiteralNode(IGraph subgraph);
+
+        /// <summary>
+        /// Creates a Graph Literal Node which represents the empty Subgraph
+        /// </summary>
+        /// <returns></returns>
+        GraphLiteralNode CreateGraphLiteralNode();
+
+        /// <summary>
+        /// Creates a Literal Node with the given Value
+        /// </summary>
+        /// <param name="literal">Value of the Literal</param>
+        /// <returns></returns>
+        LiteralNode CreateLiteralNode(string literal);
+
+        /// <summary>
+        /// Creates a Literal Node with the given Value and Data Type
+        /// </summary>
+        /// <param name="literal">Value of the Literal</param>
+        /// <param name="datatype">Data Type of the Literal</param>
+        /// <returns></returns>
+        LiteralNode CreateLiteralNode(string literal, Uri datatype);
+
+        /// <summary>
+        /// Creates a Literal Node with the given Value and Language
+        /// </summary>
+        /// <param name="literal">Value of the Literal</param>
+        /// <param name="langspec">Language Specifier for the Literal</param>
+        /// <returns></returns>
+        LiteralNode CreateLiteralNode(string literal, string langspec);
+
+        /// <summary>
+        /// Creates a Uri Node that corresponds to the Base Uri of the Graph
+        /// </summary>
+        /// <returns></returns>
+        UriNode CreateUriNode();
+
+        /// <summary>
+        /// Creates a Uri Node for the given QName
+        /// </summary>
+        /// <param name="qname">QName</param>
+        /// <returns></returns>
+        UriNode CreateUriNode(string qname);
+
+        /// <summary>
+        /// Creates a Uri Node for the given Uri
+        /// </summary>
+        /// <param name="uri">Uri</param>
+        /// <returns></returns>
+        UriNode CreateUriNode(Uri uri);
+
+        #endregion
+
+        #region Selection
+
+        /// <summary>
+        /// Selects the Blank Node with the given ID
+        /// </summary>
+        /// <param name="nodeId">Node ID</param>
+        /// <returns></returns>
+        BlankNode GetBlankNode(string nodeId);
+
+        /// <summary>
+        /// Selects the Literal Node with the given Value and Language
+        /// </summary>
+        /// <param name="literal">Value of the Literal</param>
+        /// <param name="langspec">Language Specifier of the Literal</param>
+        /// <returns></returns>
+        LiteralNode GetLiteralNode(string literal, string langspec);
+
+        /// <summary>
+        /// Selects the Literal Node with the given Value
+        /// </summary>
+        /// <param name="literal">Value of the Literal</param>
+        /// <returns></returns>
+        LiteralNode GetLiteralNode(string literal);
+
+        /// <summary>
+        /// Selects the Literal Node with the given Value and DataType
+        /// </summary>
+        /// <param name="literal">Value of the Literal</param>
+        /// <param name="datatype">Data Type of the Literal</param>
+        /// <returns></returns>
+        LiteralNode GetLiteralNode(string literal, Uri datatype);
+
+        /// <summary>
+        /// Selects all Nodes that meet the criteria of a given ISelector
+        /// </summary>
+        /// <param name="selector">A Selector on Nodes</param>
+        /// <returns></returns>
+        IEnumerable<INode> GetNodes(ISelector<INode> selector);
+
+        /// <summary>
+        /// Selects all Triples which are selected by a chain of Selectors where the results of each Selector influence the next selector and selection at each stage is over the entire Graph
+        /// </summary>
+        /// <param name="firstSelector">First Selector in the Chain</param>
+        /// <param name="selectorChain">Dependent Selectors which form the rest of the Chain</param>
+        /// <returns></returns>
+        IEnumerable<Triple> GetTriples(ISelector<Triple> firstSelector, List<IDependentSelector<Triple>> selectorChain);
+
+        /// <summary>
+        /// Selects all Triples which are selected by a chain of Selectors where each Selector is independent and selection at each stage is over the results of the previous selection stages
+        /// </summary>
+        /// <param name="selectorChain">Chain of Independent Selectors</param>
+        /// <returns></returns>
+        IEnumerable<Triple> GetTriples(List<ISelector<Triple>> selectorChain);
+
+        /// <summary>
+        /// Selects all Triples which have a Uri Node with the given Uri
+        /// </summary>
+        /// <param name="uri">Uri</param>
+        /// <returns></returns>
+        IEnumerable<Triple> GetTriples(Uri uri);
+
+        /// <summary>
+        /// Selects all Triples which meet the criteria of an ISelector
+        /// </summary>
+        /// <param name="selector">A Selector on Triples</param>
+        /// <returns></returns>
+        IEnumerable<Triple> GetTriples(ISelector<Triple> selector);
+
+        /// <summary>
+        /// Selects all Triples which contain the given Node
+        /// </summary>
+        /// <param name="n">Node</param>
+        /// <returns></returns>
+        IEnumerable<Triple> GetTriples(INode n);
+
+        /// <summary>
+        /// Selects all Triples where the Object is a Uri Node with the given Uri
+        /// </summary>
+        /// <param name="u">Uri</param>
+        /// <returns></returns>
+        IEnumerable<Triple> GetTriplesWithObject(Uri u);
+
+        /// <summary>
+        /// Selects all Triples where the Object Node meets the criteria of an ISelector
+        /// </summary>
+        /// <param name="selector">A Selector on Nodes</param>
+        /// <returns></returns>
+        IEnumerable<Triple> GetTriplesWithObject(ISelector<INode> selector);
+
+        /// <summary>
+        /// Selects all Triples where the Object is a given Node
+        /// </summary>
+        /// <param name="n">Node</param>
+        /// <returns></returns>
+        IEnumerable<Triple> GetTriplesWithObject(INode n);
+
+        /// <summary>
+        /// Selects all Triples where the Predicate is a given Node
+        /// </summary>
+        /// <param name="n">Node</param>
+        /// <returns></returns>
+        IEnumerable<Triple> GetTriplesWithPredicate(INode n);
+
+        /// <summary>
+        /// Selects all Triples where the Predicate is a Uri Node with the given Uri
+        /// </summary>
+        /// <param name="u">Uri</param>
+        /// <returns></returns>
+        IEnumerable<Triple> GetTriplesWithPredicate(Uri u);
+
+        /// <summary>
+        /// Selects all Triples where the Predicate meets the criteria of an ISelector
+        /// </summary>
+        /// <param name="selector">A Selector on Nodes</param>
+        /// <returns></returns>
+        IEnumerable<Triple> GetTriplesWithPredicate(ISelector<INode> selector);
+
+        /// <summary>
+        /// Selects all Triples where the Subject is a given Node
+        /// </summary>
+        /// <param name="n">Node</param>
+        /// <returns></returns>
+        IEnumerable<Triple> GetTriplesWithSubject(INode n);
+
+        /// <summary>
+        /// Selects all Triples where the Subject is a Uri Node with the given Uri
+        /// </summary>
+        /// <param name="u">Uri</param>
+        /// <returns></returns>
+        IEnumerable<Triple> GetTriplesWithSubject(Uri u);
+
+        /// <summary>
+        /// Selects all Triples where the Subject meets the criteria of an ISelector
+        /// </summary>
+        /// <param name="selector">A Selector on Nodes</param>
+        /// <returns></returns>
+        IEnumerable<Triple> GetTriplesWithSubject(ISelector<INode> selector);
+
+        /// <summary>
+        /// Selects all Triples with the given Subject and Predicate
+        /// </summary>
+        /// <param name="subj">Subject</param>
+        /// <param name="pred">Predicate</param>
+        /// <returns></returns>
+        IEnumerable<Triple> GetTriplesWithSubjectPredicate(INode subj, INode pred);
+
+        /// <summary>
+        /// Selects all Triples with the given Subject and Object
+        /// </summary>
+        /// <param name="subj">Subject</param>
+        /// <param name="obj">Object</param>
+        /// <returns></returns>
+        IEnumerable<Triple> GetTriplesWithSubjectObject(INode subj, INode obj);
+
+        /// <summary>
+        /// Selects all Triples with the given Predicate and Object
+        /// </summary>
+        /// <param name="pred">Predicate</param>
+        /// <param name="obj">Object</param>
+        /// <returns></returns>
+        IEnumerable<Triple> GetTriplesWithPredicateObject(INode pred, INode obj);
+
+        /// <summary>
+        /// Selects the Uri Node with the given QName
+        /// </summary>
+        /// <param name="qname">QName</param>
+        /// <returns></returns>
+        UriNode GetUriNode(string qname);
+
+        /// <summary>
+        /// Selects the Uri Node with the given Uri
+        /// </summary>
+        /// <param name="uri">Uri</param>
+        /// <returns></returns>
+        UriNode GetUriNode(Uri uri);
+
+        /// <summary>
+        /// Checks whether any Triples meeting the criteria of an ISelector can be found
+        /// </summary>
+        /// <param name="selector">A Selector on Triples</param>
+        /// <returns></returns>
+        bool TriplesExist(ISelector<Triple> selector);
+
+        /// <summary>
+        /// Gets whether a given Triple is in this Graph
+        /// </summary>
+        /// <param name="t">Triple to test</param>
+        /// <returns></returns>
+        bool ContainsTriple(Triple t);
+
+        #endregion
+
+        /// <summary>
+        /// Merges the given Graph into this Graph
+        /// </summary>
+        /// <param name="g">Graph to merge</param>
+        void Merge(IGraph g);
+
+        /// <summary>
+        /// Merges the given Graph into this Graph
+        /// </summary>
+        /// <param name="g">Graph to merge</param>
+        /// <param name="keepOriginalGraphUri">Indicates that the Merge should preserve the Graph URIs of Nodes</param>
+        void Merge(IGraph g, bool keepOriginalGraphUri);
+
+        /// <summary>
+        /// Checks whether a Graph is equal to another Graph and if so returns the mapping of Blank Nodes
+        /// </summary>
+        /// <param name="g">Graph to compare with</param>
+        /// <param name="mapping">Mapping of Blank Nodes</param>
+        /// <returns></returns>
+        bool Equals(IGraph g, out Dictionary<INode, INode> mapping);
+
+        /// <summary>
+        /// Checks whether this Graph is a sub-graph of the given Graph
+        /// </summary>
+        /// <param name="g">Graph</param>
+        /// <returns></returns>
+        bool IsSubGraphOf(IGraph g);
+
+        /// <summary>
+        /// Checks whether this Graph is a sub-graph of the given Graph
+        /// </summary>
+        /// <param name="g">Graph</param>
+        /// <param name="mapping">Mapping of Blank Nodes</param>
+        /// <returns></returns>
+        bool IsSubGraphOf(IGraph g, out Dictionary<INode, INode> mapping);
+
+        /// <summary>
+        /// Checks whether this Graph has the given Graph as a sub-graph
+        /// </summary>
+        /// <param name="g">Graph</param>
+        /// <returns></returns>
+        bool HasSubGraph(IGraph g);
+
+        /// <summary>
+        /// Checks whether this Graph has the given Graph as a sub-graph
+        /// </summary>
+        /// <param name="g">Graph</param>
+        /// <param name="mapping">Mapping of Blank Nodes</param>
+        /// <returns></returns>
+        bool HasSubGraph(IGraph g, out Dictionary<INode, INode> mapping);
+
+        /// <summary>
+        /// Resolves a QName into a Uri using the Namespace Map and Base Uri of this Graph
+        /// </summary>
+        /// <param name="qname">QName</param>
+        /// <returns></returns>
+        Uri ResolveQName(String qname);
+    }
+}

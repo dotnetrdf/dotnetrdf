@@ -1,0 +1,413 @@
+﻿dotNetRDF
+=========
+
+A Library for RDF manipulation and parsing in .Net using C# 3.0
+
+Version 0.3.0 Alpha
+
+Robert Vesse 2009-10
+rvesse@vdesign-studios.com
+
+License
+-------
+
+dotNetRDF is licensed under the GNU GPL Version 3
+
+Alternatively you may use it under the GNU Lesser GPL Version 3 or under the MIT license
+
+If none of these licenses are suitable for your intended use please contact us to discuss
+alternative terms
+
+Usage
+-----
+
+To use this library first unzip to a directory on your computer.  Then Add a Reference and use the Browse tab
+to find the directory where you unzipped the archive and select dotNetRDF.dll
+If you have downloaded the full source for the Project then you can add the Project to your Solution and then 
+use Project references instead.
+
+dotNetRDF includes intellisense for all classes providing that the dotNetRDF.XML file is located in the 
+same directory as the DLL file.
+
+To use classes from the library it is generally easiest to import the namespaces you need eg.
+
+C#
+using VDS.RDF;
+
+VB
+Imports VDS.RDF
+
+Please see the API at http://www.dotnetrdf.org/content.asp?pageID=API for further details on Namespaces,
+Classes, Methods etc
+
+Requirements
+------------
+
+To use this library you will need .Net Framework 3.5 SP1 and you may need to install/have available the 
+following third party libraries:
+- MySQL Connector.Net 6.0.3 which can be obtained from http://dev.mysql.com/downloads/connector/net/
+- Virtuoso ADO.Net Provider which can be obtained from http://docs.openlinksw.com/virtuoso/virtclientref.html
+- JSON.Net 3.5r7 which can be obtained from http://www.codeplex.com/Json
+- HtmlAgilityPack 1.4.0 Stable which can be obtained from http://www.codeplex.com/htmlagilitypack
+
+The relevant DLLs (HtmlAgilityPack.dll, MySql.Data.dll, Newtonsoft.Json.dll and virtado3.dll) are included with
+this release and if you wish to use the library you may need to reference these DLLs as well to ensure it is available in your
+project for dotNetRDF to use.
+If you have downloaded the full source code for the Library you can add a Project Reference to your Solution
+instead of referencing the DLL directly.  If you do this Visual Studio should automatically copy the 
+relevant DLLs into your output directory if they are required.
+
+Known Issues
+------------
+
+We are aware of the following issues with the library.  Please remember that this is an Alpha release and so
+there are things that may be buggy still and the API is subject to change at our discretion.
+ 
+Query
+- There is now only one SPARQL Engines provided with dotNetRDF - see http://www.dotnetrdf.org/content.asp?pageID=SPARQL%20Engine for 
+  up to date Known Issues
+  - Leviathan conforms much more closely to the SPARQL specification but still returns incorrect
+    results on a very small number of queries (5/441 in the official SPARQL Test Suite)
+ 
+Serialization
+- The RDF/XML serializers are slower than other serializers achieving around ~25,000 Triples/second maximum
+  as opposed to ~70,000 Triples/second maximum for most other serializers
+ 
+Storage
+- Write speeds can still vary wildly depending on how you perform the write and the data itself
+- Update support for 4store is highly experimental and uses a feature that is not yet stable in 4store itself
+  and in fact is not in the standard 4store builds
+- Virtuoso 6 support requires Virtuoso 6.1.1 or higher to work correctly
+ 
+ Change History
+ --------------
+ 
+ 0.3.0
+ 	- Bug Fixes
+	 - Turtle Tokeniser supports + at the start of plain numeric literals
+	 - Fixed faulty behaviour of == and != operators for Nodes when nulls are involved
+	 - Turtle and N3 parsers remove incorrect behaviour regarding unescaped " occurring at end of string
+	 - Turtle and N3 writers now always escape " character
+	 - UriLoader caching behaviour when using ETag based caching fixed
+	 - Some issues with persistence in the StoreGraph fixed
+	 - Disposing ISqlIOManager multiple times without PreserveState on no longer hangs the process
+	 - RDF/XML writers properly encode unescaped ampersands where necessary
+	 - Sorting involving literal nodes no longer fails if invalid values for known types are given
+	 - RDF/XML parser should now properly handle xml:base and provide better xml:base scoping support
+	- SPARQL
+     - Unified Tokeniser for SPARQL Query and Update
+	 - SPARQL 1.1 Query
+	  - Now only Leviathan engine present in the library
+	  - Added support for proper IF function
+	  - Added support for MINUS patterns
+	  - Added support for SERVICE patterns
+	  - Added support for BINDINGS clause
+	  - FederatedSparqlRemoteEndpoint class for federated querying
+	  - ISparqlQueryProcessor interface for defining custom query processors
+	   - Multiple processor implementations provided
+	 - SPARQL 1.1 Update
+	  - New IUpdateableTripleStore interface
+	  - TripleStore class supports updates
+	  - Classes for representing different Update Commands
+	  - Parser for SPARQL Update
+	  - ISparqlUpdateProcessor for defining custom update processors
+	   - Multiple processor implementations provided
+	   - Apply full SPARQL Update on any Triple Store represented by an IGenericIOManager (full support dependent on features provided by IGenericIOManager)
+	  - New handler class for providing an endpoint supporting this protocol in your ASP.Net applications
+	 - SPARQL 1.1 Uniform HTTP Protocol for Graph Management
+	  - New SparqlHttpProtocolConnector for connecting to stores supporting this protocol
+	  - New handler class for providing an endpoint supporting this protocol in your ASP.Net applications
+	  - ISparqlHttpProtocolProcessor for defining custom protocol processors
+	   - Multiple processor implementations provided
+	 - SparqlConnector improved 
+	  - Can be instantiated with pre-configured SparqlRemoteEndpoint instance
+	  - Properties for manipulating the underlying endpoint added
+	 - SparqlRemoteEndpoint improved
+	  - Default timeout increased to 30s instead of 15s
+	  - Support for HTTP Authentication and Proxy Servers
+	 - SPARQL Endpoints 
+	  - New handlers for providing Query, Update and Protocol services so all existing query handlers are now marked
+		as obsolete
+	  - Support no-caching though this is not recommended
+	  - Supports absolute cache expiration
+	- RDFa Support
+	 - RDFa 1.1 is supported
+	 - RdfAParser now supports selectable syntax compliance
+	- New Configuration System
+	 - New RDF based configuration system
+	 - Allows for the encoding of various objects as RDF and the loading of these Objects from the RDF Graph
+	 - Much simpler mechanism for configuring ASP.Net applications
+	- Pellet Server Client
+	 - Support for connecting to and using a Pellet Server knowledge base
+	- General Improvements
+	 - FileLoader and UriLoader can now raise warning events
+	 - Library now uses IAsyncResult pattern in many places as opposed to manual thread spawning
+	 - More writers made thread safe
+	 - Improved how compressing writers detect collections to significantly improve speed on blank node heavy graphs
+ 
+ 0.2.2 Re-release
+  - Bug Fixes
+   - CDATA nodes in RDF/XML handled properly
+ 
+ 0.2.2
+  - Bug Fixes
+   - Language Specifier handling for TriG and NTriples
+   - RDFa parsing of documents without a DOCTYPE
+   - Invalid QNames were output in some scenarios
+   - SparqlParameterizedString inserts variables in a more accurate way
+  - General Improvements
+   - Sub-graph matching
+   - Union collections for Triples and Nodes
+  - Query Improvements
+   - DISTINCT modifier for all aggregates
+   - xsd:float calculations for numeric aggregates
+   - Full property path support
+   - IN and NOT IN operator support
+   - New COALESCE, IRI, STRDT and STRLANG functions supported
+   - Limited IF ELSE support
+   - Major optimisations for much more scalable query on large datasets using Leviathan
+   - Initial API outline for OWL support (no implementation yet)
+  - Parsing Improvements
+   - Caching of Graphs by URI Loader for more efficient data retrieval
+   - Support for @prefix attribute in RDFa 1.1 (based on current working group drafts)
+   - Support for loading from data: URIs
+  - Ontology API
+   - New API for working with RDF data in terms of ontologies, resources, classes, properties and individuals
+   - ReasonerGraph class provides for having a Graph which wraps an existing Graph and materialises the triples
+     inferred by a reasoner in itself without altering the wrapped Graph
+ 
+ 0.2.1
+  - Bug Fixes
+   - SPARQL Parser accepts all Blank Node QNames
+   - Long Literals and Escapes in Turtle, N3 and TriG weren't correctly read in some cases
+   - Various fixes to Virtuoso support
+   - JSON Parser parses Language specifiers correctly
+  - Parsing Improvements
+   - Addition of an RDFa Parser
+   - Long Literals in Turtle, N3 and TriG which had quotes at the end now parse correctly
+   - Both Turtle & N3 Tokenisers refactored to derive from the standard BaseTokeniser class
+   - Turtle tokeniser handles escapes better
+  - Query Improvements
+   - ARQ function library now automatically registered
+   - Optimisation for GRAPH ?g {} pattern
+   - SparqlParameterizedString class for dynamically building queries and preventing SPARQL Injection
+  - Serialization Improvements
+   - More consistent and correct character escaping
+   - HTML Writer for Graphs now writes XHTML+RDFa
+   - IHtmlWriter interface provides for customising the CSS classes uses for page elements
+   - CSV and TSV writers for SPARQL Results don't write trailing commas/tabs to lines any more
+  - Storage Improvements
+   - Improvements Virtuoso support based on feedback from OpenLink software and end users
+   - Virtuoso 6 support (see Known Issues)
+   - Various fixes for communicating with Stores over RESTful HTTP APIs
+   - SparqlConnector allows you to disable local parsing so you can use vendor specific SPARQL extensions in
+     queries
+ 
+ 0.2.0
+  - API Improvements/Changes (This release includes many breaking changes from the 0.1.x API)
+   - Renamed many classes to better conform to the Microsoft Class Library design guidelines
+   - Graph equality supported (may not work for very large/complex Graphs)
+   - Result Set equality supported (may not work for very large/complex Result Sets)
+  - Bug Fixes
+   - File Loader assigns absolute File URIs
+   - Many bug fixes to the SPARQL engine
+    - DATATYPE and LANGMATCHES work correctly
+    - Certain types of ASK now work correctly
+    - = and != operator do value equality on known types rather than term equality
+    - Relational operators do improved value relations on known types rather than term ordering
+    - Complex OPTIONALs and UNIONs work correctly (Leviathan support is far better than Labyrinth)
+   - Turtle Tokeniser
+    - Parses complex Language Specifiers correctly
+    - Parses boolean constants correctly in all cases
+   - TriG Tokeniser now parses long literals correctly in all cases
+   - Indexed Triple Collections failed to return Node enumerations as Distinct() enumerations which meant
+     many writers weren't using High Speed mode when they should have done
+  - Storage Improvements
+   - Joseki support tested and verified (exact support varies depending on the store the Joseki server exposes)
+  - Query Improvements
+   - Various parts of the Labyrinth engine rewritten, improved and bug fixed
+   - Support for all mandatory SPARQL 1.1 features in the latest working draft (not all features are supported by Labyrinth)
+   - Support for some additional SPARQL extensions
+    - Large parts of the XPath function library for strings, numerics and date times now available
+    - Support for the ARQ (Jena's SPARQL engine) function library to permit query portability
+    - Support for our own Leviathan Function Library which provides a wealth of numeric functions
+     - http://www.dotnetrdf.org/leviathan# - RDF description of function library
+    - NMAX/NMIN aggregates - numeric maxmimum/minimum
+    - MEDIAN and MODE aggregates
+    - LET assignment
+   - Brand new Leviathan engine which conforms much more closely to the SPARQL specification
+    - Algebra based evaluation model
+    - Now the default engine for executing queries in-memory SPARQL
+   - CSV and TSV Result serializers
+   - XSLT serializer
+  - Serialization Improvements
+   - All serializers are thread safe
+   - NTriples writers
+    - Fixes to output escaping for some writers to ensure valid syntax is always produced
+    - Standardised Node Output
+    - URIs containing special characters now get escaped correctly where necessary
+   - CSV, TSV and HTML serializers for RDF
+   - CSV and TSV serializers for RDF Datasets
+   - New QName mapper for serialization ensures correct QNames for all URIs
+  - ASP.Net Integration
+   - New SchemaHandler for serving RDF schemas
+   - New FileHandler for serving single RDF files at fixed URIs e.g. FOAF files
+   - SparqlHandler and FileSparqlHandler now support defining Custom Expression Factories
+ 
+ 0.1.3
+  - Bug Fixes
+   - Some kinds of Graph which failed to serialize to RDF/XML are now serialized OK
+   - Sesame and AllegroGraph connectors now properly initialise the Base URI of the Graph they load into
+   - Collection output properly generated by Fast RDF/XML writer
+   - Turtle & Notation 3 Parsers no longer have any Blank Node handling issues
+   - TriG Parser now handles files containing comments better
+  - Storage Improvements
+   - Experimental support for Joseki
+   - Change to 4store connector to try and mitigate the high HTTP timeout rate
+  - Parsing Improvements
+   - Newly rewritten Turtle and Notation 3 parsers are marginally faster and much more maintainable
+   - Use of Parser Contexts on several parsers to make them fully Thread Safe
+  - Query Improvements
+   - Basic Query optimisation by Triple Pattern reordering within each Graph Pattern
+   - Change to a few of the base implementations of functions of Triple Collections so even without full indexing
+     queries over two parts of the Triple should be faster
+  - Serialization Improvements
+   - Use of Writer Contexts for various writers to make them fully Thread Safe
+   - Eliminated a potential issue with outputting some Blank Nodes
+ 
+ 0.1.2
+ - Bug Fixes
+  - Error in URI Resolution of QNames in the default namespace when no default namespace is defined (i.e. resolution is against
+    the base URI has been fixed)
+  - Long queries passed to a SPARQLRemoteEndpoint get POSTed to the endpoint to avoid an issue with HttpWebRequest
+ - Query Improvements
+  - Eliminated the duplicate results bug
+  - Removed the obsolete constructors from SPARQLResultSet
+  - Better encapsulation of the data in a SPARQLResultSet
+  - Improved the ISPARQLResultsReader implementations to make them fully thread safe
+  - Improved Query Tokeniser
+  - Use of Indexing for significantly faster querying
+  - Experimental support for Inference
+   - All classes derived from TripleStore implement the new IInferencingTripleStore interface
+   - Ability to attach Reasoners to SPARQL Endpoints created with the SPARQL Handler
+   - Basic RDFS Class Hierarchy and SKOS Concept Hierarchy Reasoners provided
+  - Experimental support for SPARQL 1.1 Features (Note that SPARQL 1.1 is still in early working draft stage)
+   - Aggregate Functions: AVG, COUNT, MAX, MIN and SUM
+   - Projection Expression in SELECT Clauses
+   - GROUP BY and HAVING Clauses
+ - Storage Improvements
+  - Support for native query on Virtuoso
+  - Support for 4store
+  - Support for AllegroGraph
+  - Support for any server that supports the Sesame 2.0 HTTP Protocol
+ - Parsing Improvements
+  - New FileLoader class can be used to load an RDF Graph/Dataset from a file without instantiating a parser directly
+  - Support for additional dataset syntaxes - NQuads and TriX
+ - Serialization Improvements
+  - FastRDFXMLWriter now generates much nicer RDF/XML syntax at a speed of around 25,000 triples/second
+  - Support for serializing to NQuads and TriX
+  - Some bug fixes to our internal XML writer
+  - TriG writer uses the fast writing algorithm to improve it's output speed
+ - ASP.Net Integration Improvements
+  - Bug fixes to support running on IIS in non-integrated mode
+  - Added a NativeSPARQLHandler which lets you query a Talis/Virtuoso/4store/AllegroGraph/Sesame store from your web application
+  - Added a FileSPARQLHandler which lets you query an RDF file or folder of RDF files
+  - All SPARQL Handlers now allow you to control the Cache duration
+ - Other Improvements
+  - Improved NamespaceMapper imports other NamespaceMaps more intelligently
+  - New Global Option for controlling Default Compression Level on writers returned by MIMETypesHelper
+  - Use of indexing under the hood to make major improvements to
+  - New HashTable class used for storage and indexing in various places to give performance boosts
+ 
+ 0.1.1 Re-release
+ - Bug Fixes
+  - New BlankNodeMapper ensures that users can't accidentally define Blank Node IDs which clash with auto-assigned IDs
+  - Faster writers don't produce invalid syntax when compression level is set to None
+  - NativeNTriplesParser parses simple literal objects correctly
+ 
+ 0.1.1
+ - Parsing Improvements
+  - Major performance improvements for Parsers thanks to changes in the underyling memory storage of Nodes and Triples
+  - Added RDJ/JSON and SPARQL Results JSON Support
+  - Added TriG support
+  - Added support for parsing raw RDF strings without the data needing to be in a File/Stream
+  - Full Unicode Escape Support in all Parsers which use it
+ - Serialization Improvements
+  - RDFXMLTreeWriter provides a more powerful RDF/XML Writer which can use most of the RDF/XML syntax compressions
+  - CompressingTurtleWriter provides a more powerful Turtle Writer which can use all of the Turtle syntax compressions
+  - NTriplesWriter now correctly converts non-ASCII characters into Unicode escapes
+  - Major improvements in speed to all the NTriples like (NTriples, Turtle and Notation 3) writers and the RDF/JSON writer
+  - FastRDFXMLWriter provides a fast RDF/XML writer but currently produces very verbose uncompressed syntax
+ - Storage Improvments
+  - Improved Database format now provides faster read speeds and significantly improved write speeds depending on usage
+ - Support for additional RDF Stores
+  - Improved API allows for easy integration of other Stores with the Library
+  - Added support for the Talis Platform
+  - Added support for Virtuoso Universal Server
+ - Added Thread Safe versions of Graph and SQLGraph
+ - Improvements to Node & Triple Equality calculation
+ - Some minor tweaks to SPARQL implementation
+ - Added more SPARQL Result Serializers
+ - Better Content Negotation Support
+ - Bug Fixes to retrieving RDF and SPARQL Results over HTTP
+ - Bug Fixes to URI Resolution
+ - Added a simple to configure SPARQLHandler to the Library
+ 
+ 0.1.0
+ - Initial API release
+ 
+ Release History
+ ---------------
+ 
+ 31/07/2009 - First public Alpha release (Version 0.1.0 Alpha)
+ 
+ 03/08/2009 - Rerelease to fix a bug with SQL based storage which occurs when multi-threaded writing is performed
+ 
+ 25/09/2009 - Release of Version 0.1.1 Alpha (Build 0.1.1.18640)
+ 
+ 5/10/2009 - Re-release of Version 0.1.1 Alpha (Build 0.1.1.20361) which fixes issues with Blank Node IDs and Fast writers when Compression Level is None
+ 
+ 27/11/2009 - Release of Version 0.1.2 Alpha (Build 0.1.2.16009)
+ 
+ 18/11/2009 - Release of Version 0.1.3 Alpha (Build 0.1.3.20723)
+ 
+ 3/2/2010 - Release of Version 0.2.0 Alpha (Build 0.2.0.27063)
+ 
+ 11/3/2010 - Release of Version 0.2.1 Alpha (Build 0.2.1.24471)
+ 
+ 16/4/2010 - Release of Version 0.2.2 Alpha (Build 0.2.2.24625)
+ 
+ 10/8/2010 - Release of Version 0.3.0 Alpha (Build 0.3.0.23092)
+ 
+Acknowledgements
+----------------
+
+Uses code (3rd Party Libraries) from the following sources
+-MySQL Connector.Net from MySQL AB http://www.mysql.org
+-JSON.Net from James Newton-King http://james.newtonking.com
+-Virtuoso ADO.Net Provider from OpenLink Software http://www.openlinksw.com
+-HtmlAgilityPack from Simon Mourier http://www.codeplex.com/htmlagilitypack
+
+Thanks to the following people who have helped in the development process or whose suggestions have led to 
+improvements in the code:
+- Eamon Nerbonne for the BlockingStreamReader fix (http://eamon.nerbonne.org/) which is much nicer than the
+  alternative of pre-caching in a MemoryStream
+- Hugh Williams and Jacqui Hand of OpenLink Software (http://www.openlinksw.com) for helping me resolve some
+  issues with their ADO.Net provider including promptly providing me with a fixed version once the issue
+  I'd identified had been traced to it's cause and extending my evaluation license so I could build the code
+- Toby Inkster (http://tobyinkster.co.uk/) for providing me with some TriX extensibility stylesheets that I 
+  could use to test my TriX parser
+- Marek Safar from the Mono project for fixing the bug in gmcs I identified which meant I couldn't compile
+  a Mono build of dotNetRDF
+- Andy Seaborne for excellent answers to various SPARQL and ARQ function library related questions which
+  have contributed to the new Leviathan engine and the ARQ function library support
+- The SPARQL Working Group for useful feedback and responses to my comments
+- The following people who have contributed bug reports and patches on the mailing lists:
+ - Tana Isaac
+ - Koos Strydoom
+ - Alexander Sidorov
+ - Michael Friis
+ - Bob DuCharme
+ - Alexander Zapirov
+ - Sergey Novikov
+ - Jeen Broekstra

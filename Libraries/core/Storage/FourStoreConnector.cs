@@ -1,0 +1,551 @@
+﻿/*
+
+Copyright Robert Vesse 2009-10
+rvesse@vdesign-studios.com
+
+------------------------------------------------------------------------
+
+This file is part of dotNetRDF.
+
+dotNetRDF is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+dotNetRDF is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with dotNetRDF.  If not, see <http://www.gnu.org/licenses/>.
+
+------------------------------------------------------------------------
+
+dotNetRDF may alternatively be used under the LGPL or MIT License
+
+http://www.gnu.org/licenses/lgpl.html
+http://www.opensource.org/licenses/mit-license.php
+
+If these licenses are not suitable for your intended use please contact
+us at the above stated email address to discuss alternative
+terms.
+
+*/
+
+#if !NO_STORAGE
+
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Text;
+using System.Threading;
+using VDS.RDF.Configuration;
+using VDS.RDF.Parsing;
+using VDS.RDF.Query;
+using VDS.RDF.Writing;
+
+namespace VDS.RDF.Storage
+{
+    /// <summary>
+    /// Class for connecting to 4store
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Depending on the version of <a href="http://librdf.org/rasqal/">RASQAL</a> used for your 4store instance and the options it was built with some kinds of queries may not suceed or return unexpected results.
+    /// </para>
+    /// <para>
+    /// The default build of 4store does not permit the saving of unamed Graphs to the Store or Triple level updates.  There is a branch of 4store that supports Triple level updates and you can tell the connector if your 4store instance supports this when you instantiate it.
+    /// </para>
+    /// <para>
+    /// <strong>Warning</strong> - The Triple level update support added to this connector is entirely experimental and has not been tested since I don't have time to experiment with the non-standard builds of 4store that support this feature.
+    /// </para>
+    /// </remarks>
+    public class FourStoreConnector : IQueryableGenericIOManager, IConfigurationSerializable
+    {
+        private String _baseUri;
+        private SparqlRemoteEndpoint _endpoint;
+        private bool _updatesEnabled = false;
+
+#if !NO_RWLOCK
+        ReaderWriterLockSlim _lockManager = new ReaderWriterLockSlim();
+#endif
+
+        /// <summary>
+        /// Creates a new 4store connector which manages access to the services provided by a 4store server
+        /// </summary>
+        /// <param name="baseUri">Base Uri of the 4store</param>
+        public FourStoreConnector(String baseUri)
+        {
+            //Determine the appropriate actual Base Uri
+            if (baseUri.EndsWith("sparql/"))
+            {
+                this._baseUri = baseUri.Substring(0, baseUri.IndexOf("sparql/"));
+            }
+            else if (baseUri.EndsWith("data/"))
+            {
+                this._baseUri = baseUri.Substring(0, baseUri.IndexOf("data/"));
+            }
+            else if (!baseUri.EndsWith("/"))
+            {
+                this._baseUri = baseUri + "/";
+            }
+            else
+            {
+                this._baseUri = baseUri;
+            }
+
+            this._endpoint = new SparqlRemoteEndpoint(new Uri(this._baseUri + "sparql/"));
+            this._endpoint.Timeout = 60000;
+        }
+
+        /// <summary>
+        /// Creates a new 4store connector which manages access to the services provided by a 4store server
+        /// </summary>
+        /// <param name="baseUri">Base Uri of the 4store</param>
+        /// <param name="enableUpdateSupport">Indicates to the connector that you are using a 4store instance that supports Triple level updates</param>
+        /// <remarks>
+        /// If you enable Update support but are using a 4store instance that does not support Triple level updates then you will almost certainly experience errors while using the connector.
+        /// </remarks>
+        public FourStoreConnector(String baseUri, bool enableUpdateSupport)
+            : this(baseUri)
+        {
+            this._updatesEnabled = enableUpdateSupport;
+        }
+
+        /// <summary>
+        /// Loads a Graph from the 4store instance
+        /// </summary>
+        /// <param name="g">Graph to load into</param>
+        /// <param name="graphUri">Uri of the Graph to load</param>
+        public void LoadGraph(IGraph g, Uri graphUri)
+        {
+            if (graphUri != null)
+            {
+                this.LoadGraph(g, graphUri.ToString());
+            }
+            else
+            {
+                this.LoadGraph(g, String.Empty);
+            }
+        }
+
+        /// <summary>
+        /// Loads a Graph from the 4store instance
+        /// </summary>
+        /// <param name="g">Graph to load into</param>
+        /// <param name="graphUri">Uri of the Graph to load</param>
+        /// <exception cref="RDFStorageExeception"></exception>
+        public void LoadGraph(IGraph g, string graphUri)
+        {
+            try
+            {
+#if !NO_RWLOCK
+                this._lockManager.EnterReadLock();
+#endif
+
+                if (!graphUri.Equals(String.Empty))
+                {
+                    if (g.IsEmpty) g.BaseUri = new Uri(graphUri);
+                    g.Merge(this._endpoint.QueryWithResultGraph("CONSTRUCT {?s ?p ?o} FROM <" + graphUri.Replace(">", "\\>") + "> WHERE {?s ?p ?o}"));
+                }
+                else
+                {
+                    throw new RdfStorageException("Cannot retrieve a Graph from 4store without specifying a Graph URI");
+                }
+            }
+            finally
+            {
+#if !NO_RWLOCK
+                this._lockManager.ExitReadLock();
+#endif
+            }
+        }
+
+        /// <summary>
+        /// Saves a Graph to a 4store instance (Warning: Completely replaces any existing Graph with the same URI)
+        /// </summary>
+        /// <param name="g">Graph to save</param>
+        /// <remarks>
+        /// <para>
+        /// Completely replaces any existing Graph with the same Uri in the store
+        /// </para>
+        /// <para>
+        /// Attempting to save a Graph which doesn't have a Base Uri will result in an error
+        /// </para>
+        /// </remarks>
+        /// <exception cref="RdfStorageException">Thrown if you try and save a Graph without a Base Uri or if there is an error communicating with the 4store instance</exception>
+        public void SaveGraph(IGraph g)
+        {
+            try
+            {
+#if !NO_RWLOCK
+                this._lockManager.EnterWriteLock();
+#endif
+
+                //Set up the Request
+                HttpWebRequest request;
+                if (g.BaseUri != null)
+                {
+                    request = (HttpWebRequest)WebRequest.Create(this._baseUri + "data/" + Uri.EscapeUriString(g.BaseUri.ToString()));
+                }
+                else
+                {
+                    throw new RdfStorageException("Cannot save a Graph without a Base URI to a 4store Server");
+                }
+                request.Method = "PUT";
+                request.ContentType = MimeTypesHelper.Turtle[0];
+
+                //Write the Graph as Turtle to the Request Stream
+                CompressingTurtleWriter writer = new CompressingTurtleWriter(WriterCompressionLevel.High);
+                writer.Save(g, new StreamWriter(request.GetRequestStream()));
+
+                #if DEBUG
+                    if (Options.HttpDebugging)
+                    {
+                        Tools.HttpDebugRequest(request);
+                    }
+                #endif
+
+                //Make the Request
+                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+
+                //Ensure we close the connection explicitly
+                response.Close();
+
+                #if DEBUG
+                    if (Options.HttpDebugging)
+                    {
+                        Tools.HttpDebugResponse(response);
+                    }
+                #endif
+
+                //If we get here then it's OK
+            }
+            catch (WebException webEx)
+            {
+                throw new RdfStorageException("A HTTP error occurred while communicating with the 4store Server", webEx);
+            }
+            finally
+            {
+#if !NO_RWLOCK
+                this._lockManager.ExitWriteLock();
+#endif
+            }
+        }
+
+        /// <summary>
+        /// Updates a Graph in the store
+        /// </summary>
+        /// <param name="graphUri">Uri of the Graph to Update</param>
+        /// <param name="additions">Triples to be added</param>
+        /// <param name="removals">Triples to be removed</param>
+        /// <remarks>
+        /// May throw an error since the default builds of 4store don't support Triple level updates.  There are builds that do support this and the user can instantiate the connector with support for this enabled if they wish, if they do so and the underlying 4store doesn't support updates errors will occur when updates are attempted.
+        /// </remarks>
+        public void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
+        {
+            if (graphUri == null)
+            {
+                throw new RdfStorageException("Cannot update a Graph without a Graph URI on a 4store Server");
+            }
+            else
+            {
+                this.UpdateGraph(graphUri.ToString(), additions, removals);
+            }
+        }
+
+        /// <summary>
+        /// Updates a Graph in the store
+        /// </summary>
+        /// <param name="graphUri">Uri of the Graph to Update</param>
+        /// <param name="additions">Triples to be added</param>
+        /// <param name="removals">Triples to be removed</param>
+        /// <remarks>
+        /// May throw an error since the default builds of 4store don't support Triple level updates.  There are builds that do support this and the user can instantiate the connector with support for this enabled if they wish, if they do so and the underlying 4store doesn't support updates errors will occur when updates are attempted.
+        /// </remarks>
+        public void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
+        {
+            if (!this._updatesEnabled)
+            {
+                throw new RdfStorageException("4store does not support Triple level updates");
+            }
+            else if (graphUri.Equals(String.Empty))
+            {
+                throw new RdfStorageException("Cannot update a Graph without a Graph URI on a 4store Server");
+            }
+            else
+            {
+                try
+                {
+#if !NO_RWLOCK
+                    this._lockManager.EnterWriteLock();
+#endif
+
+                    if (removals != null)
+                    {
+                        if (removals.Any())
+                        {
+                            //Build up the DELETE command and execute
+                            StringBuilder delete = new StringBuilder();
+                            Graph deleteGraph = new Graph();
+                            deleteGraph.Assert(removals);
+                            String deleteData = VDS.RDF.Writing.StringWriter.Write(deleteGraph, new NTriplesWriter());
+                            delete.AppendLine("DELETE");
+                            delete.AppendLine("{ GRAPH <" + graphUri.Replace(">", "\\>") + "> {");
+                            delete.AppendLine(deleteData);
+                            delete.AppendLine("}}");
+
+                            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this._baseUri + "update/");
+                            request.Method = "POST";
+
+                            StreamWriter postWriter = new StreamWriter(request.GetRequestStream());
+                            postWriter.Write(delete.ToString());
+                            postWriter.Close();
+
+                            #if DEBUG
+                                if (Options.HttpDebugging) Tools.HttpDebugRequest(request);
+                            #endif
+
+                            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+
+                            #if DEBUG
+                                if (Options.HttpDebugging) Tools.HttpDebugResponse(response);
+                            #endif
+
+                            response.Close();
+                        }
+                    }
+
+                    if (additions != null)
+                    {
+                        if (additions.Any())
+                        {
+                            //Build up the INSERT command and execute
+                            StringBuilder insert = new StringBuilder();
+                            Graph insertGraph = new Graph();
+                            insertGraph.Assert(additions);
+                            String insertData = VDS.RDF.Writing.StringWriter.Write(insertGraph, new NTriplesWriter());
+                            insert.AppendLine("INSERT");
+                            insert.AppendLine("{ GRAPH <" + graphUri.Replace(">", "\\>") + "> {");
+                            insert.AppendLine(insertData);
+                            insert.AppendLine("}}");
+
+                            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this._baseUri + "update/");
+                            request.Method = "POST";
+
+                            StreamWriter postWriter = new StreamWriter(request.GetRequestStream());
+                            postWriter.Write(insert.ToString());
+                            postWriter.Close();
+
+                            #if DEBUG
+                                if (Options.HttpDebugging) Tools.HttpDebugRequest(request);
+                            #endif
+
+                            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+
+                            #if DEBUG
+                                if (Options.HttpDebugging) Tools.HttpDebugResponse(response);
+                            #endif
+
+                            response.Close();
+                        }
+                    }
+                }
+                catch (WebException webEx)
+                {
+                    throw new RdfStorageException("A HTTP error occurred while communicating with the 4store Server", webEx);
+                }
+                finally
+                {
+#if !NO_RWLOCK
+                    this._lockManager.ExitWriteLock();
+#endif
+                }
+            }
+        }
+
+        /// <summary>
+        /// Returns whether this connector has been instantiated with update support or not
+        /// </summary>
+        /// <remarks>
+        /// If this property returns true it does not guarantee that the 4store instance actually supports updates it simply indicates that the user has enabled updates on the connector.  If Updates are enabled and the 4store server being connected to does not support updates then errors will occur.
+        /// </remarks>
+        public bool UpdateSupported
+        {
+            get 
+            {
+                return false; 
+            }
+        }
+
+        /// <summary>
+        /// Returns that the Connection is ready
+        /// </summary>
+        public bool IsReady
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// Returns that the Connection is not read-only
+        /// </summary>
+        public bool IsReadOnly
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Makes a Sparql Query against the underlying 4store Instance
+        /// </summary>
+        /// <param name="sparqlQuery">Sparql Query</param>
+        /// <returns>A <see cref="Graph">Graph</see> or a <see cref="SparqlResultSet">SparqlResultSet</see></returns>
+        /// <remarks>
+        /// Depending on the version of <a href="http://librdf.org/rasqal/">RASQAL</a> used and the options it was built with some kinds of queries may not suceed or return unexpected results.
+        /// </remarks>
+        public Object Query(String sparqlQuery)
+        {
+            HttpWebResponse response = this._endpoint.QueryRaw(sparqlQuery);
+            StreamReader data = new StreamReader(response.GetResponseStream());
+            try
+            {
+                //Is the Content Type referring to a Sparql Result Set format?
+                ISparqlResultsReader resreader = MimeTypesHelper.GetSparqlParser(response.ContentType);
+                SparqlResultSet results = new SparqlResultSet();
+                resreader.Load(results, data);
+                response.Close();
+                return results;
+            }
+            catch (RdfParserSelectionException)
+            {
+                //If we get a Parser Selection exception then the Content Type isn't valid for a Sparql Result Set
+
+                //Is the Content Type referring to a RDF format?
+                IRdfReader rdfreader = MimeTypesHelper.GetParser(response.ContentType);
+                Graph g = new Graph();
+                rdfreader.Load(g, data);
+                response.Close();
+                return g;
+            }
+        }
+
+        /// <summary>
+        /// Deletes a Graph from the 4store server
+        /// </summary>
+        /// <param name="graphUri">Uri of Graph to delete</param>
+        public void DeleteGraph(Uri graphUri)
+        {
+            if (graphUri == null)
+            {
+                throw new RdfStorageException("You must specify a valid URI in order to delete a Graph from 4store");
+            }
+            else
+            {
+                this.DeleteGraph(graphUri.ToString());
+            }
+        }
+
+        /// <summary>
+        /// Deletes a Graph from the 4store server
+        /// </summary>
+        /// <param name="graphUri">Uri of Graph to delete</param>
+        public void DeleteGraph(String graphUri)
+        {
+            try
+            {
+#if !NO_RWLOCK
+                this._lockManager.EnterWriteLock();
+#endif
+
+                //Set up the Request
+                HttpWebRequest request;
+                if (!graphUri.Equals(String.Empty))
+                {
+                    request = (HttpWebRequest)WebRequest.Create(this._baseUri + "data/" + Uri.EscapeUriString(graphUri));
+                }
+                else
+                {
+                    throw new RdfStorageException("Cannot delete a Graph without a Base URI from a 4store Server");
+                }
+                request.Method = "DELETE";
+
+                #if DEBUG
+                    if (Options.HttpDebugging)
+                    {
+                        Tools.HttpDebugRequest(request);
+                    }
+                #endif
+
+                //Make the Request
+                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+
+                #if DEBUG
+                    if (Options.HttpDebugging)
+                    {
+                        Tools.HttpDebugResponse(response);
+                    }
+                #endif
+
+                //If we get here then it's OK
+            }
+            catch (WebException webEx)
+            {
+                throw new RdfStorageException("A HTTP error occurred while communicating with the 4store Server", webEx);
+            }
+            finally
+            {
+#if !NO_RWLOCK
+                this._lockManager.ExitWriteLock();
+#endif
+            }
+        }
+
+        /// <summary>
+        /// Disposes of a 4store connection
+        /// </summary>
+        public void Dispose()
+        {
+            //No Dispose actions needed
+        }
+
+        /// <summary>
+        /// Gets a String which gives details of the Connection
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return "[4store] " + this._baseUri;
+        }
+
+        /// <summary>
+        /// Serializes the connection's configuration
+        /// </summary>
+        /// <param name="context"></param>
+        public void SerializeConfiguration(ConfigurationSerializationContext context)
+        {
+            INode manager = context.NextSubject;
+            INode rdfType = context.Graph.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
+            INode rdfsLabel = context.Graph.CreateUriNode(new Uri(NamespaceMapper.RDFS + "label"));
+            INode dnrType = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyType);
+            INode genericManager = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.ClassGenericManager);
+            INode server = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyServer);
+            INode enableUpdates = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyEnableUpdates);
+
+            context.Graph.Assert(new Triple(manager, rdfType, genericManager));
+            context.Graph.Assert(new Triple(manager, rdfsLabel, context.Graph.CreateLiteralNode(this.ToString())));
+            context.Graph.Assert(new Triple(manager, dnrType, context.Graph.CreateLiteralNode(this.GetType().FullName)));
+            context.Graph.Assert(new Triple(manager, server, context.Graph.CreateLiteralNode(this._baseUri)));
+            context.Graph.Assert(new Triple(manager, enableUpdates, this._updatesEnabled.ToLiteral(context.Graph)));
+        }
+    }
+}
+
+#endif

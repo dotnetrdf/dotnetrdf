@@ -1,0 +1,67 @@
+dotNetRDF Compiler Symbols
+==========================
+
+The dotNetRDF library codebase contains the following compiler symbols, defining these symbols with the define command of your compiler will have the following effects:
+
+Profile Symbols
+---------------
+
+These symbols are used to target a specific profile
+
+MONO
+
+Compile for Mono runtime
+
+SILVERLIGHT
+
+Compile for Silverlight runtime
+
+
+Feature Symbols
+---------------
+
+These symbols are used to disabled various features of the library, these are used in conjunction with a profile symbol to build a specific variant of the dotNetRDF library
+
+NO_ASP
+
+Compile without building the VDS.RDF.Web namespace which provides the ASP.Net integration.  Using NO_WEB will also cause these features to be excluded
+
+NO_DATA
+
+Compile without any System.Data dependency and without any SQL features.  Will exclude Microsoft SQL Server, MySQL and Virtuoso support and all classes that dependent on these features.  Using NO_STORAGE will also cause these features to be excluded
+
+NO_NORM
+
+Compile without any use of String.Normalize() - use in conjunction with profiles like SILVERLIGHT where it is not supported
+
+NO_PROCESS
+
+Compile without any use of System.Diagnostics.Process - use in conjunction with profiles like SILVERLIGHT where it is not supported
+
+NO_PROXY
+
+Compile without any use of WebProxy - use in conjunction with profiles like SILVERLIGHT where it is not supported
+
+NO_RWLOCK
+
+Compile without any use of ReaderWriterLockSlim - use in conjunction with profiles like SILVERLIGHT where it is not supported.  Will cause all thread safe classes that depend on this to be excluded from the build
+
+NO_STORAGE
+
+Compile with most of the VDS.RDF.Storage namespace exlcuded which provides integration with 3rd party Triple Stores.
+
+NO_STOPWATCH
+
+Compile without any use of Stopwatch - use in conjunction with profiles like SILVERLIGHT where it is not supported
+
+NO_URICACHE
+
+Compile without the caching features of the UriLoader
+
+NO_XMLDOM
+
+Compile without any use of XmlDocument and the XML DOM API - use in conjunction with profiles like SILVERLIGHT where it is not supported but other XML APIs are supported
+
+NO_XSL
+
+Compile without any use of XSL APIs - use in conjunction with profiles like SILVERLIGHT where it is not supported

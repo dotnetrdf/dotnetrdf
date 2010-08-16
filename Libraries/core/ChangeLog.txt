@@ -1,0 +1,90 @@
+﻿dotNetRDF
+=========
+
+A Library for RDF manipulation and parsing in .Net using C# 3.0
+
+Robert Vesse 2009-10
+rvesse@vdesign-studios.com
+
+Change Log
+----------
+
+This represents a summary of additions, changes and removals for the 0.3.0 release of dotNetRDF
+
+Added
+- SPARQL
+ - SPARQL 1.1 Query
+  - Added support for proper IF function
+  - Added support for MINUS patterns
+  - Added support for SERVICE patterns
+  - Added support for BINDINGS clause
+  - FederatedSparqlRemoteEndpoint class for federated querying
+  - ISparqlQueryProcessor interface for defining custom query processors
+   - Multiple processor implementations provided
+ - SPARQL 1.1 Update
+  - New IUpdateableTripleStore interface
+  - TripleStore class supports updates
+  - Classes for representing different Update Commands
+  - Parser for SPARQL Update
+  - ISparqlUpdateProcessor for defining custom update processors
+   - Multiple processor implementations provided
+   - Apply full SPARQL Update on any Triple Store represented by an IGenericIOManager (full support dependent on features provided by IGenericIOManager)
+  - New handler class for providing an endpoint supporting this protocol in your ASP.Net applications
+ - SPARQL 1.1 Uniform HTTP Protocol for Graph Management
+  - New SparqlHttpProtocolConnector for connecting to stores supporting this protocol
+  - New handler class for providing an endpoint supporting this protocol in your ASP.Net applications
+  - ISparqlHttpProtocolProcessor for defining custom protocol processors
+   - Multiple processor implementations provided
+- RDFa Support
+ - RDFa 1.1 is supported
+ - RdfAParser now supports selectable syntax compliance
+- New Configuration System
+ - New RDF based configuration system
+ - Allows for the encoding of various objects as RDF and the loading of these Objects from the RDF Graph
+ - Much simpler mechanism for configuring ASP.Net applications
+- Pellet Server Client
+ - Support for connecting to and using a Pellet Server knowledge base
+- General Improvements
+ - FileLoader and UriLoader can now raise warning events
+
+Changed
+- Bug Fixes
+ - Turtle Tokeniser supports + at the start of plain numeric literals
+ - Fixed faulty behaviour of == and != operators for Nodes when nulls are involved
+ - Turtle and N3 parsers remove incorrect behaviour regarding unescaped " occurring at end of string
+ - Turtle and N3 writers now always escape " character
+ - UriLoader caching behaviour when using ETag based caching fixed
+ - Some issues with persistence in the StoreGraph fixed
+ - Disposing ISqlIOManager multiple times without PreserveState on no longer hangs the process
+ - RDF/XML writers properly encode unescaped ampersands where necessary
+ - Sorting involving literal nodes no longer fails if invalid values for known types are given
+ - RDF/XML parser should now properly handle xml:base and provide better xml:base scoping support
+- SPARQL
+ - Now only Leviathan engine present in the library
+ - Unified Tokeniser for SPARQL Query and Update
+ - SparqlConnector improved 
+  - Can be instantiated with pre-configured SparqlRemoteEndpoint instance
+  - Properties for manipulating the underlying endpoint added
+ - SparqlRemoteEndpoint improved
+  - Default timeout increased to 30s instead of 15s
+  - Support for HTTP Authentication and Proxy Servers
+ - SPARQL Endpoints 
+  - New handlers for providing Query, Update and Protocol services so all existing query handlers are now marked
+    as obsolete
+  - Support no-caching though this is not recommended
+  - Supports absolute cache expiration
+- General Improvements
+ - Library now uses IAsyncResult pattern in many places as opposed to manual thread spawning
+ - More writers made thread safe
+ - Improved how compressing writers detect collections to significantly improve speed on blank node heavy graphs
+
+Removed
+ - Removed obsolete verison of QueryRaw() from SparqlRemoteEndpoint
+ - Removed/obsoleted all methods and implementation pertaining to the Labyrinth SPARQL Engine
+ - Removed defunct LocalName and Namespace properties from UriNode
+
+   
+
+
+
+

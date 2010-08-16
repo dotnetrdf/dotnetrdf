@@ -1,0 +1,30 @@
+Compiling dotNetRDF
+===================
+
+You can compile dotNetRDF by running the appropriate bat/sh files depending on whether you are running on Windows/Linux
+
+Note that compiling with these scripts will not sign the assemblies produced
+
+dotnet-compile.bat
+------------------
+
+Compiles dotNetRDF.dll the Windows .Net 3.5 distribution of the library
+
+mono-compile.bat / mono-compile.sh
+----------------------------------
+
+Compiles dotNetRDF.Mono.dll the Mono 2.6 distribution of the library
+
+Some features are not supported or may not work under Mono, see http://www.dotnetrdf.org?content.asp?pageID=Mono%20Issues
+
+silverlight-compile.bat
+-----------------------
+
+Compiles dotNetRDF.Silverlight.dll the Silverlight 4 distribution of the library
+
+lite-compile.bat
+----------------
+
+Compiles dotNetRDF.Lite.dll the smaller Windows .Net 3.5 distribution of the library
+
+This build excludes the VDS.RDF.Web namespace and most of the VDS.RDF.Storage namespace, use this build if you don't need the storage or ASP.Net features

@@ -1,0 +1,466 @@
+﻿/*
+
+Copyright Robert Vesse 2009-10
+rvesse@vdesign-studios.com
+
+------------------------------------------------------------------------
+
+This file is part of dotNetRDF.
+
+dotNetRDF is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+dotNetRDF is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with dotNetRDF.  If not, see <http://www.gnu.org/licenses/>.
+
+------------------------------------------------------------------------
+
+dotNetRDF may alternatively be used under the LGPL or MIT License
+
+http://www.gnu.org/licenses/lgpl.html
+http://www.opensource.org/licenses/mit-license.php
+
+If these licenses are not suitable for your intended use please contact
+us at the above stated email address to discuss alternative
+terms.
+
+*/
+
+using System;
+using System.Collections.Generic;
+
+namespace VDS.RDF
+{
+    /// <summary>
+    /// Class for representing errors with RDF
+    /// </summary>
+    public class RdfException : Exception
+    {
+        /// <summary>
+        /// Creates a new RDF Exception with the given Message
+        /// </summary>
+        /// <param name="errorMsg">Error Message</param>
+        public RdfException(String errorMsg) : base(errorMsg) { }
+
+        /// <summary>
+        /// Creates a new RDF Exception with the given Message and Inner Exception
+        /// </summary>
+        /// <param name="errorMsg">Error Message</param>
+        /// <param name="cause">Inner Exception</param>
+        public RdfException(String errorMsg, Exception cause) : base(errorMsg, cause) { }
+    }
+
+}
+
+namespace VDS.RDF.Configuration
+{
+
+    /// <summary>
+    /// Class for representing errors with dotNetRDF Configuration
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Configuration exceptions are thrown when the user tries to load objects using the <see cref="ConfigurationLoader">ConfigurationLoader</see> and their is insufficient/invalid information to load the desired object
+    /// </para>
+    /// </remarks>
+    public class DotNetRdfConfigurationException : RdfException
+    {
+        /// <summary>
+        /// Creates a new dotNetRDF Configuration Exception
+        /// </summary>
+        /// <param name="errorMsg">Error Message</param>
+        public DotNetRdfConfigurationException(String errorMsg)
+            : base(errorMsg) { }
+
+        /// <summary>
+        /// Creates a new dotNetRDF Configuration Exception
+        /// </summary>
+        /// <param name="errorMsg">Error Message</param>
+        /// <param name="cause">Exception that caused this Exception</param>
+        public DotNetRdfConfigurationException(String errorMsg, Exception cause)
+            : base(errorMsg, cause) { }
+    }
+}
+
+namespace VDS.RDF.Ontology
+{
+    /// <summary>
+    /// Class for representing errors with Ontologies
+    /// </summary>
+    public class RdfOntologyException : RdfException
+    {
+        /// <summary>
+        /// Creates a new RDF Ontology Exception with the given message
+        /// </summary>
+        /// <param name="errorMsg">Error message</param>
+        public RdfOntologyException(String errorMsg) : base(errorMsg) { }
+
+        /// <summary>
+        /// Creates a new RDF Ontology Exception with the given message and inner exception
+        /// </summary>
+        /// <param name="errorMsg">Error message</param>
+        /// <param name="cause">Inner Exception</param>
+        public RdfOntologyException(String errorMsg, Exception cause) : base(errorMsg, cause) { }
+    }
+}
+
+namespace VDS.RDF.Parsing
+{
+    /// <summary>
+    /// Class for representing errors in parsing RDF
+    /// </summary>
+    public class RdfParseException : RdfException
+    {
+        /// <summary>
+        /// Creates a new RDF Parse Exception with the given Message
+        /// </summary>
+        /// <param name="errorMsg">Error Message</param>
+        public RdfParseException(String errorMsg) : base(errorMsg) { }
+
+        /// <summary>
+        /// Creates a new RDF Parse Exception with the given Message and Inner Exception
+        /// </summary>
+        /// <param name="errorMsg">Error Message</param>
+        /// <param name="cause">Inner Exception</param>
+        public RdfParseException(String errorMsg, Exception cause) : base(errorMsg, cause) { }
+    }
+
+    /// <summary>
+    /// Class of exceptions that may occur when doing multi-threaded output of RDF
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Used when a process may result in multiple errors from different threads
+    /// </para>
+    /// </remarks>
+    public class RdfThreadedParsingException : RdfParseException
+    {
+        private List<Exception> _exceptions = new List<Exception>();
+
+        /// <summary>
+        /// Creates a new Threaded RDF Parsing Exception
+        /// </summary>
+        /// <param name="message">Error Message</param>
+        public RdfThreadedParsingException(String message)
+            : base(message) { }
+
+        /// <summary>
+        /// Adds an Exception to the list of Inner Exceptions
+        /// </summary>
+        /// <param name="ex">Exception</param>
+        public void AddException(Exception ex)
+        {
+            this._exceptions.Add(ex);
+        }
+
+        /// <summary>
+        /// Gets the enumeration of Exceptions
+        /// </summary>
+        public IEnumerable<Exception> InnerExceptions
+        {
+            get
+            {
+                return this._exceptions;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Class for representing errors in selecting an appropriate parser to parse RDF with
+    /// </summary>
+    public class RdfParserSelectionException : RdfParseException
+    {
+        /// <summary>
+        /// Creates a new RDF Parser Selection Exception with the given Message
+        /// </summary>
+        /// <param name="errorMsg">Error Message</param>
+        public RdfParserSelectionException(String errorMsg) : base(errorMsg) { }
+
+        /// <summary>
+        /// Creates a new RDF Parser Selection Exception with the given Message and Inner Exception
+        /// </summary>
+        /// <param name="errorMsg">Error Message</param>
+        /// <param name="cause">Inner Exception</param>
+        public RdfParserSelectionException(String errorMsg, Exception cause) : base(errorMsg, cause) { }
+    }
+}
+
+namespace VDS.RDF.Query
+{
+    /// <summary>
+    /// Class for representing errors that occur while querying RDF
+    /// </summary>
+    public class RdfQueryException : RdfException
+    {
+        /// <summary>
+        /// Creates a new RDF Query Exception
+        /// </summary>
+        /// <param name="errorMsg">Error Message</param>
+        public RdfQueryException(String errorMsg) : base(errorMsg) { }
+
+        /// <summary>
+        /// Creates a new RDF Query Exception
+        /// </summary>
+        /// <param name="errorMsg">Error Message</param>
+        /// <param name="cause">Exception that caused this Exception</param>
+        public RdfQueryException(String errorMsg, Exception cause) : base(errorMsg, cause) { }
+    }
+
+    /// <summary>
+    /// Class for representing Timeout errors that occur while querying RDF
+    /// </summary>
+    public class RdfQueryTimeoutException : RdfQueryException
+    {
+        /// <summary>
+        /// Creates a new RDF Query Timeout Exception
+        /// </summary>
+        /// <param name="errorMsg">Error Message</param>
+        public RdfQueryTimeoutException(String errorMsg) : base(errorMsg) { }
+    }
+
+    /// <summary>
+    /// Class for representing Exceptions occurring in RDF reasoners
+    /// </summary>
+    public class RdfReasoningException : RdfQueryException
+    {
+        /// <summary>
+        /// Creates a new RDF Reasoning Exception
+        /// </summary>
+        /// <param name="errorMsg">Error Message</param>
+        public RdfReasoningException(String errorMsg) : base(errorMsg) { }
+
+        /// <summary>
+        /// Creates a new RDF Reasoning Exception
+        /// </summary>
+        /// <param name="errorMsg">Error Message</param>
+        /// <param name="cause">Exception that caused this exception</param>
+        public RdfReasoningException(String errorMsg, Exception cause) : base(errorMsg, cause) { }
+    }
+
+    /// <summary>
+    /// Class for representing Termination errors
+    /// </summary>
+    class RdfQueryTerminatedException : RdfQueryException
+    {
+        /// <summary>
+        /// Creates a new RDF Query Termination Exception
+        /// </summary>
+        public RdfQueryTerminatedException() 
+            : base("Terminated Query since there are no results at the point reached so further execution is unnecessary") { }
+    }
+
+    /// <summary>
+    /// Class for representing Path Found terminations
+    /// </summary>
+    class RdfQueryPathFoundException : RdfQueryException
+    {
+        /// <summary>
+        /// Creates a new Path Found exception
+        /// </summary>
+        public RdfQueryPathFoundException()
+            : base("Terminated Path Evaluation since the required path has been found") { }
+    }
+}
+
+namespace VDS.RDF.Storage
+{
+    /// <summary>
+    /// Class for representing errors that occur in RDF Storage
+    /// </summary>
+    public class RdfStorageException : RdfException
+    {
+        /// <summary>
+        /// Creates a new RDF Storage Exception
+        /// </summary>
+        /// <param name="errorMsg">Error Message</param>
+        public RdfStorageException(String errorMsg) : base(errorMsg) { }
+
+        /// <summary>
+        /// Creates a new RDF Storage Exception
+        /// </summary>
+        /// <param name="errorMsg">Error Message</param>
+        /// <param name="cause">Exception which caused this Exception</param>
+        public RdfStorageException(String errorMsg, Exception cause) : base(errorMsg, cause) { }
+    }
+
+    /// <summary>
+    /// Class of exceptions that may occur when interacting with the Talis Platform
+    /// </summary>
+    public class TalisException : RdfStorageException
+    {
+        /// <summary>
+        /// Creates a new Talis Exception
+        /// </summary>
+        /// <param name="message">Error Message</param>
+        public TalisException(String message) : base(message) { }
+
+        /// <summary>
+        /// Creates a new Talis Exception
+        /// </summary>
+        /// <param name="message">Error Message</param>
+        /// <param name="cause">Exception that caused this exception to be thrown</param>
+        public TalisException(String message, Exception cause) : base(message, cause) { }
+    }
+}
+
+namespace VDS.RDF.Update
+{
+    /// <summary>
+    /// Class of exceptions that may occur when performing SPARQL Updates
+    /// </summary>
+    public class SparqlUpdateException : RdfException
+    {
+        /// <summary>
+        /// Creates a new RDF Update Exception
+        /// </summary>
+        /// <param name="message">Error Message</param>
+        public SparqlUpdateException(String message)
+            : base(message) { }
+
+        /// <summary>
+        /// Createa a new RDF Update Exception
+        /// </summary>
+        /// <param name="message">Error Message</param>
+        /// <param name="cause">Exception that caused this exception to be thrown</param>
+        public SparqlUpdateException(String message, Exception cause)
+            : base(message, cause) { }
+    }
+}
+
+namespace VDS.RDF.Update.Protocol
+{
+    /// <summary>
+    /// Class of exceptions that may occur when using the SPARQL Uniform HTTP Protocol for Graph Management
+    /// </summary>
+    public class SparqlHttpProtocolException : RdfException
+    {
+        /// <summary>
+        /// Creates a new SPARQL Uniform HTTP Protocol Exception
+        /// </summary>
+        /// <param name="message">Error Message</param>
+        public SparqlHttpProtocolException(String message)
+            : base(message) { }
+
+        /// <summary>
+        /// Creates a new SPARQL Uniform HTTP Protocol Exception
+        /// </summary>
+        /// <param name="message">Error Message</param>
+        /// <param name="cause">Exception that caused this Exception</param>
+        public SparqlHttpProtocolException(String message, Exception cause)
+            : base(message, cause) { }
+    }
+
+    /// <summary>
+    /// Exception that occurs when a Protocol Processor cannot resolve the URI for the Graph to be acted upon
+    /// </summary>
+    public class SparqlHttpProtocolUriResolutionException : SparqlHttpProtocolException
+    {
+        /// <summary>
+        /// Creates a new Protocol URI Resolution Exception
+        /// </summary>
+        public SparqlHttpProtocolUriResolutionException()
+            : base("Unable to perform a HTTP Protocol operation as the protocol processor was unable to successfully resolve the URI of the Graph to be acted upon") { }
+    }
+
+    /// <summary>
+    /// Exception that occurs when a Protocol Processor is provided with a invalid URI for the Graph to be acted upon
+    /// </summary>
+    public class SparqlHttpProtocolUriInvalidException : SparqlHttpProtocolException
+    {
+        /// <summary>
+        /// Creates a new Protocol Invalid URI Exception
+        /// </summary>
+        public SparqlHttpProtocolUriInvalidException()
+            : base("Unable to perform a HTTP Protocol operation as the request specified a URI which was invalid") { }
+    }
+}
+
+namespace VDS.RDF.Writing
+{
+    /// <summary>
+    /// Class of exceptions that may occur when outputting RDF
+    /// </summary>
+    public class RdfOutputException : RdfException
+    {
+        /// <summary>
+        /// Creates a new RDF Output Exception
+        /// </summary>
+        /// <param name="message">Error Message</param>
+        public RdfOutputException(String message)
+            : base(message) { }
+
+        /// <summary>
+        /// Creates a new RDF Output Exception
+        /// </summary>
+        /// <param name="message">Error Message</param>
+        /// <param name="cause">Exception that caused this Exception</param>
+        public RdfOutputException(String message, Exception cause)
+            : base(message, cause) { }
+    }
+
+    /// <summary>
+    /// Class of exceptions that may occur when doing multi-threaded output of RDF
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Used when a process may result in multiple errors from different threads
+    /// </para>
+    /// </remarks>
+    public class RdfThreadedOutputException : RdfOutputException
+    {
+        private List<Exception> _exceptions = new List<Exception>();
+
+        /// <summary>
+        /// Creates a new Threaded RDF Output Exception
+        /// </summary>
+        /// <param name="message">Error Message</param>
+        public RdfThreadedOutputException(String message)
+            : base(message) { }
+
+        /// <summary>
+        /// Adds an Exception to the list of Inner Exceptions
+        /// </summary>
+        /// <param name="ex">Exception</param>
+        public void AddException(Exception ex)
+        {
+            this._exceptions.Add(ex);
+        }
+
+        /// <summary>
+        /// Gets the enumeration of Exceptions
+        /// </summary>
+        public IEnumerable<Exception> InnerExceptions
+        {
+            get
+            {
+                return this._exceptions;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Class for errors in selecting an appropriate Writer to output RDF with
+    /// </summary>
+    public class RdfWriterSelectionException : RdfOutputException
+    {
+        /// <summary>
+        /// Creates a new RDF Writer Selection Exception with the given Message
+        /// </summary>
+        /// <param name="errorMsg">Error Message</param>
+        public RdfWriterSelectionException(String errorMsg) : base(errorMsg) { }
+
+        /// <summary>
+        /// Creates a new RDF Writer Selection Exception with the given Message and Inner Exception
+        /// </summary>
+        /// <param name="errorMsg">Error Message</param>
+        /// <param name="cause">Inner Exception</param>
+        public RdfWriterSelectionException(String errorMsg, Exception cause) : base(errorMsg, cause) { }
+    }
+}

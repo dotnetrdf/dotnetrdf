@@ -1,0 +1,200 @@
+﻿/*
+
+Copyright Robert Vesse 2009-10
+rvesse@vdesign-studios.com
+
+------------------------------------------------------------------------
+
+This file is part of dotNetRDF.
+
+dotNetRDF is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+dotNetRDF is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with dotNetRDF.  If not, see <http://www.gnu.org/licenses/>.
+
+------------------------------------------------------------------------
+
+dotNetRDF may alternatively be used under the LGPL or MIT License
+
+http://www.gnu.org/licenses/lgpl.html
+http://www.opensource.org/licenses/mit-license.php
+
+If these licenses are not suitable for your intended use please contact
+us at the above stated email address to discuss alternative
+terms.
+
+*/
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.IO;
+using VDS.RDF.Storage.Params;
+
+namespace VDS.RDF.Parsing
+{
+    /// <summary>
+    /// A Class for loading RDF Files into Graphs/Triple Stores
+    /// </summary>
+    public static class FileLoader
+    {
+        /// <summary>
+        /// Loads the contents of the given File into a Graph providing the RDF format can be determined
+        /// </summary>
+        /// <param name="g">Graph to load into</param>
+        /// <param name="filename">File to load from</param>
+        /// <remarks>
+        /// <para>
+        /// The <see cref="FileLoader">FileLoader</see> first attempts to select a RDF Parser by examining the file extension to select the most likely MIME type for the file.  This assumes that the file extension corresponds to one of the recognized file extensions for a RDF format the library supports.  If this suceeds then a parser is chosen and will be used to attempt to parse the input.
+        /// </para>
+        /// <para>
+        /// Should this fail then the contents of the file will be read into a String, the <see cref="StringParser">StringParser</see> is then used to attempt to parse it.  The <see cref="StringParser">StringParser</see> uses some simple rules to guess which format the input is likely to be and chooses a parser based on it's guess.
+        /// </para>
+        /// <para>
+        /// <strong>Note:</strong> FileLoader will assign the Graph a file Uri prior to attempting Parsing, any Base Uri specified in the RDF contained in the file will override this Uri.
+        /// </para>
+        /// <para>
+        /// The File Uri assigned will always be an absolute Uri for the File
+        /// </para>
+        /// </remarks>
+        public static void Load(IGraph g, String filename)
+        {
+            FileLoader.Load(g, filename, null);
+        }
+
+        /// <summary>
+        /// Loads the contents of the given File into a Graph using the given RDF Parser
+        /// </summary>
+        /// <param name="g">Graph to load into</param>
+        /// <param name="filename">File to load fro,</param>
+        /// <param name="parser">Parser to use</param>
+        public static void Load(IGraph g, String filename, IRdfReader parser)
+        {
+            if (!File.Exists(filename))
+            {
+#if SILVERLIGHT
+                throw new FileNotFoundException("Cannot read RDF from the File '" + filename + "' since it doesn't exist");
+#else
+                throw new FileNotFoundException("Cannot read RDF from a File that doesn't exist", filename);
+#endif
+            }
+
+            //Assign a File Uri to the Graph if the Graph is Empty
+            //It's possible that when we parse in the RDF this may be changed but it ensures the Graph 
+            //has a Base Uri even if the RDF doesn't specify one
+            //Ensure that the Uri is an absolute file Uri
+            if (g.IsEmpty && g.BaseUri == null)
+            {
+                OnWarning("Assigned a file: URI as the Base URI for the input Graph");
+                if (Path.IsPathRooted(filename))
+                {
+                    g.BaseUri = new Uri("file:///" + filename);
+                }
+                else
+                {
+                    g.BaseUri = new Uri("file:///" + Path.GetFullPath(filename));
+                }
+            }
+
+            //Try to get a Parser from the File Extension if one isn't explicitly specified
+            if (parser == null)
+            {
+                try
+                {
+                    parser = MimeTypesHelper.GetParser(MimeTypesHelper.GetMimeType(Path.GetExtension(filename)));
+                }
+                catch (RdfParserSelectionException)
+                {
+                    //If error then we couldn't determine MIME Type from the File Extension
+                    OnWarning("Unable to select a parser by determining MIME Type from the File Extension");
+                }
+            }
+
+            if (parser == null)
+            {
+                //Unable to determine format from File Extension
+                //Read file in locally and use the StringParser
+                StreamReader reader = new StreamReader(filename);
+                String data = reader.ReadToEnd();
+                reader.Close();
+                OnWarning("Attempting parsing using the StringParser");
+                StringParser.Parse(g, data);
+            }
+            else
+            {
+                //Parser was selected based on File Extension or one was explicitly specified
+                parser.Warning += OnWarning;
+                parser.Load(g, filename);
+            }
+        }
+
+        /// <summary>
+        /// Loads the contents of the given File into a Triple Store providing the RDF dataset format can be determined
+        /// </summary>
+        /// <param name="store">Triple Store to load into</param>
+        /// <param name="filename">File to load from</param>
+        /// <remarks>
+        /// The <see cref="FileLoader">FileLoader</see> attempts to select a Store Parser by examining the file extension to select the most likely MIME type for the file.  This assume that the file extension corresponds to one of the recognized file extensions for a RDF dataset format the library supports.  If this suceeds then a parser is chosen and used to parse the input file.
+        /// </remarks>
+        public static void Load(ITripleStore store, String filename)
+        {
+            if (!File.Exists(filename))
+            {
+#if SILVERLIGHT
+                throw new FileNotFoundException("Cannot read a RDF dataset from the File '" + filename + "' since it doesn't exist");
+#else
+                throw new FileNotFoundException("Cannot read a RDF dataset from a File that doesn't exist", filename);
+#endif
+            }
+
+            IStoreReader parser = MimeTypesHelper.GetStoreParser(MimeTypesHelper.GetMimeType(Path.GetExtension(filename)));
+            parser.Load(store, new StreamParams(filename));
+        }
+
+        /// <summary>
+        /// Raises warning messages
+        /// </summary>
+        /// <param name="message">Warning Message</param>
+        static void OnWarning(String message)
+        {
+            RdfReaderWarning d = Warning;
+            if (d != null)
+            {
+                d(message);
+            }
+        }
+
+        /// <summary>
+        /// Raises Store Warning messages
+        /// </summary>
+        /// <param name="message">Warning Message</param>
+        static void OnStoreWarning(String message)
+        {
+            StoreReaderWarning d = StoreWarning;
+            if (d != null)
+            {
+                d(message);
+            }
+        }
+
+        /// <summary>
+        /// Event which is raised when the parser invoked by the FileLoader detects a non-fatal issue with the RDF syntax
+        /// </summary>
+        public static event RdfReaderWarning Warning;
+
+        /// <summary>
+        /// Event which is raised when the Store parser invoked by the FileLoader detects a non-fatal issue with the RDF syntax
+        /// </summary>
+        public static event StoreReaderWarning StoreWarning;
+    }
+}
