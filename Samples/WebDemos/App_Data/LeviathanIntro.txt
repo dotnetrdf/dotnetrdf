@@ -1,0 +1,15 @@
+﻿This is a demonstration of the <a href="../../content.asp?pageID=Leviathan">Leviathan</a> SPARQL Engine which is a brand new Algebra based engine introduced in the 0.2.0 release of dotNetRDF to replace the existing and somewhat flawed <a href="../../content.asp?pageID=Labyrinth">Labyrinth</a> Engine.
+</p>
+<p>
+The Leviathan engine supports all of SPARQL 1.0 and most of SPARQL 1.1 (limited property path support) plus a number of extensions which are either common to other existing SPARQL engines or specific to our engine.  These include the following:
+<ul>
+<li>XPath Function Library - many string and numeric XPath functions are supported as well as some basic date time functions</li>
+<li>ARQ Function Library - all of the ARQ functions (The Jena framework's SPARQL engine) are supported</li>
+<li>Leviathan Function Library - an extensive library of mostly numeric functions</li>
+<li>LET Assignment - Supports LET statements to add additional Bindings</li>
+<li>Custom Aggregates - Has a variety of custom aggregates available</li>
+</ul>
+Follow the links at the start of the introduction to read more about the capabilities of the two engines.
+</p>
+<p>
+<strong>Note:</strong> This Demo has an initial data set which is a very small graph (58 triples) which we use for testing and debugging.  You can specify Graphs to query with by either using FROM and FROM NAMED clauses or by entering a URI in the Default Graph Uri box.  Loading Graphs may take a couple of seconds for the first query after which they will be temporarily cached for appoximately 15 minutes.

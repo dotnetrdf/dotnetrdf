@@ -1,0 +1,45 @@
+﻿body
+{
+	font-family: "Verdana";
+	font-size: 10pt;
+}
+
+TABLE 
+{
+	background: #eeeeee;
+}
+
+TR
+{
+	vertical-align: top;
+}
+
+
+TD 
+{
+	background: #ffffff;
+	padding: 3px;
+}
+
+TH 
+{
+	background: #cccccc;
+	padding: 2px;
+}
+
+A 
+{
+	color: #666666;
+}
+
+A.datatype {
+	font-size: smaller;
+	vertical-align: super;
+}
+
+H3 
+{
+	background: #cccccc;
+	padding: 5px;
+	font-weight: normal;
+}

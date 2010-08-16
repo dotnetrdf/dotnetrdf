@@ -1,0 +1,1 @@
+﻿This demonstration shows that you can create a SPARQL endpoint which forwards the queries to the SPARQL service of a Knowledge Base published by a Pellet Server.  In this case we use the Wine knowledge based on the example server provided by <a href="http://ps.clarkparsia.com">Clark &amp; Parsia</a>

@@ -1,0 +1,1 @@
+﻿This demonstration shows how a SPARQL endpoint can be set up which forwards queries to some remote endpoint.  In this case the books endpoint at <a href="http://sparql.org/books">http://sparql.org/books</a>

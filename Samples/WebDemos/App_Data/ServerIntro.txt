@@ -1,0 +1,5 @@
+﻿This is a demonstration of the new SPARQL Server introduced in the 0.3.0 release of dotNetRDF.
+<br /><br />
+The 0.3.0 release provided a completely new set of ASP.Net handlers which replace the now obsoleted handlers from the previous releases.  This handler the <em>SparqlServer</em> allows for setting up an endpoint which provides SPARQL Query, Update and Uniform HTTP Protocol for Graph Management to end users.
+<br /><br />
+You can access the <a href="/demos/server/query">Query Endpoint</a> by appending <strong>query</strong> to the Base URI of the server and similarily the <a href="/demos/server/update">Update Endpoint</a> by adding <strong>update</strong> to the Base URI of the server.  All other URIs covered by this handler are interpreted according to the Uniform HTTP Protocol for Graph Management.

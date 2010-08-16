@@ -1,0 +1,137 @@
+@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
+
+<dotnetrdf:/demos/leviathan/> a dnr:HttpHandler ;
+							  dnr:type "VDS.RDF.Web.QueryHandler" ;
+							  dnr:queryProcessor _:qProc2 ;
+							  dnr:introText "~/App_Data/LeviathanIntro.txt" ;
+							  dnr:stylesheet "/demos/sparql.css" ;
+							  dnr:defaultQueryFile "~/App_Data/default.rq" ;
+							  dnr:timeout 15000 . #;
+							  #dnr:expressionFactory _:monkey .
+							  
+<dotnetrdf:/demos/secure/> a dnr:HttpHandler ;
+						   dnr:type "VDS.RDF.Web.QueryHandler" ;
+						   dnr:queryProcessor _:qProc2 ;
+						   dnr:stylesheet "/demos/sparql.css" ;
+						   dnr:userGroup _:users .
+						   
+<dotnetrdf:/demos/secure-auth/> a dnr:HttpHandler ;
+								dnr:type "VDS.RDF.Web.QueryHandler" ;
+								dnr:stylesheet "/demos/sparql.css" ;
+								dnr:queryProcessor _:qProc3 .
+							  
+<dotnetrdf:/demos/books/> a dnr:HttpHandler ;
+						  dnr:type "VDS.RDF.Web.QueryHandler" ;
+						  dnr:stylesheet "/demos/sparql.css" ;
+						  dnr:defaultQueryFile "~/App_Data/books.rq" ;
+						  dnr:introText "~/App_Data/BooksIntro.txt" ;
+						  dnr:queryProcessor _:books .
+							
+<dotnetrdf:/demos/federated/> a dnr:HttpHandler ;
+							  dnr:type "VDS.RDF.Web.QueryHandler" ;
+							  dnr:stylesheet "/demos/sparql.css" ;
+							  dnr:introText "~/App_Data/FederatedIntro.txt" ;
+							  dnr:queryProcessor _:fedProc .
+							  
+<dotnetrdf:/demos/pellet/> a dnr:HttpHandler ;
+						   dnr:type "VDS.RDF.Web.QueryHandler" ;
+						   dnr:stylesheet "/demos/sparql.css" ;
+						   dnr:introText "~/App_Data/PelletIntro.txt" ;
+						   dnr:queryProcessor _:pellet .
+						   
+<dotnetrdf:/demos/sampleConfig> a dnr:HttpHandler ;
+							    dnr:type "VDS.RDF.Web.GraphHandler" ;
+							    dnr:stylesheet "/demos/sparql.css" ;
+							    dnr:usingGraph _:config .
+							    
+<dotnetrdf:/demos/wildcard/*> a dnr:HttpHandler ;
+							  dnr:type "VDS.RDF.Web.WildcardGraphHandler" ;
+							  dnr:stylesheet "/demos/sparql.css" ;
+							  dnr:usingGraph _:config .
+							  
+<dotnetrdf:/demos/server/*> a dnr:HttpHandler ;
+							dnr:type "VDS.RDF.Web.SparqlServer" ;
+							dnr:queryProcessor _:qProc ;
+							dnr:updateProcessor _:uProc ;
+							dnr:protocolProcessor _:pProc ;
+							dnr:stylesheet "/demos/sparql.css" ;
+							dnr:introText "~/App_Data/ServerIntro.txt" .
+							 
+_:pProc a dnr:SparqlHttpProtocolProcessor ;
+		dnr:type "VDS.RDF.Update.Protocol.ProtocolToUpdateProcessor" ;
+		dnr:queryProcessor _:qProc ;
+		dnr:updateProcessor _:uProc .
+		
+_:qProc a dnr:SparqlQueryProcessor ;
+		dnr:type "VDS.RDF.Query.LeviathanQueryProcessor" ;
+		dnr:usingStore _:store .
+		
+_:qProc2 a dnr:SparqlQueryProcessor ;
+		 dnr:type "VDS.RDF.Query.LeviathanQueryProcessor" ;
+		 dnr:usingStore _:store2 .
+		 
+_:qProc3 a dnr:SparqlQueryProcessor ;
+		 dnr:type "VDS.RDF.Query.RemoteQueryProcessor" ;
+		 dnr:endpoint _:secure .
+		 
+_:secure a dnr:SparqlEndpoint ;
+		 dnr:type "VDS.RDF.Query.SparqlRemoteEndpoint" ;
+		 dnr:endpointUri <http://www.dotnetrdf.org/demos/secure/> ;
+		 dnr:credentials _:exampleUser .
+		 
+_:books a dnr:SparqlQueryProcessor ;
+		dnr:type "VDS.RDF.Query.RemoteQueryProcessor" ;
+		dnr:endpoint <http://sparql.org/books> .
+						  
+<http://sparql.org/books> a dnr:SparqlEndpoint ;
+						  dnr:type "VDS.RDF.Query.SparqlRemoteEndpoint" ;
+						  dnr:endpointUri <http://sparql.org/books> .
+						  
+_:fedProc a dnr:SparqlQueryProcessor ;
+		  dnr:type "VDS.RDF.Query.RemoteQueryProcessor" ;
+		  dnr:endpoint _:fed .
+		  
+_:fed a dnr:SparqlEndpoint ;
+	  dnr:type "VDS.RDF.Query.FederatedSparqlRemoteEndpoint" ;
+	  dnr:endpoint <http://sparql.org/books> ;
+	  dnr:endpoint _:dbpedia .
+	  
+_:dbpedia a dnr:SparqlEndpoint ;
+		  dnr:type "VDS.RDF.Query.SparqlRemoteEndpoint" ;
+		  dnr:endpointUri <http://dbpedia.org/sparql> .
+		  
+_:pellet a dnr:SparqlQueryProcessor ;
+		 dnr:type "VDS.RDF.Query.PelletQueryProcessor" ;
+		 dnr:server <http://ps.clarkparsia.com> ;
+		 dnr:storeID "wine" .
+		
+_:uProc a dnr:SparqlUpdateProcessor ;
+		dnr:type "VDS.RDF.Update.LeviathanUpdateProcessor" ;
+		dnr:usingStore _:store .
+		
+_:store a dnr:TripleStore ;
+		dnr:type "VDS.RDF.TripleStore" .
+		
+_:store2 a dnr:TripleStore ;
+		dnr:type "VDS.RDF.WebDemandTripleStore" ;
+		dnr:usingGraph _:graph .
+		
+_:graph a dnr:Graph ;
+		dnr:type "VDS.RDF.Graph" ;
+		dnr:fromFile "~/App_Data/InferenceTest.ttl" .
+		
+_:users a dnr:UserGroup ;
+		dnr:type "VDS.RDF.Configuration.Permissions.UserGroup" ;
+		dnr:member _:exampleUser .
+		
+_:exampleUser a dnr:User ;
+			  dnr:user "example" ;
+			  dnr:password "password" .
+			  
+_:config a dnr:Graph ;
+		 dnr:type "VDS.RDF.Graph" ;
+		 dnr:fromFile "~/App_Data/config.ttl" ;
+		 dnr:assignUri <http://www.dotnetrdf.org/demos/sampleConfig> .
+		 
+_:monkey a dnr:SparqlExpressionFactory ;
+		 dnr:type "WebDemos.MonkeyExpressionFactory, WebDemos" .

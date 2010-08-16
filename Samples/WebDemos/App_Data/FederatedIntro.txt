@@ -1,0 +1,1 @@
+﻿This demonstration shows how you can set up SPARQL endpoints which federate queries across multiple remote endpoints.  In this demonstration we use the <a href="http://dbpedia.org/sparql">DBPedia</a> and <a href="http://sparql.org/books">sparql.org Books</a> endpoints
