@@ -222,7 +222,6 @@
     <Compile Include="Core\BaseEndpoint.cs" />
     <Compile Include="Core\BlankNodeMapper.cs" />
     <Compile Include="Core\DiskDemandTripleStore.cs" />
-    <Compile Include="Core\SilverlightCompatability.cs" />
     <Compile Include="Core\SubGraphMatcher.cs" />
     <Compile Include="Core\GraphMatcher.cs" />
     <Compile Include="Core\QueryableGraph.cs" />

@@ -506,17 +506,14 @@ namespace VDS.RDF
                     contentType = MimeTypesHelper.Tsv[0];
                     return new TsvWriter();
                 }
-#if !NO_WEB
                 else if (MimeTypesHelper.Html.Contains(type))
                 {
                     //Client accepts HTML
                     htmlFallback = true;
                 }
-#endif
             }
 
             //Default to NTriples unless the User accepted HTML explicitly
-#if !NO_WEB
             if (htmlFallback)
             {
                 contentType = MimeTypesHelper.Html[0];
@@ -527,11 +524,6 @@ namespace VDS.RDF
                 contentType = MimeTypesHelper.NTriples[0];
                 return new NTriplesWriter();
             }
-#else
-            contentType = MimeTypesHelper.NTriples[0];
-            return new NTriplesWriter();
-#endif
-
         }
 
         /// <summary>
@@ -759,19 +751,9 @@ namespace VDS.RDF
                 }
             }
 
-#if !NO_WEB
             //Default to HTML Output
             contentType = MimeTypesHelper.Html[0];
             return new SparqlHtmlWriter();
-#else
-    #if !NO_XMLDOM
-            contentType = MimeTypesHelper.Sparql[0];
-            return new SparqlXmlWriter();
-    #else
-            contentType = MimeTypesHelper.Sparql[1];
-            return new SparqlJsonWriter();
-    #endif
-#endif
         }
 
         /// <summary>
@@ -1144,12 +1126,10 @@ namespace VDS.RDF
             {
                 return DefaultTsvExtension;
             }
-#if !NO_WEB
             else if (writer is HtmlWriter)
             {
                 return DefaultHtmlExtension;
             }
-#endif
             else
             {
                 throw new RdfException("Unable to determine the appropriate File Extension for the RDF Writer '" + writer.GetType().ToString() + "'");

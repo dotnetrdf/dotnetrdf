@@ -99,6 +99,12 @@
     <Compile Include="..\core\Configuration\PermissionFactories.cs">
       <Link>Configuration\PermissionFactories.cs</Link>
     </Compile>
+    <Compile Include="..\core\Configuration\Permissions\Permission.cs">
+      <Link>Configuration\Permissions\Permission.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Configuration\Permissions\UserGroup.cs">
+      <Link>Configuration\Permissions\UserGroup.cs</Link>
+    </Compile>
     <Compile Include="..\core\Configuration\ProcessorFactories.cs">
       <Link>Configuration\ProcessorFactories.cs</Link>
     </Compile>
@@ -218,9 +224,6 @@
     </Compile>
     <Compile Include="..\core\Core\QueryableGraph.cs">
       <Link>Core\QueryableGraph.cs</Link>
-    </Compile>
-    <Compile Include="..\core\Core\SilverlightCompatability.cs">
-      <Link>Core\SilverlightCompatability.cs</Link>
     </Compile>
     <Compile Include="..\core\Core\SQLGraph.cs">
       <Link>Core\SQLGraph.cs</Link>
@@ -1272,8 +1275,11 @@
     <Compile Include="..\core\Writing\WriterUtilities.cs">
       <Link>Writing\WriterUtilities.cs</Link>
     </Compile>
-    <Compile Include="Configuration\Permissions\Permission.cs" />
-    <Compile Include="Configuration\Permissions\UserGroup.cs" />
+    <Compile Include="Compatability\HtmlTextWriter.cs" />
+    <Compile Include="Compatability\HtmlTextWriterAttribute.cs" />
+    <Compile Include="Compatability\HtmlTextWriterStyle.cs" />
+    <Compile Include="Compatability\HtmlTextWriterTag.cs" />
+    <Compile Include="Compatability\SilverlightCompatability.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -1310,7 +1316,7 @@
   -->
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties ProjectLinkReference="bfbac159-1e60-4d03-8aca-d34e31eb83bf" ProjectLinkerExcludeFilter="\\?desktop(\\.*)?$;\\?silverlight(\\.*)?$;\.desktop;\.silverlight;\.xaml;^service references(\\.*)?$;\.clientconfig;^web references(\\.*)?$" />
+      <UserProperties ProjectLinkerExcludeFilter="\\?desktop(\\.*)?$;\\?silverlight(\\.*)?$;\.desktop;\.silverlight;\.xaml;^service references(\\.*)?$;\.clientconfig;^web references(\\.*)?$" ProjectLinkReference="bfbac159-1e60-4d03-8aca-d34e31eb83bf" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>

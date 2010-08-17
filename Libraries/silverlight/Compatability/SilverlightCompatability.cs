@@ -34,7 +34,7 @@ terms.
 */
 
 //Uncomment the following while developing the code to get proper Intellisense
-//#define SILVERLIGHT
+//define SILVERLIGHT
 
 #if SILVERLIGHT
 

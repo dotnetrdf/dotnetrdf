@@ -1,4 +1,4 @@
-﻿/*
+/*
 
 Copyright Robert Vesse 2009-10
 rvesse@vdesign-studios.com
@@ -33,46 +33,56 @@ terms.
 
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.IO;
-#if !NO_WEB
-using System.Web.UI;
-#endif
+#if NO_WEB
 
-namespace VDS.RDF.Writing.Contexts
+namespace VDS.RDF
 {
-    /// <summary>
-    /// Writer Context for XHTML+RDFa Writers
-    /// </summary>
-    public class HtmlWriterContext : BaseWriterContext
+    public enum HtmlTextWriterStyle
     {
-        private HtmlTextWriter _writer;
-
-        /// <summary>
-        /// Creates a new HTML Writer Context
-        /// </summary>
-        /// <param name="g">Graph</param>
-        /// <param name="writer">Text Writer</param>
-        public HtmlWriterContext(IGraph g, TextWriter writer)
-            : base(g, writer) 
-        {
-            this._writer = new HtmlTextWriter(writer);
-            //Have to remove the Empty Prefix is this is reserved in XHTML+RDFa
-            this._qnameMapper.RemoveNamespace(String.Empty);
-        }
-
-        /// <summary>
-        /// HTML Writer to use
-        /// </summary>
-        public HtmlTextWriter HtmlWriter
-        {
-            get
-            {
-                return this._writer;
-            }
-        }
+        BackgroundColor,
+        BackgroundImage,
+        BorderCollapse,
+        BorderColor,
+        BorderStyle,
+        BorderWidth,
+        Color,
+        FontFamily,
+        FontSize,
+        FontStyle,
+        FontWeight,
+        Height,
+        TextDecoration,
+        Width,
+        ListStyleImage,
+        ListStyleType,
+        Cursor,
+        Direction,
+        Display,
+        Filter,
+        FontVariant,
+        Left,
+        Margin,
+        MarginBottom,
+        MarginLeft,
+        MarginRight,
+        MarginTop,
+        Overflow,
+        OverflowX,
+        OverflowY,
+        Padding,
+        PaddingBottom,
+        PaddingLeft,
+        PaddingRight,
+        PaddingTop,
+        Position,
+        TextAlign,
+        VerticalAlign,
+        TextOverflow,
+        Top,
+        Visibility,
+        WhiteSpace,
+        ZIndex
     }
 }
+
+#endif

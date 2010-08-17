@@ -33,14 +33,14 @@ terms.
 
 */
 
-#if !NO_WEB
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+#if !NO_WEB
 using System.Web.UI;
+#endif
 using VDS.RDF.Query;
 using VDS.RDF.Writing.Contexts;
 
@@ -580,5 +580,3 @@ namespace VDS.RDF.Writing
         public event RdfWriterWarning Warning;
     }
 }
-
-#endif
