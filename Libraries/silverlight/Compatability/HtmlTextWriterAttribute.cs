@@ -35,7 +35,7 @@ terms.
 
 #if NO_WEB
 
-namespace VDS.RDF
+namespace VDS.RDF.Writing
 {
     public enum HtmlTextWriterAttribute
     {

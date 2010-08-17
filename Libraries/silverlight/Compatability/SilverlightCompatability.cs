@@ -182,12 +182,53 @@ namespace VDS.RDF
 
         public static HtmlNode SelectSingleNode(this HtmlNode node, String xpath)
         {
-            throw new NotImplementedException();
+            if (!xpath.ToCharArray().All(c => Char.IsLetterOrDigit(c) || c == '/') || xpath.Contains("//"))
+            {
+                throw new NotSupportedException("Only simple XPath expressions needed by dotNetRDF code are supported by this method");
+            }
+
+            if (xpath.StartsWith("/")) xpath = xpath.Substring(1);
+
+            if (xpath.Contains("/"))
+            {
+                String firstPart = xpath.Substring(0, xpath.IndexOf('/'));
+                String rest = xpath.Substring(firstPart.Length);
+
+                foreach (HtmlNode n in node.ChildNodes)
+                {
+                    if (n.Name.Equals(firstPart))
+                    {
+                        HtmlNode temp = n.SelectSingleNode(rest);
+                        if (temp != null) return temp;
+                    }
+                }
+            }
+            else
+            {
+                foreach (HtmlNode n in node.ChildNodes)
+                {
+                    if (n.Name.Equals(xpath)) return n;
+                }
+            }
+            return null;
         }
 
         public static HtmlNodeCollection SelectNodes(this HtmlNode node, String xpath)
         {
-            throw new NotImplementedException();
+            HtmlNodeCollection results = new HtmlNodeCollection(node);
+            if (xpath.Equals("comment()"))
+            {
+                foreach (HtmlNode n in node.ChildNodes)
+                {
+                    if (n.NodeType == HtmlNodeType.Comment) results.Add(n);
+                }
+            }
+            else
+            {
+                throw new NotSupportedException("Only the XPath expressions required by dotNetRDF code are supported by this method");
+            }
+
+            return results;
         }
     }
 
@@ -195,12 +236,12 @@ namespace VDS.RDF
     {
         public static String HtmlDecode(String value)
         {
-            throw new NotImplementedException();
+            return value;
         }
 
         public static String HtmlEncode(String value)
         {
-            throw new NotImplementedException();
+            return value;
         }
     }
 }

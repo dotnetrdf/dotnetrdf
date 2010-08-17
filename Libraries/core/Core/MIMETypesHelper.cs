@@ -639,12 +639,10 @@ namespace VDS.RDF
                 {
                     return new SparqlJsonParser();
                 }
-#if !NO_XMLDOM
                 else if (MimeTypesHelper.Sparql[0].Equals(contentType))
                 {
                     return new SparqlXmlParser();
                 }
-#endif
                 else
                 {
                     throw new RdfParserSelectionException("The Library does not contain a Parser which understands SPARQL Results in the format '" + contentType + "'");

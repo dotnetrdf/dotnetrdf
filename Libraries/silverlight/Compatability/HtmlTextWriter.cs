@@ -36,363 +36,463 @@ terms.
 #if NO_WEB
 
 using System;
-using System.Text;
+using System.Collections.Generic;
 using System.IO;
+using System.Text;
+using VDS.RDF.Writing;
 
-namespace VDS.RDF
+namespace VDS.RDF.Writing
 {
+    /// <summary>
+    /// Custom implementation of <see cref="System.Web.UI.HtmlTextWriter">System.Web.UI.HtmlTextWriter</see> to replace it in builds where System.Web is not available
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Note that this is not a full implementation of HtmlTextWriter as per the original class, it simply emulates all the functionality that dotNetRDF requires for it's HTML outputting
+    /// </para>
+    /// </remarks>
     public class HtmlTextWriter : TextWriter, IDisposable
     {
+        private TextWriter _writer;
+        private bool _newline = true;
+        private int _indent = 0;
+        private Stack<String> _tags = new Stack<String>();
+        private List<KeyValuePair<String, String>> _attributes = new List<KeyValuePair<String, String>>();
+        private List<KeyValuePair<String, String>> _styles = new List<KeyValuePair<String, String>>();
+
+        /// <summary>
+        /// Creates a new HTML Text Writer
+        /// </summary>
+        /// <param name="writer">Text Writer</param>
         public HtmlTextWriter(TextWriter writer)
         {
-
+            this._writer = writer;
         }
 
+        /// <summary>
+        /// Gets the encoding of the Inner Writer
+        /// </summary>
         public override Encoding Encoding
         {
             get
             {
-                   throw new NotImplementedException();
+                return this._writer.Encoding;
             }
         }
 
-        public IFormatProvider FormatProvider
-        {
-            get
-            {
-                   throw new NotImplementedException();
-            }
-        }
-
+        /// <summary>
+        /// Gets/Sets the current Indent
+        /// </summary>
         public Int32 Indent
         {
             get
             {
-                   throw new NotImplementedException();
+                return this._indent;
             }
             set
             {
-                   throw new NotImplementedException();
+                this._indent = value;
             }
         }
 
+        /// <summary>
+        /// Gets the Inner Writer
+        /// </summary>
         public TextWriter InnerWriter
         {
             get
             {
-                   throw new NotImplementedException();
-            }
-            set
-            {
-                   throw new NotImplementedException();
+                return this._writer;
             }
         }
 
-        public String NewLine
+        private String EncodeAttribute(String value)
         {
-            get
+            value = WriterHelper.EncodeForXml(value);
+            if (value.EndsWith("&")) value += "amp;";
+            value = value.Replace("\"", "&quot;");
+            value = value.Replace("<", "&lt;");
+            value = value.Replace(">", "&gt;");
+            return value;
+        }
+
+        private String EncodeStyle(String value)
+        {
+            value = WriterHelper.EncodeForXml(value);
+            if (value.EndsWith("&")) value += "amp;";
+            value = value.Replace("\"", "'");
+            value = value.Replace("<", "&lt;");
+            value = value.Replace(">", "&gt;");
+            return value;
+        }
+
+        private String GetAttributeName(HtmlTextWriterAttribute key)
+        {
+            String name = key.ToString().ToLower();
+            if (name.Contains(".")) name = name.Substring(name.LastIndexOf(".") + 1);
+            return name;
+        }
+
+        private String GetStyleName(HtmlTextWriterStyle key)
+        {
+            String name = key.ToString();
+            if (name.Contains(".")) name = name.Substring(name.LastIndexOf(".") + 1);
+
+            StringBuilder output = new StringBuilder();
+            char[] cs = name.ToCharArray();
+            for (int i = 0; i < cs.Length; i++)
             {
-                   throw new NotImplementedException();
+                if (Char.IsUpper(cs[i]) && i > 0)
+                {
+                    output.Append('-');
+                    output.Append(cs[i]);
+                }
+                else
+                {
+                    output.Append(cs[i]);
+                }
             }
-            set
-            {
-                   throw new NotImplementedException();
-            }
+            return output.ToString();
+        }
+
+        private String GetTagName(HtmlTextWriterTag key)
+        {
+            String name = key.ToString().ToLower();
+            if (name.Contains(".")) name = name.Substring(name.LastIndexOf(".") + 1);
+            return name;
         }
 
         public void AddAttribute(String name, String value)
         {
-            throw new NotImplementedException();
+            this._attributes.Add(new KeyValuePair<String, String>(name, this.EncodeAttribute(value)));
         }
 
-        public void AddAttribute(String name, String value, Boolean fEndode)
+        public void AddAttribute(String name, String value, Boolean fEncode)
         {
-            throw new NotImplementedException();
+            if (fEncode) value = this.EncodeAttribute(value);
+            this._attributes.Add(new KeyValuePair<String, String>(name, value));
         }
 
         public void AddAttribute(HtmlTextWriterAttribute key, String value)
         {
-            throw new NotImplementedException();
+            this.AddAttribute(this.GetAttributeName(key), value);
         }
 
         public void AddAttribute(HtmlTextWriterAttribute key, String value, Boolean fEncode)
         {
-            throw new NotImplementedException();
+            this.AddAttribute(this.GetAttributeName(key), value, fEncode);
         }
 
         public void AddStyleAttribute(String name, String value)
         {
-            throw new NotImplementedException();
+            this._styles.Add(new KeyValuePair<String, String>(name, value));
         }
 
         public void AddStyleAttribute(HtmlTextWriterStyle key, String value)
         {
-            throw new NotImplementedException();
-        }
-
-        public void BeginRender()
-        {
-            throw new NotImplementedException();
+            this._styles.Add(new KeyValuePair<String, String>(this.GetStyleName(key), value));
         }
 
         public void Close()
         {
-            throw new NotImplementedException();
+            this._writer.Close();
         }
 
         public void Dispose()
         {
-            throw new NotImplementedException();
-        }
-
-        public void EndRender()
-        {
-            throw new NotImplementedException();
+            this._writer.Close();
         }
 
         public void Flush()
         {
-            throw new NotImplementedException();
-        }
-
-        public Boolean IsValidFormAttribute(String attribute)
-        {
-            throw new NotImplementedException();
+            this._writer.Flush();
         }
 
         public void RenderBeginTag(String tagName)
         {
-            throw new NotImplementedException();
+            this._tags.Push(tagName);
+            if (this._newline)
+            {
+                this._writer.Write(new String('\t', this._indent));
+                this._newline = false;
+            }
+            this._writer.Write("<" + tagName.ToLower());
+            foreach (KeyValuePair<String, String> attr in this._attributes)
+            {
+                this._writer.Write(" " + attr.Key + "=\"" + attr.Value + "\"");
+            }
+            this._attributes.Clear();
+
+            if (this._styles.Count > 0)
+            {
+                this._writer.Write(" style=\"");
+                foreach (KeyValuePair<String, String> style in this._styles)
+                {
+                    this._writer.Write(style.Key + ": " + this.EncodeStyle(style.Value) + ";");
+                }
+                this._writer.Write("\"");
+                this._styles.Clear();
+            }
+            this._writer.WriteLine(">");
+            this._newline = true;
+            this._indent++;
         }
 
         public void RenderBeginTag(HtmlTextWriterTag tagKey)
         {
-            throw new NotImplementedException();
+            this.RenderBeginTag(this.GetTagName(tagKey));
         }
 
         public void RenderEndTag()
         {
-            throw new NotImplementedException();
+            if (this._tags.Count > 0)
+            {
+                this._indent--;
+                if (!this._newline) this._writer.WriteLine();
+                this._writer.Write(new String('\t', this._indent));
+                this._writer.WriteLine("</" + this._tags.Pop().ToLower() + ">");
+                this._newline = true;
+            }
+            else
+            {
+                throw new Exception("Cannot end a tag as there are no open tags");
+            }
         }
 
-        public void Write(String s)
+        public override void Write(char value)
         {
-            throw new NotImplementedException();
+            this._writer.Write(value);
         }
 
-        public void Write(Boolean value)
+        public override void Write(bool value)
         {
-            throw new NotImplementedException();
+            this._writer.Write(value);
         }
 
-        public void Write(Char value)
+        public override void Write(char[] buffer)
         {
-            throw new NotImplementedException();
+            this._writer.Write(buffer);
         }
 
-        public void Write(Char[] buffer)
+        public override void Write(char[] buffer, int index, int count)
         {
-            throw new NotImplementedException();
+            this._writer.Write(buffer, index, count);
         }
 
-        public void Write(Char[] buffer, Int32 index, Int32 count)
+        public override void Write(decimal value)
         {
-            throw new NotImplementedException();
+            this._writer.Write(value);
         }
 
-        public void Write(Double value)
+        public override void Write(double value)
         {
-            throw new NotImplementedException();
+            this._writer.Write(value);
         }
 
-        public void Write(Single value)
+        public override void Write(float value)
         {
-            throw new NotImplementedException();
+            this._writer.Write(value);
         }
 
-        public void Write(Int32 value)
+        public override void Write(int value)
         {
-            throw new NotImplementedException();
+            this._writer.Write(value);
         }
 
-        public void Write(Int64 value)
+        public override void Write(long value)
         {
-            throw new NotImplementedException();
+            this._writer.Write(value);
         }
 
-        public void Write(Object value)
+        public override void Write(object value)
         {
-            throw new NotImplementedException();
+            this._writer.Write(value);
         }
 
-        public void Write(String format, Object arg0)
+        public override void Write(string format, object arg0)
         {
-            throw new NotImplementedException();
+            this._writer.Write(format, arg0);
         }
 
-        public void Write(String format, Object arg0, Object arg1)
+        public override void Write(string format, object arg0, object arg1)
         {
-            throw new NotImplementedException();
+            this._writer.Write(format, arg0, arg1);
         }
 
-        public void Write(String format, Object[] arg)
+        public override void Write(string format, params object[] arg)
         {
-            throw new NotImplementedException();
+            this._writer.Write(format, arg);
         }
 
-        public void Write(UInt32 value)
+        public override void Write(string value)
         {
-            throw new NotImplementedException();
+            this._writer.Write(value);
         }
 
-        public void Write(UInt64 value)
+        public override void Write(uint value)
         {
-            throw new NotImplementedException();
+            this._writer.Write(value);
         }
 
-        public void Write(Decimal value)
+        public override void Write(ulong value)
         {
-            throw new NotImplementedException();
-        }
-
-        public void Write(String format, Object arg0, Object arg1, Object arg2)
-        {
-            throw new NotImplementedException();
+            this._writer.Write(value);
         }
 
         public void WriteAttribute(String name, String value)
         {
-            throw new NotImplementedException();
+            this._writer.Write(name + "=\"" + this.EncodeAttribute(value) + "\"");
         }
 
         public void WriteAttribute(String name, String value, Boolean fEncode)
         {
-            throw new NotImplementedException();
+            if (fEncode) value = this.EncodeAttribute(value);
+            this._writer.Write(name + "=\"" + value + "\"");
         }
 
         public void WriteBeginTag(String tagName)
         {
-            throw new NotImplementedException();
+            if (this._newline)
+            {
+                this._writer.Write(new String('\t', this._indent));
+                this._newline = false;
+            }
+            this._writer.Write("<" + tagName.ToLower());
         }
 
         public void WriteBreak()
         {
-            throw new NotImplementedException();
+            if (this._newline)
+            {
+                this._writer.WriteLine(new String('\t', this._indent));
+                this._newline = false;
+            }
+            this._writer.Write("<br />");
         }
 
         public void WriteEncodedText(String text)
         {
-            throw new NotImplementedException();
+            if (this._newline)
+            {
+                this._writer.Write(new String('\t', this._indent));
+                this._newline = false;
+            }
+            this._writer.Write(text);
         }
 
         public void WriteEncodedUrl(String url)
         {
-            throw new NotImplementedException();
+            this._writer.Write(Uri.EscapeUriString(url));
         }
 
         public void WriteEncodedUrlParameter(String urlText)
         {
-            throw new NotImplementedException();
+            this._writer.Write(Uri.EscapeDataString(urlText));
         }
 
         public void WriteEndTag(String tagName)
         {
-            throw new NotImplementedException();
+            if (this._newline)
+            {
+                this._writer.Write(new String('\t', this._indent));
+                this._newline = false;
+            }
+            this._writer.Write("</" + tagName.ToLower() + ">");
         }
 
         public void WriteFullBeginTag(String tagName)
         {
-            throw new NotImplementedException();
+            if (this._newline)
+            {
+                this._writer.Write(new String('\t', this._indent));
+                this._newline = false;
+            }
+            this._writer.Write("<" + tagName.ToLower() + ">");
         }
 
-        public void WriteLine(String s)
+        public override void WriteLine()
         {
-            throw new NotImplementedException();
+            this._writer.WriteLine();
         }
 
-        public void WriteLine()
+        public override void WriteLine(bool value)
         {
-            throw new NotImplementedException();
+            this._writer.WriteLine(value);
         }
 
-        public void WriteLine(Boolean value)
+        public override void WriteLine(char value)
         {
-            throw new NotImplementedException();
+            this._writer.WriteLine(value);
         }
 
-        public void WriteLine(Char value)
+        public override void WriteLine(char[] buffer)
         {
-            throw new NotImplementedException();
+            this._writer.WriteLine(buffer);
         }
 
-        public void WriteLine(Char[] buffer)
+        public override void WriteLine(char[] buffer, int index, int count)
         {
-            throw new NotImplementedException();
+            this._writer.WriteLine(buffer, index, count);
         }
 
-        public void WriteLine(Char[] buffer, Int32 index, Int32 count)
+        public override void WriteLine(decimal value)
         {
-            throw new NotImplementedException();
+             this._writer.WriteLine(value);
         }
 
-        public void WriteLine(Double value)
+        public override void WriteLine(double value)
         {
-            throw new NotImplementedException();
+            this._writer.WriteLine(value);
         }
 
-        public void WriteLine(Single value)
+        public override void WriteLine(float value)
         {
-            throw new NotImplementedException();
+            this._writer.WriteLine(value);
         }
 
-        public void WriteLine(Int32 value)
+        public override void WriteLine(int value)
         {
-            throw new NotImplementedException();
+            this._writer.WriteLine(value);
         }
 
-        public void WriteLine(Int64 value)
+        public override void WriteLine(long value)
         {
-            throw new NotImplementedException();
+            this._writer.WriteLine(value);
         }
 
-        public void WriteLine(Object value)
+        public override void WriteLine(object value)
         {
-            throw new NotImplementedException();
+            this._writer.WriteLine(value);
         }
 
-        public void WriteLine(String format, Object arg0)
+        public override void WriteLine(string value)
         {
-            throw new NotImplementedException();
+            this._writer.WriteLine(value);
         }
 
-        public void WriteLine(String format, Object arg0, Object arg1)
+        public override void WriteLine(string format, object arg0)
         {
-            throw new NotImplementedException();
+            this._writer.WriteLine(format, arg0);
         }
 
-        public void WriteLine(String format, Object[] arg)
+        public override void WriteLine(string format, object arg0, object arg1)
         {
-            throw new NotImplementedException();
+            this._writer.WriteLine(format, arg0, arg1);
         }
 
-        public void WriteLine(UInt32 value)
+        public override void WriteLine(string format, params object[] arg)
         {
-            throw new NotImplementedException();
+            this._writer.WriteLine(format, arg);
         }
 
-        public void WriteLine(UInt64 value)
+        public override void WriteLine(uint value)
         {
-            throw new NotImplementedException();
+            this._writer.WriteLine(value);
         }
 
-        public void WriteLine(Decimal value)
+        public override void WriteLine(ulong value)
         {
-            throw new NotImplementedException();
-        }
-
-        public void WriteLine(String format, Object arg0, Object arg1, Object arg2)
-        {
-            throw new NotImplementedException();
+            this._writer.WriteLine(value);
         }
 
         public void WriteLineNoTabs(String s)
@@ -402,12 +502,13 @@ namespace VDS.RDF
 
         public void WriteStyleAttribute(String name, String value)
         {
-            throw new NotImplementedException();
+            this._writer.Write(name + ": " + this.EncodeStyle(value) + ";");
         }
 
         public void WriteStyleAttribute(String name, String value, Boolean fEncode)
         {
-            throw new NotImplementedException();
+            if (fEncode) value = this.EncodeAttribute(value);
+            this._writer.Write(name + ": " + value + ";");
         }
 
     }

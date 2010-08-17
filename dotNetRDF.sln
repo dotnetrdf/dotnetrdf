@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDFTest", "Testing\te
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SPARQLEndpointDemo", "Samples\sparqldemo\SPARQLEndpointDemo.csproj", "{476FD77E-8F98-4CB2-AB74-D24D4B805556}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDFBSBM", "Utilities\bsbm\dotNetRDFBSBM.csproj", "{38C7644F-11E4-4C98-A82B-63A9AC8D17AA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BSBM", "Utilities\bsbm\BSBM.csproj", "{38C7644F-11E4-4C98-A82B-63A9AC8D17AA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDFUnitTests", "Testing\unittest\dotNetRDFUnitTests.csproj", "{BD80F826-56A3-4A88-B466-DDFA0691FFB8}"
 EndProject
@@ -19,9 +19,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParserGUI", "Utilities\parsergui\ParserGUI.csproj", "{8A8256F2-B441-41E1-B9E8-F2FCAEAD012A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDFStore", "Utilities\storemanager\dotNetRDFStore.csproj", "{5B73EE4C-D365-437B-B3DC-8D8831BF74F3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoreManager", "Utilities\storemanager\StoreManager.csproj", "{5B73EE4C-D365-437B-B3DC-8D8831BF74F3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDFVirtuosoSample", "Samples\virtuoso\dotNetRDFVirtuosoSample.csproj", "{4904C1E6-851F-4910-B947-5A1C3B0E789B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtuosoSample", "Samples\virtuoso\VirtuosoSample.csproj", "{4904C1E6-851F-4910-B947-5A1C3B0E789B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SparqlGUI", "Utilities\SparqlGUI\SparqlGUI.csproj", "{BBD4CD30-FCB8-45B5-8AEF-F1D4192BC8B2}"
 EndProject
@@ -40,6 +40,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rdfWebDeploy", "Utilities\rdfWebDeploy\rdfWebDeploy.csproj", "{20AB4681-8D42-459E-84C4-729A9E72BF94}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.Silverlight", "Libraries\silverlight\dotNetRDF.Silverlight.csproj", "{854A789B-BA35-4A1B-9449-CAD40953F0E5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompatabilityTest", "Testing\Compatability\CompatabilityTest.csproj", "{67EC9F75-E8D3-4EDD-A341-7F156382564B}"
 EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
@@ -118,6 +120,10 @@ Global
 		{854A789B-BA35-4A1B-9449-CAD40953F0E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{854A789B-BA35-4A1B-9449-CAD40953F0E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{854A789B-BA35-4A1B-9449-CAD40953F0E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{67EC9F75-E8D3-4EDD-A341-7F156382564B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{67EC9F75-E8D3-4EDD-A341-7F156382564B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{67EC9F75-E8D3-4EDD-A341-7F156382564B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{67EC9F75-E8D3-4EDD-A341-7F156382564B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

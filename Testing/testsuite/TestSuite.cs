@@ -133,7 +133,7 @@ namespace dotNetRDFTest
             Console.WriteLine("JSON Tests Done");
 
             //Call the RDFa Test Suite
-            //RdfATestSuite.Main(args);
+            RdfATestSuite.Main(args);
             Console.SetOut(stdout);
             Console.Write("RDFa Tests Done");
 

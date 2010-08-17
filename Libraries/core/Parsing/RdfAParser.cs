@@ -186,7 +186,7 @@ namespace VDS.RDF.Parsing
             evalContext.LocalVocabulary = new TermMappings();
 
             //If there's a base element this permanently changes the Base URI
-            HtmlNode baseEl = context.Document.DocumentNode.SelectSingleNode("//head/base");
+            HtmlNode baseEl = context.Document.DocumentNode.SelectSingleNode("/html/head/base");
             if (baseEl != null)
             {
                 if (baseEl.Attributes.Contains("href"))

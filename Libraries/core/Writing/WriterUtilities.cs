@@ -612,6 +612,9 @@ namespace VDS.RDF.Writing
         {
             value = Regex.Replace(value, _uriEncodeForXmlPattern, "&amp;$1");
             if (value.EndsWith("&")) value += "amp;";
+            //value = value.Replace("\"", "&quot;");
+            value = value.Replace("<", "&lt;");
+            value = value.Replace(">", "&gt;");
             return value;
         }
     }
