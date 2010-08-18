@@ -456,6 +456,7 @@
     <Compile Include="Writing\Contexts\SqlStoreWriterContext.cs" />
     <Compile Include="Writing\Contexts\ThreadedStoreWriterContext.cs" />
     <Compile Include="Writing\Contexts\TurtleWriterContext.cs" />
+    <Compile Include="Writing\RdfXmlWriter.cs" />
     <Compile Include="Writing\HtmlWriter.cs" />
     <Compile Include="Writing\CsvWriter.cs" />
     <Compile Include="Writing\FastRdfXmlWriter.cs" />

@@ -20,6 +20,11 @@ namespace Compatability
                 //HtmlWriter writer = new HtmlWriter();
                 //writer.Save(g, "test.html");
 
+                //RDF/XML Writing for Graphs
+                FileLoader.Load(g, "InferenceTest.ttl");
+                RdfXmlWriter writer = new RdfXmlWriter();
+                writer.Save(g, "test.rdf");
+
                 //RDFa Parsing Test
                 //FileLoader.Load(g, "gr1.xhtml");
                 //foreach (Triple t in g.Triples)
@@ -42,13 +47,15 @@ namespace Compatability
                 //}
 
                 //SPARQL HTML Writer Tests
-                SparqlResultSet results = new SparqlResultSet();
-                SparqlXmlParser parser = new SparqlXmlParser();
-                parser.Load(results, "test001.srx");
-                foreach (SparqlResult r in results)
-                {
-                    Console.WriteLine(r.ToString());
-                }
+                //SparqlResultSet results = new SparqlResultSet();
+                //SparqlXmlParser parser = new SparqlXmlParser();
+                //parser.Load(results, "test001.srx");
+                //foreach (SparqlResult r in results)
+                //{
+                //    Console.WriteLine(r.ToString());
+                //}
+                //SparqlHtmlWriter writer = new SparqlHtmlWriter();
+                //writer.Save(results, "test.html");
 
                 Console.ReadLine();
             }

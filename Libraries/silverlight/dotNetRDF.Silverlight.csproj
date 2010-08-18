@@ -1227,6 +1227,9 @@
     <Compile Include="..\core\Writing\RDFXMLTreeWriter.cs">
       <Link>Writing\RDFXMLTreeWriter.cs</Link>
     </Compile>
+    <Compile Include="..\core\Writing\RdfXmlWriter.cs">
+      <Link>Writing\RdfXmlWriter.cs</Link>
+    </Compile>
     <Compile Include="..\core\Writing\SparqlCsvWriter.cs">
       <Link>Writing\SparqlCsvWriter.cs</Link>
     </Compile>
@@ -1316,7 +1319,7 @@
   -->
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties ProjectLinkReference="bfbac159-1e60-4d03-8aca-d34e31eb83bf" ProjectLinkerExcludeFilter="\\?desktop(\\.*)?$;\\?silverlight(\\.*)?$;\.desktop;\.silverlight;\.xaml;^service references(\\.*)?$;\.clientconfig;^web references(\\.*)?$" />
+      <UserProperties ProjectLinkerExcludeFilter="\\?desktop(\\.*)?$;\\?silverlight(\\.*)?$;\.desktop;\.silverlight;\.xaml;^service references(\\.*)?$;\.clientconfig;^web references(\\.*)?$" ProjectLinkReference="bfbac159-1e60-4d03-8aca-d34e31eb83bf" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>

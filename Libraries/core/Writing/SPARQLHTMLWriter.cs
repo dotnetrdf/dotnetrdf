@@ -253,7 +253,9 @@ namespace VDS.RDF.Writing
 
                 writer.RenderEndTag();
                 writer.RenderEndTag();
+#if !NO_WEB
                 writer.WriteLine();
+#endif
 
                 //Create a Table Body for the Results
                 writer.RenderBeginTag(HtmlTextWriterTag.Tbody);
@@ -350,7 +352,9 @@ namespace VDS.RDF.Writing
 
                     //End Row
                     writer.RenderEndTag();
+#if !NO_WEB
                     writer.WriteLine();
+#endif
                 }
 
                 //End Table Body
