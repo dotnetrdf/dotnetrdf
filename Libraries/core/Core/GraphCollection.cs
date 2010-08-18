@@ -80,7 +80,7 @@ namespace VDS.RDF
             if (this._graphs.ContainsKey(id)) 
             {
                 //Check Ordinal Equality of String form of URIs to detect Hash Code collision
-                if (this._graphs[id].BaseUri != null && this._graphs[id].BaseUri.ToString().Equals(graphUri.ToString(), StringComparison.Ordinal))
+                if (this._graphs[id].BaseUri != null && this._graphs[id].BaseUri.ToString().Equals(graphUri.ToSafeString(), StringComparison.Ordinal))
                 {
                     return true;
                 }
@@ -92,7 +92,7 @@ namespace VDS.RDF
                 {
                     //Hash Code Collision
                     //See if is in list of Collision Graphs
-                    return this._collisionGraphs.Any(g => (g.BaseUri == null && graphUri == null) || g.BaseUri.ToString().Equals(graphUri.ToString(), StringComparison.Ordinal));
+                    return this._collisionGraphs.Any(g => (g.BaseUri == null && graphUri == null) || g.BaseUri.ToString().Equals(graphUri.ToSafeString(), StringComparison.Ordinal));
                   }
             } 
             else 

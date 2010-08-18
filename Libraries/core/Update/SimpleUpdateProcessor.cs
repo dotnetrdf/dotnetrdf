@@ -54,6 +54,17 @@ namespace VDS.RDF.Update
         }
 
         /// <summary>
+        /// Flushes any outstanding changes to the underlying store
+        /// </summary>
+        public virtual void Flush()
+        {
+            if (this._store is IFlushableStore)
+            {
+                ((IFlushableStore)this._store).Flush();
+            }
+        }
+
+        /// <summary>
         /// Processes a CLEAR command
         /// </summary>
         /// <param name="cmd">Clear Command</param>

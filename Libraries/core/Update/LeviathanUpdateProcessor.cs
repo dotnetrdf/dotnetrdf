@@ -58,7 +58,18 @@ namespace VDS.RDF.Update
             this._context = new SparqlUpdateEvaluationContext(store);
             if (!store.HasGraph(null))
             {
-                store.Add(new Graph());
+                store.Add(new Graph(), true);
+            }
+        }
+
+        /// <summary>
+        /// Flushes any outstanding changes to the underlying store
+        /// </summary>
+        public virtual void Flush()
+        {
+            if (this._context.Data is IFlushableStore)
+            {
+                ((IFlushableStore)this._context.Data).Flush();
             }
         }
 

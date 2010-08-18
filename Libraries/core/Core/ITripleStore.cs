@@ -588,4 +588,15 @@ namespace VDS.RDF
         /// </remarks>
         void ApplyInference(IGraph g);
     }
+
+    /// <summary>
+    /// Interface for Triple Stores which are backed by some storage layer that may delay persistence and thus require flushing to ensure changes are persisted to the backing store
+    /// </summary>
+    public interface IFlushableStore : ITripleStore
+    {
+        /// <summary>
+        /// Flushes any outstanding changes to the underlying store
+        /// </summary>
+        void Flush();
+    }
 }

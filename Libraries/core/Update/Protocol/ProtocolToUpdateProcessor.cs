@@ -148,6 +148,7 @@ namespace VDS.RDF.Update.Protocol
             insertCmd.SetUri("graph", graphUri);
             SparqlUpdateCommandSet cmds = this._parser.ParseFromString(insertCmd);
             this._updateProcessor.ProcessCommandSet(cmds);
+            this._updateProcessor.Flush();
         }
 
         /// <summary>
@@ -181,6 +182,7 @@ namespace VDS.RDF.Update.Protocol
             put.SetUri("graph", graphUri);
             SparqlUpdateCommandSet putCmds = this._parser.ParseFromString(put);
             this._updateProcessor.ProcessCommandSet(putCmds);
+            this._updateProcessor.Flush();
         }
 
         /// <summary>
@@ -197,6 +199,7 @@ namespace VDS.RDF.Update.Protocol
             drop.SetUri("graph", graphUri);
             SparqlUpdateCommandSet dropCmd = this._parser.ParseFromString(drop);
             this._updateProcessor.ProcessCommandSet(dropCmd);
+            this._updateProcessor.Flush();
         }
     }
 }

@@ -259,6 +259,11 @@ namespace VDS.RDF.Storage
         /// <param name="text">String to escape</param>
         /// <returns>Escaped String</returns>
         String EscapeString(String text);
+
+        /// <summary>
+        /// Flushes any outstanding changes to the underlying SQL database
+        /// </summary>
+        void Flush();
     }
 
     /// <summary>

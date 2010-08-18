@@ -49,7 +49,7 @@ namespace VDS.RDF
     /// <summary>
     /// Class for representing Triple Stores which are automatically stored to a backing SQL Store as it is modified
     /// </summary>
-    public class SqlTripleStore : TripleStore
+    public class SqlTripleStore : TripleStore, IFlushableStore
     {
         /// <summary>
         /// Store Manager which manages the IO to the Triple Store
@@ -149,11 +149,13 @@ namespace VDS.RDF
             else if (exists)
             {
                 //It already exists as a SqlGraph in the collection
-                //Load with given merging setting
-                base.Add(g, mergeIfExists);
+                //Load with merging
+                this._graphs[g.BaseUri].Merge(g);
             } 
             else
             {
+                if (g.BaseUri == null) g.BaseUri = new Uri(GraphCollection.DefaultGraphUri);
+
                 //Move it into a SqlGraph using our Shared Manager
                 SqlGraph h = new SqlGraph(g.BaseUri, this._manager);
                 
@@ -210,6 +212,14 @@ namespace VDS.RDF
         {
             String tempID = this._manager.GetGraphID(graphUri);
             this._manager.RemoveGraph(tempID);
+        }
+
+        /// <summary>
+        /// Flushes any outstanding changes to the underlying SQL Store
+        /// </summary>
+        public void Flush()
+        {
+            this._manager.Flush();
         }
 
         /// <summary>

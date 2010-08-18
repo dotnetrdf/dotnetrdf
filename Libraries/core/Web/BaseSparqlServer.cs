@@ -365,6 +365,9 @@ namespace VDS.RDF.Web
                     }
                 }
 
+                //Flush outstanding changes
+                this._config.UpdateProcessor.Flush();
+
                 //Update the Cache as the request may have changed the endpoint
                 this.UpdateConfig(context);
             }

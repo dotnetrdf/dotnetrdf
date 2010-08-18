@@ -982,6 +982,19 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Flushes any outstanding changes to the underlying store
+        /// </summary>
+        public void Flush()
+        {
+            //Flush the Writer Thread
+            this._flushWriter = true;
+            while (!this.HasCompleted)
+            {
+                Thread.Sleep(250);
+            }
+        }
+
         #region IConfigurationSerializable Members
 
         /// <summary>

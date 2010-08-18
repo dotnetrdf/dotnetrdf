@@ -115,5 +115,10 @@ namespace VDS.RDF.Update
         /// </summary>
         /// <param name="cmd">Insert/Delete Command</param>
         void ProcessModifyCommand(ModifyCommand cmd);
+
+        /// <summary>
+        /// Causes any outstanding changes to be flushed to the underlying store
+        /// </summary>
+        void Flush();
     }
 }

@@ -74,6 +74,14 @@ namespace VDS.RDF.Update
         }
 
         /// <summary>
+        /// Flushes any outstanding changes to the underlying store
+        /// </summary>
+        public virtual void Flush()
+        {
+            //Does Nothing
+        }
+
+        /// <summary>
         /// Processes a CLEAR command
         /// </summary>
         /// <param name="cmd">Clear Command</param>
