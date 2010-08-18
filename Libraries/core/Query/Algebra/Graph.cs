@@ -79,6 +79,7 @@ namespace VDS.RDF.Query.Algebra
             }
             else
             {
+                bool datasetOk = false;
                 try
                 {
                     //Modify the Active Graph as appropriate
@@ -132,6 +133,7 @@ namespace VDS.RDF.Query.Algebra
                             }
                         }
                     }
+                    datasetOk = true;
 
                     //Evaluate the inner pattern
                     BaseMultiset initialInput = context.InputMultiset;
@@ -171,7 +173,7 @@ namespace VDS.RDF.Query.Algebra
                 }
                 finally
                 {
-                    context.Data.ResetActiveGraph();
+                    if (datasetOk) context.Data.ResetActiveGraph();
                 }
             }
 

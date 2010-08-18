@@ -26,11 +26,11 @@
 		  foaf:homepage <http://sameas.org>;
 		  aat:uriDiscoveryEndpoint <http://sameas.org/n3?uri=>.
 		  
-:Sindice a void:Dataset;
-		 dcterms:title "Sindice";
-		 dcterms:description "Semantic Web Search Engine";
-		 foaf:homepage <http://www.sindice.com>;
+#:Sindice a void:Dataset;
+#		 dcterms:title "Sindice";
+#		 dcterms:description "Semantic Web Search Engine";
+#		 foaf:homepage <http://www.sindice.com>;
 		 #void:uriLookupEndpoint <http://api.sindice.com/v2/search?qt=term&q=>.
-		 void:uriLookupEndpoint <http://api.sindice.com/v2/cache?url=>.
+#		 void:uriLookupEndpoint <http://api.sindice.com/v2/cache?url=>.
 		 
    

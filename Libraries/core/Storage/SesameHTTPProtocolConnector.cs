@@ -45,6 +45,7 @@ using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Writing;
+using VDS.RDF.Writing.Contexts;
 
 namespace VDS.RDF.Storage
 {
@@ -79,6 +80,9 @@ namespace VDS.RDF.Storage
         /// </summary>
         protected bool _hasCredentials = false;
 
+        private StringBuilder _output = new StringBuilder();
+        private BaseWriterContext _context;
+
         /// <summary>
         /// Creates a new connection to a Sesame HTTP Protocol supporting Store
         /// </summary>
@@ -89,6 +93,8 @@ namespace VDS.RDF.Storage
             this._baseUri = baseUri;
             if (!this._baseUri.EndsWith("/")) this._baseUri += "/";
             this._store = storeID;
+
+            this._context = new BaseWriterContext(new Graph(), new System.IO.StringWriter(this._output));
         }
 
         /// <summary>
@@ -319,18 +325,26 @@ namespace VDS.RDF.Storage
                 {
                     if (removals.Any())
                     {
-                        request = this.CreateRequest("repositories/" + this._store + "/statements", "*/*", "DELETE", serviceParams);
+                        serviceParams.Add("subj", null);
+                        serviceParams.Add("pred", null);
+                        serviceParams.Add("obj", null);
 
-                        //Delete the Triples to be removed
-                        Graph g = new Graph();
-                        g.Assert(removals);
-                        request.ContentType = MimeTypesHelper.NTriples[0];
-                        ntwriter.Save(g, new StreamWriter(request.GetRequestStream()));
+                        //Have to do a DELETE for each individual Triple
+                        foreach (Triple t in removals.Distinct())
+                        {
+                            this._output.Remove(0, this._output.Length);
+                            serviceParams["subj"] = this._context.FormatNode(t.Subject, NodeFormat.NTriples);
+                            serviceParams["pred"] = this._context.FormatNode(t.Predicate, NodeFormat.NTriples);
+                            serviceParams["obj"] = this._context.FormatNode(t.Object, NodeFormat.NTriples);
+                            request = this.CreateRequest("repositories/" + this._store + "/statements", "*/*", "DELETE", serviceParams);
+                            response = (HttpWebResponse)request.GetResponse();
 
-                        response = (HttpWebResponse)request.GetResponse();
-
-                        //If we get here then the Delete worked OK
-                        response.Close();
+                            //If we get here then the Delete worked OK
+                            response.Close();
+                        }
+                        serviceParams.Remove("subj");
+                        serviceParams.Remove("pred");
+                        serviceParams.Remove("obj");
                     }
                 }
 

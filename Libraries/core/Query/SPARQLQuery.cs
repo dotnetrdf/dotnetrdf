@@ -738,6 +738,8 @@ namespace VDS.RDF.Query
             this._queryTime = -1;
             this._queryTimeTicks = -1;
 
+            bool datasetOk = false;
+
             try
             {
                 //Set up the Default and Active Graphs
@@ -772,6 +774,7 @@ namespace VDS.RDF.Query
                     data.SetDefaultGraph(defGraph);
                 }
                 data.SetActiveGraph(defGraph);
+                datasetOk = true;
 
                 //Convert to Algebra and execute the Query
                 SparqlEvaluationContext context = new SparqlEvaluationContext(this, data);
@@ -856,7 +859,7 @@ namespace VDS.RDF.Query
             }
             finally
             {
-                data.ResetActiveGraph();
+                if (datasetOk) data.ResetActiveGraph();
             }
         }
 
