@@ -21,8 +21,11 @@ namespace Compatability
                 //writer.Save(g, "test.html");
 
                 //RDF/XML Writing for Graphs
-                FileLoader.Load(g, "InferenceTest.ttl");
+                //FileLoader.Load(g, "InferenceTest.ttl");
+                FileLoader.Load(g, "test.n3");
                 RdfXmlWriter writer = new RdfXmlWriter();
+                //g.NamespaceMap.RemoveNamespace("eg");
+                //g.Assert(new Triple(g.CreateUriNode(new Uri("http://example.org/subject")), g.CreateUriNode(new Uri("http://example.org/predicate")), g.CreateUriNode(new Uri("http://example.org/object"))));
                 writer.Save(g, "test.rdf");
                 RdfXmlParser parser = new RdfXmlParser();
                 Graph h = new Graph();

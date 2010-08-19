@@ -596,7 +596,22 @@ namespace VDS.RDF.Parsing
                     }
                     else if (nodeType.Equals("bnode"))
                     {
-                        n = this._g.CreateBlankNode(nodeValue.Substring(nodeValue.IndexOf(':') + 1));
+                        if (nodeValue.StartsWith("_:"))
+                        {
+                            n = this._g.CreateBlankNode(nodeValue.Substring(2));
+                        }
+                        else if (nodeValue.Contains("://"))
+                        {
+                            n = this._g.CreateBlankNode(nodeValue.Substring(nodeValue.IndexOf("://") + 3));
+                        }
+                        else if (nodeValue.Contains(":"))
+                        {
+                            n = this._g.CreateBlankNode(nodeValue.Substring(nodeValue.LastIndexOf(':') + 1));
+                        }
+                        else
+                        {
+                            n = this._g.CreateBlankNode(nodeValue);
+                        }
                     }
                     else if (nodeType.Equals("literal") || nodeType.Equals("typed-literal"))
                     {

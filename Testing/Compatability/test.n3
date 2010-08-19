@@ -1,0 +1,43 @@
+﻿
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix vds: <http://www.vdesign-studios.com/dotNetRDF#>.
+@prefix ecs: <http://id.ecs.soton.ac.uk/person/>.
+
+ecs:1650 vds:supervises ecs:11471;
+vds:collaborates ecs:60;
+vds:collaborates ecs:46.
+
+ecs:11471 vds:has "Some string";
+vds:has """This goes over
+
+several
+
+lines""";
+vds:has "Bonjour"@fr;
+vds:has 22;
+vds:has "1"^^xsd:integer;
+vds:has "2"^^<http://www.w3.org/2001/XMLSchema#integer>;
+vds:has [];
+vds:has _:random;
+vds:has [vds:is "thing"];
+vds:has [vds:is "multiple pred obj lists"; vds:is "a test"];
+vds:has ("item" "another" "list item");
+vds:has "<p>Some paragraph with some <b>bold text</b></p>"^^rdf:XMLLiteral.
+
+_:random vds:is "something".
+
+[vds:has "subject bNode"] vds:is "subject bNode Test".
+[vds:has "another bNode subject"; vds:has "multiple bNode subjects bits"] vds:is "multiple subject bNode Test".
+
+[vds:is [vds:is "nested"]] vds:is "Nested Collections Test".
+
+ecs:60 vds:supervises ecs:11471;
+vds:collaborates ecs:46;
+vds:collaborates ecs:46.
+
+ecs:46 vds:advises ecs:11471;
+	   vds:says "\u00C7ava?".
+
+#<> rdfs:seeAlso <http://example.org/1>.

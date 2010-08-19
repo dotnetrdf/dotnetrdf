@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{67EC9F75-E8D3-4EDD-A341-7F156382564B}</ProjectGuid>
     <OutputType>Exe</OutputType>
@@ -64,6 +64,9 @@
     <None Include="InferenceTest.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <Content Include="test.n3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="test001.srx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

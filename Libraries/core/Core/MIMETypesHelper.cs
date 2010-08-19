@@ -213,7 +213,6 @@ namespace VDS.RDF
                 output.Append(",");
                 output.Append(String.Join(",", Json));
                 output.Append(";q=0.9,*/*;q=0.8");
-                //output.Append(",*/*");
 
                 return output.ToString();
             }

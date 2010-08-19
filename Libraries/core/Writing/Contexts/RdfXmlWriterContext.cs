@@ -7,7 +7,7 @@ using System.Xml;
 
 namespace VDS.RDF.Writing.Contexts
 {
-    public class RdfXmlWriterContext : IWriterContext
+    public class RdfXmlWriterContext : IWriterContext, ICollectionCompressingWriterContext
     {
         /// <summary>
         /// Pretty Printing Mode setting
@@ -31,6 +31,9 @@ namespace VDS.RDF.Writing.Contexts
         private NestedNamespaceMapper _nsmapper = new NestedNamespaceMapper(true);
 
         private int _nextNamespaceID = 0;
+
+        private Dictionary<INode, OutputRDFCollection> _collections = new Dictionary<INode, OutputRDFCollection>();
+        private TripleCollection _triplesDone = new TripleCollection();
 
         public RdfXmlWriterContext(IGraph g, TextWriter output)
         {
@@ -144,6 +147,28 @@ namespace VDS.RDF.Writing.Contexts
             set
             {
                 this._nextNamespaceID = value;
+            }
+        }
+
+        /// <summary>
+        /// Represents the mapping from Blank Nodes to Collections
+        /// </summary>
+        public Dictionary<INode, OutputRDFCollection> Collections
+        {
+            get
+            {
+                return this._collections;
+            }
+        }
+
+        /// <summary>
+        /// Stores the Triples that should be excluded from standard output as they are part of collections
+        /// </summary>
+        public BaseTripleCollection TriplesDone
+        {
+            get
+            {
+                return this._triplesDone;
             }
         }
 

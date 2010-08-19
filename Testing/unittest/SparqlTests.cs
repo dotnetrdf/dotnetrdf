@@ -224,5 +224,30 @@ SELECT * WHERE {?s rdfs:label ?label . ?label bif:contains " + "\"London\" } LIM
             }
         }
 
+        [TestMethod()]
+        public void SparqlBNodeIDsInResultsTest()
+        {
+            try
+            {
+                SparqlXmlParser xmlparser = new SparqlXmlParser();
+                SparqlResultSet results = new SparqlResultSet();
+                xmlparser.Load(results, "bnodes.srx");
+
+                TestTools.ShowResults(results);
+                Assert.AreEqual(results.Results.Distinct().Count(), 1, "All Results should be the same as they should all generate same BNode");
+
+                SparqlJsonParser jsonparser = new SparqlJsonParser();
+                results = new SparqlResultSet();
+                jsonparser.Load(results, "bnodes.json");
+
+                TestTools.ShowResults(results);
+                Assert.AreEqual(results.Results.Distinct().Count(), 1, "All Results should be the same as they should all generate same BNode");
+
+            }
+            catch (Exception ex)
+            {
+                TestTools.ReportError("Error", ex, true);
+            }
+        }
     }
 }

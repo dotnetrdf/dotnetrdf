@@ -480,7 +480,7 @@ namespace VDS.RDF.Query
                 httpRequest.Method = this.HttpMode;
             }
 #if !SILVERLIGHT
-            httpRequest.Timeout = this.Timeout;
+            if (this.Timeout > 0) httpRequest.Timeout = this.Timeout;
 #endif
 
             //Apply Credentials to request if necessary

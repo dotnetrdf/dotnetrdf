@@ -120,8 +120,6 @@ namespace VDS.RDF.Writing
         /// <param name="output">Stream to save to</param>
         private void GenerateOutput(IGraph g, TextWriter output)
         {
-            TripleCollection triplesDone = new TripleCollection();
-
             //Always force RDF Namespace to be correctly defined
             g.NamespaceMap.AddNamespace("rdf", new Uri(NamespaceMapper.RDF));
 
@@ -145,6 +143,7 @@ namespace VDS.RDF.Writing
 
             //Create the rdf:RDF element
             context.Writer.WriteStartElement("rdf", "RDF", NamespaceMapper.RDF);
+            context.NamespaceMap.IncrementNesting();
             foreach (String prefix in context.NamespaceMap.Prefixes)
             {
                 if (prefix.Equals("rdf")) continue;
@@ -163,14 +162,17 @@ namespace VDS.RDF.Writing
                 }
             }
 
-            //Find the Collections
-            Dictionary<INode, OutputRDFCollection> collections = new Dictionary<INode, OutputRDFCollection>();// WriterHelper.FindCollections(g, triplesDone);
-
-            //Find the Type References
-            Dictionary<INode, String> typerefs = this.FindTypeReferences(context, triplesDone);
+            //Find the Collections and Type References
+            WriterHelper.FindCollections(context);
+            foreach (INode key in context.Collections.Keys.ToList())
+            {
+                //Currently explicit collection output is not supported
+                if (context.Collections[key].IsExplicit) context.Collections.Remove(key);
+            }
+            Dictionary<INode, String> typerefs = this.FindTypeReferences(context);
 
             //Get the Triples as a Sorted List
-            List<Triple> ts = context.Graph.Triples.Where(t => !triplesDone.Contains(t)).ToList();
+            List<Triple> ts = context.Graph.Triples.Where(t => !context.TriplesDone.Contains(t)).ToList();
             ts.Sort();
 
             //Variables we need to track our writing
@@ -180,7 +182,7 @@ namespace VDS.RDF.Writing
             for (int i = 0; i < ts.Count; i++)
             {
                 Triple t = ts[i];
-                if (triplesDone.Contains(t)) continue; //Skip if already done
+                if (context.TriplesDone.Contains(t)) continue; //Skip if already done
 
                 if (lastSubj == null || !t.Subject.Equals(lastSubj))
                 {
@@ -230,10 +232,9 @@ namespace VDS.RDF.Writing
                         case NodeType.Literal:
                             throw new RdfOutputException(WriterErrorMessages.LiteralSubjectsUnserializable("RDF/XML"));
                         case NodeType.Blank:
-                            if (collections.ContainsKey(t.Subject))
+                            if (context.Collections.ContainsKey(t.Subject))
                             {
-                                throw new NotImplementedException("Collection Output not yet implemented");
-                                //this.GenerateCollectionOutput(g, collections, t.Subject, subj, ref nextNamespaceID, tempNamespaces, doc);
+                                this.GenerateCollectionOutput(context, t.Subject);
                             }
                             else
                             {
@@ -287,16 +288,15 @@ namespace VDS.RDF.Writing
                             this.GeneratePredicateNode(context, t.Predicate);
                         }
 
-                        if (collections.ContainsKey(t.Object))
+                        if (context.Collections.ContainsKey(t.Object))
                         {
                             //Output a Collection
-                            throw new NotImplementedException("Collection Output is not yet implemented");
-                            //this.GenerateCollectionOutput(g, collections, t.Object, pred, ref nextNamespaceID, tempNamespaces, doc);
+                            this.GenerateCollectionOutput(context, t.Object);
                         }
                         else
                         {
                             //Terminate the Blank Node triple by adding a rdf:nodeID attribute
-                            context.Writer.WriteAttributeString("rdf", "nodeID", null, ((BlankNode)t.Subject).InternalID);
+                            context.Writer.WriteAttributeString("rdf", "nodeID", null, ((BlankNode)t.Object).InternalID);
                         }
 
                         break;
@@ -334,174 +334,168 @@ namespace VDS.RDF.Writing
                 context.Writer.WriteEndElement();
                 lastPred = null;
 
-                triplesDone.Add(t);
+                context.TriplesDone.Add(t);
             }
 
-            ////Check we haven't failed to output any collections
-            //foreach (KeyValuePair<INode, OutputRDFCollection> pair in collections)
-            //{
-            //    if (pair.Value.Count > 0)
-            //    {
-            //        if (typerefs.ContainsKey(pair.Key))
-            //        {
-            //            String tref = typerefs[pair.Key];
-            //            String tprefix;
-            //            if (tref.StartsWith(":")) 
-            //            {
-            //                tref = tref.Substring(1);
-            //                tprefix = String.Empty;
-            //            }
-            //            else if (tref.Contains(":"))
-            //            {
-            //                tprefix = tref.Substring(0, tref.IndexOf(':'));
-            //            }
-            //            else
-            //            {
-            //                tprefix = String.Empty;
-            //            }
-            //            subj = doc.CreateElement(tref, g.NamespaceMap.GetNamespaceUri(tprefix).ToString());
+            //Check we haven't failed to output any collections
+            foreach (KeyValuePair<INode, OutputRDFCollection> pair in context.Collections)
+            {
+                if (pair.Value.Count > 0)
+                {
+                    if (typerefs.ContainsKey(pair.Key))
+                    {
+                        String tref = typerefs[pair.Key];
+                        context.NamespaceMap.IncrementNesting();
+                        if (tref.StartsWith(":"))
+                        {
+                            context.Writer.WriteStartElement(tref.Substring(1));
+                        }
+                        else if (tref.Contains(":"))
+                        {
+                            context.Writer.WriteStartElement(tref.Substring(0, tref.IndexOf(':')), tref.Substring(tref.IndexOf(':') + 1), null);
+                        }
+                        else
+                        {
+                            context.Writer.WriteStartElement(tref);
+                        }
 
-            //            doc.DocumentElement.AppendChild(subj);
+                        this.GenerateCollectionOutput(context, pair.Key);
+                    }
+                    else
+                    {
+                        throw new RdfOutputException("Failed to output a Collection due to an unknown error");
+                    }
+                }
+            }
 
-            //            this.GenerateCollectionOutput(g, collections, pair.Key, subj, ref nextNamespaceID, tempNamespaces, doc);
-            //        }
-            //        else
-            //        {
-            //            throw new RdfOutputException("Failed to output a Collection due to an unknown error");
-            //        }
-            //    }
-            //}
-
+            context.NamespaceMap.DecrementNesting();
             context.Writer.WriteEndDocument();
 
             //Save to the Output Stream
             context.Writer.Close();
         }
 
-        //private void GenerateCollectionOutput(IGraph g, Dictionary<INode, OutputRDFCollection> collections, INode key, XmlElement pred, ref int nextNamespaceID, List<String> tempNamespaces, XmlDocument doc)
-        //{
-        //    OutputRDFCollection c = collections[key];
-        //    if (!c.IsExplicit)
-        //    {
-        //        XmlAttribute parseType;
-        //        if (pred.ParentNode != doc.DocumentElement)
-        //        {
-        //            //Need to set the Predicate to have a rdf:parseType of Resource
-        //            parseType = doc.CreateAttribute("rdf:parseType", NamespaceMapper.RDF);
-        //            parseType.Value = "Resource";
-        //            pred.Attributes.Append(parseType);
-        //        }
+        private void GenerateCollectionOutput(RdfXmlWriterContext context, INode key)
+        {
+            OutputRDFCollection c = context.Collections[key];
+            if (!c.IsExplicit)
+            {
+                if (context.NamespaceMap.NestingLevel > 2)
+                {
+                    //Need to set the Predicate to have a rdf:parseType of Resource
+                    context.Writer.WriteAttributeString("rdf", "parseType", NamespaceMapper.RDF, "Resource");
+                }
 
-        //        XmlElement first, rest;
-        //        while (c.Count > 0)
-        //        {
-        //            //Get the Next Item and generate rdf:first and rdf:rest Nodes
-        //            INode next = c.Pop();
-        //            first = doc.CreateElement("rdf:first", NamespaceMapper.RDF);
-        //            rest = doc.CreateElement("rdf:rest", NamespaceMapper.RDF);
+                int length = c.Count;
+                while (c.Count > 0)
+                {
+                    //Get the Next Item and generate the rdf:first element
+                    INode next = c.Pop();
+                    context.NamespaceMap.IncrementNesting();
+                    context.Writer.WriteStartElement("rdf", "first", NamespaceMapper.RDF);
 
-        //            pred.AppendChild(first);
-        //            pred.AppendChild(rest);
+                    //Set the value of the rdf:first Item
+                    switch (next.NodeType)
+                    {
+                        case NodeType.Blank:
+                            context.Writer.WriteAttributeString("rdf", "nodeID", NamespaceMapper.RDF, ((BlankNode)next).InternalID);
+                            break;
+                        case NodeType.GraphLiteral:
+                            throw new RdfOutputException(WriterErrorMessages.GraphLiteralsUnserializable("RDF/XML"));
+                        case NodeType.Literal:
+                            this.GenerateLiteralOutput(context, (LiteralNode)next);
+                            break;
+                        case NodeType.Uri:
+                            this.GenerateUriOutput(context, (UriNode)next, "rdf:resource");
+                            break;
+                        default:
+                            throw new RdfOutputException(WriterErrorMessages.UnknownNodeTypeUnserializable("RDF/XML"));
+                    }
 
-        //            //Set the value of the rdf:first Item
-        //            switch (next.NodeType)
-        //            {
-        //                case NodeType.Blank:
-        //                    XmlAttribute nodeID = doc.CreateAttribute("rdf:nodeID", NamespaceMapper.RDF);
-        //                    nodeID.Value = ((BlankNode)next).InternalID;
-        //                    first.Attributes.Append(nodeID);
-        //                    break;
-        //                case NodeType.GraphLiteral:
-        //                    throw new RdfOutputException(WriterErrorMessages.GraphLiteralsUnserializable("RDF/XML"));
-        //                case NodeType.Literal:
-        //                    this.GenerateLiteralOutput((LiteralNode)next, first, doc);
-        //                    break;
-        //                case NodeType.Uri:
-        //                    this.GenerateUriOutput(g, (UriNode)next, "rdf:resource", tempNamespaces, first, doc);
-        //                    break;
-        //                default:
-        //                    throw new RdfOutputException(WriterErrorMessages.UnknownNodeTypeUnserializable("RDF/XML"));
-        //            }
+                    //Now generate the rdf:rest element
+                    context.NamespaceMap.DecrementNesting();
+                    context.Writer.WriteEndElement();
+                    context.NamespaceMap.IncrementNesting();
+                    context.Writer.WriteStartElement("rdf", "rest", NamespaceMapper.RDF);
 
-        //            if (c.Count >= 1)
-        //            {
-        //                //Set Parse Type to resource
-        //                parseType = doc.CreateAttribute("rdf:parseType", NamespaceMapper.RDF);
-        //                parseType.Value = "Resource";
-        //                rest.Attributes.Append(parseType);
+                    if (c.Count >= 1)
+                    {
+                        //Set Parse Type to resource
+                        context.Writer.WriteAttributeString("rdf", "parseType", NamespaceMapper.RDF, "Resource");
+                    }
+                    else
+                    {
+                        //Terminate list with an rdf:nil
+                        context.Writer.WriteStartAttribute("rdf", "resource", NamespaceMapper.RDF);
+                        context.Writer.WriteRaw("&rdf;nil");
+                        context.Writer.WriteEndAttribute();
+                    }
+                }
+                for (int i = 0; i < length; i++)
+                {
+                    context.NamespaceMap.DecrementNesting();
+                    context.Writer.WriteEndElement();
+                }
+            }
+            else
+            {
+                //if (c.Count == 0)
+                //{
+                //    //Terminate the Blank Node triple by adding a rdf:nodeID attribute
+                //    context.Writer.WriteAttributeString("rdf", "nodeID", NamespaceMapper.RDF, ((BlankNode)key).InternalID);
+                //}
+                //else
+                //{
+                //    //Need to set the Predicate to have a rdf:parseType of Resource
+                //    if (pred.Name != "rdf:Description" && pred.ParentNode != doc.DocumentElement)
+                //    {
+                //        XmlAttribute parseType = doc.CreateAttribute("rdf:parseType", NamespaceMapper.RDF);
+                //        parseType.Value = "Resource";
+                //        pred.Attributes.Append(parseType);
+                //    }
 
-        //                pred = rest;
-        //            }
-        //            else
-        //            {
-        //                //Terminate list with an rdf:nil
-        //                XmlAttribute res = doc.CreateAttribute("rdf:resource");
-        //                res.InnerXml = "&rdf;nil";
-        //                rest.Attributes.Append(res);
-        //            }
-        //        }
-        //    }
-        //    else
-        //    {
-        //        if (c.Count == 0)
-        //        {
-        //            //Terminate the Blank Node triple by adding a rdf:nodeID attribute
-        //            XmlAttribute nodeID = doc.CreateAttribute("rdf:nodeID", NamespaceMapper.RDF);
-        //            nodeID.Value = ((BlankNode)key).InternalID;
-        //            pred.Attributes.Append(nodeID);
-        //        }
-        //        else
-        //        {
-        //            //Need to set the Predicate to have a rdf:parseType of Resource
-        //            if (pred.Name != "rdf:Description" && pred.ParentNode != doc.DocumentElement)
-        //            {
-        //                XmlAttribute parseType = doc.CreateAttribute("rdf:parseType", NamespaceMapper.RDF);
-        //                parseType.Value = "Resource";
-        //                pred.Attributes.Append(parseType);
-        //            }
+                //    //Output the Predicate Object list
+                //    while (c.Count > 0)
+                //    {
+                //        INode nextPred = c.Pop();
+                //        INode nextObj = c.Pop();
 
-        //            //Output the Predicate Object list
-        //            while (c.Count > 0)
-        //            {
-        //                INode nextPred = c.Pop();
-        //                INode nextObj = c.Pop();
+                //        XmlElement p;
 
-        //                XmlElement p;
+                //        //Generate the predicate
+                //        p = this.GeneratePredicateNode(g, nextPred, ref nextNamespaceID, tempNamespaces, doc, pred);
 
-        //                //Generate the predicate
-        //                p = this.GeneratePredicateNode(g, nextPred, ref nextNamespaceID, tempNamespaces, doc, pred);
-
-        //                //Output the Object
-        //                switch (nextObj.NodeType)
-        //                {
-        //                    case NodeType.Blank:
-        //                        if (collections.ContainsKey(nextObj))
-        //                        {
-        //                            //Output a Collection
-        //                            this.GenerateCollectionOutput(g, collections, nextObj, p, ref nextNamespaceID, tempNamespaces, doc);
-        //                        }
-        //                        else
-        //                        {
-        //                            XmlAttribute nodeID = doc.CreateAttribute("rdf:nodeID", NamespaceMapper.RDF);
-        //                            nodeID.Value = ((BlankNode)nextObj).InternalID;
-        //                            p.Attributes.Append(nodeID);
-        //                        }
-        //                        break;
-        //                    case NodeType.GraphLiteral:
-        //                        throw new RdfOutputException(WriterErrorMessages.GraphLiteralsUnserializable("RDF/XML"));
-        //                    case NodeType.Literal:
-        //                        this.GenerateLiteralOutput((LiteralNode)nextObj, p, doc);
-        //                        break;
-        //                    case NodeType.Uri:
-        //                        this.GenerateUriOutput(g, (UriNode)nextObj, "rdf:resource", tempNamespaces, p, doc);
-        //                        break;
-        //                    default:
-        //                        throw new RdfOutputException(WriterErrorMessages.UnknownNodeTypeUnserializable("RDF/XML"));
-        //                }
-        //            }
-        //        }
-        //    }
-        //}
+                //        //Output the Object
+                //        switch (nextObj.NodeType)
+                //        {
+                //            case NodeType.Blank:
+                //                if (collections.ContainsKey(nextObj))
+                //                {
+                //                    //Output a Collection
+                //                    this.GenerateCollectionOutput(g, collections, nextObj, p, ref nextNamespaceID, tempNamespaces, doc);
+                //                }
+                //                else
+                //                {
+                //                    XmlAttribute nodeID = doc.CreateAttribute("rdf:nodeID", NamespaceMapper.RDF);
+                //                    nodeID.Value = ((BlankNode)nextObj).InternalID;
+                //                    p.Attributes.Append(nodeID);
+                //                }
+                //                break;
+                //            case NodeType.GraphLiteral:
+                //                throw new RdfOutputException(WriterErrorMessages.GraphLiteralsUnserializable("RDF/XML"));
+                //            case NodeType.Literal:
+                //                this.GenerateLiteralOutput((LiteralNode)nextObj, p, doc);
+                //                break;
+                //            case NodeType.Uri:
+                //                this.GenerateUriOutput(g, (UriNode)nextObj, "rdf:resource", tempNamespaces, p, doc);
+                //                break;
+                //            default:
+                //                throw new RdfOutputException(WriterErrorMessages.UnknownNodeTypeUnserializable("RDF/XML"));
+                //        }
+                //    }
+                //}
+            }
+        }
 
         private void GeneratePredicateNode(RdfXmlWriterContext context, INode p)
         {
@@ -516,18 +510,14 @@ namespace VDS.RDF.Writing
                 case NodeType.Uri:
                     //OK
                     UriRefType rtype;
-                    String predRef = this.GenerateUriRef(context, (UriNode)p, UriRefType.QName, out rtype);
+                    String predRef = this.GenerateUriRef(context, ((UriNode)p).Uri, UriRefType.QName, out rtype);
+                    String prefix, uri;
+                    prefix = uri = null;
                     if (rtype != UriRefType.QName)
                     {
-                        String prefix, uri;
                         this.GenerateTemporaryNamespace(context, (UriNode)p, out prefix, out uri);
 
-                        //Add to current XML Element
-                        context.Writer.WriteStartAttribute("xmlns", prefix, null);
-                        context.Writer.WriteRaw(WriterHelper.EncodeForXml(uri));
-                        context.Writer.WriteEndAttribute();
-
-                        predRef = this.GenerateUriRef(context, (UriNode)p, UriRefType.QName, out rtype);
+                        predRef = this.GenerateUriRef(context, ((UriNode)p).Uri, UriRefType.QName, out rtype);
                         if (rtype != UriRefType.QName)
                         {
                             throw new RdfOutputException(WriterErrorMessages.UnreducablePropertyURIUnserializable + " - '" + p.ToString() + "'");
@@ -535,6 +525,15 @@ namespace VDS.RDF.Writing
                     }
 
                     this.GenerateElement(context, predRef);
+
+                    //Add Temporary Namespace to current XML Element
+                    if (prefix != null && uri != null)
+                    {
+                        context.Writer.WriteStartAttribute("xmlns", prefix, null);
+                        context.Writer.WriteRaw(WriterHelper.EncodeForXml(uri));
+                        context.Writer.WriteEndAttribute();
+                    }
+
                     break;
                 default:
                     throw new RdfOutputException(WriterErrorMessages.UnknownNodeTypeUnserializable("RDF/XML"));
@@ -559,9 +558,24 @@ namespace VDS.RDF.Writing
                 }
                 else
                 {
-                    context.Writer.WriteAttributeString("rdf", "datatype", null, lit.DataType.ToString());
+                    UriRefType refType;
+                    String dtUri = this.GenerateUriRef(context, lit.DataType, UriRefType.UriRef, out refType);
+                    if (refType == UriRefType.Uri)
+                    {
+                        context.Writer.WriteAttributeString("rdf", "datatype", null, lit.DataType.ToString());
+                    }
+                    else if (refType == UriRefType.UriRef)
+                    {
+                        context.Writer.WriteStartAttribute("rdf", "datatype", null);
+                        context.Writer.WriteRaw(dtUri);
+                        context.Writer.WriteEndAttribute();
+                    }
                     context.Writer.WriteRaw(lit.Value);
                 }
+            }
+            else
+            {
+                context.Writer.WriteString(lit.Value);
             }
         }
 
@@ -569,7 +583,7 @@ namespace VDS.RDF.Writing
         {
             //Get a Uri Reference if the Uri can be reduced
             UriRefType rtype;
-            String uriref = this.GenerateUriRef(context, u, UriRefType.UriRef, out rtype);
+            String uriref = this.GenerateUriRef(context, u.Uri, UriRefType.UriRef, out rtype);
             
             if (attribute.Contains(':'))
             {
@@ -585,11 +599,11 @@ namespace VDS.RDF.Writing
             }
         }
 
-        private String GenerateUriRef(RdfXmlWriterContext context, UriNode u, UriRefType type, out UriRefType outType)
+        private String GenerateUriRef(RdfXmlWriterContext context, Uri u, UriRefType type, out UriRefType outType)
         {
             String uriref, qname;
 
-            if (context.NamespaceMap.ReduceToQName(u.Uri.ToString(), out qname))
+            if (context.NamespaceMap.ReduceToQName(u.ToString(), out qname))
             {
                 //Reduced to QName OK
                 uriref = qname;
@@ -598,7 +612,7 @@ namespace VDS.RDF.Writing
             else
             {
                 //Just use the Uri
-                uriref = u.Uri.ToString();
+                uriref = u.ToString();
                 outType = UriRefType.Uri;
             }
 
@@ -677,7 +691,9 @@ namespace VDS.RDF.Writing
                 }
                 else
                 {
-                    context.Writer.WriteStartElement(qname.Substring(0, qname.IndexOf(':')), qname.Substring(qname.IndexOf(':')+1), null);
+                    String prefix = qname.Substring(0, qname.IndexOf(':'));
+                    String ns = (context.NamespaceMap.GetNestingLevel(prefix) > 1) ? context.NamespaceMap.GetNamespaceUri(prefix).ToString() : null;
+                    context.Writer.WriteStartElement(prefix, qname.Substring(prefix.Length + 1), ns);
                 }
             }
             else
@@ -705,14 +721,14 @@ namespace VDS.RDF.Writing
         //    }
         //}
 
-        private Dictionary<INode, String> FindTypeReferences(RdfXmlWriterContext context, TripleCollection triplesDone)
+        private Dictionary<INode, String> FindTypeReferences(RdfXmlWriterContext context)
         {
             //LINQ query to find all Triples which define the rdf:type of a Uri/BNode as a Uri
             UriNode rdfType = context.Graph.CreateUriNode(new Uri(NamespaceMapper.RDF + "type"));
             IEnumerable<Triple> ts = from t in context.Graph.Triples
                                      where (t.Subject.NodeType == NodeType.Blank || t.Subject.NodeType == NodeType.Uri)
                                             && t.Predicate.Equals(rdfType) && t.Object.NodeType == NodeType.Uri
-                                            && !triplesDone.Contains(t)
+                                            && !context.TriplesDone.Contains(t)
                                      select t;
 
             Dictionary<INode, String> typerefs = new Dictionary<INode, string>();
@@ -722,7 +738,7 @@ namespace VDS.RDF.Writing
                 {
                     String typeref;
                     UriRefType rtype;
-                    typeref = this.GenerateUriRef(context, (UriNode)t.Object, UriRefType.QName, out rtype);
+                    typeref = this.GenerateUriRef(context, ((UriNode)t.Object).Uri, UriRefType.QName, out rtype);
                     if (rtype != UriRefType.QName)
                     {
                         //Generate a Temporary Namespace for the QName Type Reference
@@ -734,14 +750,14 @@ namespace VDS.RDF.Writing
                         context.Writer.WriteRaw(WriterHelper.EncodeForXml(uri));
                         context.Writer.WriteEndAttribute();
 
-                        typeref = this.GenerateUriRef(context, (UriNode)t.Object, UriRefType.QName, out rtype);
+                        typeref = this.GenerateUriRef(context, ((UriNode)t.Object).Uri, UriRefType.QName, out rtype);
                         if (rtype == UriRefType.QName)
                         {
                             //Got a QName Type Reference in the Temporary Namespace OK
                             typerefs.Add(t.Subject, typeref);
                             if (context.Graph.Triples.WithSubject(t.Subject).Count() > 1)
                             {
-                                triplesDone.Add(t);
+                                context.TriplesDone.Add(t);
                             }
                         }
                     }
@@ -751,7 +767,7 @@ namespace VDS.RDF.Writing
                         typerefs.Add(t.Subject, typeref);
                         if (context.Graph.Triples.WithSubject(t.Subject).Count() > 1)
                         {
-                            triplesDone.Add(t);
+                           context.TriplesDone.Add(t);
                         }
                     }
                 }

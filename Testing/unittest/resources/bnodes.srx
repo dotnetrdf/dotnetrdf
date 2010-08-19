@@ -1,0 +1,28 @@
+﻿<?xml version="1.0"?>
+<sparql xmlns="http://www.w3.org/2005/sparql-results#">
+
+  <head>
+    <variable name="s"/>
+  </head>
+
+  <results>
+
+    <result>
+      <binding name="s"><bnode>_:bnode</bnode></binding>
+    </result>
+
+    <result> 
+      <binding name="s"><bnode>nodeID://bnode</bnode></binding>
+    </result>
+    
+    <result>
+		<binding name="s"><bnode>someurischeme:somesubdivider:bnode</bnode></binding>
+	</result>
+	
+	<result>
+		<binding name="s"><bnode>bnode</bnode></binding>
+	</result>
+
+  </results>
+
+</sparql>

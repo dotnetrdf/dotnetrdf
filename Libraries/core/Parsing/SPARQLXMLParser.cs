@@ -350,7 +350,22 @@ namespace VDS.RDF.Parsing
             }
             else if (valueNode.Name.Equals("bnode"))
             {
-                return this._g.CreateBlankNode(valueNode.InnerText);
+                if (valueNode.InnerText.StartsWith("_:"))
+                {
+                    return this._g.CreateBlankNode(valueNode.InnerText.Substring(2));
+                }
+                else if (valueNode.InnerText.Contains("://"))
+                {
+                    return this._g.CreateBlankNode(valueNode.InnerText.Substring(valueNode.InnerText.IndexOf("://") + 3));
+                }
+                else if (valueNode.InnerText.Contains(":"))
+                {
+                    return this._g.CreateBlankNode(valueNode.InnerText.Substring(valueNode.InnerText.LastIndexOf(':') + 1));
+                }
+                else
+                {
+                    return this._g.CreateBlankNode(valueNode.InnerText);
+                }
             }
             else
             {
@@ -625,7 +640,23 @@ namespace VDS.RDF.Parsing
             }
             else if (reader.Name.Equals("bnode"))
             {
-                return this._g.CreateBlankNode(reader.ReadInnerXml());
+                String bnodeID = reader.ReadInnerXml();
+                if (bnodeID.StartsWith("_:"))
+                {
+                    return this._g.CreateBlankNode(bnodeID.Substring(2));
+                }
+                else if (bnodeID.Contains("://"))
+                {
+                    return this._g.CreateBlankNode(bnodeID.Substring(bnodeID.IndexOf("://") + 3));
+                }
+                else if (bnodeID.Contains(":"))
+                {
+                    return this._g.CreateBlankNode(bnodeID.Substring(bnodeID.LastIndexOf(':') + 1));
+                }
+                else
+                {
+                    return this._g.CreateBlankNode(bnodeID);
+                }
             }
             else
             {
