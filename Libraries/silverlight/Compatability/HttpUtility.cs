@@ -44,6 +44,14 @@ namespace VDS.RDF
 
 #if SILVERLIGHT
 
+    /// <summary>
+    /// An implementation of HttpUtility for use with Silverlight builds which require it
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// The URL Encoding algorithm is partially based on an algorithm presented in this <a href="http://www.codeguru.com/cpp/cpp/cpp_mfc/article.php/c4029">CodeGuru</a> article
+    /// </para>
+    /// </remarks>
     public static class HttpUtility
     {
         public static String HtmlDecode(String value)
