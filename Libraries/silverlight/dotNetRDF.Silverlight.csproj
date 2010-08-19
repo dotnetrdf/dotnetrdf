@@ -169,6 +169,9 @@
     <Compile Include="..\core\Core\IGraph.cs">
       <Link>Core\IGraph.cs</Link>
     </Compile>
+    <Compile Include="..\core\Core\INamespaceMapper.cs">
+      <Link>Core\INamespaceMapper.cs</Link>
+    </Compile>
     <Compile Include="..\core\Core\INode.cs">
       <Link>Core\INode.cs</Link>
     </Compile>
@@ -213,6 +216,9 @@
     </Compile>
     <Compile Include="..\core\Core\NativeTripleStore.cs">
       <Link>Core\NativeTripleStore.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Core\NestedNamespaceMapper.cs">
+      <Link>Core\NestedNamespaceMapper.cs</Link>
     </Compile>
     <Compile Include="..\core\Core\NodeCollection.cs">
       <Link>Core\NodeCollection.cs</Link>
@@ -1177,6 +1183,9 @@
     <Compile Include="..\core\Writing\Contexts\HtmlWriterContext.cs">
       <Link>Writing\Contexts\HtmlWriterContext.cs</Link>
     </Compile>
+    <Compile Include="..\core\Writing\Contexts\RdfXmlWriterContext.cs">
+      <Link>Writing\Contexts\RdfXmlWriterContext.cs</Link>
+    </Compile>
     <Compile Include="..\core\Writing\Contexts\SqlStoreWriterContext.cs">
       <Link>Writing\Contexts\SqlStoreWriterContext.cs</Link>
     </Compile>
@@ -1321,7 +1330,7 @@
   -->
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties ProjectLinkReference="bfbac159-1e60-4d03-8aca-d34e31eb83bf" ProjectLinkerExcludeFilter="\\?desktop(\\.*)?$;\\?silverlight(\\.*)?$;\.desktop;\.silverlight;\.xaml;^service references(\\.*)?$;\.clientconfig;^web references(\\.*)?$" />
+      <UserProperties ProjectLinkerExcludeFilter="\\?desktop(\\.*)?$;\\?silverlight(\\.*)?$;\.desktop;\.silverlight;\.xaml;^service references(\\.*)?$;\.clientconfig;^web references(\\.*)?$" ProjectLinkReference="bfbac159-1e60-4d03-8aca-d34e31eb83bf" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>

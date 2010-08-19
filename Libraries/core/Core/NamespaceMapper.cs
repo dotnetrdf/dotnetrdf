@@ -33,7 +33,6 @@ terms.
 
 */
 
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,7 +51,7 @@ namespace VDS.RDF
     /// <summary>
     /// Class for representing Mappings between Prefixes and Namespace URIs
     /// </summary>
-    public class NamespaceMapper : IDisposable
+    public class NamespaceMapper : INamespaceMapper
     {
         /// <summary>
         /// Constant Uri for the RDF Namespace
@@ -116,9 +115,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Returns the Prefix associated with the given Base Uri
+        /// Returns the Prefix associated with the given Namespace URI
         /// </summary>
-        /// <param name="uri">The Base Uri to lookup the Prefix for</param>
+        /// <param name="uri">The Namespace URI to lookup the Prefix for</param>
         /// <returns>String prefix for the Namespace</returns>
         public virtual String GetPrefix(Uri uri)
         {
@@ -134,10 +133,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Returns the Uri associated with the given Base Uri
+        /// Returns the Namespace URI associated with the given Prefix
         /// </summary>
-        /// <param name="prefix">The Prefix to lookup the Base Uri for</param>
-        /// <returns>Base Uri for the Namespace</returns>
+        /// <param name="prefix">The Prefix to lookup the Namespace URI for</param>
+        /// <returns>URI for the Namespace</returns>
         public virtual Uri GetNamespaceUri(String prefix) 
         {
             if (this._uris.ContainsKey(prefix))
@@ -151,7 +150,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Adds a Namespace to the NamespaceMapper
+        /// Adds a Namespace to the Namespace Map
         /// </summary>
         /// <param name="prefix">Namespace Prefix</param>
         /// <param name="uri">Namespace Uri</param>
@@ -290,7 +289,7 @@ namespace VDS.RDF
         /// <remarks>
         /// Prefixes in the imported Map which are already defined in this Map are ignored, this may change in future releases.
         /// </remarks>
-        public virtual void Import(NamespaceMapper nsmap)
+        public virtual void Import(INamespaceMapper nsmap)
         {
             String tempPrefix = "ns0";
             int tempPrefixID = 0;

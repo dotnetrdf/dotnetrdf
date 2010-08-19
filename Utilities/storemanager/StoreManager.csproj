@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{5B73EE4C-D365-437B-B3DC-8D8831BF74F3}</ProjectGuid>
     <OutputType>WinExe</OutputType>
@@ -200,6 +200,7 @@
   <ItemGroup>
     <EmbeddedResource Include="fclsOpenConnection.resx">
       <DependentUpon>fclsOpenConnection.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="fclsVisualiseGraph.resx">
       <DependentUpon>fclsVisualiseGraph.cs</DependentUpon>

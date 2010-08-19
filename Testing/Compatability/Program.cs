@@ -21,9 +21,20 @@ namespace Compatability
                 //writer.Save(g, "test.html");
 
                 //RDF/XML Writing for Graphs
-                //FileLoader.Load(g, "InferenceTest.ttl");
-                //RdfXmlWriter writer = new RdfXmlWriter();
-                //writer.Save(g, "test.rdf");
+                FileLoader.Load(g, "InferenceTest.ttl");
+                RdfXmlWriter writer = new RdfXmlWriter();
+                writer.Save(g, "test.rdf");
+                RdfXmlParser parser = new RdfXmlParser();
+                Graph h = new Graph();
+                parser.Load(h, "test.rdf");
+                if (!g.Equals(h))
+                {
+                    Console.WriteLine("Graphs were not the same before and after serialization as expected");
+                }
+                else
+                {
+                    Console.WriteLine("Graphs were same before and after serialization");
+                }
 
                 //RDFa Parsing Test
                 //FileLoader.Load(g, "gr1.xhtml");
@@ -58,16 +69,16 @@ namespace Compatability
                 //writer.Save(results, "test.html");
 
                 //URL Encoding Test
-                String test = "The following String needs URL Encoding <node>Test</node> 100% not a percent encode";
-                Console.WriteLine(test);
-                Console.WriteLine();
-                Console.WriteLine(HttpUtility.UrlEncode(test));
-                Console.WriteLine();
-                Console.WriteLine(HttpUtility.UrlEncode(HttpUtility.UrlEncode(test)));
-                Console.WriteLine();
-                Console.WriteLine(HttpUtility.UrlDecode(HttpUtility.UrlEncode(test)));
-                Console.WriteLine();
-                Console.WriteLine(HttpUtility.UrlDecode(HttpUtility.UrlDecode(HttpUtility.UrlEncode(test))));
+                //String test = "The following String needs URL Encoding <node>Test</node> 100% not a percent encode";
+                //Console.WriteLine(test);
+                //Console.WriteLine();
+                //Console.WriteLine(HttpUtility.UrlEncode(test));
+                //Console.WriteLine();
+                //Console.WriteLine(HttpUtility.UrlEncode(HttpUtility.UrlEncode(test)));
+                //Console.WriteLine();
+                //Console.WriteLine(HttpUtility.UrlDecode(HttpUtility.UrlEncode(test)));
+                //Console.WriteLine();
+                //Console.WriteLine(HttpUtility.UrlDecode(HttpUtility.UrlDecode(HttpUtility.UrlEncode(test))));
 
                 Console.ReadLine();
             }
