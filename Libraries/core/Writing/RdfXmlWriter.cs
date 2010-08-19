@@ -119,7 +119,9 @@ namespace VDS.RDF.Writing
             settings.CloseOutput = true;
             settings.Encoding = Encoding.UTF8;
             settings.Indent = this._prettyprint;
+#if SILVERLIGHT
             settings.NamespaceHandling = NamespaceHandling.OmitDuplicates;
+#endif
             settings.OmitXmlDeclaration = false;
 
             return settings;

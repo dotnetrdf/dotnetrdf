@@ -40,6 +40,9 @@ using System.Text;
 using System.Net;
 using System.IO;
 using System.Threading;
+#if !NO_WEB
+using System.Web;
+#endif
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 
@@ -379,7 +382,8 @@ namespace VDS.RDF.Query
                     {
                         queryUri.Append("?query=");
                     }
-                    queryUri.Append(Uri.EscapeDataString(sparqlQuery));
+                    //queryUri.Append(Uri.EscapeDataString(sparqlQuery));
+                    queryUri.Append(HttpUtility.UrlEncode(sparqlQuery));
 
                     //Add the Default Graph URIs
                     foreach (String defaultGraph in this._defaultGraphUris)

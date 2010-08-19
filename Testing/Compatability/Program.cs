@@ -21,9 +21,9 @@ namespace Compatability
                 //writer.Save(g, "test.html");
 
                 //RDF/XML Writing for Graphs
-                FileLoader.Load(g, "InferenceTest.ttl");
-                RdfXmlWriter writer = new RdfXmlWriter();
-                writer.Save(g, "test.rdf");
+                //FileLoader.Load(g, "InferenceTest.ttl");
+                //RdfXmlWriter writer = new RdfXmlWriter();
+                //writer.Save(g, "test.rdf");
 
                 //RDFa Parsing Test
                 //FileLoader.Load(g, "gr1.xhtml");
@@ -56,6 +56,18 @@ namespace Compatability
                 //}
                 //SparqlHtmlWriter writer = new SparqlHtmlWriter();
                 //writer.Save(results, "test.html");
+
+                //URL Encoding Test
+                String test = "The following String needs URL Encoding <node>Test</node> 100% not a percent encode";
+                Console.WriteLine(test);
+                Console.WriteLine();
+                Console.WriteLine(HttpUtility.UrlEncode(test));
+                Console.WriteLine();
+                Console.WriteLine(HttpUtility.UrlEncode(HttpUtility.UrlEncode(test)));
+                Console.WriteLine();
+                Console.WriteLine(HttpUtility.UrlDecode(HttpUtility.UrlEncode(test)));
+                Console.WriteLine();
+                Console.WriteLine(HttpUtility.UrlDecode(HttpUtility.UrlDecode(HttpUtility.UrlEncode(test))));
 
                 Console.ReadLine();
             }

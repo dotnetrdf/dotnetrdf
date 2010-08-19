@@ -33,9 +33,6 @@ terms.
 
 */
 
-//Uncomment the following while developing the code to get proper Intellisense
-//define SILVERLIGHT
-
 #if SILVERLIGHT
 
 using System;
@@ -229,19 +226,6 @@ namespace VDS.RDF
             }
 
             return results;
-        }
-    }
-
-    public static class HttpUtility
-    {
-        public static String HtmlDecode(String value)
-        {
-            return value;
-        }
-
-        public static String HtmlEncode(String value)
-        {
-            return value;
         }
     }
 }
