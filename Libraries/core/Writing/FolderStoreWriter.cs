@@ -152,12 +152,12 @@ namespace VDS.RDF.Writing
                     writer = new Notation3Writer();
                     break;
                 case FolderStoreFormat.RdfXml:
-#if NO_XMLDOM
-                    throw new RdfOutputException("No available RDF/XML writers since no XML DOM API is available");
+#if !NO_XMLDOM
+                    writer = new FastRdfXmlWriter();
 #else
-                    writer = new RdfXmlTreeWriter();
-                    break;
+                    writer = new RdfXmlWriter();
 #endif
+                    break;
                 default:
                     writer = new TurtleWriter();
                     break;
@@ -182,12 +182,8 @@ namespace VDS.RDF.Writing
                             destFile += ".n3";
                             break;
                         case FolderStoreFormat.RdfXml:
-#if NO_XMLDOM
-                            throw new RdfOutputException("No available RDF/XML writers since no XML DOM API is available");
-#else
                             destFile += ".rdf";
                             break;
-#endif
                         default:
                             destFile += ".ttl";
                             break;

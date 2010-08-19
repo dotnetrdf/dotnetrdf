@@ -473,14 +473,16 @@ namespace VDS.RDF
                     contentType = MimeTypesHelper.Turtle[0];
                     return new CompressingTurtleWriter(Options.DefaultCompressionLevel);
                 }
-#if !NO_XMLDOM
                 else if (MimeTypesHelper.RdfXml.Contains(type))
                 {
                     //Client accepts RDF/XML
                     contentType = MimeTypesHelper.RdfXml[0];
+#if !NO_XMLDOM
                     return new FastRdfXmlWriter();
-                }
+#else
+                    return new RdfXmlWriter();
 #endif
+                }
                 else if (MimeTypesHelper.NTriples.Contains(type))
                 {
                     //Client accepts NTriples
@@ -1104,6 +1106,10 @@ namespace VDS.RDF
             else if (writer is Notation3Writer)
             {
                 return DefaultNotation3Extension;
+            }
+            else if (writer is RdfXmlWriter)
+            {
+                return DefaultRdfXmlExtension;
             }
 #if !NO_XMLDOM
             else if (writer is RdfXmlTreeWriter || writer is FastRdfXmlWriter)
