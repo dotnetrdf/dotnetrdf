@@ -133,7 +133,7 @@ namespace dotNetRDFTest
             Console.WriteLine("JSON Tests Done");
 
             //Call the RDFa Test Suite
-            RdfATestSuite.Main(args);
+            //RdfATestSuite.Main(args);
             Console.SetOut(stdout);
             Console.Write("RDFa Tests Done");
 
@@ -158,8 +158,8 @@ namespace dotNetRDFTest
             Console.WriteLine("SPARQL Query Parser Tests Done");
 
             //Call the SPARQL Evaluation Test Suite
-            SparqlEvaluationTestSuite sparqlEvaluation = new SparqlEvaluationTestSuite();
-            sparqlEvaluation.RunTests();
+            //SparqlEvaluationTestSuite sparqlEvaluation = new SparqlEvaluationTestSuite();
+            //sparqlEvaluation.RunTests();
             Console.SetOut(stdout);
             Console.WriteLine("SPARQL Evaluation Tests Done");
 
@@ -233,23 +233,23 @@ namespace dotNetRDFTest
             //Call Read/Write Speed Tests
             //Parameters are {TestMode,Runs,AllowHighSpeedWrites}
             //Test Mode is read/write/both
-            //Console.WriteLine("Enter options for Parser & Serializer Speed Benchmarking Tests or leave blank for defaults or enter 'skip' to skip test");
-            //Console.WriteLine("Options format is 'TestMode,Runs,AllowHighSpeedWrites'");
-            //optionlist = Console.ReadLine();
-            //if (optionlist.Equals(String.Empty))
-            //{
-            //    DiskIOSpeedTests.Main(new string[] { "write", "30", "false" });
-            //}
-            //else if (optionlist.Equals("skip", StringComparison.OrdinalIgnoreCase))
-            //{
-            //    //Do Nothing
-            //}
-            //else
-            //{
-            //    String[] options = optionlist.Split(',');
-            //    DiskIOSpeedTests.Main(options);
-            //}
-            //Console.SetOut(stdout);
+            Console.WriteLine("Enter options for Parser & Serializer Speed Benchmarking Tests or leave blank for defaults or enter 'skip' to skip test");
+            Console.WriteLine("Options format is 'TestMode,Runs,AllowHighSpeedWrites'");
+            optionlist = Console.ReadLine();
+            if (optionlist.Equals(String.Empty))
+            {
+                DiskIOSpeedTests.Main(new string[] { "write", "30", "false" });
+            }
+            else if (optionlist.Equals("skip", StringComparison.OrdinalIgnoreCase))
+            {
+                //Do Nothing
+            }
+            else
+            {
+                String[] options = optionlist.Split(',');
+                DiskIOSpeedTests.Main(options);
+            }
+            Console.SetOut(stdout);
             Console.WriteLine("Parser & Serializer Speed Benchmarking Tests Done");
 
             //Call Talis Tests

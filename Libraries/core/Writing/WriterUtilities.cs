@@ -174,6 +174,25 @@ namespace VDS.RDF.Writing
     }
 
     /// <summary>
+    /// Controls what type of collections
+    /// </summary>
+    public enum CollectionSearchMode
+    {
+        /// <summary>
+        /// Find all collections
+        /// </summary>
+        All,
+        /// <summary>
+        /// Find explicit collections only (those specified with Blank Node syntax)
+        /// </summary>
+        ExplicitOnly,
+        /// <summary>
+        /// Find implicit collections only (those using rdf:first and rdf:rest)
+        /// </summary>
+        ImplicitOnly
+    }
+
+    /// <summary>
     /// Class used to store Collections as part of the writing process for Compressing Writers
     /// </summary>
     public class OutputRDFCollection : Stack<INode>
@@ -457,148 +476,164 @@ namespace VDS.RDF.Writing
         /// Helper method which finds Collections expressed in the Graph which can be compressed into concise collection syntax constructs in some RDF syntaxes
         /// </summary>
         /// <param name="context">Writer Context</param>
-        public static void FindCollections(ICollectionCompressingWriterContext context)
+        /// <param name="mode">Collection Search Mode</param>
+        public static void FindCollections(ICollectionCompressingWriterContext context, CollectionSearchMode mode)
         {
-            //First we're going to look for implicit collections we can represent using the 
-            //brackets syntax of (a b c)
-
             //Prepare the RDF Nodes we need
             INode first, rest, nil;
             first = context.Graph.CreateUriNode(new Uri(RdfSpecsHelper.RdfListFirst));
             rest = context.Graph.CreateUriNode(new Uri(RdfSpecsHelper.RdfListRest));
             nil = context.Graph.CreateUriNode(new Uri(RdfSpecsHelper.RdfListNil));
 
-            //Find all rdf:rest rdf:nil Triples
-            //HasPropertyValueSelector cendsel = new HasPropertyValueSelector(rest, nil);
-            foreach (Triple t in context.Graph.GetTriplesWithPredicateObject(rest, nil))
+            //First we're going to look for implicit collections we can represent using the 
+            //brackets syntax of (a b c)
+
+            if (mode == CollectionSearchMode.All || mode == CollectionSearchMode.ImplicitOnly)
             {
-                //Build the collection recursively
-                OutputRDFCollection c = new OutputRDFCollection(false);
-                context.TriplesDone.Add(t);
-
-                //Get the thing that is the rdf:first related to this rdf:rest
-                //SubjectHasPropertySelector relfirstsel = new SubjectHasPropertySelector(t.Subject, first);
-                IEnumerable<Triple> firsts = context.Graph.GetTriplesWithSubjectPredicate(t.Subject, first);//context.Graph.GetTriples(relfirstsel).Distinct();
-                INode temp;
-                if (firsts.Count() > 1)
+                //Find all rdf:rest rdf:nil Triples
+                //HasPropertyValueSelector cendsel = new HasPropertyValueSelector(rest, nil);
+                foreach (Triple t in context.Graph.GetTriplesWithPredicateObject(rest, nil))
                 {
-                    //Strange error
-                    throw new RdfOutputException(WriterErrorMessages.MalformedCollectionWithMultipleFirsts);
-                }
-                else
-                {
-                    //Stick this item onto the Stack
-                    temp = firsts.First().Object;
-                    c.Push(temp);
-                    context.TriplesDone.Add(firsts.First());
-                }
+                    //Build the collection recursively
+                    OutputRDFCollection c = new OutputRDFCollection(false);
+                    context.TriplesDone.Add(t);
 
-                //See if this thing is the rdf:rest of anything else
-                do
-                {
-                    //cendsel = new HasPropertyValueSelector(rest, firsts.First().Subject);
-                    IEnumerable<Triple> ts = context.Graph.GetTriplesWithPredicateObject(rest, firsts.First().Subject);//context.Graph.GetTriples(cendsel);
-
-                    //Stop when there isn't a rdf:rest
-                    if (ts.Count() == 0)
+                    //Get the thing that is the rdf:first related to this rdf:rest
+                    //SubjectHasPropertySelector relfirstsel = new SubjectHasPropertySelector(t.Subject, first);
+                    IEnumerable<Triple> firsts = context.Graph.GetTriplesWithSubjectPredicate(t.Subject, first);//context.Graph.GetTriples(relfirstsel).Distinct();
+                    INode temp;
+                    if (firsts.Count() > 1)
                     {
-                        break;
+                        //Strange error
+                        throw new RdfOutputException(WriterErrorMessages.MalformedCollectionWithMultipleFirsts);
+                    }
+                    else
+                    {
+                        //Stick this item onto the Stack
+                        temp = firsts.First().Object;
+                        c.Push(temp);
+                        context.TriplesDone.Add(firsts.First());
                     }
 
-                    foreach (Triple t2 in ts)
+                    //See if this thing is the rdf:rest of anything else
+                    do
                     {
-                        //relfirstsel = new SubjectHasPropertySelector(t2.Subject, first);
-                        firsts = context.Graph.GetTriplesWithSubjectPredicate(t2.Subject, first).Distinct();//context.Graph.GetTriples(relfirstsel).Distinct();
-                        context.TriplesDone.Add(t2);
+                        //cendsel = new HasPropertyValueSelector(rest, firsts.First().Subject);
+                        IEnumerable<Triple> ts = context.Graph.GetTriplesWithPredicateObject(rest, firsts.First().Subject);//context.Graph.GetTriples(cendsel);
 
-                        if (firsts.Count() > 1)
+                        //Stop when there isn't a rdf:rest
+                        if (ts.Count() == 0)
                         {
-                            //Strange error
-                            throw new RdfOutputException(WriterErrorMessages.MalformedCollectionWithMultipleFirsts);
+                            break;
                         }
-                        else
-                        {
-                            //Stick this item onto the Stack
-                            temp = firsts.First().Object;
-                            c.Push(temp);
-                            context.TriplesDone.Add(firsts.First());
-                        }
-                    }
-                } while (true);
 
-                context.Collections.Add(firsts.First().Subject, c);
+                        foreach (Triple t2 in ts)
+                        {
+                            //relfirstsel = new SubjectHasPropertySelector(t2.Subject, first);
+                            firsts = context.Graph.GetTriplesWithSubjectPredicate(t2.Subject, first).Distinct();//context.Graph.GetTriples(relfirstsel).Distinct();
+                            context.TriplesDone.Add(t2);
+
+                            if (firsts.Count() > 1)
+                            {
+                                //Strange error
+                                throw new RdfOutputException(WriterErrorMessages.MalformedCollectionWithMultipleFirsts);
+                            }
+                            else
+                            {
+                                //Stick this item onto the Stack
+                                temp = firsts.First().Object;
+                                c.Push(temp);
+                                context.TriplesDone.Add(firsts.First());
+                            }
+                        }
+                    } while (true);
+
+                    context.Collections.Add(firsts.First().Subject, c);
+                }
             }
 
             //Now we want to look for explicit collections which are representable
             //using Blank Node syntax [p1 o1; p2 o2; p3 o3]
 
-            foreach (BlankNode b in context.Graph.Nodes.BlankNodes)
+            if (mode == CollectionSearchMode.All || mode == CollectionSearchMode.ExplicitOnly)
             {
-                if (context.Collections.ContainsKey(b)) continue;
-
-                List<Triple> ts = context.Graph.GetTriplesWithSubject(b).Concat(context.Graph.GetTriplesWithObject(b)).Distinct().ToList();
-                ts.RemoveAll(t => t.Predicate.Equals(first));
-                ts.RemoveAll(t => t.Predicate.Equals(rest));
-
-                if (ts.Count == 0)
+                foreach (BlankNode b in context.Graph.Nodes.BlankNodes)
                 {
-                    //This Blank Node is only used once
-                    //Add an empty explicit collection - we'll interpret this as [] later
-                    context.Collections.Add(b, new OutputRDFCollection(true));
-                }
-                else
-                {
-                    //Sort into Triples with the Blank Node as the Subject, Predicate or Object
-                    List<Triple> subjTriples = new List<Triple>();
-                    List<Triple> predTriples = new List<Triple>();
-                    List<Triple> objTriples = new List<Triple>();
+                    if (context.Collections.ContainsKey(b)) continue;
 
-                    foreach (Triple t2 in ts)
+                    List<Triple> ts = context.Graph.GetTriplesWithSubject(b).Concat(context.Graph.GetTriplesWithObject(b)).Distinct().ToList();
+                    ts.RemoveAll(t => t.Predicate.Equals(first));
+                    ts.RemoveAll(t => t.Predicate.Equals(rest));
+
+                    if (ts.Count == 0)
                     {
-                        if (t2.Subject.Equals(b))
-                        {
-                            subjTriples.Add(t2);
-                        }
-                        else if (t2.Predicate.Equals(b))
-                        {
-                            predTriples.Add(t2);
-                        }
-                        else if (t2.Object.Equals(b))
-                        {
-                            objTriples.Add(t2);
-                        }
-                    }
-
-                    if (subjTriples.Count == 0) continue;
-
-                    OutputRDFCollection c = new OutputRDFCollection(true);
-                    if (predTriples.Count > 0 || objTriples.Count > 0)
-                    {
-                        //The collection is the Object/Predicate of some other Triples
-                        //All the Subject Triples represent the Predicate Object list of the Collection
-                        foreach (Triple t2 in subjTriples)
-                        {
-                            c.Push(t2.Object);
-                            c.Push(t2.Predicate);
-                            context.TriplesDone.Add(t2);
-                        }
-                        context.Collections.Add(subjTriples[0].Subject, c);
+                        //This Blank Node is only used once
+                        //Add an empty explicit collection - we'll interpret this as [] later
+                        context.Collections.Add(b, new OutputRDFCollection(true));
                     }
                     else
                     {
-                        //The Collection is the Subject of some Triple
-                        //Assume the first Triple is the Triple with it as the subject
-                        //The other Triples are it's Predicate Object List
-                        for (int i = 1; i < subjTriples.Count; i++)
+                        //Sort into Triples with the Blank Node as the Subject, Predicate or Object
+                        List<Triple> subjTriples = new List<Triple>();
+                        List<Triple> predTriples = new List<Triple>();
+                        List<Triple> objTriples = new List<Triple>();
+
+                        foreach (Triple t2 in ts)
                         {
-                            c.Push(subjTriples[i].Object);
-                            c.Push(subjTriples[i].Predicate);
-                            context.TriplesDone.Add(subjTriples[i]);
+                            if (t2.Subject.Equals(b))
+                            {
+                                subjTriples.Add(t2);
+                            }
+                            else if (t2.Predicate.Equals(b))
+                            {
+                                predTriples.Add(t2);
+                            }
+                            else if (t2.Object.Equals(b))
+                            {
+                                objTriples.Add(t2);
+                            }
                         }
-                        context.Collections.Add(subjTriples[0].Subject, c);
+
+                        if (subjTriples.Count == 0) continue;
+
+                        OutputRDFCollection c = new OutputRDFCollection(true);
+                        if (predTriples.Count > 0 || objTriples.Count > 0)
+                        {
+                            //The collection is the Object/Predicate of some other Triples
+                            //All the Subject Triples represent the Predicate Object list of the Collection
+                            foreach (Triple t2 in subjTriples)
+                            {
+                                c.Push(t2.Object);
+                                c.Push(t2.Predicate);
+                                context.TriplesDone.Add(t2);
+                            }
+                            context.Collections.Add(subjTriples[0].Subject, c);
+                        }
+                        else
+                        {
+                            //The Collection is the Subject of some Triple
+                            //Assume the first Triple is the Triple with it as the subject
+                            //The other Triples are it's Predicate Object List
+                            for (int i = 1; i < subjTriples.Count; i++)
+                            {
+                                c.Push(subjTriples[i].Object);
+                                c.Push(subjTriples[i].Predicate);
+                                context.TriplesDone.Add(subjTriples[i]);
+                            }
+                            context.Collections.Add(subjTriples[0].Subject, c);
+                        }
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Helper method which finds Collections expressed in the Graph which can be compressed into concise collection syntax constructs in some RDF syntaxes
+        /// </summary>
+        /// <param name="context">Writer Context</param>
+        public static void FindCollections(ICollectionCompressingWriterContext context)
+        {
+            FindCollections(context, CollectionSearchMode.All);
         }
 
         /// <summary>

@@ -44,18 +44,19 @@ namespace dotNetRDFTest
                 try
                 {
                     List<IRdfReader> readers = new List<IRdfReader>() { 
-                        new NTriplesParser(), 
+
                         new NTriplesParser(),
                         new TurtleParser(),
                         new Notation3Parser(), 
-                        new RdfXmlParser() 
+                        new RdfXmlParser(RdfXmlParserMode.DOM),
+                        new RdfXmlParser(RdfXmlParserMode.Streaming)
                     };
                     List<String> files = new List<string>() { 
                         "test.nt", 
-                        "test.nt", 
                         "test.ttl", 
                         "test.n3", 
-                        "test.rdf" 
+                        "test.rdf",
+                        "test.rdf"
                     };
                     IRdfReader reader;
 
@@ -166,13 +167,15 @@ namespace dotNetRDFTest
                     Debug.WriteLine("Test Graph Loaded");
 
                     List<IRdfWriter> writers = new List<IRdfWriter>();
+                    writers.Add(new RdfXmlWriter());
                     writers.Add(new FastRdfXmlWriter());
                     writers.Add(new NTriplesWriter());
                     writers.Add(new TurtleWriter());
                     writers.Add(new CompressingTurtleWriter());
                     writers.Add(new Notation3Writer());
-                    writers.Add(new RdfXmlTreeWriter());
+                    //writers.Add(new RdfXmlTreeWriter());
                     writers.Add(new RdfJsonWriter());
+                    writers.Add(new HtmlWriter());
 
                     foreach (IRdfWriter writer in writers)
                     {

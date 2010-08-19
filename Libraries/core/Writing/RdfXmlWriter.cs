@@ -163,12 +163,7 @@ namespace VDS.RDF.Writing
             }
 
             //Find the Collections and Type References
-            WriterHelper.FindCollections(context);
-            foreach (INode key in context.Collections.Keys.ToList())
-            {
-                //Currently explicit collection output is not supported
-                if (context.Collections[key].IsExplicit) context.Collections.Remove(key);
-            }
+            WriterHelper.FindCollections(context, CollectionSearchMode.ImplicitOnly);
             Dictionary<INode, String> typerefs = this.FindTypeReferences(context);
 
             //Get the Triples as a Sorted List
@@ -547,7 +542,7 @@ namespace VDS.RDF.Writing
             if (!lit.Language.Equals(String.Empty))
             {
                 context.Writer.WriteAttributeString("xml", "lang", null, lit.Language);
-                context.Writer.WriteString(lit.Value);
+                context.Writer.WriteRaw(WriterHelper.EncodeForXml(lit.Value));
             }
             else if (lit.DataType != null)
             {
@@ -562,7 +557,7 @@ namespace VDS.RDF.Writing
                     String dtUri = this.GenerateUriRef(context, lit.DataType, UriRefType.UriRef, out refType);
                     if (refType == UriRefType.Uri)
                     {
-                        context.Writer.WriteAttributeString("rdf", "datatype", null, lit.DataType.ToString());
+                        context.Writer.WriteAttributeString("rdf", "datatype", null, WriterHelper.EncodeForXml(lit.DataType.ToString()));
                     }
                     else if (refType == UriRefType.UriRef)
                     {
@@ -575,7 +570,7 @@ namespace VDS.RDF.Writing
             }
             else
             {
-                context.Writer.WriteString(lit.Value);
+                context.Writer.WriteRaw(WriterHelper.EncodeForXml(lit.Value));
             }
         }
 

@@ -22,7 +22,10 @@ namespace Compatability
 
                 //RDF/XML Writing for Graphs
                 //FileLoader.Load(g, "InferenceTest.ttl");
+                NTriplesWriter ntwriter = new NTriplesWriter();
+                ntwriter.SortTriples = true;
                 FileLoader.Load(g, "test.n3");
+                ntwriter.Save(g, "test.input.nt");
                 RdfXmlWriter writer = new RdfXmlWriter();
                 //g.NamespaceMap.RemoveNamespace("eg");
                 //g.Assert(new Triple(g.CreateUriNode(new Uri("http://example.org/subject")), g.CreateUriNode(new Uri("http://example.org/predicate")), g.CreateUriNode(new Uri("http://example.org/object"))));
@@ -30,6 +33,7 @@ namespace Compatability
                 RdfXmlParser parser = new RdfXmlParser();
                 Graph h = new Graph();
                 parser.Load(h, "test.rdf");
+                ntwriter.Save(h, "test.output.nt");
                 if (!g.Equals(h))
                 {
                     Console.WriteLine("Graphs were not the same before and after serialization as expected");

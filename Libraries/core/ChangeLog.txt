@@ -12,11 +12,13 @@ Change Log
 This represents a summary of additions, changes and removals for the 0.3.0 release of dotNetRDF
 
 Added
+- New RdfXmlWriter which is a streaming writer based on FastRdfXmlWriter
 
 
 Changed
 - Bug Fixes
  - SqlTripleStore initialises correctly and persists updates correctly when used with an ISparqlUpdateProcessor
+ - More intelligent parsing of Blank Node IDs from SPARQL Results
 
 
 Removed

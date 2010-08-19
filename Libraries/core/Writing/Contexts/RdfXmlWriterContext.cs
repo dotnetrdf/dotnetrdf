@@ -53,6 +53,7 @@ namespace VDS.RDF.Writing.Contexts
 #if SILVERLIGHT
             settings.NamespaceHandling = NamespaceHandling.OmitDuplicates;
 #endif
+            settings.NewLineHandling = NewLineHandling.None;
             settings.OmitXmlDeclaration = false;
 
             return settings;
