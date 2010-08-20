@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.Text;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
@@ -10,6 +12,7 @@ namespace Compatability
     {
         static void Main(string[] args)
         {
+            Console.WriteLine(Console.Out.Encoding.WebName);
             try
             {
                 Graph g = new Graph();
@@ -22,26 +25,26 @@ namespace Compatability
 
                 //RDF/XML Writing for Graphs
                 //FileLoader.Load(g, "InferenceTest.ttl");
-                NTriplesWriter ntwriter = new NTriplesWriter();
-                ntwriter.SortTriples = true;
-                FileLoader.Load(g, "test.n3");
-                ntwriter.Save(g, "test.input.nt");
-                RdfXmlWriter writer = new RdfXmlWriter();
-                //g.NamespaceMap.RemoveNamespace("eg");
-                //g.Assert(new Triple(g.CreateUriNode(new Uri("http://example.org/subject")), g.CreateUriNode(new Uri("http://example.org/predicate")), g.CreateUriNode(new Uri("http://example.org/object"))));
-                writer.Save(g, "test.rdf");
-                RdfXmlParser parser = new RdfXmlParser();
-                Graph h = new Graph();
-                parser.Load(h, "test.rdf");
-                ntwriter.Save(h, "test.output.nt");
-                if (!g.Equals(h))
-                {
-                    Console.WriteLine("Graphs were not the same before and after serialization as expected");
-                }
-                else
-                {
-                    Console.WriteLine("Graphs were same before and after serialization");
-                }
+                //NTriplesWriter ntwriter = new NTriplesWriter();
+                //ntwriter.SortTriples = true;
+                //FileLoader.Load(g, "test.n3");
+                //ntwriter.Save(g, "test.input.nt");
+                //RdfXmlWriter writer = new RdfXmlWriter();
+                ////g.NamespaceMap.RemoveNamespace("eg");
+                ////g.Assert(new Triple(g.CreateUriNode(new Uri("http://example.org/subject")), g.CreateUriNode(new Uri("http://example.org/predicate")), g.CreateUriNode(new Uri("http://example.org/object"))));
+                //writer.Save(g, "test.rdf");
+                //RdfXmlParser parser = new RdfXmlParser();
+                //Graph h = new Graph();
+                //parser.Load(h, "test.rdf");
+                //ntwriter.Save(h, "test.output.nt");
+                //if (!g.Equals(h))
+                //{
+                //    Console.WriteLine("Graphs were not the same before and after serialization as expected");
+                //}
+                //else
+                //{
+                //    Console.WriteLine("Graphs were same before and after serialization");
+                //}
 
                 //RDFa Parsing Test
                 //FileLoader.Load(g, "gr1.xhtml");
@@ -77,15 +80,18 @@ namespace Compatability
 
                 //URL Encoding Test
                 //String test = "The following String needs URL Encoding <node>Test</node> 100% not a percent encode";
-                //Console.WriteLine(test);
-                //Console.WriteLine();
-                //Console.WriteLine(HttpUtility.UrlEncode(test));
-                //Console.WriteLine();
-                //Console.WriteLine(HttpUtility.UrlEncode(HttpUtility.UrlEncode(test)));
-                //Console.WriteLine();
-                //Console.WriteLine(HttpUtility.UrlDecode(HttpUtility.UrlEncode(test)));
-                //Console.WriteLine();
-                //Console.WriteLine(HttpUtility.UrlDecode(HttpUtility.UrlDecode(HttpUtility.UrlEncode(test))));
+                //String test = "This string contains UTF-8 納豆 characters";
+                //String test = "This string contains UTF-8 ç´è± characters";
+                String test = "This string contains character 256 " + (char)256 + " in it";
+                Console.WriteLine(test);
+                Console.WriteLine();
+                Console.WriteLine(HttpUtility.UrlEncode(test));
+                Console.WriteLine();
+                Console.WriteLine(HttpUtility.UrlEncode(HttpUtility.UrlEncode(test)));
+                Console.WriteLine();
+                Console.WriteLine(HttpUtility.UrlDecode(HttpUtility.UrlEncode(test)));
+                Console.WriteLine();
+                Console.WriteLine(HttpUtility.UrlDecode(HttpUtility.UrlDecode(HttpUtility.UrlEncode(test))));
 
                 Console.ReadLine();
             }

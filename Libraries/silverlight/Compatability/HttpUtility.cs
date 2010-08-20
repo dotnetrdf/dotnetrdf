@@ -37,6 +37,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HtmlAgilityPack;
 using VDS.RDF.Parsing;
 
 namespace VDS.RDF
@@ -54,16 +55,31 @@ namespace VDS.RDF
     /// </remarks>
     public static class HttpUtility
     {
+        /// <summary>
+        /// HTML Decodes a String so any character entities used are converted to their actual characters
+        /// </summary>
+        /// <param name="value">Value to decode</param>
+        /// <returns></returns>
         public static String HtmlDecode(String value)
         {
-            return value;
+            return HtmlEntity.DeEntitize(value);
         }
 
+        /// <summary>
+        /// HTML Encodes a String so any that requires entitzing are converted to character entities
+        /// </summary>
+        /// <param name="value">Value to encode</param>
+        /// <returns></returns>
         public static String HtmlEncode(String value)
         {
-            return value;
+            return HtmlEntity.Entitize(value, true, true);
         }
 
+        /// <summary>
+        /// Encodes a URL string so any characters that require percent encoding are encoded
+        /// </summary>
+        /// <param name="value">Value to encode</param>
+        /// <returns></returns>
         public static String UrlEncode(String value)
         {
             if (!IsUnsafeUrlString(value))
@@ -118,45 +134,99 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Decodes a URL string so any characters that are percent encoded are converted to actual characters
+        /// </summary>
+        /// <param name="value">Value to decode</param>
+        /// <returns></returns>
         public static String UrlDecode(String value)
         {
-            char c, d, e;
-            StringBuilder output = new StringBuilder();
-            for (int i = 0; i < value.Length; i++)
-            {
-                c = value[i];
-                if (c == '%')
-                {
-                    if (i <= value.Length - 2)
-                    {
-                        d = value[i + 1];
-                        e = value[i + 2];
-                        if (IriSpecsHelper.IsHexDigit(d) && IriSpecsHelper.IsHexDigit(e))
-                        {
-                            //Has valid hex digits after it so decode
-                            c = (char)Convert.ToInt32(new String(new char[] { d, e }), 16);
-                            output.Append(c);
-                            i += 2;
-                        }
-                        else
-                        {
-                            //Just a bare percent character
-                            output.Append(c);
-                        }
-                    }
-                    else
-                    {
-                        //Just a bare percent character
-                        output.Append(c);
-                    }
-                }
-                else
-                {
-                    //No need to decode if not a percent encoded character
-                    output.Append(c);
-                }
-            }
-            return output.ToString();
+            return Uri.UnescapeDataString(value);
+
+            ////Commented out as this doesn't always work properly
+            //char c, d, e;
+            //StringBuilder output = new StringBuilder();
+            //for (int i = 0; i < value.Length; i++)
+            //{
+            //    c = value[i];
+            //    if (c == '%')
+            //    {
+            //        if (i <= value.Length - 2)
+            //        {
+            //            d = value[i + 1];
+            //            e = value[i + 2];
+            //            if (IriSpecsHelper.IsHexDigit(d) && IriSpecsHelper.IsHexDigit(e))
+            //            {
+            //                //Has valid hex digits after it so decode
+            //                c = (char)Convert.ToInt32(new String(new char[] { d, e }), 16);
+            //                output.Append(c);
+            //                i += 2;
+            //            }
+            //            else
+            //            {
+            //                //Just a bare percent character
+            //                output.Append(c);
+            //            }
+            //        }
+            //        else
+            //        {
+            //            //Just a bare percent character
+            //            output.Append(c);
+            //        }
+            //    }
+            //    else
+            //    {
+            //        //No need to decode if not a percent encoded character
+            //        output.Append(c);
+            //    }
+            //}
+
+            ////Now look for any apparent Unicode escapes
+            //value = output.ToString();
+            //output = new StringBuilder();
+            //List<byte> codepoints = new List<byte>();
+            //Decoder decoder = Encoding.UTF8.GetDecoder();
+            //for (int i = 0; i < value.Length; i++)
+            //{
+            //    c = value[i];
+            //    if (c > 127 && c <= 255 && i < value.Length - 1)
+            //    {
+            //        codepoints.Clear();
+            //        codepoints.Add(Convert.ToByte(c));
+            //        for (int j = 1; i + j < value.Length; j++)
+            //        {
+            //            d = value[i + j];
+            //            if (d < c && d > 127)
+            //            {
+            //                codepoints.Add(Convert.ToByte(d));
+            //            }
+            //            else
+            //            {
+            //                break;
+            //            }
+            //        }
+            //        if (codepoints.Count > 1)
+            //        {
+            //            char[] cs = new char[1];
+            //            int bUsed, cUsed;
+            //            bool completed;
+            //            decoder.Convert(codepoints.ToArray(), 0, codepoints.Count, cs, 0, 1, false, out bUsed, out cUsed, out completed);
+            //            if (completed)
+            //            {
+            //                output.Append(cs);
+            //                i += codepoints.Count - 1;
+            //                continue;
+            //            }
+            //            else
+            //            {
+            //                throw new Exception("Unable to decode an appararant Unicode escape correctly");
+            //            }
+            //        }
+            //    }
+            //    output.Append(c);
+            //}
+
+            //return output.ToString();
         }
 
         private static bool IsUnsafeUrlString(String value)
@@ -216,7 +286,37 @@ namespace VDS.RDF
 
         private static String PercentEncode(char c)
         {
-            return "%" + ((int)c).ToString("x2");
+            if (c <= 255)
+            {
+                //Can be encoded in a single percent encode
+                if (c <= 127)
+                {
+                    return "%" + ((int)c).ToString("X2");
+                }
+                else
+                {
+                    byte[] codepoints = Encoding.UTF8.GetBytes(new char[] { c });
+                    StringBuilder output = new StringBuilder();
+                    foreach (byte b in codepoints)
+                    {
+                        output.Append("%");
+                        output.Append(((int)b).ToString("X2"));
+                    }
+                    return output.ToString();
+                }
+            }
+            else
+            {
+                //Unicode character so requires more than one percent encode
+                byte[] codepoints = Encoding.UTF8.GetBytes(new char[] { c });
+                StringBuilder output = new StringBuilder();
+                foreach (byte b in codepoints)
+                {
+                    output.Append("%");
+                    output.Append(((int)b).ToString("X2"));
+                }
+                return output.ToString();
+            }
         }
     }
 
