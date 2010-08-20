@@ -38,6 +38,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text;
+#if !NO_WEB
+using System.Web;
+#endif
 
 namespace VDS.RDF.Update
 {
@@ -73,7 +76,7 @@ namespace VDS.RDF.Update
                 {
                     longUpdate = true;
                     requestUri.Append("?update=");
-                    requestUri.Append(Uri.EscapeDataString(sparqlUpdate));
+                    requestUri.Append(HttpUtility.UrlEncode(sparqlUpdate));
                 }
                 else
                 {

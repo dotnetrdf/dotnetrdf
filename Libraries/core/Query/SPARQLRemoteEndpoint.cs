@@ -417,7 +417,7 @@ namespace VDS.RDF.Query
                 //Long Uri/HTTP POST Mode so use POST
                 StringBuilder postData = new StringBuilder();
                 postData.Append("query=");
-                postData.Append(Uri.EscapeDataString(sparqlQuery));
+                postData.Append(HttpUtility.UrlEncode(sparqlQuery));
 
                 //Add the Default Graph URI(s)
                 foreach (String defaultGraph in this._defaultGraphUris)
