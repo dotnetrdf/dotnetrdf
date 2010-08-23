@@ -107,7 +107,7 @@ namespace VDS.RDF.Writing
                     throw new RdfOutputException(WriterErrorMessages.GraphLiteralsUnserializable("TSV"));
                 case NodeType.Literal:
                     LiteralNode lit = (LiteralNode)n;
-                    if (TurtleSpecsHelper.IsValidPlainLiteral(lit.Value))
+                    if (TurtleSpecsHelper.IsValidPlainLiteral(lit.Value, lit.DataType))
                     {
                         output.Write(lit.Value);
                     }
@@ -328,7 +328,7 @@ namespace VDS.RDF.Writing
                     throw new RdfOutputException(WriterErrorMessages.GraphLiteralsUnserializable("TSV"));
                 case NodeType.Literal:
                     LiteralNode lit = (LiteralNode)n;
-                    if (TurtleSpecsHelper.IsValidPlainLiteral(lit.Value))
+                    if (TurtleSpecsHelper.IsValidPlainLiteral(lit.Value, lit.DataType))
                     {
                         context.Output.Write(lit.Value);
                     }

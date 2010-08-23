@@ -80,9 +80,9 @@ namespace Compatability
 
                 //URL Encoding Test
                 //String test = "The following String needs URL Encoding <node>Test</node> 100% not a percent encode";
-                //String test = "This string contains UTF-8 納豆 characters";
+                String test = "This string contains UTF-8 納豆 characters";
                 //String test = "This string contains UTF-8 ç´è± characters";
-                String test = "This string contains character 256 " + (char)256 + " in it";
+                //String test = "This string contains character 256 " + (char)256 + " in it";
                 Console.WriteLine(test);
                 Console.WriteLine();
                 Console.WriteLine(HttpUtility.UrlEncode(test));

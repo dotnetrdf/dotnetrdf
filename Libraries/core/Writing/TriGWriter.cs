@@ -334,7 +334,7 @@ namespace VDS.RDF.Writing
                     throw new RdfOutputException(WriterErrorMessages.UnknownNodeTypeUnserializable("TriG"));
             }
 
-            return context.FormatNode(n, NodeFormat.Turtle);
+            return context.NodeFormatter.Format(n);
         }
 
         /// <summary>

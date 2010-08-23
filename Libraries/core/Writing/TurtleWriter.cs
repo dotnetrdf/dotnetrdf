@@ -40,6 +40,7 @@ using System.Text;
 using System.IO;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing.Contexts;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Writing
 {
@@ -156,6 +157,7 @@ namespace VDS.RDF.Writing
                 //High Speed Writing Mode
                 //Writes everything as individual Triples
                 this.OnWarning("High Speed Write Mode in use - minimal syntax compressions will be used");
+                context.NodeFormatter = new UncompressedTurtleFormatter();
                 foreach (Triple t in context.Graph.Triples)
                 {
                     context.Output.Write(this.GenerateNodeOutput(context, t.Subject, TripleSegment.Subject));
@@ -245,7 +247,7 @@ namespace VDS.RDF.Writing
             {
                 case NodeType.Blank:
                     if (segment == TripleSegment.Predicate) throw new RdfOutputException(WriterErrorMessages.BlankPredicatesUnserializable("Turtle"));
-                    return context.FormatNode(n, NodeFormat.Turtle);
+                    return context.NodeFormatter.Format(n);
 
                 case NodeType.GraphLiteral:
                     throw new RdfOutputException(WriterErrorMessages.GraphLiteralsUnserializable("Turtle"));
@@ -253,10 +255,10 @@ namespace VDS.RDF.Writing
                 case NodeType.Literal:
                     if (segment == TripleSegment.Subject) throw new RdfOutputException(WriterErrorMessages.LiteralSubjectsUnserializable("Turtle"));
                     if (segment == TripleSegment.Predicate) throw new RdfOutputException(WriterErrorMessages.LiteralPredicatesUnserializable("Turtle"));
-                    return context.FormatNode(n, NodeFormat.Turtle);
+                    return context.NodeFormatter.Format(n);
 
                 case NodeType.Uri:
-                    return context.FormatNode(n, NodeFormat.Turtle);
+                    return context.NodeFormatter.Format(n);
 
                 default:
                     throw new RdfOutputException(WriterErrorMessages.UnknownNodeTypeUnserializable("Turtle"));

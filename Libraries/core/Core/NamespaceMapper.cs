@@ -108,7 +108,7 @@ namespace VDS.RDF
         /// Constructs a new Namespace Map which is based on an existing map
         /// </summary>
         /// <param name="nsmapper"></param>
-        protected internal NamespaceMapper(NamespaceMapper nsmapper)
+        protected internal NamespaceMapper(INamespaceMapper nsmapper)
             : this(true)
         {
             this.Import(nsmapper);
@@ -409,7 +409,7 @@ namespace VDS.RDF
         /// Creates a new QName Output Mapper using the given Namespace Map
         /// </summary>
         /// <param name="nsmapper">Namespace Map</param>
-        public QNameOutputMapper(NamespaceMapper nsmapper)
+        public QNameOutputMapper(INamespaceMapper nsmapper)
             : base(nsmapper) { }
 
         /// <summary>
@@ -579,7 +579,7 @@ namespace VDS.RDF
         /// Creates a new Thread Safe QName Output Mapper
         /// </summary>
         /// <param name="nsmapper">Namespace Mapper</param>
-        public ThreadSafeQNameOutputMapper(NamespaceMapper nsmapper)
+        public ThreadSafeQNameOutputMapper(INamespaceMapper nsmapper)
             : base(nsmapper) { }
 
         /// <summary>

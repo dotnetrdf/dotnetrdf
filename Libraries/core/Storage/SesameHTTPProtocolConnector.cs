@@ -45,7 +45,7 @@ using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Writing;
-using VDS.RDF.Writing.Contexts;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Storage
 {
@@ -81,7 +81,7 @@ namespace VDS.RDF.Storage
         protected bool _hasCredentials = false;
 
         private StringBuilder _output = new StringBuilder();
-        private BaseWriterContext _context;
+        private NTriplesFormatter _formatter = new NTriplesFormatter();
 
         /// <summary>
         /// Creates a new connection to a Sesame HTTP Protocol supporting Store
@@ -93,8 +93,6 @@ namespace VDS.RDF.Storage
             this._baseUri = baseUri;
             if (!this._baseUri.EndsWith("/")) this._baseUri += "/";
             this._store = storeID;
-
-            this._context = new BaseWriterContext(new Graph(), new System.IO.StringWriter(this._output));
         }
 
         /// <summary>
@@ -333,9 +331,9 @@ namespace VDS.RDF.Storage
                         foreach (Triple t in removals.Distinct())
                         {
                             this._output.Remove(0, this._output.Length);
-                            serviceParams["subj"] = this._context.FormatNode(t.Subject, NodeFormat.NTriples);
-                            serviceParams["pred"] = this._context.FormatNode(t.Predicate, NodeFormat.NTriples);
-                            serviceParams["obj"] = this._context.FormatNode(t.Object, NodeFormat.NTriples);
+                            serviceParams["subj"] = this._formatter.Format(t.Subject);
+                            serviceParams["pred"] = this._formatter.Format(t.Predicate);
+                            serviceParams["obj"] = this._formatter.Format(t.Object);
                             request = this.CreateRequest("repositories/" + this._store + "/statements", "*/*", "DELETE", serviceParams);
                             response = (HttpWebResponse)request.GetResponse();
 

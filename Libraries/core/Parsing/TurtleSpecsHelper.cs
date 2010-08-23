@@ -89,6 +89,36 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
+        /// Determines whether a given String is a valid Plain Literal for the given Datatype
+        /// </summary>
+        /// <param name="value">Value</param>
+        /// <param name="dt">Datatype</param>
+        /// <returns></returns>
+        public static bool IsValidPlainLiteral(String value, Uri dt)
+        {
+            if ((value.Equals("true") || value.Equals("false")) && dt.ToSafeString().Equals(XmlSpecsHelper.XmlSchemaDataTypeBoolean))
+            {
+                return true;
+            }
+            else if (_validDecimal.IsMatch(value) && dt.ToSafeString().Equals(XmlSpecsHelper.XmlSchemaDataTypeDecimal))
+            {
+                return true;
+            }
+            else if (_validInteger.IsMatch(value) && dt.ToSafeString().Equals(XmlSpecsHelper.XmlSchemaDataTypeInteger))
+            {
+                return true;
+            }
+            else if (_validDouble.IsMatch(value) && dt.ToSafeString().Equals(XmlSpecsHelper.XmlSchemaDataTypeDouble))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
         /// Determines whether a given String is a valid Integer
         /// </summary>
         /// <param name="value">String to test</param>

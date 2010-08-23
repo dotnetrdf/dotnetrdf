@@ -229,6 +229,12 @@ namespace dotNetRDFTest
                         throw new RdfException("Incorrect number of Subjects loaded, got " + h.Triples.SubjectNodes.Distinct().Count() + " but expected " + g.Triples.SubjectNodes.Distinct().Count());
                     }
 
+                    //Reserialize to NTriples
+                    NTriplesWriter ntwriter = new NTriplesWriter();
+                    ntwriter.SortTriples = true;
+                    ntwriter.Save(h, "writer_tests/" + file + ".nt");
+                    Console.WriteLine("Serialized Output reserialized to NTriples");
+
                     //Check Graphs are Equal
                     if (g.Equals(h))
                     {
@@ -250,14 +256,6 @@ namespace dotNetRDFTest
                         Console.WriteLine();
                         throw new RdfException("Graphs are non-equal");
                     }
-
-                    //Reserialize to NTriples
-                    NTriplesWriter ntwriter = new NTriplesWriter();
-                    ntwriter.SortTriples = true;
-                    ntwriter.Save(h, "writer_tests/" + file + ".nt");
-                    Console.WriteLine("Serialized Output reserialized to NTriples");
-
-
                 }
                 catch (IOException ioEx)
                 {

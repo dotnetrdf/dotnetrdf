@@ -33,12 +33,10 @@ terms.
 
 */
 
-
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Runtime.CompilerServices;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF
 {
@@ -358,9 +356,12 @@ namespace VDS.RDF
                 //Subject
                 if (this._subject.NodeType == NodeType.Uri)
                 {
-                    if (this._g.NamespaceMap.ReduceToQName(((UriNode)this._subject).Uri.ToString(),out qname)) {
+                    if (this._g.NamespaceMap.ReduceToQName(((UriNode)this._subject).Uri.ToString(),out qname)) 
+                    {
                         outString.Append(qname);
-                    } else {
+                    } 
+                    else 
+                    {
                         outString.Append(this._subject.ToString());
                     }
                 }
@@ -373,9 +374,12 @@ namespace VDS.RDF
                 //Predicate
                 if (this._predicate.NodeType == NodeType.Uri)
                 {
-                    if (this._g.NamespaceMap.ReduceToQName(((UriNode)this._predicate).Uri.ToString(),out qname)) {
+                    if (this._g.NamespaceMap.ReduceToQName(((UriNode)this._predicate).Uri.ToString(),out qname)) 
+                    {
                         outString.Append(qname);
-                    } else {
+                    } 
+                    else 
+                    {
                         outString.Append(this._predicate.ToString());
                     }
                 }
@@ -388,9 +392,12 @@ namespace VDS.RDF
                 //Object
                 if (this._object.NodeType == NodeType.Uri)
                 {
-                    if (this._g.NamespaceMap.ReduceToQName(((UriNode)this._object).Uri.ToString(),out qname)) {
+                    if (this._g.NamespaceMap.ReduceToQName(((UriNode)this._object).Uri.ToString(),out qname))
+                    {
                         outString.Append(qname);
-                    } else {
+                    } 
+                    else 
+                    {
                         outString.Append(this._object.ToString());
                     }
                 }
@@ -401,6 +408,16 @@ namespace VDS.RDF
 
                 return outString.ToString();
             }
+        }
+
+        /// <summary>
+        /// Gets the String representation of a Triple using the given Triple Formatter
+        /// </summary>
+        /// <param name="formatter">Formatter</param>
+        /// <returns></returns>
+        public string ToString(ITripleFormatter formatter)
+        {
+            return formatter.Format(this);
         }
 
         /// <summary>

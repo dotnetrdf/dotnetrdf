@@ -97,7 +97,7 @@ namespace VDS.RDF.Writing
                                             throw new RdfOutputException(WriterErrorMessages.GraphLiteralsUnserializable("SPARQL CSV"));
                                         case NodeType.Literal:
                                             LiteralNode lit = (LiteralNode)temp;
-                                            if (TurtleSpecsHelper.IsValidPlainLiteral(lit.Value))
+                                            if (TurtleSpecsHelper.IsValidPlainLiteral(lit.Value, lit.DataType))
                                             {
                                                 output.Write(lit.Value);
                                             }

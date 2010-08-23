@@ -141,10 +141,11 @@ namespace VDS.RDF
         /// <returns></returns>
         public static String UrlDecode(String value)
         {
+            //Safe to use this regardless of String length as no limit on input size
             return Uri.UnescapeDataString(value);
 
-            ////Commented out as this doesn't always work properly
-            //char c, d, e;
+            ////Commented out as this doesn't work with UTF-8
+            //char c, d, e, f;
             //StringBuilder output = new StringBuilder();
             //for (int i = 0; i < value.Length; i++)
             //{
@@ -159,8 +160,32 @@ namespace VDS.RDF
             //            {
             //                //Has valid hex digits after it so decode
             //                c = (char)Convert.ToInt32(new String(new char[] { d, e }), 16);
-            //                output.Append(c);
             //                i += 2;
+
+            //                //if (c > 127 && i <= value.Length - 3)
+            //                //{
+            //                //    f = value[i + 1];
+            //                //    if (f == '%')
+            //                //    {
+            //                //        d = value[i + 2];
+            //                //        e = value[i + 3];
+            //                //        f = (char)Convert.ToInt32(new String(new char[] { d, e }), 16);
+
+            //                //        if (Char.IsSurrogatePair(c, f))
+            //                //        {
+            //                //            throw new NotImplementedException();
+            //                //            i += 3;
+            //                //        }
+            //                //        else
+            //                //        {
+            //                //            continue;
+            //                //        }
+            //                //    }
+            //                //}
+            //                //else
+            //                //{
+            //                    output.Append(c);
+            //                //}
             //            }
             //            else
             //            {
@@ -179,51 +204,6 @@ namespace VDS.RDF
             //        //No need to decode if not a percent encoded character
             //        output.Append(c);
             //    }
-            //}
-
-            ////Now look for any apparent Unicode escapes
-            //value = output.ToString();
-            //output = new StringBuilder();
-            //List<byte> codepoints = new List<byte>();
-            //Decoder decoder = Encoding.UTF8.GetDecoder();
-            //for (int i = 0; i < value.Length; i++)
-            //{
-            //    c = value[i];
-            //    if (c > 127 && c <= 255 && i < value.Length - 1)
-            //    {
-            //        codepoints.Clear();
-            //        codepoints.Add(Convert.ToByte(c));
-            //        for (int j = 1; i + j < value.Length; j++)
-            //        {
-            //            d = value[i + j];
-            //            if (d < c && d > 127)
-            //            {
-            //                codepoints.Add(Convert.ToByte(d));
-            //            }
-            //            else
-            //            {
-            //                break;
-            //            }
-            //        }
-            //        if (codepoints.Count > 1)
-            //        {
-            //            char[] cs = new char[1];
-            //            int bUsed, cUsed;
-            //            bool completed;
-            //            decoder.Convert(codepoints.ToArray(), 0, codepoints.Count, cs, 0, 1, false, out bUsed, out cUsed, out completed);
-            //            if (completed)
-            //            {
-            //                output.Append(cs);
-            //                i += codepoints.Count - 1;
-            //                continue;
-            //            }
-            //            else
-            //            {
-            //                throw new Exception("Unable to decode an appararant Unicode escape correctly");
-            //            }
-            //        }
-            //    }
-            //    output.Append(c);
             //}
 
             //return output.ToString();

@@ -129,11 +129,11 @@ namespace VDS.RDF.Writing
             JsonTextWriter writer = new JsonTextWriter(output);
             if (this._prettyprint)
             {
-                writer.Formatting = Formatting.Indented;
+                writer.Formatting = Newtonsoft.Json.Formatting.Indented;
             }
             else
             {
-                writer.Formatting = Formatting.None;
+                writer.Formatting = Newtonsoft.Json.Formatting.None;
             }
 
             //Start the overall Object which represents the Graph

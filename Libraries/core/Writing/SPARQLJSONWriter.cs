@@ -93,7 +93,7 @@ namespace VDS.RDF.Writing
         private void GenerateOutput(SparqlResultSet results, TextWriter output)
         {
             JsonTextWriter writer = new JsonTextWriter(output);
-            writer.Formatting = Formatting.Indented;
+            writer.Formatting = Newtonsoft.Json.Formatting.Indented;
 
             //Start a Json Object for the Result Set
             writer.WriteStartObject();

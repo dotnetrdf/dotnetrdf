@@ -70,7 +70,6 @@ namespace VDS.RDF
     /// </summary>
     public interface INode : IComparable<INode>, IEquatable<INode>
     {
-
         /// <summary>
         /// Nodes have a Type
         /// </summary>

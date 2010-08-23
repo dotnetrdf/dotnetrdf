@@ -34,45 +34,11 @@ terms.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.IO;
-#if !NO_WEB
-using System.Web.UI;
-#endif
 
-namespace VDS.RDF.Writing.Contexts
+namespace VDS.RDF.Writing.Formatting
 {
-    /// <summary>
-    /// Writer Context for XHTML+RDFa Writers
-    /// </summary>
-    public class HtmlWriterContext : BaseWriterContext
+    public interface INodeFormatter
     {
-        private HtmlTextWriter _writer;
-
-        /// <summary>
-        /// Creates a new HTML Writer Context
-        /// </summary>
-        /// <param name="g">Graph</param>
-        /// <param name="writer">Text Writer</param>
-        public HtmlWriterContext(IGraph g, TextWriter writer)
-            : base(g, writer) 
-        {
-            this._writer = new HtmlTextWriter(writer);
-            //Have to remove the Empty Prefix since this is reserved in (X)HTML+RDFa for the (X)HTML namespace
-            this._qnameMapper.RemoveNamespace(String.Empty);
-        }
-
-        /// <summary>
-        /// HTML Writer to use
-        /// </summary>
-        public HtmlTextWriter HtmlWriter
-        {
-            get
-            {
-                return this._writer;
-            }
-        }
+        String Format(INode n);
     }
 }

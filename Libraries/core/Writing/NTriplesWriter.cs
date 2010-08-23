@@ -39,6 +39,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using VDS.RDF.Writing.Contexts;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Writing
 {
@@ -91,6 +92,7 @@ namespace VDS.RDF.Writing
             try
             {
                 TurtleWriterContext context = new TurtleWriterContext(g, output);
+                context.NodeFormatter = new NTriplesFormatter();
                 List<Triple> ts = g.Triples.ToList();
                 if (this._sort) ts.Sort();
 
@@ -165,7 +167,7 @@ namespace VDS.RDF.Writing
                     throw new RdfOutputException(WriterErrorMessages.UnknownNodeTypeUnserializable("NTriples"));
             }
 
-            return context.FormatNode(n, NodeFormat.NTriples);
+            return context.NodeFormatter.Format(n);
         }
 
         /// <summary>

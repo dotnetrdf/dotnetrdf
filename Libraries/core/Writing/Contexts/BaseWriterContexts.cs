@@ -39,6 +39,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Text;
 using VDS.RDF.Parsing;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Writing.Contexts
 {
@@ -91,12 +92,13 @@ namespace VDS.RDF.Writing.Contexts
         }
 
         /// <summary>
-        /// Formats a Node as a String for the given Format
+        /// Gets/Sets the Node Formatter used
         /// </summary>
-        /// <param name="n">Node</param>
-        /// <param name="format">Format</param>
-        /// <returns></returns>
-        String FormatNode(INode n, NodeFormat format);
+        INodeFormatter NodeFormatter
+        {
+            get;
+            set;
+        }
 
         /// <summary>
         /// Formats a URI as a String for full Output
@@ -149,7 +151,7 @@ namespace VDS.RDF.Writing.Contexts
     /// <remarks>
     /// This is not an abstract class since some writers will require only this information or possibly less
     /// </remarks>
-    public class BaseWriterContext
+    public class BaseWriterContext : IWriterContext
     {
         /// <summary>
         /// Compression Level to be used
@@ -175,6 +177,10 @@ namespace VDS.RDF.Writing.Contexts
         /// QName Output Mapper
         /// </summary>
         protected QNameOutputMapper _qnameMapper;
+        /// <summary>
+        /// Node Formatter
+        /// </summary>
+        protected INodeFormatter _formatter;
 
         /// <summary>
         /// Creates a new Base Writer Context with default settings
@@ -295,90 +301,27 @@ namespace VDS.RDF.Writing.Contexts
         }
 
         /// <summary>
+        /// Gets/Sets the Node Formatter in use
+        /// </summary>
+        public INodeFormatter NodeFormatter
+        {
+            get
+            {
+                return this._formatter;
+            }
+            set
+            {
+                this._formatter = value;
+            }
+        }
+
+        /// <summary>
         /// Sets the QName Mapper used
         /// </summary>
         /// <param name="mapper">QName Mapper</param>
         protected internal void SetQNameOutputerMapper(QNameOutputMapper mapper) 
         {
             this._qnameMapper = mapper;
-        }
-
-        /// <summary>
-        /// Formats a Node as a String for the given Format
-        /// </summary>
-        /// <param name="n">Node</param>
-        /// <param name="format">Format</param>
-        /// <returns></returns>
-        public virtual String FormatNode(INode n, NodeFormat format)
-        {
-            switch (n.NodeType)
-            {
-                case NodeType.Blank:
-                    return this.FormatBlankNode((BlankNode)n, format);
-                case NodeType.GraphLiteral:
-                    throw new NotSupportedException("Graph Literal Nodes cannot be formatted with this function");
-                case NodeType.Literal:
-                    return this.FormatLiteralNode((LiteralNode)n, format);
-                case NodeType.Uri:
-                    return this.FormatUriNode((UriNode)n, format);
-                default:
-                    throw new RdfOutputException(WriterErrorMessages.UnknownNodeTypeUnserializable(format.ToString()));
-            }
-        }
-
-        /// <summary>
-        /// Formats a URI Node as a String for the given Format
-        /// </summary>
-        /// <param name="u">URI Node</param>
-        /// <param name="format">Format</param>
-        /// <returns></returns>
-        protected virtual String FormatUriNode(UriNode u, NodeFormat format)
-        {
-            StringBuilder output = new StringBuilder();
-            String qname;
-            switch (format)
-            {
-                case NodeFormat.NTriples:
-                case NodeFormat.UncompressedNotation3:
-                case NodeFormat.UncompressedTurtle:
-                default:
-                    output.Append('<');
-                    foreach (char c in this.FormatUri(u.StringUri).ToCharArray())
-                    {
-                        output.Append(this.FormatChar(c, format));
-                    }
-                    output.Append('>');
-                    break;
-
-                case NodeFormat.Notation3:
-                case NodeFormat.Turtle:
-                    if (this._qnameMapper.ReduceToQName(u.StringUri, out qname))
-                    {
-                        if (TurtleSpecsHelper.IsValidQName(qname))
-                        {
-                            output.Append(qname);
-                        }
-                        else
-                        {
-                            output.Append('<');
-                            output.Append(this.FormatUri(u.StringUri));
-                            output.Append('>');
-                        }
-                    }
-                    else if (u.StringUri.Equals(RdfSpecsHelper.RdfType))
-                    {
-                        output.Append('a');
-                    }
-                    else
-                    {
-                        output.Append('<');
-                        output.Append(this.FormatUri(u.StringUri));
-                        output.Append('>');
-                    }
-                    break;
-            }
-
-            return output.ToString();
         }
 
         /// <summary>
@@ -401,147 +344,6 @@ namespace VDS.RDF.Writing.Contexts
         public virtual String FormatUri(Uri u)
         {
             return this.FormatUri(u.ToString());
-        }
-
-        /// <summary>
-        /// Formats a Literal Node as a String for the given Format
-        /// </summary>
-        /// <param name="l">Literal Node</param>
-        /// <param name="format">Format</param>
-        /// <returns></returns>
-        protected virtual String FormatLiteralNode(LiteralNode l, NodeFormat format)
-        {
-            StringBuilder output = new StringBuilder();
-            String value, qname;
-            bool longlit = false, plainlit = false;
-
-            switch (format)
-            {
-                case NodeFormat.NTriples:
-                case NodeFormat.UncompressedNotation3:
-                case NodeFormat.UncompressedTurtle:
-                default:
-                    output.Append('"');
-                    value = l.Value;
-
-                    //This first replace escapes all back slashes for good measure
-                    if (value.Contains("\\")) value = value.Replace("\\","\\\\");
-
-                    //Then these escape characters that can't occur in a NTriples literal
-                    value = value.Replace("\n", "\\n");
-                    value = value.Replace("\r", "\\r");
-                    value = value.Replace("\t", "\\t");
-                    value = value.Replace("\"", "\\\"");
-
-                    //Then remove null character since it doesn't change the meaning of the Literal
-                    value = value.Replace("\0", "");
-
-                    foreach (char c in value.ToCharArray())
-                    {
-                        output.Append(this.FormatChar(c, format));
-                    }
-                    output.Append('"');
-
-                    if (!l.Language.Equals(String.Empty))
-                    {
-                        output.Append('@');
-                        output.Append(l.Language);
-                    }
-                    else if (l.DataType != null)
-                    {
-                        output.Append("^^<");
-                        foreach (char c in this.FormatUri(l.DataType))
-                        {
-                            output.Append(this.FormatChar(c, format));
-                        }
-                        output.Append('>');
-                    }
-
-                    break;
-
-                case NodeFormat.Notation3:
-                case NodeFormat.Turtle:
-                    longlit = TurtleSpecsHelper.IsLongLiteral(l.Value);
-                    plainlit = TurtleSpecsHelper.IsValidPlainLiteral(l.Value);
-
-                    if (plainlit)
-                    {
-                        output.Append(l.Value);
-                        if (TurtleSpecsHelper.IsValidInteger(l.Value))
-                        {
-                            output.Append(' ');
-                        }
-                    }
-                    else
-                    {
-                        output.Append('"');
-                        if (longlit) output.Append("\"\"");
-
-                        value = l.Value;
-                        //This first replace escapes all back slashes for good measure
-                        if (value.Contains("\\")) value = value.Replace("\\", "\\\\");
-
-                        //Then remove null character since it doesn't change the meaning of the Literal
-                        value = value.Replace("\0", "");
-
-                        //Don't need all the other escapes for long literals as the characters that would be escaped are permitted in long literals
-                        //Need to escape " still
-                        value = value.Replace("\"", "\\\"");
-
-                        if (!longlit)
-                        {
-                            //Then if we're not a long literal we'll escape tabs
-                            value = value.Replace("\t", "\\t");
-                        }
-                        output.Append(value);
-                        output.Append('"');
-                        if (longlit) output.Append("\"\"");
-
-                        if (!l.Language.Equals(String.Empty))
-                        {
-                            output.Append('@');
-                            output.Append(l.Language);
-                        }
-                        else if (l.DataType != null)
-                        {
-                            output.Append("^^");
-                            if (this._qnameMapper.ReduceToQName(l.DataType.ToString(), out qname))
-                            {
-                                if (TurtleSpecsHelper.IsValidQName(qname))
-                                {
-                                    output.Append(qname);
-                                }
-                                else
-                                {
-                                    output.Append('<');
-                                    output.Append(this.FormatUri(l.DataType));
-                                    output.Append('>');
-                                }
-                            }
-                            else
-                            {
-                                output.Append('<');
-                                output.Append(this.FormatUri(l.DataType));
-                                output.Append('>');
-                            }
-                        }
-                    }
-
-                    break;
-            }
-
-            return output.ToString();
-        }
-
-        /// <summary>
-        /// Formats a Blank Node as a String for the given Format
-        /// </summary>
-        /// <param name="b">Blank Node</param>
-        /// <param name="format">Format</param>
-        /// <returns></returns>
-        protected virtual String FormatBlankNode(BlankNode b, NodeFormat format)
-        {
-            return b.ToString();
         }
 
         /// <summary>

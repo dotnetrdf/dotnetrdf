@@ -38,6 +38,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Writing.Contexts
 {
@@ -46,15 +47,16 @@ namespace VDS.RDF.Writing.Contexts
     /// </summary>
     public class TurtleWriterContext : BaseWriterContext
     {
-        private BlankNodeOutputMapper _bnodeRemapper = new BlankNodeOutputMapper(WriterHelper.IsValidBlankNodeID);
-
         /// <summary>
         /// Creates a new Turtle Writer Context with default settings
         /// </summary>
         /// <param name="g">Graph to write</param>
         /// <param name="output">TextWriter to write to</param>
         public TurtleWriterContext(IGraph g, TextWriter output)
-            : base(g, output) { }
+            : base(g, output) 
+        {
+            this._formatter = new TurtleFormatter(g);
+        }
 
         /// <summary>
         /// Creates a new Turtle Writer Context with custom settings
@@ -64,7 +66,10 @@ namespace VDS.RDF.Writing.Contexts
         /// <param name="prettyPrint">Pretty Print Mode</param>
         /// <param name="hiSpeed">High Speed Mode</param>
         public TurtleWriterContext(IGraph g, TextWriter output, bool prettyPrint, bool hiSpeed)
-            : base(g, output, WriterCompressionLevel.Default, prettyPrint, hiSpeed) { }
+            : base(g, output, WriterCompressionLevel.Default, prettyPrint, hiSpeed) 
+        {
+            this._formatter = new TurtleFormatter(g);
+        }
 
         /// <summary>
         /// Creates a new Turtle Writer Context with custom settings
@@ -75,30 +80,9 @@ namespace VDS.RDF.Writing.Contexts
         /// <param name="prettyPrint">Pretty Print Mode</param>
         /// <param name="hiSpeed">High Speed Mode</param>
         public TurtleWriterContext(IGraph g, TextWriter output, int compressionLevel, bool prettyPrint, bool hiSpeed)
-            : base(g, output, compressionLevel, prettyPrint, hiSpeed) { }
-
-        /// <summary>
-        /// Gets the ID that should be used to output a Blank Node as Turtle
-        /// </summary>
-        /// <param name="id">Blank Node ID</param>
-        /// <returns></returns>
-        /// <remarks>
-        /// If the Blank Node ID would not be valid in Turtle syntax it gets remapped appropriately
-        /// </remarks>
-        public String GetBlankNodeOutputID(String id)
+            : base(g, output, compressionLevel, prettyPrint, hiSpeed) 
         {
-            return this._bnodeRemapper.GetOutputID(id);
-        }
-
-        /// <summary>
-        /// Formats a Blank Node as a String for Turtle
-        /// </summary>
-        /// <param name="b">Blank Node to format</param>
-        /// <param name="format">Format to output in</param>
-        /// <returns></returns>
-        protected override string FormatBlankNode(BlankNode b, NodeFormat format)
-        {
-            return "_:" + this.GetBlankNodeOutputID(b.InternalID);
+            this._formatter = new TurtleFormatter(g);
         }
     }
 

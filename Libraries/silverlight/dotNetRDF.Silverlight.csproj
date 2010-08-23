@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{854A789B-BA35-4A1B-9449-CAD40953F0E5}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -1204,6 +1204,30 @@
     <Compile Include="..\core\Writing\FolderStoreWriter.cs">
       <Link>Writing\FolderStoreWriter.cs</Link>
     </Compile>
+    <Compile Include="..\core\Writing\Formatting\BaseFormatter.cs">
+      <Link>Writing\Formatting\BaseFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\Formatting\INodeFormatter.cs">
+      <Link>Writing\Formatting\INodeFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\Formatting\ITripleFormatter.cs">
+      <Link>Writing\Formatting\ITripleFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\Formatting\Notation3Formatter.cs">
+      <Link>Writing\Formatting\Notation3Formatter.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\Formatting\NTriplesFormatter.cs">
+      <Link>Writing\Formatting\NTriplesFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\Formatting\QNameFormatter.cs">
+      <Link>Writing\Formatting\QNameFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\Formatting\SparqlFormatter.cs">
+      <Link>Writing\Formatting\SparqlFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\Formatting\TurtleFormatter.cs">
+      <Link>Writing\Formatting\TurtleFormatter.cs</Link>
+    </Compile>
     <Compile Include="..\core\Writing\GenericStoreWriter.cs">
       <Link>Writing\GenericStoreWriter.cs</Link>
     </Compile>
@@ -1330,7 +1354,7 @@
   -->
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties ProjectLinkerExcludeFilter="\\?desktop(\\.*)?$;\\?silverlight(\\.*)?$;\.desktop;\.silverlight;\.xaml;^service references(\\.*)?$;\.clientconfig;^web references(\\.*)?$" ProjectLinkReference="bfbac159-1e60-4d03-8aca-d34e31eb83bf" />
+      <UserProperties ProjectLinkReference="bfbac159-1e60-4d03-8aca-d34e31eb83bf" ProjectLinkerExcludeFilter="\\?desktop(\\.*)?$;\\?silverlight(\\.*)?$;\.desktop;\.silverlight;\.xaml;^service references(\\.*)?$;\.clientconfig;^web references(\\.*)?$" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>

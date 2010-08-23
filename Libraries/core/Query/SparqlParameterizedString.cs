@@ -39,7 +39,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.IO;
-using VDS.RDF.Writing.Contexts;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query
 {
@@ -81,7 +81,7 @@ namespace VDS.RDF.Query
     {
         private String _query = String.Empty;
         private Dictionary<String, INode> _parameters = new Dictionary<string, INode>();
-        private TurtleWriterContext _writerContext;
+        private SparqlFormatter _formatter = new SparqlFormatter();
         private Graph _g = new Graph();
 
         private const String _validParameterNamePattern = "^@?[\\w\\-]+$";
@@ -91,7 +91,6 @@ namespace VDS.RDF.Query
         /// </summary>
         public SparqlParameterizedString()
         {
-            this._writerContext = new TurtleWriterContext(this._g, new StringWriter());
         }
 
         /// <summary>
@@ -317,7 +316,7 @@ namespace VDS.RDF.Query
             foreach (String param in this._parameters.Keys.OrderByDescending(k => k.Length))
             {
                 //Do a Regex based replace to avoid replacing other parameters whose names may be suffixes/prefixes of this name
-                output = Regex.Replace(output, "(@" + param + ")([^\\w]|$)", this._writerContext.FormatNode(this._parameters[param], VDS.RDF.Writing.NodeFormat.UncompressedTurtle) + "$2");
+                output = Regex.Replace(output, "(@" + param + ")([^\\w]|$)", this._formatter.Format(this._parameters[param]) + "$2");
                 //output = output.Replace("@" + param, this._writerContext.FormatNode(this._parameters[param], Writing.NodeFormat.UncompressedTurtle));
             }
 

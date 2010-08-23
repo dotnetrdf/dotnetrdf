@@ -216,7 +216,7 @@ namespace dotNetRDFTest
             Console.WriteLine("MySQL Store Tests Done");
 
             //Call Serialization Tests
-            //WriterTests.Main(args);
+            WriterTests.Main(args);
             Console.SetOut(stdout);
             Console.WriteLine("RDF Serializers Tests Done");
 

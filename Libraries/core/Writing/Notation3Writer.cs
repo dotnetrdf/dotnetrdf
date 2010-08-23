@@ -41,6 +41,7 @@ using System.IO;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Writing.Contexts;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Writing
 {
@@ -147,6 +148,7 @@ namespace VDS.RDF.Writing
             try
             {
                 CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, output, this._compressionLevel, this._prettyprint, this._allowHiSpeed);
+                context.NodeFormatter = new Notation3Formatter();
                 this.GenerateOutput(context);
             }
             finally
@@ -194,10 +196,11 @@ namespace VDS.RDF.Writing
             double triples = context.Graph.Triples.Count;
             if ((subjNodes / triples) > 0.75) hiSpeed = true;
 
-            if (this._compressionLevel == WriterCompressionLevel.None || (hiSpeed && context.HighSpeedModePermitted))
+            if (context.CompressionLevel == WriterCompressionLevel.None || (hiSpeed && context.HighSpeedModePermitted))
             {
                 this.OnWarning("High Speed Write Mode in use - minimal syntax compression will be used");
-                this._compressionLevel = WriterCompressionLevel.Minimal;
+                context.CompressionLevel = WriterCompressionLevel.Minimal;
+                context.NodeFormatter = new UncompressedNotation3Formatter();
 
                 foreach (Triple t in context.Graph.Triples)
                 {
@@ -206,7 +209,7 @@ namespace VDS.RDF.Writing
             }
             else
             {
-                if (this._compressionLevel >= WriterCompressionLevel.More)
+                if (context.CompressionLevel >= WriterCompressionLevel.More)
                 {
                     WriterHelper.FindCollections(context);
                 }
@@ -317,7 +320,7 @@ namespace VDS.RDF.Writing
                     }
                     else
                     {
-                        return context.FormatNode(n, NodeFormat.Notation3);
+                        return context.NodeFormatter.Format(n);
                     }
                     break;
 
@@ -328,7 +331,8 @@ namespace VDS.RDF.Writing
                     CompressingTurtleWriterContext subcontext = new CompressingTurtleWriterContext(glit.SubGraph, null);
 
                     //Write Triples 1 at a Time on a single line
-                    foreach (Triple t in subcontext.Graph.Triples) {
+                    foreach (Triple t in subcontext.Graph.Triples) 
+                    {
                         output.Append(this.GenerateNodeOutput(subcontext, t.Subject, TripleSegment.Subject));
                         output.Append(" ");
                         output.Append(this.GenerateNodeOutput(subcontext, t.Predicate, TripleSegment.Predicate));
@@ -342,10 +346,10 @@ namespace VDS.RDF.Writing
 
                 case NodeType.Literal:
                     if (segment == TripleSegment.Predicate) throw new RdfOutputException(WriterErrorMessages.LiteralPredicatesUnserializable("Notation 3"));
-                    return context.FormatNode(n, NodeFormat.Notation3);
+                    return context.NodeFormatter.Format(n);
 
                 case NodeType.Uri:
-                    return context.FormatNode(n, NodeFormat.Notation3);
+                    return context.NodeFormatter.Format(n);
 
                 default:
                     throw new RdfOutputException(WriterErrorMessages.UnknownNodeTypeUnserializable("Notation 3"));

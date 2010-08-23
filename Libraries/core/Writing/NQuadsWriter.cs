@@ -43,6 +43,7 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Storage;
 using VDS.RDF.Storage.Params;
 using VDS.RDF.Writing.Contexts;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Writing
 {
@@ -220,7 +221,7 @@ namespace VDS.RDF.Writing
                     throw new RdfOutputException(WriterErrorMessages.UnknownNodeTypeUnserializable("NQuads"));
             }
 
-            return context.FormatNode(n, NodeFormat.NTriples);
+            return context.NodeFormatter.Format(n);
         }
 
         /// <summary>
@@ -245,6 +246,7 @@ namespace VDS.RDF.Writing
 
                     //Generate the Graph Output and add to Stream
                     TurtleWriterContext context = new TurtleWriterContext(g, new System.IO.StringWriter(), globalContext.PrettyPrint, globalContext.HighSpeedModePermitted);
+                    context.NodeFormatter = new NTriplesFormatter();
                     String graphContent = this.GraphToNQuads(globalContext, context);
                     try
                     {

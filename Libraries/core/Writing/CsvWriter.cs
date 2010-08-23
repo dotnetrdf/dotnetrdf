@@ -120,7 +120,7 @@ namespace VDS.RDF.Writing
                     if (segment == TripleSegment.Predicate) throw new RdfOutputException(WriterErrorMessages.LiteralPredicatesUnserializable("CSV"));
 
                     LiteralNode lit = (LiteralNode)n;
-                    if (TurtleSpecsHelper.IsValidPlainLiteral(lit.Value))
+                    if (TurtleSpecsHelper.IsValidPlainLiteral(lit.Value, lit.DataType))
                     {
                         output.Write(lit.Value);
                     }
@@ -338,7 +338,7 @@ namespace VDS.RDF.Writing
                     if (segment == TripleSegment.Predicate) throw new RdfOutputException(WriterErrorMessages.LiteralPredicatesUnserializable("CSV"));
 
                     LiteralNode lit = (LiteralNode)n;
-                    if (TurtleSpecsHelper.IsValidPlainLiteral(lit.Value))
+                    if (TurtleSpecsHelper.IsValidPlainLiteral(lit.Value, lit.DataType))
                     {
                         context.Output.Write(lit.Value);
                     }
