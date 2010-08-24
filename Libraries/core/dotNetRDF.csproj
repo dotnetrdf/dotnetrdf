@@ -415,6 +415,7 @@
     <Compile Include="Web\Configuration\Server\BaseSparqlServerConfiguration.cs" />
     <Compile Include="Web\Configuration\Update\BaseUpdateHandlerConfiguration.cs" />
     <Compile Include="Web\Configuration\WebConfigurationLoader.cs" />
+    <Compile Include="Web\PermissionsModule.cs" />
     <Compile Include="Web\WilcardProtocolHandler.cs" />
     <Compile Include="Web\GraphHandler.cs" />
     <Compile Include="Web\HandlerHelper.cs" />
