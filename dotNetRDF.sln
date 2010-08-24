@@ -44,6 +44,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.Silverlight", "Li
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompatabilityTest", "Testing\Compatability\CompatabilityTest.csproj", "{67EC9F75-E8D3-4EDD-A341-7F156382564B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.Compact", "Libraries\compact\dotNetRDF.Compact.csproj", "{21B3621E-4F4E-453A-BF7B-3C66591C6B84}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = dotNetRDF2.vsmdi
@@ -125,6 +127,10 @@ Global
 		{67EC9F75-E8D3-4EDD-A341-7F156382564B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{67EC9F75-E8D3-4EDD-A341-7F156382564B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{67EC9F75-E8D3-4EDD-A341-7F156382564B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{21B3621E-4F4E-453A-BF7B-3C66591C6B84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21B3621E-4F4E-453A-BF7B-3C66591C6B84}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21B3621E-4F4E-453A-BF7B-3C66591C6B84}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{21B3621E-4F4E-453A-BF7B-3C66591C6B84}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

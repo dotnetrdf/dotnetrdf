@@ -123,7 +123,7 @@ namespace VDS.RDF.Query.Expressions.Functions
 
                 switch (a.NumericType(context, bindingID))
                 {
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !COMPACT
                     case SparqlNumericType.Integer:
                         return Math.Ceiling((decimal)a.IntegerValue(context, bindingID));
 

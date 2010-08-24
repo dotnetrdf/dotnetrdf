@@ -52,6 +52,7 @@ namespace VDS.RDF
     public static class Extensions
     {
         private static SHA256Managed _sha256;
+        
 
         /// <summary>
         /// Takes a single item and generates an IEnumerable containing only it

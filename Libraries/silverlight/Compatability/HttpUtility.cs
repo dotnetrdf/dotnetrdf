@@ -43,7 +43,7 @@ using VDS.RDF.Parsing;
 namespace VDS.RDF
 {
 
-#if SILVERLIGHT
+#if NO_WEB
 
     /// <summary>
     /// An implementation of HttpUtility for use with Silverlight builds which require it

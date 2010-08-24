@@ -44,6 +44,7 @@ using VDS.RDF.Query;
 using VDS.RDF.Storage;
 using VDS.RDF.Storage.Params;
 using VDS.RDF.Writing.Contexts;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Writing
 {
@@ -113,7 +114,11 @@ namespace VDS.RDF.Writing
                 }
 
                 //Write the Header of the File
-                context.NamespaceMap.Import(context.Store.Graphs.First().NamespaceMap);
+                foreach (IGraph g in context.Store.Graphs)
+                {
+                    context.NamespaceMap.Import(g.NamespaceMap);
+                }
+                //context.NamespaceMap.Import(context.Store.Graphs.First().NamespaceMap);
                 context.QNameMapper = new ThreadSafeQNameOutputMapper(context.NamespaceMap);
                 foreach (String prefix in context.NamespaceMap.Prefixes)
                 {
@@ -359,6 +364,7 @@ namespace VDS.RDF.Writing
 
                     //Generate the Graph Output and add to Stream
                     TurtleWriterContext context = new TurtleWriterContext(g, new System.IO.StringWriter(), globalContext.PrettyPrint, globalContext.HighSpeedModePermitted);
+                    context.NodeFormatter = new TurtleFormatter(globalContext.NamespaceMap);
                     String graphContent = this.GenerateGraphOutput(globalContext, context);
                     try
                     {

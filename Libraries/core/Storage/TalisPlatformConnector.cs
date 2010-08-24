@@ -271,9 +271,13 @@ namespace VDS.RDF.Storage
                 request.ContentType = MimeTypesHelper.RdfXml[0];
 
                 //Write the RDF/XML to the Request Stream
-                RdfXmlTreeWriter writer = new RdfXmlTreeWriter(WriterCompressionLevel.High);
+#if !NO_XMLDOM
+                FastRdfXmlWriter writer = new FastRdfXmlWriter();
+#else
+                RdfXmlWriter writer = new RdfXmlWriter();
+#endif
                 writer.Save(g, new StreamWriter(request.GetRequestStream()));
-
+                
                 //Make the Request
                 response = (HttpWebResponse)request.GetResponse();
 

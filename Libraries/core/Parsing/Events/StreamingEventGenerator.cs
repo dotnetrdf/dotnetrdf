@@ -131,6 +131,8 @@ namespace VDS.RDF.Parsing.Events
             XmlReaderSettings settings = new XmlReaderSettings();
 #if SILVERLIGHT
             settings.DtdProcessing = DtdProcessing.Parse;
+#elif COMPACT
+            //No DTD Processing setting under Compact Framework
 #else
             settings.ProhibitDtd = false;
 #endif

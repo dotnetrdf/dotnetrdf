@@ -42,7 +42,7 @@ using System.Security.Cryptography;
 namespace VDS.RDF.Query.Expressions.Functions
 {
 
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !COMPACT
 
     /// <summary>
     /// Represents the Leviathan lfn:md5hash() function

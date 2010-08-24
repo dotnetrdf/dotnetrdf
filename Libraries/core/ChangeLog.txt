@@ -13,12 +13,21 @@ This represents a summary of additions, changes and removals for the 0.3.0 relea
 
 Added
 - New RdfXmlWriter which is a streaming writer based on FastRdfXmlWriter
+- New INodeFormatter and ITripleFormatter namespaces
+ - Provides an easy to use and reusable means of formatting nodes
+ - Refactored existing code to use INodeFormatter instances in writing
+- Silverlight Compatability
+ - Emulated HtmlTextWriter and HttpUtility for Silverlight compatability
+ - Variety of compiler symbols defined to allow various library features to be disabled
+ - SparqlXmlParser uses XmlTextReader when no XML DOM API available
 
 
 Changed
 - Bug Fixes
  - SqlTripleStore initialises correctly and persists updates correctly when used with an ISparqlUpdateProcessor
  - More intelligent parsing of Blank Node IDs from SPARQL Results
+ - TriG Writer outputs all required @prefix definitions
+
 
 
 Removed

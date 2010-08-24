@@ -38,6 +38,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF
 {
@@ -107,6 +108,13 @@ namespace VDS.RDF
             get;
             set;
         }
+
+        /// <summary>
+        /// Gets the String representation of the Node formatted with the given Node formatter
+        /// </summary>
+        /// <param name="formatter">Formatter</param>
+        /// <returns></returns>
+        String ToString(INodeFormatter formatter);
     }
 
     /// <summary>
@@ -217,6 +225,16 @@ namespace VDS.RDF
         /// </para>
         /// </remarks>
         public abstract override string ToString();
+
+        /// <summary>
+        /// Gets the String representation of the Node formatted with the given Node formatter
+        /// </summary>
+        /// <param name="formatter">Formatter</param>
+        /// <returns></returns>
+        public virtual String ToString(INodeFormatter formatter)
+        {
+            return formatter.Format(this);
+        }
 
         /// <summary>
         /// Gets a Hash Code for a Node
