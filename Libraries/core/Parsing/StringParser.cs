@@ -161,5 +161,53 @@ namespace VDS.RDF.Parsing
                 throw new RdfParseException("StringParser failed to parse the RDF string correctly, StringParser auto-detection guessed '" + format + "' but this failed to parse.  RDF string may be malformed or StringParser may have guessed incorrectly", parseEx);
             }
         }
+
+        /// <summary>
+        /// Uses the rules described in the remarks for the <see cref="StringParser.Parse">Parse()</see> to return the most likely Parser
+        /// </summary>
+        /// <param name="data">Raw RDF String</param>
+        public static IRdfReader GetParser(String data)
+        {
+            if (data.Contains("<?xml") && data.Contains("<rdf:RDF"))
+            {
+                //Probably RDF/XML
+                return new RdfXmlParser();
+            }
+            else if (data.Contains("<html"))
+            {
+                //HTML (possibly containing RDFa)
+                return new RdfAParser();
+            }
+            else if (data.Contains("@prefix") || data.Contains("@base"))
+            {
+                //Turtle/Notation 3
+                if (data.Contains("@keywords") || data.Contains("@forall") || data.Contains("@forsome"))
+                {
+                    //Notation 3
+                    return new Notation3Parser();
+                }
+                else
+                {
+                    //Probably Turtle
+                    return new TurtleParser();
+                }
+            }
+            else if (data.Contains("\"value\"") &&
+                       data.Contains("\"type\"") &&
+                       data.Contains("{") &&
+                       data.Contains("}") &&
+                       data.Contains("[") &&
+                       data.Contains("]"))
+            {
+                //If we have all those things then it's very likely RDF/Json
+                return new RdfJsonParser();
+            }
+            else
+            {
+                //Take a stab at it being NTriples
+                //No real way to test as there's nothing particularly distinctive in NTriples
+                return new NTriplesParser();
+            }
+        }
     }
 }

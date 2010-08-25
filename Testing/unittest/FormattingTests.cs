@@ -51,7 +51,9 @@ namespace VDS.RDF.Test
                     new UncompressedTurtleFormatter(),
                     new UncompressedNotation3Formatter(),
                     new TurtleFormatter(g),
-                    new Notation3Formatter(g)
+                    new Notation3Formatter(g),
+                    new CsvFormatter(),
+                    new TsvFormatter()
                 };
                 List<INode> subjects = new List<INode>()
                 {
