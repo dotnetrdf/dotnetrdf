@@ -48,11 +48,19 @@
     <Span color="String" multiline="true">
       <Begin>"""</Begin>
       <End>"""</End>
+      <RuleSet>
+        <!-- span for escape sequences -->
+        <Span begin="\\" end="."/>
+      </RuleSet>
     </Span>
 
     <Span color="String">
       <Begin>"</Begin>
       <End>"</End>
+      <RuleSet>
+        <!-- span for escape sequences -->
+        <Span begin="\\" end="."/>
+      </RuleSet>
     </Span>
 
   </RuleSet>

@@ -15,6 +15,10 @@
 		<Span color="String">
 			<Begin>"</Begin>
 			<End>"</End>
+      <RuleSet>
+        <!-- span for escape sequences -->
+        <Span begin="\\" end="."/>
+      </RuleSet>
 		</Span>
 		
 		<!-- URIs -->

@@ -29,6 +29,9 @@ namespace rdfEditor
     /// </summary>
     public partial class EditorWindow : Window
     {
+        private const String FileFilterRdf = "All Supported RDF Files|*.rdf;*.ttl;*.n3;*.nt;*.json;*.owl|RDF/XML Files|*.rdf,*.owl|NTriples Files|*.nt|Turtle Files|*.ttl|Notation 3 Files|*.n3|RDF/JSON Files|*.json";
+        private const String FileFilterSparql = "All Supported SPARQL Files|*.rq;*.srx|SPARQL Query Files|*.rq|SPARQL Results Files|*.srx;*.json";
+
         private OpenFileDialog _ofd = new OpenFileDialog();
         private SaveFileDialog _sfd = new SaveFileDialog();
         private String _currFile = null;
@@ -59,11 +62,19 @@ namespace rdfEditor
                 IHighlightingDefinition n3 = this.LoadHighlighting("n3.xshd");
                 HighlightingManager.Instance.RegisterHighlighting("Notation3", new String[] { ".n3" }, n3);
 
+                //RDF/JSON
+                IHighlightingDefinition json = this.LoadHighlighting("rdfjson.xshd");
+                HighlightingManager.Instance.RegisterHighlighting("RdfJson", new String[] { ".json" }, json);
+
                 //SPARQL Query
                 IHighlightingDefinition rq = this.LoadHighlighting("sparql-query.xshd");
                 HighlightingManager.Instance.RegisterHighlighting("SparqlQuery10", new String[] { ".rq" }, rq);
                 IHighlightingDefinition rq11 = this.LoadHighlighting("sparql-query-11.xshd");
                 HighlightingManager.Instance.RegisterHighlighting("SparqlQuery11", new String[] { ".rq" }, rq11);
+
+                //SPARQL Results Set
+                IHighlightingDefinition srx = HighlightingManager.Instance.GetDefinition("XML");
+                HighlightingManager.Instance.RegisterHighlighting("SparqlResultsXml", new String[] { ".srx" }, srx);
             }
             catch (Exception ex)
             {
@@ -80,11 +91,13 @@ namespace rdfEditor
             //Create our Dialogs
             _ofd.Title = "Open RDF File";
             _ofd.DefaultExt = ".rdf";
-            _ofd.Filter = "All Supported RDF Files|*.rdf;*.ttl;*.n3;*.nt;*.json;*.owl|RDF/XML Files|*.rdf,*.owl|NTriples Files|*.nt|Turtle Files|*.ttl|Notation 3 Files|*.n3|RDF/JSON Files|*.json";
+            _ofd.Filter = FileFilterRdf;
             _sfd.Title = "Save RDF File";
             _sfd.DefaultExt = ".rdf";
             _sfd.Filter = _ofd.Filter;
         }
+
+        #region Editor Features - Highlighting etc
 
         private IHighlightingDefinition LoadHighlighting(String filename)
         {
@@ -125,6 +138,25 @@ namespace rdfEditor
                         case "RdfXml":
                             this.SetHighlighterSelection(mnuRdfXmlHighlighter);
                             break;
+                        case "RdfJson":
+                            if (this._sparqlMode)
+                            {
+                                this.SetHighlighterSelection(mnuSparqlResultsJsonHighlighter);
+                            }
+                            else
+                            {
+                                this.SetHighlighterSelection(mnuRdfJsonHighlighter);
+                            }
+                            break;
+                        case "SparqlQuery10":
+                            this.SetHighlighterSelection(mnuSparql10Highlighter);
+                            break;
+                        case "SparqlQuery11":
+                            this.SetHighlighterSelection(mnuSparql11Highlighter);
+                            break;
+                        case "SparqlResultsXml":
+                            this.SetHighlighterSelection(mnuSparqlResultsXmlHighlighter);
+                            break;
                         default:
                             this.SetHighlighterSelection(mnuNoHighlighter);
                             break;
@@ -142,12 +174,54 @@ namespace rdfEditor
             }
         }
 
+        private void SetHighlighting(IRdfReader parser)
+        {
+            if (parser is NTriplesParser)
+            {
+                this.SetHighlighter("NTriples", mnuNTriplesHighlighter, true);
+            }
+            else if (parser is TurtleParser)
+            {
+                this.SetHighlighter("Turtle", mnuTurtleHighlighter, true);
+            }
+            else if (parser is Notation3Parser)
+            {
+                this.SetHighlighter("Notation3", mnuN3Highlighter, true);
+            }
+            else if (parser is RdfXmlParser)
+            {
+                this.SetHighlighter("RdfXml", mnuRdfXmlHighlighter, true);
+            }
+            else if (parser is RdfJsonParser)
+            {
+                if (this._sparqlMode)
+                {
+                    this.SetHighlighter("SparqlResultsJson", mnuSparqlResultsJsonHighlighter, true);
+                }
+                else
+                {
+                    this.SetHighlighter("RdfJson", mnuRdfJsonHighlighter, true);
+                }
+            }
+            else
+            {
+                textEditor.SyntaxHighlighting = null;
+                this.SetHighlighterSelection(mnuNoHighlighter);
+            }
+        }
+
         private void SetHighlighterSelection(MenuItem selected)
         {
             foreach (MenuItem item in mnuCurrentHighlighter.Items.OfType<MenuItem>())
             {
                 item.IsChecked = ReferenceEquals(item, selected);
             }
+        }
+
+        private void SetHighlighter(String name, MenuItem selected, bool forceChecked)
+        {
+            if (forceChecked) selected.IsChecked = true;
+            this.SetHighlighter(name, selected);
         }
 
         private void SetHighlighter(String name, MenuItem selected)
@@ -174,6 +248,7 @@ namespace rdfEditor
             this.mnuNTriplesHighlighter.IsEnabled = !enabled;
             this.mnuN3Highlighter.IsEnabled = !enabled;
             this.mnuTurtleHighlighter.IsEnabled = !enabled;
+            this.mnuRdfJsonHighlighter.IsEnabled = !enabled;
 
             //Set Tools to appropriate enabled state
             this.mnuValidateRdf.IsEnabled = !enabled;
@@ -189,14 +264,36 @@ namespace rdfEditor
                 else if (ReferenceEquals(this.mnuSparql11Highlighter, selected))
                 {
                     this.SetHighlighter("SparqlQuery11", mnuSparql11Highlighter);
+                } 
+                else if (ReferenceEquals(this.mnuSparqlResultsXmlHighlighter, selected))
+                {
+                    this.SetHighlighter("SparqlResultsXml", mnuSparqlResultsXmlHighlighter);
                 }
+                else if (ReferenceEquals(this.mnuSparqlResultsJsonHighlighter, selected))
+                {
+                    this.SetHighlighter("RdfJson", mnuSparqlResultsJsonHighlighter);
+                }
+
+                _sfd.Filter = FileFilterSparql;
+                _ofd.Filter = FileFilterSparql;
+                _sfd.DefaultExt = ".rq";
+                _ofd.DefaultExt = ".rq";
             }
             else
             {
                 textEditor.SyntaxHighlighting = null;
                 this.SetHighlighterSelection(mnuNoHighlighter);
+
+                _sfd.Filter = FileFilterRdf;
+                _ofd.Filter = FileFilterRdf;
+                _sfd.DefaultExt = ".rdf";
+                _ofd.DefaultExt = ".rdf";
             }
         }
+
+        #endregion
+
+        #region File IO
 
         private void mnuOpen_Click(object sender, RoutedEventArgs e)
         {
@@ -219,6 +316,31 @@ namespace rdfEditor
                 {
                     MessageBox.Show("An error occurred while opening the selected file: " + ex.Message, "Unable to Open File");
                 }
+            }
+        }
+
+        private void mnuOpenUri_Click(object sender, RoutedEventArgs e)
+        {
+            if (this._currFile != null && this._changed)
+            {
+                MessageBoxResult res = MessageBox.Show("Would you like to save changes to the current file before opening a URI?", "Save Changes?", MessageBoxButton.YesNoCancel);
+                if (res == MessageBoxResult.Cancel)
+                {
+                    return;
+                }
+                else if (res == MessageBoxResult.Yes)
+                {
+                    mnuSave_Click(sender, e);
+                }
+                mnuClose_Click(sender, e);
+            }
+
+            OpenUri diag = new OpenUri();
+            if (diag.ShowDialog() == true)
+            {
+                textEditor.Text = diag.RetrievedData;
+                this._changed = true;
+                this.SetHighlighting(diag.Parser);
             }
         }
 
@@ -290,6 +412,10 @@ namespace rdfEditor
                 {
                     mnuSave_Click(sender, e);
                 }
+                else if (result == MessageBoxResult.No)
+                {
+                    return;
+                }
             }
 
             textEditor.Text = String.Empty;
@@ -300,10 +426,129 @@ namespace rdfEditor
             this.SetHighlighterSelection(mnuNoHighlighter);
         }
 
+        private void SaveWith(IRdfWriter writer)
+        {
+            IRdfReader parser = this.SelectParser();
+            Graph g = new Graph();
+            try
+            {
+                StringParser.Parse(g, textEditor.Text, parser);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Unable to Save With an RDF Writer as the current file is not a valid RDF document when parsed with the " + parser.GetType().Name + ".  If you believe this is a valid RDF document please select the correct Syntax Highlighting from the Options Menu and retry", "Save With Failed");
+                return;
+            }
+
+            bool filenameRequired = (this._currFile == null);
+            if (!filenameRequired)
+            {
+                MessageBoxResult res = MessageBox.Show("Are you sure you wish to overwrite your existing file with the output of the " + writer.GetType().Name + "?  Click Yes to proceed, No to select a different Filename or Cancel to abort this operation", "Overwrite File",MessageBoxButton.YesNoCancel);
+                if (res == MessageBoxResult.Cancel)
+                {
+                    return;
+                }
+                else if (res == MessageBoxResult.No)
+                {
+                    filenameRequired = true;
+                }
+                else if (res == MessageBoxResult.None)
+                {
+                    return;
+                }
+            }
+
+            //Get a Filename to Save to
+            String origFilename = this._currFile;
+            if (filenameRequired)
+            {
+                if (_sfd.ShowDialog() == true)
+                {
+                    this._currFile = _sfd.FileName;
+                }
+                else
+                {
+                    return;
+                }
+            }
+
+
+            try
+            {
+                writer.Save(g, this._currFile);
+
+                MessageBoxResult res = MessageBox.Show("Would you like to switch editing to the newly created file?", "Switch Editing", MessageBoxButton.YesNo);
+                if (res == MessageBoxResult.Yes)
+                {
+                    try
+                    {
+                        using (StreamReader reader = new StreamReader(this._currFile))
+                        {
+                            String text = reader.ReadToEnd();
+                            textEditor.Text = String.Empty;
+                            this.SetHighlighting(this._currFile);
+                            textEditor.Text = text;
+                        }
+                        this.Title = "rdfEditor - " + System.IO.Path.GetFileName(this._currFile);
+                        this._changed = false;
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("An error occurred while opening the selected file: " + ex.Message, "Unable to Open File");
+                    }
+                }
+                else
+                {
+                    if (origFilename != null)
+                    {
+                        this._currFile = origFilename;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error occurred while saving: " + ex.Message, "Save With Failed");
+            }
+        }
+
+        private void mnuSaveWithNTriples_Click(object sender, RoutedEventArgs e)
+        {
+            this.SaveWith(new NTriplesWriter());
+        }
+
+        private void mnuSaveWithTurtle_Click(object sender, RoutedEventArgs e)
+        {
+            this.SaveWith(new CompressingTurtleWriter(WriterCompressionLevel.High));
+        }
+
+        private void mnuSaveWithN3_Click(object sender, RoutedEventArgs e)
+        {
+            this.SaveWith(new Notation3Writer());
+        }
+
+        private void mnuSaveWithRdfXml_Click(object sender, RoutedEventArgs e)
+        {
+            this.SaveWith(new FastRdfXmlWriter());
+        }
+
+        private void mnuSaveWithRdfJson_Click(object sender, RoutedEventArgs e)
+        {
+            this.SaveWith(new RdfJsonWriter());
+        }
+
+        private void mnuSaveWithRdfa_Click(object sender, RoutedEventArgs e)
+        {
+            this.SaveWith(new HtmlWriter());
+        }
+
+        #endregion
+
         private void textEditor_TextChanged(object sender, EventArgs e)
         {
             this._changed = true;
         }
+
+        #region Options Menu
 
         private void mnuEnableHighlighting_Click(object sender, RoutedEventArgs e)
         {
@@ -322,6 +567,11 @@ namespace rdfEditor
         private void mnuRdfXmlHighlighter_Click(object sender, RoutedEventArgs e)
         {
             this.SetHighlighter("RdfXml", mnuRdfXmlHighlighter);
+        }
+
+        private void mnuRdfJsonHighlighter_Click(object sender, RoutedEventArgs e)
+        {
+            this.SetHighlighter("RdfJson", mnuRdfJsonHighlighter);
         }
 
         private void mnuNTriplesHighlighter_Click(object sender, RoutedEventArgs e)
@@ -345,7 +595,31 @@ namespace rdfEditor
             this.SetHighlighterSelection(mnuNoHighlighter);
         }
 
-        private void mnuValidateRdf_Click(object sender, RoutedEventArgs e)
+        private void mnuSparql10Highlighter_Click(object sender, RoutedEventArgs e)
+        {
+            this.SetSparqlMode(mnuSparql10Highlighter);
+        }
+
+        private void mnuSparql11Highlighter_Click(object sender, RoutedEventArgs e)
+        {
+            this.SetSparqlMode(mnuSparql11Highlighter);
+        }
+
+        private void mnuSparqlResultsXmlHighlighter_Click(object sender, RoutedEventArgs e)
+        {
+            this.SetSparqlMode(mnuSparqlResultsXmlHighlighter);
+        }
+
+        private void mnuSparqlResultsJsonHighlighter_Click(object sender, RoutedEventArgs e)
+        {
+            this.SetSparqlMode(mnuSparqlResultsJsonHighlighter);
+        }
+
+        #endregion
+
+        #region Tools Menu
+
+        private IRdfReader SelectParser()
         {
             IRdfReader parser = null;
             if (this._enableHighlighting)
@@ -392,6 +666,12 @@ namespace rdfEditor
             {
                 parser = StringParser.GetParser(textEditor.Text);
             }
+            return parser;
+        }
+
+        private void mnuValidateRdf_Click(object sender, RoutedEventArgs e)
+        {
+            IRdfReader parser = this.SelectParser();
 
             try
             {
@@ -412,11 +692,6 @@ namespace rdfEditor
             {
                 MessageBox.Show("Invalid RDF due to error using parser " + parser.GetType().Name + "\n\n" + ex.Message, "Invalid RDF - Error");
             }
-        }
-
-        private void mnuSparql10Highlighter_Click(object sender, RoutedEventArgs e)
-        {
-            this.SetSparqlMode(mnuSparql10Highlighter);
         }
 
         private void mnuValidateSparqlQuery10_Click(object sender, RoutedEventArgs e)
@@ -445,11 +720,6 @@ namespace rdfEditor
             }
         }
 
-        private void mnuSparql11Highlighter_Click(object sender, RoutedEventArgs e)
-        {
-            this.SetSparqlMode(mnuSparql11Highlighter);
-        }
-
         private void mnuValidateSparqlQuery11_Click(object sender, RoutedEventArgs e)
         {
             if (!this._sparqlMode) return;
@@ -475,5 +745,7 @@ namespace rdfEditor
                 MessageBox.Show("Invalid SPARQL 1.1 Query due to error\n\n" + ex.Message, "Invalid SPARQL 1.1 Query - Error");
             }
         }
+
+        #endregion
     }
 }

@@ -13,8 +13,18 @@
               >
             <MenuItem Header="_File">
                 <MenuItem Header="Open" Name="mnuOpen" Click="mnuOpen_Click" />
+                <MenuItem Header="Open URI" Name="mnuOpenUri" Click="mnuOpenUri_Click" />
+                <Separator />
                 <MenuItem Header="Save" Name="mnuSave" Click="mnuSave_Click" />
-                <MenuItem Header="SaveAs" Name="mnuSaveAs" Click="mnuSaveAs_Click" />
+                <MenuItem Header="Save As..." Name="mnuSaveAs" Click="mnuSaveAs_Click" />
+                <MenuItem Header="Save With...">
+                    <MenuItem Header="NTriples Writer" Name="mnuSaveWithNTriples" Click="mnuSaveWithNTriples_Click" />
+                    <MenuItem Header="Turtle Writer" Name="mnuSaveWithTurtle" Click="mnuSaveWithTurtle_Click" />
+                    <MenuItem Header="Notation 3 Writer" Name="mnuSaveWithN3" Click="mnuSaveWithN3_Click" />
+                    <MenuItem Header="RDF/XML Writer" Name="mnuSaveWithRdfXml" Click="mnuSaveWithRdfXml_Click" />
+                    <MenuItem Header="RDF/JSON Writer" Name="mnuSaveWithRdfJson" Click="mnuSaveWithRdfJson_Click" />
+                    <MenuItem Header="XHTML+RDFa Writer" Name="mnuSaveWithRdfa" Click="mnuSaveWithRdfa_Click" />
+                </MenuItem>
                 <Separator />
                 <MenuItem Header="Close" Name="mnuClose" Click="mnuClose_Click" />
             </MenuItem>
@@ -23,11 +33,15 @@
                     <MenuItem Header="Highlighter" Name="mnuCurrentHighlighter">
                         <MenuItem Header="None" Name="mnuNoHighlighter" IsCheckable="True" IsChecked="True" Click="mnuNoHighlighter_Click" />
                         <MenuItem Header="RDF/XML" Name="mnuRdfXmlHighlighter" IsCheckable="True" Click="mnuRdfXmlHighlighter_Click" />
+                        <MenuItem Header="RDF/JSON" Name="mnuRdfJsonHighlighter" IsCheckable="True" Click="mnuRdfJsonHighlighter_Click" />
                         <MenuItem Header="NTriples" Name="mnuNTriplesHighlighter" IsCheckable="True" Click="mnuNTriplesHighlighter_Click" />
                         <MenuItem Header="Turtle" Name="mnuTurtleHighlighter" IsCheckable="True" Click="mnuTurtleHighlighter_Click" />
                         <MenuItem Header="Notation 3" Name="mnuN3Highlighter" IsCheckable="True" Click="mnuN3Highlighter_Click" />
+                        <Separator />
                         <MenuItem Header="SPARQL Query 1.0" Name="mnuSparql10Highlighter" IsCheckable="True" Click="mnuSparql10Highlighter_Click" />
                         <MenuItem Header="SPARQL Query 1.1" Name="mnuSparql11Highlighter" IsCheckable="True" Click="mnuSparql11Highlighter_Click" />
+                        <MenuItem Header="SPARQL Results Format XML" Name="mnuSparqlResultsXmlHighlighter" IsCheckable="True" Click="mnuSparqlResultsXmlHighlighter_Click" />
+                        <MenuItem Header="SPARQL Results Format JSON" Name="mnuSparqlResultsJsonHighlighter" IsCheckable="True" Click="mnuSparqlResultsJsonHighlighter_Click" />
                 </MenuItem>
                     <Separator />
             </MenuItem>
