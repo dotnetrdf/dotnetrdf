@@ -7,6 +7,7 @@
 	<Color name="Punctuation" foreground="DarkGreen" />
 	<Color name="BNode" foreground="SteelBlue" />
 	<Color name="LangSpec" foreground="DarkGreen" />
+  <Color name="Numbers" foreground="DarkBlue" />
 	
 	<RuleSet>
 	
@@ -17,46 +18,17 @@
 			<Word>@base</Word>
 			<Word>a</Word>
 		</Keywords>
-	
-		<!-- Literals -->
+
+    <Import ruleSet="Literals" />
+
+    <Import ruleSet="Resources" />
+    		
+    <Import ruleSet="BNodes" />
+
+    <Import ruleSet="LangSpecifiers" />
 		
-		<Span color="String" multiline="true">
-			<Begin>"""</Begin>
-			<End>"""</End>
-		</Span>
-		
-		<Span color="String">
-			<Begin>"</Begin>
-			<End>"</End>
-		</Span>
-	
-		<!-- URIs and QNames -->
-		
-		<Span color="URI">
-			<Begin>&lt;</Begin>
-			<End>&gt;</End>
-		</Span>
-		
-		<Rule color="QName">
-			(\p{L}(\p{L}|\p{N}|-|_)*)?:\p{L}(\p{L}|\p{N}|-|_)*
-		</Rule>
-		
-		<!-- Blank Nodes -->
-		
-		<Rule color="BNode">
-			_:\p{L}(\p{L}|\p{N}|-|_)*
-		</Rule>
-		
-		<Rule color="BNode">
-			\[|\]|\(|\)
-		</Rule>
-		
-		<!-- Language Specifiers -->
-		
-		<Rule color="LangSpec">
-			@[A-Za-z]{2}(-[A-Za-z]+)*
-		</Rule>
-		
+    <Import ruleSet="PlainLiterals" />
+    
 		<!-- Punctuation Characters -->
 		
 		<Rule color="Punctuation">
@@ -69,4 +41,74 @@
 			<Begin>\#</Begin>
 		</Span>
 	</RuleSet>
+
+  <RuleSet name="Literals">
+    <!-- Literals -->
+
+    <Span color="String" multiline="true">
+      <Begin>"""</Begin>
+      <End>"""</End>
+    </Span>
+
+    <Span color="String">
+      <Begin>"</Begin>
+      <End>"</End>
+    </Span>
+
+  </RuleSet>
+
+  <RuleSet name="Resources">
+    <!-- URIs and QNames -->
+
+    <Span color="URI">
+      <Begin>&lt;</Begin>
+      <End>&gt;</End>
+    </Span>
+
+    <Rule color="QName">
+      (\p{L}(\p{L}|\p{N}|-|_)*)?:\p{L}(\p{L}|\p{N}|-|_)*
+    </Rule>
+  </RuleSet>
+
+  <RuleSet name="BNodes">
+    <!-- Blank Nodes -->
+
+    <Rule color="BNode">
+      _:\p{L}(\p{L}|\p{N}|-|_)*
+    </Rule>
+
+    <Rule color="BNode">
+      \[|\]|\(|\)
+    </Rule>    
+  </RuleSet>
+
+  <RuleSet name="LangSpecifiers">
+    <!-- Language Specifiers -->
+
+    <Rule color="LangSpec">
+      @[A-Za-z]{2}(-[A-Za-z]+)*
+    </Rule>
+  </RuleSet>
+  
+
+  <RuleSet name="PlainLiterals">
+    <!-- Plain Literals -->
+
+    <Keywords color="Keyword">
+      <Word>true</Word>
+      <Word>false</Word>
+    </Keywords>
+
+    <Rule color="Numbers">
+      [\-+](\d+\.\d*[eE][\-+]?\d+|\.\d+[eE][\-+]?\d+|\d+[eE]?[\-+]\d+)
+    </Rule>
+
+    <Rule color="Numbers">
+      [\-+]?(\d+\.\d*|\.\d+)
+    </Rule>
+
+    <Rule color="Numbers">
+      [\-+]?\d+
+    </Rule>
+  </RuleSet>
 </SyntaxDefinition>

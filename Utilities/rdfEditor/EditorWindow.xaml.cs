@@ -19,6 +19,7 @@ using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using Microsoft.Win32;
 using VDS.RDF;
 using VDS.RDF.Parsing;
+using VDS.RDF.Query;
 using VDS.RDF.Writing;
 
 namespace rdfEditor
@@ -33,6 +34,7 @@ namespace rdfEditor
         private String _currFile = null;
         private bool _changed = false;
         private bool _enableHighlighting = true;
+        private bool _sparqlMode = false;
 
         public EditorWindow()
         {
@@ -56,6 +58,12 @@ namespace rdfEditor
                 //Notation 3
                 IHighlightingDefinition n3 = this.LoadHighlighting("n3.xshd");
                 HighlightingManager.Instance.RegisterHighlighting("Notation3", new String[] { ".n3" }, n3);
+
+                //SPARQL Query
+                IHighlightingDefinition rq = this.LoadHighlighting("sparql-query.xshd");
+                HighlightingManager.Instance.RegisterHighlighting("SparqlQuery10", new String[] { ".rq" }, rq);
+                IHighlightingDefinition rq11 = this.LoadHighlighting("sparql-query-11.xshd");
+                HighlightingManager.Instance.RegisterHighlighting("SparqlQuery11", new String[] { ".rq" }, rq11);
             }
             catch (Exception ex)
             {
@@ -75,7 +83,7 @@ namespace rdfEditor
             _ofd.Filter = "All Supported RDF Files|*.rdf;*.ttl;*.n3;*.nt;*.json;*.owl|RDF/XML Files|*.rdf,*.owl|NTriples Files|*.nt|Turtle Files|*.ttl|Notation 3 Files|*.n3|RDF/JSON Files|*.json";
             _sfd.Title = "Save RDF File";
             _sfd.DefaultExt = ".rdf";
-            _sfd.FileName = _ofd.Filter;
+            _sfd.Filter = _ofd.Filter;
         }
 
         private IHighlightingDefinition LoadHighlighting(String filename)
@@ -148,6 +156,40 @@ namespace rdfEditor
             {
                 textEditor.SyntaxHighlighting = HighlightingManager.Instance.GetDefinition(name);
                 this.SetHighlighterSelection(selected);
+            }
+            else
+            {
+                textEditor.SyntaxHighlighting = null;
+                this.SetHighlighterSelection(mnuNoHighlighter);
+            }
+        }
+
+        private void SetSparqlMode(MenuItem selected)
+        {
+            bool enabled = selected.IsChecked;
+            this._sparqlMode = enabled;
+
+            //Set non-SPARQL Highlighters to appropriate enabled state
+            this.mnuRdfXmlHighlighter.IsEnabled = !enabled;
+            this.mnuNTriplesHighlighter.IsEnabled = !enabled;
+            this.mnuN3Highlighter.IsEnabled = !enabled;
+            this.mnuTurtleHighlighter.IsEnabled = !enabled;
+
+            //Set Tools to appropriate enabled state
+            this.mnuValidateRdf.IsEnabled = !enabled;
+            this.mnuValidateSparqlQuery10.IsEnabled = enabled;
+            this.mnuValidateSparqlQuery11.IsEnabled = enabled;
+
+            if (enabled)
+            {
+                if (ReferenceEquals(this.mnuSparql10Highlighter, selected))
+                {
+                    this.SetHighlighter("SparqlQuery10", mnuSparql10Highlighter);
+                }
+                else if (ReferenceEquals(this.mnuSparql11Highlighter, selected))
+                {
+                    this.SetHighlighter("SparqlQuery11", mnuSparql11Highlighter);
+                }
             }
             else
             {
@@ -369,6 +411,68 @@ namespace rdfEditor
             catch (Exception ex)
             {
                 MessageBox.Show("Invalid RDF due to error using parser " + parser.GetType().Name + "\n\n" + ex.Message, "Invalid RDF - Error");
+            }
+        }
+
+        private void mnuSparql10Highlighter_Click(object sender, RoutedEventArgs e)
+        {
+            this.SetSparqlMode(mnuSparql10Highlighter);
+        }
+
+        private void mnuValidateSparqlQuery10_Click(object sender, RoutedEventArgs e)
+        {
+            if (!this._sparqlMode) return;
+
+            //Compute the actual syntax compatability
+            SparqlQueryParser parser = new SparqlQueryParser();
+            parser.SyntaxMode = SparqlQuerySyntax.Sparql_1_0;
+            try
+            {
+                SparqlQuery q = parser.ParseFromString(textEditor.Text);
+                MessageBox.Show("This query is valid according to the SPARQL 1.0 specification", "Valid SPARQL");
+            }
+            catch (RdfParseException parseEx)
+            {
+                MessageBox.Show("Invalid SPARQL 1.0 Query due to parsing error\n\n" + parseEx.Message, "Invalid SPARQL 1.0 Query - Parser Error");
+            }
+            catch (RdfException rdfEx)
+            {
+                MessageBox.Show("Invalid SPARQL 1.0 Query due to RDF error\n\n" + rdfEx.Message, "Invalid SPARQL 1.0 Query - RDF Error");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Invalid SPARQL 1.0 Query due to error\n\n" + ex.Message, "Invalid SPARQL 1.0 Query - Error");
+            }
+        }
+
+        private void mnuSparql11Highlighter_Click(object sender, RoutedEventArgs e)
+        {
+            this.SetSparqlMode(mnuSparql11Highlighter);
+        }
+
+        private void mnuValidateSparqlQuery11_Click(object sender, RoutedEventArgs e)
+        {
+            if (!this._sparqlMode) return;
+
+            //Compute the actual syntax compatability
+            SparqlQueryParser parser = new SparqlQueryParser();
+            parser.SyntaxMode = SparqlQuerySyntax.Sparql_1_1;
+            try
+            {
+                SparqlQuery q = parser.ParseFromString(textEditor.Text);
+                MessageBox.Show("This query is valid according to the SPARQL 1.1 specification", "Valid SPARQL");
+            }
+            catch (RdfParseException parseEx)
+            {
+                MessageBox.Show("Invalid SPARQL 1.1 Query due to parsing error\n\n" + parseEx.Message, "Invalid SPARQL 1.1 Query - Parser Error");
+            }
+            catch (RdfException rdfEx)
+            {
+                MessageBox.Show("Invalid SPARQL 1.1 Query due to RDF error\n\n" + rdfEx.Message, "Invalid SPARQL 1.1 Query - RDF Error");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Invalid SPARQL 1.1 Query due to error\n\n" + ex.Message, "Invalid SPARQL 1.1 Query - Error");
             }
         }
     }
