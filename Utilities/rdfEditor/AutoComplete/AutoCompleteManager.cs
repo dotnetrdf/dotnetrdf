@@ -13,19 +13,6 @@ using rdfEditor.Syntax;
 
 namespace rdfEditor.AutoComplete
 {
-    public enum AutoCompleteState
-    {
-        Disabled,
-        None,
-        QName,
-        Prefix,
-        URI,
-        Keyword,
-        KeywordOrQName,
-        Inserted,
-        BNode
-    }
-
     public class AutoCompleteManager
     {
         private static bool _init = false;

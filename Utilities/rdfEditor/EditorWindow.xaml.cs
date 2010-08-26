@@ -320,6 +320,7 @@ namespace rdfEditor
             if (this._manager.IsValidateAsYouType)
             {
                 this.stsSyntaxValidation.Content = "Validate Syntax as you Type Enabled";
+                this._manager.DoValidation();
             }
             else
             {

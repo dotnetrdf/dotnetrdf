@@ -12,6 +12,8 @@ namespace rdfEditor.AutoComplete
         private AutoCompleteState _state = AutoCompleteState.None;
         private AutoCompleteState _lastCompletion = AutoCompleteState.None;
 
+        public abstract void Initialise(TextEditor editor);
+
         public abstract void StartAutoComplete(TextEditor editor, TextCompositionEventArgs e);
 
         public abstract void TryAutoComplete(TextCompositionEventArgs e);

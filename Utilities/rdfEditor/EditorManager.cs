@@ -131,7 +131,7 @@ namespace rdfEditor
                 this._enableAutoComplete = value;
                 if (this._autoCompleter != null)
                 {
-                    if (!this._endAutoComplete)
+                    if (!this._enableAutoComplete)
                     {
                         this._autoCompleter.State = AutoCompleteState.Disabled;
                     }
@@ -326,6 +326,10 @@ namespace rdfEditor
         private void SetCurrentAutoCompleter(String name)
         {
             this._autoCompleter = SyntaxManager.GetAutoCompleter(name);
+            if (this._autoCompleter != null)
+            {
+                this._autoCompleter.State = AutoCompleteState.None;
+            }
         }
 
         public IRdfReader GetParser()
@@ -367,7 +371,7 @@ namespace rdfEditor
             return parser;
         }
 
-        private void DoValidation()
+        public void DoValidation()
         {
             if (this._currValidator == null)
             {
@@ -401,6 +405,7 @@ namespace rdfEditor
             if (this._autoCompleter == null) return;
 
             this._autoCompleter.StartAutoComplete(this._editor, e);
+            System.Diagnostics.Debug.WriteLine(this._autoCompleter.State.ToString());
         }
 
         private void EditorTextEntering(object sender, TextCompositionEventArgs e)
@@ -409,6 +414,7 @@ namespace rdfEditor
             if (this._autoCompleter == null) return;
 
             this._autoCompleter.TryAutoComplete(e);
+            System.Diagnostics.Debug.WriteLine(this._autoCompleter.State.ToString());
         }
 
         private void EditorDocumentChanged(object sender, DocumentChangeEventArgs e)
@@ -426,7 +432,7 @@ namespace rdfEditor
         {
             if (this._endAutoComplete)
             {
-                this._autoCompleter.EndAutoComplete(this._editor);
+                if (this._autoCompleter != null) this._autoCompleter.EndAutoComplete(this._editor);
             }
         }
 
