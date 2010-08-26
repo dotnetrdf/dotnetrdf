@@ -381,7 +381,7 @@ namespace VDS.RDF.Parsing
             if (context.Input.HasLineInfo()) {
                 error.Append("[Line " + context.Input.LineNumber + " Column " + context.Input.LinePosition + "] ");
             }
-            error.AppendLine(context.Input.TokenType.ToString());
+            error.AppendLine(context.Input.TokenType.GetType().Name);
             error.Append(message);
             throw new RdfParseException(error.ToString());
         }

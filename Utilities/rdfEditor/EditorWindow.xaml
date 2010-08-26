@@ -1,7 +1,7 @@
 ﻿<Window x:Class="rdfEditor.EditorWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="rdfEditor" Height="638" Width="880">
+    Title="rdfEditor" Height="629" Width="880">
     <DockPanel>
          <Menu Height="22" 
               HorizontalAlignment="Left" 
@@ -31,24 +31,23 @@
             <MenuItem Header="_Options">
                     <MenuItem Header="Enable Syntax Highlighting" Name="mnuEnableHighlighting" IsCheckable="True" IsChecked="True" Click="mnuEnableHighlighting_Click" />
                     <MenuItem Header="Highlighter" Name="mnuCurrentHighlighter">
-                        <MenuItem Header="None" Name="mnuNoHighlighter" IsCheckable="True" IsChecked="True" Click="mnuNoHighlighter_Click" />
-                        <MenuItem Header="RDF/XML" Name="mnuRdfXmlHighlighter" IsCheckable="True" Click="mnuRdfXmlHighlighter_Click" />
-                        <MenuItem Header="RDF/JSON" Name="mnuRdfJsonHighlighter" IsCheckable="True" Click="mnuRdfJsonHighlighter_Click" />
-                        <MenuItem Header="NTriples" Name="mnuNTriplesHighlighter" IsCheckable="True" Click="mnuNTriplesHighlighter_Click" />
-                        <MenuItem Header="Turtle" Name="mnuTurtleHighlighter" IsCheckable="True" Click="mnuTurtleHighlighter_Click" />
-                        <MenuItem Header="Notation 3" Name="mnuN3Highlighter" IsCheckable="True" Click="mnuN3Highlighter_Click" />
+                        <MenuItem Header="None" IsCheckable="True" IsChecked="True" Tag="None" />
+                        <MenuItem Header="RDF/XML" IsCheckable="True" Tag="RdfXml" />
+                        <MenuItem Header="RDF/JSON" IsCheckable="True" Tag="RdfJson" />
+                        <MenuItem Header="NTriples" IsCheckable="True" Tag="NTriples" />
+                        <MenuItem Header="Turtle" IsCheckable="True" Tag="Turtle" />
+                        <MenuItem Header="Notation 3" IsCheckable="True" Tag="Notation3"/>
                         <Separator />
-                        <MenuItem Header="SPARQL Query 1.0" Name="mnuSparql10Highlighter" IsCheckable="True" Click="mnuSparql10Highlighter_Click" />
-                        <MenuItem Header="SPARQL Query 1.1" Name="mnuSparql11Highlighter" IsCheckable="True" Click="mnuSparql11Highlighter_Click" />
-                        <MenuItem Header="SPARQL Results Format XML" Name="mnuSparqlResultsXmlHighlighter" IsCheckable="True" Click="mnuSparqlResultsXmlHighlighter_Click" />
-                        <MenuItem Header="SPARQL Results Format JSON" Name="mnuSparqlResultsJsonHighlighter" IsCheckable="True" Click="mnuSparqlResultsJsonHighlighter_Click" />
+                        <MenuItem Header="SPARQL Query 1.0" IsCheckable="True" Tag="SparqlQuery10" />
+                        <MenuItem Header="SPARQL Query 1.1" IsCheckable="True" Tag="SparqlQuery11" />
+                        <MenuItem Header="SPARQL Results Format XML" IsCheckable="True" Tag="SparqlResultsXml"/>
+                        <!--<MenuItem Header="SPARQL Results Format JSON" IsCheckable="True" Tag="SparqlResultsJson" />-->
                 </MenuItem>
-                    <Separator />
+                <Separator />
+                <MenuItem Header="Validate Syntax as you Type" Name="mnuValidateAsYouType" IsCheckable="True" IsChecked="True" Click="mnuValidateAsYouType_Click" />
             </MenuItem>
             <MenuItem Header="_Tools">
-                <MenuItem Header="Validate RDF" Name="mnuValidateRdf" Click="mnuValidateRdf_Click" />
-                <MenuItem Header="Validate SPARQL Query 1.0" Name="mnuValidateSparqlQuery10" IsEnabled="False" Click="mnuValidateSparqlQuery10_Click" />
-                <MenuItem Header="Validate SPARQL Query 1.1" Name="mnuValidateSparqlQuery11" IsEnabled="False" Click="mnuValidateSparqlQuery11_Click" />
+                <MenuItem Header="Validate Syntax" Name="mnuValidateSyntax" Click="mnuValidateSyntax_Click" />
             </MenuItem>
             <MenuItem Header="_Help" />
         </Menu>
@@ -57,8 +56,11 @@
             Name="textEditor"
             FontFamily="Consolas"
             FontSize="10pt" Margin="0,0,0,0" 
-            DockPanel.Dock="Bottom"
-            TextChanged="textEditor_TextChanged"
+            DockPanel.Dock="Top"
+            Height="550"
             />
+        <StatusBar Name="stsBar" DockPanel.Dock="Bottom">
+            <StatusBarItem Name="stsSyntaxValidation">Validate Syntax as you Type Enabled</StatusBarItem>
+        </StatusBar>
     </DockPanel>
 </Window>

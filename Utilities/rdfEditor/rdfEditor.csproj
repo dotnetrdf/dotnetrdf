@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{F8006AE8-6107-4297-9E19-C2E55303FCC6}</ProjectGuid>
     <OutputType>WinExe</OutputType>
@@ -41,6 +41,7 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Data" />
     <Reference Include="System.Net">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -88,36 +89,45 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="EditorManager.cs" />
+    <Compile Include="Syntax\ISyntaxValidator.cs" />
+    <Compile Include="Syntax\RdfSyntaxValidator.cs" />
+    <Compile Include="Syntax\SparqlQueryValidator.cs" />
+    <Compile Include="Syntax\SyntaxDefinition.cs" />
+    <Compile Include="Syntax\SyntaxManager.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="n3.xshd">
+    <EmbeddedResource Include="Syntax\n3.xshd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="ntriples.xshd">
+    <EmbeddedResource Include="Syntax\ntriples.xshd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="sparql-query-11.xshd">
+    <EmbeddedResource Include="Syntax\sparql-query-11.xshd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <EmbeddedResource Include="rdfjson.xshd">
+    <EmbeddedResource Include="Syntax\sparql-results-xml.xshd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="sparql-query.xshd">
+    <EmbeddedResource Include="Syntax\rdfxml.xshd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="turtle.xshd">
+    <EmbeddedResource Include="Syntax\rdfjson.xshd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
-    <Content Include="test001.rdf">
+    <EmbeddedResource Include="Syntax\sparql-query.xshd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Syntax\turtle.xshd">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>

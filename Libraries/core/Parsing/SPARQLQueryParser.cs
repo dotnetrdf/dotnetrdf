@@ -103,6 +103,13 @@ namespace VDS.RDF.Parsing
             : this(TokenQueueMode.QueueAllBeforeParsing) { }
 
         /// <summary>
+        /// Creates a new instance of the SPARQL Query Parser which supports the given SPARQL Syntax
+        /// </summary>
+        /// <param name="syntax">SPARQL Syntax</param>
+        public SparqlQueryParser(SparqlQuerySyntax syntax)
+            : this(TokenQueueMode.QueueAllBeforeParsing, syntax) { }
+
+        /// <summary>
         /// Creates a new instance of the SPARQL Query Parser using the given Tokeniser Queue Mode
         /// </summary>
         /// <param name="queueMode">Token Queue Mode</param>
@@ -110,10 +117,10 @@ namespace VDS.RDF.Parsing
             : this(queueMode, Options.QueryDefaultSyntax) { }
 
         /// <summary>
-        /// Creates a new instance of the SPARLQ Query Parser using the given Tokeniser which supports the given SPARQL Syntax
+        /// Creates a new instance of the SPARQL Query Parser using the given Tokeniser which supports the given SPARQL Syntax
         /// </summary>
-        /// <param name="queueMode"></param>
-        /// <param name="syntax"></param>
+        /// <param name="queueMode">Token Queue Mode</param>
+        /// <param name="syntax">SPARQL Syntax</param>
         public SparqlQueryParser(TokenQueueMode queueMode, SparqlQuerySyntax syntax)
         {
             this._queuemode = queueMode;

@@ -375,7 +375,7 @@ namespace VDS.RDF.Parsing
         {
             StringBuilder output = new StringBuilder();
             output.Append("[");
-            output.Append(t.GetType().ToString());
+            output.Append(t.GetType().Name);
             output.Append(" at Line ");
             output.Append(t.StartLine);
             output.Append(" Column ");
