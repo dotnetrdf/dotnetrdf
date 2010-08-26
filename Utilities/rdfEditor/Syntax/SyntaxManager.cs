@@ -11,6 +11,7 @@ using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing;
+using rdfEditor.AutoComplete;
 
 namespace rdfEditor.Syntax
 {
@@ -48,6 +49,7 @@ namespace rdfEditor.Syntax
                 }
             }
 
+            _init = true;
             return allOk;
         }
 
@@ -102,6 +104,24 @@ namespace rdfEditor.Syntax
             foreach (SyntaxDefinition def in _builtinDefs)
             {
                 if (def.Name.Equals(name)) return def.DefaultWriter;
+            }
+            return null;
+        }
+
+        public static IAutoCompleter GetAutoCompleter(String name)
+        {
+            foreach (SyntaxDefinition def in _builtinDefs)
+            {
+                if (def.Name.Equals(name)) return def.AutoCompleter;
+            }
+            return null;
+        }
+
+        public static SyntaxDefinition GetDefinition(String name)
+        {
+            foreach (SyntaxDefinition def in _builtinDefs)
+            {
+                if (def.Name.Equals(name)) return def;
             }
             return null;
         }

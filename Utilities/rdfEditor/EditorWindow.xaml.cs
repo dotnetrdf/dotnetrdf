@@ -314,6 +314,24 @@ namespace rdfEditor
             this._manager.IsHighlightingEnabled = mnuEnableHighlighting.IsChecked;
         }
 
+        private void mnuValidateAsYouType_Click(object sender, RoutedEventArgs e)
+        {
+            this._manager.IsValidateAsYouType = this.mnuValidateAsYouType.IsChecked;
+            if (this._manager.IsValidateAsYouType)
+            {
+                this.stsSyntaxValidation.Content = "Validate Syntax as you Type Enabled";
+            }
+            else
+            {
+                this.stsSyntaxValidation.Content = "Validate Syntax as you Type Disabled";
+            }
+        }
+
+        private void mnuAutoComplete_Click(object sender, RoutedEventArgs e)
+        {
+            this._manager.IsAutoCompleteEnabled = this.mnuAutoComplete.IsChecked;
+        }
+
         #endregion
 
         #region Tools Menu
@@ -336,17 +354,5 @@ namespace rdfEditor
 
         #endregion
 
-        private void mnuValidateAsYouType_Click(object sender, RoutedEventArgs e)
-        {
-            this._manager.IsValidateAsYouType = this.mnuValidateAsYouType.IsChecked;
-            if (this._manager.IsValidateAsYouType)
-            {
-                this.stsSyntaxValidation.Content = "Validate Syntax as you Type Enabled";
-            }
-            else
-            {
-                this.stsSyntaxValidation.Content = "Validate Syntax as you Type Disabled";
-            }
-        }
     }
 }

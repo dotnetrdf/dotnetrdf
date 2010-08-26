@@ -70,6 +70,13 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AutoComplete\AutoCompleteDefinition.cs" />
+    <Compile Include="AutoComplete\AutoCompleteManager.cs" />
+    <Compile Include="AutoComplete\BaseAutoCompleter.cs" />
+    <Compile Include="AutoComplete\IAutoCompleter.cs" />
+    <Compile Include="AutoComplete\KeywordCompletionData.cs" />
+    <Compile Include="AutoComplete\PrefixCompletionData.cs" />
+    <Compile Include="AutoComplete\TurtleAutoCompleter.cs" />
     <Compile Include="EditorWindow.xaml.cs">
       <DependentUpon>EditorWindow.xaml</DependentUpon>
     </Compile>

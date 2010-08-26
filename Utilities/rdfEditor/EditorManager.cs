@@ -15,6 +15,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using ICSharpCode.AvalonEdit;
+using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using Microsoft.Win32;
@@ -23,6 +24,7 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Writing;
 using rdfEditor.Syntax;
+using rdfEditor.AutoComplete;
 
 namespace rdfEditor
 {
@@ -33,17 +35,29 @@ namespace rdfEditor
         private bool _changed = false;
         private bool _enableHighlighting = true;
         private String _currFile;
+
+        //Validation
         private bool _validateAsYouType = false;
         private ISyntaxValidator _currValidator;
         private StatusBarItem _validatorStatus;
 
+        //Auto-complete
+        private bool _enableAutoComplete = true;
+        private bool _endAutoComplete = false;
+        private IAutoCompleter _autoCompleter;
+
         public EditorManager(TextEditor editor)
         {
             SyntaxManager.Initialise();
+            AutoCompleteManager.Initialise();
             this._editor = editor;
 
             //Register Event Handlers for the Editor
             this._editor.TextChanged += new EventHandler(EditorTextChanged);
+            this._editor.TextArea.TextEntering += new TextCompositionEventHandler(EditorTextEntering);
+            this._editor.TextArea.TextEntered += new TextCompositionEventHandler(EditorTextEntered);
+            this._editor.Document.Changed += new EventHandler<DocumentChangeEventArgs>(EditorDocumentChanged);
+            this._editor.Document.UpdateFinished += new EventHandler(EditorDocumentUpdateFinished);
         }
 
         public EditorManager(TextEditor editor, MenuItem highlightersMenu)
@@ -103,6 +117,29 @@ namespace rdfEditor
             set
             {
                 this._validateAsYouType = value;
+            }
+        }
+
+        public bool IsAutoCompleteEnabled
+        {
+            get
+            {
+                return this._enableAutoComplete;
+            }
+            set
+            {
+                this._enableAutoComplete = value;
+                if (this._autoCompleter != null)
+                {
+                    if (!this._endAutoComplete)
+                    {
+                        this._autoCompleter.State = AutoCompleteState.Disabled;
+                    }
+                    else
+                    {
+                        this._autoCompleter.State = AutoCompleteState.None;
+                    }
+                }
             }
         }
 
@@ -168,6 +205,7 @@ namespace rdfEditor
             String syntax = (this._editor.SyntaxHighlighting == null) ? "None" : name;
             this.SetCurrentHighlighterChecked(syntax);
             this.SetCurrentValidator(syntax);
+            this.SetCurrentAutoCompleter(syntax);
         }
 
         public void SetHighlighter(IRdfReader parser)
@@ -217,6 +255,7 @@ namespace rdfEditor
                         //Valid Highlighter so check the appropriate highlighter in the list
                         this.SetCurrentValidator(name);
                         this.SetCurrentHighlighterChecked(name);
+                        this.SetCurrentAutoCompleter(name);
                     }
                     else
                     {
@@ -234,6 +273,7 @@ namespace rdfEditor
                     //Valid Highlighter so check the appropriate highlighter in the list
                     this.SetCurrentValidator(name);
                     this.SetCurrentHighlighterChecked(name);
+                    this.SetCurrentAutoCompleter(name);
                 }
                 else
                 {
@@ -253,6 +293,7 @@ namespace rdfEditor
             this._editor.SyntaxHighlighting = null;
             this.SetCurrentHighlighterChecked("None");
             this.SetCurrentValidator("None");
+            this.SetCurrentAutoCompleter("None");
         }
 
         private void SetCurrentHighlighterChecked(String name)
@@ -280,6 +321,11 @@ namespace rdfEditor
                     this._validatorStatus.Content = "Validate Syntax as you Type is Disabled";
                 }
             }
+        }
+
+        private void SetCurrentAutoCompleter(String name)
+        {
+            this._autoCompleter = SyntaxManager.GetAutoCompleter(name);
         }
 
         public IRdfReader GetParser()
@@ -346,6 +392,41 @@ namespace rdfEditor
             if (this._validateAsYouType && this._validatorStatus != null)
             {
                 this.DoValidation();
+            }
+        }
+
+        private void EditorTextEntered(object sender, TextCompositionEventArgs e)
+        {
+            if (!this._enableAutoComplete) return;
+            if (this._autoCompleter == null) return;
+
+            this._autoCompleter.StartAutoComplete(this._editor, e);
+        }
+
+        private void EditorTextEntering(object sender, TextCompositionEventArgs e)
+        {
+            if (!this._enableAutoComplete) return;
+            if (this._autoCompleter == null) return;
+
+            this._autoCompleter.TryAutoComplete(e);
+        }
+
+        private void EditorDocumentChanged(object sender, DocumentChangeEventArgs e)
+        {
+            if (e.InsertionLength > 0)
+            {
+                if (this._autoCompleter != null)
+                {
+                    this._endAutoComplete = true;
+                }
+            }
+        }
+
+        private void EditorDocumentUpdateFinished(object sender, EventArgs e)
+        {
+            if (this._endAutoComplete)
+            {
+                this._autoCompleter.EndAutoComplete(this._editor);
             }
         }
 
