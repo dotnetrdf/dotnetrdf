@@ -34,12 +34,19 @@ namespace rdfEditor.AutoComplete
             this._c = new CompletionWindow(area);
             this._c.SizeToContent = System.Windows.SizeToContent.WidthAndHeight;
             this._c.CompletionList.InsertionRequested += new EventHandler(CompletionList_InsertionRequested);
+            //this._c.CompletionList.
+        }
+
+        void CompletionWindowKeyDown(object sender, KeyEventArgs e)
+        {
+            this.HandleKey(e.Key);
         }
 
         private void AbortAutoComplete()
         {
             this.State = AutoCompleteState.None;
             this._temp = AutoCompleteState.None;
+            this.LastCompletion = AutoCompleteState.None;
             if (this._c != null) this._c.Close();
         }
 
@@ -99,6 +106,26 @@ namespace rdfEditor.AutoComplete
             
         }
 
+        public override void DetectState(TextEditor editor)
+        {
+
+        }
+
+        private void HandleKey(Key k)
+        {
+            if (this.State != AutoCompleteState.None && this.State != AutoCompleteState.Disabled) return;
+
+            System.Diagnostics.Debug.WriteLine(k.ToString());
+            if (k == Key.Back)
+            {
+                if (this._buffer.Length > 0)
+                {
+                    this._buffer.Remove(this._buffer.Length - 1, 1);
+                }
+                if (this._buffer.Length == 0) this.AbortAutoComplete();
+            }
+        }
+
         public override void StartAutoComplete(TextEditor editor, TextCompositionEventArgs e)
         {
             //Only do something if auto-complete not active
@@ -111,56 +138,34 @@ namespace rdfEditor.AutoComplete
 
             if (e.Text == "@")
             {
-                //Prefix Completion
-                this._buffer.Append(e.Text);
-                this.State = AutoCompleteState.Prefix;
-                this.SetupCompletionWindow(editor.TextArea, AutoCompleteManager.PrefixData);
-                this._c.Show();
-                this._c.Closed += new EventHandler(this.CompletionWindowClosed);
+                StartDeclarationCompletion(editor, e);
             }
             else if (e.Text.Length == 1)
             {
                 char c = e.Text[0];
                 if (Char.IsLetter(c))
                 {
-                    this.State = AutoCompleteState.KeywordOrQName;
-                    this.SetupCompletionWindow(editor.TextArea, this._keywords);
-                    this._c.Show();
-                    //KeyConverter converter = new KeyConverter();
-                    //if (e.Device is KeyboardDevice)
-                    //{
-                    //    this._c.CompletionList.HandleKey(new KeyEventArgs((KeyboardDevice)e.Device, e.Device.ActiveSource, e.Timestamp, (Key)converter.ConvertFromString(e.Text)));
-                    //}
+                    StartKeywordOrQNameCompletion(editor, e);
                 }
                 else if (c == '_')
                 {
-                    this.State = AutoCompleteState.BNode;
+                    StartBNodeCompletion(editor, e);
                 }
                 else if (c == ':')
                 {
-                    this.State = AutoCompleteState.QName;
-                    //this.SetupCompletionWindow(editor.TextArea);
-                    //this._c.Show();
+                    StartQNameCompletion(editor, e);
                 }
                 else if (c == '<')
                 {
-                    this.State = AutoCompleteState.URI;
+                    StartUriCompletion(editor, e);
                 }
                 else if (c == '#')
                 {
-                    this.State = AutoCompleteState.Comment;
+                    StartCommentCompletion(editor, e);
                 }
                 else if (c == '"')
                 {
-                    if (this._temp == AutoCompleteState.Literal || this._temp == AutoCompleteState.LongLiteral)
-                    {
-                        this._temp = AutoCompleteState.None;
-                        this.State = AutoCompleteState.None;
-                    }
-                    else
-                    {
-                        this.State = AutoCompleteState.Literal;
-                    }
+                    StartLiteralCompletion(editor, e);
                 }
 
                 //Add to Buffer if we've entered an auto-completion state
@@ -169,6 +174,59 @@ namespace rdfEditor.AutoComplete
                     this._buffer.Append(e.Text);
                 }
             }
+        }
+
+        protected virtual void StartLiteralCompletion(TextEditor editor, TextCompositionEventArgs e)
+        {
+            if (this._temp == AutoCompleteState.Literal || this._temp == AutoCompleteState.LongLiteral)
+            {
+                this._temp = AutoCompleteState.None;
+                this.State = AutoCompleteState.None;
+            }
+            else
+            {
+                this.State = AutoCompleteState.Literal;
+            }
+        }
+
+        protected virtual void StartCommentCompletion(TextEditor editor, TextCompositionEventArgs e)
+        {
+            this.State = AutoCompleteState.Comment;
+        }
+
+        protected virtual void StartUriCompletion(TextEditor editor, TextCompositionEventArgs e)
+        {
+            this.State = AutoCompleteState.Uri;
+        }
+
+        protected virtual void StartQNameCompletion(TextEditor editor, TextCompositionEventArgs e)
+        {
+            this.State = AutoCompleteState.QName;
+            //this.SetupCompletionWindow(editor.TextArea);
+            //this._c.Show();
+        }
+
+        protected virtual void StartBNodeCompletion(TextEditor editor, TextCompositionEventArgs e)
+        {
+            this.State = AutoCompleteState.BNode;
+        }
+
+        protected virtual void StartKeywordOrQNameCompletion(TextEditor editor, TextCompositionEventArgs e)
+        {
+            this.State = AutoCompleteState.KeywordOrQName;
+            this.SetupCompletionWindow(editor.TextArea, this._keywords);
+            this._c.StartOffset--;
+            this._c.Show();
+        }
+
+        protected virtual void StartDeclarationCompletion(TextEditor editor, TextCompositionEventArgs e)
+        {
+            //Prefix Completion
+            this._buffer.Append(e.Text);
+            this.State = AutoCompleteState.Prefix;
+            this.SetupCompletionWindow(editor.TextArea, AutoCompleteManager.PrefixData);
+            this._c.Show();
+            this._c.Closed += new EventHandler(this.CompletionWindowClosed);
         }
 
         public override void TryAutoComplete(TextCompositionEventArgs e)
@@ -182,121 +240,162 @@ namespace rdfEditor.AutoComplete
                 switch (this.State)
                 {
                     case AutoCompleteState.Prefix:
-                        int testLength = Math.Min(PrefixDeclaration.Length, this._buffer.Length);
-                        if (!PrefixDeclaration.Substring(0, testLength).Equals(this._buffer.ToString(0, testLength)))
-                        {
-                            //Not a prefix declaration so close the window
-                            this.AbortAutoComplete();
-                        }
+                        TryPrefixCompletion(e);
                         break;
 
                     case AutoCompleteState.KeywordOrQName:
-                        if (!this.IsValidPartialKeyword(this._buffer.ToString()) && !this.IsValidPartialQName(this._buffer.ToString()))
-                        {
-                            //Not a keyword/Qname so close the window
-                            this.AbortAutoComplete();
-                        }
-                        else if (!this.IsValidPartialKeyword(this._buffer.ToString()))
-                        {
-                            //No longer a possible keyword
-                            this.State = AutoCompleteState.QName;
-
-                            //Strip keywords from the auto-complete list
-                            for (int i = 0; i < this._c.CompletionList.CompletionData.Count; i++)
-                            {
-                                if (this._c.CompletionList.CompletionData[i] is KeywordCompletionData)
-                                {
-                                    this._c.CompletionList.CompletionData.RemoveAt(i);
-                                }
-                            }
-                        }
+                        TryKeywordOrQNameCompletion(e);
                         break;
 
                     case AutoCompleteState.QName:
-                        if (!this.IsValidPartialQName(this._buffer.ToString()))
-                        {
-                            //Not a QName so close the window
-                            this.State = AutoCompleteState.None;
-                            this.AbortAutoComplete();
-                        }
+                        TryQNameCompletion(e);
                         break;
 
                     case AutoCompleteState.BNode:
-                        if (!this.IsValidPartialBlankNodeID(this._buffer.ToString()))
-                        {
-                            //Not a BNode ID so close the window
-                            this.AbortAutoComplete();
-                        }
+                        TryBNodeCompletion(e);
                         break;
 
-                    case AutoCompleteState.URI:
-                        if (e.Text == ">")
-                        {
-                            if (!this._buffer.ToString(this._buffer.Length - 2, 2).Equals("\\>"))
-                            {
-                                //End of a URI so exit auto-complete
-                                this.FinishAutoComplete(true, true);
-                            }
-                        }
+                    case AutoCompleteState.Uri:
+                        TryUriCompletion(e);
                         break;
 
                     case AutoCompleteState.Literal:
-                        if (e.Text == "\"")
-                        {
-                            if (this._buffer.Length == 2)
-                            {
-                                //Might be a long literal so have to wait and see
-                            }
-                            else if (this._buffer.Length == 3)
-                            {
-                                char last = this._buffer[this._buffer.Length - 1];
-                                if (this._buffer.ToString().Equals("\"\"\""))
-                                {
-                                    //Switch to long literal mode
-                                    this.State = AutoCompleteState.LongLiteral;
-                                }
-                                else if (Char.IsWhiteSpace(last) || Char.IsPunctuation(last))
-                                {
-                                    //White Space/Punctuation means we've left the empty literal
-                                    this.FinishAutoComplete(true, true);
-                                }
-                                else if (!this._buffer.ToString(this._buffer.Length-2,2).Equals("\\\""))
-                                {
-                                    //Not an escape so ends the literal
-                                    this.FinishAutoComplete(true, true);
-                                }
-                            }
-                            else
-                            {
-                                //Is this an escaped "?
-                                if (!this._buffer.ToString(this._buffer.Length - 2, 2).Equals("\\\""))
-                                {
-                                    //Not escaped so terminates the literal
-                                    this.FinishAutoComplete(true, true);
-                                }
-                            }
-                        }
+                        TryLiteralCompletion(e);
                         break;
 
                     case AutoCompleteState.LongLiteral:
-                        if (e.Text == "\"")
-                        {
-                            //Is this an escaped "?
-                            if (!this._buffer.ToString(this._buffer.Length - 2, 2).Equals("\\\""))
-                            {
-                                //Not escaped so terminate the literal if the buffer ends in 3 "
-                                if (this._buffer.ToString(this._buffer.Length - 3, 3).Equals("\"\"\""))
-                                {
-                                    this.FinishAutoComplete(true, true);
-                                }
-                            }
-                        }
+                        TryLongLiteralCompletion(e);
                         break;
 
                     default:
                         //Nothing to do as no other auto-completion is implemented yet
                         break;
                 }
+            }
+        }
+
+        protected virtual void TryLongLiteralCompletion(TextCompositionEventArgs e)
+        {
+            if (e.Text == "\"")
+            {
+                //Is this an escaped "?
+                if (!this._buffer.ToString(this._buffer.Length - 2, 2).Equals("\\\""))
+                {
+                    //Not escaped so terminate the literal if the buffer ends in 3 "
+                    if (this._buffer.ToString(this._buffer.Length - 3, 3).Equals("\"\"\""))
+                    {
+                        this.FinishAutoComplete(true, true);
+                    }
+                }
+            }
+        }
+
+        protected virtual void TryLiteralCompletion(TextCompositionEventArgs e)
+        {
+            if (this.IsNewLine(e.Text)) this.AbortAutoComplete();
+
+            if (e.Text == "\"")
+            {
+                if (this._buffer.Length == 2)
+                {
+                    //Might be a long literal so have to wait and see
+                }
+                else if (this._buffer.Length == 3)
+                {
+                    char last = this._buffer[this._buffer.Length - 1];
+                    if (this._buffer.ToString().Equals("\"\"\""))
+                    {
+                        //Switch to long literal mode
+                        this.State = AutoCompleteState.LongLiteral;
+                    }
+                    else if (Char.IsWhiteSpace(last) || Char.IsPunctuation(last))
+                    {
+                        //White Space/Punctuation means we've left the empty literal
+                        this.FinishAutoComplete(true, true);
+                    }
+                    else if (!this._buffer.ToString(this._buffer.Length - 2, 2).Equals("\\\""))
+                    {
+                        //Not an escape so ends the literal
+                        this.FinishAutoComplete(true, true);
+                    }
+                }
+                else
+                {
+                    //Is this an escaped "?
+                    if (!this._buffer.ToString(this._buffer.Length - 2, 2).Equals("\\\""))
+                    {
+                        //Not escaped so terminates the literal
+                        this.FinishAutoComplete(true, true);
+                    }
+                }
+            }
+        }
+
+        protected virtual void TryUriCompletion(TextCompositionEventArgs e)
+        {
+            if (e.Text == ">")
+            {
+                if (!this._buffer.ToString(this._buffer.Length - 2, 2).Equals("\\>"))
+                {
+                    //End of a URI so exit auto-complete
+                    this.FinishAutoComplete(true, true);
+                }
+            }
+        }
+
+        protected virtual void TryBNodeCompletion(TextCompositionEventArgs e)
+        {
+            if (this.IsNewLine(e.Text) || !this.IsValidPartialBlankNodeID(this._buffer.ToString()))
+            {
+                //Not a BNode ID so close the window
+                this.AbortAutoComplete();
+            }
+        }
+
+        protected virtual void TryQNameCompletion(TextCompositionEventArgs e)
+        {
+            if (this.IsNewLine(e.Text) || !this.IsValidPartialQName(this._buffer.ToString()))
+            {
+                //Not a QName so close the window
+                this.State = AutoCompleteState.None;
+                this.AbortAutoComplete();
+            }
+        }
+
+        protected virtual void TryKeywordOrQNameCompletion(TextCompositionEventArgs e)
+        {
+            if (this.IsNewLine(e.Text)) this.AbortAutoComplete();
+
+            if (!this.IsValidPartialKeyword(this._buffer.ToString()) && !this.IsValidPartialQName(this._buffer.ToString()))
+            {
+                //Not a keyword/Qname so close the window
+                this.AbortAutoComplete();
+            }
+            else if (!this.IsValidPartialKeyword(this._buffer.ToString()))
+            {
+                //No longer a possible keyword
+                this.State = AutoCompleteState.QName;
+
+                //Strip keywords from the auto-complete list
+                for (int i = 0; i < this._c.CompletionList.CompletionData.Count; i++)
+                {
+                    if (this._c.CompletionList.CompletionData[i] is KeywordCompletionData)
+                    {
+                        this._c.CompletionList.CompletionData.RemoveAt(i);
+                    }
+                }
+            }
+        }
+
+        protected virtual void TryPrefixCompletion(TextCompositionEventArgs e)
+        {
+            if (this.IsNewLine(e.Text)) this.AbortAutoComplete();
+
+            int testLength = Math.Min(PrefixDeclaration.Length, this._buffer.Length);
+            if (!PrefixDeclaration.Substring(0, testLength).Equals(this._buffer.ToString(0, testLength)))
+            {
+                //Not a prefix declaration so close the window
+                this.AbortAutoComplete();
             }
         }
 
@@ -332,6 +431,7 @@ namespace rdfEditor.AutoComplete
             foreach (KeywordCompletionData keyword in this._keywords.OfType<KeywordCompletionData>())
             {
                 int testLength = Math.Min(keyword.Text.Length, value.Length);
+                if (testLength > keyword.Text.Length) continue;
                 if (keyword.Text.Substring(0, testLength).Equals(value.Substring(0, testLength))) return true;
             }
             return false;
@@ -452,6 +552,11 @@ namespace rdfEditor.AutoComplete
             {
                 return false;
             }
+        }
+
+        protected bool IsNewLine(String text)
+        {
+            return text.Equals("\n") || text.Equals("\r") || text.Equals("\r\n") || text.Equals("\n\r");
         }
     }
 }

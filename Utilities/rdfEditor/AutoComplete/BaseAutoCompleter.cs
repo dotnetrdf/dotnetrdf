@@ -14,6 +14,8 @@ namespace rdfEditor.AutoComplete
 
         public abstract void Initialise(TextEditor editor);
 
+        public abstract void DetectState(TextEditor editor);
+
         public abstract void StartAutoComplete(TextEditor editor, TextCompositionEventArgs e);
 
         public abstract void TryAutoComplete(TextCompositionEventArgs e);
