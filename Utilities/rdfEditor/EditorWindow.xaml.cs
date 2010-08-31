@@ -70,8 +70,8 @@ namespace rdfEditor
                     {
                         String text = reader.ReadToEnd();
                         textEditor.Text = String.Empty;
-                        this._manager.AutoDetectSyntaxHighlighter(_ofd.FileName);
                         textEditor.Text = text;
+                        this._manager.AutoDetectSyntaxHighlighter(_ofd.FileName);
                     }
                     this._manager.CurrentFile = _ofd.FileName;
                     this.Title = "rdfEditor - " + System.IO.Path.GetFileName(this._manager.CurrentFile);

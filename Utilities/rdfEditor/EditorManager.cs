@@ -137,7 +137,7 @@ namespace rdfEditor
                     }
                     else
                     {
-                        this._autoCompleter.State = AutoCompleteState.None;
+                        this._autoCompleter.Initialise(this._editor);
                     }
                 }
             }
@@ -187,6 +187,8 @@ namespace rdfEditor
                 if (def != null)
                 {
                     this.SetCurrentHighlighterChecked(def.Name);
+                    this.SetCurrentValidator(def.Name);
+                    this.SetCurrentAutoCompleter(def.Name);
                 }
                 else
                 {
@@ -328,7 +330,11 @@ namespace rdfEditor
             this._autoCompleter = SyntaxManager.GetAutoCompleter(name);
             if (this._autoCompleter != null)
             {
-                this._autoCompleter.State = AutoCompleteState.None;
+                this._autoCompleter.Initialise(this._editor);
+                if (!this._enableAutoComplete)
+                {
+                    this._autoCompleter.State = AutoCompleteState.Disabled;
+                }
             }
         }
 
@@ -404,17 +410,17 @@ namespace rdfEditor
             if (!this._enableAutoComplete) return;
             if (this._autoCompleter == null) return;
 
-            this._autoCompleter.StartAutoComplete(this._editor, e);
-            System.Diagnostics.Debug.WriteLine(this._autoCompleter.State.ToString());
+            this._autoCompleter.TryAutoComplete(this._editor, e);
+
+            if (this._enableAutoComplete && this._autoCompleter != null)
+            {
+                System.Diagnostics.Debug.WriteLine("State: " + this._autoCompleter.State.ToString());
+            }
         }
 
         private void EditorTextEntering(object sender, TextCompositionEventArgs e)
         {
-            if (!this._enableAutoComplete) return;
-            if (this._autoCompleter == null) return;
 
-            this._autoCompleter.TryAutoComplete(e);
-            System.Diagnostics.Debug.WriteLine(this._autoCompleter.State.ToString());
         }
 
         private void EditorDocumentChanged(object sender, DocumentChangeEventArgs e)

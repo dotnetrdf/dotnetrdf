@@ -90,7 +90,7 @@ namespace VDS.RDF
         /// Constructs a new Namespace Map which is optionally empty
         /// </summary>
         /// <param name="empty">Whether the Namespace Map should be empty, if set to false the Prefixes rdf, rdfs and xsd are automatically defined</param>
-        protected internal NamespaceMapper(bool empty)
+        public NamespaceMapper(bool empty)
         {
             this._uris = new Dictionary<string, Uri>();
             this._prefixes = new Dictionary<int, string>();
@@ -232,9 +232,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Internal Only method which allows the Namespace Map to be cleared
+        /// Clears the Namespace Map
         /// </summary>
-        protected virtual internal void Clear()
+        public void Clear()
         {
             this._prefixes.Clear();
             this._uris.Clear();

@@ -51,6 +51,11 @@ namespace VDS.RDF
         void AddNamespace(string prefix, Uri uri);
 
         /// <summary>
+        /// Clears the Namespace Map
+        /// </summary>
+        void Clear();
+
+        /// <summary>
         /// Returns the Namespace URI associated with the given Prefix
         /// </summary>
         /// <param name="prefix">The Prefix to lookup the Namespace URI for</param>

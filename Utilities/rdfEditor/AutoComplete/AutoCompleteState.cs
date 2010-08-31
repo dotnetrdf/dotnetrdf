@@ -13,6 +13,8 @@ namespace rdfEditor.AutoComplete
 
         QName,
         Prefix,
+        Base,
+        Declaration,
         Uri,
         Keyword,
         KeywordOrQName,

@@ -90,5 +90,13 @@ namespace rdfEditor.AutoComplete
         }
 
         #endregion
+
+        public String NamespaceUri
+        {
+            get
+            {
+                return this._uri;
+            }
+        }
     }
 }

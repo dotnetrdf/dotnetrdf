@@ -9,39 +9,13 @@ using ICSharpCode.AvalonEdit.Editing;
 
 namespace rdfEditor.AutoComplete
 {
-    public class QNameCompletionData : ICompletionData
+    public class NewBaseDeclaration : ICompletionData
     {
-        private String _qname, _description = String.Empty;
-        private double _priority = 0.0d;
-
-        public QNameCompletionData(String qname)
-        {
-            this._qname = qname;
-        }
-
-        public QNameCompletionData(String qname, String description)
-            : this(qname)
-        {
-            this._description = description;
-        }
-
-        public QNameCompletionData(String qname, double priority)
-            : this(qname)
-        {
-            this._priority = priority;
-        }
-
-        public QNameCompletionData(String qname, String description, double priority)
-            : this(qname, description)
-        {
-            this._priority = priority;
-        }
-
         #region ICompletionData Members
 
         public void Complete(TextArea textArea, ISegment completionSegment, EventArgs insertionRequestEventArgs)
         {
-            textArea.Document.Replace(completionSegment, this.Text);
+            textArea.Document.Replace(completionSegment, "base <Enter Base URI here>");
         }
 
         public object Content
@@ -56,7 +30,7 @@ namespace rdfEditor.AutoComplete
         {
             get 
             {
-                return this._description; 
+                return "Insert a new Base Declaration";
             }
         }
 
@@ -72,7 +46,7 @@ namespace rdfEditor.AutoComplete
         {
             get 
             {
-                return this._priority;
+                return 100.0d; 
             }
         }
 
@@ -80,7 +54,7 @@ namespace rdfEditor.AutoComplete
         {
             get 
             {
-                return this._qname; 
+                return "<New Base Declaration>";
             }
         }
 

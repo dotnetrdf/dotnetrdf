@@ -104,6 +104,12 @@ namespace VDS.RDF
             }
         }
 
+        public void Clear()
+        {
+            this._uris.Clear();
+            this._prefixes.Clear();
+        }
+
         public Uri GetNamespaceUri(string prefix)
         {
             if (this._uris.ContainsKey(prefix))

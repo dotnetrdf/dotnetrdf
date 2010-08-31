@@ -58,10 +58,10 @@
             FontFamily="Consolas"
             FontSize="10pt" Margin="0,0,0,0" 
             DockPanel.Dock="Top"
-            Height="550"
+            Height="545"
             />
-        <StatusBar Name="stsBar" DockPanel.Dock="Bottom">
-            <StatusBarItem Name="stsSyntaxValidation">Validate Syntax as you Type Enabled</StatusBarItem>
+        <StatusBar Name="stsBar" DockPanel.Dock="Bottom" Height="25">
+            <StatusBarItem Name="stsSyntaxValidation" VerticalContentAlignment="Top" HorizontalContentAlignment="Left">Validate Syntax as you Type Enabled</StatusBarItem>
         </StatusBar>
     </DockPanel>
 </Window>
