@@ -11,9 +11,12 @@
               Width="200" 
               DockPanel.Dock="Top"
               >
-            <MenuItem Header="_File">
+            <MenuItem Header="_File" IsCheckable="False">
+                <MenuItem Header="New" Name="mnuNew" Click="mnuNew_Click" />
+                <Separator />
                 <MenuItem Header="Open" Name="mnuOpen" Click="mnuOpen_Click" />
                 <MenuItem Header="Open URI" Name="mnuOpenUri" Click="mnuOpenUri_Click" />
+                <MenuItem Header="Open Query Results" Name="mnuOpenQueryResults" Click="mnuOpenQueryResults_Click" />
                 <Separator />
                 <MenuItem Header="Save" Name="mnuSave" Click="mnuSave_Click" />
                 <MenuItem Header="Save As..." Name="mnuSaveAs" Click="mnuSaveAs_Click" />
@@ -27,6 +30,8 @@
                 </MenuItem>
                 <Separator />
                 <MenuItem Header="Close" Name="mnuClose" Click="mnuClose_Click" />
+                <Separator />
+                <MenuItem Header="Exit" Name="mnuExit" Click="mnuExit_Click" />
             </MenuItem>
             <MenuItem Header="_Options">
                     <MenuItem Header="Enable Syntax Highlighting" Name="mnuEnableHighlighting" IsCheckable="True" IsChecked="True" Click="mnuEnableHighlighting_Click" />
@@ -41,16 +46,16 @@
                         <MenuItem Header="SPARQL Query 1.0" IsCheckable="True" Tag="SparqlQuery10" />
                         <MenuItem Header="SPARQL Query 1.1" IsCheckable="True" Tag="SparqlQuery11" />
                         <MenuItem Header="SPARQL Results Format XML" IsCheckable="True" Tag="SparqlResultsXml"/>
-                        <!--<MenuItem Header="SPARQL Results Format JSON" IsCheckable="True" Tag="SparqlResultsJson" />-->
+                        <MenuItem Header="SPARQL Results Format JSON" IsCheckable="True" Tag="SparqlResultsJson" />
                 </MenuItem>
                 <Separator />
                 <MenuItem Header="Validate Syntax as you Type" Name="mnuValidateAsYouType" IsCheckable="True" IsChecked="True" Click="mnuValidateAsYouType_Click" />
                 <MenuItem Header="Enable Auto-completion" Name="mnuAutoComplete" IsCheckable="True" IsChecked="True" Click="mnuAutoComplete_Click" />
             </MenuItem>
-            <MenuItem Header="_Tools">
+            <MenuItem Header="_Tools" IsCheckable="False">
                 <MenuItem Header="Validate Syntax" Name="mnuValidateSyntax" Click="mnuValidateSyntax_Click" />
             </MenuItem>
-            <MenuItem Header="_Help" />
+            <MenuItem Header="_Help" IsCheckable="False"/>
         </Menu>
         <avalonEdit:TextEditor
             xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"

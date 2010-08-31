@@ -43,11 +43,22 @@ namespace rdfEditor
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
                     data = new StreamReader(response.GetResponseStream()).ReadToEnd();
+                    try
+                    {
+                        this._parser = MimeTypesHelper.GetParser(response.ContentType);
+                    }
+                    catch (RdfParserSelectionException)
+                    {
+                        //Ignore here as we'll try and set the parser in another way next
+                    }
                     response.Close();
                 }
 
                 this._data = data;
-                this._parser = StringParser.GetParser(data);
+                if (this._parser == null)
+                {
+                    this._parser = StringParser.GetParser(data);
+                }
                 this._u = u;
 
                 this.DialogResult = true;

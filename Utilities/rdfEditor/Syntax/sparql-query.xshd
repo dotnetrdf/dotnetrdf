@@ -9,7 +9,8 @@
 	<Color name="LangSpec" foreground="DarkGreen" />
   <Color name="Numbers" foreground="DarkBlue" />
   <Color name="Variables" foreground="DarkOrange" />
-  
+  <Color name="EscapedChar" foreground="Teal" />
+
   <!-- SPARQL Query 1.0 Specification -->
 
   <RuleSet>
@@ -23,6 +24,8 @@
     </Keywords>
     
     <Import ruleSet="Turtle/Literals" />
+
+    <Import ruleSet="Literals" />
 
     <Import ruleSet="Turtle/Resources" />
 
@@ -91,4 +94,27 @@
     </Rule>
     
   </RuleSet>
+
+  <RuleSet name="Literals">
+    <!-- Literals -->
+
+    <Span color="String" multiline="true">
+      <Begin>'''</Begin>
+      <End>'''</End>
+      <RuleSet>
+        <Span begin="\\" end="." color="EscapedChar"/>
+      </RuleSet>
+
+    </Span>
+
+    <Span color="String">
+      <Begin>'</Begin>
+      <End>'</End>
+      <RuleSet>
+        <Span begin="\\" end="." color="EscapedChar"/>
+      </RuleSet>
+    </Span>
+
+  </RuleSet>
+  
 </SyntaxDefinition>

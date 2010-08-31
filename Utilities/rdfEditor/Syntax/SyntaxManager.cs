@@ -28,7 +28,8 @@ namespace rdfEditor.Syntax
             new SyntaxDefinition("RdfJson", "rdfjson.xshd", new String[] { ".json" }, new RdfJsonParser(), new RdfJsonWriter(), new RdfSyntaxValidator(new RdfJsonParser())),
             new SyntaxDefinition("SparqlQuery10", "sparql-query.xshd", new String[] { ".rq" }, new SparqlQueryValidator(SparqlQuerySyntax.Sparql_1_0)),
             new SyntaxDefinition("SparqlQuery11", "sparql-query-11.xshd", new String[] { ".rq" }, new SparqlQueryValidator(SparqlQuerySyntax.Sparql_1_1)),
-            new SyntaxDefinition("SparqlResultsXml", "sparql-results-xml.xshd", new String[] { ".srx" })
+            new SyntaxDefinition("SparqlResultsXml", "sparql-results-xml.xshd", new String[] { ".srx" }, new SparqlResultsValidator(new SparqlXmlParser())),
+            new SyntaxDefinition("SparqlResultsJson", "sparql-results-json.xshd", new String[] { }, new SparqlResultsValidator(new SparqlJsonParser()))
         };
 
         public static bool Initialise()
@@ -79,6 +80,15 @@ namespace rdfEditor.Syntax
 
             //If no resource available try and load from file
             return HighlightingLoader.Load(XmlReader.Create(filename), HighlightingManager.Instance);
+        }
+
+        public static IHighlightingDefinition GetHighlighter(String name)
+        {
+            foreach (SyntaxDefinition def in _builtinDefs)
+            {
+                if (def.Name.Equals(name)) return def.Highlighter;
+            }
+            return null;
         }
 
         public static ISyntaxValidator GetValidator(String name)

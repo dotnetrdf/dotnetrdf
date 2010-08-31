@@ -85,6 +85,9 @@
     <Compile Include="EditorWindow.xaml.cs">
       <DependentUpon>EditorWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="OpenQueryResults.xaml.cs">
+      <DependentUpon>OpenQueryResults.xaml</DependentUpon>
+    </Compile>
     <Compile Include="OpenUri.xaml.cs">
       <DependentUpon>OpenUri.xaml</DependentUpon>
     </Compile>
@@ -105,6 +108,7 @@
     <Compile Include="Syntax\ISyntaxValidator.cs" />
     <Compile Include="Syntax\RdfSyntaxValidator.cs" />
     <Compile Include="Syntax\SparqlQueryValidator.cs" />
+    <Compile Include="Syntax\SparqlResultsValidator.cs" />
     <Compile Include="Syntax\SyntaxDefinition.cs" />
     <Compile Include="Syntax\SyntaxManager.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -125,6 +129,9 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <EmbeddedResource Include="Syntax\sparql-results-json.xshd">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="Syntax\sparql-results-xml.xshd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
@@ -150,6 +157,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="EditorWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="OpenQueryResults.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

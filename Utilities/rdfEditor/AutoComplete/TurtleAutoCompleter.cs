@@ -192,16 +192,21 @@ namespace rdfEditor.AutoComplete
             this._c.StartOffset--;
             this.StartOffset = this._c.StartOffset;
 
+            //Backtrack start point
+            BacktrackStartOffset(editor, s => this.IsValidPartialKeyword(s) || this.IsValidPartialQName(s));
+
             if (this.IsValidPartialKeyword(this.CurrentText))
             {
                 this.State = AutoCompleteState.KeywordOrQName;
                 this.AddCompletionData(this._keywords);
+                this.AddQNameCompletionData();
             }
             else if (this.IsValidPartialQName(this.CurrentText))
             {
                 this.State = AutoCompleteState.QName;
                 this.AddQNameCompletionData();
             }
+            this._c.CompletionList.SelectItem(this.CurrentText);
 
             this._c.Show();
         }
@@ -395,7 +400,6 @@ namespace rdfEditor.AutoComplete
             {
                 //No longer a possible keyword
                 this.State = AutoCompleteState.QName;
-                this.AddQNameCompletionData();
 
                 //Strip keywords from the auto-complete list
                 this.RemoveCompletionData(data => data is KeywordCompletionData);
@@ -662,6 +666,35 @@ namespace rdfEditor.AutoComplete
                 }
             }
             this.AddCompletionData(qnames);
+        }
+
+        protected void BacktrackStartOffset(TextEditor editor, Func<String, bool> testFunc)
+        {
+            int offset = this.StartOffset - 1;
+            int backtracked = 1;
+            if (offset >= 0)
+            {
+                String test = editor.Document.GetText(offset, this.Length + backtracked);
+                while (testFunc(test))
+                {
+                    if (offset > 0)
+                    {
+                        offset--;
+                        backtracked++;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                    test = editor.Document.GetText(offset, this.Length + backtracked);
+                }
+                offset++;
+                if (offset != this.StartOffset)
+                {
+                    this._c.StartOffset = offset;
+                    this.StartOffset = offset;
+                }
+            }
         }
 
         #endregion

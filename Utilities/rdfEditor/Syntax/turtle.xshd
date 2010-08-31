@@ -8,6 +8,7 @@
 	<Color name="BNode" foreground="SteelBlue" />
 	<Color name="LangSpec" foreground="DarkGreen" />
   <Color name="Numbers" foreground="DarkBlue" />
+  <Color name="EscapedChar" foreground="Teal" />
 	
 	<RuleSet>
 	
@@ -49,17 +50,16 @@
       <Begin>"""</Begin>
       <End>"""</End>
       <RuleSet>
-        <!-- span for escape sequences -->
-        <Span begin="\\" end="."/>
+        <Span begin="\\" end="." color="EscapedChar"/>
       </RuleSet>
+
     </Span>
 
     <Span color="String">
       <Begin>"</Begin>
       <End>"</End>
       <RuleSet>
-        <!-- span for escape sequences -->
-        <Span begin="\\" end="."/>
+        <Span begin="\\" end="." color="EscapedChar"/>
       </RuleSet>
     </Span>
 
@@ -71,6 +71,9 @@
     <Span color="URI">
       <Begin>&lt;</Begin>
       <End>&gt;</End>
+      <RuleSet>
+        <Span begin="\\" end="&gt;" color="EscapedChar" />
+      </RuleSet>
     </Span>
 
     <Rule color="QName">

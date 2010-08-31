@@ -37,11 +37,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using VDS.RDF.Query;
 
 namespace VDS.RDF.Parsing
 {
     /// <summary>
-    /// Static Helper Class which allows raw strings of RDF to be parsed directly
+    /// Static Helper Class which allows raw strings of RDF/SPARQL Results to be parsed directly
     /// </summary>
     /// <remarks>
     /// The API structure for dotNetRDF means that our <see cref="IRdfReader">IRdfReader</see> classes which are our Parsers only have to support parsing from a file or a stream.  For most applications this is fine but there may be occassions when you wish to parse a small fragment of RDF and you don't want to have to put it into a file before you can parse it.
@@ -162,6 +163,59 @@ namespace VDS.RDF.Parsing
             }
         }
 
+        public static void ParseResultSet(SparqlResultSet results, String data)
+        {
+            //Try to guess the format
+            String format = "Unknown";
+            try
+            {
+                if (data.Contains("<?xml") && data.Contains("<rdf:RDF"))
+                {
+                    //Probably XML
+                    format = "SPARQL Results XML";
+                    ParseResultSet(results, data, new SparqlXmlParser());
+                }
+                 else if (data.Contains("\"value\"") &&
+                           data.Contains("\"type\"") &&
+                           data.Contains("{") &&
+                           data.Contains("}") &&
+                           data.Contains("[") &&
+                           data.Contains("]"))
+                {
+                    //If we have all those things then it's very likely RDF/Json
+                    format = "SPARQL Results JSON";
+                    ParseResultSet(results, data, new SparqlJsonParser());
+                }
+                else
+                {
+                    throw new RdfParserSelectionException("StringParser is unable to detect the SPARQL Results Format as the given String does not appear to be SPARQL Results in either XML or JSON format");
+                }
+            }
+            catch (RdfParseException parseEx)
+            {
+                //Wrap the exception in an informational exception about what we guessed
+                throw new RdfParserSelectionException("StringParser failed to parse the SPARQL Results string correctly, StringParser auto-detection guessed '" + format + "' but this failed to parse.  SPARQL Results string may be malformed or StringParser may have guessed incorrectly", parseEx);
+            }
+        }
+
+        public static void ParseResultSet(SparqlResultSet results, String data, ISparqlResultsReader reader)
+        {
+            try
+            {
+                MemoryStream mem = new MemoryStream();
+                StreamWriter writer = new StreamWriter(mem);
+                writer.Write(data);
+                writer.Flush();
+                mem.Seek(0, SeekOrigin.Begin);
+
+                reader.Load(results, new StreamReader(mem));
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
         /// <summary>
         /// Uses the rules described in the remarks for the <see cref="StringParser.Parse">Parse()</see> to return the most likely Parser
         /// </summary>
@@ -207,6 +261,29 @@ namespace VDS.RDF.Parsing
                 //Take a stab at it being NTriples
                 //No real way to test as there's nothing particularly distinctive in NTriples
                 return new NTriplesParser();
+            }
+        }
+
+        public static ISparqlResultsReader GetResultSetParser(String data)
+        {
+            if (data.Contains("<?xml") && data.Contains("<rdf:RDF"))
+            {
+                //Probably XML
+                return new SparqlXmlParser();
+            }
+            else if (data.Contains("\"value\"") &&
+               data.Contains("\"type\"") &&
+               data.Contains("{") &&
+               data.Contains("}") &&
+               data.Contains("[") &&
+               data.Contains("]"))
+            {
+                //If we have all those things then it's very likely JSON
+                return new SparqlJsonParser();
+            }
+            else
+            {
+                throw new RdfParserSelectionException("StringParser is unable to detect the SPARQL Results Format as the given String does not appear to be SPARQL Results in either XML or JSON format");
             }
         }
     }

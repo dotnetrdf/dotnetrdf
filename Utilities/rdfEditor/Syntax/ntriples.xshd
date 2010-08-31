@@ -7,6 +7,7 @@
 	<Color name="Punctuation" foreground="DarkGreen" />
 	<Color name="BNode" foreground="SteelBlue" />
 	<Color name="LangSpec" foreground="DarkGreen" />
+  <Color name="EscapedChar" foreground="Teal" />
 	
 	<RuleSet>
 	
@@ -17,7 +18,7 @@
 			<End>"</End>
       <RuleSet>
         <!-- span for escape sequences -->
-        <Span begin="\\" end="."/>
+        <Span begin="\\" end="." color="EscapedChar" />
       </RuleSet>
 		</Span>
 		
@@ -26,6 +27,9 @@
 		<Span color="URI">
 			<Begin>&lt;</Begin>
 			<End>&gt;</End>
+      <RuleSet>
+        <Span begin="\\" end="&gt;" color="EscapedChar" />
+      </RuleSet>
 		</Span>
 		
 		<!-- Blank Nodes -->

@@ -1,4 +1,4 @@
-﻿<SyntaxDefinition name="Turtle" xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
+﻿<SyntaxDefinition name="RdfJson" xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
 	<Color name="Comment" foreground="Green" />
 	<Color name="Keyword" foreground="Red" />
 	<Color name="String" foreground="Blue" />

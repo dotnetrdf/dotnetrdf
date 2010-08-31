@@ -58,7 +58,12 @@ namespace rdfEditor
             _sfd.Filter = _ofd.Filter;
         }
 
-        #region File IO
+        #region File Menu
+
+        private void mnuNew_Click(object sender, RoutedEventArgs e)
+        {
+            mnuClose_Click(sender, e);
+        }
 
         private void mnuOpen_Click(object sender, RoutedEventArgs e)
         {
@@ -86,7 +91,7 @@ namespace rdfEditor
 
         private void mnuOpenUri_Click(object sender, RoutedEventArgs e)
         {
-            if (this._manager.CurrentFile != null && this._manager.HasChanged)
+            if (this._manager.HasChanged)
             {
                 MessageBoxResult res = MessageBox.Show("Would you like to save changes to the current file before opening a URI?", "Save Changes?", MessageBoxButton.YesNoCancel);
                 if (res == MessageBoxResult.Cancel)
@@ -97,10 +102,37 @@ namespace rdfEditor
                 {
                     mnuSave_Click(sender, e);
                 }
+                this._manager.HasChanged = false;
                 mnuClose_Click(sender, e);
             }
 
             OpenUri diag = new OpenUri();
+            if (diag.ShowDialog() == true)
+            {
+                textEditor.Text = diag.RetrievedData;
+                this._manager.HasChanged = true;
+                this._manager.SetHighlighter(diag.Parser);
+            }
+        }
+
+        private void mnuOpenQueryResults_Click(object sender, RoutedEventArgs e)
+        {
+            if (this._manager.HasChanged)
+            {
+                MessageBoxResult res = MessageBox.Show("Would you like to save changes to the current file before opening Query Results?", "Save Changes?", MessageBoxButton.YesNoCancel);
+                if (res == MessageBoxResult.Cancel)
+                {
+                    return;
+                }
+                else if (res == MessageBoxResult.Yes)
+                {
+                    mnuSave_Click(sender, e);
+                }
+                this._manager.HasChanged = false;
+                mnuClose_Click(sender, e);
+            }
+
+            OpenQueryResults diag = new OpenQueryResults();
             if (diag.ShowDialog() == true)
             {
                 textEditor.Text = diag.RetrievedData;
@@ -161,33 +193,6 @@ namespace rdfEditor
                 mnuSave_Click(sender, e);
                 this._manager.AutoDetectSyntaxHighlighter(this._manager.CurrentFile);
             }
-        }
-
-        private void mnuClose_Click(object sender, RoutedEventArgs e)
-        {
-            if (this._manager.HasChanged)
-            {
-                //Prompt user to save
-                MessageBoxResult result = MessageBox.Show("Do you wish to save changes to the current file before closing it?", "Save Changes", MessageBoxButton.YesNoCancel);
-                if (result == MessageBoxResult.Cancel)
-                {
-                    return;
-                }
-                else if (result == MessageBoxResult.Yes)
-                {
-                    mnuSave_Click(sender, e);
-                }
-                else if (result == MessageBoxResult.No)
-                {
-                    return;
-                }
-            }
-
-            textEditor.Text = String.Empty;
-            this._manager.HasChanged = false;
-            this._manager.CurrentFile = null;
-            this.Title = "rdfEditor";
-            this._manager.SetNoHighlighting();
         }
 
         private void SaveWith(IRdfWriter writer)
@@ -303,6 +308,34 @@ namespace rdfEditor
         private void mnuSaveWithRdfa_Click(object sender, RoutedEventArgs e)
         {
             this.SaveWith(new HtmlWriter());
+        }
+
+        private void mnuClose_Click(object sender, RoutedEventArgs e)
+        {
+            if (this._manager.HasChanged)
+            {
+                //Prompt user to save
+                MessageBoxResult result = MessageBox.Show("Do you wish to save changes to the current file before closing it?", "Save Changes", MessageBoxButton.YesNoCancel);
+                if (result == MessageBoxResult.Cancel)
+                {
+                    return;
+                }
+                else if (result == MessageBoxResult.Yes)
+                {
+                    mnuSave_Click(sender, e);
+                }
+            }
+
+            textEditor.Text = String.Empty;
+            this._manager.HasChanged = false;
+            this._manager.CurrentFile = null;
+            this.Title = "rdfEditor";
+            this._manager.SetNoHighlighting();
+        }
+
+        private void mnuExit_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
         }
 
         #endregion

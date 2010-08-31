@@ -210,6 +210,15 @@ namespace rdfEditor
             this.SetCurrentAutoCompleter(syntax);
         }
 
+        public void SetHighlighter(IHighlightingDefinition def)
+        {
+            this._editor.SyntaxHighlighting = def;
+            String syntax = (this._editor.SyntaxHighlighting == null) ? "None" : def.Name;
+            this.SetCurrentHighlighterChecked(syntax);
+            this.SetCurrentValidator(syntax);
+            this.SetCurrentAutoCompleter(syntax);
+        }
+
         public void SetHighlighter(IRdfReader parser)
         {
             if (parser is NTriplesParser)
@@ -235,6 +244,51 @@ namespace rdfEditor
             else
             {
                 this.SetNoHighlighting();
+            }
+        }
+
+        public void SetHighlighter(ISparqlResultsReader parser)
+        {
+            if (parser is SparqlXmlParser)
+            {
+                this.SetHighlighter("SparqlResultsXml");
+            }
+            else if (parser is SparqlJsonParser)
+            {
+                this.SetHighlighter("SparqlResultsJson");
+            }
+            else
+            {
+                this.SetNoHighlighting();
+            }
+        }
+
+        public void SetValidator(ISyntaxValidator validator)
+        {
+            this._currValidator = validator;
+            if (this._validatorStatus != null)
+            {
+                if (this._validateAsYouType)
+                {
+                    this.DoValidation();
+                }
+                else
+                {
+                    this._validatorStatus.Content = "Validate Syntax as you Type is Disabled";
+                }
+            }
+        }
+
+        public void SetAutoCompleter(IAutoCompleter completer)
+        {
+            this._autoCompleter = completer;
+            if (this._autoCompleter != null)
+            {
+                this._autoCompleter.Initialise(this._editor);
+                if (!this._enableAutoComplete)
+                {
+                    this._autoCompleter.State = AutoCompleteState.Disabled;
+                }
             }
         }
 

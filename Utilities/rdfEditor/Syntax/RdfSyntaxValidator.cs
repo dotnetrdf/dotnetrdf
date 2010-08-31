@@ -23,20 +23,20 @@ namespace rdfEditor.Syntax
                 Graph g = new Graph();
                 StringParser.Parse(g, data, this._parser);
 
-                message = "Valid RDF - " + g.Triples.Count + " Triples - Parser " + this._parser.GetType().Name;
+                message = "Valid RDF - " + g.Triples.Count + " Triples - Parser: " + this._parser.GetType().Name;
                 return true;
             }
             catch (RdfParseException parseEx)
             {
-                message = "Invalid RDF - Parsing Error from Parser " + this._parser.GetType().Name + " - " + parseEx.Message;
+                message = "Invalid RDF - Parsing Error from Parser: " + this._parser.GetType().Name + " - " + parseEx.Message;
             }
             catch (RdfException rdfEx)
             {
-                message = "Invalid RDF - RDF Error from Parser " + this._parser.GetType().Name + " - " + rdfEx.Message;
+                message = "Invalid RDF - RDF Error from Parser: " + this._parser.GetType().Name + " - " + rdfEx.Message;
             }
             catch (Exception ex)
             {
-                message = "Invalid RDF - Error from Parser " + this._parser.GetType().Name + " - " + ex.Message;
+                message = "Invalid RDF - Error from Parser: " + this._parser.GetType().Name + " - " + ex.Message;
             }
             return false;
         }
