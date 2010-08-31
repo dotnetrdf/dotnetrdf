@@ -110,6 +110,7 @@ namespace rdfEditor.AutoComplete
                 {
                     this.State = AutoCompleteState.Inserted;
                 }
+                if (this._c != null) this._c.Close();
             }
             else
             {
@@ -125,6 +126,7 @@ namespace rdfEditor.AutoComplete
                 this.State = AutoCompleteState.Inserted;
                 this.EndAutoComplete(this._editor);
             }
+            if (this._c != null) this._c.Close();
         }
 
         private void CompletionList_InsertionRequested(object sender, EventArgs e)

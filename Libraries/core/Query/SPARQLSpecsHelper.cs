@@ -149,7 +149,8 @@ namespace VDS.RDF.Query
         /// <summary>
         /// Set of SPARQL Keywords that are Non-Query Keywords
         /// </summary>
-        public static String[] NonQueryKeywords = {   SparqlKeywordOrder, 
+        public static String[] NonQueryKeywords = {   
+                                                      SparqlKeywordOrder, 
                                                       SparqlKeywordBy, 
                                                       SparqlKeywordLimit, 
                                                       SparqlKeywordOffset, 
@@ -179,7 +180,8 @@ namespace VDS.RDF.Query
         /// <summary>
         /// Set of SPARQL Keywords that are Function Keywords
         /// </summary>
-        public static String[] FunctionKeywords = {   SparqlKeywordBound,
+        public static String[] FunctionKeywords = {   
+                                                      SparqlKeywordBound,
                                                       SparqlKeywordCoalesce,
                                                       SparqlKeywordDataType, 
                                                       SparqlKeywordIf,
@@ -202,7 +204,8 @@ namespace VDS.RDF.Query
         /// <summary>
         /// Set of SPARQL Keywords that are Aggregate Keywords
         /// </summary>
-        public static String[] AggregateKeywords = {   SparqlKeywordAvg, 
+        public static String[] AggregateKeywords = {   
+                                                       SparqlKeywordAvg, 
                                                        SparqlKeywordCount, 
                                                        SparqlKeywordMax, 
                                                        SparqlKeywordMedian,
@@ -220,7 +223,8 @@ namespace VDS.RDF.Query
         /// <summary>
         /// Set of SPARQL Keywords that are Update Keywords
         /// </summary>
-        public static String[] UpdateKeywords = {   SparqlKeywordClear,
+        public static String[] UpdateKeywords = {   
+                                                    SparqlKeywordClear,
                                                     SparqlKeywordCreate,
                                                     SparqlKeywordData,
                                                     SparqlKeywordDefault,
@@ -239,7 +243,8 @@ namespace VDS.RDF.Query
         /// <summary>
         /// Set of XML Schema Data Types which are derived from Integer and can be treated as Integers by Sparql
         /// </summary>
-        public static String[] IntegerDataTypes = {   XmlSpecsHelper.XmlSchemaDataTypeByte, 
+        public static String[] IntegerDataTypes = {   
+                                                      XmlSpecsHelper.XmlSchemaDataTypeByte, 
                                                       XmlSpecsHelper.XmlSchemaDataTypeInt,
                                                       XmlSpecsHelper.XmlSchemaDataTypeInteger, 
                                                       XmlSpecsHelper.XmlSchemaDataTypeLong, 
@@ -256,7 +261,8 @@ namespace VDS.RDF.Query
         /// <summary>
         /// Set of IRIs for supported Cast Functions
         /// </summary>
-        public static String[] SupportedCastFunctions = {   XmlSpecsHelper.XmlSchemaDataTypeBoolean, 
+        public static String[] SupportedCastFunctions = {   
+                                                            XmlSpecsHelper.XmlSchemaDataTypeBoolean, 
                                                             XmlSpecsHelper.XmlSchemaDataTypeDateTime, 
                                                             XmlSpecsHelper.XmlSchemaDataTypeDecimal, 
                                                             XmlSpecsHelper.XmlSchemaDataTypeDouble, 
@@ -264,6 +270,46 @@ namespace VDS.RDF.Query
                                                             XmlSpecsHelper.XmlSchemaDataTypeInteger, 
                                                             XmlSpecsHelper.XmlSchemaDataTypeString 
                                                         };
+
+        /// <summary>
+        /// Set of Keywords for SPARQL Query 1.0
+        /// </summary>
+        public static String[] SparqlQuery10Keywords = {
+                                                        SparqlKeywordAsk,
+                                                        SparqlKeywordBase,
+                                                        SparqlKeywordBound,
+                                                        SparqlKeywordBy,
+                                                        SparqlKeywordConstruct,
+                                                        SparqlKeywordDataType,
+                                                        SparqlKeywordDesc,
+                                                        SparqlKeywordDescribe,
+                                                        SparqlKeywordDistinct,
+                                                        SparqlKeywordFilter,
+                                                        SparqlKeywordFrom,
+                                                        SparqlKeywordFromNamed,
+                                                        SparqlKeywordGraph,
+                                                        SparqlKeywordIsBlank,
+                                                        SparqlKeywordIsIri,
+                                                        SparqlKeywordIsLiteral,
+                                                        SparqlKeywordIsUri,
+                                                        SparqlKeywordLang,
+                                                        SparqlKeywordLangMatches,
+                                                        SparqlKeywordLimit,
+                                                        SparqlKeywordNamed,
+                                                        SparqlKeywordOffset,
+                                                        SparqlKeywordOptional,
+                                                        SparqlKeywordOrder,
+                                                        SparqlKeywordOrderBy,
+                                                        SparqlKeywordPrefix,
+                                                        SparqlKeywordReduced,
+                                                        SparqlKeywordRegex,
+                                                        SparqlKeywordSameTerm,
+                                                        SparqlKeywordSelect,
+                                                        SparqlKeywordStr,
+                                                        SparqlKeywordUnion,
+                                                        SparqlKeywordWhere,
+                                                       };
+
         /// <summary>
         /// Regular Expression Pattern for Valid Integers in Sparql
         /// </summary>

@@ -21,7 +21,8 @@ namespace rdfEditor.AutoComplete
         private static List<AutoCompleteDefinition> _builtinCompleters = new List<AutoCompleteDefinition>()
         {
             new AutoCompleteDefinition("Turtle", new TurtleAutoCompleter()),
-            new AutoCompleteDefinition("Notation3", new TurtleAutoCompleter())
+            new AutoCompleteDefinition("Notation3", new TurtleAutoCompleter()),
+            new AutoCompleteDefinition("SparqlQuery10", new SparqlAutoCompleter(SparqlQuerySyntax.Sparql_1_0))
         };
 
         private static List<ICompletionData> _builtinPrefixes = new List<ICompletionData>()

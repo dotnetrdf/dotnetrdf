@@ -21,7 +21,7 @@ namespace rdfEditor.AutoComplete
         private const String PrefixRegexPattern = @"@prefix\s+(\p{L}(\p{L}|\p{N}|-|_)*)?:\s+<((\\>|[^>])*)>\s*\.";
         private LoadNamespaceTermsDelegate _namespaceLoader = new LoadNamespaceTermsDelegate(AutoCompleteManager.LoadNamespaceTerms);
 
-        private List<ICompletionData> _keywords = new List<ICompletionData>()
+        protected List<ICompletionData> _keywords = new List<ICompletionData>()
         {
             new KeywordCompletionData("true", "Keyword representing true - equivalent to the literal \"true\"^^<" + XmlSpecsHelper.XmlSchemaDataTypeBoolean + ">"),
             new KeywordCompletionData("false", "Keyword representing false - equivalent to the literal \"false\"^^<" + XmlSpecsHelper.XmlSchemaDataTypeBoolean + ">"),
@@ -428,6 +428,17 @@ namespace rdfEditor.AutoComplete
             {
                 this.AbortAutoComplete();
                 this.DetectNamespaces(editor);
+            }
+
+            if (e.Text.Equals("."))
+            {
+                String testText = editor.Document.GetText(this.StartOffset - 1, this.Length + 1);
+                if (Regex.IsMatch(testText, PrefixRegexPattern))
+                {
+                    this.FinishAutoComplete(false, true);
+                    this.DetectNamespaces(editor);
+                    return;
+                }
             }
 
             int testLength = Math.Min(PrefixDeclaration.Length, this.CurrentText.Length);

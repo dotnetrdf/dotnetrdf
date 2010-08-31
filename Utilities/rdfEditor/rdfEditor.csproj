@@ -80,6 +80,7 @@
     <Compile Include="AutoComplete\NewBaseDeclaration.cs" />
     <Compile Include="AutoComplete\PrefixCompletionData.cs" />
     <Compile Include="AutoComplete\QNameCompletionData.cs" />
+    <Compile Include="AutoComplete\SparqlAutoCompleter.cs" />
     <Compile Include="AutoComplete\TurtleAutoCompleter.cs" />
     <Compile Include="EditorWindow.xaml.cs">
       <DependentUpon>EditorWindow.xaml</DependentUpon>
