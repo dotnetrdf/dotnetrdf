@@ -33,7 +33,17 @@ namespace rdfEditor.AutoComplete
             this._c.CloseAutomatically = true;
             this._c.CloseWhenCaretAtBeginning = true;
             this._c.Closed += new EventHandler(this.CompletionWindowClosed);
+            this._c.KeyDown += new KeyEventHandler(CompletionWindowKeyDown);
             this._startOffset = this._c.StartOffset;
+        }
+
+        void CompletionWindowKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Space && e.KeyboardDevice.Modifiers == ModifierKeys.Control)
+            {
+                this._c.CompletionList.RequestInsertion(e);
+                e.Handled = true;
+            }
         }
 
         protected void SetupCompletionWindow(TextArea area, IEnumerable<ICompletionData> data)

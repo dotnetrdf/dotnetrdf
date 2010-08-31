@@ -18,7 +18,7 @@ namespace rdfEditor.AutoComplete
     {
         private const String PrefixDeclaration = "prefix";
         private const String BaseDeclaration = "base";
-        private const String PrefixRegexPattern = @"@prefix\s+(\p{L}(\p{L}|\p{N}|-|_)*):\s+<((\\>|[^>])*)>\s*\.";
+        private const String PrefixRegexPattern = @"@prefix\s+(\p{L}(\p{L}|\p{N}|-|_)*)?:\s+<((\\>|[^>])*)>\s*\.";
         private LoadNamespaceTermsDelegate _namespaceLoader = new LoadNamespaceTermsDelegate(AutoCompleteManager.LoadNamespaceTerms);
 
         private List<ICompletionData> _keywords = new List<ICompletionData>()
@@ -172,8 +172,13 @@ namespace rdfEditor.AutoComplete
         protected virtual void StartQNameCompletion(TextEditor editor, TextCompositionEventArgs e)
         {
             this.State = AutoCompleteState.QName;
-            //this.SetupCompletionWindow(editor.TextArea);
-            //this._c.Show();
+
+            this.SetupCompletionWindow(editor.TextArea);
+            this._c.StartOffset--;
+            this.StartOffset = this._c.StartOffset;
+            this.AddQNameCompletionData();
+
+            this._c.Show();
         }
 
         protected virtual void StartBNodeCompletion(TextEditor editor, TextCompositionEventArgs e)
