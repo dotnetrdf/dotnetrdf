@@ -175,7 +175,17 @@ namespace VDS.RDF.Parsing
                         local = _cache.GetLocalCopy(u);
                         if (local != null)
                         {
-                            FileLoader.Load(g, local, new TurtleParser());
+                            try
+                            {
+                                FileLoader.Load(g, local, new TurtleParser());
+                            }
+                            catch
+                            {
+                                //If we get an Exception we failed to access the file successfully
+                                _cache.RemoveETag(u);
+                                _cache.RemoveLocalCopy(u);
+                                UriLoader.Load(g, u);
+                            }
                             return;
                         }
                     }
@@ -244,7 +254,17 @@ namespace VDS.RDF.Parsing
                                 if (_cache.HasLocalCopy(u, false))
                                 {
                                     local = _cache.GetLocalCopy(u);
-                                    FileLoader.Load(g, local, new TurtleParser());
+                                    try
+                                    {
+                                        FileLoader.Load(g, local, new TurtleParser());
+                                    }
+                                    catch
+                                    {
+                                        //If we get an Exception we failed to access the file successfully
+                                        _cache.RemoveETag(u);
+                                        _cache.RemoveLocalCopy(u);
+                                        UriLoader.Load(g, u);
+                                    }
                                     return;
                                 }
                                 else
@@ -301,7 +321,17 @@ namespace VDS.RDF.Parsing
                         if (_cache.HasLocalCopy(u, false))
                         {
                             String local = _cache.GetLocalCopy(u);
-                            FileLoader.Load(g, local, new TurtleParser());
+                            try
+                            {
+                                FileLoader.Load(g, local, new TurtleParser());
+                            }
+                            catch
+                            {
+                                //If we get an Exception we failed to access the file successfully
+                                _cache.RemoveETag(u);
+                                _cache.RemoveLocalCopy(u);
+                                UriLoader.Load(g, u);
+                            }
                             return;
                         }
                         else

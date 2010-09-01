@@ -18,18 +18,20 @@ namespace rdfEditor.AutoComplete
     {
         private const String PrefixDeclaration = "prefix";
         private const String BaseDeclaration = "base";
-        private const String PrefixRegexPattern = @"@prefix\s+(\p{L}(\p{L}|\p{N}|-|_)*)?:\s+<((\\>|[^>])*)>\s*\.";
+        protected String PrefixRegexPattern = @"@prefix\s+(\p{L}(\p{L}|\p{N}|-|_)*)?:\s+<((\\>|[^>])*)>\s*\.";
+        protected String BlankNodePattern = @"_:\p{L}(\p{L}|\p{N}|-|_)*";
         private LoadNamespaceTermsDelegate _namespaceLoader = new LoadNamespaceTermsDelegate(AutoCompleteManager.LoadNamespaceTerms);
 
         protected List<ICompletionData> _keywords = new List<ICompletionData>()
         {
-            new KeywordCompletionData("true", "Keyword representing true - equivalent to the literal \"true\"^^<" + XmlSpecsHelper.XmlSchemaDataTypeBoolean + ">"),
+            new KeywordCompletionData("a", "Shorthand for RDF type predicate - equivalent to the URI <" + RdfSpecsHelper.RdfType + ">"),
             new KeywordCompletionData("false", "Keyword representing false - equivalent to the literal \"false\"^^<" + XmlSpecsHelper.XmlSchemaDataTypeBoolean + ">"),
-            new KeywordCompletionData("a", "Shorthand for RDF type predicate - equivalent to the URI <" + RdfSpecsHelper.RdfType + ">")
+            new KeywordCompletionData("true", "Keyword representing true - equivalent to the literal \"true\"^^<" + XmlSpecsHelper.XmlSchemaDataTypeBoolean + ">")
         };
 
         private NamespaceMapper _nsmap = new NamespaceMapper(true);
         private Dictionary<String, List<NamespaceTerm>> _namespaceTerms = new Dictionary<string, List<NamespaceTerm>>();
+        private HashSet<ICompletionData> _bnodes = new HashSet<ICompletionData>();
 
         public override void Initialise(TextEditor editor)
         {
@@ -47,12 +49,14 @@ namespace rdfEditor.AutoComplete
         public override void DetectState(TextEditor editor)
         {
             //Look for defined Prefixes - we have to clear the list of namespaces and prefixes since they might have been altered
-            this._nsmap.Clear();
             this.DetectNamespaces(editor);
+            this.DetectBlankNodes(editor);
         }
 
         protected virtual void DetectNamespaces(TextEditor editor)
         {
+            this._nsmap.Clear();
+
             foreach (Match m in Regex.Matches(editor.Text, PrefixRegexPattern))
             {
                 String prefix = m.Groups[1].Value;
@@ -62,6 +66,16 @@ namespace rdfEditor.AutoComplete
                 {
                     this._namespaceLoader.BeginInvoke(nsUri, this.LoadNamespaceTermsCallback, null);
                 }
+            }
+        }
+
+        protected virtual void DetectBlankNodes(TextEditor editor)
+        {
+            this._bnodes.Clear();
+
+            foreach (Match m in Regex.Matches(editor.Text, BlankNodePattern))
+            {
+                this._bnodes.Add(new BlankNodeCompletionData(m.Value));
             }
         }
 
@@ -184,6 +198,14 @@ namespace rdfEditor.AutoComplete
         protected virtual void StartBNodeCompletion(TextEditor editor, TextCompositionEventArgs e)
         {
             this.State = AutoCompleteState.BNode;
+
+            this.SetupCompletionWindow(editor.TextArea, this._bnodes);
+            this._c.StartOffset--;
+            this.StartOffset = this._c.StartOffset;
+
+            this._c.CompletionList.SelectItem(this.CurrentText);
+
+            this._c.Show();
         }
 
         protected virtual void StartKeywordOrQNameCompletion(TextEditor editor, TextCompositionEventArgs e)
@@ -233,6 +255,15 @@ namespace rdfEditor.AutoComplete
             //If not currently auto-completing see if we can start a completion
             if (this.State == AutoCompleteState.None)
             {
+                this.StartAutoComplete(editor, e);
+                return;
+            }
+
+            //If Length is less than zero then user has moved the caret so we'll abort our completion and start a new one
+            if (this.Length < 0)
+            {
+                this.AbortAutoComplete();
+                //TODO: Should probably call DetectState() here once it's properly implemented
                 this.StartAutoComplete(editor, e);
                 return;
             }
@@ -367,10 +398,21 @@ namespace rdfEditor.AutoComplete
 
         protected virtual void TryBNodeCompletion(TextEditor editor, TextCompositionEventArgs e)
         {
-            if (this.IsNewLine(e.Text) || !this.IsValidPartialBlankNodeID(this.CurrentText.ToString()))
+            if (this.IsNewLine(e.Text)) this.FinishAutoComplete(true, false);
+
+            char c = e.Text[0];
+            if (Char.IsWhiteSpace(c) || (Char.IsPunctuation(c) && c != '_' && c != '-' && c != ':'))
+            {
+                this.AbortAutoComplete();
+                this.DetectBlankNodes(editor);
+                return;
+            }
+
+            if (!this.IsValidPartialBlankNodeID(this.CurrentText.ToString()))
             {
                 //Not a BNode ID so close the window
                 this.AbortAutoComplete();
+                this.DetectBlankNodes(editor);
             }
         }
 
@@ -389,7 +431,11 @@ namespace rdfEditor.AutoComplete
             if (this.IsNewLine(e.Text)) this.FinishAutoComplete(true, true);
 
             char c = e.Text[0];
-            if (Char.IsWhiteSpace(c) || (Char.IsPunctuation(c) && c != '_' && c != '-' && c != ':')) this.AbortAutoComplete();
+            if (Char.IsWhiteSpace(c) || (Char.IsPunctuation(c) && c != '_' && c != '-' && c != ':'))
+            {
+                this.AbortAutoComplete();
+                return;
+            }
 
             if (!this.IsValidPartialKeyword(this.CurrentText.ToString()) && !this.IsValidPartialQName(this.CurrentText.ToString()))
             {
@@ -505,6 +551,10 @@ namespace rdfEditor.AutoComplete
                     {
                         editor.Document.Insert(offset, " ");
                     }
+                    break;
+
+                case AutoCompleteState.BNode:
+                    this.DetectBlankNodes(editor);
                     break;
             }
 
@@ -665,6 +715,7 @@ namespace rdfEditor.AutoComplete
                     }
                 }
             }
+            qnames.Sort();
             this.AddCompletionData(qnames);
         }
 
@@ -698,5 +749,10 @@ namespace rdfEditor.AutoComplete
         }
 
         #endregion
+
+        public override object Clone()
+        {
+            return new TurtleAutoCompleter();
+        }
     }
 }

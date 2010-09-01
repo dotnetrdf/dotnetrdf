@@ -18,13 +18,6 @@ namespace rdfEditor.AutoComplete
     {
         private static bool _init = false;
 
-        private static List<AutoCompleteDefinition> _builtinCompleters = new List<AutoCompleteDefinition>()
-        {
-            new AutoCompleteDefinition("Turtle", new TurtleAutoCompleter()),
-            new AutoCompleteDefinition("Notation3", new TurtleAutoCompleter()),
-            new AutoCompleteDefinition("SparqlQuery10", new SparqlAutoCompleter(SparqlQuerySyntax.Sparql_1_0))
-        };
-
         private static List<ICompletionData> _builtinPrefixes = new List<ICompletionData>()
         {
             //Standard Prefixes
@@ -39,6 +32,8 @@ namespace rdfEditor.AutoComplete
             new PrefixCompletionData("foaf", "http://xmlns.com/foaf/0.1/", "Friend of a Friend Namespace for describing social networks"),
             new PrefixCompletionData("vcard", "http://www.w3.org/2006/vcard/ns#", "VCard Namespace"),
             new PrefixCompletionData("gr", "http://purl.org/goodrelations/v1#", "Good Relations Namespace for describing eCommerce"),
+            new PrefixCompletionData("sioc", "http://rdfs.org/sioc/ns#", "Semantically Interlinked Online Communities Namespaces for describing social networks and online communitities"),
+            new PrefixCompletionData("doap", "http://usefulinc.com/ns/doap#", "Description of a Project namespaces for describing projects"),
 
             //Useful SPARQL Prefixes
             new PrefixCompletionData("fn", XPathFunctionFactory.XPathFunctionsNamespace, "XPath Functions Namespace used to refer to functions by URI in SPARQL queries"),
@@ -49,6 +44,15 @@ namespace rdfEditor.AutoComplete
             new PrefixCompletionData("dnr", ConfigurationLoader.ConfigurationNamespace, "dotNetRDF Configuration Namespace for specifying configuration files")
         };
 
+        private static List<AutoCompleteDefinition> _builtinCompleters = new List<AutoCompleteDefinition>()
+        {
+            new AutoCompleteDefinition("Turtle", new TurtleAutoCompleter()),
+            new AutoCompleteDefinition("Notation3", new Notation3AutoCompleter()),
+            new AutoCompleteDefinition("SparqlQuery10", new SparqlAutoCompleter(SparqlQuerySyntax.Sparql_1_0)),
+            new AutoCompleteDefinition("SparqlQuery11", new SparqlAutoCompleter(SparqlQuerySyntax.Sparql_1_1)),
+            new AutoCompleteDefinition("SparqlUpdate11", new SparqlUpdateAutoCompleter())
+        };
+
         private static List<NamespaceTerm> _terms = new List<NamespaceTerm>();
         private static HashSet<String> _loadedNamespaces = new HashSet<string>();
         private static LoadNamespaceTermsDelegate _namespaceLoader = new LoadNamespaceTermsDelegate(AutoCompleteManager.LoadNamespaceTerms);
@@ -56,27 +60,25 @@ namespace rdfEditor.AutoComplete
         public static void Initialise()
         {
             if (_init) return;
+            _init = true;
 
             //Have to intialise the Syntax Manager first
             SyntaxManager.Initialise();
-
-            //Then register the auto-completers
-            foreach (AutoCompleteDefinition def in _builtinCompleters)
-            {
-                SyntaxDefinition syntaxDef = SyntaxManager.GetDefinition(def.Name);
-                if (syntaxDef != null)
-                {
-                    syntaxDef.AutoCompleter = def.AutoCompleter;
-                }
-            }
 
             //Then start lazy loading Namespace Terms
             foreach (PrefixCompletionData prefix in _builtinPrefixes.OfType<PrefixCompletionData>())
             {
                 _namespaceLoader.BeginInvoke(prefix.NamespaceUri, InitialiseNamepaceTerms, null);
             }
+        }
 
-            _init = true;
+        public static IAutoCompleter GetAutoCompleter(String name)
+        {
+            foreach (AutoCompleteDefinition def in _builtinCompleters)
+            {
+                if (def.Name.Equals(name)) return (IAutoCompleter)def.AutoCompleter.Clone();
+            }
+            return null;
         }
 
         private static void InitialiseNamepaceTerms(IAsyncResult result)
@@ -150,7 +152,16 @@ namespace rdfEditor.AutoComplete
             {
                 //If an exception happens then we can't get namespace terms for whatever reason
                 //We still count the namespace as loaded so we don't try this again
-                System.Diagnostics.Debug.WriteLine(ex.Message);
+                StringBuilder error = new StringBuilder();
+                error.AppendLine("Error loading Namespace from URI " + namespaceUri);
+                error.AppendLine(ex.Message);
+                while (ex.InnerException != null)
+                {
+                    error.AppendLine(ex.InnerException.Message);
+                    ex = ex.InnerException;
+                }
+                error.AppendLine();
+                System.Diagnostics.Debug.WriteLine(error.ToString());
             }
             _loadedNamespaces.Add(namespaceUri);
             return GetNamespaceTerms(namespaceUri);

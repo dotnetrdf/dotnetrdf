@@ -37,6 +37,7 @@
                     <MenuItem Header="Enable Syntax Highlighting" Name="mnuEnableHighlighting" IsCheckable="True" IsChecked="True" Click="mnuEnableHighlighting_Click" />
                     <MenuItem Header="Highlighter" Name="mnuCurrentHighlighter">
                         <MenuItem Header="None" IsCheckable="True" IsChecked="True" Tag="None" />
+                        <Separator />
                         <MenuItem Header="RDF/XML" IsCheckable="True" Tag="RdfXml" />
                         <MenuItem Header="RDF/JSON" IsCheckable="True" Tag="RdfJson" />
                         <MenuItem Header="NTriples" IsCheckable="True" Tag="NTriples" />
@@ -45,6 +46,9 @@
                         <Separator />
                         <MenuItem Header="SPARQL Query 1.0" IsCheckable="True" Tag="SparqlQuery10" />
                         <MenuItem Header="SPARQL Query 1.1" IsCheckable="True" Tag="SparqlQuery11" />
+                        <Separator />
+                        <MenuItem Header="SPARQL Update 1.1" IsCheckable="True" Tag="SparqlUpdate11" />
+                        <Separator />
                         <MenuItem Header="SPARQL Results Format XML" IsCheckable="True" Tag="SparqlResultsXml"/>
                         <MenuItem Header="SPARQL Results Format JSON" IsCheckable="True" Tag="SparqlResultsJson" />
                 </MenuItem>

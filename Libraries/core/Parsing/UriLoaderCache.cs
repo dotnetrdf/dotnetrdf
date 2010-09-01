@@ -56,6 +56,7 @@ namespace VDS.RDF.Parsing
         private String _etagFile;
         private Dictionary<int, String> _etags = new Dictionary<int, string>();
         private CompressingTurtleWriter _ttlwriter = new CompressingTurtleWriter(WriterCompressionLevel.High);
+        private HashSet<String> _nocache = new HashSet<string>();
 
         /// <summary>
         /// Creates a new Cache which uses the system temporary directory as the cache location
@@ -147,30 +148,37 @@ namespace VDS.RDF.Parsing
             this._etagFile = Path.Combine(this._cacheDir, "dotnetrdf-etags.txt");
             if (File.Exists(this._etagFile))
             {
-                //Read in the existing ETags
-                using (StreamReader reader = new StreamReader(this._etagFile, Encoding.UTF8))
+                try
                 {
-                    while (!reader.EndOfStream)
+                    //Read in the existing ETags
+                    using (StreamReader reader = new StreamReader(this._etagFile, Encoding.UTF8))
                     {
-                        String line = reader.ReadLine();
-                        try 
+                        while (!reader.EndOfStream)
                         {
-                            String[] data = line.Split('\t');
-                            int i = Int32.Parse(data[0]);
-                            String etag = data[1];
-
-                            if (!this._etags.ContainsKey(i))
+                            String line = reader.ReadLine();
+                            try
                             {
-                                this._etags.Add(i, etag);
+                                String[] data = line.Split('\t');
+                                int i = Int32.Parse(data[0]);
+                                String etag = data[1];
+
+                                if (!this._etags.ContainsKey(i))
+                                {
+                                    this._etags.Add(i, etag);
+                                }
                             }
-                        } 
-                        catch 
-                        {
-                            //Ignore this line and continue if we can
+                            catch
+                            {
+                                //Ignore this line and continue if we can
+                            }
                         }
                     }
+                    this._canCacheETag = true;
                 }
-                this._canCacheETag = true;
+                catch
+                {
+                    //If error then we can't cache ETags
+                }
             }
             else
             {
@@ -218,6 +226,7 @@ namespace VDS.RDF.Parsing
         {
             if (this._canCacheETag)
             {
+                if (this._nocache.Contains(u.GetSha256Hash())) return false;
                 return this._etags.ContainsKey(u.GetEnhancedHashCode()) && this.HasLocalCopy(u, false);
             }
             else
@@ -236,6 +245,7 @@ namespace VDS.RDF.Parsing
         {
             if (this._canCacheETag)
             {
+                if (this._nocache.Contains(u.GetSha256Hash())) throw new KeyNotFoundException("No ETag was found for the URI " + u.ToString());
                 int id = u.GetEnhancedHashCode();
                 if (this._etags.ContainsKey(id))
                 {
@@ -258,20 +268,50 @@ namespace VDS.RDF.Parsing
         /// <param name="u">URI</param>
         public void RemoveETag(Uri u)
         {
-            if (this._canCacheETag)
+            try
             {
-                if (this._etags.ContainsKey(u.GetEnhancedHashCode()))
+                if (this._canCacheETag)
                 {
-                    this._etags.Remove(u.GetEnhancedHashCode());
-                    //If we did remove an ETag then we need to rewrite our ETag cache file
-                    using (StreamWriter writer = new StreamWriter(this._etagFile, false, Encoding.UTF8))
+                    if (this._etags.ContainsKey(u.GetEnhancedHashCode()))
                     {
-                        foreach (KeyValuePair<int, String> etag in this._etags)
+                        this._etags.Remove(u.GetEnhancedHashCode());
+                        //If we did remove an ETag then we need to rewrite our ETag cache file
+                        using (StreamWriter writer = new StreamWriter(this._etagFile, false, Encoding.UTF8))
                         {
-                            writer.WriteLine(etag.Key + "\t" + etag.Value);
+                            foreach (KeyValuePair<int, String> etag in this._etags)
+                            {
+                                writer.WriteLine(etag.Key + "\t" + etag.Value);
+                            }
                         }
                     }
                 }
+            }
+            catch (IOException)
+            {
+                //If an IO Exception occurs ignore it, something went wrong with cache alteration
+            }
+        }
+
+        /// <summary>
+        /// Removes a locally cached copy of a URIs results from the Cache
+        /// </summary>
+        /// <param name="u">URI</param>
+        public void RemoveLocalCopy(Uri u)
+        {
+            if (u == null) return;
+
+            try
+            {
+                String graph = Path.Combine(this._graphDir, u.GetSha256Hash());
+                if (File.Exists(graph))
+                {
+                    File.Delete(graph);
+                }
+            }
+            catch
+            {
+                //If error add to the list of uncachable URIs
+                this._nocache.Add(u.GetSha256Hash());
             }
         }
 
@@ -283,21 +323,30 @@ namespace VDS.RDF.Parsing
         /// <returns></returns>
         public bool HasLocalCopy(Uri u, bool requireFreshness)
         {
-            if (this._canCacheGraphs)
+            try
             {
-                String graph = Path.Combine(this._graphDir, u.GetSha256Hash());
-                if (File.Exists(graph))
+                if (this._canCacheGraphs)
                 {
-                    if (requireFreshness)
+                    if (this._nocache.Contains(u.GetSha256Hash())) return false;
+
+                    String graph = Path.Combine(this._graphDir, u.GetSha256Hash());
+                    if (File.Exists(graph))
                     {
-                        //Check the freshness of the local copy
-                        DateTime created = File.GetCreationTime(graph);
-                        TimeSpan freshness = DateTime.Now - created;
-                        if (freshness > this._cacheDuration)
+                        if (requireFreshness)
                         {
-                            //Local copy has expired
-                            File.Delete(graph);
-                            return false;
+                            //Check the freshness of the local copy
+                            DateTime created = File.GetCreationTime(graph);
+                            TimeSpan freshness = DateTime.Now - created;
+                            if (freshness > this._cacheDuration)
+                            {
+                                //Local copy has expired
+                                File.Delete(graph);
+                                return false;
+                            }
+                            else
+                            {
+                                return true;
+                            }
                         }
                         else
                         {
@@ -306,7 +355,7 @@ namespace VDS.RDF.Parsing
                     }
                     else
                     {
-                        return true;
+                        return false;
                     }
                 }
                 else
@@ -314,8 +363,9 @@ namespace VDS.RDF.Parsing
                     return false;
                 }
             }
-            else
+            catch
             {
+                //If we get an error trying to detect if a URI is cached then it can't be in the cache
                 return false;
             }
         }
@@ -332,6 +382,8 @@ namespace VDS.RDF.Parsing
         {
             if (this._canCacheGraphs)
             {
+                if (this._nocache.Contains(u.GetSha256Hash())) return null;
+
                 String graph = Path.Combine(this._graphDir, u.GetSha256Hash());
                 if (File.Exists(graph))
                 {
@@ -357,24 +409,35 @@ namespace VDS.RDF.Parsing
         public void ToCache(Uri retrieved, IGraph g, String etag)
         {
             //Cache a local copy of the Graph
-            if (this._canCacheGraphs)
+            try
             {
-                String graph = Path.Combine(this._graphDir, retrieved.GetSha256Hash());
-                this._ttlwriter.Save(g, graph);
-            }
-
-            //Cache the ETag if present
-            if (this._canCacheETag && etag != null && !etag.Equals(String.Empty))
-            {
-                int id = retrieved.GetEnhancedHashCode();
-                if (!this._etags.ContainsKey(id))
+                if (this._canCacheGraphs)
                 {
-                    this._etags.Add(id, etag);
-                    using (StreamWriter writer = new StreamWriter(this._etagFile, true, Encoding.UTF8))
+                    String graph = Path.Combine(this._graphDir, retrieved.GetSha256Hash());
+                    this._ttlwriter.Save(g, graph);
+                }
+
+                //Cache the ETag if present
+                if (this._canCacheETag && etag != null && !etag.Equals(String.Empty))
+                {
+                    int id = retrieved.GetEnhancedHashCode();
+                    if (!this._etags.ContainsKey(id))
                     {
-                        writer.WriteLine(id + "\t" + etag);
+                        this._etags.Add(id, etag);
+                        using (StreamWriter writer = new StreamWriter(this._etagFile, true, Encoding.UTF8))
+                        {
+                            writer.WriteLine(id + "\t" + etag);
+                        }
                     }
                 }
+            }
+            catch (IOException)
+            {
+                //Ignore - if we get an IO Exception we failed to cache somehow
+            }
+            catch (RdfOutputException)
+            {
+                //Ignore - if we get an RDF Output Exception then we failed to cache
             }
         }
     }

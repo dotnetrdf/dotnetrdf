@@ -9,7 +9,7 @@ using ICSharpCode.AvalonEdit.Editing;
 
 namespace rdfEditor.AutoComplete
 {
-    public class KeywordCompletionData : ICompletionData
+    public class KeywordCompletionData : BaseCompletionData
     {
         private String _keyword, _description = String.Empty;
         private double _priority = 0.0d;
@@ -37,53 +37,39 @@ namespace rdfEditor.AutoComplete
             this._priority = priority;
         }
 
-        #region ICompletionData Members
-
-        public void Complete(TextArea textArea, ISegment completionSegment, EventArgs insertionRequestEventArgs)
-        {
-            textArea.Document.Replace(completionSegment, this.Text);
-        }
-
-        public object Content
+        public override object Description
         {
             get 
             {
-                return this.Text;
+                if (this._description.Equals(String.Empty))
+                {
+                    return "The " + this._keyword + " Keyword";
+                }
+                else
+                {
+                    return this._description;
+                }
             }
         }
 
-        public object Description
-        {
-            get 
-            {
-                return this._description; 
-            }
-        }
-
-        public System.Windows.Media.ImageSource Image
-        {
-            get 
-            {
-                return null; 
-            }
-        }
-
-        public double Priority
+        public override double Priority
         {
             get 
             {
                 return this._priority;
             }
+            set
+            {
+                this._priority = value;
+            }
         }
 
-        public string Text
+        public override string Text
         {
             get 
             {
                 return this._keyword; 
             }
         }
-
-        #endregion
     }
 }

@@ -10,7 +10,7 @@ using ICSharpCode.AvalonEdit.Editing;
 
 namespace rdfEditor.AutoComplete
 {
-    public interface IAutoCompleter
+    public interface IAutoCompleter : ICloneable
     {
         void Initialise(TextEditor editor);
 

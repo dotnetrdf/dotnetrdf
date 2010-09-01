@@ -34,8 +34,8 @@ namespace rdfEditor
             InitializeComponent();
 
             this._manager = new EditorManager(queryEditor);
-            this._manager.SetHighlighter(SyntaxManager.GetHighlighter("SparqlQuery11"));
-            this._manager.SetAutoCompleter(new SparqlAutoCompleter(SparqlQuerySyntax.Sparql_1_1));
+            this._manager.SetHighlighter("SparqlQuery11");
+            this._manager.SetAutoCompleter("SparqlQuery11");
         }
 
         private void btnOpenQueryResults_Click(object sender, RoutedEventArgs e)

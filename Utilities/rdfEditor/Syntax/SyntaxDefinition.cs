@@ -18,7 +18,6 @@ namespace rdfEditor.Syntax
         private IRdfReader _parser;
         private IRdfWriter _writer;
         private ISyntaxValidator _validator;
-        private IAutoCompleter _autoComplete;
 
         #region Constructors which take an explicit Highlighting Definition
 
@@ -163,18 +162,6 @@ namespace rdfEditor.Syntax
             get
             {
                 return this._validator;
-            }
-        }
-
-        public IAutoCompleter AutoCompleter
-        {
-            get
-            {
-                return this._autoComplete;
-            }
-            set
-            {
-                this._autoComplete = value;
             }
         }
     }

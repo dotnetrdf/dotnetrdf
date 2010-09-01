@@ -27,6 +27,9 @@ Changed
  - SqlTripleStore initialises correctly and persists updates correctly when used with an ISparqlUpdateProcessor
  - More intelligent parsing of Blank Node IDs from SPARQL Results
  - TriG Writer outputs all required @prefix definitions
+ - URI Loader Cache handles File IO errors gracefully
+- General Improvements
+ - INamespaceMapper interface extracted
 
 
 

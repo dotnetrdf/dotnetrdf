@@ -11,18 +11,25 @@ namespace rdfEditor.AutoComplete
         None,
         Inserted,
 
-        QName,
         Prefix,
         Base,
         Declaration,
+
         Uri,
+        QName,
         Keyword,
         KeywordOrQName,
+
         BNode,
+
+        Variable,
+
         Literal,
         LongLiteral,
-        Comment,
+        AlternateLiteral,
+        AlternateLongLiteral,
+        NumericLiteral,
 
-        XmlAttribute
+        Comment
     }
 }

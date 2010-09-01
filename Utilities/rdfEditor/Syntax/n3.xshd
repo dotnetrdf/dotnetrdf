@@ -12,11 +12,11 @@
 		<Import ruleSet="Turtle/" />
 
 		<Rule color="QName">
-			(\p{L}(\p{L}|\p{N}|-|_)*)?:(\p{L}|\p{N})(\p{L}|\p{N}|-|_)*
+			(\p{L}(\p{L}|\p{N}|-|_)*)?:(\p{L}|\d)(\p{L}|\p{N}|-|_)*
 		</Rule>
 		
 		<Rule color="BNode">
-			_:(\p{L}|\p{N})(\p{L}|\p{N}|-|_)*
+			_:(\p{L}|\d)(\p{L}|\p{N}|-|_)*
 		</Rule>
 		
 		<Keywords color="Keyword" fontWeight="bold">

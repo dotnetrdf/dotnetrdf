@@ -1,4 +1,4 @@
-﻿<SyntaxDefinition name="SparqlQuery11" xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
+﻿<SyntaxDefinition name="SparqlQuery10" xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
 	<Color name="Comment" foreground="Green" />
 	<Color name="Keyword" foreground="Red" />
 	<Color name="String" foreground="Blue" />
@@ -9,12 +9,11 @@
 	<Color name="LangSpec" foreground="DarkGreen" />
   <Color name="Numbers" foreground="DarkBlue" />
   <Color name="Variables" foreground="DarkOrange" />
+  <Color name="EscapedChar" foreground="Teal" />
 
-  <!-- SPARQL Query 1.1 Specification -->
+  <!-- SPARQL Update 1.1 Specification -->
 
   <RuleSet>
-
-    <Import ruleSet="SparqlQuery10/Keywords" />
 
     <Import ruleSet="Keywords" />
 
@@ -43,7 +42,7 @@
     <!-- Punctuation Characters -->
 
     <Rule color="Punctuation">
-      [.;,{}*=&gt;&lt;/]|&gt;=|&lt;=|!=|\^\^|\^
+      [.;,{}*=&gt;&lt;]|&gt;=|&lt;=|!=|\^\^
     </Rule>
 
     <!-- Comments -->
@@ -57,29 +56,23 @@
   <RuleSet name="Keywords" ignoreCase="true">
     <!-- Case insensitive Keywords -->
     <Keywords color="Keyword">
-      <Word>AS</Word>
-      <Word>MINUS</Word>
-      <Word>EXISTS</Word>
-      <Word>NOT EXISTS</Word>
-      <Word>GROUP BY</Word>
-      <Word>HAVING</Word>
-      <Word>COUNT</Word>
-      <Word>AVG</Word>
-      <Word>MIN</Word>
-      <Word>MAX</Word>
-      <Word>SUM</Word>
-      <Word>SAMPLE</Word>
-      <Word>GROUP_CONCAT</Word>
-      <Word>SERVICE</Word>
-      <Word>BINDINGS</Word>
-      <Word>IF</Word>
-      <Word>IRI</Word>
-      <Word>BNODE</Word>
-      <Word>STRLANG</Word>
-      <Word>STRDT</Word>
-      <Word>COALESCE</Word>
-      <Word>URI</Word>
-      <Word>UNDEF</Word>
+      <Word>BASE</Word>
+      <Word>CLEAR</Word>
+      <Word>CREATE</Word>
+      <Word>DATA</Word>
+      <Word>DEFAULT</Word>
+      <Word>DELETE</Word>
+      <Word>DROP</Word>
+      <Word>GRAPH</Word>
+      <Word>INSERT</Word>
+      <Word>INTO</Word>
+      <Word>LOAD</Word>
+      <Word>PREFIX</Word>
+      <Word>SILENT</Word>
+      <Word>USING</Word>
+      <Word>WHERE</Word>
+      <Word>WITH</Word>
     </Keywords>
   </RuleSet>
+  
 </SyntaxDefinition>

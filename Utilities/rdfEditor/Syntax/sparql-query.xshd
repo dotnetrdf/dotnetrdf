@@ -31,6 +31,8 @@
 
     <Import ruleSet="Turtle/BNodes" />
 
+    <Import ruleSet="BNodes" />
+
     <Import ruleSet="Variables" />
 
     <Import ruleSet="Turtle/LangSpecifiers" />
@@ -86,11 +88,20 @@
     </Keywords>
   </RuleSet>
 
+  <RuleSet name="BNodes">
+    <!-- Blank Nodes -->
+
+    <Rule color="BNode">
+      _:(\p{L}|\d)(\p{L}|\p{N}|-|_)*
+    </Rule>
+
+  </RuleSet>
+
   <RuleSet name="Variables">
     <!-- Variables -->
 
     <Rule color="Variables">
-      [?$](_|\p{L}|\p{N})(_|-|\p{L}|\p{N})*
+      [?$](_|\p{L}|\d)(_|-|\p{L}|\p{N})*
     </Rule>
     
   </RuleSet>

@@ -29,12 +29,14 @@ namespace rdfEditor.Syntax
             new SyntaxDefinition("SparqlQuery10", "sparql-query.xshd", new String[] { ".rq" }, new SparqlQueryValidator(SparqlQuerySyntax.Sparql_1_0)),
             new SyntaxDefinition("SparqlQuery11", "sparql-query-11.xshd", new String[] { ".rq" }, new SparqlQueryValidator(SparqlQuerySyntax.Sparql_1_1)),
             new SyntaxDefinition("SparqlResultsXml", "sparql-results-xml.xshd", new String[] { ".srx" }, new SparqlResultsValidator(new SparqlXmlParser())),
-            new SyntaxDefinition("SparqlResultsJson", "sparql-results-json.xshd", new String[] { }, new SparqlResultsValidator(new SparqlJsonParser()))
+            new SyntaxDefinition("SparqlResultsJson", "sparql-results-json.xshd", new String[] { }, new SparqlResultsValidator(new SparqlJsonParser())),
+            new SyntaxDefinition("SparqlUpdate11", "sparql-update.xshd", new String[] { }, new SparqlUpdateValidator())
         };
 
         public static bool Initialise()
         {
             if (_init) return true;
+            _init = true;
 
             //Load in our Highlighters
             bool allOk = true;
@@ -49,8 +51,6 @@ namespace rdfEditor.Syntax
                     allOk = false;
                 }
             }
-
-            _init = true;
             return allOk;
         }
 
@@ -114,15 +114,6 @@ namespace rdfEditor.Syntax
             foreach (SyntaxDefinition def in _builtinDefs)
             {
                 if (def.Name.Equals(name)) return def.DefaultWriter;
-            }
-            return null;
-        }
-
-        public static IAutoCompleter GetAutoCompleter(String name)
-        {
-            foreach (SyntaxDefinition def in _builtinDefs)
-            {
-                if (def.Name.Equals(name)) return def.AutoCompleter;
             }
             return null;
         }

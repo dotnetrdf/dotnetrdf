@@ -30,8 +30,9 @@ namespace rdfEditor
     /// </summary>
     public partial class EditorWindow : Window
     {
-        private const String FileFilterRdf = "All Supported RDF Files|*.rdf;*.ttl;*.n3;*.nt;*.json;*.owl|RDF/XML Files|*.rdf,*.owl|NTriples Files|*.nt|Turtle Files|*.ttl|Notation 3 Files|*.n3|RDF/JSON Files|*.json";
+        private const String FileFilterRdf = "All Supported RDF Files|*.rdf;*.ttl;*.n3;*.nt;*.json;*.owl|RDF/XML Files|*.rdf,*.owl|NTriples Files|*.nt|Turtle Files|*.ttl|Notation 3 Files|*.n3|RDF/JSON Files|*.json|All Files|*.*";
         private const String FileFilterSparql = "All Supported SPARQL Files|*.rq;*.srx|SPARQL Query Files|*.rq|SPARQL Results Files|*.srx;*.json";
+        private const String FileFilterAll = "All Supported RDF and SPARQL Files|*.rdf;*.ttl;*.n3;*.nt;*.json;*.owl;*.rq;*.srx|All Supported RDF Files|*.rdf;*.ttl;*.n3;*.nt;*.json;*.owl|All Supported SPARQL Files|*.rq;*.srx|RDF/XML Files|*.rdf,*.owl|NTriples Files|*.nt|Turtle Files|*.ttl|Notation 3 Files|*.n3|RDF/JSON Files|*.json|SPARQL Query Files|*.rq|SPARQL Results Files|*.srx;*.json|All Files|*.*";
 
         private OpenFileDialog _ofd = new OpenFileDialog();
         private SaveFileDialog _sfd = new SaveFileDialog();
@@ -50,10 +51,10 @@ namespace rdfEditor
             textEditor.Options = options;
 
             //Create our Dialogs
-            _ofd.Title = "Open RDF File";
+            _ofd.Title = "Open RDF/SPARQL File";
             _ofd.DefaultExt = ".rdf";
-            _ofd.Filter = FileFilterRdf;
-            _sfd.Title = "Save RDF File";
+            _ofd.Filter = FileFilterAll;
+            _sfd.Title = "Save RDF/SPARQL File";
             _sfd.DefaultExt = ".rdf";
             _sfd.Filter = _ofd.Filter;
         }

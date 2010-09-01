@@ -42,6 +42,7 @@ namespace rdfEditor
         private StatusBarItem _validatorStatus;
 
         //Auto-complete
+        private Dictionary<String, IAutoCompleter> _completers = new Dictionary<string, IAutoCompleter>();
         private bool _enableAutoComplete = true;
         private bool _endAutoComplete = false;
         private IAutoCompleter _autoCompleter;
@@ -292,6 +293,11 @@ namespace rdfEditor
             }
         }
 
+        public void SetAutoCompleter(String name)
+        {
+            this.SetCurrentAutoCompleter(name);
+        }
+
         public void ToggleHighlighter(String name)
         {
             if (this._editor.SyntaxHighlighting != null)
@@ -381,9 +387,18 @@ namespace rdfEditor
 
         private void SetCurrentAutoCompleter(String name)
         {
-            this._autoCompleter = SyntaxManager.GetAutoCompleter(name);
+            if (this._completers.ContainsKey(name))
+            {
+                this._autoCompleter = this._completers[name];
+            }
+            else
+            {
+                this._autoCompleter = AutoCompleteManager.GetAutoCompleter(name);
+            }
             if (this._autoCompleter != null)
             {
+                //Cache auto-completer only if non-null
+                if (!this._completers.ContainsKey(name)) this._completers.Add(name, this._autoCompleter);
                 this._autoCompleter.Initialise(this._editor);
                 if (!this._enableAutoComplete)
                 {

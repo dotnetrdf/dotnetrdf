@@ -9,24 +9,14 @@ using ICSharpCode.AvalonEdit.Editing;
 
 namespace rdfEditor.AutoComplete
 {
-    public class NewBaseDeclaration : ICompletionData
+    public class NewBaseDeclaration : BaseCompletionData
     {
-        #region ICompletionData Members
-
-        public void Complete(TextArea textArea, ISegment completionSegment, EventArgs insertionRequestEventArgs)
+        public override void Complete(TextArea textArea, ISegment completionSegment, EventArgs insertionRequestEventArgs)
         {
             textArea.Document.Replace(completionSegment, "base <Enter Base URI here>");
         }
 
-        public object Content
-        {
-            get 
-            {
-                return this.Text;
-            }
-        }
-
-        public object Description
+        public override object Description
         {
             get 
             {
@@ -34,30 +24,24 @@ namespace rdfEditor.AutoComplete
             }
         }
 
-        public System.Windows.Media.ImageSource Image
-        {
-            get 
-            {
-                return null; 
-            }
-        }
-
-        public double Priority
+        public override double Priority
         {
             get 
             {
                 return 100.0d; 
             }
+            set 
+            {
+                //Does nothing
+            }
         }
 
-        public string Text
+        public override string Text
         {
             get 
             {
                 return "<New Base Declaration>";
             }
         }
-
-        #endregion
     }
 }

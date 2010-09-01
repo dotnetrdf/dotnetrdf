@@ -37,7 +37,7 @@ namespace rdfEditor.AutoComplete
             this._startOffset = this._c.StartOffset;
         }
 
-        void CompletionWindowKeyDown(object sender, KeyEventArgs e)
+        protected virtual void CompletionWindowKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Space && e.KeyboardDevice.Modifiers == ModifierKeys.Control)
             {
@@ -233,5 +233,7 @@ namespace rdfEditor.AutoComplete
                 this._temp = value;
             }
         }
+
+        public abstract object Clone();
     }
 }

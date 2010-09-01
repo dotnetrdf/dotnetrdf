@@ -9,7 +9,7 @@ using ICSharpCode.AvalonEdit.Editing;
 
 namespace rdfEditor.AutoComplete
 {
-    public class PrefixCompletionData : ICompletionData
+    public class PrefixCompletionData : BaseCompletionData
     {
         private String _prefix, _uri, _description = String.Empty;
         private double _priority = 0.0d;
@@ -38,22 +38,7 @@ namespace rdfEditor.AutoComplete
             this._priority = priority;
         }
 
-        #region ICompletionData Members
-
-        public void Complete(TextArea textArea, ISegment completionSegment, EventArgs insertionRequestEventArgs)
-        {
-            textArea.Document.Replace(completionSegment, this.Text);
-        }
-
-        public object Content
-        {
-            get 
-            {
-                return this.Text;   
-            }
-        }
-
-        public object Description
+        public override object Description
         {
             get 
             {
@@ -61,15 +46,7 @@ namespace rdfEditor.AutoComplete
             }
         }
 
-        public System.Windows.Media.ImageSource Image
-        {
-            get 
-            {
-                return null;
-            }
-        }
-
-        public double Priority
+        public override double Priority
         {
             get 
             {
@@ -81,15 +58,13 @@ namespace rdfEditor.AutoComplete
             }
         }
 
-        public string Text
+        public override string Text
         {
             get 
             {
                 return "prefix " + this._prefix + ": <" + this._uri.Replace(">", "\\>") + ">";
             }
         }
-
-        #endregion
 
         public String NamespaceUri
         {
