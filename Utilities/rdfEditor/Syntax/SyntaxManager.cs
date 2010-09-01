@@ -74,11 +74,21 @@ namespace rdfEditor.Syntax
         {
             if (useResourceIfAvailable)
             {
-                //Try and load it from an embedded resource
-                Stream resource = Assembly.GetExecutingAssembly().GetManifestResourceStream("rdfEditor.Syntax." + filename);
-                if (resource != null)
+                //If the user has specified to use customised XSHD files then we'll use the files from
+                //the Syntax directory instead of the embedded resources
+                if (!Properties.Settings.Default.UseCustomisedXshdFiles)
                 {
-                    return HighlightingLoader.Load(XmlReader.Create(resource), HighlightingManager.Instance);
+
+                    //Try and load it from an embedded resource
+                    Stream resource = Assembly.GetExecutingAssembly().GetManifestResourceStream("rdfEditor.Syntax." + filename);
+                    if (resource != null)
+                    {
+                        return HighlightingLoader.Load(XmlReader.Create(resource), HighlightingManager.Instance);
+                    }
+                }
+                else
+                {
+                    return LoadHighlighting(filename);
                 }
             }
 

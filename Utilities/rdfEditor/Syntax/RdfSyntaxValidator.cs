@@ -76,9 +76,11 @@ namespace rdfEditor.Syntax
                 else
                 {
                     message = "Valid RDF with Warnings - " + g.Triples.Count + " Triples - Parser: " + this._parser.GetType().Name + " - " + this._messages.Count + " Warnings";
+                    int i = 1;
                     foreach (String m in this._messages)
                     {
-                        message += "\n" + m;
+                        message += "\n" + i + " - " + m;
+                        i++;
                     }
                     return false;
                 }

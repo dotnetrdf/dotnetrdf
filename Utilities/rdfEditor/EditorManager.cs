@@ -101,7 +101,10 @@ namespace rdfEditor
             set
             {
                 this._enableHighlighting = value;
-                if (!this._enableHighlighting) this.SetNoHighlighting();
+
+                //Detect Syntax Highlighting, Validator and Auto-Complete settings
+                this.AutoDetectSyntaxHighlighter();
+                if (!this._enableHighlighting) this._editor.SyntaxHighlighting = null;
                 if (this._highlightersMenu != null)
                 {
                     this._highlightersMenu.IsEnabled = this._enableHighlighting;
@@ -163,6 +166,14 @@ namespace rdfEditor
                 return this._editor.SyntaxHighlighting;
             }
         }
+
+        public ISyntaxValidator CurrentValidator
+        {
+            get
+            {
+                return this._currValidator;
+            }
+        }
         
         public void AutoDetectSyntaxHighlighter()
         {
@@ -173,7 +184,7 @@ namespace rdfEditor
         {
             if (this._editor == null) return; //Not yet ready
 
-            if (!this._enableHighlighting) return;
+            //if (!this._enableHighlighting) return;
             if (filename == null)
             {
                 this.SetNoHighlighting();
@@ -183,7 +194,7 @@ namespace rdfEditor
             try
             {
                 IHighlightingDefinition def = HighlightingManager.Instance.GetDefinitionByExtension(System.IO.Path.GetExtension(filename));
-                this._editor.SyntaxHighlighting = def;
+                if (this._enableHighlighting) this._editor.SyntaxHighlighting = def;
 
                 if (def != null)
                 {
@@ -204,8 +215,16 @@ namespace rdfEditor
 
         public void SetHighlighter(String name)
         {
-            this._editor.SyntaxHighlighting = HighlightingManager.Instance.GetDefinition(name);
-            String syntax = (this._editor.SyntaxHighlighting == null) ? "None" : name;
+            String syntax;
+            if (this._enableHighlighting)
+            {
+                this._editor.SyntaxHighlighting = HighlightingManager.Instance.GetDefinition(name);
+                syntax = (this._editor.SyntaxHighlighting == null) ? "None" : name;
+            }
+            else
+            {
+                syntax = name;
+            }
             this.SetCurrentHighlighterChecked(syntax);
             this.SetCurrentValidator(syntax);
             this.SetCurrentAutoCompleter(syntax);
@@ -213,8 +232,16 @@ namespace rdfEditor
 
         public void SetHighlighter(IHighlightingDefinition def)
         {
-            this._editor.SyntaxHighlighting = def;
-            String syntax = (this._editor.SyntaxHighlighting == null) ? "None" : def.Name;
+            String syntax;
+            if (this._enableHighlighting)
+            {
+                this._editor.SyntaxHighlighting = def;
+                syntax = (this._editor.SyntaxHighlighting == null) ? "None" : def.Name;
+            }
+            else
+            {
+                syntax = def.Name;
+            }
             this.SetCurrentHighlighterChecked(syntax);
             this.SetCurrentValidator(syntax);
             this.SetCurrentAutoCompleter(syntax);
@@ -360,6 +387,8 @@ namespace rdfEditor
 
         private void SetCurrentHighlighterChecked(String name)
         {
+            if (!this._enableHighlighting) return;
+
             if (this._highlightersMenu != null)
             {
                 foreach (MenuItem item in this._highlightersMenu.Items.OfType<MenuItem>())
@@ -387,6 +416,13 @@ namespace rdfEditor
 
         private void SetCurrentAutoCompleter(String name)
         {
+            //If disabled then no Auto-Completer will be set
+            if (!this._enableAutoComplete)
+            {
+                this._autoCompleter = null;
+                return;
+            }
+
             if (this._completers.ContainsKey(name))
             {
                 this._autoCompleter = this._completers[name];

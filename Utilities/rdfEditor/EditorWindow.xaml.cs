@@ -50,6 +50,23 @@ namespace rdfEditor
             options.EnableHyperlinks = false;
             textEditor.Options = options;
 
+            //Setup Options based on the User Config file
+            if (!Properties.Settings.Default.EnableAutoComplete) 
+            {
+                this._manager.IsAutoCompleteEnabled = false;
+                this.mnuAutoComplete.IsChecked = false;
+            }
+            if (!Properties.Settings.Default.EnableHighlighting)
+            {
+                this._manager.IsHighlightingEnabled = false;
+                this.mnuEnableHighlighting.IsChecked = false;
+            }
+            if (!Properties.Settings.Default.EnableValidateAsYouType)
+            {
+                this._manager.IsValidateAsYouType = false;
+                this.mnuValidateAsYouType.IsChecked = false;
+            }
+
             //Create our Dialogs
             _ofd.Title = "Open RDF/SPARQL File";
             _ofd.DefaultExt = ".rdf";
@@ -346,11 +363,15 @@ namespace rdfEditor
         private void mnuEnableHighlighting_Click(object sender, RoutedEventArgs e)
         {
             this._manager.IsHighlightingEnabled = mnuEnableHighlighting.IsChecked;
+            Properties.Settings.Default.EnableHighlighting = this.mnuEnableHighlighting.IsChecked;
+            Properties.Settings.Default.Save();
         }
 
         private void mnuValidateAsYouType_Click(object sender, RoutedEventArgs e)
         {
             this._manager.IsValidateAsYouType = this.mnuValidateAsYouType.IsChecked;
+            Properties.Settings.Default.EnableValidateAsYouType = this.mnuValidateAsYouType.IsChecked;
+            Properties.Settings.Default.Save();
             if (this._manager.IsValidateAsYouType)
             {
                 this.stsSyntaxValidation.Content = "Validate Syntax as you Type Enabled";
@@ -365,6 +386,8 @@ namespace rdfEditor
         private void mnuAutoComplete_Click(object sender, RoutedEventArgs e)
         {
             this._manager.IsAutoCompleteEnabled = this.mnuAutoComplete.IsChecked;
+            Properties.Settings.Default.EnableAutoComplete = this.mnuAutoComplete.IsChecked;
+            Properties.Settings.Default.Save();
         }
 
         #endregion
@@ -373,8 +396,7 @@ namespace rdfEditor
 
         private void mnuValidateSyntax_Click(object sender, RoutedEventArgs e)
         {
-            String syntax = (this._manager.CurrentHighlighter == null) ? "None" : this._manager.CurrentHighlighter.Name;
-            ISyntaxValidator validator = SyntaxManager.GetValidator(syntax);
+            ISyntaxValidator validator = this._manager.CurrentValidator;
             if (validator != null)
             {
                 String message;
