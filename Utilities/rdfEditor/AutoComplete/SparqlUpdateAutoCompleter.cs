@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Query;
+using rdfEditor.AutoComplete.Data;
 
 namespace rdfEditor.AutoComplete
 {

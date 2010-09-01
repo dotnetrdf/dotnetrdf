@@ -458,7 +458,11 @@ namespace rdfEditor
                 bool validate = this._currValidator.Validate(this._editor.Text, out message);
                 this._validatorStatus.Content = message;
                 ToolTip tip = new ToolTip();
-                tip.Content = message;
+                TextBlock block = new TextBlock();
+                block.TextWrapping = TextWrapping.Wrap;
+                block.Width = 800;
+                block.Text = message;
+                tip.Content = block;
                 this._validatorStatus.ToolTip = tip;
             }
         }

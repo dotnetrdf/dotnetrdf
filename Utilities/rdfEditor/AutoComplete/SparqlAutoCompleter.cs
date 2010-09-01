@@ -11,7 +11,8 @@ using ICSharpCode.AvalonEdit.Editing;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
-using VDS.RDF.Writing; 
+using VDS.RDF.Writing;
+using rdfEditor.AutoComplete.Data;
 
 namespace rdfEditor.AutoComplete
 {
@@ -30,10 +31,11 @@ namespace rdfEditor.AutoComplete
             this.PrefixRegexPattern = this.PrefixRegexPattern.Substring(1, this.PrefixRegexPattern.Length-6);
             this.BlankNodePattern = @"_:(\p{L}|\d)(\p{L}|\p{N}|-|_)*";
 
-            if (syntax == null) return;
-
             //Add Prefix Definitions to Keywords
             this._keywords.AddRange(AutoCompleteManager.PrefixData);
+
+            //If not Query Syntax don't add any Query Keywords
+            if (syntax == null) return;
 
             //Add Keywords relevant to the Syntax
             this._syntax = (SparqlQuerySyntax)syntax;

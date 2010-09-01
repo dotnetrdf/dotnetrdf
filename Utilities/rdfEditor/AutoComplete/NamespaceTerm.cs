@@ -7,12 +7,18 @@ namespace rdfEditor.AutoComplete
 {
     public class NamespaceTerm
     {
-        private String _namespace, _term;
+        private String _namespace, _term, _label = String.Empty;
 
         public NamespaceTerm(String namespaceUri, String term)
         {
             this._namespace = namespaceUri;
             this._term = term;
+        }
+
+        public NamespaceTerm(String namespaceUri, String term, String label)
+            : this(namespaceUri, term)
+        {
+            this._label = label;
         }
 
         public String NamespaceUri
@@ -28,6 +34,18 @@ namespace rdfEditor.AutoComplete
             get
             {
                 return this._term;
+            }
+        }
+
+        public String Label
+        {
+            get
+            {
+                return this._label;
+            }
+            set
+            {
+                this._label = value;
             }
         }
 

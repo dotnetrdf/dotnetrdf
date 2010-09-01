@@ -7,32 +7,32 @@ using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Editing;
 
-namespace rdfEditor.AutoComplete
+namespace rdfEditor.AutoComplete.Data
 {
-    public class QNameCompletionData : BaseCompletionData
+    public class KeywordCompletionData : BaseCompletionData
     {
-        private String _qname, _description = String.Empty;
+        private String _keyword, _description = String.Empty;
         private double _priority = 0.0d;
 
-        public QNameCompletionData(String qname)
+        public KeywordCompletionData(String keyword)
         {
-            this._qname = qname;
+            this._keyword = keyword;
         }
 
-        public QNameCompletionData(String qname, String description)
-            : this(qname)
+        public KeywordCompletionData(String keyword, String description)
+            : this(keyword)
         {
             this._description = description;
         }
 
-        public QNameCompletionData(String qname, double priority)
-            : this(qname)
+        public KeywordCompletionData(String keyword, double priority)
+            : this(keyword)
         {
             this._priority = priority;
         }
 
-        public QNameCompletionData(String qname, String description, double priority)
-            : this(qname, description)
+        public KeywordCompletionData(String keyword, String description, double priority)
+            : this(keyword, description)
         {
             this._priority = priority;
         }
@@ -41,7 +41,14 @@ namespace rdfEditor.AutoComplete
         {
             get 
             {
-                return this._description; 
+                if (this._description.Equals(String.Empty))
+                {
+                    return "The " + this._keyword + " Keyword";
+                }
+                else
+                {
+                    return this._description;
+                }
             }
         }
 
@@ -51,7 +58,7 @@ namespace rdfEditor.AutoComplete
             {
                 return this._priority;
             }
-            set 
+            set
             {
                 this._priority = value;
             }
@@ -61,7 +68,7 @@ namespace rdfEditor.AutoComplete
         {
             get 
             {
-                return this._qname; 
+                return this._keyword; 
             }
         }
     }

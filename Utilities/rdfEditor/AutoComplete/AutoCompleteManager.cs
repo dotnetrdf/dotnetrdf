@@ -10,7 +10,9 @@ using rdfEditor.Syntax;
 using VDS.RDF;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
+using VDS.RDF.Query;
 using VDS.RDF.Query.Expressions;
+using rdfEditor.AutoComplete.Data;
 
 namespace rdfEditor.AutoComplete
 {
@@ -34,6 +36,10 @@ namespace rdfEditor.AutoComplete
             new PrefixCompletionData("gr", "http://purl.org/goodrelations/v1#", "Good Relations Namespace for describing eCommerce"),
             new PrefixCompletionData("sioc", "http://rdfs.org/sioc/ns#", "Semantically Interlinked Online Communities Namespaces for describing social networks and online communitities"),
             new PrefixCompletionData("doap", "http://usefulinc.com/ns/doap#", "Description of a Project namespaces for describing projects"),
+            new PrefixCompletionData("vann", "http://purl.org/vocab/vann/", "Vocabulary Annotation Namespace for annothing vocabularies and ontologies with descriptive information"),
+            new PrefixCompletionData("vs", "http://www.w3.org/2003/06/sw-vocab-status/ns#", "Vocabulary Status Namespace for annotating vocabularies with term status information"),
+            new PrefixCompletionData("skos", "http://www.w3.org/2004/02/skos/core#", "Simple Knowledge Organisation System for categorising things in hierarchies"),
+            new PrefixCompletionData("geo", "http://www.w3.org/2003/01/geo/wgs84_pos#", "WGS84 Geo Positing Namespace for describing positions according to WGS84"),
 
             //Useful SPARQL Prefixes
             new PrefixCompletionData("fn", XPathFunctionFactory.XPathFunctionsNamespace, "XPath Functions Namespace used to refer to functions by URI in SPARQL queries"),
@@ -112,35 +118,78 @@ namespace rdfEditor.AutoComplete
             {
                 Graph g = new Graph();
                 UriLoader.Load(g, new Uri(namespaceUri));
-
-                UriNode rdfType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
-                UriNode rdfsClass = g.CreateUriNode(new Uri(NamespaceMapper.RDFS + "Class"));
-                UriNode rdfProperty = g.CreateUriNode(new Uri(NamespaceMapper.RDF + "Property"));
-
                 List<NamespaceTerm> terms = new List<NamespaceTerm>();
                 String termUri;
-                foreach (Triple t in g.GetTriplesWithPredicateObject(rdfType, rdfsClass))
+
+                //UriNode rdfType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
+                UriNode rdfsClass = g.CreateUriNode(new Uri(NamespaceMapper.RDFS + "Class"));
+                UriNode rdfsLabel = g.CreateUriNode(new Uri(NamespaceMapper.RDFS + "label"));
+                UriNode rdfsComment = g.CreateUriNode(new Uri(NamespaceMapper.RDFS + "comment"));
+                UriNode rdfProperty = g.CreateUriNode(new Uri(NamespaceMapper.RDF + "Property"));
+
+                SparqlParameterizedString queryString = new SparqlParameterizedString();
+                queryString.QueryText = "SELECT ?term STR(?label) AS ?RawLabel STR(?comment) AS ?RawComment WHERE { {{?term a @class} UNION {?term a @property}} OPTIONAL {?term @label ?label} OPTIONAL {?term @comment ?comment} }";
+                queryString.SetParameter("class", rdfsClass);
+                queryString.SetParameter("property", rdfProperty);
+                queryString.SetParameter("label", rdfsLabel);
+                queryString.SetParameter("comment", rdfsComment);
+
+                Object results = g.ExecuteQuery(queryString.ToString());
+                if (results is SparqlResultSet)
                 {
-                    if (t.Subject.NodeType == NodeType.Uri)
+                    foreach (SparqlResult r in ((SparqlResultSet)results))
                     {
-                        termUri = t.Subject.ToString();
+                        termUri = r["term"].ToString();
                         if (termUri.StartsWith(namespaceUri))
                         {
-                            _terms.Add(new NamespaceTerm(namespaceUri, termUri.Substring(namespaceUri.Length)));
+                            //Use the Comment as the label if available
+                            if (r.HasValue("RawComment"))
+                            {
+                                if (r["RawComment"] != null)
+                                {
+                                    terms.Add(new NamespaceTerm(namespaceUri, termUri.Substring(namespaceUri.Length), r["RawComment"].ToString()));
+                                    continue;
+                                }
+                            }
+
+                            //Use the Label as the label if available
+                            if (r.HasValue("RawLabel"))
+                            {
+                                if (r["RawLabel"] != null)
+                                {
+                                    terms.Add(new NamespaceTerm(namespaceUri, termUri.Substring(namespaceUri.Length), r["RawLabel"].ToString()));
+                                    continue;
+                                }
+                            }
+
+                            //Otherwise no label
+                            terms.Add(new NamespaceTerm(namespaceUri, termUri.Substring(namespaceUri.Length)));
                         }
                     }
                 }
-                foreach (Triple t in g.GetTriplesWithPredicateObject(rdfType, rdfProperty))
-                {
-                    if (t.Subject.NodeType == NodeType.Uri)
-                    {
-                        termUri = t.Subject.ToString();
-                        if (termUri.StartsWith(namespaceUri))
-                        {
-                            _terms.Add(new NamespaceTerm(namespaceUri, termUri.Substring(namespaceUri.Length)));
-                        }
-                    }
-                }
+
+                //foreach (Triple t in g.GetTriplesWithPredicateObject(rdfType, rdfsClass))
+                //{
+                //    if (t.Subject.NodeType == NodeType.Uri)
+                //    {
+                //        termUri = t.Subject.ToString();
+                //        if (termUri.StartsWith(namespaceUri))
+                //        {
+                //            _terms.Add(new NamespaceTerm(namespaceUri, termUri.Substring(namespaceUri.Length)));
+                //        }
+                //    }
+                //}
+                //foreach (Triple t in g.GetTriplesWithPredicateObject(rdfType, rdfProperty))
+                //{
+                //    if (t.Subject.NodeType == NodeType.Uri)
+                //    {
+                //        termUri = t.Subject.ToString();
+                //        if (termUri.StartsWith(namespaceUri))
+                //        {
+                //            _terms.Add(new NamespaceTerm(namespaceUri, termUri.Substring(namespaceUri.Length)));
+                //        }
+                //    }
+                //}
 
                 lock (_terms)
                 {

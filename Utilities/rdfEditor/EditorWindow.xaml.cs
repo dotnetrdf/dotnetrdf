@@ -30,9 +30,9 @@ namespace rdfEditor
     /// </summary>
     public partial class EditorWindow : Window
     {
-        private const String FileFilterRdf = "All Supported RDF Files|*.rdf;*.ttl;*.n3;*.nt;*.json;*.owl|RDF/XML Files|*.rdf,*.owl|NTriples Files|*.nt|Turtle Files|*.ttl|Notation 3 Files|*.n3|RDF/JSON Files|*.json|All Files|*.*";
-        private const String FileFilterSparql = "All Supported SPARQL Files|*.rq;*.srx|SPARQL Query Files|*.rq|SPARQL Results Files|*.srx;*.json";
-        private const String FileFilterAll = "All Supported RDF and SPARQL Files|*.rdf;*.ttl;*.n3;*.nt;*.json;*.owl;*.rq;*.srx|All Supported RDF Files|*.rdf;*.ttl;*.n3;*.nt;*.json;*.owl|All Supported SPARQL Files|*.rq;*.srx|RDF/XML Files|*.rdf,*.owl|NTriples Files|*.nt|Turtle Files|*.ttl|Notation 3 Files|*.n3|RDF/JSON Files|*.json|SPARQL Query Files|*.rq|SPARQL Results Files|*.srx;*.json|All Files|*.*";
+        private const String FileFilterRdf = "All Supported RDF Files|*.rdf;*.ttl;*.n3;*.nt;*.json;*.owl;*.html;*.xhtml;*.htm;*.shtml|RDF/XML Files|*.rdf,*.owl|NTriples Files|*.nt|Turtle Files|*.ttl|Notation 3 Files|*.n3|RDF/JSON Files|*.json|(X)HTML+RDFa Files|*.html;*.xhtml;*.htm;*.shtml|All Files|*.*";
+        private const String FileFilterSparql = "All Supported SPARQL Files|*.rq;*.sparql;*.srx|SPARQL Query Files|*.rq;*.sparql|SPARQL Results Files|*.srx;*.json";
+        private const String FileFilterAll = "All Supported RDF and SPARQL Files|*.rdf;*.ttl;*.n3;*.nt;*.json;*.owl;*.html;*.xhtml;*.htm;*.shtml;*.rq;*.sparql;*.srx|All Supported RDF Files|*.rdf;*.ttl;*.n3;*.nt;*.json;*.owl|All Supported SPARQL Files|*.rq;*.sparql;*.srx|RDF/XML Files|*.rdf,*.owl|NTriples Files|*.nt|Turtle Files|*.ttl|Notation 3 Files|*.n3|RDF/JSON Files|*.json|(X)HTML+RDFa Files|*.html;*.xhtml;*.htm;*.shtml|SPARQL Query Files|*.rq;*.sparql|SPARQL Results Files|*.srx;*.json|All Files|*.*";
 
         private OpenFileDialog _ofd = new OpenFileDialog();
         private SaveFileDialog _sfd = new SaveFileDialog();
@@ -388,6 +388,5 @@ namespace rdfEditor
         }
 
         #endregion
-
     }
 }

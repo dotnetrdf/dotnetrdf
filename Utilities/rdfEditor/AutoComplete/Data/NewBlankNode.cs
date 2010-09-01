@@ -7,30 +7,40 @@ using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Editing;
 
-namespace rdfEditor.AutoComplete
+namespace rdfEditor.AutoComplete.Data
 {
-    public class NewBaseDeclaration : BaseCompletionData
+    public class NewBlankNode : BaseCompletionData
     {
-        public override void Complete(TextArea textArea, ISegment completionSegment, EventArgs insertionRequestEventArgs)
+        private String _id;
+
+        public NewBlankNode(String id)
         {
-            textArea.Document.Replace(completionSegment, "base <Enter Base URI here>");
+            this._id = id;
+        }
+
+        public override object Content
+        {
+            get
+            {
+                return "<New Blank Node>";
+            }
         }
 
         public override object Description
         {
-            get 
+            get
             {
-                return "Insert a new Base Declaration";
+                return "Insert a new Blank Node";
             }
         }
 
         public override double Priority
         {
-            get 
+            get
             {
-                return 100.0d; 
+                return 50.0d;
             }
-            set 
+            set
             {
                 //Does nothing
             }
@@ -38,9 +48,9 @@ namespace rdfEditor.AutoComplete
 
         public override string Text
         {
-            get 
+            get
             {
-                return "<New Base Declaration>";
+                return "_:" + this._id;
             }
         }
     }

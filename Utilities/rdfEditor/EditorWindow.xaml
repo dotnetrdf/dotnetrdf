@@ -43,6 +43,7 @@
                         <MenuItem Header="NTriples" IsCheckable="True" Tag="NTriples" />
                         <MenuItem Header="Turtle" IsCheckable="True" Tag="Turtle" />
                         <MenuItem Header="Notation 3" IsCheckable="True" Tag="Notation3"/>
+                        <MenuItem Header="(X)HTML+RDFa" IsCheckable="True" Tag="XHtmlRdfA" />
                         <Separator />
                         <MenuItem Header="SPARQL Query 1.0" IsCheckable="True" Tag="SparqlQuery10" />
                         <MenuItem Header="SPARQL Query 1.1" IsCheckable="True" Tag="SparqlQuery11" />
@@ -58,6 +59,7 @@
             </MenuItem>
             <MenuItem Header="_Tools" IsCheckable="False">
                 <MenuItem Header="Validate Syntax" Name="mnuValidateSyntax" Click="mnuValidateSyntax_Click" />
+                <!--<MenuItem Header="Test" Name="mnuTest" Click="mnuTest_Click" />-->
             </MenuItem>
             <MenuItem Header="_Help" IsCheckable="False"/>
         </Menu>

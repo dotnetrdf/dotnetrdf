@@ -74,19 +74,22 @@
     <Compile Include="AutoComplete\AutoCompleteManager.cs" />
     <Compile Include="AutoComplete\AutoCompleteState.cs" />
     <Compile Include="AutoComplete\BaseAutoCompleter.cs" />
-    <Compile Include="AutoComplete\BaseCompletionData.cs" />
-    <Compile Include="AutoComplete\BlankNodeCompletionData.cs" />
+    <Compile Include="AutoComplete\Data\BaseCompletionData.cs" />
+    <Compile Include="AutoComplete\Data\BlankNodeCompletionData.cs" />
+    <Compile Include="AutoComplete\Data\NewBlankNode.cs" />
+    <Compile Include="AutoComplete\Data\NewDefaultPrefixDeclaration.cs" />
+    <Compile Include="AutoComplete\Data\NewPrefixDeclaration.cs" />
     <Compile Include="AutoComplete\IAutoCompleter.cs" />
-    <Compile Include="AutoComplete\KeywordCompletionData.cs" />
+    <Compile Include="AutoComplete\Data\KeywordCompletionData.cs" />
     <Compile Include="AutoComplete\NamespaceTerm.cs" />
-    <Compile Include="AutoComplete\NewBaseDeclaration.cs" />
+    <Compile Include="AutoComplete\Data\NewBaseDeclaration.cs" />
     <Compile Include="AutoComplete\Notation3AutoCompleter.cs" />
-    <Compile Include="AutoComplete\PrefixCompletionData.cs" />
-    <Compile Include="AutoComplete\QNameCompletionData.cs" />
+    <Compile Include="AutoComplete\Data\PrefixCompletionData.cs" />
+    <Compile Include="AutoComplete\Data\QNameCompletionData.cs" />
     <Compile Include="AutoComplete\SparqlAutoCompleter.cs" />
     <Compile Include="AutoComplete\SparqlUpdateAutoCompleter.cs" />
     <Compile Include="AutoComplete\TurtleAutoCompleter.cs" />
-    <Compile Include="AutoComplete\VariableCompletionData.cs" />
+    <Compile Include="AutoComplete\Data\VariableCompletionData.cs" />
     <Compile Include="EditorWindow.xaml.cs">
       <DependentUpon>EditorWindow.xaml</DependentUpon>
     </Compile>
@@ -110,6 +113,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="EditorManager.cs" />
+    <Compile Include="Syntax\CustomColourBrush.cs" />
     <Compile Include="Syntax\ISyntaxValidator.cs" />
     <Compile Include="Syntax\RdfSyntaxValidator.cs" />
     <Compile Include="Syntax\SparqlQueryValidator.cs" />
@@ -135,6 +139,9 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <EmbeddedResource Include="Syntax\xhtml-rdfa.xshd">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="Syntax\sparql-update.xshd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>

@@ -7,7 +7,7 @@ using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Editing;
 
-namespace rdfEditor.AutoComplete
+namespace rdfEditor.AutoComplete.Data
 {
     public class PrefixCompletionData : BaseCompletionData
     {

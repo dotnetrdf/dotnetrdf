@@ -11,6 +11,7 @@ using ICSharpCode.AvalonEdit.Editing;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing;
+using rdfEditor.AutoComplete.Data;
 
 namespace rdfEditor.AutoComplete
 {
@@ -32,6 +33,7 @@ namespace rdfEditor.AutoComplete
         private NamespaceMapper _nsmap = new NamespaceMapper(true);
         private Dictionary<String, List<NamespaceTerm>> _namespaceTerms = new Dictionary<string, List<NamespaceTerm>>();
         private HashSet<ICompletionData> _bnodes = new HashSet<ICompletionData>();
+        private BlankNodeMapper _bnodemap = new BlankNodeMapper();
 
         public override void Initialise(TextEditor editor)
         {
@@ -61,10 +63,17 @@ namespace rdfEditor.AutoComplete
             {
                 String prefix = m.Groups[1].Value;
                 String nsUri = m.Groups[3].Value;
-                this._nsmap.AddNamespace(prefix, new Uri(nsUri));
-                if (!this._namespaceTerms.ContainsKey(nsUri))
+                try
                 {
-                    this._namespaceLoader.BeginInvoke(nsUri, this.LoadNamespaceTermsCallback, null);
+                    this._nsmap.AddNamespace(prefix, new Uri(nsUri));
+                    if (!this._namespaceTerms.ContainsKey(nsUri))
+                    {
+                        this._namespaceLoader.BeginInvoke(nsUri, this.LoadNamespaceTermsCallback, null);
+                    }
+                }
+                catch (UriFormatException)
+                {
+                    //Ignore
                 }
             }
         }
@@ -75,7 +84,11 @@ namespace rdfEditor.AutoComplete
 
             foreach (Match m in Regex.Matches(editor.Text, BlankNodePattern))
             {
-                this._bnodes.Add(new BlankNodeCompletionData(m.Value));
+                String id = m.Value;
+                if (this._bnodes.Add(new BlankNodeCompletionData(id)))
+                {
+                    this._bnodemap.CheckID(ref id);
+                }                
             }
         }
 
@@ -199,7 +212,9 @@ namespace rdfEditor.AutoComplete
         {
             this.State = AutoCompleteState.BNode;
 
-            this.SetupCompletionWindow(editor.TextArea, this._bnodes);
+            this.SetupCompletionWindow(editor.TextArea);
+            this.AddCompletionData(new NewBlankNode(this._bnodemap.GetNextID()));
+            this.AddCompletionData(this._bnodes);
             this._c.StartOffset--;
             this.StartOffset = this._c.StartOffset;
 
@@ -238,6 +253,15 @@ namespace rdfEditor.AutoComplete
             this.State = AutoCompleteState.Declaration;
             this.SetupCompletionWindow(editor.TextArea);
             this.AddCompletionData(new NewBaseDeclaration());
+            String nextPrefix = "ns0";
+            int nextPrefixID = 0;
+            while (this._nsmap.HasNamespace(nextPrefix))
+            {
+                nextPrefixID++;
+                nextPrefix = "ns" + nextPrefixID;
+            }
+            this.AddCompletionData(new NewPrefixDeclaration(nextPrefix));
+            this.AddCompletionData(new NewDefaultPrefixDeclaration());
             this.AddCompletionData(AutoCompleteManager.PrefixData);
             this._c.CloseWhenCaretAtBeginning = false;
             this._c.Show();
@@ -418,7 +442,17 @@ namespace rdfEditor.AutoComplete
 
         protected virtual void TryQNameCompletion(TextEditor editor, TextCompositionEventArgs e)
         {
-            if (this.IsNewLine(e.Text) || !this.IsValidPartialQName(this.CurrentText.ToString()))
+            if (this.IsValidPartialKeyword(this.CurrentText))
+            {
+                //Can switch back to Keyword/QName mode if user backtracks
+                this.State = AutoCompleteState.KeywordOrQName;
+                this.AddCompletionData(this._keywords.Where(k => k is KeywordCompletionData));
+                this.TryKeywordOrQNameCompletion(editor, e);
+                this._c.CompletionList.SelectItem(this.CurrentText);
+                return;
+            }
+
+            if (this.IsNewLine(e.Text) || !this.IsValidPartialQName(this.CurrentText))
             {
                 //Not a QName so close the window
                 this.State = AutoCompleteState.None;
@@ -711,7 +745,14 @@ namespace rdfEditor.AutoComplete
                 {
                     foreach (NamespaceTerm term in this._namespaceTerms[nsUri])
                     {
-                        qnames.Add(new QNameCompletionData(prefix + ":" + term.Term));
+                        if (term.Label.Equals(String.Empty))
+                        {
+                            qnames.Add(new QNameCompletionData(prefix + ":" + term.Term, "QName for the URI " + nsUri + term.Term));
+                        }
+                        else
+                        {
+                            qnames.Add(new QNameCompletionData(prefix + ":" + term.Term, term.Label));
+                        }
                     }
                 }
             }
