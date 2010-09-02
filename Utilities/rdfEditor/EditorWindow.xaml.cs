@@ -42,13 +42,14 @@ namespace rdfEditor
         {
             InitializeComponent();
 
-            this._manager = new EditorManager(this.textEditor, this.mnuCurrentHighlighter, this.stsSyntaxValidation);
+            this._manager = new EditorManager(this.textEditor, this.mnuCurrentHighlighter, this.stsSyntaxValidation);          
 
             //Set up the Editor Options
             TextEditorOptions options = new TextEditorOptions();
             options.EnableEmailHyperlinks = false;
             options.EnableHyperlinks = false;
             textEditor.Options = options;
+            textEditor.ShowLineNumbers = true;
 
             //Setup Options based on the User Config file
             if (!Properties.Settings.Default.EnableAutoComplete) 
@@ -66,6 +67,20 @@ namespace rdfEditor
                 this._manager.IsValidateAsYouType = false;
                 this.mnuValidateAsYouType.IsChecked = false;
             }
+            if (!Properties.Settings.Default.ShowLineNumbers)
+            {
+                textEditor.ShowLineNumbers = false;
+                this.mnuShowLineNumbers.IsChecked = false;
+            }
+            if (Properties.Settings.Default.WordWrap)
+            {
+                textEditor.WordWrap = false;
+                this.mnuWordWrap.IsChecked = true;
+            }
+
+            //Enable/Disable state dependendet menu options
+            this.mnuUndo.IsEnabled = textEditor.CanUndo;
+            this.mnuRedo.IsEnabled = textEditor.CanRedo;
 
             //Create our Dialogs
             _ofd.Title = "Open RDF/SPARQL File";
@@ -94,7 +109,7 @@ namespace rdfEditor
                         String text = reader.ReadToEnd();
                         textEditor.Text = String.Empty;
                         textEditor.Text = text;
-                        this._manager.AutoDetectSyntaxHighlighter(_ofd.FileName);
+                        this._manager.AutoDetectSyntax(_ofd.FileName);
                     }
                     this._manager.CurrentFile = _ofd.FileName;
                     this.Title = "rdfEditor - " + System.IO.Path.GetFileName(this._manager.CurrentFile);
@@ -129,7 +144,14 @@ namespace rdfEditor
             {
                 textEditor.Text = diag.RetrievedData;
                 this._manager.HasChanged = true;
-                this._manager.SetHighlighter(diag.Parser);
+                if (diag.Parser != null)
+                {
+                    this._manager.SetHighlighter(diag.Parser);
+                }
+                else
+                {
+                    this._manager.AutoDetectSyntax();
+                }
             }
         }
 
@@ -209,7 +231,7 @@ namespace rdfEditor
             {
                 this._manager.CurrentFile = this._sfd.FileName;
                 mnuSave_Click(sender, e);
-                this._manager.AutoDetectSyntaxHighlighter(this._manager.CurrentFile);
+                this._manager.AutoDetectSyntax(this._manager.CurrentFile);
             }
         }
 
@@ -273,8 +295,8 @@ namespace rdfEditor
                         {
                             String text = reader.ReadToEnd();
                             textEditor.Text = String.Empty;
-                            this._manager.AutoDetectSyntaxHighlighter(this._manager.CurrentFile);
                             textEditor.Text = text;
+                            this._manager.AutoDetectSyntax(this._manager.CurrentFile);
                         }
                         this.Title = "rdfEditor - " + System.IO.Path.GetFileName(this._manager.CurrentFile);
                         this._manager.HasChanged = false;
@@ -358,6 +380,60 @@ namespace rdfEditor
 
         #endregion
 
+        #region Edit Menu
+
+        private void mnuUndo_Click(object sender, RoutedEventArgs e)
+        {
+            if (textEditor.CanUndo)
+            {
+                textEditor.Undo();
+            }
+        }
+
+        private void mnuRedo_Click(object sender, RoutedEventArgs e)
+        {
+            if (textEditor.CanRedo)
+            {
+                textEditor.Redo();
+            }
+        }
+
+
+        private void mnuCut_Click(object sender, RoutedEventArgs e)
+        {
+            textEditor.Cut();
+        }
+
+        private void mnuCopy_Click(object sender, RoutedEventArgs e)
+        {
+            textEditor.Copy();
+        }
+
+        private void mnuPaste_Click(object sender, RoutedEventArgs e)
+        {
+            textEditor.Paste();
+        }
+
+        #endregion
+
+        #region View Menu
+
+        private void mnuShowLineNumbers_Click(object sender, RoutedEventArgs e)
+        {
+            textEditor.ShowLineNumbers = this.mnuShowLineNumbers.IsChecked;
+            Properties.Settings.Default.ShowLineNumbers = this.mnuShowLineNumbers.IsChecked;
+            Properties.Settings.Default.Save();
+        }
+
+        private void mnuWordWrap_Click(object sender, RoutedEventArgs e)
+        {
+            textEditor.WordWrap = this.mnuWordWrap.IsChecked;
+            Properties.Settings.Default.WordWrap = this.mnuWordWrap.IsChecked;
+            Properties.Settings.Default.Save();
+        }
+
+        #endregion
+
         #region Options Menu
 
         private void mnuEnableHighlighting_Click(object sender, RoutedEventArgs e)
@@ -399,9 +475,9 @@ namespace rdfEditor
             ISyntaxValidator validator = this._manager.CurrentValidator;
             if (validator != null)
             {
-                String message;
-                String caption = (validator.Validate(textEditor.Text, out message)) ? "Valid Syntax" : "Invalid Syntax";
-                MessageBox.Show(message, caption);
+                ISyntaxValidationResults results = validator.Validate(textEditor.Text);
+                String caption = results.IsValid ? "Valid Syntax" : "Invalid Syntax";
+                MessageBox.Show(results.Message, caption);
             }
             else
             {
@@ -410,5 +486,76 @@ namespace rdfEditor
         }
 
         #endregion
+
+        #region Command Bindings for creating Keyboard Shortcuts
+
+        private void NewCommandExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            mnuNew_Click(sender, e);
+        }
+
+        private void OpenCommandExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            mnuOpen_Click(sender, e);
+        }
+
+        private void SaveCommandExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            mnuSave_Click(sender, e);
+        }
+
+        private void SaveAsCommandExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            mnuSaveAs_Click(sender, e);
+        }
+
+        private void CloseCommandExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            mnuClose_Click(sender, e);
+        }
+
+        private void UndoCommandExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            mnuUndo_Click(sender, e);
+        }
+
+        private void RedoCommandExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            mnuRedo_Click(sender, e);
+        }
+
+        private void CutCommandExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            mnuCut_Click(sender, e);
+        }
+
+        private void CopyCommandExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            mnuCopy_Click(sender, e);
+        }
+
+        private void PasteCommandExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            mnuPaste_Click(sender, e);
+        }
+
+        private void ToggleLineNumbersExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            mnuShowLineNumbers_Click(sender, e);
+        }
+
+        private void ToggleWordWrapExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            mnuWordWrap_Click(sender, e);
+        }
+
+        #endregion
+
+        private void textEditor_TextChanged(object sender, EventArgs e)
+        {
+            this.mnuUndo.IsEnabled = textEditor.CanUndo;
+            this.mnuRedo.IsEnabled = textEditor.CanRedo;
+        }
+
     }
 }

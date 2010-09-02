@@ -22,6 +22,7 @@ using Microsoft.Win32;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
+using VDS.RDF.Update;
 using VDS.RDF.Writing;
 using rdfEditor.Syntax;
 using rdfEditor.AutoComplete;
@@ -103,7 +104,7 @@ namespace rdfEditor
                 this._enableHighlighting = value;
 
                 //Detect Syntax Highlighting, Validator and Auto-Complete settings
-                this.AutoDetectSyntaxHighlighter();
+                this.AutoDetectSyntax();
                 if (!this._enableHighlighting) this._editor.SyntaxHighlighting = null;
                 if (this._highlightersMenu != null)
                 {
@@ -175,19 +176,65 @@ namespace rdfEditor
             }
         }
         
-        public void AutoDetectSyntaxHighlighter()
+        public void AutoDetectSyntax()
         {
-            this.AutoDetectSyntaxHighlighter(this._currFile);
+            this.AutoDetectSyntax(this._currFile);
         }
 
-        public void AutoDetectSyntaxHighlighter(String filename)
+        public void AutoDetectSyntax(String filename)
         {
             if (this._editor == null) return; //Not yet ready
 
-            //if (!this._enableHighlighting) return;
             if (filename == null)
             {
-                this.SetNoHighlighting();
+                try
+                {
+                    //First see if it's an RDF format
+                    IRdfReader parser = StringParser.GetParser(this._editor.Text);
+
+                    if (parser is NTriplesParser)
+                    {
+                        //NTriples is the fallback so if we get this check if it's actually SPARQL Results
+                        try
+                        {
+                            ISparqlResultsReader sparqlParser = StringParser.GetResultSetParser(this._editor.Text);
+                        }
+                        catch (RdfParserSelectionException)
+                        {
+                            //Not a valid SPARQL Results format - may be a SPARQL Query or a SPARQL Update?
+                            SparqlQueryParser queryParser = new SparqlQueryParser(SparqlQuerySyntax.Sparql_1_1);
+                            try
+                            {
+                                SparqlQuery q = queryParser.ParseFromString(this._editor.Text);
+                                this.SetHighlighter("SparqlQuery11");
+                            }
+                            catch (RdfParseException)
+                            {
+                                //Not a valid SPARQL Query - valid SPARQL Update?
+                                SparqlUpdateParser updateParser = new SparqlUpdateParser();
+                                try
+                                {
+                                    SparqlUpdateCommandSet cmds = updateParser.ParseFromString(this._editor.Text);
+                                    this.SetHighlighter("SparqlUpdate11");
+                                }
+                                catch (RdfParseException)
+                                {
+                                    //Was probably actually NTriples
+                                    this.SetHighlighter(parser);
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        //Got a non NTriples RDF parser so use that to set Highlighter
+                        this.SetHighlighter(parser);
+                    }
+                }
+                catch (RdfParserSelectionException)
+                {
+                    this.SetNoHighlighting();
+                }
                 return;
             }
 
@@ -268,6 +315,10 @@ namespace rdfEditor
             else if (parser is RdfJsonParser)
             {
                 this.SetHighlighter("RdfJson");
+            }
+            else if (parser is RdfAParser)
+            {
+                this.SetHighlighter("XHtmlRdfA");
             }
             else
             {
@@ -491,13 +542,13 @@ namespace rdfEditor
             else
             {
                 String message;
-                bool validate = this._currValidator.Validate(this._editor.Text, out message);
-                this._validatorStatus.Content = message;
+                ISyntaxValidationResults results = this._currValidator.Validate(this._editor.Text);
+                this._validatorStatus.Content = results.Message;
                 ToolTip tip = new ToolTip();
                 TextBlock block = new TextBlock();
                 block.TextWrapping = TextWrapping.Wrap;
                 block.Width = 800;
-                block.Text = message;
+                block.Text = results.Message;
                 tip.Content = block;
                 this._validatorStatus.ToolTip = tip;
             }

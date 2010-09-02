@@ -46,6 +46,13 @@ namespace rdfEditor
                     try
                     {
                         this._parser = MimeTypesHelper.GetParser(response.ContentType);
+                        if (this._parser is NTriplesParser)
+                        {
+                            if (!MimeTypesHelper.NTriples.Contains(response.ContentType))
+                            {
+                                this._parser = null;
+                            }
+                        }
                     }
                     catch (RdfParserSelectionException)
                     {
@@ -58,6 +65,7 @@ namespace rdfEditor
                 if (this._parser == null)
                 {
                     this._parser = StringParser.GetParser(data);
+                    if (this._parser is NTriplesParser) this._parser = null;
                 }
                 this._u = u;
 
@@ -101,5 +109,13 @@ namespace rdfEditor
                 return this._parser;
             }
         }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            this.txtUri.Focus();
+            this.txtUri.SelectAll();
+        }
+
+
     }
 }

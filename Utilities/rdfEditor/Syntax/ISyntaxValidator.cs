@@ -7,6 +7,34 @@ namespace rdfEditor.Syntax
 {
     public interface ISyntaxValidator
     {
-        bool Validate(String data, out String message);
+        ISyntaxValidationResults Validate(String data);
+    }
+
+    public interface ISyntaxValidationResults
+    {
+        bool IsValid
+        {
+            get;
+        }
+
+        String Message
+        {
+            get;
+        }
+
+        IEnumerable<String> Warnings
+        {
+            get;
+        }
+
+        Exception Error
+        {
+            get;
+        }
+
+        Object Result
+        {
+            get;
+        }
     }
 }

@@ -6,9 +6,6 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
 @prefix eg: <http://example.org/vehicles/>.
 
-eg:SpaceShuttle a rdfs:Class ;
-				  rdfs:subClassOf eg:AirVehicle .
-
 # Vehicles are a Class with GroundVehicle and AirVehicle being its subclasses
 eg:Vehicle rdf:type rdfs:Class.
 eg:GroundVehicle rdfs:subClassOf eg:Vehicle.

@@ -16,29 +16,32 @@ namespace rdfEditor.Syntax
             this._parser = parser;
         }
 
-        public virtual bool Validate(string data, out string message)
+        public virtual ISyntaxValidationResults Validate(string data)
         {
+            String message;
             try
             {
                 Graph g = new Graph();
                 StringParser.Parse(g, data, this._parser);
 
                 message = "Valid RDF - " + g.Triples.Count + " Triples - Parser: " + this._parser.GetType().Name;
-                return true;
+                return new SyntaxValidationResults(true, message, g);
             }
             catch (RdfParseException parseEx)
             {
                 message = "Invalid RDF - Parsing Error from Parser: " + this._parser.GetType().Name + " - " + parseEx.Message;
+                return new SyntaxValidationResults(message, parseEx);
             }
             catch (RdfException rdfEx)
             {
                 message = "Invalid RDF - RDF Error from Parser: " + this._parser.GetType().Name + " - " + rdfEx.Message;
+                return new SyntaxValidationResults(message, rdfEx);
             }
             catch (Exception ex)
             {
                 message = "Invalid RDF - Error from Parser: " + this._parser.GetType().Name + " - " + ex.Message;
+                return new SyntaxValidationResults(message, ex);
             }
-            return false;
         }
     }
 
@@ -59,8 +62,9 @@ namespace rdfEditor.Syntax
             this._messages.Add(message);
         }
 
-        public override bool Validate(string data, out string message)
+        public override ISyntaxValidationResults Validate(string data)
         {
+            String message;
             try
             {
                 this._gotWarning = false;
@@ -71,7 +75,7 @@ namespace rdfEditor.Syntax
                 if (!this._gotWarning)
                 {
                     message = "Valid RDF - " + g.Triples.Count + " Triples - Parser: " + this._parser.GetType().Name;
-                    return true;
+                    return new SyntaxValidationResults(true, message, g);
                 }
                 else
                 {
@@ -82,22 +86,24 @@ namespace rdfEditor.Syntax
                         message += "\n" + i + " - " + m;
                         i++;
                     }
-                    return false;
+                    return new SyntaxValidationResults(false, message, g, this._messages);
                 }
             }
             catch (RdfParseException parseEx)
             {
                 message = "Invalid RDF - Parsing Error from Parser: " + this._parser.GetType().Name + " - " + parseEx.Message;
+                return new SyntaxValidationResults(message, parseEx);
             }
             catch (RdfException rdfEx)
             {
                 message = "Invalid RDF - RDF Error from Parser: " + this._parser.GetType().Name + " - " + rdfEx.Message;
+                return new SyntaxValidationResults(message, rdfEx);
             }
             catch (Exception ex)
             {
                 message = "Invalid RDF - Error from Parser: " + this._parser.GetType().Name + " - " + ex.Message;
+                return new SyntaxValidationResults(message, ex);
             }
-            return false;
         }
     }
 }
