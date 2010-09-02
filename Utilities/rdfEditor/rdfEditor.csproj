@@ -90,6 +90,10 @@
     <Compile Include="AutoComplete\SparqlUpdateAutoCompleter.cs" />
     <Compile Include="AutoComplete\TurtleAutoCompleter.cs" />
     <Compile Include="AutoComplete\Data\VariableCompletionData.cs" />
+    <Compile Include="Commands.cs" />
+    <Compile Include="ComplexInputBinding.cs" />
+    <Compile Include="ComplexInputGesture.cs" />
+    <Compile Include="ComplexInputGestureConverter.cs" />
     <Compile Include="EditorWindow.xaml.cs">
       <DependentUpon>EditorWindow.xaml</DependentUpon>
     </Compile>

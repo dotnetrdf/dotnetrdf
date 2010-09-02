@@ -42,8 +42,8 @@ namespace rdfEditor
         {
             InitializeComponent();
 
-            this._manager = new EditorManager(this.textEditor, this.mnuCurrentHighlighter, this.stsSyntaxValidation);          
-
+            this._manager = new EditorManager(this.textEditor, this.mnuCurrentHighlighter, this.stsSyntaxValidation);
+          
             //Set up the Editor Options
             TextEditorOptions options = new TextEditorOptions();
             options.EnableEmailHyperlinks = false;
@@ -509,6 +509,36 @@ namespace rdfEditor
             mnuSaveAs_Click(sender, e);
         }
 
+        private void SaveWithNTriplesExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            mnuSaveWithNTriples_Click(sender, e);
+        }
+
+        private void SaveWithTurtleExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            mnuSaveWithTurtle_Click(sender, e);
+        }
+
+        private void SaveWithN3Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            mnuSaveWithN3_Click(sender, e);
+        }
+
+        private void SaveWithRdfXmlExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            mnuSaveWithRdfXml_Click(sender, e);
+        }
+
+        private void SaveWithRdfJsonExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            mnuSaveWithRdfJson_Click(sender, e);
+        }
+
+        private void SaveWithXHtmlRdfAExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            mnuSaveWithRdfa_Click(sender, e);
+        }
+
         private void CloseCommandExecuted(object sender, ExecutedRoutedEventArgs e)
         {
             mnuClose_Click(sender, e);
@@ -541,12 +571,20 @@ namespace rdfEditor
 
         private void ToggleLineNumbersExecuted(object sender, ExecutedRoutedEventArgs e)
         {
+            this.mnuShowLineNumbers.IsChecked = !this.mnuShowLineNumbers.IsChecked;
             mnuShowLineNumbers_Click(sender, e);
         }
 
         private void ToggleWordWrapExecuted(object sender, ExecutedRoutedEventArgs e)
         {
+            this.mnuWordWrap.IsChecked = !this.mnuWordWrap.IsChecked;
             mnuWordWrap_Click(sender, e);
+        }
+
+        private void ToggleHighlightingExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            this.mnuEnableHighlighting.IsChecked = !this.mnuEnableHighlighting.IsChecked;
+            mnuEnableHighlighting_Click(sender, e);
         }
 
         #endregion
@@ -556,6 +594,5 @@ namespace rdfEditor
             this.mnuUndo.IsEnabled = textEditor.CanUndo;
             this.mnuRedo.IsEnabled = textEditor.CanRedo;
         }
-
     }
 }
