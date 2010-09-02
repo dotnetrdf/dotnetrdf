@@ -466,6 +466,12 @@ namespace rdfEditor
             Properties.Settings.Default.Save();
         }
 
+        private void mnuCustomiseFileAssociations_Click(object sender, RoutedEventArgs e)
+        {
+            FileAssociations diag = new FileAssociations();
+            diag.ShowDialog();
+        }
+
         #endregion
 
         #region Tools Menu
@@ -589,10 +595,57 @@ namespace rdfEditor
 
         #endregion
 
+        #region Misc Event Handlers
+
         private void textEditor_TextChanged(object sender, EventArgs e)
         {
             this.mnuUndo.IsEnabled = textEditor.CanUndo;
             this.mnuRedo.IsEnabled = textEditor.CanRedo;
         }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            //Open a File if we've been asked to do so
+            String[] args = Environment.GetCommandLineArgs();
+            if (args.Length >= 2)
+            {
+                if (File.Exists(args[1]))
+                {
+                    try
+                    {
+                        using (StreamReader reader = new StreamReader(args[1]))
+                        {
+                            String text = reader.ReadToEnd();
+                            textEditor.Text = String.Empty;
+                            textEditor.Text = text;
+                            this._manager.AutoDetectSyntax(args[1]);
+                        }
+                        this._manager.CurrentFile = args[1];
+                        this.Title = "rdfEditor - " + System.IO.Path.GetFileName(this._manager.CurrentFile);
+                        this._manager.HasChanged = false;
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("An error occurred while opening the selected file: " + ex.Message, "Unable to Open File");
+                    }
+                }
+            }
+
+            //Check File Associations
+            if (Properties.Settings.Default.AlwaysCheckFileAssociations)
+            {
+                if (Properties.Settings.Default.FirstRun)
+                {
+                    Properties.Settings.Default.AlwaysCheckFileAssociations = false;
+                    Properties.Settings.Default.FirstRun = false;
+                    Properties.Settings.Default.Save();
+                }
+
+                FileAssociations diag = new FileAssociations();
+                diag.ShowDialog();
+            }
+        }
+
+        #endregion
     }
 }

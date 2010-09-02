@@ -1,0 +1,33 @@
+﻿<Window x:Class="rdfEditor.FileAssociations"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="Select File Associations" Height="275" Width="460">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="60*"></RowDefinition>
+            <RowDefinition Height="125*"></RowDefinition>
+            <RowDefinition Height="25*"></RowDefinition>
+            <RowDefinition Height="25*"></RowDefinition>
+        </Grid.RowDefinitions>
+        
+        <Label Grid.Row="0">
+            <TextBlock TextWrapping="Wrap">
+                rdfEditor has detected that it is not the default program for the following RDF and SPARQL file types.  Please select which types you would like to make rdfEditor the default program for:
+            </TextBlock>
+        </Label>
+        
+        <StackPanel Grid.Row="1" Name="stackAssociations">
+            <CheckBox Tag=".nt">NTriples</CheckBox>
+            <CheckBox Tag=".ttl">Turtle</CheckBox>
+            <CheckBox Tag=".n3">Notation 3</CheckBox>
+            <CheckBox Tag=".rdf">RDF/XML</CheckBox>
+            <CheckBox Tag=".json">RDF/JSON</CheckBox>
+            <CheckBox Tag=".rq">SPARQL Query Files</CheckBox>
+            <CheckBox Tag=".srx">SPARQL Results Format XML</CheckBox>
+        </StackPanel>
+        
+        <CheckBox Grid.Row="2" Name="chkAlwaysCheckFileAssociations">Always perform this check when starting rdfEditor?</CheckBox>
+        
+        <Button Grid.Row="3" Name="btnContinue" Click="btnContinue_Click">Save Changes and Continue</Button>
+    </Grid>
+</Window>
