@@ -375,7 +375,7 @@ namespace rdfEditor
 
         private void mnuExit_Click(object sender, RoutedEventArgs e)
         {
-            Application.Current.Shutdown();
+            this.Close();
         }
 
         #endregion
@@ -593,6 +593,18 @@ namespace rdfEditor
             mnuEnableHighlighting_Click(sender, e);
         }
 
+        private void ToggleValidateAsYouTypeExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            this.mnuValidateAsYouType.IsChecked = !this.mnuValidateAsYouType.IsChecked;
+            mnuValidateAsYouType_Click(sender, e);
+        }
+
+        private void ToggleAutoCompletionExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            this.mnuAutoComplete.IsChecked = !this.mnuAutoComplete.IsChecked;
+            mnuAutoComplete_Click(sender, e);
+        }
+
         #endregion
 
         #region Misc Event Handlers
@@ -642,8 +654,13 @@ namespace rdfEditor
                 }
 
                 FileAssociations diag = new FileAssociations();
-                diag.ShowDialog();
+                if (!diag.AllAssociated) diag.ShowDialog(); //Don't show if all associations are already set
             }
+        }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            Application.Current.Shutdown();
         }
 
         #endregion

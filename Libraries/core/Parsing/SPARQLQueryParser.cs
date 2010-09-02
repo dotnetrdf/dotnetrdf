@@ -394,7 +394,14 @@ namespace VDS.RDF.Parsing
                         break;
 
                     default:
-                        throw Error("Unexpected Token encountered", temp);
+                        if (context.Query.QueryType == SparqlQueryType.Ask)
+                        {
+                            throw Error("Unexpected Token encountered, a valid ASK query has been parsed but additional invalid tokens are present after the Graph pattern", temp);
+                        }
+                        else
+                        {
+                            throw Error("Unexpected Token encountered - expected a BASE/PREFIX directive or a Query Keyword to start a Query", temp);
+                        }
                 }
             } while (temp.TokenType != Token.EOF);
 
@@ -427,7 +434,7 @@ namespace VDS.RDF.Parsing
             output.Append("]\n");
             output.Append(msg);
 
-            return new RdfParseException(output.ToString());
+            return new RdfParseException(output.ToString(), t);
         }
 
         private void TryParseBaseDeclaration(SparqlQueryParserContext context)
@@ -2741,7 +2748,7 @@ namespace VDS.RDF.Parsing
                     break;
 
                 default:
-                    throw new RdfParseException("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Left Bracket to start a bracketted expression in a HAVING Clause");
+                    throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Left Bracket to start a bracketted expression in a HAVING Clause", next);
             }
 
             //Set the Having Clause of the Group By

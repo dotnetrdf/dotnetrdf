@@ -2,7 +2,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:rdfEditor="clr-namespace:rdfEditor"
-    Title="rdfEditor" Height="629" Width="880" Loaded="Window_Loaded">
+    Title="rdfEditor" Height="629" Width="880" Loaded="Window_Loaded" Closed="Window_Closed">
     
     <Window.CommandBindings>
         <CommandBinding Command="New" Executed="NewCommandExecuted" />
@@ -26,7 +26,10 @@
         
         <CommandBinding Command="{x:Static rdfEditor:Commands.ToggleLineNumbers}" Executed="ToggleLineNumbersExecuted" />
         <CommandBinding Command="{x:Static rdfEditor:Commands.ToggleWordWrap}" Executed="ToggleWordWrapExecuted" />
+        
         <CommandBinding Command="{x:Static rdfEditor:Commands.ToggleHighlighting}" Executed="ToggleHighlightingExecuted" />
+        <CommandBinding Command="{x:Static rdfEditor:Commands.ToggleValidateAsYouType}" Executed="ToggleValidateAsYouTypeExecuted" />
+        <CommandBinding Command="{x:Static rdfEditor:Commands.ToggleAutoCompletion}" Executed="ToggleAutoCompletionExecuted" />
     </Window.CommandBindings>
     
     <Window.InputBindings>
@@ -51,8 +54,10 @@
         
         <rdfEditor:ComplexInputBinding Command="{x:Static rdfEditor:Commands.ToggleLineNumbers}" Gesture="Ctrl+E,L" />
         <rdfEditor:ComplexInputBinding Command="{x:Static rdfEditor:Commands.ToggleWordWrap}" Gesture="Ctrl+E,W" />
-        <rdfEditor:ComplexInputBinding Command="{x:Static rdfEditor:Commands.ToggleHighlighting}" Gesture="Ctrl+E,H" />
         
+        <rdfEditor:ComplexInputBinding Command="{x:Static rdfEditor:Commands.ToggleHighlighting}" Gesture="Ctrl+E,H" />
+        <rdfEditor:ComplexInputBinding Command="{x:Static rdfEditor:Commands.ToggleValidateAsYouType}" Gesture="Ctrl+E,V" />
+        <rdfEditor:ComplexInputBinding Command="{x:Static rdfEditor:Commands.ToggleAutoCompletion}" Gesture="Ctrl+E,A" />
     </Window.InputBindings>
     
     <DockPanel>
@@ -119,8 +124,8 @@
                         <MenuItem Header="SPARQL Results Format JSON" IsCheckable="True" Tag="SparqlResultsJson" />
                 </MenuItem>
                 <Separator />
-                <MenuItem Header="Validate Syntax as you Type" Name="mnuValidateAsYouType" IsCheckable="True" IsChecked="True" Click="mnuValidateAsYouType_Click" />
-                <MenuItem Header="Enable Auto-completion" Name="mnuAutoComplete" IsCheckable="True" IsChecked="True" Click="mnuAutoComplete_Click" />
+                <MenuItem Header="Validate Syntax as you Type" Name="mnuValidateAsYouType" IsCheckable="True" IsChecked="True" Click="mnuValidateAsYouType_Click" InputGestureText="Ctrl+E,V" />
+                <MenuItem Header="Enable Auto-completion" Name="mnuAutoComplete" IsCheckable="True" IsChecked="True" Click="mnuAutoComplete_Click" InputGestureText="Ctrl+E,A" />
                 <Separator />
                 <MenuItem Header="Customise File Associations" Name="mnuCustomiseFileAssociations" Click="mnuCustomiseFileAssociations_Click" />
             </MenuItem>

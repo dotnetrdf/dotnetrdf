@@ -218,7 +218,7 @@ namespace VDS.RDF.Parsing
                 case Token.LITERAL:
                 case Token.LITERALWITHDT:
                 case Token.LITERALWITHLANG:
-                    throw new RdfParseException("Subject cannot be a Literal in NTriples");
+                    throw new RdfParseException("Subject cannot be a Literal in NTriples", subjToken);
                 default:
                     throw Error("Unexpected Token '" + subjToken.GetType().ToString() + "' encountered, expected a Blank Node or URI for the Subject of a Triple", subjToken);
             }
@@ -238,14 +238,14 @@ namespace VDS.RDF.Parsing
             {
                 case Token.BLANKNODE:
                 case Token.BLANKNODEWITHID:
-                    throw new RdfParseException("Predicate cannot be a Blank Node in NTriples");
+                    throw new RdfParseException("Predicate cannot be a Blank Node in NTriples", predToken);
                 case Token.URI:
                     return context.Graph.CreateUriNode(new Uri(predToken.Value));
                     //return this.ConvertToNode(g, predToken);
                 case Token.LITERAL:
                 case Token.LITERALWITHDT:
                 case Token.LITERALWITHLANG:
-                    throw new RdfParseException("Predicate cannot be a Literal in NTriples");
+                    throw new RdfParseException("Predicate cannot be a Literal in NTriples", predToken);
                 default:
                     throw Error("Unexpected Token '" + predToken.GetType().ToString() + "' encountered, expected a URI for the Predicate of a Triple", predToken);
             }
@@ -338,7 +338,7 @@ namespace VDS.RDF.Parsing
             output.Append("]\n");
             output.Append(msg);
 
-            return new RdfParseException(output.ToString());
+            return new RdfParseException(output.ToString(), t);
         }
 
         /// <summary>

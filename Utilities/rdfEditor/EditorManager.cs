@@ -41,6 +41,7 @@ namespace rdfEditor
         private bool _validateAsYouType = false;
         private ISyntaxValidator _currValidator;
         private StatusBarItem _validatorStatus;
+        private Exception _lastError = null;
 
         //Auto-complete
         private Dictionary<String, IAutoCompleter> _completers = new Dictionary<string, IAutoCompleter>();
@@ -173,6 +174,14 @@ namespace rdfEditor
             get
             {
                 return this._currValidator;
+            }
+        }
+
+        public Exception LastValidationError
+        {
+            get
+            {
+                return this._lastError;
             }
         }
         
@@ -537,13 +546,14 @@ namespace rdfEditor
         {
             if (this._currValidator == null)
             {
+                this._lastError = null;
                 this._validatorStatus.Content = "No Validator is available for currently selected Syntax";
             }
             else
             {
-                String message;
                 ISyntaxValidationResults results = this._currValidator.Validate(this._editor.Text);
                 this._validatorStatus.Content = results.Message;
+                this._lastError = results.Error;
                 ToolTip tip = new ToolTip();
                 TextBlock block = new TextBlock();
                 block.TextWrapping = TextWrapping.Wrap;

@@ -35,6 +35,7 @@ terms.
 
 using System;
 using System.Collections.Generic;
+using VDS.RDF.Parsing.Tokens;
 
 namespace VDS.RDF
 {
@@ -118,18 +119,147 @@ namespace VDS.RDF.Parsing
     /// </summary>
     public class RdfParseException : RdfException
     {
+        private bool _hasPositionInfo = false;
+        private int _startLine, _endLine, _startPos, _endPos;
+
         /// <summary>
         /// Creates a new RDF Parse Exception with the given Message
         /// </summary>
         /// <param name="errorMsg">Error Message</param>
-        public RdfParseException(String errorMsg) : base(errorMsg) { }
+        public RdfParseException(String errorMsg)
+            : base(errorMsg) { }
 
         /// <summary>
         /// Creates a new RDF Parse Exception with the given Message and Inner Exception
         /// </summary>
         /// <param name="errorMsg">Error Message</param>
         /// <param name="cause">Inner Exception</param>
-        public RdfParseException(String errorMsg, Exception cause) : base(errorMsg, cause) { }
+        public RdfParseException(String errorMsg, Exception cause) 
+            : base(errorMsg, cause) { }
+
+        /// <summary>
+        /// Creates a new RDF Parse Exception which contains Position Information taken from the given Token
+        /// </summary>
+        /// <param name="errorMsg">Error Message</param>
+        /// <param name="t">Token</param>
+        public RdfParseException(String errorMsg, IToken t)
+            : this(errorMsg, t, null) { }
+
+        /// <summary>
+        /// Creates a new RDF Parse Exception which contains Position Information taken from the given Token
+        /// </summary>
+        /// <param name="errorMsg">Error Message</param>
+        /// <param name="t">Token</param>
+        /// <param name="cause">Inner Exception</param>
+        public RdfParseException(String errorMsg, IToken t, Exception cause)
+            : base(errorMsg, cause)
+        {
+            if (t != null)
+            {
+                this._hasPositionInfo = true;
+                this._startLine = t.StartLine;
+                this._endLine = t.EndLine;
+                this._startPos = t.StartPosition;
+                this._endPos = t.EndPosition;
+            }
+        }
+
+        /// <summary>
+        /// Creates a new RDF Parse Exception which contains Position Information
+        /// </summary>
+        /// <param name="errorMsg">Error Message</param>
+        /// <param name="line">Line the error occurred on</param>
+        /// <param name="pos">Column Position the error occurred at</param>
+        public RdfParseException(String errorMsg, int line, int pos)
+            : base(errorMsg)
+        {
+            this._hasPositionInfo = true;
+            this._startLine = this._endLine = line;
+            this._startPos = this._endPos = pos;
+        }
+
+        /// <summary>
+        /// Creates a new RDF Parse Exception which contains Position Information
+        /// </summary>
+        /// <param name="errorMsg">Error Message</param>
+        /// <param name="line">Line the error occurred on</param>
+        /// <param name="startPos">Column Position the error starts at</param>
+        /// <param name="endPos">Column Position the error ends at</param>
+        public RdfParseException(String errorMsg, int line, int startPos, int endPos)
+            : this(errorMsg, line, startPos)
+        {
+            this._endPos = endPos;
+        }
+
+        /// <summary>
+        /// Creates a new RDF Parse Exception which contains Position Information
+        /// </summary>
+        /// <param name="errorMsg">Error Message</param>
+        /// <param name="startLine">Line the error starts on</param>
+        /// <param name="endLine">Line the error ends on</param>
+        /// <param name="startPos">Column Position the error starts at</param>
+        /// <param name="endPos">Column Position the error ends at</param>
+        public RdfParseException(String errorMsg, int startLine, int endLine, int startPos, int endPos)
+            : this(errorMsg, startLine, startPos)
+        {
+            this._endLine = endLine;
+            this._endPos = endPos;
+        }
+
+        /// <summary>
+        /// Gets whether the Exception has any position information
+        /// </summary>
+        public bool HasPositionInformation
+        {
+            get
+            {
+                return this._hasPositionInfo;
+            }
+        }
+
+        /// <summary>
+        /// Gets the Start Line of the Error or -1 if no position information
+        /// </summary>
+        public int StartLine
+        {
+            get
+            {
+                return (this._hasPositionInfo) ? this._startLine : -1;
+            }
+        }
+
+        /// <summary>
+        /// Gets the End Line of the Error or -1 if no position information
+        /// </summary>
+        public int EndLine
+        {
+            get
+            {
+                return (this._hasPositionInfo) ? this._endLine : -1;
+            }
+        }
+
+        /// <summary>
+        /// Gets the Start Column of the Error or -1 if no position information
+        /// </summary>
+        public int StartPosition
+        {
+            get
+            {
+                return (this._hasPositionInfo) ? this._startPos : -1;
+            }
+        }
+
+        /// <summary>
+        /// Gets the End Column of the Error or -1 if no position information
+        /// </summary>
+        public int EndPosition
+        {
+            get
+            {
+                return (this._hasPositionInfo) ? this._endPos : -1;
+            }
+        }
     }
 
     /// <summary>

@@ -133,6 +133,7 @@
     <Compile Include="Syntax\SyntaxDefinition.cs" />
     <Compile Include="Syntax\SyntaxManager.cs" />
     <Compile Include="Syntax\SyntaxValidationResults.cs" />
+    <Compile Include="Syntax\ValidationErrorElementGenerator.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

@@ -573,7 +573,7 @@ namespace VDS.RDF.Parsing.Tokens
             }
             if (!this.Value.EndsWith(":"))
             {
-                throw new RdfParseException("Didn't find expected : Character while attempting to parse Prefix at content:\n" + this.Value + "\nPrefixes must end in a Colon Character");
+                throw new RdfParseException("Didn't find expected : Character while attempting to parse Prefix at content:\n" + this.Value + "\nPrefixes must end in a Colon Character", this.StartLine, this.CurrentLine, this.StartPosition, this.CurrentPosition);
             }
 
             //Produce a PrefixToken

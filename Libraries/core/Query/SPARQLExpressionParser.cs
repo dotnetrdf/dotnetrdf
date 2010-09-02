@@ -203,7 +203,7 @@ namespace VDS.RDF.Query
                 } 
                 else 
                 {
-                    throw new RdfParseException("Unexpected Token '" + next.GetType().ToString() + "' encountered while trying to parse a Conditional Or expression");
+                    throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered while trying to parse a Conditional Or expression", next);
                 }
             } 
             else 
@@ -409,7 +409,7 @@ namespace VDS.RDF.Query
                     }
                     else
                     {
-                        throw new RdfParseException("Unexpected Token '" + next.GetType().ToString() + "' encountered, Aggregates are not permitted in this Expression");
+                        throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, Aggregates are not permitted in this Expression", next);
                     }
 
                 case Token.URI:
@@ -444,7 +444,7 @@ namespace VDS.RDF.Query
                     }
 
                 default:
-                    throw new RdfParseException("Unexpected Token '" + next.GetType().ToString() + "' encountered while trying to parse a Primary Expression");
+                    throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered while trying to parse a Primary Expression",next);
             }
         }
 
@@ -471,7 +471,7 @@ namespace VDS.RDF.Query
                 next = tokens.Dequeue();
                 if (next.TokenType != Token.LEFTBRACKET)
                 {
-                    throw new RdfParseException("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Left Bracket to start a Bracketted Expression");
+                    throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Left Bracket to start a Bracketted Expression",next);
                 }
             }
 
@@ -552,17 +552,17 @@ namespace VDS.RDF.Query
                             }
                             else
                             {
-                                throw new RdfParseException("Unexpected Token '" + next.GetType().ToString() + "' encountered, a Right Bracket to end a BOUND function call was expected");
+                                throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, a Right Bracket to end a BOUND function call was expected",next);
                             }
                         }
                         else
                         {
-                            throw new RdfParseException("Unexpected Token '" + next.GetType().ToString() + "' encountered, a Variable Token for a BOUND function call was expected");
+                            throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, a Variable Token for a BOUND function call was expected", next);
                         }
                     }
                     else
                     {
-                        throw new RdfParseException("Unexpected Token '" + next.GetType().ToString() + "' encountered, a Left Bracket to start a BOUND function call was expected");
+                        throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, a Left Bracket to start a BOUND function call was expected", next);
                     }
                 case Token.COALESCE:
                     //Get as many argument expressions as there are
@@ -640,7 +640,7 @@ namespace VDS.RDF.Query
                     return new ExistsFunction(this._parser.TryParseGraphPattern(tempcontext, true), mustExist);
 
                 default:
-                    throw new RdfParseException("Unexpected Token '" + next.GetType().ToString() + "' encountered while trying to parse a Built-in Function call");
+                    throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered while trying to parse a Built-in Function call", next);
             }
         }
 
@@ -821,7 +821,7 @@ namespace VDS.RDF.Query
                     }
                     else
                     {
-                        throw new RdfParseException("The Plain Literal '" + literal.Value + "' is not a valid Integer, Decimal or Double");
+                        throw Error("The Plain Literal '" + literal.Value + "' is not a valid Integer, Decimal or Double", literal);
                     }
                     
                 case Token.LITERALWITHDT:
@@ -857,7 +857,7 @@ namespace VDS.RDF.Query
                     }
                     else
                     {
-                        throw new RdfParseException("The Literal '" + literal.Value + "' with Datatype URI '" + dtUri + "' is not a valid Integer, Decimal or Double");
+                        throw Error("The Literal '" + literal.Value + "' with Datatype URI '" + dtUri + "' is not a valid Integer, Decimal or Double", literal);
                     }
                     
                 case Token.LITERAL:
@@ -893,7 +893,7 @@ namespace VDS.RDF.Query
                             else
                             {
                                 //Otherwise treat as a Node Expression
-                                throw new RdfParseException("The Literal '" + literal.Value + "' is not a valid Integer, Decimal or Double");
+                                throw Error("The Literal '" + literal.Value + "' is not a valid Integer, Decimal or Double", literal);
                             }
                         }
                     }
@@ -914,12 +914,12 @@ namespace VDS.RDF.Query
                         }
                         else
                         {
-                            throw new RdfParseException("The Literal '" + literal.Value + "' is not a valid Integer, Decimal or Double");
+                            throw Error("The Literal '" + literal.Value + "' is not a valid Integer, Decimal or Double", literal);
                         }
                     }
 
                 default:
-                    throw new RdfParseException("Unexpected Token '" + literal.GetType().ToString() + "' encountered while trying to parse a Numeric Literal");
+                    throw Error("Unexpected Token '" + literal.GetType().ToString() + "' encountered while trying to parse a Numeric Literal", literal);
             }
         }
 
@@ -1231,7 +1231,7 @@ namespace VDS.RDF.Query
             output.Append("]\n");
             output.Append(msg);
 
-            return new RdfParseException(output.ToString());
+            return new RdfParseException(output.ToString(), t);
         }
     }
 }

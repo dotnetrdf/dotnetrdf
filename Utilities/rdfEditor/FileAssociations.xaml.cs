@@ -115,6 +115,14 @@ namespace rdfEditor
             }
         }
 
+        public bool AllAssociated
+        {
+            get
+            {
+                return (this._currentAssociations.Count == _associations.Count);
+            }
+        }
+
         private void SetAssociationsChecked(String ext)
         {
             foreach (CheckBox cb in stackAssociations.Children.OfType<CheckBox>())

@@ -383,7 +383,7 @@ namespace VDS.RDF.Parsing
             }
             error.AppendLine(context.Input.TokenType.GetType().Name);
             error.Append(message);
-            throw new RdfParseException(error.ToString());
+            throw new RdfParseException(error.ToString(), context.Input.LineNumber, context.Input.LinePosition);
         }
 
         /// <summary>

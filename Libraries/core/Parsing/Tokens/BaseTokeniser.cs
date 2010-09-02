@@ -629,11 +629,11 @@ namespace VDS.RDF.Parsing.Tokens
             this._reader.Close();
             if (detail.Contains("{0}"))
             {
-                return new RdfParseException("[Line " + this._currline + " Column " + this._currpos + "] " + String.Format(detail, this._format));
+                return new RdfParseException("[Line " + this._currline + " Column " + this._currpos + "] " + String.Format(detail, this._format), this._currline, this._currpos);
             }
             else
             {
-                return new RdfParseException("[Line " + this._currline + " Column " + this._currpos + "] " + detail);
+                return new RdfParseException("[Line " + this._currline + " Column " + this._currpos + "] " + detail, this._currline, this._currpos);
             }
         }
 

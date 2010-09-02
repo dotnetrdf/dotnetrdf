@@ -387,7 +387,7 @@ namespace VDS.RDF.Parsing
             output.Append("]\n");
             output.Append(msg);
 
-            return new RdfParseException(output.ToString());
+            return new RdfParseException(output.ToString(), t);
         }
 
         /// <summary>

@@ -4,7 +4,7 @@
     Title="Select File Associations" Height="275" Width="460">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="60*"></RowDefinition>
+            <RowDefinition Height="40*"></RowDefinition>
             <RowDefinition Height="125*"></RowDefinition>
             <RowDefinition Height="25*"></RowDefinition>
             <RowDefinition Height="25*"></RowDefinition>
@@ -12,21 +12,21 @@
         
         <Label Grid.Row="0">
             <TextBlock TextWrapping="Wrap">
-                rdfEditor has detected that it is not the default program for the following RDF and SPARQL file types.  Please select which types you would like to make rdfEditor the default program for:
+                Please select which file types you would like to make rdfEditor the default program for:
             </TextBlock>
         </Label>
         
-        <StackPanel Grid.Row="1" Name="stackAssociations">
-            <CheckBox Tag=".nt">NTriples</CheckBox>
-            <CheckBox Tag=".ttl">Turtle</CheckBox>
-            <CheckBox Tag=".n3">Notation 3</CheckBox>
-            <CheckBox Tag=".rdf">RDF/XML</CheckBox>
-            <CheckBox Tag=".json">RDF/JSON</CheckBox>
-            <CheckBox Tag=".rq">SPARQL Query Files</CheckBox>
-            <CheckBox Tag=".srx">SPARQL Results Format XML</CheckBox>
+        <StackPanel Grid.Row="1" Name="stackAssociations" Margin="5">
+            <CheckBox Tag=".nt">NTriples (*.nt)</CheckBox>
+            <CheckBox Tag=".ttl">Turtle (*.ttl)</CheckBox>
+            <CheckBox Tag=".n3">Notation 3 (*.n3)</CheckBox>
+            <CheckBox Tag=".rdf">RDF/XML (*.rdf)</CheckBox>
+            <CheckBox Tag=".json">RDF/JSON (*.json)</CheckBox>
+            <CheckBox Tag=".rq">SPARQL Query Files (*.rq,*.sparql)</CheckBox>
+            <CheckBox Tag=".srx">SPARQL Results Format XML (*.srx)</CheckBox>
         </StackPanel>
         
-        <CheckBox Grid.Row="2" Name="chkAlwaysCheckFileAssociations">Always perform this check when starting rdfEditor?</CheckBox>
+        <CheckBox Margin="5" Grid.Row="2" Name="chkAlwaysCheckFileAssociations">Always perform this check when starting rdfEditor?</CheckBox>
         
         <Button Grid.Row="3" Name="btnContinue" Click="btnContinue_Click">Save Changes and Continue</Button>
     </Grid>

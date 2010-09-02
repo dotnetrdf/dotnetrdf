@@ -171,7 +171,7 @@ namespace VDS.RDF.Parsing
                 }
                 else
                 {
-                    throw new RdfParseException("Unexpected Token '" + reader.TokenType.ToString() + "' encountered, the 'head' property of the JSON Result Set Object was expected");
+                    throw Error(reader, "Unexpected Token '" + reader.TokenType.ToString() + "' encountered, the 'head' property of the JSON Result Set Object was expected");
                 }
             }
             else
@@ -346,7 +346,7 @@ namespace VDS.RDF.Parsing
                 }
                 else
                 {
-                    throw new RdfParseException("Unexpected Token '" + reader.TokenType.ToString() + "' encountered, the 'results' or 'boolean' property of the JSON Result Set Object was expected");
+                    throw Error(reader, "Unexpected Token '" + reader.TokenType.ToString() + "' encountered, the 'results' or 'boolean' property of the JSON Result Set Object was expected");
                 }
             }
             else
@@ -412,7 +412,7 @@ namespace VDS.RDF.Parsing
                         }
                         else
                         {
-                            throw new RdfParseException("Unexpected Token '" + reader.TokenType.ToString() + "' encountered, expected the start of an Array for the 'bindings' property of the Results Object");
+                            throw Error(reader, "Unexpected Token '" + reader.TokenType.ToString() + "' encountered, expected the start of an Array for the 'bindings' property of the Results Object");
                         }
                     }
                     else
@@ -686,7 +686,7 @@ namespace VDS.RDF.Parsing
             }
             error.AppendLine(reader.TokenType.ToString());
             error.Append(message);
-            throw new RdfParseException(error.ToString());
+            throw new RdfParseException(error.ToString(), reader.LineNumber, reader.LinePosition);
         }
     }
 }

@@ -220,7 +220,7 @@ namespace VDS.RDF.Parsing
                             }
                             else
                             {
-                                throw new RdfParseException("Unexpected Token '" + next.GetType().ToString() + "' encounted, this is not a valid token for a Path");
+                                throw new RdfParseException("Unexpected Token '" + next.GetType().ToString() + "' encounted, this is not a valid token for a Path", next);
                             }
                             break;
                     }
@@ -244,7 +244,7 @@ namespace VDS.RDF.Parsing
                 }
                 else
                 {
-                    throw new RdfParseException("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Variable after a LENGTH keyword to bind the length of the Path to");
+                    throw new RdfParseException("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Variable after a LENGTH keyword to bind the length of the Path to", next);
                 }
             }
 
@@ -269,7 +269,7 @@ namespace VDS.RDF.Parsing
                 }
                 else
                 {
-                    throw new RdfParseException("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a valid path sequence/alternative token");
+                    throw new RdfParseException("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a valid path sequence/alternative token", next);
                 }
             }
 
@@ -356,7 +356,7 @@ namespace VDS.RDF.Parsing
                     break;
 
                 default:
-                    throw new RdfParseException("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a URI/QName, the 'a' keyword or the start of a group path expression");
+                    throw new RdfParseException("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a URI/QName, the 'a' keyword or the start of a group path expression", next);
             }
 
             //See if there's a Path Modifier
@@ -404,12 +404,12 @@ namespace VDS.RDF.Parsing
                                     if (Int32.TryParse(next.Value, out max))
                                     {
                                         next = tokens.Dequeue();
-                                        if (next.TokenType != Token.RIGHTCURLYBRACKET) throw new RdfParseException("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a } to terminate a Path Cardinality modifier");
+                                        if (next.TokenType != Token.RIGHTCURLYBRACKET) throw new RdfParseException("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a } to terminate a Path Cardinality modifier", next);
                                         return new NToM(path, min, max);
                                     }
                                     else
                                     {
-                                        throw new RdfParseException("The value '" + next.Value + "' is not valid for use as a Path Cardinality modifier");
+                                        throw new RdfParseException("The value '" + next.Value + "' is not valid for use as a Path Cardinality modifier", next);
                                     }
                                 }
                                 else if (next.TokenType == Token.RIGHTCURLYBRACKET)
@@ -418,7 +418,7 @@ namespace VDS.RDF.Parsing
                                 }
                                 else
                                 {
-                                    throw new RdfParseException("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected an Integer Plain Literal as part of a Path Cardinality modifier");
+                                    throw new RdfParseException("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected an Integer Plain Literal as part of a Path Cardinality modifier", next);
                                 }
                             }
                             else if (next.TokenType == Token.RIGHTCURLYBRACKET)
@@ -427,12 +427,12 @@ namespace VDS.RDF.Parsing
                             }
                             else
                             {
-                                throw new RdfParseException("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a valid token to continue the Path Cardinality modifier");
+                                throw new RdfParseException("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a valid token to continue the Path Cardinality modifier", next);
                             }
                         }
                         else
                         {
-                            throw new RdfParseException("The value '" + next.Value + "' is not valid for use as a Path Cardinality modifier");
+                            throw new RdfParseException("The value '" + next.Value + "' is not valid for use as a Path Cardinality modifier", next);
                         }
                     }
                     else if (next.TokenType == Token.COMMA)
@@ -443,25 +443,25 @@ namespace VDS.RDF.Parsing
                             if (Int32.TryParse(next.Value, out max))
                             {
                                 next = tokens.Dequeue();
-                                if (next.TokenType != Token.RIGHTCURLYBRACKET) throw new RdfParseException("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a } to terminate a Path Cardinality modifier");
+                                if (next.TokenType != Token.RIGHTCURLYBRACKET) throw new RdfParseException("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a } to terminate a Path Cardinality modifier", next);
                                 return new ZeroToN(path, max);
                             } 
                             else 
                             {
-                                throw new RdfParseException("The value '" + next.Value + "' is not valid for use as a Path Cardinality modifier");
+                                throw new RdfParseException("The value '" + next.Value + "' is not valid for use as a Path Cardinality modifier", next);
                             }
                         }
                         else
                         {
-                            throw new RdfParseException("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected an Integer Plain Literal as part of a Path Cardinality modifier");
+                            throw new RdfParseException("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected an Integer Plain Literal as part of a Path Cardinality modifier", next);
                         }
                     }
                     else
                     {
-                        throw new RdfParseException("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected an Integer Plain Literal/Comma as part of a Path Cardinality modifier");
+                        throw new RdfParseException("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected an Integer Plain Literal/Comma as part of a Path Cardinality modifier", next);
                     }
                 default:
-                    throw new RdfParseException("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a token which is valid as a Path Cardinality modifier");
+                    throw new RdfParseException("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a token which is valid as a Path Cardinality modifier", next);
             }
         }
     }
