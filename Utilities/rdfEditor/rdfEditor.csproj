@@ -94,6 +94,7 @@
     <Compile Include="AutoComplete\SparqlUpdateAutoCompleter.cs" />
     <Compile Include="AutoComplete\TurtleAutoCompleter.cs" />
     <Compile Include="AutoComplete\Data\VariableCompletionData.cs" />
+    <EmbeddedResource Include="AutoComplete\Vocabularies\xsd.ttl" />
     <Compile Include="Commands.cs" />
     <Compile Include="ComplexInputBinding.cs" />
     <Compile Include="ComplexInputGesture.cs" />
@@ -126,6 +127,7 @@
     </Compile>
     <Compile Include="Syntax\CustomColourBrush.cs" />
     <Compile Include="Syntax\ISyntaxValidator.cs" />
+    <Compile Include="Syntax\RdfDatasetSyntaxValidator.cs" />
     <Compile Include="Syntax\RdfSyntaxValidator.cs" />
     <Compile Include="Syntax\SparqlQueryValidator.cs" />
     <Compile Include="Syntax\SparqlResultsValidator.cs" />
@@ -154,6 +156,15 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <EmbeddedResource Include="Syntax\trix.xshd">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Syntax\trig.xshd">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Syntax\nquads.xshd">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="Syntax\xhtml-rdfa.xshd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>

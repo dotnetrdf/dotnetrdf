@@ -163,6 +163,7 @@ namespace VDS.RDF.Parsing
                     {
                         //No catch actions - just cleaning up
                     }
+                    throw;
                 }
             }
             else

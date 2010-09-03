@@ -587,8 +587,6 @@ namespace rdfEditor.AutoComplete
                     case AutoCompleteState.KeywordOrQName:
                     case AutoCompleteState.Keyword:
                     case AutoCompleteState.QName:
-                    case AutoCompleteState.Literal:
-                    case AutoCompleteState.LongLiteral:
                         if (!editor.Document.GetText(offset - 1, 1).Equals(" "))
                         {
                             editor.Document.Insert(offset, " ");

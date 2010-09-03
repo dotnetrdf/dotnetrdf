@@ -73,5 +73,13 @@ namespace rdfEditor.AutoComplete.Data
                 return this._uri;
             }
         }
+
+        public String Prefix
+        {
+            get
+            {
+                return this._prefix;
+            }
+        }
     }
 }

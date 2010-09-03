@@ -38,6 +38,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using VDS.RDF.Query;
+using VDS.RDF.Storage.Params;
 
 namespace VDS.RDF.Parsing
 {
@@ -162,6 +163,61 @@ namespace VDS.RDF.Parsing
                 throw new RdfParseException("StringParser failed to parse the RDF string correctly, StringParser auto-detection guessed '" + format + "' but this failed to parse.  RDF string may be malformed or StringParser may have guessed incorrectly", parseEx);
             }
         }
+
+        public static void ParseDataset(ITripleStore store, String data, IStoreReader reader)
+        {
+            try
+            {
+                MemoryStream mem = new MemoryStream();
+                StreamWriter writer = new StreamWriter(mem);
+                writer.Write(data);
+                writer.Flush();
+                mem.Seek(0, SeekOrigin.Begin);
+
+                reader.Load(store, new StreamParams(mem));
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        public static void ParseDataset(ITripleStore store, String data)
+        {
+            //Try to guess the format
+            String format = "Unknown";
+            try
+            {
+#if !NO_XMLDOM
+                if (data.Contains("<?xml") && data.Contains("<TriX"))
+                {
+                    //Probably TriX
+                    format = "TriX";
+                    ParseDataset(store, data, new TriXParser());
+                }
+                else 
+#endif
+                    if (data.Contains("@prefix") || data.Contains("@base"))
+                {
+                    //Probably TriG
+                    format = "TriG";
+                    ParseDataset(store, data, new TriGParser());
+                }
+                else
+                {
+                    //Take a stab at it being NQuads
+                    //No real way to test as there's nothing particularly distinctive in NQuads
+                    format = "NQuads";
+                    ParseDataset(store, data, new NQuadsParser());
+                }
+            }
+            catch (RdfParseException parseEx)
+            {
+                //Wrap the exception in an informational exception about what we guessed
+                throw new RdfParseException("StringParser failed to parse the RDF Dataset string correctly, StringParser auto-detection guessed '" + format + "' but this failed to parse.  RDF Dataset string may be malformed or StringParser may have guessed incorrectly", parseEx);
+            }
+        }
+
 
         public static void ParseResultSet(SparqlResultSet results, String data)
         {

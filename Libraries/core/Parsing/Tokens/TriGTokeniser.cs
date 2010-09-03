@@ -190,8 +190,15 @@ namespace VDS.RDF.Parsing.Tokens
                                 case '.':
                                     //Dot Terminator
                                     this.ConsumeCharacter();
-                                    this._lasttokentype = Token.DOT;
-                                    return new DotToken(this.CurrentLine, this.StartPosition);
+                                    if (Char.IsDigit(this.Peek()))
+                                    {
+                                        return this.TryGetNumericLiteral();
+                                    }
+                                    else
+                                    {
+                                        this._lasttokentype = Token.DOT;
+                                        return new DotToken(this.CurrentLine, this.StartPosition);
+                                    }
                                 case ';':
                                     //Semicolon Terminator
                                     this.ConsumeCharacter();
@@ -500,6 +507,8 @@ namespace VDS.RDF.Parsing.Tokens
             bool expoccurred = false;
             bool signoccurred = false;
 
+            if (this.Length == 1) dotoccurred = true;
+
             char next = this.Peek();
 
             //Read the Characters of the Numeric Literal
@@ -508,7 +517,7 @@ namespace VDS.RDF.Parsing.Tokens
                 if (next == '-' || next == '+')
                 {
                     //Sign can occur at start and immediatedly after an exponent
-                    if (signoccurred && !(this.Value.EndsWith("e") || this.Value.EndsWith("E")))
+                    if ((signoccurred || expoccurred) && !(this.Value.EndsWith("e") || this.Value.EndsWith("E")))
                     {
                         //+/- can only occur once at start and once after exponent
                         throw Error("Unexpected Character " + next + " encountered while parsing a Numeric Literal from input '" + this.Value + "', a +/- to specify sign has already occurred in this Numeric Literal");

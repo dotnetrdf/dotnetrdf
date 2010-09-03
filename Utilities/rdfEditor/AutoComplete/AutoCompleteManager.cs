@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.CodeCompletion;
@@ -54,9 +56,14 @@ namespace rdfEditor.AutoComplete
         {
             new AutoCompleteDefinition("Turtle", new TurtleAutoCompleter()),
             new AutoCompleteDefinition("Notation3", new Notation3AutoCompleter()),
+
             new AutoCompleteDefinition("SparqlQuery10", new SparqlAutoCompleter(SparqlQuerySyntax.Sparql_1_0)),
             new AutoCompleteDefinition("SparqlQuery11", new SparqlAutoCompleter(SparqlQuerySyntax.Sparql_1_1)),
-            new AutoCompleteDefinition("SparqlUpdate11", new SparqlUpdateAutoCompleter())
+
+            new AutoCompleteDefinition("SparqlUpdate11", new SparqlUpdateAutoCompleter()),
+
+            new AutoCompleteDefinition("TriG", new TurtleAutoCompleter())
+
         };
 
         private static List<NamespaceTerm> _terms = new List<NamespaceTerm>();
@@ -117,7 +124,24 @@ namespace rdfEditor.AutoComplete
             try
             {
                 Graph g = new Graph();
-                UriLoader.Load(g, new Uri(namespaceUri));
+                try
+                {
+                    UriLoader.Load(g, new Uri(namespaceUri));
+                }
+                catch (Exception ex)
+                {
+                    //Try and load from our local copy if there is one
+                    String prefix = GetDefaultPrefix(namespaceUri);
+                    if (!prefix.Equals(String.Empty))
+                    {
+                        Stream localCopy = Assembly.GetExecutingAssembly().GetManifestResourceStream("rdfEditor.AutoComplete.Vocabularies." + prefix + ".ttl");
+                        if (localCopy != null)
+                        {
+                            TurtleParser ttlparser = new TurtleParser();
+                            ttlparser.Load(g, new StreamReader(localCopy));
+                        }
+                    }
+                }
                 List<NamespaceTerm> terms = new List<NamespaceTerm>();
                 String termUri;
 
@@ -126,11 +150,13 @@ namespace rdfEditor.AutoComplete
                 UriNode rdfsLabel = g.CreateUriNode(new Uri(NamespaceMapper.RDFS + "label"));
                 UriNode rdfsComment = g.CreateUriNode(new Uri(NamespaceMapper.RDFS + "comment"));
                 UriNode rdfProperty = g.CreateUriNode(new Uri(NamespaceMapper.RDF + "Property"));
+                UriNode rdfsDatatype = g.CreateUriNode(new Uri(NamespaceMapper.RDFS + "Datatype"));
 
                 SparqlParameterizedString queryString = new SparqlParameterizedString();
-                queryString.QueryText = "SELECT ?term STR(?label) AS ?RawLabel STR(?comment) AS ?RawComment WHERE { {{?term a @class} UNION {?term a @property}} OPTIONAL {?term @label ?label} OPTIONAL {?term @comment ?comment} }";
+                queryString.QueryText = "SELECT ?term STR(?label) AS ?RawLabel STR(?comment) AS ?RawComment WHERE { {{?term a @class} UNION {?term a @property} UNION {?term a @datatype}} OPTIONAL {?term @label ?label} OPTIONAL {?term @comment ?comment} }";
                 queryString.SetParameter("class", rdfsClass);
                 queryString.SetParameter("property", rdfProperty);
+                queryString.SetParameter("datatype", rdfsDatatype);
                 queryString.SetParameter("label", rdfsLabel);
                 queryString.SetParameter("comment", rdfsComment);
 
@@ -168,29 +194,6 @@ namespace rdfEditor.AutoComplete
                     }
                 }
 
-                //foreach (Triple t in g.GetTriplesWithPredicateObject(rdfType, rdfsClass))
-                //{
-                //    if (t.Subject.NodeType == NodeType.Uri)
-                //    {
-                //        termUri = t.Subject.ToString();
-                //        if (termUri.StartsWith(namespaceUri))
-                //        {
-                //            _terms.Add(new NamespaceTerm(namespaceUri, termUri.Substring(namespaceUri.Length)));
-                //        }
-                //    }
-                //}
-                //foreach (Triple t in g.GetTriplesWithPredicateObject(rdfType, rdfProperty))
-                //{
-                //    if (t.Subject.NodeType == NodeType.Uri)
-                //    {
-                //        termUri = t.Subject.ToString();
-                //        if (termUri.StartsWith(namespaceUri))
-                //        {
-                //            _terms.Add(new NamespaceTerm(namespaceUri, termUri.Substring(namespaceUri.Length)));
-                //        }
-                //    }
-                //}
-
                 lock (_terms)
                 {
                     terms.RemoveAll(t => _terms.Contains(t));
@@ -199,18 +202,7 @@ namespace rdfEditor.AutoComplete
             }
             catch (Exception ex)
             {
-                //If an exception happens then we can't get namespace terms for whatever reason
-                //We still count the namespace as loaded so we don't try this again
-                StringBuilder error = new StringBuilder();
-                error.AppendLine("Error loading Namespace from URI " + namespaceUri);
-                error.AppendLine(ex.Message);
-                while (ex.InnerException != null)
-                {
-                    error.AppendLine(ex.InnerException.Message);
-                    ex = ex.InnerException;
-                }
-                error.AppendLine();
-                System.Diagnostics.Debug.WriteLine(error.ToString());
+                //Ignore Exceptions - just means we won't have those namespace terms available
             }
             _loadedNamespaces.Add(namespaceUri);
             return GetNamespaceTerms(namespaceUri);
@@ -219,8 +211,17 @@ namespace rdfEditor.AutoComplete
         public static IEnumerable<NamespaceTerm> GetNamespaceTerms(String namespaceUri)
         {
             return (from t in _terms
-                    where t.NamespaceUri.Equals(namespaceUri, StringComparison.OrdinalIgnoreCase)
+                    where t.NamespaceUri.Equals(namespaceUri, StringComparison.Ordinal)
                     select t);
+        }
+
+        public static String GetDefaultPrefix(String namespaceUri)
+        {
+            foreach (PrefixCompletionData data in _builtinPrefixes)
+            {
+                if (data.NamespaceUri.Equals(namespaceUri, StringComparison.Ordinal)) return data.Prefix;
+            }
+            return String.Empty;
         }
     }
 }
