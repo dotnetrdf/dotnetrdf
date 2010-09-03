@@ -19,6 +19,7 @@ using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using Microsoft.Win32;
 using VDS.RDF;
 using VDS.RDF.Parsing;
+using VDS.RDF.Parsing.Validation;
 using VDS.RDF.Query;
 using VDS.RDF.Writing;
 using rdfEditor.Syntax;

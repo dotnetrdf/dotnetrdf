@@ -33,31 +33,41 @@ terms.
 
 */
 
-
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using VDS.RDF.Storage.Params;
 
-namespace VDS.RDF
+namespace VDS.RDF.Parsing.Validation
 {
-    /// <summary>
-    /// Interface to be implemented by Triple Store Readers
-    /// </summary>
-    public interface IStoreReader
+    public interface ISyntaxValidator
     {
-        /// <summary>
-        /// Method for loading data into a Triple Store
-        /// </summary>
-        /// <param name="store">Triple Store</param>
-        /// <param name="parameters">Parameters indicating where the Reader should read from</param>
-        /// <exception cref="RdfStorageException">May be thrown if the Parameters are not valid for this Reader</exception>
-        void Load(ITripleStore store, IStoreParams parameters);
+        ISyntaxValidationResults Validate(String data);
+    }
 
-        /// <summary>
-        /// Event which Readers can raise when they notice syntax that is ambigious/deprecated etc which can still be parsed
-        /// </summary>
-        event StoreReaderWarning Warning;
+    public interface ISyntaxValidationResults
+    {
+        bool IsValid
+        {
+            get;
+        }
+
+        String Message
+        {
+            get;
+        }
+
+        IEnumerable<String> Warnings
+        {
+            get;
+        }
+
+        Exception Error
+        {
+            get;
+        }
+
+        Object Result
+        {
+            get;
+        }
     }
 }

@@ -43,12 +43,6 @@ using VDS.RDF.Storage.Params;
 namespace VDS.RDF
 {    
     /// <summary>
-    /// Delegate Type for Warning Events raised by Triple Store Writers
-    /// </summary>
-    /// <param name="message">Warning Message</param>
-    public delegate void StoreWriterWarning(String message);
-
-    /// <summary>
     /// Interface to be implemented by Triple Store Writers
     /// </summary>
     public interface IStoreWriter

@@ -104,6 +104,7 @@ namespace VDS.RDF
 
             //Add to Triples Collection
             this._triples.Add(t);
+            this.OnTripleAsserted(t);
         }
 
         /// <summary>
@@ -152,6 +153,7 @@ namespace VDS.RDF
             if (this._triples.Contains(t))
             {
                 this._triples.Delete(t);
+                this.OnTripleRetracted(t);
             }
         }
 

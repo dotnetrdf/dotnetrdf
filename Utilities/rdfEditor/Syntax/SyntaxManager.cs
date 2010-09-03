@@ -10,6 +10,7 @@ using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using VDS.RDF;
 using VDS.RDF.Parsing;
+using VDS.RDF.Parsing.Validation;
 using VDS.RDF.Writing;
 using rdfEditor.AutoComplete;
 

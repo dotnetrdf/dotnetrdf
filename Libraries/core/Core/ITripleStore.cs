@@ -131,6 +131,35 @@ namespace VDS.RDF
 
         #endregion
 
+        #region Events
+
+        /// <summary>
+        /// Event which is raised when a Graph is added
+        /// </summary>
+        event TripleStoreEventHandler GraphAdded;
+
+        /// <summary>
+        /// Event which is raised when a Graph is removed
+        /// </summary>
+        event TripleStoreEventHandler GraphRemoved;
+
+        /// <summary>
+        /// Event which is raised when a Graphs contents changes
+        /// </summary>
+        event TripleStoreEventHandler GraphChanged;
+
+        /// <summary>
+        /// Event which is raised when a Graph is cleared
+        /// </summary>
+        event TripleStoreEventHandler GraphCleared;
+
+        /// <summary>
+        /// Event which is raised when a Graph has a merge operation performed on it
+        /// </summary>
+        event TripleStoreEventHandler GraphsMerged;
+
+        #endregion
+
     }
 
     /// <summary>

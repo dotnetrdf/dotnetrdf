@@ -43,12 +43,6 @@ using System.IO;
 namespace VDS.RDF
 {
     /// <summary>
-    /// Delegate Type for Warning Messages raised by RDF Readers
-    /// </summary>
-    /// <param name="warning">Warning Message</param>
-    public delegate void RdfReaderWarning(String warning);
-
-    /// <summary>
     /// Interface to be implemented by RDF Readers which parse Concrete RDF Syntax
     /// </summary>
     public interface IRdfReader

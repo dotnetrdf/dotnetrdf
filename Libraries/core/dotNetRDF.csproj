@@ -231,6 +231,7 @@
     <Compile Include="Core\WebDemandTripleStore.cs" />
     <Compile Include="Core\NativeTripleStore.cs" />
     <Compile Include="Core\VirtuosoTripleStore.cs" />
+    <Compile Include="Events.cs" />
     <Compile Include="HashTable.cs" />
     <Compile Include="Indexing.cs" />
     <Compile Include="Ontology\Individual.cs" />
@@ -274,6 +275,13 @@
     <Compile Include="Parsing\SparqlBooleanParser.cs" />
     <Compile Include="Parsing\TriXParser.cs" />
     <Compile Include="Parsing\UriLoaderCache.cs" />
+    <Compile Include="Parsing\Validation\ISyntaxValidator.cs" />
+    <Compile Include="Parsing\Validation\RdfDatasetSyntaxValidator.cs" />
+    <Compile Include="Parsing\Validation\RdfSyntaxValidator.cs" />
+    <Compile Include="Parsing\Validation\SparqlQueryValidator.cs" />
+    <Compile Include="Parsing\Validation\SparqlResultsValidator.cs" />
+    <Compile Include="Parsing\Validation\SparqlUpdateValidator.cs" />
+    <Compile Include="Parsing\Validation\SyntaxValidationResults.cs" />
     <Compile Include="Query\Aggregates\BaseAggregate.cs" />
     <Compile Include="Query\Aggregates\LeviathanBooleanAggregates.cs" />
     <Compile Include="Query\Aggregates\LeviathanNumericAggregates.cs" />

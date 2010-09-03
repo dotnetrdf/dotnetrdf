@@ -207,9 +207,18 @@ namespace VDS.RDF
         /// <summary>
         /// Clears all Triples from the Graph
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The Graph will raise the <see cref="ClearRequested">ClearRequested</see> event at the start of the Clear operation which allows for aborting the operation if the operation is cancelled by an event handler.  On completing the Clear the <see cref="Cleared">Cleared</see> event will be raised.
+        /// </para>
+        /// </remarks>
         public virtual void Clear()
         {
+            if (!this.OnClearRequested()) return;
+
             this.Retract(this.Triples);
+
+            this.OnCleared();
         }
 
         #endregion
@@ -539,17 +548,21 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="g">Graph to Merge into this Graph</param>
         /// <param name="keepOriginalGraphUri">Indicates that the Merge should preserve the Graph URIs of Nodes so they refer to the Graph they originated in</param>
-        /// <remarks>The Graph on which you invoke this method will preserve its Blank Node IDs while the Blank Nodes from the Graph being merged in will be given new IDs as required in the scope of this Graph.</remarks>
+        /// <remarks>
+        /// <para>
+        /// The Graph on which you invoke this method will preserve its Blank Node IDs while the Blank Nodes from the Graph being merged in will be given new IDs as required in the scope of this Graph.
+        /// </para>
+        /// <para>
+        /// The Graph will raise the <see cref="MergeRequested">MergeRequested</see> event before the Merge operation which gives any event handlers the oppurtunity to cancel this event.  When the Merge operation is completed the <see cref="Merged">Merged</see> event is raised
+        /// </para>
+        /// </remarks>
         public virtual void Merge(IGraph g, bool keepOriginalGraphUri)
         {
+            //Check that the merge can go ahead
+            if (!this.OnMergeRequested()) return;
+
             //First copy and Prefixes across which aren't defined in this Graph
-            foreach (String prefix in g.NamespaceMap.Prefixes)
-            {
-                if (!this._nsmapper.HasNamespace(prefix))
-                {
-                    this._nsmapper.AddNamespace(prefix, g.NamespaceMap.GetNamespaceUri(prefix));
-                }
-            }
+            this._nsmapper.Import(g.NamespaceMap);
 
             if (this.IsEmpty)
             {
@@ -614,6 +627,8 @@ namespace VDS.RDF
                     this.Assert(new Triple(s, p, o));
                 }
             }
+
+            this.OnMerged();
         }
 
         #endregion
@@ -795,6 +810,164 @@ namespace VDS.RDF
         public virtual String GetNextBlankNodeID()
         {
             return this._bnodemapper.GetNextID();
+        }
+
+        #endregion
+
+        #region Events
+
+        /// <summary>
+        /// Event which is raised when a Triple is asserted in the Graph
+        /// </summary>
+        public event TripleEventHandler TripleAsserted;
+
+        /// <summary>
+        /// Event which is raised when a Triple is retracted from the Graph
+        /// </summary>
+        public event TripleEventHandler TripleRetracted;
+
+        /// <summary>
+        /// Event which is raised when the Graph contents change
+        /// </summary>
+        public event GraphEventHandler Changed;
+
+        /// <summary>
+        /// Event which is raised just before the Graph is cleared of its contents
+        /// </summary>
+        public event CancellableGraphEventHandler ClearRequested;
+
+        /// <summary>
+        /// Event which is raised after the Graph is cleared of its contents
+        /// </summary>
+        public event GraphEventHandler Cleared;
+
+        /// <summary>
+        /// Event which is raised when a Merge operation is requested on the Graph
+        /// </summary>
+        public event CancellableGraphEventHandler MergeRequested;
+
+        /// <summary>
+        /// Event which is raised when a Merge operation is completed on the Graph
+        /// </summary>
+        public event GraphEventHandler Merged;
+
+        /// <summary>
+        /// Helper method for raising the <see cref="TripleAsserted">Triple Asserted</see> event
+        /// </summary>
+        /// <param name="t">Triple</param>
+        protected void OnTripleAsserted(Triple t)
+        {
+            TripleEventHandler d = this.TripleAsserted;
+            GraphEventHandler e = this.Changed;
+            if (d != null || e != null)
+            {
+                TripleEventArgs args = new TripleEventArgs(t, this);
+                if (d != null) d(this, args);
+                if (e != null) e(this, new GraphEventArgs(this, args));
+            }
+        }
+
+        /// <summary>
+        /// Helper method for raising the <see cref="TripleRetracted">Triple Retracted</see> event
+        /// </summary>
+        /// <param name="t">Triple</param>
+        protected void OnTripleRetracted(Triple t)
+        {
+            TripleEventHandler d = this.TripleRetracted;
+            GraphEventHandler e = this.Changed;
+            if (d != null || e != null)
+            {
+                TripleEventArgs args = new TripleEventArgs(t, this, false);
+                if (d != null) d(this, args);
+                if (e != null) e(this, new GraphEventArgs(this, args));
+            }
+        }
+
+        /// <summary>
+        /// Helper method for raising the <see cref="Changed">Changed</see> event
+        /// </summary>
+        /// <param name="args">Triple Event Arguments</param>
+        protected void OnGraphChanged(TripleEventArgs args)
+        {
+            GraphEventHandler d = this.Changed;
+            if (d != null)
+            {
+                d(this, new GraphEventArgs(this, args));
+            }
+        }
+
+        /// <summary>
+        /// Helper method for raising the <see cref="Changed">Changed</see> event
+        /// </summary>
+        protected void OnGraphChanged()
+        {
+            GraphEventHandler d = this.Changed;
+            if (d != null)
+            {
+                d(this, new GraphEventArgs(this));
+            }
+        }
+
+        /// <summary>
+        /// Helper method for raising the <see cref="ClearRequested">Clear Requested</see> event and returning whether any of the Event Handlers cancelled the operation
+        /// </summary>
+        /// <returns>True if the operation can continue, false if it should be aborted</returns>
+        protected bool OnClearRequested()
+        {
+            CancellableGraphEventHandler d = this.ClearRequested;
+            if (d != null)
+            {
+                CancellableGraphEventArgs args = new CancellableGraphEventArgs(this);
+                d(this, args);
+                return !args.Cancel;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// Helper method for raising the <see cref="Cleared">Cleared</see> event
+        /// </summary>
+        protected void OnCleared()
+        {
+            GraphEventHandler d = this.Cleared;
+            if (d != null)
+            {
+                d(this, new GraphEventArgs(this));
+            }
+        }
+
+        /// <summary>
+        /// Helper method for raising the <see cref="MergeRequested">Merge Requested</see> event and returning whether any of the Event Handlers cancelled the operation
+        /// </summary>
+        /// <returns>True if the operation can continue, false if it should be aborted</returns>
+        protected bool OnMergeRequested()
+        {
+            CancellableGraphEventHandler d = this.MergeRequested;
+            if (d != null)
+            {
+                CancellableGraphEventArgs args = new CancellableGraphEventArgs(this);
+                d(this, args);
+                return !args.Cancel;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// Helper method for raising the <see cref="Merged">Merged</see> event
+        /// </summary>
+        protected void OnMerged()
+        {
+            GraphEventHandler d = this.Merged;
+            if (d != null)
+            {
+                d(this, new GraphEventArgs(this));
+            }
         }
 
         #endregion

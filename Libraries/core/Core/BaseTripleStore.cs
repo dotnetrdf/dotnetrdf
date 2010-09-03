@@ -52,6 +52,21 @@ namespace VDS.RDF
         /// </summary>
         protected BaseGraphCollection _graphs = new GraphCollection();
 
+        /// <summary>
+        /// Event Handler definitions
+        /// </summary>
+        private GraphEventHandler GraphChangedHandler, GraphMergedHandler, GraphClearedHandler;
+
+        /// <summary>
+        /// Creates a new Base Triple Store
+        /// </summary>
+        public BaseTripleStore()
+        {
+            this.GraphChangedHandler = new GraphEventHandler(this.OnGraphChanged);
+            this.GraphMergedHandler = new GraphEventHandler(this.OnGraphMerged);
+            this.GraphClearedHandler = new GraphEventHandler(this.OnGraphCleared);
+        }
+
         #region Properties
 
         /// <summary>
@@ -101,6 +116,7 @@ namespace VDS.RDF
         public virtual void Add(IGraph g)
         {
             this._graphs.Add(g, false);
+            this.OnGraphAdded(g);
         }
 
         /// <summary>
@@ -110,7 +126,12 @@ namespace VDS.RDF
         /// <param name="mergeIfExists">Whether the Graph should be merged with an existing Graph with the same Base Uri</param>
         public virtual void Add(IGraph g, bool mergeIfExists)
         {
+            bool didExist = this._graphs.Contains(g);
             this._graphs.Add(g, mergeIfExists);
+
+            //We only raise the event if the Graph didn't exist prior to the addition call
+            //If it already existed then a Merged event will have been raised instead
+            if (!didExist) this.OnGraphAdded(g);
         }
 
         /// <summary>
@@ -129,9 +150,14 @@ namespace VDS.RDF
         /// <param name="mergeIfExists">Whether the Graph should be merged with an existing Graph with the same Base Uri</param>
         public virtual void AddFromUri(Uri graphUri, bool mergeIfExists)
         {
+            bool didExist = this._graphs.Contains(graphUri);
             Graph g = new Graph();
             UriLoader.Load(g, graphUri);
             this._graphs.Add(g, mergeIfExists);
+
+            //We only raise the event if the Graph didn't exist prior to the addition call
+            //If it already existed then a Merged event will have been raised instead
+            if (!didExist) this.OnGraphAdded(g);
         }
 
         /// <summary>
@@ -140,7 +166,9 @@ namespace VDS.RDF
         /// <param name="graphUri">Uri of the Graph to Remove</param>
         public virtual void Remove(Uri graphUri)
         {
+            IGraph temp = this._graphs[graphUri];
             this._graphs.Remove(graphUri);
+            this.OnGraphRemoved(temp);
         }
 
         #endregion
@@ -165,6 +193,124 @@ namespace VDS.RDF
         public IGraph Graph(Uri graphUri)
         {
             return this._graphs[graphUri];
+        }
+
+        #endregion
+
+        #region Events
+
+        /// <summary>
+        /// Event which is raised when a Graph is added
+        /// </summary>
+        public event TripleStoreEventHandler GraphAdded;
+
+        /// <summary>
+        /// Event which is raised when a Graph is removed
+        /// </summary>
+        public event TripleStoreEventHandler GraphRemoved;
+
+        /// <summary>
+        /// Event which is raised when a Graphs contents changes
+        /// </summary>
+        public event TripleStoreEventHandler GraphChanged;
+
+        /// <summary>
+        /// Event which is raised when a Graph is cleared
+        /// </summary>
+        public event TripleStoreEventHandler GraphCleared;
+
+        /// <summary>
+        /// Event which is raised when a Graph has a merge operation performed on it
+        /// </summary>
+        public event TripleStoreEventHandler GraphsMerged;
+
+        /// <summary>
+        /// Helper method for raising the <see cref="GraphAdded">Graph Added</see> event
+        /// </summary>
+        /// <param name="g"></param>
+        protected void OnGraphAdded(IGraph g)
+        {
+            TripleStoreEventHandler d = this.GraphAdded;
+            if (d != null)
+            {
+                d(this, new TripleStoreEventArgs(this, g));
+            }
+            this.AttachEventHandlers(g);
+        }
+
+        protected void OnGraphRemoved(IGraph g)
+        {
+            TripleStoreEventHandler d = this.GraphRemoved;
+            if (d != null)
+            {
+                d(this, new TripleStoreEventArgs(this, g));
+            }
+            this.DetachEventHandlers(g);
+        }
+
+        protected void OnGraphChanged(GraphEventArgs args)
+        {
+            TripleStoreEventHandler d = this.GraphChanged;
+            if (d != null)
+            {
+                d(this, new TripleStoreEventArgs(this, args));
+            }
+        }
+
+        private void OnGraphChanged(Object sender, GraphEventArgs args)
+        {
+            this.OnGraphChanged(args);
+        }
+
+        protected void OnGraphChanged(IGraph g)
+        {
+            TripleStoreEventHandler d = this.GraphChanged;
+            if (d != null)
+            {
+                d(this, new TripleStoreEventArgs(this, g));
+            }
+        }
+
+        protected void OnGraphCleared(GraphEventArgs args)
+        {
+            TripleStoreEventHandler d = this.GraphCleared;
+            if (d != null)
+            {
+                d(this, new TripleStoreEventArgs(this, args));
+            }
+        }
+
+        private void OnGraphCleared(Object sender, GraphEventArgs args)
+        {
+            this.OnGraphCleared(args);
+        }
+
+        protected void OnGraphMerged(GraphEventArgs args)
+        {
+            TripleStoreEventHandler d = this.GraphsMerged;
+            if (d != null)
+            {
+                d(this, new TripleStoreEventArgs(this, args));
+            }
+        }
+
+        private void OnGraphMerged(Object sender, GraphEventArgs args)
+        {
+            this.OnGraphMerged(args);
+        }
+
+        protected void AttachEventHandlers(IGraph g)
+        {
+            g.Changed += this.GraphChangedHandler;
+            g.Cleared += this.GraphClearedHandler;
+            g.Merged += this.GraphMergedHandler;
+        }
+
+        protected void DetachEventHandlers(IGraph g)
+        {
+            g.Changed -= this.GraphChangedHandler;
+            g.Cleared -= this.GraphClearedHandler;
+            g.Merged -= this.GraphMergedHandler;
         }
 
         #endregion

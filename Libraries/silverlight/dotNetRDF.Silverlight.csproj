@@ -283,6 +283,9 @@
     <Compile Include="..\core\Core\WriteOnlySQLGraph.cs">
       <Link>Core\WriteOnlySQLGraph.cs</Link>
     </Compile>
+    <Compile Include="..\core\Events.cs">
+      <Link>Events.cs</Link>
+    </Compile>
     <Compile Include="..\core\Exceptions.cs">
       <Link>Exceptions.cs</Link>
     </Compile>
@@ -516,6 +519,27 @@
     </Compile>
     <Compile Include="..\core\Parsing\UriLoaderCache.cs">
       <Link>Parsing\UriLoaderCache.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\Validation\ISyntaxValidator.cs">
+      <Link>Parsing\Validation\ISyntaxValidator.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\Validation\RdfDatasetSyntaxValidator.cs">
+      <Link>Parsing\Validation\RdfDatasetSyntaxValidator.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\Validation\RdfSyntaxValidator.cs">
+      <Link>Parsing\Validation\RdfSyntaxValidator.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\Validation\SparqlQueryValidator.cs">
+      <Link>Parsing\Validation\SparqlQueryValidator.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\Validation\SparqlResultsValidator.cs">
+      <Link>Parsing\Validation\SparqlResultsValidator.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\Validation\SparqlUpdateValidator.cs">
+      <Link>Parsing\Validation\SparqlUpdateValidator.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\Validation\SyntaxValidationResults.cs">
+      <Link>Parsing\Validation\SyntaxValidationResults.cs</Link>
     </Compile>
     <Compile Include="..\core\Parsing\VirtuosoReader.cs">
       <Link>Parsing\VirtuosoReader.cs</Link>

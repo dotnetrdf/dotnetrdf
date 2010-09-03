@@ -126,15 +126,8 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="Syntax\CustomColourBrush.cs" />
-    <Compile Include="Syntax\ISyntaxValidator.cs" />
-    <Compile Include="Syntax\RdfDatasetSyntaxValidator.cs" />
-    <Compile Include="Syntax\RdfSyntaxValidator.cs" />
-    <Compile Include="Syntax\SparqlQueryValidator.cs" />
-    <Compile Include="Syntax\SparqlResultsValidator.cs" />
-    <Compile Include="Syntax\SparqlUpdateValidator.cs" />
     <Compile Include="Syntax\SyntaxDefinition.cs" />
     <Compile Include="Syntax\SyntaxManager.cs" />
-    <Compile Include="Syntax\SyntaxValidationResults.cs" />
     <Compile Include="Syntax\ValidationErrorElementGenerator.cs" />
     <Compile Include="Syntax\ValidationErrorLineText.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">

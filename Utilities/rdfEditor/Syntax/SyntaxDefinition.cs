@@ -5,6 +5,7 @@ using System.Text;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using VDS.RDF;
+using VDS.RDF.Parsing.Validation;
 using rdfEditor.AutoComplete;
 
 namespace rdfEditor.Syntax

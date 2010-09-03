@@ -33,7 +33,6 @@ terms.
 
 */
 
-
 using System;
 using System.Collections.Generic;
 
@@ -142,6 +141,11 @@ namespace VDS.RDF
         /// <summary>
         /// Retracts all Triples from the Graph
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The Graph should raise the <see cref="ClearRequested">ClearRequested</see> event at the start of the Clear operation and abort the operation if the operation is cancelled by an event handler.  On completing the Clear the <see cref="Cleared">Cleared</see> event should be raised.
+        /// </para>
+        /// </remarks>
         void Clear();
 
         #endregion
@@ -417,10 +421,17 @@ namespace VDS.RDF
 
         #endregion
 
+        #region Advanced Graph Operations
+
         /// <summary>
         /// Merges the given Graph into this Graph
         /// </summary>
         /// <param name="g">Graph to merge</param>
+        /// <remarks>
+        /// <para>
+        /// The Graph should raise the <see cref="MergeRequested">MergeRequested</see> event at the start of the Merge operation and abort the operation if the operation is cancelled by an event handler.  On completing the Merge the <see cref="Merged">Merged</see> event should be raised.
+        /// </para>
+        /// </remarks>
         void Merge(IGraph g);
 
         /// <summary>
@@ -428,6 +439,11 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="g">Graph to merge</param>
         /// <param name="keepOriginalGraphUri">Indicates that the Merge should preserve the Graph URIs of Nodes</param>
+        /// <remarks>
+        /// <para>
+        /// The Graph should raise the <see cref="MergeRequested">MergeRequested</see> event at the start of the Merge operation and abort the operation if the operation is cancelled by an event handler.  On completing the Merge the <see cref="Merged">Merged</see> event should be raised.
+        /// </para>
+        /// </remarks>
         void Merge(IGraph g, bool keepOriginalGraphUri);
 
         /// <summary>
@@ -468,11 +484,62 @@ namespace VDS.RDF
         /// <returns></returns>
         bool HasSubGraph(IGraph g, out Dictionary<INode, INode> mapping);
 
+        #endregion
+
+        #region Helper Functions
+
         /// <summary>
-        /// Resolves a QName into a Uri using the Namespace Map and Base Uri of this Graph
+        /// Resolves a QName into a URI using the Namespace Map and Base URI of this Graph
         /// </summary>
         /// <param name="qname">QName</param>
         /// <returns></returns>
         Uri ResolveQName(String qname);
+
+        #endregion
+
+        #region Events
+
+        /// <summary>
+        /// Event which is raised when a Triple is asserted in the Graph
+        /// </summary>
+        /// <remarks>
+        /// Whenever this event is raised the <see cref="Changed">Changed</see> event should also be raised
+        /// </remarks>
+        event TripleEventHandler TripleAsserted;
+
+        /// <summary>
+        /// Event which is raised when a Triple is retracted from the Graph
+        /// </summary>
+        /// <remarks>
+        /// Whenever this event is raised the <see cref="Changed">Changed</see> event should also be raised
+        /// </remarks>
+        event TripleEventHandler TripleRetracted;
+
+        /// <summary>
+        /// Event which is raised when the Graph contents change
+        /// </summary>
+        event GraphEventHandler Changed;
+
+        /// <summary>
+        /// Event which is raised just before the Graph is cleared of its contents
+        /// </summary>
+        event CancellableGraphEventHandler ClearRequested;
+
+        /// <summary>
+        /// Event which is raised after the Graph is cleared of its contents
+        /// </summary>
+        event GraphEventHandler Cleared;
+
+        /// <summary>
+        /// Event which is raised just before a Merge operation begins on the Graph
+        /// </summary>
+        event CancellableGraphEventHandler MergeRequested;
+
+        /// <summary>
+        /// Event which is raised when a Merge operation is completed on the Graph
+        /// </summary>
+        event GraphEventHandler Merged;
+
+        #endregion
     }
 }

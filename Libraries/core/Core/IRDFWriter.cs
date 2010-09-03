@@ -43,17 +43,10 @@ using System.IO;
 namespace VDS.RDF
 {
     /// <summary>
-    /// Delegate Type for Warning Messages raised by RDF Writers
-    /// </summary>
-    /// <param name="message">Warning Message</param>
-    public delegate void RdfWriterWarning(String message);
-
-    /// <summary>
     /// Interface to be implemented by RDF Writers which generate RDF Concrete Syntax
     /// </summary>
     public interface IRdfWriter
     {
-
         /// <summary>
         /// Method for Saving a Graph to a Concrete RDF Syntax in a file based format
         /// </summary>
