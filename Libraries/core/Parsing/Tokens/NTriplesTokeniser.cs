@@ -103,13 +103,13 @@ namespace VDS.RDF.Parsing.Tokens
             }
             else
             {
-                //Reading has started
-                this.StartNewToken();
-
                 try
                 {
                     do
                     {
+                        //Reading has started
+                        this.StartNewToken();
+
                         //Check for EOF
                         if (this._in.EndOfStream)
                         {

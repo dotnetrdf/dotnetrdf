@@ -21,7 +21,7 @@ namespace rdfEditor.Syntax
             String message;
             try
             {
-                Graph g = new Graph();
+                Graph g = new Graph(true);
                 StringParser.Parse(g, data, this._parser);
 
                 message = "Valid RDF - " + g.Triples.Count + " Triples - Parser: " + this._parser.GetType().Name;
@@ -69,7 +69,7 @@ namespace rdfEditor.Syntax
             {
                 this._gotWarning = false;
                 this._messages.Clear();
-                Graph g = new Graph();
+                Graph g = new Graph(true);
                 StringParser.Parse(g, data, this._parser);
 
                 if (!this._gotWarning)

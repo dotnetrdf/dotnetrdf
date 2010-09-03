@@ -61,6 +61,11 @@ namespace rdfEditor.AutoComplete
 
             foreach (Match m in Regex.Matches(editor.Text, PrefixRegexPattern))
             {
+                //Ignore namespaces defined beyond our current position as these aren't in scope
+                //int matchLine = editor.Document.GetLineByOffset(m.Index).LineNumber;
+                //int currLine = editor.Document.GetLineByOffset(editor.CaretOffset).LineNumber;
+                //if (matchLine > currLine) continue;
+
                 String prefix = m.Groups[1].Value;
                 String nsUri = m.Groups[3].Value;
                 try
@@ -565,36 +570,39 @@ namespace rdfEditor.AutoComplete
             if (this.State != AutoCompleteState.Inserted) return;
             this.State = AutoCompleteState.None;
 
-            //Take State Specific Post insertion actions
-            int offset = editor.SelectionStart + editor.SelectionLength;
-            switch (this.LastCompletion)
+            if (editor != null)
             {
-                case AutoCompleteState.Prefix:
-                case AutoCompleteState.Base:
-                case AutoCompleteState.Declaration:
-                    editor.Document.Insert(offset, ".");
-                    this.DetectNamespaces(editor);
-                    break;
 
-                case AutoCompleteState.KeywordOrQName:
-                case AutoCompleteState.Keyword:
-                case AutoCompleteState.QName:
-                case AutoCompleteState.Literal:
-                case AutoCompleteState.LongLiteral:
-                    if (!editor.Document.GetText(offset - 1, 1).Equals(" "))
-                    {
-                        editor.Document.Insert(offset, " ");
-                    }
-                    break;
+                //Take State Specific Post insertion actions
+                int offset = editor.SelectionStart + editor.SelectionLength;
+                switch (this.LastCompletion)
+                {
+                    case AutoCompleteState.Prefix:
+                    case AutoCompleteState.Base:
+                    case AutoCompleteState.Declaration:
+                        editor.Document.Insert(offset, ".");
+                        this.DetectNamespaces(editor);
+                        break;
 
-                case AutoCompleteState.BNode:
-                    this.DetectBlankNodes(editor);
-                    break;
+                    case AutoCompleteState.KeywordOrQName:
+                    case AutoCompleteState.Keyword:
+                    case AutoCompleteState.QName:
+                    case AutoCompleteState.Literal:
+                    case AutoCompleteState.LongLiteral:
+                        if (!editor.Document.GetText(offset - 1, 1).Equals(" "))
+                        {
+                            editor.Document.Insert(offset, " ");
+                        }
+                        break;
+
+                    case AutoCompleteState.BNode:
+                        this.DetectBlankNodes(editor);
+                        break;
+                }
             }
 
             this.LastCompletion = AutoCompleteState.None;
             //this._temp = AutoCompleteState.None;
-            this._editor = null;
         }
 
         #endregion

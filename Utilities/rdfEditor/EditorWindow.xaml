@@ -66,11 +66,10 @@
               Margin="0,0,0,0" 
               Name="menu1" 
               VerticalAlignment="Top" 
-              Width="200" 
               DockPanel.Dock="Top"
               
               >
-            <MenuItem Header="_File" IsCheckable="False">
+            <MenuItem Header="_File">
                 <MenuItem Header="New" Name="mnuNew" Click="mnuNew_Click" InputGestureText="Ctrl+N" />
                 <Separator />
                 <MenuItem Header="Open" Name="mnuOpen" Click="mnuOpen_Click" InputGestureText="Ctrl+O" />
@@ -102,11 +101,14 @@
             <MenuItem Header="_View">
                 <MenuItem Header="Show Line Numbers" Name="mnuShowLineNumbers" IsCheckable="True" IsChecked="True"  Click="mnuShowLineNumbers_Click" InputGestureText="Ctrl+E,L" />
                 <MenuItem Header="Word Wrap" Name="mnuWordWrap" IsCheckable="True" IsChecked="False" Click="mnuWordWrap_Click" InputGestureText="Ctrl+E,W" />
+                <Separator />
+                <MenuItem Header="Make URIs Clickable" Name="mnuClickableUris" IsCheckable="True" IsChecked="False" Click="mnuClickableUris_Click" />
             </MenuItem>
             <MenuItem Header="_Options">
                     <MenuItem Header="Enable Syntax Highlighting" Name="mnuEnableHighlighting" IsCheckable="True" IsChecked="True" Click="mnuEnableHighlighting_Click" InputGestureText="Ctrl+E,H" />
                     <MenuItem Header="Highlighter" Name="mnuCurrentHighlighter">
-                        <MenuItem Header="None" IsCheckable="True" IsChecked="True" Tag="None" />
+                    <MenuItem Header="Set Current Highlighter as Default for Startup" IsCheckable="False" Name="mnuSetDefaultHighlighter" Click="mnuSetDefaultHighlighter_Click" />
+                    <MenuItem Header="None" IsCheckable="True" IsChecked="True" Tag="None" />
                         <Separator />
                         <MenuItem Header="RDF/XML" IsCheckable="True" Tag="RdfXml" />
                         <MenuItem Header="RDF/JSON" IsCheckable="True" Tag="RdfJson" />
@@ -125,15 +127,16 @@
                 </MenuItem>
                 <Separator />
                 <MenuItem Header="Validate Syntax as you Type" Name="mnuValidateAsYouType" IsCheckable="True" IsChecked="True" Click="mnuValidateAsYouType_Click" InputGestureText="Ctrl+E,V" />
+                <MenuItem Header="Highlight Validation Errors" Name="mnuHighlightErrors" IsCheckable="True" IsChecked="True" Click="mnuHighlightErrors_Click" />
+                <Separator />
                 <MenuItem Header="Enable Auto-completion" Name="mnuAutoComplete" IsCheckable="True" IsChecked="True" Click="mnuAutoComplete_Click" InputGestureText="Ctrl+E,A" />
                 <Separator />
                 <MenuItem Header="Customise File Associations" Name="mnuCustomiseFileAssociations" Click="mnuCustomiseFileAssociations_Click" />
             </MenuItem>
-            <MenuItem Header="_Tools" IsCheckable="False">
+            <MenuItem Header="_Tools">
                 <MenuItem Header="Validate Syntax" Name="mnuValidateSyntax" Click="mnuValidateSyntax_Click" />
-                <!--<MenuItem Header="Test" Name="mnuTest" Click="mnuTest_Click" />-->
             </MenuItem>
-            <MenuItem Header="_Help" IsCheckable="False"/>
+            <MenuItem Header="_Help" />
         </Menu>
         <avalonEdit:TextEditor
             xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"

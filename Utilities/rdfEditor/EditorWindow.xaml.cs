@@ -46,8 +46,8 @@ namespace rdfEditor
           
             //Set up the Editor Options
             TextEditorOptions options = new TextEditorOptions();
-            options.EnableEmailHyperlinks = false;
-            options.EnableHyperlinks = false;
+            options.EnableEmailHyperlinks = Properties.Settings.Default.EnableClickableUris;
+            options.EnableHyperlinks = Properties.Settings.Default.EnableClickableUris;
             textEditor.Options = options;
             textEditor.ShowLineNumbers = true;
 
@@ -77,6 +77,11 @@ namespace rdfEditor
                 textEditor.WordWrap = false;
                 this.mnuWordWrap.IsChecked = true;
             }
+            if (Properties.Settings.Default.EnableClickableUris)
+            {
+                this.mnuClickableUris.IsChecked = true;
+            }
+            this._manager.SetHighlighter(Properties.Settings.Default.DefaultHighlighter);
 
             //Enable/Disable state dependendet menu options
             this.mnuUndo.IsEnabled = textEditor.CanUndo;
@@ -432,6 +437,14 @@ namespace rdfEditor
             Properties.Settings.Default.Save();
         }
 
+        private void mnuClickableUris_Click(object sender, RoutedEventArgs e)
+        {
+            textEditor.Options.EnableEmailHyperlinks = this.mnuClickableUris.IsChecked;
+            textEditor.Options.EnableHyperlinks = this.mnuClickableUris.IsChecked;
+            Properties.Settings.Default.EnableClickableUris = this.mnuClickableUris.IsChecked;
+            Properties.Settings.Default.Save();
+        }
+
         #endregion
 
         #region Options Menu
@@ -440,6 +453,12 @@ namespace rdfEditor
         {
             this._manager.IsHighlightingEnabled = mnuEnableHighlighting.IsChecked;
             Properties.Settings.Default.EnableHighlighting = this.mnuEnableHighlighting.IsChecked;
+            Properties.Settings.Default.Save();
+        }
+
+        private void mnuSetDefaultHighlighter_Click(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.DefaultHighlighter = (this._manager.CurrentHighlighter != null) ? this._manager.CurrentHighlighter.Name : "None";
             Properties.Settings.Default.Save();
         }
 
@@ -457,6 +476,13 @@ namespace rdfEditor
             {
                 this.stsSyntaxValidation.Content = "Validate Syntax as you Type Disabled";
             }
+        }
+
+        private void mnuHighlightErrors_Click(object sender, RoutedEventArgs e)
+        {
+            this._manager.IsHighlightErrorsEnabled = this.mnuHighlightErrors.IsChecked;
+            Properties.Settings.Default.EnableErrorHighlighting = this.mnuHighlightErrors.IsChecked;
+            Properties.Settings.Default.Save();
         }
 
         private void mnuAutoComplete_Click(object sender, RoutedEventArgs e)
@@ -484,6 +510,11 @@ namespace rdfEditor
                 ISyntaxValidationResults results = validator.Validate(textEditor.Text);
                 String caption = results.IsValid ? "Valid Syntax" : "Invalid Syntax";
                 MessageBox.Show(results.Message, caption);
+                if (!this._manager.IsValidateAsYouType && this._manager.IsHighlightErrorsEnabled)
+                {
+                    this._manager.LastValidationError = results.Error;
+                    textEditor.TextArea.InvalidateVisual();
+                }
             }
             else
             {
@@ -664,5 +695,6 @@ namespace rdfEditor
         }
 
         #endregion
+
     }
 }

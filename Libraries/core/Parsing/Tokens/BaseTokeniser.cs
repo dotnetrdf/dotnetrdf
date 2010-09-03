@@ -352,33 +352,35 @@ namespace VDS.RDF.Parsing.Tokens
                 {
                     case '\n':
 
-                        //Discard the White Space
-                        this._reader.Read();
-                        this._currpos = 1;
-                        this._currline++;
+                        this.ConsumeNewLine(false);
+                        ////Discard the White Space
+                        //this._reader.Read();
+                        //this._currpos = 1;
+                        //this._currline++;
 
-                        //See if there's a \r to discard as well
-                        next = this.Peek();
-                        if (next == '\r')
-                        {
-                            this._reader.Read();
-                        }
+                        ////See if there's a \r to discard as well
+                        //next = this.Peek();
+                        //if (next == '\r')
+                        //{
+                        //    this._reader.Read();
+                        //}
 
                         break;
 
                     case '\r':
 
+                        this.ConsumeNewLine(false);
                         //Discard the White Space
-                        this._reader.Read();
-                        this._currpos = 1;
-                        this._currline++;
+                        //this._reader.Read();
+                        //this._currpos = 1;
+                        //this._currline++;
 
-                        //See if there's a \n to discard as well
-                        next = this.Peek();
-                        if (next == '\n')
-                        {
-                            this._reader.Read();
-                        }
+                        ////See if there's a \n to discard as well
+                        //next = this.Peek();
+                        //if (next == '\n')
+                        //{
+                        //    this._reader.Read();
+                        //}
 
                         break;
 
@@ -652,6 +654,53 @@ namespace VDS.RDF.Parsing.Tokens
                 error.Append(", " + expected);
             }
             return Error(error.ToString());
+        }
+
+        /// <summary>
+        /// Helper Function for generating Standardised Parser Errors about unexpected end of input
+        /// </summary>
+        /// <param name="expected">Message detailing what was expected (may be empty if no explicit expectation)</param>
+        /// <returns></returns>
+        protected RdfParseException UnexpectedEndOfInput(String expected)
+        {
+            StringBuilder error = new StringBuilder();
+            error.Append("[Line " + this._startline + " Column " + this._startpos + " to Line " + this._currline + " Column " + this._currpos + "] Unexpected end of input while trying to parse " + expected);
+            if (this.Value.Length > 0 && !this.Value.ToCharArray().All(c => Char.IsWhiteSpace(c)))
+            {
+                error.AppendLine(" from content:");
+                error.Append(this.Value);
+            }
+            return new RdfParseException(error.ToString(), this._startline, this._currline, this._startpos, this._currpos);
+        }
+
+        /// <summary>
+        /// Helper Function for generating Standardised Parser Errors about unexpected new lines
+        /// </summary>
+        /// <param name="expected">Message detailing what was expected (may be empty if no explicit expectation)</param>
+        /// <returns></returns>
+        protected RdfParseException UnexpectedNewLine(String expected)
+        {
+            StringBuilder error = new StringBuilder();
+            error.AppendLine("[Line " + this._startline + " Column " + this._startpos + " to Line " + this._currline + " Column " + this._currpos + "] Unexpected new line while trying to parse " + expected + " from content:");
+            if (this.Value.Length > 0 && !this.Value.ToCharArray().All(c => Char.IsWhiteSpace(c)))
+            {
+                error.AppendLine(" from content:");
+                error.Append(this.Value);
+            }
+            return new RdfParseException(error.ToString(), this._startline, this._currline, this._startpos, this._currpos);
+        }
+
+        /// <summary>
+        /// Helper Function for generating Standardised Parser Errors about unexpected tokens
+        /// </summary>
+        /// <param name="expected">Message detailing what was expected (may be empty if no explicity expectation)</param>
+        /// <param name="t">Token that was parsed</param>
+        /// <returns></returns>
+        protected RdfParseException UnexpectedToken(String expected, IToken t)
+        {
+            StringBuilder error = new StringBuilder();
+            error.Append("[Line " + t.StartLine + " Column " + t.StartPosition + " to Line " + t.EndLine + " Column " + t.EndPosition + "] Unexpected Token parsed " + expected);
+            return new RdfParseException(error.ToString(), t);
         }
     }
 }

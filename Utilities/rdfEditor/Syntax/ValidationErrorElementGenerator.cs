@@ -20,20 +20,63 @@ namespace rdfEditor.Syntax
 
         public override VisualLineElement ConstructElement(int offset)
         {
-            if (this._manager.LastValidationError == null) return null;
+            RdfParseException parseEx = this.GetException();
+            if (parseEx == null) return null;
+            if (parseEx.StartLine > CurrentContext.Document.LineCount) return null;
 
-            return null;
+            int startOffset = this.CurrentContext.Document.GetOffset(parseEx.StartLine, parseEx.StartPosition);
+            if (startOffset > 0 && startOffset > offset && parseEx.StartLine == parseEx.EndLine && parseEx.StartPosition == parseEx.EndPosition) startOffset--;
+            int endOffset = Math.Min(this.CurrentContext.Document.GetOffset(parseEx.EndLine, parseEx.EndPosition), this.CurrentContext.VisualLine.LastDocumentLine.EndOffset);
+            if (startOffset == endOffset) return null;
+            if (startOffset > endOffset) return null;
+
+            return new ValidationErrorLineText(this.CurrentContext.VisualLine, endOffset - startOffset);
         }
 
         public override int GetFirstInterestedOffset(int startOffset)
         {
-            if (this._manager.LastValidationError == null) return -1;
+            RdfParseException parseEx = this.GetException();
+            if (parseEx == null) return -1;
+            if (parseEx.StartLine > CurrentContext.Document.LineCount) return -1;
 
             int endOffset = CurrentContext.VisualLine.LastDocumentLine.EndOffset;
-            int startLine = CurrentContext.Document.GetLineByOffset(startOffset).LineNumber;
-            int endLine = CurrentContext.Document.GetLineByOffset(endOffset).LineNumber;
+            int offset = CurrentContext.Document.GetOffset(parseEx.StartLine, parseEx.StartPosition);
+            if (offset < startOffset || offset > endOffset)
+            {
+                return -1;
+            }
+            else
+            {
+                if (offset > 0 && offset > (startOffset + 1) && parseEx.StartLine == parseEx.EndLine && parseEx.StartPosition == parseEx.EndPosition)
+                {
+                    return offset - 1;
+                }
+                else
+                {
+                    return offset;
+                }
+            }
+        }
 
-            return -1;
+        private RdfParseException GetException()
+        {
+            if (this._manager.LastValidationError == null) return null;
+            if (this._manager.LastValidationError is RdfParseException)
+            {
+                RdfParseException parseEx = (RdfParseException)this._manager.LastValidationError;
+                if (parseEx.HasPositionInformation)
+                {
+                    return parseEx;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

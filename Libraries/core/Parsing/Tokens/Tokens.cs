@@ -68,7 +68,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// </summary>
         /// <param name="line">Line at which the File Ends</param>
         /// <param name="pos">Column as which the File Ends</param>
-        public EOFToken(int line, int pos) : base(Token.EOF, String.Empty, line+1, line+1, pos, pos) { }
+        public EOFToken(int line, int pos) : base(Token.EOF, String.Empty, line, line, pos, pos) { }
     }
 
     /// <summary>

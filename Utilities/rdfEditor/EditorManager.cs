@@ -18,6 +18,7 @@ using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
+using ICSharpCode.AvalonEdit.Rendering;
 using Microsoft.Win32;
 using VDS.RDF;
 using VDS.RDF.Parsing;
@@ -42,12 +43,15 @@ namespace rdfEditor
         private ISyntaxValidator _currValidator;
         private StatusBarItem _validatorStatus;
         private Exception _lastError = null;
+        private bool _highlightErrors = true;
+        private ToolTip _errorTip = new ToolTip();
 
         //Auto-complete
         private Dictionary<String, IAutoCompleter> _completers = new Dictionary<string, IAutoCompleter>();
         private bool _enableAutoComplete = true;
         private bool _endAutoComplete = false;
         private IAutoCompleter _autoCompleter;
+        private int _lastCaretPos = 0;
 
         public EditorManager(TextEditor editor)
         {
@@ -59,9 +63,30 @@ namespace rdfEditor
             this._editor.TextChanged += new EventHandler(EditorTextChanged);
             this._editor.TextArea.TextEntering += new TextCompositionEventHandler(EditorTextEntering);
             this._editor.TextArea.TextEntered += new TextCompositionEventHandler(EditorTextEntered);
+            //this._editor.TextArea.TextView.MouseDown += new MouseButtonEventHandler(TextView_MouseDown);
+            //this._editor.TextArea.TextView.MouseUp += new MouseButtonEventHandler(TextView_MouseUp);
             this._editor.Document.Changed += new EventHandler<DocumentChangeEventArgs>(EditorDocumentChanged);
             this._editor.Document.UpdateFinished += new EventHandler(EditorDocumentUpdateFinished);
+
+            //Add the Validation Error Element Generator
+            this._editor.TextArea.TextView.ElementGenerators.Add(new ValidationErrorElementGenerator(this));
         }
+
+        //void TextView_MouseUp(object sender, MouseButtonEventArgs e)
+        //{
+        //    if (this._lastCaretPos != this._editor.CaretOffset)
+        //    {
+        //        if (this._enableAutoComplete && this._autoCompleter != null)
+        //        {
+        //            this._autoCompleter.DetectState(this._editor);
+        //        }
+        //    }
+        //}
+
+        //void TextView_MouseDown(object sender, MouseButtonEventArgs e)
+        //{
+        //    this._lastCaretPos = this._editor.CaretOffset;
+        //}
 
         public EditorManager(TextEditor editor, MenuItem highlightersMenu)
             : this(editor)
@@ -71,7 +96,10 @@ namespace rdfEditor
             //Need to register the Event Handlers for the Menu Items in the Highlighters Menu
             foreach (MenuItem item in this._highlightersMenu.Items.OfType<MenuItem>())
             {
-                item.Click += new RoutedEventHandler(HighlighterClick);
+                if (item.Tag != null)
+                {
+                    item.Click += new RoutedEventHandler(HighlighterClick);
+                }
             }
         }
 
@@ -123,6 +151,39 @@ namespace rdfEditor
             set
             {
                 this._validateAsYouType = value;
+            }
+        }
+
+        public bool IsHighlightErrorsEnabled
+        {
+            get
+            {
+                return this._highlightErrors;
+            }
+            set
+            {
+                this._highlightErrors = value;
+                if (this._highlightErrors)
+                {
+                    if (!this._editor.TextArea.TextView.ElementGenerators.Any(g => g is ValidationErrorElementGenerator))
+                    {
+                        this._editor.TextArea.TextView.ElementGenerators.Add(new ValidationErrorElementGenerator(this));
+                    }
+                }
+                else
+                {
+                    if (this._editor.TextArea.TextView.ElementGenerators.Any(g => g is ValidationErrorElementGenerator))
+                    {
+                        for (int i = 0; i < this._editor.TextArea.TextView.ElementGenerators.Count; i++)
+                        {
+                            if (this._editor.TextArea.TextView.ElementGenerators[i] is ValidationErrorElementGenerator)
+                            {
+                                this._editor.TextArea.TextView.ElementGenerators.RemoveAt(i);
+                                i--;
+                            }
+                        }
+                    }
+                }
             }
         }
 
@@ -182,6 +243,10 @@ namespace rdfEditor
             get
             {
                 return this._lastError;
+            }
+            set
+            {
+                this._lastError = value;
             }
         }
         
@@ -453,6 +518,7 @@ namespace rdfEditor
             {
                 foreach (MenuItem item in this._highlightersMenu.Items.OfType<MenuItem>())
                 {
+                    if (item.Tag == null) continue;
                     item.IsChecked = item.Tag.Equals(name);
                 }
             }

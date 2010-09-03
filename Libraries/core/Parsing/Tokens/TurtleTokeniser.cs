@@ -145,8 +145,7 @@ namespace VDS.RDF.Parsing.Tokens
                             {
                                 //We're at the End of the Stream and part-way through reading a Token
                                 //Raise an error
-                                throw Error("Unexpected End of File encountered while attempting to Parse Token from content\n" + this.Value);
-
+                                throw UnexpectedEndOfInput("Token");
                             }
                         }
 
@@ -222,7 +221,7 @@ namespace VDS.RDF.Parsing.Tokens
                                             }
                                             else
                                             {
-                                                throw Error("Unexpected Character (Code " + (int)next + "): " + next + " encountered while attempting to Parse a Data Type");
+                                                throw UnexpectedCharacter(next, "Data Type");
                                             }
 
                                         }
@@ -288,6 +287,7 @@ namespace VDS.RDF.Parsing.Tokens
                                     if (!anycharallowed)
                                     {
                                         //Start of a String Literal
+                                        this.StartNewToken();
                                         anycharallowed = true;
                                         whitespaceignored = false;
                                         whitespaceallowed = true;
@@ -437,7 +437,7 @@ namespace VDS.RDF.Parsing.Tokens
                                         }
                                         else
                                         {
-                                            throw Error("Unexpected Token parsed when a QName for a Blank Node was expected");
+                                            throw UnexpectedToken(" when a QName for a Blank Node was expected", temp);
                                         }
                                     }
                                     break;
@@ -456,7 +456,7 @@ namespace VDS.RDF.Parsing.Tokens
                                         }
                                         else
                                         {
-                                            throw Error("Unexpected Token parsed when a QName in the Default Empty Namespace was expected");
+                                            throw UnexpectedToken(" when a QName in the Default Empty Namespace was expected", temp);
                                         }
                                     }
                                     break;
@@ -507,7 +507,7 @@ namespace VDS.RDF.Parsing.Tokens
                                         }
                                         else
                                         {
-                                            throw Error("Unexpected Token parsed when a Plain Literal of a Negative Number was expected");
+                                            throw UnexpectedToken(" when a Plain Literal of a Negative Number was expected", temp);
                                         }
                                     }
                                     break;
@@ -522,7 +522,7 @@ namespace VDS.RDF.Parsing.Tokens
                                         }
                                         else
                                         {
-                                            throw Error("Unexpected Token parsed when a Plain Literal of a Positive Number was expected");
+                                            throw UnexpectedToken(" when a Plain Literal of a Positive Number was expected", temp);
                                         }
                                     }
                                     break;
@@ -571,7 +571,7 @@ namespace VDS.RDF.Parsing.Tokens
                                     else
                                     {
                                         //Raise an Error
-                                        throw Error("Unexpected New Line Character while attempting to parse Token from content\n" + this.Value);
+                                        throw UnexpectedNewLine("Token");
                                     }
                                     continue;
 
@@ -588,7 +588,7 @@ namespace VDS.RDF.Parsing.Tokens
                                     else
                                     {
                                         //Raise an Error
-                                        throw Error("Unexpected New Line Character while attempting to parse Token from content\n" + this.Value);
+                                        throw UnexpectedNewLine("Token");
                                     }
                                     continue;
                                 #endregion
@@ -666,7 +666,7 @@ namespace VDS.RDF.Parsing.Tokens
                                     else if (!anycharallowed)
                                     {
                                         //Raise an Error
-                                        throw Error("Unexpected Character (Code " + (int)'>' + "): > ");
+                                        throw UnexpectedCharacter(next, String.Empty);
                                     }
                                     break;
 
@@ -682,7 +682,7 @@ namespace VDS.RDF.Parsing.Tokens
                                     else
                                     {
                                         //Raise an Error
-                                        throw Error("Unexpected Character (Code " + (int)next + "): " + next.ToString());
+                                        throw UnexpectedCharacter(next, String.Empty);
                                     }
                                     break;
 
@@ -806,7 +806,7 @@ namespace VDS.RDF.Parsing.Tokens
                 //If we hit a New Line then Error
                 if (next == '\n' || next == '\r') 
                 {
-                    throw Error("Unexpected New Line character encountered while attempting to parse Prefix at content:\n" + this.Value);
+                    throw UnexpectedNewLine("Prefix");
                 }
 
                 //Discard unecessary White Space
@@ -829,7 +829,7 @@ namespace VDS.RDF.Parsing.Tokens
 
             //Produce a PrefixToken
             this.LastTokenType = Token.PREFIX;
-            return new PrefixToken(this.Value, this.CurrentLine, this.StartPosition, this.CurrentPosition);
+            return new PrefixToken(this.Value, this.CurrentLine, this.StartPosition, this.EndPosition);
         }
 
         /// <summary>
@@ -985,7 +985,7 @@ namespace VDS.RDF.Parsing.Tokens
             if (this.Length == 0)
             {
                 //Empty output so no Language Specifier
-                throw Error("Unexpected Character (Code " + (int)next + "): " + next + " Encountered while trying to Parse Language Specifier for preceding Literal Token");
+                throw UnexpectedCharacter(next, "Language Specifier for preceding Literal Token");
             }
             else
             {
@@ -1019,7 +1019,7 @@ namespace VDS.RDF.Parsing.Tokens
                 //Check we didn't hit an illegal character
                 if (next == '\n' || next == '\r')
                 {
-                    throw Error("Unexpected New Line Character while attempting to Parse DataType URI from Content:\n" + this.Value);
+                    throw UnexpectedNewLine("DataType URI");
                 }
                 else
                 {
