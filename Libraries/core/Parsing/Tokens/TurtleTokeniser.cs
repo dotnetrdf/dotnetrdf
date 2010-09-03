@@ -51,7 +51,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// <summary>
         /// Pattern for Valid Plain (Unquoted) Literal Formats
         /// </summary>
-        public const String ValidPlainLiteralsPattern = "^(true|false|[+-]?\\d+(\\.\\d+([eE][+-]?\\d+)?)?)$";
+        public const String ValidPlainLiteralsPattern = @"^(true|false|((\+|\-)?\d+(\.\d+([eE](\+|\-)?\d+)?)?)|(\+|\-)?(\.\d+([eE](\+|\-)?\d+)?))$";
 
         private BlockingStreamReader _in;
 
@@ -252,10 +252,28 @@ namespace VDS.RDF.Parsing.Tokens
                                 case '.':
                                     if (!anycharallowed)
                                     {
-                                        //This should be the end of a directive
-                                        this.LastTokenType = Token.DOT;
                                         this.ConsumeCharacter();
-                                        return new DotToken(this.CurrentLine, this.StartPosition);
+
+                                        //Watch our for plain literals
+                                        if (Char.IsDigit(this.Peek()))
+                                        {
+                                            IToken temp = this.TryGetQNameToken();
+                                            if (temp is PlainLiteralToken)
+                                            {
+                                                this.LastTokenType = Token.PLAINLITERAL;
+                                                return temp;
+                                            }
+                                            else
+                                            {
+                                                throw UnexpectedToken("Plain Literal", temp);
+                                            }
+                                        } 
+                                        else 
+                                        {
+                                            //This should be the end of a directive
+                                            this.LastTokenType = Token.DOT;
+                                            return new DotToken(this.CurrentLine, this.StartPosition);
+                                        }
                                     }
                                     break;
 
@@ -843,7 +861,14 @@ namespace VDS.RDF.Parsing.Tokens
             bool colonoccurred = false;
             bool dotoccurred = false;
 
-            this.StartNewToken();
+            if (this.Length == 1 && this.Value[0] == '.')
+            {
+                dotoccurred = true;
+            }
+            else
+            {
+                this.StartNewToken();
+            }
 
             //Grab all the Characters in the QName
             while (next == ':' || Char.IsLetterOrDigit(next) || next == '_' || next == '-' || next == '+' || (next == '.' && !colonoccurred))

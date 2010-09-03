@@ -687,6 +687,8 @@ namespace rdfEditor
                 FileAssociations diag = new FileAssociations();
                 if (!diag.AllAssociated) diag.ShowDialog(); //Don't show if all associations are already set
             }
+
+            textEditor.Focus();
         }
 
         private void Window_Closed(object sender, EventArgs e)

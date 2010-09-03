@@ -53,7 +53,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// <summary>
         /// Pattern for Valid Plain (Unquoted) Literal Formats
         /// </summary>
-        public const String ValidPlainLiteralsPattern = "^(true|false|(\\-?\\d+(\\.\\d+(e\\d+)?)?))$";
+        public const String ValidPlainLiteralsPattern = @"^(true|false|((\+|\-)?\d+(\.\d+([eE](\+|\-)?\d+)?)?)|(\+|\-)?(\.\d+([eE](\+|\-)?\d+)?))$";
         /// <summary>
         /// Pattern for Valid QNames that use only the Latin Alphabet
         /// </summary>
@@ -139,8 +139,7 @@ namespace VDS.RDF.Parsing.Tokens
                             {
                                 //We're at the End of the Stream and part-way through reading a Token
                                 //Raise an error
-                                throw Error("Unexpected End of File encountered while attempting to Parse Token from content\n" + this.Value);
-
+                                throw UnexpectedEndOfInput("Token");
                             }
                         }
 
@@ -152,7 +151,7 @@ namespace VDS.RDF.Parsing.Tokens
                             //Discard White Space when not in a Token
                             this.DiscardWhiteSpace();
                         }
-                        else if (Char.IsDigit(next) || next == '-')
+                        else if (Char.IsDigit(next) || next == '-' || next == '+')
                         {
                             //Start of a Numeric Plain Literal
                             return this.TryGetNumericLiteral();
@@ -179,8 +178,15 @@ namespace VDS.RDF.Parsing.Tokens
                                 case '.':
                                     //Dot Terminator
                                     this.ConsumeCharacter();
-                                    this.LastTokenType = Token.DOT;
-                                    return new DotToken(this.CurrentLine, this.StartPosition);
+                                    if (Char.IsDigit(this.Peek()))
+                                    {
+                                        return this.TryGetNumericLiteral();
+                                    }
+                                    else
+                                    {
+                                        this.LastTokenType = Token.DOT;
+                                        return new DotToken(this.CurrentLine, this.StartPosition);
+                                    }
                                 case ';':
                                     //Semicolon Terminator
                                     this.ConsumeCharacter();
@@ -268,8 +274,7 @@ namespace VDS.RDF.Parsing.Tokens
 
                                 default:
                                     //Unexpected Character
-                                    throw Error("Unexpected Character (Code " + (int)next + ") " + (char)next + " was encountered!");
-
+                                    throw UnexpectedCharacter(next, String.Empty);
                             }
                         }
 
@@ -317,32 +322,48 @@ namespace VDS.RDF.Parsing.Tokens
         {
             bool dotoccurred = false;
             bool expoccurred = false;
-            bool negoccurred = false;
+            bool signoccurred = false;
+
+            if (this.Length == 1) dotoccurred = true;
 
             char next = this.Peek();
 
-            while (Char.IsDigit(next) || next == '-' || next == 'e' || (next == '.' && !dotoccurred))
+            while (Char.IsDigit(next) || next == '-' || next == '+' || next == 'e' || next == 'E' || (next == '.' && !dotoccurred))
             {
                 //Consume the Character
                 this.ConsumeCharacter();
 
-                if (next == '-')
+                if (next == '-' || next == '+')
                 {
-                    if (negoccurred) {
-                        //Negative sign already seen
-                        throw Error("Unexpected Character (Code " + (int)next + ") -\nThe minus sign can only occur once at the Start of a Numeric Literal");
-                    } else {
-                        negoccurred = true;
+                    if (signoccurred || expoccurred) 
+                    {
+                        char last = this.Value[this.Value.Length-2];
+                        if (expoccurred)
+                        {
+                            if (last != 'e' && last != 'E')
+                            {
+                                //Can't occur here as isn't directly after the exponent
+                                throw UnexpectedCharacter(next, "The +/- Sign can only occur at the start of a Numeric Literal or at the start of the Exponent");
+                            }
+                        }
+                        else
+                        {
+                            //Negative sign already seen
+                            throw UnexpectedCharacter(next, "The +/- Sign can only occur at the start of a Numeric Literal or at the start of the Exponent");
+                        }
+                    } 
+                    else
+                    {
+                        signoccurred = true;
 
                         //Check this is at the start of the string
-                        //Output Length should only ever be 1 when we see the Negative sign
                         if (this.Length > 1)
                         {
-                            throw Error("Unexpected Character (Code " + (int)next + ") -\nThe minus sign can only occur at the Start of a Numeric Literal");
+                            throw UnexpectedCharacter(next, "The +/- Sign can only occur at the start of a Numeric Literal or at the start of the Exponent");
                         }
                     }
                 }
-                else if (next == 'e')
+                else if (next == 'e' || next == 'E')
                 {
                     if (expoccurred)
                     {
@@ -356,7 +377,7 @@ namespace VDS.RDF.Parsing.Tokens
                         //Check that it isn't the start of the string
                         if (this.Length == 1)
                         {
-                            throw Error("Unexpected Character (Code " + (int)next + " e\nThe Exponent specifier cannot occur at the start of a Numeric Literal");
+                            throw UnexpectedCharacter(next, "The Exponent specifier cannot occur at the start of a Numeric Literal");
                         }
                     }
                 }
@@ -369,7 +390,8 @@ namespace VDS.RDF.Parsing.Tokens
             }
 
             //Validate the final result
-            if (!this._isValidPlainLiteral.IsMatch(this.Value)) {
+            if (!this._isValidPlainLiteral.IsMatch(this.Value)) 
+            {
                 throw Error("The format of the Numeric Literal '" + this.Value + "' is not valid!");
             }
 

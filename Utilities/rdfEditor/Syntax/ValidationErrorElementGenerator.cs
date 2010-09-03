@@ -49,7 +49,6 @@ namespace rdfEditor.Syntax
             int offset = CurrentContext.Document.GetOffset(parseEx.StartLine, parseEx.StartPosition);
             if (offset < startOffset)
             {
-                int maxOffset = CurrentContext.VisualLine.LastDocumentLine.EndOffset;
                 int endOffset = CurrentContext.Document.GetOffset(parseEx.EndLine, parseEx.EndPosition);
                 if (startOffset < endOffset)
                 {

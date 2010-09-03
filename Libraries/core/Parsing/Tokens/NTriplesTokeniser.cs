@@ -122,7 +122,7 @@ namespace VDS.RDF.Parsing.Tokens
                             {
                                 //We're at the End of the Stream and part-way through reading a Token
                                 //Raise an error
-                                throw Error("Unexpected End of File encountered while attempting to Parse Token from content\n" + this.Value);
+                                throw UnexpectedEndOfInput("Token");
                             }
                         }
 
@@ -172,7 +172,7 @@ namespace VDS.RDF.Parsing.Tokens
                                     }
                                     else
                                     {
-                                        throw Error("Unexpected Character (Code " + (int)next + ") " + (char)next + " was encountered, expected the second ^ as part of a ^^ Data Type Specifier");
+                                        throw UnexpectedCharacter(next, "the second ^ as part of a ^^ Data Type Specifier");
                                     }
 
                                 #endregion
@@ -298,7 +298,7 @@ namespace VDS.RDF.Parsing.Tokens
                 {
                     if (colonoccurred)
                     {
-                        throw Error("Unexpected Colon encountered in input '" + this.Value + "', a Colon may only occur once in a Blank Node Name");
+                        throw Error("Unexpected Colon encountered in input '" + this.Value + "', a Colon may only occur once in a QName");
                     }
                     colonoccurred = true;
                 }
