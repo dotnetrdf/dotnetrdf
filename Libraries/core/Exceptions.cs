@@ -207,6 +207,14 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
+        /// Creates a new RDF Parse Exception which contains Position Information
+        /// </summary>
+        /// <param name="errorMsg">Error Message</param>
+        /// <pparam name="position">Position Information</pparam>
+        public RdfParseException(String errorMsg, PositionInfo position)
+            : this(errorMsg, position.StartLine, position.EndLine, position.StartPosition, position.EndPosition) { }
+
+        /// <summary>
         /// Gets whether the Exception has any position information
         /// </summary>
         public bool HasPositionInformation

@@ -19,7 +19,7 @@ namespace rdfEditor.Syntax
 
         public override TextRun CreateTextRun(int startVisualColumn, ITextRunConstructionContext context)
         {
-            this.TextRunProperties.SetTextDecorations(TextDecorations.Underline);
+            //this.TextRunProperties.SetTextDecorations(TextDecorations.Underline);
             this.TextRunProperties.SetBackgroundBrush(Brushes.DarkRed);
             this.TextRunProperties.SetForegroundBrush(Brushes.White);
             return base.CreateTextRun(startVisualColumn, context);

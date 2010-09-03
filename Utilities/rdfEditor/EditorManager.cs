@@ -627,6 +627,22 @@ namespace rdfEditor
                 block.Text = results.Message;
                 tip.Content = block;
                 this._validatorStatus.ToolTip = tip;
+
+                //TODO: Work out how to invalidate specific visual lines to force them to be redrawn
+                //if (results.Error != null)
+                //{
+                //    if (results.Error is RdfParseException)
+                //    {
+                //        RdfParseException parseEx = (RdfParseException)results.Error;
+                //        if (parseEx.StartLine != parseEx.EndLine && parseEx.StartLine > parseEx.EndLine)
+                //        {
+                //            for (int i = parseEx.StartLine; i < parseEx.EndLine; i++)
+                //            {
+                //                this._editor.TextArea.TextView.VisualLines[i]
+                //            }
+                //        }
+                //    }
+                //}
             }
         }
 

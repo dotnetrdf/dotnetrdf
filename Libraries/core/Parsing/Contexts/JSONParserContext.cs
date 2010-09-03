@@ -49,10 +49,10 @@ namespace VDS.RDF.Parsing.Contexts
         private JsonTextReader _input;
 
         /// <summary>
-        /// Creates a new Json Parser Context
+        /// Creates a new JSON Parser Context
         /// </summary>
         /// <param name="g">Graph to parse into</param>
-        /// <param name="input">Json Text Reader to read from</param>
+        /// <param name="input">JSON Text Reader to read from</param>
         public JsonParserContext(IGraph g, JsonTextReader input)
             : base(g)
         {
@@ -60,7 +60,7 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Gets the Json Text Reader which input is read from
+        /// Gets the JSON Text Reader which input is read from
         /// </summary>
         public JsonTextReader Input
         {
@@ -68,6 +68,27 @@ namespace VDS.RDF.Parsing.Contexts
             {
                 return this._input;
             }
+        }
+
+        /// <summary>
+        /// Gets the Current Position of the JSON Text Reader
+        /// </summary>
+        public PositionInfo CurrentPosition
+        {
+            get
+            {
+                return new PositionInfo(this._input.LineNumber, this._input.LinePosition);
+            }
+        }
+
+        /// <summary>
+        /// Gets the Position range from the given Start Position to the current Position
+        /// </summary>
+        /// <param name="startPosition">Start Position</param>
+        /// <returns></returns>
+        public PositionInfo GetPositionRange(PositionInfo startPosition)
+        {
+            return new PositionInfo(startPosition.StartLine, this._input.LineNumber, startPosition.StartPosition, this._input.LinePosition);
         }
     }
 }

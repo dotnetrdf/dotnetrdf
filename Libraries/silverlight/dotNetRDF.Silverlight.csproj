@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{854A789B-BA35-4A1B-9449-CAD40953F0E5}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -402,6 +402,9 @@
     </Compile>
     <Compile Include="..\core\Parsing\NTriplesParser.cs">
       <Link>Parsing\NTriplesParser.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\PositionInfo.cs">
+      <Link>Parsing\PositionInfo.cs</Link>
     </Compile>
     <Compile Include="..\core\Parsing\RdfAParser.cs">
       <Link>Parsing\RdfAParser.cs</Link>
@@ -1357,7 +1360,7 @@
   -->
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties ProjectLinkerExcludeFilter="\\?desktop(\\.*)?$;\\?silverlight(\\.*)?$;\.desktop;\.silverlight;\.xaml;^service references(\\.*)?$;\.clientconfig;^web references(\\.*)?$" ProjectLinkReference="bfbac159-1e60-4d03-8aca-d34e31eb83bf" />
+      <UserProperties ProjectLinkReference="bfbac159-1e60-4d03-8aca-d34e31eb83bf" ProjectLinkerExcludeFilter="\\?desktop(\\.*)?$;\\?silverlight(\\.*)?$;\.desktop;\.silverlight;\.xaml;^service references(\\.*)?$;\.clientconfig;^web references(\\.*)?$" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>

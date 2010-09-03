@@ -186,7 +186,6 @@ namespace VDS.RDF.Parsing
             {
                 if (context.Input.TokenType == JsonToken.StartObject)
                 {
-
                     context.Input.Read();
                     while (context.Input.TokenType != JsonToken.EndObject)
                     {
@@ -258,6 +257,8 @@ namespace VDS.RDF.Parsing
             String token, nodeValue, nodeType, nodeLang, nodeDatatype;
             nodeValue = nodeType = nodeLang = nodeDatatype = null;
 
+            PositionInfo startPos = context.CurrentPosition;
+
             if (context.Input.Read())
             {
                 if (context.Input.TokenType == JsonToken.StartObject)
@@ -271,8 +272,9 @@ namespace VDS.RDF.Parsing
 
                             //Check that we get a Property Value as a String
                             context.Input.Read();
-                            if (context.Input.TokenType != JsonToken.String) {
-                                throw Error(context, "Unexpected Token '" + context.Input.TokenType.ToString() + "' encountered, expected a Property Value describing one of the properties of an Object Node");
+                            if (context.Input.TokenType != JsonToken.String)
+                            {
+                                throw Error(context, "Unexpected Token '" + context.Input.TokenType.ToString() + "' encountered, expected a Property Value describing one of the properties of an Object Node", startPos);
                             }
 
                             //Extract the Information from the Object
@@ -292,7 +294,7 @@ namespace VDS.RDF.Parsing
                                 }
                                 else
                                 {
-                                    throw Error(context, "Unexpected Language Property specified for an Object Node where a Language or Datatype has already been specified");
+                                    throw Error(context, "Unexpected Language Property specified for an Object Node where a Language or Datatype has already been specified", startPos);
                                 }
                             }
                             else if (token.Equals("datatype"))
@@ -303,17 +305,17 @@ namespace VDS.RDF.Parsing
                                 }
                                 else
                                 {
-                                    throw Error(context, "Unexpected Datatype Property specified for an Object Node where a Language or Datatype has already been specified");
+                                    throw Error(context, "Unexpected Datatype Property specified for an Object Node where a Language or Datatype has already been specified", startPos);
                                 }
                             }
                             else
                             {
-                                throw Error(context, "Unexpected Property '" + token + "' specified for an Object Node, only 'value', 'type', 'lang' and 'datatype' are valid properties");
+                                throw Error(context, "Unexpected Property '" + token + "' specified for an Object Node, only 'value', 'type', 'lang' and 'datatype' are valid properties", startPos);
                             }
                         }
                         else
                         {
-                            throw Error(context, "Unexpected Token '" + context.Input.TokenType.ToString() + "' encountered, expected a Property Name describing one of the properties of an Object Node");
+                            throw Error(context, "Unexpected Token '" + context.Input.TokenType.ToString() + "' encountered, expected a Property Name describing one of the properties of an Object Node", startPos);
                         }
 
                         context.Input.Read();
@@ -322,11 +324,11 @@ namespace VDS.RDF.Parsing
                     //Validate the Information
                     if (nodeType == null)
                     {
-                        throw new RdfParseException("Cannot parse an Object Node from the JSON where no 'type' property was specified in the JSON Object representing the Node");
+                        throw Error(context, "Cannot parse an Object Node from the JSON where no 'type' property was specified in the JSON Object representing the Node", startPos);
                     }
                     if (nodeValue == null)
                     {
-                        throw new RdfParseException("Cannot parse an Object Node from the JSON where no 'value' property was specified in the JSON Object representing the Node");
+                        throw Error(context, "Cannot parse an Object Node from the JSON where no 'value' property was specified in the JSON Object representing the Node", startPos);
                     }
 
                     //Turn this information into a Node
@@ -356,7 +358,7 @@ namespace VDS.RDF.Parsing
                     }
                     else
                     {
-                        throw new RdfParseException("Cannot parse an Object Node from the JSON where the 'type' property is not set to one of the permitted values 'uri', 'bnode' or 'literal' in the JSON Object representing the Node");
+                        throw Error(context, "Cannot parse an Object Node from the JSON where the 'type' property is not set to one of the permitted values 'uri', 'bnode' or 'literal' in the JSON Object representing the Node", startPos);
                     }
 
                     //Assert as a Triple
@@ -378,12 +380,29 @@ namespace VDS.RDF.Parsing
         private RdfParseException Error(JsonParserContext context, String message)
         {
             StringBuilder error = new StringBuilder();
-            if (context.Input.HasLineInfo()) {
+            if (context.Input.HasLineInfo()) 
+            {
                 error.Append("[Line " + context.Input.LineNumber + " Column " + context.Input.LinePosition + "] ");
             }
             error.AppendLine(context.Input.TokenType.GetType().Name);
             error.Append(message);
             throw new RdfParseException(error.ToString(), context.Input.LineNumber, context.Input.LinePosition);
+        }
+
+        /// <summary>
+        /// Helper method for raising Error messages with attached Position Information
+        /// </summary>
+        /// <param name="context">Parser Context</param>
+        /// <param name="message">Error Message</param>
+        /// <param name="startPos">Start Position</param>
+        /// <returns></returns>
+        private RdfParseException Error(JsonParserContext context, String message, PositionInfo startPos)
+        {
+            PositionInfo info = context.GetPositionRange(startPos);
+            StringBuilder error = new StringBuilder();
+            error.Append("[Line " + info.StartLine + " Column " + info.StartPosition + " to Line " + info.EndLine + " Column " + info.EndPosition + "] ");
+            error.AppendLine(message);
+            throw new RdfParseException(error.ToString(), info);
         }
 
         /// <summary>

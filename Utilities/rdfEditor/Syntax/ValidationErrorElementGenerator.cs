@@ -24,11 +24,18 @@ namespace rdfEditor.Syntax
             if (parseEx == null) return null;
             if (parseEx.StartLine > CurrentContext.Document.LineCount) return null;
 
-            int startOffset = this.CurrentContext.Document.GetOffset(parseEx.StartLine, parseEx.StartPosition);
+            //Get the Start Offset which is the greater of the error start position or the offset start
+            //Move it back one if it is not at start of offset/document and the error is a single point
+            int startOffset = Math.Max(this.CurrentContext.Document.GetOffset(parseEx.StartLine, parseEx.StartPosition), offset);
             if (startOffset > 0 && startOffset > offset && parseEx.StartLine == parseEx.EndLine && parseEx.StartPosition == parseEx.EndPosition) startOffset--;
+
+            //Get the End Offset which is the lesser of the error end position of the end of this line
+            //If the Start and End Offsets are equal we can't show an error
             int endOffset = Math.Min(this.CurrentContext.Document.GetOffset(parseEx.EndLine, parseEx.EndPosition), this.CurrentContext.VisualLine.LastDocumentLine.EndOffset);
             if (startOffset == endOffset) return null;
             if (startOffset > endOffset) return null;
+
+            System.Diagnostics.Debug.WriteLine("Input Offset: " + offset + " - Start Offset: " + startOffset + " - End Offset: " + endOffset);
 
             return new ValidationErrorLineText(this.CurrentContext.VisualLine, endOffset - startOffset);
         }
@@ -39,11 +46,19 @@ namespace rdfEditor.Syntax
             if (parseEx == null) return -1;
             if (parseEx.StartLine > CurrentContext.Document.LineCount) return -1;
 
-            int endOffset = CurrentContext.VisualLine.LastDocumentLine.EndOffset;
             int offset = CurrentContext.Document.GetOffset(parseEx.StartLine, parseEx.StartPosition);
-            if (offset < startOffset || offset > endOffset)
+            if (offset < startOffset)
             {
-                return -1;
+                int maxOffset = CurrentContext.VisualLine.LastDocumentLine.EndOffset;
+                int endOffset = CurrentContext.Document.GetOffset(parseEx.EndLine, parseEx.EndPosition);
+                if (startOffset < endOffset)
+                {
+                    return startOffset;
+                }
+                else
+                {
+                    return -1;
+                }
             }
             else
             {
