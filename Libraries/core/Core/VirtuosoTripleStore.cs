@@ -67,6 +67,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="manager">Manager for the connection to Virtuoso</param>
         public VirtuosoTripleStore(VirtuosoManager manager)
+            : base(new GraphCollection())
         {
             this._manager = manager;
         }

@@ -62,7 +62,8 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="resourceUri">Uri of resource to retrieve a Description of</param>
         /// <param name="connector">Connection to a Talis Store</param>
-        public TalisGraph(String resourceUri, TalisPlatformConnector connector) : base()
+        public TalisGraph(String resourceUri, TalisPlatformConnector connector) 
+            : base()
         {
             this._talis = connector;
             this._talis.Describe(this, resourceUri);
@@ -74,7 +75,8 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="resourceUri">Uri of resource to retrieve a Description of</param>
         /// <param name="connector">Connection to a Talis Store</param>
-        public TalisGraph(Uri resourceUri, TalisPlatformConnector connector) : this(resourceUri.ToString(), connector) { }
+        public TalisGraph(Uri resourceUri, TalisPlatformConnector connector)
+            : this(resourceUri.ToString(), connector) { }
 
         /// <summary>
         /// Creates a new instance of a Talis Graph which contains the description of the given Uri from the given underlying Talis Store
@@ -83,7 +85,8 @@ namespace VDS.RDF
         /// <param name="storeName">Name of the Talis Store</param>
         /// <param name="username">Username for the Talis Store</param>
         /// <param name="password">Password for the Talis Store</param>
-        public TalisGraph(String resourceUri, String storeName, String username, String password) : this(resourceUri, new TalisPlatformConnector(storeName, username, password)) { }
+        public TalisGraph(String resourceUri, String storeName, String username, String password) 
+            : this(resourceUri, new TalisPlatformConnector(storeName, username, password)) { }
 
         /// <summary>
         /// Creates a new instance of a Talis Graph which contains the description of the given Uri from the given underlying Talis Store
@@ -92,7 +95,8 @@ namespace VDS.RDF
         /// <param name="storeName">Name of the Talis Store</param>
         /// <param name="username">Username for the Talis Store</param>
         /// <param name="password">Password for the Talis Store</param>
-        public TalisGraph(Uri resourceUri, String storeName, String username, String password) : this(resourceUri.ToString(), new TalisPlatformConnector(storeName, username, password)) { }
+        public TalisGraph(Uri resourceUri, String storeName, String username, String password)
+            : this(resourceUri.ToString(), new TalisPlatformConnector(storeName, username, password)) { }
 
         /// <summary>
         /// Creates a new instance of a Talis Graph which represents the description of a Resource from one of the Private Graphs from the underlying Talis Store
@@ -100,7 +104,8 @@ namespace VDS.RDF
         /// <param name="privateGraphID">Private Graph</param>
         /// <param name="connector">Connection to a Talis Store</param>
         /// <param name="resourceUri">Uri of the Resource to Describe</param>
-        public TalisGraph(String privateGraphID, String resourceUri, TalisPlatformConnector connector) : base()
+        public TalisGraph(String privateGraphID, String resourceUri, TalisPlatformConnector connector) 
+            : base()
         {
             this._talis = connector;
             this._privateGraphID = privateGraphID;
@@ -116,7 +121,8 @@ namespace VDS.RDF
         /// <param name="storeName">Name of the Talis Store</param>
         /// <param name="username">Username for the Talis Store</param>
         /// <param name="password">Password for the Talis Store</param>
-        public TalisGraph(String privateGraphID, String resourceUri, String storeName, String username, String password) : this(privateGraphID, resourceUri, new TalisPlatformConnector(storeName, username, password)) { }
+        public TalisGraph(String privateGraphID, String resourceUri, String storeName, String username, String password) 
+            : this(privateGraphID, resourceUri, new TalisPlatformConnector(storeName, username, password)) { }
 
         /// <summary>
         /// Creates a new instance of a Talis Graph which represents the description of a Resource from one of the Private Graphs from the underlying Talis Store
@@ -124,7 +130,8 @@ namespace VDS.RDF
         /// <param name="privateGraphID">Private Graph</param>
         /// <param name="connector">Connection to a Talis Store</param>
         /// <param name="resourceUri">Uri of the Resource to Describe</param>
-        public TalisGraph(String privateGraphID, Uri resourceUri, TalisPlatformConnector connector) : this(privateGraphID, resourceUri.ToString(), connector) { }
+        public TalisGraph(String privateGraphID, Uri resourceUri, TalisPlatformConnector connector) 
+            : this(privateGraphID, resourceUri.ToString(), connector) { }
 
         /// <summary>
         /// Creates a new instance of a Talis Graph which represents the description of a Resource from one of the Private Graphs from the underlying Talis Store
@@ -134,7 +141,8 @@ namespace VDS.RDF
         /// <param name="storeName">Name of the Talis Store</param>
         /// <param name="username">Username for the Talis Store</param>
         /// <param name="password">Password for the Talis Store</param>
-        public TalisGraph(String privateGraphID, Uri resourceUri, String storeName, String username, String password) : this(privateGraphID, resourceUri, new TalisPlatformConnector(storeName, username, password)) { }
+        public TalisGraph(String privateGraphID, Uri resourceUri, String storeName, String username, String password)
+            : this(privateGraphID, resourceUri, new TalisPlatformConnector(storeName, username, password)) { }
 
         #endregion
 

@@ -62,6 +62,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="manager">Manager for the Store you want to query</param>
         public NativeTripleStore(IQueryableGenericIOManager manager)
+            : base(new GraphCollection())
         {
             this._manager = manager;
         }

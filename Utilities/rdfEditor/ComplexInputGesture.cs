@@ -97,4 +97,28 @@ namespace rdfEditor
             }
         }
     }
+
+    public class ShiftKeyGesture : KeyGesture
+    {
+        private Key _key;
+
+        public ShiftKeyGesture(Key k)
+            : base(Key.None)
+        {
+            this._key = k;
+        }
+
+        public override bool Matches(object targetElement, InputEventArgs inputEventArgs)
+        {
+            if (inputEventArgs is KeyEventArgs)
+            {
+                KeyEventArgs e = (KeyEventArgs)inputEventArgs;
+                return (e.Key == this._key && e.KeyboardDevice.Modifiers == ModifierKeys.Shift);
+            }
+            else
+            {
+                return false;
+            }
+        }
+    }
 }

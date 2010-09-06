@@ -41,7 +41,16 @@ namespace rdfEditor
                 String keyStroke = keyStrokes[i];
                 if (keyStroke.Contains('+'))
                 {
-                    gestures.Add(new KeyGesture((Key)_keyConverter.ConvertFrom(keyStroke.Substring(keyStroke.IndexOf('+') + 1)), (ModifierKeys)_modifierKeysConverter.ConvertFrom(keyStroke.Substring(0, keyStroke.IndexOf('+')))));
+                    Key k = (Key)_keyConverter.ConvertFrom(keyStroke.Substring(keyStroke.IndexOf('+') + 1));
+                    ModifierKeys modifier = (ModifierKeys)_modifierKeysConverter.ConvertFrom(keyStroke.Substring(0, keyStroke.IndexOf('+')));
+                    if (modifier != ModifierKeys.Shift)
+                    {
+                        gestures.Add(new KeyGesture(k, modifier));
+                    }
+                    else
+                    {
+                        gestures.Add(new ShiftKeyGesture(k));
+                    }
                 }
                 else
                 {

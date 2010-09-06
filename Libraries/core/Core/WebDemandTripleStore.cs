@@ -88,9 +88,7 @@ namespace VDS.RDF
         /// Creates a new Web Demand Triple Store
         /// </summary>
         public WebDemandTripleStore()
-        {
-            this._graphs = new WebDemandGraphCollection(this);
-        }
+            : base(new WebDemandGraphCollection()) { }
     }
 
     /// <summary>
@@ -99,18 +97,9 @@ namespace VDS.RDF
     public class WebDemandGraphCollection : GraphCollection, IEnumerable<IGraph>
     {
         /// <summary>
-        /// Reference back to the Store that this is a GraphCollection for
-        /// </summary>
-        protected ITripleStore _store;
-
-        /// <summary>
         /// Creates a new Web Demand Graph Collection which loads Graphs from the Web on demand
         /// </summary>
-        /// <param name="store">Store this is a Graph Collection for (may be null if not associated with a Store)</param>
-        public WebDemandGraphCollection(ITripleStore store)
-        {
-            this._store = store;
-        }
+        public WebDemandGraphCollection() { }
 
         /// <summary>
         /// Checks whether the Graph with the given Uri exists in this Graph Collection.  If it doesn't but can be successfully loaded from the Web it will be loaded into the Graph Collection
@@ -130,15 +119,6 @@ namespace VDS.RDF
                     Graph g = new Graph();
                     UriLoader.Load(g, graphUri);
 
-                    //Apply Inference if associated with a store which supports it
-                    if (this._store != null)
-                    {
-                        if (this._store is IInferencingTripleStore)
-                        {
-                            ((IInferencingTripleStore)this._store).ApplyInference(g);
-                        }
-                    }
-
                     this.Add(g, false);
                     return true;
                 }
@@ -154,7 +134,6 @@ namespace VDS.RDF
         /// </summary>
         public override void Dispose()
         {
-            this._store = null;
             base.Dispose();
         }
     }

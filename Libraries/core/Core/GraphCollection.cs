@@ -133,7 +133,7 @@ namespace VDS.RDF
                     else
                     {
                         //Not allowed
-                        throw new RdfException("The Graph you tried to add already exists in the Graph Collection");
+                        throw new RdfException("The Graph you tried to add already exists in the Graph Collection and the mergeIfExists parameter was set to false");
                     }
                 }
                 else if (this._graphs[id].BaseUri == null && g.BaseUri == null)
@@ -147,7 +147,7 @@ namespace VDS.RDF
                     else
                     {
                         //Not allowed
-                        throw new RdfException("The Graph you tried to add already exists in the Graph Collection");
+                        throw new RdfException("The Graph you tried to add already exists in the Graph Collection and the mergeIfExists parameter was set to false");
                     }
                 }
                 else
@@ -164,13 +164,14 @@ namespace VDS.RDF
                         else
                         {
                             //Not allowed
-                            throw new RdfException("The Graph you tried to add already exists in the Graph Collection");
+                            throw new RdfException("The Graph you tried to add already exists in the Graph Collection and the mergeIfExists parameter was set to false");
                         }
                     }
                     else
                     {
                         //Add to collision Graphs
                         this._collisionGraphs.Add(g);
+                        this.RaiseGraphAdded(g);
                     }
                 }
             }
@@ -178,6 +179,7 @@ namespace VDS.RDF
             {
                 //Safe to add a new Graph
                 this._graphs.Add(id, g);
+                this.RaiseGraphAdded(g);
             }
         }
 
@@ -200,7 +202,9 @@ namespace VDS.RDF
             {
                 if (this._graphs[id].BaseUri != null && this._graphs[id].BaseUri.ToString().Equals(graphUri.ToString(), StringComparison.Ordinal))
                 {
+                    IGraph temp = this._graphs[id];
                     this._graphs.Remove(id);
+                    this.RaiseGraphRemoved(temp);
 
                     //Were there any collisions on this Hash Code?
                     //Q: Do we need a more general fix for null Base URI here?
@@ -213,7 +217,9 @@ namespace VDS.RDF
                 }
                 else if (this._graphs[id].BaseUri == null && graphUri == null)
                 {
+                    IGraph temp = this._graphs[id];
                     this._graphs.Remove(id);
+                    this.RaiseGraphRemoved(temp);
                     
                     //Were there any collisions on this Hash Code?
                     //Q: Do we need a more general fix for null Base URI here?
@@ -228,8 +234,9 @@ namespace VDS.RDF
                 {
                     //Hash Code collision
                     //Remove from Collision Graphs list
-
+                    IGraph temp = this._collisionGraphs.First(g => (g.BaseUri == null && graphUri == null) || g.BaseUri.ToString().Equals(graphUri.ToString(), StringComparison.Ordinal));
                     this._collisionGraphs.RemoveAll(g => (g.BaseUri == null && graphUri == null) || g.BaseUri.ToString().Equals(graphUri.ToString(), StringComparison.Ordinal));
+                    this.RaiseGraphRemoved(temp);
                 }
             }
         }

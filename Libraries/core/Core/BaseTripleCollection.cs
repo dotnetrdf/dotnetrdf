@@ -207,5 +207,41 @@ namespace VDS.RDF
         {
             return Enumerable.Empty<Triple>().GetEnumerator();
         }
+
+        /// <summary>
+        /// Event which occurs when a Triple is added to the Collection
+        /// </summary>
+        public event TripleEventHandler TripleAdded;
+
+        /// <summary>
+        /// Event which occurs when a Triple is removed from the Collection
+        /// </summary>
+        public event TripleEventHandler TripleRemoved;
+
+        /// <summary>
+        /// Helper method for raising the <see cref="TripleAdded">Triple Added</see> event
+        /// </summary>
+        /// <param name="t">Triple</param>
+        protected void RaiseTripleAdded(Triple t)
+        {
+            TripleEventHandler d = this.TripleAdded;
+            if (d != null)
+            {
+                d(this, new TripleEventArgs(t, null));
+            }
+        }
+
+        /// <summary>
+        /// Helper method for raising the <see cref="TripleRemoved">Triple Removed</see> event
+        /// </summary>
+        /// <param name="t">Triple</param>
+        protected void RaiseTripleRemoved(Triple t)
+        {
+            TripleEventHandler d = this.TripleRemoved;
+            if (d != null)
+            {
+                d(this, new TripleEventArgs(t, null, false));
+            }
+        }
     }
 }

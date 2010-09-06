@@ -33,7 +33,6 @@ terms.
 
 */
 
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -121,6 +120,42 @@ namespace VDS.RDF
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
             return Enumerable.Empty<IGraph>().GetEnumerator();
+        }
+
+        /// <summary>
+        /// Event which is raised when a Graph is added to the Collection
+        /// </summary>
+        public event GraphEventHandler GraphAdded;
+
+        /// <summary>
+        /// Event which is raised when a Graph is removed from the Collection
+        /// </summary>
+        public event GraphEventHandler GraphRemoved;
+
+        /// <summary>
+        /// Helper method which raises the <see cref="GraphAdded">Graph Added</see> event manually
+        /// </summary>
+        /// <param name="g">Graph</param>
+        protected void RaiseGraphAdded(IGraph g)
+        {
+            GraphEventHandler d = this.GraphAdded;
+            if (d != null)
+            {
+                d(this, new GraphEventArgs(g));
+            }
+        }
+
+        /// <summary>
+        /// Helper method which raises the <see cref="GraphRemoved">Graph Removed</see> event manually
+        /// </summary>
+        /// <param name="g">Graph</param>
+        protected void RaiseGraphRemoved(IGraph g)
+        {
+            GraphEventHandler d = this.GraphRemoved;
+            if (d != null)
+            {
+                d(this, new GraphEventArgs(g));
+            }
         }
     }
 }

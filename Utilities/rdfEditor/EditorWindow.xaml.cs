@@ -622,6 +622,12 @@ namespace rdfEditor
             mnuWordWrap_Click(sender, e);
         }
 
+        private void ToggleClickableUrisExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            this.mnuClickableUris.IsChecked = !this.mnuClickableUris.IsChecked;
+            mnuClickableUris_Click(sender, e);
+        }
+
         private void ToggleHighlightingExecuted(object sender, ExecutedRoutedEventArgs e)
         {
             this.mnuEnableHighlighting.IsChecked = !this.mnuEnableHighlighting.IsChecked;
@@ -634,10 +640,21 @@ namespace rdfEditor
             mnuValidateAsYouType_Click(sender, e);
         }
 
+        private void ToggleValidationErrorHighlighting(object sender, ExecutedRoutedEventArgs e)
+        {
+            this.mnuHighlightErrors.IsChecked = !this.mnuHighlightErrors.IsChecked;
+            mnuHighlightErrors_Click(sender, e);
+        }
+
         private void ToggleAutoCompletionExecuted(object sender, ExecutedRoutedEventArgs e)
         {
             this.mnuAutoComplete.IsChecked = !this.mnuAutoComplete.IsChecked;
             mnuAutoComplete_Click(sender, e);
+        }
+
+        private void ValidateSyntaxExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            mnuValidateSyntax_Click(sender, e);
         }
 
         #endregion

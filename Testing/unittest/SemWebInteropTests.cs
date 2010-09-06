@@ -17,7 +17,7 @@ namespace VDS.RDF.Test
     public class SemWebInteropTests
     {
         [TestMethod()]
-        public void ReadViaSemWeb()
+        public void SemWebReadVia()
         {
             MemoryStore mem = new MemoryStore();
             mem.Import(new N3Reader("InferenceTest.ttl"));
@@ -53,7 +53,7 @@ namespace VDS.RDF.Test
         }
 
         [TestMethod()]
-        public void WriteViaSemWeb()
+        public void SemWebWriteVia()
         {
             Graph g = new Graph();
             FileLoader.Load(g, "InferenceTest.ttl");
@@ -73,7 +73,7 @@ namespace VDS.RDF.Test
         }
 
         [TestMethod()]
-        public void GraphConversionForSemWeb()
+        public void SemWebGraphConversion()
         {
             Graph g = new Graph();
             FileLoader.Load(g, "Turtle.ttl");
@@ -96,7 +96,7 @@ namespace VDS.RDF.Test
         }
 
         [TestMethod()]
-        public void GraphSourceForSemWeb()
+        public void SemWebGraphSource()
         {
             Graph g = new Graph();
             //FileLoader.Load(g, "InferenceTest.ttl");
@@ -137,7 +137,7 @@ namespace VDS.RDF.Test
         }
 
         [TestMethod()]
-        public void InMemoryStoreSourceForSemWeb()
+        public void SemWebInMemoryStoreSource()
         {
             MicrosoftSqlStoreManager mssql = new MicrosoftSqlStoreManager("dotnetrdf_experimental", "sa", "20sQl08");
             InMemoryStoreSource source = new InMemoryStoreSource(new SqlTripleStore(mssql));
@@ -178,7 +178,7 @@ namespace VDS.RDF.Test
         }
 
         [TestMethod()]
-        public void InMemoryStoreConversionForSemWeb()
+        public void SemWebInMemoryStoreConversion()
         {
             //Set up a Store and load 3 Graphs into it
             TripleStore store = new TripleStore();
@@ -218,7 +218,7 @@ namespace VDS.RDF.Test
         }
 
         [TestMethod()]
-        public void GraphQueryWithSemWeb() 
+        public void SemWebGraphQuery() 
         {
             Graph g = new Graph();
             FileLoader.Load(g, "InferenceTest.ttl");
@@ -287,7 +287,7 @@ namespace VDS.RDF.Test
         }
 
         [TestMethod()]
-        public void NativeStoreForSemWeb()
+        public void SemWebNativeStore()
         {
             //Get the Talis Connection
             TalisPlatformConnector talis = new TalisPlatformConnector("rvesse-dev1", "rvesse", "4kn478wj");

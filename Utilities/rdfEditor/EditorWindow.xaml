@@ -26,10 +26,14 @@
         
         <CommandBinding Command="{x:Static rdfEditor:Commands.ToggleLineNumbers}" Executed="ToggleLineNumbersExecuted" />
         <CommandBinding Command="{x:Static rdfEditor:Commands.ToggleWordWrap}" Executed="ToggleWordWrapExecuted" />
+        <CommandBinding Command="{x:Static rdfEditor:Commands.ToggleClickableUris}" Executed="ToggleClickableUrisExecuted" />
         
         <CommandBinding Command="{x:Static rdfEditor:Commands.ToggleHighlighting}" Executed="ToggleHighlightingExecuted" />
         <CommandBinding Command="{x:Static rdfEditor:Commands.ToggleValidateAsYouType}" Executed="ToggleValidateAsYouTypeExecuted" />
+        <CommandBinding Command="{x:Static rdfEditor:Commands.ToggleValidationErrorHighlighting}" Executed="ToggleValidationErrorHighlighting" />
         <CommandBinding Command="{x:Static rdfEditor:Commands.ToggleAutoCompletion}" Executed="ToggleAutoCompletionExecuted" />
+        
+        <CommandBinding Command="{x:Static rdfEditor:Commands.ValidateSyntax}" Executed="ValidateSyntaxExecuted" />
     </Window.CommandBindings>
     
     <Window.InputBindings>
@@ -54,10 +58,14 @@
         
         <rdfEditor:ComplexInputBinding Command="{x:Static rdfEditor:Commands.ToggleLineNumbers}" Gesture="Ctrl+E,L" />
         <rdfEditor:ComplexInputBinding Command="{x:Static rdfEditor:Commands.ToggleWordWrap}" Gesture="Ctrl+E,W" />
+        <rdfEditor:ComplexInputBinding Command="{x:Static rdfEditor:Commands.ToggleClickableUris}" Gesture="Ctrl+E,U" />
         
         <rdfEditor:ComplexInputBinding Command="{x:Static rdfEditor:Commands.ToggleHighlighting}" Gesture="Ctrl+E,H" />
         <rdfEditor:ComplexInputBinding Command="{x:Static rdfEditor:Commands.ToggleValidateAsYouType}" Gesture="Ctrl+E,V" />
+        <rdfEditor:ComplexInputBinding Command="{x:Static rdfEditor:Commands.ToggleValidationErrorHighlighting}" Gesture="Ctrl+E,Shift+V" />
         <rdfEditor:ComplexInputBinding Command="{x:Static rdfEditor:Commands.ToggleAutoCompletion}" Gesture="Ctrl+E,A" />
+        
+        <rdfEditor:ComplexInputBinding Command="{x:Static rdfEditor:Commands.ValidateSyntax}" Gesture="Ctrl+T,V" />
     </Window.InputBindings>
     
     <DockPanel>
@@ -102,7 +110,7 @@
                 <MenuItem Header="Show Line Numbers" Name="mnuShowLineNumbers" IsCheckable="True" IsChecked="True"  Click="mnuShowLineNumbers_Click" InputGestureText="Ctrl+E,L" />
                 <MenuItem Header="Word Wrap" Name="mnuWordWrap" IsCheckable="True" IsChecked="False" Click="mnuWordWrap_Click" InputGestureText="Ctrl+E,W" />
                 <Separator />
-                <MenuItem Header="Make URIs Clickable" Name="mnuClickableUris" IsCheckable="True" IsChecked="False" Click="mnuClickableUris_Click" />
+                <MenuItem Header="Make URIs Clickable" Name="mnuClickableUris" IsCheckable="True" IsChecked="False" Click="mnuClickableUris_Click" InputGestureText="Ctrl+E,U" />
             </MenuItem>
             <MenuItem Header="_Options">
                     <MenuItem Header="Enable Syntax Highlighting" Name="mnuEnableHighlighting" IsCheckable="True" IsChecked="True" Click="mnuEnableHighlighting_Click" InputGestureText="Ctrl+E,H" />
@@ -131,14 +139,14 @@
                 </MenuItem>
                 <Separator />
                 <MenuItem Header="Validate Syntax as you Type" Name="mnuValidateAsYouType" IsCheckable="True" IsChecked="True" Click="mnuValidateAsYouType_Click" InputGestureText="Ctrl+E,V" />
-                <MenuItem Header="Highlight Validation Errors" Name="mnuHighlightErrors" IsCheckable="True" IsChecked="True" Click="mnuHighlightErrors_Click" />
+                <MenuItem Header="Highlight Validation Errors" Name="mnuHighlightErrors" IsCheckable="True" IsChecked="True" Click="mnuHighlightErrors_Click" InputGestureText="Ctrl+E,Shift+V"/>
                 <Separator />
                 <MenuItem Header="Enable Auto-completion" Name="mnuAutoComplete" IsCheckable="True" IsChecked="True" Click="mnuAutoComplete_Click" InputGestureText="Ctrl+E,A" />
                 <Separator />
                 <MenuItem Header="Customise File Associations" Name="mnuCustomiseFileAssociations" Click="mnuCustomiseFileAssociations_Click" />
             </MenuItem>
             <MenuItem Header="_Tools">
-                <MenuItem Header="Validate Syntax" Name="mnuValidateSyntax" Click="mnuValidateSyntax_Click" />
+                <MenuItem Header="Validate Syntax" Name="mnuValidateSyntax" Click="mnuValidateSyntax_Click" InputGestureText="Ctrl+T,V" />
             </MenuItem>
             <MenuItem Header="_Help" />
         </Menu>

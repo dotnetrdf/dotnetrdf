@@ -65,7 +65,6 @@ namespace VDS.RDF
             if (this._store == null)
             {
                 this._store = new TripleStore();
-                //if (this._baseuri == null) this._baseuri = new Uri("dotnetrdf:default-graph");
                 this._store.Add(this);
             }
             return this._store.ExecuteQuery(sparqlQuery);
@@ -81,7 +80,6 @@ namespace VDS.RDF
             if (this._store == null)
             {
                 this._store = new TripleStore();
-                //if (this._baseuri == null) this._baseuri = new Uri("dotnetrdf:default-graph");
                 this._store.Add(this);
             }
             return this._store.ExecuteQuery(query);

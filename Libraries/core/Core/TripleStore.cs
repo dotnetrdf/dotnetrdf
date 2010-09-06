@@ -75,6 +75,19 @@ namespace VDS.RDF
         /// </summary>
         protected Uri _inferenceGraphUri = new Uri("dotNetRDF:inference-graph");
 
+        /// <summary>
+        /// Creates a new Triple Store using a new empty Graph collection
+        /// </summary>
+        public TripleStore()
+            : base(new GraphCollection()) { }
+
+        /// <summary>
+        /// Creates a new Triple Store using the given Graph collection which may be non-empty
+        /// </summary>
+        /// <param name="graphCollection">Graph Collection</param>
+        public TripleStore(BaseGraphCollection graphCollection)
+            : base(graphCollection) { }
+
         #region Selection
 
         /// <summary>
@@ -1008,30 +1021,6 @@ namespace VDS.RDF
         #region Loading with Inference
 
         /// <summary>
-        /// Adds a Graph into the Triple Store applying Inference if any Reasoners have been set
-        /// </summary>
-        /// <param name="g">Graph to add</param>
-        public override void Add(IGraph g)
-        {
-            this.Add(g, false);
-        }
-
-        /// <summary>
-        /// Adds a Graph into the Triple Store using the chosen Merging Behaviour and applies inference if any Reasoners have been set
-        /// </summary>
-        /// <param name="g">Graph to Load</param>
-        /// <param name="mergeIfExists">Whether the Graph should be merged with an existing Graph with the same Base Uri</param>
-        /// <remarks>
-        /// Inference Engines are applied in the order that they were added to the Store
-        /// </remarks>
-        public override void Add(IGraph g, bool mergeIfExists)
-        {
-            base.Add(g, mergeIfExists);
-
-            this.ApplyInference(g);
-        }
-
-        /// <summary>
         /// Applies Inference to the given Graph
         /// </summary>
         /// <param name="g">Graph to apply inference to</param>
@@ -1165,5 +1154,16 @@ namespace VDS.RDF
         }
 
         #endregion
+
+        /// <summary>
+        /// Event Handler for the <see cref="BaseGraphCollection.GraphAdded">Graph Added</see> event of the underlying Graph Collection which calls the normal event processing of the parent class <see cref="BaseTripleStore">BaseTripleStore</see> and then applies Inference to the newly added Graph
+        /// </summary>
+        /// <param name="sender">Sender</param>
+        /// <param name="args">Graph Event Arguments</param>
+        protected override void OnGraphAdded(object sender, GraphEventArgs args)
+        {
+            base.OnGraphAdded(sender, args);
+            this.ApplyInference(args.Graph);
+        }
     }
 }

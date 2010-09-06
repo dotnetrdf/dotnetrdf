@@ -69,20 +69,36 @@ namespace VDS.RDF
         /// </summary>
         protected BlankNodeMapper _bnodemapper;
 
+        private TripleEventHandler TripleAddedHandler, TripleRemovedHandler;
+
         #endregion
 
         #region Constructor
 
         /// <summary>
-        /// Creates a new Base Graph
+        /// Creates a new Base Graph using the given Triple Collection
         /// </summary>
-        public BaseGraph()
+        /// <param name="tripleCollection">Triple Collection to use</param>
+        protected BaseGraph(BaseTripleCollection tripleCollection)
         {
-            this._triples = new IndexedTripleCollection();//new TripleCollection();
+            this._triples = new IndexedTripleCollection();
             this._nodes = new NodeCollection();
             this._bnodemapper = new BlankNodeMapper();
             this._nsmapper = new NamespaceMapper();
+
+            //Create Event Handlers and attach to the Triple Collection
+            this.TripleAddedHandler = new TripleEventHandler(this.OnTripleAsserted);
+            this.TripleRemovedHandler = new TripleEventHandler(this.OnTripleRetracted);
+
+            this._triples.TripleAdded += this.TripleAddedHandler;
+            this._triples.TripleRemoved += this.TripleRemovedHandler;
         }
+
+        /// <summary>
+        /// Creates a new Base Graph which uses the default <see cref="IndexedTripleCollection">IndexedTripleCollection</see> as the Triple Collection
+        /// </summary>
+        protected BaseGraph()
+            : this(new IndexedTripleCollection()) { }
 
         #endregion
 
@@ -214,11 +230,11 @@ namespace VDS.RDF
         /// </remarks>
         public virtual void Clear()
         {
-            if (!this.OnClearRequested()) return;
+            if (!this.RaiseClearRequested()) return;
 
             this.Retract(this.Triples);
 
-            this.OnCleared();
+            this.RaiseCleared();
         }
 
         #endregion
@@ -559,7 +575,7 @@ namespace VDS.RDF
         public virtual void Merge(IGraph g, bool keepOriginalGraphUri)
         {
             //Check that the merge can go ahead
-            if (!this.OnMergeRequested()) return;
+            if (!this.RaiseMergeRequested()) return;
 
             //First copy and Prefixes across which aren't defined in this Graph
             this._nsmapper.Import(g.NamespaceMap);
@@ -628,7 +644,7 @@ namespace VDS.RDF
                 }
             }
 
-            this.OnMerged();
+            this.RaiseMerged();
         }
 
         #endregion
@@ -852,10 +868,35 @@ namespace VDS.RDF
         public event GraphEventHandler Merged;
 
         /// <summary>
-        /// Helper method for raising the <see cref="TripleAsserted">Triple Asserted</see> event
+        /// Event Handler which handles the <see cref="BaseTripleCollection.TripleAdded">Triple Added</see> event from the underlying Triple Collection by raising the Graph's <see cref="TripleAsserted">TripleAsserted</see> event
+        /// </summary>
+        /// <param name="sender">Sender</param>
+        /// <param name="args">Triple Event Arguments</param>
+        protected virtual void OnTripleAsserted(Object sender, TripleEventArgs args)
+        {
+            this.RaiseTripleAsserted(args);
+        }
+
+        /// <summary>
+        /// Helper method for raising the <see cref="TripleAsserted">Triple Asserted</see> event manually
+        /// </summary>
+        /// <param name="args">Triple Event Arguments</param>
+        protected void RaiseTripleAsserted(TripleEventArgs args)
+        {
+            TripleEventHandler d = this.TripleAsserted;
+            args.Graph = this;
+            if (d != null)
+            {
+                d(this, args);
+            }
+            this.RaiseGraphChanged(args);
+        }
+
+        /// <summary>
+        /// Helper method for raising the <see cref="TripleAsserted">Triple Asserted</see> event manually
         /// </summary>
         /// <param name="t">Triple</param>
-        protected void OnTripleAsserted(Triple t)
+        protected void RaiseTripleAsserted(Triple t)
         {
             TripleEventHandler d = this.TripleAsserted;
             GraphEventHandler e = this.Changed;
@@ -868,10 +909,35 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Helper method for raising the <see cref="TripleRetracted">Triple Retracted</see> event
+        /// Event Handler which handles the <see cref="BaseTripleCollection.TripleRemoved">Triple Removed</see> event from the underlying Triple Collection by raising the Graph's <see cref="TripleRetracted">Triple Retracted</see> event
+        /// </summary>
+        /// <param name="sender">Sender</param>
+        /// <param name="args">Triple Event Arguments</param>
+        protected virtual void OnTripleRetracted(Object sender, TripleEventArgs args)
+        {
+            this.RaiseTripleRetracted(args);
+        }
+
+        /// <summary>
+        /// Helper method for raising the <see cref="TripleRetracted">Triple Retracted</see> event manually
+        /// </summary>
+        /// <param name="args"></param>
+        protected void RaiseTripleRetracted(TripleEventArgs args)
+        {
+            TripleEventHandler d = this.TripleRetracted;
+            args.Graph = this;
+            if (d != null)
+            {
+                d(this, args);
+            }
+            this.RaiseGraphChanged(args);
+        }
+
+        /// <summary>
+        /// Helper method for raising the <see cref="TripleRetracted">Triple Retracted</see> event manually
         /// </summary>
         /// <param name="t">Triple</param>
-        protected void OnTripleRetracted(Triple t)
+        protected void RaiseTripleRetracted(Triple t)
         {
             TripleEventHandler d = this.TripleRetracted;
             GraphEventHandler e = this.Changed;
@@ -887,7 +953,7 @@ namespace VDS.RDF
         /// Helper method for raising the <see cref="Changed">Changed</see> event
         /// </summary>
         /// <param name="args">Triple Event Arguments</param>
-        protected void OnGraphChanged(TripleEventArgs args)
+        protected void RaiseGraphChanged(TripleEventArgs args)
         {
             GraphEventHandler d = this.Changed;
             if (d != null)
@@ -899,7 +965,7 @@ namespace VDS.RDF
         /// <summary>
         /// Helper method for raising the <see cref="Changed">Changed</see> event
         /// </summary>
-        protected void OnGraphChanged()
+        protected void RaiseGraphChanged()
         {
             GraphEventHandler d = this.Changed;
             if (d != null)
@@ -912,7 +978,7 @@ namespace VDS.RDF
         /// Helper method for raising the <see cref="ClearRequested">Clear Requested</see> event and returning whether any of the Event Handlers cancelled the operation
         /// </summary>
         /// <returns>True if the operation can continue, false if it should be aborted</returns>
-        protected bool OnClearRequested()
+        protected bool RaiseClearRequested()
         {
             CancellableGraphEventHandler d = this.ClearRequested;
             if (d != null)
@@ -930,7 +996,7 @@ namespace VDS.RDF
         /// <summary>
         /// Helper method for raising the <see cref="Cleared">Cleared</see> event
         /// </summary>
-        protected void OnCleared()
+        protected void RaiseCleared()
         {
             GraphEventHandler d = this.Cleared;
             if (d != null)
@@ -943,7 +1009,7 @@ namespace VDS.RDF
         /// Helper method for raising the <see cref="MergeRequested">Merge Requested</see> event and returning whether any of the Event Handlers cancelled the operation
         /// </summary>
         /// <returns>True if the operation can continue, false if it should be aborted</returns>
-        protected bool OnMergeRequested()
+        protected bool RaiseMergeRequested()
         {
             CancellableGraphEventHandler d = this.MergeRequested;
             if (d != null)
@@ -961,7 +1027,7 @@ namespace VDS.RDF
         /// <summary>
         /// Helper method for raising the <see cref="Merged">Merged</see> event
         /// </summary>
-        protected void OnMerged()
+        protected void RaiseMerged()
         {
             GraphEventHandler d = this.Merged;
             if (d != null)

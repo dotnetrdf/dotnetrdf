@@ -54,9 +54,7 @@ namespace VDS.RDF
         /// Creates a new Disk Demand Triple Store
         /// </summary>
         public DiskDemandTripleStore()
-        {
-            this._graphs = new DiskDemandGraphCollection(this);
-        }
+            : base(new DiskDemandGraphCollection()) { }
     }
 
     /// <summary>
@@ -65,18 +63,9 @@ namespace VDS.RDF
     public class DiskDemandGraphCollection : GraphCollection, IEnumerable<IGraph>
     {
         /// <summary>
-        /// Reference back to the Store that this is a GraphCollection for
-        /// </summary>
-        protected ITripleStore _store;
-
-        /// <summary>
         /// Creates a new Web Demand Graph Collection which loads Graphs from the Web on demand
         /// </summary>
-        /// <param name="store">Store this is a Graph Collection for (may be null if not associated with a Store)</param>
-        public DiskDemandGraphCollection(ITripleStore store)
-        {
-            this._store = store;
-        }
+        public DiskDemandGraphCollection() { }
 
         /// <summary>
         /// Checks whether the Graph with the given Uri exists in this Graph Collection.  If it doesn't but is a file URI and can be retrieved successfully from disk it will be added to the collection
@@ -100,15 +89,6 @@ namespace VDS.RDF
                     Graph g = new Graph();
                     FileLoader.Load(g, graphUri.ToString().Substring(8));
 
-                    //Apply Inference if associated with a store which supports it
-                    if (this._store != null)
-                    {
-                        if (this._store is IInferencingTripleStore)
-                        {
-                            ((IInferencingTripleStore)this._store).ApplyInference(g);
-                        }
-                    }
-
                     this.Add(g, false);
                     return true;
                 }
@@ -128,7 +108,6 @@ namespace VDS.RDF
         /// </summary>
         public override void Dispose()
         {
-            this._store = null;
             base.Dispose();
         }
     }

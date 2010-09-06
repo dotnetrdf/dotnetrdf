@@ -53,7 +53,8 @@ namespace VDS.RDF
         /// <summary>
         /// Creates a new instance of a Graph
         /// </summary>
-        public Graph() : base() { }
+        public Graph() 
+            : base() { }
 
         /// <summary>
         /// Creates a new instance of a Graph with an optionally empty Namespace Map
@@ -62,7 +63,25 @@ namespace VDS.RDF
         public Graph(bool emptyNamespaceMap)
             : this()
         {
-            if (emptyNamespaceMap) this._nsmapper = new NamespaceMapper(true);
+            if (emptyNamespaceMap) this._nsmapper.Clear();
+        }
+
+        /// <summary>
+        /// Creates a new instance of a Graph using the given Triple Collection
+        /// </summary>
+        /// <param name="tripleCollection">Triple Collection</param>
+        protected Graph(BaseTripleCollection tripleCollection)
+            : base(tripleCollection) { }
+
+        /// <summary>
+        /// Creates a new instance of a Graph using the given Triple Collection and an optionally empty Namespace Map
+        /// </summary>
+        /// <param name="tripleCollection">Triple Collection</param>
+        /// <param name="emptyNamespaceMap">Whether the Namespace Map should be empty</param>
+        protected Graph(BaseTripleCollection tripleCollection, bool emptyNamespaceMap)
+            : base(tripleCollection)
+        {
+            if (emptyNamespaceMap) this._nsmapper.Clear();
         }
 
         #endregion
@@ -104,7 +123,7 @@ namespace VDS.RDF
 
             //Add to Triples Collection
             this._triples.Add(t);
-            this.OnTripleAsserted(t);
+            this.RaiseTripleAsserted(t);
         }
 
         /// <summary>
@@ -153,7 +172,7 @@ namespace VDS.RDF
             if (this._triples.Contains(t))
             {
                 this._triples.Delete(t);
-                this.OnTripleRetracted(t);
+                this.RaiseTripleRetracted(t);
             }
         }
 

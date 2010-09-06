@@ -50,21 +50,31 @@ namespace VDS.RDF
         /// <summary>
         /// Collection of Graphs that comprise the Triple Store
         /// </summary>
-        protected BaseGraphCollection _graphs = new GraphCollection();
+        protected BaseGraphCollection _graphs;
 
         /// <summary>
         /// Event Handler definitions
         /// </summary>
-        private GraphEventHandler GraphChangedHandler, GraphMergedHandler, GraphClearedHandler;
+        private GraphEventHandler GraphAddedHandler, GraphRemovedHandler, GraphChangedHandler, GraphMergedHandler, GraphClearedHandler;
 
         /// <summary>
         /// Creates a new Base Triple Store
         /// </summary>
-        public BaseTripleStore()
+        /// <param name="graphCollection">Graph Collection to use</param>
+        protected BaseTripleStore(BaseGraphCollection graphCollection)
         {
+            if (graphCollection == null) throw new ArgumentNullException("graphCollection", "Graph Collection must be an instance of a class which derives from BaseGraphCollection");
+            this._graphs = graphCollection;
+
+            this.GraphAddedHandler = new GraphEventHandler(this.OnGraphAdded);
+            this.GraphRemovedHandler = new GraphEventHandler(this.OnGraphRemoved);
             this.GraphChangedHandler = new GraphEventHandler(this.OnGraphChanged);
             this.GraphMergedHandler = new GraphEventHandler(this.OnGraphMerged);
             this.GraphClearedHandler = new GraphEventHandler(this.OnGraphCleared);
+
+            //Attach Handlers to the Graph Collection
+            this._graphs.GraphAdded += this.GraphAddedHandler;
+            this._graphs.GraphRemoved += this.GraphRemovedHandler;
         }
 
         #region Properties
@@ -116,7 +126,6 @@ namespace VDS.RDF
         public virtual void Add(IGraph g)
         {
             this._graphs.Add(g, false);
-            this.OnGraphAdded(g);
         }
 
         /// <summary>
@@ -126,12 +135,7 @@ namespace VDS.RDF
         /// <param name="mergeIfExists">Whether the Graph should be merged with an existing Graph with the same Base Uri</param>
         public virtual void Add(IGraph g, bool mergeIfExists)
         {
-            bool didExist = this._graphs.Contains(g);
             this._graphs.Add(g, mergeIfExists);
-
-            //We only raise the event if the Graph didn't exist prior to the addition call
-            //If it already existed then a Merged event will have been raised instead
-            if (!didExist) this.OnGraphAdded(g);
         }
 
         /// <summary>
@@ -150,14 +154,9 @@ namespace VDS.RDF
         /// <param name="mergeIfExists">Whether the Graph should be merged with an existing Graph with the same Base Uri</param>
         public virtual void AddFromUri(Uri graphUri, bool mergeIfExists)
         {
-            bool didExist = this._graphs.Contains(graphUri);
             Graph g = new Graph();
             UriLoader.Load(g, graphUri);
             this._graphs.Add(g, mergeIfExists);
-
-            //We only raise the event if the Graph didn't exist prior to the addition call
-            //If it already existed then a Merged event will have been raised instead
-            if (!didExist) this.OnGraphAdded(g);
         }
 
         /// <summary>
@@ -166,9 +165,7 @@ namespace VDS.RDF
         /// <param name="graphUri">Uri of the Graph to Remove</param>
         public virtual void Remove(Uri graphUri)
         {
-            IGraph temp = this._graphs[graphUri];
             this._graphs.Remove(graphUri);
-            this.OnGraphRemoved(temp);
         }
 
         #endregion
@@ -225,10 +222,10 @@ namespace VDS.RDF
         public event TripleStoreEventHandler GraphsMerged;
 
         /// <summary>
-        /// Helper method for raising the <see cref="GraphAdded">Graph Added</see> event
+        /// Helper method for raising the <see cref="GraphAdded">Graph Added</see> event manually
         /// </summary>
-        /// <param name="g"></param>
-        protected void OnGraphAdded(IGraph g)
+        /// <param name="g">Graph</param>
+        protected void RaiseGraphAdded(IGraph g)
         {
             TripleStoreEventHandler d = this.GraphAdded;
             if (d != null)
@@ -238,7 +235,36 @@ namespace VDS.RDF
             this.AttachEventHandlers(g);
         }
 
-        protected void OnGraphRemoved(IGraph g)
+        /// <summary>
+        /// Helper method for raising the <see cref="GraphAdded">Graph Added</see> event manually
+        /// </summary>
+        /// <param name="args">Graph Event Arguments</param>
+        protected void RaiseGraphAdded(GraphEventArgs args)
+        {
+            TripleStoreEventHandler d = this.GraphAdded;
+            if (d != null)
+            {
+                d(this, new TripleStoreEventArgs(this, args));
+            }
+            this.AttachEventHandlers(args.Graph);
+        }
+
+        /// <summary>
+        /// Event Handler which handles the <see cref="BaseGraphCollection.GraphAdded">Graph Added</see> event from the underlying Graph Collection and raises the Triple Store's <see cref="GraphAdded">Graph Added</see> event
+        /// </summary>
+        /// <param name="sender">Sender</param>
+        /// <param name="args">Graph Event Arguments</param>
+        /// <remarks>Override this method if your Triple Store implementation wishes to take additional actions when a Graph is added to the Store</remarks>
+        protected virtual void OnGraphAdded(Object sender, GraphEventArgs args)
+        {
+            this.RaiseGraphAdded(args);
+        }
+
+        /// <summary>
+        /// Helper method for raising the <see cref="GraphRemoved">Graph Removed</see> event manually
+        /// </summary>
+        /// <param name="g">Graph</param>
+        protected void RaiseGraphRemoved(IGraph g)
         {
             TripleStoreEventHandler d = this.GraphRemoved;
             if (d != null)
@@ -248,7 +274,35 @@ namespace VDS.RDF
             this.DetachEventHandlers(g);
         }
 
-        protected void OnGraphChanged(GraphEventArgs args)
+        /// <summary>
+        /// Helper method for raising the <see cref="GraphRemoved">Graph Removed</see> event manually
+        /// </summary>
+        /// <param name="args">Graph Event Arguments</param>
+        protected void RaiseGraphRemoved(GraphEventArgs args)
+        {
+            TripleStoreEventHandler d = this.GraphRemoved;
+            if (d != null)
+            {
+                d(this, new TripleStoreEventArgs(this, args));
+            }
+            this.DetachEventHandlers(args.Graph);
+        }
+
+        /// <summary>
+        /// Event Handler which handles the <see cref="BaseGraphCollection.GraphRemoved">Graph Removed</see> event from the underlying Graph Collection and raises the Triple Stores's <see cref="GraphRemoved">Graph Removed</see> event
+        /// </summary>
+        /// <param name="sender">Sender</param>
+        /// <param name="args">Graph Event Arguments</param>
+        protected virtual void OnGraphRemoved(Object sender, GraphEventArgs args)
+        {
+            this.RaiseGraphRemoved(args);
+        }
+
+        /// <summary>
+        /// Helper method for raising the <see cref="GraphChanged">Graph Changed</see> event manually
+        /// </summary>
+        /// <param name="args">Graph Event Arguments</param>
+        protected void RaiseGraphChanged(GraphEventArgs args)
         {
             TripleStoreEventHandler d = this.GraphChanged;
             if (d != null)
@@ -257,12 +311,21 @@ namespace VDS.RDF
             }
         }
 
-        private void OnGraphChanged(Object sender, GraphEventArgs args)
+        /// <summary>
+        /// Event Handler which handles the <see cref="IGraph.Changed">Changed</see> event of the contained Graphs by raising the Triple Store's <see cref="GraphChanged">Graph Changed</see> event
+        /// </summary>
+        /// <param name="sender">Sender</param>
+        /// <param name="args">Graph Event Arguments</param>
+        protected virtual void OnGraphChanged(Object sender, GraphEventArgs args)
         {
-            this.OnGraphChanged(args);
+            this.RaiseGraphChanged(args);
         }
 
-        protected void OnGraphChanged(IGraph g)
+        /// <summary>
+        /// Helper method for raising the <see cref="GraphChanged">Graph Changed</see> event manually
+        /// </summary>
+        /// <param name="g">Graph</param>
+        protected void RaiseGraphChanged(IGraph g)
         {
             TripleStoreEventHandler d = this.GraphChanged;
             if (d != null)
@@ -271,7 +334,11 @@ namespace VDS.RDF
             }
         }
 
-        protected void OnGraphCleared(GraphEventArgs args)
+        /// <summary>
+        /// Helper method for raising the <see cref="GraphCleared">Graph Cleared</see> event manually
+        /// </summary>
+        /// <param name="args">Graph Event Arguments</param>
+        protected void RaiseGraphCleared(GraphEventArgs args)
         {
             TripleStoreEventHandler d = this.GraphCleared;
             if (d != null)
@@ -280,12 +347,21 @@ namespace VDS.RDF
             }
         }
 
-        private void OnGraphCleared(Object sender, GraphEventArgs args)
+        /// <summary>
+        /// Event Handler which handles the <see cref="IGraph.Cleared">Cleared</see> event of the contained Graphs by raising the Triple Stores's <see cref="GraphCleared">Graph Cleared</see> event
+        /// </summary>
+        /// <param name="sender">Sender</param>
+        /// <param name="args">Graph Event Arguments</param>
+        protected virtual void OnGraphCleared(Object sender, GraphEventArgs args)
         {
-            this.OnGraphCleared(args);
+            this.RaiseGraphCleared(args);
         }
 
-        protected void OnGraphMerged(GraphEventArgs args)
+        /// <summary>
+        /// Helper method for raising the <see cref="GraphMerged">Graph Merged</see> event manually
+        /// </summary>
+        /// <param name="args">Graph Event Arguments</param>
+        protected void RaiseGraphMerged(GraphEventArgs args)
         {
             TripleStoreEventHandler d = this.GraphsMerged;
             if (d != null)
@@ -294,11 +370,20 @@ namespace VDS.RDF
             }
         }
 
-        private void OnGraphMerged(Object sender, GraphEventArgs args)
+        /// <summary>
+        /// Event Handler which handles the <see cref="IGraph.Merged">Merged</see> event of the contained Graphs by raising the Triple Store's <see cref="GraphMerged">Graph Merged</see> event
+        /// </summary>
+        /// <param name="sender">Sender</param>
+        /// <param name="args">Graph Event Arguments</param>
+        protected virtual void OnGraphMerged(Object sender, GraphEventArgs args)
         {
-            this.OnGraphMerged(args);
+            this.RaiseGraphMerged(args);
         }
 
+        /// <summary>
+        /// Helper method which attaches the Triple Store's Event Handlers to the relevant events of a Graph
+        /// </summary>
+        /// <param name="g">Graph</param>
         protected void AttachEventHandlers(IGraph g)
         {
             g.Changed += this.GraphChangedHandler;
@@ -306,6 +391,10 @@ namespace VDS.RDF
             g.Merged += this.GraphMergedHandler;
         }
 
+        /// <summary>
+        /// Helper method which detaches the Triple Store's Event Handlers from the relevant events of a Graph
+        /// </summary>
+        /// <param name="g"></param>
         protected void DetachEventHandlers(IGraph g)
         {
             g.Changed -= this.GraphChangedHandler;

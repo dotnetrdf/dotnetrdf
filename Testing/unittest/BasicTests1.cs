@@ -276,7 +276,7 @@ namespace VDS.RDF.Test
         }
 
         [TestMethod()]
-        public void DotNetURIHashCodes()
+        public void DotNetUriHashCodes()
         {
             //Quick Test to see if how the Uri classes Hash Codes behave
             Uri test1 = new Uri("http://example.org/test#one");

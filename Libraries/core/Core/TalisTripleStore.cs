@@ -67,6 +67,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="connector">Connection to a Talis Store</param>
         public TalisTripleStore(TalisPlatformConnector connector)
+            : base(new GraphCollection())
         {
             this._talis = connector;
         }
@@ -77,14 +78,16 @@ namespace VDS.RDF
         /// <param name="storeName">Name of the Talis Store</param>
         /// <param name="username">Username for the Talis Store</param>
         /// <param name="password">Password for the Talis Store</param>
-        public TalisTripleStore(String storeName, String username, String password) : this(new TalisPlatformConnector(storeName, username, password)) { }
+        public TalisTripleStore(String storeName, String username, String password)
+            : this(new TalisPlatformConnector(storeName, username, password)) { }
 
         /// <summary>
         /// Creates a new Talis Triple Store
         /// </summary>
         /// <param name="storeName">Name of the Talis Store</param>
         /// <remarks>This constructor creates a connection to the Talis platform which does not use authentication, this means that the Store must be world readable in order for queries to be executed.</remarks>
-        public TalisTripleStore(String storeName) : this(new TalisPlatformConnector(storeName)) { }
+        public TalisTripleStore(String storeName)
+            : this(new TalisPlatformConnector(storeName)) { }
 
         /// <summary>
         /// Executes a Sparql Query on the Triple Store

@@ -143,6 +143,10 @@ namespace VDS.RDF
             {
                 return this._g;
             }
+            internal set
+            {
+                this._g = value;
+            }
         }
 
         /// <summary>

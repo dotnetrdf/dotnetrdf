@@ -73,9 +73,8 @@ namespace VDS.RDF
         /// Opens an On Demand SQL Triple Store using the provided Store Manager
         /// </summary>
         /// <param name="manager">An <see cref="ISqlIOManager">ISqlIOManager</see> for your chosen backing SQL Store</param>
-        public OnDemandTripleStore(ISqlIOManager manager) : base() {
-            this._graphs = new OnDemandGraphCollection(manager, this);
-        }
+        public OnDemandTripleStore(ISqlIOManager manager)
+            : base(new OnDemandGraphCollection(manager)) { }
 
         /// <summary>
         /// Opens an On Demand SQL Triple Store using the default Manager for a dotNetRDF Store accessible at the given database settings
@@ -85,7 +84,7 @@ namespace VDS.RDF
         /// <param name="dbuser">Database User</param>
         /// <param name="dbpassword">Database Password</param>
         public OnDemandTripleStore(String dbserver, String dbname, String dbuser, String dbpassword)
-        : this(new MicrosoftSqlStoreManager(dbserver,dbname,dbuser,dbpassword)) { }
+            : this(new MicrosoftSqlStoreManager(dbserver,dbname,dbuser,dbpassword)) { }
 
         /// <summary>
         /// Opens an On Demand SQL Triple Store using the default Manager for a dotNetRDF Store accessible at the given database settings
@@ -94,8 +93,8 @@ namespace VDS.RDF
         /// <param name="dbuser">Database User</param>
         /// <param name="dbpassword">Database Password</param>
         /// <remarks>Assumes that the Store is located on the localhost</remarks>
-        public OnDemandTripleStore(String dbname, String dbuser, String dbpassword) :
-            this("localhost", dbname, dbuser, dbpassword) { }
+        public OnDemandTripleStore(String dbname, String dbuser, String dbpassword) 
+            : this("localhost", dbname, dbuser, dbpassword) { }
     }
 
     /// <summary>
@@ -103,10 +102,6 @@ namespace VDS.RDF
     /// </summary>
     public class OnDemandGraphCollection : GraphCollection, IEnumerable<IGraph>
     {
-        /// <summary>
-        /// Reference back to the Store that this is a GraphCollection for
-        /// </summary>
-        protected ITripleStore _store;
         /// <summary>
         /// The Manager for the underlying SQL Store
         /// </summary>
@@ -120,21 +115,12 @@ namespace VDS.RDF
         /// Creates a new On Demand Graph Collection which loads Graphs from a backing SQL Store on demand
         /// </summary>
         /// <param name="manager">Manager for the SQL Store</param>
-        /// <param name="store">Store this is a Graph Collection for (may be null if not associated with a Store)</param>
-        public OnDemandGraphCollection(ISqlIOManager manager, ITripleStore store)
+        public OnDemandGraphCollection(ISqlIOManager manager)
         {
-            this._store = store;
             this._manager = manager;
             this._manager.PreserveState = true;
             this._sqlreader = new SqlReader(this._manager);
         }
-
-        /// <summary>
-        /// Creates a new On Demand Graph Collection which loads Graphs from a backing SQL Store on demand
-        /// </summary>
-        /// <param name="manager">Manager for the SQL Store</param>
-        public OnDemandGraphCollection(ISqlIOManager manager)
-            : this(manager, null) { }
 
         /// <summary>
         /// Checks whether the Graph with the given Uri exists in this Graph Collection.  If it doesn't but is in the backing Store it will be loaded into the Graph Collection
@@ -170,16 +156,6 @@ namespace VDS.RDF
             if (!base.Contains(graphUri))
             {
                 Graph g = this._sqlreader.Load(graphUri);
-
-                //Apply Inference if associated with a store which supports it
-                if (this._store != null)
-                {
-                    if (this._store is IInferencingTripleStore)
-                    {
-                        ((IInferencingTripleStore)this._store).ApplyInference(g);
-                    }
-                }
-
                 this.Add(g, false);
             }
         }
@@ -189,7 +165,6 @@ namespace VDS.RDF
         /// </summary>
         public override void Dispose()
         {
-            this._store = null;
             this._sqlreader = null;
             this._manager.Dispose();
             base.Dispose();

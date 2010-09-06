@@ -17,8 +17,13 @@ namespace rdfEditor
 
         public static readonly ICommand ToggleLineNumbers = new RoutedCommand();
         public static readonly ICommand ToggleWordWrap = new RoutedCommand();
+        public static readonly ICommand ToggleClickableUris = new RoutedCommand();
+
         public static readonly ICommand ToggleHighlighting = new RoutedCommand();
         public static readonly ICommand ToggleAutoCompletion = new RoutedCommand();
         public static readonly ICommand ToggleValidateAsYouType = new RoutedCommand();
+        public static readonly ICommand ToggleValidationErrorHighlighting = new RoutedCommand();
+
+        public static readonly ICommand ValidateSyntax = new RoutedCommand();
     }
 }
