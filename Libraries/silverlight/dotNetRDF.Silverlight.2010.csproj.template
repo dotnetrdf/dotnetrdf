@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{854A789B-BA35-4A1B-9449-CAD40953F0E5}</ProjectGuid>
+    <ProjectTypeGuids>{A1591282-1198-4647-A2B1-27E5FF5F6F3B};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VDS.RDF</RootNamespace>
+    <AssemblyName>dotNetRDF.Silverlight</AssemblyName>   
+    <TargetFrameworkIdentifier>Silverlight</TargetFrameworkIdentifier>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <SilverlightVersion>$(TargetFrameworkVersion)</SilverlightVersion>
+    <SilverlightApplication>false</SilverlightApplication>
+    <ValidateXaml>true</ValidateXaml>
+    <ThrowErrorsInValidation>true</ThrowErrorsInValidation>
+  </PropertyGroup>
+  <!-- This property group is only here to support building this project using the 
+       MSBuild 3.5 toolset. In order to work correctly with this older toolset, it needs 
+       to set the TargetFrameworkVersion to v3.5 -->
+  <PropertyGroup Condition="'$(MSBuildToolsVersion)' == '3.5'">
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;SILVERLIGHT,NO_ASP,NO_WEB,NO_DATA,NO_STORAGE,NO_XMLDOM,NO_XSL,NO_PROXY,NO_RWLOCK,NO_STOPWATCH,NO_NORM,NO_URICACHE,NO_PROCESS</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\dotNetRDF.Silverlight.XML</DocumentationFile>
+    <NoStdLib>true</NoStdLib>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE;SILVERLIGHT</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="mscorlib" />
+    <Reference Include="System.Windows" />
+    <Reference Include="system" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Net" />
+    <Reference Include="System.Windows.Browser" />
+    <Reference Include="HtmlAgilityPack.Silverlight, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Dependencies\HtmlAgilityPack.Silverlight.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json.Silverlight, Version=3.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Dependencies\Newtonsoft.Json.Silverlight.dll</HintPath>
+    </Reference>
+  </ItemGroup> 
+  <ItemGroup>
+    <Compile Include="Compatability\HtmlTextWriter.cs" />
+    <Compile Include="Compatability\HtmlTextWriterAttribute.cs" />
+    <Compile Include="Compatability\HtmlTextWriterStyle.cs" />
+    <Compile Include="Compatability\HtmlTextWriterTag.cs" />
+    <Compile Include="Compatability\HttpUtility.cs" />
+    <Compile Include="Compatability\SilverlightCompatability.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\core\Parsing\trix-1.0.xsd">
+      <Link>Parsing\trix-1.0.xsd</Link>
+    </None>
+    <None Include="VDSOpenSourceKey.pfx" />
+    <Resource Include="..\core\Storage\CreateMSSQLStoreTables.sql">
+      <Link>Storage\CreateMSSQLStoreTables.sql</Link>
+    </Resource>
+    <Resource Include="..\core\Storage\CreateMySQLStoreTables.sql">
+      <Link>Storage\CreateMySQLStoreTables.sql</Link>
+    </Resource>
+    <Resource Include="..\core\Storage\DropMSSQLStoreTables.sql">
+      <Link>Storage\DropMSSQLStoreTables.sql</Link>
+    </Resource>
+    <Resource Include="..\core\Storage\DropMySQLStoreTables.sql">
+      <Link>Storage\DropMySQLStoreTables.sql</Link>
+    </Resource>
+    <Resource Include="..\core\Storage\UpgradeMSSQLStore_010_011.sql">
+      <Link>Storage\UpgradeMSSQLStore_010_011.sql</Link>
+    </Resource>
+    <Resource Include="..\core\Web\LeviathanFunctionLibrary.ttl">
+      <Link>Web\LeviathanFunctionLibrary.ttl</Link>
+    </Resource>
+  </ItemGroup>
+
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\$(SilverlightVersion)\Microsoft.Silverlight.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{A1591282-1198-4647-A2B1-27E5FF5F6F3B}">
+        <SilverlightProjectProperties />
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{BFBAC159-1E60-4D03-8ACA-D34E31EB83BF}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -14,7 +14,7 @@
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>VDSOpenSourceKey.pfx</AssemblyOriginatorKeyFile>
-    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -518,7 +518,11 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>echo "C:\Program Files (x86)\ndoc-e-bin-v1\NDocConsole.exe" -project="C:\Program Files (x86)\ndoc-e-bin-v1\dotNetRDF.NDoc"</PostBuildEvent>
+    <PostBuildEvent>echo Attempting to generate Silverlight VS 2010 Project File
+"$(SolutionDir)Build\ExportCoreContentsToTemplate\bin\Debug\ExportCoreContentsToTemplate.exe" "$(ProjectPath)" "$(SolutionDir)Libraries\silverlight\dotNetRDF.Silverlight.2010.csproj.template" "$(SolutionDir)\Libraries\silverlight\dotNetRDF.Silverlight.2010.csproj"
+echo Attempting to generate Compact Framework VS 2008 Project File
+"$(SolutionDir)Build\ExportCoreContentsToTemplate\bin\Debug\ExportCoreContentsToTemplate.exe" "$(ProjectPath)" "$(SolutionDir)Libraries\compact\dotNetRDF.Compact.csproj.template" "$(SolutionDir)\Libraries\compact\dotNetRDF.Compact.csproj"
+"$(SolutionDir)Build\ExportCoreContentsToTemplate\bin\Debug\ExportCoreContentsToTemplate.exe" "$(SolutionDir)Libraries\silverlight\dotNetRDF.Silverlight.2010.csproj" "$(SolutionDir)Libraries\compact\dotNetRDF.Compact.csproj" "$(SolutionDir)\Libraries\compact\dotNetRDF.Compact.csproj" "..\silverlight\\"</PostBuildEvent>
   </PropertyGroup>
   <ProjectExtensions>
     <VisualStudio>
