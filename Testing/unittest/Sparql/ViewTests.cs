@@ -199,5 +199,63 @@ namespace VDS.RDF.Test.Sparql
                 TestTools.ReportError("Error", ex, true);
             }
         }
+
+        [TestMethod()]
+        public void SparqlViewGraphScopeTest()
+        {
+            try
+            {
+                TripleStore store = new TripleStore();
+                SparqlView view = new SparqlView("CONSTRUCT { ?s ?p ?o } FROM <http://example.org/1> WHERE { ?s ?p ?o . FILTER(IsLiteral(?o)) }", store);
+                store.Add(view);
+
+                Console.WriteLine("SPARQL View Empty");
+                TestTools.ShowGraph(view);
+                Console.WriteLine();
+
+                //Load a Graph into the Store to cause the SPARQL View to update
+                Graph g = new Graph();
+                g.BaseUri = new Uri("http://example.org/1");
+                FileLoader.Load(g, "InferenceTest.ttl");
+                store.Add(g);
+
+                Thread.Sleep(200);
+                if (view.Triples.Count == 0) view.UpdateView();
+                int lastCount = view.Triples.Count;
+
+                Console.WriteLine("SPARQL View Populated");
+                TestTools.ShowGraph(view);
+
+                Assert.IsTrue(view.Triples.Count > 0, "View should have updated to contain some Triples");
+
+                //Load another Graph with a different URI into the Store
+                Graph h = new Graph();
+                h.BaseUri = new Uri("http://example.org/2");
+                FileLoader.Load(h, "Turtle.ttl");
+                store.Add(h);
+
+                Thread.Sleep(200);
+                view.UpdateView();
+
+                Assert.IsTrue(view.Triples.Count == lastCount, "View should not have changed since the added Graph is not in the set of Graphs over which the query operates");
+
+                //Remove this Graph and check the View still doesn't change
+                store.Remove(h.BaseUri);
+
+                Thread.Sleep(200);
+                view.UpdateView();
+
+                Assert.IsTrue(view.Triples.Count == lastCount, "View should not have changed since the removed Graph is not in the set of Graphs over which the query operates");
+
+            }
+            catch (RdfQueryException queryEx)
+            {
+                TestTools.ReportError("Query Error", queryEx, true);
+            }
+            catch (RdfException ex)
+            {
+                TestTools.ReportError("Error", ex, true);
+            }
+        }
     }
 }

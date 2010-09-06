@@ -23,6 +23,7 @@ namespace VDS.RDF.Query
         private UpdateViewDelegate _async;
         private IAsyncResult _asyncResult;
         private bool _requiresInvalidate = false;
+        private RdfQueryException _lastError;
 
         public BaseSparqlView(String sparqlQuery, ITripleStore store)
         {
@@ -73,7 +74,7 @@ namespace VDS.RDF.Query
             this._store.GraphAdded += this.OnGraphRemoved;
 
             //Fill the Graph with the results of the Query
-            this.UpdateView();
+            this.UpdateViewInternal();
         }
 
         private void InvalidateView()
@@ -120,9 +121,22 @@ namespace VDS.RDF.Query
             {
                 this.UpdateViewInternal();
             }
+            if (this.LastError != null) throw this.LastError;
         }
 
         protected abstract void UpdateViewInternal();
+
+        public RdfQueryException LastError
+        {
+            get
+            {
+                return this._lastError;
+            }
+            protected set
+            {
+                this._lastError = value;
+            }
+        }
 
         private void OnGraphChanged(Object sender, TripleStoreEventArgs args)
         {
@@ -242,11 +256,12 @@ namespace VDS.RDF.Query
                     this._triples = ((SparqlResultSet)results).ToTripleCollection(this);
                     this.AttachEventHandlers(this._triples);
                 }
+                this.LastError = null;
                 this.RaiseGraphChanged();
             }
             catch (RdfQueryException queryEx)
             {
-                throw new RdfQueryException("Unable to Update a SPARQL View as an error occurred in processing the Query - see Inner Exception for details", queryEx);
+                this.LastError = new RdfQueryException("Unable to Update a SPARQL View as an error occurred in processing the Query - see Inner Exception for details", queryEx);
             }
         }
     }
@@ -287,11 +302,12 @@ namespace VDS.RDF.Query
                     this._triples = ((SparqlResultSet)results).ToTripleCollection(this);
                     this.AttachEventHandlers(this._triples);
                 }
+                this.LastError = null;
                 this.RaiseGraphChanged();
             }
             catch (RdfQueryException queryEx)
             {
-                throw new RdfQueryException("Unable to Update a SPARQL View as an error occurred in processing the Query - see Inner Exception for details", queryEx);
+                this.LastError = new RdfQueryException("Unable to Update a SPARQL View as an error occurred in processing the Query - see Inner Exception for details", queryEx);
             }
         }
     }
