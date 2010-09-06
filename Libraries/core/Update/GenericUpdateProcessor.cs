@@ -228,7 +228,7 @@ namespace VDS.RDF.Update
                         {
                             foreach (ITriplePattern p in cmd.DeletePattern.TriplePatterns)
                             {
-                                tempDeletedTriples.Add(((IConstructTriplePattern)p).Construct(s, true));
+                                tempDeletedTriples.Add(((IConstructTriplePattern)p).Construct(null, s, true));
                             }
                             deletedTriples.AddRange(tempDeletedTriples);
                         }
@@ -278,7 +278,7 @@ namespace VDS.RDF.Update
                                 if (!deletedGraphTriples.ContainsKey(graphUri)) deletedGraphTriples.Add(graphUri, new List<Triple>());
                                 foreach (ITriplePattern p in gp.TriplePatterns)
                                 {
-                                    tempDeletedTriples.Add(((IConstructTriplePattern)p).Construct(s, true));
+                                    tempDeletedTriples.Add(((IConstructTriplePattern)p).Construct(null, s, true));
                                 }
                                 deletedGraphTriples[graphUri].AddRange(tempDeletedTriples);
                             }
@@ -431,7 +431,7 @@ namespace VDS.RDF.Update
                         {
                             foreach (ITriplePattern p in cmd.InsertPattern.TriplePatterns)
                             {
-                                tempInsertedTriples.Add(((IConstructTriplePattern)p).Construct(s, true));
+                                tempInsertedTriples.Add(((IConstructTriplePattern)p).Construct(null, s, true));
                             }
                             insertedTriples.AddRange(tempInsertedTriples);
                         }
@@ -481,7 +481,7 @@ namespace VDS.RDF.Update
                                 if (!insertedGraphTriples.ContainsKey(graphUri)) insertedGraphTriples.Add(graphUri, new List<Triple>());
                                 foreach (ITriplePattern p in gp.TriplePatterns)
                                 {
-                                    tempInsertedTriples.Add(((IConstructTriplePattern)p).Construct(s, true));
+                                    tempInsertedTriples.Add(((IConstructTriplePattern)p).Construct(null, s, true));
                                 }
                                 insertedGraphTriples[graphUri].AddRange(tempInsertedTriples);
                             }
@@ -632,7 +632,7 @@ namespace VDS.RDF.Update
                         {
                             foreach (ITriplePattern p in cmd.DeletePattern.TriplePatterns)
                             {
-                                tempDeletedTriples.Add(((IConstructTriplePattern)p).Construct(s, true));
+                                tempDeletedTriples.Add(((IConstructTriplePattern)p).Construct(null, s, true));
                             }
                             deletedTriples.AddRange(tempDeletedTriples);
                         }
@@ -682,7 +682,7 @@ namespace VDS.RDF.Update
                                 if (!deletedGraphTriples.ContainsKey(graphUri)) deletedGraphTriples.Add(graphUri, new List<Triple>());
                                 foreach (ITriplePattern p in gp.TriplePatterns)
                                 {
-                                    tempDeletedTriples.Add(((IConstructTriplePattern)p).Construct(s, true));
+                                    tempDeletedTriples.Add(((IConstructTriplePattern)p).Construct(null, s, true));
                                 }
                                 deletedGraphTriples[graphUri].AddRange(tempDeletedTriples);
                             }
@@ -705,7 +705,7 @@ namespace VDS.RDF.Update
                         {
                             foreach (ITriplePattern p in cmd.InsertPattern.TriplePatterns)
                             {
-                                tempInsertedTriples.Add(((IConstructTriplePattern)p).Construct(s, true));
+                                tempInsertedTriples.Add(((IConstructTriplePattern)p).Construct(null, s, true));
                             }
                             insertedTriples.AddRange(tempInsertedTriples);
                         }
@@ -755,7 +755,7 @@ namespace VDS.RDF.Update
                                 if (!insertedGraphTriples.ContainsKey(graphUri)) insertedGraphTriples.Add(graphUri, new List<Triple>());
                                 foreach (ITriplePattern p in gp.TriplePatterns)
                                 {
-                                    tempInsertedTriples.Add(((IConstructTriplePattern)p).Construct(s, true));
+                                    tempInsertedTriples.Add(((IConstructTriplePattern)p).Construct(null, s, true));
                                 }
                                 insertedGraphTriples[graphUri].AddRange(tempInsertedTriples);
                             }

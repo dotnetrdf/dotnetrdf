@@ -89,16 +89,18 @@ namespace VDS.RDF.Query.Patterns
         /// <summary>
         /// Constructs a Triple from a Set based on this Triple Pattern
         /// </summary>
+        /// <param name="g">Graph</param>
         /// <param name="s">Set</param>
         /// <returns></returns>
-        Triple Construct(Set s);
+        Triple Construct(IGraph g, Set s);
 
         /// <summary>
         /// Constructs a Triple from a Set based on this Triple Pattern
         /// </summary>
+        /// <param name="g">Graph</param>
         /// <param name="s">Set</param>
         /// <param name="preserveBNodes">Whether Blank Nodes should be preserved as-is (default behaviour is to re-write them)</param>
         /// <returns></returns>
-        Triple Construct(Set s, bool preserveBNodes);
+        Triple Construct(IGraph g, Set s, bool preserveBNodes);
     }
 }

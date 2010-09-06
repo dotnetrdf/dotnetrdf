@@ -66,10 +66,11 @@ namespace VDS.RDF.Query.Patterns
         /// <summary>
         /// Constructs a Node based on this Pattern for the given Set
         /// </summary>
+        /// <param name="g">Graph</param>
         /// <param name="s">Set</param>
         /// <param name="preserveBNodes">Whether Blank Node IDs should be preserved</param>
         /// <returns></returns>
-        protected internal abstract INode Construct(Set s, bool preserveBNodes);
+        protected internal abstract INode Construct(IGraph g, Set s, bool preserveBNodes);
 
         /// <summary>
         /// Sets the Binding Context for the Pattern Item
@@ -162,31 +163,32 @@ namespace VDS.RDF.Query.Patterns
         /// <param name="s">Set</param>
         /// <param name="preserveBNodes">Whether BNode IDs should be preserved</param>
         /// <returns>The Node which is bound to this Variable in this Solution</returns>
-        protected internal override INode Construct(Set s, bool preserveBNodes)
+        protected internal override INode Construct(IGraph g, Set s, bool preserveBNodes)
         {
             INode temp = s[this._varname];
-            return this.ConstructInternal(temp, preserveBNodes);               
+            return this.ConstructInternal(g, temp, preserveBNodes);               
         }
 
         /// <summary>
         /// Constructs a Node based on the given Node
         /// </summary>
+        /// <param name="g">Graph</param>
         /// <param name="value">Node</param>
         /// <param name="preserveBNodes">Whether BNode IDs should be preserved</param>
         /// <returns></returns>
         /// <remarks>
         /// Adjusts the ID of Blank Nodes appropriately
         /// </remarks>
-        private INode ConstructInternal(INode value, bool preserveBNodes)
+        private INode ConstructInternal(IGraph g, INode value, bool preserveBNodes)
         {
             if (value == null) throw new RdfQueryException("Unable to construct a Value for this Variable for this solution as it is bound to a null");
             switch (value.NodeType)
             {
                 case NodeType.Blank:
-                    if (!preserveBNodes)
+                    if (!preserveBNodes && value.GraphUri != null)
                     {
                         //Rename Blank Node based on the Graph Uri Hash Code
-                        int hash = value.GraphUri.GetHashCode();
+                        int hash = value.GraphUri.GetEnhancedHashCode();
                         if (hash >= 0)
                         {
                             return new BlankNode(null, ((BlankNode)value).InternalID + "-" + value.GraphUri.GetEnhancedHashCode());
@@ -198,7 +200,7 @@ namespace VDS.RDF.Query.Patterns
                     }
                     else
                     {
-                        return value;
+                        return new BlankNode(g, ((BlankNode)value).InternalID);
                     }
 
                 default:
@@ -260,9 +262,9 @@ namespace VDS.RDF.Query.Patterns
         /// <param name="s">Set</param>
         /// <returns>The Node this pattern matches on</returns>
         /// <param name="preserveBNodes">Whether Blank Node IDs should be preserved</param>
-        protected internal override INode Construct(Set s, bool preserveBNodes)
+        protected internal override INode Construct(IGraph g, Set s, bool preserveBNodes)
         {
-            return this._node;
+            return this._node.CopyNode(g);
         }
 
         /// <summary>
@@ -391,18 +393,19 @@ namespace VDS.RDF.Query.Patterns
         /// <summary>
         /// Constructs a Node based on the given Set
         /// </summary>
+        /// <param name="g">Graph</param>
         /// <param name="s">Set</param>
         /// <param name="preserveBNodes">Whether Blank Node IDs should be preserved</param>
         /// <returns>A Blank Node whose ID is based on the ID of the Blank Node in the pattern and the Set ID of the Solution</returns>
-        protected internal override INode Construct(Set s, bool preserveBNodes)
+        protected internal override INode Construct(IGraph g, Set s, bool preserveBNodes)
         {
             if (!preserveBNodes)
             {
-                return new BlankNode(null, this._name.Substring(2) + "-" + s.ID);
+                return new BlankNode(g, this._name.Substring(2) + "-" + s.ID);
             }
             else
             {
-                return new BlankNode(null, this._name.Substring(2));
+                return new BlankNode(g, this._name.Substring(2));
             }
         }
 

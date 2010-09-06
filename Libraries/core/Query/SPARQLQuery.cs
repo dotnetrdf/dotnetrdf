@@ -832,7 +832,7 @@ namespace VDS.RDF.Query
                                 {
                                     if (p is IConstructTriplePattern)
                                     {
-                                        constructedTriples.Add(((IConstructTriplePattern)p).Construct(s));
+                                        constructedTriples.Add(((IConstructTriplePattern)p).Construct(h, s));
                                     }
                                 }
                             }

@@ -81,7 +81,7 @@ namespace VDS.RDF
         /// <param name="tripleCollection">Triple Collection to use</param>
         protected BaseGraph(BaseTripleCollection tripleCollection)
         {
-            this._triples = new IndexedTripleCollection();
+            this._triples = tripleCollection;
             this._nodes = new NodeCollection();
             this._bnodemapper = new BlankNodeMapper();
             this._nsmapper = new NamespaceMapper();
@@ -89,9 +89,7 @@ namespace VDS.RDF
             //Create Event Handlers and attach to the Triple Collection
             this.TripleAddedHandler = new TripleEventHandler(this.OnTripleAsserted);
             this.TripleRemovedHandler = new TripleEventHandler(this.OnTripleRetracted);
-
-            this._triples.TripleAdded += this.TripleAddedHandler;
-            this._triples.TripleRemoved += this.TripleRemovedHandler;
+            this.AttachEventHandlers(this._triples);
         }
 
         /// <summary>
@@ -1036,6 +1034,32 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Helper method for attaching the necessary event Handlers to a Triple Collection
+        /// </summary>
+        /// <param name="tripleCollection">Triple Collection</param>
+        /// <remarks>
+        /// May be useful if you replace the Triple Collection after instantiation e.g. as done in <see cref="Query.SparqlView">SparqlView</see>'s
+        /// </remarks>
+        protected void AttachEventHandlers(BaseTripleCollection tripleCollection)
+        {
+            tripleCollection.TripleAdded += this.TripleAddedHandler;
+            tripleCollection.TripleRemoved += this.TripleRemovedHandler;
+        }
+
+        /// <summary>
+        /// Helper method for detaching the necessary event Handlers from a Triple Collection
+        /// </summary>
+        /// <param name="tripleCollection">Triple Collection</param>
+        /// <remarks>
+        /// May be useful if you replace the Triple Collection after instantiation e.g. as done in <see cref="Query.SparqlView">SparqlView</see>'s
+        /// </remarks>
+        protected void DetachEventHandlers(BaseTripleCollection tripleCollection)
+        {
+            tripleCollection.TripleAdded -= this.TripleAddedHandler;
+            tripleCollection.TripleRemoved -= this.TripleRemovedHandler;
+        }
+
         #endregion
 
         /// <summary>
@@ -1044,6 +1068,7 @@ namespace VDS.RDF
         public virtual void Dispose()
         {
             //this._blanknodeids.Clear();
+            this.DetachEventHandlers(this._triples);
             this._triples.Dispose();
             this._nodes.Dispose();
             this._nsmapper.Dispose();

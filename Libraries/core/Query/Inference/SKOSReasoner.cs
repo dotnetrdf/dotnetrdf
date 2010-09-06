@@ -100,7 +100,7 @@ namespace VDS.RDF.Query.Inference
                             if (this._conceptMappings[concept] != null)
                             {
                                 //Assert additional information
-                                inferences.Add(new Triple(t.Subject, t.Predicate, this._conceptMappings[concept].CopyNode(input)));
+                                inferences.Add(new Triple(t.Subject.CopyNode(output), t.Predicate.CopyNode(output), this._conceptMappings[concept].CopyNode(output)));
                                 concept = this._conceptMappings[concept];
                             }
                             else

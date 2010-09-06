@@ -41,6 +41,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Text.RegularExpressions;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
@@ -162,7 +163,7 @@ namespace VDS.RDF.Storage
                 try
                 {
                     //Is the Content Type referring to a Sparql Result Set format?
-                    ISparqlResultsReader resreader = MimeTypesHelper.GetSparqlParser(ctype, true);
+                    ISparqlResultsReader resreader = MimeTypesHelper.GetSparqlParser(ctype, Regex.IsMatch(sparqlQuery, "ASK", RegexOptions.IgnoreCase));
                     SparqlResultSet results = new SparqlResultSet();
                     resreader.Load(results, data);
                     response.Close();

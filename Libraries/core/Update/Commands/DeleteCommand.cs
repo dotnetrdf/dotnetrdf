@@ -151,7 +151,7 @@ namespace VDS.RDF.Update.Commands
                 {
                     foreach (ITriplePattern p in this._deletePattern.TriplePatterns)
                     {
-                        deletedTriples.Add(((IConstructTriplePattern)p).Construct(s, true));
+                        deletedTriples.Add(((IConstructTriplePattern)p).Construct(g, s, true));
                     }
                     g.Retract(deletedTriples);
                 }
@@ -201,7 +201,7 @@ namespace VDS.RDF.Update.Commands
                         IGraph h = context.Data.Graph(new Uri(graphUri));
                         foreach (ITriplePattern p in gp.TriplePatterns)
                         {
-                            deletedTriples.Add(((IConstructTriplePattern)p).Construct(s, true));
+                            deletedTriples.Add(((IConstructTriplePattern)p).Construct(h, s, true));
                         }
                         h.Retract(deletedTriples);
                     }

@@ -1034,6 +1034,9 @@
     <Compile Include="..\core\Query\SparqlPathParser.cs">
       <Link>Query\SparqlPathParser.cs</Link>
     </Compile>
+    <Compile Include="..\core\Query\SparqlView.cs">
+      <Link>Query\SparqlView.cs</Link>
+    </Compile>
     <Compile Include="..\core\Storage\DatasetFileManager.cs">
       <Link>Storage\DatasetFileManager.cs</Link>
     </Compile>

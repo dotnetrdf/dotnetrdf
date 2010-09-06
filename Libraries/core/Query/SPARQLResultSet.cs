@@ -386,6 +386,23 @@ namespace VDS.RDF.Query
             }
         }
 
+        public BaseTripleCollection ToTripleCollection(IGraph g)
+        {
+            return this.ToTripleCollection(g, "s", "p", "o");
+        }
+
+        public BaseTripleCollection ToTripleCollection(IGraph g, String subjVar, String predVar, String objVar)
+        {
+            IndexedTripleCollection tripleCollection = new IndexedTripleCollection();
+
+            foreach (SparqlResult r in this.Results)
+            {
+                tripleCollection.Add(new Triple(r[subjVar].CopyNode(g), r[predVar].CopyNode(g), r[objVar].CopyNode(g)));
+            }
+
+            return tripleCollection;
+        }
+
         /// <summary>
         /// Disposes of a Result Set
         /// </summary>

@@ -379,6 +379,7 @@
     <Compile Include="Query\SparqlNodeComparer.cs" />
     <Compile Include="Query\SparqlParameterizedString.cs" />
     <Compile Include="Query\SparqlPathParser.cs" />
+    <Compile Include="Query\SparqlView.cs" />
     <Compile Include="Storage\DatasetFileManager.cs" />
     <Compile Include="Storage\Params\GenericIOParams.cs" />
     <Compile Include="Storage\SparqlConnector.cs" />

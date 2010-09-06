@@ -76,5 +76,55 @@ namespace VDS.RDF.Test
                 TestTools.ReportError("Error", ex, true);
             }
         }
+
+        [TestMethod()]
+        public void AllegroGraphAsk()
+        {
+            try
+            {
+                AllegroGraphConnector agraph = new AllegroGraphConnector("http://localhost:9875", "test", "unit-test");
+
+                String ask = "ASK WHERE { ?s ?p ?o }";
+
+                Object results = agraph.Query(ask);
+                if (results is SparqlResultSet)
+                {
+                    TestTools.ShowResults(results);
+                }
+                else
+                {
+                    Assert.Fail("Failed to get a Result Set as expected");
+                }
+            }
+            catch (Exception ex)
+            {
+                TestTools.ReportError("Error", ex, true);
+            }
+        }
+
+        [TestMethod()]
+        public void AllegroGraphDescribe()
+        {
+            try
+            {
+                AllegroGraphConnector agraph = new AllegroGraphConnector("http://localhost:9875", "test", "unit-test");
+
+                String describe = "DESCRIBE <http://example.org/Vehicles/FordFiesta>";
+
+                Object results = agraph.Query(describe);
+                if (results is IGraph)
+                {
+                    TestTools.ShowGraph((IGraph)results);
+                }
+                else
+                {
+                    Assert.Fail("Failed to get a Graph as expected");
+                }
+            }
+            catch (Exception ex)
+            {
+                TestTools.ReportError("Error", ex, true);
+            }
+        }
     }
 }
