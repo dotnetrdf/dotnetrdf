@@ -185,21 +185,18 @@ namespace VDS.RDF.Writing
                     }
                     else
                     {
-                        context.Output.WriteLine("<" + context.FormatUri(context.Graph.BaseUri) + "> = {");
+                        context.Output.WriteLine("<" + context.UriFormatter.FormatUri(context.Graph.BaseUri) + "> = {");
                     }
                 }
                 else
                 {
-                    context.Output.WriteLine("<" + context.FormatUri(context.Graph.BaseUri) + "> = {");
+                    context.Output.WriteLine("<" + context.UriFormatter.FormatUri(context.Graph.BaseUri) + "> = {");
                 }
             }
             else
             {
                 context.Output.WriteLine("{");
             }
-
-            //Force the use of the Global QName Mapper
-            context.SetQNameOutputerMapper(globalContext.QNameMapper);
 
             //Generate Triples
             this.GenerateTripleOutput(globalContext, context);
@@ -364,7 +361,7 @@ namespace VDS.RDF.Writing
 
                     //Generate the Graph Output and add to Stream
                     TurtleWriterContext context = new TurtleWriterContext(g, new System.IO.StringWriter(), globalContext.PrettyPrint, globalContext.HighSpeedModePermitted);
-                    context.NodeFormatter = new TurtleFormatter(globalContext.NamespaceMap);
+                    context.NodeFormatter = new TurtleFormatter(globalContext.QNameMapper);
                     String graphContent = this.GenerateGraphOutput(globalContext, context);
                     try
                     {
@@ -407,7 +404,7 @@ namespace VDS.RDF.Writing
         /// Internal Helper method which raises the Warning event only if there is an Event Handler registered
         /// </summary>
         /// <param name="message">Warning Message</param>
-        private void OnWarning(String message) 
+        private void RaiseWarning(String message) 
         {
             StoreWriterWarning d = this.Warning;
             if (d != null)

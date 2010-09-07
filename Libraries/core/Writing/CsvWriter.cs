@@ -43,6 +43,7 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Storage;
 using VDS.RDF.Storage.Params;
 using VDS.RDF.Writing.Contexts;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Writing
 {
@@ -51,6 +52,8 @@ namespace VDS.RDF.Writing
     /// </summary>
     public class CsvWriter : IRdfWriter
     {
+        private CsvFormatter _formatter = new CsvFormatter();
+
         /// <summary>
         /// Saves a Graph to CSV format
         /// </summary>
@@ -109,7 +112,7 @@ namespace VDS.RDF.Writing
                 case NodeType.Blank:
                     if (segment == TripleSegment.Predicate) throw new RdfOutputException(WriterErrorMessages.BlankPredicatesUnserializable("CSV"));
 
-                    output.Write(n.ToString());
+                    output.Write(this._formatter.Format(n));
                     break;
 
                 case NodeType.GraphLiteral:
@@ -119,27 +122,11 @@ namespace VDS.RDF.Writing
                     if (segment == TripleSegment.Subject) throw new RdfOutputException(WriterErrorMessages.LiteralSubjectsUnserializable("CSV"));
                     if (segment == TripleSegment.Predicate) throw new RdfOutputException(WriterErrorMessages.LiteralPredicatesUnserializable("CSV"));
 
-                    LiteralNode lit = (LiteralNode)n;
-                    if (TurtleSpecsHelper.IsValidPlainLiteral(lit.Value, lit.DataType))
-                    {
-                        output.Write(lit.Value);
-                    }
-                    else
-                    {
-                        String value = lit.Value;
-                        if (TurtleSpecsHelper.IsLongLiteral(value))
-                        {
-                            value = value.Replace("\t", "\\t");
-                            value = value.Replace("\n", "\\n");
-                            value = value.Replace("\r", "\\r");
-                            value = value.Replace("\"", "\\\"");
-                        }
-                        output.Write("\"" + value + "\"");
-                    }
+                    output.Write(this._formatter.Format(n));
                     break;
 
                 case NodeType.Uri:
-                    output.Write(n.ToString());
+                    output.Write(this._formatter.Format(n));
                     break;
 
                 default:
@@ -159,6 +146,7 @@ namespace VDS.RDF.Writing
     public class CsvStoreWriter : IStoreWriter
     {
         private int _threads = 4;
+        private CsvFormatter _formatter = new CsvFormatter();
 
         /// <summary>
         /// Saves a Triple Store to CSV Format
@@ -292,7 +280,7 @@ namespace VDS.RDF.Writing
                     context.Output.Write(',');
                     this.GenerateNodeOutput(context, t.Object, TripleSegment.Object);
                     context.Output.Write(',');
-                    context.Output.Write(context.Graph.BaseUri.ToString());
+                    context.Output.Write(this._formatter.FormatUri(context.Graph.BaseUri));
                     context.Output.Write("\r\n");
                 }
             }
@@ -327,7 +315,7 @@ namespace VDS.RDF.Writing
                 case NodeType.Blank:
                     if (segment == TripleSegment.Predicate) throw new RdfOutputException(WriterErrorMessages.BlankPredicatesUnserializable("CSV"));
 
-                    context.Output.Write(n.ToString());
+                    context.Output.Write(this._formatter.Format(n));
                     break;
 
                 case NodeType.GraphLiteral:
@@ -337,27 +325,11 @@ namespace VDS.RDF.Writing
                     if (segment == TripleSegment.Subject) throw new RdfOutputException(WriterErrorMessages.LiteralSubjectsUnserializable("CSV"));
                     if (segment == TripleSegment.Predicate) throw new RdfOutputException(WriterErrorMessages.LiteralPredicatesUnserializable("CSV"));
 
-                    LiteralNode lit = (LiteralNode)n;
-                    if (TurtleSpecsHelper.IsValidPlainLiteral(lit.Value, lit.DataType))
-                    {
-                        context.Output.Write(lit.Value);
-                    }
-                    else
-                    {
-                        String value = lit.Value;
-                        if (TurtleSpecsHelper.IsLongLiteral(value))
-                        {
-                            value = value.Replace("\t", "\\t");
-                            value = value.Replace("\n", "\\n");
-                            value = value.Replace("\r", "\\r");
-                            value = value.Replace("\"", "\\\"");
-                        }
-                        context.Output.Write("\"" + value + "\"");
-                    }
+                    context.Output.Write(this._formatter.Format(n));
                     break;
 
                 case NodeType.Uri:
-                    context.Output.Write(n.ToString());
+                    context.Output.Write(this._formatter.Format(n));
                     break;
 
                 default:

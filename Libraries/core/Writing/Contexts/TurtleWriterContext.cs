@@ -56,6 +56,7 @@ namespace VDS.RDF.Writing.Contexts
             : base(g, output) 
         {
             this._formatter = new TurtleFormatter(g);
+            this._uriFormatter = (IUriFormatter)this._formatter;
         }
 
         /// <summary>
@@ -69,6 +70,7 @@ namespace VDS.RDF.Writing.Contexts
             : base(g, output, WriterCompressionLevel.Default, prettyPrint, hiSpeed) 
         {
             this._formatter = new TurtleFormatter(g);
+            this._uriFormatter = (IUriFormatter)this._formatter;
         }
 
         /// <summary>
@@ -83,6 +85,7 @@ namespace VDS.RDF.Writing.Contexts
             : base(g, output, compressionLevel, prettyPrint, hiSpeed) 
         {
             this._formatter = new TurtleFormatter(g);
+            this._uriFormatter = (IUriFormatter)this._formatter;
         }
     }
 

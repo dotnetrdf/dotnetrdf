@@ -43,6 +43,7 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Storage;
 using VDS.RDF.Storage.Params;
 using VDS.RDF.Writing.Contexts;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Writing
 {
@@ -51,6 +52,8 @@ namespace VDS.RDF.Writing
     /// </summary>
     public class TsvWriter : IRdfWriter
     {
+        private TsvFormatter _formatter = new TsvFormatter();
+
         /// <summary>
         /// Saves a Graph to TSV format
         /// </summary>
@@ -100,42 +103,11 @@ namespace VDS.RDF.Writing
         {
             switch (n.NodeType)
             {
-                case NodeType.Blank:
-                    output.Write(n.ToString());
-                    break;
                 case NodeType.GraphLiteral:
                     throw new RdfOutputException(WriterErrorMessages.GraphLiteralsUnserializable("TSV"));
+                case NodeType.Blank:
                 case NodeType.Literal:
-                    LiteralNode lit = (LiteralNode)n;
-                    if (TurtleSpecsHelper.IsValidPlainLiteral(lit.Value, lit.DataType))
-                    {
-                        output.Write(lit.Value);
-                    }
-                    else
-                    {
-                        String value = lit.Value.Replace("\t", "\\t");
-                        if (TurtleSpecsHelper.IsLongLiteral(value))
-                        {
-                            value = value.Replace("\n", "\\n");
-                            value = value.Replace("\r", "\\r");
-                            value = value.Replace("\"", "\\\"");
-                        }
-                        output.Write("\"" + value + "\"");
-
-                        if (!lit.Language.Equals(String.Empty))
-                        {
-                            output.Write("@" + lit.Language);
-                        }
-                        else if (lit.DataType != null)
-                        {
-                            output.Write("^^");
-                            output.Write("<" + lit.DataType.ToString().Replace(">", "\\>") + ">");
-                        }
-                    }
-                    break;
-                case NodeType.Uri:
-                    UriNode u = (UriNode)n;
-                    output.Write("<" + u.Uri.ToString().Replace(">", "\\>") + ">");
+                    output.Write(this._formatter.Format(n));
                     break;
                 default:
                     throw new RdfOutputException(WriterErrorMessages.UnknownNodeTypeUnserializable("TSV"));
@@ -154,6 +126,7 @@ namespace VDS.RDF.Writing
     public class TsvStoreWriter : IStoreWriter
     {
         private int _threads = 4;
+        private TsvFormatter _formatter = new TsvFormatter();
 
         /// <summary>
         /// Saves a Triple Store to TSV format
@@ -288,7 +261,7 @@ namespace VDS.RDF.Writing
                     this.GenerateNodeOutput(context, t.Object, TripleSegment.Object);
                     context.Output.Write('\t');
                     context.Output.Write('<');
-                    context.Output.Write(context.Graph.BaseUri.ToString().Replace(">", "\\>"));
+                    context.Output.Write(this._formatter.FormatUri(context.Graph.BaseUri));
                     context.Output.Write('>');
                     context.Output.Write('\n');
                 }
@@ -321,42 +294,12 @@ namespace VDS.RDF.Writing
         {
             switch (n.NodeType)
             {
-                case NodeType.Blank:
-                    context.Output.Write(n.ToString());
-                    break;
                 case NodeType.GraphLiteral:
                     throw new RdfOutputException(WriterErrorMessages.GraphLiteralsUnserializable("TSV"));
+                case NodeType.Blank:
                 case NodeType.Literal:
-                    LiteralNode lit = (LiteralNode)n;
-                    if (TurtleSpecsHelper.IsValidPlainLiteral(lit.Value, lit.DataType))
-                    {
-                        context.Output.Write(lit.Value);
-                    }
-                    else
-                    {
-                        String value = lit.Value.Replace("\t", "\\t");
-                        if (TurtleSpecsHelper.IsLongLiteral(value))
-                        {
-                            value = value.Replace("\n", "\\n");
-                            value = value.Replace("\r", "\\r");
-                            value = value.Replace("\"", "\\\"");
-                        }
-                        context.Output.Write("\"" + value + "\"");
-
-                        if (!lit.Language.Equals(String.Empty))
-                        {
-                            context.Output.Write("@" + lit.Language);
-                        }
-                        else if (lit.DataType != null)
-                        {
-                            context.Output.Write("^^");
-                            context.Output.Write("<" + lit.DataType.ToString().Replace(">", "\\>") + ">");
-                        }
-                    }
-                    break;
                 case NodeType.Uri:
-                    UriNode u = (UriNode)n;
-                    context.Output.Write("<" + u.Uri.ToString().Replace(">", "\\>") + ">");
+                    context.Output.Write(this._formatter.Format(n));
                     break;
                 default:
                     throw new RdfOutputException(WriterErrorMessages.UnknownNodeTypeUnserializable("TSV"));

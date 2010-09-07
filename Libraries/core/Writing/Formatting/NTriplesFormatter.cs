@@ -54,10 +54,7 @@ namespace VDS.RDF.Writing.Formatting
         {
             StringBuilder output = new StringBuilder();
             output.Append('<');
-            foreach (char c in this.FormatUri(u.StringUri).ToCharArray())
-            {
-                output.Append(this.FormatChar(c));
-            }
+            output.Append(this.FormatUri(u.Uri));
             output.Append('>');
             return output.ToString();
         }
@@ -131,6 +128,17 @@ namespace VDS.RDF.Writing.Formatting
         protected override string FormatBlankNode(BlankNode b)
         {
             return "_:" + this._bnodeMapper.GetOutputID(b.InternalID);
+        }
+
+        public override string FormatUri(string u)
+        {
+            String temp = base.FormatUri(u);
+            StringBuilder output = new StringBuilder();
+            foreach (char c in temp.ToCharArray())
+            {
+                output.Append(this.FormatChar(c));
+            }
+            return output.ToString();
         }
     }
 }

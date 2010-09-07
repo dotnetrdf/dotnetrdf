@@ -133,7 +133,7 @@ namespace VDS.RDF.Writing
             //Write Base Uri
             if (context.Graph.BaseUri != null)
             {
-                context.Output.WriteLine("@base <" + context.FormatUri(context.Graph.BaseUri) + ">.");
+                context.Output.WriteLine("@base <" + context.UriFormatter.FormatUri(context.Graph.BaseUri) + ">.");
                 context.Output.WriteLine();
             }
 
@@ -141,7 +141,7 @@ namespace VDS.RDF.Writing
             foreach (String prefix in context.Graph.NamespaceMap.Prefixes)
             {
                 context.Output.Write("@prefix " + prefix + ": <");
-                String nsUri = context.FormatUri(context.Graph.NamespaceMap.GetNamespaceUri(prefix));
+                String nsUri = context.UriFormatter.FormatUri(context.Graph.NamespaceMap.GetNamespaceUri(prefix));
                 context.Output.WriteLine(nsUri + ">.");
             }
             context.Output.WriteLine();
@@ -156,7 +156,7 @@ namespace VDS.RDF.Writing
             {
                 //High Speed Writing Mode
                 //Writes everything as individual Triples
-                this.OnWarning("High Speed Write Mode in use - minimal syntax compressions will be used");
+                this.RaiseWarning("High Speed Write Mode in use - minimal syntax compressions will be used");
                 context.NodeFormatter = new UncompressedTurtleFormatter();
                 foreach (Triple t in context.Graph.Triples)
                 {
@@ -269,7 +269,7 @@ namespace VDS.RDF.Writing
         /// Helper method for raising the <see cref="Warning">Warning</see> event
         /// </summary>
         /// <param name="message">Warning Message</param>
-        private void OnWarning(String message)
+        private void RaiseWarning(String message)
         {
             RdfWriterWarning d = this.Warning;
             if (d != null)

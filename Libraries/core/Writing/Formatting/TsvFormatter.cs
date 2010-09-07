@@ -8,6 +8,6 @@ namespace VDS.RDF.Writing.Formatting
     public class TsvFormatter : DeliminatedLineFormatter
     {
         public TsvFormatter()
-            : base("TSV", '\t', '\\', '<', '>', '"', '"', true) { }
+            : base("TSV", '\t', '\\', '<', '>', '"', '"', null, true) { }
     }
 }

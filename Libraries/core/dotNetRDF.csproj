@@ -466,6 +466,7 @@
     <Compile Include="Web\Configuration\Query\NativeSparqlHandlerConfiguration.cs" />
     <Compile Include="Writing\Contexts\FolderStoreWriterContext.cs" />
     <Compile Include="Writing\Contexts\HtmlWriterContext.cs" />
+    <Compile Include="Writing\Contexts\NTriplesWriterContext.cs" />
     <Compile Include="Writing\Contexts\RdfXmlWriterContext.cs" />
     <Compile Include="Writing\Contexts\SqlStoreWriterContext.cs" />
     <Compile Include="Writing\Contexts\ThreadedStoreWriterContext.cs" />
@@ -473,10 +474,14 @@
     <Compile Include="Writing\Formatting\BaseFormatter.cs" />
     <Compile Include="Writing\Formatting\CsvFormatter.cs" />
     <Compile Include="Writing\Formatting\DeliminatedLineFormatter.cs" />
+    <Compile Include="Writing\Formatting\HtmlFormatter.cs" />
+    <Compile Include="Writing\Formatting\ICharFormatter.cs" />
     <Compile Include="Writing\Formatting\ITripleFormatter.cs" />
+    <Compile Include="Writing\Formatting\IUriFormatter.cs" />
     <Compile Include="Writing\Formatting\Notation3Formatter.cs" />
     <Compile Include="Writing\Formatting\NTriplesFormatter.cs" />
     <Compile Include="Writing\Formatting\QNameFormatter.cs" />
+    <Compile Include="Writing\Formatting\RdfXmlFormatter.cs" />
     <Compile Include="Writing\Formatting\SparqlFormatter.cs" />
     <Compile Include="Writing\Formatting\TsvFormatter.cs" />
     <Compile Include="Writing\Formatting\TurtleFormatter.cs" />

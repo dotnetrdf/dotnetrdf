@@ -1295,6 +1295,9 @@
     <Compile Include="..\core\Writing\Contexts\HtmlWriterContext.cs">
       <Link>Writing\Contexts\HtmlWriterContext.cs</Link>
     </Compile>
+    <Compile Include="..\core\Writing\Contexts\NTriplesWriterContext.cs">
+      <Link>Writing\Contexts\NTriplesWriterContext.cs</Link>
+    </Compile>
     <Compile Include="..\core\Writing\Contexts\RdfXmlWriterContext.cs">
       <Link>Writing\Contexts\RdfXmlWriterContext.cs</Link>
     </Compile>
@@ -1316,8 +1319,17 @@
     <Compile Include="..\core\Writing\Formatting\DeliminatedLineFormatter.cs">
       <Link>Writing\Formatting\DeliminatedLineFormatter.cs</Link>
     </Compile>
+    <Compile Include="..\core\Writing\Formatting\HtmlFormatter.cs">
+      <Link>Writing\Formatting\HtmlFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\Formatting\ICharFormatter.cs">
+      <Link>Writing\Formatting\ICharFormatter.cs</Link>
+    </Compile>
     <Compile Include="..\core\Writing\Formatting\ITripleFormatter.cs">
       <Link>Writing\Formatting\ITripleFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\Formatting\IUriFormatter.cs">
+      <Link>Writing\Formatting\IUriFormatter.cs</Link>
     </Compile>
     <Compile Include="..\core\Writing\Formatting\Notation3Formatter.cs">
       <Link>Writing\Formatting\Notation3Formatter.cs</Link>
@@ -1327,6 +1339,9 @@
     </Compile>
     <Compile Include="..\core\Writing\Formatting\QNameFormatter.cs">
       <Link>Writing\Formatting\QNameFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\Formatting\RdfXmlFormatter.cs">
+      <Link>Writing\Formatting\RdfXmlFormatter.cs</Link>
     </Compile>
     <Compile Include="..\core\Writing\Formatting\SparqlFormatter.cs">
       <Link>Writing\Formatting\SparqlFormatter.cs</Link>

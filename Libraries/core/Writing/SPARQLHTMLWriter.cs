@@ -42,6 +42,7 @@ using System.IO;
 using System.Web.UI;
 #endif
 using VDS.RDF.Query;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Writing
 {
@@ -50,6 +51,8 @@ namespace VDS.RDF.Writing
     /// </summary>
     public class SparqlHtmlWriter : ISparqlResultsWriter, IHtmlWriter
     {
+        private HtmlFormatter _formatter = new HtmlFormatter();
+
         #region IHtmlWriter Members
 
         private String _stylesheet = String.Empty;
@@ -295,7 +298,7 @@ namespace VDS.RDF.Writing
                                             writer.WriteEncodedText(lit.Value);
                                             writer.RenderEndTag();
                                             writer.WriteEncodedText("^^");
-                                            writer.AddAttribute(HtmlTextWriterAttribute.Href, lit.DataType.ToString());
+                                            writer.AddAttribute(HtmlTextWriterAttribute.Href, this._formatter.FormatUri(lit.DataType.ToString()));
                                             writer.AddAttribute(HtmlTextWriterAttribute.Class, this._datatypeClass);
                                             writer.RenderBeginTag(HtmlTextWriterTag.A);
                                             writer.WriteEncodedText(lit.DataType.ToString());
@@ -326,7 +329,7 @@ namespace VDS.RDF.Writing
 
                                     case NodeType.Uri:
                                         writer.AddAttribute(HtmlTextWriterAttribute.Class, this._uriClass);
-                                        writer.AddAttribute(HtmlTextWriterAttribute.Href, this._uriPrefix + value.ToString());
+                                        writer.AddAttribute(HtmlTextWriterAttribute.Href, this._formatter.FormatUri(this._uriPrefix + value.ToString()));
                                         writer.RenderBeginTag(HtmlTextWriterTag.A);
                                         writer.WriteEncodedText(value.ToString());
                                         writer.RenderEndTag();

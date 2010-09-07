@@ -151,7 +151,7 @@ namespace VDS.RDF.Writing
             }
         }
 
-        private String GraphToNQuads(ThreadedStoreWriterContext globalContext, TurtleWriterContext context)
+        private String GraphToNQuads(ThreadedStoreWriterContext globalContext, NTriplesWriterContext context)
         {
             if (context.PrettyPrint)
             {
@@ -172,7 +172,7 @@ namespace VDS.RDF.Writing
         /// <param name="context">Writer Context</param>
         /// <param name="t">Triple to convert</param>
         /// <returns></returns>
-        private String TripleToNQuads(TurtleWriterContext context, Triple t)
+        private String TripleToNQuads(NTriplesWriterContext context, Triple t)
         {
             StringBuilder output = new StringBuilder();
             output.Append(this.NodeToNTriples(context, t.Subject, TripleSegment.Subject));
@@ -183,11 +183,7 @@ namespace VDS.RDF.Writing
             if (t.GraphUri != null && !WriterHelper.IsDefaultGraph(t.GraphUri))
             {
                 output.Append(" <");
-                String uri = context.FormatUri(t.GraphUri);
-                foreach (char c in uri.ToCharArray())
-                {
-                    output.Append(context.FormatChar(c, NodeFormat.NTriples));
-                }
+                output.Append(context.UriFormatter.FormatUri(t.GraphUri));
                 output.Append(">");
             }
             output.Append(" .");
@@ -202,7 +198,7 @@ namespace VDS.RDF.Writing
         /// <param name="context">Writer Context</param>
         /// <param name="segment">Triple Segment being written</param>
         /// <returns></returns>
-        private String NodeToNTriples(TurtleWriterContext context, INode n, TripleSegment segment)
+        private String NodeToNTriples(NTriplesWriterContext context, INode n, TripleSegment segment)
         {
             switch (n.NodeType)
             {
@@ -245,8 +241,7 @@ namespace VDS.RDF.Writing
                     IGraph g = globalContext.Store.Graphs[u];
 
                     //Generate the Graph Output and add to Stream
-                    TurtleWriterContext context = new TurtleWriterContext(g, new System.IO.StringWriter(), globalContext.PrettyPrint, globalContext.HighSpeedModePermitted);
-                    context.NodeFormatter = new NTriplesFormatter();
+                    NTriplesWriterContext context = new NTriplesWriterContext(g, new System.IO.StringWriter(), globalContext.PrettyPrint, globalContext.HighSpeedModePermitted);
                     String graphContent = this.GraphToNQuads(globalContext, context);
                     try
                     {

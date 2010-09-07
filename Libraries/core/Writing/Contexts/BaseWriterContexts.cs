@@ -101,26 +101,13 @@ namespace VDS.RDF.Writing.Contexts
         }
 
         /// <summary>
-        /// Formats a URI as a String for full Output
+        /// Gets/Sets the URI Formatter used
         /// </summary>
-        /// <param name="u">URI</param>
-        /// <returns></returns>
-        String FormatUri(String u);
-
-        /// <summary>
-        /// Formats a URI as a String for full Output
-        /// </summary>
-        /// <param name="u">URI</param>
-        /// <returns></returns>
-        String FormatUri(Uri u);
-
-        /// <summary>
-        /// Formats a Character for the given Format
-        /// </summary>
-        /// <param name="c">Character</param>
-        /// <param name="format">Format</param>
-        /// <returns></returns>
-        String FormatChar(char c, NodeFormat format);
+        IUriFormatter UriFormatter
+        {
+            get;
+            set;
+        }
     }
 
     /// <summary>
@@ -181,6 +168,10 @@ namespace VDS.RDF.Writing.Contexts
         /// Node Formatter
         /// </summary>
         protected INodeFormatter _formatter;
+        /// <summary>
+        /// URI Formatter
+        /// </summary>
+        protected IUriFormatter _uriFormatter;
 
         /// <summary>
         /// Creates a new Base Writer Context with default settings
@@ -316,68 +307,32 @@ namespace VDS.RDF.Writing.Contexts
         }
 
         /// <summary>
-        /// Sets the QName Mapper used
+        /// Gets/Sets the URI Formatter in use
         /// </summary>
-        /// <param name="mapper">QName Mapper</param>
-        protected internal void SetQNameOutputerMapper(QNameOutputMapper mapper) 
+        public IUriFormatter UriFormatter
         {
-            this._qnameMapper = mapper;
-        }
-
-        /// <summary>
-        /// Formats a URI as a String for full Output
-        /// </summary>
-        /// <param name="u">URI</param>
-        /// <returns></returns>
-        public virtual String FormatUri(String u)
-        {
-            String uri = Uri.EscapeUriString(u);
-            uri = uri.Replace(">", "\\>");
-            return uri;
-        }
-
-        /// <summary>
-        /// Formats a URI as a String for full Output
-        /// </summary>
-        /// <param name="u">URI</param>
-        /// <returns></returns>
-        public virtual String FormatUri(Uri u)
-        {
-            return this.FormatUri(u.ToString());
-        }
-
-        /// <summary>
-        /// Formats a Character for the given Format
-        /// </summary>
-        /// <param name="c">Character</param>
-        /// <param name="format">Format</param>
-        /// <returns></returns>
-        public virtual String FormatChar(char c, NodeFormat format)
-        {
-            if (format == NodeFormat.NTriples)
+            get
             {
-                if (c <= 127)
+                if (this._uriFormatter == null)
                 {
-                    //ASCII
-                    return c.ToString();
-                }
-                else
-                {
-                    if (c <= 65535)
+                    //If no URI Formatter set but the Node Formatter used is also a URI Formatter return that instead
+                    if (this._formatter is IUriFormatter)
                     {
-                        //Small Unicode Escape required
-                        return "\\u" + ((int)c).ToString("X4");
+                        return (IUriFormatter)this._formatter;
                     }
                     else
                     {
-                        //Big Unicode Escape required
-                        return "\\U" + ((int)c).ToString("X8");
+                        return null;
                     }
                 }
+                else
+                {
+                    return this._uriFormatter;
+                }
             }
-            else
+            set
             {
-                return c.ToString();
+                this._uriFormatter = value;
             }
         }
     }

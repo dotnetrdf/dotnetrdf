@@ -95,7 +95,7 @@ namespace VDS.RDF.Writing
             try
             {
                 //Always issue a Warning
-                this.OnWarning("RDF/JSON does not contain any Namespace information.  If you read this serialized data back in at a later date you may not be able to reserialize it to Namespace reliant formats (like RDF/XML)");
+                this.RaiseWarning("RDF/JSON does not contain any Namespace information.  If you read this serialized data back in at a later date you may not be able to reserialize it to Namespace reliant formats (like RDF/XML)");
 
                 this.GenerateOutput(g, output);
                 output.Close();
@@ -301,7 +301,7 @@ namespace VDS.RDF.Writing
         /// Internal Helper method for raising the Warning event
         /// </summary>
         /// <param name="message">Warning Message</param>
-        private void OnWarning(String message)
+        private void RaiseWarning(String message)
         {
             if (this.Warning != null)
             {

@@ -40,7 +40,7 @@ using System.Text;
 
 namespace VDS.RDF.Writing.Formatting
 {
-    public abstract class BaseFormatter : INodeFormatter, ITripleFormatter
+    public abstract class BaseFormatter : INodeFormatter, ITripleFormatter, IUriFormatter, ICharFormatter
     {
         private String _format;
 
@@ -93,7 +93,7 @@ namespace VDS.RDF.Writing.Formatting
         /// </summary>
         /// <param name="u">URI</param>
         /// <returns></returns>
-        protected virtual String FormatUri(String u)
+        public virtual String FormatUri(String u)
         {
             String uri = Uri.EscapeUriString(u);
             uri = uri.Replace(">", "\\>");
@@ -105,7 +105,7 @@ namespace VDS.RDF.Writing.Formatting
         /// </summary>
         /// <param name="u">URI</param>
         /// <returns></returns>
-        protected virtual String FormatUri(Uri u)
+        public virtual String FormatUri(Uri u)
         {
             return this.FormatUri(u.ToString());
         }

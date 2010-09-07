@@ -84,7 +84,7 @@ namespace VDS.RDF.Writing.Formatting
             else if (lit.DataType != null)
             {
                 output.Append("^^<");
-                output.Append(lit.DataType.ToString());
+                output.Append(this.FormatUri(lit.DataType));
                 output.Append(">");
             }
             return output.ToString();

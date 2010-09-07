@@ -176,7 +176,7 @@ namespace VDS.RDF.Writing
                                     else if (l.DataType != null)
                                     {
                                         XmlAttribute dt = xmlDoc.CreateAttribute("datatype");
-                                        dt.Value = l.DataType.ToString();
+                                        dt.Value = WriterHelper.EncodeForXml(l.DataType.ToString());
                                         lit.Attributes.Append(dt);
                                     }
 
@@ -186,7 +186,7 @@ namespace VDS.RDF.Writing
                                 case NodeType.Uri:
                                     //<uri> element
                                     XmlElement uri = xmlDoc.CreateElement("uri");
-                                    uri.InnerText = ((UriNode)n).StringUri;
+                                    uri.InnerText = WriterHelper.EncodeForXml(((UriNode)n).StringUri);
                                     binding.AppendChild(uri);
                                     break;
 

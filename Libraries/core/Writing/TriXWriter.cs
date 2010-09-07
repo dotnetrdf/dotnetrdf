@@ -119,13 +119,13 @@ namespace VDS.RDF.Writing
                 if (!g.BaseUri.ToString().StartsWith("trix:local:"))
                 {
                     XmlElement uri = doc.CreateElement("uri");
-                    uri.InnerText = g.BaseUri.ToString();
+                    uri.InnerText = WriterHelper.EncodeForXml(g.BaseUri.ToString());
                     graph.AppendChild(uri);
                 }
                 else
                 {
                     XmlElement id = doc.CreateElement("id");
-                    id.InnerText = g.BaseUri.ToString().Substring(11);
+                    id.InnerText = WriterHelper.EncodeForXml(g.BaseUri.ToString().Substring(11));
                     graph.AppendChild(id);
                 }
             }
@@ -169,7 +169,7 @@ namespace VDS.RDF.Writing
                             node.InnerText = lit.Value;
                         }
                         XmlAttribute type = doc.CreateAttribute("datatype");
-                        type.Value = lit.DataType.ToString();
+                        type.Value = WriterHelper.EncodeForXml(lit.DataType.ToString());
                         node.Attributes.Append(type);
                     }
                     else
@@ -187,7 +187,7 @@ namespace VDS.RDF.Writing
                     break;
                 case NodeType.Uri:
                     node = doc.CreateElement("uri");
-                    node.InnerText = ((UriNode)n).StringUri;
+                    node.InnerText = WriterHelper.EncodeForXml(((UriNode)n).StringUri);
                     break;
                 default:
                     throw new RdfOutputException(WriterErrorMessages.UnknownNodeTypeUnserializable("TriX"));
@@ -205,7 +205,7 @@ namespace VDS.RDF.Writing
         /// Internal Helper method which raises the Warning event only if there is an Event Handler registered
         /// </summary>
         /// <param name="message">Warning Message</param>
-        private void OnWarning(String message)
+        private void RaiseWarning(String message)
         {
             if (this.Warning == null)
             {

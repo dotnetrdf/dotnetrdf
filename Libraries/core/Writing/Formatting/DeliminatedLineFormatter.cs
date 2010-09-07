@@ -8,12 +8,12 @@ namespace VDS.RDF.Writing.Formatting
 {
     public abstract class DeliminatedLineFormatter : BaseFormatter
     {
-        private Nullable<char> _uriStartChar, _uriEndChar, _literalWrapperChar, _longLiteralWrapperChar;
+        private Nullable<char> _uriStartChar, _uriEndChar, _literalWrapperChar, _longLiteralWrapperChar, _lineEndChar;
         private char _deliminatorChar = ' ';
         private char _escapeChar = '\\';
         private bool _fullLiteralOutput = true;
 
-        public DeliminatedLineFormatter(String formatName, char deliminator, char escape, Nullable<char> uriStartChar, Nullable<char> uriEndChar, Nullable<char> literalWrapperChar, Nullable<char> longLiteralWrapperChar, bool fullLiteralOutput)
+        public DeliminatedLineFormatter(String formatName, char deliminator, char escape, Nullable<char> uriStartChar, Nullable<char> uriEndChar, Nullable<char> literalWrapperChar, Nullable<char> longLiteralWrapperChar, Nullable<char> lineEndChar, bool fullLiteralOutput)
             : base(formatName)
         {
             this._deliminatorChar = deliminator;
@@ -22,7 +22,23 @@ namespace VDS.RDF.Writing.Formatting
             this._uriEndChar = uriEndChar;
             this._literalWrapperChar = literalWrapperChar;
             this._longLiteralWrapperChar = longLiteralWrapperChar;
+            this._lineEndChar = lineEndChar;
             this._fullLiteralOutput = fullLiteralOutput;
+        }
+
+        public override string Format(Triple t)
+        {
+            StringBuilder output = new StringBuilder();
+            output.Append(this.Format(t.Subject));
+            output.Append(this._deliminatorChar);
+            output.Append(this.Format(t.Predicate));
+            output.Append(this._deliminatorChar);
+            output.Append(this.Format(t.Object));
+            if (this._lineEndChar != null)
+            {
+                output.Append(this._lineEndChar);
+            }
+            return output.ToString();
         }
 
         protected override string FormatUriNode(UriNode u)
@@ -31,12 +47,12 @@ namespace VDS.RDF.Writing.Formatting
             if (this._uriStartChar != null) output.Append(this._uriStartChar);
             if (this._uriEndChar != null)
             {
-                output.Append(u.Uri.ToString().Replace(new String(new char[] { (char)this._uriEndChar }), new String(new char[] { this._escapeChar, (char)this._uriEndChar })));
+                output.Append(this.FormatUri(u.Uri));
                 output.Append(this._uriEndChar);
             }
             else
             {
-                output.Append(u.Uri.ToString());
+                output.Append(this.FormatUri(u.Uri));
             }
             return output.ToString();
         }
@@ -111,17 +127,29 @@ namespace VDS.RDF.Writing.Formatting
                         if (this._uriStartChar != null) output.Append(this._uriStartChar);
                         if (this._uriEndChar != null)
                         {
-                            output.Append(lit.DataType.ToString().Replace(new String(new char[] { (char)this._uriEndChar }), new String(new char[] { this._escapeChar, (char)this._uriEndChar })));
+                            output.Append(this.FormatUri(lit.DataType));
                             output.Append(this._uriEndChar);
                         }
                         else
                         {
-                            output.Append(lit.DataType.ToString());
+                            output.Append(this.FormatUri(lit.DataType));
                         }
                     }
                 }
             }
             return output.ToString();
+        }
+
+        public override string FormatUri(String u)
+        {
+            if (this._uriEndChar != null)
+            {
+                return u.Replace(new String(new char[] { (char)this._uriEndChar }), new String(new char[] { this._escapeChar, (char)this._uriEndChar }));
+            }
+            else
+            {
+                return u;
+            }
         }
     }
 }

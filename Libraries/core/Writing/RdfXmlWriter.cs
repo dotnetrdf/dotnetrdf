@@ -157,7 +157,7 @@ namespace VDS.RDF.Writing
                 else
                 {
                     context.Writer.WriteStartAttribute("xmlns");
-                    context.Writer.WriteRaw(context.NamespaceMap.GetNamespaceUri(prefix).ToString());
+                    context.Writer.WriteRaw(WriterHelper.EncodeForXml(context.NamespaceMap.GetNamespaceUri(prefix).ToString()));
                     context.Writer.WriteEndAttribute();
                 }
             }
@@ -673,7 +673,7 @@ namespace VDS.RDF.Writing
             tempPrefix = prefix;
             tempUri = nsUri;
 
-            this.OnWarning("Created a Temporary Namespace '" + prefix + "' with URI '" + nsUri + "'");
+            this.RaiseWarning("Created a Temporary Namespace '" + prefix + "' with URI '" + nsUri + "'");
         }
 
         private void GenerateElement(RdfXmlWriterContext context, String qname)
@@ -775,7 +775,7 @@ namespace VDS.RDF.Writing
         /// Internal Helper method for raising the Warning event
         /// </summary>
         /// <param name="message">Warning Message</param>
-        private void OnWarning(String message)
+        private void RaiseWarning(String message)
         {
             if (this.Warning != null)
             {

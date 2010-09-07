@@ -40,6 +40,7 @@ using System.Text;
 using System.IO;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Writing
 {
@@ -48,6 +49,8 @@ namespace VDS.RDF.Writing
     /// </summary>
     public class SparqlTsvWriter : ISparqlResultsWriter
     {
+        private TsvFormatter _formatter = new TsvFormatter();
+
         /// <summary>
         /// Saves a SPARQL Result Set to TSV format
         /// </summary>
@@ -89,42 +92,12 @@ namespace VDS.RDF.Writing
                                 {
                                     switch (temp.NodeType)
                                     {
-                                        case NodeType.Blank:
-                                            output.Write(temp.ToString());
-                                            break;
                                         case NodeType.GraphLiteral:
                                             throw new RdfOutputException(WriterErrorMessages.GraphLiteralsUnserializable("SPARQL TSV"));
+                                        case NodeType.Blank:
                                         case NodeType.Literal:
-                                            LiteralNode lit = (LiteralNode)temp;
-                                            if (TurtleSpecsHelper.IsValidPlainLiteral(lit.Value, lit.DataType))
-                                            {
-                                                output.Write(lit.Value);
-                                            }
-                                            else
-                                            {
-                                                String value = lit.Value.Replace("\t", "\\t");
-                                                if (TurtleSpecsHelper.IsLongLiteral(value))
-                                                {
-                                                    value = value.Replace("\n", "\\n");
-                                                    value = value.Replace("\r", "\\r");
-                                                    value = value.Replace("\"", "\\\"");
-                                                }
-                                                output.Write("\"" + value + "\"");
-
-                                                if (!lit.Language.Equals(String.Empty))
-                                                {
-                                                    output.Write("@" + lit.Language);
-                                                }
-                                                else if (lit.DataType != null)
-                                                {
-                                                    output.Write("^^");
-                                                    output.Write("<" + lit.DataType.ToString().Replace(">", "\\>") + ">");
-                                                }
-                                            }
-                                            break;
                                         case NodeType.Uri:
-                                            UriNode u = (UriNode)temp;
-                                            output.Write("<" + u.Uri.ToString().Replace(">", "\\>") + ">");
+                                            output.Write(this._formatter.Format(temp));
                                             break;
                                         default:
                                             throw new RdfOutputException(WriterErrorMessages.UnknownNodeTypeUnserializable("SPARQL TSV"));

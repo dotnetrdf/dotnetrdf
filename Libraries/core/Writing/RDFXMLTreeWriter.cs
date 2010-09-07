@@ -57,7 +57,7 @@ namespace VDS.RDF.Writing
     /// Since this Writer is non-streaming it may be slower particularly for large Graphs since it has to build the entire XML DOM Tree for the output before it can be saved to disk.  While this may be a slight disadvantage this writer is capable of applying more of the RDF/XML syntax compressions than the standard streaming <see cref="RdfXmlWriter">RdfXmlWriter</see> because it can alter the parts of the DOM Tree it has already generated.
     /// </para>
     /// </remarks>
-    [Obsolete("This class is deprecated in favour of the FastRdfXmlWriter",false)]
+    [Obsolete("This class is deprecated in favour of the FastRdfXmlWriter or the new streaming RdfXmlWriter", false)]
     public class RdfXmlTreeWriter : IRdfWriter, IPrettyPrintingWriter, ICompressingWriter
     {
         private NodeCollection _subjectsDone;
@@ -610,7 +610,7 @@ namespace VDS.RDF.Writing
             ns.Value = nsUri;
             doc.DocumentElement.Attributes.Append(ns);
 
-            this.OnWarning("Created a Temporary Namespace '" + prefix + "' with URI '" + nsUri + "'");
+            this.RaiseWarning("Created a Temporary Namespace '" + prefix + "' with URI '" + nsUri + "'");
         }
 
         private XmlElement GenerateElement(String qname, XmlDocument doc)
@@ -680,7 +680,7 @@ namespace VDS.RDF.Writing
         /// Internal Helper method for handling raising of the <see cref="RdfXmlTreeWriter.Warning">Warning</see> event
         /// </summary>
         /// <param name="message">Warning Message</param>
-        private void OnWarning(String message)
+        private void RaiseWarning(String message)
         {
             if (this.Warning != null)
             {

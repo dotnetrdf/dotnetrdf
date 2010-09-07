@@ -8,6 +8,6 @@ namespace VDS.RDF.Writing.Formatting
     public class CsvFormatter : DeliminatedLineFormatter
     {
         public CsvFormatter()
-            : base("CSV", ',', '\\', null, null, null, '"', false) { }
+            : base("CSV", ',', '\\', null, null, null, '"', null, false) { }
     }
 }

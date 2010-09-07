@@ -161,6 +161,24 @@ namespace VDS.RDF.Writing.Contexts
             }
         }
 
+        /// <summary>
+        /// Gets/Sets the URI Formatter
+        /// </summary>
+        /// <remarks>
+        /// URI Formatters are not used for RDF/XML output
+        /// </remarks>
+        public IUriFormatter UriFormatter
+        {
+            get
+            {
+                return null;
+            }
+            set
+            {
+                throw new NotSupportedException("URI Formatters are not used for RDF/XML output");
+            }
+        }
+
         public NestedNamespaceMapper NamespaceMap
         {
             get
@@ -225,26 +243,6 @@ namespace VDS.RDF.Writing.Contexts
             {
                 return this._triplesDone;
             }
-        }
-
-        public string FormatNode(INode n, NodeFormat format)
-        {
-            throw new NotImplementedException();
-        }
-
-        public string FormatUri(string u)
-        {
-            throw new NotImplementedException();
-        }
-
-        public string FormatUri(Uri u)
-        {
-            throw new NotImplementedException();
-        }
-
-        public string FormatChar(char c, NodeFormat format)
-        {
-            throw new NotImplementedException();
         }
     }
 }

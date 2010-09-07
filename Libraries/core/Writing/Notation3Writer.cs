@@ -173,7 +173,7 @@ namespace VDS.RDF.Writing
             //Base Directive
             if (context.Graph.BaseUri != null)
             {
-                context.Output.WriteLine("@base <" + context.FormatUri(context.Graph.BaseUri.ToString()) + ">.");
+                context.Output.WriteLine("@base <" + context.UriFormatter.FormatUri(context.Graph.BaseUri) + ">.");
                 context.Output.WriteLine();
             }
             //Prefix Directives
@@ -181,11 +181,11 @@ namespace VDS.RDF.Writing
             {
                 if (!prefix.Equals(String.Empty))
                 {
-                    context.Output.WriteLine("@prefix " + prefix + ": <" + context.FormatUri(context.Graph.NamespaceMap.GetNamespaceUri(prefix).ToString()) + ">.");
+                    context.Output.WriteLine("@prefix " + prefix + ": <" + context.UriFormatter.FormatUri(context.Graph.NamespaceMap.GetNamespaceUri(prefix)) + ">.");
                 }
                 else
                 {
-                    context.Output.WriteLine("@prefix : <" + context.FormatUri(context.Graph.NamespaceMap.GetNamespaceUri(String.Empty).ToString()) + ">.");
+                    context.Output.WriteLine("@prefix : <" + context.UriFormatter.FormatUri(context.Graph.NamespaceMap.GetNamespaceUri(String.Empty)) + ">.");
                 }
             }
             context.Output.WriteLine();
@@ -198,7 +198,7 @@ namespace VDS.RDF.Writing
 
             if (context.CompressionLevel == WriterCompressionLevel.None || (hiSpeed && context.HighSpeedModePermitted))
             {
-                this.OnWarning("High Speed Write Mode in use - minimal syntax compression will be used");
+                this.RaiseWarning("High Speed Write Mode in use - minimal syntax compression will be used");
                 context.CompressionLevel = WriterCompressionLevel.Minimal;
                 context.NodeFormatter = new UncompressedNotation3Formatter();
 
@@ -417,7 +417,7 @@ namespace VDS.RDF.Writing
         /// Helper method for generating Parser Warning Events
         /// </summary>
         /// <param name="message">Warning Message</param>
-        private void OnWarning(String message)
+        private void RaiseWarning(String message)
         {
             RdfWriterWarning d = this.Warning;
             if (d != null)

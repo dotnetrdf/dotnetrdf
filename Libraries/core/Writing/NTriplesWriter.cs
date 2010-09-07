@@ -91,8 +91,7 @@ namespace VDS.RDF.Writing
         {
             try
             {
-                TurtleWriterContext context = new TurtleWriterContext(g, output);
-                context.NodeFormatter = new NTriplesFormatter();
+                NTriplesWriterContext context = new NTriplesWriterContext(g, output);
                 List<Triple> ts = g.Triples.ToList();
                 if (this._sort) ts.Sort();
 
@@ -124,7 +123,7 @@ namespace VDS.RDF.Writing
         /// <param name="context">Writer Context</param>
         /// <param name="t">Triple to convert</param>
         /// <returns></returns>
-        private String TripleToNTriples(TurtleWriterContext context, Triple t)
+        private String TripleToNTriples(NTriplesWriterContext context, Triple t)
         {
             StringBuilder output = new StringBuilder();
             output.Append(this.NodeToNTriples(context, t.Subject, TripleSegment.Subject));
@@ -144,7 +143,7 @@ namespace VDS.RDF.Writing
         /// <param name="n">Node to convert</param>
         /// <param name="segment">Segment of the Triple being written</param>
         /// <returns></returns>
-        private String NodeToNTriples(TurtleWriterContext context, INode n, TripleSegment segment)
+        private String NodeToNTriples(NTriplesWriterContext context, INode n, TripleSegment segment)
         {
             switch (n.NodeType)
             {
@@ -179,7 +178,7 @@ namespace VDS.RDF.Writing
         /// Internal Helper method which raises the Warning event only if there is an Event Handler registered
         /// </summary>
         /// <param name="message">Warning Message</param>
-        private void OnWarning(String message)
+        private void RaiseWarning(String message)
         {
             RdfWriterWarning d = this.Warning;
             if (d != null)

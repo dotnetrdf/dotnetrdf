@@ -62,6 +62,9 @@ namespace VDS.RDF.Writing.Formatting
         public TurtleFormatter() 
             : base("Turtle", new QNameOutputMapper()) { }
 
+        public TurtleFormatter(QNameOutputMapper qnameMapper)
+            : base("Turtle", qnameMapper) { }
+
         public TurtleFormatter(IGraph g)
             : base("Turtle", new QNameOutputMapper(g.NamespaceMap)) { }
 
@@ -76,6 +79,9 @@ namespace VDS.RDF.Writing.Formatting
 
         protected TurtleFormatter(String formatName, INamespaceMapper nsmap)
             : base(formatName, new QNameOutputMapper(nsmap)) { }
+
+        protected TurtleFormatter(String formatName, QNameOutputMapper qnameMapper)
+            : base(formatName, qnameMapper) { }
 
         protected override string FormatLiteralNode(LiteralNode l)
         {

@@ -655,7 +655,7 @@ namespace VDS.RDF.Writing
             ns.Value = nsUri;
             doc.DocumentElement.Attributes.Append(ns);
 
-            this.OnWarning("Created a Temporary Namespace '" + prefix + "' with URI '" + nsUri + "'");
+            this.RaiseWarning("Created a Temporary Namespace '" + prefix + "' with URI '" + nsUri + "'");
         }
 
         private XmlElement GenerateElement(IGraph g, String qname, XmlDocument doc)
@@ -748,7 +748,7 @@ namespace VDS.RDF.Writing
         /// Internal Helper method for raising the Warning event
         /// </summary>
         /// <param name="message">Warning Message</param>
-        private void OnWarning(String message)
+        private void RaiseWarning(String message)
         {
             if (this.Warning != null)
             {

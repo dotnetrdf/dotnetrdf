@@ -33,8 +33,6 @@ terms.
 
 */
 
-#define SILVERLIGHT
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,6 +41,7 @@ using System.Security.Cryptography;
 using System.Xml;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF
 {
@@ -53,7 +52,6 @@ namespace VDS.RDF
     {
         private static SHA256Managed _sha256;
         
-
         /// <summary>
         /// Takes a single item and generates an IEnumerable containing only it
         /// </summary>
@@ -320,6 +318,17 @@ namespace VDS.RDF
         internal static String ToSafeString(this Object obj)
         {
             return (obj == null) ? String.Empty : obj.ToString();
+        }
+
+        /// <summary>
+        /// Gets the String representation of the URI formatted using the given Formatter
+        /// </summary>
+        /// <param name="u">URI</param>
+        /// <param name="formatter">URI Formatter</param>
+        /// <returns></returns>
+        public static String ToString(this Uri u, IUriFormatter formatter)
+        {
+            return formatter.FormatUri(u);
         }
     }
 

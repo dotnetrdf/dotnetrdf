@@ -40,6 +40,7 @@ using System.Text;
 using System.IO;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Writing
 {
@@ -48,6 +49,8 @@ namespace VDS.RDF.Writing
     /// </summary>
     public class SparqlCsvWriter : ISparqlResultsWriter
     {
+        private CsvFormatter _formatter = new CsvFormatter();
+
         /// <summary>
         /// Saves a SPARQL Result Set to CSV format
         /// </summary>
@@ -91,29 +94,11 @@ namespace VDS.RDF.Writing
                                     {
                                         case NodeType.Blank:
                                         case NodeType.Uri:
-                                            output.Write(temp.ToString());
+                                        case NodeType.Literal:
+                                            output.Write(this._formatter.Format(temp));
                                             break;
                                         case NodeType.GraphLiteral:
                                             throw new RdfOutputException(WriterErrorMessages.GraphLiteralsUnserializable("SPARQL CSV"));
-                                        case NodeType.Literal:
-                                            LiteralNode lit = (LiteralNode)temp;
-                                            if (TurtleSpecsHelper.IsValidPlainLiteral(lit.Value, lit.DataType))
-                                            {
-                                                output.Write(lit.Value);
-                                            }
-                                            else
-                                            {
-                                                String value = lit.Value;
-                                                if (TurtleSpecsHelper.IsLongLiteral(value))
-                                                {
-                                                    value = value.Replace("\t", "\\t");
-                                                    value = value.Replace("\n", "\\n");
-                                                    value = value.Replace("\r", "\\r");
-                                                    value = value.Replace("\"", "\\\"");
-                                                }
-                                                output.Write("\"" + value + "\"");
-                                            }
-                                            break;
                                         default:
                                             throw new RdfOutputException(WriterErrorMessages.UnknownNodeTypeUnserializable("SPARQL CSV"));
                                     }

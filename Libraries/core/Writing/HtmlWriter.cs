@@ -417,7 +417,7 @@ namespace VDS.RDF.Writing
                     if (t.Subject.NodeType == NodeType.Uri)
                     {
                         rdfASerializable = true;
-                        context.HtmlWriter.AddAttribute("about", context.FormatUri(t.Subject.ToString()));
+                        context.HtmlWriter.AddAttribute("about", context.UriFormatter.FormatUri(t.Subject.ToString()));
                     }
                     else if (t.Subject.NodeType == NodeType.Blank)
                     {
@@ -426,7 +426,7 @@ namespace VDS.RDF.Writing
                     }
                     else
                     {
-                        this.OnWarning("Cannot serialize a Triple since the Subject is not a URI/Blank Node: " + t.Subject.ToString());
+                        this.RaiseWarning("Cannot serialize a Triple since the Subject is not a URI/Blank Node: " + t.Subject.ToString());
                     }
 
                     //Then if we can serialize this Triple we serialize the Predicate
@@ -439,11 +439,11 @@ namespace VDS.RDF.Writing
                         {
                             //Extract the Namespace and make sure it's registered on this Attribute
                             String ns = curie.Substring(0, curie.IndexOf(':'));
-                            context.HtmlWriter.AddAttribute("xmlns:" + ns, context.FormatUri(context.QNameMapper.GetNamespaceUri(ns)));
+                            context.HtmlWriter.AddAttribute("xmlns:" + ns, context.UriFormatter.FormatUri(context.QNameMapper.GetNamespaceUri(ns)));
                         }
                         else
                         {
-                            this.OnWarning("Cannot serialize a Triple since the Predicate cannot be reduced to a QName: " + t.Predicate.ToString());
+                            this.RaiseWarning("Cannot serialize a Triple since the Predicate cannot be reduced to a QName: " + t.Predicate.ToString());
                             rdfASerializable = false;
                         }
 
@@ -462,7 +462,7 @@ namespace VDS.RDF.Writing
                                     context.HtmlWriter.AddAttribute("property", curie);
                                     break;
                                 default:
-                                    this.OnWarning("Cannot serialize a Triple since the Object is not a URI/Blank/Literal Node: " + t.Object.ToString());
+                                    this.RaiseWarning("Cannot serialize a Triple since the Object is not a URI/Blank/Literal Node: " + t.Object.ToString());
                                     rdfASerializable = false;
                                     break;
                             }
@@ -471,7 +471,7 @@ namespace VDS.RDF.Writing
                 }
                 else
                 {
-                    this.OnWarning("Cannot serialize a Triple since the Predicate is not a URI Node: " + t.Predicate.ToString());
+                    this.RaiseWarning("Cannot serialize a Triple since the Predicate is not a URI Node: " + t.Predicate.ToString());
                 }
             }
 
@@ -503,7 +503,7 @@ namespace VDS.RDF.Writing
                             {
                                 //Extract the Namespace and make sure it's registered on this Attribute
                                 String ns = dtcurie.Substring(0, dtcurie.IndexOf(':'));
-                                context.HtmlWriter.AddAttribute("xmlns:" + ns, context.FormatUri(context.QNameMapper.GetNamespaceUri(ns)));
+                                context.HtmlWriter.AddAttribute("xmlns:" + ns, context.UriFormatter.FormatUri(context.QNameMapper.GetNamespaceUri(ns)));
                                 context.HtmlWriter.AddAttribute("datatype", dtcurie);
                             }
                         }
@@ -591,7 +591,11 @@ namespace VDS.RDF.Writing
             }
         }
 
-        private void OnWarning(String message)
+        /// <summary>
+        /// Helper method for raising the <see cref="Warning">Warning</see> event
+        /// </summary>
+        /// <param name="message">Warning Message</param>
+        private void RaiseWarning(String message)
         {
             RdfWriterWarning d = this.Warning;
             if (d != null)

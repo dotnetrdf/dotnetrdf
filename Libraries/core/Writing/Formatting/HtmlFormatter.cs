@@ -37,45 +37,24 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.IO;
 #if !NO_WEB
-using System.Web.UI;
+using System.Web;
 #endif
-using VDS.RDF.Writing.Formatting;
 
-namespace VDS.RDF.Writing.Contexts
+namespace VDS.RDF.Writing.Formatting
 {
-    /// <summary>
-    /// Writer Context for XHTML+RDFa Writers
-    /// </summary>
-    public class HtmlWriterContext : BaseWriterContext
+    public class HtmlFormatter : IUriFormatter
     {
-        private HtmlTextWriter _writer;
 
-        /// <summary>
-        /// Creates a new HTML Writer Context
-        /// </summary>
-        /// <param name="g">Graph</param>
-        /// <param name="writer">Text Writer</param>
-        public HtmlWriterContext(IGraph g, TextWriter writer)
-            : base(g, writer) 
+        public string FormatUri(Uri u)
         {
-            this._writer = new HtmlTextWriter(writer);
-            //Have to remove the Empty Prefix since this is reserved in (X)HTML+RDFa for the (X)HTML namespace
-            this._qnameMapper.RemoveNamespace(String.Empty);
-
-            this._uriFormatter = new HtmlFormatter();
+            return this.FormatUri(u.ToString());
         }
 
-        /// <summary>
-        /// HTML Writer to use
-        /// </summary>
-        public HtmlTextWriter HtmlWriter
+        public string FormatUri(string u)
         {
-            get
-            {
-                return this._writer;
-            }
+            return HttpUtility.HtmlEncode(u);
         }
+
     }
 }
