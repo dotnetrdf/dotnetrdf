@@ -385,16 +385,10 @@ namespace rdfEditor.AutoComplete
                 }
                 else if (this.CurrentText.Length == 3)
                 {
-                    char last = this.CurrentText[this.CurrentText.Length - 1];
                     if (this.CurrentText.ToString().Equals("\"\"\""))
                     {
                         //Switch to long literal mode
                         this.State = AutoCompleteState.LongLiteral;
-                    }
-                    else if (Char.IsWhiteSpace(last) || Char.IsPunctuation(last))
-                    {
-                        //White Space/Punctuation means we've left the empty literal
-                        this.FinishAutoComplete(true, true);
                     }
                     else if (!this.CurrentText.Substring(this.CurrentText.Length - 2, 2).Equals("\\\""))
                     {
@@ -410,6 +404,15 @@ namespace rdfEditor.AutoComplete
                         //Not escaped so terminates the literal
                         this.FinishAutoComplete(true, false);
                     }
+                }
+            }
+            else if (this.CurrentText.Length == 3)
+            {
+                char last = this.CurrentText[this.CurrentText.Length - 1];
+                if (Char.IsWhiteSpace(last) || Char.IsPunctuation(last))
+                {
+                    //White Space/Punctuation means we've left the empty literal
+                    this.FinishAutoComplete(true, true);
                 }
             }
         }

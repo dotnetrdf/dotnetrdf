@@ -54,6 +54,7 @@ namespace rdfEditor.AutoComplete
 
         private static List<AutoCompleteDefinition> _builtinCompleters = new List<AutoCompleteDefinition>()
         {
+            new AutoCompleteDefinition("NTriples", new NTriplesAutoCompleter()),
             new AutoCompleteDefinition("Turtle", new TurtleAutoCompleter()),
             new AutoCompleteDefinition("Notation3", new Notation3AutoCompleter()),
 

@@ -78,6 +78,7 @@
     <Compile Include="AutoComplete\AutoCompleteManager.cs" />
     <Compile Include="AutoComplete\AutoCompleteState.cs" />
     <Compile Include="AutoComplete\BaseAutoCompleter.cs" />
+    <Compile Include="AutoComplete\NTriplesAutoCompleter.cs" />
     <Compile Include="AutoComplete\Data\BaseCompletionData.cs" />
     <Compile Include="AutoComplete\Data\BlankNodeCompletionData.cs" />
     <Compile Include="AutoComplete\Data\NewBlankNode.cs" />

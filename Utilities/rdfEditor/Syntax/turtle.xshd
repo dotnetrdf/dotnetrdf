@@ -46,21 +46,14 @@
   <RuleSet name="Literals">
     <!-- Literals -->
 
-    <Span color="String" multiline="true">
+    <Span color="String" multiline="true" ruleSet="StringEscapes">
       <Begin>"""</Begin>
       <End>"""</End>
-      <RuleSet>
-        <Span begin="\\" end="." color="EscapedChar"/>
-      </RuleSet>
-
     </Span>
 
-    <Span color="String">
+    <Span color="String" ruleSet="StringEscapes">
       <Begin>"</Begin>
-      <End>"</End>
-      <RuleSet>
-        <Span begin="\\" end="." color="EscapedChar"/>
-      </RuleSet>
+      <End>"(?&lt;=\\)</End>
     </Span>
 
   </RuleSet>
@@ -68,12 +61,9 @@
   <RuleSet name="Resources">
     <!-- URIs and QNames -->
 
-    <Span color="URI">
+    <Span color="URI" ruleSet="UriEscapes">
       <Begin>&lt;</Begin>
-      <End>&gt;</End>
-      <RuleSet>
-        <Span begin="\\" end="&gt;" color="EscapedChar" />
-      </RuleSet>
+      <End>&gt;(?&lt;=\\)</End>
     </Span>
 
     <Rule color="QName">
@@ -101,7 +91,6 @@
     </Rule>
   </RuleSet>
   
-
   <RuleSet name="PlainLiterals">
     <!-- Plain Literals -->
 
@@ -120,6 +109,18 @@
 
     <Rule color="Numbers">
       [\-+]?\d+
+    </Rule>
+  </RuleSet>
+
+  <RuleSet name="StringEscapes">
+    <Rule color="EscapedChar">
+      \\([trn"\\]|u[a-fA-F0-9]{4}|U[a-fA-F0-9]{8})
+    </Rule>
+  </RuleSet>
+
+  <RuleSet name="UriEscapes">
+    <Rule color="EscapedChar">
+      \\([trn&gt;\\]|u[a-fA-F0-9]{4}|U[a-fA-F0-9]{8})
     </Rule>
   </RuleSet>
 </SyntaxDefinition>

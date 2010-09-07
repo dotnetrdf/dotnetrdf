@@ -13,23 +13,16 @@
 	
 		<!-- Literals -->
 		
-		<Span color="String">
+		<Span color="String" ruleSet="Turtle/StringEscapes">
 			<Begin>"</Begin>
-			<End>"</End>
-      <RuleSet>
-        <!-- span for escape sequences -->
-        <Span begin="\\" end="." color="EscapedChar" />
-      </RuleSet>
+			<End>"(?&lt;=\\)</End>
 		</Span>
 		
 		<!-- URIs -->
 		
-		<Span color="URI">
+		<Span color="URI" ruleSet="Turtle/UriEscapes">
 			<Begin>&lt;</Begin>
-			<End>&gt;</End>
-      <RuleSet>
-        <Span begin="\\" end="&gt;" color="EscapedChar" />
-      </RuleSet>
+			<End>&gt;(?&lt;=\\)</End>
 		</Span>
 		
 		<!-- Blank Nodes -->

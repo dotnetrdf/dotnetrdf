@@ -109,23 +109,22 @@
   <RuleSet name="Literals">
     <!-- Literals -->
 
-    <Span color="String" multiline="true">
+    <Span color="String" multiline="true" ruleSet="StringEscapes">
       <Begin>'''</Begin>
       <End>'''</End>
-      <RuleSet>
-        <Span begin="\\" end="." color="EscapedChar"/>
-      </RuleSet>
-
     </Span>
 
-    <Span color="String">
+    <Span color="String" ruleSet="StringEscapes">
       <Begin>'</Begin>
-      <End>'</End>
-      <RuleSet>
-        <Span begin="\\" end="." color="EscapedChar"/>
-      </RuleSet>
+      <End>'(?&lt;=\\)</End>
     </Span>
 
+  </RuleSet>
+
+  <RuleSet name="StringEscapes">
+    <Rule color="EscapedChar">
+      \\([trn'"\\]|u[a-fA-F0-9]{4}|U[a-fA-F0-9]{8})
+    </Rule>
   </RuleSet>
   
 </SyntaxDefinition>
