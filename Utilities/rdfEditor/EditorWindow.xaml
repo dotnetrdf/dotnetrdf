@@ -111,6 +111,14 @@
                 <MenuItem Header="Word Wrap" Name="mnuWordWrap" IsCheckable="True" IsChecked="False" Click="mnuWordWrap_Click" InputGestureText="Ctrl+E,W" />
                 <Separator />
                 <MenuItem Header="Make URIs Clickable" Name="mnuClickableUris" IsCheckable="True" IsChecked="False" Click="mnuClickableUris_Click" InputGestureText="Ctrl+E,U" />
+                <Separator />
+                <MenuItem Header="Show Special Characters">
+                    <MenuItem Header="Show All" Name="mnuShowSpecialAll" Click="mnuShowSpecialAll_Click" />
+                    <Separator />
+                    <MenuItem Header="Show End of Line" Name="mnuShowSpecialEOL" IsCheckable="True" IsChecked="False" Click="mnuShowSpecialEOL_Click" />
+                    <MenuItem Header="Show Spaces" Name="mnuShowSpecialSpaces" IsCheckable="True" IsChecked="False" Click="mnuShowSpecialSpaces_Click" />
+                    <MenuItem Header="Show Tabs" Name="mnuShowSpecialTabs" IsCheckable="True" IsChecked="False" Click="mnuShowSpecialTabs_Click" />
+                </MenuItem>
             </MenuItem>
             <MenuItem Header="_Options">
                     <MenuItem Header="Enable Syntax Highlighting" Name="mnuEnableHighlighting" IsCheckable="True" IsChecked="True" Click="mnuEnableHighlighting_Click" InputGestureText="Ctrl+E,H" />

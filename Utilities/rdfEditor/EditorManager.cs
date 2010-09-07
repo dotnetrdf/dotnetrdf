@@ -100,6 +100,14 @@ namespace rdfEditor
                 if (item.Tag != null)
                 {
                     item.Click += new RoutedEventHandler(HighlighterClick);
+                    String syntax = (String)item.Tag;
+                    if (!syntax.Equals("None"))
+                    {
+                        if (syntax.Equals(Properties.Settings.Default.DefaultHighlighter))
+                        {
+                            item.Header += " (Default)";
+                        }
+                    }
                 }
             }
         }

@@ -50,8 +50,12 @@ namespace rdfEditor
             TextEditorOptions options = new TextEditorOptions();
             options.EnableEmailHyperlinks = Properties.Settings.Default.EnableClickableUris;
             options.EnableHyperlinks = Properties.Settings.Default.EnableClickableUris;
+            options.ShowEndOfLine = Properties.Settings.Default.ShowEndOfLine;
+            options.ShowSpaces = Properties.Settings.Default.ShowSpaces;
+            options.ShowTabs = Properties.Settings.Default.ShowTabs;
             textEditor.Options = options;
             textEditor.ShowLineNumbers = true;
+            
 
             //Setup Options based on the User Config file
             if (!Properties.Settings.Default.EnableAutoComplete) 
@@ -82,6 +86,18 @@ namespace rdfEditor
             if (Properties.Settings.Default.EnableClickableUris)
             {
                 this.mnuClickableUris.IsChecked = true;
+            }
+            if (Properties.Settings.Default.ShowEndOfLine)
+            {
+                this.mnuShowSpecialEOL.IsChecked = true;
+            }
+            if (Properties.Settings.Default.ShowSpaces)
+            {
+                this.mnuShowSpecialSpaces.IsChecked = true;
+            }
+            if (Properties.Settings.Default.ShowTabs)
+            {
+                this.mnuShowSpecialTabs.IsChecked = true;
             }
             this._manager.SetHighlighter(Properties.Settings.Default.DefaultHighlighter);
 
@@ -449,6 +465,37 @@ namespace rdfEditor
             Properties.Settings.Default.Save();
         }
 
+        private void mnuShowSpecialAll_Click(object sender, RoutedEventArgs e)
+        {
+            this.mnuShowSpecialEOL.IsChecked = true;
+            this.mnuShowSpecialSpaces.IsChecked = true;
+            this.mnuShowSpecialTabs.IsChecked = true;
+            mnuShowSpecialEOL_Click(sender, e);
+            mnuShowSpecialSpaces_Click(sender, e);
+            mnuShowSpecialTabs_Click(sender, e);
+        }
+
+        private void mnuShowSpecialEOL_Click(object sender, RoutedEventArgs e)
+        {
+            textEditor.Options.ShowEndOfLine = this.mnuShowSpecialEOL.IsChecked;
+            Properties.Settings.Default.ShowEndOfLine = textEditor.Options.ShowEndOfLine;
+            Properties.Settings.Default.Save();
+        }
+
+        private void mnuShowSpecialSpaces_Click(object sender, RoutedEventArgs e)
+        {
+            textEditor.Options.ShowSpaces = this.mnuShowSpecialSpaces.IsChecked;
+            Properties.Settings.Default.ShowSpaces = textEditor.Options.ShowSpaces;
+            Properties.Settings.Default.Save();
+        }
+
+        private void mnuShowSpecialTabs_Click(object sender, RoutedEventArgs e)
+        {
+            textEditor.Options.ShowTabs = this.mnuShowSpecialTabs.IsChecked;
+            Properties.Settings.Default.ShowTabs = textEditor.Options.ShowTabs;
+            Properties.Settings.Default.Save();
+        }
+
         #endregion
 
         #region Options Menu
@@ -463,6 +510,27 @@ namespace rdfEditor
         private void mnuSetDefaultHighlighter_Click(object sender, RoutedEventArgs e)
         {
             Properties.Settings.Default.DefaultHighlighter = (this._manager.CurrentHighlighter != null) ? this._manager.CurrentHighlighter.Name : "None";
+            if (!Properties.Settings.Default.DefaultHighlighter.Equals("None"))
+            {
+                foreach (MenuItem item in mnuCurrentHighlighter.Items.OfType<MenuItem>())
+                {
+                    if (item.Tag != null)
+                    {
+                        String syntax = (String)item.Tag;
+                        if (syntax.Equals(Properties.Settings.Default.DefaultHighlighter))
+                        {
+                            if (!((String)item.Header).EndsWith(" (Default)"))
+                            {
+                                item.Header += " (Default)";
+                            }
+                        }
+                        else if (((String)item.Header).EndsWith(" (Default)"))
+                        {
+                            item.Header = ((String)item.Header).Substring(0, ((String)item.Header).Length - 10);
+                        }
+                    }
+                }
+            }
             Properties.Settings.Default.Save();
         }
 
@@ -717,6 +785,7 @@ namespace rdfEditor
             if (Application.Current.ShutdownMode != ShutdownMode.OnExplicitShutdown)
             {
                 mnuClose_Click(sender, new RoutedEventArgs());
+                Application.Current.Shutdown();
             }
         }
 
