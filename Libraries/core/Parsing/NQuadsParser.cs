@@ -287,7 +287,7 @@ namespace VDS.RDF.Parsing
                     }
                     else
                     {
-                        throw new RdfParseException("Cannot turn a Node of type '" + context.GetType().ToString() + "' into a Context URI for a Triple");
+                        throw Error("Cannot turn a Node of type '" + context.GetType().ToString() + "' into a Context URI for a Triple", next);
                     }
 
                     if (store.HasGraph(contextUri))
@@ -384,7 +384,7 @@ namespace VDS.RDF.Parsing
             output.Append(t.EndLine);
             output.Append(" Column ");
             output.Append(t.EndPosition);
-            output.Append("]\n");
+            output.Append("] ");
             output.Append(msg);
 
             return new RdfParseException(output.ToString(), t);

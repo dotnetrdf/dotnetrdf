@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{F8006AE8-6107-4297-9E19-C2E55303FCC6}</ProjectGuid>
     <OutputType>WinExe</OutputType>
@@ -105,6 +105,7 @@
     <Compile Include="FileAssociations.xaml.cs">
       <DependentUpon>FileAssociations.xaml</DependentUpon>
     </Compile>
+    <Compile Include="OffsetScopedNamespaceMapper.cs" />
     <Compile Include="OpenQueryResults.xaml.cs">
       <DependentUpon>OpenQueryResults.xaml</DependentUpon>
     </Compile>

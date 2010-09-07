@@ -1,63 +1,29 @@
-﻿/*
-
-Copyright Robert Vesse 2009-10
-rvesse@vdesign-studios.com
-
-------------------------------------------------------------------------
-
-This file is part of dotNetRDF.
-
-dotNetRDF is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-dotNetRDF is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with dotNetRDF.  If not, see <http://www.gnu.org/licenses/>.
-
-------------------------------------------------------------------------
-
-dotNetRDF may alternatively be used under the LGPL or MIT License
-
-http://www.gnu.org/licenses/lgpl.html
-http://www.opensource.org/licenses/mit-license.php
-
-If these licenses are not suitable for your intended use please contact
-us at the above stated email address to discuss alternative
-terms.
-
-*/
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VDS.RDF;
 
-namespace VDS.RDF
+namespace rdfEditor
 {
-    public class NestedNamespaceMapper : INamespaceMapper
+    public class OffsetScopedNamespaceMapper : INamespaceMapper
     {
-        private Dictionary<String, List<NestedMapping>> _uris = new Dictionary<string, List<NestedMapping>>();
-        private Dictionary<int, List<NestedMapping>> _prefixes = new Dictionary<int, List<NestedMapping>>();
-        private int _level = 0;
+        private Dictionary<String, List<OffsetMapping>> _uris = new Dictionary<string, List<OffsetMapping>>();
+        private Dictionary<int, List<OffsetMapping>> _prefixes = new Dictionary<int, List<OffsetMapping>>();
+        private int _offset = 0;
 
         /// <summary>
         /// Constructs a new Namespace Map
         /// </summary>
         /// <remarks>The Prefixes rdf, rdfs and xsd are automatically defined</remarks>
-        public NestedNamespaceMapper()
+        public OffsetScopedNamespaceMapper()
             : this(false) { }
 
         /// <summary>
         /// Constructs a new Namespace Map which is optionally empty
         /// </summary>
         /// <param name="empty">Whether the Namespace Map should be empty, if set to false the Prefixes rdf, rdfs and xsd are automatically defined</param>
-        protected internal NestedNamespaceMapper(bool empty)
+        protected internal OffsetScopedNamespaceMapper(bool empty)
         {
             if (!empty)
             {
@@ -70,17 +36,17 @@ namespace VDS.RDF
 
         public void AddNamespace(string prefix, Uri uri)
         {
-            NestedMapping mapping = new NestedMapping(prefix, uri, this._level);
-            if (!this._prefixes.ContainsKey(uri.GetEnhancedHashCode())) this._prefixes.Add(uri.GetEnhancedHashCode(), new List<NestedMapping>());
+            OffsetMapping mapping = new OffsetMapping(prefix, uri, this._offset);
+            if (!this._prefixes.ContainsKey(uri.GetEnhancedHashCode())) this._prefixes.Add(uri.GetEnhancedHashCode(), new List<OffsetMapping>());
 
             if (this._uris.ContainsKey(prefix))
             {
-                //Is it defined on the current nesting level?
-                if (this._uris[prefix].Any(m => m.Level == this._level))
+                //Is it defined at the current offset level?
+                if (this._uris[prefix].Any(m => m.Offset == this._offset))
                 {
                     //If it is then we override it
-                    this._uris[prefix].RemoveAll(m => m.Level == this._level);
-                    this._prefixes[uri.GetEnhancedHashCode()].RemoveAll(m => m.Level == this._level);
+                    this._uris[prefix].RemoveAll(m => m.Offset == this._offset);
+                    this._prefixes[uri.GetEnhancedHashCode()].RemoveAll(m => m.Offset == this._offset);
 
                     this._uris[prefix].Add(mapping);
                     this._prefixes[uri.GetEnhancedHashCode()].Add(mapping);
@@ -97,7 +63,7 @@ namespace VDS.RDF
             else
             {
                 //Not yet defined so add it
-                this._uris.Add(prefix, new List<NestedMapping>());
+                this._uris.Add(prefix, new List<OffsetMapping>());
                 this._uris[prefix].Add(mapping);
                 this._prefixes[uri.GetEnhancedHashCode()].Add(mapping);
                 this.OnNamespaceAdded(prefix, uri);
@@ -114,7 +80,14 @@ namespace VDS.RDF
         {
             if (this._uris.ContainsKey(prefix))
             {
-                return this._uris[prefix].Last().Uri;
+                if (this._uris[prefix].Any(m => m.Offset < this._offset))
+                {
+                    return this._uris[prefix].Last(m => m.Offset < this._offset).Uri;
+                }
+                else
+                {
+                    throw new RdfException("The Namespace URI for the given Prefix '" + prefix + "' is not in-scope at the current Offset");
+                }
             }
             else
             {
@@ -127,7 +100,14 @@ namespace VDS.RDF
             int hash = uri.GetEnhancedHashCode();
             if (this._prefixes.ContainsKey(hash))
             {
-                return this._prefixes[hash].Last().Prefix;
+                if (this._prefixes[hash].Any(m => m.Offset < this._offset))
+                {
+                    return this._prefixes[hash].Last(m => m.Offset < this._offset).Prefix;
+                }
+                else
+                {
+                    throw new RdfException("The Prefix for the given URI '" + uri.ToString() + "' is not in-scope at the current Offset");
+                }
             }
             else
             {
@@ -135,21 +115,16 @@ namespace VDS.RDF
             }
         }
 
-        public int GetNestingLevel(String prefix)
+        public bool HasNamespace(string prefix)
         {
             if (this._uris.ContainsKey(prefix))
             {
-                return this._uris[prefix].Last().Level;
+                return this._uris[prefix].Any(m => m.Offset < this._offset);
             }
             else
             {
-                throw new RdfException("The Nesting Level for the given Prefix '" + prefix + "' is not known by the in-scope NamespaceMapper");
+                return false;
             }
-        }
-
-        public bool HasNamespace(string prefix)
-        {
-            return this._uris.ContainsKey(prefix);
         }
 
         public void Import(INamespaceMapper nsmap)
@@ -180,40 +155,18 @@ namespace VDS.RDF
             }
         }
 
-        public void IncrementNesting()
-        {
-            this._level++;
-        }
-
-        public void DecrementNesting()
-        {
-            this._level--;
-            if (this._level > 0)
-            {
-                foreach (String prefix in this._uris.Keys)
-                {
-                    this._uris[prefix].RemoveAll(m => m.Level > this._level);
-                }
-                foreach (int u in this._prefixes.Keys)
-                {
-                    this._prefixes[u].RemoveAll(m => m.Level > this._level);
-                }
-                foreach (KeyValuePair<String, List<NestedMapping>> mapping in this._uris.ToList())
-                {
-                    if (mapping.Value.Count == 0) this._uris.Remove(mapping.Key);
-                }
-                foreach (KeyValuePair<int, List<NestedMapping>> mapping in this._prefixes.ToList())
-                {
-                    if (mapping.Value.Count == 0) this._prefixes.Remove(mapping.Key);
-                }
-            }
-        }
-
-        public int NestingLevel
+        /// <summary>
+        /// Gets/Sets the Current Offset
+        /// </summary>
+        public int CurrentOffset
         {
             get
             {
-                return this._level;
+                return this._offset;
+            }
+            set
+            {
+                this._offset = value;
             }
         }
 
@@ -269,13 +222,15 @@ namespace VDS.RDF
         {
             get 
             {
-                return this._uris.Keys;
+                return (from prefix in this._uris.Keys
+                        where this.HasNamespace(prefix)
+                        select prefix);
             }
         }
 
         public bool ReduceToQName(string uri, out string qname)
         {
-            foreach (Uri u in this._uris.Values.Select(l => l.Last().Uri))
+            foreach (Uri u in this._uris.Values.Select(l => l.Last(m => m.Offset < this._offset).Uri))
             {
                 String baseuri = u.ToString();
 
@@ -299,51 +254,37 @@ namespace VDS.RDF
 
         public void RemoveNamespace(string prefix)
         {
-            if (this.HasNamespace(prefix))
-            {
-                if (this.GetNestingLevel(prefix) == this._level)
-                {
-                    //If it's registered on this nesting level will be the last thing registered
-                    this._uris[prefix].RemoveAt(this._uris[prefix].Count - 1);
-                    if (this._uris[prefix].Count == 0) this._uris.Remove(prefix);
-                    Uri nsUri = this.GetNamespaceUri(prefix);
-                    int hash = nsUri.GetEnhancedHashCode();
-                    this._prefixes[hash].RemoveAt(this._prefixes[hash].Count - 1);
-                    if (this._prefixes[hash].Count == 0) this._prefixes.Remove(hash);
-                    this.OnNamespaceRemoved(prefix, nsUri);
-                }
-            }
+            throw new NotImplementedException();
         }
 
         public void Dispose()
         {
             this._prefixes.Clear();
             this._uris.Clear();
-            this._level = 0;
         }
     }
 
-    class NestedMapping
+    public class OffsetMapping
     {
-        private int _level;
+        private int _offset;
         private String _prefix;
         private Uri _uri;
 
-        public NestedMapping(String prefix, Uri uri, int level)
+        public OffsetMapping(String prefix, Uri uri, int offset)
         {
             this._prefix = prefix;
             this._uri = uri;
-            this._level = level;
+            this._offset = offset;
         }
 
-        public NestedMapping(String prefix, Uri uri)
+        public OffsetMapping(String prefix, Uri uri)
             : this(prefix, uri, 0) { }
 
-        public int Level
+        public int Offset
         {
             get 
             {
-                return this._level;
+                return this._offset;
             }
         }
 

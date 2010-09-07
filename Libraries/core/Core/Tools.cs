@@ -261,7 +261,7 @@ namespace VDS.RDF
             }
             else
             {
-                throw new RdfParseException("Unable to resolve a '" + t.GetType().ToString() + "' Token into a URI");
+                throw new RdfParseException("Unable to resolve a '" + t.GetType().ToString() + "' Token into a URI", t);
             }
         }
 

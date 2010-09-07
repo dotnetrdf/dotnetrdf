@@ -431,7 +431,7 @@ namespace VDS.RDF.Parsing
             output.Append(t.EndLine);
             output.Append(" Column ");
             output.Append(t.EndPosition);
-            output.Append("]\n");
+            output.Append("] ");
             output.Append(msg);
 
             return new RdfParseException(output.ToString(), t);

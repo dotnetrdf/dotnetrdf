@@ -64,30 +64,13 @@ namespace rdfEditor
             this._editor.TextChanged += new EventHandler(EditorTextChanged);
             this._editor.TextArea.TextEntering += new TextCompositionEventHandler(EditorTextEntering);
             this._editor.TextArea.TextEntered += new TextCompositionEventHandler(EditorTextEntered);
-            //this._editor.TextArea.TextView.MouseDown += new MouseButtonEventHandler(TextView_MouseDown);
-            //this._editor.TextArea.TextView.MouseUp += new MouseButtonEventHandler(TextView_MouseUp);
+            this._editor.TextArea.Caret.PositionChanged += new EventHandler(EditorCaretPositionChanged);
             this._editor.Document.Changed += new EventHandler<DocumentChangeEventArgs>(EditorDocumentChanged);
             this._editor.Document.UpdateFinished += new EventHandler(EditorDocumentUpdateFinished);
 
             //Add the Validation Error Element Generator
             this._editor.TextArea.TextView.ElementGenerators.Add(new ValidationErrorElementGenerator(this));
         }
-
-        //void TextView_MouseUp(object sender, MouseButtonEventArgs e)
-        //{
-        //    if (this._lastCaretPos != this._editor.CaretOffset)
-        //    {
-        //        if (this._enableAutoComplete && this._autoCompleter != null)
-        //        {
-        //            this._autoCompleter.DetectState(this._editor);
-        //        }
-        //    }
-        //}
-
-        //void TextView_MouseDown(object sender, MouseButtonEventArgs e)
-        //{
-        //    this._lastCaretPos = this._editor.CaretOffset;
-        //}
 
         public EditorManager(TextEditor editor, MenuItem highlightersMenu)
             : this(editor)
@@ -688,10 +671,15 @@ namespace rdfEditor
         {
             if (e.InsertionLength > 0)
             {
+                this._lastCaretPos = this._editor.CaretOffset;
                 if (this._autoCompleter != null)
                 {
                     this._endAutoComplete = true;
                 }
+            }
+            else if (e.RemovalLength > 0)
+            {
+                this._lastCaretPos = this._editor.CaretOffset;
             }
         }
 
@@ -701,6 +689,19 @@ namespace rdfEditor
             {
                 if (this._autoCompleter != null) this._autoCompleter.EndAutoComplete(this._editor);
             }
+        }
+
+        private void EditorCaretPositionChanged(object sender, EventArgs e)
+        {
+            //If the Caret Position changes by more than one then the auto-completer will need to detect state
+            if (Math.Abs(this._editor.CaretOffset - this._lastCaretPos) > 1)
+            {
+                if (this._autoCompleter != null)
+                {
+                    this._autoCompleter.DetectState(this._editor);
+                }
+            }
+            this._lastCaretPos = this._editor.CaretOffset;
         }
 
         private void HighlighterClick(object sender, RoutedEventArgs e)

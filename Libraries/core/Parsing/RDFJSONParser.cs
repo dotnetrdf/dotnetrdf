@@ -116,6 +116,7 @@ namespace VDS.RDF.Parsing
         private void ParseGraphObject(JsonParserContext context)
         {
             //Can we read the overall Graph Object
+            PositionInfo startPos = context.CurrentPosition;
             if (context.Input.Read())
             {
                 if (context.Input.TokenType == JsonToken.StartObject)
@@ -123,19 +124,20 @@ namespace VDS.RDF.Parsing
                     this.ParseTriples(context);
 
                     //When we get control back we should have already read the last token which should be an End Object
+                    //We ignore any content which is beyond the end of the initial object
                     if (context.Input.TokenType != JsonToken.EndObject)
                     {
-                        throw Error(context, "Unexpected Token '" + context.Input.TokenType.ToString() + "' encountered, end of the JSON Graph Object was expected");
+                        throw Error(context, "Unexpected Token '" + context.Input.TokenType.ToString() + "' encountered, end of the JSON Graph Object was expected", startPos);
                     }
                 }
                 else
                 {
-                    throw Error(context, "Unexpected Token '" + context.Input.TokenType.ToString() + "' encountered, start of the JSON Graph Object was expected");
+                    throw Error(context, "Unexpected Token '" + context.Input.TokenType.ToString() + "' encountered, start of the JSON Graph Object was expected", startPos);
                 }
             }
             else
             {
-                throw new RdfParseException("Unexpected End of Input while trying to parse start of the JSON Graph Object");
+                throw Error(context, "Unexpected End of Input while trying to parse start of the JSON Graph Object", startPos);
             }
         }
 
@@ -145,6 +147,7 @@ namespace VDS.RDF.Parsing
         /// <param name="context">Parser Context</param>
         private void ParseTriples(JsonParserContext context)
         {
+            PositionInfo startPos = context.CurrentPosition;
             if (context.Input.Read())
             {
                 while (context.Input.TokenType != JsonToken.EndObject)
@@ -165,13 +168,16 @@ namespace VDS.RDF.Parsing
 
                         this.ParsePredicateObjectList(context, subjNode);
                     }
-
+                    else
+                    {
+                        throw Error(context, "Unexpected Token '" + context.Input.TokenType.ToString() + "' encountered, expected a JSON Property Name to represent the Subject of a Triple", startPos);
+                    }
                     context.Input.Read();
                 }
             }
             else
             {
-                throw new RdfParseException("Unexpected End of Input while trying to parse Triples from the JSON");
+                throw Error(context, "Unexpected End of Input while trying to parse Triples from the JSON", startPos);
             }
         }
 
@@ -182,6 +188,8 @@ namespace VDS.RDF.Parsing
         /// <param name="subj">Subject of Triples which comes from the parent Json Object</param>
         private void ParsePredicateObjectList(JsonParserContext context, INode subj)
         {
+            PositionInfo startPos = context.CurrentPosition;
+
             if (context.Input.Read())
             {
                 if (context.Input.TokenType == JsonToken.StartObject)
@@ -199,7 +207,7 @@ namespace VDS.RDF.Parsing
                         }
                         else
                         {
-                            throw Error(context, "Unexpected Token '" + context.Input.TokenType.ToString() + "' encountered, expected a Property Name which represents a Predicate");
+                            throw Error(context, "Unexpected Token '" + context.Input.TokenType.ToString() + "' encountered, expected a Property Name which represents a Predicate", startPos);
                         }
 
                         context.Input.Read();
@@ -207,12 +215,12 @@ namespace VDS.RDF.Parsing
                 }
                 else
                 {
-                    throw Error(context, "Unexpected Token '" + context.Input.TokenType.ToString() + "' encountered, expected the start of a JSON Object to represent a Predicate Object List");
+                    throw Error(context, "Unexpected Token '" + context.Input.TokenType.ToString() + "' encountered, expected the start of a JSON Object to represent a Predicate Object List", startPos);
                 }
             }
             else
             {
-                throw new RdfParseException("Unexpected End of Input while trying to parse a Predicate Object List from the JSON");
+                throw Error(context, "Unexpected End of Input while trying to parse a Predicate Object List from the JSON", startPos);
             }
         }
 
@@ -224,6 +232,8 @@ namespace VDS.RDF.Parsing
         /// <param name="pred">Predicate of Triples which comes form the Parent Json Object</param>
         private void ParseObjectList(JsonParserContext context, INode subj, INode pred)
         {
+            PositionInfo startPos = context.CurrentPosition;
+
             if (context.Input.Read())
             {
                 //Expect an Array for the Object List
@@ -237,12 +247,12 @@ namespace VDS.RDF.Parsing
                 }
                 else
                 {
-                    throw Error(context, "Unexpected Token '" + context.Input.TokenType.ToString() + "' encountered, expected the start of a JSON Array to represent an Object List");
+                    throw Error(context, "Unexpected Token '" + context.Input.TokenType.ToString() + "' encountered, expected the start of a JSON Array to represent an Object List", startPos);
                 }
             }
             else
             {
-                throw new RdfParseException("Unexpected End of Input while trying to parse an Object List from the JSON");
+                throw Error(context, "Unexpected End of Input while trying to parse an Object List from the JSON", startPos);
             }
         }
 
@@ -367,7 +377,7 @@ namespace VDS.RDF.Parsing
             }
             else
             {
-                throw new RdfParseException("Unexpected End of Input while trying to parse an Object Node from the JSON");
+                throw Error(context, "Unexpected End of Input while trying to parse an Object Node from the JSON", startPos);
             }
         }
 

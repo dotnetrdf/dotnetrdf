@@ -214,11 +214,10 @@ namespace VDS.RDF.Parsing
                     return context.Graph.CreateBlankNode(subjToken.Value.Substring(2));
                 case Token.URI:
                     return context.Graph.CreateUriNode(new Uri(subjToken.Value));
-                    //return this.ConvertToNode(g, subjToken);
                 case Token.LITERAL:
                 case Token.LITERALWITHDT:
                 case Token.LITERALWITHLANG:
-                    throw new RdfParseException("Subject cannot be a Literal in NTriples", subjToken);
+                    throw Error("Subject cannot be a Literal in NTriples", subjToken);
                 default:
                     throw Error("Unexpected Token '" + subjToken.GetType().ToString() + "' encountered, expected a Blank Node or URI for the Subject of a Triple", subjToken);
             }
@@ -238,14 +237,14 @@ namespace VDS.RDF.Parsing
             {
                 case Token.BLANKNODE:
                 case Token.BLANKNODEWITHID:
-                    throw new RdfParseException("Predicate cannot be a Blank Node in NTriples", predToken);
+                    throw Error("Predicate cannot be a Blank Node in NTriples", predToken);
                 case Token.URI:
                     return context.Graph.CreateUriNode(new Uri(predToken.Value));
                     //return this.ConvertToNode(g, predToken);
                 case Token.LITERAL:
                 case Token.LITERALWITHDT:
                 case Token.LITERALWITHLANG:
-                    throw new RdfParseException("Predicate cannot be a Literal in NTriples", predToken);
+                    throw Error("Predicate cannot be a Literal in NTriples", predToken);
                 default:
                     throw Error("Unexpected Token '" + predToken.GetType().ToString() + "' encountered, expected a URI for the Predicate of a Triple", predToken);
             }
@@ -335,7 +334,7 @@ namespace VDS.RDF.Parsing
             output.Append(t.EndLine);
             output.Append(" Column ");
             output.Append(t.EndPosition);
-            output.Append("]\n");
+            output.Append("] ");
             output.Append(msg);
 
             return new RdfParseException(output.ToString(), t);

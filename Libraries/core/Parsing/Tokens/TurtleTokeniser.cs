@@ -640,6 +640,7 @@ namespace VDS.RDF.Parsing.Tokens
                                     //Start of a Uri Token
                                     if (!anycharallowed)
                                     {
+                                        this.StartNewToken();
                                         anycharallowed = true;
                                         rightangleallowed = false;
 

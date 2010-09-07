@@ -30,7 +30,7 @@ namespace rdfEditor.AutoComplete
             new KeywordCompletionData("true", "Keyword representing true - equivalent to the literal \"true\"^^<" + XmlSpecsHelper.XmlSchemaDataTypeBoolean + ">")
         };
 
-        private NamespaceMapper _nsmap = new NamespaceMapper(true);
+        private OffsetScopedNamespaceMapper _nsmap = new OffsetScopedNamespaceMapper(true);
         private Dictionary<String, List<NamespaceTerm>> _namespaceTerms = new Dictionary<string, List<NamespaceTerm>>();
         private HashSet<ICompletionData> _bnodes = new HashSet<ICompletionData>();
         private BlankNodeMapper _bnodemap = new BlankNodeMapper();
@@ -50,6 +50,9 @@ namespace rdfEditor.AutoComplete
 
         public override void DetectState(TextEditor editor)
         {
+            //Don't do anything if currently disabled
+            if (this.State == AutoCompleteState.Disabled) return;
+
             //Look for defined Prefixes - we have to clear the list of namespaces and prefixes since they might have been altered
             this.DetectNamespaces(editor);
             this.DetectBlankNodes(editor);
@@ -61,10 +64,8 @@ namespace rdfEditor.AutoComplete
 
             foreach (Match m in Regex.Matches(editor.Text, PrefixRegexPattern))
             {
-                //Ignore namespaces defined beyond our current position as these aren't in scope
-                //int matchLine = editor.Document.GetLineByOffset(m.Index).LineNumber;
-                //int currLine = editor.Document.GetLineByOffset(editor.CaretOffset).LineNumber;
-                //if (matchLine > currLine) continue;
+                //Set the Offset for this Namespace so it gets properly scoped later on
+                this._nsmap.CurrentOffset = m.Index + m.Length;
 
                 String prefix = m.Groups[1].Value;
                 String nsUri = m.Groups[3].Value;
@@ -742,6 +743,9 @@ namespace rdfEditor.AutoComplete
 
         protected virtual void AddQNameCompletionData()
         {
+            //Set Current Offset to scope the Namespace Mapper properly
+            this._nsmap.CurrentOffset = this.StartOffset;
+
             //Generate all available QNames
             List<ICompletionData> qnames = new List<ICompletionData>();
             foreach (String prefix in this._nsmap.Prefixes)

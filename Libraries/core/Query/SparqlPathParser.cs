@@ -142,7 +142,7 @@ namespace VDS.RDF.Parsing
                                 //If we see another { this is an error
                                 if (next.TokenType == Token.LEFTCURLYBRACKET)
                                 {
-                                    throw new RdfParseException("Nested Cardinality Modifiers for Paths are not permitted");
+                                    throw new RdfParseException("Nested Cardinality Modifiers for Paths are not permitted", next);
                                 }
 
                                 context.Tokens.Dequeue();
@@ -183,7 +183,7 @@ namespace VDS.RDF.Parsing
                                 }
                                 else
                                 {
-                                    throw new RdfParseException("Path sequencing tokens can only follow Predicates/Path Groups");
+                                    throw new RdfParseException("Path sequencing tokens can only follow Predicates/Path Groups", next);
                                 }
                             }
 
