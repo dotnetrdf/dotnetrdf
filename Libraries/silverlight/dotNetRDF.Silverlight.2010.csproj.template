@@ -35,6 +35,8 @@
     <DocumentationFile>bin\Debug\dotNetRDF.Silverlight.XML</DocumentationFile>
     <NoStdLib>true</NoStdLib>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <NoWarn>0659,1574,0067,0419,0628</NoWarn>
+    <WarningsAsErrors>0672,0108</WarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>

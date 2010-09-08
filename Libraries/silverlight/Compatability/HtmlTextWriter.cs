@@ -198,11 +198,6 @@ namespace VDS.RDF.Writing
             this._writer.Close();
         }
 
-        public void Dispose()
-        {
-            this._writer.Close();
-        }
-
         public void Flush()
         {
             this._writer.Flush();

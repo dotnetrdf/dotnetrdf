@@ -9,6 +9,7 @@ namespace ExportCoreContentsToTemplate
 {
     class Program
     {
+        public const String MSBuildNamespace = "http://schemas.microsoft.com/developer/msbuild/2003";
         static void Main(string[] args)
         {
             if (args.Length < 3)
@@ -39,7 +40,7 @@ namespace ExportCoreContentsToTemplate
                 //Copy Compile Item Groups from Core to Template
                 foreach (XmlNode itemGroup in coreProject.DocumentElement.GetElementsByTagName("ItemGroup"))
                 {
-                    XmlElement newItemGroup = template.CreateElement("ItemGroup");
+                    XmlElement newItemGroup = template.CreateElement("ItemGroup", MSBuildNamespace);
 
                     foreach (XmlNode compile in itemGroup.ChildNodes)
                     {
@@ -56,8 +57,8 @@ namespace ExportCoreContentsToTemplate
                                 if (!ok) continue;
                             }
 
-                            XmlElement newCompile = template.CreateElement("Compile");
-                            XmlAttribute include = template.CreateAttribute("Include");
+                            XmlElement newCompile = template.CreateElement("Compile", MSBuildNamespace);
+                            XmlAttribute include = template.CreateAttribute("Include");//, MSBuildNamespace);
                             String includeFile = compile.Attributes["Include"].Value;
 
                             //Never include AssemblyInfo from source Project
@@ -66,7 +67,7 @@ namespace ExportCoreContentsToTemplate
                             include.Value = relativePath + includeFile;
                             newCompile.Attributes.Append(include);
 
-                            XmlElement link = template.CreateElement("Link");
+                            XmlElement link = template.CreateElement("Link", MSBuildNamespace);
                             link.InnerText = compile.Attributes["Include"].Value;
                             newCompile.AppendChild(link);
 

@@ -675,7 +675,7 @@ namespace VDS.RDF
             }
             catch (RdfParserSelectionException)
             {
-                if (contentType.Equals(MimeTypesHelper.NTriples[0]))
+                if (allowPlainTextResults && contentType.Equals(MimeTypesHelper.NTriples[0]))
                 {
                     return new SparqlBooleanParser();
                 }

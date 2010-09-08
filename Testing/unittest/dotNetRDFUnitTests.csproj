@@ -118,6 +118,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AllegroGraphTests.cs" />
+    <Compile Include="SesameTests.cs" />
     <Compile Include="EventTests.cs" />
     <Compile Include="FormattingTests.cs" />
     <Compile Include="JenaInteropTests.cs" />

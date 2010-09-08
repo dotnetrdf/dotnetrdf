@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+<project name="dotNetRDF Core Library" default="build-nightly" basedir="../../">
+  <description>Generates the dotNetRDF Core Library Builds</description>
+
+  <target name="build" description="Build dotNetRDF">
+    <echo>This build file can be used to build the Stable/Nightly/Silverlight Nightly builds of dotNetRDF.  Use the targets build-nightly, build-silverlight-nightly or build-stable as desired.
+      
+If you run nant without a target specified the default target used is build-nighlty
+    </echo>
+  </target>
+  
+  <target name="clean-nightly" description="Clean existing Nightly Build">
+    <delete dir="../bin/nightly" />
+  </target>
+
+  <target name="build-nightly" description="Copy the latest build to the Nightly Build directory" depends="compile">
+    <copy todir="../bin/nightly" file="Libraries/core/bin/Debug/dotNetRDF.dll" />
+    <copy todir="../bin/nightly" file="Libraries/core/bin/Debug/dotNetRDF.xml" />
+    <copy todir="../bin/nightly" file="Libraries/core/bin/Debug/HtmlAgilityPack.dll" />
+    <copy todir="../bin/nightly" file="Libraries/core/bin/Debug/HtmlAgilityPack.xml" />
+    <copy todir="../bin/nightly" file="Libraries/core/bin/Debug/Newtonsoft.Json.dll" />
+    <copy todir="../bin/nightly" file="Libraries/core/bin/Debug/Newtonsoft.Json.xml" />
+    <copy todir="../bin/nightly" file="Libraries/core/bin/Debug/MySql.Data.dll" />
+    <copy todir="../bin/nightly" file="Libraries/core/bin/Debug/virtado3.dll" />
+    <copy todir="../bin/nightly" file="Libraries/core/ChangeLog.txt" />
+  </target>
+
+  <target name="clean-silverlight-nightly" description="Clean existing Silverlight Nightly Build">
+    <delete dir="../bin/silverlight-nightly" />
+  </target>
+
+  <target name="build-silverlight-nightly" description="Copy the latest Silverlight build to the Silverlight Nightly Build directory" depends="compile-silverlight">
+    <copy todir="../bin/silverlight-nightly" file="Libraries/silverlight/bin/Debug/dotNetRDF.Silverlight.dll" />
+    <copy todir="../bin/silverlight-nightly" file="Libraries/silverlight/bin/Debug/dotNetRDF.Silverlight.xml" />
+    <copy todir="../bin/silverlight-nightly" file="Libraries/silverlight/bin/Debug/HtmlAgilityPack.Silverlight.dll" />
+    <copy todir="../bin/silverlight-nightly" file="Libraries/silverlight/bin/Debug/Newtonsoft.Json.Silverlight.dll" />
+    <copy todir="../bin/silverlight-nightly" file="Libraries/silverlight/bin/Debug/Newtonsoft.Json.Silverlight.xml" />
+  </target>
+
+  <target name="clean-stable" description="Clean existing Stable Build">
+    <delete dir="../bin/stable" />
+  </target>
+
+  <target name="build-stable" description="Copy the stable build to the Stable Build directory" depends="compile,compile-silverlight">
+    <copy todir="../bin/stable" file="Libraries/core/bin/Debug/dotNetRDF.dll" />
+    <copy todir="../bin/stable" file="Libraries/core/bin/Debug/dotNetRDF.xml" />
+    <copy todir="../bin/stable" file="Libraries/core/bin/Debug/HtmlAgilityPack.dll" />
+    <copy todir="../bin/stable" file="Libraries/core/bin/Debug/HtmlAgilityPack.xml" />
+    <copy todir="../bin/stable" file="Libraries/core/bin/Debug/Newtonsoft.Json.dll" />
+    <copy todir="../bin/stable" file="Libraries/core/bin/Debug/Newtonsoft.Json.xml" />
+    <copy todir="../bin/stable" file="Libraries/core/bin/Debug/MySql.Data.dll" />
+    <copy todir="../bin/stable" file="Libraries/core/bin/Debug/virtado3.dll" />
+    <copy todir="../bin/stable" file="Libraries/core/ChangeLog.txt" />
+    <copy todir="../bin/stable" file="Libraries/core/ReleaseNotes.txt" ></copy>
+  </target>
+
+  <target name="compile" description="Compile the dotNetRDF Core Library">
+    <property name="nant.settings.currentframework" value="net-3.5" />
+    <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
+    <exec program="${msBuild.exe}" failonerror="true">
+      <arg value="Libraries/core/dotNetRDF.csproj" />
+      <arg line="/p:Configuration=Debug" />
+      <arg line="/p:PostBuildEvent="/>
+    </exec>
+  </target>
+
+  <target name="compile-all" description="Compile the dotNetRDF Solution and the Silverlight build" depends="compile-silverlight">
+    <property name="nant.settings.currentframework" value="net-3.5" />
+    <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
+    <exec program="${msBuild.exe}" failonerror="true">
+      <arg value="dotNetRDF.sln" />
+      <arg line="/p:Configuration=Debug" />
+      <arg line="/p:PostBuildEvent="/>
+    </exec>
+  </target>
+
+  <target name="compile-silverlight" description="Compile the dotNetRDF Core Library">
+    <property name="nant.settings.currentframework" value="net-4.0" />
+    <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
+    <exec program="${msBuild.exe}" failonerror="true">
+      <arg value="Libraries/silverlight/dotNetRDF.Silverlight.2010.csproj" />
+      <arg line="/p:Configuration=Debug" />
+      <arg line="/p:PostBuildEvent="/>
+    </exec>
+  </target>
+</project>

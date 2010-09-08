@@ -104,7 +104,7 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-  <ItemGroup xmlns="">
+  <ItemGroup>
     <Compile Include="..\core\Core\BackgroundPersistedGraph.cs">
       <Link>Core\BackgroundPersistedGraph.cs</Link>
     </Compile>
@@ -514,7 +514,7 @@
       <Link>Writing\WriterUtilities.cs</Link>
     </Compile>
   </ItemGroup>
-  <ItemGroup xmlns="">
+  <ItemGroup>
     <Compile Include="..\core\Configuration\CachedObjectKey.cs">
       <Link>Configuration\CachedObjectKey.cs</Link>
     </Compile>
@@ -1404,7 +1404,7 @@
       <Link>Writing\Formatting\INodeFormatter.cs</Link>
     </Compile>
   </ItemGroup>
-  <ItemGroup xmlns="">
+  <ItemGroup>
     <Compile Include="..\silverlight\Compatability\HtmlTextWriter.cs">
       <Link>Compatability\HtmlTextWriter.cs</Link>
     </Compile>
