@@ -1,0 +1,677 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ftptask</name>
+    </assembly>
+    <members>
+        <member name="T:Sourceforge.NAnt.Ftp.Tasks.FTPTask">
+            <summary>
+            Transfer files over an FTP connection.
+            </summary>
+            <remarks>
+              <para>
+              When you use an <see cref="T:Sourceforge.NAnt.Ftp.Tasks.FTPTask"/> task, you must specify 
+              connection details, either through including a <see cref="P:Sourceforge.NAnt.Ftp.Tasks.FTPTask.Connection"/> 
+              element as a child of the ftp task or through specifying in the <b>connection</b> attribute 
+              the <b>id</b> of a previously declared <see cref="P:Sourceforge.NAnt.Ftp.Tasks.FTPTask.Connection"/> element.
+              </para>
+              <para>
+              The <b>up-ascii</b>, <b>up-binary</b>, <b>down-ascii</b>, and <b>down-binary</b>
+              children have been depricated in favor of multiple <see cref="T:Sourceforge.NAnt.Ftp.Types.TransferFileSet"/> elements that are 
+              included through any number of <see cref="M:Sourceforge.NAnt.Ftp.Tasks.FTPTask.Get(System.String,System.String,System.String,EnterpriseDT.Net.Ftp.FTPTransferType,System.Boolean,System.Boolean,System.Boolean)"/> and <see cref="M:Sourceforge.NAnt.Ftp.Tasks.FTPTask.Put(System.String,System.String,System.String,EnterpriseDT.Net.Ftp.FTPTransferType,System.Boolean,System.Boolean,System.Boolean)"/> elements.
+              </para>
+              <para>
+              Transfer type (Ascii/Binary) is now specified as through the <b>Type</b> attribute of the <see cref="M:Sourceforge.NAnt.Ftp.Tasks.FTPTask.Get(System.String,System.String,System.String,EnterpriseDT.Net.Ftp.FTPTransferType,System.Boolean,System.Boolean,System.Boolean)"/> and <see cref="M:Sourceforge.NAnt.Ftp.Tasks.FTPTask.Put(System.String,System.String,System.String,EnterpriseDT.Net.Ftp.FTPTransferType,System.Boolean,System.Boolean,System.Boolean)"/> elements.
+              </para>
+              <h4>Include Scanning</h4>
+              <para>
+              <see cref="M:Sourceforge.NAnt.Ftp.Tasks.FTPTask.Put(System.String,System.String,System.String,EnterpriseDT.Net.Ftp.FTPTransferType,System.Boolean,System.Boolean,System.Boolean)"/> elements are a derived version of <see cref="T:Sourceforge.NAnt.Ftp.Types.TransferFileSet"/> that scan
+              local directories just as a <see cref="T:NAnt.Core.Types.FileSet"/> does.
+              </para>
+              <para>
+              <see cref="M:Sourceforge.NAnt.Ftp.Tasks.FTPTask.Get(System.String,System.String,System.String,EnterpriseDT.Net.Ftp.FTPTransferType,System.Boolean,System.Boolean,System.Boolean)"/> elements are a derived version of <see cref="T:Sourceforge.NAnt.Ftp.Types.TransferFileSet"/> that process
+              include statements using the same algorithm as a <see cref="T:NAnt.Core.Types.FileSet"/> only they scan
+              <b>remote</b> directories on the server.  This allows you to use NAnt's 
+              <see cref="T:NAnt.Core.Types.FileSet"/> pattern matching to selectively get a batch of files from
+              a remote filesystem.
+              </para>
+              <note>
+              <see cref="M:Sourceforge.NAnt.Ftp.Tasks.FTPTask.Get(System.String,System.String,System.String,EnterpriseDT.Net.Ftp.FTPTransferType,System.Boolean,System.Boolean,System.Boolean)"/> and <see cref="M:Sourceforge.NAnt.Ftp.Tasks.FTPTask.Put(System.String,System.String,System.String,EnterpriseDT.Net.Ftp.FTPTransferType,System.Boolean,System.Boolean,System.Boolean)"/> children are processed in the order 
+              they are listed.  All paths in these elements and their include statements are
+              to the ftp node's localpath and remotepath attributes.
+              </note>
+            </remarks>
+            <example>
+              <para>
+              Put a single file to a remote host.
+              </para>
+              <code>
+                <![CDATA[
+            <connection id="myconn" server="upload.sourceforge.net" username="anonymous" password="david@spinthemoose.com" />
+            <ftp  
+                connection="myconn"
+                remotedir="incoming"
+                localdir="c:\dev\nantftptask\trunk"
+                >
+                <put type="ascii">
+                   <include name="readme.txt" />
+                </put>
+            </ftp>
+                ]]>
+              </code>
+            </example>
+            <example>
+              <para>Put a set of binary files to a .</para>
+              <code>
+                <![CDATA[
+            	<connection id="sourceforge 
+            		    server="upload.sourceforge.net" 
+            		    username="anonymous" 
+            		    password="david@spinthemoose.com" />
+            	<ftp connection="sourceforge" >
+            		<put type="bin" localdir="." remotedir="incoming" flatten="true">
+            			<include name="${ziproot}*.zip"/>
+            		</put>
+            	</ftp>
+                ]]>
+              </code>
+            </example>
+            <example>
+              <para>
+              Debug a request to copy all php files from a remote directory.  This will list
+              the files included as the remote directories are scanned.
+              </para>
+              <code>
+                <![CDATA[
+            	
+            	    <connection id="myConn" server="${remotehost}" username="${username}" />
+            
+            	    <ftp debug="true"
+            	    	 connection="myConn"
+            	    	 remotedir="${remote-dir}"
+            	    	 showdironconnect="false" 
+            	    	 >
+            			<get type="ascii" localdir="incoming" remotedir="." failonempty="true">
+            				<include name="**\*.php" />
+            			</get>
+            	    </ftp>
+                ]]>
+              </code>
+              <note>
+              When a password is not supplied, the connection is established then 
+              logging output asks for password input from the console.  Any text
+              typed when answering this reques is masked thanks to <b>Lim Bio Liong's</b> 
+              CodeProject article <i>'.NET Console Password Input By Masking 
+              Keyed-In Characters'</i> 
+              (<see href="http://www.codeproject.com/dotnet/ConsolePasswordInput.asp">http://www.codeproject.com/dotnet/ConsolePasswordInput.asp</see>
+               - accessed on 12/18/2004) 
+              </note>
+            </example>
+        </member>
+        <member name="F:Sourceforge.NAnt.Ftp.Tasks.FTPTask.EXCEPTION_NULL_STRING">
+            <summary>Null argument</summary>
+        </member>
+        <member name="F:Sourceforge.NAnt.Ftp.Tasks.FTPTask.EXCEPTION_EMPTY_STRING">
+            <summary>Empty string</summary>
+        </member>
+        <member name="F:Sourceforge.NAnt.Ftp.Tasks.FTPTask.EMPTY_STRING">
+            <summary>""</summary>
+        </member>
+        <member name="F:Sourceforge.NAnt.Ftp.Tasks.FTPTask.DIR_SEPERATOR">
+            <summary>/</summary>
+        </member>
+        <member name="F:Sourceforge.NAnt.Ftp.Tasks.FTPTask.DOS_DIR_SEPERATOR">
+            <summary>Dir seperator on dos/win</summary>
+        </member>
+        <member name="F:Sourceforge.NAnt.Ftp.Tasks.FTPTask.DEFAULT_FTP_PORT">
+            <summary>Standard ftp port</summary>
+        </member>
+        <member name="F:Sourceforge.NAnt.Ftp.Tasks.FTPTask.ANONYMOUS_USER">
+            <summary>user for anon ftp</summary>
+        </member>
+        <member name="F:Sourceforge.NAnt.Ftp.Tasks.FTPTask.ANONYMOUS_PASS">
+            <summary>pass for anon ftp</summary>
+        </member>
+        <member name="F:Sourceforge.NAnt.Ftp.Tasks.FTPTask.SCRIPT_NODE_NAME">
+            <summary>the name of the script block</summary>
+        </member>
+        <member name="F:Sourceforge.NAnt.Ftp.Tasks.FTPTask.PUT_NODE_NAME">
+            <summary>the name of a put block</summary>
+        </member>
+        <member name="F:Sourceforge.NAnt.Ftp.Tasks.FTPTask.GET_NODE_NAME">
+            <summary>the name of a get block</summary>
+        </member>
+        <member name="F:Sourceforge.NAnt.Ftp.Tasks.FTPTask.TRANSFER_NODE_XPATH">
+            <summary>the name of a transfer block</summary>
+        </member>
+        <member name="M:Sourceforge.NAnt.Ftp.Tasks.FTPTask.ftpConnect">
+            <summary>Connect to server</summary>
+        </member>
+        <member name="M:Sourceforge.NAnt.Ftp.Tasks.FTPTask.LoginWithPromptForPassword(System.String)">
+            <summary>Do a remote login while asking the user for a password through the console.</summary>
+            <param name="username">the username to use when logging in.</param>
+        </member>
+        <member name="M:Sourceforge.NAnt.Ftp.Tasks.FTPTask.ftpDisconnect">
+            <summary>Disconnect from server</summary>
+        </member>
+        <member name="M:Sourceforge.NAnt.Ftp.Tasks.FTPTask.downloadFile(System.String,EnterpriseDT.Net.Ftp.FTPTransferType)">
+            <summary>Download one file</summary>
+            <param name="FileName">Download this filename</param>
+            <param name="FtpType">using ascii or binary</param>
+        </member>
+        <member name="M:Sourceforge.NAnt.Ftp.Tasks.FTPTask.uploadFile(System.String,EnterpriseDT.Net.Ftp.FTPTransferType)">
+            <summary>Upload one file</summary>
+            <param name="FileName">the file to upload</param>
+            <param name="FtpType">use this type (ascii/binary)</param>
+        </member>
+        <member name="M:Sourceforge.NAnt.Ftp.Tasks.FTPTask.getConnection">
+            <summary>Load connection details from the internal Connection object into the task object.</summary>
+        </member>
+        <member name="M:Sourceforge.NAnt.Ftp.Tasks.FTPTask.Cut(System.String,System.String)">
+            <summary>Cut a text like Split but with a seperator longer than one char.</summary>
+            <param name="Input">Cut this text</param>
+            <param name="Splitter">using this seperator</param>
+            <returns>and return the elements as array</returns>
+        </member>
+        <member name="P:Sourceforge.NAnt.Ftp.Tasks.FTPTask.port">
+            <summary>
+            The port number to connect to.  Default is 21.
+            </summary>
+        </member>
+        <member name="P:Sourceforge.NAnt.Ftp.Tasks.FTPTask.Mode">
+            <summary>
+            The mode to connect as.  One of 'ACTIVE' or 'PASSIVE'.
+            </summary>
+        </member>
+        <member name="P:Sourceforge.NAnt.Ftp.Tasks.FTPTask.ConnectionName">
+            <summary>
+            The id of a Connection element that specifies the details for this connection.
+            </summary>
+        </member>
+        <member name="P:Sourceforge.NAnt.Ftp.Tasks.FTPTask.createDirsOnDemand">
+            <summary>
+            If <b>true</b> we create target directories as needed when saving files.  If <b>false</b>, attempting to access a directory that does not exist generates an exception.  Default is <b>true</b>.</summary>
+        </member>
+        <member name="P:Sourceforge.NAnt.Ftp.Tasks.FTPTask.remotepath">
+            <summary>The directory to use as a base path on the remote server.  If this path is relative, it is relative to the connection's remotepath.  Default is the default connection directory.</summary>
+        </member>
+        <member name="P:Sourceforge.NAnt.Ftp.Tasks.FTPTask.localpath">
+            <summary>The directory to use as a base path on the local filesystem.</summary>
+        </member>
+        <member name="P:Sourceforge.NAnt.Ftp.Tasks.FTPTask.Exec">
+            <summary>If this is <b>true</b>, execute the file transfers.  If it is <b>false</b>, establish the remote connection but do not transfer any files or modify local or remote directory structures.  Instead, display a list of the files included in the transfer operation.  This is useful for debugging include patterns on either local or remote filesystems.  Default is true.</summary>
+        </member>
+        <member name="P:Sourceforge.NAnt.Ftp.Tasks.FTPTask.LogFiles">
+            <summary>If this is <b>true</b>, each file transfer is individually recorded in logging output.  Default is <b>true</b>.</summary>
+        </member>
+        <member name="P:Sourceforge.NAnt.Ftp.Tasks.FTPTask.ShowDirOnConnect">
+            <summary>If this property is <b>true</b>, a directory listing of the remotepath is sent to the logging output after the connection is established.  Default is <b>false</b>.</summary>
+        </member>
+        <member name="P:Sourceforge.NAnt.Ftp.Tasks.FTPTask.ServerIsSet">
+            <summary>Gets a bool flag indicating whether or not the Server member has been set.</summary>
+            <value><b>True</b> if the Server string is not null and is not empty; else <b>false</b>.</value>
+        </member>
+        <member name="P:Sourceforge.NAnt.Ftp.Tasks.FTPTask.IsConnected">
+            <summary>Gets a bool flag indicating whether or not the connection is open.</summary>
+            <value><b>True</b> if the client exists; else <b>false</b>.</value>
+        </member>
+        <member name="P:Sourceforge.NAnt.Ftp.Tasks.FTPTask.Connection">
+            <summary>The network credentials used for authenticating the request with
+            the Internet resource.</summary>
+        </member>
+        <member name="P:Sourceforge.NAnt.Ftp.Tasks.FTPTask.PutSets">
+            <summary>
+            <para>
+            A PutFileSet (derived from <see cref="T:Sourceforge.NAnt.Ftp.Types.TransferFileSet"/>) 
+            that contains a list of <b>Include</b> statements that are 
+            processed (scanned) against the local filesystem relative 
+            to the <b>localpath</b> value.
+            </para>
+            <para>
+            Multiple &lt;put&gt; elements may be included in an 
+            &lt;ftp&gt; task.  They are processed with &lt;get&gt; 
+            elements in the order of inclusion.
+            </para>
+            </summary>
+        </member>
+        <member name="P:Sourceforge.NAnt.Ftp.Tasks.FTPTask.GetSets">
+            <summary>
+            <para>
+            A Get (derived from <see cref="T:Sourceforge.NAnt.Ftp.Types.TransferFileSet"/>) 
+            that contains a list of <b>Include</b> statements that are 
+            processed (scanned) against the remote filesystem relative 
+            to the <b>remotepath</b> value.
+            </para>
+            <para>
+            Multiple &lt;get&gt; elements may be included in an 
+            &lt;ftp&gt; task.  They are processed with &lt;put&gt; 
+            elements in the order of inclusion.
+            </para>
+            </summary>
+        </member>
+        <member name="P:Sourceforge.NAnt.Ftp.Tasks.FTPTask.UploadAscii">
+            <summary>Use &lt;put mode='ascii' /&gt; instead.</summary>
+        </member>
+        <member name="P:Sourceforge.NAnt.Ftp.Tasks.FTPTask.UploadBinary">
+            <summary>Use &lt;put mode='bin' /&gt; instead.</summary>
+        </member>
+        <member name="P:Sourceforge.NAnt.Ftp.Tasks.FTPTask.DowloadAscii">
+            <summary>Use &lt;get mode='ascii' /&gt; instead.</summary>
+        </member>
+        <member name="P:Sourceforge.NAnt.Ftp.Tasks.FTPTask.DowloadBinary">
+            <summary>Use &lt;get mode='bin' /&gt; instead.</summary>
+        </member>
+        <member name="T:Sourceforge.NAnt.Ftp.Util.RemoteDirectoryScanner">
+            <summary>
+            Used for searching a remote filesystem based on given include/exclude rules.
+            </summary>
+            <example>
+                <para>Simple client code for testing the class.</para>
+                <code>
+                    while (true) {
+                        DirectoryScanner scanner = new DirectoryScanner();
+            
+                        Console.Write("Scan Basedirectory : ");
+                        string s = Console.ReadLine();
+                        if (s.Length == 0) break;
+                        scanner.BaseDirectory = s;
+            
+                        while(true) {
+                            Console.Write("Include pattern : ");
+                            s = Console.ReadLine();
+                            if (s.Length == 0) break;
+                            scanner.Includes.Add(s);
+                        }
+            
+                        while(true) {
+                            Console.Write("Exclude pattern : ");
+                            s = Console.ReadLine();
+                            if (s.Length == 0) break;
+                            scanner.Excludes.Add(s);
+                        }
+            
+                        foreach (string name in scanner.FileNames)
+                            Console.WriteLine("file:" + name);
+                        foreach (string name in scanner.DirectoryNames)
+                            Console.WriteLine("dir :" + name);
+            
+                        Console.WriteLine("");
+                    }
+                </code>
+            </example>
+            <history>
+                <change date="20020220" author="Ari Hännikäinen">Added support for absolute paths and relative paths refering to parent directories ( ../ )</change>
+                <change date="20020221" author="Ari Hännikäinen">Changed implementation because of performance reasons - now scanning each directory only once</change>
+                <change date="20030224" author="Brian Deacon (bdeacon at vidya dot com)">
+                    Fixed a bug that was causing absolute pathnames to turn into an invalid regex pattern, and thus never match.
+                </change>
+            </history>
+        </member>
+        <member name="M:Sourceforge.NAnt.Ftp.Util.RemoteDirectoryScanner.Clone">
+            <summary>
+            Creates a shallow copy of the <see cref="T:NAnt.Core.DirectoryScanner"/>.
+            </summary>
+            <returns>
+            A shallow copy of the <see cref="T:NAnt.Core.DirectoryScanner"/>.
+            </returns>
+        </member>
+        <member name="M:Sourceforge.NAnt.Ftp.Util.RemoteDirectoryScanner.Scan">
+            <summary>
+            Uses <see cref="P:Sourceforge.NAnt.Ftp.Util.RemoteDirectoryScanner.Includes"/> and <see cref="P:Sourceforge.NAnt.Ftp.Util.RemoteDirectoryScanner.Excludes"/> search criteria (relative to 
+            <see cref="P:Sourceforge.NAnt.Ftp.Util.RemoteDirectoryScanner.BaseDirectory"/> or absolute), to search for filesystem objects.
+            </summary>
+            <history>
+                <change date="20020220" author="Ari Hännikäinen">Totally changed the scanning strategy</change>
+                <change date="20020221" author="Ari Hännikäinen">Changed it again because of performance reasons</change>
+            </history>
+        </member>
+        <member name="M:Sourceforge.NAnt.Ftp.Util.RemoteDirectoryScanner.ConvertPatterns(System.Collections.Specialized.StringCollection,System.Collections.ArrayList,System.Collections.Specialized.StringCollection,System.Boolean)">
+            <summary>
+            Parses specified NAnt search patterns for search directories and 
+            corresponding regex patterns.
+            </summary>
+            <param name="nantPatterns">In. NAnt patterns. Absolute or relative paths.</param>
+            <param name="regexPatterns">Out. Regex patterns. Absolute canonical paths.</param>
+            <param name="nonRegexFiles">Out. Non-regex files. Absolute canonical paths.</param>
+            <param name="addSearchDirectories">In. Whether to allow a pattern to add search directories.</param>
+            <history>
+                <change date="20020221" author="Ari Hännikäinen">Created</change>
+            </history>
+        </member>
+        <member name="M:Sourceforge.NAnt.Ftp.Util.RemoteDirectoryScanner.ParseSearchDirectoryAndPattern(System.Boolean,System.String,System.String@,System.Boolean@,System.Boolean@,System.String@)">
+            <summary>
+            Given a NAnt search pattern returns a search directory and an regex 
+            search pattern.
+            </summary>
+            <param name="isInclude">Whether this pattern is an include or exclude pattern</param>
+            <param name="originalNAntPattern">NAnt searh pattern (relative to the Basedirectory OR absolute, relative paths refering to parent directories ( ../ ) also supported)</param>
+            <param name="searchDirectory">Out. Absolute canonical path to the directory to be searched</param>
+            <param name="recursive">Out. Whether the pattern is potentially recursive or not</param>
+            <param name="isRegex">Out. Whether this is a regex pattern or not</param>
+            <param name="regexPattern">Out. Regex search pattern (absolute canonical path)</param>
+            <history>
+                <change date="20020220" author="Ari Hännikäinen">Created</change>
+                <change date="20020221" author="Ari Hännikäinen">Returning absolute regex patterns instead of relative nant patterns</change>
+                <change date="20030224" author="Brian Deacon (bdeacon at vidya dot com)">
+                Added replacing of slashes with Path.DirectorySeparatorChar to make this OS-agnostic.  Also added the Path.IsPathRooted check
+                to support absolute pathnames to prevent basedir = "/foo/bar" and pattern="/fudge/nugget" from being incorrectly turned into 
+                "/foo/bar/fudge/nugget".  (pattern = "fudge/nugget" would still be treated as relative to basedir)
+                </change>
+            </history>
+        </member>
+        <member name="M:Sourceforge.NAnt.Ftp.Util.RemoteDirectoryScanner.ScanDirectory(System.String,System.Boolean)">
+            <summary>
+            Searches a directory recursively for files and directories matching 
+            the search criteria.
+            </summary>
+            <param name="path">Directory in which to search (absolute canonical path)</param>
+            <param name="recursive">Whether to scan recursively or not</param>
+            <history>
+                <change date="20020221" author="Ari Hännikäinen">Checking if the directory has already been scanned</change>
+            </history>
+        </member>
+        <member name="M:Sourceforge.NAnt.Ftp.Util.RemoteDirectoryScanner.ToRegexPattern(System.String)">
+            <summary>
+            Converts search pattern to a regular expression pattern.
+            </summary>
+            <param name="nantPattern">Search pattern relative to the search directory.</param>
+            <returns>Regular expresssion</returns>
+            <history>
+                <change date="20020220" author="Ari Hännikäinen">Added parameter baseDir, using  it instead of class member variable</change>
+            </history>
+        </member>
+        <member name="P:Sourceforge.NAnt.Ftp.Util.RemoteDirectoryScanner.Includes">
+            <summary>
+            Gets the collection of include patterns.
+            </summary>
+        </member>
+        <member name="P:Sourceforge.NAnt.Ftp.Util.RemoteDirectoryScanner.Excludes">
+            <summary>
+            Gets the collection of exclude patterns.
+            </summary>
+        </member>
+        <member name="P:Sourceforge.NAnt.Ftp.Util.RemoteDirectoryScanner.BaseDirectory">
+            <summary>
+            The base directory to scan. The default is the 
+            <see cref="P:System.Environment.CurrentDirectory">current directory</see>.
+            </summary>
+        </member>
+        <member name="P:Sourceforge.NAnt.Ftp.Util.RemoteDirectoryScanner.FileNames">
+            <summary>
+            Gets the list of files that match the given patterns.
+            </summary>
+        </member>
+        <member name="P:Sourceforge.NAnt.Ftp.Util.RemoteDirectoryScanner.DirectoryNames">
+            <summary>
+            Gets the list of directories that match the given patterns.
+            </summary>
+        </member>
+        <member name="P:Sourceforge.NAnt.Ftp.Util.RemoteDirectoryScanner.ScannedDirectories">
+            <summary>
+            Gets the list of directories that were scanned for files.
+            </summary>
+        </member>
+        <member name="M:Sourceforge.NAnt.Ftp.Util.StringCollectionWithGoodToString.Clone">
+            <summary>
+            Creates a shallow copy of the <see cref="T:Sourceforge.NAnt.Ftp.Util.StringCollectionWithGoodToString"/>.
+            </summary>
+            <returns>
+            A shallow copy of the <see cref="T:Sourceforge.NAnt.Ftp.Util.StringCollectionWithGoodToString"/>.
+            </returns>
+        </member>
+        <member name="M:Sourceforge.NAnt.Ftp.Util.StringCollectionWithGoodToString.ToString">
+            <summary>
+            Creates a string representing a list of the strings in the collection.
+            </summary>
+            <returns>
+            A string that represents the contents.
+            </returns>
+        </member>
+        <member name="M:Sourceforge.NAnt.Ftp.Util.DirScannerStringCollection.Clone">
+            <summary>
+            Creates a shallow copy of the <see cref="T:Sourceforge.NAnt.Ftp.Util.DirScannerStringCollection"/>.
+            </summary>
+            <returns>
+            A shallow copy of the <see cref="T:Sourceforge.NAnt.Ftp.Util.DirScannerStringCollection"/>.
+            </returns>
+        </member>
+        <member name="M:Sourceforge.NAnt.Ftp.Util.DirScannerStringCollection.Contains(System.String)">
+            <summary>
+            Determines whether the specified string is in the 
+            <see cref="T:Sourceforge.NAnt.Ftp.Util.DirScannerStringCollection"/>.
+            </summary>
+            <param name="value">The string to locate in the <see cref="T:Sourceforge.NAnt.Ftp.Util.DirScannerStringCollection"/>. The value can be <see langword="null"/>.</param>
+            <returns>
+            <seee langword="true"/> if value is found in the <see cref="T:Sourceforge.NAnt.Ftp.Util.DirScannerStringCollection"/>; otherwise, <see langword="false"/>.
+            </returns>
+            <remarks>
+            String comparisons within the <see cref="T:Sourceforge.NAnt.Ftp.Util.DirScannerStringCollection"/>
+            are only case-sensitive if the filesystem on which <paramref name="value"/>
+            is located, is case-sensitive.
+            </remarks>
+        </member>
+        <member name="M:Sourceforge.NAnt.Ftp.Util.DirScannerStringCollection.IndexOf(System.String)">
+            <summary>
+            Searches for the specified string and returns the zero-based index 
+            of the first occurrence within the <see cref="T:Sourceforge.NAnt.Ftp.Util.DirScannerStringCollection"/>.
+            </summary>
+            <param name="value">The string to locate. The value can be <see langword="null"/>.</param>
+            <returns>
+            The zero-based index of the first occurrence of <paramref name="value"/> 
+            in the <see cref="T:Sourceforge.NAnt.Ftp.Util.DirScannerStringCollection"/>, if found; otherwise, -1.
+            </returns>
+            <remarks>
+            String comparisons within the <see cref="T:Sourceforge.NAnt.Ftp.Util.DirScannerStringCollection"/>
+            are only case-sensitive if the filesystem on which <paramref name="value"/>
+            is located, is case-sensitive.
+            </remarks>
+        </member>
+        <member name="M:Sourceforge.NAnt.Ftp.Util.DirScannerStringCollection.IsCaseSensitiveFileSystem(System.String)">
+            <summary>
+            Determines whether the filesystem on which the specified path is 
+            located is case-sensitive.
+            </summary>
+            <param name="path">The path of which should be determined whether its on a case-sensitive filesystem.</param>
+            <returns>
+            <see langword="true" /> if <paramref name="path" /> is located on a 
+            case-sensitive filesystem; otherwise, <see langword="false" />.
+            </returns>
+        </member>
+        <member name="T:Sourceforge.NAnt.Ftp.Types.Connection">
+            <summary>
+            Extends the <see cref="T:NAnt.Core.Types.Credential"/> type to provides connection details for connecting to a remote host.
+            </summary>
+        </member>
+        <member name="M:Sourceforge.NAnt.Ftp.Types.Connection.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Sourceforge.NAnt.Ftp.Types.Connection"/> class.
+            </summary>
+        </member>
+        <member name="P:Sourceforge.NAnt.Ftp.Types.Connection.Server">
+            <summary>
+            The server target for this connection.
+            </summary>
+        </member>
+        <member name="T:Sourceforge.NAnt.Ftp.Types.GetFileSet">
+            <summary>
+            A specially derived <b>FileSet</b> element that is used in the &lt;ftp&gt; task.
+            </summary>
+        </member>
+        <member name="T:Sourceforge.NAnt.Ftp.Types.TransferFileSet">
+            <summary>
+            A base class for the <see cref="T:Sourceforge.NAnt.Ftp.Types.PutFileSet"/> and <see cref="T:Sourceforge.NAnt.Ftp.Types.GetFileSet"/> elements of an <see cref="T:Sourceforge.NAnt.Ftp.Tasks.FTPTask"/>.
+            </summary>
+            <remarks>
+            <para>
+            This type is not used directly...
+            </para>
+            </remarks>
+        </member>
+        <member name="M:Sourceforge.NAnt.Ftp.Types.TransferFileSet.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Sourceforge.NAnt.Ftp.Types.Connection"/> class.
+            </summary>
+        </member>
+        <member name="P:Sourceforge.NAnt.Ftp.Types.TransferFileSet.LocalPath">
+            <summary>
+            The base of the local directory of this fileset. The default is the project 
+            base directory.
+            </summary>
+        </member>
+        <member name="P:Sourceforge.NAnt.Ftp.Types.TransferFileSet.Flatten">
+            <summary>
+            When set to <see langword="true" />, causes the directory structure to be flattened at the destination. The default is <see langword="false" />.
+            </summary>
+        </member>
+        <member name="P:Sourceforge.NAnt.Ftp.Types.TransferFileSet.CreateDirsOnDemand">
+            <summary>
+            When set to <see langword="true" />, causes the directory structure to be created as needed to ensure that the destination direction exists. The default is <see langword="true" />.
+            </summary>
+        </member>
+        <member name="P:Sourceforge.NAnt.Ftp.Types.TransferFileSet.RemotePathString">
+            <summary>
+            The base of the remote directory of this fileset. The default is the connection
+            base directory.
+            </summary>
+        </member>
+        <member name="P:Sourceforge.NAnt.Ftp.Types.TransferFileSet.TransferType">
+            <summary>
+            The transfer type for this fileset (one of: a, ascii, b, bin, binary, i, img, image).  Default is bin.
+            </summary>
+        </member>
+        <member name="P:Sourceforge.NAnt.Ftp.Types.TransferFileSet.Type">
+            <summary>
+            Short-form access to <see cref="P:Sourceforge.NAnt.Ftp.Types.TransferFileSet.TransferType">TransferType</see> for this fileset.
+            </summary>
+        </member>
+        <member name="P:Sourceforge.NAnt.Ftp.Types.TransferFileSet.Update">
+            <summary>If <b>true</b> files are only transferred if the source file is newer than the destination file.</summary>
+        </member>
+        <member name="P:Sourceforge.NAnt.Ftp.Types.TransferFileSet.IfDefined">
+            <summary>
+            If <see langword="true" /> then the pattern will be included; 
+            otherwise, skipped. The default is <see langword="true" />.
+            </summary>
+            <remarks>Copied from the <b>Include</b> class in the NAnt-0.85-rc1 distribution.</remarks>
+        </member>
+        <member name="P:Sourceforge.NAnt.Ftp.Types.TransferFileSet.UnlessDefined">
+            <summary>
+            Opposite of <see cref="P:Sourceforge.NAnt.Ftp.Types.TransferFileSet.IfDefined"/>. If <see langword="false"/> 
+            then the pattern will be included; otherwise, skipped. The default 
+            is <see langword="false"/>.
+            </summary>
+            <remarks>Copied from the <b>Include</b> class in the NAnt-0.85-rc1 distribution.</remarks>
+        </member>
+        <member name="M:Sourceforge.NAnt.Ftp.Types.GetFileSet.Clone">
+            <summary>
+            Creates a shallow copy of the <see cref="T:NAnt.Core.Types.FileSet"/>.
+            </summary>
+            <returns>
+            A shallow copy of the <see cref="T:NAnt.Core.Types.FileSet"/>.
+            </returns>
+        </member>
+        <member name="M:Sourceforge.NAnt.Ftp.Types.GetFileSet.CopyTo(Sourceforge.NAnt.Ftp.Types.GetFileSet)">
+            <summary>
+            Copies all instance data of the <see cref="T:NAnt.Core.Types.FileSet"/> to a given
+            <see cref="T:NAnt.Core.Types.FileSet"/>.
+            </summary>
+        </member>
+        <member name="M:Sourceforge.NAnt.Ftp.Types.GetFileSet.FindMoreRecentLastWriteTime(System.String,System.DateTime)">
+            <summary>
+            Determines if a file has a more recent last write time than the 
+            given time, or no longer exists.
+            </summary>
+            <param name="fileName">A file to check the last write time against.</param>
+            <param name="targetLastWriteTime">The datetime to compare against.</param>
+            <returns>
+            The name of the file that has a last write time greater than 
+            <paramref name="targetLastWriteTime" /> or that no longer exists; 
+            otherwise, <see langword="null" />.
+            </returns>
+        </member>
+        <member name="M:Sourceforge.NAnt.Ftp.Types.GetFileSet.FindMoreRecentLastWriteTime(System.Collections.Specialized.StringCollection,System.DateTime)">
+            <summary>
+            Determines if one of the given files has a more recent last write 
+            time than the given time. If one of the given files no longer exists,
+            the target will be considered out-of-date.
+            </summary>
+            <param name="fileNames">A collection of filenames to check the last write time against.</param>
+            <param name="targetLastWriteTime">The datetime to compare against.</param>
+            <returns>
+            The name of the first file that has a last write time greater than 
+            <paramref name="targetLastWriteTime" />; otherwise, null.
+            </returns>
+        </member>
+        <member name="P:Sourceforge.NAnt.Ftp.Types.GetFileSet.Includes">
+            <summary>
+            Gets the collection of include patterns.
+            </summary>
+        </member>
+        <member name="P:Sourceforge.NAnt.Ftp.Types.GetFileSet.Excludes">
+            <summary>
+            Gets the collection of exclude patterns.
+            </summary>
+        </member>
+        <member name="P:Sourceforge.NAnt.Ftp.Types.GetFileSet.FileNames">
+            <summary>
+            Gets the collection of file names that match the fileset.
+            </summary>
+            <value>
+            A collection that contains the file names that match the 
+            <see cref="T:NAnt.Core.Types.FileSet"/>.
+            </value>
+        </member>
+        <member name="P:Sourceforge.NAnt.Ftp.Types.GetFileSet.DirectoryNames">
+            <summary>
+            Gets the collection of directory names that match the fileset.
+            </summary>
+            <value>
+            A collection that contains the directory names that match the 
+            <see cref="T:NAnt.Core.Types.FileSet"/>.
+            </value>
+        </member>
+        <member name="P:Sourceforge.NAnt.Ftp.Types.GetFileSet.ScannedDirectories">
+            <summary>
+            Gets the collection of directory names that were scanned for files.
+            </summary>
+            <value>
+            A collection that contains the directory names that were scanned for
+            files.
+            </value>
+        </member>
+        <member name="P:Sourceforge.NAnt.Ftp.Types.GetFileSet.IncludeElements">
+            <summary>
+            The items to include in the fileset.
+            </summary>
+        </member>
+        <member name="P:Sourceforge.NAnt.Ftp.Types.GetFileSet.IncludesFiles">
+            <summary>
+            The files from which a list of patterns or files to include should 
+            be obtained.
+            </summary>
+        </member>
+        <member name="P:Sourceforge.NAnt.Ftp.Types.GetFileSet.MostRecentLastWriteTimeFile">
+            <summary>
+            Determines the most recently modified file in the fileset (by LastWriteTime of the <see cref="T:Sourceforge.NAnt.Ftp.Util.RemotePath"/>).
+            </summary>
+            <returns>
+            The <see cref="T:Sourceforge.NAnt.Ftp.Util.RemotePath"/> of the file that has the newest (closest to present) last write time.
+            </returns>
+        </member>
+        <member name="T:Sourceforge.NAnt.Ftp.Types.PutFileSet">
+            <summary>
+            A specially derived <b>FileSet</b> element that is used in the &lt;ftp&gt; task <see cref="T:Sourceforge.NAnt.Ftp.Tasks.FTPTask"/>.
+            </summary>
+        </member>
+        <member name="T:Sourceforge.NAnt.Ftp.Types.Text">
+            <summary>
+            Provides a plain text node.
+            </summary>
+        </member>
+        <member name="M:Sourceforge.NAnt.Ftp.Types.Text.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Sourceforge.NAnt.Ftp.Types.Text"/> class.
+            </summary>
+        </member>
+    </members>
+</doc>
