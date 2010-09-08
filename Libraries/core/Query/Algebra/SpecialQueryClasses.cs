@@ -53,7 +53,14 @@ namespace VDS.RDF.Query.Algebra
             foreach (IGraph g in context.Data.Graphs)
             {
                 Set s = new Set();
-                s.Add(var, g.CreateUriNode());
+                if (g.BaseUri == null)
+                {
+                    s.Add(var, null);
+                }
+                else
+                {
+                    s.Add(var, g.CreateUriNode());
+                }
                 context.OutputMultiset.Add(s);
             }
 

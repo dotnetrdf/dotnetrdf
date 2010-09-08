@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using ICSharpCode.AvalonEdit;
+using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using Microsoft.Win32;
@@ -80,7 +81,7 @@ namespace rdfEditor
             }
             if (Properties.Settings.Default.WordWrap)
             {
-                textEditor.WordWrap = false;
+                textEditor.WordWrap = true;
                 this.mnuWordWrap.IsChecked = true;
             }
             if (Properties.Settings.Default.EnableClickableUris)
@@ -790,5 +791,101 @@ namespace rdfEditor
         }
 
         #endregion
+
+        private void mnuCommentSelection_Click(object sender, RoutedEventArgs e)
+        {
+            if (textEditor.SelectionLength == 0) return;
+
+            String syntax = this._manager.CurrentSyntax;
+            SyntaxDefinition def = SyntaxManager.GetDefinition(syntax);
+            if (def != null)
+            {
+                if (def.CanComment)
+                {
+                    String selection = textEditor.SelectedText;
+                    int startLine = textEditor.Document.GetLineByOffset(textEditor.SelectionStart).LineNumber;
+                    int endLine = textEditor.Document.GetLineByOffset(textEditor.SelectionStart + textEditor.SelectionLength).LineNumber;
+
+                    if (startLine == endLine && def.SingleLineComment != null)
+                    {
+                        //Single Line Comment
+                        textEditor.Document.Replace(textEditor.SelectionStart, textEditor.SelectionLength, def.SingleLineComment + selection);
+                    }
+                    else
+                    {
+                        //Multi Line Comment
+                        if (def.MultiLineCommentStart != null && def.MultiLineCommentEnd != null)
+                        {
+                            textEditor.Document.Replace(textEditor.SelectionStart, textEditor.SelectionLength, def.MultiLineCommentStart + selection + def.MultiLineCommentEnd);
+                        }
+                        else
+                        {
+                            textEditor.BeginChange();
+                            for (int i = startLine; i <= endLine; i++)
+                            {
+                                DocumentLine line = textEditor.Document.GetLineByNumber(i);
+                                int startOffset = Math.Max(textEditor.SelectionStart, line.Offset);
+                                textEditor.Document.Insert(startOffset, def.SingleLineComment);
+                            }
+                            textEditor.EndChange();
+                        }
+                    }
+                }
+            }
+        }
+
+        private void mnuUncommentSelection_Click(object sender, RoutedEventArgs e)
+        {
+            if (textEditor.SelectionLength == 0) return;
+
+            String syntax = this._manager.CurrentSyntax;
+            SyntaxDefinition def = SyntaxManager.GetDefinition(syntax);
+            if (def != null)
+            {
+                if (def.CanComment)
+                {
+                    String selection = textEditor.SelectedText;
+                    int startLine = textEditor.Document.GetLineByOffset(textEditor.SelectionStart).LineNumber;
+                    int endLine = textEditor.Document.GetLineByOffset(textEditor.SelectionStart + textEditor.SelectionLength).LineNumber;
+
+                    if (startLine == endLine && def.SingleLineComment != null)
+                    {
+                        //Single Line Comment
+                        int index = selection.IndexOf(def.SingleLineComment);
+                        if (index > -1)
+                        {
+                            textEditor.Document.Remove(textEditor.SelectionStart + index, def.SingleLineComment.Length);
+                        }
+                    }
+                    else
+                    {
+                        //Multi Line Comment
+                        if (def.MultiLineCommentStart != null && def.MultiLineCommentEnd != null)
+                        {
+                            int startIndex = selection.IndexOf(def.MultiLineCommentStart);
+                            int endIndex = selection.LastIndexOf(def.MultiLineCommentEnd);
+                            textEditor.BeginChange();
+                            textEditor.Document.Remove(textEditor.SelectionStart + startIndex, def.MultiLineCommentStart.Length);
+                            textEditor.Document.Remove(textEditor.SelectionStart + endIndex, def.MultiLineCommentEnd.Length);
+                            textEditor.EndChange();
+                        }
+                        else
+                        {
+                            textEditor.BeginChange();
+                            for (int i = startLine; i <= endLine; i++)
+                            {
+                                DocumentLine line = textEditor.Document.GetLineByNumber(i);
+                                int startOffset = Math.Max(textEditor.SelectionStart, line.Offset);
+                                int endOffset = Math.Min(textEditor.SelectionStart + textEditor.SelectionLength, line.EndOffset);
+                                String lineText = textEditor.Document.GetText(startOffset, endOffset - startOffset);
+                                int index = lineText.IndexOf(def.SingleLineComment);
+                                textEditor.Document.Remove(startOffset + index, def.SingleLineComment.Length);
+                            }
+                            textEditor.EndChange();
+                        }
+                    }
+                }
+            }
+        }
     }
 }

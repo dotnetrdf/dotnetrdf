@@ -116,7 +116,7 @@
 
     <Span color="String" ruleSet="StringEscapes">
       <Begin>'</Begin>
-      <End>'(?&lt;=\\)</End>
+      <End>'(?&lt;!\\)</End>
     </Span>
 
   </RuleSet>

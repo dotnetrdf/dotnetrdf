@@ -10,55 +10,8 @@
   <Color name="EscapedChar" foreground="Teal" />
 	
 	<RuleSet>
-	
-		<!-- Literals -->
-		
-		<Span color="String">
-			<Begin>"</Begin>
-			<End>"</End>
-      <RuleSet>
-        <!-- span for escape sequences -->
-        <Span begin="\\" end="." color="EscapedChar" />
-      </RuleSet>
-		</Span>
-		
-		<!-- URIs -->
-		
-		<Span color="URI">
-			<Begin>&lt;</Begin>
-			<End>&gt;</End>
-      <RuleSet>
-        <Span begin="\\" end="&gt;" color="EscapedChar" />
-      </RuleSet>
-		</Span>
-		
-		<!-- Blank Nodes -->
-		
-		<Rule color="BNode">
-			_:([a-zA-Z]|\\u[a-fA-F0-9]{4}|\\U[a-fA-F0-9]{8})\w*
-		</Rule>
-		
-		<Rule color="BNode">
-			\[\]
-		</Rule>
-		
-		<!-- Language Specifiers -->
-		
-		<Rule color="LangSpec">
-			@[A-Za-z]{2}(-[A-Za-z]+)*
-		</Rule>
-		
-		<!-- Punctuation Characters -->
-		
-		<Rule color="Punctuation">
-			[.]|\^\^
-		</Rule>
-		
-		<!-- Comments -->
-		
-		<Span color="Comment">
-			<Begin>\#</Begin>
-		</Span>
+
+    <Import ruleSet="NTriples/" />
 	
 	</RuleSet>
 	

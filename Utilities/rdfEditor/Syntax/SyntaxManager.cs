@@ -60,6 +60,23 @@ namespace rdfEditor.Syntax
                     allOk = false;
                 }
             }
+
+            //Set Comment Settings
+            SetCommentCharacters("RdfXml", null, "<!--", "-->");
+            SetCommentCharacters("Turtle", "#", null, null);
+            SetCommentCharacters("NTriples", "Turtle");
+            SetCommentCharacters("Notation3", "Turtle");
+            SetCommentCharacters("RdfJson", "//", "/*", "*/");
+            SetCommentCharacters("XHtmlRdfA", "RdfXml");
+            SetCommentCharacters("SparqlQuery10", "Turtle");
+            SetCommentCharacters("SparqlQuery11", "Turtle");
+            SetCommentCharacters("SparqlResultsXml", "RdfXml");
+            SetCommentCharacters("SparqlResultsJson", "RdfJson");
+            SetCommentCharacters("SparqlUpdate11", "Turtle");
+            SetCommentCharacters("NQuads", "Turtle");
+            SetCommentCharacters("TriG", "Turtle");
+            SetCommentCharacters("TriX", "RdfXml");
+
             return allOk;
         }
 
@@ -144,6 +161,29 @@ namespace rdfEditor.Syntax
                 if (def.Name.Equals(name)) return def;
             }
             return null;
+        }
+
+        public static void SetCommentCharacters(String name, String singleLineComment, String multiLineCommentStart, String multiLineCommentEnd)
+        {
+            SyntaxDefinition def = GetDefinition(name);
+            if (def != null)
+            {
+                def.SingleLineComment = singleLineComment;
+                def.MultiLineCommentStart = multiLineCommentStart;
+                def.MultiLineCommentEnd = multiLineCommentEnd;
+            }
+        }
+
+        public static void SetCommentCharacters(String name, String copyFrom)
+        {
+            SyntaxDefinition def = GetDefinition(name);
+            SyntaxDefinition sourceDef = GetDefinition(copyFrom);
+            if (def != null && sourceDef != null)
+            {
+                def.SingleLineComment = sourceDef.SingleLineComment;
+                def.MultiLineCommentStart = sourceDef.MultiLineCommentStart;
+                def.MultiLineCommentEnd = sourceDef.MultiLineCommentEnd;
+            }
         }
     }
 }

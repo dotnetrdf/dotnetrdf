@@ -342,7 +342,7 @@ namespace VDS.RDF.Query.Aggregates
         public override INode Apply(SparqlEvaluationContext context, IEnumerable<int> bindingIDs)
         {
             int c;
-            List < INode > values = new List<INode>();
+            List <INode> values = new List<INode>();
 
             if (this._varname != null)
             {

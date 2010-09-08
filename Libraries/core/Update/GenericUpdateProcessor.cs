@@ -333,7 +333,7 @@ namespace VDS.RDF.Update
         /// <param name="cmd">DELETE Data Command</param>
         public void ProcessDeleteDataCommand(DeleteDataCommand cmd)
         {
-            if (!cmd.DataPattern.TriplePatterns.All(p => p is TriplePattern && p.IndexType == TripleIndexType.NoVariables)) throw new SparqlUpdateException("Cannot evaluate a DELETE DATA command where any of the Triple Patterns are not complete triples");
+            if (!cmd.DataPattern.TriplePatterns.All(p => p is IConstructTriplePattern && ((IConstructTriplePattern)p).HasNoExplicitVariables)) throw new SparqlUpdateException("Cannot evaluate a DELETE DATA command where any of the Triple Patterns are not concrete triples - variables are not permitted");
 
             Uri graphUri = null;
             if (cmd.DataPattern.IsGraph)
@@ -353,16 +353,15 @@ namespace VDS.RDF.Update
             Graph g = new Graph();
             if (!this._manager.UpdateSupported) this._manager.LoadGraph(g, graphUri);
 
-            //Insert the actual Triples
+            //Delete the actual Triples
             INode subj, pred, obj;
-            foreach (ITriplePattern p in cmd.DataPattern.TriplePatterns)
+            foreach (IConstructTriplePattern p in cmd.DataPattern.TriplePatterns)
             {
-                TriplePattern tp = (TriplePattern)p;
-                subj = ((NodeMatchPattern)tp.Subject).Node.CopyNode(g);
-                pred = ((NodeMatchPattern)tp.Predicate).Node.CopyNode(g);
-                obj = ((NodeMatchPattern)tp.Object).Node.CopyNode(g);
+                subj = p.Subject.Construct(g, null, true);//((NodeMatchPattern)tp.Subject).Node.CopyNode(g);
+                pred = p.Predicate.Construct(g, null, true);//((NodeMatchPattern)tp.Predicate).Node.CopyNode(g);
+                obj = p.Object.Construct(g, null, true);//((NodeMatchPattern)tp.Object).Node.CopyNode(g);
 
-                g.Assert(new Triple(subj, pred, obj));
+                g.Retract(new Triple(subj, pred, obj));
             }
 
             if (this._manager.UpdateSupported)
@@ -536,7 +535,7 @@ namespace VDS.RDF.Update
         /// <param name="cmd">Insert Data Command</param>
         public void ProcessInsertDataCommand(InsertDataCommand cmd)
         {
-            if (!cmd.DataPattern.TriplePatterns.All(p => p is TriplePattern && p.IndexType == TripleIndexType.NoVariables)) throw new SparqlUpdateException("Cannot evaluate a INSERT DATA command where any of the Triple Patterns are not complete triples");
+            if (!cmd.DataPattern.TriplePatterns.All(p => p is IConstructTriplePattern && ((IConstructTriplePattern)p).HasNoExplicitVariables)) throw new SparqlUpdateException("Cannot evaluate a INSERT DATA command where any of the Triple Patterns are not concrete triples - variables are not permitted");
 
             Uri graphUri = null;
             if (cmd.DataPattern.IsGraph)
@@ -558,12 +557,11 @@ namespace VDS.RDF.Update
 
             //Insert the actual Triples
             INode subj, pred, obj;
-            foreach (ITriplePattern p in cmd.DataPattern.TriplePatterns)
+            foreach (IConstructTriplePattern p in cmd.DataPattern.TriplePatterns.OfType<IConstructTriplePattern>())
             {
-                TriplePattern tp = (TriplePattern)p;
-                subj = ((NodeMatchPattern)tp.Subject).Node.CopyNode(g);
-                pred = ((NodeMatchPattern)tp.Predicate).Node.CopyNode(g);
-                obj = ((NodeMatchPattern)tp.Object).Node.CopyNode(g);
+                subj = p.Subject.Construct(g, null, true);//((NodeMatchPattern)tp.Subject).Node.CopyNode(target);
+                pred = p.Predicate.Construct(g, null, true);//((NodeMatchPattern)tp.Predicate).Node.CopyNode(target);
+                obj = p.Object.Construct(g, null, true);//((NodeMatchPattern)tp.Object).Node.CopyNode(target);
 
                 g.Assert(new Triple(subj, pred, obj));
             }

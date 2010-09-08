@@ -102,5 +102,45 @@ namespace VDS.RDF.Query.Patterns
         /// <param name="preserveBNodes">Whether Blank Nodes should be preserved as-is (default behaviour is to re-write them)</param>
         /// <returns></returns>
         Triple Construct(IGraph g, Set s, bool preserveBNodes);
+
+        /// <summary>
+        /// Gets the Subject of the Pattern
+        /// </summary>
+        PatternItem Subject
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Gets the Predicate of the Pattern
+        /// </summary>
+        PatternItem Predicate
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Gets the Object of the Pattern
+        /// </summary>
+        PatternItem Object
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Gets whether the Pattern contains no Variables
+        /// </summary>
+        bool HasNoVariables
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Gets whether the Pattern contains no Explicit Variables (i.e. Blank Node Variables are ignored)
+        /// </summary>
+        bool HasNoExplicitVariables
+        {
+            get;
+        }
     }
 }

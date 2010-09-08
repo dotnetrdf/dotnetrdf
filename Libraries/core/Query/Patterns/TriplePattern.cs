@@ -429,6 +429,30 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
+        /// Gets whether the Pattern contains no Variables
+        /// </summary>
+        public bool HasNoVariables
+        {
+            get
+            {
+                return (this._indexType == TripleIndexType.NoVariables);
+            }
+        }
+
+        /// <summary>
+        /// Gets whether the Pattern contains no Explicit Variables (i.e. Blank Node Variables are ignored)
+        /// </summary>
+        public bool HasNoExplicitVariables
+        {
+            get
+            {
+                return (this._subj is NodeMatchPattern || this._subj is BlankNodePattern) &&
+                       (this._pred is NodeMatchPattern || this._pred is BlankNodePattern) &&
+                       (this._obj is NodeMatchPattern || this._obj is BlankNodePattern);
+            }
+        }
+
+        /// <summary>
         /// Gets the String representation of this Pattern
         /// </summary>
         /// <returns></returns>

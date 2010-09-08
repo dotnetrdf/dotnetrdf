@@ -53,7 +53,7 @@
 
     <Span color="String" ruleSet="StringEscapes">
       <Begin>"</Begin>
-      <End>"(?&lt;=\\)</End>
+      <End>"(?&lt;!\\)</End>
     </Span>
 
   </RuleSet>
@@ -63,7 +63,7 @@
 
     <Span color="URI" ruleSet="UriEscapes">
       <Begin>&lt;</Begin>
-      <End>&gt;(?&lt;=\\)</End>
+      <End>&gt;(?&lt;!\\)</End>
     </Span>
 
     <Rule color="QName">

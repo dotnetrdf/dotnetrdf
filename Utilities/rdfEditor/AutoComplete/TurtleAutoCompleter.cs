@@ -282,78 +282,87 @@ namespace rdfEditor.AutoComplete
             //Don't do anything if auto-complete not currently active
             if (this.State == AutoCompleteState.Disabled || this.State == AutoCompleteState.Inserted) return;
 
-            //If not currently auto-completing see if we can start a completion
-            if (this.State == AutoCompleteState.None)
+            try
             {
-                this.StartAutoComplete(editor, e);
-                return;
-            }
 
-            //If Length is less than zero then user has moved the caret so we'll abort our completion and start a new one
-            if (this.Length < 0)
-            {
-                this.AbortAutoComplete();
-                //TODO: Should probably call DetectState() here once it's properly implemented
-                this.StartAutoComplete(editor, e);
-                return;
-            }
-
-            //Length should never be 1 when we get here
-            if (this._c == null && this.Length == 1)
-            {
-                this.State = AutoCompleteState.None;
-                this.StartAutoComplete(editor, e);
-                return;
-            }
-
-            if (e.Text.Length > 0)
-            {
-                switch (this.State)
+                //If not currently auto-completing see if we can start a completion
+                if (this.State == AutoCompleteState.None)
                 {
-                    case AutoCompleteState.Declaration:
-                        TryDeclarationCompletion(editor, e);
-                        break;
-
-                    case AutoCompleteState.Base:
-                        TryBaseCompletion(editor, e);
-                        break;
-
-                    case AutoCompleteState.Prefix:
-                        TryPrefixCompletion(editor, e);
-                        break;
-
-                    case AutoCompleteState.KeywordOrQName:
-                        TryKeywordOrQNameCompletion(editor, e);
-                        break;
-
-                    case AutoCompleteState.QName:
-                        TryQNameCompletion(editor, e);
-                        break;
-
-                    case AutoCompleteState.BNode:
-                        TryBNodeCompletion(editor, e);
-                        break;
-
-                    case AutoCompleteState.Uri:
-                        TryUriCompletion(editor, e);
-                        break;
-
-                    case AutoCompleteState.Literal:
-                        TryLiteralCompletion(editor, e);
-                        break;
-
-                    case AutoCompleteState.LongLiteral:
-                        TryLongLiteralCompletion(editor, e);
-                        break;
-
-                    case AutoCompleteState.Comment:
-                        TryCommentCompletion(editor, e);
-                        break;
-
-                    default:
-                        //Nothing to do as no other auto-completion is implemented yet
-                        break;
+                    this.StartAutoComplete(editor, e);
+                    return;
                 }
+
+                //If Length is less than zero then user has moved the caret so we'll abort our completion and start a new one
+                if (this.Length < 0)
+                {
+                    this.AbortAutoComplete();
+                    //TODO: Should probably call DetectState() here once it's properly implemented
+                    this.StartAutoComplete(editor, e);
+                    return;
+                }
+
+                //Length should never be 1 when we get here
+                if (this._c == null && this.Length == 1)
+                {
+                    this.State = AutoCompleteState.None;
+                    this.StartAutoComplete(editor, e);
+                    return;
+                }
+
+                if (e.Text.Length > 0)
+                {
+                    switch (this.State)
+                    {
+                        case AutoCompleteState.Declaration:
+                            TryDeclarationCompletion(editor, e);
+                            break;
+
+                        case AutoCompleteState.Base:
+                            TryBaseCompletion(editor, e);
+                            break;
+
+                        case AutoCompleteState.Prefix:
+                            TryPrefixCompletion(editor, e);
+                            break;
+
+                        case AutoCompleteState.KeywordOrQName:
+                            TryKeywordOrQNameCompletion(editor, e);
+                            break;
+
+                        case AutoCompleteState.QName:
+                            TryQNameCompletion(editor, e);
+                            break;
+
+                        case AutoCompleteState.BNode:
+                            TryBNodeCompletion(editor, e);
+                            break;
+
+                        case AutoCompleteState.Uri:
+                            TryUriCompletion(editor, e);
+                            break;
+
+                        case AutoCompleteState.Literal:
+                            TryLiteralCompletion(editor, e);
+                            break;
+
+                        case AutoCompleteState.LongLiteral:
+                            TryLongLiteralCompletion(editor, e);
+                            break;
+
+                        case AutoCompleteState.Comment:
+                            TryCommentCompletion(editor, e);
+                            break;
+
+                        default:
+                            //Nothing to do as no other auto-completion is implemented yet
+                            break;
+                    }
+                }
+            }
+            catch
+            {
+                //If any kind of error occurs just abort auto-completion
+                this.AbortAutoComplete();
             }
         }
 

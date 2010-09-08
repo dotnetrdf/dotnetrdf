@@ -21,7 +21,7 @@ namespace VDS.RDF.Update.Commands
         public InsertDataCommand(GraphPattern pattern)
             : base(SparqlUpdateCommandType.InsertData) 
         {
-            if (!pattern.TriplePatterns.All(p => p is TriplePattern && p.IndexType == TripleIndexType.NoVariables)) throw new SparqlUpdateException("Cannot create a INSERT DATA command where any of the Triple Patterns are not complete triples");
+            if (!pattern.TriplePatterns.All(p => p is IConstructTriplePattern && ((IConstructTriplePattern)p).HasNoExplicitVariables)) throw new SparqlUpdateException("Cannot create a INSERT DATA command where any of the Triple Patterns are not concrete triples - variables are not permitted");
             this._pattern = pattern;
         }
 
@@ -42,7 +42,7 @@ namespace VDS.RDF.Update.Commands
         /// <param name="context">Evaluation Context</param>
         public override void Evaluate(SparqlUpdateEvaluationContext context)
         {
-            if (!this._pattern.TriplePatterns.All(p => p is TriplePattern && p.IndexType == TripleIndexType.NoVariables)) throw new SparqlUpdateException("Cannot evaluate a INSERT DATA command where any of the Triple Patterns are not complete triples");
+            if (!this._pattern.TriplePatterns.All(p => p is IConstructTriplePattern && ((IConstructTriplePattern)p).HasNoExplicitVariables)) throw new SparqlUpdateException("Cannot evaluate a INSERT DATA command where any of the Triple Patterns are not concrete triples - variables are not permitted");
 
             //Get the Target Graph
             IGraph target;
@@ -70,17 +70,19 @@ namespace VDS.RDF.Update.Commands
             }
             else
             {
-                throw new SparqlUpdateException("Cannot evaluate an INSERT DATA Command since the target Graph does not exist");
+                //If the Graph does not exist then it must be created
+                target = new Graph();
+                target.BaseUri = graphUri;
+                context.Data.Add(target);
             }
 
             //Insert the actual Triples
             INode subj, pred, obj;
-            foreach (ITriplePattern p in this._pattern.TriplePatterns)
+            foreach (IConstructTriplePattern p in this._pattern.TriplePatterns.OfType<IConstructTriplePattern>())
             {
-                TriplePattern tp = (TriplePattern)p;
-                subj = ((NodeMatchPattern)tp.Subject).Node.CopyNode(target);
-                pred = ((NodeMatchPattern)tp.Predicate).Node.CopyNode(target);
-                obj = ((NodeMatchPattern)tp.Object).Node.CopyNode(target);
+                subj = p.Subject.Construct(target, null, true);//((NodeMatchPattern)tp.Subject).Node.CopyNode(target);
+                pred = p.Predicate.Construct(target, null, true);//((NodeMatchPattern)tp.Predicate).Node.CopyNode(target);
+                obj = p.Object.Construct(target, null, true);//((NodeMatchPattern)tp.Object).Node.CopyNode(target);
 
                 target.Assert(new Triple(subj, pred, obj));
             }

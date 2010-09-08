@@ -102,9 +102,13 @@
             <MenuItem Header="_Edit">
                 <MenuItem Header="Undo" Name="mnuUndo" Click="mnuUndo_Click" InputGestureText="Ctrl+Z" />
                 <MenuItem Header="Redo" Name="mnuRedo" Click="mnuRedo_Click" InputGestureText="Ctrl+Y" />
+                <Separator />
                 <MenuItem Header="Cut" Name="mnuCut" Click="mnuCut_Click" InputGestureText="Ctrl+X"/>
                 <MenuItem Header="Copy" Name="mnuCopy" Click="mnuCopy_Click" InputGestureText="Ctrl+C" />
                 <MenuItem Header="Paste" Name="mnuPaste" Click="mnuPaste_Click" InputGestureText="Ctrl+V" />
+                <Separator />
+                <MenuItem Header="Comment Selection" Name="mnuCommentSelection" Click="mnuCommentSelection_Click" />
+                <MenuItem Header="Uncomment Selection" Name="mnuUncommentSelection" Click="mnuUncommentSelection_Click" /> 
             </MenuItem>
             <MenuItem Header="_View">
                 <MenuItem Header="Show Line Numbers" Name="mnuShowLineNumbers" IsCheckable="True" IsChecked="True"  Click="mnuShowLineNumbers_Click" InputGestureText="Ctrl+E,L" />

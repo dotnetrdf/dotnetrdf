@@ -55,7 +55,7 @@ namespace VDS.RDF.Update.Commands
         public DeleteDataCommand(GraphPattern pattern)
             : base(SparqlUpdateCommandType.DeleteData) 
         {
-            if (!pattern.TriplePatterns.All(p => p is TriplePattern && p.IndexType == TripleIndexType.NoVariables)) throw new SparqlUpdateException("Cannot create a DELETE DATA command where any of the Triple Patterns are not complete triples");
+            if (!pattern.TriplePatterns.All(p => p is IConstructTriplePattern && ((IConstructTriplePattern)p).HasNoExplicitVariables)) throw new SparqlUpdateException("Cannot create a DELETE DATA command where any of the Triple Patterns are not concrete triples - variables are not permitted");
             this._pattern = pattern;
         }
 
@@ -76,7 +76,7 @@ namespace VDS.RDF.Update.Commands
         /// <param name="context">Evaluation Context</param>
         public override void Evaluate(SparqlUpdateEvaluationContext context)
         {
-            if (!this._pattern.TriplePatterns.All(p => p is TriplePattern && p.IndexType == TripleIndexType.NoVariables)) throw new SparqlUpdateException("Cannot evaluate a DELETE DATA command where any of the Triple Patterns are not complete triples");
+            if (!this._pattern.TriplePatterns.All(p => p is IConstructTriplePattern && ((IConstructTriplePattern)p).HasNoExplicitVariables)) throw new SparqlUpdateException("Cannot evaluate a DELETE DATA command where any of the Triple Patterns are not concrete triples - variables are not permitted");
 
             //Get the Target Graph
             IGraph target;
@@ -109,12 +109,11 @@ namespace VDS.RDF.Update.Commands
 
             //Delete the actual Triples
             INode subj, pred, obj;
-            foreach (ITriplePattern p in this._pattern.TriplePatterns)
+            foreach (IConstructTriplePattern p in this._pattern.TriplePatterns)
             {
-                TriplePattern tp = (TriplePattern)p;
-                subj = ((NodeMatchPattern)tp.Subject).Node.CopyNode(target);
-                pred = ((NodeMatchPattern)tp.Predicate).Node.CopyNode(target);
-                obj = ((NodeMatchPattern)tp.Object).Node.CopyNode(target);
+                subj = p.Subject.Construct(target, null, true);//((NodeMatchPattern)tp.Subject).Node.CopyNode(target);
+                pred = p.Predicate.Construct(target, null, true);//((NodeMatchPattern)tp.Predicate).Node.CopyNode(target);
+                obj = p.Object.Construct(target, null, true);//((NodeMatchPattern)tp.Object).Node.CopyNode(target);
 
                 target.Retract(new Triple(subj, pred, obj));
             }

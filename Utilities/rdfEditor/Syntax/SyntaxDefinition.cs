@@ -19,6 +19,7 @@ namespace rdfEditor.Syntax
         private IRdfReader _parser;
         private IRdfWriter _writer;
         private ISyntaxValidator _validator;
+        private String _singleLineComment, _multiLineCommentStart, _multiLineCommentEnd;
 
         #region Constructors which take an explicit Highlighting Definition
 
@@ -163,6 +164,50 @@ namespace rdfEditor.Syntax
             get
             {
                 return this._validator;
+            }
+        }
+
+        public String SingleLineComment
+        {
+            get
+            {
+                return this._singleLineComment;
+            }
+            set
+            {
+                this._singleLineComment = value;
+            }
+        }
+
+        public String MultiLineCommentStart
+        {
+            get
+            {
+                return this._multiLineCommentStart;
+            }
+            set
+            {
+                this._multiLineCommentStart = value;
+            }
+        }
+
+        public String MultiLineCommentEnd
+        {
+            get
+            {
+                return this._multiLineCommentEnd;
+            }
+            set
+            {
+                this._multiLineCommentEnd = value;
+            }
+        }
+
+        public bool CanComment
+        {
+            get
+            {
+                return this._singleLineComment != null || (this._multiLineCommentStart != null && this._multiLineCommentEnd != null);
             }
         }
     }

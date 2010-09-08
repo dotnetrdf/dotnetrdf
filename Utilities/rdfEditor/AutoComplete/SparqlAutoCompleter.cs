@@ -201,34 +201,43 @@ namespace rdfEditor.AutoComplete
             //if we aren't in a completion State then we can't do anything
             if (this.State == AutoCompleteState.None) return;
 
-            //Length should never be 1 when we get here
-            if (this._c == null && this.Length == 1)
+            try
             {
-                this.State = AutoCompleteState.None;
-                this.StartAutoComplete(editor, e);
-                return;
-            }
 
-            if (e.Text.Length > 0)
-            {
-                switch (this.State)
+                //Length should never be 1 when we get here
+                if (this._c == null && this.Length == 1)
                 {
-                    case AutoCompleteState.AlternateLiteral:
-                        this.TryAlternateLiteralCompletion(editor, e);
-                        break;
-
-                    case AutoCompleteState.AlternateLongLiteral:
-                        this.TryAlternateLongLiteralCompletion(editor, e);
-                        break;
-
-                    case AutoCompleteState.Variable:
-                        this.TryVariableCompletion(editor, e);
-                        break;
-
-                    default:
-                        //No other auto-completion supported
-                        break;
+                    this.State = AutoCompleteState.None;
+                    this.StartAutoComplete(editor, e);
+                    return;
                 }
+
+                if (e.Text.Length > 0)
+                {
+                    switch (this.State)
+                    {
+                        case AutoCompleteState.AlternateLiteral:
+                            this.TryAlternateLiteralCompletion(editor, e);
+                            break;
+
+                        case AutoCompleteState.AlternateLongLiteral:
+                            this.TryAlternateLongLiteralCompletion(editor, e);
+                            break;
+
+                        case AutoCompleteState.Variable:
+                            this.TryVariableCompletion(editor, e);
+                            break;
+
+                        default:
+                            //No other auto-completion supported
+                            break;
+                    }
+                }
+            }
+            catch
+            {
+                //If any kind of error occurs then abort auto-completion
+                this.AbortAutoComplete();
             }
         }
 

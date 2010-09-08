@@ -15,14 +15,14 @@
 		
 		<Span color="String" ruleSet="Turtle/StringEscapes">
 			<Begin>"</Begin>
-			<End>"(?&lt;=\\)</End>
+			<End>"(?&lt;!\\)</End>
 		</Span>
 		
 		<!-- URIs -->
 		
 		<Span color="URI" ruleSet="Turtle/UriEscapes">
 			<Begin>&lt;</Begin>
-			<End>&gt;(?&lt;=\\)</End>
+			<End>&gt;(?&lt;!\\)</End>
 		</Span>
 		
 		<!-- Blank Nodes -->

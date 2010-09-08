@@ -38,6 +38,7 @@ namespace rdfEditor
         private bool _changed = false;
         private bool _enableHighlighting = true;
         private String _currFile;
+        private String _currSyntax = "None";
 
         //Validation
         private bool _validateAsYouType = false;
@@ -241,6 +242,14 @@ namespace rdfEditor
                 this._lastError = value;
             }
         }
+
+        public String CurrentSyntax
+        {
+            get
+            {
+                return this._currSyntax;
+            }
+        }
         
         public void AutoDetectSyntax()
         {
@@ -311,6 +320,7 @@ namespace rdfEditor
 
                 if (def != null)
                 {
+                    this._currSyntax = def.Name;
                     this.SetCurrentHighlighterChecked(def.Name);
                     this.SetCurrentValidator(def.Name);
                     this.SetCurrentAutoCompleter(def.Name);
@@ -338,6 +348,7 @@ namespace rdfEditor
             {
                 syntax = name;
             }
+            this._currSyntax = syntax;
             this.SetCurrentHighlighterChecked(syntax);
             this.SetCurrentValidator(syntax);
             this.SetCurrentAutoCompleter(syntax);
@@ -355,6 +366,7 @@ namespace rdfEditor
             {
                 syntax = def.Name;
             }
+            this._currSyntax = syntax;
             this.SetCurrentHighlighterChecked(syntax);
             this.SetCurrentValidator(syntax);
             this.SetCurrentAutoCompleter(syntax);
@@ -459,6 +471,7 @@ namespace rdfEditor
                     if (this._editor.SyntaxHighlighting != null)
                     {
                         //Valid Highlighter so check the appropriate highlighter in the list
+                        this._currSyntax = name;
                         this.SetCurrentValidator(name);
                         this.SetCurrentHighlighterChecked(name);
                         this.SetCurrentAutoCompleter(name);
@@ -477,6 +490,7 @@ namespace rdfEditor
                 if (this._editor.SyntaxHighlighting != null)
                 {
                     //Valid Highlighter so check the appropriate highlighter in the list
+                    this._currSyntax = name;
                     this.SetCurrentValidator(name);
                     this.SetCurrentHighlighterChecked(name);
                     this.SetCurrentAutoCompleter(name);
@@ -497,6 +511,7 @@ namespace rdfEditor
         public void SetNoHighlighting()
         {
             this._editor.SyntaxHighlighting = null;
+            this._currSyntax = "None";
             this.SetCurrentHighlighterChecked("None");
             this.SetCurrentValidator("None");
             this.SetCurrentAutoCompleter("None");

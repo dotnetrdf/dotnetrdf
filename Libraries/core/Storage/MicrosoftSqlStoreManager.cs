@@ -166,6 +166,8 @@ namespace VDS.RDF.Storage
         /// <returns></returns>
         public override string GetGraphID(Uri graphUri)
         {
+            if (graphUri == null) graphUri = new Uri(GraphCollection.DefaultGraphUri);
+
             if (this._graphIDs.ContainsKey(graphUri.GetEnhancedHashCode()))
             {
                 //Looked up from mapping dictionary
@@ -232,6 +234,8 @@ namespace VDS.RDF.Storage
         /// <returns></returns>
         public override bool Exists(Uri graphUri)
         {
+            if (graphUri == null) graphUri = new Uri(GraphCollection.DefaultGraphUri);
+
             if (this._graphIDs.ContainsKey(graphUri.GetEnhancedHashCode()))
             {
                 return true;
@@ -272,7 +276,14 @@ namespace VDS.RDF.Storage
             List<Uri> uris = new List<Uri>();
             foreach (DataRow r in data.Rows)
             {
-                uris.Add(new Uri(r["graphUri"].ToString()));
+                if (r["graphUri"].ToString().Equals(GraphCollection.DefaultGraphUri))
+                {
+                    uris.Add(null);
+                }
+                else
+                {
+                    uris.Add(new Uri(r["graphUri"].ToString()));
+                }
             }
 
             return uris;
