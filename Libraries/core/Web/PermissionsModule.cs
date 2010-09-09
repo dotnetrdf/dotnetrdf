@@ -1,5 +1,5 @@
 ﻿
-#if !NO_WEB && !NO_ASPNET
+#if !NO_WEB && !NO_ASP
 
 using System;
 using System.Collections.Generic;

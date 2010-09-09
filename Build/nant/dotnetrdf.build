@@ -29,7 +29,7 @@
   
   <!-- Compile Targets which Compile the Code -->
 
-  <target name="compile" description="Compile the dotNetRDF Solution and Silverlight Build" unless="${dotnetrdf.nocompile}" depends="compile-solution,compile-silverlight">
+  <target name="compile" description="Compile the dotNetRDF Solution and the Silverlight, Lite and Mono Builds" unless="${dotnetrdf.nocompile}" depends="compile-solution,compile-silverlight,compile-lite,compile-mono">
 
   </target>
 
@@ -42,6 +42,40 @@
       <arg line="/p:PostBuildEvent="/>
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
     </exec>
+  </target>
+
+  <target name="compile-lite" description="Compiles the dotNetRDF Lite Build" unless="${dotnetrdf.nocompile}">
+    <!-- This exec task syncs the Lite project file with the Core Library -->
+    <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
+      <arg value="Libraries/core/dotNetRDF.csproj" />
+      <arg value="Libraries/lite/dotNetRDF.Lite.csproj.template" />
+      <arg value="Libraries/lite/dotNetRDF.Lite.csproj" />
+    </exec>
+    <!-- Once the sync is done we can build the resulting project file -->
+    <property name="nant.settings.currentframework" value="net-3.5" />
+    <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
+    <exec program="${msBuild.exe}" failonerror="true">
+      <arg value="Libraries/lite/dotNetRDF.Lite.csproj" />
+      <arg line="/p:Configuration=Debug" />
+      <arg line="/p:PostBuildEvent="/>
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+    </exec>
+  </target>
+
+  <target name="compile-mono" description="Compile the dotNetRDF Mono Build" unless="${dotnetrdf.nocompile}" depends="compile-nightly">
+    <property name="nant.settings.currentframework" value="mono-3.5" />
+    <setenv>
+      <variable name="PATH">
+        <path>
+          <pathelement path="%PATH%" />
+          <pathelement path="${path::get-directory-name(framework::get-tool-path('gmcs'))}" />
+        </path>
+      </variable>
+    </setenv>
+    <exec program="Build/nant/mono-compile.bat">
+      
+    </exec>
+    <copy file="Libraries/core/bin/Debug/dotNetRDF.xml" tofile="Libraries/core/bin/Debug/dotNetRDF.Mono.xml" />
   </target>
 
   <target name="compile-solution" description="Compile the dotNetRDF Solution" unless="${dotnetrdf.nocompile}">
@@ -85,7 +119,7 @@
   
   <!-- Build Targets which Compile the Code and copy the output to the root bin/ directory of the repository -->
   
-  <target name="build" description="Build dotNetRDF (except Release)" depends="compile,build-nightly,build-silverlight">
+  <target name="build" description="Build dotNetRDF (except Release)" depends="build-nightly,build-silverlight,build-lite,build-mono">
     
   </target>
   
@@ -109,6 +143,26 @@
     <copy todir="../bin/silverlight-nightly" file="Libraries/silverlight/bin/Debug/Newtonsoft.Json.Silverlight.xml" />
   </target>
 
+  <target name="build-lite" description="Copy the latest Lite build to the Lite Nightly Build directory" depends="compile-lite">
+    <copy todir="../bin/lite-nightly" file="Libraries/lite/bin/Debug/dotNetRDF.Lite.dll" />
+    <copy todir="../bin/lite-nightly" file="Libraries/lite/bin/Debug/dotNetRDF.Lite.xml" />
+    <copy todir="../bin/lite-nightly" file="Libraries/lite/bin/Debug/HtmlAgilityPack.dll" />
+    <copy todir="../bin/lite-nightly" file="Libraries/lite/bin/Debug/HtmlAgilityPack.xml" />
+    <copy todir="../bin/lite-nightly" file="Libraries/lite/bin/Debug/Newtonsoft.Json.dll" />
+    <copy todir="../bin/lite-nightly" file="Libraries/lite/bin/Debug/Newtonsoft.Json.xml" />
+  </target>
+
+  <target name="build-mono" description="Copy the latest Mono build to the Mono Nightly Build directory" depends="compile-mono">
+    <copy todir="../bin/mono-nightly" file="Libraries/core/bin/Debug/dotNetRDF.Mono.dll" />
+    <copy todir="../bin/mono-nightly" file="Libraries/core/bin/Debug/dotNetRDF.Mono.xml" />
+    <copy todir="../bin/mono-nightly" file="Libraries/core/bin/Debug/HtmlAgilityPack.dll" />
+    <copy todir="../bin/mono-nightly" file="Libraries/core/bin/Debug/HtmlAgilityPack.xml" />
+    <copy todir="../bin/mono-nightly" file="Libraries/core/bin/Debug/Newtonsoft.Json.dll" />
+    <copy todir="../bin/mono-nightly" file="Libraries/core/bin/Debug/Newtonsoft.Json.xml" />
+    <copy todir="../bin/mono-nightly" file="Libraries/core/bin/Debug/MySql.Data.dll" />
+    <copy todir="../bin/mono-nightly" file="Libraries/core/bin/Debug/virtado3.dll" />
+  </target>
+
   <target name="build-release" description="Copy the stable build to the Stable Build directory ready for a release" depends="compile">
     <copy todir="../bin/stable" file="Libraries/core/bin/Debug/dotNetRDF.dll" />
     <copy todir="../bin/stable" file="Libraries/core/bin/Debug/dotNetRDF.xml" />
@@ -119,7 +173,7 @@
     <copy todir="../bin/stable" file="Libraries/core/bin/Debug/MySql.Data.dll" />
     <copy todir="../bin/stable" file="Libraries/core/bin/Debug/virtado3.dll" />
     <copy todir="../bin/stable" file="Libraries/core/ChangeLog.txt" />
-    <copy todir="../bin/stable" file="Libraries/core/ReleaseNotes.txt" ></copy>
+    <copy todir="../bin/stable" file="Libraries/core/ReleaseNotes.txt" />
   </target>
   
   <!-- Clean Targets for Cleaning the Builds -->
@@ -195,6 +249,9 @@
       <fileset basedir="../bin/silverlight-nightly/" prefix="Silverlight">
         <include name="*" />
       </fileset>
+      <fileset basedir="../bin/mono-nightly" prefix="Mono">
+        <include name="*" />
+      </fileset>
     </zip>
     <zip zipfile="${dotnetrdf.srczip}" ziplevel="9">
       <fileset basedir="Libraries/core/" prefix="DotNet">
@@ -212,7 +269,13 @@
 
   <target name="dist-nightly" description="Creates the Nightly ZIP files" depends="build-nightly">
     <zip zipfile="${dotnetrdf.nightlyzip}" ziplevel="9">
-      <fileset basedir="../bin/nightly/">
+      <fileset basedir="../bin/nightly/" prefix="DotNet">
+        <include name="*" />
+      </fileset>
+      <fileset basedir="../bin/silverlight-nightly/" prefix="Silverlight">
+        <include name="*" />
+      </fileset>
+      <fileset basedir="../bin/mono-nightly" prefix="Mono">
         <include name="*" />
       </fileset>
     </zip>

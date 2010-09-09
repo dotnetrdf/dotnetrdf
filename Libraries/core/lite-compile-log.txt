@@ -1,8 +1,0 @@
-Microsoft (R) Visual C# 2008 Compiler version 3.5.30729.4926
-for Microsoft (R) .NET Framework version 3.5
-Copyright (C) Microsoft Corporation. All rights reserved.
-
-Configuration\DataFactories.cs(122,33): warning CS0168: The variable 'connections' is declared but never used
-Configuration\DataFactories.cs(313,19): warning CS0168: The variable 'subObj' is declared but never used
-Configuration\DataFactories.cs(314,18): warning CS0168: The variable 'async' is declared but never used
-Query\Inference\Pellet\PelletServer.cs(116,30): warning CS0168: The variable 'ex' is declared but never used

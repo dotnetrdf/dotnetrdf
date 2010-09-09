@@ -1,6 +1,0 @@
-.\Query\Inference\Pellet\PelletServer.cs(116,30): warning CS0168: The variable `ex' is declared but never used
-.\Web\BaseSparqlHttpProtocolHandler.cs(155,38): warning CS0168: The variable `parseEx' is declared but never used
-.\Web\BaseSparqlHttpProtocolHandler.cs(160,30): warning CS0168: The variable `ex' is declared but never used
-.\Web\BaseSparqlServer.cs(452,38): warning CS0168: The variable `parseEx' is declared but never used
-.\Web\BaseSparqlServer.cs(457,30): warning CS0168: The variable `ex' is declared but never used
-Compilation succeeded - 5 warning(s)
