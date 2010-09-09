@@ -5,8 +5,11 @@
   <!-- Load in the <ftp> task dll -->
   <loadtasks assembly="Build/nant/ftptask.dll" />
   
-  <!-- Compile Options -->
+  <!-- Disable Building and Compiling Options -->
+  <property name="dotnetrdf.nobuild" value="" />
   <property name="dotnetrdf.nocompile" value="" />
+
+  <!-- Set the Compiler Warnings we want to ignore -->
   <property name="dotnetrdf.nowarn" value="1591;0067" />
 
   <!-- Version Properties -->
@@ -28,6 +31,10 @@
   <property name="dotnetrdf.toolkitzip" value="dotnetrdf_tools_${dotnetrdf.toolsversion}_${dotnetrdf.toolsreleasetype}.zip" />
   
   <!-- Compile Targets which Compile the Code -->
+
+  <target name="no-compile" description="Sets that no compilation should be done">
+    <property name="dotnetrdf.nocompile" value="true" />
+  </target>
 
   <target name="compile" description="Compile the dotNetRDF Solution and the Silverlight, Lite and Mono Builds" unless="${dotnetrdf.nocompile}" depends="compile-solution,compile-silverlight,compile-lite,compile-mono">
 
@@ -118,12 +125,16 @@
   </target>
   
   <!-- Build Targets which Compile the Code and copy the output to the root bin/ directory of the repository -->
+
+  <target name="no-build" description="Sets that no Builds should be performed" depends="no-compile">
+    <property name="dotnetrdf.nobuild" value="true" />
+  </target>
   
-  <target name="build" description="Build dotNetRDF (except Release)" depends="build-nightly,build-silverlight,build-lite,build-mono">
+  <target name="build" description="Build dotNetRDF (except Release)" unless="${dotnetrdf.nobuild}" depends="build-nightly,build-silverlight,build-lite,build-mono">
     
   </target>
   
-  <target name="build-nightly" description="Copy the latest build to the Nightly Build directory" depends="compile-nightly">
+  <target name="build-nightly" description="Copy the latest build to the Nightly Build directory" unless="${dotnetrdf.nobuild}"  depends="compile-nightly">
     <copy todir="../bin/nightly" file="Libraries/core/bin/Debug/dotNetRDF.dll" />
     <copy todir="../bin/nightly" file="Libraries/core/bin/Debug/dotNetRDF.xml" />
     <copy todir="../bin/nightly" file="Libraries/core/bin/Debug/HtmlAgilityPack.dll" />
@@ -135,7 +146,7 @@
     <copy todir="../bin/nightly" file="Libraries/core/ChangeLog.txt" />
   </target>
 
-  <target name="build-silverlight" description="Copy the latest Silverlight build to the Silverlight Nightly Build directory" depends="compile-silverlight">
+  <target name="build-silverlight" description="Copy the latest Silverlight build to the Silverlight Nightly Build directory" unless="${dotnetrdf.nobuild}"  depends="compile-silverlight">
     <copy todir="../bin/silverlight-nightly" file="Libraries/silverlight/bin/Debug/dotNetRDF.Silverlight.dll" />
     <copy todir="../bin/silverlight-nightly" file="Libraries/silverlight/bin/Debug/dotNetRDF.Silverlight.xml" />
     <copy todir="../bin/silverlight-nightly" file="Libraries/silverlight/bin/Debug/HtmlAgilityPack.Silverlight.dll" />
@@ -143,7 +154,7 @@
     <copy todir="../bin/silverlight-nightly" file="Libraries/silverlight/bin/Debug/Newtonsoft.Json.Silverlight.xml" />
   </target>
 
-  <target name="build-lite" description="Copy the latest Lite build to the Lite Nightly Build directory" depends="compile-lite">
+  <target name="build-lite" description="Copy the latest Lite build to the Lite Nightly Build directory" unless="${dotnetrdf.nobuild}" depends="compile-lite">
     <copy todir="../bin/lite-nightly" file="Libraries/lite/bin/Debug/dotNetRDF.Lite.dll" />
     <copy todir="../bin/lite-nightly" file="Libraries/lite/bin/Debug/dotNetRDF.Lite.xml" />
     <copy todir="../bin/lite-nightly" file="Libraries/lite/bin/Debug/HtmlAgilityPack.dll" />
@@ -152,7 +163,7 @@
     <copy todir="../bin/lite-nightly" file="Libraries/lite/bin/Debug/Newtonsoft.Json.xml" />
   </target>
 
-  <target name="build-mono" description="Copy the latest Mono build to the Mono Nightly Build directory" depends="compile-mono">
+  <target name="build-mono" description="Copy the latest Mono build to the Mono Nightly Build directory" unless="${dotnetrdf.nobuild}"  depends="compile-mono">
     <copy todir="../bin/mono-nightly" file="Libraries/core/bin/Debug/dotNetRDF.Mono.dll" />
     <copy todir="../bin/mono-nightly" file="Libraries/core/bin/Debug/dotNetRDF.Mono.xml" />
     <copy todir="../bin/mono-nightly" file="Libraries/core/bin/Debug/HtmlAgilityPack.dll" />
@@ -163,7 +174,7 @@
     <copy todir="../bin/mono-nightly" file="Libraries/core/bin/Debug/virtado3.dll" />
   </target>
 
-  <target name="build-release" description="Copy the stable build to the Stable Build directory ready for a release" depends="compile">
+  <target name="build-release" description="Copy the stable build to the Stable Build directory ready for a release" unless="${dotnetrdf.nobuild}"  depends="compile">
     <copy todir="../bin/stable" file="Libraries/core/bin/Debug/dotNetRDF.dll" />
     <copy todir="../bin/stable" file="Libraries/core/bin/Debug/dotNetRDF.xml" />
     <copy todir="../bin/stable" file="Libraries/core/bin/Debug/HtmlAgilityPack.dll" />
@@ -182,7 +193,7 @@
     
   </target>
 
-  <target name="clean-solution" description="Clean the Solution" depends="clean-nightly,clean-silverlight">
+  <target name="clean-solution" description="Clean the Solution" depends="clean-nightly,clean-silverlight,clean-lite,clean-mono">
     <delete dir="Libraries/compact/bin" />
     <delete dir="Libraries/interop/bin" />
     <delete dir="Libraries/linkeddata/bin" />
@@ -211,6 +222,15 @@
   <target name="clean-silverlight" description="Clean existing Silverlight Nightly Build">
     <delete dir="../bin/silverlight-nightly" />
     <delete dir="Libraries/silverlight/bin" />
+  </target>
+
+  <target name="clean-lite" description="Clean existing Lite Nightly Build">
+    <delete dir="../bin/lite-nightly" />
+    <delete dir="Libraries/lite/bin" />
+  </target>
+
+  <target name="clean-mono" description="Clean existing Mono Nightly Build">
+    <delete dir="../bin/mono-nightly" />
   </target>
 
   <target name="clean-release" description="Clean existing Stable Build">
@@ -252,6 +272,9 @@
       <fileset basedir="../bin/mono-nightly" prefix="Mono">
         <include name="*" />
       </fileset>
+      <fileset basedir="../bin/lite-nightly" prefix="Lite">
+        <include name="*" />
+      </fileset>
     </zip>
     <zip zipfile="${dotnetrdf.srczip}" ziplevel="9">
       <fileset basedir="Libraries/core/" prefix="DotNet">
@@ -276,6 +299,9 @@
         <include name="*" />
       </fileset>
       <fileset basedir="../bin/mono-nightly" prefix="Mono">
+        <include name="*" />
+      </fileset>
+      <fileset basedir="../bin/lite-nightly" prefix="Lite">
         <include name="*" />
       </fileset>
     </zip>
