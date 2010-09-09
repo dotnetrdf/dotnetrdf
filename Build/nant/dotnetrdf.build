@@ -2,14 +2,18 @@
 <project name="dotNetRDF Core Library" default="build-nightly" basedir="../../">
   <description>Generates the dotNetRDF Core Library Builds</description>
 
+  <!-- Load in the <ftp> task dll -->
   <loadtasks assembly="Build/nant/ftptask.dll" />
   
-  <!-- No Compile -->
+  <!-- Compile Options -->
   <property name="dotnetrdf.nocompile" value="" />
+  <property name="dotnetrdf.nowarn" value="1591;0067" />
 
   <!-- Version Properties -->
   <property name="dotnetrdf.version" value="000" />
   <property name="dotnetrdf.releasetype" value="alpha" />
+  <property name="dotnetrdf.toolsversion" value="000" />
+  <property name="dotnetrdf.toolsreleasetype" value="alpha" />
 
   <!-- Note that FTP credentials are not included in the file for obvious reasons -->
   <property name="dotnetrdf.webserver" value="" />
@@ -17,21 +21,75 @@
   <property name="dotnetrdf.webserver.password" value="" />
   <connection id="dotNetRDFWebsite" server="${dotnetrdf.webserver}" username="${dotnetrdf.webserver.username}" password="${dotnetrdf.webserver.password}" />
   
-  <!-- Nightly ZIP File -->
-  <property name="dotnetrdf.nightlyzipfile" value="dotNetRDF_library_nightly.zip" />
+  <!-- ZIP Files -->
+  <property name="dotnetrdf.nightlyzip" value="dotNetRDF_library_nightly.zip" />
+  <property name="dotnetrdf.libzip" value="dotnetrdf_library_${dotnetrdf.version}_${dotnetrdf.releasetype}.zip" />
+  <property name="dotnetrdf.srczip" value="dotnetrdf_library_source_${dotnetrdf.version}_${dotnetrdf.releasetype}.zip" />
+  <property name="dotnetrdf.toolkitzip" value="dotnetrdf_tools_${dotnetrdf.toolsversion}_${dotnetrdf.toolsreleasetype}.zip" />
   
-  <target name="build" description="Build dotNetRDF">
-    <echo>This build file can be used to build the Stable/Nightly/Silverlight Nightly builds of dotNetRDF.  Use the targets build-nightly, build-silverlight-nightly or build-stable as desired.
-      
-If you run nant without a target specified the default target used is build-nighlty
-    </echo>
-  </target>
-  
-  <target name="clean-nightly" description="Clean existing Nightly Build">
-    <delete dir="../bin/nightly" />
+  <!-- Compile Targets which Compile the Code -->
+
+  <target name="compile" description="Compile the dotNetRDF Solution and Silverlight Build" unless="${dotnetrdf.nocompile}" depends="compile-solution,compile-silverlight">
+
   </target>
 
-  <target name="build-nightly" description="Copy the latest build to the Nightly Build directory" depends="compile">
+  <target name="compile-nightly" description="Compiles just the dotNetRDF Core Library" unless="${dotnetrdf.nocompile}">
+    <property name="nant.settings.currentframework" value="net-3.5" />
+    <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
+    <exec program="${msBuild.exe}" failonerror="true">
+      <arg value="Libraries/core/dotNetRDF.csproj" />
+      <arg line="/p:Configuration=Debug" />
+      <arg line="/p:PostBuildEvent="/>
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+    </exec>
+  </target>
+
+  <target name="compile-solution" description="Compile the dotNetRDF Solution" unless="${dotnetrdf.nocompile}">
+    <property name="nant.settings.currentframework" value="net-3.5" />
+    <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
+    <exec program="${msBuild.exe}" failonerror="true">
+      <arg value="dotNetRDF.sln" />
+      <arg line="/p:Configuration=Debug" />
+      <arg line="/p:PostBuildEvent="/>
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+    </exec>
+  </target>
+
+  <target name="compile-silverlight" description="Compile the dotNetRDF Silverlight Build"  unless="${dotnetrdf.nocompile}" depends="compile-buildtools">
+    <!-- This exec task syncs the Silverlight project file with the Core Library -->
+    <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
+      <arg value="Libraries/core/dotNetRDF.csproj" />
+      <arg value="Libraries/silverlight/dotNetRDF.Silverlight.2010.csproj.template" />
+      <arg value="Libraries/silverlight/dotNetRDF.Silverlight.2010.csproj" />
+    </exec>
+    <!-- Once the sync is done we can build the resulting project file -->
+    <property name="nant.settings.currentframework" value="net-4.0" />
+    <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
+    <exec program="${msBuild.exe}" failonerror="true">
+      <arg value="Libraries/silverlight/dotNetRDF.Silverlight.2010.csproj" />
+      <arg line="/p:Configuration=Debug" />
+      <arg line="/p:PostBuildEvent="/>
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+    </exec>
+  </target>
+
+  <target name="compile-buildtools" description="Compiles Build Tools needed by the compile and build process" unless="${dotnetrdf.nocompile}">
+    <property name="nant.settings.currentframework" value="net-3.5" />
+    <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
+    <exec program="${msBuild.exe}" failonerror="true">
+      <arg value="Build/ExportCoreContentsToTemplate/ExportCoreContentsToTemplate.csproj" />
+      <arg line="/p:Configuration=Debug" />
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+    </exec>
+  </target>
+  
+  <!-- Build Targets which Compile the Code and copy the output to the root bin/ directory of the repository -->
+  
+  <target name="build" description="Build dotNetRDF (except Release)" depends="compile,build-nightly,build-silverlight">
+    
+  </target>
+  
+  <target name="build-nightly" description="Copy the latest build to the Nightly Build directory" depends="compile-nightly">
     <copy todir="../bin/nightly" file="Libraries/core/bin/Debug/dotNetRDF.dll" />
     <copy todir="../bin/nightly" file="Libraries/core/bin/Debug/dotNetRDF.xml" />
     <copy todir="../bin/nightly" file="Libraries/core/bin/Debug/HtmlAgilityPack.dll" />
@@ -43,11 +101,7 @@ If you run nant without a target specified the default target used is build-nigh
     <copy todir="../bin/nightly" file="Libraries/core/ChangeLog.txt" />
   </target>
 
-  <target name="clean-silverlight-nightly" description="Clean existing Silverlight Nightly Build">
-    <delete dir="../bin/silverlight-nightly" />
-  </target>
-
-  <target name="build-silverlight-nightly" description="Copy the latest Silverlight build to the Silverlight Nightly Build directory" depends="compile-silverlight">
+  <target name="build-silverlight" description="Copy the latest Silverlight build to the Silverlight Nightly Build directory" depends="compile-silverlight">
     <copy todir="../bin/silverlight-nightly" file="Libraries/silverlight/bin/Debug/dotNetRDF.Silverlight.dll" />
     <copy todir="../bin/silverlight-nightly" file="Libraries/silverlight/bin/Debug/dotNetRDF.Silverlight.xml" />
     <copy todir="../bin/silverlight-nightly" file="Libraries/silverlight/bin/Debug/HtmlAgilityPack.Silverlight.dll" />
@@ -55,11 +109,7 @@ If you run nant without a target specified the default target used is build-nigh
     <copy todir="../bin/silverlight-nightly" file="Libraries/silverlight/bin/Debug/Newtonsoft.Json.Silverlight.xml" />
   </target>
 
-  <target name="clean-stable" description="Clean existing Stable Build">
-    <delete dir="../bin/stable" />
-  </target>
-
-  <target name="build-stable" description="Copy the stable build to the Stable Build directory" depends="compile,compile-silverlight" unless="${dotnetrdf.nocompile}">
+  <target name="build-release" description="Copy the stable build to the Stable Build directory ready for a release" depends="compile">
     <copy todir="../bin/stable" file="Libraries/core/bin/Debug/dotNetRDF.dll" />
     <copy todir="../bin/stable" file="Libraries/core/bin/Debug/dotNetRDF.xml" />
     <copy todir="../bin/stable" file="Libraries/core/bin/Debug/HtmlAgilityPack.dll" />
@@ -71,39 +121,74 @@ If you run nant without a target specified the default target used is build-nigh
     <copy todir="../bin/stable" file="Libraries/core/ChangeLog.txt" />
     <copy todir="../bin/stable" file="Libraries/core/ReleaseNotes.txt" ></copy>
   </target>
+  
+  <!-- Clean Targets for Cleaning the Builds -->
 
-  <target name="compile" description="Compile the dotNetRDF Core Library" unless="${dotnetrdf.nocompile}">
-    <property name="nant.settings.currentframework" value="net-3.5" />
-    <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
-    <exec program="${msBuild.exe}" failonerror="true">
-      <arg value="Libraries/core/dotNetRDF.csproj" />
-      <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent="/>
-    </exec>
+  <target name="clean" description="Cleans all Builds (except Release)" depends="clean-solution">
+    
   </target>
 
-  <target name="compile-all" description="Compile the dotNetRDF Solution and the Silverlight build" depends="compile-silverlight"  unless="${dotnetrdf.nocompile}">
-    <property name="nant.settings.currentframework" value="net-3.5" />
-    <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
-    <exec program="${msBuild.exe}" failonerror="true">
-      <arg value="dotNetRDF.sln" />
-      <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent="/>
-    </exec>
+  <target name="clean-solution" description="Clean the Solution" depends="clean-nightly,clean-silverlight">
+    <delete dir="Libraries/compact/bin" />
+    <delete dir="Libraries/interop/bin" />
+    <delete dir="Libraries/linkeddata/bin" />
+    <delete dir="Samples/sparqldemo/bin" />
+    <delete dir="Samples/virtuoso/bin" />
+    <delete dir="Samples/WebDemos/bin" />
+    <delete dir="Testing/Compatability/bin" />
+    <delete dir="Testing/testsuite/bin" />
+    <delete dir="Testing/unittest/bin" />
+    <delete dir="Utilities/AllegroGraphIndexer/bin" />
+    <delete dir="Utilities/bsbm/bin" />
+    <delete dir="Utilities/parsergui/bin" />
+    <delete dir="Utilities/rdfConvert/bin" />
+    <delete dir="Utilities/rdfEditor/bin" />
+    <delete dir="Utilities/rdfQuery/bin" />
+    <delete dir="Utilities/rdfWebDeploy/bin" />
+    <delete dir="Utilities/SparqlGUI/bin" />
+    <delete dir="Utilities/storemanager/bin" />
   </target>
 
-  <target name="compile-silverlight" description="Compile the dotNetRDF Core Library"  unless="${dotnetrdf.nocompile}">
-    <property name="nant.settings.currentframework" value="net-4.0" />
-    <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
-    <exec program="${msBuild.exe}" failonerror="true">
-      <arg value="Libraries/silverlight/dotNetRDF.Silverlight.2010.csproj" />
-      <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent="/>
-    </exec>
+  <target name="clean-nightly" description="Clean existing Nightly Build">
+    <delete dir="../bin/nightly" />
+    <delete dir="Libraries/core/bin" />
   </target>
 
-  <target name="deploy-stable" description="Creates the ZIP files for the Release" depends="build-stable">
-    <zip zipfile="dotnetrdf_library_${dotnetrdf.version}_${dotnetrdf.releasetype}.zip" ziplevel="9">
+  <target name="clean-silverlight" description="Clean existing Silverlight Nightly Build">
+    <delete dir="../bin/silverlight-nightly" />
+    <delete dir="Libraries/silverlight/bin" />
+  </target>
+
+  <target name="clean-release" description="Clean existing Stable Build">
+    <delete dir="../bin/stable" />
+    <delete dir="Libraries/core/bin" />
+  </target>
+
+  <target name="clean-dist" description="Cleans the Distribution ZIP files" depends="clean-dist-release,clean-dist-nightly,clean-dist-toolkit">
+
+  </target>
+
+  <target name="clean-dist-release" description="Cleans the Release ZIP files">
+    <delete file="${dotnetrdf.libzip}" />
+    <delete file="${dotnetrdf.srczip}" />
+  </target>
+
+  <target name="clean-dist-nightly" description="Cleans the Nightly ZIP files">
+    <delete file="${dotnetrdf.nightlyzip}" />
+  </target>
+
+  <target name="clean-dist-toolkit" description="Cleans the Toolkit ZIP files">
+    <delete file="${dotnetrdf.toolkitzip}" />
+  </target>
+  
+  <!-- Dist Targets for creating the distribution ZIP Files -->
+
+  <target name="dist" description="Creates the Distribution ZIP Files" depends="dist-release,dist-nightly,dist-toolkit">
+    
+  </target>
+
+  <target name="dist-release" description="Creates the ZIP files for the Release" depends="build-release">
+    <zip zipfile="${dotnetrdf.libzip}" ziplevel="9">
       <fileset basedir="../bin/stable/" prefix="DotNet">
         <include name="*" />
       </fileset>
@@ -111,7 +196,7 @@ If you run nant without a target specified the default target used is build-nigh
         <include name="*" />
       </fileset>
     </zip>
-    <zip zipfile="dotnetrdf_library_source_${dotnetrdf.version}_${dotnetrdf.releasetype}.zip" ziplevel="9">
+    <zip zipfile="${dotnetrdf.srczip}" ziplevel="9">
       <fileset basedir="Libraries/core/" prefix="DotNet">
         <include name="**/*" />
         <exclude name="bin/" />
@@ -125,22 +210,71 @@ If you run nant without a target specified the default target used is build-nigh
     </zip>
   </target>
 
-  <target name="clean-deploy" description="Cleans the ZIP files for the Release">
-    <delete file="dotnetrdf_library_${dotnetrdf.version}_${dotnetrdf.releasetype}.zip" />
-    <delete file="dotnetrdf_library_source_${dotnetrdf.version}_${dotnetrdf.releasetype}.zip" />
-  </target>
-
-  <target name="upload-nightly" description="Uploads the Nightly Build to the dotNetRDF website" depends="build-nightly" if="${string::get-length(dotnetrdf.webserver) > 0 and string::get-length(dotnetrdf.webserver.username) > 0 and string::get-length(dotnetrdf.webserver.password) > 0}">
-    <zip zipfile="${dotnetrdf.nightlyzipfile}" ziplevel="9">
+  <target name="dist-nightly" description="Creates the Nightly ZIP files" depends="build-nightly">
+    <zip zipfile="${dotnetrdf.nightlyzip}" ziplevel="9">
       <fileset basedir="../bin/nightly/">
         <include name="*" />
       </fileset>
     </zip>
+  </target>
+
+  <target name="dist-toolkit" description="Creates the Toolkit ZIP files" depends="build">
+    <zip zipfile="${dotnetrdf.toolkitzip}" ziplevel="9">
+      <fileset basedir="Utilities/rdfConvert/bin/Debug">
+        <include name="*" />
+        <exclude name="*.pdb" />
+      </fileset>
+      <fileset basedir="Utilities/rdfEditor/bin/Debug">
+        <include name="*" />
+        <exclude name="*.pdb" />
+      </fileset>
+      <fileset basedir="Utilities/rdfQuery/bin/Debug">
+        <include name="*" />
+        <exclude name="*.pdb" />
+      </fileset>
+      <fileset basedir="Utilities/rdfWebDeploy/bin/Debug">
+        <include name="*" />
+        <exclude name="*.pdb" />
+      </fileset>
+      <fileset basedir="Utilities/SparqlGUI/bin/Debug">
+        <include name="*" />
+        <exclude name="*.pdb" />
+      </fileset>
+      <fileset basedir="Utilities/storemanager/bin/Debug">
+        <include name="*" />
+        <exclude name="*.pdb" />
+      </fileset>
+    </zip>
+  </target>
+  
+  <!-- Upload Targets for Uploading the Builds to a website -->
+
+  <target name="upload" description="Uploads the Distribution ZIP Files to a website" depends="upload-nightly,upload-release">
+    
+  </target>
+
+  <target name="upload-nightly" description="Uploads the Nightly ZIPs to a website" depends="dist-nightly" if="${string::get-length(dotnetrdf.webserver) > 0 and string::get-length(dotnetrdf.webserver.username) > 0 and string::get-length(dotnetrdf.webserver.password) > 0}">
     <ftp connection="dotNetRDFWebsite" remotedir="/downloads/" connectmode="PASSIVE" createdirs="false" verbose="true">
       <put type="bin" update="false">
-        <include name="/${dotnetrdf.nightlyzipfile}" />
+        <include name="/${dotnetrdf.nightlyzip}" />
       </put>
     </ftp>
-    <delete file="${dotnetrdf.nightlyzipfile}" />
+  </target>
+
+  <target name="upload-release" description="Uploads the Release ZIPs to a website" depends="dist-release">
+    <ftp connection="dotNetRDFWebsite" remotedir="/downloads/" connectmode="PASSIVE" createdirs="false" verbose="true">
+      <put type="bin" update="false">
+        <include name="/${dotnetrdf.libzip}" />
+        <include name="/${dotnetrdf.srczip}" />
+      </put>
+    </ftp>
+  </target>
+
+  <target name="upload-toolkit" description="Uploads the Toolkit ZIPs to a website" depends="dist-toolkit">
+    <ftp connection="dotNetRDFWebsite" remotedir="/downloads/" connectmode="PASSIVE" createdirs="false" verbose="true">
+      <put type="bin" update="false">
+        <include name="/${dotnetrdf.toolkitzip}" />
+      </put>
+    </ftp>
   </target>
 </project>
