@@ -396,10 +396,18 @@ namespace VDS.RDF.Query.Patterns
         /// <param name="g">Graph</param>
         /// <param name="s">Set</param>
         /// <param name="preserveBNodes">Whether Blank Node IDs should be preserved</param>
-        /// <returns>A Blank Node whose ID is based on the ID of the Blank Node in the pattern and the Set ID of the Solution</returns>
+        /// <remarks>
+        /// <para>
+        /// Blank Node patterns used in constructs will ignore the <paramref name="preserveBNodes"/> setting since if they are constructing for a particular set they should generate a new Blank Node specific to that Set, the only type Blank Nodes are preserved is if <strong>null</strong> is provided as the <paramref name="s">set</paramref> parameter in which case the Blank Node is preserved.
+        /// </para>
+        /// <para>
+        /// Otherwise a Blank Node whose ID is based on the ID of the Blank Node in the pattern and the Set ID of the Solution will be produced
+        /// </para>
+        /// </remarks>
+        /// <returns></returns>
         protected internal override INode Construct(IGraph g, Set s, bool preserveBNodes)
         {
-            if (!preserveBNodes)
+            if (s != null)
             {
                 return new BlankNode(g, this._name.Substring(2) + "-" + s.ID);
             }

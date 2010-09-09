@@ -866,7 +866,7 @@ namespace rdfEditor
                             int endIndex = selection.LastIndexOf(def.MultiLineCommentEnd);
                             textEditor.BeginChange();
                             textEditor.Document.Remove(textEditor.SelectionStart + startIndex, def.MultiLineCommentStart.Length);
-                            textEditor.Document.Remove(textEditor.SelectionStart + endIndex, def.MultiLineCommentEnd.Length);
+                            textEditor.Document.Remove(textEditor.SelectionStart + endIndex - def.MultiLineCommentStart.Length, def.MultiLineCommentEnd.Length);
                             textEditor.EndChange();
                         }
                         else

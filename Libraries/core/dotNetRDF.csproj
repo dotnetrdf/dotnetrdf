@@ -524,11 +524,8 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>echo Attempting to generate Silverlight VS 2010 Project File
-"$(SolutionDir)Build\ExportCoreContentsToTemplate\bin\Debug\ExportCoreContentsToTemplate.exe" "$(ProjectPath)" "$(SolutionDir)Libraries\silverlight\dotNetRDF.Silverlight.2010.csproj.template" "$(SolutionDir)\Libraries\silverlight\dotNetRDF.Silverlight.2010.csproj"
-echo Attempting to generate Compact Framework VS 2008 Project File
-"$(SolutionDir)Build\ExportCoreContentsToTemplate\bin\Debug\ExportCoreContentsToTemplate.exe" "$(ProjectPath)" "$(SolutionDir)Libraries\compact\dotNetRDF.Compact.csproj.template" "$(SolutionDir)\Libraries\compact\dotNetRDF.Compact.csproj"
-"$(SolutionDir)Build\ExportCoreContentsToTemplate\bin\Debug\ExportCoreContentsToTemplate.exe" "$(SolutionDir)Libraries\silverlight\dotNetRDF.Silverlight.2010.csproj" "$(SolutionDir)Libraries\compact\dotNetRDF.Compact.csproj" "$(SolutionDir)\Libraries\compact\dotNetRDF.Compact.csproj" "..\silverlight\\"</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <ProjectExtensions>
     <VisualStudio>

@@ -44,10 +44,11 @@ namespace AllegroGraphIndexer
             }
 
             Console.WriteLine("Which operation would you like to perform?");
-            Console.WriteLine("i - Index Store");
+            Console.WriteLine("i - Index Store (combine indices)");
+            Console.WriteLine("I - Index Store (do not combine indices)");
             Console.WriteLine("d - Delete Store");
             op = (char)Console.Read();
-            if (op != 'i' && op != 'd')
+            if (op != 'i' && op != 'd' && op != 'I')
             {
                 Console.WriteLine("Aborted - not a valid operation");
                 return;
@@ -72,6 +73,9 @@ namespace AllegroGraphIndexer
                 {
                     case 'i':
                         agraph.IndexStore(true);
+                        break;
+                    case 'I':
+                        agraph.IndexStore(false);
                         break;
                     case 'd':
                         agraph.DeleteStore(repository);

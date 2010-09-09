@@ -259,11 +259,54 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
-        /// Consumes a New Line (which may be a single \n or \r or the two characters following each other)
+        /// Consumes a single Character into the Output Buffer and increments the Position Counters
         /// </summary>
+        /// <param name="allowEOF">Whether EOF is allowed</param>
+        /// <returns>True if the EOF is reached</returns>
+        /// <remarks>
+        /// If <paramref name="allowEOF"/> is set to false then the normal behaviour is used and an error will be thrown on end of file
+        /// </remarks>
+        protected bool ConsumeCharacter(bool allowEOF)
+        {
+            if (!allowEOF)
+            {
+                this.ConsumeCharacter();
+                return false;
+            }
+            else
+            {
+                int temp = this._reader.Read();
+                if (temp > -1)
+                {
+                    this._output.Append((char)temp);
+                    this._currpos++;
+                    this._endpos++;
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+        }
+
         protected void ConsumeNewLine(bool asOutput)
         {
-            char next = (char)this._reader.Peek();
+            this.ConsumeNewLine(asOutput, false);
+        }
+
+        /// <summary>
+        /// Consumes a New Line (which may be a single \n or \r or the two characters following each other)
+        /// </summary>
+        protected void ConsumeNewLine(bool asOutput, bool allowEOF)
+        {
+            int c = this._reader.Peek();
+            if (c == -1)
+            {
+                if (!allowEOF) throw UnexpectedEndOfInput(", expected a New Line");
+                return;
+            }
+            char next = (char)c;
 
             switch (next)
             {
@@ -351,37 +394,8 @@ namespace VDS.RDF.Parsing.Tokens
                 switch (next)
                 {
                     case '\n':
-
-                        this.ConsumeNewLine(false);
-                        ////Discard the White Space
-                        //this._reader.Read();
-                        //this._currpos = 1;
-                        //this._currline++;
-
-                        ////See if there's a \r to discard as well
-                        //next = this.Peek();
-                        //if (next == '\r')
-                        //{
-                        //    this._reader.Read();
-                        //}
-
-                        break;
-
                     case '\r':
-
                         this.ConsumeNewLine(false);
-                        //Discard the White Space
-                        //this._reader.Read();
-                        //this._currpos = 1;
-                        //this._currline++;
-
-                        ////See if there's a \n to discard as well
-                        //next = this.Peek();
-                        //if (next == '\n')
-                        //{
-                        //    this._reader.Read();
-                        //}
-
                         break;
 
                     default:

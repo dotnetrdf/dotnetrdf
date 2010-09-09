@@ -169,6 +169,7 @@ namespace VDS.RDF.Parsing.Tokens
                                 case '#':
                                     //Start of a Comment
                                     return this.TryGetCommentToken();
+
                                 case '@':
                                     //Start of a Keyword or Language Specifier
                                     return this.TryGetKeywordOrLangSpec();
@@ -308,13 +309,13 @@ namespace VDS.RDF.Parsing.Tokens
             //Grab characters until we hit the new line
             while (next != '\n' && next != '\r')
             {
-                this.ConsumeCharacter();
+                if (this.ConsumeCharacter(true)) break;
                 next = this.Peek();
             }
 
             //Discard New line and reset position
             CommentToken comment = new CommentToken(this.Value, this.CurrentLine, this.StartPosition, this.EndPosition);
-            this.ConsumeNewLine(false);
+            this.ConsumeNewLine(false, true);
             return comment;
         }
 

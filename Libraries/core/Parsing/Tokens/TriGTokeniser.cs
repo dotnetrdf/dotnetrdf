@@ -281,14 +281,14 @@ namespace VDS.RDF.Parsing.Tokens
             char next = this.Peek();
             while (next != '\n' && next != '\r')
             {
-                this.ConsumeCharacter();
+                if (this.ConsumeCharacter(true)) break;
                 next = this.Peek();
             }
 
             //Create the Token, discard the new line and return
             this._lasttokentype = Token.COMMENT;
             CommentToken comment = new CommentToken(this.Value, this.CurrentLine, this.StartPosition, this.EndPosition);
-            this.ConsumeNewLine(false);
+            this.ConsumeNewLine(false, true);
             return comment;
         }
 
