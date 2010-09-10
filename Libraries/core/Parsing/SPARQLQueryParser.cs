@@ -3176,9 +3176,16 @@ namespace VDS.RDF.Parsing
 
                 case Token.URI:
                     //Uri uses a Node Match
-                    baseUri = (context.Query.BaseUri == null) ? String.Empty : context.Query.BaseUri.ToString();
-                    u = new Uri(Tools.ResolveUri(t.Value, baseUri));
-                    return new NodeMatchPattern(new UriNode(null, u));
+                    if (t.Value.StartsWith("_:"))
+                    {
+                        return new FixedBlankNodePattern(t.Value);
+                    }
+                    else
+                    {
+                        baseUri = (context.Query.BaseUri == null) ? String.Empty : context.Query.BaseUri.ToString();
+                        u = new Uri(Tools.ResolveUri(t.Value, baseUri));
+                        return new NodeMatchPattern(new UriNode(null, u));
+                    }
 
                 case Token.QNAME:
                     //QName uses a Node Match

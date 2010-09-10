@@ -190,7 +190,7 @@ namespace VDS.RDF.Parsing.Tokens
                                 case '.':
                                     //Dot Terminator
                                     this.ConsumeCharacter();
-                                    if (Char.IsDigit(this.Peek()))
+                                    if (!this._in.EndOfStream && Char.IsDigit(this.Peek()))
                                     {
                                         return this.TryGetNumericLiteral();
                                     }
@@ -396,6 +396,8 @@ namespace VDS.RDF.Parsing.Tokens
                 next = this.Peek();
             }
 
+            if (this.Value.StartsWith(".")) this.Backtrack();
+
             //Validate the QName
             if (this.Value.StartsWith("_:"))
             {
@@ -541,6 +543,8 @@ namespace VDS.RDF.Parsing.Tokens
                 next = this.Peek();
             }
 
+            if (this.Value.EndsWith(".")) this.Backtrack();
+
             //Validate
             if (TurtleSpecsHelper.IsValidPlainLiteral(this.Value))
             {
@@ -576,6 +580,14 @@ namespace VDS.RDF.Parsing.Tokens
 
             //Validate
             String value = this.Value;
+
+            //If it ends in a trailing . then we need to backtrack
+            if (value.EndsWith("."))
+            {
+                this.Backtrack();
+                value = value.Substring(0, value.Length - 1);
+            }
+
             if (value.Equals("a"))
             {
                 //Keyword 'a'

@@ -146,7 +146,6 @@ namespace VDS.RDF
                 BlankNode temp = (BlankNode)other;
 
                 //Only equal if our internal IDs match and we come from the same Graph
-
                 return this._id.Equals(temp.InternalID) && ReferenceEquals(this._graph, temp.Graph);
             }
             else

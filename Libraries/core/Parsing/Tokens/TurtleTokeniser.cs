@@ -134,7 +134,7 @@ namespace VDS.RDF.Parsing.Tokens
                     do
                     {
                         //Check for EOF
-                        if (this._in.EndOfStream)
+                        if (this._in.EndOfStream && !this.HasBacktracked)
                         {
                             if (this.Length == 0)
                             {
@@ -255,7 +255,7 @@ namespace VDS.RDF.Parsing.Tokens
                                         this.ConsumeCharacter();
 
                                         //Watch our for plain literals
-                                        if (Char.IsDigit(this.Peek()))
+                                        if (!this._in.EndOfStream && Char.IsDigit(this.Peek()))
                                         {
                                             IToken temp = this.TryGetQNameToken();
                                             if (temp is PlainLiteralToken)
@@ -898,6 +898,9 @@ namespace VDS.RDF.Parsing.Tokens
                 this.ConsumeCharacter();
                 next = this.Peek();
             }
+
+            //If it ends in a trailing . then we need to backtrack
+            if (this.Value.EndsWith(".")) this.Backtrack();
 
             if (colonoccurred && !dotoccurred)
             {

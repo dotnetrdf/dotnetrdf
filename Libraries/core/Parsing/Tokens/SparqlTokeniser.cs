@@ -182,8 +182,27 @@ namespace VDS.RDF.Parsing.Tokens
                                 case '.':
                                     //Statement Terminator
                                     this.ConsumeCharacter();
-                                    this._lasttokentype = Token.DOT;
-                                    return new DotToken(this.CurrentLine, this.StartPosition);
+
+                                    //Watch our for plain literals
+                                    if (!this._in.EndOfStream && Char.IsDigit(this.Peek()))
+                                    {
+                                        IToken temp = this.TryGetNumericLiteral();
+                                        if (temp is PlainLiteralToken)
+                                        {
+                                            this.LastTokenType = Token.PLAINLITERAL;
+                                            return temp;
+                                        }
+                                        else
+                                        {
+                                            throw UnexpectedToken("Plain Literal", temp);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        //This should be the end of a directive
+                                        this.LastTokenType = Token.DOT;
+                                        return new DotToken(this.CurrentLine, this.StartPosition);
+                                    }
 
                                 case ';':
                                     //Predicate Object List deliminator
@@ -695,6 +714,13 @@ namespace VDS.RDF.Parsing.Tokens
 #else
             String value = this.Value;
 #endif
+            //Backtrack if necessary
+            if (value.EndsWith("."))
+            {
+                this.Backtrack();
+                value = value.Substring(0, value.Length - 1);
+            }
+
             if (value.Equals("a"))
             {
                 //Keyword 'a'
@@ -756,6 +782,14 @@ namespace VDS.RDF.Parsing.Tokens
 #else
             value = this.Value;
 #endif
+
+            //Backtrack if necessary
+            if (value.EndsWith("."))
+            {
+                this.Backtrack();
+                value = value.Substring(0, value.Length - 1);
+            }
+
             if (!colonoccurred && (SparqlSpecsHelper.IsNonQueryKeyword(value) || SparqlSpecsHelper.IsFunctionKeyword(value) || SparqlSpecsHelper.IsAggregateKeyword(value) || SparqlSpecsHelper.IsUpdateKeyword(value)))
             {
                 value = value.ToUpper();
@@ -1182,6 +1216,14 @@ namespace VDS.RDF.Parsing.Tokens
 #else
             String value = this.Value;
 #endif
+
+            //Backtrack if necessary
+            if (value.EndsWith("."))
+            {
+                this.Backtrack();
+                value = value.Substring(0, value.Length - 1);
+            }
+
             if (colonoccurred)
             {
                 //Must be a QName
@@ -1382,6 +1424,8 @@ namespace VDS.RDF.Parsing.Tokens
             bool expoccurred = false;
             bool negoccurred = false;
 
+            if (this.Length == 1) dotoccurred = true;
+
             char next = this.Peek();
 
             while (Char.IsDigit(next) || next == '-' || next == '+' || next == 'e' || (next == '.' && !dotoccurred))
@@ -1441,6 +1485,7 @@ namespace VDS.RDF.Parsing.Tokens
                 next = this.Peek();
             }
 
+            if (this.Value.EndsWith(".")) this.Backtrack();
             String value = this.Value;
             if (value.Equals("+"))
             {
@@ -1461,7 +1506,6 @@ namespace VDS.RDF.Parsing.Tokens
             //Return the Token
             this._lasttokentype = Token.PLAINLITERAL;
             return new PlainLiteralToken(this.Value, this.CurrentLine, this.StartPosition, this.EndPosition);
-
         }
 
         private IToken TryGetDataType()

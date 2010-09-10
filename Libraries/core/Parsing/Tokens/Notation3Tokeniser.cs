@@ -128,7 +128,7 @@ namespace VDS.RDF.Parsing.Tokens
                     do
                     {
                         //Check for EOF
-                        if (this._in.EndOfStream)
+                        if (this._in.EndOfStream && !this.HasBacktracked)
                         {
                             if (this.Length == 0)
                             {
@@ -179,7 +179,7 @@ namespace VDS.RDF.Parsing.Tokens
                                 case '.':
                                     //Dot Terminator
                                     this.ConsumeCharacter();
-                                    if (Char.IsDigit(this.Peek()))
+                                    if (!this._in.EndOfStream && Char.IsDigit(this.Peek()))
                                     {
                                         return this.TryGetNumericLiteral();
                                     }
@@ -391,6 +391,7 @@ namespace VDS.RDF.Parsing.Tokens
             }
 
             //Validate the final result
+            if (this.Value.EndsWith(".")) this.Backtrack();
             if (!this._isValidPlainLiteral.IsMatch(this.Value)) 
             {
                 throw Error("The format of the Numeric Literal '" + this.Value + "' is not valid!");
@@ -435,6 +436,14 @@ namespace VDS.RDF.Parsing.Tokens
 
                 //Validate
                 String value = this.Value;
+
+                //If it ends in a trailing . then we need to backtrack
+                if (value.EndsWith("."))
+                {
+                    this.Backtrack();
+                    value = value.Substring(0, value.Length - 1);
+                }
+
                 if (value.Equals("a"))
                 {
                     //Keyword 'a'
@@ -517,6 +526,13 @@ namespace VDS.RDF.Parsing.Tokens
 
                 //Validate
                 String value = this.Value;
+
+                //If it ends in a trailing . then we need to backtrack
+                if (value.EndsWith("."))
+                {
+                    this.Backtrack();
+                    value = value.Substring(0, value.Length - 1);
+                }
 
                 if (this._keywords.Contains(value))
                 {
@@ -849,6 +865,14 @@ namespace VDS.RDF.Parsing.Tokens
             }
 
             String value = this.Value;
+
+            //If it ends in a trailing . then we need to backtrack
+            if (value.EndsWith("."))
+            {
+                this.Backtrack();
+                value = value.Substring(0, value.Length - 1);
+            }
+
             if (!this.IsValidQName(value))
             {
                 //Not a valid QName

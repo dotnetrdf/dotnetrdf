@@ -79,6 +79,7 @@ namespace VDS.RDF.Parsing.Tokens
         private int _currpos = 1;
         private String _format = "Unknown";
         private int _lasttokentype = -1;
+        private char? _tempChar;
 
         /// <summary>
         /// Constructor for the BaseTokeniser which takes in a TextReader that the Tokeniser will generate Tokens from
@@ -133,7 +134,27 @@ namespace VDS.RDF.Parsing.Tokens
         /// <returns></returns>
         protected char Peek()
         {
-            return (char)this._reader.Peek();
+            if (this._tempChar != null)
+            {
+                char c = (char)this._tempChar;
+                return c;
+            }
+            else
+            {
+                return (char)this._reader.Peek();
+            }
+        }
+
+        /// <summary>
+        /// Allows you to Backtrack one character (and no more)
+        /// </summary>
+        protected void Backtrack()
+        {
+            if (this._tempChar != null) throw Error("Cannot backtrack more than one character");
+            if (this._output.Length == 0) throw Error("Cannot backtrack when no characters have been consumed");
+
+            this._tempChar = this._output[this._output.Length - 1];
+            this._output.Remove(this._output.Length - 1, 1);            
         }
 
         /// <summary>
@@ -240,11 +261,30 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
+        /// Gets whether the Tokeniser has backtracked
+        /// </summary>
+        protected bool HasBacktracked
+        {
+            get
+            {
+                return this._tempChar != null;
+            }
+        }
+
+        /// <summary>
         /// Consumes a single Character into the Output Buffer and increments the Position Counters
         /// </summary>
         /// <exception cref="RdfParseException">Thrown if the caller tries to read beyond the end of the Stream</exception>
         protected void ConsumeCharacter()
         {
+            if (this._tempChar != null)
+            {
+                char c = (char)this._tempChar;
+                this._tempChar = null;
+                this._output.Append(c);
+                return;
+            }
+
             int temp = this._reader.Read();
             if (temp > -1)
             {
@@ -320,7 +360,7 @@ namespace VDS.RDF.Parsing.Tokens
                     this._endline++;
 
                     //See if there's a \r to discard as well
-                    next = (char)this._reader.Peek();
+                    next = this.Peek();
                     if (next == '\r')
                     {
                         this._reader.Read();
@@ -343,7 +383,7 @@ namespace VDS.RDF.Parsing.Tokens
                     this._endline++;
 
                     //See if there's a \n to discard as well
-                    next = (char)this._reader.Peek();
+                    next = this.Peek();
                     if (next == '\n')
                     {
                         this._reader.Read();
@@ -369,6 +409,13 @@ namespace VDS.RDF.Parsing.Tokens
         /// <exception cref="RdfParseException">Thrown if the caller tries to read beyond the end of the Stream</exception>
         protected char SkipCharacter()
         {
+            if (this._tempChar != null)
+            {
+                char c = (char)this._tempChar;
+                this._tempChar = null;
+                return c;
+            }
+
             int temp = this._reader.Read();
             if (temp > -1)
             {
@@ -387,7 +434,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// </summary>
         protected void DiscardWhiteSpace()
         {
-            char next = (char)this._reader.Peek();
+            char next = this.Peek();
 
             while (Char.IsWhiteSpace(next))
             {

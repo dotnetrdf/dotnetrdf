@@ -69,7 +69,7 @@ namespace VDS.RDF.Query
     /// <summary>
     /// Class for representing Sparql Result Sets
     /// </summary>
-    public class SparqlResultSet : IEnumerable<SparqlResult>, IDisposable
+    public sealed class SparqlResultSet : IEnumerable<SparqlResult>, IDisposable
     {
         /// <summary>
         /// Lists of Sparql Results
@@ -241,67 +241,6 @@ namespace VDS.RDF.Query
         #region Internal Methods for filling the ResultSet
 
         /// <summary>
-        /// Fills a Result Set from a given Multiset
-        /// </summary>
-        /// <param name="multiset">Multiset</param>
-        protected internal void FillResultSet(BaseMultiset multiset)
-        {
-            if (!this.IsEmpty) throw new RdfQueryException("Cannot fill a non-empty Result Set");
-            this._result = true;
-            this._type = SparqlResultsType.VariableBindings;
-            if (multiset is NullMultiset)
-            {
-                this._result = false;
-            }
-            else if (multiset is IdentityMultiset)
-            {
-                this._result = true;
-                foreach (String var in multiset.Variables)
-                {
-                    this._variables.Add(var);
-                }
-            }
-            else
-            {
-                this._result = true;
-                foreach (String var in multiset.Variables)
-                {
-                    this._variables.Add(var);
-                }
-                foreach (Set s in multiset.Sets)
-                {
-                    this.AddResult(new SparqlResult(s));
-                }
-            }
-        }
-
-        protected internal void FillResultSet(SparqlResultSet results)
-        {
-            if (!this.IsEmpty) throw new RdfQueryException("Cannot fill a non-empty Result Set");
-            this._type = results.ResultsType;
-            if (this._type == SparqlResultsType.Boolean)
-            {
-                this._result = results.Result;
-            }
-            else if (this._type == SparqlResultsType.VariableBindings)
-            {
-                this._result = true;
-                foreach (String var in results.Variables)
-                {
-                    this._variables.Add(var);
-                }
-                foreach (SparqlResult result in results)
-                {
-                    this.AddResult(result);
-                }
-            }
-            else
-            {
-                throw new RdfQueryException("Cannot fill a Result Set from a Result Set of an Unknown Type");
-            }
-        }
-
-        /// <summary>
         /// Adds a Variable to the Result Set
         /// </summary>
         /// <param name="var">Variable Name</param>
@@ -315,7 +254,7 @@ namespace VDS.RDF.Query
         /// Adds a Result to the Result Set
         /// </summary>
         /// <param name="result">Result</param>
-        protected internal virtual void AddResult(SparqlResult result)
+        protected internal void AddResult(SparqlResult result)
         {
             this._results.Add(result);
             this._type = SparqlResultsType.VariableBindings;

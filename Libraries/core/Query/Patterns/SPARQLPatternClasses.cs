@@ -342,6 +342,72 @@ namespace VDS.RDF.Query.Patterns
     }
 
     /// <summary>
+    /// Pattern which matches the Blank Node with the given Internal ID regardless of the Graph the nodes come from
+    /// </summary>
+    public class FixedBlankNodePattern : PatternItem
+    {
+        private String _id;
+
+        /// <summary>
+        /// Creates a new Fixed Blank Node Pattern
+        /// </summary>
+        /// <param name="id">ID</param>
+        public FixedBlankNodePattern(String id)
+        {
+            if (id.StartsWith("_:"))
+            {
+                this._id = id.Substring(2);
+            }
+            else
+            {
+                this._id = id;
+            }
+        }
+
+        /// <summary>
+        /// Checks whether the pattern accepts the given Node
+        /// </summary>
+        /// <param name="context">SPARQL Evaluation Context</param>
+        /// <param name="obj">Node to test</param>
+        /// <returns></returns>
+        protected internal override bool Accepts(SparqlEvaluationContext context, INode obj)
+        {
+            if (obj.NodeType == NodeType.Blank)
+            {
+                return ((BlankNode)obj).InternalID.Equals(this._id);
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Returns a Blank Node with a fixed ID scoped to whichever graph is provided
+        /// </summary>
+        /// <param name="g">Graph</param>
+        /// <param name="s">Set</param>
+        /// <param name="preserveBNodes">Whether to preserve BNode IDs</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Ignores both the <paramref name="s">Set</paramref> and <paramref name="preserveBNodes">Preserve BNodes</paramref> parameters
+        /// </remarks>
+        protected internal override INode Construct(IGraph g, Set s, bool preserveBNodes)
+        {
+            return new BlankNode(g, this._id);
+        }
+
+        /// <summary>
+        /// Gets the String representation of the Pattern Item
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return "<_:" + this._id + ">";
+        }
+    }
+
+    /// <summary>
     /// Pattern which matches Blank Nodes
     /// </summary>
     public class BlankNodePattern : PatternItem

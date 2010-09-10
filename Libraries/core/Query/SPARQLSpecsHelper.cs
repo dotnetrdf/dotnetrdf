@@ -368,15 +368,15 @@ namespace VDS.RDF.Query
         /// <summary>
         /// Regular Expression Pattern for Valid Integers in Sparql
         /// </summary>
-        public static Regex SparqlInteger = new Regex("^(\\+|-)?\\d*$");
+        public static Regex SparqlInteger = new Regex(TurtleSpecsHelper.ValidIntegerPattern);
         /// <summary>
         /// Regular Expression Pattern for Valid Decimals in Sparql
         /// </summary>
-        public static Regex SparqlDecimal = new Regex("^(((\\+|-)?\\d+\\.\\d+)|((\\+|-)?\\d+\\.))$");
+        public static Regex SparqlDecimal = new Regex(TurtleSpecsHelper.ValidDecimalPattern);
         /// <summary>
         /// Regular Expression Pattern for Valid Doubles in Sparql
         /// </summary>
-        public static Regex SparqlDouble = new Regex("^(\\+|-)?\\d+(\\.\\d+)?[eE](\\+|-)?\\d+$");
+        public static Regex SparqlDouble = new Regex(TurtleSpecsHelper.ValidDoublePattern);
 
         #endregion
 
