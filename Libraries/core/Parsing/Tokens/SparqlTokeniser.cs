@@ -1590,6 +1590,13 @@ namespace VDS.RDF.Parsing.Tokens
 
             //Validate
             String value = this.Value;
+
+            if (value.EndsWith("."))
+            {
+                this.Backtrack();
+                value = value.Substring(0, value.Length - 1);
+            }
+
             if (SparqlSpecsHelper.IsValidVarName(value))
             {
                 return new VariableToken(value, this.CurrentLine, this.StartPosition, this.EndPosition);
