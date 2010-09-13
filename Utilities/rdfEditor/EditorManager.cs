@@ -39,6 +39,7 @@ namespace rdfEditor
         private bool _enableHighlighting = true;
         private String _currFile;
         private String _currSyntax = "None";
+        private StatusBarItem _stsCurrSyntax;
 
         //Validation
         private bool _validateAsYouType = false;
@@ -96,8 +97,14 @@ namespace rdfEditor
             }
         }
 
-        public EditorManager(TextEditor editor, MenuItem highlightersMenu, StatusBarItem validatorStatus)
-            : this(editor, highlightersMenu)
+        public EditorManager(TextEditor editor, MenuItem highlightersMenu, StatusBarItem currSyntax)
+            : this(editor, highlightersMenu) 
+        {
+            this._stsCurrSyntax = currSyntax;
+        }
+
+        public EditorManager(TextEditor editor, MenuItem highlightersMenu, StatusBarItem currSyntax, StatusBarItem validatorStatus)
+            : this(editor, highlightersMenu, currSyntax)
         {
             this._validatorStatus = validatorStatus;
             this._validateAsYouType = true;
@@ -510,6 +517,11 @@ namespace rdfEditor
 
         public void SetNoHighlighting()
         {
+            if (this._stsCurrSyntax != null)
+            {
+                this._stsCurrSyntax.Content = "Syntax: None";
+            }
+
             this._editor.SyntaxHighlighting = null;
             this._currSyntax = "None";
             this.SetCurrentHighlighterChecked("None");
@@ -519,6 +531,11 @@ namespace rdfEditor
 
         private void SetCurrentHighlighterChecked(String name)
         {
+            if (this._stsCurrSyntax != null)
+            {
+                this._stsCurrSyntax.Content = "Syntax: " + name;
+            }
+
             if (!this._enableHighlighting) return;
 
             if (this._highlightersMenu != null)

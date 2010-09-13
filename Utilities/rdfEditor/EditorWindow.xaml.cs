@@ -40,12 +40,13 @@ namespace rdfEditor
         private OpenFileDialog _ofd = new OpenFileDialog();
         private SaveFileDialog _sfd = new SaveFileDialog();
         private EditorManager _manager;
+        private bool _saveWindowSize = false;
 
         public EditorWindow()
         {
             InitializeComponent();
 
-            this._manager = new EditorManager(this.textEditor, this.mnuCurrentHighlighter, this.stsSyntaxValidation);
+            this._manager = new EditorManager(this.textEditor, this.mnuCurrentHighlighter, this.stsCurrSyntax, this.stsSyntaxValidation);
           
             //Set up the Editor Options
             TextEditorOptions options = new TextEditorOptions();
@@ -102,7 +103,7 @@ namespace rdfEditor
             }
             this._manager.SetHighlighter(Properties.Settings.Default.DefaultHighlighter);
 
-            //Enable/Disable state dependendet menu options
+            //Enable/Disable state dependent menu options
             this.mnuUndo.IsEnabled = textEditor.CanUndo;
             this.mnuRedo.IsEnabled = textEditor.CanRedo;
 
@@ -779,6 +780,14 @@ namespace rdfEditor
             }
 
             textEditor.Focus();
+
+            //Set Window size
+            if (Properties.Settings.Default.WindowHeight > 0 && Properties.Settings.Default.WindowWidth > 0)
+            {
+                this.Height = Properties.Settings.Default.WindowHeight;
+                this.Width = Properties.Settings.Default.WindowWidth;
+            }
+            this._saveWindowSize = true;
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -885,6 +894,18 @@ namespace rdfEditor
                         }
                     }
                 }
+            }
+        }
+
+        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (!this._saveWindowSize) return;
+
+            if (this.Width > 0 && this.Height > 0)
+            {
+                Properties.Settings.Default.WindowHeight = this.Height;
+                Properties.Settings.Default.WindowWidth = this.Width;
+                Properties.Settings.Default.Save();
             }
         }
     }

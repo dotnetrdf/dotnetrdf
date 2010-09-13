@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Permissions;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -30,11 +31,14 @@ namespace rdfEditor
             new FileAssociationInfo(".rdf"),
             new FileAssociationInfo(".json"),
             new FileAssociationInfo(".rq"),
-            new FileAssociationInfo(".srx")            
+            new FileAssociationInfo(".srx"),
+            new FileAssociationInfo(".trig"),
+            new FileAssociationInfo(".nq")
         };
 
         private HashSet<String> _currentAssociations = new HashSet<string>();
 
+        [RegistryPermission(SecurityAction.Demand, Unrestricted=true)]
         public FileAssociations()
         {
             InitializeComponent();
@@ -150,6 +154,7 @@ namespace rdfEditor
             return false;
         }
 
+        [RegistryPermission(SecurityAction.Demand, Unrestricted=true)]
         private void btnContinue_Click(object sender, RoutedEventArgs e)
         {
             if (this.chkAlwaysCheckFileAssociations.IsChecked != null)

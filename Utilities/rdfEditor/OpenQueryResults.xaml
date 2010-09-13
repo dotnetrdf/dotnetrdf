@@ -1,7 +1,7 @@
 ﻿<Window x:Class="rdfEditor.OpenQueryResults"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="Open Query Results" Height="220" Width="623">
+    Title="Open Query Results" Height="220" Width="623" ResizeMode="NoResize">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="29*"></RowDefinition>
