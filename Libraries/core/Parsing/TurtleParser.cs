@@ -363,26 +363,8 @@ namespace VDS.RDF.Parsing
                     break;
 
                 case Token.QNAME:
-                    try
-                    {
-                        subj = context.Graph.CreateUriNode(subjToken.Value);
-                    }
-                    catch (RdfException rdfEx)
-                    {
-                        throw new RdfParseException("Unable to resolve the QName '" + subjToken.Value + "' due to the following error:\n" + rdfEx.Message, subjToken, rdfEx);
-                    }
-                    break;
-
                 case Token.URI:
-                    try
-                    {
-                        String uri = Tools.ResolveUri(subjToken.Value, context.Graph.BaseUri.ToSafeString());
-                        subj = context.Graph.CreateUriNode(new Uri(uri));
-                    }
-                    catch (RdfException rdfEx)
-                    {
-                        throw new RdfParseException("Unable to resolve the URI '" + subjToken.Value + "' due to the following error:\n" + rdfEx.Message, subjToken, rdfEx);
-                    }
+                    subj = this.TryResolveUri(context, subjToken);
                     break;
 
                 default:
@@ -423,17 +405,6 @@ namespace VDS.RDF.Parsing
                         pred = context.Graph.CreateUriNode(new Uri(NamespaceMapper.RDF + "type"));
                         break;
 
-                    case Token.QNAME:
-                        try
-                        {
-                            pred = context.Graph.CreateUriNode(predToken.Value);
-                        }
-                        catch (RdfException rdfEx)
-                        {
-                            throw new RdfParseException("Unable to resolve the QName '" + predToken.Value + "' due to the following error:\n" + rdfEx.Message, predToken, rdfEx);
-                        }
-                        break;
-
                     case Token.RIGHTSQBRACKET:
                         //If the last token was a semicolon and we're parsing a Blank Node Predicate Object list
                         //then a trailing semicolon is permitted
@@ -461,16 +432,9 @@ namespace VDS.RDF.Parsing
                             throw Error("Unexpected Right Square Bracket encountered while trying to parse a Predicate Object list", predToken);
                         }
 
+                    case Token.QNAME:
                     case Token.URI:
-                        try
-                        {
-                            String uri = Tools.ResolveUri(predToken.Value, context.Graph.BaseUri.ToSafeString());
-                            pred = context.Graph.CreateUriNode(new Uri(uri));
-                        }
-                        catch (RdfException rdfEx)
-                        {
-                            throw new RdfParseException("Unable to resolve the URI '" + predToken.Value + "' due to the following error:\n" + rdfEx.Message, predToken, rdfEx);
-                        }
+                        pred = this.TryResolveUri(context, predToken);
                         break;
 
                     case Token.EOF:
@@ -593,17 +557,6 @@ namespace VDS.RDF.Parsing
                         obj = this.TryParseLiteral(context, objToken);
                         break;
 
-                    case Token.QNAME:
-                        try
-                        {
-                            obj = context.Graph.CreateUriNode(objToken.Value);
-                        }
-                        catch (RdfException rdfEx)
-                        {
-                            throw new RdfParseException("Unable to resolve the QName '" + objToken.Value + "' due to the following error:\n" + rdfEx.Message, objToken, rdfEx);
-                        }
-                        break;
-
                     case Token.RIGHTSQBRACKET:
                         if (bnodeList)
                         {
@@ -633,15 +586,9 @@ namespace VDS.RDF.Parsing
                             throw Error("Unexpected Semicolon Triple terminator encountered, expected a valid Object for the current Triple", objToken);
                         }
 
+                    case Token.QNAME:
                     case Token.URI:
-                        try
-                        {
-                            obj = context.Graph.CreateUriNode(new Uri(Tools.ResolveUri(objToken.Value, context.Graph.BaseUri.ToSafeString())));
-                        }
-                        catch (RdfException rdfEx)
-                        {
-                            throw new RdfParseException("Unable to resolve the URI '" + objToken.Value + "' due to the following error:\n" + rdfEx.Message, objToken, rdfEx);
-                        }
+                        obj = this.TryResolveUri(context, objToken);
                         break;
 
                     case Token.EOF:
@@ -719,25 +666,8 @@ namespace VDS.RDF.Parsing
                         break;
 
                     case Token.QNAME:
-                        try
-                        {
-                            obj = context.Graph.CreateUriNode(next.Value);
-                        }
-                        catch (RdfException rdfEx)
-                        {
-                            throw new RdfParseException("Unable to resolve the QName '" + next.Value + "' due to the following error:\n" + rdfEx.Message, next, rdfEx);
-                        }
-                        break;
-
                     case Token.URI:
-                        try
-                        {
-                            obj = context.Graph.CreateUriNode(new Uri(Tools.ResolveUri(next.Value, context.Graph.BaseUri.ToSafeString())));
-                        }
-                        catch (RdfException rdfEx)
-                        {
-                            throw new RdfParseException("Unable to resolve the URI '" + next.Value + "' due to the following error:\n" + rdfEx.Message, next, rdfEx);
-                        }
+                        obj = this.TryResolveUri(context, next);
                         break;
 
                     case Token.RIGHTBRACKET:
@@ -837,7 +767,7 @@ namespace VDS.RDF.Parsing
                     }
                     catch (RdfException rdfEx)
                     {
-                        throw new RdfParseException("Unable to resolve the Datatype '" + litdt.Value + "' due to the following error:\n" + rdfEx.Message, litdt, rdfEx);
+                        throw new RdfParseException("Unable to resolve the Datatype '" + litdt.DataType + "' due to the following error:\n" + rdfEx.Message, litdt, rdfEx);
                     }
 
                 case Token.LITERALWITHLANG:
@@ -871,6 +801,44 @@ namespace VDS.RDF.Parsing
                     }
                 default:
                     throw Error("Unexpected Token '" + lit.GetType().ToString() + "' encountered, expected a valid Literal Token to convert to a Node", lit);
+            }
+        }
+
+        /// <summary>
+        /// Attempts to resolve a QName or URI Token into a URI Node and produces appropriate error messages if this fails
+        /// </summary>
+        /// <param name="context">Parser Context</param>
+        /// <param name="t">Token to resolve</param>
+        /// <returns></returns>
+        private INode TryResolveUri(TokenisingParserContext context, IToken t)
+        {
+            switch (t.TokenType)
+            {
+                case Token.QNAME:
+                    try
+                    {
+                        return context.Graph.CreateUriNode(t.Value);
+                    }
+                    catch (RdfException rdfEx)
+                    {
+                        throw new RdfParseException("Unable to resolve the QName '" + t.Value + "' due to the following error:\n" + rdfEx.Message, t, rdfEx);
+                    }
+                    break;
+
+                case Token.URI:
+                    try
+                    {
+                        String uri = Tools.ResolveUri(t.Value, context.Graph.BaseUri.ToSafeString());
+                        return context.Graph.CreateUriNode(new Uri(uri));
+                    }
+                    catch (RdfException rdfEx)
+                    {
+                        throw new RdfParseException("Unable to resolve the URI '" + t.Value + "' due to the following error:\n" + rdfEx.Message, t, rdfEx);
+                    }
+                    break;
+
+                default:
+                    throw Error("Unexpected Token '" + t.GetType().ToString() + "' encountered, expected a URI/QName Token to resolve into a URI", t);
             }
         }
 

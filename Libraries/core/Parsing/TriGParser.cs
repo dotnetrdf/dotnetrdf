@@ -299,7 +299,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        private void TryParseTriples(TriGParserContext context, Graph g)
+        private void TryParseTriples(TriGParserContext context, IGraph g)
         {
             do
             {
@@ -315,13 +315,8 @@ namespace VDS.RDF.Parsing
                         continue;
 
                     case Token.QNAME:
-                        //QName
-                        subjNode = g.CreateUriNode(subj.Value);
-                        break;
-
                     case Token.URI:
-                        //Uri (Base Uri will never be null so safe to call ToString() directly)
-                        subjNode = g.CreateUriNode(new Uri(Tools.ResolveUri(subj.Value, g.BaseUri.ToString())));
+                        subjNode = this.TryResolveUri(context, g, subj);
                         break;
 
                     case Token.BLANKNODEWITHID:
@@ -398,7 +393,7 @@ namespace VDS.RDF.Parsing
             context.Tokens.Dequeue();
         }
 
-        private void TryParsePredicateObjectList(TriGParserContext context, Graph g, INode subj)
+        private void TryParsePredicateObjectList(TriGParserContext context, IGraph g, INode subj)
         {
             bool ok = false;
             do
@@ -429,13 +424,8 @@ namespace VDS.RDF.Parsing
                         continue;
 
                     case Token.QNAME:
-                        //QName
-                        predNode = g.CreateUriNode(pred.Value);
-                        break;
-
                     case Token.URI:
-                        //Uri (Base Uri will never be null so safe to call ToString() directly)
-                        predNode = g.CreateUriNode(new Uri(Tools.ResolveUri(pred.Value, g.BaseUri.ToString())));
+                        predNode = this.TryResolveUri(context, g, pred);
                         break;
 
                     case Token.KEYWORDA:
@@ -489,7 +479,7 @@ namespace VDS.RDF.Parsing
             } while (context.Tokens.Peek().TokenType == Token.SEMICOLON); //Expect a semicolon if we are to continue
         }
 
-        private void TryParseObjectList(TriGParserContext context, Graph g, INode subj, INode pred)
+        private void TryParseObjectList(TriGParserContext context, IGraph g, INode subj, INode pred)
         {
             bool ok = false;
 
@@ -514,13 +504,8 @@ namespace VDS.RDF.Parsing
                         continue;
 
                     case Token.QNAME:
-                        //QName
-                        objNode = g.CreateUriNode(obj.Value);
-                        break;
-
                     case Token.URI:
-                        //Uri (Base Uri will never be null so safe to call ToString() directly)
-                        objNode = g.CreateUriNode(new Uri(Tools.ResolveUri(obj.Value, g.BaseUri.ToString())));
+                        objNode = this.TryResolveUri(context, g, obj);
                         break;
 
                     case Token.LITERAL:
@@ -639,7 +624,7 @@ namespace VDS.RDF.Parsing
             } while (context.Tokens.Peek().TokenType == Token.COMMA); //Expect a comma if we are to continue
         }
 
-        private void TryParseCollection(TriGParserContext context, Graph g, INode subj)
+        private void TryParseCollection(TriGParserContext context, IGraph g, INode subj)
         {
             //Create the Nodes we need
             UriNode rdfFirst, rdfRest, rdfNil;
@@ -662,10 +647,8 @@ namespace VDS.RDF.Parsing
                         continue;
 
                     case Token.QNAME:
-                        item = g.CreateUriNode(next.Value);
-                        break;
                     case Token.URI:
-                        item = g.CreateUriNode(new Uri(Tools.ResolveUri(next.Value, g.BaseUri.ToString())));
+                        item = this.TryResolveUri(context, g, next);
                         break;
 
                     case Token.LITERAL:
@@ -739,6 +722,42 @@ namespace VDS.RDF.Parsing
                 }
             } while (true);
 
+        }
+
+        /// <summary>
+        /// Attempts to resolve a QName or URI Token into a URI Node and produces appropriate error messages if this fails
+        /// </summary>
+        /// <param name="context">Parser Context</param>
+        /// <param name="t">Token to resolve</param>
+        /// <returns></returns>
+        private INode TryResolveUri(TriGParserContext context, IGraph g, IToken t)
+        {
+            switch (t.TokenType)
+            {
+                case Token.QNAME:
+                    try
+                    {
+                        return g.CreateUriNode(t.Value);
+                    }
+                    catch (RdfException rdfEx)
+                    {
+                        throw new RdfParseException("Unable to resolve the QName '" + t.Value + "' due to the following error:\n" + rdfEx.Message, t, rdfEx);
+                    }
+
+                case Token.URI:
+                    try
+                    {
+                        String uri = Tools.ResolveUri(t.Value, g.BaseUri.ToSafeString());
+                        return g.CreateUriNode(new Uri(uri));
+                    }
+                    catch (RdfException rdfEx)
+                    {
+                        throw new RdfParseException("Unable to resolve the URI '" + t.Value + "' due to the following error:\n" + rdfEx.Message, t, rdfEx);
+                    }
+
+                default:
+                    throw Error("Unexpected Token '" + t.GetType().ToString() + "' encountered, expected a URI/QName Token to resolve into a URI", t);
+            }
         }
 
         /// <summary>
