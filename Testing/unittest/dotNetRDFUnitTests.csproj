@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{BD80F826-56A3-4A88-B466-DDFA0691FFB8}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -57,6 +57,7 @@
       <HintPath>..\..\Dependencies\SemWeb.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -118,6 +119,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AllegroGraphTests.cs" />
+    <Compile Include="Configuration\ConfigurationApiTests.cs" />
     <Compile Include="SesameTests.cs" />
     <Compile Include="EventTests.cs" />
     <Compile Include="FormattingTests.cs" />

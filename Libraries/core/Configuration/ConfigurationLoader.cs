@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using SysConfig = System.Configuration;
 using System.Linq;
 using System.Net;
 using VDS.RDF.Parsing;
@@ -281,7 +282,7 @@ namespace VDS.RDF.Configuration
         /// </returns>
         public static IEnumerable<INode> GetConfigurationData(IGraph g, INode objNode, INode property)
         {
-            return g.GetTriplesWithSubjectPredicate(objNode, property).Select(t => t.Object);
+            return g.GetTriplesWithSubjectPredicate(objNode, property).Select(t => ResolveAppSetting(g, t.Object));
         }
 
         /// <summary>
@@ -295,7 +296,8 @@ namespace VDS.RDF.Configuration
         /// </returns>
         public static INode GetConfigurationNode(IGraph g, INode objNode, INode property)
         {
-            return g.GetTriplesWithSubjectPredicate(objNode, property).Select(t => t.Object).FirstOrDefault();
+            INode temp = g.GetTriplesWithSubjectPredicate(objNode, property).Select(t => t.Object).FirstOrDefault();
+            return ResolveAppSetting(g, temp);
         }
 
         /// <summary>
@@ -322,7 +324,16 @@ namespace VDS.RDF.Configuration
             }
             else
             {
-                return null;
+                INode temp = ResolveAppSetting(g, n);
+                if (temp == null) return null;
+                if (temp.NodeType == NodeType.Literal)
+                {
+                    return ((LiteralNode)temp).Value;
+                }
+                else
+                {
+                    return null;
+                }
             }
         }
 
@@ -344,7 +355,16 @@ namespace VDS.RDF.Configuration
                 case NodeType.Literal:
                     return ((LiteralNode)n).Value;
                 case NodeType.Uri:
-                    return n.ToString();
+                    INode temp = ResolveAppSetting(g, n);
+                    if (temp == null) return null;
+                    if (temp.NodeType == NodeType.Literal)
+                    {
+                        return ((LiteralNode)temp).Value;
+                    }
+                    else
+                    {
+                        return temp.ToString();
+                    }
                 default:
                     return null;
             }
@@ -364,6 +384,14 @@ namespace VDS.RDF.Configuration
         {
             INode n = g.GetTriplesWithSubjectPredicate(objNode, property).Select(t => t.Object).FirstOrDefault();
             if (n == null) return defValue;
+
+            //Resolve AppSettings
+            if (n.NodeType != NodeType.Literal)
+            {
+                n = ResolveAppSetting(g, n);
+                if (n == null) return defValue;
+            }
+
             if (n.NodeType == NodeType.Literal)
             {
                 bool temp;
@@ -396,6 +424,14 @@ namespace VDS.RDF.Configuration
         {
             INode n = g.GetTriplesWithSubjectPredicate(objNode, property).Select(t => t.Object).FirstOrDefault();
             if (n == null) return defValue;
+
+            //Resolve AppSettings
+            if (n.NodeType != NodeType.Literal)
+            {
+                n = ResolveAppSetting(g, n);
+                if (n == null) return defValue;
+            }
+
             if (n.NodeType == NodeType.Literal)
             {
                 long temp;
@@ -428,6 +464,14 @@ namespace VDS.RDF.Configuration
         {
             INode n = g.GetTriplesWithSubjectPredicate(objNode, property).Select(t => t.Object).FirstOrDefault();
             if (n == null) return defValue;
+
+            //Resolve AppSettings
+            if (n.NodeType != NodeType.Literal)
+            {
+                n = ResolveAppSetting(g, n);
+                if (n == null) return defValue;
+            }
+
             if (n.NodeType == NodeType.Literal)
             {
                 int temp;
@@ -688,6 +732,35 @@ namespace VDS.RDF.Configuration
         {
             if (_resolver == null) return path;
             return _resolver.ResolvePath(path);
+        }
+
+        /// <summary>
+        /// Attempts to resolve special &lt;appSettings&gt; URIs into actual values
+        /// </summary>
+        /// <param name="g"></param>
+        /// <param name="n"></param>
+        /// <returns></returns>
+        /// <remarks>
+        /// <para>
+        /// These special URIs have the form &lt;appSetting:Key&gt; where <strong>Key</strong> is the key for an appSetting in your applications configuration file.  When used these URIs are resolved at load time into the actual values from your configuration file.  This allows you to avoid spreading configuration data over multiple files since you can specify things like connection settings in the Application Config file and then simply reference them in the dotNetRDF configuration file.
+        /// </para>
+        /// </remarks>
+        public static INode ResolveAppSetting(IGraph g, INode n)
+        {
+            if (n.NodeType != NodeType.Uri) return n;
+
+            String uri = ((UriNode)n).StringUri;
+            if (!uri.StartsWith("appSetting:")) return n;
+
+            String key = uri.Substring(uri.IndexOf(':') + 1);
+            if (SysConfig.ConfigurationManager.AppSettings[key] == null)
+            {
+                return null;
+            }
+            else
+            {
+                return g.CreateLiteralNode(SysConfig.ConfigurationManager.AppSettings[key]);
+            }
         }
     }
 

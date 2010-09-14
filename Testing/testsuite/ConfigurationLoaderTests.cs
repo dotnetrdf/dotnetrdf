@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
@@ -29,7 +30,7 @@ namespace dotNetRDFTest
                 Graph g = new Graph();
                 FileLoader.Load(g, "sample-config.ttl");
                 Console.WriteLine("Sample graph loaded OK");
-                Console.WriteLine();
+                Console.WriteLine();        
 
                 //Attempt to load our MicrosoftSqlStoreManager from the Graph
                 Console.WriteLine("# Attempting to load an object based on the Configuration Graph");
