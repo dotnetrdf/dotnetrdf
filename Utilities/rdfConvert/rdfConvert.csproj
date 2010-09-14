@@ -59,7 +59,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="page.ico" />
     <Content Include="page_refresh.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
