@@ -21,6 +21,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		dotNetRDF2.vsmdi = dotNetRDF2.vsmdi
 		dotNetRDF3.vsmdi = dotNetRDF3.vsmdi
 		dotNetRDF4.vsmdi = dotNetRDF4.vsmdi
+		dotNetRDF5.vsmdi = dotNetRDF5.vsmdi
 		Tests.testrunconfig = Tests.testrunconfig
 	EndProjectSection
 EndProject
@@ -52,7 +53,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExportCoreContentsToTemplat
 EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
-		CategoryFile = dotNetRDF4.vsmdi
+		CategoryFile = dotNetRDF5.vsmdi
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

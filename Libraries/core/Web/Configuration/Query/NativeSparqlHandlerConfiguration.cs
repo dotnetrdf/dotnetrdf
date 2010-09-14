@@ -46,6 +46,7 @@ namespace VDS.RDF.Web.Configuration.Query
     /// <summary>
     /// Class for storing Native Sparql Handler Configuration
     /// </summary>
+    [Obsolete("This class is obseleted and has been superseded by QueryHandlerConfiguration", true)]
     public class NativeSparqlHandlerConfiguration : BaseSparqlHandlerConfiguration
     {
         private INativelyQueryableStore _store;

@@ -54,7 +54,6 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Net" />
-    <Reference Include="System.Configuration" />
     <Reference Include="System.Windows.Browser" />
     <Reference Include="HtmlAgilityPack.Silverlight, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

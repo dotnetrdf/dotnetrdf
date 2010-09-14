@@ -37,6 +37,7 @@ using VDS.RDF.Storage;
 
 namespace VDS.RDF.Web.Configuration.Resource
 {
+    [Obsolete("This class is obselete", true)]
     class SqlResourceHandlerConfiguration : BaseResourceHandlerConfiguration
     {
         private String _cacheKey = String.Empty;

@@ -50,6 +50,7 @@ namespace VDS.RDF.Web.Configuration.Query
     /// <summary>
     /// Class for storing Sparql Handler configuration where Reasoners are supported
     /// </summary>
+    [Obsolete("This class is obseleted and has been superseded by QueryHandlerConfiguration", true)]
     public class InferencingSparqlHandlerConfiguration : ExtensionSupportingSparqlHandlerConfiguration
     {
         /// <summary>

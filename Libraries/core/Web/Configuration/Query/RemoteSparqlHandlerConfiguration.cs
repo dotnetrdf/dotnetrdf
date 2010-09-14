@@ -45,6 +45,7 @@ namespace VDS.RDF.Web.Configuration.Query
     /// <summary>
     /// Class for storing Remote Sparql Handler Configuration
     /// </summary>
+    [Obsolete("This class is obseleted and has been superseded by QueryHandlerConfiguration", true)]
     class RemoteSparqlHandlerConfiguration : BaseSparqlHandlerConfiguration
     {
         private Uri _endpointURI = null;

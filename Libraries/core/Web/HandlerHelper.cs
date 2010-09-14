@@ -39,6 +39,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Security.Cryptography;
+using System.Text;
 using System.Web;
 using VDS.RDF.Configuration.Permissions;
 using VDS.RDF.Web.Configuration;
@@ -301,6 +303,125 @@ namespace VDS.RDF.Web
                 context.Response.Write(ex.StackTrace + "\n\n");
             }
 #endif
+        }
+
+        /// <summary>
+        /// Computes the ETag for a Graph
+        /// </summary>
+        /// <param name="g">Graph</param>
+        /// <returns></returns>
+        public static String GetETag(this IGraph g)
+        {
+            List<Triple> ts = g.Triples.ToList();
+            ts.Sort();
+
+            StringBuilder hash = new StringBuilder();
+            foreach (Triple t in ts)
+            {
+                hash.AppendLine(t.GetHashCode().ToString());
+            }
+            String h = hash.ToString().GetHashCode().ToString();
+
+            SHA1 sha1 = SHA1.Create();
+            byte[] hashBytes = sha1.ComputeHash(Encoding.UTF8.GetBytes(h));
+            hash = new StringBuilder();
+            foreach (byte b in hashBytes)
+            {
+                hash.Append(b.ToString("x2"));
+            }
+            return hash.ToString();
+        }
+
+        /// <summary>
+        /// Checks whether the HTTP Request contains caching headers that means a 304 Modified response can be sent
+        /// </summary>
+        /// <param name="context">HTTP Context</param>
+        /// <param name="etag">ETag</param>
+        /// <param name="lastModified">Last Modified</param>
+        /// <returns>True if a 304 Not Modified can be sent</returns>
+        public static bool CheckCachingHeaders(HttpContext context, String etag, DateTime? lastModified)
+        {
+            if (context == null) return false;
+            if (etag == null && lastModified == null) return false;
+
+            try
+            {
+                if (etag != null)
+                {
+                    //If ETags match then can send a 304 Not Modified
+                    if (etag.Equals(context.Request.Headers["If-None-Match"])) return true;
+                }
+
+                if (lastModified != null)
+                {
+                    String requestLastModifed = context.Request.Headers["If-Modified-Since"];
+                    if (requestLastModifed != null)
+                    {
+                        DateTime test = DateTime.Parse(requestLastModifed);
+                        //If the resource has not been modified after the date the request gave then can send a 304 Not Modified
+                        if (lastModified < test) return true;
+                    }
+                }
+             }
+            catch
+            {
+                //In the event of an error continue processing the request normally
+                return false;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Adds ETag and/or Last-Modified headers as appropriate to a response
+        /// </summary>
+        /// <param name="context">HTTP Context</param>
+        /// <param name="etag">ETag</param>
+        /// <param name="lastModified">Last Modified</param>
+        public static void AddCachingHeaders(HttpContext context, String etag, DateTime? lastModified)
+        {
+            if (context == null) return;
+            if (etag == null && lastModified == null) return;
+
+            try
+            {
+                if (etag != null)
+                {
+                    try
+                    {
+                        context.Response.Headers.Add("ETag", etag);
+                    }
+                    catch (PlatformNotSupportedException)
+                    {
+                        context.Response.AddHeader("ETag", etag);
+                    }
+                }
+
+                if (lastModified != null)
+                {
+                    try
+                    {
+                        context.Response.Headers.Add("Last-Modified", ((DateTime)lastModified).ToRfc2822());
+                    }
+                    catch (PlatformNotSupportedException)
+                    {
+                        context.Response.AddHeader("Last-Modified", ((DateTime)lastModified).ToRfc2822());
+                    }
+                }
+            }
+            catch
+            {
+                //In the event of an error then the Headers won't get attached
+            }
+        }
+
+        /// <summary>
+        /// Converts a DateTime to RFC 2822 format
+        /// </summary>
+        /// <param name="dt"></param>
+        /// <returns></returns>
+        private static String ToRfc2822(this DateTime dt)
+        {
+            return dt.ToString("ddd, d MMM yyyy HH:mm:ss K");
         }
     }
 }

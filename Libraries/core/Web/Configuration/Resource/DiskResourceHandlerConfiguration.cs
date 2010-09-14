@@ -45,6 +45,7 @@ namespace VDS.RDF.Web.Configuration.Resource
     /// <summary>
     /// Loads and Stores the Configuration Information for a <see cref="DiskResourceHandler">DiskResourceHandler</see>
     /// </summary>
+    [Obsolete("This class is obselete", true)]
     class DiskResourceHandlerConfiguration : BaseResourceHandlerConfiguration
     {
         private String _cacheKey = String.Empty;

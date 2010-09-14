@@ -47,6 +47,7 @@ namespace VDS.RDF.Web.Configuration.Query
     /// <summary>
     /// Class for storing SPARQL Handler Configuration where custom expression factories are supported
     /// </summary>
+    [Obsolete("This class is obseleted and has been superseded by QueryHandlerConfiguration", true)]
     public class ExtensionSupportingSparqlHandlerConfiguration : BaseSparqlHandlerConfiguration
     {
         /// <summary>

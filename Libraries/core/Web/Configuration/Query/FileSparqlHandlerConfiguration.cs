@@ -47,6 +47,7 @@ namespace VDS.RDF.Web.Configuration.Query
     /// <summary>
     /// Class for storing File Sparql Handler Configuration
     /// </summary>
+    [Obsolete("This class is obseleted and has been superseded by QueryHandlerConfiguration", true)]
     public class FileSparqlHandlerConfiguration : InferencingSparqlHandlerConfiguration
     {
         private IInMemoryQueryableStore _store = null;

@@ -49,6 +49,7 @@ namespace VDS.RDF.Web
     /// <summary>
     /// Class for Storing Sparql Handler Configuration
     /// </summary>
+    [Obsolete("This class is obseleted and has been superseded by QueryHandlerConfiguration", true)]
     class SqlSparqlHandlerConfiguration : InferencingSparqlHandlerConfiguration
     {
         private SparqlLoadMode _loadMode = SparqlLoadMode.OnDemand;

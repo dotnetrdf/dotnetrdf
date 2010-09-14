@@ -46,6 +46,7 @@ namespace VDS.RDF.Web.Configuration.Query
     /// <summary>
     /// Abstract base class for representing SPARQL Handler Configuration
     /// </summary>
+    [Obsolete("This class is obseleted and has been superseded by BaseQueryHandlerConfiguration", true)]
     public abstract class BaseSparqlHandlerConfiguration
     {
         /// <summary>

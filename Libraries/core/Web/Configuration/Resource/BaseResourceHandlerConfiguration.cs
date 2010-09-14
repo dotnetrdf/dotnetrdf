@@ -40,6 +40,7 @@ namespace VDS.RDF.Web.Configuration.Resource
     /// <summary>
     /// Abstract Base class for Resource Handlers
     /// </summary>
+    [Obsolete("This class is obselete",true)]
     public abstract class BaseResourceHandlerConfiguration
     {
     }

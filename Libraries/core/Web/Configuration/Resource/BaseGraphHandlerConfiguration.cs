@@ -47,6 +47,7 @@ namespace VDS.RDF.Web.Configuration.Resource
     public abstract class BaseGraphHandlerConfiguration : BaseHandlerConfiguration
     {
         private IGraph _g;
+        private String _etag;
 
         /// <summary>
         /// Creates a new Graph Handler Configuration
@@ -79,6 +80,21 @@ namespace VDS.RDF.Web.Configuration.Resource
             get
             {
                 return this._g;
+            }
+        }
+
+        /// <summary>
+        /// Gets/Sets the cached ETag for the Graph
+        /// </summary>
+        public String ETag
+        {
+            get
+            {
+                return this._etag;
+            }
+            set
+            {
+                this._etag = value;
             }
         }
     }

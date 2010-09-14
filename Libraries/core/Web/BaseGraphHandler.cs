@@ -36,10 +36,13 @@ terms.
 #if !NO_WEB && !NO_ASP
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
+using System.Security.Cryptography;
+using System.Text;
 using System.Web;
 using VDS.RDF.Web.Configuration.Resource;
 using VDS.RDF.Writing;
@@ -95,15 +98,28 @@ namespace VDS.RDF.Web
             }
             if (!isAuth) return;
 
+            //Check whether we can just send a 304 Not Modified
+            if (HandlerHelper.CheckCachingHeaders(context, this._config.ETag, null))
+            {
+                context.Response.StatusCode = (int)HttpStatusCode.NotModified;
+                HandlerHelper.AddCachingHeaders(context, this._config.ETag, null);
+                return;
+            }
+
             try
             {
                 String ctype;
                 IRdfWriter writer = MimeTypesHelper.GetWriter(context.Request.AcceptTypes, out ctype);
 
                 IGraph g = this.ProcessGraph(this._config.Graph);
+                if (this._config.ETag == null)
+                {
+                    this._config.ETag = this.ComputeETag(g);
+                }
 
                 //Serve the Graph to the User
                 context.Response.ContentType = ctype;
+                HandlerHelper.AddCachingHeaders(context, this._config.ETag, null);
                 if (writer is IHtmlWriter)
                 {
                     if (!this._config.Stylesheet.Equals(String.Empty))
@@ -133,6 +149,19 @@ namespace VDS.RDF.Web
         protected virtual IGraph ProcessGraph(IGraph g)
         {
             return g;
+        }
+
+        /// <summary>
+        /// Method which computes an ETag for a Graph
+        /// </summary>
+        /// <param name="g">Graph</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Method may return null if no ETag can be computed or you do not wish to serve ETag Headers
+        /// </remarks>
+        protected virtual String ComputeETag(IGraph g)
+        {
+            return g.GetETag();
         }
 
         /// <summary>
