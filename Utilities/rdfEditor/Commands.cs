@@ -15,6 +15,9 @@ namespace rdfEditor
         public static readonly ICommand SaveWithRdfJson = new RoutedCommand();
         public static readonly ICommand SaveWithXHtmlRdfA = new RoutedCommand();
 
+        public static readonly ICommand CommentSelection = new RoutedCommand();
+        public static readonly ICommand UncommentSelection = new RoutedCommand();
+
         public static readonly ICommand ToggleLineNumbers = new RoutedCommand();
         public static readonly ICommand ToggleWordWrap = new RoutedCommand();
         public static readonly ICommand ToggleClickableUris = new RoutedCommand();

@@ -15,7 +15,6 @@
         <CommandBinding Command="{x:Static rdfEditor:Commands.SaveWithRdfXml}" Executed="SaveWithRdfXmlExecuted" />
         <CommandBinding Command="{x:Static rdfEditor:Commands.SaveWithRdfJson}" Executed="SaveWithRdfJsonExecuted" />
         <CommandBinding Command="{x:Static rdfEditor:Commands.SaveWithXHtmlRdfA}" Executed="SaveWithXHtmlRdfAExecuted" />
-
         <CommandBinding Command="Close" Executed="CloseCommandExecuted" />
         
         <CommandBinding Command="Undo" Executed="UndoCommandExecuted" />
@@ -23,6 +22,8 @@
         <CommandBinding Command="Cut" Executed="CutCommandExecuted" />
         <CommandBinding Command="Copy" Executed="CopyCommandExecuted" />
         <CommandBinding Command="Paste" Executed="PasteCommandExecuted" />
+        <CommandBinding Command="{x:Static rdfEditor:Commands.CommentSelection}" Executed="CommentSelectionExecuted" />
+        <CommandBinding Command="{x:Static rdfEditor:Commands.UncommentSelection}" Executed="UncommentSelectionExecuted" />
         
         <CommandBinding Command="{x:Static rdfEditor:Commands.ToggleLineNumbers}" Executed="ToggleLineNumbersExecuted" />
         <CommandBinding Command="{x:Static rdfEditor:Commands.ToggleWordWrap}" Executed="ToggleWordWrapExecuted" />
@@ -47,7 +48,6 @@
         <rdfEditor:ComplexInputBinding Command="{x:Static rdfEditor:Commands.SaveWithRdfXml}" Gesture="Alt+S,4" />
         <rdfEditor:ComplexInputBinding Command="{x:Static rdfEditor:Commands.SaveWithRdfJson}" Gesture="Alt+S,5" />
         <rdfEditor:ComplexInputBinding Command="{x:Static rdfEditor:Commands.SaveWithXHtmlRdfA}" Gesture="Alt+S,6" />
-
         <KeyBinding Command="Close" Key="W" Modifiers="Ctrl" />
         
         <KeyBinding Command="Undo" Key="Z" Modifiers="Ctrl" />
@@ -55,6 +55,8 @@
         <KeyBinding Command="Cut" Key="X" Modifiers="Ctrl" />
         <KeyBinding Command="Copy" Key="C" Modifiers="Ctrl" />
         <KeyBinding Command="Paste" Key="V" Modifiers="Ctrl" />
+        <rdfEditor:ComplexInputBinding Command="{x:Static rdfEditor:Commands.CommentSelection}" Gesture="Ctrl+K,C" />
+        <rdfEditor:ComplexInputBinding Command="{x:Static rdfEditor:Commands.UncommentSelection}" Gesture="Ctrl+K,U" />
         
         <rdfEditor:ComplexInputBinding Command="{x:Static rdfEditor:Commands.ToggleLineNumbers}" Gesture="Ctrl+E,L" />
         <rdfEditor:ComplexInputBinding Command="{x:Static rdfEditor:Commands.ToggleWordWrap}" Gesture="Ctrl+E,W" />
@@ -116,8 +118,8 @@
                 <MenuItem Header="Copy" Name="mnuCopy" Click="mnuCopy_Click" InputGestureText="Ctrl+C" />
                 <MenuItem Header="Paste" Name="mnuPaste" Click="mnuPaste_Click" InputGestureText="Ctrl+V" />
                 <Separator />
-                <MenuItem Header="Comment Selection" Name="mnuCommentSelection" Click="mnuCommentSelection_Click" />
-                <MenuItem Header="Uncomment Selection" Name="mnuUncommentSelection" Click="mnuUncommentSelection_Click" /> 
+                <MenuItem Header="Comment Selection" Name="mnuCommentSelection" Click="mnuCommentSelection_Click" InputGestureText="Ctrl+K,C" />
+                <MenuItem Header="Uncomment Selection" Name="mnuUncommentSelection" Click="mnuUncommentSelection_Click" InputGestureText="Ctrl+K,U" /> 
             </MenuItem>
             <MenuItem Header="_View">
                 <MenuItem Header="Show Line Numbers" Name="mnuShowLineNumbers" IsCheckable="True" IsChecked="True"  Click="mnuShowLineNumbers_Click" InputGestureText="Ctrl+E,L" />

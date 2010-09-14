@@ -1404,4 +1404,24 @@
       <Link>Writing\Formatting\INodeFormatter.cs</Link>
     </Compile>
   </ItemGroup>
+  <ItemGroup xmlns="">
+    <Compile Include="..\silverlight\Compatability\HtmlTextWriter.cs">
+      <Link>Compatability\HtmlTextWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\silverlight\Compatability\HtmlTextWriterAttribute.cs">
+      <Link>Compatability\HtmlTextWriterAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\silverlight\Compatability\HtmlTextWriterStyle.cs">
+      <Link>Compatability\HtmlTextWriterStyle.cs</Link>
+    </Compile>
+    <Compile Include="..\silverlight\Compatability\HtmlTextWriterTag.cs">
+      <Link>Compatability\HtmlTextWriterTag.cs</Link>
+    </Compile>
+    <Compile Include="..\silverlight\Compatability\HttpUtility.cs">
+      <Link>Compatability\HttpUtility.cs</Link>
+    </Compile>
+    <Compile Include="..\silverlight\Compatability\SilverlightCompatability.cs">
+      <Link>Compatability\SilverlightCompatability.cs</Link>
+    </Compile>
+  </ItemGroup>
 </Project>

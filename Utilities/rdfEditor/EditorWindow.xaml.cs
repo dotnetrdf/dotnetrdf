@@ -680,6 +680,16 @@ namespace rdfEditor
             mnuPaste_Click(sender, e);
         }
 
+        private void CommentSelectionExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            mnuCommentSelection_Click(sender, e);
+        }
+
+        private void UncommentSelectionExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            mnuUncommentSelection_Click(sender, e);
+        }
+
         private void ToggleLineNumbersExecuted(object sender, ExecutedRoutedEventArgs e)
         {
             this.mnuShowLineNumbers.IsChecked = !this.mnuShowLineNumbers.IsChecked;
@@ -829,6 +839,7 @@ namespace rdfEditor
                         }
                         else
                         {
+                            //Multi-Line Comment but only supports single line comments
                             textEditor.BeginChange();
                             for (int i = startLine; i <= endLine; i++)
                             {
@@ -837,6 +848,8 @@ namespace rdfEditor
                                 textEditor.Document.Insert(startOffset, def.SingleLineComment);
                             }
                             textEditor.EndChange();
+                            if (textEditor.SelectionStart > 0) textEditor.SelectionStart--;
+                            if (textEditor.SelectionStart + textEditor.SelectionLength < textEditor.Text.Length) textEditor.SelectionLength++;
                         }
                     }
                 }
