@@ -735,14 +735,17 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
-        /// Attempts to resolve special &lt;appSettings&gt; URIs into actual values
+        /// Attempts to resolve special &lt;appsettings&gt; URIs into actual values
         /// </summary>
         /// <param name="g"></param>
         /// <param name="n"></param>
         /// <returns></returns>
         /// <remarks>
         /// <para>
-        /// These special URIs have the form &lt;appSetting:Key&gt; where <strong>Key</strong> is the key for an appSetting in your applications configuration file.  When used these URIs are resolved at load time into the actual values from your configuration file.  This allows you to avoid spreading configuration data over multiple files since you can specify things like connection settings in the Application Config file and then simply reference them in the dotNetRDF configuration file.
+        /// These special URIs have the form &lt;appsetting:Key&gt; where <strong>Key</strong> is the key for an appSetting in your applications configuration file.  When used these URIs are resolved at load time into the actual values from your configuration file.  This allows you to avoid spreading configuration data over multiple files since you can specify things like connection settings in the Application Config file and then simply reference them in the dotNetRDF configuration file.
+        /// </para>
+        /// <para>
+        /// <strong>Warning: </strong> This feature is not supported in the Silverlight build 
         /// </para>
         /// </remarks>
         public static INode ResolveAppSetting(IGraph g, INode n)
