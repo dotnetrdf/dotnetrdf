@@ -30,7 +30,43 @@ namespace dotNetRDFTest
                 Graph g = new Graph();
                 FileLoader.Load(g, "sample-config.ttl");
                 Console.WriteLine("Sample graph loaded OK");
-                Console.WriteLine();        
+                Console.WriteLine();  
+      
+                //Test AppSettings resolution
+                Console.WriteLine("# Testing <appSetting:Key> URI resolution");
+
+                //Get the Actual Values
+                String actualStr = ConfigurationManager.AppSettings["TestString"];
+                bool actualTrue = Boolean.Parse(ConfigurationManager.AppSettings["TestTrue"]);
+                bool actualFalse = Boolean.Parse(ConfigurationManager.AppSettings["TestFalse"]);
+                int actualInt = Int32.Parse(ConfigurationManager.AppSettings["TestInt32"]);
+
+                Console.WriteLine("Actual String: " + actualStr);
+                Console.WriteLine("Actual True: " + actualTrue);
+                Console.WriteLine("Actual False: " + actualFalse);
+                Console.WriteLine("Actual Int: " + actualInt);
+
+                //Now load the resolved values
+                UriNode objNode = g.GetUriNode(new Uri("dotnetrdf:test"));
+                String resolvedStr = ConfigurationLoader.GetConfigurationString(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, "dnr:stylesheet"));
+                String resolvedStr2 = ConfigurationLoader.GetConfigurationValue(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, "dnr:stylesheet"));
+                bool resolvedTrue = ConfigurationLoader.GetConfigurationBoolean(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, "dnr:cacheSliding"), false);
+                bool resolvedFalse = ConfigurationLoader.GetConfigurationBoolean(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, "dnr:showErrors"), true);
+                int resolvedInt = ConfigurationLoader.GetConfigurationInt32(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, "dnr:cacheDuration"), -1);
+
+                Console.WriteLine("Resolved String: " + resolvedStr);
+                Console.WriteLine("Resolved True: " + resolvedTrue);
+                Console.WriteLine("Resolved False: " + resolvedFalse);
+                Console.WriteLine("Resolved Int: " + resolvedInt);
+
+                if (actualStr != resolvedStr) Console.WriteLine("AppSetting resolution failed");
+                if (actualStr != resolvedStr2) Console.WriteLine("AppSetting resolution failed");
+                if (resolvedStr != resolvedStr2) Console.WriteLine("AppSetting resolution failed");
+                if (!resolvedTrue) Console.WriteLine("AppSetting resolution failed");
+                if (actualTrue != resolvedTrue) Console.WriteLine("AppSetting resolution failed");
+                if (resolvedFalse) Console.WriteLine("AppSetting resolution failed");
+                if (actualFalse != resolvedFalse) Console.WriteLine("AppSetting resolution failed");
+                if (actualInt != resolvedInt) Console.WriteLine("AppSetting resolution failed");
 
                 //Attempt to load our MicrosoftSqlStoreManager from the Graph
                 Console.WriteLine("# Attempting to load an object based on the Configuration Graph");

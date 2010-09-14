@@ -747,10 +747,13 @@ namespace VDS.RDF.Configuration
         /// </remarks>
         public static INode ResolveAppSetting(IGraph g, INode n)
         {
+#if SILVERLIGHT
+            return n;
+#else
             if (n.NodeType != NodeType.Uri) return n;
 
             String uri = ((UriNode)n).StringUri;
-            if (!uri.StartsWith("appSetting:")) return n;
+            if (!uri.StartsWith("appsetting:")) return n;
 
             String key = uri.Substring(uri.IndexOf(':') + 1);
             if (SysConfig.ConfigurationManager.AppSettings[key] == null)
@@ -761,6 +764,7 @@ namespace VDS.RDF.Configuration
             {
                 return g.CreateLiteralNode(SysConfig.ConfigurationManager.AppSettings[key]);
             }
+#endif
         }
     }
 

@@ -88,7 +88,7 @@ _:proxyTest a dnr:SparqlEndpoint ;
 			dnr:credentials [a dnr:User ; dnr:user "user" ; dnr:password "password" ] .
 
 <dotnetrdf:test> a dnr:HttpHandler ;
-				  dnr:cacheDuration <appSetting:TestInt32> ;
-				  dnr:cacheSliding <appSetting:TestTrue> ;
-				  dnr:showErrors <appSetting:TestFalse> ;
-				  dnr:stylesheet <appSetting:TestString> .
+				  dnr:cacheDuration <appsetting:TestInt32> ;
+				  dnr:cacheSliding <appsetting:TestTrue> ;
+				  dnr:showErrors <appsetting:TestFalse> ;
+				  dnr:stylesheet <appsetting:TestString> .

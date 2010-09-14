@@ -61,11 +61,6 @@
     <Compile Include="BackgroundPersistedGraphTest.cs" />
     <Compile Include="ConfigurationLoaderTests.cs" />
     <Compile Include="MockGenericManager.cs" />
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-      <DependentUpon>Settings.settings</DependentUpon>
-    </Compile>
     <Compile Include="RdfATestSuite.cs" />
     <Compile Include="JosekiTest.cs" />
     <Compile Include="SparqlEvaluationTestSuite.cs" />
@@ -3698,10 +3693,6 @@
     </Content>
     <None Include="bnodes.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <None Include="rdfa_tests\0001.sparql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
