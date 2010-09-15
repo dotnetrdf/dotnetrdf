@@ -40,7 +40,7 @@ using System.Text;
 
 namespace VDS.RDF.Writing.Formatting
 {
-    public class SparqlFormatter : QNameFormatter
+    public class SparqlFormatter : TurtleFormatter
     {
         public SparqlFormatter() 
             : base("SPARQL", new QNameOutputMapper()) { }
@@ -50,44 +50,5 @@ namespace VDS.RDF.Writing.Formatting
 
         public SparqlFormatter(INamespaceMapper nsmap)
             : base("SPARQL", new QNameOutputMapper(nsmap)) { }
-
-        protected override string FormatLiteralNode(LiteralNode lit)
-        {
-            StringBuilder output = new StringBuilder();
-            bool longlit = (lit.Value.Contains('\n') || lit.Value.Contains('\r') || lit.Value.Contains('"'));
-
-            if (longlit)
-            {
-                output.Append("\"\"\"");
-            }
-            else
-            {
-                output.Append("\"");
-            }
-
-            output.Append(lit.Value);
-
-            if (longlit)
-            {
-                output.Append("\"\"\"");
-            }
-            else
-            {
-                output.Append("\"");
-            }
-
-            if (!lit.Language.Equals(String.Empty))
-            {
-                output.Append("@");
-                output.Append(lit.Language);
-            }
-            else if (lit.DataType != null)
-            {
-                output.Append("^^<");
-                output.Append(this.FormatUri(lit.DataType));
-                output.Append(">");
-            }
-            return output.ToString();
-        }
     }
 }

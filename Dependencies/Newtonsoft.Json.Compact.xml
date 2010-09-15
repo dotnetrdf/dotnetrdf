@@ -740,6 +740,13 @@
             <param name="pattern">The regex pattern.</param>
             <param name="options">The regex options.</param>
         </member>
+        <member name="P:Newtonsoft.Json.Bson.BsonWriter.DateTimeKindHandling">
+            <summary>
+            Gets or sets the <see cref="T:System.DateTimeKind"/> used when writing <see cref="T:System.DateTime"/> values to BSON.
+            When set to <see cref="F:System.DateTimeKind.Unspecified"/> no conversion will occur.
+            </summary>
+            <value>The <see cref="T:System.DateTimeKind"/> used when writing <see cref="T:System.DateTime"/> values to BSON.</value>
+        </member>
         <member name="T:Newtonsoft.Json.ConstructorHandling">
             <summary>
             Specifies how constructors are used when initializing objects during deserialization by the <see cref="T:Newtonsoft.Json.JsonSerializer"/>.
@@ -1208,12 +1215,12 @@
         </member>
         <member name="F:Newtonsoft.Json.DefaultValueHandling.Include">
             <summary>
-            Include null values when serializing and deserializing objects.
+            Include default values when serializing and deserializing objects.
             </summary>
         </member>
         <member name="F:Newtonsoft.Json.DefaultValueHandling.Ignore">
             <summary>
-            Ignore null values when serializing and deserializing objects.
+            Ignore default values when serializing and deserializing objects.
             </summary>
         </member>
         <member name="T:Newtonsoft.Json.JsonConverterAttribute">
@@ -4657,8 +4664,10 @@
             Initializes a new instance of the <see cref="T:Newtonsoft.Json.Serialization.DefaultContractResolver"/> class.
             </summary>
             <param name="shareCache">
-            if set to <c>true</c> the <see cref="T:Newtonsoft.Json.Serialization.IContractResolver"/> will use a cached shared with other resolvers of the same type.
-            This will improve significantly performance for unshared resolvers but cause unexpected behavior if instances of the resolver could produce different results.
+            If set to <c>true</c> the <see cref="T:Newtonsoft.Json.Serialization.DefaultContractResolver"/> will use a cached shared with other resolvers of the same type.
+            Sharing the cache will significantly performance because expensive reflection will only happen once but could cause unexpected
+            behavior if different instances of the resolver are suppose to produce different results. When set to false it is highly
+            recommended to reuse <see cref="T:Newtonsoft.Json.Serialization.DefaultContractResolver"/> instances with the <see cref="T:Newtonsoft.Json.JsonSerializer"/>.
             </param>
         </member>
         <member name="M:Newtonsoft.Json.Serialization.DefaultContractResolver.ResolveContract(System.Type)">
@@ -4774,6 +4783,14 @@
             Gets or sets the default members search flags.
             </summary>
             <value>The default members search flags.</value>
+        </member>
+        <member name="P:Newtonsoft.Json.Serialization.DefaultContractResolver.SerializeCompilerGeneratedMembers">
+            <summary>
+            Gets or sets a value indicating whether compiler generated members should be serialized.
+            </summary>
+            <value>
+            	<c>true</c> if serialized compiler generated members; otherwise, <c>false</c>.
+            </value>
         </member>
         <member name="M:Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver.#ctor">
             <summary>
@@ -5647,6 +5664,11 @@
         <member name="F:Newtonsoft.Json.TypeNameHandling.Arrays">
             <summary>
             Include the .NET type name when serializing into a JSON array structure.
+            </summary>
+        </member>
+        <member name="F:Newtonsoft.Json.TypeNameHandling.Auto">
+            <summary>
+            Include the .NET type name when the type of the object being serialized is not the same as its declared type.
             </summary>
         </member>
         <member name="F:Newtonsoft.Json.TypeNameHandling.All">

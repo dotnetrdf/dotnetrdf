@@ -60,6 +60,13 @@ namespace VDS.RDF.Update
         }
 
         /// <summary>
+        /// Creates a new SPARQL Update Endpoint for the given URI
+        /// </summary>
+        /// <param name="endpointUri">Endpoint URI</param>
+        public SparqlRemoteUpdateEndpoint(String endpointUri)
+            : this(new Uri(endpointUri)) { }
+
+        /// <summary>
         /// Makes an update request to the remote endpoint
         /// </summary>
         /// <param name="sparqlUpdate">SPARQL Update</param>

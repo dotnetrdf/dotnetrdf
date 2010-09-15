@@ -186,7 +186,7 @@ namespace VDS.RDF.Storage
     /// <remarks>
     /// Designed to allow for arbitrary Triple Stores to be plugged into the library as required by the end user
     /// </remarks>
-    public interface IUpdateableGenericIOManager : IGenericIOManager
+    public interface IUpdateableGenericIOManager : IQueryableGenericIOManager
     {
         /// <summary>
         /// Processes a SPARQL Update command against the underlying Store

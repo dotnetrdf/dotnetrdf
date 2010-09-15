@@ -3,6 +3,10 @@
 
 A Library for RDF manipulation and parsing in .Net using C# 3.0
 
+This is the Lite build of dotNetRDF - it removes the ASP.Net (VDS.RDF.Web) and the Storage layers (VDS.RDF.Storage) to reduce
+dependencies and reduce the overall size of the distribution.  Designed for situations where memory is at a premium and you
+don't need the ASP.Net or Storage layers of dotNetRDF.
+
 Version 0.3.0 Alpha
 
 Robert Vesse 2009-10
@@ -45,7 +49,7 @@ Requirements
 
 To use this library you will need .Net Framework 3.5 SP1 and you may need to install/have available the 
 following third party libraries:
-- JSON.Net 3.5r7 which can be obtained from http://www.codeplex.com/Json
+- JSON.Net 3.5r8 which can be obtained from http://www.codeplex.com/Json
 - HtmlAgilityPack 1.4.0 Stable which can be obtained from http://www.codeplex.com/htmlagilitypack
 
 The relevant DLLs (HtmlAgilityPack.dll and Newtonsoft.Json.dll) are included with
