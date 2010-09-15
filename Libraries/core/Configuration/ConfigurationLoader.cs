@@ -753,6 +753,7 @@ namespace VDS.RDF.Configuration
 #if SILVERLIGHT
             return n;
 #else
+            if (n == null) return null;
             if (n.NodeType != NodeType.Uri) return n;
 
             String uri = ((UriNode)n).StringUri;
