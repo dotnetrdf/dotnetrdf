@@ -141,7 +141,7 @@ namespace VDS.RDF.Update.Commands
             //Get the Graph to which we are inserting
             IGraph g = context.Data.Graph(this._graphUri);
 
-            //Insert the Triples for each Solution
+            //Delet ethe Triples for each Solution
             foreach (Set s in queryContext.OutputMultiset.Sets)
             {
                 List<Triple> deletedTriples = new List<Triple>();
