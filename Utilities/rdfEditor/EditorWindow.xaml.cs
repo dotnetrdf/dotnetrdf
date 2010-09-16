@@ -596,6 +596,36 @@ namespace rdfEditor
             }
         }
 
+
+        private void mnuTriplesView_Click(object sender, RoutedEventArgs e)
+        {
+            ISyntaxValidator validator = this._manager.CurrentValidator;
+            if (validator != null)
+            {
+                ISyntaxValidationResults results = validator.Validate(textEditor.Text);
+                if (results.IsValid)
+                {
+                    if (results.Result is IGraph)
+                    {
+                        TriplesWindow window = new TriplesWindow((IGraph)results.Result);
+                        window.ShowDialog();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Cannot view as Triples since this is not an RDF Graph Syntax");
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Cannot view as Triples as the Syntax is not valid");
+                }
+            }
+            else
+            {
+                MessageBox.Show("Cannot view as Triples as you have not selected a Syntax");
+            }
+        }
+
         #endregion
 
         #region Command Bindings for creating Keyboard Shortcuts

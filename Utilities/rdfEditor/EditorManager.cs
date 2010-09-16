@@ -135,10 +135,6 @@ namespace rdfEditor
                 //Detect Syntax Highlighting, Validator and Auto-Complete settings
                 this.AutoDetectSyntax();
                 if (!this._enableHighlighting) this._editor.SyntaxHighlighting = null;
-                if (this._highlightersMenu != null)
-                {
-                    this._highlightersMenu.IsEnabled = this._enableHighlighting;
-                }
             }
         }
 

@@ -138,8 +138,8 @@
             </MenuItem>
             <MenuItem Header="_Options">
                     <MenuItem Header="Enable Syntax Highlighting" Name="mnuEnableHighlighting" IsCheckable="True" IsChecked="True" Click="mnuEnableHighlighting_Click" InputGestureText="Ctrl+E,H" />
-                    <MenuItem Header="Highlighter" Name="mnuCurrentHighlighter">
-                    <MenuItem Header="Set Current Highlighter as Default for Startup" IsCheckable="False" Name="mnuSetDefaultHighlighter" Click="mnuSetDefaultHighlighter_Click" />
+                    <MenuItem Header="Syntax" Name="mnuCurrentHighlighter">
+                    <MenuItem Header="Set Current Syntax as Default for Startup" IsCheckable="False" Name="mnuSetDefaultHighlighter" Click="mnuSetDefaultHighlighter_Click" />
                     <MenuItem Header="None" IsCheckable="True" IsChecked="True" Tag="None" />
                         <Separator />
                         <MenuItem Header="RDF/XML" IsCheckable="True" Tag="RdfXml" />
@@ -171,6 +171,7 @@
             </MenuItem>
             <MenuItem Header="_Tools">
                 <MenuItem Header="Validate Syntax" Name="mnuValidateSyntax" Click="mnuValidateSyntax_Click" InputGestureText="Ctrl+T,V" />
+                <MenuItem Header="Show Triples View" Name="mnuTriplesView" Click="mnuTriplesView_Click" />
             </MenuItem>
             <MenuItem Header="_Help" />
         </Menu>
