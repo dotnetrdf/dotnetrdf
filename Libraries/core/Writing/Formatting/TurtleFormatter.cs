@@ -41,48 +41,105 @@ using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Writing.Formatting
 {
+    /// <summary>
+    /// Formatter which formats Turtle without any compression
+    /// </summary>
     public class UncompressedTurtleFormatter : NTriplesFormatter
     {
+        /// <summary>
+        /// Creates a new Uncompressed Turtle Formatter
+        /// </summary>
         public UncompressedTurtleFormatter()
             : base("Turtle") { }
 
+        /// <summary>
+        /// Creates a new Uncompressed Formatter
+        /// </summary>
+        /// <param name="formatName"></param>
         protected UncompressedTurtleFormatter(String formatName)
             : base(formatName) { }
 
+        /// <summary>
+        /// Formats characters
+        /// </summary>
+        /// <param name="c">Character</param>
+        /// <returns></returns>
         public override string FormatChar(char c)
         {
             return c.ToString();
         }
     }
 
+    /// <summary>
+    /// Formatter which formats Turtle with compression
+    /// </summary>
     public class TurtleFormatter : QNameFormatter
     {
         private BlankNodeOutputMapper _bnodeMapper = new BlankNodeOutputMapper(WriterHelper.IsValidBlankNodeID);
 
+        /// <summary>
+        /// Creates a new Turtle Formatter
+        /// </summary>
         public TurtleFormatter() 
             : base("Turtle", new QNameOutputMapper()) { }
 
+        /// <summary>
+        /// Creates a new Turtle Formatter that uses the given QName mapper
+        /// </summary>
+        /// <param name="qnameMapper">QName Mapper</param>
         public TurtleFormatter(QNameOutputMapper qnameMapper)
             : base("Turtle", qnameMapper) { }
 
+        /// <summary>
+        /// Creates a new Turtle Formatter for the given Graph
+        /// </summary>
+        /// <param name="g">Graph</param>
         public TurtleFormatter(IGraph g)
             : base("Turtle", new QNameOutputMapper(g.NamespaceMap)) { }
 
+        /// <summary>
+        /// Creates a new Turtle Formatter for the given Namespace Map
+        /// </summary>
+        /// <param name="nsmap">Namespace Map</param>
         public TurtleFormatter(INamespaceMapper nsmap)
             : base("Turtle", new QNameOutputMapper(nsmap)) { }
 
+        /// <summary>
+        /// Creates a new Turtle Formatter
+        /// </summary>
+        /// <param name="formatName">Format Name</param>
         protected TurtleFormatter(String formatName)
             : base(formatName, new QNameOutputMapper()) { }
 
+        /// <summary>
+        /// Creates a new Turtle Formatter
+        /// </summary>
+        /// <param name="formatName">Format Name</param>
+        /// <param name="g">Graph</param>
         protected TurtleFormatter(String formatName, IGraph g)
             : base(formatName, new QNameOutputMapper(g.NamespaceMap)) { }
 
+        /// <summary>
+        /// Creates a new Turtle Formatter
+        /// </summary>
+        /// <param name="formatName">Format Name</param>
+        /// <param name="nsmap">Namespace Map</param>
         protected TurtleFormatter(String formatName, INamespaceMapper nsmap)
             : base(formatName, new QNameOutputMapper(nsmap)) { }
 
+        /// <summary>
+        /// Creates a new Turtle Formatter
+        /// </summary>
+        /// <param name="formatName">Format Name</param>
+        /// <param name="qnameMapper">QName Map</param>
         protected TurtleFormatter(String formatName, QNameOutputMapper qnameMapper)
             : base(formatName, qnameMapper) { }
 
+        /// <summary>
+        /// Formats a Literal Node as a String
+        /// </summary>
+        /// <param name="l">Literal Node</param>
+        /// <returns></returns>
         protected override string FormatLiteralNode(LiteralNode l)
         {
             StringBuilder output = new StringBuilder();
@@ -158,6 +215,11 @@ namespace VDS.RDF.Writing.Formatting
             return output.ToString();
         }
 
+        /// <summary>
+        /// Formats a Blank Node as a String
+        /// </summary>
+        /// <param name="b">Blank Node</param>
+        /// <returns></returns>
         protected override string FormatBlankNode(BlankNode b)
         {
             return "_:" + this._bnodeMapper.GetOutputID(b.InternalID);

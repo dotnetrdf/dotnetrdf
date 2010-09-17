@@ -52,7 +52,7 @@
     <Reference Include="System.Xml" />
     <Reference Include="virtado3, Version=6.1.3127.2, Culture=neutral, PublicKeyToken=391bf132017ae989, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\virtado3.dll</HintPath>
+      <HintPath>..\..\Dependencies\virtado3.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

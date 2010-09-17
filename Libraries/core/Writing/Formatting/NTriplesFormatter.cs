@@ -40,16 +40,31 @@ using System.Text;
 
 namespace VDS.RDF.Writing.Formatting
 {
+    /// <summary>
+    /// Formatter for formatting as NTriples
+    /// </summary>
     public class NTriplesFormatter : BaseFormatter
     {
         private BlankNodeOutputMapper _bnodeMapper = new BlankNodeOutputMapper(WriterHelper.IsValidBlankNodeID);
 
+        /// <summary>
+        /// Creates a new NTriples Formatter
+        /// </summary>
         public NTriplesFormatter()
             : base("NTriples") { }
 
+        /// <summary>
+        /// Creates a new NTriples Formatter
+        /// </summary>
+        /// <param name="formatName">Format Name</param>
         protected NTriplesFormatter(String formatName)
             : base(formatName) { }
 
+        /// <summary>
+        /// Formats a URI Node
+        /// </summary>
+        /// <param name="u">URI Node</param>
+        /// <returns></returns>
         protected override string FormatUriNode(UriNode u)
         {
             StringBuilder output = new StringBuilder();
@@ -59,10 +74,15 @@ namespace VDS.RDF.Writing.Formatting
             return output.ToString();
         }
 
+        /// <summary>
+        /// Formats a Literal Node
+        /// </summary>
+        /// <param name="l">Literal Node</param>
+        /// <returns></returns>
         protected override string FormatLiteralNode(LiteralNode l)
         {
             StringBuilder output = new StringBuilder();
-            String value, qname;
+            String value;
 
             output.Append('"');
             value = l.Value;
@@ -103,6 +123,11 @@ namespace VDS.RDF.Writing.Formatting
             return output.ToString();
         }
 
+        /// <summary>
+        /// Formats a Character
+        /// </summary>
+        /// <param name="c">Character</param>
+        /// <returns></returns>
         public override string FormatChar(char c)
         {
             if (c <= 127)
@@ -125,11 +150,21 @@ namespace VDS.RDF.Writing.Formatting
             }
         }
 
+        /// <summary>
+        /// Formats a Blank Node
+        /// </summary>
+        /// <param name="b">Blank Node</param>
+        /// <returns></returns>
         protected override string FormatBlankNode(BlankNode b)
         {
             return "_:" + this._bnodeMapper.GetOutputID(b.InternalID);
         }
 
+        /// <summary>
+        /// Formats a URI
+        /// </summary>
+        /// <param name="u">URI</param>
+        /// <returns></returns>
         public override string FormatUri(string u)
         {
             String temp = base.FormatUri(u);

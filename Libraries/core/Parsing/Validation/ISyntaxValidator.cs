@@ -38,33 +38,59 @@ using System.Collections.Generic;
 
 namespace VDS.RDF.Parsing.Validation
 {
+    /// <summary>
+    /// Interface for classes which can validate Syntax
+    /// </summary>
     public interface ISyntaxValidator
     {
+        /// <summary>
+        /// Validates the given Data
+        /// </summary>
+        /// <param name="data">Data</param>
+        /// <returns></returns>
         ISyntaxValidationResults Validate(String data);
     }
 
+    /// <summary>
+    /// Interface for Validation Results
+    /// </summary>
     public interface ISyntaxValidationResults
     {
+        /// <summary>
+        /// Gets whether the Syntax was valid
+        /// </summary>
         bool IsValid
         {
             get;
         }
 
+        /// <summary>
+        /// Gets an informational message about the validity/invalidity of the Syntax
+        /// </summary>
         String Message
         {
             get;
         }
 
+        /// <summary>
+        /// Gets an enumeration of any warning messages
+        /// </summary>
         IEnumerable<String> Warnings
         {
             get;
         }
 
+        /// <summary>
+        /// Gets any validation error
+        /// </summary>
         Exception Error
         {
             get;
         }
 
+        /// <summary>
+        /// Gets any result object that was parsed from the syntax
+        /// </summary>
         Object Result
         {
             get;

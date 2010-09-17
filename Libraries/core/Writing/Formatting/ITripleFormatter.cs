@@ -40,8 +40,16 @@ using System.Text;
 
 namespace VDS.RDF.Writing.Formatting
 {
+    /// <summary>
+    /// Interface for Triple Formatters
+    /// </summary>
     public interface ITripleFormatter
     {
+        /// <summary>
+        /// Formats a Triple as a String
+        /// </summary>
+        /// <param name="t">Triple</param>
+        /// <returns></returns>
         String Format(Triple t);
     }
 }

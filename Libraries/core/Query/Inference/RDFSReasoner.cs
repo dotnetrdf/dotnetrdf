@@ -272,6 +272,7 @@ namespace VDS.RDF.Query.Inference
         /// </summary>
         /// <param name="t">Triple defining the type for something</param>
         /// <param name="input">Input Graph</param>
+        /// <param name="output">Output Graph</param>
         /// <param name="inferences">List of Inferences</param>
         private void InferClasses(Triple t, IGraph input, IGraph output, List<Triple> inferences)
         {

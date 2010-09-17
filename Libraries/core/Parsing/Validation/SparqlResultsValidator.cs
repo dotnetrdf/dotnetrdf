@@ -38,15 +38,27 @@ using VDS.RDF.Query;
 
 namespace VDS.RDF.Parsing.Validation
 {
+    /// <summary>
+    /// Syntax Validator which validates SPARQL Results formats
+    /// </summary>
     public class SparqlResultsValidator : ISyntaxValidator
     {
         private ISparqlResultsReader _parser;
 
+        /// <summary>
+        /// Creates a new SPARQL Results Format validator that uses the given parser
+        /// </summary>
+        /// <param name="parser">SPARQL Results Parser</param>
         public SparqlResultsValidator(ISparqlResultsReader parser)
         {
             this._parser = parser;
         }
 
+        /// <summary>
+        /// Validates the syntax to see if it is valid SPARQL Results
+        /// </summary>
+        /// <param name="data">Data to validate</param>
+        /// <returns></returns>
         public ISyntaxValidationResults Validate(string data)
         {
             String message;

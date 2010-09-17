@@ -41,23 +41,45 @@ using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Writing.Formatting
 {
+    /// <summary>
+    /// Abstract Base Class for Formatters that can compress URIs to QNames
+    /// </summary>
     public abstract class QNameFormatter : BaseFormatter
     {
+        /// <summary>
+        /// QName Map used for compressing URIs to QNames
+        /// </summary>
         protected QNameOutputMapper _qnameMapper;
         private bool _allowAKeyword = true;
 
+        /// <summary>
+        /// Creates a new QName Formatter
+        /// </summary>
+        /// <param name="formatName">Format Name</param>
+        /// <param name="qnameMapper">QName Map</param>
         public QNameFormatter(String formatName, QNameOutputMapper qnameMapper)
             : base(formatName)
         {
             this._qnameMapper = qnameMapper;
         }
 
+        /// <summary>
+        /// Creates a new QName Formatter
+        /// </summary>
+        /// <param name="formatName">Format Name</param>
+        /// <param name="qnameMapper">QName Map</param>
+        /// <param name="allowAKeyword">Whether the 'a' keyword can be used for the RDF type predicate</param>
         public QNameFormatter(String formatName, QNameOutputMapper qnameMapper, bool allowAKeyword)
             : this(formatName, qnameMapper)
         {
             this._allowAKeyword = allowAKeyword;
         }
 
+        /// <summary>
+        /// Formats a URI Node using QName compression if possible
+        /// </summary>
+        /// <param name="u">URI</param>
+        /// <returns></returns>
         protected override string FormatUriNode(UriNode u)
         {
             StringBuilder output = new StringBuilder();
@@ -89,6 +111,11 @@ namespace VDS.RDF.Writing.Formatting
             return output.ToString();
         }
 
+        /// <summary>
+        /// Formats a Literal Node using QName compression for the datatype if possible
+        /// </summary>
+        /// <param name="l">Literal Node</param>
+        /// <returns></returns>
         protected abstract override string FormatLiteralNode(LiteralNode l);
     }
 }

@@ -38,10 +38,18 @@ using VDS.RDF.Update;
 
 namespace VDS.RDF.Parsing.Validation
 {
+    /// <summary>
+    /// A Syntax Validator for validating SPARQL Update Commands
+    /// </summary>
     public class SparqlUpdateValidator : ISyntaxValidator
     {
         private SparqlUpdateParser _parser = new SparqlUpdateParser();
 
+        /// <summary>
+        /// Validates whether the given data is a SPARQL Update Command
+        /// </summary>
+        /// <param name="data">Data</param>
+        /// <returns></returns>
         public ISyntaxValidationResults Validate(string data)
         {
             String message;

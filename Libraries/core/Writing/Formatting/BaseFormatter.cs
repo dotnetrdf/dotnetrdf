@@ -40,10 +40,17 @@ using System.Text;
 
 namespace VDS.RDF.Writing.Formatting
 {
+    /// <summary>
+    /// Abstract Base Class for Formatters
+    /// </summary>
     public abstract class BaseFormatter : INodeFormatter, ITripleFormatter, IUriFormatter, ICharFormatter
     {
         private String _format;
 
+        /// <summary>
+        /// Creates a new Formatter
+        /// </summary>
+        /// <param name="formatName">Format Name</param>
         public BaseFormatter(String formatName)
         {
             this._format = formatName;

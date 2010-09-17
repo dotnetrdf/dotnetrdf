@@ -330,6 +330,10 @@ namespace VDS.RDF.Parsing.Tokens
             }
         }
 
+        /// <summary>
+        /// Consumes a New Line (which may be a single \n or \r or the two characters following each other)
+        /// </summary>
+        /// <param name="asOutput">Whether the New Line should be added to the Output Buffer</param>
         protected void ConsumeNewLine(bool asOutput)
         {
             this.ConsumeNewLine(asOutput, false);
@@ -338,6 +342,8 @@ namespace VDS.RDF.Parsing.Tokens
         /// <summary>
         /// Consumes a New Line (which may be a single \n or \r or the two characters following each other)
         /// </summary>
+        /// <param name="asOutput">Whether the New Line should be added to the Output Buffer</param>
+        /// <param name="allowEOF">Whether EOF is permitted instead of a New Line</param>
         protected void ConsumeNewLine(bool asOutput, bool allowEOF)
         {
             int c = this._reader.Peek();

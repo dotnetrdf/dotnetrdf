@@ -40,14 +40,28 @@ using System.Text;
 
 namespace VDS.RDF.Writing.Formatting
 {
+    /// <summary>
+    /// Formatter for formatting Nodes for use in SPARQL
+    /// </summary>
     public class SparqlFormatter : TurtleFormatter
     {
+        /// <summary>
+        /// Creates a new SPARQL Formatter
+        /// </summary>
         public SparqlFormatter() 
             : base("SPARQL", new QNameOutputMapper()) { }
 
+        /// <summary>
+        /// Creates a new SPARQL Formatter using the given Graph
+        /// </summary>
+        /// <param name="g">Graph</param>
         public SparqlFormatter(IGraph g)
             : base("SPARQL", new QNameOutputMapper(g.NamespaceMap)) { }
 
+        /// <summary>
+        /// Creates a new SPARQL Formatter using the given Namespace Map
+        /// </summary>
+        /// <param name="nsmap">Namespace Map</param>
         public SparqlFormatter(INamespaceMapper nsmap)
             : base("SPARQL", new QNameOutputMapper(nsmap)) { }
     }

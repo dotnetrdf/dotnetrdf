@@ -468,7 +468,6 @@ namespace VDS.RDF.Parsing
         {
             IToken objToken, next;
             INode obj = null;
-            String currentBase;
 
             do
             {
@@ -823,7 +822,6 @@ namespace VDS.RDF.Parsing
                     {
                         throw new RdfParseException("Unable to resolve the QName '" + t.Value + "' due to the following error:\n" + rdfEx.Message, t, rdfEx);
                     }
-                    break;
 
                 case Token.URI:
                     try
@@ -835,7 +833,6 @@ namespace VDS.RDF.Parsing
                     {
                         throw new RdfParseException("Unable to resolve the URI '" + t.Value + "' due to the following error:\n" + rdfEx.Message, t, rdfEx);
                     }
-                    break;
 
                 default:
                     throw Error("Unexpected Token '" + t.GetType().ToString() + "' encountered, expected a URI/QName Token to resolve into a URI", t);

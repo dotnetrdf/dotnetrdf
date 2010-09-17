@@ -40,8 +40,16 @@ using System.Text;
 
 namespace VDS.RDF.Writing.Formatting
 {
+    /// <summary>
+    /// Interface for Character Formatters
+    /// </summary>
     public interface ICharFormatter
     {
+        /// <summary>
+        /// Formats a Character as a String
+        /// </summary>
+        /// <param name="c">Character</param>
+        /// <returns></returns>
         String FormatChar(char c);
     }
 }

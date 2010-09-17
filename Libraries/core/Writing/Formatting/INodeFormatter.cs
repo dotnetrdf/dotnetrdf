@@ -37,8 +37,16 @@ using System;
 
 namespace VDS.RDF.Writing.Formatting
 {
+    /// <summary>
+    /// Interface for classes which can format Nodes into Strings
+    /// </summary>
     public interface INodeFormatter
     {
+        /// <summary>
+        /// Formats a Node as a String
+        /// </summary>
+        /// <param name="n">Node</param>
+        /// <returns></returns>
         String Format(INode n);
     }
 }
