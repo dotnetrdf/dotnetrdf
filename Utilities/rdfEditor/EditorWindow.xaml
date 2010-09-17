@@ -167,6 +167,7 @@
                 <Separator />
                 <MenuItem Header="Enable Auto-completion" Name="mnuAutoComplete" IsCheckable="True" IsChecked="True" Click="mnuAutoComplete_Click" InputGestureText="Ctrl+E,A" />
                 <Separator />
+                <MenuItem Header="Customise Appearance Settings" Name="mnuCustomiseAppearance" Click="mnuCustomiseAppearance_Click" />
                 <MenuItem Header="Customise File Associations" Name="mnuCustomiseFileAssociations" Click="mnuCustomiseFileAssociations_Click" />
             </MenuItem>
             <MenuItem Header="_Tools">

@@ -50,5 +50,17 @@
     <Setting Name="WindowWidth" Type="System.Double" Scope="User">
       <Value Profile="(Default)">-1</Value>
     </Setting>
+    <Setting Name="EditorFontFace" Type="System.Windows.Media.FontFamily" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="EditorFontSize" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">13</Value>
+    </Setting>
+    <Setting Name="EditorForeground" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#FF000000</Value>
+    </Setting>
+    <Setting Name="EditorBackground" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#FFFFFFFF</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

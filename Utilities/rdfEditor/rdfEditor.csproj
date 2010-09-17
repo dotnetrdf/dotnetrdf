@@ -78,6 +78,9 @@
     <Compile Include="About.xaml.cs">
       <DependentUpon>About.xaml</DependentUpon>
     </Compile>
+    <Compile Include="AppearanceSettings.xaml.cs">
+      <DependentUpon>AppearanceSettings.xaml</DependentUpon>
+    </Compile>
     <Compile Include="AutoComplete\AutoCompleteDefinition.cs" />
     <Compile Include="AutoComplete\AutoCompleteManager.cs" />
     <Compile Include="AutoComplete\AutoCompleteState.cs" />
@@ -207,6 +210,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="About.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AppearanceSettings.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
