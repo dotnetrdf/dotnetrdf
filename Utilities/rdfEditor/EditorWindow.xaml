@@ -173,7 +173,9 @@
                 <MenuItem Header="Validate Syntax" Name="mnuValidateSyntax" Click="mnuValidateSyntax_Click" InputGestureText="Ctrl+T,V" />
                 <MenuItem Header="Show Triples View" Name="mnuTriplesView" Click="mnuTriplesView_Click" />
             </MenuItem>
-            <MenuItem Header="_Help" />
+            <MenuItem Header="_Help">
+                <MenuItem Header="About rdfEditor" Name="mnuAbout" Click="mnuAbout_Click" />
+            </MenuItem>
         </Menu>
         
         <avalonEdit:TextEditor

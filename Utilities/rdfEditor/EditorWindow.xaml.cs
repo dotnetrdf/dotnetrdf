@@ -951,5 +951,11 @@ namespace rdfEditor
                 Properties.Settings.Default.Save();
             }
         }
+
+        private void mnuAbout_Click(object sender, RoutedEventArgs e)
+        {
+            About about = new About();
+            about.ShowDialog();
+        }
     }
 }

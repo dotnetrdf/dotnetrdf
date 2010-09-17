@@ -75,6 +75,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="About.xaml.cs">
+      <DependentUpon>About.xaml</DependentUpon>
+    </Compile>
     <Compile Include="AutoComplete\AutoCompleteDefinition.cs" />
     <Compile Include="AutoComplete\AutoCompleteManager.cs" />
     <Compile Include="AutoComplete\AutoCompleteState.cs" />
@@ -203,6 +206,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="About.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\LiteralNodeControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
