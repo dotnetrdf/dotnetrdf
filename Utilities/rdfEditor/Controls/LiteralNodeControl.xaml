@@ -4,7 +4,7 @@
     <DockPanel LastChildFill="False">
         <Label Name="txtValue" DockPanel.Dock="Left" Padding="2"></Label>
         <Label Name="txtModifier" DockPanel.Dock="Right" Padding="2">
-            <Hyperlink RequestNavigate="Hyperlink_RequestNavigate">
+            <Hyperlink Click="Hyperlink_Click">
                 <Run Name="lnkDatatypeUri" />
             </Hyperlink>
         </Label>

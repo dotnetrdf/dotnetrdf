@@ -35,7 +35,7 @@ namespace rdfEditor.Controls
         public UriNodeControl(UriNode u)
             : this(u, new NTriplesFormatter()) { }
 
-        private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
+        private void Hyperlink_Click(object sender, RoutedEventArgs e)
         {
             try
             {

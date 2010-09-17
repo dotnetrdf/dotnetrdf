@@ -135,6 +135,21 @@ namespace rdfEditor
                     case 1:
                         this._formatter = new TurtleFormatter(this._g);
                         break;
+                    case 2:
+                        this._formatter = new UncompressedTurtleFormatter();
+                        break;
+                    case 3:
+                        this._formatter = new Notation3Formatter(this._g);
+                        break;
+                    case 4:
+                        this._formatter = new UncompressedNotation3Formatter();
+                        break;
+                    case 5:
+                        this._formatter = new CsvFormatter();
+                        break;
+                    case 6:
+                        this._formatter = new TsvFormatter();
+                        break;
                 }
 
                 this.RenderTriples();

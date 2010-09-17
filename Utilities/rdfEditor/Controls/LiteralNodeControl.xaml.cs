@@ -43,7 +43,7 @@ namespace rdfEditor.Controls
             }
         }
 
-        private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
+        private void Hyperlink_Click(object sender, RoutedEventArgs e)
         {
             if (this._u != null)
             {

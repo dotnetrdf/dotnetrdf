@@ -3,7 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Grid>
         <TextBlock VerticalAlignment="Center" Padding="2">
-            <Hyperlink RequestNavigate="Hyperlink_RequestNavigate">
+            <Hyperlink Click="Hyperlink_Click">
                 <Run Name="lnkUri" />
             </Hyperlink>
         </TextBlock>

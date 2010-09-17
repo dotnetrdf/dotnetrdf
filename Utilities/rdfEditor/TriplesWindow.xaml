@@ -6,13 +6,18 @@
     <StackPanel>
         <DockPanel LastChildFill="False">
             <Label>Render Triples using the following Formatter:</Label>
-            <ComboBox Name="cboFormatter" Width="160" SelectionChanged="ComboBox_SelectionChanged">
+            <ComboBox Name="cboFormatter" Width="214" SelectionChanged="ComboBox_SelectionChanged">
                 <ComboBoxItem Selector.IsSelected="True">NTriples</ComboBoxItem>
                 <ComboBoxItem>Turtle</ComboBoxItem>
+                <ComboBoxItem>Uncompressed Turtle</ComboBoxItem>
+                <ComboBoxItem>Notation 3</ComboBoxItem>
+                <ComboBoxItem>Uncompressed Notation 3</ComboBoxItem>
+                <ComboBoxItem>CSV</ComboBoxItem>
+                <ComboBoxItem>TSV</ComboBoxItem>
             </ComboBox>
         </DockPanel>
         
-        <ScrollViewer Name="scroll" Height="Auto" CanContentScroll="True">
+        <ScrollViewer Name="scroll" ScrollViewer.CanContentScroll="True" Height="325">
             <Grid ScrollViewer.CanContentScroll="True" Name="gridTriples">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="286*"></ColumnDefinition>
