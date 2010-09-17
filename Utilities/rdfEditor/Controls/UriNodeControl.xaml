@@ -1,9 +1,8 @@
 ﻿<UserControl x:Class="rdfEditor.Controls.UriNodeControl"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Height="27" Width="221">
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Grid>
-        <TextBlock VerticalAlignment="Center">
+        <TextBlock VerticalAlignment="Center" Padding="2">
             <Hyperlink RequestNavigate="Hyperlink_RequestNavigate">
                 <Run Name="lnkUri" />
             </Hyperlink>

@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{F8006AE8-6107-4297-9E19-C2E55303FCC6}</ProjectGuid>
     <OutputType>WinExe</OutputType>
@@ -139,9 +139,6 @@
     <Compile Include="TriplesWindow.xaml.cs">
       <DependentUpon>TriplesWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\TripleControl.xaml.cs">
-      <DependentUpon>TripleControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\UriNodeControl.xaml.cs">
       <DependentUpon>UriNodeControl.xaml</DependentUpon>
     </Compile>
@@ -227,10 +224,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="TriplesWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\TripleControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
