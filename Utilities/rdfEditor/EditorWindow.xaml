@@ -29,6 +29,9 @@
         <CommandBinding Command="{x:Static rdfEditor:Commands.ToggleLineNumbers}" Executed="ToggleLineNumbersExecuted" />
         <CommandBinding Command="{x:Static rdfEditor:Commands.ToggleWordWrap}" Executed="ToggleWordWrapExecuted" />
         <CommandBinding Command="{x:Static rdfEditor:Commands.ToggleClickableUris}" Executed="ToggleClickableUrisExecuted" />
+        <CommandBinding Command="{x:Static rdfEditor:Commands.IncreaseTextSize}" Executed="IncreaseTextSizeExecuted" />
+        <CommandBinding Command="{x:Static rdfEditor:Commands.DecreaseTextSize}" Executed="DecreaseTextSizeExecuted" />
+        <CommandBinding Command="{x:Static rdfEditor:Commands.ResetTextSize}" Executed="ResetTextSizeExecuted" />
         
         <CommandBinding Command="{x:Static rdfEditor:Commands.ToggleHighlighting}" Executed="ToggleHighlightingExecuted" />
         <CommandBinding Command="{x:Static rdfEditor:Commands.ToggleValidateAsYouType}" Executed="ToggleValidateAsYouTypeExecuted" />
@@ -62,6 +65,9 @@
         <rdfEditor:ComplexInputBinding Command="{x:Static rdfEditor:Commands.ToggleLineNumbers}" Gesture="Ctrl+E,L" />
         <rdfEditor:ComplexInputBinding Command="{x:Static rdfEditor:Commands.ToggleWordWrap}" Gesture="Ctrl+E,W" />
         <rdfEditor:ComplexInputBinding Command="{x:Static rdfEditor:Commands.ToggleClickableUris}" Gesture="Ctrl+E,U" />
+        <rdfEditor:ComplexInputBinding Command="{x:Static rdfEditor:Commands.IncreaseTextSize}" Gesture="Ctrl++" />
+        <rdfEditor:ComplexInputBinding Command="{x:Static rdfEditor:Commands.DecreaseTextSize}" Gesture="Ctrl+-" />
+        <rdfEditor:ComplexInputBinding Command="{x:Static rdfEditor:Commands.ResetTextSize}" Gesture="Ctrl+0" />
         
         <rdfEditor:ComplexInputBinding Command="{x:Static rdfEditor:Commands.ToggleHighlighting}" Gesture="Ctrl+E,H" />
         <rdfEditor:ComplexInputBinding Command="{x:Static rdfEditor:Commands.ToggleValidateAsYouType}" Gesture="Ctrl+E,V" />
@@ -135,6 +141,10 @@
                     <MenuItem Header="Show Spaces" Name="mnuShowSpecialSpaces" IsCheckable="True" IsChecked="False" Click="mnuShowSpecialSpaces_Click" />
                     <MenuItem Header="Show Tabs" Name="mnuShowSpecialTabs" IsCheckable="True" IsChecked="False" Click="mnuShowSpecialTabs_Click" />
                 </MenuItem>
+                <Separator/>
+                <MenuItem Header="Increase Text Size" Name="mnuIncreaseTextSize" Command="{x:Static rdfEditor:Commands.IncreaseTextSize}" InputGestureText="Ctrl++" />
+                <MenuItem Header="Decrease Text Size" Name="mnuDecreaseTextSize" Command="{x:Static rdfEditor:Commands.DecreaseTextSize}" InputGestureText="Ctrl+-"/>
+                <MenuItem Header="Reset Text Size" Name="mnuResetTextSize" Command="{x:Static rdfEditor:Commands.ResetTextSize}" InputGestureText="Ctrl+0"/>
             </MenuItem>
             <MenuItem Header="_Options">
                     <MenuItem Header="Enable Syntax Highlighting" Name="mnuEnableHighlighting" IsCheckable="True" IsChecked="True" Click="mnuEnableHighlighting_Click" InputGestureText="Ctrl+E,H" />
@@ -172,7 +182,7 @@
             </MenuItem>
             <MenuItem Header="_Tools">
                 <MenuItem Header="Validate Syntax" Name="mnuValidateSyntax" Click="mnuValidateSyntax_Click" InputGestureText="Ctrl+T,V" />
-                <MenuItem Header="Show Triples View" Name="mnuTriplesView" Click="mnuTriplesView_Click" />
+                <MenuItem Header="Show Structured View" Name="mnuStructureView" Click="mnuStructureView_Click" />
             </MenuItem>
             <MenuItem Header="_Help">
                 <MenuItem Header="About rdfEditor" Name="mnuAbout" Click="mnuAbout_Click" />

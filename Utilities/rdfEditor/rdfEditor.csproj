@@ -110,6 +110,9 @@
     <Compile Include="Controls\LiteralNodeControl.xaml.cs">
       <DependentUpon>LiteralNodeControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ResultSetWindow.xaml.cs">
+      <DependentUpon>ResultSetWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="EditorWindow.xaml.cs">
       <DependentUpon>EditorWindow.xaml</DependentUpon>
     </Compile>
@@ -220,6 +223,10 @@
     <Page Include="Controls\LiteralNodeControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ResultSetWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="EditorWindow.xaml">
       <SubType>Designer</SubType>

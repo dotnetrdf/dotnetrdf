@@ -41,7 +41,7 @@ namespace rdfEditor
                 String keyStroke = keyStrokes[i];
                 if (keyStroke.Contains('+'))
                 {
-                    Key k = (Key)_keyConverter.ConvertFrom(keyStroke.Substring(keyStroke.IndexOf('+') + 1));
+                    Key k = this.ConvertKey(keyStroke.Substring(keyStroke.IndexOf('+') + 1));
                     ModifierKeys modifier = (ModifierKeys)_modifierKeysConverter.ConvertFrom(keyStroke.Substring(0, keyStroke.IndexOf('+')));
                     if (modifier != ModifierKeys.Shift)
                     {
@@ -54,11 +54,24 @@ namespace rdfEditor
                 }
                 else
                 {
-                    gestures.Add(new UnmodifiedKeyGesture((Key)_keyConverter.ConvertFrom(keyStroke)));
+                    gestures.Add(new UnmodifiedKeyGesture(this.ConvertKey(keyStroke)));
                 }
 			}
 
-            return new ComplexInputGesture(gestures);
+            return new ComplexInputGesture(gestures, value.ToString());
 		}
+
+        private Key ConvertKey(String keyDef)
+        {
+            switch (keyDef)
+            {
+                case "+":
+                    return Key.OemPlus;
+                case "-":
+                    return Key.OemMinus;
+                default:
+                    return (Key)_keyConverter.ConvertFrom(keyDef);
+            }
+        }
     }
 }

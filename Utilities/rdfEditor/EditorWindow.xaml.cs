@@ -720,7 +720,7 @@ namespace rdfEditor
         }
 
 
-        private void mnuTriplesView_Click(object sender, RoutedEventArgs e)
+        private void mnuStructureView_Click(object sender, RoutedEventArgs e)
         {
             ISyntaxValidator validator = this._manager.CurrentValidator;
             if (validator != null)
@@ -733,19 +733,32 @@ namespace rdfEditor
                         TriplesWindow window = new TriplesWindow((IGraph)results.Result);
                         window.ShowDialog();
                     }
+                    else if (results.Result is SparqlResultSet)
+                    {
+                        SparqlResultSet sparqlResults = (SparqlResultSet)results.Result;
+                        if (sparqlResults.ResultsType == SparqlResultsType.VariableBindings)
+                        {
+                            ResultSetWindow window = new ResultSetWindow(sparqlResults);
+                            window.ShowDialog();
+                        }
+                        else
+                        {
+                            MessageBox.Show("Cannot open Structured View since this form of SPARQL Results is not structed");
+                        }
+                    }
                     else
                     {
-                        MessageBox.Show("Cannot view as Triples since this is not an RDF Graph Syntax");
+                        MessageBox.Show("Cannot open Structured View since this is not a syntax for which Structure view is available");
                     }
                 }
                 else
                 {
-                    MessageBox.Show("Cannot view as Triples as the Syntax is not valid");
+                    MessageBox.Show("Cannot open Structured View as the Syntax is not valid");
                 }
             }
             else
             {
-                MessageBox.Show("Cannot view as Triples as you have not selected a Syntax");
+                MessageBox.Show("Cannot open Structured View as you have not selected a Syntax");
             }
         }
 
@@ -869,6 +882,27 @@ namespace rdfEditor
         {
             this.mnuClickableUris.IsChecked = !this.mnuClickableUris.IsChecked;
             mnuClickableUris_Click(sender, e);
+        }
+
+        private void IncreaseTextSizeExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            this.textEditor.FontSize = Math.Round(this.textEditor.FontSize + 1.0, 0);
+            Properties.Settings.Default.EditorFontSize = this.textEditor.FontSize;
+            Properties.Settings.Default.Save();
+        }
+
+        private void DecreaseTextSizeExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            this.textEditor.FontSize = Math.Round(this.textEditor.FontSize - 1.0, 0);
+            Properties.Settings.Default.EditorFontSize = this.textEditor.FontSize;
+            Properties.Settings.Default.Save();
+        }
+
+        private void ResetTextSizeExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            this.textEditor.FontSize = 13.0d;
+            Properties.Settings.Default.EditorFontSize = this.textEditor.FontSize;
+            Properties.Settings.Default.Save();
         }
 
         private void ToggleHighlightingExecuted(object sender, ExecutedRoutedEventArgs e)

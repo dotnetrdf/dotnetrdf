@@ -15,6 +15,10 @@ namespace rdfEditor
         public static readonly ICommand SaveWithRdfJson = new RoutedCommand();
         public static readonly ICommand SaveWithXHtmlRdfA = new RoutedCommand();
 
+        public static readonly ICommand IncreaseTextSize = new RoutedCommand();
+        public static readonly ICommand DecreaseTextSize = new RoutedCommand();
+        public static readonly ICommand ResetTextSize = new RoutedCommand();
+
         public static readonly ICommand CommentSelection = new RoutedCommand();
         public static readonly ICommand UncommentSelection = new RoutedCommand();
 

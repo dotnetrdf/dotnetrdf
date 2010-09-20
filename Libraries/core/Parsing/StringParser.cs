@@ -225,14 +225,14 @@ namespace VDS.RDF.Parsing
             String format = "Unknown";
             try
             {
-                if (data.Contains("<?xml") && data.Contains("<rdf:RDF"))
+                if (data.Contains("<?xml") || data.Contains("<sparql"))
                 {
                     //Probably XML
                     format = "SPARQL Results XML";
                     ParseResultSet(results, data, new SparqlXmlParser());
                 }
-                 else if (data.Contains("\"value\"") &&
-                           data.Contains("\"type\"") &&
+                 else if (data.Contains("\"head\"") &&
+                           (data.Contains("\"results\"") || data.Contains("\"boolean\"")) &&
                            data.Contains("{") &&
                            data.Contains("}") &&
                            data.Contains("[") &&
@@ -322,13 +322,13 @@ namespace VDS.RDF.Parsing
 
         public static ISparqlResultsReader GetResultSetParser(String data)
         {
-            if (data.Contains("<?xml") && data.Contains("<rdf:RDF"))
+            if (data.Contains("<?xml") || data.Contains("<sparql"))
             {
                 //Probably XML
                 return new SparqlXmlParser();
             }
-            else if (data.Contains("\"value\"") &&
-               data.Contains("\"type\"") &&
+            else if (data.Contains("\"head\"") &&
+               (data.Contains("\"results\"") || data.Contains("\"boolean\"")) &&
                data.Contains("{") &&
                data.Contains("}") &&
                data.Contains("[") &&

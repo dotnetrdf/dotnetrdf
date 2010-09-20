@@ -114,5 +114,11 @@ namespace rdfEditor
                 return this._parser;
             }
         }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            this.txtEndpoint.Focus();
+            this.txtEndpoint.SelectAll();
+        }
     }
 }

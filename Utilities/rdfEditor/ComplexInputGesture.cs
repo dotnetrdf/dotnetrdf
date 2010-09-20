@@ -12,14 +12,15 @@ namespace rdfEditor
     /// <remarks>
     /// Based on code by Kent Boogaart from <a href="http://kentb.blogspot.com/2009/03/multikeygesture.html">this blog entry</a>
     /// </remarks>
-    public class ComplexInputGesture : InputGesture
+    public class ComplexInputGesture : KeyGesture
     {
         private List<KeyGesture> _gestures = new List<KeyGesture>();
         private int _index = 0;
         private DateTime _lastKeyPress;
         private TimeSpan _keyPressInterval = new TimeSpan(0, 0, 1);
 
-        public ComplexInputGesture(IEnumerable<KeyGesture> gestureSequence)
+        public ComplexInputGesture(IEnumerable<KeyGesture> gestureSequence, String displayString)
+            : base(Key.None, ModifierKeys.None, displayString)
         {
             this._gestures.AddRange(gestureSequence);
         }
@@ -72,6 +73,21 @@ namespace rdfEditor
                 return false;
             }
         }
+
+        public override string ToString()
+        {
+            StringBuilder output = new StringBuilder();
+            for (int i = 0; i < this._gestures.Count; i++)
+            {
+                output.Append(this._gestures[i].ToString());
+                if (i < this._gestures.Count - 1)
+                {
+                    output.Append(",");
+                }
+            }
+            return output.ToString();
+        }
+
     }
 
     public class UnmodifiedKeyGesture : KeyGesture
@@ -95,6 +111,11 @@ namespace rdfEditor
             {
                 return false;
             }
+        }
+
+        public override string ToString()
+        {
+            return this._key.ToString();
         }
     }
 
@@ -120,5 +141,11 @@ namespace rdfEditor
                 return false;
             }
         }
+
+        public override string ToString()
+        {
+            return "Shift+" + this._key.ToString();
+        }
+
     }
 }
