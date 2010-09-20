@@ -160,6 +160,7 @@ namespace VDS.RDF.Query.Patterns
         /// <summary>
         /// Constructs a Node based on the given Set
         /// </summary>
+        /// <param name="g">Graph to construct Nodes in</param>
         /// <param name="s">Set</param>
         /// <param name="preserveBNodes">Whether BNode IDs should be preserved</param>
         /// <returns>The Node which is bound to this Variable in this Solution</returns>
@@ -259,6 +260,7 @@ namespace VDS.RDF.Query.Patterns
         /// <summary>
         /// Constructs a Node based on the given Set
         /// </summary>
+        /// <param name="g">Graph to construct Nodes in</param>
         /// <param name="s">Set</param>
         /// <returns>The Node this pattern matches on</returns>
         /// <param name="preserveBNodes">Whether Blank Node IDs should be preserved</param>

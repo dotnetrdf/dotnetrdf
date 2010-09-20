@@ -164,6 +164,12 @@ namespace VDS.RDF.Parsing
             }
         }
 
+        /// <summary>
+        /// Parses a raw RDF Dataset String using the given Parser
+        /// </summary>
+        /// <param name="store">Store to load into</param>
+        /// <param name="data">Raw RDF Dataset String</param>
+        /// <param name="reader">Parser to use</param>
         public static void ParseDataset(ITripleStore store, String data, IStoreReader reader)
         {
             try
@@ -182,6 +188,16 @@ namespace VDS.RDF.Parsing
             }
         }
 
+        /// <summary>
+        /// Parses a raw RDF Dataset String (attempts to auto-detect the format)
+        /// </summary>
+        /// <param name="store">Store to load into</param>
+        /// <param name="data">Raw RDF Dataset String</param>
+        /// <remarks>
+        /// <p>
+        /// Auto-detection is based on testing the string to see if it contains certain keyword constructs which might indicate a particular syntax has been used.  This detection may not always be accurate.
+        /// </p>
+        /// </remarks>
         public static void ParseDataset(ITripleStore store, String data)
         {
             //Try to guess the format
@@ -218,7 +234,16 @@ namespace VDS.RDF.Parsing
             }
         }
 
-
+        /// <summary>
+        /// Parses a raw SPARQL Results String (attempts to auto-detect the format)
+        /// </summary>
+        /// <param name="results">SPARQL Result Set to fill</param>
+        /// <param name="data">Raw SPARQL Results String</param>
+        /// <remarks>
+        /// <p>
+        /// Auto-detection is based on testing the string to see if it contains certain keyword constructs which might indicate a particular syntax has been used.  This detection may not always be accurate.
+        /// </p>
+        /// </remarks>
         public static void ParseResultSet(SparqlResultSet results, String data)
         {
             //Try to guess the format
@@ -254,6 +279,12 @@ namespace VDS.RDF.Parsing
             }
         }
 
+        /// <summary>
+        /// Parses a raw SPARQL Results String using the given Parser
+        /// </summary>
+        /// <param name="results">SPARQL Result Set to fill</param>
+        /// <param name="data">Raw SPARQL Results String</param>
+        /// <param name="reader">Parser to use</param>
         public static void ParseResultSet(SparqlResultSet results, String data, ISparqlResultsReader reader)
         {
             try
@@ -320,6 +351,11 @@ namespace VDS.RDF.Parsing
             }
         }
 
+        /// <summary>
+        /// Uses the format detection rules to return the most likely SPARQL Results parser
+        /// </summary>
+        /// <param name="data">Raw SPARQL Results String</param>
+        /// <returns></returns>
         public static ISparqlResultsReader GetResultSetParser(String data)
         {
             if (data.Contains("<?xml") || data.Contains("<sparql"))

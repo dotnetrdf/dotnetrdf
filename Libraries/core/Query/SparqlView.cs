@@ -1,7 +1,41 @@
-﻿using System;
+﻿/*
+
+Copyright Robert Vesse 2009-10
+rvesse@vdesign-studios.com
+
+------------------------------------------------------------------------
+
+This file is part of dotNetRDF.
+
+dotNetRDF is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+dotNetRDF is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with dotNetRDF.  If not, see <http://www.gnu.org/licenses/>.
+
+------------------------------------------------------------------------
+
+dotNetRDF may alternatively be used under the LGPL or MIT License
+
+http://www.gnu.org/licenses/lgpl.html
+http://www.opensource.org/licenses/mit-license.php
+
+If these licenses are not suitable for your intended use please contact
+us at the above stated email address to discuss alternative
+terms.
+
+*/
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Query
@@ -16,8 +50,17 @@ namespace VDS.RDF.Query
     /// </remarks>
     public abstract class BaseSparqlView : Graph
     {
+        /// <summary>
+        /// SPARQL Query
+        /// </summary>
         protected SparqlQuery _q;
+        /// <summary>
+        /// Graphs that are mentioned in the Query
+        /// </summary>
         protected HashSet<String> _graphs;
+        /// <summary>
+        /// Triple Store the query operates over
+        /// </summary>
         protected ITripleStore _store;
 
         private UpdateViewDelegate _async;
@@ -25,6 +68,11 @@ namespace VDS.RDF.Query
         private bool _requiresInvalidate = false;
         private RdfQueryException _lastError;
 
+        /// <summary>
+        /// Creates a new SPARQL View
+        /// </summary>
+        /// <param name="sparqlQuery">SPARQL Query</param>
+        /// <param name="store">Triple Store to query</param>
         public BaseSparqlView(String sparqlQuery, ITripleStore store)
         {
             SparqlQueryParser parser = new SparqlQueryParser();
@@ -35,18 +83,31 @@ namespace VDS.RDF.Query
             this.Initialise();
         }
 
+        /// <summary>
+        /// Creates a new SPARQL View
+        /// </summary>
+        /// <param name="sparqlQuery">SPARQL Query</param>
+        /// <param name="store">Triple Store to query</param>
         public BaseSparqlView(SparqlParameterizedString sparqlQuery, ITripleStore store)
             : this(sparqlQuery.ToString(), store) { }
 
-        public BaseSparqlView(SparqlQuery q, ITripleStore store)
+        /// <summary>
+        /// Creates a new SPARQL View
+        /// </summary>
+        /// <param name="sparqlQuery">SPARQL Query</param>
+        /// <param name="store">Triple Store to query</param>
+        public BaseSparqlView(SparqlQuery sparqlQuery, ITripleStore store)
         {
-            this._q = q;
+            this._q = sparqlQuery;
             this._store = store;
 
             this._async = new UpdateViewDelegate(this.UpdateViewInternal);
             this.Initialise();
         }
 
+        /// <summary>
+        /// Initialises the SPARQL View
+        /// </summary>
         private void Initialise()
         {
             if (this._q.QueryType == SparqlQueryType.Ask)
@@ -77,6 +138,9 @@ namespace VDS.RDF.Query
             this.UpdateViewInternal();
         }
 
+        /// <summary>
+        /// Invalidates the View causing it to be updated
+        /// </summary>
         private void InvalidateView()
         {
             //Can't invalidate if an async UpdateView() call is in progress
@@ -89,6 +153,10 @@ namespace VDS.RDF.Query
             this._asyncResult = this._async.BeginInvoke(new AsyncCallback(this.InvalidateViewCompleted), null);
         }
 
+        /// <summary>
+        /// Callback for when asychronous invalidation completes
+        /// </summary>
+        /// <param name="result">Async call results</param>
         private void InvalidateViewCompleted(IAsyncResult result)
         {
             try
@@ -111,6 +179,9 @@ namespace VDS.RDF.Query
 
         private delegate void UpdateViewDelegate();
 
+        /// <summary>
+        /// Forces the view to be updated
+        /// </summary>
         public void UpdateView()
         {
             if (this._asyncResult != null)
@@ -124,8 +195,14 @@ namespace VDS.RDF.Query
             if (this.LastError != null) throw this.LastError;
         }
 
+        /// <summary>
+        /// Abstract method that derived classes should implement to update the view
+        /// </summary>
         protected abstract void UpdateViewInternal();
 
+        /// <summary>
+        /// Gets the error that occurred during the last update (if any)
+        /// </summary>
         public RdfQueryException LastError
         {
             get
@@ -226,15 +303,33 @@ namespace VDS.RDF.Query
     public class SparqlView : BaseSparqlView
     {
 
+        /// <summary>
+        /// Creates a new SPARQL View
+        /// </summary>
+        /// <param name="sparqlQuery">SPARQL Query</param>
+        /// <param name="store">Triple Store to query</param>
         public SparqlView(String sparqlQuery, IInMemoryQueryableStore store)
             : base(sparqlQuery, store) { }
 
+        /// <summary>
+        /// Creates a new SPARQL View
+        /// </summary>
+        /// <param name="sparqlQuery">SPARQL Query</param>
+        /// <param name="store">Triple Store to query</param>
         public SparqlView(SparqlParameterizedString sparqlQuery, IInMemoryQueryableStore store)
             : this(sparqlQuery.ToString(), store) { }
 
-        public SparqlView(SparqlQuery q, IInMemoryQueryableStore store)
-            : base(q, store) { }
+        /// <summary>
+        /// Creates a new SPARQL View
+        /// </summary>
+        /// <param name="sparqlQuery">SPARQL Query</param>
+        /// <param name="store">Triple Store to query</param>
+        public SparqlView(SparqlQuery sparqlQuery, IInMemoryQueryableStore store)
+            : base(sparqlQuery, store) { }
 
+        /// <summary>
+        /// Updates the view by making the SPARQL Query in-memory over the relevant Triple Store
+        /// </summary>
         protected override void UpdateViewInternal()
         {
             try
@@ -271,16 +366,33 @@ namespace VDS.RDF.Query
     /// </summary>
     public class NativeSparqlView : BaseSparqlView
     {
-
+        /// <summary>
+        /// Creates a new SPARQL View
+        /// </summary>
+        /// <param name="sparqlQuery">SPARQL Query</param>
+        /// <param name="store">Triple Store to query</param>
         public NativeSparqlView(String sparqlQuery, INativelyQueryableStore store)
             : base(sparqlQuery, store) { }
 
+        /// <summary>
+        /// Creates a new SPARQL View
+        /// </summary>
+        /// <param name="sparqlQuery">SPARQL Query</param>
+        /// <param name="store">Triple Store to query</param>
         public NativeSparqlView(SparqlParameterizedString sparqlQuery, INativelyQueryableStore store)
             : this(sparqlQuery.ToString(), store) { }
 
-        public NativeSparqlView(SparqlQuery q, INativelyQueryableStore store)
-            : base(q, store) { }
+        /// <summary>
+        /// Creates a new SPARQL View
+        /// </summary>
+        /// <param name="sparqlQuery">SPARQL Query</param>
+        /// <param name="store">Triple Store to query</param>
+        public NativeSparqlView(SparqlQuery sparqlQuery, INativelyQueryableStore store)
+            : base(sparqlQuery, store) { }
 
+        /// <summary>
+        /// Updates the view by making the query over the Native Store (i.e. the query is handled by the stores SPARQL implementation)
+        /// </summary>
         protected override void UpdateViewInternal()
         {
             try

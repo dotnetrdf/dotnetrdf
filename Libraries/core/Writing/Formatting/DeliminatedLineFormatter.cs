@@ -1,4 +1,39 @@
-﻿using System;
+﻿/*
+
+Copyright Robert Vesse 2009-10
+rvesse@vdesign-studios.com
+
+------------------------------------------------------------------------
+
+This file is part of dotNetRDF.
+
+dotNetRDF is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+dotNetRDF is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with dotNetRDF.  If not, see <http://www.gnu.org/licenses/>.
+
+------------------------------------------------------------------------
+
+dotNetRDF may alternatively be used under the LGPL or MIT License
+
+http://www.gnu.org/licenses/lgpl.html
+http://www.opensource.org/licenses/mit-license.php
+
+If these licenses are not suitable for your intended use please contact
+us at the above stated email address to discuss alternative
+terms.
+
+*/
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,6 +41,9 @@ using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Writing.Formatting
 {
+    /// <summary>
+    /// Abstract Base Class for formatters where things are formatted as lines of plain text deliminated by specific characters
+    /// </summary>
     public abstract class DeliminatedLineFormatter : BaseFormatter
     {
         private Nullable<char> _uriStartChar, _uriEndChar, _literalWrapperChar, _longLiteralWrapperChar, _lineEndChar;
@@ -13,6 +51,18 @@ namespace VDS.RDF.Writing.Formatting
         private char _escapeChar = '\\';
         private bool _fullLiteralOutput = true;
 
+        /// <summary>
+        /// Creates a new Deliminated Line Formatter
+        /// </summary>
+        /// <param name="formatName">Format Name</param>
+        /// <param name="deliminator">Item Deliminator Character</param>
+        /// <param name="escape">Escape Character</param>
+        /// <param name="uriStartChar">Character to start URIs (may be null)</param>
+        /// <param name="uriEndChar">Character to end URIs (may be null)</param>
+        /// <param name="literalWrapperChar">Character to wrap Literals in (may be null)</param>
+        /// <param name="longLiteralWrapperChar">Character to wrap Long Literals in (may be null)</param>
+        /// <param name="lineEndChar">Character to add at end of line (may be null)</param>
+        /// <param name="fullLiteralOutput">Whether Literals are output with Language/Datatype information</param>
         public DeliminatedLineFormatter(String formatName, char deliminator, char escape, Nullable<char> uriStartChar, Nullable<char> uriEndChar, Nullable<char> literalWrapperChar, Nullable<char> longLiteralWrapperChar, Nullable<char> lineEndChar, bool fullLiteralOutput)
             : base(formatName)
         {
@@ -26,6 +76,11 @@ namespace VDS.RDF.Writing.Formatting
             this._fullLiteralOutput = fullLiteralOutput;
         }
 
+        /// <summary>
+        /// Formats a Triple
+        /// </summary>
+        /// <param name="t">Triple</param>
+        /// <returns></returns>
         public override string Format(Triple t)
         {
             StringBuilder output = new StringBuilder();
@@ -41,6 +96,11 @@ namespace VDS.RDF.Writing.Formatting
             return output.ToString();
         }
 
+        /// <summary>
+        /// Formats a URI Node
+        /// </summary>
+        /// <param name="u">URI Node</param>
+        /// <returns></returns>
         protected override string FormatUriNode(UriNode u)
         {
             StringBuilder output = new StringBuilder();
@@ -57,6 +117,11 @@ namespace VDS.RDF.Writing.Formatting
             return output.ToString();
         }
 
+        /// <summary>
+        /// Formats a Literal Node
+        /// </summary>
+        /// <param name="lit">Literal Node</param>
+        /// <returns></returns>
         protected override string FormatLiteralNode(LiteralNode lit)
         {
             StringBuilder output = new StringBuilder();
@@ -140,6 +205,11 @@ namespace VDS.RDF.Writing.Formatting
             return output.ToString();
         }
 
+        /// <summary>
+        /// Formats URIs
+        /// </summary>
+        /// <param name="u"></param>
+        /// <returns></returns>
         public override string FormatUri(String u)
         {
             if (this._uriEndChar != null)

@@ -38,15 +38,30 @@ using System.Collections.Generic;
 
 namespace VDS.RDF.Parsing.Validation
 {
+    /// <summary>
+    /// Syntax Validator for validating RDF Graph syntaxes
+    /// </summary>
     public class RdfSyntaxValidator : ISyntaxValidator
     {
+        /// <summary>
+        /// Parser to use
+        /// </summary>
         protected IRdfReader _parser;
 
+        /// <summary>
+        /// Creates a new RDF Syntax Validator using the given Parser
+        /// </summary>
+        /// <param name="parser">Parser</param>
         public RdfSyntaxValidator(IRdfReader parser)
         {
             this._parser = parser;
         }
 
+        /// <summary>
+        /// Validates the given data to see if it is valid RDF Syntax
+        /// </summary>
+        /// <param name="data">Data</param>
+        /// <returns></returns>
         public virtual ISyntaxValidationResults Validate(string data)
         {
             String message;
@@ -76,11 +91,18 @@ namespace VDS.RDF.Parsing.Validation
         }
     }
 
+    /// <summary>
+    /// Syntax Validator for RDF Graph syntaxes which is strict (any warnings are treated as errors)
+    /// </summary>
     public class RdfStrictSyntaxValidator : RdfSyntaxValidator
     {
         private bool _gotWarning = false;
         private List<String> _messages = new List<string>();
 
+        /// <summary>
+        /// Creates a new Strict RDF Syntax Validator
+        /// </summary>
+        /// <param name="parser">Parser</param>
         public RdfStrictSyntaxValidator(IRdfReader parser)
             : base(parser)
         {
@@ -93,6 +115,11 @@ namespace VDS.RDF.Parsing.Validation
             this._messages.Add(message);
         }
 
+        /// <summary>
+        /// Validates the data to see if it is valid RDF syntax which does not produce any warnings
+        /// </summary>
+        /// <param name="data">Data</param>
+        /// <returns></returns>
         public override ISyntaxValidationResults Validate(string data)
         {
             String message;

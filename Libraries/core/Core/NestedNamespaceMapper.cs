@@ -40,6 +40,9 @@ using System.Text;
 
 namespace VDS.RDF
 {
+    /// <summary>
+    /// A Namespace Mapper which has an explicit notion of Nesting
+    /// </summary>
     public class NestedNamespaceMapper : INamespaceMapper
     {
         private Dictionary<String, List<NestedMapping>> _uris = new Dictionary<string, List<NestedMapping>>();
@@ -68,6 +71,11 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Adds a Namespace at the Current Nesting Level
+        /// </summary>
+        /// <param name="prefix">Prefix</param>
+        /// <param name="uri">Namespace URI</param>
         public void AddNamespace(string prefix, Uri uri)
         {
             NestedMapping mapping = new NestedMapping(prefix, uri, this._level);
@@ -84,14 +92,14 @@ namespace VDS.RDF
 
                     this._uris[prefix].Add(mapping);
                     this._prefixes[uri.GetEnhancedHashCode()].Add(mapping);
-                    this.OnNamespaceModified(prefix, uri);
+                    this.RaiseNamespaceModified(prefix, uri);
                 }
                 else
                 {
                     //If not we simply add it
                     this._uris[prefix].Add(mapping);
                     this._prefixes[uri.GetEnhancedHashCode()].Add(mapping);
-                    this.OnNamespaceAdded(prefix, uri);
+                    this.RaiseNamespaceAdded(prefix, uri);
                 }
             }
             else
@@ -100,16 +108,24 @@ namespace VDS.RDF
                 this._uris.Add(prefix, new List<NestedMapping>());
                 this._uris[prefix].Add(mapping);
                 this._prefixes[uri.GetEnhancedHashCode()].Add(mapping);
-                this.OnNamespaceAdded(prefix, uri);
+                this.RaiseNamespaceAdded(prefix, uri);
             }
         }
 
+        /// <summary>
+        /// Clears the Namespace Map
+        /// </summary>
         public void Clear()
         {
             this._uris.Clear();
             this._prefixes.Clear();
         }
 
+        /// <summary>
+        /// Gets the Namespace URI for the given Prefix at the current Nesting Level
+        /// </summary>
+        /// <param name="prefix">Prefix</param>
+        /// <returns></returns>
         public Uri GetNamespaceUri(string prefix)
         {
             if (this._uris.ContainsKey(prefix))
@@ -122,6 +138,11 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Gets the Namespace Prefix for the given URI at the current Nesting Level
+        /// </summary>
+        /// <param name="uri">Namespace URI</param>
+        /// <returns></returns>
         public string GetPrefix(Uri uri)
         {
             int hash = uri.GetEnhancedHashCode();
@@ -135,6 +156,11 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Gets the Nesting Level at which the given Namespace is definition is defined
+        /// </summary>
+        /// <param name="prefix">Prefix</param>
+        /// <returns></returns>
         public int GetNestingLevel(String prefix)
         {
             if (this._uris.ContainsKey(prefix))
@@ -147,11 +173,20 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Gets whether the given Namespace exists
+        /// </summary>
+        /// <param name="prefix">Prefix</param>
+        /// <returns></returns>
         public bool HasNamespace(string prefix)
         {
             return this._uris.ContainsKey(prefix);
         }
 
+        /// <summary>
+        /// Imports another Namespace Map into this one
+        /// </summary>
+        /// <param name="nsmap">Namespace Map</param>
         public void Import(INamespaceMapper nsmap)
         {
             String tempPrefix = "ns0";
@@ -180,11 +215,20 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Increments the Nesting Level
+        /// </summary>
         public void IncrementNesting()
         {
             this._level++;
         }
 
+        /// <summary>
+        /// Decrements the Nesting Level
+        /// </summary>
+        /// <remarks>
+        /// When the Nesting Level is decremented any Namespaces defined at a greater Nesting Level are now out of scope and so are removed from the Mapper
+        /// </remarks>
         public void DecrementNesting()
         {
             this._level--;
@@ -209,6 +253,9 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Gets the current Nesting Level
+        /// </summary>
         public int NestingLevel
         {
             get
@@ -217,10 +264,19 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Event which occurs when a Namespace is added
+        /// </summary>
         public event NamespaceChanged NamespaceAdded;
 
+        /// <summary>
+        /// Event which occurs when a Namespace is modified
+        /// </summary>
         public event NamespaceChanged NamespaceModified;
 
+        /// <summary>
+        /// Event which occurs when a Namespace is removed
+        /// </summary>
         public event NamespaceChanged NamespaceRemoved;
 
         /// <summary>
@@ -228,7 +284,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="prefix">Namespace Prefix</param>
         /// <param name="uri">Namespace Uri</param>
-        protected virtual void OnNamespaceAdded(String prefix, Uri uri)
+        protected virtual void RaiseNamespaceAdded(String prefix, Uri uri)
         {
             NamespaceChanged handler = this.NamespaceAdded;
             if (handler != null)
@@ -242,7 +298,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="prefix">Namespace Prefix</param>
         /// <param name="uri">Namespace Uri</param>
-        protected virtual void OnNamespaceModified(String prefix, Uri uri)
+        protected virtual void RaiseNamespaceModified(String prefix, Uri uri)
         {
             NamespaceChanged handler = this.NamespaceModified;
             if (handler != null)
@@ -265,6 +321,9 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Gets the Namespace Prefixes
+        /// </summary>
         public IEnumerable<string> Prefixes
         {
             get 
@@ -273,6 +332,12 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Tries to reduce a URI to a QName using this Namespace Map
+        /// </summary>
+        /// <param name="uri">URI</param>
+        /// <param name="qname">Resulting QName</param>
+        /// <returns></returns>
         public bool ReduceToQName(string uri, out string qname)
         {
             foreach (Uri u in this._uris.Values.Select(l => l.Last().Uri))
@@ -297,6 +362,10 @@ namespace VDS.RDF
             return false;
         }
 
+        /// <summary>
+        /// Removes a Namespace provided that Namespace is defined on the current Nesting Level
+        /// </summary>
+        /// <param name="prefix">Prefix</param>
         public void RemoveNamespace(string prefix)
         {
             if (this.HasNamespace(prefix))
@@ -315,6 +384,9 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Disposes of the Namespace Map
+        /// </summary>
         public void Dispose()
         {
             this._prefixes.Clear();
@@ -323,12 +395,21 @@ namespace VDS.RDF
         }
     }
 
+    /// <summary>
+    /// Class used to hold Nesting Namespace definition information
+    /// </summary>
     class NestedMapping
     {
         private int _level;
         private String _prefix;
         private Uri _uri;
 
+        /// <summary>
+        /// Creates a new Nested Mapping
+        /// </summary>
+        /// <param name="prefix">Prefix</param>
+        /// <param name="uri">Namespace URI</param>
+        /// <param name="level">Nesting Level</param>
         public NestedMapping(String prefix, Uri uri, int level)
         {
             this._prefix = prefix;
@@ -336,9 +417,17 @@ namespace VDS.RDF
             this._level = level;
         }
 
+        /// <summary>
+        /// Creates a new Nested Mapping
+        /// </summary>
+        /// <param name="prefix">Prefix</param>
+        /// <param name="uri">Namespace URI</param>
         public NestedMapping(String prefix, Uri uri)
             : this(prefix, uri, 0) { }
 
+        /// <summary>
+        /// Gets the Nesting Level
+        /// </summary>
         public int Level
         {
             get 
@@ -347,6 +436,9 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Gets the Namespace Prefix
+        /// </summary>
         public String Prefix
         {
             get 
@@ -355,6 +447,9 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Gets the Namespace URI
+        /// </summary>
         public Uri Uri
         {
             get

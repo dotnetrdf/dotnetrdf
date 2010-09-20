@@ -43,6 +43,9 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Writing.Contexts
 {
+    /// <summary>
+    /// Writer Context for RDF/XML Writers
+    /// </summary>
     public class RdfXmlWriterContext : IWriterContext, ICollectionCompressingWriterContext
     {
         /// <summary>
@@ -71,6 +74,11 @@ namespace VDS.RDF.Writing.Contexts
         private Dictionary<INode, OutputRDFCollection> _collections = new Dictionary<INode, OutputRDFCollection>();
         private TripleCollection _triplesDone = new TripleCollection();
 
+        /// <summary>
+        /// Creates a new RDF/XML Writer Context
+        /// </summary>
+        /// <param name="g">Graph</param>
+        /// <param name="output">Output destination</param>
         public RdfXmlWriterContext(IGraph g, TextWriter output)
         {
             this._g = g;
@@ -79,6 +87,10 @@ namespace VDS.RDF.Writing.Contexts
             this._nsmapper.Import(this._g.NamespaceMap);
         }
 
+        /// <summary>
+        /// Generates the required settings for the <see cref="XmlWriter">XmlWriter</see>
+        /// </summary>
+        /// <returns></returns>
         private XmlWriterSettings GetSettings()
         {
             XmlWriterSettings settings = new XmlWriterSettings();
@@ -179,6 +191,9 @@ namespace VDS.RDF.Writing.Contexts
             }
         }
 
+        /// <summary>
+        /// Gets the Namespace Map in use
+        /// </summary>
         public NestedNamespaceMapper NamespaceMap
         {
             get
@@ -187,6 +202,12 @@ namespace VDS.RDF.Writing.Contexts
             }
         }
 
+        /// <summary>
+        /// Gets/Sets whether High Speed Mode is permitted
+        /// </summary>
+        /// <remarks>
+        /// Not currently supported
+        /// </remarks>
         public bool HighSpeedModePermitted
         {
             get
@@ -199,6 +220,12 @@ namespace VDS.RDF.Writing.Contexts
             }
         }
 
+        /// <summary>
+        /// Gets/Sets the Compression Level used
+        /// </summary>
+        /// <remarks>
+        /// Not currently supported
+        /// </remarks>
         public int CompressionLevel
         {
             get
@@ -211,6 +238,9 @@ namespace VDS.RDF.Writing.Contexts
             }
         }
 
+        /// <summary>
+        /// Gets/Sets the next ID to use for issuing Temporary Namespaces
+        /// </summary>
         public int NextNamespaceID
         {
             get

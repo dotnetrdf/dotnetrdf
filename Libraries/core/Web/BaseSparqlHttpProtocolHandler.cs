@@ -154,12 +154,12 @@ namespace VDS.RDF.Web
                 //If we can't select a valid Parser when receiving content we send a 415 Unsupported Media Type
                 context.Response.StatusCode = (int)HttpStatusCode.UnsupportedMediaType;
             }
-            catch (RdfParseException parseEx)
+            catch (RdfParseException)
             {
                 //If we can't parse the received content successfully we send a 400 Bad Request
                 context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 //For any other error we'll send a 500 Internal Server Error
                 context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;

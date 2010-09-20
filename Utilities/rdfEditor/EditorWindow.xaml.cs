@@ -169,8 +169,8 @@ namespace rdfEditor
                     mnuSave_Click(sender, e);
                 }
                 this._manager.HasChanged = false;
-                mnuClose_Click(sender, e);
             }
+            mnuClose_Click(sender, e);
 
             OpenUri diag = new OpenUri();
             if (diag.ShowDialog() == true)
@@ -202,8 +202,8 @@ namespace rdfEditor
                     mnuSave_Click(sender, e);
                 }
                 this._manager.HasChanged = false;
-                mnuClose_Click(sender, e);
             }
+            mnuClose_Click(sender, e);
 
             OpenQueryResults diag = new OpenQueryResults();
             if (diag.ShowDialog() == true)

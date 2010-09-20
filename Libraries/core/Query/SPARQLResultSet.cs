@@ -387,18 +387,45 @@ namespace VDS.RDF.Query
             }
         }
 
+        /// <summary>
+        /// Converts a Result Set into a Triple Collection
+        /// </summary>
+        /// <param name="g">Graph to generate the Nodes in</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Assumes the Result Set contains three variables ?s, ?p and ?o to use as the Subject, Predicate and Object respectively.  Only Results for which all three variables have bound values will generate Triples
+        /// </remarks>
         public BaseTripleCollection ToTripleCollection(IGraph g)
         {
             return this.ToTripleCollection(g, "s", "p", "o");
         }
 
+        /// <summary>
+        /// Converts a Result Set into a Triple Collection
+        /// </summary>
+        /// <param name="g">Graph to generate the Nodes in</param>
+        /// <param name="subjVar">Variable whose value should be used for Subjects of Triples</param>
+        /// <param name="predVar">Variable whose value should be used for Predicates of Triples</param>
+        /// <param name="objVar">Variable whose value should be used for Object of Triples</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Only Results for which all three variables have bound values will generate Triples
+        /// </remarks>
         public BaseTripleCollection ToTripleCollection(IGraph g, String subjVar, String predVar, String objVar)
         {
             IndexedTripleCollection tripleCollection = new IndexedTripleCollection();
 
             foreach (SparqlResult r in this.Results)
             {
-                tripleCollection.Add(new Triple(r[subjVar].CopyNode(g), r[predVar].CopyNode(g), r[objVar].CopyNode(g)));
+                //Must have values available for all three variables
+                if (r.HasValue(subjVar) && r.HasValue(predVar) && r.HasValue(objVar))
+                {
+                    //None of the values is allowed to be unbound (i.e. null)
+                    if (r[subjVar] == null || r[predVar] == null || r[objVar] == null) continue;
+
+                    //If this is all OK we can generate a Triple
+                    tripleCollection.Add(new Triple(r[subjVar].CopyNode(g), r[predVar].CopyNode(g), r[objVar].CopyNode(g)));
+                }
             }
 
             return tripleCollection;

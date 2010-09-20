@@ -369,8 +369,7 @@ namespace VDS.RDF.Storage
                 request.ContentType = TalisChangeSetMIMEType;
 
                 //Write the RDF/XML to the Request Stream
-                RdfXmlTreeWriter writer = new RdfXmlTreeWriter();
-                writer.CompressionLevel = WriterCompressionLevel.More;
+                FastRdfXmlWriter writer = new FastRdfXmlWriter();
                 writer.Save(g, new StreamWriter(request.GetRequestStream()));
 
                 //Make the Request

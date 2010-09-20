@@ -105,6 +105,7 @@ namespace VDS.RDF
         /// Creates a new set of Triple Event Arguments for the given Triple
         /// </summary>
         /// <param name="t">Triple</param>
+        /// <param name="g">Graph the Triple Event occurred in</param>
         public TripleEventArgs(Triple t, IGraph g)
             : base()
         {
@@ -116,6 +117,7 @@ namespace VDS.RDF
         /// Creates a new set of Triple Event Arguments for the given Triple
         /// </summary>
         /// <param name="t">Triple</param>
+        /// <param name="g">Graph the Triple Event occurred in</param>
         /// <param name="asserted">Was the Triple Asserted (if not then it was Retracted)</param>
         public TripleEventArgs(Triple t, IGraph g, bool asserted)
             : this(t, g)
@@ -205,6 +207,7 @@ namespace VDS.RDF
         /// Creates a new set of Graph Event Arguments
         /// </summary>
         /// <param name="g">Graph</param>
+        /// <param name="args">Triple Event Arguments</param>
         public GraphEventArgs(IGraph g, TripleEventArgs args)
             : this(g)
         {
@@ -241,12 +244,24 @@ namespace VDS.RDF
     {
         private bool _cancel;
 
+        /// <summary>
+        /// Creates a new set of Cancellable Graph Event Arguments
+        /// </summary>
+        /// <param name="g">Graph</param>
         public CancellableGraphEventArgs(IGraph g)
             : base(g) { }
 
+        /// <summary>
+        /// Creates a new set of Cancellable Graph Event Arguments
+        /// </summary>
+        /// <param name="g">Graph</param>
+        /// <param name="args">Triple Event Arguments</param>
         public CancellableGraphEventArgs(IGraph g, TripleEventArgs args)
             : base(g, args) { }
 
+        /// <summary>
+        /// Gets/Sets whether the Event should be cancelled
+        /// </summary>
         public bool Cancel
         {
             get

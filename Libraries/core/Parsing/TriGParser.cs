@@ -728,6 +728,7 @@ namespace VDS.RDF.Parsing
         /// Attempts to resolve a QName or URI Token into a URI Node and produces appropriate error messages if this fails
         /// </summary>
         /// <param name="context">Parser Context</param>
+        /// <param name="g">Graph to create URI Nodes in</param>
         /// <param name="t">Token to resolve</param>
         /// <returns></returns>
         private INode TryResolveUri(TriGParserContext context, IGraph g, IToken t)

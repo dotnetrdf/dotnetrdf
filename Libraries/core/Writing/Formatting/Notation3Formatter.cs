@@ -40,20 +40,40 @@ using System.Text;
 
 namespace VDS.RDF.Writing.Formatting
 {
+    /// <summary>
+    /// Formatter for formatting as Notation 3 without any compression
+    /// </summary>
     public class UncompressedNotation3Formatter : UncompressedTurtleFormatter
     {
+        /// <summary>
+        /// Creates a new Uncompressed Notation 3 Formatter
+        /// </summary>
         public UncompressedNotation3Formatter()
             : base("Notation 3") { }
     }
 
+    /// <summary>
+    /// Formatter for formatting as Notation 3
+    /// </summary>
     public class Notation3Formatter : TurtleFormatter
     {
+        /// <summary>
+        /// Creates a new Notation 3 Formatter
+        /// </summary>
         public Notation3Formatter()
             : base("Notation 3", new QNameOutputMapper()) { }
 
+        /// <summary>
+        /// Creates a new Notation 3 Formatter using the given Graph
+        /// </summary>
+        /// <param name="g">Graph</param>
         public Notation3Formatter(IGraph g)
             : base("Notation 3", new QNameOutputMapper(g.NamespaceMap)) { }
 
+        /// <summary>
+        /// Creates a new Notation 3 Formatter using the given Namespace Map
+        /// </summary>
+        /// <param name="nsmap">Namespace Map</param>
         public Notation3Formatter(INamespaceMapper nsmap)
             : base("Notation 3", new QNameOutputMapper(nsmap)) { }
     }

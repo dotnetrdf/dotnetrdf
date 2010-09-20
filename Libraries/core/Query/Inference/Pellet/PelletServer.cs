@@ -113,7 +113,7 @@ namespace VDS.RDF.Query.Inference.Pellet
                 
                 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw new RdfReasoningException("Error while attempting to discover Knowledge Bases on a Pellet Server");
             }

@@ -54,7 +54,6 @@ namespace VDS.RDF.Web
     {
         private SparqlLoadMode _loadMode = SparqlLoadMode.OnDemand;
         private ISqlIOManager _manager = null;
-        private IInMemoryQueryableStore _uncachedStore = null;
 
         /// <summary>
         /// Creates a new Sparql Handler Configuration object which loads all the relevant settings from the AppSettings section of the in-scope config file
