@@ -57,7 +57,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\linqtordf\linqtordf.csproj">
+    <ProjectReference Include="..\..\..\Libraries\linq\dotNetRDF.Linq.csproj">
       <Project>{DCB04931-F2F1-45CA-B857-233D7B0AC615}</Project>
       <Name>linqtordf</Name>
     </ProjectReference>
