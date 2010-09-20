@@ -1065,6 +1065,10 @@ namespace VDS.RDF.Parsing.Tokens
                         //Sample Keyword
                         this._lasttokentype = Token.SAMPLE;
                         return new SampleKeywordToken(this.CurrentLine, this.StartPosition);
+                    case SparqlSpecsHelper.SparqlKeywordSeparator:
+                        //Separator Keyword
+                        this._lasttokentype = Token.SEPARATOR;
+                        return new SeparatorKeywordToken(this.CurrentLine, this.StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordService:
                         //Service Keyword
                         this._lasttokentype = Token.SERVICE;

@@ -9,7 +9,7 @@ rvesse@vdesign-studios.com
 Change Log
 ----------
 
-This represents a summary of additions, changes and removals for the 0.3.0 release of dotNetRDF
+This represents a summary of additions, changes and removals for the 0.3.1 release of dotNetRDF
 
 Added
 - New RdfXmlWriter which is a streaming writer based on FastRdfXmlWriter
@@ -31,6 +31,8 @@ Changed
  - More intelligent parsing of Blank Node IDs from SPARQL Results
  - TriG Writer outputs all required @prefix definitions and generates consistent QNames
  - URI Loader Cache handles File IO errors gracefully
+ - Rare forms of Numeric Literals now supported by Turtle, N3, TriG and SPARQL Parsers
+ - Potentially ambigious QNames and Plain Literals now no longer cause parsing errors in Turtle, N3, TriG and SPARQL Parsers
 - General Improvements
  - INamespaceMapper interface extracted and some visibility changes to NamespaceMapper methods
 

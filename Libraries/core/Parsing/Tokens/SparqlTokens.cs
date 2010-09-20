@@ -720,6 +720,19 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
+    /// Token which represents the Sparql SEPARATOR Keyword
+    /// </summary>
+    public class SeparatorKeywordToken : BaseToken
+    {
+        /// <summary>
+        /// Creates a new SEPARATOR Keyword Token
+        /// </summary>
+        /// <param name="line">Line the Keyword occurs on</param>
+        /// <param name="pos">Position the Keyword occurs at</param>
+        public SeparatorKeywordToken(int line, int pos) : base(Token.SEPARATOR, "SEPARATOR", line, line, pos, pos + 9) { }
+    }
+
+    /// <summary>
     /// Token which represents the Sparql SERVICE Keyword
     /// </summary>
     public class ServiceKeywordToken : BaseToken

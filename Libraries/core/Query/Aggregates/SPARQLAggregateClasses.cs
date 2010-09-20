@@ -513,6 +513,26 @@ namespace VDS.RDF.Query.Aggregates
             : base(expr, new NodeExpressionTerm(new LiteralNode(null, " "))) { }
 
         /// <summary>
+        /// Creates a new GROUP_CONCAT aggregate
+        /// </summary>
+        /// <param name="expr">Expression</param>
+        /// <param name="sepExpr">Separator Expression</param>
+        /// <param name="distinct">Should a distinct modifer be applied</param>
+        public GroupConcatAggregate(ISparqlExpression expr, ISparqlExpression sepExpr, bool distinct)
+            : base(expr, sepExpr)
+        {
+            this._distinct = distinct;
+        }
+
+        /// <summary>
+        /// Creates a new GROUP_CONCAT aggregate
+        /// </summary>
+        /// <param name="expr">Expression</param>
+        /// <pparam name="sepExpr">Separator Expression</pparam>
+        public GroupConcatAggregate(ISparqlExpression expr, ISparqlExpression sepExpr)
+            : base(expr, sepExpr) { }
+
+        /// <summary>
         /// Gets the String representation of the Aggregate
         /// </summary>
         /// <returns></returns>

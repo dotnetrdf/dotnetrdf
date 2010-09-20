@@ -777,10 +777,12 @@ namespace VDS.RDF.Parsing
             if (context.SyntaxMode == SparqlQuerySyntax.Sparql_1_0) throw Error("Aggregates are not supported in SPARQL 1.0", agg);
 
             bool distinct = false, all = false;
+            bool fullGroupConcat = false, sepGroupConcat = false;
             ISparqlAggregate aggregate;
-            ISparqlExpression aggExpr = null;
+            ISparqlExpression aggExpr = null, sepExpr = null;
             IToken next;
             String varname = String.Empty;
+            String concatSeparator = " ";
 
             //Check that the Token is an Aggregate Keyword Token
             switch (agg.TokenType)
@@ -848,6 +850,26 @@ namespace VDS.RDF.Parsing
                     {
                         openBrackets--;
                     }
+                    else if (next.TokenType == Token.COMMA)
+                    {
+                        //If we see a comma when we only have 1 bracket open and this is a GROUP_CONCAT then this is a GROUP_CONCAT
+                        //which concatenates multiple expressions
+                        if (openBrackets == 1 && agg.TokenType == Token.GROUPCONCAT)
+                        {
+                            fullGroupConcat = true;
+                            break;
+                        }
+                    }
+                    else if (next.TokenType == Token.SEMICOLON)
+                    {
+                        //If we see a semicolon when we only have 1 bracket open and this is a GROUP_CONCAT then this is a GROUP_CONCAT
+                        //which should have a separator
+                        if (openBrackets == 1 && agg.TokenType == Token.GROUPCONCAT)
+                        {
+                            sepGroupConcat = true;
+                            break;
+                        }
+                    }
 
                     if (openBrackets > 0)
                     {
@@ -857,6 +879,24 @@ namespace VDS.RDF.Parsing
                 } while (openBrackets > 0);
 
                 aggExpr = context.ExpressionParser.Parse(tokens);
+            }
+
+            //If we're dealing with a GROUP_CONCAT may have additional expressions to parse
+            if (fullGroupConcat)
+            {
+                //Need to parse additional expresions
+                throw new NotSupportedException("GROUP_CONCAT over multiple expressions is not yet supported");
+            }
+            else if (sepGroupConcat)
+            {
+                //Need to parse SEPARATOR
+                next = context.Tokens.Peek();
+                if (next.TokenType != Token.SEPARATOR)
+                {
+                    throw Error("Unexpected Token '" + next.GetType().ToString() + "', expected a SEPARATOR keyword as the argument for a GROUP_CONCAT aggregate", next);
+                }
+                context.Tokens.Dequeue();
+                sepExpr = this.TryParseExpression(context, false, false);
             }
 
             //See if there is an alias
@@ -935,7 +975,14 @@ namespace VDS.RDF.Parsing
                     }
                     break;
                 case Token.GROUPCONCAT:
-                    aggregate = new GroupConcatAggregate(aggExpr, distinct);
+                    if (sepExpr != null)
+                    {
+                        aggregate = new GroupConcatAggregate(aggExpr, sepExpr, distinct);
+                    }
+                    else
+                    {
+                        aggregate = new GroupConcatAggregate(aggExpr, distinct);
+                    }
                     break;
 
                 case Token.MAX:
