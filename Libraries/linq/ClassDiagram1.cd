@@ -1,0 +1,118 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="VDS.RDF.Linq.XsdtAttribute" Collapsed="true">
+    <Position X="5.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAABAAAAAAAA=</HashCode>
+      <FileName>Attributes.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VDS.RDF.Linq.XsdtTypeConverter" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="7" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAg0EgIoBEAAAQHgFIaAgAAAACAEAAQAAAAAAACAEAA=</HashCode>
+      <FileName>XsdtTypeConverter.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="VDS.RDF.Linq.NamespaceManager" Collapsed="true">
+    <Position X="8.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAIIgAEAAAIAAAACCACAJAUABAAAAAAFAAAAAAAAgAA=</HashCode>
+      <FileName>NamespaceManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VDS.RDF.Linq.ObjectDeserialiserQuerySink" Collapsed="true">
+    <Position X="10.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gBAAQAAAAAMACAAgAAAggBAAAIAQgAFAIAAAAAgCAQA=</HashCode>
+      <FileName>ObjectDeserialiser.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VDS.RDF.Linq.OwlClassSupertype" Collapsed="true">
+    <Position X="0.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAAAAAAAAAAAAAAAAAAQAAACAAGAAAAAAAAAAAQAAA=</HashCode>
+      <FileName>OwlClassSupertype.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VDS.RDF.Linq.OwlInstanceSupertype" Collapsed="true">
+    <Position X="0.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAABAAAAAAAAAAAAAAABiAAAAAAAAAAAAgAAAAA=</HashCode>
+      <FileName>OwlInstanceSupertype.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VDS.RDF.Linq.QueryFactory&lt;T&gt;" Collapsed="true">
+    <Position X="7" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAAAAAAAAAQAAEAIAAAAACAAIAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>QueryFactory.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VDS.RDF.Linq.QuerySupertype&lt;T&gt;" Collapsed="true">
+    <Position X="1.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAACAAcBAAIBAQAAAIAAgQABAAgAACAAAAIAEgAAAAI=</HashCode>
+      <FileName>QuerySupertype.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VDS.RDF.Linq.RdfDataContext" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="8.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AJIAAAAAIAAAACCAAAAIgAAAAIAAAAABAAAAAQAAAAA=</HashCode>
+      <FileName>RdfDataContext.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="VDS.RDF.Linq.LinqTripleStore" Collapsed="true">
+    <Position X="10.5" Y="1.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAQAAAAAAAAAAAAAAACAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>RdfDataContext.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="VDS.RDF.Linq.ITypeTranslator" Collapsed="true">
+    <Position X="10.5" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAgAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>XsdtTypeConverter.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="VDS.RDF.Linq.IQueryFormatTranslator" Collapsed="true">
+    <Position X="5.25" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAAAAAAAQAAAAAAAAAACAIAAAAAAAIAAAAAAAAA=</HashCode>
+      <FileName>IQueryFormatTranslator.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="VDS.RDF.Linq.IRdfContext" Collapsed="true">
+    <Position X="7" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAIAAAAACAAAAIAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>IRdfContext.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="VDS.RDF.Linq.IRdfQuery&lt;T&gt;" Collapsed="true">
+    <Position X="8.75" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>IRdfQuery.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="VDS.RDF.Linq.XsdtPrimitiveDataType" Collapsed="true">
+    <Position X="7" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAIBAQAAABgEA0AAAAABAZAhAAAAAAAgAAoAQEAAAAI=</HashCode>
+      <FileName>XsdtTypeConverter.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="VDS.RDF.Linq.LinqQueryType" Collapsed="true">
+    <Position X="5.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAAAAEAAAAAAAAAAAAAAAAEAABAAAAAAAAAgAA=</HashCode>
+      <FileName>Enums.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Tahoma" Size="8.25" />
+</ClassDiagram>
