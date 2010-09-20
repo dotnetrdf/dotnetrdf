@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ArrayOfOntologyClass xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <OntologyClass>
+    <Uri>http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing</Uri>
+    <Name>SpatialThing</Name>
+    <Properties />
+  </OntologyClass>
+  <OntologyClass>
+    <Uri>http://www.w3.org/2003/01/geo/wgs84_pos#Point</Uri>
+    <Name>Point</Name>
+    <Properties />
+  </OntologyClass>
+</ArrayOfOntologyClass>

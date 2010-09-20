@@ -1,0 +1,21 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="UnitTests.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="tasksOntologyName" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">tasks.n3</Value>
+    </Setting>
+    <Setting Name="tasksDataName" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">task-data.n3</Value>
+    </Setting>
+    <Setting Name="testStoreLocation" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">../../store3.n3</Value>
+    </Setting>
+    <Setting Name="taskStorePath" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">../../../standard-test-data/</Value>
+    </Setting>
+    <Setting Name="testSparqlEndpoint" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">http://localhost/linqtordf/sparql</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

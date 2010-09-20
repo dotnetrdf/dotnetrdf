@@ -1,0 +1,80 @@
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix daml: <http://www.daml.org/2001/03/daml+oil#> .
+@prefix log: <http://www.w3.org/2000/10/swap/log#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix xsdt: <http://www.w3.org/2001/XMLSchema#>.
+@prefix dc: <http://purl.org/dc/elements/1.1/>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#> .
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+
+@prefix : <http://aabs.purl.org/ontologies/2007/11/tasks#> .
+
+# NamedThing
+:NamedThing a owl:Class.
+:name rdfs:domain :NamedThing; rdfs:range xsdt:string.
+
+# Project
+:Project a owl:Class; rdfs:subClassOf :NamedThing.
+:usesResource rdfs:domain :Project; rdfs:range :Resource.
+
+#Task
+:Task a owl:Class; rdfs:subClassOf :NamedThing.
+:inProject rdfs:domain :Task; rdfs:range :Project.
+:hasTask daml:inverseOf :inProject.
+:requiresResource rdfs:domain :Task; rdfs:range :Resource.
+:description rdfs:domain :Task; rdfs:range xsdt:string.
+:duration rdfs:domain :Task; rdfs:range xsdt:duration.
+:startDate rdfs:domain :Task; rdfs:range xsdt:date.
+:endDate rdfs:domain :Task; rdfs:range xsdt:date.
+:dueDate = :endDate.
+:predecessor a daml:TransitiveProperty, owl:ObjectProperty; rdfs:domain :Task; rdfs:range :Task.
+:successor daml:inverseOf :predecessor.
+:isConcurrentWith a owl:SymmetricProperty; rdfs:domain :Task; rdfs:range :Task.
+
+#Resource
+:Resource a owl:Class; rdfs:subClassOf :NamedThing.
+:email rdfs:domain :Resource; rdfs:range xsdt:string.
+
+
+# Rules
+
+## if a task requires a resource then so does its project
+{
+	?P a :Project.
+	?T a :Task.
+	?R a :Resource.
+	?P :hasTask ?T.
+	?T :requiresResource ?R.
+} => {
+	?P :usesResource ?R.
+}.
+
+## a successor must happen after its predecessor
+{
+	?T1 :successor ?T2.
+	?T1!:dueDate math:greaterThan ?T2!:dueDate.
+} a log:falsehood.
+
+## A task's end date is its start date plus its duration
+{
+	(?T1!:startDate ?T1!:duration) math:sum ?e.
+} => {
+	?T1 :endDate ?e .
+}.
+
+## two tasks can be concurrent
+{
+	?T1!:startDate math:lessThan ?T2!:startDate .
+	?T2!:startDate math:notGreaterThan ?T1!:endDate .
+} => {
+	?T1 :isConcurrentWith ?T2.
+}.
+
+## can't have successor/predecessor from a different project
+{
+	?T1 :successor ?T2.
+	?T1 :inProject ?P1.
+	?T2 :inProject ?P2.
+	?P1 log:notEqualTo ?P2.
+} a log:falsehood .

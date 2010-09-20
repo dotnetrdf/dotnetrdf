@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ArrayOfOntologyClass xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <OntologyClass>
+    <Uri>http://www.w3.org/2006/time#Interval</Uri>
+    <Name>Interval</Name>
+    <Properties>
+      <OntologyProperty>
+        <Uri>http://www.w3.org/2006/time#intervalDuring</Uri>
+        <IsObjectProp>true</IsObjectProp>
+        <Name>intervalDuring</Name>
+        <RangeUri>http://www.w3.org/2006/time#Interval</RangeUri>
+        <Range>Interval</Range>
+      </OntologyProperty>
+      <OntologyProperty>
+        <Uri>http://www.w3.org/2006/time#intervalMeets</Uri>
+        <IsObjectProp>true</IsObjectProp>
+        <Name>intervalMeets</Name>
+        <RangeUri>http://www.w3.org/2006/time#Interval</RangeUri>
+        <Range>Interval</Range>
+      </OntologyProperty>
+      <OntologyProperty>
+        <Uri>http://www.w3.org/2006/time#intervalBefore</Uri>
+        <IsObjectProp>true</IsObjectProp>
+        <Name>intervalBefore</Name>
+        <RangeUri>http://www.w3.org/2006/time#Interval</RangeUri>
+        <Range>Interval</Range>
+      </OntologyProperty>
+    </Properties>
+  </OntologyClass>
+  <OntologyClass>
+    <Uri>http://www.w3.org/2006/time#Instant</Uri>
+    <Name>Instant</Name>
+    <Properties />
+  </OntologyClass>
+</ArrayOfOntologyClass>
