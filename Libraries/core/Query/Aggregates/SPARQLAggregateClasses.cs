@@ -494,6 +494,8 @@ namespace VDS.RDF.Query.Aggregates
     /// </summary>
     public class GroupConcatAggregate : XPathStringJoinFunction
     {
+        private bool _customSeparator = false;
+
         /// <summary>
         /// Creates a new GROUP_CONCAT aggregate
         /// </summary>
@@ -522,6 +524,7 @@ namespace VDS.RDF.Query.Aggregates
             : base(expr, sepExpr)
         {
             this._distinct = distinct;
+            this._customSeparator = true;
         }
 
         /// <summary>
@@ -530,7 +533,10 @@ namespace VDS.RDF.Query.Aggregates
         /// <param name="expr">Expression</param>
         /// <pparam name="sepExpr">Separator Expression</pparam>
         public GroupConcatAggregate(ISparqlExpression expr, ISparqlExpression sepExpr)
-            : base(expr, sepExpr) { }
+            : base(expr, sepExpr) 
+        {
+            this._customSeparator = true;
+        }
 
         /// <summary>
         /// Gets the String representation of the Aggregate
@@ -538,14 +544,17 @@ namespace VDS.RDF.Query.Aggregates
         /// <returns></returns>
         public override string ToString()
         {
-            if (this._distinct)
+            StringBuilder output = new StringBuilder();
+            output.Append("GROUP_CONCAT(");
+            if (this._distinct) output.Append("DISTINCT ");
+            output.Append(this._expr.ToString());
+            if (this._customSeparator)
             {
-                return "GROUP_CONCAT(DISTINCT " + this._expr.ToString() + ")";
+                output.Append(" ; SEPARATOR ");
+                output.Append(this._sep.ToString());
             }
-            else
-            {
-                return "GROUP_CONCAT(" + this._expr.ToString() + ")";
-            }
+            output.Append(")");
+            return output.ToString();
         }
     }
 

@@ -928,8 +928,9 @@ namespace VDS.RDF.Query
             if (this._syntax == SparqlQuerySyntax.Sparql_1_0) throw new RdfParseException("Aggregates are not permitted in SPARQL 1.0");
 
             IToken agg = tokens.Dequeue();
-            ISparqlExpression aggExpr = null;
+            ISparqlExpression aggExpr = null, sepExpr = null;
             bool distinct = false, all = false;
+            bool sepGroupConcat = false, fullGroupConcat = false;
 
             //Expect a Left Bracket next
             IToken next = tokens.Dequeue();
@@ -976,6 +977,26 @@ namespace VDS.RDF.Query
                     {
                         openBrackets--;
                     }
+                    else if (next.TokenType == Token.COMMA)
+                    {
+                        //If we see a comma when we only have 1 bracket open and this is a GROUP_CONCAT then this is a GROUP_CONCAT
+                        //which concatenates multiple expressions
+                        if (openBrackets == 1 && agg.TokenType == Token.GROUPCONCAT)
+                        {
+                            fullGroupConcat = true;
+                            break;
+                        }
+                    }
+                    else if (next.TokenType == Token.SEMICOLON)
+                    {
+                        //If we see a semicolon when we only have 1 bracket open and this is a GROUP_CONCAT then this is a GROUP_CONCAT
+                        //which should have a separator
+                        if (openBrackets == 1 && agg.TokenType == Token.GROUPCONCAT)
+                        {
+                            sepGroupConcat = true;
+                            break;
+                        }
+                    }
 
                     if (openBrackets > 0)
                     {
@@ -985,6 +1006,45 @@ namespace VDS.RDF.Query
                 } while (openBrackets > 0);
 
                 aggExpr = this.Parse(subtokens);
+            }
+
+            //If we're dealing with a GROUP_CONCAT may have additional expressions to parse
+            if (fullGroupConcat)
+            {
+                //Need to parse additional expresions
+                throw new NotSupportedException("GROUP_CONCAT over multiple expressions is not yet supported");
+            }
+            else if (sepGroupConcat)
+            {
+                //Need to parse SEPARATOR
+                next = tokens.Peek();
+                if (next.TokenType != Token.SEPARATOR)
+                {
+                    throw Error("Unexpected Token '" + next.GetType().ToString() + "', expected a SEPARATOR keyword as the argument for a GROUP_CONCAT aggregate", next);
+                }
+                tokens.Dequeue();
+
+                //Get the subtokens for the Separator Expression
+                Queue<IToken> subtokens = new Queue<IToken>();
+                int openBrackets = 1;
+                next = tokens.Dequeue();
+                do
+                {
+                    if (next.TokenType == Token.LEFTBRACKET)
+                    {
+                        openBrackets++;
+                    }
+                    else if (next.TokenType == Token.RIGHTBRACKET)
+                    {
+                        openBrackets--;
+                    }
+                    if (openBrackets > 0)
+                    {
+                        subtokens.Enqueue(next);
+                        next = tokens.Dequeue();
+                    }
+                } while (openBrackets > 0);
+                sepExpr = this.Parse(subtokens);
             }
 
             //Now we need to generate the actual expression
@@ -1037,7 +1097,14 @@ namespace VDS.RDF.Query
                         }
                     }
                 case Token.GROUPCONCAT:
-                    return new NonNumericAggregateExpressionTerm(new GroupConcatAggregate(aggExpr, distinct));
+                    if (sepGroupConcat)
+                    {
+                        return new NonNumericAggregateExpressionTerm(new GroupConcatAggregate(aggExpr, sepExpr, distinct));
+                    }
+                    else
+                    {
+                        return new NonNumericAggregateExpressionTerm(new GroupConcatAggregate(aggExpr, distinct));
+                    }
 
                 case Token.MAX:
                     //MAX Aggregate

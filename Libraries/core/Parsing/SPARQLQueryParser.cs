@@ -776,13 +776,9 @@ namespace VDS.RDF.Parsing
         {
             if (context.SyntaxMode == SparqlQuerySyntax.Sparql_1_0) throw Error("Aggregates are not supported in SPARQL 1.0", agg);
 
-            bool distinct = false, all = false;
-            bool fullGroupConcat = false, sepGroupConcat = false;
-            ISparqlAggregate aggregate;
-            ISparqlExpression aggExpr = null, sepExpr = null;
             IToken next;
-            String varname = String.Empty;
-            String concatSeparator = " ";
+            SparqlVariable var;
+            ISparqlAggregate aggregate;
 
             //Check that the Token is an Aggregate Keyword Token
             switch (agg.TokenType)
@@ -805,98 +801,40 @@ namespace VDS.RDF.Parsing
                     throw Error("Cannot parse an Aggregate since '" + agg.GetType().ToString() + "' is not an Aggregate Keyword Token", agg);
             }
 
-            //Expect a Left Bracket next
-            next = context.Tokens.Dequeue();
-            if (next.TokenType != Token.LEFTBRACKET)
+            //Gather up the Tokens and call into the Expression Parser to get this parsed
+            Queue<IToken> tokens = new Queue<IToken>();
+            tokens.Enqueue(agg);
+            int openBrackets = 0;
+            do
             {
-                throw Error("Unexpected Token '" + next.GetType().ToString() + "', expected a Left Bracket after an Aggregate Keyword", next);
-            }
-
-            //Then a possible DISTINCT/ALL
-            next = context.Tokens.Dequeue();
-            if (next.TokenType == Token.DISTINCT)
-            {
-                distinct = true;
                 next = context.Tokens.Dequeue();
-            }
-            if (next.TokenType == Token.ALL || next.TokenType == Token.MULTIPLY)
-            {
-                all = true;
-                next = context.Tokens.Dequeue();
-            }
-
-            //If we've seen an ALL then we need the closing bracket
-            if (all && next.TokenType != Token.RIGHTBRACKET)
-            {
-                throw Error("Unexpected Token '" + next.GetType().ToString() + "', expected a Right Bracket after the * specifier in an aggregate to terminate the aggregate", next);
-            }
-            else if (all && agg.TokenType != Token.COUNT)
-            {
-                throw new RdfQueryException("Cannot use the * specifier in aggregates other than COUNT");
-            }
-            else if (!all)
-            {
-                //If it's not an all then we expect an expression
-                //Gather the Tokens and parse the Expression
-                Queue<IToken> tokens = new Queue<IToken>();
-                int openBrackets = 1;
-                do
+                if (next.TokenType == Token.LEFTBRACKET)
                 {
-                    if (next.TokenType == Token.LEFTBRACKET)
-                    {
-                        openBrackets++;
-                    }
-                    else if (next.TokenType == Token.RIGHTBRACKET)
-                    {
-                        openBrackets--;
-                    }
-                    else if (next.TokenType == Token.COMMA)
-                    {
-                        //If we see a comma when we only have 1 bracket open and this is a GROUP_CONCAT then this is a GROUP_CONCAT
-                        //which concatenates multiple expressions
-                        if (openBrackets == 1 && agg.TokenType == Token.GROUPCONCAT)
-                        {
-                            fullGroupConcat = true;
-                            break;
-                        }
-                    }
-                    else if (next.TokenType == Token.SEMICOLON)
-                    {
-                        //If we see a semicolon when we only have 1 bracket open and this is a GROUP_CONCAT then this is a GROUP_CONCAT
-                        //which should have a separator
-                        if (openBrackets == 1 && agg.TokenType == Token.GROUPCONCAT)
-                        {
-                            sepGroupConcat = true;
-                            break;
-                        }
-                    }
-
-                    if (openBrackets > 0)
-                    {
-                        tokens.Enqueue(next);
-                        next = context.Tokens.Dequeue();
-                    }
-                } while (openBrackets > 0);
-
-                aggExpr = context.ExpressionParser.Parse(tokens);
-            }
-
-            //If we're dealing with a GROUP_CONCAT may have additional expressions to parse
-            if (fullGroupConcat)
-            {
-                //Need to parse additional expresions
-                throw new NotSupportedException("GROUP_CONCAT over multiple expressions is not yet supported");
-            }
-            else if (sepGroupConcat)
-            {
-                //Need to parse SEPARATOR
-                next = context.Tokens.Peek();
-                if (next.TokenType != Token.SEPARATOR)
-                {
-                    throw Error("Unexpected Token '" + next.GetType().ToString() + "', expected a SEPARATOR keyword as the argument for a GROUP_CONCAT aggregate", next);
+                    openBrackets++;
                 }
-                context.Tokens.Dequeue();
-                sepExpr = this.TryParseExpression(context, false, false);
+                else if (next.TokenType == Token.RIGHTBRACKET)
+                {
+                    openBrackets--;
+                }
+
+                tokens.Enqueue(next);
+            } while (openBrackets > 0);
+
+            context.ExpressionParser.AllowAggregates = true;
+            ISparqlExpression aggExpr = context.ExpressionParser.Parse(tokens);
+            context.ExpressionParser.AllowAggregates = false;
+
+            if (aggExpr is AggregateExpressionTerm)
+            {
+                aggregate = ((AggregateExpressionTerm)aggExpr).Aggregate;
+            }
+            else if (aggExpr is NonNumericAggregateExpressionTerm)
+            {
+                aggregate = ((NonNumericAggregateExpressionTerm)aggExpr).Aggregate;
+            }
+            else
+            {
+                throw new RdfParseException("Unexpected expression was parsed when an Aggregate was expected: " + aggExpr.ToString());
             }
 
             //See if there is an alias
@@ -922,166 +860,7 @@ namespace VDS.RDF.Parsing
                 }
             }
 
-            //Now create a Sparql Variable from this
-            SparqlVariable var;
-            switch (agg.TokenType)
-            {
-                case Token.AVG:
-                    //AVG Aggregate
-                    if (aggExpr is VariableExpressionTerm)
-                    {
-                        aggregate = new AverageAggregate((VariableExpressionTerm)aggExpr, distinct);
-                    }
-                    else
-                    {
-                        aggregate = new AverageAggregate(aggExpr);
-                    }
-                    break;
 
-                case Token.COUNT:
-                    //COUNT Aggregate
-                    if (all)
-                    {
-                        if (distinct)
-                        {
-                            aggregate = new CountAllDistinctAggregate();
-                        }
-                        else
-                        {
-                            aggregate = new CountAllAggregate();
-                        }
-                    }
-                    else if (aggExpr is VariableExpressionTerm)
-                    {
-                        if (distinct)
-                        {
-                            aggregate = new CountDistinctAggregate((VariableExpressionTerm)aggExpr);
-                        }
-                        else
-                        {
-                            aggregate = new CountAggregate((VariableExpressionTerm)aggExpr);
-                        }
-                    }
-                    else
-                    {
-                        if (distinct)
-                        {
-                            aggregate = new CountDistinctAggregate(aggExpr);
-                        }
-                        else
-                        {
-                            aggregate = new CountAggregate(aggExpr);
-                        }
-                    }
-                    break;
-                case Token.GROUPCONCAT:
-                    if (sepExpr != null)
-                    {
-                        aggregate = new GroupConcatAggregate(aggExpr, sepExpr, distinct);
-                    }
-                    else
-                    {
-                        aggregate = new GroupConcatAggregate(aggExpr, distinct);
-                    }
-                    break;
-
-                case Token.MAX:
-                    //MAX Aggregate
-                    if (aggExpr is VariableExpressionTerm)
-                    {
-                        aggregate = new MaxAggregate((VariableExpressionTerm)aggExpr, distinct);
-                    }
-                    else
-                    {
-                        aggregate = new MaxAggregate(aggExpr, distinct);
-                    }
-                    break;
-
-                case Token.MEDIAN:
-                    //MEDIAN Aggregate
-                    if (context.SyntaxMode != SparqlQuerySyntax.Extended) throw new RdfParseException("The MEDIAN aggregate is only supported when the Syntax is set to Extended.");
-                    if (aggExpr is VariableExpressionTerm)
-                    {
-                        aggregate = new MedianAggregate((VariableExpressionTerm)aggExpr, distinct);
-                    }
-                    else
-                    {
-                        aggregate = new MedianAggregate(aggExpr, distinct);
-                    }
-                    break;
-
-                case Token.MIN:
-                    //MIN Aggregate
-                    if (aggExpr is VariableExpressionTerm)
-                    {
-                        aggregate = new MinAggregate((VariableExpressionTerm)aggExpr, distinct);
-                    }
-                    else
-                    {
-                        aggregate = new MinAggregate(aggExpr, distinct);
-                    }
-                    break;
-
-                case Token.MODE:
-                    //MODE Aggregate
-                    if (context.SyntaxMode != SparqlQuerySyntax.Extended) throw new RdfParseException("The MODE aggregate is only supported when the Syntax is set to Extended.");
-                    if (aggExpr is VariableExpressionTerm)
-                    {
-                        aggregate = new ModeAggregate((VariableExpressionTerm)aggExpr, distinct);
-                    }
-                    else
-                    {
-                        aggregate = new ModeAggregate(aggExpr, distinct);
-                    }
-                    break;
-
-                case Token.NMAX:
-                    //NMAX Aggregate
-                    if (context.SyntaxMode != SparqlQuerySyntax.Extended) throw new RdfParseException("The NMAX (Numeric Maximum) aggregate is only supported when the Syntax is set to Extended.  To achieve an equivalent result in SPARQL 1.0/1.1 apply a FILTER to your query so the aggregated variable is only literals of the desired numeric type");
-                    if (aggExpr is VariableExpressionTerm)
-                    {
-                        aggregate = new NumericMaxAggregate((VariableExpressionTerm)aggExpr, distinct);
-                    }
-                    else
-                    {
-                        aggregate = new NumericMaxAggregate(aggExpr, distinct);
-                    }
-                    break;
-
-                case Token.NMIN:
-                    //NMIN Aggregate
-                    if (context.SyntaxMode != SparqlQuerySyntax.Extended) throw new RdfParseException("The NMIN (Numeric Minimum) aggregate is only supported when the Syntax is set to Extended.  To achieve an equivalent result in SPARQL 1.0/1.1 apply a FILTER to your query so the aggregated variable is only literals of the desired numeric type");
-                    if (aggExpr is VariableExpressionTerm)
-                    {
-                        aggregate = new NumericMinAggregate((VariableExpressionTerm)aggExpr, distinct);
-                    }
-                    else
-                    {
-                        aggregate = new NumericMinAggregate(aggExpr, distinct);
-                    }
-                    break;
-                    
-                case Token.SAMPLE:
-                    //SAMPLE Aggregate
-                    aggregate = new SampleAggregate(aggExpr);
-                    break;
-
-                case Token.SUM:
-                    //SUM Aggregate
-                    if (aggExpr is VariableExpressionTerm)
-                    {
-                        aggregate = new SumAggregate((VariableExpressionTerm)aggExpr, distinct);
-                    }
-                    else
-                    {
-                        aggregate = new SumAggregate(aggExpr, distinct);
-                    }
-                    break;
-
-                default:
-                    //Should have already handled this but have to have it to keep the compiler happy
-                    throw Error("Cannot parse an Aggregate since '" + agg.GetType().ToString() + "' is not an Aggregate Keyword Token", agg);
-            }
             var = new SparqlVariable(alias, aggregate);
 
             return var;

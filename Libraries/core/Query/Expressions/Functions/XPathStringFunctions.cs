@@ -1602,7 +1602,7 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// </summary>
     public class XPathStringJoinFunction : BaseAggregate
     {
-        private ISparqlExpression _sep;
+        protected ISparqlExpression _sep;
 
         /// <summary>
         /// Creates a new XPath String Join aggregate which uses no separator
