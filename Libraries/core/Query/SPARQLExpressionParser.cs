@@ -1011,16 +1011,84 @@ namespace VDS.RDF.Query
             //If we're dealing with a GROUP_CONCAT may have additional expressions to parse
             if (fullGroupConcat)
             {
-                //Need to parse additional expresions
-                throw new NotSupportedException("GROUP_CONCAT over multiple expressions is not yet supported");
+                //Find each additional expression
+                int openBrackets = 1;
+                List<ISparqlExpression> expressions = new List<ISparqlExpression>();
+                expressions.Add(aggExpr);
+
+                while (openBrackets > 0)
+                {
+                    Queue<IToken> subtokens = new Queue<IToken>();
+                    next = tokens.Dequeue();
+                    do
+                    {
+                        if (next.TokenType == Token.LEFTBRACKET)
+                        {
+                            openBrackets++;
+                        }
+                        else if (next.TokenType == Token.RIGHTBRACKET)
+                        {
+                            openBrackets--;
+                        }
+                        else if (next.TokenType == Token.COMMA)
+                        {
+                            //If we see a comma when we only have 1 bracket open and this is a GROUP_CONCAT then this is a GROUP_CONCAT
+                            //which concatenates multiple expressions
+                            if (openBrackets == 1 && agg.TokenType == Token.GROUPCONCAT)
+                            {
+                                break;
+                            }
+                        }
+                        else if (next.TokenType == Token.SEMICOLON)
+                        {
+                            //If we see a semicolon when we only have 1 bracket open and this is a GROUP_CONCAT then this is a GROUP_CONCAT
+                            //which should have a separator
+                            if (openBrackets == 1 && agg.TokenType == Token.GROUPCONCAT)
+                            {
+                                sepGroupConcat = true;
+                                break;
+                            }
+                        }
+
+                        if (openBrackets > 0)
+                        {
+                            subtokens.Enqueue(next);
+                            next = tokens.Dequeue();
+                        }
+                    } while (openBrackets > 0);
+
+                    //Parse this expression and add to the list of expressions we're concatenating
+                    expressions.Add(this.Parse(subtokens));
+
+                    //Once we've hit the ; for the scalar arguments then we can stop looking for expressions
+                    if (sepGroupConcat) break;
+
+                    //If we've hit a , then openBrackets will still be one and we'll go around again looking for another expression
+                    //Otherwise we've reached the end of the GROUP_CONCAT and there was no ; for scalar arguments
+                }
+                // throw new NotSupportedException("GROUP_CONCAT over multiple expressions is not yet supported");
+
+                //Represent the Expression we're concantenating as an XPath concat() function
+                aggExpr = new XPathConcatFunction(expressions);
             }
-            else if (sepGroupConcat)
+
+            //Not that this is not an else, if we're doing a fullGroupConcat and we hit an ; then we stop as we expect a SEPARATOR
+            //so we'll set sepGroupConcat to true causing us to drop in here and parse the separator
+            if (sepGroupConcat)
             {
                 //Need to parse SEPARATOR
                 next = tokens.Peek();
                 if (next.TokenType != Token.SEPARATOR)
                 {
-                    throw Error("Unexpected Token '" + next.GetType().ToString() + "', expected a SEPARATOR keyword as the argument for a GROUP_CONCAT aggregate", next);
+                    throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a SEPARATOR keyword as the argument for a GROUP_CONCAT aggregate", next);
+                }
+                tokens.Dequeue();
+
+                //Then need an equals sign
+                next = tokens.Peek();
+                if (next.TokenType != Token.EQUALS)
+                {
+                    throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a = after a SEPARATOR keyword in a GROUP_CONCAT aggregate", next);
                 }
                 tokens.Dequeue();
 

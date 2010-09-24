@@ -547,10 +547,25 @@ namespace VDS.RDF.Query.Aggregates
             StringBuilder output = new StringBuilder();
             output.Append("GROUP_CONCAT(");
             if (this._distinct) output.Append("DISTINCT ");
-            output.Append(this._expr.ToString());
+            if (this._expr is XPathConcatFunction)
+            {
+                XPathConcatFunction concatFunc = (XPathConcatFunction)this._expr;
+                for (int i = 0; i < concatFunc.Arguments.Count(); i++)
+                {
+                    output.Append(concatFunc.Arguments.Skip(i).First().ToString());
+                    if (i < concatFunc.Arguments.Count() - 1)
+                    {
+                        output.Append(", ");
+                    }
+                }
+            }
+            else
+            {
+                output.Append(this._expr.ToString());
+            }
             if (this._customSeparator)
             {
-                output.Append(" ; SEPARATOR ");
+                output.Append(" ; SEPARATOR = ");
                 output.Append(this._sep.ToString());
             }
             output.Append(")");

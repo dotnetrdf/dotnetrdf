@@ -1564,6 +1564,17 @@ namespace VDS.RDF.Query.Expressions.Functions
         }
 
         /// <summary>
+        /// Gets the Arguments the function applies to
+        /// </summary>
+        public IEnumerable<ISparqlExpression> Arguments
+        {
+            get 
+            {
+                return this._exprs;
+            }
+        }
+
+        /// <summary>
         /// Gets the Variables used in the function
         /// </summary>
         public IEnumerable<string> Variables
@@ -1590,7 +1601,7 @@ namespace VDS.RDF.Query.Expressions.Functions
             for (int i = 0; i < this._exprs.Count; i++)
             {
                 output.Append(this._exprs[i].ToString());
-                if (i < this._exprs.Count - 1) output.Append(',');
+                if (i < this._exprs.Count - 1) output.Append(", ");
             }
             output.Append(")");
             return output.ToString();
