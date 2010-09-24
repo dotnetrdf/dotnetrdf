@@ -945,8 +945,8 @@ namespace VDS.RDF.Query.Patterns
                     }
                     else if (gp.IsMinus)
                     {
-                        //REQ: Can we optimise here by not introducing a MINUS if the pattern is disjoint with this pattern?
-                        //Will need some way for Algebra operators to return which variables they contain
+                        //Always introduce a Minus here even if the Minus is disjoint since during evaluation we'll choose
+                        //not to execute it if it's disjoint
                         complex = new Minus(complex, gp.ToAlgebra());
                     }
                     else if (gp.IsService)

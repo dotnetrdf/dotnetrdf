@@ -91,8 +91,12 @@ namespace VDS.RDF.Writing
         {
             try
             {
-                XmlDocument doc = this.GenerateOutput(results);
-                this._transform.Transform(doc, null, XmlWriter.Create(output));
+                //XmlDocument doc = this.GenerateOutput(results);
+                StringBuilder temp = new StringBuilder();
+                System.IO.StringWriter writer = new System.IO.StringWriter(temp);
+                base.Save(results, writer);
+                //this._transform.Transform(doc, null, XmlWriter.Create(output));
+                this._transform.Transform(XmlReader.Create(new StringReader(temp.ToString())), null, XmlWriter.Create(output));
 
                 output.Close();
             }

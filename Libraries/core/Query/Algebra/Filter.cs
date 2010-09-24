@@ -94,6 +94,17 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
+        /// Gets the Variables used in the Algebra
+        /// </summary>
+        public IEnumerable<String> Variables
+        {
+            get
+            {
+                return (this._pattern.Variables.Concat(this._filter.Variables)).Distinct();
+            }
+        }
+
+        /// <summary>
         /// Gets the String representation of the FILTER
         /// </summary>
         /// <returns></returns>

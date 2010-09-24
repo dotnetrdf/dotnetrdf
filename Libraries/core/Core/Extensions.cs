@@ -51,7 +51,9 @@ namespace VDS.RDF
     public static class Extensions
     {
         private static SHA256Managed _sha256;
-        
+
+        #region Enumerable Extensions
+
         /// <summary>
         /// Takes a single item and generates an IEnumerable containing only it
         /// </summary>
@@ -65,6 +67,20 @@ namespace VDS.RDF
         {
             yield return item;
         }
+
+        /// <summary>
+        /// Determines whether the contents of two enumerables are disjoint
+        /// </summary>
+        /// <typeparam name="T">Type Parameter</typeparam>
+        /// <param name="x">An Enumerable</param>
+        /// <param name="y">Another Enumerable</param>
+        /// <returns></returns>
+        public static bool IsDisjoint<T>(this IEnumerable<T> x, IEnumerable<T> y)
+        {
+            return x.All(item => !y.Contains(item));
+        }
+
+        #endregion
 
         #region Triple Selection Extensions
 
@@ -121,6 +137,8 @@ namespace VDS.RDF
 
         #endregion
 
+        #region Hash Code Extensions
+
         /// <summary>
         /// Gets an Enhanced Hash Code for a Uri
         /// </summary>
@@ -156,6 +174,8 @@ namespace VDS.RDF
 
             return hash.ToString();
         }
+
+        #endregion
 
         #region Triple Assertion and Retraction Extensions
 
@@ -310,6 +330,8 @@ namespace VDS.RDF
 
         #endregion
 
+        #region ToString() Extensions
+
         /// <summary>
         /// Gets either the String representation of the Object or the Empty String if the object is null
         /// </summary>
@@ -330,10 +352,12 @@ namespace VDS.RDF
         {
             return formatter.FormatUri(u);
         }
+
+        #endregion
     }
 
     /// <summary>
-    /// Provides extension methods for converting primitive types in appropriately typed Literals
+    /// Provides extension methods for converting primitive types into appropriately typed Literal Nodes
     /// </summary>
     public static class LiteralExtensions
     {

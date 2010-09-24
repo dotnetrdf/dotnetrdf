@@ -52,5 +52,12 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         BaseMultiset Evaluate(SparqlEvaluationContext context);
 
+        /// <summary>
+        /// Gets the enumeration of Variables used in the Algebra
+        /// </summary>
+        IEnumerable<String> Variables
+        {
+            get;
+        }
     }
 }

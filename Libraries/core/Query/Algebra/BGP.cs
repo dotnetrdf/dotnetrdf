@@ -186,6 +186,19 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
+        /// Gets the Variables used in the Algebra
+        /// </summary>
+        public IEnumerable<String> Variables
+        {
+            get
+            {
+                return (from tp in this._triplePatterns
+                        from v in tp.Variables
+                        select v).Distinct();
+            }
+        }
+
+        /// <summary>
         /// Gets whether the BGP is the emtpy BGP
         /// </summary>
         public bool IsEmpty

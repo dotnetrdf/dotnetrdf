@@ -109,6 +109,25 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
+        /// Gets the Variables used in the Algebra
+        /// </summary>
+        public IEnumerable<String> Variables
+        {
+            get
+            {
+                if (this._endpointSpecifier.TokenType == Token.VARIABLE)
+                {
+                    String serviceVar = ((VariableToken)this._endpointSpecifier).Value.Substring(1);
+                    return this._pattern.Variables.Concat(serviceVar.AsEnumerable()).Distinct();
+                }
+                else
+                {
+                    return this._pattern.Variables.Distinct();
+                }
+            }
+        }
+
+        /// <summary>
         /// Gets the String representation of the Algebra
         /// </summary>
         /// <returns></returns>

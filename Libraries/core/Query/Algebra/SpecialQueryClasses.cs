@@ -68,6 +68,17 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
+        /// Gets the Variables used in the Algebra
+        /// </summary>
+        public IEnumerable<String> Variables
+        {
+            get
+            {
+                return Enumerable.Empty<String>();
+            }
+        }
+
+        /// <summary>
         /// Gets the String representation of the Algebra
         /// </summary>
         /// <returns></returns>

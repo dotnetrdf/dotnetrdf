@@ -33,6 +33,10 @@ terms.
 
 */
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
 namespace VDS.RDF.Query.Algebra
 {
     /// <summary>
@@ -72,10 +76,14 @@ namespace VDS.RDF.Query.Algebra
             {
                 context.OutputMultiset = new NullMultiset();
             }
+            else if (this._lhs.Variables.IsDisjoint(this._rhs.Variables))
+            {
+                //If the RHS is disjoint then there is no need to evaluate the RHS
+                context.OutputMultiset = lhsResult;
+            }
             else
             {
-                //For optimisation purposes we assume here that the RHS is not disjoint
-                //We rely on the conversion to Algebra to eliminate defunct minuses
+                //If we get here then the RHS is not disjoint so it does affect the ouput
 
                 //Only execute the RHS if the LHS had results
                 context.InputMultiset = lhsResult;
@@ -88,6 +96,17 @@ namespace VDS.RDF.Query.Algebra
 
             context.InputMultiset = context.OutputMultiset;
             return context.OutputMultiset;
+        }
+
+        /// <summary>
+        /// Gets the Variables used in the Algebra
+        /// </summary>
+        public IEnumerable<String> Variables
+        {
+            get
+            {
+                return (this._lhs.Variables.Concat(this._rhs.Variables)).Distinct();
+            }
         }
 
         /// <summary>

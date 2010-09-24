@@ -83,6 +83,17 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
+        /// Gets the Variables used in the Algebra
+        /// </summary>
+        public IEnumerable<String> Variables
+        {
+            get
+            {
+                return this._pattern.Variables;
+            }
+        }
+
+        /// <summary>
         /// Gets the String representation of the Algebra
         /// </summary>
         /// <returns></returns>
@@ -137,6 +148,17 @@ namespace VDS.RDF.Query.Algebra
                     context.OutputMultiset = context.InputMultiset;
                 }
                 return context.OutputMultiset;
+            }
+        }
+
+        /// <summary>
+        /// Gets the Variables used in the Algebra
+        /// </summary>
+        public IEnumerable<String> Variables
+        {
+            get
+            {
+                return this._pattern.Variables.Distinct();
             }
         }
 

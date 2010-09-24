@@ -33,6 +33,10 @@ terms.
 
 */
 
+//Defining this to disable XML DOM usage for this file to use the faster streaming XmlWriter variant since should offer better memory usage and 
+//performance and haven't decided whether to completely remove the XML DOM based code yet
+#define NO_XMLDOM
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
