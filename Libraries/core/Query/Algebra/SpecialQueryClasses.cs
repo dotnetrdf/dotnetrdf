@@ -87,4 +87,49 @@ namespace VDS.RDF.Query.Algebra
             return "SelectDistinctGraphs()";
         }
     }
+
+    /// <summary>
+    /// Special Algebra Construct for optimising queries of the form ASK WHERE {?s ?p ?o}
+    /// </summary>
+    public class AskAnyTriples : ISparqlAlgebra
+    {
+
+        /// <summary>
+        /// Evalutes the Ask Any Triples optimisation
+        /// </summary>
+        /// <param name="context">Evaluation Context</param>
+        /// <returns></returns>
+        public BaseMultiset Evaluate(SparqlEvaluationContext context)
+        {
+            if (context.Data.QueryTriples.Any())
+            {
+                context.OutputMultiset = new IdentityMultiset();
+            }
+            else
+            {
+                context.OutputMultiset = new NullMultiset();
+            }
+            return context.OutputMultiset;
+        }
+
+        /// <summary>
+        /// Gets the Variables used in the Algebra
+        /// </summary>
+        public IEnumerable<String> Variables
+        {
+            get
+            {
+                return Enumerable.Empty<String>();
+            }
+        }
+
+        /// <summary>
+        /// Gets the String representation of the Algebra
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return "AskAnyTriples()";
+        }
+    }
 }

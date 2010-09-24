@@ -115,9 +115,17 @@ namespace VDS.RDF.Query
         /// </summary>
         NotApplicable,
         /// <summary>
-        /// The Query is of the form SELECT * WHERE {?s ?p ?o}
+        /// The Query has not yet been tested to determine if special optimisations are applicable
         /// </summary>
-        SelectAll
+        Unknown,
+        /// <summary>
+        /// The Query is of the form ASK WHERE {?s ?p ?o}
+        /// </summary>
+        AskAnyTriples,
+        /// <summary>
+        /// The Query is of the form ASK WHERE {GRAPH ?g {?s ?p ?o}}
+        /// </summary>
+        AskGraphTriples
     }
 
     /// <summary>
@@ -156,6 +164,7 @@ namespace VDS.RDF.Query
         private List<Uri> _namedGraphs;
         private NamespaceMapper _nsmapper;
         private SparqlQueryType _type = SparqlQueryType.Unknown;
+        private SparqlSpecialQueryType _specialType = SparqlSpecialQueryType.Unknown;
         private Dictionary<String, SparqlVariable> _vars;
         private List<IToken> _describeVars = new List<IToken>();
         private GraphPattern _rootGraphPattern = null;
@@ -283,6 +292,10 @@ namespace VDS.RDF.Query
             {
                 return this._type;
             }
+            internal set
+            {
+                this._type = value;
+            }
         }
 
         /// <summary>
@@ -292,36 +305,51 @@ namespace VDS.RDF.Query
         {
             get
             {
-                if (this._rootGraphPattern != null)
+                if (this._specialType == SparqlSpecialQueryType.Unknown)
                 {
-                    if (this._rootGraphPattern.ChildGraphPatterns.Count == 0 && this._rootGraphPattern.TriplePatterns.Count == 1 && this._rootGraphPattern.TriplePatterns[0].IsAcceptAll && !this._rootGraphPattern.IsFiltered)
+                    //Try and detect if Special Optimisations are possible
+                    if (this._rootGraphPattern != null)
                     {
-                        return SparqlSpecialQueryType.SelectAll;
-                    }
-                    else if (this._type == SparqlQueryType.SelectDistinct &&
-                             this._defaultGraphs.Count == 0 &&
-                             this._namedGraphs.Count == 0 &&
-                             this._rootGraphPattern.TriplePatterns.Count == 0 && 
-                             this._rootGraphPattern.ChildGraphPatterns.Count == 1 && 
-                             this._rootGraphPattern.ChildGraphPatterns[0].TriplePatterns.Count == 1 &&
-                             this._rootGraphPattern.ChildGraphPatterns[0].IsGraph &&
-                             !this._rootGraphPattern.ChildGraphPatterns[0].IsFiltered &&
-                             this._rootGraphPattern.ChildGraphPatterns[0].GraphSpecifier.TokenType == Token.VARIABLE &&
-                             this._rootGraphPattern.ChildGraphPatterns[0].TriplePatterns[0].IsAcceptAll &&
-                             this._vars[this._rootGraphPattern.ChildGraphPatterns[0].GraphSpecifier.Value.Substring(1)].IsResultVariable &&
-                             this._vars.Count(pair => pair.Value.IsResultVariable) == 1)
-                    {
-                        return SparqlSpecialQueryType.DistinctGraphs;
+                        if (this._type == SparqlQueryType.Ask)
+                        {
+                            if (this._rootGraphPattern.ChildGraphPatterns.Count == 0 &&
+                                this._rootGraphPattern.TriplePatterns.Count == 1 &&
+                                this._rootGraphPattern.TriplePatterns[0].IsAcceptAll &&
+                                !this._rootGraphPattern.IsFiltered)
+                            {
+                                this._specialType = SparqlSpecialQueryType.AskAnyTriples;
+                            }
+                            //REQ: Add case for AskGraphTriples
+                        }
+                        else if (this._type == SparqlQueryType.SelectDistinct)
+                        {
+                            if (this._defaultGraphs.Count == 0 &&
+                                this._namedGraphs.Count == 0 &&
+                                this._rootGraphPattern.TriplePatterns.Count == 0 &&
+                                this._rootGraphPattern.ChildGraphPatterns.Count == 1 &&
+                                this._rootGraphPattern.ChildGraphPatterns[0].TriplePatterns.Count == 1 &&
+                                this._rootGraphPattern.ChildGraphPatterns[0].IsGraph &&
+                                !this._rootGraphPattern.ChildGraphPatterns[0].IsFiltered &&
+                                this._rootGraphPattern.ChildGraphPatterns[0].GraphSpecifier.TokenType == Token.VARIABLE &&
+                                this._rootGraphPattern.ChildGraphPatterns[0].TriplePatterns[0].IsAcceptAll &&
+                                this._vars[this._rootGraphPattern.ChildGraphPatterns[0].GraphSpecifier.Value.Substring(1)].IsResultVariable &&
+                                this._vars.Count(pair => pair.Value.IsResultVariable) == 1)
+                            {
+                                this._specialType = SparqlSpecialQueryType.DistinctGraphs;
+                            }
+                        }
+                        else
+                        {
+                            this._specialType = SparqlSpecialQueryType.NotApplicable;
+                        }
                     }
                     else
                     {
-                        return SparqlSpecialQueryType.NotApplicable;
+                        this._specialType =  SparqlSpecialQueryType.NotApplicable;
                     }
                 }
-                else
-                {
-                    return SparqlSpecialQueryType.NotApplicable;
-                }
+
+                return this._specialType;
             }
         }
 
@@ -622,15 +650,6 @@ namespace VDS.RDF.Query
         #endregion
 
         #region Methods for setting up the Query (used by SparqlQueryParser)
-
-        /// <summary>
-        /// Sets the Query Type
-        /// </summary>
-        /// <param name="type"></param>
-        protected internal void SetQueryType(SparqlQueryType type)
-        {
-            this._type = type;
-        }
 
         /// <summary>
         /// Adds a Variable to the Query
@@ -1176,8 +1195,10 @@ namespace VDS.RDF.Query
                     case SparqlSpecialQueryType.DistinctGraphs:
                         pattern = new SelectDistinctGraphs();
                         break;
+                    case SparqlSpecialQueryType.AskAnyTriples:
+                        pattern = new AskAnyTriples();
+                        break;
                     case SparqlSpecialQueryType.NotApplicable:
-                    case SparqlSpecialQueryType.SelectAll:
                     default:
                         pattern = this._rootGraphPattern.ToAlgebra();
                         break;

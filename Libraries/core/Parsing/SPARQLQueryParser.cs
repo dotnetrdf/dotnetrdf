@@ -503,18 +503,18 @@ namespace VDS.RDF.Parsing
                 switch (t.TokenType) {
                     case Token.ASK:
                         if (context.SubQueryMode) throw Error("ASK is not supported in Sub-queries",t);
-                        context.Query.SetQueryType(SparqlQueryType.Ask);
+                        context.Query.QueryType = SparqlQueryType.Ask;
                         break;
                     case Token.CONSTRUCT:
                         if (context.SubQueryMode) throw Error("CONSTRUCT is not supported in Sub-queries",t);
-                        context.Query.SetQueryType(SparqlQueryType.Construct);
+                        context.Query.QueryType = SparqlQueryType.Construct;
                         break;
                     case Token.DESCRIBE:
                         if (context.SubQueryMode) throw Error("DESCRIBE is not supported in Sub-queries", t);
-                        context.Query.SetQueryType(SparqlQueryType.Describe);
+                        context.Query.QueryType = SparqlQueryType.Describe;
                         break;
                     case Token.SELECT:
-                        context.Query.SetQueryType(SparqlQueryType.Select);
+                        context.Query.QueryType = SparqlQueryType.Select;
                         break;
                 }
             }
@@ -543,13 +543,13 @@ namespace VDS.RDF.Parsing
                         switch (context.Query.QueryType)
                         {
                             case SparqlQueryType.Select:
-                                context.Query.SetQueryType(SparqlQueryType.SelectAll);
+                                context.Query.QueryType = SparqlQueryType.SelectAll;
                                 break;
                             case SparqlQueryType.SelectDistinct:
-                                context.Query.SetQueryType(SparqlQueryType.SelectAllDistinct);
+                                context.Query.QueryType = SparqlQueryType.SelectAllDistinct;
                                 break;
                             case SparqlQueryType.SelectReduced:
-                                context.Query.SetQueryType(SparqlQueryType.SelectAllReduced);
+                                context.Query.QueryType = SparqlQueryType.SelectAllReduced;
                                 break;
                         }
                         break;
@@ -734,7 +734,7 @@ namespace VDS.RDF.Parsing
                     case Token.DISTINCT:
                         if (firstToken)
                         {
-                            context.Query.SetQueryType(SparqlQueryType.SelectDistinct);
+                            context.Query.QueryType = SparqlQueryType.SelectDistinct;
                         }
                         else
                         {
@@ -745,7 +745,7 @@ namespace VDS.RDF.Parsing
                     case Token.REDUCED:
                         if (firstToken)
                         {
-                            context.Query.SetQueryType(SparqlQueryType.SelectReduced);
+                            context.Query.QueryType = SparqlQueryType.SelectReduced;
                         }
                         else
                         {
@@ -884,7 +884,7 @@ namespace VDS.RDF.Parsing
                             throw Error("Can't use the * symbol to specify Describe All and specify Variables/URIs/QNames in the DESCRIBE Clause", next);
                         }
                         //Change the Query Type to a Describe All
-                        context.Query.SetQueryType(SparqlQueryType.DescribeAll);
+                        context.Query.QueryType = SparqlQueryType.DescribeAll;
                         break;
 
                     case Token.VARIABLE:
