@@ -69,7 +69,7 @@ namespace VDS.RDF.Query.Algebra
         {
             BaseMultiset result;
 
-            if (this._pattern is BGP && ((BGP)this._pattern).IsEmpty)
+            if (this._pattern is Bgp && ((Bgp)this._pattern).IsEmpty)
             {
                 //Optimise the case where we have GRAPH ?g {} by not setting the Graph and just returning
                 //a Null Multiset

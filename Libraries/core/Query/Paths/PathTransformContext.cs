@@ -92,7 +92,7 @@ namespace VDS.RDF.Query.Paths
                 //    TriplePattern newLast = new TriplePattern(last.Subject, last.Predicate, this._start);
                 //    this._patterns[this._patterns.Count - 1] = newLast;
                 //}
-                return new BGP(this._patterns);
+                return new Bgp(this._patterns);
             }
             else
             {

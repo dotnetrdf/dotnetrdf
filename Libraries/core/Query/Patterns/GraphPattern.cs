@@ -877,11 +877,11 @@ namespace VDS.RDF.Query.Patterns
             else if (this._graphPatterns.Count == 0)
             {
                 //If there are no Child Graph Patterns then this is a BGP
-                ISparqlAlgebra bgp = new BGP(this._triplePatterns);
+                ISparqlAlgebra bgp = new Bgp(this._triplePatterns);
                 if (this._unplacedAssignments.Count > 0)
                 {
                     //If we have any unplaced LETs these get Joined onto the BGP
-                    bgp = Join.CreateJoin(bgp, new BGP(this._unplacedAssignments));
+                    bgp = Join.CreateJoin(bgp, new Bgp(this._unplacedAssignments));
                 }
                 if (this._isFiltered && this._filter != null)
                 {
@@ -907,10 +907,10 @@ namespace VDS.RDF.Query.Patterns
             else
             {
                 //Create a basic BGP to start with
-                ISparqlAlgebra complex = new BGP();
+                ISparqlAlgebra complex = new Bgp();
                 if (this._triplePatterns.Count > 0)
                 {
-                    complex = new BGP(this._triplePatterns);
+                    complex = new Bgp(this._triplePatterns);
                 }
 
                 //Then Join each of the Graph Patterns as appropriate
@@ -962,7 +962,7 @@ namespace VDS.RDF.Query.Patterns
                 if (this._unplacedAssignments.Count > 0)
                 {
                     //Unplaced assignments get Joined as a BGP here
-                    complex = Join.CreateJoin(complex, new BGP(this._unplacedAssignments));
+                    complex = Join.CreateJoin(complex, new Bgp(this._unplacedAssignments));
                 }
                 if (this._isFiltered && this._filter != null)
                 {

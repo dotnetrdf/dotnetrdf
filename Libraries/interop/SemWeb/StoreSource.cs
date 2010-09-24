@@ -614,7 +614,7 @@ namespace VDS.RDF.Interop.SemWeb
                 if (stmt.Object is BNode && !(stmt.Object is Variable)) patterns.Add(new FilterPattern(new UnaryExpressionFilter(new IsBlankFunction(new VariableExpressionTerm(o.VariableName)))));
             }
 
-            return new BGP(patterns);
+            return new Bgp(patterns);
         }
 
         #endregion

@@ -44,14 +44,14 @@ namespace VDS.RDF.Query.Algebra
     /// <summary>
     /// Represents a BGP which is a set of Triple Patterns
     /// </summary>
-    public class BGP : ISparqlAlgebra
+    public class Bgp : ISparqlAlgebra
     {
-        private List<ITriplePattern> _triplePatterns = new List<ITriplePattern>();
+        protected List<ITriplePattern> _triplePatterns = new List<ITriplePattern>();
 
         /// <summary>
         /// Creates a new empty BGP
         /// </summary>
-        public BGP()
+        public Bgp()
         {
 
         }
@@ -60,7 +60,7 @@ namespace VDS.RDF.Query.Algebra
         /// Creates a BGP containing a single Triple Pattern
         /// </summary>
         /// <param name="p">Triple Pattern</param>
-        public BGP(ITriplePattern p)
+        public Bgp(ITriplePattern p)
         {
             this._triplePatterns.Add(p);
         }
@@ -69,7 +69,7 @@ namespace VDS.RDF.Query.Algebra
         /// Creates a BGP containing a set of Triple Patterns
         /// </summary>
         /// <param name="ps">Triple Patterns</param>
-        public BGP(IEnumerable<ITriplePattern> ps)
+        public Bgp(IEnumerable<ITriplePattern> ps)
         {
             this._triplePatterns.AddRange(ps);
         }
@@ -78,7 +78,7 @@ namespace VDS.RDF.Query.Algebra
         /// Creates a BGP containing a set of Triple Patterns
         /// </summary>
         /// <param name="ps">Triple Patterns</param>
-        public BGP(IEnumerable<TriplePattern> ps)
+        public Bgp(IEnumerable<TriplePattern> ps)
         {
             this._triplePatterns.AddRange(ps.Select(p => (ITriplePattern)p));
         }
@@ -87,7 +87,7 @@ namespace VDS.RDF.Query.Algebra
         /// Creates a BGP containing a set of Let Patterns
         /// </summary>
         /// <param name="ps">Let Patterns</param>
-        public BGP(IEnumerable<LetPattern> ps)
+        public Bgp(IEnumerable<LetPattern> ps)
         {
             this._triplePatterns.AddRange(ps.Select(p => (ITriplePattern)p));
         }
@@ -96,7 +96,7 @@ namespace VDS.RDF.Query.Algebra
         /// Creates a BGP containing a set of Filter Patterns
         /// </summary>
         /// <param name="ps">Filter Patterns</param>
-        public BGP(IEnumerable<FilterPattern> ps)
+        public Bgp(IEnumerable<FilterPattern> ps)
         {
             this._triplePatterns.AddRange(ps.Select(p => (ITriplePattern)p));
         }
@@ -105,7 +105,7 @@ namespace VDS.RDF.Query.Algebra
         /// Creates a BGP containing a set of Sub-query Patterns
         /// </summary>
         /// <param name="ps">Sub-query Patterns</param>
-        public BGP(IEnumerable<SubQueryPattern> ps)
+        public Bgp(IEnumerable<SubQueryPattern> ps)
         {
             this._triplePatterns.AddRange(ps.Select(p => (ITriplePattern)p));
         }
@@ -126,7 +126,7 @@ namespace VDS.RDF.Query.Algebra
         /// </summary>
         /// <param name="context">Evaluation Context</param>
         /// <returns></returns>
-        public BaseMultiset Evaluate(SparqlEvaluationContext context)
+        public virtual BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
             if (this._triplePatterns.Count > 0)
             {
@@ -216,6 +216,48 @@ namespace VDS.RDF.Query.Algebra
         public override string ToString()
         {
             return "BGP()";
+        }
+    }
+
+    /// <summary>
+    /// Represents a BGP which is a set of Triple Patterns
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// A Streamed BGP differs from a BGP in that rather than evaluating each Triple Pattern in turn it evaluates across all Triple Patterns.  This is useful for ASK queries where we are only concerned with whether a BGP matches and not in the specific solutions
+    /// </para>
+    /// <para>
+    /// A Streamed BGP can only contain concrete Triple Patterns and not any of the specialised Triple Pattern classes
+    /// </para>
+    /// </remarks>
+    public class StreamedBgp : Bgp
+    {
+        /// <summary>
+        /// Creates a Streamed BGP containing a single Triple Pattern
+        /// </summary>
+        /// <param name="p">Triple Pattern</param>
+        public StreamedBgp(TriplePattern p)
+        {
+            this._triplePatterns.Add((ITriplePattern)p);
+        }
+
+        /// <summary>
+        /// Creates a Streamed BGP containing a set of Triple Patterns
+        /// </summary>
+        /// <param name="ps">Triple Patterns</param>
+        public StreamedBgp(IEnumerable<TriplePattern> ps)
+        {
+            this._triplePatterns.AddRange(ps.Select(p => (ITriplePattern)p));
+        }
+
+        /// <summary>
+        /// Evaluates the BGP against the Evaluation Context
+        /// </summary>
+        /// <param name="context">Evaluation Context</param>
+        /// <returns></returns>
+        public virtual BaseMultiset Evaluate(SparqlEvaluationContext context)
+        {
+            throw new NotImplementedException("The StreamedBgp is an experimental class which is currently unimplemented");
         }
     }
 }

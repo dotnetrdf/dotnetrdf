@@ -1206,7 +1206,7 @@ namespace VDS.RDF.Query
             }
             else
             {
-                pattern = new BGP();
+                pattern = new Bgp();
             }
 
             //If we have a BINDINGS clause then we'll Join in into the algebra here

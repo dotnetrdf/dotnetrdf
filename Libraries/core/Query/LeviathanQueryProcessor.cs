@@ -91,7 +91,7 @@ namespace VDS.RDF.Query
         /// Processes a BGP
         /// </summary>
         /// <param name="bgp">BGP</param>
-        public void ProcessBGP(BGP bgp)
+        public void ProcessBgp(Bgp bgp)
         {
             bgp.Evaluate(this._context);
         }

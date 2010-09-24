@@ -50,12 +50,12 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
             TriplePattern t4 = new TriplePattern(new VariablePattern("?s"), new NodeMatchPattern(g.CreateUriNode(":name")), new VariablePattern("?name"));
 
             //Build some BGPs
-            BGP selectNothing = new BGP();
-            BGP selectAll = new BGP(t1);
-            BGP selectLabelled = new BGP(new List<ITriplePattern>() { t1, t2 });
-            BGP selectAllDisjoint = new BGP(new List<ITriplePattern>() { t1, t3 });
-            BGP selectLabels = new BGP(t2);
-            BGP selectNames = new BGP(t4);
+            Bgp selectNothing = new Bgp();
+            Bgp selectAll = new Bgp(t1);
+            Bgp selectLabelled = new Bgp(new List<ITriplePattern>() { t1, t2 });
+            Bgp selectAllDisjoint = new Bgp(new List<ITriplePattern>() { t1, t3 });
+            Bgp selectLabels = new Bgp(t2);
+            Bgp selectNames = new Bgp(t4);
             //LeftJoin selectOptionalNamed = new LeftJoin(selectAll, new Optional(selectNames));
             LeftJoin selectOptionalNamed = new LeftJoin(selectAll, selectNames);
             Union selectAllUnion = new Union(selectAll, selectAll);

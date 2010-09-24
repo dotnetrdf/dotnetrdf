@@ -234,15 +234,15 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public static ISparqlAlgebra CreateJoin(ISparqlAlgebra lhs, ISparqlAlgebra rhs)
         {
-            if (lhs is BGP)
+            if (lhs is Bgp)
             {
-                if (((BGP)lhs).IsEmpty)
+                if (((Bgp)lhs).IsEmpty)
                 {
                     return rhs;
                 }
-                else if (rhs is BGP)
+                else if (rhs is Bgp)
                 {
-                    if (((BGP)rhs).IsEmpty)
+                    if (((Bgp)rhs).IsEmpty)
                     {
                         return lhs;
                     }
@@ -256,9 +256,9 @@ namespace VDS.RDF.Query.Algebra
                     return new Join(lhs, rhs);
                 }
             }
-            else if (rhs is BGP)
+            else if (rhs is Bgp)
             {
-                if (((BGP)rhs).IsEmpty)
+                if (((Bgp)rhs).IsEmpty)
                 {
                     return lhs;
                 }
