@@ -50,10 +50,7 @@ namespace VDS.RDF.Writing
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Use this if you require fast writing and are not so bothered about the readibility of syntax produced, if you prefer readable syntax and can live with the very slow speeds (around 300 Triple/second) use the <see cref="RdfXmlWriter">RdfXmlWriter</see> or the <see cref="RdfXmlTreeWriter">RdfXmlTreeWriter</see>.
-    /// </para>
-    /// <para>
-    /// This is a fast context.Writer based on the fast writing technique used in the other non-RDF/XML context.Writers.  While it is significantly faster than the existing RDF/XML context.Writers achieving a speed of around 25,000 Triples/second the syntax produced is not the 'prettiest'.  It uses various syntax compressions but since it doesn't generate output in an explicitly striped manner it cannot produce the nice striped syntax
+    /// This is a fast writer based on the fast writing technique used in the other non-RDF/XML Writers.  While it is faster than the <see cref="FastRdfXmlWriter">FastRdfXmlWriter</see> achieving a speed of around 42,000 Triples/second the syntax produced is not as compressed as that writer.
     /// </para>
     /// </remarks>
     public class RdfXmlWriter : IRdfWriter, IPrettyPrintingWriter

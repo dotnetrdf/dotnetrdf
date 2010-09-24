@@ -33,8 +33,6 @@ terms.
 
 */
 
-#if !NO_XMLDOM
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,8 +40,6 @@ using System.Text;
 using System.Xml;
 using System.IO;
 using VDS.RDF.Query;
-
-//REQ: Implement an XmlWriter based version of this for non-XML DOM supporting platforms
 
 namespace VDS.RDF.Writing
 {
@@ -62,6 +58,8 @@ namespace VDS.RDF.Writing
             StreamWriter output = new StreamWriter(filename, false, Encoding.UTF8);
             this.Save(results, output);
         }
+
+#if !NO_XMLDOM
 
         /// <summary>
         /// Saves the Result Set to the given Stream in the Sparql Results XML Format
@@ -209,7 +207,171 @@ namespace VDS.RDF.Writing
 
             return xmlDoc;
         }
-    }
-}
+
+#else
+        private XmlWriterSettings GetSettings()
+        {
+            XmlWriterSettings settings = new XmlWriterSettings();
+            settings.CloseOutput = true;
+            settings.ConformanceLevel = ConformanceLevel.Document;
+            settings.Encoding = Encoding.UTF8;
+#if SILVERLIGHT
+            settings.NamespaceHandling = NamespaceHandling.OmitDuplicates;
+#endif
+            settings.OmitXmlDeclaration = false;
+            return settings;
+        }
+
+        /// <summary>
+        /// Saves the Result Set to the given Stream in the Sparql Results XML Format
+        /// </summary>
+        /// <param name="results"></param>
+        /// <param name="output"></param>
+        public virtual void Save(SparqlResultSet results, TextWriter output)
+        {
+            try
+            {
+                XmlWriter writer = XmlWriter.Create(output, this.GetSettings());
+                this.GenerateOutput(results, writer);
+                output.Close();
+            }
+            catch
+            {
+                try
+                {
+                    output.Close();
+                }
+                catch
+                {
+                    //No Catch Actions
+                }
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Method which generates the Sparql Query Results XML Format serialization of the Result Set
+        /// </summary>
+        /// <returns></returns>
+        protected void GenerateOutput(SparqlResultSet resultSet, XmlWriter writer)
+        {
+            //XML Declaration
+            writer.WriteStartDocument();
+
+            //<sparql> element
+            writer.WriteStartElement("sparql", SparqlSpecsHelper.SparqlNamespace);
+
+            //<head> element
+            writer.WriteStartElement("head");
+
+            //Variables in the Header?
+            if (resultSet.ResultsType == SparqlResultsType.VariableBindings)
+            {
+                foreach (String var in resultSet.Variables)
+                {
+                    //<variable> element
+                    writer.WriteStartElement("variable");
+                    writer.WriteAttributeString("name", var);
+                    writer.WriteEndElement();
+                }
+
+                //</head> Element
+                writer.WriteEndElement();
+
+                //<results> Element
+                writer.WriteStartElement("results");
+
+                foreach (SparqlResult r in resultSet.Results)
+                {
+                    //<result> Element
+                    writer.WriteStartElement("result");
+
+                    foreach (String var in resultSet.Variables)
+                    {
+                        if (r.HasValue(var))
+                        {
+                            //<binding> Element
+                            writer.WriteStartElement("binding");
+                            writer.WriteAttributeString("name", var);
+
+                            INode n = r.Value(var);
+                            if (n == null) continue; //NULLs don't get serialized in the XML Format
+                            switch (n.NodeType)
+                            {
+                                case NodeType.Blank:
+                                    //<bnode> element
+                                    writer.WriteStartElement("bnode");
+                                    writer.WriteRaw(((BlankNode)n).InternalID);
+                                    writer.WriteEndElement();
+                                    break;
+
+                                case NodeType.GraphLiteral:
+                                    //Error!
+                                    throw new RdfOutputException("Result Sets which contain Graph Literal Nodes cannot be serialized in the SPARQL Query Results XML Format");
+
+                                case NodeType.Literal:
+                                    //<literal> element
+                                    writer.WriteStartElement("literal");
+                                    LiteralNode l = (LiteralNode)n;
+
+                                    if (!l.Language.Equals(String.Empty))
+                                    {
+                                        writer.WriteAttributeString("xml:lang", l.Language);
+                                    }
+                                    else if (l.DataType != null)
+                                    {
+                                        writer.WriteStartAttribute("datatype");
+                                        writer.WriteRaw(WriterHelper.EncodeForXml(l.DataType.ToString()));
+                                        writer.WriteEndAttribute();
+                                    }
+
+                                    //Write the Value and the </literal>
+                                    writer.WriteRaw(l.Value);
+                                    writer.WriteEndElement();
+                                    break;
+
+                                case NodeType.Uri:
+                                    //<uri> element
+                                    writer.WriteStartElement("uri");
+                                    writer.WriteRaw(WriterHelper.EncodeForXml(((UriNode)n).StringUri));
+                                    writer.WriteEndElement();
+                                    break;
+
+                                default:
+                                    throw new RdfOutputException("Result Sets which contain Nodes of unknown Type cannot be serialized in the SPARQL Query Results XML Format");
+                            }
+
+                            //</binding> element
+                            writer.WriteEndElement();
+                        }
+                    }
+
+                    //</result> element
+                    writer.WriteEndElement();
+                }
+
+                //</results>
+                writer.WriteEndElement();
+            }
+            else
+            {
+                //</head>
+                writer.WriteEndElement();
+
+                //<boolean> element
+                writer.WriteStartElement("boolean");
+                writer.WriteRaw(resultSet.Result.ToString().ToLower());
+                writer.WriteEndElement();
+            }
+
+            //</sparql> element
+            writer.WriteEndElement();
+
+            //End Document
+            writer.WriteEndDocument();
+            writer.Close();
+        }
 
 #endif
+    }
+}

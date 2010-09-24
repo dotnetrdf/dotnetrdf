@@ -22,6 +22,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		dotNetRDF3.vsmdi = dotNetRDF3.vsmdi
 		dotNetRDF4.vsmdi = dotNetRDF4.vsmdi
 		dotNetRDF5.vsmdi = dotNetRDF5.vsmdi
+		dotNetRDF6.vsmdi = dotNetRDF6.vsmdi
 		Tests.testrunconfig = Tests.testrunconfig
 	EndProjectSection
 EndProject
@@ -62,6 +63,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "linq-unit-tests", "Testing\linq-tests\unit-tests\linq-unit-tests.csproj", "{8BAC4EF7-87A2-4B85-B4ED-AFE9D38A8DB5}"
 EndProject
 Global
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = dotNetRDF6.vsmdi
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU

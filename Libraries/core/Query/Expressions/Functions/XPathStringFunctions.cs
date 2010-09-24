@@ -35,7 +35,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 #if !NO_WEB
-using System.Web.UI;
+using System.Web;
 #endif
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Aggregates;
@@ -377,18 +377,11 @@ namespace VDS.RDF.Query.Expressions.Functions
         }
     }
 
-#if !NO_WEB
-
-    //REQ: Implement a version of the XPath fn:escape-html-uri() function that doesn't use System.Web
-
     /// <summary>
     /// Represents the XPath fn:escape-html-uri() function
     /// </summary>
     public class XPathEscapeHtmlUriFunction : BaseUnaryXPathStringFunction
     {
-        private HtmlTextWriter _htmlWriter;
-        private StringBuilder _output = new StringBuilder();
-
         /// <summary>
         /// Creates a new XPath Escape HTML for URI function
         /// </summary>
@@ -403,15 +396,8 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// <returns></returns>
         public override INode ValueInternal(LiteralNode stringLit)
         {
-            if (this._htmlWriter == null)
-            {
-                this._htmlWriter = new HtmlTextWriter(new StringWriter(this._output));
-            }
-            this._output.Remove(0, this._output.Length);
 
-            this._htmlWriter.WriteEncodedText(stringLit.Value);
-
-            return new LiteralNode(null, this._output.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeString));
+            return new LiteralNode(null, HttpUtility.UrlEncode(stringLit.Value), new Uri(XmlSpecsHelper.XmlSchemaDataTypeString));
         }
 
         /// <summary>
@@ -423,8 +409,6 @@ namespace VDS.RDF.Query.Expressions.Functions
             return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.EscapeHtmlURI + ">(" + this._expr.ToString() + ")";
         }
     }
-
-#endif
 
     /// <summary>
     /// Represents the XPath fn:lower-case() function

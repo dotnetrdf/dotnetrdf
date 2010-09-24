@@ -127,6 +127,7 @@
     <Compile Include="PelletTests.cs" />
     <Compile Include="RdfATests.cs" />
     <Compile Include="RdfXmlTests.cs" />
+    <Compile Include="Sparql\ResultSetWriterTests.cs" />
     <Compile Include="Sparql\ViewTests.cs" />
     <Compile Include="Web\ETagTests.cs" />
     <Content Include="resources\bad_profile.xhtml">
