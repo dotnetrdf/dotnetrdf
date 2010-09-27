@@ -88,6 +88,17 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
+        /// Gets the Inner Algebra
+        /// </summary>
+        public ISparqlAlgebra InnerAlgebra
+        {
+            get
+            {
+                return this._pattern;
+            }
+        }
+
+        /// <summary>
         /// Gets the String representation of the 
         /// </summary>
         /// <returns></returns>

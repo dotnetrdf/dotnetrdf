@@ -110,6 +110,28 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
+        /// Gets the LHS of the Join
+        /// </summary>
+        public ISparqlAlgebra Lhs
+        {
+            get
+            {
+                return this._lhs;
+            }
+        }
+
+        /// <summary>
+        /// Gets the RHS of the Join
+        /// </summary>
+        public ISparqlAlgebra Rhs
+        {
+            get
+            {
+                return this._rhs;
+            }
+        }
+
+        /// <summary>
         /// Gets the string representation of the Algebra
         /// </summary>
         /// <returns></returns>

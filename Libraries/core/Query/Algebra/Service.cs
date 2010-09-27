@@ -128,6 +128,28 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
+        /// Gets the Endpoint Specifier
+        /// </summary>
+        public IToken EndpointSpecifier
+        {
+            get
+            {
+                return this._endpointSpecifier;
+            }
+        }
+
+        /// <summary>
+        /// Gets the Graph Pattern
+        /// </summary>
+        public GraphPattern Pattern
+        {
+            get
+            {
+                return this._pattern;
+            }
+        }
+
+        /// <summary>
         /// Gets the String representation of the Algebra
         /// </summary>
         /// <returns></returns>

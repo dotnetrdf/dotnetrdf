@@ -105,6 +105,28 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
+        /// Gets the Filter to be used
+        /// </summary>
+        public ISparqlFilter SparqlFilter
+        {
+            get
+            {
+                return this._filter;
+            }
+        }
+
+        /// <summary>
+        /// Gets the Inner Algebra
+        /// </summary>
+        public ISparqlAlgebra InnerAlgebra
+        {
+            get
+            {
+                return this._pattern;
+            }
+        }
+
+        /// <summary>
         /// Gets the String representation of the FILTER
         /// </summary>
         /// <returns></returns>

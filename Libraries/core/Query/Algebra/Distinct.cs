@@ -94,6 +94,17 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
+        /// Gets the Inner Algebra
+        /// </summary>
+        public ISparqlAlgebra InnerAlgebra
+        {
+            get
+            {
+                return this._pattern;
+            }
+        }
+
+        /// <summary>
         /// Gets the String representation of the Algebra
         /// </summary>
         /// <returns></returns>
@@ -159,6 +170,17 @@ namespace VDS.RDF.Query.Algebra
             get
             {
                 return this._pattern.Variables.Distinct();
+            }
+        }
+
+        /// <summary>
+        /// Gets the Inner Algebra
+        /// </summary>
+        public ISparqlAlgebra InnerAlgebra
+        {
+            get
+            {
+                return this._pattern;
             }
         }
 

@@ -110,6 +110,28 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
+        /// Gets the LHS of the Join
+        /// </summary>
+        public ISparqlAlgebra Lhs
+        {
+            get
+            {
+                return this._lhs;
+            }
+        }
+
+        /// <summary>
+        /// Gets the RHS of the Join
+        /// </summary>
+        public ISparqlAlgebra Rhs
+        {
+            get
+            {
+                return this._rhs;
+            }
+        }
+
+        /// <summary>
         /// Gets the String representation of the Algebra
         /// </summary>
         /// <returns></returns>
@@ -193,6 +215,28 @@ namespace VDS.RDF.Query.Algebra
             get
             {
                 return (this._lhs.Variables.Concat(this._rhs.Variables)).Distinct();
+            }
+        }
+
+        /// <summary>
+        /// Gets the LHS of the Join
+        /// </summary>
+        public ISparqlAlgebra Lhs
+        {
+            get
+            {
+                return this._lhs;
+            }
+        }
+
+        /// <summary>
+        /// Gets the RHS of the Join
+        /// </summary>
+        public ISparqlAlgebra Rhs
+        {
+            get
+            {
+                return this._rhs;
             }
         }
 
@@ -319,6 +363,28 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
+        /// Gets the LHS of the Join
+        /// </summary>
+        public ISparqlAlgebra Lhs
+        {
+            get
+            {
+                return this._lhs;
+            }
+        }
+
+        /// <summary>
+        /// Gets the RHS of the Join
+        /// </summary>
+        public ISparqlAlgebra Rhs
+        {
+            get
+            {
+                return this._rhs;
+            }
+        }
+
+        /// <summary>
         /// Gets the String representation of the Join
         /// </summary>
         /// <returns></returns>
@@ -376,6 +442,28 @@ namespace VDS.RDF.Query.Algebra
             get
             {
                 return (this._lhs.Variables.Concat(this._rhs.Variables)).Distinct();
+            }
+        }
+
+        /// <summary>
+        /// Gets the LHS of the Join
+        /// </summary>
+        public ISparqlAlgebra Lhs
+        {
+            get
+            {
+                return this._lhs;
+            }
+        }
+
+        /// <summary>
+        /// Gets the RHS of the Join
+        /// </summary>
+        public ISparqlAlgebra Rhs
+        {
+            get
+            {
+                return this._rhs;
             }
         }
 
