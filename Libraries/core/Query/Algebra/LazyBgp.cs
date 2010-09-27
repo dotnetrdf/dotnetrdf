@@ -48,19 +48,36 @@ namespace VDS.RDF.Query.Algebra
     /// </summary>
     /// <remarks>
     /// <para>
-    /// <strong>Note: </strong> This is experimental code currently designed only for optimisation of certain forms of queries
+    /// A Lazy BGP differs from a BGP in that rather than evaluating each Triple Pattern in turn it evaluates across all Triple Patterns.  This is used for queries where we are only want to retrieve a limited number of solutions
     /// </para>
     /// <para>
-    /// An Ask BGP differs from a BGP in that rather than evaluating each Triple Pattern in turn it evaluates across all Triple Patterns.  This is used for ASK queries where we are only concerned with whether a BGP matches and not in the specific solutions
-    /// </para>
-    /// <para>
-    /// An Ask BGP can only contain concrete Triple Patterns and not any of the specialised Triple Pattern classes
+    /// A Lazy BGP can only contain concrete Triple Patterns and/or FILTERs and not any of other the specialised Triple Pattern classes
     /// </para>
     /// </remarks>
     public class LazyBgp : IBgp
     {
         private List<ITriplePattern> _triplePatterns = new List<ITriplePattern>();
-        private int _requiredResults = 1;
+        private int _requiredResults = -1;
+
+        /// <summary>
+        /// Creates a Streamed BGP containing a single Triple Pattern
+        /// </summary>
+        /// <param name="p">Triple Pattern</param>
+        public LazyBgp(ITriplePattern p)
+        {
+            if (!(p is TriplePattern || p is FilterPattern)) throw new ArgumentException("Triple Pattern instance must be a Triple Pattern or a FILTER Pattern", "p");
+            this._triplePatterns.Add(p);
+        }
+
+        /// <summary>
+        /// Creates a Streamed BGP containing a set of Triple Patterns
+        /// </summary>
+        /// <param name="ps">Triple Patterns</param>
+        public LazyBgp(IEnumerable<ITriplePattern> ps)
+        {
+            if (!ps.All(p => p is TriplePattern || p is FilterPattern)) throw new ArgumentException("Triple Pattern instances must all be Triple Patterns or FILTER Patterns", "ps");
+            this._triplePatterns.AddRange(ps);
+        }
 
         /// <summary>
         /// Creates a Streamed BGP containing a single Triple Pattern
@@ -70,7 +87,6 @@ namespace VDS.RDF.Query.Algebra
         public LazyBgp(ITriplePattern p, int requiredResults)
         {
             if (!(p is TriplePattern || p is FilterPattern)) throw new ArgumentException("Triple Pattern instance must be a Triple Pattern or a FILTER Pattern", "p");
-            if (this._requiredResults < 1) throw new ArgumentException("Required Results must be >= 1", "requiredResults");
             this._requiredResults = requiredResults;
             this._triplePatterns.Add(p);
         }
@@ -83,7 +99,6 @@ namespace VDS.RDF.Query.Algebra
         public LazyBgp(IEnumerable<ITriplePattern> ps, int requiredResults)
         {
             if (!ps.All(p => p is TriplePattern || p is FilterPattern)) throw new ArgumentException("Triple Pattern instances must all be Triple Patterns or FILTER Patterns", "ps");
-            if (this._requiredResults < 1) throw new ArgumentException("Required Results must be >= 1", "requiredResults");
             this._requiredResults = requiredResults;
             this._triplePatterns.AddRange(ps);
         }
@@ -142,8 +157,41 @@ namespace VDS.RDF.Query.Algebra
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
             bool halt;
-            BaseMultiset results = this.StreamingEvaluate(context, 0, out halt);
-            if (results is Multiset && results.IsEmpty) results = new NullMultiset();
+            BaseMultiset results;
+            int origRequired = this._requiredResults;
+
+            //May need to detect the actual
+            if (this._requiredResults < 0)
+            {
+                if (context.Query != null)
+                {
+                    int limit = context.Query.Limit;
+                    int offset = context.Query.Offset;
+                    if (limit >= 0 && offset >= 0)
+                    {
+                        this._requiredResults = limit + offset;
+                    }
+                    else if (limit >= 0)
+                    {
+                        this._requiredResults = limit;
+                    }
+                    else if (offset > 0)
+                    {
+                        this._requiredResults = offset;
+                    }
+                }
+            }
+
+            if (this._requiredResults != 0)
+            {
+                results = this.StreamingEvaluate(context, 0, out halt);
+                if (results is Multiset && results.IsEmpty) results = new NullMultiset();
+            }
+            else
+            {
+                results = new NullMultiset();
+            }
+            this._requiredResults = origRequired;
 
             context.OutputMultiset = results;
             context.OutputMultiset.Trim();
@@ -226,7 +274,7 @@ namespace VDS.RDF.Query.Algebra
                             results = this.StreamingEvaluate(context, pattern + 1, out halt);
 
                             //If recursion leads to a halt then we halt and return immediately
-                            if (halt && results.Count >= this._requiredResults)
+                            if (halt && results.Count >= this._requiredResults && this._requiredResults != -1)
                             {
                                 return results;
                             }
@@ -275,7 +323,7 @@ namespace VDS.RDF.Query.Algebra
                             }
 
                             //If not reached required number of results continue
-                            if (results.Count >= this._requiredResults)
+                            if (results.Count >= this._requiredResults && this._requiredResults != -1)
                             {
                                 context.OutputMultiset = results;
                                 return context.OutputMultiset;
@@ -306,7 +354,7 @@ namespace VDS.RDF.Query.Algebra
                                 results = this.StreamingEvaluate(context, pattern + 1, out halt);
 
                                 //If recursion leads to a halt then we halt and return immediately
-                                if (halt && results.Count >= this._requiredResults)
+                                if (halt && results.Count >= this._requiredResults && this._requiredResults != -1)
                                 {
                                     return results;
                                 }
@@ -355,7 +403,7 @@ namespace VDS.RDF.Query.Algebra
                                 }
 
                                 //If not reached required number of results continue
-                                if (results.Count >= this._requiredResults)
+                                if (results.Count >= this._requiredResults && this._requiredResults != -1)
                                 {
                                     context.OutputMultiset = results;
                                     return context.OutputMultiset;

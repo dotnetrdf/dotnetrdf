@@ -51,7 +51,7 @@ namespace VDS.RDF.Query.Algebra
     /// An Ask BGP differs from a BGP in that rather than evaluating each Triple Pattern in turn it evaluates across all Triple Patterns.  This is used for ASK queries where we are only concerned with whether a BGP matches and not in the specific solutions
     /// </para>
     /// <para>
-    /// An Ask BGP can only contain concrete Triple Patterns and/or FILTERs and not any of the specialised Triple Pattern classes
+    /// An Ask BGP can only contain concrete Triple Patterns and/or FILTERs and not any of the other specialised Triple Pattern classes
     /// </para>
     /// </remarks>
     public class AskBgp : IBgp

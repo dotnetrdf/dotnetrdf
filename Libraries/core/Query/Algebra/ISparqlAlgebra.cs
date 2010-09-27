@@ -37,6 +37,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Algebra
 {
@@ -56,6 +57,50 @@ namespace VDS.RDF.Query.Algebra
         /// Gets the enumeration of Variables used in the Algebra
         /// </summary>
         IEnumerable<String> Variables
+        {
+            get;
+        }
+    }
+
+    /// <summary>
+    /// Represents an Algebra construct which is a BGP
+    /// </summary>
+    public interface IBgp : ISparqlAlgebra
+    {
+        /// <summary>
+        /// Gets the Number of Patterns in the BGP
+        /// </summary>
+        int PatternCount
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Gets the Triple Patterns in the BGP
+        /// </summary>
+        IEnumerable<ITriplePattern> TriplePatterns
+        {
+            get;
+        }
+    }
+
+    /// <summary>
+    /// Represents an Algebra construct which is a Join
+    /// </summary>
+    public interface IJoin : ISparqlAlgebra
+    {
+        /// <summary>
+        /// Gets the LHS of the Join
+        /// </summary>
+        ISparqlAlgebra Lhs
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Gets the RHS of the Join
+        /// </summary>
+        ISparqlAlgebra Rhs
         {
             get;
         }

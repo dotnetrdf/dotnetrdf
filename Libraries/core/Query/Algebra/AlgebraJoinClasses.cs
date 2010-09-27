@@ -46,7 +46,7 @@ namespace VDS.RDF.Query.Algebra
     /// <summary>
     /// Represents a LeftJoin predicated on the existence/non-existence of joinable sets on the RHS for each item on the LHS
     /// </summary>
-    public class ExistsJoin : ISparqlAlgebra
+    public class ExistsJoin : IJoin
     {
         private ISparqlAlgebra _lhs, _rhs;
         private bool _mustExist;
@@ -144,7 +144,7 @@ namespace VDS.RDF.Query.Algebra
     /// <summary>
     /// Represents a LeftJoin predicated on an arbitrary filter expression
     /// </summary>
-    public class LeftJoin : ISparqlAlgebra
+    public class LeftJoin : IJoin
     {
         private ISparqlAlgebra _lhs, _rhs;
         private ISparqlFilter _filter = new UnaryExpressionFilter(new BooleanExpressionTerm(true));
@@ -219,6 +219,17 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
+        /// Gets the Filter that applies across the Join
+        /// </summary>
+        public ISparqlFilter Filter
+        {
+            get
+            {
+                return this._filter;
+            }
+        }
+
+        /// <summary>
         /// Gets the LHS of the Join
         /// </summary>
         public ISparqlAlgebra Lhs
@@ -255,7 +266,7 @@ namespace VDS.RDF.Query.Algebra
     /// <summary>
     /// Represents a Join
     /// </summary>
-    public class Join : ISparqlAlgebra
+    public class Join : IJoin
     {
         private ISparqlAlgebra _lhs, _rhs;
 
@@ -397,7 +408,7 @@ namespace VDS.RDF.Query.Algebra
     /// <summary>
     /// Represents a Union
     /// </summary>
-    public class Union : ISparqlAlgebra
+    public class Union : IJoin
     {
         private ISparqlAlgebra _lhs, _rhs;
 

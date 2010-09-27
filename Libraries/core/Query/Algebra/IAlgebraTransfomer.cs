@@ -36,29 +36,20 @@ terms.
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using VDS.RDF.Query.Patterns;
+using System.Text;
 
 namespace VDS.RDF.Query.Algebra
 {
     /// <summary>
-    /// Represents an Algebra construct which is a BGP
+    /// An Algebra Transformer is a class that can transform an algebra from one form to another e.g. for optimisation purposes
     /// </summary>
-    public interface IBgp : ISparqlAlgebra
+    public interface IAlgebraTransfomer
     {
         /// <summary>
-        /// Gets the Number of Patterns in the BGP
+        /// Creates a new Algebra Transformer
         /// </summary>
-        int PatternCount 
-        { 
-            get;
-        }
-
-        /// <summary>
-        /// Gets the Triple Patterns in the BGP
-        /// </summary>
-        IEnumerable<ITriplePattern> TriplePatterns
-        {
-            get;
-        }
+        /// <param name="algebra">Algebra to transform</param>
+        /// <returns></returns>
+        ISparqlAlgebra Transform(ISparqlAlgebra algebra);
     }
 }

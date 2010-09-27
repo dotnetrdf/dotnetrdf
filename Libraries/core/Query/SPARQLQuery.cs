@@ -658,7 +658,7 @@ namespace VDS.RDF.Query
                 {
                     if (this._type != SparqlQueryType.Ask)
                     {
-                        if (this._limit >= 0 || this._offset >= 0)
+                        if (this._limit >= 0 || this._offset > 0)
                         {
                             if (this._groupBy == null && this._having == null && this._bindings == null)
                             {
@@ -1267,24 +1267,18 @@ namespace VDS.RDF.Query
                 case SparqlQueryType.SelectAllReduced:
                 case SparqlQueryType.SelectDistinct:
                 case SparqlQueryType.SelectReduced:
-                    //Are we able to use LazyBgp
-                    if (pattern is Bgp)
+                    //Are we able to use LazyBgp?
+                    if (this.CanUseLazyBgp)
                     {
-                        if (this.CanUseLazyBgp)
+                        try
                         {
-                            try
-                            {
-                                int limit = Math.Max(this._limit, 0);
-                                int offset = Math.Max(this._offset, 0);
-                                if (limit + offset > 0)
-                                {
-                                    pattern = new LazyBgp(((IBgp)pattern).TriplePatterns, limit + offset);
-                                }
-                            }
-                            catch
-                            {
-                                //If errors then can't use LazyBgp
-                            }
+                            LazyBgpTransformer transformer = new LazyBgpTransformer();
+                            ISparqlAlgebra optPattern = transformer.Transform(pattern);
+                            pattern = optPattern;
+                        }
+                        catch
+                        {
+                            //If errors then can't use LazyBgp
                         }
                     }
                     
