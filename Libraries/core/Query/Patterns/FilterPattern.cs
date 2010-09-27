@@ -101,6 +101,17 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
+        /// Gets the Filter that this Pattern uses
+        /// </summary>
+        public ISparqlFilter Filter
+        {
+            get
+            {
+                return this._filter;
+            }
+        }
+
+        /// <summary>
         /// Returns the string representation of the Pattern
         /// </summary>
         /// <returns></returns>

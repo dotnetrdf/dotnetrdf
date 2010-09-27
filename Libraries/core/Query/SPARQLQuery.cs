@@ -1220,6 +1220,18 @@ namespace VDS.RDF.Query
             switch (this._type)
             {
                 case SparqlQueryType.Ask:
+                    if (pattern is Bgp)
+                    {
+                        try
+                        {
+                            ISparqlAlgebra optPattern = (AskBgp)(Bgp)pattern;
+                            return new Ask(optPattern);
+                        }
+                        catch
+                        {
+                            //Ignore cast errors
+                        }
+                    }
                     return new Ask(pattern);
 
                 case SparqlQueryType.Construct:

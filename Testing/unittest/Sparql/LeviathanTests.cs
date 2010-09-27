@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -11,7 +12,7 @@ using VDS.RDF.Query.Expressions.Functions;
 using VDS.RDF.Query.Filters;
 using VDS.RDF.Query.Patterns;
 
-namespace VDS.RDF.Test
+namespace VDS.RDF.Test.Sparql
 {
     [TestClass()]
     public class LeviathanTests
@@ -353,6 +354,84 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
             Console.WriteLine();
 
             Assert.AreEqual(resultsA, resultsB, "Result Sets should have been equivalent");
+        }
+
+        [TestMethod()]
+        public void StreamingBGPEvaluation()
+        {
+            //Get the Data we want to query
+            TripleStore store = new TripleStore();
+            Graph g = new Graph();
+            FileLoader.Load(g, "InferenceTest.ttl");
+            store.Add(g);
+            //g = new Graph();
+            //FileLoader.Load(g, "noise.ttl");
+            //store.Add(g);
+
+            Console.WriteLine(store.Triples.Count() + " Triples in Store");
+
+            //Create the Triple Pattern we want to query with
+            UriNode fordFiesta = g.CreateUriNode(new Uri("http://example.org/vehicles/FordFiesta"));
+            UriNode rdfType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
+            UriNode rdfsLabel = g.CreateUriNode(new Uri(NamespaceMapper.RDFS + "label"));
+            UriNode speed = g.CreateUriNode(new Uri("http://example.org/vehicles/Speed"));
+            UriNode carClass = g.CreateUriNode(new Uri("http://example.org/vehicles/Car"));
+
+            TriplePattern allTriples = new TriplePattern(new VariablePattern("?s"), new VariablePattern("?p"), new VariablePattern("?o"));
+            TriplePattern allTriples2 = new TriplePattern(new VariablePattern("?x"), new VariablePattern("?y"), new VariablePattern("?z"));
+            TriplePattern tp1 = new TriplePattern(new VariablePattern("?s"), new NodeMatchPattern(rdfType), new NodeMatchPattern(carClass));
+            TriplePattern tp2 = new TriplePattern(new VariablePattern("?s"), new NodeMatchPattern(speed), new VariablePattern("?speed"));
+            TriplePattern tp3 = new TriplePattern(new VariablePattern("?s"), new NodeMatchPattern(rdfsLabel), new VariablePattern("?label"));
+            TriplePattern novars = new TriplePattern(new NodeMatchPattern(fordFiesta), new NodeMatchPattern(rdfType), new NodeMatchPattern(carClass));
+            TriplePattern novars2 = new TriplePattern(new NodeMatchPattern(fordFiesta), new NodeMatchPattern(rdfsLabel), new NodeMatchPattern(carClass));
+            FilterPattern blankSubject = new FilterPattern(new UnaryExpressionFilter(new IsBlankFunction(new VariableExpressionTerm("?s"))));
+            List<List<ITriplePattern>> tests = new List<List<ITriplePattern>>()
+            {
+                new List<ITriplePattern>() { },
+                new List<ITriplePattern>() { allTriples },
+                new List<ITriplePattern>() { allTriples, allTriples2 },
+                new List<ITriplePattern>() { tp1 },
+                new List<ITriplePattern>() { tp1, tp2 },
+                new List<ITriplePattern>() { tp1, tp3 },
+                new List<ITriplePattern>() { novars },
+                new List<ITriplePattern>() { novars, tp1 },
+                new List<ITriplePattern>() { novars, tp1, tp2 },
+                new List<ITriplePattern>() { novars2 },
+                new List<ITriplePattern>() { tp1, blankSubject }
+            };
+
+            foreach (List<ITriplePattern> tps in tests)
+            {
+                Console.WriteLine(tps.Count + " Triple Patterns in the Query");
+                foreach (ITriplePattern tp in tps)
+                {
+                    Console.WriteLine(tp.ToString());
+                }
+                Console.WriteLine();
+
+                ISparqlAlgebra ask = new Ask(new Bgp(tps));
+                ISparqlAlgebra askOptimised = new Ask(new AskBgp(tps));
+
+                //Evaluate with timings
+                Stopwatch timer = new Stopwatch();
+                TimeSpan unopt, opt;
+                timer.Start();
+                BaseMultiset results1 = ask.Evaluate(new SparqlEvaluationContext(null, store));
+                timer.Stop();
+                unopt = timer.Elapsed;
+                timer.Reset();
+                timer.Start();
+                BaseMultiset results2 = askOptimised.Evaluate(new SparqlEvaluationContext(null, store));
+                timer.Stop();
+                opt = timer.Elapsed;
+
+                Console.WriteLine("ASK = " + results1.GetType().ToString() + " in " + unopt.ToString());
+                Console.WriteLine("ASK Optimised = " + results2.GetType().ToString() + " in " + opt.ToString());
+
+                Assert.AreEqual(results1.GetType(), results2.GetType(), "Both ASK queries should have produced the same result");
+
+                Console.WriteLine();
+            }
         }
 
         private void ShowMultiset(BaseMultiset multiset) 

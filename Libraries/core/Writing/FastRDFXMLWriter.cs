@@ -44,8 +44,6 @@ using System.Xml;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 
-//REQ: Implement a Linq to XML based RDF/XML writer for use on non-XML DOM supporting platforms
-
 namespace VDS.RDF.Writing
 {
     /// <summary>

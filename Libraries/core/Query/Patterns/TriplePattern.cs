@@ -412,21 +412,18 @@ namespace VDS.RDF.Query.Patterns
                     {
                         return context.Data.GetTriplesWithSubject(subj);
                     }
-                    break;
 
                 case TripleIndexType.SubjectPredicate:
                     subj = ((NodeMatchPattern)this._subj).Node;
                     pred = ((NodeMatchPattern)this._pred).Node;
 
                     return context.Data.GetTriplesWithSubjectPredicate(subj, pred);
-                    break;
 
                 case TripleIndexType.SubjectObject:
                     subj = ((NodeMatchPattern)this._subj).Node;
                     obj = ((NodeMatchPattern)this._obj).Node;
 
                     return context.Data.GetTriplesWithSubjectObject(subj, obj);
-                    break;
 
                 case TripleIndexType.Predicate:
                     pred = ((NodeMatchPattern)this._pred).Node;
@@ -454,14 +451,12 @@ namespace VDS.RDF.Query.Patterns
                     {
                         return context.Data.GetTriplesWithPredicate(pred);
                     }
-                    break;
 
                 case TripleIndexType.PredicateObject:
                     pred = ((NodeMatchPattern)this._pred).Node;
                     obj = ((NodeMatchPattern)this._obj).Node;
 
                     return context.Data.GetTriplesWithPredicateObject(pred, obj);
-                    break;
 
                 case TripleIndexType.Object:
                     obj = ((NodeMatchPattern)this._obj).Node;
@@ -489,7 +484,21 @@ namespace VDS.RDF.Query.Patterns
                     {
                         return context.Data.GetTriplesWithObject(obj);
                     }
-                    break;
+
+                case TripleIndexType.NoVariables:
+                    //If there are no variables then at least one Triple must match or we abort
+                    INode s, p, o;
+                    s = ((NodeMatchPattern)this._subj).Node;
+                    p = ((NodeMatchPattern)this._pred).Node;
+                    o = ((NodeMatchPattern)this._obj).Node;
+                    if (context.Data.Contains(new Triple(s, p, o)))
+                    {
+                        return new Triple(s, p, o).AsEnumerable();
+                    }
+                    else
+                    {
+                        return Enumerable.Empty<Triple>();
+                    }
 
                 default:
                     return context.Data.QueryTriples;

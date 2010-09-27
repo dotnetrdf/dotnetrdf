@@ -40,7 +40,7 @@ using System.Net;
 using System.Text;
 using VDS.RDF.Storage.Params;
 
-//SLV: Implement a version of the UriLoader that makes the requests asynchronously
+//SLV: Implement a version of the UriLoader that makes the requests asynchronously?
 
 namespace VDS.RDF.Parsing
 {

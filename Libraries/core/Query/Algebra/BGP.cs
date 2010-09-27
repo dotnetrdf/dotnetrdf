@@ -126,7 +126,7 @@ namespace VDS.RDF.Query.Algebra
         /// </summary>
         /// <param name="context">Evaluation Context</param>
         /// <returns></returns>
-        public virtual BaseMultiset Evaluate(SparqlEvaluationContext context)
+        public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
             if (this._triplePatterns.Count > 0)
             {
@@ -166,9 +166,11 @@ namespace VDS.RDF.Query.Algebra
                             context.OutputMultiset = context.InputMultiset.Join(context.OutputMultiset);
                         }
                     }
+
                     //Then the Input for the next Pattern is the Output from the previous Pattern
                     context.InputMultiset = context.OutputMultiset;
                 }
+
                 //Trim the Multiset - this eliminates any temporary variables
                 context.OutputMultiset.Trim();
             }
@@ -178,7 +180,8 @@ namespace VDS.RDF.Query.Algebra
                 context.OutputMultiset = new IdentityMultiset();
             }
 
-            //If we've ended with an Empty Multiset (last thing was a FILTER/LET) then we turn it into the Null Multiset
+            //If we've ended with an Empty Multiset then we turn it into the Null Multiset
+            //to indicate that this BGP did not match anything
             if (context.OutputMultiset is Multiset && context.OutputMultiset.IsEmpty) context.OutputMultiset = new NullMultiset();
 
             //Return the Output Multiset
@@ -217,47 +220,22 @@ namespace VDS.RDF.Query.Algebra
         {
             return "BGP()";
         }
-    }
-
-    /// <summary>
-    /// Represents a BGP which is a set of Triple Patterns
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    /// A Streamed BGP differs from a BGP in that rather than evaluating each Triple Pattern in turn it evaluates across all Triple Patterns.  This is useful for ASK queries where we are only concerned with whether a BGP matches and not in the specific solutions
-    /// </para>
-    /// <para>
-    /// A Streamed BGP can only contain concrete Triple Patterns and not any of the specialised Triple Pattern classes
-    /// </para>
-    /// </remarks>
-    public class StreamedBgp : Bgp
-    {
-        /// <summary>
-        /// Creates a Streamed BGP containing a single Triple Pattern
-        /// </summary>
-        /// <param name="p">Triple Pattern</param>
-        public StreamedBgp(TriplePattern p)
-        {
-            this._triplePatterns.Add((ITriplePattern)p);
-        }
 
         /// <summary>
-        /// Creates a Streamed BGP containing a set of Triple Patterns
+        /// Casts a BGP into an Ask BGP where possible
         /// </summary>
-        /// <param name="ps">Triple Patterns</param>
-        public StreamedBgp(IEnumerable<TriplePattern> ps)
-        {
-            this._triplePatterns.AddRange(ps.Select(p => (ITriplePattern)p));
-        }
-
-        /// <summary>
-        /// Evaluates the BGP against the Evaluation Context
-        /// </summary>
-        /// <param name="context">Evaluation Context</param>
+        /// <param name="bgp">BGP</param>
         /// <returns></returns>
-        public virtual BaseMultiset Evaluate(SparqlEvaluationContext context)
+        public static explicit operator AskBgp(Bgp bgp)
         {
-            throw new NotImplementedException("The StreamedBgp is an experimental class which is currently unimplemented");
+            if (bgp._triplePatterns.All(tp => tp is TriplePattern || tp is FilterPattern))
+            {
+                return new AskBgp(bgp._triplePatterns);
+            }
+            else
+            {
+                throw new Exception("Cannot cast this BGP to a Ask BGP as it is not composed entirely of Triple Patterns/FILTERs (i.e. it contains LETs, Property Paths or Subqueries)");
+            }
         }
     }
 }
