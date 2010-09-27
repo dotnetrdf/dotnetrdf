@@ -73,7 +73,7 @@ namespace VDS.RDF.Query
         /// Processes a BGP
         /// </summary>
         /// <param name="bgp">BGP</param>
-        void ProcessBgp(Bgp bgp);
+        void ProcessBgp(IBgp bgp);
 
         /// <summary>
         /// Processes a Bindings modifier

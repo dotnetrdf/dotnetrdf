@@ -76,7 +76,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="bgp">BGP</param>
         /// <exception cref="NotSupportedException">Thrown since this Query Processor is not an algebra supporting processor</exception>
-        public void ProcessBgp(Bgp bgp)
+        public void ProcessBgp(IBgp bgp)
         {
             throw new NotSupportedException("This Query Processor is not an algebra supporting processor");
         }

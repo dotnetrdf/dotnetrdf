@@ -618,7 +618,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="var">Variable Name</param>
         /// <returns></returns>
-        protected internal bool IsProjectionVariable(String var)
+        internal bool IsProjectionVariable(String var)
         {
             if (this._vars.ContainsKey(var))
             {
@@ -635,7 +635,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="var">Variable Name</param>
         /// <returns></returns>
-        protected internal ISparqlExpression  ProjectionVariable(String var)
+        internal ISparqlExpression  ProjectionVariable(String var)
         {
             if (this._vars.ContainsKey(var) && this._vars[var].IsProjection)
             {
@@ -644,6 +644,30 @@ namespace VDS.RDF.Query
             else
             {
                 return null;
+            }
+        }
+
+        /// <summary>
+        /// Gets whether the Query is eligible for using LazyBgp
+        /// </summary>
+        internal bool CanUseLazyBgp
+        {
+            get
+            {
+                if (this._specialType == SparqlSpecialQueryType.NotApplicable || this._specialType == SparqlSpecialQueryType.Unknown)
+                {
+                    if (this._type != SparqlQueryType.Ask)
+                    {
+                        if (this._limit >= 0 || this._offset >= 0)
+                        {
+                            if (this._groupBy == null && this._having == null && this._bindings == null)
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+                return false;
             }
         }
 
@@ -1243,6 +1267,27 @@ namespace VDS.RDF.Query
                 case SparqlQueryType.SelectAllReduced:
                 case SparqlQueryType.SelectDistinct:
                 case SparqlQueryType.SelectReduced:
+                    //Are we able to use LazyBgp
+                    if (pattern is Bgp)
+                    {
+                        if (this.CanUseLazyBgp)
+                        {
+                            try
+                            {
+                                int limit = Math.Max(this._limit, 0);
+                                int offset = Math.Max(this._offset, 0);
+                                if (limit + offset > 0)
+                                {
+                                    pattern = new LazyBgp(((IBgp)pattern).TriplePatterns, limit + offset);
+                                }
+                            }
+                            catch
+                            {
+                                //If errors then can't use LazyBgp
+                            }
+                        }
+                    }
+                    
                     //GROUP BY is the first thing applied
                     if (this._groupBy != null) pattern = new GroupBy(pattern);
 

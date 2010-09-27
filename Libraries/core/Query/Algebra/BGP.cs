@@ -44,7 +44,7 @@ namespace VDS.RDF.Query.Algebra
     /// <summary>
     /// Represents a BGP which is a set of Triple Patterns
     /// </summary>
-    public class Bgp : ISparqlAlgebra
+    public class Bgp : IBgp
     {
         protected List<ITriplePattern> _triplePatterns = new List<ITriplePattern>();
 
@@ -118,6 +118,17 @@ namespace VDS.RDF.Query.Algebra
             get
             {
                 return this._triplePatterns.Count;
+            }
+        }
+
+        /// <summary>
+        /// Gets the Triple Patterns in the BGP
+        /// </summary>
+        public IEnumerable<ITriplePattern> TriplePatterns
+        {
+            get
+            {
+                return this._triplePatterns;
             }
         }
 

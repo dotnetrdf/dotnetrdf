@@ -289,6 +289,8 @@
     <Compile Include="Query\Algebra\BaseMultiset.cs" />
     <Compile Include="Query\Algebra\Bgp.cs" />
     <Compile Include="Query\Algebra\Bindings.cs" />
+    <Compile Include="Query\Algebra\IBgp.cs" />
+    <Compile Include="Query\Algebra\LazyBgp.cs" />
     <Compile Include="Query\Algebra\Distinct.cs" />
     <Compile Include="Query\Algebra\Filter.cs" />
     <Compile Include="Query\Algebra\Graph.cs" />
