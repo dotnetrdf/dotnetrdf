@@ -60,6 +60,7 @@ namespace rdfQuery
         private IRdfWriter _graphWriter = new NTriplesWriter();
         private SparqlQueryParser _parser = new SparqlQueryParser();
         private String _query;
+        private bool _print = false;
 
         public void RunQuery(String[] args) 
         {
@@ -89,31 +90,34 @@ namespace rdfQuery
                 q.Timeout = this._timeout;
                 q.PartialResultsOnTimeout = this._partialResults;
 
-                //Execute the Query
-                Object results;
-                switch (this._mode)
+                //Execute the Query unless print was specified
+                Object results = null;
+                if (!this._print)
                 {
-                    case RdfQueryMode.Local:
-                        results = this._store.ExecuteQuery(q);
-                        break;
-                    case RdfQueryMode.Remote:
-                        this._endpoint.Timeout = Convert.ToInt32(this._timeout);
-                        switch (q.QueryType)
-                        {
-                            case SparqlQueryType.Construct:
-                            case SparqlQueryType.Describe:
-                            case SparqlQueryType.DescribeAll:
-                                results = this._endpoint.QueryWithResultGraph(this._query);
-                                break;
-                            default:
-                                results = this._endpoint.QueryWithResultSet(this._query);
-                                break;
-                        }
-                        break;
-                    case RdfQueryMode.Unknown:
-                    default:
-                        Console.Error.WriteLine("rdfQuery: There were no inputs or a remote endpoint specified in the arguments so no query can be executed");
-                        return;
+                    switch (this._mode)
+                    {
+                        case RdfQueryMode.Local:
+                            results = this._store.ExecuteQuery(q);
+                            break;
+                        case RdfQueryMode.Remote:
+                            this._endpoint.Timeout = Convert.ToInt32(this._timeout);
+                            switch (q.QueryType)
+                            {
+                                case SparqlQueryType.Construct:
+                                case SparqlQueryType.Describe:
+                                case SparqlQueryType.DescribeAll:
+                                    results = this._endpoint.QueryWithResultGraph(this._query);
+                                    break;
+                                default:
+                                    results = this._endpoint.QueryWithResultSet(this._query);
+                                    break;
+                            }
+                            break;
+                        case RdfQueryMode.Unknown:
+                        default:
+                            Console.Error.WriteLine("rdfQuery: There were no inputs or a remote endpoint specified in the arguments so no query can be executed");
+                            return;
+                    }
                 }
 
                 //Select the Output Stream
@@ -127,18 +131,32 @@ namespace rdfQuery
                     output = new StreamWriter(this._output);
                 }
 
-                //Output the Results
-                if (results is SparqlResultSet)
+                if (!this._print)
                 {
-                    this._resultsWriter.Save((SparqlResultSet)results, output);
-                }
-                else if (results is Graph)
-                {
-                    this._graphWriter.Save((Graph)results, output);
+                    //Output the Results
+                    if (results is SparqlResultSet)
+                    {
+                        this._resultsWriter.Save((SparqlResultSet)results, output);
+                    }
+                    else if (results is Graph)
+                    {
+                        this._graphWriter.Save((Graph)results, output);
+                    }
+                    else
+                    {
+                        Console.Error.WriteLine("rdfQuery: The Query resulted in an unknown result");
+                    }
                 }
                 else
                 {
-                    Console.Error.WriteLine("rdfQuery: The Query resulted in an unknown result");
+                    //If Printing Print the Query then the Algebra
+                    output.WriteLine("Query");
+                    output.WriteLine(q.ToString());
+                    output.WriteLine();
+                    output.WriteLine("Algebra");
+                    output.WriteLine(q.ToAlgebra().ToString());
+                    output.Flush();
+                    output.Close();
                 }
             }
             catch (RdfQueryTimeoutException timeout)
@@ -196,10 +214,17 @@ namespace rdfQuery
                         this._mode = RdfQueryMode.Local;
 
                         //Try and parse RDF from the given URI
-                        Uri u = new Uri(uri);
-                        Graph g = new Graph();
-                        UriLoader.Load(g, u);
-                        this._store.Add(g);
+                        if (!this._print)
+                        {
+                            Uri u = new Uri(uri);
+                            Graph g = new Graph();
+                            UriLoader.Load(g, u);
+                            this._store.Add(g);
+                        }
+                        else
+                        {
+                            Console.Error.WriteLine("rdfQuery: Ignoring the input URI '" + uri + "' since -print has been specified so the query will not be executed so no need to load the data");
+                        }
                     }
                     catch (UriFormatException)
                     {
@@ -352,6 +377,37 @@ namespace rdfQuery
                         this._partialResults = true;
                     }
                 }
+                else if (arg.StartsWith("-noopt"))
+                {
+                    if (arg.Equals("-noopt"))
+                    {
+                        Options.QueryOptimisation = false;
+                        Options.AlgebraOptimisation = false;
+                    }
+                    else if (arg.Length >= 7)
+                    {
+                        String opts = arg.Substring(7);
+                        foreach (char c in opts.ToCharArray())
+                        {
+                            if (c == 'a' || c == 'A')
+                            {
+                                Options.AlgebraOptimisation = false;
+                            }
+                            else if (c == 'q' || c == 'Q')
+                            {
+                                Options.QueryOptimisation = false;
+                            }
+                            else
+                            {
+                                Console.Error.WriteLine("rdfQuery: The value '" + c + "' as part of the -noopt argument is not supported - it has been ignored");
+                            }
+                        }
+                    }
+                }
+                else if (arg.Equals("-print"))
+                {
+                    this._print = true;
+                }
                 else if (arg.Equals("-help"))
                 {
                     //Ignore Help Argument if other arguments present
@@ -381,9 +437,16 @@ namespace rdfQuery
                         this._mode = RdfQueryMode.Local;
 
                         //Try and parse RDF from the given file
-                        Graph g = new Graph();
-                        FileLoader.Load(g, arg);
-                        this._store.Add(g);
+                        if (!this._print)
+                        {
+                            Graph g = new Graph();
+                            FileLoader.Load(g, arg);
+                            this._store.Add(g);
+                        }
+                        else
+                        {
+                            Console.Error.WriteLine("rdfQuery: Ignoring the lcoa file '" + arg + "' since -print has been specified so the query will not be executed so no need to load the data");
+                        }
                     }
                     catch (RdfParseException parseEx)
                     {
