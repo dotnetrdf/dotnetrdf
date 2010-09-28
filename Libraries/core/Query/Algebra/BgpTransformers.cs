@@ -126,6 +126,22 @@ namespace VDS.RDF.Query.Algebra
                     IJoin join = (IJoin)algebra;
                     temp = new AskUnion(this.TransformInternal(join.Lhs, depth + 1), this.TransformInternal(join.Rhs, depth + 1));
                 }
+                else if (algebra is Join)
+                {
+                    IJoin join = (IJoin)algebra;
+                    if (join.Lhs.Variables.IsDisjoint(join.Rhs.Variables))
+                    {
+                        //If the sides of the Join are disjoint then can fully transform the join since we only need to find at least
+                        //one solution on either side in order for the query to match
+                        temp = new Join(this.TransformInternal(join.Lhs, depth + 1), this.TransformInternal(join.Rhs, depth + 1));
+                    } 
+                    else 
+                    {
+                        //If the sides are not disjoint then the LHS must be fully evaluated but the RHS need only produce at least
+                        //one solution based on the full input from the LHS for the query to match
+                        temp = new Join(join.Lhs, this.TransformInternal(join.Rhs, depth + 1));
+                    }
+                }
                 else
                 {
                     temp = algebra;

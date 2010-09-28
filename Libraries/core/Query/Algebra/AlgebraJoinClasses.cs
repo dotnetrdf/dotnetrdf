@@ -289,6 +289,8 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public static ISparqlAlgebra CreateJoin(ISparqlAlgebra lhs, ISparqlAlgebra rhs)
         {
+            if (!Options.AlgebraOptimisation) return new Join(lhs, rhs);
+
             if (lhs is Bgp)
             {
                 if (((Bgp)lhs).IsEmpty)
