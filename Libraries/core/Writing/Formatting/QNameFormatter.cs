@@ -85,11 +85,11 @@ namespace VDS.RDF.Writing.Formatting
             StringBuilder output = new StringBuilder();
             String qname;
 
-            if (this._allowAKeyword && u.StringUri.Equals(RdfSpecsHelper.RdfType))
+            /*if (this._allowAKeyword && u.StringUri.Equals(RdfSpecsHelper.RdfType))
             {
                 output.Append('a');
             }
-            else if (this._qnameMapper.ReduceToQName(u.StringUri, out qname))
+            else*/ if (this._qnameMapper.ReduceToQName(u.StringUri, out qname))
             {
                 if (TurtleSpecsHelper.IsValidQName(qname))
                 {

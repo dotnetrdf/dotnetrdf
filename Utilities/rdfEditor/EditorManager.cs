@@ -263,7 +263,7 @@ namespace rdfEditor
         {
             if (this._editor == null) return; //Not yet ready
 
-            if (filename == null)
+            if (filename == null || System.IO.Path.GetExtension(filename).Equals(String.Empty))
             {
                 try
                 {

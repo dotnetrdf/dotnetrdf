@@ -142,14 +142,14 @@ namespace VDS.RDF.Parsing
 
                 {
                     //Invoke FileLoader instead
-                    OnWarning("This is a file: URI so invoking the FileLoader instead");
+                    RaiseWarning("This is a file: URI so invoking the FileLoader instead");
                     FileLoader.Load(g, u.ToString().Substring(8));
                     return;
                 }
                 if (u.Scheme.Equals("data"))
                 {
                     //Invoke DataUriLoader instead
-                    OnWarning("This is a data: URI so invoking the DataUriLoader instead");
+                    RaiseWarning("This is a data: URI so invoking the DataUriLoader instead");
                     DataUriLoader.Load(g, u);
                     return;
                 }
@@ -287,7 +287,7 @@ namespace VDS.RDF.Parsing
                         //Only need to auto-detect the parser if a specific one wasn't specified
                         parser = MimeTypesHelper.GetParser(httpResponse.ContentType);
                     }
-                    parser.Warning += OnWarning;
+                    parser.Warning += RaiseWarning;
                     parser.Load(g, new StreamReader(httpResponse.GetResponseStream()));
 
 #if !NO_URICACHE
@@ -412,7 +412,7 @@ namespace VDS.RDF.Parsing
 
                     //Get a Parser and Load the RDF
                     IStoreReader parser = MimeTypesHelper.GetStoreParser(httpResponse.ContentType);
-                    parser.Warning += OnStoreWarning;
+                    parser.Warning += RaiseStoreWarning;
                     parser.Load(store, new StreamParams(httpResponse.GetResponseStream()));
                 }
             }
@@ -442,7 +442,7 @@ namespace VDS.RDF.Parsing
         /// Raises warning messages
         /// </summary>
         /// <param name="message">Warning Message</param>
-        static void OnWarning(String message)
+        static void RaiseWarning(String message)
         {
             RdfReaderWarning d = Warning;
             if (d != null)
@@ -455,7 +455,7 @@ namespace VDS.RDF.Parsing
         /// Raises store warning messages
         /// </summary>
         /// <param name="message">Warning Message</param>
-        static void OnStoreWarning(String message)
+        static void RaiseStoreWarning(String message)
         {
             StoreReaderWarning d = StoreWarning;
             if (d != null)

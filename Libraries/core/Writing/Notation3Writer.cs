@@ -349,6 +349,10 @@ namespace VDS.RDF.Writing
                     return context.NodeFormatter.Format(n);
 
                 case NodeType.Uri:
+                    if (segment == TripleSegment.Predicate)
+                    {
+                        if (((UriNode)n).StringUri.Equals(RdfSpecsHelper.RdfType, StringComparison.Ordinal)) return "a";
+                    }
                     return context.NodeFormatter.Format(n);
 
                 default:

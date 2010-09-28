@@ -205,11 +205,14 @@ namespace VDS.RDF.Test
         {
             try
             {
+                Options.UriLoaderCaching = false;
+
                 List<Uri> testUris = new List<Uri>() {
                     new Uri("http://www.bbc.co.uk/programmes/b0080bbs#programme"),
                     new Uri("http://dbpedia.org/resource/Southampton"),
                     new Uri("file:///MergePart1.ttl"),
-                    new Uri("file:///D:/PhD Work/dotNetRDF/unittest/resources/MergePart1.ttl")
+                    /*new Uri("file:///D:/PhD Work/dotNetRDF/unittest/resources/MergePart1.ttl"),*/
+                    new Uri("http://www.dotnetrdf.org/configuration#")
                 };
 
                 Console.WriteLine("## URI Loader Test Suite");
@@ -250,6 +253,10 @@ namespace VDS.RDF.Test
             catch (Exception ex)
             {
                 TestTools.ReportError("Other Error", ex, true);
+            }
+            finally
+            {
+                Options.UriLoaderCaching = true;
             }
         }
 

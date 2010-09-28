@@ -148,7 +148,7 @@ namespace dotNetRDFTest
             Console.WriteLine("NQuads Tests Done");
 
             //Call the TriX Test Suite
-            //TriXTestSuite.Main(args);
+            TriXTestSuite.Main(args);
             Console.SetOut(stdout);
             Console.WriteLine("TriX Tests Done");
 
@@ -283,7 +283,7 @@ namespace dotNetRDFTest
             Console.WriteLine("Background persisted Graph Test Done");
 
             //Call ConfigurationLoader Test
-            ConfigurationLoaderTests.Main(args);
+            //ConfigurationLoaderTests.Main(args);
             Console.SetOut(stdout);
             Console.WriteLine("Configuration Loader Tests Done");
 

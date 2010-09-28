@@ -94,7 +94,7 @@ namespace VDS.RDF.Parsing
             //Ensure that the Uri is an absolute file Uri
             if (g.IsEmpty && g.BaseUri == null)
             {
-                OnWarning("Assigned a file: URI as the Base URI for the input Graph");
+                RaiseWarning("Assigned a file: URI as the Base URI for the input Graph");
                 if (Path.IsPathRooted(filename))
                 {
                     g.BaseUri = new Uri("file:///" + filename);
@@ -115,7 +115,7 @@ namespace VDS.RDF.Parsing
                 catch (RdfParserSelectionException)
                 {
                     //If error then we couldn't determine MIME Type from the File Extension
-                    OnWarning("Unable to select a parser by determining MIME Type from the File Extension");
+                    RaiseWarning("Unable to select a parser by determining MIME Type from the File Extension");
                 }
             }
 
@@ -126,13 +126,13 @@ namespace VDS.RDF.Parsing
                 StreamReader reader = new StreamReader(filename);
                 String data = reader.ReadToEnd();
                 reader.Close();
-                OnWarning("Attempting parsing using the StringParser");
+                RaiseWarning("Attempting parsing using the StringParser");
                 StringParser.Parse(g, data);
             }
             else
             {
                 //Parser was selected based on File Extension or one was explicitly specified
-                parser.Warning += OnWarning;
+                parser.Warning += RaiseWarning;
                 parser.Load(g, filename);
             }
         }
@@ -164,7 +164,7 @@ namespace VDS.RDF.Parsing
         /// Raises warning messages
         /// </summary>
         /// <param name="message">Warning Message</param>
-        static void OnWarning(String message)
+        static void RaiseWarning(String message)
         {
             RdfReaderWarning d = Warning;
             if (d != null)
@@ -177,7 +177,7 @@ namespace VDS.RDF.Parsing
         /// Raises Store Warning messages
         /// </summary>
         /// <param name="message">Warning Message</param>
-        static void OnStoreWarning(String message)
+        static void RaiseStoreWarning(String message)
         {
             StoreReaderWarning d = StoreWarning;
             if (d != null)

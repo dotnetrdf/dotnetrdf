@@ -100,7 +100,7 @@ namespace rdfConvert
                                     Console.Error.WriteLine("rdfConvert: When converting a single URI you must specify an output file with the -out:filename argument");
                                     return;
                                 }
-                                destFile = this._output + this._outExt;
+                                destFile = Path.GetFileNameWithoutExtension(this._output) + this._outExt;
                             }
                             else
                             {
@@ -119,7 +119,7 @@ namespace rdfConvert
                                 }
                                 else
                                 {
-                                    destFile = this._output + this._outExt;
+                                    destFile = this._output;
                                 }
                             }
                             else
@@ -242,7 +242,7 @@ namespace rdfConvert
                     }
                     else
                     {
-                        String destFile = (this._inputs.Count == 1 && !this._inputs[0].StartsWith("-uri:")) ? Path.GetFileNameWithoutExtension(this._inputs[0]) + this._outExt :"dataset" + this._outExt;
+                        String destFile = (this._inputs.Count == 1 && !this._inputs[0].StartsWith("-uri:")) ? Path.GetFileNameWithoutExtension(this._inputs[0]) + this._outExt : "dataset" + this._outExt;
                         if (File.Exists(destFile) && !this._overwrite)
                         {
                             Console.Error.WriteLine("rdfConvert: Unable to output to '" + destFile + "' because a file already exists at this location and the -overwrite argument was not used");

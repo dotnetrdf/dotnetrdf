@@ -41,6 +41,7 @@ namespace rdfEditor
         private SaveFileDialog _sfd = new SaveFileDialog();
         private EditorManager _manager;
         private bool _saveWindowSize = false;
+        private bool _overrideClose = true;
 
         public EditorWindow()
         {
@@ -64,9 +65,7 @@ namespace rdfEditor
             textEditor.FontSize = Math.Round(Properties.Settings.Default.EditorFontSize, 0);
             textEditor.Foreground = new SolidColorBrush(Properties.Settings.Default.EditorForeground);
             textEditor.Background = new SolidColorBrush(Properties.Settings.Default.EditorBackground);
-            //textEditor.FontFamily =
             
-
             //Setup Options based on the User Config file
             if (!Properties.Settings.Default.EnableAutoComplete) 
             {
@@ -122,6 +121,76 @@ namespace rdfEditor
             _sfd.Title = "Save RDF/SPARQL File";
             _sfd.DefaultExt = ".rdf";
             _sfd.Filter = _ofd.Filter;
+
+            //Setup dropping of files
+            textEditor.AllowDrop = true;
+            textEditor.Drop += new DragEventHandler(textEditor_Drop);
+        }
+
+        public EditorWindow(String file)
+            : this()
+        {
+            try
+            {
+                using (StreamReader reader = new StreamReader(file))
+                {
+                    String text = reader.ReadToEnd();
+                    textEditor.Text = String.Empty;
+                    textEditor.Text = text;
+                    this._manager.AutoDetectSyntax(file);
+                }
+                this._manager.CurrentFile = file;
+                this.Title = "rdfEditor - " + System.IO.Path.GetFileName(file);
+                this._manager.HasChanged = false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error occurred while opening the selected file: " + ex.Message, "Unable to Open File");
+            }
+        }
+
+        void textEditor_Drop(object sender, DragEventArgs e)
+        {
+            //Is the data FileDrop data?
+            String[] droppedFilePaths = e.Data.GetData(DataFormats.FileDrop, false) as string[];
+            if (droppedFilePaths == null) return;
+
+            e.Handled = true;
+
+            if (droppedFilePaths.Length > 0)
+            {
+                if (droppedFilePaths.Length == 1)
+                {
+                    String file = droppedFilePaths[0];
+                    mnuClose_Click(sender, e);
+
+                    try
+                    {
+                        using (StreamReader reader = new StreamReader(file))
+                        {
+                            String text = reader.ReadToEnd();
+                            textEditor.Text = String.Empty;
+                            textEditor.Text = text;
+                            this._manager.AutoDetectSyntax(file);
+                        }
+                        this._manager.CurrentFile = file;
+                        this.Title = "rdfEditor - " + System.IO.Path.GetFileName(this._manager.CurrentFile);
+                        this._manager.HasChanged = false;
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("An error occurred while opening the selected file: " + ex.Message, "Unable to Open File");
+                    }
+                }
+                else
+                {
+                    foreach (String droppedFile in droppedFilePaths)
+                    {
+                        EditorWindow editor = new EditorWindow(droppedFile);
+                        editor.Show();
+                    }
+                }
+            } 
         }
 
         #region File Menu
@@ -409,6 +478,7 @@ namespace rdfEditor
         private void mnuExit_Click(object sender, RoutedEventArgs e)
         {
             mnuClose_Click(sender, e);
+            this._overrideClose = false;
             Application.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
             Application.Current.Shutdown();
         }
@@ -678,7 +748,6 @@ namespace rdfEditor
             FileAssociations diag = new FileAssociations();
             diag.ShowDialog();
         }
-
 
         private void mnuCustomiseAppearance_Click(object sender, RoutedEventArgs e)
         {
@@ -999,7 +1068,8 @@ namespace rdfEditor
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if (Application.Current.ShutdownMode != ShutdownMode.OnExplicitShutdown)
+            if (this._overrideClose) return;
+            if (Application.Current.ShutdownMode != ShutdownMode.OnExplicitShutdown )
             {
                 mnuClose_Click(sender, new RoutedEventArgs());
                 Application.Current.Shutdown();
@@ -1020,6 +1090,12 @@ namespace rdfEditor
 
 
         #endregion
+
+        private void mnuCloseWindow_Click(object sender, RoutedEventArgs e)
+        {
+            mnuClose_Click(sender, e);
+            this.Close();
+        }
 
     }
 }

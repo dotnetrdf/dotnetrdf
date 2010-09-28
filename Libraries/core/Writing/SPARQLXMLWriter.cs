@@ -219,9 +219,11 @@ namespace VDS.RDF.Writing
             settings.CloseOutput = true;
             settings.ConformanceLevel = ConformanceLevel.Document;
             settings.Encoding = Encoding.UTF8;
+            settings.Indent = true;
 #if SILVERLIGHT
             settings.NamespaceHandling = NamespaceHandling.OmitDuplicates;
 #endif
+            settings.NewLineHandling = NewLineHandling.None;
             settings.OmitXmlDeclaration = false;
             return settings;
         }
