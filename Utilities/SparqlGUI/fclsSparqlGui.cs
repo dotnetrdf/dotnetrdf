@@ -64,8 +64,6 @@ namespace SparqlGUI
                 this.txtQuery.Text = defaultQuery;
                 reader.Close();
             }
-            this.radEngineLeviathan.Checked = true;
-            Options.QueryEngine = SparqlEngine.Leviathan;
             this.cboGraphFormat.SelectedIndex = 5;
             this.cboResultsFormat.SelectedIndex = 2;
         }
@@ -258,11 +256,6 @@ namespace SparqlGUI
             {
                 MessageBox.Show("Query failed:\n" + ex.Message + "\n" + ex.StackTrace, "Query Failed");
             }
-        }
-
-        private void radioButton1_CheckedChanged(object sender, EventArgs e)
-        {
-            if (this.radEngineLeviathan.Checked) Options.QueryEngine = SparqlEngine.Leviathan;
         }
 
         private void radSparql10_CheckedChanged(object sender, EventArgs e)
@@ -473,6 +466,16 @@ namespace SparqlGUI
         private void chkAllowUnknownFunctions_CheckedChanged(object sender, EventArgs e)
         {
             Options.QueryAllowUnknownFunctions = this.chkAllowUnknownFunctions.Checked;
+        }
+
+        private void chkQueryOptimisation_CheckedChanged(object sender, EventArgs e)
+        {
+            Options.QueryOptimisation = this.chkQueryOptimisation.Checked;
+        }
+
+        private void chkAlgebraOptimisation_CheckedChanged(object sender, EventArgs e)
+        {
+            Options.AlgebraOptimisation = this.chkAlgebraOptimisation.Checked;
         }
     }
 }

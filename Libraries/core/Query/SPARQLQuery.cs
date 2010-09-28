@@ -647,30 +647,6 @@ namespace VDS.RDF.Query
             }
         }
 
-        /// <summary>
-        /// Gets whether the Query is eligible for using LazyBgp
-        /// </summary>
-        internal bool CanUseLazyBgp
-        {
-            get
-            {
-                if (this._specialType == SparqlSpecialQueryType.NotApplicable || this._specialType == SparqlSpecialQueryType.Unknown)
-                {
-                    if (this._type != SparqlQueryType.Ask)
-                    {
-                        if (this._limit >= 0 || this._offset > 0)
-                        {
-                            if (this._groupBy == null && this._having == null && this._bindings == null)
-                            {
-                                return true;
-                            }
-                        }
-                    }
-                }
-                return false;
-            }
-        }
-
         #endregion
 
         #region Methods for setting up the Query (used by SparqlQueryParser)
@@ -1211,21 +1187,32 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public ISparqlAlgebra ToAlgebra()
         {
+            //Firstly Transform the Root Graph Pattern to SPARQL Algebra
             ISparqlAlgebra pattern;
             if (this._rootGraphPattern != null)
             {
-                switch (this.SpecialType)
+                if (Options.AlgebraOptimisation)
                 {
-                    case SparqlSpecialQueryType.DistinctGraphs:
-                        pattern = new SelectDistinctGraphs();
-                        break;
-                    case SparqlSpecialQueryType.AskAnyTriples:
-                        pattern = new AskAnyTriples();
-                        break;
-                    case SparqlSpecialQueryType.NotApplicable:
-                    default:
-                        pattern = this._rootGraphPattern.ToAlgebra();
-                        break;
+                    //If using Algebra Optimisation may use a special algebra in some cases
+                    switch (this.SpecialType)
+                    {
+                        case SparqlSpecialQueryType.DistinctGraphs:
+                            pattern = new SelectDistinctGraphs();
+                            break;
+                        case SparqlSpecialQueryType.AskAnyTriples:
+                            pattern = new AskAnyTriples();
+                            break;
+                        case SparqlSpecialQueryType.NotApplicable:
+                        default:
+                            //If not just use the standard transform
+                            pattern = this._rootGraphPattern.ToAlgebra();
+                            break;
+                    }
+                }
+                else
+                {
+                    //If not using Algebra Optimisation just use the standard transform
+                    pattern = this._rootGraphPattern.ToAlgebra();
                 }
             }
             else
@@ -1241,19 +1228,22 @@ namespace VDS.RDF.Query
 
             //Q: Wrap the entire thing in an Algebra that initialises the Dataset?
 
+            //Then we apply any 
             switch (this._type)
             {
                 case SparqlQueryType.Ask:
-                    if (pattern is Bgp)
+                    //Optimise ASK Queries if Algebra Optimisation is enabled
+                    if (Options.AlgebraOptimisation)
                     {
                         try
                         {
-                            ISparqlAlgebra optPattern = (AskBgp)(Bgp)pattern;
+                            AskBgpTransformer transformer = new AskBgpTransformer();
+                            ISparqlAlgebra optPattern = transformer.Transform(pattern);
                             return new Ask(optPattern);
                         }
                         catch
                         {
-                            //Ignore cast errors
+                            //Ignore transformation errors
                         }
                     }
                     return new Ask(pattern);
@@ -1267,8 +1257,8 @@ namespace VDS.RDF.Query
                 case SparqlQueryType.SelectAllReduced:
                 case SparqlQueryType.SelectDistinct:
                 case SparqlQueryType.SelectReduced:
-                    //Are we able to use LazyBgp?
-                    if (this.CanUseLazyBgp)
+                    //Optimise Queries to use LazyBgp's if Algebra Optimisation is enabled and there is a Limit/Offset
+                    if (Options.AlgebraOptimisation && (this._limit >= 0 || this._offset > 0))
                     {
                         try
                         {
@@ -1317,7 +1307,7 @@ namespace VDS.RDF.Query
                     //Finally we can apply any limit and/or offset
                     if (this._limit >= 0 || this._offset > 0)
                     {
-                        pattern = new Slice(pattern);
+                        pattern = new Slice(pattern, this._limit, this._offset);
                     }
 
                     return pattern;

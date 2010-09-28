@@ -43,7 +43,7 @@ namespace VDS.RDF.Query.Algebra
     /// <summary>
     /// An Algebra Transformer that optimises Algebra to use <see cref="LazyBgp">LazyBgp</see>'s wherever possible
     /// </summary>
-    public class LazyBgpTransformer : IAlgebraTransfomer
+    public class LazyBgpTransformer : BaseAlgebraTransformer
     {
         /// <summary>
         /// Transforms an Algebra to a form that uses <see cref="LazyBgp">LazyBgp</see> where possible
@@ -55,7 +55,7 @@ namespace VDS.RDF.Query.Algebra
         /// By transforming a query to use <see cref="LazyBgp">LazyBgp</see> we can achieve much more efficient processing of some forms of queries
         /// </para>
         /// </remarks>
-        public ISparqlAlgebra Transform(ISparqlAlgebra algebra)
+        protected override ISparqlAlgebra TransformInternal(ISparqlAlgebra algebra, int depth)
         {
             try
             {
@@ -63,17 +63,67 @@ namespace VDS.RDF.Query.Algebra
                 if (algebra is Bgp)
                 {
                     //The use of -1 for required results means requirements will be detected from Query
-                    temp = new LazyBgp(((Bgp)algebra).TriplePatterns, -1);
+                    temp = new LazyBgp(((Bgp)algebra).TriplePatterns);
                 }
                 else if (algebra is LeftJoin)
                 {
                     IJoin join = (IJoin)algebra;
-                    temp = new LeftJoin(this.Transform(join.Lhs), join.Rhs, ((LeftJoin)algebra).Filter);
+                    temp = new LeftJoin(this.TransformInternal(join.Lhs, depth + 1), join.Rhs, ((LeftJoin)algebra).Filter);
                 }
                 else if (algebra is Union)
                 {
                     IJoin join = (IJoin)algebra;
-                    temp = new Union(this.Transform(join.Lhs), this.Transform(join.Rhs));
+                    temp = new LazyUnion(this.TransformInternal(join.Lhs, depth + 1), this.TransformInternal(join.Rhs, depth + 1));
+                }
+                else
+                {
+                    temp = algebra;
+                }
+                return temp;
+            }
+            catch
+            {
+                //If the Transform fails return the current algebra
+                return algebra;
+            }
+        }
+    }
+
+    /// <summary>
+    /// An Algebra Transformer that optimises Algebra to use <see cref="AskBgp">AskBgp</see>'s wherever possible
+    /// </summary>
+    public class AskBgpTransformer : BaseAlgebraTransformer
+    {
+        /// <summary>
+        /// Transforms an Algebra to a form that uses <see cref="AskBgp">AskBgp</see> where possible
+        /// </summary>
+        /// <param name="algebra">Algebra</param>
+        /// <param name="depth">Depth</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// <para>
+        /// By transforming a query to use <see cref="AskBgp">AskBgp</see> we can achieve much more efficient processing of some forms of queries
+        /// </para>
+        /// </remarks>
+        protected override ISparqlAlgebra TransformInternal(ISparqlAlgebra algebra, int depth)
+        {
+            try
+            {
+                ISparqlAlgebra temp;
+                if (algebra is Bgp)
+                {
+                    //The use of -1 for required results means requirements will be detected from Query
+                    temp = new AskBgp(((Bgp)algebra).TriplePatterns);
+                }
+                else if (algebra is LeftJoin)
+                {
+                    IJoin join = (IJoin)algebra;
+                    temp = new LeftJoin(this.TransformInternal(join.Lhs, depth + 1), join.Rhs, ((LeftJoin)algebra).Filter);
+                }
+                else if (algebra is Union)
+                {
+                    IJoin join = (IJoin)algebra;
+                    temp = new AskUnion(this.TransformInternal(join.Lhs, depth + 1), this.TransformInternal(join.Rhs, depth + 1));
                 }
                 else
                 {

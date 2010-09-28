@@ -46,14 +46,30 @@ namespace VDS.RDF.Query.Algebra
     public class Slice : ISparqlAlgebra
     {
         private ISparqlAlgebra _pattern;
+        private int _limit = -1, _offset = 0;
+        private bool _detectSettings = true;
 
         /// <summary>
-        /// Creates a new Slice
+        /// Creates a new Slice modifier which will detect LIMIT and OFFSET from the query
         /// </summary>
         /// <param name="pattern">Pattern</param>
         public Slice(ISparqlAlgebra pattern)
         {
             this._pattern = pattern;
+        }
+
+        /// <summary>
+        /// Creates a new Slice modifier which uses a specific LIMIT and OFFSET
+        /// </summary>
+        /// <param name="pattern">Pattern</param>
+        /// <param name="limit">Limit</param>
+        /// <param name="offset">Offset</param>
+        public Slice(ISparqlAlgebra pattern, int limit, int offset)
+            : this(pattern)
+        {
+            this._limit = Math.Max(-1, limit);
+            this._offset = Math.Max(0, offset);
+            this._detectSettings = false;
         }
 
         /// <summary>
@@ -63,7 +79,18 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
-            if (context.Query.Limit == 0)
+            //Detect the Offset and Limit from the Query if required
+            int limit = this._limit, offset = this._offset;
+            if (this._detectSettings)
+            {
+                if (context.Query != null)
+                {
+                    limit = Math.Max(-1, context.Query.Limit);
+                    offset = Math.Max(0, context.Query.Offset);
+                }
+            }
+
+            if (limit == 0)
             {
                 //If Limit is Zero we can skip evaluation
                 context.OutputMultiset = new Multiset(context.Query.Variables.Select(v => v.Name));
@@ -73,9 +100,9 @@ namespace VDS.RDF.Query.Algebra
             {
                 context.InputMultiset = this._pattern.Evaluate(context);
 
-                if (context.Query.Offset > 0)
+                if (offset > 0)
                 {
-                    if (context.Query.Offset > context.InputMultiset.Count)
+                    if (offset > context.InputMultiset.Count)
                     {
                         //If the Offset is greater than the count return nothing
                         context.OutputMultiset = new Multiset(context.Query.Variables.Select(v => v.Name));
@@ -84,17 +111,17 @@ namespace VDS.RDF.Query.Algebra
                     else
                     {
                         //Otherwise discard the relevant number of Bindings
-                        foreach (int id in context.InputMultiset.SetIDs.Take(context.Query.Offset).ToList())
+                        foreach (int id in context.InputMultiset.SetIDs.Take(offset).ToList())
                         {
                             context.InputMultiset.Remove(id);
                         }
                     }
                 }
-                if (context.Query.Limit > 0)
+                if (limit > 0)
                 {
-                    if (context.InputMultiset.Count > context.Query.Limit)
+                    if (context.InputMultiset.Count > limit)
                     {
-                        foreach (int id in context.InputMultiset.SetIDs.Skip(context.Query.Limit).ToList())
+                        foreach (int id in context.InputMultiset.SetIDs.Skip(limit).ToList())
                         {
                             context.InputMultiset.Remove(id);
                         }
@@ -117,6 +144,39 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
+        /// Gets the Limit in use (-1 indicates no Limit)
+        /// </summary>
+        public int Limit
+        {
+            get
+            {
+                return this._limit;
+            }
+        }
+
+        /// <summary>
+        /// Gets the Offset in use (0 indicates no Offset)
+        /// </summary>
+        public int Offset
+        {
+            get
+            {
+                return this._offset;
+            }
+        }
+
+        /// <summary>
+        /// Gets whether the Algebra will detec the Limit and Offset to use from the provided query
+        /// </summary>
+        public bool DetectFromQuery
+        {
+            get
+            {
+                return this._detectSettings;
+            }
+        }
+
+        /// <summary>
         /// Gets the Inner Algebra
         /// </summary>
         public ISparqlAlgebra InnerAlgebra
@@ -133,7 +193,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            return "Slice(" + this._pattern.ToString() + ")";
+            return "Slice(" + this._pattern.ToString() + ", LIMIT " + this._limit + ", OFFSET " + this._offset + ")";
         }
     }
 }

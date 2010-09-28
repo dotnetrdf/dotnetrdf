@@ -310,4 +310,100 @@ namespace VDS.RDF.Query.Algebra
             return "AskBgp()";
         }
     }
+
+    /// <summary>
+    /// Represents a Union
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// An Ask Union differs from a standard Union in that if it finds a solution on the LHS it has no need to evaluate the RHS
+    /// </para>
+    /// </remarks>
+    public class AskUnion : IJoin
+    {
+        private ISparqlAlgebra _lhs, _rhs;
+
+        /// <summary>
+        /// Creates a new Ask Union
+        /// </summary>
+        /// <param name="lhs">LHS Pattern</param>
+        /// <param name="rhs">RHS Pattern</param>
+        public AskUnion(ISparqlAlgebra lhs, ISparqlAlgebra rhs)
+        {
+            this._lhs = lhs;
+            this._rhs = rhs;
+        }
+
+        /// <summary>
+        /// Evaluates the Ask Union
+        /// </summary>
+        /// <param name="context">Evaluation Context</param>
+        /// <returns></returns>
+        public BaseMultiset Evaluate(SparqlEvaluationContext context)
+        {
+            BaseMultiset initialInput = context.InputMultiset;
+            BaseMultiset lhsResult = this._lhs.Evaluate(context);
+            context.CheckTimeout();
+
+            if (lhsResult.IsEmpty)
+            {
+                //Only evaluate the RHS if the LHS was empty
+                context.InputMultiset = initialInput;
+                BaseMultiset rhsResult = this._rhs.Evaluate(context);
+                context.CheckTimeout();
+
+                context.OutputMultiset = lhsResult.Union(rhsResult);
+                context.CheckTimeout();
+
+                context.InputMultiset = context.OutputMultiset;
+            }
+            else
+            {
+                context.OutputMultiset = lhsResult;
+            }
+            return context.OutputMultiset;
+        }
+
+        /// <summary>
+        /// Gets the Variables used in the Algebra
+        /// </summary>
+        public IEnumerable<String> Variables
+        {
+            get
+            {
+                return (this._lhs.Variables.Concat(this._rhs.Variables)).Distinct();
+            }
+        }
+
+        /// <summary>
+        /// Gets the LHS of the Join
+        /// </summary>
+        public ISparqlAlgebra Lhs
+        {
+            get
+            {
+                return this._lhs;
+            }
+        }
+
+        /// <summary>
+        /// Gets the RHS of the Join
+        /// </summary>
+        public ISparqlAlgebra Rhs
+        {
+            get
+            {
+                return this._rhs;
+            }
+        }
+
+        /// <summary>
+        /// Gets the String representation of the Algebra
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return "AskUnion(" + this._lhs.ToString() + ", " + this._rhs.ToString() + ")";
+        }
+    }
 }

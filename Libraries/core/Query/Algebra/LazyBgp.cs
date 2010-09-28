@@ -450,4 +450,113 @@ namespace VDS.RDF.Query.Algebra
             return "LazyBgp()";
         }
     }
+
+    /// <summary>
+    /// Represents a Union
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// A Lazy Union differs from a standard Union in that if it finds sufficient solutions on the LHS it has no need to evaluate the RHS
+    /// </para>
+    /// </remarks>
+    public class LazyUnion : IJoin
+    {
+        private ISparqlAlgebra _lhs, _rhs;
+        private int _requiredResults = -1;
+
+        /// <summary>
+        /// Creates a new Lazy Union
+        /// </summary>
+        /// <param name="lhs">LHS Pattern</param>
+        /// <param name="rhs">RHS Pattern</param>
+        public LazyUnion(ISparqlAlgebra lhs, ISparqlAlgebra rhs)
+        {
+            this._lhs = lhs;
+            this._rhs = rhs;
+        }
+
+        /// <summary>
+        /// Creates a new Lazy Union
+        /// </summary>
+        /// <param name="lhs">LHS Pattern</param>
+        /// <param name="rhs">RHS Pattern</param>
+        /// <param name="requiredResults">The number of results that the Union should attempt to return</param>
+        public LazyUnion(ISparqlAlgebra lhs, ISparqlAlgebra rhs, int requiredResults)
+        {
+            this._lhs = lhs;
+            this._rhs = rhs;
+        }
+
+        /// <summary>
+        /// Evaluates the Lazy Union
+        /// </summary>
+        /// <param name="context">Evaluation Context</param>
+        /// <returns></returns>
+        public BaseMultiset Evaluate(SparqlEvaluationContext context)
+        {
+            BaseMultiset initialInput = context.InputMultiset;
+            BaseMultiset lhsResult = this._lhs.Evaluate(context);
+            context.CheckTimeout();
+
+            if (lhsResult.Count >= this._requiredResults || this._requiredResults == -1)
+            {
+                //Only evaluate the RHS if the LHS didn't yield sufficient results
+                context.InputMultiset = initialInput;
+                BaseMultiset rhsResult = this._rhs.Evaluate(context);
+                context.CheckTimeout();
+
+                context.OutputMultiset = lhsResult.Union(rhsResult);
+                context.CheckTimeout();
+
+                context.InputMultiset = context.OutputMultiset;
+            }
+            else
+            {
+                context.OutputMultiset = lhsResult;
+            }
+            return context.OutputMultiset;
+        }
+
+        /// <summary>
+        /// Gets the Variables used in the Algebra
+        /// </summary>
+        public IEnumerable<String> Variables
+        {
+            get
+            {
+                return (this._lhs.Variables.Concat(this._rhs.Variables)).Distinct();
+            }
+        }
+
+        /// <summary>
+        /// Gets the LHS of the Join
+        /// </summary>
+        public ISparqlAlgebra Lhs
+        {
+            get
+            {
+                return this._lhs;
+            }
+        }
+
+        /// <summary>
+        /// Gets the RHS of the Join
+        /// </summary>
+        public ISparqlAlgebra Rhs
+        {
+            get
+            {
+                return this._rhs;
+            }
+        }
+
+        /// <summary>
+        /// Gets the String representation of the Algebra
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return "LazyUnion(" + this._lhs.ToString() + ", " + this._rhs.ToString() + ")";
+        }
+    }
 }

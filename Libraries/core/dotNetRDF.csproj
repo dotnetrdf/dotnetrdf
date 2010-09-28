@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{BFBAC159-1E60-4D03-8ACA-D34E31EB83BF}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -300,7 +300,7 @@
     <Compile Include="Query\Algebra\IdentityMultiset.cs" />
     <Compile Include="Query\Algebra\ISparqlAlgebra.cs" />
     <Compile Include="Query\Algebra\AlgebraJoinClasses.cs" />
-    <Compile Include="Query\Algebra\LazyBgpTransformer.cs" />
+    <Compile Include="Query\Algebra\BgpTransformers.cs" />
     <Compile Include="Query\Algebra\Minus.cs" />
     <Compile Include="Query\Algebra\Multiset.cs" />
     <Compile Include="Query\Algebra\NullMultiset.cs" />

@@ -82,6 +82,7 @@ namespace VDS.RDF
         private static int _defaultCompressionLevel = WriterCompressionLevel.More;
         private static bool _fullIndexing = true;
         private static bool _queryOptimisation = true;
+        private static bool _algebraOptimisation = true;
         private static SparqlQuerySyntax _queryDefaultSyntax = SparqlQuerySyntax.Extended;
         private static SparqlEngine _queryEngine = SparqlEngine.Leviathan;//SparqlEngine.Labyrinth;
         private static bool _queryAllowUnknownFunctions = true;
@@ -141,6 +142,21 @@ namespace VDS.RDF
             set
             {
                 _queryOptimisation = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets/Sets whether Algebra Optimisation should be used
+        /// </summary>
+        public static bool AlgebraOptimisation
+        {
+            get
+            {
+                return _algebraOptimisation;
+            }
+            set
+            {
+                _algebraOptimisation = value;
             }
         }
 

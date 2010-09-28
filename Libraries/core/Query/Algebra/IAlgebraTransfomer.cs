@@ -52,4 +52,28 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         ISparqlAlgebra Transform(ISparqlAlgebra algebra);
     }
+
+    /// <summary>
+    /// Abstract Base Class for Algebra Transformers where the Transformer may care about the depth of the Algebra in the Algebra Tree
+    /// </summary>
+    public abstract class BaseAlgebraTransformer : IAlgebraTransfomer
+    {
+        /// <summary>
+        /// Attempts to transform an Algebra to another form
+        /// </summary>
+        /// <param name="algebra">Algebra</param>
+        /// <returns></returns>
+        public virtual ISparqlAlgebra Transform(ISparqlAlgebra algebra)
+        {
+            return this.TransformInternal(algebra, 0);
+        }
+
+        /// <summary>
+        /// Transforms the Algebra to another form tracking the depth in the Algebra tree
+        /// </summary>
+        /// <param name="algebra">Algebra</param>
+        /// <param name="depth">Depth</param>
+        /// <returns></returns>
+        protected abstract ISparqlAlgebra TransformInternal(ISparqlAlgebra algebra, int depth);
+    }
 }

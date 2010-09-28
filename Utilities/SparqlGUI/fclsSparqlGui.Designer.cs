@@ -38,8 +38,6 @@
             this.txtSourceFile = new System.Windows.Forms.TextBox();
             this.lblSourceFile = new System.Windows.Forms.Label();
             this.lblDataset = new System.Windows.Forms.Label();
-            this.grpQueryEngine = new System.Windows.Forms.GroupBox();
-            this.radEngineLeviathan = new System.Windows.Forms.RadioButton();
             this.grpQuery = new System.Windows.Forms.GroupBox();
             this.btnSaveQuery = new System.Windows.Forms.Button();
             this.btnLoad = new System.Windows.Forms.Button();
@@ -68,8 +66,9 @@
             this.cboGraphFormat = new System.Windows.Forms.ComboBox();
             this.ofdQuery = new System.Windows.Forms.OpenFileDialog();
             this.sfdQuery = new System.Windows.Forms.SaveFileDialog();
+            this.chkQueryOptimisation = new System.Windows.Forms.CheckBox();
+            this.chkAlgebraOptimisation = new System.Windows.Forms.CheckBox();
             this.grpDataset.SuspendLayout();
-            this.grpQueryEngine.SuspendLayout();
             this.grpQuery.SuspendLayout();
             this.grpQueryOptions.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numTimeout)).BeginInit();
@@ -178,29 +177,6 @@
             this.lblDataset.Text = "Use this section of the GUI to import RDF data from Files/URIs.  You can reset th" +
                 "e Dataset to the empty dataset by clicking the Clear button";
             // 
-            // grpQueryEngine
-            // 
-            this.grpQueryEngine.Controls.Add(this.radEngineLeviathan);
-            this.grpQueryEngine.Location = new System.Drawing.Point(600, 12);
-            this.grpQueryEngine.Name = "grpQueryEngine";
-            this.grpQueryEngine.Size = new System.Drawing.Size(189, 70);
-            this.grpQueryEngine.TabIndex = 1;
-            this.grpQueryEngine.TabStop = false;
-            this.grpQueryEngine.Text = "Query Engine";
-            // 
-            // radEngineLeviathan
-            // 
-            this.radEngineLeviathan.AutoSize = true;
-            this.radEngineLeviathan.Checked = true;
-            this.radEngineLeviathan.Location = new System.Drawing.Point(9, 19);
-            this.radEngineLeviathan.Name = "radEngineLeviathan";
-            this.radEngineLeviathan.Size = new System.Drawing.Size(72, 17);
-            this.radEngineLeviathan.TabIndex = 1;
-            this.radEngineLeviathan.TabStop = true;
-            this.radEngineLeviathan.Text = "Leviathan";
-            this.radEngineLeviathan.UseVisualStyleBackColor = true;
-            this.radEngineLeviathan.CheckedChanged += new System.EventHandler(this.radioButton1_CheckedChanged);
-            // 
             // grpQuery
             // 
             this.grpQuery.Controls.Add(this.btnSaveQuery);
@@ -275,15 +251,17 @@
             // 
             // grpQueryOptions
             // 
+            this.grpQueryOptions.Controls.Add(this.chkAlgebraOptimisation);
+            this.grpQueryOptions.Controls.Add(this.chkQueryOptimisation);
             this.grpQueryOptions.Controls.Add(this.chkAllowUnknownFunctions);
             this.grpQueryOptions.Controls.Add(this.chkWebDemand);
             this.grpQueryOptions.Controls.Add(this.chkPartialResults);
             this.grpQueryOptions.Controls.Add(this.lblMilliseconds);
             this.grpQueryOptions.Controls.Add(this.numTimeout);
             this.grpQueryOptions.Controls.Add(this.lblTimeout);
-            this.grpQueryOptions.Location = new System.Drawing.Point(600, 187);
+            this.grpQueryOptions.Location = new System.Drawing.Point(600, 116);
             this.grpQueryOptions.Name = "grpQueryOptions";
-            this.grpQueryOptions.Size = new System.Drawing.Size(189, 128);
+            this.grpQueryOptions.Size = new System.Drawing.Size(189, 187);
             this.grpQueryOptions.TabIndex = 3;
             this.grpQueryOptions.TabStop = false;
             this.grpQueryOptions.Text = "Query Options";
@@ -367,7 +345,7 @@
             this.grpQuerySyntax.Controls.Add(this.radSparqlExtended);
             this.grpQuerySyntax.Controls.Add(this.radSparql11);
             this.grpQuerySyntax.Controls.Add(this.radSparql10);
-            this.grpQuerySyntax.Location = new System.Drawing.Point(600, 89);
+            this.grpQuerySyntax.Location = new System.Drawing.Point(600, 18);
             this.grpQuerySyntax.Name = "grpQuerySyntax";
             this.grpQuerySyntax.Size = new System.Drawing.Size(189, 92);
             this.grpQuerySyntax.TabIndex = 2;
@@ -510,6 +488,30 @@
             this.sfdQuery.Filter = "SPARQL Query Files|*.rq|All Files|*.*";
             this.sfdQuery.Title = "Load SPARQL Query";
             // 
+            // chkQueryOptimisation
+            // 
+            this.chkQueryOptimisation.Checked = true;
+            this.chkQueryOptimisation.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkQueryOptimisation.Location = new System.Drawing.Point(6, 120);
+            this.chkQueryOptimisation.Name = "chkQueryOptimisation";
+            this.chkQueryOptimisation.Size = new System.Drawing.Size(177, 31);
+            this.chkQueryOptimisation.TabIndex = 7;
+            this.chkQueryOptimisation.Text = "Optimise Queries";
+            this.chkQueryOptimisation.UseVisualStyleBackColor = true;
+            this.chkQueryOptimisation.CheckedChanged += new System.EventHandler(this.chkQueryOptimisation_CheckedChanged);
+            // 
+            // chkAlgebraOptimisation
+            // 
+            this.chkAlgebraOptimisation.Checked = true;
+            this.chkAlgebraOptimisation.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkAlgebraOptimisation.Location = new System.Drawing.Point(6, 150);
+            this.chkAlgebraOptimisation.Name = "chkAlgebraOptimisation";
+            this.chkAlgebraOptimisation.Size = new System.Drawing.Size(177, 31);
+            this.chkAlgebraOptimisation.TabIndex = 8;
+            this.chkAlgebraOptimisation.Text = "Optimise Query Algebra";
+            this.chkAlgebraOptimisation.UseVisualStyleBackColor = true;
+            this.chkAlgebraOptimisation.CheckedChanged += new System.EventHandler(this.chkAlgebraOptimisation_CheckedChanged);
+            // 
             // fclsSparqlGui
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -521,7 +523,6 @@
             this.Controls.Add(this.grpQuerySyntax);
             this.Controls.Add(this.grpQueryOptions);
             this.Controls.Add(this.grpQuery);
-            this.Controls.Add(this.grpQueryEngine);
             this.Controls.Add(this.grpDataset);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "fclsSparqlGui";
@@ -531,8 +532,6 @@
             this.Load += new System.EventHandler(this.fclsSparqlGui_Load);
             this.grpDataset.ResumeLayout(false);
             this.grpDataset.PerformLayout();
-            this.grpQueryEngine.ResumeLayout(false);
-            this.grpQueryEngine.PerformLayout();
             this.grpQuery.ResumeLayout(false);
             this.grpQuery.PerformLayout();
             this.grpQueryOptions.ResumeLayout(false);
@@ -561,8 +560,6 @@
         private System.Windows.Forms.Button btnImportUri;
         private System.Windows.Forms.TextBox txtSourceUri;
         private System.Windows.Forms.Label lblImportUri;
-        private System.Windows.Forms.GroupBox grpQueryEngine;
-        private System.Windows.Forms.RadioButton radEngineLeviathan;
         private System.Windows.Forms.GroupBox grpQuery;
         private System.Windows.Forms.Button btnQuery;
         private System.Windows.Forms.TextBox txtQuery;
@@ -591,6 +588,8 @@
         private System.Windows.Forms.OpenFileDialog ofdQuery;
         private System.Windows.Forms.SaveFileDialog sfdQuery;
         private System.Windows.Forms.CheckBox chkAllowUnknownFunctions;
+        private System.Windows.Forms.CheckBox chkAlgebraOptimisation;
+        private System.Windows.Forms.CheckBox chkQueryOptimisation;
     }
 }
 
