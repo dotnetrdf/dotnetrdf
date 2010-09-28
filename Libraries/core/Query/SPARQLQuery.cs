@@ -1101,7 +1101,10 @@ namespace VDS.RDF.Query
                         {
                             if (var.IsResultVariable)
                             {
-                                output.Append(var.ToString() + " ");
+                                if (var.IsProjection || var.IsAggregate) output.Append("(");
+                                output.Append(var.ToString());
+                                if (var.IsProjection || var.IsAggregate) output.Append(")");
+                                output.Append(' ');
                             }
                         }
                         if (from.Length > 0) output.Append(from.ToString().Substring(1));

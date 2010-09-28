@@ -275,60 +275,7 @@ namespace VDS.RDF.Query.Patterns
         /// <returns></returns>
         public override string ToString()
         {
-            StringBuilder output = new StringBuilder();
-
-            switch (this._node.NodeType) {
-                case NodeType.Literal:
-                    LiteralNode lit = (LiteralNode)this._node;
-                    bool longlit = (lit.Value.Contains('\n') || lit.Value.Contains('\r') || lit.Value.Contains('"'));
-
-                    if (longlit)
-                    {
-                        output.Append("\"\"\"");
-                    }
-                    else
-                    {
-                        output.Append("\"");
-                    }
-
-                    output.Append(lit.Value);
-
-                    if (longlit)
-                    {
-                        output.Append("\"\"\"");
-                    }
-                    else
-                    {
-                        output.Append("\"");
-                    }
-
-                    if (!lit.Language.Equals(String.Empty))
-                    {
-                        output.Append("@");
-                        output.Append(lit.Language);
-                    }
-                    else if (lit.DataType != null)
-                    {
-                        output.Append("^^<");
-                        output.Append(lit.DataType.ToString());
-                        output.Append(">");
-                    }
-
-                    break;
-
-                case NodeType.Uri:
-                    UriNode uri = (UriNode)this._node;
-                    output.Append('<');
-                    output.Append(this._node.ToString());
-                    output.Append('>');
-                    break;
-
-                default:
-                    output.Append(this._node.ToString());
-                    break;
-            }
-
-            return output.ToString();
+            return SparqlSpecsHelper.Formatter.Format(this._node);
         }
 
         /// <summary>
