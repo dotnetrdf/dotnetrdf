@@ -1597,6 +1597,9 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// </summary>
     public class XPathStringJoinFunction : BaseAggregate
     {
+        /// <summary>
+        /// Separator Expression
+        /// </summary>
         protected ISparqlExpression _sep;
 
         /// <summary>

@@ -49,6 +49,7 @@ namespace VDS.RDF.Query.Algebra
         /// Transforms an Algebra to a form that uses <see cref="LazyBgp">LazyBgp</see> where possible
         /// </summary>
         /// <param name="algebra">Algebra</param>
+        /// <param name="depth">Depth</param>
         /// <returns></returns>
         /// <remarks>
         /// <para>

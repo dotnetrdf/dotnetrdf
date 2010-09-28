@@ -531,7 +531,7 @@ namespace VDS.RDF.Query.Aggregates
         /// Creates a new GROUP_CONCAT aggregate
         /// </summary>
         /// <param name="expr">Expression</param>
-        /// <pparam name="sepExpr">Separator Expression</pparam>
+        /// <param name="sepExpr">Separator Expression</param>
         public GroupConcatAggregate(ISparqlExpression expr, ISparqlExpression sepExpr)
             : base(expr, sepExpr) 
         {

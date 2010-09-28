@@ -33,6 +33,10 @@ terms.
 
 */
 
+//Defining this to disable XML DOM usage for this file to use the faster streaming XmlReader variant since should offer better memory usage and 
+//performance and haven't decided whether to completely remove the XML DOM based code yet
+#define NO_XMLDOM
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -396,7 +400,7 @@ namespace VDS.RDF.Parsing
         /// <summary>
         /// Parses the XML Result Set format into a set of SPARQLResult objects
         /// </summary>
-        /// <param name="xmlDoc">XML Document to parse from</param>
+        /// <param name="reader">XML Reader to parse from</param>
         /// <param name="results">Result Set to parse into</param>
         private void Parse(XmlReader reader, SparqlResultSet results)
         {
@@ -596,7 +600,7 @@ namespace VDS.RDF.Parsing
         /// <summary>
         /// Internal Helper method which parses the child element of a &lt;binding&gt; element into an <see cref="INode">INode</see>
         /// </summary>
-        /// <param name="valueNode">An XML Node representing the value bound to a Variable for a given Binding</param>
+        /// <param name="reader">XML Reader to parse from</param>
         /// <returns></returns>
         private INode ParseValue(XmlReader reader)
         {

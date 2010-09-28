@@ -122,10 +122,6 @@ namespace VDS.RDF.Query
         /// The Query is of the form ASK WHERE {?s ?p ?o}
         /// </summary>
         AskAnyTriples,
-        /// <summary>
-        /// The Query is of the form ASK WHERE {GRAPH ?g {?s ?p ?o}}
-        /// </summary>
-        AskGraphTriples
     }
 
     /// <summary>
@@ -319,7 +315,6 @@ namespace VDS.RDF.Query
                             {
                                 this._specialType = SparqlSpecialQueryType.AskAnyTriples;
                             }
-                            //REQ: Add case for AskGraphTriples
                         }
                         else if (this._type == SparqlQueryType.SelectDistinct)
                         {

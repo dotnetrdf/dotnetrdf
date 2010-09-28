@@ -324,7 +324,7 @@ namespace VDS.RDF.Web
                 }
             }
 
-            //TODO: Does Update need to support default and named graphs?
+            //TODO: Does Update need to support default and named graphs URI parameters?
 
             try
             {

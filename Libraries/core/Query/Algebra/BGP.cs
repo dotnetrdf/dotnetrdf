@@ -46,7 +46,7 @@ namespace VDS.RDF.Query.Algebra
     /// </summary>
     public class Bgp : IBgp
     {
-        protected List<ITriplePattern> _triplePatterns = new List<ITriplePattern>();
+        private List<ITriplePattern> _triplePatterns = new List<ITriplePattern>();
 
         /// <summary>
         /// Creates a new empty BGP
@@ -230,23 +230,6 @@ namespace VDS.RDF.Query.Algebra
         public override string ToString()
         {
             return "BGP()";
-        }
-
-        /// <summary>
-        /// Casts a BGP into an Ask BGP where possible
-        /// </summary>
-        /// <param name="bgp">BGP</param>
-        /// <returns></returns>
-        public static explicit operator AskBgp(Bgp bgp)
-        {
-            if (bgp._triplePatterns.All(tp => tp is TriplePattern || tp is FilterPattern))
-            {
-                return new AskBgp(bgp._triplePatterns);
-            }
-            else
-            {
-                throw new Exception("Cannot cast this BGP to a Ask BGP as it is not composed entirely of Triple Patterns/FILTERs (i.e. it contains LETs, Property Paths or Subqueries)");
-            }
         }
     }
 }
