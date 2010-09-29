@@ -483,6 +483,7 @@
     <Compile Include="Writing\Formatting\ITripleFormatter.cs" />
     <Compile Include="Writing\Formatting\IUriFormatter.cs" />
     <Compile Include="Writing\Formatting\Notation3Formatter.cs" />
+    <Compile Include="Writing\Formatting\NQuadsFormatter.cs" />
     <Compile Include="Writing\Formatting\NTriplesFormatter.cs" />
     <Compile Include="Writing\Formatting\QNameFormatter.cs" />
     <Compile Include="Writing\Formatting\RdfXmlFormatter.cs" />

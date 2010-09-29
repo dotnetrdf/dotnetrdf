@@ -592,6 +592,9 @@ namespace rdfConvert
             Console.WriteLine(" -dataset");
             Console.WriteLine(" Specifies that all Graphs retrieved from input should be output as an RDF Dataset");
             Console.WriteLine();
+            Console.WriteLine(" -debug");
+            Console.WriteLine(" Prints more detailed error messages if errors occur");
+            Console.WriteLine();
             Console.WriteLine(" -help");
             Console.WriteLine(" Prints this usage summary if it is the only argument, otherwise ignored");
             Console.WriteLine();

@@ -18,29 +18,29 @@ namespace rdfMetal
             Options opts = ProcessOptions(args);
             IEnumerable<OntologyClass> classes = null;
 
-            if (!string.IsNullOrEmpty(opts.endpoint) || !string.IsNullOrEmpty(opts.sourceFile))
+            if (!string.IsNullOrEmpty(opts.EndpointUri) || !string.IsNullOrEmpty(opts.SourceFile))
             {
                 var mr = new MetadataRetriever(opts);
                 classes = new List<OntologyClass>(mr.GetClasses());
             }
 
-            if (!string.IsNullOrEmpty(opts.metadataLocation) && classes != null)
+            if (!string.IsNullOrEmpty(opts.GeneratedMetadataLocation) && classes != null)
             {
                 var mw = new ModelWriter();
-                mw.Write(opts.metadataLocation, classes);
+                mw.Write(opts.GeneratedMetadataLocation, classes);
             }
 
-            if (classes == null && !string.IsNullOrEmpty(opts.metadataLocation))
+            if (classes == null && !string.IsNullOrEmpty(opts.GeneratedMetadataLocation))
             {
                 var mw = new ModelWriter();
-                classes = mw.Read(opts.metadataLocation);
+                classes = mw.Read(opts.GeneratedMetadataLocation);
             }
 
-            if (!string.IsNullOrEmpty(opts.sourceLocation) && classes != null)
+            if (!string.IsNullOrEmpty(opts.GeneratedSourceLocation) && classes != null)
             {
                 var cg = new CodeGenerator();
                 string code = cg.Generate(classes, opts);
-                WriteSource(opts.sourceLocation, code);
+                WriteSource(opts.GeneratedSourceLocation, code);
             }
 	         Console.WriteLine("done.");
              Console.Read();

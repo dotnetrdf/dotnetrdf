@@ -61,6 +61,7 @@ namespace rdfQuery
         private SparqlQueryParser _parser = new SparqlQueryParser();
         private String _query;
         private bool _print = false;
+        private bool _debug = false;
 
         public void RunQuery(String[] args) 
         {
@@ -162,26 +163,31 @@ namespace rdfQuery
             catch (RdfQueryTimeoutException timeout)
             {
                 Console.Error.WriteLine("rdfQuery: Query Timeout: " + timeout.Message);
+                if (this._debug) this.DebugErrors(timeout);
                 return;
             }
             catch (RdfQueryException queryEx)
             {
                 Console.Error.WriteLine("rdfQuery: Query Error: " + queryEx.Message);
+                if (this._debug) this.DebugErrors(queryEx);
                 return;
             }
             catch (RdfParseException parseEx)
             {
                 Console.Error.WriteLine("rdfQuery: Parser Error: " + parseEx.Message);
+                if (this._debug) this.DebugErrors(parseEx);
                 return;
             }
             catch (RdfException rdfEx)
             {
                 Console.Error.WriteLine("rdfQuery: RDF Error: " + rdfEx.Message);
+                if (this._debug) this.DebugErrors(rdfEx);
                 return;
             }
             catch (Exception ex)
             {
                 Console.Error.WriteLine("rdfQuery: Error: " + ex.Message);
+                if (this._debug) this.DebugErrors(ex);
                 return;
             }
         }
@@ -226,19 +232,22 @@ namespace rdfQuery
                             Console.Error.WriteLine("rdfQuery: Ignoring the input URI '" + uri + "' since -print has been specified so the query will not be executed so no need to load the data");
                         }
                     }
-                    catch (UriFormatException)
+                    catch (UriFormatException uriEx)
                     {
                         Console.Error.WriteLine("rdfQuery: Ignoring the input URI '" + uri + "' since this is not a valid URI");
+                        if (this._debug) this.DebugErrors(uriEx);
                     }
                     catch (RdfParseException parseEx)
                     {
                         Console.Error.WriteLine("rdfQuery: Ignoring the input URI '" + uri + "' due to the following error:");
                         Console.Error.WriteLine("rdfQuery: Parser Error: " + parseEx.Message);
+                        if (this._debug) this.DebugErrors(parseEx);
                     }
                     catch (Exception ex)
                     {
                         Console.Error.WriteLine("rdfQuery: Ignoring the input URI '" + uri + "' due to the following error:");
                         Console.Error.WriteLine("rdfQuery: Error: " + ex.Message);
+                        if (this._debug) this.DebugErrors(ex);
                     }
                 }
                 else if (arg.StartsWith("-endpoint:"))
@@ -268,9 +277,10 @@ namespace rdfQuery
                             this._endpoint = new SparqlRemoteEndpoint(new Uri(arg.Substring(arg.IndexOf(':') + 1)));
                         }
                     }
-                    catch (UriFormatException)
+                    catch (UriFormatException uriEx)
                     {
                         Console.Error.WriteLine("rdfQuery: Unable to use remote endpoint with URI '" + arg.Substring(arg.IndexOf(':') + 1) + "' since this is not a valid URI");
+                        if (this._debug) this.DebugErrors(uriEx);
                         return false;
                     }
                 }
@@ -408,6 +418,10 @@ namespace rdfQuery
                 {
                     this._print = true;
                 }
+                else if (arg.Equals("-debug"))
+                {
+                    this._debug = true;
+                }
                 else if (arg.Equals("-help"))
                 {
                     //Ignore Help Argument if other arguments present
@@ -445,18 +459,20 @@ namespace rdfQuery
                         }
                         else
                         {
-                            Console.Error.WriteLine("rdfQuery: Ignoring the lcoa file '" + arg + "' since -print has been specified so the query will not be executed so no need to load the data");
+                            Console.Error.WriteLine("rdfQuery: Ignoring the local file '" + arg + "' since -print has been specified so the query will not be executed so no need to load the data");
                         }
                     }
                     catch (RdfParseException parseEx)
                     {
                         Console.Error.WriteLine("rdfQuery: Ignoring the local file '" + arg + "' due to the following error:");
                         Console.Error.WriteLine("rdfQuery: Parser Error: " + parseEx.Message);
+                        if (this._debug) this.DebugErrors(parseEx);
                     }
                     catch (Exception ex)
                     {
                         Console.Error.WriteLine("rdfQuery: Ignoring the local file '" + arg + "' due to the following error:");
                         Console.Error.WriteLine("rdfQuery: Error: " + ex.Message);
+                        if (this._debug) this.DebugErrors(ex);
                     }
                 }
 
@@ -492,8 +508,17 @@ namespace rdfQuery
             Console.WriteLine("Supported Options");
             Console.WriteLine("-----------------");
             Console.WriteLine();
+            Console.WriteLine(" -debug");
+            Console.WriteLine("  Prints more detailed error messages if errors occur");
+            Console.WriteLine();
+            Console.WriteLine(" -noopt[:args]");
+            Console.WriteLine("  Disables optimisations, if used as -noopt: then args should be a series of characters indicating optimisations to disable, a/A to disable algebra optimisation and q/Q to disable query optimisation");
+            Console.WriteLine();
             Console.WriteLine(" -partialResults[:(true|false)]");
             Console.WriteLine("  Specifies whether partial results should be returned in the event of a query timeout.  Only valid for queries over local files and URIs");
+            Console.WriteLine();
+            Console.WriteLine(" -print");
+            Console.WriteLine("  Just prints the Query and it's SPARQL Algebra and doesn't execute the Query");
             Console.WriteLine();
             Console.WriteLine(" -r:(skos|rdfs)");
             Console.WriteLine("  Applies a SKOS/RDFS reasoner to the input data.  SKOS Concept Hierarchy/RDFS class & property hierarchies are dynamically determined based on the input data.  You may need to reorder the input files and URIs in order to get correct inference results e.g. if your schema was the last input it would result in little/no inferences being made");
@@ -512,5 +537,18 @@ namespace rdfQuery
             Console.WriteLine("  Specifies the Query Timeout in milliseconds");
         }
 
+        private void DebugErrors(Exception ex)
+        {
+            Console.Error.WriteLine("rdfQuery: Error Stack Trace:");
+            Console.Error.WriteLine(ex.StackTrace);
+
+            while (ex.InnerException != null)
+            {
+                Console.Error.WriteLine("rdfQuery: Error: " + ex.InnerException.Message);
+                Console.Error.WriteLine("rdfQuery: Error Stack Trace:");
+                Console.Error.WriteLine(ex.InnerException.StackTrace);
+                ex = ex.InnerException;
+            }
+        }
     }
 }

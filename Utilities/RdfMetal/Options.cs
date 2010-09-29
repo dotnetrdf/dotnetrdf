@@ -6,34 +6,37 @@ namespace rdfMetal
     public class Options : Opts
     {
         [Opt("The SPARQL endpoint to query.", 'e', "endpoint")]
-        public string endpoint = "";
+        public string EndpointUri = "";
 
         [Opt("The Default Graph of the SPARQL Endpoint", 'd')]
-        public string defaultGraphUri = "";
+        public string DefaultGraphUri = "";
 
         [Opt("An RDF File to query (Ignored if -e or -endpoint is used)", 'f')]
-        public string sourceFile = "";
+        public string SourceFile = "";
 
         [Opt("The XML Namespace to extract classes from.", 'n', "namespace")]
-        public string ontologyNamespace = "";
+        public string OntologyNamespace = "";
 
         [Opt("Where to place the generated code.", 'o', "output")]
-        public string sourceLocation = "DomainModel.cs";
+        public string GeneratedSourceLocation = "DomainModel.cs";
 
         [Opt("Where to place/get the collected metadata.", 'm', "metadata")]
-        public string metadataLocation = "";
+        public string GeneratedMetadataLocation = "";
 
         [Opt("Ignore BNodes. Use this if you only want to generate code for named classes.", 'i', "ignorebnodes")]
-        public bool ignoreBlankNodes = false;
+        public bool IgnoreBlankNodes = false;
+
+        [Opt("Extract RDFS classes instead of OWL Classes", 'r', "rdfs")]
+        public bool ExtractRdfsClasses = false;
 
         [Opt("The ontology name to be used in LinqToRdf for prefixing URIs and disambiguating class names and properties.", 'h', "handle")]
-        public string ontologyPrefix = "MyOntology";
+        public string OntologyPrefix = "MyOntology";
 
         [Opt("The .NET namespace to place the generated source in.", 'N', "netnamespace")]
-        public string dotnetNamespace = "MyOntology";
+        public string DotNetNamespace = "MyOntology";
 
         [Opt("A comma separated list of namespaces to reference in the generated source.", 'r', "references")]
-        public string namespaceReferences = "System";
+        public string DotNetNamespaceReferences = "System";
 
         public Options()
         {

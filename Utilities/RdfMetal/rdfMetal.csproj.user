@@ -1,5 +1,5 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <StartArguments>-f wine.rdf -h Test -N Test.Namespace -o test.cs -i</StartArguments>
+    <StartArguments>-e http://api.talis.com/stores/space/services/sparql -h Test -N Test.Namespace -o test.cs -i -r</StartArguments>
   </PropertyGroup>
 </Project>

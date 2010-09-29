@@ -15,22 +15,22 @@ namespace rdfMetal
 
         public MetadataSource(Options opts)
         {
-            if (!String.IsNullOrEmpty(opts.endpoint))
+            if (!String.IsNullOrEmpty(opts.EndpointUri))
             {
-                if (String.IsNullOrEmpty(opts.defaultGraphUri))
+                if (String.IsNullOrEmpty(opts.DefaultGraphUri))
                 {
-                    this._processor = new RemoteQueryProcessor(new SparqlRemoteEndpoint(new Uri(opts.endpoint)));
+                    this._processor = new RemoteQueryProcessor(new SparqlRemoteEndpoint(new Uri(opts.EndpointUri)));
                 }
                 else
                 {
-                    this._processor = new RemoteQueryProcessor(new SparqlRemoteEndpoint(new Uri(opts.endpoint), opts.defaultGraphUri));
+                    this._processor = new RemoteQueryProcessor(new SparqlRemoteEndpoint(new Uri(opts.EndpointUri), opts.DefaultGraphUri));
                 }
             }
-            else if (!String.IsNullOrEmpty(opts.sourceFile))
+            else if (!String.IsNullOrEmpty(opts.SourceFile))
             {
                 TripleStore store = new TripleStore();
                 Graph g = new Graph();
-                FileLoader.Load(g, opts.sourceFile);
+                FileLoader.Load(g, opts.SourceFile);
                 store.Add(g);
                 this._processor = new LeviathanQueryProcessor(store);
             }

@@ -85,13 +85,13 @@ namespace UnitTests
     	{
     		return new Option
     		       	{
-					ontologyNamespace = "MyOntology",
-					sourceLocation = "DomainModel.cs",
-					metadataLocation = "",
-					ignoreBlankNodes = false,
-					ontologyPrefix = "MyOntology",
-					dotnetNamespace = "MyOntology",
-					namespaceReferences = "System"
+					OntologyNamespace = "MyOntology",
+					GeneratedSourceLocation = "DomainModel.cs",
+					GeneratedMetadataLocation = "",
+					IgnoreBlankNodes = false,
+					OntologyPrefix = "MyOntology",
+					DotNetNamespace = "MyOntology",
+					DotNetNamespaceReferences = "System"
     		       	};
     	}
     }

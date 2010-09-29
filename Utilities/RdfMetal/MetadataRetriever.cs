@@ -38,8 +38,16 @@ namespace rdfMetal
         private IEnumerable<string> GetClassUris()
         {
             MetadataSource source = new MetadataSource(opts);
-            var properties = new ClassQuerySink(opts.ignoreBlankNodes, opts.ontologyNamespace, new[] { "u" });
-            SparqlResultSet results = source.QueryWithResultSet(sqGetClasses);
+            var properties = new ClassQuerySink(opts.IgnoreBlankNodes, opts.OntologyNamespace, new[] { "u" });
+            SparqlResultSet results;
+            if (opts.ExtractRdfsClasses)
+            {
+                results = source.QueryWithResultSet(sqGetRdfsClasses);
+            } 
+            else 
+            {
+                results = source.QueryWithResultSet(sqGetClasses);
+            }
             Console.WriteLine(results.Count + " possible Classes retrieved");
             properties.Fill(results);
             return properties.bindings.Map(nvc => nvc["u"]);
@@ -54,7 +62,7 @@ namespace rdfMetal
 
             string supertype = "OwlClassSupertype";
             MetadataSource source = new MetadataSource(opts);
-            var properties = new ClassQuerySink(opts.ignoreBlankNodes, null, new[] { "p", "r" });
+            var properties = new ClassQuerySink(opts.IgnoreBlankNodes, null, new[] { "p", "r" });
 
             string sparqlQuery = string.Format(sqGetSupertype, classUri);
             //try
@@ -182,11 +190,11 @@ namespace rdfMetal
 
         private bool NamespaceMatches(OntologyProperty p)
         {
-            if (string.IsNullOrEmpty(opts.ontologyNamespace))
+            if (string.IsNullOrEmpty(opts.OntologyNamespace))
             {
                 return true;
             }
-            return p.Uri.StartsWith(opts.ontologyNamespace);
+            return p.Uri.StartsWith(opts.OntologyNamespace);
         }
 
         public static void ProcessClassRelationships(IEnumerable<OntologyClass> classes)
@@ -229,6 +237,22 @@ UNION
     {
     ?u a ?x.
     ?x a owl:Class.
+    }
+}
+";
+
+        private static string sqGetRdfsClasses =
+            @"
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT DISTINCT ?u
+WHERE
+{
+    { ?u a rdfs:Class . }
+UNION
+    {
+      ?u a ?x .
+      ?x a rdfs:Class .
     }
 }
 ";

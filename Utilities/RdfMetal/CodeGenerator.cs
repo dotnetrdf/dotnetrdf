@@ -21,10 +21,10 @@ namespace rdfMetal
         {
 			StringTemplate template = stringTemplateGroup.GetInstanceOf("classes");
             template.SetAttribute("classes", classes);
-            template.SetAttribute("handle", opts.ontologyPrefix);
-            template.SetAttribute("uri", opts.ontologyNamespace);
+            template.SetAttribute("handle", opts.OntologyPrefix);
+            template.SetAttribute("uri", opts.OntologyNamespace);
             template.SetAttribute("opts", opts);
-            template.SetAttribute("refs", opts.namespaceReferences.Split(','));
+            template.SetAttribute("refs", opts.DotNetNamespaceReferences.Split(','));
             return template.ToString();
         }
     }
