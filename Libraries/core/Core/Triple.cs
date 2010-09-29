@@ -81,6 +81,19 @@ namespace VDS.RDF
         }
 
         /// <summary>
+        /// Constructs a Triple from Nodes that belong to the same Graph and associates this Triple with the given Graph (doesn't assert the Triple)
+        /// </summary>
+        /// <param name="subj">Subject</param>
+        /// <param name="pred">Predicate</param>
+        /// <param name="obj">Object</param>
+        /// <param name="g">Graph</param>
+        public Triple(INode subj, INode pred, INode obj, IGraph g)
+            : this(subj, pred, obj)
+        {
+            this._g = g;
+        }
+
+        /// <summary>
         /// Constructs a Triple from Nodes that belong to the same Graph with some Context
         /// </summary>
         /// <param name="subj">Subject of the Triple</param>
