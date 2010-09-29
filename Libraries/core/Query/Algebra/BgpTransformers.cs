@@ -66,15 +66,36 @@ namespace VDS.RDF.Query.Algebra
                     //The use of -1 for required results means requirements will be detected from Query
                     temp = new LazyBgp(((Bgp)algebra).TriplePatterns);
                 }
-                else if (algebra is LeftJoin)
+                else if (algebra is ILeftJoin)
                 {
-                    IJoin join = (IJoin)algebra;
+                    ILeftJoin join = (ILeftJoin)algebra;
                     temp = new LeftJoin(this.TransformInternal(join.Lhs, depth + 1), join.Rhs, ((LeftJoin)algebra).Filter);
                 }
-                else if (algebra is Union)
+                else if (algebra is IUnion)
+                {
+                    IUnion join = (IUnion)algebra;
+                    temp = new LazyUnion(this.TransformInternal(join.Lhs, depth + 1), this.TransformInternal(join.Rhs, depth + 1));
+                }
+                else if (algebra is IJoin)
                 {
                     IJoin join = (IJoin)algebra;
-                    temp = new LazyUnion(this.TransformInternal(join.Lhs, depth + 1), this.TransformInternal(join.Rhs, depth + 1));
+                    if (join.Lhs.Variables.IsDisjoint(join.Rhs.Variables))
+                    {
+                        //If the sides of the Join are disjoint then can fully transform the join since we only need to find the requisite number of
+                        //solutions on either side to guarantee a product which meets/exceeds the required results
+                        temp = new Join(this.TransformInternal(join.Lhs, depth + 1), this.TransformInternal(join.Rhs, depth + 1));
+                    }
+                    else
+                    {
+                        //If the sides are not disjoint then the LHS must be fully evaluated but the RHS need only produce enough
+                        //solutions that match
+                        temp = new Join(join.Lhs, this.TransformInternal(join.Rhs, depth + 1));
+                    }
+                }
+                else if (algebra is Algebra.Graph)
+                {
+                    Algebra.Graph g = (Algebra.Graph)algebra;
+                    temp = new Graph(this.TransformInternal(g.InnerAlgebra, depth + 1), g.GraphSpecifier);
                 }
                 else
                 {
@@ -116,17 +137,17 @@ namespace VDS.RDF.Query.Algebra
                     //The use of -1 for required results means requirements will be detected from Query
                     temp = new AskBgp(((Bgp)algebra).TriplePatterns);
                 }
-                else if (algebra is LeftJoin)
+                else if (algebra is ILeftJoin)
                 {
-                    IJoin join = (IJoin)algebra;
+                    ILeftJoin join = (ILeftJoin)algebra;
                     temp = new LeftJoin(this.TransformInternal(join.Lhs, depth + 1), join.Rhs, ((LeftJoin)algebra).Filter);
                 }
-                else if (algebra is Union)
+                else if (algebra is IUnion)
                 {
-                    IJoin join = (IJoin)algebra;
+                    IUnion join = (IUnion)algebra;
                     temp = new AskUnion(this.TransformInternal(join.Lhs, depth + 1), this.TransformInternal(join.Rhs, depth + 1));
                 }
-                else if (algebra is Join)
+                else if (algebra is IJoin)
                 {
                     IJoin join = (IJoin)algebra;
                     if (join.Lhs.Variables.IsDisjoint(join.Rhs.Variables))
@@ -141,6 +162,11 @@ namespace VDS.RDF.Query.Algebra
                         //one solution based on the full input from the LHS for the query to match
                         temp = new Join(join.Lhs, this.TransformInternal(join.Rhs, depth + 1));
                     }
+                }
+                else if (algebra is Algebra.Graph)
+                {
+                    Algebra.Graph g = (Algebra.Graph)algebra;
+                    temp = new Graph(this.TransformInternal(g.InnerAlgebra, depth + 1), g.GraphSpecifier);
                 }
                 else
                 {

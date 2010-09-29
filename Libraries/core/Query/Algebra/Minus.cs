@@ -42,7 +42,7 @@ namespace VDS.RDF.Query.Algebra
     /// <summary>
     /// Represents the Minus join
     /// </summary>
-    public class Minus : ISparqlAlgebra
+    public class Minus : IMinus
     {
         private ISparqlAlgebra _lhs, _rhs;
 

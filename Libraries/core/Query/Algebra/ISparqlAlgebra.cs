@@ -37,6 +37,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VDS.RDF.Query.Filters;
 using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Algebra
@@ -87,7 +88,7 @@ namespace VDS.RDF.Query.Algebra
     /// <summary>
     /// Represents an Algebra construct which is a Join
     /// </summary>
-    public interface IJoin : ISparqlAlgebra
+    public interface IAbstractJoin : ISparqlAlgebra
     {
         /// <summary>
         /// Gets the LHS of the Join
@@ -104,5 +105,33 @@ namespace VDS.RDF.Query.Algebra
         {
             get;
         }
+    }
+
+    public interface IJoin : IAbstractJoin
+    {
+
+    }
+
+    public interface ILeftJoin : IAbstractJoin
+    {
+        ISparqlFilter Filter
+        {
+            get;
+        }
+    }
+
+    public interface IUnion : IAbstractJoin
+    {
+
+    }
+
+    public interface IMinus : IAbstractJoin
+    {
+
+    }
+
+    public interface IExistsJoin : IAbstractJoin
+    {
+
     }
 }

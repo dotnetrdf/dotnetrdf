@@ -118,7 +118,7 @@ namespace VDS.RDF.Query
         /// Processes an Exists Join
         /// </summary>
         /// <param name="existsJoin">Exists Join</param>
-        public void ProcessExistsJoin(ExistsJoin existsJoin)
+        public void ProcessExistsJoin(IExistsJoin existsJoin)
         {
             existsJoin.Evaluate(this._context);
         }
@@ -163,7 +163,7 @@ namespace VDS.RDF.Query
         /// Processes a Join
         /// </summary>
         /// <param name="join">Join</param>
-        public void ProcessJoin(Join join)
+        public void ProcessJoin(IJoin join)
         {
             join.Evaluate(this._context);
         }
@@ -172,7 +172,7 @@ namespace VDS.RDF.Query
         /// Processes a LeftJoin
         /// </summary>
         /// <param name="leftJoin">Left Join</param>
-        public void ProcessLeftJoin(LeftJoin leftJoin)
+        public void ProcessLeftJoin(ILeftJoin leftJoin)
         {
             leftJoin.Evaluate(this._context);
         }
@@ -181,7 +181,7 @@ namespace VDS.RDF.Query
         /// Processes a Minus
         /// </summary>
         /// <param name="minus">Minus</param>
-        public void ProcessMinus(Minus minus)
+        public void ProcessMinus(IMinus minus)
         {
             minus.Evaluate(this._context);
         }
@@ -263,7 +263,7 @@ namespace VDS.RDF.Query
         /// Processes a Union
         /// </summary>
         /// <param name="union"></param>
-        public void ProcessUnion(Union union)
+        public void ProcessUnion(IUnion union)
         {
             union.Evaluate(this._context);
         }

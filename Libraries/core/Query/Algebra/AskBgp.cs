@@ -319,7 +319,7 @@ namespace VDS.RDF.Query.Algebra
     /// An Ask Union differs from a standard Union in that if it finds a solution on the LHS it has no need to evaluate the RHS
     /// </para>
     /// </remarks>
-    public class AskUnion : IJoin
+    public class AskUnion : IUnion
     {
         private ISparqlAlgebra _lhs, _rhs;
 

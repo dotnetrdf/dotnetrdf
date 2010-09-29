@@ -459,7 +459,7 @@ namespace VDS.RDF.Query.Algebra
     /// A Lazy Union differs from a standard Union in that if it finds sufficient solutions on the LHS it has no need to evaluate the RHS
     /// </para>
     /// </remarks>
-    public class LazyUnion : IJoin
+    public class LazyUnion : IUnion
     {
         private ISparqlAlgebra _lhs, _rhs;
         private int _requiredResults = -1;

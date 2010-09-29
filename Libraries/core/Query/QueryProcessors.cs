@@ -106,7 +106,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="existsJoin">Exists Join</param>
         /// <exception cref="NotSupportedException">Thrown since this Query Processor is not an algebra supporting processor</exception>
-        public void ProcessExistsJoin(ExistsJoin existsJoin)
+        public void ProcessExistsJoin(IExistsJoin existsJoin)
         {
             throw new NotSupportedException("This Query Processor is not an algebra supporting processor");
         }
@@ -156,7 +156,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="join">Join</param>
         /// <exception cref="NotSupportedException">Thrown since this Query Processor is not an algebra supporting processor</exception>
-        public void ProcessJoin(Join join)
+        public void ProcessJoin(IJoin join)
         {
             throw new NotSupportedException("This Query Processor is not an algebra supporting processor");
         }
@@ -166,7 +166,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="leftJoin">Left Join</param>
         /// <exception cref="NotSupportedException">Thrown since this Query Processor is not an algebra supporting processor</exception>
-        public void ProcessLeftJoin(LeftJoin leftJoin)
+        public void ProcessLeftJoin(ILeftJoin leftJoin)
         {
             throw new NotSupportedException("This Query Processor is not an algebra supporting processor");
         }
@@ -176,7 +176,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="minus">Minus</param>
         /// <exception cref="NotSupportedException">Thrown since this Query Processor is not an algebra supporting processor</exception>
-        public void ProcessMinus(Minus minus)
+        public void ProcessMinus(IMinus minus)
         {
             throw new NotSupportedException("This Query Processor is not an algebra supporting processor");
         }
@@ -256,7 +256,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="union"></param>
         /// <exception cref="NotSupportedException">Thrown since this Query Processor is not an algebra supporting processor</exception>
-        public void ProcessUnion(Union union)
+        public void ProcessUnion(IUnion union)
         {
             throw new NotSupportedException("This Query Processor is not an algebra supporting processor");
         }

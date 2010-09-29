@@ -91,7 +91,7 @@ namespace VDS.RDF.Query
         /// Processes an Exists Join
         /// </summary>
         /// <param name="existsJoin">Exists Join</param>
-        void ProcessExistsJoin(ExistsJoin existsJoin);
+        void ProcessExistsJoin(IExistsJoin existsJoin);
 
         /// <summary>
         /// Processes a Filter
@@ -121,19 +121,19 @@ namespace VDS.RDF.Query
         /// Processes a Join
         /// </summary>
         /// <param name="join">Join</param>
-        void ProcessJoin(Join join);
+        void ProcessJoin(IJoin join);
 
         /// <summary>
         /// Processes a LeftJoin
         /// </summary>
         /// <param name="leftJoin">Left Join</param>
-        void ProcessLeftJoin(LeftJoin leftJoin);
+        void ProcessLeftJoin(ILeftJoin leftJoin);
 
         /// <summary>
         /// Processes a Minus
         /// </summary>
         /// <param name="minus">Minus</param>
-        void ProcessMinus(Minus minus);
+        void ProcessMinus(IMinus minus);
 
         /// <summary>
         /// Processes an Order By
@@ -188,6 +188,6 @@ namespace VDS.RDF.Query
         /// Processes a Union
         /// </summary>
         /// <param name="union"></param>
-        void ProcessUnion(Union union);
+        void ProcessUnion(IUnion union);
     }
 }
