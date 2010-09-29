@@ -38,6 +38,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF
@@ -115,6 +116,14 @@ namespace VDS.RDF
         /// <param name="formatter">Formatter</param>
         /// <returns></returns>
         String ToString(INodeFormatter formatter);
+
+        /// <summary>
+        /// Gets the String representation of the Node formatted with the given Node formatter
+        /// </summary>
+        /// <param name="formatter">Formatter</param>
+        /// <param name="segment">Triple Segment</param>
+        /// <returns></returns>
+        String ToString(INodeFormatter formatter, TripleSegment segment);
     }
 
     /// <summary>
@@ -234,6 +243,17 @@ namespace VDS.RDF
         public virtual String ToString(INodeFormatter formatter)
         {
             return formatter.Format(this);
+        }
+
+        /// <summary>
+        /// Gets the String representation of the Node formatted with the given Node formatter
+        /// </summary>
+        /// <param name="formatter">Formatter</param>
+        /// <param name="segment">Triple Segment</param>
+        /// <returns></returns>
+        public virtual String ToString(INodeFormatter formatter, TripleSegment segment)
+        {
+            return formatter.Format(this, segment);
         }
 
         /// <summary>

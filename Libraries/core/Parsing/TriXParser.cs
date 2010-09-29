@@ -33,8 +33,6 @@ terms.
 
 */
 
-//#define NO_XMLDOM
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,8 +46,6 @@ using System.Xml.Xsl;
 using VDS.RDF.Storage;
 using VDS.RDF.Storage.Params;
 using VDS.RDF.Writing;
-
-//REQ: Implement an XmlReader based version of the TrixParser
 
 namespace VDS.RDF.Parsing
 {

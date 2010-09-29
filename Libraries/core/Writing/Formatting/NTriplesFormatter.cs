@@ -64,8 +64,9 @@ namespace VDS.RDF.Writing.Formatting
         /// Formats a URI Node
         /// </summary>
         /// <param name="u">URI Node</param>
+        /// <param name="segment">Triple Segment</param>
         /// <returns></returns>
-        protected override string FormatUriNode(UriNode u)
+        protected override string FormatUriNode(UriNode u, TripleSegment? segment)
         {
             StringBuilder output = new StringBuilder();
             output.Append('<');
@@ -78,8 +79,9 @@ namespace VDS.RDF.Writing.Formatting
         /// Formats a Literal Node
         /// </summary>
         /// <param name="l">Literal Node</param>
+        /// <param name="segment">Triple Segment</param>
         /// <returns></returns>
-        protected override string FormatLiteralNode(LiteralNode l)
+        protected override string FormatLiteralNode(LiteralNode l, TripleSegment? segment)
         {
             StringBuilder output = new StringBuilder();
             String value;
@@ -154,8 +156,9 @@ namespace VDS.RDF.Writing.Formatting
         /// Formats a Blank Node
         /// </summary>
         /// <param name="b">Blank Node</param>
+        /// <param name="segment">Triple Segment</param>
         /// <returns></returns>
-        protected override string FormatBlankNode(BlankNode b)
+        protected override string FormatBlankNode(BlankNode b, TripleSegment? segment)
         {
             return "_:" + this._bnodeMapper.GetOutputID(b.InternalID);
         }

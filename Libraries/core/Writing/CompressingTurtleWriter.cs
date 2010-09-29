@@ -334,7 +334,7 @@ namespace VDS.RDF.Writing
                     }
                     else
                     {
-                        return context.NodeFormatter.Format(n);
+                        return context.NodeFormatter.Format(n, segment);
                     }
                     break;
 
@@ -344,14 +344,10 @@ namespace VDS.RDF.Writing
                 case NodeType.Literal:
                     if (segment == TripleSegment.Subject) throw new RdfOutputException(WriterErrorMessages.LiteralSubjectsUnserializable("Turtle"));
                     if (segment == TripleSegment.Predicate) throw new RdfOutputException(WriterErrorMessages.LiteralPredicatesUnserializable("Turtle"));
-                    return context.NodeFormatter.Format(n);
+                    return context.NodeFormatter.Format(n, segment);
 
                 case NodeType.Uri:
-                    if (segment == TripleSegment.Predicate)
-                    {
-                        if (((UriNode)n).StringUri.Equals(RdfSpecsHelper.RdfType, StringComparison.Ordinal)) return "a";
-                    }
-                    return context.NodeFormatter.Format(n);
+                    return context.NodeFormatter.Format(n, segment);
 
                 default:
                     throw new RdfOutputException(WriterErrorMessages.UnknownNodeTypeUnserializable("Turtle"));

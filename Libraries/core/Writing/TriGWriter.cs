@@ -330,17 +330,13 @@ namespace VDS.RDF.Writing
                     break;
 
                 case NodeType.Uri:
-                    if (segment == TripleSegment.Predicate)
-                    {
-                        if (((UriNode)n).StringUri.Equals(RdfSpecsHelper.RdfType, StringComparison.Ordinal)) return "a";
-                    }
                     break;
 
                 default:
                     throw new RdfOutputException(WriterErrorMessages.UnknownNodeTypeUnserializable("TriG"));
             }
 
-            return context.NodeFormatter.Format(n);
+            return context.NodeFormatter.Format(n, segment);
         }
 
         /// <summary>

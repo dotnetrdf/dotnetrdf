@@ -302,8 +302,6 @@ namespace VDS.RDF.Writing
 
         private void NodeToTriX(INode n, XmlWriter writer)
         {
-            XmlElement node;
-
             switch (n.NodeType)
             {
                 case NodeType.Blank:

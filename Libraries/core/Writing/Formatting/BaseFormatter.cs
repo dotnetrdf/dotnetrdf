@@ -60,22 +60,33 @@ namespace VDS.RDF.Writing.Formatting
         /// Formats a Node as a String
         /// </summary>
         /// <param name="n">Node</param>
+        /// <param name="segment">Triple Segment</param>
         /// <returns></returns>
-        public virtual String Format(INode n)
+        public virtual String Format(INode n, TripleSegment? segment)
         {
             switch (n.NodeType)
             {
                 case NodeType.Blank:
-                    return this.FormatBlankNode((BlankNode)n);
+                    return this.FormatBlankNode((BlankNode)n, segment);
                 case NodeType.GraphLiteral:
                     throw new NotSupportedException("Graph Literal Nodes cannot be formatted with this function");
                 case NodeType.Literal:
-                    return this.FormatLiteralNode((LiteralNode)n);
+                    return this.FormatLiteralNode((LiteralNode)n, segment);
                 case NodeType.Uri:
-                    return this.FormatUriNode((UriNode)n);
+                    return this.FormatUriNode((UriNode)n, segment);
                 default:
                     throw new RdfOutputException(WriterErrorMessages.UnknownNodeTypeUnserializable(this._format));
             }
+        }
+
+        /// <summary>
+        /// Formats a Node as a String
+        /// </summary>
+        /// <param name="n">Node</param>
+        /// <returns></returns>
+        public virtual String Format(INode n)
+        {
+            return this.Format(n, null);
         }
 
         /// <summary>
@@ -85,15 +96,16 @@ namespace VDS.RDF.Writing.Formatting
         /// <returns></returns>
         public virtual String Format(Triple t)
         {
-            return this.Format(t.Subject) + " " + this.Format(t.Predicate) + " " + this.Format(t.Object) + " .";
+            return this.Format(t.Subject, TripleSegment.Subject) + " " + this.Format(t.Predicate, TripleSegment.Predicate) + " " + this.Format(t.Object, TripleSegment.Object) + " .";
         }
 
         /// <summary>
         /// Formats a URI Node as a String for the given Format
         /// </summary>
         /// <param name="u">URI Node</param>
+        /// <param name="segment">Triple Segment</param>
         /// <returns></returns>
-        protected abstract String FormatUriNode(UriNode u);
+        protected abstract String FormatUriNode(UriNode u, TripleSegment? segment);
 
         /// <summary>
         /// Formats a URI as a String for full Output
@@ -121,16 +133,19 @@ namespace VDS.RDF.Writing.Formatting
         /// Formats a Literal Node as a String for the given Format
         /// </summary>
         /// <param name="l">Literal Node</param>
+        /// <param name="segment">Triple Segment</param>
         /// <returns></returns>
-        protected abstract String FormatLiteralNode(LiteralNode l);
+        protected abstract String FormatLiteralNode(LiteralNode l, TripleSegment? segment);
 
         /// <summary>
         /// Formats a Blank Node as a String for the given Format
         /// </summary>
         /// <param name="b">Blank Node</param>
+        /// <param name="segment">Triple Segment</param>
         /// <returns></returns>
-        protected virtual String FormatBlankNode(BlankNode b)
+        protected virtual String FormatBlankNode(BlankNode b, TripleSegment? segment)
         {
+            if (segment == TripleSegment.Predicate) throw new RdfOutputException(WriterErrorMessages.BlankPredicatesUnserializable(this._format));
             return b.ToString();
         }
 

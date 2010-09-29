@@ -100,8 +100,9 @@ namespace VDS.RDF.Writing.Formatting
         /// Formats a URI Node
         /// </summary>
         /// <param name="u">URI Node</param>
+        /// <param name="segment">Triple Segment</param>
         /// <returns></returns>
-        protected override string FormatUriNode(UriNode u)
+        protected override string FormatUriNode(UriNode u, TripleSegment? segment)
         {
             StringBuilder output = new StringBuilder();
             if (this._uriStartChar != null) output.Append(this._uriStartChar);
@@ -121,8 +122,9 @@ namespace VDS.RDF.Writing.Formatting
         /// Formats a Literal Node
         /// </summary>
         /// <param name="lit">Literal Node</param>
+        /// <param name="segment">Triple Segment</param>
         /// <returns></returns>
-        protected override string FormatLiteralNode(LiteralNode lit)
+        protected override string FormatLiteralNode(LiteralNode lit, TripleSegment? segment)
         {
             StringBuilder output = new StringBuilder();
             if (TurtleSpecsHelper.IsValidPlainLiteral(lit.Value, lit.DataType))

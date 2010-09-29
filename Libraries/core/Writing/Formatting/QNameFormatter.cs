@@ -79,17 +79,18 @@ namespace VDS.RDF.Writing.Formatting
         /// Formats a URI Node using QName compression if possible
         /// </summary>
         /// <param name="u">URI</param>
+        /// <param name="segment">Triple Segment</param>
         /// <returns></returns>
-        protected override string FormatUriNode(UriNode u)
+        protected override string FormatUriNode(UriNode u, TripleSegment? segment)
         {
             StringBuilder output = new StringBuilder();
             String qname;
 
-            /*if (this._allowAKeyword && u.StringUri.Equals(RdfSpecsHelper.RdfType))
+            if (this._allowAKeyword && segment == TripleSegment.Predicate && u.StringUri.Equals(RdfSpecsHelper.RdfType))
             {
                 output.Append('a');
             }
-            else*/ if (this._qnameMapper.ReduceToQName(u.StringUri, out qname))
+            else if (this._qnameMapper.ReduceToQName(u.StringUri, out qname))
             {
                 if (TurtleSpecsHelper.IsValidQName(qname))
                 {
@@ -115,7 +116,8 @@ namespace VDS.RDF.Writing.Formatting
         /// Formats a Literal Node using QName compression for the datatype if possible
         /// </summary>
         /// <param name="l">Literal Node</param>
+        /// <param name="segment">Triple Segment</param>
         /// <returns></returns>
-        protected abstract override string FormatLiteralNode(LiteralNode l);
+        protected abstract override string FormatLiteralNode(LiteralNode l, TripleSegment? segment);
     }
 }

@@ -86,7 +86,7 @@ namespace VDS.RDF.Query.Algebra
     }
 
     /// <summary>
-    /// Represents an Algebra construct which is a Join
+    /// Represents an Algebra construct which is an Abstract Join
     /// </summary>
     public interface IAbstractJoin : ISparqlAlgebra
     {
@@ -107,29 +107,47 @@ namespace VDS.RDF.Query.Algebra
         }
     }
 
+    /// <summary>
+    /// Represents an Algebra construct which is a Join
+    /// </summary>
     public interface IJoin : IAbstractJoin
     {
 
     }
 
+    /// <summary>
+    /// Represents an Algebra construct which is a Left Join
+    /// </summary>
     public interface ILeftJoin : IAbstractJoin
     {
+        /// <summary>
+        /// Gets the Filter used on the Join
+        /// </summary>
         ISparqlFilter Filter
         {
             get;
         }
     }
 
+    /// <summary>
+    /// Represents an Algebra construct which is a Union
+    /// </summary>
     public interface IUnion : IAbstractJoin
     {
 
     }
 
+    /// <summary>
+    /// Represents an Algebra construct which is a Minus
+    /// </summary>
     public interface IMinus : IAbstractJoin
     {
 
     }
 
+    /// <summary>
+    /// Represents an Algebra construct which is an Exists Join
+    /// </summary>
     public interface IExistsJoin : IAbstractJoin
     {
 

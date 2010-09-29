@@ -48,5 +48,13 @@ namespace VDS.RDF.Writing.Formatting
         /// <param name="n">Node</param>
         /// <returns></returns>
         String Format(INode n);
+
+        /// <summary>
+        /// Formats a Node as a String for a specific segment of a Triple
+        /// </summary>
+        /// <param name="n">Node</param>
+        /// <param name="segment">Segment</param>
+        /// <returns></returns>
+        String Format(INode n, TripleSegment? segment);
     }
 }
