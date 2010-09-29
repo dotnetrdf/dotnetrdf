@@ -7,7 +7,16 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF", "..\..\Trunk\Li
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "alexandria-tests", "Testing\alexandria-tests\alexandria-tests.csproj", "{10CD378D-9490-4032-A615-20991215C7EC}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9ABC0CFA-5FB1-4602-A2A7-53C243D59F89}"
+	ProjectSection(SolutionItems) = preProject
+		alexandria.testrunconfig = alexandria.testrunconfig
+		dotNetRDF.Alexandria.vsmdi = dotNetRDF.Alexandria.vsmdi
+	EndProjectSection
+EndProject
 Global
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = dotNetRDF.Alexandria.vsmdi
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU

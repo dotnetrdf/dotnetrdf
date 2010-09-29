@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using VDS.RDF;
+using Alexandria.Documents.Adaptors;
 
 namespace Alexandria.Documents
 {
@@ -55,79 +56,9 @@ namespace Alexandria.Documents
         /// <summary>
         /// Gets the Adaptor used to convert from Documents to Graphs
         /// </summary>
-        IDocumentToGraphAdaptor GraphAdaptor
+        IDataAdaptor DataAdaptor
         {
             get;
         }
-    }
-
-    /// <summary>
-    /// Represents a Document used by Alexandria
-    /// </summary>
-    public interface IDocument : IDisposable
-    {
-        /// <summary>
-        /// Gets the Documents Name
-        /// </summary>
-        String Name
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Gets whether a Document can be opened for Reading
-        /// </summary>
-        bool CanRead
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Gets whether a Document can be opened for Writing
-        /// </summary>
-        bool CanWrite
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Gets whether the Document exists
-        /// </summary>
-        bool Exists
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Opens a Document to start writing
-        /// </summary>
-        /// <returns></returns>
-        TextWriter BeginWrite();
-
-        /// <summary>
-        /// Signals that the write has ended
-        /// </summary>
-        void EndWrite();
-
-        /// <summary>
-        /// Opens a Document to start reading
-        /// </summary>
-        /// <returns></returns>
-        StreamReader BeginRead();
-
-        /// <summary>
-        /// Signals that the read has ended
-        /// </summary>
-        void EndRead();
-    }
-
-    /// <summary>
-    /// An Adaptor which can convert a Document into an RDF Graph
-    /// </summary>
-    public interface IDocumentToGraphAdaptor
-    {
-        void ToGraph(IGraph g, IDocument document);
-
-        void ToDocument(IGraph g, IDocument document);
     }
 }

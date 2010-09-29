@@ -56,7 +56,7 @@ namespace Alexandria.Documents
             }
         }
 
-        public IDocumentToGraphAdaptor GraphAdaptor
+        public IDataAdaptor DataAdaptor
         {
             get
             {
@@ -90,7 +90,8 @@ namespace Alexandria.Documents
             {
                 try
                 {
-                    File.Create(Path.Combine(this._directory, name));
+                    FileStream temp = File.Create(Path.Combine(this._directory, name));
+                    temp.Close();
                     return true;
                 }
                 catch
@@ -147,7 +148,7 @@ namespace Alexandria.Documents
                 }
                 else
                 {
-                    throw new AlexandriaException("The request Document " + name + " is not present in this Store");
+                    throw new AlexandriaException("The requested Document " + name + " is not present in this Store");
                 }
             }
         }

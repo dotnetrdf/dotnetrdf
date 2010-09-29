@@ -27,7 +27,7 @@ namespace Alexandria
             //Only instantiate the SHA256 class when we first use it
             if (_hash == null) _hash = new SHA256Managed();
 
-            if (graphUri.Equals(String.Empty)) return "default-graph";
+            if (graphUri.Equals(String.Empty) || graphUri == null) return "default-graph";
 
             Byte[] input = Encoding.UTF8.GetBytes(graphUri);
             Byte[] output = _hash.ComputeHash(input);

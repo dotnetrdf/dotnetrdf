@@ -40,7 +40,7 @@ namespace Alexandria
                 try
                 {
                     IDocument doc = this._docManager.GetDocument(name);
-                    this._docManager.GraphAdaptor.ToGraph(g, doc);
+                    this._docManager.DataAdaptor.ToGraph(g, doc);
                 }
                 catch (AlexandriaException)
                 {
@@ -63,8 +63,17 @@ namespace Alexandria
 
             try
             {
+                //Create Document if necessary
+                if (!this._docManager.HasDocument(name))
+                {
+                    if (!this._docManager.CreateDocument(name))
+                    {
+                        throw new AlexandriaException("Unable to save a Graph to the Store as the Document Manager was unable to create a Document for this Graph");
+                    }
+                }
+
                 IDocument doc = this._docManager.GetDocument(name);
-                this._docManager.GraphAdaptor.ToDocument(g, doc);
+                this._docManager.DataAdaptor.ToDocument(g, doc);
                 this._indexManager.AddToIndex(g.Triples);
             }
             catch (AlexandriaException)
@@ -83,19 +92,65 @@ namespace Alexandria
 
         public virtual void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
-            throw new NotImplementedException();
+            this.UpdateGraph(graphUri.ToSafeString(), additions, removals);
         }
 
         public virtual void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
-            throw new NotImplementedException();
+            String name = this.GetDocumentName(graphUri);
+
+            if (this._docManager.HasDocument(name))
+            {
+
+                try
+                {
+                    IDocument doc = this._docManager.GetDocument(name);
+
+                    if (additions != null)
+                    {
+                        this._docManager.DataAdaptor.AppendTriples(additions, doc);
+                        this._indexManager.AddToIndex(additions);
+                    }
+                    if (removals != null)
+                    {
+                        this._docManager.DataAdaptor.DeleteTriples(removals, doc);
+                        this._indexManager.RemoveFromIndex(removals);
+                    }
+                }
+                catch (AlexandriaException)
+                {
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    throw new AlexandriaException("An error occurred while attempting to update a Graph in the Store", ex);
+                }
+                finally
+                {
+                    this._docManager.ReleaseDocument(name);
+                }
+            }
+            else
+            {
+                //If we don't have a document for this Graph this is actually a SaveGraph() operation on the Graph generated
+                //by first asserting the additions and then retracting the removals
+                //If that results in a non-empty Graph then SaveGraph() will be invoked
+                Graph g = new Graph();
+                if (graphUri != null && !graphUri.Equals(String.Empty))
+                {
+                    g.BaseUri = new Uri(graphUri);
+                }
+                if (additions != null) g.Assert(additions);
+                if (removals != null) g.Retract(removals);
+                if (!g.IsEmpty) this.SaveGraph(g);
+            }
         }
 
         public virtual bool UpdateSupported
         {
             get 
             {
-                return false;
+                return true;
             }
         }
 
@@ -117,8 +172,8 @@ namespace Alexandria
 
         public virtual void Dispose()
         {
-            this._docManager.Dispose();
             this._indexManager.Dispose();
+            this._docManager.Dispose();
         }
     }
 }

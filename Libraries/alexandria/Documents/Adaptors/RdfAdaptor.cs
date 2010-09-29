@@ -9,7 +9,7 @@ using VDS.RDF.Writing;
 
 namespace Alexandria.Documents.Adaptors
 {
-    public abstract class RdfAdaptor : IDocumentToGraphAdaptor
+    public abstract class RdfAdaptor : IDataAdaptor
     {
         private IRdfReader _parser;
         private IRdfWriter _writer;
@@ -47,7 +47,7 @@ namespace Alexandria.Documents.Adaptors
         {
             try
             {
-                this._writer.Save(g, document.BeginWrite());
+                this._writer.Save(g, document.BeginWrite(false));
                 document.EndWrite();
             }
             catch (AlexandriaException)
@@ -60,5 +60,9 @@ namespace Alexandria.Documents.Adaptors
                 throw new AlexandriaException("Error writing Graph to Document " + document.Name, ex);
             }
         }
+
+        public abstract void AppendTriples(IEnumerable<Triple> ts, IDocument document);
+
+        public abstract void DeleteTriples(IEnumerable<Triple> ts, IDocument document);
     }
 }

@@ -45,13 +45,17 @@
     <Compile Include="AlexandriaException.cs" />
     <Compile Include="AlexandriaFileManager.cs" />
     <Compile Include="AlexandriaManager.cs" />
+    <Compile Include="Documents\Adaptors\IDataAdaptor.cs" />
+    <Compile Include="Documents\Adaptors\NQuadsAdaptor.cs" />
     <Compile Include="Documents\Adaptors\NTriplesAdaptor.cs" />
     <Compile Include="Documents\Adaptors\RdfAdaptor.cs" />
     <Compile Include="Documents\DocumentReference.cs" />
     <Compile Include="Documents\FileDocument.cs" />
     <Compile Include="Documents\FileDocumentManager.cs" />
+    <Compile Include="Documents\IDocument.cs" />
     <Compile Include="Documents\IDocumentManager.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="Indexing\BaseIndexManager.cs" />
     <Compile Include="Indexing\FileIndexManager.cs" />
     <Compile Include="Indexing\IIndexManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

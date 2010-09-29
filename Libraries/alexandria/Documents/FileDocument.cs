@@ -11,7 +11,7 @@ namespace Alexandria.Documents
     {
         private String _filename;
         private ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
-        private bool _canRead = true, _canWrite = true;
+        private bool _canWrite = true;
 
         public FileDocument(String filename)
         {
@@ -26,22 +26,6 @@ namespace Alexandria.Documents
             }
         }
 
-        public bool CanRead
-        {
-            get 
-            {
-                return this.Exists && this._canRead;
-            }
-        }
-
-        public bool CanWrite
-        {
-            get 
-            {
-                return this._canWrite; 
-            }
-        }
-
         public bool Exists
         {
             get 
@@ -50,15 +34,21 @@ namespace Alexandria.Documents
             }
         }
 
-        public TextWriter BeginWrite()
+        public TextWriter BeginWrite(bool append)
         {
             try
             {
-                this._canRead = false;
                 this._canWrite = false;
                 this._lock.EnterWriteLock();
 
-                return new StreamWriter(this._filename);
+                if (append)
+                {
+                    return new StreamWriter(File.Open(this._filename, FileMode.Append));
+                }
+                else
+                {
+                    return new StreamWriter(File.Open(this._filename, FileMode.Create));
+                }
             }
             catch (Exception ex)
             {
@@ -71,8 +61,7 @@ namespace Alexandria.Documents
             try
             {
                 this._lock.ExitWriteLock();
-                this._canRead = true;
-                this._canWrite = true;
+                this._canWrite = (this._lock.WaitingWriteCount == 0);
             }
             catch (Exception ex)
             {
@@ -84,7 +73,6 @@ namespace Alexandria.Documents
         {
             try
             {
-                this._canWrite = false;
                 this._lock.EnterReadLock();
 
                 return new StreamReader(File.OpenRead(this._filename));
@@ -100,7 +88,6 @@ namespace Alexandria.Documents
             try
             {
                 this._lock.ExitReadLock();
-                this._canWrite = (this._lock.CurrentReadCount == 0);
             }
             catch (Exception ex)
             {
@@ -111,7 +98,7 @@ namespace Alexandria.Documents
         public void Dispose()
         {
             //Need to wait for any reads/writes to complete
-            while (!this.CanWrite || this._lock.CurrentReadCount > 0)
+            while (!this._canWrite || this._lock.WaitingReadCount > 0 || this._lock.WaitingWriteCount > 0 || this._lock.CurrentReadCount > 0)
             {
                 Thread.Sleep(50);
             }
