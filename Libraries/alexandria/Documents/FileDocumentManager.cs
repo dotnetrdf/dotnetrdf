@@ -141,7 +141,7 @@ namespace Alexandria.Documents
             {
                 if (File.Exists(Path.Combine(this._directory, name)))
                 {
-                    FileDocument doc = new FileDocument(Path.Combine(this._directory, name));
+                    FileDocument doc = new FileDocument(Path.Combine(this._directory, name), this);
                     this._activeDocuments.Add(name, new DocumentReference(doc));
                     this._activeDocuments[name].IncrementReferenceCount();
                     return doc;

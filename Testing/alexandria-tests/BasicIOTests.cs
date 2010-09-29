@@ -31,7 +31,7 @@ namespace alexandria_tests
 
             Assert.AreEqual(g, h, "Graphs should have been equal");
 
-            //manager.Dispose();
+            manager.Dispose();
         }
 
         [TestMethod]

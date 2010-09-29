@@ -9,13 +9,23 @@ namespace Alexandria.Documents
 {
     public class FileDocument : IDocument
     {
+        private IDocumentManager _manager;
         private String _filename;
         private ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
         private bool _canWrite = true;
 
-        public FileDocument(String filename)
+        public FileDocument(String filename, IDocumentManager manager)
         {
             this._filename = filename;
+            this._manager = manager;
+        }
+
+        public IDocumentManager DocumentManager
+        {
+            get
+            {
+                return this._manager;
+            }
         }
 
         public String Name

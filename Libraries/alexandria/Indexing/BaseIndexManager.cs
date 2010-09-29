@@ -25,6 +25,7 @@ namespace Alexandria.Indexing
         public BaseIndexManager()
         {
             this._indexer = new Thread(new ThreadStart(this.IndexTriples));
+            this._indexer.IsBackground = false;
             this._indexer.Start();
         }
 

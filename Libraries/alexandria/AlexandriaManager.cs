@@ -12,6 +12,11 @@ namespace Alexandria
     /// <summary>
     /// Abstract Base Class for Alexandria Store Managers
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// <strong>Important: </strong> You must explicitly <see cref="Dispose">Dispose()</see> of the Manager when you have finished with it otherwise your data and indexes may be inconsistent
+    /// </para>
+    /// </remarks>
     public abstract class AlexandriaManager : IGenericIOManager
     {
         private IDocumentManager _docManager;

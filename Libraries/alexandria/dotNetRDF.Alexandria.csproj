@@ -57,7 +57,9 @@
     <Compile Include="Extensions.cs" />
     <Compile Include="Indexing\BaseIndexManager.cs" />
     <Compile Include="Indexing\FileIndexManager.cs" />
+    <Compile Include="Indexing\FileIndexReader.cs" />
     <Compile Include="Indexing\IIndexManager.cs" />
+    <Compile Include="Indexing\StreamingNQuadsParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

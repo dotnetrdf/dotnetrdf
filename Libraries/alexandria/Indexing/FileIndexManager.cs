@@ -22,7 +22,14 @@ namespace Alexandria.Indexing
 
         public override IEnumerable<Triple> GetTriples(string indexName)
         {
-            throw new NotImplementedException();
+            if (this._manager.HasDocument(indexName))
+            {
+                return new FileIndexReader(this._manager.GetDocument(indexName));
+            }
+            else
+            {
+                return Enumerable.Empty<Triple>();
+            }
         }
 
         protected override string[] GetIndexNames(Triple t)

@@ -12,6 +12,14 @@ namespace Alexandria.Documents
     public interface IDocument : IDisposable
     {
         /// <summary>
+        /// Gets the Manager that generated the Document
+        /// </summary>
+        IDocumentManager DocumentManager
+        {
+            get;
+        }
+
+        /// <summary>
         /// Gets the Documents Name
         /// </summary>
         String Name

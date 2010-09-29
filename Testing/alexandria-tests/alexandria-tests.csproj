@@ -43,6 +43,7 @@
     <Compile Include="BasicIOTests.cs" />
     <Compile Include="CreateTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="IndexingTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\Trunk\Libraries\core\dotNetRDF.csproj">

@@ -86,10 +86,19 @@ namespace Alexandria.Documents.Adaptors
                     //We deleted some Triples so need to reserialize the data
                     try
                     {
-                        TextWriter writer = document.BeginWrite(false);
-                        writer.Write(editedOutput.ToString());
-                        writer.Close();
-                        document.EndWrite();
+                        if (editedLineCount > 0)
+                        {
+                            TextWriter writer = document.BeginWrite(false);
+                            writer.Write(editedOutput.ToString());
+                            writer.Close();
+                            document.EndWrite();
+                        }
+                        else
+                        {
+                            //If there are no lines in the result then delete the document
+                            document.DocumentManager.ReleaseDocument(document.Name);
+                            document.DocumentManager.DeleteDocument(document.Name);
+                        }
                     }
                     catch (AlexandriaException)
                     {
