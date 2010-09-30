@@ -41,5 +41,87 @@ namespace alexandria_tests
 
             manager.Dispose();
         }
+
+        [TestMethod]
+        public void IndexPredicateTest()
+        {
+            //Load in our Test Graph
+            Graph g = new Graph();
+            FileLoader.Load(g, "InferenceTest.ttl");
+            g.BaseUri = null;
+
+            //Open an Alexandria Store and save the Graph
+            AlexandriaFileManager manager = new AlexandriaFileManager("test");
+            manager.SaveGraph(g);
+
+            Thread.Sleep(500);
+
+            //Try and access an index from the Store
+            TestWrapper wrapper = new TestWrapper(manager);
+            UriNode rdfType = g.CreateUriNode("rdf:type");
+            IEnumerable<Triple> ts = wrapper.IndexManager.GetTriplesWithPredicate(rdfType);
+            foreach (Triple t in ts)
+            {
+                Console.WriteLine(t.ToString());
+            }
+
+            manager.Dispose();
+        }
+
+        [TestMethod]
+        public void IndexPartialEnumerateTest()
+        {
+            //Load in our Test Graph
+            Graph g = new Graph();
+            FileLoader.Load(g, "InferenceTest.ttl");
+            g.BaseUri = null;
+
+            //Open an Alexandria Store and save the Graph
+            AlexandriaFileManager manager = new AlexandriaFileManager("test");
+            manager.SaveGraph(g);
+
+            Thread.Sleep(500);
+
+            //Try and access an index from the Store
+            TestWrapper wrapper = new TestWrapper(manager);
+            UriNode rdfType = g.CreateUriNode("rdf:type");
+            IEnumerable<Triple> ts = wrapper.IndexManager.GetTriplesWithPredicate(rdfType);
+            foreach (Triple t in ts.Skip(5).Take(5))
+            {
+                Console.WriteLine(t.ToString());
+            }
+
+            manager.Dispose();
+        }
+
+        [TestMethod]
+        public void IndexRepeatTest()
+        {
+            //Load in our Test Graph
+            Graph g = new Graph();
+            FileLoader.Load(g, "InferenceTest.ttl");
+            g.BaseUri = null;
+
+            //Open an Alexandria Store and save the Graph
+            AlexandriaFileManager manager = new AlexandriaFileManager("test");
+            manager.SaveGraph(g);
+
+            Thread.Sleep(500);
+
+            //Try and access an index from the Store
+            TestWrapper wrapper = new TestWrapper(manager);
+            UriNode fordFiesta = g.CreateUriNode("eg:FordFiesta");
+            IEnumerable<Triple> ts = wrapper.IndexManager.GetTriplesWithSubject(fordFiesta);
+            foreach (Triple t in ts)
+            {
+                Console.WriteLine(t.ToString());
+            }
+            foreach (Triple t in ts)
+            {
+                Console.WriteLine(t.ToString());
+            }
+
+            manager.Dispose();
+        }
     }
 }

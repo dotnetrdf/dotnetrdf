@@ -14,7 +14,7 @@ namespace Alexandria
     /// </summary>
     /// <remarks>
     /// <para>
-    /// <strong>Important: </strong> You must explicitly <see cref="Dispose">Dispose()</see> of the Manager when you have finished with it otherwise your data and indexes may be inconsistent
+    /// <strong>Important: </strong> You must explicitly <see cref="AlexandriaManager.Dispose">Dispose()</see> of the Manager when you have finished with it otherwise your data and indexes may be inconsistent.  While the Manager has been designed to force a <see cref="AlexandriaManager.Dispose">Dispose()</see> call if you fail to do so this is very inefficient and may cause your program to consume memory/hang unecessarily due to the vagaries of the .Net Garbage Collector
     /// </para>
     /// </remarks>
     public abstract class AlexandriaManager : IGenericIOManager
@@ -26,6 +26,11 @@ namespace Alexandria
         {
             this._docManager = documentManager;
             this._indexManager = indexManager;
+        }
+
+        ~AlexandriaManager()
+        {
+            this.Dispose(false);
         }
 
         protected internal IDocumentManager DocumentManager
@@ -212,8 +217,18 @@ namespace Alexandria
             }
         }
 
-        public virtual void Dispose()
+        public void Dispose()
         {
+            this.Dispose(true);
+        }
+
+        public virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                GC.SuppressFinalize(this);
+            }
+
             this._indexManager.Dispose();
             this._docManager.Dispose();
         }
