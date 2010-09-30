@@ -45,10 +45,12 @@
     <Compile Include="AlexandriaException.cs" />
     <Compile Include="AlexandriaFileManager.cs" />
     <Compile Include="AlexandriaManager.cs" />
+    <Compile Include="AlexandriaSha256HashingManager.cs" />
     <Compile Include="Documents\Adaptors\IDataAdaptor.cs" />
     <Compile Include="Documents\Adaptors\NQuadsAdaptor.cs" />
     <Compile Include="Documents\Adaptors\NTriplesAdaptor.cs" />
     <Compile Include="Documents\Adaptors\RdfAdaptor.cs" />
+    <Compile Include="Documents\BaseDocumentManager.cs" />
     <Compile Include="Documents\DocumentReference.cs" />
     <Compile Include="Documents\FileDocument.cs" />
     <Compile Include="Documents\FileDocumentManager.cs" />
@@ -61,6 +63,7 @@
     <Compile Include="Indexing\IIndexManager.cs" />
     <Compile Include="Indexing\StreamingNQuadsParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestWrapper.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\Trunk\Libraries\core\dotNetRDF.csproj">

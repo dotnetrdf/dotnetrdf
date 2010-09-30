@@ -28,7 +28,23 @@ namespace Alexandria
             this._indexManager = indexManager;
         }
 
-        protected abstract String GetDocumentName(String graphUri);
+        protected internal IDocumentManager DocumentManager
+        {
+            get
+            {
+                return this._docManager;
+            }
+        }
+
+        protected internal IIndexManager IndexManager
+        {
+            get
+            {
+                return this._indexManager;
+            }
+        }
+
+        protected internal abstract String GetDocumentName(String graphUri);
 
         public virtual void LoadGraph(IGraph g, Uri graphUri)
         {
@@ -65,6 +81,7 @@ namespace Alexandria
         public virtual void SaveGraph(IGraph g)
         {
             String name = this.GetDocumentName(g.BaseUri.ToSafeString());
+            IDocument doc;
 
             try
             {
@@ -76,8 +93,28 @@ namespace Alexandria
                         throw new AlexandriaException("Unable to save a Graph to the Store as the Document Manager was unable to create a Document for this Graph");
                     }
                 }
+                else
+                {
+                    //If the Document already exists then we must first remove from the index any Triples it currently contains
+                    try
+                    {
+                        Graph temp = new Graph();
+                        doc = this._docManager.GetDocument(name);
+                        this._docManager.DataAdaptor.ToGraph(temp, doc);
+                        this._docManager.ReleaseDocument(name);
+                        this._indexManager.RemoveFromIndex(temp.Triples);
+                    }
+                    catch (AlexandriaException)
+                    {
+                        throw;
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new AlexandriaException("Unable to save a Graph to the Store since this operation requires removing a previous Graph from the Store and this operation failed", ex);
+                    }
+                }
 
-                IDocument doc = this._docManager.GetDocument(name);
+                doc = this._docManager.GetDocument(name);
                 this._docManager.DataAdaptor.ToDocument(g, doc);
                 this._indexManager.AddToIndex(g.Triples);
             }

@@ -7,11 +7,9 @@ using Alexandria.Documents.Adaptors;
 
 namespace Alexandria.Documents
 {
-    public class FileDocumentManager : IDocumentManager
+    public class FileDocumentManager : BaseDocumentManager
     {
         private String _directory;
-        private Dictionary<String,DocumentReference> _activeDocuments = new Dictionary<string,DocumentReference>();
-        private NTriplesAdaptor _adaptor = new NTriplesAdaptor();
 
         private static String[] RequiredDirectories = new String[] {
             @"index\",
@@ -20,10 +18,12 @@ namespace Alexandria.Documents
             @"index\o\",
             @"index\sp\",
             @"index\so\",
-            @"index\po\"
+            @"index\po\",
+            @"index\spo\"
         };
 
         public FileDocumentManager(String directory)
+            : base()
         {
             if (!Directory.Exists(directory))
             {
@@ -56,61 +56,27 @@ namespace Alexandria.Documents
             }
         }
 
-        public IDataAdaptor DataAdaptor
+        protected override bool HasDocumentInternal(string name)
         {
-            get
-            {
-                return this._adaptor;
-            }
+            return File.Exists(Path.Combine(this._directory, name));
         }
 
-        public bool HasDocument(string name)
+        protected override bool CreateDocumentInternal(string name)
         {
-            if (this._activeDocuments.ContainsKey(name))
+            try
             {
+                FileStream temp = File.Create(Path.Combine(this._directory, name));
+                temp.Close();
                 return true;
             }
-            else
-            {
-                return File.Exists(Path.Combine(this._directory, name));
-            }
-        }
-
-        public bool CreateDocument(string name)
-        {
-            if (this._activeDocuments.ContainsKey(name))
+            catch
             {
                 return false;
             }
-            else if (File.Exists(Path.Combine(this._directory, name)))
-            {
-                return false;
-            }
-            else
-            {
-                try
-                {
-                    FileStream temp = File.Create(Path.Combine(this._directory, name));
-                    temp.Close();
-                    return true;
-                }
-                catch
-                {
-                    return false;
-                }
-            }
         }
 
-        public bool DeleteDocument(string name)
+        protected override bool DeleteDocumentInternal(string name)
         {
-            if (this._activeDocuments.ContainsKey(name))
-            {
-                if (this._activeDocuments[name].ReferenceCount > 0)
-                {
-                    return false;
-                }
-            }
-
             //Attempt to delete the actual document
             if (File.Exists(Path.Combine(this._directory, name)))
             {
@@ -130,51 +96,15 @@ namespace Alexandria.Documents
             }
         }
 
-        public IDocument GetDocument(string name)
+        protected override IDocument GetDocumentInternal(string name)
         {
-            if (this._activeDocuments.ContainsKey(name))
+            if (File.Exists(Path.Combine(this._directory, name)))
             {
-                this._activeDocuments[name].IncrementReferenceCount();
-                return this._activeDocuments[name].Document;
+                return new FileDocument(Path.Combine(this._directory, name), name, this);
             }
             else
             {
-                if (File.Exists(Path.Combine(this._directory, name)))
-                {
-                    FileDocument doc = new FileDocument(Path.Combine(this._directory, name), this);
-                    this._activeDocuments.Add(name, new DocumentReference(doc));
-                    this._activeDocuments[name].IncrementReferenceCount();
-                    return doc;
-                }
-                else
-                {
-                    throw new AlexandriaException("The requested Document " + name + " is not present in this Store");
-                }
-            }
-        }
-
-        public bool ReleaseDocument(String name)
-        {
-            if (this._activeDocuments.ContainsKey(name))
-            {
-                this._activeDocuments[name].DecrementReferenceCount();
-                if (this._activeDocuments[name].ReferenceCount == 0)
-                {
-                    this._activeDocuments.Remove(name);
-                }
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        public void Dispose()
-        {
-            foreach (DocumentReference reference in this._activeDocuments.Values)
-            {
-                reference.Dispose();
+                throw new AlexandriaException("The requested Document " + name + " is not present in this Store");
             }
         }
     }

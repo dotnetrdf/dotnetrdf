@@ -11,7 +11,19 @@ namespace Alexandria.Indexing
     /// </summary>
     public interface IIndexManager : IDisposable
     {
-        IEnumerable<Triple> GetTriples(String indexName);
+        IEnumerable<Triple> GetTriplesWithSubject(INode subj);
+
+        IEnumerable<Triple> GetTriplesWithPredicate(INode pred);
+
+        IEnumerable<Triple> GetTriplesWithObject(INode obj);
+
+        IEnumerable<Triple> GetTriplesWithSubjectPredicate(INode subj, INode pred);
+
+        IEnumerable<Triple> GetTriplesWithPredicateObject(INode pred, INode obj);
+
+        IEnumerable<Triple> GetTriplesWithSubjectObject(INode subj, INode obj);
+
+        IEnumerable<Triple> GetTriples(Triple t);
 
         void AddToIndex(Triple t);
 

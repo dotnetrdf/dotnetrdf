@@ -17,8 +17,7 @@ namespace Alexandria.Indexing
     /// </remarks>
     public abstract class BaseIndexManager : IIndexManager
     {
-        private Queue<Triple> _addQueue = new Queue<Triple>();
-        private Queue<Triple> _removeQueue = new Queue<Triple>();
+        private Queue<IndexingAction> _indexQueue = new Queue<IndexingAction>();
         private Thread _indexer;
         private bool _stopIndexer = false, _stopped = false;
 
@@ -29,43 +28,67 @@ namespace Alexandria.Indexing
             this._indexer.Start();
         }
 
+        #region Internal Processing
+
         private void IndexTriples()
         {
             while (true)
             {
-                //First deal with additions to indices
-                //We want to empty the add queue and batch it's addition operations by index
-                lock (this._addQueue)
+                 //We want to empty the add queue and batch it's operations by index and type
+                lock (this._indexQueue)
                 {
-                    if (this._addQueue.Count > 0)
+                    if (this._indexQueue.Count > 0)
                     {
                         Dictionary<String, List<Triple>> batches = new Dictionary<string, List<Triple>>();
-                        while (this._addQueue.Count > 0)
+                        IndexingAction action = this._indexQueue.Dequeue();
+                        bool isDelete = action.IsDelete;
+                        while (true)
                         {
-                            this.BatchOperations(this._addQueue.Dequeue(), batches);
-                        }
+                            this.BatchOperations(action.Triple, batches);
 
-                        foreach (KeyValuePair<String, List<Triple>> batch in batches)
-                        {
-                            this.AddToIndexInternal(batch.Value, batch.Key);
-                        }
-                    }
-                }
+                            if (this._indexQueue.Count > 0)
+                            {
+                                action = this._indexQueue.Dequeue();
 
-                //Then deal with removals from indices
-                lock (this._removeQueue)
-                {
-                    if (this._removeQueue.Count > 0)
-                    {
-                        Dictionary<String, List<Triple>> batches = new Dictionary<string, List<Triple>>();
-                        while (this._removeQueue.Count > 0)
-                        {
-                            this.BatchOperations(this._removeQueue.Dequeue(), batches);
-                        }
+                                //When the action type changes need to process the batches so far
+                                if (action.IsDelete != isDelete)
+                                {
+                                    foreach (KeyValuePair<String, List<Triple>> batch in batches)
+                                    {
+                                        if (isDelete)
+                                        {
+                                            this.RemoveFromIndexInternal(batch.Value, batch.Key);
+                                        }
+                                        else
+                                        {
+                                            this.AddToIndexInternal(batch.Value, batch.Key);
+                                        }
+                                    }
+                                    isDelete = action.IsDelete;
 
-                        foreach (KeyValuePair<String, List<Triple>> batch in batches)
-                        {
-                            this.RemoveFromIndexInternal(batch.Value, batch.Key);
+                                    //Remember to clear the batches afterwards!
+                                    batches.Clear();
+                                }
+                            }
+                            else
+                            {
+                                //If we've emptied the queue and the action did not change then we need to process the batches
+                                foreach (KeyValuePair<String, List<Triple>> batch in batches)
+                                {
+                                    if (isDelete)
+                                    {
+                                        this.RemoveFromIndexInternal(batch.Value, batch.Key);
+                                    }
+                                    else
+                                    {
+                                        this.AddToIndexInternal(batch.Value, batch.Key);
+                                    }
+                                }
+                                batches.Clear();
+
+                                //Exit the while loop
+                                break;
+                            }
                         }
                     }
                 }
@@ -76,16 +99,16 @@ namespace Alexandria.Indexing
                     //Only stop if queues are empty
                     bool canStop = true;
                     //Checking if the add queue is empty
-                    lock (this._addQueue)
+                    lock (this._indexQueue)
                     {
-                        if (this._addQueue.Count > 0) canStop = false;
+                        if (this._indexQueue.Count > 0) canStop = false;
                     }
                     if (canStop)
                     {
                         //Need to also check if remove queue is empty
-                        lock (this._removeQueue)
+                        lock (this._indexQueue)
                         {
-                            if (this._removeQueue.Count > 0) canStop = false;
+                            if (this._indexQueue.Count > 0) canStop = false;
                         }
 
                         if (canStop)
@@ -115,13 +138,6 @@ namespace Alexandria.Indexing
         }
 
         /// <summary>
-        /// Gets all the Triples from the given Index
-        /// </summary>
-        /// <param name="indexName">Index Name</param>
-        /// <returns></returns>
-        public abstract IEnumerable<Triple> GetTriples(string indexName);
-
-        /// <summary>
         /// Gets all the Indexes to which a Triple should be added
         /// </summary>
         /// <param name="t">Triple</param>
@@ -142,40 +158,97 @@ namespace Alexandria.Indexing
         /// <param name="indexName">Index</param>
         protected abstract void RemoveFromIndexInternal(IEnumerable<Triple> ts, String indexName);
 
+        #endregion
+
+        #region Triple Lookups
+
+        public IEnumerable<Triple> GetTriplesWithSubject(INode subj)
+        {
+            return this.GetTriples(this.GetIndexNameForSubject(subj));
+        }
+
+        public IEnumerable<Triple> GetTriplesWithPredicate(INode pred)
+        {
+            return this.GetTriples(this.GetIndexNameForPredicate(pred));
+        }
+
+        public IEnumerable<Triple> GetTriplesWithObject(INode obj)
+        {
+            return this.GetTriples(this.GetIndexNameForObject(obj));
+        }
+
+        public IEnumerable<Triple> GetTriplesWithSubjectPredicate(INode subj, INode pred)
+        {
+            return this.GetTriples(this.GetIndexNameForSubjectPredicate(subj, pred));
+        }
+
+        public IEnumerable<Triple> GetTriplesWithPredicateObject(INode pred, INode obj)
+        {
+            return this.GetTriples(this.GetIndexNameForPredicateObject(pred, obj));
+        }
+
+        public IEnumerable<Triple> GetTriplesWithSubjectObject(INode subj, INode obj)
+        {
+            return this.GetTriples(this.GetIndexNameForSubjectObject(subj, obj));
+        }
+
+        public IEnumerable<Triple> GetTriples(Triple t)
+        {
+            return this.GetTriples(this.GetIndexNameForTriple(t));
+        }
+
+        protected abstract IEnumerable<Triple> GetTriples(String indexName);
+
+        protected abstract String GetIndexNameForSubject(INode subj);
+
+        protected abstract String GetIndexNameForPredicate(INode pred);
+
+        protected abstract String GetIndexNameForObject(INode obj);
+
+        protected abstract String GetIndexNameForSubjectPredicate(INode subj, INode pred);
+
+        protected abstract String GetIndexNameForSubjectObject(INode subj, INode obj);
+
+        protected abstract String GetIndexNameForPredicateObject(INode pred, INode obj);
+
+        protected abstract String GetIndexNameForTriple(Triple t);
+
+        #endregion
+
         public void AddToIndex(Triple t)
         {
-            lock (this._addQueue)
+            lock (this._indexQueue)
             {
-                this._addQueue.Enqueue(t);
+                this._indexQueue.Enqueue(new IndexingAction(t));
             }
         }
 
         public void AddToIndex(IEnumerable<Triple> ts)
         {
-            lock (this._addQueue)
+            lock (this._indexQueue)
             {
                 foreach (Triple t in ts)
                 {
-                    this._addQueue.Enqueue(t);
+                    this._indexQueue.Enqueue(new IndexingAction(t));
                 }
             }
         }
 
         public void RemoveFromIndex(Triple t)
         {
-            lock (this._removeQueue)
+            lock (this._indexQueue)
             {
-                this._removeQueue.Enqueue(t);
+                this._indexQueue.Enqueue(new IndexingAction(t, true));
             }
         }
 
         public void RemoveFromIndex(IEnumerable<Triple> ts)
         {
-            lock (this._removeQueue)
+            lock (this._indexQueue)
             {
                 foreach (Triple t in ts)
                 {
-                    this._removeQueue.Enqueue(t);
+                    this._indexQueue.Enqueue(new IndexingAction(t,true));
                 }
             }
         }
@@ -187,6 +260,39 @@ namespace Alexandria.Indexing
             while (!this._stopped)
             {
                 Thread.Sleep(50);
+            }
+        }
+    }
+
+    class IndexingAction
+    {
+        private bool _delete = false;
+        private Triple _t;
+
+        public IndexingAction(Triple t)
+        {
+            this._t = t;
+        }
+
+        public IndexingAction(Triple t, bool delete)
+            : this(t)
+        {
+            this._delete = delete;
+        }
+
+        public Triple Triple
+        {
+            get
+            {
+                return this._t;
+            }
+        }
+
+        public bool IsDelete
+        {
+            get
+            {
+                return this._delete;
             }
         }
     }

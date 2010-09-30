@@ -14,12 +14,12 @@ namespace Alexandria.Indexing
 
         public FileIndexReader(IDocument doc)
         {
-
+            this._doc = doc;
         }
 
         public IEnumerator<Triple> GetEnumerator()
         {
-            throw new NotImplementedException();
+            return new FileIndexEnumerator(this._doc);
         }
 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()

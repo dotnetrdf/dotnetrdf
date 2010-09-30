@@ -20,7 +20,7 @@ namespace Alexandria.Documents.Adaptors
         protected NTriplesAdaptor(ITripleFormatter formatter)
             : this()
         {
-            this._formatter = new NTriplesFormatter();
+            this._formatter = formatter;
         }
 
         public override void AppendTriples(IEnumerable<Triple> ts, IDocument document)
@@ -81,7 +81,7 @@ namespace Alexandria.Documents.Adaptors
                 reader.Close();
                 document.EndRead();
 
-                if (lineCount > editedLineCount)
+                if (lineCount > editedLineCount || lineCount == 0)
                 {
                     //We deleted some Triples so need to reserialize the data
                     try

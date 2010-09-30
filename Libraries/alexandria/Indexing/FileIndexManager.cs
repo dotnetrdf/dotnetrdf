@@ -20,7 +20,7 @@ namespace Alexandria.Indexing
             this._manager = manager;
         }
 
-        public override IEnumerable<Triple> GetTriples(string indexName)
+        protected override IEnumerable<Triple> GetTriples(string indexName)
         {
             if (this._manager.HasDocument(indexName))
             {
@@ -32,24 +32,65 @@ namespace Alexandria.Indexing
             }
         }
 
+        #region Index Names
+
         protected override string[] GetIndexNames(Triple t)
         {
             if (t == null) return new String[0];
-            if (this._hash == null) this._hash = new SHA256Managed();
 
-            String[] indices = new String[6];
-            indices[0] = @"index\s\" + this.GetHash(t.Subject.GetHashCode().ToString());
-            indices[1] = @"index\p\" + this.GetHash(t.Predicate.GetHashCode().ToString());
-            indices[2] = @"index\o\" + this.GetHash(t.Object.GetHashCode().ToString());
-            indices[3] = @"index\sp\" + this.GetHash(Tools.CombineHashCodes(t.Subject, t.Predicate).ToString());
-            indices[4] = @"index\so\" + this.GetHash(Tools.CombineHashCodes(t.Subject, t.Object).ToString());
-            indices[5] = @"index\po\" + this.GetHash(Tools.CombineHashCodes(t.Predicate, t.Object).ToString());
+            String[] indices = new String[7];
+            indices[0] = this.GetIndexNameForSubject(t.Subject);
+            indices[1] = this.GetIndexNameForPredicate(t.Predicate);
+            indices[2] = this.GetIndexNameForObject(t.Object);
+            indices[3] = this.GetIndexNameForSubjectPredicate(t.Subject, t.Predicate);
+            indices[4] = this.GetIndexNameForSubjectObject(t.Subject, t.Object);
+            indices[5] = this.GetIndexNameForPredicateObject(t.Predicate, t.Object);
+            indices[6] = this.GetIndexNameForTriple(t);
 
             return indices;
         }
 
+        protected override string GetIndexNameForSubject(INode subj)
+        {
+            return @"index\s\" + this.GetHash(subj.GetHashCode().ToString());
+        }
+
+        protected override string GetIndexNameForPredicate(INode pred)
+        {
+            return @"index\p\" + this.GetHash(pred.GetHashCode().ToString());
+        }
+
+        protected override string GetIndexNameForObject(INode obj)
+        {
+            return @"index\o\" + this.GetHash(obj.GetHashCode().ToString());
+        }
+
+        protected override string GetIndexNameForSubjectPredicate(INode subj, INode pred)
+        {
+            return @"index\sp\" + this.GetHash(Tools.CombineHashCodes(subj, pred).ToString());
+        }
+
+        protected override string GetIndexNameForSubjectObject(INode subj, INode obj)
+        {
+            return @"index\so\" + this.GetHash(Tools.CombineHashCodes(subj, obj).ToString());
+        }
+
+        protected override string GetIndexNameForPredicateObject(INode pred, INode obj)
+        {
+            return @"index\po\" + this.GetHash(Tools.CombineHashCodes(pred, obj).ToString());
+        }
+
+        protected override string GetIndexNameForTriple(Triple t)
+        {
+            return @"index\spo\" + this.GetHash(t.GetHashCode().ToString());
+        }
+
+        #endregion
+
         private String GetHash(String value)
         {
+            if (this._hash == null) this._hash = new SHA256Managed();
+
             Byte[] input = Encoding.UTF8.GetBytes(value);
             Byte[] output = this._hash.ComputeHash(input);
 
