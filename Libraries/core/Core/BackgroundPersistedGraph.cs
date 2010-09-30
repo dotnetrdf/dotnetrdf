@@ -72,7 +72,7 @@ namespace VDS.RDF
         /// </remarks>
         protected bool _suspendPersistence = true;
 
-        private bool _endPersistence = false;
+        private bool _endPersistence = false, _finished = false;
 
         #region Data Persistence to Native Storage
 
@@ -105,10 +105,14 @@ namespace VDS.RDF
                     if (this._endPersistence)
                     {
                         if (this._addedTriplesBuffer.Count > 0 || this._removedTriplesBuffer.Count > 0) continue;
+                        this._finished = true;
                         return;
                     }
 
-                    Thread.Sleep(30000);
+                    //Only sleep if there aren't anything in the queue
+                    if (this._addedTriplesBuffer.Count > 0 || this._removedTriplesBuffer.Count > 0) continue;
+
+                    Thread.Sleep(5000);
                 }
                 catch (ThreadAbortException)
                 {
@@ -117,6 +121,7 @@ namespace VDS.RDF
 #if !SILVERLIGHT
                     Thread.ResetAbort();
 #endif
+                    this._finished = true;
                     return;
                 }
             }
@@ -265,12 +270,12 @@ namespace VDS.RDF
         /// </summary>
         public override void Dispose()
         {
-            if (this._persister != null)
+            if (this._persister != null && !this._finished)
             {
                 //Use a signal to terminate the Thread rather than Thread.Abort() which may block indefinitely in some circumstances
                 this._endPersistence = true;
                 this._suspendPersistence = true;
-                //this._persister.Abort();
+                Thread.Sleep(100);
             }
             base.Dispose();
         }

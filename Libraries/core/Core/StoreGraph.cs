@@ -70,6 +70,11 @@ namespace VDS.RDF
         /// </summary>
         protected StoreGraph() { }
 
+        ~StoreGraph()
+        {
+            this.Dispose(false);
+        }
+
         /// <summary>
         /// Creates a new instance of a Store Graph which will contain the contents of the Graph with the given Uri
         /// </summary>
@@ -141,6 +146,16 @@ namespace VDS.RDF
         /// </summary>
         public override void Dispose()
         {
+            this.Dispose(true);
+        }
+
+        /// <summary>
+        /// Disposes of a Store Graph
+        /// </summary>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing) GC.SuppressFinalize(this);
+
             //If we don't support Triple level updates update by persisting the entire Graph on Dispose
             if (!this._manager.UpdateSupported)
             {
@@ -184,7 +199,7 @@ namespace VDS.RDF
         /// <summary>
         /// Creates a new instance which will represent a write-only view of the Graph with the given URI
         /// </summary>
-        /// <param name="graphUri">URI of the Graph to retrieve</param>
+        /// <param name="graphUri">URI of the Graph to write to</param>
         /// <param name="manager">Generic Store Manager</param>
         public WriteOnlyStoreGraph(String graphUri, IGenericIOManager manager) 
             : this(new Uri(graphUri), manager) { }
