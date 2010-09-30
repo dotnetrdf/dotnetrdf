@@ -17,7 +17,7 @@ namespace alexandria_tests
     public class IndexingTests
     {
         [TestMethod]
-        public void IndexSubjectTest()
+        public void IndexSubject()
         {
             //Load in our Test Graph
             Graph g = new Graph();
@@ -43,7 +43,7 @@ namespace alexandria_tests
         }
 
         [TestMethod]
-        public void IndexPredicateTest()
+        public void IndexPredicate()
         {
             //Load in our Test Graph
             Graph g = new Graph();
@@ -69,7 +69,7 @@ namespace alexandria_tests
         }
 
         [TestMethod]
-        public void IndexPartialEnumerateTest()
+        public void IndexPartialEnumerate()
         {
             //Load in our Test Graph
             Graph g = new Graph();
@@ -95,7 +95,7 @@ namespace alexandria_tests
         }
 
         [TestMethod]
-        public void IndexRepeatTest()
+        public void IndexRepeat()
         {
             //Load in our Test Graph
             Graph g = new Graph();

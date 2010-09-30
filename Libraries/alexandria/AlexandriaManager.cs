@@ -148,7 +148,6 @@ namespace Alexandria
 
             if (this._docManager.HasDocument(name))
             {
-
                 try
                 {
                     IDocument doc = this._docManager.GetDocument(name);

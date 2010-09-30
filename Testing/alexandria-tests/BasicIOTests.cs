@@ -14,7 +14,7 @@ namespace alexandria_tests
     public class BasicIOTests
     {
         [TestMethod]
-        public void SaveLoadGraphTest()
+        public void SaveLoadGraph()
         {
             //Load in our Test Graph
             Graph g = new Graph();
@@ -35,7 +35,7 @@ namespace alexandria_tests
         }
 
         [TestMethod]
-        public void SaveLoadWithoutDisposeTest()
+        public void SaveLoadWithoutDispose()
         {
             //Load in our Test Graph
             Graph g = new Graph();
@@ -54,7 +54,7 @@ namespace alexandria_tests
         }
 
         [TestMethod]
-        public void SaveLoadGraphWithDifferentManagersTest()
+        public void SaveLoadGraphWithDifferentManagers()
         {
             //Load in our Test Graph
             Graph g = new Graph();
@@ -77,7 +77,7 @@ namespace alexandria_tests
         }
 
         [TestMethod]
-        public void SaveOverwriteGraphTest()
+        public void SaveOverwriteGraph()
         {
             //Load in our Test Graph
             Graph g = new Graph();
@@ -112,7 +112,7 @@ namespace alexandria_tests
         }
 
         [TestMethod]
-        public void SaveMultipleGraphsTest()
+        public void SaveMultipleGraphs()
         {
             //Load in our Test Graph
             Graph g = new Graph();
@@ -145,7 +145,7 @@ namespace alexandria_tests
         }
 
         [TestMethod]
-        public void AppendTriplesTest()
+        public void AppendTriples()
         {
             //Load in our Test Graph
             Graph g = new Graph();
@@ -175,7 +175,7 @@ namespace alexandria_tests
         }
 
         [TestMethod]
-        public void DeleteTriplesTest()
+        public void DeleteTriples()
         {
             //Load in our Test Graph
             Graph g = new Graph();

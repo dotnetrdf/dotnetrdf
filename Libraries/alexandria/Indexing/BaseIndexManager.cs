@@ -55,15 +55,9 @@ namespace Alexandria.Indexing
                                 {
                                     foreach (KeyValuePair<String, List<Triple>> batch in batches)
                                     {
-                                        if (isDelete)
-                                        {
-                                            this.RemoveFromIndexInternal(batch.Value, batch.Key);
-                                        }
-                                        else
-                                        {
-                                            this.AddToIndexInternal(batch.Value, batch.Key);
-                                        }
+                                        this.ProcessBatch(batch.Key, batch.Value, isDelete);
                                     }
+                                    //this.ProcessBatches(batches, isDelete);
                                     isDelete = action.IsDelete;
 
                                     //Remember to clear the batches afterwards!
@@ -75,15 +69,9 @@ namespace Alexandria.Indexing
                                 //If we've emptied the queue and the action did not change then we need to process the batches
                                 foreach (KeyValuePair<String, List<Triple>> batch in batches)
                                 {
-                                    if (isDelete)
-                                    {
-                                        this.RemoveFromIndexInternal(batch.Value, batch.Key);
-                                    }
-                                    else
-                                    {
-                                        this.AddToIndexInternal(batch.Value, batch.Key);
-                                    }
+                                    this.ProcessBatch(batch.Key, batch.Value, isDelete);
                                 }
+                                //this.ProcessBatches(batches, isDelete);
                                 batches.Clear();
 
                                 //Exit the while loop
@@ -126,8 +114,8 @@ namespace Alexandria.Indexing
 
         private void BatchOperations(Triple t, Dictionary<String, List<Triple>> batches)
         {
-            String[] indices = this.GetIndexNames(t);
-            if (indices.Length > 0)
+            List<String> indices = this.GetIndexNames(t).ToList();
+            if (indices.Count > 0)
             {
                 foreach (String index in indices)
                 {
@@ -137,12 +125,81 @@ namespace Alexandria.Indexing
             }
         }
 
+        //private void ProcessBatches(Dictionary<String, List<Triple>> batches, bool isDelete)
+        //{
+        //    List<String> keys = batches.Keys.ToList();
+        //    WaitHandle[] handles = new WaitHandle[8];
+        //    IAsyncResult[] results = new IAsyncResult[8];
+        //    ProcessBatchDelegate d = new ProcessBatchDelegate(this.ProcessBatch);
+
+        //    int i = 0;
+        //    for (int pos = 0; pos < keys.Count; pos++)
+        //    {
+        //        //Check whether we need to wait for something to complete
+        //        if (i >= results.Length)
+        //        {
+        //            i = 0;
+        //            while (i < results.Length && results[i] != null)
+        //            {
+        //                if (results[i].IsCompleted)
+        //                {
+        //                    //End the Invoke and reuse this
+        //                    d.EndInvoke(results[i]);
+        //                    results[i] = null;
+        //                    break;
+        //                }
+        //                else
+        //                {
+        //                    i++;
+        //                }
+        //            }
+        //            if (i >= results.Length)
+        //            {
+        //                //Wait for any of the operations to complete and then reset i and continue
+        //                WaitHandle.WaitAny(handles);
+        //                i = 0;
+        //                continue;
+        //            }
+        //        }
+
+        //        //Start a new async call
+        //        results[i] = d.BeginInvoke(keys[pos], batches[keys[pos]], isDelete, null, null);
+        //        handles[i] = results[i].AsyncWaitHandle;
+
+        //        i++;
+        //    }
+
+        //    //When we exit ensure all the handles are cleaned up
+        //    if (!results.All(r => r == null || r.IsCompleted))
+        //    {
+        //        WaitHandle.WaitAll(handles);
+        //    }
+        //    foreach (IAsyncResult result in results)
+        //    {
+        //        if (result != null) d.EndInvoke(result);
+        //    }
+        //}
+
+        //private delegate void ProcessBatchDelegate(String name, List<Triple> ts, bool isDelete);
+
+        private void ProcessBatch(String name, List<Triple> ts, bool isDelete)
+        {
+            if (isDelete)
+            {
+                this.RemoveFromIndexInternal(ts, name);
+            }
+            else
+            {
+                this.AddToIndexInternal(ts, name);
+            }
+        }
+
         /// <summary>
         /// Gets all the Indexes to which a Triple should be added
         /// </summary>
         /// <param name="t">Triple</param>
         /// <returns></returns>
-        protected abstract String[] GetIndexNames(Triple t);
+        protected abstract IEnumerable<String> GetIndexNames(Triple t);
 
         /// <summary>
         /// Adds the given Triples to the given Index

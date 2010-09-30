@@ -15,9 +15,68 @@ namespace Alexandria.Indexing
         private SHA256Managed _hash;
         private NQuadsAdaptor _adaptor = new NQuadsAdaptor();
 
+        private bool _subjIndex = true;
+        private bool _predIndex = true;
+        private bool _objIndex = true;
+        private bool _subjPredIndex = true;
+        private bool _subjObjIndex = true;
+        private bool _predObjIndex = true;
+        private bool _tripleIndex = true;
+
         public FileIndexManager(FileDocumentManager manager)
         {
             this._manager = manager;
+        }
+
+        public FileIndexManager(FileDocumentManager manager, IEnumerable<TripleIndexType> indices)
+            : this(manager)
+        {
+            //Turns off indexing and then turns them back on if specified
+            this.SetNoIndexing();
+            if (indices != null)
+            {
+                if (indices.Any())
+                {
+                    foreach (TripleIndexType index in indices)
+                    {
+                        switch (index)
+                        {
+                            case TripleIndexType.Object:
+                                this._objIndex = true;
+                                break;
+                            case TripleIndexType.Predicate:
+                                this._predIndex = true;
+                                break;
+                            case TripleIndexType.PredicateObject:
+                                this._predObjIndex = true;
+                                break;
+                            case TripleIndexType.Subject:
+                                this._subjIndex = true;
+                                break;
+                            case TripleIndexType.SubjectObject:
+                                this._subjObjIndex = true;
+                                break;
+                            case TripleIndexType.SubjectPredicate:
+                                this._subjPredIndex = true;
+                                break;
+                            case TripleIndexType.NoVariables:
+                                this._tripleIndex = true;
+                                break;
+                        }
+                    }
+                }
+            }
+        }
+
+        private void SetNoIndexing()
+        {
+            this._subjIndex = false;
+            this._predIndex = false;
+            this._objIndex = false;
+            this._subjPredIndex = false;
+            this._subjObjIndex = false;
+            this._predObjIndex = false;
+            this._tripleIndex = false;
         }
 
         protected override IEnumerable<Triple> GetTriples(string indexName)
@@ -34,21 +93,23 @@ namespace Alexandria.Indexing
 
         #region Index Names
 
-        protected override string[] GetIndexNames(Triple t)
+        protected override IEnumerable<string> GetIndexNames(Triple t)
         {
-            if (t == null) return new String[0];
+            if (t == null) return Enumerable.Empty<String>();
 
-            String[] indices = new String[7];
-            indices[0] = this.GetIndexNameForSubject(t.Subject);
-            indices[1] = this.GetIndexNameForPredicate(t.Predicate);
-            indices[2] = this.GetIndexNameForObject(t.Object);
-            indices[3] = this.GetIndexNameForSubjectPredicate(t.Subject, t.Predicate);
-            indices[4] = this.GetIndexNameForSubjectObject(t.Subject, t.Object);
-            indices[5] = this.GetIndexNameForPredicateObject(t.Predicate, t.Object);
-            indices[6] = this.GetIndexNameForTriple(t);
+            List<String> indices = new List<String>();
+            if (this._subjIndex) indices.Add(this.GetIndexNameForSubject(t.Subject));
+            if (this._predIndex) indices.Add(this.GetIndexNameForPredicate(t.Predicate));
+            if (this._objIndex) indices.Add(this.GetIndexNameForObject(t.Object));
+            if (this._subjPredIndex) indices.Add(this.GetIndexNameForSubjectPredicate(t.Subject, t.Predicate));
+            if (this._subjObjIndex) indices.Add(this.GetIndexNameForSubjectObject(t.Subject, t.Object));
+            if (this._predObjIndex) indices.Add(this.GetIndexNameForPredicateObject(t.Predicate, t.Object));
+            if (this._tripleIndex) indices.Add(this.GetIndexNameForTriple(t));
 
             return indices;
         }
+
+        //TODO: Alter these functions so they provide alternative Index Names if the relevant index is not in-use
 
         protected override string GetIndexNameForSubject(INode subj)
         {
