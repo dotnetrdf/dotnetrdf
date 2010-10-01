@@ -393,5 +393,18 @@ namespace VDS.RDF.Test
                 TestTools.ReportError("Error", ex, true);
             }
         }
+
+        [TestMethod]
+        public void MalformedFileUriParsing()
+        {
+            String malformedFileUriFragment = "@base <file:/path/to/somewhere>. @prefix ex: <file:/path/to/nowhere/> . <#this> a \"URI Resolved with a malformed Base URI\" . <this> a \"Another URI Resolved with a malformed Base URI\" . ex:this a \"QName Resolved with a malformed Namespace URI\" .";
+
+            Graph g = new Graph();
+            VDS.RDF.Parsing.StringParser.Parse(g, malformedFileUriFragment);
+            foreach (Triple t in g.Triples)
+            {
+                Console.WriteLine(t.ToString());
+            }
+        }
     }
 }

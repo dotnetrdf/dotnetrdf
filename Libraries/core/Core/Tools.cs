@@ -122,7 +122,7 @@ namespace VDS.RDF
                 {
                     if (uriref[6] != '/')
                     {
-                        return "file://" + uriref.Substring(6);
+                        return "file://" + uriref.Substring(5);
                     }
                 }
                 return uriref;
@@ -148,7 +148,7 @@ namespace VDS.RDF
                 if (uriref.Equals(String.Empty))
                 {
                     //Empty Uri reference refers to the Base Uri
-                    return new Uri(baseUri).ToString();
+                    return new Uri(Tools.FixMalformedUriStrings(baseUri)).ToString();
                 }
                 else
                 {
@@ -161,7 +161,7 @@ namespace VDS.RDF
                     } 
                     else 
                     {
-                        Uri b = new Uri(baseUri);
+                        Uri b = new Uri(Tools.FixMalformedUriStrings(baseUri));
 
                         //Check that the Base Uri is valid for resolving Relative URIs
                         //If the Uri Reference is a Fragment ID then Base Uri validity is irrelevant
