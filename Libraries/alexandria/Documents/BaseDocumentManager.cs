@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using Alexandria.Documents.Adaptors;
 
@@ -90,6 +91,11 @@ namespace Alexandria.Documents
         }
 
         protected abstract IDocument GetDocumentInternal(String name);
+
+        public abstract IGraphRegistry GraphRegistry
+        {
+            get;
+        }
 
         public bool ReleaseDocument(String name)
         {

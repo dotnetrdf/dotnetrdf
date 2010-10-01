@@ -7,6 +7,7 @@ using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Storage;
 using Alexandria;
+using Alexandria.Documents;
 
 namespace alexandria_tests
 {
@@ -128,7 +129,7 @@ namespace alexandria_tests
 
             Assert.AreEqual(g, h, "Graphs should have been equal");
 
-            //Now load another Graph and overwrite the first Graph
+            //Now load another Graph and add it
             Graph i = new Graph();
             FileLoader.Load(i, "test.nt");
 

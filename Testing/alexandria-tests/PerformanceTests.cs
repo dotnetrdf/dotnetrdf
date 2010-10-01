@@ -15,10 +15,10 @@ namespace alexandria_tests
     public class PerformanceTests
     {
         [TestMethod]
-        public void LargeLoadUsingWriteOnlyGraph()
+        public void LargeLoadUsingWriteOnlyGraphAndFullIndices()
         {
             //Open an Alexandria Store and save the Graph
-            AlexandriaFileManager manager = new AlexandriaFileManager("test");
+            AlexandriaFileManager manager = new AlexandriaFileManager("test", AlexandriaFileManager.FullIndices);
 
             //Load in our Test Graph
             WriteOnlyStoreGraph g = new WriteOnlyStoreGraph((Uri)null, manager);
@@ -29,24 +29,80 @@ namespace alexandria_tests
         }
 
         [TestMethod]
-        public void LargeLoadUsingSaveGraph()
+        public void LargeLoadUsingWriteOnlyGraphAndOptimalIndices()
+        {
+            //Open an Alexandria Store and save the Graph
+            AlexandriaFileManager manager = new AlexandriaFileManager("test", AlexandriaFileManager.OptimalIndices);
+
+            //Load in our Test Graph
+            WriteOnlyStoreGraph g = new WriteOnlyStoreGraph((Uri)null, manager);
+            FileLoader.Load(g, "dataset_50.ttl");
+            g.Dispose();
+
+            manager.Dispose();
+        }
+
+        [TestMethod]
+        public void LargeLoadUsingWriteOnlyGraphAndSimpleIndices()
+        {
+            //Open an Alexandria Store and save the Graph
+            AlexandriaFileManager manager = new AlexandriaFileManager("test", AlexandriaFileManager.SimpleIndices);
+
+            //Load in our Test Graph
+            WriteOnlyStoreGraph g = new WriteOnlyStoreGraph((Uri)null, manager);
+            FileLoader.Load(g, "dataset_50.ttl");
+            g.Dispose();
+
+            manager.Dispose();
+        }
+
+        [TestMethod]
+        public void LargeLoadUsingWriteOnlyGraphAndNoIndices()
+        {
+            //Open an Alexandria Store and save the Graph
+            AlexandriaFileManager manager = new AlexandriaFileManager("test", null);
+
+            //Load in our Test Graph
+            WriteOnlyStoreGraph g = new WriteOnlyStoreGraph((Uri)null, manager);
+            FileLoader.Load(g, "dataset_50.ttl");
+            g.Dispose();
+
+            manager.Dispose();
+        }
+
+        [TestMethod]
+        public void LargeLoadUsingWriteOnlyGraphAndNoIndices2()
+        {
+            //Open an Alexandria Store and save the Graph
+            NonIndexedAlexandriaFileManager manager = new NonIndexedAlexandriaFileManager("test");
+
+            //Load in our Test Graph
+            WriteOnlyStoreGraph g = new WriteOnlyStoreGraph((Uri)null, manager);
+            FileLoader.Load(g, "dataset_50.ttl");
+            g.Dispose();
+
+            manager.Dispose();
+        }
+
+        [TestMethod]
+        public void LargeLoadUsingSaveGraphAndFullIndices()
         {
             Graph g = new Graph();
             FileLoader.Load(g, "dataset_50.ttl");
 
-            AlexandriaFileManager manager = new AlexandriaFileManager("test");
+            AlexandriaFileManager manager = new AlexandriaFileManager("test", AlexandriaFileManager.FullIndices);
             manager.SaveGraph(g);
 
             manager.Dispose();
         }
 
         [TestMethod]
-        public void LargeLoadUsingSaveGraphAndPartialIndices()
+        public void LargeLoadUsingSaveGraphAndOptimalIndices()
         {
             Graph g = new Graph();
             FileLoader.Load(g, "dataset_50.ttl");
 
-            AlexandriaFileManager manager = new AlexandriaFileManager("test", AlexandriaFileManager.PartialIndices);
+            AlexandriaFileManager manager = new AlexandriaFileManager("test", AlexandriaFileManager.OptimalIndices);
             manager.SaveGraph(g);
 
             manager.Dispose();

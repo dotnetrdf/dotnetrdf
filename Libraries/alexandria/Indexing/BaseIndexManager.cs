@@ -21,11 +21,61 @@ namespace Alexandria.Indexing
         private Thread _indexer;
         private bool _stopIndexer = false, _stopped = false;
 
+        /// <summary>
+        /// Variables controlling which indexes are created and used (all default to off by default)
+        /// </summary>
+        protected readonly bool _subjIndex = false,
+                                _predIndex = false,
+                                _objIndex = false,
+                                _subjPredIndex = false,
+                                _subjObjIndex = false,
+                                _predObjIndex = false,
+                                _tripleIndex = false;
+
         public BaseIndexManager()
         {
             this._indexer = new Thread(new ThreadStart(this.IndexTriples));
             this._indexer.IsBackground = false;
             this._indexer.Start();
+        }
+
+        public BaseIndexManager(IEnumerable<TripleIndexType> indices)
+            : this()
+        {
+            //Enable all the specified indices
+            if (indices != null)
+            {
+                if (indices.Any())
+                {
+                    foreach (TripleIndexType index in indices)
+                    {
+                        switch (index)
+                        {
+                            case TripleIndexType.Object:
+                                this._objIndex = true;
+                                break;
+                            case TripleIndexType.Predicate:
+                                this._predIndex = true;
+                                break;
+                            case TripleIndexType.PredicateObject:
+                                this._predObjIndex = true;
+                                break;
+                            case TripleIndexType.Subject:
+                                this._subjIndex = true;
+                                break;
+                            case TripleIndexType.SubjectObject:
+                                this._subjObjIndex = true;
+                                break;
+                            case TripleIndexType.SubjectPredicate:
+                                this._subjPredIndex = true;
+                                break;
+                            case TripleIndexType.NoVariables:
+                                this._tripleIndex = true;
+                                break;
+                        }
+                    }
+                }
+            }
         }
 
         #region Internal Processing
@@ -199,7 +249,21 @@ namespace Alexandria.Indexing
         /// </summary>
         /// <param name="t">Triple</param>
         /// <returns></returns>
-        protected abstract IEnumerable<String> GetIndexNames(Triple t);
+        protected virtual IEnumerable<string> GetIndexNames(Triple t)
+        {
+            if (t == null) return Enumerable.Empty<String>();
+
+            List<String> indices = new List<String>();
+            if (this._subjIndex) indices.Add(this.GetIndexNameForSubject(t.Subject));
+            if (this._predIndex) indices.Add(this.GetIndexNameForPredicate(t.Predicate));
+            if (this._objIndex) indices.Add(this.GetIndexNameForObject(t.Object));
+            if (this._subjPredIndex) indices.Add(this.GetIndexNameForSubjectPredicate(t.Subject, t.Predicate));
+            if (this._subjObjIndex) indices.Add(this.GetIndexNameForSubjectObject(t.Subject, t.Object));
+            if (this._predObjIndex) indices.Add(this.GetIndexNameForPredicateObject(t.Predicate, t.Object));
+            if (this._tripleIndex) indices.Add(this.GetIndexNameForTriple(t));
+
+            return indices;
+        }
 
         /// <summary>
         /// Adds the given Triples to the given Index
@@ -221,37 +285,158 @@ namespace Alexandria.Indexing
 
         public IEnumerable<Triple> GetTriplesWithSubject(INode subj)
         {
-            return this.GetTriples(this.GetIndexNameForSubject(subj));
+            if (this._subjIndex)
+            {
+                return this.GetTriples(this.GetIndexNameForSubject(subj));
+            }
+            else
+            {
+                throw new AlexandriaNoIndexException("Subject");
+            }
         }
 
         public IEnumerable<Triple> GetTriplesWithPredicate(INode pred)
         {
-            return this.GetTriples(this.GetIndexNameForPredicate(pred));
+            if (this._predIndex)
+            {
+                return this.GetTriples(this.GetIndexNameForPredicate(pred));
+            }
+            else
+            {
+                throw new AlexandriaNoIndexException("Predicate");
+            }
         }
 
         public IEnumerable<Triple> GetTriplesWithObject(INode obj)
         {
-            return this.GetTriples(this.GetIndexNameForObject(obj));
+            if (this._objIndex)
+            {
+                return this.GetTriples(this.GetIndexNameForObject(obj));
+            }
+            else
+            {
+                throw new AlexandriaNoIndexException("Object");
+            }
         }
 
         public IEnumerable<Triple> GetTriplesWithSubjectPredicate(INode subj, INode pred)
         {
-            return this.GetTriples(this.GetIndexNameForSubjectPredicate(subj, pred));
+            if (this._subjPredIndex)
+            {
+                return this.GetTriples(this.GetIndexNameForSubjectPredicate(subj, pred));
+            }
+            else if (this._subjIndex)
+            {
+                return (from t in this.GetTriples(this.GetIndexNameForSubject(subj))
+                        where t.Predicate.Equals(pred)
+                        select t);
+            }
+            else if (this._predIndex)
+            {
+                return (from t in this.GetTriples(this.GetIndexNameForPredicate(pred))
+                        where t.Subject.Equals(subj)
+                        select t);
+            }
+            else
+            {
+                throw new AlexandriaNoIndexException("Subject Predicate");
+            }
         }
 
         public IEnumerable<Triple> GetTriplesWithPredicateObject(INode pred, INode obj)
         {
-            return this.GetTriples(this.GetIndexNameForPredicateObject(pred, obj));
+            if (this._predObjIndex)
+            {
+                return this.GetTriples(this.GetIndexNameForPredicateObject(pred, obj));
+            }
+            else if (this._objIndex)
+            {
+                return (from t in this.GetTriples(this.GetIndexNameForObject(obj))
+                        where t.Predicate.Equals(pred)
+                        select t);
+            }
+            else if (this._predIndex)
+            {
+                return (from t in this.GetTriples(this.GetIndexNameForPredicate(pred))
+                        where t.Object.Equals(obj)
+                        select t);
+            }
+            else
+            {
+                throw new AlexandriaNoIndexException("Predicate Object");
+            }
         }
 
         public IEnumerable<Triple> GetTriplesWithSubjectObject(INode subj, INode obj)
         {
-            return this.GetTriples(this.GetIndexNameForSubjectObject(subj, obj));
+            if (this._subjObjIndex)
+            {
+                return this.GetTriples(this.GetIndexNameForSubjectObject(subj, obj));
+            }
+            else if (this._subjIndex)
+            {
+                return (from t in this.GetTriples(this.GetIndexNameForSubject(subj))
+                        where t.Object.Equals(obj)
+                        select t);
+            }
+            else if (this._objIndex)
+            {
+                return (from t in this.GetTriples(this.GetIndexNameForObject(obj))
+                        where t.Subject.Equals(subj)
+                        select t);
+            }
+            else
+            {
+                throw new AlexandriaNoIndexException("Subject Object");
+            }
         }
 
         public IEnumerable<Triple> GetTriples(Triple t)
         {
-            return this.GetTriples(this.GetIndexNameForTriple(t));
+            if (this._tripleIndex)
+            {
+                return this.GetTriples(this.GetIndexNameForTriple(t));
+            }
+            else if (this._subjPredIndex)
+            {
+                return (from x in this.GetTriples(this.GetIndexNameForSubjectPredicate(t.Subject, t.Predicate))
+                        where x.Object.Equals(t.Object)
+                        select x);
+            }
+            else if (this._predObjIndex)
+            {
+                return (from x in this.GetTriples(this.GetIndexNameForPredicateObject(t.Predicate, t.Object))
+                        where x.Subject.Equals(t.Subject)
+                        select x);
+            }
+            else if (this._subjObjIndex)
+            {
+                return (from x in this.GetTriples(this.GetIndexNameForSubjectObject(t.Subject, t.Object))
+                        where x.Predicate.Equals(t.Predicate)
+                        select x);
+            }
+            else if (this._subjIndex)
+            {
+                return (from x in this.GetTriples(this.GetIndexNameForSubject(t.Subject))
+                        where x.Predicate.Equals(t.Predicate) && x.Object.Equals(t.Object)
+                        select x);
+            }
+            else if (this._predIndex)
+            {
+                return (from x in this.GetTriples(this.GetIndexNameForPredicate(t.Predicate))
+                        where x.Subject.Equals(t.Subject) && x.Object.Equals(t.Object)
+                        select x);
+            }
+            else if (this._objIndex)
+            {
+                return (from x in this.GetTriples(this.GetIndexNameForObject(t.Object))
+                        where x.Subject.Equals(t.Subject) && x.Predicate.Equals(t.Predicate)
+                        select x);
+            }
+            else
+            {
+                throw new AlexandriaNoIndexException("Triple");
+            }
         }
 
         protected abstract IEnumerable<Triple> GetTriples(String indexName);

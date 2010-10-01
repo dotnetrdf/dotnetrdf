@@ -49,8 +49,6 @@ namespace Alexandria
             }
         }
 
-        protected internal abstract String GetDocumentName(String graphUri);
-
         public virtual void LoadGraph(IGraph g, Uri graphUri)
         {
             this.LoadGraph(g, graphUri.ToSafeString());
@@ -58,7 +56,7 @@ namespace Alexandria
 
         public virtual void LoadGraph(IGraph g, string graphUri)
         {
-            String name = this.GetDocumentName(graphUri);
+            String name = this._docManager.GraphRegistry.GetDocumentName(graphUri);
 
             //If the Document doesn't exist the Graph doesn't exist in the Store so nothing to do
             if (this._docManager.HasDocument(name))
@@ -85,7 +83,7 @@ namespace Alexandria
 
         public virtual void SaveGraph(IGraph g)
         {
-            String name = this.GetDocumentName(g.BaseUri.ToSafeString());
+            String name = this._docManager.GraphRegistry.GetDocumentName(g.BaseUri.ToSafeString());
             IDocument doc;
 
             try
@@ -120,6 +118,7 @@ namespace Alexandria
                 }
 
                 doc = this._docManager.GetDocument(name);
+                this._docManager.GraphRegistry.RegisterGraph(g.BaseUri.ToSafeString(), name);
                 this._docManager.DataAdaptor.ToDocument(g, doc);
                 this._indexManager.AddToIndex(g.Triples);
             }
@@ -144,7 +143,7 @@ namespace Alexandria
 
         public virtual void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
-            String name = this.GetDocumentName(graphUri);
+            String name = this._docManager.GraphRegistry.GetDocumentName(graphUri);
 
             if (this._docManager.HasDocument(name))
             {
@@ -197,6 +196,53 @@ namespace Alexandria
             get 
             {
                 return true;
+            }
+        }
+
+        public virtual void DeleteGraph(Uri graphUri)
+        {
+            this.DeleteGraph(graphUri.ToSafeString());
+        }
+
+        public virtual void DeleteGraph(String graphUri)
+        {
+            String name = this._docManager.GraphRegistry.GetDocumentName(graphUri);
+
+            //If the Document doesn't exist the Graph doesn't exist in the Store so nothing to do
+            if (this._docManager.HasDocument(name))
+            {
+                //First we need to remove any Triples in this Graph from the Index
+                try
+                {
+                    Graph temp = new Graph();
+                    IDocument doc = this._docManager.GetDocument(name);
+                    this._docManager.DataAdaptor.ToGraph(temp, doc);
+                    this._docManager.ReleaseDocument(name);
+                    this._indexManager.RemoveFromIndex(temp.Triples);
+                }
+                catch (AlexandriaException)
+                {
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    throw new AlexandriaException("Unable to delete a Graph from the Store since this operation requires removing indexed Triples from the Store and this operation failed", ex);
+                }
+
+                //Then we can actually delete the Graph
+                try
+                {
+                    this._docManager.DeleteDocument(name);
+                    this._docManager.GraphRegistry.UnregisterGraph(graphUri, name);
+                }
+                catch (AlexandriaException)
+                {
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    throw new AlexandriaException("An error occured while attempting to delete a Graph from the Store", ex);
+                }
             }
         }
 

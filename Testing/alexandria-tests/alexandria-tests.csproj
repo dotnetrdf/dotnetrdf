@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{10CD378D-9490-4032-A615-20991215C7EC}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="BasicIOTests.cs" />
     <Compile Include="CreateTests.cs" />
+    <Compile Include="GraphRegistryTests.cs" />
     <Compile Include="PerformanceTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="IndexingTests.cs" />

@@ -47,6 +47,14 @@ namespace Alexandria.Documents
         IDocument GetDocument(String name);
 
         /// <summary>
+        /// Gets the Graph Registry that stores the mappings between Graph URIs and Document Names
+        /// </summary>
+        IGraphRegistry GraphRegistry
+        {
+            get;
+        }
+
+        /// <summary>
         /// Signals that a Document is no longer needed by the caller
         /// </summary>
         /// <param name="name">Name</param>

@@ -17,6 +17,11 @@ namespace Alexandria.Indexing
             this._doc = doc;
         }
 
+        ~FileIndexReader()
+        {
+            this.Dispose(false);
+        }
+
         public IEnumerator<Triple> GetEnumerator()
         {
             return new FileIndexEnumerator(this._doc);
@@ -29,7 +34,15 @@ namespace Alexandria.Indexing
 
         public void Dispose()
         {
+            this.Dispose(true);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (disposing) GC.SuppressFinalize(this);
+
             this._doc.DocumentManager.ReleaseDocument(this._doc.Name);
+
         }
     }
 
@@ -44,12 +57,23 @@ namespace Alexandria.Indexing
             this._doc = doc;
         }
 
+        ~FileIndexEnumerator()
+        {
+            this.Dispose(false);
+        }
+
         public Triple Current
         {
             get 
             {
                 if (this._parser == null) throw new InvalidOperationException("The enumerator is positioned before the first element of the collection");
-                if (this._parser.EOF) throw new InvalidOperationException("The enumerator is positioned after the last element of the collection");
+                if (this._parser.EOF)
+                {
+                    if (this._current == null) throw new InvalidOperationException("The enumerator is positioned after the last element of the collection");
+                    Triple temp = this._current;
+                    this._current = null;
+                    return temp;
+                }
                 return this._current;
             }
         }
@@ -74,7 +98,7 @@ namespace Alexandria.Indexing
 
             this._current = this._parser.GetNextTriple();
             if (this._parser.EOF) this._doc.EndRead();
-            return !this._parser.EOF;
+            return true;
         }
 
         public void Reset()
@@ -84,6 +108,12 @@ namespace Alexandria.Indexing
 
         public void Dispose()
         {
+            this.Dispose(true);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (disposing) GC.SuppressFinalize(this);
             if (this._parser != null)
             {
                 if (!this._parser.EOF) this._doc.EndRead();

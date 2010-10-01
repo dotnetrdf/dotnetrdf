@@ -10,6 +10,7 @@ namespace Alexandria.Documents
     public class FileDocumentManager : BaseDocumentManager
     {
         private String _directory;
+        private IGraphRegistry _graphRegistry;
 
         private static String[] RequiredDirectories = new String[] {
             @"index\",
@@ -21,6 +22,8 @@ namespace Alexandria.Documents
             @"index\po\",
             @"index\spo\"
         };
+
+        private const String GraphRegistryDocument = "graphs";
 
         public FileDocumentManager(String directory)
             : base()
@@ -54,6 +57,16 @@ namespace Alexandria.Documents
                     throw new AlexandriaException("Unable to create the Required Directory " + dir + " for use as part of an Alexandria Store", ex);
                 }
             }
+
+            if (!this.HasDocument(GraphRegistryDocument))
+            {
+                if (!this.CreateDocument(GraphRegistryDocument))
+                {
+                    throw new AlexandriaException("Unable to create the Required Graph Registry Document");
+                }
+            }
+
+            this._graphRegistry = new TsvGraphRegistry(this.GetDocument(GraphRegistryDocument));
         }
 
         protected override bool HasDocumentInternal(string name)
@@ -105,6 +118,14 @@ namespace Alexandria.Documents
             else
             {
                 throw new AlexandriaException("The requested Document " + name + " is not present in this Store");
+            }
+        }
+
+        public override IGraphRegistry GraphRegistry
+        {
+            get 
+            {
+                return this._graphRegistry;
             }
         }
     }

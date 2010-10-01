@@ -12,12 +12,12 @@ namespace Alexandria
     /// <summary>
     /// Manages an Alexandria Store which is stored in a directory in the filesystem
     /// </summary>
-    public class AlexandriaFileManager : AlexandriaSha256HashingManager
+    public class AlexandriaFileManager : AlexandriaManager
     {
         /// <summary>
-        /// Set of Default Indices, if you don't specify your indices this is what you get - gives best query performance
+        /// Set of All Indices - gives best query performance but poorer import performance
         /// </summary>
-        public static TripleIndexType[] DefaultIndices = new TripleIndexType[]
+        public static TripleIndexType[] FullIndices = new TripleIndexType[]
         {
             TripleIndexType.NoVariables,
             TripleIndexType.Object,
@@ -29,9 +29,9 @@ namespace Alexandria
         };
 
         /// <summary>
-        /// Partial Indexes for best data import/query compromise
+        /// Optimal Indexes for best data import/query compromise (this is the Default)
         /// </summary>
-        public static TripleIndexType[] PartialIndices = new TripleIndexType[]
+        public static TripleIndexType[] OptimalIndices = new TripleIndexType[]
         {
             TripleIndexType.Object,
             TripleIndexType.Predicate,
