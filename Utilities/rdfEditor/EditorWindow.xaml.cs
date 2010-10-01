@@ -41,7 +41,6 @@ namespace rdfEditor
         private SaveFileDialog _sfd = new SaveFileDialog();
         private EditorManager _manager;
         private bool _saveWindowSize = false;
-        private bool _overrideClose = true;
 
         public EditorWindow()
         {
@@ -127,28 +126,6 @@ namespace rdfEditor
             textEditor.Drop += new DragEventHandler(textEditor_Drop);
         }
 
-        public EditorWindow(String file)
-            : this()
-        {
-            try
-            {
-                using (StreamReader reader = new StreamReader(file))
-                {
-                    String text = reader.ReadToEnd();
-                    textEditor.Text = String.Empty;
-                    textEditor.Text = text;
-                    this._manager.AutoDetectSyntax(file);
-                }
-                this._manager.CurrentFile = file;
-                this.Title = "rdfEditor - " + System.IO.Path.GetFileName(file);
-                this._manager.HasChanged = false;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("An error occurred while opening the selected file: " + ex.Message, "Unable to Open File");
-            }
-        }
-
         void textEditor_Drop(object sender, DragEventArgs e)
         {
             //Is the data FileDrop data?
@@ -159,37 +136,40 @@ namespace rdfEditor
 
             if (droppedFilePaths.Length > 0)
             {
-                if (droppedFilePaths.Length == 1)
-                {
-                    String file = droppedFilePaths[0];
-                    mnuClose_Click(sender, e);
+                //Open the 1st File in the Current Window
+                String file = droppedFilePaths[0];
+                mnuClose_Click(sender, e);
 
-                    try
-                    {
-                        using (StreamReader reader = new StreamReader(file))
-                        {
-                            String text = reader.ReadToEnd();
-                            textEditor.Text = String.Empty;
-                            textEditor.Text = text;
-                            this._manager.AutoDetectSyntax(file);
-                        }
-                        this._manager.CurrentFile = file;
-                        this.Title = "rdfEditor - " + System.IO.Path.GetFileName(this._manager.CurrentFile);
-                        this._manager.HasChanged = false;
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("An error occurred while opening the selected file: " + ex.Message, "Unable to Open File");
-                    }
-                }
-                else
+                try
                 {
-                    foreach (String droppedFile in droppedFilePaths)
+                    using (StreamReader reader = new StreamReader(file))
                     {
-                        EditorWindow editor = new EditorWindow(droppedFile);
-                        editor.Show();
+                        String text = reader.ReadToEnd();
+                        textEditor.Text = String.Empty;
+                        textEditor.Text = text;
+                        this._manager.AutoDetectSyntax(file);
                     }
+                    this._manager.CurrentFile = file;
+                    this.Title = "rdfEditor - " + System.IO.Path.GetFileName(this._manager.CurrentFile);
+                    this._manager.HasChanged = false;
                 }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("An error occurred while opening the selected file: " + ex.Message, "Unable to Open File");
+                }
+
+                MessageBox.Show("Dragging and dropping multiple files into rdfEditor is not yet supported");
+                //for (int i = 1; i < droppedFilePaths.Length; i++)
+                //{
+                //    try
+                //    {
+                //        System.Diagnostics.Process.Start("rdfEditor.exe \"" + droppedFilePaths[i] + "\"");
+                //    }
+                //    catch (Exception ex)
+                //    {
+                //        MessageBox.Show("Unable to open " + droppedFilePaths[i] + " due to the following error: " + ex.Message, "Unable to Open File");
+                //    }
+                //}
             } 
         }
 
@@ -478,7 +458,6 @@ namespace rdfEditor
         private void mnuExit_Click(object sender, RoutedEventArgs e)
         {
             mnuClose_Click(sender, e);
-            this._overrideClose = false;
             Application.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
             Application.Current.Shutdown();
         }
@@ -1068,7 +1047,6 @@ namespace rdfEditor
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if (this._overrideClose) return;
             if (Application.Current.ShutdownMode != ShutdownMode.OnExplicitShutdown )
             {
                 mnuClose_Click(sender, new RoutedEventArgs());
@@ -1090,12 +1068,5 @@ namespace rdfEditor
 
 
         #endregion
-
-        private void mnuCloseWindow_Click(object sender, RoutedEventArgs e)
-        {
-            mnuClose_Click(sender, e);
-            this.Close();
-        }
-
     }
 }

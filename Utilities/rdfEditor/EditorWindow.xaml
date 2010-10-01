@@ -115,7 +115,6 @@
                 <Separator />
                 <MenuItem Header="Close" Name="mnuClose" Click="mnuClose_Click" InputGestureText="Ctrl+W" />
                 <Separator />
-                <MenuItem Header="Close Window" Name="mnuCloseWindow" Click="mnuCloseWindow_Click" />
                 <MenuItem Header="Exit" Name="mnuExit" Click="mnuExit_Click" />
             </MenuItem>
             <MenuItem Header="_Edit">

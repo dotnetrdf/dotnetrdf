@@ -272,7 +272,7 @@ namespace VDS.RDF
 #endif
 
         /// <summary>
-        /// Gets/Sets the Timeout for URI Loader requests
+        /// Gets/Sets the Timeout for URI Loader requests (Defaults to 15 seconds)
         /// </summary>
         public static int UriLoaderTimeout
         {
@@ -282,7 +282,10 @@ namespace VDS.RDF
             }
             set
             {
-                _uriLoaderTimeout = value;
+                if (value > 0)
+                {
+                    _uriLoaderTimeout = value;
+                }
             }
         }
 

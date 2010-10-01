@@ -129,7 +129,10 @@ namespace VDS.RDF
             }
             set
             {
-                this._timeout = value;
+                if (value >= 0)
+                {
+                    this._timeout = value;
+                }
             }
         }
 
