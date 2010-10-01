@@ -220,7 +220,7 @@ namespace VDS.RDF.Parsing
                 //Use HTTP GET
                 httpRequest.Method = "GET";
 #if !SILVERLIGHT
-                httpRequest.Timeout = 15000;
+                httpRequest.Timeout = Options.UriLoaderTimeout;
 #endif
 
 #if DEBUG
@@ -388,7 +388,7 @@ namespace VDS.RDF.Parsing
                 //Use HTTP GET
                 httpRequest.Method = "GET";
 #if !SILVERLIGHT
-                httpRequest.Timeout = 15000;
+                httpRequest.Timeout = Options.UriLoaderTimeout;
 #endif
 
 #if DEBUG

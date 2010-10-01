@@ -48,7 +48,7 @@ namespace VDS.RDF.Test
             }
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void DBPediaTest()
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://dbpedia.org/resource/London");
@@ -115,6 +115,41 @@ namespace VDS.RDF.Test
             finally
             {
                 Options.HttpDebugging = false;
+            }
+        }
+
+        [TestMethod]
+        public void UriLoaderWithChunkedData()
+        {
+            try
+            {
+                Options.UriLoaderCaching = false;
+                Options.HttpDebugging = true;
+                Options.UriLoaderTimeout = 45000;
+                //Options.HttpFullDebugging = true;
+
+                Graph g = new Graph();
+                UriLoader.Load(g, new Uri("http://cheminfov.informatics.indiana.edu:8080/medline/resource/medline/15760907"), new RdfXmlParser());
+
+                foreach (Triple t in g.Triples)
+                {
+                    Console.WriteLine(t.ToString());
+                }
+            }
+            catch (RdfParseException parseEx)
+            {
+                TestTools.ReportError("Parser Error", parseEx, true);
+            }
+            catch (Exception ex)
+            {
+                TestTools.ReportError("Error", ex, true);
+            }
+            finally
+            {
+                //Options.HttpFullDebugging = false;
+                Options.UriLoaderTimeout = 15000;
+                Options.HttpDebugging = false;
+                Options.UriLoaderCaching = true;
             }
         }
     }

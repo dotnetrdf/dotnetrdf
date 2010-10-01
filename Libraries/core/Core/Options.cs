@@ -87,6 +87,7 @@ namespace VDS.RDF
         private static SparqlEngine _queryEngine = SparqlEngine.Leviathan;//SparqlEngine.Labyrinth;
         private static bool _queryAllowUnknownFunctions = true;
         private static bool _uriLoaderCaching = true;
+        private static int _uriLoaderTimeout = 15000;
 
         #if DEBUG
         //Debug Build Only
@@ -252,6 +253,8 @@ namespace VDS.RDF
             }
         }
 
+#if !NO_URICACHE
+
         /// <summary>
         /// Gets/Sets whether the <see cref="UriLoader">UriLoader</see> uses caching
         /// </summary>
@@ -264,6 +267,22 @@ namespace VDS.RDF
             set
             {
                 _uriLoaderCaching = value;
+            }
+        }
+#endif
+
+        /// <summary>
+        /// Gets/Sets the Timeout for URI Loader requests
+        /// </summary>
+        public static int UriLoaderTimeout
+        {
+            get
+            {
+                return _uriLoaderTimeout;
+            }
+            set
+            {
+                _uriLoaderTimeout = value;
             }
         }
 
