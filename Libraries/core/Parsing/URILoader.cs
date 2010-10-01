@@ -143,6 +143,7 @@ namespace VDS.RDF.Parsing
                 {
                     //Invoke FileLoader instead
                     RaiseWarning("This is a file: URI so invoking the FileLoader instead");
+                    //TODO: Fix this so it works properly on Unix filesystems?
                     FileLoader.Load(g, u.ToString().Substring(8));
                     return;
                 }

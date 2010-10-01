@@ -129,7 +129,7 @@ namespace VDS.RDF.Test
                 //Options.HttpFullDebugging = true;
 
                 Graph g = new Graph();
-                UriLoader.Load(g, new Uri("http://cheminfov.informatics.indiana.edu:8080/medline/resource/medline/15760907"), new RdfXmlParser());
+                UriLoader.Load(g, new Uri("http://cheminfov.informatics.indiana.edu:8080/medline/resource/medline/15760907"));
 
                 foreach (Triple t in g.Triples)
                 {

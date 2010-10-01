@@ -259,8 +259,7 @@ namespace VDS.RDF.Parsing
                 if (u.TokenType == Token.URI)
                 {
                     //Set the Base Uri resolving against the current Base if any
-                    String currentBase = (context.Graph.BaseUri == null) ? String.Empty : context.Graph.BaseUri.ToString();
-                    context.Graph.BaseUri = new Uri(Tools.ResolveUri(u.Value, currentBase));
+                    context.Graph.BaseUri = ((UriNode)this.TryResolveUri(context, u)).Uri;
                 }
                 else
                 {
@@ -277,15 +276,14 @@ namespace VDS.RDF.Parsing
                     if (ns.TokenType == Token.URI)
                     {
                         //Register a Namespace resolving the Namespace Uri against the Base Uri
-                        String currentBase = (context.Graph.BaseUri == null) ? String.Empty : context.Graph.BaseUri.ToString();
-                        String nsURI = Tools.ResolveUri(ns.Value, currentBase);
+                        Uri nsURI = ((UriNode)this.TryResolveUri(context, ns)).Uri;
                         if (pre.Value.Length > 1)
                         {
-                            context.Graph.NamespaceMap.AddNamespace(pre.Value.Substring(0, pre.Value.Length - 1), new Uri(nsURI));
+                            context.Graph.NamespaceMap.AddNamespace(pre.Value.Substring(0, pre.Value.Length - 1), nsURI);
                         }
                         else
                         {
-                            context.Graph.NamespaceMap.AddNamespace(String.Empty, new Uri(nsURI));
+                            context.Graph.NamespaceMap.AddNamespace(String.Empty, nsURI);
                         }
                     }
                     else
@@ -1230,6 +1228,10 @@ namespace VDS.RDF.Parsing
                     {
                         return context.Graph.CreateUriNode(t.Value);
                     }
+                    catch (UriFormatException formatEx)
+                    {
+                        throw new RdfParseException("Unable to resolve the URI '" + t.Value + "' due to the following error:\n" + formatEx.Message, t, formatEx);
+                    }
                     catch (RdfException rdfEx)
                     {
                         throw new RdfParseException("Unable to resolve the QName '" + t.Value + "' due to the following error:\n" + rdfEx.Message, t, rdfEx);
@@ -1240,6 +1242,10 @@ namespace VDS.RDF.Parsing
                     {
                         String uri = Tools.ResolveUri(t.Value, context.Graph.BaseUri.ToSafeString());
                         return context.Graph.CreateUriNode(new Uri(uri));
+                    }
+                    catch (UriFormatException formatEx)
+                    {
+                        throw new RdfParseException("Unable to resolve the URI '" + t.Value + "' due to the following error:\n" + formatEx.Message, t, formatEx);
                     }
                     catch (RdfException rdfEx)
                     {

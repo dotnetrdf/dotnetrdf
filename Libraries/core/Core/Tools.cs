@@ -106,6 +106,34 @@ namespace VDS.RDF
         }
 
         /// <summary>
+        /// Checks whether a URI Reference appears malformed and if so fixes it
+        /// </summary>
+        /// <param name="uriref">URI Reference</param>
+        /// <returns></returns>
+        static String FixMalformedUriStrings(String uriref)
+        {
+            if (uriref.StartsWith("file:/"))
+            {
+                //HACK: This is something of a Hack as a workaround to the issue that some systems may generate RDF which 
+                //has technically malformed file:// scheme URIs in it.  This is because *nix style filesystems use
+                //paths of the form /path/to/somewhere and some serializers will serialize such a file path by just prepending
+                //file: when they should be prepending file://
+                if (uriref.Length > 6)
+                {
+                    if (uriref[6] != '/')
+                    {
+                        return "file://" + uriref.Substring(6);
+                    }
+                }
+                return uriref;
+            }
+            else
+            {
+                return uriref;
+            }
+        }
+
+        /// <summary>
         /// Generic Helper Function which Resolves Uri References against a Base Uri
         /// </summary>
         /// <param name="uriref">Uri Reference to resolve</param>
@@ -125,12 +153,14 @@ namespace VDS.RDF
                 else
                 {
                     //Resolve the Uri by combining the Absolute/Relative Uri with the in-scope Base Uri
-                    Uri u = new Uri(uriref, UriKind.RelativeOrAbsolute);
+                    Uri u = new Uri(Tools.FixMalformedUriStrings(uriref), UriKind.RelativeOrAbsolute);
                     if (u.IsAbsoluteUri) 
                     {
                         //Uri Reference is an Absolute Uri so no need to resolve against Base Uri
                         return u.ToString();
-                    } else {
+                    } 
+                    else 
+                    {
                         Uri b = new Uri(baseUri);
 
                         //Check that the Base Uri is valid for resolving Relative URIs
@@ -159,7 +189,7 @@ namespace VDS.RDF
 
                 try
                 {
-                    return new Uri(uriref, UriKind.Absolute).ToString();
+                    return new Uri(Tools.FixMalformedUriStrings(uriref), UriKind.Absolute).ToString();
                 }
                 catch (UriFormatException)
                 {
