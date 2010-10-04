@@ -8,6 +8,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Storage;
+using MongoDB;
 using Alexandria;
 using Alexandria.Documents;
 using Alexandria.Indexing;
@@ -17,6 +18,9 @@ namespace alexandria_tests
     [TestClass]
     public class IndexingTests
     {
+
+        #region File System Store
+
         [TestMethod]
         public void FSIndexSubject()
         {
@@ -190,5 +194,39 @@ namespace alexandria_tests
 
             manager.Dispose();
         }
+
+        #endregion
+
+        #region MongoDB Store
+
+        [TestMethod]
+        public void MongoIndexSubject()
+        {
+            //Load in our Test Graph
+            Graph g = new Graph();
+            FileLoader.Load(g, "InferenceTest.ttl");
+            g.BaseUri = null;
+
+            //Open an Alexandria Store and save the Graph
+            AlexandriaMongoDBManager manager = new AlexandriaMongoDBManager(TestTools.GetNextStoreID());
+            manager.SaveGraph(g);
+
+            Thread.Sleep(500);
+
+            //Try and access an index from the Store
+            TestWrapper<Document, Document> wrapper = new TestWrapper<Document, Document>(manager);
+            UriNode fordFiesta = g.CreateUriNode("eg:FordFiesta");
+            IEnumerable<Triple> ts = wrapper.IndexManager.GetTriplesWithSubject(fordFiesta);
+            foreach (Triple t in ts)
+            {
+                Console.WriteLine(t.ToString());
+            }
+
+            Assert.IsTrue(ts.Any(), "Should have returned some Triples");
+
+            manager.Dispose();
+        }
+
+        #endregion
     }
 }
