@@ -5,22 +5,21 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using Alexandria.Documents.Adaptors;
+using Alexandria.Documents.GraphRegistry;
 
 namespace Alexandria.Documents
 {
-    public abstract class BaseDocumentManager : IDocumentManager
+    public abstract class BaseDocumentManager<TReader,TWriter> : IDocumentManager<TReader,TWriter>
     {
-        private Dictionary<String,DocumentReference> _activeDocuments = new Dictionary<string,DocumentReference>();
-        private IDataAdaptor _adaptor = new NTriplesAdaptor();
+        private Dictionary<String,DocumentReference<TReader,TWriter>> _activeDocuments = new Dictionary<string,DocumentReference<TReader,TWriter>>();
+        private IDataAdaptor<TReader, TWriter> _adaptor;
 
-        public BaseDocumentManager() { }
-
-        public BaseDocumentManager(IDataAdaptor adaptor)
+        public BaseDocumentManager(IDataAdaptor<TReader,TWriter> adaptor)
         {
             this._adaptor = adaptor;
         }
 
-        public IDataAdaptor DataAdaptor
+        public IDataAdaptor<TReader,TWriter> DataAdaptor
         {
             get
             {
@@ -71,7 +70,7 @@ namespace Alexandria.Documents
 
         protected abstract bool DeleteDocumentInternal(String name);
 
-        public IDocument GetDocument(string name)
+        public IDocument<TReader,TWriter> GetDocument(string name)
         {
             if (this._activeDocuments.ContainsKey(name))
             {
@@ -80,17 +79,17 @@ namespace Alexandria.Documents
             }
             else
             {
-                IDocument doc = this.GetDocumentInternal(name);
+                IDocument<TReader,TWriter> doc = this.GetDocumentInternal(name);
                 if (!this._activeDocuments.ContainsKey(name))
                 {
-                    this._activeDocuments.Add(name, new DocumentReference(doc));
+                    this._activeDocuments.Add(name, new DocumentReference<TReader,TWriter>(doc));
                 }
                 this._activeDocuments[name].IncrementReferenceCount();
                 return this._activeDocuments[name].Document;
             }
         }
 
-        protected abstract IDocument GetDocumentInternal(String name);
+        protected abstract IDocument<TReader,TWriter> GetDocumentInternal(String name);
 
         public abstract IGraphRegistry GraphRegistry
         {
@@ -116,7 +115,7 @@ namespace Alexandria.Documents
 
         public virtual void Dispose()
         {
-            foreach (DocumentReference reference in this._activeDocuments.Values)
+            foreach (DocumentReference<TReader,TWriter> reference in this._activeDocuments.Values)
             {
                 reference.Dispose();
             }

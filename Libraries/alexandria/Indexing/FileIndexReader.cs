@@ -10,9 +10,9 @@ namespace Alexandria.Indexing
 {
     class FileIndexReader : IDisposable, IEnumerable<Triple>
     {
-        private IDocument _doc;
+        private IDocument<StreamReader,TextWriter> _doc;
 
-        public FileIndexReader(IDocument doc)
+        public FileIndexReader(IDocument<StreamReader,TextWriter> doc)
         {
             this._doc = doc;
         }
@@ -48,11 +48,11 @@ namespace Alexandria.Indexing
 
     class FileIndexEnumerator : IEnumerator<Triple>
     {
-        private IDocument _doc;
+        private IDocument<StreamReader,TextWriter> _doc;
         private Triple _current;
         private StreamingNQuadsParser _parser;
 
-        public FileIndexEnumerator(IDocument doc)
+        public FileIndexEnumerator(IDocument<StreamReader,TextWriter> doc)
         {
             this._doc = doc;
         }

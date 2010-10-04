@@ -6,12 +6,12 @@ using System.Threading;
 
 namespace Alexandria.Documents
 {
-    public class DocumentReference : IDisposable
+    public class DocumentReference<TReader,TWriter> : IDisposable
     {
-        private IDocument _document;
+        private IDocument<TReader,TWriter> _document;
         private int _count = 0;
 
-        public DocumentReference(IDocument document)
+        public DocumentReference(IDocument<TReader,TWriter> document)
         {
             this._document = document;
         }
@@ -34,7 +34,7 @@ namespace Alexandria.Documents
             }
         }
 
-        public IDocument Document
+        public IDocument<TReader,TWriter> Document
         {
             get
             {

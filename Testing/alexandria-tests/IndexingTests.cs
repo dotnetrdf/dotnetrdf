@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -17,7 +18,7 @@ namespace alexandria_tests
     public class IndexingTests
     {
         [TestMethod]
-        public void IndexSubject()
+        public void FSIndexSubject()
         {
             //Load in our Test Graph
             Graph g = new Graph();
@@ -25,13 +26,13 @@ namespace alexandria_tests
             g.BaseUri = null;
 
             //Open an Alexandria Store and save the Graph
-            AlexandriaFileManager manager = new AlexandriaFileManager("test");
+            AlexandriaFileManager manager = new AlexandriaFileManager(TestTools.GetNextStoreID());
             manager.SaveGraph(g);
 
             Thread.Sleep(500);
 
             //Try and access an index from the Store
-            TestWrapper wrapper = new TestWrapper(manager);
+            TestWrapper<StreamReader,TextWriter> wrapper = new TestWrapper<StreamReader,TextWriter>(manager);
             UriNode fordFiesta = g.CreateUriNode("eg:FordFiesta");
             IEnumerable<Triple> ts = wrapper.IndexManager.GetTriplesWithSubject(fordFiesta);
             foreach (Triple t in ts)
@@ -45,7 +46,7 @@ namespace alexandria_tests
         }
 
         [TestMethod]
-        public void IndexPredicate()
+        public void FSIndexPredicate()
         {
             //Load in our Test Graph
             Graph g = new Graph();
@@ -53,13 +54,13 @@ namespace alexandria_tests
             g.BaseUri = null;
 
             //Open an Alexandria Store and save the Graph
-            AlexandriaFileManager manager = new AlexandriaFileManager("test");
+            AlexandriaFileManager manager = new AlexandriaFileManager(TestTools.GetNextStoreID());
             manager.SaveGraph(g);
 
             Thread.Sleep(500);
 
             //Try and access an index from the Store
-            TestWrapper wrapper = new TestWrapper(manager);
+            TestWrapper<StreamReader,TextWriter> wrapper = new TestWrapper<StreamReader,TextWriter>(manager);
             UriNode rdfType = g.CreateUriNode("rdf:type");
             IEnumerable<Triple> ts = wrapper.IndexManager.GetTriplesWithPredicate(rdfType);
             foreach (Triple t in ts)
@@ -73,7 +74,7 @@ namespace alexandria_tests
         }
 
         [TestMethod]
-        public void IndexSubjectPredicate()
+        public void FSIndexSubjectPredicate()
         {
             //Load in our Test Graph
             Graph g = new Graph();
@@ -81,13 +82,13 @@ namespace alexandria_tests
             g.BaseUri = null;
 
             //Open an Alexandria Store and save the Graph
-            AlexandriaFileManager manager = new AlexandriaFileManager("test");
+            AlexandriaFileManager manager = new AlexandriaFileManager(TestTools.GetNextStoreID());
             manager.SaveGraph(g);
 
             Thread.Sleep(500);
 
             //Try and access an index from the Store
-            TestWrapper wrapper = new TestWrapper(manager);
+            TestWrapper<StreamReader,TextWriter> wrapper = new TestWrapper<StreamReader,TextWriter>(manager);
             UriNode fordFiesta = g.CreateUriNode("eg:FordFiesta");
             UriNode rdfType = g.CreateUriNode("rdf:type");
             IEnumerable<Triple> ts = wrapper.IndexManager.GetTriplesWithSubjectPredicate(fordFiesta, rdfType);
@@ -102,7 +103,7 @@ namespace alexandria_tests
         }
 
         [TestMethod]
-        public void IndexSubjectObject()
+        public void FSIndexSubjectObject()
         {
             //Load in our Test Graph
             Graph g = new Graph();
@@ -110,13 +111,13 @@ namespace alexandria_tests
             g.BaseUri = null;
 
             //Open an Alexandria Store and save the Graph
-            AlexandriaFileManager manager = new AlexandriaFileManager("test");
+            AlexandriaFileManager manager = new AlexandriaFileManager(TestTools.GetNextStoreID());
             manager.SaveGraph(g);
 
             Thread.Sleep(500);
 
             //Try and access an index from the Store
-            TestWrapper wrapper = new TestWrapper(manager);
+            TestWrapper<StreamReader,TextWriter> wrapper = new TestWrapper<StreamReader,TextWriter>(manager);
             UriNode fordFiesta = g.CreateUriNode("eg:FordFiesta");
             UriNode car = g.CreateUriNode("eg:Car");
             IEnumerable<Triple> ts = wrapper.IndexManager.GetTriplesWithSubjectObject(fordFiesta, car);
@@ -131,7 +132,7 @@ namespace alexandria_tests
         }
 
         [TestMethod]
-        public void IndexPartialEnumerate()
+        public void FSIndexPartialEnumerate()
         {
             //Load in our Test Graph
             Graph g = new Graph();
@@ -139,13 +140,13 @@ namespace alexandria_tests
             g.BaseUri = null;
 
             //Open an Alexandria Store and save the Graph
-            AlexandriaFileManager manager = new AlexandriaFileManager("test");
+            AlexandriaFileManager manager = new AlexandriaFileManager(TestTools.GetNextStoreID());
             manager.SaveGraph(g);
 
             Thread.Sleep(500);
 
             //Try and access an index from the Store
-            TestWrapper wrapper = new TestWrapper(manager);
+            TestWrapper<StreamReader,TextWriter> wrapper = new TestWrapper<StreamReader,TextWriter>(manager);
             UriNode rdfType = g.CreateUriNode("rdf:type");
             IEnumerable<Triple> ts = wrapper.IndexManager.GetTriplesWithPredicate(rdfType);
             foreach (Triple t in ts.Skip(5).Take(5))
@@ -159,7 +160,7 @@ namespace alexandria_tests
         }
 
         [TestMethod]
-        public void IndexRepeat()
+        public void FSIndexRepeat()
         {
             //Load in our Test Graph
             Graph g = new Graph();
@@ -167,13 +168,13 @@ namespace alexandria_tests
             g.BaseUri = null;
 
             //Open an Alexandria Store and save the Graph
-            AlexandriaFileManager manager = new AlexandriaFileManager("test");
+            AlexandriaFileManager manager = new AlexandriaFileManager(TestTools.GetNextStoreID());
             manager.SaveGraph(g);
 
             Thread.Sleep(500);
 
             //Try and access an index from the Store
-            TestWrapper wrapper = new TestWrapper(manager);
+            TestWrapper<StreamReader,TextWriter> wrapper = new TestWrapper<StreamReader,TextWriter>(manager);
             UriNode fordFiesta = g.CreateUriNode("eg:FordFiesta");
             IEnumerable<Triple> ts = wrapper.IndexManager.GetTriplesWithSubject(fordFiesta);
             foreach (Triple t in ts)

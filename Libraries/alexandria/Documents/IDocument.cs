@@ -9,12 +9,14 @@ namespace Alexandria.Documents
     /// <summary>
     /// Represents a Document used by Alexandria
     /// </summary>
-    public interface IDocument : IDisposable
+    /// <typeparam name="TReader">Reader Type that can be used to read the contents of a Document</typeparam>
+    /// <typeparam name="TWriter">Writer Type that can be used to write the contents of a Document</typeparam>
+    public interface IDocument<TReader, TWriter> : IDisposable
     {
         /// <summary>
         /// Gets the Manager that generated the Document
         /// </summary>
-        IDocumentManager DocumentManager
+        IDocumentManager<TReader,TWriter> DocumentManager
         {
             get;
         }
@@ -40,7 +42,7 @@ namespace Alexandria.Documents
         /// </summary>
         /// <param name="append">Whether the Document is opened for apending or whether a new document should be written in place of the existing document</param>
         /// <returns></returns>
-        TextWriter BeginWrite(bool append);
+        TWriter BeginWrite(bool append);
 
         /// <summary>
         /// Signals that the write has ended
@@ -51,7 +53,7 @@ namespace Alexandria.Documents
         /// Opens a Document to start reading
         /// </summary>
         /// <returns></returns>
-        StreamReader BeginRead();
+        TReader BeginRead();
 
         /// <summary>
         /// Signals that the read has ended

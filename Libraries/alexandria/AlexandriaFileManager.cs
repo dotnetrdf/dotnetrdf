@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
+using System.IO;
 using System.Linq;
 using System.Text;
 using VDS.RDF;
@@ -12,7 +13,7 @@ namespace Alexandria
     /// <summary>
     /// Manages an Alexandria Store which is stored in a directory in the filesystem
     /// </summary>
-    public class AlexandriaFileManager : AlexandriaManager
+    public class AlexandriaFileManager : AlexandriaManager<StreamReader,TextWriter>
     {
         /// <summary>
         /// Set of All Indices - gives best query performance but poorer import performance

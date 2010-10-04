@@ -23,7 +23,7 @@ namespace Alexandria.Documents.Adaptors
             this._formatter = formatter;
         }
 
-        public override void AppendTriples(IEnumerable<Triple> ts, IDocument document)
+        public override void AppendTriples(IEnumerable<Triple> ts, IDocument<StreamReader,TextWriter> document)
         {
             if (!ts.Any()) return;
 
@@ -48,7 +48,7 @@ namespace Alexandria.Documents.Adaptors
             }
         }
 
-        public override void DeleteTriples(IEnumerable<Triple> ts, IDocument document)
+        public override void DeleteTriples(IEnumerable<Triple> ts, IDocument<StreamReader,TextWriter> document)
         {
             if (!ts.Any()) return;
 

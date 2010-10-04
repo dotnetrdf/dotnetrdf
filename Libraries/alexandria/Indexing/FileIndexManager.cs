@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
+using System.IO;
 using System.Linq;
 using System.Text;
 using VDS.RDF;
@@ -103,7 +104,7 @@ namespace Alexandria.Indexing
                     }
                 }
 
-                IDocument doc = this._manager.GetDocument(indexName);
+                IDocument<StreamReader,TextWriter> doc = this._manager.GetDocument(indexName);
                 this._adaptor.AppendTriples(ts, doc);
             }
             catch (AlexandriaException)
@@ -132,7 +133,7 @@ namespace Alexandria.Indexing
                     }
                 }
 
-                IDocument doc = this._manager.GetDocument(indexName);
+                IDocument<StreamReader,TextWriter> doc = this._manager.GetDocument(indexName);
                 this._adaptor.DeleteTriples(ts, doc);
             }
             catch (AlexandriaException)

@@ -9,7 +9,7 @@ using VDS.RDF.Writing;
 
 namespace Alexandria.Documents.Adaptors
 {
-    public abstract class RdfAdaptor : IDataAdaptor
+    public abstract class RdfAdaptor : IDataAdaptor<StreamReader, TextWriter>
     {
         private IRdfReader _parser;
         private IRdfWriter _writer;
@@ -22,7 +22,7 @@ namespace Alexandria.Documents.Adaptors
             this._writer = writer;
         }
 
-        public virtual void ToGraph(IGraph g, IDocument document)
+        public virtual void ToGraph(IGraph g, IDocument<StreamReader,TextWriter> document)
         {
             if (document.Exists)
             {
@@ -43,7 +43,7 @@ namespace Alexandria.Documents.Adaptors
             }
         }
 
-        public virtual void ToDocument(IGraph g, IDocument document)
+        public virtual void ToDocument(IGraph g, IDocument<StreamReader,TextWriter> document)
         {
             try
             {
@@ -61,8 +61,8 @@ namespace Alexandria.Documents.Adaptors
             }
         }
 
-        public abstract void AppendTriples(IEnumerable<Triple> ts, IDocument document);
+        public abstract void AppendTriples(IEnumerable<Triple> ts, IDocument<StreamReader,TextWriter> document);
 
-        public abstract void DeleteTriples(IEnumerable<Triple> ts, IDocument document);
+        public abstract void DeleteTriples(IEnumerable<Triple> ts, IDocument<StreamReader,TextWriter> document);
     }
 }

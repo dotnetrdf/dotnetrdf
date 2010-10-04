@@ -9,16 +9,16 @@ using Alexandria.Indexing;
 
 namespace Alexandria
 {
-    public class TestWrapper
+    public class TestWrapper<TReader,TWriter>
     {
-        private AlexandriaManager _manager;
+        private AlexandriaManager<TReader,TWriter> _manager;
 
-        public TestWrapper(AlexandriaManager manager)
+        public TestWrapper(AlexandriaManager<TReader,TWriter> manager)
         {
             this._manager = manager;
         }
 
-        public IDocumentManager DocumentManager
+        public IDocumentManager<TReader,TWriter> DocumentManager
         {
             get
             {

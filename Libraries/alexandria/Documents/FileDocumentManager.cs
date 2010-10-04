@@ -4,10 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Alexandria.Documents.Adaptors;
+using Alexandria.Documents.GraphRegistry;
 
 namespace Alexandria.Documents
 {
-    public class FileDocumentManager : BaseDocumentManager
+    public class FileDocumentManager : BaseDocumentManager<StreamReader, TextWriter>
     {
         private String _directory;
         private IGraphRegistry _graphRegistry;
@@ -26,7 +27,7 @@ namespace Alexandria.Documents
         private const String GraphRegistryDocument = "graphs";
 
         public FileDocumentManager(String directory)
-            : base()
+            : base(new NTriplesAdaptor())
         {
             if (!Directory.Exists(directory))
             {
@@ -109,7 +110,7 @@ namespace Alexandria.Documents
             }
         }
 
-        protected override IDocument GetDocumentInternal(string name)
+        protected override IDocument<StreamReader,TextWriter> GetDocumentInternal(string name)
         {
             if (File.Exists(Path.Combine(this._directory, name)))
             {

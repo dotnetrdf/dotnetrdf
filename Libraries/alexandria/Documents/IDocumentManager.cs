@@ -5,13 +5,14 @@ using System.Linq;
 using System.Text;
 using VDS.RDF;
 using Alexandria.Documents.Adaptors;
+using Alexandria.Documents.GraphRegistry;
 
 namespace Alexandria.Documents
 {
     /// <summary>
     /// A Document Manager manages access to the documents used by Alexandria ensuring concu
     /// </summary>
-    public interface IDocumentManager : IDisposable
+    public interface IDocumentManager<TReader,TWriter> : IDisposable
     {
         /// <summary>
         /// Returns whether the Manager has a specific document
@@ -44,7 +45,7 @@ namespace Alexandria.Documents
         /// <remarks>
         /// A Document Manager must track the number of references to a Document that is retrieved by this method
         /// </remarks>
-        IDocument GetDocument(String name);
+        IDocument<TReader,TWriter> GetDocument(String name);
 
         /// <summary>
         /// Gets the Graph Registry that stores the mappings between Graph URIs and Document Names
@@ -64,7 +65,7 @@ namespace Alexandria.Documents
         /// <summary>
         /// Gets the Adaptor used to convert from Documents to Graphs
         /// </summary>
-        IDataAdaptor DataAdaptor
+        IDataAdaptor<TReader,TWriter> DataAdaptor
         {
             get;
         }

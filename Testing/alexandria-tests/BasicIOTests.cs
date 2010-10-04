@@ -14,8 +14,11 @@ namespace alexandria_tests
     [TestClass]
     public class BasicIOTests
     {
+
+        #region File System Store
+
         [TestMethod]
-        public void SaveLoadGraph()
+        public void FSSaveLoadGraph()
         {
             //Load in our Test Graph
             Graph g = new Graph();
@@ -23,7 +26,7 @@ namespace alexandria_tests
             g.BaseUri = null;
 
             //Open an Alexandria Store and save the Graph
-            AlexandriaFileManager manager = new AlexandriaFileManager("test");
+            AlexandriaFileManager manager = new AlexandriaFileManager(TestTools.GetNextStoreID());
             manager.SaveGraph(g);
 
             //Try and read the Graph back from the Store
@@ -36,7 +39,7 @@ namespace alexandria_tests
         }
 
         [TestMethod]
-        public void SaveLoadWithoutDispose()
+        public void FSSaveLoadWithoutDispose()
         {
             //Load in our Test Graph
             Graph g = new Graph();
@@ -44,7 +47,7 @@ namespace alexandria_tests
             g.BaseUri = null;
 
             //Open an Alexandria Store and save the Graph
-            AlexandriaFileManager manager = new AlexandriaFileManager("test");
+            AlexandriaFileManager manager = new AlexandriaFileManager(TestTools.GetNextStoreID());
             manager.SaveGraph(g);
 
             //Try and read the Graph back from the Store
@@ -55,7 +58,7 @@ namespace alexandria_tests
         }
 
         [TestMethod]
-        public void SaveLoadGraphWithDifferentManagers()
+        public void FSSaveLoadGraphWithDifferentManagers()
         {
             //Load in our Test Graph
             Graph g = new Graph();
@@ -63,13 +66,14 @@ namespace alexandria_tests
             g.BaseUri = null;
 
             //Open an Alexandria Store and save the Graph
-            AlexandriaFileManager manager = new AlexandriaFileManager("test");
+            String storeID = TestTools.GetNextStoreID();
+            AlexandriaFileManager manager = new AlexandriaFileManager(storeID);
             manager.SaveGraph(g);
             manager.Dispose();
 
             //Try and read the Graph back from the Store
             Graph h = new Graph();
-            manager = new AlexandriaFileManager("test");
+            manager = new AlexandriaFileManager(storeID);
             manager.LoadGraph(h, g.BaseUri);
 
             Assert.AreEqual(g, h, "Graphs should have been equal");
@@ -78,7 +82,7 @@ namespace alexandria_tests
         }
 
         [TestMethod]
-        public void SaveOverwriteGraph()
+        public void FSSaveOverwriteGraph()
         {
             //Load in our Test Graph
             Graph g = new Graph();
@@ -86,7 +90,7 @@ namespace alexandria_tests
             g.BaseUri = null;
 
             //Open an Alexandria Store and save the Graph
-            AlexandriaFileManager manager = new AlexandriaFileManager("test");
+            AlexandriaFileManager manager = new AlexandriaFileManager(TestTools.GetNextStoreID());
             manager.SaveGraph(g);
 
             //Try and read the Graph back from the Store
@@ -113,14 +117,14 @@ namespace alexandria_tests
         }
 
         [TestMethod]
-        public void SaveMultipleGraphs()
+        public void FSSaveMultipleGraphs()
         {
             //Load in our Test Graph
             Graph g = new Graph();
             FileLoader.Load(g, "InferenceTest.ttl");
 
             //Open an Alexandria Store and save the Graph
-            AlexandriaFileManager manager = new AlexandriaFileManager("test");
+            AlexandriaFileManager manager = new AlexandriaFileManager(TestTools.GetNextStoreID());
             manager.SaveGraph(g);
 
             //Try and read the Graph back from the Store
@@ -146,7 +150,7 @@ namespace alexandria_tests
         }
 
         [TestMethod]
-        public void AppendTriples()
+        public void FSAppendTriples()
         {
             //Load in our Test Graph
             Graph g = new Graph();
@@ -159,7 +163,7 @@ namespace alexandria_tests
             Triple[] ts = new Triple[] { new Triple(spaceShuttle, rdfType, airVehicle) };
 
             //Open an Alexandria Store and save the original Graph
-            AlexandriaFileManager manager = new AlexandriaFileManager("test");
+            AlexandriaFileManager manager = new AlexandriaFileManager(TestTools.GetNextStoreID());
             manager.SaveGraph(g);
 
             //Append the Triples both locally and to the store
@@ -176,7 +180,7 @@ namespace alexandria_tests
         }
 
         [TestMethod]
-        public void DeleteTriples()
+        public void FSDeleteTriples()
         {
             //Load in our Test Graph
             Graph g = new Graph();
@@ -186,7 +190,7 @@ namespace alexandria_tests
             List<Triple> ts = g.GetTriplesWithSubject(g.CreateUriNode("eg:FordFiesta")).ToList();
 
             //Open an Alexandria Store and save the original Graph
-            AlexandriaFileManager manager = new AlexandriaFileManager("test");
+            AlexandriaFileManager manager = new AlexandriaFileManager(TestTools.GetNextStoreID());
             manager.SaveGraph(g);
 
             //Remove the Triples both locally and to the store
@@ -201,5 +205,32 @@ namespace alexandria_tests
 
             manager.Dispose();
         }
+
+        #endregion
+
+        #region MongoDB Store
+
+        [TestMethod]
+        public void MongoSaveLoadGraph()
+        {
+            //Load in our Test Graph
+            Graph g = new Graph();
+            FileLoader.Load(g, "InferenceTest.ttl");
+            g.BaseUri = null;
+
+            //Open an Alexandria Store and save the Graph
+            AlexandriaMongoDBManager manager = new AlexandriaMongoDBManager(TestTools.GetNextStoreID());
+            manager.SaveGraph(g);
+
+            //Try and read the Graph back from the Store
+            Graph h = new Graph();
+            manager.LoadGraph(h, g.BaseUri);
+
+            Assert.AreEqual(g, h, "Graphs should have been equal");
+
+            manager.Dispose();
+        }
+
+        #endregion
     }
 }

@@ -15,10 +15,10 @@ namespace alexandria_tests
     public class PerformanceTests
     {
         [TestMethod]
-        public void LargeLoadUsingWriteOnlyGraphAndFullIndices()
+        public void FSLargeLoadUsingWriteOnlyGraphAndFullIndices()
         {
             //Open an Alexandria Store and save the Graph
-            AlexandriaFileManager manager = new AlexandriaFileManager("test", AlexandriaFileManager.FullIndices);
+            AlexandriaFileManager manager = new AlexandriaFileManager(TestTools.GetNextStoreID(), AlexandriaFileManager.FullIndices);
 
             //Load in our Test Graph
             WriteOnlyStoreGraph g = new WriteOnlyStoreGraph((Uri)null, manager);
@@ -29,10 +29,10 @@ namespace alexandria_tests
         }
 
         [TestMethod]
-        public void LargeLoadUsingWriteOnlyGraphAndOptimalIndices()
+        public void FSLargeLoadUsingWriteOnlyGraphAndOptimalIndices()
         {
             //Open an Alexandria Store and save the Graph
-            AlexandriaFileManager manager = new AlexandriaFileManager("test", AlexandriaFileManager.OptimalIndices);
+            AlexandriaFileManager manager = new AlexandriaFileManager(TestTools.GetNextStoreID(), AlexandriaFileManager.OptimalIndices);
 
             //Load in our Test Graph
             WriteOnlyStoreGraph g = new WriteOnlyStoreGraph((Uri)null, manager);
@@ -43,10 +43,10 @@ namespace alexandria_tests
         }
 
         [TestMethod]
-        public void LargeLoadUsingWriteOnlyGraphAndSimpleIndices()
+        public void FSLargeLoadUsingWriteOnlyGraphAndSimpleIndices()
         {
             //Open an Alexandria Store and save the Graph
-            AlexandriaFileManager manager = new AlexandriaFileManager("test", AlexandriaFileManager.SimpleIndices);
+            AlexandriaFileManager manager = new AlexandriaFileManager(TestTools.GetNextStoreID(), AlexandriaFileManager.SimpleIndices);
 
             //Load in our Test Graph
             WriteOnlyStoreGraph g = new WriteOnlyStoreGraph((Uri)null, manager);
@@ -57,10 +57,10 @@ namespace alexandria_tests
         }
 
         [TestMethod]
-        public void LargeLoadUsingWriteOnlyGraphAndNoIndices()
+        public void FSLargeLoadUsingWriteOnlyGraphAndNoIndices()
         {
             //Open an Alexandria Store and save the Graph
-            AlexandriaFileManager manager = new AlexandriaFileManager("test", null);
+            AlexandriaFileManager manager = new AlexandriaFileManager(TestTools.GetNextStoreID(), null);
 
             //Load in our Test Graph
             WriteOnlyStoreGraph g = new WriteOnlyStoreGraph((Uri)null, manager);
@@ -71,10 +71,10 @@ namespace alexandria_tests
         }
 
         [TestMethod]
-        public void LargeLoadUsingWriteOnlyGraphAndNoIndices2()
+        public void FSLargeLoadUsingWriteOnlyGraphAndNoIndices2()
         {
             //Open an Alexandria Store and save the Graph
-            NonIndexedAlexandriaFileManager manager = new NonIndexedAlexandriaFileManager("test");
+            NonIndexedAlexandriaFileManager manager = new NonIndexedAlexandriaFileManager(TestTools.GetNextStoreID());
 
             //Load in our Test Graph
             WriteOnlyStoreGraph g = new WriteOnlyStoreGraph((Uri)null, manager);
@@ -85,60 +85,60 @@ namespace alexandria_tests
         }
 
         [TestMethod]
-        public void LargeLoadUsingSaveGraphAndFullIndices()
+        public void FSLargeLoadUsingSaveGraphAndFullIndices()
         {
             Graph g = new Graph();
             FileLoader.Load(g, "dataset_50.ttl");
 
-            AlexandriaFileManager manager = new AlexandriaFileManager("test", AlexandriaFileManager.FullIndices);
+            AlexandriaFileManager manager = new AlexandriaFileManager(TestTools.GetNextStoreID(), AlexandriaFileManager.FullIndices);
             manager.SaveGraph(g);
 
             manager.Dispose();
         }
 
         [TestMethod]
-        public void LargeLoadUsingSaveGraphAndOptimalIndices()
+        public void FSLargeLoadUsingSaveGraphAndOptimalIndices()
         {
             Graph g = new Graph();
             FileLoader.Load(g, "dataset_50.ttl");
 
-            AlexandriaFileManager manager = new AlexandriaFileManager("test", AlexandriaFileManager.OptimalIndices);
+            AlexandriaFileManager manager = new AlexandriaFileManager(TestTools.GetNextStoreID(), AlexandriaFileManager.OptimalIndices);
             manager.SaveGraph(g);
 
             manager.Dispose();
         }
 
         [TestMethod]
-        public void LargeLoadUsingSaveGraphAndSimpleIndices()
+        public void FSLargeLoadUsingSaveGraphAndSimpleIndices()
         {
             Graph g = new Graph();
             FileLoader.Load(g, "dataset_50.ttl");
 
-            AlexandriaFileManager manager = new AlexandriaFileManager("test", AlexandriaFileManager.SimpleIndices);
+            AlexandriaFileManager manager = new AlexandriaFileManager(TestTools.GetNextStoreID(), AlexandriaFileManager.SimpleIndices);
             manager.SaveGraph(g);
 
             manager.Dispose();
         }
 
         [TestMethod]
-        public void LargeLoadUsingSaveGraphAndNoIndices()
+        public void FSLargeLoadUsingSaveGraphAndNoIndices()
         {
             Graph g = new Graph();
             FileLoader.Load(g, "dataset_50.ttl");
 
-            AlexandriaFileManager manager = new AlexandriaFileManager("test", null);
+            AlexandriaFileManager manager = new AlexandriaFileManager(TestTools.GetNextStoreID(), null);
             manager.SaveGraph(g);
 
             manager.Dispose();
         }
 
         [TestMethod]
-        public void LargeLoadUsingSaveGraphAndNoIndices2()
+        public void FSLargeLoadUsingSaveGraphAndNoIndices2()
         {
             Graph g = new Graph();
             FileLoader.Load(g, "dataset_50.ttl");
 
-            NonIndexedAlexandriaFileManager manager = new NonIndexedAlexandriaFileManager("test");
+            NonIndexedAlexandriaFileManager manager = new NonIndexedAlexandriaFileManager(TestTools.GetNextStoreID());
             manager.SaveGraph(g);
 
             manager.Dispose();

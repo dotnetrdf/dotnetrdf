@@ -7,37 +7,17 @@ using System.Threading;
 
 namespace Alexandria.Documents
 {
-    public class FileDocument : IDocument
+    public class FileDocument : BaseDocument<StreamReader, TextWriter>
     {
-        private IDocumentManager _manager;
-        private String _filename, _name;
-        private ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
-        private bool _canWrite = true;
+        private String _filename;
 
-        public FileDocument(String filename, String name, IDocumentManager manager)
+        public FileDocument(String filename, String name, IDocumentManager<StreamReader,TextWriter> manager)
+            : base(name, manager)
         {
             this._filename = filename;
-            this._name = name;
-            this._manager = manager;
         }
 
-        public IDocumentManager DocumentManager
-        {
-            get
-            {
-                return this._manager;
-            }
-        }
-
-        public String Name
-        {
-            get
-            {
-                return this._name;
-            }
-        }
-
-        public bool Exists
+        public override bool Exists
         {
             get 
             {
@@ -45,76 +25,21 @@ namespace Alexandria.Documents
             }
         }
 
-        public TextWriter BeginWrite(bool append)
+        protected override TextWriter BeginWriteInternal(bool append)
         {
-            try
+            if (append)
             {
-                this._canWrite = false;
-                this._lock.EnterWriteLock();
-
-                if (append)
-                {
-                    return new StreamWriter(File.Open(this._filename, FileMode.Append));
-                }
-                else
-                {
-                    return new StreamWriter(File.Open(this._filename, FileMode.Create));
-                }
+                return new StreamWriter(File.Open(this._filename, FileMode.Append));
             }
-            catch (Exception ex)
+            else
             {
-                throw new AlexandriaException("Failed to obtain a Write Lock for the Document " + this._filename, ex);
+                return new StreamWriter(File.Open(this._filename, FileMode.Create));
             }
         }
 
-        public void EndWrite()
+        protected override StreamReader BeginReadInternal()
         {
-            try
-            {
-                this._lock.ExitWriteLock();
-                this._canWrite = (this._lock.WaitingWriteCount == 0);
-            }
-            catch (Exception ex)
-            {
-                throw new AlexandriaException("Failed to exit a Write Lock for the Document " + this._filename, ex);
-            }
-        }
-
-        public StreamReader BeginRead()
-        {
-            try
-            {
-                this._lock.EnterReadLock();
-
-                return new StreamReader(File.OpenRead(this._filename));
-            }
-            catch (Exception ex)
-            {
-                throw new AlexandriaException("Failed to obtain a Read Lock for the Document " + this._filename, ex);
-            }
-        }
-
-        public void EndRead()
-        {
-            try
-            {
-                this._lock.ExitReadLock();
-            }
-            catch (Exception ex)
-            {
-                throw new AlexandriaException("Failed to exit a Read Lock for the Document " + this._filename, ex);
-            }
-        }
-
-        public void Dispose()
-        {
-            //Need to wait for any reads/writes to complete
-            while (!this._canWrite || this._lock.WaitingReadCount > 0 || this._lock.WaitingWriteCount > 0 || this._lock.CurrentReadCount > 0)
-            {
-                Thread.Sleep(50);
-            }
-
-            this._lock.Dispose();
+            return new StreamReader(File.OpenRead(this._filename));
         }
     }
 }

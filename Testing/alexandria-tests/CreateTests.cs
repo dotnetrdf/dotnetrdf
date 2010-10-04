@@ -14,12 +14,12 @@ namespace alexandria_tests
     public class CreateTests
     {
         [TestMethod]
-        public void CreateFileStore()
+        public void FSCreateStore()
         {
             String[] testDirs = new String[]
             {
-                "test",
-                "test2",
+                "testdir",
+                "testdir2",
                 "random"
             };
 
@@ -27,7 +27,15 @@ namespace alexandria_tests
             {
                 Console.WriteLine(Path.GetFullPath(dir));
                 AlexandriaFileManager manager = new AlexandriaFileManager(dir);
+                manager.Dispose();
             }
+        }
+
+        [TestMethod]
+        public void MongoCreateStore()
+        {
+            AlexandriaMongoDBManager manager = new AlexandriaMongoDBManager("test");
+            manager.Dispose();
         }
     }
 }

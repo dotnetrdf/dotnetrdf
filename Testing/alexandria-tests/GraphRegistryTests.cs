@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -8,6 +9,7 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Storage;
 using Alexandria;
 using Alexandria.Documents;
+using Alexandria.Documents.GraphRegistry;
 
 namespace alexandria_tests
 {
@@ -15,14 +17,14 @@ namespace alexandria_tests
     public class GraphRegistryTests
     {
         [TestMethod]
-        public void GraphRegistryEnumerate()
+        public void FSGraphRegistryEnumerate()
         {
             //Load in our Test Graph
             Graph g = new Graph();
             FileLoader.Load(g, "InferenceTest.ttl");
 
             //Open an Alexandria Store and save the Graph
-            AlexandriaFileManager manager = new AlexandriaFileManager("test");
+            AlexandriaFileManager manager = new AlexandriaFileManager(TestTools.GetNextStoreID());
             manager.SaveGraph(g);
 
             //Now load another Graph and add it
@@ -33,7 +35,7 @@ namespace alexandria_tests
             manager.SaveGraph(i);
 
             //Now enumerate the Graph URIs and Document Names
-            TestWrapper wrapper = new TestWrapper(manager);
+            TestWrapper<StreamReader,TextWriter> wrapper = new TestWrapper<StreamReader,TextWriter>(manager);
             IGraphRegistry registry = wrapper.DocumentManager.GraphRegistry;
             Console.WriteLine("Graph URIs");
             foreach (String uri in registry.GraphUris)
@@ -64,7 +66,7 @@ namespace alexandria_tests
         }
 
         [TestMethod]
-        public void GraphRegistryEnumerateWithDefaultGraph()
+        public void FSGraphRegistryEnumerateWithDefaultGraph()
         {
             //Load in our Test Graph
             Graph g = new Graph();
@@ -72,7 +74,7 @@ namespace alexandria_tests
             g.BaseUri = null;
 
             //Open an Alexandria Store and save the Graph
-            AlexandriaFileManager manager = new AlexandriaFileManager("test");
+            AlexandriaFileManager manager = new AlexandriaFileManager(TestTools.GetNextStoreID());
             manager.SaveGraph(g);
 
             //Now load another Graph and add it
@@ -83,7 +85,7 @@ namespace alexandria_tests
             manager.SaveGraph(i);
 
             //Now enumerate the Graph URIs and Document Names
-            TestWrapper wrapper = new TestWrapper(manager);
+            TestWrapper<StreamReader,TextWriter> wrapper = new TestWrapper<StreamReader,TextWriter>(manager);
             IGraphRegistry registry = wrapper.DocumentManager.GraphRegistry;
             Console.WriteLine("Graph URIs");
             foreach (String uri in registry.GraphUris)
@@ -114,7 +116,30 @@ namespace alexandria_tests
         }
 
         [TestMethod]
-        public void GraphRegisterUnregister()
+        public void FSGraphRegistryLookup()
+        {
+            //Load in our Test Graph
+            Graph g = new Graph();
+            FileLoader.Load(g, "InferenceTest.ttl");
+
+            //Open an Alexandria Store and save the Graph
+            AlexandriaFileManager manager = new AlexandriaFileManager(TestTools.GetNextStoreID());
+            manager.SaveGraph(g);
+
+            TestWrapper<StreamReader,TextWriter> wrapper = new TestWrapper<StreamReader,TextWriter>(manager);
+            String graphUri = (g.BaseUri != null) ? g.BaseUri.ToString() : String.Empty;
+            String name = wrapper.DocumentManager.GraphRegistry.GetDocumentName(graphUri);
+
+            String retrievedDocumentName = wrapper.DocumentManager.GraphRegistry.GetDocumentName(graphUri);
+            Assert.AreEqual(name, retrievedDocumentName, "Document Names should have been equal");
+            String retrievedGraphUri = wrapper.DocumentManager.GraphRegistry.GetGraphUri(name);
+            Assert.AreEqual(graphUri, retrievedGraphUri, "Graph URIs should have been equal");
+
+            manager.Dispose();
+        }
+
+        [TestMethod]
+        public void FSGraphRegisterUnregister()
         {
             //Load in our Test Graph
             Graph g = new Graph();
@@ -122,7 +147,7 @@ namespace alexandria_tests
             g.BaseUri = null;
 
             //Open an Alexandria Store and save the Graph
-            AlexandriaFileManager manager = new AlexandriaFileManager("test");
+            AlexandriaFileManager manager = new AlexandriaFileManager(TestTools.GetNextStoreID());
             manager.SaveGraph(g);
 
             //Now load another Graph and add it
@@ -133,7 +158,7 @@ namespace alexandria_tests
             manager.SaveGraph(i);
 
             //Now enumerate the Graph URIs and Document Names
-            TestWrapper wrapper = new TestWrapper(manager);
+            TestWrapper<StreamReader,TextWriter> wrapper = new TestWrapper<StreamReader,TextWriter>(manager);
             IGraphRegistry registry = wrapper.DocumentManager.GraphRegistry;
             Console.WriteLine("Graph URIs");
             foreach (String uri in registry.GraphUris)

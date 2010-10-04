@@ -17,12 +17,12 @@ namespace Alexandria
     /// <strong>Important: </strong> You must explicitly <see cref="AlexandriaManager.Dispose">Dispose()</see> of the Manager when you have finished with it otherwise your data and indexes may be inconsistent.  While the Manager has been designed to force a <see cref="AlexandriaManager.Dispose">Dispose()</see> call if you fail to do so this is very inefficient and may cause your program to consume memory/hang unecessarily due to the vagaries of the .Net Garbage Collector
     /// </para>
     /// </remarks>
-    public abstract class AlexandriaManager : IGenericIOManager
+    public abstract class AlexandriaManager<TReader,TWriter> : IGenericIOManager
     {
-        private IDocumentManager _docManager;
+        private IDocumentManager<TReader,TWriter> _docManager;
         private IIndexManager _indexManager;
 
-        public AlexandriaManager(IDocumentManager documentManager, IIndexManager indexManager)
+        public AlexandriaManager(IDocumentManager<TReader,TWriter> documentManager, IIndexManager indexManager)
         {
             this._docManager = documentManager;
             this._indexManager = indexManager;
@@ -33,7 +33,7 @@ namespace Alexandria
             this.Dispose(false);
         }
 
-        protected internal IDocumentManager DocumentManager
+        protected internal IDocumentManager<TReader,TWriter> DocumentManager
         {
             get
             {
@@ -63,7 +63,7 @@ namespace Alexandria
             {
                 try
                 {
-                    IDocument doc = this._docManager.GetDocument(name);
+                    IDocument<TReader,TWriter> doc = this._docManager.GetDocument(name);
                     this._docManager.DataAdaptor.ToGraph(g, doc);
                 }
                 catch (AlexandriaException)
@@ -84,7 +84,7 @@ namespace Alexandria
         public virtual void SaveGraph(IGraph g)
         {
             String name = this._docManager.GraphRegistry.GetDocumentName(g.BaseUri.ToSafeString());
-            IDocument doc;
+            IDocument<TReader,TWriter> doc;
 
             try
             {
@@ -149,7 +149,7 @@ namespace Alexandria
             {
                 try
                 {
-                    IDocument doc = this._docManager.GetDocument(name);
+                    IDocument<TReader,TWriter> doc = this._docManager.GetDocument(name);
 
                     if (additions != null)
                     {
@@ -215,7 +215,7 @@ namespace Alexandria
                 try
                 {
                     Graph temp = new Graph();
-                    IDocument doc = this._docManager.GetDocument(name);
+                    IDocument<TReader,TWriter> doc = this._docManager.GetDocument(name);
                     this._docManager.DataAdaptor.ToGraph(temp, doc);
                     this._docManager.ReleaseDocument(name);
                     this._indexManager.RemoveFromIndex(temp.Triples);

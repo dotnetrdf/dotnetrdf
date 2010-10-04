@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Alexandria.Documents
+namespace Alexandria.Documents.GraphRegistry
 {
     /// <summary>
     /// Interface for Graph Registrys
