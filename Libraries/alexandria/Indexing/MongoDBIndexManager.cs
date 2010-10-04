@@ -28,7 +28,9 @@ namespace Alexandria.Indexing
         public IEnumerable<Triple> GetTriplesWithSubject(INode subj)
         {
             Document lookup = new Document();
-            lookup["graph." + subj.ToString()] = null;
+            Document exists = new Document();
+            exists["$exists"] = true;
+            lookup["graph." + subj.ToString()] = exists;
 
             return new MongoDBRdfJsonEnumerator(this._manager.Database[MongoDBDocumentManager.Collection], lookup, t => t.Subject.Equals(subj));
         }

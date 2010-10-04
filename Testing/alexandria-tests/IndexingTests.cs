@@ -215,7 +215,8 @@ namespace alexandria_tests
 
             //Try and access an index from the Store
             TestWrapper<Document, Document> wrapper = new TestWrapper<Document, Document>(manager);
-            UriNode fordFiesta = g.CreateUriNode("eg:FordFiesta");
+            //UriNode fordFiesta = g.CreateUriNode("eg:FordFiesta");
+            INode fordFiesta = g.GetBlankNode("autos1");
             IEnumerable<Triple> ts = wrapper.IndexManager.GetTriplesWithSubject(fordFiesta);
             foreach (Triple t in ts)
             {
