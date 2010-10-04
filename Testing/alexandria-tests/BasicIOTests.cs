@@ -231,6 +231,98 @@ namespace alexandria_tests
             manager.Dispose();
         }
 
+        [TestMethod]
+        public void MongoSaveLoadGraphWithDifferentManagers()
+        {
+            //Load in our Test Graph
+            Graph g = new Graph();
+            FileLoader.Load(g, "InferenceTest.ttl");
+            g.BaseUri = null;
+
+            //Open an Alexandria Store and save the Graph
+            String storeID = TestTools.GetNextStoreID();
+            AlexandriaMongoDBManager manager = new AlexandriaMongoDBManager(storeID);
+            manager.SaveGraph(g);
+            manager.Dispose();
+
+            //Try and read the Graph back from the Store
+            Graph h = new Graph();
+            manager = new AlexandriaMongoDBManager(storeID);
+            manager.LoadGraph(h, g.BaseUri);
+
+            Assert.AreEqual(g, h, "Graphs should have been equal");
+
+            manager.Dispose();
+        }
+
+        [TestMethod]
+        public void MongoSaveOverwriteGraph()
+        {
+            //Load in our Test Graph
+            Graph g = new Graph();
+            FileLoader.Load(g, "InferenceTest.ttl");
+            g.BaseUri = null;
+
+            //Open an Alexandria Store and save the Graph
+            AlexandriaMongoDBManager manager = new AlexandriaMongoDBManager(TestTools.GetNextStoreID());
+            manager.SaveGraph(g);
+
+            //Try and read the Graph back from the Store
+            Graph h = new Graph();
+            manager.LoadGraph(h, g.BaseUri);
+
+            Assert.AreEqual(g, h, "Graphs should have been equal");
+
+            //Now load another Graph and overwrite the first Graph
+            Graph i = new Graph();
+            FileLoader.Load(i, "test.nt");
+            i.BaseUri = null;
+
+            //Save it to the Store which should overwrite it and then load it back
+            manager.SaveGraph(i);
+            Graph j = new Graph();
+            manager.LoadGraph(j, i.BaseUri);
+
+            Assert.AreEqual(i, j, "Graphs should have been equal");
+            Assert.AreNotEqual(g, i, "Graphs should not be equal");
+            Assert.AreNotEqual(h, j, "Graphs should not be equal");
+
+            manager.Dispose();
+        }
+
+        [TestMethod]
+        public void MongoSaveMultipleGraphs()
+        {
+            //Load in our Test Graph
+            Graph g = new Graph();
+            FileLoader.Load(g, "InferenceTest.ttl");
+
+            //Open an Alexandria Store and save the Graph
+            AlexandriaMongoDBManager manager = new AlexandriaMongoDBManager(TestTools.GetNextStoreID());
+            manager.SaveGraph(g);
+
+            //Try and read the Graph back from the Store
+            Graph h = new Graph();
+            manager.LoadGraph(h, g.BaseUri);
+
+            Assert.AreEqual(g, h, "Graphs should have been equal");
+
+            //Now load another Graph and add it
+            Graph i = new Graph();
+            FileLoader.Load(i, "test.nt");
+
+            //Save it to the Store which should overwrite it and then load it back
+            manager.SaveGraph(i);
+            Graph j = new Graph();
+            manager.LoadGraph(j, i.BaseUri);
+
+            Assert.AreEqual(i, j, "Graphs should have been equal");
+            Assert.AreNotEqual(g, i, "Graphs should not be equal");
+            Assert.AreNotEqual(h, j, "Graphs should not be equal");
+
+            manager.Dispose();
+        }
+
         #endregion
     }
 }

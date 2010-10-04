@@ -29,7 +29,10 @@ namespace Alexandria.Documents.GraphRegistry
             return hash.ToString();
         }
 
-        public abstract String GetGraphUri(String name);
+        public virtual String GetGraphUri(String name)
+        {
+            return this.DocumentToGraphMappings.Where(kvp => kvp.Key.Equals(name)).Select(kvp => kvp.Value).FirstOrDefault().ToSafeString();
+        }
 
         public abstract bool RegisterGraph(String graphUri, String name);
 

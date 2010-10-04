@@ -22,11 +22,6 @@ namespace Alexandria.Documents.GraphRegistry
             this.Dispose(false);
         }
 
-        public override String GetGraphUri(String name)
-        {
-            return this.DocumentToGraphMappings.Where(kvp => kvp.Key.Equals(name)).Select(kvp => kvp.Value).FirstOrDefault().ToSafeString();
-        }
-
         public override bool RegisterGraph(String graphUri, String name)
         {
             try

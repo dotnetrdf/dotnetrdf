@@ -98,18 +98,14 @@ namespace Alexandria
                 }
                 else
                 {
-                    //If the Document already exists then we must first remove from the index any Triples it currently contains
+                    //If the Document already exists then we must first delete it then replace it with a new Document
                     try
                     {
-                        Graph temp = new Graph();
-                        doc = this._docManager.GetDocument(name);
-                        this._docManager.DataAdaptor.ToGraph(temp, doc);
-                        this._docManager.ReleaseDocument(name);
-                        this._indexManager.RemoveFromIndex(temp.Triples);
-                    }
-                    catch (AlexandriaException)
-                    {
-                        throw;
+                        this.DeleteGraph(g.BaseUri.ToSafeString());
+                        if (!this._docManager.CreateDocument(name))
+                        {
+                            throw new AlexandriaException("Unable to save a Graph to the Store as the Document Manager was unable to create a Document for this Graph");
+                        }
                     }
                     catch (Exception ex)
                     {

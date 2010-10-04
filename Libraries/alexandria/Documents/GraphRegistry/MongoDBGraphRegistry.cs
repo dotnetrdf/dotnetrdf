@@ -15,15 +15,10 @@ namespace Alexandria.Documents.GraphRegistry
             this._doc = doc;
         }
 
-        public override string GetGraphUri(string name)
-        {
-            throw new NotImplementedException();
-        }
-
         public override bool RegisterGraph(string graphUri, string name)
         {
             Document mongoDoc = this._doc.BeginWrite(false);
-            List<Document> graphs = (mongoDoc["graphs"] != null) ? (List<Document>)mongoDoc["graphs"] : new List<Document>();
+            List<Document> graphs = this.GetRegistryList(mongoDoc);
             Document reg = new Document();
             reg["name"] = name;
             reg["uri"] = graphUri;
@@ -35,27 +30,91 @@ namespace Alexandria.Documents.GraphRegistry
 
         public override bool UnregisterGraph(string graphUri, string name)
         {
-            throw new NotImplementedException();
+            Document mongoDoc = this._doc.BeginWrite(false);
+            List<Document> graphs = this.GetRegistryList(mongoDoc);
+            if (graphs.Count > 0)
+            {
+                graphs.RemoveAll(d => d["name"].Equals(name) && d["uri"].Equals(graphUri));
+                mongoDoc["graphs"] = graphs;
+            }
+            this._doc.EndWrite();
+            return true;
+        }
+
+        private List<Document> GetRegistryList(Document mongoDoc)
+        {
+            if (mongoDoc["graphs"] == null)
+            {
+                return new List<Document>();
+            }
+            else
+            {
+                Object temp = mongoDoc["graphs"];
+                if (temp.GetType().Equals(typeof(List<Document>)))
+                {
+                    return (List<Document>)temp;
+                }
+                else if (temp.GetType().Equals(typeof(List<Object>)))
+                {
+                    return ((List<Object>)temp).Select(item => (Document)item).ToList();
+                }
+                else
+                {
+                    throw new AlexandriaException("Unable to access the Graph Registry successfully");
+                }
+            }
         }
 
         public override IEnumerable<string> DocumentNames
         {
-            get { throw new NotImplementedException(); }
+            get 
+            {
+                Document mongoDoc = this._doc.BeginRead();
+                List<Document> graphs = this.GetRegistryList(mongoDoc);
+                this._doc.EndRead();
+
+                return (from d in graphs
+                        select d["name"].ToString());
+            }
         }
 
         public override IEnumerable<string> GraphUris
         {
-            get { throw new NotImplementedException(); }
+            get 
+            {
+                Document mongoDoc = this._doc.BeginRead();
+                List<Document> graphs = this.GetRegistryList(mongoDoc);
+                this._doc.EndRead();
+
+                return (from d in graphs
+                        select d["uri"].ToString()); 
+            }
         }
 
         public override IEnumerable<KeyValuePair<string, string>> DocumentToGraphMappings
         {
-            get { throw new NotImplementedException(); }
+            get 
+            {
+                Document mongoDoc = this._doc.BeginRead();
+                List<Document> graphs = this.GetRegistryList(mongoDoc);
+                this._doc.EndRead();
+
+                return (from d in graphs
+                        select new KeyValuePair<String,String>(d["name"].ToString(), d["uri"].ToString())); 
+            }
         }
 
         public override IEnumerable<KeyValuePair<string, string>> GraphToDocumentMappings
         {
-            get { throw new NotImplementedException(); }
+            get 
+            {
+                Document mongoDoc = this._doc.BeginRead();
+                List<Document> graphs = this.GetRegistryList(mongoDoc);
+                this._doc.EndRead();
+
+                return (from d in graphs
+                        select new KeyValuePair<String,String>(d["uri"].ToString(),d["name"].ToString())); 
+            }
         }
     }
 }

@@ -19,8 +19,13 @@ namespace Alexandria.Documents.Adaptors
         {
             //Get our JSON String
             Document mongoDoc = document.BeginRead();
-            String json = mongoDoc["graph"].ToString();
+            String json = String.Empty;
+            if (mongoDoc["graph"] != null)
+            {
+                json = mongoDoc["graph"].ToString();
+            }
             document.EndRead();
+            if (json.Equals(String.Empty)) return;
 
             //Then parse this
             StringParser.Parse(g, json, this._parser);

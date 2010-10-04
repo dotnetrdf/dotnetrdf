@@ -71,7 +71,12 @@ namespace Alexandria.Documents
 
         protected override bool DeleteDocumentInternal(string name)
         {
-            throw new NotImplementedException();
+            MongoDBDocument doc = new MongoDBDocument(name, this);
+            if (!doc.Exists) return false;
+            Document mongoDoc = doc.BeginRead();
+            doc.EndRead();
+            this._db[Collection].Remove(mongoDoc);
+            return true;
         }
 
         protected override IDocument<Document, Document> GetDocumentInternal(string name)
