@@ -7,10 +7,10 @@ using VDS.RDF.Storage;
 
 namespace VDS.RDF.Test
 {
-    [TestClass()]
+    [TestClass]
     public class SqlIOTests
     {
-        [TestMethod()]
+        [TestMethod]
         public void SqlIOManagerDisposeTest()
         {
             ISqlIOManager manager = new NonNativeVirtuosoManager("test", "test", "test");
@@ -60,7 +60,7 @@ namespace VDS.RDF.Test
             manager.Dispose();
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SqlIOAssertRetractTest()
         {
 

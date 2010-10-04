@@ -11,10 +11,10 @@ using VDS.RDF.Storage;
 
 namespace VDS.RDF.Test.Sparql
 {
-    [TestClass()]
+    [TestClass]
     public class ViewTests
     {
-        [TestMethod()]
+        [TestMethod]
         public void SparqlViewConstruct()
         {
             try
@@ -50,7 +50,7 @@ namespace VDS.RDF.Test.Sparql
             }
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SparqlViewDescribe()
         {
             try
@@ -86,7 +86,7 @@ namespace VDS.RDF.Test.Sparql
             }
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SparqlViewSelect()
         {
             try
@@ -122,7 +122,7 @@ namespace VDS.RDF.Test.Sparql
             }
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SparqlViewAndReasonerInteraction()
         {
             try
@@ -170,7 +170,7 @@ namespace VDS.RDF.Test.Sparql
             }
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SparqlViewNativeAllegroGraph()
         {
             try
@@ -200,7 +200,7 @@ namespace VDS.RDF.Test.Sparql
             }
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SparqlViewGraphScopeTest()
         {
             try

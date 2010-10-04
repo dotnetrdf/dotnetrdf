@@ -37,6 +37,7 @@ using System;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Parsing.Tokens;
+using VDS.RDF.Query.Construct;
 using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Update.Commands
@@ -109,11 +110,13 @@ namespace VDS.RDF.Update.Commands
 
             //Delete the actual Triples
             INode subj, pred, obj;
+
+            ConstructContext constructContext = new ConstructContext(target, null, true);
             foreach (IConstructTriplePattern p in this._pattern.TriplePatterns)
             {
-                subj = p.Subject.Construct(target, null, true);//((NodeMatchPattern)tp.Subject).Node.CopyNode(target);
-                pred = p.Predicate.Construct(target, null, true);//((NodeMatchPattern)tp.Predicate).Node.CopyNode(target);
-                obj = p.Object.Construct(target, null, true);//((NodeMatchPattern)tp.Object).Node.CopyNode(target);
+                subj = p.Subject.Construct(constructContext);//((NodeMatchPattern)tp.Subject).Node.CopyNode(target);
+                pred = p.Predicate.Construct(constructContext);//((NodeMatchPattern)tp.Predicate).Node.CopyNode(target);
+                obj = p.Object.Construct(constructContext);//((NodeMatchPattern)tp.Object).Node.CopyNode(target);
 
                 target.Retract(new Triple(subj, pred, obj));
             }

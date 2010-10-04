@@ -9,10 +9,10 @@ using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Test
 {
-    [TestClass()]
+    [TestClass]
     public class BasicTests2 : BaseTest
     {
-        [TestMethod()]
+        [TestMethod]
         public void GraphEquality() {
             try
             {
@@ -79,7 +79,7 @@ namespace VDS.RDF.Test
             }
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SubGraphMatching()
         {
             Graph parent = new Graph();
@@ -128,7 +128,7 @@ namespace VDS.RDF.Test
             Console.WriteLine();
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SubGraphMatchingWithBNodes()
         {
             Graph parent = new Graph();
@@ -163,7 +163,7 @@ namespace VDS.RDF.Test
 
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void GraphWithBNodeEquality()
         {
             try
@@ -200,7 +200,7 @@ namespace VDS.RDF.Test
             }
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void UriLoader()
         {
             try
@@ -260,7 +260,7 @@ namespace VDS.RDF.Test
             }
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void EqualityOperator()
         {
             Console.WriteLine("Testing that the overridden operators for Nodes work as expected");

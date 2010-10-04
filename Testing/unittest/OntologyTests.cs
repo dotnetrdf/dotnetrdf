@@ -10,10 +10,10 @@ using VDS.RDF.Query.Inference;
 
 namespace VDS.RDF.Test
 {
-    [TestClass()]
+    [TestClass]
     public class OntologyTests
     {
-        [TestMethod()]
+        [TestMethod]
         public void ClassBasicTest()
         {
             //Load Test Data
@@ -51,7 +51,7 @@ namespace VDS.RDF.Test
             }
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void IndividualCreationTest()
         {
             //Load Test Data
@@ -105,7 +105,7 @@ namespace VDS.RDF.Test
             }
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void PropertyBasicTest()
         {
             //Load Test Data
@@ -142,7 +142,7 @@ namespace VDS.RDF.Test
             }
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void ReasonerGraphTest()
         {
             //Load Test Data
@@ -189,7 +189,7 @@ namespace VDS.RDF.Test
             }
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void ResourceCastingTest()
         {
             //Load Test Data

@@ -6,7 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace VDS.RDF.Test
 {
-    [TestClass()]
+    [TestClass]
     public abstract class BaseTest
     {
         protected TestContext testContextInstance;

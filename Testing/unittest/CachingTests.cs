@@ -7,12 +7,12 @@ using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Test
 {
-    [TestClass()]
+    [TestClass]
     public class CachingTests
     {
         private static Uri test = new Uri("http://api.talis.com/stores/rvesse-dev1/meta?about=" + Uri.EscapeDataString("http://example.org/vehicles/FordFiesta"));
 
-        [TestMethod()]
+        [TestMethod]
         public void UriLoaderCacheTest()
         {
             //Load the Graph
@@ -26,7 +26,7 @@ namespace VDS.RDF.Test
             Assert.AreEqual(g, h);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void UriLoaderCustomCacheTest()
         {
             UriLoader.CacheDirectory = "E:\\Cache";

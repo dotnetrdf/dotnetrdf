@@ -8,10 +8,10 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Test
 {
-    [TestClass()]
+    [TestClass]
     public class FormattingTests
     {
-        [TestMethod()]
+        [TestMethod]
         public void TripleFormattingTest()
         {
             try

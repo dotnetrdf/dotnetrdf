@@ -10,10 +10,10 @@ using VDS.RDF.Writing;
 
 namespace VDS.RDF.Test
 {
-    [TestClass()]
+    [TestClass]
     public class ParserTests
     {
-        [TestMethod()]
+        [TestMethod]
         public void StringParser()
         {
             try
@@ -81,7 +81,7 @@ namespace VDS.RDF.Test
             }
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void BlankNodeIDParsing()
         {
             List<IRdfReader> parsersToTest = new List<IRdfReader>()
@@ -218,7 +218,7 @@ namespace VDS.RDF.Test
             }
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void CollectionParsing()
         {
             List<IRdfReader> parsersToTest = new List<IRdfReader>()
@@ -320,7 +320,7 @@ namespace VDS.RDF.Test
             }
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void RdfXmlNamespaceAttributes()
         {
             try
@@ -346,7 +346,7 @@ namespace VDS.RDF.Test
             }
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void MalformedRdfAParsing()
         {
             Console.WriteLine("Tests how the RDFa Parser handles RDFa from the web which is embedded in malformed HTML and is known to contain malformed RDFa");
@@ -376,7 +376,7 @@ namespace VDS.RDF.Test
             }
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void RdfXmlStreaming()
         {
             try

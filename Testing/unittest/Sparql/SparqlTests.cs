@@ -13,10 +13,10 @@ using VDS.RDF.Writing;
 
 namespace VDS.RDF.Test.Sparql
 {
-    [TestClass()]
+    [TestClass]
     public class SparqlTests
     {
-        [TestMethod()]
+        [TestMethod]
         public void ResultSetEquality()
         {
             SparqlXmlParser parser = new SparqlXmlParser();
@@ -44,7 +44,7 @@ namespace VDS.RDF.Test.Sparql
             Assert.IsTrue(a.Equals(b));
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void JsonResultSet()
         {
             Console.WriteLine("Tests that JSON Parser parses language specifiers correctly");
@@ -98,7 +98,7 @@ namespace VDS.RDF.Test.Sparql
             }
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SparqlInjectionTest()
         {
             String baseQuery = @"PREFIX ex: <http://example.org/Vehicles/>
@@ -129,7 +129,7 @@ SELECT * WHERE {
             }
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SparqlConflictingParamNamesTest()
         {
             String baseQuery = @"SELECT * WHERE {
@@ -173,7 +173,7 @@ SELECT * WHERE {
 
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SparqlParameterizedStringTest()
         {
             String test = @"INSERT DATA { GRAPH @graph {
@@ -187,7 +187,7 @@ SELECT * WHERE {
             cmds.ToString();
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SparqlEndpointWithExtensions()
         {
             SparqlConnector endpoint = new SparqlConnector(new Uri("http://lod.openlinksw.com/sparql"));
@@ -224,7 +224,7 @@ SELECT * WHERE {?s rdfs:label ?label . ?label bif:contains " + "\"London\" } LIM
             }
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SparqlBNodeIDsInResultsTest()
         {
             try

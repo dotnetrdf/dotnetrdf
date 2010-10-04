@@ -14,10 +14,10 @@ using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Test.Sparql
 {
-    [TestClass()]
+    [TestClass]
     public class LeviathanTests
     {
-        [TestMethod()]
+        [TestMethod]
         public void BgpEvaluation()
         {
             //Prepare the Store
@@ -91,7 +91,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
             this.ShowMultiset(selectAllUriObjects.Evaluate(new SparqlEvaluationContext(null, store)));
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void MultisetLeftJoin()
         {
             //Create a load of Nodes to use in the tests
@@ -262,7 +262,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
             Console.WriteLine();
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void PropertyPathParser()
         {
             //Load our test data
@@ -328,7 +328,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
             }
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SimplePropertyPathDuplicates()
         {
             QueryableGraph g = new QueryableGraph();
@@ -356,7 +356,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
             Assert.AreEqual(resultsA, resultsB, "Result Sets should have been equivalent");
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void StreamingBgpAskEvaluation()
         {
             //Get the Data we want to query
@@ -434,7 +434,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
             }
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void StreamingBgpSelectEvaluation()
         {
             //Get the Data we want to query

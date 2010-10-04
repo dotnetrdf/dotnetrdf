@@ -10,10 +10,10 @@ using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Test
 {
-    [TestClass()]
+    [TestClass]
     public class BasicTests1 : BaseTest
     {
-        [TestMethod()]
+        [TestMethod]
         public void Distinct()
         {
             Graph g = new Graph();
@@ -47,7 +47,7 @@ namespace VDS.RDF.Test
             }
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void GraphCreation1()
         {
             //Create a new Empty Graph
@@ -154,7 +154,7 @@ namespace VDS.RDF.Test
             }
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void GraphCreation2()
         {
             //Create a new Empty Graph
@@ -203,7 +203,7 @@ namespace VDS.RDF.Test
             }
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void UriResolution()
         {
             String[] baseUris = { "http://www.bbc.co.uk",
@@ -275,7 +275,7 @@ namespace VDS.RDF.Test
             }
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void DotNetUriHashCodes()
         {
             //Quick Test to see if how the Uri classes Hash Codes behave
@@ -293,7 +293,7 @@ namespace VDS.RDF.Test
             Assert.AreEqual(test1.GetHashCode(), test3.GetHashCode());
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void HashCodes()
         {
             Console.WriteLine("Tests that Literal and URI Nodes produce different Hashes");
@@ -376,7 +376,7 @@ namespace VDS.RDF.Test
 
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void UriNodeEquality() {
             //Create the Nodes
             Graph g = new Graph();
@@ -413,7 +413,7 @@ namespace VDS.RDF.Test
             TestTools.CompareNodes(k, l, true);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void BlankNodeEquality()
         {
             try
@@ -461,7 +461,7 @@ namespace VDS.RDF.Test
             }
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void LiteralNodeEquality()
         {
             try
@@ -557,7 +557,7 @@ namespace VDS.RDF.Test
             }
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void NodeSorting()
         {
             //Stream for Output
@@ -650,7 +650,7 @@ namespace VDS.RDF.Test
             }
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void NullNodeEquality()
         {
             UriNode nullUri = null;
@@ -705,7 +705,7 @@ namespace VDS.RDF.Test
             Assert.IsFalse(someBNode == nullBNode, "Null BNode Node should not be equal to an actual BNode Node");
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void GraphMerging()
         {
             try
@@ -785,7 +785,7 @@ namespace VDS.RDF.Test
             }
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void TripleCreation()
         {
             //Create two Graphs
@@ -834,7 +834,7 @@ namespace VDS.RDF.Test
             }
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void UriEncodingTest()
         {
             List<String> tests = new List<string>()

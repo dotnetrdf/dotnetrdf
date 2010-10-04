@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{BD80F826-56A3-4A88-B466-DDFA0691FFB8}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -128,6 +128,7 @@
     <Compile Include="RdfATests.cs" />
     <Compile Include="RdfXmlTests.cs" />
     <Compile Include="Sparql\ResultSetWriterTests.cs" />
+    <Compile Include="Sparql\UpdateTests.cs" />
     <Compile Include="Sparql\ViewTests.cs" />
     <Compile Include="Web\ETagTests.cs" />
     <Content Include="resources\bad_profile.xhtml">

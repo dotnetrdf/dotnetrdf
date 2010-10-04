@@ -8,10 +8,10 @@ using VDS.RDF.Storage;
 
 namespace VDS.RDF.Test
 {
-    [TestClass()]
+    [TestClass]
     public class NativeStoreTests : BaseTest
     {
-        [TestMethod()]
+        [TestMethod]
         public void NativeGraph()
         {
             try

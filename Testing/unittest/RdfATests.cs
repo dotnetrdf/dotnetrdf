@@ -8,10 +8,10 @@ using VDS.RDF.Writing;
 
 namespace VDS.RDF.Test
 {
-    [TestClass()]
+    [TestClass]
     public class RdfATests
     {
-        [TestMethod()]
+        [TestMethod]
         public void RdfABadSyntaxTest()
         {
             RdfAParser parser = new RdfAParser();
@@ -32,7 +32,7 @@ namespace VDS.RDF.Test
             ttlwriter.Save(g, "test.ttl");
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void RdfAGoodRelationsTest()
         {
             List<String> tests = new List<string>()
@@ -72,7 +72,7 @@ namespace VDS.RDF.Test
             }
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void RdfABadProfileTest()
         {
             RdfAParser parser = new RdfAParser(RdfASyntax.RDFa_1_1);

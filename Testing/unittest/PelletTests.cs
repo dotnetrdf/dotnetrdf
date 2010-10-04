@@ -10,12 +10,12 @@ using VDS.RDF.Query.Inference.Pellet.Services;
 
 namespace VDS.RDF.Test
 {
-    [TestClass()]
+    [TestClass]
     public class PelletTests
     {
         public const String PelletTestServer = "http://ps.clarkparsia.com/";
 
-        [TestMethod()]
+        [TestMethod]
         public void PelletKBListTest()
         {
             try
@@ -42,7 +42,7 @@ namespace VDS.RDF.Test
             }
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void PelletQueryTest()
         {
             try
@@ -79,7 +79,7 @@ namespace VDS.RDF.Test
             }
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void PelletRealizeTest()
         {
             try
@@ -109,7 +109,7 @@ namespace VDS.RDF.Test
             }
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void PelletConsistencyTest()
         {
             try
@@ -138,7 +138,7 @@ namespace VDS.RDF.Test
             }
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void PelletSearchTest()
         {
             try
@@ -170,7 +170,7 @@ namespace VDS.RDF.Test
             }
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void PelletNamespaceTest()
         {
             try

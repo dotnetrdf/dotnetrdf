@@ -10,10 +10,10 @@ using VDS.RDF.Storage;
 
 namespace VDS.RDF.Test
 {
-    [TestClass()]
+    [TestClass]
     public class SesameTests
     {
-        [TestMethod()]
+        [TestMethod]
         public void SesameSaveLoadTest()
         {
             try
@@ -37,7 +37,7 @@ namespace VDS.RDF.Test
             }
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SesameDeleteTriplesTest()
         {
             try
@@ -77,7 +77,7 @@ namespace VDS.RDF.Test
             }
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SesameAsk()
         {
             try
@@ -102,7 +102,7 @@ namespace VDS.RDF.Test
             }
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SesameDescribe()
         {
             try

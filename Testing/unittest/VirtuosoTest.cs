@@ -11,10 +11,10 @@ using OpenLink.Data.Virtuoso;
 
 namespace VDS.RDF.Test
 {
-    [TestClass()]
+    [TestClass]
     public class VirtuosoTest : BaseTest
     {
-        [TestMethod()]
+        [TestMethod]
         public void VirtuosoLoadGraph()
         {
             try
@@ -83,7 +83,7 @@ namespace VDS.RDF.Test
             }
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void VirtuosoSaveGraph()
         {
             try
@@ -141,7 +141,7 @@ namespace VDS.RDF.Test
             }
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void VirtuosoBlankNodePersistence()
         {
             try
@@ -229,7 +229,7 @@ namespace VDS.RDF.Test
         /// Tests retrieving the Default Graph
         /// </summary>
         /// <remarks>Excluded from Unit Tests because while this works it takes an extremely long time since the Default Graph will potentially have a very large number of Triples and the Virtuoso Manager only reads in a single threaded manner</remarks>
-        //[TestMethod()]
+        //[TestMethod]
         public void VirtuosoDefaultGraph()
         {
             Stopwatch timer = new Stopwatch();
@@ -268,7 +268,7 @@ namespace VDS.RDF.Test
             }
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void VirtuosoUpdateGraph()
         {
             try
@@ -315,7 +315,7 @@ namespace VDS.RDF.Test
             }
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void VirtuosoNativeQuery()
         {
             try
@@ -413,7 +413,7 @@ namespace VDS.RDF.Test
             }
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void VirtuosoNativeUpdate()
         {
             try
@@ -460,7 +460,7 @@ namespace VDS.RDF.Test
             }
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void VirtuosoEncodingTest()
         {
             //Get the Virtuoso Manager

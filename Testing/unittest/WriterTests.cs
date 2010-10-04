@@ -9,7 +9,7 @@ using VDS.RDF.Writing;
 
 namespace VDS.RDF.Test
 {
-    [TestClass()]
+    [TestClass]
     public class WriterTests
     {
         private List<String> samples = new List<string>()
@@ -28,7 +28,7 @@ namespace VDS.RDF.Test
 
         private String prefix = "@prefix : <http://example.org>.\n";
         
-        [TestMethod()]
+        [TestMethod]
         public void BlankNodeOutput()
         {
             //Create a Graph and add a couple of Triples which when serialized have
@@ -62,7 +62,7 @@ namespace VDS.RDF.Test
 
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void CharEscaping()
         {
             List<IRdfReader> readers = new List<IRdfReader>()
@@ -118,7 +118,7 @@ namespace VDS.RDF.Test
             }
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void NTriplesCharEscaping()
         {
             TurtleParser parser = new TurtleParser();
@@ -161,7 +161,7 @@ namespace VDS.RDF.Test
             }
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void OwlCharEscaping()
         {
             Graph g = new Graph();
@@ -190,7 +190,7 @@ namespace VDS.RDF.Test
             Assert.AreEqual(g, h, "Graphs should have been equal");
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void HtmlWriter()
         {
             Graph g = new Graph();
@@ -217,7 +217,7 @@ namespace VDS.RDF.Test
             Assert.AreEqual(g, h, "Graphs should have been the same");
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void CollectionWriting()
         {
             Graph g = new Graph();

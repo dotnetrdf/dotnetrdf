@@ -310,6 +310,7 @@
     <Compile Include="Query\Algebra\Set.cs" />
     <Compile Include="Query\Algebra\Slice.cs" />
     <Compile Include="Query\Algebra\SpecialQueryClasses.cs" />
+    <Compile Include="Query\Construct\ConstructContext.cs" />
     <Compile Include="Query\Describe\ConciseBoundedDescription.cs" />
     <Compile Include="Query\Describe\NamedGraphDescription.cs" />
     <Compile Include="Query\Expressions\AggregateExpressions.cs" />

@@ -13,10 +13,10 @@ using VDS.RDF.Storage;
 
 namespace VDS.RDF.Test
 {
-    [TestClass()]
+    [TestClass]
     public class SemWebInteropTests
     {
-        [TestMethod()]
+        [TestMethod]
         public void SemWebReadVia()
         {
             MemoryStore mem = new MemoryStore();
@@ -52,7 +52,7 @@ namespace VDS.RDF.Test
             Assert.AreEqual(g, h, "Graphs should have ben equal");
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SemWebWriteVia()
         {
             Graph g = new Graph();
@@ -72,7 +72,7 @@ namespace VDS.RDF.Test
             Assert.AreEqual(g, h, "Graphs should have been equal");
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SemWebGraphConversion()
         {
             Graph g = new Graph();
@@ -95,7 +95,7 @@ namespace VDS.RDF.Test
             Assert.AreEqual(h, i, "2 - Graphs should have been equal");
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SemWebGraphSource()
         {
             Graph g = new Graph();
@@ -136,7 +136,7 @@ namespace VDS.RDF.Test
             writer.Close();
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SemWebInMemoryStoreSource()
         {
             MicrosoftSqlStoreManager mssql = new MicrosoftSqlStoreManager("dotnetrdf_experimental", "sa", "20sQl08");
@@ -177,7 +177,7 @@ namespace VDS.RDF.Test
             writer.Close();
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SemWebInMemoryStoreConversion()
         {
             //Set up a Store and load 3 Graphs into it
@@ -217,7 +217,7 @@ namespace VDS.RDF.Test
             
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SemWebGraphQuery() 
         {
             Graph g = new Graph();
@@ -249,7 +249,7 @@ namespace VDS.RDF.Test
             source.Query(graphPattern, options, sink);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SemWebGraph()
         {
             Console.WriteLine("Testing using SemWeb as the underlying Storage for a Graph");
@@ -286,7 +286,7 @@ namespace VDS.RDF.Test
             }
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SemWebNativeStore()
         {
             //Get the Talis Connection

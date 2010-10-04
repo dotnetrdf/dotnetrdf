@@ -10,10 +10,10 @@ using VDS.RDF.Update.Commands;
 
 namespace VDS.RDF.Test
 {
-    [TestClass()]
+    [TestClass]
     public class UpdateTests
     {
-        [TestMethod()]
+        [TestMethod]
         public void SparqlUpdateCreateDropTest()
         {
             TripleStore store = new TripleStore();
@@ -79,7 +79,7 @@ namespace VDS.RDF.Test
             }
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SparqlUpdateLoadTest()
         {
             TripleStore store = new TripleStore();
@@ -110,7 +110,7 @@ namespace VDS.RDF.Test
             }
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void SparqlUpdateModifyTest()
         {
             TripleStore store = new TripleStore();

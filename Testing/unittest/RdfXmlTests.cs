@@ -8,10 +8,10 @@ using VDS.RDF.Writing;
 
 namespace VDS.RDF.Test
 {
-    [TestClass()]
+    [TestClass]
 	public class RdfXmlTests
 	{
-        [TestMethod()]
+        [TestMethod]
         public void RdfXmlAmpersandsTest()
         {
             List<IRdfWriter> writers = new List<IRdfWriter>()

@@ -10,10 +10,10 @@ using VDS.RDF.Storage;
 
 namespace VDS.RDF.Test
 {
-    [TestClass()]
+    [TestClass]
     public class AllegroGraphTests
     {
-        [TestMethod()]
+        [TestMethod]
         public void AllegroGraphSaveLoadTest()
         {
             try
@@ -37,7 +37,7 @@ namespace VDS.RDF.Test
             }
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void AllegroGraphDeleteTriplesTest()
         {
             try
@@ -77,7 +77,7 @@ namespace VDS.RDF.Test
             }
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void AllegroGraphAsk()
         {
             try
@@ -102,7 +102,7 @@ namespace VDS.RDF.Test
             }
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void AllegroGraphDescribe()
         {
             try

@@ -6,12 +6,12 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace VDS.RDF.Test
 {
-    [TestClass()]
+    [TestClass]
     public class EventTests
     {
         private bool _graphAdded, _graphRemoved, _graphChanged;
 
-        [TestMethod()]
+        [TestMethod]
         public void EventBubblingTest()
         {
             try

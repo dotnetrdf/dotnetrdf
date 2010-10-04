@@ -9,10 +9,10 @@ using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Test
 {
-    [TestClass()]
+    [TestClass]
     public class TalisTest : BaseTest
     {
-        [TestMethod()]
+        [TestMethod]
         public void TalisStoreQuery()
         {
             try

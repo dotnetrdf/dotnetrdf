@@ -12,10 +12,10 @@ using com.hp.hpl.jena.rdf.model;
 
 namespace VDS.RDF.Test
 {
-    [TestClass()]
+    [TestClass]
     public class JenaInteropTests
     {
-        [TestMethod()]
+        [TestMethod]
         public void GraphConversionForJena()
         {
             Graph g = new Graph();
