@@ -350,7 +350,8 @@ namespace VDS.RDF.Parsing.Tokens
             while (true)
             {
                 //Handle Escapes
-                if (next == '\\') {
+                if (next == '\\') 
+                {
                     this.HandleEscapes(TokeniserEscapeMode.QuotedLiterals);
                     next = this.Peek();
                     continue;

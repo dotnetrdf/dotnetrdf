@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Net;
@@ -427,6 +428,55 @@ namespace VDS.RDF.Test
             }
 
             Assert.AreEqual(g, h, "Graphs should be equal before and after serialization");
+        }
+
+        [TestMethod]
+        public void JsonNTriplesEscaping()
+        {
+            Graph g = new Graph();
+            String[] testStrings = new String[]
+            {
+                "newline \\n ",
+                "newline 2 \\r ",
+                "double quote \\\" ",
+                "tab \\t ",
+                "backslash \\\\ ",
+                "unicode \u00E9 "
+            };
+
+            UriNode subj = g.CreateUriNode("rdf:subject");
+            UriNode pred = g.CreateUriNode("rdf:predicate");
+
+            foreach (String test in testStrings)
+            {
+                g.Assert(new Triple(subj, pred, g.CreateLiteralNode(test)));
+            }
+
+            String temp = StringWriter.Write(g, new JsonNTriplesWriter());
+            Console.WriteLine(temp);
+            Console.WriteLine();
+
+            Console.WriteLine("Original Graph");
+            foreach (Triple t in g.Triples)
+            {
+                Console.WriteLine(t.ToString());
+            }
+            Console.WriteLine();
+
+            Graph h = new Graph();
+            Stopwatch timer = new Stopwatch();
+            timer.Start();
+            VDS.RDF.Parsing.StringParser.Parse(h, temp, new JsonNTriplesParser());
+            timer.Stop();
+            Console.WriteLine("Took " + timer.Elapsed + " to parse");
+
+            Console.WriteLine("Serialized then Parsed Graph");
+            foreach (Triple t in h.Triples)
+            {
+                Console.WriteLine(t.ToString());
+            }
+
+            Assert.AreEqual(g, h, "Graphs should have been equal");
         }
     }
 }

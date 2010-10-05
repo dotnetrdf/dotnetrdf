@@ -49,14 +49,18 @@ namespace dotNetRDFTest
                         new TurtleParser(),
                         new Notation3Parser(), 
                         new RdfXmlParser(RdfXmlParserMode.DOM),
-                        new RdfXmlParser(RdfXmlParserMode.Streaming)
+                        new RdfXmlParser(RdfXmlParserMode.Streaming),
+                        new RdfJsonParser(),
+                        new JsonNTriplesParser()
                     };
                     List<String> files = new List<string>() { 
                         "test.nt", 
                         "test.ttl", 
                         "test.n3", 
                         "test.rdf",
-                        "test.rdf"
+                        "test.rdf",
+                        "test.json",
+                        "test.nt.json"
                     };
                     IRdfReader reader;
 
@@ -175,6 +179,7 @@ namespace dotNetRDFTest
                     writers.Add(new Notation3Writer());
                     //writers.Add(new RdfXmlTreeWriter());
                     writers.Add(new RdfJsonWriter());
+                    writers.Add(new JsonNTriplesWriter());
                     writers.Add(new HtmlWriter());
 
                     foreach (IRdfWriter writer in writers)

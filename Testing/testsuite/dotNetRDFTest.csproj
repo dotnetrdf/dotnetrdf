@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{EBCF6F50-7879-4C91-9021-67E0DA05564C}</ProjectGuid>
     <OutputType>Exe</OutputType>
@@ -3693,6 +3693,12 @@
     </Content>
     <None Include="bnodes.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="diskio_tests\test.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="diskio_tests\test.nt.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="rdfa_tests\0001.sparql">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

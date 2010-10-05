@@ -39,6 +39,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using VDS.RDF.Parsing.Contexts;
@@ -262,33 +263,59 @@ namespace VDS.RDF.Parsing
 
         private INode TryParseNodeValue(JsonParserContext context, String value)
         {
-            if (value.StartsWith("_:"))
+            try
             {
-                return context.Graph.CreateBlankNode(value);
-            }
-            else if (value.StartsWith("<"))
-            {
-                return context.Graph.CreateUriNode(new Uri(value.Substring(1, value.Length - 2)));
-            }
-            else
-            {
-                if (value.EndsWith("\\\""))
+                if (value.StartsWith("_:"))
                 {
-                    return context.Graph.CreateLiteralNode(value.Substring(2, value.Length - 4));
+                    return context.Graph.CreateBlankNode(value);
                 }
-                else if (value.EndsWith(">"))
+                else if (value.StartsWith("<"))
                 {
-                    String lit = value.Substring(1, value.LastIndexOf("\"") - 1);
-                    String dt = value.Substring(lit.Length + 5, value.Length - lit.Length - 6);
-                    return context.Graph.CreateLiteralNode(lit, new Uri(dt));
+                    return context.Graph.CreateUriNode(new Uri(this.UnescapeValue(value.Substring(1, value.Length - 2))));
                 }
                 else
                 {
-                    String lit = value.Substring(1, value.LastIndexOf("\"@") - 1);
-                    String lang = value.Substring(lit.Length + 3);
-                    return context.Graph.CreateLiteralNode(lit, lang);
+                    if (value.EndsWith("\""))
+                    {
+                        return context.Graph.CreateLiteralNode(this.UnescapeValue(value.Substring(1, value.Length - 2)));
+                    }
+                    else if (value.EndsWith(">"))
+                    {
+                        String lit = value.Substring(1, value.LastIndexOf("^^<") - 2);
+                        String dt = value.Substring(lit.Length + 5, value.Length - lit.Length - 6);
+                        return context.Graph.CreateLiteralNode(this.UnescapeValue(lit), new Uri(this.UnescapeValue(dt)));
+                    }
+                    else
+                    {
+                        String lit = value.Substring(1, value.LastIndexOf("\"@") - 1);
+                        String lang = value.Substring(lit.Length + 3);
+                        return context.Graph.CreateLiteralNode(this.UnescapeValue(lit), this.UnescapeValue(lang));
+                    }
                 }
             }
+            catch (Exception ex)
+            {
+                throw new RdfParseException("Failed to parse the value '" + value + "' into a valid Node: " + ex.Message, ex);
+            }
+        }
+
+        private String UnescapeValue(String value)
+        {
+            String output = value.Replace("\\\\", "\\");
+            output = output.Replace("\\n", "\n");
+            output = output.Replace("\\r", "\r");
+            output = output.Replace("\\t", "\t");
+            output = output.Replace("\\\"", "\"");
+            if (Regex.IsMatch(output, @"\\u[a-fA-F0-9]{4}"))
+            {
+                foreach (Match m in Regex.Matches(output, @"\\u([a-fA-F0-9]{4})"))
+                {
+                    char c = (char)Convert.ToInt32(m.Groups[1].Value, 16);
+                    output = output.Replace(m.Value, c.ToString());
+                }
+            }
+            return output;
+            //return value.Replace("\\\\\\", "\\");
         }
 
         /// <summary>

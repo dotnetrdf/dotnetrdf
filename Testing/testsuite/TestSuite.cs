@@ -148,7 +148,7 @@ namespace dotNetRDFTest
             Console.WriteLine("NQuads Tests Done");
 
             //Call the TriX Test Suite
-            TriXTestSuite.Main(args);
+            //TriXTestSuite.Main(args);
             Console.SetOut(stdout);
             Console.WriteLine("TriX Tests Done");
 
@@ -233,22 +233,22 @@ namespace dotNetRDFTest
             //Call Read/Write Speed Tests
             //Parameters are {TestMode,Runs,AllowHighSpeedWrites}
             //Test Mode is read/write/both
-            //Console.WriteLine("Enter options for Parser & Serializer Speed Benchmarking Tests or leave blank for defaults or enter 'skip' to skip test");
-            //Console.WriteLine("Options format is 'TestMode,Runs,AllowHighSpeedWrites'");
-            //optionlist = Console.ReadLine();
-            //if (optionlist.Equals(String.Empty))
-            //{
-            //    DiskIOSpeedTests.Main(new string[] { "write", "30", "false" });
-            //}
-            //else if (optionlist.Equals("skip", StringComparison.OrdinalIgnoreCase))
-            //{
-            //    //Do Nothing
-            //}
-            //else
-            //{
-            //    String[] options = optionlist.Split(',');
-            //    DiskIOSpeedTests.Main(options);
-            //}
+            Console.WriteLine("Enter options for Parser & Serializer Speed Benchmarking Tests or leave blank for defaults or enter 'skip' to skip test");
+            Console.WriteLine("Options format is 'TestMode,Runs,AllowHighSpeedWrites'");
+            optionlist = Console.ReadLine();
+            if (optionlist.Equals(String.Empty))
+            {
+                DiskIOSpeedTests.Main(new string[] { "write", "30", "false" });
+            }
+            else if (optionlist.Equals("skip", StringComparison.OrdinalIgnoreCase))
+            {
+                //Do Nothing
+            }
+            else
+            {
+                String[] options = optionlist.Split(',');
+                DiskIOSpeedTests.Main(options);
+            }
             Console.SetOut(stdout);
             Console.WriteLine("Parser & Serializer Speed Benchmarking Tests Done");
 
