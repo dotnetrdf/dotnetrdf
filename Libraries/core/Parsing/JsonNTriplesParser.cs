@@ -267,7 +267,7 @@ namespace VDS.RDF.Parsing
             {
                 if (value.StartsWith("_:"))
                 {
-                    return context.Graph.CreateBlankNode(value);
+                    return context.Graph.CreateBlankNode(value.Substring(2));
                 }
                 else if (value.StartsWith("<"))
                 {
