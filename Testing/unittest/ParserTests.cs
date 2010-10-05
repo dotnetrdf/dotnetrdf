@@ -406,5 +406,27 @@ namespace VDS.RDF.Test
                 Console.WriteLine(t.ToString());
             }
         }
+
+        [TestMethod]
+        public void JsonNTriplesParsing()
+        {
+            Graph g = new Graph();
+            FileLoader.Load(g, "InferenceTest.ttl");
+            g.Assert(new Triple(g.CreateBlankNode(), g.CreateUriNode("rdf:type"), g.CreateLiteralNode("some text", "en")));
+
+            String temp = StringWriter.Write(g, new JsonNTriplesWriter());
+            Console.WriteLine(temp);
+            Console.WriteLine();
+
+            Graph h = new Graph();
+            VDS.RDF.Parsing.StringParser.Parse(h, temp, new JsonNTriplesParser());
+
+            foreach (Triple t in h.Triples)
+            {
+                Console.WriteLine(t.ToString());
+            }
+
+            Assert.AreEqual(g, h, "Graphs should be equal before and after serialization");
+        }
     }
 }
