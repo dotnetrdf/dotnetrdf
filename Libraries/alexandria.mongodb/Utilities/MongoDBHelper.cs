@@ -25,26 +25,82 @@ namespace Alexandria.Utilities
             return config;
         }
 
-        public static Document JsonToDocument(String json)
+        public static Object[] JsonArrayToObjects(String json)
+        {
+            JArray array = JArray.Parse(json);
+            return JsonArrayToObjects(array);
+        }
+
+        private static Object[] JsonArrayToObjects(JArray array)
+        {
+            List<Object> objects = new List<Object>();
+
+            foreach (JToken arrayItem in array)
+            {
+                if (arrayItem.Type == JTokenType.Object)
+                {
+                    objects.Add(JsonObjectToDocument((JObject)arrayItem));
+                }
+                else if (arrayItem.Type == JTokenType.Array)
+                {
+                    objects.Add(JsonArrayToObjects((JArray)arrayItem));
+                }
+                else
+                {
+                    switch (arrayItem.Type)
+                    {
+                        case JTokenType.Boolean:
+                            objects.Add((bool)arrayItem);
+                            break;
+
+                        case JTokenType.Date:
+                            objects.Add((DateTime)arrayItem);
+                            break;
+                        
+                        case JTokenType.Float:
+                            objects.Add((float)arrayItem);
+                            break;
+
+                        case JTokenType.Integer:
+                            objects.Add((int)arrayItem);
+                            break;
+
+                        case JTokenType.Null:
+                            objects.Add(null);
+                            break;
+
+                        case JTokenType.String:
+                            objects.Add((String)arrayItem);
+                            break;
+
+                        default:
+                            throw new AlexandriaException("Unable to convert JToken of Type " + arrayItem.Type.ToString() + " to a value in a MongoDB Document");
+                    }
+                }
+            }
+
+            return objects.ToArray();
+        }
+
+        public static Document JsonObjectToDocument(String json)
         {
             JObject obj = JObject.Parse(json);
+            return JsonObjectToDocument(obj);
+        }
+
+        private static Document JsonObjectToDocument(JObject obj)
+        {
             Document doc = new Document();
             foreach (JProperty property in obj.Properties())
             {
                 switch (property.Value.Type)
                 {
                     case JTokenType.Array:
-                        JArray array = (JArray)property.Value;
-                        List<Document> items = new List<Document>();
-                        foreach (JToken arrayItem in array)
-                        {
-                            items.Add(JsonToDocument(arrayItem.ToString()));
-                        }
-                        doc[property.Name] = items.ToArray();
+                        doc[property.Name] = JsonArrayToObjects((JArray)property.Value);
                         break;
 
                     case JTokenType.Object:
-                        doc[property.Name] = JsonToDocument(property.Value.ToString());
+                        doc[property.Name] = JsonObjectToDocument(property.Value.ToString());
                         break;
 
                     case JTokenType.Boolean:
@@ -82,6 +138,35 @@ namespace Alexandria.Utilities
         public static String DocumentToJson(Document doc)
         {
             return doc.ToString();
+        }
+
+        public static String DocumentListToJsonArray(Object obj)
+        {
+            if (obj == null) return String.Empty;
+            if (obj is List<Document>)
+            {
+                StringBuilder json = new StringBuilder();
+                json.AppendLine("[");
+                List<Document> docs = (List<Document>)obj;
+                for (int i = 0; i < docs.Count; i++)
+                {
+                    json.Append(docs[i].ToString());
+                    if (i < docs.Count - 1)
+                    {
+                        json.AppendLine(",");
+                    }
+                    else
+                    {
+                        json.AppendLine();
+                    }
+                }
+                json.AppendLine("]");
+                return json.ToString();
+            }
+            else
+            {
+                throw new InvalidCastException("Cannot convert an Object which is not a List<Document> to a JSON Array");
+            }
         }
     }
 }

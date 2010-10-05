@@ -10,20 +10,16 @@ using Alexandria.Utilities;
 
 namespace Alexandria.Documents.Adaptors
 {
-    public class MongoDBRdfJsonAdaptor : IDataAdaptor<Document,Document>
+    public class MongoDBRdfToJsonAdaptor : IDataAdaptor<Document,Document>
     {
-        private RdfJsonParser _parser = new RdfJsonParser();
-        private RdfJsonWriter _writer = new RdfJsonWriter();
+        private JsonNTriplesParser _parser = new JsonNTriplesParser();
+        private JsonNTriplesWriter _writer = new JsonNTriplesWriter();
 
         public void ToGraph(IGraph g, IDocument<Document, Document> document)
         {
             //Get our JSON String
             Document mongoDoc = document.BeginRead();
-            String json = String.Empty;
-            if (mongoDoc["graph"] != null)
-            {
-                json = mongoDoc["graph"].ToString();
-            }
+            String json = MongoDBHelper.DocumentListToJsonArray(mongoDoc["graph"]);
             document.EndRead();
             if (json.Equals(String.Empty)) return;
 
@@ -38,7 +34,7 @@ namespace Alexandria.Documents.Adaptors
 
             //Then convert this to a Document
             Document mongoDoc = document.BeginWrite(false);
-            mongoDoc["graph"] = MongoDBHelper.JsonToDocument(json);
+            mongoDoc["graph"] = MongoDBHelper.JsonArrayToObjects(json);
             document.EndWrite();
         }
 

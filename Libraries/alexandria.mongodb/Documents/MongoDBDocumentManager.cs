@@ -22,7 +22,7 @@ namespace Alexandria.Documents
         private const String GraphRegistryDocument = "graphs";
 
         public MongoDBDocumentManager(MongoConfiguration config, String db)
-            : base(new MongoDBRdfJsonAdaptor())
+            : base(new MongoDBRdfToJsonAdaptor())
         {
             this._connection = new Mongo(config);
             this._db = this._connection.GetDatabase(db);

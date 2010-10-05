@@ -14,20 +14,20 @@ eg:AirVehicle rdfs:subClassOf eg:Vehicle.
 # Vehicles have a Weight, Speed and PassengerCapacity
 eg:Weight rdf:type rdf:Property;
 		  rdfs:range eg:Vehicle;
-		  rdfs:domain xsd:Integer.
+		  rdfs:domain xsd:integer.
 eg:Speed rdf:type rdf:Property;
 		 rdfs:range eg:Vehicle;
-		 rdfs:domain xsd:Integer.
+		 rdfs:domain xsd:integer.
 eg:PassengerCapacity rdf:type rdf:Property;
 					 rdfs:range eg:Vehicle;
-					 rdfs:domain xsd:Integer.
+					 rdfs:domain xsd:integer.
 					 
 eg:GroundSpeed rdfs:subPropertyOf eg:Speed;
 			   rdfs:range eg:AirVehicle;
-			   rdfs:domain xsd:Integer.
+			   rdfs:domain xsd:integer.
 eg:AirSpeed rdfs:subPropertyOf eg:Speed;
 			rdfs:range eg:AirVehicle;
-			rdfs:domain xsd:Integer.
+			rdfs:domain xsd:integer.
 			
 # Cars, Vans and Lorries are GroundVehicle
 eg:Car rdfs:subClassOf eg:GroundVehicle.
@@ -37,7 +37,7 @@ eg:Lorry rdfs:subClassOf eg:GroundVehicle.
 # Cars have their max speed limited
 eg:LimitedSpeed rdfs:subPropertyOf eg:Speed;
 				rdfs:range eg:Car;
-				rdfs:domain xsd:Integer.
+				rdfs:domain xsd:integer.
 
 # Sports Cars and People Carriers are Cars
 eg:SportsCar rdfs:subClassOf eg:Car.

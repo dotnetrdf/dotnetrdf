@@ -17,7 +17,7 @@ namespace Alexandria.Utilities
         private Queue<Triple> _buffer = null;
         private Document _nextDoc;
         private Func<Triple, bool> _selector;
-        private RdfJsonParser _parser = new RdfJsonParser();
+        private JsonNTriplesParser _parser = new JsonNTriplesParser();
 
         public MongoDBRdfJsonEnumerator(IMongoCollection collection, Document query, Func<Triple,bool> selector)
         {
@@ -104,7 +104,7 @@ namespace Alexandria.Utilities
                     }
                 }
 
-                String json = this._nextDoc["graph"].ToString();
+                String json = MongoDBHelper.DocumentListToJsonArray(this._nextDoc["graph"]);
                 Graph g = new Graph();
                 StringParser.Parse(g, json, this._parser);
 

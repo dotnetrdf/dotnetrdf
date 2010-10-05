@@ -19,11 +19,12 @@ namespace alexandria_tests
         {
             Graph g = new Graph();
             FileLoader.Load(g, "InferenceTest.ttl");
-            String json = StringWriter.Write(g, new RdfJsonWriter());
+            String json = StringWriter.Write(g, new JsonNTriplesWriter());
             Console.WriteLine(json);
             Console.WriteLine();
 
-            Document doc = MongoDBHelper.JsonToDocument(json);
+            Document doc = new Document();
+            doc["graph"] = MongoDBHelper.JsonArrayToObjects(json);
             Console.WriteLine(doc.ToString());
             Console.WriteLine();
 

@@ -49,7 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AlexandriaMongoDBManager.cs" />
-    <Compile Include="Documents\Adaptors\MongoDBRdfJsonAdaptor.cs" />
+    <Compile Include="Documents\Adaptors\MongoDBRdfToJsonAdaptor.cs" />
     <Compile Include="Documents\GraphRegistry\MongoDBGraphRegistry.cs" />
     <Compile Include="Documents\MongoDBDocument.cs" />
     <Compile Include="Documents\MongoDBDocumentManager.cs" />

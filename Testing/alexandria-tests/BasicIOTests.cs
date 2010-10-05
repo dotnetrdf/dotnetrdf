@@ -6,6 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Storage;
+using VDS.RDF.Writing;
 using Alexandria;
 using Alexandria.Documents;
 
@@ -271,7 +272,7 @@ namespace alexandria_tests
             Graph h = new Graph();
             manager.LoadGraph(h, g.BaseUri);
 
-            Assert.AreEqual(g, h, "Graphs should have been equal");
+            Assert.AreEqual(g, h, "Graphs should have been equal (1)");
 
             //Now load another Graph and overwrite the first Graph
             Graph i = new Graph();
@@ -283,9 +284,9 @@ namespace alexandria_tests
             Graph j = new Graph();
             manager.LoadGraph(j, i.BaseUri);
 
-            Assert.AreEqual(i, j, "Graphs should have been equal");
-            Assert.AreNotEqual(g, i, "Graphs should not be equal");
-            Assert.AreNotEqual(h, j, "Graphs should not be equal");
+            Assert.AreEqual(i, j, "Graphs should have been equal (2)");
+            Assert.AreNotEqual(g, i, "Graphs should not be equal (3)");
+            Assert.AreNotEqual(h, j, "Graphs should not be equal (4)");
 
             manager.Dispose();
         }
@@ -305,7 +306,12 @@ namespace alexandria_tests
             Graph h = new Graph();
             manager.LoadGraph(h, g.BaseUri);
 
-            Assert.AreEqual(g, h, "Graphs should have been equal");
+            Console.WriteLine(StringWriter.Write(g, new NTriplesWriter()));
+            Console.WriteLine();
+            Console.WriteLine(StringWriter.Write(h, new NTriplesWriter()));
+
+            Assert.AreEqual(g, h, "Graphs should have been equal (1)");
+            Console.WriteLine();
 
             //Now load another Graph and add it
             Graph i = new Graph();
@@ -316,9 +322,13 @@ namespace alexandria_tests
             Graph j = new Graph();
             manager.LoadGraph(j, i.BaseUri);
 
-            Assert.AreEqual(i, j, "Graphs should have been equal");
-            Assert.AreNotEqual(g, i, "Graphs should not be equal");
-            Assert.AreNotEqual(h, j, "Graphs should not be equal");
+            Console.WriteLine(StringWriter.Write(i, new NTriplesWriter()));
+            Console.WriteLine();
+            Console.WriteLine(StringWriter.Write(j, new NTriplesWriter()));
+
+            Assert.AreEqual(i, j, "Graphs should have been equal (2)");
+            Assert.AreNotEqual(g, i, "Graphs should not be equal (3)");
+            Assert.AreNotEqual(h, j, "Graphs should not be equal (4)");
 
             manager.Dispose();
         }

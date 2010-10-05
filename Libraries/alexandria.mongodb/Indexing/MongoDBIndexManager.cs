@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF;
+using VDS.RDF.Writing.Formatting;
 using MongoDB;
 using Alexandria.Documents;
 using Alexandria.Utilities;
@@ -12,25 +13,32 @@ namespace Alexandria.Indexing
     public class MongoDBIndexManager : IIndexManager
     {
         private MongoDBDocumentManager _manager;
+        private NTriplesFormatter _formatter = new NTriplesFormatter();
+
+        private static String[] RequiredIndices = new String[]
+        {
+            "name",
+            "graph.subject",
+            "graph.predicate",
+            "graph.object"
+        };
 
         public MongoDBIndexManager(MongoDBDocumentManager manager)
         {
             this._manager = manager;
 
-            if (!this.IndexExists("name"))
+            foreach (String index in RequiredIndices)
             {
-                Document nameIndex = new Document();
-                nameIndex["name"] = 1;
-                this._manager.Database[MongoDBDocumentManager.Collection].MetaData.CreateIndex(nameIndex, false);
+                Document indexDoc = new Document();
+                indexDoc[index] = 1;
+                this._manager.Database[MongoDBDocumentManager.Collection].MetaData.CreateIndex(indexDoc, false);
             }
         }
 
         public IEnumerable<Triple> GetTriplesWithSubject(INode subj)
         {
             Document lookup = new Document();
-            Document exists = new Document();
-            exists["$exists"] = true;
-            lookup["graph." + subj.ToString()] = exists;
+            lookup["graph.subject"] = this._formatter.Format(subj);
 
             return new MongoDBRdfJsonEnumerator(this._manager.Database[MongoDBDocumentManager.Collection], lookup, t => t.Subject.Equals(subj));
         }
@@ -72,15 +80,6 @@ namespace Alexandria.Indexing
 
         public void AddToIndex(IEnumerable<Triple> ts)
         {
-            foreach (INode s in ts.Select(t => t.Subject).Distinct())
-            {
-                if (!this.IndexExists(s))
-                {
-                    Document index = new Document();
-                    index["graph." + s.ToString()] = 1;
-                    this._manager.Database[MongoDBDocumentManager.Collection].MetaData.CreateIndex(index, false);
-                }
-            }
         }
 
         public void RemoveFromIndex(Triple t)
@@ -91,17 +90,6 @@ namespace Alexandria.Indexing
         public void RemoveFromIndex(IEnumerable<Triple> ts)
         {
             
-        }
-
-        private bool IndexExists(INode s)
-        {
-            String indexName = "graph" + s.ToString();
-            return this.IndexExists(indexName);
-        }
-
-        private bool IndexExists(String indexName)
-        {
-            return this._manager.Database[MongoDBDocumentManager.Collection].MetaData.Indexes.Any(kvp => kvp.Value[indexName] != null);
         }
 
         public void Dispose()
