@@ -315,7 +315,6 @@ namespace VDS.RDF.Parsing
                 }
             }
             return output;
-            //return value.Replace("\\\\\\", "\\");
         }
 
         /// <summary>
