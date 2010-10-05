@@ -220,7 +220,14 @@ namespace alexandria_tests
             IEnumerable<Triple> ts = wrapper.IndexManager.GetTriplesWithSubject(fordFiesta);
             foreach (Triple t in ts)
             {
-                Console.WriteLine(t.ToString());
+                if (t.GraphUri != null)
+                {
+                    Console.WriteLine(t.ToString() + " from Graph " + t.GraphUri.ToString());
+                }
+                else
+                {
+                    Console.WriteLine(t.ToString() + " from Default Graph");
+                }
             }
 
             Assert.IsTrue(ts.Any(), "Should have returned some Triples");

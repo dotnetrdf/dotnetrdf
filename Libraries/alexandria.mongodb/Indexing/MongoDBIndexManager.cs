@@ -40,7 +40,15 @@ namespace Alexandria.Indexing
             Document lookup = new Document();
             lookup["graph.subject"] = this._formatter.Format(subj);
 
-            return new MongoDBRdfJsonEnumerator(this._manager.Database[MongoDBDocumentManager.Collection], lookup, t => t.Subject.Equals(subj));
+            if (subj.NodeType == NodeType.Blank)
+            {
+                String id = ((BlankNode)subj).InternalID;
+                return new MongoDBRdfJsonEnumerator(this._manager.Database[MongoDBDocumentManager.Collection], lookup, t => t.Subject.NodeType == NodeType.Blank && ((BlankNode)t.Subject).InternalID.Equals(id));
+            }
+            else
+            {
+                return new MongoDBRdfJsonEnumerator(this._manager.Database[MongoDBDocumentManager.Collection], lookup, t => t.Subject.Equals(subj));
+            }
         }
 
         public IEnumerable<Triple> GetTriplesWithPredicate(INode pred)
