@@ -11,9 +11,9 @@ namespace Alexandria
 {
     public class TestWrapper<TReader,TWriter>
     {
-        private AlexandriaManager<TReader,TWriter> _manager;
+        private AlexandriaDocumentStoreManager<TReader,TWriter> _manager;
 
-        public TestWrapper(AlexandriaManager<TReader,TWriter> manager)
+        public TestWrapper(AlexandriaDocumentStoreManager<TReader,TWriter> manager)
         {
             this._manager = manager;
         }

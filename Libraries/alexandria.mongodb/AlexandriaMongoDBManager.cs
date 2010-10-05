@@ -10,7 +10,7 @@ using Alexandria.Indexing;
 
 namespace Alexandria
 {
-    public class AlexandriaMongoDBManager : AlexandriaManager<Document, Document>
+    public class AlexandriaMongoDBManager : AlexandriaDocumentStoreManager<Document, Document>
     {
         public AlexandriaMongoDBManager(MongoDBDocumentManager manager)
             : base(manager, new MongoDBIndexManager(manager)) { }
