@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("dotNetRDF.Alexandria")]
-[assembly: AssemblyDescription("Alexandria is a storage agnostic document based Triple Store")]
+[assembly: AssemblyTitle("Alexandria.MongoDB")]
+[assembly: AssemblyDescription("A MongoDB storage layer for Alexandria")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Visual Design Studios")]
-[assembly: AssemblyProduct("dotNetRDF.Alexandria")]
+[assembly: AssemblyProduct("dotNetRDF.Alexandria.MongoDB")]
 [assembly: AssemblyCopyright("Copyright © Robert Vesse 2010")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("1cbfba7d-e2e0-4289-957f-18418c0f4885")]
+[assembly: Guid("2dcf5ba0-0bf6-4b25-b776-e9a472d86805")]
 
 // Version information for an assembly consists of the following four values:
 //
