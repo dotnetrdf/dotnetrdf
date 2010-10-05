@@ -70,7 +70,7 @@ namespace Alexandria.Utilities
             if (this._buffer != null)
             {
                 //If there's more than 1 item in the buffer or there are further documents to parse then return true, otherwise false
-                return this._buffer.Count > 1 || this.BufferNextDocument();
+                return this._buffer.Count >= 1 || this.BufferNextDocument();
             }
             else
             {
@@ -134,7 +134,7 @@ namespace Alexandria.Utilities
                 else
                 {
                     //If there's stuff in the Buffer then
-                    return this._buffer.Count > 1 || this.BufferNextDocument();
+                    return this._buffer.Count >= 1 || this.BufferNextDocument();
                 }
             }
             else
