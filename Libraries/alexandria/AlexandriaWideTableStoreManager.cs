@@ -24,7 +24,7 @@ namespace Alexandria
 
         public void SaveGraph(IGraph g)
         {
-            throw new NotImplementedException();
+            
         }
 
         public void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
