@@ -14,16 +14,16 @@ namespace Alexandria.WideTable
             get;
         }
 
-        TKey GetRowKey(Triple t);
+        bool AddGraph(IGraph g);
 
-        bool InsertData(TKey rowKey, TColumn column);
+        bool RemoveGraph(Uri graphUri);
 
-        bool InsertData(TKey rowKey, IEnumerable<TColumn> columns);
+        bool HasGraph(Uri graphUri);
 
-        bool DeleteData(TKey rowKey, TColumn column);
+        bool GetGraph(IGraph g, Uri graphUri);
 
-        bool DeleteData(TKey rowKey, IEnumerable<TColumn> columns);
+        bool AppendToGraph(Uri graphUri, IEnumerable<Triple> ts);
 
-        bool DeleteRow(TKey rowKey);
+        bool RemoveFromGraph(Uri graphUri, IEnumerable<Triple> ts);
     }
 }

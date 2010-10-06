@@ -17,6 +17,7 @@ namespace Alexandria.WideTable.ColumnSchema
         private String _subjectColumn = "Subject";
         private String _predicateColumn = "Predicate";
         private String _objectColumn = "Object";
+        private String[] _columns = new String[4];
 
         public BaseSimpleColumnSchema(bool requireSorted)
         {
@@ -28,10 +29,22 @@ namespace Alexandria.WideTable.ColumnSchema
                 this._predicateColumn = "c" + this._predicateColumn;
                 this._objectColumn = "d" + this._objectColumn;
             }
+            this._columns[0] = this._graphColumn;
+            this._columns[1] = this._subjectColumn;
+            this._columns[2] = this._predicateColumn;
+            this._columns[3] = this._objectColumn;
         }
 
         public BaseSimpleColumnSchema()
             : this(false) { }
+
+        public IEnumerable<String> ColumnNames
+        {
+            get
+            {
+                return this._columns;
+            }
+        }
 
         public IEnumerable<TColumn> ToColumns(Triple t)
         {

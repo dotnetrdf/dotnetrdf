@@ -64,7 +64,20 @@ namespace Alexandria
                 try
                 {
                     IDocument<TReader,TWriter> doc = this._docManager.GetDocument(name);
-                    this._docManager.DataAdaptor.ToGraph(g, doc);
+                    if (g.IsEmpty)
+                    {
+                        //If Graph is Empty load directly into that Graph
+                        if (g.BaseUri == null && !graphUri.Equals(String.Empty)) g.BaseUri = new Uri(graphUri);
+                        this._docManager.DataAdaptor.ToGraph(g, doc);
+                    }
+                    else
+                    {
+                        //If Graph is not Empty load into another Graph then merge
+                        Graph h = new Graph();
+                        if (!graphUri.Equals(String.Empty)) h.BaseUri = new Uri(graphUri);
+                        this._docManager.DataAdaptor.ToGraph(h, doc);
+                        g.Merge(h);
+                    }
                 }
                 catch (AlexandriaException)
                 {

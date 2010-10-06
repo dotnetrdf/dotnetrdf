@@ -23,6 +23,7 @@ namespace Alexandria.WideTable
 
         public CassandraAdaptor(String clusterName, String keySpace, String columnFamily, IColumnSchema<AquilesColumn> schema)
         {
+            throw new AlexandriaException("Implementation Work on Cassandra layer is currently halted due to limitations in the Cassandra API which make it impossible to implement efficiently as a Storage layer");
             this._connection = AquilesHelper.RetrieveConnection(clusterName);
             this._keySpace = keySpace;
             this._columnFamily = columnFamily;
@@ -85,7 +86,7 @@ namespace Alexandria.WideTable
             }
         }
 
-        public override bool InsertData(String rowKey, AquilesColumn column)
+        protected override bool InsertData(String rowKey, AquilesColumn column)
         {
             try
             {
@@ -105,7 +106,7 @@ namespace Alexandria.WideTable
             }
         }
 
-        public override bool InsertData(String rowKey, IEnumerable<AquilesColumn> columns)
+        protected override bool InsertData(String rowKey, IEnumerable<AquilesColumn> columns)
         {
             foreach (AquilesColumn column in columns)
             {
@@ -114,7 +115,7 @@ namespace Alexandria.WideTable
             return true;
         }
 
-        public override bool DeleteData(String rowKey, AquilesColumn column)
+        protected override bool DeleteData(String rowKey, AquilesColumn column)
         {
             try
             {
@@ -134,7 +135,7 @@ namespace Alexandria.WideTable
             }
         }
 
-        public override bool DeleteData(String rowKey, IEnumerable<AquilesColumn> columns)
+        protected override bool DeleteData(String rowKey, IEnumerable<AquilesColumn> columns)
         {
             foreach (AquilesColumn column in columns)
             {
@@ -143,7 +144,7 @@ namespace Alexandria.WideTable
             return true;
         }
 
-        public override bool DeleteRow(string rowKey)
+        protected override bool DeleteRow(string rowKey)
         {
             try
             {
@@ -159,6 +160,16 @@ namespace Alexandria.WideTable
             {
                 throw new AlexandriaException("An error occurred while trying to delete a row from the Cassandra Store", ex);
             }
+        }
+
+        protected override IEnumerable<string> GetRowsForGraph(Uri graphUri)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override IEnumerable<AquilesColumn> GetColumnsForRow(string rowKey, IEnumerable<string> columNames)
+        {
+            throw new NotImplementedException();
         }
 
         protected override void Dispose(bool disposing)
