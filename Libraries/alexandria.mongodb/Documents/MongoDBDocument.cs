@@ -9,13 +9,13 @@ namespace Alexandria.Documents
 {
     public class MongoDBDocument : BaseDocument<Document, Document>
     {
-        private IMongoDatabase _db;
+        private MongoDBDocumentManager _manager;
         private Document _writeDoc;
 
         public MongoDBDocument(String name, MongoDBDocumentManager manager)
             : base(name, manager) 
         {
-            this._db = manager.Database;
+            this._manager = manager;
         }
 
         public override bool Exists
@@ -24,7 +24,7 @@ namespace Alexandria.Documents
             {
                 Document query = new Document();
                 query["name"] = this.Name;
-                Document results = this._db[MongoDBDocumentManager.Collection].FindOne(query);
+                Document results = this._manager.Database[this._manager.Collection].FindOne(query);
                 return (results != null);
             }
         }
@@ -33,12 +33,12 @@ namespace Alexandria.Documents
         {
             Document query = new Document();
             query["name"] = this.Name;
-            Document current = this._db[MongoDBDocumentManager.Collection].FindOne(query);
+            Document current = this._manager.Database[this._manager.Collection].FindOne(query);
             if (current == null)
             {
                 current = new Document();
                 current["name"] = this.Name;
-                this._db[MongoDBDocumentManager.Collection].Save(current);
+                this._manager.Database[this._manager.Collection].Save(current);
             }
             this._writeDoc = current;
             return current;
@@ -46,7 +46,7 @@ namespace Alexandria.Documents
 
         protected override void EndWriteInternal()
         {
-            this._db[MongoDBDocumentManager.Collection].Save(this._writeDoc);
+            this._manager.Database[this._manager.Collection].Save(this._writeDoc);
             this._writeDoc = null;
         }
 
@@ -54,7 +54,7 @@ namespace Alexandria.Documents
         {
             Document query = new Document();
             query["name"] = this.Name;
-            Document current = this._db[MongoDBDocumentManager.Collection].FindOne(query);
+            Document current = this._manager.Database[this._manager.Collection].FindOne(query);
             if (current != null)
             {
                 return current;

@@ -5,6 +5,7 @@ using System.Text;
 using MongoDB;
 using VDS.RDF;
 using VDS.RDF.Parsing;
+using Alexandria.Documents;
 using Alexandria.Documents.Adaptors;
 
 namespace Alexandria.Utilities
@@ -12,6 +13,7 @@ namespace Alexandria.Utilities
     class MongoDBRdfJsonEnumerator : IEnumerator<Triple>, IEnumerable<Triple>
     {
         private IEnumerator<Document> _cursor;
+        private MongoDBDocumentManager _manager;
         private IMongoCollection _collection;
         private Document _query;
         private Queue<Triple> _buffer = null;
@@ -19,9 +21,10 @@ namespace Alexandria.Utilities
         private Func<Triple, bool> _selector;
         private JsonNTriplesParser _parser = new JsonNTriplesParser();
 
-        public MongoDBRdfJsonEnumerator(IMongoCollection collection, Document query, Func<Triple,bool> selector)
+        public MongoDBRdfJsonEnumerator(MongoDBDocumentManager manager, Document query, Func<Triple,bool> selector)
         {
-            this._collection = collection;
+            this._manager = manager;
+            this._collection = this._manager.Database[this._manager.Collection];
             this._query = query;
             this._selector = selector;
         }
@@ -106,6 +109,8 @@ namespace Alexandria.Utilities
 
                 String json = MongoDBHelper.DocumentListToJsonArray(this._nextDoc["graph"]);
                 Graph g = new Graph();
+                //Need to set the Graph URI
+                
                 StringParser.Parse(g, json, this._parser);
 
                 //Buffer Triples which match the Selector function

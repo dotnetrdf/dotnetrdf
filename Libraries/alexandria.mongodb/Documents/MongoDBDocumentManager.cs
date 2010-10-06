@@ -17,16 +17,18 @@ namespace Alexandria.Documents
         private Mongo _connection;
         private IMongoDatabase _db;
         private IGraphRegistry _registry;
+        private String _collection;
 
-        internal const String Collection = "dotnetrdf";
         private const String GraphRegistryDocument = "graphs";
+        private const String DefaultCollection = "dotnetrdf";
 
-        public MongoDBDocumentManager(MongoConfiguration config, String db)
+        public MongoDBDocumentManager(MongoConfiguration config, String db, String collection)
             : base(new MongoDBRdfToJsonAdaptor())
         {
             this._connection = new Mongo(config);
             this._db = this._connection.GetDatabase(db);
             this._connection.Connect();
+            this._collection = collection;
 
             //Ensure the DB is setup correctly
             this._db.GetCollection(Collection);
@@ -41,17 +43,31 @@ namespace Alexandria.Documents
             this._registry = new MongoDBGraphRegistry(this.GetDocument(GraphRegistryDocument));
         }
 
+        public MongoDBDocumentManager(MongoConfiguration config, String db)
+            : this(config, db, DefaultCollection) { }
+
         public MongoDBDocumentManager(String db)
             : this(new MongoConfiguration(), db) { }
 
         public MongoDBDocumentManager(String connectionString, String db)
             : this(MongoDBHelper.GetConfiguration(connectionString), db) { }
 
+        public MongoDBDocumentManager(String connectionString, String db, String collection)
+            : this(MongoDBHelper.GetConfiguration(connectionString), db, collection) { }
+
         internal IMongoDatabase Database
         {
             get
             {
                 return this._db;
+            }
+        }
+
+        internal String Collection
+        {
+            get
+            {
+                return this._collection;
             }
         }
 

@@ -125,6 +125,7 @@ namespace alexandria_tests
             //Load in our Test Graph
             Graph g = new Graph();
             FileLoader.Load(g, "InferenceTest.ttl");
+            g.BaseUri = null;
 
             //Open an Alexandria Store and save the Graph
             AlexandriaFileManager manager = new AlexandriaFileManager(TestTools.GetNextStoreID());
@@ -308,6 +309,7 @@ namespace alexandria_tests
             //Load in our Test Graph
             Graph g = new Graph();
             FileLoader.Load(g, "InferenceTest.ttl");
+            g.BaseUri = null;
 
             //Open an Alexandria Store and save the Graph
             AlexandriaMongoDBManager manager = new AlexandriaMongoDBManager(TestTools.GetNextStoreID());
