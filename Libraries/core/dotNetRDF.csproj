@@ -260,6 +260,7 @@
     <Compile Include="Parsing\IriSpecsHelper.cs" />
     <Compile Include="Parsing\Notation3Parser.cs" />
     <Compile Include="Parsing\FileLoader.cs" />
+    <Compile Include="Parsing\ParserHelper.cs" />
     <Compile Include="Parsing\PositionInfo.cs" />
     <Compile Include="Parsing\RdfAParser.cs" />
     <Compile Include="Parsing\RdfXmlSpecsHelper.cs" />

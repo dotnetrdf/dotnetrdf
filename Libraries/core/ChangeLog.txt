@@ -40,11 +40,13 @@ Changed
 - General Improvements
  - INamespaceMapper interface extracted and some visibility changes to NamespaceMapper methods
  - Options.UriLoaderTimeout for controlling UriLoader Timeout
+ - Most parsers generate more helpful error messages for various error conditions and much more frequently attach Position Information to errors
 - SPARQL Improvements
  - Optimisations for ASK queries
  - Optimisations for CONSTRUCT/DESCRIBE/SELECT where LIMIT/OFFSET is used
+ - SparqlXmlWriter uses streamed writing to allow it to produce output much faster using much less memory
 - ASP.Net Improvements
- - Better caching support for BaseGraphHandler - now sends ETag in responses and may response with 304 Not Modified as appropriate
+ - Better caching support for BaseGraphHandler - now sends ETag in responses and may respond with 304 Not Modified as appropriate
 
 Removed
 - Obsolete RdfXmlWriter removed
