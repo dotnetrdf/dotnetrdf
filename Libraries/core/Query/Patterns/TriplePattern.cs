@@ -548,9 +548,7 @@ namespace VDS.RDF.Query.Patterns
         /// <summary>
         /// Constructs a Triple from a Set based on this Triple Pattern
         /// </summary>
-        /// <param name="g">Graph</param>
-        /// <param name="s">Set</param>
-        /// <param name="preserveBNodes">Whether Blank Nodes should be preserved as-is or remapped (remapped is the default)</param>
+        /// <param name="context">Construct Context</param>
         /// <returns></returns>
         public Triple Construct(ConstructContext context)
         {

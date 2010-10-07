@@ -252,7 +252,6 @@
     <Compile Include="Parsing\Contexts\SparqlQueryParserContext.cs" />
     <Compile Include="Parsing\Contexts\SparqlUpdateParserContext.cs" />
     <Compile Include="Parsing\Contexts\TriGParserContext.cs" />
-    <Compile Include="Parsing\JsonNTriplesParser.cs" />
     <Compile Include="Parsing\Events\DomBasedEventGenerator.cs" />
     <Compile Include="Parsing\Events\EventQueue.cs" />
     <Compile Include="Parsing\Events\IEventGenerator.cs" />
@@ -477,7 +476,6 @@
     <Compile Include="Writing\Contexts\SqlStoreWriterContext.cs" />
     <Compile Include="Writing\Contexts\ThreadedStoreWriterContext.cs" />
     <Compile Include="Writing\Contexts\TurtleWriterContext.cs" />
-    <Compile Include="Writing\JsonNTriplesWriter.cs" />
     <Compile Include="Writing\Formatting\BaseFormatter.cs" />
     <Compile Include="Writing\Formatting\CsvFormatter.cs" />
     <Compile Include="Writing\Formatting\DeliminatedLineFormatter.cs" />

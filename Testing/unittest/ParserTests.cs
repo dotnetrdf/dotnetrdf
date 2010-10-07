@@ -327,7 +327,7 @@ namespace VDS.RDF.Test
             try
             {
                 Graph g = new Graph();
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://api.sindice.com/v2/cache?url=http://dbpedia.org/resource/Southampton");
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://dbpedia.org/resource/Southampton");
                 request.Method = "GET";
                 request.Accept = MimeTypesHelper.HttpAcceptHeader;
 
@@ -408,75 +408,75 @@ namespace VDS.RDF.Test
             }
         }
 
-        [TestMethod]
-        public void JsonNTriplesParsing()
-        {
-            Graph g = new Graph();
-            FileLoader.Load(g, "InferenceTest.ttl");
-            g.Assert(new Triple(g.CreateBlankNode(), g.CreateUriNode("rdf:type"), g.CreateLiteralNode("some text", "en")));
+        //[TestMethod]
+        //public void JsonNTriplesParsing()
+        //{
+        //    Graph g = new Graph();
+        //    FileLoader.Load(g, "InferenceTest.ttl");
+        //    g.Assert(new Triple(g.CreateBlankNode(), g.CreateUriNode("rdf:type"), g.CreateLiteralNode("some text", "en")));
 
-            String temp = StringWriter.Write(g, new JsonNTriplesWriter());
-            Console.WriteLine(temp);
-            Console.WriteLine();
+        //    String temp = StringWriter.Write(g, new JsonNTriplesWriter());
+        //    Console.WriteLine(temp);
+        //    Console.WriteLine();
 
-            Graph h = new Graph();
-            VDS.RDF.Parsing.StringParser.Parse(h, temp, new JsonNTriplesParser());
+        //    Graph h = new Graph();
+        //    VDS.RDF.Parsing.StringParser.Parse(h, temp, new JsonNTriplesParser());
 
-            foreach (Triple t in h.Triples)
-            {
-                Console.WriteLine(t.ToString());
-            }
+        //    foreach (Triple t in h.Triples)
+        //    {
+        //        Console.WriteLine(t.ToString());
+        //    }
 
-            Assert.AreEqual(g, h, "Graphs should be equal before and after serialization");
-        }
+        //    Assert.AreEqual(g, h, "Graphs should be equal before and after serialization");
+        //}
 
-        [TestMethod]
-        public void JsonNTriplesEscaping()
-        {
-            Graph g = new Graph();
-            String[] testStrings = new String[]
-            {
-                "newline \\n ",
-                "newline 2 \\r ",
-                "double quote \\\" ",
-                "tab \\t ",
-                "backslash \\\\ ",
-                "unicode \u00E9 "
-            };
+        //[TestMethod]
+        //public void JsonNTriplesEscaping()
+        //{
+        //    Graph g = new Graph();
+        //    String[] testStrings = new String[]
+        //    {
+        //        "newline \\n ",
+        //        "newline 2 \\r ",
+        //        "double quote \\\" ",
+        //        "tab \\t ",
+        //        "backslash \\\\ ",
+        //        "unicode \u00E9 "
+        //    };
 
-            UriNode subj = g.CreateUriNode("rdf:subject");
-            UriNode pred = g.CreateUriNode("rdf:predicate");
+        //    UriNode subj = g.CreateUriNode("rdf:subject");
+        //    UriNode pred = g.CreateUriNode("rdf:predicate");
 
-            foreach (String test in testStrings)
-            {
-                g.Assert(new Triple(subj, pred, g.CreateLiteralNode(test)));
-            }
+        //    foreach (String test in testStrings)
+        //    {
+        //        g.Assert(new Triple(subj, pred, g.CreateLiteralNode(test)));
+        //    }
 
-            String temp = StringWriter.Write(g, new JsonNTriplesWriter());
-            Console.WriteLine(temp);
-            Console.WriteLine();
+        //    String temp = StringWriter.Write(g, new JsonNTriplesWriter());
+        //    Console.WriteLine(temp);
+        //    Console.WriteLine();
 
-            Console.WriteLine("Original Graph");
-            foreach (Triple t in g.Triples)
-            {
-                Console.WriteLine(t.ToString());
-            }
-            Console.WriteLine();
+        //    Console.WriteLine("Original Graph");
+        //    foreach (Triple t in g.Triples)
+        //    {
+        //        Console.WriteLine(t.ToString());
+        //    }
+        //    Console.WriteLine();
 
-            Graph h = new Graph();
-            Stopwatch timer = new Stopwatch();
-            timer.Start();
-            VDS.RDF.Parsing.StringParser.Parse(h, temp, new JsonNTriplesParser());
-            timer.Stop();
-            Console.WriteLine("Took " + timer.Elapsed + " to parse");
+        //    Graph h = new Graph();
+        //    Stopwatch timer = new Stopwatch();
+        //    timer.Start();
+        //    VDS.RDF.Parsing.StringParser.Parse(h, temp, new JsonNTriplesParser());
+        //    timer.Stop();
+        //    Console.WriteLine("Took " + timer.Elapsed + " to parse");
 
-            Console.WriteLine("Serialized then Parsed Graph");
-            foreach (Triple t in h.Triples)
-            {
-                Console.WriteLine(t.ToString());
-            }
+        //    Console.WriteLine("Serialized then Parsed Graph");
+        //    foreach (Triple t in h.Triples)
+        //    {
+        //        Console.WriteLine(t.ToString());
+        //    }
 
-            Assert.AreEqual(g, h, "Graphs should have been equal");
-        }
+        //    Assert.AreEqual(g, h, "Graphs should have been equal");
+        //}
     }
 }

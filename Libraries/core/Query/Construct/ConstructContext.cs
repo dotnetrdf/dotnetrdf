@@ -6,6 +6,9 @@ using VDS.RDF.Query.Algebra;
 
 namespace VDS.RDF.Query.Construct
 {
+    /// <summary>
+    /// Context used for Constructing Triples in SPARQL Query/Update
+    /// </summary>
     public class ConstructContext
     {
         private Set _s;
@@ -13,6 +16,17 @@ namespace VDS.RDF.Query.Construct
         private bool _preserveBNodes = false;
         private Dictionary<String, INode> _bnodeMap;
 
+        /// <summary>
+        /// Creates a new Construct Context
+        /// </summary>
+        /// <param name="g">Graph to construct Triples in</param>
+        /// <param name="s">Set to construct from</param>
+        /// <param name="preserveBNodes">Whether Blank Nodes bound to variables should be preserved as-is</param>
+        /// <remarks>
+        /// <para>
+        /// Either the <paramref name="s">Set</paramref>  or <paramref name="g">Graph</paramref> parameters may be null if required
+        /// </para>
+        /// </remarks>
         public ConstructContext(IGraph g, Set s, bool preserveBNodes)
         {
             this._g = g;
@@ -20,6 +34,9 @@ namespace VDS.RDF.Query.Construct
             this._preserveBNodes = preserveBNodes;
         }
 
+        /// <summary>
+        /// Gets the Set that this Context pertains to
+        /// </summary>
         public Set Set
         {
             get
@@ -28,6 +45,9 @@ namespace VDS.RDF.Query.Construct
             }
         }
 
+        /// <summary>
+        /// Gets the Graph that Triples should be constructed in
+        /// </summary>
         public IGraph Graph
         {
             get
@@ -36,6 +56,9 @@ namespace VDS.RDF.Query.Construct
             }
         }
 
+        /// <summary>
+        /// Gets whether Blank Nodes bound to variables should be preserved
+        /// </summary>
         public bool PreserveBlankNodes
         {
             get
@@ -44,6 +67,16 @@ namespace VDS.RDF.Query.Construct
             }
         }
 
+        /// <summary>
+        /// Creates a new Blank Node for this Context
+        /// </summary>
+        /// <param name="id">ID</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// <para>
+        /// If the same Blank Node ID is used multiple times in this Context you will always get the same Blank Node for that ID
+        /// </para>
+        /// </remarks>
         public INode GetBlankNode(String id)
         {
             if (this._bnodeMap == null) this._bnodeMap = new Dictionary<string, INode>();

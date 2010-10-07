@@ -501,6 +501,13 @@ namespace VDS.RDF.Parsing
                             throw new RdfParseException("Unable to Parse a SPARQL Result Set since the <results> element contains an unexpected element <" + reader.Name + ">!");
                         }
 
+                        //Empty Elements generate an Empty Result
+                        if (reader.IsEmptyElement)
+                        {
+                            results.AddResult(new SparqlResult());
+                            continue;
+                        }
+
                         //Get the values of each Binding
                         String var;
                         INode value;

@@ -70,6 +70,9 @@ namespace VDS.RDF
         /// </summary>
         protected StoreGraph() { }
 
+        /// <summary>
+        /// Finalizer for Store Graph which ensures <see cref="StoreGraph.Dispose">Dispose()</see> gets called if the user fails to explicitly call it
+        /// </summary>
         ~StoreGraph()
         {
             this.Dispose(false);

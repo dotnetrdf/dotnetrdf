@@ -193,7 +193,7 @@ SELECT * WHERE {
             SparqlConnector endpoint = new SparqlConnector(new Uri("http://lod.openlinksw.com/sparql"));
 
             String testQuery = @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-SELECT * WHERE {?s rdfs:label ?label . ?label bif:contains " + "\"London\" } LIMIT 10";
+SELECT * WHERE {?s rdfs:label ?label . ?label bif:contains " + "\"London\" } LIMIT 1";
 
             Console.WriteLine("Testing Sparql Connector with vendor specific extensions in query");
             Console.WriteLine();

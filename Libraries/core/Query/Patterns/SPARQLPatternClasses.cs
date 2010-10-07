@@ -336,9 +336,6 @@ namespace VDS.RDF.Query.Patterns
     public class BlankNodePattern : PatternItem
     {
         private String _name;
-        private IGraph _lastGraph = null;
-        private Set _lastSet = null;
-        private INode _lastOutput = null;
 
         /// <summary>
         /// Creates a new Pattern representing a Blank Node
@@ -385,29 +382,11 @@ namespace VDS.RDF.Query.Patterns
         /// <summary>
         /// Constructs a Node based on the given Set
         /// </summary>
-        /// <param name="g">Graph</param>
-        /// <param name="s">Set</param>
-        /// <param name="preserveBNodes">Whether Blank Node IDs should be preserved</param>
-        /// <remarks>
-        /// <para>
-        /// Blank Node patterns used in constructs will ignore the <paramref name="preserveBNodes"/> setting since if they are constructing for a particular set they should generate a new Blank Node specific to that Set, the only type Blank Nodes are preserved is if <strong>null</strong> is provided as the <paramref name="s">set</paramref> parameter in which case the Blank Node is preserved.
-        /// </para>
-        /// <para>
-        /// Otherwise a Blank Node whose ID is based on the ID of the Blank Node in the pattern and the Set ID of the Solution will be produced
-        /// </para>
-        /// </remarks>
+        /// <param name="context">Construct Context</param>
         /// <returns></returns>
         protected internal override INode Construct(ConstructContext context)
         {
             return context.GetBlankNode(this._name);
-            //if (context.Set != null)
-            //{
-            //    return new BlankNode(context.Graph, this._name.Substring(2) + "-" + context.Set.ID);
-            //}
-            //else
-            //{
-            //    return new BlankNode(context.Graph, this._name.Substring(2));
-            //}
         }
 
         /// <summary>

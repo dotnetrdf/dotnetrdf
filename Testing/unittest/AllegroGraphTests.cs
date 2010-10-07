@@ -55,12 +55,6 @@ namespace VDS.RDF.Test
                 //Delete all Triples about the Ford Fiesta
                 agraph.UpdateGraph(g.BaseUri, null, g.GetTriplesWithSubject(new Uri("http://example.org/vehicles/FordFiesta")));
 
-                Object results = agraph.Query("ASK WHERE { <http://example.org/vehicles/FordFiesta> ?p ?o }");
-                if (results is SparqlResultSet)
-                {
-                    Assert.IsFalse(((SparqlResultSet)results).Result, "There should no longer be any triples about the Ford Fiesta present");
-                }
-
                 Graph h = new Graph();
                 agraph.LoadGraph(h, g.BaseUri);
 
@@ -70,6 +64,12 @@ namespace VDS.RDF.Test
                 Assert.IsFalse(h.IsEmpty, "Graph should not be completely empty");
                 Assert.IsTrue(g.HasSubGraph(h), "Graph retrieved with missing Triples should be a sub-graph of the original Graph");
                 Assert.IsFalse(g.Equals(h), "Graph retrieved should not be equal to original Graph");
+
+                Object results = agraph.Query("ASK WHERE { GRAPH <http://example.org/AllegroGraphTest> { <http://example.org/vehicles/FordFiesta> ?p ?o } }");
+                if (results is SparqlResultSet)
+                {
+                    Assert.IsFalse(((SparqlResultSet)results).Result, "There should no longer be any triples about the Ford Fiesta present");
+                }
             }
             catch (Exception ex)
             {

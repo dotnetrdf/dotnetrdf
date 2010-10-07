@@ -56,7 +56,7 @@ namespace VDS.RDF.Test.Sparql
             try
             {
                 TripleStore store = new TripleStore();
-                SparqlView view = new SparqlView("DESCRIBE <http://example.org/Vehicles/FordFiesta>", store);
+                SparqlView view = new SparqlView("DESCRIBE <http://example.org/vehicles/FordFiesta>", store);
                 store.Add(view);
 
                 Console.WriteLine("SPARQL View Empty");
