@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using VDS.RDF;
 using VDS.RDF.Storage;
-using Alexandria.WideTable;
+using VDS.Alexandria.WideTable;
 
-namespace Alexandria
+namespace VDS.Alexandria
 {
     /// <summary>
     /// Abstract Base Class for Alexandria Wide Table Store Managers

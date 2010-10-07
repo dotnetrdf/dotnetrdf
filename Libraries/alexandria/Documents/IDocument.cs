@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace Alexandria.Documents
+namespace VDS.Alexandria.Documents
 {
     /// <summary>
     /// Represents a Document used by Alexandria

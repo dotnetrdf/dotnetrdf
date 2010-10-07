@@ -5,12 +5,12 @@ using System.Text;
 using VDS.RDF;
 using VDS.RDF.Writing.Formatting;
 using MongoDB;
-using Alexandria.Documents;
-using Alexandria.Utilities;
+using VDS.Alexandria.Documents;
+using VDS.Alexandria.Utilities;
 
-namespace Alexandria.Indexing
+namespace VDS.Alexandria.Indexing
 {
-    public class MongoDBIndexManager : IIndexManager
+    public class MongoDBGraphCentricIndexManager : IIndexManager
     {
         private MongoDBDocumentManager _manager;
         private NTriplesFormatter _formatter = new NTriplesFormatter();
@@ -23,7 +23,7 @@ namespace Alexandria.Indexing
             "graph.object"
         };
 
-        public MongoDBIndexManager(MongoDBDocumentManager manager)
+        public MongoDBGraphCentricIndexManager(MongoDBDocumentManager manager)
         {
             this._manager = manager;
 
@@ -63,11 +63,11 @@ namespace Alexandria.Indexing
             if (subj.NodeType == NodeType.Blank)
             {
                 String id = ((BlankNode)subj).InternalID;
-                return new MongoDBRdfJsonEnumerator(this._manager, lookup, t => t.Subject.NodeType == NodeType.Blank && ((BlankNode)t.Subject).InternalID.Equals(id));
+                return new MongoDBGraphCentricEnumerator(this._manager, lookup, t => t.Subject.NodeType == NodeType.Blank && ((BlankNode)t.Subject).InternalID.Equals(id));
             }
             else
             {
-                return new MongoDBRdfJsonEnumerator(this._manager, lookup, t => t.Subject.Equals(subj));
+                return new MongoDBGraphCentricEnumerator(this._manager, lookup, t => t.Subject.Equals(subj));
             }
         }
 
@@ -79,11 +79,11 @@ namespace Alexandria.Indexing
             if (pred.NodeType == NodeType.Blank)
             {
                 String id = ((BlankNode)pred).InternalID;
-                return new MongoDBRdfJsonEnumerator(this._manager, lookup, t => t.Predicate.NodeType == NodeType.Blank && ((BlankNode)t.Predicate).InternalID.Equals(id));
+                return new MongoDBGraphCentricEnumerator(this._manager, lookup, t => t.Predicate.NodeType == NodeType.Blank && ((BlankNode)t.Predicate).InternalID.Equals(id));
             }
             else
             {
-                return new MongoDBRdfJsonEnumerator(this._manager, lookup, t => t.Predicate.Equals(pred));
+                return new MongoDBGraphCentricEnumerator(this._manager, lookup, t => t.Predicate.Equals(pred));
             }
         }
 
@@ -95,11 +95,11 @@ namespace Alexandria.Indexing
             if (obj.NodeType == NodeType.Blank)
             {
                 String id = ((BlankNode)obj).InternalID;
-                return new MongoDBRdfJsonEnumerator(this._manager, lookup, t => t.Object.NodeType == NodeType.Blank && ((BlankNode)t.Object).InternalID.Equals(id));
+                return new MongoDBGraphCentricEnumerator(this._manager, lookup, t => t.Object.NodeType == NodeType.Blank && ((BlankNode)t.Object).InternalID.Equals(id));
             }
             else
             {
-                return new MongoDBRdfJsonEnumerator(this._manager, lookup, t => t.Object.Equals(obj));
+                return new MongoDBGraphCentricEnumerator(this._manager, lookup, t => t.Object.Equals(obj));
             }
         }
 
@@ -115,11 +115,11 @@ namespace Alexandria.Indexing
                 if (pred.NodeType == NodeType.Blank)
                 {
                     String predID = ((BlankNode)pred).InternalID;
-                    return new MongoDBRdfJsonEnumerator(this._manager, lookup, t => t.Subject.NodeType == NodeType.Blank && t.Predicate.NodeType == NodeType.Blank && ((BlankNode)t.Subject).InternalID.Equals(subjID) && ((BlankNode)t.Predicate).InternalID.Equals(predID));
+                    return new MongoDBGraphCentricEnumerator(this._manager, lookup, t => t.Subject.NodeType == NodeType.Blank && t.Predicate.NodeType == NodeType.Blank && ((BlankNode)t.Subject).InternalID.Equals(subjID) && ((BlankNode)t.Predicate).InternalID.Equals(predID));
                 }
                 else
                 {
-                    return new MongoDBRdfJsonEnumerator(this._manager, lookup, t => t.Subject.NodeType == NodeType.Blank && ((BlankNode)t.Subject).InternalID.Equals(subjID) && t.Predicate.Equals(pred));
+                    return new MongoDBGraphCentricEnumerator(this._manager, lookup, t => t.Subject.NodeType == NodeType.Blank && ((BlankNode)t.Subject).InternalID.Equals(subjID) && t.Predicate.Equals(pred));
                 }
             }
             else
@@ -127,11 +127,11 @@ namespace Alexandria.Indexing
                 if (pred.NodeType == NodeType.Blank)
                 {
                     String id = ((BlankNode)pred).InternalID;
-                    return new MongoDBRdfJsonEnumerator(this._manager, lookup, t => t.Subject.Equals(subj) && t.Predicate.NodeType == NodeType.Blank && ((BlankNode)t.Predicate).InternalID.Equals(id));
+                    return new MongoDBGraphCentricEnumerator(this._manager, lookup, t => t.Subject.Equals(subj) && t.Predicate.NodeType == NodeType.Blank && ((BlankNode)t.Predicate).InternalID.Equals(id));
                 }
                 else
                 {
-                    return new MongoDBRdfJsonEnumerator(this._manager, lookup, t => t.Subject.Equals(subj) && t.Predicate.Equals(pred));
+                    return new MongoDBGraphCentricEnumerator(this._manager, lookup, t => t.Subject.Equals(subj) && t.Predicate.Equals(pred));
                 }
             }
         }
@@ -148,11 +148,11 @@ namespace Alexandria.Indexing
                 if (obj.NodeType == NodeType.Blank)
                 {
                     String objID = ((BlankNode)obj).InternalID;
-                    return new MongoDBRdfJsonEnumerator(this._manager, lookup, t => t.Predicate.NodeType == NodeType.Blank && t.Object.NodeType == NodeType.Blank && ((BlankNode)t.Predicate).InternalID.Equals(predID) && ((BlankNode)t.Object).InternalID.Equals(objID));
+                    return new MongoDBGraphCentricEnumerator(this._manager, lookup, t => t.Predicate.NodeType == NodeType.Blank && t.Object.NodeType == NodeType.Blank && ((BlankNode)t.Predicate).InternalID.Equals(predID) && ((BlankNode)t.Object).InternalID.Equals(objID));
                 }
                 else
                 {
-                    return new MongoDBRdfJsonEnumerator(this._manager, lookup, t => t.Predicate.NodeType == NodeType.Blank && ((BlankNode)t.Predicate).InternalID.Equals(predID) && t.Object.Equals(obj));
+                    return new MongoDBGraphCentricEnumerator(this._manager, lookup, t => t.Predicate.NodeType == NodeType.Blank && ((BlankNode)t.Predicate).InternalID.Equals(predID) && t.Object.Equals(obj));
                 }
             }
             else
@@ -160,11 +160,11 @@ namespace Alexandria.Indexing
                 if (obj.NodeType == NodeType.Blank)
                 {
                     String id = ((BlankNode)obj).InternalID;
-                    return new MongoDBRdfJsonEnumerator(this._manager, lookup, t => t.Predicate.Equals(pred) && t.Object.NodeType == NodeType.Blank && ((BlankNode)t.Object).InternalID.Equals(id));
+                    return new MongoDBGraphCentricEnumerator(this._manager, lookup, t => t.Predicate.Equals(pred) && t.Object.NodeType == NodeType.Blank && ((BlankNode)t.Object).InternalID.Equals(id));
                 }
                 else
                 {
-                    return new MongoDBRdfJsonEnumerator(this._manager, lookup, t => t.Predicate.Equals(pred) && t.Object.Equals(obj));
+                    return new MongoDBGraphCentricEnumerator(this._manager, lookup, t => t.Predicate.Equals(pred) && t.Object.Equals(obj));
                 }
             }
         }
@@ -181,11 +181,11 @@ namespace Alexandria.Indexing
                 if (obj.NodeType == NodeType.Blank)
                 {
                     String objID = ((BlankNode)obj).InternalID;
-                    return new MongoDBRdfJsonEnumerator(this._manager, lookup, t => t.Subject.NodeType == NodeType.Blank && t.Object.NodeType == NodeType.Blank && ((BlankNode)t.Subject).InternalID.Equals(subjID) && ((BlankNode)t.Object).InternalID.Equals(objID));
+                    return new MongoDBGraphCentricEnumerator(this._manager, lookup, t => t.Subject.NodeType == NodeType.Blank && t.Object.NodeType == NodeType.Blank && ((BlankNode)t.Subject).InternalID.Equals(subjID) && ((BlankNode)t.Object).InternalID.Equals(objID));
                 }
                 else
                 {
-                    return new MongoDBRdfJsonEnumerator(this._manager, lookup, t => t.Subject.NodeType == NodeType.Blank && ((BlankNode)t.Subject).InternalID.Equals(subjID) && t.Object.Equals(obj));
+                    return new MongoDBGraphCentricEnumerator(this._manager, lookup, t => t.Subject.NodeType == NodeType.Blank && ((BlankNode)t.Subject).InternalID.Equals(subjID) && t.Object.Equals(obj));
                 }
             }
             else
@@ -193,11 +193,11 @@ namespace Alexandria.Indexing
                 if (obj.NodeType == NodeType.Blank)
                 {
                     String id = ((BlankNode)obj).InternalID;
-                    return new MongoDBRdfJsonEnumerator(this._manager, lookup, t => t.Subject.Equals(subj) && t.Object.NodeType == NodeType.Blank && ((BlankNode)t.Object).InternalID.Equals(id));
+                    return new MongoDBGraphCentricEnumerator(this._manager, lookup, t => t.Subject.Equals(subj) && t.Object.NodeType == NodeType.Blank && ((BlankNode)t.Object).InternalID.Equals(id));
                 }
                 else
                 {
-                    return new MongoDBRdfJsonEnumerator(this._manager, lookup, t => t.Subject.Equals(subj) && t.Object.Equals(obj));
+                    return new MongoDBGraphCentricEnumerator(this._manager, lookup, t => t.Subject.Equals(subj) && t.Object.Equals(obj));
                 }
             }
         }
@@ -238,7 +238,7 @@ namespace Alexandria.Indexing
                 objFunc = x => x.Object.Equals(t.Object);
             }
 
-            return new MongoDBRdfJsonEnumerator(this._manager, lookup, x => subjFunc(x) && predFunc(x) && objFunc(x));
+            return new MongoDBGraphCentricEnumerator(this._manager, lookup, x => subjFunc(x) && predFunc(x) && objFunc(x));
         }
 
         public void AddToIndex(Triple t)

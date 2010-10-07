@@ -44,7 +44,7 @@ using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Storage;
 using VDS.RDF.Storage.Params;
 
-namespace Alexandria
+namespace VDS.Alexandria
 {
     /// <summary>
     /// Parser for parsing NQuads (NTriples with an additional Context i.e. Named Graphs)

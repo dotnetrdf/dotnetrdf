@@ -7,7 +7,7 @@ using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing;
 
-namespace Alexandria.Documents.Adaptors
+namespace VDS.Alexandria.Documents.Adaptors
 {
     public abstract class RdfAdaptor : IDataAdaptor<StreamReader, TextWriter>
     {

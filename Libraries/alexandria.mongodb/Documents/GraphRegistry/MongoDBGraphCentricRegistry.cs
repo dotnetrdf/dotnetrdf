@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using MongoDB;
 
-namespace Alexandria.Documents.GraphRegistry
+namespace VDS.Alexandria.Documents.GraphRegistry
 {
-    public class MongoDBGraphRegistry : BaseGraphRegistry
+    public class MongoDBGraphCentricRegistry : BaseGraphRegistry
     {
         private IDocument<Document, Document> _doc;
 
-        public MongoDBGraphRegistry(IDocument<Document, Document> doc)
+        public MongoDBGraphCentricRegistry(IDocument<Document, Document> doc)
         {
             this._doc = doc;
         }

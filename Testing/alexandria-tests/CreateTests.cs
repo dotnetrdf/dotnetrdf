@@ -6,7 +6,7 @@ using System.Text;
 using VDS.RDF;
 using VDS.RDF.Storage;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Alexandria;
+using VDS.Alexandria;
 
 namespace alexandria_tests
 {

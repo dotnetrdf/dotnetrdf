@@ -5,12 +5,12 @@ using System.Text;
 using MongoDB;
 using VDS.RDF;
 using VDS.RDF.Parsing;
-using Alexandria.Documents;
-using Alexandria.Documents.Adaptors;
+using VDS.Alexandria.Documents;
+using VDS.Alexandria.Documents.Adaptors;
 
-namespace Alexandria.Utilities
+namespace VDS.Alexandria.Utilities
 {
-    class MongoDBRdfJsonEnumerator : IEnumerator<Triple>, IEnumerable<Triple>
+    class MongoDBGraphCentricEnumerator : IEnumerator<Triple>, IEnumerable<Triple>
     {
         private IEnumerator<Document> _cursor;
         private MongoDBDocumentManager _manager;
@@ -21,7 +21,7 @@ namespace Alexandria.Utilities
         private Func<Triple, bool> _selector;
         private JsonNTriplesParser _parser = new JsonNTriplesParser();
 
-        public MongoDBRdfJsonEnumerator(MongoDBDocumentManager manager, Document query, Func<Triple,bool> selector)
+        public MongoDBGraphCentricEnumerator(MongoDBDocumentManager manager, Document query, Func<Triple,bool> selector)
         {
             this._manager = manager;
             this._collection = this._manager.Database[this._manager.Collection];

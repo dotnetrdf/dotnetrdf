@@ -7,7 +7,7 @@ using MongoDB;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing;
-using Alexandria.Utilities;
+using VDS.Alexandria.Utilities;
 
 namespace alexandria_tests
 {

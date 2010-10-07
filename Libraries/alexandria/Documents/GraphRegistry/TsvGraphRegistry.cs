@@ -4,9 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using Alexandria.Utilities;
+using VDS.Alexandria.Utilities;
 
-namespace Alexandria.Documents.GraphRegistry
+namespace VDS.Alexandria.Documents.GraphRegistry
 {
     public class TsvGraphRegistry : BaseGraphRegistry
     {

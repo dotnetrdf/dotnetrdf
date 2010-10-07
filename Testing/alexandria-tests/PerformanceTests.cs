@@ -7,7 +7,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Storage;
-using Alexandria;
+using VDS.Alexandria;
 
 namespace alexandria_tests
 {

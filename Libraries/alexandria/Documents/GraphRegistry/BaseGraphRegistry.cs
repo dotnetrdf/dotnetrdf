@@ -4,7 +4,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Alexandria.Documents.GraphRegistry
+namespace VDS.Alexandria.Documents.GraphRegistry
 {
     public abstract class BaseGraphRegistry : IGraphRegistry, IDisposable
     {

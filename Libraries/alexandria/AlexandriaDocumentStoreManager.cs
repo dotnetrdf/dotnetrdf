@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using VDS.RDF;
 using VDS.RDF.Storage;
-using Alexandria.Documents;
-using Alexandria.Indexing;
+using VDS.Alexandria.Documents;
+using VDS.Alexandria.Indexing;
 
-namespace Alexandria
+namespace VDS.Alexandria
 {
     /// <summary>
     /// Abstract Base Class for Alexandria Document Store Managers

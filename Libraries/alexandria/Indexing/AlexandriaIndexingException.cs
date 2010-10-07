@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Alexandria.Indexing
+namespace VDS.Alexandria.Indexing
 {
     public class AlexandriaIndexingException : AlexandriaException
     {

@@ -4,10 +4,10 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using Alexandria.Documents.Adaptors;
-using Alexandria.Documents.GraphRegistry;
+using VDS.Alexandria.Documents.Adaptors;
+using VDS.Alexandria.Documents.GraphRegistry;
 
-namespace Alexandria.Documents
+namespace VDS.Alexandria.Documents
 {
     public abstract class BaseDocumentManager<TReader,TWriter> : IDocumentManager<TReader,TWriter>
     {
@@ -24,6 +24,10 @@ namespace Alexandria.Documents
             get
             {
                 return this._adaptor;
+            }
+            protected set 
+            {
+                this._adaptor = value;
             }
         }
 

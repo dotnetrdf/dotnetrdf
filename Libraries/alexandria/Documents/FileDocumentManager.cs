@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Alexandria.Documents.Adaptors;
-using Alexandria.Documents.GraphRegistry;
+using VDS.Alexandria.Documents.Adaptors;
+using VDS.Alexandria.Documents.GraphRegistry;
 
-namespace Alexandria.Documents
+namespace VDS.Alexandria.Documents
 {
     public class FileDocumentManager : BaseDocumentManager<StreamReader, TextWriter>
     {

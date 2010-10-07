@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using VDS.RDF.Storage;
 
-namespace Alexandria
+namespace VDS.Alexandria
 {
     public class AlexandriaException : RdfStorageException
     {

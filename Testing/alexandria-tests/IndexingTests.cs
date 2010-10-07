@@ -9,9 +9,9 @@ using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Storage;
 using MongoDB;
-using Alexandria;
-using Alexandria.Documents;
-using Alexandria.Indexing;
+using VDS.Alexandria;
+using VDS.Alexandria.Documents;
+using VDS.Alexandria.Indexing;
 
 namespace alexandria_tests
 {

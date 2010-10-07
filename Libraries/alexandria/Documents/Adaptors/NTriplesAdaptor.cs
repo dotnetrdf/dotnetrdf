@@ -8,7 +8,7 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
 
-namespace Alexandria.Documents.Adaptors
+namespace VDS.Alexandria.Documents.Adaptors
 {
     public class NTriplesAdaptor : RdfAdaptor
     {

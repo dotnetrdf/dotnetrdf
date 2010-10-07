@@ -5,7 +5,7 @@ using System.Text;
 using VDS.RDF;
 using VDS.RDF.Writing.Formatting;
 
-namespace Alexandria.Documents.Adaptors
+namespace VDS.Alexandria.Documents.Adaptors
 {
     class NQuadsAdaptor : NTriplesAdaptor
     {

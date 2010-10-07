@@ -5,10 +5,10 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using VDS.RDF;
-using Alexandria.Documents;
-using Alexandria.Documents.Adaptors;
+using VDS.Alexandria.Documents;
+using VDS.Alexandria.Documents.Adaptors;
 
-namespace Alexandria.Indexing
+namespace VDS.Alexandria.Indexing
 {
     public class FileIndexManager : BaseIndexManager
     {

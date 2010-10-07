@@ -6,10 +6,10 @@ using Aquiles;
 using Aquiles.Connection;
 using Aquiles.Command;
 using Aquiles.Model;
-using Alexandria.WideTable.ColumnSchema;
+using VDS.Alexandria.WideTable.ColumnSchema;
 using VDS.RDF;
 
-namespace Alexandria.WideTable
+namespace VDS.Alexandria.WideTable
 {
     public class CassandraAdaptor : BaseWideTableAdaptor<AquilesColumn>
     {
@@ -23,7 +23,7 @@ namespace Alexandria.WideTable
 
         public CassandraAdaptor(String clusterName, String keySpace, String columnFamily, IColumnSchema<AquilesColumn> schema)
         {
-            throw new AlexandriaException("Implementation Work on Cassandra layer is currently halted due to limitations in the Cassandra API which make it impossible to implement efficiently as a Storage layer");
+            throw new AlexandriaException("Implementation Work on Cassandra Adaptor is currently halted until the 0.7 release of Cassandra stabilises the Secondary Indexes feature and the Aquiles C# library for Cassandra adds support this this");
             this._connection = AquilesHelper.RetrieveConnection(clusterName);
             this._keySpace = keySpace;
             this._columnFamily = columnFamily;

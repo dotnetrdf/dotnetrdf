@@ -7,8 +7,8 @@ using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Storage;
 using VDS.RDF.Writing;
-using Alexandria;
-using Alexandria.Documents;
+using VDS.Alexandria;
+using VDS.Alexandria.Documents;
 
 namespace alexandria_tests
 {
@@ -329,6 +329,63 @@ namespace alexandria_tests
             Assert.AreEqual(i, j, "Graphs should have been equal (2)");
             Assert.AreNotEqual(g, i, "Graphs should not be equal (3)");
             Assert.AreNotEqual(h, j, "Graphs should not be equal (4)");
+
+            manager.Dispose();
+        }
+
+        [TestMethod]
+        public void MongoAppendTriples()
+        {
+            //Load in our Test Graph
+            Graph g = new Graph();
+            FileLoader.Load(g, "InferenceTest.ttl");
+
+            //Get the Triples that we want to add later
+            UriNode spaceShuttle = g.CreateUriNode("eg:SpaceShuttle");
+            UriNode rdfType = g.CreateUriNode("rdf:type");
+            UriNode airVehicle = g.CreateUriNode("eg:AirVehicle");
+            Triple[] ts = new Triple[] { new Triple(spaceShuttle, rdfType, airVehicle) };
+
+            //Open an Alexandria Store and save the original Graph
+            AlexandriaMongoDBManager manager = new AlexandriaMongoDBManager(TestTools.GetNextStoreID());
+            manager.SaveGraph(g);
+
+            //Append the Triples both locally and to the store
+            g.Assert(ts);
+            manager.UpdateGraph(g.BaseUri, ts, null);
+
+            //Try and read the Graph back from the Store
+            Graph h = new Graph();
+            manager.LoadGraph(h, g.BaseUri);
+
+            Assert.AreEqual(g, h, "Graphs should have been equal");
+
+            manager.Dispose();
+        }
+
+        [TestMethod]
+        public void MongoDeleteTriples()
+        {
+            //Load in our Test Graph
+            Graph g = new Graph();
+            FileLoader.Load(g, "InferenceTest.ttl");
+
+            //Get the Triples that we want to delete later
+            List<Triple> ts = g.GetTriplesWithSubject(g.CreateUriNode("eg:FordFiesta")).ToList();
+
+            //Open an Alexandria Store and save the original Graph
+            AlexandriaMongoDBManager manager = new AlexandriaMongoDBManager(TestTools.GetNextStoreID());
+            manager.SaveGraph(g);
+
+            //Remove the Triples both locally and to the store
+            g.Retract(ts);
+            manager.UpdateGraph(g.BaseUri, null, ts);
+
+            //Try and read the Graph back from the Store
+            Graph h = new Graph();
+            manager.LoadGraph(h, g.BaseUri);
+
+            Assert.AreEqual(g, h, "Graphs should have been equal");
 
             manager.Dispose();
         }

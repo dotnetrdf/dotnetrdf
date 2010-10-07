@@ -5,10 +5,10 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using VDS.RDF;
-using Alexandria.Documents;
-using Alexandria.Indexing;
+using VDS.Alexandria.Documents;
+using VDS.Alexandria.Indexing;
 
-namespace Alexandria
+namespace VDS.Alexandria
 {
     /// <summary>
     /// Manages an Alexandria Store which is stored in a directory in the filesystem

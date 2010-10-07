@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Alexandria.Documents;
+using VDS.Alexandria.Documents;
 
-namespace Alexandria.Utilities
+namespace VDS.Alexandria.Utilities
 {
     class TsvEnumerator : IEnumerator<String[]>, IEnumerable<String[]>
     {

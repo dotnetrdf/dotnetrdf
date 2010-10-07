@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using VDS.RDF;
 
-namespace Alexandria.WideTable.ColumnSchema
+namespace VDS.Alexandria.WideTable.ColumnSchema
 {
     public interface IColumnSchema<TColumn>
     {

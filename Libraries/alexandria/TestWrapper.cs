@@ -4,10 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Alexandria.Documents;
-using Alexandria.Indexing;
+using VDS.Alexandria.Documents;
+using VDS.Alexandria.Indexing;
 
-namespace Alexandria
+namespace VDS.Alexandria
 {
     public class TestWrapper<TReader,TWriter>
     {

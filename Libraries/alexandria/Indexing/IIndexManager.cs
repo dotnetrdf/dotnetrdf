@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using VDS.RDF;
 
-namespace Alexandria.Indexing
+namespace VDS.Alexandria.Indexing
 {
     /// <summary>
     /// Interface for Index Manager

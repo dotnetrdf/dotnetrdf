@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 
-namespace Alexandria.Documents
+namespace VDS.Alexandria.Documents
 {
     public class FileDocument : BaseDocument<StreamReader, TextWriter>
     {

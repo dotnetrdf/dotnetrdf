@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using VDS.RDF;
 
-namespace Alexandria.Documents.Adaptors
+namespace VDS.Alexandria.Documents.Adaptors
 {
     /// <summary>
     /// An Adaptor which coverts between Data (Graphs and Triples) and Documents

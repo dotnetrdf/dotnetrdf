@@ -5,8 +5,10 @@ using System.Text;
 using MongoDB;
 using MongoDB.Configuration;
 using Newtonsoft.Json.Linq;
+using VDS.Alexandria.Documents;
+using VDS.Alexandria.Indexing;
 
-namespace Alexandria.Utilities
+namespace VDS.Alexandria.Utilities
 {
     /// <summary>
     /// 
@@ -23,6 +25,19 @@ namespace Alexandria.Utilities
             MongoConfiguration config = new MongoConfiguration();
             config.ConnectionString = connectionString;
             return config;
+        }
+
+        public static IIndexManager GetIndexManager(MongoDBDocumentManager manager)
+        {
+            switch (manager.Schema)
+            {
+                case MongoDBSchemas.GraphCentric:
+                    return new MongoDBGraphCentricIndexManager(manager);
+                case MongoDBSchemas.TripleCentric:
+                    throw new NotImplementedException("Triple-Centric Schema for MongoDB not yet implemented");
+                default:
+                    throw new NotSupportedException("Unknown MongoDB Schema not supported");
+            }
         }
 
         public static Object[] JsonArrayToObjects(String json)
@@ -166,6 +181,22 @@ namespace Alexandria.Utilities
             else
             {
                 throw new InvalidCastException("Cannot convert an Object which is not a List<Document> to a JSON Array");
+            }
+        }
+
+        public static List<Object> DocumentListToObjectList(Object obj)
+        {
+            if (obj is List<Object>)
+            {
+                return (List<Object>)obj;
+            }
+            else if (obj is List<Document>)
+            {
+                return ((List<Document>)obj).Select(o => (Object)o).ToList();
+            }
+            else
+            {
+                throw new InvalidCastException("Cannot convert an Object which is not a List<Document> to a List<Object>");
             }
         }
     }

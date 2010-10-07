@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading;
 using VDS.RDF;
 
-namespace Alexandria.Indexing
+namespace VDS.Alexandria.Indexing
 {
     /// <summary>
     /// Abstract Base Class for Index Managers

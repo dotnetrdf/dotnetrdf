@@ -4,9 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using VDS.RDF;
-using Alexandria.Documents;
+using VDS.Alexandria.Documents;
 
-namespace Alexandria.Indexing
+namespace VDS.Alexandria.Indexing
 {
     class FileIndexReader : IDisposable, IEnumerable<Triple>
     {

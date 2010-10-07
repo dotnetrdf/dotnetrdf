@@ -7,7 +7,7 @@ using Aquiles.Model;
 using VDS.RDF;
 using VDS.RDF.Writing.Formatting;
 
-namespace Alexandria.WideTable.ColumnSchema
+namespace VDS.Alexandria.WideTable.ColumnSchema
 {
     public class CassandraSchema : BaseSimpleColumnSchema<AquilesColumn>
     {

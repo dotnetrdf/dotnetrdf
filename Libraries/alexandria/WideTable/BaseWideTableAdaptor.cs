@@ -5,9 +5,9 @@ using System.Security.Cryptography;
 using System.Text;
 using VDS.RDF;
 using VDS.RDF.Writing.Formatting;
-using Alexandria.WideTable.ColumnSchema;
+using VDS.Alexandria.WideTable.ColumnSchema;
 
-namespace Alexandria.WideTable
+namespace VDS.Alexandria.WideTable
 {
     public abstract class BaseWideTableAdaptor<TColumn> : IWideTableAdaptor<String, TColumn>
     {

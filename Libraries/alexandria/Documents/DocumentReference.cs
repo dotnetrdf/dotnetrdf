@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 
-namespace Alexandria.Documents
+namespace VDS.Alexandria.Documents
 {
     public class DocumentReference<TReader,TWriter> : IDisposable
     {

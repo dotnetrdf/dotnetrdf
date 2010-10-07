@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using MongoDB;
 
-namespace Alexandria.Documents
+namespace VDS.Alexandria.Documents
 {
     public class MongoDBDocument : BaseDocument<Document, Document>
     {

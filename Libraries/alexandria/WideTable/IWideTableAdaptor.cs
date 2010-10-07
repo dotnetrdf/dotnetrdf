@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF;
-using Alexandria.WideTable.ColumnSchema;
+using VDS.Alexandria.WideTable.ColumnSchema;
 
-namespace Alexandria.WideTable
+namespace VDS.Alexandria.WideTable
 {
     public interface IWideTableAdaptor<TKey, TColumn> : IDisposable
     {

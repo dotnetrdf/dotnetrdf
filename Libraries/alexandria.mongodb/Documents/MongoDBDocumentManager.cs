@@ -6,11 +6,11 @@ using System.Text;
 using MongoDB;
 using MongoDB.Configuration;
 using MongoDB.Connections;
-using Alexandria.Documents.Adaptors;
-using Alexandria.Documents.GraphRegistry;
-using Alexandria.Utilities;
+using VDS.Alexandria.Documents.Adaptors;
+using VDS.Alexandria.Documents.GraphRegistry;
+using VDS.Alexandria.Utilities;
 
-namespace Alexandria.Documents
+namespace VDS.Alexandria.Documents
 {
     public class MongoDBDocumentManager : BaseDocumentManager<Document,Document>
     {
@@ -18,12 +18,13 @@ namespace Alexandria.Documents
         private IMongoDatabase _db;
         private IGraphRegistry _registry;
         private String _collection;
+        private MongoDBSchemas _schema = MongoDBSchemas.GraphCentric;
 
         private const String GraphRegistryDocument = "graphs";
         private const String DefaultCollection = "dotnetrdf";
 
-        public MongoDBDocumentManager(MongoConfiguration config, String db, String collection)
-            : base(new MongoDBRdfToJsonAdaptor())
+        public MongoDBDocumentManager(MongoConfiguration config, String db, String collection, MongoDBSchemas schema)
+            : base(null)
         {
             this._connection = new Mongo(config);
             this._db = this._connection.GetDatabase(db);
@@ -33,27 +34,58 @@ namespace Alexandria.Documents
             //Ensure the DB is setup correctly
             this._db.GetCollection(Collection);
 
-            if (!this.HasDocument(GraphRegistryDocument))
+            //Set up the Data Adaptor and Graph Registry
+            this._schema = schema;
+            switch (schema)
             {
-                if (!this.CreateDocument(GraphRegistryDocument))
-                {
-                    throw new AlexandriaException("Unable to create the Required Graph Registry Document");
-                }
+                case MongoDBSchemas.GraphCentric:
+                    this.DataAdaptor = new MongoDBGraphCentricAdaptor();
+                    if (!this.HasDocument(GraphRegistryDocument))
+                    {
+                        if (!this.CreateDocument(GraphRegistryDocument))
+                        {
+                            throw new AlexandriaException("Unable to create the Required Graph Registry Document");
+                        }
+                    }
+                    this._registry = new MongoDBGraphCentricRegistry(this.GetDocument(GraphRegistryDocument));
+                    break;
+
+                case MongoDBSchemas.TripleCentric:
+                    throw new NotImplementedException("Triple-Centric MongoDB Schema is not yet implemented");
+                    break;
+
+                default:
+                    throw new ArgumentException("Unknown MongoDB Schema", "schema");
             }
-            this._registry = new MongoDBGraphRegistry(this.GetDocument(GraphRegistryDocument));
         }
+
+        public MongoDBDocumentManager(MongoConfiguration config, String db, String collection)
+            : this(config, db, collection, MongoDBSchemas.GraphCentric) { }
 
         public MongoDBDocumentManager(MongoConfiguration config, String db)
             : this(config, db, DefaultCollection) { }
 
+        public MongoDBDocumentManager(MongoConfiguration config, String db, MongoDBSchemas schema)
+            : this(config, db, DefaultCollection, schema) { }
+
         public MongoDBDocumentManager(String db)
             : this(new MongoConfiguration(), db) { }
+
+        public MongoDBDocumentManager(String db, MongoDBSchemas schema)
+            : this(new MongoConfiguration(), db, schema) { }
 
         public MongoDBDocumentManager(String connectionString, String db)
             : this(MongoDBHelper.GetConfiguration(connectionString), db) { }
 
+        public MongoDBDocumentManager(String connectionString, String db, MongoDBSchemas schema)
+            : this(MongoDBHelper.GetConfiguration(connectionString), db, schema) { }
+
         public MongoDBDocumentManager(String connectionString, String db, String collection)
             : this(MongoDBHelper.GetConfiguration(connectionString), db, collection) { }
+
+        public MongoDBDocumentManager(String connectionString, String db, String collection, MongoDBSchemas schema)
+            : this(MongoDBHelper.GetConfiguration(connectionString), db, collection, schema) { }
+
 
         internal IMongoDatabase Database
         {
@@ -68,6 +100,14 @@ namespace Alexandria.Documents
             get
             {
                 return this._collection;
+            }
+        }
+
+        internal MongoDBSchemas Schema
+        {
+            get
+            {
+                return this._schema;
             }
         }
 

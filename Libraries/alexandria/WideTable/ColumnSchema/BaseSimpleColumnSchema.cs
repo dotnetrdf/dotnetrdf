@@ -5,7 +5,7 @@ using System.Text;
 using VDS.RDF;
 using VDS.RDF.Writing.Formatting;
 
-namespace Alexandria.WideTable.ColumnSchema
+namespace VDS.Alexandria.WideTable.ColumnSchema
 {
     /// <summary>
     /// The Simple Column Schema stores each part of the Triple in a single column
