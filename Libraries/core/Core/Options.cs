@@ -74,7 +74,9 @@ namespace VDS.RDF
     /// <summary>
     /// Configures Global Static Options for the Library
     /// </summary>
-    /// <remarks>Some of these are Debug Build only, please see the Remarks on individual members for more detail</remarks>
+    /// <remarks>
+    /// Some of these are Debug Build only, please see the Remarks on individual members for more detail
+    /// </remarks>
     public static class Options
     {
         private static LiteralEqualityMode _litEqualityMode = LiteralEqualityMode.Strict;

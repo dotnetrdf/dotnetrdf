@@ -20,40 +20,7 @@ namespace VDS.RDF.Parsing
         /// <returns></returns>
         public static INode TryResolveUri(TokenisingParserContext context, IToken t)
         {
-            switch (t.TokenType)
-            {
-                case Token.QNAME:
-                    try
-                    {
-                        return context.Graph.CreateUriNode(t.Value);
-                    }
-                    catch (UriFormatException formatEx)
-                    {
-                        throw new RdfParseException("Unable to resolve the QName '" + t.Value + "' due to the following error:\n" + formatEx.Message, t, formatEx);
-                    }
-                    catch (RdfException rdfEx)
-                    {
-                        throw new RdfParseException("Unable to resolve the QName '" + t.Value + "' due to the following error:\n" + rdfEx.Message, t, rdfEx);
-                    }
-
-                case Token.URI:
-                    try
-                    {
-                        String uri = Tools.ResolveUri(t.Value, context.Graph.BaseUri.ToSafeString());
-                        return context.Graph.CreateUriNode(new Uri(uri));
-                    }
-                    catch (UriFormatException formatEx)
-                    {
-                        throw new RdfParseException("Unable to resolve the URI '" + t.Value + "' due to the following error:\n" + formatEx.Message, t, formatEx);
-                    }
-                    catch (RdfException rdfEx)
-                    {
-                        throw new RdfParseException("Unable to resolve the URI '" + t.Value + "' due to the following error:\n" + rdfEx.Message, t, rdfEx);
-                    }
-
-                default:
-                    throw ParserHelper.Error("Unexpected Token '" + t.GetType().ToString() + "' encountered, expected a URI/QName Token to resolve into a URI", t);
-            }
+            return ParserHelper.TryResolveUri(context.Graph, t);
         }
 
         /// <summary>
