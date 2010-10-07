@@ -64,14 +64,8 @@ We are aware of the following issues with the library.  Please remember that thi
 there are things that may be buggy still and the API is subject to change at our discretion.
  
 Query
-- There is now only one SPARQL Engines provided with dotNetRDF - see http://www.dotnetrdf.org/content.asp?pageID=SPARQL%20Engine for 
-  up to date Known Issues
-  - Leviathan conforms much more closely to the SPARQL specification but still returns incorrect
-    results on a very small number of queries (5/441 in the official SPARQL Test Suite)
- 
-Serialization
-- The RDF/XML serializers are slower than other serializers achieving around ~25,000 Triples/second maximum
-  as opposed to ~70,000 Triples/second maximum for most other serializers
+- The Leviathan conforms much more closely to the SPARQL specification but still returns incorrect
+  results on a very small number of queries (~5/441 in the official SPARQL Test Suite)
  
 Storage
 - Write speeds can still vary wildly depending on how you perform the write and the data itself

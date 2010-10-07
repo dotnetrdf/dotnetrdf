@@ -156,7 +156,7 @@ namespace VDS.RDF
         /// <summary>
         /// Event which is raised when a Graph has a merge operation performed on it
         /// </summary>
-        event TripleStoreEventHandler GraphsMerged;
+        event TripleStoreEventHandler GraphMerged;
 
         #endregion
 

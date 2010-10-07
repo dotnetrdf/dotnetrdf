@@ -219,7 +219,7 @@ namespace VDS.RDF
         /// <summary>
         /// Event which is raised when a Graph has a merge operation performed on it
         /// </summary>
-        public event TripleStoreEventHandler GraphsMerged;
+        public event TripleStoreEventHandler GraphMerged;
 
         /// <summary>
         /// Helper method for raising the <see cref="GraphAdded">Graph Added</see> event manually
@@ -363,7 +363,7 @@ namespace VDS.RDF
         /// <param name="args">Graph Event Arguments</param>
         protected void RaiseGraphMerged(GraphEventArgs args)
         {
-            TripleStoreEventHandler d = this.GraphsMerged;
+            TripleStoreEventHandler d = this.GraphMerged;
             if (d != null)
             {
                 d(this, new TripleStoreEventArgs(this, args));
