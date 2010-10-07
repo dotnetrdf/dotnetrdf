@@ -44,8 +44,8 @@ improvements in the code:
   could use to test my TriX parser
 - Marek Safar from the Mono project for fixing the bug in gmcs I identified which meant I couldn't compile
   a Mono build of dotNetRDF
-- Andy Seaborne for excellent answers to various SPARQL and ARQ function library related questions which
-  have contributed to the new Leviathan engine and the ARQ function library support
+- Andy Seaborne and Steve Harris for excellent answers to various SPARQL and ARQ function library related questions 
+  which have contributed to resolving various issues in the Leviathan engine and adding the ARQ function library support
 - The SPARQL Working Group for useful feedback and responses to my comments
 - The following people who have contributed bug reports and patches on the mailing lists:
  - Tana Isaac
@@ -56,3 +56,4 @@ improvements in the code:
  - Alexander Zapirov
  - Sergey Novikov
  - Jeen Broekstra
+ - Robert P DeCarlo

@@ -519,7 +519,6 @@
     <EmbeddedResource Include="Configuration\configuration.ttl" />
     <Content Include="ReadMe.txt" />
     <Content Include="ReleaseNotes.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
