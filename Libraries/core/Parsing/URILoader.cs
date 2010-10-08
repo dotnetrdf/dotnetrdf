@@ -143,6 +143,7 @@ namespace VDS.RDF.Parsing
                 {
                     //Invoke FileLoader instead
                     RaiseWarning("This is a file: URI so invoking the FileLoader instead");
+                    //TODO: Fix this so it works properly on Unix filesystems?
                     FileLoader.Load(g, u.ToString().Substring(8));
                     return;
                 }
@@ -220,7 +221,7 @@ namespace VDS.RDF.Parsing
                 //Use HTTP GET
                 httpRequest.Method = "GET";
 #if !SILVERLIGHT
-                httpRequest.Timeout = 15000;
+                httpRequest.Timeout = Options.UriLoaderTimeout;
 #endif
 
 #if DEBUG
@@ -388,7 +389,7 @@ namespace VDS.RDF.Parsing
                 //Use HTTP GET
                 httpRequest.Method = "GET";
 #if !SILVERLIGHT
-                httpRequest.Timeout = 15000;
+                httpRequest.Timeout = Options.UriLoaderTimeout;
 #endif
 
 #if DEBUG

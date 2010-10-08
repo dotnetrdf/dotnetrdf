@@ -253,12 +253,12 @@ namespace VDS.RDF.Parsing
                         case Token.LITERAL:
                             //Check for Datatype/Language
                             IToken temp = tokens.Peek();
-                            if (temp.TokenType == Token.DATATYPE)
+                            if (temp.TokenType == Token.LANGSPEC)
                             {
                                 tokens.Dequeue();
                                 context = new LiteralNode(null, next.Value, temp.Value);
                             }
-                            else if (temp.TokenType == Token.LANGSPEC)
+                            else if (temp.TokenType == Token.DATATYPE)
                             {
                                 tokens.Dequeue();
                                 context = new LiteralNode(null, next.Value, new Uri(temp.Value.Substring(1, temp.Value.Length - 2)));

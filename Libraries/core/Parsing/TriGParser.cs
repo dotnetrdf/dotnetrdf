@@ -118,7 +118,7 @@ namespace VDS.RDF.Parsing
             IToken first = context.Tokens.Dequeue();
             if (first.TokenType != Token.BOF)
             {
-                throw Error("Unexpected Token '" + first.GetType().ToString() + "' encountered, expected a BOF Token", first);
+                throw ParserHelper.Error("Unexpected Token '" + first.GetType().ToString() + "' encountered, expected a BOF Token", first);
             }
 
             //Expect either a Directive or a Graph
@@ -151,7 +151,7 @@ namespace VDS.RDF.Parsing
                         break;
 
                     default:
-                        throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered", next);
+                        throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered", next);
                 }
             } while (next.TokenType != Token.EOF);
         }
@@ -164,7 +164,7 @@ namespace VDS.RDF.Parsing
             if (directive.TokenType == Token.BASEDIRECTIVE)
             {
                 //Base Directives Invalid in TriG
-                throw Error("The Base Directive is not a valid in TriG",directive);
+                throw ParserHelper.Error("The Base Directive is not a valid in TriG",directive);
             }
             else if (directive.TokenType == Token.PREFIXDIRECTIVE)
             {
@@ -195,27 +195,27 @@ namespace VDS.RDF.Parsing
                             IToken dot = context.Tokens.Dequeue();
                             if (dot.TokenType != Token.DOT)
                             {
-                                throw Error("Unexpected Token '" + dot.GetType().ToString() + "' encountered, expected a Dot (Line Terminator) Token to terminate a Prefix Directive", dot);
+                                throw ParserHelper.Error("Unexpected Token '" + dot.GetType().ToString() + "' encountered, expected a Dot (Line Terminator) Token to terminate a Prefix Directive", dot);
                             }
                         }
                         catch (UriFormatException)
                         {
-                            throw Error("The URI '" + uri.Value + "' given for the prefix '" + prefix.Value + "' is not a valid Absolute URI", uri);
+                            throw ParserHelper.Error("The URI '" + uri.Value + "' given for the prefix '" + prefix.Value + "' is not a valid Absolute URI", uri);
                         }
                     }
                     else
                     {
-                        throw Error("Unexpected Token '" + prefix.GetType().ToString() + "' encountered, expected a URI Token after a Prefix Token", uri);
+                        throw ParserHelper.Error("Unexpected Token '" + prefix.GetType().ToString() + "' encountered, expected a URI Token after a Prefix Token", uri);
                     }
                 }
                 else
                 {
-                    throw Error("Unexpected Token '" + prefix.GetType().ToString() + "' encountered, expected a Prefix Token after a Prefix Directive Token", prefix);
+                    throw ParserHelper.Error("Unexpected Token '" + prefix.GetType().ToString() + "' encountered, expected a Prefix Token after a Prefix Directive Token", prefix);
                 }
             }
             else
             {
-                throw Error("Unexpected Token '" + directive.GetType().ToString() + "' encountered, expected a Base/Prefix Directive Token", directive);
+                throw ParserHelper.Error("Unexpected Token '" + directive.GetType().ToString() + "' encountered, expected a Base/Prefix Directive Token", directive);
             }
         }
 
@@ -247,7 +247,7 @@ namespace VDS.RDF.Parsing
                 }
                 catch (UriFormatException)
                 {
-                    throw Error("The URI '" + next.Value + "' given as a Graph Name is not a valid Absolute URI", next);
+                    throw ParserHelper.Error("The URI '" + next.Value + "' given as a Graph Name is not a valid Absolute URI", next);
                 }
 
                 //Get the Next Token
@@ -279,12 +279,22 @@ namespace VDS.RDF.Parsing
                 g.NamespaceMap.Clear();
                 g.NamespaceMap.Import(context.NamespaceMap);
 
-                //Parse Graph Contents
-                this.TryParseTriples(context, g);
+                //Check that the Graph isn't empty i.e. the next token is not a } to close the Graph
+                next = context.Tokens.Peek();
+                if (next.TokenType == Token.RIGHTCURLYBRACKET)
+                {
+                    //Empty Graph so just discard the }
+                    context.Tokens.Dequeue();
+                }
+                else
+                {
+                    //Parse Graph Contents
+                    this.TryParseTriples(context, g);
+                }
             }
             else
             {
-                throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Left Curly Bracket to start a Graph", next);
+                throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Left Curly Bracket to start a Graph", next);
             }
 
             //Add Graph to Store
@@ -316,7 +326,7 @@ namespace VDS.RDF.Parsing
 
                     case Token.QNAME:
                     case Token.URI:
-                        subjNode = this.TryResolveUri(context, g, subj);
+                        subjNode = ParserHelper.TryResolveUri(g, subj);
                         break;
 
                     case Token.BLANKNODEWITHID:
@@ -363,11 +373,11 @@ namespace VDS.RDF.Parsing
                         break;
 
                     case Token.EOF:
-                        throw Error("Unexpected End of File while trying to parse Triples", subj);
+                        throw ParserHelper.Error("Unexpected End of File while trying to parse Triples", subj);
 
                     default:
                         //Unexpected Token
-                        throw Error("Unexpected Token '" + subj.GetType().ToString() + "' encountered, expected a URI/QName/Blank Node as the Subject of a Triple", subj);
+                        throw ParserHelper.Error("Unexpected Token '" + subj.GetType().ToString() + "' encountered, expected a URI/QName/Blank Node as the Subject of a Triple", subj);
                 }
 
                 //Parse the Predicate Object List
@@ -380,7 +390,7 @@ namespace VDS.RDF.Parsing
                     IToken dot = context.Tokens.Dequeue();
                     if (dot.TokenType != Token.DOT && dot.TokenType != Token.RIGHTCURLYBRACKET)
                     {
-                        throw Error("Unexpected Token '" + dot.GetType().ToString() + "' encountered, expected a Dot (Line Terminator) Token to terminate Triples", dot);
+                        throw ParserHelper.Error("Unexpected Token '" + dot.GetType().ToString() + "' encountered, expected a Dot (Line Terminator) Token to terminate Triples", dot);
                     }
                 }
 
@@ -425,7 +435,7 @@ namespace VDS.RDF.Parsing
 
                     case Token.QNAME:
                     case Token.URI:
-                        predNode = this.TryResolveUri(context, g, pred);
+                        predNode = ParserHelper.TryResolveUri(g, pred);
                         break;
 
                     case Token.KEYWORDA:
@@ -434,26 +444,26 @@ namespace VDS.RDF.Parsing
                         break;
 
                     case Token.EOF:
-                        throw Error("Unexpected End of File while trying to parse Predicate Object list", pred);
+                        throw ParserHelper.Error("Unexpected End of File while trying to parse Predicate Object list", pred);
 
                     case Token.DOT:
                     case Token.RIGHTCURLYBRACKET:
                         if (!ok)
                         {
-                            throw Error("Unexpected Token '" + pred.GetType().ToString() + "' encountered before a Predicate Object list was parsed", pred);
+                            throw ParserHelper.Error("Unexpected Token '" + pred.GetType().ToString() + "' encountered before a Predicate Object list was parsed", pred);
                         }
                         return;
 
                     case Token.RIGHTSQBRACKET:
                         if (!ok)
                         {
-                            throw Error("Unexpected Token '" + pred.GetType().ToString() + "' encountered before a Predicate Object list of a Blank Node Collection was parsed", pred);
+                            throw ParserHelper.Error("Unexpected Token '" + pred.GetType().ToString() + "' encountered before a Predicate Object list of a Blank Node Collection was parsed", pred);
                         }
                         return;
 
                     default:
                         //Unexpected Token
-                        throw Error("Unexpected Token '" + pred.GetType().ToString() + "' encountered, expected a URI/QName as the Predicate of a Triple", pred);
+                        throw ParserHelper.Error("Unexpected Token '" + pred.GetType().ToString() + "' encountered, expected a URI/QName as the Predicate of a Triple", pred);
                 }
 
                 ok = true;
@@ -505,7 +515,7 @@ namespace VDS.RDF.Parsing
 
                     case Token.QNAME:
                     case Token.URI:
-                        objNode = this.TryResolveUri(context, g, obj);
+                        objNode = ParserHelper.TryResolveUri(g, obj);
                         break;
 
                     case Token.LITERAL:
@@ -533,7 +543,7 @@ namespace VDS.RDF.Parsing
                             }
                             else
                             {
-                                throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a URI/QName Token to specify a Data Type after a ^^ Token", next);
+                                throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a URI/QName Token to specify a Data Type after a ^^ Token", next);
                             }
                         }
                         else
@@ -577,7 +587,7 @@ namespace VDS.RDF.Parsing
                         //End of Blank Node Collection
                         if (!ok)
                         {
-                            throw Error("Unexpected Token '" + obj.GetType().ToString() + "' encountered before an Object list of a Blank Node Collection was parsed", obj);
+                            throw ParserHelper.Error("Unexpected Token '" + obj.GetType().ToString() + "' encountered before an Object list of a Blank Node Collection was parsed", obj);
                         }
                         return;
 
@@ -601,20 +611,20 @@ namespace VDS.RDF.Parsing
                         break;
 
                     case Token.EOF:
-                        throw Error("Unexpected End of File while trying to parse Object List", obj);
+                        throw ParserHelper.Error("Unexpected End of File while trying to parse Object List", obj);
 
                     case Token.DOT:
                     case Token.RIGHTCURLYBRACKET:
                     case Token.SEMICOLON:
                         if (!ok)
                         {
-                            throw Error("Unexpected Token '" + obj.GetType().ToString() + "' encountered before an Object list was parsed", obj);
+                            throw ParserHelper.Error("Unexpected Token '" + obj.GetType().ToString() + "' encountered before an Object list was parsed", obj);
                         }
                         return;
 
                     default:
                         //Unexpected Token
-                        throw Error("Unexpected Token '" + obj.GetType().ToString() + "' encountered, expected a URI/QName/Blank Node as the Object of a Triple", obj);
+                        throw ParserHelper.Error("Unexpected Token '" + obj.GetType().ToString() + "' encountered, expected a URI/QName/Blank Node as the Object of a Triple", obj);
                 }
 
                 ok = true;
@@ -648,7 +658,7 @@ namespace VDS.RDF.Parsing
 
                     case Token.QNAME:
                     case Token.URI:
-                        item = this.TryResolveUri(context, g, next);
+                        item = ParserHelper.TryResolveUri(g, next);
                         break;
 
                     case Token.LITERAL:
@@ -695,11 +705,11 @@ namespace VDS.RDF.Parsing
                         break;
 
                     case Token.EOF:
-                        throw Error("Unexpected End of File while trying to parse a Collection", next);
+                        throw ParserHelper.Error("Unexpected End of File while trying to parse a Collection", next);
 
                     default:
                         //Unexpected Token
-                        throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a URI/QName/Literal/Blank Node as an item in a Collection", next);
+                        throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a URI/QName/Literal/Blank Node as an item in a Collection", next);
                 }
 
                 //Create the subj rdf:first item Triple
@@ -722,68 +732,6 @@ namespace VDS.RDF.Parsing
                 }
             } while (true);
 
-        }
-
-        /// <summary>
-        /// Attempts to resolve a QName or URI Token into a URI Node and produces appropriate error messages if this fails
-        /// </summary>
-        /// <param name="context">Parser Context</param>
-        /// <param name="g">Graph to create URI Nodes in</param>
-        /// <param name="t">Token to resolve</param>
-        /// <returns></returns>
-        private INode TryResolveUri(TriGParserContext context, IGraph g, IToken t)
-        {
-            switch (t.TokenType)
-            {
-                case Token.QNAME:
-                    try
-                    {
-                        return g.CreateUriNode(t.Value);
-                    }
-                    catch (RdfException rdfEx)
-                    {
-                        throw new RdfParseException("Unable to resolve the QName '" + t.Value + "' due to the following error:\n" + rdfEx.Message, t, rdfEx);
-                    }
-
-                case Token.URI:
-                    try
-                    {
-                        String uri = Tools.ResolveUri(t.Value, g.BaseUri.ToSafeString());
-                        return g.CreateUriNode(new Uri(uri));
-                    }
-                    catch (RdfException rdfEx)
-                    {
-                        throw new RdfParseException("Unable to resolve the URI '" + t.Value + "' due to the following error:\n" + rdfEx.Message, t, rdfEx);
-                    }
-
-                default:
-                    throw Error("Unexpected Token '" + t.GetType().ToString() + "' encountered, expected a URI/QName Token to resolve into a URI", t);
-            }
-        }
-
-        /// <summary>
-        /// Helper method for raising informative standardised Parser Errors
-        /// </summary>
-        /// <param name="msg">The Error Message</param>
-        /// <param name="t">The Token that is the cause of the Error</param>
-        /// <returns></returns>
-        private RdfParseException Error(String msg, IToken t)
-        {
-            StringBuilder output = new StringBuilder();
-            output.Append("[");
-            output.Append(t.GetType().Name);
-            output.Append(" at Line ");
-            output.Append(t.StartLine);
-            output.Append(" Column ");
-            output.Append(t.StartPosition);
-            output.Append(" to Line ");
-            output.Append(t.EndLine);
-            output.Append(" Column ");
-            output.Append(t.EndPosition);
-            output.Append("] ");
-            output.Append(msg);
-
-            return new RdfParseException(output.ToString(), t);
         }
 
         /// <summary>

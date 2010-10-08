@@ -74,7 +74,9 @@ namespace VDS.RDF
     /// <summary>
     /// Configures Global Static Options for the Library
     /// </summary>
-    /// <remarks>Some of these are Debug Build only, please see the Remarks on individual members for more detail</remarks>
+    /// <remarks>
+    /// Some of these are Debug Build only, please see the Remarks on individual members for more detail
+    /// </remarks>
     public static class Options
     {
         private static LiteralEqualityMode _litEqualityMode = LiteralEqualityMode.Strict;
@@ -87,6 +89,7 @@ namespace VDS.RDF
         private static SparqlEngine _queryEngine = SparqlEngine.Leviathan;//SparqlEngine.Labyrinth;
         private static bool _queryAllowUnknownFunctions = true;
         private static bool _uriLoaderCaching = true;
+        private static int _uriLoaderTimeout = 15000;
 
         #if DEBUG
         //Debug Build Only
@@ -252,6 +255,8 @@ namespace VDS.RDF
             }
         }
 
+#if !NO_URICACHE
+
         /// <summary>
         /// Gets/Sets whether the <see cref="UriLoader">UriLoader</see> uses caching
         /// </summary>
@@ -264,6 +269,25 @@ namespace VDS.RDF
             set
             {
                 _uriLoaderCaching = value;
+            }
+        }
+#endif
+
+        /// <summary>
+        /// Gets/Sets the Timeout for URI Loader requests (Defaults to 15 seconds)
+        /// </summary>
+        public static int UriLoaderTimeout
+        {
+            get
+            {
+                return _uriLoaderTimeout;
+            }
+            set
+            {
+                if (value > 0)
+                {
+                    _uriLoaderTimeout = value;
+                }
             }
         }
 

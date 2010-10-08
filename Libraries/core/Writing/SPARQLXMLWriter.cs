@@ -43,6 +43,7 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 using System.IO;
+using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 
 namespace VDS.RDF.Writing
@@ -322,7 +323,9 @@ namespace VDS.RDF.Writing
 
                                     if (!l.Language.Equals(String.Empty))
                                     {
-                                        writer.WriteAttributeString("xml:lang", l.Language);
+                                        writer.WriteStartAttribute("xml", "lang", XmlSpecsHelper.NamespaceXml);
+                                        writer.WriteRaw(l.Language);
+                                        writer.WriteEndAttribute();
                                     }
                                     else if (l.DataType != null)
                                     {

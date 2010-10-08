@@ -61,7 +61,7 @@ namespace VDS.RDF
     /// There is also support for using SQL backed stores (only recommended for small scale testing and development) and a couple of other forms of read-only store namely RDF dataset files and SPARQL query endpoints.
     /// </para>
     /// <para>
-    /// For those building ASP.Net based websites the <see cref="VDS.RDF.Web">Web</see> namespace is dedicated to providing classes for integrating RDF into ASP.Net applications.  If you've used dotNetRDF previously for ASP.Net applications please be aware that most of the existing classes are now deprecated in favour of new classes which take advantage of the new Configuration API.
+    /// For those building ASP.Net based websites the <see cref="VDS.RDF.Web">Web</see> namespace is dedicated to providing classes for integrating RDF into ASP.Net applications.  If you've used dotNetRDF for ASP.Net applications prior to Version 0.3.0 please be aware that most of the existing classes were deprecated in favour of new classes which take advantage of the new Configuration API.
     /// </para>
     /// <para>
     /// There is also a fairly new and experimental <see cref="VDS.RDF.Ontology">Ontology</see> namespace which provides a more resource and ontology centric API for working with RDF which was introduced in the 0.2.2 release
@@ -75,13 +75,27 @@ namespace VDS.RDF
     /// Currently dotNetRDF is still considered to be in Alpha, this means it may not be suitable for production scenarios and that the API is subject to change in subsequent releases should we feel it necessary.  As it is an Alpha release users should be aware that the software will not be bug free.  While we continually work to improve the quality of this library and to eliminate bugs as we find them we are at the same time attempting to enhance the library by adding more functionality so it is inevitable that some bugs will persist.  Please help us improve this library by emailing us when you find a bug, you can use the <a href="mailto:dotnetrdf-bugs@lists.sourceforge.net">Bug Reports list</a> to report bugs, the <a href="mailto:dotnetrdf-support@lists.sourceforge.net">Support list</a> to ask questions and the <a href="mailto:dotnetrdf-develop@lists.sourceforge.net">Developer list</a> to request new features or discuss development plans (all these are SourceForge mailing lists which require subscription).
     /// </para>
     /// <para>
-    /// The 0.3.0 release makes very few breaking API changes compared to the 0.2.x API and it is planned that the API should continue to remain relatively stable other than the introduction of new features and the removal of the now deprecated older ASP.Net classes.  Further 0.3.x releases will focus on bringing continued improvements in the ASP.Net support and increased support for reasoning.
+    /// The 0.3.x release makes very few breaking API changes compared to the 0.2.x API and it is planned that the API should continue to remain relatively stable other than the introduction of new features and the removal of the now deprecated older ASP.Net classes.  Further 0.3.x releases will focus on bringing continued improvements in the ASP.Net support and increased support for reasoning.
     /// </para>
+    /// <h4>Alternative Builds</h4>
+    /// <h5>Mono Build</h5>
     /// <para>
     /// We provide a Mono build of dotNetRDF (<em>dotNetRDF.Mono.dll</em>) which is currently targeted at Mono 2.6 - this port is highly experimental and has received little/no testing.  There are some known incompatabilities with Mono mostly regarding the 3rd party libraries that dotNetRDF uses - Virtuoso and MySQL support is likely not to function under Mono.  As far as we are aware all other features should work normally, in terms of roadmap the Mono build is not our main priority currently and we will conduct full testing of the Mono build in the future and make an announcement once we consider that build to be stable or have had time to adapt the build appropriately.
     /// </para>
+    /// <h5>Silverlight Build</h5>
+    /// <para>
+    /// We provide a Silverlight build of dotNetRDF (<em>dotNetRDF.Silverlight.dll</em>) which is an experimental build which has been tested by external users but not internally as we don't do any Silverlight development currently.  This build runs on Silverlight 4 and omits the following features since they can't be supported under Silverlight:
+    /// </para>
+    /// <ul>
+    /// <li>Most of the <see cref="VDS.RDF.Storage">Storage</see> namespace and the <see cref="VDS.RDF.Web">Web</see> namespaces</li>
+    /// <li>No String normalization support</li>
+    /// <li>No <see cref="VDS.RDF.Parsing.UriLoader">UriLoader</see> caching support</li>
+    /// <li>No multi-threaded support where <see cref="System.Threading.ReaderWriteLockSlim">ReaderWriterLockSlim</see> is used</li>
+    /// <li>Various writers and parsers use streaming rather than DOM based XML parsing</li>
+    /// <li>No support for XSL in TriX files</li>
+    /// </ul>
     /// </summary>
-    public class NamespaceDoc
+    class NamespaceDoc
     {
 
     }
@@ -97,7 +111,23 @@ namespace VDS.RDF.Configuration
     /// As of the 0.3.0 release we introduced this new API which provides for encoding configuration in RDF Graphs.  This configuration system has been used as part of a complete refresh of the ASP.Net support as it allows for much more expressive and flexible configurations than were previously possible.  See the <a href="http://www.dotnetrdf.org/content.asp?pageID=Configuration%20API">documentation</a> on the main website for many detailed examples.
     /// </para>
     /// </summary>
-    public class NamespaceDoc
+    class NamespaceDoc
+    {
+
+    }
+}
+
+namespace VDS.RDF.Configuration.Permissions
+{
+    /// <summary>
+    /// <para>
+    /// Namespace for classes related to configuring Permissions
+    /// </para>
+    /// <para>
+    /// <strong>Warning:</strong> The API here is experimental and may changed/be removed in future releases
+    /// </para>
+    /// </summary>
+    class NamespaceDoc
     {
 
     }
@@ -116,7 +146,7 @@ namespace VDS.RDF.Ontology
     /// One key feature of this new part of the API is the <see cref="ReasonerGraph">ReasonerGraph</see> which allows you to wrap an existing Graph with a reasoner to get a unified view over the original Triples and materialised inferences without modifying your original Graph.
     /// </para>
     /// </summary>
-    public class NamespaceDoc
+    class NamespaceDoc
     {
 
     }
@@ -135,7 +165,7 @@ namespace VDS.RDF.Parsing
     /// Has child namespaces <see cref="VDS.RDF.Parsing.Events">Events</see> and <see cref="VDS.RDF.Parsing.Tokens">Tokens</see> for supporting Event and Token based Parsing.
     /// </para>
     /// </summary>
-    public class NamespaceDoc
+    class NamespaceDoc
     {
 
     }
@@ -148,7 +178,7 @@ namespace VDS.RDF.Parsing.Contexts
     /// Namespace for Parser Context classes, these are classes that are used internally by parsers to store their state.  This allows parsers to be safely used in a multi-threaded scenario since the parsing of one Graph/Store cannot affect the parsing of another.
     /// </para>
     /// </summary>
-    public class NamespaceDoc
+    class NamespaceDoc
     {
 
     }
@@ -159,7 +189,7 @@ namespace VDS.RDF.Parsing.Events
     /// <summary>
     /// Namespace for Event classes which are used to support Event Based parsing of RDF syntaxes
     /// </summary>
-    public class NamespaceDoc
+    class NamespaceDoc
     {
        
     }
@@ -168,11 +198,26 @@ namespace VDS.RDF.Parsing.Events
 namespace VDS.RDF.Parsing.Tokens
 {
     /// <summary>
+    /// <para>
     /// Namespace for Token classes which are used to support Token Based parsing of RDF syntaxes
+    /// </para>
     /// </summary>
-    public class NamespaceDoc
+    class NamespaceDoc
     {
         
+    }
+}
+
+namespace VDS.RDF.Parsing.Validation
+{
+    /// <summary>
+    /// <para>
+    /// Namespace for Validator classes that can be used to validate various forms of syntax
+    /// </para>
+    /// </summary>
+    class NamespaceDoc
+    {
+
     }
 }
 
@@ -195,7 +240,7 @@ namespace VDS.RDF.Query
     /// </ol>
     /// </para>
     /// </summary>
-    public class NamespaceDoc
+    class NamespaceDoc
     {
 
     }
@@ -208,7 +253,7 @@ namespace VDS.RDF.Query.Aggregates
     /// Namespace for Aggregate classes which implement Aggregate functions for SPARQL
     /// </para>
     /// </summary>
-    public class NamespaceDoc
+    class NamespaceDoc
     {
 
     }
@@ -221,10 +266,24 @@ namespace VDS.RDF.Query.Algebra
     /// Contains the classes which model the mapping of SPARQL queries into the SPARQL Algebra.  This namespace is a key component of the new <strong>Leviathan</strong> SPARQL engine introduced in the 0.2.x builds of dotNetRDF
     /// </para>
     /// </summary>
-    public class NamespaceDoc
+    class NamespaceDoc
     {
 
     }
+}
+
+namespace VDS.RDF.Query.Construct
+{
+    /// <summary>
+    /// <para>
+    /// Namespace for classes used in executing CONSTRUCT queries
+    /// </para>
+    /// </summary>
+    class NamespaceDoc
+    {
+
+    }
+
 }
 
 namespace VDS.RDF.Query.Describe
@@ -234,7 +293,7 @@ namespace VDS.RDF.Query.Describe
     /// Namespace for classes which implement algorithms for executing DESCRIBE queries
     /// </para>
     /// </summary>
-    public class NamespaceDoc
+    class NamespaceDoc
     {
 
     }
@@ -247,7 +306,7 @@ namespace VDS.RDF.Query.Expressions
     /// Namespace containing all the classes related to the execution of expressions in SPARQL queries.  Any valid expression should be able to be modelled and executed using these clases.
     /// </para>
     /// </summary>
-    public class NamespaceDoc
+    class NamespaceDoc
     {
 
     }
@@ -260,7 +319,7 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// Namespace containing Expression classes which model functions in SPARQL expressions
     /// </para>
     /// </summary>
-    public class NamespaceDoc
+    class NamespaceDoc
     {
 
     }
@@ -273,7 +332,7 @@ namespace VDS.RDF.Query.Filters
     /// Namespace containing classes pertaining to the filtering of the results of SPARQL queries
     /// </para>
     /// </summary>
-    public class NamespaceDoc
+    class NamespaceDoc
     {
 
     }
@@ -286,7 +345,7 @@ namespace VDS.RDF.Query.Grouping
     /// Namespace containing classes used to apply GROUP BY clauses to SPARQL queries
     /// </para>
     /// </summary>
-    public class NamespaceDoc
+    class NamespaceDoc
     {
 
     }
@@ -305,7 +364,7 @@ namespace VDS.RDF.Query.Inference
     /// OWL reasoning currently has extremely limited support, we provide a Pellet client in the <see cref="Pellet">Pellet</see> namespace which can be used to connect to a Pellet Server but that currently only provides reasoning on external knowledge bases on the Pellet Server
     /// </para>
     /// </summary>
-    public class NamespaceDoc
+    class NamespaceDoc
     {
 
     }
@@ -321,7 +380,7 @@ namespace VDS.RDF.Query.Inference.Pellet
     /// Due to Pellet Server being a relatively new product it is currently only possible to reason over external knowledge bases on a Pellet Server and not to use Pellet to reason over in-memory data.  As Pellet Server is updated in the future this client will be updated to take advantage of those updates and to eventually provide for in-memory reasoning.
     /// </para>
     /// </summary>
-    public class NamespaceDoc
+    class NamespaceDoc
     {
 
     }
@@ -334,7 +393,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
     /// Namespace which provides classes which represent the Services offered by a Pellet Server knowledge base
     /// </para>
     /// </summary>
-    public class NamespaceDoc
+    class NamespaceDoc
     {
 
     }
@@ -347,7 +406,7 @@ namespace VDS.RDF.Query.Ordering
     /// Namespace containing classes used to order the results of SPARQL queries
     /// </para>
     /// </summary>
-    public class NamespaceDoc
+    class NamespaceDoc
     {
 
     }
@@ -360,7 +419,7 @@ namespace VDS.RDF.Query.Paths
     /// Contains the classes which model property paths in SPARQL, they can be used to both represent and evaluate a property path as part of a SPARQL query.
     /// </para>
     /// </summary>
-    public class NamespaceDoc
+    class NamespaceDoc
     {
 
     }
@@ -371,7 +430,7 @@ namespace VDS.RDF.Query.Patterns
     /// <summary>
     /// Namespace for Pattern Classes that are used in the Graph and Triple matching process for executing SPARQL queries on <see cref="IInMemoryQueryableStore">IInMemoryQueryableStore</see> objects
     /// </summary>
-    public class NamespaceDoc
+    class NamespaceDoc
     {
 
     }
@@ -391,7 +450,7 @@ namespace VDS.RDF.Storage
     /// </ol>
     /// </para>
     /// </summary>
-    public class NamespaceDoc
+    class NamespaceDoc
     {
 
     }
@@ -402,7 +461,7 @@ namespace VDS.RDF.Storage.Params
     /// <summary>
     /// Namespace for Parameter Classes which provide Parameter information to <see cref="IStoreReader">IStoreReader</see> and <see cref="IStoreWriter">IStoreWriter</see> implementations
     /// </summary>
-    public class NamespaceDoc
+    class NamespaceDoc
     {
     }
 }
@@ -414,7 +473,7 @@ namespace VDS.RDF.Translation
     /// Namespace for Translation Classes which provide the ability to translate RDF directly from one format to another
     /// </para>
     /// </summary>
-    public class NamespaceDoc
+    class NamespaceDoc
     {
 
     }
@@ -430,7 +489,7 @@ namespace VDS.RDF.Update
     /// This is a new part of the API introduced in the 0.3.0 release and adds support for using SPARQL to update Triple Stores.  SPARQL Update is part of the new SPARQL 1.1 standard and provides syntax for inserting, modifying and deleting data as well as managing graphs in a store.
     /// </para>
     /// </summary>
-    public class NamespaceDoc
+    class NamespaceDoc
     {
 
     }
@@ -443,7 +502,7 @@ namespace VDS.RDF.Update.Commands
     /// Namespace containing classes which model SPARQL Update Commands.  These can be used both to represent SPARQL Updates and to execute them over in-memory stores.
     /// </para>
     /// </summary>
-    public class NamespaceDoc
+    class NamespaceDoc
     {
 
     }
@@ -456,7 +515,7 @@ namespace VDS.RDF.Update.Protocol
     /// Namespaces containing classes which implement the SPARQL Uniform HTTP Protocol for RDF Graph Management
     /// </para>
     /// </summary>
-    public class NamespaceDoc
+    class NamespaceDoc
     {
 
     }
@@ -479,7 +538,7 @@ namespace VDS.RDF.Web
     /// <strong>Note: </strong> As can be seen the old ASP.Net handlers have now all been marked as obsolete, they are left in the library currently to provide compatability with existing applications but we strongly recommend that applications using these migrate to the new Handlers and all new development should use the new Handlers.
     /// </para>
     /// </summary>
-    public class NamespaceDoc
+    class NamespaceDoc
     {
 
     }
@@ -492,7 +551,72 @@ namespace VDS.RDF.Web.Configuration
     /// Namespace for Configuration classes which are used to load and store the configuration settings for HTTP Handlers provided as part of the <strong>Web</strong> namespace.
     /// </para>
     /// </summary>
-    public class NamespaceDoc
+    class NamespaceDoc
+    {
+
+    }
+}
+
+namespace VDS.RDF.Web.Configuration.Protocol
+{
+    /// <summary>
+    /// <para>
+    /// Namespace for Configuration classes which are used to load and store the configuration settings for SPARQL Uniform HTTP Protocol for RDF Graph Management handlers
+    /// </para>
+    /// </summary>
+    class NamespaceDoc
+    {
+
+    }
+}
+
+namespace VDS.RDF.Web.Configuration.Query
+{
+    /// <summary>
+    /// <para>
+    /// Namespace for Configuration classes which are used to load and store the configuration settings for SPARQL Query handlers
+    /// </para>
+    /// </summary>
+    class NamespaceDoc
+    {
+
+    }
+}
+
+namespace VDS.RDF.Web.Configuration.Resources
+{
+    /// <summary>
+    /// <para>
+    /// Namespace for Configuration classes which are used to load and store the configuration settings for handlers which serve resources like Graphs
+    /// </para>
+    /// </summary>
+    class NamespaceDoc
+    {
+
+    }
+}
+
+namespace VDS.RDF.Web.Configuration.Server
+{
+    /// <summary>
+    /// <para>
+    /// Namespace for Configuration classes which are used to load and store the configuration settings for SPARQL Servers
+    /// </para>
+    /// </summary>
+    class NamespaceDoc
+    {
+
+    }
+}
+
+namespace VDS.RDF.Web.Configuration.Update
+{
+    /// <summary>
+    /// <para>
+    /// Namespace for Configuration classes which are used to load and store the configuration settings for SPARQL Update handlers
+    /// </para>
+    /// </summary>
+    class NamespaceDoc
     {
 
     }
@@ -508,7 +632,7 @@ namespace VDS.RDF.Writing
     /// Also contains classes that can be used to save Graphs and Triple Stores to arbitrary database backed storage using classes from the <see cref="VDS.RDF.Storage">Storage</see> namespace.
     /// </para>
     /// </summary>
-    public class NamespaceDoc
+    class NamespaceDoc
     {
 
     }
@@ -521,7 +645,20 @@ namespace VDS.RDF.Writing.Contexts
     /// Namespace for Writer Context classes, these are classes that are used internally by writers to store their state.  This allows writers to be safely used in a multi-threaded scenario since the writing of one Graph/Store cannot affect the writing of another.
     /// </para>
     /// </summary>
-    public class NamespaceDoc
+    class NamespaceDoc
+    {
+
+    }
+}
+
+namespace VDS.RDF.Writing.Formatting
+{
+    /// <summary>
+    /// <para>
+    /// Namespace for Formatter Classes which can be used to format <see cref="VDS.RDF.Triple">Triples</see>, <see cref="VDS.RDF.INode">Nodes</see> and <see cref="System.Uri">URIs</see>
+    /// </para>
+    /// </summary>
+    class NamespaceDoc
     {
 
     }

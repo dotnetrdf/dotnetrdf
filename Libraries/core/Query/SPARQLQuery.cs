@@ -41,6 +41,7 @@ using System.Text.RegularExpressions;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Query.Algebra;
+using VDS.RDF.Query.Construct;
 using VDS.RDF.Query.Describe;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Filters;
@@ -842,11 +843,12 @@ namespace VDS.RDF.Query
                             List<Triple> constructedTriples = new List<Triple>();
                             try
                             {
+                                ConstructContext constructContext = new ConstructContext(h, s, false);
                                 foreach (ITriplePattern p in this._constructTemplate.TriplePatterns)
                                 {
                                     if (p is IConstructTriplePattern)
                                     {
-                                        constructedTriples.Add(((IConstructTriplePattern)p).Construct(h, s));
+                                        constructedTriples.Add(((IConstructTriplePattern)p).Construct(constructContext));
                                     }
                                 }
                             }
@@ -1255,8 +1257,8 @@ namespace VDS.RDF.Query
                 case SparqlQueryType.SelectAllReduced:
                 case SparqlQueryType.SelectDistinct:
                 case SparqlQueryType.SelectReduced:
-                    //Optimise Queries to use LazyBgp's if Algebra Optimisation is enabled and there is a Limit/Offset
-                    if (Options.AlgebraOptimisation && (this._limit >= 0 || this._offset > 0))
+                    //Optimise Queries to use LazyBgp's if Algebra Optimisation is enabled and there is a LIMIT but no ORDER BY
+                    if (Options.AlgebraOptimisation && this._orderBy == null && this._limit >= 0)
                     {
                         try
                         {

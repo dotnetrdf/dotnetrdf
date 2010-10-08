@@ -42,6 +42,7 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
+using VDS.RDF.Query.Construct;
 using VDS.RDF.Query.Patterns;
 using VDS.RDF.Storage;
 using VDS.RDF.Update.Commands;
@@ -226,9 +227,11 @@ namespace VDS.RDF.Update
                         List<Triple> tempDeletedTriples = new List<Triple>();
                         try
                         {
+
+                            ConstructContext context = new ConstructContext(null, s, true);
                             foreach (ITriplePattern p in cmd.DeletePattern.TriplePatterns)
                             {
-                                tempDeletedTriples.Add(((IConstructTriplePattern)p).Construct(null, s, true));
+                                tempDeletedTriples.Add(((IConstructTriplePattern)p).Construct(context));
                             }
                             deletedTriples.AddRange(tempDeletedTriples);
                         }
@@ -276,9 +279,10 @@ namespace VDS.RDF.Update
                                         continue;
                                 }
                                 if (!deletedGraphTriples.ContainsKey(graphUri)) deletedGraphTriples.Add(graphUri, new List<Triple>());
+                                ConstructContext context = new ConstructContext(null, s, true);
                                 foreach (ITriplePattern p in gp.TriplePatterns)
                                 {
-                                    tempDeletedTriples.Add(((IConstructTriplePattern)p).Construct(null, s, true));
+                                    tempDeletedTriples.Add(((IConstructTriplePattern)p).Construct(context));
                                 }
                                 deletedGraphTriples[graphUri].AddRange(tempDeletedTriples);
                             }
@@ -355,11 +359,12 @@ namespace VDS.RDF.Update
 
             //Delete the actual Triples
             INode subj, pred, obj;
+            ConstructContext context = new ConstructContext(g, null, true);
             foreach (IConstructTriplePattern p in cmd.DataPattern.TriplePatterns)
             {
-                subj = p.Subject.Construct(g, null, true);//((NodeMatchPattern)tp.Subject).Node.CopyNode(g);
-                pred = p.Predicate.Construct(g, null, true);//((NodeMatchPattern)tp.Predicate).Node.CopyNode(g);
-                obj = p.Object.Construct(g, null, true);//((NodeMatchPattern)tp.Object).Node.CopyNode(g);
+                subj = p.Subject.Construct(context);//((NodeMatchPattern)tp.Subject).Node.CopyNode(g);
+                pred = p.Predicate.Construct(context);//((NodeMatchPattern)tp.Predicate).Node.CopyNode(g);
+                obj = p.Object.Construct(context);//((NodeMatchPattern)tp.Object).Node.CopyNode(g);
 
                 g.Retract(new Triple(subj, pred, obj));
             }
@@ -428,9 +433,10 @@ namespace VDS.RDF.Update
                         List<Triple> tempInsertedTriples = new List<Triple>();
                         try
                         {
+                            ConstructContext context = new ConstructContext(null, s, true);
                             foreach (ITriplePattern p in cmd.InsertPattern.TriplePatterns)
                             {
-                                tempInsertedTriples.Add(((IConstructTriplePattern)p).Construct(null, s, true));
+                                tempInsertedTriples.Add(((IConstructTriplePattern)p).Construct(context));
                             }
                             insertedTriples.AddRange(tempInsertedTriples);
                         }
@@ -478,9 +484,10 @@ namespace VDS.RDF.Update
                                         continue;
                                 }
                                 if (!insertedGraphTriples.ContainsKey(graphUri)) insertedGraphTriples.Add(graphUri, new List<Triple>());
+                                ConstructContext context = new ConstructContext(null, s, true);
                                 foreach (ITriplePattern p in gp.TriplePatterns)
                                 {
-                                    tempInsertedTriples.Add(((IConstructTriplePattern)p).Construct(null, s, true));
+                                    tempInsertedTriples.Add(((IConstructTriplePattern)p).Construct(context));
                                 }
                                 insertedGraphTriples[graphUri].AddRange(tempInsertedTriples);
                             }
@@ -557,11 +564,12 @@ namespace VDS.RDF.Update
 
             //Insert the actual Triples
             INode subj, pred, obj;
+            ConstructContext context = new ConstructContext(g, null, true);
             foreach (IConstructTriplePattern p in cmd.DataPattern.TriplePatterns.OfType<IConstructTriplePattern>())
             {
-                subj = p.Subject.Construct(g, null, true);//((NodeMatchPattern)tp.Subject).Node.CopyNode(target);
-                pred = p.Predicate.Construct(g, null, true);//((NodeMatchPattern)tp.Predicate).Node.CopyNode(target);
-                obj = p.Object.Construct(g, null, true);//((NodeMatchPattern)tp.Object).Node.CopyNode(target);
+                subj = p.Subject.Construct(context);//((NodeMatchPattern)tp.Subject).Node.CopyNode(target);
+                pred = p.Predicate.Construct(context);//((NodeMatchPattern)tp.Predicate).Node.CopyNode(target);
+                obj = p.Object.Construct(context);//((NodeMatchPattern)tp.Object).Node.CopyNode(target);
 
                 g.Assert(new Triple(subj, pred, obj));
             }
@@ -628,9 +636,10 @@ namespace VDS.RDF.Update
                         List<Triple> tempDeletedTriples = new List<Triple>();
                         try
                         {
+                            ConstructContext context = new ConstructContext(null, s, true);
                             foreach (ITriplePattern p in cmd.DeletePattern.TriplePatterns)
                             {
-                                tempDeletedTriples.Add(((IConstructTriplePattern)p).Construct(null, s, true));
+                                tempDeletedTriples.Add(((IConstructTriplePattern)p).Construct(context));
                             }
                             deletedTriples.AddRange(tempDeletedTriples);
                         }
@@ -678,9 +687,10 @@ namespace VDS.RDF.Update
                                         continue;
                                 }
                                 if (!deletedGraphTriples.ContainsKey(graphUri)) deletedGraphTriples.Add(graphUri, new List<Triple>());
+                                ConstructContext context = new ConstructContext(null, s, true);
                                 foreach (ITriplePattern p in gp.TriplePatterns)
                                 {
-                                    tempDeletedTriples.Add(((IConstructTriplePattern)p).Construct(null, s, true));
+                                    tempDeletedTriples.Add(((IConstructTriplePattern)p).Construct(context));
                                 }
                                 deletedGraphTriples[graphUri].AddRange(tempDeletedTriples);
                             }
@@ -701,9 +711,10 @@ namespace VDS.RDF.Update
                         List<Triple> tempInsertedTriples = new List<Triple>();
                         try
                         {
+                            ConstructContext context = new ConstructContext(null, s, true);
                             foreach (ITriplePattern p in cmd.InsertPattern.TriplePatterns)
                             {
-                                tempInsertedTriples.Add(((IConstructTriplePattern)p).Construct(null, s, true));
+                                tempInsertedTriples.Add(((IConstructTriplePattern)p).Construct(context));
                             }
                             insertedTriples.AddRange(tempInsertedTriples);
                         }
@@ -751,9 +762,10 @@ namespace VDS.RDF.Update
                                         continue;
                                 }
                                 if (!insertedGraphTriples.ContainsKey(graphUri)) insertedGraphTriples.Add(graphUri, new List<Triple>());
+                                ConstructContext context = new ConstructContext(null, s, true);
                                 foreach (ITriplePattern p in gp.TriplePatterns)
                                 {
-                                    tempInsertedTriples.Add(((IConstructTriplePattern)p).Construct(null, s, true));
+                                    tempInsertedTriples.Add(((IConstructTriplePattern)p).Construct(context));
                                 }
                                 insertedGraphTriples[graphUri].AddRange(tempInsertedTriples);
                             }

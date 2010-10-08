@@ -165,19 +165,30 @@ namespace VDS.RDF.Query.Algebra
             {
                 if (context.Query != null)
                 {
-                    int limit = context.Query.Limit;
-                    int offset = context.Query.Offset;
-                    if (limit >= 0 && offset >= 0)
+                    if (context.Query.OrderBy != null)
                     {
-                        this._requiredResults = limit + offset;
+                        //If there's an ORDER BY present then can't do Lazy evaluation
+                        this._requiredResults = -1;
                     }
-                    else if (limit >= 0)
+                    else
                     {
-                        this._requiredResults = limit;
-                    }
-                    else if (offset > 0)
-                    {
-                        this._requiredResults = offset;
+                        int limit = context.Query.Limit;
+                        int offset = context.Query.Offset;
+                        if (limit >= 0 && offset >= 0)
+                        {
+                            //If there is a Limit and Offset specified then the required results is the LIMIT+OFFSET
+                            this._requiredResults = limit + offset;
+                        }
+                        else if (limit >= 0)
+                        {
+                            //If there is just a Limit specified then the required results is the LIMIT
+                            this._requiredResults = limit;
+                        }
+                        else
+                        {
+                            //In any other case required results is everything i.e. -1
+                            this._requiredResults = -1;
+                        }
                     }
                 }
             }

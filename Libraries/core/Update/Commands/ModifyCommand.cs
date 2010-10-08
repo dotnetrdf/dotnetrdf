@@ -40,6 +40,7 @@ using System.Text;
 using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
+using VDS.RDF.Query.Construct;
 using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Update.Commands
@@ -142,9 +143,10 @@ namespace VDS.RDF.Update.Commands
             {
                 try
                 {
+                    ConstructContext constructContext = new ConstructContext(g, s, true);
                     foreach (ITriplePattern p in this._deletePattern.TriplePatterns)
                     {
-                        deletedTriples.Add(((IConstructTriplePattern)p).Construct(g, s));
+                        deletedTriples.Add(((IConstructTriplePattern)p).Construct(constructContext));
                     }
                     g.Retract(deletedTriples);
                 }
@@ -192,9 +194,10 @@ namespace VDS.RDF.Update.Commands
                                 continue;
                         }
                         IGraph h = context.Data.Graph(new Uri(graphUri));
+                        ConstructContext constructContext = new ConstructContext(h, s, true);
                         foreach (ITriplePattern p in gp.TriplePatterns)
                         {
-                            deletedTriples.Add(((IConstructTriplePattern)p).Construct(h, s, true));
+                            deletedTriples.Add(((IConstructTriplePattern)p).Construct(constructContext));
                         }
                         h.Retract(deletedTriples);
                     }
@@ -213,9 +216,10 @@ namespace VDS.RDF.Update.Commands
                 List<Triple> insertedTriples = new List<Triple>();
                 try
                 {
+                    ConstructContext constructContext = new ConstructContext(g, s, true);
                     foreach (ITriplePattern p in this._insertPattern.TriplePatterns)
                     {
-                        insertedTriples.Add(((IConstructTriplePattern)p).Construct(g, s));
+                        insertedTriples.Add(((IConstructTriplePattern)p).Construct(constructContext));
                     }
                     g.Assert(insertedTriples);
                 }
@@ -263,9 +267,10 @@ namespace VDS.RDF.Update.Commands
                                 continue;
                         }
                         IGraph h = context.Data.Graph(new Uri(graphUri));
+                        ConstructContext constructContext = new ConstructContext(h, s, true);
                         foreach (ITriplePattern p in gp.TriplePatterns)
                         {
-                            insertedTriples.Add(((IConstructTriplePattern)p).Construct(h, s, true));
+                            insertedTriples.Add(((IConstructTriplePattern)p).Construct(constructContext));
                         }
                         h.Assert(insertedTriples);
                     }

@@ -37,6 +37,7 @@ using System;
 using System.Collections.Generic;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
+using VDS.RDF.Query.Construct;
 
 namespace VDS.RDF.Query.Patterns
 {
@@ -89,19 +90,9 @@ namespace VDS.RDF.Query.Patterns
         /// <summary>
         /// Constructs a Triple from a Set based on this Triple Pattern
         /// </summary>
-        /// <param name="g">Graph</param>
-        /// <param name="s">Set</param>
+        /// <param name="context">Construct Context</param>
         /// <returns></returns>
-        Triple Construct(IGraph g, Set s);
-
-        /// <summary>
-        /// Constructs a Triple from a Set based on this Triple Pattern
-        /// </summary>
-        /// <param name="g">Graph</param>
-        /// <param name="s">Set</param>
-        /// <param name="preserveBNodes">Whether Blank Nodes should be preserved as-is (default behaviour is to re-write them)</param>
-        /// <returns></returns>
-        Triple Construct(IGraph g, Set s, bool preserveBNodes);
+        Triple Construct(ConstructContext context);
 
         /// <summary>
         /// Gets the Subject of the Pattern

@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{BFBAC159-1E60-4D03-8ACA-D34E31EB83BF}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -260,6 +260,7 @@
     <Compile Include="Parsing\IriSpecsHelper.cs" />
     <Compile Include="Parsing\Notation3Parser.cs" />
     <Compile Include="Parsing\FileLoader.cs" />
+    <Compile Include="Parsing\ParserHelper.cs" />
     <Compile Include="Parsing\PositionInfo.cs" />
     <Compile Include="Parsing\RdfAParser.cs" />
     <Compile Include="Parsing\RdfXmlSpecsHelper.cs" />
@@ -310,6 +311,7 @@
     <Compile Include="Query\Algebra\Set.cs" />
     <Compile Include="Query\Algebra\Slice.cs" />
     <Compile Include="Query\Algebra\SpecialQueryClasses.cs" />
+    <Compile Include="Query\Construct\ConstructContext.cs" />
     <Compile Include="Query\Describe\ConciseBoundedDescription.cs" />
     <Compile Include="Query\Describe\NamedGraphDescription.cs" />
     <Compile Include="Query\Expressions\AggregateExpressions.cs" />
@@ -483,6 +485,7 @@
     <Compile Include="Writing\Formatting\ITripleFormatter.cs" />
     <Compile Include="Writing\Formatting\IUriFormatter.cs" />
     <Compile Include="Writing\Formatting\Notation3Formatter.cs" />
+    <Compile Include="Writing\Formatting\NQuadsFormatter.cs" />
     <Compile Include="Writing\Formatting\NTriplesFormatter.cs" />
     <Compile Include="Writing\Formatting\QNameFormatter.cs" />
     <Compile Include="Writing\Formatting\RdfXmlFormatter.cs" />
@@ -516,7 +519,6 @@
     <EmbeddedResource Include="Configuration\configuration.ttl" />
     <Content Include="ReadMe.txt" />
     <Content Include="ReleaseNotes.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

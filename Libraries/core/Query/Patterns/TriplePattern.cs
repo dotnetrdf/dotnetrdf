@@ -35,6 +35,7 @@ using System.Text;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Query.Algebra;
+using VDS.RDF.Query.Construct;
 using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Patterns
@@ -547,24 +548,11 @@ namespace VDS.RDF.Query.Patterns
         /// <summary>
         /// Constructs a Triple from a Set based on this Triple Pattern
         /// </summary>
-        /// <param name="g">Graph</param>
-        /// <param name="s">Set</param>
-        /// <param name="preserveBNodes">Whether Blank Nodes should be preserved as-is or remapped (remapped is the default)</param>
+        /// <param name="context">Construct Context</param>
         /// <returns></returns>
-        public Triple Construct(IGraph g, Set s, bool preserveBNodes)
+        public Triple Construct(ConstructContext context)
         {
-            return new Triple(Tools.CopyNode(this._subj.Construct(g, s, preserveBNodes), g), Tools.CopyNode(this._pred.Construct(g, s, preserveBNodes), g), Tools.CopyNode(this._obj.Construct(g, s, preserveBNodes), g));
-        }
-
-        /// <summary>
-        /// Constructs a Triple from a Set based on this Triple Pattern
-        /// </summary>
-        /// <param name="g">Graph</param>
-        /// <param name="s">Set</param>
-        /// <returns></returns>
-        public Triple Construct(IGraph g, Set s)
-        {
-            return this.Construct(g, s, false);
+            return new Triple(Tools.CopyNode(this._subj.Construct(context), context.Graph), Tools.CopyNode(this._pred.Construct(context), context.Graph), Tools.CopyNode(this._obj.Construct(context), context.Graph));
         }
 
         /// <summary>

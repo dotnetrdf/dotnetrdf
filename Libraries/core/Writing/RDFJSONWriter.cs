@@ -50,9 +50,6 @@ namespace VDS.RDF.Writing
     /// <p>
     /// Uses the Json.Net library by <a href="http://james.newtonking.com">James Newton-King</a> to output RDF/Json according to the specification located on the <a href="http://n2.talis.com/wiki/RDF_JSON_Specification">Talis n2 Wiki</a>
     /// </p>
-    /// <p>
-    /// Since RDF/Json doesn't contain any Namespace information a Graph serialized to RDF/Json and then re-parsed generally cannot be output to a format that requires Namespacing (eg. RDF/XML)
-    /// </p>
     /// </remarks>
     /// <threadsafety instance="true">Designed to be Thread Safe - should be able to call the Save() method from multiple threads on different Graphs without issue</threadsafety>
     public class RdfJsonWriter : IRdfWriter, IPrettyPrintingWriter
