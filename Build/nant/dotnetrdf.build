@@ -339,39 +339,39 @@
   </target>
 
   <target name="dist-toolkit" description="Creates the Toolkit ZIP files" depends="build">
-    <zip zipfile="${dotnetrdf.toolkitzip}" ziplevel="9">
+    <zip zipfile="${dotnetrdf.toolkitzip}" ziplevel="9" duplicate="Preserve">
       <fileset basedir="Utilities">
         <include name="ReadMe.txt" />
       </fileset>
       <fileset basedir="Utilities/rdfConvert/bin/Debug">
         <include name="*" />
         <exclude name="*.pdb" />
-        <exclude name="*.vshost.exe" />
+        <exclude name="*.vshost.*" />
       </fileset>
       <fileset basedir="Utilities/rdfEditor/bin/Debug">
         <include name="*" />
         <exclude name="*.pdb" />
-        <exclude name="*.vshost.exe" />
+        <exclude name="*.vshost.*" />
       </fileset>
       <fileset basedir="Utilities/rdfQuery/bin/Debug">
         <include name="*" />
         <exclude name="*.pdb" />
-        <exclude name="*.vshost.exe" />
+        <exclude name="*.vshost.*" />
       </fileset>
       <fileset basedir="Utilities/rdfWebDeploy/bin/Debug">
         <include name="*" />
         <exclude name="*.pdb" />
-        <exclude name="*.vshost.exe" />
+        <exclude name="*.vshost.*" />
       </fileset>
       <fileset basedir="Utilities/SparqlGUI/bin/Debug">
         <include name="*" />
         <exclude name="*.pdb" />
-        <exclude name="*.vshost.exe" />
+        <exclude name="*.vshost.*" />
       </fileset>
       <fileset basedir="Utilities/storemanager/bin/Debug">
         <include name="*" />
         <exclude name="*.pdb" />
-        <exclude name="*.vshost.exe" />
+        <exclude name="*.vshost.*" />
       </fileset>
     </zip>
   </target>
