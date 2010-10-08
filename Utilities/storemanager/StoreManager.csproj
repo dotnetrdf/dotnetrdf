@@ -13,7 +13,7 @@
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <StartupObject>dotNetRDFStore.Program</StartupObject>
-    <ApplicationIcon>database_gear.ico</ApplicationIcon>
+    <ApplicationIcon>file-manager.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -213,6 +213,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="sparql.css" />
     <Content Include="database_gear.ico" />
+    <Content Include="file-manager.ico" />
     <Content Include="StoreNotes.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

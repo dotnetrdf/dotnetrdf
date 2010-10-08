@@ -12,7 +12,7 @@
     <AssemblyName>rdfConvert</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <ApplicationIcon>page_refresh.ico</ApplicationIcon>
+    <ApplicationIcon>recycled.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -60,6 +60,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="page_refresh.ico" />
+    <Content Include="recycled.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

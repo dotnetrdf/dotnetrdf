@@ -12,7 +12,7 @@
     <AssemblyName>rdfWebDeploy</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <ApplicationIcon>world_go.ico</ApplicationIcon>
+    <ApplicationIcon>ark.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -86,6 +86,7 @@
     <None Include="bad-example.ttl" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="ark.ico" />
     <Content Include="world_go.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
