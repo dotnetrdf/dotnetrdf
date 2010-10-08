@@ -844,9 +844,24 @@ namespace VDS.RDF.Parsing
 
                 //Expect a comma/semicolon/dot terminator if we are to continue
                 next = context.Tokens.Peek();
-                if (next.TokenType != Token.COMMA && next.TokenType != Token.SEMICOLON && next.TokenType != Token.DOT)
+                if (context.GraphLiteralMode)
                 {
-                    throw ParserHelper.Error("Unexpected Token '" + objToken.GetType().ToString() + "' encountered while trying to parse an Object list, expected a comma, semicolon or dot to terminate the current Triple", next);
+                    if (next.TokenType != Token.COMMA && next.TokenType != Token.SEMICOLON && next.TokenType != Token.DOT && next.TokenType != Token.RIGHTCURLYBRACKET)
+                    {
+                        throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered while trying to parse an Object list, expected a comma, semicolon or dot to terminate the current Triple or a } to terminate the Graph Literal", next);
+                    }
+                }
+                else if (bnodeList)
+                {
+                    //If in a Blank Node list a dot is not permitted but a ] is
+                    if (next.TokenType != Token.COMMA && next.TokenType != Token.SEMICOLON && next.TokenType != Token.RIGHTSQBRACKET)
+                    {
+                        throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered while trying to parse a Blank Node Object List, expected a comma, semicolon or ] to terminate the current Triple/list", next);
+                    }
+                }
+                else if (next.TokenType != Token.COMMA && next.TokenType != Token.SEMICOLON && next.TokenType != Token.DOT)
+                {
+                    throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered while trying to parse an Object list, expected a comma, semicolon or dot to terminate the current Triple", next);
                 }
             } while (true);
         }
