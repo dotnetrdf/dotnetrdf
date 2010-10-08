@@ -450,34 +450,39 @@ namespace VDS.RDF.Parsing
                 {
                     throw new RdfParseException("Unable to Parse a SPARQL Result Set since the first Child Node of the <sparql> element is not the required <head> element!");
                 }
-                while (reader.Read())
-                {
-                    //Stop reading when we hit the </head>
-                    if (reader.NodeType == XmlNodeType.EndElement && reader.Name.Equals("head")) break;
 
-                    //Looking for <variable> elements
-                    if (reader.Name.Equals("variable"))
+                //Only parser <variable> and <link> elements if not an empty <head /> element
+                if (!reader.IsEmptyElement)
+                {
+                    while (reader.Read())
                     {
-                        //Should only have 1 attribute
-                        if (reader.AttributeCount != 1)
+                        //Stop reading when we hit the </head>
+                        if (reader.NodeType == XmlNodeType.EndElement && reader.Name.Equals("head")) break;
+
+                        //Looking for <variable> elements
+                        if (reader.Name.Equals("variable"))
                         {
-                            throw new RdfParseException("Unable to Parse a SPARQL Result Set since a <variable> element has too few/many attributes, only a 'name' attribute should be present!");
+                            //Should only have 1 attribute
+                            if (reader.AttributeCount != 1)
+                            {
+                                throw new RdfParseException("Unable to Parse a SPARQL Result Set since a <variable> element has too few/many attributes, only a 'name' attribute should be present!");
+                            }
+                            else
+                            {
+                                //Add the Variable to the list
+                                reader.MoveToNextAttribute();
+                                results.AddVariable(reader.Value);
+                            }
+                        }
+                        else if (reader.Name.Equals("link"))
+                        {
+                            //Not bothered about <link> elements
                         }
                         else
                         {
-                            //Add the Variable to the list
-                            reader.MoveToNextAttribute();
-                            results.AddVariable(reader.Value);
+                            //Some unexpected element
+                            throw new RdfParseException("Unable to Parse a SPARQL Result Set since the <head> contains an unexpected element <" + reader.Name + ">!");
                         }
-                    }
-                    else if (reader.Name.Equals("link"))
-                    {
-                        //Not bothered about <link> elements
-                    }
-                    else
-                    {
-                        //Some unexpected element
-                        throw new RdfParseException("Unable to Parse a SPARQL Result Set since the <head> contains an unexpected element <" + reader.Name + ">!");
                     }
                 }
 
@@ -490,77 +495,81 @@ namespace VDS.RDF.Parsing
                 if (!reader.Read()) throw new RdfParseException("Unable to Parse a SPARQL Result Set as could not read a <results> element from the input");
                 if (reader.Name.Equals("results"))
                 {
-                    while (reader.Read())
+                    //Only parser <result> elements if it's not an empty <results /> element
+                    if (!reader.IsEmptyElement)
                     {
-                        //Stop reading when we hit the </results>
-                        if (reader.NodeType == XmlNodeType.EndElement && reader.Name.Equals("results")) break;
-
-                        //Must be a <result> element
-                        if (!reader.Name.Equals("result"))
-                        {
-                            throw new RdfParseException("Unable to Parse a SPARQL Result Set since the <results> element contains an unexpected element <" + reader.Name + ">!");
-                        }
-
-                        //Empty Elements generate an Empty Result
-                        if (reader.IsEmptyElement)
-                        {
-                            results.AddResult(new SparqlResult());
-                            continue;
-                        }
-
-                        //Get the values of each Binding
-                        String var;
-                        INode value;
-                        SparqlResult result = new SparqlResult();
                         while (reader.Read())
                         {
-                            //Stop reading when we hit the </binding>
-                            if (reader.NodeType == XmlNodeType.EndElement && reader.Name.Equals("result")) break;
+                            //Stop reading when we hit the </results>
+                            if (reader.NodeType == XmlNodeType.EndElement && reader.Name.Equals("results")) break;
 
-                            //Must be a <binding> element
-                            if (!reader.Name.Equals("binding"))
+                            //Must be a <result> element
+                            if (!reader.Name.Equals("result"))
                             {
-                                throw new RdfParseException("Unable to Parse a SPARQL Result Set since a <result> element contains an unexpected element <" + reader.Name + ">!");
+                                throw new RdfParseException("Unable to Parse a SPARQL Result Set since the <results> element contains an unexpected element <" + reader.Name + ">!");
                             }
 
-                            //Must have only 1 attribute
-                            if (reader.AttributeCount != 1)
+                            //Empty Elements generate an Empty Result
+                            if (reader.IsEmptyElement)
                             {
-                                throw new RdfParseException("Unable to Parse a SPARQL Result Set since a <binding> element has too few/many attributes, only a 'name' attribute should be present!");
+                                results.AddResult(new SparqlResult());
+                                continue;
                             }
 
-                            //Get the Variable this is a binding for and its Value
-                            reader.MoveToNextAttribute();
-                            var = reader.Value;
-                            if (!reader.Read()) throw new RdfParseException("Unable to Parse a SPARQL Result Set as reached the end of input when the contents of a <binding> element was expected");
-                            value = this.ParseValue(reader);
-
-                            //Check that the Variable was defined in the Header
-                            if (!results.Variables.Contains(var))
+                            //Get the values of each Binding
+                            String var;
+                            INode value;
+                            SparqlResult result = new SparqlResult();
+                            while (reader.Read())
                             {
-                                throw new RdfParseException("Unable to Parse a SPARQL Result Set since a <binding> element attempts to bind a value to the variable '" + var + "' which is not defined in the <head> with a <variable> element!");
-                            }
+                                //Stop reading when we hit the </binding>
+                                if (reader.NodeType == XmlNodeType.EndElement && reader.Name.Equals("result")) break;
 
-                            //Set the Variable to the Value
-                            result.SetValue(var, value);
-
-                            //Check that all Variables are bound for a given result binding nulls where appropriate
-                            foreach (String v in results.Variables)
-                            {
-                                if (!result.HasValue(v))
+                                //Must be a <binding> element
+                                if (!reader.Name.Equals("binding"))
                                 {
-                                    result.SetValue(v, null);
+                                    throw new RdfParseException("Unable to Parse a SPARQL Result Set since a <result> element contains an unexpected element <" + reader.Name + ">!");
+                                }
+
+                                //Must have only 1 attribute
+                                if (reader.AttributeCount != 1)
+                                {
+                                    throw new RdfParseException("Unable to Parse a SPARQL Result Set since a <binding> element has too few/many attributes, only a 'name' attribute should be present!");
+                                }
+
+                                //Get the Variable this is a binding for and its Value
+                                reader.MoveToNextAttribute();
+                                var = reader.Value;
+                                if (!reader.Read()) throw new RdfParseException("Unable to Parse a SPARQL Result Set as reached the end of input when the contents of a <binding> element was expected");
+                                value = this.ParseValue(reader);
+
+                                //Check that the Variable was defined in the Header
+                                if (!results.Variables.Contains(var))
+                                {
+                                    throw new RdfParseException("Unable to Parse a SPARQL Result Set since a <binding> element attempts to bind a value to the variable '" + var + "' which is not defined in the <head> with a <variable> element!");
+                                }
+
+                                //Set the Variable to the Value
+                                result.SetValue(var, value);
+
+                                //Check that all Variables are bound for a given result binding nulls where appropriate
+                                foreach (String v in results.Variables)
+                                {
+                                    if (!result.HasValue(v))
+                                    {
+                                        result.SetValue(v, null);
+                                    }
                                 }
                             }
-                        }
 
-                        if (!reader.Name.Equals("result"))
-                        {
-                            throw new RdfParseException("Unable to Parse a SPARQL Result Set as reached the end of the input before a closing </result> element was found");
-                        }
+                            if (!reader.Name.Equals("result"))
+                            {
+                                throw new RdfParseException("Unable to Parse a SPARQL Result Set as reached the end of the input before a closing </result> element was found");
+                            }
 
-                        //Add to results set
-                        results.AddResult(result);
+                            //Add to results set
+                            results.AddResult(result);
+                        }
                     }
 
                     if (!reader.Name.Equals("results"))

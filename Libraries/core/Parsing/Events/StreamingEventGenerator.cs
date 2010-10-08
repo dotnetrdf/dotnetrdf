@@ -198,6 +198,8 @@ namespace VDS.RDF.Parsing.Events
                 {
                     case XmlNodeType.Element:
                         //Element
+                        //if (this._reader.IsEmptyElement) this._requireEndElement = true;
+
                         if (this._first)
                         {
                             this._first = false;
