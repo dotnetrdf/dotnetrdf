@@ -346,26 +346,32 @@
       <fileset basedir="Utilities/rdfConvert/bin/Debug">
         <include name="*" />
         <exclude name="*.pdb" />
+        <exclude name="*.vshost.exe" />
       </fileset>
       <fileset basedir="Utilities/rdfEditor/bin/Debug">
         <include name="*" />
         <exclude name="*.pdb" />
+        <exclude name="*.vshost.exe" />
       </fileset>
       <fileset basedir="Utilities/rdfQuery/bin/Debug">
         <include name="*" />
         <exclude name="*.pdb" />
+        <exclude name="*.vshost.exe" />
       </fileset>
       <fileset basedir="Utilities/rdfWebDeploy/bin/Debug">
         <include name="*" />
         <exclude name="*.pdb" />
+        <exclude name="*.vshost.exe" />
       </fileset>
       <fileset basedir="Utilities/SparqlGUI/bin/Debug">
         <include name="*" />
         <exclude name="*.pdb" />
+        <exclude name="*.vshost.exe" />
       </fileset>
       <fileset basedir="Utilities/storemanager/bin/Debug">
         <include name="*" />
         <exclude name="*.pdb" />
+        <exclude name="*.vshost.exe" />
       </fileset>
     </zip>
   </target>

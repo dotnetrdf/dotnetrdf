@@ -23,6 +23,6 @@
         
         <TextBlock Grid.Row="2" Grid.ColumnSpan="2" TextWrapping="Wrap" Padding="4">rdfEditor is based upon the free and open source AvalonEdit component which was developed by Daniel Grunwald as part of the SharpDevelop project</TextBlock>
         
-        <TextBlock Grid.Row="3" Grid.ColumnSpan="2" TextWrapping="Wrap" Padding="4">rdfEditor is currently pre-alpha and you are testing it either because you built it from dotNetRDF's SVN repository or you received an invite to test it.  Please be aware this software may be buggy - please report all bugs to <Hyperlink>dotnetrdf-bugreports@lists.sourceforge.net</Hyperlink></TextBlock>
+        <TextBlock Grid.Row="3" Grid.ColumnSpan="2" TextWrapping="Wrap" Padding="4">rdfEditor is currently Alpha so please be aware this software may be buggy - please report all bugs to <Hyperlink>dotnetrdf-bugreports@lists.sourceforge.net</Hyperlink></TextBlock>
     </Grid>
 </Window>

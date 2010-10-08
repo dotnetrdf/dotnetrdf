@@ -599,6 +599,13 @@ namespace VDS.RDF.Parsing
 
                 //Assert the Triple
                 context.Graph.Assert(new Triple(subj, pred, obj));
+
+                //Expect a comma/semicolon/dot terminator if we are to continue
+                next = context.Tokens.Peek();
+                if (next.TokenType != Token.COMMA && next.TokenType != Token.SEMICOLON && next.TokenType != Token.DOT)
+                {
+                    throw ParserHelper.Error("Unexpected Token '" + objToken.GetType().ToString() + "' encountered while trying to parse an Object list, expected a comma, semicolon or dot to terminate the current Triple", next);
+                }
             } while (true);
         }
 

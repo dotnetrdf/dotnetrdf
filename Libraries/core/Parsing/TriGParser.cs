@@ -279,8 +279,18 @@ namespace VDS.RDF.Parsing
                 g.NamespaceMap.Clear();
                 g.NamespaceMap.Import(context.NamespaceMap);
 
-                //Parse Graph Contents
-                this.TryParseTriples(context, g);
+                //Check that the Graph isn't empty i.e. the next token is not a } to close the Graph
+                next = context.Tokens.Peek();
+                if (next.TokenType == Token.RIGHTCURLYBRACKET)
+                {
+                    //Empty Graph so just discard the }
+                    context.Tokens.Dequeue();
+                }
+                else
+                {
+                    //Parse Graph Contents
+                    this.TryParseTriples(context, g);
+                }
             }
             else
             {

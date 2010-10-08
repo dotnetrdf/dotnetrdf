@@ -841,6 +841,13 @@ namespace VDS.RDF.Parsing
                     //When reversed this means the predicate was Implies By (<=)
                     context.Graph.Assert(new Triple(obj, pred, subj));
                 }
+
+                //Expect a comma/semicolon/dot terminator if we are to continue
+                next = context.Tokens.Peek();
+                if (next.TokenType != Token.COMMA && next.TokenType != Token.SEMICOLON && next.TokenType != Token.DOT)
+                {
+                    throw ParserHelper.Error("Unexpected Token '" + objToken.GetType().ToString() + "' encountered while trying to parse an Object list, expected a comma, semicolon or dot to terminate the current Triple", next);
+                }
             } while (true);
         }
 
