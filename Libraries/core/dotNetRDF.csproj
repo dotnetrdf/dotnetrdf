@@ -311,6 +311,9 @@
     <Compile Include="Query\Algebra\Slice.cs" />
     <Compile Include="Query\Algebra\SpecialQueryClasses.cs" />
     <Compile Include="Query\Construct\ConstructContext.cs" />
+    <Compile Include="Query\Datasets\BaseDataset.cs" />
+    <Compile Include="Query\Datasets\InMemoryDataset.cs" />
+    <Compile Include="Query\Datasets\ISparqlDataset.cs" />
     <Compile Include="Query\Describe\ConciseBoundedDescription.cs" />
     <Compile Include="Query\Describe\NamedGraphDescription.cs" />
     <Compile Include="Query\Expressions\AggregateExpressions.cs" />

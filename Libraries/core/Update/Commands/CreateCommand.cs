@@ -102,7 +102,7 @@ namespace VDS.RDF.Update.Commands
             {
                 Graph g = new Graph();
                 g.BaseUri = this._graphUri;
-                context.Data.Add(g);
+                context.Data.AddGraph(g);
             }
         }
 

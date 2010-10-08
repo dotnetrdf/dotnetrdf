@@ -99,7 +99,7 @@ namespace VDS.RDF.Update.Commands
             }
             else
             {
-                context.Data.Remove(this._graphUri);
+                context.Data.RemoveGraph(this._graphUri);
             }
         }
 

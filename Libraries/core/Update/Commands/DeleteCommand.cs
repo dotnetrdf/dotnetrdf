@@ -140,7 +140,7 @@ namespace VDS.RDF.Update.Commands
             if (this.UsingUris.Any()) context.Data.ResetActiveGraph();
 
             //Get the Graph to which we are inserting
-            IGraph g = context.Data.Graph(this._graphUri);
+            IGraph g = context.Data[this._graphUri];
 
             //Delet ethe Triples for each Solution
             foreach (Set s in queryContext.OutputMultiset.Sets)
@@ -200,7 +200,7 @@ namespace VDS.RDF.Update.Commands
                                 //Any other Graph Specifier we have to ignore this solution
                                 continue;
                         }
-                        IGraph h = context.Data.Graph(new Uri(graphUri));
+                        IGraph h = context.Data[new Uri(graphUri)];
                         ConstructContext constructContext = new ConstructContext(h, s, true);
                         foreach (ITriplePattern p in gp.TriplePatterns)
                         {

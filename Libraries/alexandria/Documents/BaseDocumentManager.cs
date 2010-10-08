@@ -117,6 +117,11 @@ namespace VDS.Alexandria.Documents
             }
         }
 
+        public virtual void Flush()
+        {
+
+        }
+
         public virtual void Dispose()
         {
             foreach (DocumentReference<TReader,TWriter> reference in this._activeDocuments.Values)

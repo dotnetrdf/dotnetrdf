@@ -488,47 +488,6 @@ namespace VDS.RDF
         /// </remarks>
         Object ExecuteQuery(SparqlQuery query);
 
-        /// <summary>
-        /// Gets the Set of Triples that are queries over by a Sparql Query
-        /// </summary>
-        /// <remarks>This set may be altered during the course of query execution by the query</remarks>
-        IEnumerable<Triple> QueryTriples
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Sets the Default Graph for the SPARQL Query
-        /// </summary>
-        /// <param name="g">Default Graph</param>
-        void SetDefaultGraph(IGraph g);
-
-        /// <summary>
-        /// Sets the Active Graph for the SPARQL Query
-        /// </summary>
-        /// <param name="g">Active Graph</param>
-        void SetActiveGraph(IGraph g);
-
-        /// <summary>
-        /// Sets the Active Graph for the SPARQL query
-        /// </summary>
-        /// <param name="graphUri">Uri of the Active Graph</param>
-        /// <remarks>Helper function used primarily in the execution of GRAPH Clauses</remarks>
-        void SetActiveGraph(Uri graphUri);
-
-        /// <summary>
-        /// Sets the Active Graph for the SPARQL query
-        /// </summary>
-        /// <param name="graphUris">URIs of the Graphs which form the Active Graph</param>
-        /// <remarks>Helper function used primarily in the execution of GRAPH Clauses</remarks>
-        void SetActiveGraph(List<Uri> graphUris);
-
-        /// <summary>
-        /// Sets the Active Graph for the SPARQL query to be the previous Active Graph
-        /// </summary>
-        /// <remarks>Helper function used primarily in the execution of GRAPH Clauses</remarks>
-        void ResetActiveGraph();
-
         #endregion
     }
 

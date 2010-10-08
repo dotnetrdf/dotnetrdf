@@ -69,5 +69,15 @@ namespace VDS.Alexandria.Documents
         {
             get;
         }
+
+        /// <summary>
+        /// Flushes any outstanding write operations to the underlying Storage layer
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Method should block until this is completed
+        /// </para>
+        /// </remarks>
+        void Flush();
     }
 }

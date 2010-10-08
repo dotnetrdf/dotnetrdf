@@ -42,6 +42,7 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Construct;
+using VDS.RDF.Query.Datasets;
 using VDS.RDF.Query.Describe;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Filters;
@@ -723,18 +724,9 @@ namespace VDS.RDF.Query
 
         #endregion
 
-        /// <summary>
-        /// Executes the SPARQL Query against the given Triple Store
-        /// </summary>
-        /// <param name="data">Triple Store</param>
-        /// <returns>Either a <see cref="SparqlResultSet">SparqlResultSet</see> or a <see cref="Graph">Graph</see> depending on the type of query executed</returns>
-        /// <remarks>
-        /// Obsolete method from the removed Labyrinth engine left in the API to allow existing code to be switched over gracefully to using the Evaluate() method
-        /// </remarks>
-        [Obsolete("This method is an obsolete part of the now removed Labyrinth engine - use the Evaluate() method instead to invoke the Leviathan engine",true)]
-        public Object Execute(IInMemoryQueryableStore data)
+        public Object Evaluate(IInMemoryQueryableStore data)
         {
-            return this.Evaluate(data);
+            return this.Evaluate(new InMemoryDataset(data));
         }
 
         /// <summary>
@@ -747,13 +739,13 @@ namespace VDS.RDF.Query
         /// <remarks>
         /// This method uses the more advanced and powerful Leviathan engine to evaluate queries
         /// </remarks>
-        public Object Evaluate(IInMemoryQueryableStore data)
+        public Object Evaluate(ISparqlDataset dataset)
         {
             //Reset Query Timers
             this._queryTime = -1;
             this._queryTimeTicks = -1;
 
-            bool datasetOk = false;
+            bool datasetOk = false, defGraphOk = false;
 
             try
             {
@@ -765,9 +757,9 @@ namespace VDS.RDF.Query
                     Graph g = new Graph();
                     foreach (Uri u in this._defaultGraphs)
                     {
-                        if (data.HasGraph(u))
+                        if (dataset.HasGraph(u))
                         {
-                            g.Merge(data.Graphs[u], true);
+                            g.Merge(dataset[u], true);
                         }
                         else
                         {
@@ -775,24 +767,25 @@ namespace VDS.RDF.Query
                         }
                     }
                     defGraph = g;
-                    data.SetDefaultGraph(defGraph);
-                }
+                    dataset.SetDefaultGraph(defGraph);
+                 }
                 else if (this._namedGraphs.Count > 0)
                 {
                     //No FROM Clauses but one/more FROM NAMED means the Default Graph is the empty graph
                     defGraph = new Graph();
-                    data.SetDefaultGraph(defGraph);
+                    dataset.SetDefaultGraph(defGraph);
                 }
                 else
                 {
                     defGraph = null;
-                    data.SetDefaultGraph(defGraph);
+                    dataset.SetDefaultGraph(defGraph);
                 }
-                data.SetActiveGraph(defGraph);
+                defGraphOk = true;
+                dataset.SetActiveGraph(defGraph);
                 datasetOk = true;
 
                 //Convert to Algebra and execute the Query
-                SparqlEvaluationContext context = new SparqlEvaluationContext(this, data);
+                SparqlEvaluationContext context = new SparqlEvaluationContext(this, dataset);
                 BaseMultiset result;
                 try
                 {
@@ -875,7 +868,8 @@ namespace VDS.RDF.Query
             }
             finally
             {
-                if (datasetOk) data.ResetActiveGraph();
+                if (defGraphOk) dataset.ResetDefaultGraph();
+                if (datasetOk) dataset.ResetActiveGraph();
             }
         }
 

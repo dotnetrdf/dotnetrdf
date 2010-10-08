@@ -52,6 +52,7 @@
     <Compile Include="PerformanceTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="IndexingTests.cs" />
+    <Compile Include="SparqlTests.cs" />
     <Compile Include="TestTools.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -42,10 +42,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Datasets\AlexandriaDocumentDataset.cs" />
+    <Compile Include="Datasets\AlexandriaFileDataset.cs" />
+    <Compile Include="Datasets\BaseAlexandriaDataset.cs" />
     <Compile Include="AlexandriaException.cs" />
     <Compile Include="AlexandriaFileManager.cs" />
     <Compile Include="AlexandriaDocumentStoreManager.cs" />
     <Compile Include="AlexandriaWideTableStoreManager.cs" />
+    <Compile Include="BaseAlexandriaManager.cs" />
     <Compile Include="Documents\Adaptors\IDataAdaptor.cs" />
     <Compile Include="Documents\Adaptors\NQuadsAdaptor.cs" />
     <Compile Include="Documents\Adaptors\NTriplesAdaptor.cs" />

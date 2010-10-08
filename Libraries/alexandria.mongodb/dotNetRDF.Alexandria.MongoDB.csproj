@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AlexandriaMongoDBManager.cs" />
+    <Compile Include="Datasets\AlexandriaMongoDBDataset.cs" />
     <Compile Include="Documents\Adaptors\MongoDBGraphCentricAdaptor.cs" />
     <Compile Include="Documents\GraphRegistry\MongoDBGraphCentricRegistry.cs" />
     <Compile Include="Documents\MongoDBDocument.cs" />

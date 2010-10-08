@@ -11,7 +11,7 @@ namespace VDS.Alexandria
     /// <summary>
     /// Abstract Base Class for Alexandria Wide Table Store Managers
     /// </summary>
-    public abstract class AlexandriaWideTableStoreManager<TKey, TColumn> : IGenericIOManager
+    public abstract class AlexandriaWideTableStoreManager<TKey, TColumn> : BaseAlexandriaManager
     {
         public IWideTableAdaptor<TKey, TColumn> _adaptor;
 
@@ -25,7 +25,7 @@ namespace VDS.Alexandria
             this.Dispose(false);
         }
 
-        public void LoadGraph(IGraph g, Uri graphUri)
+        public override void LoadGraph(IGraph g, Uri graphUri)
         {
             try
             {
@@ -63,7 +63,7 @@ namespace VDS.Alexandria
             }
         }
 
-        public void LoadGraph(IGraph g, string graphUri)
+        public override void LoadGraph(IGraph g, string graphUri)
         {
             if (graphUri.ToSafeString().Equals(String.Empty))
             {
@@ -75,7 +75,7 @@ namespace VDS.Alexandria
             }
         }
 
-        public void SaveGraph(IGraph g)
+        public override void SaveGraph(IGraph g)
         {
             try
             {
@@ -106,7 +106,7 @@ namespace VDS.Alexandria
             }
         }
 
-        public void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
+        public override void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
             try
             {
@@ -132,7 +132,7 @@ namespace VDS.Alexandria
             }
         }
 
-        public void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
+        public override void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
             if (graphUri.ToSafeString().Equals(String.Empty))
             {
@@ -144,7 +144,7 @@ namespace VDS.Alexandria
             }
         }
 
-        public bool UpdateSupported
+        public override bool UpdateSupported
         {
             get 
             {
@@ -152,7 +152,7 @@ namespace VDS.Alexandria
             }
         }
 
-        public virtual void DeleteGraph(Uri graphUri)
+        public override void DeleteGraph(Uri graphUri)
         {
             try
             {
@@ -168,7 +168,7 @@ namespace VDS.Alexandria
             }
         }
 
-        public virtual void DeleteGraph(String graphUri)
+        public override void DeleteGraph(String graphUri)
         {
             if (graphUri.ToSafeString().Equals(String.Empty))
             {
@@ -180,7 +180,7 @@ namespace VDS.Alexandria
             }
         }
 
-        public bool IsReady
+        public override bool IsReady
         {
             get
             {
@@ -188,7 +188,7 @@ namespace VDS.Alexandria
             }
         }
 
-        public bool IsReadOnly
+        public override bool IsReadOnly
         {
             get 
             {
@@ -196,7 +196,7 @@ namespace VDS.Alexandria
             }
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
             this.Dispose(true);
         }

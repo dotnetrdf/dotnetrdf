@@ -101,7 +101,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
-            if (context.Data.QueryTriples.Any())
+            if (context.Data.HasTriples)
             {
                 context.OutputMultiset = new IdentityMultiset();
             }

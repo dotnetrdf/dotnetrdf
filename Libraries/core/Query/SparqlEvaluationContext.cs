@@ -39,6 +39,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Query.Algebra;
+using VDS.RDF.Query.Datasets;
 
 namespace VDS.RDF.Query
 {
@@ -48,7 +49,7 @@ namespace VDS.RDF.Query
     public class SparqlEvaluationContext
     {
         private BaseMultiset _inputSet, _outputSet;
-        private IInMemoryQueryableStore _data;
+        private ISparqlDataset _data;
         private SparqlQuery _query;
         private SparqlResultBinder _binder;
 #if !NO_STOPWATCH
@@ -56,13 +57,13 @@ namespace VDS.RDF.Query
 #else
         private DateTime _start, _end;
 #endif
- 
+
         /// <summary>
         /// Creates a new Evaluation Context for the given Query over the given Triple Store
         /// </summary>
         /// <param name="q">Query</param>
-        /// <param name="data">Triple Store</param>
-        public SparqlEvaluationContext(SparqlQuery q, IInMemoryQueryableStore data)
+        /// <param name="data">Dataset</param>
+        public SparqlEvaluationContext(SparqlQuery q, ISparqlDataset data)
         {
             this._query = q;
             this._data = data;
@@ -91,9 +92,9 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets the Triple Store the query is over
+        /// Gets the Dataset the query is over
         /// </summary>
-        public IInMemoryQueryableStore Data
+        public ISparqlDataset Data
         {
             get
             {

@@ -14,10 +14,10 @@ namespace VDS.Alexandria
     /// </summary>
     /// <remarks>
     /// <para>
-    /// <strong>Important: </strong> You must explicitly <see cref="AlexandriaManager.Dispose">Dispose()</see> of the Manager when you have finished with it otherwise your data and indexes may be inconsistent.  While the Manager has been designed to force a <see cref="AlexandriaManager.Dispose">Dispose()</see> call if you fail to do so this is very inefficient and may cause your program to consume memory/hang unecessarily due to the vagaries of the .Net Garbage Collector
+    /// <strong>Important: </strong> You must explicitly <see cref="AlexandriaDocumentStoreManager.Dispose">Dispose()</see> of the Manager when you have finished with it otherwise your data and indexes may be inconsistent.  While the Manager has been designed to force a <see cref="AlexandriaManager.Dispose">Dispose()</see> call if you fail to do so this is very inefficient and may cause your program to consume memory/hang unecessarily due to the vagaries of the .Net Garbage Collector
     /// </para>
     /// </remarks>
-    public abstract class AlexandriaDocumentStoreManager<TReader,TWriter> : IGenericIOManager
+    public abstract class AlexandriaDocumentStoreManager<TReader,TWriter> : BaseAlexandriaManager
     {
         private IDocumentManager<TReader,TWriter> _docManager;
         private IIndexManager _indexManager;
@@ -41,7 +41,7 @@ namespace VDS.Alexandria
             }
         }
 
-        protected internal IIndexManager IndexManager
+        protected internal override IIndexManager IndexManager
         {
             get
             {
@@ -49,12 +49,12 @@ namespace VDS.Alexandria
             }
         }
 
-        public virtual void LoadGraph(IGraph g, Uri graphUri)
+        public override void LoadGraph(IGraph g, Uri graphUri)
         {
             this.LoadGraph(g, graphUri.ToSafeString());
         }
 
-        public virtual void LoadGraph(IGraph g, string graphUri)
+        public override void LoadGraph(IGraph g, string graphUri)
         {
             String name = this._docManager.GraphRegistry.GetDocumentName(graphUri);
 
@@ -94,7 +94,7 @@ namespace VDS.Alexandria
             }
         }
 
-        public virtual void SaveGraph(IGraph g)
+        public override void SaveGraph(IGraph g)
         {
             String name = this._docManager.GraphRegistry.GetDocumentName(g.BaseUri.ToSafeString());
             IDocument<TReader,TWriter> doc;
@@ -145,12 +145,12 @@ namespace VDS.Alexandria
             }
         }
 
-        public virtual void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
+        public override void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
             this.UpdateGraph(graphUri.ToSafeString(), additions, removals);
         }
 
-        public virtual void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
+        public override void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
             String name = this._docManager.GraphRegistry.GetDocumentName(graphUri);
 
@@ -200,7 +200,7 @@ namespace VDS.Alexandria
             }
         }
 
-        public virtual bool UpdateSupported
+        public override bool UpdateSupported
         {
             get 
             {
@@ -208,12 +208,12 @@ namespace VDS.Alexandria
             }
         }
 
-        public virtual void DeleteGraph(Uri graphUri)
+        public override void DeleteGraph(Uri graphUri)
         {
             this.DeleteGraph(graphUri.ToSafeString());
         }
 
-        public virtual void DeleteGraph(String graphUri)
+        public override void DeleteGraph(String graphUri)
         {
             String name = this._docManager.GraphRegistry.GetDocumentName(graphUri);
 
@@ -255,7 +255,7 @@ namespace VDS.Alexandria
             }
         }
 
-        public virtual bool IsReady
+        public override bool IsReady
         {
             get 
             {
@@ -263,7 +263,7 @@ namespace VDS.Alexandria
             }
         }
 
-        public virtual bool IsReadOnly
+        public override bool IsReadOnly
         {
             get 
             {
@@ -271,7 +271,7 @@ namespace VDS.Alexandria
             }
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
             this.Dispose(true);
         }

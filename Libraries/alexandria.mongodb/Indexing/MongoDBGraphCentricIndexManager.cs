@@ -261,6 +261,11 @@ namespace VDS.Alexandria.Indexing
             //Nothing to do - MongoDB manages indexing itself
         }
 
+        public void Flush()
+        {
+            //No flush actions required - MongoDB manages indexing itself
+        }
+
         public void Dispose()
         {
             //No dispose actions required - MongoDB handles all the indexing at the server end

@@ -19,7 +19,7 @@ namespace VDS.Alexandria.Indexing
     {
         private Queue<IndexingAction> _indexQueue = new Queue<IndexingAction>();
         private Thread _indexer;
-        private bool _stopIndexer = false, _stopped = false;
+        private bool _stopIndexer = false, _stopped = false, _inactive = true;
 
         /// <summary>
         /// Variables controlling which indexes are created and used (all default to off by default)
@@ -89,6 +89,7 @@ namespace VDS.Alexandria.Indexing
                 {
                     if (this._indexQueue.Count > 0)
                     {
+                        this._inactive = false;
                         Dictionary<String, List<Triple>> batches = new Dictionary<string, List<Triple>>();
                         IndexingAction action = this._indexQueue.Dequeue();
                         bool isDelete = action.IsDelete;
@@ -151,14 +152,27 @@ namespace VDS.Alexandria.Indexing
 
                         if (canStop)
                         {
+                            this._inactive = true;
                             this._stopped = true;
                             return;
                         }
                     }
                 }
-
-                //Sleep to wait for more work to appear
-                Thread.Sleep(100);
+                else
+                {
+                    //Only Sleep if no waiting Indexing operations
+                    bool canSleep = true;
+                    lock (this._indexQueue)
+                    {
+                        canSleep = (this._indexQueue.Count == 0);
+                    }
+                    if (canSleep)
+                    {
+                        this._inactive = true;
+                        //Sleep to wait for more work to appear
+                        Thread.Sleep(100);
+                    }
+                }
             }
         }
 
@@ -492,6 +506,27 @@ namespace VDS.Alexandria.Indexing
                 {
                     this._indexQueue.Enqueue(new IndexingAction(t,true));
                 }
+            }
+        }
+
+        public virtual void Flush()
+        {
+            if (this._inactive)
+            {
+                //If state is inactive check whether there are operations in the queue, if there are then need to wait to see if the indexer becomes active
+                bool needToWait = false;
+                lock (this._indexQueue)
+                {
+                    needToWait = (this._indexQueue.Count > 0);
+                }
+                if (!needToWait) return;
+                Thread.Sleep(150);
+            }
+
+            //Wait for Indexing to be inactive
+            while (!this._inactive)
+            {
+                Thread.Sleep(50);
             }
         }
 

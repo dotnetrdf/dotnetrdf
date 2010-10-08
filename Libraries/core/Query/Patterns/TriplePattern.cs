@@ -351,7 +351,7 @@ namespace VDS.RDF.Query.Patterns
                     s = ((NodeMatchPattern)this._subj).Node;
                     p = ((NodeMatchPattern)this._pred).Node;
                     o = ((NodeMatchPattern)this._obj).Node;
-                    if (context.Data.Contains(new Triple(s, p, o)))
+                    if (context.Data.ContainsTriple(new Triple(s, p, o)))
                     {
                         context.OutputMultiset = new IdentityMultiset();
                     }
@@ -362,7 +362,7 @@ namespace VDS.RDF.Query.Patterns
                     break;
 
                 default:
-                    this.GetResults(context, context.Data.QueryTriples);
+                    this.GetResults(context, context.Data.Triples);
                     break;
             }
         }
@@ -492,7 +492,7 @@ namespace VDS.RDF.Query.Patterns
                     s = ((NodeMatchPattern)this._subj).Node;
                     p = ((NodeMatchPattern)this._pred).Node;
                     o = ((NodeMatchPattern)this._obj).Node;
-                    if (context.Data.Contains(new Triple(s, p, o)))
+                    if (context.Data.ContainsTriple(new Triple(s, p, o)))
                     {
                         return new Triple(s, p, o).AsEnumerable();
                     }
@@ -502,7 +502,7 @@ namespace VDS.RDF.Query.Patterns
                     }
 
                 default:
-                    return context.Data.QueryTriples;
+                    return context.Data.Triples;
             }
         }
 

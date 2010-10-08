@@ -32,5 +32,7 @@ namespace VDS.Alexandria.Indexing
         void RemoveFromIndex(Triple t);
 
         void RemoveFromIndex(IEnumerable<Triple> ts);
+
+        void Flush();
     }
 }
