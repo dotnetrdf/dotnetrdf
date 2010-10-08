@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.Alexandria", "Libraries\alexandria\dotNetRDF.Alexandria.csproj", "{6CDCEDB4-8D4F-4C51-B0CF-30B37D1518E3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF", "..\..\Trunk\Libraries\core\dotNetRDF.csproj", "{BFBAC159-1E60-4D03-8ACA-D34E31EB83BF}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "alexandria-tests", "Testing\alexandria-tests\alexandria-tests.csproj", "{10CD378D-9490-4032-A615-20991215C7EC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9ABC0CFA-5FB1-4602-A2A7-53C243D59F89}"
@@ -19,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.Alexandria.MongoD
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.Alexandria.Cassandra", "Libraries\alexandria.cassandra\dotNetRDF.Alexandria.Cassandra.csproj", "{935197E4-FC80-46FE-9F15-3A6EB3636674}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF", "Libraries\core\dotNetRDF.csproj", "{BFBAC159-1E60-4D03-8ACA-D34E31EB83BF}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = dotNetRDF.Alexandria2.vsmdi
@@ -32,10 +32,6 @@ Global
 		{6CDCEDB4-8D4F-4C51-B0CF-30B37D1518E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6CDCEDB4-8D4F-4C51-B0CF-30B37D1518E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6CDCEDB4-8D4F-4C51-B0CF-30B37D1518E3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BFBAC159-1E60-4D03-8ACA-D34E31EB83BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BFBAC159-1E60-4D03-8ACA-D34E31EB83BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BFBAC159-1E60-4D03-8ACA-D34E31EB83BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BFBAC159-1E60-4D03-8ACA-D34E31EB83BF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{10CD378D-9490-4032-A615-20991215C7EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{10CD378D-9490-4032-A615-20991215C7EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{10CD378D-9490-4032-A615-20991215C7EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -48,6 +44,10 @@ Global
 		{935197E4-FC80-46FE-9F15-3A6EB3636674}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{935197E4-FC80-46FE-9F15-3A6EB3636674}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{935197E4-FC80-46FE-9F15-3A6EB3636674}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BFBAC159-1E60-4D03-8ACA-D34E31EB83BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BFBAC159-1E60-4D03-8ACA-D34E31EB83BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BFBAC159-1E60-4D03-8ACA-D34E31EB83BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BFBAC159-1E60-4D03-8ACA-D34E31EB83BF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
