@@ -1222,7 +1222,7 @@ namespace VDS.RDF.Parsing.Tokens
 #endif
 
             //Backtrack if necessary
-            if (value.EndsWith("."))
+            if (!Char.IsDigit(value[0]) && value.EndsWith("."))
             {
                 this.Backtrack();
                 value = value.Substring(0, value.Length - 1);
@@ -1489,7 +1489,7 @@ namespace VDS.RDF.Parsing.Tokens
                 next = this.Peek();
             }
 
-            if (this.Value.EndsWith(".")) this.Backtrack();
+            //if (this.Value.EndsWith(".")) this.Backtrack();
             String value = this.Value;
             if (value.Equals("+"))
             {

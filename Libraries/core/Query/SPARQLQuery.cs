@@ -1257,8 +1257,8 @@ namespace VDS.RDF.Query
                 case SparqlQueryType.SelectAllReduced:
                 case SparqlQueryType.SelectDistinct:
                 case SparqlQueryType.SelectReduced:
-                    //Optimise Queries to use LazyBgp's if Algebra Optimisation is enabled and there is a Limit/Offset
-                    if (Options.AlgebraOptimisation && (this._limit >= 0 || this._offset > 0))
+                    //Optimise Queries to use LazyBgp's if Algebra Optimisation is enabled and there is a LIMIT but no ORDER BY
+                    if (Options.AlgebraOptimisation && this._orderBy == null && this._limit >= 0)
                     {
                         try
                         {
