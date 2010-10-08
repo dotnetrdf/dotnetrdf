@@ -17,6 +17,7 @@ This Toolkit provides the following command line utilities:
 - rdfWebDeploy - A tool for testing and deploying configuration for ASP.Net applications
 
 This Toolkit provides the following GUI tools:
+- rdfEditor - A Notepad replacement for editing RDF and SPARQL
 - SparqlGUI - A GUI for testing SPARQL queries using dotNetRDF's in-memory Leviathan engine
 - dotNetRDFStore - A GUI for performing basic management and query tasks on various Triple Stores
 
@@ -39,6 +40,8 @@ Uses code (3rd Party Libraries) from the following sources
 -Virtuoso ADO.Net Provider from OpenLink Software http://www.openlinksw.com
 -HtmlAgilityPack from Simon Mourier http://www.codeplex.com/htmlagilitypack
 
+Uses Icons from the Crystal Project (http://everaldo.com/crystal/?action=preview) which are licensed under the LGPL
+
 Thanks to the following people who have helped in the development process or whose suggestions have led to 
 improvements in the code:
 - Eamon Nerbonne for the BlockingStreamReader fix (http://eamon.nerbonne.org/) which is much nicer than the
@@ -50,8 +53,8 @@ improvements in the code:
   could use to test my TriX parser
 - Marek Safar from the Mono project for fixing the bug in gmcs I identified which meant I couldn't compile
   a Mono build of dotNetRDF
-- Andy Seaborne for excellent answers to various SPARQL and ARQ function library related questions which
-  have contributed to the new Leviathan engine and the ARQ function library support
+- Andy Seaborne and Steve Harris for excellent answers to various SPARQL and ARQ function library related questions 
+  which have contributed to resolving various issues in the Leviathan engine and adding the ARQ function library support
 - The SPARQL Working Group for useful feedback and responses to my comments
 - The following people who have contributed bug reports and patches on the mailing lists:
  - Tana Isaac
@@ -62,3 +65,4 @@ improvements in the code:
  - Alexander Zapirov
  - Sergey Novikov
  - Jeen Broekstra
+ - Robert P DeCarlo

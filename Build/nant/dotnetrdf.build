@@ -147,70 +147,70 @@
   </target>
   
   <target name="build-nightly" description="Copy the latest build to the Nightly Build directory" unless="${dotnetrdf.nobuild}"  depends="compile-nightly">
-    <copy todir="../bin/nightly" file="Libraries/core/bin/Debug/dotNetRDF.dll" />
-    <copy todir="../bin/nightly" file="Libraries/core/bin/Debug/dotNetRDF.xml" />
-    <copy todir="../bin/nightly" file="Libraries/core/bin/Debug/HtmlAgilityPack.dll" />
-    <copy todir="../bin/nightly" file="Libraries/core/bin/Debug/HtmlAgilityPack.xml" />
-    <copy todir="../bin/nightly" file="Libraries/core/bin/Debug/Newtonsoft.Json.dll" />
-    <copy todir="../bin/nightly" file="Libraries/core/bin/Debug/Newtonsoft.Json.xml" />
-    <copy todir="../bin/nightly" file="Libraries/core/bin/Debug/MySql.Data.dll" />
-    <copy todir="../bin/nightly" file="Libraries/core/bin/Debug/virtado3.dll" />
-    <copy todir="../bin/nightly" file="Libraries/core/ChangeLog.txt" />
+    <copy overwrite="true" todir="../bin/nightly" file="Libraries/core/bin/Debug/dotNetRDF.dll" />
+    <copy overwrite="true" todir="../bin/nightly" file="Libraries/core/bin/Debug/dotNetRDF.xml" />
+    <copy overwrite="true" todir="../bin/nightly" file="Libraries/core/bin/Debug/HtmlAgilityPack.dll" />
+    <copy overwrite="true" todir="../bin/nightly" file="Libraries/core/bin/Debug/HtmlAgilityPack.xml" />
+    <copy overwrite="true" todir="../bin/nightly" file="Libraries/core/bin/Debug/Newtonsoft.Json.dll" />
+    <copy overwrite="true" todir="../bin/nightly" file="Libraries/core/bin/Debug/Newtonsoft.Json.xml" />
+    <copy overwrite="true" todir="../bin/nightly" file="Libraries/core/bin/Debug/MySql.Data.dll" />
+    <copy overwrite="true" todir="../bin/nightly" file="Libraries/core/bin/Debug/virtado3.dll" />
+    <copy overwrite="true" todir="../bin/nightly" file="Libraries/core/ChangeLog.txt" />
   </target>
 
   <target name="build-silverlight" description="Copy the latest Silverlight build to the Silverlight Nightly Build directory" unless="${dotnetrdf.nobuild}"  depends="compile-silverlight">
-    <copy todir="../bin/silverlight-nightly" file="Libraries/silverlight/bin/Debug/dotNetRDF.Silverlight.dll" />
-    <copy todir="../bin/silverlight-nightly" file="Libraries/silverlight/bin/Debug/dotNetRDF.Silverlight.xml" />
-    <copy todir="../bin/silverlight-nightly" file="Libraries/silverlight/bin/Debug/HtmlAgilityPack.Silverlight.dll" />
-    <copy todir="../bin/silverlight-nightly" file="Libraries/silverlight/bin/Debug/Newtonsoft.Json.Silverlight.dll" />
-    <copy todir="../bin/silverlight-nightly" file="Libraries/silverlight/bin/Debug/Newtonsoft.Json.Silverlight.xml" />
+    <copy overwrite="true" todir="../bin/silverlight-nightly" file="Libraries/silverlight/bin/Debug/dotNetRDF.Silverlight.dll" />
+    <copy overwrite="true" todir="../bin/silverlight-nightly" file="Libraries/silverlight/bin/Debug/dotNetRDF.Silverlight.xml" />
+    <copy overwrite="true" todir="../bin/silverlight-nightly" file="Libraries/silverlight/bin/Debug/HtmlAgilityPack.Silverlight.dll" />
+    <copy overwrite="true" todir="../bin/silverlight-nightly" file="Libraries/silverlight/bin/Debug/Newtonsoft.Json.Silverlight.dll" />
+    <copy overwrite="true" todir="../bin/silverlight-nightly" file="Libraries/silverlight/bin/Debug/Newtonsoft.Json.Silverlight.xml" />
   </target>
 
   <target name="build-lite" description="Copy the latest Lite build to the Lite Nightly Build directory" unless="${dotnetrdf.nobuild}" depends="compile-lite">
-    <copy todir="../bin/lite-nightly" file="Libraries/lite/bin/Debug/dotNetRDF.Lite.dll" />
-    <copy todir="../bin/lite-nightly" file="Libraries/lite/bin/Debug/dotNetRDF.Lite.xml" />
-    <copy todir="../bin/lite-nightly" file="Libraries/lite/bin/Debug/HtmlAgilityPack.dll" />
-    <copy todir="../bin/lite-nightly" file="Libraries/lite/bin/Debug/HtmlAgilityPack.xml" />
-    <copy todir="../bin/lite-nightly" file="Libraries/lite/bin/Debug/Newtonsoft.Json.dll" />
-    <copy todir="../bin/lite-nightly" file="Libraries/lite/bin/Debug/Newtonsoft.Json.xml" />
+    <copy overwrite="true" todir="../bin/lite-nightly" file="Libraries/lite/bin/Debug/dotNetRDF.Lite.dll" />
+    <copy overwrite="true" todir="../bin/lite-nightly" file="Libraries/lite/bin/Debug/dotNetRDF.Lite.xml" />
+    <copy overwrite="true" todir="../bin/lite-nightly" file="Libraries/lite/bin/Debug/HtmlAgilityPack.dll" />
+    <copy overwrite="true" todir="../bin/lite-nightly" file="Libraries/lite/bin/Debug/HtmlAgilityPack.xml" />
+    <copy overwrite="true" todir="../bin/lite-nightly" file="Libraries/lite/bin/Debug/Newtonsoft.Json.dll" />
+    <copy overwrite="true" todir="../bin/lite-nightly" file="Libraries/lite/bin/Debug/Newtonsoft.Json.xml" />
   </target>
 
   <target name="build-mono" description="Copy the latest Mono build to the Mono Nightly Build directory" unless="${dotnetrdf.nobuild}"  depends="compile-mono">
-    <copy todir="../bin/mono-nightly" file="Libraries/core/bin/Debug/dotNetRDF.Mono.dll" />
-    <copy todir="../bin/mono-nightly" file="Libraries/core/bin/Debug/dotNetRDF.Mono.xml" />
-    <copy todir="../bin/mono-nightly" file="Libraries/core/bin/Debug/HtmlAgilityPack.dll" />
-    <copy todir="../bin/mono-nightly" file="Libraries/core/bin/Debug/HtmlAgilityPack.xml" />
-    <copy todir="../bin/mono-nightly" file="Libraries/core/bin/Debug/Newtonsoft.Json.dll" />
-    <copy todir="../bin/mono-nightly" file="Libraries/core/bin/Debug/Newtonsoft.Json.xml" />
-    <copy todir="../bin/mono-nightly" file="Libraries/core/bin/Debug/MySql.Data.dll" />
-    <copy todir="../bin/mono-nightly" file="Libraries/core/bin/Debug/virtado3.dll" />
+    <copy overwrite="true" todir="../bin/mono-nightly" file="Libraries/core/bin/Debug/dotNetRDF.Mono.dll" />
+    <copy overwrite="true" todir="../bin/mono-nightly" file="Libraries/core/bin/Debug/dotNetRDF.Mono.xml" />
+    <copy overwrite="true" todir="../bin/mono-nightly" file="Libraries/core/bin/Debug/HtmlAgilityPack.dll" />
+    <copy overwrite="true" todir="../bin/mono-nightly" file="Libraries/core/bin/Debug/HtmlAgilityPack.xml" />
+    <copy overwrite="true" todir="../bin/mono-nightly" file="Libraries/core/bin/Debug/Newtonsoft.Json.dll" />
+    <copy overwrite="true" todir="../bin/mono-nightly" file="Libraries/core/bin/Debug/Newtonsoft.Json.xml" />
+    <copy overwrite="true" todir="../bin/mono-nightly" file="Libraries/core/bin/Debug/MySql.Data.dll" />
+    <copy overwrite="true" todir="../bin/mono-nightly" file="Libraries/core/bin/Debug/virtado3.dll" />
   </target>
 
   <target name="build-linq" description="Copy the latest Linq build to the Linq Nighlty Build directory" unless="${dotnetrdf.nobuild}" depends="compile-linq">
-    <copy todir="../bin/linq-nightly" file="Libraries/linq/bin/Debug/dotNetRDF.Linq.dll" />
-    <copy todir="../bin/linq-nightly" file="Libraries/linq/bin/Debug/dotNetRDF.Linq.xml" />
-    <copy todir="../bin/linq-nightly" file="Libraries/linq/bin/Debug/dotNetRDF.dll" />
-    <copy todir="../bin/linq-nightly" file="Libraries/linq/bin/Debug/dotNetRDF.xml" />
-    <copy todir="../bin/linq-nightly" file="Libraries/linq/bin/Debug/HtmlAgilityPack.dll" />
-    <copy todir="../bin/linq-nightly" file="Libraries/linq/bin/Debug/HtmlAgilityPack.xml" />
-    <copy todir="../bin/linq-nightly" file="Libraries/linq/bin/Debug/log4net.dll" />
-    <copy todir="../bin/linq-nightly" file="Libraries/linq/bin/Debug/Newtonsoft.Json.dll" />
-    <copy todir="../bin/linq-nightly" file="Libraries/linq/bin/Debug/Newtonsoft.Json.xml" />
-    <copy todir="../bin/linq-nightly" file="Libraries/core/bin/Debug/MySql.Data.dll" />
-    <copy todir="../bin/linq-nightly" file="Libraries/linq/bin/Debug/virtado3.dll" />
+    <copy overwrite="true" todir="../bin/linq-nightly" file="Libraries/linq/bin/Debug/dotNetRDF.Linq.dll" />
+    <copy overwrite="true" todir="../bin/linq-nightly" file="Libraries/linq/bin/Debug/dotNetRDF.Linq.xml" />
+    <copy overwrite="true" todir="../bin/linq-nightly" file="Libraries/linq/bin/Debug/dotNetRDF.dll" />
+    <copy overwrite="true" todir="../bin/linq-nightly" file="Libraries/linq/bin/Debug/dotNetRDF.xml" />
+    <copy overwrite="true" todir="../bin/linq-nightly" file="Libraries/linq/bin/Debug/HtmlAgilityPack.dll" />
+    <copy overwrite="true" todir="../bin/linq-nightly" file="Libraries/linq/bin/Debug/HtmlAgilityPack.xml" />
+    <copy overwrite="true" todir="../bin/linq-nightly" file="Libraries/linq/bin/Debug/log4net.dll" />
+    <copy overwrite="true" todir="../bin/linq-nightly" file="Libraries/linq/bin/Debug/Newtonsoft.Json.dll" />
+    <copy overwrite="true" todir="../bin/linq-nightly" file="Libraries/linq/bin/Debug/Newtonsoft.Json.xml" />
+    <copy overwrite="true" todir="../bin/linq-nightly" file="Libraries/core/bin/Debug/MySql.Data.dll" />
+    <copy overwrite="true" todir="../bin/linq-nightly" file="Libraries/linq/bin/Debug/virtado3.dll" />
   </target>
 
   <target name="build-release" description="Copy the stable build to the Stable Build directory ready for a release" unless="${dotnetrdf.nobuild}"  depends="compile">
-    <copy todir="../bin/stable" file="Libraries/core/bin/Debug/dotNetRDF.dll" />
-    <copy todir="../bin/stable" file="Libraries/core/bin/Debug/dotNetRDF.xml" />
-    <copy todir="../bin/stable" file="Libraries/core/bin/Debug/HtmlAgilityPack.dll" />
-    <copy todir="../bin/stable" file="Libraries/core/bin/Debug/HtmlAgilityPack.xml" />
-    <copy todir="../bin/stable" file="Libraries/core/bin/Debug/Newtonsoft.Json.dll" />
-    <copy todir="../bin/stable" file="Libraries/core/bin/Debug/Newtonsoft.Json.xml" />
-    <copy todir="../bin/stable" file="Libraries/core/bin/Debug/MySql.Data.dll" />
-    <copy todir="../bin/stable" file="Libraries/core/bin/Debug/virtado3.dll" />
-    <copy todir="../bin/stable" file="Libraries/core/ChangeLog.txt" />
-    <copy todir="../bin/stable" file="Libraries/core/ReleaseNotes.txt" />
+    <copy overwrite="true" todir="../bin/stable" file="Libraries/core/bin/Debug/dotNetRDF.dll" />
+    <copy overwrite="true" todir="../bin/stable" file="Libraries/core/bin/Debug/dotNetRDF.xml" />
+    <copy overwrite="true" todir="../bin/stable" file="Libraries/core/bin/Debug/HtmlAgilityPack.dll" />
+    <copy overwrite="true" todir="../bin/stable" file="Libraries/core/bin/Debug/HtmlAgilityPack.xml" />
+    <copy overwrite="true" todir="../bin/stable" file="Libraries/core/bin/Debug/Newtonsoft.Json.dll" />
+    <copy overwrite="true" todir="../bin/stable" file="Libraries/core/bin/Debug/Newtonsoft.Json.xml" />
+    <copy overwrite="true" todir="../bin/stable" file="Libraries/core/bin/Debug/MySql.Data.dll" />
+    <copy overwrite="true" todir="../bin/stable" file="Libraries/core/bin/Debug/virtado3.dll" />
+    <copy overwrite="true" todir="../bin/stable" file="Libraries/core/ChangeLog.txt" />
+    <copy overwrite="true" todir="../bin/stable" file="Libraries/core/ReleaseNotes.txt" />
   </target>
   
   <!-- Clean Targets for Cleaning the Builds -->
@@ -340,6 +340,9 @@
 
   <target name="dist-toolkit" description="Creates the Toolkit ZIP files" depends="build">
     <zip zipfile="${dotnetrdf.toolkitzip}" ziplevel="9">
+      <fileset basedir="Utilities">
+        <include name="ReadMe.txt" />
+      </fileset>
       <fileset basedir="Utilities/rdfConvert/bin/Debug">
         <include name="*" />
         <exclude name="*.pdb" />

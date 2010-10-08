@@ -1,0 +1,22 @@
+<project SchemaVersion="1.3">
+    <assemblies>
+        <assembly location="..\..\Libraries\core\bin\Debug\dotNetRDF.dll" documentation="..\..\Libraries\core\bin\Debug\dotNetRDF.xml" />
+    </assemblies>
+    <documenters>
+        <documenter name="MSDN">
+            <property name="OutputDirectory" value=".\doc\" />
+            <property name="HtmlHelpName" value="dotNetRDF API Documentation" />
+            <property name="Title" value="dotNetRDF API Documentation" />
+            <property name="OutputTarget" value="Web" />
+            <property name="NamespaceTOCStyle" value="Hierarchical" />
+            <property name="ShowMissingSummaries" value="True" />
+            <property name="ShowMissingParams" value="True" />
+            <property name="AssemblyVersionInfo" value="AssemblyFileVersion" />
+            <property name="CopyrightText" value="Robert Vesse 2009-10" />
+            <property name="CopyrightHref" value="http://www.vdesign-studios.com" />
+            <property name="FeedbackEmailAddress" value="rvesse@vdesign-studios.com" />
+            <property name="SdkDocVersion" value="SDK_v3_5" />
+            <property name="SdkDocVersionString" value="VS.90" />
+        </documenter>
+    </documenters>
+</project>
