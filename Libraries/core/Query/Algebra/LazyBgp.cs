@@ -165,9 +165,9 @@ namespace VDS.RDF.Query.Algebra
             {
                 if (context.Query != null)
                 {
-                    if (context.Query.OrderBy != null)
+                    if (context.Query.OrderBy != null || context.Query.GroupBy != null || context.Query.Having != null)
                     {
-                        //If there's an ORDER BY present then can't do Lazy evaluation
+                        //If there's an ORDER BY/GROUP BY/HAVING present then can't do Lazy evaluation
                         this._requiredResults = -1;
                     }
                     else
