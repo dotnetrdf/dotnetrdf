@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{BFBAC159-1E60-4D03-8ACA-D34E31EB83BF}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -133,14 +133,7 @@
     <Compile Include="Storage\Params\SqlIOParams.cs" />
     <Compile Include="Storage\TalisPlatformConnector.cs" />
     <Compile Include="Storage\VirtuosoManager.cs" />
-    <Compile Include="Web\BaseResourceHandler.cs" />
     <Compile Include="Web\HandlerConstants.cs" />
-    <Compile Include="Web\RemoteSparqlHandler.cs" />
-    <Compile Include="Web\Configuration\Query\RemoteSparqlHandlerConfiguration.cs" />
-    <Compile Include="Web\SparqlHandler.cs" />
-    <Compile Include="Web\Configuration\Query\SqlSparqlHandlerConfiguration.cs" />
-    <Compile Include="Web\SqlResourceHandler.cs" />
-    <Compile Include="Web\Configuration\Resource\SqlResourceHandlerConfiguration.cs" />
     <Compile Include="Writing\CompressingTurtleWriter.cs" />
     <Compile Include="Writing\FolderStoreWriter.cs" />
     <Compile Include="Writing\GraphVizGenerator.cs" />
@@ -426,10 +419,8 @@
     <Compile Include="Web\BaseSparqlServer.cs" />
     <Compile Include="Web\Configuration\Protocol\BaseProtocolHandlerConfiguration.cs" />
     <Compile Include="Web\Configuration\Query\BaseQueryHandlerConfiguration.cs" />
-    <Compile Include="Web\Configuration\Query\ExtensionSupportingSparqlHandlerConfiguration.cs" />
     <Compile Include="Update\Protocol\ISparqlHttpProtocolProcessor.cs" />
     <Compile Include="Web\Configuration\Resource\BaseGraphHandlerConfiguration.cs" />
-    <Compile Include="Web\Configuration\Resource\BaseResourceHandlerConfiguration.cs" />
     <Compile Include="Configuration\StorageFactories.cs" />
     <Compile Include="Web\Configuration\Server\BaseSparqlServerConfiguration.cs" />
     <Compile Include="Web\Configuration\Update\BaseUpdateHandlerConfiguration.cs" />
@@ -438,7 +429,6 @@
     <Compile Include="Web\GraphHandler.cs" />
     <Compile Include="Web\HandlerHelper.cs" />
     <Compile Include="Web\ProtocolHandler.cs" />
-    <Compile Include="Web\FileHandler.cs" />
     <Compile Include="Web\QueryHandler.cs" />
     <Compile Include="Web\SchemaHandler.cs" />
     <Compile Include="Web\SparqlServer.cs" />
@@ -463,15 +453,6 @@
     <Compile Include="Storage\MySqlStoreManager.cs" />
     <Compile Include="Storage\NonNativeVirtuosoManager.cs" />
     <Compile Include="Storage\SesameHttpProtocolConnector.cs" />
-    <Compile Include="Web\BaseSparqlHandler.cs" />
-    <Compile Include="Web\Configuration\Query\BaseSparqlHandlerConfiguration.cs" />
-    <Compile Include="Web\DiskResourceHandler.cs" />
-    <Compile Include="Web\Configuration\Resource\DiskResourceHandlerConfiguration.cs" />
-    <Compile Include="Web\FileSparqlHandler.cs" />
-    <Compile Include="Web\Configuration\Query\FileSparqlHandlerConfiguration.cs" />
-    <Compile Include="Web\Configuration\Query\InferencingSparqlHandlerConfiguration.cs" />
-    <Compile Include="Web\NativeSparqlHandler.cs" />
-    <Compile Include="Web\Configuration\Query\NativeSparqlHandlerConfiguration.cs" />
     <Compile Include="Writing\Contexts\FolderStoreWriterContext.cs" />
     <Compile Include="Writing\Contexts\HtmlWriterContext.cs" />
     <Compile Include="Writing\Contexts\NTriplesWriterContext.cs" />
