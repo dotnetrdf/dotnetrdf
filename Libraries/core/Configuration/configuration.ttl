@@ -412,7 +412,7 @@ dnr:showUpdateForm a rdf:Property ;
 				   
 dnr:defaultQueryFile a rdf:Property ;
 					 rdfs:label "Default Query File" ;
-					 rdfs:comment "This property indicates a file from which the default query to be displayed in the Query Form should be read." 
+					 rdfs:comment "This property indicates a file from which the default query to be displayed in the Query Form should be read." ;
 					 rdfs:domain dnr:HttpHandler .
 					 
 dnr:defaultUpdateFile a rdf:Property ;

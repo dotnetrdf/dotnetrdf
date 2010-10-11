@@ -137,32 +137,32 @@ _:monkey a dnr:SparqlExpressionFactory ;
 		 dnr:type "WebDemos.MonkeyExpressionFactory, WebDemos" .
 		 
 		
-<dotnetrdf:/demos/koos/*> a dnr:HttpHandler ;
-       dnr:queryProcessor _:koosQProc ;
-       dnr:updateProcessor _:koosUProc ;
-       dnr:protocolProcessor _:koosPProc ;
-       dnr:type "VDS.RDF.Web.SparqlServer" ;
-       dnr:defaultQueryFile "~/App_Data/default.rq" . 
-     
-_:koosQProc a dnr:SparqlQueryProcessor ;
-       dnr:type "VDS.RDF.Query.LeviathanQueryProcessor" ;
-       dnr:usingStore _:sqlStore .
-
-_:koosUProc a dnr:SparqlUpdateProcessor ;
-      dnr:type "VDS.RDF.Update.LeviathanUpdateProcessor" ;
-      dnr:usingStore _:sqlStore .
-
-_:koosPProc a dnr:SparqlHttpProtocolProcessor ;
-      dnr:type "VDS.RDF.Update.Protocol.LeviathanProtocolProcessor" ;
-      dnr:usingStore _:sqlStore .
-
-_:sqlStore a dnr:TripleStore ;
-      dnr:type "VDS.RDF.SqlTripleStore" ;
-      dnr:sqlManager _:sqlServer . 
-      
-_:sqlServer a dnr:SqlIOManager ;
-     dnr:type "VDS.RDF.Storage.MicrosoftSqlStoreManager" ;
-     dnr:server "localhost" ;
-     dnr:database "koos" ;
-     dnr:user "sa" ;
-     dnr:password "20sQl08" .
+#<dotnetrdf:/demos/koos/*> a dnr:HttpHandler ;
+#       dnr:queryProcessor _:koosQProc ;
+#       dnr:updateProcessor _:koosUProc ;
+#       dnr:protocolProcessor _:koosPProc ;
+#       dnr:type "VDS.RDF.Web.SparqlServer" ;
+#       dnr:defaultQueryFile "~/App_Data/default.rq" . 
+#     
+#_:koosQProc a dnr:SparqlQueryProcessor ;
+#       dnr:type "VDS.RDF.Query.LeviathanQueryProcessor" ;
+#       dnr:usingStore _:sqlStore .
+#
+#_:koosUProc a dnr:SparqlUpdateProcessor ;
+#      dnr:type "VDS.RDF.Update.LeviathanUpdateProcessor" ;
+#      dnr:usingStore _:sqlStore .
+#
+#_:koosPProc a dnr:SparqlHttpProtocolProcessor ;
+#      dnr:type "VDS.RDF.Update.Protocol.LeviathanProtocolProcessor" ;
+#      dnr:usingStore _:sqlStore .
+#
+#_:sqlStore a dnr:TripleStore ;
+#      dnr:type "VDS.RDF.SqlTripleStore" ;
+#      dnr:sqlManager _:sqlServer . 
+#      
+#_:sqlServer a dnr:SqlIOManager ;
+#     dnr:type "VDS.RDF.Storage.MicrosoftSqlStoreManager" ;
+#     dnr:server "localhost" ;
+#     dnr:database "koos" ;
+#     dnr:user "sa" ;
+#     dnr:password "20sQl08" .

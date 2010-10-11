@@ -1,7 +1,7 @@
 ﻿This is a demonstration of the <a href="../../content.asp?pageID=Leviathan">Leviathan</a> SPARQL Engine which is a brand new Algebra based engine introduced in the 0.2.0 release of dotNetRDF to replace the existing and somewhat flawed <a href="../../content.asp?pageID=Labyrinth">Labyrinth</a> Engine.
 </p>
 <p>
-The Leviathan engine supports all of SPARQL 1.0 and most of SPARQL 1.1 (limited property path support) plus a number of extensions which are either common to other existing SPARQL engines or specific to our engine.  These include the following:
+The Leviathan engine supports all of SPARQL 1.0 and most of SPARQL 1.1 plus a number of extensions which are either common to other existing SPARQL engines or specific to our engine.  These include the following:
 <ul>
 <li>XPath Function Library - many string and numeric XPath functions are supported as well as some basic date time functions</li>
 <li>ARQ Function Library - all of the ARQ functions (The Jena framework's SPARQL engine) are supported</li>
