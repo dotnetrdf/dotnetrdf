@@ -36,6 +36,7 @@ terms.
 #if !NO_WEB
 
 using VDS.RDF.Query;
+using VDS.RDF.Query.Datasets;
 
 namespace VDS.RDF.Update.Protocol
 {
@@ -49,7 +50,10 @@ namespace VDS.RDF.Update.Protocol
         /// </summary>
         /// <param name="store">Triple Store</param>
         public LeviathanProtocolProcessor(IInMemoryQueryableStore store)
-            : base(new LeviathanQueryProcessor(store), new LeviathanUpdateProcessor(store)) { }
+            : this(new InMemoryDataset(store)) { }
+
+        public LeviathanProtocolProcessor(ISparqlDataset dataset)
+            : base(new LeviathanQueryProcessor(dataset), new LeviathanUpdateProcessor(dataset)) { }
     }
 }
 

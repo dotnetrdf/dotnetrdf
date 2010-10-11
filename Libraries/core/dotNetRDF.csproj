@@ -202,6 +202,7 @@
     <Compile Include="Configuration\ConfigurationSerializationContext.cs" />
     <Compile Include="Configuration\CredentialsFactory.cs" />
     <Compile Include="Configuration\DataFactories.cs" />
+    <Compile Include="Configuration\DatasetFactory.cs" />
     <Compile Include="Configuration\EndpointFactories.cs" />
     <Compile Include="Configuration\ExpressionFactoryFactory.cs" />
     <Compile Include="Configuration\PermissionFactories.cs" />

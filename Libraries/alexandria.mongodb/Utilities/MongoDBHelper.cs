@@ -178,6 +178,18 @@ namespace VDS.Alexandria.Utilities
                 json.AppendLine("]");
                 return json.ToString();
             }
+            else if (obj is List<Object>)
+            {
+                List<Object> objList = (List<Object>)obj;
+                if (objList.Count == 0)
+                {
+                    return "[]";
+                }
+                else
+                {
+                    return DocumentListToJsonArray(objList.Select(o => (Document)o));
+                }
+            }
             else
             {
                 throw new InvalidCastException("Cannot convert an Object which is not a List<Document> to a JSON Array");
