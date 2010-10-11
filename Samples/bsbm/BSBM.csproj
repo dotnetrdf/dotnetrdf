@@ -53,6 +53,7 @@
     <Reference Include="System.Web.Mobile" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Data\bsbm.ttl" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
