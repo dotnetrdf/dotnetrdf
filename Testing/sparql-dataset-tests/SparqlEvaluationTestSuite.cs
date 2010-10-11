@@ -45,6 +45,7 @@ namespace dotNetRDFTest
                 Options.QueryDefaultSyntax = SparqlQuerySyntax.Sparql_1_0;
                 Options.QueryOptimisation = true;
                 Options.FullTripleIndexing = true;
+                Options.LiteralValueNormalization = false;
 
                 //Set the Tests whose results we override
                 //These tests don't pass because dotNetRDF's behaviour is slightly different or because URIs in the results are HTTP URIs
@@ -106,6 +107,8 @@ namespace dotNetRDFTest
             {
                 output.Close();
             }
+
+            Options.LiteralValueNormalization = true;
         }
 
         private void ProcessTestDirectory(String dir)

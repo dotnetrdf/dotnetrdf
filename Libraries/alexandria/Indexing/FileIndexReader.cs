@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using VDS.RDF;
 using VDS.Alexandria.Documents;
+using VDS.Alexandria.Utilities;
 
 namespace VDS.Alexandria.Indexing
 {
@@ -91,7 +92,7 @@ namespace VDS.Alexandria.Indexing
             if (this._parser == null)
             {
                 StreamReader reader = this._doc.BeginRead();
-                this._parser = new StreamingNQuadsParser(reader);
+                this._parser = new StreamingNQuadsParser(this._doc.DocumentManager.NodeFactory, reader);
             }
 
             if (this._parser.EOF) return false;

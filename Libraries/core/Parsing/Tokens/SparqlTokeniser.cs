@@ -709,11 +709,11 @@ namespace VDS.RDF.Parsing.Tokens
                 next = this.Peek();
             }
 
-#if !NO_NORM
-            String value = this.Value.Normalize();
-#else
+//#if !NO_NORM
+//            String value = this.Value.Normalize();
+//#else
             String value = this.Value;
-#endif
+//#endif
             //Backtrack if necessary
             if (value.EndsWith("."))
             {
@@ -777,11 +777,11 @@ namespace VDS.RDF.Parsing.Tokens
                 next = this.Peek();
             }
 
-#if !NO_NORM
-            value = this.Value.Normalize();
-#else
+//#if !NO_NORM
+//            value = this.Value.Normalize();
+//#else
             value = this.Value;
-#endif
+//#endif
 
             //Backtrack if necessary
             if (value.EndsWith("."))
@@ -1215,11 +1215,11 @@ namespace VDS.RDF.Parsing.Tokens
                 next = this.Peek();
             }
 
-#if !NO_NORM
-            String value = this.Value.Normalize();
-#else
+//#if !NO_NORM
+//            String value = this.Value.Normalize();
+//#else
             String value = this.Value;
-#endif
+//#endif
 
             //Backtrack if necessary
             if (!Char.IsDigit(value[0]) && value.EndsWith("."))

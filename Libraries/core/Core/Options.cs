@@ -80,6 +80,7 @@ namespace VDS.RDF
     public static class Options
     {
         private static LiteralEqualityMode _litEqualityMode = LiteralEqualityMode.Strict;
+        private static bool _litNormalization = true;
         private static long _queryExecutionTimeout = 300000;
         private static int _defaultCompressionLevel = WriterCompressionLevel.More;
         private static bool _fullIndexing = true;
@@ -109,6 +110,21 @@ namespace VDS.RDF
             set
             {
                 _litEqualityMode = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets/Sets whether Literal Values should be normalized
+        /// </summary>
+        public static bool LiteralValueNormalization
+        {
+            get
+            {
+                return _litNormalization;
+            }
+            set
+            {
+                _litNormalization = value;
             }
         }
 

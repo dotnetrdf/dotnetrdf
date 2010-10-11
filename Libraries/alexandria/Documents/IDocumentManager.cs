@@ -6,6 +6,7 @@ using System.Text;
 using VDS.RDF;
 using VDS.Alexandria.Documents.Adaptors;
 using VDS.Alexandria.Documents.GraphRegistry;
+using VDS.Alexandria.Utilities;
 
 namespace VDS.Alexandria.Documents
 {
@@ -51,6 +52,14 @@ namespace VDS.Alexandria.Documents
         /// Gets the Graph Registry that stores the mappings between Graph URIs and Document Names
         /// </summary>
         IGraphRegistry GraphRegistry
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Gets the Node Factory which is used to return Nodes tied to a consistent Graph Reference throughout the life of the Manager
+        /// </summary>
+        NodeFactory NodeFactory
         {
             get;
         }

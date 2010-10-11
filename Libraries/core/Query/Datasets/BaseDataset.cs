@@ -174,10 +174,32 @@ namespace VDS.RDF.Query.Datasets
 
         public abstract bool ContainsTriple(Triple t);
 
-        public abstract IEnumerable<Triple> Triples
+        public virtual IEnumerable<Triple> Triples
         {
-            get;
+            get
+            {
+                if (this._activeGraph == null)
+                {
+                    if (this._defaultGraph == null)
+                    {
+                        //No specific Active Graph which implies that the Default Graph is the entire Triple Store
+                        return this.GetAllTriples();
+                    }
+                    else
+                    {
+                        //Specific Default Graph so return that
+                        return this._defaultGraph.Triples;
+                    }
+                }
+                else
+                {
+                    //Active Graph is used (which may happen to be the Default Graph)
+                    return this._activeGraph.Triples;
+                }
+            }
         }
+
+        protected abstract IEnumerable<Triple> GetAllTriples();
 
         public abstract IEnumerable<Triple> GetTriplesWithSubject(INode subj);
 

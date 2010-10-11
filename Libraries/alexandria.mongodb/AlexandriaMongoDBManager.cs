@@ -61,5 +61,21 @@ namespace VDS.Alexandria
 
         public AlexandriaMongoDBManager(String connectionString, String db, MongoDBSchemas schema)
             : this(new MongoDBDocumentManager(connectionString, db, schema)) { }
+
+        internal IDocumentManager<Document, Document> DocumentManager
+        {
+            get
+            {
+                return base.DocumentManager;
+            }
+        }
+
+        internal IIndexManager IndexManager
+        {
+            get
+            {
+                return base.IndexManager;
+            }
+        }
     }
 }

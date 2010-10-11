@@ -220,6 +220,7 @@
     <Compile Include="Core\GraphMatcher.cs" />
     <Compile Include="Core\QueryableGraph.cs" />
     <Compile Include="Core\UnionCollections.cs" />
+    <Compile Include="Core\VariableNode.cs" />
     <Compile Include="Core\WebDemandTripleStore.cs" />
     <Compile Include="Core\NativeTripleStore.cs" />
     <Compile Include="Core\VirtuosoTripleStore.cs" />

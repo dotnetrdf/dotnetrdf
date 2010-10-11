@@ -271,6 +271,12 @@ namespace VDS.Alexandria
             }
         }
 
+        public override void Flush()
+        {
+            this._indexManager.Flush();
+            this._docManager.Flush();
+        }
+
         public override void Dispose()
         {
             this.Dispose(true);

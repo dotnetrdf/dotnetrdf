@@ -161,7 +161,7 @@ namespace VDS.RDF
         {
             get
             {
-                return (this._triples.Count == 0 && this._nodes.Count == 0);
+                return (this._triples.Count == 0);
             }
         }
 

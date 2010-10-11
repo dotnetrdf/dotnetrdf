@@ -108,8 +108,28 @@ namespace VDS.Alexandria.Utilities
                 }
 
                 String json = MongoDBHelper.DocumentListToJsonArray(this._nextDoc["graph"]);
-                Graph g = new Graph();
-                //Need to set the Graph URI
+
+                //Use the Graph Reference from the Node Factory to ensure consistent behaviour esp wrt Blank Nodes
+                IGraph g;
+                if (this._nextDoc["name"] != null)
+                {
+                    String uri = this._manager.GraphRegistry.GetGraphUri((String)this._nextDoc["name"]);
+                    if (uri != null && !uri.Equals(String.Empty))
+                    {
+                        g = this._manager.NodeFactory[new Uri(uri)];
+                        g.Clear();
+                    }
+                    else
+                    {
+                        g = this._manager.NodeFactory[null];
+                        g.Clear();
+                    }
+                }
+                else
+                {
+                    g = this._manager.NodeFactory[null];
+                    g.Clear();
+                }
                 
                 StringParser.Parse(g, json, this._parser);
 

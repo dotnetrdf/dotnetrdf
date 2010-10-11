@@ -44,7 +44,7 @@ using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Storage;
 using VDS.RDF.Storage.Params;
 
-namespace VDS.Alexandria
+namespace VDS.Alexandria.Utilities
 {
     /// <summary>
     /// Parser for parsing NQuads (NTriples with an additional Context i.e. Named Graphs)
@@ -69,12 +69,14 @@ namespace VDS.Alexandria
     class StreamingNQuadsParser
     {
         private ITokenQueue _tokens;
-        private TripleStore _store = new TripleStore();
-        private Graph _g = new Graph();
+        private NodeFactory _factory;
+        private IGraph _g = new Graph();
         private bool _bof = true, _eof = false;
 
-        public StreamingNQuadsParser(StreamReader reader)
+        public StreamingNQuadsParser(NodeFactory factory, StreamReader reader)
         {
+            this._factory = factory; ;
+
             NTriplesTokeniser tokeniser = new NTriplesTokeniser(reader);
             tokeniser.NQuadsMode = true;
             this._tokens = new BufferedTokenQueue(tokeniser);
@@ -161,18 +163,9 @@ namespace VDS.Alexandria
             next = this._tokens.Dequeue();
             if (next.TokenType == Token.DOT)
             {
-                //Terminates a Triple and there is no Context given for the Triple
-                IGraph def;
-                if (!this._store.HasGraph(null))
-                {
-                    def = new Graph();
-                    this._store.Add(def);
-                }
-                else
-                {
-                    def = this._store.Graph(null);
-                }
-
+                //Terminates a Triple and there is no Context given for the Triple so this
+                //Triple is in the Default Graph
+                IGraph def = this._factory[null];
                 t = this.CreateTriple(s, p, o, def);
             }
             else
@@ -227,17 +220,8 @@ namespace VDS.Alexandria
                     throw Error("Cannot turn a Node of type '" + context.GetType().ToString() + "' into a Context URI for a Triple", next);
                 }
 
-                if (this._store.HasGraph(contextUri))
-                {
-                    t = this.CreateTriple(s, p, o, this._store.Graph(contextUri));
-                }
-                else
-                {
-                    Graph dest = new Graph();
-                    dest.BaseUri = contextUri;
-                    this._store.Add(dest);
-                    t = this.CreateTriple(s, p, o, dest);
-                }
+                IGraph g = this._factory[contextUri];
+                t = this.CreateTriple(s, p, o, g);
 
                 next = this._tokens.Dequeue();
                 while (next.TokenType == Token.COMMENT)

@@ -48,30 +48,7 @@ namespace VDS.Alexandria.Datasets
             return this._manager.IndexManager.GetTriples(t).Any();
         }
 
-        public override IEnumerable<Triple> Triples
-        {
-            get 
-            {
-                if (this._activeGraph == null)
-                {
-                    if (this._defaultGraph == null)
-                    {
-                        //No specific Active Graph which implies that the Default Graph is the entire Triple Store
-                        throw new NotImplementedException();
-                    }
-                    else
-                    {
-                        //Specific Default Graph so return that
-                        return this._defaultGraph.Triples;
-                    }
-                }
-                else
-                {
-                    //Active Graph is used (which may happen to be the Default Graph)
-                    return this._activeGraph.Triples;
-                } 
-            }
-        }
+        protected abstract override IEnumerable<Triple> GetAllTriples();
 
         public override IEnumerable<Triple> GetTriplesWithSubject(INode subj)
         {
@@ -105,8 +82,7 @@ namespace VDS.Alexandria.Datasets
 
         public override void Flush()
         {
-            //TODO: Add Flush() methods to appropriate classes
-            this._manager.IndexManager.Flush();
+            this._manager.Flush();
         }
     }
 }

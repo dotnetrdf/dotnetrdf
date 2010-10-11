@@ -44,6 +44,8 @@ namespace VDS.Alexandria
             get;
         }
 
+        public abstract void Flush();
+
         public abstract void Dispose();
     }
 }

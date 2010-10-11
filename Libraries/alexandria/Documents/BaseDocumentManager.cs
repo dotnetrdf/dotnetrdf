@@ -6,6 +6,7 @@ using System.Security.Cryptography;
 using System.Text;
 using VDS.Alexandria.Documents.Adaptors;
 using VDS.Alexandria.Documents.GraphRegistry;
+using VDS.Alexandria.Utilities;
 
 namespace VDS.Alexandria.Documents
 {
@@ -13,6 +14,7 @@ namespace VDS.Alexandria.Documents
     {
         private Dictionary<String,DocumentReference<TReader,TWriter>> _activeDocuments = new Dictionary<string,DocumentReference<TReader,TWriter>>();
         private IDataAdaptor<TReader, TWriter> _adaptor;
+        private NodeFactory _nodeFactory = new NodeFactory();
 
         public BaseDocumentManager(IDataAdaptor<TReader,TWriter> adaptor)
         {
@@ -28,6 +30,14 @@ namespace VDS.Alexandria.Documents
             protected set 
             {
                 this._adaptor = value;
+            }
+        }
+
+        public NodeFactory NodeFactory
+        {
+            get
+            {
+                return this._nodeFactory;
             }
         }
 

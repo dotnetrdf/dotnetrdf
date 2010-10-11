@@ -65,13 +65,29 @@ namespace VDS.RDF
         /// <param name="g">Graph this Node is in</param>
         /// <param name="literal">String value of the Literal</param>
         protected internal LiteralNode(IGraph g, String literal)
+            : this(g, literal, Options.LiteralValueNormalization) { }
+
+        /// <summary>
+        /// Internal Only Constructor for Literal Nodes
+        /// </summary>
+        /// <param name="g">Graph this Node is in</param>
+        /// <param name="literal">String value of the Literal</param>
+        /// <param name="normalize">Whether to Normalize the Literal Value</param>
+        protected internal LiteralNode(IGraph g, String literal, bool normalize)
             : base(g, NodeType.Literal)
         {
+            if (normalize)
+            {
 #if !NO_NORM
             this._value = literal.Normalize();
 #else
             this._value = literal;
 #endif
+            } 
+            else 
+            {
+                this._value = literal;
+            }
             this._language = String.Empty;
             this._datatype = null;
 
@@ -86,13 +102,30 @@ namespace VDS.RDF
         /// <param name="literal">String value of the Literal</param>
         /// <param name="langspec">String value for the Language Specifier for the Literal</param>
         protected internal LiteralNode(IGraph g, String literal, String langspec)
+            : this(g, literal, langspec, Options.LiteralValueNormalization) { }
+
+        /// <summary>
+        /// Internal Only Constructor for Literal Nodes
+        /// </summary>
+        /// <param name="g">Graph this Node is in</param>
+        /// <param name="literal">String value of the Literal</param>
+        /// <param name="langspec">String value for the Language Specifier for the Literal</param>
+        /// <param name="normalize">Whether to Normalize the Literal Value</param>
+        protected internal LiteralNode(IGraph g, String literal, String langspec, bool normalize)
             : base(g, NodeType.Literal)
         {
+            if (normalize)
+            {
 #if !NO_NORM
-            this._value = literal.Normalize();
+                this._value = literal.Normalize();
 #else
             this._value = literal;
 #endif
+            }
+            else
+            {
+                this._value = literal;
+            }
             this._language = langspec;
             this._datatype = null;
 
@@ -115,13 +148,30 @@ namespace VDS.RDF
         /// <param name="literal">String value of the Literal</param>
         /// <param name="datatype">Uri for the Literals Data Type</param>
         protected internal LiteralNode(IGraph g, String literal, Uri datatype)
+            : this(g, literal, datatype, Options.LiteralValueNormalization) { }
+
+        /// <summary>
+        /// Internal Only Constructor for Literal Nodes
+        /// </summary>
+        /// <param name="g">Graph this Node is in</param>
+        /// <param name="literal">String value of the Literal</param>
+        /// <param name="datatype">Uri for the Literals Data Type</param>
+        /// <param name="normalize">Whether to Normalize the Literal Value</param>
+        protected internal LiteralNode(IGraph g, String literal, Uri datatype, bool normalize)
             : base(g, NodeType.Literal)
         {
+            if (normalize)
+            {
 #if !NO_NORM
-            this._value = literal.Normalize();
+                this._value = literal.Normalize();
 #else
             this._value = literal;
 #endif
+            }
+            else
+            {
+                this._value = literal;
+            }
             this._language = String.Empty;
             this._datatype = datatype;
 
@@ -493,6 +543,51 @@ namespace VDS.RDF
                 //Return -1 to indicate this
                 return -1;
             }
+        }
+    }
+
+    /// <summary>
+    /// Class for representing Literal Nodes where the Literal values are not normalized
+    /// </summary>
+    class NonNormalizedLiteralNode : LiteralNode, IComparable<NonNormalizedLiteralNode>
+    {
+        /// <summary>
+        /// Internal Only Constructor for Literal Nodes
+        /// </summary>
+        /// <param name="g">Graph this Node is in</param>
+        /// <param name="literal">String value of the Literal</param>
+        protected internal NonNormalizedLiteralNode(IGraph g, String literal)
+            : base(g, literal, false) { }
+
+        /// <summary>
+        /// Internal Only Constructor for Literal Nodes
+        /// </summary>
+        /// <param name="g">Graph this Node is in</param>
+        /// <param name="literal">String value of the Literal</param>
+        /// <param name="langspec">Lanaguage Specifier for the Literal</param>
+        protected internal NonNormalizedLiteralNode(IGraph g, String literal, String langspec)
+            : base(g, literal, langspec, false) { }
+
+        /// <summary>
+        /// Internal Only Constructor for Literal Nodes
+        /// </summary>
+        /// <param name="g">Graph this Node is in</param>
+        /// <param name="literal">String value of the Literal</param>
+        /// <param name="datatype">Uri for the Literals Data Type</param>
+        protected internal NonNormalizedLiteralNode(IGraph g, String literal, Uri datatype)
+            : base(g, literal, datatype, false) { }
+
+        /// <summary>
+        /// Implementation of Compare To for Literal Nodes
+        /// </summary>
+        /// <param name="other">Literal Node to Compare To</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Simply invokes the more general implementation of this method
+        /// </remarks>
+        public int CompareTo(NonNormalizedLiteralNode other)
+        {
+            return this.CompareTo((INode)other);
         }
     }
 }

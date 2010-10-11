@@ -18,7 +18,7 @@ namespace VDS.Alexandria.Documents.GraphRegistry
         String GetDocumentName(String graphUri);
 
         /// <summary>
-        /// Converts from a Document Name to a Grah URI
+        /// Converts from a Document Name to a Graph URI
         /// </summary>
         /// <param name="name">Document Name</param>
         /// <returns></returns>
