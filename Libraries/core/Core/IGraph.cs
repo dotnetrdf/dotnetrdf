@@ -221,11 +221,18 @@ namespace VDS.RDF
         UriNode CreateUriNode(string qname);
 
         /// <summary>
-        /// Creates a Uri Node for the given Uri
+        /// Creates a Uri Node for the given URI
         /// </summary>
-        /// <param name="uri">Uri</param>
+        /// <param name="uri">URI</param>
         /// <returns></returns>
         UriNode CreateUriNode(Uri uri);
+
+        /// <summary>
+        /// Creates a Variable Node for the given Variable Name
+        /// </summary>
+        /// <param name="varname"></param>
+        /// <returns></returns>
+        VariableNode CreateVariableNode(String varname);
 
         #endregion
 

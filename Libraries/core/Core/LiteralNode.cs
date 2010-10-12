@@ -376,9 +376,9 @@ namespace VDS.RDF
                 //Return a 1 to indicate this
                 return 1;
             }
-            else if (other.NodeType != NodeType.Literal)
+            else if (other.NodeType == NodeType.Blank || other.NodeType == NodeType.Variable || other.NodeType == NodeType.Uri)
             {
-                //Literal Nodes are greater than Blank Nodes and Uri Nodes
+                //Literal Nodes are greater than Blank, Variable and Uri Nodes
                 //Return a 1 to indicate this
                 return 1;
             }

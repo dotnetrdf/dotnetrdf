@@ -455,8 +455,7 @@ namespace VDS.RDF.Parsing
                     break;
 
                 case Token.VARIABLE:
-                    this.OnWarning("Parser treats variables as QNames in the default Namespace");
-                    subj = context.Graph.CreateUriNode(":" + subjToken.Value.Substring(1));
+                    subj = context.Graph.CreateVariableNode(subjToken.Value.Substring(1));
                     break;
 
                 default:
@@ -620,8 +619,7 @@ namespace VDS.RDF.Parsing
                         break;
 
                     case Token.VARIABLE:
-                        this.OnWarning("Parser treats variables as QNames in the default Namespace");
-                        pred = context.Graph.CreateUriNode(":" + predToken.Value.Substring(1));
+                        pred = context.Graph.CreateVariableNode(predToken.Value.Substring(1));
                         break;
 
                     case Token.EOF:
@@ -812,8 +810,7 @@ namespace VDS.RDF.Parsing
                         break;
 
                     case Token.VARIABLE:
-                        this.OnWarning("Parser treats variables as QNames in the default Namespace");
-                        obj = context.Graph.CreateUriNode(":" + objToken.Value.Substring(1));
+                        obj = context.Graph.CreateVariableNode(objToken.Value.Substring(1));
                         break;
 
                     case Token.EOF:
@@ -970,8 +967,7 @@ namespace VDS.RDF.Parsing
                         break;
 
                     case Token.VARIABLE:
-                        this.OnWarning("Parser treats variables as QNames in the default Namespace");
-                        obj = context.Graph.CreateUriNode(":" + next.Value.Substring(1));
+                        obj = context.Graph.CreateVariableNode(next.Value.Substring(1));
                         break;
 
                     default:

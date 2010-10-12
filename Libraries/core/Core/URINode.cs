@@ -203,9 +203,9 @@ namespace VDS.RDF
                 //Return a 1 to indicate this
                 return 1;
             }
-            else if (other.NodeType == NodeType.Blank)
+            else if (other.NodeType == NodeType.Blank || other.NodeType == NodeType.Variable)
             {
-                //Uri Nodes are greater than Blank Nodes
+                //Uri Nodes are greater than Blank and Variable Nodes
                 //Return a 1 to indicate this
                 return 1;
             }

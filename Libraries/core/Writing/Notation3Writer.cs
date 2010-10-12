@@ -329,6 +329,7 @@ namespace VDS.RDF.Writing
                     GraphLiteralNode glit = (GraphLiteralNode)n;
 
                     CompressingTurtleWriterContext subcontext = new CompressingTurtleWriterContext(glit.SubGraph, null);
+                    subcontext.NodeFormatter = context.NodeFormatter;
 
                     //Write Triples 1 at a Time on a single line
                     foreach (Triple t in subcontext.Graph.Triples) 
@@ -349,6 +350,9 @@ namespace VDS.RDF.Writing
                     return context.NodeFormatter.Format(n, segment);
 
                 case NodeType.Uri:
+                    return context.NodeFormatter.Format(n, segment);
+
+                case NodeType.Variable:
                     return context.NodeFormatter.Format(n, segment);
 
                 default:

@@ -50,6 +50,11 @@ namespace VDS.RDF.Writing.Formatting
         /// </summary>
         public UncompressedNotation3Formatter()
             : base("Notation 3") { }
+
+        protected override string FormatVariableNode(VariableNode v, TripleSegment? segment)
+        {
+            return v.ToString();
+        }
     }
 
     /// <summary>
@@ -76,5 +81,10 @@ namespace VDS.RDF.Writing.Formatting
         /// <param name="nsmap">Namespace Map</param>
         public Notation3Formatter(INamespaceMapper nsmap)
             : base("Notation 3", new QNameOutputMapper(nsmap)) { }
+
+        protected override string FormatVariableNode(VariableNode v, TripleSegment? segment)
+        {
+            return v.ToString();
+        }
     }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace VDS.RDF.Core
+namespace VDS.RDF
 {
     /// <summary>
     /// Class representing Variable Nodes (only used for N3)
@@ -73,17 +73,27 @@ namespace VDS.RDF.Core
             return "?" + this._var;
         }
 
-        //TODO: Decide Sort Order for Variable Nodes and update other Node classes CompareTo method to be aware of this
-
-
         public override int CompareTo(INode other)
         {
-            throw new NotImplementedException();
+            if (other == null)
+            {
+                //Variables are considered greater than null
+                return 1;
+            }
+            else if (other.NodeType == NodeType.Variable)
+            {
+                return this.CompareTo((VariableNode)other);
+            }
+            else
+            {
+                //Variable Nodes are less than everything else
+                return -1;
+            }
         }
 
         public int CompareTo(VariableNode other)
         {
-            throw new NotImplementedException();
+            return this._var.CompareTo(other.VariableName);
         }
     }
 }

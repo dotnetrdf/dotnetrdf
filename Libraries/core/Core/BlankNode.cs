@@ -177,6 +177,11 @@ namespace VDS.RDF
                 //So we return a 1 to indicate we're greater than it
                 return 1;
             }
+            else if (other.NodeType == NodeType.Variable)
+            {
+                //Blank Nodes are considered greater than Variables
+                return 1;
+            }
             else if (other.NodeType == NodeType.Blank)
             {
                 if (ReferenceEquals(this, other)) return 0;

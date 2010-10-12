@@ -74,6 +74,8 @@ namespace VDS.RDF.Writing.Formatting
                     return this.FormatLiteralNode((LiteralNode)n, segment);
                 case NodeType.Uri:
                     return this.FormatUriNode((UriNode)n, segment);
+                case NodeType.Variable:
+                    return this.FormatVariableNode((VariableNode)n, segment);
                 default:
                     throw new RdfOutputException(WriterErrorMessages.UnknownNodeTypeUnserializable(this._format));
             }
@@ -147,6 +149,17 @@ namespace VDS.RDF.Writing.Formatting
         {
             if (segment == TripleSegment.Predicate) throw new RdfOutputException(WriterErrorMessages.BlankPredicatesUnserializable(this._format));
             return b.ToString();
+        }
+
+        /// <summary>
+        /// Formats a Variable Node as a String for the given Format
+        /// </summary>
+        /// <param name="v">Variable Name</param>
+        /// <param name="segment">Triple Segment</param>
+        /// <returns></returns>
+        protected virtual String FormatVariableNode(VariableNode v, TripleSegment? segment)
+        {
+            throw new RdfOutputException(WriterErrorMessages.VariableNodesUnserializable(this._format));
         }
 
         /// <summary>

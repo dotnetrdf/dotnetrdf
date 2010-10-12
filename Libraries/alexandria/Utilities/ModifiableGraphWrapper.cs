@@ -193,6 +193,11 @@ namespace VDS.Alexandria.Utilities
             return this._g.CreateUriNode(uri);
         }
 
+        public VariableNode CreateVariableNode(String varname)
+        {
+            return this._g.CreateVariableNode(varname);
+        }
+
         public BlankNode GetBlankNode(string nodeId)
         {
             return this._g.GetBlankNode(nodeId);
