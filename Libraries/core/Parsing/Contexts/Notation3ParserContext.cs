@@ -49,6 +49,7 @@ namespace VDS.RDF.Parsing.Contexts
         private bool _keywordsMode = false;
         private List<String> _keywords = new List<string>();
         private Stack<IGraph> _graphs = new Stack<IGraph>();
+        private VariableContext _varContext = null;
         
         /// <summary>
         /// Creates a new Notation 3 Parser Context with default settings
@@ -115,6 +116,21 @@ namespace VDS.RDF.Parsing.Contexts
             get
             {
                 return this._keywords;
+            }
+        }
+
+        /// <summary>
+        /// Gets the Variable Context for Triples
+        /// </summary>
+        public VariableContext VariableContext
+        {
+            get
+            {
+                return this._varContext;
+            }
+            set
+            {
+                this._varContext = value;
             }
         }
 

@@ -5,7 +5,9 @@ using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF;
 using VDS.RDF.Parsing;
+using VDS.RDF.Query.Inference;
 using VDS.RDF.Writing;
+using VDS.RDF.Writing.Formatting;
 
 namespace branch_tests
 {
@@ -26,6 +28,96 @@ namespace branch_tests
             }
 
             StringWriter.Write(g, new Notation3Writer());
+        }
+
+        [TestMethod]
+        public void N3VariableContexts()
+        {
+            String prefixes = "@prefix rdf: <" + NamespaceMapper.RDF + ">. @prefix rdfs: <" + NamespaceMapper.RDFS + ">.";
+            List<String> tests = new List<string>()
+            {
+                prefixes + "@forAll :x :type . { :x a :type } => {:x rdfs:label \"This has a type\" } .",
+                prefixes + "@forSome :x :type . { :x a :type } => {:x rdfs:label \"This has a type\" } .",
+                prefixes + "@forAll :h . @forSome :g . :g :loves :h .",
+                prefixes + "@forSome :h . @forAll :g . :g :loves :h ."
+            };
+
+            Notation3Parser parser = new Notation3Parser();
+            Notation3Writer writer = new Notation3Writer();
+            foreach (String test in tests)
+            {
+                Graph g = new Graph();
+                g.BaseUri = new Uri("http://example.org/n3rules");
+                StringParser.Parse(g, test, parser);
+                Console.WriteLine(StringWriter.Write(g, writer));
+
+                Console.WriteLine();
+            }
+        }
+
+        [TestMethod]
+        public void N3Reasoner()
+        {
+            String rules = "@prefix rdfs: <" + NamespaceMapper.RDFS + "> . { ?s rdfs:subClassOf ?class } => { ?s a ?class } .";
+
+            Graph rulesGraph = new Graph();
+            StringParser.Parse(rulesGraph, rules, new Notation3Parser());
+
+            Graph data = new Graph();
+            FileLoader.Load(data, "InferenceTest.ttl");
+
+            Console.WriteLine("Original Graph - " + data.Triples.Count + " Triples");
+            int origCount = data.Triples.Count;
+            foreach (Triple t in data.Triples)
+            {
+                Console.WriteLine(t.ToString());
+            }
+
+            N3RulesReasoner reasoner = new N3RulesReasoner();
+            reasoner.Initialise(rulesGraph);
+
+            reasoner.Apply(data);
+
+            Console.WriteLine("Graph after Reasoner application - " + data.Triples.Count + " Triples");
+            foreach (Triple t in data.Triples)
+            {
+                Console.WriteLine(t.ToString());
+            }
+
+            Assert.IsTrue(data.Triples.Count > origCount, "Number of Triples should have increased after the reasoner was run");
+        }
+
+        [TestMethod]
+        public void N3ReasonerWithForAll()
+        {
+            String rules = "@prefix rdfs: <" + NamespaceMapper.RDFS + "> . @forAll :x . { :x rdfs:subClassOf ?class } => { :x a ?class } .";
+
+            Graph rulesGraph = new Graph();
+            rulesGraph.BaseUri = new Uri("http://example.org/rules");
+            StringParser.Parse(rulesGraph, rules, new Notation3Parser());
+
+            Graph data = new Graph();
+            FileLoader.Load(data, "InferenceTest.ttl");
+
+            Console.WriteLine("Original Graph - " + data.Triples.Count + " Triples");
+            int origCount = data.Triples.Count;
+            foreach (Triple t in data.Triples)
+            {
+                Console.WriteLine(t.ToString());
+            }
+
+            N3RulesReasoner reasoner = new N3RulesReasoner();
+            reasoner.Initialise(rulesGraph);
+
+            reasoner.Apply(data);
+
+            Console.WriteLine("Graph after Reasoner application - " + data.Triples.Count + " Triples");
+            foreach (Triple t in data.Triples)
+            {
+                Console.WriteLine(t.ToString());
+            }
+
+            Assert.IsTrue(data.Triples.Count > origCount, "Number of Triples should have increased after the reasoner was run");
         }
     }
 }

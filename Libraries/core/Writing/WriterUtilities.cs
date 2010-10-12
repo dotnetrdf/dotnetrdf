@@ -85,6 +85,10 @@ namespace VDS.RDF.Writing
         /// </summary>
         private const String LiteralPredicatesUnserializableError = "Triples with a Literal Predicate are not serializable in {0}";
         /// <summary>
+        /// Error message produced when a User attempts to serialized a Graph containing Triples with Graph Literal Predicates
+        /// </summary>
+        private const String GraphLiteralPredicatesUnserializableError = "Triples with a Graph Literal Predicate are not serializable in {0}";
+        /// <summary>
         /// Error message produced when a User attempts to serialize a Graph containing Triples with Blank Node Predicates
         /// </summary>
         private const String BlankPredicatesUnserializableError = "Triples with a Blank Node Predicate are not serializable in {0}";
@@ -153,6 +157,16 @@ namespace VDS.RDF.Writing
         public static String LiteralPredicatesUnserializable(String format)
         {
             return String.Format(LiteralPredicatesUnserializableError, format);
+        }
+
+        /// <summary>
+        /// Gets an Error message indicating that Graph Literal Predicates are not serializable with the appropriate RDF format name inserted in the error
+        /// </summary>
+        /// <param name="format">RDF format (syntax)</param>
+        /// <returns></returns>
+        public static String GraphLiteralPredicatesUnserializable(String format)
+        {
+            return String.Format(GraphLiteralPredicatesUnserializableError, format);
         }
 
         /// <summary>

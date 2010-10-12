@@ -64,5 +64,10 @@ namespace VDS.RDF.Writing.Formatting
         /// <param name="nsmap">Namespace Map</param>
         public SparqlFormatter(INamespaceMapper nsmap)
             : base("SPARQL", new QNameOutputMapper(nsmap)) { }
+
+        protected override string FormatVariableNode(VariableNode v, TripleSegment? segment)
+        {
+            return v.ToString();
+        }
     }
 }

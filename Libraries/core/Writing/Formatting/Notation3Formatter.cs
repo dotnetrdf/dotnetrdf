@@ -55,6 +55,20 @@ namespace VDS.RDF.Writing.Formatting
         {
             return v.ToString();
         }
+
+        protected override string FormatGraphLiteralNode(GraphLiteralNode glit, TripleSegment? segment)
+        {
+            if (segment == TripleSegment.Predicate) throw new RdfOutputException(WriterErrorMessages.GraphLiteralPredicatesUnserializable(this.FormatName));
+
+            StringBuilder output = new StringBuilder();
+            output.Append("{");
+            foreach (Triple t in glit.SubGraph.Triples)
+            {
+                output.Append(this.Format(t));
+            }
+            output.Append("}");
+            return output.ToString();
+        }
     }
 
     /// <summary>
@@ -85,6 +99,20 @@ namespace VDS.RDF.Writing.Formatting
         protected override string FormatVariableNode(VariableNode v, TripleSegment? segment)
         {
             return v.ToString();
+        }
+
+        protected override string FormatGraphLiteralNode(GraphLiteralNode glit, TripleSegment? segment)
+        {
+            if (segment == TripleSegment.Predicate) throw new RdfOutputException(WriterErrorMessages.GraphLiteralPredicatesUnserializable(this.FormatName));
+
+            StringBuilder output = new StringBuilder();
+            output.Append("{");
+            foreach (Triple t in glit.SubGraph.Triples)
+            {
+                output.Append(this.Format(t));
+            }
+            output.Append("}");
+            return output.ToString();
         }
     }
 }

@@ -338,15 +338,36 @@ namespace VDS.RDF.Parsing
         private void TryParseForAll(Notation3ParserContext context)
         {
             //We know the Token we've just got off the Queue was a ForAllQuantifierToken
-            //Therefore the next Token(s) should be triple items leading to a DotToken
+            //Therefore the next Token(s) should be QNames/URIs leading to a DotToken
 
+            //Create a new Variable Context if one doesn't currently exist
+            if (context.VariableContext == null)
+            {
+                context.VariableContext = new VariableContext(VariableContextType.Universal);
+            }
+            else
+            {
+                context.VariableContext.InnerContext = new VariableContext(VariableContextType.Universal);
+            }
+
+            context.Tokens.Dequeue();
             IToken next = context.Tokens.Dequeue();
             while (next.TokenType != Token.DOT)
             {
+                //Get Variables
+                switch (next.TokenType)
+                {
+                    case Token.QNAME:
+                    case Token.URI:
+                        context.VariableContext.AddVariable(ParserHelper.TryResolveUri(context, next));
+                        break;
+
+                    default:
+                        throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a URI/QName for a Universal Variable as part of a @forAll directive", next);
+                }
+
                 next = context.Tokens.Dequeue();
             }
-
-            this.OnWarning("Parser does not know how to evaluate forAll Quantifiers");
         }
 
         /// <summary>
@@ -356,11 +377,34 @@ namespace VDS.RDF.Parsing
         private void TryParseForSome(Notation3ParserContext context)
         {
             //We know the Token we've just got off the Queue was a ForSomeQuantifierToken
-            //Therefore the next Token(s) should be triple items leading to a DotToken
+            //Therefore the next Token(s) should be QNames/URIs leading to a DotToken
 
+            //Create a new Variable Context if one doesn't currently exist
+            if (context.VariableContext == null)
+            {
+                context.VariableContext = new VariableContext(VariableContextType.Existential);
+            }
+            else
+            {
+                context.VariableContext.InnerContext = new VariableContext(VariableContextType.Existential);
+            }
+
+            context.Tokens.Dequeue();
             IToken next = context.Tokens.Dequeue();
             while (next.TokenType != Token.DOT)
             {
+                //Get Variables
+                switch (next.TokenType)
+                {
+                    case Token.QNAME:
+                    case Token.URI:
+                        context.VariableContext.AddVariable(ParserHelper.TryResolveUri(context, next));
+                        break;
+
+                    default:
+                        throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a URI/QName for an Existential Variable as part of a @forSome directive", next);
+                }
+
                 next = context.Tokens.Dequeue();
             }
 
@@ -695,6 +739,7 @@ namespace VDS.RDF.Parsing
                         if (obj != null)
                         {
                             //OK to return if we've seen a valid Triple
+                            context.VariableContext = null;
                             return;
                         }
                         else
@@ -831,12 +876,26 @@ namespace VDS.RDF.Parsing
                 //Assert the Triple
                 if (!reverse)
                 {
-                    context.Graph.Assert(new Triple(subj, pred, obj));
+                    if (context.VariableContext != null)
+                    {
+                        context.Graph.Assert(new Triple(subj, pred, obj, context.VariableContext));
+                    }
+                    else
+                    {
+                        context.Graph.Assert(new Triple(subj, pred, obj));
+                    }
                 }
                 else
                 {
-                    //When reversed this means the predicate was Implies By (<=)
-                    context.Graph.Assert(new Triple(obj, pred, subj));
+                    //When reversed this means the predicate was Implied By (<=)
+                    if (context.VariableContext != null)
+                    {
+                        context.Graph.Assert(new Triple(obj, pred, subj, context.VariableContext));
+                    }
+                    else
+                    {
+                        context.Graph.Assert(new Triple(obj, pred, subj));
+                    }
                 }
 
                 //Expect a comma/semicolon/dot terminator if we are to continue

@@ -57,6 +57,17 @@ namespace VDS.RDF.Writing.Formatting
         }
 
         /// <summary>
+        /// Gets the Format Name
+        /// </summary>
+        public String FormatName
+        {
+            get
+            {
+                return this._format;
+            }
+        }
+
+        /// <summary>
         /// Formats a Node as a String
         /// </summary>
         /// <param name="n">Node</param>
@@ -69,7 +80,7 @@ namespace VDS.RDF.Writing.Formatting
                 case NodeType.Blank:
                     return this.FormatBlankNode((BlankNode)n, segment);
                 case NodeType.GraphLiteral:
-                    throw new NotSupportedException("Graph Literal Nodes cannot be formatted with this function");
+                    return this.FormatGraphLiteralNode((GraphLiteralNode)n, segment);
                 case NodeType.Literal:
                     return this.FormatLiteralNode((LiteralNode)n, segment);
                 case NodeType.Uri:
@@ -160,6 +171,17 @@ namespace VDS.RDF.Writing.Formatting
         protected virtual String FormatVariableNode(VariableNode v, TripleSegment? segment)
         {
             throw new RdfOutputException(WriterErrorMessages.VariableNodesUnserializable(this._format));
+        }
+
+        /// <summary>
+        /// Formats a Graph Literal Node as a String for the given Format
+        /// </summary>
+        /// <param name="glit">Graph Literal</param>
+        /// <param name="segment">Triple Segment</param>
+        /// <returns></returns>
+        protected virtual String FormatGraphLiteralNode(GraphLiteralNode glit, TripleSegment? segment)
+        {
+            throw new RdfOutputException(WriterErrorMessages.GraphLiteralsUnserializable(this._format));
         }
 
         /// <summary>
