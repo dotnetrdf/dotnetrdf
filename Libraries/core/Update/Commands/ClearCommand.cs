@@ -80,7 +80,7 @@ namespace VDS.RDF.Update.Commands
             //Q: Throw an error if the Graph doesn't exist?
             if (context.Data.HasGraph(this._graphUri))
             {
-                context.Data[this._graphUri].Clear();
+                context.Data.GetModifiableGraph(this._graphUri).Clear();
             }
         }
 

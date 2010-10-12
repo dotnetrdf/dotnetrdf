@@ -164,6 +164,11 @@ namespace VDS.RDF.Query.Datasets
             get;
         }
 
+        public virtual IGraph GetModifiableGraph(Uri graphUri)
+        {
+            return this[graphUri];
+        }
+
         public virtual bool HasTriples
         {
             get 

@@ -135,7 +135,7 @@ namespace VDS.RDF.Update.Commands
             if (this.UsingUris.Any()) context.Data.ResetActiveGraph();
 
             //Get the Graph to which we are deleting and inserting
-            IGraph g = context.Data[this._graphUri];
+            IGraph g = context.Data.GetModifiableGraph(this._graphUri);
 
             //Delete the Triples for each Solution
             List<Triple> deletedTriples = new List<Triple>();
@@ -193,7 +193,7 @@ namespace VDS.RDF.Update.Commands
                                 //Any other Graph Specifier we have to ignore this solution
                                 continue;
                         }
-                        IGraph h = context.Data[new Uri(graphUri)];
+                        IGraph h = context.Data.GetModifiableGraph(new Uri(graphUri));
                         ConstructContext constructContext = new ConstructContext(h, s, true);
                         foreach (ITriplePattern p in gp.TriplePatterns)
                         {
@@ -266,7 +266,7 @@ namespace VDS.RDF.Update.Commands
                                 //Any other Graph Specifier we have to ignore this solution
                                 continue;
                         }
-                        IGraph h = context.Data[new Uri(graphUri)];
+                        IGraph h = context.Data.GetModifiableGraph(new Uri(graphUri));
                         ConstructContext constructContext = new ConstructContext(h, s, true);
                         foreach (ITriplePattern p in gp.TriplePatterns)
                         {

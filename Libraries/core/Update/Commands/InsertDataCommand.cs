@@ -67,7 +67,7 @@ namespace VDS.RDF.Update.Commands
             }
             if (context.Data.HasGraph(graphUri))
             {
-                target = context.Data[graphUri];
+                target = context.Data.GetModifiableGraph(graphUri);
             }
             else
             {

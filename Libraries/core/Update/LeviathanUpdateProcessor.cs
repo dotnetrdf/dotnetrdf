@@ -133,6 +133,7 @@ namespace VDS.RDF.Update
                 default:
                     throw new SparqlUpdateException("Unknown Update Commands cannot be processed by the Leviathan Update Processor");
             }
+            this.Flush();
         }
 
         /// <summary>
