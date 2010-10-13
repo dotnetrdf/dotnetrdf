@@ -53,7 +53,7 @@ namespace VDS.RDF.Writing
     /// </p>
     /// </remarks>
     /// <threadsafety instance="true">Designed to be Thread Safe - should be able to call the Save() method from multiple threads on different Graphs without issue</threadsafety>
-    public class JsonNTriplesWriter : IRdfWriter, IPrettyPrintingWriter
+    class JsonNTriplesWriter : IRdfWriter, IPrettyPrintingWriter
     {
         private bool _prettyprint = true;
         private NTriplesFormatter _formatter = new NTriplesFormatter();

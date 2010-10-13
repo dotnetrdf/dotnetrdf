@@ -11,7 +11,7 @@ namespace alexandria_tests
     public class ManagerTests
     {
         [TestMethod]
-        public void MongoHasDocument()
+        public void MongoGCHasDocument()
         {
             MongoDBDocumentManager manager = new MongoDBDocumentManager("test-empty");
             String name = "default-graph";

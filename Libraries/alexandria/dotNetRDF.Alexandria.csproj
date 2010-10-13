@@ -48,7 +48,6 @@
     <Compile Include="AlexandriaException.cs" />
     <Compile Include="AlexandriaFileManager.cs" />
     <Compile Include="AlexandriaDocumentStoreManager.cs" />
-    <Compile Include="AlexandriaWideTableStoreManager.cs" />
     <Compile Include="BaseAlexandriaManager.cs" />
     <Compile Include="Datasets\FileIterator.cs" />
     <Compile Include="Documents\Adaptors\IDataAdaptor.cs" />
@@ -79,10 +78,6 @@
     <Compile Include="TestWrapper.cs" />
     <Compile Include="Utilities\StreamingNTriplesParser.cs" />
     <Compile Include="Utilities\TsvEnumerators.cs" />
-    <Compile Include="WideTable\BaseWideTableAdaptor.cs" />
-    <Compile Include="WideTable\ColumnSchema\BaseSimpleColumnSchema.cs" />
-    <Compile Include="WideTable\ColumnSchema\IColumnSchema.cs" />
-    <Compile Include="WideTable\IWideTableAdaptor.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="VDSOpenSourceKey.pfx" />

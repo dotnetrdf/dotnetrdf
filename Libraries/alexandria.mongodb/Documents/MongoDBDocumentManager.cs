@@ -51,7 +51,8 @@ namespace VDS.Alexandria.Documents
                     break;
 
                 case MongoDBSchemas.TripleCentric:
-                    throw new NotImplementedException("Triple-Centric MongoDB Schema is not yet implemented");
+                    this.DataAdaptor = new MongoDBTripleCentricAdaptor(this);
+                    this._registry = new MongoDBTripleCentricGraphRegistry(this);
                     break;
 
                 default:
@@ -132,6 +133,15 @@ namespace VDS.Alexandria.Documents
             Document mongoDoc = doc.BeginRead();
             doc.EndRead();
             this._db[Collection].Remove(mongoDoc);
+
+            //For Triple-Centric schema there are many documents to delete
+            if (this._schema == MongoDBSchemas.TripleCentric)
+            {
+                Document deleteTriples = new Document();
+                deleteTriples["graphuri"] = mongoDoc["uri"];
+                this._db[Collection].Remove(deleteTriples);
+            }
+
             return true;
         }
 

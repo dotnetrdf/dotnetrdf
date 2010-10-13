@@ -32,9 +32,6 @@ namespace VDS.Alexandria
         /// <para>
         /// The Triple-centric schema stores each Triple in it's own Document plus a Document per Graph to store the relation between Document Name and Graph URI.  This schema requires more read/write operations but these are smaller operations, the advantage of this schema is that it gives better query performance
         /// </para>
-        /// <para>
-        /// <strong>Note: </strong> Not yet implemented
-        /// </para>
         /// </remarks>
         TripleCentric
     }

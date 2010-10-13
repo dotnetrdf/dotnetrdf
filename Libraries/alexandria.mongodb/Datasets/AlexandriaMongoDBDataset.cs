@@ -21,17 +21,26 @@ namespace VDS.Alexandria.Datasets
 
         protected override IEnumerable<Triple> GetAllTriples()
         {
+            Document lookup, exists;
+
             switch (((MongoDBDocumentManager)this._mongoManager.DocumentManager).Schema)
             {
                 case MongoDBSchemas.GraphCentric:
-                    Document lookup = new Document();
-                    Document exists = new Document();
+                    lookup = new Document();
+                    exists = new Document();
                     exists["$exists"] = true;
                     lookup["graph"] = exists;
                     return new MongoDBGraphCentricEnumerator((MongoDBDocumentManager)this._mongoManager.DocumentManager, lookup, t => true);
 
                 case MongoDBSchemas.TripleCentric:
-                    throw new NotSupportedException("The Triple-Centric Schema for MongoDB is not yet supported");
+                    lookup = new Document();
+                    exists = new Document();
+                    exists["$exists"] = true;
+                    lookup["subject"] = exists;
+                    lookup["predicate"] = exists;
+                    lookup["object"] = exists;
+                    return new MongoDBTripleCentricEnumerator((MongoDBDocumentManager)this._mongoManager.DocumentManager, lookup);
+
                 default:
                     throw new NotSupportedException("Unknown Schemas for MongoDB are not supported");
             }

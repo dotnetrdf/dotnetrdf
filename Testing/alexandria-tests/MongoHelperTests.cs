@@ -14,22 +14,6 @@ namespace alexandria_tests
     [TestClass]
     public class MongoHelperTests
     {
-        [TestMethod]
-        public void MongoJsonToDocument()
-        {
-            Graph g = new Graph();
-            FileLoader.Load(g, "InferenceTest.ttl");
-            String json = StringWriter.Write(g, new JsonNTriplesWriter());
-            Console.WriteLine(json);
-            Console.WriteLine();
 
-            Document doc = new Document();
-            doc["graph"] = MongoDBHelper.JsonArrayToObjects(json);
-            Console.WriteLine(doc.ToString());
-            Console.WriteLine();
-
-            String json2 = MongoDBHelper.DocumentToJson(doc);
-            Console.WriteLine(json2);
-        }
     }
 }

@@ -205,7 +205,7 @@ namespace alexandria_tests
         #region MongoDB Store
 
         [TestMethod]
-        public void MongoGraphRegistryEnumerate()
+        public void MongoGCGraphRegistryEnumerate()
         {
             //Load in our Test Graph
             Graph g = new Graph();
@@ -254,7 +254,7 @@ namespace alexandria_tests
         }
 
         [TestMethod]
-        public void MongoGraphRegistryEnumerateWithDefaultGraph()
+        public void MongoGCGraphRegistryEnumerateWithDefaultGraph()
         {
             //Load in our Test Graph
             Graph g = new Graph();
@@ -304,7 +304,7 @@ namespace alexandria_tests
         }
 
         [TestMethod]
-        public void MongoGraphRegistryLookup()
+        public void MongoGCGraphRegistryLookup()
         {
             //Load in our Test Graph
             Graph g = new Graph();
@@ -328,7 +328,7 @@ namespace alexandria_tests
         }
 
         [TestMethod]
-        public void MongoGraphRegisterUnregister()
+        public void MongoGCGraphRegisterUnregister()
         {
             //Load in our Test Graph
             Graph g = new Graph();

@@ -20,6 +20,12 @@ namespace VDS.Alexandria.Utilities
     /// </remarks>
     public static class MongoDBHelper
     {
+
+        public static MongoConfiguration GetConfiguration()
+        {
+            return new MongoConfiguration();
+        }
+
         public static MongoConfiguration GetConfiguration(String connectionString)
         {
             MongoConfiguration config = new MongoConfiguration();
@@ -34,7 +40,7 @@ namespace VDS.Alexandria.Utilities
                 case MongoDBSchemas.GraphCentric:
                     return new MongoDBGraphCentricIndexManager(manager);
                 case MongoDBSchemas.TripleCentric:
-                    throw new NotImplementedException("Triple-Centric Schema for MongoDB not yet implemented");
+                    return new MongoDBTripleCentricIndexManager(manager);
                 default:
                     throw new NotSupportedException("Unknown MongoDB Schema not supported");
             }

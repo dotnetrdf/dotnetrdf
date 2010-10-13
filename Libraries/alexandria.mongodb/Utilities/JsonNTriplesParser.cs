@@ -51,7 +51,7 @@ namespace VDS.RDF.Parsing
     /// Parser for NTriples in JSON Syntax
     /// </summary>
     /// <threadsafety instance="true">Designed to be Thread Safe - should be able to call Load from multiple threads on different Graphs without issue</threadsafety>
-    public class JsonNTriplesParser : IRdfReader 
+    class JsonNTriplesParser : IRdfReader 
     {
         /// <summary>
         /// Read NTriples in JSON Syntax from some Stream into a Graph
@@ -263,33 +263,38 @@ namespace VDS.RDF.Parsing
 
         private INode TryParseNodeValue(JsonParserContext context, String value)
         {
+            return TryParseNodeValue(context.Graph, value);
+        }
+
+        internal static INode TryParseNodeValue(IGraph g, String value)
+        {
             try
             {
                 if (value.StartsWith("_:"))
                 {
-                    return context.Graph.CreateBlankNode(value.Substring(2));
+                    return g.CreateBlankNode(value.Substring(2));
                 }
                 else if (value.StartsWith("<"))
                 {
-                    return context.Graph.CreateUriNode(new Uri(this.UnescapeValue(value.Substring(1, value.Length - 2))));
+                    return g.CreateUriNode(new Uri(UnescapeValue(value.Substring(1, value.Length - 2))));
                 }
                 else
                 {
                     if (value.EndsWith("\""))
                     {
-                        return context.Graph.CreateLiteralNode(this.UnescapeValue(value.Substring(1, value.Length - 2)));
+                        return g.CreateLiteralNode(UnescapeValue(value.Substring(1, value.Length - 2)));
                     }
                     else if (value.EndsWith(">"))
                     {
                         String lit = value.Substring(1, value.LastIndexOf("^^<") - 2);
                         String dt = value.Substring(lit.Length + 5, value.Length - lit.Length - 6);
-                        return context.Graph.CreateLiteralNode(this.UnescapeValue(lit), new Uri(this.UnescapeValue(dt)));
+                        return g.CreateLiteralNode(UnescapeValue(lit), new Uri(UnescapeValue(dt)));
                     }
                     else
                     {
                         String lit = value.Substring(1, value.LastIndexOf("\"@") - 1);
                         String lang = value.Substring(lit.Length + 3);
-                        return context.Graph.CreateLiteralNode(this.UnescapeValue(lit), this.UnescapeValue(lang));
+                        return g.CreateLiteralNode(UnescapeValue(lit), UnescapeValue(lang));
                     }
                 }
             }
@@ -299,7 +304,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        private String UnescapeValue(String value)
+        private static String UnescapeValue(String value)
         {
             String output = value.Replace("\\\\", "\\");
             output = output.Replace("\\n", "\n");

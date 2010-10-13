@@ -10,6 +10,8 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.Alexandria;
 using VDS.Alexandria.Datasets;
+using VDS.Alexandria.Documents;
+using VDS.Alexandria.Utilities;
 
 namespace alexandria_tests
 {
@@ -329,10 +331,10 @@ namespace alexandria_tests
 
         #endregion
 
-        #region MongoDB Store
+        #region MongoDB Store - Graph Centric
 
         [TestMethod]
-        public void MongoSparqlSelectSubject()
+        public void MongoGCSparqlSelectSubject()
         {
             //Load in our Test Graph
             Graph g = new Graph();
@@ -370,7 +372,7 @@ namespace alexandria_tests
         }
 
         [TestMethod]
-        public void MongoSparqlSelectPredicate()
+        public void MongoGCSparqlSelectPredicate()
         {
             //Load in our Test Graph
             Graph g = new Graph();
@@ -408,7 +410,7 @@ namespace alexandria_tests
         }
 
         [TestMethod]
-        public void MongoSparqlSelectObject()
+        public void MongoGCSparqlSelectObject()
         {
             //Load in our Test Graph
             Graph g = new Graph();
@@ -446,7 +448,7 @@ namespace alexandria_tests
         }
 
         [TestMethod]
-        public void MongoSparqlSelectSubjectPredicate()
+        public void MongoGCSparqlSelectSubjectPredicate()
         {
             //Load in our Test Graph
             Graph g = new Graph();
@@ -484,7 +486,7 @@ namespace alexandria_tests
         }
 
         [TestMethod]
-        public void MongoSparqlSelectSubjectObject()
+        public void MongoGCSparqlSelectSubjectObject()
         {
             //Load in our Test Graph
             Graph g = new Graph();
@@ -522,7 +524,7 @@ namespace alexandria_tests
         }
 
         [TestMethod]
-        public void MongoSparqlSelectPredicateObject()
+        public void MongoGCSparqlSelectPredicateObject()
         {
             //Load in our Test Graph
             Graph g = new Graph();
@@ -560,7 +562,7 @@ namespace alexandria_tests
         }
 
         [TestMethod]
-        public void MongoSparqlSelectAll()
+        public void MongoGCSparqlSelectAll()
         {
             //Load in our Test Graph
             Graph g = new Graph();
@@ -602,7 +604,7 @@ namespace alexandria_tests
         }
 
         [TestMethod]
-        public void MongoSparqlSelectMultipleTriplePatterns()
+        public void MongoGCSparqlSelectMultipleTriplePatterns()
         {
             //Load in our Test Graph
             Graph g = new Graph();
@@ -611,6 +613,318 @@ namespace alexandria_tests
 
             //Open an Alexandria Store and save the Graph
             AlexandriaMongoDBManager manager = new AlexandriaMongoDBManager(TestTools.GetNextStoreID());
+            manager.SaveGraph(g);
+            manager.Flush();
+
+            //Create and Evaluate the Query
+            SparqlQueryParser parser = new SparqlQueryParser();
+            SparqlQuery q = parser.ParseFromString("PREFIX ex: <http://example.org/vehicles/> SELECT * WHERE { ?s a ex:Car ; ex:Speed ?speed }");
+            AlexandriaMongoDBDataset dataset = new AlexandriaMongoDBDataset(manager);
+
+            Object results = q.Evaluate(dataset);
+
+            manager.Dispose();
+
+            if (results is SparqlResultSet)
+            {
+                SparqlResultSet rset = (SparqlResultSet)results;
+                foreach (SparqlResult r in rset)
+                {
+                    Console.WriteLine(r.ToString());
+                }
+
+                Assert.IsTrue(rset.Count > 0, "Expected some results from the Query");
+            }
+            else
+            {
+                Assert.Fail("Expected a Result Set from the Query");
+            }
+        }
+
+        #endregion
+
+        #region MongoDB Store - Triple Centric
+
+        [TestMethod]
+        public void MongoTCSparqlSelectSubject()
+        {
+            //Load in our Test Graph
+            Graph g = new Graph();
+            FileLoader.Load(g, "InferenceTest.ttl");
+            g.BaseUri = null;
+
+            //Open an Alexandria Store and save the Graph
+            AlexandriaMongoDBManager manager = new AlexandriaMongoDBManager(new MongoDBDocumentManager(MongoDBHelper.GetConfiguration(), TestTools.GetNextStoreID(), "tc", MongoDBSchemas.TripleCentric));
+            manager.SaveGraph(g);
+            manager.Flush();
+
+            //Create and Evaluate the Query
+            SparqlQueryParser parser = new SparqlQueryParser();
+            SparqlQuery q = parser.ParseFromString("SELECT * WHERE { <http://example.org/vehicles/FordFiesta> ?p ?o }");
+            AlexandriaMongoDBDataset dataset = new AlexandriaMongoDBDataset(manager);
+
+            Object results = q.Evaluate(dataset);
+
+            manager.Dispose();
+
+            if (results is SparqlResultSet)
+            {
+                SparqlResultSet rset = (SparqlResultSet)results;
+                foreach (SparqlResult r in rset)
+                {
+                    Console.WriteLine(r.ToString());
+                }
+
+                Assert.IsTrue(rset.Count > 0, "Expected some results from the Query");
+            }
+            else
+            {
+                Assert.Fail("Expected a Result Set from the Query");
+            }
+        }
+
+        [TestMethod]
+        public void MongoTCSparqlSelectPredicate()
+        {
+            //Load in our Test Graph
+            Graph g = new Graph();
+            FileLoader.Load(g, "InferenceTest.ttl");
+            g.BaseUri = null;
+
+            //Open an Alexandria Store and save the Graph
+            AlexandriaMongoDBManager manager = new AlexandriaMongoDBManager(new MongoDBDocumentManager(MongoDBHelper.GetConfiguration(), TestTools.GetNextStoreID(), "tc", MongoDBSchemas.TripleCentric));
+            manager.SaveGraph(g);
+            manager.Flush();
+
+            //Create and Evaluate the Query
+            SparqlQueryParser parser = new SparqlQueryParser();
+            SparqlQuery q = parser.ParseFromString("SELECT * WHERE { ?s a ?o }");
+            AlexandriaMongoDBDataset dataset = new AlexandriaMongoDBDataset(manager);
+
+            Object results = q.Evaluate(dataset);
+
+            manager.Dispose();
+
+            if (results is SparqlResultSet)
+            {
+                SparqlResultSet rset = (SparqlResultSet)results;
+                foreach (SparqlResult r in rset)
+                {
+                    Console.WriteLine(r.ToString());
+                }
+
+                Assert.IsTrue(rset.Count > 0, "Expected some results from the Query");
+            }
+            else
+            {
+                Assert.Fail("Expected a Result Set from the Query");
+            }
+        }
+
+        [TestMethod]
+        public void MongoTCSparqlSelectObject()
+        {
+            //Load in our Test Graph
+            Graph g = new Graph();
+            FileLoader.Load(g, "InferenceTest.ttl");
+            g.BaseUri = null;
+
+            //Open an Alexandria Store and save the Graph
+            AlexandriaMongoDBManager manager = new AlexandriaMongoDBManager(new MongoDBDocumentManager(MongoDBHelper.GetConfiguration(), TestTools.GetNextStoreID(), "tc", MongoDBSchemas.TripleCentric));
+            manager.SaveGraph(g);
+            manager.Flush();
+
+            //Create and Evaluate the Query
+            SparqlQueryParser parser = new SparqlQueryParser();
+            SparqlQuery q = parser.ParseFromString("SELECT * WHERE { ?s ?p <http://example.org/vehicles/Car> }");
+            AlexandriaMongoDBDataset dataset = new AlexandriaMongoDBDataset(manager);
+
+            Object results = q.Evaluate(dataset);
+
+            manager.Dispose();
+
+            if (results is SparqlResultSet)
+            {
+                SparqlResultSet rset = (SparqlResultSet)results;
+                foreach (SparqlResult r in rset)
+                {
+                    Console.WriteLine(r.ToString());
+                }
+
+                Assert.IsTrue(rset.Count > 0, "Expected some results from the Query");
+            }
+            else
+            {
+                Assert.Fail("Expected a Result Set from the Query");
+            }
+        }
+
+        [TestMethod]
+        public void MongoTCSparqlSelectSubjectPredicate()
+        {
+            //Load in our Test Graph
+            Graph g = new Graph();
+            FileLoader.Load(g, "InferenceTest.ttl");
+            g.BaseUri = null;
+
+            //Open an Alexandria Store and save the Graph
+            AlexandriaMongoDBManager manager = new AlexandriaMongoDBManager(new MongoDBDocumentManager(MongoDBHelper.GetConfiguration(), TestTools.GetNextStoreID(), "tc", MongoDBSchemas.TripleCentric));
+            manager.SaveGraph(g);
+            manager.Flush();
+
+            //Create and Evaluate the Query
+            SparqlQueryParser parser = new SparqlQueryParser();
+            SparqlQuery q = parser.ParseFromString("SELECT * WHERE { <http://example.org/vehicles/FordFiesta> a ?o }");
+            AlexandriaMongoDBDataset dataset = new AlexandriaMongoDBDataset(manager);
+
+            Object results = q.Evaluate(dataset);
+
+            manager.Dispose();
+
+            if (results is SparqlResultSet)
+            {
+                SparqlResultSet rset = (SparqlResultSet)results;
+                foreach (SparqlResult r in rset)
+                {
+                    Console.WriteLine(r.ToString());
+                }
+
+                Assert.IsTrue(rset.Count > 0, "Expected some results from the Query");
+            }
+            else
+            {
+                Assert.Fail("Expected a Result Set from the Query");
+            }
+        }
+
+        [TestMethod]
+        public void MongoTCSparqlSelectSubjectObject()
+        {
+            //Load in our Test Graph
+            Graph g = new Graph();
+            FileLoader.Load(g, "InferenceTest.ttl");
+            g.BaseUri = null;
+
+            //Open an Alexandria Store and save the Graph
+            AlexandriaMongoDBManager manager = new AlexandriaMongoDBManager(new MongoDBDocumentManager(MongoDBHelper.GetConfiguration(), TestTools.GetNextStoreID(), "tc", MongoDBSchemas.TripleCentric));
+            manager.SaveGraph(g);
+            manager.Flush();
+
+            //Create and Evaluate the Query
+            SparqlQueryParser parser = new SparqlQueryParser();
+            SparqlQuery q = parser.ParseFromString("SELECT * WHERE { <http://example.org/vehicles/FordFiesta> ?p <http://example.org/vehicles/Car> }");
+            AlexandriaMongoDBDataset dataset = new AlexandriaMongoDBDataset(manager);
+
+            Object results = q.Evaluate(dataset);
+
+            manager.Dispose();
+
+            if (results is SparqlResultSet)
+            {
+                SparqlResultSet rset = (SparqlResultSet)results;
+                foreach (SparqlResult r in rset)
+                {
+                    Console.WriteLine(r.ToString());
+                }
+
+                Assert.IsTrue(rset.Count > 0, "Expected some results from the Query");
+            }
+            else
+            {
+                Assert.Fail("Expected a Result Set from the Query");
+            }
+        }
+
+        [TestMethod]
+        public void MongoTCSparqlSelectPredicateObject()
+        {
+            //Load in our Test Graph
+            Graph g = new Graph();
+            FileLoader.Load(g, "InferenceTest.ttl");
+            g.BaseUri = null;
+
+            //Open an Alexandria Store and save the Graph
+            AlexandriaMongoDBManager manager = new AlexandriaMongoDBManager(new MongoDBDocumentManager(MongoDBHelper.GetConfiguration(), TestTools.GetNextStoreID(), "tc", MongoDBSchemas.TripleCentric));
+            manager.SaveGraph(g);
+            manager.Flush();
+
+            //Create and Evaluate the Query
+            SparqlQueryParser parser = new SparqlQueryParser();
+            SparqlQuery q = parser.ParseFromString("SELECT * WHERE { ?s a <http://example.org/vehicles/Car> }");
+            AlexandriaMongoDBDataset dataset = new AlexandriaMongoDBDataset(manager);
+
+            Object results = q.Evaluate(dataset);
+
+            manager.Dispose();
+
+            if (results is SparqlResultSet)
+            {
+                SparqlResultSet rset = (SparqlResultSet)results;
+                foreach (SparqlResult r in rset)
+                {
+                    Console.WriteLine(r.ToString());
+                }
+
+                Assert.IsTrue(rset.Count > 0, "Expected some results from the Query");
+            }
+            else
+            {
+                Assert.Fail("Expected a Result Set from the Query");
+            }
+        }
+
+        [TestMethod]
+        public void MongoTCSparqlSelectAll()
+        {
+            //Load in our Test Graph
+            Graph g = new Graph();
+            FileLoader.Load(g, "InferenceTest.ttl");
+
+            //Now load another Graph and add it
+            Graph h = new Graph();
+            FileLoader.Load(h, "test.nt");
+
+            //Open an Alexandria Store and save the Graph
+            AlexandriaMongoDBManager manager = new AlexandriaMongoDBManager(new MongoDBDocumentManager(MongoDBHelper.GetConfiguration(), TestTools.GetNextStoreID(), "tc", MongoDBSchemas.TripleCentric));
+            manager.SaveGraph(g);
+            manager.SaveGraph(h);
+            manager.Flush();
+
+            //Create and Evaluate the Query
+            SparqlQueryParser parser = new SparqlQueryParser();
+            SparqlQuery q = parser.ParseFromString("SELECT * WHERE { ?s ?p ?o }");
+            AlexandriaMongoDBDataset dataset = new AlexandriaMongoDBDataset(manager);
+
+            Object results = q.Evaluate(dataset);
+
+            manager.Dispose();
+
+            if (results is SparqlResultSet)
+            {
+                SparqlResultSet rset = (SparqlResultSet)results;
+                foreach (SparqlResult r in rset)
+                {
+                    Console.WriteLine(r.ToString());
+                }
+
+                Assert.IsTrue(rset.Count > 0, "Expected some results from the Query");
+            }
+            else
+            {
+                Assert.Fail("Expected a Result Set from the Query");
+            }
+        }
+
+        [TestMethod]
+        public void MongoTCSparqlSelectMultipleTriplePatterns()
+        {
+            //Load in our Test Graph
+            Graph g = new Graph();
+            FileLoader.Load(g, "InferenceTest.ttl");
+            g.BaseUri = null;
+
+            //Open an Alexandria Store and save the Graph
+            AlexandriaMongoDBManager manager = new AlexandriaMongoDBManager(new MongoDBDocumentManager(MongoDBHelper.GetConfiguration(), TestTools.GetNextStoreID(), "tc", MongoDBSchemas.TripleCentric));
             manager.SaveGraph(g);
             manager.Flush();
 

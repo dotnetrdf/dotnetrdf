@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{5976AA06-893B-4E0D-BDED-19A8515E809C}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -51,10 +51,13 @@
     <Compile Include="AlexandriaMongoDBManager.cs" />
     <Compile Include="Datasets\AlexandriaMongoDBDataset.cs" />
     <Compile Include="Documents\Adaptors\MongoDBGraphCentricAdaptor.cs" />
+    <Compile Include="Documents\Adaptors\MongoDBTripleCentricAdaptor.cs" />
     <Compile Include="Documents\GraphRegistry\MongoDBGraphCentricRegistry.cs" />
+    <Compile Include="Documents\GraphRegistry\MongoDBTripleCentricGraphRegistry.cs" />
     <Compile Include="Documents\MongoDBDocument.cs" />
     <Compile Include="Documents\MongoDBDocumentManager.cs" />
     <Compile Include="Indexing\MongoDBGraphCentricIndexManager.cs" />
+    <Compile Include="Indexing\MongoDBTripleCentricIndexManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\CommentIgnoringJsonTextReader.cs" />
     <Compile Include="Utilities\JsonNTriplesParser.cs" />
@@ -62,6 +65,7 @@
     <Compile Include="Utilities\MongoDBHelper.cs" />
     <Compile Include="Utilities\MongoDBGraphCentricEnumerator.cs" />
     <Compile Include="Utilities\MongoDBObjectFactory.cs" />
+    <Compile Include="Utilities\MongoDBTripleCentricEnumerator.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\alexandria\dotNetRDF.Alexandria.csproj">
