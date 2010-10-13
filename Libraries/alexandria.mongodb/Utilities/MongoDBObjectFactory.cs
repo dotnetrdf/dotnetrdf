@@ -24,6 +24,21 @@ namespace VDS.Alexandria.Utilities
                     String server = ConfigurationLoader.GetConfigurationString(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyServer));
                     String storeID = ConfigurationLoader.GetConfigurationString(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyDatabase));
                     String collectionID = ConfigurationLoader.GetConfigurationString(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyCatalog));
+                    String loadMode = ConfigurationLoader.GetConfigurationString(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyLoadMode));
+
+                    MongoDBSchemas schema = MongoDBDocumentManager.DefaultSchema;
+                    if (loadMode != null)
+                    {
+                        switch (loadMode)
+                        {
+                            case "GraphCentric":
+                                schema = MongoDBSchemas.GraphCentric;
+                                break;
+                            case "TripleCentric":
+                                schema = MongoDBSchemas.TripleCentric;
+                                break;
+                        }
+                    }
 
                     if (storeID != null)
                     {
@@ -32,11 +47,11 @@ namespace VDS.Alexandria.Utilities
                         {
                             if (collectionID == null)
                             {
-                                manager = new AlexandriaMongoDBManager(storeID);
+                                manager = new AlexandriaMongoDBManager(storeID, schema);
                             }
                             else
                             {
-                                manager = new AlexandriaMongoDBManager(new MongoDBDocumentManager(new MongoConfiguration(), storeID, collectionID));
+                                manager = new AlexandriaMongoDBManager(new MongoDBDocumentManager(new MongoConfiguration(), storeID, collectionID, schema));
                             }
                         }
                         else
@@ -44,11 +59,11 @@ namespace VDS.Alexandria.Utilities
                             //Have a Custom Connection String
                             if (collectionID == null)
                             {
-                                manager = new AlexandriaMongoDBManager(server, storeID);
+                                manager = new AlexandriaMongoDBManager(new MongoDBDocumentManager(server, storeID, schema));
                             }
                             else
                             {
-                                manager = new AlexandriaMongoDBManager(new MongoDBDocumentManager(server, storeID, collectionID));
+                                manager = new AlexandriaMongoDBManager(new MongoDBDocumentManager(server, storeID, collectionID, schema));
                             }
                         }
 

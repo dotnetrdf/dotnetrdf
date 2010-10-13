@@ -221,7 +221,7 @@ namespace alexandria_tests
             g.BaseUri = null;
 
             //Open an Alexandria Store and save the Graph
-            AlexandriaMongoDBManager manager = new AlexandriaMongoDBManager(TestTools.GetNextStoreID());
+            AlexandriaMongoDBManager manager = new AlexandriaMongoDBManager(TestTools.GetNextStoreID(), MongoDBSchemas.GraphCentric);
             manager.SaveGraph(g);
 
             //Try and read the Graph back from the Store
@@ -243,13 +243,13 @@ namespace alexandria_tests
 
             //Open an Alexandria Store and save the Graph
             String storeID = TestTools.GetNextStoreID();
-            AlexandriaMongoDBManager manager = new AlexandriaMongoDBManager(storeID);
+            AlexandriaMongoDBManager manager = new AlexandriaMongoDBManager(storeID, MongoDBSchemas.GraphCentric);
             manager.SaveGraph(g);
             manager.Dispose();
 
             //Try and read the Graph back from the Store
             Graph h = new Graph();
-            manager = new AlexandriaMongoDBManager(storeID);
+            manager = new AlexandriaMongoDBManager(storeID, MongoDBSchemas.GraphCentric);
             manager.LoadGraph(h, g.BaseUri);
 
             Assert.AreEqual(g, h, "Graphs should have been equal");
@@ -266,7 +266,7 @@ namespace alexandria_tests
             g.BaseUri = null;
 
             //Open an Alexandria Store and save the Graph
-            AlexandriaMongoDBManager manager = new AlexandriaMongoDBManager(TestTools.GetNextStoreID());
+            AlexandriaMongoDBManager manager = new AlexandriaMongoDBManager(TestTools.GetNextStoreID(), MongoDBSchemas.GraphCentric);
             manager.SaveGraph(g);
 
             //Try and read the Graph back from the Store
@@ -300,7 +300,7 @@ namespace alexandria_tests
             FileLoader.Load(g, "InferenceTest.ttl");
 
             //Open an Alexandria Store and save the Graph
-            AlexandriaMongoDBManager manager = new AlexandriaMongoDBManager(TestTools.GetNextStoreID());
+            AlexandriaMongoDBManager manager = new AlexandriaMongoDBManager(TestTools.GetNextStoreID(), MongoDBSchemas.GraphCentric);
             manager.SaveGraph(g);
 
             //Try and read the Graph back from the Store
@@ -348,7 +348,7 @@ namespace alexandria_tests
             Triple[] ts = new Triple[] { new Triple(spaceShuttle, rdfType, airVehicle) };
 
             //Open an Alexandria Store and save the original Graph
-            AlexandriaMongoDBManager manager = new AlexandriaMongoDBManager(TestTools.GetNextStoreID());
+            AlexandriaMongoDBManager manager = new AlexandriaMongoDBManager(TestTools.GetNextStoreID(), MongoDBSchemas.GraphCentric);
             manager.SaveGraph(g);
 
             //Append the Triples both locally and to the store
@@ -375,7 +375,7 @@ namespace alexandria_tests
             List<Triple> ts = g.GetTriplesWithSubject(g.CreateUriNode("eg:FordFiesta")).ToList();
 
             //Open an Alexandria Store and save the original Graph
-            AlexandriaMongoDBManager manager = new AlexandriaMongoDBManager(TestTools.GetNextStoreID());
+            AlexandriaMongoDBManager manager = new AlexandriaMongoDBManager(TestTools.GetNextStoreID(), MongoDBSchemas.GraphCentric);
             manager.SaveGraph(g);
 
             //Remove the Triples both locally and to the store

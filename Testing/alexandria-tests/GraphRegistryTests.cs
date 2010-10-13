@@ -212,7 +212,7 @@ namespace alexandria_tests
             FileLoader.Load(g, "InferenceTest.ttl");
 
             //Open an Alexandria Store and save the Graph
-            AlexandriaMongoDBManager manager = new AlexandriaMongoDBManager(TestTools.GetNextStoreID());
+            AlexandriaMongoDBManager manager = new AlexandriaMongoDBManager(TestTools.GetNextStoreID(), MongoDBSchemas.GraphCentric);
             manager.SaveGraph(g);
 
             //Now load another Graph and add it
@@ -262,7 +262,7 @@ namespace alexandria_tests
             g.BaseUri = null;
 
             //Open an Alexandria Store and save the Graph
-            AlexandriaMongoDBManager manager = new AlexandriaMongoDBManager(TestTools.GetNextStoreID());
+            AlexandriaMongoDBManager manager = new AlexandriaMongoDBManager(TestTools.GetNextStoreID(), MongoDBSchemas.GraphCentric);
             manager.SaveGraph(g);
 
             //Now load another Graph and add it
@@ -312,7 +312,7 @@ namespace alexandria_tests
             g.BaseUri = null;
 
             //Open an Alexandria Store and save the Graph
-            AlexandriaMongoDBManager manager = new AlexandriaMongoDBManager(TestTools.GetNextStoreID());
+            AlexandriaMongoDBManager manager = new AlexandriaMongoDBManager(TestTools.GetNextStoreID(), MongoDBSchemas.GraphCentric);
             manager.SaveGraph(g);
 
             TestWrapper<Document, Document> wrapper = new TestWrapper<Document, Document>(manager);
@@ -336,7 +336,7 @@ namespace alexandria_tests
             g.BaseUri = null;
 
             //Open an Alexandria Store and save the Graph
-            AlexandriaMongoDBManager manager = new AlexandriaMongoDBManager(TestTools.GetNextStoreID());
+            AlexandriaMongoDBManager manager = new AlexandriaMongoDBManager(TestTools.GetNextStoreID(), MongoDBSchemas.GraphCentric);
             manager.SaveGraph(g);
 
             //Now load another Graph and add it

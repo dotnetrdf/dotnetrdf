@@ -17,16 +17,20 @@ namespace VDS.Alexandria
     public enum MongoDBSchemas
     {
         /// <summary>
-        /// Graph-centric schema (default)
+        /// Graph-centric schema
         /// </summary>
         /// <remarks>
         /// <para>
         /// The Graph-centric schema stores each Graph in a single Document plus one additional Document to store the relations between Document Names and Graph URIs.  This schema requires less read/write operations but these are larger operations and is best for stores which are primarily used just for saving and retrieving graphs though query performance is adequate
         /// </para>
+        /// <h3>Known Issues</h3>
+        /// <para>
+        /// The Graph Centric Schema cannot handle large Graphs since MongoDB imposes a limit on the size of requests that can be made to it any attempting to save a large Graph will exceed this limit, if you have Graphs whose size is in the 1000s/10,000s of Triples then you should use the Triple-Centric schema instead
+        /// </para>
         /// </remarks>
         GraphCentric,
         /// <summary>
-        /// Triple-centric schema
+        /// Triple-centric schema (default)
         /// </summary>
         /// <remarks>
         /// <para>

@@ -342,7 +342,7 @@ namespace alexandria_tests
             g.BaseUri = null;
 
             //Open an Alexandria Store and save the Graph
-            AlexandriaMongoDBManager manager = new AlexandriaMongoDBManager(TestTools.GetNextStoreID());
+            AlexandriaMongoDBManager manager = new AlexandriaMongoDBManager(TestTools.GetNextStoreID(), MongoDBSchemas.GraphCentric);
             manager.SaveGraph(g);
             manager.Flush();
 
@@ -380,7 +380,7 @@ namespace alexandria_tests
             g.BaseUri = null;
 
             //Open an Alexandria Store and save the Graph
-            AlexandriaMongoDBManager manager = new AlexandriaMongoDBManager(TestTools.GetNextStoreID());
+            AlexandriaMongoDBManager manager = new AlexandriaMongoDBManager(TestTools.GetNextStoreID(), MongoDBSchemas.GraphCentric);
             manager.SaveGraph(g);
             manager.Flush();
 
@@ -418,7 +418,7 @@ namespace alexandria_tests
             g.BaseUri = null;
 
             //Open an Alexandria Store and save the Graph
-            AlexandriaMongoDBManager manager = new AlexandriaMongoDBManager(TestTools.GetNextStoreID());
+            AlexandriaMongoDBManager manager = new AlexandriaMongoDBManager(TestTools.GetNextStoreID(), MongoDBSchemas.GraphCentric);
             manager.SaveGraph(g);
             manager.Flush();
 
@@ -456,7 +456,7 @@ namespace alexandria_tests
             g.BaseUri = null;
 
             //Open an Alexandria Store and save the Graph
-            AlexandriaMongoDBManager manager = new AlexandriaMongoDBManager(TestTools.GetNextStoreID());
+            AlexandriaMongoDBManager manager = new AlexandriaMongoDBManager(TestTools.GetNextStoreID(), MongoDBSchemas.GraphCentric);
             manager.SaveGraph(g);
             manager.Flush();
 
@@ -494,7 +494,7 @@ namespace alexandria_tests
             g.BaseUri = null;
 
             //Open an Alexandria Store and save the Graph
-            AlexandriaMongoDBManager manager = new AlexandriaMongoDBManager(TestTools.GetNextStoreID());
+            AlexandriaMongoDBManager manager = new AlexandriaMongoDBManager(TestTools.GetNextStoreID(), MongoDBSchemas.GraphCentric);
             manager.SaveGraph(g);
             manager.Flush();
 
@@ -532,7 +532,7 @@ namespace alexandria_tests
             g.BaseUri = null;
 
             //Open an Alexandria Store and save the Graph
-            AlexandriaMongoDBManager manager = new AlexandriaMongoDBManager(TestTools.GetNextStoreID());
+            AlexandriaMongoDBManager manager = new AlexandriaMongoDBManager(TestTools.GetNextStoreID(), MongoDBSchemas.GraphCentric);
             manager.SaveGraph(g);
             manager.Flush();
 
@@ -573,7 +573,7 @@ namespace alexandria_tests
             FileLoader.Load(h, "test.nt");
 
             //Open an Alexandria Store and save the Graph
-            AlexandriaMongoDBManager manager = new AlexandriaMongoDBManager(TestTools.GetNextStoreID());
+            AlexandriaMongoDBManager manager = new AlexandriaMongoDBManager(TestTools.GetNextStoreID(), MongoDBSchemas.GraphCentric);
             manager.SaveGraph(g);
             manager.SaveGraph(h);
             manager.Flush();
@@ -612,7 +612,7 @@ namespace alexandria_tests
             g.BaseUri = null;
 
             //Open an Alexandria Store and save the Graph
-            AlexandriaMongoDBManager manager = new AlexandriaMongoDBManager(TestTools.GetNextStoreID());
+            AlexandriaMongoDBManager manager = new AlexandriaMongoDBManager(TestTools.GetNextStoreID(), MongoDBSchemas.GraphCentric);
             manager.SaveGraph(g);
             manager.Flush();
 

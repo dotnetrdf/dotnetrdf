@@ -18,10 +18,17 @@ namespace VDS.Alexandria.Documents
         private IMongoDatabase _db;
         private IGraphRegistry _registry;
         private String _collection;
-        private MongoDBSchemas _schema = MongoDBSchemas.GraphCentric;
+        private MongoDBSchemas _schema = MongoDBSchemas.TripleCentric;
 
+        /// <summary>
+        /// Default Schema used if none is explicitly specified
+        /// </summary>
+        public const MongoDBSchemas DefaultSchema = MongoDBSchemas.TripleCentric;
         private const String GraphRegistryDocument = "graphs";
-        private const String DefaultCollection = "dotnetrdf";
+        /// <summary>
+        /// Default Collection used if none is explicitly specified
+        /// </summary>
+        public const String DefaultCollection = "dotnetrdf";
 
         public MongoDBDocumentManager(MongoConfiguration config, String db, String collection, MongoDBSchemas schema)
             : base(null)
@@ -61,7 +68,7 @@ namespace VDS.Alexandria.Documents
         }
 
         public MongoDBDocumentManager(MongoConfiguration config, String db, String collection)
-            : this(config, db, collection, MongoDBSchemas.GraphCentric) { }
+            : this(config, db, collection, DefaultSchema) { }
 
         public MongoDBDocumentManager(MongoConfiguration config, String db)
             : this(config, db, DefaultCollection) { }

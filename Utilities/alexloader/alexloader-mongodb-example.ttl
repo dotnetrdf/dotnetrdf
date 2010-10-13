@@ -1,0 +1,18 @@
+﻿@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix dnr: <http://www.dotnetrdf.org/configuration#>.
+
+# This defines the Object Factory - this is needed in order to be able to load Alexandria MongoDB objects
+_:factory a dnr:ObjectFactory ;
+          dnr:type "VDS.Alexandria.Utilities.MongoDBObjectFactory, dotNetRDF.Alexandria.MongoDB" .
+		  
+# This defines the connection to MongoDB
+# The dnr:database property specifies the database to be used
+# You can add the dnr:server property to specify a custom connection string
+# You can add the dnr:catalogID property to specify a collection within the database to be used
+#
+# You can add the dnr:loadMode property and set it to either GraphCentric or TripleCentric to stipulate the database schema used
+# WARNING: Schemas are not interchangeable - once your data is in one schema the only way to get it into another is to dump the store
+#          and reload it using a different schema
+_:mongo a dnr:GenericIOManager ;
+		 dnr:type "VDS.Alexandria.AlexandriaMongoDBManager, dotNetRDF.Alexandria.MongoDB" ;
+		 dnr:database "your-database-name" .

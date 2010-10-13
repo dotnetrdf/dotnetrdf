@@ -1,11 +1,12 @@
 ﻿@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
-@prefix owl: <http://www.w3.org/2002/07/owl#>.
 @prefix dnr: <http://www.dotnetrdf.org/configuration#>.
 
 _:factory a dnr:ObjectFactory ;
           dnr:type "VDS.Alexandria.Utilities.MongoDBObjectFactory, dotNetRDF.Alexandria.MongoDB" .
+          
+ # SPARQL Server for general testing
 
-<dotnetrdf:/mongodb-sparql-server/*> a dnr:HttpHandler ;
+<dotnetrdf:/mongodb-sparql-server/server/*> a dnr:HttpHandler ;
 										 dnr:type "VDS.RDF.Web.SparqlServer" ;
 										 dnr:queryProcessor _:autos1 ;
 										 dnr:updateProcessor _:autos2 ;
@@ -30,3 +31,19 @@ _:mongoDataset a dnr:SparqlDataset ;
 _:mongo a dnr:GenericIOManager ;
 		 dnr:type "VDS.Alexandria.AlexandriaMongoDBManager, dotNetRDF.Alexandria.MongoDB" ;
 		 dnr:database "mongo-sparql-server" .
+		 
+# BSBM Benchmark Testing
+
+<dotnetrdf:/mongodb-sparql-server/bsbm50> a dnr:HttpHandler ;
+										  dnr:type "VDS.RDF.Web.QueryHandler" ;
+										  dnr:queryProcessor [ a dnr:SparqlQueryProcessor ;
+															   dnr:type "VDS.RDF.Query.LeviathanQueryProcessor" ;
+															   dnr:usingDataset [ a dnr:SparqlDataset ;
+																				  dnr:type "VDS.Alexandria.Datasets.AlexandriaMongoDBDataset, dotNetRDF.Alexandria.MongoDB" ;
+																				  dnr:genericManager [ a dnr:GenericIOManager ;
+																									   dnr:type "VDS.Alexandria.AlexandriaMongoDBManager, dotNetRDF.Alexandria.MongoDB" ;
+																									   dnr:database "bsbm50" ;
+																									   dnr:loadMode "TripleCentric" 
+																									 ]
+																				 ]
+															 ] .
