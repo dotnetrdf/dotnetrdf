@@ -25,8 +25,9 @@ namespace VDS.Alexandria.Datasets
         public override IEnumerable<IGraph> Graphs
         {
             get 
-            { 
-                throw new NotImplementedException(); 
+            {
+                return (from uri in this._docManager.DocumentManager.GraphRegistry.GraphUris
+                        select this[new Uri(uri)]);
             }
         }
 
@@ -34,7 +35,7 @@ namespace VDS.Alexandria.Datasets
         {
             get 
             {
-                return this._docManager.DocumentManager.GraphRegistry.GraphUris.Select(u => new Uri(u)); 
+                return this._docManager.DocumentManager.GraphRegistry.GraphUris.Select(u => (u == null || u.Equals(String.Empty)) ? null : new Uri(u)); 
             }
         }
 

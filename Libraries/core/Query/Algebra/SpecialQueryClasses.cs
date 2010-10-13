@@ -50,16 +50,16 @@ namespace VDS.RDF.Query.Algebra
             context.OutputMultiset = new Multiset();
             String var = context.Query.Variables.First(v => v.IsResultVariable).Name;
 
-            foreach (IGraph g in context.Data.Graphs)
+            foreach (Uri graphUri in context.Data.GraphUris)
             {
                 Set s = new Set();
-                if (g.BaseUri == null)
+                if (graphUri == null)
                 {
                     s.Add(var, null);
                 }
                 else
                 {
-                    s.Add(var, g.CreateUriNode());
+                    s.Add(var, new UriNode(null, graphUri));
                 }
                 context.OutputMultiset.Add(s);
             }

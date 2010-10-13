@@ -84,6 +84,8 @@ namespace VDS.RDF.Query.Algebra
                     throw new RdfQueryException("SERVICE Specifier must be a URI/Variable Token but a " + this._endpointSpecifier.GetType().ToString() + " Token was provided");
                 }
 
+                //TODO: Do substitution in here to make more detailed SERVICE requests which actually give back relevant Triples
+
                 //Try and get a Result Set from the Service
                 SparqlResultSet results = endpoint.QueryWithResultSet(sparqlQuery.ToString());
 
