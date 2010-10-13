@@ -31,6 +31,18 @@ namespace branch_tests
         }
 
         [TestMethod]
+        public void N3GraphLiteralParsing()
+        {
+            String TestFragment = "{ :a :b :c . :d :e :f } a \"Graph Literal\" .";
+            Graph g = new Graph();
+            g.BaseUri = new Uri("http://example.org/n3/graph-literals");
+            StringParser.Parse(g, TestFragment, new Notation3Parser());
+
+            Assert.IsTrue(g.Triples.Count == 1, "Should be 1 Triple");
+            Assert.IsTrue(((GraphLiteralNode)g.Triples.First().Subject).SubGraph.Triples.Count == 2, "Should be 2 Triples in the Graph Literal");
+        }
+
+        [TestMethod]
         public void N3VariableContexts()
         {
             String prefixes = "@prefix rdf: <" + NamespaceMapper.RDF + ">. @prefix rdfs: <" + NamespaceMapper.RDFS + ">.";
@@ -39,7 +51,8 @@ namespace branch_tests
                 prefixes + "@forAll :x :type . { :x a :type } => {:x rdfs:label \"This has a type\" } .",
                 prefixes + "@forSome :x :type . { :x a :type } => {:x rdfs:label \"This has a type\" } .",
                 prefixes + "@forAll :h . @forSome :g . :g :loves :h .",
-                prefixes + "@forSome :h . @forAll :g . :g :loves :h ."
+                prefixes + "@forSome :h . @forAll :g . :g :loves :h .",
+                prefixes + "{@forSome :a . :Joe :home :a } a :Formula . :Joe :phone \"555-1212\" ."
             };
 
             Notation3Parser parser = new Notation3Parser();

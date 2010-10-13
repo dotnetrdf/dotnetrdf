@@ -341,7 +341,7 @@ namespace VDS.RDF.Parsing
             //Therefore the next Token(s) should be QNames/URIs leading to a DotToken
 
             //Create a new Variable Context if one doesn't currently exist
-            if (context.VariableContext == null)
+            if (context.VariableContext.Type == VariableContextType.None)
             {
                 context.VariableContext = new VariableContext(VariableContextType.Universal);
             }
@@ -380,7 +380,7 @@ namespace VDS.RDF.Parsing
             //Therefore the next Token(s) should be QNames/URIs leading to a DotToken
 
             //Create a new Variable Context if one doesn't currently exist
-            if (context.VariableContext == null)
+            if (context.VariableContext.Type == VariableContextType.None)
             {
                 context.VariableContext = new VariableContext(VariableContextType.Existential);
             }
@@ -739,7 +739,6 @@ namespace VDS.RDF.Parsing
                         if (obj != null)
                         {
                             //OK to return if we've seen a valid Triple
-                            context.VariableContext = null;
                             return;
                         }
                         else
@@ -876,26 +875,12 @@ namespace VDS.RDF.Parsing
                 //Assert the Triple
                 if (!reverse)
                 {
-                    if (context.VariableContext != null)
-                    {
-                        context.Graph.Assert(new Triple(subj, pred, obj, context.VariableContext));
-                    }
-                    else
-                    {
-                        context.Graph.Assert(new Triple(subj, pred, obj));
-                    }
+                    context.Graph.Assert(new Triple(subj, pred, obj, context.VariableContext));
                 }
                 else
                 {
                     //When reversed this means the predicate was Implied By (<=)
-                    if (context.VariableContext != null)
-                    {
-                        context.Graph.Assert(new Triple(obj, pred, subj, context.VariableContext));
-                    }
-                    else
-                    {
-                        context.Graph.Assert(new Triple(obj, pred, subj));
-                    }
+                    context.Graph.Assert(new Triple(obj, pred, subj, context.VariableContext));
                 }
 
                 //Expect a comma/semicolon/dot terminator if we are to continue
@@ -1016,8 +1001,8 @@ namespace VDS.RDF.Parsing
 
                     case Token.RIGHTBRACKET:
                         //We might terminate here if someone put a comment before the end of the Collection
-                        context.Graph.Assert(new Triple(subj, rdfFirst, obj));
-                        context.Graph.Assert(new Triple(subj, rdfRest, rdfNil));
+                        context.Graph.Assert(new Triple(subj, rdfFirst, obj, context.VariableContext));
+                        context.Graph.Assert(new Triple(subj, rdfRest, rdfNil, context.VariableContext));
                         return;
 
                     case Token.QNAME:
@@ -1042,19 +1027,19 @@ namespace VDS.RDF.Parsing
                 }
 
                 //Assert the relevant Triples
-                context.Graph.Assert(new Triple(subj, rdfFirst, obj));
+                context.Graph.Assert(new Triple(subj, rdfFirst, obj, context.VariableContext));
                 if (context.Tokens.Peek().TokenType == Token.RIGHTBRACKET)
                 {
                     //End of the Collection
                     context.Tokens.Dequeue();
-                    context.Graph.Assert(new Triple(subj, rdfRest, rdfNil));
+                    context.Graph.Assert(new Triple(subj, rdfRest, rdfNil, context.VariableContext));
                     return;
                 }
                 else
                 {
                     //More stuff in the collection
                     nextSubj = context.Graph.CreateBlankNode();
-                    context.Graph.Assert(new Triple(subj, rdfRest, nextSubj));
+                    context.Graph.Assert(new Triple(subj, rdfRest, nextSubj, context.VariableContext));
                     subj = nextSubj;
                 }
             } while (true);
@@ -1082,7 +1067,19 @@ namespace VDS.RDF.Parsing
 
             do
             {
-                this.TryParseTriples(context);
+                next = context.Tokens.Peek();
+                if (next.TokenType == Token.FORALL)
+                {
+                    this.TryParseForAll(context);
+                }
+                else if (next.TokenType == Token.FORSOME)
+                {
+                    this.TryParseForSome(context);
+                }
+                else
+                {
+                    this.TryParseTriples(context);
+                }
 
                 //If we've just seen a Right Curly bracket we've been terminated
                 if (context.Tokens.LastTokenType == Token.RIGHTCURLYBRACKET)
@@ -1097,7 +1094,6 @@ namespace VDS.RDF.Parsing
 
             IGraph subgraph = context.Graph;
             context.PopGraph();
-
 
             //Expect the correct number of closing brackets
             while (nesting > 0)
@@ -1149,11 +1145,11 @@ namespace VDS.RDF.Parsing
 
                 if (forward)
                 {
-                    context.Graph.Assert(new Triple(firstItem, secondItem, path));
+                    context.Graph.Assert(new Triple(firstItem, secondItem, path, context.VariableContext));
                 }
                 else
                 {
-                    context.Graph.Assert(new Triple(path, secondItem, firstItem));
+                    context.Graph.Assert(new Triple(path, secondItem, firstItem, context.VariableContext));
                 }
 
                 //Does the Path continue?

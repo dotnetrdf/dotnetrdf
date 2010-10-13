@@ -5,9 +5,22 @@ using System.Text;
 
 namespace VDS.RDF
 {
+    /// <summary>
+    /// Possible Variable Context Types
+    /// </summary>
     public enum VariableContextType
     {
+        /// <summary>
+        /// There is currently no variable context
+        /// </summary>
+        None,
+        /// <summary>
+        /// Existential Variable Context
+        /// </summary>
         Existential,
+        /// <summary>
+        /// Universal Variable Context
+        /// </summary>
         Universal
     }
 

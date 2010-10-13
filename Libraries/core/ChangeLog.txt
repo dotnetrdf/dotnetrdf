@@ -9,47 +9,22 @@ rvesse@vdesign-studios.com
 Change Log
 ----------
 
-This represents a summary of additions, changes and removals for the 0.3.1 release of dotNetRDF
+This represents a summary of additions, changes and removals for the 0.4.0 release of dotNetRDF
 
 Added
-- New RdfXmlWriter which is a streaming writer based on FastRdfXmlWriter
-- New Writing.Formatting namespaces
- - Introduces ITripleFormatter, INodeFormatter, IUriFormatter and ICharFormatter interfaces
- - Provides an easy to use and reusable means of formatting nodes and triples
- - Refactored existing code to use formatters for writing
-- New Parsing.Validation namespace
- - Provides simple classes for validating syntax
-- SPARQL Views
- - Create Graphs which are dynamically generated from a SPARQL Query and updated when the underlying data changes/on demand
-- Silverlight Compatability
- - Emulated HtmlTextWriter and HttpUtility for Silverlight compatability
- - Variety of compiler symbols defined to allow various library features to be disabled
- - SparqlXmlParser and SparqlXmlWriter use XmlReader and XmlWriter respectively when no XML DOM API available
- - TriXParser and TriXWriter use XmlReader and XmlWriter respectively when no XML DOM API available
+- Support for Variable Nodes
+- New N3RulesReasoner which can process simple N3 rules of the form { } => { }
 
 Changed
 - Bug Fixes
- - SqlTripleStore initialises correctly and persists updates correctly when used with an ISparqlUpdateProcessor
- - More intelligent parsing of Blank Node IDs from SPARQL Results
- - TriG Writer outputs all required @prefix definitions and generates consistent QNames
- - URI Loader Cache handles File IO errors gracefully
- - Rare forms of Numeric Literals now supported by Turtle, N3, TriG and SPARQL Parsers
- - Potentially ambigious QNames and Plain Literals now no longer cause parsing errors in Turtle, N3, TriG and SPARQL Parsers
- - DESCRIBE query results are received correctly from Sesame
- - Using UpdateGraph() to delete Triples from Sesame/AllegroGraph deletes the correct Triples not the entire context
-- General Improvements
- - INamespaceMapper interface extracted and some visibility changes to NamespaceMapper methods
- - Options.UriLoaderTimeout for controlling UriLoader Timeout
- - Most parsers generate more helpful error messages for various error conditions and much more frequently attach Position Information to errors
-- SPARQL Improvements
- - Optimisations for ASK queries
- - Optimisations for CONSTRUCT/DESCRIBE/SELECT where LIMIT/OFFSET is used
- - SparqlXmlWriter uses streamed writing to allow it to produce output much faster using much less memory
-- ASP.Net Improvements
- - Better caching support for BaseGraphHandler - now sends ETag in responses and may respond with 304 Not Modified as appropriate
+ - Notation 3 Parser allows variable quantification directives in Graph Literals
+- Parsing
+ - Notation 3 Parser supports Variables, @forSome and @forAll properly
 
 Removed
-- Obsolete RdfXmlWriter removed
+- Obsolete VDS.RDF.Web classes removed
+- Removed obsolete methods related to Labyrinth SPARQL engine
+- Removed dataset management methods from ITripleStore and implemenations
 
    
 
