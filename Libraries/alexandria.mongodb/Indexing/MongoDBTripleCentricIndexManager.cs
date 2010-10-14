@@ -19,10 +19,10 @@ namespace VDS.Alexandria.Indexing
         {
             "name",
             "uri",
+            "graphuri",
             "subject",
             "predicate",
-            "object",
-            "graphuri"
+            "object"
         };
 
         public MongoDBTripleCentricIndexManager(MongoDBDocumentManager manager)
@@ -36,6 +36,25 @@ namespace VDS.Alexandria.Indexing
                 indexDoc[index] = 1;
                 this._manager.Database[this._manager.Collection].MetaData.CreateIndex(indexDoc, false);
             }
+
+            //Ensure Compound Indices
+            for (int i = 3; i < RequiredIndices.Length; i++)
+            {
+                for (int j = i; j < RequiredIndices.Length; j++)
+                {
+                    if (i == j) continue;
+                    Document indexDoc = new Document();
+                    indexDoc[RequiredIndices[i]] = 1;
+                    indexDoc[RequiredIndices[j]] = 1;
+                    this._manager.Database[this._manager.Collection].MetaData.CreateIndex(indexDoc, false);
+                }
+            }
+
+            Document fullIndex = new Document();
+            fullIndex["subject"] = 1;
+            fullIndex["predicate"] = 1;
+            fullIndex["object"] = 1;
+            this._manager.Database[this._manager.Collection].MetaData.CreateIndex(fullIndex, false);
         }
 
         public IEnumerable<Triple> GetTriplesWithSubject(INode subj)

@@ -34,6 +34,20 @@ _:mongo a dnr:GenericIOManager ;
 		 
 # BSBM Benchmark Testing
 
+<dotnetrdf:/mongodb-sparql-server/bsbm10> a dnr:HttpHandler ;
+										  dnr:type "VDS.RDF.Web.QueryHandler" ;
+										  dnr:queryProcessor [ a dnr:SparqlQueryProcessor ;
+															   dnr:type "VDS.RDF.Query.LeviathanQueryProcessor" ;
+															   dnr:usingDataset [ a dnr:SparqlDataset ;
+																				  dnr:type "VDS.Alexandria.Datasets.AlexandriaMongoDBDataset, dotNetRDF.Alexandria.MongoDB" ;
+																				  dnr:genericManager [ a dnr:GenericIOManager ;
+																									   dnr:type "VDS.Alexandria.AlexandriaMongoDBManager, dotNetRDF.Alexandria.MongoDB" ;
+																									   dnr:database "bsbm10" ;
+																									   dnr:loadMode "TripleCentric" 
+																									 ]
+																				 ]
+															 ] .
+
 <dotnetrdf:/mongodb-sparql-server/bsbm50> a dnr:HttpHandler ;
 										  dnr:type "VDS.RDF.Web.QueryHandler" ;
 										  dnr:queryProcessor [ a dnr:SparqlQueryProcessor ;
@@ -43,6 +57,62 @@ _:mongo a dnr:GenericIOManager ;
 																				  dnr:genericManager [ a dnr:GenericIOManager ;
 																									   dnr:type "VDS.Alexandria.AlexandriaMongoDBManager, dotNetRDF.Alexandria.MongoDB" ;
 																									   dnr:database "bsbm50" ;
+																									   dnr:loadMode "TripleCentric" 
+																									 ]
+																				 ]
+															 ] .
+															 
+<dotnetrdf:/mongodb-sparql-server/bsbm100> a dnr:HttpHandler ;
+										  dnr:type "VDS.RDF.Web.QueryHandler" ;
+										  dnr:queryProcessor [ a dnr:SparqlQueryProcessor ;
+															   dnr:type "VDS.RDF.Query.LeviathanQueryProcessor" ;
+															   dnr:usingDataset [ a dnr:SparqlDataset ;
+																				  dnr:type "VDS.Alexandria.Datasets.AlexandriaMongoDBDataset, dotNetRDF.Alexandria.MongoDB" ;
+																				  dnr:genericManager [ a dnr:GenericIOManager ;
+																									   dnr:type "VDS.Alexandria.AlexandriaMongoDBManager, dotNetRDF.Alexandria.MongoDB" ;
+																									   dnr:database "bsbm100" ;
+																									   dnr:loadMode "TripleCentric" 
+																									 ]
+																				 ]
+															 ] .
+															 
+<dotnetrdf:/mongodb-sparql-server/bsbm250> a dnr:HttpHandler ;
+										  dnr:type "VDS.RDF.Web.QueryHandler" ;
+										  dnr:queryProcessor [ a dnr:SparqlQueryProcessor ;
+															   dnr:type "VDS.RDF.Query.LeviathanQueryProcessor" ;
+															   dnr:usingDataset [ a dnr:SparqlDataset ;
+																				  dnr:type "VDS.Alexandria.Datasets.AlexandriaMongoDBDataset, dotNetRDF.Alexandria.MongoDB" ;
+																				  dnr:genericManager [ a dnr:GenericIOManager ;
+																									   dnr:type "VDS.Alexandria.AlexandriaMongoDBManager, dotNetRDF.Alexandria.MongoDB" ;
+																									   dnr:database "bsbm250" ;
+																									   dnr:loadMode "TripleCentric" 
+																									 ]
+																				 ]
+															 ] .
+															 
+<dotnetrdf:/mongodb-sparql-server/bsbm500> a dnr:HttpHandler ;
+										  dnr:type "VDS.RDF.Web.QueryHandler" ;
+										  dnr:queryProcessor [ a dnr:SparqlQueryProcessor ;
+															   dnr:type "VDS.RDF.Query.LeviathanQueryProcessor" ;
+															   dnr:usingDataset [ a dnr:SparqlDataset ;
+																				  dnr:type "VDS.Alexandria.Datasets.AlexandriaMongoDBDataset, dotNetRDF.Alexandria.MongoDB" ;
+																				  dnr:genericManager [ a dnr:GenericIOManager ;
+																									   dnr:type "VDS.Alexandria.AlexandriaMongoDBManager, dotNetRDF.Alexandria.MongoDB" ;
+																									   dnr:database "bsbm500" ;
+																									   dnr:loadMode "TripleCentric" 
+																									 ]
+																				 ]
+															 ] .
+															 
+<dotnetrdf:/mongodb-sparql-server/bsbm1000> a dnr:HttpHandler ;
+										  dnr:type "VDS.RDF.Web.QueryHandler" ;
+										  dnr:queryProcessor [ a dnr:SparqlQueryProcessor ;
+															   dnr:type "VDS.RDF.Query.LeviathanQueryProcessor" ;
+															   dnr:usingDataset [ a dnr:SparqlDataset ;
+																				  dnr:type "VDS.Alexandria.Datasets.AlexandriaMongoDBDataset, dotNetRDF.Alexandria.MongoDB" ;
+																				  dnr:genericManager [ a dnr:GenericIOManager ;
+																									   dnr:type "VDS.Alexandria.AlexandriaMongoDBManager, dotNetRDF.Alexandria.MongoDB" ;
+																									   dnr:database "bsbm1000" ;
 																									   dnr:loadMode "TripleCentric" 
 																									 ]
 																				 ]
