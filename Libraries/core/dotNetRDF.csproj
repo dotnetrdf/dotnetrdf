@@ -340,6 +340,7 @@
     <Compile Include="Query\Inference\OwlReasonerWrapper.cs" />
     <Compile Include="Query\Inference\PelletReasoner.cs" />
     <Compile Include="Query\Inference\Pellet\Services\NamespaceService.cs" />
+    <Compile Include="Query\Patterns\BindPattern.cs" />
     <Compile Include="Query\PelletQueryProcessor.cs" />
     <Compile Include="Query\Inference\Pellet\ServiceEndpoint.cs" />
     <Compile Include="Query\Inference\Pellet\KnowledgeBase.cs" />

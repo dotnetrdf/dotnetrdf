@@ -88,7 +88,7 @@ namespace VDS.RDF
         /// </summary>
         SpecialFilter = 10,
         /// <summary>
-        /// The Pattern is actually a LET assignment
+        /// The Pattern is actually a LET/BIND assignment
         /// </summary>
         SpecialAssignment = 11,
         /// <summary>

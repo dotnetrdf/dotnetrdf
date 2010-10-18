@@ -803,6 +803,10 @@ namespace VDS.RDF.Parsing.Tokens
                         //Average Aggregate Keyword
                         this._lasttokentype = Token.AVG;
                         return new AvgKeywordToken(this.CurrentLine, this.StartPosition);
+                    case SparqlSpecsHelper.SparqlKeywordBind:
+                        //Bing Keyword
+                        this._lasttokentype = Token.BIND;
+                        return new BindKeywordToken(this.CurrentLine, this.StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordBindings:
                         //Bindings Keyword
                         this._lasttokentype = Token.BINDINGS;

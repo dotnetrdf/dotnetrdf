@@ -134,6 +134,7 @@ namespace VDS.RDF.Parsing.Tokens
                           SERVICE = 134,
                           BINDINGS = 135,
                           UNDEF = 136,
+                          BIND = 137,
 
                           STR = 150,
                           LANG = 151,

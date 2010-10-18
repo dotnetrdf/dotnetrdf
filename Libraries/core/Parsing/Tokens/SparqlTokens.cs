@@ -148,6 +148,19 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
+    /// Token which represents the Sparql BIND Keyword
+    /// </summary>
+    public class BindKeywordToken : BaseToken
+    {
+        /// <summary>
+        /// Creates a new BIND Keyword Token
+        /// </summary>
+        /// <param name="line">Line the Keyword occurs on</param>
+        /// <param name="pos">Position the Keyword occurs at</param>
+        public BindKeywordToken(int line, int pos) : base(Token.BIND, "BIND", line, line, pos, pos + 4) { }
+    }
+
+    /// <summary>
     /// Token which represents the Sparql BINDINGS Keyword
     /// </summary>
     public class BindingsKeywordToken : BaseToken

@@ -43,19 +43,19 @@ using VDS.RDF.Query.Expressions;
 namespace VDS.RDF.Query.Patterns
 {
     /// <summary>
-    /// Class for representing LET Patterns in SPARQL Queries
+    /// Class for representing BIND assignments in SPARQL Queries
     /// </summary>
-    public class LetPattern : BaseTriplePattern, IComparable<LetPattern>
+    public class BindPattern : BaseTriplePattern, IComparable<BindPattern>
     {
         private String _var;
         private ISparqlExpression _expr;
 
         /// <summary>
-        /// Creates a new LET Pattern
+        /// Creates a new BIND Pattern
         /// </summary>
         /// <param name="var">Variable to assign to</param>
         /// <param name="expr">Expression which generates a value which will be assigned to the variable</param>
-        public LetPattern(String var, ISparqlExpression expr)
+        public BindPattern(String var, ISparqlExpression expr)
         {
             this._var = var;
             this._expr = expr;
@@ -65,7 +65,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Evaluates a LET assignment in the given Evaluation Context
+    /// Evaluates a BIND assignment in the given Evaluation Context
         /// </summary>
         /// <param name="context">Evaluation Context</param>
         public override void Evaluate(SparqlEvaluationContext context)
@@ -90,41 +90,23 @@ namespace VDS.RDF.Query.Patterns
             }
             else
             {
+                if (context.InputMultiset.ContainsVariable(this._var))
+                {
+                    throw new RdfQueryException("Cannot use a BIND assigment to BIND to a variable that has previously been declared");
+                }
+
                 foreach (int id in context.InputMultiset.SetIDs.ToList())
                 {
                     Set s = context.InputMultiset[id];
-                    if (s.ContainsVariable(this._var))
+                    try
                     {
-                        try
-                        {
-                            //A value already exists so see if the two values match
-                            INode current = s[this._var];
-                            INode temp = this._expr.Value(context, id);
-                            if (current != temp)
-                            {
-                                //Where the values aren't equal the solution is eliminated
-                                context.InputMultiset.Remove(id);
-                            }
-                        }
-                        catch
-                        {
-                            //If an error occurs the solution is eliminated
-                            context.InputMultiset.Remove(id);
-                        }
+                        //Make a new assignment
+                        INode temp = this._expr.Value(context, id);
+                        s.Add(this._var, temp);
                     }
-                    else
+                    catch
                     {
-                        context.InputMultiset.AddVariable(this._var);
-                        try
-                        {
-                            //Make a new assignment
-                            INode temp = this._expr.Value(context, id);
-                            s.Add(this._var, temp);
-                        }
-                        catch
-                        {
-                            //If an error occurs no assignment happens
-                        }
+                        //If an error occurs no assignment happens
                     }
                 }
                 context.OutputMultiset = new IdentityMultiset();
@@ -132,7 +114,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Returns that this is not an accept all since it is a LET assignment
+        /// Returns that this is not an accept all since it is a BIND assignment
         /// </summary>
         public override bool IsAcceptAll
         {
@@ -171,22 +153,21 @@ namespace VDS.RDF.Query.Patterns
         public override string ToString()
         {
             StringBuilder output = new StringBuilder();
-            output.Append("LET(");
-            output.Append("?");
-            output.Append(this._var);
-            output.Append(" := ");
+            output.Append("BIND(");
             output.Append(this._expr.ToString());
+            output.Append(" AS ?");
+            output.Append(this._var);
             output.Append(")");
 
             return output.ToString();
         }
 
         /// <summary>
-        /// Compares this Let to another Let
+        /// Compares this Bind to another Bind
         /// </summary>
-        /// <param name="other">Let to compare to</param>
+        /// <param name="other">Bind to compare to</param>
         /// <returns>Just calls the base compare method since that implements all the logic we need</returns>
-        public int CompareTo(LetPattern other)
+        public int CompareTo(BindPattern other)
         {
             return base.CompareTo(other);
         }

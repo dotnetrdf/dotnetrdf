@@ -7,7 +7,7 @@
     <ProjectGuid>{B9D07296-F0AD-491F-8248-5D40F10BD3BF}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>branch_tests</RootNamespace>
+    <RootNamespace>VDS.RDF.Test</RootNamespace>
     <AssemblyName>branch-tests</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SparqlTests.cs" />
     <Compile Include="VariableNodeTests.cs" />
   </ItemGroup>
   <ItemGroup>
