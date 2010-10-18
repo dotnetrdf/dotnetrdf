@@ -65,7 +65,7 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="p">Triple Pattern</param>
         public LazyBgp(ITriplePattern p)
         {
-            if (!(p is TriplePattern || p is FilterPattern || p is BindPattern)) throw new ArgumentException("Triple Pattern instance must be a Triple Pattern or a BIND/FILTER Pattern", "p");
+            if (!IsLazilyEvaluablePattern(p)) throw new ArgumentException("Triple Pattern instance must be a Triple Pattern or a Subquery, BIND or FILTER Pattern", "p");
             this._triplePatterns.Add(p);
         }
 
@@ -75,7 +75,7 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="ps">Triple Patterns</param>
         public LazyBgp(IEnumerable<ITriplePattern> ps)
         {
-            if (!ps.All(p => p is TriplePattern || p is FilterPattern || p is BindPattern)) throw new ArgumentException("Triple Pattern instances must all be Triple Patterns or BIND/FILTER Patterns", "ps");
+            if (!ps.All(p => IsLazilyEvaluablePattern(p))) throw new ArgumentException("Triple Pattern instances must all be Triple Patterns or Subquery, BIND, FILTER Patterns", "ps");
             this._triplePatterns.AddRange(ps);
         }
 
@@ -86,7 +86,7 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="requiredResults">The number of Results the BGP should attempt to return</param>
         public LazyBgp(ITriplePattern p, int requiredResults)
         {
-            if (!(p is TriplePattern || p is FilterPattern || p is BindPattern)) throw new ArgumentException("Triple Pattern instance must be a Triple Pattern or a BIND/FILTER Pattern", "p");
+            if (!IsLazilyEvaluablePattern(p)) throw new ArgumentException("Triple Pattern instance must be a Triple Pattern or a Subqyery, BIND, FILTER Pattern", "p");
             this._requiredResults = requiredResults;
             this._triplePatterns.Add(p);
         }
@@ -98,9 +98,14 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="requiredResults">The number of Results the BGP should attempt to return</param>
         public LazyBgp(IEnumerable<ITriplePattern> ps, int requiredResults)
         {
-            if (!ps.All(p => p is TriplePattern || p is FilterPattern || p is BindPattern)) throw new ArgumentException("Triple Pattern instances must all be Triple Patterns or BIND/FILTER Patterns", "ps");
+            if (!ps.All(p => IsLazilyEvaluablePattern(p))) throw new ArgumentException("Triple Pattern instances must all be Triple Patterns or Subquery, BIND or FILTER Patterns", "ps");
             this._requiredResults = requiredResults;
             this._triplePatterns.AddRange(ps);
+        }
+
+        private bool IsLazilyEvaluablePattern(ITriplePattern p)
+        {
+            return (p is TriplePattern || p is FilterPattern || p is BindPattern || p is SubQueryPattern);
         }
 
         /// <summary>
@@ -245,7 +250,7 @@ namespace VDS.RDF.Query.Algebra
                     break;
 
                 default:
-                    //Input is join of previous input and ouput and Output is new empty multiset
+                    //Input is join of previous input and output and Output is new empty multiset
                     if (context.InputMultiset.IsDisjointWith(context.OutputMultiset))
                     {
                         //Disjoint so do a Product
@@ -507,6 +512,77 @@ namespace VDS.RDF.Query.Algebra
                     {
                         //Ignore expression evaluation errors
                         //TODO: Should error eliminate a solution/assign a null/do nothing
+                    }
+                }
+            }
+            else if (temp is SubQueryPattern)
+            {
+                SubQueryPattern sqp = (SubQueryPattern)temp;
+
+                ISparqlAlgebra algebra = sqp.SubQuery.ToAlgebra();
+                SparqlEvaluationContext subcontext = new SparqlEvaluationContext(sqp.SubQuery, context.Data);
+                context.OutputMultiset = algebra.Evaluate(subcontext);
+                resultsFound++;
+
+                //Recurse unless we're the last pattern
+                if (pattern < this._triplePatterns.Count - 1)
+                {
+                    results = this.StreamingEvaluate(context, pattern + 1, out halt);
+
+                    //If recursion leads to a halt then we halt and return immediately
+                    if (halt && results.Count >= this._requiredResults && this._requiredResults != -1)
+                    {
+                        return results;
+                    }
+                    else if (halt)
+                    {
+                        if (prevResults > -1)
+                        {
+                            if (results.Count == prevResults)
+                            {
+                                //If the amount of results found hasn't increased then this match does not
+                                //generate any further solutions further down the recursion so we can eliminate
+                                //this from the results
+                                localOutput.Remove(localOutput.SetIDs.Max());
+                            }
+                        }
+                        prevResults = results.Count;
+
+                        //If we're supposed to halt but not reached the number of required results then continue
+                        context.InputMultiset = initialInput;
+                        context.OutputMultiset = localOutput;
+                    }
+                    else
+                    {
+                        //Otherwise we need to keep going here
+                        //So must reset our input and outputs before continuing
+                        context.InputMultiset = initialInput;
+                        context.OutputMultiset = new Multiset();
+                        resultsFound--;
+                    }
+                }
+                else
+                {
+                    //If we're at the last pattern and we've found a match then we can halt
+                    halt = true;
+
+                    //Generate the final output and return it
+                    if (context.InputMultiset.IsDisjointWith(context.OutputMultiset))
+                    {
+                        //Disjoint so do a Product
+                        results = context.InputMultiset.Product(context.OutputMultiset);
+                    }
+                    else
+                    {
+                        //Normal Join
+                        results = context.InputMultiset.Join(context.OutputMultiset);
+                    }
+
+                    //If reached required number of results can return
+                    if (results.Count >= this._requiredResults && this._requiredResults != -1)
+                    {
+                        context.OutputMultiset = results;
+                        return context.OutputMultiset;
                     }
                 }
             }
