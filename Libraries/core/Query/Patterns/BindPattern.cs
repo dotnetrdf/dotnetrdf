@@ -106,7 +106,9 @@ namespace VDS.RDF.Query.Patterns
                     }
                     catch
                     {
-                        //If an error occurs no assignment happens
+                        //If an error occurs no assignment happens and the solution is eliminated
+                        //TODO: Should this assign a null/eliminate a solution/do nothing?
+                        //context.InputMultiset.Remove(id);
                     }
                 }
                 context.OutputMultiset = new IdentityMultiset();

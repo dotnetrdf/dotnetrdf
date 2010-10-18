@@ -65,7 +65,7 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="p">Triple Pattern</param>
         public LazyBgp(ITriplePattern p)
         {
-            if (!(p is TriplePattern || p is FilterPattern)) throw new ArgumentException("Triple Pattern instance must be a Triple Pattern or a FILTER Pattern", "p");
+            if (!(p is TriplePattern || p is FilterPattern || p is BindPattern)) throw new ArgumentException("Triple Pattern instance must be a Triple Pattern or a BIND/FILTER Pattern", "p");
             this._triplePatterns.Add(p);
         }
 
@@ -75,7 +75,7 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="ps">Triple Patterns</param>
         public LazyBgp(IEnumerable<ITriplePattern> ps)
         {
-            if (!ps.All(p => p is TriplePattern || p is FilterPattern)) throw new ArgumentException("Triple Pattern instances must all be Triple Patterns or FILTER Patterns", "ps");
+            if (!ps.All(p => p is TriplePattern || p is FilterPattern || p is BindPattern)) throw new ArgumentException("Triple Pattern instances must all be Triple Patterns or BIND/FILTER Patterns", "ps");
             this._triplePatterns.AddRange(ps);
         }
 
@@ -86,7 +86,7 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="requiredResults">The number of Results the BGP should attempt to return</param>
         public LazyBgp(ITriplePattern p, int requiredResults)
         {
-            if (!(p is TriplePattern || p is FilterPattern)) throw new ArgumentException("Triple Pattern instance must be a Triple Pattern or a FILTER Pattern", "p");
+            if (!(p is TriplePattern || p is FilterPattern || p is BindPattern)) throw new ArgumentException("Triple Pattern instance must be a Triple Pattern or a BIND/FILTER Pattern", "p");
             this._requiredResults = requiredResults;
             this._triplePatterns.Add(p);
         }
@@ -98,7 +98,7 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="requiredResults">The number of Results the BGP should attempt to return</param>
         public LazyBgp(IEnumerable<ITriplePattern> ps, int requiredResults)
         {
-            if (!ps.All(p => p is TriplePattern || p is FilterPattern)) throw new ArgumentException("Triple Pattern instances must all be Triple Patterns or FILTER Patterns", "ps");
+            if (!ps.All(p => p is TriplePattern || p is FilterPattern || p is BindPattern)) throw new ArgumentException("Triple Pattern instances must all be Triple Patterns or BIND/FILTER Patterns", "ps");
             this._requiredResults = requiredResults;
             this._triplePatterns.AddRange(ps);
         }
@@ -226,8 +226,15 @@ namespace VDS.RDF.Query.Algebra
             switch (pattern)
             {
                 case 0:
-                    //Input is as given and Output is new empty multiset
-                    initialInput = context.InputMultiset;
+                    //Input is as given and Output is new empty multiset UNLESS first pattern is a BIND
+                    if (this._triplePatterns[0] is BindPattern)
+                    {
+                        initialInput = new IdentityMultiset();
+                    }
+                    else
+                    {
+                        initialInput = context.InputMultiset;
+                    }
                     localOutput = new Multiset();
                     break;
 
@@ -413,7 +420,7 @@ namespace VDS.RDF.Query.Algebra
                                     results = context.InputMultiset.Join(context.OutputMultiset);
                                 }
 
-                                //If not reached required number of results continue
+                                //If have reached required number of results return
                                 if (results.Count >= this._requiredResults && this._requiredResults != -1)
                                 {
                                     context.OutputMultiset = results;
@@ -425,6 +432,81 @@ namespace VDS.RDF.Query.Algebra
                     catch
                     {
                         //Ignore expression evaluation errors
+                    }
+                }
+            }
+            else if (temp is BindPattern)
+            {
+                BindPattern bind = (BindPattern)temp;
+                if (context.InputMultiset.ContainsVariable(bind.VariableName)) throw new RdfQueryException("Cannot use a BIND assigment to BIND to a variable that has previously been declared");
+
+                foreach (int id in context.InputMultiset.SetIDs)
+                {
+                    try
+                    {
+                        Set s = context.InputMultiset[id];
+                        s.Add(bind.VariableName, bind.AssignExpression.Value(context, id));
+
+                        resultsFound++;
+                        context.OutputMultiset.Add(context.InputMultiset[id]);
+
+                        //Recurse unless we're the last pattern
+                        if (pattern < this._triplePatterns.Count - 1)
+                        {
+                            results = this.StreamingEvaluate(context, pattern + 1, out halt);
+
+                            //If recursion leads to a halt then we halt and return immediately
+                            if (halt && results.Count >= this._requiredResults && this._requiredResults != -1)
+                            {
+                                return results;
+                            }
+                            else if (halt)
+                            {
+                                if (prevResults > -1)
+                                {
+                                    if (results.Count == prevResults)
+                                    {
+                                        //If the amount of results found hasn't increased then this match does not
+                                        //generate any further solutions further down the recursion so we can eliminate
+                                        //this from the results
+                                        localOutput.Remove(localOutput.SetIDs.Max());
+                                    }
+                                }
+                                prevResults = results.Count;
+
+                                //If we're supposed to halt but not reached the number of required results then continue
+                                context.InputMultiset = initialInput;
+                                context.OutputMultiset = localOutput;
+                            }
+                            else
+                            {
+                                //Otherwise we need to keep going here
+                                //So must reset our input and outputs before continuing
+                                context.InputMultiset = initialInput;
+                                context.OutputMultiset = new Multiset();
+                                resultsFound--;
+                            }
+                        }
+                        else
+                        {
+                            //If we're at the last pattern and we've found a match then we can halt
+                            halt = true;
+
+                            //Generate the final output and return it
+                            results = context.OutputMultiset;
+
+                            //If reached required number of results can return
+                            if (results.Count >= this._requiredResults && this._requiredResults != -1)
+                            {
+                                context.OutputMultiset = results;
+                                return context.OutputMultiset;
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        //Ignore expression evaluation errors
+                        //TODO: Should error eliminate a solution/assign a null/do nothing
                     }
                 }
             }

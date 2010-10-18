@@ -38,6 +38,7 @@ using System.Collections.Generic;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Construct;
+using VDS.RDF.Query.Expressions;
 
 namespace VDS.RDF.Query.Patterns
 {
@@ -140,6 +141,14 @@ namespace VDS.RDF.Query.Patterns
     /// </summary>
     public interface IAssignmentPattern : ITriplePattern
     {
+        /// <summary>
+        /// Gets the Assignment Expression that is used
+        /// </summary>
+        ISparqlExpression AssignExpression
+        {
+            get;
+        }
+
         /// <summary>
         /// Name of the Variable which is assigned to
         /// </summary>
