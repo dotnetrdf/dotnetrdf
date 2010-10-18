@@ -30,6 +30,7 @@ _:mongoDataset a dnr:SparqlDataset ;
 		  
 _:mongo a dnr:GenericIOManager ;
 		 dnr:type "VDS.Alexandria.AlexandriaMongoDBManager, dotNetRDF.Alexandria.MongoDB" ;
+		 dnr:loadMode "GraphCentric" ;
 		 dnr:database "mongo-sparql-server" .
 		 
 # BSBM Benchmark Testing

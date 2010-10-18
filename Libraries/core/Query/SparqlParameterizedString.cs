@@ -81,10 +81,12 @@ namespace VDS.RDF.Query
     {
         private String _query = String.Empty;
         private Dictionary<String, INode> _parameters = new Dictionary<string, INode>();
+        private Dictionary<String, INode> _variables = new Dictionary<string, INode>();
         private SparqlFormatter _formatter = new SparqlFormatter();
         private Graph _g = new Graph();
 
-        private const String _validParameterNamePattern = "^@?[\\w\\-]+$";
+        private const String _validParameterNamePattern = "^@?[\\w\\-_]+$";
+        private const String _validVariableNamePattern = "^[?$]?[\\w\\-_]+$";
 
         /// <summary>
         /// Creates a new empty parameterized String
@@ -129,7 +131,7 @@ namespace VDS.RDF.Query
         public void SetParameter(String name, INode value)
         {
             //Only allow the setting of valid parameter names
-            if (!Regex.IsMatch(name, _validParameterNamePattern)) throw new FormatException("The parameter name '" + name + "' is not a valid parameter name, parameter names must consist only of alphanumeric characters and underscores");
+            if (!Regex.IsMatch(name, _validParameterNamePattern)) throw new FormatException("The parameter name '" + name + "' is not a valid parameter name, parameter names must consist only of alphanumeric characters and hypens/underscores");
 
             //OPT: Could ensure that the parameter name actually appears in the query?
             name = (name.StartsWith("@")) ? name.Substring(1) : name;
@@ -142,6 +144,26 @@ namespace VDS.RDF.Query
             else
             {
                 this._parameters.Add(name, value);
+            }
+        }
+
+        /// <summary>
+        /// Sets the Value of a Variable
+        /// </summary>
+        /// <param name="name">Variable Name</param>
+        /// <param name="value">Value</param>
+        public void SetVariable(String name, INode value)
+        {
+            //Only allow the setting of valid variable names
+            if (!Regex.IsMatch(name, _validVariableNamePattern)) throw new FormatException("The variable name '" + name + "' is not a valid variable name, variable names must consist only of alphanumeric characters and hyphens/underscores");
+
+            if (this._variables.ContainsKey(name))
+            {
+                this._variables[name] = value;
+            }
+            else
+            {
+                this._variables.Add(name, value);
             }
         }
 
@@ -317,7 +339,13 @@ namespace VDS.RDF.Query
             {
                 //Do a Regex based replace to avoid replacing other parameters whose names may be suffixes/prefixes of this name
                 output = Regex.Replace(output, "(@" + param + ")([^\\w]|$)", this._formatter.Format(this._parameters[param]) + "$2");
-                //output = output.Replace("@" + param, this._writerContext.FormatNode(this._parameters[param], Writing.NodeFormat.UncompressedTurtle));
+            }
+
+            //Do Variable replacements after Parameter replacements
+            foreach (String var in this._variables.Keys.OrderByDescending(k => k.Length))
+            {
+                //Do a Reged based replace to avoid replacing other variables whose names may be suffixes/prefixes of this name
+                output = Regex.Replace(output, "([?$]" + var + ")([^\\w]|$)", this._formatter.Format(this._variables[var]) + "$2");
             }
 
             return output;

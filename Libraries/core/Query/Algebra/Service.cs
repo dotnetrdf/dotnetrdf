@@ -84,24 +84,79 @@ namespace VDS.RDF.Query.Algebra
                     throw new RdfQueryException("SERVICE Specifier must be a URI/Variable Token but a " + this._endpointSpecifier.GetType().ToString() + " Token was provided");
                 }
 
-                //TODO: Do substitution in here to make more detailed SERVICE requests which actually give back relevant Triples
-
-                //Try and get a Result Set from the Service
-                SparqlResultSet results = endpoint.QueryWithResultSet(sparqlQuery.ToString());
-
-                //Transform this Result Set back into a Multiset
+                //Where possible do substitution and execution to get accurate and correct SERVICE results
                 context.OutputMultiset = new Multiset();
-                foreach (SparqlResult r in results.Results)
-                {
-                    Set s = new Set();
-                    foreach (String variable in r.Variables)
-                    {
-                        s.Add(variable, r[variable]);
-                    }
-                    context.OutputMultiset.Add(s);
-                }
+                List<String> existingVars = (from v in this._pattern.Variables
+                                             where context.InputMultiset.ContainsVariable(v)
+                                             select v).ToList();
 
-                return context.OutputMultiset;
+                if (existingVars.Any() || context.Query.Bindings != null)
+                {
+                    //Pre-bound variables/BINDINGS clause so do substitution and execution
+
+                    //Build the set of possible bindings
+                    HashSet<Set> bindings = new HashSet<Set>();
+                    if (context.Query.Bindings != null && !this._pattern.Variables.IsDisjoint(context.Query.Bindings.Variables))
+                    {
+                        //Possible Bindings comes from BINDINGS clause
+                        //In this case each possibility is a distinct binding tuple defined in the BINDINGS clause
+                        foreach (BindingTuple tuple in context.Query.Bindings.Tuples)
+                        {
+                            bindings.Add(new Set(tuple));
+                        }
+                    }
+                    else
+                    {
+                        //Possible Bindings get built from current input (if there was a BINDINGS clause the variables it defines are not in this SERVICE clause)
+                        //In this case each possibility only contains Variables bound so far
+                        foreach (Set s in context.InputMultiset.Sets)
+                        {
+                            Set t = new Set();
+                            foreach (String var in existingVars)
+                            {
+                                t.Add(var, s[var]);
+                            }
+                            bindings.Add(t);
+                        }
+                    }
+
+                    //Execute the Query for every possible Binding and build up our Output Multiset from all the results
+                    foreach (Set s in bindings)
+                    {
+                        foreach (String var in s.Variables)
+                        {
+                            sparqlQuery.SetVariable(var, s[var]);
+                        }
+                        SparqlResultSet results = endpoint.QueryWithResultSet(sparqlQuery.ToString());
+
+                        foreach (SparqlResult r in results)
+                        {
+                            Set t = new Set(r);
+                            foreach (String var in s.Variables)
+                            {
+                                t.Add(var, s[var]);
+                            }
+                            context.OutputMultiset.Add(t);
+                        }
+                    }
+
+                    return context.OutputMultiset;
+                }
+                else
+                {
+                    //No pre-bound variables/BINDINGS clause so just execute the query
+
+                    //Try and get a Result Set from the Service
+                    SparqlResultSet results = endpoint.QueryWithResultSet(sparqlQuery.ToString());
+
+                    //Transform this Result Set back into a Multiset
+                    foreach (SparqlResult r in results.Results)
+                    {
+                        context.OutputMultiset.Add(new Set(r));
+                    }
+
+                    return context.OutputMultiset;
+                }
 
             }
             catch (Exception ex)
