@@ -93,6 +93,15 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
+        /// Creates a BGP containing a set of Assignment Patterns
+        /// </summary>
+        /// <param name="ps">Assignment Patterns</param>
+        public Bgp(IEnumerable<IAssignmentPattern> ps)
+        {
+            this._triplePatterns.AddRange(ps.Select(p => (ITriplePattern)p));
+        }
+
+        /// <summary>
         /// Creates a BGP containing a set of Filter Patterns
         /// </summary>
         /// <param name="ps">Filter Patterns</param>
@@ -148,6 +157,10 @@ namespace VDS.RDF.Query.Algebra
                         //If the 1st thing in a BGP is a BIND/LET/FILTER the Input becomes the Identity Multiset
                         if (this._triplePatterns[i] is FilterPattern || this._triplePatterns[i] is BindPattern || this._triplePatterns[i] is LetPattern)
                         {
+                            if (this._triplePatterns[i] is BindPattern)
+                            {
+                                if (context.InputMultiset.ContainsVariable(((BindPattern)this._triplePatterns[i]).VariableName)) throw new RdfQueryException("Cannot use a BIND assigment to BIND to a variable that has previously been declared");
+                            }
                             context.InputMultiset = new IdentityMultiset();
                         }
                     }

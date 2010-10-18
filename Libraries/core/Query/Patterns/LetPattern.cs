@@ -45,7 +45,7 @@ namespace VDS.RDF.Query.Patterns
     /// <summary>
     /// Class for representing LET Patterns in SPARQL Queries
     /// </summary>
-    public class LetPattern : BaseTriplePattern, IComparable<LetPattern>
+    public class LetPattern : BaseTriplePattern, IComparable<LetPattern>, IAssignmentPattern
     {
         private String _var;
         private ISparqlExpression _expr;

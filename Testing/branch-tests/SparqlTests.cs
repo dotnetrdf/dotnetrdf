@@ -44,6 +44,35 @@ namespace VDS.RDF.Test
         }
 
         [TestMethod]
+        public void SparqlBindNested()
+        {
+            String query = "PREFIX fn: <" + XPathFunctionFactory.XPathFunctionsNamespace + "> SELECT ?triple WHERE { ?s ?p ?o .{ BIND(fn:concat(STR(?s), ' ', STR(?p), ' ', STR(?o)) AS ?triple) }}";
+
+            TripleStore store = new TripleStore();
+            Graph g = new Graph();
+            FileLoader.Load(g, "InferenceTest.ttl");
+            store.Add(g);
+
+            SparqlQueryParser parser = new SparqlQueryParser();
+            SparqlQuery q = parser.ParseFromString(query);
+
+            Object results = q.Evaluate(store);
+            if (results is SparqlResultSet)
+            {
+                SparqlResultSet rset = (SparqlResultSet)results;
+                foreach (SparqlResult r in rset)
+                {
+                    Console.WriteLine(r.ToString());
+                }
+                Assert.IsTrue(rset.Count == 0, "Expected no results");
+            }
+            else
+            {
+                Assert.Fail("Expected a SPARQL Result Set");
+            }
+        }
+
+        [TestMethod]
         public void SparqlBindIn10Standard()
         {
             String query = "PREFIX fn: <" + XPathFunctionFactory.XPathFunctionsNamespace + "> SELECT ?triple WHERE { ?s ?p ?o . BIND(fn:concat(STR(?s), ' ', STR(?p), ' ', STR(?o)) AS ?triple) }";
@@ -66,6 +95,60 @@ namespace VDS.RDF.Test
             catch
             {
                 Assert.Fail("Expected a RdfParseException");
+            }
+        }
+
+        [TestMethod]
+        public void SparqlBindToExistingVariable()
+        {
+            String query = "PREFIX fn: <" + XPathFunctionFactory.XPathFunctionsNamespace + "> SELECT * WHERE { ?s ?p ?o . BIND(?s AS ?p) }";
+
+            TripleStore store = new TripleStore();
+            Graph g = new Graph();
+            FileLoader.Load(g, "InferenceTest.ttl");
+            store.Add(g);
+
+            SparqlQueryParser parser = new SparqlQueryParser();
+            try
+            {
+                SparqlQuery q = parser.ParseFromString(query);
+                store.ExecuteQuery(q);
+                Assert.Fail("Expected a RdfQueryException to be thrown");
+            }
+            catch (RdfQueryException)
+            {
+                Console.WriteLine("Error thrown as expected");
+            }
+            catch
+            {
+                Assert.Fail("Expected a RdfQueryException");
+            }
+        }
+
+        [TestMethod]
+        public void SparqlBindToExistingVariableNested()
+        {
+            String query = "PREFIX fn: <" + XPathFunctionFactory.XPathFunctionsNamespace + "> SELECT * WHERE { ?s ?p ?o .{ BIND(?s AS ?p)} }";
+
+            TripleStore store = new TripleStore();
+            Graph g = new Graph();
+            FileLoader.Load(g, "InferenceTest.ttl");
+            store.Add(g);
+
+            SparqlQueryParser parser = new SparqlQueryParser();
+            try
+            {
+                SparqlQuery q = parser.ParseFromString(query);
+                store.ExecuteQuery(q);
+                Assert.Fail("Expected a RdfQueryException to be thrown");
+            }
+            catch (RdfQueryException)
+            {
+                Console.WriteLine("Error thrown as expected");
+            }
+            catch
+            {
+                Assert.Fail("Expected a RdfQueryException");
             }
         }
 

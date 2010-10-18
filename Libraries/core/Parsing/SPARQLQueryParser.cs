@@ -2693,7 +2693,7 @@ namespace VDS.RDF.Parsing
         private void TryParseLetAssignment(SparqlQueryParserContext context, GraphPattern p)
         {
             if (context.SyntaxMode == SparqlQuerySyntax.Sparql_1_0) throw new RdfParseException("LET assignment is not supported in SPARQL 1.0");
-            if (context.SyntaxMode == SparqlQuerySyntax.Sparql_1_1) throw new RdfParseException("LET assignment is not supported in SPARQL 1.1");
+            if (context.SyntaxMode == SparqlQuerySyntax.Sparql_1_1) throw new RdfParseException("LET assignment is not supported in SPARQL 1.1 - use BIND assignment instead");
 
             IToken variable;
             ISparqlExpression expr;
@@ -2763,7 +2763,7 @@ namespace VDS.RDF.Parsing
                         else
                         {
                             //When Optimisation is turned off we'll just stick the Let in the Triples Pattern where it occurs
-                            //since we're not going to do any Triple Pattern ordering, LET or FILTER placement
+                            //since we're not going to do any Triple Pattern ordering, Assignment or FILTER placement
                             p.AddTriplePattern(let);
                         }
                     }
@@ -2802,7 +2802,17 @@ namespace VDS.RDF.Parsing
             next = context.Tokens.Dequeue();
             if (next.TokenType == Token.VARIABLE)
             {
-                p.AddTriplePattern(new BindPattern(next.Value.Substring(1), expr));
+                BindPattern bind = new BindPattern(next.Value.Substring(1), expr);
+                if (Options.QueryOptimisation)
+                {
+                    p.UnplacedAssignments.Add(bind);
+                }
+                else
+                {
+                    //When Optimisation is turned off we'll just stick the Let in the Triples Pattern where it occurs
+                    //since we're not going to do any Triple Pattern ordering, Assignment or FILTER placement
+                    p.AddTriplePattern(bind);
+                }
 
                 //Ensure the BIND assignment is terminated with a )
                 next = context.Tokens.Dequeue();

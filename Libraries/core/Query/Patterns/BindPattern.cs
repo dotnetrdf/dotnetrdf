@@ -45,7 +45,7 @@ namespace VDS.RDF.Query.Patterns
     /// <summary>
     /// Class for representing BIND assignments in SPARQL Queries
     /// </summary>
-    public class BindPattern : BaseTriplePattern, IComparable<BindPattern>
+    public class BindPattern : BaseTriplePattern, IComparable<BindPattern>, IAssignmentPattern
     {
         private String _var;
         private ISparqlExpression _expr;

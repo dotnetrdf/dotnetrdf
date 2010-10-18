@@ -62,7 +62,7 @@ namespace VDS.RDF.Query.Patterns
         private List<GraphPattern> _graphPatterns = new List<GraphPattern>();
         private List<ITriplePattern> _triplePatterns = new List<ITriplePattern>();
         private List<ISparqlFilter> _unplacedFilters = new List<ISparqlFilter>();
-        private List<LetPattern> _unplacedAssignments = new List<LetPattern>();
+        private List<IAssignmentPattern> _unplacedAssignments = new List<IAssignmentPattern>();
         private ISparqlFilter _filter;
         private bool _break = false, _broken = false;
 
@@ -418,7 +418,7 @@ namespace VDS.RDF.Query.Patterns
         /// <summary>
         /// Gets the list of LET assignments that are in this Graph Pattern which will be placed appropriately later
         /// </summary>
-        protected internal List<LetPattern> UnplacedAssignments
+        protected internal List<IAssignmentPattern> UnplacedAssignments
         {
             get
             {
@@ -653,20 +653,20 @@ namespace VDS.RDF.Query.Patterns
         /// <summary>
         /// Tries to place assignments at the earliest point possible i.e. the first point after which all required variables have occurred
         /// </summary>
-        /// <param name="let">LET Assignment</param>
+        /// <param name="assignment">Assignment (LET/BIND)</param>
         /// <returns></returns>
-        private bool TryPlaceAssignment(LetPattern let)
+        private bool TryPlaceAssignment(IAssignmentPattern assignment)
         {
             //Firstly we need to find out what variables are needed in the Assignment
-            //The Variables property will include the variable that the LET assigns to so we can safely remove this
-            List<String> variablesNeeded = let.Variables.Distinct().ToList();
-            variablesNeeded.Remove(let.VariableName);
+            //The Variables property will include the variable that the Assignment assigns to so we can safely remove this
+            List<String> variablesNeeded = assignment.Variables.Distinct().ToList();
+            variablesNeeded.Remove(assignment.VariableName);
 
             //If there are no Variables Needed we can just place the assignment at the start
             //This implies that the assignment sets something to a fixed value
             if (variablesNeeded.Count == 0)
             {
-                this._triplePatterns.Insert(0, let);
+                this._triplePatterns.Insert(0, assignment);
                 return true;
             }
 
@@ -686,7 +686,7 @@ namespace VDS.RDF.Query.Patterns
                     if (variablesNeeded.All(v => variablesUsed.Contains(v)))
                     {
                         //We can place this Assignment after the Pattern we were just looking at
-                        this._triplePatterns.Insert(p + 1, let);
+                        this._triplePatterns.Insert(p + 1, assignment);
                         return true;
                     }
                 }

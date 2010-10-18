@@ -85,7 +85,7 @@ namespace VDS.RDF.Query.Patterns
     /// <summary>
     /// Interface for Triple Patterns that can be used in a CONSTRUCT pattern
     /// </summary>
-    public interface IConstructTriplePattern
+    public interface IConstructTriplePattern : ITriplePattern
     {
         /// <summary>
         /// Constructs a Triple from a Set based on this Triple Pattern
@@ -130,6 +130,20 @@ namespace VDS.RDF.Query.Patterns
         /// Gets whether the Pattern contains no Explicit Variables (i.e. Blank Node Variables are ignored)
         /// </summary>
         bool HasNoExplicitVariables
+        {
+            get;
+        }
+    }
+
+    /// <summary>
+    /// Interface for Triple Patterns that represent Assignment operators
+    /// </summary>
+    public interface IAssignmentPattern : ITriplePattern
+    {
+        /// <summary>
+        /// Name of the Variable which is assigned to
+        /// </summary>
+        String VariableName
         {
             get;
         }
