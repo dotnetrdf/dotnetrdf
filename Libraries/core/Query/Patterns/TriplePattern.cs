@@ -219,151 +219,24 @@ namespace VDS.RDF.Query.Patterns
         /// <param name="context">Evaluation Context</param>
         public override void Evaluate(SparqlEvaluationContext context)
         {
-            INode s, p, o;
-            INode subj, pred, obj;
-            //Triple test;
-            Graph g = new Graph();
-
-            //Stuff for more precise indexing
-            IEnumerable<INode> values = null;
-            String subjVar = this._subj.VariableName;
-            String predVar = this._pred.VariableName;
-            String objVar = this._obj.VariableName;
-            bool boundSubj = (subjVar != null && context.InputMultiset.ContainsVariable(subjVar));
-            bool boundPred = (predVar != null && context.InputMultiset.ContainsVariable(predVar));
-            bool boundObj = (objVar != null && context.InputMultiset.ContainsVariable(objVar));
-            
-            switch (this._indexType)
+            if (this._indexType == TripleIndexType.NoVariables)
             {
-                case TripleIndexType.Subject:
-                    subj = ((NodeMatchPattern)this._subj).Node;
-                    if (boundPred)
-                    {
-                        values = (from set in context.InputMultiset.Sets
-                                  where set.ContainsVariable(predVar)
-                                  select set[predVar]).Distinct();
-                        foreach (INode value in values)
-                        {
-                            if (value == null) continue;
-                            this.GetResults(context, context.Data.GetTriplesWithSubjectPredicate(subj, value));
-                        }
-                    }
-                    else if (boundObj)
-                    {
-                        values = (from set in context.InputMultiset.Sets
-                                  where set.ContainsVariable(objVar)
-                                  select set[objVar]).Distinct();
-                        foreach (INode value in values)
-                        {
-                            if (value == null) continue;
-                            this.GetResults(context, context.Data.GetTriplesWithSubjectObject(subj, value));
-                        }
-                    }
-                    else
-                    {
-                        this.GetResults(context, context.Data.GetTriplesWithSubject(subj));
-                    }
-                    break;
-
-                case TripleIndexType.SubjectPredicate:
-                    subj = ((NodeMatchPattern)this._subj).Node;
-                    pred = ((NodeMatchPattern)this._pred).Node;
-
-                    this.GetResults(context, context.Data.GetTriplesWithSubjectPredicate(subj, pred));
-                    break;
-
-                case TripleIndexType.SubjectObject:
-                    subj = ((NodeMatchPattern)this._subj).Node;
-                    obj = ((NodeMatchPattern)this._obj).Node;
-
-                    this.GetResults(context, context.Data.GetTriplesWithSubjectObject(subj, obj));
-                    break;
-
-                case TripleIndexType.Predicate:
-                    pred = ((NodeMatchPattern)this._pred).Node;
-                    if (boundSubj)
-                    {
-                        values = (from set in context.InputMultiset.Sets
-                                  where set.ContainsVariable(subjVar)
-                                  select set[subjVar]).Distinct();
-                        foreach (INode value in values)
-                        {
-                            if (value == null) continue;
-                            this.GetResults(context, context.Data.GetTriplesWithSubjectPredicate(value, pred));
-                        }
-                    }
-                    else if (boundObj)
-                    {
-                        values = (from set in context.InputMultiset.Sets
-                                  where set.ContainsVariable(objVar)
-                                  select set[objVar]).Distinct();
-                        foreach (INode value in values)
-                        {
-                            if (value == null) continue;
-                            this.GetResults(context, context.Data.GetTriplesWithPredicateObject(pred, value));
-                        }
-                    }
-                    else
-                    {
-                        this.GetResults(context, context.Data.GetTriplesWithPredicate(pred));
-                    }
-                    break;
-
-                case TripleIndexType.PredicateObject:
-                    pred = ((NodeMatchPattern)this._pred).Node;
-                    obj = ((NodeMatchPattern)this._obj).Node;
-
-                    this.GetResults(context, context.Data.GetTriplesWithPredicateObject(pred, obj));
-                    break;
-
-                case TripleIndexType.Object:
-                    obj = ((NodeMatchPattern)this._obj).Node;
-                    if (boundSubj)
-                    {
-                        values = (from set in context.InputMultiset.Sets
-                                  where set.ContainsVariable(subjVar)
-                                  select set[subjVar]).Distinct();
-                        foreach (INode value in values)
-                        {
-                            if (value == null) continue;
-                            this.GetResults(context, context.Data.GetTriplesWithSubjectObject(value, obj));
-                        }
-                    }
-                    else if (boundPred)
-                    {
-                        values = (from set in context.InputMultiset.Sets
-                                  where set.ContainsVariable(predVar)
-                                  select set[predVar]).Distinct();
-                        foreach (INode value in values)
-                        {
-                            if (value == null) continue;
-                            this.GetResults(context, context.Data.GetTriplesWithPredicateObject(value, obj));
-                        }
-                    }
-                    else
-                    {
-                        this.GetResults(context, context.Data.GetTriplesWithObject(obj));
-                    }
-                    break;
-
-                case TripleIndexType.NoVariables:
-                    //If there are no variables then at least one Triple must match or we abort
-                    s = ((NodeMatchPattern)this._subj).Node;
-                    p = ((NodeMatchPattern)this._pred).Node;
-                    o = ((NodeMatchPattern)this._obj).Node;
-                    if (context.Data.ContainsTriple(new Triple(s, p, o)))
-                    {
-                        context.OutputMultiset = new IdentityMultiset();
-                    }
-                    else
-                    {
-                        context.OutputMultiset = new NullMultiset();
-                    }
-                    break;
-
-                default:
-                    this.GetResults(context, context.Data.Triples);
-                    break;
+                //If there are no variables then at least one Triple must match or we abort
+                INode s = ((NodeMatchPattern)this._subj).Node;
+                INode p = ((NodeMatchPattern)this._pred).Node;
+                INode o = ((NodeMatchPattern)this._obj).Node;
+                if (context.Data.ContainsTriple(new Triple(s, p, o)))
+                {
+                    context.OutputMultiset = new IdentityMultiset();
+                }
+                else
+                {
+                    context.OutputMultiset = new NullMultiset();
+                }
+            }
+            else
+            {
+                this.GetResults(context, this.GetTriples(context));
             }
         }
 
