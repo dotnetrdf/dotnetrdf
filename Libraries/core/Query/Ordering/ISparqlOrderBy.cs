@@ -38,6 +38,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Query.Algebra;
+using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Ordering
 {
@@ -69,7 +70,31 @@ namespace VDS.RDF.Query.Ordering
         /// </summary>
         bool Descending
         {
+            get;
             set;
         }
+
+        /// <summary>
+        /// Gets whether the Ordering is simple (i.e. applies on variables only)
+        /// </summary>
+        bool IsSimple
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Gets all the Variables used in the Ordering
+        /// </summary>
+        IEnumerable<String> Variables
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Generates a Comparer than can be used to do Ordering based on the given Triple Pattern
+        /// </summary>
+        /// <param name="pattern">Triple Pattern</param>
+        /// <returns></returns>
+        IComparer<Triple> GetComparer(TriplePattern pattern);
     }
 }

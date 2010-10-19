@@ -236,7 +236,7 @@ namespace VDS.RDF.Query.Patterns
             }
             else
             {
-                this.GetResults(context, this.GetTriples(context));
+                this.FindResults(context, this.GetTriples(context));
             }
         }
 
@@ -384,7 +384,7 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         /// <param name="context">SPARQL Evaluation Context</param>
         /// <param name="ts">Enumerable of Triples</param>
-        private void GetResults(SparqlEvaluationContext context, IEnumerable<Triple> ts)
+        private void FindResults(SparqlEvaluationContext context, IEnumerable<Triple> ts)
         {
             foreach (Triple t in ts)
             {

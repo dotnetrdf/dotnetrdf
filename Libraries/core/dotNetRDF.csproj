@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{BFBAC159-1E60-4D03-8ACA-D34E31EB83BF}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -340,6 +340,7 @@
     <Compile Include="Query\Inference\OwlReasonerWrapper.cs" />
     <Compile Include="Query\Inference\PelletReasoner.cs" />
     <Compile Include="Query\Inference\Pellet\Services\NamespaceService.cs" />
+    <Compile Include="Query\Ordering\TripleComparer.cs" />
     <Compile Include="Query\Patterns\BindPattern.cs" />
     <Compile Include="Query\PelletQueryProcessor.cs" />
     <Compile Include="Query\Inference\Pellet\ServiceEndpoint.cs" />

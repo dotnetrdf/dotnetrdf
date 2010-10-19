@@ -132,17 +132,7 @@ namespace VDS.RDF.Query
     public enum SparqlEngine
     {
         /// <summary>
-        /// Labyrinth is the original SPARQL engine which is more mature but not fully SPARQL algebra compliant
-        /// </summary>
-        /// <remarks>
-        /// <para>
-        /// Due to being obsolete now the Leviathan engine has matured significantly the Labyrinth engine was removed for the Version 0.3.0 release
-        /// </para>
-        /// </remarks>
-        [Obsolete("Labyrinth Engine has been removed from dotNetRDF from Version 0.3.0 onwards",true)]
-        Labyrinth,
-        /// <summary>
-        /// Leviathan is the newer and more powerful SPARQL engine which is based directly on the SPARQL algebra
+        /// Leviathan is the a powerful SPARQL engine which is based directly on the SPARQL algebra and provides full SPARQL 1.1 support
         /// </summary>
         /// <remarks>
         /// <para>
@@ -178,6 +168,7 @@ namespace VDS.RDF.Query
         private long _queryTimeTicks = -1;
         private bool _partialResultsOnTimeout = false;
         private bool _optimised = false;
+        private bool? _optimisableOrdering;
         private bool _subquery = false;
         private ISparqlDescribe _describer = null;
 
@@ -392,6 +383,7 @@ namespace VDS.RDF.Query
             internal set
             {
                 this._orderBy = value;
+                this._optimisableOrdering = null; //When ORDER BY gets set reset whether the Ordering is optimisable
             }
         }
 
@@ -724,11 +716,6 @@ namespace VDS.RDF.Query
 
         #endregion
 
-        public Object Evaluate(IInMemoryQueryableStore data)
-        {
-            return this.Evaluate(new InMemoryDataset(data));
-        }
-
         /// <summary>
         /// Evaluates the SPARQL Query against the given Triple Store
         /// </summary>
@@ -736,9 +723,18 @@ namespace VDS.RDF.Query
         /// <returns>
         /// Either a <see cref="SparqlResultSet">SparqlResultSet</see> or a <see cref="Graph">Graph</see> depending on the type of query executed
         /// </returns>
-        /// <remarks>
-        /// This method uses the more advanced and powerful Leviathan engine to evaluate queries
-        /// </remarks>
+        public Object Evaluate(IInMemoryQueryableStore data)
+        {
+            return this.Evaluate(new InMemoryDataset(data));
+        }
+
+        /// <summary>
+        /// Evaluates the SPARQL Query against the given Dataset
+        /// </summary>
+        /// <param name="dataset">Dataset</param>
+        /// <returns>
+        /// Either a <see cref="SparqlResultSet">SparqlResultSet</see> or a <see cref="Graph">Graph</see> depending on the type of query executed
+        /// </returns>
         public Object Evaluate(ISparqlDataset dataset)
         {
             //Reset Query Timers
@@ -1251,8 +1247,12 @@ namespace VDS.RDF.Query
                 case SparqlQueryType.SelectAllReduced:
                 case SparqlQueryType.SelectDistinct:
                 case SparqlQueryType.SelectReduced:
-                    //Optimise Queries to use LazyBgp's if Algebra Optimisation is enabled and there is a LIMIT but no ORDER BY
-                    if (Options.AlgebraOptimisation && this._orderBy == null && this._groupBy == null && this._having == null && this._limit >= 0)
+                    //Optimise Queries to use LazyBgp's if Algebra Optimisation is enabled and there is a LIMIT but no ORDER BY/GROUP BY/HAVING
+                    //In the case that there is just an ORDER BY we may be able to optimise under certain circumstances
+                    //These are the following:
+                    // 1 - The Ordering is simple i.e. only variables
+                    // 2 - All the Variables appear in the first pattern in the query
+                    if (Options.AlgebraOptimisation && this._limit >= 0 && (this._orderBy == null || this.IsOptimisableOrderBy) && this._groupBy == null && this._having == null)
                     {
                         try
                         {
@@ -1308,6 +1308,67 @@ namespace VDS.RDF.Query
 
                 default:
                     throw new RdfQueryException("Unable to convert unknown Query Types to SPARQL Algebra");
+            }
+        }
+
+        /// <summary>
+        /// Gets whether the Query's ORDER BY clause can be optimised with Lazy evaluation
+        /// </summary>
+        internal bool IsOptimisableOrderBy
+        {
+            get
+            {
+                if (this._optimisableOrdering == null)
+                {
+                    if (this._orderBy == null)
+                    {
+                        //If there's no ordering then of course it's optimisable
+                        return true;
+                    }
+                    else
+                    {
+                        if (this._orderBy.IsSimple)
+                        {
+                            //Is the first pattern a TriplePattern
+                            //Do all the Variables occur in the first pattern
+                            if (this._rootGraphPattern != null)
+                            {
+                                if (this._rootGraphPattern.TriplePatterns.Count > 0)
+                                {
+                                    if (this._rootGraphPattern.TriplePatterns[0] is TriplePattern)
+                                    {
+                                        //If all the Ordering variables occur in the 1st Triple Pattern then we can optimise
+                                        this._optimisableOrdering = this._orderBy.Variables.All(v => this._rootGraphPattern.TriplePatterns[0].Variables.Contains(v));
+                                    }
+                                    else
+                                    {
+                                        //Not a Triple Pattern as the first pattern in Root Graph Pattern then can't optimise
+                                        this._optimisableOrdering = false;
+                                    }
+                                }
+                                else
+                                {
+                                    //Empty Root Graph Pattern => Optimisable
+                                    //Like the No Root Graph Pattern case this is somewhat defunct
+                                    this._optimisableOrdering = true;
+                                }
+                            }
+                            else
+                            {
+                                //No Root Graph Pattern => Optimisable
+                                //Though this is somewhat defunct as Queries without a Root Graph Pattern should
+                                //never result in a call to this property
+                                this._optimisableOrdering = true;
+                            }
+                        }
+                        else
+                        {
+                            //If the ordering is not simple then it's not optimisable
+                            this._optimisableOrdering = false;
+                        }
+                    }
+                }
+                return (bool)this._optimisableOrdering;
             }
         }
     }

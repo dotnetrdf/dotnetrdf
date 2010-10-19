@@ -502,5 +502,236 @@ namespace VDS.RDF.Test
                 Assert.Fail("Expected a SPARQL Result Set");
             }
         }
+
+        [TestMethod]
+        public void SparqlOrderBySubjectLazyAscending()
+        {
+            String query = "SELECT * WHERE { ?s ?p ?o . } ORDER BY ?s LIMIT 1";
+
+            TripleStore store = new TripleStore();
+            Graph g = new Graph();
+            FileLoader.Load(g, "InferenceTest.ttl");
+            store.Add(g);
+
+            SparqlQueryParser parser = new SparqlQueryParser();
+            SparqlQuery q = parser.ParseFromString(query);
+
+            Console.WriteLine(q.ToAlgebra().ToString());
+            Assert.IsTrue(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
+            Console.WriteLine();
+
+            Object results = q.Evaluate(store);
+            if (results is SparqlResultSet)
+            {
+                SparqlResultSet rset = (SparqlResultSet)results;
+                foreach (SparqlResult r in rset)
+                {
+                    Console.WriteLine(r.ToString());
+                }
+                Assert.IsTrue(rset.Count == 1, "Expected exactly 1 results");
+            }
+            else
+            {
+                Assert.Fail("Expected a SPARQL Result Set");
+            }
+        }
+
+        [TestMethod]
+        public void SparqlOrderBySubjectLazyAscendingExplicit()
+        {
+            String query = "SELECT * WHERE { ?s ?p ?o . } ORDER BY ASC(?s) LIMIT 1";
+
+            TripleStore store = new TripleStore();
+            Graph g = new Graph();
+            FileLoader.Load(g, "InferenceTest.ttl");
+            store.Add(g);
+
+            SparqlQueryParser parser = new SparqlQueryParser();
+            SparqlQuery q = parser.ParseFromString(query);
+
+            Console.WriteLine(q.ToAlgebra().ToString());
+            Assert.IsTrue(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
+            Console.WriteLine();
+
+            Object results = q.Evaluate(store);
+            if (results is SparqlResultSet)
+            {
+                SparqlResultSet rset = (SparqlResultSet)results;
+                foreach (SparqlResult r in rset)
+                {
+                    Console.WriteLine(r.ToString());
+                }
+                Assert.IsTrue(rset.Count == 1, "Expected exactly 1 results");
+            }
+            else
+            {
+                Assert.Fail("Expected a SPARQL Result Set");
+            }
+        }
+
+        [TestMethod]
+        public void SparqlOrderBySubjectLazyDescending()
+        {
+            String query = "SELECT * WHERE { ?s ?p ?o . } ORDER BY DESC(?s) LIMIT 1";
+
+            TripleStore store = new TripleStore();
+            Graph g = new Graph();
+            FileLoader.Load(g, "InferenceTest.ttl");
+            store.Add(g);
+
+            SparqlQueryParser parser = new SparqlQueryParser();
+            SparqlQuery q = parser.ParseFromString(query);
+
+            Console.WriteLine(q.ToAlgebra().ToString());
+            Assert.IsTrue(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
+            Console.WriteLine();
+
+            Object results = q.Evaluate(store);
+            if (results is SparqlResultSet)
+            {
+                SparqlResultSet rset = (SparqlResultSet)results;
+                foreach (SparqlResult r in rset)
+                {
+                    Console.WriteLine(r.ToString());
+                }
+                Assert.IsTrue(rset.Count == 1, "Expected exactly 1 results");
+            }
+            else
+            {
+                Assert.Fail("Expected a SPARQL Result Set");
+            }
+        }
+
+        [TestMethod]
+        public void SparqlOrderByPredicateLazyAscending()
+        {
+            String query = "SELECT * WHERE { ?s ?p ?o . } ORDER BY ?p LIMIT 1";
+
+            TripleStore store = new TripleStore();
+            Graph g = new Graph();
+            FileLoader.Load(g, "InferenceTest.ttl");
+            store.Add(g);
+
+            SparqlQueryParser parser = new SparqlQueryParser();
+            SparqlQuery q = parser.ParseFromString(query);
+
+            Console.WriteLine(q.ToAlgebra().ToString());
+            Assert.IsTrue(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
+            Console.WriteLine();
+
+            Object results = q.Evaluate(store);
+            if (results is SparqlResultSet)
+            {
+                SparqlResultSet rset = (SparqlResultSet)results;
+                foreach (SparqlResult r in rset)
+                {
+                    Console.WriteLine(r.ToString());
+                }
+                Assert.IsTrue(rset.Count == 1, "Expected exactly 1 results");
+            }
+            else
+            {
+                Assert.Fail("Expected a SPARQL Result Set");
+            }
+        }
+
+        [TestMethod]
+        public void SparqlOrderByPredicateLazyAscendingExplicit()
+        {
+            String query = "SELECT * WHERE { ?s ?p ?o . } ORDER BY ASC(?p) LIMIT 1";
+
+            TripleStore store = new TripleStore();
+            Graph g = new Graph();
+            FileLoader.Load(g, "InferenceTest.ttl");
+            store.Add(g);
+
+            SparqlQueryParser parser = new SparqlQueryParser();
+            SparqlQuery q = parser.ParseFromString(query);
+
+            Console.WriteLine(q.ToAlgebra().ToString());
+            Assert.IsTrue(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
+            Console.WriteLine();
+
+            Object results = q.Evaluate(store);
+            if (results is SparqlResultSet)
+            {
+                SparqlResultSet rset = (SparqlResultSet)results;
+                foreach (SparqlResult r in rset)
+                {
+                    Console.WriteLine(r.ToString());
+                }
+                Assert.IsTrue(rset.Count == 1, "Expected exactly 1 results");
+            }
+            else
+            {
+                Assert.Fail("Expected a SPARQL Result Set");
+            }
+        }
+
+        [TestMethod]
+        public void SparqlOrderByPredicateLazyDescending()
+        {
+            String query = "SELECT * WHERE { ?s ?p ?o . } ORDER BY DESC(?p) LIMIT 1";
+
+            TripleStore store = new TripleStore();
+            Graph g = new Graph();
+            FileLoader.Load(g, "InferenceTest.ttl");
+            store.Add(g);
+
+            SparqlQueryParser parser = new SparqlQueryParser();
+            SparqlQuery q = parser.ParseFromString(query);
+
+            Console.WriteLine(q.ToAlgebra().ToString());
+            Assert.IsTrue(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
+            Console.WriteLine();
+
+            Object results = q.Evaluate(store);
+            if (results is SparqlResultSet)
+            {
+                SparqlResultSet rset = (SparqlResultSet)results;
+                foreach (SparqlResult r in rset)
+                {
+                    Console.WriteLine(r.ToString());
+                }
+                Assert.IsTrue(rset.Count == 1, "Expected exactly 1 results");
+            }
+            else
+            {
+                Assert.Fail("Expected a SPARQL Result Set");
+            }
+        }
+
+        [TestMethod]
+        public void SparqlOrderByComplexLazy()
+        {
+            String query = "SELECT * WHERE { ?s ?p ?o . } ORDER BY ?s DESC(?p) LIMIT 5";
+
+            TripleStore store = new TripleStore();
+            Graph g = new Graph();
+            FileLoader.Load(g, "InferenceTest.ttl");
+            store.Add(g);
+
+            SparqlQueryParser parser = new SparqlQueryParser();
+            SparqlQuery q = parser.ParseFromString(query);
+
+            Console.WriteLine(q.ToAlgebra().ToString());
+            Assert.IsTrue(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
+            Console.WriteLine();
+
+            Object results = q.Evaluate(store);
+            if (results is SparqlResultSet)
+            {
+                SparqlResultSet rset = (SparqlResultSet)results;
+                foreach (SparqlResult r in rset)
+                {
+                    Console.WriteLine(r.ToString());
+                }
+                Assert.IsTrue(rset.Count == 5, "Expected exactly 5 results");
+            }
+            else
+            {
+                Assert.Fail("Expected a SPARQL Result Set");
+            }
+        }
     }
 }

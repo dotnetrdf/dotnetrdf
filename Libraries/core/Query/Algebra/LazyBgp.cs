@@ -39,6 +39,7 @@ using System.Linq;
 using System.Text;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Filters;
+using VDS.RDF.Query.Ordering;
 using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Algebra
@@ -170,7 +171,7 @@ namespace VDS.RDF.Query.Algebra
             {
                 if (context.Query != null)
                 {
-                    if (context.Query.OrderBy != null || context.Query.GroupBy != null || context.Query.Having != null)
+                    if ((context.Query.OrderBy != null && !context.Query.IsOptimisableOrderBy) || context.Query.GroupBy != null || context.Query.Having != null)
                     {
                         //If there's an ORDER BY/GROUP BY/HAVING present then can't do Lazy evaluation
                         this._requiredResults = -1;
@@ -276,7 +277,32 @@ namespace VDS.RDF.Query.Algebra
             {
                 //Find the first Triple which matches the Pattern
                 TriplePattern tp = (TriplePattern)temp;
-                foreach (Triple t in tp.GetTriples(context))
+                IEnumerable<Triple> ts = tp.GetTriples(context);
+
+                //In the case that we're lazily evaluating an optimisable ORDER BY then
+                //we need to apply OrderBy()'s to our enumeration
+                //This only applies to the 1st pattern
+                if (pattern == 0)
+                {
+                    if (context.Query != null)
+                    {
+                        if (context.Query.OrderBy != null && context.Query.IsOptimisableOrderBy)
+                        {
+                            IComparer<Triple> comparer = context.Query.OrderBy.GetComparer(tp);
+                            if (comparer != null)
+                            {
+                                ts = ts.OrderBy(t => t, comparer);
+                            }
+                            else
+                            {
+                                //Can't get a comparer so can't optimise
+                                this._requiredResults = -1;
+                            }
+                        }
+                    }
+                }
+
+                foreach (Triple t in ts)
                 {
                     if (tp.Accepts(context, t))
                     {
