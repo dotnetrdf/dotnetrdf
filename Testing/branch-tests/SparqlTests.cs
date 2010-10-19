@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -732,6 +733,67 @@ namespace VDS.RDF.Test
             {
                 Assert.Fail("Expected a SPARQL Result Set");
             }
+        }
+
+        [TestMethod]
+        public void SparqlOrderByComplexLazyPerformance()
+        {
+            String query = "SELECT * WHERE { ?s ?p ?o . } ORDER BY ?s DESC(?p) LIMIT 5";
+
+            TripleStore store = new TripleStore();
+            Graph g = new Graph();
+            FileLoader.Load(g, "dataset_50.ttl");
+            store.Add(g);
+
+            SparqlQueryParser parser = new SparqlQueryParser();
+
+            //First do with Optimisation
+            Stopwatch timer = new Stopwatch();
+            SparqlQuery q = parser.ParseFromString(query);
+
+            Console.WriteLine(q.ToAlgebra().ToString());
+            Assert.IsTrue(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
+            Console.WriteLine();
+
+            timer.Start();
+            Object results = q.Evaluate(store);
+            timer.Stop();
+            Console.WriteLine("Took " + timer.Elapsed + " to execute when Optimised");
+            timer.Reset();
+            if (results is SparqlResultSet)
+            {
+                SparqlResultSet rset = (SparqlResultSet)results;
+                foreach (SparqlResult r in rset)
+                {
+                    Console.WriteLine(r.ToString());
+                }
+                Assert.IsTrue(rset.Count == 5, "Expected exactly 5 results");
+            }
+            else
+            {
+                Assert.Fail("Expected a SPARQL Result Set");
+            }
+
+            //Then do without optimisation
+            Options.AlgebraOptimisation = false;
+            timer.Start();
+            results = q.Evaluate(store);
+            timer.Stop();
+            Console.WriteLine("Took " + timer.Elapsed + " to execute when Unoptimised");
+            if (results is SparqlResultSet)
+            {
+                SparqlResultSet rset = (SparqlResultSet)results;
+                foreach (SparqlResult r in rset)
+                {
+                    Console.WriteLine(r.ToString());
+                }
+                Assert.IsTrue(rset.Count == 5, "Expected exactly 5 results");
+            }
+            else
+            {
+                Assert.Fail("Expected a SPARQL Result Set");
+            }
+            Options.AlgebraOptimisation = true;
         }
     }
 }
