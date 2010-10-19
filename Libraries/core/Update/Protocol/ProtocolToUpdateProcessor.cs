@@ -36,7 +36,9 @@ terms.
 #if !NO_WEB
 
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Text;
 using System.Web;
 using VDS.RDF.Parsing;
@@ -102,8 +104,10 @@ namespace VDS.RDF.Update.Protocol
             }
             catch (RdfQueryException)
             {
-                //Q: In the event of a query exception what is the appropriate response?
-                throw;
+                //If the Query errors this implies that the Store does not contain the Graph
+                //In such a case we should return a 404
+                context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                return;
             }
         }
 
@@ -123,16 +127,11 @@ namespace VDS.RDF.Update.Protocol
             }
 
             //Get the Graph URI of the Graph to be added
-            Uri graphUri;
-            try
-            {
-                graphUri = this.ResolveGraphUri(context, g);
-            }
-            catch (SparqlHttpProtocolException)
-            {
-                //Q: What do we need to do here? Should we be generating a new Graph in the event of an error?
-                throw;
-            }
+            Uri graphUri = this.ResolveGraphUri(context, g);
+
+            //TODO: Need to add something here so that where relevant a new Graph gets created
+            //According to the spec this should happen "if the request URI identifies the underlying Network-manipulable Graph Store"
+            //May need to have Protocol Processors have this URI as a property
 
             //Generate an INSERT DATA command for the POST
             StringBuilder insert = new StringBuilder();
@@ -163,6 +162,27 @@ namespace VDS.RDF.Update.Protocol
             //Get the Graph URI of the Graph to be added
             Uri graphUri = this.ResolveGraphUri(context, g);
 
+            //Determine whether the Graph already exists or not, if it doesn't then we have to send a 201 Response
+            bool created = false;
+            try
+            {
+                SparqlQueryParser parser = new SparqlQueryParser();
+                SparqlParameterizedString graphExistsQuery = new SparqlParameterizedString();
+                graphExistsQuery.QueryText = "ASK WHERE { GRAPH @graph { } }";
+                graphExistsQuery.SetUri("graph", graphUri);
+
+                Object temp = this._queryProcessor.ProcessQuery(parser.ParseFromString(graphExistsQuery));
+                if (temp is SparqlResultSet)
+                {
+                    created = !((SparqlResultSet)temp).Result;
+                }
+            }
+            catch
+            {
+                //If any error occurs assume the Graph doesn't exist and so we'll return a 201 created
+                created = true;
+            }            
+
             //Generate a set of commands based upon this
             StringBuilder cmdSequence = new StringBuilder();
             cmdSequence.AppendLine("DROP SILENT GRAPH @graph ;");
@@ -183,6 +203,12 @@ namespace VDS.RDF.Update.Protocol
             SparqlUpdateCommandSet putCmds = this._parser.ParseFromString(put);
             this._updateProcessor.ProcessCommandSet(putCmds);
             this._updateProcessor.Flush();
+
+            //Return a 201 if required, otherwise the default behaviour of returning a 200 will occur
+            if (created)
+            {
+                context.Response.StatusCode = (int)HttpStatusCode.Created;
+            }
         }
 
         /// <summary>
@@ -200,6 +226,24 @@ namespace VDS.RDF.Update.Protocol
             SparqlUpdateCommandSet dropCmd = this._parser.ParseFromString(drop);
             this._updateProcessor.ProcessCommandSet(dropCmd);
             this._updateProcessor.Flush();
+        }
+
+        public override void ProcessHead(HttpContext context)
+        {
+            //Work out the Graph URI we want to get
+            Uri graphUri = this.ResolveGraphUri(context);
+
+            throw new NotImplementedException();
+        }
+
+        public override void ProcessOptions(HttpContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void ProcessPatch(HttpContext context)
+        {
+            throw new NotImplementedException();
         }
     }
 }

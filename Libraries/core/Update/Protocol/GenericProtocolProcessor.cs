@@ -176,6 +176,21 @@ namespace VDS.RDF.Update.Protocol
 
             this._manager.SaveGraph(g);
         }
+
+        public override void ProcessHead(HttpContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void ProcessOptions(HttpContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void ProcessPatch(HttpContext context)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
 

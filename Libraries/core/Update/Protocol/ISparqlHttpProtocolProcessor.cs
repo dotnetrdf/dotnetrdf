@@ -72,6 +72,24 @@ namespace VDS.RDF.Update.Protocol
         /// </summary>
         /// <param name="context">HTTP Context</param>
         void ProcessDelete(HttpContext context);
+
+        /// <summary>
+        /// Processes a HEAD operation which gets information about a Graph in the Store
+        /// </summary>
+        /// <param name="context">HTTP Context</param>
+        void ProcessHead(HttpContext context);
+
+        /// <summary>
+        /// Processes an OPTIONS operation which gets information about the Store
+        /// </summary>
+        /// <param name="context">HTTP Context</param>
+        void ProcessOptions(HttpContext context);
+
+        /// <summary>
+        /// Processes a PATCH operation which may choose
+        /// </summary>
+        /// <param name="context"></param>
+        void ProcessPatch(HttpContext context);
     }
 }
 

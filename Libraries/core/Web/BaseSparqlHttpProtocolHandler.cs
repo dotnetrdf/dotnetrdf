@@ -93,8 +93,6 @@ namespace VDS.RDF.Web
                 context.Response.AddHeader("X-dotNetRDF-Version", Assembly.GetExecutingAssembly().GetName().Version.ToString());
             }
 
-            //OPT: Add proper error pages?
-
             //Check whether we need to use authentication
             if (!HandlerHelper.IsAuthenticated(context, this._config.UserGroups, context.Request.HttpMethod)) return;
 
@@ -114,6 +112,15 @@ namespace VDS.RDF.Web
                         break;
                     case "DELETE":
                         this._config.Processor.ProcessDelete(context);
+                        break;
+                    case "HEAD":
+                        this._config.Processor.ProcessHead(context);
+                        break;
+                    case "OPTIONS":
+                        this._config.Processor.ProcessOptions(context);
+                        break;
+                    case "PATCH":
+                        this._config.Processor.ProcessPatch(context);
                         break;
                     default:
                         //For any other HTTP Verb we send a 405 Method Not Allowed
