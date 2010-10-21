@@ -37,6 +37,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VDS.RDF.Query.Grouping;
+using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Algebra
 {
@@ -46,14 +48,16 @@ namespace VDS.RDF.Query.Algebra
     public class GroupBy : ISparqlAlgebra
     {
         private ISparqlAlgebra _pattern;
+        private ISparqlGroupBy _grouping;
 
         /// <summary>
         /// Creates a new Group By
         /// </summary>
         /// <param name="pattern">Pattern</param>
-        public GroupBy(ISparqlAlgebra pattern)
+        public GroupBy(ISparqlAlgebra pattern, ISparqlGroupBy grouping)
         {
             this._pattern = pattern;
+            this._grouping = grouping;
         }
 
         /// <summary>
@@ -68,6 +72,10 @@ namespace VDS.RDF.Query.Algebra
             if (context.Query.GroupBy != null)
             {
                 context.OutputMultiset = new GroupMultiset(context.InputMultiset, context.Query.GroupBy.Apply(context));
+            }
+            else if (this._grouping != null)
+            {
+                context.OutputMultiset = new GroupMultiset(context.InputMultiset, this._grouping.Apply(context));
             }
             else
             {
@@ -99,12 +107,38 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
+        /// Gets the Grouping that is used
+        /// </summary>
+        /// <remarks>
+        /// If the Query supplied in the <see cref="SparqlEvaluationContext">SparqlEvaluationContext</see> is non-null and has a GROUP BY clause then that is applied rather than the clause with which the GroupBy algebra is instantiated
+        /// </remarks>
+        public ISparqlGroupBy Grouping
+        {
+            get
+            {
+                return this._grouping;
+            }
+        }
+
+        /// <summary>
         /// Gets the String representation of the 
         /// </summary>
         /// <returns></returns>
         public override string ToString()
         {
             return "GroupBy(" + this._pattern.ToString() + ")";
+        }
+
+        public SparqlQuery ToQuery()
+        {
+            SparqlQuery q = this._pattern.ToQuery();
+            q.GroupBy = this._grouping;
+            return q;
+        }
+
+        public GraphPattern ToGraphPattern()
+        {
+            throw new NotSupportedException("GroupBy() cannot be converted to a GraphPattern");
         }
     }
 }

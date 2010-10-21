@@ -214,5 +214,24 @@ namespace VDS.RDF.Query.Algebra
         {
             return "Service(" + this._endpointSpecifier.Value + ", " + this._pattern.ToAlgebra().ToString() + ")";
         }
+
+        public SparqlQuery ToQuery()
+        {
+            SparqlQuery q = new SparqlQuery();
+            q.RootGraphPattern = this.ToGraphPattern();
+            q.Optimise();
+            return q;
+        }
+
+        public GraphPattern ToGraphPattern()
+        {
+            GraphPattern p = this._pattern;
+            if (!p.IsService)
+            {
+                p.IsService = true;
+                p.GraphSpecifier = this._endpointSpecifier;
+            }
+            return p;
+        }
     }
 }

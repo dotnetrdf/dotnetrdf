@@ -244,5 +244,23 @@ namespace VDS.RDF.Query.Algebra
         {
             return "BGP()";
         }
+
+        public SparqlQuery ToQuery()
+        {
+            SparqlQuery q = new SparqlQuery();
+            q.RootGraphPattern = this.ToGraphPattern();
+            q.Optimise();
+            return q;
+        }
+
+        public GraphPattern ToGraphPattern()
+        {
+            GraphPattern p = new GraphPattern();
+            foreach (TriplePattern tp in this._triplePatterns)
+            {
+                p.AddTriplePattern(tp);
+            }
+            return p;
+        }
     }
 }

@@ -1187,7 +1187,7 @@ namespace VDS.RDF.Query
                     switch (this.SpecialType)
                     {
                         case SparqlSpecialQueryType.DistinctGraphs:
-                            pattern = new SelectDistinctGraphs();
+                            pattern = new SelectDistinctGraphs(this.Variables.First(v => v.IsResultVariable).Name);
                             break;
                         case SparqlSpecialQueryType.AskAnyTriples:
                             pattern = new AskAnyTriples();
@@ -1267,26 +1267,26 @@ namespace VDS.RDF.Query
                     }
                     
                     //GROUP BY is the first thing applied
-                    if (this._groupBy != null) pattern = new GroupBy(pattern);
+                    if (this._groupBy != null) pattern = new GroupBy(pattern, this._groupBy);
 
                     //After grouping we do projection
                     //This will generate the values for any Project Expressions and Aggregates
-                    pattern = new Project(pattern);
+                    pattern = new Project(pattern, this.Variables);
 
                     //Add HAVING clause after the projection
-                    if (this._having != null) pattern = new Having(pattern);
+                    if (this._having != null) pattern = new Having(pattern, this._having);
 
                     //We can then Order our results
                     //We do ordering before we do Select but after Project so we can order by any of
                     //the project expressions/aggregates and any variable in the results even if
                     //it won't be output as a result variable
-                    if (this._orderBy != null) pattern = new OrderBy(pattern);
+                    if (this._orderBy != null) pattern = new OrderBy(pattern, this._orderBy);
 
                     //After Ordering we apply Select
                     //Select effectively trims the results so only result variables are left
                     //This doesn't apply to CONSTRUCT since any variable may be used in the Construct Template
                     //so we don't want to eliminate anything
-                    if (this._type != SparqlQueryType.Construct) pattern = new Select(pattern);
+                    if (this._type != SparqlQueryType.Construct) pattern = new Select(pattern, this.Variables);
 
                     //If we have a Distinct/Reduced then we'll apply those after Selection
                     if (this._type == SparqlQueryType.SelectAllDistinct || this._type == SparqlQueryType.SelectDistinct)

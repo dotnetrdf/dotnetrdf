@@ -61,6 +61,20 @@ namespace VDS.RDF.Query.Algebra
         {
             get;
         }
+
+        /// <summary>
+        /// Converts the Algebra back to a SPARQL Query
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="NotSupportedException">Thrown if the given Algebra cannot be converted to a SPARQL Query</exception>
+        SparqlQuery ToQuery();
+
+        /// <summary>
+        /// Converts the Algebra back to a Graph Pattern
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="NotSupportedException">Thrown if the given Algebra cannot be converted to a Graph Pattern</exception>
+        GraphPattern ToGraphPattern();
     }
 
     /// <summary>

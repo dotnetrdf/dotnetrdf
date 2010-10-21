@@ -135,5 +135,20 @@ namespace VDS.RDF.Query.Algebra
         {
             return "Bindings(" + this._pattern.ToString() + ")";
         }
+
+        public SparqlQuery ToQuery()
+        {
+            SparqlQuery q = this._pattern.ToQuery();
+            if (this._bindings != null)
+            {
+                q.Bindings = this._bindings;
+            }
+            return q;
+        }
+
+        public GraphPattern ToGraphPattern()
+        {
+            throw new NotSupportedException("A Bindings() cannot be converted to a GraphPattern");
+        }
     }
 }

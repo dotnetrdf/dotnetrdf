@@ -36,6 +36,7 @@ terms.
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Algebra
 {
@@ -138,6 +139,23 @@ namespace VDS.RDF.Query.Algebra
         public override string ToString()
         {
             return "Minus(" + this._lhs.ToString() + ", " + this._rhs.ToString() + ")";
+        }
+
+        public SparqlQuery ToQuery()
+        {
+            SparqlQuery q = new SparqlQuery();
+            q.RootGraphPattern = this.ToGraphPattern();
+            q.Optimise();
+            return q;
+        }
+
+        public GraphPattern ToGraphPattern()
+        {
+            GraphPattern p = this._lhs.ToGraphPattern();
+            GraphPattern opt = this._rhs.ToGraphPattern();
+            opt.IsMinus = true;
+            p.AddGraphPattern(opt);
+            return p;
         }
     }
 }

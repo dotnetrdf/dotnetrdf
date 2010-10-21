@@ -136,5 +136,27 @@ namespace VDS.RDF.Query.Algebra
             filter = filter.Substring(7, filter.Length - 8);
             return "Filter(" + this._pattern.ToString() + ", " + filter + ")";
         }
+
+        public SparqlQuery ToQuery()
+        {
+            SparqlQuery q = new SparqlQuery();
+            q.RootGraphPattern = this.ToGraphPattern();
+            q.Optimise();
+            return q;
+        }
+
+        public GraphPattern ToGraphPattern()
+        {
+            GraphPattern p = this._pattern.ToGraphPattern();
+            if (p.Filter == null)
+            {
+                p.Filter = this._filter;
+            }
+            else
+            {
+                p.Filter = new ChainFilter(p.Filter, this._filter);
+            }
+            return p;
+        }
     }
 }

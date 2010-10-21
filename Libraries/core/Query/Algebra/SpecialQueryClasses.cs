@@ -32,6 +32,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VDS.RDF.Parsing.Tokens;
+using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Algebra
 {
@@ -40,6 +42,13 @@ namespace VDS.RDF.Query.Algebra
     /// </summary>
     public class SelectDistinctGraphs : ISparqlAlgebra
     {
+        private String _graphVar;
+
+        public SelectDistinctGraphs(String graphVar)
+        {
+            this._graphVar = graphVar;
+        }
+
         /// <summary>
         /// Evaluates the Select Distinct Graphs optimisation
         /// </summary>
@@ -48,7 +57,15 @@ namespace VDS.RDF.Query.Algebra
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
             context.OutputMultiset = new Multiset();
-            String var = context.Query.Variables.First(v => v.IsResultVariable).Name;
+            String var;
+            if (context.Query != null)
+            {
+                var = context.Query.Variables.First(v => v.IsResultVariable).Name;
+            }
+            else
+            {
+                var = this._graphVar;
+            }
 
             foreach (Uri graphUri in context.Data.GraphUris)
             {
@@ -79,12 +96,48 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
+        /// Gets the Graph Variable to which Graph URIs are bound
+        /// </summary>
+        /// <remarks>
+        /// If the Query supplied in the <see cref="SparqlEvaluationContext">SparqlEvaluationContext</see> is non-null then the Variable Name from the Query is used rather than this
+        /// </remarks>
+        public String GraphVariable
+        {
+            get
+            {
+                return this._graphVar;
+            }
+        }
+
+        /// <summary>
         /// Gets the String representation of the Algebra
         /// </summary>
         /// <returns></returns>
         public override string ToString()
         {
             return "SelectDistinctGraphs()";
+        }
+
+        public SparqlQuery ToQuery()
+        {
+            SparqlQuery q = new SparqlQuery();
+            q.RootGraphPattern = this.ToGraphPattern();
+            q.AddVariable(this._graphVar, true);
+            q.Optimise();
+            return q;
+        }
+
+        public GraphPattern ToGraphPattern()
+        {
+            GraphPattern p = new GraphPattern();
+            String subjVar = (!this._graphVar.Equals("s")) ? "?s" : "?subj" ;
+            String predVar = (!this._graphVar.Equals("p")) ? "?p" : "?pred" ;
+            String objVar = (!this._graphVar.Equals("o")) ? "o" : "?obj" ;
+
+            p.AddTriplePattern(new TriplePattern(new VariablePattern(subjVar), new VariablePattern(predVar), new VariablePattern(objVar)));
+            p.IsGraph = true;
+            p.GraphSpecifier = new VariableToken("?" + this._graphVar, 0, 0, 0);
+            return p;
         }
     }
 
@@ -93,7 +146,6 @@ namespace VDS.RDF.Query.Algebra
     /// </summary>
     public class AskAnyTriples : ISparqlAlgebra
     {
-
         /// <summary>
         /// Evalutes the Ask Any Triples optimisation
         /// </summary>
@@ -130,6 +182,21 @@ namespace VDS.RDF.Query.Algebra
         public override string ToString()
         {
             return "AskAnyTriples()";
+        }
+
+        public SparqlQuery ToQuery()
+        {
+            SparqlQuery q = new SparqlQuery();
+            q.RootGraphPattern = this.ToGraphPattern();
+            q.QueryType = SparqlQueryType.Ask;
+            return q;
+        }
+
+        public GraphPattern ToGraphPattern()
+        {
+            GraphPattern p = new GraphPattern();
+            p.AddTriplePattern(new TriplePattern(new VariablePattern("?s"), new VariablePattern("?p"), new VariablePattern("?o")));
+            return p;
         }
     }
 }

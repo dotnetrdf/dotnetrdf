@@ -139,6 +139,30 @@ namespace VDS.RDF.Query.Algebra
         {
             return "ExistsJoin(" + this._lhs.ToString() + ", " + this._rhs.ToString() + ", " + this._mustExist + ")";
         }
+
+        public SparqlQuery ToQuery()
+        {
+            SparqlQuery q = new SparqlQuery();
+            q.RootGraphPattern = this.ToGraphPattern();
+            q.Optimise();
+            return q;
+        }
+
+        public GraphPattern ToGraphPattern()
+        {
+            GraphPattern p = this._lhs.ToGraphPattern();
+            GraphPattern opt = this._rhs.ToGraphPattern();
+            if (this._mustExist)
+            {
+                opt.IsExists = true;
+            }
+            else
+            {
+                opt.IsNotExists = true;
+            }
+            p.AddGraphPattern(opt);
+            return p;
+        }
     }
 
     /// <summary>
@@ -260,6 +284,34 @@ namespace VDS.RDF.Query.Algebra
             String filter = this._filter.ToString();
             filter = filter.Substring(7, filter.Length - 8);
             return "LeftJoin(" + this._lhs.ToString() + ", " + this._rhs.ToString() + ", " + filter + ")";
+        }
+
+        public SparqlQuery ToQuery()
+        {
+            SparqlQuery q = new SparqlQuery();
+            q.RootGraphPattern = this.ToGraphPattern();
+            q.Optimise();
+            return q;
+        }
+
+        public GraphPattern ToGraphPattern()
+        {
+            GraphPattern p = this._lhs.ToGraphPattern();
+            GraphPattern opt = this._rhs.ToGraphPattern();
+            opt.IsOptional = true;
+            if (this._filter.Expression is BooleanExpressionTerm)
+            {
+                if (!this._filter.Expression.EffectiveBooleanValue(null, 0))
+                {
+                    opt.Filter = this._filter;
+                }
+            }
+            else
+            {
+                opt.Filter = this._filter;
+            }
+            p.AddGraphPattern(opt);
+            return p;
         }
     }
 
@@ -403,6 +455,21 @@ namespace VDS.RDF.Query.Algebra
         {
             return "Join(" + this._lhs.ToString() + ", " + this._rhs.ToString() + ")";
         }
+
+        public SparqlQuery ToQuery()
+        {
+            SparqlQuery q = new SparqlQuery();
+            q.RootGraphPattern = this.ToGraphPattern();
+            q.Optimise();
+            return q;
+        }
+
+        public GraphPattern ToGraphPattern()
+        {
+            GraphPattern p = this._lhs.ToGraphPattern();
+            p.AddGraphPattern(this._rhs.ToGraphPattern());
+            return p;
+        }
     }
 
     /// <summary>
@@ -485,6 +552,23 @@ namespace VDS.RDF.Query.Algebra
         public override string ToString()
         {
             return "Union(" + this._lhs.ToString() + ", " + this._rhs.ToString() + ")";
+        }
+
+        public SparqlQuery ToQuery()
+        {
+            SparqlQuery q = new SparqlQuery();
+            q.RootGraphPattern = this.ToGraphPattern();
+            q.Optimise();
+            return q;
+        }
+
+        public GraphPattern ToGraphPattern()
+        {
+            GraphPattern p = new GraphPattern();
+            p.IsUnion = true;
+            p.AddGraphPattern(this._lhs.ToGraphPattern());
+            p.AddGraphPattern(this._rhs.ToGraphPattern());
+            return p;
         }
     }
 }

@@ -38,6 +38,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Parsing.Tokens;
+using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Algebra
 {
@@ -228,6 +229,25 @@ namespace VDS.RDF.Query.Algebra
         public override string ToString()
         {
             return "Graph(" + this._graphSpecifier.Value + ", " + this._pattern.ToString() + ")";
+        }
+
+        public SparqlQuery ToQuery()
+        {
+            SparqlQuery q = new SparqlQuery();
+            q.RootGraphPattern = this.ToGraphPattern();
+            q.Optimise();
+            return q;
+        }
+
+        public GraphPattern ToGraphPattern()
+        {
+            GraphPattern p = this._pattern.ToGraphPattern();
+            if (!p.IsGraph)
+            {
+                p.IsGraph = true;
+                p.GraphSpecifier = this._graphSpecifier;
+            }
+            return p;
         }
     }
 }
