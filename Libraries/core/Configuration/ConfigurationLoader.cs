@@ -146,6 +146,7 @@ namespace VDS.RDF.Configuration
 #if !NO_STORAGE
             new GenericManagerFactory(),
 #endif
+            new DatasetFactory(),
             //Endpoint Factories
             new SparqlEndpointFactory(),
             //Processor Factories

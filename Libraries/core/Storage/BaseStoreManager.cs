@@ -40,6 +40,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Data;
+using System.Data.Common;
 using System.Threading;
 using System.Text.RegularExpressions;
 using VDS.RDF.Configuration;
@@ -81,6 +82,10 @@ namespace VDS.RDF.Storage
         /// Dictionary for Mapping Graph Uri Enhanced Hash Codes to Database Graph IDs
         /// </summary>
         protected Dictionary<int, String> _graphIDs = new Dictionary<int, String>();
+        /// <summary>
+        /// Dictionary for Mapping Database Graph IDs to Graph URIs
+        /// </summary>
+        protected Dictionary<String, Uri> _graphUris;
         /// <summary>
         /// Dictionary for Mapping Triple Objects by Hash Code to Database Triple IDs
         /// </summary>
@@ -302,6 +307,8 @@ namespace VDS.RDF.Storage
         /// <returns></returns>
         public abstract string GetGraphID(Uri graphUri);
 
+        public abstract Uri GetGraphUri(String graphID);
+
         /// <summary>
         /// Determines whether a given Graph exists in the Store
         /// </summary>
@@ -452,6 +459,8 @@ namespace VDS.RDF.Storage
         /// <returns>DataTable of results</returns>
         public abstract DataTable ExecuteQuery(string sqlCmd);
 
+        public abstract DbDataReader ExecuteStreamingQuery(string sqlCmd);
+
         /// <summary>
         /// Executes a Query SQL Command against the database and returns the scalar result (first column of first row of the result)
         /// </summary>
@@ -541,12 +550,17 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Loads the Node Hash Code to Databas ID Map from the Database and sets the Next Node ID to the maximum in-use Node ID
+        /// Loads the Node Hash Code to Database ID Map from the Database and sets the Next Node ID to the maximum in-use Node ID
         /// </summary>
         /// <remarks>
         /// Since Hash Codes may collide where there is a collision the implementor should set the ID mapped to the Hash as -1, this indicates to the <see cref="BaseStoreManager.GetNextNodeID">GetNextNodeID()</see> method that it must do a database lookup to determine the correct Node ID in this case
         /// </remarks>
         protected abstract void LoadNodeIDMap();
+
+        /// <summary>
+        /// Loads the Database Graph ID to Graph URI Map
+        /// </summary>
+        protected abstract void LoadGraphUriMap();
 
         /// <summary>
         /// Gets the next available Database Triple ID if the Triple is not in the Database of the existing Database Triple ID
@@ -960,6 +974,11 @@ namespace VDS.RDF.Storage
                 this._nodes.Clear();
                 this._nsPrefixIDs.Clear();
                 this._nsUriIDs.Clear();
+                if (this._graphUris != null)
+                {
+                    this._graphUris.Clear();
+                    this._graphUris = null;
+                }
 
                 //Reset Next Node and Triple ID
                 this._nextNodeID = -1;

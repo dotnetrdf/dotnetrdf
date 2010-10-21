@@ -99,15 +99,7 @@ namespace VDS.RDF.Writing
 
                 //Graph Properties
                 String graphID = String.Empty;
-                Uri graphUri;
-                if (g.BaseUri != null)
-                {
-                    graphUri = g.BaseUri;
-                }
-                else
-                {
-                    throw new RdfStorageException("Unable to store this Graph since it has no Base URI");
-                }
+                Uri graphUri = g.BaseUri;
 
                 //Retrieve the existing Graph ID if any
                 graphID = this._manager.GetGraphID(graphUri);

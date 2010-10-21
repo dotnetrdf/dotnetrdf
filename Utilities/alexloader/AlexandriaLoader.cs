@@ -118,21 +118,14 @@ namespace alexloader
 
                 if (!this._quiet) Console.WriteLine("alexloader: Selected the Store to use OK");
 
-                //Now try and load this Store as an IGenericIOManager - and more specifically a BaseAlexandriaManager
-                BaseAlexandriaManager manager;
+                //Now try and load this Store as an IGenericIOManager
+                IGenericIOManager manager;
                 try
                 {
                     Object temp = ConfigurationLoader.LoadObject(config, storeNode);
                     if (temp is IGenericIOManager)
                     {
-                        if (temp is BaseAlexandriaManager)
-                        {
-                            manager = (BaseAlexandriaManager)temp;
-                        }
-                        else
-                        {
-                            throw new Exception("The selected Store was not loadable as an Object which implements the BaseAlexandriaManager interface");
-                        }
+                        manager = (IGenericIOManager)temp;
                     }
                     else
                     {
@@ -210,11 +203,22 @@ namespace alexloader
                         Console.WriteLine();
                     }
 
-                    Console.WriteLine("alexloader: Issuing the Flush() command to the Store to ensure any outstanding writes are completed");
-                    loadTimer.Start();
-                    manager.Flush();
-                    loadTimer.Stop();
-                    Console.WriteLine("alexloader: Flush() completed OK - Total Load Time so far is " + loadTimer.Elapsed);
+                    if (manager is BaseAlexandriaManager)
+                    {
+                        Console.WriteLine("alexloader: Issuing the Flush() command to the Store to ensure any outstanding writes are completed");
+                        loadTimer.Start();
+                        ((BaseAlexandriaManager)manager).Flush();
+                        loadTimer.Stop();
+                        Console.WriteLine("alexloader: Flush() completed OK - Total Load Time so far is " + loadTimer.Elapsed);
+                    }
+                    else if (manager is ISqlIOManager)
+                    {
+                        Console.WriteLine("alexloader: Issuing the Flush() command to the Store to ensure any outstanding writes are completed");
+                        loadTimer.Start();
+                        ((ISqlIOManager)manager).Flush();
+                        loadTimer.Stop();
+                        Console.WriteLine("alexloader: Flush() completed OK - Total Load Time so far is " + loadTimer.Elapsed);
+                    }
 
                     Console.WriteLine();
                     if (!this._quiet) Console.WriteLine("alexloader: Issuing the Dispose() command on the connection");

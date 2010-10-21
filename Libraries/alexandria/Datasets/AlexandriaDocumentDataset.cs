@@ -46,7 +46,6 @@ namespace VDS.Alexandria.Datasets
                 if (this.HasGraph(graphUri))
                 {
                     //TODO: Cache retrieved Graphs in-memory
-                    //TODO: If these Graphs change then need to be aware of these changes and persist them when Flush() gets called
                     Graph g = new Graph();
                     this._docManager.LoadGraph(g, graphUri);
                     return g;

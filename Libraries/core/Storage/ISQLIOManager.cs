@@ -40,6 +40,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Data;
+using System.Data.Common;
 
 namespace VDS.RDF.Storage
 {
@@ -123,6 +124,13 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">Graph Uri</param>
         /// <returns></returns>
         String GetGraphID(Uri graphUri);
+
+        /// <summary>
+        /// Gets the URI for a Graph based on the ID throwing an error if the Graph doesn't exist
+        /// </summary>
+        /// <param name="graphID">ID</param>
+        /// <returns></returns>
+        Uri GetGraphUri(String graphID);
 
         /// <summary>
         /// Determines whether a given Graph exists in the Store
@@ -246,6 +254,8 @@ namespace VDS.RDF.Storage
         /// <returns>DataTable of results</returns>
         DataTable ExecuteQuery(String sqlCmd);
 
+        DbDataReader ExecuteStreamingQuery(String sqlCmd);
+
         /// <summary>
         /// Executes a Query SQL Command against the database and returns the scalar result (first column of first row of the result)
         /// </summary>
@@ -284,7 +294,7 @@ namespace VDS.RDF.Storage
     /// <summary>
     /// Marker interface for classes which implement SQL Stores using the dotNetRDF Store Format
     /// </summary>
-    public interface IDotNetRDFStoreManager
+    public interface IDotNetRDFStoreManager : ISqlIOManager
     {
 
     }

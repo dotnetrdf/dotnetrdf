@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using VDS.RDF;
 using VDS.Alexandria.Documents.Adaptors;
 using VDS.Alexandria.Documents.GraphRegistry;
 using VDS.Alexandria.Utilities;

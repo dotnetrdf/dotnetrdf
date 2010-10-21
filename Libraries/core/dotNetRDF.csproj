@@ -217,6 +217,7 @@
     <Compile Include="Core\DiskDemandTripleStore.cs" />
     <Compile Include="Core\INamespaceMapper.cs" />
     <Compile Include="Core\NestedNamespaceMapper.cs" />
+    <Compile Include="Core\NodeFactory.cs" />
     <Compile Include="Core\SubGraphMatcher.cs" />
     <Compile Include="Core\GraphMatcher.cs" />
     <Compile Include="Core\QueryableGraph.cs" />
@@ -310,6 +311,7 @@
     <Compile Include="Query\Datasets\BaseDataset.cs" />
     <Compile Include="Query\Datasets\InMemoryDataset.cs" />
     <Compile Include="Query\Datasets\ISparqlDataset.cs" />
+    <Compile Include="Query\Datasets\SqlDataset.cs" />
     <Compile Include="Query\Describe\ConciseBoundedDescription.cs" />
     <Compile Include="Query\Describe\NamedGraphDescription.cs" />
     <Compile Include="Query\Expressions\AggregateExpressions.cs" />
