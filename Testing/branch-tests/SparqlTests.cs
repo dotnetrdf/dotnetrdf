@@ -795,5 +795,38 @@ namespace VDS.RDF.Test
             }
             Options.AlgebraOptimisation = true;
         }
+
+        [TestMethod]
+        public void SparqlOrderByComplexLazy2()
+        {
+            String query = "SELECT * WHERE { ?s a ?vehicle . ?s <http://example.org/vehicles/Speed> ?speed } ORDER BY DESC(?speed) LIMIT 3";
+
+            TripleStore store = new TripleStore();
+            Graph g = new Graph();
+            FileLoader.Load(g, "InferenceTest.ttl");
+            store.Add(g);
+
+            SparqlQueryParser parser = new SparqlQueryParser();
+            SparqlQuery q = parser.ParseFromString(query);
+
+            Console.WriteLine(q.ToAlgebra().ToString());
+            Assert.IsTrue(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
+            Console.WriteLine();
+
+            Object results = q.Evaluate(store);
+            if (results is SparqlResultSet)
+            {
+                SparqlResultSet rset = (SparqlResultSet)results;
+                foreach (SparqlResult r in rset)
+                {
+                    Console.WriteLine(r.ToString());
+                }
+                Assert.IsTrue(rset.Count == 3, "Expected exactly 3 results");
+            }
+            else
+            {
+                Assert.Fail("Expected a SPARQL Result Set");
+            }
+        }
     }
 }

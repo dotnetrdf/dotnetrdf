@@ -18,8 +18,12 @@ Added
 Changed
 - Bug Fixes
  - Notation 3 Parser allows variable quantification directives in Graph Literals
+ - Queries with a DISTINCT modifer and a LIMIT were optimised for lazy evaluation when they shouldn't have been
 - Parsing
  - Notation 3 Parser supports Variables, @forSome and @forAll properly
+- Query Improvements
+ - Reverse Translation from ISparqlAlgebra to SparqlQuery
+ - Optimisation for queries using ORDER BY under some circumstances
 
 Removed
 - Obsolete VDS.RDF.Web classes removed
