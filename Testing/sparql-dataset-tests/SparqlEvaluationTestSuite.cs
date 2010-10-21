@@ -57,7 +57,6 @@ namespace dotNetRDFTest
                     "/solution-seq/slice-01.rq",
                     "/solution-seq/slice-10.rq",
                     "/solution-seq/slice-21.rq",
-                    "/solution-seq/slice-22.rq",
                     "/solution-seq/slice-23.rq",
                     "/graphs/graph-04.rq",
                     "/expr-equals/query-eq2-2.rq",

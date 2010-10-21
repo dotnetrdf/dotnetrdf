@@ -91,10 +91,20 @@ namespace VDS.RDF.Query.Algebra
                 }
             }
 
+            IEnumerable<String> vars;
+            if (context.InputMultiset is IdentityMultiset || context.InputMultiset is NullMultiset)
+            {
+                vars = (context.Query != null) ? context.Query.Variables.Where(v => v.IsResultVariable).Select(v => v.Name) : context.InputMultiset.Variables;
+            }
+            else
+            {
+                vars = context.InputMultiset.Variables;
+            }
+
             if (limit == 0)
             {
                 //If Limit is Zero we can skip evaluation
-                context.OutputMultiset = new Multiset(context.Query.Variables.Select(v => v.Name));
+                context.OutputMultiset = new Multiset(vars);
                 return context.OutputMultiset;
             }
             else
@@ -106,7 +116,7 @@ namespace VDS.RDF.Query.Algebra
                     if (offset > context.InputMultiset.Count)
                     {
                         //If the Offset is greater than the count return nothing
-                        context.OutputMultiset = new Multiset(context.Query.Variables.Select(v => v.Name));
+                        context.OutputMultiset = new Multiset(vars);
                         return context.OutputMultiset;
                     }
                     else

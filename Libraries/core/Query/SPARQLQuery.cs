@@ -624,7 +624,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="var">Variable Name</param>
         /// <returns></returns>
-        internal ISparqlExpression  ProjectionVariable(String var)
+        internal ISparqlExpression ProjectionVariable(String var)
         {
             if (this._vars.ContainsKey(var) && this._vars[var].IsProjection)
             {
@@ -633,6 +633,21 @@ namespace VDS.RDF.Query
             else
             {
                 return null;
+            }
+        }
+
+        public bool HasDistinctModifier
+        {
+            get
+            {
+                switch (this._type)
+                {
+                    case SparqlQueryType.SelectAllDistinct:
+                    case SparqlQueryType.SelectDistinct:
+                        return true;
+                    default:
+                        return false;
+                }
             }
         }
 
@@ -1247,12 +1262,12 @@ namespace VDS.RDF.Query
                 case SparqlQueryType.SelectAllReduced:
                 case SparqlQueryType.SelectDistinct:
                 case SparqlQueryType.SelectReduced:
-                    //Optimise Queries to use LazyBgp's if Algebra Optimisation is enabled and there is a LIMIT but no ORDER BY/GROUP BY/HAVING
+                    //Optimise Queries to use LazyBgp's if Algebra Optimisation is enabled and there is a LIMIT but no DISTINCT/ORDER BY/GROUP BY/HAVING
                     //In the case that there is just an ORDER BY we may be able to optimise under certain circumstances
                     //These are the following:
                     // 1 - The Ordering is simple i.e. only variables
                     // 2 - All the Variables appear in the first pattern in the query
-                    if (Options.AlgebraOptimisation && this._limit >= 0 && (this._orderBy == null || this.IsOptimisableOrderBy) && this._groupBy == null && this._having == null)
+                    if (Options.AlgebraOptimisation && this._limit >= 0 && !this.HasDistinctModifier && (this._orderBy == null || this.IsOptimisableOrderBy) && this._groupBy == null && this._having == null)
                     {
                         try
                         {
