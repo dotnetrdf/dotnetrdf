@@ -5,6 +5,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using VDS.RDF;
+using VDS.RDF.Parsing;
+using VDS.RDF.Query;
+using VDS.Alexandria.Datasets;
 using VDS.Alexandria.Documents;
 using VDS.Alexandria.Indexing;
 
@@ -15,6 +18,9 @@ namespace VDS.Alexandria
     /// </summary>
     public class AlexandriaFileManager : AlexandriaDocumentStoreManager<StreamReader,TextWriter>
     {
+        private LeviathanQueryProcessor _processor;
+        private SparqlQueryParser _parser;
+
         /// <summary>
         /// Set of All Indices - gives best query performance but poorer import performance
         /// </summary>
@@ -60,6 +66,17 @@ namespace VDS.Alexandria
 
         public AlexandriaFileManager(String directory, IEnumerable<TripleIndexType> indices)
             : this(new FileDocumentManager(directory), indices) { }
+
+        public override object Query(string sparqlQuery)
+        {
+            if (this._processor == null)
+            {
+                AlexandriaFileDataset dataset = new AlexandriaFileDataset(this);
+                this._processor = new LeviathanQueryProcessor(dataset);
+            }
+            if (this._parser == null) this._parser = new SparqlQueryParser();
+            return this._processor.ProcessQuery(this._parser.ParseFromString(sparqlQuery));
+        }
     }
 
     public class NonIndexedAlexandriaFileManager : AlexandriaFileManager

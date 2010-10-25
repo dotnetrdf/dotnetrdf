@@ -5,9 +5,12 @@ using System.Linq;
 using System.Text;
 using MongoDB;
 using MongoDB.Configuration;
+using VDS.Alexandria.Datasets;
 using VDS.Alexandria.Documents;
 using VDS.Alexandria.Indexing;
 using VDS.Alexandria.Utilities;
+using VDS.RDF.Parsing;
+using VDS.RDF.Query;
 
 namespace VDS.Alexandria
 {
@@ -42,6 +45,9 @@ namespace VDS.Alexandria
 
     public class AlexandriaMongoDBManager : AlexandriaDocumentStoreManager<Document, Document>
     {
+        private LeviathanQueryProcessor _processor;
+        private SparqlQueryParser _parser;
+
         public AlexandriaMongoDBManager(MongoDBDocumentManager manager)
             : base(manager, MongoDBHelper.GetIndexManager(manager)) { }
 
@@ -77,6 +83,17 @@ namespace VDS.Alexandria
             {
                 return base.IndexManager;
             }
+        }
+
+        public override object Query(string sparqlQuery)
+        {
+            if (this._processor == null)
+            {
+                AlexandriaMongoDBDataset dataset = new AlexandriaMongoDBDataset(this);
+                this._processor = new LeviathanQueryProcessor(dataset);
+            }
+            if (this._parser == null) this._parser = new SparqlQueryParser();
+            return this._processor.ProcessQuery(this._parser.ParseFromString(sparqlQuery));
         }
     }
 }

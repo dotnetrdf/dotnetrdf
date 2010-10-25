@@ -8,7 +8,7 @@ using VDS.Alexandria.Indexing;
 
 namespace VDS.Alexandria
 {
-    public abstract class BaseAlexandriaManager : IGenericIOManager
+    public abstract class BaseAlexandriaManager : IQueryableGenericIOManager
     {
         protected internal abstract IIndexManager IndexManager
         {
@@ -28,6 +28,8 @@ namespace VDS.Alexandria
         public abstract void DeleteGraph(String graphUri);
 
         public abstract void DeleteGraph(Uri graphUri);
+
+        public abstract Object Query(String sparqlQuery);
 
         public abstract bool UpdateSupported
         {

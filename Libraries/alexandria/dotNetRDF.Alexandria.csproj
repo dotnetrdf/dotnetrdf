@@ -71,6 +71,7 @@
     <Compile Include="Indexing\FileIndexReader.cs" />
     <Compile Include="Indexing\IIndexManager.cs" />
     <Compile Include="Utilities\ModifiableGraphWrapper.cs" />
+    <Compile Include="Utilities\AlexandriaObjectFactory.cs" />
     <Compile Include="Utilities\PersistenceAction.cs" />
     <Compile Include="Utilities\StreamingNQuadsParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
