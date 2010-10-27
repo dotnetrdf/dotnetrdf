@@ -580,7 +580,8 @@ namespace VDS.RDF.Query
                 case Token.DATATYPEFUNC:
                     return new DataTypeFunction(this.TryParseBrackettedExpression(tokens));
                 case Token.IF:
-                    return new IfElseFunction(this.TryParseBrackettedExpression(tokens), this.TryParseBrackettedExpression(tokens), this.TryParseBrackettedExpression(tokens));
+                    bool comma;
+                    return new IfElseFunction(this.TryParseBrackettedExpression(tokens, true, out comma), this.TryParseBrackettedExpression(tokens, false, out comma), this.TryParseBrackettedExpression(tokens, false, out comma));
                 case Token.IRI:
                     return new IriFunction(this.TryParseBrackettedExpression(tokens));
                 case Token.ISBLANK:
