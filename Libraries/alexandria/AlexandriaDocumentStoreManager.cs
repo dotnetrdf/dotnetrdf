@@ -289,8 +289,8 @@ namespace VDS.Alexandria
                 GC.SuppressFinalize(this);
             }
 
-            this._indexManager.Dispose();
-            this._docManager.Dispose();
+            if (this._indexManager != null) this._indexManager.Dispose();
+            if (this._docManager != null) this._docManager.Dispose();
         }
     }
 }

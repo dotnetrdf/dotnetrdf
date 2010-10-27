@@ -120,9 +120,9 @@ namespace VDS.RDF.Query.Expressions.Functions
         public override string ToString()
         {
             StringBuilder output = new StringBuilder();
-            output.Append("IF ");
+            output.Append("IF (");
             output.Append(this._condition.ToString());
-            output.Append(' ');
+            output.Append(" , ");
             if (this._ifBranch is IfElseFunction)
             {
                 output.Append('(');
@@ -133,19 +133,16 @@ namespace VDS.RDF.Query.Expressions.Functions
             {
                 output.Append(this._ifBranch.ToString());
             }
-            if (this._elseBranch != null)
+            output.Append(" , ");
+            if (this._elseBranch is IfElseFunction)
             {
-                output.Append(" ELSE ");
-                if (this._elseBranch is IfElseFunction)
-                {
-                    output.Append('(');
-                    output.Append(this._elseBranch.ToString());
-                    output.Append(')');
-                }
-                else
-                {
-                    output.Append(this._elseBranch.ToString());
-                }
+                output.Append('(');
+                output.Append(this._elseBranch.ToString());
+                output.Append(')');
+            }
+            else
+            {
+                output.Append(this._elseBranch.ToString());
             }
             return output.ToString();
         }

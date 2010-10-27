@@ -146,31 +146,29 @@ namespace VDS.RDF.Query.Algebra
                     }
                     else
                     {
-                        if (this._graphSpecifier.TokenType == Token.VARIABLE)
+                        //For Graph Variable Patterns where the Variable wasn't already bound add bindings
+                        String gvar = this._graphSpecifier.Value.Substring(1);
+                        if (!initialInput.ContainsVariable(gvar))
                         {
-                            //For Graph Variable Patterns where the Variable wasn't already bound add bindings
-                            String gvar = this._graphSpecifier.Value.Substring(1);
-                            if (!initialInput.ContainsVariable(gvar))
+                            result.AddVariable(gvar);
+                            foreach (Set s in result.Sets)
                             {
-                                result.AddVariable(gvar);
-                                foreach (Set s in result.Sets)
+                                INode temp = s.Values.FirstOrDefault(n => n != null && n.GraphUri != null);
+                                if (temp == null)
                                 {
-                                    INode temp = s.Values.FirstOrDefault(n => n != null && n.GraphUri != null);
-                                    if (temp == null)
-                                    {
-                                        s.Add(gvar, null);
-                                    }
-                                    else
-                                    {
-                                        s.Add(gvar, new UriNode(null, temp.GraphUri));
-                                    }
+                                    s.Add(gvar, null);
+                                }
+                                else
+                                {
+                                    s.Add(gvar, new UriNode(null, temp.GraphUri));
                                 }
                             }
                         }
                     }
 
                     //context.OutputMultiset = context.InputMultiset.Join(result);
-                    context.OutputMultiset = initialInput.Join(result);
+                    //context.OutputMultiset = initialInput.Join(result);
+                    context.OutputMultiset = result;
                 }
                 finally
                 {
