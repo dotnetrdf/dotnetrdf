@@ -568,6 +568,9 @@ namespace dotNetRDFTest
                     }
                     else
                     {
+                        Console.WriteLine("Final Query");
+                        Console.WriteLine(query.ToString());
+                        Console.WriteLine();
                         this.ShowTestData(store);
                         this.ShowResultSets(ourResults, expectedResults);
                         testsFailed++;
