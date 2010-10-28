@@ -427,7 +427,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets the Variab
+        /// Gets the Variables used in the Pattern
         /// </summary>
         public IEnumerable<String> Variables
         {
@@ -472,25 +472,57 @@ namespace VDS.RDF.Query.Patterns
             {
                 //We only apply Optimisation if the global setting is enabled
 
-                //Just call sort on the Triple Patterns list
+                //Start by calling sort on the Triple Patterns list
                 //Triple Patterns have a CompareTo defined that orders them based on what is considered to be 
                 //an optimal order
                 //This order is only an approximation and may not be effective depending on the underlying dataset
                 this._triplePatterns.Sort();
 
-                if (this._triplePatterns.Count > 0) {
+                if (this._triplePatterns.Count > 0)
+                {
                     //After we sort which gives us a rough optimisation we then may want to reorder
-                    //based on the Variables that occurred previous to us
+                    //based on the Variables that occurred previous to us OR if we're the Root Graph Pattern
                     //We only need to do this if the first pattern does not use a previously referenced variable
-                    if (this._triplePatterns.Count > 1 && !this._triplePatterns[0].Variables.Any(v => variables.Contains(v)) && variables.Intersect(ourVariables).Any())
+
+                    if (!variables.Any())
                     {
-                        this.TryReorderPatterns(variables.ToList(), 1, 0);
+                        //Optimise the Root Graph Pattern
+                        if (this._triplePatterns.Count > 1)
+                        {
+                            HashSet<String> currVariables = new HashSet<String>();
+                            this._triplePatterns[0].Variables.ForEach(v => currVariables.Add(v));
+                            for (int i = 1; i < this._triplePatterns.Count - 1; i++)
+                            {
+                                if (currVariables.Count == 0)
+                                {
+                                    this._triplePatterns[i].Variables.ForEach(v => currVariables.Add(v));
+                                    continue;
+                                }
+                                else if (currVariables.IsDisjoint(this._triplePatterns[i].Variables))
+                                {
+                                    this.TryReorderPatterns(currVariables.ToList(), i + 1, i);
+                                    this._triplePatterns[i].Variables.ForEach(v => currVariables.Add(v));
+                                }
+                                else
+                                {
+                                    this._triplePatterns[i].Variables.ForEach(v => currVariables.Add(v));
+                                }
+                            }
+                        }
                     }
-                    else if (this._triplePatterns.Count > 2)
+                    else
                     {
-                        //In the case where there are more than 2 patterns then we can try and reorder these
-                        //in order to further optimise the pattern
-                        this.TryReorderPatterns(this._triplePatterns[0].Variables, 2, 1);
+                        //Optimise nested Graph Patterns
+                        if (this._triplePatterns.Count > 1 && !this._triplePatterns[0].Variables.Any(v => variables.Contains(v)) && variables.Intersect(ourVariables).Any())
+                        {
+                            this.TryReorderPatterns(variables.ToList(), 1, 0);
+                        }
+                        else if (this._triplePatterns.Count > 2)
+                        {
+                            //In the case where there are more than 2 patterns then we can try and reorder these
+                            //in order to further optimise the pattern
+                            this.TryReorderPatterns(this._triplePatterns[0].Variables, 2, 1);
+                        }
                     }
                 }
 

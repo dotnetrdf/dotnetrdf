@@ -27,6 +27,10 @@ Changed
    SPARQL engine which allows for out of memory datasets to be queried and updated with Leviathan
  - Reverse Translation from ISparqlAlgebra to SparqlQuery
  - Optimisation for queries using ORDER BY under some circumstances
+- ASP.Net Improvements
+ - All HTTP Handlers output CORS headers so RDF/SPARQL content is accessible to JS clients
+ - SparqlServer now supports omitting any of the processors (provided at least one is specified) so you can create
+   endpoints with some features explicitly disabled
 
 Removed
 - Obsolete VDS.RDF.Web classes removed
