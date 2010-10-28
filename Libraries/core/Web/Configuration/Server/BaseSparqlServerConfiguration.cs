@@ -270,15 +270,17 @@ namespace VDS.RDF.Web.Configuration.Server
         {
             //Get the Query Processor to be used
             INode procNode = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyQueryProcessor));
-            if (procNode == null) throw new DotNetRdfConfigurationException("Unable to load SPARQL Server Configuration as the RDF configuration file does not specify a dnr:queryProcessor property for the Handler");
-            Object temp = ConfigurationLoader.LoadObject(g, procNode);
-            if (temp is ISparqlQueryProcessor)
+            if (procNode != null)
             {
-                this._queryProcessor = (ISparqlQueryProcessor)temp;
-            }
-            else
-            {
-                throw new DotNetRdfConfigurationException("Unable to load SPARQL Server Configuration as the RDF configuration file specifies a value for the Handlers dnr:updateProcessor property which cannot be loaded as an object which implements the ISparqlQueryProcessor interface");
+                Object temp = ConfigurationLoader.LoadObject(g, procNode);
+                if (temp is ISparqlQueryProcessor)
+                {
+                    this._queryProcessor = (ISparqlQueryProcessor)temp;
+                }
+                else
+                {
+                    throw new DotNetRdfConfigurationException("Unable to load SPARQL Server Configuration as the RDF configuration file specifies a value for the Handlers dnr:queryProcessor property which cannot be loaded as an object which implements the ISparqlQueryProcessor interface");
+                }
             }
 
             //SPARQL Query Default Config
@@ -304,15 +306,17 @@ namespace VDS.RDF.Web.Configuration.Server
 
             //Then get the Update Processor to be used
             procNode = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyUpdateProcessor));
-            if (procNode == null) throw new DotNetRdfConfigurationException("Unable to load SPARQL Server Configuration as the RDF configuration file does not specify a dnr:updateProcessor property for the Handler");
-            temp = ConfigurationLoader.LoadObject(g, procNode);
-            if (temp is ISparqlUpdateProcessor)
+            if (procNode != null)
             {
-                this._updateProcessor = (ISparqlUpdateProcessor)temp;
-            }
-            else
-            {
-                throw new DotNetRdfConfigurationException("Unable to load SPARQL Server Configuration as the RDF configuration file specifies a value for the Handlers dnr:updateProcessor property which cannot be loaded as an object which implements the ISparqlUpdateProcessor interface");
+                Object temp = ConfigurationLoader.LoadObject(g, procNode);
+                if (temp is ISparqlUpdateProcessor)
+                {
+                    this._updateProcessor = (ISparqlUpdateProcessor)temp;
+                }
+                else
+                {
+                    throw new DotNetRdfConfigurationException("Unable to load SPARQL Server Configuration as the RDF configuration file specifies a value for the Handlers dnr:updateProcessor property which cannot be loaded as an object which implements the ISparqlUpdateProcessor interface");
+                }
             }
 
             //Handler Settings
@@ -334,15 +338,17 @@ namespace VDS.RDF.Web.Configuration.Server
 
             //Then get the Protocol Processor to be used
             procNode = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyProtocolProcessor));
-            if (procNode == null) throw new DotNetRdfConfigurationException("Unable to load SPARQL Server Configuration as the RDF configuration file does not specify a dnr:protocolProcessor property for the Handler");
-            temp = ConfigurationLoader.LoadObject(g, procNode);
-            if (temp is ISparqlHttpProtocolProcessor)
+            if (procNode != null)
             {
-                this._protocolProcessor = (ISparqlHttpProtocolProcessor)temp;
-            }
-            else
-            {
-                throw new DotNetRdfConfigurationException("Unable to load SPARQL Server Configuration as the RDF configuration file specifies a value for the Handlers dnr:protocolProcessor property which cannot be loaded as an object which implements the ISparqlHttpProtocolProcessor interface");
+                Object temp = ConfigurationLoader.LoadObject(g, procNode);
+                if (temp is ISparqlHttpProtocolProcessor)
+                {
+                    this._protocolProcessor = (ISparqlHttpProtocolProcessor)temp;
+                }
+                else
+                {
+                    throw new DotNetRdfConfigurationException("Unable to load SPARQL Server Configuration as the RDF configuration file specifies a value for the Handlers dnr:protocolProcessor property which cannot be loaded as an object which implements the ISparqlHttpProtocolProcessor interface");
+                }
             }
         }
 

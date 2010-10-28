@@ -183,6 +183,18 @@ namespace VDS.RDF.Update.Protocol
 
             return g;
         }
+
+        /// <summary>
+        /// Retrieves the Graph with the given URI
+        /// </summary>
+        /// <param name="graphUri">Graph URI</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// <para>
+        /// Helper method intended for use by the <see cref="BaseProtocolProcessor.ProcessGet">ProcessGet()</see> and <see cref="BaseProtocolProcessor.ProcessHead">ProcessHead()</see> methods
+        /// </para>
+        /// </remarks>
+        protected abstract IGraph GetGraph(Uri graphUri);
     }
 }
 

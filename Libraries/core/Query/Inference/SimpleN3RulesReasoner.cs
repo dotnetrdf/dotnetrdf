@@ -10,7 +10,7 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query.Inference
 {
-    public class N3RulesReasoner : IInferenceEngine
+    public class SimpleN3RulesReasoner : IInferenceEngine
     {
         private List<String[]> _rules = new List<String[]>();
         private SparqlUpdateValidator _validator = new SparqlUpdateValidator();

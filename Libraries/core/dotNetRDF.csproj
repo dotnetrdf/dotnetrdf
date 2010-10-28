@@ -338,7 +338,7 @@
     <Compile Include="Query\Describe\ISparqlDescribe.cs" />
     <Compile Include="Query\Inference\InferenceHelper.cs" />
     <Compile Include="Query\Inference\IOwlReasoner.cs" />
-    <Compile Include="Query\Inference\N3RulesReasoner.cs" />
+    <Compile Include="Query\Inference\SimpleN3RulesReasoner.cs" />
     <Compile Include="Query\Inference\OwlReasonerWrapper.cs" />
     <Compile Include="Query\Inference\PelletReasoner.cs" />
     <Compile Include="Query\Inference\Pellet\Services\NamespaceService.cs" />

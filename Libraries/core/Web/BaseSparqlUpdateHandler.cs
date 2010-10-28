@@ -77,15 +77,8 @@ namespace VDS.RDF.Web
         {
             this._config = this.LoadConfig(context);
 
-            //Add our Custom Headers
-            try
-            {
-                context.Response.Headers.Add("X-dotNetRDF-Version", Assembly.GetExecutingAssembly().GetName().Version.ToString());
-            }
-            catch (PlatformNotSupportedException)
-            {
-                context.Response.AddHeader("X-dotNetRDF-Version", Assembly.GetExecutingAssembly().GetName().Version.ToString());
-            }
+            //Add our Standard Headers
+            HandlerHelper.AddStandardHeaders(context);
 
             //See if there has been an update submitted
             String updateText = context.Request.QueryString["update"];

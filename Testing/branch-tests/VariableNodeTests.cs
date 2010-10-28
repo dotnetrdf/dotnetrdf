@@ -86,7 +86,7 @@ namespace VDS.RDF.Test
                 Console.WriteLine(t.ToString());
             }
 
-            N3RulesReasoner reasoner = new N3RulesReasoner();
+            SimpleN3RulesReasoner reasoner = new SimpleN3RulesReasoner();
             reasoner.Initialise(rulesGraph);
 
             reasoner.Apply(data);
@@ -119,7 +119,7 @@ namespace VDS.RDF.Test
                 Console.WriteLine(t.ToString());
             }
 
-            N3RulesReasoner reasoner = new N3RulesReasoner();
+            SimpleN3RulesReasoner reasoner = new SimpleN3RulesReasoner();
             reasoner.Initialise(rulesGraph);
 
             reasoner.Apply(data);

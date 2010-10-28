@@ -82,15 +82,8 @@ namespace VDS.RDF.Web
             String basePath;
             this._config = this.LoadConfig(context, out basePath);
 
-            //Add our Custom Headers
-            try
-            {
-                context.Response.Headers.Add("X-dotNetRDF-Version", Assembly.GetExecutingAssembly().GetName().Version.ToString());
-            }
-            catch (PlatformNotSupportedException)
-            {
-                context.Response.AddHeader("X-dotNetRDF-Version", Assembly.GetExecutingAssembly().GetName().Version.ToString());
-            }
+            //Add our Standard Headers
+            HandlerHelper.AddStandardHeaders(context);
 
             String path = context.Request.Path;
             if (path.StartsWith(basePath))
@@ -106,6 +99,9 @@ namespace VDS.RDF.Web
                 case "update":
                     this.ProcessUpdateRequest(context);
                     break;
+                case "description":
+                    context.Response.StatusCode = (int)HttpStatusCode.NotImplemented;
+                    break;
                 default:
                     this.ProcessProtocolRequest(context);
                     break;
@@ -118,6 +114,12 @@ namespace VDS.RDF.Web
         /// <param name="context">HTTP Context</param>
         public void ProcessQueryRequest(HttpContext context)
         {
+            if (this._config.QueryProcessor == null)
+            {
+                context.Response.StatusCode = (int)HttpStatusCode.NotImplemented;
+                return;
+            }
+
             //See if there has been an query submitted
             String queryText = context.Request.QueryString["query"];
             if (queryText == null || queryText.Equals(String.Empty))
@@ -302,6 +304,12 @@ namespace VDS.RDF.Web
         /// <param name="context">HTTP Context</param>
         public void ProcessUpdateRequest(HttpContext context)
         {
+            if (this._config.UpdateProcessor == null)
+            {
+                context.Response.StatusCode = (int)HttpStatusCode.NotImplemented;
+                return;
+            }
+
             //See if there has been an update submitted
             String updateText = context.Request.QueryString["update"];
             if (updateText == null || updateText.Equals(String.Empty))
@@ -392,9 +400,15 @@ namespace VDS.RDF.Web
         /// <summary>
         /// Processes Protocol requests
         /// </summary>
-        /// <param name="context"></param>
+        /// <param name="context">HTTP Context</param>
         public void ProcessProtocolRequest(HttpContext context)
         {
+            if (this._config.ProtocolProcessor == null)
+            {
+                context.Response.StatusCode = (int)HttpStatusCode.NotImplemented;
+                return;
+            }
+
             //Check whether we need to use authentication
             if (!HandlerHelper.IsAuthenticated(context, this._config.UserGroups, context.Request.HttpMethod)) return;
 

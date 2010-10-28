@@ -69,9 +69,18 @@ namespace VDS.RDF.Update.Protocol
         /// </remarks>
         public override void ProcessGet(HttpContext context)
         {
-            Graph g = new Graph();
             Uri graphUri = this.ResolveGraphUri(context);
-            this._manager.LoadGraph(g, graphUri);
+            IGraph g;
+            try
+            {
+                g = this.GetGraph(graphUri);
+            }
+            catch
+            {
+                //If there is an error then we assume the Graph does not exist
+                context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                return;
+            }
 
             String ctype;
             IRdfWriter writer = MimeTypesHelper.GetWriter(context.Request.AcceptTypes, out ctype);
@@ -179,7 +188,23 @@ namespace VDS.RDF.Update.Protocol
 
         public override void ProcessHead(HttpContext context)
         {
-            throw new NotImplementedException();
+            Uri graphUri = this.ResolveGraphUri(context);
+            IGraph g;
+            try
+            {
+                g = this.GetGraph(graphUri);
+            }
+            catch
+            {
+                //If there is an error then we assume the Graph does not exist
+                context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                return;
+            }
+
+            String ctype;
+            IRdfWriter writer = MimeTypesHelper.GetWriter(context.Request.AcceptTypes, out ctype);
+            context.Response.ContentType = ctype;
+            //Same as ProcessGet except we don't send the Body
         }
 
         public override void ProcessOptions(HttpContext context)
@@ -190,6 +215,13 @@ namespace VDS.RDF.Update.Protocol
         public override void ProcessPatch(HttpContext context)
         {
             throw new NotImplementedException();
+        }
+
+        protected override IGraph GetGraph(Uri graphUri)
+        {
+            Graph g = new Graph();
+            this._manager.LoadGraph(g, graphUri);
+            return g;
         }
     }
 }
