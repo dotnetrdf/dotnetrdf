@@ -350,6 +350,11 @@ namespace VDS.RDF.Web.Configuration.Server
                     throw new DotNetRdfConfigurationException("Unable to load SPARQL Server Configuration as the RDF configuration file specifies a value for the Handlers dnr:protocolProcessor property which cannot be loaded as an object which implements the ISparqlHttpProtocolProcessor interface");
                 }
             }
+
+            if (this._queryProcessor == null && this._updateProcessor == null && this._protocolProcessor == null)
+            {
+                throw new DotNetRdfConfigurationException("Unable to load SPARQL Server Configuration as the RDF configuration file does not specify at least one of a Query/Update/Protocol processor for the server using the dnr:queryProcessor/dnr:updateProcessor/dnr:protocolProcessor properties");
+            }
         }
 
         /// <summary>
