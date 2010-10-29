@@ -50,6 +50,14 @@ namespace VDS.RDF.Configuration
         private const String InMemoryDataset = "VDS.RDF.Query.Datasets.InMemoryDataset",
                              SqlDataset = "VDS.RDF.Query.Datasets.SqlDataset";
 
+        /// <summary>
+        /// Tries to load a SPARQL Dataset based on information from the Configuration Graph
+        /// </summary>
+        /// <param name="g">Configuration Graph</param>
+        /// <param name="objNode">Object Node</param>
+        /// <param name="targetType">Target Type</param>
+        /// <param name="obj">Output Object</param>
+        /// <returns></returns>
         public bool TryLoadObject(IGraph g, INode objNode, Type targetType, out object obj)
         {
             obj = null;
@@ -106,6 +114,11 @@ namespace VDS.RDF.Configuration
             return false;
         }
 
+        /// <summary>
+        /// Gets whether this Factory can load objects of the given Type
+        /// </summary>
+        /// <param name="t">Type</param>
+        /// <returns></returns>
         public bool CanLoadObject(Type t)
         {
             switch (t.FullName)

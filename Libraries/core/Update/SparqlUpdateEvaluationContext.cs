@@ -47,7 +47,7 @@ namespace VDS.RDF.Update
         /// <summary>
         /// Creates a new SPARQL Update Evaluation Context
         /// </summary>
-        /// <param name="store">In-memory queryable store</param>
+        /// <param name="data">SPARQL Dataset</param>
         public SparqlUpdateEvaluationContext(ISparqlDataset data)
         {
             this._data = data;

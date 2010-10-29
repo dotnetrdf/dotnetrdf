@@ -307,6 +307,11 @@ namespace VDS.RDF.Storage
         /// <returns></returns>
         public abstract string GetGraphID(Uri graphUri);
 
+        /// <summary>
+        /// Gets the URI of a Graph based on its ID in the Store
+        /// </summary>
+        /// <param name="graphID">Graph ID</param>
+        /// <returns></returns>
         public abstract Uri GetGraphUri(String graphID);
 
         /// <summary>
@@ -459,6 +464,11 @@ namespace VDS.RDF.Storage
         /// <returns>DataTable of results</returns>
         public abstract DataTable ExecuteQuery(string sqlCmd);
 
+        /// <summary>
+        /// Returns a DataReader that can be used to read results from a query in a streaming fashion
+        /// </summary>
+        /// <param name="sqlCmd">SQL Command</param>
+        /// <returns></returns>
         public abstract DbDataReader ExecuteStreamingQuery(string sqlCmd);
 
         /// <summary>

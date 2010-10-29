@@ -15,7 +15,7 @@ namespace VDS.Alexandria.Documents
     {
         private Dictionary<String,DocumentReference<TReader,TWriter>> _activeDocuments = new Dictionary<string,DocumentReference<TReader,TWriter>>();
         private IDataAdaptor<TReader, TWriter> _adaptor;
-        private NodeFactory _nodeFactory = new NodeFactory();
+        private GraphFactory _nodeFactory = new GraphFactory();
 
         public BaseDocumentManager(IDataAdaptor<TReader,TWriter> adaptor)
         {
@@ -34,7 +34,7 @@ namespace VDS.Alexandria.Documents
             }
         }
 
-        public NodeFactory NodeFactory
+        public GraphFactory GraphFactory
         {
             get
             {

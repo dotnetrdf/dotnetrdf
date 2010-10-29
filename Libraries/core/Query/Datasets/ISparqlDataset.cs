@@ -127,7 +127,7 @@ namespace VDS.RDF.Query.Datasets
         /// <returns></returns>
         /// <remarks>
         /// <para>
-        /// This property need only return a read-only view of the Graph, code which wishes to modify Graphs should use the <see cref="ISparqlDataset.GetModifiableGraph">GetModifiableGraph()</see> method to guarantee a Graph they can modify
+        /// This property need only return a read-only view of the Graph, code which wishes to modify Graphs should use the <see cref="ISparqlDataset.GetModifiableGraph">GetModifiableGraph()</see> method to guarantee a Graph they can modify and will be persisted to the underlying storage
         /// </para>
         /// </remarks>
         IGraph this[Uri graphUri]
@@ -151,32 +151,114 @@ namespace VDS.RDF.Query.Datasets
 
         #region Triple Existence and Retrieval
 
+        /// <summary>
+        /// Gets whether the Dataset has any Triples
+        /// </summary>
         bool HasTriples
         {
             get;
         }
 
+        /// <summary>
+        /// Gets whether the Dataset contains a specific Triple
+        /// </summary>
+        /// <param name="t">Triple</param>
+        /// <returns></returns>
         bool ContainsTriple(Triple t);
 
+        /// <summary>
+        /// Gets all the Triples in the Dataset
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// <strong>Note:</strong> The Triples returned from the method should be limited to those in the current Active Graph if present, otherwise those in the current Default Graph if present and finally the entire Dataset
+        /// </para>
+        /// </remarks>
         IEnumerable<Triple> Triples
         {
             get;
         }
 
+        /// <summary>
+        /// Gets all the Triples in the Dataset with the given Subject
+        /// </summary>
+        /// <param name="subj">Subject</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// <para>
+        /// <strong>Note:</strong> The Triples returned from the method should be limited to those in the current Active Graph if present, otherwise those in the current Default Graph if present and finally the entire Dataset
+        /// </para>
+        /// </remarks>
         IEnumerable<Triple> GetTriplesWithSubject(INode subj);
 
+        /// <summary>
+        /// Gets all the Triples in the Dataset with the given Predicate
+        /// </summary>
+        /// <param name="pred">Predicate</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// <para>
+        /// <strong>Note:</strong> The Triples returned from the method should be limited to those in the current Active Graph if present, otherwise those in the current Default Graph if present and finally the entire Dataset
+        /// </para>
+        /// </remarks>
         IEnumerable<Triple> GetTriplesWithPredicate(INode pred);
 
+        /// <summary>
+        /// Gets all the Triples in the Dataset with the given Object
+        /// </summary>
+        /// <param name="obj">Object</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// <para>
+        /// <strong>Note:</strong> The Triples returned from the method should be limited to those in the current Active Graph if present, otherwise those in the current Default Graph if present and finally the entire Dataset
+        /// </para>
+        /// </remarks>
         IEnumerable<Triple> GetTriplesWithObject(INode obj);
 
+        /// <summary>
+        /// Gets all the Triples in the Dataset with the given Subject and Predicate
+        /// </summary>
+        /// <param name="subj">Subject</param>
+        /// <param name="pred">Predicate</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// <para>
+        /// <strong>Note:</strong> The Triples returned from the method should be limited to those in the current Active Graph if present, otherwise those in the current Default Graph if present and finally the entire Dataset
+        /// </para>
+        /// </remarks>
         IEnumerable<Triple> GetTriplesWithSubjectPredicate(INode subj, INode pred);
 
+        /// <summary>
+        /// Gets all the Triples in the Dataset with the given Subject and Object
+        /// </summary>
+        /// <param name="subj">Subject</param>
+        /// <param name="obj">Object</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// <para>
+        /// <strong>Note:</strong> The Triples returned from the method should be limited to those in the current Active Graph if present, otherwise those in the current Default Graph if present and finally the entire Dataset
+        /// </para>
+        /// </remarks>
         IEnumerable<Triple> GetTriplesWithSubjectObject(INode subj, INode obj);
 
+        /// <summary>
+        /// Gets all the Triples in the Dataset with the given Predicate and Object
+        /// </summary>
+        /// <param name="pred">Predicate</param>
+        /// <param name="obj">Object</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// <para>
+        /// <strong>Note:</strong> The Triples returned from the method should be limited to those in the current Active Graph if present, otherwise those in the current Default Graph if present and finally the entire Dataset
+        /// </para>
+        /// </remarks>
         IEnumerable<Triple> GetTriplesWithPredicateObject(INode pred, INode obj);
 
         #endregion
 
+        /// <summary>
+        /// Ensures that any changes to the Dataset are flushed to the underlying Storage (if any)
+        /// </summary>
         void Flush();
     }
 }

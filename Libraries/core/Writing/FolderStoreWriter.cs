@@ -51,6 +51,7 @@ namespace VDS.RDF.Writing
     /// <summary>
     /// Class for storing entire Triple Stores into disk based storage as a set of files in a Folder
     /// </summary>
+    [Obsolete("This class is deprecated in favour of using the Alexandria Filesystem store provided by the dotNetRDF.Alexandria library", false)]
     public class FolderStoreWriter : IStoreWriter
     {
 

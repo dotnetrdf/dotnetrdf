@@ -42,24 +42,60 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query.Inference
 {
+    /// <summary>
+    /// An Inference Engine that supports simple N3 rules
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// This reasoner should be initialised with a Graph that contains simple N3 rules such as the following:
+    /// </para>
+    /// <code>
+    /// { ?x a ?type } => { ?type a rdfs:Class }.
+    /// </code>
+    /// <para>
+    /// When initialised the reasoner takes account of variables declared with <em>@forAll</em> and <em>@forSome</em> directives.
+    /// </para>
+    /// <para>
+    /// When the reasoner is applied to a Graph rules are implemented by generating a SPARQL Update INSERT command like the following and executing it on the given Graph
+    /// </para>
+    /// <code>
+    /// INSERT
+    /// {
+    ///   ?type a rdfs:Class .
+    /// }
+    /// WHERE
+    /// {
+    ///   ?x a ?type .
+    /// }
+    /// </code>
+    /// </remarks>
     public class SimpleN3RulesReasoner : IInferenceEngine
     {
         private List<String[]> _rules = new List<String[]>();
         private SparqlUpdateValidator _validator = new SparqlUpdateValidator();
         private SparqlFormatter _formatter = new SparqlFormatter();
 
+        /// <summary>
+        /// Applies reasoning to the given Graph materialising the generated Triples in the same Graph
+        /// </summary>
+        /// <param name="g">Graph</param>
         public void Apply(IGraph g)
         {
             this.Apply(g, g);
         }
 
+        /// <summary>
+        /// Applies reasoning on the Input Graph materialising the generated Triples in the Output Graph
+        /// </summary>
+        /// <param name="input">Input Graph</param>
+        /// <param name="output">Output Graph</param>
         public void Apply(IGraph input, IGraph output)
         {
             TripleStore store = new TripleStore();
             store.Add(input);
             if (!ReferenceEquals(input, output))
             {
-                store.Add(output);
+                store.Add(output, true);
             }
 
             //Apply each rule in turn
@@ -89,6 +125,10 @@ namespace VDS.RDF.Query.Inference
             }
         }
 
+        /// <summary>
+        /// Initialises the Reasoner
+        /// </summary>
+        /// <param name="g">Rules Graph</param>
         public void Initialise(IGraph g)
         {
             INode implies = g.CreateUriNode(new Uri("http://www.w3.org/2000/10/swap/log#implies"));
@@ -102,6 +142,10 @@ namespace VDS.RDF.Query.Inference
             }
         }
 
+        /// <summary>
+        /// Tries to create a Rule
+        /// </summary>
+        /// <param name="t">Triple</param>
         private void TryCreateRule(Triple t)
         {
             String[] rule = new String[2];

@@ -49,6 +49,7 @@ namespace VDS.RDF.Parsing
     /// <summary>
     /// Class for reading Triple Stores that are saved on disk as a set of files in a Folder
     /// </summary>
+    [Obsolete("This class is deprecated in favour of using the Alexandria Filesystem store provided by the dotNetRDF.Alexandria library", false)]
     public class FolderStoreReader : IStoreReader
     {
         /// <summary>

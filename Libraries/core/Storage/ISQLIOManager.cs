@@ -254,6 +254,11 @@ namespace VDS.RDF.Storage
         /// <returns>DataTable of results</returns>
         DataTable ExecuteQuery(String sqlCmd);
 
+        /// <summary>
+        /// Returns a DataReader that can be used to read results from a query in a streaming fashion
+        /// </summary>
+        /// <param name="sqlCmd">SQL Command</param>
+        /// <returns></returns>
         DbDataReader ExecuteStreamingQuery(String sqlCmd);
 
         /// <summary>

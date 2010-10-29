@@ -40,10 +40,17 @@ using System.Text;
 
 namespace VDS.RDF.Query.Datasets
 {
+    /// <summary>
+    /// Represents an in-memory dataset (i.e. a <see cref="IInMemoryQueryableStore">InMemoryQueryableStore</see>) for querying and updating using SPARQL
+    /// </summary>
     public class InMemoryDataset : BaseDataset
     {
         private IInMemoryQueryableStore _store;
 
+        /// <summary>
+        /// Creates a new In-Memory dataset
+        /// </summary>
+        /// <param name="store">In-Memory queryable store</param>
         public InMemoryDataset(IInMemoryQueryableStore store)
         {
             this._store = store;
@@ -51,21 +58,37 @@ namespace VDS.RDF.Query.Datasets
 
         #region Graph Existence and Retrieval
 
+        /// <summary>
+        /// Adds a Graph to the Dataset merging it with any existing Graph with the same URI
+        /// </summary>
+        /// <param name="g">Graph</param>
         public override void AddGraph(IGraph g)
         {
             this._store.Add(g, true);
         }
 
+        /// <summary>
+        /// Removes a Graph from the Dataset
+        /// </summary>
+        /// <param name="graphUri">Graph URI</param>
         public override void RemoveGraph(Uri graphUri)
         {
             this._store.Remove(graphUri);
         }
 
+        /// <summary>
+        /// Gets whether a Graph with the given URI is the Dataset
+        /// </summary>
+        /// <param name="graphUri">Graph URI</param>
+        /// <returns></returns>
         public override bool HasGraph(Uri graphUri)
         {
             return this._store.HasGraph(graphUri);
         }
 
+        /// <summary>
+        /// Gets all the Graphs in the Dataset
+        /// </summary>
         public override IEnumerable<IGraph> Graphs
         {
             get 
@@ -74,6 +97,9 @@ namespace VDS.RDF.Query.Datasets
             }
         }
 
+        /// <summary>
+        /// Gets all the URIs of Graphs in the Dataset
+        /// </summary>
         public override IEnumerable<Uri> GraphUris
         {
             get 
@@ -83,6 +109,16 @@ namespace VDS.RDF.Query.Datasets
             }
         }
 
+        /// <summary>
+        /// Gets the Graph with the given URI from the Dataset
+        /// </summary>
+        /// <param name="graphUri">Graph URI</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// <para>
+        /// For In-Memory datasets the Graph returned from this property is no different from the Graph returned by the <see cref="InMemoryDataset.GetModifiableGraph">GetModifiableGraph()</see> method
+        /// </para>
+        /// </remarks>
         public override IGraph this[Uri graphUri]
         {
             get 
@@ -95,16 +131,30 @@ namespace VDS.RDF.Query.Datasets
 
         #region Triple Existence and Retrieval
 
+        /// <summary>
+        /// Gets whether the Dataset contains a specific Triple
+        /// </summary>
+        /// <param name="t">Triple</param>
+        /// <returns></returns>
         public override bool ContainsTriple(Triple t)
         {
             return this._store.Contains(t);
         }
 
+        /// <summary>
+        /// Gets all the Triples in the underlying in-memory store
+        /// </summary>
+        /// <returns></returns>
         protected override IEnumerable<Triple> GetAllTriples()
         {
             return this._store.Triples;
         }
 
+        /// <summary>
+        /// Gets all the Triples in the Dataset with the given Subject
+        /// </summary>
+        /// <param name="subj">Subject</param>
+        /// <returns></returns>
         public override IEnumerable<Triple> GetTriplesWithSubject(INode subj)
         {
             if (this._activeGraph == null)
@@ -126,6 +176,11 @@ namespace VDS.RDF.Query.Datasets
             }
         }
 
+        /// <summary>
+        /// Gets all the Triples in the Dataset with the given Predicate
+        /// </summary>
+        /// <param name="pred">Predicate</param>
+        /// <returns></returns>
         public override IEnumerable<Triple> GetTriplesWithPredicate(INode pred)
         {
             if (this._activeGraph == null)
@@ -147,6 +202,11 @@ namespace VDS.RDF.Query.Datasets
             }
         }
 
+        /// <summary>
+        /// Gets all the Triples in the Dataset with the given Object
+        /// </summary>
+        /// <param name="obj">Object</param>
+        /// <returns></returns>
         public override IEnumerable<Triple> GetTriplesWithObject(INode obj)
         {
             if (this._activeGraph == null)
@@ -168,6 +228,12 @@ namespace VDS.RDF.Query.Datasets
             }
         }
 
+        /// <summary>
+        /// Gets all the Triples in the Dataset with the given Subject and Predicate
+        /// </summary>
+        /// <param name="subj">Subject</param>
+        /// <param name="pred">Predicate</param>
+        /// <returns></returns>
         public override IEnumerable<Triple> GetTriplesWithSubjectPredicate(INode subj, INode pred)
         {
             if (this._activeGraph == null)
@@ -189,6 +255,12 @@ namespace VDS.RDF.Query.Datasets
             }
         }
 
+        /// <summary>
+        /// Gets all the Triples in the Dataset with the given Subject and Object
+        /// </summary>
+        /// <param name="subj">Subject</param>
+        /// <param name="obj">Object</param>
+        /// <returns></returns>
         public override IEnumerable<Triple> GetTriplesWithSubjectObject(INode subj, INode obj)
         {
             if (this._activeGraph == null)
@@ -210,6 +282,12 @@ namespace VDS.RDF.Query.Datasets
             }
         }
 
+        /// <summary>
+        /// Gets all the Triples in the Dataset with the given Predicate and Object
+        /// </summary>
+        /// <param name="pred">Predicate</param>
+        /// <param name="obj">Object</param>
+        /// <returns></returns>
         public override IEnumerable<Triple> GetTriplesWithPredicateObject(INode pred, INode obj)
         {
             if (this._activeGraph == null)
@@ -233,6 +311,9 @@ namespace VDS.RDF.Query.Datasets
 
         #endregion
 
+        /// <summary>
+        /// Flushes any changes to the Dataset to the underlying Store if the Store is an <see cref="IFlushableStore">IFlushableStore</see>
+        /// </summary>
         public override void Flush()
         {
             if (this._store is IFlushableStore)

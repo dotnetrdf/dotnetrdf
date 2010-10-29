@@ -88,11 +88,11 @@ namespace VDS.Alexandria.Datasets
                     String uri = this._manager.DocumentManager.GraphRegistry.GetGraphUri(this._currDoc.Name);
                     if (uri != null && !uri.Equals(String.Empty))
                     {
-                        this._parser = new StreamingNTriplesParser(this._manager.DocumentManager.NodeFactory[new Uri(uri)], this._currDoc.BeginRead());
+                        this._parser = new StreamingNTriplesParser(this._manager.DocumentManager.GraphFactory[new Uri(uri)], this._currDoc.BeginRead());
                     }
                     else
                     {
-                        this._parser = new StreamingNTriplesParser(this._manager.DocumentManager.NodeFactory[null], this._currDoc.BeginRead());
+                        this._parser = new StreamingNTriplesParser(this._manager.DocumentManager.GraphFactory[null], this._currDoc.BeginRead());
                     }
                 }
             }
@@ -113,11 +113,11 @@ namespace VDS.Alexandria.Datasets
                     String uri = this._manager.DocumentManager.GraphRegistry.GetGraphUri(this._currDoc.Name);
                     if (uri != null && !uri.Equals(String.Empty))
                     {
-                        this._parser = new StreamingNTriplesParser(this._manager.DocumentManager.NodeFactory[new Uri(uri)], this._currDoc.BeginRead());
+                        this._parser = new StreamingNTriplesParser(this._manager.DocumentManager.GraphFactory[new Uri(uri)], this._currDoc.BeginRead());
                     }
                     else
                     {
-                        this._parser = new StreamingNTriplesParser(this._manager.DocumentManager.NodeFactory[null], this._currDoc.BeginRead());
+                        this._parser = new StreamingNTriplesParser(this._manager.DocumentManager.GraphFactory[null], this._currDoc.BeginRead());
                     }
                 }
                 else

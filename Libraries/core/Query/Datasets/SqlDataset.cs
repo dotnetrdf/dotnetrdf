@@ -48,11 +48,18 @@ using VDS.RDF.Writing;
 
 namespace VDS.RDF.Query.Datasets
 {
+    /// <summary>
+    /// Represents an out of memory dataset which is the data stored in a SQL Database using the dotNetRDF Store format
+    /// </summary>
     public class SqlDataset : BaseDataset
     {
         private IDotNetRDFStoreManager _manager;
-        private NodeFactory _factory = new NodeFactory();
+        private GraphFactory _factory = new GraphFactory();
 
+        /// <summary>
+        /// Creates a new SQL Dataset
+        /// </summary>
+        /// <param name="manager">Manager for a dotNetRDF format SQL Store</param>
         public SqlDataset(IDotNetRDFStoreManager manager)
         {
             this._manager = manager;
@@ -62,22 +69,38 @@ namespace VDS.RDF.Query.Datasets
             }
         }
 
+        /// <summary>
+        /// Adds a Graph to the Dataset
+        /// </summary>
+        /// <param name="g">Graph</param>
         public override void AddGraph(IGraph g)
         {
             SqlWriter writer = new SqlWriter(this._manager);
             writer.Save(g, true);
         }
 
+        /// <summary>
+        /// Removes a Graph from the Dataset
+        /// </summary>
+        /// <param name="graphUri">Graph URI</param>
         public override void RemoveGraph(Uri graphUri)
         {
             this._manager.RemoveGraph(this._manager.GetGraphID(graphUri));
         }
 
+        /// <summary>
+        /// Gets whether a Graph with the given URI is the Dataset
+        /// </summary>
+        /// <param name="graphUri">Graph URI</param>
+        /// <returns></returns>
         public override bool HasGraph(Uri graphUri)
         {
             return this._manager.Exists(graphUri);
         }
 
+        /// <summary>
+        /// Gets all the Graphs in the Dataset
+        /// </summary>
         public override IEnumerable<IGraph> Graphs
         {
             get 
@@ -87,6 +110,9 @@ namespace VDS.RDF.Query.Datasets
             }
         }
 
+        /// <summary>
+        /// Gets all the URIs of Graphs in the Dataset
+        /// </summary>
         public override IEnumerable<Uri> GraphUris
         {
             get 
@@ -95,6 +121,16 @@ namespace VDS.RDF.Query.Datasets
             }
         }
 
+        /// <summary>
+        /// Gets the Graph with the given URI from the Dataset
+        /// </summary>
+        /// <param name="graphUri">Graph URI</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// <para>
+        /// For SQL datasets the Graph returned from this property is no different from the Graph returned by the <see cref="InMemoryDataset.GetModifiableGraph">GetModifiableGraph()</see> method
+        /// </para>
+        /// </remarks>
         public override IGraph this[Uri graphUri]
         {
             get 
@@ -103,6 +139,11 @@ namespace VDS.RDF.Query.Datasets
             }
         }
 
+        /// <summary>
+        /// Gets whether the Dataset contains a specific Triple
+        /// </summary>
+        /// <param name="t">Triple</param>
+        /// <returns></returns>
         public override bool ContainsTriple(Triple t)
         {
             try
@@ -127,12 +168,21 @@ namespace VDS.RDF.Query.Datasets
             }
         }
 
+        /// <summary>
+        /// Gets all the Triples in the underlying SQL store
+        /// </summary>
+        /// <returns></returns>
         protected override IEnumerable<Triple> GetAllTriples()
         {
             String query = "SELECT * FROM GRAPH_TRIPLES G INNER JOIN TRIPLES T ON G.tripleID=T.tripleID";
             return new SqlTripleEnumerable(this._manager, this._factory, query);
         }
 
+        /// <summary>
+        /// Gets all the Triples in the Dataset with the given Subject
+        /// </summary>
+        /// <param name="subj">Subject</param>
+        /// <returns></returns>
         public override IEnumerable<Triple> GetTriplesWithSubject(INode subj)
         {
             this._manager.Open(true);
@@ -142,6 +192,11 @@ namespace VDS.RDF.Query.Datasets
             return ts;
         }
 
+        /// <summary>
+        /// Gets all the Triples in the Dataset with the given Predicate
+        /// </summary>
+        /// <param name="pred">Predicate</param>
+        /// <returns></returns>
         public override IEnumerable<Triple> GetTriplesWithPredicate(INode pred)
         {
             this._manager.Open(true);
@@ -151,6 +206,11 @@ namespace VDS.RDF.Query.Datasets
             return ts;
         }
 
+        /// <summary>
+        /// Gets all the Triples in the Dataset with the given Object
+        /// </summary>
+        /// <param name="obj">Object</param>
+        /// <returns></returns>
         public override IEnumerable<Triple> GetTriplesWithObject(INode obj)
         {
             this._manager.Open(true);
@@ -160,6 +220,12 @@ namespace VDS.RDF.Query.Datasets
             return ts;
         }
 
+        /// <summary>
+        /// Gets all the Triples in the Dataset with the given Subject and Predicate
+        /// </summary>
+        /// <param name="subj">Subject</param>
+        /// <param name="pred">Predicate</param>
+        /// <returns></returns>
         public override IEnumerable<Triple> GetTriplesWithSubjectPredicate(INode subj, INode pred)
         {
             this._manager.Open(true);
@@ -169,6 +235,12 @@ namespace VDS.RDF.Query.Datasets
             return ts;
         }
 
+        /// <summary>
+        /// Gets all the Triples in the Dataset with the given Subject and Object
+        /// </summary>
+        /// <param name="subj">Subject</param>
+        /// <param name="obj">Object</param>
+        /// <returns></returns>
         public override IEnumerable<Triple> GetTriplesWithSubjectObject(INode subj, INode obj)
         {
             this._manager.Open(true);
@@ -178,6 +250,12 @@ namespace VDS.RDF.Query.Datasets
             return ts;
         }
 
+        /// <summary>
+        /// Gets all the Triples in the Dataset with the given Predicate and Object
+        /// </summary>
+        /// <param name="pred">Predicate</param>
+        /// <param name="obj">Object</param>
+        /// <returns></returns>
         public override IEnumerable<Triple> GetTriplesWithPredicateObject(INode pred, INode obj)
         {
             this._manager.Open(true);
@@ -187,6 +265,9 @@ namespace VDS.RDF.Query.Datasets
             return ts;
         }
 
+        /// <summary>
+        /// Flushes any changes to the Dataset to the underlying SQL Store
+        /// </summary>
         public override void Flush()
         {
             this._manager.Flush();
@@ -199,9 +280,9 @@ namespace VDS.RDF.Query.Datasets
     {
         private IDotNetRDFStoreManager _manager;
         private String _query;
-        private NodeFactory _factory;
+        private GraphFactory _factory;
 
-        public SqlTripleEnumerable(IDotNetRDFStoreManager manager, NodeFactory factory, String query)
+        public SqlTripleEnumerable(IDotNetRDFStoreManager manager, GraphFactory factory, String query)
         {
             this._manager = manager;
             this._factory = factory;
@@ -222,12 +303,12 @@ namespace VDS.RDF.Query.Datasets
     class SqlTripleEnumerator : IEnumerator<Triple>
     {
         private IDotNetRDFStoreManager _manager;
-        private NodeFactory _factory;
+        private GraphFactory _factory;
         private String _query;
         private Triple _current;
         private DbDataReader _reader;
 
-        public SqlTripleEnumerator(IDotNetRDFStoreManager manager, NodeFactory factory, String query)
+        public SqlTripleEnumerator(IDotNetRDFStoreManager manager, GraphFactory factory, String query)
         {
             this._manager = manager;
             this._factory = factory;

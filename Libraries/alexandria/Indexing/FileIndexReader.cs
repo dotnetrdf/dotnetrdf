@@ -92,7 +92,7 @@ namespace VDS.Alexandria.Indexing
             if (this._parser == null)
             {
                 StreamReader reader = this._doc.BeginRead();
-                this._parser = new StreamingNQuadsParser(this._doc.DocumentManager.NodeFactory, reader);
+                this._parser = new StreamingNQuadsParser(this._doc.DocumentManager.GraphFactory, reader);
             }
 
             if (this._parser.EOF) return false;

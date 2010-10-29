@@ -227,6 +227,11 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Gets the URI of a Graph based on its ID in the Store
+        /// </summary>
+        /// <param name="graphID">Graph ID</param>
+        /// <returns></returns>
         public override Uri GetGraphUri(string graphID)
         {
             if (this._graphUris == null) this.LoadGraphUriMap();
@@ -1457,6 +1462,9 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Loads the Graph ID to URI Map
+        /// </summary>
         protected override void LoadGraphUriMap()
         {
             if (this._graphUris != null) return;

@@ -69,11 +69,11 @@ namespace VDS.Alexandria.Utilities
     class StreamingNQuadsParser
     {
         private ITokenQueue _tokens;
-        private NodeFactory _factory;
+        private GraphFactory _factory;
         private IGraph _g = new Graph();
         private bool _bof = true, _eof = false;
 
-        public StreamingNQuadsParser(NodeFactory factory, StreamReader reader)
+        public StreamingNQuadsParser(GraphFactory factory, StreamReader reader)
         {
             this._factory = factory; ;
 

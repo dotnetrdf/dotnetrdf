@@ -82,16 +82,16 @@ namespace VDS.Alexandria.Utilities
                     String uri = (String)currDoc["graphuri"];
                     if (uri != null && !uri.Equals(String.Empty))
                     {
-                        g = this._manager.NodeFactory[new Uri(uri)];
+                        g = this._manager.GraphFactory[new Uri(uri)];
                     } 
                     else 
                     {
-                        g = this._manager.NodeFactory[null];
+                        g = this._manager.GraphFactory[null];
                     }
                 } 
                 else 
                 {
-                    g = this._manager.NodeFactory[null];
+                    g = this._manager.GraphFactory[null];
                 }
 
                 //Parse the Triple Parts

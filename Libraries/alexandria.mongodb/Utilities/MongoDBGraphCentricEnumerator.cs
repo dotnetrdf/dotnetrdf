@@ -116,18 +116,18 @@ namespace VDS.Alexandria.Utilities
                     String uri = this._manager.GraphRegistry.GetGraphUri((String)this._nextDoc["name"]);
                     if (uri != null && !uri.Equals(String.Empty))
                     {
-                        g = this._manager.NodeFactory[new Uri(uri)];
+                        g = this._manager.GraphFactory[new Uri(uri)];
                         g.Clear();
                     }
                     else
                     {
-                        g = this._manager.NodeFactory[null];
+                        g = this._manager.GraphFactory[null];
                         g.Clear();
                     }
                 }
                 else
                 {
-                    g = this._manager.NodeFactory[null];
+                    g = this._manager.GraphFactory[null];
                     g.Clear();
                 }
                 

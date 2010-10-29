@@ -57,9 +57,9 @@ namespace VDS.Alexandria.Documents
         }
 
         /// <summary>
-        /// Gets the Node Factory which is used to return Nodes tied to a consistent Graph Reference throughout the life of the Manager
+        /// Gets the Graph Factory which is used to return consistent Graph Reference throughout the life of the Manager to allow for Nodes to be always returned in the correct Graph
         /// </summary>
-        NodeFactory NodeFactory
+        GraphFactory GraphFactory
         {
             get;
         }
