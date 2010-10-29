@@ -65,6 +65,12 @@ namespace VDS.RDF.Writing.Formatting
         public SparqlFormatter(INamespaceMapper nsmap)
             : base("SPARQL", new QNameOutputMapper(nsmap)) { }
 
+        /// <summary>
+        /// Formats a Variable Node in SPARQL Syntax
+        /// </summary>
+        /// <param name="v">Variable Node</param>
+        /// <param name="segment">Triple Segment</param>
+        /// <returns></returns>
         protected override string FormatVariableNode(VariableNode v, TripleSegment? segment)
         {
             return v.ToString();

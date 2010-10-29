@@ -141,6 +141,10 @@ namespace VDS.RDF.Query.Algebra
             return "Minus(" + this._lhs.ToString() + ", " + this._rhs.ToString() + ")";
         }
 
+        /// <summary>
+        /// Converts the Algebra back to a SPARQL Query
+        /// </summary>
+        /// <returns></returns>
         public SparqlQuery ToQuery()
         {
             SparqlQuery q = new SparqlQuery();

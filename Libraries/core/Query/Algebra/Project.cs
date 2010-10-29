@@ -53,6 +53,7 @@ namespace VDS.RDF.Query.Algebra
         /// Creates a new Projection
         /// </summary>
         /// <param name="pattern">Inner pattern</param>
+        /// <param name="variables">Variables that should be Projected</param>
         public Project(ISparqlAlgebra pattern, IEnumerable<SparqlVariable> variables)
         {
             this._pattern = pattern;
@@ -260,11 +261,20 @@ namespace VDS.RDF.Query.Algebra
             return "Project(" + this._pattern.ToString() + ")";
         }
 
+        /// <summary>
+        /// Converts the Algebra back to a SPARQL Query
+        /// </summary>
+        /// <returns></returns>
         public SparqlQuery ToQuery()
         {
             return this._pattern.ToQuery();
         }
 
+        /// <summary>
+        /// Converts the Algebra to a Graph Pattern
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="NotSupportedException">Thrown as this Algebra cannot be converted to a Graph Pattern</exception>
         public GraphPattern ToGraphPattern()
         {
             throw new NotSupportedException("A Project() cannot be converted to a GraphPattern");
@@ -359,6 +369,10 @@ namespace VDS.RDF.Query.Algebra
             return "Select(" + this._pattern.ToString() + ")";
         }
 
+        /// <summary>
+        /// Converts the Algebra back to a SPARQL Query
+        /// </summary>
+        /// <returns></returns>
         public SparqlQuery ToQuery()
         {
             SparqlQuery q = this._pattern.ToQuery();
@@ -457,6 +471,10 @@ namespace VDS.RDF.Query.Algebra
             return "Ask(" + this._pattern.ToString() + ")";
         }
 
+        /// <summary>
+        /// Converts the Algebra back to a SPARQL Query
+        /// </summary>
+        /// <returns></returns>
         public SparqlQuery ToQuery()
         {
             SparqlQuery q = this._pattern.ToQuery();

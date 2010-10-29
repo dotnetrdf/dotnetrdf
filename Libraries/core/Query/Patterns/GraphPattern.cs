@@ -446,7 +446,7 @@ namespace VDS.RDF.Query.Patterns
         #region Pattern Optimisation
 
         /// <summary>
-        /// Causes the Query to be optimised if it isn't already
+        /// Causes the Graph Pattern to be optimised if it isn't already
         /// </summary>
         /// <remarks>
         /// Variables that have occurred prior to this Pattern

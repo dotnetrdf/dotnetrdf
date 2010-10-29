@@ -64,6 +64,9 @@ namespace VDS.RDF.Update.Commands
             this._deletePattern = deletions;
             this._wherePattern = where;
             this._graphUri = graphUri;
+
+            //Optimise the WHERE
+            this._wherePattern.Optimise(Enumerable.Empty<String>());
         }
 
         /// <summary>
@@ -81,17 +84,17 @@ namespace VDS.RDF.Update.Commands
         /// <summary>
         /// Creates a new DELETE command 
         /// </summary>
-        /// <param name="deletions">Pattern to construct Triples to delete</param>
+        /// <param name="where">Pattern to construct Triples to delete</param>
         /// <param name="graphUri">URI of the affected Graph</param>
-        public DeleteCommand(GraphPattern deletions, Uri graphUri)
-            : this(deletions, null, graphUri) { }
+        public DeleteCommand(GraphPattern where, Uri graphUri)
+            : this(where, where, graphUri) { }
 
         /// <summary>
         /// Createa a new DELETE command which operates on the Default Graph
         /// </summary>
-        /// <param name="deletions">Pattern to construct Triples to delete</param>
-        public DeleteCommand(GraphPattern deletions)
-            : this(deletions, null, null) { }
+        /// <param name="where">Pattern to construct Triples to delete</param>
+        public DeleteCommand(GraphPattern where)
+            : this(where, where, null) { }
 
         /// <summary>
         /// Gets the URI of the Graph the deletions are made from

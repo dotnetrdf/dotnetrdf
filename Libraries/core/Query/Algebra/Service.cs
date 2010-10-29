@@ -215,6 +215,10 @@ namespace VDS.RDF.Query.Algebra
             return "Service(" + this._endpointSpecifier.Value + ", " + this._pattern.ToAlgebra().ToString() + ")";
         }
 
+        /// <summary>
+        /// Converts the Algebra back to a SPARQL Query
+        /// </summary>
+        /// <returns></returns>
         public SparqlQuery ToQuery()
         {
             SparqlQuery q = new SparqlQuery();

@@ -229,6 +229,10 @@ namespace VDS.RDF.Query.Algebra
             return "Graph(" + this._graphSpecifier.Value + ", " + this._pattern.ToString() + ")";
         }
 
+        /// <summary>
+        /// Converts the Algebra back to a SPARQL Query
+        /// </summary>
+        /// <returns></returns>
         public SparqlQuery ToQuery()
         {
             SparqlQuery q = new SparqlQuery();

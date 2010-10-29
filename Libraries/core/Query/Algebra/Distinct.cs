@@ -114,6 +114,10 @@ namespace VDS.RDF.Query.Algebra
             return "Distinct(" + this._pattern.ToString() + ")";
         }
 
+        /// <summary>
+        /// Converts the Algebra back to a SPARQL Query
+        /// </summary>
+        /// <returns></returns>
         public SparqlQuery ToQuery()
         {
             SparqlQuery q = this._pattern.ToQuery();
@@ -229,6 +233,10 @@ namespace VDS.RDF.Query.Algebra
             return "Reduced(" + this._pattern.ToString() + ")";
         }
 
+        /// <summary>
+        /// Converts the Algebra back to a SPARQL Query
+        /// </summary>
+        /// <returns></returns>
         public SparqlQuery ToQuery()
         {
             SparqlQuery q = this._pattern.ToQuery();

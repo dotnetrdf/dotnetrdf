@@ -118,6 +118,10 @@ namespace VDS.RDF.Query.Algebra
             return "SelectDistinctGraphs()";
         }
 
+        /// <summary>
+        /// Converts the Algebra back to a SPARQL Query
+        /// </summary>
+        /// <returns></returns>
         public SparqlQuery ToQuery()
         {
             SparqlQuery q = new SparqlQuery();

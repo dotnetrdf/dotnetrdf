@@ -207,6 +207,10 @@ namespace VDS.RDF.Query.Algebra
             return "Slice(" + this._pattern.ToString() + ", LIMIT " + this._limit + ", OFFSET " + this._offset + ")";
         }
 
+        /// <summary>
+        /// Converts the Algebra back to a SPARQL Query
+        /// </summary>
+        /// <returns></returns>
         public SparqlQuery ToQuery()
         {
             SparqlQuery q = this._pattern.ToQuery();

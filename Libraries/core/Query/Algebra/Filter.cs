@@ -137,6 +137,10 @@ namespace VDS.RDF.Query.Algebra
             return "Filter(" + this._pattern.ToString() + ", " + filter + ")";
         }
 
+        /// <summary>
+        /// Converts the Algebra back to a SPARQL Query
+        /// </summary>
+        /// <returns></returns>
         public SparqlQuery ToQuery()
         {
             SparqlQuery q = new SparqlQuery();

@@ -296,18 +296,25 @@ namespace VDS.RDF.Query.Expressions
 
                 SparqlNumericType type = (SparqlNumericType)Math.Max((int)a.NumericType(context, bindingID), (int)b.NumericType(context, bindingID));
 
-                switch (type)
+                try
                 {
-                    case SparqlNumericType.Integer:
-                    case SparqlNumericType.Decimal:
-                        //For Division Integers are treated as decimals
-                        return a.DecimalValue(context, bindingID) / b.DecimalValue(context, bindingID);
-                    case SparqlNumericType.Float:
-                        return a.FloatValue(context, bindingID) / b.FloatValue(context, bindingID);
-                    case SparqlNumericType.Double:
-                        return a.DoubleValue(context, bindingID) / b.DoubleValue(context, bindingID);
-                    default:
-                        throw new RdfQueryException("Cannot evalute an Arithmetic Expression when the Numeric Type of the expression cannot be determined");
+                    switch (type)
+                    {
+                        case SparqlNumericType.Integer:
+                        case SparqlNumericType.Decimal:
+                            //For Division Integers are treated as decimals
+                            return a.DecimalValue(context, bindingID) / b.DecimalValue(context, bindingID);
+                        case SparqlNumericType.Float:
+                            return a.FloatValue(context, bindingID) / b.FloatValue(context, bindingID);
+                        case SparqlNumericType.Double:
+                            return a.DoubleValue(context, bindingID) / b.DoubleValue(context, bindingID);
+                        default:
+                            throw new RdfQueryException("Cannot evalute an Arithmetic Expression when the Numeric Type of the expression cannot be determined");
+                    }
+                }
+                catch (DivideByZeroException)
+                {
+                    throw new RdfQueryException("Cannot evaluate a Division Expression where the divisor is Zero");
                 }
             }
             else
