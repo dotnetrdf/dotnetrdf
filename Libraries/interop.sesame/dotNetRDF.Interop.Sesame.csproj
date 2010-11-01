@@ -52,9 +52,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Sesame\DotNetRdfValueFactory.cs" />
+    <Compile Include="Sesame\JavaIteratorWrapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Sesame\DotNetRdfGraph.cs" />
     <Compile Include="Sesame\SesameConverter.cs" />
+    <Compile Include="Sesame\SesameGraph.cs" />
     <Compile Include="Sesame\SesameMapping.cs" />
+    <Compile Include="Sesame\SesameTripleCollection.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\core\dotNetRDF.csproj">

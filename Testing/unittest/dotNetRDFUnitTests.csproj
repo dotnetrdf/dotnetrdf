@@ -98,6 +98,14 @@
       <Project>{BFBAC159-1E60-4D03-8ACA-D34E31EB83BF}</Project>
       <Name>dotNetRDF</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Libraries\interop.jena\dotNetRDF.Interop.Jena.csproj">
+      <Project>{5DF56038-7FEE-40DA-92D5-49932924A32A}</Project>
+      <Name>dotNetRDF.Interop.Jena</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Libraries\interop.semweb\dotNetRDF.Interop.SemWeb.csproj">
+      <Project>{21512DB9-2795-4ED0-B3DB-910499A9D8AC}</Project>
+      <Name>dotNetRDF.Interop.SemWeb</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="resources\bad_rdfa.html">
