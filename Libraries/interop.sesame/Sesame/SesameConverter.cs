@@ -33,11 +33,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using dotSesame = org.openrdf.model;
+using java.util;
 
 namespace VDS.RDF.Interop.Sesame
 {
     public static class SesameConverter
     {
+
+        #region Conversion To Sesame API
 
         public static void ToSesame(IGraph g, dotSesame.Graph target)
         {
@@ -159,6 +162,133 @@ namespace VDS.RDF.Interop.Sesame
             }
         }
 
-                    
+        #endregion
+
+        #region Conversion From Sesame API
+
+        public static void FromSesame(dotSesame.Graph source, IGraph target)
+        {
+            SesameMapping mapping = new SesameMapping(target, source);
+            FromSesame(source, mapping, target);
+        }
+
+        public static void FromSesame(dotSesame.Graph source, SesameMapping mapping, IGraph target)
+        {
+            Iterator iter = source.iterator();
+            while (iter.hasNext())
+            {
+                dotSesame.Statement stmt = (dotSesame.Statement)iter.next();
+                target.Assert(FromSesame(stmt, mapping));
+            }
+        }
+
+        static Triple FromSesame(dotSesame.Statement statement, SesameMapping mapping)
+        {
+            return new Triple(FromSesameResource(statement.getSubject(), mapping), FromSesameUri(statement.getPredicate(), mapping), FromSesameValue(statement.getObject(), mapping));
+        }
+
+        static INode FromSesameResource(dotSesame.Resource resource, SesameMapping mapping)
+        {
+            if (resource is dotSesame.URI)
+            {
+                return mapping.Graph.CreateUriNode(new Uri(((dotSesame.URI)resource).stringValue()));
+            }
+            else if (resource is dotSesame.BNode)
+            {
+                dotSesame.BNode bnode = (dotSesame.BNode)resource;
+                if (mapping.InputMapping.ContainsKey(bnode))
+                {
+                    return mapping.InputMapping[bnode];
+                }
+                else
+                {
+                    INode n = mapping.Graph.CreateBlankNode();
+                    lock (mapping)
+                    {
+                        if (!mapping.InputMapping.ContainsKey(bnode))
+                        {
+                            mapping.InputMapping.Add(bnode, n);
+                        }
+                        else
+                        {
+                            n = mapping.InputMapping[bnode];
+                        }
+                        if (!mapping.OutputMapping.ContainsKey(n)) mapping.OutputMapping.Add(n, bnode);
+                    }
+                    return n;
+                }
+            }
+            else
+            {
+                throw new RdfException("Unable to convert unexpected Sesame Resource Type to a dotNetRDF INode");
+            }
+        }
+
+        static INode FromSesameUri(dotSesame.URI uri, SesameMapping mapping)
+        {
+            return mapping.Graph.CreateUriNode(new Uri(uri.stringValue()));
+        }
+
+        static Uri FromSesameUri(dotSesame.URI uri)
+        {
+            return new Uri(uri.stringValue());
+        }
+
+        static INode FromSesameValue(dotSesame.Value value, SesameMapping mapping)
+        {
+            if (value is dotSesame.URI)
+            {
+                return mapping.Graph.CreateUriNode(new Uri(((dotSesame.URI)value).stringValue()));
+            }
+            else if (value is dotSesame.Literal)
+            {
+                dotSesame.Literal lit = (dotSesame.Literal)value;
+                if (lit.getDatatype() != null)
+                {
+                    return mapping.Graph.CreateLiteralNode(lit.stringValue(), FromSesameUri(lit.getDatatype()));
+                }
+                else if (lit.getLanguage() != null)
+                {
+                    return mapping.Graph.CreateLiteralNode(lit.stringValue(), lit.getLanguage());
+                }
+                else
+                {
+                    return mapping.Graph.CreateLiteralNode(lit.stringValue());
+                }
+            }
+            else if (value is dotSesame.BNode)
+            {
+                dotSesame.BNode bnode = (dotSesame.BNode)value;
+                if (mapping.InputMapping.ContainsKey(bnode))
+                {
+                    return mapping.InputMapping[bnode];
+                }
+                else
+                {
+                    INode n = mapping.Graph.CreateBlankNode();
+                    lock (mapping)
+                    {
+                        if (!mapping.InputMapping.ContainsKey(bnode))
+                        {
+                            mapping.InputMapping.Add(bnode, n);
+                        }
+                        else
+                        {
+                            n = mapping.InputMapping[bnode];
+                        }
+                        if (!mapping.OutputMapping.ContainsKey(n)) mapping.OutputMapping.Add(n, bnode);
+                    }
+                    return n;
+                }
+            }
+            else
+            {
+                throw new RdfException("Unable to convert unexpected Sesame Value Type to a dotNetRDF INode");
+            }
+        }
+
+        #endregion
+
+
     }
 }
