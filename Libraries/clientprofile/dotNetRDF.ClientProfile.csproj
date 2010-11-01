@@ -1,0 +1,1413 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{5B3596B5-DB36-45B6-AC58-1B505E78FB86}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VDS.RDF</RootNamespace>
+    <AssemblyName>dotNetRDF.ClientProfile</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkSubset>Client</TargetFrameworkSubset>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NO_WEB</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\dotNetRDF.ClientProfile.XML</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="HtmlAgilityPack, Version=1.4.0.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Dependencies\HtmlAgilityPack.dll</HintPath>
+    </Reference>
+    <Reference Include="MySql.Data, Version=6.0.3.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Dependencies\MySql.Data.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=3.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Dependencies\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="virtado3, Version=6.1.3127.2, Culture=neutral, PublicKeyToken=391bf132017ae989, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Dependencies\virtado3.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <ItemGroup>
+    <Compile Include="..\core\Core\BackgroundPersistedGraph.cs">
+      <Link>Core\BackgroundPersistedGraph.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Core\BaseGraph.cs">
+      <Link>Core\BaseGraph.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Core\BaseGraphCollection.cs">
+      <Link>Core\BaseGraphCollection.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Core\BaseNodeCollection.cs">
+      <Link>Core\BaseNodeCollection.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Core\BaseTripleStore.cs">
+      <Link>Core\BaseTripleStore.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Core\StoreGraph.cs">
+      <Link>Core\StoreGraph.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Core\Extensions.cs">
+      <Link>Core\Extensions.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Core\ISparqlResultsReader.cs">
+      <Link>Core\ISparqlResultsReader.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Core\ISparqlResultsWriter.cs">
+      <Link>Core\ISparqlResultsWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Core\BaseTripleCollection.cs">
+      <Link>Core\BaseTripleCollection.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Core\Options.cs">
+      <Link>Core\Options.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Core\OnDemandTripleStore.cs">
+      <Link>Core\OnDemandTripleStore.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Core\TalisGraph.cs">
+      <Link>Core\TalisGraph.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Core\TalisTripleStore.cs">
+      <Link>Core\TalisTripleStore.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Core\ThreadSafeGraph.cs">
+      <Link>Core\ThreadSafeGraph.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Core\ThreadSafeSqlGraph.cs">
+      <Link>Core\ThreadSafeSqlGraph.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Core\WriteOnlySqlGraph.cs">
+      <Link>Core\WriteOnlySqlGraph.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Exceptions.cs">
+      <Link>Exceptions.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\BlockingStreamReader.cs">
+      <Link>Parsing\BlockingStreamReader.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\CommentIgnoringJsonTextReader.cs">
+      <Link>Parsing\CommentIgnoringJsonTextReader.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\GenericReader.cs">
+      <Link>Parsing\GenericReader.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\Tokens\NTriplesTokeniser.cs">
+      <Link>Parsing\Tokens\NTriplesTokeniser.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\FolderStoreReader.cs">
+      <Link>Parsing\FolderStoreReader.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\RdfJsonParser.cs">
+      <Link>Parsing\RdfJsonParser.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\RdfSpecsHelper.cs">
+      <Link>Parsing\RdfSpecsHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\SparqlJsonParser.cs">
+      <Link>Parsing\SparqlJsonParser.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\SparqlXmlParser.cs">
+      <Link>Parsing\SparqlXmlParser.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\SqlReader.cs">
+      <Link>Parsing\SqlReader.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\StringParser.cs">
+      <Link>Parsing\StringParser.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\TalisReader.cs">
+      <Link>Parsing\TalisReader.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\Tokens\BaseTokeniser.cs">
+      <Link>Parsing\Tokens\BaseTokeniser.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\TriGParser.cs">
+      <Link>Parsing\TriGParser.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\Tokens\TriGTokeniser.cs">
+      <Link>Parsing\Tokens\TriGTokeniser.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\TurtleSpecsHelper.cs">
+      <Link>Parsing\TurtleSpecsHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\VirtuosoReader.cs">
+      <Link>Parsing\VirtuosoReader.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Patterns\GraphPattern.cs">
+      <Link>Query\Patterns\GraphPattern.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Expressions\ISparqlCustomExpressionFactory.cs">
+      <Link>Query\Expressions\ISparqlCustomExpressionFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Expressions\SparqlExpressionClasses.cs">
+      <Link>Query\Expressions\SparqlExpressionClasses.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Expressions\SparqlExpressionFactory.cs">
+      <Link>Query\Expressions\SparqlExpressionFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Filters\SparqlFilterClasses.cs">
+      <Link>Query\Filters\SparqlFilterClasses.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Ordering\SparqlOrderByClasses.cs">
+      <Link>Query\Ordering\SparqlOrderByClasses.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Patterns\SparqlPatternClasses.cs">
+      <Link>Query\Patterns\SparqlPatternClasses.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Patterns\TriplePattern.cs">
+      <Link>Query\Patterns\TriplePattern.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Expressions\Functions\XPathCastFunctions.cs">
+      <Link>Query\Expressions\Functions\XPathCastFunctions.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\SparqlExpressionParser.cs">
+      <Link>Query\SparqlExpressionParser.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\SparqlResult.cs">
+      <Link>Query\SparqlResult.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\SparqlResultBinder.cs">
+      <Link>Query\SparqlResultBinder.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\SparqlVariable.cs">
+      <Link>Query\SparqlVariable.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\Events\BaseEvent.cs">
+      <Link>Parsing\Events\BaseEvent.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\Tokens\BaseToken.cs">
+      <Link>Parsing\Tokens\BaseToken.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\BasicSelectors.cs">
+      <Link>Query\BasicSelectors.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Core\BlankNode.cs">
+      <Link>Core\BlankNode.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\BlankNodeSelectors.cs">
+      <Link>Query\BlankNodeSelectors.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\Tokens\BufferedTokenQueue.cs">
+      <Link>Parsing\Tokens\BufferedTokenQueue.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\ComparisonSelectors.cs">
+      <Link>Query\ComparisonSelectors.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\SparqlQuery.cs">
+      <Link>Query\SparqlQuery.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\SparqlQueryParser.cs">
+      <Link>Parsing\SparqlQueryParser.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\Tokens\SparqlTokeniser.cs">
+      <Link>Parsing\Tokens\SparqlTokeniser.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Core\Graph.cs">
+      <Link>Core\Graph.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Core\GraphCollection.cs">
+      <Link>Core\GraphCollection.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Core\GraphLiteralNode.cs">
+      <Link>Core\GraphLiteralNode.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Storage\BaseStoreManager.cs">
+      <Link>Storage\BaseStoreManager.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Storage\FolderStores.cs">
+      <Link>Storage\FolderStores.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Storage\IGenericIOManager.cs">
+      <Link>Storage\IGenericIOManager.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Storage\Params\FolderStoreParams.cs">
+      <Link>Storage\Params\FolderStoreParams.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Storage\Params\StreamParams.cs">
+      <Link>Storage\Params\StreamParams.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Storage\Params\IStoreParams.cs">
+      <Link>Storage\Params\IStoreParams.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Storage\Params\SqlIOParams.cs">
+      <Link>Storage\Params\SqlIOParams.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Storage\TalisPlatformConnector.cs">
+      <Link>Storage\TalisPlatformConnector.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Storage\VirtuosoManager.cs">
+      <Link>Storage\VirtuosoManager.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Web\BaseResourceHandler.cs">
+      <Link>Web\BaseResourceHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Web\HandlerConstants.cs">
+      <Link>Web\HandlerConstants.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Web\RemoteSparqlHandler.cs">
+      <Link>Web\RemoteSparqlHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Web\Configuration\Query\RemoteSparqlHandlerConfiguration.cs">
+      <Link>Web\Configuration\Query\RemoteSparqlHandlerConfiguration.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Web\SparqlHandler.cs">
+      <Link>Web\SparqlHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Web\Configuration\Query\SqlSparqlHandlerConfiguration.cs">
+      <Link>Web\Configuration\Query\SqlSparqlHandlerConfiguration.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Web\SqlResourceHandler.cs">
+      <Link>Web\SqlResourceHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Web\Configuration\Resource\SqlResourceHandlerConfiguration.cs">
+      <Link>Web\Configuration\Resource\SqlResourceHandlerConfiguration.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\CompressingTurtleWriter.cs">
+      <Link>Writing\CompressingTurtleWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\FolderStoreWriter.cs">
+      <Link>Writing\FolderStoreWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\GraphVizGenerator.cs">
+      <Link>Writing\GraphVizGenerator.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\GraphVizWriter.cs">
+      <Link>Writing\GraphVizWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Core\IGraph.cs">
+      <Link>Core\IGraph.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Core\INode.cs">
+      <Link>Core\INode.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Core\IRdfReader.cs">
+      <Link>Core\IRdfReader.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Core\IRdfTranslator.cs">
+      <Link>Core\IRdfTranslator.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Core\IRdfWriter.cs">
+      <Link>Core\IRdfWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\Events\IRdfXmlEvent.cs">
+      <Link>Parsing\Events\IRdfXmlEvent.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Core\ISelector.cs">
+      <Link>Core\ISelector.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Storage\ISqlIOManager.cs">
+      <Link>Storage\ISqlIOManager.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Core\IStoreReader.cs">
+      <Link>Core\IStoreReader.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Core\IStoreWriter.cs">
+      <Link>Core\IStoreWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\Tokens\IToken.cs">
+      <Link>Parsing\Tokens\IToken.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\Tokens\ITokeniser.cs">
+      <Link>Parsing\Tokens\ITokeniser.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\Tokens\ITokenQueue.cs">
+      <Link>Parsing\Tokens\ITokenQueue.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Core\ITripleContext.cs">
+      <Link>Core\ITripleContext.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Core\ITripleStore.cs">
+      <Link>Core\ITripleStore.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Core\LiteralNode.cs">
+      <Link>Core\LiteralNode.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\LogicalSelectors.cs">
+      <Link>Query\LogicalSelectors.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Core\MimeTypesHelper.cs">
+      <Link>Core\MimeTypesHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\core\NamespaceDocs.cs">
+      <Link>NamespaceDocs.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Core\NamespaceMapper.cs">
+      <Link>Core\NamespaceMapper.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\NTriplesParser.cs">
+      <Link>Parsing\NTriplesParser.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\Tokens\Notation3Tokeniser.cs">
+      <Link>Parsing\Tokens\Notation3Tokeniser.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\InternalXmlWriter.cs">
+      <Link>Writing\InternalXmlWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\RdfSchemaInferenceSelectors.cs">
+      <Link>Query\RdfSchemaInferenceSelectors.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\RdfXmlTreeWriter.cs">
+      <Link>Writing\RdfXmlTreeWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Translation\SimpleTranslator.cs">
+      <Link>Translation\SimpleTranslator.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\SparqlRemoteEndpoint.cs">
+      <Link>Query\SparqlRemoteEndpoint.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\SparqlResultSet.cs">
+      <Link>Query\SparqlResultSet.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\SparqlSpecsHelper.cs">
+      <Link>Query\SparqlSpecsHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Core\SqlGraph.cs">
+      <Link>Core\SqlGraph.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\SparqlHtmlWriter.cs">
+      <Link>Writing\SparqlHtmlWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\SparqlJsonWriter.cs">
+      <Link>Writing\SparqlJsonWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\SparqlXmlWriter.cs">
+      <Link>Writing\SparqlXmlWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\SqlStoreWriter.cs">
+      <Link>Writing\SqlStoreWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Core\SqlTripleStore.cs">
+      <Link>Core\SqlTripleStore.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\SqlWriter.cs">
+      <Link>Writing\SqlWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Core\TripleStore.cs">
+      <Link>Core\TripleStore.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\StringWriter.cs">
+      <Link>Writing\StringWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\TalisWriter.cs">
+      <Link>Writing\TalisWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\TriGWriter.cs">
+      <Link>Writing\TriGWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\NTriplesWriter.cs">
+      <Link>Writing\NTriplesWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Core\Tools.cs">
+      <Link>Core\Tools.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\Tokens\TurtleTokeniser.cs">
+      <Link>Parsing\Tokens\TurtleTokeniser.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\Tokens\Tokens.cs">
+      <Link>Parsing\Tokens\Tokens.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\UnicodeSpecsHelper.cs">
+      <Link>Parsing\UnicodeSpecsHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\UriLoader.cs">
+      <Link>Parsing\UriLoader.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Core\UriNode.cs">
+      <Link>Core\UriNode.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Core\NodeCollection.cs">
+      <Link>Core\NodeCollection.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Core\Triple.cs">
+      <Link>Core\Triple.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Core\TripleCollection.cs">
+      <Link>Core\TripleCollection.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\Events\XmlEvents.cs">
+      <Link>Parsing\Events\XmlEvents.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\RdfXmlParser.cs">
+      <Link>Parsing\RdfXmlParser.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\XmlSpecsHelper.cs">
+      <Link>Parsing\XmlSpecsHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\WriterUtilities.cs">
+      <Link>Writing\WriterUtilities.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\core\Configuration\CachedObjectKey.cs">
+      <Link>Configuration\CachedObjectKey.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Configuration\ConfigurationSerializationContext.cs">
+      <Link>Configuration\ConfigurationSerializationContext.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Configuration\CredentialsFactory.cs">
+      <Link>Configuration\CredentialsFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Configuration\DataFactories.cs">
+      <Link>Configuration\DataFactories.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Configuration\EndpointFactories.cs">
+      <Link>Configuration\EndpointFactories.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Configuration\ExpressionFactoryFactory.cs">
+      <Link>Configuration\ExpressionFactoryFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Configuration\PermissionFactories.cs">
+      <Link>Configuration\PermissionFactories.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Configuration\Permissions\Permission.cs">
+      <Link>Configuration\Permissions\Permission.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Configuration\Permissions\UserGroup.cs">
+      <Link>Configuration\Permissions\UserGroup.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Configuration\ProcessorFactories.cs">
+      <Link>Configuration\ProcessorFactories.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Configuration\ObjectFactoryFactory.cs">
+      <Link>Configuration\ObjectFactoryFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Configuration\ProxyFactory.cs">
+      <Link>Configuration\ProxyFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Configuration\ReasonerFactory.cs">
+      <Link>Configuration\ReasonerFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Core\BaseEndpoint.cs">
+      <Link>Core\BaseEndpoint.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Core\BlankNodeMapper.cs">
+      <Link>Core\BlankNodeMapper.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Core\DiskDemandTripleStore.cs">
+      <Link>Core\DiskDemandTripleStore.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Core\INamespaceMapper.cs">
+      <Link>Core\INamespaceMapper.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Core\NestedNamespaceMapper.cs">
+      <Link>Core\NestedNamespaceMapper.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Core\SubGraphMatcher.cs">
+      <Link>Core\SubGraphMatcher.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Core\GraphMatcher.cs">
+      <Link>Core\GraphMatcher.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Core\QueryableGraph.cs">
+      <Link>Core\QueryableGraph.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Core\UnionCollections.cs">
+      <Link>Core\UnionCollections.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Core\WebDemandTripleStore.cs">
+      <Link>Core\WebDemandTripleStore.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Core\NativeTripleStore.cs">
+      <Link>Core\NativeTripleStore.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Core\VirtuosoTripleStore.cs">
+      <Link>Core\VirtuosoTripleStore.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Events.cs">
+      <Link>Events.cs</Link>
+    </Compile>
+    <Compile Include="..\core\HashTable.cs">
+      <Link>HashTable.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Indexing.cs">
+      <Link>Indexing.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Ontology\Individual.cs">
+      <Link>Ontology\Individual.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Ontology\Ontology.cs">
+      <Link>Ontology\Ontology.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Ontology\OntologyClass.cs">
+      <Link>Ontology\OntologyClass.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Ontology\OntologyGraph.cs">
+      <Link>Ontology\OntologyGraph.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Ontology\OntologyHelper.cs">
+      <Link>Ontology\OntologyHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Ontology\OntologyProperty.cs">
+      <Link>Ontology\OntologyProperty.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Ontology\OntologyResource.cs">
+      <Link>Ontology\OntologyResource.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Ontology\ReasonerGraph.cs">
+      <Link>Ontology\ReasonerGraph.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\Contexts\BaseParserContext.cs">
+      <Link>Parsing\Contexts\BaseParserContext.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\Contexts\BaseStoreParserContext.cs">
+      <Link>Parsing\Contexts\BaseStoreParserContext.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\Contexts\FolderStoreParserContext.cs">
+      <Link>Parsing\Contexts\FolderStoreParserContext.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\Contexts\JsonParserContext.cs">
+      <Link>Parsing\Contexts\JsonParserContext.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\Contexts\Notation3ParserContext.cs">
+      <Link>Parsing\Contexts\Notation3ParserContext.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\Contexts\RdfAParserContext.cs">
+      <Link>Parsing\Contexts\RdfAParserContext.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\Contexts\RdfXmlParserContext.cs">
+      <Link>Parsing\Contexts\RdfXmlParserContext.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\Contexts\SparqlQueryParserContext.cs">
+      <Link>Parsing\Contexts\SparqlQueryParserContext.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\Contexts\SparqlUpdateParserContext.cs">
+      <Link>Parsing\Contexts\SparqlUpdateParserContext.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\Contexts\TriGParserContext.cs">
+      <Link>Parsing\Contexts\TriGParserContext.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\Events\DomBasedEventGenerator.cs">
+      <Link>Parsing\Events\DomBasedEventGenerator.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\Events\EventQueue.cs">
+      <Link>Parsing\Events\EventQueue.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\Events\IEventGenerator.cs">
+      <Link>Parsing\Events\IEventGenerator.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\Events\IEventQueue.cs">
+      <Link>Parsing\Events\IEventQueue.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\IRdfAVocabulary.cs">
+      <Link>Parsing\IRdfAVocabulary.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\IriSpecsHelper.cs">
+      <Link>Parsing\IriSpecsHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\Notation3Parser.cs">
+      <Link>Parsing\Notation3Parser.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\FileLoader.cs">
+      <Link>Parsing\FileLoader.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\ParserHelper.cs">
+      <Link>Parsing\ParserHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\PositionInfo.cs">
+      <Link>Parsing\PositionInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\RdfAParser.cs">
+      <Link>Parsing\RdfAParser.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\RdfXmlSpecsHelper.cs">
+      <Link>Parsing\RdfXmlSpecsHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\Events\StreamingEventGenerator.cs">
+      <Link>Parsing\Events\StreamingEventGenerator.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\SparqlRdfParser.cs">
+      <Link>Parsing\SparqlRdfParser.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\SparqlUpdateParser.cs">
+      <Link>Parsing\SparqlUpdateParser.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\Tokens\PathToken.cs">
+      <Link>Parsing\Tokens\PathToken.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\Tokens\SparqlTokens.cs">
+      <Link>Parsing\Tokens\SparqlTokens.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\Tokens\SparqlUpdateTokens.cs">
+      <Link>Parsing\Tokens\SparqlUpdateTokens.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\Tokens\Token.cs">
+      <Link>Parsing\Tokens\Token.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\TurtleParser.cs">
+      <Link>Parsing\TurtleParser.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\NQuadsParser.cs">
+      <Link>Parsing\NQuadsParser.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\SparqlBooleanParser.cs">
+      <Link>Parsing\SparqlBooleanParser.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\TriXParser.cs">
+      <Link>Parsing\TriXParser.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\UriLoaderCache.cs">
+      <Link>Parsing\UriLoaderCache.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\Validation\ISyntaxValidator.cs">
+      <Link>Parsing\Validation\ISyntaxValidator.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\Validation\RdfDatasetSyntaxValidator.cs">
+      <Link>Parsing\Validation\RdfDatasetSyntaxValidator.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\Validation\RdfSyntaxValidator.cs">
+      <Link>Parsing\Validation\RdfSyntaxValidator.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\Validation\SparqlQueryValidator.cs">
+      <Link>Parsing\Validation\SparqlQueryValidator.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\Validation\SparqlResultsValidator.cs">
+      <Link>Parsing\Validation\SparqlResultsValidator.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\Validation\SparqlUpdateValidator.cs">
+      <Link>Parsing\Validation\SparqlUpdateValidator.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\Validation\SyntaxValidationResults.cs">
+      <Link>Parsing\Validation\SyntaxValidationResults.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Aggregates\BaseAggregate.cs">
+      <Link>Query\Aggregates\BaseAggregate.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Aggregates\LeviathanBooleanAggregates.cs">
+      <Link>Query\Aggregates\LeviathanBooleanAggregates.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Aggregates\LeviathanNumericAggregates.cs">
+      <Link>Query\Aggregates\LeviathanNumericAggregates.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Algebra\AskBgp.cs">
+      <Link>Query\Algebra\AskBgp.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Algebra\BaseMultiset.cs">
+      <Link>Query\Algebra\BaseMultiset.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Algebra\Bgp.cs">
+      <Link>Query\Algebra\Bgp.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Algebra\Bindings.cs">
+      <Link>Query\Algebra\Bindings.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Algebra\IAlgebraTransfomer.cs">
+      <Link>Query\Algebra\IAlgebraTransfomer.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Algebra\LazyBgp.cs">
+      <Link>Query\Algebra\LazyBgp.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Algebra\Distinct.cs">
+      <Link>Query\Algebra\Distinct.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Algebra\Filter.cs">
+      <Link>Query\Algebra\Filter.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Algebra\Graph.cs">
+      <Link>Query\Algebra\Graph.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Algebra\GroupBy.cs">
+      <Link>Query\Algebra\GroupBy.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Algebra\GroupMultiset.cs">
+      <Link>Query\Algebra\GroupMultiset.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Algebra\Having.cs">
+      <Link>Query\Algebra\Having.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Algebra\IdentityMultiset.cs">
+      <Link>Query\Algebra\IdentityMultiset.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Algebra\ISparqlAlgebra.cs">
+      <Link>Query\Algebra\ISparqlAlgebra.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Algebra\AlgebraJoinClasses.cs">
+      <Link>Query\Algebra\AlgebraJoinClasses.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Algebra\BgpTransformers.cs">
+      <Link>Query\Algebra\BgpTransformers.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Algebra\Minus.cs">
+      <Link>Query\Algebra\Minus.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Algebra\Multiset.cs">
+      <Link>Query\Algebra\Multiset.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Algebra\NullMultiset.cs">
+      <Link>Query\Algebra\NullMultiset.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Algebra\OrderBy.cs">
+      <Link>Query\Algebra\OrderBy.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Algebra\Project.cs">
+      <Link>Query\Algebra\Project.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Algebra\Service.cs">
+      <Link>Query\Algebra\Service.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Algebra\Set.cs">
+      <Link>Query\Algebra\Set.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Algebra\Slice.cs">
+      <Link>Query\Algebra\Slice.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Algebra\SpecialQueryClasses.cs">
+      <Link>Query\Algebra\SpecialQueryClasses.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Construct\ConstructContext.cs">
+      <Link>Query\Construct\ConstructContext.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Describe\ConciseBoundedDescription.cs">
+      <Link>Query\Describe\ConciseBoundedDescription.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Describe\NamedGraphDescription.cs">
+      <Link>Query\Describe\NamedGraphDescription.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Expressions\AggregateExpressions.cs">
+      <Link>Query\Expressions\AggregateExpressions.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Expressions\ArqFunctionFactory.cs">
+      <Link>Query\Expressions\ArqFunctionFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Expressions\BaseExpressionClasses.cs">
+      <Link>Query\Expressions\BaseExpressionClasses.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Expressions\Functions\BaseHashFunction.cs">
+      <Link>Query\Expressions\Functions\BaseHashFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Expressions\Functions\LeviathanCartesianFunctions.cs">
+      <Link>Query\Expressions\Functions\LeviathanCartesianFunctions.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Expressions\Functions\LeviathanNumericFunctions.cs">
+      <Link>Query\Expressions\Functions\LeviathanNumericFunctions.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Expressions\Functions\LeviathanStringFunctions.cs">
+      <Link>Query\Expressions\Functions\LeviathanStringFunctions.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Expressions\Functions\LeviathanTrigonometricFunctions.cs">
+      <Link>Query\Expressions\Functions\LeviathanTrigonometricFunctions.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Expressions\Functions\SparqlCoalesceFunction.cs">
+      <Link>Query\Expressions\Functions\SparqlCoalesceFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Expressions\Functions\SparqlExistsFunction.cs">
+      <Link>Query\Expressions\Functions\SparqlExistsFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Expressions\Functions\SparqlIfFunction.cs">
+      <Link>Query\Expressions\Functions\SparqlIfFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Expressions\Functions\SparqlSetFunctions.cs">
+      <Link>Query\Expressions\Functions\SparqlSetFunctions.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Expressions\LeviathanFunctionFactory.cs">
+      <Link>Query\Expressions\LeviathanFunctionFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Expressions\Functions\ArqGraphFunctions.cs">
+      <Link>Query\Expressions\Functions\ArqGraphFunctions.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Expressions\Functions\ArqMiscellaneousFunctions.cs">
+      <Link>Query\Expressions\Functions\ArqMiscellaneousFunctions.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Expressions\Functions\ArqNumericFunctions.cs">
+      <Link>Query\Expressions\Functions\ArqNumericFunctions.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Expressions\Functions\ArqStringFunctions.cs">
+      <Link>Query\Expressions\Functions\ArqStringFunctions.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Expressions\Functions\SparqlBuiltInFunctions.cs">
+      <Link>Query\Expressions\Functions\SparqlBuiltInFunctions.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Expressions\Functions\XPathBooleanFunctions.cs">
+      <Link>Query\Expressions\Functions\XPathBooleanFunctions.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Expressions\PrimaryExpressions.cs">
+      <Link>Query\Expressions\PrimaryExpressions.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Expressions\SparqlNumericExpressions.cs">
+      <Link>Query\Expressions\SparqlNumericExpressions.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Describe\ISparqlDescribe.cs">
+      <Link>Query\Describe\ISparqlDescribe.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Inference\InferenceHelper.cs">
+      <Link>Query\Inference\InferenceHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Inference\IOwlReasoner.cs">
+      <Link>Query\Inference\IOwlReasoner.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Inference\OwlReasonerWrapper.cs">
+      <Link>Query\Inference\OwlReasonerWrapper.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Inference\PelletReasoner.cs">
+      <Link>Query\Inference\PelletReasoner.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Inference\Pellet\Services\NamespaceService.cs">
+      <Link>Query\Inference\Pellet\Services\NamespaceService.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\PelletQueryProcessor.cs">
+      <Link>Query\PelletQueryProcessor.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Inference\Pellet\ServiceEndpoint.cs">
+      <Link>Query\Inference\Pellet\ServiceEndpoint.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Inference\Pellet\KnowledgeBase.cs">
+      <Link>Query\Inference\Pellet\KnowledgeBase.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Inference\Pellet\PelletHelper.cs">
+      <Link>Query\Inference\Pellet\PelletHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Inference\Pellet\PelletServer.cs">
+      <Link>Query\Inference\Pellet\PelletServer.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Inference\Pellet\PelletService.cs">
+      <Link>Query\Inference\Pellet\PelletService.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Inference\Pellet\Services\ClassifyService.cs">
+      <Link>Query\Inference\Pellet\Services\ClassifyService.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Inference\Pellet\Services\ConsistencyService.cs">
+      <Link>Query\Inference\Pellet\Services\ConsistencyService.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Inference\Pellet\Services\ExplainServices.cs">
+      <Link>Query\Inference\Pellet\Services\ExplainServices.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Inference\Pellet\Services\QueryService.cs">
+      <Link>Query\Inference\Pellet\Services\QueryService.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Inference\Pellet\Services\RealizeService.cs">
+      <Link>Query\Inference\Pellet\Services\RealizeService.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Inference\Pellet\Services\SearchService.cs">
+      <Link>Query\Inference\Pellet\Services\SearchService.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Inference\Pellet\Services\UnsupportedService.cs">
+      <Link>Query\Inference\Pellet\Services\UnsupportedService.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\ISparqlQueryProcessor.cs">
+      <Link>Query\ISparqlQueryProcessor.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\LeviathanQueryProcessor.cs">
+      <Link>Query\LeviathanQueryProcessor.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Ordering\ISparqlOrderBy.cs">
+      <Link>Query\Ordering\ISparqlOrderBy.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Paths\AlternativePath.cs">
+      <Link>Query\Paths\AlternativePath.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Paths\BaseBinaryPath.cs">
+      <Link>Query\Paths\BaseBinaryPath.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Paths\BaseUnaryPath.cs">
+      <Link>Query\Paths\BaseUnaryPath.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Paths\CardinalityPathClasses.cs">
+      <Link>Query\Paths\CardinalityPathClasses.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Paths\InversePath.cs">
+      <Link>Query\Paths\InversePath.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Paths\ISparqlPath.cs">
+      <Link>Query\Paths\ISparqlPath.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Paths\PartialPath.cs">
+      <Link>Query\Paths\PartialPath.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Paths\PathEvaluationContext.cs">
+      <Link>Query\Paths\PathEvaluationContext.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Paths\PathTransformContext.cs">
+      <Link>Query\Paths\PathTransformContext.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Paths\Property.cs">
+      <Link>Query\Paths\Property.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Paths\SequencePath.cs">
+      <Link>Query\Paths\SequencePath.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Patterns\BaseTriplePattern.cs">
+      <Link>Query\Patterns\BaseTriplePattern.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Patterns\BindingsPattern.cs">
+      <Link>Query\Patterns\BindingsPattern.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Patterns\FilterPattern.cs">
+      <Link>Query\Patterns\FilterPattern.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Filters\ISparqlFilter.cs">
+      <Link>Query\Filters\ISparqlFilter.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Patterns\ITriplePattern.cs">
+      <Link>Query\Patterns\ITriplePattern.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Patterns\LetPattern.cs">
+      <Link>Query\Patterns\LetPattern.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Patterns\PropertyPathPattern.cs">
+      <Link>Query\Patterns\PropertyPathPattern.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Patterns\SubQueryPattern.cs">
+      <Link>Query\Patterns\SubQueryPattern.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Expressions\Functions\XPathDateTimeFunctions.cs">
+      <Link>Query\Expressions\Functions\XPathDateTimeFunctions.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Expressions\XPathFunctionFactory.cs">
+      <Link>Query\Expressions\XPathFunctionFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Expressions\Functions\XPathNumericFunctions.cs">
+      <Link>Query\Expressions\Functions\XPathNumericFunctions.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Expressions\Functions\XPathStringFunctions.cs">
+      <Link>Query\Expressions\Functions\XPathStringFunctions.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\QueryProcessors.cs">
+      <Link>Query\QueryProcessors.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\SparqlEvaluationContext.cs">
+      <Link>Query\SparqlEvaluationContext.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\SparqlNodeComparer.cs">
+      <Link>Query\SparqlNodeComparer.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\SparqlParameterizedString.cs">
+      <Link>Query\SparqlParameterizedString.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\SparqlPathParser.cs">
+      <Link>Query\SparqlPathParser.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\SparqlView.cs">
+      <Link>Query\SparqlView.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Storage\DatasetFileManager.cs">
+      <Link>Storage\DatasetFileManager.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Storage\Params\GenericIOParams.cs">
+      <Link>Storage\Params\GenericIOParams.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Storage\SparqlConnector.cs">
+      <Link>Storage\SparqlConnector.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Storage\SparqlHttpProtocolConnector.cs">
+      <Link>Storage\SparqlHttpProtocolConnector.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Update\Commands\BaseModifyCommand.cs">
+      <Link>Update\Commands\BaseModifyCommand.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Update\Commands\ClearCommand.cs">
+      <Link>Update\Commands\ClearCommand.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Update\Commands\CreateCommand.cs">
+      <Link>Update\Commands\CreateCommand.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Update\Commands\DeleteCommand.cs">
+      <Link>Update\Commands\DeleteCommand.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Update\Commands\DeleteDataCommand.cs">
+      <Link>Update\Commands\DeleteDataCommand.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Update\Commands\DropCommand.cs">
+      <Link>Update\Commands\DropCommand.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Update\Commands\InsertCommand.cs">
+      <Link>Update\Commands\InsertCommand.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Update\Commands\InsertDataCommand.cs">
+      <Link>Update\Commands\InsertDataCommand.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Update\Commands\LoadCommand.cs">
+      <Link>Update\Commands\LoadCommand.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Update\Commands\ModifyCommand.cs">
+      <Link>Update\Commands\ModifyCommand.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Update\GenericUpdateProcessor.cs">
+      <Link>Update\GenericUpdateProcessor.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Update\ISparqlUpdateProcessor.cs">
+      <Link>Update\ISparqlUpdateProcessor.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Update\LeviathanUpdateProcessor.cs">
+      <Link>Update\LeviathanUpdateProcessor.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Update\RemoteUpdateProcessor.cs">
+      <Link>Update\RemoteUpdateProcessor.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Update\SimpleUpdateProcessor.cs">
+      <Link>Update\SimpleUpdateProcessor.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Update\Protocol\BaseProtocolProcessor.cs">
+      <Link>Update\Protocol\BaseProtocolProcessor.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Update\Protocol\GenericProtocolProcessor.cs">
+      <Link>Update\Protocol\GenericProtocolProcessor.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Update\Protocol\LeviathanProtocolProcessor.cs">
+      <Link>Update\Protocol\LeviathanProtocolProcessor.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Update\Protocol\ProtocolToUpdateProcessor.cs">
+      <Link>Update\Protocol\ProtocolToUpdateProcessor.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Update\SparqlRemoteUpdateEndpoint.cs">
+      <Link>Update\SparqlRemoteUpdateEndpoint.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Update\SparqlUpdateCommand.cs">
+      <Link>Update\SparqlUpdateCommand.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Update\SparqlUpdateCommandSet.cs">
+      <Link>Update\SparqlUpdateCommandSet.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Update\SparqlUpdateEvaluationContext.cs">
+      <Link>Update\SparqlUpdateEvaluationContext.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Update\SparqlUpdateSpecsHelper.cs">
+      <Link>Update\SparqlUpdateSpecsHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Web\BaseGraphHandler.cs">
+      <Link>Web\BaseGraphHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Web\BaseSparqlHttpProtocolHandler.cs">
+      <Link>Web\BaseSparqlHttpProtocolHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Web\BaseSparqlQueryHandler.cs">
+      <Link>Web\BaseSparqlQueryHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Web\BaseSparqlUpdateHandler.cs">
+      <Link>Web\BaseSparqlUpdateHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Configuration\ConfigurationLoader.cs">
+      <Link>Configuration\ConfigurationLoader.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Configuration\ConfigurationInterfaces.cs">
+      <Link>Configuration\ConfigurationInterfaces.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Web\Configuration\BaseHandlerConfiguration.cs">
+      <Link>Web\Configuration\BaseHandlerConfiguration.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Web\BaseSparqlServer.cs">
+      <Link>Web\BaseSparqlServer.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Web\Configuration\Protocol\BaseProtocolHandlerConfiguration.cs">
+      <Link>Web\Configuration\Protocol\BaseProtocolHandlerConfiguration.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Web\Configuration\Query\BaseQueryHandlerConfiguration.cs">
+      <Link>Web\Configuration\Query\BaseQueryHandlerConfiguration.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Web\Configuration\Query\ExtensionSupportingSparqlHandlerConfiguration.cs">
+      <Link>Web\Configuration\Query\ExtensionSupportingSparqlHandlerConfiguration.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Update\Protocol\ISparqlHttpProtocolProcessor.cs">
+      <Link>Update\Protocol\ISparqlHttpProtocolProcessor.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Web\Configuration\Resource\BaseGraphHandlerConfiguration.cs">
+      <Link>Web\Configuration\Resource\BaseGraphHandlerConfiguration.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Web\Configuration\Resource\BaseResourceHandlerConfiguration.cs">
+      <Link>Web\Configuration\Resource\BaseResourceHandlerConfiguration.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Configuration\StorageFactories.cs">
+      <Link>Configuration\StorageFactories.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Web\Configuration\Server\BaseSparqlServerConfiguration.cs">
+      <Link>Web\Configuration\Server\BaseSparqlServerConfiguration.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Web\Configuration\Update\BaseUpdateHandlerConfiguration.cs">
+      <Link>Web\Configuration\Update\BaseUpdateHandlerConfiguration.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Web\Configuration\WebConfigurationLoader.cs">
+      <Link>Web\Configuration\WebConfigurationLoader.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Web\WilcardProtocolHandler.cs">
+      <Link>Web\WilcardProtocolHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Web\GraphHandler.cs">
+      <Link>Web\GraphHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Web\HandlerHelper.cs">
+      <Link>Web\HandlerHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Web\ProtocolHandler.cs">
+      <Link>Web\ProtocolHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Web\FileHandler.cs">
+      <Link>Web\FileHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Web\QueryHandler.cs">
+      <Link>Web\QueryHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Web\SchemaHandler.cs">
+      <Link>Web\SchemaHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Web\SparqlServer.cs">
+      <Link>Web\SparqlServer.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Web\UpdateHandler.cs">
+      <Link>Web\UpdateHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Web\WildcardGraphHandler.cs">
+      <Link>Web\WildcardGraphHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\Contexts\BaseStoreWriterContexts.cs">
+      <Link>Writing\Contexts\BaseStoreWriterContexts.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\Contexts\BaseWriterContexts.cs">
+      <Link>Writing\Contexts\BaseWriterContexts.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\BindingClasses.cs">
+      <Link>Query\BindingClasses.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Inference\IInferenceEngine.cs">
+      <Link>Query\Inference\IInferenceEngine.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Inference\RdfsReasoner.cs">
+      <Link>Query\Inference\RdfsReasoner.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Inference\SkosReasoner.cs">
+      <Link>Query\Inference\SkosReasoner.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Aggregates\ISparqlAggregate.cs">
+      <Link>Query\Aggregates\ISparqlAggregate.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Expressions\ISparqlExpression.cs">
+      <Link>Query\Expressions\ISparqlExpression.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Grouping\ISparqlGroupBy.cs">
+      <Link>Query\Grouping\ISparqlGroupBy.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Aggregates\SparqlAggregateClasses.cs">
+      <Link>Query\Aggregates\SparqlAggregateClasses.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Grouping\SparqlGroupByClasses.cs">
+      <Link>Query\Grouping\SparqlGroupByClasses.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Storage\AllegroGraphConnector.cs">
+      <Link>Storage\AllegroGraphConnector.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Storage\FourStoreConnector.cs">
+      <Link>Storage\FourStoreConnector.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Storage\BatchTriple.cs">
+      <Link>Storage\BatchTriple.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Storage\JosekiConnector.cs">
+      <Link>Storage\JosekiConnector.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Storage\MicrosoftSqlStoreManager.cs">
+      <Link>Storage\MicrosoftSqlStoreManager.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Storage\MySqlStoreManager.cs">
+      <Link>Storage\MySqlStoreManager.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Storage\NonNativeVirtuosoManager.cs">
+      <Link>Storage\NonNativeVirtuosoManager.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Storage\SesameHttpProtocolConnector.cs">
+      <Link>Storage\SesameHttpProtocolConnector.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Web\BaseSparqlHandler.cs">
+      <Link>Web\BaseSparqlHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Web\Configuration\Query\BaseSparqlHandlerConfiguration.cs">
+      <Link>Web\Configuration\Query\BaseSparqlHandlerConfiguration.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Web\DiskResourceHandler.cs">
+      <Link>Web\DiskResourceHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Web\Configuration\Resource\DiskResourceHandlerConfiguration.cs">
+      <Link>Web\Configuration\Resource\DiskResourceHandlerConfiguration.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Web\FileSparqlHandler.cs">
+      <Link>Web\FileSparqlHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Web\Configuration\Query\FileSparqlHandlerConfiguration.cs">
+      <Link>Web\Configuration\Query\FileSparqlHandlerConfiguration.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Web\Configuration\Query\InferencingSparqlHandlerConfiguration.cs">
+      <Link>Web\Configuration\Query\InferencingSparqlHandlerConfiguration.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Web\NativeSparqlHandler.cs">
+      <Link>Web\NativeSparqlHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Web\Configuration\Query\NativeSparqlHandlerConfiguration.cs">
+      <Link>Web\Configuration\Query\NativeSparqlHandlerConfiguration.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\Contexts\FolderStoreWriterContext.cs">
+      <Link>Writing\Contexts\FolderStoreWriterContext.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\Contexts\HtmlWriterContext.cs">
+      <Link>Writing\Contexts\HtmlWriterContext.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\Contexts\NTriplesWriterContext.cs">
+      <Link>Writing\Contexts\NTriplesWriterContext.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\Contexts\RdfXmlWriterContext.cs">
+      <Link>Writing\Contexts\RdfXmlWriterContext.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\Contexts\SqlStoreWriterContext.cs">
+      <Link>Writing\Contexts\SqlStoreWriterContext.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\Contexts\ThreadedStoreWriterContext.cs">
+      <Link>Writing\Contexts\ThreadedStoreWriterContext.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\Contexts\TurtleWriterContext.cs">
+      <Link>Writing\Contexts\TurtleWriterContext.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\Formatting\BaseFormatter.cs">
+      <Link>Writing\Formatting\BaseFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\Formatting\CsvFormatter.cs">
+      <Link>Writing\Formatting\CsvFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\Formatting\DeliminatedLineFormatter.cs">
+      <Link>Writing\Formatting\DeliminatedLineFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\Formatting\HtmlFormatter.cs">
+      <Link>Writing\Formatting\HtmlFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\Formatting\ICharFormatter.cs">
+      <Link>Writing\Formatting\ICharFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\Formatting\ITripleFormatter.cs">
+      <Link>Writing\Formatting\ITripleFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\Formatting\IUriFormatter.cs">
+      <Link>Writing\Formatting\IUriFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\Formatting\Notation3Formatter.cs">
+      <Link>Writing\Formatting\Notation3Formatter.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\Formatting\NQuadsFormatter.cs">
+      <Link>Writing\Formatting\NQuadsFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\Formatting\NTriplesFormatter.cs">
+      <Link>Writing\Formatting\NTriplesFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\Formatting\QNameFormatter.cs">
+      <Link>Writing\Formatting\QNameFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\Formatting\RdfXmlFormatter.cs">
+      <Link>Writing\Formatting\RdfXmlFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\Formatting\SparqlFormatter.cs">
+      <Link>Writing\Formatting\SparqlFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\Formatting\TsvFormatter.cs">
+      <Link>Writing\Formatting\TsvFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\Formatting\TurtleFormatter.cs">
+      <Link>Writing\Formatting\TurtleFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\RdfXmlWriter.cs">
+      <Link>Writing\RdfXmlWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\HtmlWriter.cs">
+      <Link>Writing\HtmlWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\CsvWriter.cs">
+      <Link>Writing\CsvWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\FastRdfXmlWriter.cs">
+      <Link>Writing\FastRdfXmlWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\GenericStoreWriter.cs">
+      <Link>Writing\GenericStoreWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\Notation3Writer.cs">
+      <Link>Writing\Notation3Writer.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\NQuadsWriter.cs">
+      <Link>Writing\NQuadsWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\RdfJsonWriter.cs">
+      <Link>Writing\RdfJsonWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\SparqlCsvWriter.cs">
+      <Link>Writing\SparqlCsvWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\SparqlRdfWriter.cs">
+      <Link>Writing\SparqlRdfWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\SparqlTsvWriter.cs">
+      <Link>Writing\SparqlTsvWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\SparqlXsltWriter.cs">
+      <Link>Writing\SparqlXsltWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\TriXWriter.cs">
+      <Link>Writing\TriXWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\TsvWriter.cs">
+      <Link>Writing\TsvWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\TurtleWriter.cs">
+      <Link>Writing\TurtleWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\GenericWriter.cs">
+      <Link>Writing\GenericWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\Formatting\INodeFormatter.cs">
+      <Link>Writing\Formatting\INodeFormatter.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\silverlight\Compatability\HtmlTextWriter.cs">
+      <Link>Compatability\HtmlTextWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\silverlight\Compatability\HtmlTextWriterAttribute.cs">
+      <Link>Compatability\HtmlTextWriterAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\silverlight\Compatability\HtmlTextWriterStyle.cs">
+      <Link>Compatability\HtmlTextWriterStyle.cs</Link>
+    </Compile>
+    <Compile Include="..\silverlight\Compatability\HtmlTextWriterTag.cs">
+      <Link>Compatability\HtmlTextWriterTag.cs</Link>
+    </Compile>
+    <Compile Include="..\silverlight\Compatability\HttpUtility.cs">
+      <Link>Compatability\HttpUtility.cs</Link>
+    </Compile>
+    <Compile Include="..\silverlight\Compatability\SilverlightCompatability.cs">
+      <Link>Compatability\SilverlightCompatability.cs</Link>
+    </Compile>
+  </ItemGroup>
+</Project>

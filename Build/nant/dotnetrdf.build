@@ -32,6 +32,41 @@
   <property name="dotnetrdf.srczip" value="dotnetrdf_library_source_${dotnetrdf.version}_${dotnetrdf.releasetype}.zip" />
   <property name="dotnetrdf.toolkitzip" value="dotnetrdf_tools_${dotnetrdf.toolsversion}_${dotnetrdf.toolsreleasetype}.zip" />
   
+  <!-- Project Generation Targets which generate some Project Files from others -->
+
+  <target name="projectgen-silverlight" description="Generates the dotNetRDF Silverlight build project file" depends="compile-buildtools">
+    <!-- This exec task syncs the Silverlight project file with the Core Library -->
+    <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
+      <arg value="Libraries/core/dotNetRDF.csproj" />
+      <arg value="Libraries/silverlight/dotNetRDF.Silverlight.2010.csproj.template" />
+      <arg value="Libraries/silverlight/dotNetRDF.Silverlight.2010.csproj" />
+    </exec>    
+  </target>
+
+  <target name="projectgen-clientprofile" description="Generates the dotNetRDF Client Profile build project file" depends="projectgen-silverlight">
+    <!-- This exec task syncs the Client Profile project file with the Core Library and Silverlight (for the System.Web compatability stuff) -->
+    <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
+      <arg value="Libraries/core/dotNetRDF.csproj" />
+      <arg value="Libraries/clientprofile/dotNetRDF.ClientProfile.csproj.template" />
+      <arg value="Libraries/clientprofile/dotNetRDF.ClientProfile.csproj.temp" />
+    </exec>
+    <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
+      <arg value="Libraries/silverlight/dotNetRDF.Silverlight.2010.csproj" />
+      <arg value="Libraries/clientprofile/dotNetRDF.ClientProfile.csproj.temp" />
+      <arg value="Libraries/clientprofile/dotNetRDF.ClientProfile.csproj" />
+      <arg value="..\silverlight\" />
+    </exec>
+  </target>
+
+  <target name="projectgen-lite" description="Generates the dotNetRDF Lite build project file" depends="compile-buildtools">
+    <!-- This exec task syncs the Lite project file with the Core Library -->
+    <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
+      <arg value="Libraries/core/dotNetRDF.csproj" />
+      <arg value="Libraries/lite/dotNetRDF.Lite.csproj.template" />
+      <arg value="Libraries/lite/dotNetRDF.Lite.csproj" />
+    </exec>
+  </target>
+  
   <!-- Compile Targets which Compile the Code -->
 
   <target name="no-compile" description="Sets that no compilation should be done">
@@ -53,14 +88,7 @@
     </exec>
   </target>
 
-  <target name="compile-lite" description="Compiles the dotNetRDF Lite Build" unless="${dotnetrdf.nocompile}">
-    <!-- This exec task syncs the Lite project file with the Core Library -->
-    <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
-      <arg value="Libraries/core/dotNetRDF.csproj" />
-      <arg value="Libraries/lite/dotNetRDF.Lite.csproj.template" />
-      <arg value="Libraries/lite/dotNetRDF.Lite.csproj" />
-    </exec>
-    <!-- Once the sync is done we can build the resulting project file -->
+  <target name="compile-lite" description="Compiles the dotNetRDF Lite Build" unless="${dotnetrdf.nocompile}" depends="compile-buildtools">
     <property name="nant.settings.currentframework" value="net-3.5" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
@@ -98,14 +126,7 @@
     </exec>
   </target>
 
-  <target name="compile-silverlight" description="Compile the dotNetRDF Silverlight Build"  unless="${dotnetrdf.nocompile}" depends="compile-buildtools">
-    <!-- This exec task syncs the Silverlight project file with the Core Library -->
-    <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
-      <arg value="Libraries/core/dotNetRDF.csproj" />
-      <arg value="Libraries/silverlight/dotNetRDF.Silverlight.2010.csproj.template" />
-      <arg value="Libraries/silverlight/dotNetRDF.Silverlight.2010.csproj" />
-    </exec>
-    <!-- Once the sync is done we can build the resulting project file -->
+  <target name="compile-silverlight" description="Compile the dotNetRDF Silverlight Build"  unless="${dotnetrdf.nocompile}" depends="projectgen-silverlight">
     <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
@@ -133,6 +154,17 @@
       <arg value="Libraries/linq/dotNetRDF.Linq.csproj" />
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
+    </exec>
+  </target>
+
+  <target name="compile-clientprofile" description="Compiles the dotNetRDF Client Profile Build" unless="${dotnetrdf.nocompile}" depends="projectgen-clientprofile">
+    <property name="nant.settings.currentframework" value="net-3.5" />
+    <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
+    <exec program="${msBuild.exe}" failonerror="true">
+      <arg value="Libraries/clientprofile/dotNetRDF.ClientProfile.csproj" />
+      <arg line="/p:Configuration=Debug" />
+      <arg line="/p:PostBuildEvent="/>
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
     </exec>
   </target>
   

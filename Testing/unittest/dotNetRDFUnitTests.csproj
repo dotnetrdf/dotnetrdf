@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{BD80F826-56A3-4A88-B466-DDFA0691FFB8}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -94,10 +94,6 @@
     <Content Include="AuthoringTests.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Libraries\interop\dotNetRDF.Interop.csproj">
-      <Project>{9DA322E0-8DEC-4C47-B109-66773478BB61}</Project>
-      <Name>dotNetRDF.Interop</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Libraries\core\dotNetRDF.csproj">
       <Project>{BFBAC159-1E60-4D03-8ACA-D34E31EB83BF}</Project>
       <Name>dotNetRDF</Name>
