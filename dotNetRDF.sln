@@ -17,15 +17,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8AF0B3BE-7B01-45FF-8EA5-CCF0C596F7E7}"
 	ProjectSection(SolutionItems) = preProject
 		Build\nant\dotnetrdf.build = Build\nant\dotnetrdf.build
-		dotNetRDF.vsmdi = dotNetRDF.vsmdi
-		dotNetRDF1.vsmdi = dotNetRDF1.vsmdi
-		dotNetRDF10.vsmdi = dotNetRDF10.vsmdi
-		dotNetRDF2.vsmdi = dotNetRDF2.vsmdi
 		dotNetRDF3.vsmdi = dotNetRDF3.vsmdi
 		dotNetRDF4.vsmdi = dotNetRDF4.vsmdi
 		dotNetRDF5.vsmdi = dotNetRDF5.vsmdi
-		dotNetRDF6.vsmdi = dotNetRDF6.vsmdi
-		dotNetRDF7.vsmdi = dotNetRDF7.vsmdi
 		dotNetRDF8.vsmdi = dotNetRDF8.vsmdi
 		Tests.testrunconfig = Tests.testrunconfig
 	EndProjectSection
