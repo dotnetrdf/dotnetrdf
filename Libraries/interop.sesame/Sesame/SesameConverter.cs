@@ -37,17 +37,30 @@ using java.util;
 
 namespace VDS.RDF.Interop.Sesame
 {
+    /// <summary>
+    /// Class for converting RDF Graphs between the dotNetRDF and Sesame APIs
+    /// </summary>
     public static class SesameConverter
     {
-
         #region Conversion To Sesame API
 
+        /// <summary>
+        /// Converts a dotNetRDF Graph to a Sesame Graph
+        /// </summary>
+        /// <param name="g">dotNetRDF Graph</param>
+        /// <param name="target">Sesame Graph</param>
         public static void ToSesame(IGraph g, dotSesame.Graph target)
         {
             SesameMapping mapping = new SesameMapping(g, target);
             ToSesame(g, mapping, target);
         }
 
+        /// <summary>
+        /// Converts a dotNetRDF Graph to a Sesame Graph
+        /// </summary>
+        /// <param name="g">dotNetRDF Graph</param>
+        /// <param name="mapping">Blank Node Mapping</param>
+        /// <param name="target">Sesame Graph</param>
         public static void ToSesame(IGraph g, SesameMapping mapping, dotSesame.Graph target)
         {
             foreach (Triple t in g.Triples)
@@ -56,11 +69,23 @@ namespace VDS.RDF.Interop.Sesame
             }
         }
 
+        /// <summary>
+        /// Converts a dotNetRDF Triple to a Sesame Statement
+        /// </summary>
+        /// <param name="t">Triple</param>
+        /// <param name="mapping">Blank Node Mapping</param>
+        /// <returns></returns>
         static dotSesame.Statement ToSesame(Triple t, SesameMapping mapping)
         {
             return mapping.ValueFactory.createStatement(ToSesameResource(t.Subject, mapping), ToSesameUri(t.Predicate, mapping), ToSesameValue(t.Object, mapping));
         }
 
+        /// <summary>
+        /// Converts a dotNetRDF Node to a Sesame Resource
+        /// </summary>
+        /// <param name="n">Node</param>
+        /// <param name="mapping">Blank Node Mapping</param>
+        /// <returns></returns>
         static dotSesame.Resource ToSesameResource(INode n, SesameMapping mapping)
         {
             switch (n.NodeType)
@@ -97,6 +122,12 @@ namespace VDS.RDF.Interop.Sesame
             }
         }
 
+        /// <summary>
+        /// Converts a dotNetRDF Node to a Sesame URI
+        /// </summary>
+        /// <param name="n">Node</param>
+        /// <param name="mapping">Blank Node Mapping</param>
+        /// <returns></returns>
         static dotSesame.URI ToSesameUri(INode n, SesameMapping mapping)
         {
             switch (n.NodeType)
@@ -108,11 +139,23 @@ namespace VDS.RDF.Interop.Sesame
             }
         }
 
+        /// <summary>
+        /// Converts a URI to a Sesame URI
+        /// </summary>
+        /// <param name="u">URI</param>
+        /// <param name="mapping">Blank Node Mapping</param>
+        /// <returns></returns>
         static dotSesame.URI ToSesameUri(Uri u, SesameMapping mapping)
         {
             return mapping.ValueFactory.createURI(u.ToString());
         }
 
+        /// <summary>
+        /// Converts a dotNetRDF Node to a Sesame Value
+        /// </summary>
+        /// <param name="n">Node</param>
+        /// <param name="mapping">Blank Node Mapping</param>
+        /// <returns></returns>
         static dotSesame.Value ToSesameValue(INode n, SesameMapping mapping)
         {
             switch (n.NodeType)
@@ -166,12 +209,23 @@ namespace VDS.RDF.Interop.Sesame
 
         #region Conversion From Sesame API
 
+        /// <summary>
+        /// Converts a Sesame Graph to a dotNetRDF Graph
+        /// </summary>
+        /// <param name="source">Sesame Graph</param>
+        /// <param name="target">dotNetRDF Graph</param>
         public static void FromSesame(dotSesame.Graph source, IGraph target)
         {
             SesameMapping mapping = new SesameMapping(target, source);
             FromSesame(source, mapping, target);
         }
 
+        /// <summary>
+        /// Converts a Sesame Graph to a dotNetRDF Graph
+        /// </summary>
+        /// <param name="source">Sesame Graph</param>
+        /// <param name="mapping">Blank Node Mapping</param>
+        /// <param name="target">dotNetRDF Graph</param>
         public static void FromSesame(dotSesame.Graph source, SesameMapping mapping, IGraph target)
         {
             Iterator iter = source.iterator();
@@ -182,11 +236,23 @@ namespace VDS.RDF.Interop.Sesame
             }
         }
 
+        /// <summary>
+        /// Converts a Sesame Statement to a dotNetRDF Triple
+        /// </summary>
+        /// <param name="statement">Sesame Statement</param>
+        /// <param name="mapping">Blank Node Mapping</param>
+        /// <returns></returns>
         static Triple FromSesame(dotSesame.Statement statement, SesameMapping mapping)
         {
             return new Triple(FromSesameResource(statement.getSubject(), mapping), FromSesameUri(statement.getPredicate(), mapping), FromSesameValue(statement.getObject(), mapping));
         }
 
+        /// <summary>
+        /// Converts a Sesame Resource to a dotNetRDF Node
+        /// </summary>
+        /// <param name="resource">Resource</param>
+        /// <param name="mapping">Blank Node Mapping</param>
+        /// <returns></returns>
         static INode FromSesameResource(dotSesame.Resource resource, SesameMapping mapping)
         {
             if (resource is dotSesame.URI)
@@ -224,16 +290,33 @@ namespace VDS.RDF.Interop.Sesame
             }
         }
 
+        /// <summary>
+        /// Converts a Sesame URI to a dotNetRDF Node
+        /// </summary>
+        /// <param name="uri">URI</param>
+        /// <param name="mapping">Blank Node Mapping</param>
+        /// <returns></returns>
         static INode FromSesameUri(dotSesame.URI uri, SesameMapping mapping)
         {
             return mapping.Graph.CreateUriNode(new Uri(uri.stringValue()));
         }
 
+        /// <summary>
+        /// Converts a Sesame URI to a URI
+        /// </summary>
+        /// <param name="uri">URI</param>
+        /// <returns></returns>
         static Uri FromSesameUri(dotSesame.URI uri)
         {
             return new Uri(uri.stringValue());
         }
 
+        /// <summary>
+        /// Converts a Sesame Value to a dotNetRDF Node
+        /// </summary>
+        /// <param name="value">Value</param>
+        /// <param name="mapping">Blank Node Mapping</param>
+        /// <returns></returns>
         static INode FromSesameValue(dotSesame.Value value, SesameMapping mapping)
         {
             if (value is dotSesame.URI)

@@ -37,9 +37,6 @@ namespace VDS.RDF.Interop.SemWeb
     /// <summary>
     /// Class for converting RDF Graphs between the dotNetRDF and SemWeb API models
     /// </summary>
-    /// <remarks>
-    /// This is an experimental and unstable API which may change in the future
-    /// </remarks>
     public static class SemWebConverter
     {
         /// <summary>
