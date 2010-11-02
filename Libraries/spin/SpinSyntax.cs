@@ -209,6 +209,48 @@ namespace VDS.RDF.Query.Spin
                 }
             }
 
+            //Add DISTINCT/REDUCED modifiers if appropriate
+            if (query.HasDistinctModifier)
+            {
+                switch (query.QueryType)
+                {
+                    case SparqlQueryType.SelectAllDistinct:
+                    case SparqlQueryType.SelectDistinct:
+                        g.Assert(root, g.CreateUriNode(new Uri(SpinPropertyDistinct)), (true).ToLiteral(g));
+                        break;
+                    case SparqlQueryType.SelectAllReduced:
+                    case SparqlQueryType.SelectReduced:
+                        g.Assert(root, g.CreateUriNode(new Uri(SpinPropertyReduced)), (true).ToLiteral(g));
+                        break;
+                }
+            }
+
+            //Add LIMIT and/or OFFSET if appropriate
+            if (query.Limit > -1)
+            {
+                g.Assert(root, g.CreateUriNode(new Uri(SpinPropertyLimit)), query.Limit.ToLiteral(g));
+            }
+            if (query.Offset > 0)
+            {
+                g.Assert(root, g.CreateUriNode(new Uri(SpinPropertyOffset)), query.Offset.ToLiteral(g));
+            }
+
+            //Add ORDER BY if appropriate
+            if (query.OrderBy != null)
+            {
+                g.Assert(root, g.CreateUriNode(new Uri(SpinPropertyOrderBy)), query.OrderBy.ToSpinRdf(g, varTable));
+            }
+
+            //Add GROUP BY and HAVING
+            if (query.GroupBy != null)
+            {
+                throw new SpinException("GROUP BY clauses are not yet representable in SPIN SPARQL Syntax");
+            }
+            if (query.Having != null)
+            {
+                throw new SpinException("HAVING clauses are not yet representable in SPIN SPARQL Syntax");
+            }
+
             return root;
         }
 
@@ -364,6 +406,13 @@ namespace VDS.RDF.Query.Spin
             INode e = g.CreateBlankNode();
 
             return e;
+        }
+
+        static INode ToSpinRdf(this ISparqlOrderBy ordering, IGraph g, SpinVariableTable varTable)
+        {
+            INode o = g.CreateBlankNode();
+            
+            return o;
         }
     }
 
