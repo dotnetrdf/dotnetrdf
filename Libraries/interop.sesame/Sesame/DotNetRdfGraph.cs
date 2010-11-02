@@ -166,7 +166,7 @@ namespace VDS.RDF.Interop.Sesame
 
         public java.util.Iterator iterator()
         {
-            throw new NotImplementedException();
+            return new DotNetEnumerableWrapper(this._g.Triples);
         }
 
         public bool remove(object obj)

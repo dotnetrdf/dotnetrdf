@@ -52,6 +52,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Sesame\DotNetEnumerableWrapper.cs" />
     <Compile Include="Sesame\DotNetRdfValueFactory.cs" />
     <Compile Include="Sesame\JavaIteratorWrapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
