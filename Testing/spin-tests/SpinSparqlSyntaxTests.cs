@@ -26,7 +26,36 @@ namespace VDS.RDF.Test.Spin
             {
                 Console.WriteLine(t.ToString(formatter));
             }
-         
+        }
+
+        [TestMethod]
+        public void SpinSparqlSyntaxSelect2()
+        {
+            String query = "SELECT * WHERE { ?s ?p ?o . ?x ?y ?z }";
+            SparqlQueryParser parser = new SparqlQueryParser();
+            SparqlQuery q = parser.ParseFromString(query);
+
+            IGraph g = q.ToSpinRdf();
+            NTriplesFormatter formatter = new NTriplesFormatter();
+            foreach (Triple t in g.Triples)
+            {
+                Console.WriteLine(t.ToString(formatter));
+            }
+        }
+
+        [TestMethod]
+        public void SpinSparqlSyntaxSelect3()
+        {
+            String query = "SELECT * WHERE {  ?s ?p ?o  {?x ?y ?z } }";
+            SparqlQueryParser parser = new SparqlQueryParser();
+            SparqlQuery q = parser.ParseFromString(query);
+
+            IGraph g = q.ToSpinRdf();
+            NTriplesFormatter formatter = new NTriplesFormatter();
+            foreach (Triple t in g.Triples)
+            {
+                Console.WriteLine(t.ToString(formatter));
+            }
         }
     }
 }

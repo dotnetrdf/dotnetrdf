@@ -177,15 +177,11 @@ namespace VDS.RDF.Query.Spin
                             SparqlVariable v = vs[i];
                             INode var = varTable[v.Name];
                             g.Assert(vars, rdfFirst, var);
-                            if (i < vs.Count - 1)
+                            if (i > 0)
                             {
                                 INode temp = g.CreateBlankNode();
                                 g.Assert(vars, rdfRest, temp);
                                 vars = temp;
-                            } 
-                            else
-                            {
-                                g.Assert(vars, rdfRest, rdfNil);
                             }
                             g.Assert(var, rdfType, varClass);
 
@@ -204,6 +200,7 @@ namespace VDS.RDF.Query.Spin
                                 g.Assert(var, varName, g.CreateLiteralNode(v.Name, new Uri(XmlSpecsHelper.XmlSchemaDataTypeString)));
                             }
                         }
+                        g.Assert(vars, rdfRest, rdfNil);
 
                         break;
                 }
@@ -258,13 +255,13 @@ namespace VDS.RDF.Query.Spin
         {
             INode p = g.CreateBlankNode();
 
+            INode rdfFirst = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfListFirst));
+            INode rdfRest = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfListRest));
+            INode rdfNil = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfListNil));
+            INode current = null;
+
             if (!pattern.IsEmpty)
             {
-                INode rdfFirst = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfListFirst));
-                INode rdfRest = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfListRest));
-                INode rdfNil = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfListNil));
-                INode current = null;
-
                 //First output Triple Patterns
                 for (int i = 0; i < pattern.TriplePatterns.Count; i++)
                 {
@@ -272,19 +269,39 @@ namespace VDS.RDF.Query.Spin
                     {
                         current = pattern.TriplePatterns[i].ToSpinRdf(g, varTable);
                     }
-                    else if (i < pattern.TriplePatterns.Count - 1 || pattern.HasChildGraphPatterns)
+                    else
                     {
                         INode temp = pattern.TriplePatterns[i].ToSpinRdf(g, varTable);
                         g.Assert(current, rdfRest, temp);
                         current = temp;
                     }
-                    else
-                    {
-                        g.Assert(current, rdfRest, rdfNil);
-                    }
 
                     g.Assert(p, rdfFirst, current);
                 }
+
+                if (!pattern.HasChildGraphPatterns)
+                {
+                    g.Assert(current, rdfRest, rdfNil);
+                }
+            }
+
+            //Then output Graph Patterns
+            if (pattern.HasChildGraphPatterns)
+            {
+                for (int i = 0; i < pattern.ChildGraphPatterns.Count; i++)
+                {
+                    if (current == null)
+                    {
+                        current = pattern.ChildGraphPatterns[i].ToSpinRdf(g, varTable);
+                    }
+                    else
+                    {
+                        INode temp = pattern.ChildGraphPatterns[i].ToSpinRdf(g, varTable);
+                        g.Assert(current, rdfRest, temp);
+                        current = temp;
+                    }
+                }
+                g.Assert(current, rdfRest, rdfNil);
             }
 
             return p;
@@ -315,8 +332,11 @@ namespace VDS.RDF.Query.Spin
             }
             else if (pattern is PropertyPathPattern)
             {
+                PropertyPathPattern pp = (PropertyPathPattern)pattern;
                 g.Assert(p, rdfType, g.CreateUriNode(new Uri(SpinClassTriplePath)));
-                throw new NotImplementedException();
+                g.Assert(p, g.CreateUriNode(new Uri(SpinPropertySubject)), pp.Subject.ToSpinRdf(g, varTable));
+                g.Assert(p, g.CreateUriNode(new Uri(SpinPropertyPath)), pp.Path.ToSpinRdf(g, varTable));
+                g.Assert(p, g.CreateUriNode(new Uri(SpinPropertyObject)), pp.Object.ToSpinRdf(g, varTable));
             }
             else if (pattern is LetPattern)
             {
@@ -411,8 +431,39 @@ namespace VDS.RDF.Query.Spin
         static INode ToSpinRdf(this ISparqlOrderBy ordering, IGraph g, SpinVariableTable varTable)
         {
             INode o = g.CreateBlankNode();
+
+            INode rdfFirst = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfListFirst));
+            INode rdfRest = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfListRest));
+            INode rdfNil = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfListNil));
+            INode expr = g.CreateUriNode(new Uri(SpinPropertyExpression));
+            INode item = null;
+
+            do
+            {
+                if (item == null)
+                {
+                    item = g.CreateBlankNode();
+                }
+                else
+                {
+                    INode temp = g.CreateBlankNode();
+                    g.Assert(o, rdfRest, temp);
+                    item = temp;
+                    ordering = ordering.Child;
+                }
+                g.Assert(o, rdfFirst, item);
+                //TODO: Convert Expression
+                //g.Assert(o, expr, ordering.E
+            } while (ordering.Child != null);
             
             return o;
+        }
+
+        static INode ToSpinRdf(this ISparqlPath path, IGraph g, SpinVariableTable varTable)
+        {
+            INode p = g.CreateBlankNode();
+
+            return p;
         }
     }
 
