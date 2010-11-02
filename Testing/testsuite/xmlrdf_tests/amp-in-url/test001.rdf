@@ -1,40 +1,21 @@
-<?xml version="1.0"?>
-<!--
-  Copyright World Wide Web Consortium, (Massachusetts Institute of
-  Technology, Institut National de Recherche en Informatique et en
-  Automatique, Keio University).
- 
-  All Rights Reserved.
- 
-  Please see the full Copyright clause at
-  <http://www.w3.org/Consortium/Legal/copyright-software.html>
-
-  Author: Dan Connolly
-
-  Description: the purpose of this test case is to show
-  how one of XML's Predefined Entities - in this case the
-  ampersand - is represented when it is used in the value of
-  an rdf:about attribute.  The ampersand is represented
-  by its numeric character reference as specified in:
-
-   http://www.w3.org/TR/REC-xml#sec-predefined-ent
-
-  In the associated N-Triples file, the ampersand will be
-  represented with a single ampersand character (and not the
-  ampersand's numeric character reference).
-
-  Note: when a XML/HTML browser is used to display this file,
-  a single ampersand character may be displayed and not the
-  ampersand's numeric character reference.  In this case, the
-  browser may provide an alternate way to view the file (such
-  as viewing the file's source or saving to a file).
-
-  $Id: test001.rdf,v 1.5 2001/09/27 21:39:27 barstow Exp $
--->
-<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-
-  <rdf:Description rdf:about="http://example/q?abc=1&#38;def=2">
-    <rdf:value>xxx</rdf:value>
-  </rdf:Description>
-
+﻿<?xml version="1.0" ?>
+<!DOCTYPE rdf:RDF[
+	<!ENTITY rdf 'http://www.w3.org/1999/02/22-rdf-syntax-ns#'>
+	<!ENTITY rdfs 'http://www.w3.org/2000/01/rdf-schema#'>
+	<!ENTITY xsd 'http://www.w3.org/2001/XMLSchema#'>
+]>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://example.org" xml:base="http://example.org">
+<rdf:Description rdf:about="#grant">
+  <grantlocality rdf:datatype="&xsd;string">a</grantlocality>
+  <granttype rdf:datatype="&xsd;string">b</granttype>
+  <status rdf:datatype="&xsd;string">c</status>
+  <cycle rdf:datatype="&xsd;string">d</cycle>
+  <region rdf:datatype="&xsd;string">e</region>
+  <hasDuration rdf:datatype="&xsd;string">f</hasDuration>
+  <hasReasonForRejection rdf:datatype="&xsd;string">g</hasReasonForRejection>
+  <hasApprovedAmount rdf:datatype="&xsd;string">h</hasApprovedAmount>
+  <hasOrganisation rdf:resource="#organisation" />
+  <involvesContactPerson rdf:resource="#person" />
+  <involvesPayment rdf:resource="#transaction" />
+</rdf:Description>
 </rdf:RDF>
