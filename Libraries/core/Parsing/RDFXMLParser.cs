@@ -1471,6 +1471,16 @@ namespace VDS.RDF.Parsing
                 }
 
             }
+            else if (element.Attributes.Count > 0 && element.Attributes.Where(a => RdfXmlSpecsHelper.IsDataTypeAttribute(a)).Count() == 1)
+            {
+                //Should be processed as a Typed Literal Event instead
+                EventQueue temp = new EventQueue();
+                temp.Enqueue(element);
+                temp.Enqueue(new TextEvent(String.Empty, String.Empty));
+                temp.Enqueue(new EndElementEvent());
+                this.GrammarProductionLiteralPropertyElement(context, temp, parent);
+                return;
+            }
             else
             {
 
