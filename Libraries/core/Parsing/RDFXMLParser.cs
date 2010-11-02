@@ -1479,6 +1479,7 @@ namespace VDS.RDF.Parsing
                 temp.Enqueue(new TextEvent(String.Empty, String.Empty));
                 temp.Enqueue(new EndElementEvent());
                 this.GrammarProductionLiteralPropertyElement(context, temp, parent);
+                return;
             }
             else
             {
