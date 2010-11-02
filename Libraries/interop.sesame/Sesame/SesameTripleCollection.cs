@@ -95,5 +95,7 @@ namespace VDS.RDF.Interop.Sesame
             JavaIteratorWrapper<dotSesame.Statement> stmtIter = new JavaIteratorWrapper<org.openrdf.model.Statement>(this._g.iterator());
             return stmtIter.Select(s => SesameConverter.FromSesame(s, this._mapping)).GetEnumerator();
         }
+
+        //TODO: Override the WithX() methods to use the match() method of the underlying Graph
     }
 }
