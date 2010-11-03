@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading;
 using dotSesame = org.openrdf.model;
 using dotSesameRepo = org.openrdf.repository;
-using dotSesameFormats = org.openrdf.rio;
 using java.io;
 using VDS.RDF.Parsing;
 using VDS.RDF.Storage;
@@ -134,48 +133,21 @@ namespace VDS.RDF.Interop.Sesame
         {
             if (this._manager.IsReadOnly) throw NotWritableError("add");
 
-            TripleStore store = null;
-            Graph g = new Graph();
-            if (str != null) g.BaseUri = new Uri(str);
-            if (rdff == dotSesameFormats.RDFFormat.N3)
-            {
-                    FileLoader.Load(g, f.getPath(), new Notation3Parser());
-            } 
-            else if (rdff == dotSesameFormats.RDFFormat.NTRIPLES)
-            {
-                    FileLoader.Load(g, f.getPath(), new NTriplesParser());
-            } 
-            else if (rdff == dotSesameFormats.RDFFormat.RDFXML)
-            {
-                    FileLoader.Load(g, f.getPath(), new RdfXmlParser());
-            } 
-            else if (rdff == dotSesameFormats.RDFFormat.TRIG)
-            {
-                    store = new TripleStore();
-                    TriGParser trig = new TriGParser();
-                    trig.Load(store, new StreamParams(f.getPath()));
-            } 
-            else if (rdff ==  dotSesameFormats.RDFFormat.TRIX)
-            {
-                    store = new TripleStore();
-                    TriXParser trix = new TriXParser();
-                    trix.Load(store, new StreamParams(f.getPath()));
-            } 
-            else if (rdff == dotSesameFormats.RDFFormat.TURTLE)
-            {
-                    FileLoader.Load(g, f.getPath(), new TurtleParser());
-            }
+            Object obj = SesameHelper.LoadFromFile(f, str, rdff);
 
-            if (store != null)
+            if (obj is ITripleStore)
             {
-                foreach (IGraph x in store.Graphs)
+                foreach (IGraph x in ((ITripleStore)obj).Graphs)
                 {
                     this._manager.SaveGraph(x);
                 }
             }
-            else if (!g.IsEmpty)
+            else if (obj is IGraph)
             {
-                this._manager.SaveGraph(g);
+                if (!((IGraph)obj).IsEmpty)
+                {
+                    this._manager.SaveGraph((IGraph)obj);
+                }
             }
         }
 
@@ -183,44 +155,21 @@ namespace VDS.RDF.Interop.Sesame
         {
             if (this._manager.IsReadOnly) throw NotWritableError("add");
 
-            if (this._manager.IsReadOnly) throw NotWritableError("add");
+            Object obj = SesameHelper.LoadFromUri(url, str, rdff);
 
-            Uri u = new Uri(url.toString());
-            TripleStore store = null;
-            Graph g = new Graph();
-            if (str != null) g.BaseUri = new Uri(str);
-            if (rdff == dotSesameFormats.RDFFormat.N3)
+            if (obj is ITripleStore)
             {
-                    UriLoader.Load(g, u, new Notation3Parser());
-            } 
-            else if (rdff == dotSesameFormats.RDFFormat.NTRIPLES)
-            {
-                    UriLoader.Load(g, u, new NTriplesParser());
-            } 
-            else if (rdff == dotSesameFormats.RDFFormat.RDFXML)
-            {
-                    UriLoader.Load(g, u, new RdfXmlParser());
-            }
-            else if (rdff == dotSesameFormats.RDFFormat.TRIG)
-            {
-                    store = new TripleStore();
-                    UriLoader.Load(store, u);
-            } 
-            else if (rdff == dotSesameFormats.RDFFormat.TURTLE)
-            {
-                    UriLoader.Load(g, u, new TurtleParser());
-            }
-
-            if (store != null)
-            {
-                foreach (IGraph x in store.Graphs)
+                foreach (IGraph x in ((ITripleStore)obj).Graphs)
                 {
                     this._manager.SaveGraph(x);
                 }
             }
-            else if (!g.IsEmpty)
+            else if (obj is IGraph)
             {
-                this._manager.SaveGraph(g);
+                if (!((IGraph)obj).IsEmpty)
+                {
+                    this._manager.SaveGraph((IGraph)obj);
+                }
             }
         }
 

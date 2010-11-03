@@ -118,12 +118,42 @@ namespace VDS.RDF.Interop.Sesame
 
         public void add(File f, string str, org.openrdf.rio.RDFFormat rdff, params org.openrdf.model.Resource[] rarr)
         {
-            throw new NotImplementedException();
+            Object obj = SesameHelper.LoadFromFile(f, str, rdff);
+
+            if (obj is ITripleStore)
+            {
+                foreach (IGraph x in ((ITripleStore)obj).Graphs)
+                {
+                    this._store.Add(x, true);
+                }
+            }
+            else if (obj is IGraph)
+            {
+                if (!((IGraph)obj).IsEmpty)
+                {
+                    this._store.Add((IGraph)obj, true);
+                }
+            }
         }
 
         public void add(java.net.URL url, string str, org.openrdf.rio.RDFFormat rdff, params org.openrdf.model.Resource[] rarr)
         {
-            throw new NotImplementedException();
+            Object obj = SesameHelper.LoadFromUri(url, str, rdff);
+
+            if (obj is ITripleStore)
+            {
+                foreach (IGraph x in ((ITripleStore)obj).Graphs)
+                {
+                    this._store.Add(x, true);
+                }
+            }
+            else if (obj is IGraph)
+            {
+                if (!((IGraph)obj).IsEmpty)
+                {
+                    this._store.Add((IGraph)obj, true);
+                }
+            }
         }
 
         public void clear(params org.openrdf.model.Resource[] rarr)

@@ -61,6 +61,7 @@
     <Compile Include="Sesame\DotNetRdfGraph.cs" />
     <Compile Include="Sesame\SesameConverter.cs" />
     <Compile Include="Sesame\SesameGraph.cs" />
+    <Compile Include="Sesame\SesameHelper.cs" />
     <Compile Include="Sesame\SesameMapping.cs" />
     <Compile Include="Sesame\SesameTripleCollection.cs" />
   </ItemGroup>
