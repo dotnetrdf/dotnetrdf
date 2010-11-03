@@ -15,6 +15,14 @@ namespace VDS.RDF.Interop.Sesame
             this._g = g;
         }
 
+        internal IGraph Graph
+        {
+            get
+            {
+                return this._g;
+            }
+        }
+
         #region ValueFactory Members
 
         public dotSesame.BNode createBNode()
