@@ -7,7 +7,7 @@ using java.util;
 
 namespace VDS.RDF.Interop.Sesame
 {
-    class DotNetEnumerableWrapper : Iterator, IDisposable
+    class DotNetEnumerableWrapper : Iterator
     {
         private IEnumerator _enumerator;
         private bool _ended = false;

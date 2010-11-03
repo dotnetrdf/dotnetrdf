@@ -137,7 +137,7 @@ namespace VDS.RDF.Storage
                 Dictionary<String, String> queryParams = new Dictionary<string, string>();
                 if (sparqlQuery.Length < 2048)
                 {
-                    queryParams.Add("query", sparqlQuery);
+                    queryParams.Add("query", EscapeQuery(sparqlQuery));
 
                     request = this.CreateRequest("repositories/" + this._store, MimeTypesHelper.HttpRdfOrSparqlAcceptHeader, "GET", queryParams);
                 }
@@ -149,7 +149,7 @@ namespace VDS.RDF.Storage
                     request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
                     StringBuilder postData = new StringBuilder();
                     postData.Append("query=");
-                    postData.Append(Uri.EscapeDataString(sparqlQuery));
+                    postData.Append(Uri.EscapeDataString(EscapeQuery(sparqlQuery)));
                     StreamWriter writer = new StreamWriter(request.GetRequestStream());
                     writer.Write(postData);
                     writer.Close();
@@ -207,6 +207,29 @@ namespace VDS.RDF.Storage
                     throw new RdfQueryException("A HTTP error occurred while querying the Store", webEx);
                 }
             }
+        }
+
+        protected virtual String EscapeQuery(String query)
+        {
+            StringBuilder output = new StringBuilder();
+            foreach (char c in query.ToCharArray())
+            {
+                if (c <= 255)
+                {
+                    output.Append('c');
+                }
+                else if (c <= 65535)
+                {
+                    output.Append("\\u");
+                    output.Append(((int)c).ToString("x4"));
+                }
+                else
+                {
+                    output.Append("\\U");
+                    output.Append(((int)c).ToString("x8"));
+                }
+            }
+            return output.ToString();
         }
 
         /// <summary>

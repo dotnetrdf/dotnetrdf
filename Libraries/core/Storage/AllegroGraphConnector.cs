@@ -212,6 +212,11 @@ namespace VDS.RDF.Storage
             return base.CreateRequest(servicePath, accept, method, queryParams);
         }
 
+        protected override string EscapeQuery(string query)
+        {
+            return query;
+        }
+
         /// <summary>
         /// Gets a String which gives details of the Connection
         /// </summary>
