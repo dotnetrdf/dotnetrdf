@@ -46,7 +46,75 @@ namespace VDS.RDF.Interop.Sesame
 
         public java.util.Iterator match(dotSesame.Resource r, dotSesame.URI uri, dotSesame.Value v, params dotSesame.Resource[] rarr)
         {
-            throw new NotImplementedException();
+            INode s = (r != null) ? SesameConverter.FromSesameResource(r, this._mapping) : null;
+            INode p = (uri != null) ? SesameConverter.FromSesameUri(uri, this._mapping) : null;
+            INode o = (v != null) ? SesameConverter.FromSesameValue(v, this._mapping) : null;
+            //Contexts are Ignored for matches on a single Graph
+
+            IEnumerable<Triple> ts;
+
+            if (s != null)
+            {
+                if (p != null)
+                {
+                    if (o != null)
+                    {
+                        //Matching on Subject Predicate and Object
+                        Triple t = new Triple(s, p, o);
+                        if (this._g.ContainsTriple(t))
+                        {
+                            ts = t.AsEnumerable();
+                        }
+                        else
+                        {
+                            ts = Enumerable.Empty<Triple>();
+                        }
+                    }
+                    else
+                    {
+                        //Just matching on Subject Predicate
+                        ts = this._g.GetTriplesWithSubjectPredicate(s, p);
+                    }
+                }
+                else
+                {
+                    if (o != null)
+                    {
+                        //Matching on Subject Object
+                        ts = this._g.GetTriplesWithSubjectObject(s, o);
+                    }
+                    else
+                    {
+                        //Just Matching on Subject
+                        ts = this._g.GetTriplesWithSubject(s);
+                    }
+                }
+            }
+            else if (p != null)
+            {
+                if (o != null)
+                {
+                    //Matching on Predicate Object
+                    ts = this._g.GetTriplesWithPredicateObject(p, o);
+                }
+                else
+                {
+                    //Just Matching on Predicate
+                    ts = this._g.GetTriplesWithPredicate(p);
+                }
+            }
+            else if (o != null)
+            {
+                //Matching on Object only
+                ts = this._g.GetTriplesWithObject(o);
+            }
+            else
+            {
+                //Matching anything
+                ts = this._g.Triples;
+            }
+
+            return new DotNetEnumerableWrapper(ts.Select(t => SesameConverter.ToSesame(t, this._mapping)));
         }
 
         #endregion
@@ -209,7 +277,22 @@ namespace VDS.RDF.Interop.Sesame
 
         public bool retainAll(java.util.Collection c)
         {
-            throw new NotImplementedException();
+            JavaIteratorWrapper<dotSesame.Statement> stmtIter = new JavaIteratorWrapper<org.openrdf.model.Statement>(c.iterator());
+            HashSet<Triple> retained = new HashSet<Triple>();
+            bool changed = false;
+            foreach (dotSesame.Statement stmt in stmtIter)
+            {
+                retained.Add(SesameConverter.FromSesame(stmt, this._mapping));
+            }
+            foreach (Triple t in this._g.Triples.ToList())
+            {
+                if (!retained.Contains(t))
+                {
+                    changed = true;
+                    this._g.Retract(t);
+                }
+            }
+            return changed;
         }
 
         public int size()
@@ -219,7 +302,22 @@ namespace VDS.RDF.Interop.Sesame
 
         public object[] toArray(object[] objarr)
         {
-            throw new NotImplementedException();
+            if (objarr.Length < this._g.Triples.Count)
+            {
+                objarr = new object[this._g.Triples.Count];
+            }
+
+            int i = 0;
+            foreach (Triple t in this._g.Triples)
+            {
+                objarr[i] = SesameConverter.ToSesame(t, this._mapping);
+                i++;
+            }
+            if (i < objarr.Length)
+            {
+                objarr[i] = null;
+            }
+            return objarr;
         }
 
         public object[] toArray()

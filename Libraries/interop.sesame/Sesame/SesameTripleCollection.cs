@@ -97,5 +97,50 @@ namespace VDS.RDF.Interop.Sesame
         }
 
         //TODO: Override the WithX() methods to use the match() method of the underlying Graph
+
+        public override IEnumerable<Triple> WithObject(INode obj)
+        {
+            dotSesame.Value v = SesameConverter.ToSesameValue(obj, this._mapping);
+            JavaIteratorWrapper<dotSesame.Statement> stmtIter = new JavaIteratorWrapper<org.openrdf.model.Statement>(this._g.match(null, null, v, null));
+            return stmtIter.Select(s => SesameConverter.FromSesame(s, this._mapping));
+        }
+
+        public override IEnumerable<Triple> WithPredicate(INode pred)
+        {
+            dotSesame.URI u = SesameConverter.ToSesameUri(pred, this._mapping);
+            JavaIteratorWrapper<dotSesame.Statement> stmtIter = new JavaIteratorWrapper<org.openrdf.model.Statement>(this._g.match(null, u, null, null));
+            return stmtIter.Select(s => SesameConverter.FromSesame(s, this._mapping));
+        }
+
+        public override IEnumerable<Triple> WithPredicateObject(INode pred, INode obj)
+        {
+            dotSesame.URI u = SesameConverter.ToSesameUri(pred, this._mapping);
+            dotSesame.Value v = SesameConverter.ToSesameValue(obj, this._mapping);
+            JavaIteratorWrapper<dotSesame.Statement> stmtIter = new JavaIteratorWrapper<org.openrdf.model.Statement>(this._g.match(null, u, v, null));
+            return stmtIter.Select(s => SesameConverter.FromSesame(s, this._mapping));
+        }
+
+        public override IEnumerable<Triple> WithSubject(INode subj)
+        {
+            dotSesame.Resource r = SesameConverter.ToSesameResource(subj, this._mapping);
+            JavaIteratorWrapper<dotSesame.Statement> stmtIter = new JavaIteratorWrapper<org.openrdf.model.Statement>(this._g.match(r, null, null, null));
+            return stmtIter.Select(s => SesameConverter.FromSesame(s, this._mapping));
+        }
+
+        public override IEnumerable<Triple> WithSubjectObject(INode subj, INode obj)
+        {
+            dotSesame.Resource r = SesameConverter.ToSesameResource(subj, this._mapping);
+            dotSesame.Value v = SesameConverter.ToSesameValue(obj, this._mapping);
+            JavaIteratorWrapper<dotSesame.Statement> stmtIter = new JavaIteratorWrapper<org.openrdf.model.Statement>(this._g.match(r, null, v, null));
+            return stmtIter.Select(s => SesameConverter.FromSesame(s, this._mapping));
+        }
+
+        public override IEnumerable<Triple> WithSubjectPredicate(INode subj, INode pred)
+        {
+            dotSesame.Resource r = SesameConverter.ToSesameResource(subj, this._mapping);
+            dotSesame.URI u = SesameConverter.ToSesameUri(pred, this._mapping);
+            JavaIteratorWrapper<dotSesame.Statement> stmtIter = new JavaIteratorWrapper<org.openrdf.model.Statement>(this._g.match(r, u, null, null));
+            return stmtIter.Select(s => SesameConverter.FromSesame(s, this._mapping));
+        }
     }
 }

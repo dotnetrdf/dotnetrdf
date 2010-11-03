@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{9DA322E0-8DEC-4C47-B109-66773478BB61}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -53,6 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Sesame\DotNetEnumerableWrapper.cs" />
+    <Compile Include="Sesame\DotNetRdfGenericRepository.cs" />
     <Compile Include="Sesame\DotNetRdfValueFactory.cs" />
     <Compile Include="Sesame\JavaIteratorWrapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
