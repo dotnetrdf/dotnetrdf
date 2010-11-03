@@ -86,6 +86,27 @@ namespace VDS.RDF.Interop.Sesame
             this._factory = factory;
         }
 
+        private bool AddGraph(IGraph g)
+        {
+            if (this._store.HasGraph(g.BaseUri))
+            {
+                IGraph target = this._store.Graphs[g.BaseUri];
+                target.Assert(g.Triples.Select(t => t.CopyTriple(target)));
+            }
+            else 
+            {
+                this._store.Add(g);
+            }
+            return true;
+        }
+
+        private bool AddGraphToContext(Uri u, IGraph g)
+        {
+            g.BaseUri = u;
+            this.AddGraph(g);
+            return true;
+        }
+
         public void add(info.aduna.iteration.Iteration i, params org.openrdf.model.Resource[] rarr)
         {
             throw new NotImplementedException();
@@ -108,7 +129,17 @@ namespace VDS.RDF.Interop.Sesame
 
         public void add(InputStream @is, string str, org.openrdf.rio.RDFFormat rdff, params org.openrdf.model.Resource[] rarr)
         {
-            throw new NotImplementedException();
+            Object obj = SesameHelper.LoadFromStream(@is, str, rdff);
+            IEnumerable<Uri> contexts = rarr.ToContexts();
+
+            if (contexts.Any())
+            {
+                SesameHelper.ToStore(obj, this.AddGraphToContext, contexts);
+            }
+            else
+            {
+                SesameHelper.ToStore(obj, this.AddGraph);
+            }
         }
 
         public void add(org.openrdf.model.Resource r, org.openrdf.model.URI uri, org.openrdf.model.Value v, params org.openrdf.model.Resource[] rarr)
@@ -119,40 +150,30 @@ namespace VDS.RDF.Interop.Sesame
         public void add(File f, string str, org.openrdf.rio.RDFFormat rdff, params org.openrdf.model.Resource[] rarr)
         {
             Object obj = SesameHelper.LoadFromFile(f, str, rdff);
+            IEnumerable<Uri> contexts = rarr.ToContexts();
 
-            if (obj is ITripleStore)
+            if (contexts.Any())
             {
-                foreach (IGraph x in ((ITripleStore)obj).Graphs)
-                {
-                    this._store.Add(x, true);
-                }
+                SesameHelper.ToStore(obj, this.AddGraphToContext, contexts);
             }
-            else if (obj is IGraph)
+            else
             {
-                if (!((IGraph)obj).IsEmpty)
-                {
-                    this._store.Add((IGraph)obj, true);
-                }
+                SesameHelper.ToStore(obj, this.AddGraph);
             }
         }
 
         public void add(java.net.URL url, string str, org.openrdf.rio.RDFFormat rdff, params org.openrdf.model.Resource[] rarr)
         {
             Object obj = SesameHelper.LoadFromUri(url, str, rdff);
+            IEnumerable<Uri> contexts = rarr.ToContexts();
 
-            if (obj is ITripleStore)
+            if (contexts.Any())
             {
-                foreach (IGraph x in ((ITripleStore)obj).Graphs)
-                {
-                    this._store.Add(x, true);
-                }
+                SesameHelper.ToStore(obj, this.AddGraphToContext, contexts);
             }
-            else if (obj is IGraph)
+            else
             {
-                if (!((IGraph)obj).IsEmpty)
-                {
-                    this._store.Add((IGraph)obj, true);
-                }
+                SesameHelper.ToStore(obj, this.AddGraph);
             }
         }
 

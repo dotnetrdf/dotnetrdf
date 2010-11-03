@@ -121,6 +121,31 @@ namespace VDS.RDF.Interop.Sesame
         {
             if (this._manager.IsReadOnly) throw NotWritableError("add");
 
+            Object obj = SesameHelper.LoadFromStream(@is, str, rdff);
+            IEnumerable<Uri> contexts = rarr.ToContexts();
+
+            if (this._manager.UpdateSupported)
+            {
+                if (contexts.Any())
+                {
+                    SesameHelper.ToStore(obj, (u, g) => { this._manager.UpdateGraph(u, g.Triples, null); return true; }, contexts);
+                }
+                else
+                {
+                    SesameHelper.ToStore(obj, g => { this._manager.UpdateGraph(g.BaseUri, g.Triples, null); return true; });
+                }
+            }
+            else
+            {
+                if (contexts.Any())
+                {
+                    SesameHelper.ToStore(obj, (u, g) => { g.BaseUri = u; this._manager.SaveGraph(g); return true; }, contexts);
+                }
+                else
+                {
+                    SesameHelper.ToStore(obj, g => { this._manager.SaveGraph(g); return true; });
+                }
+            }
         }
 
         public void add(org.openrdf.model.Resource r, org.openrdf.model.URI uri, org.openrdf.model.Value v, params org.openrdf.model.Resource[] rarr)
@@ -134,19 +159,28 @@ namespace VDS.RDF.Interop.Sesame
             if (this._manager.IsReadOnly) throw NotWritableError("add");
 
             Object obj = SesameHelper.LoadFromFile(f, str, rdff);
+            IEnumerable<Uri> contexts = rarr.ToContexts();
 
-            if (obj is ITripleStore)
+            if (this._manager.UpdateSupported)
             {
-                foreach (IGraph x in ((ITripleStore)obj).Graphs)
+                if (contexts.Any())
                 {
-                    this._manager.SaveGraph(x);
+                    SesameHelper.ToStore(obj, (u, g) => { this._manager.UpdateGraph(u, g.Triples, null); return true; }, contexts);
+                }
+                else
+                {
+                    SesameHelper.ToStore(obj, g => { this._manager.UpdateGraph(g.BaseUri, g.Triples, null); return true; });
                 }
             }
-            else if (obj is IGraph)
+            else
             {
-                if (!((IGraph)obj).IsEmpty)
+                if (contexts.Any())
                 {
-                    this._manager.SaveGraph((IGraph)obj);
+                    SesameHelper.ToStore(obj, (u, g) => { g.BaseUri = u; this._manager.SaveGraph(g); return true; }, contexts);
+                }
+                else
+                {
+                    SesameHelper.ToStore(obj, g => { this._manager.SaveGraph(g); return true; });
                 }
             }
         }
@@ -156,19 +190,28 @@ namespace VDS.RDF.Interop.Sesame
             if (this._manager.IsReadOnly) throw NotWritableError("add");
 
             Object obj = SesameHelper.LoadFromUri(url, str, rdff);
+            IEnumerable<Uri> contexts = rarr.ToContexts();
 
-            if (obj is ITripleStore)
+            if (this._manager.UpdateSupported)
             {
-                foreach (IGraph x in ((ITripleStore)obj).Graphs)
+                if (contexts.Any())
                 {
-                    this._manager.SaveGraph(x);
+                    SesameHelper.ToStore(obj, (u, g) => { this._manager.UpdateGraph(u, g.Triples, null); return true; }, contexts);
+                }
+                else
+                {
+                    SesameHelper.ToStore(obj, g => { this._manager.UpdateGraph(g.BaseUri, g.Triples, null); return true; });
                 }
             }
-            else if (obj is IGraph)
+            else
             {
-                if (!((IGraph)obj).IsEmpty)
+                if (contexts.Any())
                 {
-                    this._manager.SaveGraph((IGraph)obj);
+                    SesameHelper.ToStore(obj, (u, g) => { g.BaseUri = u; this._manager.SaveGraph(g); return true; }, contexts);
+                }
+                else
+                {
+                    SesameHelper.ToStore(obj, g => { this._manager.SaveGraph(g); return true; });
                 }
             }
         }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using dotSesame = org.openrdf.model;
 using dotSesameFormats = org.openrdf.rio;
 using java.io;
 using VDS.RDF.Parsing;
@@ -152,6 +153,79 @@ namespace VDS.RDF.Interop.Sesame
             }
 
             return obj;
+        }
+
+        internal static void ToStore(Object obj, Func<IGraph,bool> saveFunc)
+        {
+            if (obj is IGraph)
+            {
+                IGraph g = (IGraph)obj;
+                if (!g.IsEmpty)
+                {
+                    saveFunc(g);
+                }
+            }
+            else if (obj is ITripleStore)
+            {
+                ITripleStore store = (ITripleStore)obj;
+                foreach (IGraph g in store.Graphs)
+                {
+                    if (!g.IsEmpty)
+                    {
+                        saveFunc(g);
+                    }
+                }
+            }
+        }
+
+        internal static void ToStore(Object obj, Func<Uri, IGraph, bool> saveFunc, IEnumerable<Uri> contexts)
+        {
+            foreach (Uri context in contexts)
+            {
+                if (obj is IGraph)
+                {
+                    IGraph g = (IGraph)obj;
+                    if (!g.IsEmpty)
+                    {
+                        saveFunc(context, g);
+                    }
+                }
+                else if (obj is ITripleStore)
+                {
+                    ITripleStore store = (ITripleStore)obj;
+                    foreach (IGraph g in store.Graphs)
+                    {
+                        if (!g.IsEmpty)
+                        {
+                            saveFunc(context, g);
+                        }
+                    }
+                }
+            }
+        }
+
+        internal static IEnumerable<Uri> ToContexts(this dotSesame.Resource[] contexts)
+        {
+            if (contexts == null)
+            {
+                return Enumerable.Empty<Uri>();
+            }
+            else if (contexts.Length == 0)
+            {
+                return Enumerable.Empty<Uri>();
+            }
+            else
+            {
+                List<Uri> results = new List<Uri>();
+                foreach (dotSesame.Resource r in contexts)
+                {
+                    if (r != null && r is dotSesame.URI)
+                    {
+                        results.Add(((UriNode)SesameConverter.FromSesameResource(r, null)).Uri);
+                    }
+                }
+                return results;
+            }
         }
 
         private static StreamReader ToDotNetReadableStream(this InputStream stream)
