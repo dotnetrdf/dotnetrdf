@@ -24,6 +24,13 @@ namespace VDS.RDF.Interop.Sesame
             this._target = target;
         }
 
+        public SesameMapping(DotNetRdfValueFactory factory, dotSesame.Graph target)
+        {
+            this._g = factory.Graph;
+            this._target = target;
+            this._factory = factory;
+        }
+
         /// <summary>
         /// Gets the Source Graph to which this mapping applies
         /// </summary>

@@ -7,6 +7,7 @@ using dotSesame = org.openrdf.model;
 using dotSesameRepo = org.openrdf.repository;
 using java.io;
 using VDS.RDF.Parsing;
+using VDS.RDF.Query;
 using VDS.RDF.Storage;
 using VDS.RDF.Storage.Params;
 using VDS.RDF.Writing;
@@ -65,14 +66,14 @@ namespace VDS.RDF.Interop.Sesame
         }
     }
 
-    public class DotNetRdfGenericRepositoryConnection : dotSesameRepo.RepositoryConnection
+    public class DotNetRdfGenericRepositoryConnection : BaseRepositoryConnection
     {
         private DotNetRdfGenericRepository _repo;
         private IGenericIOManager _manager;
         private DotNetRdfValueFactory _factory;
-        private bool _autoCommit = false;
 
         public DotNetRdfGenericRepositoryConnection(DotNetRdfGenericRepository repo, IGenericIOManager manager, DotNetRdfValueFactory factory)
+            : base(repo, factory)
         {
             this._repo = repo;
             this._manager = manager;
@@ -94,297 +95,278 @@ namespace VDS.RDF.Interop.Sesame
             return new dotSesameRepo.RepositoryException("dotNetRDF Generic Repositories do not currently support the clear() operation");
         }
 
-        public void add(info.aduna.iteration.Iteration i, params org.openrdf.model.Resource[] rarr)
+        private bool AddGraph(IGraph g)
         {
-            if (this._manager.IsReadOnly) throw NotWritableError("add");
-        }
-
-        public void add(java.lang.Iterable i, params org.openrdf.model.Resource[] rarr)
-        {
-            if (this._manager.IsReadOnly) throw NotWritableError("add");
-
-        }
-
-        public void add(org.openrdf.model.Statement s, params org.openrdf.model.Resource[] rarr)
-        {
-            if (this._manager.IsReadOnly) throw NotWritableError("add");
-
-        }
-
-        public void  add(Reader r, string str, org.openrdf.rio.RDFFormat rdff, params org.openrdf.model.Resource[] rarr)
-        {
-            if (this._manager.IsReadOnly) throw NotWritableError("add");
-
-        }
-
-        public void add(InputStream @is, string str, org.openrdf.rio.RDFFormat rdff, params org.openrdf.model.Resource[] rarr)
-        {
-            if (this._manager.IsReadOnly) throw NotWritableError("add");
-
-            Object obj = SesameHelper.LoadFromStream(@is, str, rdff);
-            IEnumerable<Uri> contexts = rarr.ToContexts();
-
             if (this._manager.UpdateSupported)
             {
-                if (contexts.Any())
-                {
-                    SesameHelper.ToStore(obj, (u, g) => { this._manager.UpdateGraph(u, g.Triples, null); return true; }, contexts);
-                }
-                else
-                {
-                    SesameHelper.ToStore(obj, g => { this._manager.UpdateGraph(g.BaseUri, g.Triples, null); return true; });
-                }
+                this._manager.UpdateGraph(g.BaseUri, g.Triples, null);
             }
             else
             {
-                if (contexts.Any())
-                {
-                    SesameHelper.ToStore(obj, (u, g) => { g.BaseUri = u; this._manager.SaveGraph(g); return true; }, contexts);
-                }
-                else
-                {
-                    SesameHelper.ToStore(obj, g => { this._manager.SaveGraph(g); return true; });
-                }
+                Graph temp = new Graph();
+                temp.BaseUri = g.BaseUri;
+                this._manager.LoadGraph(temp, temp.BaseUri);
+                temp.Assert(g.Triples);
+                this._manager.SaveGraph(temp);
             }
+            return true;
         }
 
-        public void add(org.openrdf.model.Resource r, org.openrdf.model.URI uri, org.openrdf.model.Value v, params org.openrdf.model.Resource[] rarr)
+        private bool AddGraphToContext(Uri u, IGraph g)
         {
-            if (this._manager.IsReadOnly) throw NotWritableError("add");
-
-        }
-
-        public void add(File f, string str, org.openrdf.rio.RDFFormat rdff, params org.openrdf.model.Resource[] rarr)
-        {
-            if (this._manager.IsReadOnly) throw NotWritableError("add");
-
-            Object obj = SesameHelper.LoadFromFile(f, str, rdff);
-            IEnumerable<Uri> contexts = rarr.ToContexts();
-
             if (this._manager.UpdateSupported)
             {
-                if (contexts.Any())
-                {
-                    SesameHelper.ToStore(obj, (u, g) => { this._manager.UpdateGraph(u, g.Triples, null); return true; }, contexts);
-                }
-                else
-                {
-                    SesameHelper.ToStore(obj, g => { this._manager.UpdateGraph(g.BaseUri, g.Triples, null); return true; });
-                }
+                this._manager.UpdateGraph(u, g.Triples, null);
             }
             else
             {
-                if (contexts.Any())
-                {
-                    SesameHelper.ToStore(obj, (u, g) => { g.BaseUri = u; this._manager.SaveGraph(g); return true; }, contexts);
-                }
-                else
-                {
-                    SesameHelper.ToStore(obj, g => { this._manager.SaveGraph(g); return true; });
-                }
+                Graph temp = new Graph();
+                temp.BaseUri = g.BaseUri;
+                this._manager.LoadGraph(temp, temp.BaseUri);
+                temp.Assert(g.Triples);
+                this._manager.SaveGraph(temp);
             }
+            return true;
         }
 
-        public void add(java.net.URL url, string str, org.openrdf.rio.RDFFormat rdff, params org.openrdf.model.Resource[] rarr)
+        protected override void AddInternal(Object obj, IEnumerable<Uri> contexts)
         {
-            if (this._manager.IsReadOnly) throw NotWritableError("add");
-
-            Object obj = SesameHelper.LoadFromUri(url, str, rdff);
-            IEnumerable<Uri> contexts = rarr.ToContexts();
-
-            if (this._manager.UpdateSupported)
+            if (contexts.Any())
             {
-                if (contexts.Any())
-                {
-                    SesameHelper.ToStore(obj, (u, g) => { this._manager.UpdateGraph(u, g.Triples, null); return true; }, contexts);
-                }
-                else
-                {
-                    SesameHelper.ToStore(obj, g => { this._manager.UpdateGraph(g.BaseUri, g.Triples, null); return true; });
-                }
+                SesameHelper.ModifyStore(obj, this.AddGraphToContext, contexts);
             }
             else
             {
-                if (contexts.Any())
-                {
-                    SesameHelper.ToStore(obj, (u, g) => { g.BaseUri = u; this._manager.SaveGraph(g); return true; }, contexts);
-                }
-                else
-                {
-                    SesameHelper.ToStore(obj, g => { this._manager.SaveGraph(g); return true; });
-                }
+                SesameHelper.ModifyStore(obj, this.AddGraph);
             }
         }
 
-        public void clear(params org.openrdf.model.Resource[] rarr)
+        public override void add(info.aduna.iteration.Iteration i, params org.openrdf.model.Resource[] rarr)
+        {
+            if (this._manager.IsReadOnly) throw NotWritableError("add");
+
+            base.add(i, rarr);
+        }
+
+        public override void add(java.lang.Iterable i, params org.openrdf.model.Resource[] rarr)
+        {
+            if (this._manager.IsReadOnly) throw NotWritableError("add");
+
+            base.add(i, rarr);
+        }
+
+        public override void add(org.openrdf.model.Statement s, params org.openrdf.model.Resource[] rarr)
+        {
+            if (this._manager.IsReadOnly) throw NotWritableError("add");
+
+            base.add(s, rarr);
+        }
+
+        public override void add(Reader r, string str, org.openrdf.rio.RDFFormat rdff, params org.openrdf.model.Resource[] rarr)
+        {
+            if (this._manager.IsReadOnly) throw NotWritableError("add");
+
+            base.add(r, str, rdff, rarr);
+        }
+
+        public override void add(InputStream @is, string str, org.openrdf.rio.RDFFormat rdff, params org.openrdf.model.Resource[] rarr)
+        {
+            if (this._manager.IsReadOnly) throw NotWritableError("add");
+
+            base.add(@is, str, rdff, rarr);
+        }
+
+        public override void add(org.openrdf.model.Resource r, org.openrdf.model.URI uri, org.openrdf.model.Value v, params org.openrdf.model.Resource[] rarr)
+        {
+            if (this._manager.IsReadOnly) throw NotWritableError("add");
+
+            base.add(r, uri, v, rarr);
+        }
+
+        public override void add(File f, string str, org.openrdf.rio.RDFFormat rdff, params org.openrdf.model.Resource[] rarr)
+        {
+            if (this._manager.IsReadOnly) throw NotWritableError("add");
+
+            base.add(f, str, rdff, rarr);
+        }
+
+        public override void add(java.net.URL url, string str, org.openrdf.rio.RDFFormat rdff, params org.openrdf.model.Resource[] rarr)
+        {
+            if (this._manager.IsReadOnly) throw NotWritableError("add");
+
+            base.add(url, str, rdff, rarr);
+        }
+
+        public override void clear(params org.openrdf.model.Resource[] rarr)
         {
             if (this._manager.IsReadOnly) throw NotWritableError("add");
             throw NoClearRepository();
         }
 
-        public void clearNamespaces()
+        public override void clearNamespaces()
         {
             throw NoNamespacesError();
         }
 
-        public void close()
+        public override void close()
         {
  	        //Nothing to do
         }
 
-        public void commit()
+        public override void commit()
         {
             if (this._manager.IsReadOnly) throw NotWritableError("commit");
 
+            throw new NotSupportedException("dotNetRDF Generic Repositories do not support Transactions");
         }
 
-        public void export(org.openrdf.rio.RDFHandler rdfh, params org.openrdf.model.Resource[] rarr)
+        public override org.openrdf.repository.RepositoryResult  getContextIDs()
         {
  	        throw new NotImplementedException();
         }
 
-        public void exportStatements(org.openrdf.model.Resource r, org.openrdf.model.URI uri, org.openrdf.model.Value v, bool b, org.openrdf.rio.RDFHandler rdfh, params org.openrdf.model.Resource[] rarr)
-        {
- 	        throw new NotImplementedException();
-        }
-
-        public org.openrdf.repository.RepositoryResult  getContextIDs()
-        {
- 	        throw new NotImplementedException();
-        }
-
-        public string getNamespace(string str)
+        public override string getNamespace(string str)
         {
             throw NoNamespacesError();
         }
 
-        public org.openrdf.repository.RepositoryResult getNamespaces()
+        public override org.openrdf.repository.RepositoryResult getNamespaces()
         {
             throw NoNamespacesError();
         }
 
-        public org.openrdf.repository.Repository getRepository()
+        protected override org.openrdf.repository.RepositoryResult GetStatementsInternal(string sparqlQuery)
         {
-            return this._repo;
+            throw new NotImplementedException();
         }
 
-        public org.openrdf.repository.RepositoryResult getStatements(org.openrdf.model.Resource r, org.openrdf.model.URI uri, org.openrdf.model.Value v, bool b, params org.openrdf.model.Resource[] rarr)
+        protected override bool HasTripleInternal(Triple t)
         {
- 	        throw new NotImplementedException();
+            if (this._manager is IQueryableGenericIOManager)
+            {
+                SparqlParameterizedString queryString = new SparqlParameterizedString("ASK WHERE { @subject @predicate @object}");
+                queryString.SetParameter("subject", t.Subject);
+                queryString.SetParameter("predicate", t.Predicate);
+                queryString.SetParameter("object", t.Object);
+
+                Object results = ((IQueryableGenericIOManager)this._manager).Query(queryString.ToString());
+                if (results is SparqlResultSet)
+                {
+                    SparqlResultSet rset = (SparqlResultSet)results;
+                    return rset.ResultsType == SparqlResultsType.Boolean && rset.Result;
+                } 
+                else 
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                throw new NotSupportedException("This dotNetRDF Generic Repository does not support detecting whether a given Statement exists in the Store");
+            }
         }
 
-        public org.openrdf.model.ValueFactory getValueFactory()
+        public override bool isEmpty()
         {
-            return this._factory;
+            throw new NotSupportedException("dotNetRDF Generic Repositories do no support indicating whether they are empty");
         }
 
-        public bool hasStatement(org.openrdf.model.Statement s, bool b, params org.openrdf.model.Resource[] rarr)
-        {
- 	        throw new NotImplementedException();
-        }
-
-        public bool hasStatement(org.openrdf.model.Resource r, org.openrdf.model.URI uri, org.openrdf.model.Value v, bool b, params org.openrdf.model.Resource[] rarr)
-        {
- 	        throw new NotImplementedException();
-        }
-
-        public bool isAutoCommit()
-        {
-            return this._autoCommit;
-        }
-
-        public bool isEmpty()
-        {
- 	        throw new NotImplementedException();
-        }
-
-        public bool isOpen()
+        public override bool isOpen()
         {
             return true;
         }
 
-        public org.openrdf.query.BooleanQuery prepareBooleanQuery(org.openrdf.query.QueryLanguage ql, string str1, string str2)
+        private bool RemoveGraph(IGraph g)
         {
- 	        throw new NotImplementedException();
+            if (this._manager.UpdateSupported)
+            {
+                this._manager.UpdateGraph(g.BaseUri, null, g.Triples);
+            }
+            else
+            {
+                Graph temp = new Graph();
+                temp.BaseUri = g.BaseUri;
+                this._manager.LoadGraph(temp, temp.BaseUri);
+                temp.Retract(g.Triples);
+                this._manager.SaveGraph(temp);
+            }
+            return true;
         }
 
-        public org.openrdf.query.BooleanQuery prepareBooleanQuery(org.openrdf.query.QueryLanguage ql, string str)
+        private bool RemoveGraphFromContext(Uri u, IGraph g)
         {
- 	        throw new NotImplementedException();
+            if (this._manager.UpdateSupported)
+            {
+                this._manager.UpdateGraph(u, null, g.Triples);
+            }
+            else
+            {
+                Graph temp = new Graph();
+                temp.BaseUri = g.BaseUri;
+                this._manager.LoadGraph(temp, temp.BaseUri);
+                temp.Retract(g.Triples);
+                this._manager.SaveGraph(temp);
+            }
+            return true;
         }
 
-        public org.openrdf.query.GraphQuery prepareGraphQuery(org.openrdf.query.QueryLanguage ql, string str1, string str2)
+        protected override void RemoveInternal(object obj, IEnumerable<Uri> contexts)
         {
- 	        throw new NotImplementedException();
+            if (contexts.Any())
+            {
+                SesameHelper.ModifyStore(obj, this.RemoveGraphFromContext, contexts);
+            }
+            else
+            {
+                SesameHelper.ModifyStore(obj, this.RemoveGraph);
+            }
         }
 
-        public org.openrdf.query.GraphQuery prepareGraphQuery(org.openrdf.query.QueryLanguage ql, string str)
+        public override void remove(info.aduna.iteration.Iteration i, params org.openrdf.model.Resource[] rarr)
         {
- 	        throw new NotImplementedException();
+            if (this._manager.IsReadOnly) throw NotWritableError("remove");
+
+            base.remove(i, rarr);
         }
 
-        public org.openrdf.query.Query prepareQuery(org.openrdf.query.QueryLanguage ql, string str1, string str2)
-        {
- 	        throw new NotImplementedException();
-        }
-
-        public org.openrdf.query.Query prepareQuery(org.openrdf.query.QueryLanguage ql, string str)
-        {
- 	        throw new NotImplementedException();
-        }
-
-        public org.openrdf.query.TupleQuery prepareTupleQuery(org.openrdf.query.QueryLanguage ql, string str1, string str2)
-        {
- 	        throw new NotImplementedException();
-        }
-
-        public org.openrdf.query.TupleQuery prepareTupleQuery(org.openrdf.query.QueryLanguage ql, string str)
-        {
- 	        throw new NotImplementedException();
-        }
-
-        public void remove(info.aduna.iteration.Iteration i, params org.openrdf.model.Resource[] rarr)
+        public override void remove(java.lang.Iterable i, params org.openrdf.model.Resource[] rarr)
         {
             if (this._manager.IsReadOnly) throw NotWritableError("remove");
 
+            base.remove(i, rarr);
         }
 
-        public void remove(java.lang.Iterable i, params org.openrdf.model.Resource[] rarr)
+        public override void remove(org.openrdf.model.Statement s, params org.openrdf.model.Resource[] rarr)
         {
             if (this._manager.IsReadOnly) throw NotWritableError("remove");
+
+            base.remove(s, rarr);
         }
 
-        public void remove(org.openrdf.model.Statement s, params org.openrdf.model.Resource[] rarr)
+        public override void remove(org.openrdf.model.Resource r, org.openrdf.model.URI uri, org.openrdf.model.Value v, params org.openrdf.model.Resource[] rarr)
         {
             if (this._manager.IsReadOnly) throw NotWritableError("remove");
+
+            base.remove(r, uri, v, rarr);
         }
 
-        public void remove(org.openrdf.model.Resource r, org.openrdf.model.URI uri, org.openrdf.model.Value v, params org.openrdf.model.Resource[] rarr)
-        {
-            if (this._manager.IsReadOnly) throw NotWritableError("remove");
-        }
-
-        public void removeNamespace(string str)
+        public override void removeNamespace(string str)
         {
             throw NoNamespacesError();
         }
 
-        public void rollback()
+        public override void rollback()
         {
             if (this._manager.IsReadOnly) throw NotWritableError("rollback");
+            throw new NotSupportedException("dotNetRDF Generic Repositories do not support Transactions");
         }
 
-        public void setAutoCommit(bool b)
-        {
-            this._autoCommit = b;
-        }
-
-        public void setNamespace(string str1, string str2)
+        public override void setNamespace(string str1, string str2)
         {
             throw NoNamespacesError();
         }
 
-        public long size(params org.openrdf.model.Resource[] rarr)
+        public override long size(params org.openrdf.model.Resource[] rarr)
         {
  	        throw new NotImplementedException();
         }
