@@ -16,7 +16,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.Alexandria.MongoDB", "Libraries\alexandria.mongodb\dotNetRDF.Alexandria.MongoDB.csproj", "{5976AA06-893B-4E0D-BDED-19A8515E809C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF", "Libraries\core\dotNetRDF.csproj", "{BFBAC159-1E60-4D03-8ACA-D34E31EB83BF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF", "..\..\Trunk\Libraries\core\dotNetRDF.csproj", "{BFBAC159-1E60-4D03-8ACA-D34E31EB83BF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sparql-dataset-tests", "Testing\sparql-dataset-tests\sparql-dataset-tests.csproj", "{A4152C86-FA1B-4941-8663-16AC8BEBED6C}"
 EndProject

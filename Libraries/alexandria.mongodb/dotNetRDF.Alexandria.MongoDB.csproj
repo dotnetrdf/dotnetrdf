@@ -72,7 +72,7 @@
       <Project>{6CDCEDB4-8D4F-4C51-B0CF-30B37D1518E3}</Project>
       <Name>dotNetRDF.Alexandria</Name>
     </ProjectReference>
-    <ProjectReference Include="..\core\dotNetRDF.csproj">
+    <ProjectReference Include="..\..\..\..\Trunk\Libraries\core\dotNetRDF.csproj">
       <Project>{BFBAC159-1E60-4D03-8ACA-D34E31EB83BF}</Project>
       <Name>dotNetRDF</Name>
     </ProjectReference>
