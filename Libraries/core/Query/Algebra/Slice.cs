@@ -37,6 +37,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Algebra
 {
@@ -90,10 +91,20 @@ namespace VDS.RDF.Query.Algebra
                 }
             }
 
+            IEnumerable<String> vars;
+            if (context.InputMultiset is IdentityMultiset || context.InputMultiset is NullMultiset)
+            {
+                vars = (context.Query != null) ? context.Query.Variables.Where(v => v.IsResultVariable).Select(v => v.Name) : context.InputMultiset.Variables;
+            }
+            else
+            {
+                vars = context.InputMultiset.Variables;
+            }
+
             if (limit == 0)
             {
                 //If Limit is Zero we can skip evaluation
-                context.OutputMultiset = new Multiset(context.Query.Variables.Select(v => v.Name));
+                context.OutputMultiset = new Multiset(vars);
                 return context.OutputMultiset;
             }
             else
@@ -105,7 +116,7 @@ namespace VDS.RDF.Query.Algebra
                     if (offset > context.InputMultiset.Count)
                     {
                         //If the Offset is greater than the count return nothing
-                        context.OutputMultiset = new Multiset(context.Query.Variables.Select(v => v.Name));
+                        context.OutputMultiset = new Multiset(vars);
                         return context.OutputMultiset;
                     }
                     else
@@ -166,7 +177,7 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets whether the Algebra will detec the Limit and Offset to use from the provided query
+        /// Gets whether the Algebra will detect the Limit and Offset to use from the provided query
         /// </summary>
         public bool DetectFromQuery
         {
@@ -194,6 +205,23 @@ namespace VDS.RDF.Query.Algebra
         public override string ToString()
         {
             return "Slice(" + this._pattern.ToString() + ", LIMIT " + this._limit + ", OFFSET " + this._offset + ")";
+        }
+
+        /// <summary>
+        /// Converts the Algebra back to a SPARQL Query
+        /// </summary>
+        /// <returns></returns>
+        public SparqlQuery ToQuery()
+        {
+            SparqlQuery q = this._pattern.ToQuery();
+            q.Limit = this._limit;
+            q.Offset = this._offset;
+            return q;
+        }
+
+        public GraphPattern ToGraphPattern()
+        {
+            throw new NotSupportedException("A Slice() cannot be converted to a Graph Pattern");
         }
     }
 }

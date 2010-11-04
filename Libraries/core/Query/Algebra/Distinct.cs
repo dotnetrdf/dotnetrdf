@@ -37,6 +37,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Algebra
 {
@@ -111,6 +112,45 @@ namespace VDS.RDF.Query.Algebra
         public override string ToString()
         {
             return "Distinct(" + this._pattern.ToString() + ")";
+        }
+
+        /// <summary>
+        /// Converts the Algebra back to a SPARQL Query
+        /// </summary>
+        /// <returns></returns>
+        public SparqlQuery ToQuery()
+        {
+            SparqlQuery q = this._pattern.ToQuery();
+            switch (q.QueryType)
+            {
+                case SparqlQueryType.Select:
+                    q.QueryType = SparqlQueryType.SelectDistinct;
+                    break;
+                case SparqlQueryType.SelectAll:
+                    q.QueryType = SparqlQueryType.SelectAllDistinct;
+                    break;
+                case SparqlQueryType.SelectAllDistinct:
+                case SparqlQueryType.SelectAllReduced:
+                case SparqlQueryType.SelectDistinct:
+                case SparqlQueryType.SelectReduced:
+                    throw new NotSupportedException("Cannot convert a Distinct() to a SPARQL Query when the Inner Algebra converts to a Query that already has a DISTINCT/REDUCED modifier applied");
+                case SparqlQueryType.Ask:
+                case SparqlQueryType.Construct:
+                case SparqlQueryType.Describe:
+                case SparqlQueryType.DescribeAll:
+                    throw new NotSupportedException("Cannot convert a Distinct() to a SPARQL Query when the Inner Algebra converts to a Query that is not a SELECT query");
+                case SparqlQueryType.Unknown:
+                    q.QueryType = SparqlQueryType.SelectDistinct;
+                    break;
+                default:
+                    throw new NotSupportedException("Cannot convert a Distinct() to a SPARQL Query when the Inner Algebra converts to a Query with an unexpected Query Type");
+            }
+            return q;
+        }
+
+        public GraphPattern ToGraphPattern()
+        {
+            throw new NotSupportedException("A Distinct() cannot be converted to a GraphPattern");
         }
     }
 
@@ -191,6 +231,45 @@ namespace VDS.RDF.Query.Algebra
         public override string ToString()
         {
             return "Reduced(" + this._pattern.ToString() + ")";
+        }
+
+        /// <summary>
+        /// Converts the Algebra back to a SPARQL Query
+        /// </summary>
+        /// <returns></returns>
+        public SparqlQuery ToQuery()
+        {
+            SparqlQuery q = this._pattern.ToQuery();
+            switch (q.QueryType)
+            {
+                case SparqlQueryType.Select:
+                    q.QueryType = SparqlQueryType.SelectReduced;
+                    break;
+                case SparqlQueryType.SelectAll:
+                    q.QueryType = SparqlQueryType.SelectAllReduced;
+                    break;
+                case SparqlQueryType.SelectAllDistinct:
+                case SparqlQueryType.SelectAllReduced:
+                case SparqlQueryType.SelectDistinct:
+                case SparqlQueryType.SelectReduced:
+                    throw new NotSupportedException("Cannot convert a Reduced() to a SPARQL Query when the Inner Algebra converts to a Query that already has a DISTINCT/REDUCED modifier applied");
+                case SparqlQueryType.Ask:
+                case SparqlQueryType.Construct:
+                case SparqlQueryType.Describe:
+                case SparqlQueryType.DescribeAll:
+                    throw new NotSupportedException("Cannot convert a Reduced() to a SPARQL Query when the Inner Algebra converts to a Query that is not a SELECT query");
+                case SparqlQueryType.Unknown:
+                    q.QueryType = SparqlQueryType.SelectReduced;
+                    break;
+                default:
+                    throw new NotSupportedException("Cannot convert a Reduced() to a SPARQL Query when the Inner Algebra converts to a Query with an unexpected Query Type");
+            }
+            return q;
+        }
+
+        public GraphPattern ToGraphPattern()
+        {
+            throw new NotSupportedException("A Reduced() cannot be converted to a GraphPattern");
         }
     }
 }

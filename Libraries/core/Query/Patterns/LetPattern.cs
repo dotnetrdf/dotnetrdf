@@ -45,7 +45,7 @@ namespace VDS.RDF.Query.Patterns
     /// <summary>
     /// Class for representing LET Patterns in SPARQL Queries
     /// </summary>
-    public class LetPattern : BaseTriplePattern, IComparable<LetPattern>
+    public class LetPattern : BaseTriplePattern, IComparable<LetPattern>, IAssignmentPattern
     {
         private String _var;
         private ISparqlExpression _expr;
@@ -90,9 +90,6 @@ namespace VDS.RDF.Query.Patterns
             }
             else
             {
-                List<String> copyVars = new List<string>(this._vars);
-                copyVars.Remove(this._var);
-
                 foreach (int id in context.InputMultiset.SetIDs.ToList())
                 {
                     Set s = context.InputMultiset[id];
@@ -106,42 +103,31 @@ namespace VDS.RDF.Query.Patterns
                             if (current != temp)
                             {
                                 //Where the values aren't equal the solution is eliminated
-                                //context.InputMultiset.Remove(id);
-                            }
-                            else
-                            {
-                                context.OutputMultiset.Add(s);
+                                context.InputMultiset.Remove(id);
                             }
                         }
                         catch
                         {
                             //If an error occurs the solution is eliminated
-                            //context.InputMultiset.Remove(id);
+                            context.InputMultiset.Remove(id);
                         }
                     }
                     else
                     {
-                        Set t = new Set();
-                        foreach (String var in copyVars)
-                        {
-                            t.Add(var, s[var]);
-                        }
-                        //context.InputMultiset.AddVariable(this._var);
+                        context.InputMultiset.AddVariable(this._var);
                         try
                         {
                             //Make a new assignment
                             INode temp = this._expr.Value(context, id);
-                            //s.Add(this._var, temp);
-                            t.Add(this._var, temp);
+                            s.Add(this._var, temp);
                         }
                         catch
                         {
                             //If an error occurs no assignment happens
                         }
-                        context.OutputMultiset.Add(t);
                     }
                 }
-                //context.OutputMultiset = new IdentityMultiset();
+                context.OutputMultiset = new IdentityMultiset();
             }
         }
 

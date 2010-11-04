@@ -89,6 +89,30 @@ namespace VDS.RDF.Query.Patterns
         public PropertyPathPattern(PatternItem subj, ISparqlPath path, PatternItem obj)
             : this(subj, path, obj, String.Empty) { }
 
+        public PatternItem Subject
+        {
+            get
+            {
+                return this._subj;
+            }
+        }
+
+        public ISparqlPath Path
+        {
+            get
+            {
+                return this._path;
+            }
+        }
+
+        public PatternItem Object
+        {
+            get
+            {
+                return this._obj;
+            }
+        }
+
         /// <summary>
         /// Evaluates a property path pattern
         /// </summary>

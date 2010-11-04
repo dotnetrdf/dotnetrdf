@@ -49,6 +49,8 @@ namespace VDS.RDF.Parsing.Contexts
         private bool _keywordsMode = false;
         private List<String> _keywords = new List<string>();
         private Stack<IGraph> _graphs = new Stack<IGraph>();
+        private Stack<VariableContext> _varContexts = new Stack<VariableContext>();
+        private VariableContext _varContext = new VariableContext(VariableContextType.None);
         
         /// <summary>
         /// Creates a new Notation 3 Parser Context with default settings
@@ -119,6 +121,21 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
+        /// Gets the Variable Context for Triples
+        /// </summary>
+        public VariableContext VariableContext
+        {
+            get
+            {
+                return this._varContext;
+            }
+            set
+            {
+                this._varContext = value;
+            }
+        }
+
+        /// <summary>
         /// Pushes the current in-scope Graph onto the Graph stack and creates a new empty Graph to be the in-scope Graph
         /// </summary>
         /// <remarks>
@@ -131,6 +148,10 @@ namespace VDS.RDF.Parsing.Contexts
             h.BaseUri = this._g.BaseUri;
             this._graphs.Push(this._g);
             this._g = h;
+
+            VariableContext v = new VariableContext(VariableContextType.None);
+            this._varContexts.Push(this._varContext);
+            this._varContext = v;
         }
 
         /// <summary>
@@ -144,6 +165,7 @@ namespace VDS.RDF.Parsing.Contexts
             if (this._graphs.Count > 0)
             {
                 this._g = this._graphs.Pop();
+                this._varContext = this._varContexts.Pop();
             }
             else
             {

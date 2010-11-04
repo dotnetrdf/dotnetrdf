@@ -38,6 +38,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Parsing.Tokens;
+using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Algebra
 {
@@ -145,10 +146,10 @@ namespace VDS.RDF.Query.Algebra
                     }
                     else
                     {
-                        if (this._graphSpecifier.TokenType == Token.VARIABLE)
+                        //For Graph Variable Patterns where the Variable wasn't already bound add bindings
+                        String gvar = this._graphSpecifier.Value.Substring(1);
+                        if (!initialInput.ContainsVariable(gvar))
                         {
-                            //For Graph Variable Patterns where the Variable wasn't already bound add bindings
-                            String gvar = this._graphSpecifier.Value.Substring(1);
                             result.AddVariable(gvar);
                             foreach (Set s in result.Sets)
                             {
@@ -226,6 +227,29 @@ namespace VDS.RDF.Query.Algebra
         public override string ToString()
         {
             return "Graph(" + this._graphSpecifier.Value + ", " + this._pattern.ToString() + ")";
+        }
+
+        /// <summary>
+        /// Converts the Algebra back to a SPARQL Query
+        /// </summary>
+        /// <returns></returns>
+        public SparqlQuery ToQuery()
+        {
+            SparqlQuery q = new SparqlQuery();
+            q.RootGraphPattern = this.ToGraphPattern();
+            q.Optimise();
+            return q;
+        }
+
+        public GraphPattern ToGraphPattern()
+        {
+            GraphPattern p = this._pattern.ToGraphPattern();
+            if (!p.IsGraph)
+            {
+                p.IsGraph = true;
+                p.GraphSpecifier = this._graphSpecifier;
+            }
+            return p;
         }
     }
 }

@@ -33,6 +33,8 @@ terms.
 
 */
 
+using VDS.RDF.Query.Datasets;
+
 namespace VDS.RDF.Update
 {
     /// <summary>
@@ -40,25 +42,25 @@ namespace VDS.RDF.Update
     /// </summary>
     public class SparqlUpdateEvaluationContext
     {
-        private IInMemoryQueryableStore _store;
+        private ISparqlDataset _data;
 
         /// <summary>
         /// Creates a new SPARQL Update Evaluation Context
         /// </summary>
-        /// <param name="store">In-memory queryable store</param>
-        public SparqlUpdateEvaluationContext(IInMemoryQueryableStore store)
+        /// <param name="data">SPARQL Dataset</param>
+        public SparqlUpdateEvaluationContext(ISparqlDataset data)
         {
-            this._store = store;
+            this._data = data;
         }
 
         /// <summary>
-        /// Store upon which the Updates are applied
+        /// Dataset upon which the Updates are applied
         /// </summary>
-        public IInMemoryQueryableStore Data
+        public ISparqlDataset Data
         {
             get
             {
-                return this._store;
+                return this._data;
             }
         }
     }

@@ -35,6 +35,7 @@ terms.
 
 using System;
 using VDS.RDF.Query.Algebra;
+using VDS.RDF.Query.Datasets;
 
 namespace VDS.RDF.Query
 {
@@ -56,8 +57,11 @@ namespace VDS.RDF.Query
         /// <param name="query">Query</param>
         /// <param name="store">Triple Store</param>
         public LeviathanQueryProcessor(SparqlQuery query, IInMemoryQueryableStore store)
+            : this(query, new InMemoryDataset(store)) { }
+
+        public LeviathanQueryProcessor(SparqlQuery query, ISparqlDataset data)
         {
-            this._context = new SparqlEvaluationContext(query, store);
+            this._context = new SparqlEvaluationContext(query, data);
         }
 
         /// <summary>
@@ -65,8 +69,11 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="store">Triple Store</param>
         public LeviathanQueryProcessor(IInMemoryQueryableStore store)
+            : this(new InMemoryDataset(store)) { }
+
+        public LeviathanQueryProcessor(ISparqlDataset data)
         {
-            this._context = new SparqlEvaluationContext(null, store);
+            this._context = new SparqlEvaluationContext(null, data);
         }
 
         /// <summary>

@@ -161,7 +161,7 @@ namespace VDS.RDF
         {
             get
             {
-                return (this._triples.Count == 0 && this._nodes.Count == 0);
+                return (this._triples.Count == 0);
             }
         }
 
@@ -284,7 +284,7 @@ namespace VDS.RDF
         /// Creates a new Literal Node with the given Value and Data Type
         /// </summary>
         /// <param name="literal">String value of the Literal</param>
-        /// <param name="datatype">Uri of the Data Type</param>
+        /// <param name="datatype">URI of the Data Type</param>
         /// <returns></returns>
         public virtual LiteralNode CreateLiteralNode(String literal, Uri datatype)
         {
@@ -292,7 +292,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Creates a new Uri Node that refers to the Base Uri of the Graph
+        /// Creates a new URI Node that refers to the Base Uri of the Graph
         /// </summary>
         /// <returns></returns>
         public virtual UriNode CreateUriNode()
@@ -302,9 +302,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Creates a new Uri Node with the given Uri
+        /// Creates a new URI Node with the given URI
         /// </summary>
-        /// <param name="uri">Uri for the Node</param>
+        /// <param name="uri">URI for the Node</param>
         /// <returns></returns>
         public virtual UriNode CreateUriNode(Uri uri)
         {
@@ -312,14 +312,24 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Creates a new Uri Node with the given QName
+        /// Creates a new URI Node with the given QName
         /// </summary>
         /// <param name="qname">QName for the Node</param>
         /// <returns></returns>
-        /// <remarks>Internally the Graph will resolve the QName to a full Uri, throws an RDF Exception when this is not possible</remarks>
+        /// <remarks>Internally the Graph will resolve the QName to a full URI, throws an RDF Exception when this is not possible</remarks>
         public virtual UriNode CreateUriNode(String qname)
         {
             return new UriNode(this, qname);
+        }
+
+        /// <summary>
+        /// Creates a new Variable Node
+        /// </summary>
+        /// <param name="varname">Variable Name</param>
+        /// <returns></returns>
+        public virtual VariableNode CreateVariableNode(String varname)
+        {
+            return new VariableNode(this, varname);
         }
 
         /// <summary>

@@ -69,6 +69,17 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
+        /// Gets the Sub-Query
+        /// </summary>
+        public SparqlQuery SubQuery
+        {
+            get
+            {
+                return this._subquery;
+            }
+        }
+
+        /// <summary>
         /// Evaluates a Sub-query in the given Evaluation Context
         /// </summary>
         /// <param name="context">Evaluation Context</param>

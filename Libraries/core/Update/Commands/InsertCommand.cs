@@ -64,6 +64,9 @@ namespace VDS.RDF.Update.Commands
             this._insertPattern = insertions;
             this._wherePattern = where;
             this._graphUri = graphUri;
+
+            //Optimise the WHERE
+            this._wherePattern.Optimise(Enumerable.Empty<String>());
         }
 
         /// <summary>
@@ -121,7 +124,7 @@ namespace VDS.RDF.Update.Commands
             if (this.UsingUris.Any()) context.Data.ResetActiveGraph();
 
             //Get the Graph to which we are inserting
-            IGraph g = context.Data.Graph(this._graphUri);
+            IGraph g = context.Data.GetModifiableGraph(this._graphUri);
 
             //Insert the Triples for each Solution
             foreach (Set s in queryContext.OutputMultiset.Sets)
@@ -180,7 +183,7 @@ namespace VDS.RDF.Update.Commands
                                 //Any other Graph Specifier we have to ignore this solution
                                 continue;
                         }
-                        IGraph h = context.Data.Graph(new Uri(graphUri));
+                        IGraph h = context.Data.GetModifiableGraph(new Uri(graphUri));
                         ConstructContext constructContext = new ConstructContext(h, s, true);
                         foreach (ITriplePattern p in gp.TriplePatterns)
                         {

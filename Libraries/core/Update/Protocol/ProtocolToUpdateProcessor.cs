@@ -36,7 +36,9 @@ terms.
 #if !NO_WEB
 
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Text;
 using System.Web;
 using VDS.RDF.Parsing;
@@ -77,33 +79,21 @@ namespace VDS.RDF.Update.Protocol
             //Work out the Graph URI we want to get
             Uri graphUri = this.ResolveGraphUri(context);
 
-            //Then generate a CONSTRUCT query based on this
-            SparqlParameterizedString construct = new SparqlParameterizedString("CONSTRUCT { ?s ?p ?o . } WHERE { GRAPH @graph { ?s ?p ?o . } }");
-            construct.SetUri("graph", graphUri);
-            SparqlQueryParser parser = new SparqlQueryParser();
-            SparqlQuery q = parser.ParseFromString(construct);
-
             try
             {
-                Object results = this._queryProcessor.ProcessQuery(q);
-                if (results is Graph)
-                {
-                    //Send the Graph to the user
-                    Graph g = (Graph)results;
-                    String ctype;
-                    IRdfWriter writer = MimeTypesHelper.GetWriter(context.Request.AcceptTypes, out ctype);
-                    context.Response.ContentType = ctype;
-                    writer.Save(g, new StreamWriter(context.Response.OutputStream));
-                }
-                else
-                {
-                    throw new SparqlHttpProtocolException("Failed to process a HTTP GET protocol operation since the query processor did not return a valid Graph as expected");
-                }
+                //Send the Graph to the user
+                IGraph g = this.GetGraph(graphUri);
+                String ctype;
+                IRdfWriter writer = MimeTypesHelper.GetWriter(context.Request.AcceptTypes, out ctype);
+                context.Response.ContentType = ctype;
+                writer.Save(g, new StreamWriter(context.Response.OutputStream));
             }
             catch (RdfQueryException)
             {
-                //Q: In the event of a query exception what is the appropriate response?
-                throw;
+                //If the GetGraph() method errors this implies that the Store does not contain the Graph
+                //In such a case we should return a 404
+                context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                return;
             }
         }
 
@@ -123,16 +113,11 @@ namespace VDS.RDF.Update.Protocol
             }
 
             //Get the Graph URI of the Graph to be added
-            Uri graphUri;
-            try
-            {
-                graphUri = this.ResolveGraphUri(context, g);
-            }
-            catch (SparqlHttpProtocolException)
-            {
-                //Q: What do we need to do here? Should we be generating a new Graph in the event of an error?
-                throw;
-            }
+            Uri graphUri = this.ResolveGraphUri(context, g);
+
+            //TODO: Need to add something here so that where relevant a new Graph gets created
+            //According to the spec this should happen "if the request URI identifies the underlying Network-manipulable Graph Store"
+            //May need to have Protocol Processors have this URI as a property
 
             //Generate an INSERT DATA command for the POST
             StringBuilder insert = new StringBuilder();
@@ -163,6 +148,27 @@ namespace VDS.RDF.Update.Protocol
             //Get the Graph URI of the Graph to be added
             Uri graphUri = this.ResolveGraphUri(context, g);
 
+            //Determine whether the Graph already exists or not, if it doesn't then we have to send a 201 Response
+            bool created = false;
+            try
+            {
+                SparqlQueryParser parser = new SparqlQueryParser();
+                SparqlParameterizedString graphExistsQuery = new SparqlParameterizedString();
+                graphExistsQuery.QueryText = "ASK WHERE { GRAPH @graph { } }";
+                graphExistsQuery.SetUri("graph", graphUri);
+
+                Object temp = this._queryProcessor.ProcessQuery(parser.ParseFromString(graphExistsQuery));
+                if (temp is SparqlResultSet)
+                {
+                    created = !((SparqlResultSet)temp).Result;
+                }
+            }
+            catch
+            {
+                //If any error occurs assume the Graph doesn't exist and so we'll return a 201 created
+                created = true;
+            }            
+
             //Generate a set of commands based upon this
             StringBuilder cmdSequence = new StringBuilder();
             cmdSequence.AppendLine("DROP SILENT GRAPH @graph ;");
@@ -183,6 +189,12 @@ namespace VDS.RDF.Update.Protocol
             SparqlUpdateCommandSet putCmds = this._parser.ParseFromString(put);
             this._updateProcessor.ProcessCommandSet(putCmds);
             this._updateProcessor.Flush();
+
+            //Return a 201 if required, otherwise the default behaviour of returning a 200 will occur
+            if (created)
+            {
+                context.Response.StatusCode = (int)HttpStatusCode.Created;
+            }
         }
 
         /// <summary>
@@ -200,6 +212,67 @@ namespace VDS.RDF.Update.Protocol
             SparqlUpdateCommandSet dropCmd = this._parser.ParseFromString(drop);
             this._updateProcessor.ProcessCommandSet(dropCmd);
             this._updateProcessor.Flush();
+        }
+
+        /// <summary>
+        /// Processes a HEAD operation
+        /// </summary>
+        /// <param name="context">HTTP Context</param>
+        public override void ProcessHead(HttpContext context)
+        {
+            //Work out the Graph URI we want to get
+            Uri graphUri = this.ResolveGraphUri(context);
+
+            try
+            {
+                //Send the Content Type we'd select based on the Accept header to the user
+                IGraph g = this.GetGraph(graphUri);
+                String ctype;
+                IRdfWriter writer = MimeTypesHelper.GetWriter(context.Request.AcceptTypes, out ctype);
+                context.Response.ContentType = ctype;
+
+                //We don't send the Graph as this is a HEAD request and that would be the body
+            }
+            catch (RdfQueryException)
+            {
+                //If the GetGraph() method errors this implies that the Store does not contain the Graph
+                //In such a case we should return a 404
+                context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                return;
+            }
+        }
+
+        public override void ProcessOptions(HttpContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Processes a PATCH operation
+        /// </summary>
+        /// <param name="context">HTTP Context</param>
+        public override void ProcessPatch(HttpContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override IGraph GetGraph(Uri graphUri)
+        {
+            //Then generate a CONSTRUCT query based on this
+            SparqlParameterizedString construct = new SparqlParameterizedString("CONSTRUCT { ?s ?p ?o . } WHERE { GRAPH @graph { ?s ?p ?o . } }");
+            construct.SetUri("graph", graphUri);
+            SparqlQueryParser parser = new SparqlQueryParser();
+            SparqlQuery q = parser.ParseFromString(construct);
+
+            Object results = this._queryProcessor.ProcessQuery(q);
+            if (results is IGraph)
+            {
+                return (IGraph)results;
+            }
+            else
+            {
+                throw new SparqlHttpProtocolException("Failed to retrieve a Graph since the query processor did not return a valid Graph as expected");
+            }
         }
     }
 }

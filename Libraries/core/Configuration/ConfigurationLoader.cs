@@ -50,6 +50,7 @@ namespace VDS.RDF.Configuration
                             PropertyQueryProcessor = "dnr:queryProcessor",
                             PropertyUpdateProcessor = "dnr:updateProcessor",
                             PropertyProtocolProcessor = "dnr:protocolProcessor",
+                            PropertyUsingDataset = "dnr:usingDataset",
                             //Properties for associating Stores and Graphs with other things
                             PropertyUsingStore = "dnr:usingStore",
                             PropertyUsingGraph = "dnr:usingGraph",
@@ -109,6 +110,7 @@ namespace VDS.RDF.Configuration
                             ClassSparqlUpdateProcessor = "dnr:SparqlUpdateProcessor",
                             ClassSparqlHttpProtocolProcessor = "dnr:SparqlHttpProtocolProcessor",
                             ClassSparqlExpressionFactory = "dnr:SparqlExpressionFactory",
+                            ClassSparqlDataset = "dnr:SparqlDataset",
                             ClassReasoner = "dnr:Reasoner",
                             ClassOwlReasoner = "dnr:OwlReasoner",
                             ClassProxy = "dnr:Proxy",
@@ -144,6 +146,7 @@ namespace VDS.RDF.Configuration
 #if !NO_STORAGE
             new GenericManagerFactory(),
 #endif
+            new DatasetFactory(),
             //Endpoint Factories
             new SparqlEndpointFactory(),
             //Processor Factories
@@ -189,7 +192,7 @@ namespace VDS.RDF.Configuration
             UriNode rdfType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
             INode objLoader = CreateConfigurationNode(g, ClassObjectFactory);
 
-            foreach (INode objNode in g.GetTriplesWithPredicateObject(rdfType, objLoader))
+            foreach (INode objNode in g.GetTriplesWithPredicateObject(rdfType, objLoader).Select(t => t.Subject))
             {
                 Object temp = LoadObject(g, objNode);
                 if (temp is IObjectFactory)

@@ -39,6 +39,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Web;
@@ -411,6 +412,39 @@ namespace VDS.RDF.Web
             catch
             {
                 //In the event of an error then the Headers won't get attached
+            }
+        }
+
+        /// <summary>
+        /// Adds the Standard Custom Headers that dotNetRDF attaches to all responses from it's Handlers
+        /// </summary>
+        /// <param name="context">HTTP Context</param>
+        public static void AddStandardHeaders(HttpContext context)
+        {
+            try
+            {
+                context.Response.Headers.Add("X-dotNetRDF-Version", Assembly.GetExecutingAssembly().GetName().Version.ToString());
+            }
+            catch (PlatformNotSupportedException)
+            {
+                context.Response.AddHeader("X-dotNetRDF-Version", Assembly.GetExecutingAssembly().GetName().Version.ToString());
+            }
+            AddCorsHeaders(context);
+        }
+
+        /// <summary>
+        /// Adds CORS headers which are needed to allow JS clients to access RDF/SPARQL endpoints powered by dotNetRDF
+        /// </summary>
+        /// <param name="context">HTTP Context</param>
+        public static void AddCorsHeaders(HttpContext context)
+        {
+            try
+            {
+                context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+            }
+            catch (PlatformNotSupportedException)
+            {
+                context.Response.AddHeader("Access-Control-Allow-Origin", "*");
             }
         }
 

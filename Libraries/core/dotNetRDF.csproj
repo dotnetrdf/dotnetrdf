@@ -39,16 +39,15 @@
   <ItemGroup>
     <Reference Include="HtmlAgilityPack, Version=1.4.0.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Dependencies\HtmlAgilityPack.dll</HintPath>
+      <HintPath>..\..\..\..\Trunk\Dependencies\HtmlAgilityPack.dll</HintPath>
     </Reference>
     <Reference Include="MySql.Data, Version=6.0.3.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Dependencies\MySql.Data.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\..\..\..\Trunk\Dependencies\MySql.Data.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=3.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Dependencies\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\..\..\..\Trunk\Dependencies\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -60,7 +59,7 @@
     <Reference Include="System.Xml" />
     <Reference Include="virtado3, Version=6.1.3127.2, Culture=neutral, PublicKeyToken=391bf132017ae989, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Dependencies\virtado3.dll</HintPath>
+      <HintPath>..\..\..\..\Trunk\Dependencies\virtado3.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -134,14 +133,7 @@
     <Compile Include="Storage\Params\SqlIOParams.cs" />
     <Compile Include="Storage\TalisPlatformConnector.cs" />
     <Compile Include="Storage\VirtuosoManager.cs" />
-    <Compile Include="Web\BaseResourceHandler.cs" />
     <Compile Include="Web\HandlerConstants.cs" />
-    <Compile Include="Web\RemoteSparqlHandler.cs" />
-    <Compile Include="Web\Configuration\Query\RemoteSparqlHandlerConfiguration.cs" />
-    <Compile Include="Web\SparqlHandler.cs" />
-    <Compile Include="Web\Configuration\Query\SqlSparqlHandlerConfiguration.cs" />
-    <Compile Include="Web\SqlResourceHandler.cs" />
-    <Compile Include="Web\Configuration\Resource\SqlResourceHandlerConfiguration.cs" />
     <Compile Include="Writing\CompressingTurtleWriter.cs" />
     <Compile Include="Writing\FolderStoreWriter.cs" />
     <Compile Include="Writing\GraphVizGenerator.cs" />
@@ -210,6 +202,7 @@
     <Compile Include="Configuration\ConfigurationSerializationContext.cs" />
     <Compile Include="Configuration\CredentialsFactory.cs" />
     <Compile Include="Configuration\DataFactories.cs" />
+    <Compile Include="Configuration\DatasetFactory.cs" />
     <Compile Include="Configuration\EndpointFactories.cs" />
     <Compile Include="Configuration\ExpressionFactoryFactory.cs" />
     <Compile Include="Configuration\PermissionFactories.cs" />
@@ -224,10 +217,13 @@
     <Compile Include="Core\DiskDemandTripleStore.cs" />
     <Compile Include="Core\INamespaceMapper.cs" />
     <Compile Include="Core\NestedNamespaceMapper.cs" />
+    <Compile Include="Core\NodeFactory.cs" />
     <Compile Include="Core\SubGraphMatcher.cs" />
     <Compile Include="Core\GraphMatcher.cs" />
     <Compile Include="Core\QueryableGraph.cs" />
     <Compile Include="Core\UnionCollections.cs" />
+    <Compile Include="Core\VariableNode.cs" />
+    <Compile Include="Core\VariableContext.cs" />
     <Compile Include="Core\WebDemandTripleStore.cs" />
     <Compile Include="Core\NativeTripleStore.cs" />
     <Compile Include="Core\VirtuosoTripleStore.cs" />
@@ -312,6 +308,10 @@
     <Compile Include="Query\Algebra\Slice.cs" />
     <Compile Include="Query\Algebra\SpecialQueryClasses.cs" />
     <Compile Include="Query\Construct\ConstructContext.cs" />
+    <Compile Include="Query\Datasets\BaseDataset.cs" />
+    <Compile Include="Query\Datasets\InMemoryDataset.cs" />
+    <Compile Include="Query\Datasets\ISparqlDataset.cs" />
+    <Compile Include="Query\Datasets\SqlDataset.cs" />
     <Compile Include="Query\Describe\ConciseBoundedDescription.cs" />
     <Compile Include="Query\Describe\NamedGraphDescription.cs" />
     <Compile Include="Query\Expressions\AggregateExpressions.cs" />
@@ -338,9 +338,12 @@
     <Compile Include="Query\Describe\ISparqlDescribe.cs" />
     <Compile Include="Query\Inference\InferenceHelper.cs" />
     <Compile Include="Query\Inference\IOwlReasoner.cs" />
+    <Compile Include="Query\Inference\SimpleN3RulesReasoner.cs" />
     <Compile Include="Query\Inference\OwlReasonerWrapper.cs" />
     <Compile Include="Query\Inference\PelletReasoner.cs" />
     <Compile Include="Query\Inference\Pellet\Services\NamespaceService.cs" />
+    <Compile Include="Query\Ordering\TripleComparer.cs" />
+    <Compile Include="Query\Patterns\BindPattern.cs" />
     <Compile Include="Query\PelletQueryProcessor.cs" />
     <Compile Include="Query\Inference\Pellet\ServiceEndpoint.cs" />
     <Compile Include="Query\Inference\Pellet\KnowledgeBase.cs" />
@@ -424,10 +427,8 @@
     <Compile Include="Web\BaseSparqlServer.cs" />
     <Compile Include="Web\Configuration\Protocol\BaseProtocolHandlerConfiguration.cs" />
     <Compile Include="Web\Configuration\Query\BaseQueryHandlerConfiguration.cs" />
-    <Compile Include="Web\Configuration\Query\ExtensionSupportingSparqlHandlerConfiguration.cs" />
     <Compile Include="Update\Protocol\ISparqlHttpProtocolProcessor.cs" />
     <Compile Include="Web\Configuration\Resource\BaseGraphHandlerConfiguration.cs" />
-    <Compile Include="Web\Configuration\Resource\BaseResourceHandlerConfiguration.cs" />
     <Compile Include="Configuration\StorageFactories.cs" />
     <Compile Include="Web\Configuration\Server\BaseSparqlServerConfiguration.cs" />
     <Compile Include="Web\Configuration\Update\BaseUpdateHandlerConfiguration.cs" />
@@ -436,7 +437,6 @@
     <Compile Include="Web\GraphHandler.cs" />
     <Compile Include="Web\HandlerHelper.cs" />
     <Compile Include="Web\ProtocolHandler.cs" />
-    <Compile Include="Web\FileHandler.cs" />
     <Compile Include="Web\QueryHandler.cs" />
     <Compile Include="Web\SchemaHandler.cs" />
     <Compile Include="Web\SparqlServer.cs" />
@@ -461,15 +461,6 @@
     <Compile Include="Storage\MySqlStoreManager.cs" />
     <Compile Include="Storage\NonNativeVirtuosoManager.cs" />
     <Compile Include="Storage\SesameHttpProtocolConnector.cs" />
-    <Compile Include="Web\BaseSparqlHandler.cs" />
-    <Compile Include="Web\Configuration\Query\BaseSparqlHandlerConfiguration.cs" />
-    <Compile Include="Web\DiskResourceHandler.cs" />
-    <Compile Include="Web\Configuration\Resource\DiskResourceHandlerConfiguration.cs" />
-    <Compile Include="Web\FileSparqlHandler.cs" />
-    <Compile Include="Web\Configuration\Query\FileSparqlHandlerConfiguration.cs" />
-    <Compile Include="Web\Configuration\Query\InferencingSparqlHandlerConfiguration.cs" />
-    <Compile Include="Web\NativeSparqlHandler.cs" />
-    <Compile Include="Web\Configuration\Query\NativeSparqlHandlerConfiguration.cs" />
     <Compile Include="Writing\Contexts\FolderStoreWriterContext.cs" />
     <Compile Include="Writing\Contexts\HtmlWriterContext.cs" />
     <Compile Include="Writing\Contexts\NTriplesWriterContext.cs" />

@@ -37,6 +37,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VDS.RDF.Query.Ordering;
+using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Algebra
 {
@@ -46,14 +48,16 @@ namespace VDS.RDF.Query.Algebra
     public class OrderBy : ISparqlAlgebra
     {
         private ISparqlAlgebra _pattern;
+        private ISparqlOrderBy _ordering;
 
         /// <summary>
         /// Creates a new Order By clause
         /// </summary>
         /// <param name="pattern">Pattern</param>
-        public OrderBy(ISparqlAlgebra pattern)
+        public OrderBy(ISparqlAlgebra pattern, ISparqlOrderBy ordering)
         {
             this._pattern = pattern;
+            this._ordering = ordering;
         }
 
         /// <summary>
@@ -65,10 +69,17 @@ namespace VDS.RDF.Query.Algebra
         {
             context.InputMultiset = this._pattern.Evaluate(context);
 
-            if (context.Query.OrderBy != null)
+            if (context.Query != null)
             {
-                context.Query.OrderBy.Context = context;
-                context.InputMultiset.Sort(context.Query.OrderBy);
+                if (context.Query.OrderBy != null)
+                {
+                    context.Query.OrderBy.Context = context;
+                    context.InputMultiset.Sort(context.Query.OrderBy);
+                }
+            }
+            else if (this._ordering != null)
+            {
+                context.InputMultiset.Sort(this._ordering);
             }
             context.OutputMultiset = context.InputMultiset;
             return context.OutputMultiset;
@@ -97,12 +108,45 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
+        /// Gets the Ordering that is used
+        /// </summary>
+        /// <remarks>
+        /// If the Query supplied in the <see cref="SparqlEvaluationContext">SparqlEvaluationContext</see> is non-null and has an ORDER BY clause then that is applied rather than the ordering with which the OrderBy algebra is instantiated
+        /// </remarks>
+        public ISparqlOrderBy Ordering
+        {
+            get
+            {
+                return this._ordering;
+            }
+        }
+
+        /// <summary>
         /// Gets the String representation of the Algebra
         /// </summary>
         /// <returns></returns>
         public override string ToString()
         {
             return "OrderBy(" + this._pattern.ToString() + ")";
+        }
+
+        /// <summary>
+        /// Converts the Algebra back to a SPARQL Query
+        /// </summary>
+        /// <returns></returns>
+        public SparqlQuery ToQuery()
+        {
+            SparqlQuery q = this._pattern.ToQuery();
+            if (this._ordering != null)
+            {
+                q.OrderBy = this._ordering;
+            }
+            return q;
+        }
+
+        public GraphPattern ToGraphPattern()
+        {
+            throw new NotSupportedException("An OrderBy() cannot be converted to a Graph Pattern");
         }
     }
 }

@@ -50,6 +50,25 @@ namespace VDS.RDF.Writing.Formatting
         /// </summary>
         public UncompressedNotation3Formatter()
             : base("Notation 3") { }
+
+        protected override string FormatVariableNode(VariableNode v, TripleSegment? segment)
+        {
+            return v.ToString();
+        }
+
+        protected override string FormatGraphLiteralNode(GraphLiteralNode glit, TripleSegment? segment)
+        {
+            if (segment == TripleSegment.Predicate) throw new RdfOutputException(WriterErrorMessages.GraphLiteralPredicatesUnserializable(this.FormatName));
+
+            StringBuilder output = new StringBuilder();
+            output.Append("{");
+            foreach (Triple t in glit.SubGraph.Triples)
+            {
+                output.Append(this.Format(t));
+            }
+            output.Append("}");
+            return output.ToString();
+        }
     }
 
     /// <summary>
@@ -76,5 +95,24 @@ namespace VDS.RDF.Writing.Formatting
         /// <param name="nsmap">Namespace Map</param>
         public Notation3Formatter(INamespaceMapper nsmap)
             : base("Notation 3", new QNameOutputMapper(nsmap)) { }
+
+        protected override string FormatVariableNode(VariableNode v, TripleSegment? segment)
+        {
+            return v.ToString();
+        }
+
+        protected override string FormatGraphLiteralNode(GraphLiteralNode glit, TripleSegment? segment)
+        {
+            if (segment == TripleSegment.Predicate) throw new RdfOutputException(WriterErrorMessages.GraphLiteralPredicatesUnserializable(this.FormatName));
+
+            StringBuilder output = new StringBuilder();
+            output.Append("{");
+            foreach (Triple t in glit.SubGraph.Triples)
+            {
+                output.Append(this.Format(t));
+            }
+            output.Append("}");
+            return output.ToString();
+        }
     }
 }

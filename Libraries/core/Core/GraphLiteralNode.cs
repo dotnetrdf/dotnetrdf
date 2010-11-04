@@ -172,7 +172,7 @@ namespace VDS.RDF
             }
             else if (other.NodeType != NodeType.GraphLiteral)
             {
-                //Graph Literal Nodes are greater than Blank Nodes, Uri Nodes and Literal Nodes
+                //Graph Literal Nodes are greater than Blank, Variable, Uri and Literal Nodes
                 //Return a 1 to indicate this
                 return 1;
             }

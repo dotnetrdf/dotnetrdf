@@ -228,6 +228,53 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
+        /// Gets the URI of a Graph based on its ID in the Store
+        /// </summary>
+        /// <param name="graphID">Graph ID</param>
+        /// <returns></returns>
+        public override Uri GetGraphUri(string graphID)
+        {
+            if (this._graphUris == null) this.LoadGraphUriMap();
+
+            if (this._graphUris.ContainsKey(graphID))
+            {
+                return this._graphUris[graphID];
+            }
+            else
+            {
+
+                try
+                {
+                    this.Open(false);
+                    String getID = "SELECT graphUri FROM GRAPHS WHERE graphID=" + graphID;
+                    Object id = this.ExecuteScalar(getID);
+                    if (id != null) throw new RdfStorageException("A Graph with the given ID does not exist in the Store");
+                    Uri graphUri = new Uri(id.ToString());
+                    if (graphUri.ToString().Equals(GraphCollection.DefaultGraphUri))
+                    {
+                        graphUri = null;
+                    }
+                    this.Close(false);
+
+                    //Cache and Return
+                    lock (this._graphUris)
+                    {
+                        if (!this._graphUris.ContainsKey(graphID))
+                        {
+                            this._graphUris.Add(graphID, graphUri);
+                        }
+                    }
+                    return graphUri;
+                }
+                catch
+                {
+                    this.Close(true, true);
+                    throw;
+                }
+            }
+        }
+
+        /// <summary>
         /// Determines whether a given Graph exists in the Store
         /// </summary>
         /// <param name="graphUri">Graph Uri</param>
@@ -791,6 +838,13 @@ namespace VDS.RDF.Storage
                     {
                         this._graphIDs.Remove(id);
                     }
+                    if (this._graphUris != null)
+                    {
+                        lock (this._graphUris)
+                        {
+                            this._graphUris.Remove(graphID);
+                        }
+                    }
                 }
                 catch
                 {
@@ -1077,12 +1131,12 @@ namespace VDS.RDF.Storage
                     this._dbConnections.Add(thread, new SqlConnection());
                     if (this._dbuser != null && this._dbpwd != null)
                     {
-                        this._dbConnections[thread].ConnectionString = "Data Source=" + this._dbserver + ";Initial Catalog=" + this._dbname + ";User ID=" + this._dbuser + ";Password=" + this._dbpwd;
+                        this._dbConnections[thread].ConnectionString = "Data Source=" + this._dbserver + ";Initial Catalog=" + this._dbname + ";User ID=" + this._dbuser + ";Password=" + this._dbpwd + ";MultipleActiveResultSets=True;";
                     }
                     else
                     {
                         //Patch by Michael Friis to use Integrated Authentication
-                        this._dbConnections[thread].ConnectionString = "Data Source=" + this._dbserver + ";Initial Catalog=" + this._dbname + ";Trusted_Connection=True;";
+                        this._dbConnections[thread].ConnectionString = "Data Source=" + this._dbserver + ";Initial Catalog=" + this._dbname + ";Trusted_Connection=True;MultipleActiveResultSets=True;";
                     }
 
                     this._dbTrans.Add(thread, null);
@@ -1238,6 +1292,23 @@ namespace VDS.RDF.Storage
             adapter.Fill(data);
         }
 
+        public override System.Data.Common.DbDataReader ExecuteStreamingQuery(string sqlCmd)
+        {
+            //Get Thread ID
+            int thread = Thread.CurrentThread.ManagedThreadId;
+
+            //Create the SQL Command
+            SqlCommand cmd = new SqlCommand(sqlCmd, this._dbConnections[thread]);
+            if (this._dbTrans[thread] != null)
+            {
+                //Add to the Transaction if required
+                cmd.Transaction = this._dbTrans[thread];
+            }
+
+            //Return the Data Reader
+            return cmd.ExecuteReader();
+        }
+
         /// <summary>
         /// Executes a Query SQL Command against the database and returns the scalar result (first column of first row of the result)
         /// </summary>
@@ -1388,6 +1459,42 @@ namespace VDS.RDF.Storage
             finally
             {
                 Monitor.Exit(this._tripleIDs);
+            }
+        }
+
+        /// <summary>
+        /// Loads the Graph ID to URI Map
+        /// </summary>
+        protected override void LoadGraphUriMap()
+        {
+            if (this._graphUris != null) return;
+            this._graphUris = new Dictionary<string,Uri>();
+
+            try 
+            {
+                this.Open(false);
+                String getGraphUris = "SELECT * FROM GRAPHS";
+                DataTable data = this.ExecuteQuery(getGraphUris);
+                lock (this._graphUris)
+                {
+                    foreach (DataRow row in data.Rows)
+                    {
+                        if (!this._graphUris.ContainsKey(row["graphID"].ToString()))
+                        {
+                            Uri graphUri = new Uri(row["graphUri"].ToString());
+                            if (graphUri.ToString().Equals(GraphCollection.DefaultGraphUri))
+                            {
+                                graphUri = null;
+                            }
+                            this._graphUris.Add(row["graphID"].ToString(), graphUri);
+                        }
+                    }
+                }
+                this.Close(false);
+            } 
+            catch 
+            {
+                this.Close(true,true);
             }
         }
 

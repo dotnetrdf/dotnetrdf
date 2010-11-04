@@ -709,11 +709,11 @@ namespace VDS.RDF.Parsing.Tokens
                 next = this.Peek();
             }
 
-#if !NO_NORM
-            String value = this.Value.Normalize();
-#else
+//#if !NO_NORM
+//            String value = this.Value.Normalize();
+//#else
             String value = this.Value;
-#endif
+//#endif
             //Backtrack if necessary
             if (value.EndsWith("."))
             {
@@ -777,11 +777,11 @@ namespace VDS.RDF.Parsing.Tokens
                 next = this.Peek();
             }
 
-#if !NO_NORM
-            value = this.Value.Normalize();
-#else
+//#if !NO_NORM
+//            value = this.Value.Normalize();
+//#else
             value = this.Value;
-#endif
+//#endif
 
             //Backtrack if necessary
             if (value.EndsWith("."))
@@ -803,6 +803,10 @@ namespace VDS.RDF.Parsing.Tokens
                         //Average Aggregate Keyword
                         this._lasttokentype = Token.AVG;
                         return new AvgKeywordToken(this.CurrentLine, this.StartPosition);
+                    case SparqlSpecsHelper.SparqlKeywordBind:
+                        //Bing Keyword
+                        this._lasttokentype = Token.BIND;
+                        return new BindKeywordToken(this.CurrentLine, this.StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordBindings:
                         //Bindings Keyword
                         this._lasttokentype = Token.BINDINGS;
@@ -1215,11 +1219,11 @@ namespace VDS.RDF.Parsing.Tokens
                 next = this.Peek();
             }
 
-#if !NO_NORM
-            String value = this.Value.Normalize();
-#else
+//#if !NO_NORM
+//            String value = this.Value.Normalize();
+//#else
             String value = this.Value;
-#endif
+//#endif
 
             //Backtrack if necessary
             if (!Char.IsDigit(value[0]) && value.EndsWith("."))

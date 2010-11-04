@@ -309,6 +309,28 @@ namespace VDS.RDF.Query.Algebra
         {
             return "AskBgp()";
         }
+
+        /// <summary>
+        /// Converts the Algebra back to a SPARQL Query
+        /// </summary>
+        /// <returns></returns>
+        public SparqlQuery ToQuery()
+        {
+            SparqlQuery q = new SparqlQuery();
+            q.RootGraphPattern = this.ToGraphPattern();
+            q.Optimise();
+            return q;
+        }
+
+        public GraphPattern ToGraphPattern()
+        {
+            GraphPattern p = new GraphPattern();
+            foreach (TriplePattern tp in this._triplePatterns)
+            {
+                p.AddTriplePattern(tp);
+            }
+            return p;
+        }
     }
 
     /// <summary>
@@ -404,6 +426,27 @@ namespace VDS.RDF.Query.Algebra
         public override string ToString()
         {
             return "AskUnion(" + this._lhs.ToString() + ", " + this._rhs.ToString() + ")";
+        }
+
+        /// <summary>
+        /// Converts the Algebra back to a SPARQL Query
+        /// </summary>
+        /// <returns></returns>
+        public SparqlQuery ToQuery()
+        {
+            SparqlQuery q = new SparqlQuery();
+            q.RootGraphPattern = this.ToGraphPattern();
+            q.Optimise();
+            return q;
+        }
+
+        public GraphPattern ToGraphPattern()
+        {
+            GraphPattern p = new GraphPattern();
+            p.IsUnion = true;
+            p.AddGraphPattern(this._lhs.ToGraphPattern());
+            p.AddGraphPattern(this._rhs.ToGraphPattern());
+            return p;
         }
     }
 }

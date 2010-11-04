@@ -192,6 +192,7 @@ namespace VDS.RDF.Writing
 
             //Decide on the Write Mode to use
             bool hiSpeed = false;
+            bool contextWritten = false;
             double subjNodes = context.Graph.Triples.SubjectNodes.Count();
             double triples = context.Graph.Triples.Count;
             if ((subjNodes / triples) > 0.75) hiSpeed = true;
@@ -204,6 +205,11 @@ namespace VDS.RDF.Writing
 
                 foreach (Triple t in context.Graph.Triples)
                 {
+                    if (!contextWritten && t.Context != null && t.Context is VariableContext)
+                    {
+                        VariableContext varContext = (VariableContext)t.Context;
+                        contextWritten = this.GenerateVariableQuantificationOutput(context, varContext);
+                    }
                     context.Output.WriteLine(this.GenerateTripleOutput(context, t));
                 }
             }
@@ -227,10 +233,18 @@ namespace VDS.RDF.Writing
                 for (int i = 0; i < ts.Count; i++)
                 {
                     Triple t = ts[i];
-                    if (lastSubj == null || !t.Subject.Equals(lastSubj))
+
+                    if (lastSubj == null || !t.Subject.Equals(lastSubj) || (t.Context != null && t.Context is VariableContext))
                     {
                         //Terminate previous Triples
                         if (lastSubj != null) context.Output.WriteLine(".");
+
+                        //If there's a Variable Context insert the @forAll and @forSome
+                        if (!contextWritten && t.Context != null && t.Context is VariableContext)
+                        {
+                            VariableContext varContext = (VariableContext)t.Context;
+                            contextWritten = this.GenerateVariableQuantificationOutput(context, varContext);
+                        }
 
                         //Start a new set of Triples
                         temp = this.GenerateNodeOutput(context, t.Subject, TripleSegment.Subject);
@@ -325,14 +339,25 @@ namespace VDS.RDF.Writing
                     break;
 
                 case NodeType.GraphLiteral:
+                    if (segment == TripleSegment.Predicate) throw new RdfOutputException(WriterErrorMessages.GraphLiteralPredicatesUnserializable("Notation 3"));
+
                     output.Append("{");
                     GraphLiteralNode glit = (GraphLiteralNode)n;
 
-                    CompressingTurtleWriterContext subcontext = new CompressingTurtleWriterContext(glit.SubGraph, null);
+                    StringBuilder temp = new StringBuilder();
+                    CompressingTurtleWriterContext subcontext = new CompressingTurtleWriterContext(glit.SubGraph, new System.IO.StringWriter(temp));
+                    subcontext.NodeFormatter = context.NodeFormatter;
+                    bool contextWritten = false;
 
                     //Write Triples 1 at a Time on a single line
                     foreach (Triple t in subcontext.Graph.Triples) 
                     {
+                        if (!contextWritten && t.Context != null && t.Context is VariableContext)
+                        {
+                            contextWritten = this.GenerateVariableQuantificationOutput(subcontext, (VariableContext)t.Context);
+                            if (contextWritten) output.Append(temp.ToString());
+                        }
+
                         output.Append(this.GenerateNodeOutput(subcontext, t.Subject, TripleSegment.Subject));
                         output.Append(" ");
                         output.Append(this.GenerateNodeOutput(subcontext, t.Predicate, TripleSegment.Predicate));
@@ -349,6 +374,9 @@ namespace VDS.RDF.Writing
                     return context.NodeFormatter.Format(n, segment);
 
                 case NodeType.Uri:
+                    return context.NodeFormatter.Format(n, segment);
+
+                case NodeType.Variable:
                     return context.NodeFormatter.Format(n, segment);
 
                 default:
@@ -411,6 +439,34 @@ namespace VDS.RDF.Writing
                 }
             }
             return output.ToString();
+        }
+
+        private bool GenerateVariableQuantificationOutput(CompressingTurtleWriterContext context, VariableContext varContext)
+        {
+            if (varContext.Type == VariableContextType.None)
+            {
+                return false;
+            }
+            else if (varContext.Type == VariableContextType.Existential)
+            {
+                context.Output.Write("@forSome ");
+            }
+            else
+            {
+                context.Output.Write("@forAll ");
+            }
+            foreach (INode var in varContext.Variables)
+            {
+                context.Output.Write(context.NodeFormatter.Format(var));
+                context.Output.Write(' ');
+            }
+            context.Output.WriteLine('.');
+
+            if (varContext.InnerContext != null)
+            {
+                this.GenerateVariableQuantificationOutput(context, varContext.InnerContext);
+            }
+            return true;
         }
 
         /// <summary>

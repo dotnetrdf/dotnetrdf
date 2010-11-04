@@ -96,7 +96,7 @@ namespace VDS.RDF.Query.Describe
                     UriNode u = (UriNode)n;
                     if (context.Data.HasGraph(u.Uri))
                     {
-                        g.Merge(context.Data.Graph(u.Uri));
+                        g.Merge(context.Data[u.Uri]);
                     }
                 }
             }

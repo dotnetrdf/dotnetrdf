@@ -37,6 +37,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VDS.RDF.Query.Filters;
+using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Algebra
 {
@@ -46,14 +48,16 @@ namespace VDS.RDF.Query.Algebra
     public class Having : ISparqlAlgebra
     {
         private ISparqlAlgebra _pattern;
+        private ISparqlFilter _having;
 
         /// <summary>
         /// Creates a new Having Clause
         /// </summary>
         /// <param name="pattern">Pattern</param>
-        public Having(ISparqlAlgebra pattern)
+        public Having(ISparqlAlgebra pattern, ISparqlFilter having)
         {
             this._pattern = pattern;
+            this._having = having;
         }
 
         /// <summary>
@@ -65,9 +69,16 @@ namespace VDS.RDF.Query.Algebra
         {
             context.InputMultiset = this._pattern.Evaluate(context);
 
-            if (context.Query.Having != null)
+            if (context.Query != null)
             {
-                context.Query.Having.Evaluate(context);
+                if (context.Query.Having != null)
+                {
+                    context.Query.Having.Evaluate(context);
+                }
+            }
+            else if (this._having != null)
+            {
+                this._having.Evaluate(context);
             }
 
             context.OutputMultiset = context.InputMultiset;
@@ -97,12 +108,45 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
+        /// Gets the HAVING clause used
+        /// </summary>
+        /// <remarks>
+        /// If the Query supplied in the <see cref="SparqlEvaluationContext">SparqlEvaluationContext</see> is non-null and has a HAVING clause then that is applied rather than the clause with which the Having algebra is instantiated
+        /// </remarks>
+        public ISparqlFilter HavingClause
+        {
+            get
+            {
+                return this._having;
+            }
+        }
+
+        /// <summary>
         /// Gets the String representation of the Algebra
         /// </summary>
         /// <returns></returns>
         public override string ToString()
         {
             return "Having(" + this._pattern.ToString() + ")";
+        }
+
+        /// <summary>
+        /// Converts the Algebra back to a SPARQL Query
+        /// </summary>
+        /// <returns></returns>
+        public SparqlQuery ToQuery()
+        {
+            SparqlQuery q = this._pattern.ToQuery();
+            if (this._having != null)
+            {
+                q.Having = this._having;
+            }
+            return q;
+        }
+
+        public GraphPattern ToGraphPattern()
+        {
+            throw new NotSupportedException("A Having() cannot be converted to a Graph Pattern");
         }
     }
 }

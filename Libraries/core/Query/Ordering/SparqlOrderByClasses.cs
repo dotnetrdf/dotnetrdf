@@ -39,6 +39,7 @@ using System.Linq;
 using System.Text;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Expressions;
+using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Ordering
 {
@@ -96,6 +97,10 @@ namespace VDS.RDF.Query.Ordering
         /// </summary>
         public bool Descending
         {
+            get
+            {
+                return (this._modifier == -1);
+            }
             set
             {
                 if (value)
@@ -110,12 +115,35 @@ namespace VDS.RDF.Query.Ordering
         }
 
         /// <summary>
+        /// Gets whether the Ordering is Simple
+        /// </summary>
+        public abstract bool IsSimple
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Gets all the Variables used in the Ordering
+        /// </summary>
+        public abstract IEnumerable<String> Variables
+        {
+            get;
+        }
+
+        /// <summary>
         /// Abstract Compare method which derived classes should implement their ordering in
         /// </summary>
         /// <param name="x">A Set</param>
         /// <param name="y">A Set</param>
         /// <returns></returns>
         public abstract int Compare(Set x, Set y);
+
+        /// <summary>
+        /// Generates a Comparer than can be used to do Ordering based on the given Triple Pattern
+        /// </summary>
+        /// <param name="pattern">Triple Pattern</param>
+        /// <returns></returns>
+        public abstract IComparer<Triple> GetComparer(TriplePattern pattern);
 
         /// <summary>
         /// Gets the String representation of the Order By
@@ -172,6 +200,71 @@ namespace VDS.RDF.Query.Ordering
                 else
                 {
                     return this._modifier * c;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Generates a Comparer than can be used to do Ordering based on the given Triple Pattern
+        /// </summary>
+        /// <param name="pattern">Triple Pattern</param>
+        /// <returns></returns>
+        public override IComparer<Triple> GetComparer(TriplePattern pattern)
+        {
+            IComparer<Triple> child = (this._child == null) ? null : this._child.GetComparer(pattern);
+            Func<Triple, Triple, int> compareFunc = null;
+            if (this._varname.Equals(pattern.Subject.VariableName))
+            {
+                compareFunc = (x, y) => x.Subject.CompareTo(y.Subject);
+            }
+            else if (this._varname.Equals(pattern.Predicate.VariableName))
+            {
+                compareFunc = (x, y) => x.Predicate.CompareTo(y.Predicate);
+            }
+            else if (this._varname.Equals(pattern.Object.VariableName))
+            {
+                compareFunc = (x, y) => x.Object.CompareTo(y.Object);
+            }
+
+            if (compareFunc == null) return null;
+            return new TripleComparer(compareFunc, this.Descending, child);
+        }
+
+        /// <summary>
+        /// Gets whether the Ordering is Simple
+        /// </summary>
+        public override bool IsSimple
+        {
+            get 
+            {
+                if (this._child != null)
+                {
+                    //An ordering on a Variable is always simple so whether the Ordering is simple
+                    //depends on whether the Child Ordering is simple
+                    return this._child.IsSimple;
+                }
+                else
+                {
+                    //An ordering on a Variable is always simple
+                    return true;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets all the Variables used in the Ordering
+        /// </summary>
+        public override IEnumerable<string> Variables
+        {
+            get 
+            {
+                if (this._child != null)
+                {
+                    return this._varname.AsEnumerable<String>().Concat(this._child.Variables).Distinct();
+                }
+                else
+                {
+                    return this._varname.AsEnumerable<String>();
                 }
             }
         }
@@ -283,6 +376,96 @@ namespace VDS.RDF.Query.Ordering
                     return this._modifier * -1;
                 }
 
+            }
+        }
+
+        /// <summary>
+        /// Generates a Comparer than can be used to do Ordering based on the given Triple Pattern
+        /// </summary>
+        /// <param name="pattern">Triple Pattern</param>
+        /// <returns></returns>
+        public override IComparer<Triple> GetComparer(TriplePattern pattern)
+        {
+            if (this._expr is VariableExpressionTerm)
+            {
+                IComparer<Triple> child = (this._child == null) ? null : this._child.GetComparer(pattern);
+                Func<Triple, Triple, int> compareFunc = null;
+                String var = this._expr.Variables.First();
+                if (var.Equals(pattern.Subject.VariableName))
+                {
+                    compareFunc = (x, y) => x.Subject.CompareTo(y.Subject);
+                }
+                else if (var.Equals(pattern.Predicate.VariableName))
+                {
+                    compareFunc = (x, y) => x.Predicate.CompareTo(y.Predicate);
+                }
+                else if (var.Equals(pattern.Object.VariableName))
+                {
+                    compareFunc = (x, y) => x.Object.CompareTo(y.Object);
+                }
+
+                if (compareFunc == null) return null;
+                return new TripleComparer(compareFunc, this.Descending, child);
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Gets whether the Ordering is Simple
+        /// </summary>
+        public override bool IsSimple
+        {
+            get 
+            {
+                if (this._expr is VariableExpressionTerm)
+                {
+                    //An Expression Ordering can be simple if that expression is a Variable Term
+                    //and the Child Ordering (if any) is simple
+                    if (this._child != null)
+                    {
+                        return this._child.IsSimple;
+                    }
+                    else
+                    {
+                        return true;
+                    }
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets all the Variables used in the Ordering
+        /// </summary>
+        public override IEnumerable<string> Variables
+        {
+            get
+            {
+                if (this._child != null)
+                {
+                    return this._expr.Variables.Concat(this._child.Variables).Distinct();
+                }
+                else
+                {
+                    return this._expr.Variables;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets the Expression used for Ordering
+        /// </summary>
+        public ISparqlExpression Expression
+        {
+            get
+            {
+                return this._expr;
             }
         }
 

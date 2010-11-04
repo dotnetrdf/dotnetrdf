@@ -71,6 +71,24 @@ namespace VDS.RDF.Update.Protocol
         public abstract void ProcessDelete(HttpContext context);
 
         /// <summary>
+        /// Processes a HEAD operation
+        /// </summary>
+        /// <param name="context">HTTP Context</param>
+        public abstract void ProcessHead(HttpContext context);
+
+        /// <summary>
+        /// Processes an OPTIONS operation
+        /// </summary>
+        /// <param name="context">HTTP Context</param>
+        public abstract void ProcessOptions(HttpContext context);
+
+        /// <summary>
+        /// Processes a PATCH operation
+        /// </summary>
+        /// <param name="context">HTTP Context</param>
+        public abstract void ProcessPatch(HttpContext context);
+
+        /// <summary>
         /// Gets the Graph URI that the request should affect
         /// </summary>
         /// <param name="context">HTTP Context</param>
@@ -165,6 +183,18 @@ namespace VDS.RDF.Update.Protocol
 
             return g;
         }
+
+        /// <summary>
+        /// Retrieves the Graph with the given URI
+        /// </summary>
+        /// <param name="graphUri">Graph URI</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// <para>
+        /// Helper method intended for use by the <see cref="BaseProtocolProcessor.ProcessGet">ProcessGet()</see> and <see cref="BaseProtocolProcessor.ProcessHead">ProcessHead()</see> methods
+        /// </para>
+        /// </remarks>
+        protected abstract IGraph GetGraph(Uri graphUri);
     }
 }
 

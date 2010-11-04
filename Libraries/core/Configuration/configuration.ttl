@@ -81,6 +81,10 @@ dnr:SparqlHttpProtocolProcessor a rdfs:Class ;
 dnr:SparqlExpressionFactory a rdfs:Class ;
 							rdfs:label "Class of Custom SPARQL Expression factories" ;
 							rdfs:comment "A Custom SPARQL Expression Factory is a class that can generate expressions from extension functions used in SPARQL queries." .
+							
+dnr:SparqlDataset a rdfs:Class ;
+				  rdfs:label "Class of SPARQL Datasets" ;
+				  rdfs:comment "A SPARQL Dataset is a dataset that can be used to execute SPARQL queries against using dotNetRDF's Leviathan Query engine" .
 								
 dnr:Reasoner a rdfs:Class ;
 			 rdfs:label "Class of Forward Chaining Reasoners" ;
@@ -230,6 +234,11 @@ dnr:protocolProcessor a rdf:Property ;
 					  rdfs:label "Protocol Processor" ;
 					  rdfs:comment "This property associates a SPARQL Protocol Processor with an object." ;
 					  rdfs:range dnr:SparqlHttpProtocolProcessor .
+					  
+dnr:usingDataset a rdf:Property ;
+				 rdfs:label "Using Dataset" ;
+				 rdfs:comment "This property indicates that an object uses a SPARQL Dataset." ;
+				 rdfs:range dnr:SparqlDataset .
 					  
 # Properties for associating Stores and Graphs with other objects
 

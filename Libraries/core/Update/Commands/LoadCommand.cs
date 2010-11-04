@@ -111,7 +111,7 @@ namespace VDS.RDF.Update.Commands
             //Now merge into the appropriate Graph
             //Set the Base URI to the URI of the destination Graph
             g.BaseUri = this._graphUri;
-            context.Data.Add(g, true);
+            context.Data.AddGraph(g);
         }
 
         /// <summary>

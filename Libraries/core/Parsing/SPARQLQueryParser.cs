@@ -396,11 +396,11 @@ namespace VDS.RDF.Parsing
                     default:
                         if (context.Query.QueryType == SparqlQueryType.Ask)
                         {
-                            throw Error("Unexpected Token encountered, a valid ASK query has been parsed but additional invalid tokens are present after the Graph pattern", temp);
+                            throw ParserHelper.Error("Unexpected Token encountered, a valid ASK query has been parsed but additional invalid tokens are present after the Graph pattern", temp);
                         }
                         else
                         {
-                            throw Error("Unexpected Token encountered - expected a BASE/PREFIX directive or a Query Keyword to start a Query", temp);
+                            throw ParserHelper.Error("Unexpected Token encountered - expected a BASE/PREFIX directive or a Query Keyword to start a Query", temp);
                         }
                 }
             } while (temp.TokenType != Token.EOF);
@@ -410,31 +410,6 @@ namespace VDS.RDF.Parsing
             context.Query.Optimise();
 
             return context.Query;
-        }
-
-        /// <summary>
-        /// Helper method for raising informative standardised Parser Errors
-        /// </summary>
-        /// <param name="msg">The Error Message</param>
-        /// <param name="t">The Token that is the cause of the Error</param>
-        /// <returns></returns>
-        private RdfParseException Error(String msg, IToken t)
-        {
-            StringBuilder output = new StringBuilder();
-            output.Append("[");
-            output.Append(t.GetType().ToString());
-            output.Append(" at Line ");
-            output.Append(t.StartLine);
-            output.Append(" Column ");
-            output.Append(t.StartPosition);
-            output.Append(" to Line ");
-            output.Append(t.EndLine);
-            output.Append(" Column ");
-            output.Append(t.EndPosition);
-            output.Append("] ");
-            output.Append(msg);
-
-            return new RdfParseException(output.ToString(), t);
         }
 
         private void TryParseBaseDeclaration(SparqlQueryParserContext context)
@@ -450,7 +425,7 @@ namespace VDS.RDF.Parsing
             }
             else
             {
-                throw Error("Expected a URI Token to follow the BASE Verb in a Query", next);
+                throw ParserHelper.Error("Expected a URI Token to follow the BASE Verb in a Query", next);
             }
         }
 
@@ -481,12 +456,12 @@ namespace VDS.RDF.Parsing
                 }
                 else
                 {
-                    throw Error("Expected a URI Token to follow a Prefix Token to follow the PREFIX Verb in a Query", uri);
+                    throw ParserHelper.Error("Expected a URI Token to follow a Prefix Token to follow the PREFIX Verb in a Query", uri);
                 }
             }
             else
             {
-                throw Error("Expected a Prefix Token to follow the PREFIX Verb in a Query", prefix);
+                throw ParserHelper.Error("Expected a Prefix Token to follow the PREFIX Verb in a Query", prefix);
             }
         }
 
@@ -494,7 +469,7 @@ namespace VDS.RDF.Parsing
         {
             if (context.VerbSeen)
             {
-                throw Error("Only 1 Query Verb can occur in a Query", t);
+                throw ParserHelper.Error("Only 1 Query Verb can occur in a Query", t);
             }
             else
             {
@@ -502,15 +477,15 @@ namespace VDS.RDF.Parsing
 
                 switch (t.TokenType) {
                     case Token.ASK:
-                        if (context.SubQueryMode) throw Error("ASK is not supported in Sub-queries",t);
+                        if (context.SubQueryMode) throw ParserHelper.Error("ASK is not supported in Sub-queries",t);
                         context.Query.QueryType = SparqlQueryType.Ask;
                         break;
                     case Token.CONSTRUCT:
-                        if (context.SubQueryMode) throw Error("CONSTRUCT is not supported in Sub-queries",t);
+                        if (context.SubQueryMode) throw ParserHelper.Error("CONSTRUCT is not supported in Sub-queries",t);
                         context.Query.QueryType = SparqlQueryType.Construct;
                         break;
                     case Token.DESCRIBE:
-                        if (context.SubQueryMode) throw Error("DESCRIBE is not supported in Sub-queries", t);
+                        if (context.SubQueryMode) throw ParserHelper.Error("DESCRIBE is not supported in Sub-queries", t);
                         context.Query.QueryType = SparqlQueryType.Describe;
                         break;
                     case Token.SELECT:
@@ -537,7 +512,7 @@ namespace VDS.RDF.Parsing
                     case Token.ALL:
                         if (context.Query.Variables.Count() > 0)
                         {
-                            throw Error("Can't use the * symbol to specify Select All and specify Variables in the SELECT Clause", next);
+                            throw ParserHelper.Error("Can't use the * symbol to specify Select All and specify Variables in the SELECT Clause", next);
                         }
                         //Change the Query Type to a Select All
                         switch (context.Query.QueryType)
@@ -557,7 +532,7 @@ namespace VDS.RDF.Parsing
                     case Token.VARIABLE:
                         if ((int)context.Query.QueryType >= (int)SparqlQueryType.SelectAll)
                         {
-                            throw Error("Can't use the * symbol to specify Select All and specify Variables in the SELECT Clause", next);
+                            throw ParserHelper.Error("Can't use the * symbol to specify Select All and specify Variables in the SELECT Clause", next);
                         }
 
                         context.Query.AddVariable(next.Value, true);
@@ -576,7 +551,7 @@ namespace VDS.RDF.Parsing
                     case Token.SUM:
                         if ((int)context.Query.QueryType >= (int)SparqlQueryType.SelectAll)
                         {
-                            throw Error("Can't use the * symbol to specify Select All and specify an Aggregate in the SELECT Clause", next);
+                            throw ParserHelper.Error("Can't use the * symbol to specify Select All and specify an Aggregate in the SELECT Clause", next);
                         }
 
                         context.Tokens.Dequeue();
@@ -609,12 +584,12 @@ namespace VDS.RDF.Parsing
                         next = context.Tokens.Dequeue();
                         if (next.TokenType != Token.AS)
                         {
-                            throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected an AS Keyword after a Projection Expression", next);
+                            throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected an AS Keyword after a Projection Expression", next);
                         }
                         next = context.Tokens.Dequeue();
                         if (next.TokenType != Token.VARIABLE)
                         {
-                            throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Variable as an alias after an AS Keyword", next);
+                            throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Variable as an alias after an AS Keyword", next);
                         }
 
                         context.Query.AddVariable(new SparqlVariable(next.Value.Substring(1), expr));
@@ -633,7 +608,7 @@ namespace VDS.RDF.Parsing
                         //Ensure we then see a Open Bracket
                         if (context.Tokens.Peek().TokenType != Token.LEFTBRACKET)
                         {
-                            throw Error("Expected a Left Bracket after a URI/QName in Select Variables for the arguments of a function call", context.Tokens.Peek());
+                            throw ParserHelper.Error("Expected a Left Bracket after a URI/QName in Select Variables for the arguments of a function call", context.Tokens.Peek());
                         }
                         context.Tokens.Dequeue();
 
@@ -664,12 +639,12 @@ namespace VDS.RDF.Parsing
                         next = context.Tokens.Dequeue();
                         if (next.TokenType != Token.AS)
                         {
-                            throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected an AS Keyword after a Projection Expression", next);
+                            throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected an AS Keyword after a Projection Expression", next);
                         }
                         next = context.Tokens.Dequeue();
                         if (next.TokenType != Token.VARIABLE)
                         {
-                            throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Variable as an alias after an AS Keyword", next);
+                            throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Variable as an alias after an AS Keyword", next);
                         }
 
                         //Turn into the appropriate type of Variable
@@ -692,7 +667,7 @@ namespace VDS.RDF.Parsing
                     case Token.LEFTBRACKET:
                         if ((int)context.Query.QueryType >= (int)SparqlQueryType.SelectAll)
                         {
-                            throw Error("Can't use the * symbol to specify Select All and specify a Projection Expression in the SELECT Clause", next);
+                            throw ParserHelper.Error("Can't use the * symbol to specify Select All and specify a Projection Expression in the SELECT Clause", next);
                         }
 
                         if (context.SyntaxMode == SparqlQuerySyntax.Sparql_1_0) throw new RdfParseException("Project Expressions are not supported in SPARQL 1.0");
@@ -709,13 +684,13 @@ namespace VDS.RDF.Parsing
                             next = context.Tokens.Dequeue();
                             if (next.TokenType != Token.AS)
                             {
-                                throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected an AS Keyword after a Projection Expression", next);
+                                throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected an AS Keyword after a Projection Expression", next);
                             }
                         }
                         next = context.Tokens.Dequeue();
                         if (next.TokenType != Token.VARIABLE)
                         {
-                            throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Variable as an alias after an AS Keyword", next);
+                            throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Variable as an alias after an AS Keyword", next);
                         }
                         SparqlVariable projVar = new SparqlVariable(next.Value.Substring(1), expr);
                         context.Query.AddVariable(projVar);
@@ -726,7 +701,7 @@ namespace VDS.RDF.Parsing
                             next = context.Tokens.Dequeue();
                             if (next.TokenType != Token.RIGHTBRACKET)
                             {
-                                throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Right Bracket to terminate the Projection Expression after the alias", next);
+                                throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Right Bracket to terminate the Projection Expression after the alias", next);
                             }
                         }
                         continue;
@@ -738,7 +713,7 @@ namespace VDS.RDF.Parsing
                         }
                         else
                         {
-                            throw Error("The DISTINCT Keyword must occur immediately after the SELECT Verb in a Query", next);
+                            throw ParserHelper.Error("The DISTINCT Keyword must occur immediately after the SELECT Verb in a Query", next);
                         }
                         break;
 
@@ -749,7 +724,7 @@ namespace VDS.RDF.Parsing
                         }
                         else
                         {
-                            throw Error("The REDUCED Keyword must occur immediately after the SELECT Verb in a Query", next);
+                            throw ParserHelper.Error("The REDUCED Keyword must occur immediately after the SELECT Verb in a Query", next);
                         }
                         break;
 
@@ -761,7 +736,7 @@ namespace VDS.RDF.Parsing
                     default:
                         if (firstToken)
                         {
-                            throw Error("The SELECT Keyword must be followed by a list of one/more variables or a * to specify all variables", next);
+                            throw ParserHelper.Error("The SELECT Keyword must be followed by a list of one/more variables or a * to specify all variables", next);
                         }
                         context.ExpressionParser.AllowAggregates = false;
                         return;
@@ -774,7 +749,7 @@ namespace VDS.RDF.Parsing
 
         private SparqlVariable TryParseAggregate(SparqlQueryParserContext context, IToken agg)
         {
-            if (context.SyntaxMode == SparqlQuerySyntax.Sparql_1_0) throw Error("Aggregates are not supported in SPARQL 1.0", agg);
+            if (context.SyntaxMode == SparqlQuerySyntax.Sparql_1_0) throw ParserHelper.Error("Aggregates are not supported in SPARQL 1.0", agg);
 
             IToken next;
             SparqlVariable var;
@@ -798,7 +773,7 @@ namespace VDS.RDF.Parsing
                     break;
 
                 default:
-                    throw Error("Cannot parse an Aggregate since '" + agg.GetType().ToString() + "' is not an Aggregate Keyword Token", agg);
+                    throw ParserHelper.Error("Cannot parse an Aggregate since '" + agg.GetType().ToString() + "' is not an Aggregate Keyword Token", agg);
             }
 
             //Gather up the Tokens and call into the Expression Parser to get this parsed
@@ -846,7 +821,7 @@ namespace VDS.RDF.Parsing
                 next = context.Tokens.Dequeue();
                 if (next.TokenType != Token.VARIABLE)
                 {
-                    throw Error("Unexpected Token '" + next.GetType().ToString() + "', expected a Variable Token after an AS Keyword to act as an aliased name for the Aggregate", next);
+                    throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "', expected a Variable Token after an AS Keyword to act as an aliased name for the Aggregate", next);
                 }
                 alias = next.Value.Substring(1);
             }
@@ -881,7 +856,7 @@ namespace VDS.RDF.Parsing
                     case Token.ALL:
                         if (context.Query.DescribeVariables.Count() > 0)
                         {
-                            throw Error("Can't use the * symbol to specify Describe All and specify Variables/URIs/QNames in the DESCRIBE Clause", next);
+                            throw ParserHelper.Error("Can't use the * symbol to specify Describe All and specify Variables/URIs/QNames in the DESCRIBE Clause", next);
                         }
                         //Change the Query Type to a Describe All
                         context.Query.QueryType = SparqlQueryType.DescribeAll;
@@ -890,7 +865,7 @@ namespace VDS.RDF.Parsing
                     case Token.VARIABLE:
                         if (context.Query.QueryType == SparqlQueryType.DescribeAll)
                         {
-                            throw Error("Can't use the * symbol to specify Describe All and specify Variables/URIs/QNames in the DESCRIBE Clause", next);
+                            throw ParserHelper.Error("Can't use the * symbol to specify Describe All and specify Variables/URIs/QNames in the DESCRIBE Clause", next);
                         }
                         context.Query.AddVariable(next.Value, true);
                         context.Query.AddDescribeVariable(next);
@@ -909,7 +884,7 @@ namespace VDS.RDF.Parsing
                     default:
                         if (firstToken)
                         {
-                            throw Error("The DESCRIBE keyword must be followed by a list of one/more variables/IRI References or a * to specify all variables", next);
+                            throw ParserHelper.Error("The DESCRIBE keyword must be followed by a list of one/more variables/IRI References or a * to specify all variables", next);
                         }
                         return;
                 }
@@ -927,7 +902,7 @@ namespace VDS.RDF.Parsing
             IToken next = context.Tokens.Dequeue();
             if (next.TokenType != Token.LEFTCURLYBRACKET)
             {
-                throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Left Curly Bracket to start a CONSTRUCT Template", next);
+                throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Left Curly Bracket to start a CONSTRUCT Template", next);
             }
 
             //Use a Graph Pattern for the Construct Template
@@ -1004,12 +979,12 @@ namespace VDS.RDF.Parsing
                     }
                     else
                     {
-                        throw Error("Expected a QName/URI Token to occur after a FROM NAMED Keyword to specify a Named Graph URI", next);
+                        throw ParserHelper.Error("Expected a QName/URI Token to occur after a FROM NAMED Keyword to specify a Named Graph URI", next);
                     }
                 }
                 else
                 {
-                    throw Error("Expected a QName/URI Token to occur after a FROM Keyword to specify a Default Graph URI", next);
+                    throw ParserHelper.Error("Expected a QName/URI Token to occur after a FROM Keyword to specify a Default Graph URI", next);
                 }
             }
         }
@@ -1037,7 +1012,7 @@ namespace VDS.RDF.Parsing
                 next = context.Tokens.Dequeue();
                 if (next.TokenType != Token.LEFTCURLYBRACKET)
                 {
-                    throw Error("Unexpected Token encountered, expected the start of a Graph Pattern", next);
+                    throw ParserHelper.Error("Unexpected Token encountered, expected the start of a Graph Pattern", next);
                 }
             }
 
@@ -1178,7 +1153,7 @@ namespace VDS.RDF.Parsing
                     {
                         if (context.BlankNodeIDUsages[next.Value] != context.GraphPatternID)
                         {
-                            throw Error("Invalid use of Blank Node Label '" + next.Value + "', this Label has already been used in a different Graph Pattern", next);
+                            throw ParserHelper.Error("Invalid use of Blank Node Label '" + next.Value + "', this Label has already been used in a different Graph Pattern", next);
                         }
                     }
                     else
@@ -1188,12 +1163,17 @@ namespace VDS.RDF.Parsing
 
                     //Must then be followed be a non-empty Property List
                     context.LocalTokens.Push(next);
-                    this.TryParsePropertyObjectList(context, p,2);
+                    this.TryParsePropertyObjectList(context, p, 2);
                     break;
 
                 case Token.LET:
                     //LET assignment
                     this.TryParseLetAssignment(context, p);
+                    break;
+
+                case Token.BIND:
+                    //BIND assignment
+                    this.TryParseBindAssignment(context, p);
                     break;
 
                 case Token.LEFTSQBRACKET:
@@ -1305,7 +1285,7 @@ namespace VDS.RDF.Parsing
                         }
                         else
                         {
-                            throw Error("A DOT Token cannot follow another DOT Token within a Graph Pattern", next);
+                            throw ParserHelper.Error("A DOT Token cannot follow another DOT Token within a Graph Pattern", next);
                         }
                     }
                     else if (lasttoken == Token.SEMICOLON)
@@ -1315,12 +1295,12 @@ namespace VDS.RDF.Parsing
                     }
                     else
                     {
-                        throw Error("A DOT Token can only be used to terminate a Triple Pattern or a Nested Graph Pattern", next);
+                        throw ParserHelper.Error("A DOT Token can only be used to terminate a Triple Pattern or a Nested Graph Pattern", next);
                     }
                     break;
 
                 default:
-                    throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered when the start of a Triple Pattern was expected", next);
+                    throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered when the start of a Triple Pattern was expected", next);
             }
         }
 
@@ -1388,7 +1368,7 @@ namespace VDS.RDF.Parsing
                         }
                         else
                         {
-                            throw Error("Encountered a '" + next.GetType().ToString() + "' Token which is valid only after a Predicate to indicate Path Cardinality", next);
+                            throw ParserHelper.Error("Encountered a '" + next.GetType().ToString() + "' Token which is valid only after a Predicate to indicate Path Cardinality", next);
                         }
                         break;
 
@@ -1405,7 +1385,7 @@ namespace VDS.RDF.Parsing
                         {
                             if (context.BlankNodeIDUsages[next.Value] != context.GraphPatternID)
                             {
-                                throw Error("Invalid use of Blank Node Label '" + next.Value + "', this Label has already been used in a different Graph Pattern", next);
+                                throw ParserHelper.Error("Invalid use of Blank Node Label '" + next.Value + "', this Label has already been used in a different Graph Pattern", next);
                             }
                         }
                         else
@@ -1432,12 +1412,12 @@ namespace VDS.RDF.Parsing
                             }
                             else
                             {
-                                throw Error("Unexpected Datatype Token, a Datatype may only be specified after a quoted Literal/Long Literal", lit);
+                                throw ParserHelper.Error("Unexpected Datatype Token, a Datatype may only be specified after a quoted Literal/Long Literal", lit);
                             }
                         }
                         else
                         {
-                            throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Datatype Token to follow a ^^ Token to specify the Datatype of a previous Literal Token", next);
+                            throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Datatype Token to follow a ^^ Token to specify the Datatype of a previous Literal Token", next);
                         }
                         context.Tokens.Dequeue();
                         break;
@@ -1480,11 +1460,11 @@ namespace VDS.RDF.Parsing
                         //Check length of Stack
                         if (context.LocalTokens.Count < expectedCount)
                         {
-                            throw Error("Encountered a Right Square Bracket Token to terminate a Blank Node Collection within a Triple Pattern but there are not enough Tokens to form a valid Triple Pattern", next);
+                            throw ParserHelper.Error("Encountered a Right Square Bracket Token to terminate a Blank Node Collection within a Triple Pattern but there are not enough Tokens to form a valid Triple Pattern", next);
                         }
                         else if (context.LocalTokens.Count > expectedCount)
                         {
-                            throw Error("Encountered a Right Square Bracket Token to terminate a Blank Node Collection within a Triple Pattern but there are too many Tokens to form a valid Triple Pattern", next);
+                            throw ParserHelper.Error("Encountered a Right Square Bracket Token to terminate a Blank Node Collection within a Triple Pattern but there are too many Tokens to form a valid Triple Pattern", next);
                         }
                         obj = this.TryCreatePatternItem(context, context.LocalTokens.Pop());
                         pred = this.TryCreatePatternItem(context, context.LocalTokens.Pop());
@@ -1523,7 +1503,7 @@ namespace VDS.RDF.Parsing
                         }
                         else
                         {
-                            throw Error("Unexpected Language Specifier Token, a Language Specifier may only be specified after a quoted Literal/Long Literal", lit);
+                            throw ParserHelper.Error("Unexpected Language Specifier Token, a Language Specifier may only be specified after a quoted Literal/Long Literal", lit);
                         }
                         context.Tokens.Dequeue();
                         break;
@@ -1534,11 +1514,11 @@ namespace VDS.RDF.Parsing
                         //Check length of stack
                         if (context.LocalTokens.Count < expectedCount)
                         {
-                            throw Error("Encountered a Comma Token to terminate a Triple Pattern but there are not enough Tokens to form a valid Triple Pattern", next);
+                            throw ParserHelper.Error("Encountered a Comma Token to terminate a Triple Pattern but there are not enough Tokens to form a valid Triple Pattern", next);
                         }
                         else if (context.LocalTokens.Count > expectedCount)
                         {
-                            throw Error("Encountered a Comma Token to terminate a Triple Pattern but there are too many Tokens to form a valid Triple Pattern", next);
+                            throw ParserHelper.Error("Encountered a Comma Token to terminate a Triple Pattern but there are too many Tokens to form a valid Triple Pattern", next);
                         }
                         obj = this.TryCreatePatternItem(context, context.LocalTokens.Pop());
                         temp = context.LocalTokens.Pop();
@@ -1567,11 +1547,11 @@ namespace VDS.RDF.Parsing
                         //Check length of stack
                         if (context.LocalTokens.Count < expectedCount)
                         {
-                            throw Error("Encountered a Semicolon Token to terminate a Triple Pattern but there are not enough Tokens to form a valid Triple Pattern", next);
+                            throw ParserHelper.Error("Encountered a Semicolon Token to terminate a Triple Pattern but there are not enough Tokens to form a valid Triple Pattern", next);
                         }
                         else if (context.LocalTokens.Count > expectedCount)
                         {
-                            throw Error("Encountered a Semicolon Token to terminate a Triple Pattern but there are too many Tokens to form a valid Triple Pattern", next);
+                            throw ParserHelper.Error("Encountered a Semicolon Token to terminate a Triple Pattern but there are too many Tokens to form a valid Triple Pattern", next);
                         }
                         obj = this.TryCreatePatternItem(context, context.LocalTokens.Pop());
                         temp = context.LocalTokens.Pop();
@@ -1607,11 +1587,11 @@ namespace VDS.RDF.Parsing
                         //Check length of Stack
                         if (context.LocalTokens.Count < expectedCount)
                         {
-                            throw Error("Encountered a DOT Token to terminate a Triple Pattern but there are not enough Tokens to form a valid Triple Pattern", next);
+                            throw ParserHelper.Error("Encountered a DOT Token to terminate a Triple Pattern but there are not enough Tokens to form a valid Triple Pattern", next);
                         }
                         else if (context.LocalTokens.Count > expectedCount)
                         {
-                            throw Error("Encountered a DOT Token to terminate a Triple Pattern but there are too many Tokens to form a valid Triple Pattern", next);
+                            throw ParserHelper.Error("Encountered a DOT Token to terminate a Triple Pattern but there are too many Tokens to form a valid Triple Pattern", next);
                         }
                         obj = this.TryCreatePatternItem(context, context.LocalTokens.Pop());
                         temp = context.LocalTokens.Pop();
@@ -1662,12 +1642,12 @@ namespace VDS.RDF.Parsing
                             }
                             else
                             {
-                                throw Error("Encountered a Token which terminates a Triple Pattern but there are not enough Tokens to form a valid Triple Pattern", next);
+                                throw ParserHelper.Error("Encountered a Token which terminates a Triple Pattern but there are not enough Tokens to form a valid Triple Pattern", next);
                             }
                         }
                         else if (context.LocalTokens.Count > expectedCount)
                         {
-                            throw Error("Encountered a Token which terminates a Triple Pattern but there are too many Tokens to form a valid Triple Pattern", next);
+                            throw ParserHelper.Error("Encountered a Token which terminates a Triple Pattern but there are too many Tokens to form a valid Triple Pattern", next);
                         }
                         obj = this.TryCreatePatternItem(context, context.LocalTokens.Pop());
                         temp = context.LocalTokens.Pop();
@@ -1686,7 +1666,7 @@ namespace VDS.RDF.Parsing
                         return;
                     
                     default:
-                        throw Error("Unexpected Token '" + next.GetType().ToString() + "' while trying to Parse Triple Patterns", next);
+                        throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' while trying to Parse Triple Patterns", next);
                 }
             } while (true);
 
@@ -1865,7 +1845,7 @@ namespace VDS.RDF.Parsing
                             break;
 
                         default:
-                            throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered while trying to parse a Collection", next);
+                            throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered while trying to parse a Collection", next);
                     }
 
                     context.Tokens.Dequeue();
@@ -1920,7 +1900,7 @@ namespace VDS.RDF.Parsing
                     break;
 
                 default:
-                    throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered while trying to parse a FILTER Clause", next);
+                    throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered while trying to parse a FILTER Clause", next);
             }
         }
 
@@ -1939,7 +1919,7 @@ namespace VDS.RDF.Parsing
             //Should get a LeftBracket next
             if (next.TokenType != Token.LEFTBRACKET)
             {
-                throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered while trying to parse a Built-in Function call", next);
+                throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered while trying to parse a Built-in Function call", next);
             }
 
             //Get the Expression that will be in the filter
@@ -1949,7 +1929,7 @@ namespace VDS.RDF.Parsing
                 next = context.Tokens.Dequeue();
                 if (next.TokenType != Token.VARIABLE)
                 {
-                    throw Error("Unexpected Token '" + next.GetType().ToString() + "' while trying to parse a BOUND function call", next);
+                    throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' while trying to parse a BOUND function call", next);
                 }
                 expr = new VariableExpressionTerm(next.Value);
             }
@@ -2017,7 +1997,7 @@ namespace VDS.RDF.Parsing
                     filter = new UnaryExpressionFilter(new IriFunction(expr));
                     break;
                 default:
-                    throw Error("Unexpected Token '" + t.GetType().ToString() + "' encountered while trying to parse a Built-in Function Call", t);
+                    throw ParserHelper.Error("Unexpected Token '" + t.GetType().ToString() + "' encountered while trying to parse a Built-in Function Call", t);
             }
 
             p.IsFiltered = true;
@@ -2029,7 +2009,7 @@ namespace VDS.RDF.Parsing
                 next = context.Tokens.Dequeue();
                 if (next.TokenType != Token.RIGHTBRACKET)
                 {
-                    throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered when a RightBracketToken was expected to terminate the Built-in Function Call", next);
+                    throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered when a RightBracketToken was expected to terminate the Built-in Function Call", next);
                 }
             }
         }
@@ -2123,7 +2103,7 @@ namespace VDS.RDF.Parsing
             IToken graphspec = context.Tokens.Dequeue();
             if (graphspec.TokenType != Token.URI && graphspec.TokenType != Token.QNAME && graphspec.TokenType != Token.VARIABLE)
             {
-                throw Error("Unexpected Token '" + graphspec.GetType().ToString() + "' encountered, expected a URI/QName/Variable Token to specify the active Graph for a GRAPH Clause", graphspec);
+                throw ParserHelper.Error("Unexpected Token '" + graphspec.GetType().ToString() + "' encountered, expected a URI/QName/Variable Token to specify the active Graph for a GRAPH Clause", graphspec);
             }
 
             //Convert a QName or Relative Uri to a Absolute Uri
@@ -2226,7 +2206,7 @@ namespace VDS.RDF.Parsing
                     }
                     else
                     {
-                        throw Error("Unexpected DISTINCT Keyword Token encountered, DISTINCT modifier keyword may only occur as the first argument to an aggregate function", next);
+                        throw ParserHelper.Error("Unexpected DISTINCT Keyword Token encountered, DISTINCT modifier keyword may only occur as the first argument to an aggregate function", next);
                     }
                 }
 
@@ -2384,7 +2364,7 @@ namespace VDS.RDF.Parsing
                     default:
                         if (termsSeen == 0)
                         {
-                            throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a valid ORDER BY clause term", next);
+                            throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a valid ORDER BY clause term", next);
                         }
                         else
                         {
@@ -2488,7 +2468,7 @@ namespace VDS.RDF.Parsing
                     default:
                         if (termsSeen == 0)
                         {
-                            throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a valid GROUP BY clause term", next);
+                            throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a valid GROUP BY clause term", next);
                         }
                         else
                         {
@@ -2574,7 +2554,7 @@ namespace VDS.RDF.Parsing
                     break;
 
                 default:
-                    throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Left Bracket to start a bracketted expression in a HAVING Clause", next);
+                    throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Left Bracket to start a bracketted expression in a HAVING Clause", next);
             }
 
             //Set the Having Clause of the Group By
@@ -2613,23 +2593,23 @@ namespace VDS.RDF.Parsing
                                 }
                                 else
                                 {
-                                    throw Error("Unable to convert string '" + next.Value + "' into an Integer to use as the results offset for a OFFSET Clause", next);
+                                    throw ParserHelper.Error("Unable to convert string '" + next.Value + "' into an Integer to use as the results offset for a OFFSET Clause", next);
                                 }
                             }
                             else
                             {
-                                throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Plain Literal containing an Integer value as part of the OFFSET Clause", next);
+                                throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Plain Literal containing an Integer value as part of the OFFSET Clause", next);
                             }
                         }
                     }
                     else
                     {
-                        throw Error("Unable to convert string '" + next.Value + "' into an Integer to use as the results limit for a LIMIT Clause", next);
+                        throw ParserHelper.Error("Unable to convert string '" + next.Value + "' into an Integer to use as the results limit for a LIMIT Clause", next);
                     }
                 }
                 else
                 {
-                    throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Plain Literal containing an Integer value as part of the LIMIT Clause", next);
+                    throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Plain Literal containing an Integer value as part of the LIMIT Clause", next);
                 }
             }
             else if (next.TokenType == Token.OFFSET)
@@ -2656,28 +2636,28 @@ namespace VDS.RDF.Parsing
                                 }
                                 else
                                 {
-                                    throw Error("Unable to convert string '" + next.Value + "' into an Integer to use as the results limit for a LIMIT Clause", next);
+                                    throw ParserHelper.Error("Unable to convert string '" + next.Value + "' into an Integer to use as the results limit for a LIMIT Clause", next);
                                 }
                             }
                             else
                             {
-                                throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Plain Literal containing an Integer value as part of the LIMIT Clause", next);
+                                throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Plain Literal containing an Integer value as part of the LIMIT Clause", next);
                             }
                         }
                     }
                     else
                     {
-                        throw Error("Unable to convert string '" + next.Value + "' into an Integer to use as the results offset for a OFFSET Clause", next);
+                        throw ParserHelper.Error("Unable to convert string '" + next.Value + "' into an Integer to use as the results offset for a OFFSET Clause", next);
                     }
                 }
                 else
                 {
-                    throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Plain Literal containing an Integer value as part of the OFFSET Clause", next);
+                    throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Plain Literal containing an Integer value as part of the OFFSET Clause", next);
                 }
             }
             else
             {
-                throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Limit/Offset Token to start a Limit Offset Clause", next);
+                throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Limit/Offset Token to start a Limit Offset Clause", next);
             }
         }
 
@@ -2713,7 +2693,7 @@ namespace VDS.RDF.Parsing
         private void TryParseLetAssignment(SparqlQueryParserContext context, GraphPattern p)
         {
             if (context.SyntaxMode == SparqlQuerySyntax.Sparql_1_0) throw new RdfParseException("LET assignment is not supported in SPARQL 1.0");
-            if (context.SyntaxMode == SparqlQuerySyntax.Sparql_1_1) throw new RdfParseException("LET assignment is not supported in SPARQL 1.1");
+            if (context.SyntaxMode == SparqlQuerySyntax.Sparql_1_1) throw new RdfParseException("LET assignment is not supported in SPARQL 1.1 - use BIND assignment instead");
 
             IToken variable;
             ISparqlExpression expr;
@@ -2764,14 +2744,14 @@ namespace VDS.RDF.Parsing
                                 expr = new VariableExpressionTerm(next.Value);
                                 break;
                             default:
-                                throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Token which was valid as the start of an expression for the right hand side of a LET assignment", next);
+                                throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Token which was valid as the start of an expression for the right hand side of a LET assignment", next);
                         }
 
                         //Finally expect a Right Bracket to terminate the LET
                         next = context.Tokens.Dequeue();
                         if (next.TokenType != Token.RIGHTBRACKET)
                         {
-                            throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Right Bracket to terminate the LET assignment", next);
+                            throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Right Bracket to terminate the LET assignment", next);
                         }
                         
                         //Create a Let Pattern and add to the Query appropriately
@@ -2783,23 +2763,64 @@ namespace VDS.RDF.Parsing
                         else
                         {
                             //When Optimisation is turned off we'll just stick the Let in the Triples Pattern where it occurs
-                            //since we're not going to do any Triple Pattern ordering, LET or FILTER placement
+                            //since we're not going to do any Triple Pattern ordering, Assignment or FILTER placement
                             p.AddTriplePattern(let);
                         }
                     }
                     else
                     {
-                        throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected an Assignment operator as part of a LET assignment", next);
+                        throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected an Assignment operator as part of a LET assignment", next);
                     }
                 }
                 else
                 {
-                    throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Variable as the first item in a LET assignment", next);
+                    throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Variable as the first item in a LET assignment", next);
                 }
             }
             else
             {
-                throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Left Bracket to start a LET assignment after a LET Keyword", next);
+                throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Left Bracket to start a LET assignment after a LET Keyword", next);
+            }
+        }
+
+        private void TryParseBindAssignment(SparqlQueryParserContext context, GraphPattern p)
+        {
+            if (context.SyntaxMode == SparqlQuerySyntax.Sparql_1_0) throw new RdfParseException("BIND assignment is not supported in SPARQL 1.0");
+
+            //First need to discard opening (
+            IToken next = context.Tokens.Dequeue();
+            if (next.TokenType != Token.LEFTBRACKET) throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a ( to start a BIND assignment after a BIND keyword", next);
+
+            //Expect a bracketted expression terminated by an AS
+            ISparqlExpression expr = this.TryParseExpression(context, false, true);
+            if (context.Tokens.LastTokenType != Token.AS)
+            {
+                throw new RdfParseException("A BIND assignment did not end with an AS ?var as expected, BIND assignment must be of the general form BIND(expr AS ?var)");
+            }
+
+            //Ensure there is a Variable after the AS
+            next = context.Tokens.Dequeue();
+            if (next.TokenType == Token.VARIABLE)
+            {
+                BindPattern bind = new BindPattern(next.Value.Substring(1), expr);
+                if (Options.QueryOptimisation)
+                {
+                    p.UnplacedAssignments.Add(bind);
+                }
+                else
+                {
+                    //When Optimisation is turned off we'll just stick the Let in the Triples Pattern where it occurs
+                    //since we're not going to do any Triple Pattern ordering, Assignment or FILTER placement
+                    p.AddTriplePattern(bind);
+                }
+
+                //Ensure the BIND assignment is terminated with a )
+                next = context.Tokens.Dequeue();
+                if (next.TokenType != Token.RIGHTBRACKET) throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a ) to terminate a BIND assignment", next);
+            }
+            else
+            {
+                throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Variable after the AS in a BIND assignment", next);
             }
         }
 
@@ -2832,7 +2853,7 @@ namespace VDS.RDF.Parsing
                 }
                 else if (next.TokenType == Token.EOF)
                 {
-                    throw Error("Unexpected End of File encountered while trying to gather Tokens to parse a Sub-Query from", next);
+                    throw ParserHelper.Error("Unexpected End of File encountered while trying to gather Tokens to parse a Sub-Query from", next);
                 }
 
                 if (openBrackets > 0)
@@ -2863,7 +2884,7 @@ namespace VDS.RDF.Parsing
             IToken specifier = context.Tokens.Dequeue();
             if (specifier.TokenType != Token.URI && specifier.TokenType != Token.VARIABLE)
             {
-                throw Error("Unexpected Token '" + specifier.GetType().ToString() + "' encountered, expected a URI/Variable after a SERVICE keyword", specifier);
+                throw ParserHelper.Error("Unexpected Token '" + specifier.GetType().ToString() + "' encountered, expected a URI/Variable after a SERVICE keyword", specifier);
             }
 
             //Then a Graph Pattern
@@ -2884,7 +2905,7 @@ namespace VDS.RDF.Parsing
                 context.Tokens.Dequeue();
                 next = context.Tokens.Peek();
             }
-            if (vars.Count == 0) throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected one/more Variable Tokens after a BINDINGS keyword", next);
+            if (vars.Count == 0) throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected one/more Variable Tokens after a BINDINGS keyword", next);
 
             //Then expect a Left Curly Bracket
             if (next.TokenType == Token.LEFTCURLYBRACKET)
@@ -2933,7 +2954,7 @@ namespace VDS.RDF.Parsing
                                     }
                                     else
                                     {
-                                        throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Datatype Token to specify the datatype for a Literal", next);
+                                        throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Datatype Token to specify the datatype for a Literal", next);
                                     }
                                 }
                                 else if (next.TokenType == Token.LANGSPEC)
@@ -2954,7 +2975,7 @@ namespace VDS.RDF.Parsing
                                 break;
 
                             default:
-                                throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Token for a URI/Literal or an UNDEF keyword as part of a tuple in a BINDINGS clause", next);
+                                throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Token for a URI/Literal or an UNDEF keyword as part of a tuple in a BINDINGS clause", next);
                         }
 
                         next = context.Tokens.Peek();
@@ -2979,13 +3000,13 @@ namespace VDS.RDF.Parsing
                 //Finally we need to see a Right Curly Bracket
                 if (next.TokenType != Token.RIGHTCURLYBRACKET)
                 {
-                    throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Right Curly Bracket to terminate the BINDINGS clause", next);
+                    throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Right Curly Bracket to terminate the BINDINGS clause", next);
                 }
                 context.Tokens.Dequeue();
             }
             else
             {
-                throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Left Curly Bracket after the list of variables as part of a BINDINGS clause", next);
+                throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Left Curly Bracket after the list of variables as part of a BINDINGS clause", next);
             }
         }
 
@@ -3020,7 +3041,7 @@ namespace VDS.RDF.Parsing
                 case Token.LITERAL:
                 case Token.LONGLITERAL:
                     //Literals use Node Matches
-                    return new NodeMatchPattern(new LiteralNode(null, t.Value));
+                    return new NodeMatchPattern(new NonNormalizedLiteralNode(null, t.Value));
 
                 case Token.PLAINLITERAL:
                     //Plain Literals either use an inferred Literal Node Match
@@ -3055,18 +3076,18 @@ namespace VDS.RDF.Parsing
                     {
                         baseUri = (context.Query.BaseUri == null) ? String.Empty : context.Query.BaseUri.ToString();
                         u = new Uri(Tools.ResolveUri(litdt.DataType.Substring(1, litdt.DataType.Length - 2), baseUri));
-                        return new NodeMatchPattern(new LiteralNode(null, litdt.Value, u));
+                        return new NodeMatchPattern(new NonNormalizedLiteralNode(null, litdt.Value, u));
                     }
                     else
                     {
                         //Resolve the QName                       
-                        return new NodeMatchPattern(new LiteralNode(null, litdt.Value, this.ResolveQName(context, litdt.DataType)));
+                        return new NodeMatchPattern(new NonNormalizedLiteralNode(null, litdt.Value, this.ResolveQName(context, litdt.DataType)));
                     }
 
                 case Token.LITERALWITHLANG:
                     //Literal with Lang Spec use Node Matches
                     LiteralWithLanguageSpecifierToken litls = (LiteralWithLanguageSpecifierToken)t;
-                    return new NodeMatchPattern(new LiteralNode(null, litls.Value, litls.Language));
+                    return new NodeMatchPattern(new NonNormalizedLiteralNode(null, litls.Value, litls.Language));
 
                 case Token.BLANKNODEWITHID:
                     //Blanks accept any Blank
@@ -3076,7 +3097,7 @@ namespace VDS.RDF.Parsing
                     return new NodeMatchPattern(new UriNode(null, new Uri(NamespaceMapper.RDF + "type")));
 
                 default:
-                    throw Error("Unable to Convert a '" + t.GetType().ToString() + "' to a Pattern Item in a Triple Pattern", t);
+                    throw ParserHelper.Error("Unable to Convert a '" + t.GetType().ToString() + "' to a Pattern Item in a Triple Pattern", t);
             }
         }
 

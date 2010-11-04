@@ -38,6 +38,7 @@ using System.Collections.Generic;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Construct;
+using VDS.RDF.Query.Expressions;
 
 namespace VDS.RDF.Query.Patterns
 {
@@ -85,7 +86,7 @@ namespace VDS.RDF.Query.Patterns
     /// <summary>
     /// Interface for Triple Patterns that can be used in a CONSTRUCT pattern
     /// </summary>
-    public interface IConstructTriplePattern
+    public interface IConstructTriplePattern : ITriplePattern
     {
         /// <summary>
         /// Constructs a Triple from a Set based on this Triple Pattern
@@ -130,6 +131,28 @@ namespace VDS.RDF.Query.Patterns
         /// Gets whether the Pattern contains no Explicit Variables (i.e. Blank Node Variables are ignored)
         /// </summary>
         bool HasNoExplicitVariables
+        {
+            get;
+        }
+    }
+
+    /// <summary>
+    /// Interface for Triple Patterns that represent Assignment operators
+    /// </summary>
+    public interface IAssignmentPattern : ITriplePattern
+    {
+        /// <summary>
+        /// Gets the Assignment Expression that is used
+        /// </summary>
+        ISparqlExpression AssignExpression
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Name of the Variable which is assigned to
+        /// </summary>
+        String VariableName
         {
             get;
         }

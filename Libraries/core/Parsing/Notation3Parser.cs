@@ -338,15 +338,36 @@ namespace VDS.RDF.Parsing
         private void TryParseForAll(Notation3ParserContext context)
         {
             //We know the Token we've just got off the Queue was a ForAllQuantifierToken
-            //Therefore the next Token(s) should be triple items leading to a DotToken
+            //Therefore the next Token(s) should be QNames/URIs leading to a DotToken
 
+            //Create a new Variable Context if one doesn't currently exist
+            if (context.VariableContext.Type == VariableContextType.None)
+            {
+                context.VariableContext = new VariableContext(VariableContextType.Universal);
+            }
+            else
+            {
+                context.VariableContext.InnerContext = new VariableContext(VariableContextType.Universal);
+            }
+
+            context.Tokens.Dequeue();
             IToken next = context.Tokens.Dequeue();
             while (next.TokenType != Token.DOT)
             {
+                //Get Variables
+                switch (next.TokenType)
+                {
+                    case Token.QNAME:
+                    case Token.URI:
+                        context.VariableContext.AddVariable(ParserHelper.TryResolveUri(context, next));
+                        break;
+
+                    default:
+                        throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a URI/QName for a Universal Variable as part of a @forAll directive", next);
+                }
+
                 next = context.Tokens.Dequeue();
             }
-
-            this.OnWarning("Parser does not know how to evaluate forAll Quantifiers");
         }
 
         /// <summary>
@@ -356,11 +377,34 @@ namespace VDS.RDF.Parsing
         private void TryParseForSome(Notation3ParserContext context)
         {
             //We know the Token we've just got off the Queue was a ForSomeQuantifierToken
-            //Therefore the next Token(s) should be triple items leading to a DotToken
+            //Therefore the next Token(s) should be QNames/URIs leading to a DotToken
 
+            //Create a new Variable Context if one doesn't currently exist
+            if (context.VariableContext.Type == VariableContextType.None)
+            {
+                context.VariableContext = new VariableContext(VariableContextType.Existential);
+            }
+            else
+            {
+                context.VariableContext.InnerContext = new VariableContext(VariableContextType.Existential);
+            }
+
+            context.Tokens.Dequeue();
             IToken next = context.Tokens.Dequeue();
             while (next.TokenType != Token.DOT)
             {
+                //Get Variables
+                switch (next.TokenType)
+                {
+                    case Token.QNAME:
+                    case Token.URI:
+                        context.VariableContext.AddVariable(ParserHelper.TryResolveUri(context, next));
+                        break;
+
+                    default:
+                        throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a URI/QName for an Existential Variable as part of a @forSome directive", next);
+                }
+
                 next = context.Tokens.Dequeue();
             }
 
@@ -455,8 +499,7 @@ namespace VDS.RDF.Parsing
                     break;
 
                 case Token.VARIABLE:
-                    this.OnWarning("Parser treats variables as QNames in the default Namespace");
-                    subj = context.Graph.CreateUriNode(":" + subjToken.Value.Substring(1));
+                    subj = context.Graph.CreateVariableNode(subjToken.Value.Substring(1));
                     break;
 
                 default:
@@ -620,8 +663,7 @@ namespace VDS.RDF.Parsing
                         break;
 
                     case Token.VARIABLE:
-                        this.OnWarning("Parser treats variables as QNames in the default Namespace");
-                        pred = context.Graph.CreateUriNode(":" + predToken.Value.Substring(1));
+                        pred = context.Graph.CreateVariableNode(predToken.Value.Substring(1));
                         break;
 
                     case Token.EOF:
@@ -812,8 +854,7 @@ namespace VDS.RDF.Parsing
                         break;
 
                     case Token.VARIABLE:
-                        this.OnWarning("Parser treats variables as QNames in the default Namespace");
-                        obj = context.Graph.CreateUriNode(":" + objToken.Value.Substring(1));
+                        obj = context.Graph.CreateVariableNode(objToken.Value.Substring(1));
                         break;
 
                     case Token.EOF:
@@ -834,12 +875,12 @@ namespace VDS.RDF.Parsing
                 //Assert the Triple
                 if (!reverse)
                 {
-                    context.Graph.Assert(new Triple(subj, pred, obj));
+                    context.Graph.Assert(new Triple(subj, pred, obj, context.VariableContext));
                 }
                 else
                 {
-                    //When reversed this means the predicate was Implies By (<=)
-                    context.Graph.Assert(new Triple(obj, pred, subj));
+                    //When reversed this means the predicate was Implied By (<=)
+                    context.Graph.Assert(new Triple(obj, pred, subj, context.VariableContext));
                 }
 
                 //Expect a comma/semicolon/dot terminator if we are to continue
@@ -960,8 +1001,8 @@ namespace VDS.RDF.Parsing
 
                     case Token.RIGHTBRACKET:
                         //We might terminate here if someone put a comment before the end of the Collection
-                        context.Graph.Assert(new Triple(subj, rdfFirst, obj));
-                        context.Graph.Assert(new Triple(subj, rdfRest, rdfNil));
+                        context.Graph.Assert(new Triple(subj, rdfFirst, obj, context.VariableContext));
+                        context.Graph.Assert(new Triple(subj, rdfRest, rdfNil, context.VariableContext));
                         return;
 
                     case Token.QNAME:
@@ -970,8 +1011,7 @@ namespace VDS.RDF.Parsing
                         break;
 
                     case Token.VARIABLE:
-                        this.OnWarning("Parser treats variables as QNames in the default Namespace");
-                        obj = context.Graph.CreateUriNode(":" + next.Value.Substring(1));
+                        obj = context.Graph.CreateVariableNode(next.Value.Substring(1));
                         break;
 
                     default:
@@ -987,19 +1027,19 @@ namespace VDS.RDF.Parsing
                 }
 
                 //Assert the relevant Triples
-                context.Graph.Assert(new Triple(subj, rdfFirst, obj));
+                context.Graph.Assert(new Triple(subj, rdfFirst, obj, context.VariableContext));
                 if (context.Tokens.Peek().TokenType == Token.RIGHTBRACKET)
                 {
                     //End of the Collection
                     context.Tokens.Dequeue();
-                    context.Graph.Assert(new Triple(subj, rdfRest, rdfNil));
+                    context.Graph.Assert(new Triple(subj, rdfRest, rdfNil, context.VariableContext));
                     return;
                 }
                 else
                 {
                     //More stuff in the collection
                     nextSubj = context.Graph.CreateBlankNode();
-                    context.Graph.Assert(new Triple(subj, rdfRest, nextSubj));
+                    context.Graph.Assert(new Triple(subj, rdfRest, nextSubj, context.VariableContext));
                     subj = nextSubj;
                 }
             } while (true);
@@ -1027,7 +1067,19 @@ namespace VDS.RDF.Parsing
 
             do
             {
-                this.TryParseTriples(context);
+                next = context.Tokens.Peek();
+                if (next.TokenType == Token.FORALL)
+                {
+                    this.TryParseForAll(context);
+                }
+                else if (next.TokenType == Token.FORSOME)
+                {
+                    this.TryParseForSome(context);
+                }
+                else
+                {
+                    this.TryParseTriples(context);
+                }
 
                 //If we've just seen a Right Curly bracket we've been terminated
                 if (context.Tokens.LastTokenType == Token.RIGHTCURLYBRACKET)
@@ -1042,7 +1094,6 @@ namespace VDS.RDF.Parsing
 
             IGraph subgraph = context.Graph;
             context.PopGraph();
-
 
             //Expect the correct number of closing brackets
             while (nesting > 0)
@@ -1094,11 +1145,11 @@ namespace VDS.RDF.Parsing
 
                 if (forward)
                 {
-                    context.Graph.Assert(new Triple(firstItem, secondItem, path));
+                    context.Graph.Assert(new Triple(firstItem, secondItem, path, context.VariableContext));
                 }
                 else
                 {
-                    context.Graph.Assert(new Triple(path, secondItem, firstItem));
+                    context.Graph.Assert(new Triple(path, secondItem, firstItem, context.VariableContext));
                 }
 
                 //Does the Path continue?

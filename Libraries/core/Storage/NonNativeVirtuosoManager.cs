@@ -280,6 +280,23 @@ namespace VDS.RDF.Storage
             adapter.Fill(data);
         }
 
+        public override System.Data.Common.DbDataReader ExecuteStreamingQuery(string sqlCmd)
+        {
+            //Get Thread ID
+            int thread = Thread.CurrentThread.ManagedThreadId;
+
+            //Create the SQL Command
+            VirtuosoCommand cmd = new VirtuosoCommand(sqlCmd, this._dbConnections[thread]);
+            if (this._dbTrans[thread] != null)
+            {
+                //Add to the Transaction if required
+                cmd.Transaction = this._dbTrans[thread];
+            }
+
+            //Return the Data Reader
+            return cmd.ExecuteReader();
+        }
+
         /// <summary>
         /// Executes a Query SQL Command against the database and returns the scalar result (first column of first row of the result)
         /// </summary>

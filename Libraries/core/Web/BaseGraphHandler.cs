@@ -78,15 +78,8 @@ namespace VDS.RDF.Web
         {
             this._config = this.LoadConfig(context);
 
-            //Add our Custom Headers
-            try
-            {
-                context.Response.Headers.Add("X-dotNetRDF-Version", Assembly.GetExecutingAssembly().GetName().Version.ToString());
-            }
-            catch (PlatformNotSupportedException)
-            {
-                context.Response.AddHeader("X-dotNetRDF-Version", Assembly.GetExecutingAssembly().GetName().Version.ToString());
-            }
+            //Add our Standard Headers
+            HandlerHelper.AddStandardHeaders(context);
 
             //Check whether we need to use authentication
             //If there are no user groups then no authentication is in use so we default to authenticated with no per-action authentication needed

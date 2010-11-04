@@ -67,14 +67,14 @@ namespace VDS.RDF.Update.Commands
             }
             if (context.Data.HasGraph(graphUri))
             {
-                target = context.Data.Graph(graphUri);
+                target = context.Data.GetModifiableGraph(graphUri);
             }
             else
             {
                 //If the Graph does not exist then it must be created
                 target = new Graph();
                 target.BaseUri = graphUri;
-                context.Data.Add(target);
+                context.Data.AddGraph(target);
             }
 
             //Insert the actual Triples

@@ -37,6 +37,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Algebra
 {
@@ -46,14 +47,17 @@ namespace VDS.RDF.Query.Algebra
     public class Project : ISparqlAlgebra
     {
         private ISparqlAlgebra _pattern;
+        private List<SparqlVariable> _variables = new List<SparqlVariable>();
 
         /// <summary>
         /// Creates a new Projection
         /// </summary>
         /// <param name="pattern">Inner pattern</param>
-        public Project(ISparqlAlgebra pattern)
+        /// <param name="variables">Variables that should be Projected</param>
+        public Project(ISparqlAlgebra pattern, IEnumerable<SparqlVariable> variables)
         {
             this._pattern = pattern;
+            this._variables.AddRange(variables);
         }
 
         /// <summary>
@@ -73,31 +77,46 @@ namespace VDS.RDF.Query.Algebra
                 if (!context.Query.PartialResultsOnTimeout) throw;
             }
 
+            IEnumerable<SparqlVariable> vars;
+            if (context.Query != null)
+            {
+                vars = context.Query.Variables;
+            }
+            else
+            {
+                vars = this._variables;
+            }
+
+            //For Null and Identity Multisets this is just a simple selection
             if (context.InputMultiset is NullMultiset)
             {
-                context.InputMultiset = new Multiset(context.Query.Variables.Select(v => v.Name));
+                context.InputMultiset = new Multiset(vars.Select(v => v.Name));
                 context.OutputMultiset = context.InputMultiset;
             }
             else if (context.InputMultiset is IdentityMultiset)
             {
-                context.InputMultiset = new Multiset(context.Query.Variables.Select(v => v.Name));
+                context.InputMultiset = new Multiset(vars.Select(v => v.Name));
                 Set s = new Set();
                 context.InputMultiset.Add(s);
                 context.OutputMultiset = context.InputMultiset;
             }
 
+            //If we have a Group Multiset then Projection is more complex
             GroupMultiset groupSet = null;
             if (context.InputMultiset is GroupMultiset)
             {
                 groupSet = (GroupMultiset)context.InputMultiset;
 
                 //Project all simple variables for the Groups here
-                foreach (SparqlVariable v in context.Query.Variables.Where(v => v.IsResultVariable && !v.IsProjection && !v.IsAggregate))
+                foreach (SparqlVariable v in vars.Where(v => v.IsResultVariable && !v.IsProjection && !v.IsAggregate))
                 {
                     //Can only project a variable if it's used in the GROUP
-                    if (!context.Query.GroupBy.Variables.Contains(v.Name))
+                    if (context.Query != null)
                     {
-                        throw new RdfQueryException("Cannot project the variable ?" + v.Name + " since this Query contains Grouping(s) but the given Variable is not in the GROUP BY - use the SAMPLE aggregate if you need to sample this Variable");
+                        if (!context.Query.GroupBy.Variables.Contains(v.Name))
+                        {
+                            throw new RdfQueryException("Cannot project the variable ?" + v.Name + " since this Query contains Grouping(s) but the given Variable is not in the GROUP BY - use the SAMPLE aggregate if you need to sample this Variable");
+                        }
                     }
                     context.OutputMultiset.AddVariable(v.Name);
                     foreach (int id in groupSet.SetIDs)
@@ -111,8 +130,10 @@ namespace VDS.RDF.Query.Algebra
             {
                 context.OutputMultiset = new Multiset();
             }
+
+            //Project the rest of the Variables
             Set aggSet = new Set();
-            foreach (SparqlVariable v in context.Query.Variables.Where(v => v.IsResultVariable))
+            foreach (SparqlVariable v in vars.Where(v => v.IsResultVariable))
             {
                 if (groupSet == null)
                 {
@@ -144,7 +165,7 @@ namespace VDS.RDF.Query.Algebra
                 }
                 else if (v.IsProjection)
                 {
-                    if (context.Query.IsAggregate && context.Query.GroupBy == null)
+                    if (context.Query != null && context.Query.IsAggregate && context.Query.GroupBy == null)
                     {
                         throw new RdfQueryException("Cannot project an expression since this Query contains Aggregates and no GROUP BY");
                     }
@@ -168,12 +189,12 @@ namespace VDS.RDF.Query.Algebra
                 }
                 else
                 {
-                    if (context.Query.IsAggregate && context.Query.GroupBy == null)
+                    if (context.Query != null && context.Query.IsAggregate && context.Query.GroupBy == null)
                     {
                         //If this is an Aggregate without a GROUP BY projected variables are invalid
                         throw new RdfQueryException("Cannot project the variable ?" + v.Name + " since this Query contains Aggregates and no GROUP BY");
                     }
-                    else if (context.Query.IsAggregate && !context.Query.GroupBy.Variables.Contains(v.Name))
+                    else if (context.Query != null && context.Query.IsAggregate && !context.Query.GroupBy.Variables.Contains(v.Name))
                     {
                         //If this is an Aggregate with a GROUP BY projected variables are only valid if they occur in the GROUP BY
                         throw new RdfQueryException("Cannot project the variable ?" + v.Name + " since this Query contains Aggregates but the given Variable is not in the GROUP BY - use the SAMPLE aggregate if you need to access this variable");
@@ -183,7 +204,7 @@ namespace VDS.RDF.Query.Algebra
                 }
             }
 
-            if (context.Query.IsAggregate && context.Query.GroupBy == null)
+            if (context.Query != null && context.Query.IsAggregate && context.Query.GroupBy == null)
             {
                 context.OutputMultiset.Add(aggSet);
             }
@@ -218,12 +239,45 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
+        /// Gets the SPARQL Variables used
+        /// </summary>
+        /// <remarks>
+        /// If the Query supplied in the <see cref="SparqlEvaluationContext">SparqlEvaluationContext</see> is non-null then it's Variables are used rather than these
+        /// </remarks>
+        public IEnumerable<SparqlVariable> SparqlVariables
+        {
+            get
+            {
+                return this._variables;
+            }
+        }
+
+        /// <summary>
         /// Gets the String representation of the Projection
         /// </summary>
         /// <returns></returns>
         public override string ToString()
         {
             return "Project(" + this._pattern.ToString() + ")";
+        }
+
+        /// <summary>
+        /// Converts the Algebra back to a SPARQL Query
+        /// </summary>
+        /// <returns></returns>
+        public SparqlQuery ToQuery()
+        {
+            return this._pattern.ToQuery();
+        }
+
+        /// <summary>
+        /// Converts the Algebra to a Graph Pattern
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="NotSupportedException">Thrown as this Algebra cannot be converted to a Graph Pattern</exception>
+        public GraphPattern ToGraphPattern()
+        {
+            throw new NotSupportedException("A Project() cannot be converted to a GraphPattern");
         }
     }
 
@@ -236,14 +290,16 @@ namespace VDS.RDF.Query.Algebra
     public class Select : ISparqlAlgebra
     {
         private ISparqlAlgebra _pattern;
+        private List<SparqlVariable> _variables = new List<SparqlVariable>();
 
         /// <summary>
         /// Creates a new Select
         /// </summary>
         /// <param name="pattern">Inner Pattern</param>
-        public Select(ISparqlAlgebra pattern)
+        public Select(ISparqlAlgebra pattern, IEnumerable<SparqlVariable> variables)
         {
             this._pattern = pattern;
+            this._variables.AddRange(variables);
         }
 
         /// <summary>
@@ -255,9 +311,20 @@ namespace VDS.RDF.Query.Algebra
         {
             context.InputMultiset = this._pattern.Evaluate(context);
 
-            if (context.Query.Variables.Any(v => !v.IsResultVariable))
+            IEnumerable<SparqlVariable> vars;
+            if (context.Query != null)
             {
-                List<String> removableVars = context.Query.Variables.Where(v => !v.IsResultVariable).Select(v => v.Name).ToList();
+                vars = context.Query.Variables;
+            }
+            else
+            {
+                vars = this._variables;
+            }
+
+            //Trim Variables that aren't being SELECTed
+            if (vars.Any(v => !v.IsResultVariable))
+            {
+                List<String> removableVars = vars.Where(v => !v.IsResultVariable).Select(v => v.Name).ToList();
                 foreach (String v in removableVars)
                 {
                     context.InputMultiset.Trim(v);
@@ -280,12 +347,53 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
+        /// Gets the SPARQL Variables used
+        /// </summary>
+        /// <remarks>
+        /// If the Query supplied in the <see cref="SparqlEvaluationContext">SparqlEvaluationContext</see> is non-null then it's Variables are used rather than these
+        /// </remarks>
+        public IEnumerable<SparqlVariable> SparqlVariables
+        {
+            get
+            {
+                return this._variables;
+            }
+        }
+
+        /// <summary>
         /// Gets the String representation of the Algebra
         /// </summary>
         /// <returns></returns>
         public override string ToString()
         {
             return "Select(" + this._pattern.ToString() + ")";
+        }
+
+        /// <summary>
+        /// Converts the Algebra back to a SPARQL Query
+        /// </summary>
+        /// <returns></returns>
+        public SparqlQuery ToQuery()
+        {
+            SparqlQuery q = this._pattern.ToQuery();
+            foreach (SparqlVariable var in this._variables)
+            {
+                q.AddVariable(var);
+            }
+            if (this._variables.All(v => v.IsResultVariable))
+            {
+                q.QueryType = SparqlQueryType.SelectAll;
+            }
+            else
+            {
+                q.QueryType = SparqlQueryType.Select;
+            }
+            return q;
+        }
+
+        public GraphPattern ToGraphPattern()
+        {
+            throw new NotSupportedException("A Select() cannot be converted to a GraphPattern");
         }
     }
 
@@ -361,6 +469,22 @@ namespace VDS.RDF.Query.Algebra
         public override string ToString()
         {
             return "Ask(" + this._pattern.ToString() + ")";
+        }
+
+        /// <summary>
+        /// Converts the Algebra back to a SPARQL Query
+        /// </summary>
+        /// <returns></returns>
+        public SparqlQuery ToQuery()
+        {
+            SparqlQuery q = this._pattern.ToQuery();
+            q.QueryType = SparqlQueryType.Ask;
+            return q;
+        }
+
+        public GraphPattern ToGraphPattern()
+        {
+            throw new NotSupportedException("An Ask() cannot be converted to a GraphPattern");
         }
     }
 }

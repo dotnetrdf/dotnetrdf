@@ -35,6 +35,7 @@ terms.
 */
 
 using VDS.RDF.Query;
+using VDS.RDF.Query.Datasets;
 using VDS.RDF.Query.Inference.Pellet;
 using VDS.RDF.Storage;
 using VDS.RDF.Update;
@@ -65,20 +66,39 @@ namespace VDS.RDF.Configuration
         {
             obj = null;
             ISparqlQueryProcessor processor = null;
+            INode storeObj;
+            Object temp;
 
             switch (targetType.FullName)
             {
                 case LeviathanQueryProcessor:
-                    INode storeObj = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyUsingStore));
-                    if (storeObj == null) return false;
-                    Object temp = ConfigurationLoader.LoadObject(g, storeObj);
-                    if (temp is IInMemoryQueryableStore)
+                    INode datasetObj = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyUsingDataset));
+                    if (datasetObj != null)
                     {
-                        processor = new LeviathanQueryProcessor((IInMemoryQueryableStore)temp);
+                        temp = ConfigurationLoader.LoadObject(g, datasetObj);
+                        if (temp is ISparqlDataset)
+                        {
+                            processor = new LeviathanQueryProcessor((ISparqlDataset)temp);
+                        }
+                        else
+                        {
+                            throw new DotNetRdfConfigurationException("Unable to load the Leviathan Query Processor identified by the Node '" + objNode.ToString() + "' as the value given for the dnr:usingDataset property points to an Object that cannot be loaded as an object which implements the ISparqlDataset interface");
+                        }
                     }
                     else
                     {
-                        throw new DotNetRdfConfigurationException("Unable to load the Leviathan Query Processor identified by the Node '" + objNode.ToString() + "' as the value given for the dnr:usingStore property points to an Object that cannot be loaded as an object which implements the IInMemoryQueryableStore interface");
+                        //If no dnr:usingDataset try dnr:usingStore instead
+                        storeObj = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyUsingStore));
+                        if (storeObj == null) return false;
+                        temp = ConfigurationLoader.LoadObject(g, storeObj);
+                        if (temp is IInMemoryQueryableStore)
+                        {
+                            processor = new LeviathanQueryProcessor((IInMemoryQueryableStore)temp);
+                        }
+                        else
+                        {
+                            throw new DotNetRdfConfigurationException("Unable to load the Leviathan Query Processor identified by the Node '" + objNode.ToString() + "' as the value given for the dnr:usingStore property points to an Object that cannot be loaded as an object which implements the IInMemoryQueryableStore interface");
+                        }
                     }
                     break;
 
@@ -190,16 +210,32 @@ namespace VDS.RDF.Configuration
             switch (targetType.FullName)
             {
                 case LeviathanUpdateProcessor:
-                    storeObj = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyUsingStore));
-                    if (storeObj == null) return false;
-                    temp = ConfigurationLoader.LoadObject(g, storeObj);
-                    if (temp is IInMemoryQueryableStore)
+                    INode datasetObj = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyUsingDataset));
+                    if (datasetObj != null)
                     {
-                        processor = new LeviathanUpdateProcessor((IInMemoryQueryableStore)temp);
+                        temp = ConfigurationLoader.LoadObject(g, datasetObj);
+                        if (temp is ISparqlDataset)
+                        {
+                            processor = new LeviathanUpdateProcessor((ISparqlDataset)temp);
+                        }
+                        else
+                        {
+                            throw new DotNetRdfConfigurationException("Unable to load the Leviathan Update Processor identified by the Node '" + objNode.ToString() + "' as the value given for the dnr:usingDataset property points to an Object that cannot be loaded as an object which implements the ISparqlDataset interface");
+                        }
                     }
                     else
                     {
-                        throw new DotNetRdfConfigurationException("Unable to load the Leviathan Update Processor identified by the Node '" + objNode.ToString() + "' as the value given for the dnr:usingStore property points to an Object that cannot be loaded as an object which implements the IInMemoryQueryableStore interface");
+                        storeObj = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyUsingStore));
+                        if (storeObj == null) return false;
+                        temp = ConfigurationLoader.LoadObject(g, storeObj);
+                        if (temp is IInMemoryQueryableStore)
+                        {
+                            processor = new LeviathanUpdateProcessor((IInMemoryQueryableStore)temp);
+                        }
+                        else
+                        {
+                            throw new DotNetRdfConfigurationException("Unable to load the Leviathan Update Processor identified by the Node '" + objNode.ToString() + "' as the value given for the dnr:usingStore property points to an Object that cannot be loaded as an object which implements the IInMemoryQueryableStore interface");
+                        }
                     }
                     break;
 
@@ -282,6 +318,7 @@ namespace VDS.RDF.Configuration
         {
             obj = null;
             ISparqlHttpProtocolProcessor processor = null;
+            Object temp;
 
             switch (targetType.FullName)
             {
@@ -312,20 +349,35 @@ namespace VDS.RDF.Configuration
                     break;
 
                 case LeviathanProtocolProcessor:
-                    INode storeNode = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyUsingStore));
-                    if (storeNode == null) return false;
-
-                    Object store = ConfigurationLoader.LoadObject(g, storeNode);
-
-                    if (store is IInMemoryQueryableStore)
+                    INode datasetNode = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyUsingDataset));
+                    if (datasetNode != null)
                     {
-                        processor = new LeviathanProtocolProcessor((IInMemoryQueryableStore)store);
+                        temp = ConfigurationLoader.LoadObject(g, datasetNode);
+                        if (temp is ISparqlDataset)
+                        {
+                            processor = new LeviathanProtocolProcessor((ISparqlDataset)temp);
+                        }
+                        else
+                        {
+                            throw new DotNetRdfConfigurationException("Unable to load the Leviathan Protocol Processor identified by the Node '" + objNode.ToString() + "' as the value given for the dnr:usingDataset property points to an Object that cannot be loaded as an object which implements the ISparqlDataset interface");
+                        }
                     }
                     else
                     {
-                        throw new DotNetRdfConfigurationException("Unable to load the SPARQL HTTP Protocol Processor identified by the Node '" + objNode.ToString() + "' as the value given for the dnr:usingStore property points to an Object that cannot be loaded as an object which implements the IInMemoryQueryableStore interface");
-                    }
+                        INode storeNode = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyUsingStore));
+                        if (storeNode == null) return false;
 
+                        Object store = ConfigurationLoader.LoadObject(g, storeNode);
+
+                        if (store is IInMemoryQueryableStore)
+                        {
+                            processor = new LeviathanProtocolProcessor((IInMemoryQueryableStore)store);
+                        }
+                        else
+                        {
+                            throw new DotNetRdfConfigurationException("Unable to load the SPARQL HTTP Protocol Processor identified by the Node '" + objNode.ToString() + "' as the value given for the dnr:usingStore property points to an Object that cannot be loaded as an object which implements the IInMemoryQueryableStore interface");
+                        }
+                    }
                     break;
 
 #if !NO_STORAGE
@@ -333,7 +385,7 @@ namespace VDS.RDF.Configuration
                 case GenericProtocolProcessor:
                     INode managerObj = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyGenericManager));
                     if (managerObj == null) return false;
-                    Object temp = ConfigurationLoader.LoadObject(g, managerObj);
+                    temp = ConfigurationLoader.LoadObject(g, managerObj);
                     if (temp is IGenericIOManager)
                     {
                         processor = new GenericProtocolProcessor((IGenericIOManager)temp);

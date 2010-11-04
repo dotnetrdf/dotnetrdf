@@ -33,6 +33,7 @@ terms.
 
 */
 
+using VDS.RDF.Query.Datasets;
 using VDS.RDF.Update.Commands;
 
 namespace VDS.RDF.Update
@@ -54,11 +55,14 @@ namespace VDS.RDF.Update
         /// </summary>
         /// <param name="store">Triple Store</param>
         public LeviathanUpdateProcessor(IInMemoryQueryableStore store)
+            : this(new InMemoryDataset(store)) { }
+
+        public LeviathanUpdateProcessor(ISparqlDataset data)
         {
-            this._context = new SparqlUpdateEvaluationContext(store);
-            if (!store.HasGraph(null))
+            this._context = new SparqlUpdateEvaluationContext(data);
+            if (!this._context.Data.HasGraph(null))
             {
-                store.Add(new Graph(), true);
+                this._context.Data.AddGraph(new Graph());
             }
         }
 
@@ -67,10 +71,7 @@ namespace VDS.RDF.Update
         /// </summary>
         public virtual void Flush()
         {
-            if (this._context.Data is IFlushableStore)
-            {
-                ((IFlushableStore)this._context.Data).Flush();
-            }
+            this._context.Data.Flush();
         }
 
         /// <summary>
@@ -132,6 +133,7 @@ namespace VDS.RDF.Update
                 default:
                     throw new SparqlUpdateException("Unknown Update Commands cannot be processed by the Leviathan Update Processor");
             }
+            this.Flush();
         }
 
         /// <summary>
