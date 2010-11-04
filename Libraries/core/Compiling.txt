@@ -1,4 +1,0 @@
-Compiling dotNetRDF
-===================
-
-To compile dotNetRDF either open the Solution file in the Trunk directory using VS 2008 or use NAnt and the build files located in Trunk/Build/nant
