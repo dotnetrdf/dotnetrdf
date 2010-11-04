@@ -121,6 +121,47 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
+        /// Clears all set Parameters and Variables
+        /// </summary>
+        public void Clear()
+        {
+            this.ClearParameters();
+            this.ClearVariables();
+        }
+
+        /// <summary>
+        /// Clears all set Parameters
+        /// </summary>
+        public void ClearParameters()
+        {
+            this._parameters.Clear();
+        }
+
+        /// <summary>
+        /// Clears all set Variables
+        /// </summary>
+        public void ClearVariables()
+        {
+            this._variables.Clear();
+        }
+
+        public IEnumerable<KeyValuePair<String, INode>> Variables
+        {
+            get
+            {
+                return this._variables;
+            }
+        }
+
+        public IEnumerable<KeyValuePair<String, INode>> Parameters
+        {
+            get
+            {
+                return this._parameters;
+            }
+        }
+
+        /// <summary>
         /// Sets the Value of a Parameter 
         /// </summary>
         /// <param name="name">Parameter Name</param>
@@ -145,6 +186,18 @@ namespace VDS.RDF.Query
             {
                 this._parameters.Add(name, value);
             }
+        }
+
+        public void UnsetParameter(String name)
+        {
+            name = (name.StartsWith("@")) ? name.Substring(1) : name;
+            this._parameters.Remove(name);
+        }
+
+        public void UnsetVariable(String name)
+        {
+            name = (name.StartsWith("@")) ? name.Substring(1) : name;
+            this._variables.Remove(name);
         }
 
         /// <summary>
