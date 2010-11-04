@@ -7,6 +7,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
+using VDS.RDF.Query.Datasets;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Functions;
 using VDS.RDF.Query.Filters;
@@ -82,13 +83,13 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
             //this.ShowMultiset(selectOptionalNamed.Evaluate(new SparqlEvaluationContext(null, store)));
 
             Console.WriteLine("{{?s ?p ?o} UNION {?s ?p ?o}}");
-            this.ShowMultiset(selectAllUnion.Evaluate(new SparqlEvaluationContext(null, store)));
+            this.ShowMultiset(selectAllUnion.Evaluate(new SparqlEvaluationContext(null, new InMemoryDataset(store))));
 
             Console.WriteLine("{{?s ?p ?o} UNION {?s ?p ?o} UNION {?s ?p ?o}}");
-            this.ShowMultiset(selectAllUnion2.Evaluate(new SparqlEvaluationContext(null, store)));
+            this.ShowMultiset(selectAllUnion2.Evaluate(new SparqlEvaluationContext(null, new InMemoryDataset(store))));
 
             Console.WriteLine("{?s ?p ?o FILTER (ISURI(?o))}");
-            this.ShowMultiset(selectAllUriObjects.Evaluate(new SparqlEvaluationContext(null, store)));
+            this.ShowMultiset(selectAllUriObjects.Evaluate(new SparqlEvaluationContext(null, new InMemoryDataset(store))));
         }
 
         [TestMethod]
@@ -416,12 +417,12 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
                 Stopwatch timer = new Stopwatch();
                 TimeSpan unopt, opt;
                 timer.Start();
-                BaseMultiset results1 = ask.Evaluate(new SparqlEvaluationContext(null, store));
+                BaseMultiset results1 = ask.Evaluate(new SparqlEvaluationContext(null, new InMemoryDataset(store)));
                 timer.Stop();
                 unopt = timer.Elapsed;
                 timer.Reset();
                 timer.Start();
-                BaseMultiset results2 = askOptimised.Evaluate(new SparqlEvaluationContext(null, store));
+                BaseMultiset results2 = askOptimised.Evaluate(new SparqlEvaluationContext(null, new InMemoryDataset(store)));
                 timer.Stop();
                 opt = timer.Elapsed;
 
@@ -494,12 +495,12 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
                 Stopwatch timer = new Stopwatch();
                 TimeSpan unopt, opt;
                 timer.Start();
-                BaseMultiset results1 = select.Evaluate(new SparqlEvaluationContext(null, store));
+                BaseMultiset results1 = select.Evaluate(new SparqlEvaluationContext(null, new InMemoryDataset(store)));
                 timer.Stop();
                 unopt = timer.Elapsed;
                 timer.Reset();
                 timer.Start();
-                BaseMultiset results2 = selectOptimised.Evaluate(new SparqlEvaluationContext(null, store));
+                BaseMultiset results2 = selectOptimised.Evaluate(new SparqlEvaluationContext(null, new InMemoryDataset(store)));
                 timer.Stop();
                 opt = timer.Elapsed;
 

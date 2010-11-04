@@ -7,6 +7,7 @@ using System.Diagnostics;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
+using VDS.RDF.Query.Datasets;
 using VDS.RDF.Writing;
 
 namespace dotNetRDFTest
@@ -44,6 +45,7 @@ namespace dotNetRDFTest
                 Options.QueryDefaultSyntax = SparqlQuerySyntax.Sparql_1_0;
                 Options.QueryOptimisation = true;
                 Options.FullTripleIndexing = true;
+                Options.LiteralValueNormalization = false;
 
                 //Set the Tests whose results we override
                 //These tests don't pass because dotNetRDF's behaviour is slightly different or because URIs in the results are HTTP URIs
@@ -55,7 +57,6 @@ namespace dotNetRDFTest
                     "/solution-seq/slice-01.rq",
                     "/solution-seq/slice-10.rq",
                     "/solution-seq/slice-21.rq",
-                    "/solution-seq/slice-22.rq",
                     "/solution-seq/slice-23.rq",
                     "/graphs/graph-04.rq",
                     "/expr-equals/query-eq2-2.rq",
@@ -63,7 +64,6 @@ namespace dotNetRDFTest
                     "/dataset/dataset-04.rq",
                     "/dataset/dataset-06.rq",
                     "/dataset/dataset-07.rq",
-                    "/dataset/dataset-08.rq",
                     "/dataset/dataset-11.rq",
                     "/dataset/dataset-12b.rq"
                 };
@@ -106,6 +106,8 @@ namespace dotNetRDFTest
             {
                 output.Close();
             }
+
+            Options.LiteralValueNormalization = true;
         }
 
         private void ProcessTestDirectory(String dir)
@@ -167,6 +169,8 @@ namespace dotNetRDFTest
                         {
                             Console.WriteLine("Unable to find the Test Query for Test ID '" + testID.ToString() + "' in '" + dir + "'");
                         }
+
+                        Debug.WriteLine(tests + " Tests Completed");
                     }
                     
                 }
@@ -195,6 +199,8 @@ namespace dotNetRDFTest
                             testsIndeterminate++;
                             testsEvaluationIndeterminate++;
                         }
+
+                        Debug.WriteLine(tests + " Tests Completed");
                     }
                 }
 
@@ -456,11 +462,12 @@ namespace dotNetRDFTest
                 return -1;
             }
 
-            //Set Graphs
+            //Create a Dataset and then Set Graphs
+            InMemoryDataset dataset = new InMemoryDataset(store);
             if (!query.DefaultGraphs.Any())
             {
                 query.AddDefaultGraph(defaultGraph.BaseUri);
-                store.SetActiveGraph(defaultGraph.BaseUri);
+                //dataset.SetActiveGraph(defaultGraph.BaseUri);
             }
             if (!query.NamedGraphs.Any())
             {
@@ -474,7 +481,7 @@ namespace dotNetRDFTest
             Object results = null;
             try
             {
-                results = store.ExecuteQuery(query);
+                results = query.Evaluate(dataset);
             }
             catch (RdfQueryException queryEx)
             {
@@ -561,6 +568,9 @@ namespace dotNetRDFTest
                     }
                     else
                     {
+                        Console.WriteLine("Final Query");
+                        Console.WriteLine(query.ToString());
+                        Console.WriteLine();
                         this.ShowTestData(store);
                         this.ShowResultSets(ourResults, expectedResults);
                         testsFailed++;

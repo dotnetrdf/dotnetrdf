@@ -35,6 +35,7 @@ using System.Linq;
 using SemWeb;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
+using VDS.RDF.Query.Datasets;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Functions;
 using VDS.RDF.Query.Filters;
@@ -333,7 +334,7 @@ namespace VDS.RDF.Interop.SemWeb
                 this._store.Add(this._g);
             }
 
-            SparqlEvaluationContext context = new SparqlEvaluationContext(null, this._store);
+            SparqlEvaluationContext context = new SparqlEvaluationContext(null, new InMemoryDataset(this._store));
             BaseMultiset results = algebra.Evaluate(context);
 
             sink.Init(results.Variables.Select(v => new Variable(v)).ToArray());

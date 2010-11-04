@@ -24,6 +24,7 @@ using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
+using VDS.RDF.Query.Datasets;
 using UnitTests.Properties;
 
 namespace UnitTests
@@ -74,7 +75,7 @@ FILTER((regex(?Year, ""2007""))&&(regex(?GenreName, ""Rory Blyth: The Smartest M
 			string qry = CreateQueryForArtist("Rory Blythe");
 
             SparqlQuery query = this._parser.ParseFromString(qry);
-            SparqlEvaluationContext evalContext = new SparqlEvaluationContext(query, store);
+            SparqlEvaluationContext evalContext = new SparqlEvaluationContext(query, new InMemoryDataset(store));
             ISparqlAlgebra algebra = query.ToAlgebra();
             BaseMultiset localResults = algebra.Evaluate(evalContext);
             sink.Fill(localResults);
