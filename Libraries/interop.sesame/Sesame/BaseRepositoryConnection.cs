@@ -5,6 +5,7 @@ using System.Text;
 using java.io;
 using dotSesame = org.openrdf.model;
 using dotSesameRepo = org.openrdf.repository;
+using VDS.RDF.Query;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Interop.Sesame
@@ -14,14 +15,14 @@ namespace VDS.RDF.Interop.Sesame
         private bool _autoCommit = false;
         private dotSesameRepo.Repository _repo;
         private DotNetRdfValueFactory _factory;
-        private SesameMapping _mapping;
+        protected SesameMapping _mapping;
         private SparqlFormatter _formatter = new SparqlFormatter();
 
         public BaseRepositoryConnection(dotSesameRepo.Repository repository, DotNetRdfValueFactory factory)
         {
             this._repo = repository;
+            this._mapping = factory.Mapping;
             this._factory = factory;
-            this._mapping = new SesameMapping(factory, new dotSesame.impl.GraphImpl());
         }
 
         protected org.openrdf.query.UnsupportedQueryLanguageException UnsupportedQueryLanguage(org.openrdf.query.QueryLanguage ql)
@@ -33,6 +34,8 @@ namespace VDS.RDF.Interop.Sesame
         {
             return ql.getName().ToUpper().Equals("SPARQL");
         }
+
+
 
         protected abstract void AddInternal(Object obj, IEnumerable<Uri> contexts);
 
@@ -106,12 +109,18 @@ namespace VDS.RDF.Interop.Sesame
 
         public void export(org.openrdf.rio.RDFHandler rdfh, params org.openrdf.model.Resource[] rarr)
         {
-            throw new NotImplementedException();
+            this.exportStatements(null, null, null, false, rdfh, rarr);
         }
 
         public void exportStatements(org.openrdf.model.Resource r, org.openrdf.model.URI uri, org.openrdf.model.Value v, bool b, org.openrdf.rio.RDFHandler rdfh, params org.openrdf.model.Resource[] rarr)
         {
-            throw new NotImplementedException();
+            dotSesameRepo.RepositoryResult results = this.getStatements(r, uri, v, b, rarr);
+            rdfh.startRDF();
+            while (results.hasNext())
+            {
+                rdfh.handleStatement((dotSesame.Statement)results.next());
+            }
+            rdfh.endRDF();
         }
 
         public abstract org.openrdf.repository.RepositoryResult getContextIDs();
@@ -125,11 +134,30 @@ namespace VDS.RDF.Interop.Sesame
             return this._repo;
         }
 
-        protected abstract dotSesameRepo.RepositoryResult GetStatementsInternal(String sparqlQuery);
+        protected abstract dotSesameRepo.RepositoryResult GetStatementsInternal(String sparqlQuery, SesameMapping mapping);
 
         public org.openrdf.repository.RepositoryResult getStatements(org.openrdf.model.Resource r, org.openrdf.model.URI uri, org.openrdf.model.Value v, bool b, params org.openrdf.model.Resource[] rarr)
         {
-            throw new NotImplementedException();
+            SparqlParameterizedString queryString = new SparqlParameterizedString();
+            IEnumerable<Uri> contexts = rarr.ToContexts();
+            if (contexts.Any())
+            {
+                queryString.QueryText = "SELECT (?s AS ?subj) (?p AS ?pred) (?o AS ?obj)\n";
+                foreach (Uri u in contexts)
+                {
+                    queryString.QueryText += "FROM <" + this._formatter.FormatUri(u) + ">\n";
+                }
+                queryString.QueryText += "WHERE { ?s ?p ?o }";
+            }
+            else
+            {
+                queryString.QueryText = "SELECT (?s AS ?subj) (?p AS ?pred) (?o AS ?obj) WHERE { ?s ?p ?o }";
+            }
+            if (r != null) queryString.SetVariable("s", SesameConverter.FromSesameResource(r, this._mapping));
+            if (uri != null) queryString.SetVariable("p", SesameConverter.FromSesameUri(uri, this._mapping));
+            if (v != null) queryString.SetVariable("o", SesameConverter.FromSesameValue(v, this._mapping));
+
+            return this.GetStatementsInternal(queryString.ToString(), this._mapping);
         }
 
         public org.openrdf.model.ValueFactory getValueFactory()
@@ -223,10 +251,7 @@ namespace VDS.RDF.Interop.Sesame
 
         public virtual void remove(org.openrdf.model.Resource r, org.openrdf.model.URI uri, org.openrdf.model.Value v, params org.openrdf.model.Resource[] rarr)
         {
-            IEnumerable<Uri> contexts = rarr.ToContexts();
-            Graph g = new Graph();
-            g.Assert(SesameConverter.FromSesameResource(r, this._mapping), SesameConverter.FromSesameUri(uri, this._mapping), SesameConverter.FromSesameValue(v, this._mapping));
-            this.RemoveInternal(g, contexts);
+            throw new NotImplementedException();
         }
 
         public abstract void removeNamespace(string str);

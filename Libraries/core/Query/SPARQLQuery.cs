@@ -1095,9 +1095,12 @@ namespace VDS.RDF.Query
                     if ((int)this._type >= (int)SparqlQueryType.SelectAll)
                     {
                         output.Append('*');
-                        if (from.Length > 0) {
+                        if (from.Length > 0) 
+                        {
                             output.Append(from.ToString());
-                        } else {
+                        } 
+                        else 
+                        {
                             output.Append(' ');
                         }
                         output.AppendLine("WHERE ");

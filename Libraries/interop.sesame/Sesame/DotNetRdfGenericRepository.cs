@@ -19,7 +19,7 @@ namespace VDS.RDF.Interop.Sesame
     {
         private IGenericIOManager _manager;
         private DotNetRdfGenericRepositoryConnection _connection;
-        private DotNetRdfValueFactory _factory = new DotNetRdfValueFactory(new Graph());
+        private DotNetRdfValueFactory _factory = new DotNetRdfValueFactory();
         
         public DotNetRdfGenericRepository(IGenericIOManager manager)
         {
@@ -57,7 +57,7 @@ namespace VDS.RDF.Interop.Sesame
 
         public void setDataDir(File f)
         {
-            throw new NotSupportedException("dotNetRDF Generic Repositories do not support setting the data directory");
+            //Do Nothing
         }
 
         public void shutDown()
@@ -218,12 +218,37 @@ namespace VDS.RDF.Interop.Sesame
         {
             if (this._manager.IsReadOnly) throw NotWritableError("commit");
 
-            throw new NotSupportedException("dotNetRDF Generic Repositories do not support Transactions");
+            throw new dotSesameRepo.RepositoryException("dotNetRDF Generic Repositories do not support the commit() operation");
         }
 
-        public override org.openrdf.repository.RepositoryResult  getContextIDs()
+        public override org.openrdf.repository.RepositoryResult getContextIDs()
         {
- 	        throw new NotImplementedException();
+            if (this._manager is IQueryableGenericIOManager)
+            {
+                try 
+                {
+                    Object results = ((IQueryableGenericIOManager)this._manager).Query("SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o }}");
+                    if (results is SparqlResultSet)
+                    {
+                        IEnumerable<dotSesame.Resource> resIter = from result in (SparqlResultSet)results
+                                                                  where result.HasValue("g") && result["g"] != null
+                                                                  select SesameConverter.ToSesameResource(result["g"], this._mapping);
+                        return new org.openrdf.repository.RepositoryResult(new DotNetAdunaIterationWrapper(resIter));
+                    }
+                    else
+                    {
+                        throw new dotSesameRepo.RepositoryException("Unable to return the Context IDs from this repository as the repository returned an unexpected result");
+                    }
+                } 
+                catch (Exception ex)
+                {
+                    throw new dotSesameRepo.RepositoryException("Unable to return the Context IDs from this repository due to the following error: " + ex.Message);
+                }
+            }
+            else
+            {
+                throw new dotSesameRepo.RepositoryException("This dotNetRDF Generic Repository does not support returning the Context IDs");
+            }
         }
 
         public override string getNamespace(string str)
@@ -236,9 +261,33 @@ namespace VDS.RDF.Interop.Sesame
             throw NoNamespacesError();
         }
 
-        protected override org.openrdf.repository.RepositoryResult GetStatementsInternal(string sparqlQuery)
+        protected override org.openrdf.repository.RepositoryResult GetStatementsInternal(string sparqlQuery, SesameMapping mapping)
         {
-            throw new NotImplementedException();
+            if (this._manager is IQueryableGenericIOManager)
+            {
+                try
+                {
+                    Object results = ((IQueryableGenericIOManager)this._manager).Query(sparqlQuery);
+                    if (results is SparqlResultSet)
+                    {
+                        IEnumerable<dotSesame.Statement> stmts = from result in (SparqlResultSet)results
+                                                                 select this._factory.createStatement(SesameConverter.ToSesameResource(result["subj"], mapping), SesameConverter.ToSesameUri(result["pred"], mapping), SesameConverter.ToSesameValue(result["obj"], mapping));
+                        return new dotSesameRepo.RepositoryResult(new DotNetAdunaIterationWrapper(stmts));
+                    }
+                    else
+                    {
+                        throw new dotSesameRepo.RepositoryException("Unable to return Statements from this repository as the repository returned an unexpected result");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new dotSesameRepo.RepositoryException("Unable to return Statements from this repository due to the following error: " + ex.Message);
+                }
+            }
+            else
+            {
+                throw new dotSesameRepo.RepositoryException("This dotNetRDF Generic Repository does not support returning specific Statements");
+            }
         }
 
         protected override bool HasTripleInternal(Triple t)
@@ -269,7 +318,7 @@ namespace VDS.RDF.Interop.Sesame
 
         public override bool isEmpty()
         {
-            throw new NotSupportedException("dotNetRDF Generic Repositories do no support indicating whether they are empty");
+            throw new dotSesameRepo.RepositoryException("dotNetRDF Generic Repositories do no support indicating whether they are empty");
         }
 
         public override bool isOpen()
@@ -438,7 +487,7 @@ namespace VDS.RDF.Interop.Sesame
         public override void rollback()
         {
             if (this._manager.IsReadOnly) throw NotWritableError("rollback");
-            throw new NotSupportedException("dotNetRDF Generic Repositories do not support Transactions");
+            throw new dotSesameRepo.RepositoryException("dotNetRDF Generic Repositories do not support the rollback() operation");
         }
 
         public override void setNamespace(string str1, string str2)
@@ -448,7 +497,7 @@ namespace VDS.RDF.Interop.Sesame
 
         public override long size(params org.openrdf.model.Resource[] rarr)
         {
- 	        throw new NotImplementedException();
+            throw new dotSesameRepo.RepositoryException("dotNetRDF Generic Repositories do not support getting the size of the repository");
         }
     }
 }

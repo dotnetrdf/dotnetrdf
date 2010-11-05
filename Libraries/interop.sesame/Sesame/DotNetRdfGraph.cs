@@ -20,7 +20,7 @@ namespace VDS.RDF.Interop.Sesame
         {
             this._g = g;
             this._mapping = new SesameMapping(this._g, this);
-            this._factory = new DotNetRdfValueFactory(this._g);
+            this._factory = new DotNetRdfValueFactory(this._mapping);
         }
 
         #region Graph Members
