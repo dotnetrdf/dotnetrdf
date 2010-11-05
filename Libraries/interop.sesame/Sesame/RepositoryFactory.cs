@@ -10,7 +10,7 @@ using VDS.RDF.Storage;
 
 namespace VDS.RDF.Interop.Sesame
 {
-    public class RepositoryFactory : dotSesameRepo.config.RepositoryFactory
+    public class DotNetRdfRepositoryFactory : dotSesameRepo.config.RepositoryFactory
     {
         private int _nextID = 0;
 
@@ -18,14 +18,14 @@ namespace VDS.RDF.Interop.Sesame
 
         public org.openrdf.repository.config.RepositoryImplConfig getConfig()
         {
-            return new RepositoryConfiguration((++this._nextID).ToString());
+            return new DotNetRdfRepositoryConfiguration((++this._nextID).ToString());
         }
 
         public org.openrdf.repository.Repository getRepository(org.openrdf.repository.config.RepositoryImplConfig ric)
         {
-            if (ric is RepositoryConfiguration)
+            if (ric is DotNetRdfRepositoryConfiguration)
             {
-                return ((RepositoryConfiguration)ric).Repository;
+                return ((DotNetRdfRepositoryConfiguration)ric).Repository;
             }
             else
             {
@@ -35,18 +35,18 @@ namespace VDS.RDF.Interop.Sesame
 
         public string getRepositoryType()
         {
-            return typeof(BaseRepositoryConnection).FullName;
+            return "VDS.RDF.Interop.Sesame.DotNetRdfInMemoryRepository";
         }
 
         #endregion
     }
 
-    public class RepositoryConfiguration : dotSesameRepo.config.RepositoryImplConfig
+    public class DotNetRdfRepositoryConfiguration : dotSesameRepo.config.RepositoryImplConfig
     {
         private String _name;
         private dotSesameRepo.Repository _repo;
 
-        public RepositoryConfiguration(String name)
+        public DotNetRdfRepositoryConfiguration(String name)
         {
             this._name = name;
         }
@@ -81,7 +81,7 @@ namespace VDS.RDF.Interop.Sesame
                 ConfigurationSerializationContext context = new ConfigurationSerializationContext(temp);
                 context.NextSubject = subj;
                 ((IConfigurationSerializable)this._repo).SerializeConfiguration(context);
-                return g.getValueFactory().createURI(temp.ToString());                
+                return g.getValueFactory().createURI(subj.ToString());                
             }
             else
             {
@@ -91,14 +91,7 @@ namespace VDS.RDF.Interop.Sesame
 
         public string getType()
         {
-            if (this._repo != null)
-            {
-                return "[dotNetRDF] " + this._repo.GetType().Name;
-            }
-            else
-            {
-                return "[dotNetRDF] Unknown";
-            }
+            return "VDS.RDF.Interop.Sesame.DotNetRdfInMemoryRepository";
         }
 
         public void parse(org.openrdf.model.Graph g, org.openrdf.model.Resource r)
