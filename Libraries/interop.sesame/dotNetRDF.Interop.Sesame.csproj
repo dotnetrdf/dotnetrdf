@@ -52,6 +52,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Sesame\RepositoryFactory.cs" />
     <Compile Include="Sesame\BaseQuery.cs" />
     <Compile Include="Sesame\BaseRepositoryConnection.cs" />
     <Compile Include="Sesame\DotNetEnumerableWrapper.cs" />

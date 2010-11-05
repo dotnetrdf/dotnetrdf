@@ -7,6 +7,7 @@ using dotSesame = org.openrdf.model;
 using dotSesameRepo = org.openrdf.repository;
 using dotSesameQuery = org.openrdf.query;
 using java.io;
+using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Storage;
@@ -15,7 +16,7 @@ using VDS.RDF.Writing;
 
 namespace VDS.RDF.Interop.Sesame
 {
-    public class DotNetRdfGenericRepository : dotSesameRepo.Repository
+    public class DotNetRdfGenericRepository : dotSesameRepo.Repository, IConfigurationSerializable
     {
         private IGenericIOManager _manager;
         private DotNetRdfGenericRepositoryConnection _connection;
@@ -64,6 +65,18 @@ namespace VDS.RDF.Interop.Sesame
         {
             if (this._manager != null) this._manager.Dispose();
             this._manager = null;
+        }
+
+        public void SerializeConfiguration(ConfigurationSerializationContext context)
+        {
+            if (this._manager is IConfigurationSerializable)
+            {
+                ((IConfigurationSerializable)this._manager).SerializeConfiguration(context);
+            }
+            else
+            {
+                throw new dotSesameRepo.config.RepositoryConfigException("This Repository does not support serializing it's Configuration");
+            }
         }
     }
 

@@ -7,6 +7,7 @@ using dotSesameRepo = org.openrdf.repository;
 using dotSesameFormats = org.openrdf.rio;
 using dotSesameQuery = org.openrdf.query;
 using java.io;
+using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Storage;
@@ -15,7 +16,7 @@ using VDS.RDF.Writing;
 
 namespace VDS.RDF.Interop.Sesame
 {
-    public class DotNetRdfInMemoryRepository : dotSesameRepo.Repository
+    public class DotNetRdfInMemoryRepository : dotSesameRepo.Repository, IConfigurationSerializable
     {
         private IInMemoryQueryableStore _store;
         private DotNetRdfInMemoryRepositoryConnection _connection;
@@ -71,6 +72,13 @@ namespace VDS.RDF.Interop.Sesame
                 this._store.Dispose();
             }
             this._store = null;
+        }
+
+        public void SerializeConfiguration(ConfigurationSerializationContext context)
+        {
+            INode subj = context.NextSubject;
+            context.Graph.Assert(subj, context.Graph.CreateUriNode(new Uri(RdfSpecsHelper.RdfType)), ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.ClassTripleStore));
+            context.Graph.Assert(subj, ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyType), context.Graph.CreateLiteralNode(this._store.GetType().FullName));
         }
     }
 
