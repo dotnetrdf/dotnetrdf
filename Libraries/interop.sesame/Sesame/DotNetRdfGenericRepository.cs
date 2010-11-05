@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using dotSesame = org.openrdf.model;
 using dotSesameRepo = org.openrdf.repository;
+using dotSesameQuery = org.openrdf.query;
 using java.io;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
@@ -262,7 +263,7 @@ namespace VDS.RDF.Interop.Sesame
             }
             else
             {
-                throw new NotSupportedException("This dotNetRDF Generic Repository does not support detecting whether a given Statement exists in the Store");
+                throw new dotSesameRepo.RepositoryException("This dotNetRDF Generic Repository does not support detecting whether a given Statement exists in the Store");
             }
         }
 
@@ -274,6 +275,85 @@ namespace VDS.RDF.Interop.Sesame
         public override bool isOpen()
         {
             return true;
+        }
+
+        public override org.openrdf.query.BooleanQuery prepareBooleanQuery(org.openrdf.query.QueryLanguage ql, string str)
+        {
+            if (!this.SupportsQueryLanguage(ql)) throw UnsupportedQueryLanguage(ql);
+            if (this._manager is IQueryableGenericIOManager)
+            {
+                return new GenericBooleanQuery(str, (IQueryableGenericIOManager)this._manager);
+            }
+            else
+            {
+                throw new dotSesameRepo.RepositoryException("This dotNetRDF Generic Repository does not support SPARQL Queries");
+            }
+        }
+
+        public override org.openrdf.query.GraphQuery prepareGraphQuery(org.openrdf.query.QueryLanguage ql, string str)
+        {
+            if (!this.SupportsQueryLanguage(ql)) throw UnsupportedQueryLanguage(ql);
+            if (this._manager is IQueryableGenericIOManager)
+            {
+                return new GenericGraphQuery(str, (IQueryableGenericIOManager)this._manager);
+            }
+            else
+            {
+                throw new dotSesameRepo.RepositoryException("This dotNetRDF Generic Repository does not support SPARQL Queries");
+            }
+        }
+
+        public override org.openrdf.query.Query prepareQuery(org.openrdf.query.QueryLanguage ql, string str)
+        {
+            if (!this.SupportsQueryLanguage(ql)) throw UnsupportedQueryLanguage(ql);
+
+            if (!(this._manager is IQueryableGenericIOManager))
+            {
+                throw new dotSesameRepo.RepositoryException("This dotNetRDF Generic Repository does not support SPARQL Queries");
+            }
+
+            try
+            {
+                SparqlQueryParser parser = new SparqlQueryParser();
+                SparqlQuery q = parser.ParseFromString(str);
+
+                switch (q.QueryType)
+                {
+                    case SparqlQueryType.Ask:
+                        return new GenericBooleanQuery(str, (IQueryableGenericIOManager)this._manager);
+                    case SparqlQueryType.Construct:
+                    case SparqlQueryType.Describe:
+                    case SparqlQueryType.DescribeAll:
+                        return new GenericGraphQuery(str, (IQueryableGenericIOManager)this._manager);
+                    case SparqlQueryType.Select:
+                    case SparqlQueryType.SelectAll:
+                    case SparqlQueryType.SelectAllDistinct:
+                    case SparqlQueryType.SelectAllReduced:
+                    case SparqlQueryType.SelectDistinct:
+                    case SparqlQueryType.SelectReduced:
+                        return new GenericTupleQuery(str, (IQueryableGenericIOManager)this._manager);
+                    case SparqlQueryType.Unknown:
+                    default:
+                        throw new dotSesameQuery.MalformedQueryException("Unable to parse the given Query into a valid SPARQL Query as the Query Type is unknown");
+                }
+            }
+            catch (RdfParseException parseEx)
+            {
+                throw new dotSesameQuery.MalformedQueryException("Unable to parse the given Query into a valid SPARQL Query due to the following error: " + parseEx.Message);
+            }
+        }
+
+        public override org.openrdf.query.TupleQuery prepareTupleQuery(org.openrdf.query.QueryLanguage ql, string str)
+        {
+            if (!this.SupportsQueryLanguage(ql)) throw UnsupportedQueryLanguage(ql);
+            if (this._manager is IQueryableGenericIOManager)
+            {
+                return new GenericTupleQuery(str, (IQueryableGenericIOManager)this._manager);
+            }
+            else
+            {
+                throw new dotSesameRepo.RepositoryException("This dotNetRDF Generic Repository does not support SPARQL Queries");
+            }
         }
 
         private bool RemoveGraph(IGraph g)

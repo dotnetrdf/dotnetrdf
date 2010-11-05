@@ -5,8 +5,10 @@ using System.Text;
 using dotSesame = org.openrdf.model;
 using dotSesameRepo = org.openrdf.repository;
 using dotSesameFormats = org.openrdf.rio;
+using dotSesameQuery = org.openrdf.query;
 using java.io;
 using VDS.RDF.Parsing;
+using VDS.RDF.Query;
 using VDS.RDF.Storage;
 using VDS.RDF.Storage.Params;
 using VDS.RDF.Writing;
@@ -208,6 +210,58 @@ namespace VDS.RDF.Interop.Sesame
             return true;
         }
 
+        public override org.openrdf.query.BooleanQuery prepareBooleanQuery(org.openrdf.query.QueryLanguage ql, string str)
+        {
+            if (!this.SupportsQueryLanguage(ql)) throw UnsupportedQueryLanguage(ql);
+            return new InMemoryBooleanQuery(str, this._store);
+        }
+
+        public override org.openrdf.query.GraphQuery prepareGraphQuery(org.openrdf.query.QueryLanguage ql, string str)
+        {
+            if (!this.SupportsQueryLanguage(ql)) throw UnsupportedQueryLanguage(ql);
+            return new InMemoryGraphQuery(str, this._store);
+        }
+
+        public override org.openrdf.query.Query prepareQuery(org.openrdf.query.QueryLanguage ql, string str)
+        {
+            if (!this.SupportsQueryLanguage(ql)) throw UnsupportedQueryLanguage(ql);
+            try
+            {
+                SparqlQueryParser parser = new SparqlQueryParser();
+                SparqlQuery q = parser.ParseFromString(str);
+
+                switch (q.QueryType)
+                {
+                    case SparqlQueryType.Ask:
+                        return new InMemoryBooleanQuery(str, this._store);
+                    case SparqlQueryType.Construct:
+                    case SparqlQueryType.Describe:
+                    case SparqlQueryType.DescribeAll:
+                        return new InMemoryGraphQuery(str, this._store);
+                    case SparqlQueryType.Select:
+                    case SparqlQueryType.SelectAll:
+                    case SparqlQueryType.SelectAllDistinct:
+                    case SparqlQueryType.SelectAllReduced:
+                    case SparqlQueryType.SelectDistinct:
+                    case SparqlQueryType.SelectReduced:
+                        return new InMemoryTupleQuery(str, this._store);
+                    case SparqlQueryType.Unknown:
+                    default:
+                        throw new dotSesameQuery.MalformedQueryException("Unable to parse the given Query into a valid SPARQL Query as the Query Type is unknown");
+                }
+            }
+            catch (RdfParseException parseEx)
+            {
+                throw new dotSesameQuery.MalformedQueryException("Unable to parse the given Query into a valid SPARQL Query due to the following error: " + parseEx.Message);
+            }
+        }
+
+        public override org.openrdf.query.TupleQuery prepareTupleQuery(org.openrdf.query.QueryLanguage ql, string str)
+        {
+            if (!this.SupportsQueryLanguage(ql)) throw UnsupportedQueryLanguage(ql);
+            return new InMemoryTupleQuery(str, this._store);
+        }
+
         private bool RemoveGraph(IGraph g)
         {
             if (this._store.HasGraph(g.BaseUri))
@@ -236,7 +290,6 @@ namespace VDS.RDF.Interop.Sesame
                 SesameHelper.ModifyStore(obj, this.RemoveGraph);
             }
         }
-
 
         public override void removeNamespace(string str)
         {

@@ -61,6 +61,7 @@
     <Compile Include="Sesame\JavaIteratorWrapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sesame\DotNetRdfGraph.cs" />
+    <Compile Include="Sesame\Query.cs" />
     <Compile Include="Sesame\SesameConverter.cs" />
     <Compile Include="Sesame\SesameGraph.cs" />
     <Compile Include="Sesame\SesameHelper.cs" />

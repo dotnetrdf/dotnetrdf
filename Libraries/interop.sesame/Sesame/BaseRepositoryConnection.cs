@@ -5,6 +5,7 @@ using System.Text;
 using java.io;
 using dotSesame = org.openrdf.model;
 using dotSesameRepo = org.openrdf.repository;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Interop.Sesame
 {
@@ -14,12 +15,23 @@ namespace VDS.RDF.Interop.Sesame
         private dotSesameRepo.Repository _repo;
         private DotNetRdfValueFactory _factory;
         private SesameMapping _mapping;
+        private SparqlFormatter _formatter = new SparqlFormatter();
 
         public BaseRepositoryConnection(dotSesameRepo.Repository repository, DotNetRdfValueFactory factory)
         {
             this._repo = repository;
             this._factory = factory;
             this._mapping = new SesameMapping(factory, new dotSesame.impl.GraphImpl());
+        }
+
+        protected org.openrdf.query.UnsupportedQueryLanguageException UnsupportedQueryLanguage(org.openrdf.query.QueryLanguage ql)
+        {
+            throw new org.openrdf.query.UnsupportedQueryLanguageException("dotNetRDF Repository Connections do not support the " + ql.getName() + " Query Language");
+        }
+
+        protected bool SupportsQueryLanguage(org.openrdf.query.QueryLanguage ql)
+        {
+            return ql.getName().ToUpper().Equals("SPARQL");
         }
 
         protected abstract void AddInternal(Object obj, IEnumerable<Uri> contexts);
@@ -149,43 +161,39 @@ namespace VDS.RDF.Interop.Sesame
 
         public org.openrdf.query.BooleanQuery prepareBooleanQuery(org.openrdf.query.QueryLanguage ql, string str1, string str2)
         {
-            throw new NotImplementedException();
+            if (!this.SupportsQueryLanguage(ql)) throw UnsupportedQueryLanguage(ql);
+            String query = "BASE <" + this._formatter.FormatUri(str2) + ">\n" + str1;
+            return this.prepareBooleanQuery(ql, query);
         }
 
-        public org.openrdf.query.BooleanQuery prepareBooleanQuery(org.openrdf.query.QueryLanguage ql, string str)
-        {
-            throw new NotImplementedException();
-        }
+        public abstract org.openrdf.query.BooleanQuery prepareBooleanQuery(org.openrdf.query.QueryLanguage ql, string str);
 
         public org.openrdf.query.GraphQuery prepareGraphQuery(org.openrdf.query.QueryLanguage ql, string str1, string str2)
         {
-            throw new NotImplementedException();
+            if (!this.SupportsQueryLanguage(ql)) throw UnsupportedQueryLanguage(ql);
+            String query = "BASE <" + this._formatter.FormatUri(str2) + ">\n" + str1;
+            return this.prepareGraphQuery(ql, query);
         }
 
-        public org.openrdf.query.GraphQuery prepareGraphQuery(org.openrdf.query.QueryLanguage ql, string str)
-        {
-            throw new NotImplementedException();
-        }
+        public abstract org.openrdf.query.GraphQuery prepareGraphQuery(org.openrdf.query.QueryLanguage ql, string str);
 
         public org.openrdf.query.Query prepareQuery(org.openrdf.query.QueryLanguage ql, string str1, string str2)
         {
-            throw new NotImplementedException();
+            if (!this.SupportsQueryLanguage(ql)) throw UnsupportedQueryLanguage(ql);
+            String query = "BASE <" + this._formatter.FormatUri(str2) + ">\n" + str1;
+            return this.prepareQuery(ql, query);
         }
 
-        public org.openrdf.query.Query prepareQuery(org.openrdf.query.QueryLanguage ql, string str)
-        {
-            throw new NotImplementedException();
-        }
+        public abstract org.openrdf.query.Query prepareQuery(org.openrdf.query.QueryLanguage ql, string str);
 
         public org.openrdf.query.TupleQuery prepareTupleQuery(org.openrdf.query.QueryLanguage ql, string str1, string str2)
         {
-            throw new NotImplementedException();
+            if (!this.SupportsQueryLanguage(ql)) throw UnsupportedQueryLanguage(ql);
+            String query = "BASE <" + this._formatter.FormatUri(str2) + ">\n" + str1;
+            return this.prepareTupleQuery(ql, query);
         }
 
-        public org.openrdf.query.TupleQuery prepareTupleQuery(org.openrdf.query.QueryLanguage ql, string str)
-        {
-            throw new NotImplementedException();
-        }
+        public abstract org.openrdf.query.TupleQuery prepareTupleQuery(org.openrdf.query.QueryLanguage ql, string str);
 
         protected abstract void RemoveInternal(Object obj, IEnumerable<Uri> contexts);
 
