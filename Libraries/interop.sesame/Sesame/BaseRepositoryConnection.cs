@@ -256,7 +256,10 @@ namespace VDS.RDF.Interop.Sesame
 
         public abstract void removeNamespace(string str);
 
-        public abstract void rollback();
+        public virtual void rollback()
+        {
+            //Does Nothing
+        }
 
         public void setAutoCommit(bool b)
         {

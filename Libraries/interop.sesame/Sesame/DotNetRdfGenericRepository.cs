@@ -484,12 +484,6 @@ namespace VDS.RDF.Interop.Sesame
             throw NoNamespacesError();
         }
 
-        public override void rollback()
-        {
-            if (this._manager.IsReadOnly) throw NotWritableError("rollback");
-            throw new dotSesameRepo.RepositoryException("dotNetRDF Generic Repositories do not support the rollback() operation");
-        }
-
         public override void setNamespace(string str1, string str2)
         {
             throw NoNamespacesError();

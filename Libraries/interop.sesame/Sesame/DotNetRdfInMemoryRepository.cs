@@ -333,11 +333,6 @@ namespace VDS.RDF.Interop.Sesame
             throw new NotImplementedException();
         }
 
-        public override void rollback()
-        {
-            throw new dotSesameRepo.RepositoryException("dotNetRDF In-Memory Repositories do not support the rollback() operation");
-        }
-
         public override void setNamespace(string str1, string str2)
         {
             this._factory.Graph.NamespaceMap.AddNamespace(str1, new Uri(str2));
