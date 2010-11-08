@@ -56,7 +56,7 @@ namespace VDS.RDF.Parsing
         private bool _traceTokeniser = false;
         private IEnumerable<ISparqlCustomExpressionFactory> _factories = Enumerable.Empty<ISparqlCustomExpressionFactory>();
 
-        //Q: Does the SPARQL Update Parser need selectable syntax?
+        //OPT: Add support to the SPARQL Update Parser for selectable syntax in the future
 
         /// <summary>
         /// Gets/Sets whether Tokeniser Tracing is used
@@ -275,35 +275,44 @@ namespace VDS.RDF.Parsing
 
         private void TryParseClearCommand(SparqlUpdateParserContext context)
         {
-            ClearCommand cmd;
+            bool silent = false;
 
-            //Must have a GRAPH keyword
-            IToken next = context.Tokens.Peek();
+            //May possibly have a SILENT Keyword
+            IToken next = context.Tokens.Dequeue();
+            if (next.TokenType == Token.SILENT)
+            {
+                silent = true;
+                next = context.Tokens.Dequeue();
+            }
+
+            //Then expect a GRAPH followed by a URI or one of the DEFAULT/NAMED/ALL keywords
             if (next.TokenType == Token.GRAPH)
             {
-                context.Tokens.Dequeue();
                 next = context.Tokens.Dequeue();
-                if (next.TokenType == Token.URI)
+                if (next.TokenType != Token.URI)
                 {
-                    String baseUri = (context.BaseUri == null) ? String.Empty : context.BaseUri.ToString();
-                    Uri u = new Uri(Tools.ResolveUri(next.Value, baseUri));
-                    cmd = new ClearCommand(u);
+                    throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a GRAPH Keyword as part of the CLEAR command", next);
                 }
-                else if (next.TokenType == Token.DEFAULT) 
-                {
-                    cmd = new ClearCommand();
-                }
-                else
-                {
-                    throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a URI/the DEFAULT keyword after a GRAPH keyword to specify the Graph to be cleared by this CLEAR command", next);
-                }
+                Uri u = new Uri(Tools.ResolveUri(next.Value, context.BaseUri.ToSafeString()));
+                ClearCommand cmd = new ClearCommand(u, ClearMode.Graph, silent);
+                context.CommandSet.AddCommand(cmd);
+            }
+            else if (next.TokenType == Token.DEFAULT)
+            {
+                context.CommandSet.AddCommand(new ClearCommand(ClearMode.Default, silent));
+            }
+            else if (next.TokenType == Token.NAMED)
+            {
+                context.CommandSet.AddCommand(new ClearCommand(ClearMode.Named, silent));
+            }
+            else if (next.TokenType == Token.ALLWORD)
+            {
+                context.CommandSet.AddCommand(new ClearCommand(ClearMode.All, silent));
             }
             else
             {
-                throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a GRAPH keyword after the CLEAR keyword", next);
+                throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a GRAPH <URI> to specify the Graph to CLEAR or one of the DEFAULT/NAMED/ALL keywords", next);
             }
-
-            context.CommandSet.AddCommand(cmd);
         }
 
         private void TryParseCreateCommand(SparqlUpdateParserContext context)
@@ -470,24 +479,33 @@ namespace VDS.RDF.Parsing
                 next = context.Tokens.Dequeue();
             }
 
-            //Followed by a mandatory GRAPH Keyword
-            if (next.TokenType != Token.GRAPH)
+            //Then expect a GRAPH followed by a URI or one of the DEFAULT/NAMED/ALL keywords
+            if (next.TokenType == Token.GRAPH)
             {
-                throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a GRAPH Keyword as part of the DROP command", next);
-            }
-            next = context.Tokens.Dequeue();
-
-            //Then MUST have a URI
-            if (next.TokenType == Token.URI)
-            {
-                String baseUri = (context.BaseUri == null) ? String.Empty : context.BaseUri.ToString();
-                Uri u = new Uri(Tools.ResolveUri(next.Value, baseUri));
-                DropCommand cmd = new DropCommand(u, silent);
+                next = context.Tokens.Dequeue();
+                if (next.TokenType != Token.URI)
+                {
+                    throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a GRAPH Keyword as part of the DROP command", next);
+                }
+                Uri u = new Uri(Tools.ResolveUri(next.Value, context.BaseUri.ToSafeString()));
+                DropCommand cmd = new DropCommand(u, ClearMode.Graph, silent);
                 context.CommandSet.AddCommand(cmd);
+            }
+            else if (next.TokenType == Token.DEFAULT)
+            {
+                context.CommandSet.AddCommand(new DropCommand(ClearMode.Default, silent));
+            } 
+            else if (next.TokenType == Token.NAMED)
+            {
+                context.CommandSet.AddCommand(new DropCommand(ClearMode.Named, silent));
+            }
+            else if (next.TokenType == Token.ALLWORD)
+            {
+                context.CommandSet.AddCommand(new DropCommand(ClearMode.All, silent));
             }
             else
             {
-                throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a URI to specify the Graph to DROP", next);
+                throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a GRAPH <URI> to specify the Graph to DROP or one of the DEFAULT/NAMED/ALL keywords", next);
             }
         }
         
@@ -586,7 +604,15 @@ namespace VDS.RDF.Parsing
         private void TryParseLoadCommand(SparqlUpdateParserContext context)
         {
             LoadCommand cmd;
-            String baseUri = (context.BaseUri == null) ? String.Empty : context.BaseUri.ToString();
+            String baseUri = context.BaseUri.ToSafeString();
+
+            //May optionally have a SILENT keyword
+            bool silent = false;
+            if (context.Tokens.Peek().TokenType == Token.SILENT)
+            {
+                silent = true;
+                context.Tokens.Dequeue();
+            }
 
             //Expect a URI which is the Source URI
             IToken next = context.Tokens.Dequeue();
@@ -607,7 +633,7 @@ namespace VDS.RDF.Parsing
                         if (next.TokenType == Token.URI)
                         {
                             Uri destUri = new Uri(Tools.ResolveUri(next.Value, baseUri));
-                            cmd = new LoadCommand(sourceUri, destUri);
+                            cmd = new LoadCommand(sourceUri, destUri, silent);
                         }
                         else
                         {
@@ -621,12 +647,12 @@ namespace VDS.RDF.Parsing
                 }
                 else
                 {
-                    cmd = new LoadCommand(sourceUri);
+                    cmd = new LoadCommand(sourceUri, silent);
                 }
             }
             else
             {
-                cmd = new LoadCommand(sourceUri);
+                cmd = new LoadCommand(sourceUri, silent);
             }
             context.CommandSet.AddCommand(cmd);
         }

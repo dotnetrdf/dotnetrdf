@@ -343,7 +343,7 @@ namespace dotNetRDFStore
                             int port;
                             if (Int32.TryParse(this.txtPort.Text, out port))
                             {
-                                //Port Specified
+                                //A Port was Specified
                                 this._connection = new MySQLServerConnection(this.txtDBServer.Text, port, this.txtDBName.Text, this.txtUsername.Text, this.txtPassword.Text);
                             }
                             else

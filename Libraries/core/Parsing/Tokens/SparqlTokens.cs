@@ -109,6 +109,19 @@ namespace VDS.RDF.Parsing.Tokens
     #region Non-Query Keyword Tokens
 
     /// <summary>
+    /// Token which represents the Sparql ALL Keyword
+    /// </summary>
+    public class AllKeywordToken : BaseToken
+    {
+        /// <summary>
+        /// Creates a new ALL Keyword Token
+        /// </summary>
+        /// <param name="line">Line the Keyword occurs on</param>
+        /// <param name="pos">Position the Keyword occurs at</param>
+        public AllKeywordToken(int line, int pos) : base(Token.ALLWORD, "ALL", line, line, pos, pos + 3) { }
+    }
+
+    /// <summary>
     /// Token which represents the Sparql AS Keyword
     /// </summary>
     public class AsKeywordToken : BaseToken

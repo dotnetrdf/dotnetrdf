@@ -1234,8 +1234,6 @@ namespace VDS.RDF.Query
                 pattern = new Bindings(this._bindings, pattern);
             }
 
-            //Q: Wrap the entire thing in an Algebra that initialises the Dataset?
-
             //Then we apply any 
             switch (this._type)
             {

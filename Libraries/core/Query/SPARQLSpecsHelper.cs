@@ -145,6 +145,7 @@ namespace VDS.RDF.Query
                       SparqlKeywordWith = "WITH",
                       SparqlKeywordUsing = "USING",
                       SparqlKeywordDefault = "DEFAULT",
+                      SparqlKeywordAll = "ALL",
                       SparqlKeywordMinus = "MINUS",
                       SparqlKeywordService = "SERVICE",
                       SparqlKeywordBindings = "BINDINGS",
@@ -229,6 +230,7 @@ namespace VDS.RDF.Query
         /// Set of SPARQL Keywords that are Update Keywords
         /// </summary>
         public static String[] UpdateKeywords = {   
+                                                    SparqlKeywordAll,
                                                     SparqlKeywordClear,
                                                     SparqlKeywordCreate,
                                                     SparqlKeywordData,

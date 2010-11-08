@@ -38,27 +38,80 @@ using System;
 namespace VDS.RDF.Update.Commands
 {
     /// <summary>
+    /// Mode by which to clear Graphs
+    /// </summary>
+    public enum ClearMode
+    {
+        /// <summary>
+        /// Clears a specific Graph of Triples
+        /// </summary>
+        Graph,
+        /// <summary>
+        /// Clears all Named Graphs of Triples
+        /// </summary>
+        Named,
+        /// <summary>
+        /// Clears the Default Graph of Triples
+        /// </summary>
+        Default,
+        /// <summary>
+        /// Clears all Graphs of Triples
+        /// </summary>
+        All
+    }
+
+    /// <summary>
     /// Represents the SPARQL Update CLEAR command
     /// </summary>
     public class ClearCommand : SparqlUpdateCommand
     {
         private Uri _graphUri;
+        private ClearMode _mode = ClearMode.Graph;
+        private bool _silent = false;
+
+        /// <summary>
+        /// Creates a Command which clears the given Graph or Graphs depending on the Clear Mode specified
+        /// </summary>
+        /// <param name="graphUri">Graph URI</param>
+        /// <param name="mode">Clear Mode</param>
+        /// <pparam name="silent">Whether errors should be suppressed</pparam>
+        public ClearCommand(Uri graphUri, ClearMode mode, bool silent)
+            : base(SparqlUpdateCommandType.Clear)
+        {
+            this._graphUri = graphUri;
+            this._mode = mode;
+            if (this._graphUri == null && this._mode == ClearMode.Graph) this._mode = ClearMode.Default;
+            if (this._mode == ClearMode.Default) this._graphUri = null;
+            this._silent = silent;
+        }
 
         /// <summary>
         /// Creates a Command which clears the given Graph
         /// </summary>
-        /// <param name="graphUri">Graph URI</param>
+        /// <param name="graphUri"></param>
         public ClearCommand(Uri graphUri)
-            : base(SparqlUpdateCommandType.Clear)
-        {
-            this._graphUri = graphUri;
-        }
+            : this(graphUri, ClearMode.Graph, false) { }
 
         /// <summary>
         /// Creates a Command which clears the Default Graph (if any)
         /// </summary>
         public ClearCommand()
-            : this(null) { }
+            : this(null, ClearMode.Default, false) { }
+
+        /// <summary>
+        /// Creates a Command which performs the specified type of clear
+        /// </summary>
+        /// <param name="mode">Clear Mode</param>
+        /// <param name="silent">Whether errors should be suppressed</param>
+        public ClearCommand(ClearMode mode, bool silent)
+            : this(null, mode, silent) { }
+
+        /// <summary>
+        /// Creates a Command which performs the specified type of clear
+        /// </summary>
+        /// <param name="mode">Clear Mode</param>
+        public ClearCommand(ClearMode mode)
+            : this(mode, false) { }
 
         /// <summary>
         /// Gets the URI of the Graph to be cleared (or null if the default graph should be cleared)
@@ -72,15 +125,64 @@ namespace VDS.RDF.Update.Commands
         }
 
         /// <summary>
+        /// Gets whether errors should be suppressed
+        /// </summary>
+        public bool Silent
+        {
+            get
+            {
+                return this._silent;
+            }
+        }
+
+        /// <summary>
+        /// Gets the Mode by which Graphs are to be cleared
+        /// </summary>
+        public ClearMode Mode
+        {
+            get
+            {
+                return this._mode;
+            }
+        }
+
+        /// <summary>
         /// Evaluates the Command in the given Context
         /// </summary>
         /// <param name="context"></param>
         public override void Evaluate(SparqlUpdateEvaluationContext context)
         {
-            //Q: Throw an error if the Graph doesn't exist?
-            if (context.Data.HasGraph(this._graphUri))
+            try
             {
-                context.Data.GetModifiableGraph(this._graphUri).Clear();
+                switch (this._mode)
+                {
+                    case ClearMode.Graph:
+                    case ClearMode.Default:
+                        if (context.Data.HasGraph(this._graphUri))
+                        {
+                            context.Data.GetModifiableGraph(this._graphUri).Clear();
+                        }
+                        break;
+                    case ClearMode.Named:
+                        foreach (Uri u in context.Data.GraphUris)
+                        {
+                            if (u != null)
+                            {
+                                context.Data.GetModifiableGraph(u).Clear();
+                            }
+                        }
+                        break;
+                    case ClearMode.All:
+                        foreach (Uri u in context.Data.GraphUris)
+                        {
+                                context.Data.GetModifiableGraph(u).Clear();
+                        }
+                        break;
+                }
+            }
+            catch
+            {
+                if (!this._silent) throw;
             }
         }
 
@@ -99,13 +201,19 @@ namespace VDS.RDF.Update.Commands
         /// <returns></returns>
         public override string ToString()
         {
-            if (this._graphUri == null)
+            String silent = (this._silent) ? "SILENT " : String.Empty;
+            switch (this._mode)
             {
-                return "CLEAR GRAPH DEFAULT";
-            }
-            else
-            {
-                return "CLEAR GRAPH <" + this._graphUri.ToString().Replace(">", "\\>") + ">";
+                case ClearMode.All:
+                    return "CLEAR " + silent + "ALL";
+                case ClearMode.Default:
+                    return "CLEAR " + silent + "DEFAULT";
+                case ClearMode.Graph:
+                    return "CLEAR " + silent + "GRAPH <" + this._graphUri.ToString().Replace(">", "\\>") + ">";
+                case ClearMode.Named:
+                    return "CLEAR " + silent + "NAMED";
+                default:
+                    throw new NotSupportedException("Cannot convert a CLEAR Command to a string when the Command Mode is unknown");
             }
         }
     }

@@ -44,6 +44,7 @@ namespace VDS.RDF.Update.Commands
     public class DropCommand : SparqlUpdateCommand
     {
         private Uri _graphUri;
+        private ClearMode _mode = ClearMode.Graph;
         private bool _silent = false;
 
         /// <summary>
@@ -51,19 +52,46 @@ namespace VDS.RDF.Update.Commands
         /// </summary>
         /// <param name="graphUri">URI ofthe Graph to DROP</param>
         /// <param name="silent">Whether the DROP should be done silently</param>
-        public DropCommand(Uri graphUri, bool silent)
+        public DropCommand(Uri graphUri, ClearMode mode, bool silent)
             : base(SparqlUpdateCommandType.Drop)
         {
             this._graphUri = graphUri;
+            this._mode = mode;
+            if (this._graphUri == null && this._mode == ClearMode.Graph) this._mode = ClearMode.Default;
+            if (this._mode == ClearMode.Default) this._graphUri = null;
             this._silent = silent;
         }
+
+        public DropCommand(Uri graphUri, ClearMode mode)
+            : this(graphUri, mode, false) { }
 
         /// <summary>
         /// Creates a new DROP command
         /// </summary>
         /// <param name="graphUri">URI of the Graph to DROP</param>
         public DropCommand(Uri graphUri)
-            : this(graphUri, false) { }
+            : this(graphUri, ClearMode.Graph, false) { }
+
+        /// <summary>
+        /// Creates a new DROP command which drops the Default Graph
+        /// </summary>
+        public DropCommand()
+            : this(null, ClearMode.Default) { }
+
+        /// <summary>
+        /// Creates a new DROP command which performs a specific clear mode drop operation
+        /// </summary>
+        /// <param name="mode">Clear Mode</param>
+        public DropCommand(ClearMode mode)
+            : this(mode, false) { }
+
+        /// <summary>
+        /// Creates a new DROP command which performs a specific clear mode drop operation
+        /// </summary>
+        /// <param name="mode">Clear Mode</param>
+        /// <param name="silent">Whether errors should be suppressed</param>
+        public DropCommand(ClearMode mode, bool silent)
+            : this(null, mode, silent) { }
 
         /// <summary>
         /// Gets the URI of the Graph to be dropped
@@ -88,18 +116,78 @@ namespace VDS.RDF.Update.Commands
         }
 
         /// <summary>
+        /// Gets the type of DROP operation to perform
+        /// </summary>
+        public ClearMode Mode
+        {
+            get
+            {
+                return this._mode;
+            }
+        }
+
+        /// <summary>
         /// Evaluates the Command in the given Context
         /// </summary>
         /// <param name="context">Evaluation Context</param>
         public override void Evaluate(SparqlUpdateEvaluationContext context)
         {
-            if (!context.Data.HasGraph(this._graphUri))
+            try
             {
-                if (!this._silent) throw new SparqlUpdateException("Cannot remove a Named Graph with URI '" + this._graphUri.ToString() + "' since a Graph with this URI does not exist in the Store");
+                switch (this._mode)
+                {
+                    case ClearMode.Default:
+                    case ClearMode.Graph:
+                        if (!context.Data.HasGraph(this._graphUri))
+                        {
+                            if (!this._silent) throw new SparqlUpdateException("Cannot remove a Named Graph with URI '" + this._graphUri.ToString() + "' since a Graph with this URI does not exist in the Store");
+                        }
+                        else
+                        {
+                            if (this._mode == ClearMode.Graph)
+                            {
+                                context.Data.RemoveGraph(this._graphUri);
+                            }
+                            else
+                            {
+                                //DROPing the DEFAULT graph only results in clearing it
+                                //This is because removing the default graph may cause errors in later commands/queries
+                                //which rely on it existing
+                                context.Data.GetModifiableGraph(this._graphUri).Clear();
+                            }
+                        }
+                        break;
+
+                    case ClearMode.Named:
+                        foreach (Uri u in context.Data.GraphUris)
+                        {
+                            if (u != null)
+                            {
+                                context.Data.RemoveGraph(u);
+                            }
+                        }
+                        break;
+                    case ClearMode.All:
+                        foreach (Uri u in context.Data.GraphUris)
+                        {
+                            if (u != null)
+                            {
+                                context.Data.RemoveGraph(u);
+                            }
+                            else
+                            {
+                                //DROPing the DEFAULT graph only results in clearing it
+                                //This is because removing the default graph may cause errors in later commands/queries
+                                //which rely on it existing
+                                context.Data.GetModifiableGraph(u).Clear();
+                            }
+                        }
+                        break;
+                }
             }
-            else
+            catch
             {
-                context.Data.RemoveGraph(this._graphUri);
+                if (!this._silent) throw;
             }
         }
 
@@ -121,9 +209,23 @@ namespace VDS.RDF.Update.Commands
             StringBuilder output = new StringBuilder();
             output.Append("DROP ");
             if (this._silent) output.Append("SILENT ");
-            output.Append("GRAPH <");
-            output.Append(this._graphUri.ToString().Replace(">", "\\>"));
-            output.Append('>');
+            switch (this._mode)
+            {
+                case ClearMode.All:
+                    output.Append("ALL");
+                    break;
+                case ClearMode.Default:
+                    output.Append("DEFAULT");
+                    break;
+                case ClearMode.Named:
+                    output.Append("NAMED");
+                    break;
+                case ClearMode.Graph:
+                    output.Append("GRAPH <");
+                    output.Append(this._graphUri.ToString().Replace(">", "\\>"));
+                    output.Append('>');
+                    break;
+            }
             return output.ToString();
         }
 

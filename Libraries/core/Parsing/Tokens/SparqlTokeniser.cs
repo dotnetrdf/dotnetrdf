@@ -795,6 +795,10 @@ namespace VDS.RDF.Parsing.Tokens
                 value = value.ToUpper();
                 switch (value)
                 {
+                    case SparqlSpecsHelper.SparqlKeywordAll:
+                        //All Keyword
+                        this._lasttokentype = Token.ALLWORD;
+                        return new AllKeywordToken(this.CurrentLine, this.StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordAs:
                         //As Alias Keyword
                         this._lasttokentype = Token.AS;

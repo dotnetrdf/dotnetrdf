@@ -199,6 +199,7 @@ namespace VDS.RDF.Parsing.Tokens
                           WITH = 209,
                           USING = 210,
                           DEFAULT = 211,
+                          ALLWORD = 212,
 
                           EOF = 1000;
     }
