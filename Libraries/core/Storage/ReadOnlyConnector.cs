@@ -40,71 +40,91 @@ using System.Text;
 
 namespace VDS.RDF.Storage
 {
-    //REQ: Implement a Fuseki Connector
-
     /// <summary>
-    /// Class for connecting to any dataset that can be exposed via Fuseki
+    /// Provides a Read-Only wrapper that can be placed around another <see cref="IGenericIOManager">IGenericIOManager</see> instance
     /// </summary>
     /// <remarks>
-    /// <strong>Not yet implemented</strong>
+    /// <para>
+    /// This is useful if you want to allow some code read-only access to a mutable store and ensure that it cannot modify the store via the manager instance
+    /// </para>
     /// </remarks>
-    public class FusekiConnector : IGenericIOManager
+    public class ReadOnlyConnector : IGenericIOManager
     {
+        public IGenericIOManager _manager;
+
+        public ReadOnlyConnector(IGenericIOManager manager)
+        {
+            this._manager = manager;
+        }
+
         #region IGenericIOManager Members
 
         public void LoadGraph(IGraph g, Uri graphUri)
         {
-            throw new NotImplementedException();
+            this._manager.LoadGraph(g, graphUri);
         }
 
         public void LoadGraph(IGraph g, string graphUri)
         {
-            throw new NotImplementedException();
+            this._manager.LoadGraph(g, graphUri);
         }
 
         public void SaveGraph(IGraph g)
         {
-            throw new NotImplementedException();
+            throw new RdfStorageException("The Read-Only Connector is a read-only connection");
         }
 
         public void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
-            throw new NotImplementedException();
+            throw new RdfStorageException("The Read-Only Connector is a read-only connection");
         }
 
         public void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
-            throw new NotImplementedException();
+            throw new RdfStorageException("The Read-Only Connector is a read-only connection");
         }
 
         public bool UpdateSupported
         {
-            get { throw new NotImplementedException(); }
+            get 
+            {
+                return false; 
+            }
         }
 
         public void DeleteGraph(Uri graphUri)
         {
-            throw new NotImplementedException();
+            throw new RdfStorageException("The Read-Only Connector is a read-only connection");
         }
 
         public void DeleteGraph(string graphUri)
         {
-            throw new NotImplementedException();
+            throw new RdfStorageException("The Read-Only Connector is a read-only connection");
         }
 
         public bool DeleteSupported
         {
-            get { throw new NotImplementedException(); }
+            get 
+            {
+                return false; 
+            }
         }
 
         public bool IsReady
         {
-            get { throw new NotImplementedException(); }
+            get 
+            {
+                return this._manager.IsReady; 
+            }
+
         }
 
         public bool IsReadOnly
         {
-            get { throw new NotImplementedException(); }
+            get 
+            {
+                return true; 
+            }
         }
 
         #endregion
@@ -113,7 +133,7 @@ namespace VDS.RDF.Storage
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            this._manager.Dispose();
         }
 
         #endregion

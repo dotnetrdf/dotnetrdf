@@ -391,7 +391,9 @@
     <Compile Include="Query\SparqlView.cs" />
     <Compile Include="Storage\DatasetFileManager.cs" />
     <Compile Include="Storage\FusekiConnector.cs" />
+    <Compile Include="Storage\InMemoryManager.cs" />
     <Compile Include="Storage\Params\GenericIOParams.cs" />
+    <Compile Include="Storage\ReadOnlyConnector.cs" />
     <Compile Include="Storage\SparqlConnector.cs" />
     <Compile Include="Storage\SparqlHttpProtocolConnector.cs" />
     <Compile Include="Update\Commands\BaseModifyCommand.cs" />

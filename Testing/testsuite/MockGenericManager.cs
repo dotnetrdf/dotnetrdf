@@ -54,6 +54,24 @@ namespace dotNetRDFTest
             get { return false; }
         }
 
+        public void DeleteGraph(Uri graphUri)
+        {
+            Thread.Sleep(500);
+        }
+
+        public void DeleteGraph(String graphUri)
+        {
+            Thread.Sleep(500);
+        }
+
+        public bool DeleteSupported
+        {
+            get
+            {
+                return true;
+            }
+        }
+
         #endregion
 
         #region IDisposable Members
