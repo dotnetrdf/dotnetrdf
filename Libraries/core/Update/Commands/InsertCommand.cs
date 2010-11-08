@@ -111,6 +111,18 @@ namespace VDS.RDF.Update.Commands
         }
 
         /// <summary>
+        /// Optimises the Commands WHERE pattern
+        /// </summary>
+        public override void Optimise()
+        {
+            if (!this.IsOptimised)
+            {
+                this._wherePattern.Optimise(Enumerable.Empty<String>());
+                this.IsOptimised = true;
+            }
+        }
+
+        /// <summary>
         /// Evaluates the Command in the given Context
         /// </summary>
         /// <param name="context">Evaluation Context</param>

@@ -76,7 +76,7 @@ namespace VDS.RDF.Update.Commands
         /// <param name="mode">Clear Mode</param>
         /// <pparam name="silent">Whether errors should be suppressed</pparam>
         public ClearCommand(Uri graphUri, ClearMode mode, bool silent)
-            : base(SparqlUpdateCommandType.Clear)
+            : base(SparqlUpdateCommandType.Clear, true)
         {
             this._graphUri = graphUri;
             this._mode = mode;

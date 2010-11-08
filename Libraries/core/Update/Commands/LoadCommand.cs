@@ -52,7 +52,7 @@ namespace VDS.RDF.Update.Commands
         /// <param name="sourceUri">Source URI to load data from</param>
         /// <param name="graphUri">Target URI for the Graph to store data in</param>
         public LoadCommand(Uri sourceUri, Uri graphUri, bool silent)
-            : base(SparqlUpdateCommandType.Load) 
+            : base(SparqlUpdateCommandType.Load, true) 
         {
             if (sourceUri == null) throw new ArgumentNullException("sourceUri");
             this._sourceUri = sourceUri;

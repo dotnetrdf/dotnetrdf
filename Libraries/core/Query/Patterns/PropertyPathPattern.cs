@@ -144,8 +144,6 @@ namespace VDS.RDF.Query.Patterns
 
                     context.OutputMultiset = initialInput.Join(result);
 
-                    //Q: Is it necessary to eliminate duplicates for simple paths?  Issued referred to the SPARQL 1.1 WG
-
                     //If we reach here we've successfully evaluated the simple pattern and can return
                     return;
                 }

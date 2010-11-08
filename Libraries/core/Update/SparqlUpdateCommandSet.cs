@@ -35,6 +35,7 @@ terms.
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace VDS.RDF.Update
@@ -139,6 +140,28 @@ namespace VDS.RDF.Update
             get
             {
                 return this._nsmap;
+            }
+        }
+
+        /// <summary>
+        /// Gets whether the Commands in the Command Set are optimised
+        /// </summary>
+        public bool IsOptimised
+        {
+            get
+            {
+                return this._commands.All(c => c.IsOptimised);
+            }
+        }
+
+        /// <summary>
+        /// Optimises the Commands in the Command Set
+        /// </summary>
+        public void Optimise()
+        {
+            foreach (SparqlUpdateCommand c in this._commands)
+            {
+                c.Optimise();
             }
         }
 

@@ -130,6 +130,18 @@ namespace VDS.RDF.Update.Commands
         }
 
         /// <summary>
+        /// Optimises the Commands WHERE pattern
+        /// </summary>
+        public override void Optimise()
+        {
+            if (!this.IsOptimised)
+            {
+                this._wherePattern.Optimise(Enumerable.Empty<String>());
+                this.IsOptimised = true;
+            }
+        }
+
+        /// <summary>
         /// Evaluates the Command in the given Context
         /// </summary>
         /// <param name="context">Evaluation Context</param>
@@ -145,7 +157,7 @@ namespace VDS.RDF.Update.Commands
             //Get the Graph from which we are deleting
             IGraph g = context.Data.GetModifiableGraph(this._graphUri);
 
-            //Delet ethe Triples for each Solution
+            //Delete the Triples for each Solution
             foreach (Set s in queryContext.OutputMultiset.Sets)
             {
                 List<Triple> deletedTriples = new List<Triple>();

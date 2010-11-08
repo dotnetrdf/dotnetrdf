@@ -52,7 +52,7 @@ namespace VDS.RDF.Update.Commands
         /// <param name="graphUri">URI of the Graph to create</param>
         /// <param name="silent">Whether the create should be done silenty</param>
         public CreateCommand(Uri graphUri, bool silent)
-            : base(SparqlUpdateCommandType.Create) 
+            : base(SparqlUpdateCommandType.Create, true) 
         {
             if (graphUri == null) throw new ArgumentNullException("graphUri");
             this._graphUri = graphUri;
