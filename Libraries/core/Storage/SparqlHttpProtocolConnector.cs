@@ -141,8 +141,7 @@ namespace VDS.RDF.Storage
         /// </remarks>
         public void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
-            String u = (graphUri == null) ? String.Empty : graphUri.ToString();
-            this.UpdateGraph(u, additions, removals);
+            this.UpdateGraph(graphUri.ToSafeString(), additions, removals);
         }
 
         /// <summary>
@@ -195,6 +194,43 @@ namespace VDS.RDF.Storage
         public bool UpdateSupported
         {
             get 
+            {
+                return true;
+            }
+        }
+
+        public void DeleteGraph(Uri graphUri)
+        {
+            this.DeleteGraph(graphUri.ToSafeString());
+        }
+
+        public void DeleteGraph(String graphUri)
+        {
+            String deleteUri = this._serviceUri;
+            if (!graphUri.Equals(String.Empty))
+            {
+                deleteUri += "?graph=" + Uri.EscapeDataString(graphUri);
+            }
+
+            try
+            {
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(new Uri(deleteUri));
+                request.Method = "DELETE";
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                {
+                    //If we get then it was OK
+                    response.Close();
+                }
+            }
+            catch (WebException webEx)
+            {
+                throw new RdfStorageException("A HTTP Error occurred while trying to delete a Graph from the Store", webEx);
+            }
+        }
+
+        public bool DeleteSupported
+        {
+            get
             {
                 return true;
             }

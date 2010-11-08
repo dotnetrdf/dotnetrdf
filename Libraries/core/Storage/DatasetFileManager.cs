@@ -196,6 +196,24 @@ namespace VDS.RDF.Storage
             }
         }
 
+        public void DeleteGraph(Uri graphUri)
+        {
+            throw new RdfStorageException("The DatasetFileManager provides a read-only connection");
+        }
+
+        public void DeleteGraph(String graphUri)
+        {
+            throw new RdfStorageException("The DatasetFileManager provides a read-only connection");
+        }
+
+        public bool DeleteSupported
+        {
+            get
+            {
+                return false;
+            }
+        }
+
         /// <summary>
         /// Returns that the Manager is ready if the underlying file has been loaded
         /// </summary>

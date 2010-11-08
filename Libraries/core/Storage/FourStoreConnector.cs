@@ -508,6 +508,14 @@ namespace VDS.RDF.Storage
             }
         }
 
+        public bool DeleteSupported
+        {
+            get
+            {
+                return false;
+            }
+        }
+
         /// <summary>
         /// Disposes of a 4store connection
         /// </summary>

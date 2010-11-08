@@ -105,7 +105,7 @@ namespace VDS.RDF.Storage
         /// Behaviour of this method with regards to non-existent Graph is up to the implementor, it may create a new empty Graph and apply the updates to that or it may throw an error.  Implementors <strong>should</strong> state in the XML comments for their implementation what behaviour is implemented.
         /// </para>
         /// <para>
-        /// Implementers <strong>should</strong> allow for either the additions or removals argument to be null
+        /// Implementers <strong>MUST</strong> allow for either the additions or removals argument to be null
         /// </para>
         /// </remarks>
         /// <exception cref="NotSupportedException">May be thrown if the underlying Store is not capable of doing Updates at the Triple level</exception>
@@ -126,7 +126,7 @@ namespace VDS.RDF.Storage
         /// Behaviour of this method with regards to non-existent Graph is up to the implementor, it may create a new empty Graph and apply the updates to that or it may throw an error.  Implementors <strong>should</strong> state in the XML comments for their implementation what behaviour is implemented.
         /// </para>
         /// <para>
-        /// Implementers <strong>should</strong> allow for either the additions or removals argument to be null
+        /// Implementers <strong>MUST</strong> allow for either the additions or removals argument to be null
         /// </para>
         /// </remarks>
         /// <exception cref="NotSupportedException">May be thrown if the underlying Store is not capable of doing Updates at the Triple level</exception>
@@ -140,6 +140,43 @@ namespace VDS.RDF.Storage
         /// Some Stores do not support updates at the Triple level and may as designated in the interface defintion throw a <see cref="NotSupportedException">NotSupportedException</see> if the <see cref="IGenericIOManager.Update">Update()</see> method is called.  This property allows for calling code to check in advance whether Updates are supported
         /// </remarks>
         bool UpdateSupported
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Deletes a Graph from the Store
+        /// </summary>
+        /// <param name="graphUri">URI of the Graph to be deleted</param>
+        /// <exception cref="NotSupportedException">May be thrown if the underlying Store is not capable of doing Deleting a Graph</exception>
+        /// <exception cref="RdfStorageException">May be thrown if the underlying Store is not capable of Deleting a Graph or an error occurs while performing the delete</exception>
+        /// <remarks>
+        /// <para>
+        /// <strong>Note:</strong> Not all Stores are capable of Deleting a Graph so it is acceptable for such a Store to throw a <see cref="NotSupportedException">NotSupportedException</see> or an <see cref="RdfStorageException">RdfStorageException</see> if the Store cannot provide this functionality
+        /// </para>
+        /// </remarks>
+        void DeleteGraph(Uri graphUri);
+
+        /// <summary>
+        /// Deletes a Graph from the Store
+        /// </summary>
+        /// <param name="graphUri">URI of the Graph to be deleted</param>
+        /// <exception cref="NotSupportedException">May be thrown if the underlying Store is not capable of doing Deleting a Graph</exception>
+        /// <exception cref="RdfStorageException">May be thrown if the underlying Store is not capable of Deleting a Graph or an error occurs while performing the delete</exception>
+        /// <remarks>
+        /// <para>
+        /// <strong>Note:</strong> Not all Stores are capable of Deleting a Graph so it is acceptable for such a Store to throw a <see cref="NotSupportedException">NotSupportedException</see> or an <see cref="RdfStorageException">RdfStorageException</see> if the Store cannot provide this functionality
+        /// </para>
+        /// </remarks>
+        void DeleteGraph(String graphUri);
+
+        /// <summary>
+        /// Gets whether the <see cref="IGenericIOManager.DeleteGraph">DeleteGraph()</see> method is supported by the Manager
+        /// </summary>
+        /// <remarks>
+        /// Some Stores do not support the deletion of Graphs and may as designated in the interface definition throw a <see cref="NotSupportedException">NotSupportedException</see> if the <see cref="IGenericIOManager.DeleteGraph">DeleteGraph()</see> method is called.  This property allows for calling code to check in advance whether Deletion of Graphs is supported.
+        /// </remarks>
+        bool DeleteSupported
         {
             get;
         }

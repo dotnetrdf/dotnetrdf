@@ -928,6 +928,24 @@ namespace VDS.RDF.Storage
 
         #endregion
 
+        public void DeleteGraph(Uri graphUri)
+        {
+            //TODO: Implement Delete Graph for Virtuoso
+        }
+
+        public void DeleteGraph(String graphUri)
+        {
+            //TODO: Implement Delete Graph for Virtuoso
+        }
+
+        public bool DeleteSupported
+        {
+            get
+            {
+                return false;
+            }
+        }
+
         #region Database IO
 
         /// <summary>

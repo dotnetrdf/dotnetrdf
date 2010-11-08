@@ -323,6 +323,24 @@ namespace VDS.RDF.Storage
             }
         }
 
+        public void DeleteGraph(Uri graphUri)
+        {
+            throw new RdfStorageException("The SparqlConnector provides a read-only connection");
+        }
+
+        public void DeleteGraph(String graphUri)
+        {
+            throw new RdfStorageException("The SparqlConnector provides a read-only connection");
+        }
+
+        public bool DeleteSupported
+        {
+            get
+            {
+                return false;
+            }
+        }
+
         /// <summary>
         /// Returns that the Connection is ready
         /// </summary>

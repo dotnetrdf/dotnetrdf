@@ -935,6 +935,25 @@ namespace VDS.RDF.Storage
             }
         }
 
+        public virtual void DeleteGraph(Uri graphUri)
+        {
+            this.RemoveGraph(this.GetGraphID(graphUri));
+        }
+
+        public virtual void DeleteGraph(String graphUri)
+        {
+            Uri u = (graphUri.ToSafeString().Equals(String.Empty)) ? null : new Uri(graphUri);
+            this.DeleteGraph(u);
+        }
+
+        public bool DeleteSupported
+        {
+            get
+            {
+                return true;
+            }
+        }
+
         /// <summary>
         /// Returns that the Manager is ready
         /// </summary>

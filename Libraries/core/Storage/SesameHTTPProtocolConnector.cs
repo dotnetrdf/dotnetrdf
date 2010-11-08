@@ -331,14 +331,7 @@ namespace VDS.RDF.Storage
         /// <param name="removals">Triples to be removed</param>
         public void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
-            if (graphUri != null)
-            {
-                this.UpdateGraph(graphUri.ToString(), additions, removals);
-            }
-            else
-            {
-                this.UpdateGraph(String.Empty, additions, removals);
-            }
+            this.UpdateGraph(graphUri.ToSafeString(), additions, removals);
         }
 
         /// <summary>
@@ -422,6 +415,50 @@ namespace VDS.RDF.Storage
         public bool UpdateSupported
         {
             get 
+            {
+                return true;
+            }
+        }
+
+        public void DeleteGraph(Uri graphUri)
+        {
+            this.DeleteGraph(graphUri.ToSafeString());
+        }
+
+        public void DeleteGraph(String graphUri)
+        {
+            try
+            {
+                HttpWebRequest request;
+                HttpWebResponse response;
+                Dictionary<String, String> serviceParams = new Dictionary<string, string>();
+                NTriplesWriter ntwriter = new NTriplesWriter();
+
+                if (!graphUri.Equals(String.Empty))
+                {
+                    serviceParams.Add("context", "<" + graphUri + ">");
+                }
+                else
+                {
+                    serviceParams.Add("context", "null");
+                }
+
+                request = this.CreateRequest("repositories/" + this._store + "/statements", "*/*", "DELETE", serviceParams);
+                using (response = (HttpWebResponse)request.GetResponse())
+                {
+                    //If we get here then the Delete worked OK
+                    response.Close();
+                }
+            }
+            catch (WebException webEx)
+            {
+                throw new RdfStorageException("A HTTP Error occurred while trying to delete a Graph from the Store", webEx);
+            }
+        }
+
+        public bool DeleteSupported
+        {
+            get
             {
                 return true;
             }

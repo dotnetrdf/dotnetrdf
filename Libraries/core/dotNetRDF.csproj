@@ -390,6 +390,7 @@
     <Compile Include="Query\SparqlPathParser.cs" />
     <Compile Include="Query\SparqlView.cs" />
     <Compile Include="Storage\DatasetFileManager.cs" />
+    <Compile Include="Storage\FusekiConnector.cs" />
     <Compile Include="Storage\Params\GenericIOParams.cs" />
     <Compile Include="Storage\SparqlConnector.cs" />
     <Compile Include="Storage\SparqlHttpProtocolConnector.cs" />

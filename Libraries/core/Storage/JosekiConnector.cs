@@ -308,7 +308,11 @@ namespace VDS.RDF.Storage
         /// <param name="removals">Triples to be removed</param>
         public void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
-            if (graphUri.Equals(String.Empty))
+            if (graphUri.ToSafeString().Equals(String.Empty))
+            {
+                this.UpdateGraph((Uri)null, additions, removals);
+            }
+            else if (graphUri == null)
             {
                 this.UpdateGraph((Uri)null, additions, removals);
             }
@@ -327,6 +331,24 @@ namespace VDS.RDF.Storage
         public bool UpdateSupported
         {
             get 
+            {
+                return (this._updateService != null);
+            }
+        }
+
+        public void DeleteGraph(Uri graphUri)
+        {
+            //REQ: Implement Delete Graph for Joseki
+        }
+
+        public void DeleteGraph(String graphUri)
+        {
+            //REQ: Implement Delete Graph for Joseki
+        }
+
+        public bool DeleteSupported
+        {
+            get
             {
                 return (this._updateService != null);
             }

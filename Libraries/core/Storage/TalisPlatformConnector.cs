@@ -764,6 +764,24 @@ namespace VDS.RDF.Storage
             }
         }
 
+        public void DeleteGraph(Uri graphUri)
+        {
+            throw new RdfStorageException("The TalisConnector does not support deletion of Graphs since the Talis platform is not a named graph store");
+        }
+
+        public void DeleteGraph(String graphUri)
+        {
+            throw new RdfStorageException("The TalisConnector does not support deletion of Graphs since the Talis platform is not a named graph store");
+        }
+
+        public bool DeleteSupported
+        {
+            get
+            {
+                return false;
+            }
+        }
+
         /// <summary>
         /// Returns that the Connection is ready
         /// </summary>
