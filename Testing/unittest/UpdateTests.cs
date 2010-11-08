@@ -67,7 +67,7 @@ namespace VDS.RDF.Test
                 Console.WriteLine("Trying to DROP a non-existent Graph produced an error as expected");
             }
 
-            DropCommand drop2 = new DropCommand(new Uri("http://example.org/1"), true);
+            DropCommand drop2 = new DropCommand(new Uri("http://example.org/1"), ClearMode.Graph, true);
             try
             {
                 store.ExecuteUpdate(drop2);

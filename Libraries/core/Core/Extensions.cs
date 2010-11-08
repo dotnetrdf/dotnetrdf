@@ -602,17 +602,67 @@ namespace VDS.RDF
         }
 
         /// <summary>
+        /// Creates a new Byte typed literal
+        /// </summary>
+        /// <param name="b">Byte</param>
+        /// <param name="g">Graph to create in</param>
+        /// <returns></returns>
+        public static LiteralNode ToLiteral(this byte b, IGraph g)
+        {
+            return g.CreateLiteralNode(XmlConvert.ToString(b), new Uri(XmlSpecsHelper.XmlSchemaDataTypeByte));
+        }
+
+        /// <summary>
+        /// Creates a new Byte typed literal
+        /// </summary>
+        /// <param name="b">Byte</param>
+        /// <param name="g">Graph to create in</param>
+        /// <returns></returns>
+        public static LiteralNode ToLiteral(this sbyte b, IGraph g)
+        {
+            return g.CreateLiteralNode(XmlConvert.ToString(b), new Uri(XmlSpecsHelper.XmlSchemaDataTypeByte));
+        }
+
+        /// <summary>
         /// Creates a new Date Time typed literal
         /// </summary>
         /// <param name="dt">Date Time</param>
         /// <param name="g">Graph to create in</param>
         /// <returns></returns>
-        /// <exception cref="ArgumentNullException">Thrown if the Graph/Date Time argument is null</exception>
+        /// <exception cref="ArgumentNullException">Thrown if the Graph argument is null</exception>
         public static LiteralNode ToLiteral(this DateTime dt, IGraph g)
         {
             if (g == null) throw new ArgumentNullException("g", "Cannot create a Literal Node in a null Graph");
 
             return g.CreateLiteralNode(dt.ToString(XmlSpecsHelper.XmlSchemaDateTimeFormat), new Uri(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
+        }
+
+        /// <summary>
+        /// Creates a new Date typed literal
+        /// </summary>
+        /// <param name="dt">Date Time</param>
+        /// <param name="g">Graph to create in</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException">Thrown if the Graph argument is null</exception>
+        public static LiteralNode ToLiteralDate(this DateTime dt, IGraph g)
+        {
+            if (g == null) throw new ArgumentNullException("g", "Cannot create a Literal Node in a null Graph");
+
+            return g.CreateLiteralNode(dt.ToString(XmlSpecsHelper.XmlSchemaDateFormat), new Uri(XmlSpecsHelper.XmlSchemaDataTypeDate));
+        }
+
+        /// <summary>
+        /// Creates a new Time typed literal
+        /// </summary>
+        /// <param name="dt">Date Time</param>
+        /// <param name="g">Graph to create in</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException">Thrown if the Graph argument is null</exception>
+        public static LiteralNode ToLiteralTime(this DateTime dt, IGraph g)
+        {
+            if (g == null) throw new ArgumentNullException("g", "Cannot create a Literal Node in a null Graph");
+
+            return g.CreateLiteralNode(dt.ToString(XmlSpecsHelper.XmlSchemaTimeFormat), new Uri(XmlSpecsHelper.XmlSchemaDataTypeTime));
         }
         
         /// <summary>

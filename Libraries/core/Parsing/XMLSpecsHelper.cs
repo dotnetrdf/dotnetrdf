@@ -59,6 +59,10 @@ namespace VDS.RDF.Parsing
         /// Namespace for XML Namespaces
         /// </summary>
         public const String NamespaceXmlNamespaces = "http://www.w3.org/2000/xmlns/";
+        /// <summary>
+        /// Namespace for XML Schema
+        /// </summary>
+        public const String NamespaceXmlSchema = "http://www.w3.org/2001/XMLSchema#";
 
         /// <summary>
         /// Date Time Formatting string which meets the specified format for xsd:dateTime
@@ -68,34 +72,41 @@ namespace VDS.RDF.Parsing
         /// </remarks>
         public const String XmlSchemaDateTimeFormat = "yyyy-MM-dd\\THH:mm:ssK";
 
+        public const String XmlSchemaDateFormat = "yyyy-MM-ddK";
+
+        public const String XmlSchemaTimeFormat = "HH:mm:ssK";
+
+
+
         /// <summary>
         /// Data Type Uri Constants for XML Schema Data Types
         /// </summary>
-        public const String XmlSchemaDataTypeAnyUri = "http://www.w3.org/2001/XMLSchema#anyURI",
-                            XmlSchemaDataTypeBase64Binary = "http://www.w3.org/2001/XMLSchema#base64Binary",
-                            XmlSchemaDataTypeBoolean = "http://www.w3.org/2001/XMLSchema#boolean",
-                            XmlSchemaDataTypeByte = "http://www.w3.org/2001/XMLSchema#byte",
-                            XmlSchemaDataTypeDate = "http://www.w3.org/2001/XMLSchema#date",
-                            XmlSchemaDataTypeDateTime = "http://www.w3.org/2001/XMLSchema#dateTime",
-                            XmlSchemaDataTypeDayTimeDuration = "http://www.w3.org/2001/XMLSchema#dayTimeDuration",
-                            XmlSchemaDataTypeDuration = "http://www.w3.org/2001/XMLSchema#duration",
-                            XmlSchemaDataTypeDecimal = "http://www.w3.org/2001/XMLSchema#decimal",
-                            XmlSchemaDataTypeDouble = "http://www.w3.org/2001/XMLSchema#double",
-                            XmlSchemaDataTypeFloat = "http://www.w3.org/2001/XMLSchema#float",
-                            XmlSchemaDataTypeHexBinary = "http://www.w3.org/2001/XMLSchema#hexBinary",
-                            XmlSchemaDataTypeInt = "http://www.w3.org/2001/XMLSchema#int",
-                            XmlSchemaDataTypeInteger = "http://www.w3.org/2001/XMLSchema#integer",
-                            XmlSchemaDataTypeLong = "http://www.w3.org/2001/XMLSchema#long",
-                            XmlSchemaDataTypeNegativeInteger = "http://www.w3.org/2001/XMLSchema#negativeInteger",
-                            XmlSchemaDataTypeNonNegativeInteger = "http://www.w3.org/2001/XMLSchema#nonNegativeInteger",
-                            XmlSchemaDataTypeNonPositiveInteger = "http://www.w3.org/2001/XMLSchema#nonPositiveInteger",
-                            XmlSchemaDataTypePositiveInteger = "http://www.w3.org/2001/XMLSchema#positiveInteger",
-                            XmlSchemaDataTypeShort = "http://www.w3.org/2001/XMLSchema#short",
-                            XmlSchemaDataTypeString = "http://www.w3.org/2001/XMLSchema#string",
-                            XmlSchemaDataTypeUnsignedByte = "http://www.w3.org/2001/XMLSchema#unsignedByte",
-                            XmlSchemaDataTypeUnsignedInt = "http://www.w3.org/2001/XMLSchema#unsignedInt",
-                            XmlSchemaDataTypeUnsignedLong = "http://www.w3.org/2001/XMLSchema#unsignedLong",
-                            XmlSchemaDataTypeUnsignedShort = "http://www.w3.org/2001/XMLSchema#unsignedShort";
+        public const String XmlSchemaDataTypeAnyUri = NamespaceXmlSchema + "anyURI",
+                            XmlSchemaDataTypeBase64Binary = NamespaceXmlSchema + "base64Binary",
+                            XmlSchemaDataTypeBoolean = NamespaceXmlSchema + "boolean",
+                            XmlSchemaDataTypeByte = NamespaceXmlSchema + "byte",
+                            XmlSchemaDataTypeDate = NamespaceXmlSchema + "date",
+                            XmlSchemaDataTypeDateTime = NamespaceXmlSchema + "dateTime",
+                            XmlSchemaDataTypeDayTimeDuration = NamespaceXmlSchema + "dayTimeDuration",
+                            XmlSchemaDataTypeDuration = NamespaceXmlSchema + "duration",
+                            XmlSchemaDataTypeDecimal = NamespaceXmlSchema + "decimal",
+                            XmlSchemaDataTypeDouble = NamespaceXmlSchema + "double",
+                            XmlSchemaDataTypeFloat = NamespaceXmlSchema + "float",
+                            XmlSchemaDataTypeHexBinary = NamespaceXmlSchema + "hexBinary",
+                            XmlSchemaDataTypeInt = NamespaceXmlSchema + "int",
+                            XmlSchemaDataTypeInteger = NamespaceXmlSchema + "integer",
+                            XmlSchemaDataTypeLong = NamespaceXmlSchema + "long",
+                            XmlSchemaDataTypeNegativeInteger = NamespaceXmlSchema + "negativeInteger",
+                            XmlSchemaDataTypeNonNegativeInteger = NamespaceXmlSchema + "nonNegativeInteger",
+                            XmlSchemaDataTypeNonPositiveInteger = NamespaceXmlSchema + "nonPositiveInteger",
+                            XmlSchemaDataTypePositiveInteger = NamespaceXmlSchema + "positiveInteger",
+                            XmlSchemaDataTypeShort = NamespaceXmlSchema + "short",
+                            XmlSchemaDataTypeTime = NamespaceXmlSchema + "time",
+                            XmlSchemaDataTypeString = NamespaceXmlSchema + "string",
+                            XmlSchemaDataTypeUnsignedByte = NamespaceXmlSchema + "unsignedByte",
+                            XmlSchemaDataTypeUnsignedInt = NamespaceXmlSchema + "unsignedInt",
+                            XmlSchemaDataTypeUnsignedLong = NamespaceXmlSchema + "unsignedLong",
+                            XmlSchemaDataTypeUnsignedShort = NamespaceXmlSchema + "unsignedShort";
 
         /// <summary>
         /// Array of Constants for Data Types that are supported by the Literal Node CompareTo method
