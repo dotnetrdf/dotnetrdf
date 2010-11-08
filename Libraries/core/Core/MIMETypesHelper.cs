@@ -392,6 +392,31 @@ namespace VDS.RDF
         }
 
         /// <summary>
+        /// Creates a Custom HTTP Accept Header containing only the Accept Types supported by a specific parser
+        /// </summary>
+        /// <param name="parser">RDF Parser</param>
+        /// <returns></returns>
+        public static String CustomHttpAcceptHeader(IStoreReader parser)
+        {
+            if (parser is NQuadsParser)
+            {
+                return String.Join(",", NQuads);
+            }
+            else if (parser is TriGParser)
+            {
+                return String.Join(",", TriG);
+            }
+            else if (parser is TriXParser)
+            {
+                return String.Join(",", TriX);
+            }
+            else
+            {
+                return MimeTypesHelper.HttpRdfDatasetAcceptHeader;
+            }
+        }
+
+        /// <summary>
         /// Gets the Enumeration of supported MIME Types for RDF Graphs
         /// </summary>
         public static IEnumerable<String> SupportedRdfMimeTypes

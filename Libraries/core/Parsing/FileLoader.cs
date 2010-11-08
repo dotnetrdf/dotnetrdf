@@ -142,10 +142,13 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="store">Triple Store to load into</param>
         /// <param name="filename">File to load from</param>
+        /// <param name="parser">Parser to use to parse the given file</param>
         /// <remarks>
-        /// The <see cref="FileLoader">FileLoader</see> attempts to select a Store Parser by examining the file extension to select the most likely MIME type for the file.  This assume that the file extension corresponds to one of the recognized file extensions for a RDF dataset format the library supports.  If this suceeds then a parser is chosen and used to parse the input file.
+        /// <para>
+        /// If the <paramref name="parser"/> parameter is set to null then the <see cref="FileLoader">FileLoader</see> attempts to select a Store Parser by examining the file extension to select the most likely MIME type for the file.  This assume that the file extension corresponds to one of the recognized file extensions for a RDF dataset format the library supports.  If this suceeds then a parser is chosen and used to parse the input file.
+        /// </para>
         /// </remarks>
-        public static void Load(ITripleStore store, String filename)
+        public static void Load(ITripleStore store, String filename, IStoreReader parser)
         {
             if (!File.Exists(filename))
             {
@@ -156,8 +159,26 @@ namespace VDS.RDF.Parsing
 #endif
             }
 
-            IStoreReader parser = MimeTypesHelper.GetStoreParser(MimeTypesHelper.GetMimeType(Path.GetExtension(filename)));
+            if (parser == null)
+            {
+                parser = MimeTypesHelper.GetStoreParser(MimeTypesHelper.GetMimeType(Path.GetExtension(filename)));
+            }
             parser.Load(store, new StreamParams(filename));
+        }
+
+        /// <summary>
+        /// Loads the contents of the given File into a Triple Store providing the RDF dataset format can be determined
+        /// </summary>
+        /// <param name="store">Triple Store to load into</param>
+        /// <param name="filename">File to load from</param>
+        /// <remarks>
+        /// <para>
+        /// The <see cref="FileLoader">FileLoader</see> attempts to select a Store Parser by examining the file extension to select the most likely MIME type for the file.  This assume that the file extension corresponds to one of the recognized file extensions for a RDF dataset format the library supports.  If this suceeds then a parser is chosen and used to parse the input file.
+        /// </para>
+        /// </remarks>
+        public static void Load(ITripleStore store, String filename)
+        {
+            FileLoader.Load(store, filename, null);
         }
 
         /// <summary>

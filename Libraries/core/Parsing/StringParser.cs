@@ -59,19 +59,27 @@ namespace VDS.RDF.Parsing
         /// <remarks>Use this when you have a raw RDF string and you know the syntax the RDF is in</remarks>
         public static void Parse(IGraph g, String data, IRdfReader reader)
         {
-            try
+            if (reader == null)
             {
-                MemoryStream mem = new MemoryStream();
-                StreamWriter writer = new StreamWriter(mem);
-                writer.Write(data);
-                writer.Flush();
-                mem.Seek(0, SeekOrigin.Begin);
-
-                reader.Load(g, new StreamReader(mem));
+                //If no parser supplied then should auto-detect syntax
+                Parse(g, data);
             }
-            catch
+            else
             {
-                throw;
+                try
+                {
+                    MemoryStream mem = new MemoryStream();
+                    StreamWriter writer = new StreamWriter(mem);
+                    writer.Write(data);
+                    writer.Flush();
+                    mem.Seek(0, SeekOrigin.Begin);
+
+                    reader.Load(g, new StreamReader(mem));
+                }
+                catch
+                {
+                    throw;
+                }
             }
         }
 
@@ -172,19 +180,27 @@ namespace VDS.RDF.Parsing
         /// <param name="reader">Parser to use</param>
         public static void ParseDataset(ITripleStore store, String data, IStoreReader reader)
         {
-            try
+            if (reader == null)
             {
-                MemoryStream mem = new MemoryStream();
-                StreamWriter writer = new StreamWriter(mem);
-                writer.Write(data);
-                writer.Flush();
-                mem.Seek(0, SeekOrigin.Begin);
-
-                reader.Load(store, new StreamParams(mem));
+                //If no parser supplied then should auto-detect syntax
+                ParseDataset(store, data);
             }
-            catch
+            else
             {
-                throw;
+                try
+                {
+                    MemoryStream mem = new MemoryStream();
+                    StreamWriter writer = new StreamWriter(mem);
+                    writer.Write(data);
+                    writer.Flush();
+                    mem.Seek(0, SeekOrigin.Begin);
+
+                    reader.Load(store, new StreamParams(mem));
+                }
+                catch
+                {
+                    throw;
+                }
             }
         }
 
@@ -204,16 +220,13 @@ namespace VDS.RDF.Parsing
             String format = "Unknown";
             try
             {
-#if !NO_XMLDOM
                 if (data.Contains("<?xml") && data.Contains("<TriX"))
                 {
                     //Probably TriX
                     format = "TriX";
                     ParseDataset(store, data, new TriXParser());
                 }
-                else 
-#endif
-                    if (data.Contains("@prefix") || data.Contains("@base"))
+                else if (data.Contains("@prefix") || data.Contains("@base"))
                 {
                     //Probably TriG
                     format = "TriG";
@@ -287,19 +300,27 @@ namespace VDS.RDF.Parsing
         /// <param name="reader">Parser to use</param>
         public static void ParseResultSet(SparqlResultSet results, String data, ISparqlResultsReader reader)
         {
-            try
+            if (reader == null)
             {
-                MemoryStream mem = new MemoryStream();
-                StreamWriter writer = new StreamWriter(mem);
-                writer.Write(data);
-                writer.Flush();
-                mem.Seek(0, SeekOrigin.Begin);
-
-                reader.Load(results, new StreamReader(mem));
+                //If no parser specified then auto-detect syntax
+                ParseResultSet(results, data);
             }
-            catch
+            else
             {
-                throw;
+                try
+                {
+                    MemoryStream mem = new MemoryStream();
+                    StreamWriter writer = new StreamWriter(mem);
+                    writer.Write(data);
+                    writer.Flush();
+                    mem.Seek(0, SeekOrigin.Begin);
+
+                    reader.Load(results, new StreamReader(mem));
+                }
+                catch
+                {
+                    throw;
+                }
             }
         }
 

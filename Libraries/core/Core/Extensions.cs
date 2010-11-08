@@ -298,38 +298,6 @@ namespace VDS.RDF
 
         #endregion
 
-        #region Graph Extensions
-
-        /// <summary>
-        /// Executes a SPARQL Query on a Graph
-        /// </summary>
-        /// <param name="g">Graph to query</param>
-        /// <param name="sparqlQuery">SPARQL Query</param>
-        /// <returns></returns>
-        public static Object ExecuteQuery(this IGraph g, String sparqlQuery)
-        {
-            TripleStore store = new TripleStore();
-            if (g.BaseUri == null) g.BaseUri = new Uri("dotnetrdf:default-graph");
-            store.Add(g);
-            return store.ExecuteQuery(sparqlQuery);
-        }
-
-        /// <summary>
-        /// Executes a SPARQL Query on a Graph
-        /// </summary>
-        /// <param name="g">Graph to query</param>
-        /// <param name="query">SPARQL Query</param>
-        /// <returns></returns>
-        public static Object ExecuteQuery(this IGraph g, SparqlQuery query)
-        {
-            TripleStore store = new TripleStore();
-            if (g.BaseUri == null) g.BaseUri = new Uri("dotnetrdf:default-graph");
-            store.Add(g);
-            return store.ExecuteQuery(query);
-        }
-
-        #endregion
-
         #region ToString() Extensions
 
         /// <summary>
@@ -354,6 +322,264 @@ namespace VDS.RDF
         }
 
         #endregion
+    }
+
+    /// <summary>
+    /// Provides useful Extension Methods for working with Graphs
+    /// </summary>
+    public static class GraphExtensions
+    {
+        /// <summary>
+        /// Executes a SPARQL Query on a Graph
+        /// </summary>
+        /// <param name="g">Graph to query</param>
+        /// <param name="sparqlQuery">SPARQL Query</param>
+        /// <returns></returns>
+        public static Object ExecuteQuery(this IGraph g, String sparqlQuery)
+        {
+            TripleStore store = new TripleStore();
+            store.Add(g);
+            return store.ExecuteQuery(sparqlQuery);
+        }
+
+        /// <summary>
+        /// Executes a SPARQL Query on a Graph
+        /// </summary>
+        /// <param name="g">Graph to query</param>
+        /// <param name="query">SPARQL Query</param>
+        /// <returns></returns>
+        public static Object ExecuteQuery(this IGraph g, SparqlQuery query)
+        {
+            TripleStore store = new TripleStore();
+            store.Add(g);
+            return store.ExecuteQuery(query);
+        }
+
+        /// <summary>
+        /// Loads RDF data from a file into a Graph
+        /// </summary>
+        /// <param name="g">Graph to load into</param>
+        /// <param name="file">File to load from</param>
+        /// <param name="parser">Parser to use</param>
+        /// <remarks>
+        /// This is just a shortcut to using the static <strong>Load()</strong> methods from the <see cref="FileLoader">FileLoader</see> class located in the <see cref="VDS.RDF.Parsing">Parsing</see> namespace
+        /// </remarks>
+        public static void LoadFromFile(this IGraph g, String file, IRdfReader parser)
+        {
+            FileLoader.Load(g, file, parser);
+        }
+
+        /// <summary>
+        /// Loads RDF data from a file into a Graph
+        /// </summary>
+        /// <param name="g">Graph to load into</param>
+        /// <param name="file">File to load from</param>
+        /// <remarks>
+        /// This is just a shortcut to using the static <strong>Load()</strong> methods from the <see cref="FileLoader">FileLoader</see> class located in the <see cref="VDS.RDF.Parsing">Parsing</see> namespace
+        /// </remarks>
+        public static void LoadFromFile(this IGraph g, String file)
+        {
+            FileLoader.Load(g, file);
+        }
+
+        /// <summary>
+        /// Loads RDF data from a URI into a Graph
+        /// </summary>
+        /// <param name="g">Graph to load into</param>
+        /// <param name="u">URI to load from</param>
+        /// <param name="parser">Parser to use</param>
+        /// <remarks>
+        /// This is just a shortcut to using the static <strong>Load()</strong> methods from the <see cref="UriLoader">UriLoader</see> class located in the <see cref="VDS.RDF.Parsing">Parsing</see> namespace
+        /// </remarks>
+        public static void LoadFromUri(this IGraph g, Uri u, IRdfReader parser)
+        {
+            UriLoader.Load(g, u, parser);
+        }
+
+        /// <summary>
+        /// Loads RDF data from a URI into a Graph
+        /// </summary>
+        /// <param name="g">Graph to load into</param>
+        /// <param name="u">URI to load from</param>
+        /// <remarks>
+        /// This is just a shortcut to using the static <strong>Load()</strong> methods from the <see cref="UriLoader">UriLoader</see> class located in the <see cref="VDS.RDF.Parsing">Parsing</see> namespace
+        /// </remarks>
+        public static void LoadFromUri(this IGraph g, Uri u)
+        {
+            UriLoader.Load(g, u);
+        }
+
+        /// <summary>
+        /// Loads RDF data from a String into a Graph
+        /// </summary>
+        /// <param name="g">Graph to load into</param>
+        /// <param name="data">Data to load</param>
+        /// <param name="parser">Parser to use</param>
+        /// <remarks>
+        /// This is just a shortcut to using the static <strong>Parse()</strong> methods from the <see cref="StringParser">StringParser</see> class located in the <see cref="VDS.RDF.Parsing">Parsing</see> namespace
+        /// </remarks>
+        public static void LoadFromString(this IGraph g, String data, IRdfReader parser)
+        {
+            StringParser.Parse(g, data, parser);
+        }
+
+        /// <summary>
+        /// Loads RDF data from a String into a Graph
+        /// </summary>
+        /// <param name="g">Graph to load into</param>
+        /// <param name="data">Data to load</param>
+        /// <remarks>
+        /// This is just a shortcut to using the static <strong>Parse()</strong> methods from the <see cref="StringParser">StringParser</see> class located in the <see cref="VDS.RDF.Parsing">Parsing</see> namespace
+        /// </remarks>
+        public static void LoadFromString(this IGraph g, String data)
+        {
+            StringParser.Parse(g, data);
+        }
+
+        /// <summary>
+        /// Saves a Graph to a File
+        /// </summary>
+        /// <param name="g">Graph to save</param>
+        /// <param name="file">File to save to</param>
+        /// <param name="writer">Writer to use</param>
+        public static void SaveToFile(this IGraph g, String file, IRdfWriter writer)
+        {
+            if (writer == null)
+            {
+                g.SaveToFile(file);
+            } 
+            else 
+            {
+                writer.Save(g, file);
+            }
+        }
+
+        /// <summary>
+        /// Saves a Graph to a File
+        /// </summary>
+        /// <param name="g">Graph to save</param>
+        /// <param name="file">File to save to</param>
+        public static void SaveToFile(this IGraph g, String file)
+        {
+            IRdfWriter writer = MimeTypesHelper.GetWriter(MimeTypesHelper.GetMimeType(System.IO.Path.GetExtension(file)));
+            writer.Save(g, file);
+        }
+    }
+
+    /// <summary>
+    /// Provides useful Extension Methods for working with Triple Stores
+    /// </summary>
+    public static class TripleStoreExtensions
+    {
+        /// <summary>
+        /// Loads an RDF dataset from a file into a Triple Store
+        /// </summary>
+        /// <param name="store">Triple Store to load into</param>
+        /// <param name="file">File to load from</param>
+        /// <param name="parser">Parser to use</param>
+        /// <remarks>
+        /// This is just a shortcut to using the static <strong>Load()</strong> methods from the <see cref="FileLoader">FileLoader</see> class located in the <see cref="VDS.RDF.Parsing">Parsing</see> namespace
+        /// </remarks>
+        public static void LoadFromFile(this ITripleStore store, String file, IStoreReader parser)
+        {
+            FileLoader.Load(store, file, parser);
+        }
+
+        /// <summary>
+        /// Loads an RDF dataset from a file into a Triple Store
+        /// </summary>
+        /// <param name="store">Triple Store to load into</param>
+        /// <param name="file">File to load from</param>
+        /// <remarks>
+        /// This is just a shortcut to using the static <strong>Load()</strong> methods from the <see cref="FileLoader">FileLoader</see> class located in the <see cref="VDS.RDF.Parsing">Parsing</see> namespace
+        /// </remarks>
+        public static void LoadFromFile(this ITripleStore store, String file)
+        {
+            FileLoader.Load(store, file);
+        }
+
+        /// <summary>
+        /// Loads an RDF dataset from a URI into a Triple Store
+        /// </summary>
+        /// <param name="store">Triple Store to load into</param>
+        /// <param name="u">URI to load from</param>
+        /// <param name="parser">Parser to use</param>
+        /// <remarks>
+        /// This is just a shortcut to using the static <strong>Load()</strong> methods from the <see cref="UriLoader">UriLoader</see> class located in the <see cref="VDS.RDF.Parsing">Parsing</see> namespace
+        /// </remarks>
+        public static void LoadFromUri(this ITripleStore store, Uri u, IStoreReader parser)
+        {
+            UriLoader.Load(store, u, parser);
+        }
+
+        /// <summary>
+        /// Loads an RDF dataset from a URI into a Triple Store
+        /// </summary>
+        /// <param name="store">Triple Store to load into</param>
+        /// <param name="u">URI to load from</param>
+        /// <remarks>
+        /// This is just a shortcut to using the static <strong>Load()</strong> methods from the <see cref="UriLoader">UriLoader</see> class located in the <see cref="VDS.RDF.Parsing">Parsing</see> namespace
+        /// </remarks>
+        public static void LoadFromUri(this ITripleStore store, Uri u)
+        {
+            UriLoader.Load(store, u);
+        }
+
+        /// <summary>
+        /// Loads an RDF dataset from a String into a Triple Store
+        /// </summary>
+        /// <param name="store">Triple Store to load into</param>
+        /// <param name="data">Data to load</param>
+        /// <param name="parser">Parser to use</param>
+        /// <remarks>
+        /// This is just a shortcut to using the static <strong>ParseDataset()</strong> methods from the <see cref="StringParser">StringParser</see> class located in the <see cref="VDS.RDF.Parsing">Parsing</see> namespace
+        /// </remarks>
+        public static void LoadFromString(this ITripleStore store, String data, IStoreReader parser)
+        {
+            StringParser.ParseDataset(store, data, parser);
+        }
+
+        /// <summary>
+        /// Loads an RDF dataset from a String into a Triple Store
+        /// </summary>
+        /// <param name="store">Triple Store to load into</param>
+        /// <param name="data">Data to load</param>
+        /// <remarks>
+        /// This is just a shortcut to using the static <strong>ParseDataset()</strong> methods from the <see cref="StringParser">StringParser</see> class located in the <see cref="VDS.RDF.Parsing">Parsing</see> namespace
+        /// </remarks>
+        public static void LoadFromString(this ITripleStore store, String data)
+        {
+            StringParser.ParseDataset(store, data);
+        }
+
+        /// <summary>
+        /// Saves a Triple Store to a file
+        /// </summary>
+        /// <param name="store">Triple Store to save</param>
+        /// <param name="file">File to save to</param>
+        /// <param name="writer">Writer to use</param>
+        public static void SaveToFile(this ITripleStore store, String file, IStoreWriter writer)
+        {
+            if (writer == null)
+            {
+                store.SaveToFile(file);
+            }
+            else
+            {
+                writer.Save(store, new VDS.RDF.Storage.Params.StreamParams(file));
+            }
+        }
+
+        /// <summary>
+        /// Saves a Triple Store to a file
+        /// </summary>
+        /// <param name="store">Triple Store to save</param>
+        /// <param name="file">File to save to</param>
+        public static void SaveToFile(this ITripleStore store, String file)
+        {
+            IStoreWriter writer = MimeTypesHelper.GetStoreWriter(MimeTypesHelper.GetMimeType(System.IO.Path.GetExtension(file)));
+            writer.Save(store, new VDS.RDF.Storage.Params.StreamParams(file));
+        }
     }
 
     /// <summary>

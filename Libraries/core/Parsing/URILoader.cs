@@ -367,15 +367,16 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="store">Triple Store to load into</param>
         /// <param name="u">Uri to attempt to get a RDF dataset from</param>
+        /// <param name="parser">Parser to use to parse the RDF dataset</param>
         /// <remarks>
         /// <para>
-        /// Attempts to select the relevant Store Parser based on the Content Type header returned in the HTTP Response.
+        /// If the <paramref name="parser"/> parameter is set to null then this method attempts to select the relevant Store Parser based on the Content Type header returned in the HTTP Response.
         /// </para>
         /// <para>
-        /// If you know ahead of time the Content Type you can just open a HTTP Stream yourself and pass it to an instance of the correct Store Parser.
+        /// If you know ahead of time the Content Type you can explicitly pass in the parser to use.
         /// </para>
         /// </remarks>
-        public static void Load(ITripleStore store, Uri u)
+        public static void Load(ITripleStore store, Uri u, IStoreReader parser)
         {
             try
             {
@@ -384,6 +385,15 @@ namespace VDS.RDF.Parsing
                 httpRequest = (HttpWebRequest)WebRequest.Create(u);
 
                 //Want to ask for TriG, NQuads or TriX
+                if (parser != null)
+                {
+                    //If a non-null parser set up a HTTP Header that is just for the given parser
+                    httpRequest.Accept = MimeTypesHelper.CustomHttpAcceptHeader(parser);
+                }
+                else
+                {
+                    httpRequest.Accept = MimeTypesHelper.HttpAcceptHeader;
+                }
                 httpRequest.Accept = MimeTypesHelper.HttpRdfDatasetAcceptHeader;
 
                 //Use HTTP GET
@@ -412,7 +422,10 @@ namespace VDS.RDF.Parsing
 #endif
 
                     //Get a Parser and Load the RDF
-                    IStoreReader parser = MimeTypesHelper.GetStoreParser(httpResponse.ContentType);
+                    if (parser == null)
+                    {
+                        parser = MimeTypesHelper.GetStoreParser(httpResponse.ContentType);
+                    }
                     parser.Warning += RaiseStoreWarning;
                     parser.Load(store, new StreamParams(httpResponse.GetResponseStream()));
                 }
@@ -437,6 +450,21 @@ namespace VDS.RDF.Parsing
                 //Other Exception
                 throw;
             }
+        }
+
+        /// <summary>
+        /// Attempts to load a RDF dataset from the given Uri into the given Triple Store
+        /// </summary>
+        /// <param name="store">Triple Store to load into</param>
+        /// <param name="u">Uri to attempt to get a RDF dataset from</param>
+        /// <remarks>
+        /// <para>
+        /// Attempts to select the relevant Store Parser based on the Content Type header returned in the HTTP Response.
+        /// </para>
+        /// </remarks>
+        public static void Load(ITripleStore store, Uri u)
+        {
+            UriLoader.Load(store, u, null);
         }
 
         /// <summary>

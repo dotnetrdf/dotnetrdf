@@ -44,6 +44,9 @@ using VDS.RDF.Writing;
 
 namespace VDS.RDF.Parsing
 {
+    //TODO: Define a SanitiseUri() function that strips Fragment IDs from URIs
+    //TODO: Add an additional argument to the ToCache function so that data is cached under both the request URI and the actual response URI
+    
     /// <summary>
     /// Provides caching services to the <see cref="UriLoader">UriLoader</see> class
     /// </summary>
