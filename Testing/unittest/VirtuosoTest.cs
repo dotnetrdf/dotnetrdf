@@ -144,6 +144,69 @@ namespace VDS.RDF.Test
         }
 
         [TestMethod]
+        public void VirtuosoDeleteGraph()
+        {
+            try
+            {
+                VirtuosoManager manager = new VirtuosoManager("DB", "dba", "20sQl09");
+                Assert.IsNotNull(manager);
+
+                Console.WriteLine("Got the Virtuoso Manager OK");
+
+                //Load in our Test Graph
+                TurtleParser ttlparser = new TurtleParser();
+                Graph g = new Graph();
+                ttlparser.Load(g, "Turtle.ttl");
+                g.BaseUri = new Uri("http://example.org/deleteMe");
+
+                Console.WriteLine();
+                Console.WriteLine("Loaded Test Graph OK");
+                Console.WriteLine("Test Graph contains:");
+
+                Assert.IsFalse(g.IsEmpty, "Test Graph should be non-empty");
+
+                foreach (Triple t in g.Triples)
+                {
+                    Console.WriteLine(t.ToString());
+                }
+                Console.WriteLine();
+
+                //Try to save to Virtuoso
+                manager.SaveGraph(g);
+                Console.WriteLine("Saved OK");
+                Console.WriteLine();
+
+                //Try to retrieve
+                Graph h = new Graph();
+                manager.LoadGraph(h, "http://example.org/deleteMe");
+
+                Assert.IsFalse(h.IsEmpty, "Retrieved Graph should be non-empty");
+
+                Console.WriteLine("Retrieved the Graph from Virtuoso OK");
+                Console.WriteLine("Retrieved Graph contains:");
+                foreach (Triple t in h.Triples)
+                {
+                    Console.WriteLine(t.ToString());
+                }
+
+                //Try to delete
+                manager.DeleteGraph("http://example.org/deleteMe");
+                Graph i = new Graph();
+                manager.LoadGraph(i, "http://example.org/deleteMe");
+
+                Assert.IsTrue(i.IsEmpty, "Retrieved Graph should be empty as it should have been deleted from the Store");
+            }
+            catch (VirtuosoException virtEx)
+            {
+                TestTools.ReportError("Virtuoso Error", virtEx, true);
+            }
+            catch (Exception ex)
+            {
+                TestTools.ReportError("Other Error", ex, true);
+            }
+        }
+
+        [TestMethod]
         public void VirtuosoBlankNodePersistence()
         {
             try

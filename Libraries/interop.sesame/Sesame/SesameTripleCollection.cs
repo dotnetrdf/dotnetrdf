@@ -96,8 +96,6 @@ namespace VDS.RDF.Interop.Sesame
             return stmtIter.Select(s => SesameConverter.FromSesame(s, this._mapping)).GetEnumerator();
         }
 
-        //TODO: Override the WithX() methods to use the match() method of the underlying Graph
-
         public override IEnumerable<Triple> WithObject(INode obj)
         {
             dotSesame.Value v = SesameConverter.ToSesameValue(obj, this._mapping);

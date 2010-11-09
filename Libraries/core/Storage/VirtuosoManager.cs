@@ -95,7 +95,6 @@ namespace VDS.RDF.Storage
         /// Indicates whether the Database Connection is currently being kept open
         /// </summary>
         private bool _keepOpen = false;
-
         private bool _customConnString = false;
 
         /// <summary>
@@ -930,19 +929,31 @@ namespace VDS.RDF.Storage
 
         public void DeleteGraph(Uri graphUri)
         {
-            //TODO: Implement Delete Graph for Virtuoso
+            this.DeleteGraph(graphUri.ToSafeString());
         }
 
         public void DeleteGraph(String graphUri)
         {
-            //TODO: Implement Delete Graph for Virtuoso
+            if (graphUri == null) return;
+            if (graphUri.Equals(String.Empty)) return;
+
+            try
+            {
+                this.Open(false);
+                this.ExecuteNonQuery("DELETE FROM DB.DBA.RDF_QUAD WHERE G = DB.DBA.RDF_MAKE_IID_OF_QNAME('" + graphUri + "')");
+            }
+            catch
+            {
+                this.Close(true, true);
+                throw;
+            }
         }
 
         public bool DeleteSupported
         {
             get
             {
-                return false;
+                return true;
             }
         }
 
