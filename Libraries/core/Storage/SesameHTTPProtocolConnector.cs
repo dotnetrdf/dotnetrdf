@@ -216,7 +216,7 @@ namespace VDS.RDF.Storage
             {
                 if (c <= 255)
                 {
-                    output.Append('c');
+                    output.Append(c);
                 }
                 else if (c <= 65535)
                 {

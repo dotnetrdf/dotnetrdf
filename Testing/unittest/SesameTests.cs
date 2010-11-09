@@ -78,6 +78,36 @@ namespace VDS.RDF.Test
         }
 
         [TestMethod]
+        public void SesameCyrillic()
+        {
+            try
+            {
+                SesameHttpProtocolConnector sesame = new SesameHttpProtocolConnector("http://nottm-virtual.ecs.soton.ac.uk:8080/openrdf-sesame/", "unit-test");
+                Graph g = new Graph();
+                g.BaseUri = new Uri("http://example.org/sesame/cyrillic");
+                FileLoader.Load(g, "cyrillic.rdf");
+                sesame.SaveGraph(g);
+
+                String ask = "ASK WHERE {?s ?p 'литерал'}";
+
+                Object results = sesame.Query(ask);
+                if (results is SparqlResultSet)
+                {
+                    TestTools.ShowResults(results);
+                }
+                else
+                {
+                    Assert.Fail("Failed to get a Result Set as expected");
+                }
+            }
+            catch (Exception ex)
+            {
+                TestTools.ReportError("Error", ex, true);
+            
+            }
+        }
+
+        [TestMethod]
         public void SesameAsk()
         {
             try

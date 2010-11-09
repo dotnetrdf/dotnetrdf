@@ -204,6 +204,9 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="resources\cyrillic.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="resources\empty-string-rdfxml.rdf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
