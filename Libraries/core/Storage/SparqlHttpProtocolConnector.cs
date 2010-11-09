@@ -65,19 +65,27 @@ namespace VDS.RDF.Storage
         /// Creates a new SPARQL Uniform HTTP Protocol Connector
         /// </summary>
         /// <param name="serviceUri">URI of the Protocol Server</param>
-        public SparqlHttpProtocolConnector(Uri serviceUri)
+        public SparqlHttpProtocolConnector(String serviceUri)
         {
             if (serviceUri == null) throw new ArgumentNullException("serviceUri", "Cannot create a connection to a Uniform HTTP Protocol store if the Service URI is null");
+            if (serviceUri.Equals(String.Empty)) throw new ArgumentException("Cannot create a connection to a Uniform HTTP Protocol store if the Service URI is null/empty", "serviceUri");
 
-            this._serviceUri = serviceUri.ToString();
+            this._serviceUri = serviceUri;
         }
+
+        /// <summary>
+        /// Creates a new SPARQL Uniform HTTP Protocol Connector
+        /// </summary>
+        /// <param name="serviceUri">URI of the Protocol Server</param>
+        public SparqlHttpProtocolConnector(Uri serviceUri)
+            : this(serviceUri.ToSafeString()) { }
 
         /// <summary>
         /// Loads a Graph from the Protocol Server
         /// </summary>
         /// <param name="g">Graph to load into</param>
         /// <param name="graphUri">URI of the Graph to load</param>
-        public void LoadGraph(IGraph g, Uri graphUri)
+        public virtual void LoadGraph(IGraph g, Uri graphUri)
         {
             String u = (graphUri == null) ? String.Empty : graphUri.ToString();
             this.LoadGraph(g, u);
@@ -88,7 +96,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="g">Graph to load into</param>
         /// <param name="graphUri">URI of the Graph to load</param>
-        public void LoadGraph(IGraph g, string graphUri)
+        public virtual void LoadGraph(IGraph g, string graphUri)
         {
             String retrievalUri = this._serviceUri;
             if (!graphUri.Equals(String.Empty)) retrievalUri += "?graph=" + Uri.EscapeDataString(graphUri);
@@ -99,7 +107,7 @@ namespace VDS.RDF.Storage
         /// Saves a Graph to the Protocol Server
         /// </summary>
         /// <param name="g">Graph to save</param>
-        public void SaveGraph(IGraph g)
+        public virtual void SaveGraph(IGraph g)
         {
             String saveUri = this._serviceUri;
             if (g.BaseUri != null) 
@@ -139,7 +147,7 @@ namespace VDS.RDF.Storage
         /// <remarks>
         /// <strong>Note:</strong> The SPARQL Uniform HTTP Protocol for Graph Management only supports the addition of Triples to a Graph and does not support removal of Triples from a Graph.  If you attempt to remove Triples then an <see cref="RdfStorageException">RdfStorageException</see> will be thrown
         /// </remarks>
-        public void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
+        public virtual void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
             this.UpdateGraph(graphUri.ToSafeString(), additions, removals);
         }
@@ -153,7 +161,7 @@ namespace VDS.RDF.Storage
         /// <remarks>
         /// <strong>Note:</strong> The SPARQL Uniform HTTP Protocol for Graph Management only supports the addition of Triples to a Graph and does not support removal of Triples from a Graph.  If you attempt to remove Triples then an <see cref="RdfStorageException">RdfStorageException</see> will be thrown
         /// </remarks>
-        public void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
+        public virtual void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
             if (removals.Any()) throw new RdfStorageException("Unable to Update a Graph since this update requests that Triples be removed from the Graph which the SPARQL Uniform HTTP Protocol for Graph Management does not support");
 
@@ -191,7 +199,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Gets that Updates are supported
         /// </summary>
-        public bool UpdateSupported
+        public virtual bool UpdateSupported
         {
             get 
             {
@@ -199,12 +207,12 @@ namespace VDS.RDF.Storage
             }
         }
 
-        public void DeleteGraph(Uri graphUri)
+        public virtual void DeleteGraph(Uri graphUri)
         {
             this.DeleteGraph(graphUri.ToSafeString());
         }
 
-        public void DeleteGraph(String graphUri)
+        public virtual void DeleteGraph(String graphUri)
         {
             String deleteUri = this._serviceUri;
             if (!graphUri.Equals(String.Empty))
@@ -228,7 +236,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        public bool DeleteSupported
+        public virtual bool DeleteSupported
         {
             get
             {
@@ -239,7 +247,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Gets that the Store is ready
         /// </summary>
-        public bool IsReady
+        public virtual bool IsReady
         {
             get 
             {
@@ -250,7 +258,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Gets that the Store is not read-only
         /// </summary>
-        public bool IsReadOnly
+        public virtual bool IsReadOnly
         {
             get 
             {
@@ -261,7 +269,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Disposes of the Connection
         /// </summary>
-        public void Dispose()
+        public virtual void Dispose()
         {
             //Nothing to dispose of
         }
@@ -275,12 +283,11 @@ namespace VDS.RDF.Storage
             return "[SPARQL Uniform HTTP Protocol] " + this._serviceUri;
         }
 
-
         /// <summary>
         /// Serializes the connection's configuration
         /// </summary>
         /// <param name="context">Configuration Serialization Context</param>
-        public void SerializeConfiguration(ConfigurationSerializationContext context)
+        public virtual void SerializeConfiguration(ConfigurationSerializationContext context)
         {
             INode manager = context.NextSubject;
             INode rdfType = context.Graph.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));

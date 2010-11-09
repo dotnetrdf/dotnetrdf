@@ -35,87 +35,112 @@ terms.
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
+using VDS.RDF.Query;
+using VDS.RDF.Update;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Storage
 {
-    //REQ: Implement a Fuseki Connector
-
     /// <summary>
     /// Class for connecting to any dataset that can be exposed via Fuseki
     /// </summary>
     /// <remarks>
-    /// <strong>Not yet implemented</strong>
+    /// <para>
+    /// Uses all three Services provided by a Fuseki instance - Query, Update and HTTP Update
+    /// </para>
     /// </remarks>
-    public class FusekiConnector : IGenericIOManager
+    public class FusekiConnector : SparqlHttpProtocolConnector, IQueryableGenericIOManager
     {
-        #region IGenericIOManager Members
+        private SparqlFormatter _formatter = new SparqlFormatter();
+        private String _updateUri;
+        private String _queryUri;
 
-        public void LoadGraph(IGraph g, Uri graphUri)
+        public FusekiConnector(Uri serviceUri)
+            : this(serviceUri.ToSafeString()) { }
+
+        public FusekiConnector(String serviceUri)
+            : base(serviceUri) 
         {
-            throw new NotImplementedException();
+            if (!serviceUri.ToString().EndsWith("/data")) throw new ArgumentException("This does not appear to be a valid Fuseki Server URI, you must provide the URI that ends with /data", "serviceUri");
+
+            this._updateUri = serviceUri.Substring(0, serviceUri.Length - 4) + "update";
+            this._queryUri = serviceUri.Substring(0, serviceUri.Length - 4) + "query";
         }
 
-        public void LoadGraph(IGraph g, string graphUri)
+        public override void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
-            throw new NotImplementedException();
+            try
+            {
+                String graph = (graphUri != null && !graphUri.Equals(String.Empty)) ? "GRAPH <" + this._formatter.FormatUri(graphUri) + "> {" : String.Empty;
+                StringBuilder update = new StringBuilder();
+
+                if (additions != null)
+                {
+                    if (additions.Any())
+                    {
+                        update.AppendLine("INSERT DATA {");
+                        if (!graph.Equals(String.Empty)) update.AppendLine(graph);
+
+                        foreach (Triple t in additions)
+                        {
+                            update.AppendLine(this._formatter.Format(t));
+                        }
+
+                        if (!graph.Equals(String.Empty)) update.AppendLine("}");
+                        update.AppendLine("}");
+                    }
+                }
+
+                if (removals != null)
+                {
+                    if (removals.Any())
+                    {
+                        if (update.Length > 0) update.AppendLine(";");
+
+                        update.AppendLine("DELETE DATA {");
+                        if (!graph.Equals(String.Empty)) update.AppendLine(graph);
+
+                        foreach (Triple t in removals)
+                        {
+                            update.AppendLine(this._formatter.Format(t));
+                        }
+
+                        if (!graph.Equals(String.Empty)) update.AppendLine("}");
+                        update.AppendLine("}");
+                    }
+                }
+
+                if (update.Length > 0)
+                {
+                    //Make the SPARQL Update Request
+                    HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this._updateUri);
+                    request.Method = "POST";
+                    request.ContentType = "application/sparql-update";
+
+                    StreamWriter writer = new StreamWriter(request.GetRequestStream());
+                    writer.Write(update.ToString());
+                    writer.Close();
+
+                    using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                    {
+                        //If we get here without erroring then the request was OK
+                        response.Close();
+                    }
+                }
+            }
+            catch (WebException webEx)
+            {
+                throw new RdfStorageException("A HTTP error occurred while communicating with the Fuseki Server", webEx);
+            }
         }
 
-        public void SaveGraph(IGraph g)
+        public override void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
-            throw new NotImplementedException();
+            this.UpdateGraph(graphUri.ToSafeString(), additions, removals);
         }
-
-        public void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool UpdateSupported
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public void DeleteGraph(Uri graphUri)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void DeleteGraph(string graphUri)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool DeleteSupported
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public bool IsReady
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public bool IsReadOnly
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        #endregion
-
-        #region IDisposable Members
-
-        public void Dispose()
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
     }
 }
