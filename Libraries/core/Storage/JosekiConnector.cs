@@ -49,6 +49,7 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Update;
 using VDS.RDF.Writing;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Storage
 {
@@ -69,6 +70,7 @@ namespace VDS.RDF.Storage
     public class JosekiConnector : IUpdateableGenericIOManager, IConfigurationSerializable
     {
         private String _baseUri, _queryService, _updateService;
+        private SparqlFormatter _formatter = new SparqlFormatter();
 
         /// <summary>
         /// Creates a new connection to a Joseki server
@@ -260,7 +262,6 @@ namespace VDS.RDF.Storage
                         String insertData = VDS.RDF.Writing.StringWriter.Write(insertGraph, new NTriplesWriter());
                         modify.AppendLine("INSERT");
                         modify.AppendLine("{");
-
                         modify.AppendLine(insertData);
                         modify.AppendLine("}");
                     }
@@ -341,12 +342,15 @@ namespace VDS.RDF.Storage
 
         public void DeleteGraph(Uri graphUri)
         {
-            //REQ: Implement Delete Graph for Joseki
+            this.DeleteGraph(graphUri.ToSafeString());
         }
 
         public void DeleteGraph(String graphUri)
         {
-            //REQ: Implement Delete Graph for Joseki
+            if (graphUri == null) return;
+            if (graphUri.Equals(String.Empty)) return;
+
+            this.Update("DROP GRAPH <" + this._formatter.FormatUri(graphUri) + ">");
         }
 
         public bool DeleteSupported
