@@ -12,7 +12,7 @@ namespace VDS.RDF.Test
         private bool _graphAdded, _graphRemoved, _graphChanged;
 
         [TestMethod]
-        public void EventBubblingTest()
+        public void EventBubbling()
         {
             try
             {

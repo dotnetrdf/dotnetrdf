@@ -16,7 +16,7 @@ namespace VDS.RDF.Test
         public const String PelletTestServer = "http://ps.clarkparsia.com/";
 
         [TestMethod]
-        public void PelletKBListTest()
+        public void PelletKBList()
         {
             try
             {
@@ -43,7 +43,7 @@ namespace VDS.RDF.Test
         }
 
         [TestMethod]
-        public void PelletQueryTest()
+        public void PelletQuery()
         {
             try
             {
@@ -80,7 +80,7 @@ namespace VDS.RDF.Test
         }
 
         [TestMethod]
-        public void PelletRealizeTest()
+        public void PelletRealize()
         {
             try
             {
@@ -110,7 +110,7 @@ namespace VDS.RDF.Test
         }
 
         [TestMethod]
-        public void PelletConsistencyTest()
+        public void PelletConsistency()
         {
             try
             {
@@ -139,7 +139,7 @@ namespace VDS.RDF.Test
         }
 
         [TestMethod]
-        public void PelletSearchTest()
+        public void PelletSearch()
         {
             try
             {
@@ -171,7 +171,7 @@ namespace VDS.RDF.Test
         }
 
         [TestMethod]
-        public void PelletNamespaceTest()
+        public void PelletNamespace()
         {
             try
             {

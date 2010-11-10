@@ -133,6 +133,20 @@ namespace VDS.RDF
             }
         }
 
+        public static Uri StripUriFragment(Uri u)
+        {
+            if (u.Fragment.Equals(String.Empty))
+            {
+                return u;
+            }
+            else
+            {
+                String temp = u.ToString();
+                temp = temp.Substring(0, temp.Length - u.Fragment.Length);
+                return new Uri(temp);
+            }
+        }
+
         /// <summary>
         /// Generic Helper Function which Resolves Uri References against a Base Uri
         /// </summary>

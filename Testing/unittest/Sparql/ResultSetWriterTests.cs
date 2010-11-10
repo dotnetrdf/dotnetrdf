@@ -14,7 +14,7 @@ namespace VDS.RDF.Test.Sparql
     public class ResultSetWriterTests
     {
         [TestMethod]
-        public void SparqlXmlWriterTest()
+        public void SparqlXmlWriter()
         {
             try
             {

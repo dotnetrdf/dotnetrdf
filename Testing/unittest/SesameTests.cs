@@ -14,7 +14,7 @@ namespace VDS.RDF.Test
     public class SesameTests
     {
         [TestMethod]
-        public void SesameSaveLoadTest()
+        public void SesameSaveLoad()
         {
             try
             {
@@ -38,7 +38,7 @@ namespace VDS.RDF.Test
         }
 
         [TestMethod]
-        public void SesameDeleteTriplesTest()
+        public void SesameDeleteTriples()
         {
             try
             {

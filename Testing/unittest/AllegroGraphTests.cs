@@ -14,7 +14,7 @@ namespace VDS.RDF.Test
     public class AllegroGraphTests
     {
         [TestMethod]
-        public void AllegroGraphSaveLoadTest()
+        public void AllegroGraphSaveLoad()
         {
             try
             {
@@ -38,7 +38,7 @@ namespace VDS.RDF.Test
         }
 
         [TestMethod]
-        public void AllegroGraphDeleteTriplesTest()
+        public void AllegroGraphDeleteTriples()
         {
             try
             {

@@ -12,7 +12,7 @@ namespace VDS.RDF.Test
     public class RdfATests
     {
         [TestMethod]
-        public void RdfABadSyntaxTest()
+        public void RdfABadSyntax()
         {
             RdfAParser parser = new RdfAParser();
             Graph g = new Graph();
@@ -33,7 +33,7 @@ namespace VDS.RDF.Test
         }
 
         [TestMethod]
-        public void RdfAGoodRelationsTest()
+        public void RdfAGoodRelations()
         {
             List<String> tests = new List<string>()
             {
@@ -73,7 +73,7 @@ namespace VDS.RDF.Test
         }
 
         [TestMethod]
-        public void RdfABadProfileTest()
+        public void RdfABadProfile()
         {
             RdfAParser parser = new RdfAParser(RdfASyntax.RDFa_1_1);
             parser.Warning += TestTools.WarningPrinter;

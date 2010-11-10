@@ -14,7 +14,7 @@ namespace VDS.RDF.Test
     public class UpdateTests
     {
         [TestMethod]
-        public void SparqlUpdateCreateDropTest()
+        public void SparqlUpdateCreateDrop()
         {
             TripleStore store = new TripleStore();
 
@@ -80,7 +80,7 @@ namespace VDS.RDF.Test
         }
 
         [TestMethod]
-        public void SparqlUpdateLoadTest()
+        public void SparqlUpdateLoad()
         {
             TripleStore store = new TripleStore();
 
@@ -111,7 +111,7 @@ namespace VDS.RDF.Test
         }
 
         [TestMethod]
-        public void SparqlUpdateModifyTest()
+        public void SparqlUpdateModify()
         {
             TripleStore store = new TripleStore();
             Graph g = new Graph();

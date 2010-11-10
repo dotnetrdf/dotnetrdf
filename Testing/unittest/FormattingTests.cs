@@ -12,7 +12,7 @@ namespace VDS.RDF.Test
     public class FormattingTests
     {
         [TestMethod]
-        public void TripleFormattingTest()
+        public void TripleFormatting()
         {
             try
             {

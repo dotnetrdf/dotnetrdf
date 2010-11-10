@@ -13,7 +13,7 @@ namespace VDS.RDF.Test
 	public class RdfXmlTests
 	{
         [TestMethod]
-        public void RdfXmlAmpersandsTest()
+        public void RdfXmlAmpersands()
         {
             List<IRdfWriter> writers = new List<IRdfWriter>()
             {

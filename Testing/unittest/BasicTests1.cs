@@ -835,7 +835,7 @@ namespace VDS.RDF.Test
         }
 
         [TestMethod]
-        public void UriEncodingTest()
+        public void UriEncoding()
         {
             List<String> tests = new List<string>()
             {

@@ -526,7 +526,7 @@ namespace VDS.RDF.Test
         }
 
         [TestMethod]
-        public void VirtuosoEncodingTest()
+        public void VirtuosoEncoding()
         {
             //Get the Virtuoso Manager
             VirtuosoManager manager = new VirtuosoManager("DB", "dba", "20sQl09");

@@ -13,7 +13,7 @@ namespace VDS.RDF.Test
     public class LoaderTests
     {
         [TestMethod]
-        public void DataUriTest()
+        public void DataUri()
         {
             String rdfFragment = "@prefix : <http://example.org/> . :subject :predicate :object .";
             String rdfBase64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(rdfFragment));
@@ -49,7 +49,7 @@ namespace VDS.RDF.Test
         }
 
         [TestMethod]
-        public void DBPediaTest()
+        public void DBPedia()
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://dbpedia.org/resource/London");
             request.Accept = "application/rdf+xml";

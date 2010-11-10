@@ -14,6 +14,12 @@ This represents a summary of additions, changes and removals for the 0.4.0 relea
 Added
 - Support for Variable Nodes
 - New SimpleN3RulesReasoner which can process simple N3 rules of the form { } => { }
+- More Extension Methods
+ - LoadFromFile and LoadFromUri for Graphs and Triple Stores
+ - ToLiteral for byte and sbyte
+ - ToLiteralDate and ToLiteralTime for DateTime
+- New HTTP Handlers for ASP.Net
+ - DatasetHandler for serving RDF datasets
 
 Changed
 - Bug Fixes

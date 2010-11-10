@@ -99,7 +99,7 @@ namespace VDS.RDF.Test.Sparql
         }
 
         [TestMethod]
-        public void SparqlInjectionTest()
+        public void SparqlInjection()
         {
             String baseQuery = @"PREFIX ex: <http://example.org/Vehicles/>
 SELECT * WHERE {
@@ -130,7 +130,7 @@ SELECT * WHERE {
         }
 
         [TestMethod]
-        public void SparqlConflictingParamNamesTest()
+        public void SparqlConflictingParamNames()
         {
             String baseQuery = @"SELECT * WHERE {
     ?s a @type ; a @type1 ; a @type2 .
@@ -174,7 +174,7 @@ SELECT * WHERE {
         }
 
         [TestMethod]
-        public void SparqlParameterizedStringTest()
+        public void SparqlParameterizedString()
         {
             String test = @"INSERT DATA { GRAPH @graph {
                             <http://uri> <http://uri> <http://uri>
@@ -225,7 +225,7 @@ SELECT * WHERE {?s rdfs:label ?label . ?label bif:contains " + "\"London\" } LIM
         }
 
         [TestMethod]
-        public void SparqlBNodeIDsInResultsTest()
+        public void SparqlBNodeIDsInResults()
         {
             try
             {

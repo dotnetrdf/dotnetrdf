@@ -201,7 +201,7 @@ namespace VDS.RDF.Test.Sparql
         }
 
         [TestMethod]
-        public void SparqlViewGraphScopeTest()
+        public void SparqlViewGraphScope()
         {
             try
             {

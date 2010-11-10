@@ -143,8 +143,14 @@ namespace VDS.RDF.Parsing
                 {
                     //Invoke FileLoader instead
                     RaiseWarning("This is a file: URI so invoking the FileLoader instead");
-                    //TODO: Fix this so it works properly on Unix filesystems?
-                    FileLoader.Load(g, u.ToString().Substring(8));
+                    if (Path.DirectorySeparatorChar == '/')
+                    {
+                        FileLoader.Load(g, u.ToString().Substring(7), parser);
+                    }
+                    else
+                    {
+                        FileLoader.Load(g, u.ToString().Substring(8), parser);
+                    }
                     return;
                 }
                 if (u.Scheme.Equals("data"))
@@ -157,6 +163,9 @@ namespace VDS.RDF.Parsing
 
                 //Set Base Uri if necessary
                 if (g.BaseUri == null) g.BaseUri = u;
+
+                //Sanitise the URI to remove any Fragment ID
+                u = Tools.StripUriFragment(u);
 
                 //Use Cache if possible
                 String etag = String.Empty;
@@ -380,6 +389,29 @@ namespace VDS.RDF.Parsing
         {
             try
             {
+#if SILVERLIGHT
+                if (u.IsFile())
+#else
+                if (u.IsFile)
+#endif
+
+                {
+                    //Invoke FileLoader instead
+                    RaiseWarning("This is a file: URI so invoking the FileLoader instead");
+                    if (Path.DirectorySeparatorChar == '/')
+                    {
+                        FileLoader.Load(store, u.ToString().Substring(7), parser);
+                    }
+                    else
+                    {
+                        FileLoader.Load(store, u.ToString().Substring(8), parser);
+                    }
+                    return;
+                }
+
+                //Sanitise the URI to remove any Fragment ID
+                u = Tools.StripUriFragment(u);
+
                 //Set-up the Request
                 HttpWebRequest httpRequest;
                 httpRequest = (HttpWebRequest)WebRequest.Create(u);
@@ -466,6 +498,21 @@ namespace VDS.RDF.Parsing
         {
             UriLoader.Load(store, u, null);
         }
+
+#if !NO_URICACHE
+
+        /// <summary>
+        /// Determines whether the RDF behind the given URI is cached (<strong>Note</strong> that this does not guarantee that the cached content will be used if you load from the URI using the UriLoader)
+        /// </summary>
+        /// <param name="u">URI</param>
+        /// <returns></returns>
+        public static bool IsCached(Uri u)
+        {
+            Uri temp = Tools.StripUriFragment(u);
+            return _cache.HasLocalCopy(temp, false);
+        }
+
+#endif
 
         /// <summary>
         /// Raises warning messages
