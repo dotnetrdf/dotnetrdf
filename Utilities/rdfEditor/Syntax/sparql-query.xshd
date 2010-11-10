@@ -27,7 +27,7 @@
 
     <Import ruleSet="Literals" />
 
-    <Import ruleSet="Turtle/Resources" />
+    <Import ruleSet="Resources" />
 
     <Import ruleSet="Turtle/BNodes" />
 
@@ -86,6 +86,19 @@
       <Word>ISBLANK</Word>
       <Word>REGEX</Word>
     </Keywords>
+  </RuleSet>
+
+  <RuleSet name="Resources">
+    <!-- URIs and QNames -->
+
+    <Span color="URI" ruleSet="Turtle/UriEscapes">
+      <Begin>&lt;(?![ =])</Begin>
+      <End>&gt;(?&lt;!\\)</End>
+    </Span>
+
+    <Rule color="QName">
+      (\p{L}(\p{L}|\p{N}|-|_)*)?:(\p{L}|\d)(\p{L}|\p{N}|-|_)*
+    </Rule>
   </RuleSet>
 
   <RuleSet name="BNodes">

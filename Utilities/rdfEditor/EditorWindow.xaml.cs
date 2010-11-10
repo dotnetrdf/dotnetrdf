@@ -41,6 +41,7 @@ namespace rdfEditor
         private SaveFileDialog _sfd = new SaveFileDialog();
         private EditorManager _manager;
         private bool _saveWindowSize = false;
+        private FindReplace _findReplace;
 
         public EditorWindow()
         {
@@ -239,6 +240,12 @@ namespace rdfEditor
 
         private void mnuOpenQueryResults_Click(object sender, RoutedEventArgs e)
         {
+            String queryText = String.Empty;
+            if (this._manager.CurrentSyntax.StartsWith("SparqlQuery"))
+            {
+                queryText = this.textEditor.Text;
+            }
+
             if (this._manager.HasChanged)
             {
                 MessageBoxResult res = MessageBox.Show("Would you like to save changes to the current file before opening Query Results?", "Save Changes?", MessageBoxButton.YesNoCancel);
@@ -255,6 +262,7 @@ namespace rdfEditor
             mnuClose_Click(sender, e);
 
             OpenQueryResults diag = new OpenQueryResults();
+            if (!queryText.Equals(String.Empty)) diag.Query = queryText;
             if (diag.ShowDialog() == true)
             {
                 textEditor.Text = diag.RetrievedData;
@@ -906,17 +914,17 @@ namespace rdfEditor
 
         private void FindCommandExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-
+            this.mnuFind_Click(sender, e);
         }
 
         private void FindNextCommandExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-
+            this.mnuFindNext_Click(sender, e);
         }
 
         private void ReplaceCommandExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-
+            this.mnuReplace_Click(sender, e);
         }
 
         private void CommentSelectionExecuted(object sender, ExecutedRoutedEventArgs e)
@@ -1091,17 +1099,43 @@ namespace rdfEditor
 
         private void mnuFind_Click(object sender, RoutedEventArgs e)
         {
-
+            if (this._findReplace == null)
+            {
+                this._findReplace = new FindReplace();
+            }
+            if (this._findReplace.Visibility != Visibility.Visible)
+            {
+                this._findReplace.Mode = FindReplaceMode.Find;
+                this._findReplace.Editor = this.textEditor;
+                this._findReplace.Show();
+            }
+            this._findReplace.BringIntoView();
+            this._findReplace.Focus();
         }
 
         private void mnuFindNext_Click(object sender, RoutedEventArgs e)
         {
-
+            if (this._findReplace == null)
+            {
+                this.mnuFind_Click(sender, e);
+            }
+            else
+            {
+                this._findReplace.Find(this.textEditor);
+            }            
         }
 
         private void mnuReplace_Click(object sender, RoutedEventArgs e)
         {
-
+            if (this._findReplace == null)
+            {
+                this._findReplace = new FindReplace();
+            }
+            this._findReplace.Mode = FindReplaceMode.FindAndReplace;
+            this._findReplace.Editor = this.textEditor;
+            if (this._findReplace.Visibility != Visibility.Visible) this._findReplace.Show();
+            this._findReplace.BringIntoView();
+            this._findReplace.Focus();
         }
     }
 }

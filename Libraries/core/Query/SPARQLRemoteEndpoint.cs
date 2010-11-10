@@ -237,8 +237,8 @@ namespace VDS.RDF.Query
         /// <summary>
         /// Makes a Query where the expected Result is a SparqlResultSet ie. SELECT and ASK Queries
         /// </summary>
-        /// <param name="sparqlQuery">Sparql Query String</param>
-        /// <returns>A Sparql Result Set</returns>
+        /// <param name="sparqlQuery">SPARQL Query String</param>
+        /// <returns>A SPARQL Result Set</returns>
         public virtual SparqlResultSet QueryWithResultSet(String sparqlQuery)
         {
             try
@@ -286,7 +286,7 @@ namespace VDS.RDF.Query
         /// <summary>
         /// Makes a Query where the expected Result is an RDF Graph ie. CONSTRUCT and DESCRIBE Queries
         /// </summary>
-        /// <param name="sparqlQuery">Sparql Query String</param>
+        /// <param name="sparqlQuery">SPARQL Query String</param>
         /// <returns>RDF Graph</returns>
         public virtual Graph QueryWithResultGraph(String sparqlQuery)
         {
@@ -320,16 +320,17 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Makes a Query to a Sparql Endpoint and returns the raw Response
+        /// Makes a Query to a SPARQL Endpoint and returns the raw Response
         /// </summary>
-        /// <param name="sparqlQuery">Sparql Query String</param>
+        /// <param name="sparqlQuery">SPARQL Query String</param>
         /// <returns></returns>
         public virtual HttpWebResponse QueryRaw(String sparqlQuery)
         {
             try
             {
                 //Make the Query
-                return this.QueryInternal(sparqlQuery, MimeTypesHelper.HttpRdfOrSparqlAcceptHeader);
+                //HACK: Changed to an accept all for the time being to ensure works OK with DBPedia and Virtuoso
+                return this.QueryInternal(sparqlQuery, MimeTypesHelper.Any);
             }
             catch (WebException webEx)
             {
@@ -341,7 +342,7 @@ namespace VDS.RDF.Query
         /// <summary>
         /// Makes a Query where the expected Result is a SparqlResultSet ie. SELECT and ASK Queries
         /// </summary>
-        /// <param name="sparqlQuery">Sparql Query String</param>
+        /// <param name="sparqlQuery">SPARQL Query String</param>
         /// <returns>A Sparql Result Set</returns>
         /// <remarks>Allows for implementation of asynchronous querying</remarks>
         public delegate SparqlResultSet AsyncQueryWithResultSet(String sparqlQuery);

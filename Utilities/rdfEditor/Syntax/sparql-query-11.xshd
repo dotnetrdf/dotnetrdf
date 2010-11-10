@@ -28,7 +28,7 @@
 
     <Import ruleSet="SparqlQuery10/Literals" />
 
-    <Import ruleSet="Turtle/Resources" />
+    <Import ruleSet="SparqlQuery10/Resources" />
 
     <Import ruleSet="Turtle/BNodes" />
 

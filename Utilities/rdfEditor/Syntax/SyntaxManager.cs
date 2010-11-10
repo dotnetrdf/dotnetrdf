@@ -55,8 +55,9 @@ namespace rdfEditor.Syntax
                 {
                     HighlightingManager.Instance.RegisterHighlighting(def.Name, def.FileExtensions, def.Highlighter);
                 }
-                catch
+                catch (Exception ex)
                 {
+                    System.Windows.MessageBox.Show("Syntax Highlighting for " + def.Name + " will not be available as the Highlight Definition was malformed:\n" + ex.Message);
                     allOk = false;
                 }
             }

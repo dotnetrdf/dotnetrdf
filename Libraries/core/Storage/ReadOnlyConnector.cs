@@ -33,6 +33,8 @@ terms.
 
 */
 
+#if !NO_STORAGE
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -139,3 +141,5 @@ namespace VDS.RDF.Storage
         #endregion
     }
 }
+
+#endif

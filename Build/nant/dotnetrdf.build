@@ -88,7 +88,7 @@
     </exec>
   </target>
 
-  <target name="compile-lite" description="Compiles the dotNetRDF Lite Build" unless="${dotnetrdf.nocompile}" depends="compile-buildtools">
+  <target name="compile-lite" description="Compiles the dotNetRDF Lite Build" unless="${dotnetrdf.nocompile}" depends="projectgen-lite">
     <property name="nant.settings.currentframework" value="net-3.5" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">

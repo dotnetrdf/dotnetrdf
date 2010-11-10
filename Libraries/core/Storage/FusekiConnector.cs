@@ -33,6 +33,8 @@ terms.
 
 */
 
+#if !NO_STORAGE
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -233,3 +235,5 @@ namespace VDS.RDF.Storage
         }
     }
 }
+
+#endif

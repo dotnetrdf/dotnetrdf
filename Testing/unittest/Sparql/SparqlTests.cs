@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -16,6 +18,33 @@ namespace VDS.RDF.Test.Sparql
     [TestClass]
     public class SparqlTests
     {
+        [TestMethod]
+        public void SparqlDBPedia()
+        {
+            Options.HttpDebugging = true;
+
+            String query = "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> SELECT * WHERE {?s a rdfs:Class } LIMIT 50";
+
+            SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(new Uri("http://dbpedia.org/sparql"), "http://dbpedia.org");
+            SparqlResultSet results = endpoint.QueryWithResultSet(query);
+            TestTools.ShowResults(results);
+
+           using (HttpWebResponse response = endpoint.QueryRaw(query))
+            {
+                using (StreamReader reader = new StreamReader(response.GetResponseStream()))
+                {
+                    while (!reader.EndOfStream)
+                    {
+                        Console.WriteLine(reader.ReadLine());
+                    }
+                    reader.Close();
+                }
+                response.Close();
+            }
+
+           Options.HttpDebugging = false;
+        }
+
         [TestMethod]
         public void ResultSetEquality()
         {

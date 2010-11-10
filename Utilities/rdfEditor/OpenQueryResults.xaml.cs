@@ -99,6 +99,18 @@ namespace rdfEditor
             }
         }
 
+        public String Query
+        {
+            get
+            {
+                return this.queryEditor.Text;
+            }
+            set
+            {
+                this.queryEditor.Text = value;
+            }
+        }
+
         public String RetrievedData
         {
             get
