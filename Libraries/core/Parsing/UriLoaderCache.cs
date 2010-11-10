@@ -284,6 +284,7 @@ namespace VDS.RDF.Parsing
                             {
                                 writer.WriteLine(etag.Key + "\t" + etag.Value);
                             }
+                            writer.Close();
                         }
                     }
                 }
@@ -405,30 +406,86 @@ namespace VDS.RDF.Parsing
         /// <summary>
         /// Caches a Graph in the Cache
         /// </summary>
-        /// <param name="retrieved">URI from which the Graph was retrieved</param>
+        /// <param name="requestUri">URI from which the Graph was requested</param>
+        /// <param name="responseUri">The actual URI which responded to the request</param>
         /// <param name="g">Graph</param>
         /// <param name="etag">ETag</param>
-        public void ToCache(Uri retrieved, IGraph g, String etag)
+        public void ToCache(Uri requestUri, Uri responseUri, IGraph g, String etag)
         {
             //Cache a local copy of the Graph
             try
             {
+                bool cacheTwice = !requestUri.ToString().Equals(responseUri.ToString() , StringComparison.OrdinalIgnoreCase);
+
                 if (this._canCacheGraphs)
                 {
-                    String graph = Path.Combine(this._graphDir, retrieved.GetSha256Hash());
+                    String graph = Path.Combine(this._graphDir, requestUri.GetSha256Hash());
                     this._ttlwriter.Save(g, graph);
+
+                    //If applicable also cache under the responseUri
+                    if (cacheTwice)
+                    {
+                        graph = Path.Combine(this._graphDir, responseUri.GetSha256Hash());
+                        this._ttlwriter.Save(g, graph);
+                    }
                 }
 
                 //Cache the ETag if present
                 if (this._canCacheETag && etag != null && !etag.Equals(String.Empty))
                 {
-                    int id = retrieved.GetEnhancedHashCode();
-                    if (!this._etags.ContainsKey(id))
+                    int id = requestUri.GetEnhancedHashCode();
+                    bool requireAdd = false;
+                    if (this._etags.ContainsKey(id))
                     {
+                        if (!this._etagFile[id].Equals(etag))
+                        {
+                            //If the ETag has changed remove it and then re-add it
+                            this.RemoveETag(requestUri);
+                            requireAdd = true;
+                        }
+                    }
+                    else
+                    {
+                        requireAdd = true;
+                    }
+
+                    if (requireAdd)
+                    {
+                        //Add a New ETag
                         this._etags.Add(id, etag);
                         using (StreamWriter writer = new StreamWriter(this._etagFile, true, Encoding.UTF8))
                         {
                             writer.WriteLine(id + "\t" + etag);
+                            writer.Close();
+                        }
+                    }
+
+                    //Cache under the Response URI as well if applicable
+                    if (cacheTwice)
+                    {
+                        id = responseUri.GetEnhancedHashCode();
+                        requireAdd = false;
+                        if (this._etags.ContainsKey(id))
+                        {
+                            if (!this._etagFile[id].Equals(etag))
+                            {
+                                //If the ETag has changed remove it and then re-add it
+                                this.RemoveETag(responseUri);
+                                requireAdd = true;
+                            }
+                        }
+                        else
+                        {
+                            requireAdd = true;
+                        }
+
+                        if (requireAdd)
+                        {
+                            using (StreamWriter writer = new StreamWriter(this._etagFile, true, Encoding.UTF8))
+                            {
+                                writer.WriteLine(id + "\t" + etag);
+                                writer.Close();
+                            }
                         }
                     }
                 }

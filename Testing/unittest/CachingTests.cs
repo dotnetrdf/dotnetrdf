@@ -56,5 +56,20 @@ namespace VDS.RDF.Test
 
             Assert.AreEqual(g, h, "Two Graphs should be equal since they come from the same URI");
         }
+
+        [TestMethod]
+        public void UriLoaderResponseUriCaching()
+        {
+            Uri soton = new Uri("http://dbpedia.org/resource/Southampton");
+            Uri sotonPage = new Uri("http://dbpedia.org/page/Southampton.html");
+            Uri sotonData = new Uri("http://dbpedia.org/data/Southampton.xml");
+
+            Graph g = new Graph();
+            UriLoader.Load(g, soton);
+
+            Assert.IsTrue(UriLoader.IsCached(soton), "Resource URI should have been cached");
+            Assert.IsTrue(UriLoader.IsCached(sotonData), "Data URI should have been cached");
+            Assert.IsFalse(UriLoader.IsCached(sotonPage), "Page URI should not have been cached");
+        }
     }
 }

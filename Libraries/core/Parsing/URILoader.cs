@@ -305,7 +305,7 @@ namespace VDS.RDF.Parsing
                     {
                         //Cache the response only if caching is enabled and the Graph we parsed into was empty to start with
                         //If it was non-empty then we can't cache as this Graph doesn't just represent the URI we just retrieved
-                        _cache.ToCache(u, g, httpResponse.Headers["ETag"]);
+                        _cache.ToCache(u, Tools.StripUriFragment(httpResponse.ResponseUri), g, httpResponse.Headers["ETag"]);
                     }
 #endif
                 }
