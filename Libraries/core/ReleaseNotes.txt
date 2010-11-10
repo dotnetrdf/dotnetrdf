@@ -103,6 +103,8 @@ Storage
  
  8/10/2010 - Release of Version 0.3.1 Alpha (Build 0.3.1.20277)
  
+ ?/?/201? - Release of Version 0.4.0 Beta (Build 0.4.0.?)
+ 
 Acknowledgements
 ----------------
 
@@ -136,3 +138,4 @@ improvements in the code:
  - Sergey Novikov
  - Jeen Broekstra
  - Robert P DeCarlo
+ - Clive Emberey

@@ -904,6 +904,21 @@ namespace rdfEditor
             mnuPaste_Click(sender, e);
         }
 
+        private void FindCommandExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+
+        }
+
+        private void FindNextCommandExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+
+        }
+
+        private void ReplaceCommandExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+
+        }
+
         private void CommentSelectionExecuted(object sender, ExecutedRoutedEventArgs e)
         {
             mnuCommentSelection_Click(sender, e);
@@ -1068,5 +1083,25 @@ namespace rdfEditor
 
 
         #endregion
+
+        private void CommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+
+        }
+
+        private void mnuFind_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void mnuFindNext_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void mnuReplace_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
