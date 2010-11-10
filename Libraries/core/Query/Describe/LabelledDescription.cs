@@ -43,14 +43,19 @@ using VDS.RDF.Query.Algebra;
 namespace VDS.RDF.Query.Describe
 {
     /// <summary>
-    /// Computes the merge of the Minimal Spanning Graphs for all the Values resulting from the Query
+    /// Computes a Labelled Description for all the Values resulting from the Query
     /// </summary>
-    public class MinimalSpanningGraph : BaseDescribeAlgorithm
+    /// <remarks>
+    /// <para>
+    /// The Description returned is all the Triples for which a Value is a Subject and with any Blank Nodes expanded to include their rdfs:label property if present
+    /// </para>
+    /// </remarks>
+    public class LabelledDescription : BaseDescribeAlgorithm
     {
         /// <summary>
-        /// Returns the Graph which is the Merge of the Minimal Spanning Graphs for all the Values resulting from the Query
+        /// Returns the Graph which is the Result of the Describe Query by computing the Labelled Description for all Results
         /// </summary>
-        /// <param name="context"></param>
+        /// <param name="context">SPARQL Evaluation Context</param>
         /// <returns></returns>
         public override Graph Describe(SparqlEvaluationContext context)
         {
@@ -95,8 +100,10 @@ namespace VDS.RDF.Query.Describe
             //Get Triples for this Subject
             Queue<INode> bnodes = new Queue<INode>();
             HashSet<INode> expandedBNodes = new HashSet<INode>();
+            INode rdfsLabel = g.CreateUriNode(new Uri(NamespaceMapper.RDFS + "label"));
             foreach (INode n in nodes)
             {
+                //Get Triples where the Node is the Subject
                 foreach (Triple t in context.Data.GetTriplesWithSubject(n))
                 {
                     if (t.Object.NodeType == NodeType.Blank)
@@ -105,68 +112,18 @@ namespace VDS.RDF.Query.Describe
                     }
                     g.Assert(this.RewriteDescribeBNodes(t, bnodeMapping, g));
                 }
-                if (n.NodeType == NodeType.Blank)
-                {
-                    foreach (Triple t in context.Data.GetTriplesWithPredicate(n))
-                    {
-                        if (t.Subject.NodeType == NodeType.Blank)
-                        {
-                            if (!expandedBNodes.Contains(t.Subject)) bnodes.Enqueue(t.Subject);
-                        }
-                        if (t.Object.NodeType == NodeType.Blank)
-                        {
-                            if (!expandedBNodes.Contains(t.Object)) bnodes.Enqueue(t.Object);
-                        }
-                        g.Assert(this.RewriteDescribeBNodes(t, bnodeMapping, g));
-                    }
-                }
-                foreach (Triple t in context.Data.GetTriplesWithObject(n))
-                {
-                    if (t.Subject.NodeType == NodeType.Blank)
-                    {
-                        if (!expandedBNodes.Contains(t.Object)) bnodes.Enqueue(t.Subject);
-                    }
-                    g.Assert(this.RewriteDescribeBNodes(t, bnodeMapping, g));
-                }
-            }
 
-            //Expand BNodes
-            while (bnodes.Count > 0)
-            {
-                INode n = bnodes.Dequeue();
-                if (expandedBNodes.Contains(n)) continue;
-                expandedBNodes.Add(n);
+                //Compute the Blank Node Closure for this Subject
+                while (bnodes.Count > 0)
+                {
+                    INode bsubj = bnodes.Dequeue();
+                    if (expandedBNodes.Contains(bsubj)) continue;
+                    expandedBNodes.Add(bsubj);
 
-                foreach (Triple t in context.Data.GetTriplesWithSubject(n))
-                {
-                    if (t.Object.NodeType == NodeType.Blank)
+                    foreach (Triple t2 in context.Data.GetTriplesWithSubjectPredicate(bsubj, rdfsLabel))
                     {
-                        if (!expandedBNodes.Contains(t.Object)) bnodes.Enqueue(t.Object);
+                        g.Assert(this.RewriteDescribeBNodes(t2, bnodeMapping, g));
                     }
-                    g.Assert(this.RewriteDescribeBNodes(t, bnodeMapping, g));
-                }
-                if (n.NodeType == NodeType.Blank)
-                {
-                    foreach (Triple t in context.Data.GetTriplesWithPredicate(n))
-                    {
-                        if (t.Subject.NodeType == NodeType.Blank)
-                        {
-                            if (!expandedBNodes.Contains(t.Subject)) bnodes.Enqueue(t.Subject);
-                        }
-                        if (t.Object.NodeType == NodeType.Blank)
-                        {
-                            if (!expandedBNodes.Contains(t.Object)) bnodes.Enqueue(t.Object);
-                        }
-                        g.Assert(this.RewriteDescribeBNodes(t, bnodeMapping, g));
-                    }
-                }
-                foreach (Triple t in context.Data.GetTriplesWithObject(n))
-                {
-                    if (t.Subject.NodeType == NodeType.Blank)
-                    {
-                        if (!expandedBNodes.Contains(t.Object)) bnodes.Enqueue(t.Subject);
-                    }
-                    g.Assert(this.RewriteDescribeBNodes(t, bnodeMapping, g));
                 }
             }
 

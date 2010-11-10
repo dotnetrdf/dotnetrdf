@@ -315,6 +315,7 @@
     <Compile Include="Query\Datasets\SqlDataset.cs" />
     <Compile Include="Query\Describe\BaseDescribeAlgorithm.cs" />
     <Compile Include="Query\Describe\ConciseBoundedDescription.cs" />
+    <Compile Include="Query\Describe\LabelledDescription.cs" />
     <Compile Include="Query\Describe\MinimalSpanningGraph.cs" />
     <Compile Include="Query\Describe\SymmetricConciseBoundedDescription.cs" />
     <Compile Include="Query\Describe\SimpleSubjectObjectDescription.cs" />

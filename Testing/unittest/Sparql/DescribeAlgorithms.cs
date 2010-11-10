@@ -87,5 +87,11 @@ namespace VDS.RDF.Test.Sparql
         {
             this.RunDescribeTest(new MinimalSpanningGraph());
         }
+
+        [TestMethod]
+        public void DescribeLabelled()
+        {
+            this.RunDescribeTest(new LabelledDescription());
+        }
     }
 }
