@@ -42,21 +42,9 @@ using VDS.RDF.Query.Algebra;
 
 namespace VDS.RDF.Query.Describe
 {
-    /// <summary>
-    /// Computes a Concise Bounded Description for all the Values resulting from the Query
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    /// The Description returned is all the Triples for which a Value is a Subject and with any Blank Nodes expanded to include Triples with the Blank Node as the Subject
-    /// </para>
-    /// </remarks>
-    public class ConciseBoundedDescription : BaseDescribeAlgorithm
+    public class MinimalSpanningGraph : BaseDescribeAlgorithm
     {
-        /// <summary>
-        /// Returns the Graph which is the Result of the Describe Query by computing the Concise Bounded Description for all Results
-        /// </summary>
-        /// <param name="context">SPARQL Evaluation Context</param>
-        /// <returns></returns>
+
         public override Graph Describe(SparqlEvaluationContext context)
         {
             //Get a new empty Graph and import the Base Uri and Namespace Map of the Query
@@ -102,7 +90,6 @@ namespace VDS.RDF.Query.Describe
             HashSet<INode> expandedBNodes = new HashSet<INode>();
             foreach (INode n in nodes)
             {
-                //Get Triples where the Node is the Subject
                 foreach (Triple t in context.Data.GetTriplesWithSubject(n))
                 {
                     if (t.Object.NodeType == NodeType.Blank)
@@ -111,22 +98,68 @@ namespace VDS.RDF.Query.Describe
                     }
                     g.Assert(this.RewriteDescribeBNodes(t, bnodeMapping, g));
                 }
-
-                //Compute the Blank Node Closure for this Subject
-                while (bnodes.Count > 0)
+                if (n.NodeType == NodeType.Blank)
                 {
-                    INode bsubj = bnodes.Dequeue();
-                    if (expandedBNodes.Contains(bsubj)) continue;
-                    expandedBNodes.Add(bsubj);
-
-                    foreach (Triple t2 in context.Data.GetTriplesWithSubject(bsubj))
+                    foreach (Triple t in context.Data.GetTriplesWithPredicate(n))
                     {
-                        if (t2.Object.NodeType == NodeType.Blank)
+                        if (t.Subject.NodeType == NodeType.Blank)
                         {
-                            if (!expandedBNodes.Contains(t2.Object)) bnodes.Enqueue(t2.Object);
+                            if (!expandedBNodes.Contains(t.Subject)) bnodes.Enqueue(t.Subject);
                         }
-                        g.Assert(this.RewriteDescribeBNodes(t2, bnodeMapping, g));
+                        if (t.Object.NodeType == NodeType.Blank)
+                        {
+                            if (!expandedBNodes.Contains(t.Object)) bnodes.Enqueue(t.Object);
+                        }
+                        g.Assert(this.RewriteDescribeBNodes(t, bnodeMapping, g));
                     }
+                }
+                foreach (Triple t in context.Data.GetTriplesWithObject(n))
+                {
+                    if (t.Subject.NodeType == NodeType.Blank)
+                    {
+                        if (!expandedBNodes.Contains(t.Object)) bnodes.Enqueue(t.Subject);
+                    }
+                    g.Assert(this.RewriteDescribeBNodes(t, bnodeMapping, g));
+                }
+            }
+
+            //Expand BNodes
+            while (bnodes.Count > 0)
+            {
+                INode n = bnodes.Dequeue();
+                if (expandedBNodes.Contains(n)) continue;
+                expandedBNodes.Add(n);
+
+                foreach (Triple t in context.Data.GetTriplesWithSubject(n))
+                {
+                    if (t.Object.NodeType == NodeType.Blank)
+                    {
+                        if (!expandedBNodes.Contains(t.Object)) bnodes.Enqueue(t.Object);
+                    }
+                    g.Assert(this.RewriteDescribeBNodes(t, bnodeMapping, g));
+                }
+                if (n.NodeType == NodeType.Blank)
+                {
+                    foreach (Triple t in context.Data.GetTriplesWithPredicate(n))
+                    {
+                        if (t.Subject.NodeType == NodeType.Blank)
+                        {
+                            if (!expandedBNodes.Contains(t.Subject)) bnodes.Enqueue(t.Subject);
+                        }
+                        if (t.Object.NodeType == NodeType.Blank)
+                        {
+                            if (!expandedBNodes.Contains(t.Object)) bnodes.Enqueue(t.Object);
+                        }
+                        g.Assert(this.RewriteDescribeBNodes(t, bnodeMapping, g));
+                    }
+                }
+                foreach (Triple t in context.Data.GetTriplesWithObject(n))
+                {
+                    if (t.Subject.NodeType == NodeType.Blank)
+                    {
+                        if (!expandedBNodes.Contains(t.Object)) bnodes.Enqueue(t.Subject);
+                    }
+                    g.Assert(this.RewriteDescribeBNodes(t, bnodeMapping, g));
                 }
             }
 

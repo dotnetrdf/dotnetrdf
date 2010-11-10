@@ -43,17 +43,17 @@ using VDS.RDF.Query.Algebra;
 namespace VDS.RDF.Query.Describe
 {
     /// <summary>
-    /// Computes a Concise Bounded Description for all the Values resulting from the Query
+    /// Computes a Symmetric Concise Bounded Description for all the Values resulting from the Query
     /// </summary>
     /// <remarks>
     /// <para>
-    /// The Description returned is all the Triples for which a Value is a Subject and with any Blank Nodes expanded to include Triples with the Blank Node as the Subject
+    /// The Description returned is all the Triples for which a Value is a Subject/Object and with any Blank Nodes expanded to include Triples with the Blank Node as the Subject
     /// </para>
     /// </remarks>
-    public class ConciseBoundedDescription : BaseDescribeAlgorithm
+    public class SymmetricConciseBoundedDescription : BaseDescribeAlgorithm
     {
         /// <summary>
-        /// Returns the Graph which is the Result of the Describe Query by computing the Concise Bounded Description for all Results
+        /// Returns the Graph which is the Result of the Describe Query by computing the Symmetric Concise Bounded Description for all Results
         /// </summary>
         /// <param name="context">SPARQL Evaluation Context</param>
         /// <returns></returns>
@@ -111,6 +111,15 @@ namespace VDS.RDF.Query.Describe
                     }
                     g.Assert(this.RewriteDescribeBNodes(t, bnodeMapping, g));
                 }
+                //Get Triples where the Node is the Object
+                foreach (Triple t in context.Data.GetTriplesWithObject(n))
+                {
+                    if (t.Subject.NodeType == NodeType.Blank)
+                    {
+                        if (!expandedBNodes.Contains(t.Subject)) bnodes.Enqueue(t.Subject);
+                    }
+                    g.Assert(this.RewriteDescribeBNodes(t, bnodeMapping, g));
+                }
 
                 //Compute the Blank Node Closure for this Subject
                 while (bnodes.Count > 0)
@@ -124,6 +133,14 @@ namespace VDS.RDF.Query.Describe
                         if (t2.Object.NodeType == NodeType.Blank)
                         {
                             if (!expandedBNodes.Contains(t2.Object)) bnodes.Enqueue(t2.Object);
+                        }
+                        g.Assert(this.RewriteDescribeBNodes(t2, bnodeMapping, g));
+                    }
+                    foreach (Triple t2 in context.Data.GetTriplesWithObject(bsubj))
+                    {
+                        if (t2.Subject.NodeType == NodeType.Blank)
+                        {
+                            if (!expandedBNodes.Contains(t2.Subject)) bnodes.Enqueue(t2.Subject);
                         }
                         g.Assert(this.RewriteDescribeBNodes(t2, bnodeMapping, g));
                     }

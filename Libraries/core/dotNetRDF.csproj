@@ -313,7 +313,11 @@
     <Compile Include="Query\Datasets\InMemoryDataset.cs" />
     <Compile Include="Query\Datasets\ISparqlDataset.cs" />
     <Compile Include="Query\Datasets\SqlDataset.cs" />
+    <Compile Include="Query\Describe\BaseDescribeAlgorithm.cs" />
     <Compile Include="Query\Describe\ConciseBoundedDescription.cs" />
+    <Compile Include="Query\Describe\MinimalSpanningGraph.cs" />
+    <Compile Include="Query\Describe\SymmetricConciseBoundedDescription.cs" />
+    <Compile Include="Query\Describe\SimpleSubjectObjectDescription.cs" />
     <Compile Include="Query\Describe\NamedGraphDescription.cs" />
     <Compile Include="Query\Describe\SimpleSubjectDescription.cs" />
     <Compile Include="Query\Expressions\AggregateExpressions.cs" />

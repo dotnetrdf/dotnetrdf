@@ -37,20 +37,20 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Query.Algebra;
+using VDS.RDF.Parsing.Tokens;
 
 namespace VDS.RDF.Query.Describe
 {
     /// <summary>
-    /// Computes a Concise Bounded Description for all the Values resulting from the Query
+    /// Computes a Simple Subject Object Description for all Values resulting from the Query
     /// </summary>
     /// <remarks>
     /// <para>
-    /// The Description returned is all the Triples for which a Value is a Subject and with any Blank Nodes expanded to include Triples with the Blank Node as the Subject
+    /// The Description returned is all the Triples for which a Value is the Subject or Object - this description does not expand any Blank Nodes
     /// </para>
     /// </remarks>
-    public class ConciseBoundedDescription : BaseDescribeAlgorithm
+    public class SimpleSubjectObjectDescription : BaseDescribeAlgorithm
     {
         /// <summary>
         /// Returns the Graph which is the Result of the Describe Query by computing the Concise Bounded Description for all Results
@@ -98,35 +98,17 @@ namespace VDS.RDF.Query.Describe
             Dictionary<String, INode> bnodeMapping = new Dictionary<string, INode>();
 
             //Get Triples for this Subject
-            Queue<INode> bnodes = new Queue<INode>();
-            HashSet<INode> expandedBNodes = new HashSet<INode>();
             foreach (INode n in nodes)
             {
                 //Get Triples where the Node is the Subject
                 foreach (Triple t in context.Data.GetTriplesWithSubject(n))
                 {
-                    if (t.Object.NodeType == NodeType.Blank)
-                    {
-                        if (!expandedBNodes.Contains(t.Object)) bnodes.Enqueue(t.Object);
-                    }
                     g.Assert(this.RewriteDescribeBNodes(t, bnodeMapping, g));
                 }
-
-                //Compute the Blank Node Closure for this Subject
-                while (bnodes.Count > 0)
+                //Get Triples where the Node is the Object
+                foreach (Triple t in context.Data.GetTriplesWithObject(n))
                 {
-                    INode bsubj = bnodes.Dequeue();
-                    if (expandedBNodes.Contains(bsubj)) continue;
-                    expandedBNodes.Add(bsubj);
-
-                    foreach (Triple t2 in context.Data.GetTriplesWithSubject(bsubj))
-                    {
-                        if (t2.Object.NodeType == NodeType.Blank)
-                        {
-                            if (!expandedBNodes.Contains(t2.Object)) bnodes.Enqueue(t2.Object);
-                        }
-                        g.Assert(this.RewriteDescribeBNodes(t2, bnodeMapping, g));
-                    }
+                    g.Assert(this.RewriteDescribeBNodes(t, bnodeMapping, g));
                 }
             }
 
