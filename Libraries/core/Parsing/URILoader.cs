@@ -55,7 +55,7 @@ namespace VDS.RDF.Parsing
     public static class UriLoader
     {
 #if !NO_URICACHE
-        private static UriLoaderCache _cache = new UriLoaderCache();
+        private static IUriLoaderCache _cache = new UriLoaderCache();
 
         /// <summary>
         /// Gets/Sets the Directory used for caching Graphs loaded from URIs
@@ -87,6 +87,27 @@ namespace VDS.RDF.Parsing
             set
             {
                 _cache.CacheDuration = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets/Sets the Cache that is in use
+        /// </summary>
+        /// <remarks>
+        /// Setting the Cache to null does not disable it, to disable caching use the <see cref="Options.UriLoaderCaching">Options.UriLoaderCaching</see> property.
+        /// </remarks>
+        public static IUriLoaderCache Cache
+        {
+            get
+            {
+                return _cache;
+            }
+            set
+            {
+                if (value != null)
+                {
+                    _cache = value;
+                }
             }
         }
 #endif

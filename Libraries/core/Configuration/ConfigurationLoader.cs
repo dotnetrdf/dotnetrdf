@@ -93,7 +93,8 @@ namespace VDS.RDF.Configuration
                             PropertyStylesheet = "dnr:stylesheet",
                             PropertyCacheDuration = "dnr:cacheDuration",
                             PropertyCacheSliding = "dnr:cacheSliding",
-                            PropertyExpressionFactory = "dnr:expressionFactory"
+                            PropertyExpressionFactory = "dnr:expressionFactory",
+                            PropertyDescribeAlgorithm = "dnr:describeAlgorithm"
                             ;
 
         /// <summary>

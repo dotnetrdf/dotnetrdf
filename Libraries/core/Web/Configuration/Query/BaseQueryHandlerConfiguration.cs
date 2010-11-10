@@ -38,10 +38,12 @@ terms.
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using System.Web;
 using VDS.RDF.Configuration;
 using VDS.RDF.Configuration.Permissions;
 using VDS.RDF.Query;
+using VDS.RDF.Query.Describe;
 
 namespace VDS.RDF.Web.Configuration.Query
 {
@@ -92,6 +94,10 @@ namespace VDS.RDF.Web.Configuration.Query
         /// Default Sparql Query
         /// </summary>
         protected String _defaultQuery = String.Empty;
+        /// <summary>
+        /// SPARQL Describe Algorithm to use (null indicates default is used)
+        /// </summary>
+        protected ISparqlDescribe _describer = null;
 
         /// <summary>
         /// Creates a new Query Handler Configuration
@@ -134,6 +140,36 @@ namespace VDS.RDF.Web.Configuration.Query
                     {
                         this._defaultQuery = reader.ReadToEnd();
                         reader.Close();
+                    }
+                }
+            }
+
+            //Get the SPARQL Describe Algorithm
+            INode describeNode = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyDescribeAlgorithm));
+            if (describeNode != null)
+            {
+                if (describeNode.NodeType == NodeType.Literal)
+                {
+                    String algoClass = ((LiteralNode)describeNode).Value;
+                    try
+                    {
+                        Object desc = Activator.CreateInstance(Type.GetType(algoClass));
+                        if (desc is ISparqlDescribe)
+                        {
+                            this._describer = (ISparqlDescribe)desc;
+                        }
+                        else
+                        {
+                            throw new DotNetRdfConfigurationException("Unable to set the Describe Algorithm for the HTTP Handler identified by the Node '" + objNode.ToString() + "' as the value given for the dnr:describeAlgorithm property was not a type name of a type that implements the ISparqlDescribe interface");
+                        }
+                    }
+                    catch (DotNetRdfConfigurationException)
+                    {
+                            throw;
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new DotNetRdfConfigurationException("Unable to set the Describe Algorithm for the HTTP Handler identified by the Node '" + objNode.ToString() + "' as the value given for the dnr:describeAlgorithm property was not a type name for a type that can be instantiated", ex);
                     }
                 }
             }
@@ -227,7 +263,6 @@ namespace VDS.RDF.Web.Configuration.Query
             }
         }
 
-
         /// <summary>
         /// Gets whether the Query Form should be shown to users
         /// </summary>
@@ -250,7 +285,16 @@ namespace VDS.RDF.Web.Configuration.Query
             }
         }
 
-
+        /// <summary>
+        /// Gets the SPARQL Describe Algorithm to be used
+        /// </summary>
+        public ISparqlDescribe DescribeAlgorithm
+        {
+            get
+            {
+                return this._describer;
+            }
+        }
     }
 
     /// <summary>

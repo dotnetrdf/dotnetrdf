@@ -202,7 +202,7 @@ dnr:async a rdf:Property ;
 		  
 dnr:loadMode a rdf:Property ;
 			 rdfs:label "Load Mode" ;
-			 rdfs:comment "This property indicates the loading mode." ;
+			 rdfs:comment "This property indicates the loading mode.  It is a general purpose property that can be used to indicate additional parameters for Objects, the exact meaning of this property depends on the Object being declared and the Object Factory which loads it" ;
 			 rdfs:domain dnr:GenericIOManager ;
 			 rdfs:domain dnr:TripleStore .
 		  
@@ -323,7 +323,7 @@ dnr:proxy a rdf:Property ;
 		  rdfs:label "Proxy Server" ;
 		  rdfs:domain dnr:SparqlEndpoint ;
 		  rdfs:range dnr:Proxy .
-				  
+		  				  
 # Properties for associating Reasoners with objects
 
 dnr:reasoner a rdf:Property ;
@@ -456,8 +456,8 @@ dnr:expressionFactory a rdf:Property ;
 					  rdfs:comment "This property associates a custom expression factory for SPARQL parsing with a handler." ;
 					  rdfs:range dnr:SparqlExpressionFactory ;
 					  rdfs:domain dnr:HttpHandler .
-				  
-
-			 
-
-
+					  
+dnr:describeAlgorithm a rdf:Property ;
+						rdfs:label "SPARQL Describe Algorithm" ;
+						rdfs:comment "This property associates a custom SPARQL Describe Algorithm with a HTTP Handler.  The value should be a literal which contains a fully qualified type name of the Describe Algorithm which must implement the VDS.RDF.Query.Describe.ISparqlDescribe interface." ;
+						rdfs:domain dnr:HttpHandler .

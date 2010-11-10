@@ -29,6 +29,10 @@ Changed
  - RDF/XML parser now correctly treats empty elements with rdf:datatype as literal properties rather than empty properties
 - Parsing
  - Notation 3 Parser supports Variables, @forSome and @forAll fully
+ - UriLoader Caching improved
+  - URIs are santised when being cached
+  - Data is cached under both the request and response URIS
+  - Extracted existing private implementation into an interface so users can choose to slot in alternative caching mechanisms if desired
 - Query Improvements
  - Leviathan SPARQL engine now operates over an ISparqlDataset which is an abstraction between the data and the
    SPARQL engine which allows for out of memory datasets to be queried and updated with Leviathan

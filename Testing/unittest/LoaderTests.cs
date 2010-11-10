@@ -125,7 +125,7 @@ namespace VDS.RDF.Test
             {
                 Options.UriLoaderCaching = false;
                 Options.HttpDebugging = true;
-                Options.UriLoaderTimeout = 45000;
+                Options.UriLoaderTimeout = 60000;
                 //Options.HttpFullDebugging = true;
 
                 Graph g = new Graph();

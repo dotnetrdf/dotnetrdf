@@ -227,6 +227,9 @@ namespace VDS.RDF.Web
                 //Set Partial Results Setting                 
                 query.PartialResultsOnTimeout = partialResults;
 
+                //Set Describe Algorithm
+                query.Describer = this._config.DescribeAlgorithm;
+
                 //Now we can finally make the query and return the results
                 Object result = this.ProcessQuery(query);
                 this.ProcessResults(context, result);

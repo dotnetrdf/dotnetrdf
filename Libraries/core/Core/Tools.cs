@@ -133,6 +133,11 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Returns a URI with any Fragment ID removed from it
+        /// </summary>
+        /// <param name="u">URI</param>
+        /// <returns></returns>
         public static Uri StripUriFragment(Uri u)
         {
             if (u.Fragment.Equals(String.Empty))

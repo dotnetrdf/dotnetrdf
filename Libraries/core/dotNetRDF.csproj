@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{BFBAC159-1E60-4D03-8ACA-D34E31EB83BF}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -254,6 +254,7 @@
     <Compile Include="Parsing\Events\IEventQueue.cs" />
     <Compile Include="Parsing\IRdfAVocabulary.cs" />
     <Compile Include="Parsing\IriSpecsHelper.cs" />
+    <Compile Include="Parsing\IUriLoaderCache.cs" />
     <Compile Include="Parsing\Notation3Parser.cs" />
     <Compile Include="Parsing\FileLoader.cs" />
     <Compile Include="Parsing\ParserHelper.cs" />
@@ -314,6 +315,7 @@
     <Compile Include="Query\Datasets\SqlDataset.cs" />
     <Compile Include="Query\Describe\ConciseBoundedDescription.cs" />
     <Compile Include="Query\Describe\NamedGraphDescription.cs" />
+    <Compile Include="Query\Describe\SimpleSubjectDescription.cs" />
     <Compile Include="Query\Expressions\AggregateExpressions.cs" />
     <Compile Include="Query\Expressions\ArqFunctionFactory.cs" />
     <Compile Include="Query\Expressions\BaseExpressionClasses.cs" />

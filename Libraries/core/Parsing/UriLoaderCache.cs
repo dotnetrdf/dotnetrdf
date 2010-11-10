@@ -44,12 +44,10 @@ using VDS.RDF.Writing;
 
 namespace VDS.RDF.Parsing
 {
-    //TODO: Add an additional argument to the ToCache function so that data is cached under both the request URI and the actual response URI
-    
     /// <summary>
     /// Provides caching services to the <see cref="UriLoader">UriLoader</see> class
     /// </summary>
-    class UriLoaderCache
+    class UriLoaderCache : IUriLoaderCache
     {
         private String _cacheDir;
         private TimeSpan _cacheDuration = new TimeSpan(1, 0, 0);
@@ -220,7 +218,7 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Is there an ETag for the given URI
+        /// Gets whether there is an ETag for the given URI
         /// </summary>
         /// <param name="u">URI</param>
         /// <returns></returns>
