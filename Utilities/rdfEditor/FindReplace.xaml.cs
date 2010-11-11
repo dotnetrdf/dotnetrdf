@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -67,6 +68,22 @@ namespace rdfEditor
             }
         }
 
+        public bool IsScopeCurrentDocument
+        {
+            get
+            {
+                return ((ComboBoxItem)this.cboLookIn.SelectedItem).Tag.Equals("Current Document");
+            }
+        }
+
+        public bool IsScopeSelection
+        {
+            get
+            {
+                return ((ComboBoxItem)this.cboLookIn.SelectedItem).Tag.Equals("Selection");
+            }
+        }
+
         private void ToggleReplaceVisibility(Visibility v)
         {
             this.lblReplace.Visibility = v;
@@ -104,7 +121,14 @@ namespace rdfEditor
 
         public bool FindNext(TextEditor editor)
         {
-            return this.FindNext(editor, -1, editor.Text.Length);
+            if (this.IsScopeCurrentDocument || editor.SelectionLength == 0)
+            {
+                return this.FindNext(editor, -1, editor.Text.Length);
+            }
+            else
+            {
+                return this.FindNext(editor, Math.Max(0, editor.SelectionStart - 1), editor.SelectionStart + editor.SelectionLength);
+            }
         }
 
         public bool FindNext(TextEditor editor, int minPos, int maxPos)
@@ -120,6 +144,22 @@ namespace rdfEditor
                 return false;
             }
             String find = this.cboFind.Text;
+
+            //Validate Regex
+            if (this.chkRegex.IsChecked == true)
+            {
+                try
+                {
+                    Regex.IsMatch(String.Empty, find);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Regular Expression is malformed - " + ex.Message);
+                    return false;
+                }
+            }
+
+            //Add Search Text to Combo Box for later reuse
             if (!this.cboFind.Items.Contains(find))
             {
                 this.cboFind.Items.Add(find);
@@ -127,18 +167,52 @@ namespace rdfEditor
 
             int start = editor.CaretOffset;
             int pos;
+            int length = find.Length;
             StringComparison compareMode = (this.chkMatchCase.IsChecked == true) ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
+            RegexOptions regexOps = (this.chkMatchCase.IsChecked == true) ? RegexOptions.None : RegexOptions.IgnoreCase;
 
             if (this.chkSearchUp.IsChecked == true)
             {
                 //Search portion of Document prior to current position
-                pos = editor.Text.Substring(0, start).LastIndexOf(find, compareMode);
+                if (this.chkRegex.IsChecked == true)
+                {
+                    MatchCollection ms = Regex.Matches(editor.Text.Substring(0, start), find, regexOps);
+                    if (ms.Count == 0)
+                    {
+                        pos = -1;
+                    }
+                    else
+                    {
+                        pos = ms[ms.Count - 1].Index;
+                        length = ms[ms.Count - 1].Length;
+                    }
+                }
+                else
+                {
+                    pos = editor.Text.Substring(0, start).LastIndexOf(find, compareMode);
+                }
             }
             else
             {
                 //Search position of Document subsequent to current position (incl. any selected text)
                 start += editor.SelectionLength;
-                pos = editor.Text.IndexOf(find, start, compareMode);
+                if (this.chkRegex.IsChecked == true)
+                {
+                    Match m = Regex.Match(editor.Text.Substring(start), find, regexOps);
+                    if (!m.Success)
+                    {
+                        pos = -1;
+                    }
+                    else
+                    {
+                        pos = start + m.Index;
+                        length = m.Length;
+                    }
+                }
+                else
+                {
+                    pos = editor.Text.IndexOf(find, start, compareMode);
+                }
             }
 
             //If we've found the position of the next highlight it and return true otherwise return false
@@ -149,7 +223,7 @@ namespace rdfEditor
                 {
                     editor.CaretOffset = pos;
                     editor.SelectionStart = pos;
-                    editor.SelectionLength = find.Length;
+                    editor.SelectionLength = length;
                     return this.FindNext(editor, minPos, maxPos);
                 }
 
@@ -163,26 +237,26 @@ namespace rdfEditor
                         if (Char.IsLetterOrDigit(c))
                         {
                             //Not a boundary so adjust start position and recurse
-                            editor.CaretOffset = pos + find.Length;
+                            editor.CaretOffset = pos + length;
                             if (this.chkSearchUp.IsChecked == false) editor.CaretOffset -= editor.SelectionLength;
                             return this.FindNext(editor);
                         }
                     }
                     //Check boundary after
-                    if (pos + find.Length < editor.Text.Length - 1)
+                    if (pos + length < editor.Text.Length - 1)
                     {
-                        char c = editor.Text[pos + find.Length];
+                        char c = editor.Text[pos + length];
                         if (Char.IsLetterOrDigit(c))
                         {
                             //Not a boundary so adjust start position and recurse
-                            editor.CaretOffset = pos + find.Length - 1;
+                            editor.CaretOffset = pos + length - 1;
                             if (this.chkSearchUp.IsChecked == false) editor.CaretOffset -= editor.SelectionLength;
                             return this.FindNext(editor);
                         }
                     }
                 }
 
-                editor.Select(pos, find.Length);
+                editor.Select(pos, length);
                 editor.CaretOffset = pos;
                 editor.ScrollTo(editor.Document.GetLineByOffset(pos).LineNumber, 0);
                 return true;
@@ -244,21 +318,24 @@ namespace rdfEditor
 
             int origPos = editor.CaretOffset;
 
-            //Check whether the relevant Text is already selected
-            if (this.cboFind.Text != null && !this.cboFind.Text.Equals(String.Empty))
+            if (!this.cboLookIn.SelectedValue.ToString().Equals("Selection"))
             {
-                if (this.cboFind.Text.Equals(editor.SelectedText))
+                //Check whether the relevant Text is already selected
+                if (this.cboFind.Text != null && !this.cboFind.Text.Equals(String.Empty))
                 {
-                    //If it is remove the selection so the FindNext() call will simply find the currently highlighted text
-                    editor.SelectionStart = 0;
-                    editor.SelectionLength = 0;
+                    if (this.cboFind.Text.Equals(editor.SelectedText))
+                    {
+                        //If it is remove the selection so the FindNext() call will simply find the currently highlighted text
+                        editor.SelectionStart = 0;
+                        editor.SelectionLength = 0;
+                    }
                 }
             }
 
             //Replace All works over the entire document unless there was already a selection present
             int minPos, maxPos;
             bool restoreSelection = false;
-            if (editor.SelectionLength > 0)
+            if (editor.SelectionLength > 0 && this.IsScopeSelection)
             {
                 restoreSelection = true;
                 minPos = editor.SelectionStart - 1;
