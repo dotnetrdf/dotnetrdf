@@ -244,6 +244,17 @@ namespace rdfEditor
 
             int origPos = editor.CaretOffset;
 
+            //Check whether the relevant Text is already selected
+            if (this.cboFind.Text != null && !this.cboFind.Text.Equals(String.Empty))
+            {
+                if (this.cboFind.Text.Equals(editor.SelectedText))
+                {
+                    //If it is remove the selection so the FindNext() call will simply find the currently highlighted text
+                    editor.SelectionStart = 0;
+                    editor.SelectionLength = 0;
+                }
+            }
+
             //Replace All works over the entire document unless there was already a selection present
             int minPos, maxPos;
             bool restoreSelection = false;

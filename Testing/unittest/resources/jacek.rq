@@ -1,5 +1,4 @@
-﻿
-PREFIX p: <http://jacek.gajek.rpg/>
+﻿PREFIX p: <http://jacek.gajek.rpg/>
 
 SELECT DISTINCT ?x
 WHERE
@@ -12,8 +11,5 @@ WHERE
   ?p p:hasName ?pname.
   ?p p:in ?s.
   
-
-
-
   FILTER regex(?pname, "jacek", "i").
 }
