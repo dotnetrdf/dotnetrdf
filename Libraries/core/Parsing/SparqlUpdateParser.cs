@@ -204,7 +204,7 @@ namespace VDS.RDF.Parsing
                         break;
 
                     default:
-                        throw Error("Unexpected Token encountered", next);
+                        throw ParserHelper.Error("Unexpected Token encountered", next);
                 }
 
                 if (commandParsed)
@@ -213,7 +213,7 @@ namespace VDS.RDF.Parsing
                     next = context.Tokens.Dequeue();
                     if (next.TokenType != Token.SEMICOLON && next.TokenType != Token.EOF)
                     {
-                        throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a semicolon separator or EOF after a command", next);
+                        throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a semicolon separator or EOF after a command", next);
                     }
 
                     commandParsed = false;
@@ -237,7 +237,7 @@ namespace VDS.RDF.Parsing
             }
             else
             {
-                throw Error("Expected a URI Token to follow the BASE Verb in an Update", next);
+                throw ParserHelper.Error("Expected a URI Token to follow the BASE Verb in an Update", next);
             }
         }
 
@@ -266,12 +266,12 @@ namespace VDS.RDF.Parsing
                 }
                 else
                 {
-                    throw Error("Expected a URI Token to follow a Prefix Token to follow the PREFIX Verb in an Update", uri);
+                    throw ParserHelper.Error("Expected a URI Token to follow a Prefix Token to follow the PREFIX Verb in an Update", uri);
                 }
             }
             else
             {
-                throw Error("Expected a Prefix Token to follow the PREFIX Verb in an Update", prefix);
+                throw ParserHelper.Error("Expected a Prefix Token to follow the PREFIX Verb in an Update", prefix);
             }
         }
 
@@ -293,7 +293,7 @@ namespace VDS.RDF.Parsing
                 next = context.Tokens.Dequeue();
                 if (next.TokenType != Token.URI)
                 {
-                    throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a GRAPH Keyword as part of the CLEAR command", next);
+                    throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a GRAPH Keyword as part of the CLEAR command", next);
                 }
                 Uri u = new Uri(Tools.ResolveUri(next.Value, context.BaseUri.ToSafeString()));
                 ClearCommand cmd = new ClearCommand(u, ClearMode.Graph, silent);
@@ -313,7 +313,7 @@ namespace VDS.RDF.Parsing
             }
             else
             {
-                throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a GRAPH <URI> to specify the Graph to CLEAR or one of the DEFAULT/NAMED/ALL keywords", next);
+                throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a GRAPH <URI> to specify the Graph to CLEAR or one of the DEFAULT/NAMED/ALL keywords", next);
             }
         }
 
@@ -332,7 +332,7 @@ namespace VDS.RDF.Parsing
             //Followed by a mandatory GRAPH Keyword
             if (next.TokenType != Token.GRAPH)
             {
-                throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a GRAPH Keyword as part of the CREATE command", next);
+                throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a GRAPH Keyword as part of the CREATE command", next);
             }
             next = context.Tokens.Dequeue();
 
@@ -346,7 +346,7 @@ namespace VDS.RDF.Parsing
             }
             else
             {
-                throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a URI to specify the Graph to CREATE", next);
+                throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a URI to specify the Graph to CREATE", next);
             }
         }
 
@@ -361,7 +361,7 @@ namespace VDS.RDF.Parsing
             }
             else
             {
-                if (next.TokenType == Token.DATA) throw Error("The DATA keyword is not permitted here as this INSERT command forms part of a modification command", next);
+                if (next.TokenType == Token.DATA) throw ParserHelper.Error("The DATA keyword is not permitted here as this INSERT command forms part of a modification command", next);
             }
 
             if (next.TokenType == Token.WHERE)
@@ -415,7 +415,7 @@ namespace VDS.RDF.Parsing
                 }
                 else
                 {
-                    throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a WHERE keyword as part of a DELETE command", next);
+                    throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a WHERE keyword as part of a DELETE command", next);
                 }
             }
         }
@@ -487,7 +487,7 @@ namespace VDS.RDF.Parsing
                 next = context.Tokens.Dequeue();
                 if (next.TokenType != Token.URI)
                 {
-                    throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a GRAPH Keyword as part of the DROP command", next);
+                    throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a GRAPH Keyword as part of the DROP command", next);
                 }
                 Uri u = new Uri(Tools.ResolveUri(next.Value, context.BaseUri.ToSafeString()));
                 DropCommand cmd = new DropCommand(u, ClearMode.Graph, silent);
@@ -507,7 +507,7 @@ namespace VDS.RDF.Parsing
             }
             else
             {
-                throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a GRAPH <URI> to specify the Graph to DROP or one of the DEFAULT/NAMED/ALL keywords", next);
+                throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a GRAPH <URI> to specify the Graph to DROP or one of the DEFAULT/NAMED/ALL keywords", next);
             }
         }
         
@@ -522,7 +522,7 @@ namespace VDS.RDF.Parsing
             }
             else
             {
-                if (next.TokenType == Token.DATA) throw Error("The DATA keyword is not permitted here as this INSERT command forms part of a modification command", next);
+                if (next.TokenType == Token.DATA) throw ParserHelper.Error("The DATA keyword is not permitted here as this INSERT command forms part of a modification command", next);
             }
 
             //Get the Modification Template
@@ -535,7 +535,7 @@ namespace VDS.RDF.Parsing
                 usings = this.TryParseUsingStatements(context).ToList();
                 next = context.Tokens.Dequeue();
             }
-            if (next.TokenType != Token.WHERE) throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a WHERE keyword as part of a INSERT command", next);
+            if (next.TokenType != Token.WHERE) throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a WHERE keyword as part of a INSERT command", next);
             
             //Now parse the WHERE pattern
             SparqlQueryParserContext subContext = new SparqlQueryParserContext(context.Tokens);
@@ -618,7 +618,7 @@ namespace VDS.RDF.Parsing
 
             //Expect a URI which is the Source URI
             IToken next = context.Tokens.Dequeue();
-            if (next.TokenType != Token.URI) throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a URI to LOAD data from", next);
+            if (next.TokenType != Token.URI) throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a URI to LOAD data from", next);
             Uri sourceUri = new Uri(Tools.ResolveUri(next.Value, baseUri));
 
             //Then optionally an INTO GRAPH followed by a Graph URI to assign
@@ -639,12 +639,12 @@ namespace VDS.RDF.Parsing
                         }
                         else
                         {
-                            throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a URI after the INTO GRAPH keyword for a LOAD command", next);
+                            throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a URI after the INTO GRAPH keyword for a LOAD command", next);
                         }
                     }
                     else
                     {
-                        throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a GRAPH keyword after the INTO keyword for a LOAD command", next);
+                        throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a GRAPH keyword after the INTO keyword for a LOAD command", next);
                     }
                 }
                 else
@@ -664,7 +664,7 @@ namespace VDS.RDF.Parsing
             //Firstly we expect the URI that the modifications apply to
             String baseUri = (context.BaseUri == null) ? String.Empty : context.BaseUri.ToString();
             IToken next = context.Tokens.Dequeue();
-            if (next.TokenType != Token.URI) throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a URI after a WITH keyword as part of a INSERT/DELETE command", next);
+            if (next.TokenType != Token.URI) throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a URI after a WITH keyword as part of a INSERT/DELETE command", next);
             Uri u = new Uri(Tools.ResolveUri(next.Value, baseUri));
 
             //Now parse the INSERT/DELETE as appropriate
@@ -690,7 +690,7 @@ namespace VDS.RDF.Parsing
             }
             else
             {
-                throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected an INSERT/DELETE keyword", next);
+                throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected an INSERT/DELETE keyword", next);
             }
         }
 
@@ -768,7 +768,7 @@ namespace VDS.RDF.Parsing
                     }
                     else
                     {
-                        throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a URI as part of a USING statement", next);
+                        throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a URI as part of a USING statement", next);
                     }
 
                     //Peek at the next thing in case it's a further USING
@@ -779,31 +779,6 @@ namespace VDS.RDF.Parsing
             {
                 yield break;
             }
-        }
-
-        /// <summary>
-        /// Helper method for raising informative standardised Parser Errors
-        /// </summary>
-        /// <param name="msg">The Error Message</param>
-        /// <param name="t">The Token that is the cause of the Error</param>
-        /// <returns></returns>
-        private RdfParseException Error(String msg, IToken t)
-        {
-            StringBuilder output = new StringBuilder();
-            output.Append("[");
-            output.Append(t.GetType().ToString());
-            output.Append(" at Line ");
-            output.Append(t.StartLine);
-            output.Append(" Column ");
-            output.Append(t.StartPosition);
-            output.Append(" to Line ");
-            output.Append(t.EndLine);
-            output.Append(" Column ");
-            output.Append(t.EndPosition);
-            output.Append("]\n");
-            output.Append(msg);
-
-            return new RdfParseException(output.ToString(), t);
         }
     }
 }
