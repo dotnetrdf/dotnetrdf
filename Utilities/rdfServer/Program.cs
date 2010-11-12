@@ -23,7 +23,7 @@ namespace rdfServer
                 configFile = args[0];
             }
 
-            HttpListenerHandlerCollection handlers = new SparqlHttpHandlers();
+            HttpListenerHandlerCollection handlers = new SparqlHandlersCollection();
             using (HttpServer server = new HttpServer(1986, handlers))
             {
                 //Need to load up the Configuration Graph and add to Server State

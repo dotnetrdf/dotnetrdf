@@ -43,7 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FileHttpHandler.cs" />
+    <Compile Include="StaticFileHandler.cs" />
     <Compile Include="FormVariables.cs" />
     <Compile Include="HttpListenerHandlerCollection.cs" />
     <Compile Include="HttpRequestMapping.cs" />
@@ -53,7 +53,7 @@
     <Compile Include="IHttpListenerHandler.cs" />
     <Compile Include="MimeTypeMapping.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SimpleFileHttpHandlers.cs" />
+    <Compile Include="StaticFileHandlersCollection.cs" />
     <Compile Include="Tools.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

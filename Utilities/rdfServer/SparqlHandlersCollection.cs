@@ -6,9 +6,9 @@ using VDS.Web;
 
 namespace rdfServer
 {
-    public class SparqlHttpHandlers : HttpListenerHandlerCollection
+    public class SparqlHandlersCollection : HttpListenerHandlerCollection
     {
-        public SparqlHttpHandlers()
+        public SparqlHandlersCollection()
         {
             base.AddMapping(new HttpRequestMapping(HttpRequestMapping.AllVerbs, HttpRequestMapping.AnyPath, typeof(SparqlServerHandler)));
         }

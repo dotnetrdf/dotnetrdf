@@ -10,7 +10,7 @@ namespace VDS.Web
     /// <summary>
     /// A HTTP Listener Handler which serves a variety of File Formats as Plain Text/Binary Data
     /// </summary>
-    public class FileHttpHandler : IHttpListenerHandler
+    public class StaticFileHandler : IHttpListenerHandler
     {
         //TODO: Support a configuration file which determines which File Formats are valid
         List<MimeTypeMapping> _mappings = new List<MimeTypeMapping>()
