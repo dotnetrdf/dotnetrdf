@@ -310,7 +310,7 @@ namespace VDS.RDF.Web.Configuration.Server
             String defQueryFile = ConfigurationLoader.GetConfigurationString(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyDefaultQueryFile));
             if (defQueryFile != null)
             {
-                defQueryFile = context.Server.MapPath(defQueryFile);
+                defQueryFile = ConfigurationLoader.ResolvePath(defQueryFile);
                 if (File.Exists(defQueryFile))
                 {
                     using (StreamReader reader = new StreamReader(defQueryFile))
@@ -372,7 +372,7 @@ namespace VDS.RDF.Web.Configuration.Server
             String defUpdateFile = ConfigurationLoader.GetConfigurationString(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyDefaultUpdateFile));
             if (defUpdateFile != null)
             {
-                defUpdateFile = context.Server.MapPath(defUpdateFile);
+                defUpdateFile = ConfigurationLoader.ResolvePath(defUpdateFile);
                 if (File.Exists(defUpdateFile))
                 {
                     using (StreamReader reader = new StreamReader(defUpdateFile))
@@ -403,6 +403,9 @@ namespace VDS.RDF.Web.Configuration.Server
                 throw new DotNetRdfConfigurationException("Unable to load SPARQL Server Configuration as the RDF configuration file does not specify at least one of a Query/Update/Protocol processor for the server using the dnr:queryProcessor/dnr:updateProcessor/dnr:protocolProcessor properties");
             }
         }
+
+        public BaseSparqlServerConfiguration(IGraph g, INode objNode)
+            : this(null, g, objNode) { }
 
         /// <summary>
         /// Gets the SPARQL Query Processor
@@ -454,6 +457,9 @@ namespace VDS.RDF.Web.Configuration.Server
         {
 
         }
+
+        public SparqlServerConfiguration(IGraph g, INode objNode)
+            : base(null, g, objNode) { }
     }
 }
 

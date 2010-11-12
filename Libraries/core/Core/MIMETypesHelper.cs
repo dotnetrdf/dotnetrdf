@@ -56,12 +56,12 @@ namespace VDS.RDF
         /// <summary>
         /// MIME Type for accept any content Type
         /// </summary>
-        public static String Any = "*/*";
+        public const String Any = "*/*";
 
         /// <summary>
         /// MIME Type for URL Encoded WWW Form Content used when POSTing over HTTP
         /// </summary>
-        public static String WWWFormURLEncoded = "application/x-www-form-urlencoded";
+        public const String WWWFormURLEncoded = "application/x-www-form-urlencoded";
 
         /// <summary>
         /// MIME Types for Turtle

@@ -86,7 +86,20 @@ namespace VDS.RDF.Web.Configuration
         /// <param name="context">HTTP Context</param>
         /// <param name="g">Configuration Graph</param>
         /// <param name="objNode">Object Node</param>
+        /// <remarks>
+        /// <para>
+        /// It is acceptable for the <paramref name="content">context</paramref> parameter to be null
+        /// </para>
+        /// </remarks>
         public BaseHandlerConfiguration(HttpContext context, IGraph g, INode objNode)
+            : this(g, objNode) { }
+
+        /// <summary>
+        /// Creates a new Base Handler Configuration which loads common Handler settings from a Configuration Graph
+        /// </summary>
+        /// <param name="g">Configuration Graph</param>
+        /// <param name="objNode">Object Node</param>
+        public BaseHandlerConfiguration(IGraph g, INode objNode)
         {
             //Are there any User Groups associated with this Handler?
             IEnumerable<INode> groups = ConfigurationLoader.GetConfigurationData(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, "dnr:userGroup"));
@@ -108,7 +121,7 @@ namespace VDS.RDF.Web.Configuration
             String introFile = ConfigurationLoader.GetConfigurationString(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyIntroFile));
             if (introFile != null)
             {
-                introFile = context.Server.MapPath(introFile);
+                introFile = ConfigurationLoader.ResolvePath(introFile);
                 if (File.Exists(introFile))
                 {
                     using (StreamReader reader = new StreamReader(introFile))

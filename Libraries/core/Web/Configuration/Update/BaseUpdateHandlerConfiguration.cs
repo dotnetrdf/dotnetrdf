@@ -97,7 +97,7 @@ namespace VDS.RDF.Web.Configuration.Update
             String defUpdateFile = ConfigurationLoader.GetConfigurationString(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyDefaultUpdateFile));
             if (defUpdateFile != null)
             {
-                defUpdateFile = context.Server.MapPath(defUpdateFile);
+                defUpdateFile = ConfigurationLoader.ResolvePath(defUpdateFile);
                 if (File.Exists(defUpdateFile))
                 {
                     using (StreamReader reader = new StreamReader(defUpdateFile))

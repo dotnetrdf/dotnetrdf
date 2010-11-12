@@ -67,10 +67,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.Interop.Intellidi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.Interop.Sesame", "Libraries\interop.sesame\dotNetRDF.Interop.Sesame.csproj", "{9DA322E0-8DEC-4C47-B109-66773478BB61}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rdfServer", "Utilities\rdfServer\rdfServer.csproj", "{7DF4C47C-6CB5-4EC4-ABE1-956A74CB9D17}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VDS.Web.Server", "Libraries\httpserver\VDS.Web.Server.csproj", "{EEDC2947-D637-4A46-BFBC-BB64BAEC4500}"
+EndProject
 Global
-	GlobalSection(TestCaseManagementSettings) = postSolution
-		CategoryFile = dotNetRDF.vsmdi
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
@@ -180,6 +181,14 @@ Global
 		{9DA322E0-8DEC-4C47-B109-66773478BB61}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9DA322E0-8DEC-4C47-B109-66773478BB61}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9DA322E0-8DEC-4C47-B109-66773478BB61}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7DF4C47C-6CB5-4EC4-ABE1-956A74CB9D17}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7DF4C47C-6CB5-4EC4-ABE1-956A74CB9D17}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7DF4C47C-6CB5-4EC4-ABE1-956A74CB9D17}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7DF4C47C-6CB5-4EC4-ABE1-956A74CB9D17}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EEDC2947-D637-4A46-BFBC-BB64BAEC4500}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EEDC2947-D637-4A46-BFBC-BB64BAEC4500}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EEDC2947-D637-4A46-BFBC-BB64BAEC4500}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EEDC2947-D637-4A46-BFBC-BB64BAEC4500}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

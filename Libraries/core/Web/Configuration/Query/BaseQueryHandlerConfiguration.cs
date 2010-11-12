@@ -133,7 +133,7 @@ namespace VDS.RDF.Web.Configuration.Query
             String defQueryFile = ConfigurationLoader.GetConfigurationString(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyDefaultQueryFile));
             if (defQueryFile != null)
             {
-                defQueryFile = context.Server.MapPath(defQueryFile);
+                defQueryFile = ConfigurationLoader.ResolvePath(defQueryFile);
                 if (File.Exists(defQueryFile))
                 {
                     using (StreamReader reader = new StreamReader(defQueryFile))
@@ -174,6 +174,9 @@ namespace VDS.RDF.Web.Configuration.Query
                 }
             }
         }
+
+        public BaseQueryHandlerConfiguration(IGraph g, INode objNode)
+            : this(null, g, objNode) { }
 
         /// <summary>
         /// Gets the Processor used to evaluate queries
@@ -310,6 +313,9 @@ namespace VDS.RDF.Web.Configuration.Query
         /// <param name="objNode">Object Node</param>
         public QueryHandlerConfiguration(HttpContext context, IGraph g, INode objNode)
             : base(context, g, objNode) { }
+
+        public QueryHandlerConfiguration(IGraph g, INode objNode)
+            : this(null, g, objNode) { }
     }
 }
 
