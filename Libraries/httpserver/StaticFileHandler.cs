@@ -45,7 +45,6 @@ namespace VDS.Web
             {
                 //If No Base Directory can't find anything
                 context.Response.StatusCode = (int)HttpStatusCode.NotFound;
-                context.Response.Close();
                 return;
             }
 
@@ -56,7 +55,7 @@ namespace VDS.Web
             {
                 //TODO: Directory Listing
                 context.Response.StatusCode = (int)HttpStatusCode.NotFound;
-                context.Response.Close();
+                return;
             }
             else
             {
@@ -70,14 +69,12 @@ namespace VDS.Web
                         {
                             //Don't accept paths that try to go outside the base directory
                             context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-                            context.Response.Close();
                             return;
                         }
                         else if (!File.Exists(actualPath))
                         {
                             //If File doesn't exist then 404
                             context.Response.StatusCode = (int)HttpStatusCode.NotFound;
-                            context.Response.Close();
                             return;
                         }
 
@@ -93,7 +90,6 @@ namespace VDS.Web
                                 if (modified <= dt)
                                 {
                                     context.Response.StatusCode = (int)HttpStatusCode.NotModified;
-                                    context.Response.Close();
                                     return;
                                 }
                             }
@@ -109,6 +105,7 @@ namespace VDS.Web
                         {
                             if (mapping.IsBinaryData)
                             {
+                                context.Response.ContentLength64 = new FileInfo(actualPath).Length;
                                 using (StreamReader input = new StreamReader(actualPath))
                                 {
                                     using (Stream output = context.Response.OutputStream)
@@ -123,6 +120,7 @@ namespace VDS.Web
                             {
                                 using (StreamReader reader = new StreamReader(actualPath, true))
                                 {
+                                    //context.Response.ContentLength64 = new FileInfo(actualPath).Length;
                                     context.Response.ContentEncoding = reader.CurrentEncoding;
                                     using (StreamWriter writer = new StreamWriter(context.Response.OutputStream, reader.CurrentEncoding))
                                     {
@@ -136,15 +134,12 @@ namespace VDS.Web
                                 }
                             }
                         }
-
-                        context.Response.Close();
                         return;
                     }
                 }
 
                 //If we get out of the foreach then the extension is not servable
                 context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                context.Response.Close();
             }
         }
     }

@@ -64,7 +64,8 @@
     <Compile Include="HandlerHelper.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SparqlHttpHandlers.cs" />
+    <Compile Include="RdfServerOptions.cs" />
+    <Compile Include="SparqlHandlersCollection.cs" />
     <Compile Include="SparqlServerHandler.cs" />
   </ItemGroup>
   <ItemGroup>

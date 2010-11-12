@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading;
+using VDS.Web.Logging;
 
 namespace VDS.Web
 {
@@ -19,7 +20,9 @@ namespace VDS.Web
         private bool _shouldTerminate = false;
         private HandleRequestDelegate _delegate;
         private bool _disposed = false;
+
         private HttpServerState _state = new HttpServerState();
+        private List<IHttpLogger> _loggers = new List<IHttpLogger>();
 
         /// <summary>
         /// Constant for using accepting requests to the port from any host name
@@ -45,6 +48,9 @@ namespace VDS.Web
 
         public HttpServer(int port, HttpListenerHandlerCollection handlers, bool autostart)
             : this(DefaultHost, port, handlers, autostart) { }
+
+        public HttpServer(String host, int port, HttpListenerHandlerCollection handlers)
+            : this(host, port, handlers, false) { }
 
         public HttpServer(String host, int port, HttpListenerHandlerCollection handlers, bool autostart)
         {
@@ -83,6 +89,21 @@ namespace VDS.Web
             {
                 return this._state;
             }
+        }
+
+        public void AddLogger(IHttpLogger logger)
+        {
+            this._loggers.Add(logger);
+        }
+
+        public void RemoveLogger(IHttpLogger logger)
+        {
+            this._loggers.Remove(logger);
+        }
+
+        public void ClearLoggers()
+        {
+            this._loggers.Clear();
         }
 
         public void Start()
@@ -143,15 +164,13 @@ namespace VDS.Web
             }
             catch (NoHandlerException noHandlerEx)
             {
-                //TODO: Log error
+                this.LogErrors(noHandlerEx);
                 context.Response.StatusCode = (int)HttpStatusCode.MethodNotAllowed;
-                context.Response.Close();
             }
             catch (HttpServerException serverEx)
             {
-                //TODO: Log error
+                this.LogErrors(serverEx);
                 context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                context.Response.Close();
             }
 
             return context;
@@ -162,12 +181,28 @@ namespace VDS.Web
             try
             {
                 HttpListenerContext context = this._delegate.EndInvoke(result);
-
+                this.LogRequests(context);
                 context.Response.Close();
             }
             catch (Exception ex)
             {
-                //TODO: Log errors here
+                this.LogErrors(ex);
+            }
+        }
+
+        private void LogRequests(HttpListenerContext context)
+        {
+            foreach (IHttpLogger logger in this._loggers)
+            {
+                logger.LogRequest(context);
+            }
+        }
+
+        private void LogErrors(Exception ex)
+        {
+            foreach (IExtendedHttpLogger logger in this._loggers.OfType<IExtendedHttpLogger>())
+            {
+                logger.LogError(ex);
             }
         }
 

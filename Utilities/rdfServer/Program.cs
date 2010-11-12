@@ -6,6 +6,7 @@ using System.Text;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.Web;
+using VDS.Web.Logging;
 
 namespace rdfServer
 {
@@ -13,35 +14,58 @@ namespace rdfServer
     {
         static void Main(string[] args)
         {
-            String configFile;
-            if (args.Length == 0)
-            {
-                configFile = "default.ttl";
-            } 
-            else
-            {
-                configFile = args[0];
-            }
+            RdfServerOptions options = new RdfServerOptions(args);
 
-            HttpListenerHandlerCollection handlers = new SparqlHandlersCollection();
-            using (HttpServer server = new HttpServer(1986, handlers))
+            HttpListenerHandlerCollection handlers = new SparqlHandlersCollection(options);
+            try
             {
-                //Need to load up the Configuration Graph and add to Server State
-                Graph g = new Graph();
-                try
+                using (HttpServer server = new HttpServer(options.Host, options.Port, handlers))
                 {
-                    FileLoader.Load(g, configFile);
-                    server.State["ConfigurationGraph"] = g;
-
-                    Console.WriteLine("rdfServer: Running");
-                    while (true)
+                    //Need to load up the Configuration Graph and add to Server State
+                    Graph g = new Graph();
+                    try
                     {
-                        server.Start();
+                        FileLoader.Load(g, options.ConfigurationFile);
+                        server.State["ConfigurationGraph"] = g;
+
+                        //Setup Logging appropriately
+                        if (options.LogFile != null)
+                        {
+                            server.AddLogger(new FileLogger(options.LogFile, options.LogFormat));
+                        }
+                        if (options.VerboseMode)
+                        {
+                            server.AddLogger(new ConsoleLogger(options.LogFormat));
+                        }
+                        else
+                        {
+                            server.AddLogger(new ConsoleErrorLogger());
+                        }
+
+                        Console.WriteLine("rdfServer: Running");
+                        while (true)
+                        {
+                            server.Start();
+                        }
+                    }
+                    catch (FileNotFoundException)
+                    {
+                        Console.Error.WriteLine("rdfServer: Error: Configuration File '" + options.ConfigurationFile + "' was not found");
                     }
                 }
-                catch (FileNotFoundException)
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine("rdfServer: Error: An unexpected error occurred while trying to start up the Server.  See subsequent error messages for details:");
+                Console.Error.WriteLine(ex.Message);
+                Console.Error.WriteLine(ex.StackTrace);
+                while (ex.InnerException != null)
                 {
-                    Console.Error.WriteLine("rdfServer: Error: Configuration File '" + configFile + "' was not found");
+                    Console.Error.WriteLine();
+                    Console.Error.WriteLine("Inner Exception:");
+                    Console.Error.WriteLine(ex.InnerException.Message);
+                    Console.Error.WriteLine(ex.InnerException.StackTrace);
+                    ex = ex.InnerException;
                 }
             }
         }

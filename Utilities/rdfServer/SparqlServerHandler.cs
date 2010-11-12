@@ -71,8 +71,6 @@ namespace rdfServer
                     context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                     break;
             }
-
-            context.Response.Close();
         }
 
         /// <summary>
@@ -92,7 +90,6 @@ namespace rdfServer
             if (!form.IsValid)
             {
                 context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                context.Response.Close();
                 return;
             }
 
@@ -109,13 +106,11 @@ namespace rdfServer
                 if (this._config.ShowQueryForm)
                 {
                     this.ShowQueryForm(context);
-                    context.Response.Close();
                     return;
                 }
                 else
                 {
                     context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                    context.Response.Close();
                     return;
                 }
             }
@@ -250,7 +245,6 @@ namespace rdfServer
                 //Now we can finally make the query and return the results
                 Object result = this._config.QueryProcessor.ProcessQuery(query);
                 this.ProcessQueryResults(context, result);
-                context.Response.Close();
             }
             catch (RdfParseException parseEx)
             {
@@ -346,7 +340,6 @@ namespace rdfServer
             if (!form.IsValid)
             {
                 context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                context.Response.Close();
                 return;
             }
 
@@ -363,13 +356,11 @@ namespace rdfServer
                 if (this._config.ShowUpdateForm)
                 {
                     this.ShowUpdateForm(context);
-                    context.Response.Close();
                     return;
                 }
                 else
                 {
                     context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                    context.Response.Close();
                     return;
                 }
             }

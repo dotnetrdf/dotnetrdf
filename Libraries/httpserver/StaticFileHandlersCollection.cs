@@ -24,6 +24,7 @@ namespace VDS.Web
 
         public override void Initialise(HttpServerState state)
         {
+            base.Initialise(state);
             state["BaseDirectory"] = this._baseDirectory;
         }
     }

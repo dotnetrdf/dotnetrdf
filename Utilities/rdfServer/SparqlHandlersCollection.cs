@@ -8,9 +8,30 @@ namespace rdfServer
 {
     public class SparqlHandlersCollection : HttpListenerHandlerCollection
     {
-        public SparqlHandlersCollection()
+        private RdfServerOptions _options;
+
+        public SparqlHandlersCollection(RdfServerOptions options)
         {
-            base.AddMapping(new HttpRequestMapping(HttpRequestMapping.AllVerbs, HttpRequestMapping.AnyPath, typeof(SparqlServerHandler)));
+            this._options = options;
+            if (options.BaseDirectory == null)
+            {
+                base.AddMapping(new HttpRequestMapping(HttpRequestMapping.AllVerbs, HttpRequestMapping.AnyPath, typeof(SparqlServerHandler)));
+            }
+            else
+            {
+                base.AddMapping(new HttpRequestMapping(HttpRequestMapping.AllVerbs, "/query", typeof(SparqlServerHandler)));
+                base.AddMapping(new HttpRequestMapping(HttpRequestMapping.AllVerbs, "/update", typeof(SparqlServerHandler)));
+                base.AddMapping(new HttpRequestMapping(HttpRequestMapping.AllVerbs, HttpRequestMapping.AnyPath, typeof(StaticFileHandler)));
+            }
+        }
+
+        public override void Initialise(HttpServerState state)
+        {
+            base.Initialise(state);
+            if (this._options.BaseDirectory != null)
+            {
+                state["BaseDirectory"] = this._options.BaseDirectory;
+            }
         }
     }
 }
