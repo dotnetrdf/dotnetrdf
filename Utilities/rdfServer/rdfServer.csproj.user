@@ -1,5 +1,5 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <StartArguments>-base . -log log.txt -format common -service install TestService5</StartArguments>
+    <StartArguments>-base . -log log.txt -format common -service run TestService5</StartArguments>
   </PropertyGroup>
 </Project>
