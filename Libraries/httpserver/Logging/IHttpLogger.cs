@@ -8,7 +8,7 @@ namespace VDS.Web.Logging
 {
     public interface IHttpLogger : IDisposable
     {
-        void LogRequest(HttpListenerContext context);
+        void LogRequest(HttpServerContext context);
     }
 
     public interface IExtendedHttpLogger : IHttpLogger

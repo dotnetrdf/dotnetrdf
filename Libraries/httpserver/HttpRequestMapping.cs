@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Text;
+using VDS.Web.Handlers;
 
 namespace VDS.Web
 {
@@ -136,7 +137,7 @@ namespace VDS.Web
             }
         }
 
-        public bool AcceptsRequest(HttpListenerContext context)
+        public bool AcceptsRequest(HttpServerContext context)
         {
             if (this._mode == PathMode.Unknown) return false;
 

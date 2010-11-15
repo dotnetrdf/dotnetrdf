@@ -17,6 +17,9 @@ namespace VDS.Web
         /// </summary>
         private const String WWWFormURLEncoded = "application/x-www-form-urlencoded";
 
+        public FormVariables(HttpServerContext context)
+            : this(context.InnerContext) { }
+
         public FormVariables(HttpListenerContext context)
         {
             if (context.Request.HasEntityBody && context.Request.ContentType.Equals(WWWFormURLEncoded))

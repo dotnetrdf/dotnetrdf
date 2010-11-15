@@ -6,6 +6,7 @@ using System.Text;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.Web;
+using VDS.Web.Handlers;
 using VDS.Web.Logging;
 
 namespace rdfServer
@@ -16,7 +17,7 @@ namespace rdfServer
         {
             RdfServerOptions options = new RdfServerOptions(args);
 
-            HttpListenerHandlerCollection handlers = new SparqlHandlersCollection(options);
+            IHttpListenerHandlerCollection handlers = new SparqlHandlersCollection(options);
             try
             {
                 using (HttpServer server = new HttpServer(options.Host, options.Port, handlers))
@@ -26,6 +27,7 @@ namespace rdfServer
                     try
                     {
                         FileLoader.Load(g, options.ConfigurationFile);
+                        server.BaseDirectory = options.BaseDirectory;
                         server.State["ConfigurationGraph"] = g;
 
                         //Setup Logging appropriately

@@ -19,7 +19,7 @@ namespace VDS.Web.Logging
             }
         }
 
-        public void LogRequest(System.Net.HttpListenerContext context)
+        public void LogRequest(HttpServerContext context)
         {
             //Does Nothing
         }

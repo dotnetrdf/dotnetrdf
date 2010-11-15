@@ -39,7 +39,7 @@ namespace VDS.Web.Logging
             }
         }
 
-        public void LogRequest(HttpListenerContext context)
+        public void LogRequest(HttpServerContext context)
         {
             StringBuilder logLine = new StringBuilder();
             String logPart;

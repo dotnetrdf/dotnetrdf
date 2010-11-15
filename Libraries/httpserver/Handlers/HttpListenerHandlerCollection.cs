@@ -4,9 +4,9 @@ using System.Linq;
 using System.Net;
 using System.Text;
 
-namespace VDS.Web
+namespace VDS.Web.Handlers
 {
-    public abstract class HttpListenerHandlerCollection
+    public class HttpListenerHandlerCollection : VDS.Web.Handlers.IHttpListenerHandlerCollection
     {
         private List<HttpRequestMapping> _mappings = new List<HttpRequestMapping>();
         private Dictionary<Type, IHttpListenerHandler> _cachedHandlers = new Dictionary<Type, IHttpListenerHandler>();
@@ -29,13 +29,14 @@ namespace VDS.Web
             this._mappings.Insert(insertAt, mapping);
         }
 
-        public IHttpListenerHandler GetHandler(HttpListenerContext context)
+        public IHttpListenerHandler GetHandler(HttpServerContext context)
         {
             for (int i = 0; i < this._mappings.Count; i++)
             {
                 if (this._mappings[i].AcceptsRequest(context))
                 {
                     Type t = this._mappings[i].HandlerType;
+
                     if (this._cachedHandlers.ContainsKey(t))
                     {
                         return this._cachedHandlers[t];
@@ -43,7 +44,7 @@ namespace VDS.Web
                     else
                     {
                         //Get a new instance and Cache if reusable
-                        try 
+                        try
                         {
                             IHttpListenerHandler handler = this._mappings[i].CreateHandlerInstance();
                             if (handler.IsReusable)
@@ -51,10 +52,10 @@ namespace VDS.Web
                                 this._cachedHandlers.Add(t, handler);
                             }
                             return handler;
-                        } 
+                        }
                         catch (Exception ex)
                         {
-                            throw new NoHandlerException("The Handler Type " + t.FullName + " which would have accepted the request failed to instantiate correctly", ex);
+                            throw new NoHandlerException("The Handler Type " + t.FullName + " which would have processed the request failed to instantiate correctly", ex);
                         }
                     }
                 }
@@ -63,13 +64,29 @@ namespace VDS.Web
             throw new NoHandlerException("There are No Handlers registered which can process this request");
         }
 
-        /// <summary>
-        /// Allows for the Handler Collection to optionally read/write values from the Server State for use by its contained Handlers
-        /// </summary>
-        /// <param name="state">HTTP Server State</param>
-        public virtual void Initialise(HttpServerState state)
+        public IHttpListenerHandler GetHandler(Type handlerType)
         {
-
+            if (this._cachedHandlers.ContainsKey(handlerType))
+            {
+                return this._cachedHandlers[handlerType];
+            }
+            else
+            {
+                //Get a new instance and Cache if reusable
+                try
+                {
+                    IHttpListenerHandler handler = this._mappings.FirstOrDefault(m => m.HandlerType.Equals(handlerType)).CreateHandlerInstance();
+                    if (handler.IsReusable)
+                    {
+                        this._cachedHandlers.Add(handlerType, handler);
+                    }
+                    return handler;
+                }
+                catch (Exception ex)
+                {
+                    throw new NoHandlerException("The Handler Type " + handlerType.FullName + " which would have processed the request failed to instantiate correctly", ex);
+                }
+            }
         }
     }
 }

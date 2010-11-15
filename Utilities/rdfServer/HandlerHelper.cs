@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using VDS.RDF.Web.Configuration;
+using VDS.Web;
 
 namespace rdfServer
 {
@@ -18,7 +19,7 @@ namespace rdfServer
         /// <param name="title">Error title</param>
         /// <param name="query">Sparql Query</param>
         /// <param name="ex">Error</param>
-        public static void HandleQueryErrors(HttpListenerContext context, BaseHandlerConfiguration config, String title, String query, Exception ex)
+        public static void HandleQueryErrors(HttpServerContext context, BaseHandlerConfiguration config, String title, String query, Exception ex)
         {
             HandleQueryErrors(context, config, title, query, ex, (int)HttpStatusCode.InternalServerError);
         }
@@ -32,7 +33,7 @@ namespace rdfServer
         /// <param name="query">Sparql Query</param>
         /// <param name="ex">Error</param>
         /// <param name="statusCode">HTTP Status Code to return</param>
-        public static void HandleQueryErrors(HttpListenerContext context, BaseHandlerConfiguration config, String title, String query, Exception ex, int statusCode)
+        public static void HandleQueryErrors(HttpServerContext context, BaseHandlerConfiguration config, String title, String query, Exception ex, int statusCode)
         {
             //Clear any existing Response and set our HTTP Status Code
             context.Response.StatusCode = statusCode;
@@ -89,7 +90,7 @@ namespace rdfServer
         /// <param name="title">Error title</param>
         /// <param name="update">SPARQL Update</param>
         /// <param name="ex">Error</param>
-        public static void HandleUpdateErrors(HttpListenerContext context, BaseHandlerConfiguration config, String title, String update, Exception ex)
+        public static void HandleUpdateErrors(HttpServerContext context, BaseHandlerConfiguration config, String title, String update, Exception ex)
         {
             HandleUpdateErrors(context, config, title, update, ex, (int)HttpStatusCode.InternalServerError);
         }
@@ -103,7 +104,7 @@ namespace rdfServer
         /// <param name="update">SPARQL Update</param>
         /// <param name="ex">Error</param>
         /// <param name="statusCode">HTTP Status Code to return</param>
-        public static void HandleUpdateErrors(HttpListenerContext context, BaseHandlerConfiguration config, String title, String update, Exception ex, int statusCode)
+        public static void HandleUpdateErrors(HttpServerContext context, BaseHandlerConfiguration config, String title, String update, Exception ex, int statusCode)
         {
             if (config != null)
             {

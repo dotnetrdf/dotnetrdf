@@ -13,6 +13,7 @@ using VDS.RDF.Update;
 using VDS.RDF.Web.Configuration.Server;
 using VDS.RDF.Writing;
 using VDS.Web;
+using VDS.Web.Handlers;
 
 namespace rdfServer
 {
@@ -28,12 +29,12 @@ namespace rdfServer
             }
         }
 
-        public void ProcessRequest(System.Net.HttpListenerContext context, HttpServer server)
+        public void ProcessRequest(HttpServerContext context)
         {
             if (this._config == null)
             {
                 //Try and get the Configuration Graph
-                IGraph g = (IGraph)server.State["ConfigurationGraph"];
+                IGraph g = (IGraph)context.Server.State["ConfigurationGraph"];
                 if (g == null) throw new DotNetRdfConfigurationException("The HTTP Server does not contain a Configuration Graph in its State Information");
 
                 //Generate the expected Path and try and load the Configuration using the appropriate Node
@@ -77,7 +78,7 @@ namespace rdfServer
         /// Processes Query requests
         /// </summary>
         /// <param name="context">HTTP Context</param>
-        public void ProcessQueryRequest(HttpListenerContext context)
+        public void ProcessQueryRequest(HttpServerContext context)
         {
             if (this._config.QueryProcessor == null)
             {
@@ -277,7 +278,7 @@ namespace rdfServer
         /// </summary>
         /// <param name="context">Context of the HTTP Request</param>
         /// <param name="result">Results of the Sparql Query</param>
-        protected void ProcessQueryResults(HttpListenerContext context, Object result)
+        protected void ProcessQueryResults(HttpServerContext context, Object result)
         {
             //Return the Results
             String ctype;
@@ -327,7 +328,7 @@ namespace rdfServer
         /// Processes Update requests
         /// </summary>
         /// <param name="context">HTTP Context</param>
-        public void ProcessUpdateRequest(HttpListenerContext context)
+        public void ProcessUpdateRequest(HttpServerContext context)
         {
             if (this._config.UpdateProcessor == null)
             {
@@ -520,7 +521,7 @@ namespace rdfServer
         /// <param name="title">Error title</param>
         /// <param name="query">Sparql Query</param>
         /// <param name="ex">Error</param>
-        protected virtual void HandleQueryErrors(HttpListenerContext context, String title, String query, Exception ex)
+        protected virtual void HandleQueryErrors(HttpServerContext context, String title, String query, Exception ex)
         {
             HandlerHelper.HandleQueryErrors(context, this._config, title, query, ex);
         }
@@ -533,7 +534,7 @@ namespace rdfServer
         /// <param name="query">Sparql Query</param>
         /// <param name="ex">Error</param>
         /// <param name="statusCode">HTTP Status Code to return</param>
-        protected virtual void HandleQueryErrors(HttpListenerContext context, String title, String query, Exception ex, int statusCode)
+        protected virtual void HandleQueryErrors(HttpServerContext context, String title, String query, Exception ex, int statusCode)
         {
             HandlerHelper.HandleQueryErrors(context, this._config, title, query, ex, statusCode);
         }
@@ -545,7 +546,7 @@ namespace rdfServer
         /// <param name="title">Error title</param>
         /// <param name="update">SPARQL Update</param>
         /// <param name="ex">Error</param>
-        protected virtual void HandleUpdateErrors(HttpListenerContext context, String title, String update, Exception ex)
+        protected virtual void HandleUpdateErrors(HttpServerContext context, String title, String update, Exception ex)
         {
             HandlerHelper.HandleUpdateErrors(context, this._config, title, update, ex);
         }
@@ -558,7 +559,7 @@ namespace rdfServer
         /// Generates a SPARQL Query Form
         /// </summary>
         /// <param name="context">HTTP Context</param>
-        protected virtual void ShowQueryForm(HttpListenerContext context)
+        protected virtual void ShowQueryForm(HttpServerContext context)
         {
             //Set Content Type
             context.Response.ContentType = "text/html";
@@ -668,7 +669,7 @@ namespace rdfServer
         /// Generates a SPARQL Update Form
         /// </summary>
         /// <param name="context">HTTP Context</param>
-        protected virtual void ShowUpdateForm(HttpListenerContext context)
+        protected virtual void ShowUpdateForm(HttpServerContext context)
         {
             //Set Content Type
             context.Response.ContentType = "text/html";

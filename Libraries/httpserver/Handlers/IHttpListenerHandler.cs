@@ -4,7 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 
-namespace VDS.Web
+namespace VDS.Web.Handlers
 {
     /// <summary>
     /// Interface for Handlers which handle requests made to a <see cref="HttpListener">HttpListener</see>
@@ -24,6 +24,6 @@ namespace VDS.Web
         /// </summary>
         /// <param name="context">HTTP Listener Context</param>
         /// <param name="server">HTTP Server</param>
-        void ProcessRequest(HttpListenerContext context, HttpServer server);
+        void ProcessRequest(HttpServerContext context);
     }
 }

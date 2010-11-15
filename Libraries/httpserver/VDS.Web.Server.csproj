@@ -40,24 +40,31 @@
     <Reference Include="System.Net">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Security" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration\VirtualDirectoryManager.cs" />
+    <Compile Include="Configuration\VirtualDirectoryMapping.cs" />
+    <Compile Include="Handlers\IHttpListenerHandlerCollection.cs" />
+    <Compile Include="HttpServerContext.cs" />
     <Compile Include="Logging\ApacheStyleLogger.cs" />
     <Compile Include="Logging\ConsoleErrorLogger.cs" />
     <Compile Include="Logging\FileLogger.cs" />
     <Compile Include="Logging\IHttpLogger.cs" />
-    <Compile Include="StaticFileHandler.cs" />
+    <Compile Include="Modules\IHttpListenerModule.cs" />
+    <Compile Include="Handlers\StaticFileHandler.cs" />
     <Compile Include="FormVariables.cs" />
-    <Compile Include="HttpListenerHandlerCollection.cs" />
+    <Compile Include="Handlers\HttpListenerHandlerCollection.cs" />
     <Compile Include="HttpRequestMapping.cs" />
     <Compile Include="HttpServer.cs" />
     <Compile Include="HttpServerException.cs" />
     <Compile Include="HttpServerState.cs" />
-    <Compile Include="IHttpListenerHandler.cs" />
+    <Compile Include="Handlers\IHttpListenerHandler.cs" />
     <Compile Include="MimeTypeMapping.cs" />
+    <Compile Include="Modules\LoggingModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="StaticFileHandlersCollection.cs" />
+    <Compile Include="Handlers\StaticFileHandlersCollection.cs" />
     <Compile Include="Tools.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 
-namespace VDS.Web
+namespace VDS.Web.Handlers
 {
     /// <summary>
     /// A HTTP Listener Handler which serves a variety of File Formats as Plain Text/Binary Data
@@ -38,20 +38,17 @@ namespace VDS.Web
             }
         }
 
-        public void ProcessRequest(HttpListenerContext context, HttpServer server)
+        public void ProcessRequest(HttpServerContext context)
         {
-            String baseDir = (String)server.State["BaseDirectory"];
-            if (baseDir == null)
+            String path = context.Server.MapPath(context.Request.Url.AbsolutePath); 
+            if (path == null)
             {
-                //If No Base Directory can't find anything
-                context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                //Don't accept paths that are invalid
+                context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
                 return;
             }
 
-            String path = context.Request.Url.AbsolutePath;
-            if (path.Length > 1) path = path.Substring(1);
-
-            if (path.Equals("/") || path.Equals(String.Empty))
+            if (path.EndsWith("/") || path.Equals(String.Empty))
             {
                 //TODO: Directory Listing
                 context.Response.StatusCode = (int)HttpStatusCode.NotFound;
@@ -64,14 +61,7 @@ namespace VDS.Web
                     if (path.EndsWith(mapping.Extension))
                     {
                         //Map Path to a File System Path
-                        String actualPath = Path.Combine(baseDir, path.Replace('/', Path.DirectorySeparatorChar));
-                        if (!actualPath.StartsWith(baseDir))
-                        {
-                            //Don't accept paths that try to go outside the base directory
-                            context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-                            return;
-                        }
-                        else if (!File.Exists(actualPath))
+                        if (!File.Exists(path))
                         {
                             //If File doesn't exist then 404
                             context.Response.StatusCode = (int)HttpStatusCode.NotFound;
@@ -86,7 +76,7 @@ namespace VDS.Web
                             if (DateTime.TryParse(ifModSince, out dt))
                             {
                                 dt = dt.ToUniversalTime();
-                                DateTime modified = File.GetLastWriteTimeUtc(actualPath);
+                                DateTime modified = File.GetLastWriteTimeUtc(path);
                                 if (modified <= dt)
                                 {
                                     context.Response.StatusCode = (int)HttpStatusCode.NotModified;
@@ -99,14 +89,14 @@ namespace VDS.Web
                         //Return a 200 OK with appropriate MIME Type and Encoding
                         context.Response.ContentType = mapping.MimeType;
                         context.Response.StatusCode = (int)HttpStatusCode.OK;
-                        context.Response.AddHeader("Last-Modified", File.GetLastWriteTimeUtc(actualPath).ToRfc2822());
+                        context.Response.AddHeader("Last-Modified", File.GetLastWriteTimeUtc(path).ToRfc2822());
 
                         if (!context.Request.HttpMethod.Equals("HEAD"))
                         {
                             if (mapping.IsBinaryData)
                             {
-                                context.Response.ContentLength64 = new FileInfo(actualPath).Length;
-                                using (StreamReader input = new StreamReader(actualPath))
+                                context.Response.ContentLength64 = new FileInfo(path).Length;
+                                using (StreamReader input = new StreamReader(path))
                                 {
                                     using (Stream output = context.Response.OutputStream)
                                     {
@@ -118,7 +108,7 @@ namespace VDS.Web
                             }
                             else
                             {
-                                using (StreamReader reader = new StreamReader(actualPath, true))
+                                using (StreamReader reader = new StreamReader(path, true))
                                 {
                                     //context.Response.ContentLength64 = new FileInfo(actualPath).Length;
                                     context.Response.ContentEncoding = reader.CurrentEncoding;
