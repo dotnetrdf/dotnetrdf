@@ -50,9 +50,9 @@ namespace VDS.Web
                             String[] kvp = pair.Split(new char[] { '=' }, 2);
                             if (!this._values.ContainsKey(kvp[0]))
                             {
-                                this._values.Add(kvp[0], new List<String>());
+                                this._values.Add(Uri.UnescapeDataString(kvp[0]), new List<String>());
                             }
-                            this._values[kvp[0]].Add(kvp[1]);
+                            this._values[kvp[0]].Add(Uri.UnescapeDataString(kvp[1]));
                         }
                         else
                         {

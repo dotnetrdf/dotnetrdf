@@ -85,6 +85,7 @@ namespace VDS.Web
             }
 
             //Check Handler Type implements IHttpListenerHandler
+            if (handlerType == null) throw new ArgumentNullException("handlerType", "Handler Type cannot be null");
             if (!handlerType.GetInterfaces().Contains(typeof(IHttpListenerHandler)))
             {
                 throw new ArgumentException("The Type given for the Handler type must implement the IHttpListenerHandler interface");

@@ -14,7 +14,7 @@ namespace rdfServer
         private String _host = HttpServer.DefaultHost;
         private String _configFile = "default.ttl";
         private String _logFile = null;
-        private String _logFormat = ApacheStyleLogger.CommonLogFormat;
+        private String _logFormat = ApacheStyleLogger.LogCommon;
         private bool _verbose = false;
         private String _baseDir = null;
 
@@ -102,14 +102,7 @@ namespace rdfServer
                                 i++;
                                 this._logFormat = args[i];
                                 Console.WriteLine("rdfServer: Log Format set to " + this._logFormat);
-                                if (this._logFormat.Equals("common"))
-                                {
-                                    this._logFormat = ApacheStyleLogger.CommonLogFormat;
-                                }
-                                else if (this._logFormat.Equals("combined"))
-                                {
-                                    this._logFormat = ApacheStyleLogger.CombinedLogFormat;
-                                }
+                                this._logFormat = ApacheStyleLogger.GetLogFormat(this._logFormat);
                             }
                             else
                             {

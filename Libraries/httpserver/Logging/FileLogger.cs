@@ -11,7 +11,7 @@ namespace VDS.Web.Logging
         private String _logFile;
 
         public FileLogger(String logFile)
-            : this(logFile, CommonLogFormat) { }
+            : this(logFile, LogCommon) { }
 
         public FileLogger(String logFile, String logFormatString)
             : base(logFormatString)
@@ -53,7 +53,7 @@ namespace VDS.Web.Logging
         }
 
         public StreamLogger(StreamWriter writer)
-            : this(writer, CommonLogFormat) { }
+            : this(writer, LogCommon) { }
 
         public StreamLogger(Stream stream)
             : this(new StreamWriter(stream)) { }
@@ -79,7 +79,7 @@ namespace VDS.Web.Logging
             : base(logFormatString) { }
 
         public ConsoleLogger()
-            : this(CommonLogFormat) { }
+            : this(LogCommon) { }
 
         protected override void AppendToLog(string line)
         {

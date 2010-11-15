@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Xml;
 
 namespace VDS.Web
 {
@@ -32,6 +33,13 @@ namespace VDS.Web
             {
                 return address;
             }
+        }
+
+        public static String GetSafeNamedItem(this XmlAttributeCollection attributes, String name)
+        {
+            XmlNode attr = attributes.GetNamedItem(name);
+            if (attr == null) return null;
+            return attr.Value;
         }
     }
 

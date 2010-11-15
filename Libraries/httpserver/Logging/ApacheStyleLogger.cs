@@ -15,15 +15,16 @@ namespace VDS.Web.Logging
         private String[] _logParts;
 
         public const String ClfDateFormat = "[dd/MMM/yyyy:hh:mm:ss zzz]";
-        public const String CommonLogFormat = "%h %l %u %t \"%r\" %>s %b";
-        public const String CombinedLogFormat = CommonLogFormat + " \"%{Referer}i\" \"%{User-Agent}i\"";
+        public const String LogCommon = "%h %l %u %t \"%r\" %>s %b";
+        public const String LogCombined = LogCommon + " \"%{Referer}i\" \"%{User-Agent}i\"";
         public const String LogAll = "%a %A %B %b %h %H %l %m %p %P %q \"%r\" %s %>s %t %U \"%u\" \"%{Referer}i \"%{User}i\" \"%{Accept}i \"%{Content-Type}o";
+        public const String LogUserAgent = "\"%{User-Agent}i\"";
 
         public ApacheStyleLogger(String logFormatString)
         {
             if (logFormatString == null || logFormatString.Equals(String.Empty))
             {
-                this._formatString = CommonLogFormat;
+                this._formatString = LogCommon;
             }
             else
             {
@@ -36,6 +37,23 @@ namespace VDS.Web.Logging
             else
             {
                 this._logParts = new String[] { this._formatString };
+            }
+        }
+
+        public static String GetLogFormat(String format)
+        {
+            switch (format)
+            {
+                case "common":
+                    return ApacheStyleLogger.LogCommon;
+                case "combined":
+                    return ApacheStyleLogger.LogCombined;
+                case "all":
+                    return ApacheStyleLogger.LogAll;
+                case "user-agent":
+                    return ApacheStyleLogger.LogUserAgent;
+                default:
+                    return format;
             }
         }
 

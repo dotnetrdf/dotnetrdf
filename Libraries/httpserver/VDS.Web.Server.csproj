@@ -33,21 +33,32 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.Management" />
     <Reference Include="System.Net">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Security" />
+    <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration\IConfigurationLoader.cs" />
+    <Compile Include="Configuration\MimeTypeManager.cs" />
     <Compile Include="Configuration\VirtualDirectoryManager.cs" />
     <Compile Include="Configuration\VirtualDirectoryMapping.cs" />
     <Compile Include="Handlers\IHttpListenerHandlerCollection.cs" />
     <Compile Include="HttpServerContext.cs" />
+    <Compile Include="HttpServerService.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="HttpServerService.Designer.cs">
+      <DependentUpon>HttpServerService.cs</DependentUpon>
+    </Compile>
     <Compile Include="Logging\ApacheStyleLogger.cs" />
     <Compile Include="Logging\ConsoleErrorLogger.cs" />
     <Compile Include="Logging\FileLogger.cs" />
@@ -61,11 +72,28 @@
     <Compile Include="HttpServerException.cs" />
     <Compile Include="HttpServerState.cs" />
     <Compile Include="Handlers\IHttpListenerHandler.cs" />
-    <Compile Include="MimeTypeMapping.cs" />
+    <Compile Include="Configuration\MimeTypeMapping.cs" />
     <Compile Include="Modules\LoggingModule.cs" />
+    <Compile Include="HttpServerInstaller.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="HttpServerInstaller.Designer.cs">
+      <DependentUpon>HttpServerInstaller.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Handlers\StaticFileHandlersCollection.cs" />
     <Compile Include="Tools.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="server.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="HttpServerInstaller.resx">
+      <DependentUpon>HttpServerInstaller.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

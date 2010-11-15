@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Text;
 using System.Threading;
+using System.Xml;
 using VDS.Web.Configuration;
 using VDS.Web.Handlers;
 using VDS.Web.Logging;
@@ -22,6 +24,7 @@ namespace VDS.Web
         private List<IHttpListenerModule> _preRequestModules = new List<IHttpListenerModule>();
         private List<IHttpListenerModule> _preResponseModules = new List<IHttpListenerModule>();
         private VirtualDirectoryManager _virtualDirs;
+        private MimeTypeManager _mimeTypes;
 
         private Thread _serverThread;
         private bool _shouldTerminate = false;
@@ -47,8 +50,14 @@ namespace VDS.Web
         /// Constant for the Default Port used if none is specified (80)
         /// </summary>
         public const int DefaultPort = 80;
+        /// <summary>
+        /// Constant for the Default Configuration File used
+        /// </summary>
+        public const String DefaultConfigurationFile = "server.config";
 
         #region Constructors
+
+        #region Explicit Constructors
 
         public HttpServer(String host)
             : this(host, new HttpListenerHandlerCollection(), false) { }
@@ -91,14 +100,325 @@ namespace VDS.Web
             if (!HttpListener.IsSupported) throw new PlatformNotSupportedException("HttpServer is not able to run on your Platform as HttpListener is not supported");
 
             this._handlers = handlers;
+            this._mimeTypes = new MimeTypeManager();
             this._preResponseModules.Add(new LoggingModule());
-            this.Intialise(host, port);
+            this.Initialise(host, port);
 
             //Auto-start if specified
             if (autostart) this.Start();
         }
 
-        private void Intialise(String host, int port)
+        #endregion
+
+        #region Using Configuration File Constructors
+
+        public HttpServer(String host, int port, String configFile, bool autostart)
+        {
+            if (host == null) throw new ArgumentNullException("host", "Cannot specify a null host, to specify any host please use the constant HttpServer.AnyHost");
+            if (!HttpListener.IsSupported) throw new PlatformNotSupportedException("HttpServer is not able to run on your Platform as HttpListener is not supported");
+            if (!File.Exists(configFile)) throw new ArgumentException("Cannot specify a non-existent Configuration File for the Server", "configFile");
+            
+            this._handlers = new HttpListenerHandlerCollection();
+
+            //Read in the Configuration File
+            try
+            {
+                XmlDocument doc = new XmlDocument();
+                doc.Load(configFile);
+
+                if (doc.DocumentElement.Name.Equals("server"))
+                {
+                    if (doc.DocumentElement.Attributes.Count > 0)
+                    {
+                        foreach (XmlAttribute attr in doc.DocumentElement.Attributes)
+                        {
+                            switch (attr.Name)
+                            {
+                                case "basedir":
+                                    String baseDir = attr.Value;
+                                    if (baseDir.Equals(".")) baseDir = Environment.CurrentDirectory;
+                                    if (!Directory.Exists(baseDir)) throw new HttpServerException("Configuration File specifies a base directory with the basedir attribute of the <server> element which is not a valid directory");
+                                    this._baseDirectory = baseDir;
+                                    if (!this._baseDirectory.EndsWith(new String(new char[]{Path.DirectorySeparatorChar}))) this._baseDirectory += Path.DirectorySeparatorChar;
+                                    break;
+                            }
+                        }
+                    }
+
+                    foreach (XmlNode child in doc.DocumentElement.ChildNodes)
+                    {
+                        //Ignore non-element Nodes (e.g. comments)
+                        if (child.NodeType != XmlNodeType.Element) continue;
+
+                        switch (child.Name)
+                        {
+                            case "appSettings":
+                                //Load App Settings
+                                foreach (XmlNode appSetting in child.ChildNodes)
+                                {
+                                    if (appSetting.NodeType != XmlNodeType.Element) continue;
+
+                                    if (appSetting.Name.Equals("add"))
+                                    {
+                                        String name = appSetting.Attributes.GetSafeNamedItem("key");
+                                        if (name == null) throw new HttpServerException("Configuration File is invalid since an <add> element in the <appSettings> section does not have a key attribute");
+                                        String value = appSetting.Attributes.GetSafeNamedItem("value");
+
+                                        this.State[name] = value;
+                                    }
+                                    else
+                                    {
+                                        throw new HttpServerException("Configuration File is invalid since one of the child elements of the <appSettings> element is not an <add> element");
+                                    }
+                                }
+                                break;
+
+                            case "virtualDirs":
+                                //Load Virtual Directories
+                                foreach (XmlNode vDir in child.ChildNodes)
+                                {
+                                    if (vDir.NodeType != XmlNodeType.Element) continue;
+
+                                    if (vDir.Name.Equals("virtualDir"))
+                                    {
+                                        String path = vDir.Attributes.GetSafeNamedItem("path");
+                                        if (path == null) throw new HttpServerException("Configuration File is invalid since a <virtualDir> element does not have the required path attribute");
+                                        String dir = vDir.Attributes.GetSafeNamedItem("directory");
+                                        if (dir == null) throw new HttpServerException("Configuration File is invalid since a <virtualDir> element does not have the required directory attribute");
+                                        if (!Directory.Exists(dir)) throw new HttpServerException("Configuration File is invalid since a <virtualDir> element specified a non-existent directory for its directory attribute");
+
+                                        this.AddVirtualDirectory(path, dir);
+                                    }
+                                    else
+                                    {
+                                        throw new HttpServerException("Configuration File is invalid since of the child elements of the <virtualDirs> element is not a <virtualDir> element");
+                                    }
+                                }
+                                break;
+
+                            case "modules":
+                                //Load Modules
+                                foreach (XmlNode moduleTypeNode in child.ChildNodes)
+                                {
+                                    if (moduleTypeNode.NodeType != XmlNodeType.Element) continue;
+
+                                    String moduleType;
+                                    switch (moduleTypeNode.Name)
+                                    {
+                                        case "prerequest":
+                                            foreach (XmlNode module in moduleTypeNode.ChildNodes)
+                                            {
+                                                moduleType = module.Attributes.GetSafeNamedItem("type");
+                                                if (moduleType == null) throw new HttpServerException("Configuration File is invalid since the a <module> element does not have the required type attribute");
+
+                                                try
+                                                {
+                                                    Object temp = Activator.CreateInstance(Type.GetType(moduleType));
+                                                    if (temp is IHttpListenerModule)
+                                                    {
+                                                        this.AddPreRequestModule((IHttpListenerModule)temp);
+                                                    }
+                                                    else
+                                                    {
+                                                        throw new HttpServerException("Configuration File is invalid since it contains a <module> element which specifies '" + moduleType + "' for its type attribute but this type does not implement the IHttpListenerModule interface");
+                                                    }
+                                                }
+                                                catch (Exception ex)
+                                                {
+                                                    throw new HttpServerException("Configuration File is invalid since it contains a <module> element which specifies '" + moduleType + "' for its type attribute but this type and this type could not be instantiated successfully", ex);
+                                                }
+                                            }
+                                            break;
+                                        case "preresponse":
+                                            foreach (XmlNode module in moduleTypeNode.ChildNodes)
+                                            {
+                                                moduleType = module.Attributes.GetSafeNamedItem("type");
+                                                if (moduleType == null) throw new HttpServerException("Configuration File is invalid since the a <module> element does not have the required type attribute");
+
+                                                try
+                                                {
+                                                    Object temp = Activator.CreateInstance(Type.GetType(moduleType));
+                                                    if (temp is IHttpListenerModule)
+                                                    {
+                                                        this.AddPreResponseModule((IHttpListenerModule)temp);
+                                                    }
+                                                    else
+                                                    {
+                                                        throw new HttpServerException("Configuration File is invalid since it contains a <module> element which specifies '" + moduleType + "' for its type attribute but this type does not implement the IHttpListenerModule interface");
+                                                    }
+                                                }
+                                                catch (Exception ex)
+                                                {
+                                                    throw new HttpServerException("Configuration File is invalid since it contains a <module> element which specifies '" + moduleType + "' for its type attribute but this type and this type could not be instantiated successfully", ex);
+                                                }
+                                            }
+                                            break;
+                                        default:
+                                            throw new HttpServerException("Configuration File is invalid since the <modules> element contains an unknown child element <" + moduleTypeNode.Name + ">");
+                                    }
+                                }
+
+                                break;
+
+                            case "handlers":
+                                //Load Handlers
+                                foreach (XmlNode handler in child.ChildNodes)
+                                {
+                                    if (handler.NodeType != XmlNodeType.Element) continue;
+
+                                    if (handler.Name.Equals("handler"))
+                                    {
+                                        String verb = handler.Attributes.GetSafeNamedItem("verb");
+                                        if (verb == null) verb = HttpRequestMapping.AllVerbs;
+                                        String path = handler.Attributes.GetSafeNamedItem("path");
+                                        if (path == null) path = HttpRequestMapping.AnyPath;
+                                        String type = handler.Attributes.GetSafeNamedItem("type");
+                                        if (type == null) throw new HttpServerException("Configuration File is invalid since one of the <handler> elements in the <handlers> section does not specify a type attribute");
+
+                                        Type t = Type.GetType(type);
+                                        if (t == null) throw new HttpServerException("Configuration File is invalid since the value '" + type + "' given for the type attribute of a <handler> element is not the type name of a valid type (you may be missing an Assembly reference of failed to specify a Fully Qualified Type Name");
+                                        this._handlers.AddMapping(new HttpRequestMapping(verb, path, t));
+                                    }
+                                    else
+                                    {
+                                        throw new HttpServerException("Configuration File is invalid since one of the child elements of the <handlers> element is not a <handler> element");
+                                    }
+                                }
+
+                                break;
+
+                            case "loggers":
+                                //Load Loggers
+                                foreach (XmlNode logger in child.ChildNodes)
+                                {
+                                    if (logger.NodeType != XmlNodeType.Element) continue;
+
+                                    String logFormat;
+                                    switch (logger.Name)
+                                    {
+                                        case "filelogger":
+                                            String logFile = logger.Attributes.GetSafeNamedItem("file");
+                                            if (logFile == null) throw new HttpServerException("Configuration File is invalid since a <filelogger> element does not have the required file attribute");
+                                            logFormat = logger.Attributes.GetSafeNamedItem("format");
+                                            if (logFormat == null) logFormat = "common";
+                                            logFormat = ApacheStyleLogger.GetLogFormat(logFormat);
+                                            this.AddLogger(new FileLogger(logFile, logFormat));
+                                            break;
+
+                                        case "consolelogger":
+                                            logFormat = logger.Attributes.GetSafeNamedItem("format");
+                                            if (logFormat == null) logFormat = "common";
+                                            logFormat = ApacheStyleLogger.GetLogFormat(logFormat);
+                                            String verbose = logger.Attributes.GetSafeNamedItem("verbose");
+                                            if (verbose == null) verbose = "false";
+                                            if (verbose.Equals("true"))
+                                            {
+                                                this.AddLogger(new ConsoleLogger());
+                                            }
+                                            else
+                                            {
+                                                this.AddLogger(new ConsoleErrorLogger());
+                                            }
+                                            break;
+
+                                        default:
+                                            if (logger.Attributes.GetNamedItem("loadwith") != null)
+                                            {
+                                                String loader = logger.Attributes["loadwith"].Value;
+                                                try
+                                                {
+                                                    Object temp = Activator.CreateInstance(Type.GetType(loader));
+                                                    if (temp is IConfigurationLoader)
+                                                    {
+                                                        ((IConfigurationLoader)temp).Load(child, this);
+                                                    }
+                                                    else
+                                                    {
+                                                        throw new HttpServerException("Configuration File contains unexpected logger element <" + logger.Name + "> whose loadwith attribute points to a type which does not implement the required IConfigurationLoader interface");
+                                                    }
+                                                }
+                                                catch (Exception ex)
+                                                {
+                                                    throw new HttpServerException("Configuration File contains unexpected logger element <" + logger.Name + "> whose loadwith attribute points to a type which could not be instantiated successfully or whose Load() method raised an exception", ex);
+                                                }
+                                            }
+                                            else
+                                            {
+                                                throw new HttpServerException("Configuration File contains unexpected logger element <" + logger.Name + "> which does not have a loadwith attribute to specify a type which implement IConfigurationLoader and can load its configuration information");
+                                            }
+                                            break;
+                                    }
+                                }
+                                break;
+
+                            default:
+                                //Unknown attributes are processed by an IConfigurationLoader specified by a @loadwith attribute
+                                if (child.Attributes.GetNamedItem("loadwith") != null)
+                                {
+                                    String loader = child.Attributes["loadwith"].Value;
+                                    try
+                                    {
+                                        Object temp = Activator.CreateInstance(Type.GetType(loader));
+                                        if (temp is IConfigurationLoader)
+                                        {
+                                            ((IConfigurationLoader)temp).Load(child, this);
+                                        }
+                                        else
+                                        {
+                                            throw new HttpServerException("Configuration File contains unexpected element <" + child.Name + "> whose loadwith attribute points to a type which does not implement the required IConfigurationLoader interface");
+                                        }
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        throw new HttpServerException("Configuration File contains unexpected element <" + child.Name + "> whose loadwith attribute points to a type which could not be instantiated successfully or whose Load() method raised an exception", ex);
+                                    }
+                                }
+                                else
+                                {
+                                    throw new HttpServerException("Configuration File contains unexpected element <" + child.Name + "> which does not have a loadwith attribute to specify a type which implement IConfigurationLoader and can load its configuration information");
+                                }
+                                break;
+                        }
+                    }
+                }
+                else
+                {
+                    throw new HttpServerException("Configuration File did not contain the required root element <server>");
+                }
+            }
+            catch (HttpServerException serverEx)
+            {
+                    throw;
+            }
+            catch (Exception ex)
+            {
+                throw new HttpServerException("Unable to create a HTTP Server instance since the Configuration File was invalid due to the following error: " + ex.Message, ex);
+            }
+
+            this.Initialise(host, port);
+
+            //Auto-start if specified
+            if (autostart) this.Start();
+        }
+
+        public HttpServer(String host, int port, String configFile)
+            : this(host, port, configFile, false) { }
+
+        public HttpServer(String host, String configFile, bool autostart)
+            : this(host, DefaultPort, configFile, autostart) { }
+
+        public HttpServer(String host, String configFile)
+            : this(host, DefaultPort, configFile, false) { }
+
+        public HttpServer(int port, String configFile, bool autostart)
+            : this(DefaultHost, port, configFile, autostart) { }
+
+        public HttpServer(int port, String configFile)
+            : this(DefaultHost, port, configFile, false) { }
+
+        #endregion
+
+        private void Initialise(String host, int port)
         {
             this._port = port;
             this._host = host;
@@ -436,6 +756,16 @@ namespace VDS.Web
                 //No Base Directory so cannot map URL paths to physical paths
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Gets the MIME Type for the response based on the file extension or null if the MIME type is not allowed to be served
+        /// </summary>
+        /// <param name="extension">File Extension</param>
+        /// <returns></returns>
+        public MimeTypeMapping GetMimeType(String extension)
+        {
+            return this._mimeTypes.GetMapping(extension);
         }
 
         public void RemapHandler(HttpServerContext context, Type handlerType)
