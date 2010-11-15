@@ -61,6 +61,7 @@
     </Compile>
     <Compile Include="Logging\ApacheStyleLogger.cs" />
     <Compile Include="Logging\ConsoleErrorLogger.cs" />
+    <Compile Include="Logging\EventLogger.cs" />
     <Compile Include="Logging\FileLogger.cs" />
     <Compile Include="Logging\IHttpLogger.cs" />
     <Compile Include="Modules\IHttpListenerModule.cs" />

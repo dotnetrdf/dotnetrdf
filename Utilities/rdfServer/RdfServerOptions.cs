@@ -18,6 +18,7 @@ namespace rdfServer
         Run,
         InstallService,
         UninstallService,
+        RunService,
         StartService,
         StopService,
         RestartService
@@ -194,6 +195,9 @@ namespace rdfServer
                                     case "restart":
                                         this._mode = RdfServerConsoleMode.RestartService;
                                         break;
+                                    case "run":
+                                        this._mode = RdfServerConsoleMode.RunService;
+                                        break;
                                     default:
                                         Console.Error.WriteLine("rdfServer: Error: Operation '" + op + "' is not a valid operation argument to be specified after the -s/-service operation");
                                         this._mode = RdfServerConsoleMode.Quit;
@@ -294,6 +298,7 @@ namespace rdfServer
                 {
                     server.AddLogger(new ConsoleErrorLogger());
                 }
+                server.AddLogger(new EventLogger(this.ServiceName));
             }
             catch (FileNotFoundException)
             {

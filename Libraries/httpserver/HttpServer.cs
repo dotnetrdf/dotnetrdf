@@ -636,10 +636,17 @@ namespace VDS.Web
 
                 if (this._listener.IsListening)
                 {
-                    HttpListenerContext context = this._listener.GetContext();
+                    try
+                    {
+                        HttpListenerContext context = this._listener.GetContext();
 
-                    //Hand it off to be processed asynchronously
-                    this._delegate.BeginInvoke(context, new AsyncCallback(this.EndRequest), null);
+                        //Hand it off to be processed asynchronously
+                        this._delegate.BeginInvoke(context, new AsyncCallback(this.EndRequest), null);
+                    }
+                    catch (Exception ex)
+                    {
+                        this.LogErrors(ex);
+                    }
                 }
             }
         }
