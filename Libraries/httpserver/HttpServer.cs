@@ -100,7 +100,7 @@ namespace VDS.Web
             if (!HttpListener.IsSupported) throw new PlatformNotSupportedException("HttpServer is not able to run on your Platform as HttpListener is not supported");
 
             this._handlers = handlers;
-            this._mimeTypes = new MimeTypeManager();
+            this._mimeTypes = new MimeTypeManager(true);
             this._preResponseModules.Add(new LoggingModule());
             this.Initialise(host, port);
 
@@ -171,6 +171,11 @@ namespace VDS.Web
                                         throw new HttpServerException("Configuration File is invalid since one of the child elements of the <appSettings> element is not an <add> element");
                                     }
                                 }
+                                break;
+
+                            case "mimeTypes":
+                                //MIME Type mappings
+                                this._mimeTypes = new MimeTypeManager(child);
                                 break;
 
                             case "virtualDirs":
@@ -394,6 +399,9 @@ namespace VDS.Web
             {
                 throw new HttpServerException("Unable to create a HTTP Server instance since the Configuration File was invalid due to the following error: " + ex.Message, ex);
             }
+
+            //If there was no <mimeTypes> section then use defaults
+            if (this._mimeTypes == null) this._mimeTypes = new MimeTypeManager(true);
 
             this.Initialise(host, port);
 

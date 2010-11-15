@@ -16,9 +16,13 @@ namespace VDS.Web
     {
         private HttpServer _server;
 
-        public HttpServerService()
+        public HttpServerService(String name)
         {
             InitializeComponent();
+            this.ServiceName = name;
+            this.CanShutdown = true;
+            this.CanStop = true;
+            this.CanPauseAndContinue = true;
         }
 
         protected override void OnStart(string[] args)

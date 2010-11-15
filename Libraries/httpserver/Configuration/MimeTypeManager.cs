@@ -10,7 +10,52 @@ namespace VDS.Web.Configuration
     {
         private Dictionary<String, MimeTypeMapping> _mappings = new Dictionary<string, MimeTypeMapping>();
 
-        public MimeTypeManager()
+        public MimeTypeManager(bool useDefaults)
+        {
+            if (useDefaults) this.InitialiseWithDefaults();
+        }
+
+        public MimeTypeManager(XmlNode node)
+        {
+            if (node.Name.Equals("mimeTypes"))
+            {
+                //Use Defaults?
+                //Do this first so user specified ones can override these settings
+                String useDefaults = node.Attributes.GetSafeNamedItem("usedefault");
+                if (useDefaults != null)
+                {
+                    if (useDefaults.ToLower().Equals("true")) this.InitialiseWithDefaults();
+                }
+
+                foreach (XmlNode mimeType in node.ChildNodes)
+                {
+                    if (mimeType.NodeType != XmlNodeType.Element) continue;
+
+                    if (mimeType.Name.Equals("mimeType"))
+                    {
+                        String ext = mimeType.Attributes.GetSafeNamedItem("extension");
+                        if (ext == null) throw new HttpServerException("Configuration File is invalid since a <mimeType> element does not have the required extension attribute");
+                        String type = mimeType.Attributes.GetSafeNamedItem("type");
+                        if (type == null) throw new HttpServerException("Configuration File is invalid since a <mimeTyoe> element does not have the required type attribute");
+                        String bin = mimeType.Attributes.GetSafeNamedItem("binary");
+                        if (bin == null) bin = "false";
+                        bin = bin.ToLower();
+
+                        this.AddMimeType(new MimeTypeMapping(ext, type, bin.Equals("true")));
+                    }
+                    else
+                    {
+                        throw new HttpServerException("Configuration File is invalid since the <mimeTypes> element contains an unexpected <" + mimeType.Name + "> element");
+                    }
+                }
+            }
+            else
+            {
+                throw new HttpServerException("MimeTypeManager constructor expected to receive a <mimeTypes> node but received a <" + node.Name + "> node");
+            }
+        }
+
+        private void InitialiseWithDefaults()
         {
             this.AddMimeType(new MimeTypeMapping(".html", "text/html"));
             this.AddMimeType(new MimeTypeMapping(".htm", "text/html"));
@@ -24,11 +69,6 @@ namespace VDS.Web.Configuration
             this.AddMimeType(new MimeTypeMapping(".gif", "image/gif", true));
             this.AddMimeType(new MimeTypeMapping(".png", "image/png", true));
             this.AddMimeType(new MimeTypeMapping(".bmp", "image/bmp", true));
-        }
-
-        public MimeTypeManager(XmlNode node)
-        {
-
         }
 
         public void AddMimeType(MimeTypeMapping mapping)

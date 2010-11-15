@@ -2,6 +2,11 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
 @prefix dnr: <http://www.dotnetrdf.org/configuration#>.
 
+# This is the default configuration file for rdfServer
+# You need to specify a HttpHandler with dnr:type VDS.RDF.Web.SparqlServer
+# You can then specify a Query and/or an Update Processor
+# You may specify a Protocol Processor as well
+
 <dotnetrdf:/*> a dnr:HttpHandler ;
 				 dnr:type "VDS.RDF.Web.SparqlServer" ;
 				 dnr:queryProcessor _:qProc ;
