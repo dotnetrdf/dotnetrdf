@@ -167,6 +167,8 @@ namespace VDS.RDF.Interop.Sesame
 
         protected abstract bool HasTripleInternal(Triple t);
 
+        protected abstract bool HasTriplesInternal(String askQuery);
+
         public bool hasStatement(org.openrdf.model.Statement s, bool b, params org.openrdf.model.Resource[] rarr)
         {
             Triple t = SesameConverter.FromSesame(s, this._mapping);
@@ -175,7 +177,18 @@ namespace VDS.RDF.Interop.Sesame
 
         public bool hasStatement(org.openrdf.model.Resource r, org.openrdf.model.URI uri, org.openrdf.model.Value v, bool b, params org.openrdf.model.Resource[] rarr)
         {
-            throw new NotImplementedException();
+            SparqlParameterizedString queryString = new SparqlParameterizedString();
+            queryString.QueryText = "ASK";
+            foreach (Uri u in rarr.ToContexts())
+            {
+                queryString.QueryText += "\nFROM <" + this._formatter.FormatUri(u) + ">";
+            }
+            queryString.QueryText += "\nWHERE { ?subject ?predicate ?object}";
+            if (r != null) queryString.SetVariable("subject", SesameConverter.FromSesameResource(r, this._mapping));
+            if (uri != null) queryString.SetVariable("predicate", SesameConverter.FromSesameUri(uri, this._mapping));
+            if (v != null) queryString.SetVariable("object", SesameConverter.FromSesameValue(v, this._mapping));
+
+            return this.HasTriplesInternal(queryString.ToString());
         }
 
         public bool isAutoCommit()

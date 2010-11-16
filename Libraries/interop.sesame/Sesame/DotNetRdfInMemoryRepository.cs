@@ -151,7 +151,13 @@ namespace VDS.RDF.Interop.Sesame
             }
             else
             {
-                throw new NotImplementedException();
+                foreach (Uri u in rarr.ToContexts())
+                {
+                    if (this._store.HasGraph(u))
+                    {
+                        this._store.Remove(u);
+                    }
+                }
             }
         }
 
@@ -171,16 +177,6 @@ namespace VDS.RDF.Interop.Sesame
             {
                 ((IFlushableStore)this._store).Flush();
             }
-        }
-
-        public void export(org.openrdf.rio.RDFHandler rdfh, params org.openrdf.model.Resource[] rarr)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void exportStatements(org.openrdf.model.Resource r, org.openrdf.model.URI uri, org.openrdf.model.Value v, bool b, org.openrdf.rio.RDFHandler rdfh, params org.openrdf.model.Resource[] rarr)
-        {
-            throw new NotImplementedException();
         }
 
         public override org.openrdf.repository.RepositoryResult getContextIDs()
@@ -243,6 +239,20 @@ namespace VDS.RDF.Interop.Sesame
         protected override bool HasTripleInternal(Triple t)
         {
             return this._store.Contains(t);
+        }
+
+        protected override bool HasTriplesInternal(string askQuery)
+        {
+            Object results = this._store.ExecuteQuery(askQuery);
+            if (results is SparqlResultSet)
+            {
+                SparqlResultSet rset = (SparqlResultSet)results;
+                return rset.ResultsType == SparqlResultsType.Boolean && rset.Result;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public override bool isEmpty()
@@ -338,7 +348,7 @@ namespace VDS.RDF.Interop.Sesame
 
         public override void removeNamespace(string str)
         {
-            throw new NotImplementedException();
+            this._factory.Graph.NamespaceMap.RemoveNamespace(str);
         }
 
         public override void setNamespace(string str1, string str2)
@@ -354,7 +364,16 @@ namespace VDS.RDF.Interop.Sesame
             }
             else
             {
-                throw new NotImplementedException();
+                List<Uri> contexts = rarr.ToContexts().Distinct().ToList();
+                int sum = 0;
+                foreach (Uri u in contexts)
+                {
+                    if (this._store.HasGraph(u))
+                    {
+                        sum += this._store.Graphs[u].Triples.Count;
+                    }
+                }
+                return sum;
             }
         }
     }

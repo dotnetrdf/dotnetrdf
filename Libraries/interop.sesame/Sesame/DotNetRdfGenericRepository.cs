@@ -329,6 +329,27 @@ namespace VDS.RDF.Interop.Sesame
             }
         }
 
+        protected override bool HasTriplesInternal(string askQuery)
+        {
+            if (this._manager is IQueryableGenericIOManager)
+            {
+                Object results = ((IQueryableGenericIOManager)this._manager).Query(askQuery);
+                if (results is SparqlResultSet)
+                {
+                    SparqlResultSet rset = (SparqlResultSet)results;
+                    return rset.ResultsType == SparqlResultsType.Boolean && rset.Result;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                throw new dotSesameRepo.RepositoryException("This dotNetRDF Generic Repository does not support detecting whether certain Statements exist in the Store");
+            }
+        }
+
         public override bool isEmpty()
         {
             throw new dotSesameRepo.RepositoryException("dotNetRDF Generic Repositories do no support indicating whether they are empty");
