@@ -41,12 +41,33 @@ namespace rdfServer
                 }
                 else
                 {
-                    EventLog.WriteEntry("rdfServer Started with options");
+                    EventLog.WriteEntry("rdfServer Started with options\n" + this._options.ToString());
                     options = this._options;
                 }
-                this._server = options.GetServerInstance();
+                try 
+                {
+                    this._server = options.GetServerInstance();
+
+                    EventLog.WriteEntry("HttpServer Instance for rdfServer created OK");
+                } 
+                catch (Exception ex)
+                {
+                    EventLog.WriteEntry("Failed to create the Server instance due to the error " + ex.Message);
+                    throw;
+                }
             }
-            this._server.Start();
+
+            try
+            {
+                this._server.Start();
+
+                EventLog.WriteEntry("HttpServer is " + ((this._server.IsRunning) ? "running" : "not running"));
+            }
+            catch (Exception ex)
+            {
+                EventLog.WriteEntry("HttpServer Failed to Start due to the error " + ex.Message);
+                throw;
+            }
         }
 
         public String[] StartupArguments

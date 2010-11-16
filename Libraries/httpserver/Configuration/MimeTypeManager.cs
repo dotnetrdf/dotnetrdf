@@ -64,6 +64,8 @@ namespace VDS.Web.Configuration
             this.AddMimeType(new MimeTypeMapping(".css", "text/css"));
             this.AddMimeType(new MimeTypeMapping(".js", "text/javascript"));
             this.AddMimeType(new MimeTypeMapping(".txt", "text/plain"));
+            this.AddMimeType(new MimeTypeMapping(".csv", "text/csv"));
+            this.AddMimeType(new MimeTypeMapping(".tsv", "text/tab-separated-values"));
             this.AddMimeType(new MimeTypeMapping(".jpg", "image/jpeg", true));
             this.AddMimeType(new MimeTypeMapping(".jpeg", "image/jpeg", true));
             this.AddMimeType(new MimeTypeMapping(".gif", "image/gif", true));

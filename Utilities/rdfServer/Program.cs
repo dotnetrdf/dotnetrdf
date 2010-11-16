@@ -63,7 +63,6 @@ namespace rdfServer
                     return;
 
                 case RdfServerConsoleMode.InstallService:
-                    Console.Error.WriteLine("rdfServer: Error: Service Installation is not yet supported");
                     try
                     {
                         //Find Location of the rdfServer executable

@@ -285,20 +285,38 @@ namespace rdfServer
                 FileLoader.Load(g, this.ConfigurationFile);
                 server.State["ConfigurationGraph"] = g;
 
+                //Add MIME Type Mappings for RDF File Types
+                server.AddMimeType(".rdf", MimeTypesHelper.GetCanonicalType(MimeTypesHelper.RdfXml));
+                server.AddMimeType(".nt", MimeTypesHelper.GetCanonicalType(MimeTypesHelper.NTriples));
+                server.AddMimeType(".ttl", MimeTypesHelper.GetCanonicalType(MimeTypesHelper.Turtle));
+                server.AddMimeType(".n3", MimeTypesHelper.GetCanonicalType(MimeTypesHelper.Notation3));
+                server.AddMimeType(".json", MimeTypesHelper.GetCanonicalType(MimeTypesHelper.Json));
+                server.AddMimeType(".trig", MimeTypesHelper.GetCanonicalType(MimeTypesHelper.TriG));
+                server.AddMimeType(".nq", MimeTypesHelper.GetCanonicalType(MimeTypesHelper.NQuads));
+                server.AddMimeType(".srx", MimeTypesHelper.GetCanonicalType(MimeTypesHelper.Sparql));
+
                 //Setup Logging appropriately
                 if (this.LogFile != null)
                 {
                     server.AddLogger(new FileLogger(this.LogFile, this.LogFormat));
                 }
-                if (this.VerboseMode)
+                if (this.Mode == RdfServerConsoleMode.Run)
                 {
-                    server.AddLogger(new ConsoleLogger(this.LogFormat));
+                    //Console Logging only applies when running from Console
+                    if (this.VerboseMode)
+                    {
+                        server.AddLogger(new ConsoleLogger(this.LogFormat));
+                    }
+                    else
+                    {
+                        server.AddLogger(new ConsoleErrorLogger());
+                    }
                 }
                 else
                 {
-                    server.AddLogger(new ConsoleErrorLogger());
+                    //Otherwise use Event Log Logging
+                    server.AddLogger(new EventLogger(this.ServiceName));
                 }
-                server.AddLogger(new EventLogger(this.ServiceName));
             }
             catch (FileNotFoundException)
             {
@@ -378,6 +396,62 @@ namespace rdfServer
             {
                 return this._baseDir;
             }
+        }
+
+        public override string ToString()
+        {
+            StringBuilder output = new StringBuilder();
+            if (this.BaseDirectory != null)
+            {
+                output.Append("-base \"" + this.BaseDirectory.Replace("\\", "\\\\") + "\"");
+                output.Append(' ');
+            }
+            output.Append("-config " + this.ConfigurationFile);
+            output.Append(' ');
+            output.Append("-format \"" + this.LogFormat.Replace("\"", "\\\"") + "\"");
+            output.Append(' ');
+            output.Append("-host " + this.Host);
+            output.Append(' ');
+            if (this.LogFile != null)
+            {
+                output.Append("-log " + this.LogFile);
+                output.Append(' ');
+            }
+            output.Append("-port " + this.Port);
+
+            if (this.Mode != RdfServerConsoleMode.Quit)
+            {
+                output.Append(' ');
+                switch (this.Mode)
+                {
+                    case RdfServerConsoleMode.InstallService:
+                        output.Append("-service install " + this.ServiceName);
+                        break;
+                    case RdfServerConsoleMode.RestartService:
+                        output.Append("-service restart " + this.ServiceName);
+                        break;
+                    case RdfServerConsoleMode.RunService:
+                        output.Append("-service run " + this.ServiceName);
+                        break;
+                    case RdfServerConsoleMode.StartService:
+                        output.Append("-service start " + this.ServiceName);
+                        break;
+                    case RdfServerConsoleMode.StopService:
+                        output.Append("-service stop " + this.ServiceName);
+                        break;
+                    case RdfServerConsoleMode.UninstallService:
+                        output.Append("-service uninstall " + this.ServiceName);
+                        break;
+                    case RdfServerConsoleMode.Run:
+                        if (this.VerboseMode)
+                        {
+                            output.Append("-verbose");
+                        }
+                        break;
+                }
+            }
+
+            return output.ToString();
         }
     }
 }

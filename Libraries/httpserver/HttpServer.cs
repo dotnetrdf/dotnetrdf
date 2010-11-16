@@ -530,6 +530,16 @@ namespace VDS.Web
             this._virtualDirs.AddVirtualDirectory(path, directory);
         }
 
+        public void AddMimeType(String ext, String mimeType, bool binary)
+        {
+            this._mimeTypes.AddMimeType(ext, mimeType, binary);
+        }
+
+        public void AddMimeType(String ext, String mimeType)
+        {
+            this._mimeTypes.AddMimeType(ext, mimeType);
+        }
+
         public void AddPreRequestModule(IHttpListenerModule module)
         {
             this._preRequestModules.Add(module);
@@ -745,6 +755,7 @@ namespace VDS.Web
                 if (realPath != null)
                 {
                     //Maps to a Virtual Directory so resolve the path relative to the virtual directory
+                    //TODO: Do we need to ensure doesn't attempt to break out of Virtual Directory?
                     if (relativePath.StartsWith("/")) relativePath = relativePath.Substring(1);
                     realPath = Path.Combine(realPath, relativePath);
                     return realPath;

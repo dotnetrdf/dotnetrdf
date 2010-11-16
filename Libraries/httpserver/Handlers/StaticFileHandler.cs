@@ -31,10 +31,10 @@ namespace VDS.Web.Handlers
                 return;
             }
 
-            if (path.EndsWith("/") || path.Equals(String.Empty))
+            if (path.EndsWith(new String(new char[] { Path.DirectorySeparatorChar })) || path.Equals(String.Empty))
             {
-                //TODO: Directory Listing
-                context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                //Directory Listing
+                context.Server.RemapHandler(context, typeof(DirectoryListingHandler));
                 return;
             }
             else

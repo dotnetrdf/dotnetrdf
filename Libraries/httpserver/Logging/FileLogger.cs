@@ -92,8 +92,8 @@ namespace VDS.Web.Logging
             Console.Error.WriteLine(ex.StackTrace);
             if (ex.InnerException != null)
             {
-                Console.WriteLine();
-                Console.WriteLine("Inner Exception:");
+                Console.Error.WriteLine();
+                Console.Error.WriteLine("Inner Exception:");
                 this.LogError(ex.InnerException);
             }
         }

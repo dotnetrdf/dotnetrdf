@@ -23,6 +23,7 @@ namespace rdfServer
                 base.AddMapping(new HttpRequestMapping(HttpRequestMapping.AllVerbs, "/query", typeof(SparqlServerHandler)));
                 base.AddMapping(new HttpRequestMapping(HttpRequestMapping.AllVerbs, "/update", typeof(SparqlServerHandler)));
                 base.AddMapping(new HttpRequestMapping(HttpRequestMapping.AllVerbs, HttpRequestMapping.AnyPath, typeof(StaticFileHandler)));
+                base.AddMapping(new HttpRequestMapping(HttpRequestMapping.NoVerbs, HttpRequestMapping.AnyPath, typeof(DirectoryListingHandler)));
             }
         }
     }

@@ -35,6 +35,10 @@ namespace VDS.Web
         WildcardPath
     }
 
+
+    /// <summary>
+    /// Mapping from a Request Verb and Path to a <see cref="IHttpListenerHandler">IHttpListenerHandler</see>
+    /// </summary>
     public class HttpRequestMapping
     {
         private String _verb = "*";
@@ -43,16 +47,35 @@ namespace VDS.Web
         private PathMode _mode = PathMode.Unknown;
         private Type _handlerType;
 
+        /// <summary>
+        /// Constant for specifying that the mapping applies for All HTTP Verbs
+        /// </summary>
         public const String AllVerbs = "*";
-
+        /// <summary>
+        /// Constant for specifying that the mapping applies to Any Path
+        /// </summary>
         public const String AnyPath = "*";
+        /// <summary>
+        /// Constant for specifying that the mapping is never directly applied (use when the Handler may be invoked via <see cref="HttpServer.RemapHandler">HttpServer.RemapHandler()</see> but should not be invoked normally
+        /// </summary>
+        public const String NoVerbs = "";
 
+        /// <summary>
+        /// Creates a new Request Mapping
+        /// </summary>
+        /// <param name="verb">HTTP Verbs (comma separated)</param>
+        /// <param name="path">URL Path</param>
+        /// <param name="handlerType">Handler Type</param>
         public HttpRequestMapping(String verb, String path, Type handlerType)
         {
             this._verb = verb.ToUpper();
             if (this._verb.Equals(AllVerbs))
             {
                 this._verbs = new String[] { AllVerbs };
+            }
+            else if (this._verb.Equals(NoVerbs))
+            {
+                this._verbs = new String[] { };
             }
             else if (!this._verb.Contains(','))
             {
@@ -93,6 +116,9 @@ namespace VDS.Web
             this._handlerType = handlerType;
         }
 
+        /// <summary>
+        /// Gets the Type of the Handler
+        /// </summary>
         public Type HandlerType
         {
             get
@@ -101,7 +127,10 @@ namespace VDS.Web
             }
         }
 
-        public String[] AcceptedVerb
+        /// <summary>
+        /// Gets the Accepted Verbs
+        /// </summary>
+        public String[] AcceptedVerbs
         {
             get
             {
@@ -109,6 +138,9 @@ namespace VDS.Web
             }
         }
 
+        /// <summary>
+        /// Gets the Accepted Path
+        /// </summary>
         public String AcceptedPath
         {
             get
@@ -117,6 +149,9 @@ namespace VDS.Web
             }
         }
 
+        /// <summary>
+        /// Gets the Accepted Path Mode
+        /// </summary>
         public PathMode AcceptedPathMode
         {
             get
@@ -125,6 +160,10 @@ namespace VDS.Web
             }
         }
 
+        /// <summary>
+        /// Creates a new instance of the Handler this mapping refers to
+        /// </summary>
+        /// <returns></returns>
         public IHttpListenerHandler CreateHandlerInstance()
         {
             Object temp = Activator.CreateInstance(this._handlerType);
@@ -138,6 +177,11 @@ namespace VDS.Web
             }
         }
 
+        /// <summary>
+        /// Determines whether this mapping accepts the request
+        /// </summary>
+        /// <param name="context">HTTP Context</param>
+        /// <returns></returns>
         public bool AcceptsRequest(HttpServerContext context)
         {
             if (this._mode == PathMode.Unknown) return false;
@@ -165,11 +209,20 @@ namespace VDS.Web
             }
         }
 
+        /// <summary>
+        /// Determines whether this mapping accepts the HTTP verb
+        /// </summary>
+        /// <param name="verb">HTTP verb</param>
+        /// <returns></returns>
         private bool AcceptsVerb(String verb)
         {
             if (this._verb.Equals(AllVerbs))
             {
                 return true;
+            }
+            else if (this._verb.Equals(NoVerbs))
+            {
+                return false;
             }
             else
             {
