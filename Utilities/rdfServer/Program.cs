@@ -20,7 +20,7 @@ namespace rdfServer
         static void Main(string[] args)
         {
             RdfServerOptions options = new RdfServerOptions(args);
-            RdfServerServiceInstaller installer = null;
+            //RdfServerServiceInstaller installer = null;
             Hashtable hashtable = new Hashtable();
 
             switch (options.Mode)
@@ -53,16 +53,16 @@ namespace rdfServer
                     }
                     break;
 
-                case RdfServerConsoleMode.RunService:
+                /*case RdfServerConsoleMode.RunService:
                     RdfServerService service = new RdfServerService(options.ServiceName);
                     service.StartupOptions = options;
                     ServiceBase.Run(service);
-                    break;
+                    break;*/
 
                 case RdfServerConsoleMode.Quit:
                     return;
 
-                case RdfServerConsoleMode.InstallService:
+                /*case RdfServerConsoleMode.InstallService:
                     try
                     {
                         //Find Location of the rdfServer executable
@@ -193,14 +193,14 @@ namespace rdfServer
                         Console.Error.WriteLine(ex.Message);
                         Console.Error.WriteLine(ex.StackTrace);
                     }
-                    break;
+                    break;*/
             }
 
-            if (options.Mode != RdfServerConsoleMode.RunService)
-            {
+            //if (options.Mode != RdfServerConsoleMode.RunService)
+            //{
                 Console.WriteLine("rdfServer: Finished - press any key to exit");
                 Console.ReadKey();
-            }
+            //}
         }
     }
 }

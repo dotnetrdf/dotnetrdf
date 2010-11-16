@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{7DF4C47C-6CB5-4EC4-ABE1-956A74CB9D17}</ProjectGuid>
     <OutputType>Exe</OutputType>
@@ -68,18 +68,6 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RdfServerOptions.cs" />
-    <Compile Include="RdfServerService.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="RdfServerService.designer.cs">
-      <DependentUpon>RdfServerService.cs</DependentUpon>
-    </Compile>
-    <Compile Include="RdfServerServiceInstaller.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="RdfServerServiceInstaller.designer.cs">
-      <DependentUpon>RdfServerServiceInstaller.cs</DependentUpon>
-    </Compile>
     <Compile Include="SparqlHandlersCollection.cs" />
     <Compile Include="SparqlServerHandler.cs" />
   </ItemGroup>
@@ -97,12 +85,6 @@
     <Content Include="default.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="RdfServerServiceInstaller.resx">
-      <DependentUpon>RdfServerServiceInstaller.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

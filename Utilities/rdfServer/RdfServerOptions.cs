@@ -16,12 +16,12 @@ namespace rdfServer
     {
         Quit,
         Run,
-        InstallService,
+        /*InstallService,
         UninstallService,
         RunService,
         StartService,
         StopService,
-        RestartService
+        RestartService*/
     }
 
     public class RdfServerOptions
@@ -161,7 +161,7 @@ namespace rdfServer
                             }
                             break;
 
-                        case "-s":
+                        /*case "-s":
                         case "-service":
                             if (i < args.Length - 1)
                             {
@@ -209,7 +209,7 @@ namespace rdfServer
                                 Console.Error.WriteLine("rdfServer: Error: Expected an argument after the -s/-service option to specify a service operation to perform");
                                 this._mode = RdfServerConsoleMode.Quit;
                             }
-                            break;
+                            break;*/
 
                         default:
                             Console.Error.WriteLine("rdfServer: Error: Unknown option/argument '" + args[i] + "' was ignored");
@@ -244,6 +244,9 @@ namespace rdfServer
             Console.WriteLine("-format format");
             Console.WriteLine(" Sets the Log Format for use with logging, format string is in Apache mod_log style");
             Console.WriteLine();
+            Console.WriteLine("-help");
+            Console.WriteLine(" Prints this usage summary and quits");
+            Console.WriteLine();
             Console.WriteLine("-h host");
             Console.WriteLine("-host host");
             Console.WriteLine(" Sets the host name that the server listens on");
@@ -256,7 +259,7 @@ namespace rdfServer
             Console.WriteLine("-port port");
             Console.WriteLine(" Sets the port that the server listens on");
             Console.WriteLine();
-            Console.WriteLine("-s operation [servicename]");
+            /*Console.WriteLine("-s operation [servicename]");
             Console.WriteLine("-service operation [servicename]");
             Console.WriteLine(" Performs a Windows Service related operation.");
             Console.WriteLine(" Supported options are:");
@@ -266,7 +269,7 @@ namespace rdfServer
             Console.WriteLine("     restart     Restarts the Service");
             Console.WriteLine("     stop        Stops the Service");
             Console.WriteLine(" Service Name is optional and if not specified will be rdfServerService");
-            Console.WriteLine();
+            Console.WriteLine();*/
             Console.WriteLine("-v");
             Console.WriteLine("-verbose");
             Console.WriteLine(" Sets Verbose mode - causes all requests and errors to be logged to console");
@@ -312,11 +315,11 @@ namespace rdfServer
                         server.AddLogger(new ConsoleErrorLogger());
                     }
                 }
-                else
+                /*else
                 {
                     //Otherwise use Event Log Logging
                     server.AddLogger(new EventLogger(this.ServiceName));
-                }
+                }*/
             }
             catch (FileNotFoundException)
             {
@@ -424,7 +427,7 @@ namespace rdfServer
                 output.Append(' ');
                 switch (this.Mode)
                 {
-                    case RdfServerConsoleMode.InstallService:
+                    /*case RdfServerConsoleMode.InstallService:
                         output.Append("-service install " + this.ServiceName);
                         break;
                     case RdfServerConsoleMode.RestartService:
@@ -441,7 +444,7 @@ namespace rdfServer
                         break;
                     case RdfServerConsoleMode.UninstallService:
                         output.Append("-service uninstall " + this.ServiceName);
-                        break;
+                        break;*/
                     case RdfServerConsoleMode.Run:
                         if (this.VerboseMode)
                         {
