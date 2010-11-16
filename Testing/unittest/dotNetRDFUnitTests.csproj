@@ -211,6 +211,12 @@
     <Content Include="resources\describe-algos.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="resources\anton.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\anton.rq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="resources\empty-string-rdfxml.rdf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

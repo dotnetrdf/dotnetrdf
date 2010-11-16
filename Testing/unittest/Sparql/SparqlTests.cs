@@ -278,5 +278,30 @@ SELECT * WHERE {?s rdfs:label ?label . ?label bif:contains " + "\"London\" } LIM
                 TestTools.ReportError("Error", ex, true);
             }
         }
+
+        [TestMethod]
+        public void SparqlAnton()
+        {
+            Graph g = new Graph();
+            FileLoader.Load(g, "anton.rdf");
+
+            SparqlQueryParser parser = new SparqlQueryParser();
+            SparqlQuery query = parser.ParseFromFile("anton.rq");
+
+            Object results = g.ExecuteQuery(query);
+            if (results is SparqlResultSet)
+            {
+                SparqlResultSet rset = (SparqlResultSet)results;
+                foreach (SparqlResult r in rset)
+                {
+                    Console.WriteLine(r);
+                }
+                Assert.AreEqual(1, rset.Count, "Should be exactly 1 result");
+            }
+            else
+            {
+                Assert.Fail("Query should have returned a Result Set");
+            }
+        }
     }
 }

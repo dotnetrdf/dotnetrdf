@@ -612,6 +612,10 @@ namespace VDS.Web
             if (!this._listener.IsListening)
             {
                 this._listener.Start();
+                while (!this._listener.IsListening)
+                {
+                    //Wait for listener to start
+                }
             }
         }
 
@@ -657,6 +661,11 @@ namespace VDS.Web
                     {
                         this.LogErrors(ex);
                     }
+                }
+                else
+                {
+                    //Wait until we're asked to listen again
+                    Thread.Sleep(50);
                 }
             }
         }

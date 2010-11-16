@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.ServiceProcess;
 using System.Text;
+using System.Threading;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.Web;
@@ -30,10 +31,11 @@ namespace rdfServer
                     {
                         using (HttpServer server = options.GetServerInstance())
                         {
-                            Console.WriteLine("rdfServer: Running");
+                            if (!options.QuietMode) Console.WriteLine("rdfServer: Running");
+                            server.Start();
                             while (true)
                             {
-                                server.Start();
+                                Thread.Sleep(1000);
                             }
                         }
                     }
@@ -198,8 +200,11 @@ namespace rdfServer
 
             //if (options.Mode != RdfServerConsoleMode.RunService)
             //{
+            if (!options.QuietMode)
+            {
                 Console.WriteLine("rdfServer: Finished - press any key to exit");
                 Console.ReadKey();
+            }
             //}
         }
     }

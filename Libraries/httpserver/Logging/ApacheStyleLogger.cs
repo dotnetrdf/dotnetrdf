@@ -14,10 +14,25 @@ namespace VDS.Web.Logging
         private String _formatString;
         private String[] _logParts;
 
+        /// <summary>
+        /// Constant for Date Format used in Common Log Format
+        /// </summary>
         public const String ClfDateFormat = "[dd/MMM/yyyy:hh:mm:ss zzz]";
+        /// <summary>
+        /// Constant for Common Log Format
+        /// </summary>
         public const String LogCommon = "%h %l %u %t \"%r\" %>s %b";
+        /// <summary>
+        /// Constant for Combined Log Format
+        /// </summary>
         public const String LogCombined = LogCommon + " \"%{Referer}i\" \"%{User-Agent}i\"";
+        /// <summary>
+        /// Constant for Logging all available fields
+        /// </summary>
         public const String LogAll = "%a %A %B %b %h %H %l %m %p %P %q \"%r\" %s %>s %t %U \"%u\" \"%{Referer}i \"%{User}i\" \"%{Accept}i \"%{Content-Type}o";
+        /// <summary>
+        /// Constant for User Agent Log
+        /// </summary>
         public const String LogUserAgent = "\"%{User-Agent}i\"";
 
         public ApacheStyleLogger(String logFormatString)
@@ -42,6 +57,8 @@ namespace VDS.Web.Logging
 
         public static String GetLogFormat(String format)
         {
+            if (format == null) return ApacheStyleLogger.LogCommon;
+
             switch (format)
             {
                 case "common":
@@ -52,6 +69,8 @@ namespace VDS.Web.Logging
                     return ApacheStyleLogger.LogAll;
                 case "user-agent":
                     return ApacheStyleLogger.LogUserAgent;
+                case "":
+                    return ApacheStyleLogger.LogCommon;
                 default:
                     return format;
             }
@@ -135,10 +154,6 @@ namespace VDS.Web.Logging
                             logLine.Append(context.Request.HttpMethod);
                             logLine.Append(' ');
                             logLine.Append(context.Request.RawUrl);
-                            if (!context.Request.Url.Query.Equals(String.Empty))
-                            {
-                                logLine.Append(context.Request.Url.Query);
-                            }
                             logLine.Append(" HTTP/");
                             logLine.Append(context.Request.ProtocolVersion.Major + "." + context.Request.ProtocolVersion.Minor);
                             break;

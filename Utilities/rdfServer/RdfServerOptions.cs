@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -28,16 +29,17 @@ namespace rdfServer
     {
         private RdfServerConsoleMode _mode = RdfServerConsoleMode.Run;
 
-        private int _port = 1986;
+        private int _port = DefaultPort;
         private String _host = HttpServer.DefaultHost;
         private String _configFile = "default.ttl";
         private String _logFile = null;
         private String _logFormat = ApacheStyleLogger.LogCommon;
-        private bool _verbose = false;
+        private bool _verbose = false, _quiet = false;
         private String _baseDir = null;
         private String _serviceName = null;
 
         public const String DefaultServiceName = "rdfServerService";
+        public const int DefaultPort = 1986;
 
         public RdfServerOptions(String[] args)
         {
@@ -61,7 +63,7 @@ namespace rdfServer
                                 if (Int32.TryParse(args[i], out port))
                                 {
                                     this._port = port;
-                                    Console.WriteLine("rdfServer: Port Set to " + this._port);
+                                    if (!this._quiet) Console.WriteLine("rdfServer: Port Set to " + this._port);
                                 }
                                 else
                                 {
@@ -80,7 +82,7 @@ namespace rdfServer
                             {
                                 i++;
                                 this._host = args[i];
-                                Console.WriteLine("rdfServer: Host set to " + this._host);
+                                if (!this._quiet) Console.WriteLine("rdfServer: Host set to " + this._host);
                             }
                             else
                             {
@@ -94,7 +96,7 @@ namespace rdfServer
                             {
                                 i++;
                                 this._configFile = args[i];
-                                Console.WriteLine("rdfServer: Configuration File set to " + this._configFile);
+                                if (!this._quiet) Console.WriteLine("rdfServer: Configuration File set to " + this._configFile);
                             }
                             else
                             {
@@ -104,8 +106,13 @@ namespace rdfServer
 
                         case "-v":
                         case "-verbose":
-                            Console.WriteLine("rdfServer: Verbose Mode on - all requests and errors will be logged to the Console in the specified Log Format");
+                            if (!this._quiet) Console.WriteLine("rdfServer: Verbose Mode on - all requests and errors will be logged to the Console in the specified Log Format");
                             this._verbose = true;
+                            break;
+
+                        case "-q":
+                        case "-quiet":
+                            this._quiet = true;
                             break;
 
                         case "-l":
@@ -114,7 +121,7 @@ namespace rdfServer
                             {
                                 i++;
                                 this._logFile = args[i];
-                                Console.WriteLine("rdfServer: Log File set to " + this._logFile);
+                                if (!this._quiet) Console.WriteLine("rdfServer: Log File set to " + this._logFile);
                             }
                             else
                             {
@@ -128,7 +135,7 @@ namespace rdfServer
                             {
                                 i++;
                                 this._logFormat = args[i];
-                                Console.WriteLine("rdfServer: Log Format set to " + this._logFormat);
+                                if (!this._quiet) Console.WriteLine("rdfServer: Log Format set to " + this._logFormat);
                                 this._logFormat = ApacheStyleLogger.GetLogFormat(this._logFormat);
                             }
                             else
@@ -147,7 +154,7 @@ namespace rdfServer
                                 if (!this._baseDir.EndsWith(new String(new char[] { Path.DirectorySeparatorChar }))) this._baseDir += Path.DirectorySeparatorChar;
                                 if (Directory.Exists(args[i]))
                                 {                                  
-                                    Console.WriteLine("rdfServer: Running with HTTP Server enabled - static files (HTML, Plain Text, Images etc) will be served from the base directory " + this._baseDir);
+                                    if (!this._quiet) Console.WriteLine("rdfServer: Running with HTTP Server enabled - static files (HTML, Plain Text, Images etc) will be served from the base directory " + this._baseDir);
                                 }
                                 else
                                 {
@@ -259,6 +266,10 @@ namespace rdfServer
             Console.WriteLine("-port port");
             Console.WriteLine(" Sets the port that the server listens on");
             Console.WriteLine();
+            Console.WriteLine("-q");
+            Console.WriteLine("-quiet");
+            Console.WriteLine(" Suppresses all information messages and ignores verbose mode if set");
+            Console.WriteLine();
             /*Console.WriteLine("-s operation [servicename]");
             Console.WriteLine("-service operation [servicename]");
             Console.WriteLine(" Performs a Windows Service related operation.");
@@ -278,6 +289,7 @@ namespace rdfServer
         public HttpServer GetServerInstance()
         {
             IHttpListenerHandlerCollection handlers = new SparqlHandlersCollection(this);
+
             HttpServer server = new HttpServer(this.Host, this.Port, handlers);
             server.BaseDirectory = this.BaseDirectory;
 
@@ -305,14 +317,17 @@ namespace rdfServer
                 }
                 if (this.Mode == RdfServerConsoleMode.Run)
                 {
-                    //Console Logging only applies when running from Console
-                    if (this.VerboseMode)
+                    if (!this.QuietMode)
                     {
-                        server.AddLogger(new ConsoleLogger(this.LogFormat));
-                    }
-                    else
-                    {
-                        server.AddLogger(new ConsoleErrorLogger());
+                        //Console Logging only applies when not in Quiet Mode
+                        if (this.VerboseMode)
+                        {
+                            server.AddLogger(new ConsoleLogger(this.LogFormat));
+                        }
+                        else
+                        {
+                            server.AddLogger(new ConsoleErrorLogger());
+                        }
                     }
                 }
                 /*else
@@ -390,6 +405,14 @@ namespace rdfServer
             get
             {
                 return this._verbose;
+            }
+        }
+
+        public bool QuietMode
+        {
+            get
+            {
+                return this._quiet;
             }
         }
 

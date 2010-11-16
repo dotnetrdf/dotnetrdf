@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<rdf:RDF
+  xmlns:dcterms='http://purl.org/dc/terms/'
+  xmlns:folder='http://www.eea.europa.eu/portal_types/Folder#'
+  xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'
+  xmlns:dc='http://purl.org/dc/elements/1.1/'
+  xmlns:image='http://www.eea.europa.eu/portal_types/Image#'
+>
+  <image:Image rdf:about="http://www.eea.europa.eu/atlas/eea/a-day-in-my-forest/satellite-images/satellite-images/poland-forest">
+    <dc:created xml:lang="en">2010/10/12 15:10:57.842 GMT+2</dc:created>
+    <dc:creator>deliggia</dc:creator>
+    <dc:effective xml:lang="en">2010/09/29 17:11:35 GMT+2</dc:effective>
+    <dcterms:isPartOf>
+      <folder:Folder rdf:about="http://www.eea.europa.eu/atlas/eea/a-day-in-my-forest/satellite-images/satellite-images">
+        <folder:id xml:lang="en">satellite-images</folder:id>
+        <dc:created xml:lang="en">2010/09/29 17:03:59.451 GMT+2</dc:created>
+        <dc:creator>deliggia</dc:creator>
+        <dc:effective xml:lang="en">2010/09/29 17:11:35 GMT+2</dc:effective>
+        <dcterms:isPartOf rdf:resource="http://www.eea.europa.eu/atlas/eea/a-day-in-my-forest/satellite-images"/>
+        <dc:modified xml:lang="en">2010/09/29 17:54:54.189 GMT+2</dc:modified>
+        <dcterms:hasPart rdf:resource="http://www.eea.europa.eu/atlas/eea/a-day-in-my-forest/satellite-images/satellite-images/poland-forest"/>
+        <dcterms:hasPart rdf:resource="http://www.eea.europa.eu/atlas/eea/a-day-in-my-forest/satellite-images/satellite-images/forest-legend"/>
+        <dcterms:hasPart rdf:resource="http://www.eea.europa.eu/atlas/eea/a-day-in-my-forest/satellite-images/satellite-images/bialowieza-primaeval-forest-poland-2"/>
+        <dcterms:hasPart rdf:resource="http://www.eea.europa.eu/atlas/eea/a-day-in-my-forest/satellite-images/satellite-images/satellite-images-1"/>
+        <dcterms:hasPart rdf:resource="http://www.eea.europa.eu/atlas/eea/a-day-in-my-forest/satellite-images/satellite-images/bialowieza-primaeval-forest-poland"/>
+        <dcterms:hasPart rdf:resource="http://www.eea.europa.eu/atlas/eea/a-day-in-my-forest/satellite-images/satellite-images/bialowieza-primaeval-forest-poland-1"/>
+        <dcterms:hasPart rdf:resource="http://www.eea.europa.eu/atlas/eea/a-day-in-my-forest/satellite-images/satellite-images/poland-meris-forest"/>
+        <dc:title xml:lang="en">Satellite images</dc:title>
+      </folder:Folder>
+    </dcterms:isPartOf>
+    <dc:description xml:lang="en">Satellite data are an excellent tool to determine forest extent and changes in forest cover and density. Nowadays, tropical deforestation as well as reforestation and deforestation are routinely observed and monitored by satellites in the frame of the Kyoto protocol. 
+ 
+Copyright: European Forest Institute</dc:description>
+    <dc:modified xml:lang="en">2010/10/12 15:15:59.270 GMT+2</dc:modified>
+    <image:id xml:lang="en">poland-forest</image:id>
+    <dc:title xml:lang="en">Poland Forest</dc:title>
+  </image:Image>  
+</rdf:RDF>

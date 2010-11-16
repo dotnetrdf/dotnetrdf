@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace VDS.Web.Logging
 {
     public class FileLogger : ApacheStyleLogger
     {
         private String _logFile;
+        private ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
 
         public FileLogger(String logFile)
             : this(logFile, LogCommon) { }
@@ -33,10 +35,18 @@ namespace VDS.Web.Logging
 
         protected override void AppendToLog(string line)
         {
-            using (StreamWriter writer = new StreamWriter(this._logFile, true))
+            try
             {
-                writer.WriteLine(line);
-                writer.Close();
+                this._lock.EnterWriteLock();
+                using (StreamWriter writer = new StreamWriter(this._logFile, true))
+                {
+                    writer.WriteLine(line);
+                    writer.Close();
+                }
+            }
+            finally
+            {
+                this._lock.ExitWriteLock();
             }
         }
     }
@@ -44,6 +54,7 @@ namespace VDS.Web.Logging
     public class StreamLogger : ApacheStyleLogger
     {
         private StreamWriter _writer;
+        private ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
 
         public StreamLogger(StreamWriter writer, String logFormatString)
             : base(logFormatString)
@@ -63,7 +74,15 @@ namespace VDS.Web.Logging
 
         protected override void AppendToLog(string line)
         {
-            this._writer.WriteLine(line);
+            try
+            {
+                this._lock.EnterWriteLock();
+                this._writer.WriteLine(line);
+            }
+            finally
+            {
+                this._lock.ExitWriteLock();
+            }
         }
 
         public override void Dispose()
