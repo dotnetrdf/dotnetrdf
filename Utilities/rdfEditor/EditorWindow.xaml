@@ -119,6 +119,10 @@
                     <MenuItem Header="XHTML+RDFa Writer" Name="mnuSaveWithRdfa" Click="mnuSaveWithRdfa_Click" InputGestureText="Alt+S,6" />
                 </MenuItem>
                 <Separator />
+                <MenuItem Header="Print Preview" Name="mnuPrintPreview" Click="mnuPrintPreview_Click" />
+                <MenuItem Header="Print" Name="mnuPrint" Click="mnuPrint_Click" InputGestureText="Ctrl+P" />
+                <MenuItem Header="Print without Highlighting" Name="mnuPrintNoHightlighting" Click="mnuPrintNoHightlighting_Click" InputGestureText="Ctrl+Alt+P" />
+                <Separator />
                 <MenuItem Header="Close" Name="mnuClose" Click="mnuClose_Click" InputGestureText="Ctrl+W" />
                 <Separator />
                 <MenuItem Header="Exit" Name="mnuExit" Click="mnuExit_Click" />

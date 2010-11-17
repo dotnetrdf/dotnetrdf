@@ -440,6 +440,42 @@ namespace rdfEditor
             this.SaveWith(new HtmlWriter());
         }
 
+        private void mnuPrint_Click(object sender, RoutedEventArgs e)
+        {
+            this.Print(true);
+        }
+
+        private void mnuPrintNoHightlighting_Click(object sender, RoutedEventArgs e)
+        {
+            this.Print(false);
+        }
+
+        private void Print(bool withHighlighting)
+        {
+            PrintDialog dialog = new PrintDialog();
+
+            //Create a FlowDocument and use it's paginator to
+            FlowDocument doc = DocumentPrinter.CreateFlowDocumentForEditor(this.textEditor, withHighlighting);
+            IDocumentPaginatorSource paginator = (IDocumentPaginatorSource)doc;
+            dialog.MinPage = 1;
+            paginator.DocumentPaginator.ComputePageCount();
+            dialog.MaxPage = (uint)paginator.DocumentPaginator.PageCount;
+            dialog.UserPageRangeEnabled = true;
+            dialog.PageRange = new PageRange(1, paginator.DocumentPaginator.PageCount);
+
+            if (dialog.ShowDialog() == true)
+            {
+                String descrip = "rdfEditor";
+                if (this._manager.CurrentFile != null) descrip += " - " + this._manager.CurrentFile;
+                dialog.PrintDocument(paginator.DocumentPaginator, descrip);
+            }
+        }
+
+        private void mnuPrintPreview_Click(object sender, RoutedEventArgs e)
+        {
+            
+        }
+
         private void mnuClose_Click(object sender, RoutedEventArgs e)
         {
             if (this._manager.HasChanged)
@@ -490,7 +526,6 @@ namespace rdfEditor
             }
         }
 
-
         private void mnuCut_Click(object sender, RoutedEventArgs e)
         {
             textEditor.Cut();
@@ -504,6 +539,47 @@ namespace rdfEditor
         private void mnuPaste_Click(object sender, RoutedEventArgs e)
         {
             textEditor.Paste();
+        }
+
+        private void mnuFind_Click(object sender, RoutedEventArgs e)
+        {
+            if (this._findReplace == null)
+            {
+                this._findReplace = new FindReplace();
+            }
+            if (this._findReplace.Visibility != Visibility.Visible)
+            {
+                this._findReplace.Mode = FindReplaceMode.Find;
+                this._findReplace.Editor = this.textEditor;
+                this._findReplace.Show();
+            }
+            this._findReplace.BringIntoView();
+            this._findReplace.Focus();
+        }
+
+        private void mnuFindNext_Click(object sender, RoutedEventArgs e)
+        {
+            if (this._findReplace == null)
+            {
+                this.mnuFind_Click(sender, e);
+            }
+            else
+            {
+                this._findReplace.Find(this.textEditor);
+            }
+        }
+
+        private void mnuReplace_Click(object sender, RoutedEventArgs e)
+        {
+            if (this._findReplace == null)
+            {
+                this._findReplace = new FindReplace();
+            }
+            this._findReplace.Mode = FindReplaceMode.FindAndReplace;
+            this._findReplace.Editor = this.textEditor;
+            if (this._findReplace.Visibility != Visibility.Visible) this._findReplace.Show();
+            this._findReplace.BringIntoView();
+            this._findReplace.Focus();
         }
 
         private void mnuCommentSelection_Click(object sender, RoutedEventArgs e)
@@ -1091,51 +1167,5 @@ namespace rdfEditor
 
 
         #endregion
-
-        private void CommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-
-        }
-
-        private void mnuFind_Click(object sender, RoutedEventArgs e)
-        {
-            if (this._findReplace == null)
-            {
-                this._findReplace = new FindReplace();
-            }
-            if (this._findReplace.Visibility != Visibility.Visible)
-            {
-                this._findReplace.Mode = FindReplaceMode.Find;
-                this._findReplace.Editor = this.textEditor;
-                this._findReplace.Show();
-            }
-            this._findReplace.BringIntoView();
-            this._findReplace.Focus();
-        }
-
-        private void mnuFindNext_Click(object sender, RoutedEventArgs e)
-        {
-            if (this._findReplace == null)
-            {
-                this.mnuFind_Click(sender, e);
-            }
-            else
-            {
-                this._findReplace.Find(this.textEditor);
-            }            
-        }
-
-        private void mnuReplace_Click(object sender, RoutedEventArgs e)
-        {
-            if (this._findReplace == null)
-            {
-                this._findReplace = new FindReplace();
-            }
-            this._findReplace.Mode = FindReplaceMode.FindAndReplace;
-            this._findReplace.Editor = this.textEditor;
-            if (this._findReplace.Visibility != Visibility.Visible) this._findReplace.Show();
-            this._findReplace.BringIntoView();
-            this._findReplace.Focus();
-        }
     }
 }

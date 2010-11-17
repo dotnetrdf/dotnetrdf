@@ -435,7 +435,7 @@ namespace VDS.RDF.Parsing
                     bool requireAdd = false;
                     if (this._etags.ContainsKey(id))
                     {
-                        if (!this._etagFile[id].Equals(etag))
+                        if (!this._etags[id].Equals(etag))
                         {
                             //If the ETag has changed remove it and then re-add it
                             this.RemoveETag(requestUri);
@@ -465,7 +465,7 @@ namespace VDS.RDF.Parsing
                         requireAdd = false;
                         if (this._etags.ContainsKey(id))
                         {
-                            if (!this._etagFile[id].Equals(etag))
+                            if (!this._etags[id].Equals(etag))
                             {
                                 //If the ETag has changed remove it and then re-add it
                                 this.RemoveETag(responseUri);

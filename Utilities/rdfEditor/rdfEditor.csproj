@@ -110,6 +110,7 @@
     <Compile Include="Controls\LiteralNodeControl.xaml.cs">
       <DependentUpon>LiteralNodeControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DocumentPrinter.cs" />
     <Compile Include="FindReplace.xaml.cs">
       <DependentUpon>FindReplace.xaml</DependentUpon>
     </Compile>
