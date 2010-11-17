@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using ICSharpCode.AvalonEdit;
@@ -20,6 +22,49 @@ namespace rdfEditor
     /// </remarks>
     public static class DocumentPrinter
     {
+        public static bool Print(TextEditor editor, String filename, bool withHighlighting)
+        {
+            PrintDialog dialog = new PrintDialog();
+
+            //Create a FlowDocument and use it's paginator to
+            FlowDocument doc = DocumentPrinter.CreateFlowDocumentForEditor(editor, withHighlighting);
+            IDocumentPaginatorSource paginator = (IDocumentPaginatorSource)doc;
+            dialog.MinPage = 1;
+            paginator.DocumentPaginator.ComputePageCount();
+            dialog.MaxPage = (uint)paginator.DocumentPaginator.PageCount;
+            dialog.UserPageRangeEnabled = true;
+            dialog.PageRange = new PageRange(1, paginator.DocumentPaginator.PageCount);
+
+            if (dialog.ShowDialog() == true)
+            {
+                String descrip = "rdfEditor";
+                if (filename != null) descrip += " - " + filename;
+                dialog.PrintDocument(paginator.DocumentPaginator, descrip);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public static void QuickPrint(TextEditor editor, String filename, bool withHighlighting)
+        {
+            PrintDialog dialog = new PrintDialog();
+
+            //Create a FlowDocument and use it's paginator to
+            FlowDocument doc = DocumentPrinter.CreateFlowDocumentForEditor(editor, withHighlighting);
+            IDocumentPaginatorSource paginator = (IDocumentPaginatorSource)doc;
+            dialog.MinPage = 1;
+            paginator.DocumentPaginator.ComputePageCount();
+            dialog.MaxPage = (uint)paginator.DocumentPaginator.PageCount;
+            dialog.UserPageRangeEnabled = true;
+            dialog.PageRange = new PageRange(1, paginator.DocumentPaginator.PageCount);
+
+            String descrip = "rdfEditor";
+            if (filename != null) descrip += " - " + filename;
+            dialog.PrintDocument(paginator.DocumentPaginator, descrip);
+        }
 
         public static FlowDocument CreateFlowDocumentForEditor(TextEditor editor, bool withHighlighting)
         {
@@ -27,6 +72,9 @@ namespace rdfEditor
             FlowDocument doc = new FlowDocument(ConvertTextDocumentToBlock(editor.Document, highlighter));
             doc.FontFamily = editor.FontFamily;
             doc.FontSize = editor.FontSize;
+            doc.ColumnWidth = 40 * doc.FontSize;
+            //doc.PageWidth = 21.0 * (96.0 / 2.54);
+            //doc.PageHeight = 29.7 * (96.0 / 2.54);
             return doc;
         }
 

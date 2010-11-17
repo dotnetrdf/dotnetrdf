@@ -442,38 +442,18 @@ namespace rdfEditor
 
         private void mnuPrint_Click(object sender, RoutedEventArgs e)
         {
-            this.Print(true);
+            DocumentPrinter.Print(this.textEditor, this._manager.CurrentFile, true);
         }
 
         private void mnuPrintNoHightlighting_Click(object sender, RoutedEventArgs e)
         {
-            this.Print(false);
-        }
-
-        private void Print(bool withHighlighting)
-        {
-            PrintDialog dialog = new PrintDialog();
-
-            //Create a FlowDocument and use it's paginator to
-            FlowDocument doc = DocumentPrinter.CreateFlowDocumentForEditor(this.textEditor, withHighlighting);
-            IDocumentPaginatorSource paginator = (IDocumentPaginatorSource)doc;
-            dialog.MinPage = 1;
-            paginator.DocumentPaginator.ComputePageCount();
-            dialog.MaxPage = (uint)paginator.DocumentPaginator.PageCount;
-            dialog.UserPageRangeEnabled = true;
-            dialog.PageRange = new PageRange(1, paginator.DocumentPaginator.PageCount);
-
-            if (dialog.ShowDialog() == true)
-            {
-                String descrip = "rdfEditor";
-                if (this._manager.CurrentFile != null) descrip += " - " + this._manager.CurrentFile;
-                dialog.PrintDocument(paginator.DocumentPaginator, descrip);
-            }
+            DocumentPrinter.Print(this.textEditor, this._manager.CurrentFile, false);
         }
 
         private void mnuPrintPreview_Click(object sender, RoutedEventArgs e)
         {
-            
+            PrintPreviewDialog dialog = new PrintPreviewDialog(this.textEditor, this._manager.CurrentFile, true);
+            dialog.ShowDialog();
         }
 
         private void mnuClose_Click(object sender, RoutedEventArgs e)

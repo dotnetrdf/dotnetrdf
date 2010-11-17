@@ -114,6 +114,9 @@
     <Compile Include="FindReplace.xaml.cs">
       <DependentUpon>FindReplace.xaml</DependentUpon>
     </Compile>
+    <Compile Include="PrintPreviewDialog.xaml.cs">
+      <DependentUpon>PrintPreviewDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ResultSetWindow.xaml.cs">
       <DependentUpon>ResultSetWindow.xaml</DependentUpon>
     </Compile>
@@ -229,6 +232,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="FindReplace.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PrintPreviewDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
