@@ -21,10 +21,17 @@ namespace rdfServer.GUI
             this._errorHandler = new DataReceivedEventHandler(this.HandleError);
             this._outputHandler = new DataReceivedEventHandler(this.HandleOutput);
 
-            this._process.BeginErrorReadLine();
-            this._process.BeginOutputReadLine();
-            this._process.ErrorDataReceived += this._errorHandler;
-            this._process.OutputDataReceived += this._outputHandler;
+            if (!this._process.StartInfo.UseShellExecute && this._process.StartInfo.RedirectStandardError && this._process.StartInfo.RedirectStandardOutput)
+            {
+                this._process.BeginErrorReadLine();
+                this._process.BeginOutputReadLine();
+                this._process.ErrorDataReceived += this._errorHandler;
+                this._process.OutputDataReceived += this._outputHandler;
+            }
+            else
+            {
+                monitor.WriteLine("Cannot monitor a process that was not started in the current rdfServerGUI session but you may still stop this server");
+            }
         }
 
         private void HandleError(Object sender, DataReceivedEventArgs args)
@@ -41,10 +48,13 @@ namespace rdfServer.GUI
         {
             if (this._process != null)
             {
-                this._process.CancelErrorRead();
-                this._process.CancelOutputRead();
-                this._process.ErrorDataReceived -= this._errorHandler;
-                this._process.OutputDataReceived -= this._outputHandler;
+                if (!this._process.StartInfo.UseShellExecute && this._process.StartInfo.RedirectStandardError && this._process.StartInfo.RedirectStandardOutput)
+                {
+                    this._process.CancelErrorRead();
+                    this._process.CancelOutputRead();
+                    this._process.ErrorDataReceived -= this._errorHandler;
+                    this._process.OutputDataReceived -= this._outputHandler;
+                }
                 this._process = null;
             }
         }

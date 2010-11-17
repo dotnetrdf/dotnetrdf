@@ -334,5 +334,23 @@ namespace rdfServer.GUI
                 return input;
             }
         }
+
+        private void fclsServerManager_Load(object sender, EventArgs e)
+        {
+            try
+            {
+                foreach (Process p in Process.GetProcessesByName("rdfServer"))
+                {
+                    ProcessStartInfo info = p.StartInfo;
+                    
+                    ExternalProcessServerHarness server = new ExternalProcessServerHarness(info, p);
+                    this._servers.Add(server);
+                }
+            }
+            catch
+            {
+                //Ignore exceptions here - just means we failed to enumerate relevant processes successfully
+            }
+        }
     }
 }

@@ -147,6 +147,12 @@ namespace rdfServer.GUI
             }
         }
 
+        public ExternalProcessServerHarness(ProcessStartInfo info, Process process)
+            : this(info)
+        {
+            this._process = process;
+        }
+
         #region IServerHarness Members
 
         public void Stop()
@@ -167,6 +173,12 @@ namespace rdfServer.GUI
         {
             if (this._process == null)
             {
+                //Ensure Start Info is correct
+                this._info.UseShellExecute = false;
+                this._info.RedirectStandardError = true;
+                this._info.RedirectStandardOutput = true;
+                this._info.CreateNoWindow = true;
+
                 this._process = new Process();
                 this._process.StartInfo = this._info;
                 this._process.Start();

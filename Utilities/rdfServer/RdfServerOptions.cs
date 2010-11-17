@@ -37,6 +37,7 @@ namespace rdfServer
         private bool _verbose = false, _quiet = false;
         private String _baseDir = null;
         private String _serviceName = null;
+        private bool _restControl = false;
 
         public const String DefaultServiceName = "rdfServerService";
         public const int DefaultPort = 1986;
@@ -168,6 +169,12 @@ namespace rdfServer
                             }
                             break;
 
+                        case "-r":
+                        case "-rest":
+                            this._restControl = true;
+                            if (!this._quiet) Console.WriteLine("rdfServer: RESTful Control enabled, POST a request to /control with a querystring of operation=restart or operation=stop to control the server");
+                            break;
+
                         /*case "-s":
                         case "-service":
                             if (i < args.Length - 1)
@@ -270,6 +277,10 @@ namespace rdfServer
             Console.WriteLine("-quiet");
             Console.WriteLine(" Suppresses all information messages and ignores verbose mode if set");
             Console.WriteLine();
+            Console.WriteLine("-r");
+            Console.WriteLine("-rest");
+            Console.WriteLine(" Enabled RESTful Control which allows a request to be POSTed to /control with operation=restart or operation=stop to control the server");
+            Console.WriteLine();
             /*Console.WriteLine("-s operation [servicename]");
             Console.WriteLine("-service operation [servicename]");
             Console.WriteLine(" Performs a Windows Service related operation.");
@@ -289,6 +300,7 @@ namespace rdfServer
         public HttpServer GetServerInstance()
         {
             IHttpListenerHandlerCollection handlers = new SparqlHandlersCollection(this);
+            if (this.RestControl) handlers.InsertMapping(new HttpRequestMapping("POST", "/control", typeof(RestControlHandler)), 0);
 
             HttpServer server = new HttpServer(this.Host, this.Port, handlers);
             server.BaseDirectory = this.BaseDirectory;
@@ -413,6 +425,14 @@ namespace rdfServer
             get
             {
                 return this._quiet;
+            }
+        }
+
+        public bool RestControl
+        {
+            get
+            {
+                return this._restControl;
             }
         }
 

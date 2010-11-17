@@ -40,6 +40,7 @@ namespace rdfServer.GUI
 
         public void WriteLine(String line)
         {
+            if (line == null) return;
             if (line.Contains("\r\n"))
             {
                 this._buffer.AddRange(line.Split(new char[] {'\r', '\n'}));

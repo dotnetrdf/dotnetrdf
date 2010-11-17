@@ -31,6 +31,8 @@
             this.components = new System.ComponentModel.Container();
             this.tabControls = new System.Windows.Forms.TabControl();
             this.tabCreate = new System.Windows.Forms.TabPage();
+            this.btnCreate = new System.Windows.Forms.Button();
+            this.chkStartAuto = new System.Windows.Forms.CheckBox();
             this.chkRunExternal = new System.Windows.Forms.CheckBox();
             this.chkQuietMode = new System.Windows.Forms.CheckBox();
             this.chkVerboseMode = new System.Windows.Forms.CheckBox();
@@ -61,8 +63,6 @@
             this.lblServers = new System.Windows.Forms.Label();
             this.monServers = new rdfServer.GUI.ServerMonitor();
             this.ttpTips = new System.Windows.Forms.ToolTip(this.components);
-            this.chkStartAuto = new System.Windows.Forms.CheckBox();
-            this.btnCreate = new System.Windows.Forms.Button();
             this.tabControls.SuspendLayout();
             this.tabCreate.SuspendLayout();
             this.tabCreateAdvanced.SuspendLayout();
@@ -111,6 +111,26 @@
             this.tabCreate.TabIndex = 0;
             this.tabCreate.Text = "Create Server";
             this.tabCreate.UseVisualStyleBackColor = true;
+            // 
+            // btnCreate
+            // 
+            this.btnCreate.Location = new System.Drawing.Point(183, 275);
+            this.btnCreate.Name = "btnCreate";
+            this.btnCreate.Size = new System.Drawing.Size(75, 23);
+            this.btnCreate.TabIndex = 18;
+            this.btnCreate.Text = "Create";
+            this.btnCreate.UseVisualStyleBackColor = true;
+            this.btnCreate.Click += new System.EventHandler(this.btnCreate_Click);
+            // 
+            // chkStartAuto
+            // 
+            this.chkStartAuto.AutoSize = true;
+            this.chkStartAuto.Location = new System.Drawing.Point(9, 255);
+            this.chkStartAuto.Name = "chkStartAuto";
+            this.chkStartAuto.Size = new System.Drawing.Size(153, 17);
+            this.chkStartAuto.TabIndex = 17;
+            this.chkStartAuto.Text = "Start Server Automatically?";
+            this.chkStartAuto.UseVisualStyleBackColor = true;
             // 
             // chkRunExternal
             // 
@@ -345,7 +365,7 @@
             this.tabRunningServers.Controls.Add(this.monServers);
             this.tabRunningServers.Location = new System.Drawing.Point(4, 22);
             this.tabRunningServers.Name = "tabRunningServers";
-            this.tabRunningServers.Size = new System.Drawing.Size(441, 280);
+            this.tabRunningServers.Size = new System.Drawing.Size(441, 304);
             this.tabRunningServers.TabIndex = 2;
             this.tabRunningServers.Text = "Running Servers";
             this.tabRunningServers.UseVisualStyleBackColor = true;
@@ -423,26 +443,6 @@
             // 
             this.ttpTips.IsBalloon = true;
             // 
-            // chkStartAuto
-            // 
-            this.chkStartAuto.AutoSize = true;
-            this.chkStartAuto.Location = new System.Drawing.Point(9, 255);
-            this.chkStartAuto.Name = "chkStartAuto";
-            this.chkStartAuto.Size = new System.Drawing.Size(153, 17);
-            this.chkStartAuto.TabIndex = 17;
-            this.chkStartAuto.Text = "Start Server Automatically?";
-            this.chkStartAuto.UseVisualStyleBackColor = true;
-            // 
-            // btnCreate
-            // 
-            this.btnCreate.Location = new System.Drawing.Point(183, 275);
-            this.btnCreate.Name = "btnCreate";
-            this.btnCreate.Size = new System.Drawing.Size(75, 23);
-            this.btnCreate.TabIndex = 18;
-            this.btnCreate.Text = "Create";
-            this.btnCreate.UseVisualStyleBackColor = true;
-            this.btnCreate.Click += new System.EventHandler(this.btnCreate_Click);
-            // 
             // fclsServerManager
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -454,6 +454,7 @@
             this.Name = "fclsServerManager";
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.Text = "rdfServer GUI";
+            this.Load += new System.EventHandler(this.fclsServerManager_Load);
             this.tabControls.ResumeLayout(false);
             this.tabCreate.ResumeLayout(false);
             this.tabCreate.PerformLayout();

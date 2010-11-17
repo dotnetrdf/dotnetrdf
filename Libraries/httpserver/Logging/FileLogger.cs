@@ -23,11 +23,17 @@ namespace VDS.Web.Logging
             {
                 try
                 {
-                    File.Create(logFile);
+                    this._lock.EnterWriteLock();
+                    FileStream file = File.Create(logFile);
+                    file.Close();
                 }
                 catch (Exception ex)
                 {
                     throw new ArgumentException("Unable to create the Log File '" + logFile + "'", "logFile", ex);
+                }
+                finally
+                {
+                    this._lock.ExitWriteLock();
                 }
             }
             this._logFile = logFile;

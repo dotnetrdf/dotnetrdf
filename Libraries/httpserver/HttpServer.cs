@@ -456,6 +456,7 @@ namespace VDS.Web
         {
             get
             {
+                if (this._disposed) throw new ObjectDisposedException("Cannot access the properties/methods of a HttpServer instance after it has been disposed of");
                 return this._port;
             }
         }
@@ -464,6 +465,7 @@ namespace VDS.Web
         {
             get
             {
+                if (this._disposed) throw new ObjectDisposedException("Cannot access the properties/methods of a HttpServer instance after it has been disposed of");
                 return this._host;
             }
         }
@@ -472,10 +474,12 @@ namespace VDS.Web
         {
             get
             {
+                if (this._disposed) throw new ObjectDisposedException("Cannot access the properties/methods of a HttpServer instance after it has been disposed of");
                 return this._baseDirectory;
             }
             set
             {
+                if (this._disposed) throw new ObjectDisposedException("Cannot access the properties/methods of a HttpServer instance after it has been disposed of");
                 this._baseDirectory = value;
             }
         }
@@ -484,6 +488,7 @@ namespace VDS.Web
         {
             get
             {
+                if (this._disposed) throw new ObjectDisposedException("Cannot access the properties/methods of a HttpServer instance after it has been disposed of");
                 return this._state;
             }
         }
@@ -492,6 +497,7 @@ namespace VDS.Web
         {
             get
             {
+                if (this._disposed) throw new ObjectDisposedException("Cannot access the properties/methods of a HttpServer instance after it has been disposed of");
                 return this._handlers;
             }
         }
@@ -500,6 +506,7 @@ namespace VDS.Web
         {
             get
             {
+                if (this._disposed) throw new ObjectDisposedException("Cannot access the properties/methods of a HttpServer instance after it has been disposed of");
                 return this._loggers;
             }
         }
@@ -508,6 +515,7 @@ namespace VDS.Web
         {
             get
             {
+                if (this._disposed) throw new ObjectDisposedException("Cannot access the properties/methods of a HttpServer instance after it has been disposed of");
                 return this._preRequestModules;
             }
         }
@@ -516,6 +524,7 @@ namespace VDS.Web
         {
             get
             {
+                if (this._disposed) throw new ObjectDisposedException("Cannot access the properties/methods of a HttpServer instance after it has been disposed of");
                 return this._preResponseModules;
             }
         }
@@ -526,77 +535,92 @@ namespace VDS.Web
 
         public void AddVirtualDirectory(String path, String directory)
         {
+            if (this._disposed) throw new ObjectDisposedException("Cannot access the properties/methods of a HttpServer instance after it has been disposed of");
             if (this._virtualDirs == null) this._virtualDirs = new VirtualDirectoryManager();
             this._virtualDirs.AddVirtualDirectory(path, directory);
         }
 
         public void AddMimeType(String ext, String mimeType, bool binary)
         {
+            if (this._disposed) throw new ObjectDisposedException("Cannot access the properties/methods of a HttpServer instance after it has been disposed of");
             this._mimeTypes.AddMimeType(ext, mimeType, binary);
         }
 
         public void AddMimeType(String ext, String mimeType)
         {
+            if (this._disposed) throw new ObjectDisposedException("Cannot access the properties/methods of a HttpServer instance after it has been disposed of");
             this._mimeTypes.AddMimeType(ext, mimeType);
         }
 
         public void AddPreRequestModule(IHttpListenerModule module)
         {
+            if (this._disposed) throw new ObjectDisposedException("Cannot access the properties/methods of a HttpServer instance after it has been disposed of");
             this._preRequestModules.Add(module);
         }
 
         public void AddPreResponseModule(IHttpListenerModule module)
         {
+            if (this._disposed) throw new ObjectDisposedException("Cannot access the properties/methods of a HttpServer instance after it has been disposed of");
             this._preResponseModules.Add(module);
         }
 
         public void InsertPreRequestModule(IHttpListenerModule module, int insertAt)
         {
+            if (this._disposed) throw new ObjectDisposedException("Cannot access the properties/methods of a HttpServer instance after it has been disposed of");
             this._preRequestModules.Insert(insertAt, module);
         }
 
         public void InsertPreResponseModule(IHttpListenerModule module, int insertAt)
         {
+            if (this._disposed) throw new ObjectDisposedException("Cannot access the properties/methods of a HttpServer instance after it has been disposed of");
             this._preResponseModules.Insert(insertAt, module);
         }
 
         public void RemovePreRequestModule(IHttpListenerModule module)
         {
+            if (this._disposed) throw new ObjectDisposedException("Cannot access the properties/methods of a HttpServer instance after it has been disposed of");
             this._preRequestModules.Remove(module);
         }
 
         public void RemovePreResponseModule(IHttpListenerModule module)
         {
+            if (this._disposed) throw new ObjectDisposedException("Cannot access the properties/methods of a HttpServer instance after it has been disposed of");
             this._preResponseModules.Remove(module);
         }
 
         public void ClearPreRequestModules()
         {
+            if (this._disposed) throw new ObjectDisposedException("Cannot access the properties/methods of a HttpServer instance after it has been disposed of");
             this._preRequestModules.Clear();
         }
 
         public void ClearPreResponseModules()
         {
+            if (this._disposed) throw new ObjectDisposedException("Cannot access the properties/methods of a HttpServer instance after it has been disposed of");
             this._preResponseModules.Clear();
         }
 
         public void AddLogger(IHttpLogger logger)
         {
+            if (this._disposed) throw new ObjectDisposedException("Cannot access the properties/methods of a HttpServer instance after it has been disposed of");
             this._loggers.Add(logger);
         }
 
         public void InsertLogger(IHttpLogger logger, int insertAt)
         {
+            if (this._disposed) throw new ObjectDisposedException("Cannot access the properties/methods of a HttpServer instance after it has been disposed of");
             this._loggers.Insert(insertAt, logger);
         }
 
         public void RemoveLogger(IHttpLogger logger)
         {
+            if (this._disposed) throw new ObjectDisposedException("Cannot access the properties/methods of a HttpServer instance after it has been disposed of");
             this._loggers.Remove(logger);
         }
 
         public void ClearLoggers()
         {
+            if (this._disposed) throw new ObjectDisposedException("Cannot access the properties/methods of a HttpServer instance after it has been disposed of");
             this._loggers.Clear();
         }
 
@@ -604,6 +628,9 @@ namespace VDS.Web
 
         #region Server Control
 
+        /// <summary>
+        /// Starts the Server
+        /// </summary>
         public void Start()
         {
             if (this._disposed) throw new ObjectDisposedException("Cannot access the properties/methods of a HttpServer instance after it has been disposed of");
@@ -619,6 +646,9 @@ namespace VDS.Web
             }
         }
 
+        /// <summary>
+        /// Restarts the Server
+        /// </summary>
         public void Restart()
         {
             if (this._disposed) throw new ObjectDisposedException("Cannot access the properties/methods of a HttpServer instance after it has been disposed of");
@@ -627,6 +657,9 @@ namespace VDS.Web
             this.Start();
         }
 
+        /// <summary>
+        /// Stops the Server
+        /// </summary>
         public void Stop()
         {
             if (this._disposed) throw new ObjectDisposedException("Cannot access the properties/methods of a HttpServer instance after it has been disposed of");
@@ -635,6 +668,27 @@ namespace VDS.Web
             if (this._listener.IsListening)
             {
                 this._listener.Stop();
+            }
+        }
+
+        /// <summary>
+        /// Shuts down the server and optionally kills the process in which it is running
+        /// </summary>
+        /// <param name="killProcess">Whether to kill the containing process</param>
+        /// <remarks>
+        /// <para>
+        /// After a Server has been shut down it's methods and properties cannot be accessed
+        /// </para>
+        /// </remarks>
+        public void Shutdown(bool killProcess)
+        {
+            if (this._disposed) throw new ObjectDisposedException("Cannot access the properties/methods of a HttpServer instance after it has been disposed of");
+
+            this.Dispose();
+
+            if (killProcess)
+            {
+                System.Diagnostics.Process.GetCurrentProcess().Kill();
             }
         }
 
@@ -659,7 +713,7 @@ namespace VDS.Web
                     }
                     catch (Exception ex)
                     {
-                        this.LogErrors(ex);
+                        if (this._listener.IsListening) this.LogErrors(ex);
                     }
                 }
                 else
@@ -704,8 +758,11 @@ namespace VDS.Web
             try
             {
                 HttpServerContext context = this._delegate.EndInvoke(result);
-                this.ApplyPreResponseModules(context);
-                context.Response.Close();
+                if (this._listener.IsListening)
+                {
+                    this.ApplyPreResponseModules(context);
+                    context.Response.Close();
+                }
             }
             catch (Exception ex)
             {
@@ -803,6 +860,11 @@ namespace VDS.Web
             return this._mimeTypes.GetMapping(extension);
         }
 
+        /// <summary>
+        /// Remaps the Request to another Handler, the Handler must be a registered Handler for remapping to succeed
+        /// </summary>
+        /// <param name="context">HTTP Context</param>
+        /// <param name="handlerType">Handler Type</param>
         public void RemapHandler(HttpServerContext context, Type handlerType)
         {
             try
@@ -834,8 +896,13 @@ namespace VDS.Web
 
         public void Dispose()
         {
+            if (this._disposed) return;
+
             this._disposed = true;
-            this._listener.Stop();
+            if (this._listener != null)
+            {
+                if (this._listener.IsListening) this._listener.Stop();
+            }
             this._shouldTerminate = true;
             while (this._serverThread.ThreadState != ThreadState.Stopped)
             {
