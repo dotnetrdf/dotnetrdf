@@ -106,7 +106,7 @@ namespace VDS.RDF.Query.Algebra
 
         private bool IsLazilyEvaluablePattern(ITriplePattern p)
         {
-            return (p is TriplePattern || p is FilterPattern || p is BindPattern || p is SubQueryPattern);
+            return (p is TriplePattern);// || p is FilterPattern || p is BindPattern || p is SubQueryPattern);
         }
 
         /// <summary>

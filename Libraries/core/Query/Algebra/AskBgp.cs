@@ -64,7 +64,7 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="p">Triple Pattern</param>
         public AskBgp(ITriplePattern p)
         {
-            if (!(p is TriplePattern || p is FilterPattern)) throw new ArgumentException("Triple Pattern instance must be a Triple Pattern or a FILTER Pattern", "p");
+            if (!IsAskEvaluablePattern(p)) throw new ArgumentException("Triple Pattern instance must be a Triple Pattern or a FILTER Pattern", "p");
             this._triplePatterns.Add(p);
         }
 
@@ -74,8 +74,13 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="ps">Triple Patterns</param>
         public AskBgp(IEnumerable<ITriplePattern> ps)
         {
-            if (!ps.All(p => p is TriplePattern || p is FilterPattern)) throw new ArgumentException("Triple Pattern instances must all be Triple Patterns or FILTER Patterns", "ps");
+            if (!ps.All(p => IsAskEvaluablePattern(p))) throw new ArgumentException("Triple Pattern instances must all be Triple Patterns or FILTER Patterns", "ps");
             this._triplePatterns.AddRange(ps);
+        }
+
+        public bool IsAskEvaluablePattern(ITriplePattern p)
+        {
+            return (p is TriplePattern || p is FilterPattern);
         }
 
         /// <summary>
