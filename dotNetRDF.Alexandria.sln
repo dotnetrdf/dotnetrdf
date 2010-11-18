@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.Alexandria", "Libraries\alexandria\dotNetRDF.Alexandria.csproj", "{6CDCEDB4-8D4F-4C51-B0CF-30B37D1518E3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.Alexandria", "..\..\Trunk\Libraries\alexandria\dotNetRDF.Alexandria.csproj", "{6CDCEDB4-8D4F-4C51-B0CF-30B37D1518E3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "alexandria-tests", "Testing\alexandria-tests\alexandria-tests.csproj", "{10CD378D-9490-4032-A615-20991215C7EC}"
 EndProject
@@ -14,7 +14,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		dotNetRDF.Alexandria3.vsmdi = dotNetRDF.Alexandria3.vsmdi
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.Alexandria.MongoDB", "Libraries\alexandria.mongodb\dotNetRDF.Alexandria.MongoDB.csproj", "{5976AA06-893B-4E0D-BDED-19A8515E809C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.Alexandria.MongoDB", "..\..\Trunk\Libraries\alexandria.mongodb\dotNetRDF.Alexandria.MongoDB.csproj", "{5976AA06-893B-4E0D-BDED-19A8515E809C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF", "..\..\Trunk\Libraries\core\dotNetRDF.csproj", "{BFBAC159-1E60-4D03-8ACA-D34E31EB83BF}"
 EndProject
