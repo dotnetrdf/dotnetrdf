@@ -29,6 +29,7 @@ Changed
  - RDF/XML parser now correctly treats empty elements with rdf:datatype as literal properties rather than empty properties
 - Parsing
  - Notation 3 Parser supports Variables, @forSome and @forAll fully
+ - All Parsers should now throw RdfParseExceptions when null Graphs, Stores, filenames, streams etc are passed as arguments
  - UriLoader Caching improved
   - URIs are santised when being cached
   - Data is cached under both the request and response URIS

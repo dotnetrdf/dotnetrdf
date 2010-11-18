@@ -145,6 +145,9 @@ namespace VDS.RDF.Parsing
         /// <param name="input">Input Stream</param>
         public void Load(IGraph g, StreamReader input)
         {
+            if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
+            if (input == null) throw new RdfParseException("Cannot read RDF from a null Stream");
+
             try
             {
 //Silverlight only supports XmlReader not the full XmlDocument API
@@ -213,6 +216,9 @@ namespace VDS.RDF.Parsing
         /// <remarks>Simply opens a Stream for the File then calls the other version of Load to do the actual parsing</remarks>
         public void Load(IGraph g, string filename)
         {
+            if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
+            if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
+
             //Open a Stream for the File and call other variant of Load
             StreamReader input = new StreamReader(filename);
             this.Load(g, input);
@@ -227,6 +233,9 @@ namespace VDS.RDF.Parsing
         /// <param name="document">XML Document</param>
         public void Load(IGraph g, XmlDocument document)
         {
+            if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
+            if (document == null) throw new RdfParseException("Cannot read RDF from a null XML Document");
+
             try 
             {
                 //Create a new Parser Context and Parse

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using VDS.RDF;
 using VDS.RDF.Configuration;
@@ -16,13 +17,7 @@ namespace rdfServer
     public enum RdfServerConsoleMode
     {
         Quit,
-        Run,
-        /*InstallService,
-        UninstallService,
-        RunService,
-        StartService,
-        StopService,
-        RestartService*/
+        Run
     }
 
     public class RdfServerOptions
@@ -36,7 +31,6 @@ namespace rdfServer
         private String _logFormat = ApacheStyleLogger.LogCommon;
         private bool _verbose = false, _quiet = false;
         private String _baseDir = null;
-        private String _serviceName = null;
         private bool _restControl = false;
 
         public const String DefaultServiceName = "rdfServerService";
@@ -175,56 +169,6 @@ namespace rdfServer
                             if (!this._quiet) Console.WriteLine("rdfServer: RESTful Control enabled, POST a request to /control with a querystring of operation=restart or operation=stop to control the server");
                             break;
 
-                        /*case "-s":
-                        case "-service":
-                            if (i < args.Length - 1)
-                            {
-                                i++;
-                                String op = args[i];
-                                String svcName = DefaultServiceName;
-                                if (i < args.Length - 1)
-                                {
-                                    if (!args[i + 1].StartsWith("-"))
-                                    {
-                                        i++;
-                                        svcName = args[i];
-                                    }
-                                }
-                                this._serviceName = svcName;
-
-                                switch (op)
-                                {
-                                    case "install":
-                                        this._mode = RdfServerConsoleMode.InstallService;
-                                        break;
-                                    case "uninstall":
-                                        this._mode = RdfServerConsoleMode.UninstallService;
-                                        break;
-                                    case "start":
-                                        this._mode = RdfServerConsoleMode.StartService;
-                                        break;
-                                    case "stop":
-                                        this._mode = RdfServerConsoleMode.StopService;
-                                        break;
-                                    case "restart":
-                                        this._mode = RdfServerConsoleMode.RestartService;
-                                        break;
-                                    case "run":
-                                        this._mode = RdfServerConsoleMode.RunService;
-                                        break;
-                                    default:
-                                        Console.Error.WriteLine("rdfServer: Error: Operation '" + op + "' is not a valid operation argument to be specified after the -s/-service operation");
-                                        this._mode = RdfServerConsoleMode.Quit;
-                                        break;
-                                }
-                            }
-                            else
-                            {
-                                Console.Error.WriteLine("rdfServer: Error: Expected an argument after the -s/-service option to specify a service operation to perform");
-                                this._mode = RdfServerConsoleMode.Quit;
-                            }
-                            break;*/
-
                         default:
                             Console.Error.WriteLine("rdfServer: Error: Unknown option/argument '" + args[i] + "' was ignored");
                             break;
@@ -281,17 +225,6 @@ namespace rdfServer
             Console.WriteLine("-rest");
             Console.WriteLine(" Enabled RESTful Control which allows a request to be POSTed to /control with operation=restart or operation=stop to control the server");
             Console.WriteLine();
-            /*Console.WriteLine("-s operation [servicename]");
-            Console.WriteLine("-service operation [servicename]");
-            Console.WriteLine(" Performs a Windows Service related operation.");
-            Console.WriteLine(" Supported options are:");
-            Console.WriteLine("     install     Installs the Service");
-            Console.WriteLine("     uninstall   Uninstalls the Service");
-            Console.WriteLine("     start       Starts the Service");
-            Console.WriteLine("     restart     Restarts the Service");
-            Console.WriteLine("     stop        Stops the Service");
-            Console.WriteLine(" Service Name is optional and if not specified will be rdfServerService");
-            Console.WriteLine();*/
             Console.WriteLine("-v");
             Console.WriteLine("-verbose");
             Console.WriteLine(" Sets Verbose mode - causes all requests and errors to be logged to console");
@@ -306,54 +239,86 @@ namespace rdfServer
             server.BaseDirectory = this.BaseDirectory;
 
             //Need to load up the Configuration Graph and add to Server State
-            Graph g = new Graph();
-            try
+            server.State["ConfigurationGraph"] = this.LoadConfigurationGraph();
+            if (server.State["ConfigurationGraph"] == null)
             {
-                FileLoader.Load(g, this.ConfigurationFile);
-                server.State["ConfigurationGraph"] = g;
+                throw new HttpServerException("Unable to create a HttpServer instance as the Configuration Graph for the server could not be loaded");
+            }
 
-                //Add MIME Type Mappings for RDF File Types
-                server.AddMimeType(".rdf", MimeTypesHelper.GetCanonicalType(MimeTypesHelper.RdfXml));
-                server.AddMimeType(".nt", MimeTypesHelper.GetCanonicalType(MimeTypesHelper.NTriples));
-                server.AddMimeType(".ttl", MimeTypesHelper.GetCanonicalType(MimeTypesHelper.Turtle));
-                server.AddMimeType(".n3", MimeTypesHelper.GetCanonicalType(MimeTypesHelper.Notation3));
-                server.AddMimeType(".json", MimeTypesHelper.GetCanonicalType(MimeTypesHelper.Json));
-                server.AddMimeType(".trig", MimeTypesHelper.GetCanonicalType(MimeTypesHelper.TriG));
-                server.AddMimeType(".nq", MimeTypesHelper.GetCanonicalType(MimeTypesHelper.NQuads));
-                server.AddMimeType(".srx", MimeTypesHelper.GetCanonicalType(MimeTypesHelper.Sparql));
+            //Add MIME Type Mappings for RDF File Types
+            server.AddMimeType(".rdf", MimeTypesHelper.GetCanonicalType(MimeTypesHelper.RdfXml));
+            server.AddMimeType(".nt", MimeTypesHelper.GetCanonicalType(MimeTypesHelper.NTriples));
+            server.AddMimeType(".ttl", MimeTypesHelper.GetCanonicalType(MimeTypesHelper.Turtle));
+            server.AddMimeType(".n3", MimeTypesHelper.GetCanonicalType(MimeTypesHelper.Notation3));
+            server.AddMimeType(".json", MimeTypesHelper.GetCanonicalType(MimeTypesHelper.Json));
+            server.AddMimeType(".trig", MimeTypesHelper.GetCanonicalType(MimeTypesHelper.TriG));
+            server.AddMimeType(".nq", MimeTypesHelper.GetCanonicalType(MimeTypesHelper.NQuads));
+            server.AddMimeType(".srx", MimeTypesHelper.GetCanonicalType(MimeTypesHelper.Sparql));
 
-                //Setup Logging appropriately
-                if (this.LogFile != null)
+            //Setup Logging appropriately
+            if (this.LogFile != null)
+            {
+                server.AddLogger(new FileLogger(this.LogFile, this.LogFormat));
+            }
+            if (this.Mode == RdfServerConsoleMode.Run)
+            {
+                if (!this.QuietMode)
                 {
-                    server.AddLogger(new FileLogger(this.LogFile, this.LogFormat));
-                }
-                if (this.Mode == RdfServerConsoleMode.Run)
-                {
-                    if (!this.QuietMode)
+                    //Console Logging only applies when not in Quiet Mode
+                    if (this.VerboseMode)
                     {
-                        //Console Logging only applies when not in Quiet Mode
-                        if (this.VerboseMode)
-                        {
-                            server.AddLogger(new ConsoleLogger(this.LogFormat));
-                        }
-                        else
-                        {
-                            server.AddLogger(new ConsoleErrorLogger());
-                        }
+                        server.AddLogger(new ConsoleLogger(this.LogFormat));
+                    }
+                    else
+                    {
+                        server.AddLogger(new ConsoleErrorLogger());
                     }
                 }
-                /*else
-                {
-                    //Otherwise use Event Log Logging
-                    server.AddLogger(new EventLogger(this.ServiceName));
-                }*/
-            }
-            catch (FileNotFoundException)
-            {
-                Console.Error.WriteLine("rdfServer: Error: Configuration File '" + this.ConfigurationFile + "' was not found");
             }
 
+
             return server;
+        }
+
+        private IGraph LoadConfigurationGraph()
+        {
+            IGraph g = null;
+
+            try
+            {
+                if (File.Exists(this._configFile))
+                {
+                    g = new Graph();
+                    FileLoader.Load(g, this._configFile);
+                }
+                else
+                {
+                    //Try to get from embedded resource instead
+                    Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(this._configFile);
+                    if (stream == null)
+                    {
+                        Console.Error.WriteLine("rdfServer: Error: Configuration File '" + this.ConfigurationFile + "' was not found");
+                    }
+                    else
+                    {
+                        IRdfReader reader = MimeTypesHelper.GetParser(MimeTypesHelper.GetMimeType(Path.GetExtension(this._configFile)));
+                        g = new Graph();
+                        reader.Load(g, new StreamReader(stream));
+                    }
+                }
+            }
+            catch (RdfParserSelectionException selectEx)
+            {
+                g = null;
+                Console.Error.WriteLine("rdfServer: Error: Configuration File '" + this.ConfigurationFile + "' could not be loaded as a suitable parser was not found");
+            }
+            catch (RdfParseException parseEx)
+            {
+                g = null;
+                Console.Error.WriteLine("rdfServer: Error: Configuration File '" + this.ConfigurationFile + "' was not valid RDF");
+            }
+
+            return g;
         }
 
         public RdfServerConsoleMode Mode
@@ -361,14 +326,6 @@ namespace rdfServer
             get
             {
                 return this._mode;
-            }
-        }
-
-        public String ServiceName
-        {
-            get
-            {
-                return this._serviceName;
             }
         }
 
@@ -470,24 +427,6 @@ namespace rdfServer
                 output.Append(' ');
                 switch (this.Mode)
                 {
-                    /*case RdfServerConsoleMode.InstallService:
-                        output.Append("-service install " + this.ServiceName);
-                        break;
-                    case RdfServerConsoleMode.RestartService:
-                        output.Append("-service restart " + this.ServiceName);
-                        break;
-                    case RdfServerConsoleMode.RunService:
-                        output.Append("-service run " + this.ServiceName);
-                        break;
-                    case RdfServerConsoleMode.StartService:
-                        output.Append("-service start " + this.ServiceName);
-                        break;
-                    case RdfServerConsoleMode.StopService:
-                        output.Append("-service stop " + this.ServiceName);
-                        break;
-                    case RdfServerConsoleMode.UninstallService:
-                        output.Append("-service uninstall " + this.ServiceName);
-                        break;*/
                     case RdfServerConsoleMode.Run:
                         if (this.VerboseMode)
                         {

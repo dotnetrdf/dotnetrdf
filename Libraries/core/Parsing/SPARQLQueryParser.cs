@@ -201,6 +201,7 @@ namespace VDS.RDF.Parsing
         /// <returns></returns>
         public SparqlQuery ParseFromFile(String queryFile)
         {
+            if (queryFile == null) throw new RdfParseException("Cannot parse a SPARQL Query from a null File");
             StreamReader reader = new StreamReader(queryFile);
             return this.ParseInternal(reader);
         }
@@ -212,6 +213,7 @@ namespace VDS.RDF.Parsing
         /// <returns></returns>
         public SparqlQuery Parse(StreamReader input)
         {
+            if (input == null) throw new RdfParseException("Cannot parse a SPARQL Query from a null Stream");
             return this.ParseInternal(input);
         }
 
@@ -222,6 +224,8 @@ namespace VDS.RDF.Parsing
         /// <returns></returns>
         public SparqlQuery ParseFromString(String queryString)
         {
+            if (queryString == null) throw new RdfParseException("Cannot parse a SPARQL Query from a null String");
+
             //Turn into a Stream which we can pass to ParseFromFile
             MemoryStream mem = new MemoryStream();
             StreamWriter writer = new StreamWriter(mem);
@@ -244,6 +248,7 @@ namespace VDS.RDF.Parsing
         /// </remarks>
         public SparqlQuery ParseFromString(SparqlParameterizedString queryString)
         {
+            if (queryString == null) throw new RdfParseException("Cannot parse a SPARQL Query from a null String");
             return this.ParseFromString(queryString.ToString());
         }
 
@@ -251,11 +256,29 @@ namespace VDS.RDF.Parsing
 
         private SparqlQuery ParseInternal(StreamReader input)
         {
-            //Create the Parser Context
-            SparqlQueryParserContext context = new SparqlQueryParserContext(new SparqlTokeniser(input, this._syntax), this._queuemode, false, this._tracetokeniser);
-            context.ExpressionFactories = this._factories;
+            try
+            {
+                //Create the Parser Context
+                SparqlQueryParserContext context = new SparqlQueryParserContext(new SparqlTokeniser(input, this._syntax), this._queuemode, false, this._tracetokeniser);
+                context.ExpressionFactories = this._factories;
 
-            return this.ParseInternal(context);
+                return this.ParseInternal(context);
+            }
+            catch
+            {
+                throw;
+            }
+            finally
+            {
+                try
+                {
+                    input.Close();
+                }
+                catch
+                {
+                    //No catch actions just trying to clean up the stream
+                }
+            }
         }
 
         private SparqlQuery ParseInternal(SparqlQueryParserContext context)

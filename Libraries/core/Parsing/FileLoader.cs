@@ -79,6 +79,9 @@ namespace VDS.RDF.Parsing
         /// <param name="parser">Parser to use</param>
         public static void Load(IGraph g, String filename, IRdfReader parser)
         {
+            if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
+            if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
+
             if (!File.Exists(filename))
             {
 #if SILVERLIGHT || COMPACT
@@ -150,6 +153,9 @@ namespace VDS.RDF.Parsing
         /// </remarks>
         public static void Load(ITripleStore store, String filename, IStoreReader parser)
         {
+            if (store == null) throw new RdfParseException("Cannot read a RDF dataset into a null Store");
+            if (filename == null) throw new RdfParseException("Cannot read a RDF dataset from a null File");
+
             if (!File.Exists(filename))
             {
 #if SILVERLIGHT

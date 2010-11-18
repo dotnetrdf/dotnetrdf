@@ -80,6 +80,8 @@ namespace VDS.RDF.Parsing
         /// <param name="parameters">Parameters indicating the Stream to read from</param>
         public void Load(ITripleStore store, IStoreParams parameters)
         {
+            if (store == null) throw new RdfParseException("Cannot read a RDF dataset into a null Store");
+
             if (parameters is StreamParams)
             {
                 //Get Input Stream
@@ -90,10 +92,12 @@ namespace VDS.RDF.Parsing
                     //Create the Parser Context and Invoke the Parser
                     TriGParserContext context = new TriGParserContext(store, new TriGTokeniser(input), TokenQueueMode.SynchronousBufferDuringParsing, false, this._tracetokeniser);
                     this.Parse(context);
-
-                    input.Close();
                 }
                 catch
+                {
+                    throw;
+                }
+                finally
                 {
                     try
                     {
@@ -103,7 +107,6 @@ namespace VDS.RDF.Parsing
                     {
                         //No catch actions just cleaning up
                     }
-                    throw;
                 }
             }
             else

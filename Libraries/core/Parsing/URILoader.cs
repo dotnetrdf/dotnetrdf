@@ -154,6 +154,7 @@ namespace VDS.RDF.Parsing
         {
             try
             {
+                if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
                 if (u == null) throw new RdfParseException("Cannot load RDF from a null URI");
 #if SILVERLIGHT
                 if (u.IsFile())
@@ -410,6 +411,9 @@ namespace VDS.RDF.Parsing
         {
             try
             {
+                if (store == null) throw new RdfParseException("Cannot read a RDF dataset into a null Graph");
+                if (u == null) throw new RdfParseException("Cannot read a RDF dataset from a null URI");
+
 #if SILVERLIGHT
                 if (u.IsFile())
 #else

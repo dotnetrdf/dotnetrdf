@@ -54,27 +54,34 @@ namespace rdfServer.GUI
             }
             else
             {
-                ProcessStartInfo info = new ProcessStartInfo();
-                info.FileName = path;
-                info.Arguments = this.txtCreateAdvanced.Text;
-                info.CreateNoWindow = true;
-                info.RedirectStandardOutput = true;
-                info.RedirectStandardError = true;
-                info.UseShellExecute = false;
-
-                IServerHarness harness = new ExternalProcessServerHarness(info);
-                if (this.chkStartAutoAdvanced.Checked)
+                try
                 {
-                    try
+                    ProcessStartInfo info = new ProcessStartInfo();
+                    info.FileName = path;
+                    info.Arguments = this.txtCreateAdvanced.Text;
+                    info.CreateNoWindow = true;
+                    info.RedirectStandardOutput = true;
+                    info.RedirectStandardError = true;
+                    info.UseShellExecute = false;
+
+                    IServerHarness harness = new ExternalProcessServerHarness(info);
+                    if (this.chkStartAutoAdvanced.Checked)
                     {
-                        harness.Start();
+                        try
+                        {
+                            harness.Start();
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(ex.Message, "Error Starting Server", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
                     }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(ex.Message, "Error Starting Server", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
+                    this._servers.Add(harness);
                 }
-                this._servers.Add(harness);
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Unable to create an External Process Server due to the following error:\n" + ex.Message, "Error Creating Server", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
 
         }
@@ -281,19 +288,26 @@ namespace rdfServer.GUI
             else
             {
                 RdfServerOptions options = new RdfServerOptions(args.ToArray());
-                IServerHarness server = new InProcessServerHarness(options.GetServerInstance(), this.cboLogFormat.Text);
-                if (this.chkStartAuto.Checked)
+                try
                 {
-                    try
+                    IServerHarness server = new InProcessServerHarness(options.GetServerInstance(), this.cboLogFormat.Text);
+                    if (this.chkStartAuto.Checked)
                     {
-                        server.Start();
+                        try
+                        {
+                            server.Start();
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(ex.Message, "Error Starting Server", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
                     }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(ex.Message, "Error Starting Server", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
+                    this._servers.Add(server);
                 }
-                this._servers.Add(server);
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Unable to create an In-Process server due to the following error:\n" + ex.Message, "Error Creating Server", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
 

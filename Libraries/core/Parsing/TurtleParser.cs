@@ -112,6 +112,9 @@ namespace VDS.RDF.Parsing
         /// <param name="input">Stream to read from</param>
         public void Load(IGraph g, StreamReader input)
         {
+            if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
+            if (input == null) throw new RdfParseException("Cannot read RDF from a null Stream");
+
             try
             {
                 if (!g.IsEmpty)
@@ -129,10 +132,12 @@ namespace VDS.RDF.Parsing
                     TokenisingParserContext context = new TokenisingParserContext(g, new TurtleTokeniser(input), this._queueMode, this._traceParsing, this._traceTokeniser);
                     this.Parse(context);
                 }
-
-                input.Close();
-            } 
-            catch 
+            }
+            catch
+            {
+                throw;
+            }
+            finally
             {
                 try
                 {
@@ -140,9 +145,9 @@ namespace VDS.RDF.Parsing
                 }
                 catch
                 {
-                    //No catch actions, just trying to clean up
+                    //Catch is just here in case something goes wrong with closing the stream
+                    //This error can be ignored
                 }
-                throw;
             }
         }
 
@@ -153,6 +158,8 @@ namespace VDS.RDF.Parsing
         /// <param name="filename">File to read from</param>
         public void Load(IGraph g, string filename)
         {
+            if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
+            if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
             this.Load(g, new StreamReader(filename));
         }
 

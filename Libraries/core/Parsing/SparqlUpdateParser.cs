@@ -98,8 +98,27 @@ namespace VDS.RDF.Parsing
         /// <returns></returns>
         public SparqlUpdateCommandSet Parse(StreamReader input)
         {
-            SparqlUpdateParserContext context = new SparqlUpdateParserContext(new SparqlTokeniser(input, SparqlQuerySyntax.Sparql_1_1));
-            return this.ParseInternal(context);
+            if (input == null) throw new RdfParseException("Cannot parse SPARQL Update Commands from a null Stream");
+            try
+            {
+                SparqlUpdateParserContext context = new SparqlUpdateParserContext(new SparqlTokeniser(input, SparqlQuerySyntax.Sparql_1_1));
+                return this.ParseInternal(context);
+            }
+            catch
+            {
+                throw;
+            }
+            finally
+            {
+                try
+                {
+                    input.Close();
+                }
+                catch
+                {
+                    //No catch actions just trying to clean up the stream
+                }
+            }
         }
 
         /// <summary>
@@ -109,6 +128,7 @@ namespace VDS.RDF.Parsing
         /// <returns></returns>
         public SparqlUpdateCommandSet ParseFromFile(String file)
         {
+            if (file == null) throw new RdfParseException("Cannot parse SPARQL Update Commands from a null File");
             return this.Parse(new StreamReader(file));
         }
 
@@ -119,6 +139,8 @@ namespace VDS.RDF.Parsing
         /// <returns></returns>
         public SparqlUpdateCommandSet ParseFromString(String updates)
         {
+            if (updates == null) throw new RdfParseException("Cannot parse SPARQL Update Commands from a null String");
+
             //Turn into a Stream which we can pass to ParseFromFile
             MemoryStream mem = new MemoryStream();
             StreamWriter writer = new StreamWriter(mem);
@@ -137,6 +159,7 @@ namespace VDS.RDF.Parsing
         /// <returns></returns>
         public SparqlUpdateCommandSet ParseFromString(SparqlParameterizedString updates)
         {
+            if (updates == null) throw new RdfParseException("Cannot parse SPARQL Update Commands from a null String");
             return this.ParseFromString(updates.ToString());
         }
 

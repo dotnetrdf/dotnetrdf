@@ -44,7 +44,10 @@ namespace VDS.RDF.Parsing
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Only available in Builds for which caching is supported e.g. not supported under Silverlight
+    /// <strong>Warning:</strong> Only available in Builds for which caching is supported e.g. not supported under Silverlight
+    /// </para>
+    /// <para>
+    /// Implementors should take care to implement their caches such that any errors in the cache do not bubble up outside of the cache.  If the cache encounters any error when caching data or retrieving data from the cache it should indicate that the cached data is not available
     /// </para>
     /// </remarks>
     public interface IUriLoaderCache

@@ -112,23 +112,43 @@ namespace VDS.RDF.Parsing
         /// <param name="input">Arbitrary Input Stream to read input from</param>
         public void Load(IGraph g, StreamReader input)
         {
-            if (!g.IsEmpty)
-            {
-                //Parse into a new Graph then merge with the existing Graph
-                Graph h = new Graph();
-                h.BaseUri = g.BaseUri;
-                TokenisingParserContext context = new TokenisingParserContext(h, new NTriplesTokeniser(input), this._queuemode, this._traceparsing, this._tracetokeniser);
-                this.Parse(context);
-                g.Merge(h);
-            }
-            else
-            {
-                //Can parse directly into an empty Graph
-                TokenisingParserContext context = new TokenisingParserContext(g, new NTriplesTokeniser(input), this._queuemode, this._traceparsing, this._tracetokeniser);
-                this.Parse(context);
-            }
+            if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
+            if (input == null) throw new RdfParseException("Cannot read RDF from a null Stream");
 
-            input.Close();
+            try
+            {
+                if (!g.IsEmpty)
+                {
+                    //Parse into a new Graph then merge with the existing Graph
+                    Graph h = new Graph();
+                    h.BaseUri = g.BaseUri;
+                    TokenisingParserContext context = new TokenisingParserContext(h, new NTriplesTokeniser(input), this._queuemode, this._traceparsing, this._tracetokeniser);
+                    this.Parse(context);
+                    g.Merge(h);
+                }
+                else
+                {
+                    //Can parse directly into an empty Graph
+                    TokenisingParserContext context = new TokenisingParserContext(g, new NTriplesTokeniser(input), this._queuemode, this._traceparsing, this._tracetokeniser);
+                    this.Parse(context);
+                }
+            }
+            catch
+            {
+                throw;
+            }
+            finally
+            {
+                try
+                {
+                    input.Close();
+                }
+                catch
+                {
+                    //Catch is just here in case something goes wrong with closing the stream
+                    //This error can be ignored
+                }
+            }
         }
 
         /// <summary>
@@ -139,8 +159,10 @@ namespace VDS.RDF.Parsing
         /// <remarks>Simply opens an StreamReader and uses the overloaded version of this function</remarks>
         public void Load(IGraph g, string filename)
         {
-            StreamReader input = new StreamReader(filename);
+            if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
+            if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
 
+            StreamReader input = new StreamReader(filename);
             this.Load(g, input);
         }
 

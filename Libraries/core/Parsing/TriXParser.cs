@@ -80,6 +80,8 @@ namespace VDS.RDF.Parsing
         /// <param name="parameters">Parameters indicating the Stream to read from</param>
         public void Load(ITripleStore store, IStoreParams parameters)
         {
+            if (store == null) throw new RdfParseException("Cannot read a RDF dataset into a null Store");
+
             if (parameters is StreamParams)
             {
                 //Get Input Stream

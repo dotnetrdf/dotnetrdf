@@ -5,7 +5,8 @@
 # This is the default configuration file for rdfServer
 # You need to specify a HttpHandler with dnr:type VDS.RDF.Web.SparqlServer
 # You can then specify a Query and/or an Update Processor
-# You may specify a Protocol Processor as well
+# You may specify a Protocol Processor as well though this is currently 
+# not supported under rdfServer (will be supported in future)
 
 <dotnetrdf:/*> a dnr:HttpHandler ;
 				 dnr:type "VDS.RDF.Web.SparqlServer" ;

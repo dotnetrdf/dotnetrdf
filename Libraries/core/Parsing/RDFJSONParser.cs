@@ -58,6 +58,9 @@ namespace VDS.RDF.Parsing
         /// <param name="input">Stream to read from</param>
         public void Load(IGraph g, StreamReader input)
         {
+            if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
+            if (input == null) throw new RdfParseException("Cannot read RDF from a null Stream");
+
             try
             {
                 if (g.IsEmpty)
@@ -70,9 +73,12 @@ namespace VDS.RDF.Parsing
                     this.Parse(h, input);
                     g.Merge(h);
                 }
-                input.Close();
             }
             catch
+            {
+                throw;
+            }
+            finally
             {
                 try
                 {
@@ -80,9 +86,9 @@ namespace VDS.RDF.Parsing
                 }
                 catch
                 {
-                    //No Catch actions
+                    //Catch is just here in case something goes wrong with closing the stream
+                    //This error can be ignored
                 }
-                throw;
             }
         }
 
@@ -93,6 +99,8 @@ namespace VDS.RDF.Parsing
         /// <param name="filename">File to read from</param>
         public void Load(IGraph g, string filename)
         {
+            if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
+            if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
             StreamReader input = new StreamReader(filename);
             this.Load(g, input);
         }

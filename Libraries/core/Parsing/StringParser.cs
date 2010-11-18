@@ -59,6 +59,9 @@ namespace VDS.RDF.Parsing
         /// <remarks>Use this when you have a raw RDF string and you know the syntax the RDF is in</remarks>
         public static void Parse(IGraph g, String data, IRdfReader reader)
         {
+            if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
+            if (data == null) return;
+
             if (reader == null)
             {
                 //If no parser supplied then should auto-detect syntax
@@ -114,6 +117,9 @@ namespace VDS.RDF.Parsing
         /// </remarks>
         public static void Parse(IGraph g, String data)
         {
+            if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
+            if (data == null) return;
+
             //Try to guess the format
             String format = "Unknown";
             try
@@ -180,6 +186,9 @@ namespace VDS.RDF.Parsing
         /// <param name="reader">Parser to use</param>
         public static void ParseDataset(ITripleStore store, String data, IStoreReader reader)
         {
+            if (store == null) throw new RdfParseException("Cannot read a RDF dataset into a null Graph");
+            if (data == null) return;
+
             if (reader == null)
             {
                 //If no parser supplied then should auto-detect syntax
@@ -216,6 +225,9 @@ namespace VDS.RDF.Parsing
         /// </remarks>
         public static void ParseDataset(ITripleStore store, String data)
         {
+            if (store == null) throw new RdfParseException("Cannot read a RDF dataset into a null Graph");
+            if (data == null) return;
+
             //Try to guess the format
             String format = "Unknown";
             try
@@ -259,6 +271,9 @@ namespace VDS.RDF.Parsing
         /// </remarks>
         public static void ParseResultSet(SparqlResultSet results, String data)
         {
+            if (results == null) throw new RdfParseException("Cannot read SPARQL Results into a null Result Set");
+            if (data == null) return;
+
             //Try to guess the format
             String format = "Unknown";
             try
@@ -300,6 +315,9 @@ namespace VDS.RDF.Parsing
         /// <param name="reader">Parser to use</param>
         public static void ParseResultSet(SparqlResultSet results, String data, ISparqlResultsReader reader)
         {
+            if (results == null) throw new RdfParseException("Cannot read SPARQL Results into a null Result Set");
+            if (data == null) return;
+
             if (reader == null)
             {
                 //If no parser specified then auto-detect syntax
@@ -330,6 +348,8 @@ namespace VDS.RDF.Parsing
         /// <param name="data">Raw RDF String</param>
         public static IRdfReader GetParser(String data)
         {
+            if (data == null) throw new RdfParserSelectionException("Cannot select a parser for a null String");
+
             if (data.Contains("<?xml") && data.Contains("<rdf:RDF"))
             {
                 //Probably RDF/XML
@@ -379,6 +399,8 @@ namespace VDS.RDF.Parsing
         /// <returns></returns>
         public static ISparqlResultsReader GetResultSetParser(String data)
         {
+            if (data == null) throw new RdfParserSelectionException("Cannot select a Result Set parser from a null string");
+
             if (data.Contains("<?xml") || data.Contains("<sparql"))
             {
                 //Probably XML

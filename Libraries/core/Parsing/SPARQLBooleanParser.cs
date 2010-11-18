@@ -54,6 +54,9 @@ namespace VDS.RDF.Parsing
         /// <param name="input">Input Stream to read from</param>
         public void Load(SparqlResultSet results, StreamReader input)
         {
+            if (results == null) throw new RdfParseException("Cannot read SPARQL Results into a null Result Set");
+            if (input == null) throw new RdfParseException("Cannot read SPARQL Results from a null Stream");
+
             //Ensure Empty Result Set
             if (!results.IsEmpty)
             {
@@ -76,6 +79,10 @@ namespace VDS.RDF.Parsing
             }
             catch
             {
+                throw;
+            }
+            finally
+            {
                 try
                 {
                     input.Close();
@@ -84,7 +91,6 @@ namespace VDS.RDF.Parsing
                 {
                     //No Catch just cleaning up
                 }
-                throw;
             }
         }
 
@@ -95,6 +101,8 @@ namespace VDS.RDF.Parsing
         /// <param name="filename">File to read from</param>
         public void Load(SparqlResultSet results, string filename)
         {
+            if (results == null) throw new RdfParseException("Cannot read SPARQL Results into a null Result Set");
+            if (filename == null) throw new RdfParseException("Cannot read SPARQL Results from a null File");
             this.Load(results, new StreamReader(filename));
         }
     }
