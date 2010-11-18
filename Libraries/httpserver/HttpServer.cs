@@ -821,8 +821,10 @@ namespace VDS.Web
                 if (realPath != null)
                 {
                     //Maps to a Virtual Directory so resolve the path relative to the virtual directory
-                    //TODO: Do we need to ensure doesn't attempt to break out of Virtual Directory?
+                    //Not allowed to break out of directory, if the content you output has parent paths in it 
+                    //then is up to the client to resolve these themselves before making subsequent requests
                     if (relativePath.StartsWith("/")) relativePath = relativePath.Substring(1);
+                    if (relativePath.Contains("../") || relativePath.Contains("./")) return null;
                     realPath = Path.Combine(realPath, relativePath);
                     return realPath;
                 }
@@ -832,6 +834,9 @@ namespace VDS.Web
             if (this._baseDirectory != null)
             {
                 if (path.StartsWith("/")) path = path.Substring(1);
+
+                //Try to ensure that pathws cannot go outside the base directory
+                if (path.Contains("../") || path.Contains("./")) return null;
                 realPath = Path.Combine(this._baseDirectory, path.Replace('/', Path.DirectorySeparatorChar));
                 if (realPath.StartsWith(this._baseDirectory))
                 {
