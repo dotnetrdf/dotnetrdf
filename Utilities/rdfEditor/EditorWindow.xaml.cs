@@ -442,18 +442,17 @@ namespace rdfEditor
 
         private void mnuPrint_Click(object sender, RoutedEventArgs e)
         {
-            DocumentPrinter.Print(this.textEditor, this._manager.CurrentFile, true);
+            this.textEditor.PrintDialog(this._manager.CurrentFile, true);
         }
 
         private void mnuPrintNoHightlighting_Click(object sender, RoutedEventArgs e)
         {
-            DocumentPrinter.Print(this.textEditor, this._manager.CurrentFile, false);
+            this.textEditor.PrintDialog(this._manager.CurrentFile, false);
         }
 
         private void mnuPrintPreview_Click(object sender, RoutedEventArgs e)
         {
-            PrintPreviewDialog dialog = new PrintPreviewDialog(this.textEditor, this._manager.CurrentFile, true);
-            dialog.ShowDialog();
+            this.textEditor.PrintPreviewDialog(this._manager.CurrentFile);
         }
 
         private void mnuClose_Click(object sender, RoutedEventArgs e)
