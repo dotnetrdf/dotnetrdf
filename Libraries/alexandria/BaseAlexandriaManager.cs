@@ -29,6 +29,11 @@ namespace VDS.Alexandria
 
         public abstract void DeleteGraph(Uri graphUri);
 
+        public abstract bool DeleteSupported
+        {
+            get;
+        }
+
         public abstract Object Query(String sparqlQuery);
 
         public abstract bool UpdateSupported

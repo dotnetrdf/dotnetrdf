@@ -255,6 +255,14 @@ namespace VDS.Alexandria
             }
         }
 
+        public override bool DeleteSupported
+        {
+            get 
+            {
+                return true;
+            }
+        }
+
         public override bool IsReady
         {
             get 
