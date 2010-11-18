@@ -122,6 +122,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Sparql\AlgebraReverseTranslation.cs" />
     <Compile Include="AllegroGraphTests.cs" />
     <Compile Include="Configuration\ConfigurationApiTests.cs" />
     <Compile Include="SesameTests.cs" />
@@ -131,10 +132,12 @@
     <Compile Include="PelletTests.cs" />
     <Compile Include="RdfATests.cs" />
     <Compile Include="RdfXmlTests.cs" />
+    <Compile Include="Sparql\SparqlTests2.cs" />
     <Compile Include="Sparql\DescribeAlgorithms.cs" />
     <Compile Include="Sparql\ResultSetWriterTests.cs" />
     <Compile Include="Sparql\UpdateTests.cs" />
     <Compile Include="Sparql\ViewTests.cs" />
+    <Compile Include="VariableNodeTests.cs" />
     <Compile Include="Web\ETagTests.cs" />
     <Content Include="resources\bad_profile.xhtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -205,6 +208,10 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\..\Utilities\bsbm\App_Data\dataset_50.ttl">
+      <Link>resources\dataset_50.ttl</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="resources\cyrillic.rdf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
