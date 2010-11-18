@@ -328,14 +328,97 @@ namespace VDS.Alexandria.Utilities
             return this._g.ContainsTriple(t);
         }
 
-        public void Merge(IGraph g)
+        /// <summary>
+        /// Merges another Graph into the current Graph
+        /// </summary>
+        /// <param name="g">Graph to Merge into this Graph</param>
+        /// <remarks>The Graph on which you invoke this method will preserve its Blank Node IDs while the Blank Nodes from the Graph being merged in will be given new IDs as required in the scope of this Graph.</remarks>
+        public virtual void Merge(IGraph g)
         {
-            this._g.Merge(g);
+            this.Merge(g, false);
         }
 
-        public void Merge(IGraph g, bool keepOriginalGraphUri)
+        /// <summary>
+        /// Merges another Graph into the current Graph
+        /// </summary>
+        /// <param name="g">Graph to Merge into this Graph</param>
+        /// <param name="keepOriginalGraphUri">Indicates that the Merge should preserve the Graph URIs of Nodes so they refer to the Graph they originated in</param>
+        /// <remarks>
+        /// <para>
+        /// The Graph on which you invoke this method will preserve its Blank Node IDs while the Blank Nodes from the Graph being merged in will be given new IDs as required in the scope of this Graph.
+        /// </para>
+        /// <para>
+        /// The Graph will raise the <see cref="MergeRequested">MergeRequested</see> event before the Merge operation which gives any event handlers the oppurtunity to cancel this event.  When the Merge operation is completed the <see cref="Merged">Merged</see> event is raised
+        /// </para>
+        /// </remarks>
+        public virtual void Merge(IGraph g, bool keepOriginalGraphUri)
         {
-            this._g.Merge(g, keepOriginalGraphUri);
+            //First copy and Prefixes across which aren't defined in this Graph
+            this._g.NamespaceMap.Import(g.NamespaceMap);
+
+            if (this.IsEmpty)
+            {
+                //Empty Graph so do a quick copy
+                foreach (Triple t in g.Triples)
+                {
+                    this.Assert(new Triple(Tools.CopyNode(t.Subject, this, keepOriginalGraphUri), Tools.CopyNode(t.Predicate, this, keepOriginalGraphUri), Tools.CopyNode(t.Object, this, keepOriginalGraphUri)));
+                }
+            }
+            else
+            {   //Prepare a mapping of Blank Nodes to Blank Nodes
+                Dictionary<INode, BlankNode> mapping = new Dictionary<INode, BlankNode>();
+
+                foreach (Triple t in g.Triples)
+                {
+                    INode s, p, o;
+                    if (t.Subject.NodeType == NodeType.Blank)
+                    {
+                        if (!mapping.ContainsKey(t.Subject))
+                        {
+                            BlankNode temp = this.CreateBlankNode();
+                            if (keepOriginalGraphUri) temp.GraphUri = t.Subject.GraphUri;
+                            mapping.Add(t.Subject, temp);
+                        }
+                        s = mapping[t.Subject];
+                    }
+                    else
+                    {
+                        s = Tools.CopyNode(t.Subject, this, keepOriginalGraphUri);
+                    }
+
+                    if (t.Predicate.NodeType == NodeType.Blank)
+                    {
+                        if (!mapping.ContainsKey(t.Predicate))
+                        {
+                            BlankNode temp = this.CreateBlankNode();
+                            if (keepOriginalGraphUri) temp.GraphUri = t.Predicate.GraphUri;
+                            mapping.Add(t.Predicate, temp);
+                        }
+                        p = mapping[t.Predicate];
+                    }
+                    else
+                    {
+                        p = Tools.CopyNode(t.Predicate, this, keepOriginalGraphUri);
+                    }
+
+                    if (t.Object.NodeType == NodeType.Blank)
+                    {
+                        if (!mapping.ContainsKey(t.Object))
+                        {
+                            BlankNode temp = this.CreateBlankNode();
+                            if (keepOriginalGraphUri) temp.GraphUri = t.Object.GraphUri;
+                            mapping.Add(t.Object, temp);
+                        }
+                        o = mapping[t.Object];
+                    }
+                    else
+                    {
+                        o = Tools.CopyNode(t.Object, this, keepOriginalGraphUri);
+                    }
+
+                    this.Assert(new Triple(s, p, o));
+                }
+            }
         }
 
         public bool Equals(IGraph g, out Dictionary<INode, INode> mapping)

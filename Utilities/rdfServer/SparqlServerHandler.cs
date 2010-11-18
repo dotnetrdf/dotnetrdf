@@ -15,6 +15,8 @@ using VDS.RDF.Writing;
 using VDS.Web;
 using VDS.Web.Handlers;
 
+//TODO: Send appropriate Content Encoding
+
 namespace rdfServer
 {
     public class SparqlServerHandler : IHttpListenerHandler

@@ -9,11 +9,11 @@
 _:factory a dnr:ObjectFactory ;
 		   dnr:type "VDS.Alexandria.Utilities.AlexandriaObjectFactory, dotNetRDF.Alexandria" .
 
-<dotnetrdf:/mongodb-sparql-server/fs/*> a dnr:HttpHandler ;
-										 dnr:type "VDS.RDF.Web.SparqlServer" ;
-										 dnr:queryProcessor _:fsQuery ;
-										 dnr:updateProcessor _:fsUpdate ;
-										 dnr:protocolProcessor _:fsProtocol .
+<dotnetrdf:/*> a dnr:HttpHandler ;
+				dnr:type "VDS.RDF.Web.SparqlServer" ;
+				dnr:queryProcessor _:fsQuery ;
+				dnr:updateProcessor _:fsUpdate ;
+				dnr:protocolProcessor _:fsProtocol .
 										 
  _:fsQuery a dnr:SparqlQueryProcessor ;
  		   dnr:type "VDS.RDF.Query.LeviathanQueryProcessor" ;

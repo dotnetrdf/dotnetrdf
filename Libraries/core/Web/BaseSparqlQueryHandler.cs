@@ -327,6 +327,7 @@ namespace VDS.RDF.Web
                 context.Response.Clear();
 
                 //Send Result Set to Client
+                //TODO: Send appropriate Content Encoding
                 sparqlwriter.Save((SparqlResultSet)result, new StreamWriter(context.Response.OutputStream));
             }
             else if (result is Graph)
@@ -343,6 +344,7 @@ namespace VDS.RDF.Web
                 context.Response.Clear();
 
                 //Send Graph to Client
+                //TODO: Send appropriate Content Encoding
                 rdfwriter.Save((Graph)result, new StreamWriter(context.Response.OutputStream));
             }
             else

@@ -71,6 +71,7 @@ namespace VDS.Web.Configuration
             this.AddMimeType(new MimeTypeMapping(".gif", "image/gif", true));
             this.AddMimeType(new MimeTypeMapping(".png", "image/png", true));
             this.AddMimeType(new MimeTypeMapping(".bmp", "image/bmp", true));
+            this.AddMimeType(new MimeTypeMapping(".ico", "image/vnd.microsoft.icon", true));
         }
 
         public void AddMimeType(MimeTypeMapping mapping)

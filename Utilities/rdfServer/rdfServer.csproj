@@ -68,10 +68,19 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RdfServerOptions.cs" />
+    <Compile Include="RdfServerPathResolver.cs" />
     <Compile Include="SparqlHandlersCollection.cs" />
     <Compile Include="SparqlServerHandler.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Libraries\alexandria.mongodb\dotNetRDF.Alexandria.MongoDB.csproj">
+      <Project>{5976AA06-893B-4E0D-BDED-19A8515E809C}</Project>
+      <Name>dotNetRDF.Alexandria.MongoDB</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Libraries\alexandria\dotNetRDF.Alexandria.csproj">
+      <Project>{6CDCEDB4-8D4F-4C51-B0CF-30B37D1518E3}</Project>
+      <Name>dotNetRDF.Alexandria</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Libraries\core\dotNetRDF.csproj">
       <Project>{BFBAC159-1E60-4D03-8ACA-D34E31EB83BF}</Project>
       <Name>dotNetRDF</Name>
@@ -87,7 +96,12 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="mongodb-example.ttl" />
+    <Content Include="alexfs-example.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="mongodb-example.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

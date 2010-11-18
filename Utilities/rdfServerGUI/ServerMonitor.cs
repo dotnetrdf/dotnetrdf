@@ -74,6 +74,8 @@ namespace rdfServer.GUI
             else
             {
                 tbox.Text = text;
+                tbox.SelectionStart = text.Length - 1;
+                tbox.ScrollToCaret();
             }
         }
 
@@ -87,6 +89,8 @@ namespace rdfServer.GUI
             else
             {
                 tbox.Text += text;
+                tbox.SelectionStart = tbox.Text.Length - 1;
+                tbox.ScrollToCaret();
             }
         }
     }

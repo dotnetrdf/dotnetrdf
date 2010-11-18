@@ -238,6 +238,8 @@ namespace rdfServer
             HttpServer server = new HttpServer(this.Host, this.Port, handlers);
             server.BaseDirectory = this.BaseDirectory;
 
+            ConfigurationLoader.PathResolver = new RdfServerPathResolver(server);
+
             //Need to load up the Configuration Graph and add to Server State
             server.State["ConfigurationGraph"] = this.LoadConfigurationGraph();
             if (server.State["ConfigurationGraph"] == null)
@@ -318,6 +320,11 @@ namespace rdfServer
                 Console.Error.WriteLine("rdfServer: Error: Configuration File '" + this.ConfigurationFile + "' was not valid RDF");
             }
 
+            //If got a Graph OK then prep the dotNetRDF Configuration API
+            if (g != null)
+            {
+                ConfigurationLoader.AutoDetectObjectFactories(g);
+            }
             return g;
         }
 

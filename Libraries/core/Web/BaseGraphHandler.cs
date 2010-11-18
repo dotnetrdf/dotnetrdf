@@ -120,6 +120,7 @@ namespace VDS.RDF.Web
                         ((IHtmlWriter)writer).Stylesheet = this._config.Stylesheet;
                     }
                 }
+                //TODO: Send appropriate Content Encoding
                 writer.Save(g, new StreamWriter(context.Response.OutputStream));
 
                 this.UpdateConfig(context);

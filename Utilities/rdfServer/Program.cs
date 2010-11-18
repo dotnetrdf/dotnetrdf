@@ -20,14 +20,14 @@ namespace rdfServer
     {
         static void Main(string[] args)
         {
-            RdfServerOptions options = new RdfServerOptions(args);
-            Hashtable hashtable = new Hashtable();
-
-            switch (options.Mode)
+            try
             {
-                case RdfServerConsoleMode.Run:
-                    try
-                    {
+                RdfServerOptions options = new RdfServerOptions(args);
+                Hashtable hashtable = new Hashtable();
+
+                switch (options.Mode)
+                {
+                    case RdfServerConsoleMode.Run:
                         using (HttpServer server = options.GetServerInstance())
                         {
                             if (!options.QuietMode) Console.WriteLine("rdfServer: Running");
@@ -37,31 +37,31 @@ namespace rdfServer
                                 Thread.Sleep(1000);
                             }
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.Error.WriteLine("rdfServer: Error: An unexpected error occurred while trying to start up the Server.  See subsequent error messages for details:");
-                        Console.Error.WriteLine(ex.Message);
-                        Console.Error.WriteLine(ex.StackTrace);
-                        while (ex.InnerException != null)
-                        {
-                            Console.Error.WriteLine();
-                            Console.Error.WriteLine("Inner Exception:");
-                            Console.Error.WriteLine(ex.InnerException.Message);
-                            Console.Error.WriteLine(ex.InnerException.StackTrace);
-                            ex = ex.InnerException;
-                        }
-                    }
-                    break;
+                        break;
 
-                case RdfServerConsoleMode.Quit:
-                    return;
+                    case RdfServerConsoleMode.Quit:
+                        return;
+                }
+
+                if (!options.QuietMode)
+                {
+                    Console.WriteLine("rdfServer: Finished - press any key to exit");
+                    Console.ReadKey();
+                }
             }
-
-            if (!options.QuietMode)
+            catch (Exception ex)
             {
-                Console.WriteLine("rdfServer: Finished - press any key to exit");
-                Console.ReadKey();
+                Console.Error.WriteLine("rdfServer: Error: An unexpected error occurred while trying to start up the Server.  See subsequent error messages for details:");
+                Console.Error.WriteLine(ex.Message);
+                Console.Error.WriteLine(ex.StackTrace);
+                while (ex.InnerException != null)
+                {
+                    Console.Error.WriteLine();
+                    Console.Error.WriteLine("Inner Exception:");
+                    Console.Error.WriteLine(ex.InnerException.Message);
+                    Console.Error.WriteLine(ex.InnerException.StackTrace);
+                    ex = ex.InnerException;
+                }
             }
         }
     }
