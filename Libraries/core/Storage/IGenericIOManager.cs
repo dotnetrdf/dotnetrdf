@@ -184,6 +184,25 @@ namespace VDS.RDF.Storage
         //REQ: Add support for listing Graphs ListGraphs() method and ListGraphsSupported property
 
         /// <summary>
+        /// Gets a List of Graph URIs for the graphs in the store
+        /// </summary>
+        /// <returns></returns>
+        /// <remarks>
+        /// <para>
+        /// Implementations should implement this method only if they need to provide a custom way of listing Graphs.  If the Store for which you are providing a manager can efficiently return the Graphs using a SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } } query then there should be no need to implement this function.
+        /// </para>
+        /// </remarks>
+        IEnumerable<Uri> ListGraphs();
+
+        /// <summary>
+        /// Gets whether the Store supports Listing Graphs
+        /// </summary>
+        bool ListGraphsSupported
+        {
+            get;
+        }
+
+        /// <summary>
         /// Gets whether the connection with the underlying Store is ready for use
         /// </summary>
         bool IsReady

@@ -34,6 +34,13 @@ namespace VDS.Alexandria
             get;
         }
 
+        public abstract IEnumerable<Uri> ListGraphs();
+
+        public abstract bool ListGraphsSupported
+        {
+            get;
+        }
+
         public abstract Object Query(String sparqlQuery);
 
         public abstract bool UpdateSupported

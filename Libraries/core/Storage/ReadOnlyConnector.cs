@@ -39,6 +39,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VDS.RDF.Query;
 
 namespace VDS.RDF.Storage
 {
@@ -112,6 +113,19 @@ namespace VDS.RDF.Storage
             }
         }
 
+        public virtual IEnumerable<Uri> ListGraphs()
+        {
+            throw new NotSupportedException("Listing Graphs is not supported by this Store");
+        }
+
+        public virtual bool ListGraphsSupported
+        {
+            get
+            {
+                return false;
+            }
+        }
+
         public bool IsReady
         {
             get 
@@ -139,6 +153,62 @@ namespace VDS.RDF.Storage
         }
 
         #endregion
+    }
+
+    public class QueryableReadOnlyConnector : ReadOnlyConnector, IQueryableGenericIOManager
+    {
+        private IQueryableGenericIOManager _queryManager;
+
+        public QueryableReadOnlyConnector(IQueryableGenericIOManager manager)
+            : base(manager)
+        {
+            this._queryManager = manager;
+        }
+
+        public Object Query(String sparqlQuery)
+        {
+            return this._queryManager.Query(sparqlQuery);
+        }
+
+        public override IEnumerable<Uri> ListGraphs()
+        {
+            try
+            {
+                Object results = this.Query("SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } }");
+                if (results is SparqlResultSet)
+                {
+                    List<Uri> graphs = new List<Uri>();
+                    foreach (SparqlResult r in ((SparqlResultSet)results))
+                    {
+                        if (r.HasValue("g"))
+                        {
+                            INode temp = r["g"];
+                            if (temp.NodeType == NodeType.Uri)
+                            {
+                                graphs.Add(((UriNode)temp).Uri);
+                            }
+                        }
+                    }
+                    return graphs;
+                }
+                else
+                {
+                    return Enumerable.Empty<Uri>();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new RdfStorageException("Underlying Store returned an error while trying to List Graphs", ex);
+            }
+        }
+
+        public override bool ListGraphsSupported
+        {
+            get
+            {
+                return true;
+            }
+        }
     }
 }
 

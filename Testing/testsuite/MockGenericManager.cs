@@ -72,6 +72,20 @@ namespace dotNetRDFTest
             }
         }
 
+        public IEnumerable<Uri> ListGraphs()
+        {
+            Thread.Sleep(100);
+            return Enumerable.Empty<Uri>();
+        }
+
+        public bool ListGraphsSupported
+        {
+            get
+            {
+                return true;
+            }
+        }
+
         #endregion
 
         #region IDisposable Members

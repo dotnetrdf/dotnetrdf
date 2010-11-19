@@ -236,6 +236,19 @@ namespace VDS.RDF.Storage
             }
         }
 
+        public IEnumerable<Uri> ListGraphs()
+        {
+            return this._store.Graphs.GraphUris;
+        }
+
+        public bool ListGraphsSupported
+        {
+            get
+            {
+                return true;
+            }
+        }
+
         /// <summary>
         /// Disposes of the Manager
         /// </summary>

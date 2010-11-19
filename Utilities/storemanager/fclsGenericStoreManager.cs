@@ -96,6 +96,8 @@ namespace dotNetRDFStore
                 this.CrossThreadBeginUpdate(this.lvwGraphs);
                 this.CrossThreadClear(this.lvwGraphs);
 
+                //TODO: Use the ListGraphs() method if supported
+
                 IQueryableGenericIOManager queryManager = (IQueryableGenericIOManager)this._manager;
                 try
                 {

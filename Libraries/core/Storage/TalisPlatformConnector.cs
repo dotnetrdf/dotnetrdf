@@ -782,6 +782,19 @@ namespace VDS.RDF.Storage
             }
         }
 
+        public IEnumerable<Uri> ListGraphs()
+        {
+            throw new NotSupportedException("Talis Platform does not support listing Graphs");
+        }
+
+        public bool ListGraphsSupported
+        {
+            get
+            {
+                return false;
+            }
+        }
+
         /// <summary>
         /// Returns that the Connection is ready
         /// </summary>

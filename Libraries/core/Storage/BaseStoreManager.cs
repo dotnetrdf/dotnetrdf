@@ -728,7 +728,7 @@ namespace VDS.RDF.Storage
 
         #endregion
 
-        #region Native IO Manager Implementation
+        #region Generic IO Manager Implementation
 
         /// <summary>
         /// Loads a Graph from the Store
@@ -947,6 +947,19 @@ namespace VDS.RDF.Storage
         }
 
         public bool DeleteSupported
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        public virtual IEnumerable<Uri> ListGraphs()
+        {
+            return this.GetGraphUris();
+        }
+
+        public virtual bool ListGraphsSupported
         {
             get
             {

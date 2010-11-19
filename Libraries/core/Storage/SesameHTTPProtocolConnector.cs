@@ -464,6 +464,46 @@ namespace VDS.RDF.Storage
             }
         }
 
+        public virtual IEnumerable<Uri> ListGraphs()
+        {
+            try
+            {
+                Object results = this.Query("SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } }");
+                if (results is SparqlResultSet)
+                {
+                    List<Uri> graphs = new List<Uri>();
+                    foreach (SparqlResult r in ((SparqlResultSet)results))
+                    {
+                        if (r.HasValue("g"))
+                        {
+                            INode temp = r["g"];
+                            if (temp.NodeType == NodeType.Uri)
+                            {
+                                graphs.Add(((UriNode)temp).Uri);
+                            }
+                        }
+                    }
+                    return graphs;
+                }
+                else
+                {
+                    return Enumerable.Empty<Uri>();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new RdfStorageException("Underlying Store returned an error while trying to List Graphs", ex);
+            }
+        }
+
+        public virtual bool ListGraphsSupported
+        {
+            get
+            {
+                return true;
+            }
+        }
+
         /// <summary>
         /// Returns that the Connection is ready
         /// </summary>

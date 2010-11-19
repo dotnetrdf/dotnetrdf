@@ -192,6 +192,19 @@ namespace VDS.RDF.Storage
             }
         }
 
+        public IEnumerable<Uri> ListGraphs()
+        {
+            return this._dataset.GraphUris;
+        }
+
+        public bool ListGraphsSupported
+        {
+            get
+            {
+                return true;
+            }
+        }
+
         public bool IsReady
         {
             get 

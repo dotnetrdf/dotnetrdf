@@ -244,6 +244,19 @@ namespace VDS.RDF.Storage
             }
         }
 
+        public IEnumerable<Uri> ListGraphs()
+        {
+            throw new NotSupportedException("SPARQL HTTP Protocol Connector does not support listing Graphs");
+        }
+
+        public bool ListGraphsSupported
+        {
+            get
+            {
+                return false;
+            }
+        }
+
         /// <summary>
         /// Gets that the Store is ready
         /// </summary>

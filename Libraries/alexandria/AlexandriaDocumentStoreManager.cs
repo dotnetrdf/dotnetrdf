@@ -263,6 +263,21 @@ namespace VDS.Alexandria
             }
         }
 
+        public override IEnumerable<Uri> ListGraphs()
+        {
+            return (from u in this._docManager.GraphRegistry.GraphUris
+                    where u != null
+                    select new Uri(u));
+        }
+
+        public override bool ListGraphsSupported
+        {
+            get
+            {
+                return true;
+            }
+        }
+
         public override bool IsReady
         {
             get 
