@@ -181,6 +181,8 @@ namespace VDS.RDF.Storage
             get;
         }
 
+        //REQ: Add support for listing Graphs ListGraphs() method and ListGraphsSupported property
+
         /// <summary>
         /// Gets whether the connection with the underlying Store is ready for use
         /// </summary>

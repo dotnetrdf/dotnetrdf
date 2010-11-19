@@ -75,7 +75,7 @@ namespace VDS.RDF.Parsing
         /// Loads the contents of the given File into a Graph using the given RDF Parser
         /// </summary>
         /// <param name="g">Graph to load into</param>
-        /// <param name="filename">File to load fro,</param>
+        /// <param name="filename">File to load from</param>
         /// <param name="parser">Parser to use</param>
         public static void Load(IGraph g, String filename, IRdfReader parser)
         {

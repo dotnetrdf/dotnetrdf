@@ -33,7 +33,6 @@ terms.
 
 */
 
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,6 +50,9 @@ namespace VDS.RDF
     /// </remarks>
     public class MimeTypesHelper
     {
+        //REQ: Use a more extensible means of specifying MIME types and associate MIME types with Encodings where applicable
+        //REQ: Add the ability to specify custom parsers and writers for MIME types and/or override the defaults
+
         #region MIME Types
 
         /// <summary>

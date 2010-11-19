@@ -32,6 +32,8 @@ using System;
 using System.Linq;
 using System.Text;
 
+//REQ: Add command line arguments to import custom parsers and serializers
+
 namespace rdfConvert
 {
     class Program
