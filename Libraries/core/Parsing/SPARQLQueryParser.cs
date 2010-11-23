@@ -1052,10 +1052,12 @@ namespace VDS.RDF.Parsing
             {
                 //Nested Graph Pattern
                 GraphPattern pattern = new GraphPattern();
-                GraphPattern child = new GraphPattern();
+                GraphPattern child;// = new GraphPattern();
 
-                this.TryParseTriplePatterns(context, child);
+                child = this.TryParseGraphPattern(context, true);
+                //this.TryParseTriplePatterns(context, child);
                 pattern.AddGraphPattern(child);
+                child = new GraphPattern();
 
                 //Keep Parsing Graph Patterns until we hit a Right Curly Bracket
                 do
@@ -1067,10 +1069,16 @@ namespace VDS.RDF.Parsing
                         context.Tokens.Dequeue();
                         break;
                     }
-                    else {
+                    else
+                    {
                         switch (next.TokenType)
                         {
                             case Token.UNION:
+                                if (!child.IsEmpty)
+                                {
+                                    pattern.AddGraphPattern(child);
+                                    child = new GraphPattern();
+                                }
                                 context.Tokens.Dequeue();
                                 this.TryParseUnionClause(context, pattern);
                                 break;
@@ -1079,6 +1087,11 @@ namespace VDS.RDF.Parsing
                                 this.TryParseFilterClause(context, pattern);
                                 break;
                             case Token.OPTIONAL:
+                                if (!child.IsEmpty)
+                                {
+                                    pattern.AddGraphPattern(child);
+                                    child = new GraphPattern();
+                                }
                                 context.Tokens.Dequeue();
                                 this.TryParseOptionalClause(context, pattern);
                                 break;
@@ -1086,24 +1099,57 @@ namespace VDS.RDF.Parsing
                             case Token.NOTEXISTS:
                             case Token.UNSAID:
                                 if (next.TokenType == Token.UNSAID && context.SyntaxMode != SparqlQuerySyntax.Extended) throw new RdfParseException("The UNSAID Keyword is only supported when syntax is set to Extended.  It is an alias for NOT EXISTS which can be used when the syntax is set to SPARQL 1.1/Extended");
+                                if (!child.IsEmpty)
+                                {
+                                    pattern.AddGraphPattern(child);
+                                    child = new GraphPattern();
+                                }
                                 context.Tokens.Dequeue();
                                 this.TryParseExistsClause(context, pattern, (next.TokenType == Token.EXISTS));
                                 break;
                             case Token.MINUS_P:
+                                if (!child.IsEmpty)
+                                {
+                                    pattern.AddGraphPattern(child);
+                                    child = new GraphPattern();
+                                }
                                 context.Tokens.Dequeue();
                                 this.TryParseMinusClause(context, pattern);
                                 break;
                             case Token.SERVICE:
+                                if (!child.IsEmpty)
+                                {
+                                    pattern.AddGraphPattern(child);
+                                    child = new GraphPattern();
+                                }
                                 context.Tokens.Dequeue();
                                 this.TryParseServiceClause(context, pattern);
                                 break;
+                            case Token.VARIABLE:
+                            case Token.URI:
+                            case Token.QNAME:
+                            case Token.LITERAL:
+                            case Token.LONGLITERAL:
+                            case Token.PLAINLITERAL:
+                            case Token.BLANKNODE:
+                            case Token.BLANKNODEWITHID:
+                            case Token.LET:
+                            case Token.BIND:
+                            case Token.LEFTSQBRACKET:
+                            case Token.LEFTBRACKET:
+                                this.TryParseTriplePatterns(context, child);
+                                break;
                             default:
                                 pattern.AddGraphPattern(this.TryParseGraphPattern(context, true));
-                                 break;
+                                break;
                         }
                     }
                 } while (true);
 
+                if (!child.IsEmpty)
+                {
+                    pattern.AddGraphPattern(child);
+                }
                 return pattern;
             }
             else

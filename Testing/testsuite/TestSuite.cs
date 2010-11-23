@@ -113,7 +113,7 @@ namespace dotNetRDFTest
             Console.WriteLine("RDF/XML Parser Tests Done");
 
             //Call Notation3 Test Suite
-            Notation3TestSuite.Main(args);
+            //Notation3TestSuite.Main(args);
             Console.SetOut(stdout);
             Console.WriteLine("Notation 3 Parser Tests Done");
 
@@ -158,8 +158,8 @@ namespace dotNetRDFTest
             Console.WriteLine("SPARQL Query Parser Tests Done");
 
             //Call the SPARQL Evaluation Test Suite
-            //SparqlEvaluationTestSuite sparqlEvaluation = new SparqlEvaluationTestSuite();
-            //sparqlEvaluation.RunTests();
+            SparqlEvaluationTestSuite sparqlEvaluation = new SparqlEvaluationTestSuite();
+            sparqlEvaluation.RunTests();
             Console.SetOut(stdout);
             Console.WriteLine("SPARQL Evaluation Tests Done");
 

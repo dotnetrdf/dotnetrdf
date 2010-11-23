@@ -132,6 +132,7 @@
     <Compile Include="PelletTests.cs" />
     <Compile Include="RdfATests.cs" />
     <Compile Include="RdfXmlTests.cs" />
+    <Compile Include="Sparql\SparqlParsingComplex.cs" />
     <Compile Include="Sparql\SparqlTests2.cs" />
     <Compile Include="Sparql\DescribeAlgorithms.cs" />
     <Compile Include="Sparql\ResultSetWriterTests.cs" />
@@ -222,6 +223,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="resources\anton.rq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\childgraphpattern.rq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\childgraphpattern2.rq">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="resources\empty-string-rdfxml.rdf">
