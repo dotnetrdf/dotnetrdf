@@ -78,9 +78,7 @@ namespace UnitTests
 
         public ProjectsAndTasksTests1()
         {
-            //
-            // TODO: Add constructor logic here
-            //
+
         }
 
         //

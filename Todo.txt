@@ -1,0 +1,120 @@
+dotNetRDF To Do
+===============
+
+This is a summary of the various TODOs currently in the source organised by project.
+
+We use the following grades of To Dos:
+
+REQ - This task is a requirement for the next release.  Often used when stub classes are added for
+	  new features but not yet implemented or for important changes/improvements to existing features.
+	  
+HACK - The code near this TODO is a temporary work around typically for a bug/issue in 3rd party code/system
+	   that our code interacts with and should be changed at some point subject to the resolution of the issue.
+	   
+BUG - This task denotes a bug that needs to be fix for which we don't yet have a fix/time to fix.
+	  
+TODO - This task should be done for the next release (time-permitting).  Typically used for nice
+	   improvements that should be done at some point or used while working on new features to
+	   indicate unfinished sections
+	   
+Q - This task may be necessary subject to the determination of the answer to the question in the To Do.
+
+OPT - This task is optional (time-permitting) and is typically non-essential.
+
+SLV - This task is related to porting to Silverlight
+
+PORT - This task is related to porting 3rd party code onto the dotNetRDF API
+
+
+dotNetRDF
+---------
+
+REQ: Implement Base Dataset Handler
+REQ: Implement Dataset Handler
+REQ: Implement Dataset Handler Configuration
+REQ: Implement a HtmlWriter which prints a human readable Schema style document
+REQ: Use a more extensible means of specifying MIME types and associate MIME types with Encodings where applicable
+REQ: Add the ability to specify custom parsers and writers for MIME types and/or override the defaults
+HACK: Changed to an accept all for the time being to ensure works OK with DBPedia and Virtuoso
+HACK: Have to send only RDF/XML as the accept header due to a known issue with Talis Platform
+5 x TODO: Send appropriate Content Encoding
+TODO: Implement IsIpvFuture
+TODO: Add support for reading Base Uri from xml:base attributes in the file
+TODO: Implement type compatability detection for numeric types
+2 x Q : Should this assign a null/eliminate a solution/do nothing?
+2 x Q: Do we need a more general fix for null Base URI here?
+Q: Does LOAD into a named Graph require that Graph to be pre-existing?
+Q: Do we need to do something special to check whether there are any sets with this variable also unbound in the other set and thus eliminate/keep it?
+Q: Assert that this resource is a Class?
+Q: Assert that this resource is a property?
+Q: What should the behaviour be when the payload is null for a POST? Assuming a 200 OK response
+OPT: Replace with usage of MapTriple instead?
+OPT: Extract these constants into a Notation3SpecsHelper class
+OPT: Add Some more validation of Uri References here?
+OPT: Could ensure that the parameter name actually appears in the query?
+OPT: Add support to the SPARQL Update Parser for selectable syntax in the future
+OPT: Do this multi-threaded?
+OPT: Move the following into TurtleSpecsHelper?
+2 x OPT: Do we need to process the charset parameter here at all?
+SLV: Implement a version of the UriLoader that makes the requests asynchronously?
+
+dotNetRDF.Alexandria
+--------------------
+
+TODO: Cache retried Graphs in-memory?
+TODO: Add support for using dnr:loadMode to specify the indexes to be used
+
+dotNetRDF.Interop.Intellidimension
+----------------------------------
+
+TODO: Implement interoperability with Intellidimension's Semantics SDK (if licensing allows this)
+
+dotNetRDF.Interop.Jena
+----------------------
+
+TODO: Suppress reification triples
+
+
+dotNetRDF.LinkedData
+--------------------
+
+REQ: Convert to an IAsyncResult pattern
+TODO: Convert into a configurable handler and include in dotNetRDF.LinkedData
+
+dotNetRDF.Linq
+--------------
+
+TODO: this documentation needs a clean uo
+TODO: Determine whether the changes to the Data Set clause break the case for named graphs
+TODO: assign event handlers for NotifyPropertyChanged
+2 x TODO: devise a solution using the std .Net decoding system (or the <see cref="XsdtTypeConverter" />)
+TODO: Assign to an appropriate value for the property
+2 x TODO: Implement code to verify target
+TODO: the time zone offset needs to be returned from somewhere...
+TODO: explore whether there is a need to unescape the entities in an xsd string
+TODO: Assign to an appropriate value for the property
+PORT: Convert this just to use SparqlFormatter instead?
+
+rdfConvert
+----------
+
+REQ: Add command line arguments to import custom parsers and serializers
+
+rdfEditor
+---------
+
+TODO: Work out how to invalidate specific visual lines to force them to be redrawn
+2 x TODO: Should probably call DetectState() here once it's properly implemented
+
+rdfServer
+---------
+
+TODO: Send appropriate Content Encoding
+3 x Q: Support authentication?
+TODO: Support Protocol Requests?
+
+StoreManager
+------------
+
+TODO: Use the ListGraphs() method if supported
+TODO: Ensure we are in the OpenWith List

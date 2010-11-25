@@ -183,11 +183,11 @@ namespace UnitTests
 		public void QueryTypeTest()
 		{
 			mocks = new MockRepository();
-			LinqQueryMethod queryType = LinqQueryMethod.RemoteSparql; // TODO: Initialize to an appropriate value
+			LinqQueryMethod queryType = LinqQueryMethod.RemoteSparql; 
 			LinqTripleStore ts = new LinqTripleStore("http://www.tempuri.com");
 			IRdfContext context = mocks.CreateMock<RdfDataContext>(ts);
 			QueryFactory<Task> target = new QueryFactory<Task>(queryType, context);
-			LinqQueryMethod val = LinqQueryMethod.RemoteSparql; // TODO: Assign to an appropriate value for the property
+			LinqQueryMethod val = LinqQueryMethod.RemoteSparql;
 			Assert.AreEqual(val, target.QueryType, "VDS.RDF.Linq.QueryFactory<T>.QueryType was not set correctly.");
 //			Assert.Fail("Generics testing must be manually provided.");
 		}

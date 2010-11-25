@@ -537,7 +537,7 @@ namespace VDS.RDF.Query.Algebra
                     catch
                     {
                         //Ignore expression evaluation errors
-                        //TODO: Should error eliminate a solution/assign a null/do nothing
+                        //Q: Should error eliminate a solution/assign a null/do nothing
                     }
                 }
             }

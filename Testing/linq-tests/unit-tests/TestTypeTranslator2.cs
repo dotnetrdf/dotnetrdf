@@ -20,9 +20,7 @@ namespace UnitTests
     {
         public TestTypeTranslator2()
         {
-            //
-            // TODO: Add constructor logic here
-            //
+
         }
 
         [Test]

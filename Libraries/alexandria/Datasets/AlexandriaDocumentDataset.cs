@@ -45,7 +45,7 @@ namespace VDS.Alexandria.Datasets
             {
                 if (this.HasGraph(graphUri))
                 {
-                    //TODO: Cache retrieved Graphs in-memory
+                    //TODO: Cache retrieved Graphs in-memory?
                     Graph g = new Graph();
                     this._docManager.LoadGraph(g, graphUri);
                     return g;

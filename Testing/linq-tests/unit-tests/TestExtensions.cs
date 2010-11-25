@@ -15,9 +15,7 @@ namespace UnitTests
     {
         public TestExtensions()
         {
-            //
-            // TODO: Add constructor logic here
-            //
+
         }
 
         [Test]

@@ -17,9 +17,7 @@ namespace UnitTests
 	{
 		public JoinTests()
 		{
-			//
-			// TODO: Add constructor logic here
-			//
+
 		}
 
 		[Test]

@@ -181,8 +181,6 @@ namespace VDS.RDF.Storage
             get;
         }
 
-        //REQ: Add support for listing Graphs ListGraphs() method and ListGraphsSupported property
-
         /// <summary>
         /// Gets a List of Graph URIs for the graphs in the store
         /// </summary>

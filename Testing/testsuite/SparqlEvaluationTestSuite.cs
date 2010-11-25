@@ -245,7 +245,6 @@ namespace dotNetRDFTest
                                 }
                                 else
                                 {
-                                    //TODO: Allow a situation here where Default Graph can be null
                                     Console.WriteLine("Unable to find the Expected Result file for Test ID '" + testID.ToString() + "' in '" + dir + "'");
                                     testsIndeterminate++;
                                     testsEvaluationIndeterminate++;

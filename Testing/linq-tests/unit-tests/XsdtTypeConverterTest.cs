@@ -25,7 +25,7 @@ namespace UnitTests
 		{
 			XsdtTypeConverter target = new XsdtTypeConverter();
 
-			Type t = typeof (string); // TODO: Initialize to an appropriate value
+			Type t = typeof (string); 
 
 			XsdtPrimitiveDataType expected = XsdtPrimitiveDataType.XsdtString;
 			XsdtPrimitiveDataType actual;
@@ -35,35 +35,16 @@ namespace UnitTests
 			Assert.AreEqual(expected, actual, "VDS.RDF.Linq.XsdtTypeConverter.GetDataType did not return the expected value.");
 		}
 
-/*
-		[Test]
-		public void GetXsdtAttrForTest()
-		{
-			XsdtTypeConverter target = new XsdtTypeConverter();
-
-			LinqToRdf_XsdtTypeConverterAccessor accessor = new LinqToRdf_XsdtTypeConverterAccessor(target);
-
-			XsdtPrimitiveDataType dt = XsdtPrimitiveDataType.XsdtString; // TODO: Initialize to an appropriate value
-
-			XsdtAttribute expected = new XsdtAttribute(true, "string");
-			XsdtAttribute actual;
-
-			actual = new XsdtTypeConverter().Get()
-
-			Assert.AreEqual(expected, actual, "VDS.RDF.Linq.XsdtTypeConverter.GetXsdtAttrFor did not return the expected value.");
-		}
-
-*/
 		[Test]
 		public void GetXsdtDateRepresentationForTest()
 		{
 			XsdtTypeConverter target = new XsdtTypeConverter();
 
-		    DateTime d = new DateTime(2007, 10, 17, 19, 42, 01); // TODO: Initialize to an appropriate value
+		    DateTime d = new DateTime(2007, 10, 17, 19, 42, 01); 
             
-			XsdtPrimitiveDataType dt = XsdtPrimitiveDataType.XsdtDateTime; // TODO: Initialize to an appropriate value
+			XsdtPrimitiveDataType dt = XsdtPrimitiveDataType.XsdtDateTime; 
 
-			XsdtAttribute attr = new XsdtAttribute(true, "dateTime"); // TODO: Initialize to an appropriate value
+			XsdtAttribute attr = new XsdtAttribute(true, "dateTime");
 
 			string expected = "2007-10-17T19:42:01+" + ((d.IsDaylightSavingTime())?"01:00":"00:00");
 			string actual;

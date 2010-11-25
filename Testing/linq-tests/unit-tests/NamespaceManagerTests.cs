@@ -15,9 +15,7 @@ namespace UnitTests
     {
         public NamspaceManagerTests()
         {
-            //
-            // TODO: Add constructor logic here
-            //
+
         }
         public NamespaceManager nsm = null;
         [SetUp]

@@ -181,7 +181,7 @@ namespace rdfServer
                 parser.ExpressionFactories = this._config.ExpressionFactories;
                 SparqlQuery query = parser.ParseFromString(queryText);
 
-                //TODO: Support authentication?
+                //Q: Support authentication?
                 ////Check whether we need to use authentication
                 ////If there are no user groups then no authentication is in use so we default to authenticated with no per-action authentication needed
                 //bool isAuth = true, requireActionAuth = false;
@@ -375,7 +375,7 @@ namespace rdfServer
                 parser.ExpressionFactories = this._config.ExpressionFactories;
                 SparqlUpdateCommandSet commands = parser.ParseFromString(updateText);
 
-                //TODO: Support authentication
+                //Q: Support authentication?
                 ////Check whether we need to use authentication
                 ////If there are no user groups then no authentication is in use so we default to authenticated with no per-action authentication needed
                 //bool isAuth = true, requireActionAuth = false;
@@ -442,7 +442,7 @@ namespace rdfServer
         //        return;
         //    }
 
-        //    //TODO: Support authentication
+        //    //Q: Support authentication?
         //    ////Check whether we need to use authentication
         //    //if (!HandlerHelper.IsAuthenticated(context, this._config.UserGroups, context.Request.HttpMethod)) return;
 

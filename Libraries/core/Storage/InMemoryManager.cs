@@ -46,13 +46,10 @@ using VDS.RDF.Update;
 
 namespace VDS.RDF.Storage
 {
-    //REQ: Implement the In-Memory Manager
-
     /// <summary>
     /// Provides a wrapper around an in-memory store
     /// </summary>
     /// <remarks>
-    /// <strong>Not yet implemented</strong>
     /// <para>
     /// Useful if you want to test out some code using temporary in-memory data before you run the code against a real store or if you are using some code that requires an <see cref="IGenericIOManager">IGenericIOManager</see> interface but you need the results of that code to be available directly in-memory.
     /// </para>
