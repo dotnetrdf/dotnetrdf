@@ -80,6 +80,7 @@ namespace VDS.RDF.Query
     public class SparqlParameterizedString
     {
         private String _query = String.Empty;
+        private INamespaceMapper _nsmap = new NamespaceMapper(true);
         private Dictionary<String, INode> _parameters = new Dictionary<string, INode>();
         private Dictionary<String, INode> _variables = new Dictionary<string, INode>();
         private SparqlFormatter _formatter = new SparqlFormatter();
@@ -103,6 +104,21 @@ namespace VDS.RDF.Query
             : this()
         {
             this._query = query;
+        }
+
+        /// <summary>
+        /// Gets/Sets the Namespace Map that is used to prepend PREFIX declarations to the Query
+        /// </summary>
+        public INamespaceMapper Namespaces
+        {
+            get
+            {
+                return this._nsmap;
+            }
+            set
+            {
+                if (value != null) this._nsmap = value;
+            }
         }
 
         /// <summary>
@@ -383,7 +399,18 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public override string ToString()
         {
-            String output = this._query;
+            String output = String.Empty;
+
+            //First prepend any Namespace Declarations
+            foreach (String prefix in this._nsmap.Prefixes)
+            {
+                output += "PREFIX " + prefix + ": <" + this._formatter.FormatUri(this._nsmap.GetNamespaceUri(prefix)) + ">\n";
+            }
+                
+            //Then add the actual Query Text
+            output += this._query;
+
+            //Finally substitue in values for parameters and variables
 
             //Make the replacements starting with the longest parameter names first so in the event
             //of one parameter name being a prefix of another we've already replaced the longer name
