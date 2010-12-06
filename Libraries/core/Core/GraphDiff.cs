@@ -43,6 +43,26 @@ namespace VDS.RDF
     /// <summary>
     /// Implementation of a Graph Difference algorithm for RDF Graphs
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// This algorithm is broadly based upon the methodology fror computing differences in RDF Graphs described in the <a href="http://www.springerlink.com/index/lq65211003774313.pdf">RDFSync</a> paper by Tummarello et al.  This is an implementation purely of a difference algorithm and not the synchronisation aspects described in their paper.  Main difference between their algorithm and mine is that mine does not make the input Graphs lean as it is concerned with showing the raw differences between the Graphs and does not concern itself with whether the differences may be semantically irrelevant.
+    /// </para>
+    /// <para>
+    /// To understand this consider the following Graphs:
+    /// </para>
+    /// <h2>Graph A</h2>
+    /// <code>
+    /// _:autos1 rdfs:label "Rob" .
+    /// </code>
+    /// <h2>Graph B</h2>
+    /// <code>
+    /// _:autos1 rdfs:label "Rob" .
+    /// _:autos2 rdfs:label "Rob" .
+    /// </code>
+    /// <para>
+    /// Given these Graphs computing the Graph Difference between A and B would report an Added MSG (Minimal Spanning Graph) when in fact the 2nd Graph is non-lean and could be reduced to the same as the 1st Graph
+    /// </para>
+    /// </remarks>
     public class GraphDiff
     {
         private HashSet<Triple> _lhsUnassigned = new HashSet<Triple>();
