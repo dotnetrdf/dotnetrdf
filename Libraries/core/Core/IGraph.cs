@@ -491,6 +491,18 @@ namespace VDS.RDF
         /// <returns></returns>
         bool HasSubGraph(IGraph g, out Dictionary<INode, INode> mapping);
 
+        /// <summary>
+        /// Calculates the difference between this Graph and the given Graph
+        /// </summary>
+        /// <param name="g">Graph</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// <para>
+        /// Produces a report which shows the changes that must be made to this Graph to produce the given Graph
+        /// </para>
+        /// </remarks>
+        GraphDiffReport Difference(IGraph g);
+
         #endregion
 
         #region Helper Functions

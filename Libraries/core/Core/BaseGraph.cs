@@ -815,6 +815,26 @@ namespace VDS.RDF
 
         #endregion
 
+        #region Graph Difference
+
+        /// <summary>
+        /// Computes the Difference between this Graph the given Graph
+        /// </summary>
+        /// <param name="g">Graph</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// <para>
+        /// Produces a report which shows the changes that must be made to this Graph to produce the given Graph
+        /// </para>
+        /// </remarks>
+        public GraphDiffReport Difference(IGraph g)
+        {
+            GraphDiff differ = new GraphDiff();
+            return differ.Difference(this, g);
+        }
+
+        #endregion
+
         #region Helper Functions
 
         /// <summary>

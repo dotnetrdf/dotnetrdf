@@ -446,6 +446,11 @@ namespace VDS.Alexandria.Utilities
             return this._g.HasSubGraph(g, out mapping);
         }
 
+        public GraphDiffReport Difference(IGraph g)
+        {
+            return this._g.Difference(g);
+        }
+
         public Uri ResolveQName(string qname)
         {
             return this._g.ResolveQName(qname);
