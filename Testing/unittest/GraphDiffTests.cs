@@ -26,6 +26,20 @@ namespace VDS.RDF.Test
         }
 
         [TestMethod]
+        public void DiffDifferentGraphs()
+        {
+            Graph g = new Graph();
+            Graph h = new Graph();
+            FileLoader.Load(g, "InferenceTest.ttl");
+            FileLoader.Load(h, "Turtle.ttl");
+
+            GraphDiffReport report = g.Difference(h);
+            ShowDifferences(report);
+
+            Assert.IsFalse(report.AreEqual, "Graphs should not be equal");
+        }
+
+        [TestMethod]
         public void DiffEqualGraphs2()
         {
             Graph g = new Graph();
