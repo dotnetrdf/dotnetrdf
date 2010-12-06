@@ -400,6 +400,7 @@
     <Compile Include="Query\SparqlView.cs" />
     <Compile Include="Storage\DatasetFileManager.cs" />
     <Compile Include="Storage\FusekiConnector.cs" />
+    <Compile Include="Storage\GSISHttpProtocolConnector.cs" />
     <Compile Include="Storage\InMemoryManager.cs" />
     <Compile Include="Storage\Params\GenericIOParams.cs" />
     <Compile Include="Storage\ReadOnlyConnector.cs" />

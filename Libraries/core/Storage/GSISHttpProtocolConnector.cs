@@ -33,6 +33,8 @@ terms.
 
 */
 
+#if UNFINISHED
+
 #if !NO_STORAGE
 
 using System;
@@ -571,5 +573,7 @@ namespace VDS.RDF.Storage
         }
     }
 }
+
+#endif
 
 #endif
