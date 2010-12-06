@@ -51,6 +51,9 @@ namespace VDS.RDF.Ontology
     /// <para>
     /// Any changes to this Graph (via <see cref="IGraph.Assert">Assert()</see> and <see cref="IGraph.Retract">Retract()</see>) affect this Graph - specifically the set of materialised Triples - rather than the original Graph around which this Graph is a wrapper
     /// </para>
+    /// <para>
+    /// See <a href="http://www.dotnetrdf.org/content.asp?pageID=Ontology%20API">Using the Ontology API</a> for some informal documentation on the use of the Ontology namespace
+    /// </para>
     /// </remarks>
     public class ReasonerGraph : OntologyGraph
     {

@@ -45,6 +45,11 @@ namespace VDS.RDF.Ontology
     /// <summary>
     /// Base class for representing a resource in an Ontology
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// See <a href="http://www.dotnetrdf.org/content.asp?pageID=Ontology%20API">Using the Ontology API</a> for some informal documentation on the use of the Ontology namespace
+    /// </para>
+    /// </remarks>
     public class OntologyResource
     {
         /// <summary>

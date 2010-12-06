@@ -43,6 +43,11 @@ namespace VDS.RDF.Ontology
     /// <summary>
     /// Represents an Individual i.e. an instance of some class in an ontology
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// See <a href="http://www.dotnetrdf.org/content.asp?pageID=Ontology%20API">Using the Ontology API</a> for some informal documentation on the use of the Ontology namespace
+    /// </para>
+    /// </remarks>
     public class Individual : OntologyResource
     {
         private List<OntologyClass> _classes = new List<OntologyClass>();
