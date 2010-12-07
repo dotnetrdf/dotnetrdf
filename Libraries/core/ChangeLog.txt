@@ -13,6 +13,7 @@ This represents a summary of additions, changes and removals for the 0.4.0 relea
 
 Added
 - Support for Variable Nodes
+- Graph Difference Algorithm
 - New SimpleN3RulesReasoner which can process simple N3 rules of the form { } => { }
 - More Extension Methods
  - LoadFromFile and LoadFromUri for Graphs and Triple Stores
@@ -20,10 +21,14 @@ Added
  - ToLiteralDate and ToLiteralTime for DateTime
 - New HTTP Handlers for ASP.Net
  - DatasetHandler for serving RDF datasets
+- Additional Configuration API for new features
+ - dnr:SparqlDataset and dnr:usingDataset properties
 
 Changed
 - Bug Fixes
  - Notation 3 Parser allows variable quantification directives in Graph Literals
+ - Queries with a LIMIT modifier containing FILTERs were optimised for lazy evaluation but would return incorrect results
+   in some cases
  - Queries with a DISTINCT modifer and a LIMIT were optimised for lazy evaluation when they shouldn't have been
  - Queries containing GRAPH clauses no longer unintentionally introduce a Product in some places
  - RDF/XML parser now correctly treats empty elements with rdf:datatype as literal properties rather than empty properties
@@ -40,6 +45,9 @@ Changed
    SPARQL engine which allows for out of memory datasets to be queried and updated with Leviathan
  - Reverse Translation from ISparqlAlgebra to SparqlQuery
  - Optimisation for queries using ORDER BY under some circumstances
+ - Improved SparqlParameterizedString
+  - Can now set values for Variables which are substituted into the query when you call ToString()
+  - Has own Namespace Map allowing prefixes to be registered programatically and have the code take care of generating the PREFIX declarations
 - Update Improvements
  - WHERE clauses in Update Commands are now optimised
  - Added support for new features latest drafts of the SPARQL 1.1 Update specification
