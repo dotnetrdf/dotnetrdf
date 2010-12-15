@@ -148,7 +148,10 @@ namespace VDS.RDF.Writing
                 if (!prefix.Equals(String.Empty))
                 {
                     context.Writer.WriteStartAttribute("xmlns", prefix, null);
-                    context.Writer.WriteRaw("&" + prefix + ";");
+                    //String nsRef = "&" + prefix + ";";
+                    //context.Writer.WriteRaw(nsRef);
+                    //context.Writer.WriteEntityRef(prefix);
+                    context.Writer.WriteRaw(WriterHelper.EncodeForXml(context.NamespaceMap.GetNamespaceUri(prefix).ToString()));
                     context.Writer.WriteEndAttribute();
                 }
                 else

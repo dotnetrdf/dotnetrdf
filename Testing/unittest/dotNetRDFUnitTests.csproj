@@ -88,7 +88,7 @@
     <Compile Include="TestTools.cs" />
     <Compile Include="UpdateTests.cs" />
     <Compile Include="VirtuosoTest.cs" />
-    <Compile Include="WriterTests.cs" />
+    <Compile Include="Writing\WriterTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="AuthoringTests.txt" />
@@ -141,6 +141,7 @@
     <Compile Include="Sparql\ViewTests.cs" />
     <Compile Include="VariableNodeTests.cs" />
     <Compile Include="Web\ETagTests.cs" />
+    <Compile Include="Writing\OwlOneOf.cs" />
     <Content Include="resources\bad_profile.xhtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

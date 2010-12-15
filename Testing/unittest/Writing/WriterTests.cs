@@ -7,7 +7,7 @@ using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing;
 
-namespace VDS.RDF.Test
+namespace VDS.RDF.Test.Writing
 {
     [TestClass]
     public class WriterTests
