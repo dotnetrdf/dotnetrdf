@@ -53,9 +53,28 @@ namespace VDS.RDF.Writing
     /// This is a fast writer based on the fast writing technique used in the other non-RDF/XML Writers.  While it is faster than the <see cref="FastRdfXmlWriter">FastRdfXmlWriter</see> achieving a speed of around 42,000 Triples/second the syntax produced is not as compressed as that writer.
     /// </para>
     /// </remarks>
-    public class RdfXmlWriter : IRdfWriter, IPrettyPrintingWriter
+    public class RdfXmlWriter : IRdfWriter, IPrettyPrintingWriter, ICompressingWriter
     {
         private bool _prettyprint = true;
+        private int _compressionLevel = WriterCompressionLevel.High;
+
+        /// <summary>
+        /// Creates a new RDF/XML Writer
+        /// </summary>
+        public RdfXmlWriter()
+        {
+
+        }
+
+        /// <summary>
+        /// Creates a new RDF/XML Writer
+        /// </summary>
+        /// <param name="compressionLevel">Compression Level</param>
+        public RdfXmlWriter(int compressionLevel)
+            : this()
+        {
+            this._compressionLevel = compressionLevel;
+        }
 
         /// <summary>
         /// Gets/Sets Pretty Print Mode for the Writer
@@ -69,6 +88,26 @@ namespace VDS.RDF.Writing
             set
             {
                 this._prettyprint = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets/Sets the Compression Level in use
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Compression Level defaults to <see cref="WriterCompressionLevel.High">High</see> - if Compression Level is set to below <see cref="WriterCompressionLevel.More">More</see> i.e. &lt; 5 then Collections will not be compressed into more compact syntax
+        /// </para>
+        /// </remarks>
+        public int CompressionLevel
+        {
+            get
+            {
+                return this._compressionLevel;
+            }
+            set
+            {
+                this._compressionLevel = value;
             }
         }
 
@@ -122,6 +161,7 @@ namespace VDS.RDF.Writing
 
             //Create our Writer Context and start the XML Document
             RdfXmlWriterContext context = new RdfXmlWriterContext(g, output);
+            context.CompressionLevel = this._compressionLevel;
             context.Writer.WriteStartDocument();
 
             //Create the DOCTYPE declaration
@@ -163,7 +203,10 @@ namespace VDS.RDF.Writing
             }
 
             //Find the Collections and Type References
-            WriterHelper.FindCollections(context, CollectionSearchMode.ImplicitOnly);
+            if (context.CompressionLevel >= WriterCompressionLevel.More)
+            {
+                WriterHelper.FindCollections(context, CollectionSearchMode.ImplicitOnly);
+            }
             Dictionary<INode, String> typerefs = this.FindTypeReferences(context);
 
             //Get the Triples as a Sorted List

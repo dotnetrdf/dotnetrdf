@@ -54,9 +54,28 @@ namespace VDS.RDF.Writing
     /// This is a fast writer based on the fast writing technique used in the other non-RDF/XML writers.  It is no longer the fastest of the RDF/XML writers provided achieving a speed of around 25,000 Triples/second the syntax is the most compressed RDF/XML syntax of the two writers
     /// </para>
     /// </remarks>
-    public class FastRdfXmlWriter : IRdfWriter, IPrettyPrintingWriter
+    public class FastRdfXmlWriter : IRdfWriter, IPrettyPrintingWriter, ICompressingWriter
     {
         private bool _prettyprint = true;
+        private int _compressionLevel = WriterCompressionLevel.High;
+
+        /// <summary>
+        /// Creates a new Fast RDF/XML Writer
+        /// </summary>
+        public FastRdfXmlWriter()
+        {
+
+        }
+
+        /// <summary>
+        /// Creates a new Fast RDF/XML Writer
+        /// </summary>
+        /// <param name="compressionLevel">Compression Level</param>
+        public FastRdfXmlWriter(int compressionLevel)
+            : this()
+        {
+            this._compressionLevel = compressionLevel;
+        }
 
         /// <summary>
         /// Gets/Sets Pretty Print Mode for the Writer
@@ -70,6 +89,26 @@ namespace VDS.RDF.Writing
             set
             {
                 this._prettyprint = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets/Sets the Compression Level in use
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Compression Level defaults to <see cref="WriterCompressionLevel.High">High</see> - if Compression Level is set to below <see cref="WriterCompressionLevel.More">More</see> i.e. &lt; 5 then Collections will not be compressed into more compact syntax
+        /// </para>
+        /// </remarks>
+        public int CompressionLevel
+        {
+            get
+            {
+                return this._compressionLevel;
+            }
+            set
+            {
+                this._compressionLevel = value;
             }
         }
 
@@ -158,7 +197,15 @@ namespace VDS.RDF.Writing
             doc.AppendChild(rdf);
 
             //Find the Collections
-            Dictionary<INode, OutputRDFCollection> collections = WriterHelper.FindCollections(g, triplesDone);
+            Dictionary<INode, OutputRDFCollection> collections;
+            if (this._compressionLevel >= WriterCompressionLevel.More)
+            {
+                collections = WriterHelper.FindCollections(g, triplesDone);
+            }
+            else
+            {
+                collections = new Dictionary<INode, OutputRDFCollection>();
+            }
 
             //Find the Type References
             Dictionary<INode, String> typerefs = this.FindTypeReferences(g, ref nextNamespaceID, tempNamespaces, doc, triplesDone);

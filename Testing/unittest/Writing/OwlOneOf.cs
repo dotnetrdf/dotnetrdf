@@ -61,6 +61,62 @@ namespace VDS.RDF.Test.Writing
             Console.WriteLine("FastRdfXmlWriter serialization was OK");
         }
 
+        [TestMethod]
+        public void SerializeOwnOneOfVeryLarge()
+        {
+            try
+            {
+                //Create the Graph for the Test and Generate a List of URIs
+                Graph g = new Graph();
+                List<UriNode> nodes = new List<UriNode>();
+                for (int i = 1; i <= 10000; i++)
+                {
+                    nodes.Add(g.CreateUriNode(new Uri("http://example.org/Class" + i)));
+                }
+
+                //Use the thingOneOf to generate the Triples
+                thingOneOf(g, nodes.ToArray());
+
+                //Dump as NTriples to the Console
+                NTriplesFormatter formatter = new NTriplesFormatter();
+                foreach (Triple t in g.Triples)
+                {
+                    Console.WriteLine(t.ToString(formatter));
+                }
+
+                Console.WriteLine();
+
+                //Now try to save as RDF/XML
+                IRdfWriter writer = new RdfXmlWriter();
+                writer.Save(g, "owl-one-of.rdf");
+                
+                Console.WriteLine("Saved OK using RdfXmlWriter");
+                Console.WriteLine();
+
+                writer = new FastRdfXmlWriter();
+                ((ICompressingWriter)writer).CompressionLevel = WriterCompressionLevel.Medium;
+                writer.Save(g, "owl-one-of-fast.rdf");
+                Console.WriteLine("Saved OK using FastRdfXmlWriter");
+                Console.WriteLine();
+
+                //Now check that the Graphs are all equivalent
+                Graph h = new Graph();
+                FileLoader.Load(h, "owl-one-of.rdf");
+                Assert.AreEqual(g, h, "Graphs should be equal (RdfXmlWriter)");
+                Console.WriteLine("RdfXmlWriter serialization was OK");
+                Console.WriteLine();
+
+                Graph j = new Graph();
+                FileLoader.Load(j, "owl-one-of-fast.rdf");
+                Assert.AreEqual(g, j, "Graphs should be equal (FastRdfXmlWriter)");
+                Console.WriteLine("FastRdfXmlWriter serialization was OK");
+            }
+            catch (StackOverflowException ex)
+            {
+                TestTools.ReportError("Stack Overflow", ex, true);
+            }
+        }
+
         public static void thingOneOf(IGraph graph, UriNode[] listInds)
         {
             BlankNode oneOfNode = graph.CreateBlankNode();
