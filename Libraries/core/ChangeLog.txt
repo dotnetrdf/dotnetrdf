@@ -23,6 +23,11 @@ Added
  - DatasetHandler for serving RDF datasets
 - Additional Configuration API for new features
  - dnr:SparqlDataset and dnr:usingDataset properties
+- Storage
+ - Expanded the IGenericIOManager interface to include methods for deletings graphs and listing graphs
+ - Connector for Fuseki
+ - Connector which wraps an in-memory store (i.e. a IInMemoryQueryableStore) or a SPARQL dataset (i.e. a ISparqlDataset)
+ - Connector which wraps any IGenericIOManager and makes it read-only
 
 Changed
 - Bug Fixes
