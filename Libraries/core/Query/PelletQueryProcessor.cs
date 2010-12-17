@@ -93,7 +93,13 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public override object ProcessQuery(SparqlQuery query)
         {
-            return this._svc.Query(query.ToString());
+            query.QueryTime = -1;
+            query.QueryTimeTicks = -1;
+            DateTime start = DateTime.Now;
+            Object temp = this._svc.Query(query.ToString());
+            query.QueryTime = (DateTime.Now - start).Milliseconds;
+            query.QueryTimeTicks = (DateTime.Now - start).Ticks;
+            return temp;
         }
     }
 }

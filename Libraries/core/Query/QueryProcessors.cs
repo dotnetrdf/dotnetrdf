@@ -285,7 +285,13 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public override object ProcessQuery(SparqlQuery query)
         {
-            return _store.ExecuteQuery(query.ToString());
+            query.QueryTime = -1;
+            query.QueryTimeTicks = -1;
+            DateTime start = DateTime.Now;
+            Object temp = this._store.ExecuteQuery(query.ToString());
+            query.QueryTime = (DateTime.Now - start).Milliseconds;
+            query.QueryTimeTicks = (DateTime.Now - start).Ticks;
+            return temp;
         }
     }
 
@@ -314,7 +320,13 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public override object ProcessQuery(SparqlQuery query)
         {
-            return this._manager.Query(query.ToString());
+            query.QueryTime = -1;
+            query.QueryTimeTicks = -1;
+            DateTime start = DateTime.Now;
+            Object temp = this._manager.Query(query.ToString());
+            query.QueryTime = (DateTime.Now - start).Milliseconds;
+            query.QueryTimeTicks = (DateTime.Now - start).Ticks;
+            return temp;
         }
     }
 
@@ -343,6 +355,10 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public override object ProcessQuery(SparqlQuery query)
         {
+            query.QueryTime = -1;
+            query.QueryTimeTicks = -1;
+            DateTime start = DateTime.Now;
+            Object temp;
             switch (query.QueryType)
             {
                 case SparqlQueryType.Ask:
@@ -352,14 +368,19 @@ namespace VDS.RDF.Query
                 case SparqlQueryType.SelectAllReduced:
                 case SparqlQueryType.SelectDistinct:
                 case SparqlQueryType.SelectReduced:
-                    return this._endpoint.QueryWithResultSet(query.ToString());
+                    temp = this._endpoint.QueryWithResultSet(query.ToString());
+                    break;
                 case SparqlQueryType.Construct:
                 case SparqlQueryType.Describe:
                 case SparqlQueryType.DescribeAll:
-                    return this._endpoint.QueryWithResultGraph(query.ToString());
+                    temp = this._endpoint.QueryWithResultGraph(query.ToString());
+                    break;
                 default:
                     throw new RdfQueryException("Unable to execute an unknown query type against a Remote Endpoint");
             }
+            query.QueryTime = (DateTime.Now - start).Milliseconds;
+            query.QueryTimeTicks = (DateTime.Now - start).Ticks;
+            return temp;
         }
     }
 }

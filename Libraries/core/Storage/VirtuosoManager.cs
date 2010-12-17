@@ -401,7 +401,7 @@ namespace VDS.RDF.Storage
                 cmd.CommandText = "DB.DBA.TTLP(@data, @base, @graph, 1)";
                 //cmd.Parameters.Add("data", 
                 cmd.Parameters.Add("data", VirtDbType.VarChar);
-                cmd.Parameters["data"].Value = VDS.RDF.Writing.StringWriter.Write(g, new NTriplesWriter());//);
+                cmd.Parameters["data"].Value = VDS.RDF.Writing.StringWriter.Write(g, new NTriplesWriter());
                 String baseUri = (g.BaseUri == null) ? String.Empty : g.BaseUri.ToString();
                 cmd.Parameters.Add("base", VirtDbType.VarChar);
                 cmd.Parameters.Add("graph", VirtDbType.VarChar);
@@ -446,6 +446,10 @@ namespace VDS.RDF.Storage
                         {
                             delete += " FROM <" + graphUri.ToString() + ">";
                         }
+                        else
+                        {
+                            throw new RdfStorageException("Cannot update the Default Graph of a Virtuoso Store using this method - you must specify the URI of a Graph to Update");
+                        }
                         delete += " { " + deleteData + " }";
                         deleteCmd.CommandText = delete;
                         deleteCmd.Connection = this._db;
@@ -469,6 +473,10 @@ namespace VDS.RDF.Storage
                         if (graphUri != null)
                         {
                             insert += " INTO <" + graphUri.ToString() + ">";
+                        }
+                        else
+                        {
+                            throw new RdfStorageException("Cannot update the Default Graph of a Virtuoso Store using this method - you must specify the URI of a Graph to Update");
                         }
                         insert += "{ " + insertData + " }";
                         insertCmd.CommandText = insert;
@@ -921,7 +929,7 @@ namespace VDS.RDF.Storage
             {
                 //Wrap in a SPARQL Update Exception
                 this.Close(true, true);
-                throw new SparqlUpdateException("An error occurred while trying to perform the SPARQL Update with Virtuoso", ex);
+                throw new SparqlUpdateException("An error occurred while trying to perform the SPARQL Update with Virtuoso.  Note that Virtuoso primarily supports SPARUL (the precursor to SPARQL Update) and many valid SPARQL Update Commands are not yet supported by Virtuoso.", ex);
             }
         }
 

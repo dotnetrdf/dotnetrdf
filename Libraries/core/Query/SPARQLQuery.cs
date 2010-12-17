@@ -560,6 +560,10 @@ namespace VDS.RDF.Query
                     throw new RdfQueryException("Cannot request the Query Time before a Query has completed");
                 }
             }
+            internal set
+            {
+                this._queryTime = value;
+            }
         }
 
         /// <summary>
@@ -577,6 +581,10 @@ namespace VDS.RDF.Query
                 {
                     throw new RdfQueryException("Cannot request the Query Time before a Query has completed");
                 }
+            }
+            internal set
+            {
+                this._queryTimeTicks = value;
             }
         }
 
