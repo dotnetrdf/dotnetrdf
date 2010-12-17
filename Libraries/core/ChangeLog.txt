@@ -33,6 +33,7 @@ Changed
  - Queries containing GRAPH clauses no longer unintentionally introduce a Product in some places
  - RDF/XML parser now correctly treats empty elements with rdf:datatype as literal properties rather than empty properties
  - SPARQL Query Parser now parses correctly if first item in the WHERE clause is a nested graph pattern
+ - Non-Leviathan Query Processors record the time the Query took to execute
 - Parsing
  - Notation 3 Parser supports Variables, @forSome and @forAll fully
  - All Parsers should now throw RdfParseExceptions when null Graphs, Stores, filenames, streams etc are passed as arguments

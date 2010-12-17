@@ -288,10 +288,17 @@ namespace VDS.RDF.Query
             query.QueryTime = -1;
             query.QueryTimeTicks = -1;
             DateTime start = DateTime.Now;
-            Object temp = this._store.ExecuteQuery(query.ToString());
-            query.QueryTime = (DateTime.Now - start).Milliseconds;
-            query.QueryTimeTicks = (DateTime.Now - start).Ticks;
-            return temp;
+            try
+            {
+                Object temp = this._store.ExecuteQuery(query.ToString());
+                return temp;
+            }
+            finally
+            {
+                query.QueryTime = (DateTime.Now - start).Milliseconds;
+                query.QueryTimeTicks = (DateTime.Now - start).Ticks;
+
+            }
         }
     }
 
@@ -323,10 +330,16 @@ namespace VDS.RDF.Query
             query.QueryTime = -1;
             query.QueryTimeTicks = -1;
             DateTime start = DateTime.Now;
-            Object temp = this._manager.Query(query.ToString());
-            query.QueryTime = (DateTime.Now - start).Milliseconds;
-            query.QueryTimeTicks = (DateTime.Now - start).Ticks;
-            return temp;
+            try
+            {
+                Object temp = this._manager.Query(query.ToString());
+                return temp;
+            }
+            finally
+            {
+                query.QueryTime = (DateTime.Now - start).Milliseconds;
+                query.QueryTimeTicks = (DateTime.Now - start).Ticks;
+            }
         }
     }
 
@@ -359,28 +372,34 @@ namespace VDS.RDF.Query
             query.QueryTimeTicks = -1;
             DateTime start = DateTime.Now;
             Object temp;
-            switch (query.QueryType)
+            try
             {
-                case SparqlQueryType.Ask:
-                case SparqlQueryType.Select:
-                case SparqlQueryType.SelectAll:
-                case SparqlQueryType.SelectAllDistinct:
-                case SparqlQueryType.SelectAllReduced:
-                case SparqlQueryType.SelectDistinct:
-                case SparqlQueryType.SelectReduced:
-                    temp = this._endpoint.QueryWithResultSet(query.ToString());
-                    break;
-                case SparqlQueryType.Construct:
-                case SparqlQueryType.Describe:
-                case SparqlQueryType.DescribeAll:
-                    temp = this._endpoint.QueryWithResultGraph(query.ToString());
-                    break;
-                default:
-                    throw new RdfQueryException("Unable to execute an unknown query type against a Remote Endpoint");
+                switch (query.QueryType)
+                {
+                    case SparqlQueryType.Ask:
+                    case SparqlQueryType.Select:
+                    case SparqlQueryType.SelectAll:
+                    case SparqlQueryType.SelectAllDistinct:
+                    case SparqlQueryType.SelectAllReduced:
+                    case SparqlQueryType.SelectDistinct:
+                    case SparqlQueryType.SelectReduced:
+                        temp = this._endpoint.QueryWithResultSet(query.ToString());
+                        break;
+                    case SparqlQueryType.Construct:
+                    case SparqlQueryType.Describe:
+                    case SparqlQueryType.DescribeAll:
+                        temp = this._endpoint.QueryWithResultGraph(query.ToString());
+                        break;
+                    default:
+                        throw new RdfQueryException("Unable to execute an unknown query type against a Remote Endpoint");
+                }
+                return temp;
             }
-            query.QueryTime = (DateTime.Now - start).Milliseconds;
-            query.QueryTimeTicks = (DateTime.Now - start).Ticks;
-            return temp;
+            finally
+            {
+                query.QueryTime = (DateTime.Now - start).Milliseconds;
+                query.QueryTimeTicks = (DateTime.Now - start).Ticks;
+            }
         }
     }
 }

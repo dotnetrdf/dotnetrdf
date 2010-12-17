@@ -96,10 +96,16 @@ namespace VDS.RDF.Query
             query.QueryTime = -1;
             query.QueryTimeTicks = -1;
             DateTime start = DateTime.Now;
-            Object temp = this._svc.Query(query.ToString());
-            query.QueryTime = (DateTime.Now - start).Milliseconds;
-            query.QueryTimeTicks = (DateTime.Now - start).Ticks;
-            return temp;
+            try
+            {
+                Object temp = this._svc.Query(query.ToString());
+                 return temp;
+            }
+            finally
+            {
+                query.QueryTime = (DateTime.Now - start).Milliseconds;
+                query.QueryTimeTicks = (DateTime.Now - start).Ticks;
+            }
         }
     }
 }
