@@ -53,6 +53,8 @@ namespace VDS.RDF
         //REQ: Use a more extensible means of specifying MIME types and associate MIME types with Encodings where applicable
         //REQ: Add the ability to specify custom parsers and writers for MIME types and/or override the defaults
 
+        internal const String ValidMimeTypePattern = @"[\w\-]+/\w+(-\w+)*";
+
         #region MIME Types
 
         /// <summary>

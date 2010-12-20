@@ -402,7 +402,7 @@ namespace VDS.RDF.Storage
                 //cmd.Parameters.Add("data", 
                 cmd.Parameters.Add("data", VirtDbType.VarChar);
                 cmd.Parameters["data"].Value = VDS.RDF.Writing.StringWriter.Write(g, new NTriplesWriter());
-                String baseUri = (g.BaseUri == null) ? String.Empty : g.BaseUri.ToString();
+                String baseUri = g.BaseUri.ToSafeString();
                 cmd.Parameters.Add("base", VirtDbType.VarChar);
                 cmd.Parameters.Add("graph", VirtDbType.VarChar);
                 cmd.Parameters["base"].Value = baseUri;

@@ -42,6 +42,7 @@ Changed
 - Parsing
  - Notation 3 Parser supports Variables, @forSome and @forAll fully
  - All Parsers should now throw RdfParseExceptions when null Graphs, Stores, filenames, streams etc are passed as arguments
+ - SparqlRdfParser can now be created to use a specific RDF Parser rather than just auto-detection
  - UriLoader Caching improved
   - URIs are santised when being cached
   - Data is cached under both the request and response URIS

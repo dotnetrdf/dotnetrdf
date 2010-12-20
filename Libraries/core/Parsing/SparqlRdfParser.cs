@@ -47,6 +47,25 @@ namespace VDS.RDF.Parsing
     /// </summary>
     public class SparqlRdfParser : ISparqlResultsReader
     {
+        private IRdfReader _parser;
+
+        /// <summary>
+        /// Creates a new SPARQL RDF Parser which will use auto-detection for determining the syntax of input streams/files
+        /// </summary>
+        public SparqlRdfParser()
+        {
+
+        }
+
+        /// <summary>
+        /// Creates a new SPARQL RDF Parser which will use the given RDF Parser
+        /// </summary>
+        /// <param name="parser">RDF Parser</param>
+        public SparqlRdfParser(IRdfReader parser)
+        {
+            this._parser = parser;
+        }
+
         /// <summary>
         /// Loads a SPARQL Result Set from RDF contained in the given Stream
         /// </summary>
@@ -69,8 +88,15 @@ namespace VDS.RDF.Parsing
             try
             {
                 Graph g = new Graph();
-                String data = input.ReadToEnd();
-                StringParser.Parse(g, data);
+                if (this._parser == null)
+                {
+                    String data = input.ReadToEnd();
+                    StringParser.Parse(g, data);
+                }
+                else
+                {
+                    this._parser.Load(g, input);
+                }
                 this.Parse(results, g);
             }
             catch
@@ -110,7 +136,14 @@ namespace VDS.RDF.Parsing
             }
 
             Graph g = new Graph();
-            FileLoader.Load(g, filename);
+            if (this._parser == null)
+            {
+                FileLoader.Load(g, filename);
+            }
+            else
+            {
+                this._parser.Load(g, filename);
+            }
             this.Parse(results, g);
         }
 

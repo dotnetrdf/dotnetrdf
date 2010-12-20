@@ -218,6 +218,7 @@
     <Compile Include="Core\DiskDemandTripleStore.cs" />
     <Compile Include="Core\GraphDiff.cs" />
     <Compile Include="Core\INamespaceMapper.cs" />
+    <Compile Include="Core\MimeTypeDefinition.cs" />
     <Compile Include="Core\NestedNamespaceMapper.cs" />
     <Compile Include="Core\NodeFactory.cs" />
     <Compile Include="Core\SubGraphMatcher.cs" />
