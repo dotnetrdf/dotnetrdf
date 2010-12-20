@@ -118,7 +118,7 @@ namespace VDS.RDF.Interop.Sesame
                     }
 
                 default:
-                    throw new RdfException("Only URI and Blank Node subjects are not supported in Sesame");
+                    throw new RdfException("Only URI and Blank Node subjects are supported in Sesame");
             }
         }
 
