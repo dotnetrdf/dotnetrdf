@@ -7,6 +7,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Storage;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
+using VDS.RDF.Writing.Formatting;
 using OpenLink.Data.Virtuoso;
 
 namespace VDS.RDF.Test
@@ -14,12 +15,19 @@ namespace VDS.RDF.Test
     [TestClass]
     public class VirtuosoTest : BaseTest
     {
+        /// <summary>
+        /// Test Account to use for Virtuoso testing - set to Virtuoso default DBA login by default
+        /// </summary>
+        public const String VirtuosoTestUsername = "dba",
+                            VirtuosoTestPassword = "dba";
+
         [TestMethod]
         public void VirtuosoLoadGraph()
         {
+            NTriplesFormatter formatter = new NTriplesFormatter();
             try
             {
-                VirtuosoManager manager = new VirtuosoManager("DB", "dba", "20sQl09");
+                VirtuosoManager manager = new VirtuosoManager("DB", VirtuosoTestUsername, VirtuosoTestPassword);
                 Assert.IsNotNull(manager);
 
                 Console.WriteLine("Got the Virtuoso Manager OK");
@@ -35,7 +43,6 @@ namespace VDS.RDF.Test
                 manager.SaveGraph(testData);
                 Console.WriteLine("Saved the Test Data to Virtuoso");
 
-
                 //Try loading it back again
                 Graph g = new Graph();
                 manager.LoadGraph(g, "http://localhost/VirtuosoTest");
@@ -46,7 +53,7 @@ namespace VDS.RDF.Test
 
                 foreach (Triple t in g.Triples)
                 {
-                    Console.WriteLine(t.ToString());
+                    Console.WriteLine(t.ToString(formatter));
                 }
 
                 Console.WriteLine();
@@ -60,7 +67,7 @@ namespace VDS.RDF.Test
 
                 foreach (Triple t in h.Triples)
                 {
-                    Console.WriteLine(t.ToString());
+                    Console.WriteLine(t.ToString(formatter));
                 }
 
                 Console.WriteLine();
@@ -86,9 +93,10 @@ namespace VDS.RDF.Test
         [TestMethod]
         public void VirtuosoSaveGraph()
         {
+            NTriplesFormatter formatter = new NTriplesFormatter();
             try
             {
-                VirtuosoManager manager = new VirtuosoManager("DB", "dba", "20sQl09");
+                VirtuosoManager manager = new VirtuosoManager("DB", VirtuosoTestUsername, VirtuosoTestPassword);
                 Assert.IsNotNull(manager);
 
                 Console.WriteLine("Got the Virtuoso Manager OK");
@@ -106,7 +114,7 @@ namespace VDS.RDF.Test
 
                 foreach (Triple t in g.Triples)
                 {
-                    Console.WriteLine(t.ToString());
+                    Console.WriteLine(t.ToString(formatter));
                 }
                 Console.WriteLine();
 
@@ -125,7 +133,7 @@ namespace VDS.RDF.Test
                 Console.WriteLine("Retrieved Graph contains:");
                 foreach (Triple t in h.Triples)
                 {
-                    Console.WriteLine(t.ToString());
+                    Console.WriteLine(t.ToString(formatter));
                 }
 
                 Assert.Inconclusive("Virtuoso has known issues around not correctly returning datatypes on numeric literals and converts booleans to integers internally");
@@ -148,7 +156,7 @@ namespace VDS.RDF.Test
         {
             try
             {
-                VirtuosoManager manager = new VirtuosoManager("DB", "dba", "20sQl09");
+                VirtuosoManager manager = new VirtuosoManager("DB", VirtuosoTestUsername, VirtuosoTestPassword);
                 Assert.IsNotNull(manager);
 
                 Console.WriteLine("Got the Virtuoso Manager OK");
@@ -224,7 +232,7 @@ namespace VDS.RDF.Test
                 Assert.AreEqual(1, g.Triples.Count, "Should only be 1 Triple in the Test Graph");
 
                 //Connect to Virtuoso
-                VirtuosoManager manager = new VirtuosoManager("DB", "dba", "20sQl09");
+                VirtuosoManager manager = new VirtuosoManager("DB", VirtuosoTestUsername, VirtuosoTestPassword);
 
                 //Save Graph
                 manager.SaveGraph(g);
@@ -300,7 +308,7 @@ namespace VDS.RDF.Test
             Stopwatch timer = new Stopwatch();
             try
             {                
-                VirtuosoManager manager = new VirtuosoManager("DB", "dba", "20sQl09");
+                VirtuosoManager manager = new VirtuosoManager("DB", VirtuosoTestUsername, VirtuosoTestPassword);
                 Assert.IsNotNull(manager);
 
                 Console.WriteLine("Got the Virtuoso Manager OK");
@@ -338,7 +346,7 @@ namespace VDS.RDF.Test
         {
             try
             {
-                VirtuosoManager manager = new VirtuosoManager("DB", "dba", "20sQl09");
+                VirtuosoManager manager = new VirtuosoManager("DB", VirtuosoTestUsername, VirtuosoTestPassword);
                 Assert.IsNotNull(manager);
 
                 Console.WriteLine("Got the Virtuoso Manager OK");
@@ -383,9 +391,10 @@ namespace VDS.RDF.Test
         [TestMethod]
         public void VirtuosoNativeQuery()
         {
+            NTriplesFormatter formatter = new NTriplesFormatter();
             try
             {
-                VirtuosoManager manager = new VirtuosoManager("DB", "dba", "20sQl09");
+                VirtuosoManager manager = new VirtuosoManager("DB", VirtuosoTestUsername, VirtuosoTestPassword);
                 Assert.IsNotNull(manager);
 
                 Console.WriteLine("Got the Virtuoso Manager OK");
@@ -483,7 +492,7 @@ namespace VDS.RDF.Test
         {
             try
             {
-                VirtuosoManager manager = new VirtuosoManager("DB", "dba", "20sQl09");
+                VirtuosoManager manager = new VirtuosoManager("DB", VirtuosoTestUsername, VirtuosoTestPassword);
                 Assert.IsNotNull(manager);
 
                 Console.WriteLine("Got the Virtuoso Manager OK");
@@ -529,7 +538,7 @@ namespace VDS.RDF.Test
         public void VirtuosoEncoding()
         {
             //Get the Virtuoso Manager
-            VirtuosoManager manager = new VirtuosoManager("DB", "dba", "20sQl09");
+            VirtuosoManager manager = new VirtuosoManager("DB", VirtuosoTestUsername, VirtuosoTestPassword);
 
             //Make the Test Graph
             Graph g = new Graph();
@@ -558,6 +567,7 @@ namespace VDS.RDF.Test
 
         private static void CheckQueryResult(Object results, bool expectResultSet)
         {
+            NTriplesFormatter formatter = new NTriplesFormatter();
             if (results == null) 
             {
                 Assert.Fail("Got a Null Result from a Query");
@@ -572,7 +582,7 @@ namespace VDS.RDF.Test
                     Console.WriteLine("Result = " + rset.Result);
                     foreach (SparqlResult r in rset)
                     {
-                        Console.WriteLine(r.ToString());
+                        Console.WriteLine(r.ToString(formatter));
                     }
                     Console.WriteLine();
                 }
@@ -590,7 +600,7 @@ namespace VDS.RDF.Test
                     Console.WriteLine(g.Triples.Count + " Triples");
                     foreach (Triple t in g.Triples)
                     {
-                        Console.WriteLine(t.ToString());
+                        Console.WriteLine(t.ToString(formatter));
                     }
                     Console.WriteLine();
                 }

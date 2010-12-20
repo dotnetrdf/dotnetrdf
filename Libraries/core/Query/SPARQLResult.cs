@@ -38,6 +38,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Query.Algebra;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query
 {
@@ -200,9 +201,37 @@ namespace VDS.RDF.Query
                 output.Append("?");
                 output.Append(var);
                 output.Append(" = ");
-                if (!(this._resultValues[var] == null))
+                if (this._resultValues[var] != null)
                 {
                     output.Append(this._resultValues[var].ToString());
+                }
+
+                output.Append(" , ");
+            }
+
+            String outString = output.ToString();
+            if (outString.Length > 3)
+            {
+                return outString.Substring(0, outString.Length - 3);
+            }
+            else
+            {
+                return String.Empty;
+            }
+        }
+
+        public String ToString(INodeFormatter formatter)
+        {
+            StringBuilder output = new StringBuilder();
+
+            foreach (String var in this._resultValues.Keys)
+            {
+                output.Append("?");
+                output.Append(var);
+                output.Append(" = ");
+                if (this._resultValues[var] != null)
+                {
+                    output.Append(this._resultValues[var].ToString(formatter));
                 }
 
                 output.Append(" , ");
