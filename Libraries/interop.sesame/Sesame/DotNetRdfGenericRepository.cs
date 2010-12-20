@@ -231,7 +231,10 @@ namespace VDS.RDF.Interop.Sesame
         {
             if (this._manager.IsReadOnly) throw NotWritableError("commit");
 
-            throw new dotSesameRepo.RepositoryException("dotNetRDF Generic Repositories do not support the commit() operation");
+            //HACK: Commit() in effect does nothing as no way of knowing whether the underlying Store supports transactions
+            //If the underlying Store does support transactions then typically these will be used by the IGenericIOManager implementation
+            //but this behaviour is not made publicly available to end users
+            //throw new dotSesameRepo.RepositoryException("dotNetRDF Generic Repositories do not support the commit() operation");
         }
 
         public override org.openrdf.repository.RepositoryResult getContextIDs()
