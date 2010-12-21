@@ -156,6 +156,8 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">Uri of the Graph to Load</param>
         public void LoadGraph(IGraph g, Uri graphUri)
         {
+            if (graphUri == null) throw new RdfStorageException("Cannot load an unnamed Graph from Virtuoso as this would require loading the entirety of the Virtuoso Quad Store into memory!");
+
             if (!g.IsEmpty)
             {
                 //Do the load into a new Empty Graph and then do a merge
@@ -385,16 +387,14 @@ namespace VDS.RDF.Storage
         /// </remarks>
         public void SaveGraph(IGraph g)
         {
+            if (g.BaseUri == null) throw new RdfStorageException("Cannot save a Graph without a Base URI to Virtuoso");
+
             try
             {
                 this.Open(false);
 
                 //Delete the existing Graph (if it exists)
-                //Don't delete the Default Graph!
-                if (g.BaseUri != null)
-                {
-                    this.ExecuteNonQuery("DELETE FROM DB.DBA.RDF_QUAD WHERE G = DB.DBA.RDF_MAKE_IID_OF_QNAME('" + g.BaseUri.ToString() + "')");
-                }
+                this.ExecuteNonQuery("DELETE FROM DB.DBA.RDF_QUAD WHERE G = DB.DBA.RDF_MAKE_IID_OF_QNAME('" + g.BaseUri.ToString() + "')");
 
                 //Make a call to the TTLP() Virtuoso function
                 VirtuosoCommand cmd = new VirtuosoCommand();
@@ -448,7 +448,7 @@ namespace VDS.RDF.Storage
                         }
                         else
                         {
-                            throw new RdfStorageException("Cannot update the Default Graph of a Virtuoso Store using this method - you must specify the URI of a Graph to Update");
+                            throw new RdfStorageException("Cannot update an unnamed Graph in a Virtuoso Store using this method - you must specify the URI of a Graph to Update");
                         }
                         delete += " { " + deleteData + " }";
                         deleteCmd.CommandText = delete;
@@ -476,7 +476,7 @@ namespace VDS.RDF.Storage
                         }
                         else
                         {
-                            throw new RdfStorageException("Cannot update the Default Graph of a Virtuoso Store using this method - you must specify the URI of a Graph to Update");
+                            throw new RdfStorageException("Cannot update an unnamed Graph in a Virtuoso Store using this method - you must specify the URI of a Graph to Update");
                         }
                         insert += "{ " + insertData + " }";
                         insertCmd.CommandText = insert;
