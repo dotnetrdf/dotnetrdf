@@ -44,23 +44,23 @@ using VDS.RDF.Query;
 namespace VDS.RDF.Writing
 {
     /// <summary>
-    /// Class for saving Sparql Result Sets to the Sparql Results Json Format
+    /// Class for saving Sparql Result Sets to the SPARQL Results JSON Format
     /// </summary>
     public class SparqlJsonWriter : ISparqlResultsWriter
     {
         /// <summary>
-        /// Saves the Result Set to the given File in the Sparql Results XML Format
+        /// Saves the Result Set to the given File in the SPARQL Results JSON Format
         /// </summary>
         /// <param name="results">Result Set to save</param>
         /// <param name="filename">File to save to</param>
         public void Save(SparqlResultSet results, String filename)
         {
-            StreamWriter output = new StreamWriter(filename, false, Encoding.UTF8);
+            StreamWriter output = new StreamWriter(filename, false, new UTF8Encoding(Options.UseBomForUtf8));
             this.Save(results, output);
         }
 
         /// <summary>
-        /// Saves the Result Set to the given Stream in the Sparql Results XML Format
+        /// Saves the Result Set to the given Stream in the SPARQL Results JSON Format
         /// </summary>
         /// <param name="results">Result Set to save</param>
         /// <param name="output">Stream to save to</param>
@@ -86,7 +86,7 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Internal method which generates the Sparql Query Results Json output
+        /// Internal method which generates the SPARQL Query Results JSON output
         /// </summary>
         /// <param name="results">Result Set to save</param>
         /// <param name="output">Stream to save to</param>

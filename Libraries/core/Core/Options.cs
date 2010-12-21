@@ -87,10 +87,10 @@ namespace VDS.RDF
         private static bool _queryOptimisation = true;
         private static bool _algebraOptimisation = true;
         private static SparqlQuerySyntax _queryDefaultSyntax = SparqlQuerySyntax.Extended;
-        private static SparqlEngine _queryEngine = SparqlEngine.Leviathan;//SparqlEngine.Labyrinth;
         private static bool _queryAllowUnknownFunctions = true;
         private static bool _uriLoaderCaching = true;
         private static int _uriLoaderTimeout = 15000;
+        private static bool _utf8Bom = true;
 
         #if DEBUG
         //Debug Build Only
@@ -195,29 +195,6 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets/Sets the engine used for processing SPARQL queries
-        /// </summary>
-        /// <remarks>
-        /// <para>
-        /// The default engine is the <see cref="SparqlEngine.Leviathan">Leviathan</see> engine
-        /// </para>
-        /// <para>
-        /// As of the 0.3.0 release there will once again be only one SPARQL engine present in the library since the obsolete Labyrinth engine has been removed
-        /// </para>
-        /// </remarks>
-        public static SparqlEngine QueryEngine
-        {
-            get
-            {
-                return _queryEngine;
-            }
-            set
-            {
-                _queryEngine = value;
-            }
-        }
-
-        /// <summary>
         /// Gets/Sets whether functions that can't be parsed into Expressions should be represented by the <see cref="NullExpression">NullExpression</see>
         /// </summary>
         /// <remarks>When set to false a Parser Error will be thrown if the Function cannot be parsed into an Expression</remarks>
@@ -304,6 +281,21 @@ namespace VDS.RDF
                 {
                     _uriLoaderTimeout = value;
                 }
+            }
+        }
+
+        /// <summary>
+        /// Gets/Sets whether a UTF-8 BOM is used for UTF-8 Streams created by dotNetRDF (this does not affect Streams passed directly to methods as open streams cannot have their encoding changed)
+        /// </summary>
+        public static bool UseBomForUtf8
+        {
+            get
+            {
+                return _utf8Bom;
+            }
+            set
+            {
+                _utf8Bom = value;
             }
         }
 

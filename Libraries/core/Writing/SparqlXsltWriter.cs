@@ -79,7 +79,7 @@ namespace VDS.RDF.Writing
         /// <param name="filename">File to save to</param>
         public override void Save(SparqlResultSet results, string filename)
         {
-            this.Save(results, new StreamWriter(filename, false, Encoding.UTF8));
+            this.Save(results, new StreamWriter(filename, false, new UTF8Encoding(Options.UseBomForUtf8)));
         }
 
         /// <summary>

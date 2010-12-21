@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -159,18 +160,20 @@ namespace rdfEditor
                     MessageBox.Show("An error occurred while opening the selected file: " + ex.Message, "Unable to Open File");
                 }
 
-                MessageBox.Show("Dragging and dropping multiple files into rdfEditor is not yet supported");
-                //for (int i = 1; i < droppedFilePaths.Length; i++)
-                //{
-                //    try
-                //    {
-                //        System.Diagnostics.Process.Start("rdfEditor.exe \"" + droppedFilePaths[i] + "\"");
-                //    }
-                //    catch (Exception ex)
-                //    {
-                //        MessageBox.Show("Unable to open " + droppedFilePaths[i] + " due to the following error: " + ex.Message, "Unable to Open File");
-                //    }
-                //}
+                for (int i = 1; i < droppedFilePaths.Length; i++)
+                {
+                    try
+                    {
+                        ProcessStartInfo info = new ProcessStartInfo();
+                        info.FileName = Assembly.GetExecutingAssembly().Location;
+                        info.Arguments = "\"" + droppedFilePaths[i] + "\"";
+                        Process.Start(info);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Unable to open " + droppedFilePaths[i] + " due to the following error: " + ex.Message, "Unable to Open File");
+                    }
+                }
             } 
         }
 
@@ -287,13 +290,13 @@ namespace rdfEditor
                     }
                     else
                     {
-                        fileWriter = new StreamWriter(this._manager.CurrentFile, false, Encoding.UTF8);
+                        fileWriter = new StreamWriter(this._manager.CurrentFile, false, new UTF8Encoding(Options.UseBomForUtf8));
                     }
                 }
                 catch
                 {
                     //Ignore and just create a UTF-8 Stream
-                    fileWriter = new StreamWriter(this._manager.CurrentFile, false, Encoding.UTF8);
+                    fileWriter = new StreamWriter(this._manager.CurrentFile, false, new UTF8Encoding(Options.UseBomForUtf8));
                 }
 
                 try
@@ -1146,5 +1149,10 @@ namespace rdfEditor
 
 
         #endregion
+
+        private void mnuUseBomForUtf8_Checked(object sender, RoutedEventArgs e)
+        {
+            Options.UseBomForUtf8 = this.mnuUseBomForUtf8.IsChecked;
+        }
     }
 }

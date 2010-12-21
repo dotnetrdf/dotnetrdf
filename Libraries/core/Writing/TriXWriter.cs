@@ -200,7 +200,7 @@ namespace VDS.RDF.Writing
             XmlWriterSettings settings = new XmlWriterSettings();
             settings.CloseOutput = true;
             settings.ConformanceLevel = ConformanceLevel.Document;
-            settings.Encoding = Encoding.UTF8;
+            settings.Encoding = new UTF8Encoding(Options.UseBomForUtf8);
             settings.Indent = true;
 #if SILVERLIGHT
             settings.NamespaceHandling = NamespaceHandling.OmitDuplicates;

@@ -463,17 +463,7 @@ namespace VDS.RDF.Query.Aggregates
         /// <returns></returns>
         public override INode Apply(SparqlEvaluationContext context, IEnumerable<int> bindingIDs)
         {
-            int c;
-
-            switch (Options.QueryEngine)
-            {
-                case SparqlEngine.Leviathan:
-                    c = context.InputMultiset.Sets.Distinct().Count();
-                    break;
-                default:
-                    throw new RdfQueryException("Unknown Query Engine - unable to evaluate the COUNT(DISTINCT *) aggregate");
-            }
-
+            int c = context.InputMultiset.Sets.Distinct().Count();
 
             LiteralNode count = new LiteralNode(null, c.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger));
             return count;

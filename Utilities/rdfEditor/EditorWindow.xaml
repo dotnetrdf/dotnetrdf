@@ -118,6 +118,7 @@
                     <MenuItem Header="RDF/JSON Writer" Name="mnuSaveWithRdfJson" Click="mnuSaveWithRdfJson_Click" InputGestureText="Alt+S,5" />
                     <MenuItem Header="XHTML+RDFa Writer" Name="mnuSaveWithRdfa" Click="mnuSaveWithRdfa_Click" InputGestureText="Alt+S,6" />
                 </MenuItem>
+                <MenuItem Header="Use BOM for UTF-8 Output" Name="mnuUseBomForUtf8" Checked="mnuUseBomForUtf8_Checked" IsCheckable="True" IsChecked="True" />
                 <Separator />
                 <MenuItem Header="Print Preview" Name="mnuPrintPreview" Click="mnuPrintPreview_Click" />
                 <MenuItem Header="Print" Name="mnuPrint" Click="mnuPrint_Click" InputGestureText="Ctrl+P" />

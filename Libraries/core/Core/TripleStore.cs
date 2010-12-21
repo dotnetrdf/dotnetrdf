@@ -718,14 +718,8 @@ namespace VDS.RDF
         /// <returns></returns>
         public virtual Object ExecuteQuery(SparqlQuery query)
         {
-            switch (Options.QueryEngine)
-            {
-                case SparqlEngine.Leviathan:
-                    //Invoke Query's Evaluate method
-                    return query.Evaluate(this);
-                default:
-                    throw new RdfQueryException("Unable to process a SPARQL Query as an unknown Query Engine has been selected");
-            }
+            //Invoke Query's Evaluate method
+            return query.Evaluate(this);
         }
 
         #endregion

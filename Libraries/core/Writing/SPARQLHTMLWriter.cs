@@ -178,7 +178,7 @@ namespace VDS.RDF.Writing
         /// <param name="filename">File to save to</param>
         public void Save(SparqlResultSet results, String filename)
         {
-            StreamWriter output = new StreamWriter(filename, false, Encoding.UTF8);
+            StreamWriter output = new StreamWriter(filename, false, new UTF8Encoding(Options.UseBomForUtf8));
             this.Save(results, output);
         }
 

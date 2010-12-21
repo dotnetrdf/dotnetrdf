@@ -48,7 +48,7 @@ namespace VDS.RDF.Storage.Params
     {
         private Stream _input = null;
         private String _filename;
-        private Encoding _encoding = Encoding.UTF8;
+        private Encoding _encoding = new UTF8Encoding(Options.UseBomForUtf8);
 
         /// <summary>
         /// Creates a new set of Parameters

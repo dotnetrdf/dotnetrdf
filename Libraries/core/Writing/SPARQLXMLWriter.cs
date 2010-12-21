@@ -60,7 +60,7 @@ namespace VDS.RDF.Writing
         /// <param name="filename">File to save to</param>
         public virtual void Save(SparqlResultSet results, String filename)
         {
-            StreamWriter output = new StreamWriter(filename, false, Encoding.UTF8);
+            StreamWriter output = new StreamWriter(filename, false, new UTF8Encoding(Options.UseBomForUtf8));
             this.Save(results, output);
         }
 
@@ -219,7 +219,7 @@ namespace VDS.RDF.Writing
             XmlWriterSettings settings = new XmlWriterSettings();
             settings.CloseOutput = true;
             settings.ConformanceLevel = ConformanceLevel.Document;
-            settings.Encoding = Encoding.UTF8;
+            settings.Encoding = new UTF8Encoding(Options.UseBomForUtf8);
             settings.Indent = true;
 #if SILVERLIGHT
             settings.NamespaceHandling = NamespaceHandling.OmitDuplicates;
