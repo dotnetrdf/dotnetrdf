@@ -70,10 +70,11 @@ namespace VDS.RDF.Update.Protocol
         public override void ProcessGet(HttpContext context)
         {
             Uri graphUri = this.ResolveGraphUri(context);
-            IGraph g;
             try
             {
-                g = this.GetGraph(graphUri);
+                //Send the Graph to the user
+                IGraph g = this.GetGraph(graphUri);
+                this.SendResultsToClient(context, g);
             }
             catch
             {
@@ -81,11 +82,6 @@ namespace VDS.RDF.Update.Protocol
                 context.Response.StatusCode = (int)HttpStatusCode.NotFound;
                 return;
             }
-
-            String ctype;
-            IRdfWriter writer = MimeTypesHelper.GetWriter(context.Request.AcceptTypes, out ctype);
-            context.Response.ContentType = ctype;
-            writer.Save(g, new StreamWriter(context.Response.OutputStream));
         }
 
         /// <summary>

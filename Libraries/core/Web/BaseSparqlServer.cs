@@ -432,6 +432,15 @@ namespace VDS.RDF.Web
                     case "DELETE":
                         this._config.ProtocolProcessor.ProcessDelete(context);
                         break;
+                    case "PATCH":
+                        this._config.ProtocolProcessor.ProcessPatch(context);
+                        break;
+                    case "OPTIONS":
+                        this._config.ProtocolProcessor.ProcessOptions(context);
+                        break;
+                    case "HEAD":
+                        this._config.ProtocolProcessor.ProcessHead(context);
+                        break;
                     default:
                         //For any other HTTP Verb we send a 405 Method Not Allowed
                         context.Response.StatusCode = (int)HttpStatusCode.MethodNotAllowed;
@@ -540,56 +549,14 @@ namespace VDS.RDF.Web
         /// </summary>
         /// <param name="context">Context of the HTTP Request</param>
         /// <param name="result">Results of the Sparql Query</param>
-        protected void ProcessQueryResults(HttpContext context, Object result)
+        /// <remarks>
+        /// <para>
+        /// Implementations should override this if they want to control how results are sent to the client rather than using the default behaviour provided by <see cref="HandlerHelper.ProcessResults">HandlerHelper.ProcessResults()</see>
+        /// </para>
+        /// </remarks>
+        protected virtual void ProcessQueryResults(HttpContext context, Object result)
         {
-            //Return the Results
-            String ctype;
-            if (result is SparqlResultSet)
-            {
-                //Get the appropriate Writer and set the Content Type
-                ISparqlResultsWriter sparqlwriter;
-                if (context.Request.AcceptTypes != null)
-                {
-                    sparqlwriter = MimeTypesHelper.GetSparqlWriter(context.Request.AcceptTypes, out ctype);
-                }
-                else
-                {
-                    //Default to SPARQL XML Results Format if no accept header
-                    sparqlwriter = new SparqlXmlWriter();
-                    ctype = MimeTypesHelper.Sparql[0];
-                }
-                context.Response.ContentType = ctype;
-                if (sparqlwriter is IHtmlWriter)
-                {
-                    ((IHtmlWriter)sparqlwriter).Stylesheet = this._config.Stylesheet;
-                }
-
-                //Clear any existing Response
-                context.Response.Clear();
-
-                //Send Result Set to Client
-                sparqlwriter.Save((SparqlResultSet)result, new StreamWriter(context.Response.OutputStream));
-            }
-            else if (result is Graph)
-            {
-                //Get the appropriate Writer and set the Content Type
-                IRdfWriter rdfwriter = MimeTypesHelper.GetWriter(context.Request.AcceptTypes, out ctype);
-                context.Response.ContentType = ctype;
-                if (rdfwriter is IHtmlWriter)
-                {
-                    ((IHtmlWriter)rdfwriter).Stylesheet = this._config.Stylesheet;
-                }
-
-                //Clear any existing Response
-                context.Response.Clear();
-
-                //Send Graph to Client
-                rdfwriter.Save((Graph)result, new StreamWriter(context.Response.OutputStream));
-            }
-            else
-            {
-                throw new RdfQueryException("Unexpected Query Result Object of Type '" + result.GetType().ToString() + "' returned");
-            }
+            HandlerHelper.ProcessResults(context, result, this._config);
         }
 
         #endregion

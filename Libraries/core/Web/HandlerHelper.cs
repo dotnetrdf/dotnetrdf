@@ -37,6 +37,7 @@ terms.
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
@@ -44,7 +45,10 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Web;
 using VDS.RDF.Configuration.Permissions;
+using VDS.RDF.Parsing;
+using VDS.RDF.Query;
 using VDS.RDF.Web.Configuration;
+using VDS.RDF.Writing;
 
 namespace VDS.RDF.Web
 {
@@ -167,6 +171,147 @@ namespace VDS.RDF.Web
             }
             return true;
         }
+
+        #region Results Processing
+
+        /// <summary>
+        /// Helper function which returns the Results (Graph/Triple Store/SPARQL Results) back to the Client in one of their accepted formats
+        /// </summary>
+        /// <param name="context">Context of the HTTP Request</param>
+        /// <param name="result">Results of the Sparql Query</param>
+        /// <param name="config">Handler Configuration</param>
+        public static void ProcessResults(HttpContext context, Object result, BaseHandlerConfiguration config)
+        {
+            MimeTypeDefinition definition = null;
+            String ctype = "text/plain";
+
+            //Return the Results
+            if (result is SparqlResultSet)
+            {
+                ISparqlResultsWriter sparqlwriter;      
+       
+                //Try and get a MIME Type Definition using the HTTP Requests Accept Header
+                if (context.Request.AcceptTypes != null)
+                {
+                    definition = MimeTypesHelper.GetDefinitions(context.Request.AcceptTypes).FirstOrDefault(d => d.CanWriteSparqlResults);
+                } 
+                //Try and get the registered Definition for SPARQL Results XML
+                if (definition == null)
+                {
+                    definition = MimeTypesHelper.GetDefinitions(MimeTypesHelper.SparqlXml[0]).FirstOrDefault();
+                }
+                //If Definition is still null create a temporary definition
+                if (definition == null)
+                {
+                    definition = new MimeTypeDefinition("SPARQL Results XML", MimeTypesHelper.SparqlXml, Enumerable.Empty<String>());
+                    definition.SparqlResultsWriterType = typeof(VDS.RDF.Writing.SparqlXmlWriter);
+                }
+                
+                //Set up the Writer appropriately
+                sparqlwriter = definition.GetSparqlResultsWriter();
+
+                context.Response.ContentType = definition.CanonicalMimeType;
+                if (sparqlwriter is IHtmlWriter)
+                {
+                    ((IHtmlWriter)sparqlwriter).Stylesheet = config.Stylesheet;
+                }
+
+                //Clear any existing Response
+                context.Response.Clear();
+
+                //Send Result Set to Client
+                context.Response.ContentEncoding = definition.Encoding;
+                sparqlwriter.Save((SparqlResultSet)result, new StreamWriter(context.Response.OutputStream, definition.Encoding));
+            }
+            else if (result is IGraph)
+            {
+                IRdfWriter rdfwriter;
+
+                //Try and get a MIME Type Definition using the HTTP Requests Accept Header
+                if (context.Request.AcceptTypes != null)
+                {
+                    definition = MimeTypesHelper.GetDefinitions(context.Request.AcceptTypes).FirstOrDefault(d => d.CanWriteRdf);
+                    rdfwriter = definition.GetRdfWriter();
+                } 
+                else
+                {
+                    //If no appropriate definition then use the GetWriter method instead
+                    rdfwriter = MimeTypesHelper.GetWriter(context.Request.AcceptTypes, out ctype);
+                }
+
+                //Setup the writer
+                if (definition != null) ctype = definition.CanonicalMimeType;
+                context.Response.ContentType = ctype;
+                if (rdfwriter is ICompressingWriter)
+                {
+                    ((ICompressingWriter)rdfwriter).CompressionLevel = Options.DefaultCompressionLevel;
+                }
+                if (rdfwriter is IHtmlWriter)
+                {
+                    ((IHtmlWriter)rdfwriter).Stylesheet = config.Stylesheet;
+                }
+
+                //Clear any existing Response
+                context.Response.Clear();
+
+                //Send Graph to Client
+                if (definition != null)
+                {
+                    context.Response.ContentEncoding = definition.Encoding;
+                    rdfwriter.Save((IGraph)result, new StreamWriter(context.Response.OutputStream, definition.Encoding));
+                }
+                else 
+                {
+                    rdfwriter.Save((IGraph)result, new StreamWriter(context.Response.OutputStream));
+                }
+            }
+            else if (result is ITripleStore)
+            {
+                IStoreWriter storewriter;
+
+                //Try and get a MIME Type Definition using the HTTP Requests Accept Header
+                if (context.Request.AcceptTypes != null)
+                {
+                    definition = MimeTypesHelper.GetDefinitions(context.Request.AcceptTypes).FirstOrDefault(d => d.CanWriteRdfDatasets);
+                    storewriter = definition.GetRdfDatasetWriter();
+                } 
+                else
+                {
+                    //If no appropriate definition then use the GetStoreWriter method instead
+                    storewriter = MimeTypesHelper.GetStoreWriter(context.Request.AcceptTypes, out ctype);
+                }
+
+                //Setup the writer
+                if (definition != null) ctype = definition.CanonicalMimeType;
+                context.Response.ContentType = ctype;
+                if (storewriter is IHtmlWriter)
+                {
+                    ((IHtmlWriter)storewriter).Stylesheet = config.Stylesheet;
+                }
+
+                //Clear any existing Response
+                context.Response.Clear();
+
+                //Send Triple Store to Client
+                if (definition != null) 
+                {
+                    context.Response.ContentEncoding = definition.Encoding;
+                    storewriter.Save((ITripleStore)result, new VDS.RDF.Storage.Params.StreamParams(context.Response.OutputStream, definition.Encoding));
+                } 
+                else
+                {
+                    storewriter.Save((ITripleStore)result, new VDS.RDF.Storage.Params.StreamParams(context.Response.OutputStream));
+                }
+            }
+            else
+            {
+                throw new RdfOutputException("Unexpected Result Object of Type '" + result.GetType().ToString() + "' returned - unable to write Objects of this Type to the HTTP Response");
+            }
+        }
+
+        #endregion
+
+        #region Error Handling
 
         /// <summary>
         /// Handles errors in processing SPARQL Query Requests
@@ -305,6 +450,10 @@ namespace VDS.RDF.Web
             }
 #endif
         }
+
+        #endregion
+
+        #region HTTP Headers and Caching
 
         /// <summary>
         /// Computes the ETag for a Graph
@@ -457,6 +606,8 @@ namespace VDS.RDF.Web
         {
             return dt.ToString("ddd, d MMM yyyy HH:mm:ss K");
         }
+
+        #endregion
     }
 }
 

@@ -286,71 +286,27 @@ namespace VDS.RDF.Web
         }
 
         /// <summary>
+        /// Processes the Results and returns them to the Client in the HTTP Response
+        /// </summary>
+        /// <param name="context">HTTP Context</param>
+        /// <param name="result">Result Object</param>
+        /// <remarks>
+        /// <para>
+        /// Implementations should override this if they do not want to use the default results processing behaviour provided by <see cref="HandlerHelper.ProcessResults">HandlerHelper.ProcessResults()</see>
+        /// </para>
+        /// </remarks>
+        protected virtual void ProcessResults(HttpContext context, Object result)
+        {
+            HandlerHelper.ProcessResults(context, result, this._config);
+        }
+
+        /// <summary>
         /// Updates the Handler Configuration
         /// </summary>
         /// <param name="context">HTTP Context</param>
         protected virtual void UpdateConfig(HttpContext context)
         {
 
-        }
-
-        /// <summary>
-        /// Internal Helper function which returns the Results back to the Client in one of their accepted formats
-        /// </summary>
-        /// <param name="context">Context of the HTTP Request</param>
-        /// <param name="result">Results of the Sparql Query</param>
-        protected void ProcessResults(HttpContext context, Object result)
-        {
-            //Return the Results
-            String ctype;
-            if (result is SparqlResultSet)
-            {
-                //Get the appropriate Writer and set the Content Type
-                ISparqlResultsWriter sparqlwriter;
-                if (context.Request.AcceptTypes != null)
-                {
-                    sparqlwriter = MimeTypesHelper.GetSparqlWriter(context.Request.AcceptTypes, out ctype);
-                }
-                else
-                {
-                    //Default to SPARQL XML Results Format if no accept header
-                    sparqlwriter = new SparqlXmlWriter();
-                    ctype = MimeTypesHelper.Sparql[0];
-                }
-                context.Response.ContentType = ctype;
-                if (sparqlwriter is IHtmlWriter)
-                {
-                    ((IHtmlWriter)sparqlwriter).Stylesheet = this._config.Stylesheet;
-                }
-
-                //Clear any existing Response
-                context.Response.Clear();
-
-                //Send Result Set to Client
-                //TODO: Send appropriate Content Encoding
-                sparqlwriter.Save((SparqlResultSet)result, new StreamWriter(context.Response.OutputStream));
-            }
-            else if (result is Graph)
-            {
-                //Get the appropriate Writer and set the Content Type
-                IRdfWriter rdfwriter = MimeTypesHelper.GetWriter(context.Request.AcceptTypes, out ctype);
-                context.Response.ContentType = ctype;
-                if (rdfwriter is IHtmlWriter)
-                {
-                    ((IHtmlWriter)rdfwriter).Stylesheet = this._config.Stylesheet;
-                }
-
-                //Clear any existing Response
-                context.Response.Clear();
-
-                //Send Graph to Client
-                //TODO: Send appropriate Content Encoding
-                rdfwriter.Save((Graph)result, new StreamWriter(context.Response.OutputStream));
-            }
-            else
-            {
-                throw new RdfQueryException("Unexpected Query Result Object of Type '" + result.GetType().ToString() + "' returned");
-            }
         }
 
         /// <summary>

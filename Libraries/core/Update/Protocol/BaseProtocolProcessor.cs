@@ -37,7 +37,9 @@ terms.
 
 using System;
 using System.IO;
+using System.Linq;
 using System.Web;
+using VDS.RDF.Writing;
 
 namespace VDS.RDF.Update.Protocol
 {
@@ -182,6 +184,47 @@ namespace VDS.RDF.Update.Protocol
             g.NamespaceMap.Clear();
 
             return g;
+        }
+
+        /// <summary>
+        /// Sends the given Graph to the Client via the HTTP Response
+        /// </summary>
+        /// <param name="context">HTTP Context</param>
+        /// <param name="g">Graph to send</param>
+        protected void SendResultsToClient(HttpContext context, IGraph g)
+        {
+            IRdfWriter writer;
+            String ctype;
+
+            //Look up the MIME Type Definition - if none use GetWriter instead
+            MimeTypeDefinition definition = MimeTypesHelper.GetDefinitions(context.Request.AcceptTypes).FirstOrDefault(d => d.CanWriteRdf);
+            if (definition != null)
+            {
+                writer = definition.GetRdfWriter();
+                ctype = definition.CanonicalMimeType;
+            }
+            else
+            {
+                writer = MimeTypesHelper.GetWriter(context.Request.AcceptTypes, out ctype);
+            }
+
+            //Set up the Writer
+            if (writer is ICompressingWriter)
+            {
+                ((ICompressingWriter)writer).CompressionLevel = Options.DefaultCompressionLevel;
+            }
+
+            //Send Content to Client
+            context.Response.ContentType = ctype;
+            if (definition != null)
+            {
+                context.Response.ContentEncoding = definition.Encoding;
+                writer.Save(g, new StreamWriter(context.Response.OutputStream, definition.Encoding));
+            }
+            else
+            {
+                writer.Save(g, new StreamWriter(context.Response.OutputStream));
+            }
         }
 
         /// <summary>

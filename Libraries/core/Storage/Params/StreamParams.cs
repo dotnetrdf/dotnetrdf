@@ -77,11 +77,23 @@ namespace VDS.RDF.Storage.Params
         /// Creates a new set of Parameters
         /// </summary>
         /// <param name="stream">Stream to use</param>
-        /// <remarks>If created using this constructor then theses Parameters are one use only</remarks>
+        /// <remarks>If created using this constructor then these Parameters are one use only</remarks>
         public StreamParams(Stream stream)
         {
             if (stream == null) throw new ArgumentNullException("stream", "Cannot use a null Stream");
             this._input = stream;
+        }
+
+        /// <summary>
+        /// Creates a new set of Parameters
+        /// </summary>
+        /// <param name="stream">Stream to use</param>
+        /// <param name="encoding">Encoding of the Stream</param>
+        /// <remarks>If created using this constructor then these Parameters are one use only</remarks>
+        public StreamParams(Stream stream, Encoding encoding)
+            : this(stream)
+        {
+            this._encoding = encoding;
         }
 
         /// <summary>
@@ -93,7 +105,7 @@ namespace VDS.RDF.Storage.Params
             {
                 if (this._input != null)
                 {
-                    return new StreamReader(this._input);
+                    return new StreamReader(this._input, this._encoding);
                 }
                 else
                 {
@@ -111,7 +123,7 @@ namespace VDS.RDF.Storage.Params
             {
                 if (this._input != null)
                 {
-                    return new StreamWriter(this._input);
+                    return new StreamWriter(this._input, this._encoding);
                 }
                 else
                 {

@@ -38,6 +38,7 @@ terms.
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Text;
 using System.Web;
@@ -83,10 +84,7 @@ namespace VDS.RDF.Update.Protocol
             {
                 //Send the Graph to the user
                 IGraph g = this.GetGraph(graphUri);
-                String ctype;
-                IRdfWriter writer = MimeTypesHelper.GetWriter(context.Request.AcceptTypes, out ctype);
-                context.Response.ContentType = ctype;
-                writer.Save(g, new StreamWriter(context.Response.OutputStream));
+                this.SendResultsToClient(context, g);
             }
             catch (RdfQueryException)
             {

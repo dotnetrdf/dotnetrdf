@@ -47,8 +47,6 @@ using VDS.RDF.Update.Protocol;
 using VDS.RDF.Web.Configuration.Protocol;
 using VDS.RDF.Writing;
 
-//TODO: Send appropriate Content Encoding
-
 namespace VDS.RDF.Web
 {
     /// <summary>
