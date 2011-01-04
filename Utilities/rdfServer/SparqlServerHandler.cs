@@ -296,7 +296,7 @@ namespace rdfServer
                 {
                     //Default to SPARQL XML Results Format if no accept header
                     sparqlwriter = new SparqlXmlWriter();
-                    ctype = MimeTypesHelper.Sparql[0];
+                    ctype = "application/sparql-results+xml";
                 }
                 context.Response.ContentType = ctype;
                 if (sparqlwriter is IHtmlWriter)

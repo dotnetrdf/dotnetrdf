@@ -1,2 +1,4 @@
 cd Libraries/core/
+echo "Starting Mono Compile"
 gmcs -out:bin\Debug\dotNetRDF.Mono.dll -t:library -v -recurse:*.cs -resource:Storage\DropMySQLStoreTables.sql,VDS.RDF.Storage.DropMySQLStoreTables.sql -resource:Storage\DropMSSQLStoreTables.sql,VDS.RDF.Storage.DropMSSQLStoreTables.sql -resource:Storage\CreateMSSQLStoreTables.sql,VDS.RDF.Storage.CreateMSSQLStoreTables.sql -resource:Storage\UpgradeMSSQLStore_010_011.sql,VDS.RDF.Storage.UpgradeMSSQLStore_010_011.sql -resource:Storage\CreateMySQLStoreTables.sql,VDS.RDF.Storage.CreateMySQLStoreTables.sql -resource:Configuration\configuration.ttl,VDS.RDF.Configuration.configuration.ttl -r:System.Data,System.Web,System.Configuration,Newtonsoft.Json,virtado3,MySql.Data,HtmlAgilityPack -lib:bin\Debug -nowarn:0659,0628,0169,0414,0219,0162 -define:MONO,DEBUG > mono-compile-log.txt 2>&1
+echo "Finished Mono Compile"

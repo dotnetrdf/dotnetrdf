@@ -632,17 +632,7 @@ namespace rdfConvert
 
         public static bool IsValidMimeType(String mimeType)
         {
-            if (MimeTypesHelper.Csv.Contains(mimeType) ||
-                MimeTypesHelper.Html.Contains(mimeType) ||
-                MimeTypesHelper.Json.Contains(mimeType) ||
-                MimeTypesHelper.Notation3.Contains(mimeType) ||
-                MimeTypesHelper.NQuads.Contains(mimeType) ||
-                MimeTypesHelper.NTriples.Contains(mimeType) ||
-                MimeTypesHelper.RdfXml.Contains(mimeType) ||
-                MimeTypesHelper.TriG.Contains(mimeType) ||
-                MimeTypesHelper.TriX.Contains(mimeType) ||
-                MimeTypesHelper.Tsv.Contains(mimeType) ||
-                MimeTypesHelper.Turtle.Contains(mimeType))
+            if (MimeTypesHelper.GetDefinitions(mimeType).Any())
             {
                 return true;
             }

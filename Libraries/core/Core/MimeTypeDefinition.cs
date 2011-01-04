@@ -96,7 +96,7 @@ namespace VDS.RDF
             this.RdfDatasetParserType = rdfDatasetParserType;
             this.SparqlResultsParserType = sparqlResultsParserType;
             this.RdfWriterType = rdfWriterType;
-            this.RdfDatasetParserType = rdfDatasetWriterType;
+            this.RdfDatasetWriterType = rdfDatasetWriterType;
             this.SparqlResultsWriterType = sparqlResultsWriterType;
         }
 
@@ -173,7 +173,7 @@ namespace VDS.RDF
         /// <summary>
         /// Gets the Canonical MIME Type that should be used
         /// </summary>
-        public String CanonicalType
+        public String CanonicalMimeType
         {
             get
             {
@@ -441,7 +441,7 @@ namespace VDS.RDF
                 }
                 else
                 {
-                    if (EnsureInterface("SPARQL Results Writer", value, typeof(IRdfReader)))
+                    if (EnsureInterface("SPARQL Results Writer", value, typeof(ISparqlResultsWriter)))
                     {
                         this._sparqlResultsWriterType = value;
                     }
@@ -479,6 +479,30 @@ namespace VDS.RDF
             get
             {
                 return (this._sparqlResultsParserType != null);
+            }
+        }
+
+        public bool CanWriteRdf
+        {
+            get
+            {
+                return (this._rdfWriterType != null);
+            }
+        }
+
+        public bool CanWriteRdfDatasets
+        {
+            get
+            {
+                return (this._rdfDatasetWriterType != null);
+            }
+        }
+
+        public bool CanWriteSparqlResults
+        {
+            get
+            {
+                return (this._sparqlResultsWriterType != null);
             }
         }
 

@@ -48,7 +48,7 @@ namespace rdfEditor
                         this._parser = MimeTypesHelper.GetParser(response.ContentType);
                         if (this._parser is NTriplesParser)
                         {
-                            if (!MimeTypesHelper.NTriples.Contains(response.ContentType))
+                            if (!response.ContentType.Equals("text/plain"))
                             {
                                 this._parser = null;
                             }

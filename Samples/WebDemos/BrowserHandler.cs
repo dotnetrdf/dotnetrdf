@@ -47,7 +47,7 @@ namespace WebDemos
                 writer.Stylesheet = "../sparql.css";
                 writer.UriPrefix = "?uri=";
 
-                context.Response.ContentType = MimeTypesHelper.Html[0];
+                context.Response.ContentType = "text/html";
                 writer.Save(g, context.Response.Output);
             }
         }

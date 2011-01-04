@@ -101,8 +101,14 @@ namespace VDS.RDF.Web
 
             try
             {
-                String ctype;
-                IRdfWriter writer = MimeTypesHelper.GetWriter(context.Request.AcceptTypes, out ctype);
+                //Retrieve an appropriate MIME Type Definition which can be used to get a Writer
+                MimeTypeDefinition definition = MimeTypesHelper.GetDefinitions(context.Request.AcceptTypes).FirstOrDefault(d => d.CanWriteRdf);
+                if (definition == null) throw new RdfWriterSelectionException("No MIME Type Definitions have a registered RDF Writer for the MIME Types specified in the HTTP Accept Header");
+                IRdfWriter writer = definition.GetRdfWriter();
+                if (writer is ICompressingWriter)
+                {
+                    ((ICompressingWriter)writer).CompressionLevel = Options.DefaultCompressionLevel;
+                }
 
                 IGraph g = this.ProcessGraph(this._config.Graph);
                 if (this._config.ETag == null)
@@ -111,7 +117,7 @@ namespace VDS.RDF.Web
                 }
 
                 //Serve the Graph to the User
-                context.Response.ContentType = ctype;
+                context.Response.ContentType = definition.CanonicalMimeType;
                 HandlerHelper.AddCachingHeaders(context, this._config.ETag, null);
                 if (writer is IHtmlWriter)
                 {
@@ -120,8 +126,8 @@ namespace VDS.RDF.Web
                         ((IHtmlWriter)writer).Stylesheet = this._config.Stylesheet;
                     }
                 }
-                //TODO: Send appropriate Content Encoding
-                writer.Save(g, new StreamWriter(context.Response.OutputStream));
+                context.Response.ContentEncoding = definition.Encoding;
+                writer.Save(g, new StreamWriter(context.Response.OutputStream, definition.Encoding));
 
                 this.UpdateConfig(context);
             }

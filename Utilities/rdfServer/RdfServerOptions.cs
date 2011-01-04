@@ -248,14 +248,10 @@ namespace rdfServer
             }
 
             //Add MIME Type Mappings for RDF File Types
-            server.AddMimeType(".rdf", MimeTypesHelper.GetCanonicalType(MimeTypesHelper.RdfXml));
-            server.AddMimeType(".nt", MimeTypesHelper.GetCanonicalType(MimeTypesHelper.NTriples));
-            server.AddMimeType(".ttl", MimeTypesHelper.GetCanonicalType(MimeTypesHelper.Turtle));
-            server.AddMimeType(".n3", MimeTypesHelper.GetCanonicalType(MimeTypesHelper.Notation3));
-            server.AddMimeType(".json", MimeTypesHelper.GetCanonicalType(MimeTypesHelper.Json));
-            server.AddMimeType(".trig", MimeTypesHelper.GetCanonicalType(MimeTypesHelper.TriG));
-            server.AddMimeType(".nq", MimeTypesHelper.GetCanonicalType(MimeTypesHelper.NQuads));
-            server.AddMimeType(".srx", MimeTypesHelper.GetCanonicalType(MimeTypesHelper.Sparql));
+            foreach (MimeTypeDefinition definition in MimeTypesHelper.Definitions)
+            {
+                server.AddMimeType(definition.CanonicalFileExtension, definition.CanonicalMimeType);
+            }
 
             //Setup Logging appropriately
             if (this.LogFile != null)

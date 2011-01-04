@@ -55,7 +55,133 @@ namespace VDS.RDF
 
         internal const String ValidMimeTypePattern = @"[\w\-]+/\w+(-\w+)*";
 
+        #region Static State i.e. Default MIME Type Definitions
+
+        private static List<MimeTypeDefinition> _mimeTypes;
+        private static bool _init = false;
+
+        /// <summary>
+        /// Initialises the MIME Type definitions
+        /// </summary>
+        private static void Init()
+        {
+            if (!_init)
+            {
+                _mimeTypes = new List<MimeTypeDefinition>();
+                
+                //Define RDF/XML
+                _mimeTypes.Add(new MimeTypeDefinition("RDF/XML", RdfXml, new String[] { DefaultRdfXmlExtension, ".owl" }, typeof(RdfXmlParser), null, null, typeof(RdfXmlWriter), null, null));                
+
+                //Define NTriples
+                MimeTypeDefinition ntriples = new MimeTypeDefinition("NTriples", NTriples, new String[] { DefaultNTriplesExtension }, typeof(NTriplesParser), null, null, typeof(NTriplesWriter), null, null);
+#if !SILVERLIGHT
+                ntriples.Encoding = Encoding.ASCII;
+#endif
+                _mimeTypes.Add(ntriples);
+
+                //Define Turtle
+                _mimeTypes.Add(new MimeTypeDefinition("Turtle", Turtle, new String[] { DefaultTurtleExtension }, typeof(TurtleParser), null, null, typeof(CompressingTurtleWriter), null, null));
+
+                //Define Notation 3
+                _mimeTypes.Add(new MimeTypeDefinition("Notation 3", Notation3, new String[] { DefaultNotation3Extension }, typeof(Notation3Parser), null, null, typeof(Notation3Writer), null, null));
+
+                //Define RDF/JSON - include SPARQL Parsers to support servers that send back incorrect MIME Type for SPARQL JSON Results
+                _mimeTypes.Add(new MimeTypeDefinition("RDF/JSON", Json, new String[] { DefaultJsonExtension }, typeof(RdfJsonParser), null, typeof(SparqlJsonParser), typeof(RdfJsonWriter), null, typeof(SparqlJsonWriter)));
+
+                //Define NQuads
+                _mimeTypes.Add(new MimeTypeDefinition("NQuads", NQuads, new String[] { DefaultNQuadsExtension }, null, typeof(NQuadsParser), null, null, typeof(NQuadsWriter), null));
+
+                //Define TriG
+                _mimeTypes.Add(new MimeTypeDefinition("TriG", TriG, new String[] { DefaultTriGExtension }, null, typeof(TriGParser), null, null, typeof(TriGWriter), null));
+
+                //Define TriX
+                _mimeTypes.Add(new MimeTypeDefinition("TriX", TriX, new String[] { DefaultTriXExtension }, null, typeof(TriXParser), null, null, typeof(TriXWriter), null));
+
+                //Define SPARQL Results XML
+                _mimeTypes.Add(new MimeTypeDefinition("SPARQL Results XML", SparqlXml, new String[] { DefaultSparqlXmlExtension }, null, null, typeof(SparqlXmlParser), null, null, typeof(SparqlXmlWriter)));
+
+                //Define SPARQL Results JSON
+                _mimeTypes.Add(new MimeTypeDefinition("SPARQL Results JSON", SparqlJson, new String[] { DefaultJsonExtension }, null, null, typeof(SparqlJsonParser), null, null, typeof(SparqlJsonWriter)));
+
+                //Define CSV
+                _mimeTypes.Add(new MimeTypeDefinition("CSV", Csv, new String[] { DefaultCsvExtension }, null, null, null, typeof(CsvWriter), typeof(CsvStoreWriter), typeof(SparqlCsvWriter)));
+
+                //Define TSV
+                _mimeTypes.Add(new MimeTypeDefinition("TSV", Tsv, new String[] { DefaultTsvExtension }, null, null, null, typeof(TsvWriter), typeof(TsvStoreWriter), typeof(SparqlTsvWriter)));
+
+                //Define HTML
+                _mimeTypes.Add(new MimeTypeDefinition("HTML", Html, new String[] { DefaultHtmlExtension, DefaultXHtmlExtension, ".htm" }, typeof(RdfAParser), null, null, typeof(HtmlWriter), null, typeof(SparqlHtmlWriter)));
+
+                _init = true;
+            }
+        }
+
+        #endregion
+
         #region MIME Types
+
+        /// <summary>
+        /// Gets the available MIME Type Definitions
+        /// </summary>
+        public static IEnumerable<MimeTypeDefinition> Definitions
+        {
+            get
+            {
+                if (!_init) Init();
+
+                return _mimeTypes;
+            }
+        }
+
+        /// <summary>
+        /// Adds a new MIME Type Definition
+        /// </summary>
+        /// <param name="definition">MIME Type Definition</param>
+        public static void AddDefinition(MimeTypeDefinition definition)
+        {
+            if (!_init) Init();
+            _mimeTypes.Add(definition);
+        }
+
+        /// <summary>
+        /// Gets all MIME Type definitions which support the given MIME Type
+        /// </summary>
+        /// <param name="mimeType">MIME Type</param>
+        /// <returns></returns>
+        public static IEnumerable<MimeTypeDefinition> GetDefinitions(String mimeType)
+        {
+            if (!_init) Init();
+
+            return (from definition in MimeTypesHelper.Definitions
+                    where definition.MimeTypes.Contains(mimeType)
+                    select definition);
+        }
+
+        /// <summary>
+        /// Gets all MIME Type definition which support the given MIME Types
+        /// </summary>
+        /// <param name="mimeTypes">MIME Types</param>
+        /// <returns></returns>
+        public static IEnumerable<MimeTypeDefinition> GetDefinitions(String[] mimeTypes)
+        {
+            if (!_init) Init();
+
+            if (mimeTypes.Length == 0) return Enumerable.Empty<MimeTypeDefinition>();
+
+            //Clean up the MIME Types to remove any Charset/Quality parameters
+            for (int i = 0; i < mimeTypes.Length; i++)
+            {
+                if (mimeTypes[i].Contains(";"))
+                {
+                    mimeTypes[i] = mimeTypes[i].Substring(0, mimeTypes[i].IndexOf(';'));
+                }
+            }
+
+            return (from mimeType in mimeTypes
+                    from definition in MimeTypesHelper.GetDefinitions(mimeType)
+                    select definition).Distinct();
+                    
+        }
 
         /// <summary>
         /// MIME Type for accept any content Type
@@ -70,72 +196,66 @@ namespace VDS.RDF
         /// <summary>
         /// MIME Types for Turtle
         /// </summary>
-        public static string[] Turtle = { "text/turtle", "application/x-turtle", "application/turtle" };
+        internal static string[] Turtle = { "text/turtle", "application/x-turtle", "application/turtle" };
 
         /// <summary>
         /// MIME Types for RDF/XML
         /// </summary>
-        public static string[] RdfXml = { "application/rdf+xml", "text/xml" };
+        internal static string[] RdfXml = { "application/rdf+xml", "text/xml" };
 
         /// <summary>
         /// MIME Types for Notation 3
         /// </summary>
-        public static string[] Notation3 = { "text/n3", "text/rdf+n3" };
+        internal static string[] Notation3 = { "text/n3", "text/rdf+n3" };
 
         /// <summary>
         /// MIME Types for NTriples
         /// </summary>
-        public static string[] NTriples = { "text/plain", "application/x-ntriples" };
+        internal static string[] NTriples = { "text/plain", "application/x-ntriples" };
 
         /// <summary>
         /// MIME Types for NQuads
         /// </summary>
-        public static string[] NQuads = { "text/x-nquads" };
+        internal static string[] NQuads = { "text/x-nquads" };
 
         /// <summary>
         /// MIME Types for TriG
         /// </summary>
-        public static string[] TriG = { "application/x-trig" };
+        internal static string[] TriG = { "application/x-trig" };
 
         /// <summary>
         /// MIME Types for TriX
         /// </summary>
-        public static string[] TriX = { "application/trix" };
+        internal static string[] TriX = { "application/trix" };
 
         /// <summary>
         /// MIME Types for RDF/Json
         /// </summary>
-        public static string[] Json = { "application/json", "text/json" };
+        internal static string[] Json = { "application/json", "text/json" };
 
         /// <summary>
         /// MIME Types for Sparql Result Sets
         /// </summary>
-        public static string[] Sparql = { "application/sparql-results+xml", "application/sparql-results+json" };
+        internal static string[] Sparql = { "application/sparql-results+xml", "application/sparql-results+json" };
+
+        internal static string[] SparqlXml = { "application/sparql-results+xml" };
+
+        internal static string[] SparqlJson = { "application/sparql-results+json" };
 
         /// <summary>
         /// MIME Types for CSV
         /// </summary>
-        public static string[] Csv = { "text/csv", "text/comma-separated-values" };
+        internal static string[] Csv = { "text/csv", "text/comma-separated-values" };
 
         /// <summary>
         /// MIME Types for TSV
         /// </summary>
-        public static string[] Tsv = { "text/tab-separated-values" };
+        internal static string[] Tsv = { "text/tab-separated-values" };
 
         /// <summary>
         /// MIME Types for HTML
         /// </summary>
-        public static string[] Html = { "text/html", "application/xhtml+xml" };
-
-        /// <summary>
-        /// Gets the Canonical Type from a set of MIME Types where it is assumed the first type in the list is the Canonical Type
-        /// </summary>
-        /// <param name="mimeTypes">MIME Types</param>
-        /// <returns></returns>
-        public static String GetCanonicalType(IEnumerable<String> mimeTypes)
-        {
-            return mimeTypes.First();
-        }
+        internal static string[] Html = { "text/html", "application/xhtml+xml" };
 
         #endregion
 
@@ -206,16 +326,19 @@ namespace VDS.RDF
         {
             get
             {
+                if (!_init) Init();
+
                 StringBuilder output = new StringBuilder();
-                output.Append(String.Join(",", RdfXml));
-                output.Append(",");
-                output.Append(String.Join(",", Notation3));
-                output.Append(",");
-                output.Append(String.Join(",", Turtle));
-                output.Append(",");
-                output.Append(String.Join(",", NTriples));
-                output.Append(",");
-                output.Append(String.Join(",", Json));
+
+                foreach (MimeTypeDefinition definition in MimeTypesHelper.Definitions)
+                {
+                    if (definition.CanParseRdf)
+                    {
+                        output.Append(String.Join(",", definition.MimeTypes.ToArray()));
+                        output.Append(',');
+                    }
+                }
+                if (output[output.Length - 1] == ',') output.Remove(output.Length - 1, 1);
                 output.Append(";q=0.9,*/*;q=0.8");
 
                 return output.ToString();
@@ -223,15 +346,26 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Builds the String for the HTTP Accept Header that should be used for querying Sparql Endpoints where the response will be a Sparql Result Set format
+        /// Builds the String for the HTTP Accept Header that should be used for querying Sparql Endpoints where the response will be a SPARQL Result Set format
         /// </summary>
         /// <returns></returns>
         public static String HttpSparqlAcceptHeader
         {
             get
             {
+                if (!_init) Init();
+
                 StringBuilder output = new StringBuilder();
-                output.Append(String.Join(",", Sparql));
+
+                foreach (MimeTypeDefinition definition in MimeTypesHelper.Definitions)
+                {
+                    if (definition.CanParseSparqlResults)
+                    {
+                        output.Append(String.Join(",", definition.MimeTypes.ToArray()));
+                        output.Append(',');
+                    }
+                }
+                if (output[output.Length - 1] == ',') output.Remove(output.Length - 1, 1);
                 output.Append(";q=1.0");
 
                 return output.ToString();
@@ -239,25 +373,26 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Builds the String for the HTTP Accept Header that should be used for making HTTP Requests where the returned data may be RDF or a Sparql Result Set
+        /// Builds the String for the HTTP Accept Header that should be used for making HTTP Requests where the returned data may be RDF or a SPARQL Result Set
         /// </summary>
         /// <returns></returns>
         public static String HttpRdfOrSparqlAcceptHeader
         {
             get
             {
+                if (!_init) Init();
+
                 StringBuilder output = new StringBuilder();
-                output.Append(String.Join(",", RdfXml));
-                output.Append(",");
-                output.Append(String.Join(",", Notation3));
-                output.Append(",");
-                output.Append(String.Join(",", Turtle));
-                output.Append(",");
-                output.Append(String.Join(",", NTriples));
-                output.Append(",");
-                output.Append(String.Join(",", Json));
-                output.Append(",");
-                output.Append(String.Join(",", Sparql));
+
+                foreach (MimeTypeDefinition definition in MimeTypesHelper.Definitions)
+                {
+                    if (definition.CanParseRdf || definition.CanParseSparqlResults)
+                    {
+                        output.Append(String.Join(",", definition.MimeTypes.ToArray()));
+                        output.Append(',');
+                    }
+                }
+                if (output[output.Length - 1] == ',') output.Remove(output.Length - 1, 1);
                 output.Append(";q=0.9,*/*;q=0.8");
 
                 return output.ToString();
@@ -271,12 +406,19 @@ namespace VDS.RDF
         {
             get
             {
+                if (!_init) Init();
+
                 StringBuilder output = new StringBuilder();
-                output.Append(String.Join(",", TriG));
-                output.Append(",");
-                output.Append(String.Join(",", NQuads));
-                output.Append(",");
-                output.Append(String.Join(",", TriX));
+
+                foreach (MimeTypeDefinition definition in MimeTypesHelper.Definitions)
+                {
+                    if (definition.CanParseRdfDatasets)
+                    {
+                        output.Append(String.Join(",", definition.MimeTypes.ToArray()));
+                        output.Append(',');
+                    }
+                }
+                if (output[output.Length - 1] == ',') output.Remove(output.Length - 1, 1);
                 output.Append(";q=1.0");
 
                 return output.ToString();
@@ -290,22 +432,19 @@ namespace VDS.RDF
         {
             get
             {
+                if (!_init) Init();
+
                 StringBuilder output = new StringBuilder();
-                output.Append(String.Join(",", RdfXml));
-                output.Append(",");
-                output.Append(String.Join(",", Notation3));
-                output.Append(",");
-                output.Append(String.Join(",", Turtle));
-                output.Append(",");
-                output.Append(String.Join(",", NTriples));
-                output.Append(",");
-                output.Append(String.Join(",", Json));
-                output.Append(",");
-                output.Append(String.Join(",", TriG));
-                output.Append(",");
-                output.Append(String.Join(",", NQuads));
-                output.Append(",");
-                output.Append(String.Join(",", TriX));
+
+                foreach (MimeTypeDefinition definition in MimeTypesHelper.Definitions)
+                {
+                    if (definition.CanParseRdf || definition.CanParseRdfDatasets)
+                    {
+                        output.Append(String.Join(",", definition.MimeTypes.ToArray()));
+                        output.Append(',');
+                    }
+                }
+                if (output[output.Length - 1] == ',') output.Remove(output.Length - 1, 1);
                 output.Append(";q=0.9,*/*;q=0.8");
 
                 return output.ToString();
@@ -365,34 +504,17 @@ namespace VDS.RDF
         /// <returns></returns>
         public static String CustomHttpAcceptHeader(IRdfReader parser)
         {
-            if (parser is NTriplesParser)
+            if (!_init) Init();
+
+            Type requiredType = parser.GetType();
+            foreach (MimeTypeDefinition definition in MimeTypesHelper.Definitions)
             {
-                return String.Join(",", NTriples);
+                if (requiredType.Equals(definition.RdfParserType))
+                {
+                    return String.Join(",", definition.MimeTypes.ToArray());
+                }
             }
-            else if (parser is TurtleParser)
-            {
-                return String.Join(",", Turtle);
-            }
-            else if (parser is Notation3Parser)
-            {
-                return String.Join(",", Notation3);
-            }
-            else if (parser is RdfXmlParser)
-            {
-                return String.Join(",", RdfXml);
-            }
-            else if (parser is RdfAParser)
-            {
-                return String.Join(",", MimeTypesHelper.Html);
-            }
-            else if (parser is RdfJsonParser)
-            {
-                return String.Join(",", MimeTypesHelper.Json);
-            }
-            else
-            {
-                return MimeTypesHelper.HttpAcceptHeader;
-            }
+            return MimeTypesHelper.HttpAcceptHeader;
         }
 
         /// <summary>
@@ -402,22 +524,17 @@ namespace VDS.RDF
         /// <returns></returns>
         public static String CustomHttpAcceptHeader(IStoreReader parser)
         {
-            if (parser is NQuadsParser)
+            if (!_init) Init();
+
+            Type requiredType = parser.GetType();
+            foreach (MimeTypeDefinition definition in MimeTypesHelper.Definitions)
             {
-                return String.Join(",", NQuads);
+                if (requiredType.Equals(definition.RdfDatasetParserType))
+                {
+                    return String.Join(",", definition.MimeTypes.ToArray());
+                }
             }
-            else if (parser is TriGParser)
-            {
-                return String.Join(",", TriG);
-            }
-            else if (parser is TriXParser)
-            {
-                return String.Join(",", TriX);
-            }
-            else
-            {
-                return MimeTypesHelper.HttpRdfDatasetAcceptHeader;
-            }
+            return MimeTypesHelper.HttpRdfDatasetAcceptHeader;
         }
 
         /// <summary>
@@ -427,7 +544,12 @@ namespace VDS.RDF
         {
             get
             {
-                return RdfXml.Concat(NTriples).Concat(Turtle).Concat(Notation3).Concat(Json);
+                if (!_init) Init();
+
+                return (from definition in MimeTypesHelper.Definitions
+                        where definition.CanParseRdf
+                        from mimeType in definition.MimeTypes
+                        select mimeType);
             }
         }
 
@@ -438,7 +560,12 @@ namespace VDS.RDF
         {
             get
             {
-                return Sparql;
+                if (!_init) Init();
+
+                return (from definition in MimeTypesHelper.Definitions
+                        where definition.CanParseSparqlResults
+                        from mimeType in definition.MimeTypes
+                        select mimeType);
             }
         }
 
@@ -449,7 +576,12 @@ namespace VDS.RDF
         {
             get
             {
-                return SupportedRdfMimeTypes.Concat(SupportedSparqlMimeTypes);
+                if (!_init) Init();
+
+                return (from definition in MimeTypesHelper.Definitions
+                        where definition.CanParseRdf || definition.CanParseSparqlResults
+                        from mimeType in definition.MimeTypes
+                        select mimeType);
             }
         }
 
@@ -474,7 +606,6 @@ namespace VDS.RDF
         public static IRdfWriter GetWriter(String[] ctypes, out String contentType)
         {
             String type;
-            bool htmlFallback = false;
 
             foreach (String ctype in ctypes)
             {
@@ -489,71 +620,26 @@ namespace VDS.RDF
                 }
                 type = type.ToLowerInvariant();
 
-
-                if (MimeTypesHelper.Notation3.Contains(type))
+                //See if there are any MIME Type Definitions for this MIME Type
+                foreach (MimeTypeDefinition definition in MimeTypesHelper.GetDefinitions(type))
                 {
-                    //Client accepts Notation 3
-                    contentType = MimeTypesHelper.Notation3[0];
-                    return new Notation3Writer(Options.DefaultCompressionLevel);
-                }
-                else if (MimeTypesHelper.Turtle.Contains(type))
-                {
-                    //Client accepts Turtle
-                    contentType = MimeTypesHelper.Turtle[0];
-                    return new CompressingTurtleWriter(Options.DefaultCompressionLevel);
-                }
-                else if (MimeTypesHelper.RdfXml.Contains(type))
-                {
-                    //Client accepts RDF/XML
-                    contentType = MimeTypesHelper.RdfXml[0];
-#if !NO_XMLDOM
-                    return new FastRdfXmlWriter();
-#else
-                    return new RdfXmlWriter();
-#endif
-                }
-                else if (MimeTypesHelper.NTriples.Contains(type))
-                {
-                    //Client accepts NTriples
-                    contentType = MimeTypesHelper.NTriples[0];
-                    return new NTriplesWriter();
-                }
-                else if (MimeTypesHelper.Json.Contains(type))
-                {
-                    //Client accepts RDF/Json
-                    contentType = MimeTypesHelper.Json[0];
-                    return new RdfJsonWriter();
-                }
-                else if (MimeTypesHelper.Csv.Contains(type))
-                {
-                    //Client accepts CSV
-                    contentType = MimeTypesHelper.Csv[0];
-                    return new CsvWriter();
-                }
-                else if (MimeTypesHelper.Tsv.Contains(type))
-                {
-                    //Client accepts TSV
-                    contentType = MimeTypesHelper.Tsv[0];
-                    return new TsvWriter();
-                }
-                else if (MimeTypesHelper.Html.Contains(type))
-                {
-                    //Client accepts HTML
-                    htmlFallback = true;
+                    //If so return the Writer from the first match found
+                    if (definition.CanWriteRdf)
+                    {
+                        IRdfWriter writer = definition.GetRdfWriter();
+                        if (writer is ICompressingWriter)
+                        {
+                            ((ICompressingWriter)writer).CompressionLevel = Options.DefaultCompressionLevel;
+                        }
+                        contentType = definition.CanonicalMimeType;
+                        return writer;
+                    }
                 }
             }
 
-            //Default to NTriples unless the User accepted HTML explicitly
-            if (htmlFallback)
-            {
-                contentType = MimeTypesHelper.Html[0];
-                return new HtmlWriter();
-            }
-            else
-            {
-                contentType = MimeTypesHelper.NTriples[0];
-                return new NTriplesWriter();
-            }
+            //Default to NTriples
+            contentType = MimeTypesHelper.NTriples[0];
+            return new NTriplesWriter();
         }
 
         /// <summary>
@@ -612,42 +698,17 @@ namespace VDS.RDF
             {
                 contentType = contentType.Substring(0, contentType.IndexOf(";"));
             }
+            contentType = contentType.ToLowerInvariant();
 
-            //Select a Parser based on Content Type
-            if (MimeTypesHelper.RdfXml.Contains(contentType))
+            foreach (MimeTypeDefinition definition in MimeTypesHelper.GetDefinitions(contentType))
             {
-                //XML/RDF
-                return new RdfXmlParser();
+                if (definition.CanParseRdf)
+                {
+                    return definition.GetRdfParser();
+                }
             }
-            else if (MimeTypesHelper.Turtle.Contains(contentType))
-            {
-                //Turtle
-                return new TurtleParser();
-            }
-            else if (MimeTypesHelper.Notation3.Contains(contentType))
-            {
-                //Notation 3 (N3)
-                return new Notation3Parser();
-            }
-            else if (MimeTypesHelper.NTriples.Contains(contentType))
-            {
-                //NTriples
-                return new NTriplesParser();
-            }
-            else if (MimeTypesHelper.Json.Contains(contentType))
-            {
-                //RDF/Json
-                return new RdfJsonParser();
-            }
-            else if (MimeTypesHelper.Html.Contains(contentType))
-            {
-                //May be RDFa embedded in the HTML
-                return new RdfAParser();
-            }
-            else
-            {
-                throw new RdfParserSelectionException("The Library does not contain a Parser which understands RDF Graphs in the format '" + contentType + "'");
-            }
+
+            throw new RdfParserSelectionException("The Library does not contain a Parser which understands RDF Graphs in the format '" + contentType + "'");
         }
 
         /// <summary>
@@ -662,26 +723,17 @@ namespace VDS.RDF
             {
                 contentType = contentType.Substring(0, contentType.IndexOf(";"));
             }
+            contentType = contentType.ToLowerInvariant();
 
-            if (MimeTypesHelper.Sparql.Contains(contentType))
+            foreach (MimeTypeDefinition definition in MimeTypesHelper.Definitions)
             {
-                if (MimeTypesHelper.Sparql[1].Equals(contentType))
+                if (definition.CanParseSparqlResults)
                 {
-                    return new SparqlJsonParser();
-                }
-                else if (MimeTypesHelper.Sparql[0].Equals(contentType))
-                {
-                    return new SparqlXmlParser();
-                }
-                else
-                {
-                    throw new RdfParserSelectionException("The Library does not contain a Parser which understands SPARQL Results in the format '" + contentType + "'");
+                    return definition.GetSparqlResultsParser();
                 }
             }
-            else
-            {
-                throw new RdfParserSelectionException("The Library does not contain a Parser which understands SPARQL Results in the format '" + contentType + "'");
-            }
+
+            throw new RdfParserSelectionException("The Library does not contain a Parser which understands SPARQL Results in the format '" + contentType + "'");
         }
 
         /// <summary>
@@ -697,6 +749,7 @@ namespace VDS.RDF
             {
                 contentType = contentType.Substring(0, contentType.IndexOf(";"));
             }
+            contentType = contentType.ToLowerInvariant();
 
             try
             {
@@ -704,7 +757,7 @@ namespace VDS.RDF
             }
             catch (RdfParserSelectionException)
             {
-                if (allowPlainTextResults && contentType.Equals(MimeTypesHelper.NTriples[0]))
+                if (allowPlainTextResults && contentType.Equals("text/plain"))
                 {
                     return new SparqlBooleanParser();
                 }
@@ -739,43 +792,13 @@ namespace VDS.RDF
                 }
                 type = type.ToLowerInvariant();
 
-                if (MimeTypesHelper.Sparql.Contains(type))
+                foreach (MimeTypeDefinition definition in MimeTypesHelper.Definitions)
                 {
-#if !NO_XMLDOM
-                    //Client accepts some form of Sparql Result Set
-                    if (type == MimeTypesHelper.Sparql[0])
+                    if (definition.CanWriteSparqlResults)
                     {
-                        //Sparql XML Results Format
-                        contentType = MimeTypesHelper.Sparql[0];
-                        return new SparqlXmlWriter();
+                        contentType = definition.CanonicalMimeType;
+                        return definition.GetSparqlResultsWriter();
                     }
-                    else
-                    {
-#endif
-                        //Sparql JSON Results Format
-                        contentType = MimeTypesHelper.Sparql[1];
-                        return new SparqlJsonWriter();
-#if !NO_XMLDOM
-                    }
-#endif
-                }
-                else if (MimeTypesHelper.Csv.Contains(type))
-                {
-                    //CSV Format
-                    contentType = MimeTypesHelper.Csv[0];
-                    return new SparqlCsvWriter();
-                }
-                else if (MimeTypesHelper.Tsv.Contains(type))
-                {
-                    //TSV Format
-                    contentType = MimeTypesHelper.Tsv[0];
-                    return new SparqlTsvWriter();
-                }
-                else if (MimeTypesHelper.Json.Contains(type))
-                {
-                    //SPARQL JSON Results Format
-                    contentType = MimeTypesHelper.Sparql[1];
-                    return new SparqlJsonWriter();
                 }
             }
 
@@ -833,29 +856,17 @@ namespace VDS.RDF
             {
                 contentType = contentType.Substring(0, contentType.IndexOf(";"));
             }
+            contentType = contentType.ToLowerInvariant();
 
-            //Select a Parser based on Content Type
-            if (MimeTypesHelper.TriG.Contains(contentType))
+            foreach (MimeTypeDefinition definition in MimeTypesHelper.Definitions)
             {
-                //TriG
-                return new TriGParser();
+                if (definition.CanParseRdfDatasets)
+                {
+                    return definition.GetRdfDatasetParser();
+                }
             }
-#if !NO_XMLDOM
-            else if (MimeTypesHelper.TriX.Contains(contentType))
-            {
-                //TriX
-                return new TriXParser();
-            }
-#endif
-            else if (MimeTypesHelper.NQuads.Contains(contentType))
-            {
-                //NQuads
-                return new NQuadsParser();
-            }
-            else
-            {
-                throw new RdfParserSelectionException("The Library does not contain a Parser which understands RDF datasets in the format '" + contentType + "'");
-            }
+
+            throw new RdfParserSelectionException("The Library does not contain a Parser which understands RDF datasets in the format '" + contentType + "'");
         }
 
         /// <summary>
@@ -881,43 +892,13 @@ namespace VDS.RDF
                 }
                 type = type.ToLowerInvariant();
 
-                if (MimeTypesHelper.TriG.Contains(type))
+                foreach (MimeTypeDefinition definition in MimeTypesHelper.GetDefinitions(type))
                 {
-                    //Client accepts TriG
-                    contentType = MimeTypesHelper.TriG[0];
-                    return new TriGWriter();
-                }
-                else if (MimeTypesHelper.NQuads.Contains(type))
-                {
-                    //Client accepts NQuads
-                    contentType = MimeTypesHelper.NQuads[0];
-                    return new NQuadsWriter();
-                }
-#if !NO_XMLDOM
-                else if (MimeTypesHelper.TriX.Contains(type))
-                {
-                    //Client accepts TriX
-                    contentType = MimeTypesHelper.TriX[0];
-                    return new TriXWriter();
-                }
-#endif
-                else if (MimeTypesHelper.Csv.Contains(type))
-                {
-                    //Client accepts CSV
-                    contentType = MimeTypesHelper.Csv[0];
-                    return new CsvStoreWriter();
-                }
-                else if (MimeTypesHelper.Tsv.Contains(type))
-                {
-                    //Client accepts TSV
-                    contentType = MimeTypesHelper.Tsv[0];
-                    return new TsvStoreWriter();
-                }
-                else if (MimeTypesHelper.Any.Equals(type))
-                {
-                    //Default for Accept Any is TriG
-                    contentType = MimeTypesHelper.TriG[0];
-                    return new TriGWriter();
+                    if (definition.CanWriteRdfDatasets)
+                    {
+                        contentType = definition.CanonicalMimeType;
+                        return definition.GetRdfDatasetWriter();
+                    }
                 }
             }
 
@@ -1055,66 +1036,16 @@ namespace VDS.RDF
                 mimeType = mimeType.Substring(0, mimeType.IndexOf(";"));
             }
 
-            //Select a File Extension based on Content Type
-            if (MimeTypesHelper.RdfXml.Contains(mimeType))
+            if (!_init) Init();
+            foreach (MimeTypeDefinition definition in MimeTypesHelper.Definitions)
             {
-                //XML/RDF
-                return DefaultRdfXmlExtension;
+                if (definition.MimeTypes.Contains(mimeType))
+                {
+                    return definition.CanonicalFileExtension;
+                }
             }
-            else if (MimeTypesHelper.Turtle.Contains(mimeType))
-            {
-                //Turtle
-                return DefaultTurtleExtension;
-            }
-            else if (MimeTypesHelper.Notation3.Contains(mimeType))
-            {
-                //Notation 3 (N3)
-                return DefaultNotation3Extension;
-            }
-            else if (MimeTypesHelper.NTriples.Contains(mimeType))
-            {
-                //NTriples
-                return DefaultNTriplesExtension;
-            }
-            else if (MimeTypesHelper.Json.Contains(mimeType))
-            {
-                //RDF/Json
-                return DefaultJsonExtension;
-            }
-            else if (MimeTypesHelper.TriG.Contains(mimeType))
-            {
-                //TriG
-                return DefaultTriGExtension;
-            }
-            else if (MimeTypesHelper.NQuads.Contains(mimeType))
-            {
-                //NQuads
-                return DefaultNQuadsExtension;
-            }
-            else if (MimeTypesHelper.TriX.Contains(mimeType))
-            {
-                //TriX
-                return DefaultTriXExtension;
-            }
-            else if (MimeTypesHelper.Csv.Contains(mimeType))
-            {
-                //CSV
-                return DefaultCsvExtension;
-            }
-            else if (MimeTypesHelper.Tsv.Contains(mimeType))
-            {
-                //TSV
-                return DefaultTsvExtension;
-            }
-            else if (MimeTypesHelper.Html.Contains(mimeType))
-            {
-                //HTML
-                return DefaultHtmlExtension;
-            }
-            else
-            {
-                throw new RdfException("Unable to determine the appropriate File Extension for the MIME Type '" + mimeType + "'");
-            }
+
+            throw new RdfException("Unable to determine the appropriate File Extension for the MIME Type '" + mimeType + "'");
         }
 
         /// <summary>
@@ -1124,48 +1055,17 @@ namespace VDS.RDF
         /// <returns></returns>
         public static String GetFileExtension(IRdfWriter writer)
         {
-            if (writer is NTriplesWriter)
+            if (!_init) Init();
+            Type requiredType = writer.GetType();
+            foreach (MimeTypeDefinition definition in MimeTypesHelper.Definitions)
             {
-                return DefaultNTriplesExtension;
+                if (requiredType.Equals(definition.RdfWriterType))
+                {
+                    return definition.CanonicalFileExtension;
+                }
             }
-            else if (writer is TurtleWriter || writer is CompressingTurtleWriter)
-            {
-                return DefaultTurtleExtension;
-            }
-            else if (writer is Notation3Writer)
-            {
-                return DefaultNotation3Extension;
-            }
-            else if (writer is RdfXmlWriter)
-            {
-                return DefaultRdfXmlExtension;
-            }
-#if !NO_XMLDOM
-            else if (writer is RdfXmlTreeWriter || writer is FastRdfXmlWriter)
-            {
-                return DefaultRdfXmlExtension;
-            }
-#endif
-            else if (writer is RdfJsonWriter)
-            {
-                return DefaultJsonExtension;
-            }
-            else if (writer is CsvWriter)
-            {
-                return DefaultCsvExtension;
-            }
-            else if (writer is TsvWriter)
-            {
-                return DefaultTsvExtension;
-            }
-            else if (writer is HtmlWriter)
-            {
-                return DefaultHtmlExtension;
-            }
-            else
-            {
-                throw new RdfException("Unable to determine the appropriate File Extension for the RDF Writer '" + writer.GetType().ToString() + "'");
-            }
+
+            throw new RdfException("Unable to determine the appropriate File Extension for the RDF Writer '" + writer.GetType().ToString() + "'");
         }
 
         /// <summary>
@@ -1175,32 +1075,17 @@ namespace VDS.RDF
         /// <returns></returns>
         public static String GetFileExtension(IStoreWriter writer)
         {
-            if (writer is TriGWriter)
+            if (!_init) Init();
+            Type requiredType = writer.GetType();
+            foreach (MimeTypeDefinition definition in MimeTypesHelper.Definitions)
             {
-                return DefaultTriGExtension;
+                if (requiredType.Equals(definition.RdfDatasetWriterType))
+                {
+                    return definition.CanonicalFileExtension;
+                }
             }
-#if !NO_XMLDOM
-            else if (writer is TriXWriter)
-            {
-                return DefaultTriXExtension;
-            }
-#endif
-            else if (writer is NQuadsWriter)
-            {
-                return DefaultNQuadsExtension;
-            }
-            else if (writer is CsvStoreWriter)
-            {
-                return DefaultCsvExtension;
-            }
-            else if (writer is TsvStoreWriter)
-            {
-                return DefaultTsvExtension;
-            }
-            else
-            {
-                throw new RdfException("Unable to determine the appropriate File Extension for the Store Writer '" + writer.GetType().ToString() + "'");
-            }
+                
+            throw new RdfException("Unable to determine the appropriate File Extension for the Store Writer '" + writer.GetType().ToString() + "'");
         }
 
         #endregion
