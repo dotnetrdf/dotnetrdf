@@ -50,14 +50,20 @@ namespace VDS.RDF
     /// </remarks>
     public class MimeTypesHelper
     {
-        //REQ: Use a more extensible means of specifying MIME types and associate MIME types with Encodings where applicable
-        //REQ: Add the ability to specify custom parsers and writers for MIME types and/or override the defaults
-
+        /// <summary>
+        /// Constant for Valid MIME Types
+        /// </summary>
         internal const String ValidMimeTypePattern = @"[\w\-]+/\w+(-\w+)*";
 
-        #region Static State i.e. Default MIME Type Definitions
+        #region Default MIME Type Definitions
 
+        /// <summary>
+        /// List of MIME Type Definition
+        /// </summary>
         private static List<MimeTypeDefinition> _mimeTypes;
+        /// <summary>
+        /// Whether MIME Type Definitions have been initialised
+        /// </summary>
         private static bool _init = false;
 
         /// <summary>
@@ -111,6 +117,8 @@ namespace VDS.RDF
 
                 //Define HTML
                 _mimeTypes.Add(new MimeTypeDefinition("HTML", Html, new String[] { DefaultHtmlExtension, DefaultXHtmlExtension, ".htm" }, typeof(RdfAParser), null, null, typeof(HtmlWriter), null, typeof(SparqlHtmlWriter)));
+
+                //Q: Define SPARQL Query?
 
                 _init = true;
             }
@@ -234,12 +242,18 @@ namespace VDS.RDF
         internal static string[] Json = { "application/json", "text/json" };
 
         /// <summary>
-        /// MIME Types for Sparql Result Sets
+        /// MIME Types for SPARQL Result Sets
         /// </summary>
         internal static string[] Sparql = { "application/sparql-results+xml", "application/sparql-results+json" };
 
+        /// <summary>
+        /// MIME Types for SPARQL Results XML
+        /// </summary>
         internal static string[] SparqlXml = { "application/sparql-results+xml" };
 
+        /// <summary>
+        /// Mime Types for SPARQL Results JSON
+        /// </summary>
         internal static string[] SparqlJson = { "application/sparql-results+json" };
 
         /// <summary>

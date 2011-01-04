@@ -493,5 +493,18 @@ namespace VDS.RDF.Test
                 Console.WriteLine(t.ToString());
             }
         }
+
+        [TestMethod]
+        public void TurtleWithAndWithoutBOM()
+        {
+            TurtleParser parser = new TurtleParser();
+            Graph g = new Graph();
+            FileLoader.Load(g, "ttl-with-bom.ttl");
+
+            Graph h = new Graph();
+            FileLoader.Load(h, "ttl-without-bom.ttl");
+
+            Assert.AreEqual(g, h, "Graphs should be equal as presence (or lack thereof) of UTF-8 BOM should make no difference");
+        }
     }
 }

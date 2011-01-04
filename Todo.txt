@@ -33,11 +33,8 @@ REQ: Implement Base Dataset Handler
 REQ: Implement Dataset Handler
 REQ: Implement Dataset Handler Configuration
 REQ: Implement a HtmlWriter which prints a human readable Schema style document
-REQ: Use a more extensible means of specifying MIME types and associate MIME types with Encodings where applicable
-REQ: Add the ability to specify custom parsers and writers for MIME types and/or override the defaults
 HACK: Changed to an accept all for the time being to ensure works OK with DBPedia and Virtuoso
 HACK: Have to send only RDF/XML as the accept header due to a known issue with Talis Platform
-5 x TODO: Send appropriate Content Encoding
 TODO: Implement IsIpvFuture
 TODO: Add support for reading Base Uri from xml:base attributes in the file
 TODO: Implement type compatability detection for numeric types
