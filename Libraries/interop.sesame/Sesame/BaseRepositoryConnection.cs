@@ -41,7 +41,7 @@ namespace VDS.RDF.Interop.Sesame
 
         public virtual void add(info.aduna.iteration.Iteration i, params org.openrdf.model.Resource[] rarr)
         {
-            IEnumerable<Uri> contexts = rarr.ToContexts();
+            IEnumerable<Uri> contexts = rarr.ToContexts(this._mapping);
             Graph g = new Graph();
             g.Assert(i.ToTriples(this._mapping));
             this.AddInternal(g, contexts);
@@ -49,7 +49,7 @@ namespace VDS.RDF.Interop.Sesame
 
         public virtual void add(java.lang.Iterable i, params org.openrdf.model.Resource[] rarr)
         {
-            IEnumerable<Uri> contexts = rarr.ToContexts();
+            IEnumerable<Uri> contexts = rarr.ToContexts(this._mapping);
             Graph g = new Graph();
             g.Assert(new JavaIteratorWrapper<dotSesame.Statement>(i.iterator()).Select(s => SesameConverter.FromSesame(s, this._mapping)));
             this.AddInternal(g, contexts);
@@ -57,7 +57,7 @@ namespace VDS.RDF.Interop.Sesame
 
         public virtual void add(org.openrdf.model.Statement s, params org.openrdf.model.Resource[] rarr)
         {
-            IEnumerable<Uri> contexts = rarr.ToContexts();
+            IEnumerable<Uri> contexts = rarr.ToContexts(this._mapping);
             Graph g = new Graph();
             g.Assert(SesameConverter.FromSesame(s, this._mapping));
             this.AddInternal(g, contexts);
@@ -66,20 +66,20 @@ namespace VDS.RDF.Interop.Sesame
         public virtual void add(Reader r, string str, org.openrdf.rio.RDFFormat rdff, params org.openrdf.model.Resource[] rarr)
         {
             Object obj = SesameHelper.LoadFromReader(r, str, rdff);
-            IEnumerable<Uri> contexts = rarr.ToContexts();
+            IEnumerable<Uri> contexts = rarr.ToContexts(this._mapping);
             this.AddInternal(obj, contexts);
         }
 
         public virtual void add(InputStream @is, string str, org.openrdf.rio.RDFFormat rdff, params org.openrdf.model.Resource[] rarr)
         {
             Object obj = SesameHelper.LoadFromStream(@is, str, rdff);
-            IEnumerable<Uri> contexts = rarr.ToContexts();
+            IEnumerable<Uri> contexts = rarr.ToContexts(this._mapping);
             this.AddInternal(obj, contexts);
         }
 
         public virtual void add(org.openrdf.model.Resource r, org.openrdf.model.URI uri, org.openrdf.model.Value v, params org.openrdf.model.Resource[] rarr)
         {
-            IEnumerable<Uri> contexts = rarr.ToContexts();
+            IEnumerable<Uri> contexts = rarr.ToContexts(this._mapping);
             Graph g = new Graph();
             g.Assert(SesameConverter.FromSesameResource(r, this._mapping), SesameConverter.FromSesameUri(uri, this._mapping), SesameConverter.FromSesameValue(v, this._mapping));
             this.AddInternal(g, contexts);
@@ -88,14 +88,14 @@ namespace VDS.RDF.Interop.Sesame
         public virtual void add(File f, string str, org.openrdf.rio.RDFFormat rdff, params org.openrdf.model.Resource[] rarr)
         {
             Object obj = SesameHelper.LoadFromFile(f, str, rdff);
-            IEnumerable<Uri> contexts = rarr.ToContexts();
+            IEnumerable<Uri> contexts = rarr.ToContexts(this._mapping);
             this.AddInternal(obj, contexts);
         }
 
         public virtual void add(java.net.URL url, string str, org.openrdf.rio.RDFFormat rdff, params org.openrdf.model.Resource[] rarr)
         {
             Object obj = SesameHelper.LoadFromUri(url, str, rdff);
-            IEnumerable<Uri> contexts = rarr.ToContexts();
+            IEnumerable<Uri> contexts = rarr.ToContexts(this._mapping);
             this.AddInternal(obj, contexts);
         }
 
@@ -139,7 +139,7 @@ namespace VDS.RDF.Interop.Sesame
         public org.openrdf.repository.RepositoryResult getStatements(org.openrdf.model.Resource r, org.openrdf.model.URI uri, org.openrdf.model.Value v, bool b, params org.openrdf.model.Resource[] rarr)
         {
             SparqlParameterizedString queryString = new SparqlParameterizedString();
-            IEnumerable<Uri> contexts = rarr.ToContexts();
+            IEnumerable<Uri> contexts = rarr.ToContexts(this._mapping);
             if (contexts.Any())
             {
                 queryString.QueryText = "SELECT (?s AS ?subj) (?p AS ?pred) (?o AS ?obj)\n";
@@ -179,7 +179,7 @@ namespace VDS.RDF.Interop.Sesame
         {
             SparqlParameterizedString queryString = new SparqlParameterizedString();
             queryString.QueryText = "ASK";
-            foreach (Uri u in rarr.ToContexts())
+            foreach (Uri u in rarr.ToContexts(this._mapping))
             {
                 queryString.QueryText += "\nFROM <" + this._formatter.FormatUri(u) + ">";
             }
@@ -240,7 +240,7 @@ namespace VDS.RDF.Interop.Sesame
 
         public virtual void remove(info.aduna.iteration.Iteration i, params org.openrdf.model.Resource[] rarr)
         {
-            IEnumerable<Uri> contexts = rarr.ToContexts();
+            IEnumerable<Uri> contexts = rarr.ToContexts(this._mapping);
             Graph g = new Graph();
             g.Assert(i.ToTriples(this._mapping));
             this.RemoveInternal(g, contexts);
@@ -248,7 +248,7 @@ namespace VDS.RDF.Interop.Sesame
 
         public virtual void remove(java.lang.Iterable i, params org.openrdf.model.Resource[] rarr)
         {
-            IEnumerable<Uri> contexts = rarr.ToContexts();
+            IEnumerable<Uri> contexts = rarr.ToContexts(this._mapping);
             Graph g = new Graph();
             g.Assert(new JavaIteratorWrapper<dotSesame.Statement>(i.iterator()).Select(s => SesameConverter.FromSesame(s, this._mapping)));
             this.RemoveInternal(g, contexts);
@@ -256,7 +256,7 @@ namespace VDS.RDF.Interop.Sesame
 
         public virtual void remove(org.openrdf.model.Statement s, params org.openrdf.model.Resource[] rarr)
         {
-            IEnumerable<Uri> contexts = rarr.ToContexts();
+            IEnumerable<Uri> contexts = rarr.ToContexts(this._mapping);
             Graph g = new Graph();
             g.Assert(SesameConverter.FromSesame(s, this._mapping));
             this.RemoveInternal(g, contexts);

@@ -151,7 +151,7 @@ namespace VDS.RDF.Interop.Sesame
             }
             else
             {
-                foreach (Uri u in rarr.ToContexts())
+                foreach (Uri u in rarr.ToContexts(this._mapping))
                 {
                     if (this._store.HasGraph(u))
                     {
@@ -364,7 +364,7 @@ namespace VDS.RDF.Interop.Sesame
             }
             else
             {
-                List<Uri> contexts = rarr.ToContexts().Distinct().ToList();
+                List<Uri> contexts = rarr.ToContexts(this._mapping).Distinct().ToList();
                 int sum = 0;
                 foreach (Uri u in contexts)
                 {

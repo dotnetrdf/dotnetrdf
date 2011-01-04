@@ -256,7 +256,7 @@ namespace VDS.RDF.Interop.Sesame
             }
         }
 
-        internal static IEnumerable<Uri> ToContexts(this dotSesame.Resource[] contexts)
+        internal static IEnumerable<Uri> ToContexts(this dotSesame.Resource[] contexts, SesameMapping mapping)
         {
             if (contexts == null)
             {
@@ -273,7 +273,7 @@ namespace VDS.RDF.Interop.Sesame
                 {
                     if (r != null && r is dotSesame.URI)
                     {
-                        results.Add(((UriNode)SesameConverter.FromSesameResource(r, null)).Uri);
+                        results.Add(((UriNode)SesameConverter.FromSesameResource(r, mapping)).Uri);
                     }
                 }
                 return results;
