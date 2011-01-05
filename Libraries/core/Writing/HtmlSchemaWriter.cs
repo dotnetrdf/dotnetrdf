@@ -44,11 +44,15 @@ using System.Web.UI;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Writing.Contexts;
+using VDS.RDF.Writing.Formatting;
 
 //REQ:  Implement a HtmlWriter which prints a human readble Schema style document
 
 namespace VDS.RDF.Writing
 {
+    /// <summary>
+    /// HTML Schema Writer is a HTML Writer which writes a human readable description of a Schema/Ontology
+    /// </summary>
     public class HtmlSchemaWriter : IRdfWriter, IHtmlWriter
     {
         #region IHtmlWriter Members
@@ -213,6 +217,8 @@ namespace VDS.RDF.Writing
         /// <param name="context">Writer Context</param>
         private void GenerateOutput(HtmlWriterContext context)
         {
+            Object results;
+
             //Add the Namespaces we want to use later on
             context.QNameMapper.AddNamespace("owl", new Uri(NamespaceMapper.OWL));
             context.QNameMapper.AddNamespace("rdf", new Uri(NamespaceMapper.RDF));
@@ -224,11 +230,15 @@ namespace VDS.RDF.Writing
 
             //Find the Node that represents the Schema Ontology
             //Assumes there is exactly one thing given rdf:type owl:Ontology
-            UriNode ontology = context.Graph.CreateUriNode(NamespaceMapper.OWL + "Ontology");
-            UriNode rdfType = context.Graph.CreateUriNode(RdfSpecsHelper.RdfType);
-            UriNode rdfsLabel = context.Graph.CreateUriNode(NamespaceMapper.RDFS + "label");
+            UriNode ontology = context.Graph.CreateUriNode(new Uri(NamespaceMapper.OWL + "Ontology"));
+            UriNode rdfType = context.Graph.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
+            UriNode rdfsLabel = context.Graph.CreateUriNode(new Uri(NamespaceMapper.RDFS + "label"));
             INode ontoNode = context.Graph.GetTriplesWithPredicateObject(rdfType, ontology).Select(t => t.Subject).FirstOrDefault();
             INode ontoLabel = (ontoNode != null) ? context.Graph.GetTriplesWithSubjectPredicate(ontoNode, rdfsLabel).Select(t => t.Object).FirstOrDefault() : null;
+
+            //Stuff for formatting
+            //We'll use the Turtle Formatter to get nice QNames wherever possible
+            TurtleFormatter formatter = new TurtleFormatter(context.QNameMapper);
 
             //Page Header
             context.HtmlWriter.Write("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML+RDFa 1.0//EN\" \"http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd\">");
@@ -263,7 +273,7 @@ namespace VDS.RDF.Writing
             context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Body);
 
             //Title
-            context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.H3);
+            context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.H2);
             context.HtmlWriter.WriteEncodedText("Schema");
             if (ontoNode != null && ontoLabel != null)
             {
@@ -284,15 +294,389 @@ namespace VDS.RDF.Writing
                 SparqlParameterizedString getOntoDescrip = new SparqlParameterizedString();
                 getOntoDescrip.Namespaces = context.QNameMapper;
                 getOntoDescrip.QueryText = "SELECT * WHERE { @onto a owl:Ontology . OPTIONAL { @onto rdfs:comment ?description } . OPTIONAL { @onto vann:preferredNamespacePrefix ?nsPrefix ; vann:preferredNamespaceUri ?nsUri } . OPTIONAL { @onto dc:creator ?creator . ?creator (foaf:name | rdfs:label) ?creatorName } }";
+                getOntoDescrip.SetParameter("onto", ontoNode);
 
-                //TODO: Show the Namespace information for the Schema
+                try 
+                {
+                    results = context.Graph.ExecuteQuery(getOntoDescrip);
+                    if (results is SparqlResultSet)
+                    {
+                        if (!((SparqlResultSet)results).IsEmpty)
+                        {
+                            SparqlResult ontoInfo = ((SparqlResultSet)results)[0];
+
+                            //Show rdfs:comment on the Ontology
+                            if (ontoInfo.HasValue("description"))
+                            {
+                                INode descrip = ontoInfo["description"];
+                                if (descrip.NodeType == NodeType.Literal)
+                                {
+                                    context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.P);
+                                    context.HtmlWriter.Write(((LiteralNode)descrip).Value);
+                                    context.HtmlWriter.RenderEndTag();
+#if !NO_WEB
+                                    context.HtmlWriter.WriteLine();
+#endif
+                                }
+                            }
+
+                            //Show Author Information
+                            if (ontoInfo.HasValue("creator"))
+                            {
+                                INode author = ontoInfo["creator"];
+                                INode authorName = ontoInfo["creatorName"];
+                                context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.P);
+                                context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Em);
+                                context.HtmlWriter.WriteEncodedText("Schema created by ");
+                                if (author.NodeType == NodeType.Uri)
+                                {
+                                    context.HtmlWriter.AddAttribute("href", ((UriNode)author).Uri.ToString());
+                                    context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.A);
+                                }
+                                switch (authorName.NodeType)
+                                {
+                                    case NodeType.Uri:
+                                        context.HtmlWriter.WriteEncodedText(((UriNode)authorName).Uri.ToString());
+                                        break;
+                                    case NodeType.Literal:
+                                        context.HtmlWriter.WriteEncodedText(((LiteralNode)authorName).Value);
+                                        break;
+                                    default:
+                                        context.HtmlWriter.WriteEncodedText(authorName.ToString());
+                                        break;
+                                }
+                                if (author.NodeType == NodeType.Uri) context.HtmlWriter.RenderEndTag();
+                                context.HtmlWriter.RenderEndTag();
+                                context.HtmlWriter.RenderEndTag();
+#if !NO_WEB
+                                context.HtmlWriter.WriteLine();
+#endif
+                            }
+
+                            //Show the Namespace information for the Schema
+                            if (ontoInfo.HasValue("nsPrefix"))
+                            {
+                                if (ontoInfo["nsPrefix"].NodeType == NodeType.Literal && ontoInfo["nsUri"].NodeType == NodeType.Uri)
+                                {
+                                    //Add this QName to the QName Mapper so we can get nice QNames later on
+                                    String prefix = ((LiteralNode)ontoInfo["nsPrefix"]).Value;
+                                    context.QNameMapper.AddNamespace(prefix, ((UriNode)ontoInfo["nsUri"]).Uri);
+
+                                    context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.H4);
+                                    context.HtmlWriter.WriteEncodedText("Preferred Namespace Definition");
+                                    context.HtmlWriter.RenderEndTag();
+
+#if !NO_WEB
+                                    context.HtmlWriter.WriteLine();
+#endif
+
+                                    //RDF/XML Syntax
+                                    context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.H5);
+                                    context.HtmlWriter.WriteEncodedText("RDF/XML Syntax");
+                                    context.HtmlWriter.RenderEndTag();
+#if !NO_WEB
+                                    context.HtmlWriter.WriteLine();
+#endif
+                                    context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Pre);
+                                    context.HtmlWriter.WriteEncodedText("<?xml version=\"1.0\" charset=\"utf-8\"?>");
+                                    context.HtmlWriter.WriteLine();
+                                    context.HtmlWriter.WriteEncodedText("<rdf:RDF xmlns:rdf=\"" + NamespaceMapper.RDF + "\" xmlns:" + prefix + "=\"" + formatter.FormatUri(context.QNameMapper.GetNamespaceUri(prefix)) + "\">");
+                                    context.HtmlWriter.WriteLine();
+                                    context.HtmlWriter.WriteEncodedText("   <!-- Your RDF here... -->");
+                                    context.HtmlWriter.WriteLine();
+                                    context.HtmlWriter.WriteEncodedText("</rdf:RDF>");
+                                    context.HtmlWriter.RenderEndTag();
+#if !NO_WEB
+                                    context.HtmlWriter.WriteLine();
+#endif
+
+                                    //Turtle/N3 Syntax
+                                    context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.H5);
+                                    context.HtmlWriter.WriteEncodedText("Turtle/N3 Syntax");
+                                    context.HtmlWriter.RenderEndTag();
+#if !NO_WEB
+                                    context.HtmlWriter.WriteLine();
+#endif
+                                    context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Pre);
+                                    context.HtmlWriter.WriteEncodedText("@prefix " + prefix + ": <" + formatter.FormatUri(context.QNameMapper.GetNamespaceUri(prefix)) + "> .");
+                                    context.HtmlWriter.RenderEndTag();
+#if !NO_WEB
+                                    context.HtmlWriter.WriteLine();
+#endif
+
+                                    //SPARQL Syntax
+                                    context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.H5);
+                                    context.HtmlWriter.WriteEncodedText("SPARQL Syntax");
+                                    context.HtmlWriter.RenderEndTag();
+#if !NO_WEB
+                                    context.HtmlWriter.WriteLine();
+#endif
+                                    context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Pre);
+                                    context.HtmlWriter.WriteEncodedText("PREFIX " + prefix + ": <" + formatter.FormatUri(context.QNameMapper.GetNamespaceUri(prefix)) + ">");
+                                    context.HtmlWriter.RenderEndTag();
+#if !NO_WEB
+                                    context.HtmlWriter.WriteLine();
+#endif
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        throw new RdfOutputException("Tried to make a SPARQL Query to determine Schema Information but an unexpected Query Result was returned");
+                    }
+                }
+                catch (RdfQueryException queryEx)
+                {
+                    throw new RdfOutputException("Tried to make a SPARQL Query to determine Schema Information but a Query Error occurred", queryEx);
+                }
             }
 
             //TODO: Show lists of all Classes and Properties in the Schema
+            context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.H4);
+            context.HtmlWriter.WriteEncodedText("Class and Property Summary");
+            context.HtmlWriter.RenderEndTag();
+#if !NO_WEB
+            context.HtmlWriter.WriteLine();
+#endif
 
-            //TODO: Show details for each class
+            context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.P);
+            context.HtmlWriter.WriteEncodedText("This Schema defines the following classes:");
+            context.HtmlWriter.RenderEndTag();
+#if !NO_WEB
+            context.HtmlWriter.WriteLine();
+#endif
+            context.HtmlWriter.AddStyleAttribute("width", "90%");
+            context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.P);
+
+            //Get the Classes and Display
+            SparqlParameterizedString getClasses = new SparqlParameterizedString();
+            getClasses.Namespaces = context.QNameMapper;
+            getClasses.QueryText = "SELECT DISTINCT ?class WHERE { { ?class a rdfs:Class } UNION { ?class a owl:Class } } ORDER BY ?class";
+            try
+            {
+                results = context.Graph.ExecuteQuery(getClasses);
+                if (results is SparqlResultSet)
+                {
+                    SparqlResultSet rs = (SparqlResultSet)results;
+                    for (int i = 0; i < rs.Count; i++)
+                    {
+                        SparqlResult r = rs[i];
+
+                        //Get the QName and output a Link to an anchor that we'll generate later to let
+                        //users jump to a Class/Property definition
+                        String qname = formatter.Format(r["class"]);
+                        context.HtmlWriter.AddAttribute("href", "#" + qname);
+                        context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.A);
+                        context.HtmlWriter.WriteEncodedText(qname);
+                        context.HtmlWriter.RenderEndTag();
+
+                        if (i < rs.Count - 1)
+                        {
+                            context.HtmlWriter.WriteEncodedText(" , ");
+                        }
+                    }
+                }
+                else
+                {
+                    throw new RdfOutputException("Tried to make a SPARQL Query to find Classes in the Schema but an unexpected Query Result was returned");
+                }
+            }
+            catch (RdfQueryException queryEx)
+            {
+                throw new RdfOutputException("Tried to make a SPARQL Query to find Classes in the Schema but a Query Error occurred", queryEx);
+            }
+
+            context.HtmlWriter.RenderEndTag();
+#if !NO_WEB
+            context.HtmlWriter.WriteLine();
+#endif
+
+            context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.P);
+            context.HtmlWriter.WriteEncodedText("This Schema defines the following properties:");
+            context.HtmlWriter.RenderEndTag();
+#if !NO_WEB
+            context.HtmlWriter.WriteLine();
+#endif
+            context.HtmlWriter.AddStyleAttribute("width", "90%");
+            context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.P);
+
+            //Get the Properties and Display
+            SparqlParameterizedString getProperties = new SparqlParameterizedString();
+            getProperties.Namespaces = context.QNameMapper;
+            getProperties.QueryText = "SELECT DISTINCT ?property WHERE { { ?property a rdf:Property } UNION { ?property a owl:DatatypeProperty } UNION { ?property a owl:ObjectProperty } } ORDER BY ?property";
+            try
+            {
+                results = context.Graph.ExecuteQuery(getProperties);
+                if (results is SparqlResultSet)
+                {
+                    SparqlResultSet rs = (SparqlResultSet)results;
+                    for (int i = 0; i < rs.Count; i++)
+                    {
+                        SparqlResult r = rs[i];
+
+                        //Get the QName and output a Link to an anchor that we'll generate later to let
+                        //users jump to a Class/Property definition
+                        String qname = formatter.Format(r["property"]);
+                        context.HtmlWriter.AddAttribute("href", "#" + qname);
+                        context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.A);
+                        context.HtmlWriter.WriteEncodedText(qname);
+                        context.HtmlWriter.RenderEndTag();
+
+                        if (i < rs.Count - 1)
+                        {
+                            context.HtmlWriter.WriteEncodedText(" , ");
+                        }
+                    }
+                }
+                else
+                {
+                    throw new RdfOutputException("Tried to make a SPARQL Query to find Properties in the Schema but an unexpected Query Result was returned");
+                }
+            }
+            catch (RdfQueryException queryEx)
+            {
+                throw new RdfOutputException("Tried to make a SPARQL Query to find Properties in the Schema but a Query Error occurred", queryEx);
+            }
+
+            context.HtmlWriter.RenderEndTag();
+#if !NO_WEB
+            context.HtmlWriter.WriteLine();
+#endif
+
+            //Show details for each class
+            context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.H3);
+            context.HtmlWriter.WriteEncodedText("Classes");
+            context.HtmlWriter.RenderEndTag();
+#if !NO_WEB
+            context.HtmlWriter.WriteLine();
+#endif
+
+            //Now create the URI Nodes we need for the next stage of Output
+            UriNode rdfsDomain = context.Graph.CreateUriNode(new Uri(NamespaceMapper.RDFS + "domain"));
+            UriNode rdfsRange = context.Graph.CreateUriNode(new Uri(NamespaceMapper.RDFS + "range"));
+
+            //Alter our previous getClasses query to get additional details
+            getClasses.QueryText = "SELECT ?class (SAMPLE(?label) AS ?classLabel) (SAMPLE(?description) AS ?classDescription) WHERE { { ?class a rdfs:Class } UNION { ?class a owl:Class } OPTIONAL { ?class rdfs:label ?label } OPTIONAL { ?class rdfs:comment ?description } } GROUP BY ?class ORDER BY ?class";
+            try
+            {
+                results = context.Graph.ExecuteQuery(getClasses);
+                if (results is SparqlResultSet)
+                {
+                    foreach (SparqlResult r in (SparqlResultSet)results)
+                    {
+                        String qname = formatter.Format(r["class"]);
+
+                        //Use a <div> for each Class
+                        context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Div);
+
+                        //Add the Anchor to which earlier Class summary links to
+                        context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Name, qname);
+                        context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.A);
+                        context.HtmlWriter.RenderEndTag();
+
+                        //Show Basic Class Information
+                        context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.H4);
+                        context.HtmlWriter.WriteEncodedText("Class: " + qname);
+                        context.HtmlWriter.RenderEndTag();
+
+                        //Show "Local Name - Label"
+                        context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Em);
+                        if (TurtleSpecsHelper.IsValidQName(qname))
+                        {
+                            context.HtmlWriter.WriteEncodedText(qname);
+                        }
+                        else
+                        {
+                            Uri temp = new Uri(qname, UriKind.RelativeOrAbsolute);
+                            if (!temp.Fragment.Equals(String.Empty))
+                            {
+                                context.HtmlWriter.WriteEncodedText(temp.Fragment);
+                            } 
+                            else 
+                            {
+                                context.HtmlWriter.WriteEncodedText(temp.Segments.Last());
+                            }
+                        }
+                        context.HtmlWriter.RenderEndTag();
+                        if (r.HasValue("classLabel"))
+                        {
+                            if (r["classLabel"].NodeType == NodeType.Literal)
+                            {
+                                context.HtmlWriter.WriteEncodedText(" - ");
+                                context.HtmlWriter.WriteEncodedText(((LiteralNode)r["classLabel"]).Value);
+                            }
+                        }
+                        context.HtmlWriter.WriteLine();
+                        context.HtmlWriter.WriteBreak();
+#if !NO_WEB
+                        context.HtmlWriter.WriteLine();
+#endif
+
+                        //Output Properties which have this as domain/range
+                        IEnumerable<Triple> ts = context.Graph.GetTriplesWithPredicateObject(rdfsDomain, r["class"]);
+                        if (ts.Any())
+                        {
+                            context.HtmlWriter.AddStyleAttribute("width", "90%");
+                            context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.P);
+                            context.HtmlWriter.WriteLine();
+                            context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Strong);
+                            context.HtmlWriter.WriteEncodedText("Properties Include: ");
+                            context.HtmlWriter.RenderEndTag();
+                            context.HtmlWriter.WriteLine();
+                            foreach (Triple t in ts.OrderBy(x => x.Subject))
+                            {
+                                qname = formatter.Format(t.Subject);
+                                context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Href, "#" + qname);
+                                context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.A);
+                                context.HtmlWriter.WriteEncodedText(qname);
+                                context.HtmlWriter.RenderEndTag();
+                                context.HtmlWriter.Write(' ');
+                            }
+                            context.HtmlWriter.RenderEndTag();
+#if !NO_WEB
+                            context.HtmlWriter.WriteLine();
+#endif
+                        }
+                        //TODO: Output any Subclasses
+                        //TODO: Output any Equivalent Classes
+                        //TODO: Output any Disjoint Classes
+
+                        //Show the Class Description
+                        if (r.HasValue("classDescription"))
+                        {
+                            if (r["classDescription"].NodeType == NodeType.Literal)
+                            {
+                                context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.P);
+                                context.HtmlWriter.Write(((LiteralNode)r["classDescription"]).Value);
+                                context.HtmlWriter.RenderEndTag();
+                            }
+                        }
+
+                        //End the </div> for the Class
+                        context.HtmlWriter.RenderEndTag();
+#if !NO_WEB
+                        context.HtmlWriter.WriteLine();
+#endif
+                    }
+                }
+                else
+                {
+                    throw new RdfOutputException("Tried to make a SPARQL Query to get Class Information from the Schema but an unexpected Query Result was returned");
+                }
+            }
+            catch (RdfQueryException queryEx)
+            {
+                throw new RdfOutputException("Tried to make a SPARQL Query to get Class Information from the Schema but a Query Error occurred", queryEx);
+            }
 
             //TODO: Show details for each property
+            context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.H3);
+            context.HtmlWriter.WriteEncodedText("Properties");
+            context.HtmlWriter.RenderEndTag();
+#if !NO_WEB
+            context.HtmlWriter.WriteLine();
+#endif
 
             //End of Page
             context.HtmlWriter.RenderEndTag(); //End Body

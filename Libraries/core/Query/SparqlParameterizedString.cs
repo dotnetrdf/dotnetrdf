@@ -122,7 +122,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets/Sets the paramterized Query Text
+        /// Gets/Sets the parameterized Query Text
         /// </summary>
         public String QueryText
         {

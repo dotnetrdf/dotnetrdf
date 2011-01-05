@@ -346,6 +346,17 @@ namespace VDS.RDF
         /// Executes a SPARQL Query on a Graph
         /// </summary>
         /// <param name="g">Graph to query</param>
+        /// <param name="sparqlQuery">SPARQL Query</param>
+        /// <returns></returns>
+        public static Object ExecuteQuery(this IGraph g, SparqlParameterizedString sparqlQuery)
+        {
+            return g.ExecuteQuery(sparqlQuery.ToString());
+        }
+
+        /// <summary>
+        /// Executes a SPARQL Query on a Graph
+        /// </summary>
+        /// <param name="g">Graph to query</param>
         /// <param name="query">SPARQL Query</param>
         /// <returns></returns>
         public static Object ExecuteQuery(this IGraph g, SparqlQuery query)

@@ -1,4 +1,4 @@
-# Copyright Robert Vesse 2009-10
+﻿# Copyright Robert Vesse 2009-10
 # rvesse@vdesign-studios.com
 #
 # ------------------------------------------------------------------------
@@ -33,8 +33,23 @@
 
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
 @prefix dnr: <http://www.dotnetrdf.org/configuration#> .
+@prefix dc: <http://purl.org/dc/elements/1.1/>.
+@prefix dcterms: <http://www.purl.org/dc/terms/>.
+@prefix vann: <http://purl.org/vocab/vann/>.
+@prefix vs: <http://www.w3.org/2003/06/sw-vocab-status/ns#>.
+@prefix foaf: <http://xmlns.com/foaf/0.1/>.
+
+# Definition of this Schema
+
+<> a owl:Ontology ;
+   rdfs:label "dotNetRDF Configuration Vocabulary" ;
+   rdfs:comment """dotNetRDF Configuration Vocabulary is used to define configuration information for applications that make use of dotNetRDF in an RDF format.  This allows for automated validation of the Configuration but also allows the vocabulary to be extensible by design.  New Classes and Properties can be added by end users provided they provide an implementation of the <strong>VDS.RDF.Configuration.IObjectFactory</strong> interface in their application and register it in the Configuration Files that need it/within their application.  The use of the vocabulary to describe Configuration for a variety of types of objects is described in the <a href="http://www.dotnetrdf.org/content.asp?pageID=Configuration%20API">User Guide</a>.""" ;
+   dc:creator [ foaf:name "Rob Vesse" ] ;
+   vann:preferredNamespacePrefix "dnr" ;
+   vann:preferredNamespaceUri <http://www.dotnetrdf.org/configuration#> .
 
 # Classes of things whose Configuration is understood by default
 
