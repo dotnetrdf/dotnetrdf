@@ -242,6 +242,7 @@ namespace VDS.RDF.Writing
                 context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Link);
                 context.HtmlWriter.RenderEndTag();
             }
+            //TODO: Add <meta> for charset?
             context.HtmlWriter.RenderEndTag();
 #if !NO_WEB
             context.HtmlWriter.WriteLine();

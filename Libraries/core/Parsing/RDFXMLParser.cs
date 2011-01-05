@@ -86,7 +86,7 @@ namespace VDS.RDF.Parsing
         DOM,
 #endif
         /// <summary>
-        /// Uses Streaming Based parsing
+        /// Uses Streaming Based parsing (default)
         /// </summary>
         Streaming
     }
@@ -147,6 +147,16 @@ namespace VDS.RDF.Parsing
         {
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
             if (input == null) throw new RdfParseException("Cannot read RDF from a null Stream");
+
+            //Issue a Warning if the Encoding of the Stream is not UTF-8
+            if (!input.CurrentEncoding.Equals(Encoding.UTF8))
+            {
+#if !SILVERLIGHT
+                this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
+#else
+                this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.GetType().Name + " - Please be aware that parsing errors may occur as a result");
+#endif
+            }
 
             try
             {
@@ -220,7 +230,7 @@ namespace VDS.RDF.Parsing
             if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
 
             //Open a Stream for the File and call other variant of Load
-            StreamReader input = new StreamReader(filename);
+            StreamReader input = new StreamReader(filename, Encoding.UTF8);
             this.Load(g, input);
         }
 
@@ -262,6 +272,19 @@ namespace VDS.RDF.Parsing
 #endif
 
         #endregion
+
+        /// <summary>
+        /// Helper Method for raising the <see cref="RdfXmlParser.Warning">Warning</see> event
+        /// </summary>
+        /// <param name="warning">Warning Message</param>
+        private void RaiseWarning(String warning)
+        {
+            RdfReaderWarning d = this.Warning;
+            if (d != null)
+            {
+                d(warning);
+            }
+        }
 
         /// <summary>
         /// Event which Readers can raise when they notice syntax that is ambigious/deprecated etc which can still be parsed

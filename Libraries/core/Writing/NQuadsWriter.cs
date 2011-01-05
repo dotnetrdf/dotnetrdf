@@ -50,11 +50,6 @@ namespace VDS.RDF.Writing
     /// <summary>
     /// Class for serializing a Triple Store in the NQuads (NTriples plus context) syntax
     /// </summary>
-    /// <remarks>
-    /// <para>
-    /// For efficiency the TriG Writer splits it's writing over several threads (currently 4), these threads share a reference to a Context object which gives Global writing context eg. the target <see cref="TextWriter">TextWriter</see> being written to.  Each thread generates temporary local writing contexts as it goes along, each of these is scoped to writing a specific Graph.  Graphs are written to a <see cref="StringWriter">StringWriter</see> so the output for each Graph is built completely and then written in one go to the <see cref="TextWriter">TextWriter</see> specified as the target of the writing in the global context.
-    /// </para>
-    /// </remarks>
     public class NQuadsWriter : IStoreWriter, IPrettyPrintingWriter
     {
         private int _threads = 4;
@@ -88,6 +83,9 @@ namespace VDS.RDF.Writing
             if (parameters is StreamParams)
             {
                 //Create a new Writer Context
+#if !SILVERLIGHT
+                ((StreamParams)parameters).Encoding = Encoding.ASCII;
+#endif
                 ThreadedStoreWriterContext context = new ThreadedStoreWriterContext(store, ((StreamParams)parameters).StreamWriter, this._prettyPrint, false);
 
                 //Check there's something to do
@@ -284,15 +282,12 @@ namespace VDS.RDF.Writing
         /// Internal Helper method which raises the Warning event only if there is an Event Handler registered
         /// </summary>
         /// <param name="message">Warning Message</param>
-        private void OnWarning(String message)
+        private void RaiseWarning(String message)
         {
-            if (this.Warning == null)
+            StoreWriterWarning d = this.Warning;
+            if (d != null)
             {
-                //Do Nothing
-            }
-            else
-            {
-                this.Warning(message);
+                d(message);
             }
         }
     }

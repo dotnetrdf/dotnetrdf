@@ -105,5 +105,23 @@ namespace VDS.RDF.Parsing
             if (filename == null) throw new RdfParseException("Cannot read SPARQL Results from a null File");
             this.Load(results, new StreamReader(filename));
         }
+
+        /// <summary>
+        /// Helper Method which raises the Warning event when a non-fatal issue with the SPARQL Results being parsed is detected
+        /// </summary>
+        /// <param name="message">Warning Message</param>
+        private void RaiseWarning(String message)
+        {
+            SparqlWarning d = this.Warning;
+            if (d != null)
+            {
+                d(message);
+            }
+        }
+
+        /// <summary>
+        /// Event raised when a non-fatal issue with the SPARQL Results being parsed is detected
+        /// </summary>
+        public event SparqlWarning Warning;
     }
 }

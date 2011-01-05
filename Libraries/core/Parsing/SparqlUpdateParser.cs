@@ -91,6 +91,30 @@ namespace VDS.RDF.Parsing
             }
         }
 
+        #region Events
+
+        /// <summary>
+        /// Helper Method which raises the Warning event when a non-fatal issue with the SPARQL Update Commands being parsed is detected
+        /// </summary>
+        /// <param name="message">Warning Message</param>
+        private void RaiseWarning(String message)
+        {
+            SparqlWarning d = this.Warning;
+            if (d != null)
+            {
+                d(message);
+            }
+        }
+
+        /// <summary>
+        /// Event raised when a non-fatal issue with the SPARQL Update Commands being parsed is detected
+        /// </summary>
+        public event SparqlWarning Warning;
+
+        #endregion
+
+        #region Public Parsing Methods
+
         /// <summary>
         /// Parses a SPARQL Update Command Set from the input stream
         /// </summary>
@@ -99,8 +123,20 @@ namespace VDS.RDF.Parsing
         public SparqlUpdateCommandSet Parse(StreamReader input)
         {
             if (input == null) throw new RdfParseException("Cannot parse SPARQL Update Commands from a null Stream");
+
+            //Issue a Warning if the Encoding of the Stream is not UTF-8
+            if (!input.CurrentEncoding.Equals(Encoding.UTF8))
+            {
+#if !SILVERLIGHT
+                this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
+#else
+                this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.GetType().Name + " - Please be aware that parsing errors may occur as a result");
+#endif            
+            }
+
             try
             {
+                //Start the actual parsing
                 SparqlUpdateParserContext context = new SparqlUpdateParserContext(new SparqlTokeniser(input, SparqlQuerySyntax.Sparql_1_1));
                 return this.ParseInternal(context);
             }
@@ -129,7 +165,7 @@ namespace VDS.RDF.Parsing
         public SparqlUpdateCommandSet ParseFromFile(String file)
         {
             if (file == null) throw new RdfParseException("Cannot parse SPARQL Update Commands from a null File");
-            return this.Parse(new StreamReader(file));
+            return this.Parse(new StreamReader(file, Encoding.UTF8));
         }
 
         /// <summary>
@@ -143,7 +179,7 @@ namespace VDS.RDF.Parsing
 
             //Turn into a Stream which we can pass to ParseFromFile
             MemoryStream mem = new MemoryStream();
-            StreamWriter writer = new StreamWriter(mem);
+            StreamWriter writer = new StreamWriter(mem, Encoding.UTF8);
             writer.Write(updates);
             writer.Flush();
             mem.Seek(0, SeekOrigin.Begin);
@@ -162,6 +198,10 @@ namespace VDS.RDF.Parsing
             if (updates == null) throw new RdfParseException("Cannot parse SPARQL Update Commands from a null String");
             return this.ParseFromString(updates.ToString());
         }
+
+        #endregion
+
+        #region Internal Parsing Logic
 
         private SparqlUpdateCommandSet ParseInternal(SparqlUpdateParserContext context)
         {
@@ -803,5 +843,7 @@ namespace VDS.RDF.Parsing
                 yield break;
             }
         }
+
+        #endregion
     }
 }

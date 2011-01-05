@@ -219,5 +219,23 @@ namespace VDS.RDF.Writing
             writer.WriteEndObject();
 
         }
+
+        /// <summary>
+        /// Helper Method which raises the Warning event when a non-fatal issue with the SPARQL Results being written is detected
+        /// </summary>
+        /// <param name="message">Warning Message</param>
+        private void RaiseWarning(String message)
+        {
+            SparqlWarning d = this.Warning;
+            if (d != null)
+            {
+                d(message);
+            }
+        }
+
+        /// <summary>
+        /// Event raised when a non-fatal issue with the SPARQL Results being written is detected
+        /// </summary>
+        public event SparqlWarning Warning;
     }
 }

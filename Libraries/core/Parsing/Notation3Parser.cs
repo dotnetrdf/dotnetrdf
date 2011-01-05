@@ -126,6 +126,16 @@ namespace VDS.RDF.Parsing
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
             if (input == null) throw new RdfParseException("Cannot read RDF from a null Stream");
 
+            //Issue a Warning if the Encoding of the Stream is not UTF-8
+            if (!input.CurrentEncoding.Equals(Encoding.UTF8))
+            {
+#if !SILVERLIGHT
+                this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
+#else
+                this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.GetType().Name + " - Please be aware that parsing errors may occur as a result");
+#endif
+            }
+
             try
             {
                 if (!g.IsEmpty)
@@ -169,7 +179,7 @@ namespace VDS.RDF.Parsing
         {
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
             if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
-            this.Load(g, new StreamReader(filename));
+            this.Load(g, new StreamReader(filename, Encoding.UTF8));
         }
 
         /// <summary>
@@ -413,7 +423,7 @@ namespace VDS.RDF.Parsing
                 next = context.Tokens.Dequeue();
             }
 
-            this.OnWarning("Parser does not know how to evaluate forSome Quantifiers");
+            this.RaiseWarning("Parser does not know how to evaluate forSome Quantifiers");
         }
 
         /// <summary>
@@ -1293,7 +1303,7 @@ namespace VDS.RDF.Parsing
         /// Helper method which raises the Warning event if there is an event handler registered
         /// </summary>
         /// <param name="message"></param>
-        private void OnWarning(String message)
+        private void RaiseWarning(String message)
         {
             RdfReaderWarning d = this.Warning;
             if (d != null)

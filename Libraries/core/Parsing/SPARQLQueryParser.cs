@@ -192,6 +192,28 @@ namespace VDS.RDF.Parsing
 
         #endregion
 
+        #region Events
+
+        /// <summary>
+        /// Helper Method which raises the Warning event when a non-fatal issue with the SPARQL Query being parsed is detected
+        /// </summary>
+        /// <param name="message">Warning Message</param>
+        private void RaiseWarning(String message)
+        {
+            SparqlWarning d = this.Warning;
+            if (d != null)
+            {
+                d(message);
+            }
+        }
+
+        /// <summary>
+        /// Event raised when a non-fatal issue with the SPARQL Query being parsed is detected
+        /// </summary>
+        public event SparqlWarning Warning;
+
+        #endregion
+
         #region Public Parser Methods
 
         /// <summary>
@@ -202,7 +224,7 @@ namespace VDS.RDF.Parsing
         public SparqlQuery ParseFromFile(String queryFile)
         {
             if (queryFile == null) throw new RdfParseException("Cannot parse a SPARQL Query from a null File");
-            StreamReader reader = new StreamReader(queryFile);
+            StreamReader reader = new StreamReader(queryFile, Encoding.UTF8);
             return this.ParseInternal(reader);
         }
 
@@ -228,7 +250,7 @@ namespace VDS.RDF.Parsing
 
             //Turn into a Stream which we can pass to ParseFromFile
             MemoryStream mem = new MemoryStream();
-            StreamWriter writer = new StreamWriter(mem);
+            StreamWriter writer = new StreamWriter(mem, Encoding.UTF8);
             writer.Write(queryString);
             writer.Flush();
             mem.Seek(0, SeekOrigin.Begin);
@@ -254,8 +276,20 @@ namespace VDS.RDF.Parsing
 
         #endregion
 
+        #region Internal Parsing Logic
+
         private SparqlQuery ParseInternal(StreamReader input)
         {
+            //Issue a Warning if the Encoding of the Stream is not UTF-8
+            if (!input.CurrentEncoding.Equals(Encoding.UTF8))
+            {
+#if !SILVERLIGHT
+                this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
+#else
+                this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.GetType().Name + " - Please be aware that parsing errors may occur as a result");
+#endif
+            }
+
             try
             {
                 //Create the Parser Context
@@ -3174,5 +3208,7 @@ namespace VDS.RDF.Parsing
         {
             return new Uri(Tools.ResolveQName(qname, context.Query.NamespaceMap, context.Query.BaseUri));
         }
+
+        #endregion
     }
 }

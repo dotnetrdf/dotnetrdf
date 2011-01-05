@@ -103,6 +103,14 @@ namespace VDS.RDF.Parsing
                 //Get Input Stream
                 StreamReader input = ((StreamParams)parameters).StreamReader;
 
+#if !SILVERLIGHT
+                //Issue a Warning if the Encoding of the Stream is not ASCII
+                if (!input.CurrentEncoding.Equals(Encoding.ASCII))
+                {
+                    this.RaiseWarning("Expected Input Stream to be encoded as ASCII but got a Stream encoded as " + input.CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
+                }
+#endif
+
                 try
                 {
                     //Setup Token Queue and Tokeniser
@@ -398,7 +406,7 @@ namespace VDS.RDF.Parsing
         /// Helper method used to raise the Warning event if there is an event handler registered
         /// </summary>
         /// <param name="message">Warning message</param>
-        private void OnWarning(String message)
+        private void RaiseWarning(String message)
         {
             StoreReaderWarning d = this.Warning;
             if (d != null)

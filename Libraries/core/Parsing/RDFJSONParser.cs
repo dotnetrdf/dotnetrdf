@@ -61,6 +61,16 @@ namespace VDS.RDF.Parsing
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
             if (input == null) throw new RdfParseException("Cannot read RDF from a null Stream");
 
+            //Issue a Warning if the Encoding of the Stream is not UTF-8
+            if (!input.CurrentEncoding.Equals(Encoding.UTF8))
+            {
+#if !SILVERLIGHT
+                this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
+#else
+                this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.GetType().Name + " - Please be aware that parsing errors may occur as a result");
+#endif
+            }
+
             try
             {
                 if (g.IsEmpty)
@@ -421,6 +431,19 @@ namespace VDS.RDF.Parsing
             error.Append("[Line " + info.StartLine + " Column " + info.StartPosition + " to Line " + info.EndLine + " Column " + info.EndPosition + "] ");
             error.AppendLine(message);
             throw new RdfParseException(error.ToString(), info);
+        }
+
+        /// <summary>
+        /// Helper Method for raising the <see cref="RdfJsonParser.Warning">Warning</see> event
+        /// </summary>
+        /// <param name="message">Warning Message</param>
+        private void RaiseWarning(String message)
+        {
+            RdfReaderWarning d = this.Warning;
+            if (d != null)
+            {
+                d(message);
+            }
         }
 
         /// <summary>

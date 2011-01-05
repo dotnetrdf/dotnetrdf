@@ -104,6 +104,7 @@ namespace VDS.RDF.Writing
             if (parameters is StreamParams)
             {
                 //Create a new Writer Context
+                ((StreamParams)parameters).Encoding = Encoding.UTF8;
                 ThreadedStoreWriterContext context = new ThreadedStoreWriterContext(store, ((StreamParams)parameters).StreamWriter, this._prettyprint, this._allowHiSpeed);
 
                 //Check there's something to do

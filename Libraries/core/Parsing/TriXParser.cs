@@ -87,6 +87,12 @@ namespace VDS.RDF.Parsing
                 //Get Input Stream
                 StreamReader input = ((StreamParams)parameters).StreamReader;
 
+                //Issue a Warning if the Encoding of the Stream is not UTF-8
+                if (!input.CurrentEncoding.Equals(Encoding.UTF8))
+                {
+                    this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
+                }
+
                 //First try and load as XML and apply any stylesheets
                 try
                 {

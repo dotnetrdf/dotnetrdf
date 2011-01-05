@@ -61,5 +61,10 @@ namespace VDS.RDF
         /// <param name="results">Result Set to save</param>
         /// <param name="output">Stream to save to</param>
         void Save(SparqlResultSet results, TextWriter output);
+
+        /// <summary>
+        /// Event raised when a non-fatal issue with the SPARQL Results being written is detected
+        /// </summary>
+        event SparqlWarning Warning;
     }
 }

@@ -51,7 +51,7 @@ namespace VDS.RDF.Parsing
         private IGraph _g;
 
         /// <summary>
-        /// Creates a new Sparql Result Json Parser
+        /// Creates a new SPARQL Results JSON Parser
         /// </summary>
         public SparqlJsonParser()
         {
@@ -697,5 +697,23 @@ namespace VDS.RDF.Parsing
             error.Append(message);
             throw new RdfParseException(error.ToString(), reader.LineNumber, reader.LinePosition);
         }
+
+        /// <summary>
+        /// Helper Method which raises the Warning event when a non-fatal issue with the SPARQL Results being parsed is detected
+        /// </summary>
+        /// <param name="message">Warning Message</param>
+        private void RaiseWarning(String message)
+        {
+            SparqlWarning d = this.Warning;
+            if (d != null)
+            {
+                d(message);
+            }
+        }
+
+        /// <summary>
+        /// Event raised when a non-fatal issue with the SPARQL Results being parsed is detected
+        /// </summary>
+        public event SparqlWarning Warning;
     }
 }

@@ -46,11 +46,6 @@ namespace VDS.RDF.Parsing
     /// <summary>
     /// Parser for Turtle syntax
     /// </summary>
-    /// <remarks>
-    /// <para>
-    /// This is a newly implemented parser as of 11/12/2009 - it was rewritten from scratch in order to remove an issue with Blank Node Handling which could not be solved with the old parser.  The code is now around a third the size, parses faster and appears to be bug free so far!
-    /// </para>
-    /// </remarks>
     /// <threadsafety instance="true">Designed to be Thread Safe - should be able to call Load from multiple threads on different Graphs without issue</threadsafety>
     public class TurtleParser : IRdfReader, ITraceableParser, ITraceableTokeniser
     {
@@ -115,6 +110,16 @@ namespace VDS.RDF.Parsing
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
             if (input == null) throw new RdfParseException("Cannot read RDF from a null Stream");
 
+            //Issue a Warning if the Encoding of the Stream is not UTF-8
+            if (!input.CurrentEncoding.Equals(Encoding.UTF8))
+            {
+#if !SILVERLIGHT
+                this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
+#else
+                this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.GetType().Name + " - Please be aware that parsing errors may occur as a result");
+#endif           
+            }
+
             try
             {
                 if (!g.IsEmpty)
@@ -160,7 +165,7 @@ namespace VDS.RDF.Parsing
         {
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
             if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
-            this.Load(g, new StreamReader(filename));
+            this.Load(g, new StreamReader(filename, Encoding.UTF8));
         }
 
         /// <summary>
@@ -829,7 +834,7 @@ namespace VDS.RDF.Parsing
         /// Helper method which raises the Warning event if there is an event handler registered
         /// </summary>
         /// <param name="message"></param>
-        private void OnWarning(String message)
+        private void RaiseWarning(String message)
         {
             RdfReaderWarning d = this.Warning;
             if (d != null)

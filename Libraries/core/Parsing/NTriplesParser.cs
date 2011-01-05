@@ -115,6 +115,14 @@ namespace VDS.RDF.Parsing
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
             if (input == null) throw new RdfParseException("Cannot read RDF from a null Stream");
 
+#if !SILVERLIGHT
+            //Issue a Warning if the Encoding of the Stream is not ASCII
+            if (!input.CurrentEncoding.Equals(Encoding.ASCII))
+            {
+                this.RaiseWarning("Expected Input Stream to be encoded as ASCII but got a Stream encoded as " + input.CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
+            }
+#endif
+
             try
             {
                 if (!g.IsEmpty)
@@ -162,7 +170,12 @@ namespace VDS.RDF.Parsing
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
             if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
 
+            //Can only open Streams as ASCII when not running under Silverlight as Silverlight has no ASCII support
+#if !SILVERLIGHT
+            StreamReader input = new StreamReader(filename, Encoding.ASCII);
+#else
             StreamReader input = new StreamReader(filename);
+#endif
             this.Load(g, input);
         }
 
@@ -366,7 +379,7 @@ namespace VDS.RDF.Parsing
         /// Internal Helper method which raises the Warning event if an event handler is registered to it
         /// </summary>
         /// <param name="message">Warning Message</param>
-        private void OnWarning(String message)
+        private void RaiseWarning(String message)
         {
             if (this.Warning == null)
             {

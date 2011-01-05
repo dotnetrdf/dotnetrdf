@@ -65,5 +65,10 @@ namespace VDS.RDF
         /// <returns></returns>
         /// <remarks>Should throw an error if the Result Set is not empty</remarks>
         void Load(SparqlResultSet results, String filename);
+
+        /// <summary>
+        /// Event raised when a non-fatal issue with the SPARQL Results being parsed is detected
+        /// </summary>
+        event SparqlWarning Warning;
     }
 }

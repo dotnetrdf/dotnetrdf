@@ -53,7 +53,11 @@ namespace VDS.RDF.Writing
     /// <para>
     /// This is a fast writer based on the fast writing technique used in the other non-RDF/XML writers.  It is no longer the fastest of the RDF/XML writers provided achieving a speed of around 25,000 Triples/second the syntax is the most compressed RDF/XML syntax of the two writers
     /// </para>
+    /// <para>
+    /// <strong>Note:</strong> If the Graph to be serialized makes heavy use of collections it may result in a StackOverflowException.  To address this set the <see cref="FastRdfXmlWriter.CompressionLevel">CompressionLevel</see> property to &lt; 5
+    /// </para>
     /// </remarks>
+    [Obsolete("This class is deprecated in favour of the newer fully streaming RdfXmlWriter which is faster and uses significantly less memory.  This writer will be removed in future releases", false)]
     public class FastRdfXmlWriter : IRdfWriter, IPrettyPrintingWriter, ICompressingWriter
     {
         private bool _prettyprint = true;

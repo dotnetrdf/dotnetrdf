@@ -40,6 +40,8 @@ using System.Text;
 
 namespace VDS.RDF
 {
+    #region Reader and Writer Warning Events
+
     /// <summary>
     /// Delegate Type for Warning Messages raised by RDF Readers
     /// </summary>
@@ -63,6 +65,16 @@ namespace VDS.RDF
     /// </summary>
     /// <param name="message">Warning Message</param>
     public delegate void StoreReaderWarning(String message);
+
+    /// <summary>
+    /// Delegate Type for Warning Events raised by SPARQL Readers and Writers for Queries, Updates and Results
+    /// </summary>
+    /// <param name="message">Warning Message</param>
+    public delegate void SparqlWarning(String message);
+
+    #endregion
+
+    #region Triple, Graph and Triple Store Events
 
     /// <summary>
     /// Delegate Type for Triple events raised by Graphs
@@ -91,6 +103,10 @@ namespace VDS.RDF
     /// <param name="sender">Originator of the event</param>
     /// <param name="args">Triple Store Event Arguments</param>
     public delegate void TripleStoreEventHandler(Object sender, TripleStoreEventArgs args);
+
+    #endregion
+
+    #region Event Argument Classes
 
     /// <summary>
     /// Event Arguments for Events regarding the assertion and retraction of Triples
@@ -334,4 +350,6 @@ namespace VDS.RDF
             }
         }
     }
+
+    #endregion
 }
