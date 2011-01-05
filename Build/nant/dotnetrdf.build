@@ -43,6 +43,21 @@
     </exec>    
   </target>
 
+  <target name="projectgen-windowsphone" description="Generates the dotNetRDF Windows Phone build project file" depends="projectgen-silverlight">
+    <!-- This exec task syncs the Windows Phone project file with the Core Library -->
+    <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
+      <arg value="Libraries/core/dotNetRDF.csproj" />
+      <arg value="Libraries/windowsphone/dotNetRDF.WindowsPhone.2010.csproj.template" />
+      <arg value="Libraries/windowsphone/dotNetRDF.WindowsPhone.2010.csproj.temp" />
+    </exec>
+    <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
+      <arg value="Libraries/silverlight/dotNetRDF.Silverlight.2010.csproj" />
+      <arg value="Libraries/windowsphone/dotNetRDF.WindowsPhone.2010.csproj.temp" />
+      <arg value="Libraries/windowsphone/dotNetRDF.WindowsPhone.2010.csproj" />
+      <arg value="..\silverlight\" />
+    </exec>
+  </target>
+
   <target name="projectgen-clientprofile" description="Generates the dotNetRDF Client Profile build project file" depends="projectgen-silverlight">
     <!-- This exec task syncs the Client Profile project file with the Core Library and Silverlight (for the System.Web compatability stuff) -->
     <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
@@ -131,6 +146,18 @@
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Libraries/silverlight/dotNetRDF.Silverlight.2010.csproj" />
+      <arg line="/p:Configuration=Debug" />
+      <arg line="/p:PostBuildEvent="/>
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+    </exec>
+  </target>
+
+  <target name="compile-windowsphone" description="Compile the dotNetRDF Windows Phone Build"  unless="${dotnetrdf.nocompile}" depends="projectgen-windowsphone">
+    <property name="nant.settings.currentframework" value="net-4.0" />
+    <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
+    <property name="msBuild.exe" value="${string::replace(msBuild.exe,'Framework64','Framework')}" if="${string::contains(msBuild.exe, 'Framework64')}" />
+    <exec program="${msBuild.exe}" failonerror="true">
+      <arg value="Libraries/windowsphone/dotNetRDF.WindowsPhone.2010.csproj" />
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent="/>
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
@@ -280,6 +307,10 @@
   <target name="clean-silverlight" description="Clean existing Silverlight Nightly Build">
     <delete dir="../bin/silverlight-nightly" />
     <delete dir="Libraries/silverlight/bin" />
+  </target>
+
+  <target name="clean-windowsphone" description="Clean existing Silverlight Nightly Build">
+    <delete dir="Libraries/windowsphone/bin" />
   </target>
 
   <target name="clean-lite" description="Clean existing Lite Nightly Build">

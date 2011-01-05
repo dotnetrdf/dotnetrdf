@@ -3,7 +3,7 @@
 
 A Library for RDF manipulation and parsing in .Net using C# 3.0
 
-Version 0.3.1 Alpha
+Version 0.4.0 Alpha
 
 Robert Vesse 2009-10
 rvesse@vdesign-studios.com
@@ -127,6 +127,7 @@ improvements in the code:
   a Mono build of dotNetRDF
 - Andy Seaborne and Steve Harris for excellent answers to various SPARQL and ARQ function library related questions 
   which have contributed to resolving various issues in the Leviathan engine and adding the ARQ function library support
+- Peter Kahle for his efforts in producing a Windows Phone 7 version of the library
 - The SPARQL Working Group for useful feedback and responses to my comments
 - The following people who have contributed bug reports and patches on the mailing lists:
  - Tana Isaac
@@ -139,3 +140,5 @@ improvements in the code:
  - Jeen Broekstra
  - Robert P DeCarlo
  - Clive Emberey
+ - Anton Andreev
+ - Steve Fraleigh
