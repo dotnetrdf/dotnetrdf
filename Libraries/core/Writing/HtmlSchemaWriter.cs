@@ -238,7 +238,8 @@ namespace VDS.RDF.Writing
 
             //Stuff for formatting
             //We'll use the Turtle Formatter to get nice QNames wherever possible
-            TurtleFormatter formatter = new TurtleFormatter(context.QNameMapper);
+            context.NodeFormatter = new TurtleFormatter(context.QNameMapper);
+            context.UriFormatter = (IUriFormatter)context.NodeFormatter;
 
             //Page Header
             context.HtmlWriter.Write("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML+RDFa 1.0//EN\" \"http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd\">");
@@ -380,7 +381,7 @@ namespace VDS.RDF.Writing
                                     context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Pre);
                                     context.HtmlWriter.WriteEncodedText("<?xml version=\"1.0\" charset=\"utf-8\"?>");
                                     context.HtmlWriter.WriteLine();
-                                    context.HtmlWriter.WriteEncodedText("<rdf:RDF xmlns:rdf=\"" + NamespaceMapper.RDF + "\" xmlns:" + prefix + "=\"" + formatter.FormatUri(context.QNameMapper.GetNamespaceUri(prefix)) + "\">");
+                                    context.HtmlWriter.WriteEncodedText("<rdf:RDF xmlns:rdf=\"" + NamespaceMapper.RDF + "\" xmlns:" + prefix + "=\"" + context.UriFormatter.FormatUri(context.QNameMapper.GetNamespaceUri(prefix)) + "\">");
                                     context.HtmlWriter.WriteLine();
                                     context.HtmlWriter.WriteEncodedText("   <!-- Your RDF here... -->");
                                     context.HtmlWriter.WriteLine();
@@ -398,7 +399,7 @@ namespace VDS.RDF.Writing
                                     context.HtmlWriter.WriteLine();
 #endif
                                     context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Pre);
-                                    context.HtmlWriter.WriteEncodedText("@prefix " + prefix + ": <" + formatter.FormatUri(context.QNameMapper.GetNamespaceUri(prefix)) + "> .");
+                                    context.HtmlWriter.WriteEncodedText("@prefix " + prefix + ": <" + context.UriFormatter.FormatUri(context.QNameMapper.GetNamespaceUri(prefix)) + "> .");
                                     context.HtmlWriter.RenderEndTag();
 #if !NO_WEB
                                     context.HtmlWriter.WriteLine();
@@ -412,7 +413,7 @@ namespace VDS.RDF.Writing
                                     context.HtmlWriter.WriteLine();
 #endif
                                     context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Pre);
-                                    context.HtmlWriter.WriteEncodedText("PREFIX " + prefix + ": <" + formatter.FormatUri(context.QNameMapper.GetNamespaceUri(prefix)) + ">");
+                                    context.HtmlWriter.WriteEncodedText("PREFIX " + prefix + ": <" + context.UriFormatter.FormatUri(context.QNameMapper.GetNamespaceUri(prefix)) + ">");
                                     context.HtmlWriter.RenderEndTag();
 #if !NO_WEB
                                     context.HtmlWriter.WriteLine();
@@ -432,7 +433,7 @@ namespace VDS.RDF.Writing
                 }
             }
 
-            //TODO: Show lists of all Classes and Properties in the Schema
+            //Show lists of all Classes and Properties in the Schema
             context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.H4);
             context.HtmlWriter.WriteEncodedText("Class and Property Summary");
             context.HtmlWriter.RenderEndTag();
@@ -465,7 +466,7 @@ namespace VDS.RDF.Writing
 
                         //Get the QName and output a Link to an anchor that we'll generate later to let
                         //users jump to a Class/Property definition
-                        String qname = formatter.Format(r["class"]);
+                        String qname = context.NodeFormatter.Format(r["class"]);
                         context.HtmlWriter.AddAttribute("href", "#" + qname);
                         context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.A);
                         context.HtmlWriter.WriteEncodedText(qname);
@@ -517,7 +518,7 @@ namespace VDS.RDF.Writing
 
                         //Get the QName and output a Link to an anchor that we'll generate later to let
                         //users jump to a Class/Property definition
-                        String qname = formatter.Format(r["property"]);
+                        String qname = context.NodeFormatter.Format(r["property"]);
                         context.HtmlWriter.AddAttribute("href", "#" + qname);
                         context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.A);
                         context.HtmlWriter.WriteEncodedText(qname);
@@ -555,6 +556,12 @@ namespace VDS.RDF.Writing
             //Now create the URI Nodes we need for the next stage of Output
             UriNode rdfsDomain = context.Graph.CreateUriNode(new Uri(NamespaceMapper.RDFS + "domain"));
             UriNode rdfsRange = context.Graph.CreateUriNode(new Uri(NamespaceMapper.RDFS + "range"));
+            UriNode rdfsSubClassOf = context.Graph.CreateUriNode(new Uri(NamespaceMapper.RDFS + "subClassOf"));
+            UriNode rdfsSubPropertyOf = context.Graph.CreateUriNode(new Uri(NamespaceMapper.RDFS + "subPropertyOf"));
+            UriNode owlDisjointClass = context.Graph.CreateUriNode(new Uri(NamespaceMapper.OWL + "disjointWith"));
+            UriNode owlEquivalentClass = context.Graph.CreateUriNode(new Uri(NamespaceMapper.OWL + "equivalentClass"));
+            UriNode owlEquivalentProperty = context.Graph.CreateUriNode(new Uri(NamespaceMapper.OWL + "equivalentProperty"));
+            UriNode owlInverseProperty = context.Graph.CreateUriNode(new Uri(NamespaceMapper.OWL + "inverseOf"));
 
             //Alter our previous getClasses query to get additional details
             getClasses.QueryText = "SELECT ?class (SAMPLE(?label) AS ?classLabel) (SAMPLE(?description) AS ?classDescription) WHERE { { ?class a rdfs:Class } UNION { ?class a owl:Class } OPTIONAL { ?class rdfs:label ?label } OPTIONAL { ?class rdfs:comment ?description } } GROUP BY ?class ORDER BY ?class";
@@ -565,7 +572,7 @@ namespace VDS.RDF.Writing
                 {
                     foreach (SparqlResult r in (SparqlResultSet)results)
                     {
-                        String qname = formatter.Format(r["class"]);
+                        String qname = context.NodeFormatter.Format(r["class"]);
 
                         //Use a <div> for each Class
                         context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Div);
@@ -601,7 +608,7 @@ namespace VDS.RDF.Writing
                         context.HtmlWriter.RenderEndTag();
                         if (r.HasValue("classLabel"))
                         {
-                            if (r["classLabel"].NodeType == NodeType.Literal)
+                            if (r["classLabel"] != null && r["classLabel"].NodeType == NodeType.Literal)
                             {
                                 context.HtmlWriter.WriteEncodedText(" - ");
                                 context.HtmlWriter.WriteEncodedText(((LiteralNode)r["classLabel"]).Value);
@@ -612,40 +619,30 @@ namespace VDS.RDF.Writing
 #if !NO_WEB
                         context.HtmlWriter.WriteLine();
 #endif
+                        //Output further information about the class
+                        IEnumerable<Triple> ts;
+
+                        //Output any Subclasses
+                        ts = context.Graph.GetTriplesWithSubjectPredicate(rdfsSubClassOf, r["class"]);
+                        this.GenerateCaptionedInformation(context, "Has Sub Classes", ts, t => t.Object);
 
                         //Output Properties which have this as domain/range
-                        IEnumerable<Triple> ts = context.Graph.GetTriplesWithPredicateObject(rdfsDomain, r["class"]);
-                        if (ts.Any())
-                        {
-                            context.HtmlWriter.AddStyleAttribute("width", "90%");
-                            context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.P);
-                            context.HtmlWriter.WriteLine();
-                            context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Strong);
-                            context.HtmlWriter.WriteEncodedText("Properties Include: ");
-                            context.HtmlWriter.RenderEndTag();
-                            context.HtmlWriter.WriteLine();
-                            foreach (Triple t in ts.OrderBy(x => x.Subject))
-                            {
-                                qname = formatter.Format(t.Subject);
-                                context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Href, "#" + qname);
-                                context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.A);
-                                context.HtmlWriter.WriteEncodedText(qname);
-                                context.HtmlWriter.RenderEndTag();
-                                context.HtmlWriter.Write(' ');
-                            }
-                            context.HtmlWriter.RenderEndTag();
-#if !NO_WEB
-                            context.HtmlWriter.WriteLine();
-#endif
-                        }
-                        //TODO: Output any Subclasses
-                        //TODO: Output any Equivalent Classes
-                        //TODO: Output any Disjoint Classes
+                        ts = context.Graph.GetTriplesWithPredicateObject(rdfsDomain, r["class"]);
+                        this.GenerateCaptionedInformation(context, "Properties Include", ts, t => t.Subject);
+                        ts = context.Graph.GetTriplesWithPredicateObject(rdfsRange, r["class"]);
+                        this.GenerateCaptionedInformation(context, "Used With", ts, t => t.Subject);
+
+                        //Output any Equivalent Classes
+                        ts = context.Graph.GetTriplesWithSubjectPredicate(r["class"], owlEquivalentClass).Concat(context.Graph.GetTriplesWithPredicateObject(owlEquivalentClass, r["class"]));
+                        this.GenerateCaptionedInformation(context, "Equivalent Classes", ts, t => t.Subject.Equals(r["class"]) ? t.Object : t.Subject);
+                        //Output any Disjoint Classes
+                        ts = context.Graph.GetTriplesWithSubjectPredicate(r["class"], owlDisjointClass).Concat(context.Graph.GetTriplesWithPredicateObject(owlDisjointClass, r["class"]));
+                        this.GenerateCaptionedInformation(context, "Disjoint Classes", ts, t => t.Subject.Equals(r["class"]) ? t.Object : t.Subject);
 
                         //Show the Class Description
                         if (r.HasValue("classDescription"))
                         {
-                            if (r["classDescription"].NodeType == NodeType.Literal)
+                            if (r["classDescription"] != null && r["classDescription"].NodeType == NodeType.Literal)
                             {
                                 context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.P);
                                 context.HtmlWriter.Write(((LiteralNode)r["classDescription"]).Value);
@@ -678,9 +675,141 @@ namespace VDS.RDF.Writing
             context.HtmlWriter.WriteLine();
 #endif
 
+            //Alter our previous getClasses query to get additional details
+            getProperties.QueryText = "SELECT ?property (SAMPLE(?label) AS ?propertyLabel) (SAMPLE(?description) AS ?propertyDescription) WHERE { { ?property a rdf:Property } UNION { ?property a owl:ObjectProperty } UNION { ?property a owl:DatatypeProperty } OPTIONAL { ?property rdfs:label ?label } OPTIONAL { ?property rdfs:comment ?description } } GROUP BY ?property ORDER BY ?property";
+            try
+            {
+                results = context.Graph.ExecuteQuery(getProperties);
+                if (results is SparqlResultSet)
+                {
+                    foreach (SparqlResult r in (SparqlResultSet)results)
+                    {
+                        String qname = context.NodeFormatter.Format(r["property"]);
+
+                        //Use a <div> for each Property
+                        context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Div);
+
+                        //Add the Anchor to which earlier Property summary links to
+                        context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Name, qname);
+                        context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.A);
+                        context.HtmlWriter.RenderEndTag();
+
+                        //Show Basic Property Information
+                        context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.H4);
+                        context.HtmlWriter.WriteEncodedText("Property: " + qname);
+                        context.HtmlWriter.RenderEndTag();
+
+                        //Show "Local Name - Label"
+                        context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Em);
+                        if (TurtleSpecsHelper.IsValidQName(qname))
+                        {
+                            context.HtmlWriter.WriteEncodedText(qname);
+                        }
+                        else
+                        {
+                            Uri temp = new Uri(qname, UriKind.RelativeOrAbsolute);
+                            if (!temp.Fragment.Equals(String.Empty))
+                            {
+                                context.HtmlWriter.WriteEncodedText(temp.Fragment);
+                            }
+                            else
+                            {
+                                context.HtmlWriter.WriteEncodedText(temp.Segments.Last());
+                            }
+                        }
+                        context.HtmlWriter.RenderEndTag();
+                        if (r.HasValue("propertyLabel"))
+                        {
+                            if (r["propertyLabel"] != null && r["propertyLabel"].NodeType == NodeType.Literal)
+                            {
+                                context.HtmlWriter.WriteEncodedText(" - ");
+                                context.HtmlWriter.WriteEncodedText(((LiteralNode)r["propertyLabel"]).Value);
+                            }
+                        }
+                        context.HtmlWriter.WriteLine();
+                        context.HtmlWriter.WriteBreak();
+#if !NO_WEB
+                        context.HtmlWriter.WriteLine();
+#endif
+                        //Output further information about the property
+                        IEnumerable<Triple> ts;
+
+                        //Output any Subproperties
+                        ts = context.Graph.GetTriplesWithSubjectPredicate(rdfsSubPropertyOf, r["property"]);
+                        this.GenerateCaptionedInformation(context, "Has Sub Properties", ts, t => t.Object);
+
+                        //Output Domain and Range
+                        ts = context.Graph.GetTriplesWithSubjectPredicate(r["property"], rdfsDomain);
+                        this.GenerateCaptionedInformation(context, "Has Domain", ts, t => t.Object);
+                        ts = context.Graph.GetTriplesWithSubjectPredicate(r["property"], rdfsRange);
+                        this.GenerateCaptionedInformation(context, "Has Range", ts, t => t.Object);
+
+                        //Output any Equivalent Properties
+                        ts = context.Graph.GetTriplesWithSubjectPredicate(r["property"], owlEquivalentProperty).Concat(context.Graph.GetTriplesWithPredicateObject(owlEquivalentProperty, r["property"]));
+                        this.GenerateCaptionedInformation(context, "Equivalent Properties", ts, t => t.Subject.Equals(r["property"]) ? t.Object : t.Subject);
+                        //Output any Disjoint Classes
+                        ts = context.Graph.GetTriplesWithSubjectPredicate(r["property"], owlInverseProperty).Concat(context.Graph.GetTriplesWithPredicateObject(owlInverseProperty, r["property"]));
+                        this.GenerateCaptionedInformation(context, "Inverse Property", ts, t => t.Subject.Equals(r["property"]) ? t.Object : t.Subject);
+
+                        //Show the Property Description
+                        if (r.HasValue("propertyDescription"))
+                        {
+                            if (r["propertyDescription"] != null && r["propertyDescription"].NodeType == NodeType.Literal)
+                            {
+                                context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.P);
+                                context.HtmlWriter.Write(((LiteralNode)r["propertyDescription"]).Value);
+                                context.HtmlWriter.RenderEndTag();
+                            }
+                        }
+
+                        //End the </div> for the Property
+                        context.HtmlWriter.RenderEndTag();
+#if !NO_WEB
+                        context.HtmlWriter.WriteLine();
+#endif
+                    }
+                }
+                else
+                {
+                    throw new RdfOutputException("Tried to make a SPARQL Query to get Property Information from the Schema but an unexpected Query Result was returned");
+                }
+            }
+            catch (RdfQueryException queryEx)
+            {
+                throw new RdfOutputException("Tried to make a SPARQL Query to get Property Information from the Schema but a Query Error occurred", queryEx);
+            }
+
+
             //End of Page
             context.HtmlWriter.RenderEndTag(); //End Body
             context.HtmlWriter.RenderEndTag(); //End Html
+        }
+
+        private void GenerateCaptionedInformation(HtmlWriterContext context, String caption, IEnumerable<Triple> ts, Func<Triple,INode> displaySelector)
+        {
+            if (ts.Any())
+            {
+                context.HtmlWriter.AddStyleAttribute("width", "90%");
+                context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.P);
+                context.HtmlWriter.WriteLine();
+                context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Strong);
+                context.HtmlWriter.WriteEncodedText(caption + ": ");
+                context.HtmlWriter.RenderEndTag();
+                context.HtmlWriter.WriteLine();
+                foreach (Triple t in ts.OrderBy(displaySelector))
+                {
+                    String qname = context.NodeFormatter.Format(displaySelector(t));
+                    context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Href, "#" + qname);
+                    context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.A);
+                    context.HtmlWriter.WriteEncodedText(qname);
+                    context.HtmlWriter.RenderEndTag();
+                    context.HtmlWriter.Write(' ');
+                }
+                context.HtmlWriter.RenderEndTag();
+#if !NO_WEB
+                context.HtmlWriter.WriteLine();
+#endif
+            }
         }
 
         /// <summary>
