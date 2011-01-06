@@ -54,6 +54,7 @@ namespace VDS.RDF.Query.Algebra
         /// Creates a new Having Clause
         /// </summary>
         /// <param name="pattern">Pattern</param>
+        /// <param name="having">Having Clause</param>
         public Having(ISparqlAlgebra pattern, ISparqlFilter having)
         {
             this._pattern = pattern;

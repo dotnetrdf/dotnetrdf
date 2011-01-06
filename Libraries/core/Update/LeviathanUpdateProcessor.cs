@@ -57,6 +57,10 @@ namespace VDS.RDF.Update
         public LeviathanUpdateProcessor(IInMemoryQueryableStore store)
             : this(new InMemoryDataset(store)) { }
 
+        /// <summary>
+        /// Creates a new Leviathan Update Processor
+        /// </summary>
+        /// <param name="data">SPARQL Dataset</param>
         public LeviathanUpdateProcessor(ISparqlDataset data)
         {
             this._context = new SparqlUpdateEvaluationContext(data);

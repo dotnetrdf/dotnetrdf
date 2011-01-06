@@ -212,6 +212,11 @@ namespace VDS.RDF.Storage
             return base.CreateRequest(servicePath, accept, method, queryParams);
         }
 
+        /// <summary>
+        /// Does nothing as AllegroGraph does not require the same query escaping that Sesame does
+        /// </summary>
+        /// <param name="query">Query to escape</param>
+        /// <returns></returns>
         protected override string EscapeQuery(string query)
         {
             return query;

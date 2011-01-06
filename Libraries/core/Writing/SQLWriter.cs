@@ -51,6 +51,7 @@ namespace VDS.RDF.Writing
     /// Class for storing RDF Graphs into SQL backed Storage
     /// </summary>
     /// <remarks>The Default Database format is that of the dotNetRDF Store which can be found at <see>http://www.dotnetrdf.org/content.asp?pageID=dotNetRDF%20Store</see>, arbitrary database formats can be used by implementing the <see cref="ISqlIOManager">ISqlIOManager</see> interface for your chosen database.</remarks>
+    [Obsolete("Direct SQL Backed Stores are considered obsolete and are not recommended for anything other than small scale prototyping and will be removed in future versions", false)]
     public class SqlWriter
     {
         private ISqlIOManager _manager;

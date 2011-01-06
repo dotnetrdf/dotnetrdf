@@ -52,6 +52,7 @@ namespace VDS.RDF
     /// Class for representing an RDF Graph which is automatically stored to a backing SQL Store as it is modified
     /// </summary>
     /// <threadsafety instance="false">Safe for multi-threaded read-only access but unsafe if one/more threads may modify the Graph by using the <see cref="Graph.Assert">Assert</see>, <see cref="Graph.Retract">Retract</see> or <see cref="BaseGraph.Merge">Merge</see> methods</threadsafety>
+    [Obsolete("Direct SQL Backed Stores are considered obsolete and are not recommended for anything other than small scale prototyping and will be removed in future versions", false)]   
     public class SqlGraph : Graph
     {
         /// <summary>

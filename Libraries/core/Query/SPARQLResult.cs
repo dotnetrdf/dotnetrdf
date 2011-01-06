@@ -189,7 +189,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Displays the Result as a commas separated string of pairs of the form ?var = value
+        /// Displays the Result as a comma separated string of pairs of the form ?var = value
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -220,6 +220,11 @@ namespace VDS.RDF.Query
             }
         }
 
+        /// <summary>
+        /// Displays the Result as a comma separated string of paris of the form ?var = value where values are formatted using the given Node Formatter
+        /// </summary>
+        /// <param name="formatter">Node Formatter</param>
+        /// <returns></returns>
         public String ToString(INodeFormatter formatter)
         {
             StringBuilder output = new StringBuilder();

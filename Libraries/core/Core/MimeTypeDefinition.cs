@@ -83,6 +83,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="syntaxName">Syntax Name for the Syntax which has this MIME Type definition</param>
         /// <param name="mimeTypes">MIME Types</param>
+        /// <param name="fileExtensions">File Extensions</param>
         /// <param name="rdfParserType">Type to use to parse RDF (or null if not applicable)</param>
         /// <param name="rdfDatasetParserType">Type to use to parse RDF Datasets (or null if not applicable)</param>
         /// <param name="sparqlResultsParserType">Type to use to parse SPARQL Results (or null if not applicable)</param>
@@ -482,6 +483,9 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Gets whether the definition provides a RDF Writer
+        /// </summary>
         public bool CanWriteRdf
         {
             get
@@ -490,6 +494,9 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Gets whether the Definition provides a RDF Dataset Writer
+        /// </summary>
         public bool CanWriteRdfDatasets
         {
             get
@@ -498,6 +505,9 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Gets whether the Definition provides a SPARQL Results Writer
+        /// </summary>
         public bool CanWriteSparqlResults
         {
             get
@@ -506,6 +516,10 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Gets an instance of a RDF parser
+        /// </summary>
+        /// <returns></returns>
         public IRdfReader GetRdfParser()
         {
             if (this._rdfParserType != null)
@@ -518,6 +532,10 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Gets an instance of a RDF writer
+        /// </summary>
+        /// <returns></returns>
         public IRdfWriter GetRdfWriter()
         {
             if (this._rdfWriterType != null)
@@ -530,6 +548,10 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Gets an instance of a RDF Dataset parser
+        /// </summary>
+        /// <returns></returns>
         public IStoreReader GetRdfDatasetParser()
         {
             if (this._rdfDatasetParserType != null)
@@ -542,6 +564,10 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Gets an instance of a RDF Dataset writer
+        /// </summary>
+        /// <returns></returns>
         public IStoreWriter GetRdfDatasetWriter()
         {
             if (this._rdfDatasetWriterType != null)
@@ -554,6 +580,10 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Gets an instance of a SPARQL Results parser
+        /// </summary>
+        /// <returns></returns>
         public ISparqlResultsReader GetSparqlResultsParser()
         {
             if (this._sparqlResultsParserType != null)
@@ -570,6 +600,10 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Gets an instance of a SPARQL Results writer
+        /// </summary>
+        /// <returns></returns>
         public ISparqlResultsWriter GetSparqlResultsWriter()
         {
             if (this._sparqlResultsWriterType != null)

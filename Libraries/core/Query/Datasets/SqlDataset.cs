@@ -51,6 +51,7 @@ namespace VDS.RDF.Query.Datasets
     /// <summary>
     /// Represents an out of memory dataset which is the data stored in a SQL Database using the dotNetRDF Store format
     /// </summary>
+    [Obsolete("Direct SQL Backed Stores are considered obsolete and are not recommended for anything other than small scale prototyping and will be removed in future versions", false)]
     public class SqlDataset : BaseDataset
     {
         private IDotNetRDFStoreManager _manager;

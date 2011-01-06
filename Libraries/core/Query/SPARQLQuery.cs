@@ -644,6 +644,9 @@ namespace VDS.RDF.Query
             }
         }
 
+        /// <summary>
+        /// Gets whether a Query has a DISTINCT modifier
+        /// </summary>
         public bool HasDistinctModifier
         {
             get

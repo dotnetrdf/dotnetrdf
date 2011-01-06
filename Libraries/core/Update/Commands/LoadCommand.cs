@@ -51,6 +51,7 @@ namespace VDS.RDF.Update.Commands
         /// </summary>
         /// <param name="sourceUri">Source URI to load data from</param>
         /// <param name="graphUri">Target URI for the Graph to store data in</param>
+        /// <param name="silent">Whether errors loading should be suppressed</param>
         public LoadCommand(Uri sourceUri, Uri graphUri, bool silent)
             : base(SparqlUpdateCommandType.Load, true) 
         {
@@ -60,9 +61,19 @@ namespace VDS.RDF.Update.Commands
             this._silent = silent;
         }
 
+        /// <summary>
+        /// Creates a new LOAD command
+        /// </summary>
+        /// <param name="sourceUri">Source URI to load data from</param>
+        /// <param name="silent">Whether errors loading should be suppressed</param>
         public LoadCommand(Uri sourceUri, bool silent)
             : this(sourceUri, null, silent) { }
 
+        /// <summary>
+        /// Creates a new LOAD command
+        /// </summary>
+        /// <param name="sourceUri">Source URI to load data from</param>
+        /// <param name="graphUri">Target URI for the Graph to store data in</param>
         public LoadCommand(Uri sourceUri, Uri targetUri)
             : this(sourceUri, targetUri, false) { }
 
@@ -95,6 +106,9 @@ namespace VDS.RDF.Update.Commands
             }
         }
 
+        /// <summary>
+        /// Gets whether errors loading the data are suppressed
+        /// </summary>
         public bool Silent
         {
             get

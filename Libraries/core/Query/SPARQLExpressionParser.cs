@@ -928,7 +928,7 @@ namespace VDS.RDF.Query
             if (this._syntax == SparqlQuerySyntax.Sparql_1_0) throw new RdfParseException("Aggregates are not permitted in SPARQL 1.0");
 
             IToken agg = tokens.Dequeue();
-            ISparqlExpression aggExpr = null, sepExpr = null;
+            ISparqlExpression aggExpr = null;
             bool distinct = false, all = false;
             bool scalarArgs = false;
 

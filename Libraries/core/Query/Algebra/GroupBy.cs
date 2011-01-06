@@ -54,6 +54,7 @@ namespace VDS.RDF.Query.Algebra
         /// Creates a new Group By
         /// </summary>
         /// <param name="pattern">Pattern</param>
+        /// <param name="grouping">Grouping to use</param>
         public GroupBy(ISparqlAlgebra pattern, ISparqlGroupBy grouping)
         {
             this._pattern = pattern;
@@ -63,7 +64,7 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Evaluates a Group By by generating a <see cref="GroupMultiset">GroupMultiset</see> from the Input Multiset
         /// </summary>
-        /// <param name="context"></param>
+        /// <param name="context">SPARQL Evaluation Context</param>
         /// <returns></returns>
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
@@ -140,6 +141,11 @@ namespace VDS.RDF.Query.Algebra
             return q;
         }
 
+        /// <summary>
+        /// Throws an exception since GroupBy() cannot be converted to a Graph Pattern
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="NotSupportedException">Thrown since GroupBy() cannot be converted to a GraphPattern</exception>
         public GraphPattern ToGraphPattern()
         {
             throw new NotSupportedException("GroupBy() cannot be converted to a GraphPattern");

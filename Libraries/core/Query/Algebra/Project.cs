@@ -296,6 +296,7 @@ namespace VDS.RDF.Query.Algebra
         /// Creates a new Select
         /// </summary>
         /// <param name="pattern">Inner Pattern</param>
+        /// <param name="variables">Variables to Select</param>
         public Select(ISparqlAlgebra pattern, IEnumerable<SparqlVariable> variables)
         {
             this._pattern = pattern;

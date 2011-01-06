@@ -51,11 +51,23 @@ namespace VDS.RDF.Writing.Formatting
         public UncompressedNotation3Formatter()
             : base("Notation 3") { }
 
+        /// <summary>
+        /// Formats a Variable Node for Notation 3
+        /// </summary>
+        /// <param name="v">Variable</param>
+        /// <param name="segment">Triple Segment</param>
+        /// <returns></returns>
         protected override string FormatVariableNode(VariableNode v, TripleSegment? segment)
         {
             return v.ToString();
         }
 
+        /// <summary>
+        /// Formats a Graph Literal Node for Notation 3
+        /// </summary>
+        /// <param name="glit">Graph Literal</param>
+        /// <param name="segment">Triple Segment</param>
+        /// <returns></returns>
         protected override string FormatGraphLiteralNode(GraphLiteralNode glit, TripleSegment? segment)
         {
             if (segment == TripleSegment.Predicate) throw new RdfOutputException(WriterErrorMessages.GraphLiteralPredicatesUnserializable(this.FormatName));
@@ -96,11 +108,23 @@ namespace VDS.RDF.Writing.Formatting
         public Notation3Formatter(INamespaceMapper nsmap)
             : base("Notation 3", new QNameOutputMapper(nsmap)) { }
 
+        /// <summary>
+        /// Formats a Variable Node for Notation 3
+        /// </summary>
+        /// <param name="v">Variable</param>
+        /// <param name="segment">Triple Segment</param>
+        /// <returns></returns>
         protected override string FormatVariableNode(VariableNode v, TripleSegment? segment)
         {
             return v.ToString();
         }
 
+        /// <summary>
+        /// Formats a Graph Literal Node for Notation 3
+        /// </summary>
+        /// <param name="glit">Graph Literal</param>
+        /// <param name="segment">Triple Segment</param>
+        /// <returns></returns>
         protected override string FormatGraphLiteralNode(GraphLiteralNode glit, TripleSegment? segment)
         {
             if (segment == TripleSegment.Predicate) throw new RdfOutputException(WriterErrorMessages.GraphLiteralPredicatesUnserializable(this.FormatName));

@@ -57,6 +57,7 @@ namespace VDS.RDF
     /// Iterating over the Triples/Nodes of this Graph will only return those that have been added to the Graph since its instantiation or the most recent call to <see cref="WriteOnlySqlGraph.Refresh">Refresh()</see>
     /// </para>
     /// </remarks>
+    [Obsolete("Direct SQL Backed Stores are considered obsolete and are not recommended for anything other than small scale prototyping and will be removed in future versions", false)]   
     public class WriteOnlySqlGraph : SqlGraph 
     {
         /// <summary>

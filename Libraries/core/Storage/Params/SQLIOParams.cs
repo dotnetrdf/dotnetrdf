@@ -45,6 +45,7 @@ namespace VDS.RDF.Storage.Params
     /// <summary>
     /// Interface for Store Parameters where the Parameter is a <see cref="ISqlIOManager">ISqlIOManager</see>
     /// </summary>
+    [Obsolete("Direct SQL Backed Stores are considered obsolete and are not recommended for anything other than small scale prototyping and will be removed in future versions", false)]
     public interface ISQLIOParams : IStoreParams 
     {
         /// <summary>
@@ -58,6 +59,7 @@ namespace VDS.RDF.Storage.Params
     /// <summary>
     /// Store Parameters for Readers &amp; Writers which use SQL based storage where the main Parameter is a <see cref="ISqlIOManager">ISqlIOManager</see>
     /// </summary>
+    [Obsolete("Direct SQL Backed Stores are considered obsolete and are not recommended for anything other than small scale prototyping and will be removed in future versions", false)]
     public class SqlIOParams : ISQLIOParams
     {
         /// <summary>
@@ -118,6 +120,7 @@ namespace VDS.RDF.Storage.Params
     /// <summary>
     /// Store Parameters for multi-threaded Readers &amp; Writers which use SQL based storage where the main Parameter is a <see cref="IThreadedSqlIOManager">IThreadedSqlIOManager</see>
     /// </summary>
+    [Obsolete("Direct SQL Backed Stores are considered obsolete and are not recommended for anything other than small scale prototyping and will be removed in future versions", false)]
     public class ThreadedSqlIOParams : SqlIOParams
     {
         private IThreadedSqlIOManager _threadedmanager;

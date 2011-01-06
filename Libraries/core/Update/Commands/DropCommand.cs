@@ -51,6 +51,7 @@ namespace VDS.RDF.Update.Commands
         /// Creates a new DROP command
         /// </summary>
         /// <param name="graphUri">URI ofthe Graph to DROP</param>
+        /// <param name="mode">DROP Mode to use</param>
         /// <param name="silent">Whether the DROP should be done silently</param>
         public DropCommand(Uri graphUri, ClearMode mode, bool silent)
             : base(SparqlUpdateCommandType.Drop, true)
@@ -62,6 +63,11 @@ namespace VDS.RDF.Update.Commands
             this._silent = silent;
         }
 
+        /// <summary>
+        /// Creates a new DROP command
+        /// </summary>
+        /// <param name="graphUri">URI of the Graph to DROP</param>
+        /// <param name="mode">DROP Mode to use</param>
         public DropCommand(Uri graphUri, ClearMode mode)
             : this(graphUri, mode, false) { }
 

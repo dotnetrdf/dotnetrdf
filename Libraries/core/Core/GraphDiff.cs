@@ -70,6 +70,12 @@ namespace VDS.RDF
         private List<IGraph> _lhsMSGs = new List<IGraph>();
         private List<IGraph> _rhsMSGs = new List<IGraph>();
 
+        /// <summary>
+        /// Calculates the Difference between the two Graphs i.e. the changes required to get from the 1st Graph to the 2nd Graph
+        /// </summary>
+        /// <param name="a">First Graph</param>
+        /// <param name="b">Second Graph</param>
+        /// <returns></returns>
         public GraphDiffReport Difference(IGraph a, IGraph b)
         {
             GraphDiffReport report = new GraphDiffReport();
@@ -173,6 +179,12 @@ namespace VDS.RDF
             return report;
         }
 
+        /// <summary>
+        /// Computes MSGs for a Graph
+        /// </summary>
+        /// <param name="g">Graph</param>
+        /// <param name="unassigned">Triples that need assigning to MSGs</param>
+        /// <param name="msgs">MSGs list to populate</param>
         private void ComputeMSGs(IGraph g, HashSet<Triple> unassigned, List<IGraph> msgs)
         {
             //While we have unassigned Triples build MSGs
@@ -356,6 +368,9 @@ namespace VDS.RDF
     /// <summary>
     /// A Comparer for Graphs which compares based on number of Triples
     /// </summary>
+    /// <remarks>
+    /// Used internally in computing Graph Differences but made a public Graph as it may occasionally come in useful
+    /// </remarks>
     public class GraphSizeComparer : IComparer<IGraph>
     {
         /// <summary>

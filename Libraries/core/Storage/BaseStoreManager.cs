@@ -54,6 +54,7 @@ namespace VDS.RDF.Storage
     /// <remarks>
     /// Provides a Background Buffer Thread which does writing when Transactions are enabled, when transactions are disabled it assumes that this has been done to allow multi-threaded writing and so all writes are done synchronously.  Benchmarking shows this is about 3 times as fast as using the single buffer Thread when doing a large multi-threaded write.
     /// </remarks>
+    [Obsolete("Direct SQL Backed Stores are considered obsolete and are not recommended for anything other than small scale prototyping and will be removed in future versions", false)]
     public abstract class BaseStoreManager : ISqlIOManager, IThreadedSqlIOManager, IGenericIOManager, IConfigurationSerializable
     {
         #region Protected Member Variables for use by derived classes

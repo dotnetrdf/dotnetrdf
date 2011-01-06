@@ -72,8 +72,20 @@ namespace VDS.RDF.Parsing
         /// </remarks>
         public const String XmlSchemaDateTimeFormat = "yyyy-MM-dd\\THH:mm:ssK";
 
+        /// <summary>
+        /// Date Time Formatting string which meets the specified format for xsd:date
+        /// </summary>
+        /// <remarks>
+        /// Use with the <see cref="DateTime.ToString()">DateTime.ToString()</see> method to format a DateTime into appropriate string format
+        /// </remarks>
         public const String XmlSchemaDateFormat = "yyyy-MM-ddK";
 
+        /// <summary>
+        /// Date Time Formatting string which meets the the specified format for xsd:time
+        /// </summary>
+        /// <remarks>
+        /// Use with the <see cref="DateTime.ToString()">DateTime.ToString()</see> method to format a DateTime into appropriate string format
+        /// </remarks>
         public const String XmlSchemaTimeFormat = "HH:mm:ssK";
 
 

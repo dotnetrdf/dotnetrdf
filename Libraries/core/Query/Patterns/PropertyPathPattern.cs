@@ -89,6 +89,9 @@ namespace VDS.RDF.Query.Patterns
         public PropertyPathPattern(PatternItem subj, ISparqlPath path, PatternItem obj)
             : this(subj, path, obj, String.Empty) { }
 
+        /// <summary>
+        /// Gets the Subject of the Property Path
+        /// </summary>
         public PatternItem Subject
         {
             get
@@ -97,6 +100,9 @@ namespace VDS.RDF.Query.Patterns
             }
         }
 
+        /// <summary>
+        /// Gets the Property Path
+        /// </summary>
         public ISparqlPath Path
         {
             get
@@ -105,6 +111,9 @@ namespace VDS.RDF.Query.Patterns
             }
         }
 
+        /// <summary>
+        /// Gets the Object of the Property Path
+        /// </summary>
         public PatternItem Object
         {
             get

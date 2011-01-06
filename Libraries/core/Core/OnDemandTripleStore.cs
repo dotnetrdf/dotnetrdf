@@ -52,6 +52,8 @@ namespace VDS.RDF
     /// <br /><br />
     /// Users of this class should be aware of the implications of the <strong>read-only</strong> nature of this Store.  Although it represents a view of a SQL Based Store changes made to either the Store (adding/removing Graphs) or to individual Graphs are <strong>never</strong> persisted to the backing Store.
     /// </remarks>
+    [Obsolete("Direct SQL Backed Stores are considered obsolete and are not recommended for anything other than small scale prototyping and will be removed in future versions", false)]
+   
     public class OnDemandTripleStore : TripleStore
     {
         /// <summary>
@@ -100,6 +102,7 @@ namespace VDS.RDF
     /// <summary>
     /// A Graph Collection connected to a backing SQL Store where Graphs can be loaded on-demand from the Store as needed
     /// </summary>
+    [Obsolete("Direct SQL Backed Stores are considered obsolete and are not recommended for anything other than small scale prototyping and will be removed in future versions", false)]   
     public class OnDemandGraphCollection : GraphCollection, IEnumerable<IGraph>
     {
         /// <summary>

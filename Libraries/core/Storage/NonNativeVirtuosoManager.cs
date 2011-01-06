@@ -65,6 +65,7 @@ namespace VDS.RDF.Storage
     /// <remarks>
     /// Since there is no way of knowing what the underlying Database of a Virtual Database in Virtuoso is this Manager cannot automatically create the dotNetRDF Store since it does not know which SQL Setup script to use.  You <strong>must</strong> configure your virtual database yourself before using this Manager to access it.
     /// </remarks>
+    [Obsolete("Direct SQL Backed Stores are considered obsolete and are not recommended for anything other than small scale prototyping and will be removed in future versions", false)]
     public class NonNativeVirtuosoManager : MicrosoftSqlStoreManager, IConfigurationSerializable
     {
         private Dictionary<int, VirtuosoConnection> _dbConnections = new Dictionary<int, VirtuosoConnection>();

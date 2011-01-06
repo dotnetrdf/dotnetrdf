@@ -83,7 +83,6 @@ namespace VDS.RDF.Configuration
                             throw new DotNetRdfConfigurationException("Unable to load the In-Memory Dataset identified by the Node '" + objNode.ToString() + "' since the Object pointed to by the dnr:usingStore property could not be loaded as an object which implements the IInMemoryQueryableStore interface");
                         }
                     }
-                    break;
 
 #if !NO_DATA && !NO_STORAGE
 
@@ -106,7 +105,6 @@ namespace VDS.RDF.Configuration
                             throw new DotNetRdfConfigurationException("Unable to load the SQL Dataset identified by the Node '" + objNode.ToString() + "' since the Object pointed to by the dnr:sqlManager property could not be laoded as an object which implements the IDotNetRDFStoreManager interface");
                         }
                     }
-                    break;
 
 #endif
             } 

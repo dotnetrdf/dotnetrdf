@@ -175,6 +175,11 @@ namespace VDS.RDF.Web.Configuration.Query
             }
         }
 
+        /// <summary>
+        /// Creates a new Query Handler Configuration
+        /// </summary>
+        /// <param name="g">Configuration Graph</param>
+        /// <param name="objNode">Object Node</param>
         public BaseQueryHandlerConfiguration(IGraph g, INode objNode)
             : this(null, g, objNode) { }
 
@@ -306,7 +311,7 @@ namespace VDS.RDF.Web.Configuration.Query
     public class QueryHandlerConfiguration : BaseQueryHandlerConfiguration
     {
         /// <summary>
-        /// Creates a new Protocol Handler Configuration
+        /// Creates a new Query Handler Configuration
         /// </summary>
         /// <param name="context">HTTP Context</param>
         /// <param name="g">Configuration Graph</param>
@@ -314,6 +319,11 @@ namespace VDS.RDF.Web.Configuration.Query
         public QueryHandlerConfiguration(HttpContext context, IGraph g, INode objNode)
             : base(context, g, objNode) { }
 
+        /// <summary>
+        /// Creates a new Query Handler Configuration
+        /// </summary>
+        /// <param name="g">Configuration Graph</param>
+        /// <param name="objNode">Object Node</param>
         public QueryHandlerConfiguration(IGraph g, INode objNode)
             : this(null, g, objNode) { }
     }

@@ -161,6 +161,9 @@ namespace VDS.RDF.Query
             this._variables.Clear();
         }
 
+        /// <summary>
+        /// Gets an enumeration of the Variables for which Values have been set
+        /// </summary>
         public IEnumerable<KeyValuePair<String, INode>> Variables
         {
             get
@@ -169,6 +172,9 @@ namespace VDS.RDF.Query
             }
         }
 
+        /// <summary>
+        /// Gets an enumeration of the Parameters for which Values have been set
+        /// </summary>
         public IEnumerable<KeyValuePair<String, INode>> Parameters
         {
             get
@@ -204,12 +210,26 @@ namespace VDS.RDF.Query
             }
         }
 
+        /// <summary>
+        /// Removes a previously set value for a Parameter
+        /// </summary>
+        /// <param name="name">Parameter Name</param>
+        /// <remarks>
+        /// There is generally no reason to do this since you can just set a parameters value to change it
+        /// </remarks>
         public void UnsetParameter(String name)
         {
             name = (name.StartsWith("@")) ? name.Substring(1) : name;
             this._parameters.Remove(name);
         }
 
+        /// <summary>
+        /// Removes a previously set value for a Variable
+        /// </summary>
+        /// <param name="name">Variable Name</param>
+        /// <remarks>
+        /// May be useful if you have a skeleton query into which you sometimes substitute values for variables but don't always do so
+        /// </remarks>
         public void UnsetVariable(String name)
         {
             name = (name.StartsWith("@")) ? name.Substring(1) : name;

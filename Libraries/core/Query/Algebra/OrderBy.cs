@@ -54,6 +54,7 @@ namespace VDS.RDF.Query.Algebra
         /// Creates a new Order By clause
         /// </summary>
         /// <param name="pattern">Pattern</param>
+        /// <param name="ordering">Ordering</param>
         public OrderBy(ISparqlAlgebra pattern, ISparqlOrderBy ordering)
         {
             this._pattern = pattern;

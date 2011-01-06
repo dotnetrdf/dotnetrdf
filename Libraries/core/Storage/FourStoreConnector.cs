@@ -485,14 +485,17 @@ namespace VDS.RDF.Storage
                 #endif
 
                 //Make the Request
-                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                {
 
-                #if DEBUG
+#if DEBUG
                     if (Options.HttpDebugging)
                     {
                         Tools.HttpDebugResponse(response);
                     }
-                #endif
+#endif
+                    response.Close();
+                }
 
                 //If we get here then it's OK
             }
@@ -508,14 +511,21 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Returns that deleting Graph is supported
+        /// </summary>
         public bool DeleteSupported
         {
             get
             {
-                return false;
+                return true;
             }
         }
 
+        /// <summary>
+        /// Lists the Graphs in the Store
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<Uri> ListGraphs()
         {
             try
@@ -548,6 +558,9 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Returns that Listing Graphs is supported
+        /// </summary>
         public bool ListGraphsSupported
         {
             get

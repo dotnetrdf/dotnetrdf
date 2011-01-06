@@ -62,9 +62,17 @@ namespace VDS.RDF.Storage
         private LeviathanQueryProcessor _queryProcessor;
         private LeviathanUpdateProcessor _updateProcessor;
 
+        /// <summary>
+        /// Creates a new In-Memory Manager which is a wrapper around an in-memory store
+        /// </summary>
+        /// <param name="store">Triple Store</param>
         public InMemoryManager(IInMemoryQueryableStore store)
             : this(new InMemoryDataset(store)) { }
 
+        /// <summary>
+        /// Creates a new In-Memory Manager which is a wrapper around a SPARQL Dataset
+        /// </summary>
+        /// <param name="dataset">Dataset</param>
         public InMemoryManager(ISparqlDataset dataset)
         {
             this._dataset = dataset;
@@ -72,6 +80,11 @@ namespace VDS.RDF.Storage
 
         #region IGenericIOManager Members
 
+        /// <summary>
+        /// Loads a Graph from the Store
+        /// </summary>
+        /// <param name="g">Graph to load into</param>
+        /// <param name="graphUri">Graph URI to load</param>
         public void LoadGraph(IGraph g, Uri graphUri)
         {
             if (this._dataset.HasGraph(graphUri))
@@ -80,6 +93,11 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Loads a Graph from the Store
+        /// </summary>
+        /// <param name="g">Graph to load into</param>
+        /// <param name="graphUri">Graph URI to load</param>
         public void LoadGraph(IGraph g, string graphUri)
         {
             if (graphUri == null)
@@ -96,6 +114,10 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Saves a Graph to the Store
+        /// </summary>
+        /// <param name="g">Graph</param>
         public void SaveGraph(IGraph g)
         {
             if (this._dataset.HasGraph(g.BaseUri))
@@ -106,6 +128,12 @@ namespace VDS.RDF.Storage
             this._dataset.Flush();
         }
 
+        /// <summary>
+        /// Updates a Graph in the Store
+        /// </summary>
+        /// <param name="graphUri">URI of the Graph to Update</param>
+        /// <param name="additions">Triples to be added</param>
+        /// <param name="removals">Triples to be removed</param>
         public void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
             if (!this._dataset.HasGraph(graphUri))
@@ -126,6 +154,12 @@ namespace VDS.RDF.Storage
             this._dataset.Flush();
         }
 
+        /// <summary>
+        /// Updates a Graph in the Store
+        /// </summary>
+        /// <param name="graphUri">URI of the Graph to Update</param>
+        /// <param name="additions">Triples to be added</param>
+        /// <param name="removals">Triples to be removed</param>
         public void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
             if (graphUri == null)
@@ -142,6 +176,9 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Returns that Triple level updates are supported
+        /// </summary>
         public bool UpdateSupported
         {
             get 
@@ -150,6 +187,10 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Deletes a Graph from the Store
+        /// </summary>
+        /// <param name="graphUri">URI of the Graph to delete</param>
         public void DeleteGraph(Uri graphUri)
         {
             if (graphUri == null)
@@ -165,6 +206,10 @@ namespace VDS.RDF.Storage
             this._dataset.Flush();
         }
 
+        /// <summary>
+        /// Deletes a Graph from the Store
+        /// </summary>
+        /// <param name="graphUri">URI of the Graph to delete</param>
         public void DeleteGraph(string graphUri)
         {
             if (graphUri == null)
@@ -181,6 +226,9 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Returns that Graph Deletion is supported
+        /// </summary>
         public bool DeleteSupported
         {
             get 
@@ -189,11 +237,18 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Lists the URIs of Graphs in the Store
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<Uri> ListGraphs()
         {
             return this._dataset.GraphUris;
         }
 
+        /// <summary>
+        /// Returns that listing graphs is supported
+        /// </summary>
         public bool ListGraphsSupported
         {
             get
@@ -202,6 +257,9 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Returns that the Store is ready
+        /// </summary>
         public bool IsReady
         {
             get 
@@ -210,6 +268,9 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Returns that the Store is not read-only
+        /// </summary>
         public bool IsReadOnly
         {
             get 
@@ -218,6 +279,11 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Makes a SPARQL Query against the Store
+        /// </summary>
+        /// <param name="sparqlQuery">SPARQL Query</param>
+        /// <returns></returns>
         public Object Query(String sparqlQuery)
         {
             if (this._queryParser == null) this._queryParser = new SparqlQueryParser();
@@ -227,6 +293,10 @@ namespace VDS.RDF.Storage
             return this._queryProcessor.ProcessQuery(q);
         }
 
+        /// <summary>
+        /// Applies SPARQL Updates to the Store
+        /// </summary>
+        /// <param name="sparqlUpdate">SPARQL Update</param>
         public void Update(String sparqlUpdate)
         {
             if (this._updateParser == null) this._updateParser = new SparqlUpdateParser();
@@ -240,6 +310,9 @@ namespace VDS.RDF.Storage
 
         #region IDisposable Members
 
+        /// <summary>
+        /// Disposes of the Manager
+        /// </summary>
         public void Dispose()
         {
             this._dataset.Flush();

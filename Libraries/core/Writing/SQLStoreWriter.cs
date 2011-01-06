@@ -50,6 +50,7 @@ namespace VDS.RDF.Writing
     /// Class for storing entire Triple Stores into SQL backed Storage
     /// </summary>
     /// <remarks>Uses single threaded writing which will be very slow for large Triple Stores, use a <see cref="ThreadedSqlStoreWriter">ThreadedSqlStoreWriter</see> for large Stores</remarks>
+    [Obsolete("Direct SQL Backed Stores are considered obsolete and are not recommended for anything other than small scale prototyping and will be removed in future versions", false)]
     public class SqlStoreWriter : IStoreWriter
     {
         /// <summary>

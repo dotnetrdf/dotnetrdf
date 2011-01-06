@@ -58,6 +58,7 @@ namespace VDS.RDF.Storage
     /// While the interface does not define any methods related to the creation/destruction of a Store we recommend that the constructor of implementations of this class should set up the necessary database tables if it determines that they do not exist.
     /// </para>
     /// </remarks>
+    [Obsolete("Direct SQL Backed Stores are considered obsolete and are not recommended for anything other than small scale prototyping and will be removed in future versions", false)]
     public interface ISqlIOManager : IDisposable
     {
         /// <summary>
@@ -284,6 +285,7 @@ namespace VDS.RDF.Storage
     /// <summary>
     /// Interface for classes which provide the Read/Write functionality for a SQL Store in a Thread Safe way
     /// </summary>
+    [Obsolete("Direct SQL Backed Stores are considered obsolete and are not recommended for anything other than small scale prototyping and will be removed in future versions", false)]
     public interface IThreadedSqlIOManager : ISqlIOManager
     {
         /// <summary>
@@ -299,6 +301,7 @@ namespace VDS.RDF.Storage
     /// <summary>
     /// Marker interface for classes which implement SQL Stores using the dotNetRDF Store Format
     /// </summary>
+    [Obsolete("Direct SQL Backed Stores are considered obsolete and are not recommended for anything other than small scale prototyping and will be removed in future versions", false)]
     public interface IDotNetRDFStoreManager : ISqlIOManager
     {
 
