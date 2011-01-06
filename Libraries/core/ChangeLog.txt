@@ -28,6 +28,7 @@ Added
  - Connector for Fuseki
  - Connector which wraps an in-memory store (i.e. a IInMemoryQueryableStore) or a SPARQL dataset (i.e. a ISparqlDataset)
  - Connector which wraps any IGenericIOManager and makes it read-only
+- New HtmlSchemaWriter outputs HTML versions of ontologies in a schema specification style rather than as a table like the existing HtmlWriter
 
 Changed
 - Bug Fixes
@@ -42,6 +43,7 @@ Changed
 - General Improvements
  - Internal restructuring of how MIME Types are managed
   - Allows for new MIME Types, File Extensions and parsers to be registered with the API and used automatically where appropriate
+ - Can use dotnetrdf:default-graph as a URI to explicitly access the default unnamed graph in a SPARQL dataset
 - Parsing
  - Notation 3 Parser supports Variables, @forSome and @forAll fully
  - All Parsers should now throw RdfParseExceptions when null Graphs, Stores, filenames, streams etc are passed as arguments
@@ -70,6 +72,9 @@ Changed
  - All HTTP Handlers output CORS headers so RDF/SPARQL content is accessible to JS clients
  - SparqlServer now supports omitting any of the processors (provided at least one is specified) so you can create
    endpoints with some features explicitly disabled
+- Obsoleted Features
+ - All ISqlIOManager features marked as obsolete (but still allowed until 0.5.x most likely)
+ - RdfXmlTreeWriter and FastRdfXmlWriter marked as obsolete
 
 Removed
 - Obsolete VDS.RDF.Web classes removed

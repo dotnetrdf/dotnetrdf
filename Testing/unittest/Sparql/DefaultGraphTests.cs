@@ -52,5 +52,7 @@ namespace VDS.RDF.Test.Sparql
                 Assert.Fail("ASK Query did not return a SPARQL Result Set as expected");
             }
         }
+
+        //TODO: Add additional tests for the same thing with a SQL Dataset and directly onto an ISqlIOManager instance
     }
 }
