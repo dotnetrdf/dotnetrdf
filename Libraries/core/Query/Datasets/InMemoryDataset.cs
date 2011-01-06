@@ -73,7 +73,14 @@ namespace VDS.RDF.Query.Datasets
         /// <param name="graphUri">Graph URI</param>
         public override void RemoveGraph(Uri graphUri)
         {
-            this._store.Remove(graphUri);
+            if (graphUri.ToSafeString().Equals(GraphCollection.DefaultGraphUri))
+            {
+                this._store.Remove(null);
+            }
+            else
+            {
+                this._store.Remove(graphUri);
+            }
         }
 
         /// <summary>
@@ -83,7 +90,14 @@ namespace VDS.RDF.Query.Datasets
         /// <returns></returns>
         public override bool HasGraph(Uri graphUri)
         {
-            return this._store.HasGraph(graphUri);
+            if (graphUri.ToSafeString().Equals(GraphCollection.DefaultGraphUri))
+            {
+                return this._store.HasGraph(null);
+            }
+            else
+            {
+                return this._store.HasGraph(graphUri);
+            }
         }
 
         /// <summary>
@@ -123,7 +137,14 @@ namespace VDS.RDF.Query.Datasets
         {
             get 
             {
-                return this._store.Graph(graphUri); 
+                if (graphUri.ToSafeString().Equals(GraphCollection.DefaultGraphUri))
+                {
+                    return this._store.Graph(null);
+                }
+                else
+                {
+                    return this._store.Graph(graphUri);
+                }
             }
         }
 
