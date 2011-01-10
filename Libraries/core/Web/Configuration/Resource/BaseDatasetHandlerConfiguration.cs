@@ -40,19 +40,68 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Web;
+using VDS.RDF.Configuration;
+using VDS.RDF.Query.Datasets;
 
 namespace VDS.RDF.Web.Configuration.Resource
 {
     //REQ: Implement Dataset Handler Configuration
 
+    /// <summary>
+    /// Abstract Base Class for Dataset Handler configurations
+    /// </summary>
     public class BaseDatasetHandlerConfiguration : BaseHandlerConfiguration
     {
+        private ISparqlDataset _dataset;
 
+        /// <summary>
+        /// Creates a new Dataset Handler configuration
+        /// </summary>
+        /// <param name="context">HTTP Context</param>
+        /// <param name="config">Configuration Graph</param>
+        /// <param name="objNode">Object Node</param>
         public BaseDatasetHandlerConfiguration(HttpContext context, IGraph config, INode objNode)
             : base(context, config, objNode)
         {
+            INode datasetNode = ConfigurationLoader.GetConfigurationNode(config, objNode, ConfigurationLoader.CreateConfigurationNode(config, ConfigurationLoader.PropertyUsingDataset));
 
+            //Load the Dataset
+            Object temp = ConfigurationLoader.LoadObject(config, datasetNode);
+            if (temp is ISparqlDataset)
+            {
+                this._dataset = (ISparqlDataset)temp;
+            }
+            else
+            {
+                throw new DotNetRdfConfigurationException("Unable to load Dataset Handler Configuration as the dnr:usingDatset property points to an Object which cannot be loaded as an object which implements the ISparqlDataset interface");
+            }
         }
+
+        /// <summary>
+        /// Gets the Dataset
+        /// </summary>
+        public ISparqlDataset Dataset
+        {
+            get
+            {
+                return this._dataset;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Basic implementation of a Dataset Handler Configuration
+    /// </summary>
+    public class DatasetHandlerConfiguration : BaseDatasetHandlerConfiguration
+    {
+        /// <summary>
+        /// Creates a new Dataset Handler configuration
+        /// </summary>
+        /// <param name="context">HTTP Context</param>
+        /// <param name="config">Configuration Graph</param>
+        /// <param name="objNode">Object Node</param>
+        public DatasetHandlerConfiguration(HttpContext context, IGraph config, INode objNode)
+            : base(context, config, objNode) { }
     }
 }
 

@@ -63,7 +63,7 @@ namespace VDS.RDF
         /// <param name="graphCollection">Graph Collection to use</param>
         protected BaseTripleStore(BaseGraphCollection graphCollection)
         {
-            if (graphCollection == null) throw new ArgumentNullException("graphCollection", "Graph Collection must be an instance of a class which derives from BaseGraphCollection");
+            if (graphCollection == null) throw new ArgumentNullException("graphCollection", "Graph Collection must be an non-null instance of a class which derives from BaseGraphCollection");
             this._graphs = graphCollection;
 
             this.GraphAddedHandler = new GraphEventHandler(this.OnGraphAdded);

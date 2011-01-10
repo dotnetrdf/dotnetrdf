@@ -97,36 +97,48 @@ namespace dotNetRDFStore
                 this.CrossThreadBeginUpdate(this.lvwGraphs);
                 this.CrossThreadClear(this.lvwGraphs);
 
-                //TODO: Use the ListGraphs() method if supported
-
-                IQueryableGenericIOManager queryManager = (IQueryableGenericIOManager)this._manager;
-                try
+                if (this._manager.ListGraphsSupported)
                 {
-                    Object results = queryManager.Query("SELECT DISTINCT ?g WHERE {GRAPH ?g {?s ?p ?o}}");
-                    if (results is SparqlResultSet)
+                    //Use ListGraphs() if it is supported
+                    foreach (Uri u in this._manager.ListGraphs())
                     {
-                        SparqlResultSet rset = (SparqlResultSet)results;
-                        foreach (SparqlResult res in rset)
-                        {
-                            this.CrossThreadAdd(this.lvwGraphs, res["g"].ToString());
-                        }
+                        this.CrossThreadAdd(this.lvwGraphs, u.ToString());
                     }
+
                     this.CrossThreadSetText(this.stsCurrent, "Store is ready");
                 }
-                catch (RdfStorageException storeEx)
+                else
                 {
-                    this.CrossThreadSetText(this.stsCurrent, "Graph Listing unavailable - Store is ready");
-                    this.CrossThreadMessage("Unable to list Graphs due to the following error:\n" + storeEx.Message, "Graph List Unavailable", MessageBoxIcon.Warning);
-                }
-                catch (RdfException rdfEx)
-                {
-                    this.CrossThreadSetText(this.stsCurrent, "Graph Listing unavailable - Store is ready");
-                    CrossThreadMessage("Unable to list Graphs due to the following error:\n" + rdfEx.Message, "Graph List Unavailable", MessageBoxIcon.Warning);
-                }
-                catch (Exception ex)
-                {
-                    this.CrossThreadSetText(this.stsCurrent, "Graph Listing unavailable - Store is ready");
-                    CrossThreadMessage("Unable to list Graphs due to the following error:\n" + ex.Message, "Graph List Unavailable", MessageBoxIcon.Warning);
+                    //Otherwise List Graphs by issuing SELECT DISTINCT ?g WHERE {GRAPH ?g {?s ?p ?o}}
+                    IQueryableGenericIOManager queryManager = (IQueryableGenericIOManager)this._manager;
+                    try
+                    {
+                        Object results = queryManager.Query("SELECT DISTINCT ?g WHERE {GRAPH ?g {?s ?p ?o}}");
+                        if (results is SparqlResultSet)
+                        {
+                            SparqlResultSet rset = (SparqlResultSet)results;
+                            foreach (SparqlResult res in rset)
+                            {
+                                this.CrossThreadAdd(this.lvwGraphs, res["g"].ToString());
+                            }
+                        }
+                        this.CrossThreadSetText(this.stsCurrent, "Store is ready");
+                    }
+                    catch (RdfStorageException storeEx)
+                    {
+                        this.CrossThreadSetText(this.stsCurrent, "Graph Listing unavailable - Store is ready");
+                        this.CrossThreadMessage("Unable to list Graphs due to the following error:\n" + storeEx.Message, "Graph List Unavailable", MessageBoxIcon.Warning);
+                    }
+                    catch (RdfException rdfEx)
+                    {
+                        this.CrossThreadSetText(this.stsCurrent, "Graph Listing unavailable - Store is ready");
+                        CrossThreadMessage("Unable to list Graphs due to the following error:\n" + rdfEx.Message, "Graph List Unavailable", MessageBoxIcon.Warning);
+                    }
+                    catch (Exception ex)
+                    {
+                        this.CrossThreadSetText(this.stsCurrent, "Graph Listing unavailable - Store is ready");
+                        CrossThreadMessage("Unable to list Graphs due to the following error:\n" + ex.Message, "Graph List Unavailable", MessageBoxIcon.Warning);
+                    }
                 }
 
                 this.CrossThreadEndUpdate(this.lvwGraphs);

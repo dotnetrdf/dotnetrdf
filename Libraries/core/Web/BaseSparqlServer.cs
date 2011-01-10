@@ -554,7 +554,7 @@ namespace VDS.RDF.Web
         /// </remarks>
         protected virtual void ProcessQueryResults(HttpContext context, Object result)
         {
-            HandlerHelper.ProcessResults(context, result, this._config);
+            HandlerHelper.SendToClient(context, result, this._config);
         }
 
         #endregion

@@ -46,6 +46,7 @@ using System.Text;
 using System.Web;
 using VDS.RDF.Configuration.Permissions;
 using VDS.RDF.Query;
+using VDS.RDF.Query.Datasets;
 using VDS.RDF.Web.Configuration;
 using VDS.RDF.Writing;
 
@@ -179,7 +180,7 @@ namespace VDS.RDF.Web
         /// <param name="context">Context of the HTTP Request</param>
         /// <param name="result">Results of the Sparql Query</param>
         /// <param name="config">Handler Configuration</param>
-        public static void ProcessResults(HttpContext context, Object result, BaseHandlerConfiguration config)
+        public static void SendToClient(HttpContext context, Object result, BaseHandlerConfiguration config)
         {
             MimeTypeDefinition definition = null;
             String ctype = "text/plain";
@@ -301,6 +302,12 @@ namespace VDS.RDF.Web
                 {
                     storewriter.Save((ITripleStore)result, new VDS.RDF.Storage.Params.StreamParams(context.Response.OutputStream));
                 }
+            }
+            else if (result is ISparqlDataset)
+            {
+                //Wrap in a Triple Store and then call self so the Triple Store writing branch of this if gets called instead
+                TripleStore store = new TripleStore(new DatasetGraphCollection((ISparqlDataset)result));
+                HandlerHelper.SendToClient(context, store, config);
             }
             else
             {

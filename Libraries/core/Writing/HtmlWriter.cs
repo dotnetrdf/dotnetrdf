@@ -57,126 +57,8 @@ namespace VDS.RDF.Writing
     /// If you encode Triples which have values datatyped as XML Literals with this writer then round-trip Graph equality is not guaranteed as the RDFa parser will add appropriate Namespace declarations to elements as required by the specification
     /// </para>
     /// </remarks>
-    public class HtmlWriter : IRdfWriter, IHtmlWriter
+    public class HtmlWriter : BaseHtmlWriter, IRdfWriter
     {
-
-        #region IHtmlWriter Members
-
-        private String _stylesheet = String.Empty;
-        private String _uriClass = "uri",
-                       _bnodeClass = "bnode",
-                       _literalClass = "literal",
-                       _datatypeClass = "datatype",
-                       _langClass = "langspec";
-        private String _uriPrefix = String.Empty;
-
-
-        /// <summary>
-        /// Gets/Sets a path to a Stylesheet which is used to format the Graph output
-        /// </summary>
-        public string Stylesheet
-        {
-            get
-            {
-                return this._stylesheet;
-            }
-            set
-            {
-                this._stylesheet = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets/Sets the CSS class used for the anchor tags used to display the URIs of URI Nodes
-        /// </summary>
-        public string CssClassUri
-        {
-            get
-            {
-                return this._uriClass;
-            }
-            set
-            {
-                this._uriClass = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets/Sets the CSS class used for the span tags used to display Blank Node IDs
-        /// </summary>
-        public string CssClassBlankNode
-        {
-            get
-            {
-                return this._bnodeClass;
-            }
-            set
-            {
-                this._bnodeClass = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets/Sets the CSS class used for the span tags used to display Literals
-        /// </summary>
-        public string CssClassLiteral
-        {
-            get
-            {
-                return this._literalClass;
-            }
-            set
-            {
-                this._literalClass = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets/Sets the CSS class used for the anchor tags used to display Literal datatypes
-        /// </summary>
-        public string CssClassDatatype
-        {
-            get
-            {
-                return this._datatypeClass;
-            }
-            set
-            {
-                this._datatypeClass = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets/Sets the CSS class used for the span tags used to display Literal language specifiers
-        /// </summary>
-        public string CssClassLangSpec
-        {
-            get
-            {
-                return this._langClass;
-            }
-            set
-            {
-                this._langClass = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets/Sets the Prefix applied to href attributes
-        /// </summary>
-        public String UriPrefix
-        {
-            get
-            {
-                return this._uriPrefix;
-            }
-            set
-            {
-                this._uriPrefix = value;
-            }
-        }
-
-        #endregion
 
         /// <summary>
         /// Saves the Graph to the given File as an XHTML Table with embedded RDFa
@@ -234,9 +116,9 @@ namespace VDS.RDF.Writing
                 context.HtmlWriter.WriteEncodedText(" - " + context.Graph.BaseUri.ToString());
             }
             context.HtmlWriter.RenderEndTag();
-            if (!this._stylesheet.Equals(String.Empty))
+            if (!this.Stylesheet.Equals(String.Empty))
             {
-                context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Href, this._stylesheet);
+                context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Href, this.Stylesheet);
                 context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Type, "text/css");
                 context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Rel, "stylesheet");
                 context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Link);
@@ -486,7 +368,7 @@ namespace VDS.RDF.Writing
                         context.HtmlWriter.AddAttribute("resource", "[" + n.ToString() + "]");
                     }
 
-                    context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, this._bnodeClass);
+                    context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClassBlankNode);
                     context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Span);
                     context.HtmlWriter.WriteEncodedText(n.ToString());
                     context.HtmlWriter.RenderEndTag();
@@ -509,7 +391,7 @@ namespace VDS.RDF.Writing
                             }
                         }
 
-                        context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, this._literalClass);
+                        context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClassLiteral);
                         context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Span);
                         if (lit.DataType.ToString().Equals(Parsing.RdfSpecsHelper.RdfXmlLiteral))
                         {
@@ -524,7 +406,7 @@ namespace VDS.RDF.Writing
                         //Output the Datatype
                         context.HtmlWriter.WriteEncodedText("^^");
                         context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Href, lit.DataType.ToString());
-                        context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, this._datatypeClass);
+                        context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClassDatatype);
                         context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.A);
                         if (context.QNameMapper.ReduceToQName(lit.DataType.ToString(), out qname))
                         {
@@ -546,14 +428,14 @@ namespace VDS.RDF.Writing
                                 context.HtmlWriter.AddAttribute("xml:lang", lit.Language);
                             }
                         }
-                        context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, this._literalClass);
+                        context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClassLiteral);
                         context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Span);
                         context.HtmlWriter.WriteEncodedText(lit.Value);
                         context.HtmlWriter.RenderEndTag();
                         if (!lit.Language.Equals(String.Empty))
                         {
                             context.HtmlWriter.WriteEncodedText("@");
-                            context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, this._langClass);
+                            context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClassLangSpec);
                             context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Span);
                             context.HtmlWriter.WriteEncodedText(lit.Language);
                             context.HtmlWriter.RenderEndTag();
@@ -566,15 +448,15 @@ namespace VDS.RDF.Writing
                     throw new RdfOutputException(WriterErrorMessages.GraphLiteralsUnserializable("HTML"));
 
                 case NodeType.Uri:
-                    if (rdfASerializable && !this._uriPrefix.Equals(String.Empty))
+                    if (rdfASerializable && !this.UriPrefix.Equals(String.Empty))
                     {
                         //If the URIs are being prefixed with something then we need to set the original
                         //URI in the resource attribute to generate the correct triple
                         context.HtmlWriter.AddAttribute("resource", n.ToString());
                     }
 
-                    context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, this._uriClass);
-                    context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Href, this._uriPrefix + n.ToString());
+                    context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClassUri);
+                    context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Href, this.UriPrefix + n.ToString());
                     context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.A);
                     if (context.QNameMapper.ReduceToQName(n.ToString(), out qname))
                     {

@@ -113,5 +113,5 @@ TODO: Support Protocol Requests?
 StoreManager
 ------------
 
-TODO: Use the ListGraphs() method if supported
+REQ: Add support for newly supported Stores
 TODO: Ensure we are in the OpenWith List

@@ -49,127 +49,9 @@ namespace VDS.RDF.Writing
     /// <summary>
     /// Class for saving SPARQL Result Sets to a HTML Table format (this is not a standardised format)
     /// </summary>
-    public class SparqlHtmlWriter : ISparqlResultsWriter, IHtmlWriter
+    public class SparqlHtmlWriter : BaseHtmlWriter, ISparqlResultsWriter
     {
         private HtmlFormatter _formatter = new HtmlFormatter();
-
-        #region IHtmlWriter Members
-
-        private String _stylesheet = String.Empty;
-        private String _uriClass = "uri",
-                       _bnodeClass = "bnode",
-                       _literalClass = "literal",
-                       _datatypeClass = "datatype",
-                       _langClass = "langspec";
-        private String _uriPrefix = String.Empty;
-
-
-        /// <summary>
-        /// Gets/Sets a path to a Stylesheet which is used to format the Results
-        /// </summary>
-        public string Stylesheet
-        {
-            get
-            {
-                return this._stylesheet;
-            }
-            set
-            {
-                this._stylesheet = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets/Sets the CSS class used for the anchor tags used to display the URIs of URI Nodes
-        /// </summary>
-        public string CssClassUri
-        {
-            get
-            {
-                return this._uriClass;
-            }
-            set
-            {
-                this._uriClass = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets/Sets the CSS class used for the span tags used to display Blank Node IDs
-        /// </summary>
-        public string CssClassBlankNode
-        {
-            get
-            {
-                return this._bnodeClass;
-            }
-            set
-            {
-                this._bnodeClass = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets/Sets the CSS class used for the span tags used to display Literals
-        /// </summary>
-        public string CssClassLiteral
-        {
-            get
-            {
-                return this._literalClass;
-            }
-            set
-            {
-                this._literalClass = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets/Sets the CSS class used for the anchor tags used to display Literal datatypes
-        /// </summary>
-        public string CssClassDatatype
-        {
-            get
-            {
-                return this._datatypeClass;
-            }
-            set
-            {
-                this._datatypeClass = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets/Sets the CSS class used for the span tags used to display Literal language specifiers
-        /// </summary>
-        public string CssClassLangSpec
-        {
-            get
-            {
-                return this._langClass;
-            }
-            set
-            {
-                this._langClass = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets/Sets the Prefix applied to href attributes
-        /// </summary>
-        public String UriPrefix
-        {
-            get
-            {
-                return this._uriPrefix;
-            }
-            set
-            {
-                this._uriPrefix = value;
-            }
-        }
-
-        #endregion
 
         /// <summary>
         /// Saves the Result Set to the given File as a HTML Table
@@ -224,9 +106,9 @@ namespace VDS.RDF.Writing
             writer.RenderBeginTag(HtmlTextWriterTag.Title);
             writer.WriteEncodedText("SPARQL Query Results");
             writer.RenderEndTag();
-            if (!this._stylesheet.Equals(String.Empty))
+            if (!this.Stylesheet.Equals(String.Empty))
             {
-                writer.AddAttribute(HtmlTextWriterAttribute.Href, this._stylesheet);
+                writer.AddAttribute(HtmlTextWriterAttribute.Href, this.Stylesheet);
                 writer.AddAttribute(HtmlTextWriterAttribute.Type, "text/css");
                 writer.AddAttribute(HtmlTextWriterAttribute.Rel, "stylesheet");
                 writer.RenderBeginTag(HtmlTextWriterTag.Link);
@@ -284,7 +166,7 @@ namespace VDS.RDF.Writing
                                 switch (value.NodeType)
                                 {
                                     case NodeType.Blank:
-                                        writer.AddAttribute(HtmlTextWriterAttribute.Class, this._bnodeClass);
+                                        writer.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClassBlankNode);
                                         writer.RenderBeginTag(HtmlTextWriterTag.Span);
                                         writer.WriteEncodedText(value.ToString());
                                         writer.RenderEndTag();
@@ -292,7 +174,7 @@ namespace VDS.RDF.Writing
 
                                     case NodeType.Literal:
                                         LiteralNode lit = (LiteralNode)value;
-                                        writer.AddAttribute(HtmlTextWriterAttribute.Class, this._literalClass);
+                                        writer.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClassLiteral);
                                         writer.RenderBeginTag(HtmlTextWriterTag.Span);
                                         if (lit.DataType != null)
                                         {
@@ -300,7 +182,7 @@ namespace VDS.RDF.Writing
                                             writer.RenderEndTag();
                                             writer.WriteEncodedText("^^");
                                             writer.AddAttribute(HtmlTextWriterAttribute.Href, this._formatter.FormatUri(lit.DataType.ToString()));
-                                            writer.AddAttribute(HtmlTextWriterAttribute.Class, this._datatypeClass);
+                                            writer.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClassDatatype);
                                             writer.RenderBeginTag(HtmlTextWriterTag.A);
                                             writer.WriteEncodedText(lit.DataType.ToString());
                                             writer.RenderEndTag();
@@ -312,7 +194,7 @@ namespace VDS.RDF.Writing
                                             {
                                                 writer.RenderEndTag();
                                                 writer.WriteEncodedText("@");
-                                                writer.AddAttribute(HtmlTextWriterAttribute.Class, this._langClass);
+                                                writer.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClassLangSpec);
                                                 writer.RenderBeginTag(HtmlTextWriterTag.Span);
                                                 writer.WriteEncodedText(lit.Language);
                                                 writer.RenderEndTag();
@@ -329,8 +211,8 @@ namespace VDS.RDF.Writing
                                         throw new RdfOutputException("Result Sets which contain Graph Literal Nodes cannot be serialized in the HTML Format");
 
                                     case NodeType.Uri:
-                                        writer.AddAttribute(HtmlTextWriterAttribute.Class, this._uriClass);
-                                        writer.AddAttribute(HtmlTextWriterAttribute.Href, this._formatter.FormatUri(this._uriPrefix + value.ToString()));
+                                        writer.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClassUri);
+                                        writer.AddAttribute(HtmlTextWriterAttribute.Href, this._formatter.FormatUri(this.UriPrefix + value.ToString()));
                                         writer.RenderBeginTag(HtmlTextWriterTag.A);
                                         writer.WriteEncodedText(value.ToString());
                                         writer.RenderEndTag();
