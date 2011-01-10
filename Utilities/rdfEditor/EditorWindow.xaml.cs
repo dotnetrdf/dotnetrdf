@@ -144,6 +144,7 @@ namespace rdfEditor
 
                 try
                 {
+                    PreOpenCheck(file);
                     using (StreamReader reader = new StreamReader(file))
                     {
                         String text = reader.ReadToEnd();
@@ -190,6 +191,7 @@ namespace rdfEditor
             {
                 try
                 {
+                    PreOpenCheck(_ofd.FileName);
                     using (StreamReader reader = new StreamReader(_ofd.FileName))
                     {
                         String text = reader.ReadToEnd();
@@ -271,6 +273,38 @@ namespace rdfEditor
                 textEditor.Text = diag.RetrievedData;
                 this._manager.HasChanged = true;
                 this._manager.SetHighlighter(diag.Parser);
+            }
+        }
+
+        private void PreOpenCheck(String file)
+        {
+            FileInfo info = new FileInfo(file);
+            long sizeInMB = info.Length / 1024 / 1024;
+
+            if (sizeInMB >= 10)
+            {
+                if (this.mnuEnableHighlighting.IsChecked)
+                {
+                    mnuEnableHighlighting.IsChecked = false;
+                    mnuEnableHighlighting_Click(null, new RoutedEventArgs());
+                }
+                if (this.mnuValidateAsYouType.IsChecked)
+                {
+                    mnuValidateAsYouType.IsChecked = false;
+                    mnuValidateAsYouType_Click(null, new RoutedEventArgs());
+                }
+                if (this.mnuHighlightErrors.IsChecked)
+                {
+                    mnuHighlightErrors.IsChecked = false;
+                    mnuHighlightErrors_Click(null, new RoutedEventArgs());
+                }
+                if (this.mnuAutoComplete.IsChecked)
+                {
+                    mnuAutoComplete.IsChecked = false;
+                    mnuAutoComplete_Click(null, new RoutedEventArgs());
+                }
+
+                MessageBox.Show("The file that you are opening is considered large (>= 10MB) by this editor and so Syntax Highlighting, Validate as you Type, Highlight Validation Errors and Auto-Completion have been temporarily disabled.  You may re-enable these features if you wish but they may significantly degrade performance on a file of this size", "Large File Warning", MessageBoxButton.OK, MessageBoxImage.Warning);       
             }
         }
 
