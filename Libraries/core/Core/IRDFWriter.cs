@@ -180,6 +180,15 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
+        /// Gets/Sets the CSS class used for the div tags used to group chunks of markup into a box
+        /// </summary>
+        String CssClassBox
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
         /// Gets/Sets a Prefix that is applied to all href attributes
         /// </summary>
         String UriPrefix
@@ -188,4 +197,5 @@ namespace VDS.RDF.Writing
             set;
         }
     }
+
 }

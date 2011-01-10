@@ -52,7 +52,8 @@ namespace VDS.RDF.Writing
                        _bnodeClass = "bnode",
                        _literalClass = "literal",
                        _datatypeClass = "datatype",
-                       _langClass = "langspec";
+                       _langClass = "langspec",
+                       _boxClass = "box";
         private String _uriPrefix = String.Empty;
 
 
@@ -146,6 +147,21 @@ namespace VDS.RDF.Writing
             }
         }
 
+        /// <summary>
+        /// Gets/Sets the CSS class used for div tags used to group chunks of markup into a box
+        /// </summary>
+        public String CssClassBox
+        {
+            get
+            {
+                return this._boxClass;
+            }
+            set
+            {
+                if (value != null) this._boxClass = value;
+            }
+        }
+        
         /// <summary>
         /// Gets/Sets the Prefix applied to href attributes
         /// </summary>

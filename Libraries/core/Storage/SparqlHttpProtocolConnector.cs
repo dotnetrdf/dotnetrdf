@@ -119,11 +119,7 @@ namespace VDS.RDF.Storage
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(new Uri(saveUri));
                 request.Method = "PUT";
                 request.ContentType = MimeTypesHelper.RdfXml[0];
-#if !NO_XMLDOM
-                FastRdfXmlWriter writer = new FastRdfXmlWriter();
-#else
                 RdfXmlWriter writer = new RdfXmlWriter();
-#endif
                 writer.Save(g, new StreamWriter(request.GetRequestStream()));
 
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
@@ -176,11 +172,7 @@ namespace VDS.RDF.Storage
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(new Uri(updateUri));
                 request.Method = "POST";
                 request.ContentType = MimeTypesHelper.RdfXml[0];
-#if !NO_XMLDOM
-                FastRdfXmlWriter writer = new FastRdfXmlWriter();
-#else
                 RdfXmlWriter writer = new RdfXmlWriter();
-#endif
                 Graph g = new Graph();
                 g.Assert(additions);
                 writer.Save(g, new StreamWriter(request.GetRequestStream()));

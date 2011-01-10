@@ -214,6 +214,7 @@ namespace VDS.RDF.Writing
                                 if (author.NodeType == NodeType.Uri)
                                 {
                                     context.HtmlWriter.AddAttribute("href", ((UriNode)author).Uri.ToString());
+                                    context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClassUri);
                                     context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.A);
                                 }
                                 switch (authorName.NodeType)
@@ -253,6 +254,20 @@ namespace VDS.RDF.Writing
                                     context.HtmlWriter.WriteLine();
 #endif
 
+                                    //Show human readable description of preferred Namespace Settings
+                                    context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.P);
+                                    context.HtmlWriter.WriteEncodedText("Preferred Namespace Prefix is ");
+                                    context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Strong);
+                                    context.HtmlWriter.WriteEncodedText(prefix);
+                                    context.HtmlWriter.RenderEndTag();
+                                    context.HtmlWriter.WriteEncodedText(" and preferred Namespace URI is ");
+                                    context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Href, context.QNameMapper.GetNamespaceUri(prefix).ToString());
+                                    context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClassUri);
+                                    context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.A);
+                                    context.HtmlWriter.WriteEncodedText(context.QNameMapper.GetNamespaceUri(prefix).ToString());
+                                    context.HtmlWriter.RenderEndTag();
+                                    context.HtmlWriter.RenderEndTag();
+
                                     //RDF/XML Syntax
                                     context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.H5);
                                     context.HtmlWriter.WriteEncodedText("RDF/XML Syntax");
@@ -260,6 +275,7 @@ namespace VDS.RDF.Writing
 #if !NO_WEB
                                     context.HtmlWriter.WriteLine();
 #endif
+                                    context.HtmlWriter.AddStyleAttribute(HtmlTextWriterStyle.Width, "90%");
                                     context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Pre);
                                     context.HtmlWriter.WriteEncodedText("<?xml version=\"1.0\" charset=\"utf-8\"?>");
                                     context.HtmlWriter.WriteLine();
@@ -280,6 +296,7 @@ namespace VDS.RDF.Writing
 #if !NO_WEB
                                     context.HtmlWriter.WriteLine();
 #endif
+                                    context.HtmlWriter.AddStyleAttribute(HtmlTextWriterStyle.Width, "90%");
                                     context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Pre);
                                     context.HtmlWriter.WriteEncodedText("@prefix " + prefix + ": <" + context.UriFormatter.FormatUri(context.QNameMapper.GetNamespaceUri(prefix)) + "> .");
                                     context.HtmlWriter.RenderEndTag();
@@ -294,6 +311,7 @@ namespace VDS.RDF.Writing
 #if !NO_WEB
                                     context.HtmlWriter.WriteLine();
 #endif
+                                    context.HtmlWriter.AddStyleAttribute(HtmlTextWriterStyle.Width, "90%");
                                     context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Pre);
                                     context.HtmlWriter.WriteEncodedText("PREFIX " + prefix + ": <" + context.UriFormatter.FormatUri(context.QNameMapper.GetNamespaceUri(prefix)) + ">");
                                     context.HtmlWriter.RenderEndTag();
@@ -330,6 +348,7 @@ namespace VDS.RDF.Writing
             context.HtmlWriter.WriteLine();
 #endif
             context.HtmlWriter.AddStyleAttribute("width", "90%");
+            context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClassBox);
             context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.P);
 
             //Get the Classes and Display
@@ -350,6 +369,7 @@ namespace VDS.RDF.Writing
                         //users jump to a Class/Property definition
                         String qname = context.NodeFormatter.Format(r["class"]);
                         context.HtmlWriter.AddAttribute("href", "#" + qname);
+                        context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClassUri);
                         context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.A);
                         context.HtmlWriter.WriteEncodedText(qname);
                         context.HtmlWriter.RenderEndTag();
@@ -382,6 +402,7 @@ namespace VDS.RDF.Writing
             context.HtmlWriter.WriteLine();
 #endif
             context.HtmlWriter.AddStyleAttribute("width", "90%");
+            context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClassBox);
             context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.P);
 
             //Get the Properties and Display
@@ -402,6 +423,7 @@ namespace VDS.RDF.Writing
                         //users jump to a Class/Property definition
                         String qname = context.NodeFormatter.Format(r["property"]);
                         context.HtmlWriter.AddAttribute("href", "#" + qname);
+                        context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClassUri);
                         context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.A);
                         context.HtmlWriter.WriteEncodedText(qname);
                         context.HtmlWriter.RenderEndTag();
@@ -457,6 +479,7 @@ namespace VDS.RDF.Writing
                         String qname = context.NodeFormatter.Format(r["class"]);
 
                         //Use a <div> for each Class
+                        context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClassBox);
                         context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Div);
 
                         //Add the Anchor to which earlier Class summary links to
@@ -553,7 +576,7 @@ namespace VDS.RDF.Writing
                 throw new RdfOutputException("Tried to make a SPARQL Query to get Class Information from the Schema but a Query Error occurred", queryEx);
             }
 
-            //TODO: Show details for each property
+            //Show details for each property
             context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.H3);
             context.HtmlWriter.WriteEncodedText("Properties");
             context.HtmlWriter.RenderEndTag();
@@ -573,6 +596,7 @@ namespace VDS.RDF.Writing
                         String qname = context.NodeFormatter.Format(r["property"]);
 
                         //Use a <div> for each Property
+                        context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClassBox);
                         context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Div);
 
                         //Add the Anchor to which earlier Property summary links to
@@ -690,6 +714,7 @@ namespace VDS.RDF.Writing
                 {
                     String qname = context.NodeFormatter.Format(displaySelector(t));
                     context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Href, "#" + qname);
+                    context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClassUri);
                     context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.A);
                     context.HtmlWriter.WriteEncodedText(qname);
                     context.HtmlWriter.RenderEndTag();
@@ -699,208 +724,6 @@ namespace VDS.RDF.Writing
 #if !NO_WEB
                 context.HtmlWriter.WriteLine();
 #endif
-            }
-        }
-
-        /// <summary>
-        /// Generates Output for a given Node
-        /// </summary>
-        /// <param name="context">Writer Context</param>
-        /// <param name="n">Node</param>
-        private void GenerateNodeOutput(HtmlWriterContext context, INode n)
-        {
-            this.GenerateNodeOutput(context, n, null);
-        }
-
-        /// <summary>
-        /// Generates Output for a given Node
-        /// </summary>
-        /// <param name="context">Writer Context</param>
-        /// <param name="n">Node</param>
-        /// <param name="t">Triple being written</param>
-        private void GenerateNodeOutput(HtmlWriterContext context, INode n, Triple t)
-        {
-            //Embed RDFa on the Node Output
-            bool rdfASerializable = false;
-            if (t != null)
-            {
-                if (t.Predicate.NodeType == NodeType.Uri)
-                {
-                    //Use @about to specify the Subject
-                    if (t.Subject.NodeType == NodeType.Uri)
-                    {
-                        rdfASerializable = true;
-                        context.HtmlWriter.AddAttribute("about", context.UriFormatter.FormatUri(t.Subject.ToString()));
-                    }
-                    else if (t.Subject.NodeType == NodeType.Blank)
-                    {
-                        rdfASerializable = true;
-                        context.HtmlWriter.AddAttribute("about", "[" + t.Subject.ToString() + "]");
-                    }
-                    else
-                    {
-                        this.RaiseWarning("Cannot serialize a Triple since the Subject is not a URI/Blank Node: " + t.Subject.ToString());
-                    }
-
-                    //Then if we can serialize this Triple we serialize the Predicate
-                    if (rdfASerializable)
-                    {
-                        //Get the CURIE for the Predicate
-                        String curie;
-                        String tempNamespace;
-                        if (context.QNameMapper.ReduceToQName(t.Predicate.ToString(), out curie, out tempNamespace))
-                        {
-                            //Extract the Namespace and make sure it's registered on this Attribute
-                            String ns = curie.Substring(0, curie.IndexOf(':'));
-                            context.HtmlWriter.AddAttribute("xmlns:" + ns, context.UriFormatter.FormatUri(context.QNameMapper.GetNamespaceUri(ns)));
-                        }
-                        else
-                        {
-                            this.RaiseWarning("Cannot serialize a Triple since the Predicate cannot be reduced to a QName: " + t.Predicate.ToString());
-                            rdfASerializable = false;
-                        }
-
-                        if (rdfASerializable)
-                        {
-                            switch (t.Object.NodeType)
-                            {
-                                case NodeType.Blank:
-                                case NodeType.Uri:
-                                    //If the Object is a URI or a Blank then we specify the predicate with @rel
-                                    context.HtmlWriter.AddAttribute("rel", curie);
-                                    break;
-
-                                case NodeType.Literal:
-                                    //If the Object is a Literal we specify the predicate with @property
-                                    context.HtmlWriter.AddAttribute("property", curie);
-                                    break;
-                                default:
-                                    this.RaiseWarning("Cannot serialize a Triple since the Object is not a URI/Blank/Literal Node: " + t.Object.ToString());
-                                    rdfASerializable = false;
-                                    break;
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    this.RaiseWarning("Cannot serialize a Triple since the Predicate is not a URI Node: " + t.Predicate.ToString());
-                }
-            }
-
-            String qname;
-            switch (n.NodeType)
-            {
-                case NodeType.Blank:
-                    if (rdfASerializable)
-                    {
-                        //Need to embed the CURIE for the BNode in the @resource attribute
-                        context.HtmlWriter.AddAttribute("resource", "[" + n.ToString() + "]");
-                    }
-
-                    context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClassBlankNode);
-                    context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Span);
-                    context.HtmlWriter.WriteEncodedText(n.ToString());
-                    context.HtmlWriter.RenderEndTag();
-                    break;
-
-                case NodeType.Literal:
-                    LiteralNode lit = (LiteralNode)n;
-                    if (lit.DataType != null)
-                    {
-                        if (rdfASerializable)
-                        {
-                            //Need to embed the datatype in the @datatype attribute
-                            String dtcurie, dtnamespace;
-                            if (context.QNameMapper.ReduceToQName(lit.DataType.ToString(), out dtcurie, out dtnamespace))
-                            {
-                                //Extract the Namespace and make sure it's registered on this Attribute
-                                String ns = dtcurie.Substring(0, dtcurie.IndexOf(':'));
-                                context.HtmlWriter.AddAttribute("xmlns:" + ns, context.UriFormatter.FormatUri(context.QNameMapper.GetNamespaceUri(ns)));
-                                context.HtmlWriter.AddAttribute("datatype", dtcurie);
-                            }
-                        }
-
-                        context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClassLiteral);
-                        context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Span);
-                        if (lit.DataType.ToString().Equals(Parsing.RdfSpecsHelper.RdfXmlLiteral))
-                        {
-                            context.HtmlWriter.Write(lit.Value);
-                        }
-                        else
-                        {
-                            context.HtmlWriter.WriteEncodedText(lit.Value);
-                        }
-                        context.HtmlWriter.RenderEndTag();
-
-                        //Output the Datatype
-                        context.HtmlWriter.WriteEncodedText("^^");
-                        context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Href, lit.DataType.ToString());
-                        context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClassDatatype);
-                        context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.A);
-                        if (context.QNameMapper.ReduceToQName(lit.DataType.ToString(), out qname))
-                        {
-                            context.HtmlWriter.WriteEncodedText(qname);
-                        }
-                        else
-                        {
-                            context.HtmlWriter.WriteEncodedText(lit.DataType.ToString());
-                        }
-                        context.HtmlWriter.RenderEndTag();
-                    }
-                    else
-                    {
-                        if (rdfASerializable)
-                        {
-                            if (!lit.Language.Equals(String.Empty))
-                            {
-                                //Need to add the language as an xml:lang attribute
-                                context.HtmlWriter.AddAttribute("xml:lang", lit.Language);
-                            }
-                        }
-                        context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClassLiteral);
-                        context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Span);
-                        context.HtmlWriter.WriteEncodedText(lit.Value);
-                        context.HtmlWriter.RenderEndTag();
-                        if (!lit.Language.Equals(String.Empty))
-                        {
-                            context.HtmlWriter.WriteEncodedText("@");
-                            context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClassLangSpec);
-                            context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Span);
-                            context.HtmlWriter.WriteEncodedText(lit.Language);
-                            context.HtmlWriter.RenderEndTag();
-                        }
-                    }
-                    break;
-
-                case NodeType.GraphLiteral:
-                    //Error
-                    throw new RdfOutputException(WriterErrorMessages.GraphLiteralsUnserializable("HTML"));
-
-                case NodeType.Uri:
-                    if (rdfASerializable && !this.UriPrefix.Equals(String.Empty))
-                    {
-                        //If the URIs are being prefixed with something then we need to set the original
-                        //URI in the resource attribute to generate the correct triple
-                        context.HtmlWriter.AddAttribute("resource", n.ToString());
-                    }
-
-                    context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClassUri);
-                    context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Href, this.UriPrefix + n.ToString());
-                    context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.A);
-                    if (context.QNameMapper.ReduceToQName(n.ToString(), out qname))
-                    {
-                        context.HtmlWriter.WriteEncodedText(qname);
-                    }
-                    else
-                    {
-                        context.HtmlWriter.WriteEncodedText(n.ToString());
-                    }
-                    context.HtmlWriter.RenderEndTag();
-                    break;
-
-                default:
-                    throw new RdfOutputException(WriterErrorMessages.UnknownNodeTypeUnserializable("HTML"));
             }
         }
 

@@ -1,7 +1,12 @@
-﻿body
+﻿body, p, div
 {
 	font-family: "Verdana";
 	font-size: 10pt;
+}
+
+h1, h2, h3, h4, h5, h6
+{
+	font-family: "Verdana";
 }
 
 TABLE 
@@ -32,7 +37,8 @@ A
 	color: #666666;
 }
 
-A.datatype {
+A.datatype 
+{
 	font-size: smaller;
 	vertical-align: super;
 }
@@ -42,4 +48,14 @@ H3
 	background: #cccccc;
 	padding: 5px;
 	font-weight: normal;
+}
+
+.box, pre
+{
+	border: thin solid #000000;
+	background: #cccccc;
+	padding: 5px;
+	margin-bottom: 5px;
+	text-align: left;
+	vertical-align: top;
 }

@@ -41,6 +41,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Update;
@@ -56,9 +57,10 @@ namespace VDS.RDF.Storage
     /// Uses all three Services provided by a Fuseki instance - Query, Update and HTTP Update
     /// </para>
     /// </remarks>
-    public class FusekiConnector : SparqlHttpProtocolConnector, IUpdateableGenericIOManager
+    public class FusekiConnector : SparqlHttpProtocolConnector, IUpdateableGenericIOManager, IConfigurationSerializable
     {
         private SparqlFormatter _formatter = new SparqlFormatter();
+        private String _serverUri;
         private String _updateUri;
         private String _queryUri;
 
@@ -69,6 +71,7 @@ namespace VDS.RDF.Storage
             : base(serviceUri) 
         {
             if (!serviceUri.ToString().EndsWith("/data")) throw new ArgumentException("This does not appear to be a valid Fuseki Server URI, you must provide the URI that ends with /data", "serviceUri");
+            this._serverUri = serviceUri;
 
             this._updateUri = serviceUri.Substring(0, serviceUri.Length - 4) + "update";
             this._queryUri = serviceUri.Substring(0, serviceUri.Length - 4) + "query";
@@ -233,6 +236,34 @@ namespace VDS.RDF.Storage
                 throw new RdfStorageException("A HTTP error occurred while communicating with the Fuseki Server", webEx);
             }
         }
+
+        /// <summary>
+        /// Gets a String which gives details of the Connection
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return "[Fuseki] " + this._serverUri;
+        }
+
+        #region IConfigurationSerializable Members
+
+        public override void SerializeConfiguration(ConfigurationSerializationContext context)
+        {
+            INode manager = context.NextSubject;
+            INode rdfType = context.Graph.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
+            INode rdfsLabel = context.Graph.CreateUriNode(new Uri(NamespaceMapper.RDFS + "label"));
+            INode dnrType = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyType);
+            INode genericManager = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.ClassGenericManager);
+            INode server = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyServer);
+
+            context.Graph.Assert(new Triple(manager, rdfType, genericManager));
+            context.Graph.Assert(new Triple(manager, rdfsLabel, context.Graph.CreateLiteralNode(this.ToString())));
+            context.Graph.Assert(new Triple(manager, dnrType, context.Graph.CreateLiteralNode(this.GetType().FullName)));
+            context.Graph.Assert(new Triple(manager, server, context.Graph.CreateLiteralNode(this._serverUri)));
+        }
+
+        #endregion
     }
 }
 
