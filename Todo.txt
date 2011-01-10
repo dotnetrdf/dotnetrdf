@@ -29,10 +29,6 @@ PORT - This task is related to porting 3rd party code onto the dotNetRDF API
 dotNetRDF
 ---------
 
-REQ: Implement Base Dataset Handler
-REQ: Implement Dataset Handler
-REQ: Implement Dataset Handler Configuration
-REQ: Implement a HtmlWriter which prints a human readable Schema style document
 HACK: Changed to an accept all for the time being to ensure works OK with DBPedia and Virtuoso
 HACK: Have to send only RDF/XML as the accept header due to a known issue with Talis Platform
 TODO: Implement IsIpvFuture

@@ -46,7 +46,7 @@ using VDS.RDF.Query;
 using VDS.RDF.Writing.Contexts;
 using VDS.RDF.Writing.Formatting;
 
-//REQ:  Implement a HtmlWriter which prints a human readble Schema style document
+//REQ: Beautify the HTML Output with CSS (and possible RDFa if possible)
 
 namespace VDS.RDF.Writing
 {
