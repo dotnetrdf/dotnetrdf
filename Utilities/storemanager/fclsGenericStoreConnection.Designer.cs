@@ -42,6 +42,7 @@
             this.txtAllegroGraphServer = new System.Windows.Forms.TextBox();
             this.lblAllegroGraphServer = new System.Windows.Forms.Label();
             this.tabFourStore = new System.Windows.Forms.TabPage();
+            this.chk4storeUpdates = new System.Windows.Forms.CheckBox();
             this.btnConnect4Store = new System.Windows.Forms.Button();
             this.txt4StoreServer = new System.Windows.Forms.TextBox();
             this.lbl4StoreServer = new System.Windows.Forms.Label();
@@ -77,6 +78,11 @@
             this.txtSparqlEndpoint = new System.Windows.Forms.TextBox();
             this.lblSparqlEndpoint = new System.Windows.Forms.Label();
             this.lblSparqlIntro = new System.Windows.Forms.Label();
+            this.tabSparqlHttpProtocol = new System.Windows.Forms.TabPage();
+            this.btnSparqlHttpConnect = new System.Windows.Forms.Button();
+            this.txtSparqlHttpServer = new System.Windows.Forms.TextBox();
+            this.lblSparqlHttpServer = new System.Windows.Forms.Label();
+            this.lblSparqlHttpIntro = new System.Windows.Forms.Label();
             this.tabTalis = new System.Windows.Forms.TabPage();
             this.btnConnectTalis = new System.Windows.Forms.Button();
             this.txtTalisPassword = new System.Windows.Forms.TextBox();
@@ -99,12 +105,12 @@
             this.lblVirtuosoServer = new System.Windows.Forms.Label();
             this.btnCancel = new System.Windows.Forms.Button();
             this.ofdDatasetFile = new System.Windows.Forms.OpenFileDialog();
-            this.chk4storeUpdates = new System.Windows.Forms.CheckBox();
-            this.tabSparqlHttpProtocol = new System.Windows.Forms.TabPage();
-            this.txtSparqlHttpServer = new System.Windows.Forms.TextBox();
-            this.lblSparqlHttpServer = new System.Windows.Forms.Label();
-            this.lblSparqlHttpIntro = new System.Windows.Forms.Label();
-            this.btnSparqlHttpConnect = new System.Windows.Forms.Button();
+            this.txtDefaultGraph = new System.Windows.Forms.TextBox();
+            this.lblDefaultGraph = new System.Windows.Forms.Label();
+            this.tabFuseki = new System.Windows.Forms.TabPage();
+            this.txtFusekiUri = new System.Windows.Forms.TextBox();
+            this.lblFusekiUri = new System.Windows.Forms.Label();
+            this.btnConnectFuseki = new System.Windows.Forms.Button();
             this.tabStores.SuspendLayout();
             this.tabAllegroGraph.SuspendLayout();
             this.tabFourStore.SuspendLayout();
@@ -112,15 +118,17 @@
             this.tabDataset.SuspendLayout();
             this.tabSesame.SuspendLayout();
             this.tabSparqlEndpoint.SuspendLayout();
+            this.tabSparqlHttpProtocol.SuspendLayout();
             this.tabTalis.SuspendLayout();
             this.tabVirtuoso.SuspendLayout();
-            this.tabSparqlHttpProtocol.SuspendLayout();
+            this.tabFuseki.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabStores
             // 
             this.tabStores.Controls.Add(this.tabAllegroGraph);
             this.tabStores.Controls.Add(this.tabFourStore);
+            this.tabStores.Controls.Add(this.tabFuseki);
             this.tabStores.Controls.Add(this.tabJoseki);
             this.tabStores.Controls.Add(this.tabDataset);
             this.tabStores.Controls.Add(this.tabSesame);
@@ -162,7 +170,7 @@
             this.txtAllegroPassword.Name = "txtAllegroPassword";
             this.txtAllegroPassword.PasswordChar = '*';
             this.txtAllegroPassword.Size = new System.Drawing.Size(100, 20);
-            this.txtAllegroPassword.TabIndex = 18;
+            this.txtAllegroPassword.TabIndex = 9;
             // 
             // lblAllegroPassword
             // 
@@ -170,7 +178,7 @@
             this.lblAllegroPassword.Location = new System.Drawing.Point(6, 116);
             this.lblAllegroPassword.Name = "lblAllegroPassword";
             this.lblAllegroPassword.Size = new System.Drawing.Size(56, 13);
-            this.lblAllegroPassword.TabIndex = 17;
+            this.lblAllegroPassword.TabIndex = 8;
             this.lblAllegroPassword.Text = "Password:";
             // 
             // txtAllegroUsername
@@ -178,7 +186,7 @@
             this.txtAllegroUsername.Location = new System.Drawing.Point(72, 87);
             this.txtAllegroUsername.Name = "txtAllegroUsername";
             this.txtAllegroUsername.Size = new System.Drawing.Size(100, 20);
-            this.txtAllegroUsername.TabIndex = 16;
+            this.txtAllegroUsername.TabIndex = 7;
             // 
             // lblAllegroUsername
             // 
@@ -186,7 +194,7 @@
             this.lblAllegroUsername.Location = new System.Drawing.Point(6, 90);
             this.lblAllegroUsername.Name = "lblAllegroUsername";
             this.lblAllegroUsername.Size = new System.Drawing.Size(58, 13);
-            this.lblAllegroUsername.TabIndex = 15;
+            this.lblAllegroUsername.TabIndex = 6;
             this.lblAllegroUsername.Text = "Username:";
             // 
             // txtAllegroStoreID
@@ -194,7 +202,7 @@
             this.txtAllegroStoreID.Location = new System.Drawing.Point(72, 61);
             this.txtAllegroStoreID.Name = "txtAllegroStoreID";
             this.txtAllegroStoreID.Size = new System.Drawing.Size(100, 20);
-            this.txtAllegroStoreID.TabIndex = 13;
+            this.txtAllegroStoreID.TabIndex = 5;
             this.txtAllegroStoreID.Text = "store";
             // 
             // lblAllegroStoreID
@@ -203,7 +211,7 @@
             this.lblAllegroStoreID.Location = new System.Drawing.Point(6, 64);
             this.lblAllegroStoreID.Name = "lblAllegroStoreID";
             this.lblAllegroStoreID.Size = new System.Drawing.Size(49, 13);
-            this.lblAllegroStoreID.TabIndex = 12;
+            this.lblAllegroStoreID.TabIndex = 4;
             this.lblAllegroStoreID.Text = "Store ID:";
             // 
             // txtAllegroCatalogID
@@ -211,7 +219,7 @@
             this.txtAllegroCatalogID.Location = new System.Drawing.Point(72, 36);
             this.txtAllegroCatalogID.Name = "txtAllegroCatalogID";
             this.txtAllegroCatalogID.Size = new System.Drawing.Size(100, 20);
-            this.txtAllegroCatalogID.TabIndex = 11;
+            this.txtAllegroCatalogID.TabIndex = 3;
             this.txtAllegroCatalogID.Text = "catalog";
             // 
             // lblAllegroCatalogID
@@ -220,7 +228,7 @@
             this.lblAllegroCatalogID.Location = new System.Drawing.Point(6, 39);
             this.lblAllegroCatalogID.Name = "lblAllegroCatalogID";
             this.lblAllegroCatalogID.Size = new System.Drawing.Size(60, 13);
-            this.lblAllegroCatalogID.TabIndex = 10;
+            this.lblAllegroCatalogID.TabIndex = 2;
             this.lblAllegroCatalogID.Text = "Catalog ID:";
             // 
             // btnConnectAllegroGraph
@@ -228,7 +236,7 @@
             this.btnConnectAllegroGraph.Location = new System.Drawing.Point(335, 128);
             this.btnConnectAllegroGraph.Name = "btnConnectAllegroGraph";
             this.btnConnectAllegroGraph.Size = new System.Drawing.Size(137, 23);
-            this.btnConnectAllegroGraph.TabIndex = 14;
+            this.btnConnectAllegroGraph.TabIndex = 10;
             this.btnConnectAllegroGraph.Text = "Connect to AllegroGraph";
             this.btnConnectAllegroGraph.UseVisualStyleBackColor = true;
             this.btnConnectAllegroGraph.Click += new System.EventHandler(this.btnConnectAllegroGraph_Click);
@@ -238,7 +246,7 @@
             this.txtAllegroGraphServer.Location = new System.Drawing.Point(139, 10);
             this.txtAllegroGraphServer.Name = "txtAllegroGraphServer";
             this.txtAllegroGraphServer.Size = new System.Drawing.Size(330, 20);
-            this.txtAllegroGraphServer.TabIndex = 9;
+            this.txtAllegroGraphServer.TabIndex = 1;
             this.txtAllegroGraphServer.Text = "http://localhost:9875/";
             // 
             // lblAllegroGraphServer
@@ -247,7 +255,7 @@
             this.lblAllegroGraphServer.Location = new System.Drawing.Point(6, 13);
             this.lblAllegroGraphServer.Name = "lblAllegroGraphServer";
             this.lblAllegroGraphServer.Size = new System.Drawing.Size(127, 13);
-            this.lblAllegroGraphServer.TabIndex = 8;
+            this.lblAllegroGraphServer.TabIndex = 0;
             this.lblAllegroGraphServer.Text = "AllegroGraph Server URI:";
             // 
             // tabFourStore
@@ -264,12 +272,22 @@
             this.tabFourStore.Text = "4store";
             this.tabFourStore.UseVisualStyleBackColor = true;
             // 
+            // chk4storeUpdates
+            // 
+            this.chk4storeUpdates.AutoSize = true;
+            this.chk4storeUpdates.Location = new System.Drawing.Point(9, 38);
+            this.chk4storeUpdates.Name = "chk4storeUpdates";
+            this.chk4storeUpdates.Size = new System.Drawing.Size(250, 17);
+            this.chk4storeUpdates.TabIndex = 2;
+            this.chk4storeUpdates.Text = "This 4store Server supports Triple level updates";
+            this.chk4storeUpdates.UseVisualStyleBackColor = true;
+            // 
             // btnConnect4Store
             // 
             this.btnConnect4Store.Location = new System.Drawing.Point(362, 128);
             this.btnConnect4Store.Name = "btnConnect4Store";
             this.btnConnect4Store.Size = new System.Drawing.Size(110, 23);
-            this.btnConnect4Store.TabIndex = 2;
+            this.btnConnect4Store.TabIndex = 3;
             this.btnConnect4Store.Text = "Connect to 4store";
             this.btnConnect4Store.UseVisualStyleBackColor = true;
             this.btnConnect4Store.Click += new System.EventHandler(this.btnConnect4Store_Click);
@@ -301,9 +319,9 @@
             this.tabJoseki.Controls.Add(this.btnConnectJoseki);
             this.tabJoseki.Controls.Add(this.txtJosekiServer);
             this.tabJoseki.Controls.Add(this.lblJosekiServer);
-            this.tabJoseki.Location = new System.Drawing.Point(4, 22);
+            this.tabJoseki.Location = new System.Drawing.Point(4, 40);
             this.tabJoseki.Name = "tabJoseki";
-            this.tabJoseki.Size = new System.Drawing.Size(475, 174);
+            this.tabJoseki.Size = new System.Drawing.Size(475, 156);
             this.tabJoseki.TabIndex = 2;
             this.tabJoseki.Text = "Joseki";
             this.tabJoseki.UseVisualStyleBackColor = true;
@@ -398,7 +416,7 @@
             this.btnConnectDatasetFile.Location = new System.Drawing.Point(314, 128);
             this.btnConnectDatasetFile.Name = "btnConnectDatasetFile";
             this.btnConnectDatasetFile.Size = new System.Drawing.Size(158, 23);
-            this.btnConnectDatasetFile.TabIndex = 15;
+            this.btnConnectDatasetFile.TabIndex = 4;
             this.btnConnectDatasetFile.Text = "Connect to RDF Dataset File";
             this.btnConnectDatasetFile.UseVisualStyleBackColor = true;
             this.btnConnectDatasetFile.Click += new System.EventHandler(this.btnConnectDatasetFile_Click);
@@ -462,7 +480,7 @@
             this.txtSesamePassword.Name = "txtSesamePassword";
             this.txtSesamePassword.PasswordChar = '*';
             this.txtSesamePassword.Size = new System.Drawing.Size(100, 20);
-            this.txtSesamePassword.TabIndex = 27;
+            this.txtSesamePassword.TabIndex = 7;
             // 
             // lblSesamePassword
             // 
@@ -470,7 +488,7 @@
             this.lblSesamePassword.Location = new System.Drawing.Point(6, 93);
             this.lblSesamePassword.Name = "lblSesamePassword";
             this.lblSesamePassword.Size = new System.Drawing.Size(56, 13);
-            this.lblSesamePassword.TabIndex = 26;
+            this.lblSesamePassword.TabIndex = 6;
             this.lblSesamePassword.Text = "Password:";
             // 
             // txtSesameUsername
@@ -478,7 +496,7 @@
             this.txtSesameUsername.Location = new System.Drawing.Point(70, 62);
             this.txtSesameUsername.Name = "txtSesameUsername";
             this.txtSesameUsername.Size = new System.Drawing.Size(100, 20);
-            this.txtSesameUsername.TabIndex = 25;
+            this.txtSesameUsername.TabIndex = 5;
             // 
             // lblSesameUsername
             // 
@@ -486,7 +504,7 @@
             this.lblSesameUsername.Location = new System.Drawing.Point(6, 65);
             this.lblSesameUsername.Name = "lblSesameUsername";
             this.lblSesameUsername.Size = new System.Drawing.Size(58, 13);
-            this.lblSesameUsername.TabIndex = 24;
+            this.lblSesameUsername.TabIndex = 4;
             this.lblSesameUsername.Text = "Username:";
             // 
             // txtSesameStoreID
@@ -494,7 +512,7 @@
             this.txtSesameStoreID.Location = new System.Drawing.Point(70, 36);
             this.txtSesameStoreID.Name = "txtSesameStoreID";
             this.txtSesameStoreID.Size = new System.Drawing.Size(100, 20);
-            this.txtSesameStoreID.TabIndex = 22;
+            this.txtSesameStoreID.TabIndex = 3;
             this.txtSesameStoreID.Text = "store";
             // 
             // lblSesameStoreID
@@ -503,7 +521,7 @@
             this.lblSesameStoreID.Location = new System.Drawing.Point(6, 39);
             this.lblSesameStoreID.Name = "lblSesameStoreID";
             this.lblSesameStoreID.Size = new System.Drawing.Size(49, 13);
-            this.lblSesameStoreID.TabIndex = 21;
+            this.lblSesameStoreID.TabIndex = 2;
             this.lblSesameStoreID.Text = "Store ID:";
             // 
             // btnConnectSesame
@@ -511,7 +529,7 @@
             this.btnConnectSesame.Location = new System.Drawing.Point(355, 128);
             this.btnConnectSesame.Name = "btnConnectSesame";
             this.btnConnectSesame.Size = new System.Drawing.Size(117, 23);
-            this.btnConnectSesame.TabIndex = 23;
+            this.btnConnectSesame.TabIndex = 8;
             this.btnConnectSesame.Text = "Connect to Sesame";
             this.btnConnectSesame.UseVisualStyleBackColor = true;
             this.btnConnectSesame.Click += new System.EventHandler(this.btnConnectSesame_Click);
@@ -521,7 +539,7 @@
             this.txtSesameServer.Location = new System.Drawing.Point(116, 10);
             this.txtSesameServer.Name = "txtSesameServer";
             this.txtSesameServer.Size = new System.Drawing.Size(354, 20);
-            this.txtSesameServer.TabIndex = 20;
+            this.txtSesameServer.TabIndex = 1;
             this.txtSesameServer.Text = "http://localhost/";
             // 
             // lblSesameServer
@@ -530,20 +548,22 @@
             this.lblSesameServer.Location = new System.Drawing.Point(6, 13);
             this.lblSesameServer.Name = "lblSesameServer";
             this.lblSesameServer.Size = new System.Drawing.Size(104, 13);
-            this.lblSesameServer.TabIndex = 19;
+            this.lblSesameServer.TabIndex = 0;
             this.lblSesameServer.Text = "Sesame Server URI:";
             // 
             // tabSparqlEndpoint
             // 
+            this.tabSparqlEndpoint.Controls.Add(this.txtDefaultGraph);
+            this.tabSparqlEndpoint.Controls.Add(this.lblDefaultGraph);
             this.tabSparqlEndpoint.Controls.Add(this.btnConnectSparql);
             this.tabSparqlEndpoint.Controls.Add(this.radSparqlConstruct);
             this.tabSparqlEndpoint.Controls.Add(this.radSparqlDescribe);
             this.tabSparqlEndpoint.Controls.Add(this.txtSparqlEndpoint);
             this.tabSparqlEndpoint.Controls.Add(this.lblSparqlEndpoint);
             this.tabSparqlEndpoint.Controls.Add(this.lblSparqlIntro);
-            this.tabSparqlEndpoint.Location = new System.Drawing.Point(4, 22);
+            this.tabSparqlEndpoint.Location = new System.Drawing.Point(4, 40);
             this.tabSparqlEndpoint.Name = "tabSparqlEndpoint";
-            this.tabSparqlEndpoint.Size = new System.Drawing.Size(475, 174);
+            this.tabSparqlEndpoint.Size = new System.Drawing.Size(475, 156);
             this.tabSparqlEndpoint.TabIndex = 7;
             this.tabSparqlEndpoint.Text = "SPARQL Endpoint";
             this.tabSparqlEndpoint.UseVisualStyleBackColor = true;
@@ -553,7 +573,7 @@
             this.btnConnectSparql.Location = new System.Drawing.Point(314, 128);
             this.btnConnectSparql.Name = "btnConnectSparql";
             this.btnConnectSparql.Size = new System.Drawing.Size(158, 23);
-            this.btnConnectSparql.TabIndex = 16;
+            this.btnConnectSparql.TabIndex = 7;
             this.btnConnectSparql.Text = "Connect to SPARQL Endpoint";
             this.btnConnectSparql.UseVisualStyleBackColor = true;
             this.btnConnectSparql.Click += new System.EventHandler(this.btnConnectSparql_Click);
@@ -562,10 +582,10 @@
             // 
             this.radSparqlConstruct.AutoSize = true;
             this.radSparqlConstruct.Checked = true;
-            this.radSparqlConstruct.Location = new System.Drawing.Point(12, 81);
+            this.radSparqlConstruct.Location = new System.Drawing.Point(12, 98);
             this.radSparqlConstruct.Name = "radSparqlConstruct";
             this.radSparqlConstruct.Size = new System.Drawing.Size(224, 17);
-            this.radSparqlConstruct.TabIndex = 5;
+            this.radSparqlConstruct.TabIndex = 6;
             this.radSparqlConstruct.TabStop = true;
             this.radSparqlConstruct.Text = "Use CONSTRUCT FROM to Load Graphs";
             this.radSparqlConstruct.UseVisualStyleBackColor = true;
@@ -573,10 +593,10 @@
             // radSparqlDescribe
             // 
             this.radSparqlDescribe.AutoSize = true;
-            this.radSparqlDescribe.Location = new System.Drawing.Point(12, 58);
+            this.radSparqlDescribe.Location = new System.Drawing.Point(12, 75);
             this.radSparqlDescribe.Name = "radSparqlDescribe";
             this.radSparqlDescribe.Size = new System.Drawing.Size(177, 17);
-            this.radSparqlDescribe.TabIndex = 4;
+            this.radSparqlDescribe.TabIndex = 5;
             this.radSparqlDescribe.Text = "Use DESCRIBE to Load Graphs";
             this.radSparqlDescribe.UseVisualStyleBackColor = true;
             // 
@@ -585,7 +605,7 @@
             this.txtSparqlEndpoint.Location = new System.Drawing.Point(110, 27);
             this.txtSparqlEndpoint.Name = "txtSparqlEndpoint";
             this.txtSparqlEndpoint.Size = new System.Drawing.Size(362, 20);
-            this.txtSparqlEndpoint.TabIndex = 3;
+            this.txtSparqlEndpoint.TabIndex = 2;
             this.txtSparqlEndpoint.Text = "http://example.org/sparql";
             // 
             // lblSparqlEndpoint
@@ -594,7 +614,7 @@
             this.lblSparqlEndpoint.Location = new System.Drawing.Point(9, 30);
             this.lblSparqlEndpoint.Name = "lblSparqlEndpoint";
             this.lblSparqlEndpoint.Size = new System.Drawing.Size(98, 13);
-            this.lblSparqlEndpoint.TabIndex = 2;
+            this.lblSparqlEndpoint.TabIndex = 1;
             this.lblSparqlEndpoint.Text = "SPARQL Endpoint:";
             // 
             // lblSparqlIntro
@@ -602,9 +622,57 @@
             this.lblSparqlIntro.Location = new System.Drawing.Point(9, 10);
             this.lblSparqlIntro.Name = "lblSparqlIntro";
             this.lblSparqlIntro.Size = new System.Drawing.Size(461, 20);
-            this.lblSparqlIntro.TabIndex = 1;
+            this.lblSparqlIntro.TabIndex = 0;
             this.lblSparqlIntro.Text = "Allows you to treat an arbitrary remote SPARQL Query Endpoint as a read-only Stor" +
                 "e";
+            // 
+            // tabSparqlHttpProtocol
+            // 
+            this.tabSparqlHttpProtocol.Controls.Add(this.btnSparqlHttpConnect);
+            this.tabSparqlHttpProtocol.Controls.Add(this.txtSparqlHttpServer);
+            this.tabSparqlHttpProtocol.Controls.Add(this.lblSparqlHttpServer);
+            this.tabSparqlHttpProtocol.Controls.Add(this.lblSparqlHttpIntro);
+            this.tabSparqlHttpProtocol.Location = new System.Drawing.Point(4, 40);
+            this.tabSparqlHttpProtocol.Name = "tabSparqlHttpProtocol";
+            this.tabSparqlHttpProtocol.Size = new System.Drawing.Size(475, 156);
+            this.tabSparqlHttpProtocol.TabIndex = 8;
+            this.tabSparqlHttpProtocol.Text = "SPARQL Uniform HTTP Protocol";
+            this.tabSparqlHttpProtocol.UseVisualStyleBackColor = true;
+            // 
+            // btnSparqlHttpConnect
+            // 
+            this.btnSparqlHttpConnect.Location = new System.Drawing.Point(207, 128);
+            this.btnSparqlHttpConnect.Name = "btnSparqlHttpConnect";
+            this.btnSparqlHttpConnect.Size = new System.Drawing.Size(265, 23);
+            this.btnSparqlHttpConnect.TabIndex = 3;
+            this.btnSparqlHttpConnect.Text = "Connect to SPARQL Uniform HTTP Protocol Server";
+            this.btnSparqlHttpConnect.UseVisualStyleBackColor = true;
+            this.btnSparqlHttpConnect.Click += new System.EventHandler(this.btnSparqlHttpConnect_Click);
+            // 
+            // txtSparqlHttpServer
+            // 
+            this.txtSparqlHttpServer.Location = new System.Drawing.Point(90, 42);
+            this.txtSparqlHttpServer.Name = "txtSparqlHttpServer";
+            this.txtSparqlHttpServer.Size = new System.Drawing.Size(374, 20);
+            this.txtSparqlHttpServer.TabIndex = 2;
+            // 
+            // lblSparqlHttpServer
+            // 
+            this.lblSparqlHttpServer.AutoSize = true;
+            this.lblSparqlHttpServer.Location = new System.Drawing.Point(1, 45);
+            this.lblSparqlHttpServer.Name = "lblSparqlHttpServer";
+            this.lblSparqlHttpServer.Size = new System.Drawing.Size(83, 13);
+            this.lblSparqlHttpServer.TabIndex = 1;
+            this.lblSparqlHttpServer.Text = "Protocol Server:";
+            // 
+            // lblSparqlHttpIntro
+            // 
+            this.lblSparqlHttpIntro.Location = new System.Drawing.Point(3, 9);
+            this.lblSparqlHttpIntro.Name = "lblSparqlHttpIntro";
+            this.lblSparqlHttpIntro.Size = new System.Drawing.Size(461, 30);
+            this.lblSparqlHttpIntro.TabIndex = 0;
+            this.lblSparqlHttpIntro.Text = "Connect to a Server which supports the SPARQL Uniform HTTP Protocol for Graph Man" +
+                "agement";
             // 
             // tabTalis
             // 
@@ -627,7 +695,7 @@
             this.btnConnectTalis.Location = new System.Drawing.Point(368, 128);
             this.btnConnectTalis.Name = "btnConnectTalis";
             this.btnConnectTalis.Size = new System.Drawing.Size(104, 23);
-            this.btnConnectTalis.TabIndex = 34;
+            this.btnConnectTalis.TabIndex = 6;
             this.btnConnectTalis.Text = "Connect to Talis";
             this.btnConnectTalis.UseVisualStyleBackColor = true;
             this.btnConnectTalis.Click += new System.EventHandler(this.btnConnectTalis_Click);
@@ -638,7 +706,7 @@
             this.txtTalisPassword.Name = "txtTalisPassword";
             this.txtTalisPassword.PasswordChar = '*';
             this.txtTalisPassword.Size = new System.Drawing.Size(100, 20);
-            this.txtTalisPassword.TabIndex = 33;
+            this.txtTalisPassword.TabIndex = 5;
             // 
             // lblTalisPassword
             // 
@@ -646,7 +714,7 @@
             this.lblTalisPassword.Location = new System.Drawing.Point(6, 68);
             this.lblTalisPassword.Name = "lblTalisPassword";
             this.lblTalisPassword.Size = new System.Drawing.Size(56, 13);
-            this.lblTalisPassword.TabIndex = 32;
+            this.lblTalisPassword.TabIndex = 4;
             this.lblTalisPassword.Text = "Password:";
             // 
             // txtTalisUsername
@@ -654,7 +722,7 @@
             this.txtTalisUsername.Location = new System.Drawing.Point(68, 37);
             this.txtTalisUsername.Name = "txtTalisUsername";
             this.txtTalisUsername.Size = new System.Drawing.Size(100, 20);
-            this.txtTalisUsername.TabIndex = 31;
+            this.txtTalisUsername.TabIndex = 3;
             // 
             // lblTalisUsername
             // 
@@ -662,7 +730,7 @@
             this.lblTalisUsername.Location = new System.Drawing.Point(6, 40);
             this.lblTalisUsername.Name = "lblTalisUsername";
             this.lblTalisUsername.Size = new System.Drawing.Size(58, 13);
-            this.lblTalisUsername.TabIndex = 30;
+            this.lblTalisUsername.TabIndex = 2;
             this.lblTalisUsername.Text = "Username:";
             // 
             // txtTalisStoreID
@@ -670,7 +738,7 @@
             this.txtTalisStoreID.Location = new System.Drawing.Point(68, 10);
             this.txtTalisStoreID.Name = "txtTalisStoreID";
             this.txtTalisStoreID.Size = new System.Drawing.Size(100, 20);
-            this.txtTalisStoreID.TabIndex = 29;
+            this.txtTalisStoreID.TabIndex = 1;
             this.txtTalisStoreID.Text = "store";
             // 
             // lblTalisStoreID
@@ -679,7 +747,7 @@
             this.lblTalisStoreID.Location = new System.Drawing.Point(6, 13);
             this.lblTalisStoreID.Name = "lblTalisStoreID";
             this.lblTalisStoreID.Size = new System.Drawing.Size(49, 13);
-            this.lblTalisStoreID.TabIndex = 28;
+            this.lblTalisStoreID.TabIndex = 0;
             this.lblTalisStoreID.Text = "Store ID:";
             // 
             // tabVirtuoso
@@ -812,63 +880,60 @@
             this.ofdDatasetFile.Filter = "RDF Dataset files|*.nq;*.trig;*.trix";
             this.ofdDatasetFile.Title = "Open RDF Dataset File";
             // 
-            // chk4storeUpdates
+            // txtDefaultGraph
             // 
-            this.chk4storeUpdates.AutoSize = true;
-            this.chk4storeUpdates.Location = new System.Drawing.Point(9, 38);
-            this.chk4storeUpdates.Name = "chk4storeUpdates";
-            this.chk4storeUpdates.Size = new System.Drawing.Size(250, 17);
-            this.chk4storeUpdates.TabIndex = 3;
-            this.chk4storeUpdates.Text = "This 4store Server supports Triple level updates";
-            this.chk4storeUpdates.UseVisualStyleBackColor = true;
+            this.txtDefaultGraph.Location = new System.Drawing.Point(108, 53);
+            this.txtDefaultGraph.Name = "txtDefaultGraph";
+            this.txtDefaultGraph.Size = new System.Drawing.Size(362, 20);
+            this.txtDefaultGraph.TabIndex = 4;
             // 
-            // tabSparqlHttpProtocol
+            // lblDefaultGraph
             // 
-            this.tabSparqlHttpProtocol.Controls.Add(this.btnSparqlHttpConnect);
-            this.tabSparqlHttpProtocol.Controls.Add(this.txtSparqlHttpServer);
-            this.tabSparqlHttpProtocol.Controls.Add(this.lblSparqlHttpServer);
-            this.tabSparqlHttpProtocol.Controls.Add(this.lblSparqlHttpIntro);
-            this.tabSparqlHttpProtocol.Location = new System.Drawing.Point(4, 40);
-            this.tabSparqlHttpProtocol.Name = "tabSparqlHttpProtocol";
-            this.tabSparqlHttpProtocol.Size = new System.Drawing.Size(475, 156);
-            this.tabSparqlHttpProtocol.TabIndex = 8;
-            this.tabSparqlHttpProtocol.Text = "SPARQL Uniform HTTP Protocol";
-            this.tabSparqlHttpProtocol.UseVisualStyleBackColor = true;
+            this.lblDefaultGraph.AutoSize = true;
+            this.lblDefaultGraph.Location = new System.Drawing.Point(7, 56);
+            this.lblDefaultGraph.Name = "lblDefaultGraph";
+            this.lblDefaultGraph.Size = new System.Drawing.Size(76, 13);
+            this.lblDefaultGraph.TabIndex = 3;
+            this.lblDefaultGraph.Text = "Default Graph:";
             // 
-            // txtSparqlHttpServer
+            // tabFuseki
             // 
-            this.txtSparqlHttpServer.Location = new System.Drawing.Point(92, 26);
-            this.txtSparqlHttpServer.Name = "txtSparqlHttpServer";
-            this.txtSparqlHttpServer.Size = new System.Drawing.Size(374, 20);
-            this.txtSparqlHttpServer.TabIndex = 6;
+            this.tabFuseki.Controls.Add(this.btnConnectFuseki);
+            this.tabFuseki.Controls.Add(this.txtFusekiUri);
+            this.tabFuseki.Controls.Add(this.lblFusekiUri);
+            this.tabFuseki.Location = new System.Drawing.Point(4, 40);
+            this.tabFuseki.Name = "tabFuseki";
+            this.tabFuseki.Size = new System.Drawing.Size(475, 156);
+            this.tabFuseki.TabIndex = 9;
+            this.tabFuseki.Text = "Fuseki";
+            this.tabFuseki.UseVisualStyleBackColor = true;
             // 
-            // lblSparqlHttpServer
+            // txtFusekiUri
             // 
-            this.lblSparqlHttpServer.AutoSize = true;
-            this.lblSparqlHttpServer.Location = new System.Drawing.Point(3, 29);
-            this.lblSparqlHttpServer.Name = "lblSparqlHttpServer";
-            this.lblSparqlHttpServer.Size = new System.Drawing.Size(83, 13);
-            this.lblSparqlHttpServer.TabIndex = 5;
-            this.lblSparqlHttpServer.Text = "Protocol Server:";
+            this.txtFusekiUri.Location = new System.Drawing.Point(121, 10);
+            this.txtFusekiUri.Name = "txtFusekiUri";
+            this.txtFusekiUri.Size = new System.Drawing.Size(348, 20);
+            this.txtFusekiUri.TabIndex = 3;
+            this.txtFusekiUri.Text = "http://localhost:3030/";
             // 
-            // lblSparqlHttpIntro
+            // lblFusekiUri
             // 
-            this.lblSparqlHttpIntro.Location = new System.Drawing.Point(3, 9);
-            this.lblSparqlHttpIntro.Name = "lblSparqlHttpIntro";
-            this.lblSparqlHttpIntro.Size = new System.Drawing.Size(461, 20);
-            this.lblSparqlHttpIntro.TabIndex = 4;
-            this.lblSparqlHttpIntro.Text = "Connect to a Server which supports the SPARQL Uniform HTTP Protocol for Graph Man" +
-                "agement";
+            this.lblFusekiUri.AutoSize = true;
+            this.lblFusekiUri.Location = new System.Drawing.Point(6, 13);
+            this.lblFusekiUri.Name = "lblFusekiUri";
+            this.lblFusekiUri.Size = new System.Drawing.Size(97, 13);
+            this.lblFusekiUri.TabIndex = 2;
+            this.lblFusekiUri.Text = "Fuseki Server URI:";
             // 
-            // btnSparqlHttpConnect
+            // btnConnectFuseki
             // 
-            this.btnSparqlHttpConnect.Location = new System.Drawing.Point(207, 128);
-            this.btnSparqlHttpConnect.Name = "btnSparqlHttpConnect";
-            this.btnSparqlHttpConnect.Size = new System.Drawing.Size(265, 23);
-            this.btnSparqlHttpConnect.TabIndex = 7;
-            this.btnSparqlHttpConnect.Text = "Connect to SPARQL Uniform HTTP Protocol Server";
-            this.btnSparqlHttpConnect.UseVisualStyleBackColor = true;
-            this.btnSparqlHttpConnect.Click += new System.EventHandler(this.btnSparqlHttpConnect_Click);
+            this.btnConnectFuseki.Location = new System.Drawing.Point(362, 128);
+            this.btnConnectFuseki.Name = "btnConnectFuseki";
+            this.btnConnectFuseki.Size = new System.Drawing.Size(110, 23);
+            this.btnConnectFuseki.TabIndex = 8;
+            this.btnConnectFuseki.Text = "Connect to Fuseki";
+            this.btnConnectFuseki.UseVisualStyleBackColor = true;
+            this.btnConnectFuseki.Click += new System.EventHandler(this.btnConnectFuseki_Click);
             // 
             // fclsGenericStoreConnection
             // 
@@ -898,12 +963,14 @@
             this.tabSesame.PerformLayout();
             this.tabSparqlEndpoint.ResumeLayout(false);
             this.tabSparqlEndpoint.PerformLayout();
+            this.tabSparqlHttpProtocol.ResumeLayout(false);
+            this.tabSparqlHttpProtocol.PerformLayout();
             this.tabTalis.ResumeLayout(false);
             this.tabTalis.PerformLayout();
             this.tabVirtuoso.ResumeLayout(false);
             this.tabVirtuoso.PerformLayout();
-            this.tabSparqlHttpProtocol.ResumeLayout(false);
-            this.tabSparqlHttpProtocol.PerformLayout();
+            this.tabFuseki.ResumeLayout(false);
+            this.tabFuseki.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -987,5 +1054,11 @@
         private System.Windows.Forms.TextBox txtSparqlHttpServer;
         private System.Windows.Forms.Label lblSparqlHttpServer;
         private System.Windows.Forms.Label lblSparqlHttpIntro;
+        private System.Windows.Forms.TextBox txtDefaultGraph;
+        private System.Windows.Forms.Label lblDefaultGraph;
+        private System.Windows.Forms.TabPage tabFuseki;
+        private System.Windows.Forms.TextBox txtFusekiUri;
+        private System.Windows.Forms.Label lblFusekiUri;
+        private System.Windows.Forms.Button btnConnectFuseki;
     }
 }

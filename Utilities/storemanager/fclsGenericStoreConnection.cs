@@ -64,6 +64,11 @@ namespace dotNetRDFStore
             MessageBox.Show("You must enter a valid URI for the " + parameter + " in order to connect to " + store, "Invalid URI Parameter", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
+        private void ArgumentInvalid(String parameter, String store, ArgumentException argEx)
+        {
+            MessageBox.Show("The value for the " + parameter + " is invalid due to the following error - " + argEx.Message, "Invalid Parameter", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
         private void btnCancel_Click(object sender, EventArgs e)
         {
             this.DialogResult = DialogResult.Cancel;
@@ -303,6 +308,27 @@ namespace dotNetRDFStore
                 catch (UriFormatException)
                 {
                     this.UriParameterInvalid("Protocol Server", "SPARQL Uniform HTTP Protocol");
+                }
+            }
+        }
+
+        private void btnConnectFuseki_Click(object sender, EventArgs e)
+        {
+            if (this.txtFusekiUri.Text.Equals(String.Empty))
+            {
+                this.ParameterRequired("Fuseki Server URI", "Fuseki");
+            }
+            else
+            {
+                try
+                {
+                    this._manager = new FusekiConnector(this.txtFusekiUri.Text);
+                    this.DialogResult = DialogResult.OK;
+                    this.Close();
+                }
+                catch (ArgumentException argEx)
+                {
+                    this.ArgumentInvalid("Fuseki Server URI", "Fuseki", argEx);
                 }
             }
         }
