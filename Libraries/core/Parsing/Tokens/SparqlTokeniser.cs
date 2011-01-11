@@ -48,7 +48,6 @@ namespace VDS.RDF.Parsing.Tokens
         private int _lasttokentype = -1;
         private bool _queryKeywordSeen = false;
         private bool _orderByKeywordSeen = false;
-        private bool _groupByKeywordSeen = false;
         private bool _baseDeclared = false;
         private SparqlQuerySyntax _syntax = Options.QueryDefaultSyntax;
 
@@ -879,27 +878,12 @@ namespace VDS.RDF.Parsing.Tokens
                         //GROUP Keyword, must be followed by a BY Keyword to form a GROUP BY keyword
                         if (this.GetExpectedKeyword(SparqlSpecsHelper.SparqlKeywordGroupBy))
                         {
-                            if (!this._groupByKeywordSeen)
-                            {
-                                this._lasttokentype = Token.GROUPBY;
-                                this._groupByKeywordSeen = true;
-                                return new GroupByKeywordToken(this.CurrentLine, this.StartPosition);
-                            }
-                            else
-                            {
-                                throw Error("Unexpected GROUP BY encountered, the GROUP BY Keyword has already occurred in this Query");
-                            }
+                            this._lasttokentype = Token.GROUPBY;
+                            return new GroupByKeywordToken(this.CurrentLine, this.StartPosition);
                         }
                         else
                         {
-                            if (!this._groupByKeywordSeen)
-                            {
-                                throw Error("Unexpected content while attempting to parse an GROUP BY keyword from Content:\n" + this.Value);
-                            }
-                            else
-                            {
-                                throw Error("Unexpected GROUP encountered, the GROUP Keyword has already occurred in this Query");
-                            }
+                            throw Error("Unexpected content while attempting to parse an GROUP BY keyword from Content:\n" + this.Value);
                         }
                     case SparqlSpecsHelper.SparqlKeywordGroupConcat:
                         //GROUP_CONCAT Keyword
