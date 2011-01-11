@@ -45,8 +45,6 @@ using VDS.RDF.Query.Datasets;
 
 namespace VDS.RDF.Web.Configuration.Resource
 {
-    //REQ: Implement Dataset Handler Configuration
-
     /// <summary>
     /// Abstract Base Class for Dataset Handler configurations
     /// </summary>

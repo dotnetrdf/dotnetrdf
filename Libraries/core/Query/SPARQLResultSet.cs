@@ -192,7 +192,7 @@ namespace VDS.RDF.Query
         /// <summary>
         /// Gets whether the Result Set is empty and can have Results loaded into it
         /// </summary>
-        protected internal bool IsEmpty
+        public bool IsEmpty
         {
             get
             {

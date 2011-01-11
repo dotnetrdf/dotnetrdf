@@ -639,6 +639,7 @@ namespace rdfEditor
             {
                 ISyntaxValidationResults results = this._currValidator.Validate(this._editor.Text);
                 this._validatorStatus.Content = results.Message;
+                bool shouldReset = (results.Error == null && this._lastError != null);
                 this._lastError = results.Error;
                 ToolTip tip = new ToolTip();
                 TextBlock block = new TextBlock();
@@ -648,21 +649,22 @@ namespace rdfEditor
                 tip.Content = block;
                 this._validatorStatus.ToolTip = tip;
 
-                //TODO: Work out how to invalidate specific visual lines to force them to be redrawn
-                //if (results.Error != null)
-                //{
-                //    if (results.Error is RdfParseException)
-                //    {
-                //        RdfParseException parseEx = (RdfParseException)results.Error;
-                //        if (parseEx.StartLine != parseEx.EndLine && parseEx.StartLine > parseEx.EndLine)
-                //        {
-                //            for (int i = parseEx.StartLine; i < parseEx.EndLine; i++)
-                //            {
-                //                this._editor.TextArea.TextView.VisualLines[i]
-                //            }
-                //        }
-                //    }
-                //}
+                //Turn Highlighting Errors on then off to ensure that the editor redraws
+                if (this._highlightErrors && shouldReset)
+                {
+                    if (this._editor.TextArea.TextView.ElementGenerators.Any(g => g is ValidationErrorElementGenerator))
+                    {
+                        for (int i = 0; i < this._editor.TextArea.TextView.ElementGenerators.Count; i++)
+                        {
+                            if (this._editor.TextArea.TextView.ElementGenerators[i] is ValidationErrorElementGenerator)
+                            {
+                                this._editor.TextArea.TextView.ElementGenerators.RemoveAt(i);
+                                i--;
+                            }
+                        }
+                    }
+                    this._editor.TextArea.TextView.ElementGenerators.Add(new ValidationErrorElementGenerator(this));
+                }
             }
         }
 
