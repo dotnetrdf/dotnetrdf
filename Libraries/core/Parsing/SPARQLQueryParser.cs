@@ -294,6 +294,8 @@ namespace VDS.RDF.Parsing
             {
                 //Create the Parser Context
                 SparqlQueryParserContext context = new SparqlQueryParserContext(new SparqlTokeniser(input, this._syntax), this._queuemode, false, this._tracetokeniser);
+                context.SyntaxMode = this._syntax;
+                context.ExpressionParser.SyntaxMode = context.SyntaxMode;
                 context.ExpressionFactories = this._factories;
 
                 return this.ParseInternal(context);

@@ -9,7 +9,7 @@ namespace WebDemos
 {
     public class MonkeyExpressionFactory : ISparqlCustomExpressionFactory
     {
-        public bool TryCreateExpression(Uri u, List<ISparqlExpression> args, out ISparqlExpression expr)
+        public bool TryCreateExpression(Uri u, List<ISparqlExpression> args, Dictionary<String,ISparqlExpression> scalarArgs, out ISparqlExpression expr)
         {
             Graph g = new Graph();
             expr = new NodeExpressionTerm(g.CreateLiteralNode("Monkey"));

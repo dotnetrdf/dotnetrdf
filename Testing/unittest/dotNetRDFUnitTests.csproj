@@ -135,6 +135,7 @@
     <Compile Include="RdfXmlTests.cs" />
     <Compile Include="Sparql\DefaultGraphTests.cs" />
     <Compile Include="Sparql\GroupByTests.cs" />
+    <Compile Include="Sparql\ScalarArgumentsTests.cs" />
     <Compile Include="Sparql\SparqlParsingComplex.cs" />
     <Compile Include="Sparql\SparqlTests2.cs" />
     <Compile Include="Sparql\DescribeAlgorithms.cs" />

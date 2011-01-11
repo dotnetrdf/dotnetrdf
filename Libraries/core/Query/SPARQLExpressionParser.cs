@@ -461,9 +461,16 @@ namespace VDS.RDF.Query
 
         private ISparqlExpression TryParseBrackettedExpression(Queue<IToken> tokens, bool requireOpeningLeftBracket, out bool commaTerminated)
         {
+            bool temp = false;
+            return this.TryParseBrackettedExpression(tokens, requireOpeningLeftBracket, out commaTerminated, out temp);
+        }
+
+        private ISparqlExpression TryParseBrackettedExpression(Queue<IToken> tokens, bool requireOpeningLeftBracket, out bool commaTerminated, out bool semicolonTerminated)
+        {
             IToken next;
 
             commaTerminated = false;
+            semicolonTerminated = false;
 
             //Discard the Opening Bracket
             if (requireOpeningLeftBracket)
@@ -496,6 +503,11 @@ namespace VDS.RDF.Query
                 {
                     openBrackets--;
                     commaTerminated = true;
+                }
+                else if (next.TokenType == Token.SEMICOLON && openBrackets == 1)
+                {
+                    openBrackets--;
+                    semicolonTerminated = true;
                 }
                 else if (next.TokenType == Token.DISTINCT && openBrackets == 1)
                 {
@@ -688,17 +700,25 @@ namespace VDS.RDF.Query
                 IToken next = tokens.Peek();
                 if (next.TokenType == Token.LEFTBRACKET)
                 {
-                    bool comma = false;
+                    bool comma = false, semicolon = false;
                     List<ISparqlExpression> args = new List<ISparqlExpression>();
-                    args.Add(this.TryParseBrackettedExpression(tokens, true, out comma));
+                    args.Add(this.TryParseBrackettedExpression(tokens, true, out comma, out semicolon));
 
-                    while (comma)
+                    while (comma && !semicolon)
                     {
-                        args.Add(this.TryParseBrackettedExpression(tokens, false, out comma));
+                        args.Add(this.TryParseBrackettedExpression(tokens, false, out comma, out semicolon));
                     }
 
                     //If there are no arguments (one null argument) then discard
                     if (args.Count == 1 && args.First() == null) args.Clear();
+
+                    //Check whether we need to parse Scalar Arguments
+                    Dictionary<String, ISparqlExpression> scalarArgs = null;
+                    if (semicolon)
+                    {
+                        if (this._syntax != SparqlQuerySyntax.Extended) throw new RdfParseException("Arguments List terminated by a Semicolon - Arbitrary Scalar Arguments for Extension Functions/Aggregates are not permitted in SPARQL 1.1");
+                        scalarArgs = this.TryParseScalarArguments(first, tokens);
+                    }
 
                     //Return an Extension Function expression
                     ISparqlExpression expr = SparqlExpressionFactory.CreateExpression(u, args, this._factories);
@@ -1041,95 +1061,7 @@ namespace VDS.RDF.Query
             Dictionary<String, ISparqlExpression> scalarArguments = new Dictionary<string, ISparqlExpression>();
             if (scalarArgs)
             {
-                //Parse the Scalar Arguments
-                Queue<IToken> subtokens = new Queue<IToken>();
-                int openBrackets = 1;
-                while (openBrackets > 0)
-                {
-                    //First expect a Keyword/QName/URI for the Scalar Argument Name
-                    String argName;
-                    next = tokens.Peek();
-                    switch (next.TokenType)
-                    {
-                        case Token.SEPARATOR:
-                            if (agg.TokenType == Token.GROUPCONCAT)
-                            {
-                                //OK
-                                argName = SparqlSpecsHelper.SparqlKeywordSeparator;
-                            }
-                            else
-                            {
-                                throw Error("The SEPARATOR scalar argument is only valid with the GROUP_CONCAT aggregate", next);
-                            }
-                            break;
-
-                        case Token.QNAME:
-                        case Token.URI:
-                            if (this._syntax != SparqlQuerySyntax.Extended) throw new RdfParseException("Arbitrary Scalar Arguments for Aggregates are not permitted in SPARQL 1.1");
-
-                            //Resolve QName/URI
-                            if (next.TokenType == Token.QNAME)
-                            {
-                                argName = Tools.ResolveQName(next.Value, this._nsmapper, this._baseUri);
-                            }
-                            else
-                            {
-                                argName = Tools.ResolveUri(next.Value, this._baseUri.ToSafeString());
-                            }
-                            break;
-
-                        default:
-                            throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Keyword/QName/URI for the Scalar Argument Name", next);
-                    }
-                    tokens.Dequeue();
-
-                    //After the Argument Name need an =
-                    next = tokens.Peek();
-                    if (next.TokenType != Token.EQUALS)
-                    {
-                        throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a = after a Scalar Argument name in an aggregate", next);
-                    }
-                    tokens.Dequeue();
-
-                    //Get the subtokens for the Argument Expression
-                    next = tokens.Dequeue();
-                    do
-                    {
-                        if (next.TokenType == Token.LEFTBRACKET)
-                        {
-                            openBrackets++;
-                        }
-                        else if (next.TokenType == Token.RIGHTBRACKET)
-                        {
-                            openBrackets--;
-                        }
-                        else if (next.TokenType == Token.COMMA)
-                        {
-                            //If we see a COMMA and there is only 1 bracket open then expect another argument
-                            if (openBrackets == 1)
-                            {
-                                break;
-                            }
-                        }
-
-                        //If not the end bracket then add it to the subtokens
-                        if (openBrackets > 0)
-                        {
-                            subtokens.Enqueue(next);
-                            next = tokens.Dequeue();
-                        }
-                    } while (openBrackets > 0);
-
-                    //Parse the Subtokens into the Argument Expression
-                    if (scalarArguments.ContainsKey(argName))
-                    {
-                        scalarArguments[argName] = this.Parse(subtokens);
-                    } 
-                    else 
-                    {
-                        scalarArguments.Add(argName, this.Parse(subtokens));
-                    }
-                }
+                scalarArguments = this.TryParseScalarArguments(agg, tokens);
             }
 
             //Now we need to generate the actual expression
@@ -1283,6 +1215,104 @@ namespace VDS.RDF.Query
                     //Should have already handled this but have to have it to keep the compiler happy
                     throw Error("Cannot parse an Aggregate since '" + agg.GetType().ToString() + "' is not an Aggregate Keyword Token", agg);
             }
+        }
+
+        private Dictionary<String, ISparqlExpression> TryParseScalarArguments(IToken funcToken, Queue<IToken> tokens)
+        {
+            //Parse the Scalar Arguments
+            Dictionary<String, ISparqlExpression> scalarArguments = new Dictionary<string, ISparqlExpression>();
+            IToken next;
+            Queue<IToken> subtokens = new Queue<IToken>();
+            int openBrackets = 1;
+
+            while (openBrackets > 0)
+            {
+                //First expect a Keyword/QName/URI for the Scalar Argument Name
+                String argName;
+                next = tokens.Peek();
+                switch (next.TokenType)
+                {
+                    case Token.SEPARATOR:
+                        if (funcToken.TokenType == Token.GROUPCONCAT)
+                        {
+                            //OK
+                            argName = SparqlSpecsHelper.SparqlKeywordSeparator;
+                        }
+                        else
+                        {
+                            throw Error("The SEPARATOR scalar argument is only valid with the GROUP_CONCAT aggregate", next);
+                        }
+                        break;
+
+                    case Token.QNAME:
+                    case Token.URI:
+                        if (this._syntax != SparqlQuerySyntax.Extended) throw new RdfParseException("Arbitrary Scalar Arguments for Aggregates are not permitted in SPARQL 1.1");
+
+                        //Resolve QName/URI
+                        if (next.TokenType == Token.QNAME)
+                        {
+                            argName = Tools.ResolveQName(next.Value, this._nsmapper, this._baseUri);
+                        }
+                        else
+                        {
+                            argName = Tools.ResolveUri(next.Value, this._baseUri.ToSafeString());
+                        }
+                        break;
+
+                    default:
+                        throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Keyword/QName/URI for the Scalar Argument Name", next);
+                }
+                tokens.Dequeue();
+
+                //After the Argument Name need an =
+                next = tokens.Peek();
+                if (next.TokenType != Token.EQUALS)
+                {
+                    throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a = after a Scalar Argument name in an aggregate", next);
+                }
+                tokens.Dequeue();
+
+                //Get the subtokens for the Argument Expression
+                next = tokens.Dequeue();
+                do
+                {
+                    if (next.TokenType == Token.LEFTBRACKET)
+                    {
+                        openBrackets++;
+                    }
+                    else if (next.TokenType == Token.RIGHTBRACKET)
+                    {
+                        openBrackets--;
+                    }
+                    else if (next.TokenType == Token.COMMA)
+                    {
+                        //If we see a COMMA and there is only 1 bracket open then expect another argument
+                        if (openBrackets == 1)
+                        {
+                            break;
+                        }
+                    }
+
+                    //If not the end bracket then add it to the subtokens
+                    if (openBrackets > 0)
+                    {
+                        subtokens.Enqueue(next);
+                        next = tokens.Dequeue();
+                    }
+                } while (openBrackets > 0);
+
+                //Parse the Subtokens into the Argument Expression
+                if (scalarArguments.ContainsKey(argName))
+                {
+                    scalarArguments[argName] = this.Parse(subtokens);
+                }
+                else
+                {
+                    scalarArguments.Add(argName, this.Parse(subtokens));
+                }
+            }
+
+            return scalarArguments;
         }
 
         private ISparqlExpression TryParseSetExpression(VariableExpressionTerm varTerm, Queue<IToken> tokens)

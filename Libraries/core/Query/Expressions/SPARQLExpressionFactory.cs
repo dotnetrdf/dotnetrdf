@@ -95,6 +95,23 @@ namespace VDS.RDF.Query.Expressions
         /// </remarks>
         public static ISparqlExpression CreateExpression(Uri u, List<ISparqlExpression> args, IEnumerable<ISparqlCustomExpressionFactory> factories)
         {
+            return CreateExpression(u, args, new Dictionary<String, ISparqlExpression>(), factories);
+        }
+
+        /// <summary>
+        /// Tries to create an Expression from the given function Uri and list of argument expressions
+        /// </summary>
+        /// <param name="u">Function Uri</param>
+        /// <param name="args">List of Argument Expressions</param>
+        /// <param name="factories">Enumeration of locally scoped expression factories to use</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// <para>
+        /// Globally scoped custom expression factories are tried first and then any locally scoped expression factories are used
+        /// </para>
+        /// </remarks>
+        public static ISparqlExpression CreateExpression(Uri u, List<ISparqlExpression> args, Dictionary<String,ISparqlExpression> scalarArgs, IEnumerable<ISparqlCustomExpressionFactory> factories)
+        {
             if (SparqlSpecsHelper.SupportedCastFunctions.Contains(u.ToString()))
             {
                 //Should only have 1 argument
@@ -145,7 +162,7 @@ namespace VDS.RDF.Query.Expressions
                 ISparqlExpression expr = null;
                 foreach (ISparqlCustomExpressionFactory customFactory in _customFactories)
                 {
-                    if (customFactory.TryCreateExpression(u, args, out expr))
+                    if (customFactory.TryCreateExpression(u, args, scalarArgs, out expr))
                     {
                         //If the Factory succesfully creates an expression we'll return it
                         return expr;
@@ -155,7 +172,7 @@ namespace VDS.RDF.Query.Expressions
                 //If we have any locally scoped factories then we can now use these to try and generate the Expression
                 foreach (ISparqlCustomExpressionFactory customFactory in factories)
                 {
-                    if (customFactory.TryCreateExpression(u, args, out expr)) 
+                    if (customFactory.TryCreateExpression(u, args, scalarArgs, out expr)) 
                     {
                         //If the Factory creates an expression we'll return it
                         return expr;

@@ -118,8 +118,15 @@ namespace VDS.RDF.Query.Expressions
         /// <param name="args">Function Arguments</param>
         /// <param name="expr">Generated Expression</param>
         /// <returns>Whether an expression was successfully generated</returns>
-        public bool TryCreateExpression(Uri u, List<ISparqlExpression> args, out ISparqlExpression expr)
+        public bool TryCreateExpression(Uri u, List<ISparqlExpression> args, Dictionary<String,ISparqlExpression> scalarArgs, out ISparqlExpression expr)
         {
+            //If any Scalar Arguments are present then can't possibly be a Leviathan Function
+            if (scalarArgs.Count > 0)
+            {
+                expr = null;
+                return false;
+            }
+
             String func = u.ToString();
             if (func.StartsWith(LeviathanFunctionFactory.LeviathanFunctionsNamespace))
             {

@@ -110,6 +110,8 @@ namespace VDS.RDF.Parsing.Contexts
             this._subqueryMode = true;
             this._query = new SparqlQuery(true);
             this._factories = parent.ExpressionFactories;
+            this._syntax = parent.SyntaxMode;
+            this._exprParser.SyntaxMode = this._syntax;
         }
 
         /// <summary>
