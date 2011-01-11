@@ -19,7 +19,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Build\nant\dotnetrdf.build = Build\nant\dotnetrdf.build
 		dotNetRDF.vsmdi = dotNetRDF.vsmdi
 		dotNetRDF1.vsmdi = dotNetRDF1.vsmdi
-		dotNetRDF11.vsmdi = dotNetRDF11.vsmdi
 		dotNetRDF2.vsmdi = dotNetRDF2.vsmdi
 		dotNetRDF3.vsmdi = dotNetRDF3.vsmdi
 		dotNetRDF4.vsmdi = dotNetRDF4.vsmdi
@@ -27,6 +26,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		dotNetRDF6.vsmdi = dotNetRDF6.vsmdi
 		dotNetRDF7.vsmdi = dotNetRDF7.vsmdi
 		dotNetRDF8.vsmdi = dotNetRDF8.vsmdi
+		dotNetRDF9.vsmdi = dotNetRDF9.vsmdi
 		Tests.testrunconfig = Tests.testrunconfig
 		Todo.txt = Todo.txt
 	EndProjectSection
@@ -85,7 +85,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.Alexandria.MongoD
 EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
-		CategoryFile = dotNetRDF11.vsmdi
+		CategoryFile = dotNetRDF9.vsmdi
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
