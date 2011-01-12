@@ -392,6 +392,11 @@ namespace VDS.RDF.Query.Algebra
             return q;
         }
 
+        /// <summary>
+        /// Throws an error as a Select() cannot be converted back to a Graph Pattern
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="NotSupportedException">Thrown since a Select() cannot be converted back to a Graph Pattern</exception>
         public GraphPattern ToGraphPattern()
         {
             throw new NotSupportedException("A Select() cannot be converted to a GraphPattern");
@@ -483,6 +488,11 @@ namespace VDS.RDF.Query.Algebra
             return q;
         }
 
+        /// <summary>
+        /// Throws an exception since an Ask() cannot be converted to a Graph Pattern
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="NotSupportedException">Thrown since an Ask() cannot be converted to a Graph Pattern</exception>
         public GraphPattern ToGraphPattern()
         {
             throw new NotSupportedException("An Ask() cannot be converted to a GraphPattern");

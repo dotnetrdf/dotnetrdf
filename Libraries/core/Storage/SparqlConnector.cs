@@ -323,16 +323,29 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Throws an exception as this connector provides a read-only connection
+        /// </summary>
+        /// <param name="graphUri">URI of this Graph to delete</param>
+        /// <exception cref="RdfStorageException">Thrown since this connection is read-only so you cannot delete graphs using it</exception>
         public void DeleteGraph(Uri graphUri)
         {
             throw new RdfStorageException("The SparqlConnector provides a read-only connection");
         }
 
+        /// <summary>
+        /// Throws an exception as this connector provides a read-only connection
+        /// </summary>
+        /// <param name="graphUri">URI of this Graph to delete</param>
+        /// <exception cref="RdfStorageException">Thrown since this connection is read-only so you cannot delete graphs using it</exception>
         public void DeleteGraph(String graphUri)
         {
             throw new RdfStorageException("The SparqlConnector provides a read-only connection");
         }
 
+        /// <summary>
+        /// Returns that deleting graphs is not supported
+        /// </summary>
         public bool DeleteSupported
         {
             get
@@ -341,6 +354,10 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Lists the Graphs in the Store
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<Uri> ListGraphs()
         {
             try
@@ -373,6 +390,9 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Returns that listing graphs is supported
+        /// </summary>
         public bool ListGraphsSupported
         {
             get

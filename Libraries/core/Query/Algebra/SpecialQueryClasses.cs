@@ -44,6 +44,10 @@ namespace VDS.RDF.Query.Algebra
     {
         private String _graphVar;
 
+        /// <summary>
+        /// Creates a new Select Distinct algebra
+        /// </summary>
+        /// <param name="graphVar">Graph Variable to bind Graph URIs to</param>
         public SelectDistinctGraphs(String graphVar)
         {
             this._graphVar = graphVar;
@@ -131,6 +135,10 @@ namespace VDS.RDF.Query.Algebra
             return q;
         }
 
+        /// <summary>
+        /// Converts the Algebra to a Graph Pattern
+        /// </summary>
+        /// <returns></returns>
         public GraphPattern ToGraphPattern()
         {
             GraphPattern p = new GraphPattern();
@@ -188,6 +196,10 @@ namespace VDS.RDF.Query.Algebra
             return "AskAnyTriples()";
         }
 
+        /// <summary>
+        /// Converts the Algebra back to a SPARQL Query
+        /// </summary>
+        /// <returns></returns>
         public SparqlQuery ToQuery()
         {
             SparqlQuery q = new SparqlQuery();
@@ -196,6 +208,10 @@ namespace VDS.RDF.Query.Algebra
             return q;
         }
 
+        /// <summary>
+        /// Converts the Algebra to a Graph Pattern
+        /// </summary>
+        /// <returns></returns>
         public GraphPattern ToGraphPattern()
         {
             GraphPattern p = new GraphPattern();

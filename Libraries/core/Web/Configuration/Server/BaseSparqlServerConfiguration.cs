@@ -404,6 +404,11 @@ namespace VDS.RDF.Web.Configuration.Server
             }
         }
 
+        /// <summary>
+        /// Creates a new Base SPARQL Server Configuration based on information from a Configuration Graph
+        /// </summary>
+        /// <param name="g">Configuration Graph</param>
+        /// <param name="objNode">Object Node</param>
         public BaseSparqlServerConfiguration(IGraph g, INode objNode)
             : this(null, g, objNode) { }
 
@@ -458,6 +463,11 @@ namespace VDS.RDF.Web.Configuration.Server
 
         }
 
+        /// <summary>
+        /// Creates a new SPARQL Server Configuration from information in a Configuration Graph
+        /// </summary>
+        /// <param name="g">Configuration Graph</param>
+        /// <param name="objNode">Object Node</param>
         public SparqlServerConfiguration(IGraph g, INode objNode)
             : base(null, g, objNode) { }
     }

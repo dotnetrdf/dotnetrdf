@@ -209,6 +209,11 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Escapes a Query to avoid a character encoding issue when communicating a query to Sesame
+        /// </summary>
+        /// <param name="query">Query</param>
+        /// <returns></returns>
         protected virtual String EscapeQuery(String query)
         {
             StringBuilder output = new StringBuilder();
@@ -420,11 +425,19 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Deletes a Graph from the Sesame store
+        /// </summary>
+        /// <param name="graphUri">URI of the Graph to delete</param>
         public void DeleteGraph(Uri graphUri)
         {
             this.DeleteGraph(graphUri.ToSafeString());
         }
 
+        /// <summary>
+        /// Deletes a Graph from the Sesame store
+        /// </summary>
+        /// <param name="graphUri">URI of the Graph to delete</param>
         public void DeleteGraph(String graphUri)
         {
             try
@@ -456,6 +469,9 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Returns that deleting graphs from the Sesame store is supported
+        /// </summary>
         public bool DeleteSupported
         {
             get
@@ -464,6 +480,10 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Gets the list of Graphs in the Sesame store
+        /// </summary>
+        /// <returns></returns>
         public virtual IEnumerable<Uri> ListGraphs()
         {
             try
@@ -496,6 +516,9 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Returns that listing Graphs is supported
+        /// </summary>
         public virtual bool ListGraphsSupported
         {
             get

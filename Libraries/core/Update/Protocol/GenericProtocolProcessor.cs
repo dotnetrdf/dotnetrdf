@@ -182,6 +182,10 @@ namespace VDS.RDF.Update.Protocol
             this._manager.SaveGraph(g);
         }
 
+        /// <summary>
+        /// Processes a HEAD operation
+        /// </summary>
+        /// <param name="context">HTTP Context</param>
         public override void ProcessHead(HttpContext context)
         {
             Uri graphUri = this.ResolveGraphUri(context);
@@ -203,16 +207,31 @@ namespace VDS.RDF.Update.Protocol
             //Same as ProcessGet except we don't send the Body
         }
 
+        /// <summary>
+        /// Processes an OPTIONS operation
+        /// </summary>
+        /// <param name="context">HTTP Context</param>
         public override void ProcessOptions(HttpContext context)
         {
+            //REQ: Implement OPTIONS for SPARQL Uniform HTTP Protocol
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Processes a PATCH operation
+        /// </summary>
+        /// <param name="context">HTTP Context</param>
         public override void ProcessPatch(HttpContext context)
         {
+            //REQ: Implement PATCH for SPARQL Uniform HTTP Protocol
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Retrieves the Graph with the given URI
+        /// </summary>
+        /// <param name="graphUri">Graph URI</param>
+        /// <returns></returns>
         protected override IGraph GetGraph(Uri graphUri)
         {
             Graph g = new Graph();

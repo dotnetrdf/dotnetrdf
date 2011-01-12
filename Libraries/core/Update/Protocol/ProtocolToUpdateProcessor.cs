@@ -240,8 +240,13 @@ namespace VDS.RDF.Update.Protocol
             }
         }
 
+        /// <summary>
+        /// Processes an OPTIONS operation
+        /// </summary>
+        /// <param name="context">HTTP Context</param>
         public override void ProcessOptions(HttpContext context)
         {
+            //REQ: Implement OPTIONS for SPARQL Uniform HTTP Protocol
             throw new NotImplementedException();
         }
 
@@ -251,9 +256,15 @@ namespace VDS.RDF.Update.Protocol
         /// <param name="context">HTTP Context</param>
         public override void ProcessPatch(HttpContext context)
         {
+            //REQ: Implement PATCH for SPARQL Uniform HTTP Protocol
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Retrieves the Graph with the given URI
+        /// </summary>
+        /// <param name="graphUri">Graph URI</param>
+        /// <returns></returns>
         protected override IGraph GetGraph(Uri graphUri)
         {
             //Then generate a CONSTRUCT query based on this

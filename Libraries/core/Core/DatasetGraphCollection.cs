@@ -40,20 +40,38 @@ using System.Text;
 
 namespace VDS.RDF.Query.Datasets
 {
+    /// <summary>
+    /// A Graph Collection which wraps an <see cref="ISparqlDataset">ISparqlDataset</see> implementation so it can be used as if it was a Graph Collection
+    /// </summary>
     public class DatasetGraphCollection : BaseGraphCollection
     {
         private ISparqlDataset _dataset;
 
+        /// <summary>
+        /// Creates a new Dataset Graph collection
+        /// </summary>
+        /// <param name="dataset">SPARQL Dataset</param>
         public DatasetGraphCollection(ISparqlDataset dataset)
         {
             this._dataset = dataset;
         }
 
+        /// <summary>
+        /// Gets whether the Collection contains a Graph with the given URI
+        /// </summary>
+        /// <param name="graphUri">Graph URI</param>
+        /// <returns></returns>
         public override bool Contains(Uri graphUri)
         {
             return this._dataset.HasGraph(graphUri);
         }
 
+        /// <summary>
+        /// Adds a Graph to the Collection
+        /// </summary>
+        /// <param name="g">Graph to add</param>
+        /// <param name="mergeIfExists">Whether to merge the given Graph with any existing Graph with the same URI</param>
+        /// <exception cref="RdfException">Thrown if a Graph with the given URI already exists and the <paramref name="mergeIfExists">mergeIfExists</paramref> is set to false</exception>
         protected internal override void Add(IGraph g, bool mergeIfExists)
         {
             if (this.Contains(g.BaseUri))
@@ -79,6 +97,10 @@ namespace VDS.RDF.Query.Datasets
             }
         }
 
+        /// <summary>
+        /// Removes a Graph from the Collection
+        /// </summary>
+        /// <param name="graphUri">URI of the Graph to removed</param>
         protected internal override void Remove(Uri graphUri)
         {
             if (this.Contains(graphUri))
@@ -91,6 +113,9 @@ namespace VDS.RDF.Query.Datasets
             }
         }
 
+        /// <summary>
+        /// Gets the number of Graphs in the Collection
+        /// </summary>
         public override int Count
         {
             get 
@@ -99,6 +124,9 @@ namespace VDS.RDF.Query.Datasets
             }
         }
 
+        /// <summary>
+        /// Gets the URIs of Graphs in the Collection
+        /// </summary>
         public override IEnumerable<Uri> GraphUris
         {
             get 
@@ -107,19 +135,38 @@ namespace VDS.RDF.Query.Datasets
             }
         }
 
+        /// <summary>
+        /// Gets the Graph with the given URI
+        /// </summary>
+        /// <param name="graphUri">Graph URI</param>
+        /// <returns></returns>
         public override IGraph this[Uri graphUri]
         {
             get 
             {
-                return this._dataset[graphUri]; 
+                if (this._dataset.HasGraph(graphUri))
+                {
+                    return this._dataset[graphUri];
+                }
+                else
+                {
+                    throw new RdfException("The Graph with the given URI does not exist in this Graph Collection");
+                }
             }
         }
 
+        /// <summary>
+        /// Disposes of the Graph Collection
+        /// </summary>
         public override void Dispose()
         {
             this._dataset.Flush();
         }
 
+        /// <summary>
+        /// Gets the enumeration of Graphs in this Collection
+        /// </summary>
+        /// <returns></returns>
         public override IEnumerator<IGraph> GetEnumerator()
         {
             return this._dataset.Graphs.GetEnumerator();

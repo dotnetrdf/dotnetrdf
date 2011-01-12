@@ -52,6 +52,9 @@ namespace VDS.RDF.Web
     /// </summary>
     public abstract class BaseDatasetHandler : IHttpHandler
     {
+        /// <summary>
+        /// Holds the Configuration for this HTTP Handler
+        /// </summary>
         protected BaseDatasetHandlerConfiguration _config;
 
         /// <summary>

@@ -153,6 +153,10 @@ namespace VDS.RDF.Query.Algebra
             return q;
         }
 
+        /// <summary>
+        /// Converts the Minus() back to a MINUS Graph Pattern
+        /// </summary>
+        /// <returns></returns>
         public GraphPattern ToGraphPattern()
         {
             GraphPattern p = this._lhs.ToGraphPattern();

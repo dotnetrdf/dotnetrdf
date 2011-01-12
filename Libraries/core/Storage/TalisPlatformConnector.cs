@@ -271,11 +271,7 @@ namespace VDS.RDF.Storage
                 request.ContentType = MimeTypesHelper.RdfXml[0];
 
                 //Write the RDF/XML to the Request Stream
-#if !NO_XMLDOM
-                FastRdfXmlWriter writer = new FastRdfXmlWriter();
-#else
                 RdfXmlWriter writer = new RdfXmlWriter();
-#endif
                 writer.Save(g, new StreamWriter(request.GetRequestStream()));
                 
                 //Make the Request
@@ -369,7 +365,7 @@ namespace VDS.RDF.Storage
                 request.ContentType = TalisChangeSetMIMEType;
 
                 //Write the RDF/XML to the Request Stream
-                FastRdfXmlWriter writer = new FastRdfXmlWriter();
+                RdfXmlWriter writer = new RdfXmlWriter();
                 writer.Save(g, new StreamWriter(request.GetRequestStream()));
 
                 //Make the Request
@@ -764,16 +760,29 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Throws an exception since you cannot delete a Graph from a Talis Store as it is not a named graph store
+        /// </summary>
+        /// <param name="graphUri">URI of the Graph to delete</param>
+        /// <exception cref="RdfStorageException">Thrown since you cannot delete a Graph from the Talis Platform as it is not a named graph store</exception>
         public void DeleteGraph(Uri graphUri)
         {
             throw new RdfStorageException("The TalisConnector does not support deletion of Graphs since the Talis platform is not a named graph store");
         }
 
+        /// <summary>
+        /// Throws an exception since you cannot delete a Graph from a Talis Store as it is not a named graph store
+        /// </summary>
+        /// <param name="graphUri">URI of the Graph to delete</param>
+        /// <exception cref="RdfStorageException">Thrown since you cannot delete a Graph from the Talis Platform as it is not a named graph store</exception>
         public void DeleteGraph(String graphUri)
         {
             throw new RdfStorageException("The TalisConnector does not support deletion of Graphs since the Talis platform is not a named graph store");
         }
 
+        /// <summary>
+        /// Returns that deleting a Graph is not supported
+        /// </summary>
         public bool DeleteSupported
         {
             get
@@ -782,11 +791,18 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Throws an exception since listing graphs from the Talis Platform is not supported as it is not a named graph store
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<Uri> ListGraphs()
         {
             throw new NotSupportedException("Talis Platform does not support listing Graphs");
         }
 
+        /// <summary>
+        /// Returns that listing graphs is not supported
+        /// </summary>
         public bool ListGraphsSupported
         {
             get

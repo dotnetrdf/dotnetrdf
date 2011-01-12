@@ -59,6 +59,11 @@ namespace VDS.RDF.Query
         public LeviathanQueryProcessor(SparqlQuery query, IInMemoryQueryableStore store)
             : this(query, new InMemoryDataset(store)) { }
 
+        /// <summary>
+        /// Creates a new Leviathan Query Processor
+        /// </summary>
+        /// <param name="query">Query</param>
+        /// <param name="data">SPARQL Dataset</param>
         public LeviathanQueryProcessor(SparqlQuery query, ISparqlDataset data)
         {
             this._context = new SparqlEvaluationContext(query, data);
@@ -71,6 +76,10 @@ namespace VDS.RDF.Query
         public LeviathanQueryProcessor(IInMemoryQueryableStore store)
             : this(new InMemoryDataset(store)) { }
 
+        /// <summary>
+        /// Creates a new Leviathan Query Processor
+        /// </summary>
+        /// <param name="data">SPARQL Dataset</param>
         public LeviathanQueryProcessor(ISparqlDataset data)
         {
             this._context = new SparqlEvaluationContext(null, data);

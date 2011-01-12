@@ -145,6 +145,11 @@ namespace VDS.RDF.Query.Algebra
             return q;
         }
 
+        /// <summary>
+        /// Throws an error since an OrderBy() cannot be converted back to a Graph Pattern
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="NotSupportedException">Thrown since an OrderBy() cannot be converted back to a Graph Pattern</exception>
         public GraphPattern ToGraphPattern()
         {
             throw new NotSupportedException("An OrderBy() cannot be converted to a Graph Pattern");

@@ -150,6 +150,11 @@ namespace VDS.RDF.Query.Algebra
             return q;
         }
 
+        /// <summary>
+        /// Throws an exception as a Bindings() algebra cannot be converted to a Graph Pattern
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="NotSupportedException">Always thrown as a Bindings() cannot be converted to a Graph Pattern</exception>
         public GraphPattern ToGraphPattern()
         {
             throw new NotSupportedException("A Bindings() cannot be converted to a GraphPattern");

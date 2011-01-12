@@ -29,6 +29,8 @@ PORT - This task is related to porting 3rd party code onto the dotNetRDF API
 dotNetRDF
 ---------
 
+2x REQ: Implement OPTIONS for SPARQL Uniform HTTP Protocol
+2x REQ: Implement PATCH for SPARQL Uniform HTTP Protocol
 HACK: Changed to an accept all for the time being to ensure works OK with DBPedia and Virtuoso
 HACK: Have to send only RDF/XML as the accept header due to a known issue with Talis Platform
 TODO: Implement IsIpvFuture
@@ -55,7 +57,6 @@ dotNetRDF.Alexandria
 --------------------
 
 TODO: Cache retried Graphs in-memory?
-TODO: Add support for using dnr:loadMode to specify the indexes to be used
 
 dotNetRDF.Interop.Intellidimension
 ----------------------------------

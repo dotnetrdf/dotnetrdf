@@ -935,11 +935,19 @@ namespace VDS.RDF.Storage
 
         #endregion
 
+        /// <summary>
+        /// Deletes a Graph from the Virtuoso store
+        /// </summary>
+        /// <param name="graphUri">URI of the Graph to delete</param>
         public void DeleteGraph(Uri graphUri)
         {
             this.DeleteGraph(graphUri.ToSafeString());
         }
 
+        /// <summary>
+        /// Deletes a Graph from the store
+        /// </summary>
+        /// <param name="graphUri">URI of the Graph to delete</param>
         public void DeleteGraph(String graphUri)
         {
             if (graphUri == null) return;
@@ -957,6 +965,9 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Returns that deleting Graphs is supported
+        /// </summary>
         public bool DeleteSupported
         {
             get
@@ -965,6 +976,10 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Lists the Graphs in the store
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<Uri> ListGraphs()
         {
             try
@@ -997,6 +1012,9 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Returns that listing graphs is supported
+        /// </summary>
         public bool ListGraphsSupported
         {
             get

@@ -73,7 +73,7 @@ namespace VDS.RDF.Update.Commands
         /// Creates a new LOAD command
         /// </summary>
         /// <param name="sourceUri">Source URI to load data from</param>
-        /// <param name="graphUri">Target URI for the Graph to store data in</param>
+        /// <param name="targetUri">Target URI for the Graph to store data in</param>
         public LoadCommand(Uri sourceUri, Uri targetUri)
             : this(sourceUri, targetUri, false) { }
 

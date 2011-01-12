@@ -78,7 +78,12 @@ namespace VDS.RDF.Query.Algebra
             this._triplePatterns.AddRange(ps);
         }
 
-        public bool IsAskEvaluablePattern(ITriplePattern p)
+        /// <summary>
+        /// Determines whether a Triple Pattern can be evaluated using a Lazy ASK approach
+        /// </summary>
+        /// <param name="p">Triple Pattern</param>
+        /// <returns></returns>
+        private bool IsAskEvaluablePattern(ITriplePattern p)
         {
             return (p is TriplePattern || p is FilterPattern);
         }
@@ -327,6 +332,10 @@ namespace VDS.RDF.Query.Algebra
             return q;
         }
 
+        /// <summary>
+        /// Converts the BGP back to a Graph Pattern
+        /// </summary>
+        /// <returns></returns>
         public GraphPattern ToGraphPattern()
         {
             GraphPattern p = new GraphPattern();
@@ -445,6 +454,10 @@ namespace VDS.RDF.Query.Algebra
             return q;
         }
 
+        /// <summary>
+        /// Converts the Union back to Graph Patterns
+        /// </summary>
+        /// <returns></returns>
         public GraphPattern ToGraphPattern()
         {
             GraphPattern p = new GraphPattern();

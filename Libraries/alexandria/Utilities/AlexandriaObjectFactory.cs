@@ -23,8 +23,16 @@ namespace VDS.Alexandria.Utilities
 
                     if (storeID != null)
                     {
-                        //TODO: Add support for using dnr:loadMode to specify the indexes to be used
-                        obj = new AlexandriaFileManager(ConfigurationLoader.ResolvePath(storeID));
+                        //Supports using dnr:loadMode to specify the indexes to be used
+                        String indices = ConfigurationLoader.GetConfigurationString(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyLoadMode));
+                        if (indices == null)
+                        {
+                            obj = new AlexandriaFileManager(ConfigurationLoader.ResolvePath(storeID));
+                        }
+                        else
+                        {
+                            obj = new AlexandriaFileManager(ConfigurationLoader.ResolvePath(storeID), this.ParseIndexTypes(indices));
+                        }
                         return true;
                     }
 
@@ -55,6 +63,61 @@ namespace VDS.Alexandria.Utilities
 
             obj = null;
             return false;
+        }
+
+        private IEnumerable<TripleIndexType> ParseIndexTypes(String indices)
+        {
+            List<TripleIndexType> requiredIndices = new List<TripleIndexType>();
+
+            String[] temp;
+            if (indices.Contains(","))
+            {
+                temp = indices.Split(',');
+            }
+            else
+            {
+                temp = new String[] { indices };
+            }
+
+            foreach (String index in temp)
+            {
+                switch (index.ToLower())
+                {
+                    case "s":
+                        requiredIndices.Add(TripleIndexType.Subject);
+                        break;
+                    case "p":
+                        requiredIndices.Add(TripleIndexType.Predicate);
+                        break;
+                    case "o":
+                        requiredIndices.Add(TripleIndexType.Object);
+                        break;
+                    case "sp":
+                        requiredIndices.Add(TripleIndexType.SubjectPredicate);
+                        break;
+                    case "so":
+                        requiredIndices.Add(TripleIndexType.SubjectObject);
+                        break;
+                    case "po":
+                        requiredIndices.Add(TripleIndexType.PredicateObject);
+                        break;
+                    case "spo":
+                        requiredIndices.Add(TripleIndexType.NoVariables);
+                        break;
+                    default:
+                        //Ignore Bad Index Types
+                        break;
+                }
+            }
+
+            if (requiredIndices.Count > 0)
+            {
+                return requiredIndices.Distinct();
+            }
+            else
+            {
+                return AlexandriaFileManager.OptimalIndices;
+            }
         }
 
         public bool CanLoadObject(Type t)

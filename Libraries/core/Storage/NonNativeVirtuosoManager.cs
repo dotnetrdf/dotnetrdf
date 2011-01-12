@@ -281,6 +281,10 @@ namespace VDS.RDF.Storage
             adapter.Fill(data);
         }
 
+        /// <summary>
+        /// Executes a Query SQL Command against the database and returns the results in a streaming fashion
+        /// </summary>
+        /// <param name="sqlCmd">SQL Command</param>
         public override System.Data.Common.DbDataReader ExecuteStreamingQuery(string sqlCmd)
         {
             //Get Thread ID

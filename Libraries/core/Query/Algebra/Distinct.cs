@@ -148,6 +148,11 @@ namespace VDS.RDF.Query.Algebra
             return q;
         }
 
+        /// <summary>
+        /// Throws an exception since a Distinct() cannot be converted back to a Graph Pattern
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="NotSupportedException">Thrown since a Distinct() cannot be converted to a Graph Pattern</exception>
         public GraphPattern ToGraphPattern()
         {
             throw new NotSupportedException("A Distinct() cannot be converted to a GraphPattern");
@@ -267,6 +272,11 @@ namespace VDS.RDF.Query.Algebra
             return q;
         }
 
+        /// <summary>
+        /// Throws an exception since a Reduced() cannot be converted back to a Graph Pattern
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="NotSupportedException">Thrown since a Reduced() cannot be converted to a Graph Pattern</exception>
         public GraphPattern ToGraphPattern()
         {
             throw new NotSupportedException("A Reduced() cannot be converted to a GraphPattern");

@@ -196,16 +196,29 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Throws an error since this connection is read-only
+        /// </summary>
+        /// <param name="graphUri">URI of the Graph to delete</param>
+        /// <exception cref="RdfStorageException">Thrown since you cannot delete a Graph from a read-only connection</exception>
         public void DeleteGraph(Uri graphUri)
         {
             throw new RdfStorageException("The DatasetFileManager provides a read-only connection");
         }
 
+        /// <summary>
+        /// Throws an error since this connection is read-only
+        /// </summary>
+        /// <param name="graphUri">URI of the Graph to delete</param>
+        /// <exception cref="RdfStorageException">Thrown since you cannot delete a Graph from a read-only connection</exception>
         public void DeleteGraph(String graphUri)
         {
             throw new RdfStorageException("The DatasetFileManager provides a read-only connection");
         }
 
+        /// <summary>
+        /// Returns that deleting graphs is not supported
+        /// </summary>
         public bool DeleteSupported
         {
             get
@@ -236,11 +249,18 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Gets the list of URIs of Graphs in the Store
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<Uri> ListGraphs()
         {
             return this._store.Graphs.GraphUris;
         }
 
+        /// <summary>
+        /// Returns that listing graphs is supported
+        /// </summary>
         public bool ListGraphsSupported
         {
             get

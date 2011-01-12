@@ -936,17 +936,28 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Deletes a Graph from the Store
+        /// </summary>
+        /// <param name="graphUri">URI of the Graph to delete</param>
         public virtual void DeleteGraph(Uri graphUri)
         {
             this.RemoveGraph(this.GetGraphID(graphUri));
         }
 
+        /// <summary>
+        /// Deletes a Graph from the Store
+        /// </summary>
+        /// <param name="graphUri">URI of the Graph to delete</param>
         public virtual void DeleteGraph(String graphUri)
         {
             Uri u = (graphUri.ToSafeString().Equals(String.Empty)) ? null : new Uri(graphUri);
             this.DeleteGraph(u);
         }
 
+        /// <summary>
+        /// Returns that deleting Graphs is supported
+        /// </summary>
         public bool DeleteSupported
         {
             get
@@ -955,11 +966,18 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Lists the URIs of Graphs in the Store
+        /// </summary>
+        /// <returns></returns>
         public virtual IEnumerable<Uri> ListGraphs()
         {
             return this.GetGraphUris();
         }
 
+        /// <summary>
+        /// Returns that listing Graph URIs is supported
+        /// </summary>
         public virtual bool ListGraphsSupported
         {
             get

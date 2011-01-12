@@ -1293,6 +1293,11 @@ namespace VDS.RDF.Storage
             adapter.Fill(data);
         }
 
+        /// <summary>
+        /// Executes a Query SQL Command against the database and gets a streaming reader of the results
+        /// </summary>
+        /// <param name="sqlCmd">SQL Command</param>
+        /// <returns></returns>
         public override System.Data.Common.DbDataReader ExecuteStreamingQuery(string sqlCmd)
         {
             //Get Thread ID

@@ -149,6 +149,10 @@ namespace VDS.RDF.Query.Algebra
             return q;
         }
 
+        /// <summary>
+        /// Converts the Algebra back to a Graph Pattern
+        /// </summary>
+        /// <returns></returns>
         public GraphPattern ToGraphPattern()
         {
             GraphPattern p = this._pattern.ToGraphPattern();

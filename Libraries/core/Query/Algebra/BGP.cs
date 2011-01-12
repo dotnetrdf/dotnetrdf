@@ -257,6 +257,10 @@ namespace VDS.RDF.Query.Algebra
             return q;
         }
 
+        /// <summary>
+        /// Converts the BGP to a Graph Pattern
+        /// </summary>
+        /// <returns></returns>
         public GraphPattern ToGraphPattern()
         {
             GraphPattern p = new GraphPattern();

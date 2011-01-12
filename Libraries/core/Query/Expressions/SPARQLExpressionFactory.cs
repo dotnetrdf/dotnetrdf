@@ -103,6 +103,7 @@ namespace VDS.RDF.Query.Expressions
         /// </summary>
         /// <param name="u">Function Uri</param>
         /// <param name="args">List of Argument Expressions</param>
+        /// <param name="scalarArgs">Scalar Arguments</param>
         /// <param name="factories">Enumeration of locally scoped expression factories to use</param>
         /// <returns></returns>
         /// <remarks>

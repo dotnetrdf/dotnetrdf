@@ -131,6 +131,7 @@ namespace VDS.RDF.Query.Expressions
         /// </summary>
         /// <param name="u">Function Uri</param>
         /// <param name="args">Function Arguments</param>
+        /// <param name="scalarArgs">Scalar Arguments</param>
         /// <param name="expr">Generated Expression</param>
         /// <returns>Whether an expression was successfully generated</returns>
         public bool TryCreateExpression(Uri u, List<ISparqlExpression> args, Dictionary<String,ISparqlExpression> scalarArgs, out ISparqlExpression expr)

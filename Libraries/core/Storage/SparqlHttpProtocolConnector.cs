@@ -199,11 +199,19 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Deletes a Graph from the store
+        /// </summary>
+        /// <param name="graphUri">URI of the Graph to delete</param>
         public virtual void DeleteGraph(Uri graphUri)
         {
             this.DeleteGraph(graphUri.ToSafeString());
         }
 
+        /// <summary>
+        /// Deletes a Graph from the store
+        /// </summary>
+        /// <param name="graphUri">URI of the Graph to delete</param>
         public virtual void DeleteGraph(String graphUri)
         {
             String deleteUri = this._serviceUri;
@@ -228,6 +236,9 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Returns that deleting Graphs is supported
+        /// </summary>
         public virtual bool DeleteSupported
         {
             get
@@ -236,11 +247,19 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Throws an exception as listing graphs in a SPARQL Uniform HTTP Protocol does not support listing graphs
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="NotSupportedException">Thrown since SPARQL Uniform HTTP Protocol does not support listing graphs</exception>
         public IEnumerable<Uri> ListGraphs()
         {
             throw new NotSupportedException("SPARQL HTTP Protocol Connector does not support listing Graphs");
         }
 
+        /// <summary>
+        /// Returns that listing Graphs is not supported
+        /// </summary>
         public bool ListGraphsSupported
         {
             get

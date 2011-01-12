@@ -340,11 +340,19 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Deletes a Graph from the Store if the connection is not in read-only mode
+        /// </summary>
+        /// <param name="graphUri">URI of the Graph to delete</param>
         public void DeleteGraph(Uri graphUri)
         {
             this.DeleteGraph(graphUri.ToSafeString());
         }
 
+        /// <summary>
+        /// Deletes a Graph from the Store if the connection is not in read-only mode
+        /// </summary>
+        /// <param name="graphUri">URI of the Graph to delete</param>
         public void DeleteGraph(String graphUri)
         {
             if (graphUri == null) return;
@@ -353,6 +361,9 @@ namespace VDS.RDF.Storage
             this.Update("DROP GRAPH <" + this._formatter.FormatUri(graphUri) + ">");
         }
 
+        /// <summary>
+        /// Returns that delete is supported if this connection is not in read-only mode
+        /// </summary>
         public bool DeleteSupported
         {
             get
@@ -361,6 +372,10 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Gets the List of Graphs in the Store
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<Uri> ListGraphs()
         {
             try
@@ -393,6 +408,9 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Returns that listed Graphs is supported
+        /// </summary>
         public bool ListGraphsSupported
         {
             get

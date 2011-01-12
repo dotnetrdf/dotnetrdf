@@ -219,6 +219,11 @@ namespace VDS.RDF.Query.Algebra
             return q;
         }
 
+        /// <summary>
+        /// Throws an exception since a Slice() cannot be converted back to a Graph Pattern
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="NotSupportedException">Thrown since a Slice() cannot be converted to a Graph Pattern</exception>
         public GraphPattern ToGraphPattern()
         {
             throw new NotSupportedException("A Slice() cannot be converted to a Graph Pattern");

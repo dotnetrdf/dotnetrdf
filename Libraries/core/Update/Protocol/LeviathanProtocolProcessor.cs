@@ -52,6 +52,10 @@ namespace VDS.RDF.Update.Protocol
         public LeviathanProtocolProcessor(IInMemoryQueryableStore store)
             : this(new InMemoryDataset(store)) { }
 
+        /// <summary>
+        /// Creates a new Leviathan Protocol Processor
+        /// </summary>
+        /// <param name="dataset">SPARQL Dataset</param>
         public LeviathanProtocolProcessor(ISparqlDataset dataset)
             : base(new LeviathanQueryProcessor(dataset), new LeviathanUpdateProcessor(dataset)) { }
     }

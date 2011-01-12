@@ -64,9 +64,17 @@ namespace VDS.RDF.Storage
         private String _updateUri;
         private String _queryUri;
 
+        /// <summary>
+        /// Creates a new connection to a Fuseki Server
+        /// </summary>
+        /// <param name="serviceUri">The /data URI of the Fuseki Server</param>
         public FusekiConnector(Uri serviceUri)
             : this(serviceUri.ToSafeString()) { }
 
+        /// <summary>
+        /// Creates a new connection to a Fuseki Server
+        /// </summary>
+        /// <param name="serviceUri">The /data URI of the Fuseki Server</param>
         public FusekiConnector(String serviceUri)
             : base(serviceUri) 
         {
@@ -77,6 +85,12 @@ namespace VDS.RDF.Storage
             this._queryUri = serviceUri.Substring(0, serviceUri.Length - 4) + "query";
         }
 
+        /// <summary>
+        /// Updates a Graph in the Fuseki store
+        /// </summary>
+        /// <param name="graphUri">URI of the Graph to update</param>
+        /// <param name="additions">Triples to be added</param>
+        /// <param name="removals">Triples to be removed</param>
         public override void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
             try
@@ -144,11 +158,22 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Updates a Graph in the Fuseki store
+        /// </summary>
+        /// <param name="graphUri">URI of the Graph to update</param>
+        /// <param name="additions">Triples to be added</param>
+        /// <param name="removals">Triples to be removed</param>
         public override void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
             this.UpdateGraph(graphUri.ToSafeString(), additions, removals);
         }
 
+        /// <summary>
+        /// Executes a SPARQL Query on the Fuseki store
+        /// </summary>
+        /// <param name="sparqlQuery">SPARQL Query</param>
+        /// <returns></returns>
         public Object Query(String sparqlQuery)
         {
             try
@@ -212,6 +237,10 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Executes SPARQL Updates against the Fuseki store
+        /// </summary>
+        /// <param name="sparqlUpdate"></param>
         public void Update(String sparqlUpdate)
         {
             try
@@ -248,6 +277,10 @@ namespace VDS.RDF.Storage
 
         #region IConfigurationSerializable Members
 
+        /// <summary>
+        /// Serializes the connection's configuration
+        /// </summary>
+        /// <param name="context">Configuration Serialization Context</param>
         public override void SerializeConfiguration(ConfigurationSerializationContext context)
         {
             INode manager = context.NextSubject;
