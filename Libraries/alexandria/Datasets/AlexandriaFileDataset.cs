@@ -19,7 +19,7 @@ namespace VDS.Alexandria.Datasets
 
         protected override IEnumerable<Triple> GetAllTriples()
         {
-            return new FileIterator(this._fileManager);
+            return new FileEnumerable(this._fileManager);
         }
     }
 }

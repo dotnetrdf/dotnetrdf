@@ -30,7 +30,7 @@ namespace VDS.Alexandria.Datasets
                     exists = new Document();
                     exists["$exists"] = true;
                     lookup["graph"] = exists;
-                    return new MongoDBGraphCentricEnumerator((MongoDBDocumentManager)this._mongoManager.DocumentManager, lookup, t => true);
+                    return new MongoDBGraphCentricEnumerable((MongoDBDocumentManager)this._mongoManager.DocumentManager, lookup, t => true);
 
                 case MongoDBSchemas.TripleCentric:
                     lookup = new Document();
@@ -39,7 +39,7 @@ namespace VDS.Alexandria.Datasets
                     lookup["subject"] = exists;
                     lookup["predicate"] = exists;
                     lookup["object"] = exists;
-                    return new MongoDBTripleCentricEnumerator((MongoDBDocumentManager)this._mongoManager.DocumentManager, lookup);
+                    return new MongoDBTripleCentricEnumerable((MongoDBDocumentManager)this._mongoManager.DocumentManager, lookup);
 
                 default:
                     throw new NotSupportedException("Unknown Schemas for MongoDB are not supported");

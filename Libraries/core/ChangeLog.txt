@@ -23,6 +23,9 @@ Added
  - DatasetHandler for serving RDF datasets
 - Additional Configuration API for new features
  - dnr:SparqlDataset and dnr:usingDataset properties
+- Query
+ - GROUP BY is now supported in subqueries
+ - Scalar Arguments for aggregates added when in 1.1 Extended mode (only GROUP_CONCAT allows scalar arguments in 1.1 mode)
 - Storage
  - Expanded the IGenericIOManager interface to include methods for deletings graphs and listing graphs
  - Connector for Fuseki

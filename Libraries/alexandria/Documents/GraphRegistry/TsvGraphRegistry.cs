@@ -101,7 +101,7 @@ namespace VDS.Alexandria.Documents.GraphRegistry
         {
             get
             {
-                return new TsvSingleItemEnumerator(this._doc, 0);
+                return new TsvSingleItemEnumerable(this._doc, 0);
             }
         }
 
@@ -109,7 +109,7 @@ namespace VDS.Alexandria.Documents.GraphRegistry
         {
             get
             {
-                return new TsvSingleItemEnumerator(this._doc, 1, true);
+                return new TsvSingleItemEnumerable(this._doc, 1, true);
             }
         }
 
@@ -117,7 +117,7 @@ namespace VDS.Alexandria.Documents.GraphRegistry
         {
             get
             {
-                return new TsvEnumerator(this._doc, 2).Select(values => new KeyValuePair<String, String>(values[0], values[1]));                        
+                return new TsvEnumerable(this._doc, 2).Select(values => new KeyValuePair<String, String>(values[0], values[1]));                        
             }
         }
 
@@ -125,7 +125,7 @@ namespace VDS.Alexandria.Documents.GraphRegistry
         {
             get
             {
-                return new TsvEnumerator(this._doc, 2).Select(values => new KeyValuePair<String, String>(values[1], values[0]));
+                return new TsvEnumerable(this._doc, 2).Select(values => new KeyValuePair<String, String>(values[1], values[0]));
             }
         }
 

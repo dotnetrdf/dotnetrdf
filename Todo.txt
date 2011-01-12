@@ -96,8 +96,8 @@ REQ: Add command line arguments to import custom parsers and serializers
 rdfEditor
 ---------
 
-TODO: Work out how to invalidate specific visual lines to force them to be redrawn
 2 x TODO: Should probably call DetectState() here once it's properly implemented
+TODO: Ensure we are in the OpenWith List
 
 rdfServer
 ---------
@@ -108,6 +108,3 @@ TODO: Support Protocol Requests?
 
 StoreManager
 ------------
-
-REQ: Add support for newly supported Stores
-TODO: Ensure we are in the OpenWith List

@@ -26,7 +26,7 @@ namespace VDS.Alexandria.Documents.Adaptors
             lookup["graphuri"] = mongoDoc["uri"];
             document.EndRead();
 
-            IEnumerable<Triple> ts = new MongoDBTripleCentricEnumerator(this._manager, lookup);
+            IEnumerable<Triple> ts = new MongoDBTripleCentricEnumerable(this._manager, lookup);
             foreach (Triple t in ts)
             {
                 g.Assert(Tools.CopyTriple(t, g));

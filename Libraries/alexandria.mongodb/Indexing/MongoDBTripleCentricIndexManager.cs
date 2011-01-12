@@ -61,21 +61,21 @@ namespace VDS.Alexandria.Indexing
         {
             Document lookup = new Document();
             lookup["subject"] = this._formatter.Format(subj);
-            return new MongoDBTripleCentricEnumerator(this._manager, lookup);
+            return new MongoDBTripleCentricEnumerable(this._manager, lookup);
         }
 
         public IEnumerable<Triple> GetTriplesWithPredicate(INode pred)
         {
             Document lookup = new Document();
             lookup["predicate"] = this._formatter.Format(pred);
-            return new MongoDBTripleCentricEnumerator(this._manager, lookup);
+            return new MongoDBTripleCentricEnumerable(this._manager, lookup);
         }
 
         public IEnumerable<Triple> GetTriplesWithObject(INode obj)
         {
             Document lookup = new Document();
             lookup["object"] = this._formatter.Format(obj);
-            return new MongoDBTripleCentricEnumerator(this._manager, lookup);
+            return new MongoDBTripleCentricEnumerable(this._manager, lookup);
         }
 
         public IEnumerable<Triple> GetTriplesWithSubjectPredicate(INode subj, INode pred)
@@ -83,7 +83,7 @@ namespace VDS.Alexandria.Indexing
             Document lookup = new Document();
             lookup["subject"] = this._formatter.Format(subj);
             lookup["predicate"] = this._formatter.Format(pred);
-            return new MongoDBTripleCentricEnumerator(this._manager, lookup);
+            return new MongoDBTripleCentricEnumerable(this._manager, lookup);
         }
 
         public IEnumerable<Triple> GetTriplesWithPredicateObject(INode pred, INode obj)
@@ -91,7 +91,7 @@ namespace VDS.Alexandria.Indexing
             Document lookup = new Document();
             lookup["predicate"] = this._formatter.Format(pred);
             lookup["object"] = this._formatter.Format(obj);
-            return new MongoDBTripleCentricEnumerator(this._manager, lookup);
+            return new MongoDBTripleCentricEnumerable(this._manager, lookup);
         }
 
         public IEnumerable<Triple> GetTriplesWithSubjectObject(INode subj, INode obj)
@@ -99,7 +99,7 @@ namespace VDS.Alexandria.Indexing
             Document lookup = new Document();
             lookup["subject"] = this._formatter.Format(subj);
             lookup["object"] = this._formatter.Format(obj);
-            return new MongoDBTripleCentricEnumerator(this._manager, lookup);
+            return new MongoDBTripleCentricEnumerable(this._manager, lookup);
         }
 
         public IEnumerable<Triple> GetTriples(Triple t)
@@ -109,7 +109,7 @@ namespace VDS.Alexandria.Indexing
             lookup["predicate"] = this._formatter.Format(t.Predicate);
             lookup["object"] = this._formatter.Format(t.Object);
 
-            return new MongoDBTripleCentricEnumerator(this._manager, lookup);
+            return new MongoDBTripleCentricEnumerable(this._manager, lookup);
         }
 
         public void AddToIndex(Triple t)

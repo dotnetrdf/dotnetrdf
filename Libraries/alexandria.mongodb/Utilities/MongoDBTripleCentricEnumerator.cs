@@ -9,7 +9,7 @@ using VDS.Alexandria.Documents;
 
 namespace VDS.Alexandria.Utilities
 {
-    public class MongoDBTripleCentricEnumerator : IEnumerable<Triple>, IEnumerator<Triple>
+    public class MongoDBTripleCentricEnumerator : IEnumerator<Triple>
     {
         private MongoDBDocumentManager _manager;
         private Document _query;
@@ -21,16 +21,6 @@ namespace VDS.Alexandria.Utilities
         {
             this._manager = manager;
             this._query = query;
-        }
-
-        public IEnumerator<Triple> GetEnumerator()
-        {
-            return this;
-        }
-
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        {
-            return this.GetEnumerator();
         }
 
         public Triple Current
@@ -111,6 +101,28 @@ namespace VDS.Alexandria.Utilities
         public void Reset()
         {
             throw new NotSupportedException("The Reset() operation is not supported by the MongoDB Triple-Centric Enumerator");
+        }
+    }
+
+    public class MongoDBTripleCentricEnumerable : IEnumerable<Triple>
+    {
+        private MongoDBDocumentManager _manager;
+        private Document _query;
+
+        public MongoDBTripleCentricEnumerable(MongoDBDocumentManager manager, Document query)
+        {
+            this._manager = manager;
+            this._query = query;
+        }
+
+        public IEnumerator<Triple> GetEnumerator()
+        {
+            return new MongoDBTripleCentricEnumerator(this._manager, this._query);
+        }
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return this.GetEnumerator();
         }
     }
 }

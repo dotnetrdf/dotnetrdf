@@ -10,7 +10,7 @@ using VDS.Alexandria.Documents.Adaptors;
 
 namespace VDS.Alexandria.Utilities
 {
-    class MongoDBGraphCentricEnumerator : IEnumerator<Triple>, IEnumerable<Triple>
+    class MongoDBGraphCentricEnumerator : IEnumerator<Triple>
     {
         private IEnumerator<Document> _cursor;
         private MongoDBDocumentManager _manager;
@@ -186,15 +186,29 @@ namespace VDS.Alexandria.Utilities
                 this._buffer = null;
             }
         }
+    }
+
+    class MongoDBGraphCentricEnumerable : IEnumerable<Triple>
+    {
+        private MongoDBDocumentManager _manager;
+        private Document _query;
+        private Func<Triple, bool> _selector;
+
+        public MongoDBGraphCentricEnumerable(MongoDBDocumentManager manager, Document query, Func<Triple,bool> selector)
+        {
+            this._manager = manager;
+            this._query = query;
+            this._selector = selector;
+        }
 
         public IEnumerator<Triple> GetEnumerator()
         {
-            return this;
+            return new MongoDBGraphCentricEnumerator(this._manager, this._query, this._selector);
         }
 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
-            return this;
+            return this.GetEnumerator();
         }
     }
 }

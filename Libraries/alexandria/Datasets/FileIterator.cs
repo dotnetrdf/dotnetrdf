@@ -9,7 +9,7 @@ using VDS.Alexandria.Utilities;
 
 namespace VDS.Alexandria.Datasets
 {
-    class FileIterator : IEnumerable<Triple>, IEnumerator<Triple>
+    class FileEnumerator : IEnumerator<Triple>
     {
         private AlexandriaFileManager _manager;
         private Triple _current = null;
@@ -17,19 +17,9 @@ namespace VDS.Alexandria.Datasets
         private IDocument<StreamReader, TextWriter> _currDoc;
         private StreamingNTriplesParser _parser;
 
-        public FileIterator(AlexandriaFileManager manager)
+        public FileEnumerator(AlexandriaFileManager manager)
         {
             this._manager = manager;
-        }
-
-        public IEnumerator<Triple> GetEnumerator()
-        {
-            return this;
-        }
-
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        {
-            return this.GetEnumerator();
         }
 
         public Triple Current
@@ -142,6 +132,26 @@ namespace VDS.Alexandria.Datasets
         public void Reset()
         {
             throw new NotSupportedException("The FileIterator does not support the Reset() operation");
+        }
+    }
+
+    class FileEnumerable : IEnumerable<Triple>
+    {
+        private AlexandriaFileManager _manager;
+
+        public FileEnumerable(AlexandriaFileManager manager)
+        {
+            this._manager = manager;
+        }
+
+        public IEnumerator<Triple> GetEnumerator()
+        {
+            return new FileEnumerator(this._manager);
+        }
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return this.GetEnumerator();
         }
     }
 }

@@ -7,7 +7,7 @@ using VDS.Alexandria.Documents;
 
 namespace VDS.Alexandria.Utilities
 {
-    class TsvEnumerator : IEnumerator<String[]>, IEnumerable<String[]>
+    class TsvEnumerator : IEnumerator<String[]>
     {
         private IDocument<StreamReader, TextWriter> _doc;
         private StreamReader _reader;
@@ -97,27 +97,38 @@ namespace VDS.Alexandria.Utilities
                 this._reader = null;
             }
         }
+    }
 
-        #region IEnumerable<string> Members
+    class TsvEnumerable : IEnumerable<String[]>
+    {
+        private IDocument<StreamReader, TextWriter> _doc;
+        private bool _join = false;
+        private int _maxItems = 0;
+
+        public TsvEnumerable(IDocument<StreamReader, TextWriter> doc)
+        {
+            this._doc = doc;
+        }
+
+        public TsvEnumerable(IDocument<StreamReader, TextWriter> doc, int maxItems)
+            : this(doc)
+        {
+            this._join = true;
+            this._maxItems = Math.Max(1, maxItems);
+        }
 
         public IEnumerator<string[]> GetEnumerator()
         {
-            return this;
+            throw new NotImplementedException();
         }
-
-        #endregion
-
-        #region IEnumerable Members
 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
             return this.GetEnumerator();
         }
-
-        #endregion
     }
 
-    class TsvSingleItemEnumerator : IEnumerator<String>, IEnumerable<String>
+    class TsvSingleItemEnumerator : IEnumerator<String>
     {
         private IDocument<StreamReader, TextWriter> _doc;
         private StreamReader _reader;
@@ -225,23 +236,39 @@ namespace VDS.Alexandria.Utilities
                 this._reader = null;
             }
         }
+    }
 
-        #region IEnumerable<string> Members
+    class TsvSingleItemEnumerable : IEnumerable<String>
+    {
+        private IDocument<StreamReader, TextWriter> _doc;
+        private int _index = 0;
+        private bool _join = false;
+
+        public TsvSingleItemEnumerable(IDocument<StreamReader, TextWriter> doc)
+        {
+            this._doc = doc;
+        }
+
+        public TsvSingleItemEnumerable(IDocument<StreamReader, TextWriter> doc, int index)
+            : this(doc)
+        {
+            this._index = index;
+        }
+
+        public TsvSingleItemEnumerable(IDocument<StreamReader, TextWriter> doc, int index, bool join)
+            : this(doc, index)
+        {
+            this._join = join;
+        }
 
         public IEnumerator<string> GetEnumerator()
         {
-            return this;
+            return new TsvSingleItemEnumerator(this._doc, this._index, this._join);
         }
-
-        #endregion
-
-        #region IEnumerable Members
 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
             return this.GetEnumerator();
         }
-
-        #endregion
     }
 }

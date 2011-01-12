@@ -59,21 +59,21 @@ namespace VDS.Alexandria.Indexing
         {
             Document lookup = new Document();
             lookup["graph.subject"] = this._formatter.Format(subj);
-            return new MongoDBGraphCentricEnumerator(this._manager, lookup, t => t.Subject.Equals(subj));
+            return new MongoDBGraphCentricEnumerable(this._manager, lookup, t => t.Subject.Equals(subj));
         }
 
         public IEnumerable<Triple> GetTriplesWithPredicate(INode pred)
         {
             Document lookup = new Document();
             lookup["graph.predicate"] = this._formatter.Format(pred);
-            return new MongoDBGraphCentricEnumerator(this._manager, lookup, t => t.Predicate.Equals(pred));
+            return new MongoDBGraphCentricEnumerable(this._manager, lookup, t => t.Predicate.Equals(pred));
         }
 
         public IEnumerable<Triple> GetTriplesWithObject(INode obj)
         {
             Document lookup = new Document();
             lookup["graph.object"] = this._formatter.Format(obj);
-            return new MongoDBGraphCentricEnumerator(this._manager, lookup, t => t.Object.Equals(obj));
+            return new MongoDBGraphCentricEnumerable(this._manager, lookup, t => t.Object.Equals(obj));
         }
 
         public IEnumerable<Triple> GetTriplesWithSubjectPredicate(INode subj, INode pred)
@@ -81,7 +81,7 @@ namespace VDS.Alexandria.Indexing
             Document lookup = new Document();
             lookup["graph.subject"] = this._formatter.Format(subj);
             lookup["graph.predicate"] = this._formatter.Format(pred);
-            return new MongoDBGraphCentricEnumerator(this._manager, lookup, t => t.Subject.Equals(subj) && t.Predicate.Equals(pred));
+            return new MongoDBGraphCentricEnumerable(this._manager, lookup, t => t.Subject.Equals(subj) && t.Predicate.Equals(pred));
         }
 
         public IEnumerable<Triple> GetTriplesWithPredicateObject(INode pred, INode obj)
@@ -89,7 +89,7 @@ namespace VDS.Alexandria.Indexing
             Document lookup = new Document();
             lookup["graph.predicate"] = this._formatter.Format(pred);
             lookup["graph.object"] = this._formatter.Format(obj);
-            return new MongoDBGraphCentricEnumerator(this._manager, lookup, t => t.Predicate.Equals(pred) && t.Object.Equals(obj));
+            return new MongoDBGraphCentricEnumerable(this._manager, lookup, t => t.Predicate.Equals(pred) && t.Object.Equals(obj));
         }
 
         public IEnumerable<Triple> GetTriplesWithSubjectObject(INode subj, INode obj)
@@ -97,7 +97,7 @@ namespace VDS.Alexandria.Indexing
             Document lookup = new Document();
             lookup["graph.subject"] = this._formatter.Format(subj);
             lookup["graph.object"] = this._formatter.Format(obj);
-            return new MongoDBGraphCentricEnumerator(this._manager, lookup, t => t.Subject.Equals(subj) && t.Object.Equals(obj));
+            return new MongoDBGraphCentricEnumerable(this._manager, lookup, t => t.Subject.Equals(subj) && t.Object.Equals(obj));
         }
 
         public IEnumerable<Triple> GetTriples(Triple t)
@@ -107,7 +107,7 @@ namespace VDS.Alexandria.Indexing
             lookup["graph.predicate"] = this._formatter.Format(t.Predicate);
             lookup["graph.object"] = this._formatter.Format(t.Object);
 
-            return new MongoDBGraphCentricEnumerator(this._manager, lookup, x => x.Subject.Equals(t.Subject) && x.Predicate.Equals(t.Predicate) && x.Object.Equals(t.Object));
+            return new MongoDBGraphCentricEnumerable(this._manager, lookup, x => x.Subject.Equals(t.Subject) && x.Predicate.Equals(t.Predicate) && x.Object.Equals(t.Object));
         }
 
         public void AddToIndex(Triple t)
