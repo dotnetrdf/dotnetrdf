@@ -67,6 +67,7 @@ Changed
   - Can now set values for Variables which are substituted into the query when you call ToString()
   - Has own Namespace Map allowing prefixes to be registered programatically and have the code take care of generating the PREFIX declarations
  - Improved ISparqlExpression interface to allow for traversing of expression trees and custom formatting
+ - IN and NOT IN for SPARQL now support any expression in the SET and evaluate properly using SPARQL value equality
 - Update Improvements
  - WHERE clauses in Update Commands are now optimised
  - Added support for new features latest drafts of the SPARQL 1.1 Update specification
