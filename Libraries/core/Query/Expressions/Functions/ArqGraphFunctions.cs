@@ -98,6 +98,22 @@ namespace VDS.RDF.Query.Expressions.Functions
         {
             return "<" + ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.BNode + ">(" + this._expr.ToString() + ")";
         }
+
+        public override SparqlExpressionType Type
+        {
+            get 
+            {
+                return SparqlExpressionType.Function;
+            }
+        }
+
+        public override string Functor
+        {
+            get 
+            { 
+                return ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.BNode;
+            }
+        }
     }
 
     /// <summary>
@@ -169,6 +185,22 @@ namespace VDS.RDF.Query.Expressions.Functions
         {
             return "<" + ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.LocalName + ">(" + this._expr.ToString() + ")";
         }
+
+        public override SparqlExpressionType Type
+        {
+            get
+            {
+                return SparqlExpressionType.Function;
+            }
+        }
+
+        public override string Functor
+        {
+            get
+            {
+                return ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.LocalName;
+            }
+        }
     }
 
     /// <summary>
@@ -235,6 +267,22 @@ namespace VDS.RDF.Query.Expressions.Functions
         public override string ToString()
         {
             return "<" + ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.Namespace + ">(" + this._expr.ToString() + ")";
+        }
+
+        public override SparqlExpressionType Type
+        {
+            get
+            {
+                return SparqlExpressionType.Function;
+            }
+        }
+
+        public override string Functor
+        {
+            get
+            {
+                return ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.Namespace;
+            }
         }
     }
 }

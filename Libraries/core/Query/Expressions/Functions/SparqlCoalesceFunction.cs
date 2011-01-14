@@ -130,5 +130,29 @@ namespace VDS.RDF.Query.Expressions.Functions
             output.Append(")");
             return output.ToString();
         }
+
+        public SparqlExpressionType Type
+        {
+            get
+            {
+                return SparqlExpressionType.Function;
+            }
+        }
+
+        public String Functor
+        {
+            get
+            {
+                return SparqlSpecsHelper.SparqlKeywordCoalesce;
+            }
+        }
+
+        public IEnumerable<ISparqlExpression> Arguments
+        {
+            get
+            {
+                return this._expressions;
+            }
+        }
     }
 }

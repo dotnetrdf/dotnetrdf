@@ -64,6 +64,14 @@ namespace VDS.RDF.Query.Expressions.Functions
         {
             return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.MD5Hash + ">(" + this._expr.ToString() + ")";
         }
+
+        public override string Functor
+        {
+            get 
+            {
+                return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.MD5Hash;
+            }
+        }
     }
 
 #endif
@@ -87,6 +95,14 @@ namespace VDS.RDF.Query.Expressions.Functions
         public override string ToString()
         {
             return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Sha256Hash + ">(" + this._expr.ToString() + ")";
+        }
+
+        public override string Functor
+        {
+            get 
+            {
+                return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Sha256Hash; 
+            }
         }
     }
 }

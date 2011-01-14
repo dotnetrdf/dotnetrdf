@@ -78,6 +78,30 @@ namespace VDS.RDF.Query.Expressions
                 return Enumerable.Empty<String>(); 
             }
         }
+
+        public SparqlExpressionType Type
+        {
+            get
+            {
+                return SparqlExpressionType.Primary;
+            }
+        }
+
+        public String Functor
+        {
+            get
+            {
+                return SparqlSpecsHelper.SparqlKeywordDistinct;
+            }
+        }
+
+        public IEnumerable<ISparqlExpression> Arguments
+        {
+            get
+            {
+                return Enumerable.Empty<ISparqlExpression>();
+            }
+        }
     }
 
     /// <summary>
@@ -200,6 +224,30 @@ namespace VDS.RDF.Query.Expressions
                 return this._aggregate.Expression.Variables;
             }
         }
+
+        public override SparqlExpressionType Type
+        {
+            get 
+            {
+                return SparqlExpressionType.Aggregate; 
+            }
+        }
+
+        public override string Functor
+        {
+            get 
+            {
+                return this._aggregate.Functor; 
+            }
+        }
+
+        public override IEnumerable<ISparqlExpression> Arguments
+        {
+            get
+            {
+                return this._aggregate.Arguments;
+            }
+        }
     }
 
     /// <summary>
@@ -281,6 +329,30 @@ namespace VDS.RDF.Query.Expressions
         public override string ToString()
         {
             return this._aggregate.ToString();
+        }
+
+        public SparqlExpressionType Type
+        {
+            get
+            {
+                return SparqlExpressionType.Aggregate;
+            }
+        }
+
+        public string Functor
+        {
+            get
+            {
+                return this._aggregate.Functor;
+            }
+        }
+
+        public IEnumerable<ISparqlExpression> Arguments
+        {
+            get
+            {
+                return this._aggregate.Arguments;
+            }
         }
     }
 }

@@ -224,6 +224,14 @@ namespace VDS.RDF.Query.Aggregates
             output.Append(this._expr.ToString() + ")");
             return output.ToString();
         }
+
+        public override string Functor
+        {
+            get 
+            {
+                return SparqlSpecsHelper.SparqlKeywordAvg;
+            }
+        }
     }
 
     /// <summary>
@@ -305,6 +313,14 @@ namespace VDS.RDF.Query.Aggregates
             StringBuilder output = new StringBuilder();
             output.Append("COUNT(" + this._expr.ToString() + ")");
             return output.ToString();
+        }
+
+        public override string Functor
+        {
+            get 
+            {
+                return SparqlSpecsHelper.SparqlKeywordCount;
+            }
         }
     }
 
@@ -400,6 +416,14 @@ namespace VDS.RDF.Query.Aggregates
             output.Append("COUNT(" + this._expr.ToString() + ")");
             return output.ToString();
         }
+
+        public override string Functor
+        {
+            get
+            {
+                return SparqlSpecsHelper.SparqlKeywordCount;
+            }
+        }
     }
 
     /// <summary>
@@ -440,6 +464,14 @@ namespace VDS.RDF.Query.Aggregates
         {
             return "COUNT(*)";
         }
+
+        public override string Functor
+        {
+            get
+            {
+                return SparqlSpecsHelper.SparqlKeywordCount;
+            }
+        }
     }
 
     /// <summary>
@@ -476,6 +508,14 @@ namespace VDS.RDF.Query.Aggregates
         public override string ToString()
         {
             return "COUNT(DISTINCT *)";
+        }
+
+        public override string Functor
+        {
+            get
+            {
+                return SparqlSpecsHelper.SparqlKeywordCount;
+            }
         }
     }
 
@@ -560,6 +600,14 @@ namespace VDS.RDF.Query.Aggregates
             }
             output.Append(")");
             return output.ToString();
+        }
+
+        public override string Functor
+        {
+            get
+            {
+                return SparqlSpecsHelper.SparqlKeywordGroupConcat;
+            }
         }
     }
 
@@ -669,6 +717,14 @@ namespace VDS.RDF.Query.Aggregates
             output.Append(this._expr.ToString() + ")");
             return output.ToString();
         }
+
+        public override string Functor
+        {
+            get 
+            { 
+                return SparqlSpecsHelper.SparqlKeywordMax;
+            }
+        }
     }
 
     /// <summary>
@@ -757,6 +813,14 @@ namespace VDS.RDF.Query.Aggregates
             output.Append(this._expr.ToString() + ")");
             return output.ToString();
         }
+
+        public override string Functor
+        {
+            get
+            {
+                return SparqlSpecsHelper.SparqlKeywordMin;
+            }
+        }
     }
 
     /// <summary>
@@ -812,6 +876,14 @@ namespace VDS.RDF.Query.Aggregates
             else
             {
                 return "SAMPLE(" + this._expr.ToString() + ")";
+            }
+        }
+
+        public override string Functor
+        {
+            get
+            {
+                return SparqlSpecsHelper.SparqlKeywordSample;
             }
         }
     }
@@ -980,6 +1052,14 @@ namespace VDS.RDF.Query.Aggregates
             if (this._distinct) output.Append("DISTINCT ");
             output.Append(this._expr.ToString() + ")");
             return output.ToString();
+        }
+
+        public override string Functor
+        {
+            get
+            {
+                return SparqlSpecsHelper.SparqlKeywordSum;
+            }
         }
     }
 }

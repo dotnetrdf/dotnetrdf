@@ -41,6 +41,7 @@ using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Query.Expressions.Functions
 {
+
     /// <summary>
     /// Abstract base class for SPARQL Functions which operate on Sets
     /// </summary>
@@ -53,19 +54,19 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// <summary>
         /// Set that is used in the function
         /// </summary>
-        protected HashSet<INode> _set = new HashSet<INode>();
+        protected List<ISparqlExpression> _expressions = new List<ISparqlExpression>();
 
         /// <summary>
         /// Creates a new SPARQL Set function
         /// </summary>
         /// <param name="varTerm">Variable Expression Term</param>
         /// <param name="set">Set</param>
-        public SparqlSetFunction(VariableExpressionTerm varTerm, IEnumerable<INode> set)
+        public SparqlSetFunction(VariableExpressionTerm varTerm, IEnumerable<ISparqlExpression> set)
         {
             this._varTerm = varTerm;
-            foreach (INode n in set)
+            foreach (ISparqlExpression e in set)
             {
-                this._set.Add(n);
+                this._expressions.Add(e);
             }
         }
 
@@ -80,24 +81,7 @@ namespace VDS.RDF.Query.Expressions.Functions
             return new LiteralNode(null, this.EffectiveBooleanValue(context, bindingID).ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeBoolean));
         }
 
-        /// <summary>
-        /// Gets the effective boolean value of the function as evaluated for a given Binding in the given Context
-        /// </summary>
-        /// <param name="context">SPARQL Evaluation Context</param>
-        /// <param name="bindingID">Binding ID</param>
-        /// <returns></returns>
-        public virtual bool EffectiveBooleanValue(SparqlEvaluationContext context, int bindingID)
-        {
-            INode result = this._varTerm.Value(context, bindingID);
-            if (result != null)
-            {
-                return this._set.Contains(result);
-            }
-            else
-            {
-                return false;
-            }
-        }
+        public abstract bool EffectiveBooleanValue(SparqlEvaluationContext context, int bindingID);
 
         /// <summary>
         /// Gets the Variable the function applies to
@@ -109,6 +93,29 @@ namespace VDS.RDF.Query.Expressions.Functions
                 return this._varTerm.Variables; 
             }
         }
+
+        public SparqlExpressionType Type
+        {
+            get
+            {
+                return SparqlExpressionType.SetOperator;
+            }
+        }
+
+        public abstract String Functor
+        {
+            get;
+        }
+
+        public IEnumerable<ISparqlExpression> Arguments
+        {
+            get
+            {
+                return this._varTerm.AsEnumerable<ISparqlExpression>().Concat(this._expressions);
+            }
+        }
+
+        public abstract override string ToString();
     }
 
     /// <summary>
@@ -121,8 +128,77 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// </summary>
         /// <param name="varTerm">Variable Expression Term</param>
         /// <param name="set">Set</param>
-        public SparqlInFunction(VariableExpressionTerm varTerm, IEnumerable<INode> set)
+        public SparqlInFunction(VariableExpressionTerm varTerm, IEnumerable<ISparqlExpression> set)
             : base(varTerm, set) { }
+
+        /// <summary>
+        /// Gets the effective boolean value of the function as evaluated for a given Binding in the given Context
+        /// </summary>
+        /// <param name="context">SPARQL Evaluation Context</param>
+        /// <param name="bindingID">Binding ID</param>
+        /// <returns></returns>
+        public override bool EffectiveBooleanValue(SparqlEvaluationContext context, int bindingID)
+        {
+            INode result = this._varTerm.Value(context, bindingID);
+            if (result != null)
+            {
+                if (this._expressions.Count == 0) return false;
+
+                //Have to use SPARQL Value Equality here
+                //If any expressions error and nothing in the set matches then an error is thrown
+                bool errors = false;
+                foreach (ISparqlExpression expr in this._expressions)
+                {
+                    try
+                    {
+                        INode temp = expr.Value(context, bindingID);
+                        if (SparqlSpecsHelper.Equality(result, temp)) return true;
+                    }
+                    catch
+                    {
+                        errors = true;
+                    }
+                }
+
+                if (errors)
+                {
+                    throw new RdfQueryException("One/more expressions in a Set function failed to evaluate");
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public override string Functor
+        {
+            get 
+            {
+                return SparqlSpecsHelper.SparqlKeywordIn; 
+            }
+        }
+
+        public override string ToString()
+        {
+            StringBuilder output = new StringBuilder();
+            output.Append(this._varTerm.ToString());
+            output.Append(" IN (");
+            for (int i = 0; i < this._expressions.Count; i++)
+            {
+                output.Append(this._expressions[i].ToString());
+                if (i < this._expressions.Count - 1)
+                {
+                    output.Append(" , ");
+                }
+            }
+            output.Append(")");
+            return output.ToString();
+        }
     }
 
     /// <summary>
@@ -135,7 +211,7 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// </summary>
         /// <param name="varTerm">Variable Expression Term</param>
         /// <param name="set">Set</param>
-        public SparqlNotInFunction(VariableExpressionTerm varTerm, IEnumerable<INode> set)
+        public SparqlNotInFunction(VariableExpressionTerm varTerm, IEnumerable<ISparqlExpression> set)
             : base(varTerm, set) { }
 
         /// <summary>
@@ -146,7 +222,65 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// <returns></returns>
         public override bool EffectiveBooleanValue(SparqlEvaluationContext context, int bindingID)
         {
-            return !base.EffectiveBooleanValue(context, bindingID);
+            INode result = this._varTerm.Value(context, bindingID);
+            if (result != null)
+            {
+                if (this._expressions.Count == 0) return true;
+
+                //Have to use SPARQL Value Equality here
+                //If any expressions error and nothing in the set matches then an error is thrown
+                bool errors = false;
+                foreach (ISparqlExpression expr in this._expressions)
+                {
+                    try
+                    {
+                        INode temp = expr.Value(context, bindingID);
+                        if (SparqlSpecsHelper.Equality(result, temp)) return false;
+                    }
+                    catch
+                    {
+                        errors = true;
+                    }
+                }
+
+                if (errors)
+                {
+                    throw new RdfQueryException("One/more expressions in a Set function failed to evaluate");
+                }
+                else
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        public override string Functor
+        {
+            get 
+            {
+                return SparqlSpecsHelper.SparqlKeywordNotIn; 
+            }
+        }
+
+        public override string ToString()
+        {
+            StringBuilder output = new StringBuilder();
+            output.Append(this._varTerm.ToString());
+            output.Append(" NOT IN (");
+            for (int i = 0; i < this._expressions.Count; i++)
+            {
+                output.Append(this._expressions[i].ToString());
+                if (i < this._expressions.Count - 1)
+                {
+                    output.Append(" , ");
+                }
+            }
+            output.Append(")");
+            return output.ToString();
         }
     }
 }

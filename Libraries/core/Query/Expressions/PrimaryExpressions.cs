@@ -250,6 +250,30 @@ namespace VDS.RDF.Query.Expressions
                 return this._name.AsEnumerable();
             }
         }
+
+        public SparqlExpressionType Type
+        {
+            get
+            {
+                return SparqlExpressionType.Primary;
+            }
+        }
+
+        public String Functor
+        {
+            get
+            {
+                return String.Empty;
+            }
+        }
+
+        public IEnumerable<ISparqlExpression> Arguments
+        {
+            get
+            {
+                return Enumerable.Empty<ISparqlExpression>();
+            }
+        }
     }
 
     /// <summary>
@@ -326,6 +350,30 @@ namespace VDS.RDF.Query.Expressions
                 return Enumerable.Empty<String>();
             }
         }
+
+        public SparqlExpressionType Type
+        {
+            get
+            {
+                return SparqlExpressionType.Primary;
+            }
+        }
+
+        public String Functor
+        {
+            get
+            {
+                return String.Empty;
+            }
+        }
+
+        public IEnumerable<ISparqlExpression> Arguments
+        {
+            get
+            {
+                return Enumerable.Empty<ISparqlExpression>();
+            }
+        }
     }
 
     /// <summary>
@@ -385,6 +433,30 @@ namespace VDS.RDF.Query.Expressions
             get
             {
                 return Enumerable.Empty<String>();
+            }
+        }
+
+        public SparqlExpressionType Type
+        {
+            get
+            {
+                return SparqlExpressionType.Primary;
+            }
+        }
+
+        public String Functor
+        {
+            get
+            {
+                return String.Empty;
+            }
+        }
+
+        public IEnumerable<ISparqlExpression> Arguments
+        {
+            get
+            {
+                return Enumerable.Empty<ISparqlExpression>();
             }
         }
     }
@@ -598,6 +670,30 @@ namespace VDS.RDF.Query.Expressions
             get
             {
                 return Enumerable.Empty<String>();
+            }
+        }
+
+        public SparqlExpressionType Type
+        {
+            get
+            {
+                return SparqlExpressionType.Primary;
+            }
+        }
+
+        public virtual String Functor
+        {
+            get
+            {
+                return String.Empty;
+            }
+        }
+
+        public IEnumerable<ISparqlExpression> Arguments
+        {
+            get
+            {
+                return Enumerable.Empty<ISparqlExpression>();
             }
         }
     }

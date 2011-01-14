@@ -229,6 +229,37 @@ namespace VDS.RDF.Query.Expressions.Functions
                 return "<" + ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.Substring + ">(" + this._expr.ToString() + "," + this._start.ToString() + ")";
             }
         }
+
+        public SparqlExpressionType Type
+        {
+            get
+            {
+                return SparqlExpressionType.Function;
+            }
+        }
+
+        public String Functor
+        {
+            get
+            {
+                return ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.Substring;
+            }
+        }
+
+        public IEnumerable<ISparqlExpression> Arguments
+        {
+            get
+            {
+                if (this._end != null)
+                {
+                    return new ISparqlExpression[] { this._expr, this._start, this._end };
+                } 
+                else 
+                {
+                    return new ISparqlExpression[] { this._end, this._start };
+                }
+            }
+        }
     }
 
     /// <summary>
@@ -358,6 +389,30 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
             output.Append(")");
             return output.ToString();
+        }
+
+        public SparqlExpressionType Type
+        {
+            get
+            {
+                return SparqlExpressionType.Function;
+            }
+        }
+
+        public String Functor
+        {
+            get
+            {
+                return ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.StrJoin;
+            }
+        }
+
+        public IEnumerable<ISparqlExpression> Arguments
+        {
+            get
+            {
+                return this._sep.AsEnumerable().Concat(this._exprs);
+            }
         }
     }
 }

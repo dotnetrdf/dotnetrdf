@@ -1320,62 +1320,27 @@ namespace VDS.RDF.Query
             IToken next = tokens.Dequeue();
             ISparqlExpression nodeExpr;
             bool inSet = (next.TokenType == Token.IN);
-            List<INode> values = new List<INode>();
+            List<ISparqlExpression> expressions = new List<ISparqlExpression>();
 
             //Expecting a ( afterwards
             next = tokens.Dequeue();
             if (next.TokenType == Token.LEFTBRACKET)
             {
                 next = tokens.Peek();
-                while (next.TokenType != Token.RIGHTBRACKET)
+
+                if (next.TokenType == Token.RIGHTBRACKET)
                 {
-                    switch (next.TokenType)
+                    tokens.Dequeue();
+                } 
+                else
+                {
+                    bool comma = false;
+                    expressions.Add(this.TryParseBrackettedExpression(tokens, false, out comma));
+                    while (comma)
                     {
-                        case Token.QNAME:
-                        case Token.URI:
-                            nodeExpr = this.TryParseIriRefOrFunction(tokens);
-                            if (nodeExpr is NodeExpressionTerm)
-                            {
-                                values.Add(((NodeExpressionTerm)nodeExpr).Value(null,0));
-                            }
-                            else
-                            {
-                                throw new RdfParseException("Expected a URI/QName as a value for the set for an IN/NOT IN expression but got a " + nodeExpr.GetType().ToString());
-                            }
-                            break;
-                        case Token.LITERAL:
-                        case Token.LONGLITERAL:
-                        case Token.LITERALWITHDT:
-                        case Token.LITERALWITHLANG:
-                            nodeExpr = this.TryParseRdfLiteral(tokens);
-                            if (nodeExpr is NodeExpressionTerm)
-                            {
-                                values.Add(((NodeExpressionTerm)nodeExpr).Value(null,0));
-                            }
-                            else
-                            {
-                                throw new RdfParseException("Expected a Literal as a value for the set for an IN/NOT IN expression but got a " + nodeExpr.GetType().ToString());
-                            }
-                            break;
-                        case Token.PLAINLITERAL:
-                            nodeExpr = this.TryParseBooleanOrNumericLiteral(tokens);
-                            if (nodeExpr is NodeExpressionTerm) 
-                            {
-                                values.Add(((NodeExpressionTerm)nodeExpr).Value(null,0));
-                            } 
-                            else 
-                            {
-                                throw new RdfParseException("Expected a Plain Literal as a value for the set for an IN/NOT IN expression but got a " + nodeExpr.GetType().ToString());
-                            }
-                            break;
-
-                        default:
-                            throw Error("Unexpected token '" + next.GetType().ToString() + "' encountered, expected a QName/URI/Literal as a value for the set for an IN/NOT IN expression", next);
+                        expressions.Add(this.TryParseBrackettedExpression(tokens, false, out comma));
                     }
-
-                    next = tokens.Peek();
                 }
-                tokens.Dequeue();
             }
             else
             {
@@ -1384,11 +1349,11 @@ namespace VDS.RDF.Query
 
             if (inSet)
             {
-                return new SparqlInFunction(varTerm, values);
+                return new SparqlInFunction(varTerm, expressions);
             }
             else
             {
-                return new SparqlNotInFunction(varTerm, values);
+                return new SparqlNotInFunction(varTerm, expressions);
             }
         }
 

@@ -66,7 +66,8 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public virtual INode Value(SparqlEvaluationContext context, int bindingID) {
+        public virtual INode Value(SparqlEvaluationContext context, int bindingID) 
+        {
             throw new NotImplementedException("Derived Class does not implement a Value method");
         }
 
@@ -76,7 +77,8 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public virtual bool EffectiveBooleanValue(SparqlEvaluationContext context, int bindingID) {
+        public virtual bool EffectiveBooleanValue(SparqlEvaluationContext context, int bindingID)
+        {
             return SparqlSpecsHelper.EffectiveBooleanValue(this.Value(context, bindingID));
         }
 
@@ -94,6 +96,27 @@ namespace VDS.RDF.Query.Expressions.Functions
             get
             {
                 return this._expr.Variables;
+            }
+        }
+
+        public SparqlExpressionType Type
+        {
+            get
+            {
+                return SparqlExpressionType.Function;
+            }
+        }
+
+        public abstract String Functor
+        {
+            get;
+        }
+
+        public IEnumerable<ISparqlExpression> Arguments
+        {
+            get
+            {
+                return this._expr.AsEnumerable();
             }
         }
     }
@@ -251,6 +274,14 @@ namespace VDS.RDF.Query.Expressions.Functions
         {
             return "<" + XmlSpecsHelper.XmlSchemaDataTypeBoolean + ">(" + this._expr.ToString() + ")";
         }
+
+        public override string Functor
+        {
+            get
+            {
+                return XmlSpecsHelper.XmlSchemaDataTypeBoolean; 
+            }
+        }
     }
 
     /// <summary>
@@ -347,6 +378,14 @@ namespace VDS.RDF.Query.Expressions.Functions
         {
             return "<" + XmlSpecsHelper.XmlSchemaDataTypeDouble + ">(" + this._expr.ToString() + ")";
         }
+
+        public override string Functor
+        {
+            get
+            {
+                return XmlSpecsHelper.XmlSchemaDataTypeDouble;
+            }
+        }
     }
 
     /// <summary>
@@ -436,6 +475,14 @@ namespace VDS.RDF.Query.Expressions.Functions
         public override string ToString()
         {
             return "<" + XmlSpecsHelper.XmlSchemaDataTypeFloat + ">(" + this._expr.ToString() + ")";
+        }
+
+        public override string Functor
+        {
+            get
+            {
+                return XmlSpecsHelper.XmlSchemaDataTypeFloat;
+            }
         }
     }
 
@@ -533,6 +580,14 @@ namespace VDS.RDF.Query.Expressions.Functions
         {
             return "<" + XmlSpecsHelper.XmlSchemaDataTypeDecimal + ">(" + this._expr.ToString() + ")";
         }
+
+        public override string Functor
+        {
+            get
+            {
+                return XmlSpecsHelper.XmlSchemaDataTypeDecimal;
+            }
+        }
     }
 
     /// <summary>
@@ -629,6 +684,14 @@ namespace VDS.RDF.Query.Expressions.Functions
         {
             return "<" + XmlSpecsHelper.XmlSchemaDataTypeInteger + ">(" + this._expr.ToString() + ")";
         }
+
+        public override string Functor
+        {
+            get
+            {
+                return XmlSpecsHelper.XmlSchemaDataTypeInteger;
+            }
+        }
     }
 
     /// <summary>
@@ -719,6 +782,14 @@ namespace VDS.RDF.Query.Expressions.Functions
         {
             return "<" + XmlSpecsHelper.XmlSchemaDataTypeDateTime + ">(" + this._expr.ToString() + ")";
         }
+
+        public override string Functor
+        {
+            get
+            {
+                return XmlSpecsHelper.XmlSchemaDataTypeDateTime;
+            }
+        }
     }
 
     /// <summary>
@@ -775,6 +846,14 @@ namespace VDS.RDF.Query.Expressions.Functions
         public override string ToString()
         {
             return "<" + XmlSpecsHelper.XmlSchemaDataTypeString + ">(" + this._expr.ToString() + ")";
+        }
+
+        public override string Functor
+        {
+            get
+            {
+                return XmlSpecsHelper.XmlSchemaDataTypeString;
+            }
         }
     }
 }

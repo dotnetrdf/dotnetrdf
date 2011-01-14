@@ -73,6 +73,22 @@ namespace VDS.RDF.Query.Expressions.Functions
         {
             return "BOUND(" + this._expr.ToString() + ")";
         }
+
+        public override SparqlExpressionType Type
+        {
+            get
+            {
+                return SparqlExpressionType.Function;
+            }
+        }
+
+        public override String Functor
+        {
+            get
+            {
+                return SparqlSpecsHelper.SparqlKeywordBound;
+            }
+        }
     }
 
     /// <summary>
@@ -148,6 +164,22 @@ namespace VDS.RDF.Query.Expressions.Functions
         public override string ToString()
         {
             return "DATATYPE(" + this._expr.ToString() + ")";
+        }
+
+        public override SparqlExpressionType Type
+        {
+            get
+            {
+                return SparqlExpressionType.Function;
+            }
+        }
+
+        public override String Functor
+        {
+            get
+            {
+                return SparqlSpecsHelper.SparqlKeywordDataType;
+            }
         }
     }
 
@@ -227,6 +259,22 @@ namespace VDS.RDF.Query.Expressions.Functions
         {
             return "IRI(" + this._expr.ToString() + ")";
         }
+
+        public override SparqlExpressionType Type
+        {
+            get
+            {
+                return SparqlExpressionType.Function;
+            }
+        }
+
+        public override String Functor
+        {
+            get
+            {
+                return SparqlSpecsHelper.SparqlKeywordIri;
+            }
+        }
     }
 
     /// <summary>
@@ -266,6 +314,22 @@ namespace VDS.RDF.Query.Expressions.Functions
         public override string ToString()
         {
             return "ISBLANK(" + this._expr.ToString() + ")";
+        }
+
+        public override SparqlExpressionType Type
+        {
+            get
+            {
+                return SparqlExpressionType.Function;
+            }
+        }
+
+        public override String Functor
+        {
+            get
+            {
+                return SparqlSpecsHelper.SparqlKeywordIsBlank;
+            }
         }
     }
 
@@ -307,6 +371,22 @@ namespace VDS.RDF.Query.Expressions.Functions
         {
             return "ISIRI(" + this._expr.ToString() + ")";
         }
+
+        public override SparqlExpressionType Type
+        {
+            get
+            {
+                return SparqlExpressionType.Function;
+            }
+        }
+
+        public override String Functor
+        {
+            get
+            {
+                return SparqlSpecsHelper.SparqlKeywordIsIri;
+            }
+        }
     }
 
     /// <summary>
@@ -347,6 +427,22 @@ namespace VDS.RDF.Query.Expressions.Functions
         {
             return "ISLITERAL(" + this._expr.ToString() + ")";
         }
+
+        public override SparqlExpressionType Type
+        {
+            get
+            {
+                return SparqlExpressionType.Function;
+            }
+        }
+
+        public override String Functor
+        {
+            get
+            {
+                return SparqlSpecsHelper.SparqlKeywordIsLiteral;
+            }
+        }
     }
 
     /// <summary>
@@ -367,6 +463,14 @@ namespace VDS.RDF.Query.Expressions.Functions
         public override string ToString()
         {
             return "ISURI(" + this._expr.ToString() + ")";
+        }
+
+        public override String Functor
+        {
+            get
+            {
+                return SparqlSpecsHelper.SparqlKeywordIsUri;
+            }
         }
     }
 
@@ -429,6 +533,22 @@ namespace VDS.RDF.Query.Expressions.Functions
         public override string ToString()
         {
             return "LANG(" + this._expr.ToString() + ")";
+        }
+
+        public override SparqlExpressionType Type
+        {
+            get
+            {
+                return SparqlExpressionType.Function;
+            }
+        }
+
+        public override String Functor
+        {
+            get
+            {
+                return SparqlSpecsHelper.SparqlKeywordLang;
+            }
         }
     }
 
@@ -498,6 +618,22 @@ namespace VDS.RDF.Query.Expressions.Functions
         {
             return "LANGMATCHES(" + this._leftExpr.ToString() + "," + this._rightExpr.ToString() + ")";
         }
+
+        public override SparqlExpressionType Type
+        {
+            get
+            {
+                return SparqlExpressionType.Function;
+            }
+        }
+
+        public override String Functor
+        {
+            get
+            {
+                return SparqlSpecsHelper.SparqlKeywordLangMatches;
+            }
+        }
     }
 
     /// <summary>
@@ -548,6 +684,22 @@ namespace VDS.RDF.Query.Expressions.Functions
         public override string ToString()
         {
             return "SAMETERM(" + this._leftExpr.ToString() + "," + this._rightExpr.ToString() + ")";
+        }
+
+        public override SparqlExpressionType Type
+        {
+            get
+            {
+                return SparqlExpressionType.Function;
+            }
+        }
+
+        public override String Functor
+        {
+            get
+            {
+                return SparqlSpecsHelper.SparqlKeywordSameTerm;
+            }
         }
     }
 
@@ -612,6 +764,22 @@ namespace VDS.RDF.Query.Expressions.Functions
         public override string ToString()
         {
             return "STR(" + this._expr.ToString() + ")";
+        }
+
+        public override SparqlExpressionType Type
+        {
+            get 
+            {
+                return SparqlExpressionType.Function; 
+            }
+        }
+
+        public override string Functor
+        {
+            get 
+            {
+                return SparqlSpecsHelper.SparqlKeywordStr; 
+            }
         }
     }
 
@@ -705,6 +873,22 @@ namespace VDS.RDF.Query.Expressions.Functions
         public override string ToString()
         {
             return "STRDT(" + this._leftExpr.ToString() + ", " + this._rightExpr.ToString() + ")";
+        }
+
+        public override SparqlExpressionType Type
+        {
+            get
+            {
+                return SparqlExpressionType.Function;
+            }
+        }
+
+        public override String Functor
+        {
+            get
+            {
+                return SparqlSpecsHelper.SparqlKeywordStrDt;
+            }
         }
     }
 
@@ -813,6 +997,22 @@ namespace VDS.RDF.Query.Expressions.Functions
         public override string ToString()
         {
             return "STRLANG(" + this._leftExpr.ToString() + ", " + this._rightExpr.ToString() + ")";
+        }
+
+        public override SparqlExpressionType Type
+        {
+            get
+            {
+                return SparqlExpressionType.Function;
+            }
+        }
+
+        public override String Functor
+        {
+            get
+            {
+                return SparqlSpecsHelper.SparqlKeywordStrLang;
+            }
         }
     }
 
@@ -1074,6 +1274,37 @@ namespace VDS.RDF.Query.Expressions.Functions
                 if (this._patternExpr != null) vs.AddRange(this._patternExpr.Variables);
                 if (this._optionExpr != null) vs.AddRange(this._optionExpr.Variables);
                 return vs;
+            }
+        }
+
+        public SparqlExpressionType Type
+        {
+            get
+            {
+                return SparqlExpressionType.Function;
+            }
+        }
+
+        public String Functor
+        {
+            get
+            {
+                return SparqlSpecsHelper.SparqlKeywordRegex;
+            }
+        }
+
+        public IEnumerable<ISparqlExpression> Arguments
+        {
+            get
+            {
+                if (this._optionExpr != null)
+                {
+                    return new ISparqlExpression[] { this._textExpr, this._patternExpr, this._optionExpr };
+                }
+                else
+                {
+                    return new ISparqlExpression[] { this._textExpr, this._patternExpr };
+                }
             }
         }
     }

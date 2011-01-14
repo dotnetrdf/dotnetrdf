@@ -161,6 +161,14 @@ namespace VDS.RDF.Query.Aggregates
             output.Append(')');
             return output.ToString();
         }
+
+        public override string Functor
+        {
+            get 
+            {
+                return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Median;
+            }
+        }
     }
 
     /// <summary>
@@ -276,6 +284,14 @@ namespace VDS.RDF.Query.Aggregates
             output.Append(this._expr.ToString());
             output.Append(')');
             return output.ToString();
+        }
+
+        public override string Functor
+        {
+            get
+            {
+                return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Mode;
+            }
         }
     }
 
@@ -490,6 +506,14 @@ namespace VDS.RDF.Query.Aggregates
             output.Append(')');
             return output.ToString();
         }
+
+        public override string Functor
+        {
+            get
+            {
+                return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.NumericMax;
+            }
+        }
     }
 
     /// <summary>
@@ -698,6 +722,14 @@ namespace VDS.RDF.Query.Aggregates
             output.Append(this._expr.ToString());
             output.Append(')');
             return output.ToString();
+        }
+
+        public override string Functor
+        {
+            get
+            {
+                return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.NumericMin;
+            }
         }
     }
 }

@@ -66,6 +66,7 @@ Changed
  - Improved SparqlParameterizedString
   - Can now set values for Variables which are substituted into the query when you call ToString()
   - Has own Namespace Map allowing prefixes to be registered programatically and have the code take care of generating the PREFIX declarations
+ - Improved ISparqlExpression interface to allow for traversing of expression trees and custom formatting
 - Update Improvements
  - WHERE clauses in Update Commands are now optimised
  - Added support for new features latest drafts of the SPARQL 1.1 Update specification
@@ -82,7 +83,9 @@ Changed
 Removed
 - Obsolete VDS.RDF.Web classes removed
 - Removed obsolete methods related to Labyrinth SPARQL engine
-- Removed dataset management methods from ITripleStore and implemenations
+- Removed dataset management methods from ITripleStore and implementations
+- IBinaryOperator marker interface removed as ISparqlExpression.Type can now be used to determine whether an expression
+  is a binary operator
 
    
 

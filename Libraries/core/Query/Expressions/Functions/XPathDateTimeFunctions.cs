@@ -115,6 +115,14 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// </summary>
         /// <returns></returns>
         public abstract override string ToString();
+
+        public override SparqlExpressionType Type
+        {
+            get 
+            {
+                return SparqlExpressionType.Function;
+            }
+        }
     }
 
     /// <summary>
@@ -146,6 +154,14 @@ namespace VDS.RDF.Query.Expressions.Functions
         public override string ToString()
         {
             return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.YearFromDateTime + ">(" + this._expr.ToString() + ")";
+        }
+
+        public override string Functor
+        {
+            get 
+            {
+                return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.YearFromDateTime;
+            }
         }
     }
 
@@ -179,6 +195,14 @@ namespace VDS.RDF.Query.Expressions.Functions
         {
             return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.MonthFromDateTime + ">(" + this._expr.ToString() + ")";
         }
+
+        public override string Functor
+        {
+            get
+            {
+                return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.MonthFromDateTime;
+            }
+        }
     }
 
     /// <summary>
@@ -210,6 +234,14 @@ namespace VDS.RDF.Query.Expressions.Functions
         public override string ToString()
         {
             return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.DayFromDateTime + ">(" + this._expr.ToString() + ")";
+        }
+
+        public override string Functor
+        {
+            get
+            {
+                return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.DayFromDateTime;
+            }
         }
     }
 
@@ -243,6 +275,14 @@ namespace VDS.RDF.Query.Expressions.Functions
         {
             return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.HoursFromDateTime + ">(" + this._expr.ToString() + ")";
         }
+
+        public override string Functor
+        {
+            get
+            {
+                return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.HoursFromDateTime;
+            }
+        }
     }
 
     /// <summary>
@@ -274,6 +314,14 @@ namespace VDS.RDF.Query.Expressions.Functions
         public override string ToString()
         {
             return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.MinutesFromDateTime + ">(" + this._expr.ToString() + ")";
+        }
+
+        public override string Functor
+        {
+            get
+            {
+                return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.MinutesFromDateTime;
+            }
         }
     }
 
@@ -309,6 +357,14 @@ namespace VDS.RDF.Query.Expressions.Functions
         public override string ToString()
         {
             return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.SecondsFromDateTime + ">(" + this._expr.ToString() + ")";
+        }
+
+        public override string Functor
+        {
+            get
+            {
+                return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.SecondsFromDateTime;
+            }
         }
     }
 
@@ -426,6 +482,30 @@ namespace VDS.RDF.Query.Expressions.Functions
         public override string ToString()
         {
             return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.TimezoneFromDateTime + ">(" + this._expr.ToString() + ")";
+        }
+
+        public SparqlExpressionType Type
+        {
+            get
+            {
+                return SparqlExpressionType.Function;
+            }
+        }
+
+        public string Functor
+        {
+            get
+            {
+                return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.TimezoneFromDateTime;
+            }
+        }
+
+        public IEnumerable<ISparqlExpression> Arguments
+        {
+            get
+            {
+                return this._expr.AsEnumerable();
+            }
         }
 
     }

@@ -95,6 +95,22 @@ namespace VDS.RDF.Query.Expressions.Functions
         {
             return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Absolute + ">(" + this._expr.ToString() + ")";
         }
+
+        public override SparqlExpressionType Type
+        {
+            get
+            {
+                return SparqlExpressionType.Function; 
+            }
+        }
+
+        public override string Functor
+        {
+            get
+            {
+                return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Absolute; 
+            }
+        }
     }
 
     /// <summary>
@@ -153,6 +169,22 @@ namespace VDS.RDF.Query.Expressions.Functions
         public override string ToString()
         {
             return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Ceiling + ">(" + this._expr.ToString() + ")";
+        }
+
+        public override SparqlExpressionType Type
+        {
+            get
+            {
+                return SparqlExpressionType.Function;
+            }
+        }
+
+        public override string Functor
+        {
+            get
+            {
+                return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Ceiling;
+            }
         }
     }
 
@@ -214,6 +246,22 @@ namespace VDS.RDF.Query.Expressions.Functions
         {
             return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Floor + ">(" + this._expr.ToString() + ")";
         }
+
+        public override SparqlExpressionType Type
+        {
+            get
+            {
+                return SparqlExpressionType.Function;
+            }
+        }
+
+        public override string Functor
+        {
+            get
+            {
+                return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Floor;
+            }
+        }
     }
 
     /// <summary>
@@ -268,6 +316,22 @@ namespace VDS.RDF.Query.Expressions.Functions
         public override string ToString()
         {
             return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Round + ">(" + this._expr.ToString() + ")";
+        }
+
+        public override SparqlExpressionType Type
+        {
+            get
+            {
+                return SparqlExpressionType.Function;
+            }
+        }
+
+        public override string Functor
+        {
+            get
+            {
+                return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Round;
+            }
         }
     }
 
@@ -349,6 +413,22 @@ namespace VDS.RDF.Query.Expressions.Functions
         public override string ToString()
         {
             return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Floor + ">(" + this._expr.ToString() + ")";
+        }
+
+        public override SparqlExpressionType Type
+        {
+            get
+            {
+                return SparqlExpressionType.Function;
+            }
+        }
+
+        public override string Functor
+        {
+            get
+            {
+                return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.RoundHalfToEven;
+            }
         }
     }
 

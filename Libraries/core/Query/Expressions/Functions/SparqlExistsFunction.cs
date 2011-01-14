@@ -151,5 +151,37 @@ namespace VDS.RDF.Query.Expressions.Functions
             output.Append(this._pattern.ToString());
             return output.ToString();
         }
+
+        public SparqlExpressionType Type
+        {
+            get
+            {
+                return SparqlExpressionType.GraphOperator;
+            }
+        }
+
+        public String Functor
+        {
+            get
+            {
+                if (this._mustExist)
+                {
+                    return SparqlSpecsHelper.SparqlKeywordExists;
+                }
+                else
+                {
+                    return SparqlSpecsHelper.SparqlKeywordNotExists;
+                }
+            }
+        }
+
+        public IEnumerable<ISparqlExpression> Arguments
+        {
+            get
+            {
+                //REQ: Implement an expression that wraps a Graph Pattern for use with this
+                throw new NotImplementedException();
+            }
+        }
     }
 }

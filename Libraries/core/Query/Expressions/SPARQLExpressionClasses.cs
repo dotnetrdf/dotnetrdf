@@ -103,7 +103,7 @@ namespace VDS.RDF.Query.Expressions
         public override string ToString()
         {
             StringBuilder output = new StringBuilder();
-            if (this._leftExpr is IBinaryOperator)
+            if (this._leftExpr.Type == SparqlExpressionType.BinaryOperator)
             {
                 output.Append("(" + this._leftExpr.ToString() + ")");
             }
@@ -112,7 +112,7 @@ namespace VDS.RDF.Query.Expressions
                 output.Append(this._leftExpr.ToString());
             }
             output.Append(" || ");
-            if (this._rightExpr is IBinaryOperator)
+            if (this._rightExpr.Type == SparqlExpressionType.BinaryOperator)
             {
                 output.Append("(" + this._rightExpr.ToString() + ")");
             }
@@ -121,6 +121,22 @@ namespace VDS.RDF.Query.Expressions
                 output.Append(this._rightExpr.ToString());
             }
             return output.ToString();
+        }
+
+        public override SparqlExpressionType Type
+        {
+            get 
+            {
+                return SparqlExpressionType.BinaryOperator;
+            }
+        }
+
+        public override string Functor
+        {
+            get 
+            {
+                return "||";
+            }
         }
     }
 
@@ -182,7 +198,7 @@ namespace VDS.RDF.Query.Expressions
         public override string ToString()
         {
             StringBuilder output = new StringBuilder();
-            if (this._leftExpr is IBinaryOperator)
+            if (this._leftExpr.Type == SparqlExpressionType.BinaryOperator)
             {
                 output.Append("(" + this._leftExpr.ToString() + ")");
             }
@@ -191,7 +207,7 @@ namespace VDS.RDF.Query.Expressions
                 output.Append(this._leftExpr.ToString());
             }
             output.Append(" && ");
-            if (this._rightExpr is IBinaryOperator)
+            if (this._rightExpr.Type == SparqlExpressionType.BinaryOperator)
             {
                 output.Append("(" + this._rightExpr.ToString() + ")");
             }
@@ -200,6 +216,22 @@ namespace VDS.RDF.Query.Expressions
                 output.Append(this._rightExpr.ToString());
             }
             return output.ToString();
+        }
+
+        public override SparqlExpressionType Type
+        {
+            get
+            {
+                return SparqlExpressionType.BinaryOperator;
+            }
+        }
+
+        public override string Functor
+        {
+            get
+            {
+                return "&&";
+            }
         }
     }
 
@@ -232,6 +264,22 @@ namespace VDS.RDF.Query.Expressions
         public override string ToString()
         {
             return "!" + this._expr.ToString();
+        }
+
+        public override SparqlExpressionType Type
+        {
+            get
+            {
+                return SparqlExpressionType.UnaryOperator;
+            }
+        }
+
+        public override string Functor
+        {
+            get
+            {
+                return "!";
+            }
         }
     }
 
@@ -272,7 +320,7 @@ namespace VDS.RDF.Query.Expressions
         public override string ToString()
         {
             StringBuilder output = new StringBuilder();
-            if (this._leftExpr is IBinaryOperator)
+            if (this._leftExpr.Type == SparqlExpressionType.BinaryOperator)
             {
                 output.Append("(" + this._leftExpr.ToString() + ")");
             }
@@ -281,7 +329,7 @@ namespace VDS.RDF.Query.Expressions
                 output.Append(this._leftExpr.ToString());
             }
             output.Append(" = ");
-            if (this._rightExpr is IBinaryOperator)
+            if (this._rightExpr.Type == SparqlExpressionType.BinaryOperator)
             {
                 output.Append("(" + this._rightExpr.ToString() + ")");
             }
@@ -290,6 +338,22 @@ namespace VDS.RDF.Query.Expressions
                 output.Append(this._rightExpr.ToString());
             }
             return output.ToString();
+        }
+
+        public override SparqlExpressionType Type
+        {
+            get
+            {
+                return SparqlExpressionType.BinaryOperator;
+            }
+        }
+
+        public override string Functor
+        {
+            get
+            {
+                return "=";
+            }
         }
     }
 
@@ -326,7 +390,7 @@ namespace VDS.RDF.Query.Expressions
         public override string ToString()
         {
             StringBuilder output = new StringBuilder();
-            if (this._leftExpr is IBinaryOperator)
+            if (this._leftExpr.Type == SparqlExpressionType.BinaryOperator)
             {
                 output.Append("(" + this._leftExpr.ToString() + ")");
             }
@@ -335,7 +399,7 @@ namespace VDS.RDF.Query.Expressions
                 output.Append(this._leftExpr.ToString());
             }
             output.Append(" != ");
-            if (this._rightExpr is IBinaryOperator)
+            if (this._rightExpr.Type == SparqlExpressionType.BinaryOperator)
             {
                 output.Append("(" + this._rightExpr.ToString() + ")");
             }
@@ -344,6 +408,22 @@ namespace VDS.RDF.Query.Expressions
                 output.Append(this._rightExpr.ToString());
             }
             return output.ToString();
+        }
+
+        public override SparqlExpressionType Type
+        {
+            get
+            {
+                return SparqlExpressionType.BinaryOperator;
+            }
+        }
+
+        public override string Functor
+        {
+            get
+            {
+                return "!=";
+            }
         }
     }
 
@@ -385,7 +465,7 @@ namespace VDS.RDF.Query.Expressions
         public override string ToString()
         {
             StringBuilder output = new StringBuilder();
-            if (this._leftExpr is IBinaryOperator)
+            if (this._leftExpr.Type == SparqlExpressionType.BinaryOperator)
             {
                 output.Append("(" + this._leftExpr.ToString() + ")");
             }
@@ -394,7 +474,7 @@ namespace VDS.RDF.Query.Expressions
                 output.Append(this._leftExpr.ToString());
             }
             output.Append(" < ");
-            if (this._rightExpr is IBinaryOperator)
+            if (this._rightExpr.Type == SparqlExpressionType.BinaryOperator)
             {
                 output.Append("(" + this._rightExpr.ToString() + ")");
             }
@@ -403,6 +483,22 @@ namespace VDS.RDF.Query.Expressions
                 output.Append(this._rightExpr.ToString());
             }
             return output.ToString();
+        }
+
+        public override SparqlExpressionType Type
+        {
+            get
+            {
+                return SparqlExpressionType.BinaryOperator;
+            }
+        }
+
+        public override string Functor
+        {
+            get
+            {
+                return "<";
+            }
         }
     }
 
@@ -455,7 +551,7 @@ namespace VDS.RDF.Query.Expressions
         public override string ToString()
         {
             StringBuilder output = new StringBuilder();
-            if (this._leftExpr is IBinaryOperator)
+            if (this._leftExpr.Type == SparqlExpressionType.BinaryOperator)
             {
                 output.Append("(" + this._leftExpr.ToString() + ")");
             }
@@ -464,7 +560,7 @@ namespace VDS.RDF.Query.Expressions
                 output.Append(this._leftExpr.ToString());
             }
             output.Append(" <= ");
-            if (this._rightExpr is IBinaryOperator)
+            if (this._rightExpr.Type == SparqlExpressionType.BinaryOperator)
             {
                 output.Append("(" + this._rightExpr.ToString() + ")");
             }
@@ -473,6 +569,22 @@ namespace VDS.RDF.Query.Expressions
                 output.Append(this._rightExpr.ToString());
             }
             return output.ToString();
+        }
+
+        public override SparqlExpressionType Type
+        {
+            get
+            {
+                return SparqlExpressionType.BinaryOperator;
+            }
+        }
+
+        public override string Functor
+        {
+            get
+            {
+                return "<=";
+            }
         }
     }
 
@@ -515,7 +627,7 @@ namespace VDS.RDF.Query.Expressions
         public override string ToString()
         {
             StringBuilder output = new StringBuilder();
-            if (this._leftExpr is IBinaryOperator)
+            if (this._leftExpr.Type == SparqlExpressionType.BinaryOperator)
             {
                 output.Append("(" + this._leftExpr.ToString() + ")");
             }
@@ -524,7 +636,7 @@ namespace VDS.RDF.Query.Expressions
                 output.Append(this._leftExpr.ToString());
             }
             output.Append(" > ");
-            if (this._rightExpr is IBinaryOperator)
+            if (this._rightExpr.Type == SparqlExpressionType.BinaryOperator)
             {
                 output.Append("(" + this._rightExpr.ToString() + ")");
             }
@@ -534,6 +646,22 @@ namespace VDS.RDF.Query.Expressions
             }
             return output.ToString();
         }
+        public override SparqlExpressionType Type
+        {
+            get
+            {
+                return SparqlExpressionType.BinaryOperator;
+            }
+        }
+
+        public override string Functor
+        {
+            get
+            {
+                return ">";
+            }
+        }
+
     }
 
     /// <summary>
@@ -585,7 +713,7 @@ namespace VDS.RDF.Query.Expressions
         public override string ToString()
         {
             StringBuilder output = new StringBuilder();
-            if (this._leftExpr is IBinaryOperator)
+            if (this._leftExpr.Type == SparqlExpressionType.BinaryOperator)
             {
                 output.Append("(" + this._leftExpr.ToString() + ")");
             }
@@ -594,7 +722,7 @@ namespace VDS.RDF.Query.Expressions
                 output.Append(this._leftExpr.ToString());
             }
             output.Append(" >= ");
-            if (this._rightExpr is IBinaryOperator)
+            if (this._rightExpr.Type == SparqlExpressionType.BinaryOperator)
             {
                 output.Append("(" + this._rightExpr.ToString() + ")");
             }
@@ -603,6 +731,22 @@ namespace VDS.RDF.Query.Expressions
                 output.Append(this._rightExpr.ToString());
             }
             return output.ToString();
+        }
+
+        public override SparqlExpressionType Type
+        {
+            get
+            {
+                return SparqlExpressionType.BinaryOperator;
+            }
+        }
+
+        public override string Functor
+        {
+            get
+            {
+                return ">=";
+            }
         }
     }
 
@@ -657,6 +801,30 @@ namespace VDS.RDF.Query.Expressions
             get
             {
                 return Enumerable.Empty<String>();
+            }
+        }
+
+        public SparqlExpressionType Type
+        {
+            get
+            {
+                return SparqlExpressionType.Primary;
+            }
+        }
+
+        public String Functor
+        {
+            get
+            {
+                return String.Empty;
+            }
+        }
+
+        public IEnumerable<ISparqlExpression> Arguments
+        {
+            get
+            {
+                return Enumerable.Empty<ISparqlExpression>();
             }
         }
     }

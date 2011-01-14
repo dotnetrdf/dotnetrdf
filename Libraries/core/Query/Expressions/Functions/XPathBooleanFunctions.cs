@@ -71,5 +71,21 @@ namespace VDS.RDF.Query.Expressions.Functions
         {
             return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Boolean + ">(" + this._expr.ToString() + ")";
         }
+
+        public override string Functor
+        {
+            get 
+            {
+                return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Boolean;
+            }
+        }
+
+        public override SparqlExpressionType Type
+        {
+            get
+            {
+                return SparqlExpressionType.Function;
+            }
+        }
     }
 }

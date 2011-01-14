@@ -66,5 +66,29 @@ namespace VDS.RDF.Query.Aggregates
         {
             get;
         }
+
+        /// <summary>
+        /// Gets the Type of the Aggregate
+        /// </summary>
+        SparqlExpressionType Type
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Gets the URI/Keyword of the Aggregate
+        /// </summary>
+        String Functor
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Gets the Arguments of the Aggregate
+        /// </summary>
+        IEnumerable<ISparqlExpression> Arguments
+        {
+            get;
+        }
     }
 }

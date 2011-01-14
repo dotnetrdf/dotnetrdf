@@ -146,5 +146,29 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
             return output.ToString();
         }
+
+        public SparqlExpressionType Type
+        {
+            get
+            {
+                return SparqlExpressionType.Function;
+            }
+        }
+
+        public String Functor
+        {
+            get
+            {
+                return SparqlSpecsHelper.SparqlKeywordIf;
+            }
+        }
+
+        public IEnumerable<ISparqlExpression> Arguments
+        {
+            get
+            {
+                return new ISparqlExpression[] { this._condition, this._ifBranch, this._elseBranch };
+            }
+        }
     }
 }

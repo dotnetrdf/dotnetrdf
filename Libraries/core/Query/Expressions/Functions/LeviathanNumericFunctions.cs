@@ -110,6 +110,14 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// </summary>
         /// <returns></returns>
         public abstract override string ToString();
+
+        public override SparqlExpressionType Type
+        {
+            get 
+            {
+                return SparqlExpressionType.Function; 
+            }
+        }
     }
 
     /// <summary>
@@ -187,6 +195,14 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// </summary>
         /// <returns></returns>
         public abstract override string ToString();
+
+        public override SparqlExpressionType Type
+        {
+            get
+            {
+                return SparqlExpressionType.Function;
+            }
+        }
     }
 
     /// <summary>
@@ -238,6 +254,14 @@ namespace VDS.RDF.Query.Expressions.Functions
         public override string ToString()
         {
             return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Square + ">(" + this._expr.ToString() + ")";
+        }
+
+        public override string Functor
+        {
+            get 
+            {
+                return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Square;
+            }
         }
     }
 
@@ -291,6 +315,14 @@ namespace VDS.RDF.Query.Expressions.Functions
         {
             return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Cube + ">(" + this._expr.ToString() + ")";
         }
+
+        public override string Functor
+        {
+            get
+            {
+                return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Cube;
+            }
+        }
     }
 
     /// <summary>
@@ -342,6 +374,14 @@ namespace VDS.RDF.Query.Expressions.Functions
         public override string ToString()
         {
             return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.SquareRoot + ">(" + this._expr.ToString() + ")";
+        }
+
+        public override string Functor
+        {
+            get
+            {
+                return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.SquareRoot;
+            }
         }
     }
 
@@ -395,6 +435,14 @@ namespace VDS.RDF.Query.Expressions.Functions
         {
             return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Ln + ">(" + this._expr.ToString() + ")";
         }
+
+        public override string Functor
+        {
+            get
+            {
+                return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Ln;
+            }
+        }
     }
 
     /// <summary>
@@ -447,6 +495,14 @@ namespace VDS.RDF.Query.Expressions.Functions
         {
             return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.E + ">(" + this._expr.ToString() + ")";
         }
+
+        public override string Functor
+        {
+            get
+            {
+                return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.E;
+            }
+        }
     }
 
     /// <summary>
@@ -498,6 +554,14 @@ namespace VDS.RDF.Query.Expressions.Functions
         public override string ToString()
         {
             return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Ten + ">(" + this._expr.ToString() + ")";
+        }
+
+        public override string Functor
+        {
+            get
+            {
+                return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Ten;
+            }
         }
     }
 
@@ -567,6 +631,14 @@ namespace VDS.RDF.Query.Expressions.Functions
         {
             return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Factorial + ">(" + this._expr.ToString() + ")";
         }
+
+        public override string Functor
+        {
+            get
+            {
+                return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Factorial;
+            }
+        }
     }
 
     /// <summary>
@@ -618,6 +690,14 @@ namespace VDS.RDF.Query.Expressions.Functions
         public override string ToString()
         {
             return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Reciprocal + ">(" + this._expr.ToString() + ")";
+        }
+
+        public override string Functor
+        {
+            get
+            {
+                return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Reciprocal;
+            }
         }
     }
 
@@ -675,6 +755,14 @@ namespace VDS.RDF.Query.Expressions.Functions
         {
             return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Power + ">(" + this._leftExpr.ToString() + "," + this._rightExpr.ToString() + ")";
         }
+
+        public override string Functor
+        {
+            get
+            {
+                return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Power;
+            }
+        }
     }
 
     /// <summary>
@@ -730,6 +818,14 @@ namespace VDS.RDF.Query.Expressions.Functions
         public override string ToString()
         {
             return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Power + ">(" + this._leftExpr.ToString() + "," + this._rightExpr.ToString() + ")";
+        }
+
+        public override string Functor
+        {
+            get
+            {
+                return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Root;
+            }
         }
     }
 
@@ -806,6 +902,14 @@ namespace VDS.RDF.Query.Expressions.Functions
                 return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Log + ">(" + this._leftExpr.ToString() + "," + this._rightExpr.ToString() + ")";
             }
         }
+
+        public override string Functor
+        {
+            get
+            {
+                return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Log;
+            }
+        }
     }
 
     /// <summary>
@@ -861,6 +965,14 @@ namespace VDS.RDF.Query.Expressions.Functions
         public override string ToString()
         {
             return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Pythagoras + ">(" + this._leftExpr.ToString() + "," + this._rightExpr.ToString() + ")";
+        }
+
+        public override string Functor
+        {
+            get
+            {
+                return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Pythagoras;
+            }
         }
     }
 
@@ -960,6 +1072,14 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
             output.Append(')');
             return output.ToString();
+        }
+
+        public override string Functor
+        {
+            get
+            {
+                return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Random;
+            }
         }
     }
 

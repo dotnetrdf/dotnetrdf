@@ -127,5 +127,13 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// </summary>
         /// <returns></returns>
         public abstract override string ToString();
+
+        public override SparqlExpressionType Type
+        {
+            get
+            {
+                return SparqlExpressionType.Function;
+            }
+        }
     }
 }

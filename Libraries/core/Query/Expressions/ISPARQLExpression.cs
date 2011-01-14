@@ -67,6 +67,41 @@ namespace VDS.RDF.Query.Expressions
     }
 
     /// <summary>
+    /// SPARQL Expression Types
+    /// </summary>
+    public enum SparqlExpressionType
+    {
+        /// <summary>
+        /// The Expression is a Primary Expression which is a leaf in the expression tree
+        /// </summary>
+        Primary,
+        /// <summary>
+        /// The Expression is a Unary Operator which has a single argument
+        /// </summary>
+        UnaryOperator,
+        /// <summary>
+        /// The Expression is a Binary Operator which has two arguments
+        /// </summary>
+        BinaryOperator,
+        /// <summary>
+        /// The Expression is a Function which has zero/more arguments
+        /// </summary>
+        Function,
+        /// <summary>
+        /// The Expression is an Aggregate Function which has one/more arguments
+        /// </summary>
+        Aggregate,
+        /// <summary>
+        /// The Expression is a Set Operator where the first argument forms the LHS and all remaining arguments form a set on the RHS
+        /// </summary>
+        SetOperator,
+        /// <summary>
+        /// The Expression is a Unary Operator that applies to a Graph Pattern
+        /// </summary>
+        GraphOperator
+    }
+
+    /// <summary>
     /// Interface for SPARQL Expression Terms that can be used in Expression Trees while evaluating Sparql Queries
     /// </summary>
     public interface ISparqlExpression
@@ -94,6 +129,32 @@ namespace VDS.RDF.Query.Expressions
         {
             get;
         }
+
+        /// <summary>
+        /// Gets the SPARQL Expression Type
+        /// </summary>
+        SparqlExpressionType Type
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Gets the Function Name or Operator Symbol - function names may be URIs of Keywords or the empty string in the case of primary expressions
+        /// </summary>
+        String Functor
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Gets the Arguments of this Expression
+        /// </summary>
+        IEnumerable<ISparqlExpression> Arguments
+        {
+            get;
+        }
+
+        
     }
 
     /// <summary>
@@ -146,17 +207,6 @@ namespace VDS.RDF.Query.Expressions
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         double DoubleValue(SparqlEvaluationContext context, int bindingID);
-    }
-
-    /// <summary>
-    /// Marker interface for Expression classes which represent Binary Operators
-    /// </summary>
-    /// <remarks>
-    /// Used as a marker so that the ToString() implementations can appropriately bracket expressions with binary operators so that the precedence of the expression is clear
-    /// </remarks>
-    public interface IBinaryOperator
-    {
-
     }
 
 }

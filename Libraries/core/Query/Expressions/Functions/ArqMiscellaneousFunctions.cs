@@ -117,5 +117,13 @@ namespace VDS.RDF.Query.Expressions.Functions
         {
             return "<" + ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.Sha1Sum + ">(" + this._expr.ToString() + ")";
         }
+
+        public override string Functor
+        {
+            get 
+            {
+                return ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.Sha1Sum; 
+            }
+        }
     }
 }

@@ -110,6 +110,14 @@ namespace VDS.RDF.Query.Aggregates
             output.Append(')');
             return output.ToString();
         }
+
+        public override string Functor
+        {
+            get 
+            {
+                return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.All;
+            }
+        }
     }
 
     /// <summary>
@@ -179,6 +187,14 @@ namespace VDS.RDF.Query.Aggregates
             output.Append(')');
             return output.ToString();
         }
+
+        public override string Functor
+        {
+            get
+            {
+                return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Any;
+            }
+        }
     }
 
     /// <summary>
@@ -247,6 +263,14 @@ namespace VDS.RDF.Query.Aggregates
             output.Append(this._expr.ToString());
             output.Append(')');
             return output.ToString();
+        }
+
+        public override string Functor
+        {
+            get
+            {
+                return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.None;
+            }
         }
     }
 }

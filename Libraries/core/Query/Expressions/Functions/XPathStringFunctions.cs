@@ -139,6 +139,27 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// </summary>
         /// <returns></returns>
         public abstract override string ToString();
+
+        public SparqlExpressionType Type
+        {
+            get
+            {
+                return SparqlExpressionType.Function;
+            }
+        }
+
+        public abstract String Functor
+        {
+            get;
+        }
+
+        public IEnumerable<ISparqlExpression> Arguments
+        {
+            get
+            {
+                return this._expr.AsEnumerable();
+            }
+        }
     }
 
     /// <summary>
@@ -307,6 +328,27 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// </summary>
         /// <returns></returns>
         public abstract override string ToString();
+
+        public SparqlExpressionType Type
+        {
+            get
+            {
+                return SparqlExpressionType.Function;
+            }
+        }
+
+        public abstract String Functor
+        {
+            get;
+        }
+
+        public IEnumerable<ISparqlExpression> Arguments
+        {
+            get
+            {
+                return new ISparqlExpression[] { this._expr, this._arg };
+            }
+        }
     }
 
     #endregion
@@ -343,6 +385,14 @@ namespace VDS.RDF.Query.Expressions.Functions
         {
             return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.StringLength + ">(" + this._expr.ToString() + ")";
         }
+
+        public override string Functor
+        {
+            get 
+            {
+                return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.StringLength;
+            }
+        }
     }
 
     /// <summary>
@@ -374,6 +424,14 @@ namespace VDS.RDF.Query.Expressions.Functions
         public override string ToString()
         {
             return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.EncodeForURI + ">(" + this._expr.ToString() + ")";
+        }
+
+        public override string Functor
+        {
+            get 
+            {
+                return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.EncodeForURI;
+            }
         }
     }
 
@@ -408,6 +466,14 @@ namespace VDS.RDF.Query.Expressions.Functions
         {
             return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.EscapeHtmlURI + ">(" + this._expr.ToString() + ")";
         }
+
+        public override string Functor
+        {
+            get
+            {
+                return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.EscapeHtmlURI;
+            }
+        }
     }
 
     /// <summary>
@@ -440,6 +506,14 @@ namespace VDS.RDF.Query.Expressions.Functions
         {
             return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.LowerCase + ">(" + this._expr.ToString() + ")";
         }
+
+        public override string Functor
+        {
+            get
+            {
+                return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.LowerCase;
+            }
+        }
     }
 
     /// <summary>
@@ -471,6 +545,14 @@ namespace VDS.RDF.Query.Expressions.Functions
         public override string ToString()
         {
             return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.UpperCase + ">(" + this._expr.ToString() + ")";
+        }
+
+        public override string Functor
+        {
+            get
+            {
+                return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.UpperCase;
+            }
         }
     }
 
@@ -507,6 +589,14 @@ namespace VDS.RDF.Query.Expressions.Functions
         public override string ToString()
         {
             return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.NormalizeSpace + ">(" + this._expr.ToString() + ")";
+        }
+
+        public override string Functor
+        {
+            get
+            {
+                return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.NormalizeSpace;
+            }
         }
     }
 
@@ -604,6 +694,14 @@ namespace VDS.RDF.Query.Expressions.Functions
                 return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.NormalizeUnicode + ">(" + this._expr.ToString() + ")";
             }
         }
+
+        public override string Functor
+        {
+            get
+            {
+                return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.NormalizeUnicode;
+            }
+        }
     }
 
 #endif
@@ -653,6 +751,14 @@ namespace VDS.RDF.Query.Expressions.Functions
         public override string ToString()
         {
             return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Contains + ">(" + this._expr.ToString() + "," + this._arg.ToString() + ")";
+        }
+
+        public override string Functor
+        {
+            get
+            {
+                return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Contains;
+            }
         }
     }
 
@@ -710,6 +816,14 @@ namespace VDS.RDF.Query.Expressions.Functions
         {
             return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.EndsWith + ">(" + this._expr.ToString() + "," + this._arg.ToString() + ")";
         }
+
+        public override string Functor
+        {
+            get
+            {
+                return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.EndsWith;
+            }
+        }
     }
 
     /// <summary>
@@ -766,6 +880,14 @@ namespace VDS.RDF.Query.Expressions.Functions
         {
             return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.StartsWith + ">(" + this._expr.ToString() + "," + this._arg.ToString() + ")";
         }
+
+        public override string Functor
+        {
+            get
+            {
+                return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.StartsWith;
+            }
+        }
     }
 
     /// <summary>
@@ -818,6 +940,14 @@ namespace VDS.RDF.Query.Expressions.Functions
         {
             return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.SubstringBefore + ">(" + this._expr.ToString() + "," + this._arg.ToString() + ")";
         }
+
+        public override string Functor
+        {
+            get
+            {
+                return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.SubstringBefore;
+            }
+        }
     }
 
     /// <summary>
@@ -869,6 +999,14 @@ namespace VDS.RDF.Query.Expressions.Functions
         public override string ToString()
         {
             return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.SubstringAfter + ">(" + this._expr.ToString() + "," + this._arg.ToString() + ")";
+        }
+
+        public override string Functor
+        {
+            get
+            {
+                return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.SubstringAfter;
+            }
         }
     }
 
@@ -979,6 +1117,14 @@ namespace VDS.RDF.Query.Expressions.Functions
         public double DoubleValue(SparqlEvaluationContext context, int bindingID)
         {
             return Convert.ToDouble(this.NumericValue(context, bindingID));
+        }
+
+        public override string Functor
+        {
+            get
+            {
+                return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Compare;
+            }
         }
     }
 
@@ -1170,6 +1316,37 @@ namespace VDS.RDF.Query.Expressions.Functions
             else
             {
                 return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Substring + ">(" + this._expr.ToString() + "," + this._start.ToString() + ")";
+            }
+        }
+
+        public SparqlExpressionType Type
+        {
+            get
+            {
+                return SparqlExpressionType.Function;
+            }
+        }
+
+        public string Functor
+        {
+            get
+            {
+                return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Substring;
+            }
+        }
+
+        public IEnumerable<ISparqlExpression> Arguments
+        {
+            get
+            {
+                if (this._length != null)
+                {
+                    return new ISparqlExpression[] { this._expr, this._start, this._length };
+                }
+                else
+                {
+                    return new ISparqlExpression[] { this._expr, this._start };
+                }
             }
         }
     }
@@ -1481,6 +1658,37 @@ namespace VDS.RDF.Query.Expressions.Functions
                 return vs;
             }
         }
+
+        public SparqlExpressionType Type
+        {
+            get
+            {
+                return SparqlExpressionType.Function;
+            }
+        }
+
+        public string Functor
+        {
+            get
+            {
+                return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Replace;
+            }
+        }
+
+        public IEnumerable<ISparqlExpression> Arguments
+        {
+            get
+            {
+                if (this._optionExpr != null)
+                {
+                    return new ISparqlExpression[] { this._textExpr, this._findExpr, this._replaceExpr, this._optionExpr };
+                }
+                else
+                {
+                    return new ISparqlExpression[] { this._textExpr, this._findExpr, this._replaceExpr };
+                }
+            }
+        }
     }
 
     /// <summary>
@@ -1590,6 +1798,22 @@ namespace VDS.RDF.Query.Expressions.Functions
             output.Append(")");
             return output.ToString();
         }
+
+        public SparqlExpressionType Type
+        {
+            get
+            {
+                return SparqlExpressionType.Function;
+            }
+        }
+
+        public string Functor
+        {
+            get
+            {
+                return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Concat;
+            }
+        }
     }
 
     /// <summary>
@@ -1601,13 +1825,17 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// Separator Expression
         /// </summary>
         protected ISparqlExpression _sep;
+        private bool _customSep = true;
 
         /// <summary>
         /// Creates a new XPath String Join aggregate which uses no separator
         /// </summary>
         /// <param name="expr">Expression</param>
         public XPathStringJoinFunction(ISparqlExpression expr)
-            : this(expr, new NodeExpressionTerm(new LiteralNode(null, String.Empty))) { }
+            : this(expr, new NodeExpressionTerm(new LiteralNode(null, String.Empty))) 
+        {
+            this._customSep = false;
+        }
 
         /// <summary>
         /// Creates a new XPath String Join aggregate
@@ -1753,8 +1981,20 @@ namespace VDS.RDF.Query.Expressions.Functions
             output.Append(">(");
             if (this._distinct) output.Append("DISTINCT ");
             output.Append(this._expr.ToString());
+            if (this._customSep)
+            {
+                output.Append(this._sep.ToString());
+            }
             output.Append(')');
             return output.ToString();
+        }
+
+        public override string Functor
+        {
+            get
+            {
+                return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.StringJoin;
+            }
         }
     }
 }

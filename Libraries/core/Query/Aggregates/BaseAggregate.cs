@@ -109,5 +109,26 @@ namespace VDS.RDF.Query.Aggregates
         /// </summary>
         /// <returns></returns>
         public abstract override string ToString();
+
+        public SparqlExpressionType Type
+        {
+            get
+            {
+                return SparqlExpressionType.Aggregate;
+            }
+        }
+
+        public abstract String Functor
+        {
+            get;
+        }
+
+        public IEnumerable<ISparqlExpression> Arguments
+        {
+            get
+            {
+                return this._expr.AsEnumerable();
+            }
+        }
     }
 }

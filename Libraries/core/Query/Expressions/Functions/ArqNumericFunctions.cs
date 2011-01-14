@@ -95,6 +95,22 @@ namespace VDS.RDF.Query.Expressions.Functions
         {
             return "<" + ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.Max + ">(" + this._leftExpr.ToString() + ", " + this._rightExpr.ToString() + ")";
         }
+
+        public override SparqlExpressionType Type
+        {
+            get 
+            {
+                return SparqlExpressionType.Function; 
+            }
+        }
+
+        public override string Functor
+        {
+            get 
+            {
+                return ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.Max; 
+            }
+        }
     }
 
     /// <summary>
@@ -152,6 +168,22 @@ namespace VDS.RDF.Query.Expressions.Functions
         {
             return "<" + ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.Min + ">(" + this._leftExpr.ToString() + ", " + this._rightExpr.ToString() + ")";
         }
+
+        public override SparqlExpressionType Type
+        {
+            get
+            {
+                return SparqlExpressionType.Function;
+            }
+        }
+
+        public override string Functor
+        {
+            get
+            {
+                return ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.Min;
+            }
+        }
     }
 
     /// <summary>
@@ -173,6 +205,14 @@ namespace VDS.RDF.Query.Expressions.Functions
         {
             return "<" + ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.Pi + ">()";
         }
+
+        public override string Functor
+        {
+            get
+            {
+                return ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.Pi;
+            }
+        }
     }
 
     /// <summary>
@@ -193,6 +233,14 @@ namespace VDS.RDF.Query.Expressions.Functions
         public override string ToString()
         {
             return "<" + ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.E + ">()";
+        }
+
+        public override string Functor
+        {
+            get
+            {
+                return ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.E;
+            }
         }
     }
 }

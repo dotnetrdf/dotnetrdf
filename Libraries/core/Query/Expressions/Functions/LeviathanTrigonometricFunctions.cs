@@ -155,6 +155,14 @@ namespace VDS.RDF.Query.Expressions.Functions
         {
             return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.DegreesToRadians + ">(" + this._expr.ToString() + ")";
         }
+
+        public override string Functor
+        {
+            get 
+            {
+                return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.DegreesToRadians; 
+            }
+        }
     }
 
     /// <summary>
@@ -207,6 +215,14 @@ namespace VDS.RDF.Query.Expressions.Functions
         {
             return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.RadiansToDegrees + ">(" + this._expr.ToString() + ")";
         }
+
+        public override string Functor
+        {
+            get
+            {
+                return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.RadiansToDegrees;
+            }
+        }
     }
 
     /// <summary>
@@ -255,6 +271,21 @@ namespace VDS.RDF.Query.Expressions.Functions
             else
             {
                 return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigSin + ">(" + this._expr.ToString() + ")";
+            }
+        }
+
+        public override string Functor
+        {
+            get
+            {
+                if (this._inverse)
+                {
+                    return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigSinInv;
+                }
+                else
+                {
+                    return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigSin;
+                }
             }
         }
     }
@@ -307,6 +338,21 @@ namespace VDS.RDF.Query.Expressions.Functions
                 return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigCos + ">(" + this._expr.ToString() + ")";
             }
         }
+
+        public override string Functor
+        {
+            get
+            {
+                if (this._inverse)
+                {
+                    return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigCosInv;
+                }
+                else
+                {
+                    return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigCos;
+                }
+            }
+        }
     }
 
     /// <summary>
@@ -355,6 +401,21 @@ namespace VDS.RDF.Query.Expressions.Functions
             else
             {
                 return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigTan + ">(" + this._expr.ToString() + ")";
+            }
+        }
+
+        public override string Functor
+        {
+            get
+            {
+                if (this._inverse)
+                {
+                    return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigTanInv;
+                }
+                else
+                {
+                    return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigTan;
+                }
             }
         }
     }
@@ -409,6 +470,21 @@ namespace VDS.RDF.Query.Expressions.Functions
                 return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigSec + ">(" + this._expr.ToString() + ")";
             }
         }
+
+        public override string Functor
+        {
+            get
+            {
+                if (this._inverse)
+                {
+                    return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigSecInv;
+                }
+                else
+                {
+                    return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigSec;
+                }
+            }
+        }
     }
 
     /// <summary>
@@ -461,6 +537,21 @@ namespace VDS.RDF.Query.Expressions.Functions
                 return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigCosec + ">(" + this._expr.ToString() + ")";
             }
         }
+
+        public override string Functor
+        {
+            get
+            {
+                if (this._inverse)
+                {
+                    return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigCosecInv;
+                }
+                else
+                {
+                    return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigCosec;
+                }
+            }
+        }
     }
 
     /// <summary>
@@ -511,6 +602,21 @@ namespace VDS.RDF.Query.Expressions.Functions
             else
             {
                 return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigCotan + ">(" + this._expr.ToString() + ")";
+            }
+        }
+
+        public override string Functor
+        {
+            get
+            {
+                if (this._inverse)
+                {
+                    return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigCotanInv;
+                }
+                else
+                {
+                    return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigCotan;
+                }
             }
         }
     }

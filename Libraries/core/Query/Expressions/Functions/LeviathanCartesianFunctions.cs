@@ -203,5 +203,36 @@ namespace VDS.RDF.Query.Expressions.Functions
             output.Append(')');
             return output.ToString();
         }
+
+        public override SparqlExpressionType Type
+        {
+            get
+            {
+                return SparqlExpressionType.Function; 
+            }
+        }
+
+        public override string Functor
+        {
+            get 
+            {
+                return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Cartesian;
+            }
+        }
+
+        public override IEnumerable<ISparqlExpression> Arguments
+        {
+            get 
+            {
+                if (this._3d)
+                {
+                    return new ISparqlExpression[] { this._x1, this._y1, this._z1, this._x2, this._y2, this._z2 };
+                }
+                else
+                {
+                    return new ISparqlExpression[] { this._x1, this._y1, this._x2, this._y2 };
+                }
+            }
+        }
     }
 }

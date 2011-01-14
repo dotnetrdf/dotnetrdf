@@ -101,12 +101,31 @@ namespace VDS.RDF.Query.Expressions
                 return this._expr.Variables;
             }
         }
+
+        public abstract SparqlExpressionType Type
+        {
+            get;
+        }
+
+        public abstract String Functor
+        {
+            get;
+        }
+
+        public IEnumerable<ISparqlExpression> Arguments
+        {
+            get
+            {
+                return this._expr.AsEnumerable();
+            }
+        }
+
     }
 
     /// <summary>
     /// Abstract base class for Binary Expressions
     /// </summary>
-    public abstract class BaseBinaryExpression : ISparqlExpression, IBinaryOperator
+    public abstract class BaseBinaryExpression : ISparqlExpression
     {
         /// <summary>
         /// The sub-expressions of this Expression
@@ -161,6 +180,24 @@ namespace VDS.RDF.Query.Expressions
             get
             {
                 return this._leftExpr.Variables.Concat(this._rightExpr.Variables);
+            }
+        }
+
+        public abstract SparqlExpressionType Type
+        {
+            get;
+        }
+
+        public abstract String Functor
+        {
+            get;
+        }
+
+        public IEnumerable<ISparqlExpression> Arguments
+        {
+            get
+            {
+                return new ISparqlExpression[] { this._leftExpr, this._rightExpr };
             }
         }
     }
@@ -329,6 +366,21 @@ namespace VDS.RDF.Query.Expressions
         {
             get;
         }
+
+        public abstract SparqlExpressionType Type
+        {
+            get;
+        }
+
+        public abstract String Functor
+        {
+            get;
+        }
+
+        public abstract IEnumerable<ISparqlExpression> Arguments
+        {
+            get;
+        }
     }
 
     /// <summary>
@@ -366,12 +418,20 @@ namespace VDS.RDF.Query.Expressions
                 return this._expr.Variables;
             }
         }
+
+        public override IEnumerable<ISparqlExpression> Arguments
+        {
+            get 
+            {
+                return this._expr.AsEnumerable();
+            }
+        }
     }
 
     /// <summary>
     /// Abstract base class for Binary Arithmetic Expressions
     /// </summary>
-    public abstract class BaseBinaryArithmeticExpression : BaseArithmeticExpression, IBinaryOperator
+    public abstract class BaseBinaryArithmeticExpression : BaseArithmeticExpression
     {
         /// <summary>
         /// The sub-expressions of this Expression
@@ -403,6 +463,14 @@ namespace VDS.RDF.Query.Expressions
             get
             {
                 return this._leftExpr.Variables.Concat(this._rightExpr.Variables);
+            }
+        }
+
+        public override IEnumerable<ISparqlExpression> Arguments
+        {
+            get 
+            {
+                return new ISparqlExpression[] { this._leftExpr, this._rightExpr }; 
             }
         }
     }
