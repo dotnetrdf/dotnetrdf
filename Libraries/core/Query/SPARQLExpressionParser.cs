@@ -575,11 +575,13 @@ namespace VDS.RDF.Query
         private ISparqlExpression TryParseBuiltInCall(Queue<IToken> tokens)
         {
             IToken next = tokens.Dequeue();
+            bool comma = false;
 
             switch (next.TokenType)
             {
                 case Token.ABS:
                     return new AbsFunction(this.TryParseBrackettedExpression(tokens));
+
                 case Token.BOUND:
                     //Expect a Left Bracket, Variable and then a Right Bracket
                     next = tokens.Dequeue();
@@ -608,18 +610,19 @@ namespace VDS.RDF.Query
                     {
                         throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, a Left Bracket to start a BOUND function call was expected", next);
                     }
+
                 case Token.CEIL:
                     return new CeilFunction(this.TryParseBrackettedExpression(tokens));
+
                 case Token.COALESCE:
                     //Get as many argument expressions as there are
                     List<ISparqlExpression> args = new List<ISparqlExpression>();
-                    bool commaTerminated = false;
                     bool first = true;
                     do
                     {
-                        args.Add(this.TryParseBrackettedExpression(tokens, first, out commaTerminated));
+                        args.Add(this.TryParseBrackettedExpression(tokens, first, out comma));
                         first = false;
-                    } while (commaTerminated);
+                    } while (comma);
 
                     return new CoalesceFunction(args);
 
@@ -627,12 +630,13 @@ namespace VDS.RDF.Query
                     return new DataTypeFunction(this.TryParseBrackettedExpression(tokens));
                 case Token.DAY:
                     return new DayFunction(this.TryParseBrackettedExpression(tokens));
+                case Token.ENCODEFORURI:
+                    return new EncodeForUriFunction(this.TryParseBrackettedExpression(tokens));
                 case Token.FLOOR:
                     return new FloorFunction(this.TryParseBrackettedExpression(tokens));
                 case Token.HOURS:
                     return new HoursFunction(this.TryParseBrackettedExpression(tokens));
                 case Token.IF:
-                    bool comma;
                     return new IfElseFunction(this.TryParseBrackettedExpression(tokens, true, out comma), this.TryParseBrackettedExpression(tokens, false, out comma), this.TryParseBrackettedExpression(tokens, false, out comma));
                 case Token.IRI:
                 case Token.URIFUNC:
@@ -649,10 +653,13 @@ namespace VDS.RDF.Query
                     return new LangFunction(this.TryParseBrackettedExpression(tokens));
                 case Token.LANGMATCHES:
                     return new LangMatchesFunction(this.TryParseBrackettedExpression(tokens), this.TryParseBrackettedExpression(tokens, false));
+                case Token.LCASE:
+                    return new LCaseFunction(this.TryParseBrackettedExpression(tokens));
                 case Token.MINUTES:
                     return new MinutesFunction(this.TryParseBrackettedExpression(tokens));
                 case Token.MONTH:
                     return new MonthFunction(this.TryParseBrackettedExpression(tokens));
+
                 case Token.NOW:
                     //Expect a () after the Keyword Token
                     next = tokens.Dequeue();
@@ -660,6 +667,7 @@ namespace VDS.RDF.Query
                     next = tokens.Dequeue();
                     if (next.TokenType != Token.RIGHTBRACKET) throw Error("Expected a Right Bracket after NOW( since the NOW() function does not take any arguments", next);
                     return new NowFunction();
+
                 case Token.ROUND:
                     return new RoundFunction(this.TryParseBrackettedExpression(tokens));
                 case Token.SAMETERM:
@@ -672,8 +680,27 @@ namespace VDS.RDF.Query
                     return new StrDtFunction(this.TryParseBrackettedExpression(tokens), this.TryParseBrackettedExpression(tokens, false));
                 case Token.STRLANG:
                     return new StrLangFunction(this.TryParseBrackettedExpression(tokens), this.TryParseBrackettedExpression(tokens, false));
+                case Token.STRLEN:
+                    return new StrLenFunction(this.TryParseBrackettedExpression(tokens));
+
+                case Token.SUBSTR:
+                    //SUBSTR may have 2/3 arguments
+                    ISparqlExpression strExpr = this.TryParseBrackettedExpression(tokens);
+                    ISparqlExpression startExpr = this.TryParseBrackettedExpression(tokens, false, out comma);
+                    if (comma)
+                    {
+                        ISparqlExpression lengthExpr = this.TryParseBrackettedExpression(tokens, false);
+                        return new SubStrFunction(strExpr, startExpr, lengthExpr);
+                    }
+                    else
+                    {
+                        return new SubStrFunction(strExpr, startExpr);
+                    }
+
                 case Token.REGEX:
                     return this.TryParseRegexExpression(tokens);
+                case Token.UCASE:
+                    return new UCaseFunction(this.TryParseBrackettedExpression(tokens));
                 case Token.YEAR:
                     return new YearFunction(this.TryParseBrackettedExpression(tokens));
 
