@@ -336,6 +336,7 @@
     <Compile Include="Query\Expressions\Functions\SparqlCoalesceFunction.cs" />
     <Compile Include="Query\Expressions\Functions\SparqlExistsFunction.cs" />
     <Compile Include="Query\Expressions\Functions\SparqlIfFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\SparqlNumericFunctions.cs" />
     <Compile Include="Query\Expressions\Functions\SparqlSetFunctions.cs" />
     <Compile Include="Query\Expressions\LeviathanFunctionFactory.cs" />
     <Compile Include="Query\Expressions\Functions\ArqGraphFunctions.cs" />

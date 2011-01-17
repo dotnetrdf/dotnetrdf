@@ -619,23 +619,53 @@ namespace VDS.RDF.Parsing
                         firstToken = false;
                         continue;
 
+                    case Token.ABS:
                     case Token.BOUND:
+                    case Token.CEIL:
                     case Token.COALESCE:
+                    case Token.CONCAT:
                     case Token.DATATYPEFUNC:
+                    case Token.DAY:
+                    case Token.ENCODEFORURI:
+                    case Token.EXISTS:
+                    case Token.FLOOR:
+                    case Token.HOURS:
                     case Token.IF:
                     case Token.IRI:
                     case Token.ISBLANK:
                     case Token.ISIRI:
                     case Token.ISLITERAL:
+                    case Token.ISNUMERIC:
                     case Token.ISURI:
                     case Token.LANG:
                     case Token.LANGMATCHES:
+                    case Token.LCASE:
+                    case Token.MINUTES:
+                    case Token.MONTH:
+                    case Token.NOTEXISTS:
+                    case Token.NOW:
+                    case Token.REGEX:
+                    case Token.ROUND:
                     case Token.SAMETERM:
+                    case Token.SECONDS:
+                    case Token.SHA1:
+                    case Token.SHA224:
+                    case Token.SHA256:
+                    case Token.SHA384:
+                    case Token.SHA512:
                     case Token.STR:
+                    case Token.STRCONTAINS:
                     case Token.STRDT:
+                    case Token.STRENDS:
                     case Token.STRLANG:
+                    case Token.STRLEN:
+                    case Token.STRSTARTS:
+                    case Token.SUBSTR:
+                    case Token.TIMEZONE:
+                    case Token.TZ:
+                    case Token.UCASE:
                     case Token.URIFUNC:
-                        //REQ: Add Tokens for all the new SPARQL Functions here
+                    case Token.YEAR:
                         if (context.SyntaxMode == SparqlQuerySyntax.Sparql_1_0) throw new RdfParseException("Project Expressions are not supported in SPARQL 1.0");
 
                         expr = this.TryParseFunctionExpression(context);
@@ -893,6 +923,7 @@ namespace VDS.RDF.Parsing
                 {
                     alias = "Result" + context.NextAliasID;
                 }
+                this.RaiseWarning("No AS ?variable given for the Aggregate " + aggregate.ToString() + " so assigning alias '" + alias + "'");
             }
 
 
@@ -1970,23 +2001,50 @@ namespace VDS.RDF.Parsing
                     this.TryParseFilterExpression(context, p);
                     break;
 
+                case Token.ABS:
                 case Token.BOUND:
+                case Token.CEIL:
                 case Token.COALESCE:
+                case Token.CONCAT:
                 case Token.DATATYPEFUNC:
+                case Token.DAY:
+                case Token.ENCODEFORURI:
+                case Token.FLOOR:
+                case Token.HOURS:
                 case Token.IF:
                 case Token.IRI:
                 case Token.ISBLANK:
                 case Token.ISIRI:
                 case Token.ISLITERAL:
+                case Token.ISNUMERIC:
                 case Token.ISURI:
                 case Token.LANG:
                 case Token.LANGMATCHES:
+                case Token.LCASE:
+                case Token.MINUTES:
+                case Token.MONTH:
+                case Token.NOW:
+                case Token.ROUND:
                 case Token.SAMETERM:
+                case Token.SECONDS:
+                case Token.SHA1:
+                case Token.SHA224:
+                case Token.SHA256:
+                case Token.SHA384:
+                case Token.SHA512:
                 case Token.STR:
+                case Token.STRCONTAINS:
                 case Token.STRDT:
+                case Token.STRENDS:
                 case Token.STRLANG:
+                case Token.STRLEN:
+                case Token.STRSTARTS:
+                case Token.SUBSTR:
+                case Token.TIMEZONE:
+                case Token.TZ:
+                case Token.UCASE:
                 case Token.URIFUNC:
-                    //REQ: Add Tokens for all the new SPARQL Functions here
+                case Token.YEAR:
                     //Built-in functions
                     this.TryParseFilterBuiltInCall(context, next, p);
                     break;
@@ -2022,8 +2080,6 @@ namespace VDS.RDF.Parsing
 
         private void TryParseFilterBuiltInCall(SparqlQueryParserContext context, IToken t, GraphPattern p)
         {
-            //TODO: Refactor this entire function to just rely on SparqlExpressionParser instead
-
             ISparqlFilter filter;
             IToken next = context.Tokens.Dequeue();
 
@@ -2033,98 +2089,38 @@ namespace VDS.RDF.Parsing
                 throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered while trying to parse a Built-in Function call", next);
             }
 
-            //Get the Expression that will be in the filter
-            ISparqlExpression expr;
-            if (t.TokenType == Token.BOUND)
+            //Gather tokens for the FILTER expression
+            Queue<IToken> subtokens = new Queue<IToken>();
+            subtokens.Enqueue(t);
+            subtokens.Enqueue(next);
+            int openBrackets = 1;
+            while (openBrackets > 0)
             {
                 next = context.Tokens.Dequeue();
-                if (next.TokenType != Token.VARIABLE)
+                if (next.TokenType == Token.LEFTBRACKET)
                 {
-                    throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' while trying to parse a BOUND function call", next);
+                    openBrackets++;
                 }
-                expr = new VariableExpressionTerm(next.Value);
+                else if (next.TokenType == Token.RIGHTBRACKET)
+                {
+                    openBrackets--;
+                }
+
+                subtokens.Enqueue(next);
+            }
+
+            ISparqlExpression expr = context.ExpressionParser.Parse(subtokens);
+            if (expr is BoundFunction)
+            {
+                filter = new BoundFilter((VariableExpressionTerm)expr.Arguments.First());
             }
             else
             {
-                //Parse an Expression
-                expr = this.TryParseExpression(context, true);
-            }
-
-            //REQ: Add Tokens for all the new Functions here
-
-            //Create the relevant Filter class
-            switch (t.TokenType)
-            {
-                case Token.BOUND:
-                    filter = new BoundFilter((VariableExpressionTerm)expr);
-                    break;
-                case Token.COALESCE:
-                    List<ISparqlExpression> coArgs = new List<ISparqlExpression>();
-                    coArgs.Add(expr);
-                    while (context.Tokens.LastTokenType == Token.COMMA)
-                    {
-                        coArgs.Add(this.TryParseExpression(context, true));
-                    }
-                    filter = new UnaryExpressionFilter(new CoalesceFunction(coArgs));
-                    break;
-                case Token.DATATYPEFUNC:
-                    filter = new UnaryExpressionFilter(new DataTypeFunction(expr));
-                    break;
-                case Token.IF:
-                    filter = new UnaryExpressionFilter(new IfElseFunction(expr, this.TryParseExpression(context, true), this.TryParseExpression(context, false)));
-                    break;
-                case Token.IRI:
-                    filter = new UnaryExpressionFilter(new IriFunction(expr));
-                    break;
-                case Token.ISBLANK:
-                    filter = new UnaryExpressionFilter(new IsBlankFunction(expr));
-                    break;
-                case Token.ISIRI:
-                    filter = new UnaryExpressionFilter(new IsIriFunction(expr));
-                    break;
-                case Token.ISLITERAL:
-                    filter = new UnaryExpressionFilter(new IsLiteralFunction(expr));
-                    break;
-                case Token.ISURI:
-                    filter = new UnaryExpressionFilter(new IsUriFunction(expr));
-                    break;
-                case Token.LANG:
-                    filter = new UnaryExpressionFilter(new LangFunction(expr));
-                    break;
-                case Token.LANGMATCHES:
-                    filter = new UnaryExpressionFilter(new LangMatchesFunction(expr, this.TryParseExpression(context, false)));
-                    break;
-                case Token.SAMETERM:
-                    filter = new UnaryExpressionFilter(new SameTermFunction(expr, this.TryParseExpression(context, false)));
-                    break;
-                case Token.STR:
-                    filter = new UnaryExpressionFilter(new StrFunction(expr));
-                    break;
-                case Token.STRDT:
-                    filter = new UnaryExpressionFilter(new StrDtFunction(expr, this.TryParseExpression(context, false)));
-                    break;
-                case Token.STRLANG:
-                    filter = new UnaryExpressionFilter(new StrLangFunction(expr, this.TryParseExpression(context, false)));
-                    break;
-                case Token.URIFUNC:
-                    filter = new UnaryExpressionFilter(new IriFunction(expr));
-                    break;
-                default:
-                    throw ParserHelper.Error("Unexpected Token '" + t.GetType().ToString() + "' encountered while trying to parse a Built-in Function Call", t);
+                filter = new UnaryExpressionFilter(expr);
             }
 
             p.IsFiltered = true;
             p.UnplacedFilters.Add(filter);
-
-            if (t.TokenType == Token.BOUND)
-            {
-                //Get the next Token which should be a Right Bracket to end the function call
-                next = context.Tokens.Dequeue();
-                if (next.TokenType != Token.RIGHTBRACKET)
-                {
-                    throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered when a RightBracketToken was expected to terminate the Built-in Function Call", next);
-                }
-            }
         }
 
         private void TryParseFilterRegex(SparqlQueryParserContext context, IToken t, GraphPattern p)
@@ -2440,26 +2436,53 @@ namespace VDS.RDF.Parsing
                         }
                         break;
 
+                    case Token.ABS:
                     case Token.BOUND:
+                    case Token.CEIL:
                     case Token.COALESCE:
+                    case Token.CONCAT:
                     case Token.DATATYPEFUNC:
+                    case Token.DAY:
+                    case Token.ENCODEFORURI:
+                    case Token.EXISTS:
+                    case Token.FLOOR:
+                    case Token.HOURS:
                     case Token.IF:
                     case Token.IRI:
                     case Token.ISBLANK:
                     case Token.ISIRI:
                     case Token.ISLITERAL:
+                    case Token.ISNUMERIC:
                     case Token.ISURI:
                     case Token.LANG:
                     case Token.LANGMATCHES:
-                    case Token.SAMETERM:
-                    case Token.STR:
-                    case Token.STRDT:
-                    case Token.STRLANG:
+                    case Token.LCASE:
+                    case Token.MINUTES:
+                    case Token.MONTH:
+                    case Token.NOTEXISTS:
+                    case Token.NOW:
                     case Token.REGEX:
-                    case Token.QNAME:
-                    case Token.URI:
+                    case Token.ROUND:
+                    case Token.SAMETERM:
+                    case Token.SECONDS:
+                    case Token.SHA1:
+                    case Token.SHA224:
+                    case Token.SHA256:
+                    case Token.SHA384:
+                    case Token.SHA512:
+                    case Token.STR:
+                    case Token.STRCONTAINS:
+                    case Token.STRDT:
+                    case Token.STRENDS:
+                    case Token.STRLANG:
+                    case Token.STRLEN:
+                    case Token.STRSTARTS:
+                    case Token.SUBSTR:
+                    case Token.TIMEZONE:
+                    case Token.TZ:
+                    case Token.UCASE:
                     case Token.URIFUNC:
-                        //REQ: Add Tokens for all the new functions here
+                    case Token.YEAR:
                         //Built-in/Extension Function Call Order By
                         ISparqlExpression expr = this.TryParseFunctionExpression(context);
 
