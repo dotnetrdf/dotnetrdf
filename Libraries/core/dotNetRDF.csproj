@@ -334,6 +334,7 @@
     <Compile Include="Query\Expressions\Functions\LeviathanStringFunctions.cs" />
     <Compile Include="Query\Expressions\Functions\LeviathanTrigonometricFunctions.cs" />
     <Compile Include="Query\Expressions\Functions\SparqlCoalesceFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\SparqlDateTimeFunctions.cs" />
     <Compile Include="Query\Expressions\Functions\SparqlExistsFunction.cs" />
     <Compile Include="Query\Expressions\Functions\SparqlIfFunction.cs" />
     <Compile Include="Query\Expressions\Functions\SparqlNumericFunctions.cs" />

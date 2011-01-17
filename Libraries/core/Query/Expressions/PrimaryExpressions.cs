@@ -359,7 +359,7 @@ namespace VDS.RDF.Query.Expressions
             }
         }
 
-        public String Functor
+        public virtual String Functor
         {
             get
             {

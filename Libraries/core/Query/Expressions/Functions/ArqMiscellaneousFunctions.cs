@@ -47,6 +47,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// </summary>
     public class ArqNowFunction : NodeExpressionTerm
     {
+        private SparqlQuery _currQuery;
+
         /// <summary>
         /// Creates a new ARQ Now function
         /// </summary>
@@ -63,7 +65,11 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// </returns>
         public override INode Value(SparqlEvaluationContext context, int bindingID)
         {
-            if (this._node == null)
+            if (this._currQuery == null)
+            {
+                this._currQuery = context.Query;
+            }
+            if (this._node == null || !ReferenceEquals(this._currQuery, context.Query))
             {
                 this._node = new LiteralNode(null, DateTime.Now.ToString(XmlSpecsHelper.XmlSchemaDateTimeFormat), new Uri(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
                 this._ebv = false;
@@ -79,12 +85,16 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// <returns></returns>
         public override bool EffectiveBooleanValue(SparqlEvaluationContext context, int bindingID)
         {
-            if (this._node == null)
+            //Date Times cannot be converted to booleans so effective boolean value is error
+            throw new RdfQueryException("XML Schema Date Times cannot have an Effective Boolean Value calculated for them");
+        }
+
+        public override string Functor
+        {
+            get
             {
-                this._node = new LiteralNode(null, DateTime.Now.ToString(XmlSpecsHelper.XmlSchemaDateTimeFormat), new Uri(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
-                this._ebv = false;
+                return ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.Now;
             }
-            return this._ebv;
         }
 
         /// <summary>

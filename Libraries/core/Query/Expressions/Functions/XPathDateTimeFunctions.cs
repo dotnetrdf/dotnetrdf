@@ -373,7 +373,10 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// </summary>
     public class XPathTimezoneFromDateTimeFunction : ISparqlExpression
     {
-        private ISparqlExpression _expr;
+        /// <summary>
+        /// Expression that the Function applies to
+        /// </summary>
+        protected ISparqlExpression _expr;
 
         /// <summary>
         /// Creates a new XPath Timezone from Date Time function
@@ -390,7 +393,7 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public INode Value(SparqlEvaluationContext context, int bindingID)
+        public virtual INode Value(SparqlEvaluationContext context, int bindingID)
         {
             INode temp = this._expr.Value(context, bindingID);
             if (temp != null)
@@ -420,9 +423,11 @@ namespace VDS.RDF.Query.Expressions.Functions
                                     //If the Offset is outside the range -14 to 14 this is considered invalid
                                     if (dt.Offset.Hours < -14 || dt.Offset.Hours > 14) return null; 
 
-                                    //Otherwise it has an offset which is a given number of hours
+                                    //Otherwise it has an offset which is a given number of hours and minutse
                                     String offset = "PT" + Math.Abs(dt.Offset.Hours) + "H";
                                     if (dt.Offset.Hours < 0) offset = "-" + offset;
+                                    if (dt.Offset.Minutes != 0) offset = offset + Math.Abs(dt.Offset.Minutes) + "M";
+                                    if (dt.Offset.Hours == 0 && dt.Offset.Minutes < 0) offset = "-" + offset;
 
                                     return new LiteralNode(null, offset, new Uri(XmlSpecsHelper.XmlSchemaDataTypeDayTimeDuration));
                                 }
@@ -461,7 +466,7 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// <returns></returns>
         public bool EffectiveBooleanValue(SparqlEvaluationContext context, int bindingID)
         {
-            return SparqlSpecsHelper.EffectiveBooleanValue(this.Value(context, bindingID));
+            throw new RdfQueryException("Cannot calculate the Effective Boolean Value of an XML Schema Duration");
         }
 
         /// <summary>
@@ -492,7 +497,7 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
-        public string Functor
+        public virtual string Functor
         {
             get
             {

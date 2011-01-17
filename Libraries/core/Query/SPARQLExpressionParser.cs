@@ -625,12 +625,17 @@ namespace VDS.RDF.Query
 
                 case Token.DATATYPEFUNC:
                     return new DataTypeFunction(this.TryParseBrackettedExpression(tokens));
+                case Token.DAY:
+                    return new DayFunction(this.TryParseBrackettedExpression(tokens));
                 case Token.FLOOR:
                     return new FloorFunction(this.TryParseBrackettedExpression(tokens));
+                case Token.HOURS:
+                    return new HoursFunction(this.TryParseBrackettedExpression(tokens));
                 case Token.IF:
                     bool comma;
                     return new IfElseFunction(this.TryParseBrackettedExpression(tokens, true, out comma), this.TryParseBrackettedExpression(tokens, false, out comma), this.TryParseBrackettedExpression(tokens, false, out comma));
                 case Token.IRI:
+                case Token.URIFUNC:
                     return new IriFunction(this.TryParseBrackettedExpression(tokens));
                 case Token.ISBLANK:
                     return new IsBlankFunction(this.TryParseBrackettedExpression(tokens));
@@ -644,10 +649,23 @@ namespace VDS.RDF.Query
                     return new LangFunction(this.TryParseBrackettedExpression(tokens));
                 case Token.LANGMATCHES:
                     return new LangMatchesFunction(this.TryParseBrackettedExpression(tokens), this.TryParseBrackettedExpression(tokens, false));
+                case Token.MINUTES:
+                    return new MinutesFunction(this.TryParseBrackettedExpression(tokens));
+                case Token.MONTH:
+                    return new MonthFunction(this.TryParseBrackettedExpression(tokens));
+                case Token.NOW:
+                    //Expect a () after the Keyword Token
+                    next = tokens.Dequeue();
+                    if (next.TokenType != Token.LEFTBRACKET) throw Error("Expected a Left Bracket after a NOW keyword to call the NOW() function", next);
+                    next = tokens.Dequeue();
+                    if (next.TokenType != Token.RIGHTBRACKET) throw Error("Expected a Right Bracket after NOW( since the NOW() function does not take any arguments", next);
+                    return new NowFunction();
                 case Token.ROUND:
                     return new RoundFunction(this.TryParseBrackettedExpression(tokens));
                 case Token.SAMETERM:
                     return new SameTermFunction(this.TryParseBrackettedExpression(tokens), this.TryParseBrackettedExpression(tokens, false));
+                case Token.SECONDS:
+                    return new SecondsFunction(this.TryParseBrackettedExpression(tokens));
                 case Token.STR:
                     return new StrFunction(this.TryParseBrackettedExpression(tokens));
                 case Token.STRDT:
@@ -656,8 +674,8 @@ namespace VDS.RDF.Query
                     return new StrLangFunction(this.TryParseBrackettedExpression(tokens), this.TryParseBrackettedExpression(tokens, false));
                 case Token.REGEX:
                     return this.TryParseRegexExpression(tokens);
-                case Token.URIFUNC:
-                    return new IriFunction(this.TryParseBrackettedExpression(tokens));
+                case Token.YEAR:
+                    return new YearFunction(this.TryParseBrackettedExpression(tokens));
 
                 case Token.EXISTS:
                 case Token.NOTEXISTS:
