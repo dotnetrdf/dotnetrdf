@@ -27,8 +27,9 @@ Added
  - GROUP BY is now supported in subqueries
  - Scalar Arguments for aggregates added when in 1.1 Extended mode (only GROUP_CONCAT allows scalar arguments in 1.1 mode)
  - Added new SPARQL 1.1 functions
-  - General Functions - 
-  - Date Time Functions - 
+  - General Functions - ENCODE_FOR_URI, LCASE, STRLEN, SUBSTR, UCASE
+  - Date Time Functions - DAY, HOURS, MINUTES, MONTH, NOW, SECONDS, TIMEZONE, TZ and YEAR
+  - Hash Functions - 
 - Storage
  - Expanded the IGenericIOManager interface to include methods for deletings graphs and listing graphs
  - Connector for Fuseki

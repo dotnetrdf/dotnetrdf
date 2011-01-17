@@ -82,7 +82,14 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// <returns></returns>
         public override INode ValueInternal(LiteralNode stringLit)
         {
-            return new LiteralNode(null, Uri.EscapeUriString(stringLit.Value));
+            if (stringLit.DataType != null)
+            {
+                return new LiteralNode(null, Uri.EscapeUriString(stringLit.Value), stringLit.DataType);
+            }
+            else
+            {
+                return new LiteralNode(null, Uri.EscapeDataString(stringLit.Value), stringLit.Language);
+            }
         }
 
         /// <summary>
