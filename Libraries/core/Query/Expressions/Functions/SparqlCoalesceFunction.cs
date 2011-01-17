@@ -83,8 +83,8 @@ namespace VDS.RDF.Query.Expressions.Functions
                 }
             }
 
-            //Return null if all expressions are null/error
-            return null;
+            //Return error if all expressions are null/error
+            throw new RdfQueryException("None of the arguments to the COALESCE function could be evaluated to give non-null/error responses for the given Binding");
         }
 
         /// <summary>

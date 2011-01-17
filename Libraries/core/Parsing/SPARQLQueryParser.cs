@@ -635,6 +635,7 @@ namespace VDS.RDF.Parsing
                     case Token.STRDT:
                     case Token.STRLANG:
                     case Token.URIFUNC:
+                        //REQ: Add Tokens for all the new SPARQL Functions here
                         if (context.SyntaxMode == SparqlQuerySyntax.Sparql_1_0) throw new RdfParseException("Project Expressions are not supported in SPARQL 1.0");
 
                         expr = this.TryParseFunctionExpression(context);
@@ -1960,6 +1961,8 @@ namespace VDS.RDF.Parsing
 
         private void TryParseFilterClause(SparqlQueryParserContext context, GraphPattern p)
         {
+            //TODO: Refactor entire function to just rely on SparqlExpressionParser instead
+
             IToken next = context.Tokens.Dequeue();
             switch (next.TokenType)
             {
@@ -1983,6 +1986,7 @@ namespace VDS.RDF.Parsing
                 case Token.STRDT:
                 case Token.STRLANG:
                 case Token.URIFUNC:
+                    //REQ: Add Tokens for all the new SPARQL Functions here
                     //Built-in functions
                     this.TryParseFilterBuiltInCall(context, next, p);
                     break;
@@ -2018,6 +2022,8 @@ namespace VDS.RDF.Parsing
 
         private void TryParseFilterBuiltInCall(SparqlQueryParserContext context, IToken t, GraphPattern p)
         {
+            //TODO: Refactor this entire function to just rely on SparqlExpressionParser instead
+
             ISparqlFilter filter;
             IToken next = context.Tokens.Dequeue();
 
@@ -2043,6 +2049,8 @@ namespace VDS.RDF.Parsing
                 //Parse an Expression
                 expr = this.TryParseExpression(context, true);
             }
+
+            //REQ: Add Tokens for all the new Functions here
 
             //Create the relevant Filter class
             switch (t.TokenType)
@@ -2451,6 +2459,7 @@ namespace VDS.RDF.Parsing
                     case Token.QNAME:
                     case Token.URI:
                     case Token.URIFUNC:
+                        //REQ: Add Tokens for all the new functions here
                         //Built-in/Extension Function Call Order By
                         ISparqlExpression expr = this.TryParseFunctionExpression(context);
 

@@ -149,7 +149,37 @@ namespace VDS.RDF.Query
                       SparqlKeywordMinus = "MINUS",
                       SparqlKeywordService = "SERVICE",
                       SparqlKeywordBindings = "BINDINGS",
-                      SparqlKeywordUndef = "UNDEF";
+                      SparqlKeywordUndef = "UNDEF",
+                      SparqlKeywordIsNumeric = "ISNUMERIC",
+                      SparqlKeywordStrLen = "STRLEN",
+                      SparqlKeywordSubStr = "SUBSTR",
+                      SparqlKeywordUCase = "UCASE",
+                      SparqlKeywordLCase = "LCASE",
+                      SparqlKeywordStrStarts = "STRSTARTS",
+                      SparqlKeywordStrEnds = "STRENDS",
+                      SparqlKeywordStrContains = "STRCONTAINS",
+                      SparqlKeywordEncodeForUri = "ENCODE_FOR_URI",
+                      SparqlKeywordConcat = "CONCAT",
+                      SparqlKeywordAbs = "ABS",
+                      SparqlKeywordRound = "ROUND",
+                      SparqlKeywordCeil = "CEIL",
+                      SparqlKeywordFloor = "FLOOR",
+                      SparqlKeywordNow = "NOW",
+                      SparqlKeywordYear = "YEAR",
+                      SparqlKeywordMonth = "MONTH",
+                      SparqlKeywordDay = "DAY",
+                      SparqlKeywordHours = "HOURS",
+                      SparqlKeywordMinutes = "MINUTES",
+                      SparqlKeywordSeconds = "SECONDS",
+                      SparqlKeywordTimezone = "TIMEZONE",
+                      SparqlKeywordTz = "TZ",
+                      SparqlKeywordMD5 = "MD5",
+                      SparqlKeywordSha1 = "SHA1",
+                      SparqlKeywordSha224 = "SHA224",
+                      SparqlKeywordSha256 = "SHA256",
+                      SparqlKeywordSha384 = "SHA384",
+                      SparqlKeywordSha512 = "SHA512"
+                      ;
 
         /// <summary>
         /// Set of SPARQL Keywords that are Non-Query Keywords
@@ -187,26 +217,56 @@ namespace VDS.RDF.Query
         /// Set of SPARQL Keywords that are Function Keywords
         /// </summary>
         public static String[] FunctionKeywords = {   
+                                                      SparqlKeywordAbs,
                                                       SparqlKeywordBound,
+                                                      SparqlKeywordCeil,
                                                       SparqlKeywordCoalesce,
+                                                      SparqlKeywordConcat,
                                                       SparqlKeywordDataType, 
+                                                      SparqlKeywordDay,
+                                                      SparqlKeywordEncodeForUri,
+                                                      SparqlKeywordFloor,
+                                                      SparqlKeywordHours,
                                                       SparqlKeywordIf,
                                                       SparqlKeywordIn,
                                                       SparqlKeywordIri,
                                                       SparqlKeywordIsBlank, 
                                                       SparqlKeywordIsIri, 
                                                       SparqlKeywordIsLiteral, 
+                                                      SparqlKeywordIsNumeric,
                                                       SparqlKeywordIsUri, 
                                                       SparqlKeywordLang,
                                                       SparqlKeywordLangMatches, 
+                                                      SparqlKeywordLCase,
+                                                      SparqlKeywordMD5,
+                                                      SparqlKeywordMinutes,
+                                                      SparqlKeywordMonth,
                                                       SparqlKeywordNotIn,
+                                                      SparqlKeywordNow,
                                                       SparqlKeywordRegex, 
+                                                      SparqlKeywordRound,
                                                       SparqlKeywordSameTerm, 
+                                                      SparqlKeywordSeconds,
+                                                      SparqlKeywordSha1,
+                                                      SparqlKeywordSha224,
+                                                      SparqlKeywordSha256,
+                                                      SparqlKeywordSha384,
+                                                      SparqlKeywordSha512,
                                                       SparqlKeywordStr,
+                                                      SparqlKeywordStrContains,
                                                       SparqlKeywordStrDt,
+                                                      SparqlKeywordStrEnds,
                                                       SparqlKeywordStrLang,
-                                                      SparqlKeywordUri
+                                                      SparqlKeywordStrLen,
+                                                      SparqlKeywordStrStarts,
+                                                      SparqlKeywordSubStr,
+                                                      SparqlKeywordTimezone,
+                                                      SparqlKeywordTz,
+                                                      SparqlKeywordUCase,
+                                                      SparqlKeywordUri,
+                                                      SparqlKeywordYear
                                                   };
+
         /// <summary>
         /// Set of SPARQL Keywords that are Aggregate Keywords
         /// </summary>
@@ -322,31 +382,60 @@ namespace VDS.RDF.Query
         /// Set of additional Keywords for SPARQL Query 1.1
         /// </summary>
         public static String[] SparqlQuery11Keywords = {
+                                                        SparqlKeywordAbs,
                                                         SparqlKeywordAs,
                                                         SparqlKeywordAvg,
                                                         SparqlKeywordBindings,
+                                                        SparqlKeywordCeil,
                                                         SparqlKeywordCoalesce,
+                                                        SparqlKeywordConcat,
                                                         SparqlKeywordCount,
+                                                        SparqlKeywordDay,
+                                                        SparqlKeywordEncodeForUri,
                                                         SparqlKeywordExists,
+                                                        SparqlKeywordFloor,
                                                         SparqlKeywordGroup,
                                                         SparqlKeywordGroupBy,
                                                         SparqlKeywordGroupConcat,
                                                         SparqlKeywordHaving,
+                                                        SparqlKeywordHours,
                                                         SparqlKeywordIf,
                                                         SparqlKeywordIn,
                                                         SparqlKeywordIri,
+                                                        SparqlKeywordIsNumeric,
+                                                        SparqlKeywordLCase,
                                                         SparqlKeywordMax,
+                                                        SparqlKeywordMD5,
                                                         SparqlKeywordMin,
+                                                        SparqlKeywordMinutes,
                                                         SparqlKeywordMinus,
+                                                        SparqlKeywordMonth,
                                                         SparqlKeywordNot,
                                                         SparqlKeywordNotExists,
                                                         SparqlKeywordNotIn,
+                                                        SparqlKeywordNow,
+                                                        SparqlKeywordRound,
                                                         SparqlKeywordSample,
+                                                        SparqlKeywordSeconds,
                                                         SparqlKeywordService,
+                                                        SparqlKeywordSha1,
+                                                        SparqlKeywordSha224,
+                                                        SparqlKeywordSha256,
+                                                        SparqlKeywordSha384,
+                                                        SparqlKeywordSha512,
+                                                        SparqlKeywordStrContains,
                                                         SparqlKeywordStrDt,
                                                         SparqlKeywordStrLang,
+                                                        SparqlKeywordStrLen,
+                                                        SparqlKeywordStrEnds,
+                                                        SparqlKeywordStrStarts,
+                                                        SparqlKeywordSubStr,
                                                         SparqlKeywordSum,
-                                                        SparqlKeywordUndef
+                                                        SparqlKeywordTimezone,
+                                                        SparqlKeywordTz,
+                                                        SparqlKeywordUCase,
+                                                        SparqlKeywordUndef,
+                                                        SparqlKeywordYear
                                                        };
 
         /// <summary>
@@ -413,7 +502,7 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public static bool IsNonQueryKeyword(String keyword)
         {
-            return NonQueryKeywords.Contains(keyword.ToUpper());
+            return NonQueryKeywords.Contains(keyword, StringComparer.OrdinalIgnoreCase);
         }
 
         /// <summary>
@@ -423,7 +512,17 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public static bool IsFunctionKeyword(String keyword)
         {
-            return FunctionKeywords.Contains(keyword.ToUpper());
+            return FunctionKeywords.Contains(keyword, StringComparer.OrdinalIgnoreCase);
+        }
+
+        /// <summary>
+        /// Checks whether a given Keyword is a SPARQL 1.1 Function Verb
+        /// </summary>
+        /// <param name="keyword">Keyword to check</param>
+        /// <returns></returns>
+        public static bool IsFunctionKeyword11(String keyword)
+        {
+            return IsFunctionKeyword(keyword) && SparqlQuery11Keywords.Contains(keyword, StringComparer.OrdinalIgnoreCase);
         }
 
         /// <summary>
@@ -433,7 +532,7 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public static bool IsAggregateKeyword(String keyword)
         {
-            return AggregateKeywords.Contains(keyword.ToUpper());
+            return AggregateKeywords.Contains(keyword, StringComparer.OrdinalIgnoreCase);
         }
 
         /// <summary>
@@ -443,7 +542,7 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public static bool IsUpdateKeyword(String keyword)
         {
-            return UpdateKeywords.Contains(keyword.ToUpper());
+            return UpdateKeywords.Contains(keyword, StringComparer.OrdinalIgnoreCase);
         }
 
         #endregion
@@ -1376,5 +1475,4 @@ namespace VDS.RDF.Query
 
         #endregion
     }
-
 }

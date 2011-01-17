@@ -794,6 +794,10 @@ namespace VDS.RDF.Parsing.Tokens
                 value = value.ToUpper();
                 switch (value)
                 {
+                    case SparqlSpecsHelper.SparqlKeywordAbs:
+                        //Abs Function Keyword
+                        this._lasttokentype = Token.ABS;
+                        return new AbsKeywordToken(this.CurrentLine, this.StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordAll:
                         //All Keyword
                         this._lasttokentype = Token.ALLWORD;
@@ -807,7 +811,7 @@ namespace VDS.RDF.Parsing.Tokens
                         this._lasttokentype = Token.AVG;
                         return new AvgKeywordToken(this.CurrentLine, this.StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordBind:
-                        //Bing Keyword
+                        //Bind Keyword
                         this._lasttokentype = Token.BIND;
                         return new BindKeywordToken(this.CurrentLine, this.StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordBindings:
@@ -818,6 +822,10 @@ namespace VDS.RDF.Parsing.Tokens
                         //Bound Function Keyword
                         this._lasttokentype = Token.BOUND;
                         return new BoundKeywordToken(this.CurrentLine, this.StartPosition);
+                    case SparqlSpecsHelper.SparqlKeywordCeil:
+                        //Ceil Function Keyword
+                        this._lasttokentype = Token.CEIL;
+                        return new CeilKeywordToken(this.CurrentLine, this.StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordClear:
                         //Clear Keyword
                         this._lasttokentype = Token.CLEAR;
@@ -826,6 +834,10 @@ namespace VDS.RDF.Parsing.Tokens
                         //COALESCE Function Keyword
                         this._lasttokentype = Token.COALESCE;
                         return new CoalesceKeywordToken(this.CurrentLine, this.StartPosition);
+                    case SparqlSpecsHelper.SparqlKeywordConcat:
+                        //Concat Function Keyword
+                        this._lasttokentype = Token.CONCAT;
+                        return new ConcatKeywordToken(this.CurrentLine, this.StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordCount:
                         //Count Aggregate Keyword
                         this._lasttokentype = Token.COUNT;
@@ -842,6 +854,10 @@ namespace VDS.RDF.Parsing.Tokens
                         //Datatype Function Keyword
                         this._lasttokentype = Token.DATATYPEFUNC;
                         return new DataTypeKeywordToken(this.CurrentLine, this.StartPosition);
+                    case SparqlSpecsHelper.SparqlKeywordDay:
+                        //Day Function Keyword
+                        this._lasttokentype = Token.DAY;
+                        return new DayKeywordToken(this.CurrentLine, this.StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordDefault:
                         //Default Keyword
                         this._lasttokentype = Token.DEFAULT;
@@ -858,6 +874,10 @@ namespace VDS.RDF.Parsing.Tokens
                         //Drop Keyword
                         this._lasttokentype = Token.DROP;
                         return new DropKeywordToken(this.CurrentLine, this.StartPosition);
+                    case SparqlSpecsHelper.SparqlKeywordEncodeForUri:
+                        //EncodeForUri Function Keyword
+                        this._lasttokentype = Token.ENCODEFORURI;
+                        return new EncodeForUriKeywordToken(this.CurrentLine, this.StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordExists:
                         //Exists Keyword
                         this._lasttokentype = Token.EXISTS;
@@ -866,6 +886,10 @@ namespace VDS.RDF.Parsing.Tokens
                         //Filter Keyword
                         this._lasttokentype = Token.FILTER;
                         return new FilterKeywordToken(this.CurrentLine, this.StartPosition);
+                    case SparqlSpecsHelper.SparqlKeywordFloor:
+                        //Floor Function Keyword
+                        this._lasttokentype = Token.FLOOR;
+                        return new FloorKeywordToken(this.CurrentLine, this.StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordFrom:
                         //From Keyword
                         this._lasttokentype = Token.FROM;
@@ -893,6 +917,10 @@ namespace VDS.RDF.Parsing.Tokens
                         //HAVING Keyword
                         this._lasttokentype = Token.HAVING;
                         return new HavingKeywordToken(this.CurrentLine, this.StartPosition);
+                    case SparqlSpecsHelper.SparqlKeywordHours:
+                        //Hours Function Keyword
+                        this._lasttokentype = Token.HOURS;
+                        return new HoursKeywordToken(this.CurrentLine, this.StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordIf:
                         //IF Keyword
                         this._lasttokentype = Token.IF;
@@ -925,6 +953,10 @@ namespace VDS.RDF.Parsing.Tokens
                         //isLiteral Keyword
                         this._lasttokentype = Token.ISLITERAL;
                         return new IsLiteralKeywordToken(this.CurrentLine, this.StartPosition);
+                    case SparqlSpecsHelper.SparqlKeywordIsNumeric:
+                        //IsNumeric Function Keyword
+                        this._lasttokentype = Token.ISNUMERIC;
+                        return new IsNumericKeywordToken(this.CurrentLine, this.StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordIsUri:
                         //isURI Keyword
                         this._lasttokentype = Token.ISURI;
@@ -937,6 +969,10 @@ namespace VDS.RDF.Parsing.Tokens
                         //Lang Matches Keyword
                         this._lasttokentype = Token.LANGMATCHES;
                         return new LangMatchesKeywordToken(this.CurrentLine, this.StartPosition);
+                    case SparqlSpecsHelper.SparqlKeywordLCase:
+                        //LCase Function Keyword
+                        this._lasttokentype = Token.LCASE;
+                        return new LCaseKeywordToken(this.CurrentLine, this.StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordLength:
                         //Length Keyword
                         if (this._syntax != SparqlQuerySyntax.Extended) throw Error("The LENGTH keyword is only supported when syntax is set to Extended");
@@ -958,6 +994,10 @@ namespace VDS.RDF.Parsing.Tokens
                         //Max Aggregate Keyword
                         this._lasttokentype = Token.MAX;
                         return new MaxKeywordToken(this.CurrentLine, this.StartPosition);
+                    case SparqlSpecsHelper.SparqlKeywordMD5:
+                        //MD5 Function Keyword
+                        this._lasttokentype = Token.MD5;
+                        return new MD5KeywordToken(this.CurrentLine, this.StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordMedian:
                         //Median Aggregate Keyword
                         this._lasttokentype = Token.MEDIAN;
@@ -970,10 +1010,18 @@ namespace VDS.RDF.Parsing.Tokens
                         //Minus Keyword
                         this._lasttokentype = Token.MINUS_P;
                         return new MinusKeywordToken(this.CurrentLine, this.StartPosition);
+                    case SparqlSpecsHelper.SparqlKeywordMinutes:
+                        //Minutes Function Keyword
+                        this._lasttokentype = Token.MINUTES;
+                        return new MinutesKeywordToken(this.CurrentLine, this.StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordMode:
                         //Mode Aggregate Keyword
                         this._lasttokentype = Token.MODE;
                         return new ModeKeywordToken(this.CurrentLine, this.StartPosition);
+                    case SparqlSpecsHelper.SparqlKeywordMonth:
+                        //Month Function Keyword
+                        this._lasttokentype = Token.MONTH;
+                        return new MonthKeywordToken(this.CurrentLine, this.StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordNamed:
                         //Named Keyword
                         this._lasttokentype = Token.NAMED;
@@ -1005,6 +1053,10 @@ namespace VDS.RDF.Parsing.Tokens
                         {
                             throw Error("Unexpected content while attempting to parse an NOT EXISTS/NOT IN keyword from Content:\n" + this.Value);
                         }
+                    case SparqlSpecsHelper.SparqlKeywordNow:
+                        //Now Function Keyword
+                        this._lasttokentype = Token.NOW;
+                        return new NowKeywordToken(this.CurrentLine, this.StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordOffset:
                         //Offset Keyword
                         this._lasttokentype = Token.OFFSET;
@@ -1049,6 +1101,10 @@ namespace VDS.RDF.Parsing.Tokens
                         //Regex Keyword
                         this._lasttokentype = Token.REGEX;
                         return new RegexKeywordToken(this.CurrentLine, this.StartPosition);
+                    case SparqlSpecsHelper.SparqlKeywordRound:
+                        //Round Function Keyword
+                        this._lasttokentype = Token.ROUND;
+                        return new RoundKeywordToken(this.CurrentLine, this.StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordSameTerm:
                         //sameTerm Keyword
                         this._lasttokentype = Token.SAMETERM;
@@ -1065,6 +1121,26 @@ namespace VDS.RDF.Parsing.Tokens
                         //Service Keyword
                         this._lasttokentype = Token.SERVICE;
                         return new ServiceKeywordToken(this.CurrentLine, this.StartPosition);
+                    case SparqlSpecsHelper.SparqlKeywordSha1:
+                        //Sha1 Function Keyword
+                        this._lasttokentype = Token.SHA1;
+                        return new Sha1KeywordToken(this.CurrentLine, this.StartPosition);
+                    case SparqlSpecsHelper.SparqlKeywordSha224:
+                        //Sha224 Function Keyword
+                        this._lasttokentype = Token.SHA224;
+                        return new Sha224KeywordToken(this.CurrentLine, this.StartPosition);
+                    case SparqlSpecsHelper.SparqlKeywordSha256:
+                        //Sha256 Function Keyword
+                        this._lasttokentype = Token.SHA256;
+                        return new Sha256KeywordToken(this.CurrentLine, this.StartPosition);
+                    case SparqlSpecsHelper.SparqlKeywordSha384:
+                        //Sha384 Function Keyword
+                        this._lasttokentype = Token.SHA384;
+                        return new Sha384KeywordToken(this.CurrentLine, this.StartPosition);
+                    case SparqlSpecsHelper.SparqlKeywordSha512:
+                        //Sha1 Function Keyword
+                        this._lasttokentype = Token.SHA512;
+                        return new Sha512KeywordToken(this.CurrentLine, this.StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordSilent:
                         //Silent Keyword
                         this._lasttokentype = Token.SILENT;
@@ -1073,6 +1149,10 @@ namespace VDS.RDF.Parsing.Tokens
                         //Str Keyword
                         this._lasttokentype = Token.STR;
                         return new StrKeywordToken(this.CurrentLine, this.StartPosition);
+                    case SparqlSpecsHelper.SparqlKeywordStrContains:
+                        //StrContains Function Keyword
+                        this._lasttokentype = Token.STRCONTAINS;
+                        return new StrContainsKeywordToken(this.CurrentLine, this.StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordStrDt:
                         //StrDt Keyword
                         this._lasttokentype = Token.STRDT;
@@ -1081,10 +1161,38 @@ namespace VDS.RDF.Parsing.Tokens
                         //StrLang Keyword
                         this._lasttokentype = Token.STRLANG;
                         return new StrLangKeywordToken(this.CurrentLine, this.StartPosition);
+                    case SparqlSpecsHelper.SparqlKeywordStrLen:
+                        //StrLen Function Keyword
+                        this._lasttokentype = Token.STRLEN;
+                        return new StrLenKeywordToken(this.CurrentLine, this.StartPosition);
+                    case SparqlSpecsHelper.SparqlKeywordStrEnds:
+                        //StrEnds Function Keyword
+                        this._lasttokentype = Token.STRENDS;
+                        return new StrEndsKeywordToken(this.CurrentLine, this.StartPosition);
+                    case SparqlSpecsHelper.SparqlKeywordStrStarts:
+                        //StrStarts Function Keyword
+                        this._lasttokentype = Token.STRSTARTS;
+                        return new StrStartsKeywordToken(this.CurrentLine, this.StartPosition);
+                    case SparqlSpecsHelper.SparqlKeywordSubStr:
+                        //SubStr Function Keyword
+                        this._lasttokentype = Token.SUBSTR;
+                        return new SubStrKeywordToken(this.CurrentLine, this.StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordSum:
                         //Sum Keyword
                         this._lasttokentype = Token.SUM;
                         return new SumKeywordToken(this.CurrentLine, this.StartPosition);
+                    case SparqlSpecsHelper.SparqlKeywordTimezone:
+                        //Timezone Function Keyword
+                        this._lasttokentype = Token.TIMEZONE;
+                        return new TimezoneKeywordToken(this.CurrentLine, this.StartPosition);
+                    case SparqlSpecsHelper.SparqlKeywordTz:
+                        //TZ Function Keyword
+                        this._lasttokentype = Token.TZ;
+                        return new TZKeywordToken(this.CurrentLine, this.StartPosition);
+                    case SparqlSpecsHelper.SparqlKeywordUCase:
+                        //UCase Function Keyword
+                        this._lasttokentype = Token.UCASE;
+                        return new UCaseKeywordToken(this.CurrentLine, this.StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordUndef:
                         //Undef Keyword
                         this._lasttokentype = Token.UNDEF;
@@ -1113,6 +1221,10 @@ namespace VDS.RDF.Parsing.Tokens
                         //With Keyword
                         this._lasttokentype = Token.WITH;
                         return new WithKeywordToken(this.CurrentLine, this.StartPosition);
+                    case SparqlSpecsHelper.SparqlKeywordYear:
+                        //Year Function Keyword
+                        this._lasttokentype = Token.YEAR;
+                        return new YearKeywordToken(this.CurrentLine, this.StartPosition);
                     default:
                         throw Error("Unexpected String '" + value + "' encountered while trying to parse a SPARQL Keyword");
                 }

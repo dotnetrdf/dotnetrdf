@@ -40,7 +40,7 @@ namespace VDS.RDF.Parsing.Tokens
     #region Query Keyword Tokens
 
     /// <summary>
-    /// Token which represents the Sparql SELECT Keyword
+    /// Token which represents the SPARQL SELECT Keyword
     /// </summary>
     public class SelectKeywordToken : BaseToken
     {
@@ -53,7 +53,7 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
-    /// Token which represents the Sparql ASK Keyword
+    /// Token which represents the SPARQL ASK Keyword
     /// </summary>
     public class AskKeywordToken : BaseToken
     {
@@ -66,7 +66,7 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
-    /// Token which represents the Sparql DESCRIBE Keyword
+    /// Token which represents the SPARQL DESCRIBE Keyword
     /// </summary>
     public class DescribeKeywordToken : BaseToken
     {
@@ -79,7 +79,7 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
-    /// Token which represents the Sparql CONSTRUCT Keyword
+    /// Token which represents the SPARQL CONSTRUCT Keyword
     /// </summary>
     public class ConstructKeywordToken : BaseToken
     {
@@ -109,7 +109,20 @@ namespace VDS.RDF.Parsing.Tokens
     #region Non-Query Keyword Tokens
 
     /// <summary>
-    /// Token which represents the Sparql ALL Keyword
+    /// Token which represents the SPARQL ABS Keyword
+    /// </summary>
+    public class AbsKeywordToken : BaseToken
+    {
+        /// <summary>
+        /// Creates a new ABS Keyword Token
+        /// </summary>
+        /// <param name="line">Line the Keyword occurs on</param>
+        /// <param name="pos">Position the Keyword occurs at</param>
+        public AbsKeywordToken(int line, int pos) : base(Token.ABS, "ABS", line, line, pos, pos + 3) { }
+    }
+
+    /// <summary>
+    /// Token which represents the SPARQL ALL Keyword
     /// </summary>
     public class AllKeywordToken : BaseToken
     {
@@ -122,7 +135,7 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
-    /// Token which represents the Sparql AS Keyword
+    /// Token which represents the SPARQL AS Keyword
     /// </summary>
     public class AsKeywordToken : BaseToken
     {
@@ -135,7 +148,7 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
-    /// Token which represents the Sparql ASC Keyword
+    /// Token which represents the SPARQL ASC Keyword
     /// </summary>
     public class AscKeywordToken : BaseToken
     {
@@ -148,7 +161,7 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
-    /// Token which represents the Sparql AVG Keyword
+    /// Token which represents the SPARQL AVG Keyword
     /// </summary>
     public class AvgKeywordToken : BaseToken
     {
@@ -161,7 +174,7 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
-    /// Token which represents the Sparql BIND Keyword
+    /// Token which represents the SPARQL BIND Keyword
     /// </summary>
     public class BindKeywordToken : BaseToken
     {
@@ -174,7 +187,7 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
-    /// Token which represents the Sparql BINDINGS Keyword
+    /// Token which represents the SPARQL BINDINGS Keyword
     /// </summary>
     public class BindingsKeywordToken : BaseToken
     {
@@ -187,7 +200,7 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
-    /// Token which represents the Sparql BOUND Keyword
+    /// Token which represents the SPARQL BOUND Keyword
     /// </summary>
     public class BoundKeywordToken : BaseToken
     {
@@ -200,7 +213,20 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
-    /// Token which represents the Sparql COALESCE Keyword
+    /// Token which represents the SPARQL CEIL Keyword
+    /// </summary>
+    public class CeilKeywordToken : BaseToken
+    {
+        /// <summary>
+        /// Creates a new CEIL Keyword Token
+        /// </summary>
+        /// <param name="line">Line the Keyword occurs on</param>
+        /// <param name="pos">Position the Keyword occurs at</param>
+        public CeilKeywordToken(int line, int pos) : base(Token.CEIL, "CEIL", line, line, pos, pos + 4) { }
+    }
+
+    /// <summary>
+    /// Token which represents the SPARQL COALESCE Keyword
     /// </summary>
     public class CoalesceKeywordToken : BaseToken
     {
@@ -213,7 +239,20 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
-    /// Token which represents the Sparql COUNT Keyword
+    /// Token which represents the SPARQL CONCAT Keyword
+    /// </summary>
+    public class ConcatKeywordToken : BaseToken
+    {
+        /// <summary>
+        /// Creates a new CONCAT Keyword Token
+        /// </summary>
+        /// <param name="line">Line the Keyword occurs on</param>
+        /// <param name="pos">Position the Keyword occurs at</param>
+        public ConcatKeywordToken(int line, int pos) : base(Token.CONCAT, "CONCAT", line, line, pos, pos + 6) { }
+    }
+
+    /// <summary>
+    /// Token which represents the SPARQL COUNT Keyword
     /// </summary>
     public class CountKeywordToken : BaseToken
     {
@@ -226,7 +265,7 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
-    /// Token which represents the Sparql DATATYPE Keyword
+    /// Token which represents the SPARQL DATATYPE Keyword
     /// </summary>
     public class DataTypeKeywordToken : BaseToken
     {
@@ -239,7 +278,20 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
-    /// Token which represents the Sparql DESC Keyword
+    /// Token which represents the SPARQL DAY Keyword
+    /// </summary>
+    public class DayKeywordToken : BaseToken
+    {
+        /// <summary>
+        /// Creates a new DAY Keyword Token
+        /// </summary>
+        /// <param name="line">Line the Keyword occurs on</param>
+        /// <param name="pos">Position the Keyword occurs at</param>
+        public DayKeywordToken(int line, int pos) : base(Token.DAY, "DAY", line, line, pos, pos + 3) { }
+    }
+
+    /// <summary>
+    /// Token which represents the SPARQL DESC Keyword
     /// </summary>
     public class DescKeywordToken : BaseToken
     {
@@ -252,7 +304,7 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
-    /// Token which represents the Sparql DISTINCT Keyword
+    /// Token which represents the SPARQL DISTINCT Keyword
     /// </summary>
     public class DistinctKeywordToken : BaseToken
     {
@@ -265,7 +317,20 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
-    /// Token which represents the Sparql EXISTS Keyword
+    /// Token which represents the SPARQL ENCODE_FOR_URI Keyword
+    /// </summary>
+    public class EncodeForUriKeywordToken : BaseToken
+    {
+        /// <summary>
+        /// Creates a new ENCODE_FOR_URI Keyword Token
+        /// </summary>
+        /// <param name="line">Line the Keyword occurs on</param>
+        /// <param name="pos">Position the Keyword occurs at</param>
+        public EncodeForUriKeywordToken(int line, int pos) : base(Token.ENCODEFORURI, "ENCODE_FOR_URI", line, line, pos, pos + 14) { }
+    }
+
+    /// <summary>
+    /// Token which represents the SPARQL EXISTS Keyword
     /// </summary>
     public class ExistsKeywordToken : BaseToken
     {
@@ -278,7 +343,7 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
-    /// Token which represents the Sparql FILTER Keyword
+    /// Token which represents the SPARQL FILTER Keyword
     /// </summary>
     public class FilterKeywordToken : BaseToken
     {
@@ -291,7 +356,20 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
-    /// Token which represents the Sparql FROM Keyword
+    /// Token which represents the SPARQL FLOOR Keyword
+    /// </summary>
+    public class FloorKeywordToken : BaseToken
+    {
+        /// <summary>
+        /// Creates a new FLOOR Keyword Token
+        /// </summary>
+        /// <param name="line">Line the Keyword occurs on</param>
+        /// <param name="pos">Position the Keyword occurs at</param>
+        public FloorKeywordToken(int line, int pos) : base(Token.FLOOR, "FLOOR", line, line, pos, pos + 5) { }
+    }
+
+    /// <summary>
+    /// Token which represents the SPARQL FROM Keyword
     /// </summary>
     public class FromKeywordToken : BaseToken
     {
@@ -304,7 +382,7 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
-    /// Token which represents the Sparql FROM NAMED Keyword combination
+    /// Token which represents the SPARQL FROM NAMED Keyword combination
     /// </summary>
     public class FromNamedKeywordToken : BaseToken
     {
@@ -317,7 +395,7 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
-    /// Token which represents the Sparql GRAPH Keyword
+    /// Token which represents the SPARQL GRAPH Keyword
     /// </summary>
     public class GraphKeywordToken : BaseToken
     {
@@ -330,7 +408,7 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
-    /// Token which represents the Sparql GROUP BY Keyword
+    /// Token which represents the SPARQL GROUP BY Keyword
     /// </summary>
     public class GroupByKeywordToken : BaseToken
     {
@@ -343,7 +421,7 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
-    /// Token which represents the Sparql GROUP_CONCAT Keyword
+    /// Token which represents the SPARQL GROUP_CONCAT Keyword
     /// </summary>
     public class GroupConcatKeywordToken : BaseToken
     {
@@ -356,7 +434,7 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
-    /// Token which represents the Sparql HAVING Keyword
+    /// Token which represents the SPARQL HAVING Keyword
     /// </summary>
     public class HavingKeywordToken : BaseToken
     {
@@ -365,11 +443,24 @@ namespace VDS.RDF.Parsing.Tokens
         /// </summary>
         /// <param name="line">Line the Keyword occurs on</param>
         /// <param name="pos">Position the Keyword occurs at</param>
-        public HavingKeywordToken(int line, int pos) : base(Token.HAVING, "HAVING", line, line, pos, pos + 8) { }
+        public HavingKeywordToken(int line, int pos) : base(Token.HAVING, "HAVING", line, line, pos, pos + 6) { }
     }
 
     /// <summary>
-    /// Token which represents the Sparql IF Keyword
+    /// Token which represents the SPARQL HOURS Keyword
+    /// </summary>
+    public class HoursKeywordToken : BaseToken
+    {
+        /// <summary>
+        /// Creates a new HOURS Keyword Token
+        /// </summary>
+        /// <param name="line">Line the Keyword occurs on</param>
+        /// <param name="pos">Position the Keyword occurs at</param>
+        public HoursKeywordToken(int line, int pos) : base(Token.HOURS, "HOURS", line, line, pos, pos + 5) { }
+    }
+
+    /// <summary>
+    /// Token which represents the SPARQL IF Keyword
     /// </summary>
     public class IfKeywordToken : BaseToken
     {
@@ -382,7 +473,7 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
-    /// Token which represents the Sparql IN Keyword
+    /// Token which represents the SPARQL IN Keyword
     /// </summary>
     public class InKeywordToken : BaseToken
     {
@@ -395,7 +486,7 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
-    /// Token which represents the Sparql IRI Keyword
+    /// Token which represents the SPARQL IRI Keyword
     /// </summary>
     public class IriKeywordToken : BaseToken
     {
@@ -408,7 +499,7 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
-    /// Token which represents the Sparql ISBLANK Keyword
+    /// Token which represents the SPARQL ISBLANK Keyword
     /// </summary>
     public class IsBlankKeywordToken : BaseToken
     {
@@ -421,7 +512,7 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
-    /// Token which represents the Sparql ISIRI Keyword
+    /// Token which represents the SPARQL ISIRI Keyword
     /// </summary>
     public class IsIriKeywordToken : BaseToken
     {
@@ -434,7 +525,7 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
-    /// Token which represents the Sparql ISLITERAL Keyword
+    /// Token which represents the SPARQL ISLITERAL Keyword
     /// </summary>
     public class IsLiteralKeywordToken : BaseToken
     {
@@ -447,7 +538,20 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
-    /// Token which represents the Sparql ISURI Keyword
+    /// Token which represents the SPARQL ISNUMERIC Keyword
+    /// </summary>
+    public class IsNumericKeywordToken : BaseToken
+    {
+        /// <summary>
+        /// Creates a new ISNUMERIC Keyword Token
+        /// </summary>
+        /// <param name="line">Line the Keyword occurs on</param>
+        /// <param name="pos">Position the Keyword occurs at</param>
+        public IsNumericKeywordToken(int line, int pos) : base(Token.ISNUMERIC, "ISNUMERIC", line, line, pos, pos + 9) { }
+    }
+
+    /// <summary>
+    /// Token which represents the SPARQL ISURI Keyword
     /// </summary>
     public class IsUriKeywordToken : BaseToken
     {
@@ -460,7 +564,7 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
-    /// Token which represents the Sparql LANG Keyword
+    /// Token which represents the SPARQL LANG Keyword
     /// </summary>
     public class LangKeywordToken : BaseToken
     {
@@ -473,7 +577,7 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
-    /// Token which represents the Sparql LANGMATCHES Keyword
+    /// Token which represents the SPARQL LANGMATCHES Keyword
     /// </summary>
     public class LangMatchesKeywordToken : BaseToken
     {
@@ -486,7 +590,20 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
-    /// Token which represents the Sparql LENGTH Keyword
+    /// Token which represents the SPARQL LCASE Keyword
+    /// </summary>
+    public class LCaseKeywordToken : BaseToken
+    {
+        /// <summary>
+        /// Creates a new LCASE Keyword Token
+        /// </summary>
+        /// <param name="line">Line the Keyword occurs on</param>
+        /// <param name="pos">Position the Keyword occurs at</param>
+        public LCaseKeywordToken(int line, int pos) : base(Token.LCASE, "LCASE", line, line, pos, pos + 5) { }
+    }
+
+    /// <summary>
+    /// Token which represents the SPARQL LENGTH Keyword
     /// </summary>
     public class LengthKeywordToken : BaseToken
     {
@@ -499,7 +616,7 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
-    /// Token which represents the Sparql LET Keyword
+    /// Token which represents the SPARQL LET Keyword
     /// </summary>
     public class LetKeywordToken : BaseToken
     {
@@ -512,7 +629,7 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
-    /// Token which represents the Sparql LIMIT Keyword
+    /// Token which represents the SPARQL LIMIT Keyword
     /// </summary>
     public class LimitKeywordToken : BaseToken
     {
@@ -525,7 +642,7 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
-    /// Token which represents the Sparql MAX Keyword
+    /// Token which represents the SPARQL MAX Keyword
     /// </summary>
     public class MaxKeywordToken : BaseToken
     {
@@ -538,7 +655,20 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
-    /// Token which represents the Sparql MEDIAN Keyword
+    /// Token which represents the SPARQL MD5 Keyword
+    /// </summary>
+    public class MD5KeywordToken : BaseToken
+    {
+        /// <summary>
+        /// Creates a new MD5 Keyword Token
+        /// </summary>
+        /// <param name="line">Line the Keyword occurs on</param>
+        /// <param name="pos">Position the Keyword occurs at</param>
+        public MD5KeywordToken(int line, int pos) : base(Token.MD5, "MD5", line, line, pos, pos + 3) { }
+    }
+
+    /// <summary>
+    /// Token which represents the SPARQL MEDIAN Keyword
     /// </summary>
     public class MedianKeywordToken : BaseToken
     {
@@ -551,7 +681,7 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
-    /// Token which represents the Sparql MIN Keyword
+    /// Token which represents the SPARQL MIN Keyword
     /// </summary>
     public class MinKeywordToken : BaseToken
     {
@@ -564,7 +694,20 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
-    /// Token which represents the Sparql MINUS Keyword
+    /// Token which represents the SPARQL MINUTES Keyword
+    /// </summary>
+    public class MinutesKeywordToken : BaseToken
+    {
+        /// <summary>
+        /// Creates a new MINUTES Keyword Token
+        /// </summary>
+        /// <param name="line">Line the Keyword occurs on</param>
+        /// <param name="pos">Position the Keyword occurs at</param>
+        public MinutesKeywordToken(int line, int pos) : base(Token.MINUTES, "MINUTES", line, line, pos, pos + 7) { }
+    }
+
+    /// <summary>
+    /// Token which represents the SPARQL MINUS Keyword
     /// </summary>
     public class MinusKeywordToken : BaseToken
     {
@@ -577,7 +720,7 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
-    /// Token which represents the Sparql MODE Keyword
+    /// Token which represents the SPARQL MODE Keyword
     /// </summary>
     public class ModeKeywordToken : BaseToken
     {
@@ -590,7 +733,20 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
-    /// Token which represents the Sparql NAMED Keyword
+    /// Token which represents the SPARQL MONTH Keyword
+    /// </summary>
+    public class MonthKeywordToken : BaseToken
+    {
+        /// <summary>
+        /// Creates a new MONTH Keyword Token
+        /// </summary>
+        /// <param name="line">Line the Keyword occurs on</param>
+        /// <param name="pos">Position the Keyword occurs at</param>
+        public MonthKeywordToken(int line, int pos) : base(Token.MONTH, "MONTH", line, line, pos, pos + 5) { }
+    }
+
+    /// <summary>
+    /// Token which represents the SPARQL NAMED Keyword
     /// </summary>
     public class NamedKeywordToken : BaseToken
     {
@@ -603,7 +759,7 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
-    /// Token which represents the Sparql NOT IN Keyword
+    /// Token which represents the SPARQL NOT IN Keyword
     /// </summary>
     public class NotInKeywordToken : BaseToken
     {
@@ -616,7 +772,7 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
-    /// Token which represents the Sparql NMAX Keyword
+    /// Token which represents the SPARQL NMAX Keyword
     /// </summary>
     public class NumericMaxKeywordToken : BaseToken
     {
@@ -629,7 +785,7 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
-    /// Token which represents the Sparql NMIN Keyword
+    /// Token which represents the SPARQL NMIN Keyword
     /// </summary>
     public class NumericMinKeywordToken : BaseToken
     {
@@ -642,7 +798,7 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
-    /// Token which represents the Sparql NOT EXISTS Keyword
+    /// Token which represents the SPARQL NOT EXISTS Keyword
     /// </summary>
     public class NotExistsKeywordToken : BaseToken
     {
@@ -655,7 +811,20 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
-    /// Token which represents the Sparql OFFSET Keyword
+    /// Token which represents the SPARQL NOW Keyword
+    /// </summary>
+    public class NowKeywordToken : BaseToken
+    {
+        /// <summary>
+        /// Creates a new NOW Keyword Token
+        /// </summary>
+        /// <param name="line">Line the Keyword occurs on</param>
+        /// <param name="pos">Position the Keyword occurs at</param>
+        public NowKeywordToken(int line, int pos) : base(Token.NOW, "NOW", line, line, pos, pos + 3) { }
+    }
+
+    /// <summary>
+    /// Token which represents the SPARQL OFFSET Keyword
     /// </summary>
     public class OffsetKeywordToken : BaseToken
     {
@@ -668,7 +837,7 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
-    /// Token which represents the Sparql OPTIONAL Keyword
+    /// Token which represents the SPARQL OPTIONAL Keyword
     /// </summary>
     public class OptionalKeywordToken : BaseToken
     {
@@ -681,7 +850,7 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
-    /// Token which represents the Sparql ORDER BY Keyword combination
+    /// Token which represents the SPARQL ORDER BY Keyword combination
     /// </summary>
     public class OrderByKeywordToken : BaseToken
     {
@@ -694,7 +863,7 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
-    /// Token which represents the Sparql REDUCED Keyword
+    /// Token which represents the SPARQL REDUCED Keyword
     /// </summary>
     public class ReducedKeywordToken : BaseToken
     {
@@ -707,7 +876,7 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
-    /// Token which represents the Sparql REGEX Keyword
+    /// Token which represents the SPARQL REGEX Keyword
     /// </summary>
     public class RegexKeywordToken : BaseToken
     {
@@ -720,7 +889,20 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
-    /// Token which represents the Sparql SAMETERM Keyword
+    /// Token which represents the SPARQL ROUND Keyword
+    /// </summary>
+    public class RoundKeywordToken : BaseToken
+    {
+        /// <summary>
+        /// Creates a new ROUND Keyword Token
+        /// </summary>
+        /// <param name="line">Line the Keyword occurs on</param>
+        /// <param name="pos">Position the Keyword occurs at</param>
+        public RoundKeywordToken(int line, int pos) : base(Token.ROUND, "ROUND", line, line, pos, pos + 5) { }
+    }
+
+    /// <summary>
+    /// Token which represents the SPARQL SAMETERM Keyword
     /// </summary>
     public class SameTermKeywordToken : BaseToken
     {
@@ -733,7 +915,7 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
-    /// Token which represents the Sparql SAMPLE Keyword
+    /// Token which represents the SPARQL SAMPLE Keyword
     /// </summary>
     public class SampleKeywordToken : BaseToken
     {
@@ -746,7 +928,20 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
-    /// Token which represents the Sparql SEPARATOR Keyword
+    /// Token which represents the SPARQL SECONDS Keyword
+    /// </summary>
+    public class SecondsKeywordToken : BaseToken
+    {
+        /// <summary>
+        /// Creates a new SECONDS Keyword Token
+        /// </summary>
+        /// <param name="line">Line the Keyword occurs on</param>
+        /// <param name="pos">Position the Keyword occurs at</param>
+        public SecondsKeywordToken(int line, int pos) : base(Token.SECONDS, "SECONDS", line, line, pos, pos + 7) { }
+    }
+
+    /// <summary>
+    /// Token which represents the SPARQL SEPARATOR Keyword
     /// </summary>
     public class SeparatorKeywordToken : BaseToken
     {
@@ -759,7 +954,7 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
-    /// Token which represents the Sparql SERVICE Keyword
+    /// Token which represents the SPARQL SERVICE Keyword
     /// </summary>
     public class ServiceKeywordToken : BaseToken
     {
@@ -772,7 +967,72 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
-    /// Token which represents the Sparql STR Keyword
+    /// Token which represents the SPARQL SHA1 Keyword
+    /// </summary>
+    public class Sha1KeywordToken : BaseToken
+    {
+        /// <summary>
+        /// Creates a new SHA1 Keyword Token
+        /// </summary>
+        /// <param name="line">Line the Keyword occurs on</param>
+        /// <param name="pos">Position the Keyword occurs at</param>
+        public Sha1KeywordToken(int line, int pos) : base(Token.SHA1, "SHA1", line, line, pos, pos + 4) { }
+    }
+
+    /// <summary>
+    /// Token which represents the SPARQL SHA224 Keyword
+    /// </summary>
+    public class Sha224KeywordToken : BaseToken
+    {
+        /// <summary>
+        /// Creates a new SHA224 Keyword Token
+        /// </summary>
+        /// <param name="line">Line the Keyword occurs on</param>
+        /// <param name="pos">Position the Keyword occurs at</param>
+        public Sha224KeywordToken(int line, int pos) : base(Token.SHA224, "SHA224", line, line, pos, pos + 6) { }
+    }
+
+    /// <summary>
+    /// Token which represents the SPARQL SHA256 Keyword
+    /// </summary>
+    public class Sha256KeywordToken : BaseToken
+    {
+        /// <summary>
+        /// Creates a new SHA256 Keyword Token
+        /// </summary>
+        /// <param name="line">Line the Keyword occurs on</param>
+        /// <param name="pos">Position the Keyword occurs at</param>
+        public Sha256KeywordToken(int line, int pos) : base(Token.SHA256, "SHA256", line, line, pos, pos + 6) { }
+    }
+
+    /// <summary>
+    /// Token which represents the SPARQL SHA384 Keyword
+    /// </summary>
+    public class Sha384KeywordToken : BaseToken
+    {
+        /// <summary>
+        /// Creates a new SHA384 Keyword Token
+        /// </summary>
+        /// <param name="line">Line the Keyword occurs on</param>
+        /// <param name="pos">Position the Keyword occurs at</param>
+        public Sha384KeywordToken(int line, int pos) : base(Token.SHA384, "SHA384", line, line, pos, pos + 6) { }
+    }
+
+    /// <summary>
+    /// Token which represents the SPARQL SHA512 Keyword
+    /// </summary>
+    public class Sha512KeywordToken : BaseToken
+    {
+        /// <summary>
+        /// Creates a new SHA512 Keyword Token
+        /// </summary>
+        /// <param name="line">Line the Keyword occurs on</param>
+        /// <param name="pos">Position the Keyword occurs at</param>
+        public Sha512KeywordToken(int line, int pos) : base(Token.SHA512, "SHA512", line, line, pos, pos + 6) { }
+    }
+
+    /// <summary>
+    /// Token which represents the SPARQL STR Keyword
     /// </summary>
     public class StrKeywordToken : BaseToken
     {
@@ -785,7 +1045,20 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
-    /// Token which represents the Sparql STRDT Keyword
+    /// Token which represents the SPARQL STRCONTAINS Keyword
+    /// </summary>
+    public class StrContainsKeywordToken : BaseToken
+    {
+        /// <summary>
+        /// Creates a new STRCONTAINS Keyword Token
+        /// </summary>
+        /// <param name="line">Line the Keyword occurs on</param>
+        /// <param name="pos">Position the Keyword occurs at</param>
+        public StrContainsKeywordToken(int line, int pos) : base(Token.STRCONTAINS, "STRCONTAINS", line, line, pos, pos + 11) { }
+    }
+
+    /// <summary>
+    /// Token which represents the SPARQL STRDT Keyword
     /// </summary>
     public class StrDtKeywordToken : BaseToken
     {
@@ -798,7 +1071,20 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
-    /// Token which represents the Sparql STRLANG Keyword
+    /// Token which represents the SPARQL STRENDS Keyword
+    /// </summary>
+    public class StrEndsKeywordToken : BaseToken
+    {
+        /// <summary>
+        /// Creates a new STRENDS Keyword Token
+        /// </summary>
+        /// <param name="line">Line the Keyword occurs on</param>
+        /// <param name="pos">Position the Keyword occurs at</param>
+        public StrEndsKeywordToken(int line, int pos) : base(Token.STRENDS, "STRENDS", line, line, pos, pos + 7) { }
+    }
+
+    /// <summary>
+    /// Token which represents the SPARQL STRLANG Keyword
     /// </summary>
     public class StrLangKeywordToken : BaseToken
     {
@@ -811,7 +1097,46 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
-    /// Token which represents the Sparql SUM Keyword
+    /// Token which represents the SPARQL STRLEN Keyword
+    /// </summary>
+    public class StrLenKeywordToken : BaseToken
+    {
+        /// <summary>
+        /// Creates a new STRLEN Keyword Token
+        /// </summary>
+        /// <param name="line">Line the Keyword occurs on</param>
+        /// <param name="pos">Position the Keyword occurs at</param>
+        public StrLenKeywordToken(int line, int pos) : base(Token.STRLEN, "STRLEN", line, line, pos, pos + 6) { }
+    }
+
+    /// <summary>
+    /// Token which represents the SPARQL STRSTARTS Keyword
+    /// </summary>
+    public class StrStartsKeywordToken : BaseToken
+    {
+        /// <summary>
+        /// Creates a new STRSTARTS Keyword Token
+        /// </summary>
+        /// <param name="line">Line the Keyword occurs on</param>
+        /// <param name="pos">Position the Keyword occurs at</param>
+        public StrStartsKeywordToken(int line, int pos) : base(Token.STRSTARTS, "STRSTARTS", line, line, pos, pos + 9) { }
+    }
+
+    /// <summary>
+    /// Token which represents the SPARQL SUBSTR Keyword
+    /// </summary>
+    public class SubStrKeywordToken : BaseToken
+    {
+        /// <summary>
+        /// Creates a new SUBSTR Keyword Token
+        /// </summary>
+        /// <param name="line">Line the Keyword occurs on</param>
+        /// <param name="pos">Position the Keyword occurs at</param>
+        public SubStrKeywordToken(int line, int pos) : base(Token.SUBSTR, "SUBSTR", line, line, pos, pos + 6) { }
+    }
+
+    /// <summary>
+    /// Token which represents the SPARQL SUM Keyword
     /// </summary>
     public class SumKeywordToken : BaseToken
     {
@@ -824,7 +1149,46 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
-    /// Token which represents the Sparql UNDEF Keyword
+    /// Token which represents the SPARQL TIMEZONE Keyword
+    /// </summary>
+    public class TimezoneKeywordToken : BaseToken
+    {
+        /// <summary>
+        /// Creates a new TIMEZONE Keyword Token
+        /// </summary>
+        /// <param name="line">Line the Keyword occurs on</param>
+        /// <param name="pos">Position the Keyword occurs at</param>
+        public TimezoneKeywordToken(int line, int pos) : base(Token.TIMEZONE, "TIMEZONE", line, line, pos, pos + 8) { }
+    }
+
+    /// <summary>
+    /// Token which represents the SPARQL TZ Keyword
+    /// </summary>
+    public class TZKeywordToken : BaseToken
+    {
+        /// <summary>
+        /// Creates a new TZ Keyword Token
+        /// </summary>
+        /// <param name="line">Line the Keyword occurs on</param>
+        /// <param name="pos">Position the Keyword occurs at</param>
+        public TZKeywordToken(int line, int pos) : base(Token.TZ, "TZ", line, line, pos, pos + 2) { }
+    }
+
+    /// <summary>
+    /// Token which represents the SPARQL UCASE Keyword
+    /// </summary>
+    public class UCaseKeywordToken : BaseToken
+    {
+        /// <summary>
+        /// Creates a new UCASE Keyword Token
+        /// </summary>
+        /// <param name="line">Line the Keyword occurs on</param>
+        /// <param name="pos">Position the Keyword occurs at</param>
+        public UCaseKeywordToken(int line, int pos) : base(Token.UCASE, "UCASE", line, line, pos, pos + 5) { }
+    }
+
+    /// <summary>
+    /// Token which represents the SPARQL UNDEF Keyword
     /// </summary>
     public class UndefKeywordToken : BaseToken
     {
@@ -837,7 +1201,7 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
-    /// Token which represents the Sparql UNION Keyword
+    /// Token which represents the SPARQL UNION Keyword
     /// </summary>
     public class UnionKeywordToken : BaseToken
     {
@@ -850,7 +1214,7 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
-    /// Token which represents the Sparql UNSAID Keyword
+    /// Token which represents the SPARQL UNSAID Keyword
     /// </summary>
     public class UnsaidKeywordToken : BaseToken
     {
@@ -863,7 +1227,7 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
-    /// Token which represents the Sparql URI Keyword
+    /// Token which represents the SPARQL URI Keyword
     /// </summary>
     public class UriKeywordToken : BaseToken
     {
@@ -876,7 +1240,7 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
-    /// Token which represents the Sparql WHERE Keyword
+    /// Token which represents the SPARQL WHERE Keyword
     /// </summary>
     public class WhereKeywordToken : BaseToken
     {
@@ -886,6 +1250,19 @@ namespace VDS.RDF.Parsing.Tokens
         /// <param name="line">Line the Keyword occurs on</param>
         /// <param name="pos">Position the Keyword occurs at</param>
         public WhereKeywordToken(int line, int pos) : base(Token.WHERE, "WHERE", line, line, pos, pos + 5) { }
+    }
+
+    /// <summary>
+    /// Token which represents the SPARQL YEAR Keyword
+    /// </summary>
+    public class YearKeywordToken : BaseToken
+    {
+        /// <summary>
+        /// Creates a new YEAR Keyword Token
+        /// </summary>
+        /// <param name="line">Line the Keyword occurs on</param>
+        /// <param name="pos">Position the Keyword occurs at</param>
+        public YearKeywordToken(int line, int pos) : base(Token.YEAR, "YEAR", line, line, pos, pos + 4) { }
     }
 
     #endregion

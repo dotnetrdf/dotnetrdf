@@ -390,6 +390,8 @@ namespace VDS.RDF.Query
                 case Token.STRLANG:
                 case Token.REGEX:
                 case Token.URIFUNC:
+                    //REQ: Add Tokens for all the new functions here
+                    if (this._syntax == SparqlQuerySyntax.Sparql_1_0 && SparqlSpecsHelper.IsFunctionKeyword11(next.Value)) throw Error("The function " + next.Value + " is not supported in SPARQL 1.0", next);
                     return this.TryParseBuiltInCall(tokens);
 
                 case Token.AVG:

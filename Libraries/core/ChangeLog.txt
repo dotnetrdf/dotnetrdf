@@ -26,6 +26,9 @@ Added
 - Query
  - GROUP BY is now supported in subqueries
  - Scalar Arguments for aggregates added when in 1.1 Extended mode (only GROUP_CONCAT allows scalar arguments in 1.1 mode)
+ - Added new SPARQL 1.1 functions
+  - General Functions - 
+  - Date Time Functions - 
 - Storage
  - Expanded the IGenericIOManager interface to include methods for deletings graphs and listing graphs
  - Connector for Fuseki
@@ -67,7 +70,9 @@ Changed
   - Can now set values for Variables which are substituted into the query when you call ToString()
   - Has own Namespace Map allowing prefixes to be registered programatically and have the code take care of generating the PREFIX declarations
  - Improved ISparqlExpression interface to allow for traversing of expression trees and custom formatting
- - IN and NOT IN for SPARQL now support any expression in the SET and evaluate properly using SPARQL value equality
+ - Changes to support latest 1.1 Draft Specifications
+  - IN and NOT IN for SPARQL now support any expression in the SET and evaluate properly using SPARQL value equality
+  - COALESCE now errors if none of the arguments evaluate to a non-null value
 - Update Improvements
  - WHERE clauses in Update Commands are now optimised
  - Added support for new features latest drafts of the SPARQL 1.1 Update specification
