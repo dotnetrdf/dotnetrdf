@@ -407,7 +407,7 @@ namespace VDS.RDF.Query
                 case Token.SHA384:
                 case Token.SHA512:
                 case Token.STR:
-                case Token.STRCONTAINS:
+                case Token.CONTAINS:
                 case Token.STRDT:
                 case Token.STRENDS:
                 case Token.STRLANG:
@@ -626,6 +626,8 @@ namespace VDS.RDF.Query
 
                     return new CoalesceFunction(args);
 
+                case Token.CONTAINS:
+                    return new ContainsFunction(this.TryParseBrackettedExpression(tokens), this.TryParseBrackettedExpression(tokens, false));
                 case Token.DATATYPEFUNC:
                     return new DataTypeFunction(this.TryParseBrackettedExpression(tokens));
                 case Token.DAY:
@@ -680,10 +682,14 @@ namespace VDS.RDF.Query
                     return new StrFunction(this.TryParseBrackettedExpression(tokens));
                 case Token.STRDT:
                     return new StrDtFunction(this.TryParseBrackettedExpression(tokens), this.TryParseBrackettedExpression(tokens, false));
+                case Token.STRENDS:
+                    return new StrEndsFunction(this.TryParseBrackettedExpression(tokens), this.TryParseBrackettedExpression(tokens, false));
                 case Token.STRLANG:
                     return new StrLangFunction(this.TryParseBrackettedExpression(tokens), this.TryParseBrackettedExpression(tokens, false));
                 case Token.STRLEN:
                     return new StrLenFunction(this.TryParseBrackettedExpression(tokens));
+                case Token.STRSTARTS:
+                    return new StrStartsFunction(this.TryParseBrackettedExpression(tokens), this.TryParseBrackettedExpression(tokens, false));
 
                 case Token.SUBSTR:
                     //SUBSTR may have 2/3 arguments

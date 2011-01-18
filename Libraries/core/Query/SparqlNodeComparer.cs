@@ -271,4 +271,6 @@ namespace VDS.RDF.Query
             }
         }
     }
+
+    //TODO: Implement another IComparer<INode> which is similar to the CompareTo method from the above class but more closely follows the SPARQL sort order regarding numerics and type promotion
 }

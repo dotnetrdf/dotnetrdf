@@ -1149,9 +1149,9 @@ namespace VDS.RDF.Parsing.Tokens
                         //Str Keyword
                         this._lasttokentype = Token.STR;
                         return new StrKeywordToken(this.CurrentLine, this.StartPosition);
-                    case SparqlSpecsHelper.SparqlKeywordStrContains:
+                    case SparqlSpecsHelper.SparqlKeywordContains:
                         //StrContains Function Keyword
-                        this._lasttokentype = Token.STRCONTAINS;
+                        this._lasttokentype = Token.CONTAINS;
                         return new StrContainsKeywordToken(this.CurrentLine, this.StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordStrDt:
                         //StrDt Keyword

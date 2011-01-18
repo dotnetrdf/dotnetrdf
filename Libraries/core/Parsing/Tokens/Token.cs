@@ -163,7 +163,7 @@ namespace VDS.RDF.Parsing.Tokens
                           LCASE = 174,
                           STRSTARTS = 175,
                           STRENDS = 176,
-                          STRCONTAINS = 177,
+                          CONTAINS = 177,
                           ENCODEFORURI = 178,
                           CONCAT = 179,
                           ABS = 180,

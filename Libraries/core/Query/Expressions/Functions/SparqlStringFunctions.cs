@@ -29,36 +29,6 @@ terms.
 */
 
 using System;
-/*
-
-Copyright Robert Vesse 2009-10
-rvesse@vdesign-studios.com
-
-------------------------------------------------------------------------
-
-This file is part of dotNetRDF.
-
-dotNetRDF is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-dotNetRDF is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with dotNetRDF.  If not, see <http://www.gnu.org/licenses/>.
-
-------------------------------------------------------------------------
-
-If this license is not suitable for your intended use please contact
-us at the above stated email address to discuss alternative
-terms.
-
-*/
-
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -66,6 +36,136 @@ using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Query.Expressions.Functions
 {
+    public abstract class BaseBinarySparqlStringFunction : BaseBinaryExpression
+    {
+        public BaseBinarySparqlStringFunction(ISparqlExpression stringExpr, ISparqlExpression argExpr)
+            : base(stringExpr, argExpr) { }
+
+        public override bool EffectiveBooleanValue(SparqlEvaluationContext context, int bindingID)
+        {
+            INode x = this._leftExpr.Value(context, bindingID);
+            INode y = this._rightExpr.Value(context, bindingID);
+
+            if (x.NodeType == NodeType.Literal && y.NodeType == NodeType.Literal)
+            {
+                LiteralNode stringLit = (LiteralNode)x;
+                LiteralNode argLit = (LiteralNode)y;
+
+                if (IsValidArgumentPair(stringLit, argLit))
+                {
+                    return this.ValueInternal(stringLit, argLit);
+                }
+                else
+                {
+                    throw new RdfQueryException("The Literals provided as arguments to this SPARQL String function are not of valid forms (see SPARQL spec for acceptable combinations)");
+                }
+            }
+            else
+            {
+                throw new RdfQueryException("Arguments to a SPARQL String function must both be Literal Nodes");
+            }
+        }
+
+        protected abstract bool ValueInternal(LiteralNode stringLit, LiteralNode argLit);
+
+        private bool IsValidArgumentPair(LiteralNode stringLit, LiteralNode argLit)
+        {
+            if (stringLit.DataType != null)
+            {
+                //If 1st argument has a DataType must be an xsd:string or not valid
+                if (!stringLit.DataType.ToString().Equals(XmlSpecsHelper.XmlSchemaDataTypeString)) return false;
+
+                if (argLit.DataType != null)
+                {
+                    //If 2nd argument also has a DataType must also be an xsd:string or not valid
+                    if (!argLit.DataType.ToString().Equals(XmlSpecsHelper.XmlSchemaDataTypeString)) return false;
+                    return true;
+                }
+                else if (argLit.Language.Equals(String.Empty))
+                {
+                    //If 2nd argument does not have a DataType but 1st does then 2nd argument must have no
+                    //Language Tag
+                    return true;
+                }
+                else
+                {
+                    //2nd argument does not have a DataType but 1st does BUT 2nd has a Language Tag so invalid
+                    return false;
+                }
+            }
+            else if (!stringLit.Language.Equals(String.Empty))
+            {
+                if (argLit.DataType != null)
+                {
+                    //If 1st argument has a Language Tag and 2nd Argument is typed then must be xsd:string
+                    //to be valid
+                    return argLit.DataType.ToString().Equals(XmlSpecsHelper.XmlSchemaDataTypeString);
+                }
+                else if (argLit.Language.Equals(String.Empty) || stringLit.Language.Equals(argLit.Language))
+                {
+                    //If 1st argument has a Language Tag then 2nd Argument must have same Language Tag 
+                    //or no Language Tag in order to be valid
+                    return true;
+                }
+                else
+                {
+                    //Otherwise Invalid
+                    return false;
+                }
+            }
+            else
+            {
+                if (argLit.DataType != null)
+                {
+                    //If 1st argument is plain literal then 2nd argument must be xsd:string if typed
+                    return argLit.DataType.ToString().Equals(XmlSpecsHelper.XmlSchemaDataTypeString);
+                }
+                else if (argLit.Language.Equals(String.Empty))
+                {
+                    //If 1st argument is plain literal then 2nd literal cannot have a language tag to be valid
+                    return true;
+                }
+                else 
+                {
+                    //If 1st argument is plain literal and 2nd has language tag then invalid
+                    return false;
+                }
+            }
+        }
+
+        public override SparqlExpressionType Type
+        {
+            get 
+            {
+                return SparqlExpressionType.Function; 
+            }
+        }
+    }
+
+    public class ContainsFunction : BaseBinarySparqlStringFunction
+    {
+        public ContainsFunction(ISparqlExpression stringExpr, ISparqlExpression searchExpr)
+            : base(stringExpr, searchExpr) { }
+
+        protected override bool ValueInternal(LiteralNode stringLit, LiteralNode argLit)
+        {
+            return stringLit.Value.Contains(argLit.Value);
+        }
+
+        public override string Functor
+        {
+            get 
+            {
+                return SparqlSpecsHelper.SparqlKeywordContains;
+            }
+        }
+
+        public override string ToString()
+        {
+            return SparqlSpecsHelper.SparqlKeywordContains + "(" + this._leftExpr.ToString() + ", " + this._rightExpr.ToString() + ")";
+        }
+    }
+
     public class EncodeForUriFunction : BaseUnaryXPathStringFunction
     {
         /// <summary>
@@ -141,6 +241,30 @@ namespace VDS.RDF.Query.Expressions.Functions
         }
     }
 
+    public class StrEndsFunction : BaseBinarySparqlStringFunction
+    {
+        public StrEndsFunction(ISparqlExpression stringExpr, ISparqlExpression endsExpr)
+            : base(stringExpr, endsExpr) { }
+
+        protected override bool ValueInternal(LiteralNode stringLit, LiteralNode argLit)
+        {
+            return stringLit.Value.EndsWith(argLit.Value);
+        }
+
+        public override string Functor
+        {
+            get 
+            {
+                return SparqlSpecsHelper.SparqlKeywordStrEnds; 
+            }
+        }
+
+        public override string ToString()
+        {
+            return SparqlSpecsHelper.SparqlKeywordStrEnds + "(" + this._leftExpr.ToString() + ", " + this._rightExpr.ToString() + ")";
+        }
+    }
+
     public class StrLenFunction : BaseUnaryXPathStringFunction
     {
         public StrLenFunction(ISparqlExpression expr)
@@ -162,6 +286,30 @@ namespace VDS.RDF.Query.Expressions.Functions
         public override string ToString()
         {
             return SparqlSpecsHelper.SparqlKeywordStrLen + "(" + this._expr.ToString() + ")";
+        }
+    }
+
+    public class StrStartsFunction : BaseBinarySparqlStringFunction
+    {
+        public StrStartsFunction(ISparqlExpression stringExpr, ISparqlExpression startsExpr)
+            : base(stringExpr, startsExpr) { }
+
+        protected override bool ValueInternal(LiteralNode stringLit, LiteralNode argLit)
+        {
+            return stringLit.Value.StartsWith(argLit.Value);
+        }
+
+        public override string Functor
+        {
+            get
+            {
+                return SparqlSpecsHelper.SparqlKeywordStrStarts;
+            }
+        }
+
+        public override string ToString()
+        {
+            return SparqlSpecsHelper.SparqlKeywordStrStarts + "(" + this._leftExpr.ToString() + ", " + this._rightExpr.ToString() + ")";
         }
     }
 

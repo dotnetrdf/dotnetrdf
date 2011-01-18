@@ -1054,7 +1054,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// </summary>
         /// <param name="line">Line the Keyword occurs on</param>
         /// <param name="pos">Position the Keyword occurs at</param>
-        public StrContainsKeywordToken(int line, int pos) : base(Token.STRCONTAINS, "STRCONTAINS", line, line, pos, pos + 11) { }
+        public StrContainsKeywordToken(int line, int pos) : base(Token.CONTAINS, "STRCONTAINS", line, line, pos, pos + 11) { }
     }
 
     /// <summary>

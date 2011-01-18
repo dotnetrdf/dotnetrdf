@@ -654,7 +654,7 @@ namespace VDS.RDF.Parsing
                     case Token.SHA384:
                     case Token.SHA512:
                     case Token.STR:
-                    case Token.STRCONTAINS:
+                    case Token.CONTAINS:
                     case Token.STRDT:
                     case Token.STRENDS:
                     case Token.STRLANG:
@@ -2033,7 +2033,7 @@ namespace VDS.RDF.Parsing
                 case Token.SHA384:
                 case Token.SHA512:
                 case Token.STR:
-                case Token.STRCONTAINS:
+                case Token.CONTAINS:
                 case Token.STRDT:
                 case Token.STRENDS:
                 case Token.STRLANG:
@@ -2471,7 +2471,7 @@ namespace VDS.RDF.Parsing
                     case Token.SHA384:
                     case Token.SHA512:
                     case Token.STR:
-                    case Token.STRCONTAINS:
+                    case Token.CONTAINS:
                     case Token.STRDT:
                     case Token.STRENDS:
                     case Token.STRLANG:
