@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{BFBAC159-1E60-4D03-8ACA-D34E31EB83BF}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -336,6 +336,7 @@
     <Compile Include="Query\Expressions\Functions\SparqlCoalesceFunction.cs" />
     <Compile Include="Query\Expressions\Functions\SparqlDateTimeFunctions.cs" />
     <Compile Include="Query\Expressions\Functions\SparqlExistsFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\SparqlHashFunctions.cs" />
     <Compile Include="Query\Expressions\Functions\SparqlIfFunction.cs" />
     <Compile Include="Query\Expressions\Functions\SparqlNumericFunctions.cs" />
     <Compile Include="Query\Expressions\Functions\SparqlSetFunctions.cs" />

@@ -30,7 +30,7 @@ Added
   - String Functions - CONACT, CONTAINS, ENCODE_FOR_URI, LCASE, STRENDS, STRLEN, STRSTARTS, SUBSTR, UCASE
   - Date Time Functions - DAY, HOURS, MINUTES, MONTH, NOW, SECONDS, TIMEZONE, TZ and YEAR
   - Numeric Functions - ABS, CEIL, FLOOR, ROUND and ISNUMERIC
-  - Hash Functions - 
+  - Hash Functions - MD5, SHA1, SHA256, SHA384, SHA512
 - Storage
  - Expanded the IGenericIOManager interface to include methods for deletings graphs and listing graphs
  - Connector for Fuseki

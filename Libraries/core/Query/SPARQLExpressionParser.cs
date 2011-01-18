@@ -670,6 +670,14 @@ namespace VDS.RDF.Query
                     return new LangMatchesFunction(this.TryParseBrackettedExpression(tokens), this.TryParseBrackettedExpression(tokens, false));
                 case Token.LCASE:
                     return new LCaseFunction(this.TryParseBrackettedExpression(tokens));
+
+#if !SILVERLIGHT && !COMPACT
+                case Token.MD5:
+                    return new MD5HashFunction(this.TryParseBrackettedExpression(tokens));
+#else
+                case Token.MD5:
+                    throw new RdfParseException("MD5() is not supported by the Leviathan Engine when running under Silverlight/Windows Phone 7 as there is no support for it in the Silverlight version of the .Net framework");
+#endif
                 case Token.MINUTES:
                     return new MinutesFunction(this.TryParseBrackettedExpression(tokens));
                 case Token.MONTH:
@@ -689,6 +697,25 @@ namespace VDS.RDF.Query
                     return new SameTermFunction(this.TryParseBrackettedExpression(tokens), this.TryParseBrackettedExpression(tokens, false));
                 case Token.SECONDS:
                     return new SecondsFunction(this.TryParseBrackettedExpression(tokens));
+
+                case Token.SHA1:
+                    return new Sha1HashFunction(this.TryParseBrackettedExpression(tokens));
+                case Token.SHA224:
+                    throw new RdfParseException("SHA224() is not supported in the Leviathan Engine as there is no support for it in the .Net Framework");
+                case Token.SHA256:
+                    return new Sha256HashFunction(this.TryParseBrackettedExpression(tokens));
+
+#if !SILVERLIGHT && !COMPACT
+                case Token.SHA384:
+                    return new Sha384HashFunction(this.TryParseBrackettedExpression(tokens));
+                case Token.SHA512:
+                    return new Sha512HashFunction(this.TryParseBrackettedExpression(tokens));
+#else
+                case Token.SHA384:
+                case Token.SHA512:
+                    throw new RdfParseException("SHA384/SHA512() is not supported in the Leviathan Engine when running under Silverlight/Windows Phone 7 as there is no support for it in the Silverlight version of the .Net framework");
+#endif
+
                 case Token.STR:
                     return new StrFunction(this.TryParseBrackettedExpression(tokens));
                 case Token.STRDT:
