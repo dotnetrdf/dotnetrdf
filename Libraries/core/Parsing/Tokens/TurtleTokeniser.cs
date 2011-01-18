@@ -1018,8 +1018,15 @@ namespace VDS.RDF.Parsing.Tokens
             }
             else
             {
-                this.LastTokenType = Token.LANGSPEC;
-                return new LanguageSpecifierToken(this.Value, this.CurrentLine, this.StartPosition, this.EndPosition);
+                if (RdfSpecsHelper.IsValidLangSpecifier(this.Value))
+                {
+                    this.LastTokenType = Token.LANGSPEC;
+                    return new LanguageSpecifierToken(this.Value, this.CurrentLine, this.StartPosition, this.EndPosition);
+                }
+                else
+                {
+                    throw Error("Unexpected Content '" + this.Value + "' encountered, expected a valid Language Specifier");
+                }
             }
         }
 

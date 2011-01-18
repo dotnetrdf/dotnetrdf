@@ -49,6 +49,8 @@ Changed
  - SPARQL Query Parser now parses correctly if first item in the WHERE clause is a nested graph pattern
  - Non-Leviathan Query Processors record the time the Query took to execute
  - Some bug fixes around LiteralNode value comparisons regarding equivalences between .Net types and XML Schema types
+ - Validation of Language Tags was overzealous and rejected some valid language tags and in some places language 
+   tags weren't validated when they should have been
 - General Improvements
  - Internal restructuring of how MIME Types are managed
   - Allows for new MIME Types, File Extensions and parsers to be registered with the API and used automatically where appropriate
