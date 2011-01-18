@@ -27,7 +27,7 @@ Added
  - GROUP BY is now supported in subqueries
  - Scalar Arguments for aggregates added when in 1.1 Extended mode (only GROUP_CONCAT allows scalar arguments in 1.1 mode)
  - Added new SPARQL 1.1 functions
-  - General Functions - ENCODE_FOR_URI, LCASE, STRLEN, SUBSTR, UCASE
+  - String Functions - CONACT, CONTAINS, ENCODE_FOR_URI, LCASE, STRENDS, STRLEN, STRSTARTS, SUBSTR, UCASE
   - Date Time Functions - DAY, HOURS, MINUTES, MONTH, NOW, SECONDS, TIMEZONE, TZ and YEAR
   - Numeric Functions - ABS, CEIL, FLOOR, ROUND and ISNUMERIC
   - Hash Functions - 

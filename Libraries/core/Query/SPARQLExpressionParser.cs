@@ -575,7 +575,8 @@ namespace VDS.RDF.Query
         private ISparqlExpression TryParseBuiltInCall(Queue<IToken> tokens)
         {
             IToken next = tokens.Dequeue();
-            bool comma = false;
+            bool comma = false, first = true;
+            List<ISparqlExpression> args;
 
             switch (next.TokenType)
             {
@@ -615,9 +616,8 @@ namespace VDS.RDF.Query
                     return new CeilFunction(this.TryParseBrackettedExpression(tokens));
 
                 case Token.COALESCE:
-                    //Get as many argument expressions as there are
-                    List<ISparqlExpression> args = new List<ISparqlExpression>();
-                    bool first = true;
+                    //Get as many argument expressions as we can
+                    args = new List<ISparqlExpression>();
                     do
                     {
                         args.Add(this.TryParseBrackettedExpression(tokens, first, out comma));
@@ -625,6 +625,17 @@ namespace VDS.RDF.Query
                     } while (comma);
 
                     return new CoalesceFunction(args);
+
+                case Token.CONCAT:
+                    //Get as many argument expressions as we can
+                    args = new List<ISparqlExpression>();
+                    do
+                    {
+                        args.Add(this.TryParseBrackettedExpression(tokens, first, out comma));
+                        first = false;
+                    } while (comma);
+
+                    return new ConcatFunction(args);
 
                 case Token.CONTAINS:
                     return new ContainsFunction(this.TryParseBrackettedExpression(tokens), this.TryParseBrackettedExpression(tokens, false));
