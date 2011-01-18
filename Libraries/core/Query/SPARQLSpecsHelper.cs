@@ -1104,7 +1104,8 @@ namespace VDS.RDF.Query
                     }
                     else if (xtype.Equals(ytype))
                     {
-                        switch (xtype) {
+                        switch (xtype) 
+                        {
                             case XmlSpecsHelper.XmlSchemaDataTypeDate:
                                 return DateEquality(x, y);
                             case XmlSpecsHelper.XmlSchemaDataTypeDateTime:

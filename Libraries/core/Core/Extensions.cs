@@ -618,9 +618,23 @@ namespace VDS.RDF
         /// <param name="b">Byte</param>
         /// <param name="g">Graph to create in</param>
         /// <returns></returns>
+        /// <remarks>
+        /// Byte in .Net is actually equivalent to Unsigned Byte in XML Schema so depending on the value of the Byte the type will either be xsd:byte if it fits or xsd:usignedByte
+        /// </remarks>
         public static LiteralNode ToLiteral(this byte b, IGraph g)
         {
-            return g.CreateLiteralNode(XmlConvert.ToString(b), new Uri(XmlSpecsHelper.XmlSchemaDataTypeByte));
+            if (g == null) throw new ArgumentNullException("g", "Cannot create a Literal Node in a null Graph");
+
+            if (b > 128)
+            {
+                //If value is > 128 must use unsigned byte as the type as xsd:byte has range -127 to 128 
+                //while .Net byte has range 0-255
+                return g.CreateLiteralNode(XmlConvert.ToString(b), new Uri(XmlSpecsHelper.XmlSchemaDataTypeUnsignedByte));
+            }
+            else
+            {
+                return g.CreateLiteralNode(XmlConvert.ToString(b), new Uri(XmlSpecsHelper.XmlSchemaDataTypeByte));
+            }
         }
 
         /// <summary>
@@ -629,8 +643,13 @@ namespace VDS.RDF
         /// <param name="b">Byte</param>
         /// <param name="g">Graph to create in</param>
         /// <returns></returns>
+        /// <remarks>
+        /// SByte in .Net is directly equivalent to Byte in XML Schema so the type will always be xsd:byte
+        /// </remarks>
         public static LiteralNode ToLiteral(this sbyte b, IGraph g)
         {
+            if (g == null) throw new ArgumentNullException("g", "Cannot create a Literal Node in a null Graph");
+
             return g.CreateLiteralNode(XmlConvert.ToString(b), new Uri(XmlSpecsHelper.XmlSchemaDataTypeByte));
         }
 

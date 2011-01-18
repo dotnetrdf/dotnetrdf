@@ -647,6 +647,8 @@ namespace VDS.RDF.Query
                     return new IsIriFunction(this.TryParseBrackettedExpression(tokens));
                 case Token.ISLITERAL:
                     return new IsLiteralFunction(this.TryParseBrackettedExpression(tokens));
+                case Token.ISNUMERIC:
+                    return new IsNumericFunction(this.TryParseBrackettedExpression(tokens));
                 case Token.ISURI:
                     return new IsUriFunction(this.TryParseBrackettedExpression(tokens));
                 case Token.LANG:

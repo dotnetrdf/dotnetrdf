@@ -425,6 +425,16 @@ namespace VDS.RDF
                                     return this._value.ToLower().CompareTo(l.Value.ToLower());
 
                                 case XmlSpecsHelper.XmlSchemaDataTypeByte:
+                                    //Remember that xsd:byte is actually equivalent to SByte in .Net
+                                    //Extract the Byte Values and compare
+                                    sbyte aSByte, bSByte;
+                                    aSByte = SByte.Parse(this._value);
+                                    bSByte = SByte.Parse(l.Value);
+
+                                    return aSByte.CompareTo(bSByte);
+
+                                case XmlSpecsHelper.XmlSchemaDataTypeUnsignedByte:
+                                    //Remember that xsd:unsignedByte is equivalent to Byte in .Net
                                     //Extract the Byte Values and compare
                                     byte aByte, bByte;
                                     aByte = Byte.Parse(this._value);
@@ -440,7 +450,6 @@ namespace VDS.RDF
                                 case XmlSpecsHelper.XmlSchemaDataTypeNonPositiveInteger:
                                 case XmlSpecsHelper.XmlSchemaDataTypePositiveInteger:
                                 case XmlSpecsHelper.XmlSchemaDataTypeShort:
-                                case XmlSpecsHelper.XmlSchemaDataTypeUnsignedByte:
                                 case XmlSpecsHelper.XmlSchemaDataTypeUnsignedInt:
                                 case XmlSpecsHelper.XmlSchemaDataTypeUnsignedLong:
                                 case XmlSpecsHelper.XmlSchemaDataTypeUnsignedShort:
