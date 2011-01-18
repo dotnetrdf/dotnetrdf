@@ -29,6 +29,7 @@ Added
  - Added new SPARQL 1.1 functions
   - General Functions - ENCODE_FOR_URI, LCASE, STRLEN, SUBSTR, UCASE
   - Date Time Functions - DAY, HOURS, MINUTES, MONTH, NOW, SECONDS, TIMEZONE, TZ and YEAR
+  - Numeric Functions - ABS, CEIL, FLOOR, ROUND and ISNUMERIC
   - Hash Functions - 
 - Storage
  - Expanded the IGenericIOManager interface to include methods for deletings graphs and listing graphs
@@ -47,6 +48,7 @@ Changed
  - RDF/XML parser now correctly treats empty elements with rdf:datatype as literal properties rather than empty properties
  - SPARQL Query Parser now parses correctly if first item in the WHERE clause is a nested graph pattern
  - Non-Leviathan Query Processors record the time the Query took to execute
+ - Some bug fixes around LiteralNode value comparisons regarding equivalences between .Net types and XML Schema types
 - General Improvements
  - Internal restructuring of how MIME Types are managed
   - Allows for new MIME Types, File Extensions and parsers to be registered with the API and used automatically where appropriate

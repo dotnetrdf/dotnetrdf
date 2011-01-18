@@ -445,20 +445,36 @@ namespace VDS.RDF
                                 case XmlSpecsHelper.XmlSchemaDataTypeInt:
                                 case XmlSpecsHelper.XmlSchemaDataTypeInteger:
                                 case XmlSpecsHelper.XmlSchemaDataTypeLong:
-                                case XmlSpecsHelper.XmlSchemaDataTypeNegativeInteger:
-                                case XmlSpecsHelper.XmlSchemaDataTypeNonNegativeInteger:
-                                case XmlSpecsHelper.XmlSchemaDataTypeNonPositiveInteger:
-                                case XmlSpecsHelper.XmlSchemaDataTypePositiveInteger:
                                 case XmlSpecsHelper.XmlSchemaDataTypeShort:
-                                case XmlSpecsHelper.XmlSchemaDataTypeUnsignedInt:
-                                case XmlSpecsHelper.XmlSchemaDataTypeUnsignedLong:
-                                case XmlSpecsHelper.XmlSchemaDataTypeUnsignedShort:
                                     //Extract the Integer Values and compare
                                     long aInt, bInt;
                                     aInt = Int64.Parse(this._value);
                                     bInt = Int64.Parse(l.Value);
 
                                     return aInt.CompareTo(bInt);
+
+                                case XmlSpecsHelper.XmlSchemaDataTypeNegativeInteger:
+                                case XmlSpecsHelper.XmlSchemaDataTypeNonPositiveInteger:
+                                    //Extract the Integer Values, ensure negative and compare
+                                    long aNegInt, bNegInt;
+                                    aNegInt = Int64.Parse(this._value);
+                                    bNegInt = Int64.Parse(l.Value);
+
+                                    if (aNegInt >= 0 || bNegInt >= 0) throw new RdfException("One of the Negative/Non-Positive Integers has a Positive Value");
+
+                                    return aNegInt.CompareTo(bNegInt);
+
+                                case XmlSpecsHelper.XmlSchemaDataTypeUnsignedInt:
+                                case XmlSpecsHelper.XmlSchemaDataTypeUnsignedLong:
+                                case XmlSpecsHelper.XmlSchemaDataTypeUnsignedShort:
+                                case XmlSpecsHelper.XmlSchemaDataTypeNonNegativeInteger:
+                                case XmlSpecsHelper.XmlSchemaDataTypePositiveInteger:
+                                    //Unsigned Integers
+                                    ulong aUInt, bUInt;
+                                    aUInt = UInt64.Parse(this._value);
+                                    bUInt = UInt64.Parse(l.Value);
+
+                                    return aUInt.CompareTo(bUInt);
 
                                 case XmlSpecsHelper.XmlSchemaDataTypeDouble:
                                     //Extract the Double Values and compare
