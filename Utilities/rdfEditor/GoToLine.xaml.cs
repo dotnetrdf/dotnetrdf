@@ -29,6 +29,9 @@ namespace rdfEditor
             this._maxLine = editor.Document.LineCount;
             this.txtLineNumber.Text = this._line.ToString();
             this.lblLineNumber.Content = String.Format((String)this.lblLineNumber.Content, this._maxLine);
+
+            this.txtLineNumber.SelectAll();
+            this.txtLineNumber.Focus();
         }
 
         public int Line

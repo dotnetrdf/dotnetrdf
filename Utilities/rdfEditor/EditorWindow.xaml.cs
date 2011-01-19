@@ -606,6 +606,7 @@ namespace rdfEditor
         private void mnuGoToLine_Click(object sender, RoutedEventArgs e)
         {
             GoToLine gotoLine = new GoToLine(this.textEditor);
+            gotoLine.Owner = this;
             if (gotoLine.ShowDialog() == true)
             {
                 this.textEditor.CaretOffset = this.textEditor.Document.GetOffset(gotoLine.Line, 1);
