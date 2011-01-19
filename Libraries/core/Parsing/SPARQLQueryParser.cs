@@ -2943,13 +2943,15 @@ namespace VDS.RDF.Parsing
                 if (Options.QueryOptimisation)
                 {
                     p.UnplacedAssignments.Add(bind);
-                }
+                  }
                 else
                 {
-                    //When Optimisation is turned off we'll just stick the Let in the Triples Pattern where it occurs
+                    //When Optimisation is turned off we'll just stick the BIND in the Triples Pattern where it occurs
                     //since we're not going to do any Triple Pattern ordering, Assignment or FILTER placement
                     p.AddTriplePattern(bind);
                 }
+                //A BIND always breaks the BGP it occurs in
+                p.BreakBGP();
 
                 //Ensure the BIND assignment is terminated with a )
                 next = context.Tokens.Dequeue();

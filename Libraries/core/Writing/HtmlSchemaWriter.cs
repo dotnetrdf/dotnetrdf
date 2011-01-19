@@ -46,7 +46,7 @@ using VDS.RDF.Query;
 using VDS.RDF.Writing.Contexts;
 using VDS.RDF.Writing.Formatting;
 
-//REQ: Beautify the HTML Output with CSS (and possible RDFa if possible)
+//TODO: Embed RDFa in the HTML Output
 
 namespace VDS.RDF.Writing
 {

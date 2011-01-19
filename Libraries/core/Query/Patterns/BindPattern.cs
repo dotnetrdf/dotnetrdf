@@ -65,7 +65,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-    /// Evaluates a BIND assignment in the given Evaluation Context
+        /// Evaluates a BIND assignment in the given Evaluation Context
         /// </summary>
         /// <param name="context">Evaluation Context</param>
         public override void Evaluate(SparqlEvaluationContext context)
@@ -92,7 +92,7 @@ namespace VDS.RDF.Query.Patterns
             {
                 if (context.InputMultiset.ContainsVariable(this._var))
                 {
-                    throw new RdfQueryException("Cannot use a BIND assigment to BIND to a variable that has previously been declared");
+                    throw new RdfQueryException("Cannot use a BIND assigment to BIND to a variable that has previously been used in the Query");
                 }
 
                 foreach (int id in context.InputMultiset.SetIDs.ToList())
@@ -106,9 +106,7 @@ namespace VDS.RDF.Query.Patterns
                     }
                     catch
                     {
-                        //If an error occurs no assignment happens and the solution is eliminated
-                        //Q: Should this assign a null/eliminate a solution/do nothing?
-                        //context.InputMultiset.Remove(id);
+                        //If an error occurs then no assignment occurs
                     }
                 }
                 context.OutputMultiset = new IdentityMultiset();
