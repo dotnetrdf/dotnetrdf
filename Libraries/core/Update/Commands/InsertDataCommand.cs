@@ -37,6 +37,58 @@ namespace VDS.RDF.Update.Commands
             }
         }
 
+        public override bool AffectsSingleGraph
+        {
+            get
+            {
+                if (!this._pattern.HasChildGraphPatterns)
+                {
+                    return true;
+                }
+                else
+                {
+                    List<String> affectedUris = new List<string>();
+                    if (this._pattern.IsGraph)
+                    {
+                        affectedUris.Add(this._pattern.GraphSpecifier.Value);
+                    }
+                    else
+                    {
+                        affectedUris.Add(null);
+                    }
+                    affectedUris.AddRange(from p in this._pattern.ChildGraphPatterns
+                                          where p.IsGraph
+                                          select p.GraphSpecifier.Value);
+
+                    return affectedUris.Distinct().Count() <= 1;
+                }
+            }
+        }
+
+        public override bool AffectsGraph(Uri graphUri)
+        {
+            if (graphUri.ToSafeString().Equals(GraphCollection.DefaultGraphUri)) graphUri = null;
+
+            List<String> affectedUris = new List<string>();
+            if (this._pattern.IsGraph)
+            {
+                affectedUris.Add(this._pattern.GraphSpecifier.Value);
+            } 
+            else 
+            {
+                affectedUris.Add(null);
+            }
+            if (this._pattern.HasChildGraphPatterns)
+            {
+                affectedUris.AddRange(from p in this._pattern.ChildGraphPatterns
+                                      where p.IsGraph
+                                      select p.GraphSpecifier.Value);
+            }
+            if (affectedUris.Any(u => u.Equals(GraphCollection.DefaultGraphUri))) affectedUris.Add(null);
+
+            return affectedUris.Contains(graphUri.ToSafeString());
+        }
+
         /// <summary>
         /// Evaluates the Command in the given Context
         /// </summary>

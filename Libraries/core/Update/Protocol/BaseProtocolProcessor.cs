@@ -109,6 +109,10 @@ namespace VDS.RDF.Update.Protocol
                         Uri baseUri = new Uri(context.Request.Url.AbsoluteUri);
                         graphUri = new Uri(Tools.ResolveUri(graphUri, baseUri));
                     }
+                    else if (graphUri.ToString().Equals(GraphCollection.DefaultGraphUri))
+                    {
+                        return null;
+                    }
                 }
                 else
                 {

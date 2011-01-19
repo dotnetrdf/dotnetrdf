@@ -40,6 +40,7 @@ using System.Linq;
 using System.IO;
 using System.Net;
 using System.Web;
+using VDS.RDF.Parsing;
 using VDS.RDF.Storage;
 
 namespace VDS.RDF.Update.Protocol
@@ -223,8 +224,54 @@ namespace VDS.RDF.Update.Protocol
         /// <param name="context">HTTP Context</param>
         public override void ProcessPatch(HttpContext context)
         {
-            //REQ: Implement PATCH for SPARQL Uniform HTTP Protocol
-            throw new NotImplementedException();
+            //Work out the Graph URI we want to patch
+            Uri graphUri = this.ResolveGraphUri(context);
+
+            //If the Request has the SPARQL Update MIME Type then we can process it
+            if (context.Request.ContentLength > 0)
+            {
+                if (context.Request.ContentType.Equals("application/sparql-update"))
+                {
+                    //Try and parse the SPARQL Update
+                    //No error handling here as we assume the calling IHttpHandler does that
+                    String patchData;
+                    using (StreamReader reader = new StreamReader(context.Request.InputStream))
+                    {
+                        patchData = reader.ReadToEnd();
+                        reader.Close();
+                    }
+                    SparqlUpdateParser parser = new SparqlUpdateParser();
+                    SparqlUpdateCommandSet cmds = parser.ParseFromString(patchData);
+
+                    //Assuming that we've got here i.e. the SPARQL Updates are parseable then
+                    //we need to check that they actually affect the relevant Graph
+                    if (cmds.Commands.All(c => c.AffectsSingleGraph && c.AffectsGraph(graphUri)))
+                    {
+                        GenericUpdateProcessor processor = new GenericUpdateProcessor(this._manager);
+                        processor.ProcessCommandSet(cmds);
+                        processor.Flush();
+                    }
+                    else
+                    {
+                        //One/More commands either do no affect a Single Graph or don't affect the Graph
+                        //implied by the HTTP Request so give a 422 response
+                        context.Response.StatusCode = 422;
+                        return;
+                    }
+                }
+                else
+                {
+                    //Don't understand other forms of PATCH requests
+                    context.Response.StatusCode = (int)HttpStatusCode.UnsupportedMediaType;
+                    return;
+                }
+            }
+            else
+            {
+                //Empty Request is a Bad Request
+                context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                return;
+            }
         }
 
         /// <summary>

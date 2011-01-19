@@ -2943,7 +2943,7 @@ namespace VDS.RDF.Parsing
                 if (Options.QueryOptimisation)
                 {
                     p.UnplacedAssignments.Add(bind);
-                  }
+                }
                 else
                 {
                     //When Optimisation is turned off we'll just stick the BIND in the Triples Pattern where it occurs

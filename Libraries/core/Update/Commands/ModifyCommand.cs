@@ -80,6 +80,62 @@ namespace VDS.RDF.Update.Commands
         public ModifyCommand(GraphPattern deletions, GraphPattern insertions, GraphPattern where)
             : this(deletions, insertions, where, null) { }
 
+        public override bool AffectsSingleGraph
+        {
+            get
+            {
+                List<String> affectedUris = new List<string>();
+                if (this.TargetUri != null)
+                {
+                    affectedUris.Add(this.TargetUri.ToString());
+                }
+                if (this._deletePattern.IsGraph) affectedUris.Add(this._deletePattern.GraphSpecifier.Value);
+                if (this._deletePattern.HasChildGraphPatterns)
+                {
+                    affectedUris.AddRange(from p in this._deletePattern.ChildGraphPatterns
+                                          where p.IsGraph
+                                          select p.GraphSpecifier.Value);
+                }
+                if (this._insertPattern.IsGraph) affectedUris.Add(this._insertPattern.GraphSpecifier.Value);
+                if (this._insertPattern.HasChildGraphPatterns)
+                {
+                    affectedUris.AddRange(from p in this._insertPattern.ChildGraphPatterns
+                                          where p.IsGraph
+                                          select p.GraphSpecifier.Value);
+                }
+
+                return affectedUris.Distinct().Count() <= 1;
+            }
+        }
+
+        public override bool AffectsGraph(Uri graphUri)
+        {
+            if (graphUri.ToSafeString().Equals(GraphCollection.DefaultGraphUri)) graphUri = null;
+
+            List<String> affectedUris = new List<string>();
+            if (this.TargetUri != null)
+            {
+                affectedUris.Add(this.TargetUri.ToString());
+            }
+            if (this._deletePattern.IsGraph) affectedUris.Add(this._deletePattern.GraphSpecifier.Value);
+            if (this._deletePattern.HasChildGraphPatterns)
+            {
+                affectedUris.AddRange(from p in this._deletePattern.ChildGraphPatterns
+                                      where p.IsGraph
+                                      select p.GraphSpecifier.Value);
+            }
+            if (this._insertPattern.IsGraph) affectedUris.Add(this._insertPattern.GraphSpecifier.Value);
+            if (this._insertPattern.HasChildGraphPatterns)
+            {
+                affectedUris.AddRange(from p in this._insertPattern.ChildGraphPatterns
+                                      where p.IsGraph
+                                      select p.GraphSpecifier.Value);
+            }
+            if (affectedUris.Any(u => u.Equals(GraphCollection.DefaultGraphUri))) affectedUris.Add(null);
+
+            return affectedUris.Contains(graphUri.ToSafeString());
+        }
+
         /// <summary>
         /// Gets the URI of the Graph the insertions are made to
         /// </summary>

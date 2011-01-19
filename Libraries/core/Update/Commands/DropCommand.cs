@@ -99,6 +99,39 @@ namespace VDS.RDF.Update.Commands
         public DropCommand(ClearMode mode, bool silent)
             : this(null, mode, silent) { }
 
+        public override bool AffectsSingleGraph
+        {
+            get
+            {
+                return this._mode == ClearMode.Graph || this._mode == ClearMode.Default;
+            }
+        }
+
+        public override bool AffectsGraph(Uri graphUri)
+        {
+            switch (this._mode)
+            {
+                case ClearMode.All:
+                    return true;
+                case ClearMode.Default:
+                    return graphUri == null || graphUri.ToSafeString().Equals(GraphCollection.DefaultGraphUri);
+                case ClearMode.Named:
+                    return graphUri != null && !graphUri.ToSafeString().Equals(GraphCollection.DefaultGraphUri);
+                case ClearMode.Graph:
+                    if (this._graphUri == null)
+                    {
+                        return graphUri == null || graphUri.ToSafeString().Equals(GraphCollection.DefaultGraphUri);
+                    }
+                    else
+                    {
+                        return this._graphUri.ToString().Equals(graphUri.ToSafeString());
+                    }
+                default:
+                    //No Other Clear Modes but have to keep the compiler happy
+                    return true;
+            }
+        }
+
         /// <summary>
         /// Gets the URI of the Graph to be dropped
         /// </summary>

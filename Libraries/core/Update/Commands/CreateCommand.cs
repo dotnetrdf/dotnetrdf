@@ -66,6 +66,26 @@ namespace VDS.RDF.Update.Commands
         public CreateCommand(Uri graphUri)
             : this(graphUri, false) { }
 
+        public override bool AffectsSingleGraph
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        public override bool AffectsGraph(Uri graphUri)
+        {
+            if (this._graphUri == null)
+            {
+                return graphUri == null || graphUri.ToSafeString().Equals(GraphCollection.DefaultGraphUri);
+            }
+            else
+            {
+                return this._graphUri.ToString().Equals(graphUri.ToSafeString());
+            }
+        }
+
         /// <summary>
         /// Gets the URI of the Graph to be created
         /// </summary>

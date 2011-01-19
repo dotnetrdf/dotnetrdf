@@ -33,6 +33,7 @@ terms.
 
 */
 
+using System;
 
 namespace VDS.RDF.Update
 {
@@ -119,6 +120,24 @@ namespace VDS.RDF.Update
                 return this._type;
             }
         }
+
+        /// <summary>
+        /// Gets whether the Command will only affect a single Graph
+        /// </summary>
+        public abstract bool AffectsSingleGraph
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Gets whether the Command will potentially affect the given Graph
+        /// </summary>
+        /// <param name="graphUri">Graph URI</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// A return value of <strong>true</strong> does not guarantee that the Graph will be affected.  Some Commands (e.g. DROP ALL) affect all Graphs in the Dataset but the command itself doesn't know whether a Graph with the given URI is actually present in the dataset to which it is applied
+        /// </remarks>
+        public abstract bool AffectsGraph(Uri graphUri);
 
         /// <summary>
         /// Gets whether this Command is optimised
