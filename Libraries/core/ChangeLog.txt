@@ -31,6 +31,8 @@ Added
   - Date Time Functions - DAY, HOURS, MINUTES, MONTH, NOW, SECONDS, TIMEZONE, TZ and YEAR
   - Numeric Functions - ABS, CEIL, FLOOR, ROUND and ISNUMERIC
   - Hash Functions - MD5, SHA1, SHA256, SHA384, SHA512
+- Update
+ - Added support for HTTP PATCH operation to SPARQL Uniform HTTP Protocol implementations
 - Storage
  - Expanded the IGenericIOManager interface to include methods for deletings graphs and listing graphs
  - Connector for Fuseki
