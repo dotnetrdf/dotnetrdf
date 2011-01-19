@@ -477,6 +477,11 @@ namespace rdfEditor
             this.SaveWith(new HtmlWriter());
         }
 
+        private void mnuUseBomForUtf8_Checked(object sender, RoutedEventArgs e)
+        {
+            Options.UseBomForUtf8 = this.mnuUseBomForUtf8.IsChecked;
+        }
+
         private void mnuPrint_Click(object sender, RoutedEventArgs e)
         {
             this.textEditor.PrintDialog(this._manager.CurrentFile, true);
@@ -596,6 +601,16 @@ namespace rdfEditor
             if (this._findReplace.Visibility != Visibility.Visible) this._findReplace.Show();
             this._findReplace.BringIntoView();
             this._findReplace.Focus();
+        }
+
+        private void mnuGoToLine_Click(object sender, RoutedEventArgs e)
+        {
+            GoToLine gotoLine = new GoToLine(this.textEditor);
+            if (gotoLine.ShowDialog() == true)
+            {
+                this.textEditor.CaretOffset = this.textEditor.Document.GetOffset(gotoLine.Line, 1);
+                this.textEditor.ScrollToLine(gotoLine.Line);
+            }
         }
 
         private void mnuCommentSelection_Click(object sender, RoutedEventArgs e)
@@ -1019,6 +1034,11 @@ namespace rdfEditor
             this.mnuReplace_Click(sender, e);
         }
 
+        private void GoToLineCommandExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            this.mnuGoToLine_Click(sender, e);
+        }
+
         private void CommentSelectionExecuted(object sender, ExecutedRoutedEventArgs e)
         {
             mnuCommentSelection_Click(sender, e);
@@ -1183,10 +1203,5 @@ namespace rdfEditor
 
 
         #endregion
-
-        private void mnuUseBomForUtf8_Checked(object sender, RoutedEventArgs e)
-        {
-            Options.UseBomForUtf8 = this.mnuUseBomForUtf8.IsChecked;
-        }
     }
 }

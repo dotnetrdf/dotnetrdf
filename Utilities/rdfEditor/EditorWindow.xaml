@@ -26,6 +26,7 @@
         <CommandBinding Command="{x:Static rdfEditor:Commands.Find}" Executed="FindCommandExecuted" />
         <CommandBinding Command="{x:Static rdfEditor:Commands.FindNext}" Executed="FindNextCommandExecuted"  />
         <CommandBinding Command="{x:Static rdfEditor:Commands.Replace}" Executed="ReplaceCommandExecuted" />
+        <CommandBinding Command="{x:Static rdfEditor:Commands.GoToLine}" Executed="GoToLineCommandExecuted" />
         <CommandBinding Command="{x:Static rdfEditor:Commands.CommentSelection}" Executed="CommentSelectionExecuted" />
         <CommandBinding Command="{x:Static rdfEditor:Commands.UncommentSelection}" Executed="UncommentSelectionExecuted" />
         
@@ -65,6 +66,7 @@
         <KeyBinding Command="{x:Static rdfEditor:Commands.Find}" Key="F" Modifiers="Ctrl" />
         <KeyBinding Command="{x:Static rdfEditor:Commands.FindNext}" Key="F3" />
         <KeyBinding Command="{x:Static rdfEditor:Commands.Replace}" Key="H" Modifiers="Ctrl" />
+        <KeyBinding Command="{x:Static rdfEditor:Commands.GoToLine}" Key="G" Modifiers="Ctrl" />
         <rdfEditor:ComplexInputBinding Command="{x:Static rdfEditor:Commands.CommentSelection}" Gesture="Ctrl+K,C" />
         <rdfEditor:ComplexInputBinding Command="{x:Static rdfEditor:Commands.UncommentSelection}" Gesture="Ctrl+K,U" />
         
@@ -139,6 +141,7 @@
                 <MenuItem Header="Find" Name="mnuFind" Click="mnuFind_Click" InputGestureText="Ctrl+F" />
                 <MenuItem Header="Find Next" Name="mnuFindNext" Click="mnuFindNext_Click" InputGestureText="F3" />
                 <MenuItem Header="Find and Replace" Name="mnuReplace" Click="mnuReplace_Click" InputGestureText="Ctrl+H" />
+                <MenuItem Header="Go to Line" Name="mnuGoToLine" Click="mnuGoToLine_Click" InputGestureText="Ctrl+G" />
                 <Separator />
                 <MenuItem Header="Comment Selection" Name="mnuCommentSelection" Click="mnuCommentSelection_Click" InputGestureText="Ctrl+K,C" />
                 <MenuItem Header="Uncomment Selection" Name="mnuUncommentSelection" Click="mnuUncommentSelection_Click" InputGestureText="Ctrl+K,U" /> 

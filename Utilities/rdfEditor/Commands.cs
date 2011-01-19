@@ -25,6 +25,7 @@ namespace rdfEditor
         public static readonly ICommand Find = new RoutedCommand();
         public static readonly ICommand FindNext = new RoutedCommand();
         public static readonly ICommand Replace = new RoutedCommand();
+        public static readonly ICommand GoToLine = new RoutedCommand();
 
         public static readonly ICommand IncreaseTextSize = new RoutedCommand();
         public static readonly ICommand DecreaseTextSize = new RoutedCommand();
