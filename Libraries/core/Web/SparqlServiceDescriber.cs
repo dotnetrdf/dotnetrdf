@@ -107,6 +107,7 @@ namespace VDS.RDF.Web
         {
             IGraph g = SparqlServiceDescriber.GetNewGraph();
 
+            //TODO: Should probably use a Blank Node as the top level thing to allow multiple description per file
             UriNode descrip = g.CreateUriNode(descripUri);
             UriNode rdfType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
             UriNode service = g.CreateUriNode("sd:" + ClassService);
