@@ -241,16 +241,6 @@ namespace VDS.RDF.Update.Protocol
         }
 
         /// <summary>
-        /// Processes an OPTIONS operation
-        /// </summary>
-        /// <param name="context">HTTP Context</param>
-        public override void ProcessOptions(HttpContext context)
-        {
-            //REQ: Implement OPTIONS for SPARQL Uniform HTTP Protocol
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
         /// Processes a PATCH operation
         /// </summary>
         /// <param name="context">HTTP Context</param>

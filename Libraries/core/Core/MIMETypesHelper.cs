@@ -739,7 +739,7 @@ namespace VDS.RDF
             }
             contentType = contentType.ToLowerInvariant();
 
-            foreach (MimeTypeDefinition definition in MimeTypesHelper.Definitions)
+            foreach (MimeTypeDefinition definition in MimeTypesHelper.GetDefinitions(contentType))
             {
                 if (definition.CanParseSparqlResults)
                 {
@@ -806,7 +806,7 @@ namespace VDS.RDF
                 }
                 type = type.ToLowerInvariant();
 
-                foreach (MimeTypeDefinition definition in MimeTypesHelper.Definitions)
+                foreach (MimeTypeDefinition definition in MimeTypesHelper.GetDefinitions(type))
                 {
                     if (definition.CanWriteSparqlResults)
                     {
@@ -872,7 +872,7 @@ namespace VDS.RDF
             }
             contentType = contentType.ToLowerInvariant();
 
-            foreach (MimeTypeDefinition definition in MimeTypesHelper.Definitions)
+            foreach (MimeTypeDefinition definition in MimeTypesHelper.GetDefinitions(contentType))
             {
                 if (definition.CanParseRdfDatasets)
                 {

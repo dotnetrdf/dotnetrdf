@@ -30,7 +30,6 @@ dotNetRDF
 ---------
 
 2x REQ: Implement OPTIONS for SPARQL Uniform HTTP Protocol
-2x REQ: Implement PATCH for SPARQL Uniform HTTP Protocol
 HACK: Changed to an accept all for the time being to ensure works OK with DBPedia and Virtuoso
 HACK: Have to send only RDF/XML as the accept header due to a known issue with Talis Platform
 TODO: Implement IsIpvFuture

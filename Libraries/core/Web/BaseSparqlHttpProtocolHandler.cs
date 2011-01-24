@@ -110,7 +110,10 @@ namespace VDS.RDF.Web
                         this._config.Processor.ProcessHead(context);
                         break;
                     case "OPTIONS":
-                        this._config.Processor.ProcessOptions(context);
+                        //For an OPTIONS request we should return a URI that gets a Service
+                        //Description - in the case of the standalone Protocl Handler this is
+                        //not possible so we give a 405 Method Not Allowed response
+                        context.Response.StatusCode = (int)HttpStatusCode.MethodNotAllowed;
                         break;
                     case "PATCH":
                         this._config.Processor.ProcessPatch(context);

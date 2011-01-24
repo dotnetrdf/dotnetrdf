@@ -79,12 +79,6 @@ namespace VDS.RDF.Update.Protocol
         public abstract void ProcessHead(HttpContext context);
 
         /// <summary>
-        /// Processes an OPTIONS operation
-        /// </summary>
-        /// <param name="context">HTTP Context</param>
-        public abstract void ProcessOptions(HttpContext context);
-
-        /// <summary>
         /// Processes a PATCH operation
         /// </summary>
         /// <param name="context">HTTP Context</param>

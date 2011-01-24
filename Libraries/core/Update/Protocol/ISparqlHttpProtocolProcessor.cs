@@ -80,12 +80,6 @@ namespace VDS.RDF.Update.Protocol
         void ProcessHead(HttpContext context);
 
         /// <summary>
-        /// Processes an OPTIONS operation which gets information about the Store
-        /// </summary>
-        /// <param name="context">HTTP Context</param>
-        void ProcessOptions(HttpContext context);
-
-        /// <summary>
         /// Processes a PATCH operation which may choose
         /// </summary>
         /// <param name="context"></param>

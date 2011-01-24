@@ -61,6 +61,7 @@ namespace VDS.RDF.Web
         /// Handler Configuration
         /// </summary>
         protected BaseSparqlServerConfiguration _config;
+        private String _basePath;
 
         /// <summary>
         /// Returns that the Handler is reusable
@@ -79,16 +80,15 @@ namespace VDS.RDF.Web
         /// <param name="context">HTTP Context</param>
         public void ProcessRequest(HttpContext context)
         {
-            String basePath;
-            this._config = this.LoadConfig(context, out basePath);
+            this._config = this.LoadConfig(context, out this._basePath);
 
             //Add our Standard Headers
             HandlerHelper.AddStandardHeaders(context);
 
             String path = context.Request.Path;
-            if (path.StartsWith(basePath))
+            if (path.StartsWith(this._basePath))
             {
-                path = path.Substring(basePath.Length);
+                path = path.Substring(this._basePath.Length);
             }
 
             switch (path)
@@ -434,7 +434,16 @@ namespace VDS.RDF.Web
                         this._config.ProtocolProcessor.ProcessPatch(context);
                         break;
                     case "OPTIONS":
-                        this._config.ProtocolProcessor.ProcessOptions(context);
+                        //For an OPTIONS request we should return a URI that gives a Service
+                        //Description document
+                        try
+                        {
+                            context.Response.Headers.Add("Location", this._basePath + "description");
+                        }
+                        catch (PlatformNotSupportedException)
+                        {
+                            context.Response.AddHeader("Location", this._basePath + "description");
+                        }
                         break;
                     case "HEAD":
                         this._config.ProtocolProcessor.ProcessHead(context);

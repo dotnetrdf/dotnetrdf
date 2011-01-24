@@ -583,7 +583,7 @@ namespace VDS.RDF.Web.Configuration.Query
     }
 }
 
-namespace VDS.RDF.Web.Configuration.Resources
+namespace VDS.RDF.Web.Configuration.Resource
 {
     /// <summary>
     /// <para>

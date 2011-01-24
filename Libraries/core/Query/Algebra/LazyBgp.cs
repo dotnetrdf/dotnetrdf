@@ -381,236 +381,240 @@ namespace VDS.RDF.Query.Algebra
                     }
                 }
             }
-            else if (temp is FilterPattern)
+            //else if (temp is FilterPattern)
+            //{
+            //    FilterPattern fp = (FilterPattern)temp;
+            //    ISparqlFilter filter = fp.Filter;
+            //    ISparqlExpression expr = filter.Expression;
+
+            //    //Find the first result of those we've got so f
+            //    foreach (int id in context.InputMultiset.SetIDs)
+            //    {
+            //        try
+            //        {
+            //            if (expr.EffectiveBooleanValue(context, id))
+            //            {
+            //                resultsFound++;
+            //                context.OutputMultiset.Add(context.InputMultiset[id]);
+
+            //                //Recurse unless we're the last pattern
+            //                if (pattern < this._triplePatterns.Count - 1)
+            //                {
+            //                    results = this.StreamingEvaluate(context, pattern + 1, out halt);
+
+            //                    //If recursion leads to a halt then we halt and return immediately
+            //                    if (halt && results.Count >= this._requiredResults && this._requiredResults != -1)
+            //                    {
+            //                        return results;
+            //                    }
+            //                    else if (halt)
+            //                    {
+            //                        if (prevResults > -1)
+            //                        {
+            //                            if (results.Count == prevResults)
+            //                            {
+            //                                //If the amount of results found hasn't increased then this match does not
+            //                                //generate any further solutions further down the recursion so we can eliminate
+            //                                //this from the results
+            //                                localOutput.Remove(localOutput.SetIDs.Max());
+            //                            }
+            //                        }
+            //                        prevResults = results.Count;
+
+            //                        //If we're supposed to halt but not reached the number of required results then continue
+            //                        context.InputMultiset = initialInput;
+            //                        context.OutputMultiset = localOutput;
+            //                    }
+            //                    else
+            //                    {
+            //                        //Otherwise we need to keep going here
+            //                        //So must reset our input and outputs before continuing
+            //                        context.InputMultiset = initialInput;
+            //                        context.OutputMultiset = new Multiset();
+            //                        resultsFound--;
+            //                    }
+            //                }
+            //                else
+            //                {
+            //                    //If we're at the last pattern and we've found a match then we can halt
+            //                    halt = true;
+
+            //                    //Generate the final output and return it
+            //                    if (context.InputMultiset.IsDisjointWith(context.OutputMultiset))
+            //                    {
+            //                        //Disjoint so do a Product
+            //                        results = context.InputMultiset.Product(context.OutputMultiset);
+            //                    }
+            //                    else
+            //                    {
+            //                        //Normal Join
+            //                        results = context.InputMultiset.Join(context.OutputMultiset);
+            //                    }
+
+            //                    //If have reached required number of results return
+            //                    if (results.Count >= this._requiredResults && this._requiredResults != -1)
+            //                    {
+            //                        context.OutputMultiset = results;
+            //                        return context.OutputMultiset;
+            //                    }
+            //                }
+            //            }
+            //        }
+            //        catch
+            //        {
+            //            //Ignore expression evaluation errors
+            //        }
+            //    }
+            //}
+            //else if (temp is BindPattern)
+            //{
+            //    BindPattern bind = (BindPattern)temp;
+            //    if (context.InputMultiset.ContainsVariable(bind.VariableName)) throw new RdfQueryException("Cannot use a BIND assigment to BIND to a variable that has previously been declared");
+
+            //    foreach (int id in context.InputMultiset.SetIDs)
+            //    {
+            //        try
+            //        {
+            //            Set s = context.InputMultiset[id];
+            //            s.Add(bind.VariableName, bind.AssignExpression.Value(context, id));
+
+            //            resultsFound++;
+            //            context.OutputMultiset.Add(context.InputMultiset[id]);
+
+            //            //Recurse unless we're the last pattern
+            //            if (pattern < this._triplePatterns.Count - 1)
+            //            {
+            //                results = this.StreamingEvaluate(context, pattern + 1, out halt);
+
+            //                //If recursion leads to a halt then we halt and return immediately
+            //                if (halt && results.Count >= this._requiredResults && this._requiredResults != -1)
+            //                {
+            //                    return results;
+            //                }
+            //                else if (halt)
+            //                {
+            //                    if (prevResults > -1)
+            //                    {
+            //                        if (results.Count == prevResults)
+            //                        {
+            //                            //If the amount of results found hasn't increased then this match does not
+            //                            //generate any further solutions further down the recursion so we can eliminate
+            //                            //this from the results
+            //                            localOutput.Remove(localOutput.SetIDs.Max());
+            //                        }
+            //                    }
+            //                    prevResults = results.Count;
+
+            //                    //If we're supposed to halt but not reached the number of required results then continue
+            //                    context.InputMultiset = initialInput;
+            //                    context.OutputMultiset = localOutput;
+            //                }
+            //                else
+            //                {
+            //                    //Otherwise we need to keep going here
+            //                    //So must reset our input and outputs before continuing
+            //                    context.InputMultiset = initialInput;
+            //                    context.OutputMultiset = new Multiset();
+            //                    resultsFound--;
+            //                }
+            //            }
+            //            else
+            //            {
+            //                //If we're at the last pattern and we've found a match then we can halt
+            //                halt = true;
+
+            //                //Generate the final output and return it
+            //                results = context.OutputMultiset;
+
+            //                //If reached required number of results can return
+            //                if (results.Count >= this._requiredResults && this._requiredResults != -1)
+            //                {
+            //                    context.OutputMultiset = results;
+            //                    return context.OutputMultiset;
+            //                }
+            //            }
+            //        }
+            //        catch
+            //        {
+            //            //Ignore expression evaluation errors
+            //            //Q: Should error eliminate a solution/assign a null/do nothing
+            //        }
+            //    }
+            //}
+            //else if (temp is SubQueryPattern)
+            //{
+            //    SubQueryPattern sqp = (SubQueryPattern)temp;
+
+            //    ISparqlAlgebra algebra = sqp.SubQuery.ToAlgebra();
+            //    SparqlEvaluationContext subcontext = new SparqlEvaluationContext(sqp.SubQuery, context.Data);
+            //    context.OutputMultiset = algebra.Evaluate(subcontext);
+            //    resultsFound++;
+
+            //    //Recurse unless we're the last pattern
+            //    if (pattern < this._triplePatterns.Count - 1)
+            //    {
+            //        results = this.StreamingEvaluate(context, pattern + 1, out halt);
+
+            //        //If recursion leads to a halt then we halt and return immediately
+            //        if (halt && results.Count >= this._requiredResults && this._requiredResults != -1)
+            //        {
+            //            return results;
+            //        }
+            //        else if (halt)
+            //        {
+            //            if (prevResults > -1)
+            //            {
+            //                if (results.Count == prevResults)
+            //                {
+            //                    //If the amount of results found hasn't increased then this match does not
+            //                    //generate any further solutions further down the recursion so we can eliminate
+            //                    //this from the results
+            //                    localOutput.Remove(localOutput.SetIDs.Max());
+            //                }
+            //            }
+            //            prevResults = results.Count;
+
+            //            //If we're supposed to halt but not reached the number of required results then continue
+            //            context.InputMultiset = initialInput;
+            //            context.OutputMultiset = localOutput;
+            //        }
+            //        else
+            //        {
+            //            //Otherwise we need to keep going here
+            //            //So must reset our input and outputs before continuing
+            //            context.InputMultiset = initialInput;
+            //            context.OutputMultiset = new Multiset();
+            //            resultsFound--;
+            //        }
+            //    }
+            //    else
+            //    {
+            //        //If we're at the last pattern and we've found a match then we can halt
+            //        halt = true;
+
+            //        //Generate the final output and return it
+            //        if (context.InputMultiset.IsDisjointWith(context.OutputMultiset))
+            //        {
+            //            //Disjoint so do a Product
+            //            results = context.InputMultiset.Product(context.OutputMultiset);
+            //        }
+            //        else
+            //        {
+            //            //Normal Join
+            //            results = context.InputMultiset.Join(context.OutputMultiset);
+            //        }
+
+            //        //If reached required number of results can return
+            //        if (results.Count >= this._requiredResults && this._requiredResults != -1)
+            //        {
+            //            context.OutputMultiset = results;
+            //            return context.OutputMultiset;
+            //        }
+            //    }
+            //}
+            else
             {
-                FilterPattern fp = (FilterPattern)temp;
-                ISparqlFilter filter = fp.Filter;
-                ISparqlExpression expr = filter.Expression;
-
-                //Find the first result of those we've got so f
-                foreach (int id in context.InputMultiset.SetIDs)
-                {
-                    try
-                    {
-                        if (expr.EffectiveBooleanValue(context, id))
-                        {
-                            resultsFound++;
-                            context.OutputMultiset.Add(context.InputMultiset[id]);
-
-                            //Recurse unless we're the last pattern
-                            if (pattern < this._triplePatterns.Count - 1)
-                            {
-                                results = this.StreamingEvaluate(context, pattern + 1, out halt);
-
-                                //If recursion leads to a halt then we halt and return immediately
-                                if (halt && results.Count >= this._requiredResults && this._requiredResults != -1)
-                                {
-                                    return results;
-                                }
-                                else if (halt)
-                                {
-                                    if (prevResults > -1)
-                                    {
-                                        if (results.Count == prevResults)
-                                        {
-                                            //If the amount of results found hasn't increased then this match does not
-                                            //generate any further solutions further down the recursion so we can eliminate
-                                            //this from the results
-                                            localOutput.Remove(localOutput.SetIDs.Max());
-                                        }
-                                    }
-                                    prevResults = results.Count;
-
-                                    //If we're supposed to halt but not reached the number of required results then continue
-                                    context.InputMultiset = initialInput;
-                                    context.OutputMultiset = localOutput;
-                                }
-                                else
-                                {
-                                    //Otherwise we need to keep going here
-                                    //So must reset our input and outputs before continuing
-                                    context.InputMultiset = initialInput;
-                                    context.OutputMultiset = new Multiset();
-                                    resultsFound--;
-                                }
-                            }
-                            else
-                            {
-                                //If we're at the last pattern and we've found a match then we can halt
-                                halt = true;
-
-                                //Generate the final output and return it
-                                if (context.InputMultiset.IsDisjointWith(context.OutputMultiset))
-                                {
-                                    //Disjoint so do a Product
-                                    results = context.InputMultiset.Product(context.OutputMultiset);
-                                }
-                                else
-                                {
-                                    //Normal Join
-                                    results = context.InputMultiset.Join(context.OutputMultiset);
-                                }
-
-                                //If have reached required number of results return
-                                if (results.Count >= this._requiredResults && this._requiredResults != -1)
-                                {
-                                    context.OutputMultiset = results;
-                                    return context.OutputMultiset;
-                                }
-                            }
-                        }
-                    }
-                    catch
-                    {
-                        //Ignore expression evaluation errors
-                    }
-                }
-            }
-            else if (temp is BindPattern)
-            {
-                BindPattern bind = (BindPattern)temp;
-                if (context.InputMultiset.ContainsVariable(bind.VariableName)) throw new RdfQueryException("Cannot use a BIND assigment to BIND to a variable that has previously been declared");
-
-                foreach (int id in context.InputMultiset.SetIDs)
-                {
-                    try
-                    {
-                        Set s = context.InputMultiset[id];
-                        s.Add(bind.VariableName, bind.AssignExpression.Value(context, id));
-
-                        resultsFound++;
-                        context.OutputMultiset.Add(context.InputMultiset[id]);
-
-                        //Recurse unless we're the last pattern
-                        if (pattern < this._triplePatterns.Count - 1)
-                        {
-                            results = this.StreamingEvaluate(context, pattern + 1, out halt);
-
-                            //If recursion leads to a halt then we halt and return immediately
-                            if (halt && results.Count >= this._requiredResults && this._requiredResults != -1)
-                            {
-                                return results;
-                            }
-                            else if (halt)
-                            {
-                                if (prevResults > -1)
-                                {
-                                    if (results.Count == prevResults)
-                                    {
-                                        //If the amount of results found hasn't increased then this match does not
-                                        //generate any further solutions further down the recursion so we can eliminate
-                                        //this from the results
-                                        localOutput.Remove(localOutput.SetIDs.Max());
-                                    }
-                                }
-                                prevResults = results.Count;
-
-                                //If we're supposed to halt but not reached the number of required results then continue
-                                context.InputMultiset = initialInput;
-                                context.OutputMultiset = localOutput;
-                            }
-                            else
-                            {
-                                //Otherwise we need to keep going here
-                                //So must reset our input and outputs before continuing
-                                context.InputMultiset = initialInput;
-                                context.OutputMultiset = new Multiset();
-                                resultsFound--;
-                            }
-                        }
-                        else
-                        {
-                            //If we're at the last pattern and we've found a match then we can halt
-                            halt = true;
-
-                            //Generate the final output and return it
-                            results = context.OutputMultiset;
-
-                            //If reached required number of results can return
-                            if (results.Count >= this._requiredResults && this._requiredResults != -1)
-                            {
-                                context.OutputMultiset = results;
-                                return context.OutputMultiset;
-                            }
-                        }
-                    }
-                    catch
-                    {
-                        //Ignore expression evaluation errors
-                        //Q: Should error eliminate a solution/assign a null/do nothing
-                    }
-                }
-            }
-            else if (temp is SubQueryPattern)
-            {
-                SubQueryPattern sqp = (SubQueryPattern)temp;
-
-                ISparqlAlgebra algebra = sqp.SubQuery.ToAlgebra();
-                SparqlEvaluationContext subcontext = new SparqlEvaluationContext(sqp.SubQuery, context.Data);
-                context.OutputMultiset = algebra.Evaluate(subcontext);
-                resultsFound++;
-
-                //Recurse unless we're the last pattern
-                if (pattern < this._triplePatterns.Count - 1)
-                {
-                    results = this.StreamingEvaluate(context, pattern + 1, out halt);
-
-                    //If recursion leads to a halt then we halt and return immediately
-                    if (halt && results.Count >= this._requiredResults && this._requiredResults != -1)
-                    {
-                        return results;
-                    }
-                    else if (halt)
-                    {
-                        if (prevResults > -1)
-                        {
-                            if (results.Count == prevResults)
-                            {
-                                //If the amount of results found hasn't increased then this match does not
-                                //generate any further solutions further down the recursion so we can eliminate
-                                //this from the results
-                                localOutput.Remove(localOutput.SetIDs.Max());
-                            }
-                        }
-                        prevResults = results.Count;
-
-                        //If we're supposed to halt but not reached the number of required results then continue
-                        context.InputMultiset = initialInput;
-                        context.OutputMultiset = localOutput;
-                    }
-                    else
-                    {
-                        //Otherwise we need to keep going here
-                        //So must reset our input and outputs before continuing
-                        context.InputMultiset = initialInput;
-                        context.OutputMultiset = new Multiset();
-                        resultsFound--;
-                    }
-                }
-                else
-                {
-                    //If we're at the last pattern and we've found a match then we can halt
-                    halt = true;
-
-                    //Generate the final output and return it
-                    if (context.InputMultiset.IsDisjointWith(context.OutputMultiset))
-                    {
-                        //Disjoint so do a Product
-                        results = context.InputMultiset.Product(context.OutputMultiset);
-                    }
-                    else
-                    {
-                        //Normal Join
-                        results = context.InputMultiset.Join(context.OutputMultiset);
-                    }
-
-                    //If reached required number of results can return
-                    if (results.Count >= this._requiredResults && this._requiredResults != -1)
-                    {
-                        context.OutputMultiset = results;
-                        return context.OutputMultiset;
-                    }
-                }
+                throw new RdfQueryException("Encountered a " + temp.GetType().FullName + " which is not a lazily evaluable Pattern");
             }
 
             //If we found no possibles we return the null multiset
