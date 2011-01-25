@@ -317,13 +317,13 @@ namespace dotNetRDFTest
                 {
                     if (shouldParse)
                     {
-                        Console.WriteLine(" Parsed OK (Test Failed)");
+                        Console.WriteLine(" Parsing Failed when should have parsed (Test Failed)");
                         testsFailed++;
                         testsSyntaxFailed++;
                     }
                     else
                     {
-                        Console.WriteLine(" Parsing Failed (Test Passed)");
+                        Console.WriteLine(" Parsing Failed as expected (Test Passed)");
                         testsPassed++;
                         testsSyntaxPassed++;
                     }
@@ -332,13 +332,13 @@ namespace dotNetRDFTest
                 {
                     if (shouldParse)
                     {
-                        Console.WriteLine(" Parsed OK (Test Passed)");
+                        Console.WriteLine(" Parsed OK as expected (Test Passed)");
                         testsPassed++;
                         testsSyntaxPassed++;
                     }
                     else
                     {
-                        Console.WriteLine(" Parsing Failed (Test Failed)");
+                        Console.WriteLine(" Parsed OK when should have failed (Test Failed)");
                         testsFailed++;
                         testsSyntaxFailed++;
                     }

@@ -1205,6 +1205,7 @@ namespace VDS.RDF.Parsing
                             case Token.BIND:
                             case Token.LEFTSQBRACKET:
                             case Token.LEFTBRACKET:
+                                context.GraphPatternID++;
                                 this.TryParseTriplePatterns(context, child);
                                 break;
                             default:
@@ -2483,6 +2484,8 @@ namespace VDS.RDF.Parsing
                     case Token.UCASE:
                     case Token.URIFUNC:
                     case Token.YEAR:
+                    case Token.QNAME:
+                    case Token.URI:
                         //Built-in/Extension Function Call Order By
                         ISparqlExpression expr = this.TryParseFunctionExpression(context);
 

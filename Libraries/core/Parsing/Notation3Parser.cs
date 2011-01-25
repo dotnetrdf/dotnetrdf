@@ -382,6 +382,12 @@ namespace VDS.RDF.Parsing
                 }
 
                 next = context.Tokens.Dequeue();
+
+                //May optionally have a COMMA between each QName/URI
+                if (next.TokenType == Token.COMMA)
+                {
+                    next = context.Tokens.Dequeue();
+                }
             }
         }
 
@@ -421,6 +427,12 @@ namespace VDS.RDF.Parsing
                 }
 
                 next = context.Tokens.Dequeue();
+
+                //May optionally have a COMMA between each QName/URI
+                if (next.TokenType == Token.COMMA)
+                {
+                    next = context.Tokens.Dequeue();
+                }
             }
 
             this.RaiseWarning("Parser does not know how to evaluate forSome Quantifiers");
