@@ -15,5 +15,21 @@ namespace WebDemos
             expr = new NodeExpressionTerm(g.CreateLiteralNode("Monkey"));
             return true;
         }
+
+        public IEnumerable<Uri> AvailableExtensionFunctions
+        {
+            get
+            {
+                return Enumerable.Empty<Uri>();
+            }
+        }
+
+        public IEnumerable<Uri> AvailableExtensionAggregates
+        {
+            get
+            {
+                return Enumerable.Empty<Uri>();
+            }
+        }
     }
 }

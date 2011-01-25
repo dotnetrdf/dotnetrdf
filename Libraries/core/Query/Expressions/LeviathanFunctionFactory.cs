@@ -110,6 +110,54 @@ namespace VDS.RDF.Query.Expressions
         public const String Mode = "mode",
                             Median = "median";
 
+        /// <summary>
+        /// Array of Extension Function URIs
+        /// </summary>
+        private String[] FunctionUris = {
+                                            MD5Hash,
+                                            Sha256Hash,
+                                            Random,
+                                            TrigCos,
+                                            TrigCosec,
+                                            TrigCosecInv,
+                                            TrigCosInv,
+                                            TrigCotan,
+                                            TrigCotanInv,
+                                            TrigSec,
+                                            TrigSecInv,
+                                            TrigSin,
+                                            TrigSinInv,
+                                            TrigTan,
+                                            TrigTanInv,
+                                            RadiansToDegrees,
+                                            DegreesToRadians,
+                                            Log,
+                                            Ln,
+                                            E,
+                                            Ten,
+                                            Power,
+                                            Square,
+                                            Cube,
+                                            SquareRoot,
+                                            Root,
+                                            Pythagoras,
+                                            Cartesian,
+                                            Factorial,
+                                        };
+
+        /// <summary>
+        /// Array of Extension Aggregate URIs
+        /// </summary>
+        private String[] AggregateUris = {
+                                             All,
+                                             Any,
+                                             None,
+                                             NumericMax,
+                                             NumericMin,
+                                             Mode,
+                                             Median
+                                         };
+
 
         /// <summary>
         /// Tries to create an Leviathan Function expression if the function Uri correseponds to a supported Leviathan Function
@@ -516,6 +564,30 @@ namespace VDS.RDF.Query.Expressions
             }
             expr = null;
             return false;  
+        }
+
+        /// <summary>
+        /// Gets the Extension Function URIs supported by this Factory
+        /// </summary>
+        public IEnumerable<Uri> AvailableExtensionFunctions
+        {
+            get
+            {
+                return (from u in FunctionUris
+                        select new Uri(LeviathanFunctionsNamespace + u));
+            }
+        }
+
+        /// <summary>
+        /// Gets the Extension Aggregate URIs supported by this Factory
+        /// </summary>
+        public IEnumerable<Uri> AvailableExtensionAggregates
+        {
+            get
+            {
+                return (from u in AggregateUris
+                        select new Uri(LeviathanFunctionsNamespace + u));
+            }
         }
     }
 }

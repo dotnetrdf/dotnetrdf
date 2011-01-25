@@ -100,7 +100,7 @@ namespace VDS.RDF.Web
                     this.ProcessUpdateRequest(context);
                     break;
                 case "description":
-                    context.Response.StatusCode = (int)HttpStatusCode.NotImplemented;
+                    this.ProcessDescriptionRequest(context);
                     break;
                 default:
                     this.ProcessProtocolRequest(context);
@@ -201,7 +201,7 @@ namespace VDS.RDF.Web
             try
             {
                 //Now we're going to parse the Query
-                SparqlQueryParser parser = new SparqlQueryParser();
+                SparqlQueryParser parser = new SparqlQueryParser(this._config.QuerySyntax);
                 parser.ExpressionFactories = this._config.ExpressionFactories;
                 SparqlQuery query = parser.ParseFromString(queryText);
 
@@ -495,6 +495,25 @@ namespace VDS.RDF.Web
             catch (Exception)
             {
                 //For any other error we'll send a 500 Internal Server Error
+                context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+            }
+        }
+
+        /// <summary>
+        /// Processes Service Description requests
+        /// </summary>
+        /// <param name="context">HTTP Context</param>
+        public void ProcessDescriptionRequest(HttpContext context)
+        {
+            try
+            {
+                //Get the Service Description Graph
+                IGraph serviceDescrip = SparqlServiceDescriber.GetServiceDescription(context, this._config, new Uri(context.Request.Url.AbsoluteUri));
+                HandlerHelper.SendToClient(context, serviceDescrip, this._config);
+            }
+            catch
+            {
+                //If any errors occur then return a 500 Internal Server Error
                 context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
             }
         }

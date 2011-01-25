@@ -81,6 +81,7 @@ namespace VDS.RDF.Configuration
                             PropertyDeny = "dnr:deny",
                             PropertyAction = "dnr:action",
                             //Properties for HTTP Handler configuration
+                            PropertySyntax = "dnr:syntax",
                             PropertyTimeout = "dnr:timeout",
                             PropertyPartialResults = "dnr:partialResults",
                             PropertyShowErrors = "dnr:showErrors",

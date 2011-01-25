@@ -398,6 +398,11 @@ dnr:action a rdf:Property ;
 		   
 # Properties for HTTP Handler Configuration
 
+dnr:syntax a rdf:Property ;
+			rdfs:label "Syntax" ;
+			rdfs:comment "This property sets the Syntax in use." ;
+			rdfs:domain dnr:HttpHandler .
+
 dnr:timeout a rdf:Property ;
 			rdfs:label "Timeout" ;
 			rdfs:comment "This property sets the timeout." ;

@@ -41,18 +41,34 @@ using System.Text;
 namespace VDS.RDF.Query.Expressions
 {
     /// <summary>
-    /// Interface for implementing SPARQL custom expression factories which turn Uri specified functions into Sparql Expressions
+    /// Interface for implementing SPARQL custom expression factories which turn URI specified functions into SPARQL Expressions
     /// </summary>
     public interface ISparqlCustomExpressionFactory
     {
         /// <summary>
-        /// Tries to Create a SPARQL Expression for a function with the given Uri and set of arguments
+        /// Tries to Create a SPARQL Expression for a function with the given URI and set of arguments
         /// </summary>
-        /// <param name="u">Uri of the function</param>
+        /// <param name="u">URI of the function</param>
         /// <param name="args">List of Arguments</param>
         /// <param name="scalarArguments">Dictionary of Scalar Arguments which are supportable by aggregates when Syntax is set to SPARQL 1.1 Extended</param>
         /// <param name="expr">Resulting Expression if able to generate</param>
         /// <returns>True if an expression is generated, false if not</returns>
         bool TryCreateExpression(Uri u, List<ISparqlExpression> args, Dictionary<String,ISparqlExpression> scalarArguments, out ISparqlExpression expr);
+
+        /// <summary>
+        /// Gets the Extension Function URIs that this Factory provides
+        /// </summary>
+        IEnumerable<Uri> AvailableExtensionFunctions
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Gets the Extension Aggregate URIs that this Factory provides
+        /// </summary>
+        IEnumerable<Uri> AvailableExtensionAggregates
+        {
+            get;
+        }
     }
 }

@@ -92,16 +92,42 @@ namespace VDS.RDF.Web
             //If no Query sent either show Query Form or give a HTTP 400 response
             if (queryText == null || queryText.Equals(String.Empty))
             {
+                //If there is no Query we may return the SPARQL Service Description where appropriate
+                try
+                {
+                    //If we might show the Query Form only show the Description if the selected writer is
+                    //not a HTML writer
+                    MimeTypeDefinition definition = MimeTypesHelper.GetDefinitions(context.Request.AcceptTypes).FirstOrDefault(d => d.CanWriteRdf);
+                    if (definition != null)
+                    {
+                        IRdfWriter writer = definition.GetRdfWriter();
+                        if (!this._config.ShowQueryForm || !(writer is IHtmlWriter))
+                        {
+                            //If not a HTML Writer selected OR not showing Query Form then show the Service Description Graph
+                            //unless an error occurs creating it
+                            IGraph serviceDescrip = SparqlServiceDescriber.GetServiceDescription(context, this._config, new Uri(context.Request.Url.AbsoluteUri));
+                            context.Response.ContentType = definition.CanonicalMimeType;
+                            context.Response.ContentEncoding = definition.Encoding;
+                            writer.Save(serviceDescrip, new StreamWriter(context.Response.OutputStream, definition.Encoding));
+                            return;
+                        }
+                    }
+                }
+                catch
+                {
+                    //Ignore Exceptions - we'll just show the Query Form or return a 400 Bad Request instead
+                }
+
+                //If a Writer can't be selected then we'll either show the Query Form or return a 400 Bad Request
                 if (this._config.ShowQueryForm)
                 {
                     this.ShowQueryForm(context);
-                    return;
                 }
                 else
                 {
                     context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                    return;
                 }
+                return;
             }
 
             //Get Other options associated with this query
@@ -163,7 +189,7 @@ namespace VDS.RDF.Web
             try
             {
                 //Now we're going to parse the Query
-                SparqlQueryParser parser = new SparqlQueryParser();
+                SparqlQueryParser parser = new SparqlQueryParser(this._config.Syntax);
                 parser.ExpressionFactories = this._config.ExpressionFactories;
                 SparqlQuery query = parser.ParseFromString(queryText);
 

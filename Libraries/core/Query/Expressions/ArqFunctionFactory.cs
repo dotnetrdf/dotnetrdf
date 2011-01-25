@@ -86,6 +86,24 @@ namespace VDS.RDF.Query.Expressions
                             Now = "now";
 
         /// <summary>
+        /// Array of Extension Function URIs
+        /// </summary>
+        private String[] FunctionUris = {
+                                            Max,
+                                            Min,
+                                            Pi,
+                                            E,
+                                            BNode,
+                                            LocalName,
+                                            Namespace,
+                                            Substr,
+                                            Substring,
+                                            StrJoin,
+                                            Sha1Sum,
+                                            Now
+                                        };
+
+        /// <summary>
         /// Tries to create an ARQ Function expression if the function Uri correseponds to a supported ARQ Function
         /// </summary>
         /// <param name="u">Function Uri</param>
@@ -235,6 +253,29 @@ namespace VDS.RDF.Query.Expressions
             }
             expr = null;
             return false;  
+        }
+
+        /// <summary>
+        /// Gets the Extension Function URIs supported by this Factory
+        /// </summary>
+        public IEnumerable<Uri> AvailableExtensionFunctions
+        {
+            get
+            {
+                return (from u in FunctionUris
+                        select new Uri(ArqFunctionsNamespace + u));
+            }
+        }
+
+        /// <summary>
+        /// Gets the Extension Aggregate URIs supported by this Factory
+        /// </summary>
+        public IEnumerable<Uri> AvailableExtensionAggregates
+        {
+            get
+            {
+                return Enumerable.Empty<Uri>();
+            }
         }
     }
 }

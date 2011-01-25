@@ -113,6 +113,45 @@ namespace VDS.RDF.Query.Expressions
                             XPathUnicodeNormalizationFormKD = "NFKD",
                             XPathUnicodeNormalizationFormFull = "FULLY-NORMALIZED";
 
+        private String[] FunctionUris = {
+                                            Not,
+                                            Boolean,
+                                            True,
+                                            False,
+                                            Matches,
+                                            Contains,
+                                            StartsWith,
+                                            EndsWith,
+                                            StringLength,
+                                            Concat,
+                                            Substring,
+                                            SubstringAfter,
+                                            SubstringBefore,
+                                            NormalizeSpace,
+                                            NormalizeUnicode,
+                                            UpperCase,
+                                            LowerCase,
+                                            EncodeForURI,
+                                            Replace,
+                                            EscapeHtmlURI,
+                                            Absolute,
+                                            Ceiling,
+                                            Floor,
+                                            Round,
+                                            RoundHalfToEven,
+                                            YearFromDateTime,
+                                            MonthFromDateTime,
+                                            DayFromDateTime,
+                                            HoursFromDateTime,
+                                            MinutesFromDateTime,
+                                            SecondsFromDateTime,
+                                            TimezoneFromDateTime,
+                                        };
+
+        private String[] AggregateUris = {
+                                             StringJoin
+                                         };
+
         /// <summary>
         /// Argument Type Validator for validating that a Literal either has no datatype or is a String
         /// </summary>
@@ -488,7 +527,15 @@ namespace VDS.RDF.Query.Expressions
                         }
                         break;
                     case XPathFunctionFactory.TimezoneFromDateTime:
-                        throw new NotSupportedException("XPath timezone-from-dateTime() function is not supported");
+                        if (args.Count == 1)
+                        {
+                            xpathFunc = new XPathTimezoneFromDateTimeFunction(args.First());
+                        }
+                        else
+                        {
+                            throw new RdfParseException("Incorrect number of arguments for the XPath timezone-from-dateTime() function");
+                        }
+                        break;
                     case XPathFunctionFactory.Translate:
                         throw new NotSupportedException("XPath translate() function is not supported");
                     case XPathFunctionFactory.True:
@@ -531,6 +578,30 @@ namespace VDS.RDF.Query.Expressions
             }
             expr = null;
             return false;        
+        }
+
+        /// <summary>
+        /// Gets the Extension Function URIs supported by this Factory
+        /// </summary>
+        public IEnumerable<Uri> AvailableExtensionFunctions
+        {
+            get
+            {
+                return (from u in FunctionUris
+                        select new Uri(XPathFunctionsNamespace + u));
+            }
+        }
+
+        /// <summary>
+        /// Gets the Extension Aggregate URIs supported by this Factory
+        /// </summary>
+        public IEnumerable<Uri> AvailableExtensionAggregates
+        {
+            get
+            {
+                return (from u in AggregateUris
+                        select new Uri(XPathFunctionsNamespace + u));
+            }
         }
     }
 }

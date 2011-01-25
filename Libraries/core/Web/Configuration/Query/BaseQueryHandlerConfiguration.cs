@@ -42,8 +42,10 @@ using System.Reflection;
 using System.Web;
 using VDS.RDF.Configuration;
 using VDS.RDF.Configuration.Permissions;
+using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Describe;
+using VDS.RDF.Query.Expressions;
 
 namespace VDS.RDF.Web.Configuration.Query
 {
@@ -98,6 +100,10 @@ namespace VDS.RDF.Web.Configuration.Query
         /// SPARQL Describe Algorithm to use (null indicates default is used)
         /// </summary>
         protected ISparqlDescribe _describer = null;
+        /// <summary>
+        /// SPARQL Syntax to use (defaults to library default which is SPARQL 1.1 unless changed)
+        /// </summary>
+        protected SparqlQuerySyntax _syntax = Options.QueryDefaultSyntax;
 
         /// <summary>
         /// Creates a new Query Handler Configuration
@@ -142,6 +148,20 @@ namespace VDS.RDF.Web.Configuration.Query
                         reader.Close();
                     }
                 }
+            }
+
+            //Get Query Syntax to use
+            try
+            {
+                String syntaxSetting = ConfigurationLoader.GetConfigurationString(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertySyntax));
+                if (syntaxSetting != null)
+                {
+                    this._syntax = (SparqlQuerySyntax)Enum.Parse(typeof(SparqlQuerySyntax), syntaxSetting);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new DotNetRdfConfigurationException("Unable to set the Syntax for the HTTP Handler identified by the Node '" + objNode.ToString() + "' as the value given for the dnr:syntax property was not a valid value from the enum VDS.RDF.Parsing.SparqlQuerySyntax", ex);
             }
 
             //Get the SPARQL Describe Algorithm
@@ -301,6 +321,40 @@ namespace VDS.RDF.Web.Configuration.Query
             get
             {
                 return this._describer;
+            }
+        }
+
+        /// <summary>
+        /// Gets the SPARQL Query Syntax to use
+        /// </summary>
+        public SparqlQuerySyntax Syntax
+        {
+            get
+            {
+                return this._syntax;
+            }
+        }
+
+        /// <summary>
+        /// Adds Description of Features for the given Handler Configuration
+        /// </summary>
+        /// <param name="g">Service Description Graph</param>
+        /// <param name="descripNode">Description Node for the Service</param>
+        public virtual void AddFeatureDescription(IGraph g, INode descripNode)
+        {
+            //Add Local Extension Function definitions
+            UriNode extensionFunction = g.CreateUriNode("sd:" + SparqlServiceDescriber.PropertyExtensionFunction);
+            UriNode extensionAggregate = g.CreateUriNode("sd:" + SparqlServiceDescriber.PropertyExtensionAggregate);
+            foreach (ISparqlCustomExpressionFactory factory in this._expressionFactories)
+            {
+                foreach (Uri u in factory.AvailableExtensionFunctions)
+                {
+                    g.Assert(descripNode, extensionFunction, g.CreateUriNode(u));
+                }
+                foreach (Uri u in factory.AvailableExtensionAggregates)
+                {
+                    g.Assert(descripNode, extensionAggregate, g.CreateUriNode(u));
+                }
             }
         }
     }

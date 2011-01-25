@@ -49,7 +49,7 @@ namespace VDS.RDF
     /// </summary>
     public class MimeTypeDefinition
     {
-        private String _name, _canonicalType, _canonicalExt;
+        private String _name, _canonicalType, _canonicalExt, _formatUri;
         private Encoding _encoding = Encoding.UTF8;
         private List<String> _mimeTypes = new List<string>();
         private List<String> _fileExtensions = new List<string>();
@@ -82,6 +82,19 @@ namespace VDS.RDF
         /// Creates a new MIME Type Definition
         /// </summary>
         /// <param name="syntaxName">Syntax Name for the Syntax which has this MIME Type definition</param>
+        /// <param name="formatUri">Format URI as defined by the <a href="http://www.w3.org/ns/formats/">W3C</a></param>
+        /// <param name="mimeTypes">MIME Types</param>
+        /// <param name="fileExtensions">File Extensions</param>
+        public MimeTypeDefinition(String syntaxName, String formatUri, IEnumerable<String> mimeTypes, IEnumerable<String> fileExtensions)
+            : this(syntaxName, mimeTypes, fileExtensions)
+        {
+            this._formatUri = formatUri;
+        }
+
+        /// <summary>
+        /// Creates a new MIME Type Definition
+        /// </summary>
+        /// <param name="syntaxName">Syntax Name for the Syntax which has this MIME Type definition</param>
         /// <param name="mimeTypes">MIME Types</param>
         /// <param name="fileExtensions">File Extensions</param>
         /// <param name="rdfParserType">Type to use to parse RDF (or null if not applicable)</param>
@@ -102,6 +115,26 @@ namespace VDS.RDF
         }
 
         /// <summary>
+        /// Creates a new MIME Type Definition
+        /// </summary>
+        /// <param name="syntaxName">Syntax Name for the Syntax which has this MIME Type definition</param>
+        /// <param name="formatUri">Format URI as defined by the <a href="http://www.w3.org/ns/formats/">W3C</a></param>
+        /// <param name="mimeTypes">MIME Types</param>
+        /// <param name="fileExtensions">File Extensions</param>
+        /// <param name="rdfParserType">Type to use to parse RDF (or null if not applicable)</param>
+        /// <param name="rdfDatasetParserType">Type to use to parse RDF Datasets (or null if not applicable)</param>
+        /// <param name="sparqlResultsParserType">Type to use to parse SPARQL Results (or null if not applicable)</param>
+        /// <param name="rdfWriterType">Type to use to writer RDF (or null if not applicable)</param>
+        /// <param name="rdfDatasetWriterType">Type to use to write RDF Datasets (or null if not applicable)</param>
+        /// <param name="sparqlResultsWriterType">Type to use to write SPARQL Results (or null if not applicable)</param>
+        public MimeTypeDefinition(String syntaxName, String formatUri, IEnumerable<String> mimeTypes, IEnumerable<String> fileExtensions, Type rdfParserType, Type rdfDatasetParserType, Type sparqlResultsParserType, Type rdfWriterType, Type rdfDatasetWriterType, Type sparqlResultsWriterType)
+            : this(syntaxName, mimeTypes, fileExtensions, rdfParserType, rdfDatasetParserType, sparqlResultsParserType, rdfWriterType, rdfDatasetWriterType, sparqlResultsWriterType)
+        {
+            this._formatUri = formatUri;
+        }
+
+
+        /// <summary>
         /// Gets the name of the Syntax to which this MIME Type Definition relates
         /// </summary>
         public String SyntaxName
@@ -109,6 +142,17 @@ namespace VDS.RDF
             get
             {
                 return this._name;
+            }
+        }
+
+        /// <summary>
+        /// Gets the Format URI as defined by the <a href="http://www.w3.org/ns/formats/">W3C</a> (where applicable)
+        /// </summary>
+        public String FormatUri
+        {
+            get
+            {
+                return this._formatUri;
             }
         }
 

@@ -200,5 +200,16 @@ namespace VDS.RDF.Query.Expressions
                 _customFactories.Add(factory);
             }
         }
+
+        /// <summary>
+        /// Gets the Global Custom Expression Factories that are in use
+        /// </summary>
+        public static IEnumerable<ISparqlCustomExpressionFactory> Factories
+        {
+            get
+            {
+                return _customFactories;
+            }
+        }
     }
 }

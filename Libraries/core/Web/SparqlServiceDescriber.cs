@@ -33,11 +33,15 @@ terms.
 
 */
 
+#if !NO_ASP && !NO_WEB
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Web;
 using VDS.RDF.Parsing;
+using VDS.RDF.Query.Expressions;
 using VDS.RDF.Web.Configuration;
 using VDS.RDF.Web.Configuration.Query;
 using VDS.RDF.Web.Configuration.Server;
@@ -53,44 +57,56 @@ namespace VDS.RDF.Web
     /// </summary>
     public static class SparqlServiceDescriber
     {
+        /// <summary>
+        /// Namespace URI for SPARQL Service Description 1.1
+        /// </summary>
         public const String ServiceDescriptionNamespace = "http://www.w3.org/ns/sparql-service-description#";
 
-        private const String ClassService = "Service",
-                             ClassLanguage = "Language",
-                             ClassFunction = "Function",
-                             ClassAggregate = "Aggregate",
-                             ClassEntailmentRegime = "EntailmentRegime",
-                             ClassEntailmentProfile = "EntailmentProfile",
-                             ClassGraphCollection = "GraphCollection",
-                             ClassDataset = "Dataset",
-                             ClassGraph = "Graph",
-                             ClassNamedGraph = "NamedGraph";
+        /// <summary>
+        /// Constants for SPARQL Service Description Classes
+        /// </summary>
+        public const String ClassService = "Service",
+                            ClassLanguage = "Language",
+                            ClassFunction = "Function",
+                            ClassAggregate = "Aggregate",
+                            ClassEntailmentRegime = "EntailmentRegime",
+                            ClassEntailmentProfile = "EntailmentProfile",
+                            ClassGraphCollection = "GraphCollection",
+                            ClassDataset = "Dataset",
+                            ClassGraph = "Graph",
+                            ClassNamedGraph = "NamedGraph";
 
-        private const String InstanceSparql10Query = "SPARQL10Query",
-                             InstanceSparql11Query = "SPARQL11Query",
-                             InstanceSparql11Update = "SPARQL11Update",
-                             InstanceDereferencesURIs = "DereferencesURIs",
-                             InstanceUnionDefaultGraph = "UnionDefaultGraph",
-                             InstanceRequiresDataset = "RequiresDataset",
-                             InstanceEmptyGraphs = "EmptyGraphs";
+        /// <summary>
+        /// Constants for SPARQL Service Description Instances
+        /// </summary>
+        public const String InstanceSparql10Query = "SPARQL10Query",
+                            InstanceSparql11Query = "SPARQL11Query",
+                            InstanceSparql11Update = "SPARQL11Update",
+                            InstanceDereferencesURIs = "DereferencesURIs",
+                            InstanceUnionDefaultGraph = "UnionDefaultGraph",
+                            InstanceRequiresDataset = "RequiresDataset",
+                            InstanceEmptyGraphs = "EmptyGraphs";
 
-        private const String PropertyUrl = "url",
-                             PropertyFeatures = "feature",
-                             PropertyDefaultEntailmentRegime = "defaultEntailmentRegime",
-                             PropertySupportedEntailmentRegime = "supportedEntailmentRegime",
-                             PropertyExtensionFunction = "extensionFunction",
-                             PropertyExtensionAggregate = "extensionAggregate",
-                             PropertyLanguageExtension = "languageExtension",
-                             PropertySupportedLanguage = "supportedLanguage",
-                             PropertyPropertyFeature = "propertyFeature",
-                             PropertyDefaultDatasetDescription = "defaultDatasetDescription",
-                             PropertyAvailableGraphDescriptions = "availableGraphDescriptions",
-                             PropertyResultFormat = "resultFormat",
-                             PropertyInputFormat = "inputFormat",
-                             PropertyDefaultGraph = "defaultGraph",
-                             PropertyNamedGraph = "namedGraph",
-                             PropertyName = "name",
-                             PropertyGraph = "graph";
+        /// <summary>
+        /// Constants for SPARQL Service Description Properties
+        /// </summary>
+        public const String PropertyUrl = "url",
+                            PropertyFeatures = "feature",
+                            PropertyDefaultEntailmentRegime = "defaultEntailmentRegime",
+                            PropertySupportedEntailmentRegime = "supportedEntailmentRegime",
+                            PropertyExtensionFunction = "extensionFunction",
+                            PropertyExtensionAggregate = "extensionAggregate",
+                            PropertyLanguageExtension = "languageExtension",
+                            PropertySupportedLanguage = "supportedLanguage",
+                            PropertyPropertyFeature = "propertyFeature",
+                            PropertyDefaultDatasetDescription = "defaultDatasetDescription",
+                            PropertyAvailableGraphDescriptions = "availableGraphDescriptions",
+                            PropertyResultFormat = "resultFormat",
+                            PropertyInputFormat = "inputFormat",
+                            PropertyDefaultGraph = "defaultGraph",
+                            PropertyNamedGraph = "namedGraph",
+                            PropertyName = "name",
+                            PropertyGraph = "graph";
 
         private static IGraph GetNewGraph()
         {
@@ -103,26 +119,164 @@ namespace VDS.RDF.Web
         }
 
 
-        public static IGraph GetServiceDescription(BaseQueryHandlerConfiguration config, Uri descripUri)
+        public static IGraph GetServiceDescription(HttpContext context, BaseQueryHandlerConfiguration config, Uri descripUri)
         {
             IGraph g = SparqlServiceDescriber.GetNewGraph();
 
-            //TODO: Should probably use a Blank Node as the top level thing to allow multiple description per file
+            //Add the Top Level Node representing the Service
             UriNode descrip = g.CreateUriNode(descripUri);
             UriNode rdfType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
             UriNode service = g.CreateUriNode("sd:" + ClassService);
-            
-            throw new NotImplementedException();
+            g.Assert(descrip, rdfType, service);
+
+            //Add its sd:url
+            UriNode url = g.CreateUriNode("sd:" + PropertyUrl);
+            g.Assert(descrip, url, descrip);
+
+            //Add the sd:supportedLanguage - Requires Query Language to be configurable through the Configuration API
+            UriNode supportedLang = g.CreateUriNode("sd:" + PropertySupportedLanguage);
+            UriNode lang;
+            switch (config.Syntax)
+            {
+                case SparqlQuerySyntax.Extended:
+                case SparqlQuerySyntax.Sparql_1_1:
+                    lang = g.CreateUriNode("sd:" + InstanceSparql11Query);
+                    break;
+                default:
+                    lang = g.CreateUriNode("sd:" + InstanceSparql10Query);
+                    break;
+            }
+            g.Assert(descrip, supportedLang, lang);
+
+            //Add the Result Formats
+            UriNode resultFormat = g.CreateUriNode("sd:" + PropertyResultFormat);
+            foreach (MimeTypeDefinition definition in MimeTypesHelper.Definitions)
+            {
+                if (definition.CanWriteRdf || definition.CanWriteSparqlResults)
+                {
+                    if (definition.FormatUri != null)
+                    {
+                        g.Assert(descrip, resultFormat, g.CreateUriNode(new Uri(definition.FormatUri)));
+                    }
+                }
+            }
+
+            //Add Features and Dataset Description
+            //First add descriptions for Global Expression Factories
+            UriNode extensionFunction = g.CreateUriNode("sd:" + PropertyExtensionFunction);
+            UriNode extensionAggregate = g.CreateUriNode("sd:" + PropertyExtensionAggregate);
+            foreach (ISparqlCustomExpressionFactory factory in SparqlExpressionFactory.Factories)
+            {
+                foreach (Uri u in factory.AvailableExtensionFunctions)
+                {
+                    g.Assert(descrip, extensionFunction, g.CreateUriNode(u));
+                }
+                foreach (Uri u in factory.AvailableExtensionAggregates)
+                {
+                    g.Assert(descrip, extensionAggregate, g.CreateUriNode(u));
+                }
+            }
+
+            //Then get the Configuration Object to add any other Feature Descriptions it wishes to
+            config.AddFeatureDescription(g, descrip);
+
+            return g;
         }
 
-        public static IGraph GetServiceDescription(BaseSparqlServerConfiguration config, Uri descripUri)
+        public static IGraph GetServiceDescription(HttpContext context, BaseSparqlServerConfiguration config, Uri descripUri)
         {
-            throw new NotImplementedException();
+            IGraph g = SparqlServiceDescriber.GetNewGraph();
+
+            INode queryNode, updateNode, protocolNode;
+
+            //Query Service Description
+            if (config.QueryProcessor != null)
+            {
+                //Add the Top Level Node representing the Query Service
+                queryNode = g.CreateUriNode(new Uri(descripUri, "query"));
+                UriNode rdfType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
+                UriNode service = g.CreateUriNode("sd:" + ClassService);
+                g.Assert(queryNode, rdfType, service);
+
+                //Add its sd:url
+                UriNode url = g.CreateUriNode("sd:" + PropertyUrl);
+                g.Assert(queryNode, url, queryNode);
+
+                //Add the sd:supportedLanguage - Requires Query Language to be configurable through the Configuration API
+                UriNode supportedLang = g.CreateUriNode("sd:" + PropertySupportedLanguage);
+                UriNode lang;
+                switch (config.QuerySyntax)
+                {
+                    case SparqlQuerySyntax.Extended:
+                    case SparqlQuerySyntax.Sparql_1_1:
+                        lang = g.CreateUriNode("sd:" + InstanceSparql11Query);
+                        break;
+                    default:
+                        lang = g.CreateUriNode("sd:" + InstanceSparql10Query);
+                        break;
+                }
+                g.Assert(queryNode, supportedLang, lang);
+
+                //Add the Result Formats
+                UriNode resultFormat = g.CreateUriNode("sd:" + PropertyResultFormat);
+                foreach (MimeTypeDefinition definition in MimeTypesHelper.Definitions)
+                {
+                    if (definition.CanWriteRdf || definition.CanWriteSparqlResults)
+                    {
+                        if (definition.FormatUri != null)
+                        {
+                            g.Assert(queryNode, resultFormat, g.CreateUriNode(new Uri(definition.FormatUri)));
+                        }
+                    }
+                }
+
+                //Add Features and Dataset Description
+                //First add descriptions for Global Expression Factories
+                UriNode extensionFunction = g.CreateUriNode("sd:" + PropertyExtensionFunction);
+                UriNode extensionAggregate = g.CreateUriNode("sd:" + PropertyExtensionAggregate);
+                foreach (ISparqlCustomExpressionFactory factory in SparqlExpressionFactory.Factories)
+                {
+                    foreach (Uri u in factory.AvailableExtensionFunctions)
+                    {
+                        g.Assert(queryNode, extensionFunction, g.CreateUriNode(u));
+                    }
+                    foreach (Uri u in factory.AvailableExtensionAggregates)
+                    {
+                        g.Assert(queryNode, extensionAggregate, g.CreateUriNode(u));
+                    }
+                }
+            }
+            else
+            {
+                queryNode = null;
+            }
+
+            //Update Service Description
+            if (config.UpdateProcessor != null)
+            {
+                //TODO: Implement SPARQL Update Service Description
+                updateNode = null;
+            }
+            else
+            {
+                updateNode = null;
+            }
+
+            //Uniform HTTP Protocol Description
+            //Nothing happens here as there is no stuff in SPARQL Service Description 1.1 for describing such endpoints
+            protocolNode = null;
+
+            //Finally get the Configuration Node to add additional feature and dataset descriptions
+            config.AddFeatureDescription(g, queryNode, updateNode, protocolNode);
+
+            return g;
         }
 
-        public static IGraph GetServiceDescription(BaseUpdateHandlerConfiguration config, Uri descripUri)
+        public static IGraph GetServiceDescription(HttpContext context, BaseUpdateHandlerConfiguration config, Uri descripUri)
         {
             throw new NotImplementedException();
         }
     }
 }
+
+#endif

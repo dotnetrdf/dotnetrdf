@@ -55,6 +55,11 @@ namespace VDS.RDF
         /// </summary>
         internal const String ValidMimeTypePattern = @"[\w\-]+/\w+(-\w+)*";
 
+        /// <summary>
+        /// Constant for W3C File Formats Namespace
+        /// </summary>
+        private const String W3CFormatsNamespace = "http://www.w3.org/ns/formats/";
+
         #region Default MIME Type Definitions
 
         /// <summary>
@@ -76,20 +81,20 @@ namespace VDS.RDF
                 _mimeTypes = new List<MimeTypeDefinition>();
                 
                 //Define RDF/XML
-                _mimeTypes.Add(new MimeTypeDefinition("RDF/XML", RdfXml, new String[] { DefaultRdfXmlExtension, ".owl" }, typeof(RdfXmlParser), null, null, typeof(RdfXmlWriter), null, null));                
+                _mimeTypes.Add(new MimeTypeDefinition("RDF/XML", W3CFormatsNamespace + "RDF_XML", RdfXml, new String[] { DefaultRdfXmlExtension, ".owl" }, typeof(RdfXmlParser), null, null, typeof(RdfXmlWriter), null, null));                
 
                 //Define NTriples
-                MimeTypeDefinition ntriples = new MimeTypeDefinition("NTriples", NTriples, new String[] { DefaultNTriplesExtension }, typeof(NTriplesParser), null, null, typeof(NTriplesWriter), null, null);
+                MimeTypeDefinition ntriples = new MimeTypeDefinition("NTriples", W3CFormatsNamespace + "N-Triples", NTriples, new String[] { DefaultNTriplesExtension }, typeof(NTriplesParser), null, null, typeof(NTriplesWriter), null, null);
 #if !SILVERLIGHT
                 ntriples.Encoding = Encoding.ASCII;
 #endif
                 _mimeTypes.Add(ntriples);
 
                 //Define Turtle
-                _mimeTypes.Add(new MimeTypeDefinition("Turtle", Turtle, new String[] { DefaultTurtleExtension }, typeof(TurtleParser), null, null, typeof(CompressingTurtleWriter), null, null));
+                _mimeTypes.Add(new MimeTypeDefinition("Turtle", W3CFormatsNamespace + "Turtle", Turtle, new String[] { DefaultTurtleExtension }, typeof(TurtleParser), null, null, typeof(CompressingTurtleWriter), null, null));
 
                 //Define Notation 3
-                _mimeTypes.Add(new MimeTypeDefinition("Notation 3", Notation3, new String[] { DefaultNotation3Extension }, typeof(Notation3Parser), null, null, typeof(Notation3Writer), null, null));
+                _mimeTypes.Add(new MimeTypeDefinition("Notation 3", W3CFormatsNamespace + "N3", Notation3, new String[] { DefaultNotation3Extension }, typeof(Notation3Parser), null, null, typeof(Notation3Writer), null, null));
 
                 //Define RDF/JSON - include SPARQL Parsers to support servers that send back incorrect MIME Type for SPARQL JSON Results
                 _mimeTypes.Add(new MimeTypeDefinition("RDF/JSON", Json, new String[] { DefaultJsonExtension }, typeof(RdfJsonParser), null, typeof(SparqlJsonParser), typeof(RdfJsonWriter), null, typeof(SparqlJsonWriter)));
@@ -104,10 +109,10 @@ namespace VDS.RDF
                 _mimeTypes.Add(new MimeTypeDefinition("TriX", TriX, new String[] { DefaultTriXExtension }, null, typeof(TriXParser), null, null, typeof(TriXWriter), null));
 
                 //Define SPARQL Results XML
-                _mimeTypes.Add(new MimeTypeDefinition("SPARQL Results XML", SparqlXml, new String[] { DefaultSparqlXmlExtension }, null, null, typeof(SparqlXmlParser), null, null, typeof(SparqlXmlWriter)));
+                _mimeTypes.Add(new MimeTypeDefinition("SPARQL Results XML", W3CFormatsNamespace + "SPARQL_Results_XML", SparqlXml, new String[] { DefaultSparqlXmlExtension }, null, null, typeof(SparqlXmlParser), null, null, typeof(SparqlXmlWriter)));
 
                 //Define SPARQL Results JSON
-                _mimeTypes.Add(new MimeTypeDefinition("SPARQL Results JSON", SparqlJson, new String[] { DefaultJsonExtension }, null, null, typeof(SparqlJsonParser), null, null, typeof(SparqlJsonWriter)));
+                _mimeTypes.Add(new MimeTypeDefinition("SPARQL Results JSON", W3CFormatsNamespace + "SPARQL_Results_JSON", SparqlJson, new String[] { DefaultJsonExtension }, null, null, typeof(SparqlJsonParser), null, null, typeof(SparqlJsonWriter)));
 
                 //Define CSV
                 _mimeTypes.Add(new MimeTypeDefinition("CSV", Csv, new String[] { DefaultCsvExtension }, null, null, null, typeof(CsvWriter), typeof(CsvStoreWriter), typeof(SparqlCsvWriter)));
