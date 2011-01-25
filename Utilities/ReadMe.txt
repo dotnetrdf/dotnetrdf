@@ -12,14 +12,14 @@ Usage
 Unzip this zip package to a folder of your choice.  We recommend adding this folder to your PATH variable so you can access the command line tools from a command prompt regardless of the working directory.
 
 This Toolkit provides the following command line utilities:
-- rdfConvert - A tool for converting RDF Graphs and Datasets between different serializations
-- rdfQuery - A tool for querying RDF data using SPARQL
-- rdfWebDeploy - A tool for testing and deploying configuration for ASP.Net applications
+- rdfConvert - A tool for converting RDF Graphs and Datasets between different serializations (Version 1.2)
+- rdfQuery - A tool for querying RDF data using SPARQL (Version 1.2)
+- rdfWebDeploy - A tool for testing and deploying configuration for ASP.Net applications (Version 1.2)
 
 This Toolkit provides the following GUI tools:
-- rdfEditor - A Notepad replacement for editing RDF and SPARQL
-- SparqlGUI - A GUI for testing SPARQL queries using dotNetRDF's in-memory Leviathan engine
-- dotNetRDFStore - A GUI for performing basic management and query tasks on various Triple Stores
+- rdfEditor - A Notepad replacement for editing RDF and SPARQL (Version 1.1)
+- SparqlGUI - A GUI for testing SPARQL queries using dotNetRDF's in-memory Leviathan engine (Version 1.2)
+- dotNetRDFStore - A GUI for performing basic management and query tasks on various Triple Stores (Version 1.4)
 
 License
 -------
@@ -40,8 +40,6 @@ Uses code (3rd Party Libraries) from the following sources
 -Virtuoso ADO.Net Provider from OpenLink Software http://www.openlinksw.com
 -HtmlAgilityPack from Simon Mourier http://www.codeplex.com/htmlagilitypack
 
-Uses Icons from the Crystal Project (http://everaldo.com/crystal/?action=preview) which are licensed under the LGPL
-
 Thanks to the following people who have helped in the development process or whose suggestions have led to 
 improvements in the code:
 - Eamon Nerbonne for the BlockingStreamReader fix (http://eamon.nerbonne.org/) which is much nicer than the
@@ -55,6 +53,7 @@ improvements in the code:
   a Mono build of dotNetRDF
 - Andy Seaborne and Steve Harris for excellent answers to various SPARQL and ARQ function library related questions 
   which have contributed to resolving various issues in the Leviathan engine and adding the ARQ function library support
+- Peter Kahle for his efforts in producing a Windows Phone 7 version of the library
 - The SPARQL Working Group for useful feedback and responses to my comments
 - The following people who have contributed bug reports and patches on the mailing lists:
  - Tana Isaac
@@ -66,3 +65,6 @@ improvements in the code:
  - Sergey Novikov
  - Jeen Broekstra
  - Robert P DeCarlo
+ - Clive Emberey
+ - Anton Andreev
+ - Steve Fraleigh

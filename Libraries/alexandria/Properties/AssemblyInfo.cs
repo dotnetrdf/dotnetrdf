@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("dotNetRDF.Alexandria")]
-[assembly: AssemblyDescription("Alexandria is a storage agnostic document based Triple Store")]
+[assembly: AssemblyDescription("Alexandria is an abstract framework for a storage agnostic document based Triple Store")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Visual Design Studios")]
 [assembly: AssemblyProduct("dotNetRDF.Alexandria")]

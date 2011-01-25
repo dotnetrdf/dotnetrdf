@@ -9,7 +9,7 @@ using VDS.RDF.Linq;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("dotNetRDF.Linq")]
-[assembly: AssemblyDescription("A LINQ query provider for access to RDF triple stores using SPARQL")]
+[assembly: AssemblyDescription("A LINQ query provider for access to RDF triple stores using SPARQL (Port of LinqToRdf to dotNetRDF)")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Visual Design Studios")]
 [assembly: AssemblyProduct("dotNetRDF.Linq")]

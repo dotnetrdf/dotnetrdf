@@ -7,11 +7,11 @@ using Mono;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("RdfMetal")]
-[assembly: AssemblyDescription("A code generator for LinqToRdf")]
+[assembly: AssemblyDescription("A code generator for LinqToRdf (Port of rdfMetal from LinqToRdf to dotNetRDF.Linq)")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Andrew Matthews")]
 [assembly: AssemblyProduct("RdfMetal")]
-[assembly: AssemblyCopyright("Copyright © Andrew Matthews 2008")]
+[assembly: AssemblyCopyright("Copyright © Andrew Matthews 2008 and Robert Vesse 2010")]
 [assembly: AssemblyTrademark("LinqToRdf, RdfMetal")]
 [assembly: AssemblyCulture("")]
 
@@ -33,7 +33,7 @@ using Mono;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("0.1.0.0")]
+[assembly: AssemblyVersion("0.1.0.*")]
 [assembly: AssemblyFileVersion("0.1.0.0")]
 
 [assembly: UsageComplement("is used with the following options")]
