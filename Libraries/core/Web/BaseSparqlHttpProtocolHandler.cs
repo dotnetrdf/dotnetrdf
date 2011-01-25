@@ -111,7 +111,7 @@ namespace VDS.RDF.Web
                         break;
                     case "OPTIONS":
                         //For an OPTIONS request we should return a URI that gets a Service
-                        //Description - in the case of the standalone Protocl Handler this is
+                        //Description - in the case of the standalone Protocol Handler this is
                         //not possible so we give a 405 Method Not Allowed response
                         context.Response.StatusCode = (int)HttpStatusCode.MethodNotAllowed;
                         break;

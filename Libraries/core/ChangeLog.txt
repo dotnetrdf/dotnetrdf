@@ -19,8 +19,9 @@ Added
  - LoadFromFile and LoadFromUri for Graphs and Triple Stores
  - ToLiteral for byte and sbyte
  - ToLiteralDate and ToLiteralTime for DateTime
-- New HTTP Handlers for ASP.Net
+- ASP.Net Integration
  - DatasetHandler for serving RDF datasets
+ - QueryHandler, UpdateHandler and SparqlServer all now return SPARQL Service Description when appropriate
 - Additional Configuration API for new features
  - dnr:SparqlDataset and dnr:usingDataset properties
 - Query

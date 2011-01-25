@@ -436,13 +436,14 @@ namespace VDS.RDF.Web
                     case "OPTIONS":
                         //For an OPTIONS request we should return a URI that gives a Service
                         //Description document
+                        Uri descripLocation = new Uri(new Uri(context.Request.Url.AbsoluteUri), this._basePath + "description");
                         try
                         {
-                            context.Response.Headers.Add("Location", this._basePath + "description");
+                            context.Response.Headers.Add("Location", descripLocation.ToString());
                         }
                         catch (PlatformNotSupportedException)
                         {
-                            context.Response.AddHeader("Location", this._basePath + "description");
+                            context.Response.AddHeader("Location", descripLocation.ToString());
                         }
                         break;
                     case "HEAD":

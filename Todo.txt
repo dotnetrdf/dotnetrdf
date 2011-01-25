@@ -35,7 +35,6 @@ HACK: Have to send only RDF/XML as the accept header due to a known issue with T
 TODO: Implement IsIpvFuture
 TODO: Add support for reading Base Uri from xml:base attributes in the file
 TODO: Implement type compatability detection for numeric types
-2 x Q : Should this assign a null/eliminate a solution/do nothing?
 2 x Q: Do we need a more general fix for null Base URI here?
 Q: Does LOAD into a named Graph require that Graph to be pre-existing?
 Q: Do we need to do something special to check whether there are any sets with this variable also unbound in the other set and thus eliminate/keep it?
