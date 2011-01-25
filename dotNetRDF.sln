@@ -75,6 +75,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.Alexandria", "Lib
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.Alexandria.MongoDB", "Libraries\alexandria.mongodb\dotNetRDF.Alexandria.MongoDB.csproj", "{5976AA06-893B-4E0D-BDED-19A8515E809C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rdfPublisher", "rdfPublisher\rdfPublisher.csproj", "{9B5281F6-C947-4619-9116-ED4DD806FF21}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -205,6 +207,10 @@ Global
 		{5976AA06-893B-4E0D-BDED-19A8515E809C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5976AA06-893B-4E0D-BDED-19A8515E809C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5976AA06-893B-4E0D-BDED-19A8515E809C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9B5281F6-C947-4619-9116-ED4DD806FF21}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B5281F6-C947-4619-9116-ED4DD806FF21}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B5281F6-C947-4619-9116-ED4DD806FF21}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B5281F6-C947-4619-9116-ED4DD806FF21}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
