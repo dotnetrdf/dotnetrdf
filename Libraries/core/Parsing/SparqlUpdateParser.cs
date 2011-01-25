@@ -205,6 +205,7 @@ namespace VDS.RDF.Parsing
 
         private SparqlUpdateCommandSet ParseInternal(SparqlUpdateParserContext context)
         {
+            context.QueryParser.ExpressionFactories = context.ExpressionFactories;
             context.ExpressionParser.NamespaceMap = context.NamespaceMap;
             context.ExpressionParser.QueryParser = context.QueryParser;
             context.ExpressionParser.ExpressionFactories = context.ExpressionFactories;

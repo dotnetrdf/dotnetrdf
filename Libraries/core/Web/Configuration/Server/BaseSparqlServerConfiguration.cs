@@ -485,11 +485,12 @@ namespace VDS.RDF.Web.Configuration.Server
         /// <param name="protocolNode">Node for the SPARQL Uniform HTTP Protocol service</param>
         public virtual void AddFeatureDescription(IGraph g, INode queryNode, INode updateNode, INode protocolNode)
         {
+            UriNode extensionFunction = g.CreateUriNode("sd:" + SparqlServiceDescriber.PropertyExtensionFunction);
+            UriNode extensionAggregate = g.CreateUriNode("sd:" + SparqlServiceDescriber.PropertyExtensionAggregate);
+
             if (queryNode != null)
             {
                 //Add Local Extension Function definitions
-                UriNode extensionFunction = g.CreateUriNode("sd:" + SparqlServiceDescriber.PropertyExtensionFunction);
-                UriNode extensionAggregate = g.CreateUriNode("sd:" + SparqlServiceDescriber.PropertyExtensionAggregate);
                 foreach (ISparqlCustomExpressionFactory factory in this._expressionFactories)
                 {
                     foreach (Uri u in factory.AvailableExtensionFunctions)
@@ -499,6 +500,22 @@ namespace VDS.RDF.Web.Configuration.Server
                     foreach (Uri u in factory.AvailableExtensionAggregates)
                     {
                         g.Assert(queryNode, extensionAggregate, g.CreateUriNode(u));
+                    }
+                }
+            }
+
+            if (updateNode != null)
+            {
+                //Add Local Extension Function definitions
+                foreach (ISparqlCustomExpressionFactory factory in this._expressionFactories)
+                {
+                    foreach (Uri u in factory.AvailableExtensionFunctions)
+                    {
+                        g.Assert(updateNode, extensionFunction, g.CreateUriNode(u));
+                    }
+                    foreach (Uri u in factory.AvailableExtensionAggregates)
+                    {
+                        g.Assert(updateNode, extensionAggregate, g.CreateUriNode(u));
                     }
                 }
             }

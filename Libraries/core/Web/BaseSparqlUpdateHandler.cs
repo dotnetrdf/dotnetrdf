@@ -45,6 +45,7 @@ using System.Web.UI;
 using VDS.RDF.Web.Configuration.Update;
 using VDS.RDF.Parsing;
 using VDS.RDF.Update;
+using VDS.RDF.Writing;
 
 namespace VDS.RDF.Web
 {
@@ -90,16 +91,42 @@ namespace VDS.RDF.Web
             //If no Update sent either show Update Form or give a HTTP 400 response
             if (updateText == null || updateText.Equals(String.Empty))
             {
+                //If there is no Update we may return the SPARQL Service Description where appropriate
+                try
+                {
+                    //If we might show the Update Form only show the Description if the selected writer is
+                    //not a HTML writer
+                    MimeTypeDefinition definition = MimeTypesHelper.GetDefinitions(context.Request.AcceptTypes).FirstOrDefault(d => d.CanWriteRdf);
+                    if (definition != null)
+                    {
+                        IRdfWriter writer = definition.GetRdfWriter();
+                        if (!this._config.ShowUpdateForm || !(writer is IHtmlWriter))
+                        {
+                            //If not a HTML Writer selected OR not showing Update Form then show the Service Description Graph
+                            //unless an error occurs creating it
+                            IGraph serviceDescrip = SparqlServiceDescriber.GetServiceDescription(context, this._config, new Uri(context.Request.Url.AbsoluteUri));
+                            context.Response.ContentType = definition.CanonicalMimeType;
+                            context.Response.ContentEncoding = definition.Encoding;
+                            writer.Save(serviceDescrip, new StreamWriter(context.Response.OutputStream, definition.Encoding));
+                            return;
+                        }
+                    }
+                }
+                catch
+                {
+                    //Ignore Exceptions - we'll just show the Query Form or return a 400 Bad Request instead
+                }
+
+                //If a Writer can't be selected then we'll either show the Update Form or return a 400 Bad Request
                 if (this._config.ShowUpdateForm)
                 {
                     this.ShowUpdateForm(context);
-                    return;
                 }
                 else
                 {
                     context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                    return;
                 }
+                return;
             }
 
             try

@@ -41,6 +41,7 @@ using System.IO;
 using System.Web;
 using VDS.RDF.Configuration;
 using VDS.RDF.Configuration.Permissions;
+using VDS.RDF.Query.Expressions;
 using VDS.RDF.Update;
 
 namespace VDS.RDF.Web.Configuration.Update
@@ -150,6 +151,29 @@ namespace VDS.RDF.Web.Configuration.Update
             get
             {
                 return this._defaultUpdate;
+            }
+        }
+
+        /// <summary>
+        /// Adds Description of Features for the given Handler Configuration
+        /// </summary>
+        /// <param name="g">Service Description Graph</param>
+        /// <param name="descripNode">Description Node for the Service</param>
+        public virtual void AddFeatureDescription(IGraph g, INode descripNode)
+        {
+            //Add Local Extension Function definitions
+            UriNode extensionFunction = g.CreateUriNode("sd:" + SparqlServiceDescriber.PropertyExtensionFunction);
+            UriNode extensionAggregate = g.CreateUriNode("sd:" + SparqlServiceDescriber.PropertyExtensionAggregate);
+            foreach (ISparqlCustomExpressionFactory factory in this._expressionFactories)
+            {
+                foreach (Uri u in factory.AvailableExtensionFunctions)
+                {
+                    g.Assert(descripNode, extensionFunction, g.CreateUriNode(u));
+                }
+                foreach (Uri u in factory.AvailableExtensionAggregates)
+                {
+                    g.Assert(descripNode, extensionAggregate, g.CreateUriNode(u));
+                }
             }
         }
     }

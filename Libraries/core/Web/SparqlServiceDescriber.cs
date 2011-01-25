@@ -49,7 +49,6 @@ using VDS.RDF.Web.Configuration.Update;
 
 namespace VDS.RDF.Web
 {
-    //REQ: Implement SPARQL Service Descriptions
     //Q: Are multiple service descriptions in a single file permitted?
 
     /// <summary>
@@ -202,7 +201,7 @@ namespace VDS.RDF.Web
                 UriNode url = g.CreateUriNode("sd:" + PropertyUrl);
                 g.Assert(queryNode, url, queryNode);
 
-                //Add the sd:supportedLanguage - Requires Query Language to be configurable through the Configuration API
+                //Add the sd:supportedLanguage
                 UriNode supportedLang = g.CreateUriNode("sd:" + PropertySupportedLanguage);
                 UriNode lang;
                 switch (config.QuerySyntax)
@@ -254,8 +253,35 @@ namespace VDS.RDF.Web
             //Update Service Description
             if (config.UpdateProcessor != null)
             {
-                //TODO: Implement SPARQL Update Service Description
-                updateNode = null;
+                //Add the Top Level Node representing the Update Service
+                updateNode = g.CreateUriNode(new Uri(descripUri, "update"));
+                UriNode rdfType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
+                UriNode service = g.CreateUriNode("sd:" + ClassService);
+                g.Assert(updateNode, rdfType, service);
+
+                //Add its sd:url
+                UriNode url = g.CreateUriNode("sd:" + PropertyUrl);
+                g.Assert(updateNode, url, updateNode);
+
+                //Add the sd:supportedLanguage
+                UriNode supportedLang = g.CreateUriNode("sd:" + PropertySupportedLanguage);
+                g.Assert(updateNode, supportedLang, g.CreateUriNode("sd:" + InstanceSparql11Update));
+
+                //Add Features and Dataset Description
+                //First add descriptions for Global Expression Factories
+                UriNode extensionFunction = g.CreateUriNode("sd:" + PropertyExtensionFunction);
+                UriNode extensionAggregate = g.CreateUriNode("sd:" + PropertyExtensionAggregate);
+                foreach (ISparqlCustomExpressionFactory factory in SparqlExpressionFactory.Factories)
+                {
+                    foreach (Uri u in factory.AvailableExtensionFunctions)
+                    {
+                        g.Assert(updateNode, extensionFunction, g.CreateUriNode(u));
+                    }
+                    foreach (Uri u in factory.AvailableExtensionAggregates)
+                    {
+                        g.Assert(updateNode, extensionAggregate, g.CreateUriNode(u));
+                    }
+                }
             }
             else
             {
@@ -274,7 +300,42 @@ namespace VDS.RDF.Web
 
         public static IGraph GetServiceDescription(HttpContext context, BaseUpdateHandlerConfiguration config, Uri descripUri)
         {
-            throw new NotImplementedException();
+            IGraph g = SparqlServiceDescriber.GetNewGraph();
+
+            //Add the Top Level Node representing the Service
+            UriNode descrip = g.CreateUriNode(descripUri);
+            UriNode rdfType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
+            UriNode service = g.CreateUriNode("sd:" + ClassService);
+            g.Assert(descrip, rdfType, service);
+
+            //Add its sd:url
+            UriNode url = g.CreateUriNode("sd:" + PropertyUrl);
+            g.Assert(descrip, url, descrip);
+
+            //Add the sd:supportedLanguage
+            UriNode supportedLang = g.CreateUriNode("sd:" + PropertySupportedLanguage);
+            g.Assert(descrip, supportedLang, g.CreateUriNode("sd:" + InstanceSparql11Update));
+
+            //Add Features and Dataset Description
+            //First add descriptions for Global Expression Factories
+            UriNode extensionFunction = g.CreateUriNode("sd:" + PropertyExtensionFunction);
+            UriNode extensionAggregate = g.CreateUriNode("sd:" + PropertyExtensionAggregate);
+            foreach (ISparqlCustomExpressionFactory factory in SparqlExpressionFactory.Factories)
+            {
+                foreach (Uri u in factory.AvailableExtensionFunctions)
+                {
+                    g.Assert(descrip, extensionFunction, g.CreateUriNode(u));
+                }
+                foreach (Uri u in factory.AvailableExtensionAggregates)
+                {
+                    g.Assert(descrip, extensionAggregate, g.CreateUriNode(u));
+                }
+            }
+
+            //Then get the Configuration Object to add any other Feature Descriptions it wishes to
+            config.AddFeatureDescription(g, descrip);
+
+            return g;
         }
     }
 }
