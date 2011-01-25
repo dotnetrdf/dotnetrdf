@@ -181,10 +181,27 @@ namespace VDS.RDF.Writing
 
                 //Then a Column for the Subject which spans the correct number of Rows
                 context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Rowspan, ts.Count().ToString());
+
                 context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Td);
 #if !NO_WEB
                 context.HtmlWriter.WriteLine();
 #endif
+                //For each Subject add an anchor if it can be reduced to a QName
+                if (subj.NodeType == NodeType.Uri)
+                {
+                    String qname;
+                    if (context.QNameMapper.ReduceToQName(subj.ToString(), out qname))
+                    {
+                        if (!qname.EndsWith(":"))
+                        {
+                            qname = qname.Substring(qname.IndexOf(':') + 1);
+                            context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Name, qname);
+                            context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.A);
+                            context.HtmlWriter.RenderEndTag();
+                        }
+                    }
+                }
+
                 this.GenerateNodeOutput(context, subj);
 #if !NO_WEB
                 context.HtmlWriter.WriteLine();
