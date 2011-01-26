@@ -235,7 +235,7 @@ namespace VDS.RDF.Storage
             String getTriples;
             if (graphUri != null)
             {
-                getTriples = "SPARQL define output:format '_JAVA_' SELECT * FROM <" + graphUri.ToString() + "> WHERE {?s ?p ?o}";
+                getTriples = "SPARQL define output:format '__' SELECT * FROM <" + graphUri.ToString() + "> WHERE {?s ?p ?o}";
             }
             else
             {
