@@ -921,7 +921,7 @@ namespace VDS.RDF
                 }
             }
 
-            throw new RdfException("The Library does not contain a writer which can output RDF datasets in a format supported by the Client");
+            throw new RdfWriterSelectionException("The Library does not contain a writer which can output RDF datasets in a format supported by the Client");
         }
 
         /// <summary>
@@ -978,64 +978,17 @@ namespace VDS.RDF
                 fileExt = fileExt.Substring(fileExt.LastIndexOf(".") + 1);
             }
 
-            //Determine MIME Type
-            if (fileExt.Equals(DefaultTurtleExtension, StringComparison.OrdinalIgnoreCase))
+            if (!_init) Init();
+            foreach (MimeTypeDefinition definition in MimeTypesHelper.Definitions)
             {
-                return MimeTypesHelper.Turtle[0];
+                if (definition.FileExtensions.Contains(fileExt))
+                {
+                    return definition.CanonicalMimeType;
+                }
             }
-            else if (fileExt.Equals(DefaultNotation3Extension, StringComparison.OrdinalIgnoreCase))
-            {
-                return MimeTypesHelper.Notation3[0];
-            }
-            else if (fileExt.Equals(DefaultNTriplesExtension, StringComparison.OrdinalIgnoreCase))
-            {
-                return MimeTypesHelper.NTriples[0];
-            }
-            else if (fileExt.Equals(DefaultRdfXmlExtension, StringComparison.OrdinalIgnoreCase) || fileExt.Equals("owl"))
-            {
-                return MimeTypesHelper.RdfXml[0];
-            }
-            else if (fileExt.Equals(DefaultJsonExtension, StringComparison.OrdinalIgnoreCase))
-            {
-                return MimeTypesHelper.Json[0];
-            }
-            else if (fileExt.Equals(DefaultSparqlXmlExtension, StringComparison.OrdinalIgnoreCase))
-            {
-                return MimeTypesHelper.Sparql[0];
-            }
-            else if (fileExt.Equals(DefaultTriGExtension, StringComparison.OrdinalIgnoreCase))
-            {
-                return MimeTypesHelper.TriG[0];
-            }
-            else if (fileExt.Equals(DefaultNQuadsExtension, StringComparison.OrdinalIgnoreCase))
-            {
-                return MimeTypesHelper.NQuads[0];
-            }
-            else if (fileExt.Equals(DefaultTriXExtension, StringComparison.OrdinalIgnoreCase) || fileExt.Equals("trix", StringComparison.OrdinalIgnoreCase))
-            {
-                return MimeTypesHelper.TriX[0];
-            }
-            else if (fileExt.Equals(DefaultCsvExtension, StringComparison.OrdinalIgnoreCase))
-            {
-                return MimeTypesHelper.Csv[0];
-            }
-            else if (fileExt.Equals(DefaultTsvExtension, StringComparison.OrdinalIgnoreCase))
-            {
-                return MimeTypesHelper.Tsv[0];
-            }
-            else if (fileExt.Equals(DefaultHtmlExtension, StringComparison.OrdinalIgnoreCase))
-            {
-                return MimeTypesHelper.Html[0];
-            }
-            else if (fileExt.Equals(DefaultXHtmlExtension, StringComparison.OrdinalIgnoreCase))
-            {
-                return MimeTypesHelper.Html[0];
-            }
-            else
-            {
-                //Unknown File Extension
-                throw new RdfParserSelectionException("Unable to determine the appropriate MIME Type for the File Extension '" + fileExt + "' as this is not a standard extension for an RDF format");
-            }
+
+            //Unknown File Extension
+            throw new RdfParserSelectionException("Unable to determine the appropriate MIME Type for the File Extension '" + fileExt + "' as this is not a standard extension for an RDF format");
         }
 
         #endregion
