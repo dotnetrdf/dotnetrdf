@@ -1142,6 +1142,7 @@ namespace VDS.RDF.Parsing
                         switch (next.TokenType)
                         {
                             case Token.UNION:
+                                //UNION Clause
                                 if (!child.IsEmpty)
                                 {
                                     pattern.AddGraphPattern(child);
@@ -1150,11 +1151,15 @@ namespace VDS.RDF.Parsing
                                 context.Tokens.Dequeue();
                                 this.TryParseUnionClause(context, pattern);
                                 break;
+
                             case Token.FILTER:
+                                //FILTER Clause
                                 context.Tokens.Dequeue();
                                 this.TryParseFilterClause(context, pattern);
                                 break;
+
                             case Token.OPTIONAL:
+                                //OPTIONAL Clause
                                 if (!child.IsEmpty)
                                 {
                                     pattern.AddGraphPattern(child);
@@ -1163,9 +1168,22 @@ namespace VDS.RDF.Parsing
                                 context.Tokens.Dequeue();
                                 this.TryParseOptionalClause(context, pattern);
                                 break;
+
+                            case Token.GRAPH:
+                                //GRAPH Clause
+                                if (!child.IsEmpty)
+                                {
+                                    pattern.AddGraphPattern(child);
+                                    child = new GraphPattern();
+                                }
+                                context.Tokens.Dequeue();
+                                this.TryParseGraphClause(context, pattern);
+                                break;
+
                             case Token.EXISTS:
                             case Token.NOTEXISTS:
                             case Token.UNSAID:
+                                //EXISTS/NOT EXISTS/UNSAID Clause
                                 if (next.TokenType == Token.UNSAID && context.SyntaxMode != SparqlQuerySyntax.Extended) throw new RdfParseException("The UNSAID Keyword is only supported when syntax is set to Extended.  It is an alias for NOT EXISTS which can be used when the syntax is set to SPARQL 1.1/Extended");
                                 if (!child.IsEmpty)
                                 {
@@ -1175,7 +1193,9 @@ namespace VDS.RDF.Parsing
                                 context.Tokens.Dequeue();
                                 this.TryParseExistsClause(context, pattern, (next.TokenType == Token.EXISTS));
                                 break;
+
                             case Token.MINUS_P:
+                                //MINUS Clause
                                 if (!child.IsEmpty)
                                 {
                                     pattern.AddGraphPattern(child);
@@ -1184,7 +1204,9 @@ namespace VDS.RDF.Parsing
                                 context.Tokens.Dequeue();
                                 this.TryParseMinusClause(context, pattern);
                                 break;
+
                             case Token.SERVICE:
+                                //SERVICE clause
                                 if (!child.IsEmpty)
                                 {
                                     pattern.AddGraphPattern(child);
@@ -1193,6 +1215,7 @@ namespace VDS.RDF.Parsing
                                 context.Tokens.Dequeue();
                                 this.TryParseServiceClause(context, pattern);
                                 break;
+
                             case Token.VARIABLE:
                             case Token.URI:
                             case Token.QNAME:
@@ -1205,10 +1228,13 @@ namespace VDS.RDF.Parsing
                             case Token.BIND:
                             case Token.LEFTSQBRACKET:
                             case Token.LEFTBRACKET:
+                                //Start of some Triple Patterns
                                 context.GraphPatternID++;
                                 this.TryParseTriplePatterns(context, child);
                                 break;
+
                             default:
+                                //Otherwise we'll expect a new Graph Pattern
                                 pattern.AddGraphPattern(this.TryParseGraphPattern(context, true));
                                 break;
                         }
