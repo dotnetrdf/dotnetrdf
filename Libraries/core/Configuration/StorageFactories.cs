@@ -37,6 +37,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.Query;
+using VDS.RDF.Query.Datasets;
 using VDS.RDF.Storage;
 
 namespace VDS.RDF.Configuration
@@ -157,14 +158,16 @@ namespace VDS.RDF.Configuration
         private const String AllegroGraph = "VDS.RDF.Storage.AllegroGraphConnector",
                              DatasetFile = "VDS.RDF.Storage.DatasetFileManager",
                              FourStore = "VDS.RDF.Storage.FourStoreConnector",
+                             Fuseki = "VDS.RDF.Storage.FusekiConnector",
+                             InMemory = "VDS.RDF.Storage.InMemoryConnector",
                              Joseki = "VDS.RDF.Storage.JosekiConnector",
+                             ReadOnly = "VDS.RDF.Storage.ReadOnlyConnector",
+                             ReadOnlyQueryable = "VDS.RDF.Storage.QueryableReadOnlyConnector",
                              Sesame = "VDS.RDF.Storage.SesameHttpProtocolConnector",
                              Sparql = "VDS.RDF.Storage.SparqlConnector",
                              SparqlHttpProtocol = "VDS.RDF.Storage.SparqlHttpProtocolConnector",
                              Talis = "VDS.RDF.Storage.TalisPlatformConnector",
                              Virtuoso = "VDS.RDF.Storage.VirtuosoManager";
-
-        //REQ: Add Fuseki, In-Memory and Read Only support here
 
         /// <summary>
         /// Tries to load a Generic IO Manager based on information from the Configuration Graph
@@ -181,6 +184,9 @@ namespace VDS.RDF.Configuration
 
             String server, user, pwd, store;
             bool async;
+
+            Object temp;
+            INode storeObj;
 
             //Create the URI Nodes we're going to use to search for things
             INode propServer = ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyServer),
@@ -229,6 +235,45 @@ namespace VDS.RDF.Configuration
                     manager = new FourStoreConnector(server, enableUpdates);
                     break;
 
+                case Fuseki:
+                    //Get the Server URI
+                    server = ConfigurationLoader.GetConfigurationString(g, objNode, propServer);
+                    if (server == null) return false;
+                    manager = new FusekiConnector(server);
+                    break;
+
+                case InMemory:
+                    //Get the Dataset/Store
+                    INode datasetObj = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyUsingDataset));
+                    if (datasetObj != null)
+                    {
+                        temp = ConfigurationLoader.LoadObject(g, datasetObj);
+                        if (temp is ISparqlDataset)
+                        {
+                            manager = new InMemoryManager((ISparqlDataset)temp);
+                        }
+                        else
+                        {
+                            throw new DotNetRdfConfigurationException("Unable to load the In-Memory Manager identified by the Node '" + objNode.ToString() + "' as the value given for the dnr:usingDataset property points to an Object that cannot be loaded as an object which implements the ISparqlDataset interface");
+                        }
+                    }
+                    else
+                    {
+                        //If no dnr:usingDataset try dnr:usingStore instead
+                        storeObj = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyUsingStore));
+                        if (storeObj == null) return false;
+                        temp = ConfigurationLoader.LoadObject(g, storeObj);
+                        if (temp is IInMemoryQueryableStore)
+                        {
+                            manager = new InMemoryManager((IInMemoryQueryableStore)temp);
+                        }
+                        else
+                        {
+                            throw new DotNetRdfConfigurationException("Unable to load the In-Memory Manager identified by the Node '" + objNode.ToString() + "' as the value given for the dnr:usingStore property points to an Object that cannot be loaded as an object which implements the IInMemoryQueryableStore interface");
+                        }
+                    }
+                    break;
+
                 case Joseki:
                     //Get the Query and Update URIs
                     server = ConfigurationLoader.GetConfigurationString(g, objNode, propServer);
@@ -243,6 +288,34 @@ namespace VDS.RDF.Configuration
                     else
                     {
                         manager = new JosekiConnector(server, queryService, updateService);
+                    }
+                    break;
+
+                case ReadOnly:
+                    //Get the actual Manager we are wrapping
+                    storeObj = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyGenericManager));
+                    temp = ConfigurationLoader.LoadObject(g, storeObj);
+                    if (temp is IGenericIOManager)
+                    {
+                        manager = new ReadOnlyConnector((IGenericIOManager)temp);
+                    }
+                    else
+                    {
+                        throw new DotNetRdfConfigurationException("Unable to load the Read-Only Connector identified by the Node '" + objNode.ToString() + "' as the value given for the dnr:genericManager property points to an Object which cannot be loaded as an object which implements the required IGenericIOManager interface");
+                    }
+                    break;
+
+                case ReadOnlyQueryable:
+                    //Get the actual Manager we are wrapping
+                    storeObj = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyGenericManager));
+                    temp = ConfigurationLoader.LoadObject(g, storeObj);
+                    if (temp is IQueryableGenericIOManager)
+                    {
+                        manager = new QueryableReadOnlyConnector((IQueryableGenericIOManager)temp);
+                    }
+                    else
+                    {
+                        throw new DotNetRdfConfigurationException("Unable to load the Queryable Read-Only Connector identified by the Node '" + objNode.ToString() + "' as the value given for the dnr:genericManager property points to an Object which cannot be loaded as an object which implements the required IQueryableGenericIOManager interface");
                     }
                     break;
 
@@ -290,7 +363,7 @@ namespace VDS.RDF.Configuration
                     {
                         INode endpointObj = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyEndpoint));
                         if (endpointObj == null) return false;
-                        Object temp = ConfigurationLoader.LoadObject(g, endpointObj);
+                        temp = ConfigurationLoader.LoadObject(g, endpointObj);
                         if (temp is SparqlRemoteEndpoint)
                         {
                             manager = new SparqlConnector((SparqlRemoteEndpoint)temp, loadMode);
