@@ -164,6 +164,8 @@ namespace VDS.RDF.Configuration
                              Talis = "VDS.RDF.Storage.TalisPlatformConnector",
                              Virtuoso = "VDS.RDF.Storage.VirtuosoManager";
 
+        //REQ: Add Fuseki, In-Memory and Read Only support here
+
         /// <summary>
         /// Tries to load a Generic IO Manager based on information from the Configuration Graph
         /// </summary>
@@ -223,7 +225,7 @@ namespace VDS.RDF.Configuration
                     //Get the Server and whether Updates are enabled
                     server = ConfigurationLoader.GetConfigurationString(g, objNode, propServer);
                     if (server == null) return false;
-                    bool enableUpdates = ConfigurationLoader.GetConfigurationBoolean(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyEnableUpdates), false);
+                    bool enableUpdates = ConfigurationLoader.GetConfigurationBoolean(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyEnableUpdates), true);
                     manager = new FourStoreConnector(server, enableUpdates);
                     break;
 

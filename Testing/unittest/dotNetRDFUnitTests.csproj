@@ -126,6 +126,7 @@
     <Compile Include="Sparql\AlgebraReverseTranslation.cs" />
     <Compile Include="Storage\AllegroGraphTests.cs" />
     <Compile Include="Configuration\ConfigurationApiTests.cs" />
+    <Compile Include="Storage\FourStoreTest.cs" />
     <Compile Include="Storage\FusekiTest.cs" />
     <Compile Include="Storage\SesameTests.cs" />
     <Compile Include="EventTests.cs" />

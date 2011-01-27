@@ -67,7 +67,7 @@ namespace VDS.RDF.Storage
     {
         private String _baseUri;
         private SparqlRemoteEndpoint _endpoint;
-        private bool _updatesEnabled = false;
+        private bool _updatesEnabled = true;
 
 #if !NO_RWLOCK
         ReaderWriterLockSlim _lockManager = new ReaderWriterLockSlim();
@@ -77,6 +77,9 @@ namespace VDS.RDF.Storage
         /// Creates a new 4store connector which manages access to the services provided by a 4store server
         /// </summary>
         /// <param name="baseUri">Base Uri of the 4store</param>
+        /// <remarks>
+        /// <strong>Note:</strong> As of the 0.4.0 release 4store support defaults to Triple Level updates enabled as all recent 4store releases have supported this.  You can still optionally disable this with the two argument version of the constructor
+        /// </remarks>
         public FourStoreConnector(String baseUri)
         {
             //Determine the appropriate actual Base Uri

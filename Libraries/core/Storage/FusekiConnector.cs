@@ -86,6 +86,17 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
+        /// Returns that Triple level updates are supported using Fuseki
+        /// </summary>
+        public override bool UpdateSupported
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        /// <summary>
         /// Updates a Graph in the Fuseki store
         /// </summary>
         /// <param name="graphUri">URI of the Graph to update</param>

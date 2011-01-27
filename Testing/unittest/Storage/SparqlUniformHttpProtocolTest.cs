@@ -131,5 +131,53 @@ namespace VDS.RDF.Test.Storage
                 TestTools.ReportError("Error", ex, false);
             }
         }
+
+        [TestMethod]
+        public void SparqlUniformHttpProtocolAddTriples()
+        {
+            SparqlUniformHttpProtocolSaveGraph();
+
+            Graph g = new Graph();
+            FileLoader.Load(g, "InferenceTest.ttl");
+
+            SparqlHttpProtocolConnector sparql = new SparqlHttpProtocolConnector(new Uri(ProtocolTestUri));
+            sparql.UpdateGraph("http://example.org/sparqlTest", g.Triples, null);
+
+            Graph h = new Graph();
+            sparql.LoadGraph(h, "http://example.org/sparqlTest");
+
+            foreach (Triple t in h.Triples)
+            {
+                Console.WriteLine(t.ToString(this._formatter));
+            }
+
+            Assert.IsTrue(g.IsSubGraphOf(h), "Retrieved Graph should have the added Triples as a Sub Graph");
+
+        }
+
+        [TestMethod]
+        public void SparqlUniformHttpProtocolRemoveTriples()
+        {
+            Graph g = new Graph();
+            FileLoader.Load(g, "InferenceTest.ttl");
+
+            try
+            {
+                SparqlHttpProtocolConnector sparql = new SparqlHttpProtocolConnector(new Uri(ProtocolTestUri));
+                sparql.UpdateGraph("http://example.org/sparqlTest", null, g.Triples);
+
+                Assert.Fail("SPARQL Uniform HTTP Protocol does not support removing Triples");
+            }
+            catch (RdfStorageException storeEx)
+            {
+                Console.WriteLine("Got an error as expected");
+                TestTools.ReportError("Storage Error", storeEx, false);
+            }
+            catch (NotSupportedException ex)
+            {
+                Console.WriteLine("Got a Not Supported error as expected");
+                TestTools.ReportError("Not Supported", ex, false);
+            }
+        }
     }
 }

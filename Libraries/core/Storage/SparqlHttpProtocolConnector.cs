@@ -159,7 +159,9 @@ namespace VDS.RDF.Storage
         /// </remarks>
         public virtual void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
-            if (removals.Any()) throw new RdfStorageException("Unable to Update a Graph since this update requests that Triples be removed from the Graph which the SPARQL Uniform HTTP Protocol for Graph Management does not support");
+            if (removals != null && removals.Any()) throw new RdfStorageException("Unable to Update a Graph since this update requests that Triples be removed from the Graph which the SPARQL Uniform HTTP Protocol for Graph Management does not support");
+
+            if (additions == null || !additions.Any()) return;
 
             String updateUri = this._serviceUri;
             if (!graphUri.Equals(String.Empty))
