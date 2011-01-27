@@ -144,7 +144,7 @@ namespace rdfEditor
 
                 try
                 {
-                    PreOpenCheck(file);
+                    if (!PreOpenCheck(file)) return;
                     using (StreamReader reader = new StreamReader(file))
                     {
                         String text = reader.ReadToEnd();
@@ -191,7 +191,7 @@ namespace rdfEditor
             {
                 try
                 {
-                    PreOpenCheck(_ofd.FileName);
+                    if (!PreOpenCheck(_ofd.FileName)) return;
                     using (StreamReader reader = new StreamReader(_ofd.FileName))
                     {
                         String text = reader.ReadToEnd();
@@ -276,35 +276,47 @@ namespace rdfEditor
             }
         }
 
-        private void PreOpenCheck(String file)
+        private bool PreOpenCheck(String file)
         {
             FileInfo info = new FileInfo(file);
             long sizeInMB = info.Length / 1024 / 1024;
 
             if (sizeInMB >= 10)
             {
-                if (this.mnuEnableHighlighting.IsChecked)
+                if (MessageBox.Show("The file that you are opening is considered large (>= 10MB) by this editor and so Syntax Highlighting, Validate as you Type, Highlight Validation Errors and Auto-Completion have been temporarily disabled.  You may re-enable these features if you wish but they may significantly degrade performance on a file of this size.  You can cancel opening this file if you wish by clicking Cancel", "Large File Warning", MessageBoxButton.OKCancel, MessageBoxImage.Warning) == MessageBoxResult.OK)
                 {
-                    mnuEnableHighlighting.IsChecked = false;
-                    mnuEnableHighlighting_Click(null, new RoutedEventArgs());
-                }
-                if (this.mnuValidateAsYouType.IsChecked)
-                {
-                    mnuValidateAsYouType.IsChecked = false;
-                    mnuValidateAsYouType_Click(null, new RoutedEventArgs());
-                }
-                if (this.mnuHighlightErrors.IsChecked)
-                {
-                    mnuHighlightErrors.IsChecked = false;
-                    mnuHighlightErrors_Click(null, new RoutedEventArgs());
-                }
-                if (this.mnuAutoComplete.IsChecked)
-                {
-                    mnuAutoComplete.IsChecked = false;
-                    mnuAutoComplete_Click(null, new RoutedEventArgs());
-                }
+                    //Disable features if user proceeds
+                    if (this.mnuEnableHighlighting.IsChecked)
+                    {
+                        mnuEnableHighlighting.IsChecked = false;
+                        mnuEnableHighlighting_Click(null, new RoutedEventArgs());
+                    }
+                    if (this.mnuValidateAsYouType.IsChecked)
+                    {
+                        mnuValidateAsYouType.IsChecked = false;
+                        mnuValidateAsYouType_Click(null, new RoutedEventArgs());
+                    }
+                    if (this.mnuHighlightErrors.IsChecked)
+                    {
+                        mnuHighlightErrors.IsChecked = false;
+                        mnuHighlightErrors_Click(null, new RoutedEventArgs());
+                    }
+                    if (this.mnuAutoComplete.IsChecked)
+                    {
+                        mnuAutoComplete.IsChecked = false;
+                        mnuAutoComplete_Click(null, new RoutedEventArgs());
+                    }
 
-                MessageBox.Show("The file that you are opening is considered large (>= 10MB) by this editor and so Syntax Highlighting, Validate as you Type, Highlight Validation Errors and Auto-Completion have been temporarily disabled.  You may re-enable these features if you wish but they may significantly degrade performance on a file of this size", "Large File Warning", MessageBoxButton.OK, MessageBoxImage.Warning);       
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return true;
             }
         }
 

@@ -56,11 +56,32 @@ namespace rdfEditor
         private IAutoCompleter _autoCompleter;
         private int _lastCaretPos = 0;
 
+        //Context Menu
+        private ContextMenu _contextMenu = new ContextMenu();
+
         public EditorManager(TextEditor editor)
         {
             SyntaxManager.Initialise();
             AutoCompleteManager.Initialise();
             this._editor = editor;
+
+            //Set up the Context Menu
+            MenuItem cut = new MenuItem();
+            cut.Header = "Cut";
+            cut.InputGestureText = "Ctrl+X";
+            cut.Command = ApplicationCommands.Cut;
+            this._contextMenu.Items.Add(cut);
+            MenuItem copy = new MenuItem();
+            copy.Header = "Copy";
+            copy.InputGestureText = "Ctrl+C";
+            copy.Command = ApplicationCommands.Copy;
+            this._contextMenu.Items.Add(copy);
+            MenuItem paste = new MenuItem();
+            paste.Header = "Paste";
+            paste.InputGestureText = "Ctrl+V";
+            paste.Command = ApplicationCommands.Paste;
+            this._contextMenu.Items.Add(paste);
+            this._editor.ContextMenu = this._contextMenu;
 
             //Register Event Handlers for the Editor
             this._editor.TextChanged += new EventHandler(EditorTextChanged);

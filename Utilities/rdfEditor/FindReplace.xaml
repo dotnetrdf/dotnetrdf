@@ -31,7 +31,7 @@
                 <RowDefinition></RowDefinition>
             </Grid.RowDefinitions>
             
-            <Button Name="btnFindNext" Grid.Row="0" Grid.Column="0" Click="btnFindNext_Click">Find Next</Button>
+            <Button Name="btnFindNext" Grid.Row="0" Grid.Column="0" Click="btnFindNext_Click" IsDefault="True">Find Next</Button>
             <Button Name="btnReplace" Grid.Row="0" Grid.Column="1" Visibility="Collapsed" Click="btnReplace_Click" GotFocus="btnReplace_GotFocus">Replace</Button>
             <Button Name="btnReplaceAll" Grid.Row="1" Grid.Column="1" Visibility="Collapsed" Click="btnReplaceAll_Click" GotFocus="btnReplaceAll_GotFocus">Replace All</Button>
         </Grid>
