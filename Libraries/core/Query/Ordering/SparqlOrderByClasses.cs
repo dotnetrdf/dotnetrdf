@@ -157,6 +157,7 @@ namespace VDS.RDF.Query.Ordering
     /// </summary>
     public class OrderByVariable : BaseOrderBy
     {
+        private SparqlOrderingComparer _comparer = new SparqlOrderingComparer();
         private String _varname = String.Empty;
 
         /// <summary>
@@ -191,7 +192,8 @@ namespace VDS.RDF.Query.Ordering
             }
             else
             {
-                int c = xval.CompareTo(y[this._varname]);
+                //int c = xval.CompareTo(y[this._varname]);
+                int c = this._comparer.Compare(xval, y[this._varname]);
 
                 if (c == 0 && this._child != null)
                 {
@@ -215,15 +217,15 @@ namespace VDS.RDF.Query.Ordering
             Func<Triple, Triple, int> compareFunc = null;
             if (this._varname.Equals(pattern.Subject.VariableName))
             {
-                compareFunc = (x, y) => x.Subject.CompareTo(y.Subject);
+                compareFunc = (x, y) => this._comparer.Compare(x.Subject, y.Subject);
             }
             else if (this._varname.Equals(pattern.Predicate.VariableName))
             {
-                compareFunc = (x, y) => x.Predicate.CompareTo(y.Predicate);
+                compareFunc = (x, y) => this._comparer.Compare(x.Predicate, y.Predicate);
             }
             else if (this._varname.Equals(pattern.Object.VariableName))
             {
-                compareFunc = (x, y) => x.Object.CompareTo(y.Object);
+                compareFunc = (x, y) => this._comparer.Compare(x.Object, y.Object);
             }
 
             if (compareFunc == null) return null;
@@ -307,6 +309,7 @@ namespace VDS.RDF.Query.Ordering
     /// </summary>
     public class OrderByExpression : BaseOrderBy
     {
+        private SparqlOrderingComparer _comparer = new SparqlOrderingComparer();
         private ISparqlExpression _expr;
 
         /// <summary>
@@ -354,7 +357,7 @@ namespace VDS.RDF.Query.Ordering
                     //If both give a value then compare
                     if (a != null)
                     {
-                        int c = a.CompareTo(b);
+                        int c = this._comparer.Compare(a, b);
                         if (c == 0 && this._child != null)
                         {
                             return this._modifier * this._child.Compare(x, y);
@@ -393,15 +396,15 @@ namespace VDS.RDF.Query.Ordering
                 String var = this._expr.Variables.First();
                 if (var.Equals(pattern.Subject.VariableName))
                 {
-                    compareFunc = (x, y) => x.Subject.CompareTo(y.Subject);
+                    compareFunc = (x, y) => this._comparer.Compare(x.Subject, y.Subject);
                 }
                 else if (var.Equals(pattern.Predicate.VariableName))
                 {
-                    compareFunc = (x, y) => x.Predicate.CompareTo(y.Predicate);
+                    compareFunc = (x, y) => this._comparer.Compare(x.Predicate, y.Predicate);
                 }
                 else if (var.Equals(pattern.Object.VariableName))
                 {
-                    compareFunc = (x, y) => x.Object.CompareTo(y.Object);
+                    compareFunc = (x, y) => this._comparer.Compare(x.Object, y.Object);
                 }
 
                 if (compareFunc == null) return null;

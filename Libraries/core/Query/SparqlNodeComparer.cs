@@ -42,6 +42,8 @@ using VDS.RDF.Query.Expressions;
 
 namespace VDS.RDF.Query
 {
+    //TODO: Use this for ORDER BY? Or implement another IComparer<INode> which is similar to the CompareTo method from the above class but more closely follows the SPARQL sort order regarding numerics and type promotion
+
     /// <summary>
     /// Comparer class for implementing the SPARQL semantics for the relational operators
     /// </summary>
@@ -53,7 +55,7 @@ namespace VDS.RDF.Query
         /// <param name="x">Node</param>
         /// <param name="y">Node</param>
         /// <returns></returns>
-        public int Compare(INode x, INode y)
+        public virtual int Compare(INode x, INode y)
         {
             //Nulls are less than everything
             if (x == null && y == null) return 0;
@@ -178,7 +180,7 @@ namespace VDS.RDF.Query
         /// <param name="y">Node</param>
         /// <param name="type">Numeric Type</param>
         /// <returns></returns>
-        private int NumericCompare(INode x, INode y, SparqlNumericType type)
+        protected int NumericCompare(INode x, INode y, SparqlNumericType type)
         {
             if (x == null || y == null) throw new RdfQueryException("Cannot evaluate numeric ordering when one or both arguments are Null");
             if (type == SparqlNumericType.NaN) throw new RdfQueryException("Cannot evaluate numeric ordering when the Numeric Type is NaN");
@@ -214,7 +216,7 @@ namespace VDS.RDF.Query
         /// <param name="x">Node</param>
         /// <param name="y">Node</param>
         /// <returns></returns>
-        private int DateTimeCompare(INode x, INode y)
+        protected int DateTimeCompare(INode x, INode y)
         {
             if (x == null || y == null) throw new RdfQueryException("Cannot evaluate date time equality when one or both arguments are Null");
             try
@@ -241,7 +243,7 @@ namespace VDS.RDF.Query
         /// <param name="x">Node</param>
         /// <param name="y">Node</param>
         /// <returns></returns>
-        private int DateCompare(INode x, INode y)
+        protected int DateCompare(INode x, INode y)
         {
             if (x == null || y == null) throw new RdfQueryException("Cannot evaluate date equality when one or both arguments are Null");
             try
@@ -272,5 +274,140 @@ namespace VDS.RDF.Query
         }
     }
 
-    //TODO: Implement another IComparer<INode> which is similar to the CompareTo method from the above class but more closely follows the SPARQL sort order regarding numerics and type promotion
+    public class SparqlOrderingComparer : SparqlNodeComparer
+    {
+        /// <summary>
+        /// Compares two Nodes
+        /// </summary>
+        /// <param name="x">Node</param>
+        /// <param name="y">Node</param>
+        /// <returns></returns>
+        public override int Compare(INode x, INode y)
+        {
+            //Nulls are less than everything
+            if (x == null && y == null) return 0;
+            if (x == null) return -1;
+            if (y == null) return 1;
+
+            //If the Node Types are different use Node ordering
+            if (x.NodeType != y.NodeType) return x.CompareTo(y);
+
+            if (x.NodeType == NodeType.Literal)
+            {
+                try
+                {
+                    //Do they have supported Data Types?
+                    String xtype, ytype;
+                    try
+                    {
+                        xtype = XmlSpecsHelper.GetSupportedDataType(x);
+                        ytype = XmlSpecsHelper.GetSupportedDataType(y);
+                    }
+                    catch (RdfException)
+                    {
+                        //Can't determine a Data Type for one/both of the Nodes so use Node ordering
+                        return x.CompareTo(y);
+                    }
+
+                    if (xtype.Equals(String.Empty) || ytype.Equals(String.Empty))
+                    {
+                        //One/both has an unknown type
+                        if (x.Equals(y))
+                        {
+                            //If RDF Term equality returns true then we return that they are equal
+                            return 0;
+                        }
+                        else
+                        {
+                            //If RDF Term equality returns false then we fall back to Node Ordering
+                            return x.CompareTo(y);
+                        }
+                    }
+                    else
+                    {
+                        //Both have known types
+                        SparqlNumericType xnumtype = SparqlSpecsHelper.GetNumericTypeFromDataTypeUri(xtype);
+                        SparqlNumericType ynumtype = SparqlSpecsHelper.GetNumericTypeFromDataTypeUri(ytype);
+                        SparqlNumericType numtype = (SparqlNumericType)Math.Max((int)xnumtype, (int)ynumtype);
+                        if (numtype != SparqlNumericType.NaN)
+                        {
+                            if (xnumtype == SparqlNumericType.NaN || ynumtype == SparqlNumericType.NaN)
+                            {
+                                //If one is non-numeric then we can't assume non-equality
+                                //So fall back to Node Ordering
+                                return x.CompareTo(y);
+                            }
+
+                            //Both are Numeric so use Numeric ordering
+                            try
+                            {
+                                return this.NumericCompare(x, y, numtype);
+                            }
+                            catch (FormatException)
+                            {
+                                if (x.Equals(y)) return 0;
+                                //Otherwise fall back to Node Ordering
+                                return x.CompareTo(y);
+                            }
+                            catch (RdfQueryException)
+                            {
+                                //If this errors try RDF Term equality since that might still give equality
+                                if (x.Equals(y)) return 0;
+                                //Otherwise fall back to Node Ordering
+                                return x.CompareTo(y);
+                            }
+                        }
+                        else if (xtype.Equals(ytype))
+                        {
+                            switch (xtype)
+                            {
+                                case XmlSpecsHelper.XmlSchemaDataTypeDate:
+                                    return DateCompare(x, y);
+                                case XmlSpecsHelper.XmlSchemaDataTypeDateTime:
+                                    return DateTimeCompare(x, y);
+                                case XmlSpecsHelper.XmlSchemaDataTypeString:
+                                    //Both Strings so use Lexical string ordering
+                                    return ((LiteralNode)x).Value.CompareTo(((LiteralNode)y).Value);
+                                default:
+                                    //Use node ordering
+                                    return x.CompareTo(y);
+                            }
+                        }
+                        else
+                        {
+                            String commontype = XmlSpecsHelper.GetCompatibleSupportedDataType(xtype, ytype, true);
+                            if (commontype.Equals(String.Empty))
+                            {
+                                //Use Node ordering
+                                return x.CompareTo(y);
+                            }
+                            else
+                            {
+                                switch (commontype)
+                                {
+                                    case XmlSpecsHelper.XmlSchemaDataTypeDate:
+                                        return DateCompare(x, y);
+                                    case XmlSpecsHelper.XmlSchemaDataTypeDateTime:
+                                        return DateTimeCompare(x, y);
+                                    default:
+                                        //Use Node ordering
+                                        return x.CompareTo(y);
+                                }
+                            }
+                        }
+                    }
+                }
+                catch
+                {
+                    //If error then can't determine ordering so fall back to node ordering
+                    return x.CompareTo(y);
+                }
+            }
+            else
+            {
+                //If not Literals use Node ordering
+                return x.CompareTo(y);
+            }
+        }
+    }
 }

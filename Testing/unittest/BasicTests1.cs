@@ -7,6 +7,7 @@ using System.Web;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Writing;
 using VDS.RDF.Parsing;
+using VDS.RDF.Query;
 
 namespace VDS.RDF.Test
 {
@@ -616,6 +617,91 @@ namespace VDS.RDF.Test
             }
 
             nodes.Sort();
+
+            //Output the Results
+            foreach (INode n in nodes)
+            {
+                if (n == null)
+                {
+                    Console.WriteLine("NULL");
+                }
+                else
+                {
+                    Console.WriteLine(n.ToString());
+                }
+            }
+
+            Console.WriteLine();
+            Console.WriteLine("Now in reverse...");
+            Console.WriteLine();
+
+            nodes.Reverse();
+
+            //Output the Results
+            foreach (INode n in nodes)
+            {
+                if (n == null)
+                {
+                    Console.WriteLine("NULL");
+                }
+                else
+                {
+                    Console.WriteLine(n.ToString());
+                }
+            }
+        }
+
+        [TestMethod]
+        public void NodeSortingSparqlOrder()
+        {
+            SparqlOrderingComparer comparer = new SparqlOrderingComparer();
+
+            //Stream for Output
+            Console.WriteLine("## Sorting Test");
+            Console.WriteLine("NULLs < Blank Nodes < URI Nodes < Untyped Literals < Typed Literals");
+            Console.WriteLine();
+
+            //Create a Graph
+            Graph g = new Graph();
+            g.BaseUri = new Uri("http://example.org/");
+            g.NamespaceMap.AddNamespace("", new Uri("http://example.org/"));
+
+            //Create a list of various Nodes
+            List<INode> nodes = new List<INode>();
+            nodes.Add(g.CreateUriNode(":someUri"));
+            nodes.Add(g.CreateBlankNode());
+            nodes.Add(null);
+            nodes.Add(g.CreateBlankNode());
+            nodes.Add(g.CreateLiteralNode("cheese"));
+            nodes.Add(g.CreateLiteralNode("aardvark"));
+            nodes.Add(g.CreateLiteralNode(DateTime.Now.AddDays(-25).ToString(XmlSpecsHelper.XmlSchemaDateTimeFormat), new Uri(XmlSpecsHelper.XmlSchemaDataTypeDateTime)));
+            nodes.Add(g.CreateLiteralNode("duck"));
+            nodes.Add(g.CreateUriNode(":otherUri"));
+            nodes.Add(g.CreateLiteralNode("1.5", new Uri(XmlSpecsHelper.XmlSchemaDataTypeDouble)));
+            nodes.Add(g.CreateUriNode(new Uri("http://www.google.com")));
+            nodes.Add(g.CreateLiteralNode(DateTime.Now.AddYears(3).ToString(XmlSpecsHelper.XmlSchemaDateTimeFormat), new Uri(XmlSpecsHelper.XmlSchemaDataTypeDateTime)));
+            nodes.Add(g.CreateLiteralNode("23", new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger)));
+            nodes.Add(g.CreateLiteralNode("M43d", new Uri(XmlSpecsHelper.XmlSchemaDataTypeBase64Binary)));
+            nodes.Add(g.CreateUriNode(new Uri("http://www.dotnetrdf.org")));
+            nodes.Add(g.CreateLiteralNode("12", new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger)));
+            nodes.Add(g.CreateBlankNode("monkey"));
+            nodes.Add(g.CreateBlankNode());
+            nodes.Add(g.CreateLiteralNode("chaese"));
+            nodes.Add(g.CreateLiteralNode("1.0456345", new Uri(XmlSpecsHelper.XmlSchemaDataTypeDouble)));
+            nodes.Add(g.CreateLiteralNode("cheese"));
+            nodes.Add(g.CreateLiteralNode(Convert.ToBase64String(new byte[] { Byte.Parse("32") }), new Uri(XmlSpecsHelper.XmlSchemaDataTypeBase64Binary)));
+            nodes.Add(g.CreateLiteralNode("TA==", new Uri(XmlSpecsHelper.XmlSchemaDataTypeBase64Binary)));
+            nodes.Add(g.CreateLiteralNode("-45454", new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger)));
+            nodes.Add(g.CreateLiteralNode(DateTime.Now.ToString(XmlSpecsHelper.XmlSchemaDateTimeFormat), new Uri(XmlSpecsHelper.XmlSchemaDataTypeDateTime)));
+            nodes.Add(g.CreateLiteralNode("-3", new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger)));
+            nodes.Add(g.CreateLiteralNode("242344.3456435", new Uri(XmlSpecsHelper.XmlSchemaDataTypeDouble)));
+            nodes.Add(g.CreateLiteralNode("true", new Uri(XmlSpecsHelper.XmlSchemaDataTypeBoolean)));
+            nodes.Add(g.CreateUriNode(":what"));
+            nodes.Add(null);
+            nodes.Add(g.CreateLiteralNode("false", new Uri(XmlSpecsHelper.XmlSchemaDataTypeBoolean)));
+            nodes.Add(g.CreateLiteralNode("invalid-value", new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger)));
+
+            nodes.Sort(comparer);
 
             //Output the Results
             foreach (INode n in nodes)
