@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{BD80F826-56A3-4A88-B466-DDFA0691FFB8}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -74,7 +74,7 @@
     <Compile Include="BasicTests1.cs" />
     <Compile Include="BasicTests2.cs" />
     <Compile Include="CachingTests.cs" />
-    <Compile Include="SemWebInteropTests.cs" />
+    <Compile Include="Interop\SemWebInteropTests.cs" />
     <Compile Include="Sparql\LeviathanTests.cs" />
     <Compile Include="LoaderTests.cs" />
     <Compile Include="NamespaceMapperTest.cs" />
@@ -83,11 +83,11 @@
     <Compile Include="ParserTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sparql\SparqlTests.cs" />
-    <Compile Include="SqlIOTests.cs" />
-    <Compile Include="TalisTest.cs" />
+    <Compile Include="Storage\SqlIOTests.cs" />
+    <Compile Include="Storage\TalisTest.cs" />
     <Compile Include="TestTools.cs" />
     <Compile Include="UpdateTests.cs" />
-    <Compile Include="VirtuosoTest.cs" />
+    <Compile Include="Storage\VirtuosoTest.cs" />
     <Compile Include="Writing\WriterTests.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -124,15 +124,16 @@
   <ItemGroup>
     <Compile Include="GraphDiffTests.cs" />
     <Compile Include="Sparql\AlgebraReverseTranslation.cs" />
-    <Compile Include="AllegroGraphTests.cs" />
+    <Compile Include="Storage\AllegroGraphTests.cs" />
     <Compile Include="Configuration\ConfigurationApiTests.cs" />
-    <Compile Include="SesameTests.cs" />
+    <Compile Include="Storage\FusekiTest.cs" />
+    <Compile Include="Storage\SesameTests.cs" />
     <Compile Include="EventTests.cs" />
     <Compile Include="FormattingTests.cs" />
-    <Compile Include="JenaInteropTests.cs" />
+    <Compile Include="Interop\JenaInteropTests.cs" />
     <Compile Include="PelletTests.cs" />
-    <Compile Include="RdfATests.cs" />
-    <Compile Include="RdfXmlTests.cs" />
+    <Compile Include="Parsing\RdfATests.cs" />
+    <Compile Include="Parsing\RdfXmlTests.cs" />
     <Compile Include="Sparql\DefaultGraphTests.cs" />
     <Compile Include="Sparql\GroupByTests.cs" />
     <Compile Include="Sparql\ParsingTests.cs" />

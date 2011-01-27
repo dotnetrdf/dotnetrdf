@@ -226,8 +226,17 @@ namespace VDS.RDF.Storage
                 request.Method = "DELETE";
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
-                    //If we get then it was OK
+                    //If we get then it was OK if the status code is 200 or 202
+                    HttpStatusCode status = response.StatusCode;
                     response.Close();
+                    if (status == HttpStatusCode.OK || status == HttpStatusCode.Accepted)
+                    {
+                        //OK
+                    }
+                    else
+                    {
+                        throw new RdfStorageException("Server response with a HTTP " + (int)status + " Response - Only HTTP 200/202 are considered to indicate success so the desired Graph may not have been deleted");
+                    }
                 }
             }
             catch (WebException webEx)

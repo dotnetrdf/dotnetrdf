@@ -7,7 +7,7 @@ using VDS.RDF.Storage;
 using VDS.RDF.Query;
 using VDS.RDF.Parsing;
 
-namespace VDS.RDF.Test
+namespace VDS.RDF.Test.Storage
 {
     [TestClass]
     public class TalisTest : BaseTest

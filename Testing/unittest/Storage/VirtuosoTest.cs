@@ -10,7 +10,7 @@ using VDS.RDF.Query;
 using VDS.RDF.Writing.Formatting;
 using OpenLink.Data.Virtuoso;
 
-namespace VDS.RDF.Test
+namespace VDS.RDF.Test.Storage
 {
     [TestClass]
     public class VirtuosoTest : BaseTest
