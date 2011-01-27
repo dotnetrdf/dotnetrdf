@@ -77,7 +77,7 @@ namespace VDS.RDF.Web
             this._config = this.LoadConfig(context);
 
             //Add our Standard Headers
-            HandlerHelper.AddStandardHeaders(context);
+            HandlerHelper.AddStandardHeaders(context, this._config);
 
             //Check whether we need to use authentication
             //If there are no user groups then no authentication is in use so we default to authenticated with no per-action authentication needed

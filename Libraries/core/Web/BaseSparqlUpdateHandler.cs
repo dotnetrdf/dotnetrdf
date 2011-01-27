@@ -79,7 +79,7 @@ namespace VDS.RDF.Web
             this._config = this.LoadConfig(context);
 
             //Add our Standard Headers
-            HandlerHelper.AddStandardHeaders(context);
+            HandlerHelper.AddStandardHeaders(context, this._config);
 
             //See if there has been an update submitted
             String updateText = context.Request.QueryString["update"];

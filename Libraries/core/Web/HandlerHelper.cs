@@ -574,7 +574,7 @@ namespace VDS.RDF.Web
         /// Adds the Standard Custom Headers that dotNetRDF attaches to all responses from it's Handlers
         /// </summary>
         /// <param name="context">HTTP Context</param>
-        public static void AddStandardHeaders(HttpContext context)
+        public static void AddStandardHeaders(HttpContext context, BaseHandlerConfiguration config)
         {
             try
             {
@@ -584,7 +584,7 @@ namespace VDS.RDF.Web
             {
                 context.Response.AddHeader("X-dotNetRDF-Version", Assembly.GetExecutingAssembly().GetName().Version.ToString());
             }
-            AddCorsHeaders(context);
+            if (config.IsCorsEnabled) AddCorsHeaders(context);
         }
 
         /// <summary>

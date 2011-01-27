@@ -81,6 +81,11 @@ namespace VDS.RDF.Web.Configuration
         protected List<ISparqlCustomExpressionFactory> _expressionFactories = new List<ISparqlCustomExpressionFactory>();
 
         /// <summary>
+        /// Sets whether CORS headers are output
+        /// </summary>
+        protected bool _corsEnabled = true;
+
+        /// <summary>
         /// Creates a new Base Handler Configuration which loads common Handler settings from a Configuration Graph
         /// </summary>
         /// <param name="context">HTTP Context</param>
@@ -132,6 +137,7 @@ namespace VDS.RDF.Web.Configuration
                 }
             }
             this._stylesheet = ConfigurationLoader.GetConfigurationString(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyStylesheet)).ToSafeString();
+            this._corsEnabled = ConfigurationLoader.GetConfigurationBoolean(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyEnableCors), true);
 
             //Cache Settings
             this._cacheDuration = ConfigurationLoader.GetConfigurationInt32(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyCacheDuration), this._cacheDuration);
@@ -174,6 +180,17 @@ namespace VDS.RDF.Web.Configuration
             get
             {
                 return this._showErrors;
+            }
+        }
+
+        /// <summary>
+        /// Gets whether CORS (Cross Origin Resource Sharing) headers are sent to the client in HTTP responses
+        /// </summary>
+        public bool IsCorsEnabled
+        {
+            get
+            {
+                return this._corsEnabled;
             }
         }
 

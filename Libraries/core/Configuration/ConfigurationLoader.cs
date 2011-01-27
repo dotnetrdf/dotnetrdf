@@ -81,6 +81,7 @@ namespace VDS.RDF.Configuration
                             PropertyDeny = "dnr:deny",
                             PropertyAction = "dnr:action",
                             //Properties for HTTP Handler configuration
+                            PropertyEnableCors = "dnr:enableCors",
                             PropertySyntax = "dnr:syntax",
                             PropertyTimeout = "dnr:timeout",
                             PropertyPartialResults = "dnr:partialResults",

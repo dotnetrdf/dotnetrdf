@@ -398,6 +398,11 @@ dnr:action a rdf:Property ;
 		   
 # Properties for HTTP Handler Configuration
 
+dnr:enableCors a rdf:Property ;
+				rdfs:label "Enable CORS" ;
+				rdfs:comment "This property sets whether CORS Headers are output" ;
+				rdfs:domain dnr:HttpHandler .
+
 dnr:syntax a rdf:Property ;
 			rdfs:label "Syntax" ;
 			rdfs:comment "This property sets the Syntax in use." ;

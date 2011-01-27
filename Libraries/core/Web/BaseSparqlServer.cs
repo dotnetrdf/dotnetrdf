@@ -83,7 +83,7 @@ namespace VDS.RDF.Web
             this._config = this.LoadConfig(context, out this._basePath);
 
             //Add our Standard Headers
-            HandlerHelper.AddStandardHeaders(context);
+            HandlerHelper.AddStandardHeaders(context, this._config);
 
             String path = context.Request.Path;
             if (path.StartsWith(this._basePath))

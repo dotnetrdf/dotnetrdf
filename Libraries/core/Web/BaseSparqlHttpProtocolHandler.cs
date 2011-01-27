@@ -84,7 +84,7 @@ namespace VDS.RDF.Web
             this._config = this.LoadConfig(context);
 
             //Add our Standard Headers
-            HandlerHelper.AddStandardHeaders(context);
+            HandlerHelper.AddStandardHeaders(context, this._config);
 
             //Check whether we need to use authentication
             if (!HandlerHelper.IsAuthenticated(context, this._config.UserGroups, context.Request.HttpMethod)) return;
