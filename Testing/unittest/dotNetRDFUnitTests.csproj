@@ -145,6 +145,7 @@
     <Compile Include="Sparql\ResultSetWriterTests.cs" />
     <Compile Include="Sparql\UpdateTests.cs" />
     <Compile Include="Sparql\ViewTests.cs" />
+    <Compile Include="Storage\SparqlUniformHttpProtocolTest.cs" />
     <Compile Include="VariableNodeTests.cs" />
     <Compile Include="Web\ETagTests.cs" />
     <Compile Include="Web\ServiceDescription.cs" />
