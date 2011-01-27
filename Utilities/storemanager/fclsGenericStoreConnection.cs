@@ -50,7 +50,22 @@ namespace dotNetRDFStore
         {
             get
             {
-                return this._manager;
+                //If Force Read-Only is checked and Manager is not already Read-Only then we must wrap in a (Queryable)ReadOnlyConnector
+                if (this.chkReadOnly.Checked && !this._manager.IsReadOnly)
+                {
+                    if (this._manager is IQueryableGenericIOManager)
+                    {
+                        return new QueryableReadOnlyConnector((IQueryableGenericIOManager)this._manager);
+                    }
+                    else
+                    {
+                        return new ReadOnlyConnector(this._manager);
+                    }
+                }
+                else
+                {
+                    return this._manager;
+                }
             }
         }
 

@@ -67,10 +67,14 @@ namespace dotNetRDFStore
         private void fclsGenericStoreManager_Load(object sender, EventArgs e)
         {
             this.cboSPARQLResultFormat.SelectedIndex = 0;
+
+            //Determine whether SPARQL Query is supported
             if (!(this._manager is IQueryableGenericIOManager))
             {
                 this.tabFunctions.TabPages.Remove(this.tabSparqlQuery);
             }
+
+            //Determine what SPARQL Update mode if any is supported
             if (this._manager is IUpdateableGenericIOManager)
             {
                 this.lblUpdateMode.Text = "Update Mode: Native";
@@ -79,6 +83,12 @@ namespace dotNetRDFStore
             {
                 this.lblUpdateMode.Text = "Update Mode: Approximated";
             }
+            else
+            {
+                this.tabFunctions.TabPages.Remove(this.tabSparqlUpdate);
+            }
+
+            //Disable Import for Read-Only stores
             if (this._manager.IsReadOnly)
             {
                 this.grpImport.Enabled = false;
@@ -209,44 +219,44 @@ namespace dotNetRDFStore
                         try
                         {
                             writer.Save((SparqlResultSet)results, destFile);
-                            this.stsCurrent.Text = "SPARQL Query complete (took " + timer.Elapsed + ") - Store is ready";
+                            this.stsCurrent.Text = "SPARQL Query Complete (Took " + timer.Elapsed + ") - Store is ready";
                             System.Diagnostics.Process.Start(destFile);
                         }
                         catch (Exception ex)
                         {
-                            this.stsCurrent.Text = "Unable to display SPARQL Query results (took " + timer.Elapsed + ") - Store is ready";
+                            this.stsCurrent.Text = "Unable to display SPARQL Query results (Took " + timer.Elapsed + ") - Store is ready";
                             MessageBox.Show("Unable to display results due to the following error during output:\n" + ex.Message, "Output Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
                     }
                     else if (results is Graph)
                     {
-                        this.stsCurrent.Text = "SPARQL Query complete (took " + timer.Elapsed + ") - Store is ready";
+                        this.stsCurrent.Text = "SPARQL Query Complete (Took " + timer.Elapsed + ") - Store is ready";
                         fclsGraphViewer graphViewer = new fclsGraphViewer((Graph)results);
                         graphViewer.MdiParent = this.MdiParent;
                         graphViewer.Show();
                     }
                     else
                     {
-                        this.stsCurrent.Text = "SPARQL Query returned unknown result (took " + timer.Elapsed + ") - Store is ready";
+                        this.stsCurrent.Text = "SPARQL Query returned unknown result (Took " + timer.Elapsed + ") - Store is ready";
                         MessageBox.Show("Received an unknown result from the SPARQL Query", "SPARQL Query Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
                 catch (RdfStorageException storeEx)
                 {
                     if (timer.IsRunning) timer.Stop();
-                    this.stsCurrent.Text = "SPARQL Query failed (took " + timer.Elapsed + ") - Store is ready";
+                    this.stsCurrent.Text = "SPARQL Query Failed (Took " + timer.Elapsed + ") - Store is ready";
                     MessageBox.Show("SPARQL Query failed due to the following error:\n" + storeEx.Message, "SPARQL Query Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 catch (RdfParseException parseEx)
                 {
                     if (timer.IsRunning) timer.Stop();
-                    this.stsCurrent.Text = "Unable to parse SPARQL Query Results (took " + timer.Elapsed + ") - Store is ready";
+                    this.stsCurrent.Text = "Unable to parse SPARQL Query Results (Took " + timer.Elapsed + ") - Store is ready";
                     MessageBox.Show("Parsing the results of the SPARQL Query failed due to the following error:\n" + parseEx.Message, "SPARQL Query Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 catch (Exception ex)
                 {
                     if (timer.IsRunning) timer.Stop();
-                    this.stsCurrent.Text = "SPARQL Query failed (took " + timer.Elapsed + ") - Store is ready";
+                    this.stsCurrent.Text = "SPARQL Query Failed (Took " + timer.Elapsed + ") - Store is ready";
                     MessageBox.Show("SPARQL Query failed due to the following error:\n" + ex.Message, "SPARQL Query Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }

@@ -261,15 +261,22 @@ namespace VDS.RDF.Configuration
                     {
                         //If no dnr:usingDataset try dnr:usingStore instead
                         storeObj = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyUsingStore));
-                        if (storeObj == null) return false;
-                        temp = ConfigurationLoader.LoadObject(g, storeObj);
-                        if (temp is IInMemoryQueryableStore)
+                        if (storeObj != null)
                         {
-                            manager = new InMemoryManager((IInMemoryQueryableStore)temp);
+                            temp = ConfigurationLoader.LoadObject(g, storeObj);
+                            if (temp is IInMemoryQueryableStore)
+                            {
+                                manager = new InMemoryManager((IInMemoryQueryableStore)temp);
+                            }
+                            else
+                            {
+                                throw new DotNetRdfConfigurationException("Unable to load the In-Memory Manager identified by the Node '" + objNode.ToString() + "' as the value given for the dnr:usingStore property points to an Object that cannot be loaded as an object which implements the IInMemoryQueryableStore interface");
+                            }
                         }
                         else
                         {
-                            throw new DotNetRdfConfigurationException("Unable to load the In-Memory Manager identified by the Node '" + objNode.ToString() + "' as the value given for the dnr:usingStore property points to an Object that cannot be loaded as an object which implements the IInMemoryQueryableStore interface");
+                            //If no dnr:usingStore either then create a new empty store
+                            manager = new InMemoryManager(new TripleStore());
                         }
                     }
                     break;
@@ -465,8 +472,12 @@ namespace VDS.RDF.Configuration
                 case AllegroGraph:
                 case DatasetFile:
                 case FourStore:
+                case Fuseki:
+                case InMemory:
                 case Joseki:
                 case Sesame:
+                case ReadOnly:
+                case ReadOnlyQueryable:
                 case Sparql:
                 case SparqlHttpProtocol:
                 case Talis:

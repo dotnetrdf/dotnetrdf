@@ -39,6 +39,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VDS.RDF.Configuration;
+using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 
 namespace VDS.RDF.Storage
@@ -51,7 +53,7 @@ namespace VDS.RDF.Storage
     /// This is useful if you want to allow some code read-only access to a mutable store and ensure that it cannot modify the store via the manager instance
     /// </para>
     /// </remarks>
-    public class ReadOnlyConnector : IGenericIOManager
+    public class ReadOnlyConnector : IGenericIOManager, IConfigurationSerializable
     {
 
         private IGenericIOManager _manager;
@@ -219,6 +221,36 @@ namespace VDS.RDF.Storage
         }
 
         #endregion
+
+        public override string ToString()
+        {
+            return "[Read Only]" + this._manager.ToString();
+        }
+
+        public virtual void SerializeConfiguration(ConfigurationSerializationContext context)
+        {
+            INode manager = context.NextSubject;
+            INode rdfType = context.Graph.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
+            INode rdfsLabel = context.Graph.CreateUriNode(new Uri(NamespaceMapper.RDFS + "label"));
+            INode dnrType = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyType);
+            INode genericManager = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyGenericManager);
+
+            context.Graph.Assert(manager, rdfType, ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.ClassGenericManager));
+            context.Graph.Assert(manager, dnrType, context.Graph.CreateLiteralNode(this.GetType().ToString()));
+            context.Graph.Assert(manager, rdfsLabel, context.Graph.CreateLiteralNode(this.ToString()));
+
+            if (this._manager is IConfigurationSerializable)
+            {
+                INode managerObj = context.Graph.CreateBlankNode();
+                context.NextSubject = managerObj;
+                ((IConfigurationSerializable)this._manager).SerializeConfiguration(context);
+                context.Graph.Assert(manager, genericManager, managerObj);
+            }
+            else
+            {
+                throw new DotNetRdfConfigurationException("Unable to serialize configuration as the underlying IGenericIOManager is not serializable");
+            }
+        }
     }
 
     /// <summary>

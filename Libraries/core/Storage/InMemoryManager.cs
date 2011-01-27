@@ -39,6 +39,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
@@ -54,7 +55,7 @@ namespace VDS.RDF.Storage
     /// Useful if you want to test out some code using temporary in-memory data before you run the code against a real store or if you are using some code that requires an <see cref="IGenericIOManager">IGenericIOManager</see> interface but you need the results of that code to be available directly in-memory.
     /// </para>
     /// </remarks>
-    public class InMemoryManager : IUpdateableGenericIOManager
+    public class InMemoryManager : IUpdateableGenericIOManager, IConfigurationSerializable
     {
         private ISparqlDataset _dataset;
         private SparqlQueryParser _queryParser;
@@ -316,6 +317,27 @@ namespace VDS.RDF.Storage
         public void Dispose()
         {
             this._dataset.Flush();
+        }
+
+        #endregion
+
+        public override string ToString()
+        {
+            return "[In-Memory]";
+        }
+
+        #region IConfigurationSerializable Members
+
+        public void SerializeConfiguration(ConfigurationSerializationContext context)
+        {
+            INode manager = context.NextSubject;
+            INode rdfType = context.Graph.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
+            INode rdfsLabel = context.Graph.CreateUriNode(new Uri(NamespaceMapper.RDFS + "label"));
+            INode dnrType = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyType);
+
+            context.Graph.Assert(manager, rdfType, ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.ClassGenericManager));
+            context.Graph.Assert(manager, dnrType, context.Graph.CreateLiteralNode(this.GetType().ToString()));
+            context.Graph.Assert(manager, rdfsLabel, context.Graph.CreateLiteralNode(this.ToString()));
         }
 
         #endregion

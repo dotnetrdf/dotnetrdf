@@ -46,6 +46,10 @@
             this.btnConnect4Store = new System.Windows.Forms.Button();
             this.txt4StoreServer = new System.Windows.Forms.TextBox();
             this.lbl4StoreServer = new System.Windows.Forms.Label();
+            this.tabFuseki = new System.Windows.Forms.TabPage();
+            this.btnConnectFuseki = new System.Windows.Forms.Button();
+            this.txtFusekiUri = new System.Windows.Forms.TextBox();
+            this.lblFusekiUri = new System.Windows.Forms.Label();
             this.tabJoseki = new System.Windows.Forms.TabPage();
             this.chkJosekiReadOnly = new System.Windows.Forms.CheckBox();
             this.txtJosekiUpdatePath = new System.Windows.Forms.TextBox();
@@ -72,6 +76,8 @@
             this.txtSesameServer = new System.Windows.Forms.TextBox();
             this.lblSesameServer = new System.Windows.Forms.Label();
             this.tabSparqlEndpoint = new System.Windows.Forms.TabPage();
+            this.txtDefaultGraph = new System.Windows.Forms.TextBox();
+            this.lblDefaultGraph = new System.Windows.Forms.Label();
             this.btnConnectSparql = new System.Windows.Forms.Button();
             this.radSparqlConstruct = new System.Windows.Forms.RadioButton();
             this.radSparqlDescribe = new System.Windows.Forms.RadioButton();
@@ -105,15 +111,11 @@
             this.lblVirtuosoServer = new System.Windows.Forms.Label();
             this.btnCancel = new System.Windows.Forms.Button();
             this.ofdDatasetFile = new System.Windows.Forms.OpenFileDialog();
-            this.txtDefaultGraph = new System.Windows.Forms.TextBox();
-            this.lblDefaultGraph = new System.Windows.Forms.Label();
-            this.tabFuseki = new System.Windows.Forms.TabPage();
-            this.txtFusekiUri = new System.Windows.Forms.TextBox();
-            this.lblFusekiUri = new System.Windows.Forms.Label();
-            this.btnConnectFuseki = new System.Windows.Forms.Button();
+            this.chkReadOnly = new System.Windows.Forms.CheckBox();
             this.tabStores.SuspendLayout();
             this.tabAllegroGraph.SuspendLayout();
             this.tabFourStore.SuspendLayout();
+            this.tabFuseki.SuspendLayout();
             this.tabJoseki.SuspendLayout();
             this.tabDataset.SuspendLayout();
             this.tabSesame.SuspendLayout();
@@ -121,7 +123,6 @@
             this.tabSparqlHttpProtocol.SuspendLayout();
             this.tabTalis.SuspendLayout();
             this.tabVirtuoso.SuspendLayout();
-            this.tabFuseki.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabStores
@@ -264,10 +265,10 @@
             this.tabFourStore.Controls.Add(this.btnConnect4Store);
             this.tabFourStore.Controls.Add(this.txt4StoreServer);
             this.tabFourStore.Controls.Add(this.lbl4StoreServer);
-            this.tabFourStore.Location = new System.Drawing.Point(4, 22);
+            this.tabFourStore.Location = new System.Drawing.Point(4, 40);
             this.tabFourStore.Name = "tabFourStore";
             this.tabFourStore.Padding = new System.Windows.Forms.Padding(3);
-            this.tabFourStore.Size = new System.Drawing.Size(475, 174);
+            this.tabFourStore.Size = new System.Drawing.Size(475, 156);
             this.tabFourStore.TabIndex = 1;
             this.tabFourStore.Text = "4store";
             this.tabFourStore.UseVisualStyleBackColor = true;
@@ -308,6 +309,45 @@
             this.lbl4StoreServer.Size = new System.Drawing.Size(95, 13);
             this.lbl4StoreServer.TabIndex = 0;
             this.lbl4StoreServer.Text = "4store Server URI:";
+            // 
+            // tabFuseki
+            // 
+            this.tabFuseki.Controls.Add(this.btnConnectFuseki);
+            this.tabFuseki.Controls.Add(this.txtFusekiUri);
+            this.tabFuseki.Controls.Add(this.lblFusekiUri);
+            this.tabFuseki.Location = new System.Drawing.Point(4, 40);
+            this.tabFuseki.Name = "tabFuseki";
+            this.tabFuseki.Size = new System.Drawing.Size(475, 156);
+            this.tabFuseki.TabIndex = 9;
+            this.tabFuseki.Text = "Fuseki";
+            this.tabFuseki.UseVisualStyleBackColor = true;
+            // 
+            // btnConnectFuseki
+            // 
+            this.btnConnectFuseki.Location = new System.Drawing.Point(362, 128);
+            this.btnConnectFuseki.Name = "btnConnectFuseki";
+            this.btnConnectFuseki.Size = new System.Drawing.Size(110, 23);
+            this.btnConnectFuseki.TabIndex = 8;
+            this.btnConnectFuseki.Text = "Connect to Fuseki";
+            this.btnConnectFuseki.UseVisualStyleBackColor = true;
+            this.btnConnectFuseki.Click += new System.EventHandler(this.btnConnectFuseki_Click);
+            // 
+            // txtFusekiUri
+            // 
+            this.txtFusekiUri.Location = new System.Drawing.Point(121, 10);
+            this.txtFusekiUri.Name = "txtFusekiUri";
+            this.txtFusekiUri.Size = new System.Drawing.Size(348, 20);
+            this.txtFusekiUri.TabIndex = 3;
+            this.txtFusekiUri.Text = "http://localhost:3030/";
+            // 
+            // lblFusekiUri
+            // 
+            this.lblFusekiUri.AutoSize = true;
+            this.lblFusekiUri.Location = new System.Drawing.Point(6, 13);
+            this.lblFusekiUri.Name = "lblFusekiUri";
+            this.lblFusekiUri.Size = new System.Drawing.Size(97, 13);
+            this.lblFusekiUri.TabIndex = 2;
+            this.lblFusekiUri.Text = "Fuseki Server URI:";
             // 
             // tabJoseki
             // 
@@ -404,9 +444,9 @@
             this.tabDataset.Controls.Add(this.txtDatasetFile);
             this.tabDataset.Controls.Add(this.lblDatasetFile);
             this.tabDataset.Controls.Add(this.lblDatasetFileIntro);
-            this.tabDataset.Location = new System.Drawing.Point(4, 22);
+            this.tabDataset.Location = new System.Drawing.Point(4, 40);
             this.tabDataset.Name = "tabDataset";
-            this.tabDataset.Size = new System.Drawing.Size(475, 174);
+            this.tabDataset.Size = new System.Drawing.Size(475, 156);
             this.tabDataset.TabIndex = 6;
             this.tabDataset.Text = "RDF Dataset File";
             this.tabDataset.UseVisualStyleBackColor = true;
@@ -467,9 +507,9 @@
             this.tabSesame.Controls.Add(this.btnConnectSesame);
             this.tabSesame.Controls.Add(this.txtSesameServer);
             this.tabSesame.Controls.Add(this.lblSesameServer);
-            this.tabSesame.Location = new System.Drawing.Point(4, 22);
+            this.tabSesame.Location = new System.Drawing.Point(4, 40);
             this.tabSesame.Name = "tabSesame";
-            this.tabSesame.Size = new System.Drawing.Size(475, 174);
+            this.tabSesame.Size = new System.Drawing.Size(475, 156);
             this.tabSesame.TabIndex = 3;
             this.tabSesame.Text = "Sesame";
             this.tabSesame.UseVisualStyleBackColor = true;
@@ -567,6 +607,22 @@
             this.tabSparqlEndpoint.TabIndex = 7;
             this.tabSparqlEndpoint.Text = "SPARQL Endpoint";
             this.tabSparqlEndpoint.UseVisualStyleBackColor = true;
+            // 
+            // txtDefaultGraph
+            // 
+            this.txtDefaultGraph.Location = new System.Drawing.Point(108, 53);
+            this.txtDefaultGraph.Name = "txtDefaultGraph";
+            this.txtDefaultGraph.Size = new System.Drawing.Size(362, 20);
+            this.txtDefaultGraph.TabIndex = 4;
+            // 
+            // lblDefaultGraph
+            // 
+            this.lblDefaultGraph.AutoSize = true;
+            this.lblDefaultGraph.Location = new System.Drawing.Point(7, 56);
+            this.lblDefaultGraph.Name = "lblDefaultGraph";
+            this.lblDefaultGraph.Size = new System.Drawing.Size(76, 13);
+            this.lblDefaultGraph.TabIndex = 3;
+            this.lblDefaultGraph.Text = "Default Graph:";
             // 
             // btnConnectSparql
             // 
@@ -880,60 +936,15 @@
             this.ofdDatasetFile.Filter = "RDF Dataset files|*.nq;*.trig;*.trix";
             this.ofdDatasetFile.Title = "Open RDF Dataset File";
             // 
-            // txtDefaultGraph
+            // chkReadOnly
             // 
-            this.txtDefaultGraph.Location = new System.Drawing.Point(108, 53);
-            this.txtDefaultGraph.Name = "txtDefaultGraph";
-            this.txtDefaultGraph.Size = new System.Drawing.Size(362, 20);
-            this.txtDefaultGraph.TabIndex = 4;
-            // 
-            // lblDefaultGraph
-            // 
-            this.lblDefaultGraph.AutoSize = true;
-            this.lblDefaultGraph.Location = new System.Drawing.Point(7, 56);
-            this.lblDefaultGraph.Name = "lblDefaultGraph";
-            this.lblDefaultGraph.Size = new System.Drawing.Size(76, 13);
-            this.lblDefaultGraph.TabIndex = 3;
-            this.lblDefaultGraph.Text = "Default Graph:";
-            // 
-            // tabFuseki
-            // 
-            this.tabFuseki.Controls.Add(this.btnConnectFuseki);
-            this.tabFuseki.Controls.Add(this.txtFusekiUri);
-            this.tabFuseki.Controls.Add(this.lblFusekiUri);
-            this.tabFuseki.Location = new System.Drawing.Point(4, 40);
-            this.tabFuseki.Name = "tabFuseki";
-            this.tabFuseki.Size = new System.Drawing.Size(475, 156);
-            this.tabFuseki.TabIndex = 9;
-            this.tabFuseki.Text = "Fuseki";
-            this.tabFuseki.UseVisualStyleBackColor = true;
-            // 
-            // txtFusekiUri
-            // 
-            this.txtFusekiUri.Location = new System.Drawing.Point(121, 10);
-            this.txtFusekiUri.Name = "txtFusekiUri";
-            this.txtFusekiUri.Size = new System.Drawing.Size(348, 20);
-            this.txtFusekiUri.TabIndex = 3;
-            this.txtFusekiUri.Text = "http://localhost:3030/";
-            // 
-            // lblFusekiUri
-            // 
-            this.lblFusekiUri.AutoSize = true;
-            this.lblFusekiUri.Location = new System.Drawing.Point(6, 13);
-            this.lblFusekiUri.Name = "lblFusekiUri";
-            this.lblFusekiUri.Size = new System.Drawing.Size(97, 13);
-            this.lblFusekiUri.TabIndex = 2;
-            this.lblFusekiUri.Text = "Fuseki Server URI:";
-            // 
-            // btnConnectFuseki
-            // 
-            this.btnConnectFuseki.Location = new System.Drawing.Point(362, 128);
-            this.btnConnectFuseki.Name = "btnConnectFuseki";
-            this.btnConnectFuseki.Size = new System.Drawing.Size(110, 23);
-            this.btnConnectFuseki.TabIndex = 8;
-            this.btnConnectFuseki.Text = "Connect to Fuseki";
-            this.btnConnectFuseki.UseVisualStyleBackColor = true;
-            this.btnConnectFuseki.Click += new System.EventHandler(this.btnConnectFuseki_Click);
+            this.chkReadOnly.AutoSize = true;
+            this.chkReadOnly.Location = new System.Drawing.Point(16, 216);
+            this.chkReadOnly.Name = "chkReadOnly";
+            this.chkReadOnly.Size = new System.Drawing.Size(189, 17);
+            this.chkReadOnly.TabIndex = 2;
+            this.chkReadOnly.Text = "Force connection to be Read Only";
+            this.chkReadOnly.UseVisualStyleBackColor = true;
             // 
             // fclsGenericStoreConnection
             // 
@@ -942,6 +953,7 @@
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(507, 236);
             this.ControlBox = false;
+            this.Controls.Add(this.chkReadOnly);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.tabStores);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -955,6 +967,8 @@
             this.tabAllegroGraph.PerformLayout();
             this.tabFourStore.ResumeLayout(false);
             this.tabFourStore.PerformLayout();
+            this.tabFuseki.ResumeLayout(false);
+            this.tabFuseki.PerformLayout();
             this.tabJoseki.ResumeLayout(false);
             this.tabJoseki.PerformLayout();
             this.tabDataset.ResumeLayout(false);
@@ -969,9 +983,8 @@
             this.tabTalis.PerformLayout();
             this.tabVirtuoso.ResumeLayout(false);
             this.tabVirtuoso.PerformLayout();
-            this.tabFuseki.ResumeLayout(false);
-            this.tabFuseki.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -1060,5 +1073,6 @@
         private System.Windows.Forms.TextBox txtFusekiUri;
         private System.Windows.Forms.Label lblFusekiUri;
         private System.Windows.Forms.Button btnConnectFuseki;
+        private System.Windows.Forms.CheckBox chkReadOnly;
     }
 }

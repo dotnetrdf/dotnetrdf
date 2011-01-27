@@ -42,7 +42,6 @@ using VDS.RDF.Query.Expressions;
 
 namespace VDS.RDF.Query
 {
-    //TODO: Use this for ORDER BY? Or implement another IComparer<INode> which is similar to the CompareTo method from the above class but more closely follows the SPARQL sort order regarding numerics and type promotion
 
     /// <summary>
     /// Comparer class for implementing the SPARQL semantics for the relational operators
@@ -274,6 +273,9 @@ namespace VDS.RDF.Query
         }
     }
 
+    /// <summary>
+    /// Comparer class for use in SPARQL ORDER BY - implements the Semantics broadly similar to the relational operator but instead of erroring using Node/Lexical ordering where an error would occur
+    /// </summary>
     public class SparqlOrderingComparer : SparqlNodeComparer
     {
         /// <summary>
