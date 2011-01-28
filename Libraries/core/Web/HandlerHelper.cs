@@ -58,6 +58,29 @@ namespace VDS.RDF.Web
     public static class HandlerHelper
     {
         /// <summary>
+        /// Gets the Username of the User for the HTTP Request provided that they are authenticated
+        /// </summary>
+        /// <param name="context">HTTP Context</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// <strong>Note: </strong> Unauthenticated Users are treated as guests
+        /// </remarks>
+        private static String GetUsername(HttpContext context)
+        {
+            if (context.User != null)
+            {
+                if (context.User.Identity != null)
+                {
+                    if (context.User.Identity.IsAuthenticated)
+                    {
+                        return context.User.Identity.Name;
+                    }
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
         /// Checks whether a User is authenticated (or guests are permitted)
         /// </summary>
         /// <param name="context">HTTP Context</param>
@@ -65,44 +88,18 @@ namespace VDS.RDF.Web
         /// <returns></returns>
         public static bool IsAuthenticated(HttpContext context, IEnumerable<UserGroup> groups)
         {
+            String user = HandlerHelper.GetUsername(context);
             if (groups.Any())
             {
-                //Have we had credentials provided to us?
-                if (context.Request.Headers["Authorization"] != null)
+                if (user != null && groups.Any(g => g.HasMember(user)))
                 {
-                    String authDetails = context.Request.Headers["Authorization"];
-                    if (authDetails.StartsWith("Basic"))
-                    {
-                        authDetails = authDetails.Substring(authDetails.IndexOf(' ') + 1);
-                        authDetails = new String(Convert.FromBase64String(authDetails).Select(b => (char)b).ToArray());
-                        String user = authDetails.Substring(0, authDetails.IndexOf(':'));
-                        String pwd = authDetails.Substring(authDetails.IndexOf(':') + 1);
-
-                        //Does any Group have this Member?
-                        if (!groups.Any(g => g.HasMember(user, pwd)))
-                        {
-                            context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-                            return false;
-                        }
-                    }
-                    else
-                    {
-                        context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-                        return false;
-                    }
+                    //A Group has the given Member so is authenticated
+                    return true;
                 }
                 else if (!groups.Any(g => g.AllowGuests))
                 {
                     //No Groups allow guests so we require authentication
                     context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-                    try
-                    {
-                        context.Response.Headers.Add("WWW-Authenticate", "Basic realm=\"" + context.Request.Path + "\"");
-                    }
-                    catch (PlatformNotSupportedException)
-                    {
-                        context.Response.AddHeader("WWW-Authenticate", "Basic realm=\"" + context.Request.Path + "\"");
-                    }
                     return false;
                 }
             }
@@ -120,47 +117,22 @@ namespace VDS.RDF.Web
         {
             if (groups.Any())
             {
-                //Have we had credentials provided to us?
-                if (context.Request.Headers["Authorization"] != null)
+                //Does any Group have this Member and allow this action?
+                String user = HandlerHelper.GetUsername(context);
+                if (user != null && !groups.Any(g => g.HasMember(user) && g.IsActionPermitted(context.Request.HttpMethod)))
                 {
-                    String authDetails = context.Request.Headers["Authorization"];
-                    if (authDetails.StartsWith("Basic"))
-                    {
-                        authDetails = authDetails.Substring(authDetails.IndexOf(' ') + 1);
-                        authDetails = new String(Convert.FromBase64String(authDetails).Select(b => (char)b).ToArray());
-                        String user = authDetails.Substring(0, authDetails.IndexOf(':'));
-                        String pwd = authDetails.Substring(authDetails.IndexOf(':') + 1);
-
-                        //Does any Group have this Member and allow this action?
-                        if (!groups.Any(g => g.HasMember(user, pwd) && g.IsActionPermitted(context.Request.HttpMethod)))
-                        {
-                            context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-                            return false;
-                        }
-                    }
-                    else
-                    {
-                        context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-                        return false;
-                    }
+                    context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                    return false;
                 }
                 else if (!groups.Any(g => g.AllowGuests))
                 {
                     //No Groups allow guests so we require authentication
                     context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-                    try
-                    {
-                        context.Response.Headers.Add("WWW-Authenticate", "Basic realm=\"" + context.Request.Path + "\"");
-                    }
-                    catch (PlatformNotSupportedException)
-                    {
-                        context.Response.AddHeader("WWW-Authenticate", "Basic realm=\"" + context.Request.Path + "\"");
-                    }
                     return false;
                 }
                 else
                 {
-                    //No Autorization so does a Group that allows guests allow this action?
+                    //No Authorization so does a Group that allows guests allow this action?
                     if (!groups.Any(g => g.AllowGuests && g.IsActionPermitted(context.Request.HttpMethod)))
                     {
                         //There are no Groups that allow guests and allow this action so this is forbidden

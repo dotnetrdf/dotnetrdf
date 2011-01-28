@@ -129,6 +129,16 @@ namespace VDS.RDF.Configuration.Permissions
         }
 
         /// <summary>
+        /// Returns whether the Group has a member with the given username
+        /// </summary>
+        /// <param name="username">Username</param>
+        /// <returns></returns>
+        public bool HasMember(String username)
+        {
+            return this._users.Any(u => u.UserName.Equals(username));
+        }
+
+        /// <summary>
         /// Returns whether the Group has a member with the given credentials
         /// </summary>
         /// <param name="username">Username</param>
