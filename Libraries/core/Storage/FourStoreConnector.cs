@@ -42,6 +42,9 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading;
+#if !NO_WEB
+using System.Web;
+#endif
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
@@ -213,19 +216,19 @@ namespace VDS.RDF.Storage
                 #endif
 
                 //Make the Request
-                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-
-                //Ensure we close the connection explicitly
-                response.Close();
-
-                #if DEBUG
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                {
+#if DEBUG
                     if (Options.HttpDebugging)
                     {
                         Tools.HttpDebugResponse(response);
                     }
-                #endif
+#endif
+                    //If we get here then it was OK
+                    response.Close();
+                }
 
-                //If we get here then it's OK
+
             }
             catch (WebException webEx)
             {
@@ -296,29 +299,32 @@ namespace VDS.RDF.Storage
                             Graph deleteGraph = new Graph();
                             deleteGraph.Assert(removals);
                             String deleteData = VDS.RDF.Writing.StringWriter.Write(deleteGraph, new NTriplesWriter());
-                            delete.AppendLine("DELETE");
+                            delete.AppendLine("DELETE DATA");
                             delete.AppendLine("{ GRAPH <" + graphUri.Replace(">", "\\>") + "> {");
                             delete.AppendLine(deleteData);
                             delete.AppendLine("}}");
 
                             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this._baseUri + "update/");
                             request.Method = "POST";
+                            request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
 
                             StreamWriter postWriter = new StreamWriter(request.GetRequestStream());
-                            postWriter.Write(delete.ToString());
+                            postWriter.Write("update=");
+                            postWriter.Write(HttpUtility.UrlEncode(delete.ToString()));
                             postWriter.Close();
 
                             #if DEBUG
                                 if (Options.HttpDebugging) Tools.HttpDebugRequest(request);
                             #endif
 
-                            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-
-                            #if DEBUG
+                            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                            {
+#if DEBUG
                                 if (Options.HttpDebugging) Tools.HttpDebugResponse(response);
-                            #endif
-
-                            response.Close();
+#endif
+                                //If we get here then it was OK
+                                response.Close();
+                            }
                         }
                     }
 
@@ -331,29 +337,32 @@ namespace VDS.RDF.Storage
                             Graph insertGraph = new Graph();
                             insertGraph.Assert(additions);
                             String insertData = VDS.RDF.Writing.StringWriter.Write(insertGraph, new NTriplesWriter());
-                            insert.AppendLine("INSERT");
+                            insert.AppendLine("INSERT DATA");
                             insert.AppendLine("{ GRAPH <" + graphUri.Replace(">", "\\>") + "> {");
                             insert.AppendLine(insertData);
                             insert.AppendLine("}}");
 
                             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this._baseUri + "update/");
                             request.Method = "POST";
+                            request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
 
                             StreamWriter postWriter = new StreamWriter(request.GetRequestStream());
-                            postWriter.Write(insert.ToString());
+                            postWriter.Write("update=");
+                            postWriter.Write(HttpUtility.UrlEncode(insert.ToString()));
                             postWriter.Close();
 
                             #if DEBUG
                                 if (Options.HttpDebugging) Tools.HttpDebugRequest(request);
                             #endif
 
-                            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-
-                            #if DEBUG
+                            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                            {
+#if DEBUG
                                 if (Options.HttpDebugging) Tools.HttpDebugResponse(response);
-                            #endif
-
-                            response.Close();
+#endif
+                                //If we get here then it was OK
+                                response.Close();
+                            }
                         }
                     }
                 }

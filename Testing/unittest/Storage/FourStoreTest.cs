@@ -2,6 +2,7 @@
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Parsing;
 using VDS.RDF.Storage;
@@ -73,15 +74,15 @@ namespace VDS.RDF.Test.Storage
             FourStoreSaveGraph();
 
             Graph g = new Graph();
-            FileLoader.Load(g, "Turtle.ttl");
+            List<Triple> ts = new List<Triple>();
+            ts.Add(new Triple(g.CreateUriNode(new Uri("http://example.org/subject")), g.CreateUriNode(new Uri("http://example.org/predicate")), g.CreateUriNode(new Uri("http://example.org/object"))));
 
             FourStoreConnector fourstore = new FourStoreConnector(FourStoreTestUri);
-            fourstore.UpdateGraph("http://example.org/4storeTest", g.Triples, null);
+            fourstore.UpdateGraph("http://example.org/4storeTest", ts, null);
 
-            Graph h = new Graph();
-            fourstore.LoadGraph(h, "http://example.org/4storeTest");
+            fourstore.LoadGraph(g, "http://example.org/4storeTest");
 
-            Assert.IsTrue(g.IsSubGraphOf(h), "Should be a sub-graph of the retrieved Graph");
+            Assert.IsTrue(ts.All(t => g.ContainsTriple(t)), "Added Triple should not have been in the Graph");
         }
 
         [TestMethod]
@@ -90,15 +91,17 @@ namespace VDS.RDF.Test.Storage
             FourStoreAddTriples();
 
             Graph g = new Graph();
-            FileLoader.Load(g, "InferenceTest.ttl");
+            List<Triple> ts = new List<Triple>();
+            ts.Add(new Triple(g.CreateUriNode(new Uri("http://example.org/subject")), g.CreateUriNode(new Uri("http://example.org/predicate")), g.CreateUriNode(new Uri("http://example.org/object"))));
 
             FourStoreConnector fourstore = new FourStoreConnector(FourStoreTestUri);
-            fourstore.UpdateGraph("http://example.org/4storeTest", null, g.Triples);
+            fourstore.UpdateGraph("http://example.org/4storeTest", null, ts);
 
-            Graph h = new Graph();
-            fourstore.LoadGraph(h, "http://example.org/4storeTest");
+            Thread.Sleep(2500);
 
-            Assert.IsFalse(g.IsSubGraphOf(h), "Subgraph should not be present as Triples were removed");
+            fourstore.LoadGraph(g, "http://example.org/4storeTest");
+
+            Assert.IsTrue(ts.All(t => !g.ContainsTriple(t)), "Removed Triple should not have been in the Graph");
         }
     }
 }
