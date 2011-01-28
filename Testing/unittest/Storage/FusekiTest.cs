@@ -57,8 +57,8 @@ namespace VDS.RDF.Test.Storage
 
                 Assert.IsTrue(diff.AddedTriples.Count() == 1, "Should only be 1 Triple difference due to New Line normalization");
                 Assert.IsTrue(diff.RemovedTriples.Count() == 1, "Should only be 1 Triple difference due to New Line normalization");
-                Assert.IsFalse(diff.AddedMSGs.Any(), "Should not be any MSG differences");
-                Assert.IsFalse(diff.RemovedMSGs.Any(), "Should not be any MSG differences");
+                Assert.IsFalse(diff.AddedMSGs.Any(), "Should not be any MSG differences (MSGs added)");
+                Assert.IsFalse(diff.RemovedMSGs.Any(), "Should not be any MSG differences (MSGs removed)");
             }
         }
 
@@ -113,24 +113,29 @@ namespace VDS.RDF.Test.Storage
             FusekiSaveGraph();
 
             FusekiConnector fuseki = new FusekiConnector(new Uri(FusekiTestUri));
+
+            //Ensure that there is a 2nd Graph in the Store in case Fuseki is treating the 1st Graph as the default Graph
+            Graph g = new Graph();
+            FileLoader.Load(g, "InferenceTest.ttl");
+            g.BaseUri = new Uri("http://example.org/fusekiTest2");
+            fuseki.SaveGraph(g);
+
             fuseki.DeleteGraph("http://example.org/fusekiTest");
 
-            //Give Fuseki time to delete stuff
-            Thread.Sleep(1000);
-
+            Graph h = new Graph();
             try
             {
-                Graph g = new Graph();
-                fuseki.LoadGraph(g, "http://example.org/fusekiTest");
-
-                //If we do get here without erroring then the Graph should be empty
-                Assert.IsTrue(g.IsEmpty, "If the Graph loaded without error then it should have been empty as we deleted it from the store");
+                fuseki.LoadGraph(h, "http://example.org/fusekiTest");
             }
             catch (Exception ex)
             {
                 Console.WriteLine("Errored as expected since the Graph was deleted");
                 TestTools.ReportError("Error", ex, false);
             }
+            Console.WriteLine();
+
+            //If we do get here without erroring then the Graph should be empty
+            Assert.IsTrue(h.IsEmpty, "Graph should be empty even if an error wasn't thrown as the data should have been deleted from the Store");
         }
 
         [TestMethod]

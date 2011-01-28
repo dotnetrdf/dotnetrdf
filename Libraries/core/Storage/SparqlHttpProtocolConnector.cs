@@ -122,16 +122,16 @@ namespace VDS.RDF.Storage
                 RdfXmlWriter writer = new RdfXmlWriter();
                 writer.Save(g, new StreamWriter(request.GetRequestStream()));
 
-                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-
-                //If we get then it was OK
-                response.Close();
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                {
+                    //If we get here then it was OK
+                    response.Close();
+                }
             }
             catch (WebException webEx)
             {
                 throw new RdfStorageException("A HTTP Error occurred while trying to save a Graph to the Store", webEx);
             }
-
         }
 
         /// <summary>
@@ -179,10 +179,11 @@ namespace VDS.RDF.Storage
                 g.Assert(additions);
                 writer.Save(g, new StreamWriter(request.GetRequestStream()));
 
-                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-
-                //If we get then it was OK
-                response.Close();
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                {
+                    //If we get here then it was OK
+                    response.Close();
+                }
             }
             catch (WebException webEx)
             {
@@ -228,17 +229,8 @@ namespace VDS.RDF.Storage
                 request.Method = "DELETE";
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
-                    //If we get then it was OK if the status code is 200 or 202
-                    HttpStatusCode status = response.StatusCode;
+                    //If we get here then it was OK
                     response.Close();
-                    if (status == HttpStatusCode.OK || status == HttpStatusCode.Accepted)
-                    {
-                        //OK
-                    }
-                    else
-                    {
-                        throw new RdfStorageException("Server response with a HTTP " + (int)status + " Response - Only HTTP 200/202 are considered to indicate success so the desired Graph may not have been deleted");
-                    }
                 }
             }
             catch (WebException webEx)
