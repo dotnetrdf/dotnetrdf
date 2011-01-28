@@ -388,6 +388,11 @@ namespace VDS.RDF
                 b2 = new BlankNode(target, b.InternalID);
                 return b2;
             }
+            else if (original.NodeType == NodeType.Variable)
+            {
+                VariableNode v = (VariableNode)original;
+                return new VariableNode(target, v.VariableName);
+            }
             else
             {
                 throw new RdfException("Unable to Copy '" + original.GetType().ToString() + "' Nodes between Graphs");
