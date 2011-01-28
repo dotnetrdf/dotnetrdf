@@ -20,134 +20,152 @@ namespace VDS.RDF.Test.Storage
         [TestMethod]
         public void FusekiSaveGraph()
         {
-            Graph g = new Graph();
-            FileLoader.Load(g, "Turtle.ttl");
-            g.BaseUri = new Uri("http://example.org/fusekiTest");
-
-            //Save Graph to Fuseki
-            FusekiConnector fuseki = new FusekiConnector(FusekiTestUri);
-            fuseki.SaveGraph(g);
-            Console.WriteLine("Graph saved to Fuseki OK");
-
-            //Now retrieve Graph from Fuseki
-            Graph h = new Graph();
-            fuseki.LoadGraph(h, "http://example.org/fusekiTest");
-
-            Console.WriteLine();
-            foreach (Triple t in h.Triples)
+            try
             {
-                Console.WriteLine(t.ToString(this._formatter));
-            }
+                Options.UriLoaderCaching = false;
 
-            GraphDiffReport diff = g.Difference(h);
-            if (!diff.AreEqual)
-            {
+                Graph g = new Graph();
+                FileLoader.Load(g, "InferenceTest.ttl");
+                g.BaseUri = new Uri("http://example.org/fusekiTest");
+
+                //Save Graph to Fuseki
+                FusekiConnector fuseki = new FusekiConnector(FusekiTestUri);
+                fuseki.SaveGraph(g);
+                Console.WriteLine("Graph saved to Fuseki OK");
+
+                //Now retrieve Graph from Fuseki
+                Graph h = new Graph();
+                fuseki.LoadGraph(h, "http://example.org/fusekiTest");
+
                 Console.WriteLine();
-                Console.WriteLine("Graphs are different - should be 1 difference due to New Line Normalization");
-                Console.WriteLine("Added Triples");
-                foreach (Triple t in diff.AddedTriples)
-                {
-                    Console.WriteLine(t.ToString(this._formatter));
-                }
-                Console.WriteLine("Removed Triples");
-                foreach (Triple t in diff.RemovedTriples)
+                foreach (Triple t in h.Triples)
                 {
                     Console.WriteLine(t.ToString(this._formatter));
                 }
 
-                Assert.IsTrue(diff.AddedTriples.Count() == 1, "Should only be 1 Triple difference due to New Line normalization");
-                Assert.IsTrue(diff.RemovedTriples.Count() == 1, "Should only be 1 Triple difference due to New Line normalization");
-                Assert.IsFalse(diff.AddedMSGs.Any(), "Should not be any MSG differences (MSGs added)");
-                Assert.IsFalse(diff.RemovedMSGs.Any(), "Should not be any MSG differences (MSGs removed)");
+                Assert.AreEqual(g, h, "Graphs should be equal");
+            }
+            finally
+            {
+                Options.UriLoaderCaching = true;
             }
         }
 
         [TestMethod]
         public void FusekiLoadGraph()
         {
-            //Ensure that the Graph will be there using the SaveGraph() test
-            FusekiSaveGraph();
-
-            Graph g = new Graph();
-            FileLoader.Load(g, "Turtle.ttl");
-            g.BaseUri = new Uri("http://example.org/fusekiTest");
-
-            //Try to load the relevant Graph back from the Store
-            FusekiConnector fuseki = new FusekiConnector(FusekiTestUri);
-
-            Graph h = new Graph();
-            fuseki.LoadGraph(h, "http://example.org/fusekiTest");
-
-            Console.WriteLine();
-            foreach (Triple t in h.Triples)
+            try
             {
-                Console.WriteLine(t.ToString(this._formatter));
-            }
+                Options.UriLoaderCaching = false;
 
-            GraphDiffReport diff = g.Difference(h);
-            if (!diff.AreEqual)
-            {
+                //Ensure that the Graph will be there using the SaveGraph() test
+                FusekiSaveGraph();
+
+                Graph g = new Graph();
+                FileLoader.Load(g, "InferenceTest.ttl");
+                g.BaseUri = new Uri("http://example.org/fusekiTest");
+
+                //Try to load the relevant Graph back from the Store
+                FusekiConnector fuseki = new FusekiConnector(FusekiTestUri);
+
+                Graph h = new Graph();
+                fuseki.LoadGraph(h, "http://example.org/fusekiTest");
+
                 Console.WriteLine();
-                Console.WriteLine("Graphs are different - should be 1 difference due to New Line Normalization");
-                Console.WriteLine("Added Triples");
-                foreach (Triple t in diff.AddedTriples)
-                {
-                    Console.WriteLine(t.ToString(this._formatter));
-                }
-                Console.WriteLine("Removed Triples");
-                foreach (Triple t in diff.RemovedTriples)
+                foreach (Triple t in h.Triples)
                 {
                     Console.WriteLine(t.ToString(this._formatter));
                 }
 
-                Assert.IsTrue(diff.AddedTriples.Count() == 1, "Should only be 1 Triple difference due to New Line normalization");
-                Assert.IsTrue(diff.RemovedTriples.Count() == 1, "Should only be 1 Triple difference due to New Line normalization");
-                Assert.IsFalse(diff.AddedMSGs.Any(), "Should not be any MSG differences");
-                Assert.IsFalse(diff.RemovedMSGs.Any(), "Should not be any MSG differences");
+                Assert.AreEqual(g, h, "Graphs should be equal");
+            }
+            finally
+            {
+                Options.UriLoaderCaching = true;
             }
         }
 
         [TestMethod]
         public void FusekiDeleteGraph()
         {
-            FusekiSaveGraph();
-
-            FusekiConnector fuseki = new FusekiConnector(new Uri(FusekiTestUri));
-
-            //Ensure that there is a 2nd Graph in the Store in case Fuseki is treating the 1st Graph as the default Graph
-            Graph g = new Graph();
-            FileLoader.Load(g, "InferenceTest.ttl");
-            g.BaseUri = new Uri("http://example.org/fusekiTest2");
-            fuseki.SaveGraph(g);
-
-            fuseki.DeleteGraph("http://example.org/fusekiTest");
-
-            Graph h = new Graph();
             try
             {
-                fuseki.LoadGraph(h, "http://example.org/fusekiTest");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Errored as expected since the Graph was deleted");
-                TestTools.ReportError("Error", ex, false);
-            }
-            Console.WriteLine();
+                Options.UriLoaderCaching = false;
 
-            //If we do get here without erroring then the Graph should be empty
-            Assert.IsTrue(h.IsEmpty, "Graph should be empty even if an error wasn't thrown as the data should have been deleted from the Store");
+                FusekiSaveGraph();
+
+                FusekiConnector fuseki = new FusekiConnector(new Uri(FusekiTestUri));
+                fuseki.DeleteGraph("http://example.org/fusekiTest");
+
+                Graph g = new Graph();
+                try
+                {
+                    fuseki.LoadGraph(g, "http://example.org/fusekiTest");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Errored as expected since the Graph was deleted");
+                    TestTools.ReportError("Error", ex, false);
+                }
+                Console.WriteLine();
+
+                //If we do get here without erroring then the Graph should be empty
+                Assert.IsTrue(g.IsEmpty, "Graph should be empty even if an error wasn't thrown as the data should have been deleted from the Store");
+            }
+            finally
+            {
+                Options.UriLoaderCaching = true;
+            }
         }
 
         [TestMethod]
         public void FusekiAddTriples()
         {
-            Assert.Inconclusive("Test Not Implemented");
+            try
+            {
+                Options.UriLoaderCaching = false;
+
+                FusekiSaveGraph();
+
+                Graph g = new Graph();
+                List<Triple> ts = new List<Triple>();
+                ts.Add(new Triple(g.CreateUriNode(new Uri("http://example.org/subject")), g.CreateUriNode(new Uri("http://example.org/predicate")), g.CreateUriNode(new Uri("http://example.org/object"))));
+
+                FusekiConnector fuseki = new FusekiConnector(FusekiTestUri);
+                fuseki.UpdateGraph("http://example.org/fusekiTest", ts, null);
+
+                fuseki.LoadGraph(g, "http://example.org/fusekiTest");
+                Assert.IsTrue(ts.All(t => g.ContainsTriple(t)), "Added Triple should have been in the Graph");
+            }
+            finally
+            {
+                Options.UriLoaderCaching = true;
+            }
         }
 
         [TestMethod]
         public void FusekiRemoveTriples()
         {
-            Assert.Inconclusive("Test Not Implemented");
+            try
+            {
+                Options.UriLoaderCaching = false;
+
+                FusekiSaveGraph();
+
+                Graph g = new Graph();
+                List<Triple> ts = new List<Triple>();
+                ts.Add(new Triple(g.CreateUriNode(new Uri("http://example.org/subject")), g.CreateUriNode(new Uri("http://example.org/predicate")), g.CreateUriNode(new Uri("http://example.org/object"))));
+
+                FusekiConnector fuseki = new FusekiConnector(FusekiTestUri);
+                fuseki.UpdateGraph("http://example.org/fusekiTest", null, ts);
+
+                fuseki.LoadGraph(g, "http://example.org/fusekiTest");
+                Assert.IsTrue(ts.All(t => !g.ContainsTriple(t)), "Removed Triple should not have been in the Graph");
+            }
+            finally
+            {
+                Options.UriLoaderCaching = true;
+            }
         }
 
         [TestMethod]

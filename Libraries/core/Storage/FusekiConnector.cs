@@ -159,6 +159,13 @@ namespace VDS.RDF.Storage
                     using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                     {
                         //If we get here without erroring then the request was OK
+
+#if !NO_URICACHE
+                        //Must invalidate the UriLoader Cache for the Graph
+                        Uri cacheUri = (graphUri != null && !graphUri.Equals(String.Empty)) ? new Uri(this._serverUri + "?graph=" + Uri.EscapeDataString(graphUri)) : new Uri(this._serverUri + "?graph=" + Uri.EscapeDataString("?default"));
+                        UriLoader.Cache.RemoveETag(cacheUri);
+                        UriLoader.Cache.RemoveLocalCopy(cacheUri);
+#endif
                         response.Close();
                     }
                 }
