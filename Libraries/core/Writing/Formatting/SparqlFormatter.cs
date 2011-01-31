@@ -673,15 +673,26 @@ namespace VDS.RDF.Writing.Formatting
 
             if (path is AlternativePath)
             {
-
+                AlternativePath alt = (AlternativePath)path;
+                output.Append('(');
+                output.Append(this.FormatPath(alt.LhsPath));
+                output.Append(" | ");
+                output.Append(this.FormatPath(alt.RhsPath));
+                output.Append(')');
             }
             else if (path is FixedCardinality)
             {
-
+                FixedCardinality card = (FixedCardinality)path;
+                output.Append(this.FormatPath(card.Path));
+                output.Append('{');
+                output.Append(card.MaxCardinality);
+                output.Append('}');
             }
             else if (path is InversePath)
             {
-
+                InversePath inv = (InversePath)path;
+                output.Append("^ ");
+                output.Append(this.FormatPath(inv.Path));
             }
             else if (path is NOrMore)
             {
@@ -703,7 +714,9 @@ namespace VDS.RDF.Writing.Formatting
             }
             else if (path is OneOrMore)
             {
-
+                OneOrMore oneOrMore = (OneOrMore)path;
+                output.Append(this.FormatPath(oneOrMore.Path));
+                output.Append('+');
             }
             else if (path is Property)
             {
@@ -712,19 +725,30 @@ namespace VDS.RDF.Writing.Formatting
             }
             else if (path is SequencePath)
             {
-
+                SequencePath seq = (SequencePath)path;
+                output.Append(this.FormatPath(seq.LhsPath));
+                output.Append(" / ");
+                output.Append(this.FormatPath(seq.RhsPath));
             }
             else if (path is ZeroOrMore)
             {
-
+                ZeroOrMore zeroOrMore = (ZeroOrMore)path;
+                output.Append(this.FormatPath(zeroOrMore.Path));
+                output.Append('*');
             }
             else if (path is ZeroOrOne)
             {
-
+                ZeroOrOne zeroOrOne = (ZeroOrOne)path;
+                output.Append(this.FormatPath(zeroOrOne.Path));
+                output.Append('?');
             }
             else if (path is ZeroToN)
             {
-
+                ZeroToN zeroToN = (ZeroToN)path;
+                output.Append(this.FormatPath(zeroToN.Path));
+                output.Append("{,");
+                output.Append(zeroToN.MaxCardinality);
+                output.Append('}');
             }
             else
             {

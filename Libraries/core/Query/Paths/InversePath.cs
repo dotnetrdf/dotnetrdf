@@ -82,14 +82,7 @@ namespace VDS.RDF.Query.Paths
         /// <returns></returns>
         public override string ToString()
         {
-            if (this._path is AlternativePath)
-            {
-                return "^ (" + this._path.ToString() + ")";
-            }
-            else
-            {
-                return "^ " + this._path.ToString();
-            }
+            return "^ " + this._path.ToString();
         }
 
         /// <summary>
