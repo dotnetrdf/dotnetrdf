@@ -178,7 +178,10 @@ namespace VDS.RDF.Query
                       SparqlKeywordSha224 = "SHA224",
                       SparqlKeywordSha256 = "SHA256",
                       SparqlKeywordSha384 = "SHA384",
-                      SparqlKeywordSha512 = "SHA512"
+                      SparqlKeywordSha512 = "SHA512",
+                      SparqlKeyordAll = "ALL",
+                      SparqlKeywordAny = "ANY",
+                      SparqlKeywordNone = "NONE"
                       ;
 
         /// <summary>
@@ -271,12 +274,15 @@ namespace VDS.RDF.Query
         /// Set of SPARQL Keywords that are Aggregate Keywords
         /// </summary>
         public static String[] AggregateKeywords = {   
+                                                       SparqlKeywordAll,
+                                                       SparqlKeywordAny,
                                                        SparqlKeywordAvg, 
                                                        SparqlKeywordCount, 
                                                        SparqlKeywordMax, 
                                                        SparqlKeywordMedian,
                                                        SparqlKeywordMin, 
                                                        SparqlKeywordMode,
+                                                       SparqlKeywordNone,
                                                        SparqlKeywordNMin, 
                                                        SparqlKeywordNMax, 
                                                        SparqlKeywordSum, 

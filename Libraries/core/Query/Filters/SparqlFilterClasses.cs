@@ -46,7 +46,8 @@ namespace VDS.RDF.Query.Filters
     /// <summary>
     /// Abstract Base class for Unary Filters that operate on a single Expression
     /// </summary>
-    public abstract class BaseUnaryFilter : ISparqlFilter {
+    public abstract class BaseUnaryFilter : ISparqlFilter 
+    {
         /// <summary>
         /// Expression which is the Argument to the Filter
         /// </summary>
@@ -105,7 +106,8 @@ namespace VDS.RDF.Query.Filters
         /// Creates a new Bound Filter
         /// </summary>
         /// <param name="varTerm">Variable Expression</param>
-        public BoundFilter(VariableExpressionTerm varTerm) : base(varTerm) { }
+        public BoundFilter(VariableExpressionTerm varTerm)
+            : base(varTerm) { }
 
         /// <summary>
         /// Evaluates a filter in the given Evaluation Context
@@ -181,7 +183,8 @@ namespace VDS.RDF.Query.Filters
                     }
                     catch
                     {
-
+                        //Error is treated as false for Filters so Null Multiset is returned
+                        context.InputMultiset = new NullMultiset();
                     }
                 }
                 else
@@ -338,7 +341,7 @@ namespace VDS.RDF.Query.Filters
         /// <param name="context">Evaluation Context</param>
         public override void Evaluate(SparqlEvaluationContext context)
         {
-            throw new NotImplementedException("HAVING Clauses are implemented in a different way in Leviathan");
+            throw new NotImplementedException("HAVING Clauses are special cases of Filters implemented in a different way in Leviathan so Evaluate() should never be called on them");
         }
 
         /// <summary>

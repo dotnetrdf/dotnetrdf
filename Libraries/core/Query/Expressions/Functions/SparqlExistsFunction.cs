@@ -179,8 +179,7 @@ namespace VDS.RDF.Query.Expressions.Functions
         {
             get
             {
-                //REQ: Implement an expression that wraps a Graph Pattern for use with this
-                throw new NotImplementedException();
+                return new ISparqlExpression[] { new GraphPatternExpressionTerm(this._pattern) };
             }
         }
     }

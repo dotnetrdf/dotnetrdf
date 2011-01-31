@@ -611,36 +611,13 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Checks whether a Variable is a Projection Variable
+        /// Gets whether this Query is a Sub-Query in another Query
         /// </summary>
-        /// <param name="var">Variable Name</param>
-        /// <returns></returns>
-        internal bool IsProjectionVariable(String var)
+        public bool IsSubQuery
         {
-            if (this._vars.ContainsKey(var))
+            get
             {
-                return this._vars[var].IsProjection;
-            }
-            else
-            {
-                return false;
-            } 
-        }
-
-        /// <summary>
-        /// Gets the Projection Expression for a Projection Variable
-        /// </summary>
-        /// <param name="var">Variable Name</param>
-        /// <returns></returns>
-        internal ISparqlExpression ProjectionVariable(String var)
-        {
-            if (this._vars.ContainsKey(var) && this._vars[var].IsProjection)
-            {
-                return this._vars[var].Projection;
-            }
-            else
-            {
-                return null;
+                return this._subquery;
             }
         }
 

@@ -89,6 +89,14 @@ namespace VDS.RDF.Query.Grouping
         {
             get;
         }
+
+        /// <summary>
+        /// Gets the Expression used to GROUP BY
+        /// </summary>
+        public abstract ISparqlExpression Expression
+        {
+            get;
+        }
     }
 
     /// <summary>
@@ -197,6 +205,17 @@ namespace VDS.RDF.Query.Grouping
                 {
                     return this._child.Variables.Concat(this._name.AsEnumerable<String>());
                 }
+            }
+        }
+
+        /// <summary>
+        /// Gets the Variable Expression Term used by this GROUP BY
+        /// </summary>
+        public override ISparqlExpression Expression
+        {
+            get 
+            {
+                return new VariableExpressionTerm(this._name); 
             }
         }
 
@@ -373,6 +392,17 @@ namespace VDS.RDF.Query.Grouping
                         return this._child.Variables;
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Gets the Expression used to GROUP BY
+        /// </summary>
+        public override ISparqlExpression Expression
+        {
+            get 
+            {
+                return this._expr;
             }
         }
 

@@ -87,6 +87,22 @@ namespace VDS.RDF.Query.Paths
             }
         }
 
+        public ISparqlPath LhsPath
+        {
+            get
+            {
+                return this._lhs;
+            }
+        }
+
+        public ISparqlPath RhsPath
+        {
+            get
+            {
+                return this._rhs;
+            }
+        }
+
         /// <summary>
         /// Evaluates the Path using the given Path Evaluation Context
         /// </summary>

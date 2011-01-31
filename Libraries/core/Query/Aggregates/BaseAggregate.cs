@@ -123,7 +123,7 @@ namespace VDS.RDF.Query.Aggregates
             get;
         }
 
-        public IEnumerable<ISparqlExpression> Arguments
+        public virtual IEnumerable<ISparqlExpression> Arguments
         {
             get
             {

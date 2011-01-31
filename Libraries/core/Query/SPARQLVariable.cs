@@ -162,15 +162,17 @@ namespace VDS.RDF.Query
             StringBuilder output = new StringBuilder();
             if (this._aggregate != null)
             {
+                output.Append('(');
                 output.Append(this._aggregate.ToString());
                 output.Append(" AS ?" + this._name);
+                output.Append(')');
             }
             else if (this._expr != null)
             {
-                output.Append("(");
+                output.Append('(');
                 output.Append(this._expr.ToString());
-                output.Append(")");
                 output.Append(" AS ?" + this._name);
+                output.Append(')');
             }
             else
             {

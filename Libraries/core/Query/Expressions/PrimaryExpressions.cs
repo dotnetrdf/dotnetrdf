@@ -697,4 +697,71 @@ namespace VDS.RDF.Query.Expressions
             }
         }
     }
+
+    /// <summary>
+    /// Class for representing Graph Pattern Terms (as used in EXISTS/NOT EXISTS)
+    /// </summary>
+    public class GraphPatternExpressionTerm : ISparqlExpression
+    {
+        private GraphPattern _pattern;
+
+        public GraphPatternExpressionTerm(GraphPattern pattern)
+        {
+            this._pattern = pattern;
+        }
+
+        #region ISparqlExpression Members
+
+        public INode Value(SparqlEvaluationContext context, int bindingID)
+        {
+            throw new RdfQueryException("Graph Pattern Terms do not have a Node Value");
+        }
+
+        public bool EffectiveBooleanValue(SparqlEvaluationContext context, int bindingID)
+        {
+            throw new RdfQueryException("Graph Pattern Terms do not have an Effective Boolean Value");
+        }
+
+        public GraphPattern Pattern
+        {
+            get
+            {
+                return this._pattern;
+            }
+        }
+
+        public IEnumerable<string> Variables
+        {
+            get 
+            {
+                return this._pattern.Variables; 
+            }
+        }
+
+        public SparqlExpressionType Type
+        {
+            get 
+            {
+                return SparqlExpressionType.Primary;
+            }
+        }
+
+        public string Functor
+        {
+            get
+            {
+                return String.Empty; 
+            }
+        }
+
+        public IEnumerable<ISparqlExpression> Arguments
+        {
+            get
+            {
+                return Enumerable.Empty<ISparqlExpression>(); 
+            }
+        }
+
+        #endregion
+    }
 }

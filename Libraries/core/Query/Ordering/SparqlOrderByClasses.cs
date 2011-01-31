@@ -131,6 +131,14 @@ namespace VDS.RDF.Query.Ordering
         }
 
         /// <summary>
+        /// Gets the Expression used in the Ordering
+        /// </summary>
+        public abstract ISparqlExpression Expression
+        {
+            get;
+        }
+
+        /// <summary>
         /// Abstract Compare method which derived classes should implement their ordering in
         /// </summary>
         /// <param name="x">A Set</param>
@@ -268,6 +276,17 @@ namespace VDS.RDF.Query.Ordering
                 {
                     return this._varname.AsEnumerable<String>();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Gets the Variable Expression Term used in the Ordering
+        /// </summary>
+        public override ISparqlExpression Expression
+        {
+            get
+            {
+                return new VariableExpressionTerm(this._varname); 
             }
         }
 
@@ -464,7 +483,7 @@ namespace VDS.RDF.Query.Ordering
         /// <summary>
         /// Gets the Expression used for Ordering
         /// </summary>
-        public ISparqlExpression Expression
+        public override ISparqlExpression Expression
         {
             get
             {

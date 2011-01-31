@@ -37,6 +37,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Filters;
 
 namespace VDS.RDF.Query.Grouping
@@ -77,6 +78,14 @@ namespace VDS.RDF.Query.Grouping
         /// Should only return variables whose raw values are grouped upon not those which are used in expressions
         /// </remarks>
         IEnumerable<String> Variables
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Gets the Expression used to GROUP BY
+        /// </summary>
+        ISparqlExpression Expression
         {
             get;
         }

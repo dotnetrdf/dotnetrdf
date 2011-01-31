@@ -38,6 +38,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Query.Algebra;
+using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Ordering
@@ -86,6 +87,14 @@ namespace VDS.RDF.Query.Ordering
         /// Gets all the Variables used in the Ordering
         /// </summary>
         IEnumerable<String> Variables
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Gets the Expression used to do the Ordering
+        /// </summary>
+        ISparqlExpression Expression
         {
             get;
         }

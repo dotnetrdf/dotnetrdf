@@ -37,14 +37,24 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VDS.RDF.Parsing.Tokens;
+using VDS.RDF.Query;
+using VDS.RDF.Query.Aggregates;
+using VDS.RDF.Query.Expressions;
+using VDS.RDF.Query.Grouping;
+using VDS.RDF.Query.Ordering;
+using VDS.RDF.Query.Paths;
+using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Writing.Formatting
 {
     /// <summary>
-    /// Formatter for formatting Nodes for use in SPARQL
+    /// Formatter for formatting Nodes for use in SPARQL and for formatting SPARQL Queries
     /// </summary>
-    public class SparqlFormatter : TurtleFormatter
+    public class SparqlFormatter : TurtleFormatter, IQueryFormatter
     {
+        private Uri _tempBaseUri;
+
         /// <summary>
         /// Creates a new SPARQL Formatter
         /// </summary>
@@ -75,5 +85,696 @@ namespace VDS.RDF.Writing.Formatting
         {
             return v.ToString();
         }
+
+        public virtual String Format(SparqlQuery query)
+        {
+            if (query == null) throw new ArgumentNullException("Cannot format a null SPARQL Query as a String");
+
+            try
+            {
+                this._tempBaseUri = query.BaseUri;
+                StringBuilder output = new StringBuilder();
+
+                //Base and Prefix Declarations if not a sub-query
+                if (!query.IsSubQuery)
+                {
+                    if (query.BaseUri != null)
+                    {
+                        output.AppendLine("BASE <" + this.FormatUri(query.BaseUri.ToString()) + ">");
+                    }
+                    foreach (String prefix in this._qnameMapper.Prefixes)
+                    {
+                        output.AppendLine("PREFIX " + prefix + ": <" + this.FormatUri(this._qnameMapper.GetNamespaceUri(prefix).ToString()) + ">");
+                    }
+
+                    //Use a Blank Line to separate Prologue from Query where necessary
+                    if (query.BaseUri != null || this._qnameMapper.Prefixes.Any())
+                    {
+                        output.AppendLine();
+                    }
+                }
+
+                //Next up is the Query Verb
+                switch (query.QueryType)
+                {
+                    case SparqlQueryType.Ask:
+                        output.Append("ASK ");
+                        break;
+
+                    case SparqlQueryType.Construct:
+                        output.AppendLine("CONSTRUCT");
+                        //Add in the Construct Pattern
+                        output.AppendLine(this.Format(query.ConstructTemplate));
+                        break;
+
+                    case SparqlQueryType.Describe:
+                        output.Append("DESCRIBE ");
+                        output.AppendLine(this.FormatVariablesList(query.Variables));
+                        break;
+
+                    case SparqlQueryType.DescribeAll:
+                        output.Append("DESCRIBE * ");
+                        break;
+
+                    case SparqlQueryType.Select:
+                        output.Append("SELECT ");
+                        output.AppendLine(this.FormatVariablesList(query.Variables));
+                        break;
+
+                    case SparqlQueryType.SelectAll:
+                        output.AppendLine("SELECT *");
+                        break;
+
+                    case SparqlQueryType.SelectAllDistinct:
+                        output.AppendLine("SELECT DISTINCT *");
+                        break;
+
+                    case SparqlQueryType.SelectAllReduced:
+                        output.AppendLine("SELECT REDUCED *");
+                        break;
+
+                    case SparqlQueryType.SelectDistinct:
+                        output.Append("SELECT DISTINCT ");
+                        output.AppendLine(this.FormatVariablesList(query.Variables));
+                        break;
+
+                    case SparqlQueryType.SelectReduced:
+                        output.Append("SELECT REDUCED ");
+                        output.AppendLine(this.FormatVariablesList(query.Variables));
+                        break;
+
+                    default:
+                        throw new RdfOutputException("Cannot Format an Unknown Query Type");
+                }
+
+                //Then add in FROM and FROM NAMED if not a sub-query
+                if (!query.IsSubQuery)
+                {
+                    foreach (Uri u in query.DefaultGraphs)
+                    {
+                        output.AppendLine("FROM <" + this.FormatUri(u) + ">");
+                    }
+                    foreach (Uri u in query.NamedGraphs)
+                    {
+                        output.AppendLine("FROM NAMED <" + this.FormatUri(u) + ">");
+                    }
+                }
+
+                //Then the WHERE clause (unless there isn't one)
+                if (query.RootGraphPattern == null)
+                {
+                    if (query.QueryType != SparqlQueryType.Describe) throw new RdfOutputException("Cannot Format a SPARQL Query as it has no Graph Pattern for the WHERE clause and is not a DESCRIBE query");
+                }
+                else
+                {
+                    if (query.RootGraphPattern.IsEmpty)
+                    {
+                        output.AppendLine("WHERE { }");
+                    }
+                    else
+                    {
+                        output.AppendLine("WHERE");
+                        output.AppendLine("{");
+                        output.AppendLineIndented(this.Format(query.RootGraphPattern), 2);
+                        output.AppendLine("}");
+                    }
+                }
+
+                //Then a GROUP BY
+                if (query.GroupBy != null)
+                {
+                    output.Append("GROUP BY ");
+                    output.AppendLine(this.FormatGroupBy(query.GroupBy));
+                }
+
+                //Then a HAVING
+                if (query.Having != null)
+                {
+                    output.Append("HAVING ");
+                    output.Append('(');
+                    output.Append(this.FormatExpression(query.Having.Expression));
+                    output.AppendLine(")");
+                }
+
+                //Then ORDER BY
+                if (query.OrderBy != null)
+                {
+                    output.Append("ORDER BY ");
+                    output.AppendLine(this.FormatOrderBy(query.OrderBy));
+                }
+
+                //Then LIMIT and OFFSET
+                if (query.Limit >= 0) output.AppendLine("LIMIT " + query.Limit);
+                if (query.Offset > 0) output.AppendLine("OFFSET " + query.Offset);
+
+                return output.ToString();
+            }
+            finally
+            {
+                this._tempBaseUri = null;
+            }
+        }
+
+        public virtual String Format(GraphPattern gp)
+        {
+            if (gp == null) throw new RdfOutputException("Cannot format a null Graph Pattern as a String");
+
+            StringBuilder output = new StringBuilder();
+
+            if (gp.IsUnion)
+            {
+                for (int i = 0; i < gp.ChildGraphPatterns.Count; i++)
+                {
+                    output.AppendLine(this.Format(gp.ChildGraphPatterns[i]));
+                    if (i < gp.ChildGraphPatterns.Count - 1)
+                    {
+                        output.AppendLine("UNION");
+                    }
+                }
+                return output.ToString();
+            }
+            else if (gp.IsGraph || gp.IsService)
+            {
+                if (gp.IsGraph)
+                {
+                    output.Append("GRAPH ");
+                }
+                else
+                {
+                    output.Append("SERVICE ");
+                }
+
+                switch (gp.GraphSpecifier.TokenType)
+                {
+                    case Token.QNAME:
+                        try
+                        {
+                            String uri = Tools.ResolveQName(gp.GraphSpecifier.Value, this._qnameMapper, this._tempBaseUri);
+                            //If the QName resolves OK in the context of the Namespace Map we're using to format this then we
+                            //can print the QName as-is
+                            output.Append(gp.GraphSpecifier.Value);
+                        }
+                        catch
+                        {
+                            //If the QName fails to resolve then can't format in the context
+                            throw new RdfOutputException("Cannot format the Graph/Service Specifier QName " + gp.GraphSpecifier.Value + " as the Namespace Mapper in use for this Formatter cannot resolve the QName");
+                        }
+                        break;
+
+                    case Token.URI:
+                        output.Append('<');
+                        output.Append(this.FormatUri(gp.GraphSpecifier.Value));
+                        output.Append('>');
+                        break;
+
+                    case Token.VARIABLE:
+                    default:
+                        output.Append(gp.GraphSpecifier.Value);
+                        break;
+                }
+                output.Append(' ');
+            }
+            else if (gp.IsSubQuery)
+            {
+                output.Append('{');
+                output.Append(this.Format(((SubQueryPattern)gp.TriplePatterns[0]).SubQuery));
+                output.AppendLine("}");
+                return output.ToString();
+            }
+            else if (gp.IsOptional)
+            {
+                output.Append("OPTIONAL ");
+            }
+            else if (gp.IsExists)
+            {
+                output.Append("EXISTS ");
+            }
+            else if (gp.IsNotExists)
+            {
+                output.Append("NOT EXISTS ");
+            }
+            else if (gp.IsMinus)
+            {
+                output.Append("MINUS ");
+            }
+
+            output.Append('{');
+            if (gp.TriplePatterns.Count > 1 || gp.HasChildGraphPatterns)
+            {
+                output.AppendLine();
+                foreach (ITriplePattern tp in gp.TriplePatterns)
+                {
+                    output.AppendLineIndented(this.Format(tp), 2);
+                }
+                foreach (GraphPattern child in gp.ChildGraphPatterns)
+                {
+                    output.AppendLineIndented(this.Format(child), 2);
+                }
+                output.AppendLine("}");
+            }
+            else
+            {
+                output.Append(' ');
+                output.Append(this.Format(gp.TriplePatterns[0]));
+                output.AppendLine(" }");
+            }
+
+            return output.ToString();
+        }
+
+        public virtual String Format(ITriplePattern tp)
+        {
+            StringBuilder output = new StringBuilder();
+            if (tp is TriplePattern)
+            {
+                TriplePattern match = (TriplePattern)tp;
+                output.Append(this.Format(match.Subject, TripleSegment.Subject));
+                output.Append(' ');
+                output.Append(this.Format(match.Predicate, TripleSegment.Predicate));
+                output.Append(' ');
+                output.Append(this.Format(match.Object, TripleSegment.Object));
+                output.AppendLine(" .");
+            }
+            else if (tp is FilterPattern)
+            {
+                FilterPattern filter = (FilterPattern)tp;
+                output.Append("FILTER(");
+                output.Append(this.FormatExpression(filter.Filter.Expression));
+                output.AppendLine(")");
+            }
+            else if (tp is SubQueryPattern)
+            {
+                SubQueryPattern subquery = (SubQueryPattern)tp;
+                output.Append("{ ");
+                output.Append(this.Format(subquery.SubQuery));
+                output.AppendLine(" }");
+            }
+            else if (tp is PropertyPathPattern)
+            {
+                PropertyPathPattern path = (PropertyPathPattern)tp;
+                output.Append(this.Format(path.Subject, TripleSegment.Subject));
+                output.Append(' ');
+                output.Append(this.FormatPath(path.Path));
+                output.Append(' ');
+                output.Append(this.Format(path.Object, TripleSegment.Object));
+                output.AppendLine(" .");
+            }
+            else if (tp is LetPattern)
+            {
+                LetPattern let = (LetPattern)tp;
+                output.Append("LET(?");
+                output.Append(let.VariableName);
+                output.Append(" := ");
+                output.Append(this.FormatExpression(let.AssignExpression));
+                output.AppendLine(")");
+            }
+            else if (tp is BindPattern)
+            {
+                BindPattern bind = (BindPattern)tp;
+                output.Append("BIND (");
+                output.Append(this.FormatExpression(bind.AssignExpression));
+                output.Append(" AS ?");
+                output.Append(bind.VariableName);
+                output.AppendLine("}");
+            }
+            else
+            {
+                throw new RdfOutputException("Unable to Format an unknown ITriplePattern implementation as a String");
+            }
+
+            return output.ToString();
+        }
+
+        public virtual String Format(PatternItem item, TripleSegment? segment)
+        {
+            if (item is VariablePattern)
+            {
+                return item.ToString();
+            }
+            else if (item is NodeMatchPattern)
+            {
+                NodeMatchPattern match = (NodeMatchPattern)item;
+                return this.Format(match.Node, segment);
+            }
+            else if (item is FixedBlankNodePattern)
+            {
+                if (segment != null)
+                {
+                    if (segment == TripleSegment.Predicate) throw new RdfOutputException("Cannot format a Fixed Blank Node Pattern Item as the Predicate of a Triple Pattern as Blank Nodes are not permitted as Predicates");
+                }
+
+                return item.ToString();
+            }
+            else if (item is BlankNodePattern)
+            {
+                return item.ToString();
+            }
+            else
+            {
+                throw new RdfOutputException("Unable to Format an unknown PatternItem implementation as a String");
+            }
+        }
+
+        #region Protected Helper functions which can be overridden to change specific parts of the formatting
+
+        protected virtual String FormatVariablesList(IEnumerable<SparqlVariable> vars)
+        {
+            StringBuilder output = new StringBuilder();
+
+            List<SparqlVariable> varList = vars.Where(v => v.IsResultVariable).ToList();
+
+            int onLine = 0;
+            for (int i = 0; i < varList.Count; i++)
+            {
+                SparqlVariable v = varList[i];
+                if (v.IsAggregate)
+                {
+                    onLine += 2;
+                    output.Append('(');
+                    output.Append(this.FormatAggregate(v.Aggregate));
+                    output.Append(" AS ?");
+                    output.Append(v.Name);
+                    output.Append(')');
+                }
+                else if (v.IsProjection)
+                {
+                    onLine += 3;
+                    output.Append('(');
+                    output.Append(this.FormatExpression(v.Projection));
+                    output.Append(" AS ?");
+                    output.Append(v.Name);
+                    output.Append(')');
+                }
+                else
+                {
+                    onLine += 1;
+                    output.Append(v.ToString());
+                }
+
+                //Maximum of 6 things per line (aggregates worth 2 and expression worth 3)
+                if (onLine >= 6 && i < varList.Count - 1)
+                {
+                    output.AppendLine();
+                }
+                else if (i < varList.Count - 1)
+                {
+                    output.Append(' ');
+                }
+            }
+
+            return output.ToString();
+        }
+
+        protected virtual String FormatExpression(ISparqlExpression expr)
+        {
+            throw new NotImplementedException();
+            StringBuilder output = new StringBuilder();
+
+            try
+            {
+                switch (expr.Type)
+                {
+                    case SparqlExpressionType.Aggregate:
+
+                        break;
+
+                    case SparqlExpressionType.BinaryOperator:
+                        ISparqlExpression lhs = expr.Arguments.First();
+                        ISparqlExpression rhs = expr.Arguments.Skip(1).First();
+
+                        //Format the Expression wrapping the LHS and/or RHS in brackets if required
+                        //to ensure that ordering of operators is preserved
+                        if (lhs.Type == SparqlExpressionType.BinaryOperator)
+                        {
+                            output.Append('(');
+                            output.Append(this.FormatExpression(lhs));
+                            output.Append(')');
+                        }
+                        else
+                        {
+                            output.Append(this.FormatExpression(lhs));
+                        }
+                        output.Append(' ');
+                        output.Append(expr.Functor);
+                        output.Append(' ');
+                        if (rhs.Type == SparqlExpressionType.BinaryOperator)
+                        {
+                            output.Append('(');
+                            output.Append(this.FormatExpression(rhs));
+                            output.Append(')');
+                        }
+                        else
+                        {
+                            output.Append(this.FormatExpression(rhs));
+                        }
+                        break;
+
+                    case SparqlExpressionType.Function:
+                        //Show either a Keyword/URI/QName as appropriate
+                        if (SparqlSpecsHelper.IsFunctionKeyword(expr.Functor))
+                        {
+                            output.Append(expr.Functor);
+                        }
+                        else
+                        {
+                            String funcQname;
+                            if (this._qnameMapper.ReduceToQName(expr.Functor, out funcQname))
+                            {
+                                output.Append(funcQname);
+                            }
+                            else
+                            {
+                                output.Append('<');
+                                output.Append(this.FormatUri(expr.Functor));
+                                output.Append('>');
+                            }
+                        }
+
+                        //Add Arguments list
+                        output.Append('(');
+                        List<ISparqlExpression> args = expr.Arguments.ToList();
+                        for (int i = 0; i < args.Count; i++)
+                        {
+                            output.Append(this.FormatExpression(args[i]));
+                            if (i < args.Count - 1)
+                            {
+                                output.Append(", ");
+                            }
+                        }
+                        output.Append(')');
+                        break;
+
+                    case SparqlExpressionType.GraphOperator:
+
+                        break;
+
+                    case SparqlExpressionType.Primary:
+                        //If Node/Numeric Term then use Node Formatting otherwise use ToString() on the expression
+                        if (expr is NodeExpressionTerm)
+                        {
+                            NodeExpressionTerm nodeTerm = (NodeExpressionTerm)expr;
+                            output.Append(this.Format(nodeTerm.Value(null, 0)));
+                        }
+                        else if (expr is NumericExpressionTerm)
+                        {
+                            NumericExpressionTerm numTerm = (NumericExpressionTerm)expr;
+                            output.Append(this.Format(numTerm.Value(null, 0)));
+                        }
+                        else if (expr is GraphPatternExpressionTerm)
+                        {
+                            GraphPatternExpressionTerm gp = (GraphPatternExpressionTerm)expr;
+                            output.Append("{ ");
+                            //TODO: Add an AppendFlattern extension method which flattens the String onto a single line and use it here
+                            output.Append(this.Format(gp.Pattern));
+                            output.Append(" }");
+                        }
+                        else
+                        {
+                            output.Append(expr.ToString());
+                        }
+                        break;
+
+                    case SparqlExpressionType.SetOperator:
+                        //Add First Argument and Set Operator
+                        output.Append(this.FormatExpression(expr.Arguments.First()));
+                        output.Append(' ');
+                        output.Append(expr.Functor);
+
+                        //Add Set
+                        output.Append(" (");
+                        List<ISparqlExpression> set = expr.Arguments.Skip(1).ToList();
+                        for (int i = 0; i < set.Count; i++)
+                        {
+                            output.Append(this.FormatExpression(set[i]));
+                            if (i < set.Count - 1)
+                            {
+                                output.Append(", ");
+                            }
+                        }
+                        output.Append(')');
+                        break;
+
+                    case SparqlExpressionType.UnaryOperator:
+                        //Just Functor then Expression
+                        output.Append(expr.Functor);
+                        output.Append(this.FormatExpression(expr.Arguments.First()));
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new RdfOutputException("Error formatting a SPARQL Expression - the Expression may have the wrong number of arguments for the reported expression type", ex);
+            }
+
+            return output.ToString();
+        }
+
+        protected virtual String FormatAggregate(ISparqlAggregate agg)
+        {
+            StringBuilder output = new StringBuilder();
+            if (SparqlSpecsHelper.IsAggregateKeyword(agg.Functor))
+            {
+                output.Append(agg.Functor);
+            }
+            else
+            {
+                String aggQName;
+                if (this._qnameMapper.ReduceToQName(agg.Functor, out aggQName))
+                {
+                    output.Append(aggQName);
+                }
+                else
+                {
+                    output.Append('<');
+                    output.Append(this.FormatUri(agg.Functor));
+                    output.Append('>');
+                }
+            }
+
+            output.Append('(');
+            List<ISparqlExpression> args = agg.Arguments.ToList();
+            for (int i = 0; i < args.Count; i++)
+            {
+                output.Append(this.FormatExpression(args[i]));
+                if (i < args.Count - 1 && !(args[i] is DistinctModifierExpression))
+                {
+                    output.Append(", ");
+                }
+            }
+            output.Append(')');
+
+            return output.ToString();
+        }
+
+        protected virtual String FormatPath(ISparqlPath path)
+        {
+            throw new NotImplementedException();
+            StringBuilder output = new StringBuilder();
+
+            if (path is AlternativePath)
+            {
+
+            }
+            else if (path is FixedCardinality)
+            {
+
+            }
+            else if (path is InversePath)
+            {
+
+            }
+            else if (path is NOrMore)
+            {
+                NOrMore nOrMore = (NOrMore)path;
+                output.Append(this.FormatPath(nOrMore.Path));
+                output.Append('{');
+                output.Append(nOrMore.MinCardinality);
+                output.Append(",}");
+            }
+            else if (path is NToM)
+            {
+                NToM nToM = (NToM)path;
+                output.Append(this.FormatPath(nToM.Path));
+                output.Append('{');
+                output.Append(nToM.MinCardinality);
+                output.Append(',');
+                output.Append(nToM.MaxCardinality);
+                output.Append('}');
+            }
+            else if (path is OneOrMore)
+            {
+
+            }
+            else if (path is Property)
+            {
+                Property prop = (Property)path;
+                output.Append(this.Format(prop.Predicate, TripleSegment.Predicate));
+            }
+            else if (path is SequencePath)
+            {
+
+            }
+            else if (path is ZeroOrMore)
+            {
+
+            }
+            else if (path is ZeroOrOne)
+            {
+
+            }
+            else if (path is ZeroToN)
+            {
+
+            }
+            else
+            {
+                throw new RdfOutputException("Unable to Format an unknown ISparqlPath implementations as a String");
+            }
+
+            return output.ToString();
+        }
+
+        protected virtual String FormatGroupBy(ISparqlGroupBy groupBy)
+        {
+            StringBuilder output = new StringBuilder();
+
+            output.Append(this.FormatExpression(groupBy.Expression));
+
+            if (groupBy.Child != null)
+            {
+                output.Append(' ');
+                output.Append(this.FormatGroupBy(groupBy.Child));
+            }
+
+            return output.ToString();
+        }
+
+        protected virtual String FormatOrderBy(ISparqlOrderBy orderBy)
+        {
+            StringBuilder output = new StringBuilder();
+
+            if (orderBy.Descending)
+            {
+                output.Append("DESC(");
+                output.Append(this.FormatExpression(orderBy.Expression));
+                output.Append(')');
+            }
+            else 
+            {
+                output.Append("ASC(");
+                output.Append(this.FormatExpression(orderBy.Expression));
+                output.Append(')');
+            }
+
+            if (orderBy.Child != null)
+            {
+                output.Append(' ');
+                output.Append(this.FormatOrderBy(orderBy.Child));
+            }
+
+            return output.ToString();
+        }
+
+        #endregion
     }
 }

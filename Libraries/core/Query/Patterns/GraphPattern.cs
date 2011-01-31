@@ -774,10 +774,18 @@ namespace VDS.RDF.Query.Patterns
                 }
                 return output.ToString();
             }
-            else if (this._isGraph)
+            else if (this._isGraph || this._isService)
             {
-                output.Append("GRAPH ");
-                switch (this._graphSpecifier.TokenType) {
+                if (this._isGraph)
+                {
+                    output.Append("GRAPH ");
+                }
+                else
+                {
+                    output.Append("SERVICE ");
+                }
+                switch (this._graphSpecifier.TokenType)
+                {
                     case Token.QNAME:
                         output.Append(this._graphSpecifier.Value);
                         break;
@@ -807,6 +815,10 @@ namespace VDS.RDF.Query.Patterns
                 {
                     output.Append("OPTIONAL ");
                 }
+            }
+            else if (this._isMinus)
+            {
+                output.Append("MINUS ");
             }
 
             output.Append("{ ");

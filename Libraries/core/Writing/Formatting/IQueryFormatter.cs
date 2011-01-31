@@ -1,6 +1,6 @@
 ﻿/*
 
-Copyright Robert Vesse 2009-10
+Copyright Robert Vesse 2009-11
 rvesse@vdesign-studios.com
 
 ------------------------------------------------------------------------
@@ -37,35 +37,44 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using VDS.RDF.Query.Expressions;
+using VDS.RDF.Query;
+using VDS.RDF.Query.Patterns;
 
-namespace VDS.RDF.Query.Filters
+namespace VDS.RDF.Writing.Formatting
 {
+
     /// <summary>
-    /// Interface for Classes which implement SPARQL Filter Functions
+    /// Interface for classes which can format SPARQL Queries into Strings
     /// </summary>
-    public interface ISparqlFilter
+    public interface IQueryFormatter : INodeFormatter, IUriFormatter
     {
         /// <summary>
-        /// Evaluates a Filter in the given Evaluation Context
+        /// Formats a SPARQL Query into a String
         /// </summary>
-        /// <param name="context">Evaluation Context</param>
-        void Evaluate(SparqlEvaluationContext context);
+        /// <param name="query">SPARQL Query</param>
+        /// <returns></returns>
+        String Format(SparqlQuery query);
 
         /// <summary>
-        /// Gets the enumeration of Variables that are used in the Filter
+        /// Formats a Graph Pattern into a String
         /// </summary>
-        IEnumerable<String> Variables
-        {
-            get;
-        }
+        /// <param name="gp">Graph Pattern</param>
+        /// <returns></returns>
+        String Format(GraphPattern gp);
 
         /// <summary>
-        /// Gets the Expression that this Filter uses
+        /// Formats a Triple Pattern into a String
         /// </summary>
-        ISparqlExpression Expression
-        {
-            get;
-        }
+        /// <param name="tp">Triple Pattern</param>
+        /// <returns></returns>
+        String Format(ITriplePattern tp);
+
+        /// <summary>
+        /// Formats a Triple Pattern item into a String
+        /// </summary>
+        /// <param name="item">Pattern Item</param>
+        /// <param name="segment">Segment of the Triple Pattern in which the Item appears</param>
+        /// <returns></returns>
+        String Format(PatternItem item, TripleSegment? segment);
     }
 }

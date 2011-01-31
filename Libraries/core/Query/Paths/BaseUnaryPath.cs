@@ -80,6 +80,14 @@ namespace VDS.RDF.Query.Paths
             }
         }
 
+        public ISparqlPath Path
+        {
+            get
+            {
+                return this._path;
+            }
+        }
+
         /// <summary>
         /// Evaluates the Path using the given Path Evaluation Context
         /// </summary>

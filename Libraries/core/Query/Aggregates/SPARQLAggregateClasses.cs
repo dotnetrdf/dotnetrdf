@@ -424,6 +424,14 @@ namespace VDS.RDF.Query.Aggregates
                 return SparqlSpecsHelper.SparqlKeywordCount;
             }
         }
+
+        public override IEnumerable<ISparqlExpression> Arguments
+        {
+            get
+            {
+                return new ISparqlExpression[] { new DistinctModifierExpression() }.Concat(base.Arguments);
+            }
+        }
     }
 
     /// <summary>
@@ -472,6 +480,14 @@ namespace VDS.RDF.Query.Aggregates
                 return SparqlSpecsHelper.SparqlKeywordCount;
             }
         }
+
+        public override IEnumerable<ISparqlExpression> Arguments
+        {
+            get
+            {
+                return new ISparqlExpression[] { new AllModifierExpression() };
+            }
+        }
     }
 
     /// <summary>
@@ -515,6 +531,14 @@ namespace VDS.RDF.Query.Aggregates
             get
             {
                 return SparqlSpecsHelper.SparqlKeywordCount;
+            }
+        }
+
+        public override IEnumerable<ISparqlExpression> Arguments
+        {
+            get
+            {
+                return new ISparqlExpression[] { new DistinctModifierExpression(), new AllModifierExpression() };
             }
         }
     }

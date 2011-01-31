@@ -61,6 +61,16 @@ namespace VDS.RDF.Query.Paths
             get;
         }
 
+        public abstract int MinCardinality
+        {
+            get;
+        }
+
+        public abstract int MaxCardinality
+        {
+            get;
+        }
+
         /// <summary>
         /// Evaluates the Path in the given Context
         /// </summary>
@@ -93,6 +103,22 @@ namespace VDS.RDF.Query.Paths
             : base(path)
         {
             this._n = n;
+        }
+
+        public override int MaxCardinality
+        {
+            get 
+            {
+                return this._n; 
+            }
+        }
+
+        public override int MinCardinality
+        {
+            get 
+            {
+                return this._n; 
+            }
         }
 
         /// <summary>
@@ -212,6 +238,22 @@ namespace VDS.RDF.Query.Paths
             }
         }
 
+        public override int MaxCardinality
+        {
+            get 
+            {
+                return Int32.MaxValue;
+            }
+        }
+
+        public override int MinCardinality
+        {
+            get 
+            {
+                return 0;
+            }
+        }
+
         /// <summary>
         /// Evaluates the Path in the given Context
         /// </summary>
@@ -271,6 +313,22 @@ namespace VDS.RDF.Query.Paths
             }
         }
 
+        public override int MaxCardinality
+        {
+            get 
+            {
+                return 1; 
+            }
+        }
+
+        public override int MinCardinality
+        {
+            get 
+            {
+                return 0; 
+            }
+        }
+
         /// <summary>
         /// Evaluates the Path in the given Context
         /// </summary>
@@ -311,6 +369,22 @@ namespace VDS.RDF.Query.Paths
             get
             {
                 return false;
+            }
+        }
+
+        public override int MaxCardinality
+        {
+            get 
+            {
+                return Int32.MaxValue;
+            }
+        }
+
+        public override int MinCardinality
+        {
+            get 
+            {
+                return 1;
             }
         }
 
@@ -368,6 +442,22 @@ namespace VDS.RDF.Query.Paths
             }
         }
 
+        public override int MaxCardinality
+        {
+            get 
+            {
+                return Int32.MaxValue;
+            }
+        }
+
+        public override int MinCardinality
+        {
+            get 
+            {
+                return this._n;
+            }
+        }
+
         /// <summary>
         /// Evaluates the Path in the given Context
         /// </summary>
@@ -422,6 +512,22 @@ namespace VDS.RDF.Query.Paths
             get
             {
                 return false;
+            }
+        }
+
+        public override int MaxCardinality
+        {
+            get 
+            {
+                return this._n;
+            }
+        }
+
+        public override int MinCardinality
+        {
+            get 
+            {
+                return 0; 
             }
         }
 
@@ -492,6 +598,30 @@ namespace VDS.RDF.Query.Paths
             get
             {
                 return false;
+            }
+        }
+
+        public override int MaxCardinality
+        {
+            get 
+            {
+                return this._m; 
+            }
+        }
+
+        public override int MinCardinality
+        {
+            get 
+            {
+                return this._n;
+            }
+        }
+
+        public override bool AllowsZeroLength
+        {
+            get
+            {
+                return (this._n == 0);
             }
         }
 

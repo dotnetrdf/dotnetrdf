@@ -321,6 +321,42 @@ namespace VDS.RDF
             return formatter.FormatUri(u);
         }
 
+        /// <summary>
+        /// Appends a String to the StringBuilder with an indent of <paramref name="indent"/> spaces
+        /// </summary>
+        /// <param name="builder">String Builder</param>
+        /// <param name="line">String to append</param>
+        /// <param name="indent">Indent</param>
+        internal static void AppendIndented(this StringBuilder builder, String line, int indent)
+        {
+            builder.Append(new String(' ', indent) + line);
+        }
+
+        /// <summary>
+        /// Appends a String to the StringBuilder with an indent of <paramref name="indent"/> spaces
+        /// </summary>
+        /// <param name="builder">String Builder</param>
+        /// <param name="line">String to append</param>
+        /// <param name="indent">Indent</param>
+        /// <remarks>
+        /// Strings containing new lines are split over multiple lines
+        /// </remarks>
+        internal static void AppendLineIndented(this StringBuilder builder, String line, int indent)
+        {
+            if (line.Contains('\n'))
+            {
+                String[] lines = line.Split('\n');
+                foreach (String l in lines)
+                {
+                    builder.AppendLine(new String(' ', indent) + l);
+                }
+            }
+            else
+            {
+                builder.AppendLine(new String(' ', indent) + line);
+            }
+        }
+
         #endregion
     }
 

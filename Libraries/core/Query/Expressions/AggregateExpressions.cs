@@ -104,6 +104,66 @@ namespace VDS.RDF.Query.Expressions
         }
     }
 
+    public class AllModifierExpression : ISparqlExpression
+    {
+        /// <summary>
+        /// Throws a <see cref="NotImplementedException">NotImplementedException</see> since this class is a placeholder and only used in parsing
+        /// </summary>
+        /// <param name="context">SPARQL Evaluation Context</param>
+        /// <param name="bindingID">Binding ID</param>
+        /// <returns></returns>
+        public INode Value(SparqlEvaluationContext context, int bindingID)
+        {
+            throw new NotImplementedException("This class is a placeholder only - aggregates taking this as an argument should apply over all rows");
+        }
+
+        /// <summary>
+        /// Throws a <see cref="NotImplementedException">NotImplementedException</see> since this class is a placeholder and only used in parsing
+        /// </summary>
+        /// <param name="context">SPARQL Evaluation Context</param>
+        /// <param name="bindingID">Binding ID</param>
+        /// <returns></returns>
+        public bool EffectiveBooleanValue(SparqlEvaluationContext context, int bindingID)
+        {
+            throw new NotImplementedException("This class is a placeholder only - aggregates taking this as an argument should apply over all rows");
+        }
+
+        /// <summary>
+        /// Returns an empty enumerable
+        /// </summary>
+        public IEnumerable<string> Variables
+        {
+            get
+            {
+                return Enumerable.Empty<String>();
+            }
+        }
+
+        public SparqlExpressionType Type
+        {
+            get
+            {
+                return SparqlExpressionType.Primary;
+            }
+        }
+
+        public String Functor
+        {
+            get
+            {
+                return "*";
+            }
+        }
+
+        public IEnumerable<ISparqlExpression> Arguments
+        {
+            get
+            {
+                return Enumerable.Empty<ISparqlExpression>();
+            }
+        }
+    }
+
     /// <summary>
     /// Class for representing Aggregate Expressions which have Numeric Results
     /// </summary>
