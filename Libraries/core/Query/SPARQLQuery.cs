@@ -767,7 +767,7 @@ namespace VDS.RDF.Query
                     }
                     defGraph = g;
                     dataset.SetDefaultGraph(defGraph);
-                 }
+                }
                 else if (this._namedGraphs.Count > 0)
                 {
                     //No FROM Clauses but one/more FROM NAMED means the Default Graph is the empty graph

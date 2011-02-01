@@ -89,5 +89,14 @@ namespace VDS.RDF.Query.Grouping
         {
             get;
         }
+
+        /// <summary>
+        /// Gets/Sets the Variable the value of the GROUP BY expression should be bound to (may be null if not bound to anything)
+        /// </summary>
+        String AssignVariable
+        {
+            get;
+            set;
+        }
     }
 }

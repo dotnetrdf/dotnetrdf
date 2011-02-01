@@ -47,6 +47,20 @@ namespace VDS.RDF.Query
     public class BindingGroup : IEnumerable<int>
     {
         private List<int> _bindingIDs = new List<int>();
+        private Dictionary<String, INode> _assignments = new Dictionary<string, INode>();
+
+        public BindingGroup()
+        {
+
+        }
+
+        public BindingGroup(BindingGroup parent)
+        {
+            foreach (KeyValuePair<String, INode> assignment in parent.Assignments)
+            {
+                this._assignments.Add(assignment.Key, assignment.Value);
+            }
+        }
 
         /// <summary>
         /// Adds a Binding ID to the Group
@@ -84,6 +98,27 @@ namespace VDS.RDF.Query
             {
                 return (from id in this._bindingIDs
                         select id);
+            }
+        }
+
+        public void AddAssignment(String variable, INode value)
+        {
+            if (this._assignments.ContainsKey(variable))
+            {
+                throw new RdfQueryException("Cannot assign the value of a GROUP BY expression to a Variable assigned to by an earlier GROUP BY");
+            }
+            else
+            {
+                this._assignments.Add(variable, value);
+            }
+        }
+
+        public IEnumerable<KeyValuePair<String, INode>> Assignments
+        {
+            get
+            {
+                return (from kvp in this._assignments
+                        select kvp);
             }
         }
     }

@@ -61,7 +61,12 @@ namespace VDS.RDF.Query.Algebra
 
             foreach (BindingGroup group in groups)
             {
-                base.Add(new Set());
+                Set s = new Set();
+                foreach (KeyValuePair<String, INode> assignment in group.Assignments)
+                {
+                    s.Add(assignment.Key, assignment.Value);
+                }
+                base.Add(s);
             }
         }
 

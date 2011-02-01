@@ -538,7 +538,20 @@ namespace VDS.RDF.Writing.Formatting
                 switch (expr.Type)
                 {
                     case SparqlExpressionType.Aggregate:
-
+                        if (expr is AggregateExpressionTerm)
+                        {
+                            AggregateExpressionTerm agg = (AggregateExpressionTerm)expr;
+                            output.Append(this.FormatAggregate(agg.Aggregate));
+                        }
+                        else if (expr is NonNumericAggregateExpressionTerm)
+                        {
+                            NonNumericAggregateExpressionTerm nonNumAgg = (NonNumericAggregateExpressionTerm)expr;
+                            output.Append(this.FormatAggregate(nonNumAgg.Aggregate));
+                        }
+                        else
+                        {
+                            output.Append(expr.ToString());
+                        }
                         break;
 
                     case SparqlExpressionType.BinaryOperator:
@@ -627,7 +640,6 @@ namespace VDS.RDF.Writing.Formatting
                         {
                             GraphPatternExpressionTerm gp = (GraphPatternExpressionTerm)expr;
                             output.Append("{ ");
-                            //TODO: Add an AppendFlattern extension method which flattens the String onto a single line and use it here
                             output.Append(this.Format(gp.Pattern));
                             output.Append(" }");
                         }
@@ -804,7 +816,17 @@ namespace VDS.RDF.Writing.Formatting
         {
             StringBuilder output = new StringBuilder();
 
+            if (groupBy.AssignVariable != null)
+            {
+                output.Append('(');
+            }
             output.Append(this.FormatExpression(groupBy.Expression));
+            if (groupBy.AssignVariable != null)
+            {
+                output.Append(" AS ?");
+                output.Append(groupBy.AssignVariable);
+                output.Append(')');
+            }
 
             if (groupBy.Child != null)
             {

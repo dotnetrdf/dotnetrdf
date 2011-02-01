@@ -113,7 +113,7 @@ namespace VDS.RDF.Update.Protocol
             //Get the Graph URI of the Graph to be added
             Uri graphUri = this.ResolveGraphUri(context, g);
 
-            //TODO: Need to add something here so that where relevant a new Graph gets created
+            //Q: Do we need to add something here so that where relevant a new Graph gets created?
             //According to the spec this should happen "if the request URI identifies the underlying Network-manipulable Graph Store"
             //May need to have Protocol Processors have this URI as a property
 

@@ -2555,12 +2555,14 @@ namespace VDS.RDF.Parsing
             //GROUP BY has already been discarded
             IToken next = context.Tokens.Peek();
 
-            ISparqlGroupBy first, last;
+            ISparqlGroupBy first, last, current;
             ISparqlExpression expr;
-            first = last = null;
+            first = last = current = null;
             int termsSeen = 0;
             bool exit = false;
+            bool terminateExpression = false;
 
+            context.ExpressionParser.AllowAggregates = true;
             while (true)
             {
                 switch (next.TokenType)
@@ -2569,14 +2571,15 @@ namespace VDS.RDF.Parsing
                         //Simple Variable Group By
 
                         String name = next.Value.Substring(1);
+                        current = new GroupByVariable(name);
                         if (first == null)
                         {
-                            first = new GroupByVariable(name);
+                            first = current;
                             last = first;
                         }
                         else
                         {
-                            last.Child = new GroupByVariable(name);
+                            last.Child = current;
                             last = last.Child;
                         }
                         context.Tokens.Dequeue();
@@ -2585,15 +2588,17 @@ namespace VDS.RDF.Parsing
                     case Token.LEFTBRACKET:
                         //Bracketted Expression Group By
                         context.Tokens.Dequeue();
-                        expr = this.TryParseExpression(context, false);
+                        expr = this.TryParseExpression(context, false, true);
+                        terminateExpression = (context.Tokens.LastTokenType == Token.AS);
+                        current = new GroupByExpression(expr);
                         if (first == null)
                         {
-                            first = new GroupByExpression(expr);
+                            first = current;
                             last = first;
                         }
                         else
                         {
-                            last.Child = new GroupByExpression(expr);
+                            last.Child = current;
                             last = last.Child;
                         }
                         break;
@@ -2619,14 +2624,15 @@ namespace VDS.RDF.Parsing
                     case Token.QNAME:
                         //Function Expression Group By
                         expr = this.TryParseFunctionExpression(context);
+                        current = new GroupByExpression(expr);
                         if (first == null)
                         {
-                            first = new GroupByExpression(expr);
+                            first = current;
                             last = first;
                         }
                         else
                         {
-                            last.Child = new GroupByExpression(expr);
+                            last.Child = current;
                             last = last.Child;
                         }
                         break;
@@ -2646,7 +2652,39 @@ namespace VDS.RDF.Parsing
 
                 termsSeen++;
                 next = context.Tokens.Peek();
+
+                //Allow an AS ?var after an expression
+                if (next.TokenType == Token.AS || terminateExpression)
+                {
+                    if (!terminateExpression) context.Tokens.Dequeue();
+                    next = context.Tokens.Peek();
+                    if (next.TokenType == Token.VARIABLE)
+                    {
+                        context.Tokens.Dequeue();
+                        if (current != null) current.AssignVariable = next.Value.Substring(1);
+                        next = context.Tokens.Peek();
+
+                        //Find the terminating right bracket if required
+                        if (terminateExpression)
+                        {
+                            if (next.TokenType != Token.RIGHTBRACKET)
+                            {
+                                throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a ) to terminate the AS clause in a bracketted expression", next);
+                            }
+                            context.Tokens.Dequeue();
+                            next = context.Tokens.Peek();
+                        }
+                    }
+                    else
+                    {
+                        throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Variable Token after an AS token in a GROUP BY clause to specify the value to assign the GROUPed value to", next);
+                    }
+                }
+
+                terminateExpression = false;
             }
+
+            context.ExpressionParser.AllowAggregates = false;
 
             //Set to Query
             context.Query.GroupBy = first;

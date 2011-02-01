@@ -110,20 +110,37 @@ namespace VDS.RDF.Query.Algebra
                 //Project all simple variables for the Groups here
                 foreach (SparqlVariable v in vars.Where(v => v.IsResultVariable && !v.IsProjection && !v.IsAggregate))
                 {
-                    //Can only project a variable if it's used in the GROUP
+                    //Can only project a variable if it's used in the GROUP OR if it was assigned by a GROUP BY expression
                     if (context.Query != null)
                     {
-                        if (!context.Query.GroupBy.Variables.Contains(v.Name))
+                        if (!groupSet.ContainsVariable(v.Name) && !context.Query.GroupBy.Variables.Contains(v.Name))
                         {
                             throw new RdfQueryException("Cannot project the variable ?" + v.Name + " since this Query contains Grouping(s) but the given Variable is not in the GROUP BY - use the SAMPLE aggregate if you need to sample this Variable");
                         }
                     }
+
+                    //Project the value for each variable
                     context.OutputMultiset.AddVariable(v.Name);
-                    foreach (int id in groupSet.SetIDs)
+                    if (!groupSet.ContainsVariable(v.Name))
                     {
-                        INode value = groupSet.Contents[groupSet.GroupSetIDs(id).First()][v.Name];
-                        context.OutputMultiset[id].Add(v.Name, value);
+                        //Simple Variable Projection used in GROUP BY so grab first value as all should be same
+                        //for the group
+                        foreach (int id in groupSet.SetIDs)
+                        {
+                            INode value = groupSet.Contents[groupSet.GroupSetIDs(id).First()][v.Name];
+                            context.OutputMultiset[id].Add(v.Name, value);
+                        }
                     }
+                    //Q: Do we need to do anything here to get GROUP BY assigned values out?
+                    //else
+                    //{
+                    //    //Variable Projection of a Value assigned by a GROUP BY expression so the value will be in
+                    //    //the Set for the Group already
+                    //    foreach (int id in groupSet.SetIDs)
+                    //    {
+                    //        context.OutputMultiset[id].Add(v.Name, groupSet[id][v.Name]);
+                    //    }
+                    //}
                 }
             }
             else if (context.Query.IsAggregate)

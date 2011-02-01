@@ -52,6 +52,8 @@ namespace VDS.RDF.Query.Grouping
         /// </summary>
         protected ISparqlGroupBy _child = null;
 
+        private String _assignVariable;
+
         /// <summary>
         /// Gets/Sets the Child GROUP BY Clause
         /// </summary>
@@ -97,6 +99,18 @@ namespace VDS.RDF.Query.Grouping
         {
             get;
         }
+
+        public String AssignVariable
+        {
+            get
+            {
+                return this._assignVariable;
+            }
+            set
+            {
+                this._assignVariable = value;
+            }
+        }
     }
 
     /// <summary>
@@ -123,28 +137,44 @@ namespace VDS.RDF.Query.Grouping
         public override List<BindingGroup> Apply(SparqlEvaluationContext context)
         {
             Dictionary<INode, BindingGroup> groups = new Dictionary<INode, BindingGroup>();
+            BindingGroup nulls = new BindingGroup();
 
             foreach (int id in context.Binder.BindingIDs)
             {
                 INode value = context.Binder.Value(this._name, id);
 
-                if (!groups.ContainsKey(value))
+                if (value != null)
                 {
-                    groups.Add(value, new BindingGroup());
-                }
+                    if (!groups.ContainsKey(value))
+                    {
+                        groups.Add(value, new BindingGroup());
+                        if (this.AssignVariable != null)
+                        {
+                            groups[value].AddAssignment(this.AssignVariable, value);
+                        }
+                    }
 
-                groups[value].Add(id);
+                    groups[value].Add(id);
+                }
+                else
+                {
+                    nulls.Add(id);
+                }
             }
 
+            List<BindingGroup> outGroups = (from g in groups.Values select g).ToList();
+            if (nulls.Any())
+            {
+                outGroups.Add(nulls);
+                if (this.AssignVariable != null) nulls.AddAssignment(this.AssignVariable, null);
+            }
             if (this._child == null)
             {
-                return (from g in groups.Values
-                        select g).ToList();
+                return outGroups;
             }
             else
             {
-                List<BindingGroup> parentGroups = (from g in groups.Values select g).ToList();
-                return this._child.Apply(context, parentGroups);
+                return this._child.Apply(context, outGroups);
             }
         }
 
@@ -157,6 +187,7 @@ namespace VDS.RDF.Query.Grouping
         public override List<BindingGroup> Apply(SparqlEvaluationContext context, List<BindingGroup> groups)
         {
             List<BindingGroup> outgroups = new List<BindingGroup>();
+            BindingGroup nulls = new BindingGroup();
 
             foreach (BindingGroup group in groups)
             {
@@ -166,17 +197,33 @@ namespace VDS.RDF.Query.Grouping
                 {
                     INode value = context.Binder.Value(this._name, id);
 
-                    if (!subgroups.ContainsKey(value))
+                    if (value != null)
                     {
-                        subgroups.Add(value, new BindingGroup());
-                    }
+                        if (!subgroups.ContainsKey(value))
+                        {
+                            subgroups.Add(value, new BindingGroup(group));
+                            if (this.AssignVariable != null)
+                            {
+                                subgroups[value].AddAssignment(this.AssignVariable, value);
+                            }
+                        }
 
-                    subgroups[value].Add(id);
+                        subgroups[value].Add(id);
+                    }
+                    else
+                    {
+                        nulls.Add(id);
+                    }
                 }
 
                 foreach (BindingGroup g in subgroups.Values)
                 {
                     outgroups.Add(g);
+                }
+                if (nulls.Any())
+                {
+                    outgroups.Add(nulls);
+                    if (this.AssignVariable != null) nulls.AddAssignment(this.AssignVariable, null);
                 }
             }
 
@@ -225,14 +272,27 @@ namespace VDS.RDF.Query.Grouping
         /// <returns></returns>
         public override string ToString()
         {
-            if (this._child == null)
+            StringBuilder output = new StringBuilder();
+            if (this.AssignVariable != null)
             {
-                return "?" + this._name;
+                output.Append('(');
             }
-            else
+            output.Append('?');
+            output.Append(this._name);
+            if (this.AssignVariable != null)
             {
-                return "?" + this._name + " " + this._child.ToString();
+                output.Append(" AS ?");
+                output.Append(this.AssignVariable);
+                output.Append(')');
             }
+
+            if (this._child != null)
+            {
+                output.Append(' ');
+                output.Append(this._child.ToString());
+            }
+
+            return output.ToString();
         }
     }
 
@@ -274,6 +334,10 @@ namespace VDS.RDF.Query.Grouping
                         if (!groups.ContainsKey(value))
                         {
                             groups.Add(value, new BindingGroup());
+                            if (this.AssignVariable != null)
+                            {
+                                groups[value].AddAssignment(this.AssignVariable, value);
+                            }
                         }
 
                         groups[value].Add(id);
@@ -289,9 +353,19 @@ namespace VDS.RDF.Query.Grouping
                 }
             }
 
+            //Build the List of Groups
+            //Null and Error Group are included if required
             List<BindingGroup> parentGroups = (from g in groups.Values select g).ToList();
-            if (error.BindingIDs.Any()) parentGroups.Add(error);
-            if (nulls.BindingIDs.Any()) parentGroups.Add(nulls);
+            if (error.BindingIDs.Any())
+            {
+                parentGroups.Add(error);
+                if (this.AssignVariable != null) error.AddAssignment(this.AssignVariable, null);
+            }
+            if (nulls.BindingIDs.Any())
+            {
+                parentGroups.Add(nulls);
+                if (this.AssignVariable != null) nulls.AddAssignment(this.AssignVariable, null);
+            }
 
             if (this._child != null)
             {
@@ -330,6 +404,10 @@ namespace VDS.RDF.Query.Grouping
                             if (!subgroups.ContainsKey(value))
                             {
                                 subgroups.Add(value, new BindingGroup());
+                                if (this.AssignVariable != null)
+                                {
+                                    subgroups[value].AddAssignment(this.AssignVariable, value);
+                                }
                             }
 
                             subgroups[value].Add(id);
@@ -345,12 +423,22 @@ namespace VDS.RDF.Query.Grouping
                     }
                 }
 
+                //Build the List of Groups
+                //Null and Error Group are included if required
                 foreach (BindingGroup g in subgroups.Values)
                 {
                     outgroups.Add(g);
                 }
-                if (error.BindingIDs.Any()) outgroups.Add(error);
-                if (nulls.BindingIDs.Any()) outgroups.Add(nulls);
+                if (error.BindingIDs.Any())
+                {
+                    outgroups.Add(error);
+                    if (this.AssignVariable != null) error.AddAssignment(this.AssignVariable, null);
+                }
+                if (nulls.BindingIDs.Any())
+                {
+                    outgroups.Add(nulls);
+                    if (this.AssignVariable != null) nulls.AddAssignment(this.AssignVariable, null);
+                }
             }
 
             if (this._child == null)
@@ -412,14 +500,23 @@ namespace VDS.RDF.Query.Grouping
         /// <returns></returns>
         public override string ToString()
         {
-            if (this._child == null)
+            StringBuilder output = new StringBuilder();
+            output.Append('(');
+            output.Append(this._expr.ToString());
+            if (this.AssignVariable != null)
             {
-                return this._expr.ToString();
+                output.Append(" AS ?");
+                output.Append(this.AssignVariable);
             }
-            else
+            output.Append(')');
+
+            if (this._child != null)
             {
-                return this._expr.ToString() + " " + this._child.ToString();
+                output.Append(' ');
+                output.Append(this._child.ToString());
             }
+
+            return output.ToString();
         }
     }
 }

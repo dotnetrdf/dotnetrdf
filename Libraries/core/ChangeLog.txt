@@ -12,9 +12,11 @@ Change Log
 This represents a summary of additions, changes and removals for the 0.4.0 release of dotNetRDF
 
 Added
-- Support for Variable Nodes
-- Graph Difference Algorithm
-- New SimpleN3RulesReasoner which can process simple N3 rules of the form { } => { }
+- Additional N3 Feature Support
+ - Variable Nodes
+ - New SimpleN3RulesReasoner which can process simple N3 rules of the form { } => { }
+ - Notation 3 Parser supports Variables, @forSome and @forAll fully
+- Graph Difference Algorithms
 - More Extension Methods
  - LoadFromFile and LoadFromUri for Graphs and Triple Stores
  - ToLiteral for byte and sbyte
@@ -61,7 +63,6 @@ Changed
   - Allows for new MIME Types, File Extensions and parsers to be registered with the API and used automatically where appropriate
  - Can use dotnetrdf:default-graph as a URI to explicitly access the default unnamed graph in a SPARQL dataset
 - Parsing
- - Notation 3 Parser supports Variables, @forSome and @forAll fully
  - All Parsers should now throw RdfParseExceptions when null Graphs, Stores, filenames, streams etc are passed as arguments
  - SparqlRdfParser can now be created to use a specific RDF Parser rather than just auto-detection
  - UriLoader Caching improved
