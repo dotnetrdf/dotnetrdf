@@ -64,6 +64,8 @@ namespace VDS.RDF.Storage
         private String _updateUri;
         private String _queryUri;
 
+        private const String FusekiDefaultGraphUri = "?default";
+
         /// <summary>
         /// Creates a new connection to a Fuseki Server
         /// </summary>
@@ -83,6 +85,90 @@ namespace VDS.RDF.Storage
 
             this._updateUri = serviceUri.Substring(0, serviceUri.Length - 4) + "update";
             this._queryUri = serviceUri.Substring(0, serviceUri.Length - 4) + "query";
+        }
+
+        public override void SaveGraph(IGraph g)
+        {
+            if (g.BaseUri == null)
+            {
+                try
+                {
+                    g.BaseUri = new Uri(FusekiDefaultGraphUri, UriKind.Relative);
+                    base.SaveGraph(g);
+                }
+                finally
+                {
+                    g.BaseUri = null;
+                }
+            }
+            else
+            {
+                base.SaveGraph(g);
+            }
+        }
+
+        public override void LoadGraph(IGraph g, string graphUri)
+        {
+            if (graphUri == null || graphUri.Equals(String.Empty))
+            {
+                Uri origUri = g.BaseUri;
+                try
+                {
+                    base.LoadGraph(g, new Uri(FusekiDefaultGraphUri, UriKind.Relative));
+                }
+                finally
+                {
+                    g.BaseUri = origUri;
+                }
+            }
+            else
+            {
+                base.LoadGraph(g, graphUri);
+            }
+        }
+
+        public override void LoadGraph(IGraph g, Uri graphUri)
+        {
+            if (graphUri == null)
+            {
+                Uri origUri = g.BaseUri;
+                try
+                {
+                    base.LoadGraph(g, new Uri(FusekiDefaultGraphUri, UriKind.Relative));
+                }
+                finally
+                {
+                    g.BaseUri = origUri;
+                }
+            }
+            else
+            {
+                base.LoadGraph(g, graphUri);
+            }
+        }
+
+        public override void DeleteGraph(string graphUri)
+        {
+            if (graphUri == null || graphUri.Equals(String.Empty))
+            {
+                base.DeleteGraph(new Uri(FusekiDefaultGraphUri, UriKind.Relative));
+            }
+            else
+            {
+                base.DeleteGraph(graphUri);
+            }
+        }
+
+        public override void DeleteGraph(Uri graphUri)
+        {
+            if (graphUri == null)
+            {
+                base.DeleteGraph(new Uri(FusekiDefaultGraphUri, UriKind.Relative));
+            }
+            else
+            {
+                base.DeleteGraph(graphUri);
+            }
         }
 
         /// <summary>

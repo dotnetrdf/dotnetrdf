@@ -52,6 +52,74 @@ namespace VDS.RDF.Test.Storage
         }
 
         [TestMethod]
+        public void FusekiSaveDefaultGraph()
+        {
+            try
+            {
+                Options.UriLoaderCaching = false;
+
+                Graph g = new Graph();
+                FileLoader.Load(g, "InferenceTest.ttl");
+                g.BaseUri = null;
+
+                //Save Graph to Fuseki
+                FusekiConnector fuseki = new FusekiConnector(FusekiTestUri);
+                fuseki.SaveGraph(g);
+                Console.WriteLine("Graph saved to Fuseki OK");
+
+                //Now retrieve Graph from Fuseki
+                Graph h = new Graph();
+                fuseki.LoadGraph(h, (Uri)null);
+
+                Console.WriteLine();
+                foreach (Triple t in h.Triples)
+                {
+                    Console.WriteLine(t.ToString(this._formatter));
+                }
+
+                Assert.AreEqual(g, h, "Graphs should be equal");
+            }
+            finally
+            {
+                Options.UriLoaderCaching = true;
+            }
+        }
+
+        [TestMethod]
+        public void FusekiSaveDefaultGraph2()
+        {
+            try
+            {
+                Options.UriLoaderCaching = false;
+
+                Graph g = new Graph();
+                FileLoader.Load(g, "InferenceTest.ttl");
+                g.BaseUri = null;
+
+                //Save Graph to Fuseki
+                FusekiConnector fuseki = new FusekiConnector(FusekiTestUri);
+                fuseki.SaveGraph(g);
+                Console.WriteLine("Graph saved to Fuseki OK");
+
+                //Now retrieve Graph from Fuseki
+                Graph h = new Graph();
+                fuseki.LoadGraph(h, (String)null);
+
+                Console.WriteLine();
+                foreach (Triple t in h.Triples)
+                {
+                    Console.WriteLine(t.ToString(this._formatter));
+                }
+
+                Assert.AreEqual(g, h, "Graphs should be equal");
+            }
+            finally
+            {
+                Options.UriLoaderCaching = true;
+            }
+        }
+
+        [TestMethod]
         public void FusekiLoadGraph()
         {
             try
