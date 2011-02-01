@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Text;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Parsing;
+using VDS.RDF.Query;
 using VDS.RDF.Storage;
+using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Test.Storage
@@ -187,6 +191,72 @@ namespace VDS.RDF.Test.Storage
         }
 
         [TestMethod]
+        public void FusekiDeleteDefaultGraph()
+        {
+            try
+            {
+                Options.UriLoaderCaching = false;
+
+                FusekiSaveDefaultGraph();
+
+                FusekiConnector fuseki = new FusekiConnector(new Uri(FusekiTestUri));
+                fuseki.DeleteGraph((Uri)null);
+
+                Graph g = new Graph();
+                try
+                {
+                    fuseki.LoadGraph(g, (Uri)null);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Errored as expected since the Graph was deleted");
+                    TestTools.ReportError("Error", ex, false);
+                }
+                Console.WriteLine();
+
+                //If we do get here without erroring then the Graph should be empty
+                Assert.IsTrue(g.IsEmpty, "Graph should be empty even if an error wasn't thrown as the data should have been deleted from the Store");
+            }
+            finally
+            {
+                Options.UriLoaderCaching = true;
+            }
+        }
+
+        [TestMethod]
+        public void FusekiDeleteDefaultGraph2()
+        {
+            try
+            {
+                Options.UriLoaderCaching = false;
+
+                FusekiSaveDefaultGraph();
+
+                FusekiConnector fuseki = new FusekiConnector(new Uri(FusekiTestUri));
+                fuseki.DeleteGraph((String)null);
+
+                Graph g = new Graph();
+                try
+                {
+                    fuseki.LoadGraph(g, (Uri)null);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Errored as expected since the Graph was deleted");
+                    TestTools.ReportError("Error", ex, false);
+                }
+                Console.WriteLine();
+
+                //If we do get here without erroring then the Graph should be empty
+                Assert.IsTrue(g.IsEmpty, "Graph should be empty even if an error wasn't thrown as the data should have been deleted from the Store");
+            }
+            finally
+            {
+                Options.UriLoaderCaching = true;
+            }
+        }
+
+        [TestMethod]
         public void FusekiAddTriples()
         {
             try
@@ -239,7 +309,17 @@ namespace VDS.RDF.Test.Storage
         [TestMethod]
         public void FusekiQuery()
         {
-            Assert.Inconclusive("Test Not Implemented");
+            FusekiConnector fuseki = new FusekiConnector(FusekiTestUri);
+
+            Object results = fuseki.Query("SELECT * WHERE { {?s ?p ?o} UNION { GRAPH ?g {?s ?p ?o} } }");
+            if (results is SparqlResultSet)
+            {
+                TestTools.ShowResults(results);
+            }
+            else
+            {
+                Assert.Fail("Did not get a SPARQL Result Set as expected");
+            }
         }
 
         [TestMethod]

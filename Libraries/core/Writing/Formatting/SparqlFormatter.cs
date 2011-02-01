@@ -51,7 +51,7 @@ namespace VDS.RDF.Writing.Formatting
     /// <summary>
     /// Formatter for formatting Nodes for use in SPARQL and for formatting SPARQL Queries
     /// </summary>
-    public class SparqlFormatter : TurtleFormatter, IQueryFormatter
+    public class SparqlFormatter : TurtleFormatter, IQueryFormatter, IResultFormatter
     {
         private Uri _tempBaseUri;
 
@@ -86,6 +86,13 @@ namespace VDS.RDF.Writing.Formatting
             return v.ToString();
         }
 
+        #region Query Formatting
+
+        /// <summary>
+        /// Formats a Query in nicely formatted SPARQL syntax
+        /// </summary>
+        /// <param name="query">SPARQL Query</param>
+        /// <returns></returns>
         public virtual String Format(SparqlQuery query)
         {
             if (query == null) throw new ArgumentNullException("Cannot format a null SPARQL Query as a String");
@@ -235,6 +242,11 @@ namespace VDS.RDF.Writing.Formatting
             }
         }
 
+        /// <summary>
+        /// Formats a Graph Pattern in nicely formatted SPARQL syntax
+        /// </summary>
+        /// <param name="gp">Graph Pattern</param>
+        /// <returns></returns>
         public virtual String Format(GraphPattern gp)
         {
             if (gp == null) throw new RdfOutputException("Cannot format a null Graph Pattern as a String");
@@ -342,6 +354,11 @@ namespace VDS.RDF.Writing.Formatting
             return output.ToString();
         }
 
+        /// <summary>
+        /// Formats a Triple Pattern in nicely formatted SPARQL syntax
+        /// </summary>
+        /// <param name="tp">Triple Pattern</param>
+        /// <returns></returns>
         public virtual String Format(ITriplePattern tp)
         {
             StringBuilder output = new StringBuilder();
@@ -405,6 +422,12 @@ namespace VDS.RDF.Writing.Formatting
             return output.ToString();
         }
 
+        /// <summary>
+        /// Formats a Pattern Item in nicely formatted SPARQL syntax
+        /// </summary>
+        /// <param name="item">Pattern Item</param>
+        /// <param name="segment">Triple Pattern Segment</param>
+        /// <returns></returns>
         public virtual String Format(PatternItem item, TripleSegment? segment)
         {
             if (item is VariablePattern)
@@ -437,6 +460,11 @@ namespace VDS.RDF.Writing.Formatting
 
         #region Protected Helper functions which can be overridden to change specific parts of the formatting
 
+        /// <summary>
+        /// Formats the Variable List for a SPARQL Query
+        /// </summary>
+        /// <param name="vars"></param>
+        /// <returns></returns>
         protected virtual String FormatVariablesList(IEnumerable<SparqlVariable> vars)
         {
             StringBuilder output = new StringBuilder();
@@ -797,6 +825,22 @@ namespace VDS.RDF.Writing.Formatting
             }
 
             return output.ToString();
+        }
+
+        #endregion
+
+        #endregion
+
+        #region Result Formatting
+
+        /// <summary>
+        /// Formats a SPARQL Result using this Formatter to format the Node values for each Variable
+        /// </summary>
+        /// <param name="result">SPARQL Result</param>
+        /// <returns></returns>
+        public virtual String Format(SparqlResult result)
+        {
+            return result.ToString(this);
         }
 
         #endregion

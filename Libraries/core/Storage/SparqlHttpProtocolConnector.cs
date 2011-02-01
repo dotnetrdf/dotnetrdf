@@ -59,7 +59,7 @@ namespace VDS.RDF.Storage
     /// </remarks>
     public class SparqlHttpProtocolConnector : IGenericIOManager, IConfigurationSerializable
     {
-        private String _serviceUri;
+        protected String _serviceUri;
 
         /// <summary>
         /// Creates a new SPARQL Uniform HTTP Protocol Connector
@@ -87,8 +87,9 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">URI of the Graph to load</param>
         public virtual void LoadGraph(IGraph g, Uri graphUri)
         {
-            String u = (graphUri == null) ? String.Empty : graphUri.ToString();
-            this.LoadGraph(g, u);
+            String retrievalUri = this._serviceUri;
+            if (graphUri != null) retrievalUri += "?graph=" + Uri.EscapeDataString(graphUri.ToString());
+            UriLoader.Load(g, new Uri(retrievalUri));
         }
 
         /// <summary>
@@ -225,7 +226,7 @@ namespace VDS.RDF.Storage
         public virtual void DeleteGraph(String graphUri)
         {
             String deleteUri = this._serviceUri;
-            if (!graphUri.Equals(String.Empty))
+            if (graphUri != null && !graphUri.Equals(String.Empty))
             {
                 deleteUri += "?graph=" + Uri.EscapeDataString(graphUri);
             }

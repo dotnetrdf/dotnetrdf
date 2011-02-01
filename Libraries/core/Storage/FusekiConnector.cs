@@ -60,7 +60,6 @@ namespace VDS.RDF.Storage
     public class FusekiConnector : SparqlHttpProtocolConnector, IUpdateableGenericIOManager, IConfigurationSerializable
     {
         private SparqlFormatter _formatter = new SparqlFormatter();
-        private String _serverUri;
         private String _updateUri;
         private String _queryUri;
 
@@ -81,7 +80,6 @@ namespace VDS.RDF.Storage
             : base(serviceUri) 
         {
             if (!serviceUri.ToString().EndsWith("/data")) throw new ArgumentException("This does not appear to be a valid Fuseki Server URI, you must provide the URI that ends with /data", "serviceUri");
-            this._serverUri = serviceUri;
 
             this._updateUri = serviceUri.Substring(0, serviceUri.Length - 4) + "update";
             this._queryUri = serviceUri.Substring(0, serviceUri.Length - 4) + "query";
@@ -91,14 +89,15 @@ namespace VDS.RDF.Storage
         {
             if (g.BaseUri == null)
             {
+                String origService = this._serviceUri;
                 try
                 {
-                    g.BaseUri = new Uri(FusekiDefaultGraphUri, UriKind.Relative);
+                    this._serviceUri = origService + "?default";
                     base.SaveGraph(g);
                 }
                 finally
                 {
-                    g.BaseUri = null;
+                    this._serviceUri = origService;
                 }
             }
             else
@@ -112,12 +111,15 @@ namespace VDS.RDF.Storage
             if (graphUri == null || graphUri.Equals(String.Empty))
             {
                 Uri origUri = g.BaseUri;
+                String origService = this._serviceUri;
                 try
                 {
-                    base.LoadGraph(g, new Uri(FusekiDefaultGraphUri, UriKind.Relative));
+                    this._serviceUri = origService + "?default";
+                    base.LoadGraph(g, (Uri)null);
                 }
                 finally
                 {
+                    this._serviceUri = origService;
                     g.BaseUri = origUri;
                 }
             }
@@ -132,12 +134,15 @@ namespace VDS.RDF.Storage
             if (graphUri == null)
             {
                 Uri origUri = g.BaseUri;
+                String origService = this._serviceUri;
                 try
                 {
-                    base.LoadGraph(g, new Uri(FusekiDefaultGraphUri, UriKind.Relative));
+                    this._serviceUri = origService + "?default";
+                    base.LoadGraph(g, (Uri)null);
                 }
                 finally
                 {
+                    this._serviceUri = origService;
                     g.BaseUri = origUri;
                 }
             }
@@ -151,7 +156,16 @@ namespace VDS.RDF.Storage
         {
             if (graphUri == null || graphUri.Equals(String.Empty))
             {
-                base.DeleteGraph(new Uri(FusekiDefaultGraphUri, UriKind.Relative));
+                String origService = this._serviceUri;
+                try
+                {
+                    if (!this._serviceUri.EndsWith("?default")) this._serviceUri = origService + "?default";
+                    base.DeleteGraph(String.Empty);
+                }
+                finally
+                {
+                    this._serviceUri = origService;
+                }
             }
             else
             {
@@ -163,7 +177,16 @@ namespace VDS.RDF.Storage
         {
             if (graphUri == null)
             {
-                base.DeleteGraph(new Uri(FusekiDefaultGraphUri, UriKind.Relative));
+                String origService = this._serviceUri;
+                try
+                {
+                    if (!this._serviceUri.EndsWith("?default")) this._serviceUri = origService + "?default";
+                    base.DeleteGraph(String.Empty);
+                }
+                finally
+                {
+                    this._serviceUri = origService;
+                }
             }
             else
             {
@@ -248,7 +271,7 @@ namespace VDS.RDF.Storage
 
 #if !NO_URICACHE
                         //Must invalidate the UriLoader Cache for the Graph
-                        Uri cacheUri = (graphUri != null && !graphUri.Equals(String.Empty)) ? new Uri(this._serverUri + "?graph=" + Uri.EscapeDataString(graphUri)) : new Uri(this._serverUri + "?graph=" + Uri.EscapeDataString("?default"));
+                        Uri cacheUri = (graphUri != null && !graphUri.Equals(String.Empty)) ? new Uri(this._serviceUri + "?graph=" + Uri.EscapeDataString(graphUri)) : new Uri(this._serviceUri + "?graph=" + Uri.EscapeDataString("?default"));
                         UriLoader.Cache.RemoveETag(cacheUri);
                         UriLoader.Cache.RemoveLocalCopy(cacheUri);
 #endif
@@ -376,7 +399,7 @@ namespace VDS.RDF.Storage
         /// <returns></returns>
         public override string ToString()
         {
-            return "[Fuseki] " + this._serverUri;
+            return "[Fuseki] " + this._serviceUri;
         }
 
         #region IConfigurationSerializable Members
@@ -397,7 +420,7 @@ namespace VDS.RDF.Storage
             context.Graph.Assert(new Triple(manager, rdfType, genericManager));
             context.Graph.Assert(new Triple(manager, rdfsLabel, context.Graph.CreateLiteralNode(this.ToString())));
             context.Graph.Assert(new Triple(manager, dnrType, context.Graph.CreateLiteralNode(this.GetType().FullName)));
-            context.Graph.Assert(new Triple(manager, server, context.Graph.CreateLiteralNode(this._serverUri)));
+            context.Graph.Assert(new Triple(manager, server, context.Graph.CreateLiteralNode(this._serviceUri)));
         }
 
         #endregion
