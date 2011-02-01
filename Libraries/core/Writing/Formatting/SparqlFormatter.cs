@@ -201,9 +201,7 @@ namespace VDS.RDF.Writing.Formatting
                     else
                     {
                         output.AppendLine("WHERE");
-                        output.AppendLine("{");
-                        output.AppendLineIndented(this.Format(query.RootGraphPattern), 2);
-                        output.AppendLine("}");
+                        output.AppendLine(this.Format(query.RootGraphPattern));
                     }
                 }
 
@@ -310,7 +308,7 @@ namespace VDS.RDF.Writing.Formatting
             {
                 output.Append('{');
                 output.Append(this.Format(((SubQueryPattern)gp.TriplePatterns[0]).SubQuery));
-                output.AppendLine("}");
+                output.Append("}");
                 return output.ToString();
             }
             else if (gp.IsOptional)
@@ -330,10 +328,9 @@ namespace VDS.RDF.Writing.Formatting
                 output.Append("MINUS ");
             }
 
-            output.Append('{');
-            if (gp.TriplePatterns.Count > 1 || gp.HasChildGraphPatterns)
+            if (gp.TriplePatterns.Count > 1 || gp.HasChildGraphPatterns || (gp.TriplePatterns.Count <= 1 && gp.Filter != null))
             {
-                output.AppendLine();
+                output.AppendLine("{");
                 foreach (ITriplePattern tp in gp.TriplePatterns)
                 {
                     output.AppendLineIndented(this.Format(tp), 2);
@@ -342,13 +339,32 @@ namespace VDS.RDF.Writing.Formatting
                 {
                     output.AppendLineIndented(this.Format(child), 2);
                 }
-                output.AppendLine("}");
+                if (gp.Filter != null)
+                {
+                    output.AppendIndented("FILTER(", 2);
+                    output.Append(this.FormatExpression(gp.Filter.Expression));
+                    output.AppendLine(")");
+                }
+                output.Append("}");
+            }
+            else if (gp.TriplePatterns.Count == 0)
+            {
+                if (gp.Filter != null)
+                {
+                    output.AppendIndented("{ FILTER(", 2);
+                    output.Append(this.FormatExpression(gp.Filter.Expression));
+                    output.AppendLine(") }");
+                }
+                else
+                {
+                    output.Append("{ }");
+                }
             }
             else
             {
-                output.Append(' ');
+                output.Append("{ ");
                 output.Append(this.Format(gp.TriplePatterns[0]));
-                output.AppendLine(" }");
+                output.Append(" }");
             }
 
             return output.ToString();
@@ -370,21 +386,21 @@ namespace VDS.RDF.Writing.Formatting
                 output.Append(this.Format(match.Predicate, TripleSegment.Predicate));
                 output.Append(' ');
                 output.Append(this.Format(match.Object, TripleSegment.Object));
-                output.AppendLine(" .");
+                output.Append(" .");
             }
             else if (tp is FilterPattern)
             {
                 FilterPattern filter = (FilterPattern)tp;
                 output.Append("FILTER(");
                 output.Append(this.FormatExpression(filter.Filter.Expression));
-                output.AppendLine(")");
+                output.Append(")");
             }
             else if (tp is SubQueryPattern)
             {
                 SubQueryPattern subquery = (SubQueryPattern)tp;
                 output.Append("{ ");
                 output.Append(this.Format(subquery.SubQuery));
-                output.AppendLine(" }");
+                output.Append(" }");
             }
             else if (tp is PropertyPathPattern)
             {
@@ -394,7 +410,7 @@ namespace VDS.RDF.Writing.Formatting
                 output.Append(this.FormatPath(path.Path));
                 output.Append(' ');
                 output.Append(this.Format(path.Object, TripleSegment.Object));
-                output.AppendLine(" .");
+                output.Append(" .");
             }
             else if (tp is LetPattern)
             {
@@ -403,7 +419,7 @@ namespace VDS.RDF.Writing.Formatting
                 output.Append(let.VariableName);
                 output.Append(" := ");
                 output.Append(this.FormatExpression(let.AssignExpression));
-                output.AppendLine(")");
+                output.Append(")");
             }
             else if (tp is BindPattern)
             {
@@ -412,7 +428,7 @@ namespace VDS.RDF.Writing.Formatting
                 output.Append(this.FormatExpression(bind.AssignExpression));
                 output.Append(" AS ?");
                 output.Append(bind.VariableName);
-                output.AppendLine("}");
+                output.Append("}");
             }
             else
             {
@@ -463,7 +479,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <summary>
         /// Formats the Variable List for a SPARQL Query
         /// </summary>
-        /// <param name="vars"></param>
+        /// <param name="vars">Variables</param>
         /// <returns></returns>
         protected virtual String FormatVariablesList(IEnumerable<SparqlVariable> vars)
         {
@@ -515,7 +531,6 @@ namespace VDS.RDF.Writing.Formatting
 
         protected virtual String FormatExpression(ISparqlExpression expr)
         {
-            throw new NotImplementedException();
             StringBuilder output = new StringBuilder();
 
             try
@@ -696,7 +711,6 @@ namespace VDS.RDF.Writing.Formatting
 
         protected virtual String FormatPath(ISparqlPath path)
         {
-            throw new NotImplementedException();
             StringBuilder output = new StringBuilder();
 
             if (path is AlternativePath)

@@ -9,6 +9,7 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Writing;
+using VDS.RDF.Writing.Formatting;
 
 namespace dotNetRDFTest
 {
@@ -295,6 +296,12 @@ namespace dotNetRDFTest
                 SparqlQuery q = parser.ParseFromFile(queryFile);
 
                 Console.WriteLine(q.ToString());
+                Console.WriteLine();
+
+                Console.WriteLine("Formatted with SparqlFormatter");
+                SparqlFormatter formatter = new SparqlFormatter(q.NamespaceMap);
+                Console.WriteLine(formatter.Format(q));
+                Console.WriteLine();
             }
             catch (RdfParseException parseEx)
             {
@@ -381,6 +388,10 @@ namespace dotNetRDFTest
                 query = parser.ParseFromFile(queryFile);
 
                 Console.WriteLine(query.ToString());
+                Console.WriteLine();
+                Console.WriteLine("Formatted with SparqlFormatter");
+                SparqlFormatter formatter = new SparqlFormatter(query.NamespaceMap);
+                Console.WriteLine(formatter.Format(query));
                 Console.WriteLine();
 
                 try

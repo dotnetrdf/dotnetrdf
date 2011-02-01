@@ -1035,7 +1035,8 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// </summary>
         /// <param name="text">Text to apply the Regular Expression to</param>
         /// <param name="pattern">Regular Expression Pattern</param>
-        public RegexFunction(ISparqlExpression text, ISparqlExpression pattern) : this(text, pattern, null) { }
+        public RegexFunction(ISparqlExpression text, ISparqlExpression pattern)
+            : this(text, pattern, null) { }
 
         /// <summary>
         /// Creates a new Regex() function expression
@@ -1046,6 +1047,7 @@ namespace VDS.RDF.Query.Expressions.Functions
         public RegexFunction(ISparqlExpression text, ISparqlExpression pattern, ISparqlExpression options)
         {
             this._textExpr = text;
+            this._patternExpr = pattern;
 
             //Get the Pattern
             if (pattern is NodeExpressionTerm)
@@ -1070,10 +1072,6 @@ namespace VDS.RDF.Query.Expressions.Functions
                         //No catch actions
                     }
                 }
-            }
-            else
-            {
-                this._patternExpr = pattern;
             }
 
             //Get the Options

@@ -348,7 +348,7 @@ namespace VDS.RDF
                 String[] lines = line.Split('\n');
                 foreach (String l in lines)
                 {
-                    builder.AppendLine(new String(' ', indent) + l);
+                    if (!l.Equals(String.Empty)) builder.AppendLine(new String(' ', indent) + l);
                 }
             }
             else
