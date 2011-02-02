@@ -166,7 +166,9 @@ namespace VDS.RDF.Query.Algebra
             if (other is NullMultiset) return this;
 
             //Find the First Variable from this Multiset which is in both Multisets
-            String joinVar = this._variables.FirstOrDefault(v => other.Variables.Contains(v));
+            List<String> joinableVars = this._variables.Where(v => other.Variables.Contains(v)).ToList();
+            String joinVar = joinableVars.FirstOrDefault();
+            if (joinVar != null) joinableVars.RemoveAt(0);
             bool disjoint = this.IsDisjointWith(other);
 
             //Start building the Joined Set
@@ -184,7 +186,7 @@ namespace VDS.RDF.Query.Algebra
                     {
                         //Get all the Sets from the Other Multiset which have the given Node as their value
                         //for the Join Variable
-                        IEnumerable<Set> ys = other.Sets.Where(s => joinNode.Equals(s[joinVar]));
+                        IEnumerable<Set> ys = other.Sets.Where(s => joinNode.Equals(s[joinVar]) && joinableVars.All(v => (x[v] == null && s[v] == null) || x[v].Equals(s[v])));
                         if (ys.Any())
                         {
                             foreach (Set y in ys)

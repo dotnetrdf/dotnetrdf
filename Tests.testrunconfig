@@ -3,8 +3,12 @@
   <Description>This is a default test run configuration for a local test run.</Description>
   <Deployment>
     <DeploymentItem filename="Testing\unittest\dotNetRDFUnitTests.dll.config" />
+    <DeploymentItem filename="Testing\testsuite\sparqlparser_tests\optional\complex-data-1.ttl" />
     <DeploymentItem filename="Testing\unittest\bin\Debug\resources\" />
-    <DeploymentItem filename="Testing\testsuite\sparqlparser_tests\il8n\" />
+    <DeploymentItem filename="Testing\testsuite\sparqlparser_tests\optional\result-opt-complex-4.ttl" />
+    <DeploymentItem filename="Testing\testsuite\sparqlparser_tests\optional\data.ttl" />
+    <DeploymentItem filename="Testing\testsuite\sparqlparser_tests\optional\complex-data-2.ttl" />
+    <DeploymentItem filename="Testing\testsuite\sparqlparser_tests\optional\q-opt-complex-4.rq" />
   </Deployment>
   <TestTypeSpecific />
 </TestRunConfiguration>

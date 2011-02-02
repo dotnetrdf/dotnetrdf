@@ -6,6 +6,8 @@ using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
+using VDS.RDF.Query.Datasets;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Test.Sparql
 {
@@ -132,5 +134,115 @@ namespace VDS.RDF.Test.Sparql
         //        //Options.UriNormalization = true;
         //    }
         //}
+
+        [TestMethod]
+        public void SparqlComplexOptionalGraphUnion()
+        {
+            SparqlQueryParser parser = new SparqlQueryParser();
+            SparqlQuery q = parser.ParseFromFile("q-opt-complex-4.rq");
+
+            TripleStore store = new TripleStore();
+            Graph g = new Graph();
+            FileLoader.Load(g, "complex-data-2.ttl");
+            store.Add(g);
+            Graph h = new Graph();
+            FileLoader.Load(h, "complex-data-1.ttl");
+            store.Add(h);
+
+            InMemoryDataset dataset = new InMemoryDataset(store);
+            q.AddDefaultGraph(g.BaseUri);
+            q.AddNamedGraph(h.BaseUri);
+
+            SparqlFormatter formatter = new SparqlFormatter(q.NamespaceMap);
+            Object results;
+
+            //Examine limited parts of the Query to see why it doesn't work properly
+            SparqlParameterizedString unionClause = new SparqlParameterizedString();
+            unionClause.Namespaces = q.NamespaceMap;
+            unionClause.QueryText = "SELECT * WHERE { ?person foaf:name ?name . { ?person ex:healthplan ?plan . } UNION { ?person ex:department ?dept . } }";
+            SparqlQuery unionQuery = parser.ParseFromString(unionClause);
+
+            Console.WriteLine("UNION Clause Only");
+            Console.WriteLine(formatter.Format(unionQuery));
+
+            results = unionQuery.Evaluate(dataset);
+            if (results is SparqlResultSet)
+            {
+                SparqlResultSet rset = (SparqlResultSet)results;
+                TestTools.ShowResults(rset);
+            }
+            else
+            {
+                Assert.Fail("Didn't get a Result Set as expected");
+            }
+            Console.WriteLine();
+
+            //Try the Optional Clause
+            SparqlParameterizedString optionalClause = new SparqlParameterizedString();
+            optionalClause.Namespaces = q.NamespaceMap;
+            optionalClause.QueryText = "SELECT * WHERE { OPTIONAL { ?person a foaf:Person . GRAPH ?g { [] foaf:depiction ?img ; foaf:name ?name } } }";
+            SparqlQuery optionalQuery = parser.ParseFromString(optionalClause);
+
+            Console.WriteLine("OPTIONAL Clause Only");
+            Console.WriteLine(formatter.Format(optionalQuery));
+
+            results = optionalQuery.Evaluate(dataset);
+            if (results is SparqlResultSet)
+            {
+                SparqlResultSet rset = (SparqlResultSet)results;
+                TestTools.ShowResults(rset);
+            }
+            else
+            {
+                Assert.Fail("Didn't get a Result Set as expected");
+            }
+            Console.WriteLine();
+
+            //Try the full Query with a SELECT * to examine all the values
+            SparqlParameterizedString fullQuery = new SparqlParameterizedString();
+            fullQuery.Namespaces = q.NamespaceMap;
+            fullQuery.QueryText = "SELECT * WHERE { ?person foaf:name ?name . { ?person ex:healthplan ?plan . } UNION { ?person ex:department ?dept . } OPTIONAL { ?person a foaf:Person . GRAPH ?g { [] foaf:depiction ?img ; foaf:name ?name } } }";
+            SparqlQuery q2 = parser.ParseFromString(fullQuery);
+
+            Console.WriteLine("Full Query as a SELECT *");
+            Console.WriteLine(formatter.Format(q2));
+
+            results = q2.Evaluate(dataset);
+            if (results is SparqlResultSet)
+            {
+                SparqlResultSet rset = (SparqlResultSet)results;
+                TestTools.ShowResults(rset);
+            }
+            else
+            {
+                Assert.Fail("Didn't get a Result Set as expected");
+            }
+            Console.WriteLine();
+
+            //Try the full Query
+            Console.WriteLine("Full Query");
+            Console.WriteLine(formatter.Format(q));
+
+            results = q.Evaluate(dataset);
+            if (results is SparqlResultSet)
+            {
+                SparqlResultSet rset = (SparqlResultSet)results;
+                TestTools.ShowResults(rset);
+
+                SparqlRdfParser resultsParser = new SparqlRdfParser(new TurtleParser());
+                SparqlResultSet expected = new SparqlResultSet();
+                resultsParser.Load(expected, "result-opt-complex-4.ttl");
+
+                Console.WriteLine();
+                Console.WriteLine("Expected Results");
+                TestTools.ShowResults(expected);
+
+                Assert.AreEqual(rset, expected, "Result Sets should be equal");
+            } 
+            else 
+            {
+                Assert.Fail("Didn't get a Result Set as expected");
+            }
+        }
     }
 }
