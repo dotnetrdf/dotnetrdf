@@ -2,13 +2,19 @@
 <TestRunConfiguration name="Tests" id="832e8b63-436f-4292-ba51-c92cddc3430d" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2006">
   <Description>This is a default test run configuration for a local test run.</Description>
   <Deployment>
-    <DeploymentItem filename="Testing\unittest\dotNetRDFUnitTests.dll.config" />
-    <DeploymentItem filename="Testing\testsuite\sparqlparser_tests\optional\complex-data-1.ttl" />
+    <DeploymentItem filename="Testing\testsuite\sparqlparser_tests\graphs\data-g4.ttl" />
+    <DeploymentItem filename="Testing\testsuite\sparqlparser_tests\optional\complex-data-2.ttl" />
     <DeploymentItem filename="Testing\unittest\bin\Debug\resources\" />
     <DeploymentItem filename="Testing\testsuite\sparqlparser_tests\optional\result-opt-complex-4.ttl" />
+    <DeploymentItem filename="Testing\unittest\dotNetRDFUnitTests.dll.config" />
+    <DeploymentItem filename="Testing\testsuite\sparqlparser_tests\optional\complex-data-1.ttl" />
+    <DeploymentItem filename="Testing\testsuite\sparqlparser_tests\graphs\graph-11.ttl" />
+    <DeploymentItem filename="Testing\testsuite\sparqlparser_tests\graphs\data-g2.ttl" />
+    <DeploymentItem filename="Testing\testsuite\sparqlparser_tests\graphs\graph-11.rq" />
     <DeploymentItem filename="Testing\testsuite\sparqlparser_tests\optional\data.ttl" />
-    <DeploymentItem filename="Testing\testsuite\sparqlparser_tests\optional\complex-data-2.ttl" />
+    <DeploymentItem filename="Testing\testsuite\sparqlparser_tests\graphs\data-g3.ttl" />
     <DeploymentItem filename="Testing\testsuite\sparqlparser_tests\optional\q-opt-complex-4.rq" />
+    <DeploymentItem filename="Testing\testsuite\sparqlparser_tests\graphs\data-g1.ttl" />
   </Deployment>
   <TestTypeSpecific />
 </TestRunConfiguration>

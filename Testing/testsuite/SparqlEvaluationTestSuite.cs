@@ -52,10 +52,13 @@ namespace dotNetRDFTest
                 //These tests don't pass because dotNetRDF's behaviour is slightly different or because URIs in the results are HTTP URIs
                 //and the URIs in our results are File URIs due to our testbed environment
                 //All have been manually inspected to ensure that behaviour is as expected
+                //Some won't run automatically under the test harness but will run with slight tweaking to the
+                //harness so some are represented by special unit tests instead
                 evaluationTestOverride = new List<string>()
                 {
                     "/expr-builtin/q-lang-3.rq",
                     "/graphs/graph-04.rq",
+                    "/graphs/graph-11.rq",
                     "/expr-equals/query-eq2-2.rq",
                     "/dataset/dataset-03.rq",
                     "/dataset/dataset-04.rq",

@@ -244,5 +244,63 @@ namespace VDS.RDF.Test.Sparql
                 Assert.Fail("Didn't get a Result Set as expected");
             }
         }
+
+        [TestMethod]
+        public void SparqlGraphUnion()
+        {
+            SparqlQueryParser parser = new SparqlQueryParser();
+            SparqlQuery q = parser.ParseFromFile("graph-11.rq");
+            q.BaseUri = new Uri("file:///" + Environment.CurrentDirectory.Replace('\\', '/') + "/");
+
+            TripleStore store = new TripleStore();
+            Graph g = new Graph();
+
+            FileLoader.Load(g, "data-g1.ttl");
+            store.Add(g);
+            Graph h = new Graph();
+            FileLoader.Load(h, "data-g2.ttl");
+            store.Add(h);
+            Graph i = new Graph();
+            FileLoader.Load(i, "data-g3.ttl");
+            store.Add(i);
+            Graph j = new Graph();
+            FileLoader.Load(j, "data-g4.ttl");
+            store.Add(j);
+
+            InMemoryDataset dataset = new InMemoryDataset(store);
+            q.AddDefaultGraph(g.BaseUri);
+            q.AddNamedGraph(g.BaseUri);
+            q.AddNamedGraph(h.BaseUri);
+            q.AddNamedGraph(i.BaseUri);
+            q.AddNamedGraph(j.BaseUri);
+
+            SparqlFormatter formatter = new SparqlFormatter(q.NamespaceMap);
+            Object results;
+
+            //Try the full Query
+            Console.WriteLine("Full Query");
+            Console.WriteLine(formatter.Format(q));
+
+            results = q.Evaluate(dataset);
+            if (results is SparqlResultSet)
+            {
+                SparqlResultSet rset = (SparqlResultSet)results;
+                TestTools.ShowResults(rset);
+
+                //SparqlRdfParser resultsParser = new SparqlRdfParser(new TurtleParser());
+                //SparqlResultSet expected = new SparqlResultSet();
+                //resultsParser.Load(expected, "graph-11.ttl");
+
+                //Console.WriteLine();
+                //Console.WriteLine("Expected Results");
+                //TestTools.ShowResults(expected);
+
+                //Assert.AreEqual(rset, expected, "Result Sets should be equal");
+            }
+            else
+            {
+                Assert.Fail("Didn't get a Result Set as expected");
+            }
+        }
     }
 }
