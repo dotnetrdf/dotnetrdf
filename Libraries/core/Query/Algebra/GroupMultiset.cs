@@ -59,13 +59,16 @@ namespace VDS.RDF.Query.Algebra
             this._contents = contents;
             this._groups = groups;
 
+            bool first = true;
             foreach (BindingGroup group in groups)
             {
                 Set s = new Set();
                 foreach (KeyValuePair<String, INode> assignment in group.Assignments)
                 {
+                    if (first) this.AddVariable(assignment.Key);
                     s.Add(assignment.Key, assignment.Value);
                 }
+                first = false;
                 base.Add(s);
             }
         }

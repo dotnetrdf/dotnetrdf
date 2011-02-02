@@ -2562,7 +2562,6 @@ namespace VDS.RDF.Parsing
             bool exit = false;
             bool terminateExpression = false;
 
-            context.ExpressionParser.AllowAggregates = true;
             while (true)
             {
                 switch (next.TokenType)
@@ -2683,8 +2682,6 @@ namespace VDS.RDF.Parsing
 
                 terminateExpression = false;
             }
-
-            context.ExpressionParser.AllowAggregates = false;
 
             //Set to Query
             context.Query.GroupBy = first;

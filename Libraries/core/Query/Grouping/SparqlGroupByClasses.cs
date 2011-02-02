@@ -403,7 +403,7 @@ namespace VDS.RDF.Query.Grouping
                         {
                             if (!subgroups.ContainsKey(value))
                             {
-                                subgroups.Add(value, new BindingGroup());
+                                subgroups.Add(value, new BindingGroup(group));
                                 if (this.AssignVariable != null)
                                 {
                                     subgroups[value].AddAssignment(this.AssignVariable, value);

@@ -120,27 +120,17 @@ namespace VDS.RDF.Query.Algebra
                     }
 
                     //Project the value for each variable
-                    context.OutputMultiset.AddVariable(v.Name);
                     if (!groupSet.ContainsVariable(v.Name))
                     {
                         //Simple Variable Projection used in GROUP BY so grab first value as all should be same
                         //for the group
+                        context.OutputMultiset.AddVariable(v.Name);
                         foreach (int id in groupSet.SetIDs)
                         {
                             INode value = groupSet.Contents[groupSet.GroupSetIDs(id).First()][v.Name];
                             context.OutputMultiset[id].Add(v.Name, value);
                         }
                     }
-                    //Q: Do we need to do anything here to get GROUP BY assigned values out?
-                    //else
-                    //{
-                    //    //Variable Projection of a Value assigned by a GROUP BY expression so the value will be in
-                    //    //the Set for the Group already
-                    //    foreach (int id in groupSet.SetIDs)
-                    //    {
-                    //        context.OutputMultiset[id].Add(v.Name, groupSet[id][v.Name]);
-                    //    }
-                    //}
                 }
             }
             else if (context.Query.IsAggregate)
