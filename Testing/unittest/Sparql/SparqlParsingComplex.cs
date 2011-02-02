@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -70,5 +71,66 @@ namespace VDS.RDF.Test.Sparql
                 Assert.Fail("Expected a SPARQL Result Set");
             }
         }
+
+        //[TestMethod]
+        //public void SparqlNonNormalizedUris()
+        //{
+        //    try
+        //    {
+        //        //Options.UriNormalization = false;
+
+        //        SparqlQueryParser parser = new SparqlQueryParser();
+        //        SparqlRdfParser rdfParser = new SparqlRdfParser(new TurtleParser());
+
+        //        foreach (String file in Directory.GetFiles(Environment.CurrentDirectory))
+        //        {
+        //            if (Path.GetFileName(file).StartsWith("normalization") && Path.GetExtension(file).Equals(".ttl") && !Path.GetFileName(file).EndsWith("-results.ttl"))
+        //            {
+        //                QueryableGraph g = new QueryableGraph();
+        //                FileLoader.Load(g, file);
+
+        //                Console.WriteLine("Testing " + Path.GetFileName(file));
+
+        //                SparqlQuery query = parser.ParseFromFile(Path.GetFileNameWithoutExtension(file) + ".rq");
+
+        //                Object results = g.ExecuteQuery(query);
+        //                if (results is SparqlResultSet)
+        //                {
+        //                    SparqlResultSet rset = (SparqlResultSet)results;
+
+        //                    SparqlResultSet expected = new SparqlResultSet();
+        //                    rdfParser.Load(expected, Path.GetFileNameWithoutExtension(file) + "-results.ttl");
+
+        //                    if (!rset.Equals(expected))
+        //                    {
+        //                        Console.WriteLine("Expected Results");
+        //                        Console.WriteLine();
+        //                        foreach (SparqlResult r in expected)
+        //                        {
+        //                            Console.WriteLine(r.ToString());
+        //                        }
+        //                        Console.WriteLine();
+        //                        Console.WriteLine("Actual Results");
+        //                        Console.WriteLine();
+        //                        foreach (SparqlResult r in rset)
+        //                        {
+        //                            Console.WriteLine(r.ToString());
+        //                        }
+        //                        Console.WriteLine();
+        //                    }
+        //                    Assert.AreEqual(rset, expected, "Result Sets should be equal");
+        //                }
+        //                else
+        //                {
+        //                    Assert.Fail("Didn't get a SPARQL Result Set as expected");
+        //                }
+        //            }
+        //        }
+        //    }
+        //    finally
+        //    {
+        //        //Options.UriNormalization = true;
+        //    }
+        //}
     }
 }

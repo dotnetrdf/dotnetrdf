@@ -61,6 +61,7 @@ namespace dotNetRDFTest
                     "/dataset/dataset-04.rq",
                     "/dataset/dataset-06.rq",
                     "/dataset/dataset-07.rq",
+                    "/dataset/dataset-08.rq",
                     "/dataset/dataset-11.rq",
                     "/dataset/dataset-12b.rq"
                 };
@@ -110,6 +111,12 @@ namespace dotNetRDFTest
         private void ProcessTestDirectory(String dir)
         {
             Console.WriteLine("## Processing Directory '" + dir + "'");
+
+            //if (dir.EndsWith("il8n\\"))
+            //{
+            //    Console.WriteLine("Disabling URI Normalization for the Internationalization Tests");
+            //    Options.UriNormalization = false;
+            //}
 
             //First need to find the manifest file
             if (File.Exists(dir + "manifest.ttl"))
@@ -273,6 +280,11 @@ namespace dotNetRDFTest
             Console.WriteLine("## Finished processing directory '" + dir + "'");
             Console.WriteLine(new String('=', 150));
             Console.WriteLine();
+
+            //if (dir.EndsWith("il8n\\"))
+            //{
+            //    Options.UriNormalization = true;
+            //}
         }
 
         private void ProcessSyntaxTest(SparqlQueryParser parser, String queryFile, bool shouldParse)

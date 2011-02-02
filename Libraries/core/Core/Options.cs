@@ -47,7 +47,8 @@ namespace VDS.RDF
     /// <summary>
     /// Possible Literal Equality Mode Settings
     /// </summary>
-    public enum LiteralEqualityMode {
+    public enum LiteralEqualityMode
+    {
         /// <summary>
         /// Strict Mode compares Literals according to the official W3C RDF Specification
         /// </summary>
@@ -80,7 +81,7 @@ namespace VDS.RDF
     public static class Options
     {
         private static LiteralEqualityMode _litEqualityMode = LiteralEqualityMode.Strict;
-        private static bool _litNormalization = true;
+        private static bool _litNormalization = true;//, _uriNormalization = true;
         private static long _queryExecutionTimeout = 300000;
         private static int _defaultCompressionLevel = WriterCompressionLevel.More;
         private static bool _fullIndexing = true;
@@ -127,6 +128,29 @@ namespace VDS.RDF
                 _litNormalization = value;
             }
         }
+
+        ///// <summary>
+        ///// Gets/Sets whether URI Values should be normalized
+        ///// </summary>
+        ///// <remarks>
+        ///// <para>
+        ///// <strong>Warning:</strong> It is strongly recommended that you do not turn this option off unless your data is poorly normalized and you cannot fix the data
+        ///// </para>
+        ///// <para>
+        ///// This Option only applies to URIs parsed from data not to URIs created by direct calls to <see cref="IGraph.CreateUriNode">CreateUriNode()</see>
+        ///// </para>
+        ///// </remarks>
+        //public static bool UriNormalization
+        //{
+        //    get
+        //    {
+        //        return _uriNormalization;
+        //    }
+        //    set
+        //    {
+        //        _uriNormalization = value;
+        //    }
+        //}
 
         /// <summary>
         /// Gets/Sets the Hard Timeout limit for Sparql Query Execution (in milliseconds)

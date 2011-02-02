@@ -36,7 +36,14 @@ namespace VDS.RDF.Parsing
                 case Token.QNAME:
                     try
                     {
-                        return g.CreateUriNode(t.Value);
+                        //if (Options.UriNormalization)
+                        //{
+                            return g.CreateUriNode(t.Value);
+                        //}
+                        //else
+                        //{
+                        //    return new NonNormalizedUriNode(g, Tools.ResolveQName(t.Value, g.NamespaceMap, g.BaseUri));
+                        //}
                     }
                     catch (UriFormatException formatEx)
                     {
@@ -51,7 +58,14 @@ namespace VDS.RDF.Parsing
                     try
                     {
                         String uri = Tools.ResolveUri(t.Value, g.BaseUri.ToSafeString());
-                        return g.CreateUriNode(new Uri(uri));
+                        //if (Options.UriNormalization)
+                        //{
+                            return g.CreateUriNode(new Uri(uri));
+                        //}
+                        //else
+                        //{
+                        //    return new NonNormalizedUriNode(g, uri);
+                        //}
                     }
                     catch (UriFormatException formatEx)
                     {

@@ -429,7 +429,7 @@ namespace VDS.RDF
             obj = CopyNode(t.Object, target, keepOriginalGraphUri);
 
             //Return a new Triple
-            return new Triple(subj, pred, obj);
+            return new Triple(subj, pred, obj, t.Context);
         }
 
         /// <summary>

@@ -42,15 +42,12 @@ using System.Text;
 namespace VDS.RDF
 {
     /// <summary>
-    /// Class for representing Uri Nodes
+    /// Class for representing URI Nodes
     /// </summary>
-    /// <remarks>
-    /// As of the 0.2.x API we removed the LocalName and Namespace properties since these were causing issues when Nodes were moved between Graphs
-    /// </remarks>
     public class UriNode : BaseNode, IComparable<UriNode>
     {
         private Uri _uri;
-        private String _stringUri;
+        protected String _stringUri;
 
         /// <summary>
         /// Internal Only Constructor for Uri Nodes
@@ -101,9 +98,25 @@ namespace VDS.RDF
         }
 
         /// <summary>
+        /// Protected Constructor for derived classes which want to control the URI more closely
+        /// </summary>
+        /// <param name="g">Graph</param>
+        /// <param name="uri">A form of the URI (derived classes may override Uri property as desired)</param>
+        /// <param name="stringUri">String form of the URI (may be unormalized/relative etc)</param>
+        protected UriNode(IGraph g, Uri uri, String stringUri)
+            : base(g, NodeType.Uri)
+        {
+            this._uri = uri;
+            this._stringUri = stringUri;
+
+            //Compute Hash Code
+            this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
+        }
+
+        /// <summary>
         /// Gets the Uri for this Node
         /// </summary>
-        public Uri Uri
+        public virtual Uri Uri
         {
             get
             {
@@ -167,7 +180,7 @@ namespace VDS.RDF
                 UriNode temp = (UriNode)other;
 
                 //Switched to using straight ordinal string comparison
-                return this._stringUri.Equals(temp.StringUri, StringComparison.Ordinal);
+                return this.StringUri.Equals(temp.StringUri, StringComparison.Ordinal);
             }
             else
             {
@@ -182,7 +195,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override string ToString()
         {
-            return this._uri.ToString();
+            return this._stringUri;
         }
 
         /// <summary>
@@ -216,7 +229,7 @@ namespace VDS.RDF
                 //Uri Nodes are ordered lexically
                 //Return the result of CompareTo on the string values of the URIs
                 UriNode u = (UriNode)other;
-                return this._uri.ToString().CompareTo(u.Uri.ToString());
+                return this._stringUri.CompareTo(u.StringUri);
             }
             else
             {
@@ -239,4 +252,16 @@ namespace VDS.RDF
             return this.CompareTo((INode)other);
         }
     }
+
+    ///// <summary>
+    ///// Class for representing URI Nodes where the URI may be non-normalized
+    ///// </summary>
+    //class NonNormalizedUriNode : UriNode
+    //{
+    //    protected internal NonNormalizedUriNode(IGraph g, String uri)
+    //        : base(g, new Uri(uri), uri)
+    //    {
+
+    //    }
+    //}
 }

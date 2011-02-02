@@ -4,6 +4,7 @@
   <Deployment>
     <DeploymentItem filename="Testing\unittest\dotNetRDFUnitTests.dll.config" />
     <DeploymentItem filename="Testing\unittest\bin\Debug\resources\" />
+    <DeploymentItem filename="Testing\testsuite\sparqlparser_tests\il8n\" />
   </Deployment>
   <TestTypeSpecific />
 </TestRunConfiguration>

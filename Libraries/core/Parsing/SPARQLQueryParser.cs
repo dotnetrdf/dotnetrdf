@@ -3232,14 +3232,28 @@ namespace VDS.RDF.Parsing
                     }
                     else
                     {
-                        baseUri = (context.Query.BaseUri == null) ? String.Empty : context.Query.BaseUri.ToString();
-                        u = new Uri(Tools.ResolveUri(t.Value, baseUri));
-                        return new NodeMatchPattern(new UriNode(null, u));
+                        String uri = Tools.ResolveUri(t.Value, context.Query.BaseUri.ToSafeString());
+                        u = new Uri(uri);
+                        //if (Options.UriNormalization)
+                        //{
+                            return new NodeMatchPattern(new UriNode(null, u));
+                        //}
+                        //else
+                        //{
+                        //    return new NodeMatchPattern(new NonNormalizedUriNode(null, uri));
+                        //}
                     }
 
                 case Token.QNAME:
                     //QName uses a Node Match
-                    return new NodeMatchPattern(new UriNode(null, this.ResolveQName(context, t.Value)));
+                    //if (Options.UriNormalization)
+                    //{
+                        return new NodeMatchPattern(new UriNode(null, this.ResolveQName(context, t.Value)));
+                    //}
+                    //else
+                    //{
+                    //    return new NodeMatchPattern(new NonNormalizedUriNode(null, Tools.ResolveQName(t.Value, context.Query.NamespaceMap, context.Query.BaseUri)));
+                    //}
 
                 case Token.LITERAL:
                 case Token.LONGLITERAL:
