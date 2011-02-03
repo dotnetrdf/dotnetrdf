@@ -39,6 +39,7 @@ Added
   - Hash Functions - MD5, SHA1, SHA256, SHA384, SHA512
 - Update
  - Added support for HTTP PATCH operation to SPARQL Uniform HTTP Protocol implementations
+ - Added support for the newly defined SPARQL Update 1.1 ADD, COPY and DELETE commands
 - Storage
  - Expanded the IGenericIOManager interface to include methods for deletings graphs and listing graphs
  - Connector for Fuseki
@@ -74,6 +75,7 @@ Changed
   - Streams in the wrong encoded will cause parsers to issue a warning
  - Added Warning events to ISparqlResultsReader, ISparqlResultsWriter, SparqlQueryParser and SparqlUpdateParser
 - Query Improvements
+ - Syntax is now SPARQL 1.1 Standard by default (rather than 1.1 Extended)
  - Leviathan SPARQL engine now operates over an ISparqlDataset which is an abstraction between the data and the
    SPARQL engine which allows for out of memory datasets to be queried and updated with Leviathan
  - Reverse Translation from ISparqlAlgebra to SparqlQuery
@@ -87,7 +89,7 @@ Changed
   - COALESCE now errors if none of the arguments evaluate to a non-null value
 - Update Improvements
  - WHERE clauses in Update Commands are now optimised
- - Added support for new features latest drafts of the SPARQL 1.1 Update specification
+ - Added support for revised syntax of existing commands based on latest drafts of the SPARQL 1.1 Update specification
 - Writing Improvements
  - Writers all try to ensure correct encoding where possible (most already did this)
 - ASP.Net Improvements
