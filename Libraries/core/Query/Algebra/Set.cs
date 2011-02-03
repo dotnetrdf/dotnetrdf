@@ -72,6 +72,15 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
+        /// Creates a new Set which is a copy of an existing Set
+        /// </summary>
+        /// <param name="x">Set to copy</param>
+        public Set(Set x)
+        {
+            this._values = new Dictionary<string, INode>(x._values);
+        }
+
+        /// <summary>
         /// Creates a new Set from a SPARQL Result
         /// </summary>
         /// <param name="result">Result</param>

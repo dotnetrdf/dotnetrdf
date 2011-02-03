@@ -2996,7 +2996,7 @@ namespace VDS.RDF.Parsing
             ISparqlExpression expr = this.TryParseExpression(context, false, true);
             if (context.Tokens.LastTokenType != Token.AS)
             {
-                throw new RdfParseException("A BIND assignment did not end with an AS ?var as expected, BIND assignment must be of the general form BIND(expr AS ?var)");
+                throw ParserHelper.Error("A BIND assignment did not end with an AS ?var as expected, BIND assignment must be of the general form BIND(expr AS ?var)", next);
             }
 
             //Ensure there is a Variable after the AS
@@ -3004,6 +3004,17 @@ namespace VDS.RDF.Parsing
             if (next.TokenType == Token.VARIABLE)
             {
                 BindPattern bind = new BindPattern(next.Value.Substring(1), expr);
+
+                //Check that the Variable has not already been used
+                if (context.Query.RootGraphPattern != null && context.Query.RootGraphPattern.Variables.Contains(bind.VariableName))
+                {
+                    throw ParserHelper.Error("A BIND assignment is attempting to bind to the variable ?" + bind.VariableName + " but this variable is already in use in the query", next);
+                }
+                else if (p.Variables.Contains(bind.VariableName))
+                {
+                    throw ParserHelper.Error("A BIND assignment is attempting to bind to the variable ?" + bind.VariableName + " but this variable is already in use earlier in the Graph pattern", next);
+                }
+
                 if (Options.QueryOptimisation)
                 {
                     p.UnplacedAssignments.Add(bind);
