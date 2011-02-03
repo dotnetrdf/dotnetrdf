@@ -534,10 +534,18 @@ namespace VDS.RDF.Parsing.Tokens
                         value = value.ToUpper();
                         switch (value)
                         {
+                            case SparqlSpecsHelper.SparqlKeywordAdd:
+                                //Add Keyword
+                                this._lasttokentype = Token.ADD;
+                                return new AddKeywordToken(this.CurrentLine, this.StartPosition);
                             case SparqlSpecsHelper.SparqlKeywordClear:
                                 //Clear Keyword
                                 this._lasttokentype = Token.CLEAR;
                                 return new ClearKeywordToken(this.CurrentLine, this.StartPosition);
+                            case SparqlSpecsHelper.SparqlKeywordCopy:
+                                //Copy Keyword
+                                this._lasttokentype = Token.COPY;
+                                return new CopyKeywordToken(this.CurrentLine, this.StartPosition);
                             case SparqlSpecsHelper.SparqlKeywordCreate:
                                 //Create Keyword
                                 this._lasttokentype = Token.CREATE;
@@ -558,6 +566,10 @@ namespace VDS.RDF.Parsing.Tokens
                                 //Load Keyword
                                 this._lasttokentype = Token.LOAD;
                                 return new LoadKeywordToken(this.CurrentLine, this.StartPosition);
+                            case SparqlSpecsHelper.SparqlKeywordMove:
+                                //Move Keyword
+                                this._lasttokentype = Token.MOVE;
+                                return new MoveKeywordToken(this.CurrentLine, this.StartPosition);
                             case SparqlSpecsHelper.SparqlKeywordWith:
                                 //With Keyword
                                 this._lasttokentype = Token.WITH;

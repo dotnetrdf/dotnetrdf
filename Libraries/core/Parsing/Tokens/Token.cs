@@ -229,6 +229,9 @@ namespace VDS.RDF.Parsing.Tokens
                           USING = 510,
                           DEFAULT = 511,
                           ALLWORD = 512,
+                          ADD = 513,
+                          COPY = 514,
+                          MOVE = 515,
 
                           EOF = 1000;
     }

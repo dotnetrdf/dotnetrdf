@@ -82,6 +82,36 @@ namespace VDS.RDF.Update
             //Does Nothing
         }
 
+        public void ProcessAddCommand(AddCommand cmd)
+        {
+            if (this._manager is IUpdateableGenericIOManager)
+            {
+                ((IUpdateableGenericIOManager)this._manager).Update(cmd.ToString());
+            }
+            else
+            {
+                try
+                {
+                    Graph source = new Graph();
+                    this._manager.LoadGraph(source, cmd.SourceUri);
+                    source.BaseUri = cmd.SourceUri;
+
+                    //Load Destination Graph
+                    Graph dest = new Graph();
+                    this._manager.LoadGraph(dest, cmd.DestinationUri);
+                    dest.BaseUri = cmd.DestinationUri;
+
+                    //Transfer the data and update the Destination Graph
+                    dest.Merge(source);
+                    this._manager.SaveGraph(dest);
+                }
+                catch
+                {
+                    if (!cmd.Silent) throw;
+                }
+            }
+        }
+
         /// <summary>
         /// Processes a CLEAR command
         /// </summary>
@@ -111,6 +141,50 @@ namespace VDS.RDF.Update
                         case ClearMode.All:
                             throw new NotSupportedException("The Generic Update processor does not support this form of the CLEAR command");
                     }
+                }
+                catch
+                {
+                    if (!cmd.Silent) throw;
+                }
+            }
+        }
+
+        public void ProcessCopyCommand(CopyCommand cmd)
+        {
+            if (this._manager is IUpdateableGenericIOManager)
+            {
+                ((IUpdateableGenericIOManager)this._manager).Update(cmd.ToString());
+            }
+            else
+            {
+                try
+                {
+                    Graph source = new Graph();
+                    this._manager.LoadGraph(source, cmd.SourceUri);
+                    source.BaseUri = cmd.SourceUri;
+
+                    //If the Manager supports delete ensure the Destination Graph is deleted
+                    if (this._manager.DeleteSupported)
+                    {
+                        try
+                        {
+                            this._manager.DeleteGraph(cmd.DestinationUri);
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new SparqlUpdateException("Unable to process a MOVE command as unable to ensure that the Destination Graph was deleted prior to moving the data from the Source Graph", ex);
+                        }
+                    }
+
+                    //Load Destination Graph and ensure it is empty
+                    Graph dest = new Graph();
+                    this._manager.LoadGraph(dest, cmd.DestinationUri);
+                    dest.BaseUri = cmd.DestinationUri;
+                    dest.Clear();
+
+                    //Transfer the data and update both the Graphs
+                    dest.Merge(source);
+                    this._manager.SaveGraph(dest);
                 }
                 catch
                 {
@@ -171,8 +245,14 @@ namespace VDS.RDF.Update
             {
                 switch (cmd.CommandType)
                 {
+                    case SparqlUpdateCommandType.Add:
+                        this.ProcessAddCommand((AddCommand)cmd);
+                        break;
                     case SparqlUpdateCommandType.Clear:
                         this.ProcessClearCommand((ClearCommand)cmd);
+                        break;
+                    case SparqlUpdateCommandType.Copy:
+                        this.ProcessCopyCommand((CopyCommand)cmd);
                         break;
                     case SparqlUpdateCommandType.Create:
                         this.ProcessCreateCommand((CreateCommand)cmd);
@@ -197,6 +277,9 @@ namespace VDS.RDF.Update
                         break;
                     case SparqlUpdateCommandType.Modify:
                         this.ProcessModifyCommand((ModifyCommand)cmd);
+                        break;
+                    case SparqlUpdateCommandType.Move:
+                        this.ProcessMoveCommand((MoveCommand)cmd);
                         break;
                     default:
                         throw new SparqlUpdateException("Unknown Update Commands cannot be processed by the Generic Update Processor");
@@ -913,6 +996,68 @@ namespace VDS.RDF.Update
                 else
                 {
                     throw new NotSupportedException("INSERT/DELETE commands are not supported by this Update Processor as the manager for the underlying Store does not provide Query capabilities which are necessary to process this command");
+                }
+            }
+        }
+
+        public void ProcessMoveCommand(MoveCommand cmd)
+        {
+            if (this._manager is IUpdateableGenericIOManager)
+            {
+                ((IUpdateableGenericIOManager)this._manager).Update(cmd.ToString());
+            }
+            else
+            {
+                try
+                {
+                    Graph source = new Graph();
+                    this._manager.LoadGraph(source, cmd.SourceUri);
+                    source.BaseUri = cmd.SourceUri;
+
+                    //If the Manager supports delete ensure the Destination Graph is deleted
+                    if (this._manager.DeleteSupported)
+                    {
+                        try
+                        {
+                            this._manager.DeleteGraph(cmd.DestinationUri);
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new SparqlUpdateException("Unable to process a MOVE command as unable to ensure that the Destination Graph was deleted prior to moving the data from the Source Graph", ex);
+                        }
+                    }
+
+                    //Load Destination Graph and ensure it is empty
+                    Graph dest = new Graph();
+                    this._manager.LoadGraph(dest, cmd.DestinationUri);
+                    dest.BaseUri = cmd.DestinationUri;
+                    dest.Clear();
+
+                    //Transfer the data and update both the Graphs
+                    //For the Source Graph which we must delete the contents of either use DeleteGraph() if supported or
+                    //just save an empty Graph in its place and hope that SaveGraph() is an overwrite operation
+                    dest.Merge(source);
+                    source.Clear();
+                    this._manager.SaveGraph(dest);
+                    if (this._manager.DeleteSupported)
+                    {
+                        try
+                        {
+                            this._manager.DeleteGraph(cmd.SourceUri);
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new SparqlUpdateException("Unable to process a MOVE command as unable to ensure that the Source Graph was deleted after the movement of data to the Destination Graph", ex);
+                        }
+                    }
+                    else
+                    {
+                        this._manager.SaveGraph(source);
+                    }
+                }
+                catch
+                {
+                    if (!cmd.Silent) throw;
                 }
             }
         }

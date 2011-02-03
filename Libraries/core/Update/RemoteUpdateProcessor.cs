@@ -76,11 +76,21 @@ namespace VDS.RDF.Update
             //No flush actions requied
         }
 
+        public void ProcessAddCommand(AddCommand cmd)
+        {
+            this.ProcessCommand(cmd);
+        }
+
         /// <summary>
         /// Processes a CLEAR command
         /// </summary>
         /// <param name="cmd">Clear Command</param>
         public void ProcessClearCommand(ClearCommand cmd)
+        {
+            this.ProcessCommand(cmd);
+        }
+
+        public void ProcessCopyCommand(CopyCommand cmd)
         {
             this.ProcessCommand(cmd);
         }
@@ -171,6 +181,11 @@ namespace VDS.RDF.Update
         /// </summary>
         /// <param name="cmd">Insert/Delete Command</param>
         public void ProcessModifyCommand(ModifyCommand cmd)
+        {
+            this.ProcessCommand(cmd);
+        }
+
+        public void ProcessMoveCommand(MoveCommand cmd)
         {
             this.ProcessCommand(cmd);
         }

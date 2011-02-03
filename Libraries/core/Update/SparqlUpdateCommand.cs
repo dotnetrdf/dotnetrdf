@@ -78,6 +78,9 @@ namespace VDS.RDF.Update
         /// Command removes a Graph from the Store
         /// </summary>
         Drop,
+        Add,
+        Copy,
+        Move,
         /// <summary>
         /// Unknown
         /// </summary>

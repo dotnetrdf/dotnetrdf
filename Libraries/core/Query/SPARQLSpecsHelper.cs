@@ -179,9 +179,11 @@ namespace VDS.RDF.Query
                       SparqlKeywordSha256 = "SHA256",
                       SparqlKeywordSha384 = "SHA384",
                       SparqlKeywordSha512 = "SHA512",
-                      SparqlKeyordAll = "ALL",
                       SparqlKeywordAny = "ANY",
-                      SparqlKeywordNone = "NONE"
+                      SparqlKeywordNone = "NONE",
+                      SparqlKeywordAdd = "ADD",
+                      SparqlKeywordCopy = "COPY",
+                      SparqlKeywordMove = "MOVE"
                       ;
 
         /// <summary>
@@ -290,31 +292,10 @@ namespace VDS.RDF.Query
                                                        SparqlKeywordGroupConcat,
                                                        SparqlKeywordSample,
                                                        SparqlKeywordSeparator
-                                                   };
+                                                   };                                                
 
         /// <summary>
-        /// Set of SPARQL Keywords that are Update Keywords
-        /// </summary>
-        public static String[] UpdateKeywords = {   
-                                                    SparqlKeywordAll,
-                                                    SparqlKeywordClear,
-                                                    SparqlKeywordCreate,
-                                                    SparqlKeywordData,
-                                                    SparqlKeywordDefault,
-                                                    SparqlKeywordDelete,
-                                                    SparqlKeywordDrop,
-                                                    SparqlKeywordInsert,
-                                                    SparqlKeywordInto,
-                                                    SparqlKeywordLoad,
-                                                    SparqlKeywordNamed,
-                                                    SparqlKeywordSilent,
-                                                    SparqlKeywordUsing,
-                                                    SparqlKeywordWith
-                                                };
-                                                    
-
-        /// <summary>
-        /// Set of XML Schema Data Types which are derived from Integer and can be treated as Integers by Sparql
+        /// Set of XML Schema Data Types which are derived from Integer and can be treated as Integers by SPARQL
         /// </summary>
         public static String[] IntegerDataTypes = {   
                                                       XmlSpecsHelper.XmlSchemaDataTypeByte, 
@@ -445,11 +426,36 @@ namespace VDS.RDF.Query
                                                        };
 
         /// <summary>
+        /// Set of SPARQL Keywords that are Update Keywords
+        /// </summary>
+        public static String[] UpdateKeywords = {   
+                                                    SparqlKeywordAdd,
+                                                    SparqlKeywordAll,
+                                                    SparqlKeywordClear,
+                                                    SparqlKeywordCopy,
+                                                    SparqlKeywordCreate,
+                                                    SparqlKeywordData,
+                                                    SparqlKeywordDefault,
+                                                    SparqlKeywordDelete,
+                                                    SparqlKeywordDrop,
+                                                    SparqlKeywordInsert,
+                                                    SparqlKeywordInto,
+                                                    SparqlKeywordLoad,
+                                                    SparqlKeywordMove,
+                                                    SparqlKeywordSilent,
+                                                    SparqlKeywordUsing,
+                                                    SparqlKeywordWith
+                                                };
+
+        /// <summary>
         /// Set of Keywords for SPARQL Update 1.1
         /// </summary>
         public static String[] SparqlUpdate11Keywords = {
+                                                          SparqlKeywordAdd,
+                                                          SparqlKeywordAll,
                                                           SparqlKeywordBase,
                                                           SparqlKeywordClear,
+                                                          SparqlKeywordCopy,
                                                           SparqlKeywordCreate,
                                                           SparqlKeywordData,
                                                           SparqlKeywordDefault,
@@ -459,6 +465,7 @@ namespace VDS.RDF.Query
                                                           SparqlKeywordInsert,
                                                           SparqlKeywordInto,
                                                           SparqlKeywordLoad,
+                                                          SparqlKeywordMove,
                                                           SparqlKeywordPrefix,
                                                           SparqlKeywordSilent,
                                                           SparqlKeywordUsing,

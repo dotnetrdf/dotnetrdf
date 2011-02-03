@@ -6,6 +6,19 @@ using System.Text;
 namespace VDS.RDF.Parsing.Tokens
 {
     /// <summary>
+    /// Token which represents the SPARQL Update ADD Keyword
+    /// </summary>
+    public class AddKeywordToken : BaseToken
+    {
+        /// <summary>
+        /// Creates a new ADD Keyword Token
+        /// </summary>
+        /// <param name="line">Line the Keyword occurs on</param>
+        /// <param name="pos">Position the Keyword occurs at</param>
+        public AddKeywordToken(int line, int pos) : base(Token.ADD, "ADD", line, line, pos, pos + 3) { }
+    }
+
+    /// <summary>
     /// Token which represents the SPARQL Update CLEAR Keyword
     /// </summary>
     public class ClearKeywordToken : BaseToken
@@ -16,6 +29,19 @@ namespace VDS.RDF.Parsing.Tokens
         /// <param name="line">Line the Keyword occurs on</param>
         /// <param name="pos">Position the Keyword occurs at</param>
         public ClearKeywordToken(int line, int pos) : base(Token.CLEAR, "CLEAR", line, line, pos, pos + 5) { }
+    }
+
+    /// <summary>
+    /// Token which represents the SPARQL Update COPY Keyword
+    /// </summary>
+    public class CopyKeywordToken : BaseToken
+    {
+        /// <summary>
+        /// Creates a new COPY Keyword Token
+        /// </summary>
+        /// <param name="line">Line the Keyword occurs on</param>
+        /// <param name="pos">Position the Keyword occurs at</param>
+        public CopyKeywordToken(int line, int pos) : base(Token.COPY, "COPY", line, line, pos, pos + 4) { }
     }
 
     /// <summary>
@@ -120,6 +146,19 @@ namespace VDS.RDF.Parsing.Tokens
         /// <param name="line">Line the Keyword occurs on</param>
         /// <param name="pos">Position the Keyword occurs at</param>
         public LoadKeywordToken(int line, int pos) : base(Token.LOAD, "LOAD", line, line, pos, pos + 4) { }
+    }
+
+    /// <summary>
+    /// Token which represents the SPARQL Update MOVE Keyword
+    /// </summary>
+    public class MoveKeywordToken : BaseToken
+    {
+        /// <summary>
+        /// Creates a new MOVE Keyword Token
+        /// </summary>
+        /// <param name="line">Line the Keyword occurs on</param>
+        /// <param name="pos">Position the Keyword occurs at</param>
+        public MoveKeywordToken(int line, int pos) : base(Token.MOVE, "MOVE", line, line, pos, pos + 4) { }
     }
 
     /// <summary>

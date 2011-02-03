@@ -50,11 +50,15 @@ namespace VDS.RDF.Update
     /// </remarks>
     public interface ISparqlUpdateProcessor
     {
+        void ProcessAddCommand(AddCommand cmd);
+
         /// <summary>
         /// Processes a CLEAR command
         /// </summary>
         /// <param name="cmd">Clear Command</param>
         void ProcessClearCommand(ClearCommand cmd);
+
+        void ProcessCopyCommand(CopyCommand cmd);
 
         /// <summary>
         /// Processes a CREATE command
@@ -115,6 +119,8 @@ namespace VDS.RDF.Update
         /// </summary>
         /// <param name="cmd">Insert/Delete Command</param>
         void ProcessModifyCommand(ModifyCommand cmd);
+
+        void ProcessMoveCommand(MoveCommand cmd);
 
         /// <summary>
         /// Causes any outstanding changes to be flushed to the underlying store

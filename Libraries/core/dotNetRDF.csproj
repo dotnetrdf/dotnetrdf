@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{BFBAC159-1E60-4D03-8ACA-D34E31EB83BF}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -412,8 +412,11 @@
     <Compile Include="Storage\ReadOnlyConnector.cs" />
     <Compile Include="Storage\SparqlConnector.cs" />
     <Compile Include="Storage\SparqlHttpProtocolConnector.cs" />
+    <Compile Include="Update\Commands\AddCommand.cs" />
     <Compile Include="Update\Commands\BaseModifyCommand.cs" />
+    <Compile Include="Update\Commands\BaseTransferCommand.cs" />
     <Compile Include="Update\Commands\ClearCommand.cs" />
+    <Compile Include="Update\Commands\CopyCommand.cs" />
     <Compile Include="Update\Commands\CreateCommand.cs" />
     <Compile Include="Update\Commands\DeleteCommand.cs" />
     <Compile Include="Update\Commands\DeleteDataCommand.cs" />
@@ -422,6 +425,7 @@
     <Compile Include="Update\Commands\InsertDataCommand.cs" />
     <Compile Include="Update\Commands\LoadCommand.cs" />
     <Compile Include="Update\Commands\ModifyCommand.cs" />
+    <Compile Include="Update\Commands\MoveCommand.cs" />
     <Compile Include="Update\GenericUpdateProcessor.cs" />
     <Compile Include="Update\ISparqlUpdateProcessor.cs" />
     <Compile Include="Update\LeviathanUpdateProcessor.cs" />

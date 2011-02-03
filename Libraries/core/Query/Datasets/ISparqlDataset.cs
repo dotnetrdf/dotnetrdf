@@ -43,6 +43,11 @@ namespace VDS.RDF.Query.Datasets
     /// <summary>
     /// Interfaces for Datasets that SPARQL Queries and Updates can be applied to
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// <strong>Note:</strong> For all operations that take a Graph URI a <em>null</em> Uri should be considered to refer to the Default Graph of the dataset
+    /// </para>
+    /// </remarks>
     public interface ISparqlDataset
     {
         #region Active and Default Graph Management

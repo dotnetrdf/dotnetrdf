@@ -48,7 +48,10 @@ namespace VDS.RDF.Update
     /// </remarks>
     public class LeviathanUpdateProcessor : ISparqlUpdateProcessor
     {
-        private SparqlUpdateEvaluationContext _context;
+        /// <summary>
+        /// Update Context that can be passed to commands Evaluate() method
+        /// </summary>
+        protected SparqlUpdateEvaluationContext _context;
 
         /// <summary>
         /// Creates a new Leviathan Update Processor
@@ -78,11 +81,21 @@ namespace VDS.RDF.Update
             this._context.Data.Flush();
         }
 
+        public virtual void ProcessAddCommand(AddCommand cmd)
+        {
+            cmd.Evaluate(this._context);
+        }
+
         /// <summary>
         /// Processes a CLEAR command
         /// </summary>
         /// <param name="cmd">Clear Command</param>
         public virtual void ProcessClearCommand(ClearCommand cmd)
+        {
+            cmd.Evaluate(this._context);
+        }
+
+        public virtual void ProcessCopyCommand(CopyCommand cmd)
         {
             cmd.Evaluate(this._context);
         }
@@ -107,8 +120,14 @@ namespace VDS.RDF.Update
         {
             switch (cmd.CommandType)
             {
+                case SparqlUpdateCommandType.Add:
+                    this.ProcessAddCommand((AddCommand)cmd);
+                    break;
                 case SparqlUpdateCommandType.Clear:
                     this.ProcessClearCommand((ClearCommand)cmd);
+                    break;
+                case SparqlUpdateCommandType.Copy:
+                    this.ProcessCopyCommand((CopyCommand)cmd);
                     break;
                 case SparqlUpdateCommandType.Create:
                     this.ProcessCreateCommand((CreateCommand)cmd);
@@ -134,9 +153,13 @@ namespace VDS.RDF.Update
                 case SparqlUpdateCommandType.Modify:
                     this.ProcessModifyCommand((ModifyCommand)cmd);
                     break;
+                case SparqlUpdateCommandType.Move:
+                    this.ProcessMoveCommand((MoveCommand)cmd);
+                    break;
                 default:
                     throw new SparqlUpdateException("Unknown Update Commands cannot be processed by the Leviathan Update Processor");
             }
+            //Flush after every command to ensure that the next command operates on the most up to date data and doesn't see stale/cached data
             this.Flush();
         }
 
@@ -216,6 +239,11 @@ namespace VDS.RDF.Update
         public virtual void ProcessModifyCommand(ModifyCommand cmd)
         {
             cmd.Evaluate(this._context);;
+        }
+
+        public virtual void ProcessMoveCommand(MoveCommand cmd)
+        {
+            cmd.Evaluate(this._context);
         }
     }
 }
