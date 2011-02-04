@@ -3,7 +3,7 @@
 
 A Library for RDF manipulation and parsing in .Net using C# 3.0
 
-Version 0.4.0 Alpha
+Version 0.4.0 Beta
 
 Robert Vesse 2009-10
 rvesse@vdesign-studios.com
@@ -64,14 +64,12 @@ We are aware of the following issues with the library.  Please remember that thi
 there are things that may be buggy still and the API is subject to change at our discretion.
  
 Query
-- The Leviathan conforms much more closely to the SPARQL specification but still returns incorrect
-  results on a very small number of queries (~5/441 in the official SPARQL Test Suite)
+- Leviathan passes the entire SPARQL 1.0 Test Suite except three of the normalization tests - this is due to how
+  .Net handles normalization esp. wrt. URIs
  
 Storage
-- Write speeds can still vary wildly depending on how you perform the write and the data itself
-- Update support for 4store is highly experimental and uses a feature that is not yet stable in 4store itself
-  and in fact is not in the standard 4store builds
-- Virtuoso 6 support requires Virtuoso 6.1.1 or higher to work correctly
+- SQL Storage is officially deprecated though still usable - will be removed/rewritten entirely in future releases
+- Virtuoso support is seriously broken due to an issue with the Virtuoso ADO.Net provider
  
  Change History
  --------------
@@ -103,16 +101,19 @@ Storage
  
  8/10/2010 - Release of Version 0.3.1 Alpha (Build 0.3.1.20277)
  
- ?/?/201? - Release of Version 0.4.0 Beta (Build 0.4.0.?)
+ ?/2/2011 - Release of Version 0.4.0 Beta (Build 0.4.0.?)
  
 Acknowledgements
 ----------------
 
-Uses code (3rd Party Libraries) from the following sources
+Uses code (3rd Party Libraries) from the following sources:
 -MySQL Connector.Net from MySQL AB http://www.mysql.org
 -JSON.Net from James Newton-King http://james.newtonking.com
 -Virtuoso ADO.Net Provider from OpenLink Software http://www.openlinksw.com
 -HtmlAgilityPack from Simon Mourier http://www.codeplex.com/htmlagilitypack
+
+Uses code (embedded in the library) from the following sources:
+-HashLib http://hashlib.codeplex.com/
 
 Thanks to the following people who have helped in the development process or whose suggestions have led to 
 improvements in the code:

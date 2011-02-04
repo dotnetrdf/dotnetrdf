@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{BFBAC159-1E60-4D03-8ACA-D34E31EB83BF}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -142,7 +142,6 @@
     <Compile Include="Core\IGraph.cs" />
     <Compile Include="Core\INode.cs" />
     <Compile Include="Core\IRdfReader.cs" />
-    <Compile Include="Core\IRdfTranslator.cs" />
     <Compile Include="Core\IRdfWriter.cs" />
     <Compile Include="Parsing\Events\IRdfXmlEvent.cs" />
     <Compile Include="Core\ISelector.cs" />
@@ -164,7 +163,6 @@
     <Compile Include="Writing\InternalXmlWriter.cs" />
     <Compile Include="Query\RdfSchemaInferenceSelectors.cs" />
     <Compile Include="Writing\RdfXmlTreeWriter.cs" />
-    <Compile Include="Translation\SimpleTranslator.cs" />
     <Compile Include="Query\SparqlRemoteEndpoint.cs" />
     <Compile Include="Query\SparqlResultSet.cs" />
     <Compile Include="Query\SparqlSpecsHelper.cs" />
@@ -329,6 +327,22 @@
     <Compile Include="Query\Expressions\ArqFunctionFactory.cs" />
     <Compile Include="Query\Expressions\BaseExpressionClasses.cs" />
     <Compile Include="Query\Expressions\Functions\BaseHashFunction.cs" />
+    <Compile Include="Query\Expressions\Functions\HashLib\ArrayExtensions.cs" />
+    <Compile Include="Query\Expressions\Functions\HashLib\Converters.cs" />
+    <Compile Include="Query\Expressions\Functions\HashLib\Hash.cs" />
+    <Compile Include="Query\Expressions\Functions\HashLib\HashBuffer.cs" />
+    <Compile Include="Query\Expressions\Functions\HashLib\HashCrypto.cs" />
+    <Compile Include="Query\Expressions\Functions\HashLib\HashCryptoNotBuildIn.cs" />
+    <Compile Include="Query\Expressions\Functions\HashLib\HashResult.cs" />
+    <Compile Include="Query\Expressions\Functions\HashLib\IHash.cs" />
+    <Compile Include="Query\Expressions\Functions\HashLib\IHashInfo.cs" />
+    <Compile Include="Query\Expressions\Functions\HashLib\MD5.cs" />
+    <Compile Include="Query\Expressions\Functions\HashLib\MDBase.cs" />
+    <Compile Include="Query\Expressions\Functions\HashLib\SHA224.cs" />
+    <Compile Include="Query\Expressions\Functions\HashLib\SHA256Base.cs" />
+    <Compile Include="Query\Expressions\Functions\HashLib\SHA384.cs" />
+    <Compile Include="Query\Expressions\Functions\HashLib\SHA512.cs" />
+    <Compile Include="Query\Expressions\Functions\HashLib\SHA512Base.cs" />
     <Compile Include="Query\Expressions\Functions\LeviathanCartesianFunctions.cs" />
     <Compile Include="Query\Expressions\Functions\LeviathanNumericFunctions.cs" />
     <Compile Include="Query\Expressions\Functions\LeviathanStringFunctions.cs" />

@@ -803,6 +803,9 @@
     <Compile Include="..\core\Query\Datasets\BaseDataset.cs">
       <Link>Query\Datasets\BaseDataset.cs</Link>
     </Compile>
+    <Compile Include="..\core\Core\DatasetGraphCollection.cs">
+      <Link>Core\DatasetGraphCollection.cs</Link>
+    </Compile>
     <Compile Include="..\core\Query\Datasets\InMemoryDataset.cs">
       <Link>Query\Datasets\InMemoryDataset.cs</Link>
     </Compile>
@@ -848,6 +851,54 @@
     <Compile Include="..\core\Query\Expressions\Functions\BaseHashFunction.cs">
       <Link>Query\Expressions\Functions\BaseHashFunction.cs</Link>
     </Compile>
+    <Compile Include="..\core\Query\Expressions\Functions\HashLib\ArrayExtensions.cs">
+      <Link>Query\Expressions\Functions\HashLib\ArrayExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Expressions\Functions\HashLib\Converters.cs">
+      <Link>Query\Expressions\Functions\HashLib\Converters.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Expressions\Functions\HashLib\Hash.cs">
+      <Link>Query\Expressions\Functions\HashLib\Hash.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Expressions\Functions\HashLib\HashBuffer.cs">
+      <Link>Query\Expressions\Functions\HashLib\HashBuffer.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Expressions\Functions\HashLib\HashCrypto.cs">
+      <Link>Query\Expressions\Functions\HashLib\HashCrypto.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Expressions\Functions\HashLib\HashCryptoNotBuildIn.cs">
+      <Link>Query\Expressions\Functions\HashLib\HashCryptoNotBuildIn.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Expressions\Functions\HashLib\HashResult.cs">
+      <Link>Query\Expressions\Functions\HashLib\HashResult.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Expressions\Functions\HashLib\IHash.cs">
+      <Link>Query\Expressions\Functions\HashLib\IHash.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Expressions\Functions\HashLib\IHashInfo.cs">
+      <Link>Query\Expressions\Functions\HashLib\IHashInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Expressions\Functions\HashLib\MD5.cs">
+      <Link>Query\Expressions\Functions\HashLib\MD5.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Expressions\Functions\HashLib\MDBase.cs">
+      <Link>Query\Expressions\Functions\HashLib\MDBase.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Expressions\Functions\HashLib\SHA224.cs">
+      <Link>Query\Expressions\Functions\HashLib\SHA224.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Expressions\Functions\HashLib\SHA256Base.cs">
+      <Link>Query\Expressions\Functions\HashLib\SHA256Base.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Expressions\Functions\HashLib\SHA384.cs">
+      <Link>Query\Expressions\Functions\HashLib\SHA384.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Expressions\Functions\HashLib\SHA512.cs">
+      <Link>Query\Expressions\Functions\HashLib\SHA512.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Expressions\Functions\HashLib\SHA512Base.cs">
+      <Link>Query\Expressions\Functions\HashLib\SHA512Base.cs</Link>
+    </Compile>
     <Compile Include="..\core\Query\Expressions\Functions\LeviathanCartesianFunctions.cs">
       <Link>Query\Expressions\Functions\LeviathanCartesianFunctions.cs</Link>
     </Compile>
@@ -863,14 +914,26 @@
     <Compile Include="..\core\Query\Expressions\Functions\SparqlCoalesceFunction.cs">
       <Link>Query\Expressions\Functions\SparqlCoalesceFunction.cs</Link>
     </Compile>
+    <Compile Include="..\core\Query\Expressions\Functions\SparqlDateTimeFunctions.cs">
+      <Link>Query\Expressions\Functions\SparqlDateTimeFunctions.cs</Link>
+    </Compile>
     <Compile Include="..\core\Query\Expressions\Functions\SparqlExistsFunction.cs">
       <Link>Query\Expressions\Functions\SparqlExistsFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Expressions\Functions\SparqlHashFunctions.cs">
+      <Link>Query\Expressions\Functions\SparqlHashFunctions.cs</Link>
     </Compile>
     <Compile Include="..\core\Query\Expressions\Functions\SparqlIfFunction.cs">
       <Link>Query\Expressions\Functions\SparqlIfFunction.cs</Link>
     </Compile>
+    <Compile Include="..\core\Query\Expressions\Functions\SparqlNumericFunctions.cs">
+      <Link>Query\Expressions\Functions\SparqlNumericFunctions.cs</Link>
+    </Compile>
     <Compile Include="..\core\Query\Expressions\Functions\SparqlSetFunctions.cs">
       <Link>Query\Expressions\Functions\SparqlSetFunctions.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Expressions\Functions\SparqlStringFunctions.cs">
+      <Link>Query\Expressions\Functions\SparqlStringFunctions.cs</Link>
     </Compile>
     <Compile Include="..\core\Query\Expressions\LeviathanFunctionFactory.cs">
       <Link>Query\Expressions\LeviathanFunctionFactory.cs</Link>
@@ -1085,11 +1148,20 @@
     <Compile Include="..\core\Storage\SparqlHttpProtocolConnector.cs">
       <Link>Storage\SparqlHttpProtocolConnector.cs</Link>
     </Compile>
+    <Compile Include="..\core\Update\Commands\AddCommand.cs">
+      <Link>Update\Commands\AddCommand.cs</Link>
+    </Compile>
     <Compile Include="..\core\Update\Commands\BaseModifyCommand.cs">
       <Link>Update\Commands\BaseModifyCommand.cs</Link>
     </Compile>
+    <Compile Include="..\core\Update\Commands\BaseTransferCommand.cs">
+      <Link>Update\Commands\BaseTransferCommand.cs</Link>
+    </Compile>
     <Compile Include="..\core\Update\Commands\ClearCommand.cs">
       <Link>Update\Commands\ClearCommand.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Update\Commands\CopyCommand.cs">
+      <Link>Update\Commands\CopyCommand.cs</Link>
     </Compile>
     <Compile Include="..\core\Update\Commands\CreateCommand.cs">
       <Link>Update\Commands\CreateCommand.cs</Link>
@@ -1114,6 +1186,9 @@
     </Compile>
     <Compile Include="..\core\Update\Commands\ModifyCommand.cs">
       <Link>Update\Commands\ModifyCommand.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Update\Commands\MoveCommand.cs">
+      <Link>Update\Commands\MoveCommand.cs</Link>
     </Compile>
     <Compile Include="..\core\Update\GenericUpdateProcessor.cs">
       <Link>Update\GenericUpdateProcessor.cs</Link>
@@ -1214,6 +1289,9 @@
     <Compile Include="..\core\Web\DatasetHandler.cs">
       <Link>Web\DatasetHandler.cs</Link>
     </Compile>
+    <Compile Include="..\core\Web\SparqlServiceDescriber.cs">
+      <Link>Web\SparqlServiceDescriber.cs</Link>
+    </Compile>
     <Compile Include="..\core\Web\WilcardProtocolHandler.cs">
       <Link>Web\WilcardProtocolHandler.cs</Link>
     </Compile>
@@ -1240,6 +1318,9 @@
     </Compile>
     <Compile Include="..\core\Web\WildcardGraphHandler.cs">
       <Link>Web\WildcardGraphHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\BaseHtmlWriter.cs">
+      <Link>Writing\BaseHtmlWriter.cs</Link>
     </Compile>
     <Compile Include="..\core\Writing\Contexts\BaseStoreWriterContexts.cs">
       <Link>Writing\Contexts\BaseStoreWriterContexts.cs</Link>
@@ -1333,6 +1414,12 @@
     </Compile>
     <Compile Include="..\core\Writing\Formatting\ICharFormatter.cs">
       <Link>Writing\Formatting\ICharFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\Formatting\IQueryFormatter.cs">
+      <Link>Writing\Formatting\IQueryFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\Formatting\IResultFormatter.cs">
+      <Link>Writing\Formatting\IResultFormatter.cs</Link>
     </Compile>
     <Compile Include="..\core\Writing\Formatting\ITripleFormatter.cs">
       <Link>Writing\Formatting\ITripleFormatter.cs</Link>

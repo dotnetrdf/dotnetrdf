@@ -38,6 +38,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Security.Cryptography;
+using HashLib;
 
 namespace VDS.RDF.Query.Expressions.Functions
 {
@@ -106,7 +107,7 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// </summary>
         /// <param name="input">Input String</param>
         /// <returns></returns>
-        private String Hash(String input)
+        protected virtual String Hash(String input)
         {
             Byte[] inputBytes, hashBytes;
             StringBuilder output = new StringBuilder();
@@ -120,6 +121,92 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
 
             return output.ToString();
+        }
+
+        /// <summary>
+        /// Gets the String representation of the function
+        /// </summary>
+        /// <returns></returns>
+        public abstract override string ToString();
+
+        public override SparqlExpressionType Type
+        {
+            get
+            {
+                return SparqlExpressionType.Function;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Abstract base class for Hash Functions that use the parts of the HashLib integrated into dotNetRDF
+    /// </summary>
+    public abstract class BaseHashLibFunction : BaseUnaryExpression
+    {
+        private HashCryptoNotBuildIn _crypto;
+
+        /// <summary>
+        /// Creates a new Hash function
+        /// </summary>
+        /// <param name="expr">Expression</param>
+        /// <param name="hash">Hash Algorithm to use</param>
+        public BaseHashLibFunction(ISparqlExpression expr, HashCryptoNotBuildIn hash)
+            : base(expr)
+        {
+            this._crypto = hash;
+        }
+
+        /// <summary>
+        /// Gets the value of the function in the given Evaluation Context for the given Binding ID
+        /// </summary>
+        /// <param name="context">Evaluation Context</param>
+        /// <param name="bindingID">Binding ID</param>
+        /// <returns></returns>
+        public override INode Value(SparqlEvaluationContext context, int bindingID)
+        {
+            INode temp = this._expr.Value(context, bindingID);
+            if (temp != null)
+            {
+                switch (temp.NodeType)
+                {
+                    case NodeType.Blank:
+                        throw new RdfQueryException("Cannot calculate the Hash of a Blank Node");
+                    case NodeType.GraphLiteral:
+                        throw new RdfQueryException("Cannot calculate the Hash of a Graph Literal");
+                    case NodeType.Literal:
+                        return new LiteralNode(null, this.Hash(((LiteralNode)temp).Value));
+                    case NodeType.Uri:
+                        return new LiteralNode(null, this.Hash(temp.ToString()));
+                    default:
+                        throw new RdfQueryException("Cannot calculate the Hash of an Unknown Node Type");
+                }
+            }
+            else
+            {
+                throw new RdfQueryException("Cannot calculate the SHA 1 Sum of a null");
+            }
+        }
+
+        /// <summary>
+        /// Gets the effective boolean value of the function in the given Evaluation Context for the given Binding ID
+        /// </summary>
+        /// <param name="context">Evaluation Context</param>
+        /// <param name="bindingID">Binding ID</param>
+        /// <returns></returns>
+        public override bool EffectiveBooleanValue(SparqlEvaluationContext context, int bindingID)
+        {
+            return SparqlSpecsHelper.EffectiveBooleanValue(this.Value(context, bindingID));
+        }
+
+        /// <summary>
+        /// Computes Hashes
+        /// </summary>
+        /// <param name="input">Input String</param>
+        /// <returns></returns>
+        protected virtual String Hash(String input)
+        {
+            HashResult r = this._crypto.ComputeString(input, Encoding.UTF8);
+            return r.ToString();
         }
 
         /// <summary>

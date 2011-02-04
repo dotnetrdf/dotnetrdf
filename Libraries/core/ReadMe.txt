@@ -27,11 +27,14 @@ For security conscious deployment scenarios we suggest that you build the projec
 Acknowledgements
 ----------------
 
-Uses code (3rd Party Libraries) from the following sources
+Uses code (3rd Party Libraries) from the following sources:
 -MySQL Connector.Net from MySQL AB http://www.mysql.org
 -JSON.Net from James Newton-King http://james.newtonking.com
 -Virtuoso ADO.Net Provider from OpenLink Software http://www.openlinksw.com
 -HtmlAgilityPack from Simon Mourier http://www.codeplex.com/htmlagilitypack
+
+Uses code (embedded in the library) from the following sources:
+-HashLib http://hashlib.codeplex.com/
 
 Thanks to the following people who have helped in the development process or whose suggestions have led to 
 improvements in the code:

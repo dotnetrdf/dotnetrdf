@@ -43,7 +43,7 @@ namespace VDS.RDF
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Index types are given Integer values with the lowest being the least useful index and the highest being most useful index.
+    /// Index types are given Integer values with the lowest being the least useful index and the highest being most useful index.  Non-Index based Patterns are given arbitrary high values since these will typically never be used as these items are usually inserted into a Graph Pattern after the ordering step
     /// </para>
     /// <para>
     /// When used to sort Patterns as part of query optimisation the patterns are partially ordered on the usefullness of their index since more useful indexes are considered more likely to return fewer results which will help restrict the query space earlier in the execution process.

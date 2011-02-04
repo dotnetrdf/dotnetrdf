@@ -466,19 +466,6 @@ namespace VDS.RDF.Storage.Params
     }
 }
 
-namespace VDS.RDF.Translation
-{
-    /// <summary>
-    /// <para>
-    /// Namespace for Translation Classes which provide the ability to translate RDF directly from one format to another
-    /// </para>
-    /// </summary>
-    class NamespaceDoc
-    {
-
-    }
-}
-
 namespace VDS.RDF.Update
 {
     /// <summary>

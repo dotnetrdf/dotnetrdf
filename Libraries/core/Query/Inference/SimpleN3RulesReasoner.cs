@@ -53,7 +53,7 @@ namespace VDS.RDF.Query.Inference
     /// { ?x a ?type } => { ?type a rdfs:Class }.
     /// </code>
     /// <para>
-    /// When initialised the reasoner takes account of variables declared with <em>@forAll</em> and <em>@forSome</em> directives.
+    /// When initialised the reasoner takes account of variables declared with <em>@forAll</em> and <em>@forSome</em> directives though no guarantees that scoping will be correct if you've got multiple <em>@forAll</em> and <em>@forSome</em> directives.
     /// </para>
     /// <para>
     /// When the reasoner is applied to a Graph rules are implemented by generating a SPARQL Update INSERT command like the following and executing it on the given Graph

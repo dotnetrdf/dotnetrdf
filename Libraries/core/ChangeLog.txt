@@ -23,7 +23,7 @@ Added
  - ToLiteralDate and ToLiteralTime for DateTime
 - ASP.Net Integration
  - DatasetHandler for serving RDF datasets
- - QueryHandler, UpdateHandler and SparqlServer all now return SPARQL Service Description when appropriate
+ - QueryHandler, UpdateHandler and SparqlServer all now return SPARQL Service Description where appropriate
 - Configuration API
  - dnr:SparqlDataset and dnr:usingDataset properties
  - All new IGenericIOManager implementations - Fuseki, In-Memory and Read-Only - are now loadable via the ConfigurationLoader
@@ -36,7 +36,7 @@ Added
   - String Functions - CONCAT, CONTAINS, ENCODE_FOR_URI, LCASE, STRENDS, STRLEN, STRSTARTS, SUBSTR, UCASE
   - Date Time Functions - DAY, HOURS, MINUTES, MONTH, NOW, SECONDS, TIMEZONE, TZ and YEAR
   - Numeric Functions - ABS, CEIL, FLOOR, ROUND and ISNUMERIC
-  - Hash Functions - MD5, SHA1, SHA256, SHA384, SHA512
+  - Hash Functions - MD5, SHA1, SHA224, SHA256, SHA384, SHA512
 - Update
  - Added support for HTTP PATCH operation to SPARQL Uniform HTTP Protocol implementations
  - Added support for the newly defined SPARQL Update 1.1 ADD, COPY and DELETE commands
@@ -107,6 +107,7 @@ Removed
 - Removed dataset management methods from ITripleStore and implementations
 - IBinaryOperator marker interface removed as ISparqlExpression.Type can now be used to determine whether an expression
   is a binary operator
+- Removed obsolete and unused IRdfTranslator and corresponding VDS.RDF.Translation namespace
 
    
 

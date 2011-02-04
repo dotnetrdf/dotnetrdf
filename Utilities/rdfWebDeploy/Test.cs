@@ -60,6 +60,7 @@ namespace rdfWebDeploy
         private const String ValidRangeTest = "ASK WHERE { @property a rdf:Property ; rdfs:range ?range . @s @property ?obj . OPTIONAL { ?obj a ?type }. FILTER (?range = ?type || (IsLiteral(?obj) && DATATYPE(?obj) = ?range)) }";
         private const String InvalidDomainTest = "SELECT DISTINCT * WHERE { ?property a rdf:Property ; rdfs:domain ?domain . ?s ?property ?obj ; a ?type FILTER(?domain != ?type) }";
         private const String ValidDomainTest = "ASK WHERE { @property a rdf:Property ; rdfs:domain ?domain . @s @property ?obj ; a ?type FILTER(?domain = ?type) }";
+        private const String ClearTextPasswordTest = "SELECT DISTINCT ?s WHERE {?s dnr:password ?password . FILTER(ISLITERAL(?password)) }";
 
         public void RunTest(String[] args)
         {
@@ -295,6 +296,22 @@ namespace rdfWebDeploy
                             errors++;
                         }
                     }
+                }
+            }
+            Console.WriteLine();
+
+            #endregion
+
+            #region Clear Text Password Tests
+
+            Console.WriteLine("rdfWebDeploy: Testing for clear text passwords used with dnr:password property");
+            results = store.ExecuteQuery(RdfWebDeployHelper.NamespacePrefixes + ClearTextPasswordTest);
+            if (results is SparqlResultSet)
+            {
+                foreach (SparqlResult r in (SparqlResultSet)results)
+                {
+                    Console.Error.WriteLine("rdfWebDeploy: Warning: The Node '" + r["s"].ToString() + "' has a value for the dnr:password property specified as a Literal in clear text.  It is recommended that you specify any passwords as AppSetting URIs e.g. <appsetting:MyPassword> and then create an AppSetting in the <appSettings> section of your Web.config file to store your password.  The Web.config file can then have the <appSettings> section encrypted to help protect your password");
+                    warnings++;
                 }
             }
             Console.WriteLine();
