@@ -134,13 +134,21 @@ namespace VDS.RDF.Query.Algebra
                 ISparqlAlgebra temp;
                 if (algebra is Bgp)
                 {
-                    //The use of -1 for required results means requirements will be detected from Query
+                    //Bgp is transformed into AskBgp
+                    //This tries to find 1 possible solution
                     temp = new AskBgp(((Bgp)algebra).TriplePatterns);
                 }
                 else if (algebra is ILeftJoin)
                 {
                     ILeftJoin join = (ILeftJoin)algebra;
                     temp = new LeftJoin(this.TransformInternal(join.Lhs, depth + 1), join.Rhs, ((LeftJoin)algebra).Filter);
+
+                    //Q: Is the following Optimisation valid?
+                    //LeftJoin is transformed to just be the LHS as the RHS is irrelevant for ASK queries
+                    //UNLESS the LeftJoin occurs inside a Filter BUT we should never get called to transform a 
+                    //LeftJoin() for those branches of the algebra as the Transformer does not transform 
+                    //Filter() operators
+                    //temp = this.TransformInternal(join.Lhs, depth + 1);
                 }
                 else if (algebra is IUnion)
                 {
