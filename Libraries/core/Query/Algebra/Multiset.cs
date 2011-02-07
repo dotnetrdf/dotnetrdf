@@ -152,7 +152,7 @@ namespace VDS.RDF.Query.Algebra
                 //1 - Both the LHS and RHS have a null as the value
                 //2 - The RHS is null (this allows for situations where the RHS may not return a value for some variables as they may be in an OPTIONAL
                 //3 - Both the LHS and RHS have the same non-null value
-                IEnumerable<Set> ys = other.Sets.Where(s => joinVars.All(v => (x[v] == null && s[v] == null) || s[v] == null || x[v].Equals(s[v])));
+                IEnumerable<Set> ys = other.Sets.Where(s => joinVars.All(v => (x[v] == null && s[v] == null) || s[v] == null || (x[v] != null && x[v].Equals(s[v]))));
 
                 foreach (Set y in ys/*.Distinct()*/)
                 {

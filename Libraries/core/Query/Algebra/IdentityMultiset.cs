@@ -55,6 +55,9 @@ namespace VDS.RDF.Query.Algebra
         /// </returns>
         public override BaseMultiset Join(BaseMultiset other)
         {
+            //If Other is Null/Empty then the Join still results in Identity
+            if (other is NullMultiset) return this;
+            if (other.IsEmpty) return this;
             return other;
         }
 
@@ -66,6 +69,9 @@ namespace VDS.RDF.Query.Algebra
         /// <returns>The other Multiset</returns>
         public override BaseMultiset LeftJoin(BaseMultiset other, ISparqlExpression expr)
         {
+            //If Other is Null/Empty then the Join still results in Identity
+            if (other is NullMultiset) return this;
+            if (other.IsEmpty) return this;
             return other;
         }
 
@@ -97,6 +103,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override BaseMultiset MinusJoin(BaseMultiset other)
         {
+            //Identity is always disjoint with Minus so return Identity
             return this;
         }
 
@@ -107,6 +114,9 @@ namespace VDS.RDF.Query.Algebra
         /// <returns>The other Multiset</returns>
         public override BaseMultiset Product(BaseMultiset other)
         {
+            //If Other is Null/Empty then the Join still results in Identity
+            if (other is NullMultiset) return this;
+            if (other.IsEmpty) return this;
             return other;
         }
 
@@ -117,6 +127,9 @@ namespace VDS.RDF.Query.Algebra
         /// <returns>The other Multiset</returns>
         public override BaseMultiset Union(BaseMultiset other)
         {
+            //If Other is Null/Empty then the Join still results in Identity
+            if (other is NullMultiset) return this;
+            if (other.IsEmpty) return this;
             return other;
         }
 
