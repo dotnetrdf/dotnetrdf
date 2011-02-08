@@ -119,16 +119,31 @@ namespace VDS.RDF.Update.Protocol
 
             //Generate an INSERT DATA command for the POST
             StringBuilder insert = new StringBuilder();
-            insert.AppendLine("INSERT DATA { GRAPH @graph {");
+            if (graphUri != null)
+            {
+                insert.AppendLine("INSERT DATA { GRAPH @graph {");
+            }
+            else
+            {
+                insert.AppendLine("INSERT DATA {");
+            }
 
             System.IO.StringWriter writer = new System.IO.StringWriter(insert);
             CompressingTurtleWriter ttlwriter = new CompressingTurtleWriter(WriterCompressionLevel.High);
             ttlwriter.Save(g, writer);
-            insert.AppendLine("} }");
+
+            if (graphUri != null)
+            {
+                insert.AppendLine("} }");
+            }
+            else
+            {
+                insert.AppendLine("}");
+            }
 
             //Parse and evaluate the command
             SparqlParameterizedString insertCmd = new SparqlParameterizedString(insert.ToString());
-            insertCmd.SetUri("graph", graphUri);
+            if (graphUri != null) insertCmd.SetUri("graph", graphUri);
             SparqlUpdateCommandSet cmds = this._parser.ParseFromString(insertCmd);
             this._updateProcessor.ProcessCommandSet(cmds);
             this._updateProcessor.Flush();
@@ -169,26 +184,48 @@ namespace VDS.RDF.Update.Protocol
 
             //Generate a set of commands based upon this
             StringBuilder cmdSequence = new StringBuilder();
-            cmdSequence.AppendLine("DROP SILENT GRAPH @graph ;");
-            cmdSequence.Append("CREATE SILENT GRAPH @graph");
+            if (graphUri != null)
+            {
+                cmdSequence.AppendLine("DROP SILENT GRAPH @graph ;");
+                cmdSequence.Append("CREATE SILENT GRAPH @graph");
+            }
+            else
+            {
+                cmdSequence.Append("DROP SILENT DEFAULT");
+            }
             if (g != null)
             {
                 cmdSequence.AppendLine(" ;");
-                cmdSequence.AppendLine("INSERT DATA { GRAPH @graph {");
+                if (graphUri != null)
+                {
+                    cmdSequence.AppendLine("INSERT DATA { GRAPH @graph {");
+                }
+                else
+                {
+                    cmdSequence.AppendLine("INSERT DATA { ");
+                }
 
                 System.IO.StringWriter writer = new System.IO.StringWriter(cmdSequence);
                 CompressingTurtleWriter ttlwriter = new CompressingTurtleWriter(WriterCompressionLevel.High);
                 ttlwriter.Save(g, writer);
-                cmdSequence.AppendLine("} }");
+
+                if (graphUri != null)
+                {
+                    cmdSequence.AppendLine("} }");
+                }
+                else
+                {
+                    cmdSequence.AppendLine("}");
+                }
             }
 
             SparqlParameterizedString put = new SparqlParameterizedString(cmdSequence.ToString());
-            put.SetUri("graph", graphUri);
+            if (graphUri != null) put.SetUri("graph", graphUri);
             SparqlUpdateCommandSet putCmds = this._parser.ParseFromString(put);
             this._updateProcessor.ProcessCommandSet(putCmds);
             this._updateProcessor.Flush();
 
-            //Return a 201 if required, otherwise the default behaviour of returning a 200 will occur
+            //Return a 201 if required, otherwise the default behaviour of returning a 200 will occur automatically
             if (created)
             {
                 context.Response.StatusCode = (int)HttpStatusCode.Created;
