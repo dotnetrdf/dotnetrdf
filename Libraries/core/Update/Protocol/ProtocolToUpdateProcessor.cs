@@ -205,8 +205,16 @@ namespace VDS.RDF.Update.Protocol
             Uri graphUri = this.ResolveGraphUri(context);
 
             //Generate a DROP GRAPH command based on this
-            SparqlParameterizedString drop = new SparqlParameterizedString("DROP GRAPH @graph");
-            drop.SetUri("graph", graphUri);
+            SparqlParameterizedString drop = new SparqlParameterizedString("DROP ");
+            if (graphUri != null)
+            {
+                drop.QueryText += "GRAPH @graph";
+                drop.SetUri("graph", graphUri);
+            }
+            else
+            {
+                drop.QueryText += "DEFAULT";
+            }
             SparqlUpdateCommandSet dropCmd = this._parser.ParseFromString(drop);
             this._updateProcessor.ProcessCommandSet(dropCmd);
             this._updateProcessor.Flush();
@@ -302,8 +310,16 @@ namespace VDS.RDF.Update.Protocol
         protected override IGraph GetGraph(Uri graphUri)
         {
             //Then generate a CONSTRUCT query based on this
-            SparqlParameterizedString construct = new SparqlParameterizedString("CONSTRUCT { ?s ?p ?o . } WHERE { GRAPH @graph { ?s ?p ?o . } }");
-            construct.SetUri("graph", graphUri);
+            SparqlParameterizedString construct = new SparqlParameterizedString();
+            if (graphUri != null)
+            {
+                construct.QueryText = "CONSTRUCT { ?s ?p ?o . } WHERE { GRAPH @graph { ?s ?p ?o . } }";
+                construct.SetUri("graph", graphUri);
+            }
+            else
+            {
+                construct.QueryText = "CONSTRUCT { ?s ?p ?o . } WHERE { ?s ?p ?o }";
+            }
             SparqlQueryParser parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(construct);
 

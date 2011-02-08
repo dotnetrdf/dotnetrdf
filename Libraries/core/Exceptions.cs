@@ -505,6 +505,13 @@ namespace VDS.RDF.Update.Protocol
         /// </summary>
         public SparqlHttpProtocolUriResolutionException()
             : base("Unable to perform a HTTP Protocol operation as the protocol processor was unable to successfully resolve the URI of the Graph to be acted upon") { }
+
+        /// <summary>
+        /// Creates a new Protocol URI Resolution Exception
+        /// </summary>
+        /// <param name="message">Error Message</param>
+        public SparqlHttpProtocolUriResolutionException(String message)
+            : base(message) { }
     }
 
     /// <summary>

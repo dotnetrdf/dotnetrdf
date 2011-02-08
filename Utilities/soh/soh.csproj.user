@@ -1,5 +1,5 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <StartArguments>query --server http://dbpedia.org/sparql</StartArguments>
+    <StartArguments>protocol head http://localhost:3030/dataset/data http://example.org/graph</StartArguments>
   </PropertyGroup>
 </Project>

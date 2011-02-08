@@ -99,14 +99,16 @@ namespace VDS.RDF.Update.Protocol
                     graphUri = new Uri(context.Request.QueryString["graph"], UriKind.RelativeOrAbsolute);
                     if (!graphUri.IsAbsoluteUri)
                     {
-                        //Need to resolve this relative URI against the Request URI
-                        Uri baseUri = new Uri(context.Request.Url.AbsoluteUri);
-                        graphUri = new Uri(Tools.ResolveUri(graphUri, baseUri));
+                        throw new SparqlHttpProtocolUriResolutionException("Graph URIs specified using the ?graph parameter must be absolute URIs");
                     }
                     else if (graphUri.ToString().Equals(GraphCollection.DefaultGraphUri))
                     {
                         return null;
                     }
+                }
+                else if (context.Request.QueryString["default"] != null)
+                {
+                    graphUri = null;
                 }
                 else
                 {
@@ -142,10 +144,16 @@ namespace VDS.RDF.Update.Protocol
                     graphUri = new Uri(context.Request.QueryString["graph"], UriKind.RelativeOrAbsolute);
                     if (!graphUri.IsAbsoluteUri)
                     {
-                        //Need to resolve this relative URI against the Graph Base URI or Request URI as appropriate
-                        Uri baseUri = (g.BaseUri != null) ? g.BaseUri : new Uri(context.Request.Url.AbsoluteUri);
-                        graphUri = new Uri(Tools.ResolveUri(graphUri, baseUri));
+                        throw new SparqlHttpProtocolUriResolutionException("Graph URIs specified using the ?graph parameter must be absolute URIs");
                     }
+                    else if (graphUri.ToString().Equals(GraphCollection.DefaultGraphUri))
+                    {
+                        return null;
+                    }
+                }
+                else if (context.Request.QueryString["default"] != null)
+                {
+                    graphUri = null;
                 }
                 else if (g.BaseUri != null)
                 {

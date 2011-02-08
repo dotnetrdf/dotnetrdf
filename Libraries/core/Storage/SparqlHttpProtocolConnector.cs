@@ -88,7 +88,14 @@ namespace VDS.RDF.Storage
         public virtual void LoadGraph(IGraph g, Uri graphUri)
         {
             String retrievalUri = this._serviceUri;
-            if (graphUri != null) retrievalUri += "?graph=" + Uri.EscapeDataString(graphUri.ToString());
+            if (graphUri != null)
+            {
+                retrievalUri += "?graph=" + Uri.EscapeDataString(graphUri.ToString());
+            }
+            else
+            {
+                retrievalUri += "?default";
+            }
             UriLoader.Load(g, new Uri(retrievalUri));
         }
 
@@ -100,8 +107,66 @@ namespace VDS.RDF.Storage
         public virtual void LoadGraph(IGraph g, string graphUri)
         {
             String retrievalUri = this._serviceUri;
-            if (!graphUri.Equals(String.Empty)) retrievalUri += "?graph=" + Uri.EscapeDataString(graphUri);
+            if (!graphUri.Equals(String.Empty))
+            {
+                retrievalUri += "?graph=" + Uri.EscapeDataString(graphUri);
+            }
+            else
+            {
+                retrievalUri += "?default";
+            }
             UriLoader.Load(g, new Uri(retrievalUri));
+        }
+
+        /// <summary>
+        /// Sends a HEAD Command to the Protocol Server to determine whether a given Graph exists
+        /// </summary>
+        /// <param name="graphUri">URI of the Graph to check for</param>
+        public virtual bool GraphExists(Uri graphUri)
+        {
+            return this.GraphExists(graphUri.ToSafeString());
+        }
+
+        /// <summary>
+        /// Sends a HEAD Command to the Protocol Server to determine whether a given Graph exists
+        /// </summary>
+        /// <param name="graphUri">URI of the Graph to check for</param>
+        public virtual bool GraphExists(String graphUri)
+        {
+            String lookupUri = this._serviceUri;
+            if (graphUri != null && !graphUri.Equals(String.Empty))
+            {
+                lookupUri += "?graph=" + Uri.EscapeDataString(graphUri);
+            }
+            else
+            {
+                lookupUri += "?default";
+            }
+            try
+            {
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(lookupUri);
+                request.Method = "HEAD";
+
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                {
+                    //If we get here then it was OK
+                    response.Close();
+                    return true;
+                }
+            }
+            catch (WebException webEx)
+            {
+                //If the error is a 404 then return false
+                //Any other error caused the function to throw an error
+                if (webEx.Response != null)
+                {
+                    if (((HttpWebResponse)webEx.Response).StatusCode == HttpStatusCode.NotFound)
+                    {
+                        return false;
+                    }
+                }
+                throw new RdfStorageException("A HTTP Error occurred while trying to check whether a Graph exists in the Store", webEx);
+            }
         }
 
         /// <summary>
@@ -111,9 +176,13 @@ namespace VDS.RDF.Storage
         public virtual void SaveGraph(IGraph g)
         {
             String saveUri = this._serviceUri;
-            if (g.BaseUri != null) 
+            if (g.BaseUri != null)
             {
                 saveUri += "?graph=" + Uri.EscapeDataString(g.BaseUri.ToString());
+            }
+            else
+            {
+                saveUri += "?default";
             }
             try
             {
@@ -168,6 +237,10 @@ namespace VDS.RDF.Storage
             if (!graphUri.Equals(String.Empty))
             {
                 updateUri += "?graph=" + Uri.EscapeDataString(graphUri);
+            }
+            else
+            {
+                updateUri += "?default";
             }
 
             try
@@ -229,6 +302,10 @@ namespace VDS.RDF.Storage
             if (graphUri != null && !graphUri.Equals(String.Empty))
             {
                 deleteUri += "?graph=" + Uri.EscapeDataString(graphUri);
+            }
+            else
+            {
+                deleteUri += "?default";
             }
 
             try

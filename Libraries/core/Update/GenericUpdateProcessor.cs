@@ -129,17 +129,34 @@ namespace VDS.RDF.Update
             {
                 try
                 {
+                    Graph g;
+
                     switch (cmd.Mode)
                     {
                         case ClearMode.Default:
                         case ClearMode.Graph:
-                            Graph g = new Graph();
+                            g = new Graph();
                             g.BaseUri = cmd.TargetUri;
                             this._manager.SaveGraph(g);
                             break;
+
                         case ClearMode.Named:
                         case ClearMode.All:
-                            throw new NotSupportedException("The Generic Update processor does not support this form of the CLEAR command");
+                            if (this._manager.ListGraphsSupported)
+                            {
+                                List<Uri> graphs = this._manager.ListGraphs().ToList();
+                                foreach (Uri u in graphs)
+                                {
+                                    g = new Graph();
+                                    g.BaseUri = u;
+                                    this._manager.SaveGraph(g);
+                                }
+                            }
+                            else
+                            {
+                                throw new NotSupportedException("The Generic Update processor does not support this form of the CLEAR command");
+                            }
+                            break;
                     }
                 }
                 catch
@@ -520,18 +537,33 @@ namespace VDS.RDF.Update
             {
                 try
                 {
+                    Graph g;
                     switch (cmd.Mode)
                     {
                         case ClearMode.Graph:
                         case ClearMode.Default:
-                            Graph g = new Graph();
+                            g = new Graph();
                             g.BaseUri = cmd.TargetUri;
                             this._manager.SaveGraph(g);
                             break;
 
                         case ClearMode.All:
                         case ClearMode.Named:
-                            throw new NotSupportedException("The Generic Update processor does not support this form of the DROP command");
+                            if (this._manager.ListGraphsSupported)
+                            {
+                                List<Uri> graphs = this._manager.ListGraphs().ToList();
+                                foreach (Uri u in graphs)
+                                {
+                                    g = new Graph();
+                                    g.BaseUri = u;
+                                    this._manager.SaveGraph(g);
+                                }
+                            }
+                            else
+                            {
+                                throw new NotSupportedException("The Generic Update processor does not support this form of the DROP command");
+                            }
+                            break;
                     }
                 }
                 catch

@@ -42,6 +42,7 @@ Added
   - ICV and Cluster Services
 - Update
  - Added support for HTTP PATCH operation to SPARQL Uniform HTTP Protocol implementations
+ - Added support for use of ?default as opposed to ?graph in the SPARQL Uniform HTTP Protocol support
  - Added support for the newly defined SPARQL Update 1.1 ADD, COPY and DELETE commands
 - Storage
  - Expanded the IGenericIOManager interface to include methods for deletings graphs and listing graphs

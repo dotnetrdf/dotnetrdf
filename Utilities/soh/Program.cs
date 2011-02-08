@@ -10,6 +10,7 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Storage;
 using VDS.RDF.Update;
+using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
 
 namespace soh
@@ -26,33 +27,44 @@ namespace soh
             {
                 Dictionary<String, String> arguments = ParseArguments(args.Skip(1).ToArray());
 
-                switch (args[0].ToLower())
+                try
                 {
-                    case "query":
-                        DoQuery(arguments);
-                        break;
-                    case "update":
-                        DoUpdate(arguments);
-                        break;
-                    case "protocol":
-                        DoProtocol(arguments);
-                        break;
+                    switch (args[0].ToLower())
+                    {
+                        case "query":
+                            DoQuery(arguments);
+                            break;
+                        case "update":
+                            DoUpdate(arguments);
+                            break;
+                        case "protocol":
+                            DoProtocol(arguments);
+                            break;
 
-                    default:
-                        if (arguments.ContainsKey("help") || arguments.ContainsKey("h"))
-                        {
-                            ShowUsage();
-                        }
-                        else if (arguments.ContainsKey("version"))
-                        {
-                            ShowVersion();
-                        }
-                        else
-                        {
-                            Console.Error.WriteLine("soh: Error: First argument must be one of query, update or protocol - Type soh --help for details");
-                        }
-                        break;
-                } 
+                        default:
+                            if (arguments.ContainsKey("help") || arguments.ContainsKey("h"))
+                            {
+                                ShowUsage();
+                            }
+                            else if (arguments.ContainsKey("version"))
+                            {
+                                ShowVersion();
+                            }
+                            else
+                            {
+                                Console.Error.WriteLine("soh: Error: First argument must be one of query, update or protocol - Type soh --help for details");
+                            }
+                            break;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.Error.WriteLine("soh: Error: Unexpected Error occurred");
+                    Console.Error.WriteLine(ex.Message);
+                    Console.Error.WriteLine(ex.StackTrace);
+                    Environment.Exit(-1);
+                    return;
+                }
             }
         }
 
@@ -193,7 +205,114 @@ namespace soh
 
         static void DoProtocol(Dictionary<String, String> arguments)
         {
-            Console.Error.WriteLine("soh: Error: Not yet implemented");
+            String method;
+            SparqlHttpProtocolConnector endpoint;
+            bool verbose = arguments.ContainsKey("verbose") || arguments.ContainsKey("v");
+
+            //First Argument must be HTTP Method
+            if (arguments.ContainsKey("$1") && !arguments["$1"].Equals(String.Empty))
+            {
+                method = arguments["$1"].ToUpper();
+            }
+            else
+            {
+                Console.Error.WriteLine("soh: Error: First argument must be one of head, get, put or post - type soh --help for details");
+                Environment.Exit(-1);
+                return;
+            }
+
+            try
+            {
+                if (arguments.ContainsKey("$2") && !arguments["$2"].Equals(String.Empty))
+                {
+                    endpoint = new SparqlHttpProtocolConnector(new Uri(arguments["$2"]));
+                }
+                else
+                {
+                    Console.Error.WriteLine("soh: Error: Second argument is required and must be the Dataset URI");
+                    Environment.Exit(-1);
+                    return;
+                }
+            }
+            catch (UriFormatException uriEx)
+            {
+                Console.Error.WriteLine("soh: Error: Malformed SPARQL Endpoint URI");
+                Console.Error.WriteLine(uriEx.Message);
+                Environment.Exit(-1);
+                return;
+            }
+            if (verbose) Console.Error.WriteLine("soh: Connection to SPARQL Uniform HTTP Protocol endpoint created OK");
+
+            Uri graphUri;
+            try
+            {
+                if (arguments.ContainsKey("$3") && !arguments["$3"].Equals(String.Empty))
+                {
+                    if (arguments["$3"].Equals("default"))
+                    {
+                        graphUri = null;
+                    }
+                    else
+                    {
+                        graphUri = new Uri(arguments["$3"]);
+                    }
+                }
+                else
+                {
+                    Console.Error.WriteLine("soh: Error: Third argument is required and must be the Graph URI");
+                    Environment.Exit(-1);
+                    return;
+                }
+            }
+            catch (UriFormatException uriEx)
+            {
+                Console.Error.WriteLine("soh: Error: Malformed Graph URI");
+                Console.Error.WriteLine(uriEx.Message);
+                Environment.Exit(-1);
+                return;
+            }
+
+            try
+            {
+                switch (method)
+                {
+                    case "GET":
+                        Graph g = new Graph();
+                        endpoint.LoadGraph(g, graphUri);
+
+                        //TODO: Support choice of output format
+                        CompressingTurtleWriter writer = new CompressingTurtleWriter();
+                        Console.OutputEncoding = Encoding.UTF8;
+                        writer.Save(g, new StreamWriter(Console.OpenStandardOutput(), Encoding.UTF8));
+
+                        break;
+
+                    case "HEAD":
+                        bool exists = endpoint.GraphExists(graphUri);
+                        Console.WriteLine(exists.ToString().ToLower());
+                        break;
+
+                    case "PUT":
+                        Console.Error.WriteLine("soh: Not Yet Implemented");
+                        break;
+
+                    case "POST":
+                        Console.Error.WriteLine("soh: Not Yet Implemented");
+                        break;
+
+                    default:
+                        Console.Error.WriteLine("soh: Error: " + method + " is not a HTTP Method supported by this tool");
+                        Environment.Exit(-1);
+                        return;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine("soh: Error: Error processing HTTP Protocol request");
+                Console.Error.WriteLine(ex.Message);
+                Environment.Exit(-1);
+                return;
+            }
         }
 
         static void ShowUsage()

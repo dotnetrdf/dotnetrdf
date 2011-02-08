@@ -43,6 +43,8 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query
 {
+    //TODO: Validate for null values in all the Set methods
+
     /// <summary>
     /// A SPARQL Parameterized String is a String that can contain parameters in the same fashion as a SQL command string
     /// </summary>
