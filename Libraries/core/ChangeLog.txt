@@ -12,15 +12,11 @@ Change Log
 This represents a summary of additions, changes and removals for the 0.4.0 release of dotNetRDF
 
 Added
-- Additional N3 Feature Support
- - Variable Nodes
- - New SimpleN3RulesReasoner which can process simple N3 rules of the form { } => { }
- - Notation 3 Parser supports Variables, @forSome and @forAll fully
-- Graph Difference Algorithms
+- Graph Difference Algorithm
 - More Extension Methods
  - LoadFromFile and LoadFromUri for Graphs and Triple Stores
  - ToLiteral for byte and sbyte
- - ToLiteralDate and ToLiteralTime for DateTime
+ - ToLiteralDate and ToLiteralTime for DateTime (gives only the xsd:date or xsd:time representation)
 - ASP.Net Integration
  - DatasetHandler for serving RDF datasets
  - QueryHandler, UpdateHandler and SparqlServer all now return SPARQL Service Description where appropriate
@@ -28,6 +24,11 @@ Added
  - dnr:SparqlDataset and dnr:usingDataset properties
  - All new IGenericIOManager implementations - Fuseki, In-Memory and Read-Only - are now loadable via the ConfigurationLoader
  - dnr:enableCors property for disabling CORS Headers on HTTP Handlers
+- Parsing
+ - Additional N3 Feature Support
+ - Variable Nodes
+ - New SimpleN3RulesReasoner which can process simple N3 rules of the form { } => { }
+ - Notation 3 Parser supports Variables, @forSome and @forAll fully
 - Query
  - GROUP BY is now supported in subqueries
  - GROUP BY (?x AS ?y) now supported
@@ -37,6 +38,8 @@ Added
   - Date Time Functions - DAY, HOURS, MINUTES, MONTH, NOW, SECONDS, TIMEZONE, TZ and YEAR
   - Numeric Functions - ABS, CEIL, FLOOR, ROUND and ISNUMERIC
   - Hash Functions - MD5, SHA1, SHA224, SHA256, SHA384, SHA512
+ - Additional Pellet Server Client features
+  - ICV and Cluster Services
 - Update
  - Added support for HTTP PATCH operation to SPARQL Uniform HTTP Protocol implementations
  - Added support for the newly defined SPARQL Update 1.1 ADD, COPY and DELETE commands
@@ -44,8 +47,10 @@ Added
  - Expanded the IGenericIOManager interface to include methods for deletings graphs and listing graphs
  - Connector for Fuseki
  - Connector which wraps an in-memory store (i.e. a IInMemoryQueryableStore) or a SPARQL dataset (i.e. a ISparqlDataset)
- - Connector which wraps any IGenericIOManager and makes it read-only
-- New HtmlSchemaWriter outputs HTML versions of ontologies in a schema specification style rather than as a table like the existing HtmlWriter
+ - Connector which wraps any IGenericIOManager/IQueryableGenericIOManager and makes it read-only
+- Writing
+ - New HtmlSchemaWriter outputs HTML versions of ontologies in a schema specification style rather than as a table like the existing HtmlWriter
+ - New IQueryFormatter interface to allow customised formatting of SPARQL Queries
 
 Changed
 - Bug Fixes
@@ -63,7 +68,7 @@ Changed
 - General Improvements
  - Internal restructuring of how MIME Types are managed
   - Allows for new MIME Types, File Extensions and parsers to be registered with the API and used automatically where appropriate
- - Can use dotnetrdf:default-graph as a URI to explicitly access the default unnamed graph in a SPARQL dataset
+ - Can use dotnetrdf:default-graph as a URI to explicitly access the default unnamed graph in a SPARQL dataset for most in-memory datasets
 - Parsing
  - All Parsers should now throw RdfParseExceptions when null Graphs, Stores, filenames, streams etc are passed as arguments
  - SparqlRdfParser can now be created to use a specific RDF Parser rather than just auto-detection
@@ -99,7 +104,7 @@ Changed
  - SparqlServer now supports omitting any of the processors (provided at least one is specified) so you can create
    endpoints with some features explicitly disabled
 - Obsoleted Features
- - All ISqlIOManager features marked as obsolete (but still allowed until 0.5.x most likely)
+ - All ISqlIOManager features marked as obsolete (but still allowed until 0.5.x most likely at which point they will be removed/replaced)
  - RdfXmlTreeWriter and FastRdfXmlWriter marked as obsolete
 
 Removed

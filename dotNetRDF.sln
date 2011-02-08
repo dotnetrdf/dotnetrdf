@@ -78,6 +78,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.Alexandria.MongoD
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rdfPublisher", "rdfPublisher\rdfPublisher.csproj", "{9B5281F6-C947-4619-9116-ED4DD806FF21}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "soh", "Utilities\soh\soh.csproj", "{158872DD-31B7-4DF7-8950-A9547CC220C2}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = dotNetRDF14.vsmdi
@@ -215,6 +217,10 @@ Global
 		{9B5281F6-C947-4619-9116-ED4DD806FF21}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9B5281F6-C947-4619-9116-ED4DD806FF21}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9B5281F6-C947-4619-9116-ED4DD806FF21}.Release|Any CPU.Build.0 = Release|Any CPU
+		{158872DD-31B7-4DF7-8950-A9547CC220C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{158872DD-31B7-4DF7-8950-A9547CC220C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{158872DD-31B7-4DF7-8950-A9547CC220C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{158872DD-31B7-4DF7-8950-A9547CC220C2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
