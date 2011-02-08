@@ -573,6 +573,22 @@ namespace VDS.RDF
         }
 
         /// <summary>
+        /// Gets the Enumeration of supported MIME Types for RDF Datasets
+        /// </summary>
+        public static IEnumerable<String> SupportedRdfDatasetMimeTypes
+        {
+            get
+            {
+                if (!_init) Init();
+
+                return (from definition in MimeTypesHelper.Definitions
+                        where definition.CanParseRdfDatasets
+                        from mimeType in definition.MimeTypes
+                        select mimeType);
+            }
+        }
+
+        /// <summary>
         /// Gets the Enumeration of supported MIME Types for SPARQL Results
         /// </summary>
         public static IEnumerable<String> SupportedSparqlMimeTypes

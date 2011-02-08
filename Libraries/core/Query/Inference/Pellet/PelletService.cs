@@ -82,6 +82,10 @@ namespace VDS.RDF.Query.Inference.Pellet
                     //Classify Service
                     return new ClassifyService(serviceName, obj);
 
+                case PelletHelper.ServiceCluster:
+                    //Clustering Service
+                    return new ClusterService(serviceName, obj);
+
                 case PelletHelper.ServiceConsistency:
                     //Consistency Service
                     return new ConsistencyService(serviceName, obj);
@@ -109,6 +113,14 @@ namespace VDS.RDF.Query.Inference.Pellet
                 case PelletHelper.ServiceExplainUnsat:
                     //Explain Unsat Service
                     return new ExplainUnsatService(serviceName, obj);
+
+                case PelletHelper.ServiceIntegrityConstraintValidation:
+                    //ICV Service
+                    return new IntegrityConstraintValidationService(serviceName, obj);
+
+                //case PelletHelper.ServicePredict:
+                    //Prediction Service
+
 
                 case PelletHelper.ServiceQuery:
                     //SPARQL Query Service

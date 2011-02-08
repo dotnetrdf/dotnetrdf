@@ -202,6 +202,72 @@ namespace VDS.RDF.Test
                 TestTools.ReportError("Error", ex, true);
             }
         }
+
+        [TestMethod]
+        public void PelletIcv()
+        {
+            try
+            {
+                PelletServer server = new PelletServer(PelletTestServer);
+                Type svcType = typeof(IntegrityConstraintValidationService);
+
+                foreach (KnowledgeBase kb in server.KnowledgeBases)
+                {
+                    if (kb.SupportsService(svcType))
+                    {
+                        Console.WriteLine(kb.Name + " supports ICV");
+                        IntegrityConstraintValidationService svc = (IntegrityConstraintValidationService)kb.GetService(svcType);
+
+                        ITripleStore store = svc.Validate();
+                        Console.WriteLine("ICV returned " + store.Graphs.Count + " with " + store.Graphs.Sum(g => g.Triples.Count) + " Triples");
+                    }
+                    else
+                    {
+                        Console.WriteLine(kb.Name + " does not support the ICV Service");
+                    }
+                    Console.WriteLine();
+                }
+            }
+            catch (Exception ex)
+            {
+                TestTools.ReportError("Error", ex, true);
+            }
+        }
+
+        [TestMethod]
+        public void PelletCluster()
+        {
+            try
+            {
+                PelletServer server = new PelletServer(PelletTestServer);
+                Type svcType = typeof(ClusterService);
+
+                foreach (KnowledgeBase kb in server.KnowledgeBases)
+                {
+                    if (kb.SupportsService(svcType))
+                    {
+                        Console.WriteLine(kb.Name + " supports Clustering");
+                        ClusterService svc = (ClusterService)kb.GetService(svcType);
+                        Console.WriteLine("Cluster=3");
+                        List<List<INode>> clusters = svc.Cluster(3);
+                        Console.WriteLine(clusters.Count + " Clusters returned");
+                        for (int i = 0; i < clusters.Count; i++)
+                        {
+                            Console.WriteLine("Cluster " + (i + 1) + " contains " + clusters[i].Count + " Items");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine(kb.Name + " does not support the Cluster Service");
+                    }
+                    Console.WriteLine();
+                }
+            }
+            catch (Exception ex)
+            {
+                TestTools.ReportError("Error", ex, true);
+            }
+        }
     }
 }
 

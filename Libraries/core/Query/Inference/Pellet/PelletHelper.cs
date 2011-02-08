@@ -58,6 +58,9 @@ namespace VDS.RDF.Query.Inference.Pellet
                             ServiceExplainSubclass = "explain-subclass",
                             ServiceExplainInconsistent = "explain-inconsistent",
                             ServiceExplain = "explain",
-                            ServiceExplainProperty = "explain-property";
+                            ServiceExplainProperty = "explain-property",
+                            ServiceIntegrityConstraintValidation = "icv",
+                            ServicePredict = "predict",
+                            ServiceCluster = "cluster";
     }
 }
