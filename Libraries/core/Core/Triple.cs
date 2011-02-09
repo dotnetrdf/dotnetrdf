@@ -174,12 +174,18 @@ namespace VDS.RDF
         /// <summary>
         /// Gets the Context Information for this Triple
         /// </summary>
-        /// <remarks>Context may be null where no Context for the Triple has been defined</remarks>
+        /// <remarks>
+        /// Context may be null where no Context for the Triple has been defined
+        /// </remarks>
         public ITripleContext Context
         {
             get
             {
-                return _context;
+                return this._context;
+            }
+            set
+            {
+                this._context = value;
             }
         }
 

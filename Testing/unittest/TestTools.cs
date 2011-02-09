@@ -7,6 +7,7 @@ using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Test
 {
@@ -116,9 +117,10 @@ namespace VDS.RDF.Test
                 Console.WriteLine("NULL");
             }
             Console.WriteLine(g.Triples.Count + " Triples");
+            NTriplesFormatter formatter = new NTriplesFormatter();
             foreach (Triple t in g.Triples)
             {
-                Console.WriteLine(t.ToString());
+                Console.WriteLine(t.ToString(formatter));
             }
         }
 

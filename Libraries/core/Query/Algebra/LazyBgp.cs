@@ -347,6 +347,7 @@ namespace VDS.RDF.Query.Algebra
                                 {
                                     //If recursing leads to no results then eliminate all outputs
                                     //Also reset to prevResults to -1
+                                    resultsFound = 0;
                                     localOutput = new Multiset();
                                     prevResults = -1;
                                 }

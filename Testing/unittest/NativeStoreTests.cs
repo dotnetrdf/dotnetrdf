@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Parsing;
 using VDS.RDF.Storage;
+using VDS.RDF.Test.Storage;
 
 namespace VDS.RDF.Test
 {
@@ -35,7 +36,7 @@ namespace VDS.RDF.Test
                 //Create our Native Managers
                 List<IGenericIOManager> managers = new List<IGenericIOManager>() {
                     new MicrosoftSqlStoreManager("localhost", "dotnetrdf_experimental","example","password"),
-                    new VirtuosoManager("localhost", 1111, "DB", "dba", "20sQl09")
+                    new VirtuosoManager("localhost", 1111, "DB", VirtuosoTest.VirtuosoTestUsername, VirtuosoTest.VirtuosoTestPassword)
                 };
 
                 //Save the Graph to each Manager

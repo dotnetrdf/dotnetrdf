@@ -12,11 +12,7 @@
 	</head>
 	
 	<body>
-		<div about="#test" property="rdfs:comment">
-			A @profile attribute pointing to an unresolvable profile should cause the entire DOM subtree to be ignored to avoid invalid Triples being generated
-		</div>
-		<div profile="http://example.org/noSuchProfile" property="rdfs:comment">
-			This is a Bad Triple which should not be generated since the profile document may redefine the rdfs: prefix but the parser cannot know this if it cannot retrieve the profile document
-		</div>
+		<div about="#test" property="rdfs:comment">A @profile attribute pointing to an unresolvable profile should cause the entire DOM subtree to be ignored to avoid invalid Triples being generated</div>
+		<div profile="http://www.dotnetrdf.org/noSuchProfile" property="rdfs:comment">This is a Bad Triple which should not be generated since the profile document may redefine the rdfs: prefix but the parser cannot know this if it cannot retrieve the profile document</div>
 	</body>
 </html>
