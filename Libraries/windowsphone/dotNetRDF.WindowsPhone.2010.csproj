@@ -306,9 +306,6 @@
     <Compile Include="..\core\Core\IRdfReader.cs">
       <Link>Core\IRdfReader.cs</Link>
     </Compile>
-    <Compile Include="..\core\Core\IRdfTranslator.cs">
-      <Link>Core\IRdfTranslator.cs</Link>
-    </Compile>
     <Compile Include="..\core\Core\IRdfWriter.cs">
       <Link>Core\IRdfWriter.cs</Link>
     </Compile>
@@ -371,9 +368,6 @@
     </Compile>
     <Compile Include="..\core\Writing\RdfXmlTreeWriter.cs">
       <Link>Writing\RdfXmlTreeWriter.cs</Link>
-    </Compile>
-    <Compile Include="..\core\Translation\SimpleTranslator.cs">
-      <Link>Translation\SimpleTranslator.cs</Link>
     </Compile>
     <Compile Include="..\core\Query\SparqlRemoteEndpoint.cs">
       <Link>Query\SparqlRemoteEndpoint.cs</Link>
@@ -971,6 +965,12 @@
     <Compile Include="..\core\Query\Inference\IOwlReasoner.cs">
       <Link>Query\Inference\IOwlReasoner.cs</Link>
     </Compile>
+    <Compile Include="..\core\Query\Inference\Pellet\Services\ClusterService.cs">
+      <Link>Query\Inference\Pellet\Services\ClusterService.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Inference\Pellet\Services\IntegrityConstraintValidationService.cs">
+      <Link>Query\Inference\Pellet\Services\IntegrityConstraintValidationService.cs</Link>
+    </Compile>
     <Compile Include="..\core\Query\Inference\SimpleN3RulesReasoner.cs">
       <Link>Query\Inference\SimpleN3RulesReasoner.cs</Link>
     </Compile>
@@ -1292,8 +1292,8 @@
     <Compile Include="..\core\Web\SparqlServiceDescriber.cs">
       <Link>Web\SparqlServiceDescriber.cs</Link>
     </Compile>
-    <Compile Include="..\core\Web\WilcardProtocolHandler.cs">
-      <Link>Web\WilcardProtocolHandler.cs</Link>
+    <Compile Include="..\core\Web\WildcardProtocolHandler.cs">
+      <Link>Web\WildcardProtocolHandler.cs</Link>
     </Compile>
     <Compile Include="..\core\Web\GraphHandler.cs">
       <Link>Web\GraphHandler.cs</Link>
@@ -1306,9 +1306,6 @@
     </Compile>
     <Compile Include="..\core\Web\QueryHandler.cs">
       <Link>Web\QueryHandler.cs</Link>
-    </Compile>
-    <Compile Include="..\core\Web\SchemaHandler.cs">
-      <Link>Web\SchemaHandler.cs</Link>
     </Compile>
     <Compile Include="..\core\Web\SparqlServer.cs">
       <Link>Web\SparqlServer.cs</Link>
