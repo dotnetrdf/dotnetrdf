@@ -1,5 +1,0 @@
-﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <StartArguments>-base . -log log.txt -format common -verbose -host nottm.ecs.soton.ac.uk</StartArguments>
-  </PropertyGroup>
-</Project>
