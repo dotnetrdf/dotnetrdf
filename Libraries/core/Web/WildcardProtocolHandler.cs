@@ -71,14 +71,13 @@ namespace VDS.RDF.Web
     /// </remarks>
     public class WildcardProtocolHandler : BaseSparqlHttpProtocolHandler
     {
-        private String _cachePath;
 
         /// <summary>
         /// Loads the Handler Configuration
         /// </summary>
         /// <param name="context">HTTP Context</param>
         /// <returns></returns>
-        protected override BaseProtocolHandlerConfiguration LoadConfig(HttpContext context)
+        protected override BaseProtocolHandlerConfiguration LoadConfig(HttpContext context, out String basePath)
         {
             //Check the Configuration File is specified
             String configFile = context.Server.MapPath(ConfigurationManager.AppSettings["dotNetRDFConfig"]);
@@ -86,11 +85,12 @@ namespace VDS.RDF.Web
             IGraph g = WebConfigurationLoader.LoadConfigurationGraph(context, configFile);
 
             //Then check there is configuration associated with the expected URI
-            INode objNode = WebConfigurationLoader.FindObject(g, context.Request.Url, out this._cachePath);
+            INode objNode = WebConfigurationLoader.FindObject(g, context.Request.Url, out basePath);
             if (objNode == null) throw new DotNetRdfConfigurationException("Unable to load Wildcard Protocol Handler Configuration as the RDF configuration file does not have any configuration associated with an appropriate wildcard URI");
+            this._basePath = basePath;
 
             //Is our Configuration already cached?
-            Object temp = context.Cache[this._cachePath];
+            Object temp = context.Cache[this._basePath];
             if (temp != null)
             {
                 if (temp is BaseProtocolHandlerConfiguration)
@@ -99,7 +99,7 @@ namespace VDS.RDF.Web
                 }
                 else
                 {
-                    context.Cache.Remove(this._cachePath);
+                    context.Cache.Remove(this._basePath);
                 }
             }
 
@@ -108,11 +108,11 @@ namespace VDS.RDF.Web
             //Finally cache the Configuration before returning it
             if (config.CacheSliding)
             {
-                context.Cache.Add(this._cachePath, config, null, System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(0, config.CacheDuration, 0), System.Web.Caching.CacheItemPriority.Normal, null);
+                context.Cache.Add(this._basePath, config, new System.Web.Caching.CacheDependency(configFile), System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(0, config.CacheDuration, 0), System.Web.Caching.CacheItemPriority.Normal, null);
             }
             else
             {
-                context.Cache.Add(this._cachePath, config, null, DateTime.Now.AddMinutes(config.CacheDuration), System.Web.Caching.Cache.NoSlidingExpiration, System.Web.Caching.CacheItemPriority.Normal, null);
+                context.Cache.Add(this._basePath, config, new System.Web.Caching.CacheDependency(configFile), DateTime.Now.AddMinutes(config.CacheDuration), System.Web.Caching.Cache.NoSlidingExpiration, System.Web.Caching.CacheItemPriority.Normal, null);
             }
             return config;
         }
@@ -125,23 +125,26 @@ namespace VDS.RDF.Web
         {
             if (this._config.CacheDuration == 0)
             {
-                if (context.Cache[this._cachePath] != null) context.Cache.Remove(this._cachePath);
+                if (context.Cache[this._basePath] != null) context.Cache.Remove(this._basePath);
             }
             else
             {
-                if (context.Cache[this._cachePath] != null)
+                if (context.Cache[this._basePath] != null)
                 {
-                    context.Cache[this._cachePath] = this._config;
+                    context.Cache[this._basePath] = this._config;
                 }
                 else
                 {
+                    String configFile = context.Server.MapPath(ConfigurationManager.AppSettings["dotNetRDFConfig"]);
+                    System.Web.Caching.CacheDependency dependency = (configFile != null) ? new System.Web.Caching.CacheDependency(configFile) : null;
+
                     if (this._config.CacheSliding)
                     {
-                        context.Cache.Add(this._cachePath, this._config, null, System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(0, this._config.CacheDuration, 0), System.Web.Caching.CacheItemPriority.Normal, null);
+                        context.Cache.Add(this._basePath, this._config, null, System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(0, this._config.CacheDuration, 0), System.Web.Caching.CacheItemPriority.Normal, null);
                     }
                     else
                     {
-                        context.Cache.Add(this._cachePath, this._config, null, DateTime.Now.AddMinutes(this._config.CacheDuration), System.Web.Caching.Cache.NoSlidingExpiration, System.Web.Caching.CacheItemPriority.Normal, null);
+                        context.Cache.Add(this._basePath, this._config, null, DateTime.Now.AddMinutes(this._config.CacheDuration), System.Web.Caching.Cache.NoSlidingExpiration, System.Web.Caching.CacheItemPriority.Normal, null);
                     }
                 }
             }

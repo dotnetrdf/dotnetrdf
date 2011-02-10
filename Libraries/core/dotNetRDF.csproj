@@ -476,12 +476,11 @@
     <Compile Include="Web\Configuration\WebConfigurationLoader.cs" />
     <Compile Include="Web\DatasetHandler.cs" />
     <Compile Include="Web\SparqlServiceDescriber.cs" />
-    <Compile Include="Web\WilcardProtocolHandler.cs" />
+    <Compile Include="Web\WildcardProtocolHandler.cs" />
     <Compile Include="Web\GraphHandler.cs" />
     <Compile Include="Web\HandlerHelper.cs" />
     <Compile Include="Web\ProtocolHandler.cs" />
     <Compile Include="Web\QueryHandler.cs" />
-    <Compile Include="Web\SchemaHandler.cs" />
     <Compile Include="Web\SparqlServer.cs" />
     <Compile Include="Web\UpdateHandler.cs" />
     <Compile Include="Web\WildcardGraphHandler.cs" />

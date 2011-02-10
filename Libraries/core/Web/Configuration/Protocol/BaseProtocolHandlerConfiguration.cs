@@ -89,6 +89,16 @@ namespace VDS.RDF.Web.Configuration.Protocol
                 return this._processor;
             }
         }
+
+        /// <summary>
+        /// Adds Description of Features for the given Handler Configuration
+        /// </summary>
+        /// <param name="g">Service Description Graph</param>
+        /// <param name="descripNode">Description Node for the Service</param>
+        public virtual void AddFeatureDescription(IGraph g, INode descripNode)
+        {
+
+        }
     }
 
     /// <summary>

@@ -58,6 +58,7 @@ namespace VDS.RDF.Web
         /// Handler Configuration
         /// </summary>
         protected BaseProtocolHandlerConfiguration _config;
+        protected String _basePath;
 
         /// <summary>
         /// Indicates that the Handler is reusable
@@ -81,10 +82,18 @@ namespace VDS.RDF.Web
         /// </remarks>
         public virtual void ProcessRequest(HttpContext context)
         {
-            this._config = this.LoadConfig(context);
+            this._config = this.LoadConfig(context, out this._basePath);
 
             //Add our Standard Headers
             HandlerHelper.AddStandardHeaders(context, this._config);
+
+            if (context.Request.HttpMethod.Equals("OPTIONS"))
+            {
+                //OPTIONS requests always result in the Service Description document
+                IGraph svcDescrip = SparqlServiceDescriber.GetServiceDescription(context, this._config, new Uri(new Uri(context.Request.Url.AbsoluteUri), this._basePath));
+                HandlerHelper.SendToClient(context, svcDescrip, this._config);
+                return;
+            }
 
             //Check whether we need to use authentication
             if (!HandlerHelper.IsAuthenticated(context, this._config.UserGroups, context.Request.HttpMethod)) return;
@@ -108,12 +117,6 @@ namespace VDS.RDF.Web
                         break;
                     case "HEAD":
                         this._config.Processor.ProcessHead(context);
-                        break;
-                    case "OPTIONS":
-                        //For an OPTIONS request we should return a URI that gets a Service
-                        //Description - in the case of the standalone Protocol Handler this is
-                        //not possible so we give a 405 Method Not Allowed response
-                        context.Response.StatusCode = (int)HttpStatusCode.MethodNotAllowed;
                         break;
                     case "PATCH":
                         this._config.Processor.ProcessPatch(context);
@@ -174,7 +177,7 @@ namespace VDS.RDF.Web
         /// </summary>
         /// <param name="context">HTTP Context</param>
         /// <returns></returns>
-        protected abstract BaseProtocolHandlerConfiguration LoadConfig(HttpContext context);
+        protected abstract BaseProtocolHandlerConfiguration LoadConfig(HttpContext context, out String basePath);
 
         /// <summary>
         /// Updates the Handler Configuration

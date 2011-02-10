@@ -43,6 +43,7 @@ using System.Web;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Web.Configuration;
+using VDS.RDF.Web.Configuration.Protocol;
 using VDS.RDF.Web.Configuration.Query;
 using VDS.RDF.Web.Configuration.Server;
 using VDS.RDF.Web.Configuration.Update;
@@ -117,7 +118,6 @@ namespace VDS.RDF.Web
             return g;
         }
 
-
         public static IGraph GetServiceDescription(HttpContext context, BaseQueryHandlerConfiguration config, Uri descripUri)
         {
             IGraph g = SparqlServiceDescriber.GetNewGraph();
@@ -185,6 +185,8 @@ namespace VDS.RDF.Web
         public static IGraph GetServiceDescription(HttpContext context, BaseSparqlServerConfiguration config, Uri descripUri)
         {
             IGraph g = SparqlServiceDescriber.GetNewGraph();
+            UriNode rdfType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
+            UriNode service = g.CreateUriNode("sd:" + ClassService);
 
             INode queryNode, updateNode, protocolNode;
 
@@ -193,8 +195,6 @@ namespace VDS.RDF.Web
             {
                 //Add the Top Level Node representing the Query Service
                 queryNode = g.CreateUriNode(new Uri(descripUri, "query"));
-                UriNode rdfType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
-                UriNode service = g.CreateUriNode("sd:" + ClassService);
                 g.Assert(queryNode, rdfType, service);
 
                 //Add its sd:url
@@ -255,8 +255,6 @@ namespace VDS.RDF.Web
             {
                 //Add the Top Level Node representing the Update Service
                 updateNode = g.CreateUriNode(new Uri(descripUri, "update"));
-                UriNode rdfType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
-                UriNode service = g.CreateUriNode("sd:" + ClassService);
                 g.Assert(updateNode, rdfType, service);
 
                 //Add its sd:url
@@ -289,8 +287,55 @@ namespace VDS.RDF.Web
             }
 
             //Uniform HTTP Protocol Description
-            //Nothing happens here as there is no stuff in SPARQL Service Description 1.1 for describing such endpoints
-            protocolNode = null;
+            if (config.ProtocolProcessor != null)
+            {
+                //Add the Top Level Node representing the Service
+                if (descripUri.ToString().EndsWith("/description"))
+                {
+                    String actualUri = descripUri.ToString();
+                    actualUri = actualUri.Substring(0, actualUri.LastIndexOf("/description") + 1);
+                    protocolNode = g.CreateUriNode(new Uri(actualUri));
+                }
+                else
+                {
+                    protocolNode = g.CreateUriNode(descripUri);
+                }
+                g.Assert(protocolNode, rdfType, service);
+
+                //Add its sd:url
+                UriNode url = g.CreateUriNode("sd:" + PropertyUrl);
+                g.Assert(protocolNode, url, protocolNode);
+
+                //Add the Input Formats
+                UriNode inputFormat = g.CreateUriNode("sd:" + PropertyInputFormat);
+                foreach (MimeTypeDefinition definition in MimeTypesHelper.Definitions)
+                {
+                    if (definition.CanParseRdf)
+                    {
+                        if (definition.FormatUri != null)
+                        {
+                            g.Assert(protocolNode, inputFormat, g.CreateUriNode(new Uri(definition.FormatUri)));
+                        }
+                    }
+                }
+
+                //Add the Result Formats
+                UriNode resultFormat = g.CreateUriNode("sd:" + PropertyResultFormat);
+                foreach (MimeTypeDefinition definition in MimeTypesHelper.Definitions)
+                {
+                    if (definition.CanWriteRdf)
+                    {
+                        if (definition.FormatUri != null)
+                        {
+                            g.Assert(protocolNode, resultFormat, g.CreateUriNode(new Uri(definition.FormatUri)));
+                        }
+                    }
+                }
+            }
+            else
+            {
+                protocolNode = null;
+            }
 
             //Finally get the Configuration Node to add additional feature and dataset descriptions
             config.AddFeatureDescription(g, queryNode, updateNode, protocolNode);
@@ -333,6 +378,51 @@ namespace VDS.RDF.Web
             }
 
             //Then get the Configuration Object to add any other Feature Descriptions it wishes to
+            config.AddFeatureDescription(g, descrip);
+
+            return g;
+        }
+
+        public static IGraph GetServiceDescription(HttpContext context, BaseProtocolHandlerConfiguration config, Uri descripUri)
+        {
+            IGraph g = SparqlServiceDescriber.GetNewGraph();
+
+            //Add the Top Level Node representing the Service
+            UriNode descrip = g.CreateUriNode(descripUri);
+            UriNode rdfType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
+            UriNode service = g.CreateUriNode("sd:" + ClassService);
+            g.Assert(descrip, rdfType, service);
+
+            //Add its sd:url
+            UriNode url = g.CreateUriNode("sd:" + PropertyUrl);
+            g.Assert(descrip, url, descrip);
+
+            //Add the Input Formats
+            UriNode inputFormat = g.CreateUriNode("sd:" + PropertyInputFormat);
+            foreach (MimeTypeDefinition definition in MimeTypesHelper.Definitions)
+            {
+                if (definition.CanParseRdf)
+                {
+                    if (definition.FormatUri != null)
+                    {
+                        g.Assert(descrip, inputFormat, g.CreateUriNode(new Uri(definition.FormatUri)));
+                    }
+                }
+            }
+
+            //Add the Result Formats
+            UriNode resultFormat = g.CreateUriNode("sd:" + PropertyResultFormat);
+            foreach (MimeTypeDefinition definition in MimeTypesHelper.Definitions)
+            {
+                if (definition.CanWriteRdf)
+                {
+                    if (definition.FormatUri != null)
+                    {
+                        g.Assert(descrip, resultFormat, g.CreateUriNode(new Uri(definition.FormatUri)));
+                    }
+                }
+            }
+
             config.AddFeatureDescription(g, descrip);
 
             return g;
