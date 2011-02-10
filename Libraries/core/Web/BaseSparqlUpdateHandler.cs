@@ -81,6 +81,14 @@ namespace VDS.RDF.Web
             //Add our Standard Headers
             HandlerHelper.AddStandardHeaders(context, this._config);
 
+            if (context.Request.HttpMethod.Equals("OPTIONS"))
+            {
+                //OPTIONS requests always result in the Service Description document
+                IGraph svcDescrip = SparqlServiceDescriber.GetServiceDescription(context, this._config, new Uri(context.Request.Url.AbsoluteUri));
+                HandlerHelper.SendToClient(context, svcDescrip, this._config);
+                return;
+            }
+
             //See if there has been an update submitted
             String updateText = context.Request.QueryString["update"];
             if (updateText == null || updateText.Equals(String.Empty))

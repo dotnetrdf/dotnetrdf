@@ -30,23 +30,14 @@ namespace VDS.RDF.Test.Web
 
             using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
             {
-                if (response.Headers["Location"] != null)
-                {
-                    Console.WriteLine("Server returned Location: " + response.Headers["Location"]);
-                    Console.WriteLine();
+                IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
+                Graph g = new Graph();
+                parser.Load(g, new StreamReader(response.GetResponseStream()));
 
-                    Graph g = new Graph();
-                    UriLoader.Load(g, new Uri(response.Headers["Location"]));
+                TestTools.ShowGraph(g);
 
-                    foreach (Triple t in g.Triples)
-                    {
-                        Console.WriteLine(t.ToString(formatter));
-                    }
-                }
-                else
-                {
-                    Assert.Fail("Expected the SPARQL Server to return a 200 OK with a Location: Header for an OPTIONS request");
-                }
+                Assert.IsFalse(g.IsEmpty, "A non-empty Service Description Graph should have been returned");
+
                 response.Close();
             }
         }
@@ -66,25 +57,43 @@ namespace VDS.RDF.Test.Web
 
             using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
             {
-                if (response.Headers["Location"] != null)
-                {
-                    Console.WriteLine("Server returned Location: " + response.Headers["Location"]);
-                    Console.WriteLine();
+                IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
+                Graph g = new Graph();
+                parser.Load(g, new StreamReader(response.GetResponseStream()));
 
-                    Graph g = new Graph();
-                    UriLoader.Load(g, new Uri(response.Headers["Location"]));
+                TestTools.ShowGraph(g);
 
-                    foreach (Triple t in g.Triples)
-                    {
-                        Console.WriteLine(t.ToString(formatter));
-                    }
-                }
-                else
-                {
-                    Assert.Fail("Expected the SPARQL Server to return a 200 OK with a Location: Header for an OPTIONS request");
-                }
+                Assert.IsFalse(g.IsEmpty, "A non-empty Service Description Graph should have been returned");
+
+                response.Close();
+            }
+        }
+
+        [TestMethod]
+        public void ServiceDescriptionOptionsRequestOnQueryHandler()
+        {
+            Console.WriteLine("Making an OPTIONS request to the web demos Query Handler at http://localhost/demos/leviathan/");
+            Console.WriteLine();
+
+            NTriplesFormatter formatter = new NTriplesFormatter();
+
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://localhost/demos/leviathan/");
+            request.Method = "OPTIONS";
+            request.Accept = MimeTypesHelper.HttpAcceptHeader;
+
+            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+            {
+                IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
+                Graph g = new Graph();
+                parser.Load(g, new StreamReader(response.GetResponseStream()));
+
+                TestTools.ShowGraph(g);
+
+                Assert.IsFalse(g.IsEmpty, "A non-empty Service Description Graph should have been returned");
+
                 response.Close();
             }
         }
     }
+
 }

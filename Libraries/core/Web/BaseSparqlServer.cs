@@ -91,20 +91,29 @@ namespace VDS.RDF.Web
                 path = path.Substring(this._basePath.Length);
             }
 
-            switch (path)
+            if (context.Request.HttpMethod.Equals("OPTIONS"))
             {
-                case "query":
-                    this.ProcessQueryRequest(context);
-                    break;
-                case "update":
-                    this.ProcessUpdateRequest(context);
-                    break;
-                case "description":
-                    this.ProcessDescriptionRequest(context);
-                    break;
-                default:
-                    this.ProcessProtocolRequest(context);
-                    break;
+                //OPTIONS requests always result in the Service Description document
+                IGraph svcDescrip = SparqlServiceDescriber.GetServiceDescription(context, this._config, new Uri(new Uri(context.Request.Url.AbsoluteUri), this._basePath + "description"));
+                HandlerHelper.SendToClient(context, svcDescrip, this._config);
+            }
+            else
+            {
+                switch (path)
+                {
+                    case "query":
+                        this.ProcessQueryRequest(context);
+                        break;
+                    case "update":
+                        this.ProcessUpdateRequest(context);
+                        break;
+                    case "description":
+                        this.ProcessDescriptionRequest(context);
+                        break;
+                    default:
+                        this.ProcessProtocolRequest(context);
+                        break;
+                }
             }
         }
 
@@ -432,19 +441,6 @@ namespace VDS.RDF.Web
                         break;
                     case "PATCH":
                         this._config.ProtocolProcessor.ProcessPatch(context);
-                        break;
-                    case "OPTIONS":
-                        //For an OPTIONS request we should return a URI that gives a Service
-                        //Description document
-                        Uri descripLocation = new Uri(new Uri(context.Request.Url.AbsoluteUri), this._basePath + "description");
-                        try
-                        {
-                            context.Response.Headers.Add("Location", descripLocation.ToString());
-                        }
-                        catch (PlatformNotSupportedException)
-                        {
-                            context.Response.AddHeader("Location", descripLocation.ToString());
-                        }
                         break;
                     case "HEAD":
                         this._config.ProtocolProcessor.ProcessHead(context);
