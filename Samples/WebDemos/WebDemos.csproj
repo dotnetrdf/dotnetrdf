@@ -53,7 +53,6 @@
     <Reference Include="System.Web.Mobile" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Data\AlternateIntro.txt" />
     <Content Include="App_Data\BooksIntro.txt" />
     <Content Include="App_Data\FederatedIntro.txt" />
     <Content Include="App_Data\LabyrinthInfo.txt" />
