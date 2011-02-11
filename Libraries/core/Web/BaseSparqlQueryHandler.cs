@@ -326,7 +326,7 @@ namespace VDS.RDF.Web
         /// <param name="result">Result Object</param>
         /// <remarks>
         /// <para>
-        /// Implementations should override this if they do not want to use the default results processing behaviour provided by <see cref="HandlerHelper.ProcessResults">HandlerHelper.ProcessResults()</see>
+        /// Implementations should override this if they do not want to use the default results processing behaviour provided by <see cref="HandlerHelper.SendToClient">HandlerHelper.SendToClient()</see>
         /// </para>
         /// </remarks>
         protected virtual void ProcessResults(HttpContext context, Object result)

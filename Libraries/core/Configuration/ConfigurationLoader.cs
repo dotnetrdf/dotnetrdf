@@ -56,6 +56,7 @@ namespace VDS.RDF.Configuration
                             PropertyUsingGraph = "dnr:usingGraph",
                             //Properties for defining where data comes from
                             PropertyFromFile = "dnr:fromFile",
+                            PropertyFromEmbedded = "dnr:fromEmbedded",
                             PropertyFromUri = "dnr:fromUri",
                             PropertyFromString = "dnr:fromString",
                             PropertyFromDatabase = "dnr:fromDatabase",
@@ -96,7 +97,8 @@ namespace VDS.RDF.Configuration
                             PropertyCacheDuration = "dnr:cacheDuration",
                             PropertyCacheSliding = "dnr:cacheSliding",
                             PropertyExpressionFactory = "dnr:expressionFactory",
-                            PropertyDescribeAlgorithm = "dnr:describeAlgorithm"
+                            PropertyDescribeAlgorithm = "dnr:describeAlgorithm",
+                            PropertyServiceDescription = "dnr:serviceDescription"
                             ;
 
         /// <summary>

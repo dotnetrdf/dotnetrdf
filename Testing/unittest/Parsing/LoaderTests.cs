@@ -7,7 +7,7 @@ using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Parsing;
 
-namespace VDS.RDF.Test
+namespace VDS.RDF.Test.Parsing
 {
     [TestClass]
     public class LoaderTests
@@ -151,6 +151,28 @@ namespace VDS.RDF.Test
                 Options.HttpDebugging = false;
                 Options.UriLoaderCaching = true;
             }
+        }
+
+        [TestMethod]
+        public void EmbeddedResourceInDotNetRdf()
+        {
+            Graph g = new Graph();
+            EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl");
+
+            TestTools.ShowGraph(g);
+
+            Assert.IsFalse(g.IsEmpty, "Graph should be non-empty");
+        }
+
+        [TestMethod]
+        public void EmbeddedResourceInExternalAssembly()
+        {
+            Graph g = new Graph();
+            EmbeddedResourceLoader.Load(g, "VDS.RDF.Test.embedded.ttl, dotNetRDFUnitTests");
+
+            TestTools.ShowGraph(g);
+
+            Assert.IsFalse(g.IsEmpty, "Graph should be non-empty");
         }
     }
 }

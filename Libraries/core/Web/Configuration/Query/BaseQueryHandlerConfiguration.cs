@@ -106,6 +106,11 @@ namespace VDS.RDF.Web.Configuration.Query
         protected SparqlQuerySyntax _syntax = Options.QueryDefaultSyntax;
 
         /// <summary>
+        /// Service Description Graph
+        /// </summary>
+        protected IGraph _serviceDescription = null;
+
+        /// <summary>
         /// Creates a new Query Handler Configuration
         /// </summary>
         /// <param name="context">HTTP Context</param>
@@ -191,6 +196,21 @@ namespace VDS.RDF.Web.Configuration.Query
                     {
                         throw new DotNetRdfConfigurationException("Unable to set the Describe Algorithm for the HTTP Handler identified by the Node '" + objNode.ToString() + "' as the value given for the dnr:describeAlgorithm property was not a type name for a type that can be instantiated", ex);
                     }
+                }
+            }
+
+            //Get the Service Description Graph
+            INode descripNode = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyServiceDescription));
+            if (descripNode != null)
+            {
+                Object descrip = ConfigurationLoader.LoadObject(g, descripNode);
+                if (descrip is IGraph)
+                {
+                    this._serviceDescription = (IGraph)descrip;
+                }
+                else
+                {
+                    throw new DotNetRdfConfigurationException("Unable to set the Service Description Graph for the HTTP Handler identified by the Node '" + objNode.ToString() + "' as the value given for the dnr:serviceDescription property points to an Object which could not be loaded as an object which implements the required IGraph interface");
                 }
             }
         }
@@ -332,6 +352,17 @@ namespace VDS.RDF.Web.Configuration.Query
             get
             {
                 return this._syntax;
+            }
+        }
+
+        /// <summary>
+        /// Gets the Service Description Graph
+        /// </summary>
+        public IGraph ServiceDescription
+        {
+            get
+            {
+                return this._serviceDescription;
             }
         }
 

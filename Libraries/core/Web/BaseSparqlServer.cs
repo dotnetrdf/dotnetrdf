@@ -574,7 +574,7 @@ namespace VDS.RDF.Web
         /// <param name="result">Results of the Sparql Query</param>
         /// <remarks>
         /// <para>
-        /// Implementations should override this if they want to control how results are sent to the client rather than using the default behaviour provided by <see cref="HandlerHelper.ProcessResults">HandlerHelper.ProcessResults()</see>
+        /// Implementations should override this if they want to control how results are sent to the client rather than using the default behaviour provided by <see cref="HandlerHelper.SendToClient">HandlerHelper.SendToClient()</see>
         /// </para>
         /// </remarks>
         protected virtual void ProcessQueryResults(HttpContext context, Object result)

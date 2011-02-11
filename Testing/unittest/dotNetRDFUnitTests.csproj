@@ -76,7 +76,7 @@
     <Compile Include="CachingTests.cs" />
     <Compile Include="Interop\SemWebInteropTests.cs" />
     <Compile Include="Sparql\LeviathanTests.cs" />
-    <Compile Include="LoaderTests.cs" />
+    <Compile Include="Parsing\LoaderTests.cs" />
     <Compile Include="NamespaceMapperTest.cs" />
     <Compile Include="NativeStoreTests.cs" />
     <Compile Include="OntologyTests.cs" />
@@ -89,9 +89,6 @@
     <Compile Include="UpdateTests.cs" />
     <Compile Include="Storage\VirtuosoTest.cs" />
     <Compile Include="Writing\WriterTests.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="AuthoringTests.txt" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Libraries\core\dotNetRDF.csproj">
@@ -225,6 +222,7 @@
       <Link>resources\dataset_50.ttl</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <EmbeddedResource Include="embedded.ttl" />
     <Content Include="resources\cyrillic.rdf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

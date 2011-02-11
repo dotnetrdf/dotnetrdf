@@ -249,13 +249,13 @@ dnr:protocolProcessor a rdf:Property ;
 					  rdfs:label "Protocol Processor" ;
 					  rdfs:comment "This property associates a SPARQL Protocol Processor with an object." ;
 					  rdfs:range dnr:SparqlHttpProtocolProcessor .
-					  
+					  					  
+# Properties for associating Datasets, Stores and Graphs with other objects
+
 dnr:usingDataset a rdf:Property ;
 				 rdfs:label "Using Dataset" ;
 				 rdfs:comment "This property indicates that an object uses a SPARQL Dataset." ;
 				 rdfs:range dnr:SparqlDataset .
-					  
-# Properties for associating Stores and Graphs with other objects
 
 dnr:usingStore a rdf:Property ;
 			   rdfs:label "Using Store" ;
@@ -280,6 +280,12 @@ dnr:fromFile a rdf:Property ;
 			 rdfs:comment "This property states that data is retrieved from a file." ;
 			 rdfs:domain dnr:Graph ;
 			 rdfs:domain dnr:TripleStore .
+			 
+dnr:fromEmbedded a rdf:Property ;
+				  rdfs:label "From Embedded" ;
+				  rdfs:comment "This property states that data is retrieved from an embedded resource in the manifest.  This will usually require that the fully qualified name of the embedded resource be used so that the Configuration Loader can use the correct assembly to read the stream from" ;
+				  rdfs:domain dnr:Graph ;
+				  rdfs:domain dnr:TripleStore .
 			 
 dnr:fromUri a rdf:Property ;
 			rdfs:label "From URI" ;
@@ -486,3 +492,9 @@ dnr:describeAlgorithm a rdf:Property ;
 						rdfs:label "SPARQL Describe Algorithm" ;
 						rdfs:comment "This property associates a custom SPARQL Describe Algorithm with a HTTP Handler.  The value should be a literal which contains a fully qualified type name of the Describe Algorithm which must implement the VDS.RDF.Query.Describe.ISparqlDescribe interface." ;
 						rdfs:domain dnr:HttpHandler .
+						
+dnr:serviceDescription a rdf:Property ;
+						 rdfs:label "Service Description" ;
+						 rdfs:comment "This property allows a Graph containing a user defined SPARQL Service Description be used as the Service Description Graph rather than having dotNetRDF auto-generate the Description" ;
+						 rdfs:domain dnr:HttpHandler ;
+						 rdfs:range dnr:Graph .

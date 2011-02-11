@@ -120,6 +120,9 @@ namespace VDS.RDF.Web
 
         public static IGraph GetServiceDescription(HttpContext context, BaseQueryHandlerConfiguration config, Uri descripUri)
         {
+            //Use user specified Service Description if present
+            if (config.ServiceDescription != null) return config.ServiceDescription;
+
             IGraph g = SparqlServiceDescriber.GetNewGraph();
 
             //Add the Top Level Node representing the Service
@@ -184,6 +187,9 @@ namespace VDS.RDF.Web
 
         public static IGraph GetServiceDescription(HttpContext context, BaseSparqlServerConfiguration config, Uri descripUri)
         {
+            //Use user specified Service Description if present
+            if (config.ServiceDescription != null) return config.ServiceDescription;
+
             IGraph g = SparqlServiceDescriber.GetNewGraph();
             UriNode rdfType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
             UriNode service = g.CreateUriNode("sd:" + ClassService);
@@ -345,6 +351,9 @@ namespace VDS.RDF.Web
 
         public static IGraph GetServiceDescription(HttpContext context, BaseUpdateHandlerConfiguration config, Uri descripUri)
         {
+            //Use user specified Service Description if present
+            if (config.ServiceDescription != null) return config.ServiceDescription;
+
             IGraph g = SparqlServiceDescriber.GetNewGraph();
 
             //Add the Top Level Node representing the Service
@@ -385,6 +394,9 @@ namespace VDS.RDF.Web
 
         public static IGraph GetServiceDescription(HttpContext context, BaseProtocolHandlerConfiguration config, Uri descripUri)
         {
+            //Use user specified Service Description if present
+            if (config.ServiceDescription != null) return config.ServiceDescription;
+
             IGraph g = SparqlServiceDescriber.GetNewGraph();
 
             //Add the Top Level Node representing the Service

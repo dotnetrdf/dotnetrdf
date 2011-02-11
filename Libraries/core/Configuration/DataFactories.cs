@@ -90,6 +90,20 @@ namespace VDS.RDF.Configuration
                     throw new DotNetRdfConfigurationException("Unable to load data from another Graph for the Graph identified by the Node '" + objNode.ToString() + "' as one of the values for the dnr:fromGraph property points to an Object that cannot be loaded as an object which implements the IGraph interface");
                 }
             }
+
+            //Load from Embedded Resources
+            sources = ConfigurationLoader.GetConfigurationData(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyFromEmbedded));
+            foreach (INode source in sources)
+            {
+                if (source.NodeType == NodeType.Literal)
+                {
+                    EmbeddedResourceLoader.Load(output, ((LiteralNode)source).Value);
+                }
+                else
+                {
+                    throw new DotNetRdfConfigurationException("Unable to load data from an Embedded Resource for the Graph identified by the Node '" + objNode.ToString() + "' as one of the values for the dnr:fromEmbedded property is not a Literal Node as required");
+                }
+            }
             
             //Load from Files
             sources = ConfigurationLoader.GetConfigurationData(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyFromFile));
@@ -404,6 +418,20 @@ namespace VDS.RDF.Configuration
                     else
                     {
                         throw new DotNetRdfConfigurationException("Unable to load data from a Graph for the Triple Store identified by the Node '" + objNode.ToString() + "' as one of the values for the dnr:usingGraph property points to an Object that cannot be loaded as an object which implements the IGraph interface");
+                    }
+                }
+
+                //Load from Embedded Resources
+                sources = ConfigurationLoader.GetConfigurationData(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyFromEmbedded));
+                foreach (INode source in sources)
+                {
+                    if (source.NodeType == NodeType.Literal)
+                    {
+                        EmbeddedResourceLoader.Load(store, ((LiteralNode)source).Value);
+                    }
+                    else
+                    {
+                        throw new DotNetRdfConfigurationException("Unable to load data from an Embedded Resource for the Graph identified by the Node '" + objNode.ToString() + "' as one of the values for the dnr:fromEmbedded property is not a Literal Node as required");
                     }
                 }
 

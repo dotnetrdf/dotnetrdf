@@ -104,7 +104,7 @@ namespace VDS.RDF.Web
                 //Retrieve an appropriate MIME Type Definition which can be used to get a Writer
                 MimeTypeDefinition definition = MimeTypesHelper.GetDefinitions(context.Request.AcceptTypes).FirstOrDefault(d => d.CanWriteRdf);
                 if (definition == null) throw new RdfWriterSelectionException("No MIME Type Definitions have a registered RDF Writer for the MIME Types specified in the HTTP Accept Header");
-                IRdfWriter writer = definition.GetRdfWriter();
+                IRdfWriter writer = this.SelectWriter(definition);
                 if (writer is ICompressingWriter)
                 {
                     ((ICompressingWriter)writer).CompressionLevel = Options.DefaultCompressionLevel;
@@ -139,6 +139,21 @@ namespace VDS.RDF.Web
             {
                 context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
             }
+        }
+
+        /// <summary>
+        /// Selects the Writer to use for sending the Graph to the Client
+        /// </summary>
+        /// <param name="definition">Selected MIME Type Definition</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// <para>
+        /// Implementations may override this if they wish to substitute in an alternative writer for certain MIME types (e.g. as done by the <see cref="SchemaGraphHandler">SchemaGraphHandler</see>)
+        /// </para>
+        /// </remarks>
+        protected virtual IRdfWriter SelectWriter(MimeTypeDefinition definition)
+        {
+            return definition.GetRdfWriter();
         }
 
         /// <summary>

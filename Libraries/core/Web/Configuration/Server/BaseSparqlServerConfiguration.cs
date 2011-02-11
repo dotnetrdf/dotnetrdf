@@ -65,6 +65,10 @@ namespace VDS.RDF.Web.Configuration.Server
         /// Protocol processor
         /// </summary>
         protected ISparqlHttpProtocolProcessor _protocolProcessor;
+        /// <summary>
+        /// Service Description Graph
+        /// </summary>
+        protected IGraph _serviceDescription = null;
 
         #region Query Variables and Properties
 
@@ -294,6 +298,17 @@ namespace VDS.RDF.Web.Configuration.Server
         #endregion
 
         /// <summary>
+        /// Gets the Service Description Graph
+        /// </summary>
+        public IGraph ServiceDescription
+        {
+            get
+            {
+                return this._serviceDescription;
+            }
+        }
+
+        /// <summary>
         /// Creates a new Base SPARQL Server Configuration based on information from a Configuration Graph
         /// </summary>
         /// <param name="context">HTTP Context</param>
@@ -432,6 +447,21 @@ namespace VDS.RDF.Web.Configuration.Server
             if (this._queryProcessor == null && this._updateProcessor == null && this._protocolProcessor == null)
             {
                 throw new DotNetRdfConfigurationException("Unable to load SPARQL Server Configuration as the RDF configuration file does not specify at least one of a Query/Update/Protocol processor for the server using the dnr:queryProcessor/dnr:updateProcessor/dnr:protocolProcessor properties");
+            }
+
+            //Get the Service Description Graph
+            INode descripNode = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyServiceDescription));
+            if (descripNode != null)
+            {
+                Object descrip = ConfigurationLoader.LoadObject(g, descripNode);
+                if (descrip is IGraph)
+                {
+                    this._serviceDescription = (IGraph)descrip;
+                }
+                else
+                {
+                    throw new DotNetRdfConfigurationException("Unable to set the Service Description Graph for the HTTP Handler identified by the Node '" + objNode.ToString() + "' as the value given for the dnr:serviceDescription property points to an Object which could not be loaded as an object which implements the required IGraph interface");
+                }
             }
         }
 
