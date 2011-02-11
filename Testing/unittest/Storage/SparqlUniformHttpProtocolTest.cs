@@ -221,5 +221,75 @@ namespace VDS.RDF.Test.Storage
                 Options.UriLoaderCaching = true;
             }
         }
+
+        [TestMethod]
+        public void SparqlUniformHttpProtocolSaveDefaultGraph()
+        {
+            try
+            {
+                Options.UriLoaderCaching = false;
+
+                Graph g = new Graph();
+                FileLoader.Load(g, "InferenceTest.ttl");
+                g.BaseUri = null;
+
+                //Save Graph to Fuseki
+                SparqlHttpProtocolConnector protocol = new SparqlHttpProtocolConnector(ProtocolTestUri);
+                protocol.SaveGraph(g);
+                Console.WriteLine("Graph saved to SPARQL Uniform Protocol OK");
+
+                //Now retrieve Graph from Fuseki
+                Graph h = new Graph();
+                protocol.LoadGraph(h, (Uri)null);
+
+                Console.WriteLine();
+                foreach (Triple t in h.Triples)
+                {
+                    Console.WriteLine(t.ToString(this._formatter));
+                }
+
+                Assert.AreEqual(g, h, "Graphs should be equal");
+                Assert.IsNull(h.BaseUri, "Retrieved Graph should have a null Base URI");
+            }
+            finally
+            {
+                Options.UriLoaderCaching = true;
+            }
+        }
+
+        [TestMethod]
+        public void SparqlUniformHttpProtocolSaveDefaultGraph2()
+        {
+            try
+            {
+                Options.UriLoaderCaching = false;
+
+                Graph g = new Graph();
+                FileLoader.Load(g, "InferenceTest.ttl");
+                g.BaseUri = null;
+
+                //Save Graph to Fuseki
+                SparqlHttpProtocolConnector protocol = new SparqlHttpProtocolConnector(ProtocolTestUri);
+                protocol.SaveGraph(g);
+                Console.WriteLine("Graph saved to SPARQl Uniform Protocol OK");
+
+                //Now retrieve Graph from Fuseki
+                Graph h = new Graph();
+                protocol.LoadGraph(h, (String)null);
+
+                Console.WriteLine();
+                foreach (Triple t in h.Triples)
+                {
+                    Console.WriteLine(t.ToString(this._formatter));
+                }
+
+                Assert.AreEqual(g, h, "Graphs should be equal");
+                Assert.IsNull(h.BaseUri, "Retrieved Graph should have a null Base URI");
+            }
+            finally
+            {
+                Options.UriLoaderCaching = true;
+            }
+        }
     }
 }

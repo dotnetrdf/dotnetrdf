@@ -38,6 +38,7 @@ terms.
 using System;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web;
 using VDS.RDF.Writing;
 
@@ -48,6 +49,11 @@ namespace VDS.RDF.Update.Protocol
     /// </summary>
     public abstract class BaseProtocolProcessor : ISparqlHttpProtocolProcessor
     {
+        /// <summary>
+        /// This is the Pattern that is used to check whether ?default is present in the querystring.  This is needed since IIS does not recognise ?default as being a valid querystring key unless it ends in a &eq; which the specification does not mandate so cannot be assumed
+        /// </summary>
+        protected const String DefaultParameterPattern = "^default$|^default&|&default&|&default$";
+
         /// <summary>
         /// Processes a GET operation
         /// </summary>
@@ -106,7 +112,7 @@ namespace VDS.RDF.Update.Protocol
                         return null;
                     }
                 }
-                else if (context.Request.QueryString["default"] != null)
+                else if (context.Request.QueryString.AllKeys.Contains("default") || Regex.IsMatch(context.Request.QueryString.ToString(), DefaultParameterPattern))
                 {
                     graphUri = null;
                 }
@@ -151,7 +157,7 @@ namespace VDS.RDF.Update.Protocol
                         return null;
                     }
                 }
-                else if (context.Request.QueryString["default"] != null)
+                else if (context.Request.QueryString.AllKeys.Contains("default") || Regex.IsMatch(context.Request.QueryString.ToString(), DefaultParameterPattern))
                 {
                     graphUri = null;
                 }

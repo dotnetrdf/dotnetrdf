@@ -171,18 +171,80 @@ namespace soh
                         Console.Error.WriteLine("soh: Content-Encoding: " + enc.WebName);
                     }
 
-                    using (StreamReader reader = new StreamReader(response.GetResponseStream()))
+                    String requestedType = arguments.ContainsKey("accept") ? arguments["accept"] : null;
+
+                    if (requestedType == null || response.ContentType.StartsWith(requestedType, StringComparison.OrdinalIgnoreCase))
                     {
-                        using (StreamWriter writer = new StreamWriter(Console.OpenStandardOutput(), enc))
+                        //If no --accept (OR matches servers content type) then just return whatever the server has given us
+                        using (StreamReader reader = new StreamReader(response.GetResponseStream()))
                         {
-                            while (!reader.EndOfStream)
+                            using (StreamWriter writer = new StreamWriter(Console.OpenStandardOutput(), enc))
                             {
-                                writer.WriteLine(reader.ReadLine());
+                                while (!reader.EndOfStream)
+                                {
+                                    writer.WriteLine(reader.ReadLine());
+                                }
+                                writer.Close();
                             }
-                            writer.Close();
+                            reader.Close();
                         }
-                        reader.Close();
                     }
+                    else
+                    {
+                        if (verbose) Console.Error.WriteLine("soh: Warning: Retrieved Content Type '" + response.ContentType + "' does not match your desired Content Type '" + requestedType + "' so dotNetRDF will not attempt to transcode the response into your desired format");
+
+                        //Requested Type Doesn't match servers returned type so parse then serialize
+                        MimeTypeDefinition outputDefinition;
+                        try
+                        {
+                            ISparqlResultsReader sparqlParser = MimeTypesHelper.GetSparqlParser(response.ContentType);
+                            SparqlResultSet results = new SparqlResultSet();
+                            using (StreamReader reader = new StreamReader(response.GetResponseStream()))
+                            {
+                                sparqlParser.Load(results, reader);
+                                reader.Close();
+                            }
+
+                            outputDefinition = MimeTypesHelper.GetDefinitions(requestedType).FirstOrDefault(d => d.CanWriteSparqlResults || d.CanWriteRdf);
+                            if (outputDefinition == null) throw new RdfWriterSelectionException("No MIME Type Definition for the MIME Type '" + requestedType + "' was found that can write SPARQL Results/RDF");
+                            ISparqlResultsWriter writer = outputDefinition.GetSparqlResultsWriter();
+                            Console.OutputEncoding = outputDefinition.Encoding;
+                            writer.Save(results, new StreamWriter(Console.OpenStandardOutput(), outputDefinition.Encoding));
+                        }
+                        catch (RdfParserSelectionException)
+                        {
+                            try 
+                            {
+                                IRdfReader rdfParser = MimeTypesHelper.GetParser(response.ContentType);
+                                Graph g = new Graph();
+                                using (StreamReader reader = new StreamReader(response.GetResponseStream()))
+                                {
+                                    rdfParser.Load(g, reader);
+                                    reader.Close();
+                                }
+
+                                outputDefinition = MimeTypesHelper.GetDefinitions(requestedType).FirstOrDefault(d => d.CanWriteRdf);
+                                if (outputDefinition == null) throw new RdfWriterSelectionException("No MIME Type Definition for the MIME Type '" + requestedType + "' was found that can write RDF");
+                                IRdfWriter writer = outputDefinition.GetRdfWriter();
+                                Console.OutputEncoding = outputDefinition.Encoding;
+                                writer.Save(g, new StreamWriter(Console.OpenStandardOutput(), outputDefinition.Encoding));
+
+                            }
+                            catch (Exception ex)
+                            {
+                                //For any other exception show a warning
+                                Console.Error.WriteLine("soh: Warning: You wanted results in the format '" + requestedType + "' but the server returned '" + response.ContentType + "' and dotNetRDF was unable to translate the response into your desired format.");
+                                Console.Error.WriteLine(ex.Message);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            //For any other exception show a warning
+                            Console.Error.WriteLine("soh: Warning: You wanted results in the format '" + requestedType + "' but the server returned '" + response.ContentType + "' and dotNetRDF was unable to translate the response into your desired format.");
+                            Console.Error.WriteLine(ex.Message);
+                        }
+                    }
+                    
 
                     response.Close();
                 }
@@ -280,10 +342,26 @@ namespace soh
                         Graph g = new Graph();
                         endpoint.LoadGraph(g, graphUri);
 
-                        //TODO: Support choice of output format
-                        CompressingTurtleWriter writer = new CompressingTurtleWriter();
-                        Console.OutputEncoding = Encoding.UTF8;
-                        writer.Save(g, new StreamWriter(Console.OpenStandardOutput(), Encoding.UTF8));
+                        //Use users choice of output format otherwise RDF/XML
+                        MimeTypeDefinition definition = null;
+                        if (arguments.ContainsKey("accept"))
+                        {
+                            definition = MimeTypesHelper.GetDefinitions(arguments["accept"]).FirstOrDefault(d => d.CanWriteRdf);
+                        }
+
+                        if (definition != null)
+                        {
+                            Console.OutputEncoding = definition.Encoding;
+                            IRdfWriter writer = definition.GetRdfWriter();
+                            writer.Save(g, new StreamWriter(Console.OpenStandardOutput(), definition.Encoding));
+                        }
+                        else
+                        {
+                            if (arguments.ContainsKey("accept") && verbose) Console.Error.WriteLine("soh: Warning: You wanted output in format '" + arguments["accept"] + "' but dotNetRDF does not support this format so RDF/XML will be returned instead");
+
+                            RdfXmlWriter rdfXmlWriter = new RdfXmlWriter();
+                            rdfXmlWriter.Save(g, new StreamWriter(Console.OpenStandardOutput(), Encoding.UTF8));
+                        }
 
                         break;
 
@@ -336,6 +414,8 @@ namespace soh
             Console.WriteLine("  SPARQL Endpoint");
             Console.WriteLine("--query QUERY, --file=FILE");
             Console.WriteLine("  Takes query from a File");
+            Console.WriteLine("--accept MIMETYPE");
+            Console.WriteLine("  Sets the MIME Type that you want to get the Results as");
             Console.WriteLine("-v, --verbose");
             Console.WriteLine("  Verbose Mode");
             Console.WriteLine("--version");
@@ -360,6 +440,8 @@ namespace soh
             Console.WriteLine("Options for SPARQL Uniform HTTP Protocol");
             Console.WriteLine("----------------------------------------");
             Console.WriteLine();
+            Console.WriteLine("--accept MIMETYPE");
+            Console.WriteLine("  Sets the MIME Type that you want to receive Graphs as for GET requests");
             Console.WriteLine("-v, --verbose");
             Console.WriteLine("  Verbose Mode");
             Console.WriteLine("--version");
@@ -406,7 +488,11 @@ namespace soh
                     {
                         if (i < args.Length - 1)
                         {
-                            if (!args[i+1].StartsWith("-") && !IsSimpleArgument(args[i+1]))
+                            if (IsSimpleArgument(name))
+                            {
+                                value = String.Empty;
+                            }
+                            else if (!args[i+1].StartsWith("-"))
                             {
                                 value = args[i+1];
                                 i++;
@@ -444,13 +530,15 @@ namespace soh
 
         static bool IsSimpleArgument(String arg)
         {
+            if (arg.StartsWith("--")) arg = arg.Substring(2);
+            if (arg.StartsWith("-")) arg = arg.Substring(1);
             switch (arg.ToLower())
             {
-                case "-v":
-                case "--verbose":
-                case "-h":
-                case "--help":
-                case "--version":
+                case "v":
+                case "verbose":
+                case "h":
+                case "help":
+                case "version":
                     return true;
                 default:
                     return false;

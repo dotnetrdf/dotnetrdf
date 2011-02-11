@@ -88,6 +88,7 @@ namespace VDS.RDF.Storage
         public virtual void LoadGraph(IGraph g, Uri graphUri)
         {
             String retrievalUri = this._serviceUri;
+            Uri origUri = g.BaseUri;
             if (graphUri != null)
             {
                 retrievalUri += "?graph=" + Uri.EscapeDataString(graphUri.ToString());
@@ -97,6 +98,7 @@ namespace VDS.RDF.Storage
                 retrievalUri += "?default";
             }
             UriLoader.Load(g, new Uri(retrievalUri));
+            g.BaseUri = origUri;
         }
 
         /// <summary>
@@ -107,7 +109,8 @@ namespace VDS.RDF.Storage
         public virtual void LoadGraph(IGraph g, string graphUri)
         {
             String retrievalUri = this._serviceUri;
-            if (!graphUri.Equals(String.Empty))
+            Uri origUri = g.BaseUri;
+            if (graphUri != null && !graphUri.Equals(String.Empty))
             {
                 retrievalUri += "?graph=" + Uri.EscapeDataString(graphUri);
             }
@@ -116,6 +119,7 @@ namespace VDS.RDF.Storage
                 retrievalUri += "?default";
             }
             UriLoader.Load(g, new Uri(retrievalUri));
+            g.BaseUri = origUri;
         }
 
         /// <summary>
@@ -234,7 +238,7 @@ namespace VDS.RDF.Storage
             if (additions == null || !additions.Any()) return;
 
             String updateUri = this._serviceUri;
-            if (!graphUri.Equals(String.Empty))
+            if (graphUri != null && !graphUri.Equals(String.Empty))
             {
                 updateUri += "?graph=" + Uri.EscapeDataString(graphUri);
             }
