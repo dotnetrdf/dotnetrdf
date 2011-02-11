@@ -186,7 +186,7 @@ namespace VDS.RDF.Writing.Formatting
                 {
                     if (!lit.Language.Equals(String.Empty))
                     {
-                        output.Append("@" + lit.Language);
+                        output.Append("@" + lit.Language.ToLower());
                     }
                     else if (lit.DataType != null)
                     {

@@ -526,7 +526,6 @@
     <Compile Include="Writing\Formatting\NQuadsFormatter.cs" />
     <Compile Include="Writing\Formatting\NTriplesFormatter.cs" />
     <Compile Include="Writing\Formatting\QNameFormatter.cs" />
-    <Compile Include="Writing\Formatting\RdfXmlFormatter.cs" />
     <Compile Include="Writing\Formatting\SparqlFormatter.cs" />
     <Compile Include="Writing\Formatting\TsvFormatter.cs" />
     <Compile Include="Writing\Formatting\TurtleFormatter.cs" />

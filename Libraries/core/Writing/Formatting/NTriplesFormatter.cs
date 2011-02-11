@@ -110,7 +110,7 @@ namespace VDS.RDF.Writing.Formatting
             if (!l.Language.Equals(String.Empty))
             {
                 output.Append('@');
-                output.Append(l.Language);
+                output.Append(l.Language.ToLower());
             }
             else if (l.DataType != null)
             {

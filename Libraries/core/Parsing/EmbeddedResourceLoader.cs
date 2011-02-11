@@ -48,6 +48,8 @@ namespace VDS.RDF.Parsing
     /// </summary>
     public static class EmbeddedResourceLoader
     {
+        private static String _currAsmName = Assembly.GetExecutingAssembly().GetName().Name;
+
         /// <summary>
         /// Loads a Graph from an Embedded Resource
         /// </summary>
@@ -80,7 +82,7 @@ namespace VDS.RDF.Parsing
                     resourceName = resourceName.Substring(0, resource.IndexOf(',')).TrimEnd();
 
                     //Try to load this assembly
-                    Assembly asm = assemblyName.Equals("dotNetRDF") ? Assembly.GetExecutingAssembly() : Assembly.Load(assemblyName);
+                    Assembly asm = assemblyName.Equals(_currAsmName) ? Assembly.GetExecutingAssembly() : Assembly.Load(assemblyName);
                     if (asm != null)
                     {
                         //Resource is in the loaded assembly
@@ -202,7 +204,7 @@ namespace VDS.RDF.Parsing
                     resourceName = resourceName.Substring(0, resource.IndexOf(',')).TrimEnd();
 
                     //Try to load this assembly
-                    Assembly asm = assemblyName.Equals("dotNetRDF") ? Assembly.GetExecutingAssembly() : Assembly.Load(assemblyName);
+                    Assembly asm = assemblyName.Equals(_currAsmName) ? Assembly.GetExecutingAssembly() : Assembly.Load(assemblyName);
                     if (asm != null)
                     {
                         //Resource is in the loaded assembly
