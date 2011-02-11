@@ -43,7 +43,7 @@ using VDS.RDF.Storage.Params;
 namespace VDS.RDF.Parsing
 {
     /// <summary>
-    /// A Class for loading RDF Files into Graphs/Triple Stores
+    /// Static Helper Class for loading RDF Files into Graphs/Triple Stores
     /// </summary>
     public static class FileLoader
     {
@@ -153,15 +153,15 @@ namespace VDS.RDF.Parsing
         /// </remarks>
         public static void Load(ITripleStore store, String filename, IStoreReader parser)
         {
-            if (store == null) throw new RdfParseException("Cannot read a RDF dataset into a null Store");
-            if (filename == null) throw new RdfParseException("Cannot read a RDF dataset from a null File");
+            if (store == null) throw new RdfParseException("Cannot read a RDF Dataset into a null Store");
+            if (filename == null) throw new RdfParseException("Cannot read a RDF Dataset from a null File");
 
             if (!File.Exists(filename))
             {
 #if SILVERLIGHT
-                throw new FileNotFoundException("Cannot read a RDF dataset from the File '" + filename + "' since it doesn't exist");
+                throw new FileNotFoundException("Cannot read a RDF Dataset from the File '" + filename + "' since it doesn't exist");
 #else
-                throw new FileNotFoundException("Cannot read a RDF dataset from a File that doesn't exist", filename);
+                throw new FileNotFoundException("Cannot read a RDF Dataset from a File that doesn't exist", filename);
 #endif
             }
 

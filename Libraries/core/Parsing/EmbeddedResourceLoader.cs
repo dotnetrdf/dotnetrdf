@@ -44,7 +44,7 @@ using VDS.RDF.Storage.Params;
 namespace VDS.RDF.Parsing
 {
     /// <summary>
-    /// Static Helper class for loading Graphs and Triple Stores from Embedded Resources
+    /// Static Helper Class for loading Graphs and Triple Stores from Embedded Resources
     /// </summary>
     public static class EmbeddedResourceLoader
     {
@@ -53,8 +53,12 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="g">Graph to load into</param>
         /// <param name="resource">Assembly Qualified Name of the Resource to load</param>
-        public static void Load(IGraph g, String resource)
+        /// <param name="parser">Parser to use (leave null for auto-selection)</param>
+        public static void Load(IGraph g, String resource, IRdfReader parser)
         {
+            if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
+            if (resource == null) throw new RdfParseException("Cannot read RDF from a null Resource");
+
             IGraph target;
             if (g.IsEmpty)
             {
@@ -76,11 +80,11 @@ namespace VDS.RDF.Parsing
                     resourceName = resourceName.Substring(0, resource.IndexOf(',')).TrimEnd();
 
                     //Try to load this assembly
-                    Assembly asm = Assembly.Load(assemblyName);
+                    Assembly asm = assemblyName.Equals("dotNetRDF") ? Assembly.GetExecutingAssembly() : Assembly.Load(assemblyName);
                     if (asm != null)
                     {
                         //Resource is in the loaded assembly
-                        EmbeddedResourceLoader.LoadInternal(target, asm, resourceName);
+                        EmbeddedResourceLoader.LoadInternal(target, asm, resourceName, parser);
                     }
                     else
                     {
@@ -90,7 +94,7 @@ namespace VDS.RDF.Parsing
                 else
                 {
                     //Resource is in dotNetRDF
-                    EmbeddedResourceLoader.LoadInternal(target, Assembly.GetExecutingAssembly(), resourceName);
+                    EmbeddedResourceLoader.LoadInternal(target, Assembly.GetExecutingAssembly(), resourceName, parser);
                 }
             }
             catch (RdfParseException)
@@ -109,15 +113,27 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
+        /// Loads a Graph from an Embedded Resource
+        /// </summary>
+        /// <param name="g">Graph to load into</param>
+        /// <param name="resource">Assembly Qualified Name of the Resource to load</param>
+        /// <remarks>
+        /// Parser will be auto-selected
+        /// </remarks>
+        public static void Load(IGraph g, String resource)
+        {
+            EmbeddedResourceLoader.Load(g, resource, null);
+        }
+
+        /// <summary>
         /// Internal Helper method which does the actual loading of the Graph from the Resource
         /// </summary>
         /// <param name="g">Graph to load into</param>
         /// <param name="asm">Assembly to get the resource stream from</param>
         /// <param name="resource">Full name of the Resource (without the Assembly Name)</param>
-        private static void LoadInternal(IGraph g, Assembly asm, String resource)
+        /// <param name="parser">Parser to use (if null then will be auto-selected)</param>
+        private static void LoadInternal(IGraph g, Assembly asm, String resource, IRdfReader parser)
         {
-            IRdfReader parser;
-
             //Resource is in the given assembly
             using (Stream s = asm.GetManifestResourceStream(resource))
             {
@@ -129,26 +145,36 @@ namespace VDS.RDF.Parsing
                 else
                 {
                     //Resource exists
-                    String ext = resource.Substring(resource.LastIndexOf("."));
-                    MimeTypeDefinition def = MimeTypesHelper.GetDefinitions(MimeTypesHelper.GetMimeType(ext)).FirstOrDefault(d => d.CanParseRdf);
-                    if (def != null)
+
+                    //Did we get a defined parser to use?
+                    if (parser != null)
                     {
-                        //Resource has an appropriate file extension and we've found a candidate parser for it
-                        parser = def.GetRdfParser();
                         parser.Load(g, new StreamReader(s));
                     }
                     else
                     {
-                        //Resource did not have a file extension or we didn't have a parser associated with the extension
-                        //Try using StringParser instead
-                        String data;
-                        using (StreamReader reader = new StreamReader(s))
+                        //Need to select a Parser or use StringParser
+                        String ext = resource.Substring(resource.LastIndexOf("."));
+                        MimeTypeDefinition def = MimeTypesHelper.GetDefinitions(MimeTypesHelper.GetMimeType(ext)).FirstOrDefault(d => d.CanParseRdf);
+                        if (def != null)
                         {
-                            data = reader.ReadToEnd();
-                            reader.Close();
+                            //Resource has an appropriate file extension and we've found a candidate parser for it
+                            parser = def.GetRdfParser();
+                            parser.Load(g, new StreamReader(s));
                         }
+                        else
+                        {
+                            //Resource did not have a file extension or we didn't have a parser associated with the extension
+                            //Try using StringParser instead
+                            String data;
+                            using (StreamReader reader = new StreamReader(s))
+                            {
+                                data = reader.ReadToEnd();
+                                reader.Close();
+                            }
 
-                        StringParser.Parse(g, data);
+                            StringParser.Parse(g, data);
+                        }
                     }
                 }
             }
@@ -159,8 +185,12 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="store">Store to load into</param>
         /// <param name="resource">Assembly Qualified Name of the Resource to load</param>
-        public static void Load(ITripleStore store, String resource)
+        /// <param name="parser">Parser to use (leave null for auto-selection)</param>
+        public static void Load(ITripleStore store, String resource, IStoreReader parser)
         {
+            if (store == null) throw new RdfParseException("Cannot read RDF Dataset into a null Store");
+            if (resource == null) throw new RdfParseException("Cannot read RDF Dataset from a null Resource");
+
             try
             {
                 String resourceName = resource;
@@ -172,11 +202,11 @@ namespace VDS.RDF.Parsing
                     resourceName = resourceName.Substring(0, resource.IndexOf(',')).TrimEnd();
 
                     //Try to load this assembly
-                    Assembly asm = Assembly.Load(assemblyName);
+                    Assembly asm = assemblyName.Equals("dotNetRDF") ? Assembly.GetExecutingAssembly() : Assembly.Load(assemblyName);
                     if (asm != null)
                     {
                         //Resource is in the loaded assembly
-                        EmbeddedResourceLoader.LoadInternal(store, asm, resourceName);
+                        EmbeddedResourceLoader.LoadInternal(store, asm, resourceName, parser);
                     }
                     else
                     {
@@ -186,7 +216,7 @@ namespace VDS.RDF.Parsing
                 else
                 {
                     //Resource is in dotNetRDF
-                    EmbeddedResourceLoader.LoadInternal(store, Assembly.GetExecutingAssembly(), resourceName);
+                    EmbeddedResourceLoader.LoadInternal(store, Assembly.GetExecutingAssembly(), resourceName, parser);
                 }
             }
             catch (RdfParseException)
@@ -200,14 +230,27 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
+        /// Loads a Triple Store from an Embedded Resource
+        /// </summary>
+        /// <param name="store">Store to load into</param>
+        /// <param name="resource">Assembly Qualified Name of the Resource to load</param>
+        /// <remarks>
+        /// Parser will be auto-selected
+        /// </remarks>
+        public static void Load(ITripleStore store, String resource)
+        {
+            EmbeddedResourceLoader.Load(store, resource, null);
+        }
+
+        /// <summary>
         /// Internal Helper method which does the actual loading of the Triple Store from the Resource
         /// </summary>
         /// <param name="store">Store to load into</param>
         /// <param name="asm">Assembly to get the resource stream from</param>
         /// <param name="resource">Full name of the Resource (without the Assembly Name)</param>
-        private static void LoadInternal(ITripleStore store, Assembly asm, String resource)
+        /// <param name="parser">Parser to use (if null will be auto-selected)</param>
+        private static void LoadInternal(ITripleStore store, Assembly asm, String resource, IStoreReader parser)
         {
-            IStoreReader parser;
 
             //Resource is in the given assembly
             using (Stream s = asm.GetManifestResourceStream(resource))
@@ -220,27 +263,35 @@ namespace VDS.RDF.Parsing
                 else
                 {
                     //Resource exists
-                    String ext = resource.Substring(resource.LastIndexOf("."));
-                    MimeTypeDefinition def = MimeTypesHelper.GetDefinitions(MimeTypesHelper.GetMimeType(ext)).FirstOrDefault(d => d.CanParseRdfDatasets);
-                    if (def != null)
+                    //Do we have a predefined Parser?
+                    if (parser != null)
                     {
-                        //Resource has an appropriate file extension and we've found a candidate parser for it
-                        parser = def.GetRdfDatasetParser();
-                        StreamParams parameters = new StreamParams(s);
-                        parser.Load(store, parameters);
+                        parser.Load(store, new StreamParams(s));
                     }
                     else
                     {
-                        //Resource did not have a file extension or we didn't have a parser associated with the extension
-                        //Try using StringParser instead
-                        String data;
-                        using (StreamReader reader = new StreamReader(s))
+                        //Need to select a Parser or use StringParser
+                        String ext = resource.Substring(resource.LastIndexOf("."));
+                        MimeTypeDefinition def = MimeTypesHelper.GetDefinitions(MimeTypesHelper.GetMimeType(ext)).FirstOrDefault(d => d.CanParseRdfDatasets);
+                        if (def != null)
                         {
-                            data = reader.ReadToEnd();
-                            reader.Close();
+                            //Resource has an appropriate file extension and we've found a candidate parser for it
+                            parser = def.GetRdfDatasetParser();
+                            parser.Load(store, new StreamParams(s));
                         }
+                        else
+                        {
+                            //Resource did not have a file extension or we didn't have a parser associated with the extension
+                            //Try using StringParser instead
+                            String data;
+                            using (StreamReader reader = new StreamReader(s))
+                            {
+                                data = reader.ReadToEnd();
+                                reader.Close();
+                            }
 
-                        StringParser.ParseDataset(store, data);
+                            StringParser.ParseDataset(store, data);
+                        }
                     }
                 }
             }

@@ -484,6 +484,33 @@ namespace VDS.RDF
         }
 
         /// <summary>
+        /// Loads RDF data from an Embedded Resource into a Graph
+        /// </summary>
+        /// <param name="g">Graph to load into</param>
+        /// <param name="resource">Assembly qualified name of the resource to load from</param>
+        /// <remarks>
+        /// This is just a shortcut to using the static <strong>Load()</strong> methods from the <see cref="EmbeddedResourceLoader">EmbeddedResourceLoader</see> class located in the <see cref="VDS.RDF.Parsing">Parsing</see> namespace
+        /// </remarks>
+        public static void LoadFromEmbeddedResource(this IGraph g, String resource)
+        {
+            EmbeddedResourceLoader.Load(g, resource);
+        }
+
+        /// <summary>
+        /// Loads RDF data from an Embedded Resource into a Graph
+        /// </summary>
+        /// <param name="g">Graph to load into</param>
+        /// <param name="resource">Assembly qualified name of the resource to load from</param>
+        /// <param name="parser">Parser to use</param>
+        /// <remarks>
+        /// This is just a shortcut to using the static <strong>Load()</strong> methods from the <see cref="EmbeddedResourceLoader">EmbeddedResourceLoader</see> class located in the <see cref="VDS.RDF.Parsing">Parsing</see> namespace
+        /// </remarks>
+        public static void LoadFromEmbeddedResource(this IGraph g, String resource, IRdfReader parser)
+        {
+            EmbeddedResourceLoader.Load(g, resource, parser);
+        }
+
+        /// <summary>
         /// Saves a Graph to a File
         /// </summary>
         /// <param name="g">Graph to save</param>
@@ -597,6 +624,33 @@ namespace VDS.RDF
         public static void LoadFromString(this ITripleStore store, String data)
         {
             StringParser.ParseDataset(store, data);
+        }
+
+        /// <summary>
+        /// Loads an RDF dataset from an Embedded Resource into a Triple Store
+        /// </summary>
+        /// <param name="store">Triple Store to load into</param>
+        /// <param name="resource">Assembly Qualified Name of the Embedded Resource to load from</param>
+        /// <param name="parser">Parser to use</param>
+        /// <remarks>
+        /// This is just a shortcut to using the static <strong>Load()</strong> methods from the <see cref="EmbeddedResourceLoader">EmbeddedResourceLoader</see> class located in the <see cref="VDS.RDF.Parsing">Parsing</see> namespace
+        /// </remarks>
+        public static void LoadFromEmbeddedResource(this ITripleStore store, String resource, IStoreReader parser)
+        {
+            EmbeddedResourceLoader.Load(store, resource, parser);
+        }
+
+        /// <summary>
+        /// Loads an RDF dataset from an Embedded Resource into a Triple Store
+        /// </summary>
+        /// <param name="store">Triple Store to load into</param>
+        /// <param name="resource">Assembly Qualified Name of the Embedded Resource to load from</param>
+        /// <remarks>
+        /// This is just a shortcut to using the static <strong>Load()</strong> methods from the <see cref="EmbeddedResourceLoader">EmbeddedResourceLoader</see> class located in the <see cref="VDS.RDF.Parsing">Parsing</see> namespace
+        /// </remarks>
+        public static void LoadFromEmbeddedResource(this ITripleStore store, String resource)
+        {
+            EmbeddedResourceLoader.Load(store, resource);
         }
 
         /// <summary>

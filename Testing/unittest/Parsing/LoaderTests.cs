@@ -165,6 +165,17 @@ namespace VDS.RDF.Test.Parsing
         }
 
         [TestMethod]
+        public void EmbeddedResourceInDotNetRdf2()
+        {
+            Graph g = new Graph();
+            EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl, dotNetRDF");
+
+            TestTools.ShowGraph(g);
+
+            Assert.IsFalse(g.IsEmpty, "Graph should be non-empty");
+        }
+
+        [TestMethod]
         public void EmbeddedResourceInExternalAssembly()
         {
             Graph g = new Graph();
