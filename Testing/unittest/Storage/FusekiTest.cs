@@ -82,6 +82,7 @@ namespace VDS.RDF.Test.Storage
                 }
 
                 Assert.AreEqual(g, h, "Graphs should be equal");
+                Assert.IsNull(h.BaseUri, "Retrieved Graph should have a null Base URI");
             }
             finally
             {
@@ -116,6 +117,7 @@ namespace VDS.RDF.Test.Storage
                 }
 
                 Assert.AreEqual(g, h, "Graphs should be equal");
+                Assert.IsNull(h.BaseUri, "Retrieved Graph should have a null Base URI");
             }
             finally
             {

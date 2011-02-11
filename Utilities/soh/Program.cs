@@ -270,6 +270,7 @@ namespace soh
             String method;
             SparqlHttpProtocolConnector endpoint;
             bool verbose = arguments.ContainsKey("verbose") || arguments.ContainsKey("v");
+            Options.UriLoaderCaching = !arguments.ContainsKey("nocache");
 
             //First Argument must be HTTP Method
             if (arguments.ContainsKey("$1") && !arguments["$1"].Equals(String.Empty))
@@ -388,6 +389,13 @@ namespace soh
             {
                 Console.Error.WriteLine("soh: Error: Error processing HTTP Protocol request");
                 Console.Error.WriteLine(ex.Message);
+                while (ex.InnerException != null)
+                {
+                    Console.Error.WriteLine();
+                    Console.Error.WriteLine(ex.InnerException.Message);
+                    Console.Error.WriteLine(ex.InnerException.StackTrace);
+                    ex = ex.InnerException;
+                }
                 Environment.Exit(-1);
                 return;
             }
@@ -442,6 +450,8 @@ namespace soh
             Console.WriteLine();
             Console.WriteLine("--accept MIMETYPE");
             Console.WriteLine("  Sets the MIME Type that you want to receive Graphs as for GET requests");
+            Console.WriteLine("--nocache");
+            Console.WriteLine("  Disables caching of GET requests so that you always see the fresh data from the server");
             Console.WriteLine("-v, --verbose");
             Console.WriteLine("  Verbose Mode");
             Console.WriteLine("--version");
@@ -539,6 +549,7 @@ namespace soh
                 case "h":
                 case "help":
                 case "version":
+                case "nocache":
                     return true;
                 default:
                     return false;

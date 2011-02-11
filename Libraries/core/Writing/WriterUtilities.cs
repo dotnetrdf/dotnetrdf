@@ -684,7 +684,10 @@ namespace VDS.RDF.Writing
         /// </returns>
         public static String EncodeForXml(String value)
         {
-            value = Regex.Replace(value, _uriEncodeForXmlPattern, "&amp;$1");
+            while (Regex.IsMatch(value, _uriEncodeForXmlPattern))
+            {
+                value = Regex.Replace(value, _uriEncodeForXmlPattern, "&amp;$1");
+            }
             if (value.EndsWith("&")) value += "amp;";
             //value = value.Replace("\"", "&quot;");
             value = value.Replace("<", "&lt;");

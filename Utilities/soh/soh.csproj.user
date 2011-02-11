@@ -1,5 +1,5 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <StartArguments>query --server http://dbpedia.org/sparql --accept "application/sparql-results+json" --verbose "SELECT * WHERE { ?s ?p ?o} LIMIT 5"</StartArguments>
+    <StartArguments>protocol get http://localhost/demos/server/ default</StartArguments>
   </PropertyGroup>
 </Project>

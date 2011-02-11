@@ -227,5 +227,38 @@ namespace VDS.RDF.Test.Writing
             CompressingTurtleWriter ttlwriter = new CompressingTurtleWriter(WriterCompressionLevel.High);
             Console.WriteLine(StringWriter.Write(g, ttlwriter));
         }
+
+        [TestMethod]
+        public void XmlAmpersandEscaping()
+        {
+            List<String> inputs = new List<string>()
+            {
+                "&value",
+                "&amp;",
+                "&",
+                "&value&next",
+                new String('&', 1000)
+            };
+
+            List<String> outputs = new List<string>()
+            {
+                "&amp;value",
+                "&amp;",
+                "&amp;",
+                "&amp;value&amp;next"
+            };
+            StringBuilder temp = new StringBuilder();
+            for (int i = 0; i < 1000; i++)
+            {
+                temp.Append("&amp;");
+            }
+            outputs.Add(temp.ToString());
+
+            for (int i = 0; i < inputs.Count; i++)
+            {
+                Console.WriteLine("Input: " + inputs[i] + " - Expected Output: " + outputs[i] + " - Actual Output: " + WriterHelper.EncodeForXml(inputs[i]));
+                Assert.AreEqual(WriterHelper.EncodeForXml(inputs[i]), outputs[i], "Ampersands should have been encoded correctly");
+            }
+        }
     }
 }
