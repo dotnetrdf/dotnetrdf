@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Parsing;
 using VDS.RDF.Storage;
+using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Test.Storage
@@ -223,73 +226,100 @@ namespace VDS.RDF.Test.Storage
         }
 
         [TestMethod]
-        public void SparqlUniformHttpProtocolSaveDefaultGraph()
+        public void SparqlUniformHttpProtocolPostCreate()
         {
-            try
+            SparqlHttpProtocolConnector connector = new SparqlHttpProtocolConnector("http://localhost/demos/server/");
+
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://localhost/demos/server/");
+            request.Method = "POST";
+            request.ContentType = "application/rdf+xml";
+
+            Graph g = new Graph();
+            FileLoader.Load(g, "InferenceTest.ttl");
+
+            using (StreamWriter writer = new StreamWriter(request.GetRequestStream()))
             {
-                Options.UriLoaderCaching = false;
-
-                Graph g = new Graph();
-                FileLoader.Load(g, "InferenceTest.ttl");
-                g.BaseUri = null;
-
-                //Save Graph to Fuseki
-                SparqlHttpProtocolConnector protocol = new SparqlHttpProtocolConnector(ProtocolTestUri);
-                protocol.SaveGraph(g);
-                Console.WriteLine("Graph saved to SPARQL Uniform Protocol OK");
-
-                //Now retrieve Graph from Fuseki
-                Graph h = new Graph();
-                protocol.LoadGraph(h, (Uri)null);
-
-                Console.WriteLine();
-                foreach (Triple t in h.Triples)
-                {
-                    Console.WriteLine(t.ToString(this._formatter));
-                }
-
-                Assert.AreEqual(g, h, "Graphs should be equal");
-                Assert.IsNull(h.BaseUri, "Retrieved Graph should have a null Base URI");
+                RdfXmlWriter rdfxmlwriter = new RdfXmlWriter();
+                rdfxmlwriter.Save(g, writer);
+                writer.Close();
             }
-            finally
+
+            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
             {
-                Options.UriLoaderCaching = true;
+                //Should get a 201 Created response
+                if (response.StatusCode == HttpStatusCode.Created)
+                {
+                    if (response.Headers["Location"] == null) Assert.Fail("A Location: Header containing the URI of the newly created Graph should have been returned");
+                    Uri graphUri = new Uri(response.Headers["Location"]);
+
+                    Console.WriteLine("New Graph URI is " + graphUri.ToString());
+
+                    Console.WriteLine("Now attempting to retrieve this Graph from the Store");
+                    Graph h = new Graph();
+                    connector.LoadGraph(h, graphUri);
+
+                    TestTools.ShowGraph(h);
+
+                    Assert.AreEqual(g, h, "Graphs should have been equal");
+                }
+                else
+                {
+                    Assert.Fail("A 201 Created response should have been received but got a " + (int)response.StatusCode + " response");
+                }
+                response.Close();
             }
         }
 
         [TestMethod]
-        public void SparqlUniformHttpProtocolSaveDefaultGraph2()
+        public void SparqlUniformHttpProtocolPostCreateMultiple()
         {
-            try
+            SparqlHttpProtocolConnector connector = new SparqlHttpProtocolConnector("http://localhost/demos/server/");
+
+            Graph g = new Graph();
+            FileLoader.Load(g, "InferenceTest.ttl");
+
+            List<Uri> uris = new List<Uri>();
+            for (int i = 0; i < 10; i++)
             {
-                Options.UriLoaderCaching = false;
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://localhost/demos/server/");
+                request.Method = "POST";
+                request.ContentType = "application/rdf+xml";
 
-                Graph g = new Graph();
-                FileLoader.Load(g, "InferenceTest.ttl");
-                g.BaseUri = null;
-
-                //Save Graph to Fuseki
-                SparqlHttpProtocolConnector protocol = new SparqlHttpProtocolConnector(ProtocolTestUri);
-                protocol.SaveGraph(g);
-                Console.WriteLine("Graph saved to SPARQl Uniform Protocol OK");
-
-                //Now retrieve Graph from Fuseki
-                Graph h = new Graph();
-                protocol.LoadGraph(h, (String)null);
-
-                Console.WriteLine();
-                foreach (Triple t in h.Triples)
+                using (StreamWriter writer = new StreamWriter(request.GetRequestStream()))
                 {
-                    Console.WriteLine(t.ToString(this._formatter));
+                    RdfXmlWriter rdfxmlwriter = new RdfXmlWriter();
+                    rdfxmlwriter.Save(g, writer);
+                    writer.Close();
                 }
 
-                Assert.AreEqual(g, h, "Graphs should be equal");
-                Assert.IsNull(h.BaseUri, "Retrieved Graph should have a null Base URI");
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                {
+                    //Should get a 201 Created response
+                    if (response.StatusCode == HttpStatusCode.Created)
+                    {
+                        if (response.Headers["Location"] == null) Assert.Fail("A Location: Header containing the URI of the newly created Graph should have been returned");
+                        Uri graphUri = new Uri(response.Headers["Location"]);
+                        uris.Add(graphUri);
+
+                        Console.WriteLine("New Graph URI is " + graphUri.ToString());
+
+                        Console.WriteLine("Now attempting to retrieve this Graph from the Store");
+                        Graph h = new Graph();
+                        connector.LoadGraph(h, graphUri);
+
+                        Assert.AreEqual(g, h, "Graphs should have been equal");
+                        Console.WriteLine("Graphs were equal as expected");
+                    }
+                    else
+                    {
+                        Assert.Fail("A 201 Created response should have been received but got a " + (int)response.StatusCode + " response");
+                    }
+                    response.Close();
+                }
+                Console.WriteLine();
             }
-            finally
-            {
-                Options.UriLoaderCaching = true;
-            }
+
+            Assert.IsTrue(uris.Distinct().Count() == 10, "Should have generated 10 distinct URIs");
         }
     }
 }

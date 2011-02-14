@@ -13,11 +13,15 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BSBM", "Utilities\bsbm\BSBM.csproj", "{38C7644F-11E4-4C98-A82B-63A9AC8D17AA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDFUnitTests", "Testing\unittest\dotNetRDFUnitTests.csproj", "{BD80F826-56A3-4A88-B466-DDFA0691FFB8}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A94A8072-04EB-4D9B-96A8-82C3C3CA21CD} = {A94A8072-04EB-4D9B-96A8-82C3C3CA21CD}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8AF0B3BE-7B01-45FF-8EA5-CCF0C596F7E7}"
 	ProjectSection(SolutionItems) = preProject
 		Build\nant\dotnetrdf.build = Build\nant\dotnetrdf.build
 		dotNetRDF.vsmdi = dotNetRDF.vsmdi
+		dotNetRDF2.vsmdi = dotNetRDF2.vsmdi
 		Utilities\ReadMe.txt = Utilities\ReadMe.txt
 		Tests.testrunconfig = Tests.testrunconfig
 		Todo.txt = Todo.txt
@@ -72,6 +76,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "soh", "Utilities\soh\soh.csproj", "{158872DD-31B7-4DF7-8950-A9547CC220C2}"
 EndProject
 Global
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = dotNetRDF2.vsmdi
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|x64 = Debug|x64

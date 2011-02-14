@@ -41,6 +41,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.UI;
 using VDS.RDF.Parsing;
@@ -460,13 +461,21 @@ namespace VDS.RDF.Web
                         break;
                     case "POST":
                         Uri serviceUri = new Uri(new Uri(context.Request.Url.AbsoluteUri), this._basePath);
-                        if (context.Request.Url.AbsoluteUri.Equals(serviceUri))
+                        if (context.Request.Url.AbsoluteUri.Equals(serviceUri.ToString()))
                         {
-                            //If there is no ?graph parameter or ?default parameter then this is a PostCreate
-                            //Otherwise it is a normal Post
+                            //If there is a ?graph parameter or ?default parameter then this is a normal Post
+                            //Otherwise it is a PostCreate
                             if (context.Request.QueryString["graph"] != null)
                             {
                                 this._config.ProtocolProcessor.ProcessPost(context);
+                            }
+                            else if (context.Request.QueryString.AllKeys.Contains("default") || Regex.IsMatch(context.Request.QueryString.ToString(), BaseProtocolProcessor.DefaultParameterPattern))
+                            {
+                                this._config.ProtocolProcessor.ProcessPost(context);
+                            }
+                            else
+                            {
+                                this._config.ProtocolProcessor.ProcessPostCreate(context);
                             }
                         }
                         else

@@ -38,10 +38,8 @@ terms.
 using System;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System.Web;
-using VDS.RDF.Parsing;
 using VDS.RDF.Writing;
 
 namespace VDS.RDF.Update.Protocol
@@ -54,7 +52,7 @@ namespace VDS.RDF.Update.Protocol
         /// <summary>
         /// This is the Pattern that is used to check whether ?default is present in the querystring.  This is needed since IIS does not recognise ?default as being a valid querystring key unless it ends in a &eq; which the specification does not mandate so cannot be assumed
         /// </summary>
-        protected const String DefaultParameterPattern = "^default$|^default&|&default&|&default$";
+        internal const String DefaultParameterPattern = "^default$|^default&|&default&|&default$";
 
         /// <summary>
         /// Processes a GET operation
@@ -202,7 +200,7 @@ namespace VDS.RDF.Update.Protocol
         /// </remarks>
         protected virtual Uri MintGraphUri(HttpContext context, IGraph g)
         {
-            String graphID = context.Request.UserHostAddress + "/" + DateTime.Now.ToString(XmlSpecsHelper.XmlSchemaDateTimeFormat);
+            String graphID = context.Request.UserHostAddress + "/" + DateTime.Now.ToString("yyyyMMddHHmmssfffffffK");
             graphID = graphID.GetSha256Hash();
 
             Uri baseUri = new Uri(context.Request.Url.AbsoluteUri);
