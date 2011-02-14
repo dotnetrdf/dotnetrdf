@@ -118,9 +118,9 @@ namespace VDS.RDF.Query.Inference.Pellet
                     //ICV Service
                     return new IntegrityConstraintValidationService(serviceName, obj);
 
-                //case PelletHelper.ServicePredict:
+                case PelletHelper.ServicePredict:
                     //Prediction Service
-
+                    return new PredictService(serviceName, obj);
 
                 case PelletHelper.ServiceQuery:
                     //SPARQL Query Service
@@ -133,6 +133,10 @@ namespace VDS.RDF.Query.Inference.Pellet
                 case PelletHelper.ServiceSearch:
                     //Search Service
                     return new SearchService(serviceName, obj);
+
+                case PelletHelper.ServiceSimilarity:
+                    //Similarity Service
+                    return new SimilarityService(serviceName, obj);
 
                 case PelletHelper.ServiceNamespaces:
                     //Namespace Service

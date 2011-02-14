@@ -42,7 +42,7 @@ Added
   - Numeric Functions - ABS, CEIL, FLOOR, ROUND and ISNUMERIC
   - Hash Functions - MD5, SHA1, SHA224, SHA256, SHA384, SHA512
  - Additional Pellet Server Client features
-  - ICV and Cluster Services
+  - ICV, Cluster, Predict and Similairty Services now supported
 - Update
  - Added support for HTTP PATCH operation to SPARQL Uniform HTTP Protocol implementations
  - Added support for use of ?default as opposed to ?graph in the SPARQL Uniform HTTP Protocol support

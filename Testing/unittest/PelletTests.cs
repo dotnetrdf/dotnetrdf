@@ -220,6 +220,12 @@ namespace VDS.RDF.Test
 
                         ITripleStore store = svc.Validate();
                         Console.WriteLine("ICV returned " + store.Graphs.Count + " with " + store.Graphs.Sum(g => g.Triples.Count) + " Triples");
+
+                        foreach (Graph g in store.Graphs)
+                        {
+                            TestTools.ShowGraph(g);
+                            Console.WriteLine();
+                        }
                     }
                     else
                     {
@@ -259,6 +265,172 @@ namespace VDS.RDF.Test
                     else
                     {
                         Console.WriteLine(kb.Name + " does not support the Cluster Service");
+                    }
+                    Console.WriteLine();
+                }
+            }
+            catch (Exception ex)
+            {
+                TestTools.ReportError("Error", ex, true);
+            }
+        }
+
+        [TestMethod]
+        public void PelletClusterWithType()
+        {
+            try
+            {
+                PelletServer server = new PelletServer(PelletTestServer);
+                Type svcType = typeof(ClusterService);
+
+                foreach (KnowledgeBase kb in server.KnowledgeBases)
+                {
+                    if (kb.SupportsService(svcType))
+                    {
+                        Console.WriteLine(kb.Name + " supports Clustering");
+                        ClusterService svc = (ClusterService)kb.GetService(svcType);
+                        Console.WriteLine("Cluster=3 and Type=wine:WineGrape");
+                        List<List<INode>> clusters = svc.Cluster(3, "wine:WineGrape");
+                        Console.WriteLine(clusters.Count + " Clusters returned");
+                        for (int i = 0; i < clusters.Count; i++)
+                        {
+                            Console.WriteLine("Cluster " + (i + 1) + " contains " + clusters[i].Count + " Items");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine(kb.Name + " does not support the Cluster Service");
+                    }
+                    Console.WriteLine();
+                }
+            }
+            catch (Exception ex)
+            {
+                TestTools.ReportError("Error", ex, true);
+            }
+        }
+
+        [TestMethod]
+        public void PelletSimilarity()
+        {
+            try
+            {
+                PelletServer server = new PelletServer(PelletTestServer);
+                Type svcType = typeof(SimilarityService);
+
+                foreach (KnowledgeBase kb in server.KnowledgeBases)
+                {
+                    if (kb.SupportsService(svcType))
+                    {
+                        Console.WriteLine(kb.Name + " supports Similarity");
+                        SimilarityService svc = (SimilarityService)kb.GetService(svcType);
+
+                        IGraph g = svc.SimilarityRaw(5, "wine:Red");
+                        TestTools.ShowGraph(g);
+                    }
+                    else
+                    {
+                        Console.WriteLine(kb.Name + " does not support the Similarity Service");
+                    }
+                    Console.WriteLine();
+                }
+            }
+            catch (Exception ex)
+            {
+                TestTools.ReportError("Error", ex, true);
+            }
+        }
+
+        [TestMethod]
+        public void PelletSimilarity2()
+        {
+            try
+            {
+                PelletServer server = new PelletServer(PelletTestServer);
+                Type svcType = typeof(SimilarityService);
+
+                foreach (KnowledgeBase kb in server.KnowledgeBases)
+                {
+                    if (kb.SupportsService(svcType))
+                    {
+                        Console.WriteLine(kb.Name + " supports Similarity");
+                        SimilarityService svc = (SimilarityService)kb.GetService(svcType);
+
+                        List<KeyValuePair<INode, double>> results = svc.Similarity(5, "wine:Red");
+                        foreach (KeyValuePair<INode, double> kvp in results)
+                        {
+                            Console.WriteLine(kvp.Key.ToString() + " (Similarity = " + kvp.Value + ")");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine(kb.Name + " does not support the Similarity Service");
+                    }
+                    Console.WriteLine();
+                }
+            }
+            catch (Exception ex)
+            {
+                TestTools.ReportError("Error", ex, true);
+            }
+        }
+
+        [TestMethod]
+        public void PelletPredict()
+        {
+            try
+            {
+                PelletServer server = new PelletServer(PelletTestServer);
+                Type svcType = typeof(PredictService);
+
+                foreach (KnowledgeBase kb in server.KnowledgeBases)
+                {
+                    if (kb.SupportsService(svcType))
+                    {
+                        Console.WriteLine(kb.Name + " supports Prediction");
+                        PredictService svc = (PredictService)kb.GetService(svcType);
+
+                        IGraph g = svc.PredictRaw("wine:DAnjou", "wine:locatedIn");
+                        TestTools.ShowGraph(g);
+                    }
+                    else
+                    {
+                        Console.WriteLine(kb.Name + " does not support the Prediction Service");
+                    }
+                    Console.WriteLine();
+                }
+            }
+            catch (Exception ex)
+            {
+                TestTools.ReportError("Error", ex, true);
+            }
+        }
+
+        [TestMethod]
+        public void PelletPredict2()
+        {
+            try
+            {
+                PelletServer server = new PelletServer(PelletTestServer);
+                Type svcType = typeof(PredictService);
+
+                foreach (KnowledgeBase kb in server.KnowledgeBases)
+                {
+                    if (kb.SupportsService(svcType))
+                    {
+                        Console.WriteLine(kb.Name + " supports Prediction");
+                        PredictService svc = (PredictService)kb.GetService(svcType);
+
+                        List<INode> predictions = svc.Predict("wine:DAnjou", "wine:locatedIn");
+                        Console.WriteLine(predictions.Count + " Predictions");
+                        foreach (INode obj in predictions)
+                        {
+                            Console.WriteLine(obj.ToString());
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine(kb.Name + " does not support the Prediction Service");
                     }
                     Console.WriteLine();
                 }

@@ -369,7 +369,9 @@
     <Compile Include="Query\Inference\InferenceHelper.cs" />
     <Compile Include="Query\Inference\IOwlReasoner.cs" />
     <Compile Include="Query\Inference\Pellet\Services\ClusterService.cs" />
+    <Compile Include="Query\Inference\Pellet\Services\SimilarityService.cs" />
     <Compile Include="Query\Inference\Pellet\Services\IntegrityConstraintValidationService.cs" />
+    <Compile Include="Query\Inference\Pellet\Services\PredictService.cs" />
     <Compile Include="Query\Inference\SimpleN3RulesReasoner.cs" />
     <Compile Include="Query\Inference\OwlReasonerWrapper.cs" />
     <Compile Include="Query\Inference\PelletReasoner.cs" />

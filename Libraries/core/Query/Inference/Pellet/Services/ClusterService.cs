@@ -71,36 +71,46 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// <returns></returns>
         public List<List<INode>> Cluster(int number)
         {
-            if (number < 2) throw new RdfReasoningException("Pellet Server requires the number of Clusters to be at least 2");
+            IGraph g = this.ClusterRaw(number); 
 
-            String requestUri = this._clusterUri + number + "/";
-
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(requestUri);
-            request.Method = this.Endpoint.HttpMethods.First();
-            request.Accept = MimeTypesHelper.CustomHttpAcceptHeader(this.MimeTypes.Where(type => !type.Equals("text/json")), MimeTypesHelper.SupportedRdfMimeTypes);
-
-            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+            //Build the List of Lists
+            List<List<INode>> clusters = new List<List<INode>>();
+            foreach (INode clusterNode in g.Triples.SubjectNodes.Distinct())
             {
-                IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
-                Graph g = new Graph();
-                parser.Load(g, new StreamReader(response.GetResponseStream()));
-
-                response.Close();
-                
-                //Build the List of Lists
-                List<List<INode>> clusters = new List<List<INode>>();
-                foreach (INode clusterNode in g.Triples.SubjectNodes.Distinct())
+                List<INode> cluster = new List<INode>();
+                foreach (Triple t in g.GetTriplesWithSubject(clusterNode))
                 {
-                    List<INode> cluster = new List<INode>();
-                    foreach (Triple t in g.GetTriplesWithSubject(clusterNode))
-                    {
-                        cluster.Add(t.Object);
-                    }
-                    cluster = cluster.Distinct().ToList();
-                    clusters.Add(cluster);
+                    cluster.Add(t.Object);
                 }
-                return clusters;
+                cluster = cluster.Distinct().ToList();
+                clusters.Add(cluster);
             }
+            return clusters;
+        }
+
+        /// <summary>
+        /// Gets a list of lists expressing clusters within the Knowledge Base
+        /// </summary>
+        /// <param name="number">Number of Clusters</param>
+        /// <param name="type">QName of a Type to cluster around</param>
+        /// <returns></returns>
+        public List<List<INode>> Cluster(int number, String type)
+        {
+            IGraph g = this.ClusterRaw(number, type);
+
+            //Build the List of Lists
+            List<List<INode>> clusters = new List<List<INode>>();
+            foreach (INode clusterNode in g.Triples.SubjectNodes.Distinct())
+            {
+                List<INode> cluster = new List<INode>();
+                foreach (Triple t in g.GetTriplesWithSubject(clusterNode))
+                {
+                    cluster.Add(t.Object);
+                }
+                cluster = cluster.Distinct().ToList();
+                clusters.Add(cluster);
+            }
+            return clusters;
         }
 
         /// <summary>
@@ -117,6 +127,33 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(requestUri);
             request.Method = this.Endpoint.HttpMethods.First();
             request.Accept = MimeTypesHelper.CustomHttpAcceptHeader(this.MimeTypes.Where(type => !type.Equals("text/json")), MimeTypesHelper.SupportedRdfMimeTypes);
+
+            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+            {
+                IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
+                Graph g = new Graph();
+                parser.Load(g, new StreamReader(response.GetResponseStream()));
+
+                response.Close();
+                return g;
+            }
+        }
+
+        /// <summary>
+        /// Gets the raw Cluster Graph for the Knowledge Base
+        /// </summary>
+        /// <param name="number">Number of Clusters</param>
+        /// <param name="type">QName of a Type to Cluster around</param>
+        /// <returns></returns>
+        public IGraph ClusterRaw(int number, String type)
+        {
+            if (number < 2) throw new RdfReasoningException("Pellet Server requires the number of Clusters to be at least 2");
+
+            String requestUri = this._clusterUri + number + "/" + type;
+
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(requestUri);
+            request.Method = this.Endpoint.HttpMethods.First();
+            request.Accept = MimeTypesHelper.CustomHttpAcceptHeader(this.MimeTypes.Where(t => !t.Equals("text/json")), MimeTypesHelper.SupportedRdfMimeTypes);
 
             using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
             {

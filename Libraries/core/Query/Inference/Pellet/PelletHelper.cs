@@ -61,6 +61,7 @@ namespace VDS.RDF.Query.Inference.Pellet
                             ServiceExplainProperty = "explain-property",
                             ServiceIntegrityConstraintValidation = "icv",
                             ServicePredict = "predict",
-                            ServiceCluster = "cluster";
+                            ServiceCluster = "cluster",
+                            ServiceSimilarity = "similarity";
     }
 }
