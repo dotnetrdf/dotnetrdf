@@ -36,11 +36,25 @@ using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Query.Expressions.Functions
 {
+    /// <summary>
+    /// Abstract Base Class for SPARQL String Testing functions which take two arguments
+    /// </summary>
     public abstract class BaseBinarySparqlStringFunction : BaseBinaryExpression
     {
+        /// <summary>
+        /// Creates a new Base Binary SPARQL String Function
+        /// </summary>
+        /// <param name="stringExpr">String Expression</param>
+        /// <param name="argExpr">Argument Expression</param>
         public BaseBinarySparqlStringFunction(ISparqlExpression stringExpr, ISparqlExpression argExpr)
             : base(stringExpr, argExpr) { }
 
+        /// <summary>
+        /// Calculates the Effective Boolean Value of the Function in the given Context for the given Binding
+        /// </summary>
+        /// <param name="context">Evaluation Context</param>
+        /// <param name="bindingID">Binding ID</param>
+        /// <returns></returns>
         public override bool EffectiveBooleanValue(SparqlEvaluationContext context, int bindingID)
         {
             INode x = this._leftExpr.Value(context, bindingID);
@@ -66,8 +80,20 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Abstract method that child classes must implement to 
+        /// </summary>
+        /// <param name="stringLit"></param>
+        /// <param name="argLit"></param>
+        /// <returns></returns>
         protected abstract bool ValueInternal(LiteralNode stringLit, LiteralNode argLit);
 
+        /// <summary>
+        /// Determines whether the Arguments are valid
+        /// </summary>
+        /// <param name="stringLit">String Literal</param>
+        /// <param name="argLit">Argument Literal</param>
+        /// <returns></returns>
         private bool IsValidArgumentPair(LiteralNode stringLit, LiteralNode argLit)
         {
             if (stringLit.DataType != null)
@@ -133,6 +159,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the Expression Type
+        /// </summary>
         public override SparqlExpressionType Type
         {
             get 
@@ -142,6 +171,9 @@ namespace VDS.RDF.Query.Expressions.Functions
         }
     }
 
+    /// <summary>
+    /// Represents the SPARQL CONCAT function
+    /// </summary>
     public class ConcatFunction : ISparqlExpression
     {
         private List<ISparqlExpression> _exprs = new List<ISparqlExpression>();
@@ -269,6 +301,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             return output.ToString();
         }
 
+        /// <summary>
+        /// Gets the Type of the SPARQL Expression
+        /// </summary>
         public SparqlExpressionType Type
         {
             get
@@ -277,6 +312,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the Functor of the expression
+        /// </summary>
         public string Functor
         {
             get
@@ -286,16 +324,33 @@ namespace VDS.RDF.Query.Expressions.Functions
         }
     }
 
+    /// <summary>
+    /// Represents the SPARQL CONTAINS function
+    /// </summary>
     public class ContainsFunction : BaseBinarySparqlStringFunction
     {
+        /// <summary>
+        /// Creates a new SPARQL CONTAINS function
+        /// </summary>
+        /// <param name="stringExpr">String Expression</param>
+        /// <param name="searchExpr">Search Expression</param>
         public ContainsFunction(ISparqlExpression stringExpr, ISparqlExpression searchExpr)
             : base(stringExpr, searchExpr) { }
 
+        /// <summary>
+        /// Determines whether the String contains the given Argument
+        /// </summary>
+        /// <param name="stringLit">String Literal</param>
+        /// <param name="argLit">Argument Literal</param>
+        /// <returns></returns>
         protected override bool ValueInternal(LiteralNode stringLit, LiteralNode argLit)
         {
             return stringLit.Value.Contains(argLit.Value);
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public override string Functor
         {
             get 
@@ -304,12 +359,19 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the String representation of the Expression
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return SparqlSpecsHelper.SparqlKeywordContains + "(" + this._leftExpr.ToString() + ", " + this._rightExpr.ToString() + ")";
         }
     }
 
+    /// <summary>
+    /// Represents the SPARQL ENCODE_FOR_URI Function
+    /// </summary>
     public class EncodeForUriFunction : BaseUnaryXPathStringFunction
     {
         /// <summary>
@@ -345,6 +407,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             return SparqlSpecsHelper.SparqlKeywordEncodeForUri + "(" + this._expr.ToString() + ")";
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public override string Functor
         {
             get 
@@ -354,6 +419,9 @@ namespace VDS.RDF.Query.Expressions.Functions
         }
     }
 
+    /// <summary>
+    /// Represents the SPARQL LCASE Function
+    /// </summary>
     public class LCaseFunction : BaseUnaryXPathStringFunction
     {
         public LCaseFunction(ISparqlExpression expr)
@@ -371,6 +439,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public override string Functor
         {
             get
@@ -379,12 +450,19 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the String representation of the Expression
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return SparqlSpecsHelper.SparqlKeywordLCase + "(" + this._expr.ToString() + ")";
         }
     }
 
+    /// <summary>
+    /// Represents the SPARQL STRENDS Function
+    /// </summary>
     public class StrEndsFunction : BaseBinarySparqlStringFunction
     {
         public StrEndsFunction(ISparqlExpression stringExpr, ISparqlExpression endsExpr)
@@ -395,6 +473,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             return stringLit.Value.EndsWith(argLit.Value);
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public override string Functor
         {
             get 
@@ -403,12 +484,19 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the String representation of the Expression
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return SparqlSpecsHelper.SparqlKeywordStrEnds + "(" + this._leftExpr.ToString() + ", " + this._rightExpr.ToString() + ")";
         }
     }
 
+    /// <summary>
+    /// Represents the SPARQL STRLEN Function
+    /// </summary>
     public class StrLenFunction : BaseUnaryXPathStringFunction
     {
         public StrLenFunction(ISparqlExpression expr)
@@ -419,6 +507,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             return new LiteralNode(null, stringLit.Value.Length.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger));
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public override string Functor
         {
             get 
@@ -427,12 +518,19 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the String representation of the Expression
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return SparqlSpecsHelper.SparqlKeywordStrLen + "(" + this._expr.ToString() + ")";
         }
     }
 
+    /// <summary>
+    /// Represents the SPARQL STRSTARTS Function
+    /// </summary>
     public class StrStartsFunction : BaseBinarySparqlStringFunction
     {
         public StrStartsFunction(ISparqlExpression stringExpr, ISparqlExpression startsExpr)
@@ -443,6 +541,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             return stringLit.Value.StartsWith(argLit.Value);
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public override string Functor
         {
             get
@@ -451,12 +552,19 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the String representation of the Expression
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return SparqlSpecsHelper.SparqlKeywordStrStarts + "(" + this._leftExpr.ToString() + ", " + this._rightExpr.ToString() + ")";
         }
     }
 
+    /// <summary>
+    /// Represents the SPARQL SUBSTR Function
+    /// </summary>
     public class SubStrFunction : ISparqlExpression
     {
         private ISparqlExpression _expr, _start, _length;
@@ -677,6 +785,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the Type of the Expression
+        /// </summary>
         public SparqlExpressionType Type
         {
             get
@@ -685,6 +796,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public string Functor
         {
             get
@@ -693,6 +807,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the Arguments of the Function
+        /// </summary>
         public IEnumerable<ISparqlExpression> Arguments
         {
             get
@@ -709,6 +826,9 @@ namespace VDS.RDF.Query.Expressions.Functions
         }
     }
 
+    /// <summary>
+    /// Represents the SPARQL UCASE Function
+    /// </summary>
     public class UCaseFunction : BaseUnaryXPathStringFunction
     {
         public UCaseFunction(ISparqlExpression expr)
@@ -726,6 +846,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public override string Functor
         {
             get
@@ -734,6 +857,10 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the String representation of the Expression
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return SparqlSpecsHelper.SparqlKeywordUCase + "(" + this._expr.ToString() + ")";

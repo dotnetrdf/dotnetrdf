@@ -136,7 +136,7 @@ namespace VDS.RDF.Writing.Formatting
 
                     case SparqlQueryType.Describe:
                         output.Append("DESCRIBE ");
-                        output.AppendLine(this.FormatVariablesList(query.Variables));
+                        output.AppendLine(this.FormatDescribeVariablesList(query));
                         break;
 
                     case SparqlQueryType.DescribeAll:
@@ -521,6 +521,67 @@ namespace VDS.RDF.Writing.Formatting
                     output.AppendLine();
                 }
                 else if (i < varList.Count - 1)
+                {
+                    output.Append(' ');
+                }
+            }
+
+            return output.ToString();
+        }
+
+        protected virtual String FormatDescribeVariablesList(SparqlQuery q)
+        {
+            StringBuilder output = new StringBuilder();
+
+            List<IToken> tokenList = q.DescribeVariables.ToList();
+
+            int onLine = 0;
+            for (int i = 0; i < tokenList.Count; i++)
+            {
+                IToken t = tokenList[i];
+
+                switch (t.TokenType)
+                {
+                    case Token.VARIABLE:
+                        output.Append(t.Value);
+                        onLine++;
+                        break;
+                    case Token.URI:
+                        output.Append('<');
+                        output.Append(this.FormatUri(t.Value));
+                        output.Append('>');
+                        onLine += 3;
+                        break;
+                    case Token.QNAME:
+                        //If the QName has the same Namespace URI in this Formatter as in the Query then format
+                        //as a QName otherwise expand to a full URI
+                        String prefix = t.Value.Substring(0, t.Value.IndexOf(':'));
+                        if (this._qnameMapper.HasNamespace(prefix) && q.NamespaceMap.GetNamespaceUri(prefix).ToString().Equals(this._qnameMapper.GetNamespaceUri(prefix).ToString()))
+                        {
+                            output.AppendLine(t.Value);
+                            onLine += 2;
+                        }
+                        else if (q.NamespaceMap.HasNamespace(prefix))
+                        {
+                            output.Append('<');
+                            output.Append(this.FormatUri(Tools.ResolveQName(t.Value, q.NamespaceMap, q.BaseUri)));
+                            output.Append('>');
+                            onLine += 3;
+                        }
+                        else
+                        {
+                            throw new RdfOutputException("Unable to Format the DESCRIBE variables list since one of the Variables is the QName '" + t.Value + "' which cannot be resolved using the Namespace Map of the Query");
+                        }
+
+                        break;
+                }
+
+                //Maximum of 6 things per line (URIs worth 3 and QNames worth 2)
+                if (onLine >= 6 && i < tokenList.Count - 1)
+                {
+                    output.AppendLine();
+                }
+                else if (i < tokenList.Count - 1)
                 {
                     output.Append(' ');
                 }

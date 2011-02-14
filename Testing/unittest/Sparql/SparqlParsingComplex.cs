@@ -15,7 +15,7 @@ namespace VDS.RDF.Test.Sparql
     public class SparqlParsingComplex
     {
         [TestMethod]
-        public void SparqlNestedGraphPatternFirstItem()
+        public void SparqlParsingNestedGraphPatternFirstItem()
         {
             try
             {
@@ -33,7 +33,7 @@ namespace VDS.RDF.Test.Sparql
         }
 
         [TestMethod]
-        public void SparqlNestedGraphPatternFirstItem2()
+        public void SparqlParsingNestedGraphPatternFirstItem2()
         {
             try
             {
@@ -51,7 +51,7 @@ namespace VDS.RDF.Test.Sparql
         }
 
         [TestMethod]
-        public void SparqlSubQueryWithLimitAndOrderBy()
+        public void SparqlParsingSubQueryWithLimitAndOrderBy()
         {
             Graph g = new Graph();
             FileLoader.Load(g, "InferenceTest.ttl");
@@ -136,7 +136,7 @@ namespace VDS.RDF.Test.Sparql
         //}
 
         [TestMethod]
-        public void SparqlComplexOptionalGraphUnion()
+        public void SparqlEvaluationComplexOptionalGraphUnion()
         {
             SparqlQueryParser parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromFile("q-opt-complex-4.rq");
@@ -246,7 +246,7 @@ namespace VDS.RDF.Test.Sparql
         }
 
         [TestMethod]
-        public void SparqlGraphUnion()
+        public void SparqlEvaluationGraphUnion()
         {
             SparqlQueryParser parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromFile("graph-11.rq");
@@ -300,6 +300,107 @@ namespace VDS.RDF.Test.Sparql
             else
             {
                 Assert.Fail("Didn't get a Result Set as expected");
+            }
+        }
+
+        [TestMethod]
+        public void SparqlParsingDescribeHangingWhere()
+        {
+            List<String> valid = new List<string>()
+            {
+                "DESCRIBE ?s WHERE { ?s a ?type }",
+                "DESCRIBE <http://example.org/>",
+                "PREFIX ex: <http://example.org/> DESCRIBE ex:"
+            };
+
+            List<String> invalid = new List<string>()
+            {
+                "DESCRIBE ?s WHERE"
+            };
+
+            SparqlQueryParser parser = new SparqlQueryParser();
+            SparqlFormatter formatter = new SparqlFormatter();
+            foreach (String v in valid)
+            {
+                try
+                {
+                    SparqlQuery q = parser.ParseFromString(v);
+                    Console.WriteLine(formatter.Format(q));
+                    Console.WriteLine();
+                }
+                catch (RdfParseException parseEx)
+                {
+                    Console.WriteLine("Failed to parse valid Query");
+                    TestTools.ReportError("Parsing Error", parseEx, true);
+                }
+            }
+
+            foreach (String iv in invalid)
+            {
+                try
+                {
+                    SparqlQuery q = parser.ParseFromString(iv);
+                    Assert.Fail("Should have thrown a Parsing Error");
+                }
+                catch (RdfParseException parseEx)
+                {
+                    Console.WriteLine("Errored as expected");
+                    TestTools.ReportError("Parsing Error", parseEx, false);
+                }
+            }
+        }
+
+        [TestMethod]
+        public void SparqlParsingConstructShortForm()
+        {
+            List<String> valid = new List<string>()
+            {
+                "CONSTRUCT WHERE {?s ?p ?o }",
+                "CONSTRUCT WHERE {?s a ?type }",
+            };
+
+            List<String> invalid = new List<string>()
+            {
+                "CONSTRUCT {?s ?p ?o}",
+                "CONSTRUCT WHERE { ?s ?p ?o . FILTER(ISLITERAL(?o)) }",
+                "CONSTRUCT WHERE { GRAPH ?g { ?s ?p ?o } }",
+                "CONSTRUCT WHERE { ?s ?p ?o . OPTIONAL {?s a ?type}}",
+                "CONSTRUCT WHERE { ?s a ?type . BIND (<http://example.org> AS ?thing) }",
+                "CONSTRUCT WHERE { {SELECT * WHERE { ?s ?p ?o } }"
+            };
+
+            SparqlQueryParser parser = new SparqlQueryParser();
+            SparqlFormatter formatter = new SparqlFormatter();
+            foreach (String v in valid)
+            {
+                Console.WriteLine("Valid Input: " + v);
+                try
+                {
+                    SparqlQuery q = parser.ParseFromString(v);
+                    Console.WriteLine(formatter.Format(q));
+                }
+                catch (RdfParseException parseEx)
+                {
+                    Console.WriteLine("Failed to parse valid Query");
+                    TestTools.ReportError("Parsing Error", parseEx, true);
+                }
+                Console.WriteLine();
+            }
+
+            foreach (String iv in invalid)
+            {
+                Console.WriteLine("Invalid Input: " + iv);
+                try
+                {
+                    SparqlQuery q = parser.ParseFromString(iv);
+                    Assert.Fail("Should have thrown a Parsing Error");
+                }
+                catch (RdfParseException parseEx)
+                {
+                    Console.WriteLine("Errored as expected");
+                    TestTools.ReportError("Parsing Error", parseEx, false);
+                }
+                Console.WriteLine();
             }
         }
     }

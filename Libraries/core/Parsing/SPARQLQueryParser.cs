@@ -376,19 +376,27 @@ namespace VDS.RDF.Parsing
                             temp = context.Tokens.Peek();
                         }
 
-                        //Check for Optional WHERE and Discard
-                        temp = context.Tokens.Peek();
-                        if (temp.TokenType == Token.WHERE)
+                        //Unless a SHORT Form CONSTRUCT then we need to check for a WHERE { } clause
+                        //If the Query is a DESCRIBE then if there is no WHERE keyword the WHERE clause is not required
+                        if (context.Query.QueryType != SparqlQueryType.Construct || (context.Query.QueryType == SparqlQueryType.Construct && context.Query.RootGraphPattern == null))
                         {
-                            context.Tokens.Dequeue();
-                        }
+                            //Check for Optional WHERE and Discard
+                            temp = context.Tokens.Peek();
+                            bool whereSeen = false;
+                            if (temp.TokenType == Token.WHERE)
+                            {
+                                context.Tokens.Dequeue();
+                                whereSeen = true;
+                            }
 
-                        //Unless it's a DESCRIBE we must now see a Graph Pattern 
-                        //OR if the next Token is a { then it must be a Graph Pattern regardless
-                        temp = context.Tokens.Peek();
-                        if (context.Query.QueryType != SparqlQueryType.Describe || temp.TokenType == Token.LEFTCURLYBRACKET)
-                        {
-                            this.TryParseGraphPatterns(context);
+                            //Unless it's a DESCRIBE we must now see a Graph Pattern 
+                            //OR if the next Token is a { then it must be a Graph Pattern regardless
+                            //OR we saw a WHERE in which case we must have a Graph Pattern
+                            temp = context.Tokens.Peek();
+                            if (whereSeen || context.Query.QueryType != SparqlQueryType.Describe || temp.TokenType == Token.LEFTCURLYBRACKET)
+                            {
+                                this.TryParseGraphPatterns(context);
+                            }
                         }
 
                         //If we're an ASK then we shouldn't have any Solution Modifier
@@ -989,6 +997,17 @@ namespace VDS.RDF.Parsing
         {
             if (context.SubQueryMode) throw new RdfQueryException("CONSTRUCT not permitted as a sub-query");
 
+            bool shortForm = (context.Tokens.Peek().TokenType == Token.WHERE);
+            if (shortForm && context.SyntaxMode == SparqlQuerySyntax.Sparql_1_0)
+            {
+                throw ParserHelper.Error("Short Form CONSTRUCT queries are not permitted in SPARQL 1.0", context.Tokens.Peek());
+            }
+            else if (shortForm)
+            {
+                //For Short Form CONSTRUCT discard the WHERE
+                context.Tokens.Dequeue();
+            }
+
             //Discard the opening {
             IToken next = context.Tokens.Dequeue();
             if (next.TokenType != Token.LEFTCURLYBRACKET)
@@ -1008,9 +1027,9 @@ namespace VDS.RDF.Parsing
             {
                 throw new RdfParseException("A GRAPH Clause cannot occur in a CONSTRUCT Template");
             }
-            else if (constructTemplate.IsOptional)
+            else if (constructTemplate.IsOptional || constructTemplate.IsMinus || constructTemplate.IsExists || constructTemplate.IsNotExists  || constructTemplate.IsService || constructTemplate.IsSubQuery)
             {
-                throw new RdfParseException("An OPTIONAL Clause cannot occur in a CONSTRUCT Template");
+                throw new RdfParseException("Graph Clauses (e.g. OPTIONAL, MINUS etc.) cannot occur in a CONSTRUCT Template");
             }
             else if (constructTemplate.IsUnion)
             {
@@ -1020,16 +1039,25 @@ namespace VDS.RDF.Parsing
             {
                 throw new RdfParseException("Nested Graph Patterns cannot occur in a CONSTRUCT Template");
             }
+            else if (!constructTemplate.TriplePatterns.All(p => p is IConstructTriplePattern))
+            {
+                throw new RdfParseException("A Construct Template may only be composed of Triple Patterns - Assignments, Property Paths, Sub-queries etc. are not permitted");
+            }
+            else if (constructTemplate.UnplacedAssignments.Any())
+            {
+                throw new RdfParseException("A Construct Template may not contain any Assignments");
+            }
             else
             {
                 //OK
                 context.Query.ConstructTemplate = constructTemplate;
+                if (shortForm) context.Query.RootGraphPattern = constructTemplate;
             }
         }
 
         private void TryParseFrom(SparqlQueryParserContext context)
         {
-            if (context.SubQueryMode) throw new RdfQueryException("Dataset Descriptions are not supported in Sub-queries");
+            if (context.SubQueryMode) throw new RdfQueryException("Dataset Descriptions are not permitted in Sub-queries");
 
             IToken next = context.Tokens.Dequeue();
 
