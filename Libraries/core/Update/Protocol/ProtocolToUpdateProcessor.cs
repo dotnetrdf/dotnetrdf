@@ -113,9 +113,7 @@ namespace VDS.RDF.Update.Protocol
             //Get the Graph URI of the Graph to be added
             Uri graphUri = this.ResolveGraphUri(context, g);
 
-            //Q: Do we need to add something here so that where relevant a new Graph gets created?
-            //According to the spec this should happen "if the request URI identifies the underlying Network-manipulable Graph Store"
-            //May need to have Protocol Processors have this URI as a property
+            //First we need a 
 
             //Generate an INSERT DATA command for the POST
             StringBuilder insert = new StringBuilder();
@@ -147,6 +145,59 @@ namespace VDS.RDF.Update.Protocol
             SparqlUpdateCommandSet cmds = this._parser.ParseFromString(insertCmd);
             this._updateProcessor.ProcessCommandSet(cmds);
             this._updateProcessor.Flush();
+        }
+
+        /// <summary>
+        /// Processes a POST operation which adds triples to a new Graph in the Store and returns the URI of the newly created Graph
+        /// </summary>
+        /// <param name="context">HTTP Context</param>
+        /// <remarks>
+        /// <para>
+        /// This operation allows clients to POST data to an endpoint and have it create a Graph and assign a URI for them.
+        /// </para>
+        /// </remarks>
+        public override void ProcessPostCreate(HttpContext context)
+        {
+            //Get the payload assuming there is one
+            IGraph g = this.ParsePayload(context);
+
+            //Mint a URI for the Graph
+            Uri graphUri = this.MintGraphUri(context, g);
+
+            //First generate a CREATE to ensure that the Graph exists
+            //We don't do a CREATE SILENT as this operation is supposed to generate a new Graph URI
+            //so if MintGraphUri() fails to deliver a unused Graph URI then the operation should fail
+            StringBuilder insert = new StringBuilder();
+            insert.AppendLine("CREATE GRAPH @graph ;");
+
+            //Then Generate an INSERT DATA command for the actual POST
+            //Note that if the payload is empty this still has the effect of creating a Graph
+            if (g != null)
+            {
+                insert.AppendLine("INSERT DATA { GRAPH @graph {");
+                System.IO.StringWriter writer = new System.IO.StringWriter(insert);
+                CompressingTurtleWriter ttlwriter = new CompressingTurtleWriter(WriterCompressionLevel.High);
+                ttlwriter.Save(g, writer);
+                insert.AppendLine("} }");
+            }
+
+            //Parse and evaluate the command
+            SparqlParameterizedString insertCmd = new SparqlParameterizedString(insert.ToString());
+            insertCmd.SetUri("graph", graphUri);
+            SparqlUpdateCommandSet cmds = this._parser.ParseFromString(insertCmd);
+            this._updateProcessor.ProcessCommandSet(cmds);
+            this._updateProcessor.Flush();
+
+            //Finally return a 201 Created and a Location header with the new Graph URI
+            context.Response.StatusCode = (int)HttpStatusCode.Created;
+            try
+            {
+                context.Response.Headers.Add("Location", graphUri.ToString());
+            }
+            catch (PlatformNotSupportedException)
+            {
+                context.Response.AddHeader("Location", graphUri.ToString());
+            }
         }
 
         /// <summary>

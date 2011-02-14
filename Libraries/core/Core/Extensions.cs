@@ -160,10 +160,36 @@ namespace VDS.RDF
         /// <returns></returns>
         public static String GetSha256Hash(this Uri u)
         {
+            if (u == null) throw new ArgumentNullException("u");
+
             //Only instantiate the SHA256 class when we first use it
             if (_sha256 == null) _sha256 = new SHA256Managed();
 
             Byte[] input = Encoding.UTF8.GetBytes(u.ToString());
+            Byte[] output = _sha256.ComputeHash(input);
+
+            StringBuilder hash = new StringBuilder();
+            foreach (Byte b in output)
+            {
+                hash.Append(b.ToString("x2"));
+            }
+
+            return hash.ToString();
+        }
+
+        /// <summary>
+        /// Gets a SHA256 Hash for a String
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        internal static String GetSha256Hash(this String s)
+        {
+            if (s == null) throw new ArgumentNullException("s");
+
+            //Only instantiate the SHA256 class when we first use it
+            if (_sha256 == null) _sha256 = new SHA256Managed();
+
+            Byte[] input = Encoding.UTF8.GetBytes(s);
             Byte[] output = _sha256.ComputeHash(input);
 
             StringBuilder hash = new StringBuilder();

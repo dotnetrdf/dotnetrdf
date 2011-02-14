@@ -38,8 +38,10 @@ terms.
 using System;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System.Web;
+using VDS.RDF.Parsing;
 using VDS.RDF.Writing;
 
 namespace VDS.RDF.Update.Protocol
@@ -65,6 +67,17 @@ namespace VDS.RDF.Update.Protocol
         /// </summary>
         /// <param name="context">HTTP Context</param>
         public abstract void ProcessPost(HttpContext context);
+
+        /// <summary>
+        /// Processes a POST operation which adds triples to a new Graph in the Store and returns the URI of the newly created Graph
+        /// </summary>
+        /// <param name="context">HTTP Context</param>
+        /// <remarks>
+        /// <para>
+        /// This operation allows clients to POST data to an endpoint and have it create a Graph and assign a URI for them.
+        /// </para>
+        /// </remarks>
+        public abstract void ProcessPostCreate(HttpContext context);
 
         /// <summary>
         /// Processes a PUT operation
@@ -176,6 +189,35 @@ namespace VDS.RDF.Update.Protocol
             }
 
             return graphUri;
+        }
+
+        /// <summary>
+        /// Generates a new Graph URI that should be used to create a new Graph in the Store in conjunction with the <see cref="ISparqlHttpProtocolProcessor.ProcessPostCreate">ProcessPostCreate()</see> operation
+        /// </summary>
+        /// <param name="context">HTTP Context</param>
+        /// <param name="g">Graph parsed from the request body</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Default behaviour is to mint a URI based on a hash of the Request IP and Date Time.  Implementations can override this method to control URI creation as they desire
+        /// </remarks>
+        protected virtual Uri MintGraphUri(HttpContext context, IGraph g)
+        {
+            String graphID = context.Request.UserHostAddress + "/" + DateTime.Now.ToString(XmlSpecsHelper.XmlSchemaDateTimeFormat);
+            graphID = graphID.GetSha256Hash();
+
+            Uri baseUri = new Uri(context.Request.Url.AbsoluteUri);
+            if (baseUri.ToString().EndsWith("/"))
+            {
+                return new Uri(baseUri, graphID);
+            }
+            else if (baseUri.Segments.Any())
+            {
+                return new Uri(baseUri, baseUri.Segments.Last() + "/" + graphID);
+            }
+            else
+            {
+                return new Uri(baseUri, graphID);
+            }
         }
 
         /// <summary>

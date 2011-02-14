@@ -127,6 +127,45 @@ namespace VDS.RDF.Update.Protocol
         }
 
         /// <summary>
+        /// Processes a POST operation which adds triples to a new Graph in the Store and returns the URI of the newly created Graph
+        /// </summary>
+        /// <param name="context">HTTP Context</param>
+        /// <remarks>
+        /// <para>
+        /// This operation allows clients to POST data to an endpoint and have it create a Graph and assign a URI for them.
+        /// </para>
+        /// </remarks>
+        public override void ProcessPostCreate(HttpContext context)
+        {
+            //If the Manager is read-only then a 403 Forbidden will be returned
+            if (this._manager.IsReadOnly)
+            {
+                context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                return;
+            }
+
+            IGraph g = this.ParsePayload(context);
+            if (g == null) g = new Graph();
+
+            Uri graphUri = this.MintGraphUri(context, g);
+            g.BaseUri = graphUri;
+
+            //Save the Payload under the newly Minted Graph URI
+            this._manager.SaveGraph(g);
+
+            //Finally return a 201 Created and a Location header with the new Graph URI
+            context.Response.StatusCode = (int)HttpStatusCode.Created;
+            try
+            {
+                context.Response.Headers.Add("Location", graphUri.ToString());
+            }
+            catch (PlatformNotSupportedException)
+            {
+                context.Response.AddHeader("Location", graphUri.ToString());
+            }
+        }
+
+        /// <summary>
         /// Processes a PUT operation
         /// </summary>
         /// <param name="context">HTTP Context</param>

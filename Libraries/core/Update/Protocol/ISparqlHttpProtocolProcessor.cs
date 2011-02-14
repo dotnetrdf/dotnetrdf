@@ -62,6 +62,17 @@ namespace VDS.RDF.Update.Protocol
         void ProcessPost(HttpContext context);
 
         /// <summary>
+        /// Processes a POST operation which adds triples to a new Graph in the Store and returns the URI of the newly created Graph
+        /// </summary>
+        /// <param name="context">HTTP Context</param>
+        /// <remarks>
+        /// <para>
+        /// This operation allows clients to POST data to an endpoint and have it create a Graph and assign a URI for them.
+        /// </para>
+        /// </remarks>
+        void ProcessPostCreate(HttpContext context);
+
+        /// <summary>
         /// Processes a PUT operation which should save a Graph to the Store completely replacing any existing Graph with the same URI
         /// </summary>
         /// <param name="context">HTTP Context</param>

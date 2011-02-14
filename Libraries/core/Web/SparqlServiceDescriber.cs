@@ -50,7 +50,28 @@ using VDS.RDF.Web.Configuration.Update;
 
 namespace VDS.RDF.Web
 {
-    //Q: Are multiple service descriptions in a single file permitted?
+    /// <summary>
+    /// Type of Service Description to return
+    /// </summary>
+    public enum ServiceDescriptionType
+    {
+        /// <summary>
+        /// Description of the Query Service
+        /// </summary>
+        Query,
+        /// <summary>
+        /// Description of the Update Service
+        /// </summary>
+        Update,
+        /// <summary>
+        /// Description of the Protocol Service
+        /// </summary>
+        Protocol,
+        /// <summary>
+        /// Description of all Services (this will produce an invalid Service Description document as defined by the current Specification Drafts)
+        /// </summary>
+        All
+    }
 
     /// <summary>
     /// Static Helper class responsible for generating SPARQL Service Description Graphs based on a given Configuration object
@@ -185,7 +206,7 @@ namespace VDS.RDF.Web
             return g;
         }
 
-        public static IGraph GetServiceDescription(HttpContext context, BaseSparqlServerConfiguration config, Uri descripUri)
+        public static IGraph GetServiceDescription(HttpContext context, BaseSparqlServerConfiguration config, Uri descripUri, ServiceDescriptionType type)
         {
             //Use user specified Service Description if present
             if (config.ServiceDescription != null) return config.ServiceDescription;
@@ -197,7 +218,7 @@ namespace VDS.RDF.Web
             INode queryNode, updateNode, protocolNode;
 
             //Query Service Description
-            if (config.QueryProcessor != null)
+            if (config.QueryProcessor != null && (type == ServiceDescriptionType.Query || type == ServiceDescriptionType.All))
             {
                 //Add the Top Level Node representing the Query Service
                 queryNode = g.CreateUriNode(new Uri(descripUri, "query"));
@@ -257,7 +278,7 @@ namespace VDS.RDF.Web
             }
 
             //Update Service Description
-            if (config.UpdateProcessor != null)
+            if (config.UpdateProcessor != null && (type == ServiceDescriptionType.Update || type == ServiceDescriptionType.All))
             {
                 //Add the Top Level Node representing the Update Service
                 updateNode = g.CreateUriNode(new Uri(descripUri, "update"));
@@ -293,7 +314,7 @@ namespace VDS.RDF.Web
             }
 
             //Uniform HTTP Protocol Description
-            if (config.ProtocolProcessor != null)
+            if (config.ProtocolProcessor != null && (type == ServiceDescriptionType.Protocol || type == ServiceDescriptionType.All))
             {
                 //Add the Top Level Node representing the Service
                 if (descripUri.ToString().EndsWith("/description"))

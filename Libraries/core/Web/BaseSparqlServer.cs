@@ -91,14 +91,15 @@ namespace VDS.RDF.Web
                 path = path.Substring(this._basePath.Length);
             }
 
-            if (context.Request.HttpMethod.Equals("OPTIONS"))
-            {
-                //OPTIONS requests always result in the Service Description document
-                IGraph svcDescrip = SparqlServiceDescriber.GetServiceDescription(context, this._config, new Uri(new Uri(context.Request.Url.AbsoluteUri), this._basePath + "description"));
-                HandlerHelper.SendToClient(context, svcDescrip, this._config);
-            }
-            else
-            {
+            //Q: Commented out as current Service Description draft specifications says only a single Service can be described in a document. Reinstate if drafts change?
+            //if (context.Request.HttpMethod.Equals("OPTIONS"))
+            //{
+            //    //OPTIONS requests always result in the Service Description document
+            //    IGraph svcDescrip = SparqlServiceDescriber.GetServiceDescription(context, this._config, new Uri(new Uri(context.Request.Url.AbsoluteUri), this._basePath + "description"));
+            //    HandlerHelper.SendToClient(context, svcDescrip, this._config);
+            //}
+            //else
+            //{
                 switch (path)
                 {
                     case "query":
@@ -107,14 +108,14 @@ namespace VDS.RDF.Web
                     case "update":
                         this.ProcessUpdateRequest(context);
                         break;
-                    case "description":
-                        this.ProcessDescriptionRequest(context);
-                        break;
+                    //case "description":
+                    //    this.ProcessDescriptionRequest(context);
+                    //    break;
                     default:
                         this.ProcessProtocolRequest(context);
                         break;
                 }
-            }
+            //}
         }
 
         /// <summary>
@@ -126,6 +127,14 @@ namespace VDS.RDF.Web
             if (this._config.QueryProcessor == null)
             {
                 context.Response.StatusCode = (int)HttpStatusCode.NotImplemented;
+                return;
+            }
+
+            if (context.Request.HttpMethod.Equals("OPTIONS"))
+            {
+                //OPTIONS requests always result in the Service Description document
+                IGraph svcDescrip = SparqlServiceDescriber.GetServiceDescription(context, this._config, new Uri(context.Request.Url.AbsoluteUri), ServiceDescriptionType.Query);
+                HandlerHelper.SendToClient(context, svcDescrip, this._config);
                 return;
             }
 
@@ -322,6 +331,14 @@ namespace VDS.RDF.Web
                 return;
             }
 
+            if (context.Request.HttpMethod.Equals("OPTIONS"))
+            {
+                //OPTIONS requests always result in the Service Description document
+                IGraph svcDescrip = SparqlServiceDescriber.GetServiceDescription(context, this._config, new Uri(context.Request.Url.AbsoluteUri), ServiceDescriptionType.Update);
+                HandlerHelper.SendToClient(context, svcDescrip, this._config);
+                return;
+            }
+
             //See if there has been an update submitted
             String updateText = context.Request.QueryString["update"];
             if (updateText == null || updateText.Equals(String.Empty))
@@ -419,6 +436,14 @@ namespace VDS.RDF.Web
                 return;
             }
 
+            if (context.Request.HttpMethod.Equals("OPTIONS"))
+            {
+                //OPTIONS requests always result in the Service Description document
+                IGraph svcDescrip = SparqlServiceDescriber.GetServiceDescription(context, this._config, new Uri(new Uri(context.Request.Url.AbsoluteUri), this._basePath), ServiceDescriptionType.Protocol);
+                HandlerHelper.SendToClient(context, svcDescrip, this._config);
+                return;
+            }
+
             //Check whether we need to use authentication
             if (!HandlerHelper.IsAuthenticated(context, this._config.UserGroups, context.Request.HttpMethod)) return;
 
@@ -434,7 +459,20 @@ namespace VDS.RDF.Web
                         this._config.ProtocolProcessor.ProcessPut(context);
                         break;
                     case "POST":
-                        this._config.ProtocolProcessor.ProcessPost(context);
+                        Uri serviceUri = new Uri(new Uri(context.Request.Url.AbsoluteUri), this._basePath);
+                        if (context.Request.Url.AbsoluteUri.Equals(serviceUri))
+                        {
+                            //If there is no ?graph parameter or ?default parameter then this is a PostCreate
+                            //Otherwise it is a normal Post
+                            if (context.Request.QueryString["graph"] != null)
+                            {
+                                this._config.ProtocolProcessor.ProcessPost(context);
+                            }
+                        }
+                        else
+                        {
+                            this._config.ProtocolProcessor.ProcessPost(context);
+                        }
                         break;
                     case "DELETE":
                         this._config.ProtocolProcessor.ProcessDelete(context);
@@ -505,7 +543,7 @@ namespace VDS.RDF.Web
             try
             {
                 //Get the Service Description Graph
-                IGraph serviceDescrip = SparqlServiceDescriber.GetServiceDescription(context, this._config, new Uri(context.Request.Url.AbsoluteUri));
+                IGraph serviceDescrip = SparqlServiceDescriber.GetServiceDescription(context, this._config, new Uri(context.Request.Url.AbsoluteUri), ServiceDescriptionType.All);
                 HandlerHelper.SendToClient(context, serviceDescrip, this._config);
             }
             catch
@@ -574,7 +612,7 @@ namespace VDS.RDF.Web
         /// <param name="result">Results of the Sparql Query</param>
         /// <remarks>
         /// <para>
-        /// Implementations should override this if they want to control how results are sent to the client rather than using the default behaviour provided by <see cref="HandlerHelper.SendToClient">HandlerHelper.SendToClient()</see>
+        /// Implementations should override this if they want to control how results are sent to the client rather than using the default behaviour provided by <see cref="HandlerHelper.ProcessResults">HandlerHelper.ProcessResults()</see>
         /// </para>
         /// </remarks>
         protected virtual void ProcessQueryResults(HttpContext context, Object result)
