@@ -41,6 +41,7 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Web;
 using VDS.RDF.Parsing;
 using VDS.RDF.Update.Protocol;
@@ -110,7 +111,28 @@ namespace VDS.RDF.Web
                         this._config.Processor.ProcessPut(context);
                         break;
                     case "POST":
-                        this._config.Processor.ProcessPost(context);
+                        Uri serviceUri = new Uri(new Uri(context.Request.Url.AbsoluteUri), this._basePath);
+                        if (context.Request.Url.AbsoluteUri.Equals(serviceUri.ToString()))
+                        {
+                            //If there is a ?graph parameter or ?default parameter then this is a normal Post
+                            //Otherwise it is a PostCreate
+                            if (context.Request.QueryString["graph"] != null)
+                            {
+                                this._config.Processor.ProcessPost(context);
+                            }
+                            else if (context.Request.QueryString.AllKeys.Contains("default") || Regex.IsMatch(context.Request.QueryString.ToString(), BaseProtocolProcessor.DefaultParameterPattern))
+                            {
+                                this._config.Processor.ProcessPost(context);
+                            }
+                            else
+                            {
+                                this._config.Processor.ProcessPostCreate(context);
+                            }
+                        }
+                        else
+                        {
+                            this._config.Processor.ProcessPost(context);
+                        }
                         break;
                     case "DELETE":
                         this._config.Processor.ProcessDelete(context);
