@@ -6,7 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing.Formatting;
 
-namespace VDS.RDF.Test
+namespace VDS.RDF.Test.Writing
 {
     [TestClass]
     public class FormattingTests

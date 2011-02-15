@@ -6,7 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 
-namespace VDS.RDF.Test
+namespace VDS.RDF.Test.Parsing
 {
     [TestClass]
     public class CachingTests

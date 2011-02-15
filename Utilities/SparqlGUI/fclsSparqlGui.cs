@@ -344,7 +344,7 @@ namespace SparqlGUI
                     this._rdfext = ".json";
                     break;
                 case 5:
-                    this._rdfwriter = new FastRdfXmlWriter();
+                    this._rdfwriter = new RdfXmlWriter();
                     this._rdfext = ".rdf";
                     break;
                 case 6:

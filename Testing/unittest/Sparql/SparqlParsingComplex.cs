@@ -366,7 +366,7 @@ namespace VDS.RDF.Test.Sparql
                 "CONSTRUCT WHERE { GRAPH ?g { ?s ?p ?o } }",
                 "CONSTRUCT WHERE { ?s ?p ?o . OPTIONAL {?s a ?type}}",
                 "CONSTRUCT WHERE { ?s a ?type . BIND (<http://example.org> AS ?thing) }",
-                "CONSTRUCT WHERE { {SELECT * WHERE { ?s ?p ?o } }"
+                "CONSTRUCT WHERE { {SELECT * WHERE { ?s ?p ?o } } }"
             };
 
             SparqlQueryParser parser = new SparqlQueryParser();

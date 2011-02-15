@@ -56,5 +56,12 @@ namespace VDS.RDF.Test.Sparql
             String query = "SELECT * WHERE {{?x ?y ?z} UNION {?z ?y ?x} SERVICE ?g {?x ?y ?z}}";
             this.TestQuery(query);
         }
+
+        [TestMethod]
+        public void SparqlParsingSingleSubQuery()
+        {
+            String query = "SELECT * WHERE {{SELECT * WHERE {?s ?p ?o}}}";
+            this.TestQuery(query);
+        }
     }
 }

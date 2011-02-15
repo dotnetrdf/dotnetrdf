@@ -156,5 +156,43 @@ namespace VDS.RDF.Test
                 h = new Graph();
             }
         }
+
+        [TestMethod]
+        public void HardGraphMatch5()
+        {
+            IGraph g = new Graph();
+            IGraph h = new Graph();
+
+            int size = 1 << Dimension;
+            Random rnd = new Random();
+
+            for (int i = 0; i < Quantity; i++)
+            {
+                int a = rnd.Next(size);
+                int b = rnd.Next(size);
+                while (a == b)
+                {
+                    b = rnd.Next(size);
+                }
+
+                Hypercube hc1 = new Hypercube(Dimension, g);
+                hc1 = hc1.Toggle(a, b);
+                Hypercube hc2 = new Hypercube(Dimension, h);
+                hc2 = hc2.Toggle(b, a);
+
+                if (i == 0)
+                {
+                    TestTools.ShowGraph(g);
+                    Console.WriteLine();
+                    TestTools.ShowGraph(h);
+                }
+
+                Assert.IsFalse(g.Equals(h), "Graphs should be equal");
+                Console.WriteLine("Run #" + (i + 1) + " passed OK");
+
+                g = new Graph();
+                h = new Graph();
+            }
+        }
     }
 }

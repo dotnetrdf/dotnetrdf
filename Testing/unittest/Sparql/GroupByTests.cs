@@ -103,5 +103,33 @@ namespace VDS.RDF.Test.Sparql
                 Assert.Fail("Didn't get a Result Set as expected");
             }
         }
+
+        [TestMethod]
+        public void SparqlGroupByAssignmentExpression2()
+        {
+            String query = "SELECT ?lang (SAMPLE(?o) AS ?example) WHERE { ?s ?p ?o . FILTER(ISLITERAL(?o)) } GROUP BY (LANG(?o) AS ?lang)";
+            SparqlQueryParser parser = new SparqlQueryParser();
+            SparqlQuery q = parser.ParseFromString(query);
+
+            SparqlFormatter formatter = new SparqlFormatter();
+            Console.WriteLine(formatter.Format(q));
+            Console.WriteLine();
+
+            QueryableGraph g = new QueryableGraph();
+            UriLoader.Load(g, new Uri("http://dbpedia.org/resource/Southampton"));
+
+            Object results = g.ExecuteQuery(q);
+            if (results is SparqlResultSet)
+            {
+                SparqlResultSet rset = (SparqlResultSet)results;
+                TestTools.ShowResults(rset);
+
+                Assert.IsTrue(rset.All(r => r.HasValue("lang") && r.HasValue("example")), "All Results should have a ?lang and a ?example variable");
+            }
+            else
+            {
+                Assert.Fail("Didn't get a Result Set as expected");
+            }
+        }
     }
 }

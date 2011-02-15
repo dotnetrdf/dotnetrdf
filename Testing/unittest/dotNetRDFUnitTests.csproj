@@ -73,14 +73,14 @@
     <Compile Include="BaseTest.cs" />
     <Compile Include="BasicTests1.cs" />
     <Compile Include="BasicTests2.cs" />
-    <Compile Include="CachingTests.cs" />
+    <Compile Include="Parsing\CachingTests.cs" />
     <Compile Include="Interop\SemWebInteropTests.cs" />
     <Compile Include="Sparql\LeviathanTests.cs" />
     <Compile Include="Parsing\LoaderTests.cs" />
     <Compile Include="NamespaceMapperTest.cs" />
     <Compile Include="NativeStoreTests.cs" />
     <Compile Include="OntologyTests.cs" />
-    <Compile Include="ParserTests.cs" />
+    <Compile Include="Parsing\ParserTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sparql\SparqlTests.cs" />
     <Compile Include="Storage\SqlIOTests.cs" />
@@ -129,7 +129,7 @@
     <Compile Include="Storage\FusekiTest.cs" />
     <Compile Include="Storage\SesameTests.cs" />
     <Compile Include="EventTests.cs" />
-    <Compile Include="FormattingTests.cs" />
+    <Compile Include="Writing\FormattingTests.cs" />
     <Compile Include="Interop\JenaInteropTests.cs" />
     <Compile Include="PelletTests.cs" />
     <Compile Include="Parsing\RdfATests.cs" />
@@ -146,7 +146,7 @@
     <Compile Include="Sparql\UpdateTests.cs" />
     <Compile Include="Sparql\ViewTests.cs" />
     <Compile Include="Storage\SparqlUniformHttpProtocolTest.cs" />
-    <Compile Include="VariableNodeTests.cs" />
+    <Compile Include="Parsing\VariableNodeTests.cs" />
     <Compile Include="Web\ETagTests.cs" />
     <Compile Include="Web\ServiceDescription.cs" />
     <Compile Include="Writing\OwlOneOf.cs" />

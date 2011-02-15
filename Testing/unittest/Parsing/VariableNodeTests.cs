@@ -9,7 +9,7 @@ using VDS.RDF.Query.Inference;
 using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
 
-namespace VDS.RDF.Test
+namespace VDS.RDF.Test.Parsing
 {
     [TestClass]
     public class VariableNodeTests
