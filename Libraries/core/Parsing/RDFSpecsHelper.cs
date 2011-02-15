@@ -69,7 +69,7 @@ namespace VDS.RDF.Parsing
         /// <summary>
         /// Pattern for Valid Language Specifiers
         /// </summary>
-        public const String ValidLangSpecifiersPattern = "^@?[A-Za-z]+(\\-[A-Za-z]+)*$";
+        public const String ValidLangSpecifiersPattern = "^@?[A-Za-z]+(\\-[A-Za-z0-9]+)*$";
 
         /// <summary>
         /// Regular Expression for Valid Language Specifiers

@@ -32,17 +32,20 @@ using System;
 using System.Windows.Forms;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
+using VDS.RDF.Writing.Formatting;
 
 namespace SparqlGUI
 {
     public partial class fclsInspect : Form
     {
+        private SparqlFormatter _formatter = new SparqlFormatter();
+
         public fclsInspect(SparqlQuery query, long parseTime, String origQuery)
         {
             InitializeComponent();
 
             this.lblParseTime.Text = "Took " + parseTime + "ms to parse";
-            this.txtQuery.Text = query.ToString();
+            this.txtQuery.Text = this._formatter.Format(query);
             this.txtAlgebra.Text = query.ToAlgebra().ToString();
 
             //Compute the actual syntax compatability

@@ -877,7 +877,7 @@ namespace VDS.RDF.Query
             if (n == null)
             {
                 //Nulls give Type Error
-                throw new RdfQueryException("Cannot calculate the Effective Boolean Value of an unbound variable");
+                throw new RdfQueryException("Cannot calculate the Effective Boolean Value of a null value");
             }
             else
             {

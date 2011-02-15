@@ -41,14 +41,14 @@ using System.Text;
 namespace VDS.RDF.Query.Expressions.Functions
 {
     /// <summary>
-    /// Class representing the SPARQL IF ELSE function
+    /// Class representing the SPARQL IF function
     /// </summary>
     public class IfElseFunction : ISparqlExpression
     {
         private ISparqlExpression _condition, _ifBranch, _elseBranch;
 
         /// <summary>
-        /// Creates a new IF ELSE function
+        /// Creates a new IF function
         /// </summary>
         /// <param name="condition">Condition</param>
         /// <param name="ifBranch">Expression to evaluate if condition evaluates to true</param>
@@ -99,7 +99,7 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// <returns></returns>
         public bool EffectiveBooleanValue(SparqlEvaluationContext context, int bindingID)
         {
-            throw new RdfQueryException("A SPARQL IF ELSE does not have an effective boolean value");
+            return SparqlSpecsHelper.EffectiveBooleanValue(this.Value(context, bindingID));
         }
 
         /// <summary>
@@ -123,30 +123,16 @@ namespace VDS.RDF.Query.Expressions.Functions
             output.Append("IF (");
             output.Append(this._condition.ToString());
             output.Append(" , ");
-            if (this._ifBranch is IfElseFunction)
-            {
-                output.Append('(');
-                output.Append(this._ifBranch.ToString());
-                output.Append(')');
-            }
-            else
-            {
-                output.Append(this._ifBranch.ToString());
-            }
+            output.Append(this._ifBranch.ToString());
             output.Append(" , ");
-            if (this._elseBranch is IfElseFunction)
-            {
-                output.Append('(');
-                output.Append(this._elseBranch.ToString());
-                output.Append(')');
-            }
-            else
-            {
-                output.Append(this._elseBranch.ToString());
-            }
+            output.Append(this._elseBranch.ToString());
+            output.Append(')');
             return output.ToString();
         }
 
+        /// <summary>
+        /// Gets the Expression Type
+        /// </summary>
         public SparqlExpressionType Type
         {
             get
@@ -155,6 +141,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the Functor for the Expression
+        /// </summary>
         public String Functor
         {
             get
@@ -163,6 +152,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the Arguments of the Expression
+        /// </summary>
         public IEnumerable<ISparqlExpression> Arguments
         {
             get

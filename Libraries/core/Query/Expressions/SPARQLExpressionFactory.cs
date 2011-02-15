@@ -60,6 +60,7 @@ namespace VDS.RDF.Query.Expressions
         /// </remarks>
         private static List<ISparqlCustomExpressionFactory> _customFactories = new List<ISparqlCustomExpressionFactory>() 
         {
+            new SparqlBuiltInFunctionFactory(),
             new XPathFunctionFactory(),
             new LeviathanFunctionFactory(),
             new ArqFunctionFactory()
@@ -180,8 +181,18 @@ namespace VDS.RDF.Query.Expressions
                     }
                 }
 
-                //If we're allowing Unknown functions return a NullExpression
-                if (Options.QueryAllowUnknownFunctions) return new NullExpression();
+                //If we're allowing Unknown functions return an UnknownFunction
+                if (Options.QueryAllowUnknownFunctions)
+                {
+                    if (args.Count == 0)
+                    {
+                        return new UnknownFunction(u);
+                    }
+                    else
+                    {
+                        return new UnknownFunction(u, args);
+                    }
+                }
 
                 //If we get here we haven't been able to create an expression so we error
                 throw new RdfParseException("Unable to parse a SPARQL Extension Function with IRI <" + u.ToString() + ">, it is not a supported Casting function and no Custom Expression Factories are able to generate an Expression from this IRI");

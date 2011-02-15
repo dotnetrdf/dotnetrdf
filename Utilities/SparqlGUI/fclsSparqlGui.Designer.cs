@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.grpDataset = new System.Windows.Forms.GroupBox();
             this.btnClearDataset = new System.Windows.Forms.Button();
             this.btnImportUri = new System.Windows.Forms.Button();
@@ -46,6 +47,8 @@
             this.txtQuery = new System.Windows.Forms.TextBox();
             this.ofdBrowse = new System.Windows.Forms.OpenFileDialog();
             this.grpQueryOptions = new System.Windows.Forms.GroupBox();
+            this.chkAlgebraOptimisation = new System.Windows.Forms.CheckBox();
+            this.chkQueryOptimisation = new System.Windows.Forms.CheckBox();
             this.chkAllowUnknownFunctions = new System.Windows.Forms.CheckBox();
             this.chkWebDemand = new System.Windows.Forms.CheckBox();
             this.chkPartialResults = new System.Windows.Forms.CheckBox();
@@ -66,8 +69,7 @@
             this.cboGraphFormat = new System.Windows.Forms.ComboBox();
             this.ofdQuery = new System.Windows.Forms.OpenFileDialog();
             this.sfdQuery = new System.Windows.Forms.SaveFileDialog();
-            this.chkQueryOptimisation = new System.Windows.Forms.CheckBox();
-            this.chkAlgebraOptimisation = new System.Windows.Forms.CheckBox();
+            this.ttpTips = new System.Windows.Forms.ToolTip(this.components);
             this.grpDataset.SuspendLayout();
             this.grpQuery.SuspendLayout();
             this.grpQueryOptions.SuspendLayout();
@@ -266,6 +268,34 @@
             this.grpQueryOptions.TabStop = false;
             this.grpQueryOptions.Text = "Query Options";
             // 
+            // chkAlgebraOptimisation
+            // 
+            this.chkAlgebraOptimisation.Checked = true;
+            this.chkAlgebraOptimisation.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkAlgebraOptimisation.Location = new System.Drawing.Point(6, 150);
+            this.chkAlgebraOptimisation.Name = "chkAlgebraOptimisation";
+            this.chkAlgebraOptimisation.Size = new System.Drawing.Size(177, 31);
+            this.chkAlgebraOptimisation.TabIndex = 8;
+            this.chkAlgebraOptimisation.Text = "Optimise Query Algebra";
+            this.ttpTips.SetToolTip(this.chkAlgebraOptimisation, "Determines whether the Engine will use Algebra optimisations to evaluate some que" +
+                    "ries more efficiently");
+            this.chkAlgebraOptimisation.UseVisualStyleBackColor = true;
+            this.chkAlgebraOptimisation.CheckedChanged += new System.EventHandler(this.chkAlgebraOptimisation_CheckedChanged);
+            // 
+            // chkQueryOptimisation
+            // 
+            this.chkQueryOptimisation.Checked = true;
+            this.chkQueryOptimisation.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkQueryOptimisation.Location = new System.Drawing.Point(6, 120);
+            this.chkQueryOptimisation.Name = "chkQueryOptimisation";
+            this.chkQueryOptimisation.Size = new System.Drawing.Size(177, 31);
+            this.chkQueryOptimisation.TabIndex = 7;
+            this.chkQueryOptimisation.Text = "Optimise Queries";
+            this.ttpTips.SetToolTip(this.chkQueryOptimisation, "Determines whether the Engine will optimise the ordering of Triple Patterns in yo" +
+                    "ur Query (highly recommended)");
+            this.chkQueryOptimisation.UseVisualStyleBackColor = true;
+            this.chkQueryOptimisation.CheckedChanged += new System.EventHandler(this.chkQueryOptimisation_CheckedChanged);
+            // 
             // chkAllowUnknownFunctions
             // 
             this.chkAllowUnknownFunctions.Checked = true;
@@ -274,7 +304,9 @@
             this.chkAllowUnknownFunctions.Name = "chkAllowUnknownFunctions";
             this.chkAllowUnknownFunctions.Size = new System.Drawing.Size(177, 31);
             this.chkAllowUnknownFunctions.TabIndex = 6;
-            this.chkAllowUnknownFunctions.Text = "Treat unknown function URIs as null functions";
+            this.chkAllowUnknownFunctions.Text = "Permit Unknown Function URIs";
+            this.ttpTips.SetToolTip(this.chkAllowUnknownFunctions, "Unknown Functions allow unrecognised extension Function URIs to be used but the e" +
+                    "ngine will not evaluate these when evaluating queries");
             this.chkAllowUnknownFunctions.UseVisualStyleBackColor = true;
             this.chkAllowUnknownFunctions.CheckedChanged += new System.EventHandler(this.chkAllowUnknownFunctions_CheckedChanged);
             // 
@@ -355,12 +387,10 @@
             // radSparqlExtended
             // 
             this.radSparqlExtended.AutoSize = true;
-            this.radSparqlExtended.Checked = true;
             this.radSparqlExtended.Location = new System.Drawing.Point(6, 65);
             this.radSparqlExtended.Name = "radSparqlExtended";
             this.radSparqlExtended.Size = new System.Drawing.Size(134, 17);
             this.radSparqlExtended.TabIndex = 2;
-            this.radSparqlExtended.TabStop = true;
             this.radSparqlExtended.Text = "SPARQL 1.1 Extended";
             this.radSparqlExtended.UseVisualStyleBackColor = true;
             this.radSparqlExtended.CheckedChanged += new System.EventHandler(this.radSparqlExtended_CheckedChanged);
@@ -368,10 +398,12 @@
             // radSparql11
             // 
             this.radSparql11.AutoSize = true;
+            this.radSparql11.Checked = true;
             this.radSparql11.Location = new System.Drawing.Point(6, 42);
             this.radSparql11.Name = "radSparql11";
             this.radSparql11.Size = new System.Drawing.Size(86, 17);
             this.radSparql11.TabIndex = 1;
+            this.radSparql11.TabStop = true;
             this.radSparql11.Text = "SPARQL 1.1";
             this.radSparql11.UseVisualStyleBackColor = true;
             this.radSparql11.CheckedChanged += new System.EventHandler(this.radSparql11_CheckedChanged);
@@ -488,30 +520,6 @@
             this.sfdQuery.Filter = "SPARQL Query Files|*.rq|All Files|*.*";
             this.sfdQuery.Title = "Load SPARQL Query";
             // 
-            // chkQueryOptimisation
-            // 
-            this.chkQueryOptimisation.Checked = true;
-            this.chkQueryOptimisation.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkQueryOptimisation.Location = new System.Drawing.Point(6, 120);
-            this.chkQueryOptimisation.Name = "chkQueryOptimisation";
-            this.chkQueryOptimisation.Size = new System.Drawing.Size(177, 31);
-            this.chkQueryOptimisation.TabIndex = 7;
-            this.chkQueryOptimisation.Text = "Optimise Queries";
-            this.chkQueryOptimisation.UseVisualStyleBackColor = true;
-            this.chkQueryOptimisation.CheckedChanged += new System.EventHandler(this.chkQueryOptimisation_CheckedChanged);
-            // 
-            // chkAlgebraOptimisation
-            // 
-            this.chkAlgebraOptimisation.Checked = true;
-            this.chkAlgebraOptimisation.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkAlgebraOptimisation.Location = new System.Drawing.Point(6, 150);
-            this.chkAlgebraOptimisation.Name = "chkAlgebraOptimisation";
-            this.chkAlgebraOptimisation.Size = new System.Drawing.Size(177, 31);
-            this.chkAlgebraOptimisation.TabIndex = 8;
-            this.chkAlgebraOptimisation.Text = "Optimise Query Algebra";
-            this.chkAlgebraOptimisation.UseVisualStyleBackColor = true;
-            this.chkAlgebraOptimisation.CheckedChanged += new System.EventHandler(this.chkAlgebraOptimisation_CheckedChanged);
-            // 
             // fclsSparqlGui
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -590,6 +598,7 @@
         private System.Windows.Forms.CheckBox chkAllowUnknownFunctions;
         private System.Windows.Forms.CheckBox chkAlgebraOptimisation;
         private System.Windows.Forms.CheckBox chkQueryOptimisation;
+        private System.Windows.Forms.ToolTip ttpTips;
     }
 }
 

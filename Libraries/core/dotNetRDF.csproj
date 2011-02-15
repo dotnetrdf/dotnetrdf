@@ -356,6 +356,7 @@
     <Compile Include="Query\Expressions\Functions\SparqlNumericFunctions.cs" />
     <Compile Include="Query\Expressions\Functions\SparqlSetFunctions.cs" />
     <Compile Include="Query\Expressions\Functions\SparqlStringFunctions.cs" />
+    <Compile Include="Query\Expressions\Functions\UnknownFunction.cs" />
     <Compile Include="Query\Expressions\LeviathanFunctionFactory.cs" />
     <Compile Include="Query\Expressions\Functions\ArqGraphFunctions.cs" />
     <Compile Include="Query\Expressions\Functions\ArqMiscellaneousFunctions.cs" />
@@ -364,6 +365,7 @@
     <Compile Include="Query\Expressions\Functions\SparqlBuiltInFunctions.cs" />
     <Compile Include="Query\Expressions\Functions\XPathBooleanFunctions.cs" />
     <Compile Include="Query\Expressions\PrimaryExpressions.cs" />
+    <Compile Include="Query\Expressions\SparqlBuiltInFunctionFactory.cs" />
     <Compile Include="Query\Expressions\SparqlNumericExpressions.cs" />
     <Compile Include="Query\Describe\ISparqlDescribe.cs" />
     <Compile Include="Query\Inference\InferenceHelper.cs" />

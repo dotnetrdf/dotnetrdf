@@ -29,11 +29,11 @@
         private void InitializeComponent()
         {
             this.grpQuery = new System.Windows.Forms.GroupBox();
+            this.lblSyntaxCompatability = new System.Windows.Forms.Label();
             this.txtQuery = new System.Windows.Forms.TextBox();
             this.grpAlgebra = new System.Windows.Forms.GroupBox();
             this.txtAlgebra = new System.Windows.Forms.TextBox();
             this.lblParseTime = new System.Windows.Forms.Label();
-            this.lblSyntaxCompatability = new System.Windows.Forms.Label();
             this.grpQuery.SuspendLayout();
             this.grpAlgebra.SuspendLayout();
             this.SuspendLayout();
@@ -48,6 +48,15 @@
             this.grpQuery.TabIndex = 1;
             this.grpQuery.TabStop = false;
             this.grpQuery.Text = "Query - Optimised && Explictly Nested Form";
+            // 
+            // lblSyntaxCompatability
+            // 
+            this.lblSyntaxCompatability.AutoSize = true;
+            this.lblSyntaxCompatability.Location = new System.Drawing.Point(3, 180);
+            this.lblSyntaxCompatability.Name = "lblSyntaxCompatability";
+            this.lblSyntaxCompatability.Size = new System.Drawing.Size(107, 13);
+            this.lblSyntaxCompatability.TabIndex = 1;
+            this.lblSyntaxCompatability.Text = "Syntax Compatability:";
             // 
             // txtQuery
             // 
@@ -87,15 +96,6 @@
             this.lblParseTime.Size = new System.Drawing.Size(95, 13);
             this.lblParseTime.TabIndex = 0;
             this.lblParseTime.Text = "Took ?ms to parse";
-            // 
-            // lblSyntaxCompatability
-            // 
-            this.lblSyntaxCompatability.AutoSize = true;
-            this.lblSyntaxCompatability.Location = new System.Drawing.Point(3, 180);
-            this.lblSyntaxCompatability.Name = "lblSyntaxCompatability";
-            this.lblSyntaxCompatability.Size = new System.Drawing.Size(107, 13);
-            this.lblSyntaxCompatability.TabIndex = 1;
-            this.lblSyntaxCompatability.Text = "Syntax Compatability:";
             // 
             // fclsInspect
             // 
