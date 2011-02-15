@@ -275,11 +275,15 @@ namespace VDS.RDF.Query
         /// <summary>
         /// Set of SPARQL Keywords that are Aggregate Keywords
         /// </summary>
+        /// <remarks>
+        /// Unlike <see cref="SparqlSpecsHelper.AggregateFunctionKeywords">AggregateFunctionKeywords[]</see> this includes keywords related to aggregates (like DISTINCT) and those for Leviathan extension aggregates which are not standard SPARQL 1.1 syntax
+        /// </remarks>
         public static String[] AggregateKeywords = {   
                                                        SparqlKeywordAll,
                                                        SparqlKeywordAny,
                                                        SparqlKeywordAvg, 
                                                        SparqlKeywordCount, 
+                                                       SparqlKeywordDistinct,
                                                        SparqlKeywordMax, 
                                                        SparqlKeywordMedian,
                                                        SparqlKeywordMin, 
@@ -292,7 +296,20 @@ namespace VDS.RDF.Query
                                                        SparqlKeywordGroupConcat,
                                                        SparqlKeywordSample,
                                                        SparqlKeywordSeparator
-                                                   };                                                
+                                                   };
+
+        /// <summary>
+        /// Set of SPARQL Keywords that are built in SPARQL Aggregate Functions
+        /// </summary>
+        public static String[] AggregateFunctionKeywords = {
+                                                                SparqlKeywordAvg,
+                                                                SparqlKeywordCount,
+                                                                SparqlKeywordGroupConcat,
+                                                                SparqlKeywordMax,
+                                                                SparqlKeywordMin,
+                                                                SparqlKeywordSum,
+                                                                SparqlKeywordSample
+                                                           };
 
         /// <summary>
         /// Set of XML Schema Data Types which are derived from Integer and can be treated as Integers by SPARQL
@@ -539,13 +556,23 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Checks whether a given Keyword is a SPARQL Aggregate Keyword
+        /// Checks whether a given Keyword is a SPARQL Aggregate Keyword (includes keywords related to aggregates like DISTINCT, AS and Leviathan extension aggregate keywords)
         /// </summary>
         /// <param name="keyword">Keyword to check</param>
         /// <returns></returns>
         public static bool IsAggregateKeyword(String keyword)
         {
             return AggregateKeywords.Contains(keyword, StringComparer.OrdinalIgnoreCase);
+        }
+
+        /// <summary>
+        /// Checks whether a given Keyword is a SPARQL Aggregate Function Keyword (only keywords for the SPARQL built-in aggregate functions)
+        /// </summary>
+        /// <param name="keyword">Keyword to check</param>
+        /// <returns></returns>
+        public static bool IsAggregateFunctionKeyword(String keyword)
+        {
+            return AggregateFunctionKeywords.Contains(keyword, StringComparer.OrdinalIgnoreCase);
         }
 
         /// <summary>

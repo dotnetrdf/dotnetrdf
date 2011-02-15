@@ -14,6 +14,10 @@ namespace HashLib
         private byte[] m_data;
         private int m_pos;
 
+        /// <summary>
+        /// Creates a new Hash Buffer
+        /// </summary>
+        /// <param name="a_length"></param>
         public HashBuffer(int a_length)
         {
             Debug.Assert(a_length > 0);
@@ -23,11 +27,18 @@ namespace HashLib
             Initialize();
         }
 
+        /// <summary>
+        /// Initializes the Hash Buffer
+        /// </summary>
         public void Initialize()
         {
             m_pos = 0;
         }
 
+        /// <summary>
+        /// Gets the Bytes in the Buffer
+        /// </summary>
+        /// <returns></returns>
         public byte[] GetBytes()
         {
             Debug.Assert(IsFull);
@@ -36,6 +47,10 @@ namespace HashLib
             return m_data;
         }
 
+        /// <summary>
+        /// Gets the Bytes in the Buffer with Zero Padding
+        /// </summary>
+        /// <returns></returns>
         public byte[] GetBytesZeroPadded()
         {
             Array.Clear(m_data, m_pos, m_data.Length - m_pos); 
@@ -43,6 +58,14 @@ namespace HashLib
             return m_data;
         }
 
+        /// <summary>
+        /// Feeds data into the Buffer
+        /// </summary>
+        /// <param name="a_data"></param>
+        /// <param name="a_startIndex"></param>
+        /// <param name="a_length"></param>
+        /// <param name="a_processedBytes"></param>
+        /// <returns></returns>
         public bool Feed(byte[] a_data, ref int a_startIndex, ref int a_length, ref ulong a_processedBytes)
         {
             Debug.Assert(a_startIndex >= 0);
@@ -70,6 +93,13 @@ namespace HashLib
             return IsFull;
         }
 
+        /// <summary>
+        /// Feeds data into the Buffer
+        /// </summary>
+        /// <param name="a_data"></param>
+        /// <param name="a_startIndex"></param>
+        /// <param name="a_length"></param>
+        /// <returns></returns>
         public bool Feed(byte[] a_data, ref int a_startIndex, ref int a_length)
         {
             Debug.Assert(a_startIndex >= 0);
@@ -96,6 +126,12 @@ namespace HashLib
             return IsFull;
         }
 
+        /// <summary>
+        /// Feeds data into the Buffer
+        /// </summary>
+        /// <param name="a_data"></param>
+        /// <param name="a_length"></param>
+        /// <returns></returns>
         public bool Feed(byte[] a_data, int a_length)
         {
             Debug.Assert(a_length >= 0);
@@ -119,6 +155,11 @@ namespace HashLib
             return IsFull;
         }
 
+        /// <summary>
+        /// Feeds data into the Buffer
+        /// </summary>
+        /// <param name="a_data"></param>
+        /// <returns></returns>
         public bool Feed(byte a_data)
         {
             Debug.Assert(!IsFull);
@@ -129,6 +170,9 @@ namespace HashLib
             return IsFull;
         }
 
+        /// <summary>
+        /// Gets whether the Buffer is empty
+        /// </summary>
         public bool IsEmpty
         {
             get
@@ -137,6 +181,9 @@ namespace HashLib
             }
         }
 
+        /// <summary>
+        /// Gets the Position in the Buffer
+        /// </summary>
         public int Pos
         {
             get
@@ -145,6 +192,9 @@ namespace HashLib
             }
         }
 
+        /// <summary>
+        /// Gets the Length of the Buffer
+        /// </summary>
         public int Length
         {
             get
@@ -153,6 +203,9 @@ namespace HashLib
             }
         }
 
+        /// <summary>
+        /// Gets whether the Buffer is full
+        /// </summary>
         public bool IsFull
         {
             get

@@ -230,6 +230,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the Type of the Expression
+        /// </summary>
         public SparqlExpressionType Type
         {
             get
@@ -238,6 +241,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public String Functor
         {
             get
@@ -246,6 +252,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the Arguments of the Expression
+        /// </summary>
         public IEnumerable<ISparqlExpression> Arguments
         {
             get
@@ -391,6 +400,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             return output.ToString();
         }
 
+        /// <summary>
+        /// Gets the Type of the Expression
+        /// </summary>
         public SparqlExpressionType Type
         {
             get
@@ -399,6 +411,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public String Functor
         {
             get
@@ -407,6 +422,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the Arguments of the Expression
+        /// </summary>
         public IEnumerable<ISparqlExpression> Arguments
         {
             get

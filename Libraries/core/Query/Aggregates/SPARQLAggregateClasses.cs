@@ -225,6 +225,9 @@ namespace VDS.RDF.Query.Aggregates
             return output.ToString();
         }
 
+        /// <summary>
+        /// Gets the Functor of the Aggregate
+        /// </summary>
         public override string Functor
         {
             get 
@@ -315,6 +318,9 @@ namespace VDS.RDF.Query.Aggregates
             return output.ToString();
         }
 
+        /// <summary>
+        /// Gets the Functor of the Aggregate
+        /// </summary>
         public override string Functor
         {
             get 
@@ -417,6 +423,9 @@ namespace VDS.RDF.Query.Aggregates
             return output.ToString();
         }
 
+        /// <summary>
+        /// Gets the Functor of the Aggregate
+        /// </summary>
         public override string Functor
         {
             get
@@ -425,6 +434,9 @@ namespace VDS.RDF.Query.Aggregates
             }
         }
 
+        /// <summary>
+        /// Gets the Arguments of the Aggregate
+        /// </summary>
         public override IEnumerable<ISparqlExpression> Arguments
         {
             get
@@ -473,6 +485,9 @@ namespace VDS.RDF.Query.Aggregates
             return "COUNT(*)";
         }
 
+        /// <summary>
+        /// Gets the Functor of the Aggregate
+        /// </summary>
         public override string Functor
         {
             get
@@ -481,6 +496,9 @@ namespace VDS.RDF.Query.Aggregates
             }
         }
 
+        /// <summary>
+        /// Gets the Arguments of the Aggregate
+        /// </summary>
         public override IEnumerable<ISparqlExpression> Arguments
         {
             get
@@ -526,6 +544,9 @@ namespace VDS.RDF.Query.Aggregates
             return "COUNT(DISTINCT *)";
         }
 
+        /// <summary>
+        /// Gets the Functor of the Aggregate
+        /// </summary>
         public override string Functor
         {
             get
@@ -534,6 +555,9 @@ namespace VDS.RDF.Query.Aggregates
             }
         }
 
+        /// <summary>
+        /// Gets the Arguments of the Aggregate
+        /// </summary>
         public override IEnumerable<ISparqlExpression> Arguments
         {
             get
@@ -626,6 +650,9 @@ namespace VDS.RDF.Query.Aggregates
             return output.ToString();
         }
 
+        /// <summary>
+        /// Gets the Functor of the Aggregate
+        /// </summary>
         public override string Functor
         {
             get
@@ -742,6 +769,9 @@ namespace VDS.RDF.Query.Aggregates
             return output.ToString();
         }
 
+        /// <summary>
+        /// Gets the Functor of the Aggregate
+        /// </summary>
         public override string Functor
         {
             get 
@@ -838,6 +868,9 @@ namespace VDS.RDF.Query.Aggregates
             return output.ToString();
         }
 
+        /// <summary>
+        /// Gets the Functor of the Aggregate
+        /// </summary>
         public override string Functor
         {
             get
@@ -903,6 +936,9 @@ namespace VDS.RDF.Query.Aggregates
             }
         }
 
+        /// <summary>
+        /// Gets the Functor of the Aggregate
+        /// </summary>
         public override string Functor
         {
             get
@@ -1078,6 +1114,9 @@ namespace VDS.RDF.Query.Aggregates
             return output.ToString();
         }
 
+        /// <summary>
+        /// Gets the Functor of the Aggregate
+        /// </summary>
         public override string Functor
         {
             get

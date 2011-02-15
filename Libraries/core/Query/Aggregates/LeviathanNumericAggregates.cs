@@ -162,6 +162,9 @@ namespace VDS.RDF.Query.Aggregates
             return output.ToString();
         }
 
+        /// <summary>
+        /// Gets the Functor of the Aggregate
+        /// </summary>
         public override string Functor
         {
             get 
@@ -286,6 +289,9 @@ namespace VDS.RDF.Query.Aggregates
             return output.ToString();
         }
 
+        /// <summary>
+        /// Gets the Functor of the Aggregate
+        /// </summary>
         public override string Functor
         {
             get
@@ -507,6 +513,9 @@ namespace VDS.RDF.Query.Aggregates
             return output.ToString();
         }
 
+        /// <summary>
+        /// Gets the Functor of the Aggregate
+        /// </summary>
         public override string Functor
         {
             get
@@ -724,6 +733,9 @@ namespace VDS.RDF.Query.Aggregates
             return output.ToString();
         }
 
+        /// <summary>
+        /// Gets the Functor of the Aggregate
+        /// </summary>
         public override string Functor
         {
             get

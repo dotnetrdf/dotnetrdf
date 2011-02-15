@@ -89,6 +89,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             throw new RdfQueryException("XML Schema Date Times cannot have an Effective Boolean Value calculated for them");
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public override string Functor
         {
             get
@@ -128,6 +131,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             return "<" + ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.Sha1Sum + ">(" + this._expr.ToString() + ")";
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public override string Functor
         {
             get 

@@ -510,6 +510,7 @@ namespace VDS.RDF.Query.Algebra
                 else
                 {
                     //Compute the Binding for every value
+                    context.OutputMultiset.AddVariable(bindVar);
                     foreach (Set s in context.InputMultiset.Sets)
                     {
                         Set x = new Set(s);
@@ -518,7 +519,7 @@ namespace VDS.RDF.Query.Algebra
                             INode val = bindExpr.Value(context, s.ID);
                             x.Add(bindVar, val);
                         }
-                        catch (RdfQueryException queryEx)
+                        catch (RdfQueryException)
                         {
                             //Equivalent to no assignment
                         }

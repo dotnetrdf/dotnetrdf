@@ -12,6 +12,10 @@ namespace HashLib
     [DebuggerStepThrough]
     public static class ArrayExtensions
     {
+        /// <summary>
+        /// Clears an Array
+        /// </summary>
+        /// <param name="a_array">Array</param>
         public static void Clear(this Array a_array)
         {
             Array.Clear(a_array, 0, a_array.Length);

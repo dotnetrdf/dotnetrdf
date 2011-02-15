@@ -11,9 +11,21 @@ namespace HashLib
     /// </remarks>
     public abstract class HashCryptoNotBuildIn : HashCrypto, ICryptoNotBuildIn
     {
+        /// <summary>
+        /// Hash Buffer
+        /// </summary>
         protected readonly HashBuffer m_buffer;
+        /// <summary>
+        /// Counter for processed Bytes
+        /// </summary>
         protected ulong m_processedBytes;
 
+        /// <summary>
+        /// Creates a new non-built-in Hash Function
+        /// </summary>
+        /// <param name="a_hashSize"></param>
+        /// <param name="a_blockSize"></param>
+        /// <param name="a_bufferSize"></param>
         protected HashCryptoNotBuildIn(int a_hashSize, int a_blockSize, int a_bufferSize) 
             : base(a_hashSize, a_blockSize)
         {
@@ -24,6 +36,12 @@ namespace HashLib
             m_processedBytes = 0;
         }
 
+        /// <summary>
+        /// Transforms some Bytes
+        /// </summary>
+        /// <param name="a_data"></param>
+        /// <param name="a_index"></param>
+        /// <param name="a_length"></param>
         public override void TransformBytes(byte[] a_data, int a_index, int a_length)
         {
             Debug.Assert(a_index >= 0);
@@ -48,12 +66,19 @@ namespace HashLib
                 m_buffer.Feed(a_data, ref a_index, ref a_length, ref m_processedBytes);
         }
 
+        /// <summary>
+        /// Initializes the Hash Function
+        /// </summary>
         public override void Initialize()
         {
             m_buffer.Initialize();
             m_processedBytes = 0;
         }
 
+        /// <summary>
+        /// Produces the final Hash of all the Transformed Inputs
+        /// </summary>
+        /// <returns></returns>
         public override HashResult TransformFinal()
         {
             Finish();
@@ -68,6 +93,9 @@ namespace HashLib
             return new HashResult(result);
         }
 
+        /// <summary>
+        /// Transforms the Buffer
+        /// </summary>
         protected void TransformBuffer()
         {
             Debug.Assert(m_buffer.IsFull);
@@ -75,8 +103,22 @@ namespace HashLib
             TransformBlock(m_buffer.GetBytes(), 0);
         }
 
+        /// <summary>
+        /// Signals that the Hash is finished
+        /// </summary>
         protected abstract void Finish();
+
+        /// <summary>
+        /// Transforms a Block
+        /// </summary>
+        /// <param name="a_data"></param>
+        /// <param name="a_index"></param>
         protected abstract void TransformBlock(byte[] a_data, int a_index);
+
+        /// <summary>
+        /// Gets the Result as Bytes
+        /// </summary>
+        /// <returns></returns>
         protected abstract byte[] GetResult();
     }
 }

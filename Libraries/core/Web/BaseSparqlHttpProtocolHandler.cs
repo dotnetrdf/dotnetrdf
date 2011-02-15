@@ -201,6 +201,7 @@ namespace VDS.RDF.Web
         /// Loads the Handler Configuration
         /// </summary>
         /// <param name="context">HTTP Context</param>
+        /// <param name="basePath">Base Path of the Handler to be determined by an implementing class</param>
         /// <returns></returns>
         protected abstract BaseProtocolHandlerConfiguration LoadConfig(HttpContext context, out String basePath);
 

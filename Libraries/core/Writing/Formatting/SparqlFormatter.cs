@@ -748,7 +748,7 @@ namespace VDS.RDF.Writing.Formatting
         protected virtual String FormatAggregate(ISparqlAggregate agg)
         {
             StringBuilder output = new StringBuilder();
-            if (SparqlSpecsHelper.IsAggregateKeyword(agg.Functor))
+            if (SparqlSpecsHelper.IsAggregateFunctionKeyword(agg.Functor))
             {
                 output.Append(agg.Functor);
             }

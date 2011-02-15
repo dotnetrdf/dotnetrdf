@@ -99,6 +99,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             return "<" + ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.BNode + ">(" + this._expr.ToString() + ")";
         }
 
+        /// <summary>
+        /// Gets the Type of the Expression
+        /// </summary>
         public override SparqlExpressionType Type
         {
             get 
@@ -107,6 +110,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public override string Functor
         {
             get 
@@ -186,6 +192,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             return "<" + ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.LocalName + ">(" + this._expr.ToString() + ")";
         }
 
+        /// <summary>
+        /// Gets the Type of the Expression
+        /// </summary>
         public override SparqlExpressionType Type
         {
             get
@@ -194,6 +203,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public override string Functor
         {
             get
@@ -269,6 +281,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             return "<" + ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.Namespace + ">(" + this._expr.ToString() + ")";
         }
 
+        /// <summary>
+        /// Gets the Type of the Expression
+        /// </summary>
         public override SparqlExpressionType Type
         {
             get
@@ -277,6 +292,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public override string Functor
         {
             get

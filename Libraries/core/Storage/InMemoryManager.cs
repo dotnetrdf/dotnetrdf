@@ -321,6 +321,10 @@ namespace VDS.RDF.Storage
 
         #endregion
 
+        /// <summary>
+        /// Gets a String representation of the Manager
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return "[In-Memory]";
@@ -328,6 +332,10 @@ namespace VDS.RDF.Storage
 
         #region IConfigurationSerializable Members
 
+        /// <summary>
+        /// Serializes the Configuration of the Manager
+        /// </summary>
+        /// <param name="context">Configuration Serialization Context</param>
         public void SerializeConfiguration(ConfigurationSerializationContext context)
         {
             INode manager = context.NextSubject;

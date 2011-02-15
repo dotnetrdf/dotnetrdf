@@ -122,6 +122,9 @@ namespace VDS.RDF.Query.Expressions
         }
     }
 
+    /// <summary>
+    /// Class for representing the All Modifier
+    /// </summary>
     public class AllModifierExpression : ISparqlExpression
     {
         /// <summary>

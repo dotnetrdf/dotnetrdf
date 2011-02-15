@@ -622,19 +622,27 @@ namespace VDS.RDF.Query.Expressions
             return false;
         }
 
+        /// <summary>
+        /// Gets the URIs of available SPARQL Functions
+        /// </summary>
         public IEnumerable<Uri> AvailableExtensionFunctions
         {
             get 
             {
-                throw new NotImplementedException(); 
+                return (from u in SparqlSpecsHelper.FunctionKeywords
+                        select new Uri(SparqlFunctionsNamespace + u.ToLower()));
             }
         }
 
+        /// <summary>
+        /// Gets the URIs of available SPARQL Aggregates
+        /// </summary>
         public IEnumerable<Uri> AvailableExtensionAggregates
         {
             get 
-            { 
-                throw new NotImplementedException(); 
+            {
+                return (from u in SparqlSpecsHelper.AggregateFunctionKeywords
+                        select new Uri(SparqlFunctionsNamespace + u.ToLower()));
             }
         }
     }

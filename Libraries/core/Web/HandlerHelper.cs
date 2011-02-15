@@ -546,6 +546,7 @@ namespace VDS.RDF.Web
         /// Adds the Standard Custom Headers that dotNetRDF attaches to all responses from it's Handlers
         /// </summary>
         /// <param name="context">HTTP Context</param>
+        /// <param name="config">Handler Configuration</param>
         public static void AddStandardHeaders(HttpContext context, BaseHandlerConfiguration config)
         {
             try

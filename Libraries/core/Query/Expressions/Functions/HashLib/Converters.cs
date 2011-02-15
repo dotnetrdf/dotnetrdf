@@ -12,6 +12,11 @@ namespace HashLib
     /// </remarks>
     public static class Converters
     {
+        /// <summary>
+        /// Converts to Bytes
+        /// </summary>
+        /// <param name="a_in">Object</param>
+        /// <returns></returns>
         public static byte[] ConvertToBytes(object a_in)
         {
             if (a_in is byte)
@@ -60,6 +65,11 @@ namespace HashLib
                 throw new ArgumentException();
         }
 
+        /// <summary>
+        /// Converts to Bytes
+        /// </summary>
+        /// <param name="a_in">Byte Array</param>
+        /// <returns></returns>
         public static uint[] ConvertBytesToUInts(byte[] a_in)
         {
             Check(a_in, 1, 4);
@@ -69,6 +79,12 @@ namespace HashLib
             return result;
         }
 
+        /// <summary>
+        /// Converts Bytes to Unsigned Integers
+        /// </summary>
+        /// <param name="a_in">Byte Array</param>
+        /// <param name="a_result">Unsigned Integer Array</param>
+        /// <returns></returns>
         public static void ConvertBytesToUInts(byte[] a_in, uint[] a_result)
         {
             Check(a_in, 1, a_result, 4);
@@ -76,6 +92,13 @@ namespace HashLib
             ConvertBytesToUInts(a_in, 0, a_in.Length, a_result);
         } 
 
+        /// <summary>
+        /// Converts Bytes to Unsigned Integers
+        /// </summary>
+        /// <param name="a_in">Byte Array</param>
+        /// <param name="a_index"></param>
+        /// <param name="a_length"></param>
+        /// <returns></returns>
         public static uint[] ConvertBytesToUInts(byte[] a_in, int a_index, int a_length)
         {
             Check(a_in, 1, 4, a_index, a_length);
@@ -85,6 +108,13 @@ namespace HashLib
             return result;
         }
 
+        /// <summary>
+        /// Converts Bytes to Unsigned Integers
+        /// </summary>
+        /// <param name="a_in">Byte Array</param>
+        /// <param name="a_index"></param>
+        /// <param name="a_length"></param>
+        /// <param name="a_result">Unsigned Integer Array</param>
         public static void ConvertBytesToUInts(byte[] a_in, int a_index, int a_length, uint[] a_result)
         {
             Check(a_in, 1, a_result, 4, a_index, a_length);
@@ -92,6 +122,14 @@ namespace HashLib
             ConvertBytesToUInts(a_in, a_index, a_length, a_result, 0);
         }
 
+        /// <summary>
+        /// Converts Bytes to Unsigned Integers
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <param name="a_index_in"></param>
+        /// <param name="a_length"></param>
+        /// <param name="a_result"></param>
+        /// <param name="a_index_out"></param>
         public static void ConvertBytesToUInts(byte[] a_in, int a_index_in, int a_length, uint[] a_result, int a_index_out)
         {
             Check(a_in, 1, a_result, 4, a_index_in, a_length, a_index_out);
@@ -99,6 +137,11 @@ namespace HashLib
             Buffer.BlockCopy(a_in, a_index_in, a_result, a_index_out * 4, a_length);
         }
 
+        /// <summary>
+        /// Converts Bytes to Integers
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <returns></returns>
         public static int[] ConvertBytesToInts(byte[] a_in)
         {
             Check(a_in, 1, 4);
@@ -108,6 +151,11 @@ namespace HashLib
             return result;
         }
 
+        /// <summary>
+        /// Converts Bytes to Integers
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <param name="a_result"></param>
         public static void ConvertBytesToInts(byte[] a_in, int[] a_result)
         {
             Check(a_in, 1, a_result, 4);
@@ -115,6 +163,13 @@ namespace HashLib
             ConvertBytesToInts(a_in, 0, a_in.Length, a_result);
         }
 
+        /// <summary>
+        /// Converts Bytes to Integers
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <param name="a_index"></param>
+        /// <param name="a_length"></param>
+        /// <returns></returns>
         public static int[] ConvertBytesToInts(byte[] a_in, int a_index, int a_length)
         {
             Check(a_in, 1, 4, a_index, a_length);
@@ -124,6 +179,13 @@ namespace HashLib
             return result;
         }
 
+        /// <summary>
+        /// Converts Bytes to Integers
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <param name="a_index"></param>
+        /// <param name="a_length"></param>
+        /// <param name="a_result"></param>
         public static void ConvertBytesToInts(byte[] a_in, int a_index, int a_length, int[] a_result)
         {
             Check(a_in, 1, a_result, 4, a_index, a_length);
@@ -131,6 +193,14 @@ namespace HashLib
             ConvertBytesToInts(a_in, a_index, a_length, a_result, 0);
         }
 
+        /// <summary>
+        /// Converts Bytes to Integers
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <param name="a_index_in"></param>
+        /// <param name="a_length"></param>
+        /// <param name="a_result"></param>
+        /// <param name="a_index_out"></param>
         public static void ConvertBytesToInts(byte[] a_in, int a_index_in, int a_length, int[] a_result, int a_index_out)
         {
             Check(a_in, 1, a_result, 4, a_index_in, a_length, a_index_out);
@@ -138,6 +208,11 @@ namespace HashLib
             Buffer.BlockCopy(a_in, a_index_in, a_result, a_index_out * 4, a_length);
         }
 
+        /// <summary>
+        /// Converts Bytes to Unsigned Longs
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <returns></returns>
         public static ulong[] ConvertBytesToULongs(byte[] a_in)
         {
             Check(a_in, 1, 8);
@@ -147,6 +222,11 @@ namespace HashLib
             return result;
         }
 
+        /// <summary>
+        /// Converts Bytes to Unsigned Longs
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <param name="a_result"></param>
         public static void ConvertBytesToULongs(byte[] a_in, ulong[] a_result)
         {
             Check(a_in, 1, a_result, 8);
@@ -154,6 +234,13 @@ namespace HashLib
             ConvertBytesToULongs(a_in, 0, a_in.Length, a_result);
         }
 
+        /// <summary>
+        /// Converts Bytes to Unsigned Longs
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <param name="a_index"></param>
+        /// <param name="a_length"></param>
+        /// <returns></returns>
         public static ulong[] ConvertBytesToULongs(byte[] a_in, int a_index, int a_length)
         {
             Check(a_in, 1, 4, a_index, a_length);
@@ -163,6 +250,13 @@ namespace HashLib
             return result;
         }
 
+        /// <summary>
+        /// Converts Bytes to Unsigned Longs
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <param name="a_index"></param>
+        /// <param name="a_length"></param>
+        /// <param name="a_result"></param>
         public static void ConvertBytesToULongs(byte[] a_in, int a_index, int a_length, ulong[] a_result)
         {
             Check(a_in, 1, a_result, 8, a_index, a_length);
@@ -170,6 +264,14 @@ namespace HashLib
             ConvertBytesToULongs(a_in, a_index, a_length, a_result, 0);
         }
 
+        /// <summary>
+        /// Converts Bytes to Unsigned Longs
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <param name="a_index_in"></param>
+        /// <param name="a_length"></param>
+        /// <param name="a_result"></param>
+        /// <param name="a_index_out"></param>
         public static void ConvertBytesToULongs(byte[] a_in, int a_index_in, int a_length, ulong[] a_result, int a_index_out)
         {
             Check(a_in, 1, a_result, 8, a_index_in, a_length, a_index_out);
@@ -177,6 +279,11 @@ namespace HashLib
             Buffer.BlockCopy(a_in, a_index_in, a_result, a_index_out * 8, a_length);
         }
 
+        /// <summary>
+        /// Converts Bytes to Unsigned Longs
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <returns></returns>
         public static long[] ConvertBytesToLongs(byte[] a_in)
         {
             Check(a_in, 1, 8);
@@ -186,6 +293,11 @@ namespace HashLib
             return result;
         }
 
+        /// <summary>
+        /// Converts Bytes to Unsigned Longs
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <param name="a_result"></param>
         public static void ConvertBytesToLongs(byte[] a_in, long[] a_result)
         {
             Check(a_in, 1, a_result, 8);
@@ -193,6 +305,13 @@ namespace HashLib
             ConvertBytesToLongs(a_in, 0, a_in.Length, a_result);
         }
 
+        /// <summary>
+        /// Converts Bytes to Unsigned Longs
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <param name="a_index"></param>
+        /// <param name="a_length"></param>
+        /// <returns></returns>
         public static long[] ConvertBytesToLongs(byte[] a_in, int a_index, int a_length)
         {
             Check(a_in, 1, 8, a_index, a_length);
@@ -202,6 +321,13 @@ namespace HashLib
             return result;
         }
 
+        /// <summary>
+        /// Converts Bytes to Unsigned Longs
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <param name="a_index"></param>
+        /// <param name="a_length"></param>
+        /// <param name="a_result"></param>
         public static void ConvertBytesToLongs(byte[] a_in, int a_index, int a_length, long[] a_result)
         {
             Check(a_in, 1, a_result, 8, a_index, a_length);
@@ -209,6 +335,14 @@ namespace HashLib
             ConvertBytesToLongs(a_in, a_index, a_length, a_result, 0);
         }
 
+        /// <summary>
+        /// Converts Bytes to Unsigned Longs
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <param name="a_index_in"></param>
+        /// <param name="a_length"></param>
+        /// <param name="a_result"></param>
+        /// <param name="a_index_out"></param>
         public static void ConvertBytesToLongs(byte[] a_in, int a_index_in, int a_length, long[] a_result, int a_index_out)
         {
             Check(a_in, 1, a_result, 8, a_index_in, a_length, a_index_out);
@@ -216,6 +350,11 @@ namespace HashLib
             Buffer.BlockCopy(a_in, a_index_in, a_result, a_index_out * 8, a_length);
         }
 
+        /// <summary>
+        /// Converts Bytes to Unsigned Integers
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <returns></returns>
         public static uint[] ConvertBytesToUIntsSwapOrder(byte[] a_in)
         {
             Check(a_in, 1, 4);
@@ -225,6 +364,11 @@ namespace HashLib
             return result;
         }
 
+        /// <summary>
+        /// Converts Bytes to Unsigned Integers
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <param name="a_result"></param>
         public static void ConvertBytesToUIntsSwapOrder(byte[] a_in, uint[] a_result)
         {
             Check(a_in, 1, a_result, 4);
@@ -232,6 +376,13 @@ namespace HashLib
             ConvertBytesToUIntsSwapOrder(a_in, 0, a_in.Length, a_result);
         }
 
+        /// <summary>
+        /// Converts Bytes to Unsigned Integers
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <param name="a_index"></param>
+        /// <param name="a_length"></param>
+        /// <returns></returns>
         public static uint[] ConvertBytesToUIntsSwapOrder(byte[] a_in, int a_index, int a_length)
         {
             Check(a_in, 1, 4, a_index, a_length);
@@ -241,6 +392,13 @@ namespace HashLib
             return result;
         }
 
+        /// <summary>
+        /// Converts Bytes to Unsigned Integers
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <param name="a_index"></param>
+        /// <param name="a_length"></param>
+        /// <param name="a_result"></param>
         public static void ConvertBytesToUIntsSwapOrder(byte[] a_in, int a_index, int a_length, uint[] a_result)
         {
             Check(a_in, 1, a_result, 4, a_index, a_length);
@@ -248,6 +406,14 @@ namespace HashLib
             ConvertBytesToUIntsSwapOrder(a_in, a_index, a_length, a_result, 0);
         }
 
+        /// <summary>
+        /// Converts Bytes to Unsigned Integers
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <param name="a_index"></param>
+        /// <param name="a_length"></param>
+        /// <param name="a_result"></param>
+        /// <param name="a_index_out"></param>
         public static void ConvertBytesToUIntsSwapOrder(byte[] a_in, int a_index, int a_length, uint[] a_result, int a_index_out)
         {
             Check(a_in, 1, a_result, 4, a_index, a_length, a_index_out);
@@ -262,6 +428,11 @@ namespace HashLib
             }
         }
 
+        /// <summary>
+        /// Converts Bytes to Integers
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <returns></returns>
         public static int[] ConvertBytesToIntsSwapOrder(byte[] a_in)
         {
             Check(a_in, 1, 4);
@@ -271,6 +442,11 @@ namespace HashLib
             return result;
         }
 
+        /// <summary>
+        /// Converts Bytes to Integers
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <param name="a_result"></param>
         public static void ConvertBytesToIntsSwapOrder(byte[] a_in, int[] a_result)
         {
             Check(a_in, 1, a_result, 4);
@@ -278,6 +454,13 @@ namespace HashLib
             ConvertBytesToIntsSwapOrder(a_in, 0, a_in.Length, a_result);
         }
 
+        /// <summary>
+        /// Converts Bytes to Integers
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <param name="a_index"></param>
+        /// <param name="a_length"></param>
+        /// <returns></returns>
         public static int[] ConvertBytesToIntsSwapOrder(byte[] a_in, int a_index, int a_length)
         {
             Check(a_in, 1, 4, a_index, a_length);
@@ -287,6 +470,13 @@ namespace HashLib
             return result;
         }
 
+        /// <summary>
+        /// Converts Bytes to Integers
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <param name="a_index"></param>
+        /// <param name="a_length"></param>
+        /// <param name="a_result"></param>
         public static void ConvertBytesToIntsSwapOrder(byte[] a_in, int a_index, int a_length, int[] a_result)
         {
             Check(a_in, 1, a_result, 4, a_index, a_length);
@@ -294,6 +484,14 @@ namespace HashLib
             ConvertBytesToIntsSwapOrder(a_in, a_index, a_length, a_result, 0);
         }
 
+        /// <summary>
+        /// Converts Bytes to Integers
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <param name="a_index"></param>
+        /// <param name="a_length"></param>
+        /// <param name="a_result"></param>
+        /// <param name="a_index_out"></param>
         public static void ConvertBytesToIntsSwapOrder(byte[] a_in, int a_index, int a_length, int[] a_result, int a_index_out)
         {
             Check(a_in, 1, a_result, 4, a_index, a_length, a_index_out);
@@ -308,6 +506,11 @@ namespace HashLib
             }
         }
 
+        /// <summary>
+        /// Converts Bytes to Unsigned Longs
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <returns></returns>
         public static ulong[] ConvertBytesToULongsSwapOrder(byte[] a_in)
         {
             Check(a_in, 1, 8);
@@ -317,6 +520,12 @@ namespace HashLib
             return result;
         }
 
+        /// <summary>
+        /// Converts Bytes to Unsigned Longs
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <param name="a_index"></param>
+        /// <returns></returns>
         public static ulong ConvertBytesToULongSwapOrder(byte[] a_in, int a_index)
         {
             Debug.Assert(a_index >= 0);
@@ -332,6 +541,12 @@ namespace HashLib
                    a_in[a_index];
         }
 
+        /// <summary>
+        /// Converts Bytes to Unsigned Longs
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <param name="a_index"></param>
+        /// <returns></returns>
         public static ulong ConvertBytesToULong(byte[] a_in, int a_index)
         {
             Debug.Assert(a_index >= 0);
@@ -340,6 +555,12 @@ namespace HashLib
             return BitConverter.ToUInt64(a_in, a_index);
         }
 
+        /// <summary>
+        /// Converts Bytes to Unsigned Integers
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <param name="a_index"></param>
+        /// <returns></returns>
         public static uint ConvertBytesToUIntSwapOrder(byte[] a_in, int a_index)
         {
             Debug.Assert(a_index >= 0);
@@ -351,6 +572,12 @@ namespace HashLib
                    a_in[a_index];
         }
 
+        /// <summary>
+        /// Converts Bytes to Unsigned Integers
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <param name="a_index"></param>
+        /// <returns></returns>
         public static uint ConvertBytesToUInt(byte[] a_in, int a_index)
         {
             Debug.Assert(a_index >= 0);
@@ -362,6 +589,11 @@ namespace HashLib
                    ((uint)a_in[a_index] << 24);
         }
 
+        /// <summary>
+        /// Converts Bytes to Unsigned Longs
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <param name="a_result"></param>
         public static void ConvertBytesToULongsSwapOrder(byte[] a_in, ulong[] a_result)
         {
             Check(a_in, 1, a_result, 8);
@@ -369,6 +601,13 @@ namespace HashLib
             ConvertBytesToULongsSwapOrder(a_in, 0, a_in.Length, a_result);
         }
 
+        /// <summary>
+        /// Converts Bytes to Unsigned Longs
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <param name="a_index"></param>
+        /// <param name="a_length"></param>
+        /// <returns></returns>
         public static ulong[] ConvertBytesToULongsSwapOrder(byte[] a_in, int a_index, int a_length)
         {
             Check(a_in, 1, 8, a_index, a_length);
@@ -378,6 +617,13 @@ namespace HashLib
             return result;
         }
 
+        /// <summary>
+        /// Converts Bytes to Unsigned Longs
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <param name="a_index"></param>
+        /// <param name="a_length"></param>
+        /// <param name="a_result"></param>
         public static void ConvertBytesToULongsSwapOrder(byte[] a_in, int a_index, int a_length, ulong[] a_result)
         {
             Check(a_in, 1, a_result, 8, a_index, a_length);
@@ -385,6 +631,14 @@ namespace HashLib
             ConvertBytesToULongsSwapOrder(a_in, a_index, a_length, a_result, 0);
         }
 
+        /// <summary>
+        /// Converts Bytes to Unsigned Longs
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <param name="a_index_in"></param>
+        /// <param name="a_length"></param>
+        /// <param name="a_result"></param>
+        /// <param name="a_index_out"></param>
         public static void ConvertBytesToULongsSwapOrder(byte[] a_in, int a_index_in, int a_length, ulong[] a_result, int a_index_out)
         {
             Check(a_in, 1, a_result, 8, a_index_in, a_length, a_index_out);
@@ -403,6 +657,11 @@ namespace HashLib
             }
         }
 
+        /// <summary>
+        /// Converts Bytes to Longs
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <returns></returns>
         public static long[] ConvertBytesToLongsSwapOrder(byte[] a_in)
         {
             Check(a_in, 1, 8);
@@ -412,6 +671,11 @@ namespace HashLib
             return result;
         }
 
+        /// <summary>
+        /// Converts Bytes to Longs
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <param name="a_result"></param>
         public static void ConvertBytesToLongsSwapOrder(byte[] a_in, long[] a_result)
         {
             Check(a_in, 1, a_result, 8);
@@ -419,6 +683,13 @@ namespace HashLib
             ConvertBytesToLongsSwapOrder(a_in, 0, a_in.Length, a_result);
         }
 
+        /// <summary>
+        /// Converts Bytes to Longs
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <param name="a_index"></param>
+        /// <param name="a_length"></param>
+        /// <returns></returns>
         public static long[] ConvertBytesToLongsSwapOrder(byte[] a_in, int a_index, int a_length)
         {
             Check(a_in, 1, 8, a_index, a_length);
@@ -428,6 +699,13 @@ namespace HashLib
             return result;
         }
 
+        /// <summary>
+        /// Converts Bytes to Longs
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <param name="a_index"></param>
+        /// <param name="a_length"></param>
+        /// <param name="a_result"></param>
         public static void ConvertBytesToLongsSwapOrder(byte[] a_in, int a_index, int a_length, long[] a_result)
         {
             Check(a_in, 1, a_result, 8, a_index, a_length);
@@ -435,6 +713,14 @@ namespace HashLib
             ConvertBytesToLongsSwapOrder(a_in, a_index, a_length, a_result, 0);
         }
 
+        /// <summary>
+        /// Converts Bytes to Longs
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <param name="a_index_in"></param>
+        /// <param name="a_length"></param>
+        /// <param name="a_result"></param>
+        /// <param name="a_index_out"></param>
         public static void ConvertBytesToLongsSwapOrder(byte[] a_in, int a_index_in, int a_length, long[] a_result, int a_index_out)
         {
             Check(a_in, 1, a_result, 8, a_index_in, a_length, a_index_out);
@@ -453,16 +739,32 @@ namespace HashLib
             }
         }
 
+        /// <summary>
+        /// Convert String to Bytes
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <returns></returns>
         public static byte[] ConvertStringToBytes(string a_in)
         {
             return ConvertStringToBytes(a_in, Encoding.Unicode);
         }
 
+        /// <summary>
+        /// Convert String to Bytes
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <param name="a_encoding"></param>
+        /// <returns></returns>
         public static byte[] ConvertStringToBytes(string a_in, Encoding a_encoding)
         {
             return a_encoding.GetBytes(a_in);
         }
 
+        /// <summary>
+        /// Convert Chars to Bytes
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <returns></returns>
         public static byte[] ConvertCharsToBytes(char[] a_in)
         {
             Check(a_in, 2, 1);
@@ -472,6 +774,12 @@ namespace HashLib
             return result;
         }
 
+        /// <summary>
+        /// Convert Chars to Bytes
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <param name="a_encoding"></param>
+        /// <returns></returns>
         public static byte[] ConvertCharsToBytes(char[] a_in, Encoding a_encoding)
         {
             Check(a_in, 2, 1);
@@ -479,6 +787,11 @@ namespace HashLib
             return a_encoding.GetBytes(a_in);
         }
 
+        /// <summary>
+        /// Convert Shorts to Bytes
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <returns></returns>
         public static byte[] ConvertShortsToBytes(short[] a_in)
         {
             Check(a_in, 2, 1);
@@ -488,6 +801,11 @@ namespace HashLib
             return result;
         }
 
+        /// <summary>
+        /// Convert Unsigned Shorts to Bytes
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <returns></returns>
         public static byte[] ConvertUShortsToBytes(ushort[] a_in)
         {
             Check(a_in, 2, 1);
@@ -497,6 +815,11 @@ namespace HashLib
             return result;
         }
 
+        /// <summary>
+        /// Convert Integers to Bytes
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <returns></returns>
         public static byte[] ConvertIntsToBytes(int[] a_in)
         {
             Check(a_in, 4, 1);
@@ -504,6 +827,13 @@ namespace HashLib
             return ConvertIntsToBytes(a_in, 0, a_in.Length);
         }
 
+        /// <summary>
+        /// Convert Integers to Bytes
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <param name="a_index"></param>
+        /// <param name="a_length"></param>
+        /// <returns></returns>
         public static byte[] ConvertIntsToBytes(int[] a_in, int a_index, int a_length)
         {
             Check(a_in, 4, 1, a_index, a_length);
@@ -513,6 +843,11 @@ namespace HashLib
             return result;
         }
 
+        /// <summary>
+        /// Convert Integers to Bytes
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <returns></returns>
         public static byte[] ConvertIntsToBytesSwapOrder(int[] a_in)
         {
             Check(a_in, 4, 1);
@@ -520,6 +855,13 @@ namespace HashLib
             return ConvertIntsToBytesSwapOrder(a_in, 0, a_in.Length);
         }
 
+        /// <summary>
+        /// Convert Integers to Bytes
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <param name="a_index"></param>
+        /// <param name="a_length"></param>
+        /// <returns></returns>
         public static byte[] ConvertIntsToBytesSwapOrder(int[] a_in, int a_index, int a_length)
         {
             Check(a_in, 4, 1, a_index, a_length);
@@ -537,6 +879,11 @@ namespace HashLib
             return result;
         }
 
+        /// <summary>
+        /// Convert Unsigned Integers to Bytes
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <returns></returns>
         public static byte[] ConvertUIntsToBytes(uint[] a_in)
         {
             Check(a_in, 4, 1);
@@ -544,6 +891,13 @@ namespace HashLib
             return ConvertUIntsToBytes(a_in, 0, a_in.Length);
         }
 
+        /// <summary>
+        /// Convert Unsigned Integers to Bytes
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <param name="a_index"></param>
+        /// <param name="a_length"></param>
+        /// <returns></returns>
         public static byte[] ConvertUIntsToBytes(uint[] a_in, int a_index, int a_length)
         {
             Check(a_in, 4, 1, a_index, a_length);
@@ -553,6 +907,11 @@ namespace HashLib
             return result;
         }
 
+        /// <summary>
+        /// Convert Unsigned Integers to Bytes
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <returns></returns>
         public static byte[] ConvertUIntsToBytesSwapOrder(uint[] a_in)
         {
             Check(a_in, 4, 1);
@@ -560,6 +919,13 @@ namespace HashLib
             return ConvertUIntsToBytesSwapOrder(a_in, 0, a_in.Length);
         }
 
+        /// <summary>
+        /// Convert Unsigned Integers to Bytes
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <param name="a_index"></param>
+        /// <param name="a_length"></param>
+        /// <returns></returns>
         public static byte[] ConvertUIntsToBytesSwapOrder(uint[] a_in, int a_index, int a_length)
         {
             Check(a_in, 4, 1, a_index, a_length);
@@ -577,6 +943,11 @@ namespace HashLib
             return result;
         }
 
+        /// <summary>
+        /// Convert Longs to Bytes
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <returns></returns>
         public static byte[] ConvertLongsToBytes(long[] a_in)
         {
             Check(a_in, 8, 1);
@@ -584,6 +955,13 @@ namespace HashLib
             return ConvertLongsToBytes(a_in, 0, a_in.Length);
         }
 
+        /// <summary>
+        /// Convert Longs to Bytes
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <param name="a_index"></param>
+        /// <param name="a_length"></param>
+        /// <returns></returns>
         public static byte[] ConvertLongsToBytes(long[] a_in, int a_index, int a_length)
         {
             Check(a_in, 8, 1, a_index, a_length);
@@ -593,6 +971,11 @@ namespace HashLib
             return result;
         }
 
+        /// <summary>
+        /// Convert Longs to Bytes
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <returns></returns>
         public static byte[] ConvertLongsToBytesSwapOrder(long[] a_in)
         {
             Check(a_in, 8, 1);
@@ -600,6 +983,11 @@ namespace HashLib
             return ConvertLongsToBytesSwapOrder(a_in, 0, a_in.Length);
         }
 
+        /// <summary>
+        /// Swaps ordering
+        /// </summary>
+        /// <param name="a_ulong"></param>
+        /// <returns></returns>
         public static ulong SwapOrder(ulong a_ulong)
         {
             return
@@ -613,11 +1001,21 @@ namespace HashLib
                 (a_ulong << 56);
         }
 
+        /// <summary>
+        /// Swaps ordering
+        /// </summary>
+        /// <param name="a_long"></param>
+        /// <returns></returns>
         public static long SwapOrder(long a_long)
         {
             return (long)SwapOrder((ulong)a_long);
         }
 
+        /// <summary>
+        /// Swaps ordering
+        /// </summary>
+        /// <param name="a_int"></param>
+        /// <returns></returns>
         public static uint SwapOrder(uint a_int)
         {
             return
@@ -627,11 +1025,23 @@ namespace HashLib
                 (a_int << 24);
         }
 
+        /// <summary>
+        /// Swaps ordering
+        /// </summary>
+        /// <param name="a_int"></param>
+        /// <returns></returns>
         public static int SwapOrder(int a_int)
         {
             return (int)SwapOrder((uint)a_int);
         }
 
+        /// <summary>
+        /// Convert Longs to Bytes
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <param name="a_index"></param>
+        /// <param name="a_length"></param>
+        /// <returns></returns>
         public static byte[] ConvertLongsToBytesSwapOrder(long[] a_in, int a_index, int a_length)
         {
             Check(a_in, 8, 1, a_index, a_length);
@@ -653,6 +1063,11 @@ namespace HashLib
             return result;
         }
 
+        /// <summary>
+        /// Convert Unsigned Longs to Bytes
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <returns></returns>
         public static byte[] ConvertULongsToBytes(ulong[] a_in)
         {
             Check(a_in, 8, 1);
@@ -660,6 +1075,13 @@ namespace HashLib
             return ConvertULongsToBytes(a_in, 0, a_in.Length);
         }
 
+        /// <summary>
+        /// Convert Unsigned Longs to Bytes
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <param name="a_index"></param>
+        /// <param name="a_length"></param>
+        /// <returns></returns>
         public static byte[] ConvertULongsToBytes(ulong[] a_in, int a_index, int a_length)
         {
             Check(a_in, 8, 1, a_index, a_length);
@@ -669,6 +1091,13 @@ namespace HashLib
             return result;
         }
 
+        /// <summary>
+        /// Convert Unsigned Longs to Bytes
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <param name="a_index"></param>
+        /// <param name="a_length"></param>
+        /// <param name="a_result"></param>
         public static void ConvertULongsToBytes(ulong[] a_in, int a_index, int a_length, byte[] a_result)
         {
             Check(a_in, 8, a_result, 1, a_index, a_length);
@@ -676,12 +1105,24 @@ namespace HashLib
             Buffer.BlockCopy(a_in, a_index * 8, a_result, 0, a_length * 8);
         }
 
+        /// <summary>
+        /// Convert Unsigned Longs to Bytes
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <returns></returns>
         public static byte[] ConvertULongsToBytesSwapOrder(ulong[] a_in)
         {
             Check(a_in, 8, 1);
             return ConvertULongsToBytesSwapOrder(a_in, 0, a_in.Length);
         }
 
+        /// <summary>
+        /// Convert Unsigned Longs to Bytes
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <param name="a_index"></param>
+        /// <param name="a_length"></param>
+        /// <returns></returns>
         public static byte[] ConvertULongsToBytesSwapOrder(ulong[] a_in, int a_index, int a_length)
         {
             Check(a_in, 8, 1, a_index, a_length);
@@ -703,6 +1144,11 @@ namespace HashLib
             return result;
         }
 
+        /// <summary>
+        /// Convert Doubles to Bytes
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <returns></returns>
         public static byte[] ConvertDoublesToBytes(double[] a_in)
         {
             Check(a_in, 8, 1);
@@ -710,6 +1156,13 @@ namespace HashLib
             return ConvertDoublesToBytes(a_in, 0, a_in.Length);
         }
 
+        /// <summary>
+        /// Convert Doubles to Bytes
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <param name="a_index"></param>
+        /// <param name="a_length"></param>
+        /// <returns></returns>
         public static byte[] ConvertDoublesToBytes(double[] a_in, int a_index, int a_length)
         {
             Check(a_in, 8, 1, a_index, a_length);
@@ -719,6 +1172,11 @@ namespace HashLib
             return result;
         }
 
+        /// <summary>
+        /// Convert Floats to Bytes
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <returns></returns>
         public static byte[] ConvertFloatsToBytes(float[] a_in)
         {
             Check(a_in, 4, 1);
@@ -726,6 +1184,13 @@ namespace HashLib
             return ConvertFloatsToBytes(a_in, 0, a_in.Length);
         }
 
+        /// <summary>
+        /// Convert Floats to Bytes
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <param name="a_index"></param>
+        /// <param name="a_length"></param>
+        /// <returns></returns>
         public static byte[] ConvertFloatsToBytes(float[] a_in, int a_index, int a_length)
         {
             Check(a_in, 4, 1, a_index, a_length);
@@ -735,6 +1200,12 @@ namespace HashLib
             return result;
         }
 
+        /// <summary>
+        /// Convert Bytes to Hex String
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <param name="a_group"></param>
+        /// <returns></returns>
         public static string ConvertBytesToHexString(byte[] a_in, bool a_group)
         {
             Check(a_in, 1, 4);
@@ -760,6 +1231,11 @@ namespace HashLib
             return hex;
         }
 
+        /// <summary>
+        /// Convert Hex String to Bytes
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <returns></returns>
         public static byte[] ConvertHexStringToBytes(string a_in)
         {
             a_in = a_in.Replace("-", "");
@@ -774,6 +1250,11 @@ namespace HashLib
             return result;
         }
 
+        /// <summary>
+        /// Convert Bytes to Chars
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <returns></returns>
         public static char[] ConvertBytesToChars(byte[] a_in)
         {
             Check(a_in, 1, 2);
@@ -783,6 +1264,11 @@ namespace HashLib
             return result;
         }
 
+        /// <summary>
+        /// Convert Bytes to Shorts
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <returns></returns>
         public static short[] ConvertBytesToShorts(byte[] a_in)
         {
             Check(a_in, 1, 2);
@@ -792,6 +1278,11 @@ namespace HashLib
             return result;
         }
 
+        /// <summary>
+        /// Convert Bytes to Unsigned Shorts
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <returns></returns>
         public static ushort[] ConvertBytesToUShorts(byte[] a_in)
         {
             Check(a_in, 1, 2);
@@ -801,6 +1292,11 @@ namespace HashLib
             return result;
         }
 
+        /// <summary>
+        /// Convert Bytes to Floats
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <returns></returns>
         public static float[] ConvertBytesToFloats(byte[] a_in)
         {
             Check(a_in, 1, 4);
@@ -810,6 +1306,11 @@ namespace HashLib
             return result;
         }
 
+        /// <summary>
+        /// Convert Bytes to Floats
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <param name="a_result"></param>
         public static void ConvertBytesToFloats(byte[] a_in, float[] a_result)
         {
             Check(a_in, 1, a_result, 4);
@@ -817,6 +1318,13 @@ namespace HashLib
             ConvertBytesToFloats(a_in, 0, a_in.Length, a_result);
         }
 
+        /// <summary>
+        /// Convert Bytes to Floats
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <param name="a_index"></param>
+        /// <param name="a_length"></param>
+        /// <returns></returns>
         public static float[] ConvertBytesToFloats(byte[] a_in, int a_index, int a_length)
         {
             Check(a_in, 1, 4, a_index, a_length);
@@ -826,6 +1334,13 @@ namespace HashLib
             return result;
         }
 
+        /// <summary>
+        /// Convert Bytes to Floats
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <param name="a_index"></param>
+        /// <param name="a_length"></param>
+        /// <param name="a_result"></param>
         public static void ConvertBytesToFloats(byte[] a_in, int a_index, int a_length, float[] a_result)
         {
             Check(a_in, 1, a_result, 4, a_index, a_length);
@@ -833,6 +1348,14 @@ namespace HashLib
             ConvertBytesToFloats(a_in, a_index, a_length, a_result, 0);
         }
 
+        /// <summary>
+        /// Convert Bytes to Floats
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <param name="a_index_in"></param>
+        /// <param name="a_length"></param>
+        /// <param name="a_result"></param>
+        /// <param name="a_index_out"></param>
         public static void ConvertBytesToFloats(byte[] a_in, int a_index_in, int a_length, float[] a_result, int a_index_out)
         {
             Check(a_in, 1, a_result, 4, a_index_in, a_length, a_index_out);
@@ -840,6 +1363,12 @@ namespace HashLib
             Buffer.BlockCopy(a_in, a_index_in, a_result, a_index_out * 4, a_length);
         }
 
+        /// <summary>
+        /// Convert Bytes to Doubles
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <param name="a_index"></param>
+        /// <returns></returns>
         public static double ConvertBytesToDouble(byte[] a_in, int a_index)
         {
             Debug.Assert(a_index + 8 <= a_in.Length);
@@ -847,6 +1376,11 @@ namespace HashLib
             return BitConverter.ToDouble(a_in, a_index);
         }
 
+        /// <summary>
+        /// Convert Bytes to Doubles
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <returns></returns>
         public static double[] ConvertBytesToDoubles(byte[] a_in)
         {
             Check(a_in, 1, 8);
@@ -856,6 +1390,11 @@ namespace HashLib
             return result;
         }
 
+        /// <summary>
+        /// Convert Bytes to Doubles
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <param name="a_result"></param>
         public static void ConvertBytesToDoubles(byte[] a_in, double[] a_result)
         {
             Check(a_in, 1, a_result, 8);
@@ -863,6 +1402,13 @@ namespace HashLib
             ConvertBytesToDoubles(a_in, 0, a_in.Length, a_result);
         }
 
+        /// <summary>
+        /// Convert Bytes to Doubles
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <param name="a_index"></param>
+        /// <param name="a_length"></param>
+        /// <returns></returns>
         public static double[] ConvertBytesToDoubles(byte[] a_in, int a_index, int a_length)
         {
             Check(a_in, 1, 8, a_index, a_length);
@@ -872,6 +1418,13 @@ namespace HashLib
             return result;
         }
 
+        /// <summary>
+        /// Convert Bytes to Doubles
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <param name="a_index"></param>
+        /// <param name="a_length"></param>
+        /// <param name="a_result"></param>
         public static void ConvertBytesToDoubles(byte[] a_in, int a_index, int a_length, double[] a_result)
         {
             Check(a_in, 1, a_result, 8, a_index, a_length);
@@ -879,6 +1432,14 @@ namespace HashLib
             ConvertBytesToDoubles(a_in, a_index, a_length, a_result, 0);
         }
 
+        /// <summary>
+        /// Convert Bytes to Doubles
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <param name="a_index_in"></param>
+        /// <param name="a_length"></param>
+        /// <param name="a_result"></param>
+        /// <param name="a_index_out"></param>
         public static void ConvertBytesToDoubles(byte[] a_in, int a_index_in, int a_length, double[] a_result, int a_index_out)
         {
             Check(a_in, 1, a_result, 8, a_index_in, a_length, a_index_out);
@@ -934,6 +1495,12 @@ namespace HashLib
             Debug.Assert(a_index_out + a_result.Length >= (a_length / a_out_size));
         }
 
+        /// <summary>
+        /// Convert Bytes to Floats
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <param name="a_index"></param>
+        /// <returns></returns>
         public static float ConvertBytesToFloat(byte[] a_in, int a_index)
         {
             Debug.Assert(a_index + 4 <= a_in.Length);
@@ -941,11 +1508,22 @@ namespace HashLib
             return BitConverter.ToSingle(a_in, a_index);
         }
 
+        /// <summary>
+        /// Converts Float to Bytes
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <returns></returns>
         public static byte[] ConvertFloatToBytes(float a_in)
         {
             return BitConverter.GetBytes(a_in);
         }
 
+        /// <summary>
+        /// Converts Float to Bytes
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <param name="a_result"></param>
+        /// <param name="a_index"></param>
         public static void ConvertFloatToBytes(float a_in, byte[] a_result, int a_index)
         {
             Debug.Assert(a_index + 4 <= a_result.Length);
@@ -953,6 +1531,12 @@ namespace HashLib
             Array.Copy(BitConverter.GetBytes(a_in), 0, a_result, a_index, 4);
         }
 
+        /// <summary>
+        /// Converts Char to Bytes
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <param name="a_result"></param>
+        /// <param name="a_index"></param>
         public static void ConvertCharToBytes(char a_in, byte[] a_result, int a_index)
         {
             Debug.Assert(a_index + 2 <= a_result.Length);
@@ -960,6 +1544,12 @@ namespace HashLib
             Array.Copy(BitConverter.GetBytes(a_in), 0, a_result, a_index, 2);
         }
 
+        /// <summary>
+        /// Converts Short to Bytes
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <param name="a_result"></param>
+        /// <param name="a_index"></param>
         public static void ConvertShortToBytes(short a_in, byte[] a_result, int a_index)
         {
             Debug.Assert(a_index + 2 <= a_result.Length);
@@ -967,6 +1557,12 @@ namespace HashLib
             Array.Copy(BitConverter.GetBytes(a_in), 0, a_result, a_index, 2);
         }
 
+        /// <summary>
+        /// Converts Unsigned Short to Bytes
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <param name="a_result"></param>
+        /// <param name="a_index"></param>
         public static void ConvertUShortToBytes(ushort a_in, byte[] a_result, int a_index)
         {
             Debug.Assert(a_index + 2 <= a_result.Length);
@@ -974,6 +1570,12 @@ namespace HashLib
             Array.Copy(BitConverter.GetBytes(a_in), 0, a_result, a_index, 2);
         }
 
+        /// <summary>
+        /// Converts Integer to Bytes
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <param name="a_result"></param>
+        /// <param name="a_index"></param>
         public static void ConvertIntToBytes(int a_in, byte[] a_result, int a_index)
         {
             Debug.Assert(a_index + 4 <= a_result.Length);
@@ -981,6 +1583,12 @@ namespace HashLib
             Array.Copy(BitConverter.GetBytes(a_in), 0, a_result, a_index, 4);
         }
 
+        /// <summary>
+        /// Converts Unsigned Integer to Bytes
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <param name="a_result"></param>
+        /// <param name="a_index"></param>
         public static void ConvertUIntToBytes(uint a_in, byte[] a_result, int a_index)
         {
             Debug.Assert(a_index + 4 <= a_result.Length);
@@ -988,6 +1596,12 @@ namespace HashLib
             Array.Copy(BitConverter.GetBytes(a_in), 0, a_result, a_index, 4);
         }
 
+        /// <summary>
+        /// Converts Long to Bytes
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <param name="a_out"></param>
+        /// <param name="a_index"></param>
         public static void ConvertLongToBytes(long a_in, byte[] a_out, int a_index)
         {
             Debug.Assert(a_index + 8 <= a_out.Length);
@@ -995,6 +1609,12 @@ namespace HashLib
             Array.Copy(BitConverter.GetBytes(a_in), 0, a_out, a_index, 8);
         }
 
+        /// <summary>
+        /// Converts Unsigned Long to Bytes
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <param name="a_out"></param>
+        /// <param name="a_index"></param>
         public static void ConvertULongToBytes(ulong a_in, byte[] a_out, int a_index)
         {
             Debug.Assert(a_index + 8 <= a_out.Length);
@@ -1002,6 +1622,12 @@ namespace HashLib
             Array.Copy(BitConverter.GetBytes(a_in), 0, a_out, a_index, 8);
         }
 
+        /// <summary>
+        /// Converts Unsigned Long to Bytes
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <param name="a_out"></param>
+        /// <param name="a_index"></param>
         public static void ConvertULongToBytesSwapOrder(ulong a_in, byte[] a_out, int a_index)
         {
             Debug.Assert(a_index + 8 <= a_out.Length);
@@ -1016,11 +1642,22 @@ namespace HashLib
             a_out[a_index++] = (byte)a_in;
         }
 
+        /// <summary>
+        /// Converts Double to Bytes
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <returns></returns>
         public static byte[] ConvertDoubleToBytes(double a_in)
         {
             return BitConverter.GetBytes(a_in);
         }
 
+        /// <summary>
+        /// Converts Double to Bytes
+        /// </summary>
+        /// <param name="a_in"></param>
+        /// <param name="a_result"></param>
+        /// <param name="a_index"></param>
         public static void ConvertDoubleToBytes(double a_in, byte[] a_result, int a_index)
         {
             Debug.Assert(a_index + 8 <= a_result.Length);

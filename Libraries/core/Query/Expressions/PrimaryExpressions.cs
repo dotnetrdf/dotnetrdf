@@ -251,6 +251,9 @@ namespace VDS.RDF.Query.Expressions
             }
         }
 
+        /// <summary>
+        /// Gets the Type of the Expression
+        /// </summary>
         public SparqlExpressionType Type
         {
             get
@@ -259,6 +262,9 @@ namespace VDS.RDF.Query.Expressions
             }
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public String Functor
         {
             get
@@ -267,6 +273,9 @@ namespace VDS.RDF.Query.Expressions
             }
         }
 
+        /// <summary>
+        /// Gets the Arguments of the Expression
+        /// </summary>
         public IEnumerable<ISparqlExpression> Arguments
         {
             get
@@ -351,6 +360,9 @@ namespace VDS.RDF.Query.Expressions
             }
         }
 
+        /// <summary>
+        /// Gets the Type of the Expression
+        /// </summary>
         public SparqlExpressionType Type
         {
             get
@@ -359,6 +371,9 @@ namespace VDS.RDF.Query.Expressions
             }
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public virtual String Functor
         {
             get
@@ -367,6 +382,9 @@ namespace VDS.RDF.Query.Expressions
             }
         }
 
+        /// <summary>
+        /// Gets the Arguments of the Expression
+        /// </summary>
         public IEnumerable<ISparqlExpression> Arguments
         {
             get
@@ -436,6 +454,9 @@ namespace VDS.RDF.Query.Expressions
             }
         }
 
+        /// <summary>
+        /// Gets the Type of the Expression
+        /// </summary>
         public SparqlExpressionType Type
         {
             get
@@ -444,6 +465,9 @@ namespace VDS.RDF.Query.Expressions
             }
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public String Functor
         {
             get
@@ -452,6 +476,9 @@ namespace VDS.RDF.Query.Expressions
             }
         }
 
+        /// <summary>
+        /// Gets the Arguments of the Expression
+        /// </summary>
         public IEnumerable<ISparqlExpression> Arguments
         {
             get
@@ -673,6 +700,9 @@ namespace VDS.RDF.Query.Expressions
             }
         }
 
+        /// <summary>
+        /// Gets the Type of the Expression
+        /// </summary>
         public SparqlExpressionType Type
         {
             get
@@ -681,6 +711,9 @@ namespace VDS.RDF.Query.Expressions
             }
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public virtual String Functor
         {
             get
@@ -689,6 +722,9 @@ namespace VDS.RDF.Query.Expressions
             }
         }
 
+        /// <summary>
+        /// Gets the Arguments of the Expression
+        /// </summary>
         public IEnumerable<ISparqlExpression> Arguments
         {
             get
@@ -705,23 +741,40 @@ namespace VDS.RDF.Query.Expressions
     {
         private GraphPattern _pattern;
 
+        /// <summary>
+        /// Creates a new Graph Pattern Expression
+        /// </summary>
+        /// <param name="pattern">Graph Pattern</param>
         public GraphPatternExpressionTerm(GraphPattern pattern)
         {
             this._pattern = pattern;
         }
 
-        #region ISparqlExpression Members
-
+        /// <summary>
+        /// Gets the value of this Term as evaluated for the given Bindings in the given Context
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="bindingID"></param>
+        /// <returns></returns>
         public INode Value(SparqlEvaluationContext context, int bindingID)
         {
             throw new RdfQueryException("Graph Pattern Terms do not have a Node Value");
         }
 
+        /// <summary>
+        /// Gets the Effective Boolean Value of this Term as evaluated for the given Binding in the given Context
+        /// </summary>
+        /// <param name="context">Evaluation Context</param>
+        /// <param name="bindingID">Binding ID</param>
+        /// <returns></returns>
         public bool EffectiveBooleanValue(SparqlEvaluationContext context, int bindingID)
         {
             throw new RdfQueryException("Graph Pattern Terms do not have an Effective Boolean Value");
         }
 
+        /// <summary>
+        /// Gets the Graph Pattern this term represents
+        /// </summary>
         public GraphPattern Pattern
         {
             get
@@ -730,6 +783,9 @@ namespace VDS.RDF.Query.Expressions
             }
         }
 
+        /// <summary>
+        /// Gets the Variables used in the Expression
+        /// </summary>
         public IEnumerable<string> Variables
         {
             get 
@@ -738,6 +794,9 @@ namespace VDS.RDF.Query.Expressions
             }
         }
 
+        /// <summary>
+        /// Gets the Type of the Expression
+        /// </summary>
         public SparqlExpressionType Type
         {
             get 
@@ -746,6 +805,9 @@ namespace VDS.RDF.Query.Expressions
             }
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public string Functor
         {
             get
@@ -754,6 +816,9 @@ namespace VDS.RDF.Query.Expressions
             }
         }
 
+        /// <summary>
+        /// Gets the Arguments of the Expression
+        /// </summary>
         public IEnumerable<ISparqlExpression> Arguments
         {
             get
@@ -761,7 +826,5 @@ namespace VDS.RDF.Query.Expressions
                 return Enumerable.Empty<ISparqlExpression>(); 
             }
         }
-
-        #endregion
     }
 }

@@ -82,6 +82,10 @@ namespace VDS.RDF.Update
             //Does Nothing
         }
 
+        /// <summary>
+        /// Processes an ADD command
+        /// </summary>
+        /// <param name="cmd">Add Command</param>
         public void ProcessAddCommand(AddCommand cmd)
         {
             if (this._manager is IUpdateableGenericIOManager)
@@ -166,6 +170,10 @@ namespace VDS.RDF.Update
             }
         }
 
+        /// <summary>
+        /// Processes a COPY command
+        /// </summary>
+        /// <param name="cmd">Copy Command</param>
         public void ProcessCopyCommand(CopyCommand cmd)
         {
             if (this._manager is IUpdateableGenericIOManager)
@@ -1032,6 +1040,10 @@ namespace VDS.RDF.Update
             }
         }
 
+        /// <summary>
+        /// Processes a MOVE command
+        /// </summary>
+        /// <param name="cmd">Move Command</param>
         public void ProcessMoveCommand(MoveCommand cmd)
         {
             if (this._manager is IUpdateableGenericIOManager)

@@ -129,6 +129,9 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// <returns></returns>
         public abstract override string ToString();
 
+        /// <summary>
+        /// Gets the Type of the Expression
+        /// </summary>
         public override SparqlExpressionType Type
         {
             get
@@ -139,7 +142,7 @@ namespace VDS.RDF.Query.Expressions.Functions
     }
 
     /// <summary>
-    /// Abstract base class for Hash Functions that use the parts of the HashLib integrated into dotNetRDF
+    /// Abstract base class for Hash Functions that use the parts of the HashLib that are integrated into dotNetRDF
     /// </summary>
     public abstract class BaseHashLibFunction : BaseUnaryExpression
     {
@@ -215,6 +218,9 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// <returns></returns>
         public abstract override string ToString();
 
+        /// <summary>
+        /// Gets the Type of the Expression
+        /// </summary>
         public override SparqlExpressionType Type
         {
             get

@@ -55,7 +55,6 @@ namespace VDS.RDF.Storage
     /// </remarks>
     public class ReadOnlyConnector : IGenericIOManager, IConfigurationSerializable
     {
-
         private IGenericIOManager _manager;
 
         /// <summary>
@@ -222,11 +221,19 @@ namespace VDS.RDF.Storage
 
         #endregion
 
+        /// <summary>
+        /// Gets the String representation of the Manager
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return "[Read Only]" + this._manager.ToString();
         }
 
+        /// <summary>
+        /// Serializes the Configuration of the Manager
+        /// </summary>
+        /// <param name="context">Configuration Serialization Context</param>
         public virtual void SerializeConfiguration(ConfigurationSerializationContext context)
         {
             INode manager = context.NextSubject;

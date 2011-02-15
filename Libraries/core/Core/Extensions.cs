@@ -180,7 +180,7 @@ namespace VDS.RDF
         /// <summary>
         /// Gets a SHA256 Hash for a String
         /// </summary>
-        /// <param name="obj"></param>
+        /// <param name="s">String to hash</param>
         /// <returns></returns>
         internal static String GetSha256Hash(this String s)
         {

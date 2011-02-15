@@ -102,16 +102,25 @@ namespace VDS.RDF.Query.Expressions
             }
         }
 
+        /// <summary>
+        /// Gets the Type of the Expression
+        /// </summary>
         public abstract SparqlExpressionType Type
         {
             get;
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public abstract String Functor
         {
             get;
         }
 
+        /// <summary>
+        /// Gets the Arguments of the Expression
+        /// </summary>
         public IEnumerable<ISparqlExpression> Arguments
         {
             get
@@ -183,16 +192,25 @@ namespace VDS.RDF.Query.Expressions
             }
         }
 
+        /// <summary>
+        /// Gets the Type of the Expression
+        /// </summary>
         public abstract SparqlExpressionType Type
         {
             get;
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public abstract String Functor
         {
             get;
         }
 
+        /// <summary>
+        /// Gets the Arguments of the Expression
+        /// </summary>
         public IEnumerable<ISparqlExpression> Arguments
         {
             get
@@ -367,16 +385,25 @@ namespace VDS.RDF.Query.Expressions
             get;
         }
 
+        /// <summary>
+        /// Gets the Type of the Expression
+        /// </summary>
         public abstract SparqlExpressionType Type
         {
             get;
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public abstract String Functor
         {
             get;
         }
 
+        /// <summary>
+        /// Gets the Arguments of the Expression
+        /// </summary>
         public abstract IEnumerable<ISparqlExpression> Arguments
         {
             get;
@@ -419,6 +446,9 @@ namespace VDS.RDF.Query.Expressions
             }
         }
 
+        /// <summary>
+        /// Gets the Arguments of the Expression
+        /// </summary>
         public override IEnumerable<ISparqlExpression> Arguments
         {
             get 
@@ -466,6 +496,9 @@ namespace VDS.RDF.Query.Expressions
             }
         }
 
+        /// <summary>
+        /// Gets the Arguments of the Expression
+        /// </summary>
         public override IEnumerable<ISparqlExpression> Arguments
         {
             get 

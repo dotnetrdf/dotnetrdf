@@ -87,6 +87,9 @@ namespace VDS.RDF.Query.Paths
             }
         }
 
+        /// <summary>
+        /// Gets the LHS Path component
+        /// </summary>
         public ISparqlPath LhsPath
         {
             get
@@ -95,6 +98,9 @@ namespace VDS.RDF.Query.Paths
             }
         }
 
+        /// <summary>
+        /// Gets the RHS Path component
+        /// </summary>
         public ISparqlPath RhsPath
         {
             get

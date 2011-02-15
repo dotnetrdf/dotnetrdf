@@ -110,6 +110,9 @@ namespace VDS.RDF.Query.Aggregates
         /// <returns></returns>
         public abstract override string ToString();
 
+        /// <summary>
+        /// Gets the Type of the Expression
+        /// </summary>
         public SparqlExpressionType Type
         {
             get
@@ -118,11 +121,17 @@ namespace VDS.RDF.Query.Aggregates
             }
         }
 
+        /// <summary>
+        /// Gets the Functor of the Aggregate
+        /// </summary>
         public abstract String Functor
         {
             get;
         }
 
+        /// <summary>
+        /// Gets the Arguments of the Expression
+        /// </summary>
         public virtual IEnumerable<ISparqlExpression> Arguments
         {
             get
