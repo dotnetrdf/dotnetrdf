@@ -66,6 +66,9 @@ namespace VDS.RDF.Update.Commands
         public CreateCommand(Uri graphUri)
             : this(graphUri, false) { }
 
+        /// <summary>
+        /// Gets whether the Command affects a Single Graph
+        /// </summary>
         public override bool AffectsSingleGraph
         {
             get
@@ -74,6 +77,11 @@ namespace VDS.RDF.Update.Commands
             }
         }
 
+        /// <summary>
+        /// Gets whether the Command affects a given Graph
+        /// </summary>
+        /// <param name="graphUri">Graph URI</param>
+        /// <returns></returns>
         public override bool AffectsGraph(Uri graphUri)
         {
             if (this._graphUri == null)

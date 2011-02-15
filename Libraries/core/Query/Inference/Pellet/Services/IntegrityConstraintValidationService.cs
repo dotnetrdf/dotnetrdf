@@ -45,6 +45,9 @@ using VDS.RDF.Storage.Params;
 
 namespace VDS.RDF.Query.Inference.Pellet.Services
 {
+    /// <summary>
+    /// Represents the Integrity Constraint Validation Service provided by a Pellet Knowledge Base
+    /// </summary>
     public class IntegrityConstraintValidationService : PelletService
     {
         /// <summary>
@@ -56,7 +59,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
             : base(name, obj) { }
 
         /// <summary>
-        /// Extracts an RDF Dataset which 
+        /// Extracts an RDF Dataset which details the Constraints violated (if any) and whether Constraints are satisified
         /// </summary>
         /// <returns></returns>
         public ITripleStore Validate()

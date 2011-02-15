@@ -113,6 +113,9 @@ namespace VDS.RDF.Update.Commands
         public ClearCommand(ClearMode mode)
             : this(mode, false) { }
 
+        /// <summary>
+        /// Gets whether this Command affects a Single Graph
+        /// </summary>
         public override bool AffectsSingleGraph
         {
             get 
@@ -121,6 +124,11 @@ namespace VDS.RDF.Update.Commands
             }
         }
 
+        /// <summary>
+        /// Gets whether this Command affects the given Graph
+        /// </summary>
+        /// <param name="graphUri">Graph URI</param>
+        /// <returns></returns>
         public override bool AffectsGraph(Uri graphUri)
         {
             switch (this._mode)
@@ -182,7 +190,7 @@ namespace VDS.RDF.Update.Commands
         /// <summary>
         /// Evaluates the Command in the given Context
         /// </summary>
-        /// <param name="context"></param>
+        /// <param name="context">Evaluation Context</param>
         public override void Evaluate(SparqlUpdateEvaluationContext context)
         {
             try

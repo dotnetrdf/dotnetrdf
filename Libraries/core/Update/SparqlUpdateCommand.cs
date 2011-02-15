@@ -78,8 +78,17 @@ namespace VDS.RDF.Update
         /// Command removes a Graph from the Store
         /// </summary>
         Drop,
+        /// <summary>
+        /// Command which merges the data from one Graph into another
+        /// </summary>
         Add,
+        /// <summary>
+        /// Command which copies the data from one Graph into another overwriting the destination Graph
+        /// </summary>
         Copy,
+        /// <summary>
+        /// Command which moves data from one Graph to another overwriting the destination Graph and deleting the Source Graph
+        /// </summary>
         Move,
         /// <summary>
         /// Unknown

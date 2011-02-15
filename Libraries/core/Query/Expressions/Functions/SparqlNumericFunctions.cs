@@ -36,11 +36,21 @@ using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Query.Expressions.Functions
 {
+    /// <summary>
+    /// Represents the SPARQL ABS() Function
+    /// </summary>
     public class AbsFunction : XPathAbsoluteFunction
     {
+        /// <summary>
+        /// Creates a new SPARQL ABS() Function
+        /// </summary>
+        /// <param name="expr">Argument Expression</param>
         public AbsFunction(ISparqlExpression expr)
             : base(expr) { }
 
+        /// <summary>
+        /// Gets the Functor of this Expression
+        /// </summary>
         public override string Functor
         {
             get
@@ -49,17 +59,31 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the String representation of this Expression
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return SparqlSpecsHelper.SparqlKeywordAbs + "(" + this._expr.ToString() + ")";
         }
     }
 
+    /// <summary>
+    /// Represents the SPARQL CEIL() Function
+    /// </summary>
     public class CeilFunction : XPathCeilingFunction
     {
+        /// <summary>
+        /// Creates a new SPARQL CEIL() Function
+        /// </summary>
+        /// <param name="expr">Argument Expression</param>
         public CeilFunction(ISparqlExpression expr)
             : base(expr) { }
 
+        /// <summary>
+        /// Gets the Functor of this Expression
+        /// </summary>
         public override string Functor
         {
             get
@@ -68,17 +92,31 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the String representation of this Expression
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return SparqlSpecsHelper.SparqlKeywordCeil + "(" + this._expr.ToString() + ")";
         }
     }
 
+    /// <summary>
+    /// Represents the SPARQL FLOOR() Function
+    /// </summary>
     public class FloorFunction : XPathFloorFunction
     {
+        /// <summary>
+        /// Creates a new SPARQL FLOOR() Function
+        /// </summary>
+        /// <param name="expr">Argument Expression</param>
         public FloorFunction(ISparqlExpression expr)
             : base(expr) { }
 
+        /// <summary>
+        /// Gets the Functor of this Expression
+        /// </summary>
         public override string Functor
         {
             get
@@ -87,17 +125,31 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the String representation of this Expression
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return SparqlSpecsHelper.SparqlKeywordFloor + "(" + this._expr.ToString() + ")";
         }
     }
 
+    /// <summary>
+    /// Represents the SPARQL ROUND() Function
+    /// </summary>
     public class RoundFunction : XPathRoundFunction
     {
+        /// <summary>
+        /// Creates a new SPARQL ROUND() Function
+        /// </summary>
+        /// <param name="expr">Argument Expression</param>
         public RoundFunction(ISparqlExpression expr)
             : base(expr) { }
 
+        /// <summary>
+        /// Gets the Functor of this Expression
+        /// </summary>
         public override string Functor
         {
             get
@@ -106,14 +158,25 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the String representation of this Expression
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return SparqlSpecsHelper.SparqlKeywordRound + "(" + this._expr.ToString() + ")";
         }
     }
 
+    /// <summary>
+    /// Represents the SPARQL ISNUMERIC() Function
+    /// </summary>
     public class IsNumericFunction : BaseUnaryExpression
     {
+        /// <summary>
+        /// Creates a new SPARQL ISNUMERIC() Function
+        /// </summary>
+        /// <param name="expr">Argument Expression</param>
         public IsNumericFunction(ISparqlExpression expr)
             : base(expr) { }
 
@@ -203,6 +266,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the Type of this Expression
+        /// </summary>
         public override SparqlExpressionType Type
         {
             get 
@@ -211,6 +277,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the Functor of this Expression
+        /// </summary>
         public override string Functor
         {
             get 
@@ -219,6 +288,10 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the String representation of this Expression
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return SparqlSpecsHelper.SparqlKeywordIsNumeric + "(" + this._expr.ToString() + ")";

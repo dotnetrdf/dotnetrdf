@@ -81,6 +81,12 @@ namespace VDS.RDF.Query.Expressions.Functions
             return new LiteralNode(null, this.EffectiveBooleanValue(context, bindingID).ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeBoolean));
         }
 
+        /// <summary>
+        /// Gets the Effective Boolean Value of the function as evaluated for a given Binding in the given Context
+        /// </summary>
+        /// <param name="context">Evaluation Context</param>
+        /// <param name="bindingID">Binding ID</param>
+        /// <returns></returns>
         public abstract bool EffectiveBooleanValue(SparqlEvaluationContext context, int bindingID);
 
         /// <summary>
@@ -94,6 +100,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the Type of the Expression
+        /// </summary>
         public SparqlExpressionType Type
         {
             get
@@ -102,11 +111,17 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public abstract String Functor
         {
             get;
         }
 
+        /// <summary>
+        /// Gets the Arguments of the Exception
+        /// </summary>
         public IEnumerable<ISparqlExpression> Arguments
         {
             get
@@ -115,6 +130,10 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the String representation of the Expression
+        /// </summary>
+        /// <returns></returns>
         public abstract override string ToString();
     }
 
@@ -175,6 +194,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public override string Functor
         {
             get 
@@ -183,6 +205,10 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the String representation of the Expression
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             StringBuilder output = new StringBuilder();
@@ -258,6 +284,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public override string Functor
         {
             get 
@@ -266,6 +295,10 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the String representation of the Expression
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             StringBuilder output = new StringBuilder();

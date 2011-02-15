@@ -37,11 +37,20 @@ using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Query.Expressions.Functions
 {
+    /// <summary>
+    /// Represents the SPARQL NOW() Function
+    /// </summary>
     public class NowFunction : ArqNowFunction
     {
+        /// <summary>
+        /// Creates a new SPARQL NOW() Function
+        /// </summary>
         public NowFunction()
             : base() { }
 
+        /// <summary>
+        /// Gets the Functor of this Expression
+        /// </summary>
         public override string Functor
         {
             get
@@ -50,17 +59,31 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the String representation of this Expression
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return SparqlSpecsHelper.SparqlKeywordNow + "()";
         }
     }
 
+    /// <summary>
+    /// Represents the SPARQL YEAR() Function
+    /// </summary>
     public class YearFunction : XPathYearFromDateTimeFunction
     {
+        /// <summary>
+        /// Creates a new SPARQL YEAR() Function
+        /// </summary>
+        /// <param name="expr">Argument Expression</param>
         public YearFunction(ISparqlExpression expr)
             : base(expr) { }
 
+        /// <summary>
+        /// Gets the Functor of this Expression
+        /// </summary>
         public override string Functor
         {
             get
@@ -69,17 +92,31 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the String representation of this Expression
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return SparqlSpecsHelper.SparqlKeywordYear + "(" + this._expr.ToString() + ")";
         }
     }
 
+    /// <summary>
+    /// Represents the SPARQL MONTH() Function
+    /// </summary>
     public class MonthFunction : XPathMonthFromDateTimeFunction
     {
+        /// <summary>
+        /// Creates a new SPARQL YEAR() Function
+        /// </summary>
+        /// <param name="expr">Argument Expression</param>
         public MonthFunction(ISparqlExpression expr)
             : base(expr) { }
 
+        /// <summary>
+        /// Gets the Functor of this Expression
+        /// </summary>
         public override string Functor
         {
             get
@@ -88,17 +125,31 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the String representation of this Expression
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return SparqlSpecsHelper.SparqlKeywordMonth + "(" + this._expr.ToString() + ")";
         }
     }
 
+    /// <summary>
+    /// Represents the SPARQL DAY() Function
+    /// </summary>
     public class DayFunction : XPathDayFromDateTimeFunction
     {
+        /// <summary>
+        /// Creates a new SPARQL DAY() Function
+        /// </summary>
+        /// <param name="expr">Argument Expression</param>
         public DayFunction(ISparqlExpression expr)
             : base(expr) { }
 
+        /// <summary>
+        /// Gets the Functor of this Expression
+        /// </summary>
         public override string Functor
         {
             get
@@ -107,17 +158,31 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the String representation of this Expression
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return SparqlSpecsHelper.SparqlKeywordDay + "(" + this._expr.ToString() + ")";
         }
     }
 
+    /// <summary>
+    /// Represents the SPARQL HOURS() Function
+    /// </summary>
     public class HoursFunction : XPathHoursFromDateTimeFunction
     {
+        /// <summary>
+        /// Creates a new SPARQL HOURS() Function
+        /// </summary>
+        /// <param name="expr">Argument Expression</param>
         public HoursFunction(ISparqlExpression expr)
             : base(expr) { }
 
+        /// <summary>
+        /// Gets the Functor of this Expression
+        /// </summary>
         public override string Functor
         {
             get
@@ -126,17 +191,31 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the String representation of this Expression
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return SparqlSpecsHelper.SparqlKeywordHours + "(" + this._expr.ToString() + ")";
         }
     }
 
+    /// <summary>
+    /// Represents the SPARQL MINUTES() Function
+    /// </summary>
     public class MinutesFunction : XPathMinutesFromDateTimeFunction
     {
+        /// <summary>
+        /// Creates a new SPARQL MINUTES() Function
+        /// </summary>
+        /// <param name="expr">Argument Expression</param>
         public MinutesFunction(ISparqlExpression expr)
             : base(expr) { }
 
+        /// <summary>
+        /// Gets the Functor of this Expression
+        /// </summary>
         public override string Functor
         {
             get
@@ -145,17 +224,31 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the String representation of this Expression
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return SparqlSpecsHelper.SparqlKeywordMinutes + "(" + this._expr.ToString() + ")";
         }
     }
 
+    /// <summary>
+    /// Represents the SPARQL SECONDS() Function
+    /// </summary>
     public class SecondsFunction : XPathSecondsFromDateTimeFunction
     {
+        /// <summary>
+        /// Creates a new SPARQL SECONDS() Function
+        /// </summary>
+        /// <param name="expr">Argument Expression</param>
         public SecondsFunction(ISparqlExpression expr)
             : base(expr) { }
 
+        /// <summary>
+        /// Gets the Functor of this Expression
+        /// </summary>
         public override string Functor
         {
             get
@@ -164,17 +257,34 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the String representation of this Expression
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return SparqlSpecsHelper.SparqlKeywordSeconds + "(" + this._expr.ToString() + ")";
         }
     }
 
+    /// <summary>
+    /// Represents the SPARQL TIMEZONE() Function
+    /// </summary>
     public class TimezoneFunction : XPathTimezoneFromDateTimeFunction
     {
+        /// <summary>
+        /// Creates a new SPARQL TIMEZONE() Function
+        /// </summary>
+        /// <param name="expr">Argument Expression</param>
         public TimezoneFunction(ISparqlExpression expr)
             : base(expr) { }
 
+        /// <summary>
+        /// Gets the Timezone of the Argument Expression as evaluated for the given Binding in the given Context
+        /// </summary>
+        /// <param name="context">Evaluation Context</param>
+        /// <param name="bindingID">Binding ID</param>
+        /// <returns></returns>
         public override INode Value(SparqlEvaluationContext context, int bindingID)
         {
             INode temp = base.Value(context, bindingID);
@@ -191,6 +301,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the Functor of this Expression
+        /// </summary>
         public override string Functor
         {
             get
@@ -199,17 +312,34 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the String representation of this Expression
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return SparqlSpecsHelper.SparqlKeywordTimezone + "(" + this._expr.ToString() + ")";
         }
     }
 
+    /// <summary>
+    /// Represents the SPARQL TZ() Function
+    /// </summary>
     public class TZFunction : BaseUnaryExpression
     {
+        /// <summary>
+        /// Creates a new SPARQL TZ() Function
+        /// </summary>
+        /// <param name="expr">Argument Expression</param>
         public TZFunction(ISparqlExpression expr)
             : base(expr) { }
 
+        /// <summary>
+        /// Gets the Timezone of the Argument Expression as evaluated for the given Binding in the given Context
+        /// </summary>
+        /// <param name="context">Evaluation Context</param>
+        /// <param name="bindingID">Binding ID</param>
+        /// <returns></returns>
         public override INode Value(SparqlEvaluationContext context, int bindingID)
         {
             INode temp = this._expr.Value(context, bindingID);
@@ -270,11 +400,20 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the Effective Boolean Value of the Expression as evaluated for the given Binding in the given Context
+        /// </summary>
+        /// <param name="context">Evaluation Context</param>
+        /// <param name="bindingID">Binding ID</param>
+        /// <returns></returns>
         public override bool EffectiveBooleanValue(SparqlEvaluationContext context, int bindingID)
         {
             return SparqlSpecsHelper.EffectiveBooleanValue(this.Value(context, bindingID));
         }
 
+        /// <summary>
+        /// Gets the Type of this Expression
+        /// </summary>
         public override SparqlExpressionType Type
         {
             get 
@@ -283,6 +422,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the Functor of this Expression
+        /// </summary>
         public override string Functor
         {
             get 
@@ -291,6 +433,10 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the String representation of this Expression
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return SparqlSpecsHelper.SparqlKeywordTz + "(" + this._expr.ToString() + ")";

@@ -59,6 +59,9 @@ namespace VDS.RDF.Web
         /// Handler Configuration
         /// </summary>
         protected BaseProtocolHandlerConfiguration _config;
+        /// <summary>
+        /// Base Path of the Handler as determined by the implementing class when loading Configuration using the <see cref="BaseSparqlHttpProtocolHandler.LoadConfig">LoadConfig()</see> method
+        /// </summary>
         protected String _basePath;
 
         /// <summary>

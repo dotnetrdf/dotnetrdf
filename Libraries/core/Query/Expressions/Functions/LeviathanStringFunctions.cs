@@ -65,6 +65,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.MD5Hash + ">(" + this._expr.ToString() + ")";
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public override string Functor
         {
             get 
@@ -97,6 +100,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Sha256Hash + ">(" + this._expr.ToString() + ")";
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public override string Functor
         {
             get 

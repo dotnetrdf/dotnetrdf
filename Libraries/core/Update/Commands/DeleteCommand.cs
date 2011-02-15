@@ -96,6 +96,9 @@ namespace VDS.RDF.Update.Commands
         public DeleteCommand(GraphPattern where)
             : this(where, where, null) { }
 
+        /// <summary>
+        /// Gets whether the Command affects a single Graph
+        /// </summary>
         public override bool AffectsSingleGraph
         {
             get
@@ -117,6 +120,11 @@ namespace VDS.RDF.Update.Commands
             }
         }
 
+        /// <summary>
+        /// Gets whether the Command affects a given Graph
+        /// </summary>
+        /// <param name="graphUri">Graph URI</param>
+        /// <returns></returns>
         public override bool AffectsGraph(Uri graphUri)
         {
             if (graphUri.ToSafeString().Equals(GraphCollection.DefaultGraphUri)) graphUri = null;
@@ -237,7 +245,12 @@ namespace VDS.RDF.Update.Commands
                                 if (s.ContainsVariable(gp.GraphSpecifier.Value))
                                 {
                                     INode temp = s[gp.GraphSpecifier.Value.Substring(1)];
-                                    if (temp.NodeType == NodeType.Uri)
+                                    if (temp == null)
+                                    {
+                                        //If the Variable is not bound then skip
+                                        continue;
+                                    }
+                                    else if (temp.NodeType == NodeType.Uri)
                                     {
                                         graphUri = temp.ToSafeString();
                                     }

@@ -59,6 +59,9 @@ namespace VDS.RDF.Storage
     /// </remarks>
     public class SparqlHttpProtocolConnector : IGenericIOManager, IConfigurationSerializable
     {
+        /// <summary>
+        /// URI of the Protocol Server
+        /// </summary>
         protected String _serviceUri;
 
         /// <summary>

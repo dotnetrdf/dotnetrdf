@@ -48,7 +48,6 @@ namespace VDS.RDF.Parsing
     /// Static Helper Class for dereferencing URIs and attempting to parse the results of a HTTP GET request to the URI into RDF
     /// </summary>
     /// <remarks>
-#if !NO_URICACHE
     /// <h3>Caching</h3>
     /// <para>
     /// As of the 0.2.2 release the loader has support for caching retrieved data locally built into it (for Graphs only), caching is done using ETags where the remote server provides them or just by a user-defineable 'freshness' criteria (i.e. number of hours retrieved resources should be cached for).  By default this caching happens in the system temporary directory which means it is non-persistent i.e. if you run your application using dotNetRDF it may cache stuff during the session but once the application is closed the operating system may freely delete the cached data.  If you wish to have a persistent cache then you can use the <see cref="UriLoader.CacheDirectory">CacheDirectory</see> property to set your own cache directory.  Even when you set your own cache directory dotNetRDF will delete obsolete data from it over time though this will only happen when a new request invalidates previously cached data.
@@ -56,7 +55,6 @@ namespace VDS.RDF.Parsing
     /// <para>
     /// If you wish to completely control the Cache you can implement your own <see cref="IUriLoaderCache">IUriLoaderCache</see> implementation and use it by setting the <see cref="UriLoader.Cache">Cache</see> property
     /// </para>
-#endif
     /// </remarks>
     public static class UriLoader
     {

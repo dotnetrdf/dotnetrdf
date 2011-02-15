@@ -76,6 +76,10 @@ namespace VDS.RDF.Update
             //No flush actions requied
         }
 
+        /// <summary>
+        /// Processes an ADD command
+        /// </summary>
+        /// <param name="cmd">Add Command</param>
         public void ProcessAddCommand(AddCommand cmd)
         {
             this.ProcessCommand(cmd);
@@ -90,6 +94,10 @@ namespace VDS.RDF.Update
             this.ProcessCommand(cmd);
         }
 
+        /// <summary>
+        /// Processes a COPY command
+        /// </summary>
+        /// <param name="cmd">Copy Command</param>
         public void ProcessCopyCommand(CopyCommand cmd)
         {
             this.ProcessCommand(cmd);
@@ -185,6 +193,10 @@ namespace VDS.RDF.Update
             this.ProcessCommand(cmd);
         }
 
+        /// <summary>
+        /// Processes a MOVE command
+        /// </summary>
+        /// <param name="cmd">Move Command</param>
         public void ProcessMoveCommand(MoveCommand cmd)
         {
             this.ProcessCommand(cmd);

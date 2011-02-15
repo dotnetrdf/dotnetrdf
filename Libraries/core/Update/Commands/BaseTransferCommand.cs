@@ -40,17 +40,43 @@ using System.Text;
 
 namespace VDS.RDF.Update.Commands
 {
+    /// <summary>
+    /// Abstract Base Class for SPARQL Update Commands which move data between Graphs
+    /// </summary>
     public abstract class BaseTransferCommand : SparqlUpdateCommand
     {
-        protected Uri _sourceUri, _destUri;
+        /// <summary>
+        /// Source Graph URI
+        /// </summary>
+        protected Uri _sourceUri;
+        /// <summary>
+        /// Destination Graph URI
+        /// </summary>
+        protected Uri _destUri;
+        /// <summary>
+        /// Whether errors should be suppressed
+        /// </summary>
         protected bool _silent = false;
 
+        /// <summary>
+        /// Creates a new Transfer Command
+        /// </summary>
+        /// <param name="type">Command Type</param>
+        /// <param name="sourceUri">Source Graph URI</param>
+        /// <param name="destUri">Destination Graph URI</param>
+        /// <param name="silent">Whether errors should be suppressed</param>
         public BaseTransferCommand(SparqlUpdateCommandType type, Uri sourceUri, Uri destUri, bool silent)
             : this(type, sourceUri, destUri)
         {
             this._silent = silent;
         }
 
+        /// <summary>
+        /// Creates a new Transfer Command
+        /// </summary>
+        /// <param name="type">Command Type</param>
+        /// <param name="sourceUri">Source Graph URI</param>
+        /// <param name="destUri">Destination Graph URI</param>
         public BaseTransferCommand(SparqlUpdateCommandType type, Uri sourceUri, Uri destUri)
             : base(type, true)
         {
@@ -58,6 +84,9 @@ namespace VDS.RDF.Update.Commands
             this._destUri = destUri;
         }
 
+        /// <summary>
+        /// URI of the Source Graph
+        /// </summary>
         public Uri SourceUri
         {
             get
@@ -66,6 +95,9 @@ namespace VDS.RDF.Update.Commands
             }
         }
 
+        /// <summary>
+        /// URI of the Destination Graph
+        /// </summary>
         public Uri DestinationUri
         {
             get
@@ -74,6 +106,9 @@ namespace VDS.RDF.Update.Commands
             }
         }
 
+        /// <summary>
+        /// Whether errors during evaluation should be suppressed
+        /// </summary>
         public bool Silent
         {
             get
@@ -82,6 +117,9 @@ namespace VDS.RDF.Update.Commands
             }
         }
 
+        /// <summary>
+        /// Gets whether the Command affects a Single Graph
+        /// </summary>
         public override bool AffectsSingleGraph
         {
             get
@@ -90,6 +128,11 @@ namespace VDS.RDF.Update.Commands
             }
         }
 
+        /// <summary>
+        /// Gets whether the Command affects a given Graph
+        /// </summary>
+        /// <param name="graphUri">Graph URI</param>
+        /// <returns></returns>
         public override bool AffectsGraph(Uri graphUri)
         {
             if (graphUri == null || graphUri.ToString().Equals(GraphCollection.DefaultGraphUri))
@@ -102,6 +145,10 @@ namespace VDS.RDF.Update.Commands
             }
             }
 
+        /// <summary>
+        /// Gets the String representation of the Command
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             StringBuilder output = new StringBuilder();

@@ -476,7 +476,7 @@ namespace rdfEditor
 
         private void mnuSaveWithRdfXml_Click(object sender, RoutedEventArgs e)
         {
-            this.SaveWith(new FastRdfXmlWriter());
+            this.SaveWith(new RdfXmlWriter());
         }
 
         private void mnuSaveWithRdfJson_Click(object sender, RoutedEventArgs e)

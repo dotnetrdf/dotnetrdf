@@ -72,6 +72,9 @@ namespace VDS.RDF.Update.Commands
             }
         }
 
+        /// <summary>
+        /// Gets whether the Command affects a single Graph
+        /// </summary>
         public override bool AffectsSingleGraph
         {
             get
@@ -100,6 +103,11 @@ namespace VDS.RDF.Update.Commands
             }
         }
 
+        /// <summary>
+        /// Gets whether the Command affects a given Graph
+        /// </summary>
+        /// <param name="graphUri">Graph URI</param>
+        /// <returns></returns>
         public override bool AffectsGraph(Uri graphUri)
         {
             if (graphUri.ToSafeString().Equals(GraphCollection.DefaultGraphUri)) graphUri = null;

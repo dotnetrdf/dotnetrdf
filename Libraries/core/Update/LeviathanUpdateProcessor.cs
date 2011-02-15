@@ -81,6 +81,10 @@ namespace VDS.RDF.Update
             this._context.Data.Flush();
         }
 
+        /// <summary>
+        /// Processes an ADD command
+        /// </summary>
+        /// <param name="cmd">Add Command</param>
         public virtual void ProcessAddCommand(AddCommand cmd)
         {
             cmd.Evaluate(this._context);
@@ -95,6 +99,10 @@ namespace VDS.RDF.Update
             cmd.Evaluate(this._context);
         }
 
+        /// <summary>
+        /// Processes a COPY command
+        /// </summary>
+        /// <param name="cmd">Copy Command</param>
         public virtual void ProcessCopyCommand(CopyCommand cmd)
         {
             cmd.Evaluate(this._context);
@@ -241,6 +249,10 @@ namespace VDS.RDF.Update
             cmd.Evaluate(this._context);;
         }
 
+        /// <summary>
+        /// Processes a MOVE command
+        /// </summary>
+        /// <param name="cmd">Move Command</param>
         public virtual void ProcessMoveCommand(MoveCommand cmd)
         {
             cmd.Evaluate(this._context);

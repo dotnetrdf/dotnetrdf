@@ -74,6 +74,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             return "BOUND(" + this._expr.ToString() + ")";
         }
 
+        /// <summary>
+        /// Gets the Type of the Expression
+        /// </summary>
         public override SparqlExpressionType Type
         {
             get
@@ -82,6 +85,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public override String Functor
         {
             get
@@ -166,6 +172,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             return "DATATYPE(" + this._expr.ToString() + ")";
         }
 
+        /// <summary>
+        /// Gets the Type of the Expression
+        /// </summary>
         public override SparqlExpressionType Type
         {
             get
@@ -174,6 +183,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public override String Functor
         {
             get
@@ -260,6 +272,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             return "IRI(" + this._expr.ToString() + ")";
         }
 
+        /// <summary>
+        /// Gets the Type of the Expression
+        /// </summary>
         public override SparqlExpressionType Type
         {
             get
@@ -268,6 +283,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public override String Functor
         {
             get
@@ -316,6 +334,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             return "ISBLANK(" + this._expr.ToString() + ")";
         }
 
+        /// <summary>
+        /// Gets the Type of the Expression
+        /// </summary>
         public override SparqlExpressionType Type
         {
             get
@@ -324,6 +345,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public override String Functor
         {
             get
@@ -372,6 +396,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             return "ISIRI(" + this._expr.ToString() + ")";
         }
 
+        /// <summary>
+        /// Gets the Type of the Expression
+        /// </summary>
         public override SparqlExpressionType Type
         {
             get
@@ -380,6 +407,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public override String Functor
         {
             get
@@ -428,6 +458,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             return "ISLITERAL(" + this._expr.ToString() + ")";
         }
 
+        /// <summary>
+        /// Gets the Type of the Expression
+        /// </summary>
         public override SparqlExpressionType Type
         {
             get
@@ -436,6 +469,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public override String Functor
         {
             get
@@ -465,6 +501,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             return "ISURI(" + this._expr.ToString() + ")";
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public override String Functor
         {
             get
@@ -535,6 +574,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             return "LANG(" + this._expr.ToString() + ")";
         }
 
+        /// <summary>
+        /// Gets the Type of the Expression
+        /// </summary>
         public override SparqlExpressionType Type
         {
             get
@@ -543,6 +585,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public override String Functor
         {
             get
@@ -619,6 +664,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             return "LANGMATCHES(" + this._leftExpr.ToString() + "," + this._rightExpr.ToString() + ")";
         }
 
+        /// <summary>
+        /// Gets the Type of the Expression
+        /// </summary>
         public override SparqlExpressionType Type
         {
             get
@@ -627,6 +675,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public override String Functor
         {
             get
@@ -686,6 +737,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             return "SAMETERM(" + this._leftExpr.ToString() + "," + this._rightExpr.ToString() + ")";
         }
 
+        /// <summary>
+        /// Gets the Type of the Expression
+        /// </summary>
         public override SparqlExpressionType Type
         {
             get
@@ -694,6 +748,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public override String Functor
         {
             get
@@ -766,6 +823,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             return "STR(" + this._expr.ToString() + ")";
         }
 
+        /// <summary>
+        /// Gets the Type of the Expression
+        /// </summary>
         public override SparqlExpressionType Type
         {
             get 
@@ -774,6 +834,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public override string Functor
         {
             get 
@@ -875,6 +938,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             return "STRDT(" + this._leftExpr.ToString() + ", " + this._rightExpr.ToString() + ")";
         }
 
+        /// <summary>
+        /// Gets the Type of the Expression
+        /// </summary>
         public override SparqlExpressionType Type
         {
             get
@@ -883,6 +949,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public override String Functor
         {
             get
@@ -999,6 +1068,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             return "STRLANG(" + this._leftExpr.ToString() + ", " + this._rightExpr.ToString() + ")";
         }
 
+        /// <summary>
+        /// Gets the Type of the Expression
+        /// </summary>
         public override SparqlExpressionType Type
         {
             get
@@ -1007,6 +1079,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public override String Functor
         {
             get
@@ -1275,6 +1350,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the Type of the Expression
+        /// </summary>
         public SparqlExpressionType Type
         {
             get
@@ -1283,6 +1361,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public String Functor
         {
             get
@@ -1291,6 +1372,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the Arguments of the Expression
+        /// </summary>
         public IEnumerable<ISparqlExpression> Arguments
         {
             get

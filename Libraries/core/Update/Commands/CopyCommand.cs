@@ -40,14 +40,32 @@ using System.Text;
 
 namespace VDS.RDF.Update.Commands
 {
+    /// <summary>
+    /// Represents the SPARQL Update COPY Command
+    /// </summary>
     public class CopyCommand : BaseTransferCommand
     {
+        /// <summary>
+        /// Creates a Command which Copies the contents of one Graph to another overwriting the destination Graph
+        /// </summary>
+        /// <param name="sourceUri">Source Graph URI</param>
+        /// <param name="destUri">Destination Graph URI</param>
+        /// <param name="silent">Whether errors should be suppressed</param>
         public CopyCommand(Uri sourceUri, Uri destUri, bool silent)
             : base(SparqlUpdateCommandType.Copy, sourceUri, destUri, silent) { }
 
+        /// <summary>
+        /// Creates a Command which Copies the contents of one Graph to another overwriting the destination Graph
+        /// </summary>
+        /// <param name="sourceUri">Source Graph URI</param>
+        /// <param name="destUri">Destination Graph URI</param>
         public CopyCommand(Uri sourceUri, Uri destUri)
             : base(SparqlUpdateCommandType.Copy, sourceUri, destUri) { }
 
+        /// <summary>
+        /// Evaluates the Command in the given Context
+        /// </summary>
+        /// <param name="context">Evaluation Context</param>
         public override void Evaluate(SparqlUpdateEvaluationContext context)
         {
             try
@@ -107,6 +125,10 @@ namespace VDS.RDF.Update.Commands
             }
         }
 
+        /// <summary>
+        /// Processes the Command using the given Update Processor
+        /// </summary>
+        /// <param name="processor">SPARQL Update Processor</param>
         public override void Process(ISparqlUpdateProcessor processor)
         {
             processor.ProcessCopyCommand(this);

@@ -80,6 +80,9 @@ namespace VDS.RDF.Query.Paths
             }
         }
 
+        /// <summary>
+        /// Gets the Inner Path
+        /// </summary>
         public ISparqlPath Path
         {
             get

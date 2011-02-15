@@ -61,11 +61,17 @@ namespace VDS.RDF.Query.Paths
             get;
         }
 
+        /// <summary>
+        /// Gets the Minimum Cardinality of the Path
+        /// </summary>
         public abstract int MinCardinality
         {
             get;
         }
 
+        /// <summary>
+        /// Gets the Maximum Cardinality of the Path
+        /// </summary>
         public abstract int MaxCardinality
         {
             get;
@@ -105,6 +111,9 @@ namespace VDS.RDF.Query.Paths
             this._n = n;
         }
 
+        /// <summary>
+        /// Gets the Maximum Cardinality of the Path
+        /// </summary>
         public override int MaxCardinality
         {
             get 
@@ -113,6 +122,9 @@ namespace VDS.RDF.Query.Paths
             }
         }
 
+        /// <summary>
+        /// Gets the Minimum Cardinality of the Path
+        /// </summary>
         public override int MinCardinality
         {
             get 
@@ -238,6 +250,9 @@ namespace VDS.RDF.Query.Paths
             }
         }
 
+        /// <summary>
+        /// Gets the Maximum Cardinality of the Path
+        /// </summary>
         public override int MaxCardinality
         {
             get 
@@ -246,6 +261,9 @@ namespace VDS.RDF.Query.Paths
             }
         }
 
+        /// <summary>
+        /// Gets the Minimum Cardinality of the Path
+        /// </summary>
         public override int MinCardinality
         {
             get 
@@ -313,6 +331,9 @@ namespace VDS.RDF.Query.Paths
             }
         }
 
+        /// <summary>
+        /// Gets the Maximum Cardinality of the Path
+        /// </summary>
         public override int MaxCardinality
         {
             get 
@@ -321,6 +342,9 @@ namespace VDS.RDF.Query.Paths
             }
         }
 
+        /// <summary>
+        /// Gets the Minimum Cardinality of the Path
+        /// </summary>
         public override int MinCardinality
         {
             get 
@@ -372,6 +396,9 @@ namespace VDS.RDF.Query.Paths
             }
         }
 
+        /// <summary>
+        /// Gets the Maximum Cardinality of the Path
+        /// </summary>
         public override int MaxCardinality
         {
             get 
@@ -380,6 +407,9 @@ namespace VDS.RDF.Query.Paths
             }
         }
 
+        /// <summary>
+        /// Gets the Minimum Cardinality of the Path
+        /// </summary>
         public override int MinCardinality
         {
             get 
@@ -442,6 +472,9 @@ namespace VDS.RDF.Query.Paths
             }
         }
 
+        /// <summary>
+        /// Gets the Maximum Cardinality of the Path
+        /// </summary>
         public override int MaxCardinality
         {
             get 
@@ -450,6 +483,9 @@ namespace VDS.RDF.Query.Paths
             }
         }
 
+        /// <summary>
+        /// Gets the Minimum Cardinality of the Path
+        /// </summary>
         public override int MinCardinality
         {
             get 
@@ -515,6 +551,9 @@ namespace VDS.RDF.Query.Paths
             }
         }
 
+        /// <summary>
+        /// Gets the Maximum Cardinality of the Path
+        /// </summary>
         public override int MaxCardinality
         {
             get 
@@ -523,6 +562,9 @@ namespace VDS.RDF.Query.Paths
             }
         }
 
+        /// <summary>
+        /// Gets the Minimum Cardinality of the Path
+        /// </summary>
         public override int MinCardinality
         {
             get 
@@ -601,6 +643,9 @@ namespace VDS.RDF.Query.Paths
             }
         }
 
+        /// <summary>
+        /// Gets the Maximum Cardinality of the Path
+        /// </summary>
         public override int MaxCardinality
         {
             get 
@@ -609,6 +654,9 @@ namespace VDS.RDF.Query.Paths
             }
         }
 
+        /// <summary>
+        /// Gets the Minimum Cardinality of the Path
+        /// </summary>
         public override int MinCardinality
         {
             get 
@@ -617,6 +665,9 @@ namespace VDS.RDF.Query.Paths
             }
         }
 
+        /// <summary>
+        /// Gets whether the Path allows Zero Length Paths
+        /// </summary>
         public override bool AllowsZeroLength
         {
             get

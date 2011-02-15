@@ -49,11 +49,18 @@ namespace VDS.RDF.Query
         private List<int> _bindingIDs = new List<int>();
         private Dictionary<String, INode> _assignments = new Dictionary<string, INode>();
 
+        /// <summary>
+        /// Creates a new Binding Group
+        /// </summary>
         public BindingGroup()
         {
 
         }
 
+        /// <summary>
+        /// Creates a new Binding Group which is a sub-group of the given Parent Group
+        /// </summary>
+        /// <param name="parent">Parent Group</param>
         public BindingGroup(BindingGroup parent)
         {
             foreach (KeyValuePair<String, INode> assignment in parent.Assignments)
@@ -101,6 +108,11 @@ namespace VDS.RDF.Query
             }
         }
 
+        /// <summary>
+        /// Adds a Variable Assignment to the Group
+        /// </summary>
+        /// <param name="variable">Variable</param>
+        /// <param name="value">Value</param>
         public void AddAssignment(String variable, INode value)
         {
             if (this._assignments.ContainsKey(variable))
@@ -113,6 +125,9 @@ namespace VDS.RDF.Query
             }
         }
 
+        /// <summary>
+        /// Gets the Variable Assignments for the Group
+        /// </summary>
         public IEnumerable<KeyValuePair<String, INode>> Assignments
         {
             get

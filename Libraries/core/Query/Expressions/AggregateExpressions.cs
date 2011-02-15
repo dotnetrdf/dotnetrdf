@@ -79,6 +79,9 @@ namespace VDS.RDF.Query.Expressions
             }
         }
 
+        /// <summary>
+        /// Gets the Type of the Expression
+        /// </summary>
         public SparqlExpressionType Type
         {
             get
@@ -87,6 +90,9 @@ namespace VDS.RDF.Query.Expressions
             }
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public String Functor
         {
             get
@@ -95,12 +101,24 @@ namespace VDS.RDF.Query.Expressions
             }
         }
 
+        /// <summary>
+        /// Gets the Arguments of the Expression
+        /// </summary>
         public IEnumerable<ISparqlExpression> Arguments
         {
             get
             {
                 return Enumerable.Empty<ISparqlExpression>();
             }
+        }
+
+        /// <summary>
+        /// Gets the String representation of the Expression
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return "DISTINCT";
         }
     }
 
@@ -139,6 +157,9 @@ namespace VDS.RDF.Query.Expressions
             }
         }
 
+        /// <summary>
+        /// Gets the Type of the Expression
+        /// </summary>
         public SparqlExpressionType Type
         {
             get
@@ -147,6 +168,9 @@ namespace VDS.RDF.Query.Expressions
             }
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public String Functor
         {
             get
@@ -155,12 +179,24 @@ namespace VDS.RDF.Query.Expressions
             }
         }
 
+        /// <summary>
+        /// Gets the Arguments of the Expression
+        /// </summary>
         public IEnumerable<ISparqlExpression> Arguments
         {
             get
             {
                 return Enumerable.Empty<ISparqlExpression>();
             }
+        }
+
+        /// <summary>
+        /// Gets the String representation of the Expression
+        /// </summary>
+        /// <returns></returns>
+        public override string  ToString()
+        {
+ 	        return "*";
         }
     }
 
@@ -285,6 +321,9 @@ namespace VDS.RDF.Query.Expressions
             }
         }
 
+        /// <summary>
+        /// Gets the Type of the Expression
+        /// </summary>
         public override SparqlExpressionType Type
         {
             get 
@@ -293,6 +332,9 @@ namespace VDS.RDF.Query.Expressions
             }
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public override string Functor
         {
             get 
@@ -301,6 +343,9 @@ namespace VDS.RDF.Query.Expressions
             }
         }
 
+        /// <summary>
+        /// Gets the Arguments of the Expression
+        /// </summary>
         public override IEnumerable<ISparqlExpression> Arguments
         {
             get
@@ -391,6 +436,9 @@ namespace VDS.RDF.Query.Expressions
             return this._aggregate.ToString();
         }
 
+        /// <summary>
+        /// Gets the Type of the Expression
+        /// </summary>
         public SparqlExpressionType Type
         {
             get
@@ -399,6 +447,9 @@ namespace VDS.RDF.Query.Expressions
             }
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public string Functor
         {
             get
@@ -407,6 +458,9 @@ namespace VDS.RDF.Query.Expressions
             }
         }
 
+        /// <summary>
+        /// Gets the Arguments of the Expression
+        /// </summary>
         public IEnumerable<ISparqlExpression> Arguments
         {
             get

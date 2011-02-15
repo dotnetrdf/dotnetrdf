@@ -4,6 +4,12 @@ using System.Text;
 
 namespace HashLib
 {
+    /// <summary>
+    /// Code incorporated from the <a href="http://hashlib.codeplex.com">HashLib</a> project to support SHA224 and provide support for all Hash functions under Silverlight
+    /// </summary>
+    /// <remarks>
+    /// Slightly modified to downgrade the code to C# 3 syntax
+    /// </remarks>
     public static class Converters
     {
         public static byte[] ConvertToBytes(object a_in)

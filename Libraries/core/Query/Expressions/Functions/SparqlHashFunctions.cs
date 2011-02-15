@@ -45,11 +45,21 @@ namespace VDS.RDF.Query.Expressions.Functions
 
 #if !SILVERLIGHT && !COMPACT
 
+    /// <summary>
+    /// Represents the SPARQL MD5() Function
+    /// </summary>
     public class MD5HashFunction : LeviathanMD5HashFunction
     {
+        /// <summary>
+        /// Creates a new MD5() Function
+        /// </summary>
+        /// <param name="expr">Argument Expression</param>
         public MD5HashFunction(ISparqlExpression expr)
             : base(expr) { }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public override string Functor
         {
             get
@@ -58,6 +68,10 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the String representation of the Expression
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return SparqlSpecsHelper.SparqlKeywordMD5 + "(" + this._expr.ToString() + ")";
@@ -66,11 +80,21 @@ namespace VDS.RDF.Query.Expressions.Functions
 
 #else
 
+    /// <summary>
+    /// Represents the SPARQL MD5() Function
+    /// </summary>
     public class MD5HashFunction : BaseHashLibFunction
     {
+        /// <summary>
+        /// Creates a new MD5() Function
+        /// </summary>
+        /// <param name="expr">Argument Expression</param>
         public MD5HashFunction(ISparqlExpression expr)
             : base(expr, new MD5()) { }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public override string Functor
         {
             get
@@ -79,6 +103,10 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the String representation of the Expression
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return SparqlSpecsHelper.SparqlKeywordMD5 + "(" + this._expr.ToString() + ")";
@@ -87,11 +115,21 @@ namespace VDS.RDF.Query.Expressions.Functions
 
 #endif
 
+    /// <summary>
+    /// Represents the SPARQL SHA1() Function
+    /// </summary>
     public class Sha1HashFunction : BaseHashFunction
     {
+        /// <summary>
+        /// Creates a new SHA1() Function
+        /// </summary>
+        /// <param name="expr">Argument Expression</param>
         public Sha1HashFunction(ISparqlExpression expr)
             : base(expr, new SHA1Managed()) { }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public override string Functor
         {
             get 
@@ -100,17 +138,31 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the String representation of the Expression
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return SparqlSpecsHelper.SparqlKeywordSha1 + "(" + this._expr.ToString() + ")";
         }
     }
 
+    /// <summary>
+    /// Represents the SPARQL SHA224() Function
+    /// </summary>
     public class Sha224HashFunction : BaseHashLibFunction
-    {
+    {        
+        /// <summary>
+        /// Creates a new SHA224() Function
+        /// </summary>
+        /// <param name="expr">Argument Expression</param>
         public Sha224HashFunction(ISparqlExpression expr)
             : base(expr, new SHA224()) { }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public override string Functor
         {
             get 
@@ -119,17 +171,31 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the String representation of the Expression
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return SparqlSpecsHelper.SparqlKeywordSha224 + "(" + this._expr.ToString() + ")";
         }
     }
 
+    /// <summary>
+    /// Represents the SPARQL SHA256() Function
+    /// </summary>
     public class Sha256HashFunction : LeviathanSha256HashFunction
     {
+        /// <summary>
+        /// Creates a new SHA256() Function
+        /// </summary>
+        /// <param name="expr">Argument Expression</param>
         public Sha256HashFunction(ISparqlExpression expr)
             : base(expr) { }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public override string Functor
         {
             get
@@ -138,6 +204,10 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the String representation of the Expression
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return SparqlSpecsHelper.SparqlKeywordSha256 + "(" + this._expr.ToString() + ")";
@@ -146,11 +216,21 @@ namespace VDS.RDF.Query.Expressions.Functions
 
 #if !SILVERLIGHT && !COMPACT
 
+    /// <summary>
+    /// Represents the SPARQL SHA384() Function
+    /// </summary>
     public class Sha384HashFunction : BaseHashFunction
     {
+        /// <summary>
+        /// Creates a new SHA384() Function
+        /// </summary>
+        /// <param name="expr">Argument Expression</param>
         public Sha384HashFunction(ISparqlExpression expr)
             : base(expr, new SHA384Managed()) { }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public override string Functor
         {
             get 
@@ -159,17 +239,31 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the String representation of the Expression
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return SparqlSpecsHelper.SparqlKeywordSha384 + "(" + this._expr.ToString() + ")";
         }
     }
 
+    /// <summary>
+    /// Represents the SPARQL SHA512() Function
+    /// </summary>
     public class Sha512HashFunction : BaseHashFunction
     {
+        /// <summary>
+        /// Creates a new SHA512() Function
+        /// </summary>
+        /// <param name="expr">Argument Expression</param>
         public Sha512HashFunction(ISparqlExpression expr)
             : base(expr, new SHA512Managed()) { }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public override string Functor
         {
             get
@@ -178,6 +272,10 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the String representation of the Expression
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return SparqlSpecsHelper.SparqlKeywordSha512 + "(" + this._expr.ToString() + ")";
@@ -186,11 +284,21 @@ namespace VDS.RDF.Query.Expressions.Functions
 
 #else
 
+    /// <summary>
+    /// Represents the SPARQL SHA384() Function
+    /// </summary>
     public class Sha384HashFunction : BaseHashLibFunction
     {
+        /// <summary>
+        /// Creates a new SHA384() Function
+        /// </summary>
+        /// <param name="expr">Argument Expression</param>
         public Sha384HashFunction(ISparqlExpression expr)
             : base(expr, new SHA384()) { }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public override string Functor
         {
             get 
@@ -199,17 +307,31 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the String representation of the Expression
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return SparqlSpecsHelper.SparqlKeywordSha384 + "(" + this._expr.ToString() + ")";
         }
     }
 
+    /// <summary>
+    /// Represents the SPARQL SHA512() Function
+    /// </summary>
     public class Sha512HashFunction : BaseHashLibFunction
     {
+        /// <summary>
+        /// Creates a new SHA512() Function
+        /// </summary>
+        /// <param name="expr">Argument Expression</param>
         public Sha512HashFunction(ISparqlExpression expr)
             : base(expr, new SHA512()) { }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public override string Functor
         {
             get
@@ -218,6 +340,10 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the String representation of the Expression
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return SparqlSpecsHelper.SparqlKeywordSha512 + "(" + this._expr.ToString() + ")";

@@ -47,7 +47,7 @@ namespace VDS.RDF
     public class UriNode : BaseNode, IComparable<UriNode>
     {
         private Uri _uri;
-        protected String _stringUri;
+        private String _stringUri;
 
         /// <summary>
         /// Internal Only Constructor for Uri Nodes

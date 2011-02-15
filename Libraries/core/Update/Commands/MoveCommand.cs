@@ -40,14 +40,32 @@ using System.Text;
 
 namespace VDS.RDF.Update.Commands
 {
+    /// <summary>
+    /// Represents a SPARQL Update MOVE Command
+    /// </summary>
     public class MoveCommand : BaseTransferCommand
     {
+        /// <summary>
+        /// Creates a Command which Moves data from one Graph to another overwriting the destination Graph and deleting the source Graph
+        /// </summary>
+        /// <param name="sourceUri">Source Graph URI</param>
+        /// <param name="destUri">Destination Graph URI</param>
+        /// <param name="silent">Whether errors should be suppressed</param>
         public MoveCommand(Uri sourceUri, Uri destUri, bool silent)
             : base(SparqlUpdateCommandType.Move, sourceUri, destUri, silent) { }
 
+        /// <summary>
+        /// Creates a Command which Moves data from one Graph to another overwriting the destination Graph and deleting the source Graph
+        /// </summary>
+        /// <param name="sourceUri">Source Graph URI</param>
+        /// <param name="destUri">Destination Graph URI</param>
         public MoveCommand(Uri sourceUri, Uri destUri)
             : base(SparqlUpdateCommandType.Move, sourceUri, destUri) { }
 
+        /// <summary>
+        /// Evaluates the Command in the given Context
+        /// </summary>
+        /// <param name="context">Evaluation Context</param>
         public override void Evaluate(SparqlUpdateEvaluationContext context)
         {
             try
@@ -117,6 +135,10 @@ namespace VDS.RDF.Update.Commands
             }
         }
 
+        /// <summary>
+        /// Processes the Command using the given Update Processor
+        /// </summary>
+        /// <param name="processor">SPARQL Update Processor</param>
         public override void Process(ISparqlUpdateProcessor processor)
         {
             processor.ProcessMoveCommand(this);
