@@ -35,6 +35,7 @@ terms.
 
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Xml;
@@ -429,6 +430,39 @@ namespace VDS.RDF.Query
             }
 
             return tripleCollection;
+        }
+
+        /// <summary>
+        /// Casts a SPARQL Result Set to a DataTable with all Columns typed as <see cref="INode">INode</see> (Results with unbound variables will have nulls in the appropriate columns of their <see cref="System.Data.DataRow">DataRow</see>)
+        /// </summary>
+        /// <param name="results">SPARQL Result Set</param>
+        /// <returns></returns>
+        public static explicit operator DataTable(SparqlResultSet results)
+        {
+            DataTable table = new DataTable();
+            foreach (String var in results.Variables)
+            {
+                table.Columns.Add(new DataColumn(var, typeof(INode)));
+            }
+
+            foreach (SparqlResult r in results)
+            {
+                DataRow row = table.NewRow();
+
+                foreach (String var in results.Variables)
+                {
+                    if (r.HasValue(var))
+                    {
+                        row[var] = r[var];
+                    }
+                    else
+                    {
+                        row[var] = null;
+                    }
+                }
+                table.Rows.Add(row);
+            }
+            return table;
         }
 
         /// <summary>
