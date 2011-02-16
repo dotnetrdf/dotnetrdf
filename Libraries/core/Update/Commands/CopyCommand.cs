@@ -88,6 +88,9 @@ namespace VDS.RDF.Update.Commands
                         {
                             context.Data.RemoveGraph(this._destUri);
                             dest = new Graph();
+                            dest.BaseUri = this._destUri;
+                            context.Data.AddGraph(dest);
+                            dest = context.Data.GetModifiableGraph(this._destUri);
                         }
                     }
                     else
@@ -98,8 +101,6 @@ namespace VDS.RDF.Update.Commands
 
                     //Move data from the Source into the Destination
                     dest.Merge(source);
-                    source.Dispose();
-                    dest.Dispose();
                 }
                 else
                 {

@@ -183,7 +183,8 @@ namespace VDS.RDF.Query
                       SparqlKeywordNone = "NONE",
                       SparqlKeywordAdd = "ADD",
                       SparqlKeywordCopy = "COPY",
-                      SparqlKeywordMove = "MOVE"
+                      SparqlKeywordMove = "MOVE",
+                      SparqlKeywordTo = "TO"
                       ;
 
         /// <summary>
@@ -216,7 +217,8 @@ namespace VDS.RDF.Query
                                                       SparqlKeywordMinus,
                                                       SparqlKeywordService,
                                                       SparqlKeywordBindings,
-                                                      SparqlKeywordUndef
+                                                      SparqlKeywordUndef,
+                                                      SparqlKeywordDefault
                                                   };
         /// <summary>
         /// Set of SPARQL Keywords that are Function Keywords
@@ -395,6 +397,7 @@ namespace VDS.RDF.Query
                                                         SparqlKeywordConcat,
                                                         SparqlKeywordCount,
                                                         SparqlKeywordDay,
+                                                        SparqlKeywordDefault,
                                                         SparqlKeywordEncodeForUri,
                                                         SparqlKeywordExists,
                                                         SparqlKeywordFloor,
@@ -460,6 +463,7 @@ namespace VDS.RDF.Query
                                                     SparqlKeywordLoad,
                                                     SparqlKeywordMove,
                                                     SparqlKeywordSilent,
+                                                    SparqlKeywordTo,
                                                     SparqlKeywordUsing,
                                                     SparqlKeywordWith
                                                 };
@@ -485,6 +489,7 @@ namespace VDS.RDF.Query
                                                           SparqlKeywordMove,
                                                           SparqlKeywordPrefix,
                                                           SparqlKeywordSilent,
+                                                          SparqlKeywordTo,
                                                           SparqlKeywordUsing,
                                                           SparqlKeywordWhere,
                                                           SparqlKeywordWith                                                        

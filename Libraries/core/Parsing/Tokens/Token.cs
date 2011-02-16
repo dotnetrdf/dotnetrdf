@@ -232,6 +232,7 @@ namespace VDS.RDF.Parsing.Tokens
                           ADD = 513,
                           COPY = 514,
                           MOVE = 515,
+                          TO = 516,
 
                           EOF = 1000;
     }

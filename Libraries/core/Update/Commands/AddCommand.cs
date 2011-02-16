@@ -89,8 +89,6 @@ namespace VDS.RDF.Update.Commands
 
                     //Move data from the Source into the Destination
                     dest.Merge(source);
-                    source.Dispose();
-                    dest.Dispose();
                 }
                 else
                 {
@@ -99,12 +97,12 @@ namespace VDS.RDF.Update.Commands
                     {
                         if (this._sourceUri != null)
                         {
-                            throw new SparqlUpdateException("Cannot COPY from Graph <" + this._sourceUri.ToString() + "> as it does not exist");
+                            throw new SparqlUpdateException("Cannot ADD from Graph <" + this._sourceUri.ToString() + "> as it does not exist");
                         }
                         else
                         {
                             //This would imply a more fundamental issue with the Dataset not understanding that null means default graph
-                            throw new SparqlUpdateException("Cannot COPY from the Default Graph as it does not exist");
+                            throw new SparqlUpdateException("Cannot ADD from the Default Graph as it does not exist");
                         }
                     }
                 }

@@ -175,6 +175,19 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
+    /// Token which represents the SPARQL Update TO Keyword
+    /// </summary>
+    public class ToKeywordToken : BaseToken
+    {
+        /// <summary>
+        /// Creates a new TO Keyword Token
+        /// </summary>
+        /// <param name="line">Line the Keyword occurs on</param>
+        /// <param name="pos">Position the Keyword occurs at</param>
+        public ToKeywordToken(int line, int pos) : base(Token.TO, "TO", line, line, pos, pos + 2) { }
+    }
+
+    /// <summary>
     /// Token which represents the SPARQL Update USING Keyword
     /// </summary>
     public class UsingKeywordToken : BaseToken

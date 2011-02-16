@@ -582,6 +582,8 @@ namespace VDS.RDF
         /// </remarks>
         public virtual void Merge(IGraph g, bool keepOriginalGraphUri)
         {
+            if (ReferenceEquals(this, g)) throw new RdfException("You cannot Merge an RDF Graph with itself");
+
             //Check that the merge can go ahead
             if (!this.RaiseMergeRequested()) return;
 

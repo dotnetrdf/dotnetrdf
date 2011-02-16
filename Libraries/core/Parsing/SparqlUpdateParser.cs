@@ -231,8 +231,18 @@ namespace VDS.RDF.Parsing
                         this.TryParsePrefixDeclaration(context);
                         break;
 
+                    case Token.ADD:
+                        this.TryParseAddCommand(context);
+                        commandParsed = true;
+                        break;
+
                     case Token.CLEAR:
                         this.TryParseClearCommand(context);
+                        commandParsed = true;
+                        break;
+
+                    case Token.COPY:
+                        this.TryParseCopyCommand(context);
                         commandParsed = true;
                         break;
 
@@ -246,7 +256,6 @@ namespace VDS.RDF.Parsing
                         commandParsed = true;
                         break;
 
-
                     case Token.DELETE:
                         context.CommandSet.AddCommand(this.TryParseDeleteCommand(context, true));
                         commandParsed = true;
@@ -259,6 +268,11 @@ namespace VDS.RDF.Parsing
 
                     case Token.LOAD:
                         this.TryParseLoadCommand(context);
+                        commandParsed = true;
+                        break;
+
+                    case Token.MOVE:
+                        this.TryParseMoveCommand(context);
                         commandParsed = true;
                         break;
 
@@ -339,6 +353,24 @@ namespace VDS.RDF.Parsing
             }
         }
 
+        private void TryParseAddCommand(SparqlUpdateParserContext context)
+        {
+            //First an Optional SILENT keyword
+            bool silent = false;
+            IToken next = context.Tokens.Peek();
+            if (next.TokenType == Token.SILENT)
+            {
+                context.Tokens.Dequeue();
+                silent = true;
+            }
+
+            //Then get the Source and Destination URIs
+            Uri sourceUri, destUri;
+            this.TryParseTransferUris(context, out sourceUri, out destUri);
+
+            context.CommandSet.AddCommand(new AddCommand(sourceUri, destUri, silent));
+        }
+
         private void TryParseClearCommand(SparqlUpdateParserContext context)
         {
             bool silent = false;
@@ -379,6 +411,24 @@ namespace VDS.RDF.Parsing
             {
                 throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a GRAPH <URI> to specify the Graph to CLEAR or one of the DEFAULT/NAMED/ALL keywords", next);
             }
+        }
+
+        private void TryParseCopyCommand(SparqlUpdateParserContext context)
+        {
+            //First an Optional SILENT keyword
+            bool silent = false;
+            IToken next = context.Tokens.Peek();
+            if (next.TokenType == Token.SILENT)
+            {
+                context.Tokens.Dequeue();
+                silent = true;
+            }
+
+            //Then get the Source and Destination URIs
+            Uri sourceUri, destUri;
+            this.TryParseTransferUris(context, out sourceUri, out destUri);
+
+            context.CommandSet.AddCommand(new CopyCommand(sourceUri, destUri, silent));
         }
 
         private void TryParseCreateCommand(SparqlUpdateParserContext context)
@@ -799,6 +849,24 @@ namespace VDS.RDF.Parsing
 
         }
 
+        private void TryParseMoveCommand(SparqlUpdateParserContext context)
+        {
+            //First an Optional SILENT keyword
+            bool silent = false;
+            IToken next = context.Tokens.Peek();
+            if (next.TokenType == Token.SILENT)
+            {
+                context.Tokens.Dequeue();
+                silent = true;
+            }
+
+            //Then get the Source and Destination URIs
+            Uri sourceUri, destUri;
+            this.TryParseTransferUris(context, out sourceUri, out destUri);
+
+            context.CommandSet.AddCommand(new MoveCommand(sourceUri, destUri, silent));
+        }
+
         private void TryParseUsings(SparqlUpdateParserContext context, BaseModificationCommand cmd)
         {
             foreach (Uri u in this.TryParseUsingStatements(context))
@@ -842,6 +910,62 @@ namespace VDS.RDF.Parsing
             else
             {
                 yield break;
+            }
+        }
+
+        private void TryParseTransferUris(SparqlUpdateParserContext context, out Uri sourceUri, out Uri destUri)
+        {
+            IToken next = context.Tokens.Dequeue();
+            sourceUri = destUri = null;
+
+            //Parse the Source Graph URI
+            if (next.TokenType == Token.GRAPH)
+            {
+                next = context.Tokens.Dequeue();
+                if (next.TokenType == Token.URI || next.TokenType == Token.QNAME)
+                {
+                    sourceUri = new Uri(Tools.ResolveUriOrQName(next, context.NamespaceMap, context.BaseUri));
+                }
+                else
+                {
+                    ParserHelper.Error("Unexpected Token '" + next.GetType().Name + "' encountered, expected a URI/QName after a GRAPH keyword to specify the URI of the Source Graph for a Transfer (ADD/COPY/MOVE) Command", next);
+                }
+            }
+            else if (next.TokenType == Token.DEFAULT)
+            {
+                sourceUri = null;
+            }
+            else
+            {
+                throw ParserHelper.Error("Unexpected Token '" + next.GetType().Name + "' encountered, expected a GRAPH/DEFAULT keyword to indicate the Source Graph for a Transfer (ADD/COPY/MOVE) Command", next);
+            }
+
+            //Then get the TO keyword
+            next = context.Tokens.Dequeue();
+            if (next.TokenType != Token.TO) throw ParserHelper.Error("Unexpected Token '" + next.GetType().Name + "' encountered, expected a TO Keyword after the Source Graph specifier", next);
+
+            next = context.Tokens.Dequeue();
+
+            //Parse the Destination Graph URI
+            if (next.TokenType == Token.GRAPH)
+            {
+                next = context.Tokens.Dequeue();
+                if (next.TokenType == Token.URI || next.TokenType == Token.QNAME)
+                {
+                    destUri = new Uri(Tools.ResolveUriOrQName(next, context.NamespaceMap, context.BaseUri));
+                }
+                else
+                {
+                    ParserHelper.Error("Unexpected Token '" + next.GetType().Name + "' encountered, expected a URI/QName after a GRAPH keyword to specify the URI of the Destination Graph for a Transfer (ADD/COPY/MOVE) Command", next);
+                }
+            }
+            else if (next.TokenType == Token.DEFAULT)
+            {
+                destUri = null;
+            }
+            else
+            {
+                throw ParserHelper.Error("Unexpected Token '" + next.GetType().Name + "' encountered, expected a GRAPH/DEFAULT keyword to indicate the Destination Graph for a Transfer (ADD/COPY/MOVE) Command", next);
             }
         }
 

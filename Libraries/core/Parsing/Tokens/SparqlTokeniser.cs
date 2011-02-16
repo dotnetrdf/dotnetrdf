@@ -810,6 +810,10 @@ namespace VDS.RDF.Parsing.Tokens
                         //Abs Function Keyword
                         this._lasttokentype = Token.ABS;
                         return new AbsKeywordToken(this.CurrentLine, this.StartPosition);
+                    case SparqlSpecsHelper.SparqlKeywordAdd:
+                        //Add Update Keyword
+                        this._lasttokentype = Token.ADD;
+                        return new AddKeywordToken(this.CurrentLine, this.StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordAll:
                         //All Keyword
                         this._lasttokentype = Token.ALLWORD;
@@ -842,6 +846,10 @@ namespace VDS.RDF.Parsing.Tokens
                         //Clear Keyword
                         this._lasttokentype = Token.CLEAR;
                         return new ClearKeywordToken(this.CurrentLine, this.StartPosition);
+                    case SparqlSpecsHelper.SparqlKeywordCopy:
+                        //Copy Update Keyword
+                        this._lasttokentype = Token.COPY;
+                        return new CopyKeywordToken(this.CurrentLine, this.StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordCoalesce:
                         //COALESCE Function Keyword
                         this._lasttokentype = Token.COALESCE;
@@ -1034,6 +1042,10 @@ namespace VDS.RDF.Parsing.Tokens
                         //Month Function Keyword
                         this._lasttokentype = Token.MONTH;
                         return new MonthKeywordToken(this.CurrentLine, this.StartPosition);
+                    case SparqlSpecsHelper.SparqlKeywordMove:
+                        //Move Update Keyword
+                        this._lasttokentype = Token.MOVE;
+                        return new MoveKeywordToken(this.CurrentLine, this.StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordNamed:
                         //Named Keyword
                         this._lasttokentype = Token.NAMED;
@@ -1197,6 +1209,10 @@ namespace VDS.RDF.Parsing.Tokens
                         //Timezone Function Keyword
                         this._lasttokentype = Token.TIMEZONE;
                         return new TimezoneKeywordToken(this.CurrentLine, this.StartPosition);
+                    case SparqlSpecsHelper.SparqlKeywordTo:
+                        //To Keyword
+                        this._lasttokentype = Token.TO;
+                        return new ToKeywordToken(this.CurrentLine, this.StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordTz:
                         //TZ Function Keyword
                         this._lasttokentype = Token.TZ;
