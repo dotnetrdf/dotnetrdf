@@ -529,6 +529,11 @@ namespace VDS.RDF.Writing.Formatting
             return output.ToString();
         }
 
+        /// <summary>
+        /// Formats the Variable/QName/URI for a SPARQL DESCRIBE Query
+        /// </summary>
+        /// <param name="q">SPARQL Query</param>
+        /// <returns></returns>
         protected virtual String FormatDescribeVariablesList(SparqlQuery q)
         {
             StringBuilder output = new StringBuilder();
@@ -590,6 +595,11 @@ namespace VDS.RDF.Writing.Formatting
             return output.ToString();
         }
 
+        /// <summary>
+        /// Formats a SPARQL Expression
+        /// </summary>
+        /// <param name="expr">SPARQL Expression</param>
+        /// <returns></returns>
         protected virtual String FormatExpression(ISparqlExpression expr)
         {
             StringBuilder output = new StringBuilder();
@@ -745,6 +755,11 @@ namespace VDS.RDF.Writing.Formatting
             return output.ToString();
         }
 
+        /// <summary>
+        /// Formats a SPARQL Aggregate
+        /// </summary>
+        /// <param name="agg">SPARQL Aggregate</param>
+        /// <returns></returns>
         protected virtual String FormatAggregate(ISparqlAggregate agg)
         {
             StringBuilder output = new StringBuilder();
@@ -782,6 +797,11 @@ namespace VDS.RDF.Writing.Formatting
             return output.ToString();
         }
 
+        /// <summary>
+        /// Formats a SPARQL Property Path
+        /// </summary>
+        /// <param name="path">SPARQL Property Path</param>
+        /// <returns></returns>
         protected virtual String FormatPath(ISparqlPath path)
         {
             StringBuilder output = new StringBuilder();
@@ -873,6 +893,11 @@ namespace VDS.RDF.Writing.Formatting
             return output.ToString();
         }
 
+        /// <summary>
+        /// Formats a SPARQL GROUP BY Clause
+        /// </summary>
+        /// <param name="groupBy">GROUP BY Clause</param>
+        /// <returns></returns>
         protected virtual String FormatGroupBy(ISparqlGroupBy groupBy)
         {
             StringBuilder output = new StringBuilder();
@@ -898,6 +923,11 @@ namespace VDS.RDF.Writing.Formatting
             return output.ToString();
         }
 
+        /// <summary>
+        /// Formats a SPARQL ORDER BY Clause
+        /// </summary>
+        /// <param name="orderBy">ORDER BY Clause</param>
+        /// <returns></returns>
         protected virtual String FormatOrderBy(ISparqlOrderBy orderBy)
         {
             StringBuilder output = new StringBuilder();

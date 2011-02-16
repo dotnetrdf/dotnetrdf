@@ -63,5 +63,33 @@ namespace VDS.RDF.Test.Sparql
             String query = "SELECT * WHERE {{SELECT * WHERE {?s ?p ?o}}}";
             this.TestQuery(query);
         }
+
+        [TestMethod]
+        public void SparqlParsingSetExpression()
+        {
+            String query = "SELECT * WHERE { ?s ?p ?o . FILTER(?o IN (1, 2, 3)) }";
+            TestQuery(query);
+        }
+
+        [TestMethod]
+        public void SparqlParsingSetExpression2()
+        {
+            String query = "PREFIX xsd: <" + NamespaceMapper.XMLSCHEMA + "> SELECT * WHERE { ?s ?p ?o . FILTER(xsd:integer(?o) IN (1, 2, 3)) }";
+            TestQuery(query);
+        }
+
+        [TestMethod]
+        public void SparqlParsingSetExpression3()
+        {
+            String query = "PREFIX xsd: <" + NamespaceMapper.XMLSCHEMA + "> SELECT * WHERE { ?s ?p ?o . FILTER(xsd:integer(?o) NOT IN (1, 2, 3)) }";
+            TestQuery(query);
+        }
+
+        [TestMethod]
+        public void SparqlParsingSetExpression4()
+        {
+            String query = "PREFIX xsd: <" + NamespaceMapper.XMLSCHEMA + "> SELECT * WHERE { ?s ?p ?o . FILTER(1 + 3 IN (1, 2, 3)) }";
+            TestQuery(query);
+        }
     }
 }

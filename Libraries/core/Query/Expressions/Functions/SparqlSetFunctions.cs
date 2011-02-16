@@ -50,7 +50,7 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// <summary>
         /// Variable Expression Term that the Set function applies to
         /// </summary>
-        protected VariableExpressionTerm _varTerm;
+        protected ISparqlExpression _expr;
         /// <summary>
         /// Set that is used in the function
         /// </summary>
@@ -61,13 +61,10 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// </summary>
         /// <param name="varTerm">Variable Expression Term</param>
         /// <param name="set">Set</param>
-        public SparqlSetFunction(VariableExpressionTerm varTerm, IEnumerable<ISparqlExpression> set)
+        public SparqlSetFunction(ISparqlExpression expr, IEnumerable<ISparqlExpression> set)
         {
-            this._varTerm = varTerm;
-            foreach (ISparqlExpression e in set)
-            {
-                this._expressions.Add(e);
-            }
+            this._expr = expr;
+            this._expressions.AddRange(set);
         }
 
         /// <summary>
@@ -96,7 +93,9 @@ namespace VDS.RDF.Query.Expressions.Functions
         {
             get 
             {
-                return this._varTerm.Variables; 
+                return this._expr.Variables.Concat(from e in this._expressions
+                                                   from v in e.Variables
+                                                   select v);
             }
         }
 
@@ -126,7 +125,7 @@ namespace VDS.RDF.Query.Expressions.Functions
         {
             get
             {
-                return this._varTerm.AsEnumerable<ISparqlExpression>().Concat(this._expressions);
+                return this._expr.AsEnumerable<ISparqlExpression>().Concat(this._expressions);
             }
         }
 
@@ -147,8 +146,8 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// </summary>
         /// <param name="varTerm">Variable Expression Term</param>
         /// <param name="set">Set</param>
-        public SparqlInFunction(VariableExpressionTerm varTerm, IEnumerable<ISparqlExpression> set)
-            : base(varTerm, set) { }
+        public SparqlInFunction(ISparqlExpression expr, IEnumerable<ISparqlExpression> set)
+            : base(expr, set) { }
 
         /// <summary>
         /// Gets the effective boolean value of the function as evaluated for a given Binding in the given Context
@@ -158,7 +157,7 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// <returns></returns>
         public override bool EffectiveBooleanValue(SparqlEvaluationContext context, int bindingID)
         {
-            INode result = this._varTerm.Value(context, bindingID);
+            INode result = this._expr.Value(context, bindingID);
             if (result != null)
             {
                 if (this._expressions.Count == 0) return false;
@@ -212,7 +211,9 @@ namespace VDS.RDF.Query.Expressions.Functions
         public override string ToString()
         {
             StringBuilder output = new StringBuilder();
-            output.Append(this._varTerm.ToString());
+            if (this._expr.Type == SparqlExpressionType.BinaryOperator || this._expr.Type == SparqlExpressionType.GraphOperator || this._expr.Type == SparqlExpressionType.SetOperator) output.Append('(');
+            output.Append(this._expr.ToString());
+            if (this._expr.Type == SparqlExpressionType.BinaryOperator || this._expr.Type == SparqlExpressionType.GraphOperator || this._expr.Type == SparqlExpressionType.SetOperator) output.Append(')');
             output.Append(" IN (");
             for (int i = 0; i < this._expressions.Count; i++)
             {
@@ -237,8 +238,8 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// </summary>
         /// <param name="varTerm">Variable Expression Term</param>
         /// <param name="set">Set</param>
-        public SparqlNotInFunction(VariableExpressionTerm varTerm, IEnumerable<ISparqlExpression> set)
-            : base(varTerm, set) { }
+        public SparqlNotInFunction(ISparqlExpression expr, IEnumerable<ISparqlExpression> set)
+            : base(expr, set) { }
 
         /// <summary>
         /// Gets the effective boolean value of the function as evaluated for a given Binding in the given Context
@@ -248,7 +249,7 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// <returns></returns>
         public override bool EffectiveBooleanValue(SparqlEvaluationContext context, int bindingID)
         {
-            INode result = this._varTerm.Value(context, bindingID);
+            INode result = this._expr.Value(context, bindingID);
             if (result != null)
             {
                 if (this._expressions.Count == 0) return true;
@@ -302,7 +303,7 @@ namespace VDS.RDF.Query.Expressions.Functions
         public override string ToString()
         {
             StringBuilder output = new StringBuilder();
-            output.Append(this._varTerm.ToString());
+            output.Append(this._expr.ToString());
             output.Append(" NOT IN (");
             for (int i = 0; i < this._expressions.Count; i++)
             {

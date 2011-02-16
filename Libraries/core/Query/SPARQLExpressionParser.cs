@@ -272,6 +272,9 @@ namespace VDS.RDF.Query
                     case Token.GREATERTHANOREQUALTO:
                         tokens.Dequeue();
                         return new GreaterThanOrEqualToExpression(firstTerm, this.TryParseNumericExpression(tokens));
+                    case Token.IN:
+                    case Token.NOTIN:
+                        return this.TryParseSetExpression(firstTerm, tokens);
                     default:
                         return firstTerm;
                 }
@@ -455,23 +458,7 @@ namespace VDS.RDF.Query
 
                 case Token.VARIABLE:
                     tokens.Dequeue();
-
-                    if (tokens.Count > 0)
-                    {
-                        //If the Variable is followed by an IN/NOT IN then we'll parse the Set function
-                        if (tokens.Peek().TokenType == Token.IN || tokens.Peek().TokenType == Token.NOTIN)
-                        {
-                            return this.TryParseSetExpression(new VariableExpressionTerm(next.Value), tokens);
-                        }
-                        else
-                        {
-                            return new VariableExpressionTerm(next.Value);
-                        }
-                    }
-                    else
-                    {
-                        return new VariableExpressionTerm(next.Value);
-                    }
+                    return new VariableExpressionTerm(next.Value);
 
                 default:
                     throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered while trying to parse a Primary Expression",next);
@@ -1429,10 +1416,9 @@ namespace VDS.RDF.Query
             return scalarArguments;
         }
 
-        private ISparqlExpression TryParseSetExpression(VariableExpressionTerm varTerm, Queue<IToken> tokens)
+        private ISparqlExpression TryParseSetExpression(ISparqlExpression expr, Queue<IToken> tokens)
         {
             IToken next = tokens.Dequeue();
-            ISparqlExpression nodeExpr;
             bool inSet = (next.TokenType == Token.IN);
             List<ISparqlExpression> expressions = new List<ISparqlExpression>();
 
@@ -1463,11 +1449,11 @@ namespace VDS.RDF.Query
 
             if (inSet)
             {
-                return new SparqlInFunction(varTerm, expressions);
+                return new SparqlInFunction(expr, expressions);
             }
             else
             {
-                return new SparqlNotInFunction(varTerm, expressions);
+                return new SparqlNotInFunction(expr, expressions);
             }
         }
 
