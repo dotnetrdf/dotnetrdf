@@ -35,24 +35,25 @@ using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 using VDS.RDF;
+using VDS.RDF.Query;
 using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.GUI.WinForms
 {
     /// <summary>
-    /// A Form that displays a Graph using a DataGridView
+    /// A Form that displays a SPARQL Result Set using a DataGridView
     /// </summary>
-    public partial class GraphViewerForm : Form
+    public partial class ResultSetViewerForm : Form
     {
-        private IGraph _g;
-        private INodeFormatter _formatter = new NTriplesFormatter();
+        private SparqlResultSet _results;
+        private INodeFormatter _formatter = new SparqlFormatter();
 
         /// <summary>
-        /// Displays the given Graph
+        /// Displays the given SPARQL Result Set
         /// </summary>
-        /// <param name="g">Graph to display</param>
-        public GraphViewerForm(IGraph g)
+        /// <param name="results">SPARQL Result to display</param>
+        public ResultSetViewerForm(SparqlResultSet results)
         {
             InitializeComponent();
 
@@ -88,22 +89,22 @@ namespace VDS.RDF.GUI.WinForms
             this.dgvTriples.CellFormatting += new DataGridViewCellFormattingEventHandler(dgvTriples_CellFormatting);
             this.dgvTriples.CellContentClick += new DataGridViewCellEventHandler(dgvTriples_CellClick);
 
-            this._g = g;
+            this._results = results;
         }
 
         /// <summary>
-        /// Displays the given Graph and prefixes the Form Title with the given Title
+        /// Displays the given SPARQL Result Set and prefixes the Form Title with the given Title
         /// </summary>
-        /// <param name="g">Graph to display</param>
+        /// <param name="results">SPARQL Result Set to display</param>
         /// <param name="title">Title</param>
-        public GraphViewerForm(IGraph g, String title)
-            : this(g)
+        public ResultSetViewerForm(SparqlResultSet results, String title)
+            : this(results)
         {
             this.Text = String.Format("{0} - Graph Viewer", title);
         }
 
         /// <summary>
-        /// Event which is raised when a User clicks a URI
+        /// Event which is raised when the User clicks a URI
         /// </summary>
         public event UriClickedEventHandler UriClicked;
 
@@ -114,22 +115,7 @@ namespace VDS.RDF.GUI.WinForms
             if (e.Value is INode)
             {
                 INode n = (INode)e.Value;
-
-                TripleSegment? segment = null;
-                switch (e.ColumnIndex)
-                {
-                    case 0:
-                        segment = TripleSegment.Subject;
-                        break;
-                    case 1:
-                        segment = TripleSegment.Predicate;
-                        break;
-                    case 2:
-                        segment = TripleSegment.Object;
-                        break;
-                }
-
-                e.Value = this._formatter.Format(n, segment);
+                e.Value = this._formatter.Format(n);
                 e.FormattingApplied = true;
                 switch (n.NodeType)
                 {
@@ -157,7 +143,7 @@ namespace VDS.RDF.GUI.WinForms
             }
         }
 
-        private void GraphViewerForm_Load(object sender, System.EventArgs e)
+        private void ResultSetViewerForm_Load(object sender, System.EventArgs e)
         {
             //Load Graph and Populate Form Fields
             this.LoadInternal();
@@ -165,18 +151,8 @@ namespace VDS.RDF.GUI.WinForms
 
         private void LoadInternal()
         {
-            //Show Graph Uri
-            if (this._g.BaseUri != null)
-            {
-                this.lnkBaseURI.Text = this._g.BaseUri.ToString();
-            }
-            else
-            {
-                this.lnkBaseURI.Text = "null";
-            }
-
             //Show Triples
-            this.dgvTriples.DataSource = this._g.ToDataTable();
+            this.dgvTriples.DataSource = (DataTable)this._results;
         }
 
         private void cboFormat_SelectedIndexChanged(object sender, EventArgs e)
@@ -189,22 +165,7 @@ namespace VDS.RDF.GUI.WinForms
                     INodeFormatter currFormatter = this._formatter;
 
                     Type t = formatter.GetType();
-                    Type graphType = typeof(IGraph);
-                    if (t.GetConstructors().Any(c => c.IsPublic && c.GetParameters().Any() && c.GetParameters().All(p => p.ParameterType.Equals(graphType))))
-                    {
-                        try
-                        {
-                            this._formatter = (INodeFormatter)Activator.CreateInstance(t, new object[] { this._g });
-                        }
-                        catch
-                        {
-                            this._formatter = formatter;
-                        }
-                    }
-                    else
-                    {
-                        this._formatter = formatter;
-                    }
+                    this._formatter = formatter;
 
                     if (!ReferenceEquals(currFormatter, this._formatter) || !currFormatter.GetType().Equals(this._formatter.GetType()))
                     {
@@ -219,29 +180,24 @@ namespace VDS.RDF.GUI.WinForms
 
         private void btnExport_Click(object sender, EventArgs e)
         {
-            ExportGraphOptionsForm exporter = new ExportGraphOptionsForm();
-            if (exporter.ShowDialog() == DialogResult.OK)
-            {
-                IRdfWriter writer = exporter.Writer;
-                String file = exporter.File;
+            MessageBox.Show("SPARQL Result Set Export is not yet implemented");
+            //ExportGraphOptionsForm exporter = new ExportGraphOptionsForm();
+            //if (exporter.ShowDialog() == DialogResult.OK)
+            //{
+            //    IRdfWriter writer = exporter.Writer;
+            //    String file = exporter.File;
 
-                try
-                {
-                    writer.Save(this._g, file);
+            //    try
+            //    {
+            //        writer.Save(this._g, file);
 
-                    MessageBox.Show("Successfully exported the Graph to the file '" + file + "'", "Graph Export Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("An error occurred attempting to export the Graph:\n" + ex.Message, "Graph Export Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
-        }
-
-        private void btnVisualise_Click(object sender, EventArgs e)
-        {
-            VisualiseGraphForm visualiser = new VisualiseGraphForm(this._g);
-            visualiser.ShowDialog();
+            //        MessageBox.Show("Successfully exported the Graph to the file '" + file + "'", "Graph Export Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        MessageBox.Show("An error occurred attempting to export the Graph:\n" + ex.Message, "Graph Export Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //    }
+            //}
         }
 
         private void RaiseUriClicked(Uri u)

@@ -186,5 +186,14 @@ namespace VDS.RDF.Writing
                 d(message);
             }
         }
+
+        /// <summary>
+        /// Gets the String representation of the writer which is a description of the syntax it produces
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return "NTriples";
+        }
     }
 }

@@ -34,6 +34,7 @@ terms.
 */
 
 using System;
+using System.Collections.Generic;
 
 namespace VDS.RDF.GUI
 {
@@ -78,4 +79,33 @@ namespace VDS.RDF.GUI
             }
         }
     }
+
+    /// <summary>
+    /// Comparer which compares objects based on the value of their ToString() method
+    /// </summary>
+    /// <typeparam name="T">Type to compare</typeparam>
+    class ToStringComparer<T> : IComparer<T>
+    {
+
+        public int Compare(T x, T y)
+        {
+            if (x == null && y == null)
+            {
+                return 0;
+            }
+            else if (x == null)
+            {
+                return -1;
+            }
+            else if (y == null)
+            {
+                return 1;
+            }
+            else
+            {
+                return x.ToString().CompareTo(y.ToString());
+            }
+        }
+    }
+
 }

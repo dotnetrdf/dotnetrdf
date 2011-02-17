@@ -250,5 +250,13 @@ namespace VDS.RDF.Writing
         /// <remarks>Not used by this Writer</remarks>
         public event RdfWriterWarning Warning;
 
+        /// <summary>
+        /// Gets the String representation of the writer which is a description of the syntax it produces
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return "GraphViz DOT";
+        }
     }
 }

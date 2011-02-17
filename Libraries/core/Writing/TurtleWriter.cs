@@ -282,5 +282,14 @@ namespace VDS.RDF.Writing
         /// Event which is raised when a non-fatal issue with the Graph being serialized is encountered
         /// </summary>
         public event RdfWriterWarning Warning;
+
+        /// <summary>
+        /// Gets the String representation of the writer which is a description of the syntax it produces
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return "Turtle";
+        }
     }
 }

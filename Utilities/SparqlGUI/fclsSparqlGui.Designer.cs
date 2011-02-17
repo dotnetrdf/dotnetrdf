@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(fclsSparqlGui));
             this.grpDataset = new System.Windows.Forms.GroupBox();
             this.btnClearDataset = new System.Windows.Forms.Button();
             this.btnImportUri = new System.Windows.Forms.Button();
@@ -70,6 +71,7 @@
             this.ofdQuery = new System.Windows.Forms.OpenFileDialog();
             this.sfdQuery = new System.Windows.Forms.SaveFileDialog();
             this.ttpTips = new System.Windows.Forms.ToolTip(this.components);
+            this.chkViewResultsInApp = new System.Windows.Forms.CheckBox();
             this.grpDataset.SuspendLayout();
             this.grpQuery.SuspendLayout();
             this.grpQueryOptions.SuspendLayout();
@@ -188,7 +190,7 @@
             this.grpQuery.Controls.Add(this.txtQuery);
             this.grpQuery.Location = new System.Drawing.Point(12, 148);
             this.grpQuery.Name = "grpQuery";
-            this.grpQuery.Size = new System.Drawing.Size(582, 285);
+            this.grpQuery.Size = new System.Drawing.Size(582, 344);
             this.grpQuery.TabIndex = 4;
             this.grpQuery.TabStop = false;
             this.grpQuery.Text = "Query";
@@ -196,7 +198,7 @@
             // btnSaveQuery
             // 
             this.btnSaveQuery.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.btnSaveQuery.Location = new System.Drawing.Point(214, 256);
+            this.btnSaveQuery.Location = new System.Drawing.Point(214, 315);
             this.btnSaveQuery.Name = "btnSaveQuery";
             this.btnSaveQuery.Size = new System.Drawing.Size(75, 23);
             this.btnSaveQuery.TabIndex = 4;
@@ -207,7 +209,7 @@
             // btnLoad
             // 
             this.btnLoad.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.btnLoad.Location = new System.Drawing.Point(133, 256);
+            this.btnLoad.Location = new System.Drawing.Point(133, 315);
             this.btnLoad.Name = "btnLoad";
             this.btnLoad.Size = new System.Drawing.Size(75, 23);
             this.btnLoad.TabIndex = 3;
@@ -218,7 +220,7 @@
             // btnInspect
             // 
             this.btnInspect.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.btnInspect.Location = new System.Drawing.Point(375, 256);
+            this.btnInspect.Location = new System.Drawing.Point(375, 315);
             this.btnInspect.Name = "btnInspect";
             this.btnInspect.Size = new System.Drawing.Size(75, 23);
             this.btnInspect.TabIndex = 2;
@@ -229,7 +231,7 @@
             // btnQuery
             // 
             this.btnQuery.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.btnQuery.Location = new System.Drawing.Point(295, 256);
+            this.btnQuery.Location = new System.Drawing.Point(295, 315);
             this.btnQuery.Name = "btnQuery";
             this.btnQuery.Size = new System.Drawing.Size(75, 23);
             this.btnQuery.TabIndex = 1;
@@ -244,7 +246,7 @@
             this.txtQuery.Multiline = true;
             this.txtQuery.Name = "txtQuery";
             this.txtQuery.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.txtQuery.Size = new System.Drawing.Size(566, 231);
+            this.txtQuery.Size = new System.Drawing.Size(566, 290);
             this.txtQuery.TabIndex = 0;
             // 
             // ofdBrowse
@@ -253,6 +255,7 @@
             // 
             // grpQueryOptions
             // 
+            this.grpQueryOptions.Controls.Add(this.chkViewResultsInApp);
             this.grpQueryOptions.Controls.Add(this.chkAlgebraOptimisation);
             this.grpQueryOptions.Controls.Add(this.chkQueryOptimisation);
             this.grpQueryOptions.Controls.Add(this.chkAllowUnknownFunctions);
@@ -263,7 +266,7 @@
             this.grpQueryOptions.Controls.Add(this.lblTimeout);
             this.grpQueryOptions.Location = new System.Drawing.Point(600, 116);
             this.grpQueryOptions.Name = "grpQueryOptions";
-            this.grpQueryOptions.Size = new System.Drawing.Size(189, 187);
+            this.grpQueryOptions.Size = new System.Drawing.Size(189, 258);
             this.grpQueryOptions.TabIndex = 3;
             this.grpQueryOptions.TabStop = false;
             this.grpQueryOptions.Text = "Query Options";
@@ -425,9 +428,9 @@
             this.stsGraphs,
             this.stsTriples,
             this.stsLastQuery});
-            this.stsStatus.Location = new System.Drawing.Point(0, 438);
+            this.stsStatus.Location = new System.Drawing.Point(0, 506);
             this.stsStatus.Name = "stsStatus";
-            this.stsStatus.Size = new System.Drawing.Size(801, 22);
+            this.stsStatus.Size = new System.Drawing.Size(799, 22);
             this.stsStatus.TabIndex = 5;
             this.stsStatus.Text = "statusStrip1";
             // 
@@ -452,7 +455,7 @@
             // grpResultsFormat
             // 
             this.grpResultsFormat.Controls.Add(this.cboResultsFormat);
-            this.grpResultsFormat.Location = new System.Drawing.Point(600, 321);
+            this.grpResultsFormat.Location = new System.Drawing.Point(600, 380);
             this.grpResultsFormat.Name = "grpResultsFormat";
             this.grpResultsFormat.Size = new System.Drawing.Size(189, 53);
             this.grpResultsFormat.TabIndex = 6;
@@ -481,7 +484,7 @@
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.cboGraphFormat);
-            this.groupBox1.Location = new System.Drawing.Point(600, 380);
+            this.groupBox1.Location = new System.Drawing.Point(600, 439);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(189, 53);
             this.groupBox1.TabIndex = 7;
@@ -520,11 +523,25 @@
             this.sfdQuery.Filter = "SPARQL Query Files|*.rq|All Files|*.*";
             this.sfdQuery.Title = "Load SPARQL Query";
             // 
+            // chkViewResultsInApp
+            // 
+            this.chkViewResultsInApp.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.chkViewResultsInApp.Checked = true;
+            this.chkViewResultsInApp.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkViewResultsInApp.Location = new System.Drawing.Point(6, 187);
+            this.chkViewResultsInApp.Name = "chkViewResultsInApp";
+            this.chkViewResultsInApp.Size = new System.Drawing.Size(166, 39);
+            this.chkViewResultsInApp.TabIndex = 9;
+            this.chkViewResultsInApp.Text = "View Results and Graphs in Application";
+            this.chkViewResultsInApp.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.ttpTips.SetToolTip(this.chkViewResultsInApp, resources.GetString("chkViewResultsInApp.ToolTip"));
+            this.chkViewResultsInApp.UseVisualStyleBackColor = true;
+            // 
             // fclsSparqlGui
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(801, 460);
+            this.ClientSize = new System.Drawing.Size(799, 528);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.grpResultsFormat);
             this.Controls.Add(this.stsStatus);
@@ -599,6 +616,7 @@
         private System.Windows.Forms.CheckBox chkAlgebraOptimisation;
         private System.Windows.Forms.CheckBox chkQueryOptimisation;
         private System.Windows.Forms.ToolTip ttpTips;
+        private System.Windows.Forms.CheckBox chkViewResultsInApp;
     }
 }
 

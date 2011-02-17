@@ -34,6 +34,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using VDS.RDF;
+using VDS.RDF.GUI.WinForms;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Storage.Params;
@@ -200,15 +201,31 @@ namespace SparqlGUI
                 }
 
                 Object results = this._store.ExecuteQuery(query);
-                if (results is Graph)
+                if (results is IGraph)
                 {
-                    this._rdfwriter.Save((Graph)results, new StreamWriter("temp" + this._rdfext));
-                    System.Diagnostics.Process.Start("temp" + this._rdfext);
+                    if (this.chkViewResultsInApp.Checked)
+                    {
+                        GraphViewerForm graphViewer = new GraphViewerForm((IGraph)results, "SPARQL GUI");
+                        graphViewer.Show();
+                    }
+                    else
+                    {
+                        this._rdfwriter.Save((IGraph)results, new StreamWriter("temp" + this._rdfext));
+                        System.Diagnostics.Process.Start("temp" + this._rdfext);
+                    }
                 }
                 else if (results is SparqlResultSet)
                 {
-                    this._resultswriter.Save((SparqlResultSet)results, new StreamWriter("temp" + this._resultsext));
-                    System.Diagnostics.Process.Start("temp" + this._resultsext);
+                    if (this.chkViewResultsInApp.Checked)
+                    {
+                        ResultSetViewerForm resultSetViewer = new ResultSetViewerForm((SparqlResultSet)results, "SPARQL GUI");
+                        resultSetViewer.Show();
+                    }
+                    else
+                    {
+                        this._resultswriter.Save((SparqlResultSet)results, new StreamWriter("temp" + this._resultsext));
+                        System.Diagnostics.Process.Start("temp" + this._resultsext);
+                    }
                 }
                 else
                 {

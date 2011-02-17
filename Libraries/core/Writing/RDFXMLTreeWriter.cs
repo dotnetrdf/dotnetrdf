@@ -692,6 +692,15 @@ namespace VDS.RDF.Writing
         /// Event which is raised when the Writer detects a non-fatal issue with the Graph being written
         /// </summary>
         public event RdfWriterWarning Warning;
+
+        /// <summary>
+        /// Gets the String representation of the writer which is a description of the syntax it produces
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return "RDF/XML (DOM Based Writer)";
+        }
     }
 
 #endif

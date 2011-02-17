@@ -138,6 +138,15 @@ namespace VDS.RDF.Writing
         /// Event which is raised if the Writer detects a non-fatal error while outputting CSV
         /// </summary>
         public event RdfWriterWarning Warning;
+
+        /// <summary>
+        /// Gets the String representation of the writer which is a description of the syntax it produces
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return "CSV";
+        }
     }
 
     /// <summary>
@@ -341,5 +350,14 @@ namespace VDS.RDF.Writing
         /// Event which is raised when a non-fatal error occurs while outputting CSV
         /// </summary>
         public event StoreWriterWarning Warning;
+
+        /// <summary>
+        /// Gets the String representation of the writer which is a description of the syntax it produces
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return "CSV";
+        }
     }
 }

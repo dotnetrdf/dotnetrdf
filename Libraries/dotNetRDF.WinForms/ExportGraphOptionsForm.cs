@@ -29,6 +29,9 @@ terms.
 */
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using System.Windows.Forms;
 using VDS.RDF;
 using VDS.RDF.Writing;
@@ -46,6 +49,33 @@ namespace VDS.RDF.GUI.WinForms
         public ExportGraphOptionsForm()
         {
             InitializeComponent();
+
+            //Load Writers
+            Type targetType = typeof(IRdfWriter);
+            List<IRdfWriter> writers = new List<IRdfWriter>();
+            foreach (Type t in Assembly.GetAssembly(targetType).GetTypes())
+            {
+                if (t.Namespace == null) continue;
+
+                if (t.Namespace.Equals("VDS.RDF.Writing"))
+                {
+                    if (t.GetInterfaces().Contains(targetType))
+                    {
+                        try
+                        {
+                            IRdfWriter writer = (IRdfWriter)Activator.CreateInstance(t);
+                            writers.Add(writer);
+                        }
+                        catch
+                        {
+                            //Ignore this Formatter
+                        }
+                    }
+                }
+            }
+            writers.Sort(new ToStringComparer<IRdfWriter>());
+            this.cboWriter.DataSource = writers;
+            if (this.cboWriter.Items.Count > 0) this.cboWriter.SelectedIndex = 0;
 
             this.cboWriter.SelectedIndex = 0;
             this.cboCompression.SelectedIndex = 1;
@@ -77,43 +107,8 @@ namespace VDS.RDF.GUI.WinForms
         {
             get
             {
-                IRdfWriter writer;
-                switch (this.cboWriter.SelectedIndex)
-                {
-                    case 0:
-                        writer = new NTriplesWriter();
-                        break;
-                    case 1:
-                        writer = new TurtleWriter();
-                        break;
-                    case 2:
-                        writer = new CompressingTurtleWriter();
-                        break;
-                    case 3:
-                        writer = new Notation3Writer();
-                        break;
-                    case 4:
-                        writer = new RdfXmlTreeWriter();
-                        break;
-                    case 5:
-                        writer = new FastRdfXmlWriter();
-                        break;
-                    case 6:
-                        writer = new RdfJsonWriter();
-                        break;
-                    case 7:
-                        writer = new HtmlWriter();
-                        break;
-                    case 8:
-                        writer = new CsvWriter();
-                        break;
-                    case 9:
-                        writer = new TsvWriter();
-                        break;
-                    default:
-                        writer = new NTriplesWriter();
-                        break;
-                }
+                IRdfWriter writer = this.cboWriter.SelectedItem as IRdfWriter;
+                if (writer == null) writer = new NTriplesWriter();
 
                 //Configure Options on the Writer
                 if (writer is IPrettyPrintingWriter)

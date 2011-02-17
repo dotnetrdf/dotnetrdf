@@ -403,5 +403,45 @@ namespace VDS.RDF.Test.Sparql
                 Console.WriteLine();
             }
         }
+
+        [TestMethod]
+        public void SparqlEvaluationMultipleOptionals()
+        {
+            TripleStore store = new TripleStore();
+            store.LoadFromFile("multiple-options.trig");
+
+            SparqlQueryParser parser = new SparqlQueryParser();
+            SparqlQuery query = parser.ParseFromFile("multiple-optionals.rq");
+
+            Object results = query.Evaluate(store);
+            if (results is SparqlResultSet)
+            {
+                TestTools.ShowResults(results);
+            }
+            else
+            {
+                Assert.Fail("Expected a SPARQL Result Set");
+            }
+        }
+
+        [TestMethod]
+        public void SparqlEvaluationMultipleOptionals2()
+        {
+            TripleStore store = new TripleStore();
+            store.LoadFromFile("multiple-options.trig");
+
+            SparqlQueryParser parser = new SparqlQueryParser();
+            SparqlQuery query = parser.ParseFromFile("multiple-optionals-alternate.rq");
+
+            Object results = query.Evaluate(store);
+            if (results is SparqlResultSet)
+            {
+                TestTools.ShowResults(results);
+            }
+            else
+            {
+                Assert.Fail("Expected a SPARQL Result Set");
+            }
+        }
     }
 }

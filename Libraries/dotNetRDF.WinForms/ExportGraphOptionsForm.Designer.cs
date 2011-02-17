@@ -128,20 +128,9 @@
             // 
             this.cboWriter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboWriter.FormattingEnabled = true;
-            this.cboWriter.Items.AddRange(new object[] {
-            "NTriples",
-            "Turtle",
-            "Turtle (Compressing Writer)",
-            "Notation 3",
-            "RDF/XML (DOM Writer)",
-            "RDF/XML (Fast Writer)",
-            "RDF/JSON",
-            "XHTML+RDFa",
-            "CSV",
-            "TSV"});
             this.cboWriter.Location = new System.Drawing.Point(53, 36);
             this.cboWriter.Name = "cboWriter";
-            this.cboWriter.Size = new System.Drawing.Size(290, 21);
+            this.cboWriter.Size = new System.Drawing.Size(371, 21);
             this.cboWriter.TabIndex = 6;
             // 
             // btnExport
@@ -169,7 +158,7 @@
             // 
             this.sfdExport.Title = "Select file to export Graph to";
             // 
-            // fclsExportGraph
+            // ExportGraphOptionsForm
             // 
             this.AcceptButton = this.btnExport;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -190,7 +179,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "fclsExportGraph";
+            this.Name = "ExportGraphOptionsForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Export Graph";
             this.ResumeLayout(false);

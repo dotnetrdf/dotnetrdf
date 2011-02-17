@@ -400,5 +400,14 @@ namespace VDS.RDF.Writing
         /// Event raised when a non-fatal issue with the SPARQL Results being written is detected
         /// </summary>
         public event SparqlWarning Warning;
+
+        /// <summary>
+        /// Gets the String representation of the writer which is a description of the syntax it produces
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return "SPARQL Results XML";
+        }
     }
 }
