@@ -1,6 +1,6 @@
-﻿namespace dotNetRDFStore
+﻿namespace VDS.RDF.GUI.WinForms
 {
-    partial class fclsOpenConnection
+    partial class OpenConnectionForm
     {
         /// <summary>
         /// Required designer variable.
@@ -31,6 +31,7 @@
             this.lblIntro = new System.Windows.Forms.Label();
             this.lstConnections = new System.Windows.Forms.ListBox();
             this.btnOpen = new System.Windows.Forms.Button();
+            this.btnCancel = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // lblIntro
@@ -53,7 +54,7 @@
             // 
             // btnOpen
             // 
-            this.btnOpen.Location = new System.Drawing.Point(152, 168);
+            this.btnOpen.Location = new System.Drawing.Point(111, 168);
             this.btnOpen.Name = "btnOpen";
             this.btnOpen.Size = new System.Drawing.Size(75, 23);
             this.btnOpen.TabIndex = 2;
@@ -61,19 +62,32 @@
             this.btnOpen.UseVisualStyleBackColor = true;
             this.btnOpen.Click += new System.EventHandler(this.btnOpen_Click);
             // 
-            // fclsOpenConnection
+            // btnCancel
+            // 
+            this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.btnCancel.Location = new System.Drawing.Point(192, 168);
+            this.btnCancel.Name = "btnCancel";
+            this.btnCancel.Size = new System.Drawing.Size(75, 23);
+            this.btnCancel.TabIndex = 3;
+            this.btnCancel.Text = "&Cancel";
+            this.btnCancel.UseVisualStyleBackColor = true;
+            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
+            // 
+            // OpenConnectionForm
             // 
             this.AcceptButton = this.btnOpen;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(379, 197);
+            this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOpen);
             this.Controls.Add(this.lstConnections);
             this.Controls.Add(this.lblIntro);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "fclsOpenConnection";
+            this.Name = "OpenConnectionForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Open Connection";
             this.ResumeLayout(false);
@@ -85,5 +99,6 @@
         private System.Windows.Forms.Label lblIntro;
         private System.Windows.Forms.ListBox lstConnections;
         private System.Windows.Forms.Button btnOpen;
+        private System.Windows.Forms.Button btnCancel;
     }
 }

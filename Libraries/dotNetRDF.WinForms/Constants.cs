@@ -35,21 +35,36 @@ terms.
 
 using System;
 
-namespace dotNetRDFStore
+namespace VDS.RDF.GUI
 {
+    /// <summary>
+    /// Constants for use in GUI Applications
+    /// </summary>
     public static class Constants
     {
         /// <summary>
         /// Filename Filter for RDF Graphs for Open/Save Dialogs
         /// </summary>
         public const String RdfFilter = "NTriples Files (*.nt)|*.nt|Turtle Files (*.ttl)|*.ttl|Notation 3 Files (*.n3)|*.n3|RDF/XML Files (*.rdf)|*.rdf|RDF/JSON Files (*.json)|*.json|RDFa Files|*.html,*.xhtml,*.htm";
+
         /// <summary>
         /// Filename Filter for RDF Datasets for Open/Save Dialogs
         /// </summary>
         public const String RdfDatasetFilter = "NQuads Files (*.nq)|*.nq|TriG Files (*.trig)|*.trig|TriX Files (*.xml)|*.xml";
 
+        /// <summary>
+        /// Filename Filter for SPARQL Queries
+        /// </summary>
         public const String SparqlQueryFilter = "SPARQL Query Files|*.rq|All Files|*.*";
 
+        /// <summary>
+        /// Filename Filter for SPARQL Updates
+        /// </summary>
+        public const String SparqlUpdateFilter = "SPARQL Update Files|*.ru|All Files|*.*";
+
+        /// <summary>
+        /// Filename Filter for Formats which can be used to serialise RDF and SPARQL Results but which are not standardised
+        /// </summary>
         public const String NonStandardFilter = "Comma Separated Values Files (*.csv)|*.csv|Tab Separated Values Files (*.tsv)|*.tsv";
 
         /// <summary>

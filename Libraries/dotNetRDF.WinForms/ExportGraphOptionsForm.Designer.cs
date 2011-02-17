@@ -1,6 +1,6 @@
-﻿namespace dotNetRDFStore
+﻿namespace VDS.RDF.GUI.WinForms
 {
-    partial class fclsExportGraph
+    partial class ExportGraphOptionsForm
     {
         /// <summary>
         /// Required designer variable.

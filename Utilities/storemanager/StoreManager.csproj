@@ -54,27 +54,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseDBConnection.cs" />
-    <Compile Include="Constants.cs" />
     <Compile Include="CrossThreadForm.cs">
       <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="fclsOpenConnection.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="fclsOpenConnection.Designer.cs">
-      <DependentUpon>fclsOpenConnection.cs</DependentUpon>
-    </Compile>
-    <Compile Include="fclsVisualiseGraph.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="fclsVisualiseGraph.Designer.cs">
-      <DependentUpon>fclsVisualiseGraph.cs</DependentUpon>
-    </Compile>
-    <Compile Include="fclsGraphViewer.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="fclsGraphViewer.Designer.cs">
-      <DependentUpon>fclsGraphViewer.cs</DependentUpon>
     </Compile>
     <Compile Include="fclsAddTriples.cs">
       <SubType>Form</SubType>
@@ -87,12 +68,6 @@
     </Compile>
     <Compile Include="fclsCreateTriple.Designer.cs">
       <DependentUpon>fclsCreateTriple.cs</DependentUpon>
-    </Compile>
-    <Compile Include="fclsExportGraph.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="fclsExportGraph.Designer.cs">
-      <DependentUpon>fclsExportGraph.cs</DependentUpon>
     </Compile>
     <Compile Include="fclsGenericStoreConnection.cs">
       <SubType>Form</SubType>
@@ -135,20 +110,12 @@
     <Compile Include="MySQLServerConnection.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="fclsGraphViewer.resx">
-      <DependentUpon>fclsGraphViewer.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="fclsAddTriples.resx">
       <DependentUpon>fclsAddTriples.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="fclsCreateTriple.resx">
       <DependentUpon>fclsCreateTriple.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="fclsExportGraph.resx">
-      <DependentUpon>fclsExportGraph.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="fclsGenericStoreConnection.resx">
@@ -197,16 +164,12 @@
       <Project>{BFBAC159-1E60-4D03-8ACA-D34E31EB83BF}</Project>
       <Name>dotNetRDF</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Libraries\dotNetRDF.WinForms\dotNetRDF.WinForms.csproj">
+      <Project>{0D1B8423-44F6-4ACE-8055-58D66E574F9D}</Project>
+      <Name>dotNetRDF.WinForms</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="fclsOpenConnection.resx">
-      <DependentUpon>fclsOpenConnection.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="fclsVisualiseGraph.resx">
-      <DependentUpon>fclsVisualiseGraph.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="fclsPleaseWait.resx">
       <DependentUpon>fclsPleaseWait.cs</DependentUpon>
       <SubType>Designer</SubType>

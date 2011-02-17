@@ -1,6 +1,6 @@
-﻿namespace dotNetRDFStore
+﻿namespace VDS.RDF.GUI.WinForms
 {
-    partial class fclsVisualiseGraph
+    partial class VisualiseGraphForm
     {
         /// <summary>
         /// Required designer variable.

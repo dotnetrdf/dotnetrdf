@@ -35,6 +35,7 @@ terms.
 
 using System;
 using System.Collections.Generic;
+using System.Data;
 
 namespace VDS.RDF
 {
@@ -507,6 +508,12 @@ namespace VDS.RDF
         /// </para>
         /// </remarks>
         GraphDiffReport Difference(IGraph g);
+
+        /// <summary>
+        /// Converts the Graph into a DataTable
+        /// </summary>
+        /// <returns></returns>
+        DataTable ToDataTable();
 
         #endregion
 

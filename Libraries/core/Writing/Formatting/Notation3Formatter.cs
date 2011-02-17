@@ -49,7 +49,7 @@ namespace VDS.RDF.Writing.Formatting
         /// Creates a new Uncompressed Notation 3 Formatter
         /// </summary>
         public UncompressedNotation3Formatter()
-            : base("Notation 3") { }
+            : base("Notation 3 (Uncompressed)") { }
 
         /// <summary>
         /// Formats a Variable Node for Notation 3

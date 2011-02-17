@@ -40,14 +40,22 @@ using VDS.RDF.Configuration;
 using VDS.RDF.Query;
 using VDS.RDF.Storage;
 
-namespace dotNetRDFStore
+namespace VDS.RDF.GUI.WinForms
 {
-    public partial class fclsOpenConnection : Form
+    /// <summary>
+    /// A Form that can be used to select an IGenericIOManager instance defined in an RDF Graph using the dotNetRDF Configuration Vocabulary
+    /// </summary>
+    public partial class OpenConnectionForm : Form
     {
         private IGraph _g;
         private List<INode> _connectionNodes = new List<INode>();
+        private IGenericIOManager _connection;
 
-        public fclsOpenConnection(IGraph g)
+        /// <summary>
+        /// Creates a new Open Connection Form
+        /// </summary>
+        /// <param name="g">Graph contaning Connection Definitions</param>
+        public OpenConnectionForm(IGraph g)
         {
             InitializeComponent();
 
@@ -80,6 +88,20 @@ namespace dotNetRDFStore
             }
         }
 
+        /// <summary>
+        /// Gets the Connection created when the User clicked the Open button
+        /// </summary>
+        /// <remarks>
+        /// May be null if the User closes/cancels the Form
+        /// </remarks>
+        public IGenericIOManager Connection
+        {
+            get
+            {
+                return this._connection;
+            }
+        }
+
         private void btnOpen_Click(object sender, EventArgs e)
         {
             if (this.lstConnections.SelectedIndex != -1)
@@ -92,9 +114,9 @@ namespace dotNetRDFStore
                     Object temp = ConfigurationLoader.LoadObject(this._g, objNode);
                     if (temp is IGenericIOManager)
                     {
-                        fclsGenericStoreManager storeManager = new fclsGenericStoreManager((IGenericIOManager)temp);
-                        storeManager.MdiParent = this.MdiParent;
-                        storeManager.Show();
+                        this._connection = (IGenericIOManager)temp;
+                        this.DialogResult = DialogResult.OK;
+                        this.Close();
                     }
                     else
                     {
@@ -106,6 +128,12 @@ namespace dotNetRDFStore
                     MessageBox.Show("Unable to open the selected connection due to the following error:\n" + ex.Message, "Open Connection Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
+        }
+
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+            this.DialogResult = DialogResult.Cancel;
+            this.Close();
         }
     }
 }

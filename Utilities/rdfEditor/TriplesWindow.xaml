@@ -18,6 +18,7 @@
         </DockPanel>
         
         <ScrollViewer Name="scroll" ScrollViewer.CanContentScroll="True" Height="325">
+                       
             <Grid ScrollViewer.CanContentScroll="True" Name="gridTriples">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="286*"></ColumnDefinition>

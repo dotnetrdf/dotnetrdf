@@ -33,6 +33,8 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using VDS.RDF;
+using VDS.RDF.GUI;
+using VDS.RDF.GUI.WinForms;
 using VDS.RDF.Parsing;
 using VDS.RDF.Storage;
 using VDS.RDF.Configuration;
@@ -235,9 +237,15 @@ namespace dotNetRDFStore
                     Graph g = new Graph();
                     FileLoader.Load(g, this.ofdConnection.FileName);
 
-                    fclsOpenConnection openConnections = new fclsOpenConnection(g);
+                    OpenConnectionForm openConnections = new OpenConnectionForm(g);
                     openConnections.MdiParent = this;
-                    openConnections.Show();
+                    if (openConnections.ShowDialog() == DialogResult.OK)
+                    {
+                        IGenericIOManager manager = openConnections.Connection;
+                        fclsGenericStoreManager genManagerForm = new fclsGenericStoreManager(manager);
+                        genManagerForm.MdiParent = this;
+                        genManagerForm.Show();
+                    }
                 }
                 catch (RdfParseException)
                 {

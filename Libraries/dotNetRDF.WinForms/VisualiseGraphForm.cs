@@ -34,13 +34,20 @@ using System.Windows.Forms;
 using VDS.RDF;
 using VDS.RDF.Writing;
 
-namespace dotNetRDFStore
+namespace VDS.RDF.GUI.WinForms
 {
-    public partial class fclsVisualiseGraph : Form
+    /// <summary>
+    /// A Form that can be used to Visualise a Graph using GraphViz (or produce DOT output for use with GraphViz)
+    /// </summary>
+    public partial class VisualiseGraphForm : Form
     {
         private IGraph _g;
 
-        public fclsVisualiseGraph(IGraph g)
+        /// <summary>
+        /// Creates a new Form for Visualising Graphs
+        /// </summary>
+        /// <param name="g">Graph to visualise</param>
+        public VisualiseGraphForm(IGraph g)
         {
             InitializeComponent();
 

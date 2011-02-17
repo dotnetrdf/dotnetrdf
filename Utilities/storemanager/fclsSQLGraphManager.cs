@@ -33,6 +33,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Windows.Forms;
 using VDS.RDF;
+using VDS.RDF.GUI.WinForms;
 using VDS.RDF.Parsing;
 using VDS.RDF.Storage;
 
@@ -61,7 +62,6 @@ namespace dotNetRDFStore
                 throw new RdfStorageException("The specified Graph does not exist in this dotNetRDF Store");
             }
         }
-
 
         private void fclsGraphManager_Load(object sender, System.EventArgs e)
         {
@@ -166,7 +166,7 @@ namespace dotNetRDFStore
 
         private void btnExport_Click(object sender, EventArgs e)
         {
-            fclsExportGraph exporter = new fclsExportGraph();
+            ExportGraphOptionsForm exporter = new ExportGraphOptionsForm();
             if (exporter.ShowDialog() == DialogResult.OK)
             {
                 IRdfWriter writer = exporter.Writer;

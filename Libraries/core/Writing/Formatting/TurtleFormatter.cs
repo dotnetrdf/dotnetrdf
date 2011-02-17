@@ -50,7 +50,7 @@ namespace VDS.RDF.Writing.Formatting
         /// Creates a new Uncompressed Turtle Formatter
         /// </summary>
         public UncompressedTurtleFormatter()
-            : base("Turtle") { }
+            : base("Turtle (Uncompressed)") { }
 
         /// <summary>
         /// Creates a new Uncompressed Formatter

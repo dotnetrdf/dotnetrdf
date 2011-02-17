@@ -33,11 +33,17 @@ using System.Windows.Forms;
 using VDS.RDF;
 using VDS.RDF.Writing;
 
-namespace dotNetRDFStore
+namespace VDS.RDF.GUI.WinForms
 {
-    public partial class fclsExportGraph : Form
+    /// <summary>
+    /// A Form that can be used to select options for Exporting a Graph to a File
+    /// </summary>
+    public partial class ExportGraphOptionsForm : Form
     {
-        public fclsExportGraph()
+        /// <summary>
+        /// Creates a new Export Graph Options Form
+        /// </summary>
+        public ExportGraphOptionsForm()
         {
             InitializeComponent();
 
@@ -64,6 +70,9 @@ namespace dotNetRDFStore
             this.Close();
         }
 
+        /// <summary>
+        /// Gets the RDF Writer the user selected
+        /// </summary>
         public IRdfWriter Writer
         {
             get
@@ -149,6 +158,9 @@ namespace dotNetRDFStore
             }
         }
 
+        /// <summary>
+        /// Gets the Target Filename the user selected
+        /// </summary>
         public String File
         {
             get

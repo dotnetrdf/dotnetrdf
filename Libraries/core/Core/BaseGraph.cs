@@ -865,6 +865,17 @@ namespace VDS.RDF
         #region Operators
 
         /// <summary>
+        /// Converts a Graph into a DataTable using the explicit cast operator defined by this class
+        /// </summary>
+        /// <returns>
+        /// A DataTable containing three Columns (Subject, Predicate and Object) all typed as <see cref="INode">INode</see> with a Row per Triple
+        /// </returns>
+        public virtual DataTable ToDataTable()
+        {
+            return (DataTable)this;
+        }
+
+        /// <summary>
         /// Casts a Graph to a DataTable with all Columns typed as <see cref="INode">INode</see> (Column Names are Subject, Predicate and Object
         /// </summary>
         /// <param name="g">Graph to convert</param>

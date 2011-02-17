@@ -193,5 +193,14 @@ namespace VDS.RDF.Writing.Formatting
         {
             return c.ToString();
         }
+
+        /// <summary>
+        /// Gets the Name of the Format this Format uses
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return this.FormatName;
+        }
     }
 }

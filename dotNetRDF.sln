@@ -71,6 +71,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.Alexandria.MongoD
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "soh", "Utilities\soh\soh.csproj", "{158872DD-31B7-4DF7-8950-A9547CC220C2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.WinForms", "Libraries\dotNetRDF.WinForms\dotNetRDF.WinForms.csproj", "{0D1B8423-44F6-4ACE-8055-58D66E574F9D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -193,6 +195,10 @@ Global
 		{158872DD-31B7-4DF7-8950-A9547CC220C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{158872DD-31B7-4DF7-8950-A9547CC220C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{158872DD-31B7-4DF7-8950-A9547CC220C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D1B8423-44F6-4ACE-8055-58D66E574F9D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D1B8423-44F6-4ACE-8055-58D66E574F9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D1B8423-44F6-4ACE-8055-58D66E574F9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D1B8423-44F6-4ACE-8055-58D66E574F9D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

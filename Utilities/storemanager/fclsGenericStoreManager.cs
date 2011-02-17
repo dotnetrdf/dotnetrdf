@@ -35,6 +35,8 @@ using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
 using VDS.RDF;
+using VDS.RDF.GUI;
+using VDS.RDF.GUI.WinForms;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Storage;
@@ -231,7 +233,7 @@ namespace dotNetRDFStore
                     else if (results is Graph)
                     {
                         this.stsCurrent.Text = "SPARQL Query Complete (Took " + timer.Elapsed + ") - Store is ready";
-                        fclsGraphViewer graphViewer = new fclsGraphViewer((Graph)results);
+                        GraphViewerForm graphViewer = new GraphViewerForm((Graph)results, "dotNetRDF Store Manager");
                         graphViewer.MdiParent = this.MdiParent;
                         graphViewer.Show();
                     }
@@ -427,7 +429,7 @@ namespace dotNetRDFStore
                 String graphUri = this.lvwGraphs.SelectedItems[0].Text;
                 Graph g = new Graph();
                 this._manager.LoadGraph(g, graphUri);
-                fclsGraphViewer graphViewer = new fclsGraphViewer(g);
+                GraphViewerForm graphViewer = new GraphViewerForm(g, "dotNetRDF Store Manager");
                 graphViewer.MdiParent = this.MdiParent;
                 graphViewer.Show();
             }

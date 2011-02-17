@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using VDS.RDF;
@@ -469,6 +470,11 @@ namespace VDS.Alexandria.Utilities
         public event CancellableGraphEventHandler MergeRequested;
 
         public event GraphEventHandler Merged;
+
+        public DataTable ToDataTable()
+        {
+            return this._g.ToDataTable();
+        }
 
         public void Dispose()
         {
