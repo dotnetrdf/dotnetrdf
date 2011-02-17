@@ -29,7 +29,7 @@ namespace VDS.RDF.Test.Writing
         private String prefix = "@prefix : <http://example.org>.\n";
         
         [TestMethod]
-        public void BlankNodeOutput()
+        public void WritingBlankNodeOutput()
         {
             //Create a Graph and add a couple of Triples which when serialized have
             //potentially colliding IDs
@@ -63,7 +63,7 @@ namespace VDS.RDF.Test.Writing
         }
 
         [TestMethod]
-        public void CharEscaping()
+        public void WritingCharEscaping()
         {
             List<IRdfReader> readers = new List<IRdfReader>()
             {
@@ -119,7 +119,7 @@ namespace VDS.RDF.Test.Writing
         }
 
         [TestMethod]
-        public void NTriplesCharEscaping()
+        public void WritingNTriplesCharEscaping()
         {
             TurtleParser parser = new TurtleParser();
             NTriplesParser ntparser = new NTriplesParser();
@@ -162,7 +162,7 @@ namespace VDS.RDF.Test.Writing
         }
 
         [TestMethod]
-        public void OwlCharEscaping()
+        public void WritingOwlCharEscaping()
         {
             Graph g = new Graph();
             FileLoader.Load(g, "charescaping.owl");
@@ -191,7 +191,7 @@ namespace VDS.RDF.Test.Writing
         }
 
         [TestMethod]
-        public void HtmlWriter()
+        public void WritingHtmlWriter()
         {
             Graph g = new Graph();
             FileLoader.Load(g, "InferenceTest.ttl");
@@ -218,7 +218,7 @@ namespace VDS.RDF.Test.Writing
         }
 
         [TestMethod]
-        public void CollectionWriting()
+        public void WritingCollections()
         {
             Graph g = new Graph();
             Options.UriLoaderCaching = false;
@@ -229,7 +229,7 @@ namespace VDS.RDF.Test.Writing
         }
 
         [TestMethod]
-        public void XmlAmpersandEscaping()
+        public void WritingXmlAmpersandEscaping()
         {
             List<String> inputs = new List<string>()
             {

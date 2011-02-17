@@ -36,6 +36,7 @@ terms.
 
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 
@@ -857,6 +858,36 @@ namespace VDS.RDF
         public virtual String GetNextBlankNodeID()
         {
             return this._bnodemapper.GetNextID();
+        }
+
+        #endregion
+
+        #region Operators
+
+        /// <summary>
+        /// Casts a Graph to a DataTable with all Columns typed as <see cref="INode">INode</see> (Column Names are Subject, Predicate and Object
+        /// </summary>
+        /// <param name="g">Graph to convert</param>
+        /// <returns>
+        /// A DataTable containing three Columns (Subject, Predicate and Object) all typed as <see cref="INode">INode</see> with a Row per Triple
+        /// </returns>
+        public static explicit operator DataTable(BaseGraph g)
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add(new DataColumn("Subject", typeof(INode)));
+            table.Columns.Add(new DataColumn("Predicate", typeof(INode)));
+            table.Columns.Add(new DataColumn("Object", typeof(INode)));
+
+            foreach (Triple t in g.Triples)
+            {
+                DataRow row = table.NewRow();
+                row["Subject"] = t.Subject;
+                row["Predicate"] = t.Predicate;
+                row["Object"] = t.Object;
+                table.Rows.Add(row);
+            }
+
+            return table;
         }
 
         #endregion

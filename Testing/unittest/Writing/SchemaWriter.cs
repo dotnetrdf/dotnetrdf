@@ -14,7 +14,7 @@ namespace VDS.RDF.Test.Writing
     public class SchemaWriter
     {
         [TestMethod]
-        public void HtmlSchemaWriter()
+        public void WritingHtmlSchemaWriter()
         {
             //Load the Graph from within the Assembly
             Graph g = new Graph();

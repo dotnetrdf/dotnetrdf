@@ -15,7 +15,7 @@ namespace VDS.RDF.Test.Parsing
     public class ParserTests
     {
         [TestMethod]
-        public void StringParser()
+        public void ParsingStringParser()
         {
             try
             {
@@ -83,7 +83,7 @@ namespace VDS.RDF.Test.Parsing
         }
 
         [TestMethod]
-        public void BlankNodeIDParsing()
+        public void ParsingBlankNodeIDs()
         {
             List<IRdfReader> parsersToTest = new List<IRdfReader>()
             {
@@ -220,7 +220,7 @@ namespace VDS.RDF.Test.Parsing
         }
 
         [TestMethod]
-        public void CollectionParsing()
+        public void ParsingCollections()
         {
             List<IRdfReader> parsersToTest = new List<IRdfReader>()
             {
@@ -322,7 +322,7 @@ namespace VDS.RDF.Test.Parsing
         }
 
         [TestMethod]
-        public void RdfXmlNamespaceAttributes()
+        public void ParsingRdfXmlNamespaceAttributes()
         {
             try
             {
@@ -348,7 +348,7 @@ namespace VDS.RDF.Test.Parsing
         }
 
         [TestMethod]
-        public void MalformedRdfAParsing()
+        public void ParsingMalformedRdfA()
         {
             Console.WriteLine("Tests how the RDFa Parser handles RDFa from the web which is embedded in malformed HTML and is known to contain malformed RDFa");
             Console.WriteLine("For this we use MySpace RDFa");
@@ -378,7 +378,7 @@ namespace VDS.RDF.Test.Parsing
         }
 
         [TestMethod]
-        public void RdfXmlStreaming()
+        public void ParsingRdfXmlStreaming()
         {
             try
             {
@@ -396,7 +396,7 @@ namespace VDS.RDF.Test.Parsing
         }
 
         [TestMethod]
-        public void MalformedFileUriParsing()
+        public void ParsingMalformedFileUris()
         {
             String malformedFileUriFragment = "@base <file:/path/to/somewhere>. @prefix ex: <file:/path/to/nowhere/> . <#this> a \"URI Resolved with a malformed Base URI\" . <this> a \"Another URI Resolved with a malformed Base URI\" . ex:this a \"QName Resolved with a malformed Namespace URI\" .";
 
@@ -480,7 +480,7 @@ namespace VDS.RDF.Test.Parsing
         //}
 
         [TestMethod]
-        public void RdfXmlEmptyElement()
+        public void ParsingRdfXmlEmptyElement()
         {
             String fragment = @"<?xml version='1.0'?><rdf:RDF xmlns:rdf='" + NamespaceMapper.RDF + @"' xmlns='http://example.org/'><rdf:Description rdf:about='http://example.org/subject'><predicate rdf:resource='http://example.org/object' /></rdf:Description></rdf:RDF>";
 
@@ -495,7 +495,7 @@ namespace VDS.RDF.Test.Parsing
         }
 
         [TestMethod]
-        public void TurtleWithAndWithoutBOM()
+        public void ParsingTurtleWithAndWithoutBOM()
         {
             TurtleParser parser = new TurtleParser();
             Graph g = new Graph();

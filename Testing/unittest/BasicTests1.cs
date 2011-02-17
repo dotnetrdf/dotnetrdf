@@ -15,7 +15,7 @@ namespace VDS.RDF.Test
     public class BasicTests1 : BaseTest
     {
         [TestMethod]
-        public void Distinct()
+        public void NodesDistinct()
         {
             Graph g = new Graph();
             List<INode> test = new List<INode>()
@@ -277,7 +277,7 @@ namespace VDS.RDF.Test
         }
 
         [TestMethod]
-        public void DotNetUriHashCodes()
+        public void UriHashCodes()
         {
             //Quick Test to see if how the Uri classes Hash Codes behave
             Uri test1 = new Uri("http://example.org/test#one");
@@ -295,7 +295,7 @@ namespace VDS.RDF.Test
         }
 
         [TestMethod]
-        public void HashCodes()
+        public void NodesHashCodes()
         {
             Console.WriteLine("Tests that Literal and URI Nodes produce different Hashes");
             Console.WriteLine();
@@ -378,7 +378,7 @@ namespace VDS.RDF.Test
         }
 
         [TestMethod]
-        public void UriNodeEquality() {
+        public void NodesUriNodeEquality() {
             //Create the Nodes
             Graph g = new Graph();
             Console.WriteLine("Creating two URIs referring to google - one lowercase, one uppercase - which should be equivalent");
@@ -415,7 +415,7 @@ namespace VDS.RDF.Test
         }
 
         [TestMethod]
-        public void BlankNodeEquality()
+        public void NodesBlankNodeEquality()
         {
             try
             {
@@ -463,7 +463,7 @@ namespace VDS.RDF.Test
         }
 
         [TestMethod]
-        public void LiteralNodeEquality()
+        public void NodesLiteralNodeEquality()
         {
             try
             {
@@ -559,7 +559,7 @@ namespace VDS.RDF.Test
         }
 
         [TestMethod]
-        public void NodeSorting()
+        public void NodesSorting()
         {
             //Stream for Output
             Console.WriteLine("## Sorting Test");
@@ -652,7 +652,7 @@ namespace VDS.RDF.Test
         }
 
         [TestMethod]
-        public void NodeSortingSparqlOrder()
+        public void NodesSortingSparqlOrder()
         {
             SparqlOrderingComparer comparer = new SparqlOrderingComparer();
 
@@ -737,7 +737,7 @@ namespace VDS.RDF.Test
         }
 
         [TestMethod]
-        public void NullNodeEquality()
+        public void NodesNullNodeEquality()
         {
             UriNode nullUri = null;
             LiteralNode nullLiteral = null;
@@ -872,7 +872,7 @@ namespace VDS.RDF.Test
         }
 
         [TestMethod]
-        public void TripleCreation()
+        public void GraphTripleCreation()
         {
             //Create two Graphs
             Graph g = new Graph();

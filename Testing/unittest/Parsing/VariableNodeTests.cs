@@ -15,7 +15,7 @@ namespace VDS.RDF.Test.Parsing
     public class VariableNodeTests
     {
         [TestMethod]
-        public void N3VariableParsing()
+        public void ParsingN3Variables()
         {
             String TestFragment = "@prefix rdfs: <" + NamespaceMapper.RDFS + ">. { ?s a ?type } => { ?s rdfs:label \"This has a type\" } .";
             Notation3Parser parser = new Notation3Parser();
@@ -31,7 +31,7 @@ namespace VDS.RDF.Test.Parsing
         }
 
         [TestMethod]
-        public void N3GraphLiteralParsing()
+        public void ParsingN3GraphLiterals()
         {
             String TestFragment = "{ :a :b :c . :d :e :f } a \"Graph Literal\" .";
             Graph g = new Graph();
@@ -43,7 +43,7 @@ namespace VDS.RDF.Test.Parsing
         }
 
         [TestMethod]
-        public void N3VariableContexts()
+        public void ParsingN3VariableContexts()
         {
             String prefixes = "@prefix rdf: <" + NamespaceMapper.RDF + ">. @prefix rdfs: <" + NamespaceMapper.RDFS + ">.";
             List<String> tests = new List<string>()
@@ -69,7 +69,7 @@ namespace VDS.RDF.Test.Parsing
         }
 
         [TestMethod]
-        public void N3Reasoner()
+        public void ParsingN3Reasoner()
         {
             String rules = "@prefix rdfs: <" + NamespaceMapper.RDFS + "> . { ?s rdfs:subClassOf ?class } => { ?s a ?class } .";
 
@@ -101,7 +101,7 @@ namespace VDS.RDF.Test.Parsing
         }
 
         [TestMethod]
-        public void N3ReasonerWithForAll()
+        public void ParsingN3ReasonerWithForAll()
         {
             String rules = "@prefix rdfs: <" + NamespaceMapper.RDFS + "> . @forAll :x . { :x rdfs:subClassOf ?class } => { :x a ?class } .";
 

@@ -200,5 +200,145 @@ namespace VDS.RDF.Test.Sparql
                 Assert.Fail("Query should have returned a Result Set");
             }
         }
+
+        [TestMethod]
+        public void SparqlResultSetToDataTable5()
+        {
+            String query = "ASK WHERE {?s ?p ?o}";
+            SparqlQueryParser parser = new SparqlQueryParser();
+            SparqlQuery q = parser.ParseFromString(query);
+
+            Graph g = new Graph();
+            FileLoader.Load(g, "InferenceTest.ttl");
+
+            Object results = g.ExecuteQuery(q);
+            if (results is SparqlResultSet)
+            {
+                SparqlResultSet rset = (SparqlResultSet)results;
+
+                DataTable table = (DataTable)rset;
+
+                Assert.IsTrue(rset.ResultsType == SparqlResultsType.Boolean);
+                Assert.AreEqual(table.Columns.Count, 1, "Should only be one Column");
+                Assert.AreEqual(table.Rows.Count, 1, "Should only be one Row");
+                Assert.IsTrue((bool)table.Rows[0]["ASK"], "Should be true");
+
+                foreach (DataRow row in table.Rows)
+                {
+                    foreach (DataColumn col in table.Columns)
+                    {
+                        Object temp = row[col];
+                        Console.Write(col.ColumnName + " = " + ((temp != null) ? temp.ToString() : String.Empty) + " , ");
+                    }
+                    Console.WriteLine();
+                }
+            }
+            else
+            {
+                Assert.Fail("Query should have returned a Result Set");
+            }
+        }
+
+        [TestMethod]
+        public void SparqlResultSetToDataTable6()
+        {
+            String query = "ASK WHERE {?s <http://example.org/noSuchPredicate> ?o}";
+            SparqlQueryParser parser = new SparqlQueryParser();
+            SparqlQuery q = parser.ParseFromString(query);
+
+            Graph g = new Graph();
+            FileLoader.Load(g, "InferenceTest.ttl");
+
+            Object results = g.ExecuteQuery(q);
+            if (results is SparqlResultSet)
+            {
+                SparqlResultSet rset = (SparqlResultSet)results;
+
+                DataTable table = (DataTable)rset;
+
+                Assert.IsTrue(rset.ResultsType == SparqlResultsType.Boolean);
+                Assert.AreEqual(table.Columns.Count, 1, "Should only be one Column");
+                Assert.AreEqual(table.Rows.Count, 1, "Should only be one Row");
+                Assert.IsFalse((bool)table.Rows[0]["ASK"], "Should be false");
+
+                foreach (DataRow row in table.Rows)
+                {
+                    foreach (DataColumn col in table.Columns)
+                    {
+                        Object temp = row[col];
+                        Console.Write(col.ColumnName + " = " + ((temp != null) ? temp.ToString() : String.Empty) + " , ");
+                    }
+                    Console.WriteLine();
+                }
+            }
+            else
+            {
+                Assert.Fail("Query should have returned a Result Set");
+            }
+        }
+
+        [TestMethod]
+        public void SparqlResultSetToDataTable7()
+        {
+            SparqlResultSet rset = new SparqlResultSet(true);
+
+            DataTable table = (DataTable)rset;
+
+            Assert.IsTrue(rset.ResultsType == SparqlResultsType.Boolean);
+            Assert.AreEqual(table.Columns.Count, 1, "Should only be one Column");
+            Assert.AreEqual(table.Rows.Count, 1, "Should only be one Row");
+            Assert.IsTrue((bool)table.Rows[0]["ASK"], "Should be true");
+
+            foreach (DataRow row in table.Rows)
+            {
+                foreach (DataColumn col in table.Columns)
+                {
+                    Object temp = row[col];
+                    Console.Write(col.ColumnName + " = " + ((temp != null) ? temp.ToString() : String.Empty) + " , ");
+                }
+                Console.WriteLine();
+            }
+        }
+
+        [TestMethod]
+        public void SparqlResultSetToDataTable8()
+        {
+            SparqlResultSet rset = new SparqlResultSet(false);
+
+            DataTable table = (DataTable)rset;
+
+            Assert.IsTrue(rset.ResultsType == SparqlResultsType.Boolean);
+            Assert.AreEqual(table.Columns.Count, 1, "Should only be one Column");
+            Assert.AreEqual(table.Rows.Count, 1, "Should only be one Row");
+            Assert.IsFalse((bool)table.Rows[0]["ASK"], "Should be false");
+
+            foreach (DataRow row in table.Rows)
+            {
+                foreach (DataColumn col in table.Columns)
+                {
+                    Object temp = row[col];
+                    Console.Write(col.ColumnName + " = " + ((temp != null) ? temp.ToString() : String.Empty) + " , ");
+                }
+                Console.WriteLine();
+            }
+        }
+
+        [TestMethod]
+        public void SparqlResultSetToDataTable9()
+        {
+            SparqlResultSet results = new SparqlResultSet();
+            try
+            {
+                DataTable table = (DataTable)results;
+                Assert.Fail("Should have thrown an InvalidCastException");
+            }
+            catch (InvalidCastException ex)
+            {
+                Assert.AreEqual(SparqlResultsType.Unknown, results.ResultsType, "Should have unknown results type");
+                Console.WriteLine("Errored as expected");
+                Console.WriteLine();
+                TestTools.ReportError("Invalid Cast", ex, false);
+            }
+        }
     }
 }

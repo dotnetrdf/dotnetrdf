@@ -13,7 +13,7 @@ namespace VDS.RDF.Test.Parsing
 	public class RdfXmlTests
 	{
         [TestMethod]
-        public void RdfXmlAmpersands()
+        public void ParsingRdfXmlAmpersands()
         {
             List<IRdfWriter> writers = new List<IRdfWriter>()
             {
@@ -47,7 +47,7 @@ namespace VDS.RDF.Test.Parsing
         }
 
         [TestMethod]
-        public void RdfXmlEmptyStrings()
+        public void ParsingRdfXmlEmptyStrings()
         {
             NTriplesFormatter formatter = new NTriplesFormatter();
             RdfXmlParser domParser = new RdfXmlParser(RdfXmlParserMode.DOM);

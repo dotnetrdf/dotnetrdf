@@ -14,7 +14,7 @@ namespace VDS.RDF.Test
     public class AlgebraReverseTranslation
     {
         [TestMethod]
-        public void AlgebraReverseSimple()
+        public void SparqlAlgebraReverseSimple()
         {
             List<String> tests = new List<string>()
             {

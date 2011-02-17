@@ -59,37 +59,37 @@ namespace VDS.RDF.Test.Sparql
         }
 
         [TestMethod]
-        public void DescribeCBD()
+        public void SparqlDescribeCBD()
         {
             this.RunDescribeTest(new ConciseBoundedDescription());
         }
 
         [TestMethod]
-        public void DescribeSCBD()
+        public void SparqlDescribeSCBD()
         {
             this.RunDescribeTest(new SymmetricConciseBoundedDescription());
         }
 
         [TestMethod]
-        public void DescribeSubject()
+        public void SparqlDescribeSubject()
         {
             this.RunDescribeTest(new SimpleSubjectDescription());
         }
 
         [TestMethod]
-        public void DescribeSubjectObject()
+        public void SparqlDescribeSubjectObject()
         {
             this.RunDescribeTest(new SimpleSubjectObjectDescription());
         }
 
         [TestMethod]
-        public void DescribeMSG()
+        public void SparqlDescribeMSG()
         {
             this.RunDescribeTest(new MinimalSpanningGraph());
         }
 
         [TestMethod]
-        public void DescribeLabelled()
+        public void SparqlDescribeLabelled()
         {
             this.RunDescribeTest(new LabelledDescription());
         }

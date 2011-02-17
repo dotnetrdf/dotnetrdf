@@ -46,7 +46,7 @@ namespace VDS.RDF.Test.Sparql
         }
 
         [TestMethod]
-        public void ResultSetEquality()
+        public void SparqlResultSetEquality()
         {
             SparqlXmlParser parser = new SparqlXmlParser();
             SparqlRdfParser rdfparser = new SparqlRdfParser();
@@ -74,7 +74,7 @@ namespace VDS.RDF.Test.Sparql
         }
 
         [TestMethod]
-        public void JsonResultSet()
+        public void SparqlJsonResultSet()
         {
             Console.WriteLine("Tests that JSON Parser parses language specifiers correctly");
 

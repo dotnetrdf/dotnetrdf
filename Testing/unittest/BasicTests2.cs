@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Net;
@@ -80,7 +81,7 @@ namespace VDS.RDF.Test
         }
 
         [TestMethod]
-        public void SubGraphMatching()
+        public void GraphSubGraphMatching()
         {
             Graph parent = new Graph();
             FileLoader.Load(parent, "InferenceTest.ttl");
@@ -129,7 +130,7 @@ namespace VDS.RDF.Test
         }
 
         [TestMethod]
-        public void SubGraphMatchingWithBNodes()
+        public void GraphSubGraphMatchingWithBNodes()
         {
             Graph parent = new Graph();
             FileLoader.Load(parent, "Turtle.ttl");
@@ -201,7 +202,7 @@ namespace VDS.RDF.Test
         }
 
         [TestMethod]
-        public void UriLoader()
+        public void ParsingUriLoader()
         {
             try
             {
@@ -261,7 +262,7 @@ namespace VDS.RDF.Test
         }
 
         [TestMethod]
-        public void EqualityOperator()
+        public void NodesEqualityOperator()
         {
             Console.WriteLine("Testing that the overridden operators for Nodes work as expected");
 
@@ -313,6 +314,47 @@ namespace VDS.RDF.Test
             catch (Exception ex)
             {
                 TestTools.ReportError("Error", ex, true);
+            }
+        }
+
+        [TestMethod]
+        public void GraphToDataTable()
+        {
+            Graph g = new Graph();
+            FileLoader.Load(g, "InferenceTest.ttl");
+
+            DataTable table = (DataTable)g;
+
+            Assert.AreEqual(g.Triples.Count, table.Rows.Count, "Rows should have been equal to original number of Triples");
+            Assert.AreEqual(3, table.Columns.Count, "Should have had 3 columns");
+
+            foreach (DataRow row in table.Rows)
+            {
+                foreach (DataColumn col in table.Columns)
+                {
+                    Console.Write(col.ColumnName + " = " + row[col].ToString() + " , ");
+                }
+                Console.WriteLine();
+            }
+        }
+
+        [TestMethod]
+        public void GraphToDataTable2()
+        {
+            Graph g = new Graph();
+
+            DataTable table = (DataTable)g;
+
+            Assert.AreEqual(g.Triples.Count, table.Rows.Count, "Rows should have been equal to original number of Triples");
+            Assert.AreEqual(3, table.Columns.Count, "Should have had 3 columns");
+
+            foreach (DataRow row in table.Rows)
+            {
+                foreach (DataColumn col in table.Columns)
+                {
+                    Console.Write(col.ColumnName + " = " + row[col].ToString() + " , ");
+                }
+                Console.WriteLine();
             }
         }
     }

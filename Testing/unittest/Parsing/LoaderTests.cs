@@ -13,7 +13,7 @@ namespace VDS.RDF.Test.Parsing
     public class LoaderTests
     {
         [TestMethod]
-        public void DataUri()
+        public void ParsingDataUri()
         {
             String rdfFragment = "@prefix : <http://example.org/> . :subject :predicate :object .";
             String rdfBase64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(rdfFragment));
@@ -49,7 +49,7 @@ namespace VDS.RDF.Test.Parsing
         }
 
         [TestMethod]
-        public void DBPedia()
+        public void ParsingDBPedia()
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://dbpedia.org/resource/London");
             request.Accept = "application/rdf+xml";
@@ -119,7 +119,7 @@ namespace VDS.RDF.Test.Parsing
         }
 
         [TestMethod]
-        public void UriLoaderWithChunkedData()
+        public void ParsingUriLoaderWithChunkedData()
         {
             try
             {
@@ -154,7 +154,7 @@ namespace VDS.RDF.Test.Parsing
         }
 
         [TestMethod]
-        public void EmbeddedResourceInDotNetRdf()
+        public void ParsingEmbeddedResourceInDotNetRdf()
         {
             Graph g = new Graph();
             EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl");
@@ -165,7 +165,7 @@ namespace VDS.RDF.Test.Parsing
         }
 
         [TestMethod]
-        public void EmbeddedResourceInDotNetRdf2()
+        public void ParsingEmbeddedResourceInDotNetRdf2()
         {
             Graph g = new Graph();
             EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl, dotNetRDF");
@@ -176,7 +176,7 @@ namespace VDS.RDF.Test.Parsing
         }
 
         [TestMethod]
-        public void EmbeddedResourceInExternalAssembly()
+        public void ParsingEmbeddedResourceInExternalAssembly()
         {
             Graph g = new Graph();
             EmbeddedResourceLoader.Load(g, "VDS.RDF.Test.embedded.ttl, dotNetRDFUnitTests");

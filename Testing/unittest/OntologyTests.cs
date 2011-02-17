@@ -14,7 +14,7 @@ namespace VDS.RDF.Test
     public class OntologyTests
     {
         [TestMethod]
-        public void ClassBasic()
+        public void OntologyClassBasic()
         {
             //Load Test Data
             Console.WriteLine("Loading in the standard test data InferenceTest.ttl");
@@ -52,7 +52,7 @@ namespace VDS.RDF.Test
         }
 
         [TestMethod]
-        public void IndividualCreation()
+        public void OntologyIndividualCreation()
         {
             //Load Test Data
             Console.WriteLine("Loading in the standard test data InferenceTest.ttl");
@@ -106,7 +106,7 @@ namespace VDS.RDF.Test
         }
 
         [TestMethod]
-        public void PropertyBasic()
+        public void OntologyPropertyBasic()
         {
             //Load Test Data
             Console.WriteLine("Loading in the standard test data InferenceTest.ttl");
@@ -143,7 +143,7 @@ namespace VDS.RDF.Test
         }
 
         [TestMethod]
-        public void ReasonerGraph()
+        public void OntologyReasonerGraph()
         {
             //Load Test Data
             Console.WriteLine("Loading in the standard test data InferenceTest.ttl");
@@ -190,7 +190,7 @@ namespace VDS.RDF.Test
         }
 
         [TestMethod]
-        public void ResourceCasting()
+        public void OntologyResourceCasting()
         {
             //Load Test Data
             Console.WriteLine("Loading in the standard test data InferenceTest.ttl");

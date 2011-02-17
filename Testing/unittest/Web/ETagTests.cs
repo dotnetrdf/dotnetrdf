@@ -13,7 +13,7 @@ namespace VDS.RDF.Test.Web
     public class ETagTests
     {
         [TestMethod]
-        public void ETagComputation()
+        public void WebETagComputation()
         {
             try
             {

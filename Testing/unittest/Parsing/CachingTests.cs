@@ -14,7 +14,7 @@ namespace VDS.RDF.Test.Parsing
         private static Uri test = new Uri("http://api.talis.com/stores/rvesse-dev1/meta?about=" + Uri.EscapeDataString("http://example.org/vehicles/FordFiesta"));
 
         [TestMethod]
-        public void UriLoaderCache()
+        public void ParsingUriLoaderCache()
         {
             //Load the Graph
             Graph g = new Graph();
@@ -28,15 +28,15 @@ namespace VDS.RDF.Test.Parsing
         }
 
         [TestMethod]
-        public void UriLoaderCustomCache()
+        public void ParsingUriLoaderCustomCache()
         {
             UriLoader.CacheDirectory = "E:\\Cache";
 
-            this.UriLoaderCache();
+            this.ParsingUriLoaderCache();
         }
 
         [TestMethod]
-        public void UriLoaderUriSantisation()
+        public void ParsingUriLoaderUriSantisation()
         {
             Uri a = new Uri(ConfigurationLoader.ConfigurationNamespace + "TripleStore");
             Uri b = new Uri(ConfigurationLoader.ConfigurationNamespace + "Graph");
@@ -58,7 +58,7 @@ namespace VDS.RDF.Test.Parsing
         }
 
         [TestMethod]
-        public void UriLoaderResponseUriCaching()
+        public void ParsingUriLoaderResponseUriCaching()
         {
             Uri soton = new Uri("http://dbpedia.org/resource/Southampton");
             Uri sotonPage = new Uri("http://dbpedia.org/page/Southampton.html");

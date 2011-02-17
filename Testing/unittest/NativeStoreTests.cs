@@ -13,7 +13,7 @@ namespace VDS.RDF.Test
     public class NativeStoreTests : BaseTest
     {
         [TestMethod]
-        public void NativeGraph()
+        public void StorageNativeGraph()
         {
             try
             {

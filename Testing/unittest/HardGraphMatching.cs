@@ -19,7 +19,7 @@ namespace VDS.RDF.Test
         private const int StarNodes = 50;
 
         [TestMethod]
-        public void HardGraphMatch1()
+        public void GraphHardMatch1()
         {
             IGraph g = new Graph();
             IGraph h = new Graph();
@@ -52,7 +52,7 @@ namespace VDS.RDF.Test
         }
 
         [TestMethod]
-        public void HardGraphMatch2()
+        public void GraphHardMatch2()
         {
             IGraph g = new Graph();
             IGraph h = new Graph();
@@ -85,7 +85,7 @@ namespace VDS.RDF.Test
         }
 
         [TestMethod]
-        public void HardGraphMatch3()
+        public void GraphHardMatch3()
         {
             IGraph g = new Graph();
             IGraph h = new Graph();
@@ -123,7 +123,7 @@ namespace VDS.RDF.Test
         }
 
         [TestMethod]
-        public void HardGraphMatch4()
+        public void GraphHardMatch4()
         {
             IGraph g = new Graph();
             IGraph h = new Graph();
@@ -161,7 +161,7 @@ namespace VDS.RDF.Test
         }
 
         [TestMethod]
-        public void HardGraphMatch5()
+        public void GraphHardMatch5()
         {
             IGraph g = new Graph();
             IGraph h = new Graph();
@@ -199,7 +199,7 @@ namespace VDS.RDF.Test
         }
 
         [TestMethod]
-        public void HardGraphMatchCyclic()
+        public void GraphHardMatchCyclic()
         {
             Random rnd = new Random();
 
@@ -220,7 +220,7 @@ namespace VDS.RDF.Test
         }
 
         [TestMethod]
-        public void HardGraphMatchStar()
+        public void GraphHardMatchStar()
         {
             for (int i = 0; i < Quantity; i++)
             {

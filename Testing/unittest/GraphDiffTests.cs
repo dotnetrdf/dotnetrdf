@@ -12,7 +12,7 @@ namespace VDS.RDF.Test
     public class GraphDiffTests
     {
         [TestMethod]
-        public void DiffEqualGraphs()
+        public void GraphDiffEqualGraphs()
         {
             Graph g = new Graph();
             Graph h = new Graph();
@@ -26,7 +26,7 @@ namespace VDS.RDF.Test
         }
 
         [TestMethod]
-        public void DiffDifferentGraphs()
+        public void GraphDiffDifferentGraphs()
         {
             Graph g = new Graph();
             Graph h = new Graph();
@@ -40,7 +40,7 @@ namespace VDS.RDF.Test
         }
 
         [TestMethod]
-        public void DiffEqualGraphs2()
+        public void GraphDiffEqualGraphs2()
         {
             Graph g = new Graph();
             Graph h = new Graph();
@@ -54,7 +54,7 @@ namespace VDS.RDF.Test
         }
 
         [TestMethod]
-        public void DiffRemovedGroundTriples()
+        public void GraphDiffRemovedGroundTriples()
         {
             Graph g = new Graph();
             Graph h = new Graph();
@@ -72,7 +72,7 @@ namespace VDS.RDF.Test
         }
 
         [TestMethod]
-        public void DiffAddedGroundTriples()
+        public void GraphDiffAddedGroundTriples()
         {
             Graph g = new Graph();
             Graph h = new Graph();
@@ -93,7 +93,7 @@ namespace VDS.RDF.Test
         }
 
         [TestMethod]
-        public void DiffAddedMSG()
+        public void GraphDiffAddedMSG()
         {
             Graph g = new Graph();
             Graph h = new Graph();
@@ -114,7 +114,7 @@ namespace VDS.RDF.Test
         }
 
         [TestMethod]
-        public void DiffRemovedMSG()
+        public void GraphDiffRemovedMSG()
         {
             Graph g = new Graph();
             Graph h = new Graph();

@@ -440,28 +440,46 @@ namespace VDS.RDF.Query
         public static explicit operator DataTable(SparqlResultSet results)
         {
             DataTable table = new DataTable();
-            foreach (String var in results.Variables)
-            {
-                table.Columns.Add(new DataColumn(var, typeof(INode)));
-            }
+            DataRow row;
 
-            foreach (SparqlResult r in results)
+            switch (results.ResultsType)
             {
-                DataRow row = table.NewRow();
+                case SparqlResultsType.VariableBindings:
+                    foreach (String var in results.Variables)
+                    {
+                        table.Columns.Add(new DataColumn(var, typeof(INode)));
+                    }
 
-                foreach (String var in results.Variables)
-                {
-                    if (r.HasValue(var))
+                    foreach (SparqlResult r in results)
                     {
-                        row[var] = r[var];
+                        row = table.NewRow();
+
+                        foreach (String var in results.Variables)
+                        {
+                            if (r.HasValue(var))
+                            {
+                                row[var] = r[var];
+                            }
+                            else
+                            {
+                                row[var] = null;
+                            }
+                        }
+                        table.Rows.Add(row);
                     }
-                    else
-                    {
-                        row[var] = null;
-                    }
-                }
-                table.Rows.Add(row);
+                    break;
+                case SparqlResultsType.Boolean:
+                    table.Columns.Add(new DataColumn("ASK", typeof(bool)));
+                    row = table.NewRow();
+                    row["ASK"] = results.Result;
+                    table.Rows.Add(row);
+                    break;
+
+                case SparqlResultsType.Unknown:
+                default:
+                    throw new InvalidCastException("Unable to cast a SparqlResultSet to a DataTable as the ResultSet has yet to be filled with data and so has no SparqlResultsType which determines how it is cast to a DataTable");
             }
+        
             return table;
         }
 

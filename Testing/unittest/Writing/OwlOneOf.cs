@@ -15,7 +15,7 @@ namespace VDS.RDF.Test.Writing
     public class OwlOneOf
     {
         [TestMethod]
-        public void SerializeOwnOneOf()
+        public void WritingSerializeOwnOneOf()
         {
             //Create the Graph for the Test and Generate a List of URIs
             Graph g = new Graph();
@@ -62,7 +62,7 @@ namespace VDS.RDF.Test.Writing
         }
 
         [TestMethod]
-        public void SerializeOwnOneOfVeryLarge()
+        public void WritingSerializeOwnOneOfVeryLarge()
         {
             try
             {

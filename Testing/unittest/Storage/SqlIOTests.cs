@@ -11,7 +11,7 @@ namespace VDS.RDF.Test.Storage
     public class SqlIOTests
     {
         [TestMethod]
-        public void SqlIOManagerDispose()
+        public void StorageSqlIOManagerDispose()
         {
             ISqlIOManager manager = new NonNativeVirtuosoManager("test", "test", "test");
             Console.WriteLine("Created a Manager which we will now dipose of twice, second dispose should throw an error");
@@ -60,11 +60,11 @@ namespace VDS.RDF.Test.Storage
             manager.Dispose();
         }
 
-        [TestMethod]
-        public void SqlIOAssertRetract()
-        {
+        //[TestMethod]
+        //public void StorageSqlIOAssertRetract()
+        //{
 
-        }
+        //}
 
     }
 }

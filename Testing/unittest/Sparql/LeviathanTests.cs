@@ -19,7 +19,7 @@ namespace VDS.RDF.Test.Sparql
     public class LeviathanTests
     {
         [TestMethod]
-        public void BgpEvaluation()
+        public void SparqlBgpEvaluation()
         {
             //Prepare the Store
             TripleStore store = new TripleStore();
@@ -93,7 +93,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
         }
 
         [TestMethod]
-        public void MultisetLeftJoin()
+        public void SparqlMultisetLeftJoin()
         {
             //Create a load of Nodes to use in the tests
             Graph g = new Graph();
@@ -264,7 +264,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
         }
 
         [TestMethod]
-        public void PropertyPathParser()
+        public void SparqlPropertyPathParser()
         {
             //Load our test data
             TripleStore store = new TripleStore();
@@ -330,7 +330,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
         }
 
         [TestMethod]
-        public void SimplePropertyPathDuplicates()
+        public void SparqlSimplePropertyPathDuplicates()
         {
             QueryableGraph g = new QueryableGraph();
             FileLoader.Load(g, "property-path-duplicates.ttl");
@@ -358,7 +358,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
         }
 
         [TestMethod]
-        public void StreamingBgpAskEvaluation()
+        public void SparqlStreamingBgpAskEvaluation()
         {
             //Get the Data we want to query
             TripleStore store = new TripleStore();
