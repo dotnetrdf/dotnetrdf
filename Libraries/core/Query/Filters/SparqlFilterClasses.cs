@@ -320,37 +320,4 @@ namespace VDS.RDF.Query.Filters
             }
         }
     }
-
-    /// <summary>
-    /// Represents a Filter in a HAVING Clause of a Sparql Query
-    /// </summary>
-    /// <remarks>
-    /// Having Clause Filters are only applied over Binding IDs that refer to Groups
-    /// </remarks>
-    public class HavingClauseFilter : BaseUnaryFilter
-    {
-        /// <summary>
-        /// Creates a new HAVING Clause Filter which filters using the given Expression
-        /// </summary>
-        /// <param name="expr">Expression to filter with</param>
-        public HavingClauseFilter(ISparqlExpression expr) : base(expr) { }
-
-        /// <summary>
-        /// Evaluates a filter in the given Evaluation Context
-        /// </summary>
-        /// <param name="context">Evaluation Context</param>
-        public override void Evaluate(SparqlEvaluationContext context)
-        {
-            throw new NotImplementedException("HAVING Clauses are special cases of Filters implemented in a different way in Leviathan so Evaluate() should never be called on them");
-        }
-
-        /// <summary>
-        /// Gets the String representation of the Having Clause Filter
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return "(" + this._arg.ToString() + ") ";
-        }
-    }
 }
