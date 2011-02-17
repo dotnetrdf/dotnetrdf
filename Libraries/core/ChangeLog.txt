@@ -13,6 +13,7 @@ This represents a summary of additions, changes and removals for the 0.4.0 relea
 
 Added
 - Graph Difference Algorithm
+- Conversion from IGraph and SparqlResultSet to DataTable
 - More Extension Methods
  - LoadFromFile and LoadFromUri for Graphs and Triple Stores
  - ToLiteral for byte and sbyte
@@ -35,6 +36,7 @@ Added
 - Query
  - GROUP BY is now supported in subqueries
  - GROUP BY (?x AS ?y) now supported
+ - Short form CONSTRUCT WHERE { } now supported
  - Scalar Arguments for aggregates added when in 1.1 Extended mode (only GROUP_CONCAT allows scalar arguments in 1.1 mode)
  - Added new SPARQL 1.1 functions
   - String Functions - CONCAT, CONTAINS, ENCODE_FOR_URI, LCASE, STRENDS, STRLEN, STRSTARTS, SUBSTR, UCASE
@@ -96,7 +98,7 @@ Changed
   - Has own Namespace Map allowing prefixes to be registered programatically and have the code take care of generating the PREFIX declarations
  - Improved ISparqlExpression interface to allow for traversing of expression trees and custom formatting
  - Changes to support latest 1.1 Draft Specifications
-  - IN and NOT IN for SPARQL now support any expression in the SET and evaluate properly using SPARQL value equality
+  - IN and NOT IN for SPARQL now support any expressions evaluate properly using SPARQL value equality
   - COALESCE now errors if none of the arguments evaluate to a non-null value
 - Update Improvements
  - WHERE clauses in Update Commands are now optimised
