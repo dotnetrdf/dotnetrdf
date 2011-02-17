@@ -116,6 +116,9 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// <returns></returns>
         public abstract override string ToString();
 
+        /// <summary>
+        /// Gets the Type of the Expression
+        /// </summary>
         public override SparqlExpressionType Type
         {
             get 
@@ -156,6 +159,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.YearFromDateTime + ">(" + this._expr.ToString() + ")";
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public override string Functor
         {
             get 
@@ -196,6 +202,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.MonthFromDateTime + ">(" + this._expr.ToString() + ")";
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public override string Functor
         {
             get
@@ -236,6 +245,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.DayFromDateTime + ">(" + this._expr.ToString() + ")";
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public override string Functor
         {
             get
@@ -276,6 +288,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.HoursFromDateTime + ">(" + this._expr.ToString() + ")";
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public override string Functor
         {
             get
@@ -316,6 +331,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.MinutesFromDateTime + ">(" + this._expr.ToString() + ")";
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public override string Functor
         {
             get
@@ -359,6 +377,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.SecondsFromDateTime + ">(" + this._expr.ToString() + ")";
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public override string Functor
         {
             get
@@ -489,6 +510,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.TimezoneFromDateTime + ">(" + this._expr.ToString() + ")";
         }
 
+        /// <summary>
+        /// Gets the Type of the Expression
+        /// </summary>
         public SparqlExpressionType Type
         {
             get
@@ -497,6 +521,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public virtual string Functor
         {
             get
@@ -505,6 +532,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the Arguments of the Expression
+        /// </summary>
         public IEnumerable<ISparqlExpression> Arguments
         {
             get

@@ -25,6 +25,7 @@
     <Optimize>false</Optimize>
     <OutputPath>Bin\Debug</OutputPath>
     <DefineConstants>DEBUG;TRACE;SILVERLIGHT;WINDOWS_PHONE,NO_ASP,NO_WEB,NO_DATA,NO_STORAGE,NO_XMLDOM,NO_XSL,NO_PROXY,NO_RWLOCK,NO_STOPWATCH,NO_NORM,NO_URICACHE,NO_PROCESS</DefineConstants>
+    <DocumentationFile>bin\Debug\dotNetRDF.WindowsPhone.XML</DocumentationFile>
     <NoStdLib>true</NoStdLib>
     <NoConfig>true</NoConfig>
     <ErrorReport>prompt</ErrorReport>
@@ -611,6 +612,9 @@
     <Compile Include="..\core\Parsing\Contexts\TriGParserContext.cs">
       <Link>Parsing\Contexts\TriGParserContext.cs</Link>
     </Compile>
+    <Compile Include="..\core\Parsing\EmbeddedResourceLoader.cs">
+      <Link>Parsing\EmbeddedResourceLoader.cs</Link>
+    </Compile>
     <Compile Include="..\core\Parsing\Events\DomBasedEventGenerator.cs">
       <Link>Parsing\Events\DomBasedEventGenerator.cs</Link>
     </Compile>
@@ -929,6 +933,9 @@
     <Compile Include="..\core\Query\Expressions\Functions\SparqlStringFunctions.cs">
       <Link>Query\Expressions\Functions\SparqlStringFunctions.cs</Link>
     </Compile>
+    <Compile Include="..\core\Query\Expressions\Functions\UnknownFunction.cs">
+      <Link>Query\Expressions\Functions\UnknownFunction.cs</Link>
+    </Compile>
     <Compile Include="..\core\Query\Expressions\LeviathanFunctionFactory.cs">
       <Link>Query\Expressions\LeviathanFunctionFactory.cs</Link>
     </Compile>
@@ -953,6 +960,9 @@
     <Compile Include="..\core\Query\Expressions\PrimaryExpressions.cs">
       <Link>Query\Expressions\PrimaryExpressions.cs</Link>
     </Compile>
+    <Compile Include="..\core\Query\Expressions\SparqlBuiltInFunctionFactory.cs">
+      <Link>Query\Expressions\SparqlBuiltInFunctionFactory.cs</Link>
+    </Compile>
     <Compile Include="..\core\Query\Expressions\SparqlNumericExpressions.cs">
       <Link>Query\Expressions\SparqlNumericExpressions.cs</Link>
     </Compile>
@@ -968,8 +978,14 @@
     <Compile Include="..\core\Query\Inference\Pellet\Services\ClusterService.cs">
       <Link>Query\Inference\Pellet\Services\ClusterService.cs</Link>
     </Compile>
+    <Compile Include="..\core\Query\Inference\Pellet\Services\SimilarityService.cs">
+      <Link>Query\Inference\Pellet\Services\SimilarityService.cs</Link>
+    </Compile>
     <Compile Include="..\core\Query\Inference\Pellet\Services\IntegrityConstraintValidationService.cs">
       <Link>Query\Inference\Pellet\Services\IntegrityConstraintValidationService.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Inference\Pellet\Services\PredictService.cs">
+      <Link>Query\Inference\Pellet\Services\PredictService.cs</Link>
     </Compile>
     <Compile Include="..\core\Query\Inference\SimpleN3RulesReasoner.cs">
       <Link>Query\Inference\SimpleN3RulesReasoner.cs</Link>
@@ -1289,6 +1305,9 @@
     <Compile Include="..\core\Web\DatasetHandler.cs">
       <Link>Web\DatasetHandler.cs</Link>
     </Compile>
+    <Compile Include="..\core\Web\SchemaGraphHandler.cs">
+      <Link>Web\SchemaGraphHandler.cs</Link>
+    </Compile>
     <Compile Include="..\core\Web\SparqlServiceDescriber.cs">
       <Link>Web\SparqlServiceDescriber.cs</Link>
     </Compile>
@@ -1435,9 +1454,6 @@
     </Compile>
     <Compile Include="..\core\Writing\Formatting\QNameFormatter.cs">
       <Link>Writing\Formatting\QNameFormatter.cs</Link>
-    </Compile>
-    <Compile Include="..\core\Writing\Formatting\RdfXmlFormatter.cs">
-      <Link>Writing\Formatting\RdfXmlFormatter.cs</Link>
     </Compile>
     <Compile Include="..\core\Writing\Formatting\SparqlFormatter.cs">
       <Link>Writing\Formatting\SparqlFormatter.cs</Link>

@@ -386,7 +386,7 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// </summary>
         /// <param name="stringLit">Simple/String typed Literal</param>
         /// <returns></returns>
-        public override INode ValueInternal(LiteralNode stringLit)
+        protected override INode ValueInternal(LiteralNode stringLit)
         {
             if (stringLit.DataType != null)
             {
@@ -424,10 +424,19 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// </summary>
     public class LCaseFunction : BaseUnaryXPathStringFunction
     {
+        /// <summary>
+        /// Creates a new LCASE function
+        /// </summary>
+        /// <param name="expr">Argument Expression</param>
         public LCaseFunction(ISparqlExpression expr)
             : base(expr) { }
 
-        public override INode ValueInternal(LiteralNode stringLit)
+        /// <summary>
+        /// Calculates
+        /// </summary>
+        /// <param name="stringLit"></param>
+        /// <returns></returns>
+        protected override INode ValueInternal(LiteralNode stringLit)
         {
             if (stringLit.DataType != null)
             {
@@ -465,9 +474,20 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// </summary>
     public class StrEndsFunction : BaseBinarySparqlStringFunction
     {
+        /// <summary>
+        /// Creates a new STRENDS() function
+        /// </summary>
+        /// <param name="stringExpr">String Expression</param>
+        /// <param name="endsExpr">Argument Expression</param>
         public StrEndsFunction(ISparqlExpression stringExpr, ISparqlExpression endsExpr)
             : base(stringExpr, endsExpr) { }
 
+        /// <summary>
+        /// Determines whether the given String Literal ends with the given Argument Literal
+        /// </summary>
+        /// <param name="stringLit">String Literal</param>
+        /// <param name="argLit">Argument Literal</param>
+        /// <returns></returns>
         protected override bool ValueInternal(LiteralNode stringLit, LiteralNode argLit)
         {
             return stringLit.Value.EndsWith(argLit.Value);
@@ -499,10 +519,19 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// </summary>
     public class StrLenFunction : BaseUnaryXPathStringFunction
     {
+        /// <summary>
+        /// Creates a new STRLEN() function
+        /// </summary>
+        /// <param name="expr">Argument Expression</param>
         public StrLenFunction(ISparqlExpression expr)
             : base(expr) { }
 
-        public override INode ValueInternal(LiteralNode stringLit)
+        /// <summary>
+        /// Determines the Length of the given String Literal
+        /// </summary>
+        /// <param name="stringLit">String Literal</param>
+        /// <returns></returns>
+        protected override INode ValueInternal(LiteralNode stringLit)
         {
             return new LiteralNode(null, stringLit.Value.Length.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger));
         }
@@ -533,9 +562,20 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// </summary>
     public class StrStartsFunction : BaseBinarySparqlStringFunction
     {
+        /// <summary>
+        /// Creates a new STRSTARTS() function
+        /// </summary>
+        /// <param name="stringExpr">String Expression</param>
+        /// <param name="startsExpr">Argument Expression</param>
         public StrStartsFunction(ISparqlExpression stringExpr, ISparqlExpression startsExpr)
             : base(stringExpr, startsExpr) { }
 
+        /// <summary>
+        /// Determines whether the given String Literal starts with the given Argument Literal
+        /// </summary>
+        /// <param name="stringLit">String Literal</param>
+        /// <param name="argLit">Argument Literal</param>
+        /// <returns></returns>
         protected override bool ValueInternal(LiteralNode stringLit, LiteralNode argLit)
         {
             return stringLit.Value.StartsWith(argLit.Value);
@@ -831,10 +871,19 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// </summary>
     public class UCaseFunction : BaseUnaryXPathStringFunction
     {
+        /// <summary>
+        /// Creates a new UCASE() function
+        /// </summary>
+        /// <param name="expr">Argument Expression</param>
         public UCaseFunction(ISparqlExpression expr)
             : base(expr) { }
 
-        public override INode ValueInternal(LiteralNode stringLit)
+        /// <summary>
+        /// Converts the given String Literal to upper case
+        /// </summary>
+        /// <param name="stringLit">String Literal</param>
+        /// <returns></returns>
+        protected override INode ValueInternal(LiteralNode stringLit)
         {
             if (stringLit.DataType != null)
             {

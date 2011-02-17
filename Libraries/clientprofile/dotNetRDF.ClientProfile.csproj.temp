@@ -280,29 +280,8 @@
     <Compile Include="..\core\Storage\VirtuosoManager.cs">
       <Link>Storage\VirtuosoManager.cs</Link>
     </Compile>
-    <Compile Include="..\core\Web\BaseResourceHandler.cs">
-      <Link>Web\BaseResourceHandler.cs</Link>
-    </Compile>
     <Compile Include="..\core\Web\HandlerConstants.cs">
       <Link>Web\HandlerConstants.cs</Link>
-    </Compile>
-    <Compile Include="..\core\Web\RemoteSparqlHandler.cs">
-      <Link>Web\RemoteSparqlHandler.cs</Link>
-    </Compile>
-    <Compile Include="..\core\Web\Configuration\Query\RemoteSparqlHandlerConfiguration.cs">
-      <Link>Web\Configuration\Query\RemoteSparqlHandlerConfiguration.cs</Link>
-    </Compile>
-    <Compile Include="..\core\Web\SparqlHandler.cs">
-      <Link>Web\SparqlHandler.cs</Link>
-    </Compile>
-    <Compile Include="..\core\Web\Configuration\Query\SqlSparqlHandlerConfiguration.cs">
-      <Link>Web\Configuration\Query\SqlSparqlHandlerConfiguration.cs</Link>
-    </Compile>
-    <Compile Include="..\core\Web\SqlResourceHandler.cs">
-      <Link>Web\SqlResourceHandler.cs</Link>
-    </Compile>
-    <Compile Include="..\core\Web\Configuration\Resource\SqlResourceHandlerConfiguration.cs">
-      <Link>Web\Configuration\Resource\SqlResourceHandlerConfiguration.cs</Link>
     </Compile>
     <Compile Include="..\core\Writing\CompressingTurtleWriter.cs">
       <Link>Writing\CompressingTurtleWriter.cs</Link>
@@ -324,9 +303,6 @@
     </Compile>
     <Compile Include="..\core\Core\IRdfReader.cs">
       <Link>Core\IRdfReader.cs</Link>
-    </Compile>
-    <Compile Include="..\core\Core\IRdfTranslator.cs">
-      <Link>Core\IRdfTranslator.cs</Link>
     </Compile>
     <Compile Include="..\core\Core\IRdfWriter.cs">
       <Link>Core\IRdfWriter.cs</Link>
@@ -390,9 +366,6 @@
     </Compile>
     <Compile Include="..\core\Writing\RdfXmlTreeWriter.cs">
       <Link>Writing\RdfXmlTreeWriter.cs</Link>
-    </Compile>
-    <Compile Include="..\core\Translation\SimpleTranslator.cs">
-      <Link>Translation\SimpleTranslator.cs</Link>
     </Compile>
     <Compile Include="..\core\Query\SparqlRemoteEndpoint.cs">
       <Link>Query\SparqlRemoteEndpoint.cs</Link>
@@ -492,6 +465,9 @@
     <Compile Include="..\core\Configuration\DataFactories.cs">
       <Link>Configuration\DataFactories.cs</Link>
     </Compile>
+    <Compile Include="..\core\Configuration\DatasetFactory.cs">
+      <Link>Configuration\DatasetFactory.cs</Link>
+    </Compile>
     <Compile Include="..\core\Configuration\EndpointFactories.cs">
       <Link>Configuration\EndpointFactories.cs</Link>
     </Compile>
@@ -528,11 +504,20 @@
     <Compile Include="..\core\Core\DiskDemandTripleStore.cs">
       <Link>Core\DiskDemandTripleStore.cs</Link>
     </Compile>
+    <Compile Include="..\core\Core\GraphDiff.cs">
+      <Link>Core\GraphDiff.cs</Link>
+    </Compile>
     <Compile Include="..\core\Core\INamespaceMapper.cs">
       <Link>Core\INamespaceMapper.cs</Link>
     </Compile>
+    <Compile Include="..\core\Core\MimeTypeDefinition.cs">
+      <Link>Core\MimeTypeDefinition.cs</Link>
+    </Compile>
     <Compile Include="..\core\Core\NestedNamespaceMapper.cs">
       <Link>Core\NestedNamespaceMapper.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Core\NodeFactory.cs">
+      <Link>Core\NodeFactory.cs</Link>
     </Compile>
     <Compile Include="..\core\Core\SubGraphMatcher.cs">
       <Link>Core\SubGraphMatcher.cs</Link>
@@ -545,6 +530,12 @@
     </Compile>
     <Compile Include="..\core\Core\UnionCollections.cs">
       <Link>Core\UnionCollections.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Core\VariableNode.cs">
+      <Link>Core\VariableNode.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Core\VariableContext.cs">
+      <Link>Core\VariableContext.cs</Link>
     </Compile>
     <Compile Include="..\core\Core\WebDemandTripleStore.cs">
       <Link>Core\WebDemandTripleStore.cs</Link>
@@ -618,6 +609,9 @@
     <Compile Include="..\core\Parsing\Contexts\TriGParserContext.cs">
       <Link>Parsing\Contexts\TriGParserContext.cs</Link>
     </Compile>
+    <Compile Include="..\core\Parsing\EmbeddedResourceLoader.cs">
+      <Link>Parsing\EmbeddedResourceLoader.cs</Link>
+    </Compile>
     <Compile Include="..\core\Parsing\Events\DomBasedEventGenerator.cs">
       <Link>Parsing\Events\DomBasedEventGenerator.cs</Link>
     </Compile>
@@ -635,6 +629,9 @@
     </Compile>
     <Compile Include="..\core\Parsing\IriSpecsHelper.cs">
       <Link>Parsing\IriSpecsHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Parsing\IUriLoaderCache.cs">
+      <Link>Parsing\IUriLoaderCache.cs</Link>
     </Compile>
     <Compile Include="..\core\Parsing\Notation3Parser.cs">
       <Link>Parsing\Notation3Parser.cs</Link>
@@ -798,11 +795,44 @@
     <Compile Include="..\core\Query\Construct\ConstructContext.cs">
       <Link>Query\Construct\ConstructContext.cs</Link>
     </Compile>
+    <Compile Include="..\core\Query\Datasets\BaseDataset.cs">
+      <Link>Query\Datasets\BaseDataset.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Core\DatasetGraphCollection.cs">
+      <Link>Core\DatasetGraphCollection.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Datasets\InMemoryDataset.cs">
+      <Link>Query\Datasets\InMemoryDataset.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Datasets\ISparqlDataset.cs">
+      <Link>Query\Datasets\ISparqlDataset.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Datasets\SqlDataset.cs">
+      <Link>Query\Datasets\SqlDataset.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Describe\BaseDescribeAlgorithm.cs">
+      <Link>Query\Describe\BaseDescribeAlgorithm.cs</Link>
+    </Compile>
     <Compile Include="..\core\Query\Describe\ConciseBoundedDescription.cs">
       <Link>Query\Describe\ConciseBoundedDescription.cs</Link>
     </Compile>
+    <Compile Include="..\core\Query\Describe\LabelledDescription.cs">
+      <Link>Query\Describe\LabelledDescription.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Describe\MinimalSpanningGraph.cs">
+      <Link>Query\Describe\MinimalSpanningGraph.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Describe\SymmetricConciseBoundedDescription.cs">
+      <Link>Query\Describe\SymmetricConciseBoundedDescription.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Describe\SimpleSubjectObjectDescription.cs">
+      <Link>Query\Describe\SimpleSubjectObjectDescription.cs</Link>
+    </Compile>
     <Compile Include="..\core\Query\Describe\NamedGraphDescription.cs">
       <Link>Query\Describe\NamedGraphDescription.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Describe\SimpleSubjectDescription.cs">
+      <Link>Query\Describe\SimpleSubjectDescription.cs</Link>
     </Compile>
     <Compile Include="..\core\Query\Expressions\AggregateExpressions.cs">
       <Link>Query\Expressions\AggregateExpressions.cs</Link>
@@ -815,6 +845,54 @@
     </Compile>
     <Compile Include="..\core\Query\Expressions\Functions\BaseHashFunction.cs">
       <Link>Query\Expressions\Functions\BaseHashFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Expressions\Functions\HashLib\ArrayExtensions.cs">
+      <Link>Query\Expressions\Functions\HashLib\ArrayExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Expressions\Functions\HashLib\Converters.cs">
+      <Link>Query\Expressions\Functions\HashLib\Converters.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Expressions\Functions\HashLib\Hash.cs">
+      <Link>Query\Expressions\Functions\HashLib\Hash.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Expressions\Functions\HashLib\HashBuffer.cs">
+      <Link>Query\Expressions\Functions\HashLib\HashBuffer.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Expressions\Functions\HashLib\HashCrypto.cs">
+      <Link>Query\Expressions\Functions\HashLib\HashCrypto.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Expressions\Functions\HashLib\HashCryptoNotBuildIn.cs">
+      <Link>Query\Expressions\Functions\HashLib\HashCryptoNotBuildIn.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Expressions\Functions\HashLib\HashResult.cs">
+      <Link>Query\Expressions\Functions\HashLib\HashResult.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Expressions\Functions\HashLib\IHash.cs">
+      <Link>Query\Expressions\Functions\HashLib\IHash.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Expressions\Functions\HashLib\IHashInfo.cs">
+      <Link>Query\Expressions\Functions\HashLib\IHashInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Expressions\Functions\HashLib\MD5.cs">
+      <Link>Query\Expressions\Functions\HashLib\MD5.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Expressions\Functions\HashLib\MDBase.cs">
+      <Link>Query\Expressions\Functions\HashLib\MDBase.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Expressions\Functions\HashLib\SHA224.cs">
+      <Link>Query\Expressions\Functions\HashLib\SHA224.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Expressions\Functions\HashLib\SHA256Base.cs">
+      <Link>Query\Expressions\Functions\HashLib\SHA256Base.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Expressions\Functions\HashLib\SHA384.cs">
+      <Link>Query\Expressions\Functions\HashLib\SHA384.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Expressions\Functions\HashLib\SHA512.cs">
+      <Link>Query\Expressions\Functions\HashLib\SHA512.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Expressions\Functions\HashLib\SHA512Base.cs">
+      <Link>Query\Expressions\Functions\HashLib\SHA512Base.cs</Link>
     </Compile>
     <Compile Include="..\core\Query\Expressions\Functions\LeviathanCartesianFunctions.cs">
       <Link>Query\Expressions\Functions\LeviathanCartesianFunctions.cs</Link>
@@ -831,14 +909,29 @@
     <Compile Include="..\core\Query\Expressions\Functions\SparqlCoalesceFunction.cs">
       <Link>Query\Expressions\Functions\SparqlCoalesceFunction.cs</Link>
     </Compile>
+    <Compile Include="..\core\Query\Expressions\Functions\SparqlDateTimeFunctions.cs">
+      <Link>Query\Expressions\Functions\SparqlDateTimeFunctions.cs</Link>
+    </Compile>
     <Compile Include="..\core\Query\Expressions\Functions\SparqlExistsFunction.cs">
       <Link>Query\Expressions\Functions\SparqlExistsFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Expressions\Functions\SparqlHashFunctions.cs">
+      <Link>Query\Expressions\Functions\SparqlHashFunctions.cs</Link>
     </Compile>
     <Compile Include="..\core\Query\Expressions\Functions\SparqlIfFunction.cs">
       <Link>Query\Expressions\Functions\SparqlIfFunction.cs</Link>
     </Compile>
+    <Compile Include="..\core\Query\Expressions\Functions\SparqlNumericFunctions.cs">
+      <Link>Query\Expressions\Functions\SparqlNumericFunctions.cs</Link>
+    </Compile>
     <Compile Include="..\core\Query\Expressions\Functions\SparqlSetFunctions.cs">
       <Link>Query\Expressions\Functions\SparqlSetFunctions.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Expressions\Functions\SparqlStringFunctions.cs">
+      <Link>Query\Expressions\Functions\SparqlStringFunctions.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Expressions\Functions\UnknownFunction.cs">
+      <Link>Query\Expressions\Functions\UnknownFunction.cs</Link>
     </Compile>
     <Compile Include="..\core\Query\Expressions\LeviathanFunctionFactory.cs">
       <Link>Query\Expressions\LeviathanFunctionFactory.cs</Link>
@@ -864,6 +957,9 @@
     <Compile Include="..\core\Query\Expressions\PrimaryExpressions.cs">
       <Link>Query\Expressions\PrimaryExpressions.cs</Link>
     </Compile>
+    <Compile Include="..\core\Query\Expressions\SparqlBuiltInFunctionFactory.cs">
+      <Link>Query\Expressions\SparqlBuiltInFunctionFactory.cs</Link>
+    </Compile>
     <Compile Include="..\core\Query\Expressions\SparqlNumericExpressions.cs">
       <Link>Query\Expressions\SparqlNumericExpressions.cs</Link>
     </Compile>
@@ -876,6 +972,21 @@
     <Compile Include="..\core\Query\Inference\IOwlReasoner.cs">
       <Link>Query\Inference\IOwlReasoner.cs</Link>
     </Compile>
+    <Compile Include="..\core\Query\Inference\Pellet\Services\ClusterService.cs">
+      <Link>Query\Inference\Pellet\Services\ClusterService.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Inference\Pellet\Services\SimilarityService.cs">
+      <Link>Query\Inference\Pellet\Services\SimilarityService.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Inference\Pellet\Services\IntegrityConstraintValidationService.cs">
+      <Link>Query\Inference\Pellet\Services\IntegrityConstraintValidationService.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Inference\Pellet\Services\PredictService.cs">
+      <Link>Query\Inference\Pellet\Services\PredictService.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Inference\SimpleN3RulesReasoner.cs">
+      <Link>Query\Inference\SimpleN3RulesReasoner.cs</Link>
+    </Compile>
     <Compile Include="..\core\Query\Inference\OwlReasonerWrapper.cs">
       <Link>Query\Inference\OwlReasonerWrapper.cs</Link>
     </Compile>
@@ -884,6 +995,12 @@
     </Compile>
     <Compile Include="..\core\Query\Inference\Pellet\Services\NamespaceService.cs">
       <Link>Query\Inference\Pellet\Services\NamespaceService.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Ordering\TripleComparer.cs">
+      <Link>Query\Ordering\TripleComparer.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Query\Patterns\BindPattern.cs">
+      <Link>Query\Patterns\BindPattern.cs</Link>
     </Compile>
     <Compile Include="..\core\Query\PelletQueryProcessor.cs">
       <Link>Query\PelletQueryProcessor.cs</Link>
@@ -1023,8 +1140,20 @@
     <Compile Include="..\core\Storage\DatasetFileManager.cs">
       <Link>Storage\DatasetFileManager.cs</Link>
     </Compile>
+    <Compile Include="..\core\Storage\FusekiConnector.cs">
+      <Link>Storage\FusekiConnector.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Storage\GSISHttpProtocolConnector.cs">
+      <Link>Storage\GSISHttpProtocolConnector.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Storage\InMemoryManager.cs">
+      <Link>Storage\InMemoryManager.cs</Link>
+    </Compile>
     <Compile Include="..\core\Storage\Params\GenericIOParams.cs">
       <Link>Storage\Params\GenericIOParams.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Storage\ReadOnlyConnector.cs">
+      <Link>Storage\ReadOnlyConnector.cs</Link>
     </Compile>
     <Compile Include="..\core\Storage\SparqlConnector.cs">
       <Link>Storage\SparqlConnector.cs</Link>
@@ -1032,11 +1161,20 @@
     <Compile Include="..\core\Storage\SparqlHttpProtocolConnector.cs">
       <Link>Storage\SparqlHttpProtocolConnector.cs</Link>
     </Compile>
+    <Compile Include="..\core\Update\Commands\AddCommand.cs">
+      <Link>Update\Commands\AddCommand.cs</Link>
+    </Compile>
     <Compile Include="..\core\Update\Commands\BaseModifyCommand.cs">
       <Link>Update\Commands\BaseModifyCommand.cs</Link>
     </Compile>
+    <Compile Include="..\core\Update\Commands\BaseTransferCommand.cs">
+      <Link>Update\Commands\BaseTransferCommand.cs</Link>
+    </Compile>
     <Compile Include="..\core\Update\Commands\ClearCommand.cs">
       <Link>Update\Commands\ClearCommand.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Update\Commands\CopyCommand.cs">
+      <Link>Update\Commands\CopyCommand.cs</Link>
     </Compile>
     <Compile Include="..\core\Update\Commands\CreateCommand.cs">
       <Link>Update\Commands\CreateCommand.cs</Link>
@@ -1061,6 +1199,9 @@
     </Compile>
     <Compile Include="..\core\Update\Commands\ModifyCommand.cs">
       <Link>Update\Commands\ModifyCommand.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Update\Commands\MoveCommand.cs">
+      <Link>Update\Commands\MoveCommand.cs</Link>
     </Compile>
     <Compile Include="..\core\Update\GenericUpdateProcessor.cs">
       <Link>Update\GenericUpdateProcessor.cs</Link>
@@ -1104,6 +1245,9 @@
     <Compile Include="..\core\Update\SparqlUpdateSpecsHelper.cs">
       <Link>Update\SparqlUpdateSpecsHelper.cs</Link>
     </Compile>
+    <Compile Include="..\core\Web\BaseDatasetHandler.cs">
+      <Link>Web\BaseDatasetHandler.cs</Link>
+    </Compile>
     <Compile Include="..\core\Web\BaseGraphHandler.cs">
       <Link>Web\BaseGraphHandler.cs</Link>
     </Compile>
@@ -1134,17 +1278,14 @@
     <Compile Include="..\core\Web\Configuration\Query\BaseQueryHandlerConfiguration.cs">
       <Link>Web\Configuration\Query\BaseQueryHandlerConfiguration.cs</Link>
     </Compile>
-    <Compile Include="..\core\Web\Configuration\Query\ExtensionSupportingSparqlHandlerConfiguration.cs">
-      <Link>Web\Configuration\Query\ExtensionSupportingSparqlHandlerConfiguration.cs</Link>
-    </Compile>
     <Compile Include="..\core\Update\Protocol\ISparqlHttpProtocolProcessor.cs">
       <Link>Update\Protocol\ISparqlHttpProtocolProcessor.cs</Link>
     </Compile>
+    <Compile Include="..\core\Web\Configuration\Resource\BaseDatasetHandlerConfiguration.cs">
+      <Link>Web\Configuration\Resource\BaseDatasetHandlerConfiguration.cs</Link>
+    </Compile>
     <Compile Include="..\core\Web\Configuration\Resource\BaseGraphHandlerConfiguration.cs">
       <Link>Web\Configuration\Resource\BaseGraphHandlerConfiguration.cs</Link>
-    </Compile>
-    <Compile Include="..\core\Web\Configuration\Resource\BaseResourceHandlerConfiguration.cs">
-      <Link>Web\Configuration\Resource\BaseResourceHandlerConfiguration.cs</Link>
     </Compile>
     <Compile Include="..\core\Configuration\StorageFactories.cs">
       <Link>Configuration\StorageFactories.cs</Link>
@@ -1158,8 +1299,17 @@
     <Compile Include="..\core\Web\Configuration\WebConfigurationLoader.cs">
       <Link>Web\Configuration\WebConfigurationLoader.cs</Link>
     </Compile>
-    <Compile Include="..\core\Web\WilcardProtocolHandler.cs">
-      <Link>Web\WilcardProtocolHandler.cs</Link>
+    <Compile Include="..\core\Web\DatasetHandler.cs">
+      <Link>Web\DatasetHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Web\SchemaGraphHandler.cs">
+      <Link>Web\SchemaGraphHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Web\SparqlServiceDescriber.cs">
+      <Link>Web\SparqlServiceDescriber.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Web\WildcardProtocolHandler.cs">
+      <Link>Web\WildcardProtocolHandler.cs</Link>
     </Compile>
     <Compile Include="..\core\Web\GraphHandler.cs">
       <Link>Web\GraphHandler.cs</Link>
@@ -1170,14 +1320,8 @@
     <Compile Include="..\core\Web\ProtocolHandler.cs">
       <Link>Web\ProtocolHandler.cs</Link>
     </Compile>
-    <Compile Include="..\core\Web\FileHandler.cs">
-      <Link>Web\FileHandler.cs</Link>
-    </Compile>
     <Compile Include="..\core\Web\QueryHandler.cs">
       <Link>Web\QueryHandler.cs</Link>
-    </Compile>
-    <Compile Include="..\core\Web\SchemaHandler.cs">
-      <Link>Web\SchemaHandler.cs</Link>
     </Compile>
     <Compile Include="..\core\Web\SparqlServer.cs">
       <Link>Web\SparqlServer.cs</Link>
@@ -1187,6 +1331,9 @@
     </Compile>
     <Compile Include="..\core\Web\WildcardGraphHandler.cs">
       <Link>Web\WildcardGraphHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\BaseHtmlWriter.cs">
+      <Link>Writing\BaseHtmlWriter.cs</Link>
     </Compile>
     <Compile Include="..\core\Writing\Contexts\BaseStoreWriterContexts.cs">
       <Link>Writing\Contexts\BaseStoreWriterContexts.cs</Link>
@@ -1245,33 +1392,6 @@
     <Compile Include="..\core\Storage\SesameHttpProtocolConnector.cs">
       <Link>Storage\SesameHttpProtocolConnector.cs</Link>
     </Compile>
-    <Compile Include="..\core\Web\BaseSparqlHandler.cs">
-      <Link>Web\BaseSparqlHandler.cs</Link>
-    </Compile>
-    <Compile Include="..\core\Web\Configuration\Query\BaseSparqlHandlerConfiguration.cs">
-      <Link>Web\Configuration\Query\BaseSparqlHandlerConfiguration.cs</Link>
-    </Compile>
-    <Compile Include="..\core\Web\DiskResourceHandler.cs">
-      <Link>Web\DiskResourceHandler.cs</Link>
-    </Compile>
-    <Compile Include="..\core\Web\Configuration\Resource\DiskResourceHandlerConfiguration.cs">
-      <Link>Web\Configuration\Resource\DiskResourceHandlerConfiguration.cs</Link>
-    </Compile>
-    <Compile Include="..\core\Web\FileSparqlHandler.cs">
-      <Link>Web\FileSparqlHandler.cs</Link>
-    </Compile>
-    <Compile Include="..\core\Web\Configuration\Query\FileSparqlHandlerConfiguration.cs">
-      <Link>Web\Configuration\Query\FileSparqlHandlerConfiguration.cs</Link>
-    </Compile>
-    <Compile Include="..\core\Web\Configuration\Query\InferencingSparqlHandlerConfiguration.cs">
-      <Link>Web\Configuration\Query\InferencingSparqlHandlerConfiguration.cs</Link>
-    </Compile>
-    <Compile Include="..\core\Web\NativeSparqlHandler.cs">
-      <Link>Web\NativeSparqlHandler.cs</Link>
-    </Compile>
-    <Compile Include="..\core\Web\Configuration\Query\NativeSparqlHandlerConfiguration.cs">
-      <Link>Web\Configuration\Query\NativeSparqlHandlerConfiguration.cs</Link>
-    </Compile>
     <Compile Include="..\core\Writing\Contexts\FolderStoreWriterContext.cs">
       <Link>Writing\Contexts\FolderStoreWriterContext.cs</Link>
     </Compile>
@@ -1308,6 +1428,12 @@
     <Compile Include="..\core\Writing\Formatting\ICharFormatter.cs">
       <Link>Writing\Formatting\ICharFormatter.cs</Link>
     </Compile>
+    <Compile Include="..\core\Writing\Formatting\IQueryFormatter.cs">
+      <Link>Writing\Formatting\IQueryFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\Formatting\IResultFormatter.cs">
+      <Link>Writing\Formatting\IResultFormatter.cs</Link>
+    </Compile>
     <Compile Include="..\core\Writing\Formatting\ITripleFormatter.cs">
       <Link>Writing\Formatting\ITripleFormatter.cs</Link>
     </Compile>
@@ -1326,9 +1452,6 @@
     <Compile Include="..\core\Writing\Formatting\QNameFormatter.cs">
       <Link>Writing\Formatting\QNameFormatter.cs</Link>
     </Compile>
-    <Compile Include="..\core\Writing\Formatting\RdfXmlFormatter.cs">
-      <Link>Writing\Formatting\RdfXmlFormatter.cs</Link>
-    </Compile>
     <Compile Include="..\core\Writing\Formatting\SparqlFormatter.cs">
       <Link>Writing\Formatting\SparqlFormatter.cs</Link>
     </Compile>
@@ -1337,6 +1460,9 @@
     </Compile>
     <Compile Include="..\core\Writing\Formatting\TurtleFormatter.cs">
       <Link>Writing\Formatting\TurtleFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\core\Writing\HtmlSchemaWriter.cs">
+      <Link>Writing\HtmlSchemaWriter.cs</Link>
     </Compile>
     <Compile Include="..\core\Writing\RdfXmlWriter.cs">
       <Link>Writing\RdfXmlWriter.cs</Link>

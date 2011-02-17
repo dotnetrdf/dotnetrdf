@@ -35,7 +35,9 @@ terms.
 
 using System;
 using System.Collections.Generic;
+#if !NO_DATA
 using System.Data;
+#endif
 
 namespace VDS.RDF
 {
@@ -509,11 +511,18 @@ namespace VDS.RDF
         /// </remarks>
         GraphDiffReport Difference(IGraph g);
 
+#if !NO_DATA
+
         /// <summary>
         /// Converts the Graph into a DataTable
         /// </summary>
         /// <returns></returns>
+        /// <remarks>
+        /// <strong>Warning:</strong> Not available under builds which remove the Data Storage layer from dotNetRDF e.g. Silverlight
+        /// </remarks>
         DataTable ToDataTable();
+
+#endif
 
         #endregion
 

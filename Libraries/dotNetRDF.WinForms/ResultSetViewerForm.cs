@@ -180,24 +180,23 @@ namespace VDS.RDF.GUI.WinForms
 
         private void btnExport_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("SPARQL Result Set Export is not yet implemented");
-            //ExportGraphOptionsForm exporter = new ExportGraphOptionsForm();
-            //if (exporter.ShowDialog() == DialogResult.OK)
-            //{
-            //    IRdfWriter writer = exporter.Writer;
-            //    String file = exporter.File;
+            ExportResultSetOptionsForm exporter = new ExportResultSetOptionsForm();
+            if (exporter.ShowDialog() == DialogResult.OK)
+            {
+                ISparqlResultsWriter writer = exporter.Writer;
+                String file = exporter.File;
 
-            //    try
-            //    {
-            //        writer.Save(this._g, file);
+                try
+                {
+                    writer.Save(this._results, file);
 
-            //        MessageBox.Show("Successfully exported the Graph to the file '" + file + "'", "Graph Export Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        MessageBox.Show("An error occurred attempting to export the Graph:\n" + ex.Message, "Graph Export Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //    }
-            //}
+                    MessageBox.Show("Successfully exported the SPARQL Results to the file '" + file + "'", "SPARQL Results Export Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("An error occurred attempting to export the SPARQL Results:\n" + ex.Message, "SPARQL Results Export Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
         }
 
         private void RaiseUriClicked(Uri u)

@@ -59,7 +59,7 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// <summary>
         /// Creates a new SPARQL Set function
         /// </summary>
-        /// <param name="varTerm">Variable Expression Term</param>
+        /// <param name="expr">Expression</param>
         /// <param name="set">Set</param>
         public SparqlSetFunction(ISparqlExpression expr, IEnumerable<ISparqlExpression> set)
         {
@@ -144,7 +144,7 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// <summary>
         /// Creates a new SPARQL IN function
         /// </summary>
-        /// <param name="varTerm">Variable Expression Term</param>
+        /// <param name="expr">Expression</param>
         /// <param name="set">Set</param>
         public SparqlInFunction(ISparqlExpression expr, IEnumerable<ISparqlExpression> set)
             : base(expr, set) { }
@@ -236,7 +236,7 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// <summary>
         /// Creates a new SPARQL NOT IN function
         /// </summary>
-        /// <param name="varTerm">Variable Expression Term</param>
+        /// <param name="expr">Expression</param>
         /// <param name="set">Set</param>
         public SparqlNotInFunction(ISparqlExpression expr, IEnumerable<ISparqlExpression> set)
             : base(expr, set) { }

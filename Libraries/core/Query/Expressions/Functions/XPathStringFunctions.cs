@@ -110,7 +110,7 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// </summary>
         /// <param name="stringLit">Simple/String typed Literal</param>
         /// <returns></returns>
-        public abstract INode ValueInternal(LiteralNode stringLit);
+        protected abstract INode ValueInternal(LiteralNode stringLit);
 
         /// <summary>
         /// Gets the Effective Boolean Value of the function as evaluated in the given Context for the given Binding ID
@@ -140,6 +140,9 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// <returns></returns>
         public abstract override string ToString();
 
+        /// <summary>
+        /// Gets the Type of the Expression
+        /// </summary>
         public SparqlExpressionType Type
         {
             get
@@ -148,11 +151,17 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public abstract String Functor
         {
             get;
         }
 
+        /// <summary>
+        /// Gets the Arguments of the Expression
+        /// </summary>
         public IEnumerable<ISparqlExpression> Arguments
         {
             get
@@ -329,6 +338,9 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// <returns></returns>
         public abstract override string ToString();
 
+        /// <summary>
+        /// Gets the Type of the Expression
+        /// </summary>
         public SparqlExpressionType Type
         {
             get
@@ -337,11 +349,17 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public abstract String Functor
         {
             get;
         }
 
+        /// <summary>
+        /// Gets the Arguments of the Expression
+        /// </summary>
         public IEnumerable<ISparqlExpression> Arguments
         {
             get
@@ -372,7 +390,7 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// </summary>
         /// <param name="stringLit">Simple/String typed Literal</param>
         /// <returns></returns>
-        public override INode ValueInternal(LiteralNode stringLit)
+        protected override INode ValueInternal(LiteralNode stringLit)
         {
             return new LiteralNode(null, stringLit.Value.Length.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger));
         }
@@ -386,6 +404,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.StringLength + ">(" + this._expr.ToString() + ")";
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public override string Functor
         {
             get 
@@ -412,7 +433,7 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// </summary>
         /// <param name="stringLit">Simple/String typed Literal</param>
         /// <returns></returns>
-        public override INode ValueInternal(LiteralNode stringLit)
+        protected override INode ValueInternal(LiteralNode stringLit)
         {
             return new LiteralNode(null, Uri.EscapeUriString(stringLit.Value), new Uri(XmlSpecsHelper.XmlSchemaDataTypeString));
         }
@@ -426,6 +447,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.EncodeForURI + ">(" + this._expr.ToString() + ")";
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public override string Functor
         {
             get 
@@ -452,7 +476,7 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// </summary>
         /// <param name="stringLit">Simple/String typed Literal</param>
         /// <returns></returns>
-        public override INode ValueInternal(LiteralNode stringLit)
+        protected override INode ValueInternal(LiteralNode stringLit)
         {
 
             return new LiteralNode(null, HttpUtility.UrlEncode(stringLit.Value), new Uri(XmlSpecsHelper.XmlSchemaDataTypeString));
@@ -467,6 +491,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.EscapeHtmlURI + ">(" + this._expr.ToString() + ")";
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public override string Functor
         {
             get
@@ -493,7 +520,7 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// </summary>
         /// <param name="stringLit">Simple/String typed Literal</param>
         /// <returns></returns>
-        public override INode ValueInternal(LiteralNode stringLit)
+        protected override INode ValueInternal(LiteralNode stringLit)
         {
             return new LiteralNode(null, stringLit.Value.ToLower(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeString));
         }
@@ -507,6 +534,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.LowerCase + ">(" + this._expr.ToString() + ")";
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public override string Functor
         {
             get
@@ -533,7 +563,7 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// </summary>
         /// <param name="stringLit">Simple/String typed Literal</param>
         /// <returns></returns>
-        public override INode ValueInternal(LiteralNode stringLit)
+        protected override INode ValueInternal(LiteralNode stringLit)
         {
             return new LiteralNode(null, stringLit.Value.ToUpper(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeString));
         }
@@ -547,6 +577,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.UpperCase + ">(" + this._expr.ToString() + ")";
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public override string Functor
         {
             get
@@ -573,7 +606,7 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// </summary>
         /// <param name="stringLit">Simple/String typed Literal</param>
         /// <returns></returns>
-        public override INode ValueInternal(LiteralNode stringLit)
+        protected override INode ValueInternal(LiteralNode stringLit)
         {
             String temp = stringLit.Value.Trim();
             Regex normalizeSpace = new Regex("\\s{2,}");
@@ -591,6 +624,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.NormalizeSpace + ">(" + this._expr.ToString() + ")";
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public override string Functor
         {
             get
@@ -695,6 +731,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public override string Functor
         {
             get
@@ -753,6 +792,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Contains + ">(" + this._expr.ToString() + "," + this._arg.ToString() + ")";
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public override string Functor
         {
             get
@@ -817,6 +859,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.EndsWith + ">(" + this._expr.ToString() + "," + this._arg.ToString() + ")";
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public override string Functor
         {
             get
@@ -881,6 +926,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.StartsWith + ">(" + this._expr.ToString() + "," + this._arg.ToString() + ")";
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public override string Functor
         {
             get
@@ -941,6 +989,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.SubstringBefore + ">(" + this._expr.ToString() + "," + this._arg.ToString() + ")";
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public override string Functor
         {
             get
@@ -1001,6 +1052,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             return "<" + XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.SubstringAfter + ">(" + this._expr.ToString() + "," + this._arg.ToString() + ")";
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public override string Functor
         {
             get
@@ -1119,6 +1173,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             return Convert.ToDouble(this.NumericValue(context, bindingID));
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public override string Functor
         {
             get
@@ -1319,6 +1376,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the Type of the Expression
+        /// </summary>
         public SparqlExpressionType Type
         {
             get
@@ -1327,6 +1387,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public string Functor
         {
             get
@@ -1335,6 +1398,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the Arguments of the Expression
+        /// </summary>
         public IEnumerable<ISparqlExpression> Arguments
         {
             get
@@ -1659,6 +1725,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the Type of the Expression
+        /// </summary>
         public SparqlExpressionType Type
         {
             get
@@ -1667,6 +1736,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public string Functor
         {
             get
@@ -1799,6 +1871,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             return output.ToString();
         }
 
+        /// <summary>
+        /// Gets the Type of the Expression
+        /// </summary>
         public SparqlExpressionType Type
         {
             get
@@ -1807,6 +1882,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public string Functor
         {
             get
@@ -1989,6 +2067,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             return output.ToString();
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public override string Functor
         {
             get

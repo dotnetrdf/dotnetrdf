@@ -36,7 +36,9 @@ terms.
 
 using System;
 using System.Collections.Generic;
+#if !NO_DATA
 using System.Data;
+#endif
 using System.Linq;
 using System.Text;
 
@@ -864,12 +866,17 @@ namespace VDS.RDF
 
         #region Operators
 
+#if !NO_DATA
+
         /// <summary>
         /// Converts a Graph into a DataTable using the explicit cast operator defined by this class
         /// </summary>
         /// <returns>
         /// A DataTable containing three Columns (Subject, Predicate and Object) all typed as <see cref="INode">INode</see> with a Row per Triple
         /// </returns>
+        /// <remarks>
+        /// <strong>Warning:</strong> Not available under builds which remove the Data Storage layer from dotNetRDF e.g. Silverlight
+        /// </remarks>
         public virtual DataTable ToDataTable()
         {
             return (DataTable)this;
@@ -882,6 +889,9 @@ namespace VDS.RDF
         /// <returns>
         /// A DataTable containing three Columns (Subject, Predicate and Object) all typed as <see cref="INode">INode</see> with a Row per Triple
         /// </returns>
+        /// <remarks>
+        /// <strong>Warning:</strong> Not available under builds which remove the Data Storage layer from dotNetRDF e.g. Silverlight
+        /// </remarks>
         public static explicit operator DataTable(BaseGraph g)
         {
             DataTable table = new DataTable();
@@ -900,6 +910,8 @@ namespace VDS.RDF
 
             return table;
         }
+
+#endif
 
         #endregion
 

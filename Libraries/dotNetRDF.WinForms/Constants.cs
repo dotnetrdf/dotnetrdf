@@ -46,12 +46,17 @@ namespace VDS.RDF.GUI
         /// <summary>
         /// Filename Filter for RDF Graphs for Open/Save Dialogs
         /// </summary>
-        public const String RdfFilter = "NTriples Files (*.nt)|*.nt|Turtle Files (*.ttl)|*.ttl|Notation 3 Files (*.n3)|*.n3|RDF/XML Files (*.rdf)|*.rdf|RDF/JSON Files (*.json)|*.json|RDFa Files|*.html,*.xhtml,*.htm";
+        public const String RdfFilter = "NTriples Files (*.nt)|*.nt|Turtle Files (*.ttl)|*.ttl|Notation 3 Files (*.n3)|*.n3|RDF/XML Files (*.rdf)|*.rdf|RDF/JSON Files (*.json)|*.json|RDFa Files|*.html,*.xhtml,*.htm|All Files|*.*";
 
         /// <summary>
         /// Filename Filter for RDF Datasets for Open/Save Dialogs
         /// </summary>
-        public const String RdfDatasetFilter = "NQuads Files (*.nq)|*.nq|TriG Files (*.trig)|*.trig|TriX Files (*.xml)|*.xml";
+        public const String RdfDatasetFilter = "NQuads Files (*.nq)|*.nq|TriG Files (*.trig)|*.trig|TriX Files (*.xml)|*.xml|All Files|*.*";
+
+        /// <summary>
+        /// Filname Filter for SPARQL Results for Open/Save Dialogs
+        /// </summary>
+        public const String SparqlResultsFilter = "SPARQL Results XML Files (*.srx)|*.srx|SPARQL Results JSON Files (*.json)|*.json|HTML Files (*.html,*.htm,*.xhtml)|*.html,*.xhtml,*.htm|All Files|*.*";
 
         /// <summary>
         /// Filename Filter for SPARQL Queries
@@ -75,7 +80,7 @@ namespace VDS.RDF.GUI
         {
             get
             {
-                return RdfFilter + "|" + RdfDatasetFilter + "|All Files|*.*";
+                return RdfFilter + "|" + RdfDatasetFilter;
             }
         }
     }

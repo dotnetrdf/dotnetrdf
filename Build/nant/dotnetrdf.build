@@ -201,7 +201,7 @@
     <property name="dotnetrdf.nobuild" value="true" />
   </target>
   
-  <target name="build" description="Build dotNetRDF (except Release)" unless="${dotnetrdf.nobuild}" depends="build-nightly,build-silverlight,build-lite,build-mono,build-linq">
+  <target name="build" description="Build dotNetRDF (except Release)" unless="${dotnetrdf.nobuild}" depends="build-nightly,build-silverlight,build-lite,build-mono,build-linq,build-clientprofile,build-windowsphone">
     
   </target>
   
@@ -225,6 +225,14 @@
     <copy overwrite="true" todir="../bin/silverlight-nightly" file="Libraries/silverlight/bin/Debug/Newtonsoft.Json.Silverlight.xml" />
   </target>
 
+  <target name="build-windowsphone" description="Copy the latest Windows Phone build to the Windows Phone Nightly Build directory" unless="${dotnetrdf.nobuild}"  depends="compile-windowsphone">
+    <copy overwrite="true" todir="../bin/windowsphone-nightly" file="Libraries/windowsphone/bin/Debug/dotNetRDF.WindowsPhone.dll" />
+    <copy overwrite="true" todir="../bin/windowsphone-nightly" file="Libraries/windowsphone/bin/Debug/dotNetRDF.WindowsPhone.xml" />
+    <copy overwrite="true" todir="../bin/windowsphone-nightly" file="Libraries/windowsphone/bin/Debug/HtmlAgilityPack.WindowsPhone.dll" />
+    <copy overwrite="true" todir="../bin/windowsphone-nightly" file="Libraries/windowsphone/bin/Debug/Newtonsoft.Json.Silverlight.dll" />
+    <copy overwrite="true" todir="../bin/windowsphone-nightly" file="Libraries/windowsphone/bin/Debug/Newtonsoft.Json.Silverlight.xml" />
+  </target>
+
   <target name="build-lite" description="Copy the latest Lite build to the Lite Nightly Build directory" unless="${dotnetrdf.nobuild}" depends="compile-lite">
     <copy overwrite="true" todir="../bin/lite-nightly" file="Libraries/lite/bin/Debug/dotNetRDF.Lite.dll" />
     <copy overwrite="true" todir="../bin/lite-nightly" file="Libraries/lite/bin/Debug/dotNetRDF.Lite.xml" />
@@ -232,6 +240,15 @@
     <copy overwrite="true" todir="../bin/lite-nightly" file="Libraries/lite/bin/Debug/HtmlAgilityPack.xml" />
     <copy overwrite="true" todir="../bin/lite-nightly" file="Libraries/lite/bin/Debug/Newtonsoft.Json.dll" />
     <copy overwrite="true" todir="../bin/lite-nightly" file="Libraries/lite/bin/Debug/Newtonsoft.Json.xml" />
+  </target>
+
+  <target name="build-clientprofile" description="Copy the latest Client Profile build to the Client Profile Nightly Build directory" unless="${dotnetrdf.nobuild}" depends="compile-clientprofile">
+    <copy overwrite="true" todir="../bin/clientprofile-nightly" file="Libraries/clientprofile/bin/Debug/dotNetRDF.ClientProfile.dll" />
+    <copy overwrite="true" todir="../bin/clientprofile-nightly" file="Libraries/clientprofile/bin/Debug/dotNetRDF.ClientProfile.xml" />
+    <copy overwrite="true" todir="../bin/clientprofile-nightly" file="Libraries/clientprofile/bin/Debug/HtmlAgilityPack.dll" />
+    <copy overwrite="true" todir="../bin/clientprofile-nightly" file="Libraries/clientprofile/bin/Debug/HtmlAgilityPack.xml" />
+    <copy overwrite="true" todir="../bin/clientprofile-nightly" file="Libraries/clientprofile/bin/Debug/Newtonsoft.Json.dll" />
+    <copy overwrite="true" todir="../bin/clientprofile-nightly" file="Libraries/clientprofile/bin/Debug/Newtonsoft.Json.xml" />
   </target>
 
   <target name="build-mono" description="Copy the latest Mono build to the Mono Nightly Build directory" unless="${dotnetrdf.nobuild}"  depends="compile-mono">

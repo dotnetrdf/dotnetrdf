@@ -139,6 +139,13 @@ namespace VDS.RDF.Web
             return g;
         }
 
+        /// <summary>
+        /// Generates a SPARQL Service Description Graph for the given Query Handler Configuration or uses the configuration supplied Description Graph
+        /// </summary>
+        /// <param name="context">HTTP Context</param>
+        /// <param name="config">Query Handler Configuration</param>
+        /// <param name="descripUri">Base URI of the Description</param>
+        /// <returns></returns>
         public static IGraph GetServiceDescription(HttpContext context, BaseQueryHandlerConfiguration config, Uri descripUri)
         {
             //Use user specified Service Description if present
@@ -206,6 +213,14 @@ namespace VDS.RDF.Web
             return g;
         }
 
+        /// <summary>
+        /// Generates a SPARQL Service Description Graph for the specified portion of the SPARQL Server Handler Configuration or uses the configuration supplied Description Graph
+        /// </summary>
+        /// <param name="context">HTTP Context</param>
+        /// <param name="config">SPARQL Server Configuration</param>
+        /// <param name="descripUri">Base URI of the Description</param>
+        /// <param name="type">Portion of the SPARQL Server to describe</param>
+        /// <returns></returns>
         public static IGraph GetServiceDescription(HttpContext context, BaseSparqlServerConfiguration config, Uri descripUri, ServiceDescriptionType type)
         {
             //Use user specified Service Description if present
@@ -370,6 +385,13 @@ namespace VDS.RDF.Web
             return g;
         }
 
+        /// <summary>
+        /// Generates a SPARQL Service Description Graph for the given Update Handler Configuration or uses the configuration supplied Description Graph
+        /// </summary>
+        /// <param name="context">HTTP Context</param>
+        /// <param name="config">Update Handler Configuration</param>
+        /// <param name="descripUri">Base URI of the Description</param>
+        /// <returns></returns>
         public static IGraph GetServiceDescription(HttpContext context, BaseUpdateHandlerConfiguration config, Uri descripUri)
         {
             //Use user specified Service Description if present
@@ -413,6 +435,13 @@ namespace VDS.RDF.Web
             return g;
         }
 
+        /// <summary>
+        /// Generates a SPARQL Service Description Graph for the given Protocol Handler Configuration or uses the configuration supplied Description Graph
+        /// </summary>
+        /// <param name="context">HTTP Context</param>
+        /// <param name="config">Protocol Handler Configuration</param>
+        /// <param name="descripUri">Base URI of the Description</param>
+        /// <returns></returns>
         public static IGraph GetServiceDescription(HttpContext context, BaseProtocolHandlerConfiguration config, Uri descripUri)
         {
             //Use user specified Service Description if present

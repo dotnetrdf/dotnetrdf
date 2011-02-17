@@ -180,6 +180,12 @@ namespace VDS.RDF.Query.Expressions.Functions
         public IsNumericFunction(ISparqlExpression expr)
             : base(expr) { }
 
+        /// <summary>
+        /// Determines the Effective Boolean Value of the expression for the given Binding in the given Context
+        /// </summary>
+        /// <param name="context">Evaluation Context</param>
+        /// <param name="bindingID">Binding ID</param>
+        /// <returns></returns>
         public override bool EffectiveBooleanValue(SparqlEvaluationContext context, int bindingID)
         {
             try

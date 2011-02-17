@@ -49,6 +49,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Constants.cs" />
+    <Compile Include="ExportResultSetOptionsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ExportResultSetOptionsForm.Designer.cs">
+      <DependentUpon>ExportResultSetOptionsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="ResultSetViewerForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -90,6 +96,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="ExportResultSetOptionsForm.resx">
+      <DependentUpon>ExportResultSetOptionsForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="ResultSetViewerForm.resx">
       <DependentUpon>ResultSetViewerForm.cs</DependentUpon>
       <SubType>Designer</SubType>

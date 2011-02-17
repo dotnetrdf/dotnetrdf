@@ -1,6 +1,6 @@
 ﻿namespace VDS.RDF.GUI.WinForms
 {
-    partial class ExportGraphOptionsForm
+    partial class ExportResultSetOptionsForm
     {
         /// <summary>
         /// Required designer variable.
@@ -32,10 +32,6 @@
             this.txtFile = new System.Windows.Forms.TextBox();
             this.btnBrowse = new System.Windows.Forms.Button();
             this.lblFormat = new System.Windows.Forms.Label();
-            this.cboCompression = new System.Windows.Forms.ComboBox();
-            this.lblCompression = new System.Windows.Forms.Label();
-            this.chkHighSpeed = new System.Windows.Forms.CheckBox();
-            this.chkPrettyPrinting = new System.Windows.Forms.CheckBox();
             this.cboWriter = new System.Windows.Forms.ComboBox();
             this.btnExport = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
@@ -77,53 +73,6 @@
             this.lblFormat.TabIndex = 3;
             this.lblFormat.Text = "Format:";
             // 
-            // cboCompression
-            // 
-            this.cboCompression.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboCompression.FormattingEnabled = true;
-            this.cboCompression.Items.AddRange(new object[] {
-            "None",
-            "Minimal",
-            "Default",
-            "Medium",
-            "More",
-            "High"});
-            this.cboCompression.Location = new System.Drawing.Point(192, 95);
-            this.cboCompression.Name = "cboCompression";
-            this.cboCompression.Size = new System.Drawing.Size(151, 21);
-            this.cboCompression.TabIndex = 10;
-            // 
-            // lblCompression
-            // 
-            this.lblCompression.AutoSize = true;
-            this.lblCompression.Location = new System.Drawing.Point(2, 98);
-            this.lblCompression.Name = "lblCompression";
-            this.lblCompression.Size = new System.Drawing.Size(187, 13);
-            this.lblCompression.TabIndex = 9;
-            this.lblCompression.Text = "Compression Level (where supported):";
-            // 
-            // chkHighSpeed
-            // 
-            this.chkHighSpeed.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.chkHighSpeed.Location = new System.Drawing.Point(182, 63);
-            this.chkHighSpeed.Name = "chkHighSpeed";
-            this.chkHighSpeed.Size = new System.Drawing.Size(242, 32);
-            this.chkHighSpeed.TabIndex = 8;
-            this.chkHighSpeed.Text = "Use High Speed Mode if Graph is ill-suited to syntax compression";
-            this.chkHighSpeed.UseVisualStyleBackColor = true;
-            // 
-            // chkPrettyPrinting
-            // 
-            this.chkPrettyPrinting.AutoSize = true;
-            this.chkPrettyPrinting.Checked = true;
-            this.chkPrettyPrinting.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkPrettyPrinting.Location = new System.Drawing.Point(5, 63);
-            this.chkPrettyPrinting.Name = "chkPrettyPrinting";
-            this.chkPrettyPrinting.Size = new System.Drawing.Size(171, 17);
-            this.chkPrettyPrinting.TabIndex = 7;
-            this.chkPrettyPrinting.Text = "Use Pretty Printing if supported";
-            this.chkPrettyPrinting.UseVisualStyleBackColor = true;
-            // 
             // cboWriter
             // 
             this.cboWriter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -135,7 +84,7 @@
             // 
             // btnExport
             // 
-            this.btnExport.Location = new System.Drawing.Point(135, 122);
+            this.btnExport.Location = new System.Drawing.Point(135, 63);
             this.btnExport.Name = "btnExport";
             this.btnExport.Size = new System.Drawing.Size(75, 23);
             this.btnExport.TabIndex = 11;
@@ -146,7 +95,7 @@
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(216, 122);
+            this.btnCancel.Location = new System.Drawing.Point(216, 63);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 12;
@@ -164,13 +113,9 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(426, 148);
+            this.ClientSize = new System.Drawing.Size(426, 95);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnExport);
-            this.Controls.Add(this.cboCompression);
-            this.Controls.Add(this.lblCompression);
-            this.Controls.Add(this.chkHighSpeed);
-            this.Controls.Add(this.chkPrettyPrinting);
             this.Controls.Add(this.cboWriter);
             this.Controls.Add(this.lblFormat);
             this.Controls.Add(this.btnBrowse);
@@ -179,9 +124,9 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "ExportGraphOptionsForm";
+            this.Name = "ExportResultSetOptionsForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Export Graph Options";
+            this.Text = "Export SPARQL Results Options";
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -193,10 +138,6 @@
         private System.Windows.Forms.TextBox txtFile;
         private System.Windows.Forms.Button btnBrowse;
         private System.Windows.Forms.Label lblFormat;
-        private System.Windows.Forms.ComboBox cboCompression;
-        private System.Windows.Forms.Label lblCompression;
-        private System.Windows.Forms.CheckBox chkHighSpeed;
-        private System.Windows.Forms.CheckBox chkPrettyPrinting;
         private System.Windows.Forms.ComboBox cboWriter;
         private System.Windows.Forms.Button btnExport;
         private System.Windows.Forms.Button btnCancel;

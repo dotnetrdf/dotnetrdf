@@ -100,6 +100,9 @@ namespace VDS.RDF.Query.Grouping
             get;
         }
 
+        /// <summary>
+        /// Gets/Sets the Variable that the grouped upon value should be assigned to
+        /// </summary>
         public String AssignVariable
         {
             get

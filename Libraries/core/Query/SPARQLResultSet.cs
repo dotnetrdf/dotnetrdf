@@ -35,7 +35,9 @@ terms.
 
 using System;
 using System.Collections.Generic;
+#if !NO_DATA
 using System.Data;
+#endif
 using System.Linq;
 using System.Text;
 using System.Xml;
@@ -432,11 +434,15 @@ namespace VDS.RDF.Query
             return tripleCollection;
         }
 
+#if !NO_DATA
         /// <summary>
         /// Casts a SPARQL Result Set to a DataTable with all Columns typed as <see cref="INode">INode</see> (Results with unbound variables will have nulls in the appropriate columns of their <see cref="System.Data.DataRow">DataRow</see>)
         /// </summary>
         /// <param name="results">SPARQL Result Set</param>
         /// <returns></returns>
+        /// <remarks>
+        /// <strong>Warning:</strong> Not available under builds which remove the Data Storage layer from dotNetRDF e.g. Silverlight
+        /// </remarks>
         public static explicit operator DataTable(SparqlResultSet results)
         {
             DataTable table = new DataTable();
@@ -482,6 +488,7 @@ namespace VDS.RDF.Query
         
             return table;
         }
+#endif
 
         /// <summary>
         /// Disposes of a Result Set
