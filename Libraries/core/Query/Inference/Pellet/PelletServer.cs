@@ -94,11 +94,24 @@ namespace VDS.RDF.Query.Inference.Pellet
                 request.Method = "GET";
                 request.Accept = ServerDescriptionFormat;
 
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    Tools.HttpDebugRequest(request);
+                }
+#endif
+
                 //Get the response and parse the JSON
                 String jsonText;
                 JObject json;
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
+#if DEBUG
+                    if (Options.HttpDebugging)
+                    {
+                        Tools.HttpDebugResponse(response);
+                    }
+#endif
                     jsonText = new StreamReader(response.GetResponseStream()).ReadToEnd();
                     json = JObject.Parse(jsonText);
 
@@ -110,8 +123,16 @@ namespace VDS.RDF.Query.Inference.Pellet
                 {
                     this._kbs.Add(new KnowledgeBase(kb));
                 }
-                
-                
+            }
+            catch (WebException webEx)
+            {
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                }
+#endif
+                throw new RdfReasoningException("A HTTP error occurred while communicating with the Pellet Server", webEx);
             }
             catch (Exception)
             {

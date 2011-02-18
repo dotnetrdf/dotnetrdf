@@ -68,15 +68,41 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
             request.Method = this.Endpoint.HttpMethods.First();
             request.ContentType = MimeTypesHelper.CustomHttpAcceptHeader(this.MimeTypes, MimeTypesHelper.SupportedRdfDatasetMimeTypes);
 
-            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+#if DEBUG
+            if (Options.HttpDebugging)
             {
-                IStoreReader parser = MimeTypesHelper.GetStoreParser(response.ContentType);
-                TripleStore store = new TripleStore();
-                StreamParams parameters = new StreamParams(response.GetResponseStream());
-                parser.Load(store, parameters);
+                Tools.HttpDebugRequest(request);
+            }
+#endif
 
-                response.Close();
-                return store;
+            try
+            {
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                {
+#if DEBUG
+                    if (Options.HttpDebugging)
+                    {
+                        Tools.HttpDebugResponse(response);
+                    }
+#endif
+                    IStoreReader parser = MimeTypesHelper.GetStoreParser(response.ContentType);
+                    TripleStore store = new TripleStore();
+                    StreamParams parameters = new StreamParams(response.GetResponseStream());
+                    parser.Load(store, parameters);
+
+                    response.Close();
+                    return store;
+                }
+            }
+            catch (WebException webEx)
+            {
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                }
+#endif
+                throw new RdfReasoningException("A HTTP error occurred while communicating with the Pellet Server", webEx);
             }
         }
 

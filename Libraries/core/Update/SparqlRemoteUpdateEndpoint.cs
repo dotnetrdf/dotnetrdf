@@ -97,6 +97,12 @@ namespace VDS.RDF.Update
 
                 //Make the request
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(requestUri.ToString());
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    Tools.HttpDebugRequest(request);
+                }
+#endif
                 if (longUpdate)
                 {
                     request.Method = "POST";
@@ -114,6 +120,12 @@ namespace VDS.RDF.Update
                 request.Accept = MimeTypesHelper.Any;
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
+#if DEBUG
+                    if (Options.HttpDebugging)
+                    {
+                        Tools.HttpDebugResponse(response);
+                    }
+#endif
                     //If we don't get an error then we should be fine
                     response.Close();
                 }
@@ -121,6 +133,12 @@ namespace VDS.RDF.Update
             }
             catch (WebException webEx)
             {
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                }
+#endif
                 //Some sort of HTTP Error occurred
                 throw new SparqlUpdateException("A HTTP Error occurred when trying to make the SPARQL Update", webEx);
             }

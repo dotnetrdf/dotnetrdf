@@ -232,6 +232,12 @@ namespace VDS.RDF.Storage
             }
             catch (WebException webEx)
             {
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                }
+#endif
                 throw new RdfStorageException("A HTTP error occurred while communicating with the 4store Server", webEx);
             }
             finally
@@ -368,6 +374,12 @@ namespace VDS.RDF.Storage
                 }
                 catch (WebException webEx)
                 {
+#if DEBUG
+                    if (Options.HttpDebugging)
+                    {
+                        if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                    }
+#endif
                     throw new RdfStorageException("A HTTP error occurred while communicating with the 4store Server", webEx);
                 }
                 finally
@@ -513,6 +525,12 @@ namespace VDS.RDF.Storage
             }
             catch (WebException webEx)
             {
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                }
+#endif
                 throw new RdfStorageException("A HTTP error occurred while communicating with the 4store Server", webEx);
             }
             finally

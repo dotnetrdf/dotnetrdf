@@ -154,8 +154,21 @@ namespace VDS.RDF.Storage
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(lookupUri);
                 request.Method = "HEAD";
 
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    Tools.HttpDebugRequest(request);
+                }
+#endif
+
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
+#if DEBUG
+                    if (Options.HttpDebugging)
+                    {
+                        Tools.HttpDebugResponse(response);
+                    }
+#endif
                     //If we get here then it was OK
                     response.Close();
                     return true;
@@ -167,6 +180,12 @@ namespace VDS.RDF.Storage
                 //Any other error caused the function to throw an error
                 if (webEx.Response != null)
                 {
+#if DEBUG
+                    if (Options.HttpDebugging)
+                    {
+                        Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                    }
+#endif
                     if (((HttpWebResponse)webEx.Response).StatusCode == HttpStatusCode.NotFound)
                     {
                         return false;
@@ -199,14 +218,33 @@ namespace VDS.RDF.Storage
                 RdfXmlWriter writer = new RdfXmlWriter();
                 writer.Save(g, new StreamWriter(request.GetRequestStream()));
 
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    Tools.HttpDebugRequest(request);
+                }
+#endif
+
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
+#if DEBUG
+                    if (Options.HttpDebugging)
+                    {
+                        Tools.HttpDebugResponse(response);
+                    }
+#endif
                     //If we get here then it was OK
                     response.Close();
                 }
             }
             catch (WebException webEx)
             {
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                }
+#endif
                 throw new RdfStorageException("A HTTP Error occurred while trying to save a Graph to the Store", webEx);
             }
         }
@@ -260,8 +298,21 @@ namespace VDS.RDF.Storage
                 g.Assert(additions);
                 writer.Save(g, new StreamWriter(request.GetRequestStream()));
 
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    Tools.HttpDebugRequest(request);
+                }
+#endif
+
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
+#if DEBUG
+                    if (Options.HttpDebugging)
+                    {
+                        Tools.HttpDebugResponse(response);
+                    }
+#endif
                     //If we get here then it was OK
 
 #if !NO_URICACHE
@@ -275,6 +326,12 @@ namespace VDS.RDF.Storage
             }
             catch (WebException webEx)
             {
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                }
+#endif
                 throw new RdfStorageException("A HTTP Error occurred while trying to update a Graph in the Store", webEx);
             }
         }
@@ -319,8 +376,22 @@ namespace VDS.RDF.Storage
             {
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(new Uri(deleteUri));
                 request.Method = "DELETE";
+
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    Tools.HttpDebugRequest(request);
+                }
+#endif
+
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
+#if DEBUG
+                    if (Options.HttpDebugging)
+                    {
+                        Tools.HttpDebugResponse(response);
+                    }
+#endif
                     //If we get here then it was OK
 
 #if !NO_URICACHE
@@ -335,6 +406,12 @@ namespace VDS.RDF.Storage
             }
             catch (WebException webEx)
             {
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                }
+#endif
                 throw new RdfStorageException("A HTTP Error occurred while trying to delete a Graph from the Store", webEx);
             }
         }

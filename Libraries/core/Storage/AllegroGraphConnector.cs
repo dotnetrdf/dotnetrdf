@@ -107,13 +107,34 @@ namespace VDS.RDF.Storage
             {
                 request = this.CreateRequest("repositories/" + storeID, "*/*", "PUT", new Dictionary<string, string>());
 
-                response = (HttpWebResponse)request.GetResponse();
-                response.Close();
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    Tools.HttpDebugRequest(request);
+                }
+#endif
+
+                using (response = (HttpWebResponse)request.GetResponse())
+                {
+#if DEBUG
+                    if (Options.HttpDebugging)
+                    {
+                        Tools.HttpDebugResponse(response);
+                    }
+#endif
+                    response.Close();
+                }
             }
             catch (WebException webEx)
             {
                 if (webEx.Response != null)
                 {
+#if DEBUG
+                    if (Options.HttpDebugging)
+                    {
+                        if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                    }
+#endif
                     //Got a Response so we can analyse the Response Code
                     response = (HttpWebResponse)webEx.Response;
                     int code = (int)response.StatusCode;
@@ -158,11 +179,33 @@ namespace VDS.RDF.Storage
                     requestParams.Add("all","false");
                 }
                 HttpWebRequest request = this.CreateRequest("repositories/" + this._store + "/indexing", "*/*", "POST", requestParams);
-                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-                response.Close();
+
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    Tools.HttpDebugRequest(request);
+                }
+#endif
+
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                {
+#if DEBUG
+                    if (Options.HttpDebugging)
+                    {
+                        Tools.HttpDebugResponse(response);
+                    }
+#endif
+                    response.Close();
+                }
             }
             catch (WebException webEx)
             {
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                }
+#endif
                 throw new RdfStorageException("A HTTP Error occurred while attempting to index a Store", webEx);
             }
         }
@@ -176,11 +219,33 @@ namespace VDS.RDF.Storage
             try
             {
                 HttpWebRequest request = this.CreateRequest("repositories/" + this._store, "*/*", "DELETE", new Dictionary<string, string>());
-                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-                response.Close();
+
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    Tools.HttpDebugRequest(request);
+                }
+#endif
+
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                {
+#if DEBUG
+                    if (Options.HttpDebugging)
+                    {
+                        Tools.HttpDebugResponse(response);
+                    }
+#endif
+                    response.Close();
+                }
             }
             catch (WebException webEx)
             {
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                }
+#endif
                 throw new RdfStorageException("A HTTP Error occurred while attempting to delete a Store", webEx);
             }
         }

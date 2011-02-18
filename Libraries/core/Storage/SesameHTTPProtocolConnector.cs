@@ -155,36 +155,56 @@ namespace VDS.RDF.Storage
                     writer.Close();
                 }
 
-                //Get the Response and process based on the Content Type
-                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-
-                StreamReader data = new StreamReader(response.GetResponseStream());
-                String ctype = response.ContentType;
-                try
+#if DEBUG
+                if (Options.HttpDebugging)
                 {
-                    //Is the Content Type referring to a Sparql Result Set format?
-                    ISparqlResultsReader resreader = MimeTypesHelper.GetSparqlParser(ctype, Regex.IsMatch(sparqlQuery, "ASK", RegexOptions.IgnoreCase));
-                    SparqlResultSet results = new SparqlResultSet();
-                    resreader.Load(results, data);
-                    response.Close();
-                    return results;
+                    Tools.HttpDebugRequest(request);
                 }
-                catch (RdfParserSelectionException)
-                {
-                    //If we get a Parser Selection exception then the Content Type isn't valid for a Sparql Result Set
+#endif
 
-                    //Is the Content Type referring to a RDF format?
-                    IRdfReader rdfreader = MimeTypesHelper.GetParser(ctype);
-                    Graph g = new Graph();
-                    rdfreader.Load(g, data);
-                    response.Close();
-                    return g;
+                //Get the Response and process based on the Content Type
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                {
+#if DEBUG
+                    if (Options.HttpDebugging)
+                    {
+                        Tools.HttpDebugResponse(response);
+                    }
+#endif
+                    StreamReader data = new StreamReader(response.GetResponseStream());
+                    String ctype = response.ContentType;
+                    try
+                    {
+                        //Is the Content Type referring to a Sparql Result Set format?
+                        ISparqlResultsReader resreader = MimeTypesHelper.GetSparqlParser(ctype, Regex.IsMatch(sparqlQuery, "ASK", RegexOptions.IgnoreCase));
+                        SparqlResultSet results = new SparqlResultSet();
+                        resreader.Load(results, data);
+                        response.Close();
+                        return results;
+                    }
+                    catch (RdfParserSelectionException)
+                    {
+                        //If we get a Parser Selection exception then the Content Type isn't valid for a Sparql Result Set
+
+                        //Is the Content Type referring to a RDF format?
+                        IRdfReader rdfreader = MimeTypesHelper.GetParser(ctype);
+                        Graph g = new Graph();
+                        rdfreader.Load(g, data);
+                        response.Close();
+                        return g;
+                    }
                 }
             }
             catch (WebException webEx)
             {
                 if (webEx.Response != null)
                 {
+#if DEBUG
+                    if (Options.HttpDebugging)
+                    {
+                        Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                    }
+#endif
                     if (webEx.Response.ContentLength > 0)
                     {
                         try 
@@ -277,14 +297,34 @@ namespace VDS.RDF.Storage
 
                 request = this.CreateRequest(requestUri, MimeTypesHelper.HttpAcceptHeader, "GET", serviceParams);
 
-                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    Tools.HttpDebugRequest(request);
+                }
+#endif
 
-                IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
-                parser.Load(g, new StreamReader(response.GetResponseStream()));
-                response.Close();
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                {
+#if DEBUG
+                    if (Options.HttpDebugging)
+                    {
+                        Tools.HttpDebugResponse(response);
+                    }
+#endif
+                    IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
+                    parser.Load(g, new StreamReader(response.GetResponseStream()));
+                    response.Close();
+                }
             }
             catch (WebException webEx)
             {
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                }
+#endif
                 throw new RdfStorageException("A HTTP Error occurred while trying to load a Graph from the Store", webEx);
             }
         }
@@ -317,13 +357,32 @@ namespace VDS.RDF.Storage
                 NTriplesWriter ntwriter = new NTriplesWriter();
                 ntwriter.Save(g, new StreamWriter(request.GetRequestStream()));
 
-                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-
-                //If we get then it was OK
-                response.Close();
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    Tools.HttpDebugRequest(request);
+                }
+#endif
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                {
+#if DEBUG
+                    if (Options.HttpDebugging)
+                    {
+                        Tools.HttpDebugResponse(response);
+                    }
+#endif
+                    //If we get then it was OK
+                    response.Close();
+                }
             }
             catch (WebException webEx)
             {
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                }
+#endif
                 throw new RdfStorageException("A HTTP Error occurred while trying to save a Graph to the Store", webEx);
             }
         }
@@ -379,10 +438,25 @@ namespace VDS.RDF.Storage
                             serviceParams["pred"] = this._formatter.Format(t.Predicate);
                             serviceParams["obj"] = this._formatter.Format(t.Object);
                             request = this.CreateRequest("repositories/" + this._store + "/statements", "*/*", "DELETE", serviceParams);
-                            response = (HttpWebResponse)request.GetResponse();
 
-                            //If we get here then the Delete worked OK
-                            response.Close();
+#if DEBUG
+                            if (Options.HttpDebugging)
+                            {
+                                Tools.HttpDebugRequest(request);
+                            }
+#endif
+
+                            using (response = (HttpWebResponse)request.GetResponse())
+                            {
+#if DEBUG
+                                if (Options.HttpDebugging)
+                                {
+                                    Tools.HttpDebugResponse(response);
+                                }
+#endif
+                                //If we get here then the Delete worked OK
+                                response.Close();
+                            }
                         }
                         serviceParams.Remove("subj");
                         serviceParams.Remove("pred");
@@ -401,15 +475,35 @@ namespace VDS.RDF.Storage
                         request.ContentType = MimeTypesHelper.NTriples[0];
                         ntwriter.Save(h, new StreamWriter(request.GetRequestStream()));
 
-                        response = (HttpWebResponse)request.GetResponse();
+#if DEBUG
+                        if (Options.HttpDebugging)
+                        {
+                            Tools.HttpDebugRequest(request);
+                        }
+#endif
 
-                        //If we get then it was OK
-                        response.Close();
+                        using (response = (HttpWebResponse)request.GetResponse())
+                        {
+#if DEBUG
+                            if (Options.HttpDebugging)
+                            {
+                                Tools.HttpDebugResponse(response);
+                            }
+#endif
+                            //If we get then it was OK
+                            response.Close();
+                        }
                     }
                 }
             }
             catch (WebException webEx)
             {
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                }
+#endif
                 throw new RdfStorageException("A HTTP Error occurred while trying to update a Graph in the Store", webEx);
             }
         }
@@ -457,14 +551,32 @@ namespace VDS.RDF.Storage
                 }
 
                 request = this.CreateRequest("repositories/" + this._store + "/statements", "*/*", "DELETE", serviceParams);
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    Tools.HttpDebugRequest(request);
+                }
+#endif
                 using (response = (HttpWebResponse)request.GetResponse())
                 {
+#if DEBUG
+                    if (Options.HttpDebugging)
+                    {
+                        Tools.HttpDebugResponse(response);
+                    }
+#endif
                     //If we get here then the Delete worked OK
                     response.Close();
                 }
             }
             catch (WebException webEx)
             {
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                }
+#endif
                 throw new RdfStorageException("A HTTP Error occurred while trying to delete a Graph from the Store", webEx);
             }
         }

@@ -62,16 +62,42 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this.Endpoint.Uri);
             request.Method = this.Endpoint.HttpMethods.First();
-            request.ContentType = MimeTypesHelper.HttpSparqlAcceptHeader;//MimeTypesHelper.CustomHttpAcceptHeader(this.MimeTypes, MimeTypesHelper.SupportedSparqlMimeTypes);
+            request.ContentType = MimeTypesHelper.HttpSparqlAcceptHeader;
 
-            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+#if DEBUG
+            if (Options.HttpDebugging)
             {
-                ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParser(response.ContentType);
-                SparqlResultSet results = new SparqlResultSet();
-                parser.Load(results, new StreamReader(response.GetResponseStream()));
+                Tools.HttpDebugRequest(request);
+            }
+#endif
 
-                //Expect a boolean result set
-                return results.Result;
+            try
+            {
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                {
+#if DEBUG
+                    if (Options.HttpDebugging)
+                    {
+                        Tools.HttpDebugResponse(response);
+                    }
+#endif
+                    ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParser(response.ContentType);
+                    SparqlResultSet results = new SparqlResultSet();
+                    parser.Load(results, new StreamReader(response.GetResponseStream()));
+
+                    //Expect a boolean result set
+                    return results.Result;
+                }
+            }
+            catch (WebException webEx)
+            {
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                }
+#endif
+                throw new RdfReasoningException("A HTTP error occurred while communicating with the Pellet Server", webEx);
             }
         }
     }

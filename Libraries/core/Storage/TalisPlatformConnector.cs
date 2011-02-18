@@ -207,14 +207,29 @@ namespace VDS.RDF.Storage
                 request = this.CreateRequest(servicePath, ps);
                 request.Method = "GET";
                 request.Accept = MimeTypesHelper.HttpAcceptHeader;
-                response = (HttpWebResponse)request.GetResponse();
 
-                if (g.IsEmpty) g.BaseUri = new Uri(resourceUri);
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    Tools.HttpDebugRequest(request);
+                }
+#endif
 
-                //Get the relevant Parser
-                IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
-                parser.Load(g, new StreamReader(response.GetResponseStream()));
-                response.Close();
+                using (response = (HttpWebResponse)request.GetResponse())
+                {
+#if DEBUG
+                    if (Options.HttpDebugging)
+                    {
+                        Tools.HttpDebugResponse(response);
+                    }
+#endif
+                    if (g.IsEmpty) g.BaseUri = new Uri(resourceUri);
+
+                    //Get the relevant Parser
+                    IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
+                    parser.Load(g, new StreamReader(response.GetResponseStream()));
+                    response.Close();
+                }
             }
             catch (WebException webEx)
             {
@@ -273,12 +288,26 @@ namespace VDS.RDF.Storage
                 //Write the RDF/XML to the Request Stream
                 RdfXmlWriter writer = new RdfXmlWriter();
                 writer.Save(g, new StreamWriter(request.GetRequestStream()));
+
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    Tools.HttpDebugRequest(request);
+                }
+#endif
                 
                 //Make the Request
-                response = (HttpWebResponse)request.GetResponse();
-
-                //OK if we get here!
-                response.Close();
+                using (response = (HttpWebResponse)request.GetResponse())
+                {
+#if DEBUG
+                    if (Options.HttpDebugging)
+                    {
+                        Tools.HttpDebugResponse(response);
+                    }
+#endif
+                    //OK if we get here!
+                    response.Close();
+                }
             }
             catch (WebException webEx)
             {
@@ -368,27 +397,42 @@ namespace VDS.RDF.Storage
                 RdfXmlWriter writer = new RdfXmlWriter();
                 writer.Save(g, new StreamWriter(request.GetRequestStream()));
 
-                //Make the Request
-                response = (HttpWebResponse)request.GetResponse();
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    Tools.HttpDebugRequest(request);
+                }
+#endif
 
-                //What sort of Update Result did we get?
-                int code = (int)response.StatusCode;
-                response.Close();
-                if (code == 200 || code == 201)
+                //Make the Request
+                using (response = (HttpWebResponse)request.GetResponse())
                 {
-                    return TalisUpdateResult.Synchronous;
-                }
-                else if (code == 202)
-                {
-                    return TalisUpdateResult.Asynchronous;
-                }
-                else if (code == 204)
-                {
-                    return TalisUpdateResult.Done;
-                }
-                else
-                {
-                    return TalisUpdateResult.Unknown;
+#if DEBUG
+                    if (Options.HttpDebugging)
+                    {
+                        Tools.HttpDebugResponse(response);
+                    }
+#endif
+
+                    //What sort of Update Result did we get?
+                    int code = (int)response.StatusCode;
+                    response.Close();
+                    if (code == 200 || code == 201)
+                    {
+                        return TalisUpdateResult.Synchronous;
+                    }
+                    else if (code == 202)
+                    {
+                        return TalisUpdateResult.Asynchronous;
+                    }
+                    else if (code == 204)
+                    {
+                        return TalisUpdateResult.Done;
+                    }
+                    else
+                    {
+                        return TalisUpdateResult.Unknown;
+                    }
                 }
             }
             catch (WebException webEx)
@@ -557,12 +601,28 @@ namespace VDS.RDF.Storage
                     case SparqlQueryType.SelectReduced:
                         //Some kind of Sparql Result Set
                         request.Accept = MimeTypesHelper.HttpSparqlAcceptHeader;
-                        response = (HttpWebResponse)request.GetResponse();
-                        ISparqlResultsReader resultsParser = MimeTypesHelper.GetSparqlParser(response.ContentType);
-                        SparqlResultSet results = new SparqlResultSet();
-                        resultsParser.Load(results, new StreamReader(response.GetResponseStream()));
-                        response.Close();
-                        return results;
+
+#if DEBUG
+                        if (Options.HttpDebugging)
+                        {
+                            Tools.HttpDebugRequest(request);
+                        }
+#endif
+
+                        using (response = (HttpWebResponse)request.GetResponse())
+                        {
+#if DEBUG
+                            if (Options.HttpDebugging)
+                            {
+                                Tools.HttpDebugResponse(response);
+                            }
+#endif
+                            ISparqlResultsReader resultsParser = MimeTypesHelper.GetSparqlParser(response.ContentType);
+                            SparqlResultSet results = new SparqlResultSet();
+                            resultsParser.Load(results, new StreamReader(response.GetResponseStream()));
+                            response.Close();
+                            return results;
+                        }
 
                     case SparqlQueryType.Construct:
                     case SparqlQueryType.Describe:
@@ -570,12 +630,28 @@ namespace VDS.RDF.Storage
                         //Some kind of Graph
                         //HACK: Have to send only RDF/XML as the accept header due to a known issue with Talis Platform
                         request.Accept = MimeTypesHelper.RdfXml[0];//MimeTypesHelper.HttpAcceptHeader;
-                        response = (HttpWebResponse)request.GetResponse();
-                        IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
-                        Graph g = new Graph();
-                        parser.Load(g, new StreamReader(response.GetResponseStream()));
-                        response.Close();
-                        return g;
+
+#if DEBUG
+                        if (Options.HttpDebugging)
+                        {
+                            Tools.HttpDebugRequest(request);
+                        }
+#endif
+
+                        using (response = (HttpWebResponse)request.GetResponse())
+                        {
+#if DEBUG
+                            if (Options.HttpDebugging)
+                            {
+                                Tools.HttpDebugResponse(response);
+                            }
+#endif
+                            IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
+                            Graph g = new Graph();
+                            parser.Load(g, new StreamReader(response.GetResponseStream()));
+                            response.Close();
+                            return g;
+                        }
 
                     case SparqlQueryType.Unknown:
                     default:
@@ -642,6 +718,12 @@ namespace VDS.RDF.Storage
         /// <returns></returns>
         protected TalisException Error(int code, WebException ex)
         {
+#if DEBUG
+            if (Options.HttpDebugging)
+            {
+                Tools.HttpDebugResponse((HttpWebResponse)ex.Response);
+            }
+#endif
             switch (code)
             {
                 case 400:

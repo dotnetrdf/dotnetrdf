@@ -128,8 +128,21 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
             request.Method = this.Endpoint.HttpMethods.First();
             request.Accept = MimeTypesHelper.CustomHttpAcceptHeader(this.MimeTypes.Where(type => !type.Equals("text/json")), MimeTypesHelper.SupportedRdfMimeTypes);
 
+#if DEBUG
+            if (Options.HttpDebugging)
+            {
+                Tools.HttpDebugRequest(request);
+            }
+#endif
+
             using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
             {
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    Tools.HttpDebugResponse(response);
+                }
+#endif
                 IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
                 Graph g = new Graph();
                 parser.Load(g, new StreamReader(response.GetResponseStream()));
@@ -155,14 +168,40 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
             request.Method = this.Endpoint.HttpMethods.First();
             request.Accept = MimeTypesHelper.CustomHttpAcceptHeader(this.MimeTypes.Where(t => !t.Equals("text/json")), MimeTypesHelper.SupportedRdfMimeTypes);
 
-            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+#if DEBUG
+            if (Options.HttpDebugging)
             {
-                IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
-                Graph g = new Graph();
-                parser.Load(g, new StreamReader(response.GetResponseStream()));
+                Tools.HttpDebugRequest(request);
+            }
+#endif
 
-                response.Close();
-                return g;
+            try
+            {
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                {
+#if DEBUG
+                    if (Options.HttpDebugging)
+                    {
+                        Tools.HttpDebugResponse(response);
+                    }
+#endif
+                    IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
+                    Graph g = new Graph();
+                    parser.Load(g, new StreamReader(response.GetResponseStream()));
+
+                    response.Close();
+                    return g;
+                }
+            }
+            catch (WebException webEx)
+            {
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                }
+#endif
+                throw new RdfReasoningException("A HTTP error occurred while communicating with the Pellet Server", webEx);
             }
         }
     }

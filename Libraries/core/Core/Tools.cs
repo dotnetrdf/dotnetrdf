@@ -455,6 +455,8 @@ namespace VDS.RDF
         /// <remarks><strong>Only available in Debug builds</strong></remarks>
         public static void HttpDebugRequest(HttpWebRequest httpRequest)
         {
+            if (!Options.HttpDebugging) return;
+
             //Output the Request Headers
             Console.WriteLine("# HTTP DEBUGGING #");
             Console.WriteLine("HTTP Request to " + httpRequest.RequestUri);
@@ -474,6 +476,8 @@ namespace VDS.RDF
         /// <remarks><strong>Only available in Debug builds</strong></remarks>
         public static void HttpDebugResponse(HttpWebResponse httpResponse)
         {
+            if (!Options.HttpDebugging) return;
+
             //Output the Response Uri and Headers
             Console.WriteLine();
             Console.WriteLine("HTTP Response from " + httpResponse.ResponseUri);

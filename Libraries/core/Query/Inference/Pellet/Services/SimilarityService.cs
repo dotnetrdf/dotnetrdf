@@ -103,6 +103,16 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
                     throw new RdfReasoningException("Unable to extract the Similarity Information from the Similarity Graph returned by Pellet Server");
                 }
             }
+            catch (WebException webEx)
+            {
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                }
+#endif
+                throw new RdfReasoningException("A HTTP error occurred while communicating with Pellet Server", webEx);
+            }
             catch (Exception ex)
             {
                 throw new RdfReasoningException("Unable to extract the Similarity Information from the Similarity Graph returned by Pellet Server", ex);
@@ -127,8 +137,21 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
             request.Method = this.Endpoint.HttpMethods.First();
             request.Accept = MimeTypesHelper.CustomHttpAcceptHeader(this.MimeTypes.Where(t => !t.Equals("text/json")), MimeTypesHelper.SupportedRdfMimeTypes);
 
+#if DEBUG
+            if (Options.HttpDebugging)
+            {
+                Tools.HttpDebugRequest(request);
+            }
+#endif
+
             using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
             {
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    Tools.HttpDebugResponse(response);
+                }
+#endif
                 IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
                 Graph g = new Graph();
                 parser.Load(g, new StreamReader(response.GetResponseStream()));

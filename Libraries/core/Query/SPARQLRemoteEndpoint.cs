@@ -275,6 +275,12 @@ namespace VDS.RDF.Query
             }
             catch (WebException webEx)
             {
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                }
+#endif
                 //Some sort of HTTP Error occurred
                 throw new RdfQueryException("A HTTP Error occurred while trying to make the SPARQL Query", webEx);
             }
@@ -311,6 +317,12 @@ namespace VDS.RDF.Query
             }
             catch (WebException webEx)
             {
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                }
+#endif
                 //Some sort of HTTP Error occurred
                 throw new RdfQueryException("A HTTP Error occurred when trying to make the SPARQL Query", webEx);
             }
@@ -336,6 +348,12 @@ namespace VDS.RDF.Query
             }
             catch (WebException webEx)
             {
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                }
+#endif
                 //Some sort of HTTP Error occurred
                 throw new RdfQueryException("A HTTP Error occurred while trying to make the SPARQL Query", webEx);
             }

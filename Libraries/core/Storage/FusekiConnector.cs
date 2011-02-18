@@ -152,12 +152,26 @@ namespace VDS.RDF.Storage
                     request.Method = "POST";
                     request.ContentType = "application/sparql-update";
 
+#if DEBUG
+                    if (Options.HttpDebugging)
+                    {
+                        Tools.HttpDebugRequest(request);
+                    }
+#endif
+
                     StreamWriter writer = new StreamWriter(request.GetRequestStream());
                     writer.Write(update.ToString());
                     writer.Close();
 
                     using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                     {
+#if DEBUG
+                        if (Options.HttpDebugging)
+                        {
+                            Tools.HttpDebugResponse(response);
+                        }
+#endif
+
                         //If we get here without erroring then the request was OK
 
 #if !NO_URICACHE
@@ -172,6 +186,12 @@ namespace VDS.RDF.Storage
             }
             catch (WebException webEx)
             {
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                }
+#endif
                 throw new RdfStorageException("A HTTP error occurred while communicating with the Fuseki Server", webEx);
             }
         }
@@ -223,34 +243,55 @@ namespace VDS.RDF.Storage
                     writer.Close();
                 }
 
-                //Get the Response and process based on the Content Type
-                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-
-                StreamReader data = new StreamReader(response.GetResponseStream());
-                String ctype = response.ContentType;
-                try
+#if DEBUG
+                if (Options.HttpDebugging)
                 {
-                    //Is the Content Type referring to a Sparql Result Set format?
-                    ISparqlResultsReader resreader = MimeTypesHelper.GetSparqlParser(ctype, true);
-                    SparqlResultSet results = new SparqlResultSet();
-                    resreader.Load(results, data);
-                    response.Close();
-                    return results;
+                    Tools.HttpDebugRequest(request);
                 }
-                catch (RdfParserSelectionException)
-                {
-                    //If we get a Parse exception then the Content Type isn't valid for a Sparql Result Set
+#endif
 
-                    //Is the Content Type referring to a RDF format?
-                    IRdfReader rdfreader = MimeTypesHelper.GetParser(ctype);
-                    Graph g = new Graph();
-                    rdfreader.Load(g, data);
-                    response.Close();
-                    return g;
+                //Get the Response and process based on the Content Type
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                {
+#if DEBUG
+                    if (Options.HttpDebugging)
+                    {
+                        Tools.HttpDebugResponse(response);
+                    }
+#endif
+
+                    StreamReader data = new StreamReader(response.GetResponseStream());
+                    String ctype = response.ContentType;
+                    try
+                    {
+                        //Is the Content Type referring to a Sparql Result Set format?
+                        ISparqlResultsReader resreader = MimeTypesHelper.GetSparqlParser(ctype, true);
+                        SparqlResultSet results = new SparqlResultSet();
+                        resreader.Load(results, data);
+                        response.Close();
+                        return results;
+                    }
+                    catch (RdfParserSelectionException)
+                    {
+                        //If we get a Parse exception then the Content Type isn't valid for a Sparql Result Set
+
+                        //Is the Content Type referring to a RDF format?
+                        IRdfReader rdfreader = MimeTypesHelper.GetParser(ctype);
+                        Graph g = new Graph();
+                        rdfreader.Load(g, data);
+                        response.Close();
+                        return g;
+                    }
                 }
             }
             catch (WebException webEx)
             {
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                }
+#endif
                 throw new RdfQueryException("A HTTP error occurred while querying the Store", webEx);
             }
         }
@@ -272,14 +313,33 @@ namespace VDS.RDF.Storage
                 writer.Write(sparqlUpdate);
                 writer.Close();
 
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    Tools.HttpDebugRequest(request);
+                }
+#endif
+
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
+#if DEBUG
+                    if (Options.HttpDebugging)
+                    {
+                        Tools.HttpDebugResponse(response);
+                    }
+#endif
                     //If we get here without erroring then the request was OK
                     response.Close();
                 }
             }
             catch (WebException webEx)
             {
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                }
+#endif
                 throw new RdfStorageException("A HTTP error occurred while communicating with the Fuseki Server", webEx);
             }
         }
