@@ -86,6 +86,22 @@ namespace VDS.RDF.Query.Datasets
         /// </summary>
         void ResetDefaultGraph();
 
+        /// <summary>
+        /// Gets the current Default Graph (null if none)
+        /// </summary>
+        IGraph DefaultGraph
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Gets the current Active Graph (null if none)
+        /// </summary>
+        IGraph ActiveGraph
+        {
+            get;
+        }
+
         #endregion
 
         #region Graph Existence and Retrieval

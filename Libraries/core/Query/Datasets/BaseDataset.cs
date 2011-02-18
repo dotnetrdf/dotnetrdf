@@ -110,7 +110,9 @@ namespace VDS.RDF.Query.Datasets
             }
             else
             {
-                throw new RdfQueryException("A Graph with URI '" + graphUri.ToString() + "' does not exist in this Triple Store, a GRAPH Clause cannot be used to change the Active Graph to a Graph that doesn't exist");
+                //Active Graph is an empty Graph in the case where the Graph is not present in the Dataset
+                this._activeGraphs.Push(this._activeGraph);
+                this._activeGraph = new Graph();
             }
         }
 
@@ -178,6 +180,28 @@ namespace VDS.RDF.Query.Datasets
             else
             {
                 throw new RdfQueryException("Unable to reset the Default Graph since no previous Default Graphs exist");
+            }
+        }
+
+        /// <summary>
+        /// Gets the current Default Graph (null if none)
+        /// </summary>
+        public IGraph DefaultGraph
+        {
+            get
+            {
+                return this._defaultGraph;
+            }
+        }
+
+        /// <summary>
+        /// Gets the current Active Graph (null if none)
+        /// </summary>
+        public IGraph ActiveGraph
+        {
+            get
+            {
+                return this._activeGraph;
             }
         }
 

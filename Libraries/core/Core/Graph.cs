@@ -74,12 +74,32 @@ namespace VDS.RDF
             : base(tripleCollection) { }
 
         /// <summary>
+        /// Creates a new instance of a Graph using the given Triple and Node Collections
+        /// </summary>
+        /// <param name="tripleCollection">Triple Collection</param>
+        /// <param name="nodeCollection">Node Collection</param>
+        protected Graph(BaseTripleCollection tripleCollection, BaseNodeCollection nodeCollection)
+            : base(tripleCollection, nodeCollection) { }
+
+        /// <summary>
         /// Creates a new instance of a Graph using the given Triple Collection and an optionally empty Namespace Map
         /// </summary>
         /// <param name="tripleCollection">Triple Collection</param>
         /// <param name="emptyNamespaceMap">Whether the Namespace Map should be empty</param>
         protected Graph(BaseTripleCollection tripleCollection, bool emptyNamespaceMap)
             : base(tripleCollection)
+        {
+            if (emptyNamespaceMap) this._nsmapper.Clear();
+        }
+
+        /// <summary>
+        /// Creates a new instance of a Graph using the given Triple and Node Collections
+        /// </summary>
+        /// <param name="tripleCollection">Triple Collection</param>
+        /// <param name="nodeCollection">Node Collection</param>
+        /// <param name="emptyNamespaceMap">Whether the Namespace Map should be empty</param>
+        protected Graph(BaseTripleCollection tripleCollection, BaseNodeCollection nodeCollection, bool emptyNamespaceMap)
+            : base(tripleCollection, nodeCollection) 
         {
             if (emptyNamespaceMap) this._nsmapper.Clear();
         }

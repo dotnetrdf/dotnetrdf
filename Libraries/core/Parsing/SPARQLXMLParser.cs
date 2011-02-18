@@ -81,7 +81,7 @@ namespace VDS.RDF.Parsing
             if (input == null) throw new RdfParseException("Cannot read SPARQL Results from a null Stream");
 
             //Ensure Empty Result Set
-            if (!results.IsEmpty)
+            if (!results.IsEmpty || results.ResultsType != SparqlResultsType.Unknown)
             {
                 throw new RdfParseException("Cannot load a Result Set from a Stream into a non-empty Result Set");
             }
@@ -414,8 +414,6 @@ namespace VDS.RDF.Parsing
         {
             try
             {
-                results.SetEmpty(false);
-
                 //Get the Document Element and check it's a Sparql element
                 if (!reader.Read()) throw new RdfParseException("Unable to Parse a SPARQL Result Set as it was not possible to read a document element from the input");
                 while (reader.NodeType != XmlNodeType.Element)

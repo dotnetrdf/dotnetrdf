@@ -80,7 +80,7 @@ namespace VDS.RDF.Parsing
             if (input == null) throw new RdfParseException("Cannot read SPARQL Results from a null Stream");
 
             //Ensure Empty Result Set
-            if (!results.IsEmpty)
+            if (!results.IsEmpty || results.ResultsType != SparqlResultsType.Unknown)
             {
                 throw new RdfParseException("Cannot load a Result Set from a Stream into a non-empty Result Set");
             }
@@ -130,7 +130,7 @@ namespace VDS.RDF.Parsing
             if (filename == null) throw new RdfParseException("Cannot read SPARQL Results from a null File");
 
             //Ensure Empty Result Set
-            if (!results.IsEmpty)
+            if (!results.IsEmpty || results.ResultsType != SparqlResultsType.Unknown)
             {
                 throw new RdfParseException("Cannot load a Result Set from a File into a non-empty Result Set");
             }
@@ -191,7 +191,6 @@ namespace VDS.RDF.Parsing
                                 if (Boolean.TryParse(lit.Value, out b))
                                 {
                                     results.SetResult(b);
-                                    results.SetEmpty(false);
                                     return;
                                 }
                                 else

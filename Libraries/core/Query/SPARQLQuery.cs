@@ -776,7 +776,7 @@ namespace VDS.RDF.Query
                 }
                 else
                 {
-                    defGraph = null;
+                    defGraph = dataset.DefaultGraph;
                     dataset.SetDefaultGraph(defGraph);
                 }
                 defGraphOk = true;

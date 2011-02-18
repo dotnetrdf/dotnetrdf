@@ -435,6 +435,27 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
             }
         }
 
+        [TestMethod]
+        public void SparqlEvaluationGraphNonExistentUri()
+        {
+            String query = "SELECT * WHERE { GRAPH <http://example.org/noSuchGraph> { ?s ?p ?o } }";
+            TripleStore store = new TripleStore();
+            Object results = store.ExecuteQuery(query);
+
+            if (results is SparqlResultSet)
+            {
+                TestTools.ShowResults(results);
+
+                SparqlResultSet rset = (SparqlResultSet)results;
+                Assert.IsTrue(rset.IsEmpty, "Result Set should be empty");
+                Assert.AreEqual(3, rset.Variables.Count(), "Should still be 3 Variables even if no results");
+            }
+            else
+            {
+                Assert.Fail("Query should have returned a SPARQL Result Set");
+            }
+        }
+
         //[TestMethod]
         //public void StreamingBgpSelectEvaluation()
         //{

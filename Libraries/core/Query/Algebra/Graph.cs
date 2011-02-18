@@ -90,7 +90,17 @@ namespace VDS.RDF.Query.Algebra
                         {
                             case Token.URI:
                             case Token.QNAME:
-                                context.Data.SetActiveGraph(new Uri(Tools.ResolveUriOrQName(this._graphSpecifier, context.Query.NamespaceMap, context.Query.BaseUri)));
+                                Uri activeGraphUri = new Uri(Tools.ResolveUriOrQName(this._graphSpecifier, context.Query.NamespaceMap, context.Query.BaseUri));
+                                if (context.Data.HasGraph(activeGraphUri))
+                                {
+                                    context.Data.SetActiveGraph(activeGraphUri);
+                                }
+                                else
+                                {
+                                    //If specifies a specific Graph and not in the Dataset result is an empty multiset
+                                    context.OutputMultiset = new Multiset();
+                                    return context.OutputMultiset;
+                                }
                                 break;
                             default:
                                 throw new RdfQueryException("Cannot use a '" + this._graphSpecifier.GetType().ToString() + "' Token to specify the Graph for a GRAPH clause");
@@ -99,7 +109,10 @@ namespace VDS.RDF.Query.Algebra
                     else
                     {
                         String gvar = this._graphSpecifier.Value.Substring(1);
-                        if (context.InputMultiset.ContainsVariable(gvar))
+
+                        //Watch out for the case in which the Graph Variable is not bound for all Sets in which case
+                        //we still need to operate over all Graphs
+                        if (context.InputMultiset.ContainsVariable(gvar) && context.InputMultiset.Sets.All(s => s[gvar] != null))
                         {
                             //If there are already values bound to the Graph variable then we limit the Query to those Graphs
                             List<Uri> graphUris = new List<Uri>();
@@ -130,7 +143,6 @@ namespace VDS.RDF.Query.Algebra
                             {
                                 //Query is over entire dataset/default Graph since no named Graphs are explicitly specified
                                 context.Data.SetActiveGraph((Uri)null);
-                                //context.Data.SetActiveGraph(new VDS.RDF.Graph());
                             }
                         }
                     }
@@ -147,12 +159,17 @@ namespace VDS.RDF.Query.Algebra
                     else
                     {
                         //For Graph Variable Patterns where the Variable wasn't already bound add bindings
+                        //Watch out for the case where only some sets have the variable bound in which case we need to
+                        //bind the Graph Variable
                         String gvar = this._graphSpecifier.Value.Substring(1);
-                        if (!initialInput.ContainsVariable(gvar))
+                        if (!initialInput.ContainsVariable(gvar) || !initialInput.Sets.All(s => s[gvar] != null))
                         {
                             result.AddVariable(gvar);
                             foreach (Set s in result.Sets)
                             {
+                                //Skip if Graph variable was already bound to something
+                                if (s[gvar] != null) continue;
+
                                 INode temp = s.Values.FirstOrDefault(n => n != null && n.GraphUri != null);
                                 if (temp == null)
                                 {
@@ -165,9 +182,6 @@ namespace VDS.RDF.Query.Algebra
                             }
                         }
                     }
-
-                    //context.OutputMultiset = context.InputMultiset.Join(result);
-                    //context.OutputMultiset = initialInput.Join(result);
                     context.OutputMultiset = result;
                 }
                 finally

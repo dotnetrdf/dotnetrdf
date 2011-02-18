@@ -86,7 +86,21 @@ namespace VDS.RDF.Query.Datasets
         /// <param name="graphUri">Graph URI</param>
         public override void RemoveGraph(Uri graphUri)
         {
-            this._manager.RemoveGraph(this._manager.GetGraphID(graphUri));
+            if (graphUri == null || graphUri.ToString().Equals(GraphCollection.DefaultGraphUri))
+            {
+                if (this._defaultGraph != null)
+                {
+                    this._defaultGraph.Clear();
+                }
+                else
+                {
+                    this._manager.ClearGraph(this._manager.GetGraphID(null));
+                }
+            }
+            else
+            {
+                this._manager.RemoveGraph(this._manager.GetGraphID(graphUri));
+            }
         }
 
         /// <summary>
@@ -96,7 +110,21 @@ namespace VDS.RDF.Query.Datasets
         /// <returns></returns>
         public override bool HasGraph(Uri graphUri)
         {
-            return this._manager.Exists(graphUri);
+            if (graphUri == null || graphUri.ToString().Equals(GraphCollection.DefaultGraphUri))
+            {
+                if (this._defaultGraph != null)
+                {
+                    return true;
+                }
+                else
+                {
+                    return this._manager.Exists(graphUri);
+                }
+            }
+            else
+            {
+                return this._manager.Exists(graphUri);
+            }
         }
 
         /// <summary>
@@ -136,7 +164,21 @@ namespace VDS.RDF.Query.Datasets
         {
             get 
             {
-                return new SqlGraph(graphUri, this._manager);
+                if (graphUri == null || graphUri.ToString().Equals(GraphCollection.DefaultGraphUri))
+                {
+                    if (this._defaultGraph != null)
+                    {
+                        return this._defaultGraph;
+                    }
+                    else
+                    {
+                        return new SqlGraph(graphUri, this._manager);
+                    }
+                }
+                else
+                {
+                    return new SqlGraph(graphUri, this._manager);
+                }
             }
         }
 
@@ -147,25 +189,36 @@ namespace VDS.RDF.Query.Datasets
         /// <returns></returns>
         public override bool ContainsTriple(Triple t)
         {
-            try
+            if (this._defaultGraph != null)
             {
-                this._manager.Open(true);
-                String subjID = this._manager.SaveNode(t.Subject);
-                String predID = this._manager.SaveNode(t.Predicate);
-                String objID = this._manager.SaveNode(t.Object);
-
-                String query = "SELECT tripleID FROM TRIPLES WHERE tripleSubject=" + subjID + " AND triplePredicate=" + predID + " AND tripleObject=" + objID;
-                bool contains = false;
-                Object tripleID = this._manager.ExecuteScalar(query);
-                if (tripleID != null) contains = true;
-                this._manager.Close(true);
-
-                return contains;
+                return this._defaultGraph.ContainsTriple(t);
             }
-            catch
+            else if (this._activeGraph != null)
             {
-                this._manager.Close(true, true);
-                throw;
+                return this._activeGraph.ContainsTriple(t);
+            }
+            else
+            {
+                try
+                {
+                    this._manager.Open(true);
+                    String subjID = this._manager.SaveNode(t.Subject);
+                    String predID = this._manager.SaveNode(t.Predicate);
+                    String objID = this._manager.SaveNode(t.Object);
+
+                    String query = "SELECT tripleID FROM TRIPLES WHERE tripleSubject=" + subjID + " AND triplePredicate=" + predID + " AND tripleObject=" + objID;
+                    bool contains = false;
+                    Object tripleID = this._manager.ExecuteScalar(query);
+                    if (tripleID != null) contains = true;
+                    this._manager.Close(true);
+
+                    return contains;
+                }
+                catch
+                {
+                    this._manager.Close(true, true);
+                    throw;
+                }
             }
         }
 
@@ -176,7 +229,21 @@ namespace VDS.RDF.Query.Datasets
         protected override IEnumerable<Triple> GetAllTriples()
         {
             String query = "SELECT * FROM GRAPH_TRIPLES G INNER JOIN TRIPLES T ON G.tripleID=T.tripleID";
-            return new SqlTripleEnumerable(this._manager, this._factory, query);
+            if (this._activeGraph == null)
+            {
+                if (this._defaultGraph == null)
+                {
+                    return new SqlTripleEnumerable(this._manager, this._factory, query);
+                }
+                else
+                {
+                    return this._defaultGraph.Triples;
+                }
+            }
+            else
+            {
+                return this._activeGraph.Triples;
+            }
         }
 
         /// <summary>
@@ -186,11 +253,25 @@ namespace VDS.RDF.Query.Datasets
         /// <returns></returns>
         public override IEnumerable<Triple> GetTriplesWithSubject(INode subj)
         {
-            this._manager.Open(true);
-            String query = "SELECT * FROM GRAPH_TRIPLES G INNER JOIN TRIPLES T ON G.tripleID=T.tripleID WHERE tripleSubject=" + this._manager.SaveNode(subj);
-            IEnumerable<Triple> ts = new SqlTripleEnumerable(this._manager, this._factory, query);
-            this._manager.Close(true);
-            return ts;
+            if (this._activeGraph == null)
+            {
+                if (this._defaultGraph == null)
+                {
+                    this._manager.Open(true);
+                    String query = "SELECT * FROM GRAPH_TRIPLES G INNER JOIN TRIPLES T ON G.tripleID=T.tripleID WHERE tripleSubject=" + this._manager.SaveNode(subj);
+                    IEnumerable<Triple> ts = new SqlTripleEnumerable(this._manager, this._factory, query);
+                    this._manager.Close(true);
+                    return ts;
+                }
+                else
+                {
+                    return this._defaultGraph.GetTriplesWithSubject(subj);
+                }
+            }
+            else
+            {
+                return this._activeGraph.GetTriplesWithSubject(subj);
+            }
         }
 
         /// <summary>
@@ -200,11 +281,25 @@ namespace VDS.RDF.Query.Datasets
         /// <returns></returns>
         public override IEnumerable<Triple> GetTriplesWithPredicate(INode pred)
         {
-            this._manager.Open(true);
-            String query = "SELECT * FROM GRAPH_TRIPLES G INNER JOIN TRIPLES T ON G.tripleID=T.tripleID WHERE triplePredicate=" + this._manager.SaveNode(pred);
-            IEnumerable<Triple> ts = new SqlTripleEnumerable(this._manager, this._factory, query);
-            this._manager.Close(true);
-            return ts;
+            if (this._activeGraph == null)
+            {
+                if (this._defaultGraph == null)
+                {
+                    this._manager.Open(true);
+                    String query = "SELECT * FROM GRAPH_TRIPLES G INNER JOIN TRIPLES T ON G.tripleID=T.tripleID WHERE triplePredicate=" + this._manager.SaveNode(pred);
+                    IEnumerable<Triple> ts = new SqlTripleEnumerable(this._manager, this._factory, query);
+                    this._manager.Close(true);
+                    return ts;
+                }
+                else
+                {
+                    return this._defaultGraph.GetTriplesWithPredicate(pred);
+                }
+            }
+            else
+            {
+                return this._activeGraph.GetTriplesWithPredicate(pred);
+            }
         }
 
         /// <summary>
@@ -214,11 +309,25 @@ namespace VDS.RDF.Query.Datasets
         /// <returns></returns>
         public override IEnumerable<Triple> GetTriplesWithObject(INode obj)
         {
-            this._manager.Open(true);
-            String query = "SELECT * FROM GRAPH_TRIPLES G INNER JOIN TRIPLES T ON G.tripleID=T.tripleID WHERE tripleObject=" + this._manager.SaveNode(obj);
-            IEnumerable<Triple> ts = new SqlTripleEnumerable(this._manager, this._factory, query);
-            this._manager.Close(true);
-            return ts;
+            if (this._activeGraph == null)
+            {
+                if (this._defaultGraph == null)
+                {
+                    this._manager.Open(true);
+                    String query = "SELECT * FROM GRAPH_TRIPLES G INNER JOIN TRIPLES T ON G.tripleID=T.tripleID WHERE tripleObject=" + this._manager.SaveNode(obj);
+                    IEnumerable<Triple> ts = new SqlTripleEnumerable(this._manager, this._factory, query);
+                    this._manager.Close(true);
+                    return ts;
+                }
+                else
+                {
+                    return this._defaultGraph.GetTriplesWithObject(obj);
+                }
+            }
+            else
+            {
+                return this._activeGraph.GetTriplesWithObject(obj);
+            }
         }
 
         /// <summary>
@@ -229,11 +338,25 @@ namespace VDS.RDF.Query.Datasets
         /// <returns></returns>
         public override IEnumerable<Triple> GetTriplesWithSubjectPredicate(INode subj, INode pred)
         {
-            this._manager.Open(true);
-            String query = "SELECT * FROM GRAPH_TRIPLES G INNER JOIN TRIPLES T ON G.tripleID=T.tripleID WHERE tripleSubject=" + this._manager.SaveNode(subj) + " AND triplePredicate=" + this._manager.SaveNode(pred);
-            IEnumerable<Triple> ts = new SqlTripleEnumerable(this._manager, this._factory, query);
-            this._manager.Close(true);
-            return ts;
+            if (this._activeGraph == null)
+            {
+                if (this._defaultGraph == null)
+                {
+                    this._manager.Open(true);
+                    String query = "SELECT * FROM GRAPH_TRIPLES G INNER JOIN TRIPLES T ON G.tripleID=T.tripleID WHERE tripleSubject=" + this._manager.SaveNode(subj) + " AND triplePredicate=" + this._manager.SaveNode(pred);
+                    IEnumerable<Triple> ts = new SqlTripleEnumerable(this._manager, this._factory, query);
+                    this._manager.Close(true);
+                    return ts;
+                }
+                else
+                {
+                    return this._defaultGraph.GetTriplesWithSubjectPredicate(subj, pred);
+                }
+            }
+            else
+            {
+                return this._activeGraph.GetTriplesWithSubjectPredicate(subj, pred);
+            }
         }
 
         /// <summary>
@@ -244,11 +367,25 @@ namespace VDS.RDF.Query.Datasets
         /// <returns></returns>
         public override IEnumerable<Triple> GetTriplesWithSubjectObject(INode subj, INode obj)
         {
-            this._manager.Open(true);
-            String query = "SELECT * FROM GRAPH_TRIPLES G INNER JOIN TRIPLES T ON G.tripleID=T.tripleID WHERE tripleSubject=" + this._manager.SaveNode(subj) + " AND tripleObject=" + this._manager.SaveNode(obj);
-            IEnumerable<Triple> ts = new SqlTripleEnumerable(this._manager, this._factory, query);
-            this._manager.Close(true);
-            return ts;
+            if (this._activeGraph == null)
+            {
+                if (this._defaultGraph == null)
+                {
+                    this._manager.Open(true);
+                    String query = "SELECT * FROM GRAPH_TRIPLES G INNER JOIN TRIPLES T ON G.tripleID=T.tripleID WHERE tripleSubject=" + this._manager.SaveNode(subj) + " AND tripleObject=" + this._manager.SaveNode(obj);
+                    IEnumerable<Triple> ts = new SqlTripleEnumerable(this._manager, this._factory, query);
+                    this._manager.Close(true);
+                    return ts;
+                }
+                else
+                {
+                    return this._defaultGraph.GetTriplesWithSubjectObject(subj, obj);
+                }
+            }
+            else
+            {
+                return this._activeGraph.GetTriplesWithSubjectObject(subj, obj);
+            }
         }
 
         /// <summary>
@@ -259,11 +396,25 @@ namespace VDS.RDF.Query.Datasets
         /// <returns></returns>
         public override IEnumerable<Triple> GetTriplesWithPredicateObject(INode pred, INode obj)
         {
-            this._manager.Open(true);
-            String query = "SELECT * FROM GRAPH_TRIPLES G INNER JOIN TRIPLES T ON G.tripleID=T.tripleID WHERE triplePredicate=" + this._manager.SaveNode(pred) + " AND tripleObject=" + this._manager.SaveNode(obj);
-            IEnumerable<Triple> ts = new SqlTripleEnumerable(this._manager, this._factory, query);
-            this._manager.Close(true);
-            return ts;
+            if (this._activeGraph == null)
+            {
+                if (this._defaultGraph == null)
+                {
+                    this._manager.Open(true);
+                    String query = "SELECT * FROM GRAPH_TRIPLES G INNER JOIN TRIPLES T ON G.tripleID=T.tripleID WHERE triplePredicate=" + this._manager.SaveNode(pred) + " AND tripleObject=" + this._manager.SaveNode(obj);
+                    IEnumerable<Triple> ts = new SqlTripleEnumerable(this._manager, this._factory, query);
+                    this._manager.Close(true);
+                    return ts;
+                }
+                else
+                {
+                    return this._defaultGraph.GetTriplesWithPredicateObject(pred, obj);
+                }
+            }
+            else
+            {
+                return this._activeGraph.GetTriplesWithPredicateObject(pred, obj);
+            }
         }
 
         /// <summary>

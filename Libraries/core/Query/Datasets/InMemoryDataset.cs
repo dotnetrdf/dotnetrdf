@@ -73,9 +73,16 @@ namespace VDS.RDF.Query.Datasets
         /// <param name="graphUri">Graph URI</param>
         public override void RemoveGraph(Uri graphUri)
         {
-            if (graphUri.ToSafeString().Equals(GraphCollection.DefaultGraphUri))
+            if (graphUri == null || graphUri.ToSafeString().Equals(GraphCollection.DefaultGraphUri))
             {
-                this._store.Remove(null);
+                if (this._defaultGraph != null)
+                {
+                    this._defaultGraph.Clear();
+                }
+                else
+                {
+                    this._store.Graphs[null].Clear();
+                }
             }
             else
             {
@@ -90,9 +97,16 @@ namespace VDS.RDF.Query.Datasets
         /// <returns></returns>
         public override bool HasGraph(Uri graphUri)
         {
-            if (graphUri.ToSafeString().Equals(GraphCollection.DefaultGraphUri))
+            if (graphUri == null || graphUri.ToSafeString().Equals(GraphCollection.DefaultGraphUri))
             {
-                return this._store.HasGraph(null);
+                if (this._defaultGraph != null)
+                {
+                    return true;
+                }
+                else
+                {
+                    return this._store.HasGraph(null);
+                }
             }
             else
             {
@@ -137,9 +151,16 @@ namespace VDS.RDF.Query.Datasets
         {
             get 
             {
-                if (graphUri.ToSafeString().Equals(GraphCollection.DefaultGraphUri))
+                if (graphUri == null || graphUri.ToSafeString().Equals(GraphCollection.DefaultGraphUri))
                 {
-                    return this._store.Graph(null);
+                    if (this._defaultGraph != null)
+                    {
+                        return this._defaultGraph;
+                    } 
+                    else 
+                    {
+                        return this._store.Graph(null);
+                    }
                 }
                 else
                 {
@@ -159,7 +180,21 @@ namespace VDS.RDF.Query.Datasets
         /// <returns></returns>
         public override bool ContainsTriple(Triple t)
         {
-            return this._store.Contains(t);
+            if (this._activeGraph == null)
+            {
+                if (this._defaultGraph == null)
+                {
+                    return this._store.Contains(t);
+                }
+                else
+                {
+                    return this._defaultGraph.ContainsTriple(t);
+                }
+            }
+            else
+            {
+                return this._activeGraph.ContainsTriple(t);
+            }
         }
 
         /// <summary>
@@ -168,7 +203,21 @@ namespace VDS.RDF.Query.Datasets
         /// <returns></returns>
         protected override IEnumerable<Triple> GetAllTriples()
         {
-            return this._store.Triples;
+            if (this._activeGraph == null)
+            {
+                if (this._defaultGraph == null)
+                {
+                    return this._store.Triples;
+                }
+                else
+                {
+                    return this._defaultGraph.Triples;
+                }
+            }
+            else
+            {
+                return this._activeGraph.Triples;
+            }
         }
 
         /// <summary>

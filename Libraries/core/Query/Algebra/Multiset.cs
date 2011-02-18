@@ -195,7 +195,7 @@ namespace VDS.RDF.Query.Algebra
                     {
                         //Get all the Sets from the Other Multiset which have the given Node as their value
                         //for the Join Variable
-                        IEnumerable<Set> ys = other.Sets.Where(s => joinNode.Equals(s[joinVar]) && joinableVars.All(v => (x[v] == null && s[v] == null) || x[v].Equals(s[v])));
+                        IEnumerable<Set> ys = other.Sets.Where(s => joinNode.Equals(s[joinVar]) && joinableVars.All(v => x[v] == null || (x[v] != null && x[v].Equals(s[v]))));
                         if (ys.Any())
                         {
                             foreach (Set y in ys)

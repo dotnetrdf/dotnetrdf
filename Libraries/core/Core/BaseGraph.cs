@@ -82,7 +82,7 @@ namespace VDS.RDF
         /// Creates a new Base Graph using the given Triple Collection
         /// </summary>
         /// <param name="tripleCollection">Triple Collection to use</param>
-        protected BaseGraph(BaseTripleCollection tripleCollection)
+        protected BaseGraph(BaseTripleCollection tripleCollection, BaseNodeCollection nodeCollection)
         {
             this._triples = tripleCollection;
             this._nodes = new NodeCollection();
@@ -96,7 +96,14 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Creates a new Base Graph which uses the default <see cref="IndexedTripleCollection">IndexedTripleCollection</see> as the Triple Collection
+        /// Creates a new Base Graph which uses the given Triple Collection and the default <see cref="NodeCollection">NodeCollection</see> as the Node Collection
+        /// </summary>
+        /// <param name="tripleCollection">Triple Collection to use</param>
+        protected BaseGraph(BaseTripleCollection tripleCollection)
+            : this(tripleCollection, new NodeCollection()) { }
+
+        /// <summary>
+        /// Creates a new Base Graph which uses the default <see cref="IndexedTripleCollection">IndexedTripleCollection</see> as the Triple Collection and the default <see cref="NodeCollection">NodeCollection</see> as the Node Collection
         /// </summary>
         protected BaseGraph()
             : this(new IndexedTripleCollection()) { }

@@ -928,8 +928,7 @@ namespace VDS.RDF.Query
 
             //Now merge all the results together
             HashSet<String> varsSeen = new HashSet<string>();
-            SparqlResultSet mergedResult = new SparqlResultSet();
-            mergedResult.SetEmpty(false);
+            SparqlResultSet mergedResult = null;
             for (int i = 0; i < asyncCalls.Count; i++)
             {
                 //Retrieve the result for this call
@@ -967,18 +966,25 @@ namespace VDS.RDF.Query
                 }
 
                 //Merge the result into the final results
-                foreach (String variable in partialResult.Variables)
+                if (mergedResult == null)
                 {
-                    if (!varsSeen.Contains(variable))
+                    mergedResult = partialResult;
+                } 
+                else
+                {
+                    foreach (String variable in partialResult.Variables)
                     {
-                        mergedResult.AddVariable(variable);
-                        varsSeen.Add(variable);
+                        if (!varsSeen.Contains(variable))
+                        {
+                            mergedResult.AddVariable(variable);
+                            varsSeen.Add(variable);
+                        }
                     }
-                }
 
-                foreach (SparqlResult result in partialResult.Results)
-                {
-                    mergedResult.AddResult(result);
+                    foreach (SparqlResult result in partialResult.Results)
+                    {
+                        mergedResult.AddResult(result);
+                    }
                 }
             }
 

@@ -77,7 +77,7 @@ namespace VDS.RDF.Parsing
             if (input == null) throw new RdfParseException("Cannot read SPARQL Results from a null Stream");
 
             //Ensure Empty Result Set
-            if (!results.IsEmpty)
+            if (!results.IsEmpty || results.ResultsType != SparqlResultsType.Unknown)
             {
                 throw new RdfParseException("Cannot load a Result Set from a Stream into a non-empty Result Set");
             }

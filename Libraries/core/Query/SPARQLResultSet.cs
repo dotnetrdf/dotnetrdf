@@ -64,7 +64,7 @@ namespace VDS.RDF.Query
         /// </summary>
         VariableBindings,
         /// <summary>
-        /// The Result Set represents an unknown result
+        /// The Result Set represents an unknown result i.e. it has yet to be filled with Results
         /// </summary>
         Unknown
     }
@@ -86,10 +86,6 @@ namespace VDS.RDF.Query
         /// Boolean Result
         /// </summary>
         private bool _result = false;
-        /// <summary>
-        /// Indicates whether the Result Set is Empty and can have Results safely loaded into it
-        /// </summary>
-        private bool _empty = true;
         private SparqlResultsType _type = SparqlResultsType.Unknown;
 
         /// <summary>
@@ -108,7 +104,6 @@ namespace VDS.RDF.Query
         public SparqlResultSet(bool result)
         {
             this._result = result;
-            this._empty = false;
             this._type = SparqlResultsType.Boolean;
         }
 
@@ -118,7 +113,6 @@ namespace VDS.RDF.Query
         /// <param name="context">SPARQL Evaluation Context</param>
         public SparqlResultSet(SparqlEvaluationContext context)
         {
-            this._empty = false;
             this._type = (context.Query.QueryType == SparqlQueryType.Ask) ? SparqlResultsType.Boolean : SparqlResultsType.VariableBindings;
             if (context.OutputMultiset is NullMultiset)
             {
@@ -195,11 +189,23 @@ namespace VDS.RDF.Query
         /// <summary>
         /// Gets whether the Result Set is empty and can have Results loaded into it
         /// </summary>
+        /// <remarks>
+        /// </remarks>
         public bool IsEmpty
         {
             get
             {
-                return this._empty;
+                switch (this._type)
+                {
+                    case SparqlResultsType.Boolean:
+                        return false;
+                    case SparqlResultsType.Unknown:
+                        return true;
+                    case SparqlResultsType.VariableBindings:
+                        return (this._results.Count == 0);
+                    default:
+                        return true;
+                }
             }
         }
 
@@ -259,6 +265,7 @@ namespace VDS.RDF.Query
         /// <param name="result">Result</param>
         protected internal void AddResult(SparqlResult result)
         {
+            if (this._type == SparqlResultsType.Boolean) throw new RdfException("Cannot add a Variable Binding Result to a Boolean Result Set");
             this._results.Add(result);
             this._type = SparqlResultsType.VariableBindings;
         }
@@ -269,17 +276,9 @@ namespace VDS.RDF.Query
         /// <param name="result">Boolean Result</param>
         protected internal void SetResult(bool result)
         {
+            if (this._type != SparqlResultsType.Unknown) throw new RdfException("Cannot set the Boolean Result value for this Result Set as its Result Type has already been set");
             this._result = result;
             if (this._type == SparqlResultsType.Unknown) this._type = SparqlResultsType.Boolean;
-        }
-
-        /// <summary>
-        /// Sets whether the Result Set is empty
-        /// </summary>
-        /// <param name="empty">Whether the Result Set is empty</param>
-        protected internal void SetEmpty(bool empty)
-        {
-            this._empty = empty;
         }
 
         #endregion
@@ -498,7 +497,6 @@ namespace VDS.RDF.Query
             this._results.Clear();
             this._variables.Clear();
             this._result = false;
-            this._empty = true;
         }
     }
 }

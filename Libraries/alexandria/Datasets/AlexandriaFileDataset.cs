@@ -19,7 +19,21 @@ namespace VDS.Alexandria.Datasets
 
         protected override IEnumerable<Triple> GetAllTriples()
         {
-            return new FileEnumerable(this._fileManager);
+            if (this._activeGraph == null)
+            {
+                if (this._defaultGraph == null)
+                {
+                    return new FileEnumerable(this._fileManager);
+                }
+                else
+                {
+                    return this._defaultGraph.Triples;
+                }
+            }
+            else
+            {
+                return this._activeGraph.Triples;
+            }
         }
     }
 }

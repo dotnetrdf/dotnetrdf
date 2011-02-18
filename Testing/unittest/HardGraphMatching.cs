@@ -16,6 +16,7 @@ namespace VDS.RDF.Test
         private const int Dimension = 6;
 
         private const int CycleNodes = 100;
+        private const int CycleDropNodes = 25;
         private const int StarNodes = 50;
 
         [TestMethod]
@@ -220,6 +221,27 @@ namespace VDS.RDF.Test
         }
 
         [TestMethod]
+        public void GraphHardMatchCyclic2()
+        {
+            Random rnd = new Random();
+
+            for (int i = 0; i < Quantity; i++)
+            {
+                IGraph g = this.GenerateCyclicGraph(CycleNodes, rnd.Next(CycleNodes), CycleDropNodes);
+                IGraph h = this.GenerateCyclicGraph(CycleNodes, rnd.Next(CycleNodes), CycleDropNodes);
+
+                if (i == 0)
+                {
+                    TestTools.ShowGraph(g);
+                    TestTools.ShowGraph(h);
+                }
+
+                Assert.AreEqual(g, h, "Graphs should be equal");
+                Console.WriteLine("Run #" + (i + 1) + " Passed");
+            }
+        }
+
+        [TestMethod]
         public void GraphHardMatchStar()
         {
             for (int i = 0; i < Quantity; i++)
@@ -242,16 +264,29 @@ namespace VDS.RDF.Test
 
         private IGraph GenerateCyclicGraph(int nodes, int seed)
         {
+            return GenerateCyclicGraph(nodes, seed, 0);
+        }
+
+        private IGraph GenerateCyclicGraph(int nodes, int seed, int toDrop)
+        {
             Graph g = new Graph();
             UriNode rdfValue = g.CreateUriNode("rdf:value");
 
-            if (seed >= nodes) seed = nodes - 2;
+            if (seed >= nodes-toDrop) seed = nodes - toDrop - 2;
 
             List<BlankNode> bnodes = new List<BlankNode>(nodes);
             for (int i = 0; i < nodes; i++)
             {
                 bnodes.Add(g.CreateBlankNode());
             }
+
+            Random rnd = new Random();
+            for (int i = 0; i < toDrop; i++)
+            {
+                bnodes.RemoveAt(rnd.Next(bnodes.Count));
+            }
+
+            if (seed >= bnodes.Count) seed = bnodes.Count - 2;
 
             //Generate a cycle of Triples starting from the seed
             int counter = 0;

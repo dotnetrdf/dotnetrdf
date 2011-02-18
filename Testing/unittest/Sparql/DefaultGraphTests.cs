@@ -7,6 +7,7 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Storage;
+using VDS.RDF.Update;
 using VDS.RDF.Writing;
 
 namespace VDS.RDF.Test.Sparql
@@ -175,6 +176,108 @@ namespace VDS.RDF.Test.Sparql
             store.Flush();
             db.PreserveState = false;
             store.Dispose();
+        }
+
+        [TestMethod]
+        public void SparqlDatasetDefaultGraphManagement()
+        {
+            TripleStore store = new TripleStore();
+            Graph g = new Graph();
+            g.Assert(g.CreateUriNode(new Uri("http://example.org/subject")), g.CreateUriNode(new Uri("http://example.org/predicate")), g.CreateUriNode(new Uri("http://example.org/object")));
+            store.Add(g);
+            Graph h = new Graph();
+            h.BaseUri = new Uri("http://example.org/someOtherGraph");
+            store.Add(h);
+
+            InMemoryDataset dataset = new InMemoryDataset(store);
+            dataset.SetDefaultGraph(h);
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
+            SparqlQueryParser parser = new SparqlQueryParser();
+            SparqlQuery q = parser.ParseFromString("SELECT * WHERE { ?s ?p ?o }");
+
+            Object results = processor.ProcessQuery(q);
+            if (results is SparqlResultSet)
+            {
+                TestTools.ShowResults(results);
+                Assert.IsTrue(((SparqlResultSet)results).IsEmpty, "Results should be empty as an empty Graph was set as the Default Graph");
+            }
+            else
+            {
+                Assert.Fail("ASK Query did not return a SPARQL Result Set as expected");
+            }
+        }
+
+        [TestMethod]
+        public void SparqlDatasetDefaultGraphManagement2()
+        {
+            TripleStore store = new TripleStore();
+            Graph g = new Graph();
+            g.Assert(g.CreateUriNode(new Uri("http://example.org/subject")), g.CreateUriNode(new Uri("http://example.org/predicate")), g.CreateUriNode(new Uri("http://example.org/object")));
+            store.Add(g);
+            Graph h = new Graph();
+            h.BaseUri = new Uri("http://example.org/someOtherGraph");
+            store.Add(h);
+
+            InMemoryDataset dataset = new InMemoryDataset(store);
+            dataset.SetDefaultGraph(g);
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
+            SparqlQueryParser parser = new SparqlQueryParser();
+            SparqlQuery q = parser.ParseFromString("SELECT * WHERE { ?s ?p ?o }");
+
+            Object results = processor.ProcessQuery(q);
+            if (results is SparqlResultSet)
+            {
+                TestTools.ShowResults(results);
+                Assert.IsFalse(((SparqlResultSet)results).IsEmpty, "Results should be false as a non-empty Graph was set as the Default Graph");
+            }
+            else
+            {
+                Assert.Fail("ASK Query did not return a SPARQL Result Set as expected");
+            }
+        }
+
+        [TestMethod]
+        public void SparqlDatasetDefaultGraphManagementWithUpdate()
+        {
+            TripleStore store = new TripleStore();
+            Graph g = new Graph();
+            store.Add(g);
+            Graph h = new Graph();
+            h.BaseUri = new Uri("http://example.org/someOtherGraph");
+            store.Add(h);
+
+            InMemoryDataset dataset = new InMemoryDataset(store);
+            dataset.SetDefaultGraph(h);
+            LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
+            SparqlUpdateParser parser = new SparqlUpdateParser();
+            SparqlUpdateCommandSet cmds = parser.ParseFromString("LOAD <http://dbpedia.org/resource/Ilkeston>");
+
+            processor.ProcessCommandSet(cmds);
+
+            Assert.IsTrue(g.IsEmpty, "Graph with null URI (normally the default Graph) should be empty as the Default Graph for the Dataset should have been a named Graph so this Graph should not have been filled by the LOAD Command");
+            Assert.IsFalse(h.IsEmpty, "Graph with name should be non-empty as it should have been the Default Graph for the Dataset and so filled by the LOAD Command");
+        }
+
+        [TestMethod]
+        public void SparqlDatasetDefaultGraphManagementWithUpdate2()
+        {
+            TripleStore store = new TripleStore();
+            Graph g = new Graph();
+            store.Add(g);
+            Graph h = new Graph();
+            h.BaseUri = new Uri("http://example.org/someOtherGraph");
+            store.Add(h);
+
+            InMemoryDataset dataset = new InMemoryDataset(store);
+            dataset.SetDefaultGraph(g);
+            LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
+            SparqlUpdateParser parser = new SparqlUpdateParser();
+            SparqlUpdateCommandSet cmds = parser.ParseFromString("LOAD <http://dbpedia.org/resource/Ilkeston>");
+
+            processor.ProcessCommandSet(cmds);
+
+            Assert.IsFalse(g.IsEmpty, "Graph with null URI should be non-empty as it should have been the Default Graph for the Dataset and so filled by the LOAD Command");
+            Assert.IsTrue(h.IsEmpty, "Graph with name should be empty as it should not have been the Default Graph for the Dataset and so shouldn't have been filled by the LOAD Command");
         }
     }
 }

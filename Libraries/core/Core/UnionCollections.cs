@@ -60,6 +60,8 @@ namespace VDS.RDF
         /// <param name="additionalTriples">Additional Triple Collection</param>
         public UnionTripleCollection(BaseTripleCollection baseTriples, BaseTripleCollection additionalTriples)
         {
+            if (baseTriples == null) throw new ArgumentNullException("baseTriple");
+            if (additionalTriples == null) throw new ArgumentNullException("additionalTriples");
             this._collections.Add(baseTriples);
             this._collections.Add(additionalTriples);
             this._baseCollection = baseTriples;
@@ -72,6 +74,7 @@ namespace VDS.RDF
         /// <param name="additionalTriples">Additional Triple Collection(s)</param>
         public UnionTripleCollection(BaseTripleCollection baseTriples, IEnumerable<BaseTripleCollection> additionalTriples)
         {
+            if (baseTriples == null) throw new ArgumentNullException("baseTriple");
             this._collections.Add(baseTriples);
             this._collections.AddRange(additionalTriples);
             this._baseCollection = baseTriples;
@@ -148,8 +151,8 @@ namespace VDS.RDF
             get 
             {
                 return (from c in this._collections
-                        from t in c
-                        select t.Object).Distinct();
+                        from o in c.ObjectNodes
+                        select o);
             }
         }
 
@@ -161,8 +164,8 @@ namespace VDS.RDF
             get 
             {
                 return (from c in this._collections
-                        from t in c
-                        select t.Predicate).Distinct(); 
+                        from p in c.PredicateNodes
+                        select p); 
             }
         }
 
@@ -174,8 +177,8 @@ namespace VDS.RDF
             get 
             {
                 return (from c in this._collections
-                        from t in c
-                        select t.Subject).Distinct(); 
+                        from s in c.SubjectNodes
+                        select s); 
             }
         }
 
@@ -196,7 +199,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override IEnumerator<Triple> GetEnumerator()
         {
-            return this._collections.SelectMany(c => c).Distinct().GetEnumerator();
+            return this._collections.SelectMany(c => c).GetEnumerator();
         }
     }
 
@@ -220,6 +223,8 @@ namespace VDS.RDF
         /// <param name="additionalNodes">Additional Collection</param>
         public UnionNodeCollection(BaseNodeCollection baseNodes, BaseNodeCollection additionalNodes)
         {
+            if (baseNodes == null) throw new ArgumentNullException("baseNodes");
+            if (additionalNodes == null) throw new ArgumentNullException("additionalNodes");
             this._collections.Add(baseNodes);
             this._collections.Add(additionalNodes);
             this._baseCollection = baseNodes;
@@ -232,6 +237,7 @@ namespace VDS.RDF
         /// <param name="additionalNodes">Additional Collection(s)</param>
         public UnionNodeCollection(BaseNodeCollection baseNodes, IEnumerable<BaseNodeCollection> additionalNodes)
         {
+            if (baseNodes == null) throw new ArgumentNullException("baseNodes");
             this._collections.Add(baseNodes);
             this._collections.AddRange(additionalNodes);
             this._baseCollection = baseNodes;
@@ -294,7 +300,7 @@ namespace VDS.RDF
                 return (from c in this._collections
                         from n in c
                         where n.NodeType == NodeType.GraphLiteral
-                        select (GraphLiteralNode)n).Distinct(); 
+                        select (GraphLiteralNode)n); 
             }
         }
 
@@ -308,7 +314,7 @@ namespace VDS.RDF
                 return (from c in this._collections
                         from n in c
                         where n.NodeType == NodeType.Literal
-                        select (LiteralNode)n).Distinct(); 
+                        select (LiteralNode)n); 
             }
         }
 
@@ -322,7 +328,7 @@ namespace VDS.RDF
                 return (from c in this._collections
                         from n in c
                         where n.NodeType == NodeType.Uri
-                        select (UriNode)n).Distinct();
+                        select (UriNode)n);
             }
         }
 
@@ -343,7 +349,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override IEnumerator<INode> GetEnumerator()
         {
-            return this._collections.SelectMany(c => c).Distinct().GetEnumerator();
+            return this._collections.SelectMany(c => c).GetEnumerator();
         }
     }
 }
