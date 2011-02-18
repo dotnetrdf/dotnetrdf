@@ -56,6 +56,8 @@ namespace VDS.RDF.Query
         private List<String> _defaultGraphUris = new List<string>();
         private List<String> _namedGraphUris = new List<string>();
 
+        const int LongQueryLength = 2048;
+
         #region Constructors
 
         /// <summary>
@@ -370,7 +372,7 @@ namespace VDS.RDF.Query
             StringBuilder queryUri = new StringBuilder();
             queryUri.Append(this.Uri.ToString());
             bool longQuery = true;
-            if (!this.HttpMode.Equals("POST") && sparqlQuery.Length <= (32766 - queryUri.Length))
+            if (!this.HttpMode.Equals("POST") && sparqlQuery.Length <= LongQueryLength)
             {
                 longQuery = false;
                 try
@@ -472,9 +474,11 @@ namespace VDS.RDF.Query
             {
                 httpRequest.Method = "POST";
                 httpRequest.ContentType = MimeTypesHelper.WWWFormURLEncoded;
-                StreamWriter writer = new StreamWriter(httpRequest.GetRequestStream());
-                writer.Write(postData);
-                writer.Close();
+                using (StreamWriter writer = new StreamWriter(httpRequest.GetRequestStream()))
+                {
+                    writer.Write(postData);
+                    writer.Close();
+                }
             }
             else
             {

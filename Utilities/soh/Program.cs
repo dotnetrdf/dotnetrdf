@@ -262,7 +262,87 @@ namespace soh
 
         static void DoUpdate(Dictionary<String, String> arguments)
         {
-            Console.Error.WriteLine("soh: Error: Not yet implemented");
+            SparqlRemoteUpdateEndpoint endpoint;
+            bool verbose = arguments.ContainsKey("verbose") || arguments.ContainsKey("v");
+
+            //First get the Server to which we are going to connect
+            try
+            {
+                if (arguments.ContainsKey("server") && !arguments["server"].Equals(String.Empty))
+                {
+                    endpoint = new SparqlRemoteUpdateEndpoint(new Uri(arguments["server"]));
+                }
+                else if (arguments.ContainsKey("service") && !arguments["service"].Equals(String.Empty))
+                {
+                    endpoint = new SparqlRemoteUpdateEndpoint(new Uri(arguments["service"]));
+                }
+                else
+                {
+                    Console.Error.WriteLine("soh: Error: Required --server/--service argument not present");
+                    Environment.Exit(-1);
+                    return;
+                }
+            }
+            catch (UriFormatException uriEx)
+            {
+                Console.Error.WriteLine("soh: Error: Malformed SPARQL Update Endpoint URI");
+                Console.Error.WriteLine(uriEx.Message);
+                Environment.Exit(-1);
+                return;
+            }
+            if (verbose) Console.Error.WriteLine("soh: SPARQL Update Endpoint for URI " + endpoint.Uri + " created OK");
+
+            //Then decide where to get the update to execute from
+            SparqlUpdateParser parser = new SparqlUpdateParser();
+            SparqlUpdateCommandSet cmds;
+            try
+            {
+                if (arguments.ContainsKey("query") && !arguments["query"].Equals(String.Empty))
+                {
+                    cmds = parser.ParseFromFile(arguments["query"]);
+                }
+                else if (arguments.ContainsKey("file") && !arguments["file"].Equals(String.Empty))
+                {
+                    cmds = parser.ParseFromFile(arguments["file"]);
+                }
+                else if (arguments.ContainsKey("$1") && !arguments["$1"].Equals(String.Empty))
+                {
+                    cmds = parser.ParseFromString(arguments["$1"]);
+                }
+                else
+                {
+                    Console.Error.WriteLine("soh: Error: Required SPARQL Update not found - may be specified as --file/--update FILE or as final argument");
+                    Environment.Exit(-1);
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine("soh: Error: Error Parsing SPARQL Update");
+                Console.Error.WriteLine(ex.Message);
+                Environment.Exit(-1);
+                return;
+            }
+
+            if (verbose)
+            {
+                Console.Error.WriteLine("soh: Parsed Update OK");
+                Console.Error.WriteLine("soh: dotNetRDF's interpretation of the Update:");
+                Console.Error.WriteLine(cmds.ToString());
+                Console.Error.WriteLine("soh: Submitting Update");
+            }
+
+            try
+            {
+                endpoint.Update(cmds.ToString());
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine("soh: Error: Error while making the SPARQL Update");
+                Console.Error.WriteLine(ex.Message);
+                Environment.Exit(-1);
+                return;
+            }
         }
 
         static void DoProtocol(Dictionary<String, String> arguments)

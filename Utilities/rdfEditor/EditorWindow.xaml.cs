@@ -489,7 +489,7 @@ namespace rdfEditor
             this.SaveWith(new HtmlWriter());
         }
 
-        private void mnuUseBomForUtf8_Checked(object sender, RoutedEventArgs e)
+        private void mnuUseBomForUtf8_Click(object sender, RoutedEventArgs e)
         {
             Options.UseBomForUtf8 = this.mnuUseBomForUtf8.IsChecked;
         }

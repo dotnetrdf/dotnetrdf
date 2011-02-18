@@ -35,6 +35,7 @@ terms.
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -49,6 +50,8 @@ namespace VDS.RDF.Update
     /// </summary>
     public class SparqlRemoteUpdateEndpoint : BaseEndpoint
     {
+        const int LongUpdateLength = 2048;
+
         /// <summary>
         /// Creates a new SPARQL Update Endpoint for the given URI
         /// </summary>
@@ -79,7 +82,7 @@ namespace VDS.RDF.Update
                 requestUri.Append(this.Uri.ToString());
                 StringBuilder postData = new StringBuilder();
                 bool longUpdate = false;
-                if (!this.HttpMode.Equals("POST") && sparqlUpdate.Length < (32766 - requestUri.Length))
+                if (!this.HttpMode.Equals("POST") && sparqlUpdate.Length <= LongUpdateLength)
                 {
                     longUpdate = true;
                     requestUri.Append("?update=");
@@ -97,6 +100,12 @@ namespace VDS.RDF.Update
                 if (longUpdate)
                 {
                     request.Method = "POST";
+                    request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
+                    using (StreamWriter writer = new StreamWriter(request.GetRequestStream()))
+                    {
+                        writer.Write(postData);
+                        writer.Close();
+                    }
                 }
                 else
                 {

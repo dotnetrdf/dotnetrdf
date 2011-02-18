@@ -459,6 +459,7 @@ namespace VDS.RDF
             Console.WriteLine("# HTTP DEBUGGING #");
             Console.WriteLine("HTTP Request to " + httpRequest.RequestUri);
             Console.WriteLine();
+            Console.WriteLine(httpRequest.Method);
             foreach (String header in httpRequest.Headers.AllKeys)
             {
                 Console.WriteLine(header + ":" + httpRequest.Headers[header]);
