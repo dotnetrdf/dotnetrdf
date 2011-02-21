@@ -46,28 +46,13 @@ namespace VDS.RDF.Query
     /// <para>
     /// The Leviathan Query Processor simply invokes the <see cref="ISparqlAlgebra">Evaluate</see> method of the SPARQL Algebra it is asked to process
     /// </para>
+    /// <para>
+    /// In future releases much of the Leviathan Query engine logic will be moved into this class to make it possible for implementors to override specific bits of the algebra processing but this is not possible at this time
+    /// </para>
     /// </remarks>
-    public class LeviathanQueryProcessor : ISparqlQueryProcessor
+    public class LeviathanQueryProcessor : ISparqlQueryProcessor, ISparqlQueryAlgebraProcessor<BaseMultiset, SparqlEvaluationContext>
     {
-        private SparqlEvaluationContext _context;
-
-        /// <summary>
-        /// Creates a new Leviathan Query Processor
-        /// </summary>
-        /// <param name="query">Query</param>
-        /// <param name="store">Triple Store</param>
-        public LeviathanQueryProcessor(SparqlQuery query, IInMemoryQueryableStore store)
-            : this(query, new InMemoryDataset(store)) { }
-
-        /// <summary>
-        /// Creates a new Leviathan Query Processor
-        /// </summary>
-        /// <param name="query">Query</param>
-        /// <param name="data">SPARQL Dataset</param>
-        public LeviathanQueryProcessor(SparqlQuery query, ISparqlDataset data)
-        {
-            this._context = new SparqlEvaluationContext(query, data);
-        }
+        private ISparqlDataset _dataset;
 
         /// <summary>
         /// Creates a new Leviathan Query Processor
@@ -82,142 +67,172 @@ namespace VDS.RDF.Query
         /// <param name="data">SPARQL Dataset</param>
         public LeviathanQueryProcessor(ISparqlDataset data)
         {
-            this._context = new SparqlEvaluationContext(null, data);
+            this._dataset = data;
         }
 
         /// <summary>
         /// Processes SPARQL Algebra
         /// </summary>
         /// <param name="algebra">Algebra</param>
-        public void ProcessAlgebra(ISparqlAlgebra algebra)
+        /// <param name="context">SPARQL Evaluation Context</param>
+        public BaseMultiset ProcessAlgebra(ISparqlAlgebra algebra, SparqlEvaluationContext context)
         {
-            algebra.Evaluate(this._context);
+            if (context == null) context = new SparqlEvaluationContext(null, this._dataset);
+            return algebra.Evaluate(context);
         }
 
         /// <summary>
         /// Processes an Ask
         /// </summary>
         /// <param name="ask">Ask</param>
-        public void ProcessAsk(Ask ask)
+        /// <param name="context">SPARQL Evaluation Context</param>
+        public BaseMultiset ProcessAsk(Ask ask, SparqlEvaluationContext context)
         {
-            ask.Evaluate(this._context);
+            if (context == null) context = new SparqlEvaluationContext(null, this._dataset);
+            return ask.Evaluate(context);
         }
 
         /// <summary>
         /// Processes a BGP
         /// </summary>
         /// <param name="bgp">BGP</param>
-        public void ProcessBgp(IBgp bgp)
+        /// <param name="context">SPARQL Evaluation Context</param>
+        public BaseMultiset ProcessBgp(IBgp bgp, SparqlEvaluationContext context)
         {
-            bgp.Evaluate(this._context);
+            if (context == null) context = new SparqlEvaluationContext(null, this._dataset);
+            return bgp.Evaluate(context);
         }
 
         /// <summary>
         /// Processes a Bindings modifier
         /// </summary>
         /// <param name="b">Bindings</param>
-        public void ProcessBindings(Bindings b)
+        /// <param name="context">SPARQL Evaluation Context</param>
+        public BaseMultiset ProcessBindings(Bindings b, SparqlEvaluationContext context)
         {
-            b.Evaluate(this._context);
+            if (context == null) context = new SparqlEvaluationContext(null, this._dataset);
+            return b.Evaluate(context);
         }
 
         /// <summary>
         /// Processes a Distinct modifier
         /// </summary>
         /// <param name="distinct">Distinct modifier</param>
-        public void ProcessDistinct(Distinct distinct)
+        /// <param name="context">SPARQL Evaluation Context</param>
+        public BaseMultiset ProcessDistinct(Distinct distinct, SparqlEvaluationContext context)
         {
-            distinct.Evaluate(this._context);
+            if (context == null) context = new SparqlEvaluationContext(null, this._dataset);
+            return distinct.Evaluate(context);
         }
 
         /// <summary>
         /// Processes an Exists Join
         /// </summary>
         /// <param name="existsJoin">Exists Join</param>
-        public void ProcessExistsJoin(IExistsJoin existsJoin)
+        /// <param name="context">SPARQL Evaluation Context</param>
+        public BaseMultiset ProcessExistsJoin(IExistsJoin existsJoin, SparqlEvaluationContext context)
         {
-            existsJoin.Evaluate(this._context);
+            if (context == null) context = new SparqlEvaluationContext(null, this._dataset);
+            return existsJoin.Evaluate(context);
         }
 
         /// <summary>
         /// Processes a Filter
         /// </summary>
         /// <param name="filter">Filter</param>
-        public void ProcessFilter(Filter filter)
+        /// <param name="context">SPARQL Evaluation Context</param>
+        public BaseMultiset ProcessFilter(Filter filter, SparqlEvaluationContext context)
         {
-            filter.Evaluate(this._context);
+            if (context == null) context = new SparqlEvaluationContext(null, this._dataset);
+            return filter.Evaluate(context);
         }
 
         /// <summary>
         /// Processes a Graph
         /// </summary>
         /// <param name="graph">Graph</param>
-        public void ProcessGraph(Algebra.Graph graph)
+        /// <param name="context">SPARQL Evaluation Context</param>
+        public BaseMultiset ProcessGraph(Algebra.Graph graph, SparqlEvaluationContext context)
         {
-            graph.Evaluate(this._context);
+            if (context == null) context = new SparqlEvaluationContext(null, this._dataset);
+            return graph.Evaluate(context);
         }
 
         /// <summary>
         /// Processes a Group By
         /// </summary>
         /// <param name="groupBy">Group By</param>
-        public void ProcessGroupBy(GroupBy groupBy)
+        /// <param name="context">SPARQL Evaluation Context</param>
+        public BaseMultiset ProcessGroupBy(GroupBy groupBy, SparqlEvaluationContext context)
         {
-            groupBy.Evaluate(this._context);
+            if (context == null) context = new SparqlEvaluationContext(null, this._dataset);
+            return groupBy.Evaluate(context);
         }
 
         /// <summary>
         /// Processes a Having
         /// </summary>
         /// <param name="having">Having</param>
-        public void ProcessHaving(Having having)
+        /// <param name="context">SPARQL Evaluation Context</param>
+        public BaseMultiset ProcessHaving(Having having, SparqlEvaluationContext context)
         {
-            having.Evaluate(this._context);
+            if (context == null) context = new SparqlEvaluationContext(null, this._dataset);
+            return having.Evaluate(context);
         }
 
         /// <summary>
         /// Processes a Join
         /// </summary>
         /// <param name="join">Join</param>
-        public void ProcessJoin(IJoin join)
+        /// <param name="context">SPARQL Evaluation Context</param>
+        public BaseMultiset ProcessJoin(IJoin join, SparqlEvaluationContext context)
         {
-            join.Evaluate(this._context);
+            if (context == null) context = new SparqlEvaluationContext(null, this._dataset);
+            return join.Evaluate(context);
         }
 
         /// <summary>
         /// Processes a LeftJoin
         /// </summary>
         /// <param name="leftJoin">Left Join</param>
-        public void ProcessLeftJoin(ILeftJoin leftJoin)
+        /// <param name="context">SPARQL Evaluation Context</param>
+        public BaseMultiset ProcessLeftJoin(ILeftJoin leftJoin, SparqlEvaluationContext context)
         {
-            leftJoin.Evaluate(this._context);
+            if (context == null) context = new SparqlEvaluationContext(null, this._dataset);
+            return leftJoin.Evaluate(context);
         }
 
         /// <summary>
         /// Processes a Minus
         /// </summary>
         /// <param name="minus">Minus</param>
-        public void ProcessMinus(IMinus minus)
+        /// <param name="context">SPARQL Evaluation Context</param>
+        public BaseMultiset ProcessMinus(IMinus minus, SparqlEvaluationContext context)
         {
-            minus.Evaluate(this._context);
+            if (context == null) context = new SparqlEvaluationContext(null, this._dataset);
+            return minus.Evaluate(context);
         }
 
         /// <summary>
         /// Processes an Order By
         /// </summary>
         /// <param name="orderBy"></param>
-        public void ProcessOrderBy(OrderBy orderBy)
+        /// <param name="context">SPARQL Evaluation Context</param>
+        public BaseMultiset ProcessOrderBy(OrderBy orderBy, SparqlEvaluationContext context)
         {
-            orderBy.Evaluate(this._context);
+            if (context == null) context = new SparqlEvaluationContext(null, this._dataset);
+            return orderBy.Evaluate(context);
         }
 
         /// <summary>
         /// Processes a Projection
         /// </summary>
         /// <param name="project">Projection</param>
-        public void ProcessProject(Project project)
+        /// <param name="context">SPARQL Evaluation Context</param>
+        public BaseMultiset ProcessProject(Project project, SparqlEvaluationContext context)
         {
-            project.Evaluate(this._context);
+            if (context == null) context = new SparqlEvaluationContext(null, this._dataset);
+            return project.Evaluate(context);
         }
 
         /// <summary>
@@ -227,61 +242,73 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public Object ProcessQuery(SparqlQuery query)
         {
-            return query.Evaluate(this._context.Data);
+            return query.Evaluate(this._dataset);
         }
 
         /// <summary>
         /// Processes a Reduced modifier
         /// </summary>
         /// <param name="reduced">Reduced modifier</param>
-        public void ProcessReduced(Reduced reduced)
+        /// <param name="context">SPARQL Evaluation Context</param>
+        public BaseMultiset ProcessReduced(Reduced reduced, SparqlEvaluationContext context)
         {
-            reduced.Evaluate(this._context);
+            if (context == null) context = new SparqlEvaluationContext(null, this._dataset);
+            return reduced.Evaluate(context);
         }
 
         /// <summary>
         /// Processes a Select
         /// </summary>
         /// <param name="select">Select</param>
-        public void ProcessSelect(Select select)
+        /// <param name="context">SPARQL Evaluation Context</param>
+        public BaseMultiset ProcessSelect(Select select, SparqlEvaluationContext context)
         {
-            select.Evaluate(this._context);
+            if (context == null) context = new SparqlEvaluationContext(null, this._dataset);
+            return select.Evaluate(context);
         }
 
         /// <summary>
         /// Processes a Select Distinct Graphs
         /// </summary>
         /// <param name="selDistGraphs">Select Distinct Graphs</param>
-        public void ProcessSelectDistinctGraphs(SelectDistinctGraphs selDistGraphs)
+        /// <param name="context">SPARQL Evaluation Context</param>
+        public BaseMultiset ProcessSelectDistinctGraphs(SelectDistinctGraphs selDistGraphs, SparqlEvaluationContext context)
         {
-            selDistGraphs.Evaluate(this._context);
+            if (context == null) context = new SparqlEvaluationContext(null, this._dataset);
+            return selDistGraphs.Evaluate(context);
         }
 
         /// <summary>
         /// Processes a Service
         /// </summary>
         /// <param name="service">Service</param>
-        public void ProcessService(Service service)
+        /// <param name="context">SPARQL Evaluation Context</param>
+        public BaseMultiset ProcessService(Service service, SparqlEvaluationContext context)
         {
-            service.Evaluate(this._context);
+            if (context == null) context = new SparqlEvaluationContext(null, this._dataset);
+            return service.Evaluate(context);
         }
 
         /// <summary>
         /// Processes a Slice modifier
         /// </summary>
         /// <param name="slice">Slice modifier</param>
-        public void ProcessSlice(Slice slice)
+        /// <param name="context">SPARQL Evaluation Context</param>
+        public BaseMultiset ProcessSlice(Slice slice, SparqlEvaluationContext context)
         {
-            slice.Evaluate(this._context);
+            if (context == null) context = new SparqlEvaluationContext(null, this._dataset);
+            return slice.Evaluate(context);
         }
 
         /// <summary>
         /// Processes a Union
         /// </summary>
-        /// <param name="union"></param>
-        public void ProcessUnion(IUnion union)
+        /// <param name="union">Union</param>
+        /// <param name="context">SPARQL Evaluation Context</param>
+        public BaseMultiset ProcessUnion(IUnion union, SparqlEvaluationContext context)
         {
-            union.Evaluate(this._context);
+            if (context == null) context = new SparqlEvaluationContext(null, this._dataset);
+            return union.Evaluate(context);
         }
     }
 }

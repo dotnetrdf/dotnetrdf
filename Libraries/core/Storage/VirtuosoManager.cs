@@ -399,8 +399,7 @@ namespace VDS.RDF.Storage
                 //Make a call to the TTLP() Virtuoso function
                 VirtuosoCommand cmd = new VirtuosoCommand();
                 cmd.CommandText = "DB.DBA.TTLP(@data, @base, @graph, 1)";
-                //cmd.Parameters.Add("data", 
-                cmd.Parameters.Add("data", VirtDbType.VarChar);
+                 cmd.Parameters.Add("data", VirtDbType.VarChar);
                 cmd.Parameters["data"].Value = VDS.RDF.Writing.StringWriter.Write(g, new NTriplesWriter());
                 String baseUri = g.BaseUri.ToSafeString();
                 cmd.Parameters.Add("base", VirtDbType.VarChar);

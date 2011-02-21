@@ -11,7 +11,7 @@ namespace VDS.RDF.Linq
     /// <summary>
     /// A LINQ Query Processor is a wrapper around a normal SPARQL Query processor designed to dump the SPARQL Results into an <see cref="ILinqResultsSink">ILinqResultsSink</see>
     /// </summary>
-    public class LinqQueryProcessor : NonAlgebraQueryProcessor
+    public class LinqQueryProcessor : ISparqlQueryProcessor
     {
         private ISparqlQueryProcessor _underlyingProcessor;
 
@@ -35,7 +35,7 @@ namespace VDS.RDF.Linq
         public LinqQueryProcessor(INativelyQueryableStore store)
             : this(new SimpleQueryProcessor(store)) { }
 
-        public override object ProcessQuery(SparqlQuery query)
+        public object ProcessQuery(SparqlQuery query)
         {
             return this._underlyingProcessor.ProcessQuery(query);
         }

@@ -46,7 +46,7 @@ namespace VDS.RDF.Query
     /// <summary>
     /// A SPARQL Query Processor which processes queries by parsing them to the SPARQL Query Service of a Knowledge Base on a Pellet Server
     /// </summary>
-    public class PelletQueryProcessor : NonAlgebraQueryProcessor 
+    public class PelletQueryProcessor : ISparqlQueryProcessor 
     {
         private Type _svcType = typeof(QueryService);
         private QueryService _svc;
@@ -91,7 +91,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="query">SPARQL Query</param>
         /// <returns></returns>
-        public override object ProcessQuery(SparqlQuery query)
+        public object ProcessQuery(SparqlQuery query)
         {
             query.QueryTime = -1;
             query.QueryTimeTicks = -1;

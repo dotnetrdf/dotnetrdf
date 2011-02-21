@@ -152,6 +152,28 @@ namespace VDS.RDF.Test.Storage
         }
 
         [TestMethod]
+        public void VirtuosoDataTypes()
+        {
+            VirtuosoManager manager = new VirtuosoManager("DB", VirtuosoTestUsername, VirtuosoTestPassword);
+            Assert.IsNotNull(manager);
+
+            NTriplesFormatter formatter = new NTriplesFormatter();
+
+            //Try to retrieve
+            Graph g = new Graph();
+            manager.LoadGraph(g, "http://localhost/TurtleImportTest");
+
+            Assert.IsFalse(g.IsEmpty, "Retrieved Graph should be non-empty");
+
+            Console.WriteLine("Retrieved the Graph from Virtuoso OK");
+            Console.WriteLine("Retrieved Graph contains:");
+            foreach (Triple t in g.Triples)
+            {
+                Console.WriteLine(t.ToString(formatter));
+            }
+        }
+
+        [TestMethod]
         public void VirtuosoDeleteGraph()
         {
             try

@@ -44,109 +44,18 @@ namespace VDS.RDF.Query
     /// <summary>
     /// Interface for SPARQL Query Processors
     /// </summary>
+    /// <typeparam name="TResult">Type of intermediate results produced by processing an Algebra operator</typeparam>
+    /// <typeparam name="TContext">Type of context object providing evaluation context</typeparam>
     /// <remarks>
     /// <para>
     /// A SPARQL Query Processor is a class that knows how to evaluate SPARQL queries against some data source to which the processor has access
     /// </para>
     /// <para>
-    /// The point of this interface is to allow for end users to implement custom update processors or to extend and modify the behaviour of the default Leviathan engine as required.
-    /// </para>
-    /// <para>
-    /// Implementations may choose to only implement the parts relevant to them and leave the rest throwing <see cref="NotImplementedException">NotImplementedException</see>'s or similar.  For example a query processor might just implement the <see cref="ProcessQuery">ProcessQuery</see> method and not implement any of the algebra processing methods as it may choose to evaluate the query in it's own way or simply farm the query out to some remote query engine and not need to make/use the algebra transform.
+    /// The point of this interface is to allow for end users to implement custom query processors or to extend and modify the behaviour of the default Leviathan engine as required.
     /// </para>
     /// </remarks>
     public interface ISparqlQueryProcessor
     {
-        /// <summary>
-        /// Processes SPARQL Algebra
-        /// </summary>
-        /// <param name="algebra">Algebra</param>
-        void ProcessAlgebra(ISparqlAlgebra algebra);
-
-        /// <summary>
-        /// Processes an Ask
-        /// </summary>
-        /// <param name="ask">Ask</param>
-        void ProcessAsk(Ask ask);
-
-        /// <summary>
-        /// Processes a BGP
-        /// </summary>
-        /// <param name="bgp">BGP</param>
-        void ProcessBgp(IBgp bgp);
-
-        /// <summary>
-        /// Processes a Bindings modifier
-        /// </summary>
-        /// <param name="b">Bindings</param>
-        void ProcessBindings(Bindings b);
-
-        /// <summary>
-        /// Processes a Distinct modifier
-        /// </summary>
-        /// <param name="distinct">Distinct modifier</param>
-        void ProcessDistinct(Distinct distinct);
-
-        /// <summary>
-        /// Processes an Exists Join
-        /// </summary>
-        /// <param name="existsJoin">Exists Join</param>
-        void ProcessExistsJoin(IExistsJoin existsJoin);
-
-        /// <summary>
-        /// Processes a Filter
-        /// </summary>
-        /// <param name="filter">Filter</param>
-        void ProcessFilter(Filter filter);
-
-        /// <summary>
-        /// Processes a Graph
-        /// </summary>
-        /// <param name="graph">Graph</param>
-        void ProcessGraph(Algebra.Graph graph);
-
-        /// <summary>
-        /// Processes a Group By
-        /// </summary>
-        /// <param name="groupBy">Group By</param>
-        void ProcessGroupBy(GroupBy groupBy);
-
-        /// <summary>
-        /// Processes a Having
-        /// </summary>
-        /// <param name="having">Having</param>
-        void ProcessHaving(Having having);
-
-        /// <summary>
-        /// Processes a Join
-        /// </summary>
-        /// <param name="join">Join</param>
-        void ProcessJoin(IJoin join);
-
-        /// <summary>
-        /// Processes a LeftJoin
-        /// </summary>
-        /// <param name="leftJoin">Left Join</param>
-        void ProcessLeftJoin(ILeftJoin leftJoin);
-
-        /// <summary>
-        /// Processes a Minus
-        /// </summary>
-        /// <param name="minus">Minus</param>
-        void ProcessMinus(IMinus minus);
-
-        /// <summary>
-        /// Processes an Order By
-        /// </summary>
-        /// <param name="orderBy"></param>
-        void ProcessOrderBy(OrderBy orderBy);
-
-        /// <summary>
-        /// Processes a Projection
-        /// </summary>
-        /// <param name="project">Projection</param>
-        void ProcessProject(Project project);
-
         /// <summary>
         /// Processes a SPARQL Query
         /// </summary>
@@ -154,40 +63,142 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         Object ProcessQuery(SparqlQuery query);
 
+    }
+
+    /// <summary>
+    /// Interface for SPARQL Query Algebra Processors
+    /// </summary>
+    /// <remarks>
+    /// A SPARQL Query Algebra Processor is a class which knows how to evaluate the
+    /// </remarks>
+    /// <typeparam name="TResult">Type of intermediate results produced by processing an Algebra operator</typeparam>
+    /// <typeparam name="TContext">Type of context object providing evaluation context</typeparam>
+    public interface ISparqlQueryAlgebraProcessor<TResult, TContext>
+    {
+        /// <summary>
+        /// Processes SPARQL Algebra
+        /// </summary>
+        /// <param name="algebra">Algebra</param>
+        TResult ProcessAlgebra(ISparqlAlgebra algebra, TContext context);
+
+        /// <summary>
+        /// Processes an Ask
+        /// </summary>
+        /// <param name="ask">Ask</param>
+        TResult ProcessAsk(Ask ask, TContext context);
+
+        /// <summary>
+        /// Processes a BGP
+        /// </summary>
+        /// <param name="bgp">BGP</param>
+        TResult ProcessBgp(IBgp bgp, TContext context);
+
+        /// <summary>
+        /// Processes a Bindings modifier
+        /// </summary>
+        /// <param name="b">Bindings</param>
+        TResult ProcessBindings(Bindings b, TContext context);
+
+        /// <summary>
+        /// Processes a Distinct modifier
+        /// </summary>
+        /// <param name="distinct">Distinct modifier</param>
+        TResult ProcessDistinct(Distinct distinct, TContext context);
+
+        /// <summary>
+        /// Processes an Exists Join
+        /// </summary>
+        /// <param name="existsJoin">Exists Join</param>
+        TResult ProcessExistsJoin(IExistsJoin existsJoin, TContext context);
+
+        /// <summary>
+        /// Processes a Filter
+        /// </summary>
+        /// <param name="filter">Filter</param>
+        TResult ProcessFilter(Filter filter, TContext context);
+
+        /// <summary>
+        /// Processes a Graph
+        /// </summary>
+        /// <param name="graph">Graph</param>
+        TResult ProcessGraph(Algebra.Graph graph, TContext context);
+
+        /// <summary>
+        /// Processes a Group By
+        /// </summary>
+        /// <param name="groupBy">Group By</param>
+        TResult ProcessGroupBy(GroupBy groupBy, TContext context);
+
+        /// <summary>
+        /// Processes a Having
+        /// </summary>
+        /// <param name="having">Having</param>
+        TResult ProcessHaving(Having having, TContext context);
+
+        /// <summary>
+        /// Processes a Join
+        /// </summary>
+        /// <param name="join">Join</param>
+        TResult ProcessJoin(IJoin join, TContext context);
+
+        /// <summary>
+        /// Processes a LeftJoin
+        /// </summary>
+        /// <param name="leftJoin">Left Join</param>
+        TResult ProcessLeftJoin(ILeftJoin leftJoin, TContext context);
+
+        /// <summary>
+        /// Processes a Minus
+        /// </summary>
+        /// <param name="minus">Minus</param>
+        TResult ProcessMinus(IMinus minus, TContext context);
+
+        /// <summary>
+        /// Processes an Order By
+        /// </summary>
+        /// <param name="orderBy"></param>
+        TResult ProcessOrderBy(OrderBy orderBy, TContext context);
+
+        /// <summary>
+        /// Processes a Projection
+        /// </summary>
+        /// <param name="project">Projection</param>
+        TResult ProcessProject(Project project, TContext context);
+
         /// <summary>
         /// Processes a Reduced modifier
         /// </summary>
         /// <param name="reduced">Reduced modifier</param>
-        void ProcessReduced(Reduced reduced);
+        TResult ProcessReduced(Reduced reduced, TContext context);
 
         /// <summary>
         /// Processes a Select
         /// </summary>
         /// <param name="select">Select</param>
-        void ProcessSelect(Select select);
+        TResult ProcessSelect(Select select, TContext context);
 
         /// <summary>
         /// Processes a Select Distinct Graphs
         /// </summary>
         /// <param name="selDistGraphs">Select Distinct Graphs</param>
-        void ProcessSelectDistinctGraphs(SelectDistinctGraphs selDistGraphs);
+        TResult ProcessSelectDistinctGraphs(SelectDistinctGraphs selDistGraphs, TContext context);
 
         /// <summary>
         /// Processes a Service
         /// </summary>
         /// <param name="service">Service</param>
-        void ProcessService(Service service);
+        TResult ProcessService(Service service, TContext context);
 
         /// <summary>
         /// Processes a Slice modifier
         /// </summary>
         /// <param name="slice">Slice modifier</param>
-        void ProcessSlice(Slice slice);
+        TResult ProcessSlice(Slice slice, TContext context);
 
         /// <summary>
         /// Processes a Union
         /// </summary>
         /// <param name="union"></param>
-        void ProcessUnion(IUnion union);
+        TResult ProcessUnion(IUnion union, TContext context);
     }
 }
