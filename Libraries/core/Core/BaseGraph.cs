@@ -82,6 +82,7 @@ namespace VDS.RDF
         /// Creates a new Base Graph using the given Triple Collection
         /// </summary>
         /// <param name="tripleCollection">Triple Collection to use</param>
+        /// <param name="nodeCollection">Node Collection to use</param>
         protected BaseGraph(BaseTripleCollection tripleCollection, BaseNodeCollection nodeCollection)
         {
             this._triples = tripleCollection;

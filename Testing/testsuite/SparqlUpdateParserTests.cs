@@ -29,12 +29,14 @@ namespace dotNetRDFTest
                 "WITH <http://example.org> DELETE { ?s ?p ?o } USING <http://example.org/1> USING NAMED <http://example.org/2> WHERE { ?s ?p ?o }",
                 "WITH <http://example.org> DELETE { ?s ?p ?o } USING <http://example.org/1> USING NAMED <http://example.org/2> USING <http://example.org/3> WHERE { ?s ?p ?o }",
                 "WITH <http://example.org> DELETE { ?s ?p ?o } INSERT { ?s ?p ?o } WHERE { ?s ?p ?o }",
+                "WITH <http://example.org> DELETE { ?s ?p ?o } INSERT { ?s ?p ?o } USING <http://example.org/1> USING NAMED <http://example.org/2> USING <http://example.org/3> WHERE { ?s ?p ?o }",
                 "DELETE { ?s ?p ?o . GRAPH <http://example.org> { ?s a ?type } } WHERE { ?s ?p ?o }",
                 "WITH <http://example.org> INSERT { ?s ?p ?o } WHERE { ?s ?p ?o }",
                 "DROP GRAPH <http://example.org>",
                 "DROP SILENT GRAPH <http://example.org>",
                 "INSERT { ?s ?p ?o } WHERE { ?s ?p ?o }",
                 "INSERT { ?s ?p ?o } WHERE { GRAPH <http://example.org> { ?s ?p ?o } }",
+                "INSERT { ?s ?p ?o } USING <http://example.org/1> USING NAMED <http://example.org/2> USING <http://example.org/3> WHERE { ?s ?p ?o }",
                 "LOAD <http://dbpedia.org/resource/Southampton>",
                 "LOAD <http://dbpedia.org/resource/Southampton> INTO GRAPH <http://example.org>"
             };

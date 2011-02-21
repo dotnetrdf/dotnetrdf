@@ -1747,6 +1747,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the Arguments of the Expression
+        /// </summary>
         public IEnumerable<ISparqlExpression> Arguments
         {
             get

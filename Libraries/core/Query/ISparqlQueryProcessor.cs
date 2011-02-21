@@ -44,8 +44,6 @@ namespace VDS.RDF.Query
     /// <summary>
     /// Interface for SPARQL Query Processors
     /// </summary>
-    /// <typeparam name="TResult">Type of intermediate results produced by processing an Algebra operator</typeparam>
-    /// <typeparam name="TContext">Type of context object providing evaluation context</typeparam>
     /// <remarks>
     /// <para>
     /// A SPARQL Query Processor is a class that knows how to evaluate SPARQL queries against some data source to which the processor has access
@@ -79,126 +77,147 @@ namespace VDS.RDF.Query
         /// Processes SPARQL Algebra
         /// </summary>
         /// <param name="algebra">Algebra</param>
+        /// <param name="context">Evaluation Context</param>
         TResult ProcessAlgebra(ISparqlAlgebra algebra, TContext context);
 
         /// <summary>
         /// Processes an Ask
         /// </summary>
         /// <param name="ask">Ask</param>
+        /// <param name="context">Evaluation Context</param>
         TResult ProcessAsk(Ask ask, TContext context);
 
         /// <summary>
         /// Processes a BGP
         /// </summary>
         /// <param name="bgp">BGP</param>
+        /// <param name="context">Evaluation Context</param>
         TResult ProcessBgp(IBgp bgp, TContext context);
 
         /// <summary>
         /// Processes a Bindings modifier
         /// </summary>
         /// <param name="b">Bindings</param>
+        /// <param name="context">Evaluation Context</param>
         TResult ProcessBindings(Bindings b, TContext context);
 
         /// <summary>
         /// Processes a Distinct modifier
         /// </summary>
         /// <param name="distinct">Distinct modifier</param>
+        /// <param name="context">Evaluation Context</param>
         TResult ProcessDistinct(Distinct distinct, TContext context);
 
         /// <summary>
         /// Processes an Exists Join
         /// </summary>
         /// <param name="existsJoin">Exists Join</param>
+        /// <param name="context">Evaluation Context</param>
         TResult ProcessExistsJoin(IExistsJoin existsJoin, TContext context);
 
         /// <summary>
         /// Processes a Filter
         /// </summary>
         /// <param name="filter">Filter</param>
+        /// <param name="context">Evaluation Context</param>
         TResult ProcessFilter(Filter filter, TContext context);
 
         /// <summary>
         /// Processes a Graph
         /// </summary>
         /// <param name="graph">Graph</param>
+        /// <param name="context">Evaluation Context</param>
         TResult ProcessGraph(Algebra.Graph graph, TContext context);
 
         /// <summary>
         /// Processes a Group By
         /// </summary>
         /// <param name="groupBy">Group By</param>
+        /// <param name="context">Evaluation Context</param>
         TResult ProcessGroupBy(GroupBy groupBy, TContext context);
 
         /// <summary>
         /// Processes a Having
         /// </summary>
         /// <param name="having">Having</param>
+        /// <param name="context">Evaluation Context</param>
         TResult ProcessHaving(Having having, TContext context);
 
         /// <summary>
         /// Processes a Join
         /// </summary>
         /// <param name="join">Join</param>
+        /// <param name="context">Evaluation Context</param>
         TResult ProcessJoin(IJoin join, TContext context);
 
         /// <summary>
         /// Processes a LeftJoin
         /// </summary>
         /// <param name="leftJoin">Left Join</param>
+        /// <param name="context">Evaluation Context</param>
         TResult ProcessLeftJoin(ILeftJoin leftJoin, TContext context);
 
         /// <summary>
         /// Processes a Minus
         /// </summary>
         /// <param name="minus">Minus</param>
+        /// <param name="context">Evaluation Context</param>
         TResult ProcessMinus(IMinus minus, TContext context);
 
         /// <summary>
         /// Processes an Order By
         /// </summary>
         /// <param name="orderBy"></param>
+        /// <param name="context">Evaluation Context</param>
         TResult ProcessOrderBy(OrderBy orderBy, TContext context);
 
         /// <summary>
         /// Processes a Projection
         /// </summary>
         /// <param name="project">Projection</param>
+        /// <param name="context">Evaluation Context</param>
         TResult ProcessProject(Project project, TContext context);
 
         /// <summary>
         /// Processes a Reduced modifier
         /// </summary>
         /// <param name="reduced">Reduced modifier</param>
+        /// <param name="context">Evaluation Context</param>
         TResult ProcessReduced(Reduced reduced, TContext context);
 
         /// <summary>
         /// Processes a Select
         /// </summary>
         /// <param name="select">Select</param>
+        /// <param name="context">Evaluation Context</param>
         TResult ProcessSelect(Select select, TContext context);
 
         /// <summary>
         /// Processes a Select Distinct Graphs
         /// </summary>
         /// <param name="selDistGraphs">Select Distinct Graphs</param>
+        /// <param name="context">Evaluation Context</param>
         TResult ProcessSelectDistinctGraphs(SelectDistinctGraphs selDistGraphs, TContext context);
 
         /// <summary>
         /// Processes a Service
         /// </summary>
         /// <param name="service">Service</param>
+        /// <param name="context">Evaluation Context</param>
         TResult ProcessService(Service service, TContext context);
 
         /// <summary>
         /// Processes a Slice modifier
         /// </summary>
         /// <param name="slice">Slice modifier</param>
+        /// <param name="context">Evaluation Context</param>
         TResult ProcessSlice(Slice slice, TContext context);
 
         /// <summary>
         /// Processes a Union
         /// </summary>
-        /// <param name="union"></param>
+        /// <param name="union">Union</param>
+        /// <param name="context">Evaluation Context</param>
         TResult ProcessUnion(IUnion union, TContext context);
     }
 }

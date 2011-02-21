@@ -356,6 +356,10 @@ namespace VDS.RDF.Update
                     {
                         query.AddDefaultGraph(u);
                     }
+                    foreach (Uri u in cmd.UsingNamedUris)
+                    {
+                        query.AddNamedGraph(u);
+                    }
 
                     Object results = ((IQueryableGenericIOManager)this._manager).Query(query.ToString());
                     if (results is SparqlResultSet)
@@ -608,6 +612,10 @@ namespace VDS.RDF.Update
                     {
                         query.AddDefaultGraph(u);
                     }
+                    foreach (Uri u in cmd.UsingNamedUris)
+                    {
+                        query.AddNamedGraph(u);
+                    }
 
                     Object results = ((IQueryableGenericIOManager)this._manager).Query(query.ToString());
                     if (results is SparqlResultSet)
@@ -837,6 +845,10 @@ namespace VDS.RDF.Update
                     foreach (Uri u in cmd.UsingUris)
                     {
                         query.AddDefaultGraph(u);
+                    }
+                    foreach (Uri u in cmd.UsingNamedUris)
+                    {
+                        query.AddNamedGraph(u);
                     }
 
                     Object results = ((IQueryableGenericIOManager)this._manager).Query(query.ToString());
