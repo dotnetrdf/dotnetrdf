@@ -49,9 +49,13 @@ namespace VDS.RDF.Update.Commands
         /// </summary>
         protected Uri _graphUri;
         /// <summary>
-        /// URIs for the USING clause
+        /// URIs for the USING clauses
         /// </summary>
         protected List<Uri> _usingUris;
+        /// <summary>
+        /// URIS for the USING NAMED clauses
+        /// </summary>
+        protected List<Uri> _usingNamedUris;
 
         /// <summary>
         /// Creates a new Base Modification Command
@@ -61,7 +65,7 @@ namespace VDS.RDF.Update.Commands
             : base(type, false) { }
 
         /// <summary>
-        /// Gets the URIs specified in the USING clause
+        /// Gets the URIs specified in USING clauses
         /// </summary>
         public IEnumerable<Uri> UsingUris
         {
@@ -74,6 +78,24 @@ namespace VDS.RDF.Update.Commands
                 else
                 {
                     return this._usingUris;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets the URIs specified in USING NAMED clauses
+        /// </summary>
+        public IEnumerable<Uri> UsingNamedUris
+        {
+            get
+            {
+                if (this._usingNamedUris == null)
+                {
+                    return Enumerable.Empty<Uri>();
+                }
+                else
+                {
+                    return this._usingNamedUris;
                 }
             }
         }
@@ -101,6 +123,16 @@ namespace VDS.RDF.Update.Commands
         {
             if (this._usingUris == null) this._usingUris = new List<Uri>();
             this._usingUris.Add(u);
+        }
+
+        /// <summary>
+        /// Adds a new USING NAMED URI
+        /// </summary>
+        /// <param name="u">URI</param>
+        internal void AddUsingNamedUri(Uri u)
+        {
+            if (this._usingNamedUris == null) this._usingNamedUris = new List<Uri>();
+            this._usingNamedUris.Add(u);
         }
     }
 }

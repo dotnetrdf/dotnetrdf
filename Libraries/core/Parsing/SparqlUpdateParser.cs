@@ -467,7 +467,8 @@ namespace VDS.RDF.Parsing
         private SparqlUpdateCommand TryParseDeleteCommand(SparqlUpdateParserContext context, bool allowData)
         {
             IToken next = context.Tokens.Dequeue();
-            List<Uri> usings = null;
+            List<Uri> usings = new List<Uri>();
+            List<Uri> usingNamed = new List<Uri>();
             if (allowData)
             {
                 //We are allowed to have an DELETE DATA command here so check for it
@@ -496,7 +497,17 @@ namespace VDS.RDF.Parsing
                 next = context.Tokens.Dequeue();
                 if (next.TokenType == Token.USING)
                 {
-                    usings = this.TryParseUsingStatements(context).ToList();
+                    foreach (KeyValuePair<Uri, bool> kvp in this.TryParseUsingStatements(context))
+                    {
+                        if (kvp.Value)
+                        {
+                            usingNamed.Add(kvp.Key);
+                        }
+                        else
+                        {
+                            usings.Add(kvp.Key);
+                        }
+                    }
                     next = context.Tokens.Dequeue();
                 }
                 if (next.TokenType == Token.WHERE)
@@ -511,20 +522,16 @@ namespace VDS.RDF.Parsing
 
                     //And finally return the command
                     DeleteCommand cmd = new DeleteCommand(deletions, where);
-                    if (usings != null)
-                    {
-                        usings.ForEach(u => cmd.AddUsingUri(u));
-                    }
+                    usings.ForEach(u => cmd.AddUsingUri(u));
+                    usingNamed.ForEach(u => cmd.AddUsingNamedUri(u));
                     return cmd;
                 }
                 else if (next.TokenType == Token.INSERT)
                 {
                     InsertCommand insertCmd = (InsertCommand)this.TryParseInsertCommand(context, false);
                     ModifyCommand cmd = new ModifyCommand(deletions, insertCmd.InsertPattern, insertCmd.WherePattern);
-                    if (usings != null)
-                    {
-                        usings.ForEach(u => cmd.AddUsingUri(u));
-                    }
+                    insertCmd.UsingUris.ToList().ForEach(u => cmd.AddUsingUri(u));
+                    insertCmd.UsingNamedUris.ToList().ForEach(u => cmd.AddUsingNamedUri(u));
                     return cmd;
                 }
                 else
@@ -627,7 +634,8 @@ namespace VDS.RDF.Parsing
         
         private SparqlUpdateCommand TryParseInsertCommand(SparqlUpdateParserContext context, bool allowData)
         {
-            List<Uri> usings = null;
+            List<Uri> usings = new List<Uri>();
+            List<Uri> usingNamed = new List<Uri>();
             IToken next = context.Tokens.Dequeue();
             if (allowData)
             {
@@ -646,7 +654,17 @@ namespace VDS.RDF.Parsing
             next = context.Tokens.Dequeue();
             if (next.TokenType == Token.USING)
             {
-                usings = this.TryParseUsingStatements(context).ToList();
+                foreach (KeyValuePair<Uri, bool> kvp in this.TryParseUsingStatements(context))
+                {
+                    if (kvp.Value)
+                    {
+                        usingNamed.Add(kvp.Key);
+                    }
+                    else
+                    {
+                        usings.Add(kvp.Key);
+                    }
+                }
                 next = context.Tokens.Dequeue();
             }
             if (next.TokenType != Token.WHERE) throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a WHERE keyword as part of a INSERT command", next);
@@ -661,10 +679,8 @@ namespace VDS.RDF.Parsing
 
             //And finally return the command
             InsertCommand cmd = new InsertCommand(insertions, where);
-            if (usings != null)
-            {
-                usings.ForEach(u => cmd.AddUsingUri(u));
-            }
+            usings.ForEach(u => cmd.AddUsingUri(u));
+            usingNamed.ForEach(u => cmd.AddUsingNamedUri(u));
             return cmd;
         }
 
@@ -869,18 +885,27 @@ namespace VDS.RDF.Parsing
 
         private void TryParseUsings(SparqlUpdateParserContext context, BaseModificationCommand cmd)
         {
-            foreach (Uri u in this.TryParseUsingStatements(context))
+            foreach (KeyValuePair<Uri,bool> u in this.TryParseUsingStatements(context))
             {
-                cmd.AddUsingUri(u);
+                //If the Boolean flag is true then this was a USING NAMED as opposed to a USING
+                if (u.Value)
+                {
+                    cmd.AddUsingNamedUri(u.Key);
+                }
+                else
+                {
+                    cmd.AddUsingUri(u.Key);
+                }
             }
         }
 
-        private IEnumerable<Uri> TryParseUsingStatements(SparqlUpdateParserContext context)
+        private IEnumerable<KeyValuePair<Uri,bool>> TryParseUsingStatements(SparqlUpdateParserContext context)
         {
             if (context.Tokens.Count > 0)
             {
                 String baseUri = (context.BaseUri == null) ? String.Empty : context.BaseUri.ToString();
                 IToken next = context.Tokens.Peek();
+                bool named = false;
 
                 //While we can see USINGs we'll keep returning USING URIs
                 do
@@ -891,12 +916,13 @@ namespace VDS.RDF.Parsing
                     if (next.TokenType == Token.NAMED)
                     {
                         next = context.Tokens.Dequeue();
+                        named = true;
                     }
                     if (next.TokenType == Token.URI)
                     {
                         //Yield the URI
                         Uri u = new Uri(Tools.ResolveUri(next.Value, baseUri));
-                        yield return u;
+                        yield return new KeyValuePair<Uri, bool>(u, named);
                     }
                     else
                     {

@@ -242,6 +242,16 @@ namespace VDS.RDF.Test
         }
 
         [TestMethod]
+        public void GraphHardMatchCyclic3()
+        {
+            Console.WriteLine("This test is just to verify that our Cyclic Graph generation is working properly");
+            IGraph g = this.GenerateCyclicGraph(CycleNodes, 74, CycleDropNodes);
+            IGraph h = this.GenerateCyclicGraph(CycleNodes, 90, CycleDropNodes);
+
+            Assert.AreEqual(g, h, "Graphs should be equal");
+        }
+
+        [TestMethod]
         public void GraphHardMatchStar()
         {
             for (int i = 0; i < Quantity; i++)
@@ -269,10 +279,12 @@ namespace VDS.RDF.Test
 
         private IGraph GenerateCyclicGraph(int nodes, int seed, int toDrop)
         {
+            Console.WriteLine("Generating Cyclic Graph - Nodes " + nodes + " - Seed " + seed + " - Drop " + toDrop);
+
             Graph g = new Graph();
             UriNode rdfValue = g.CreateUriNode("rdf:value");
 
-            if (seed >= nodes-toDrop) seed = nodes - toDrop - 2;
+            if (seed >= nodes - toDrop - 1) seed = nodes - toDrop - 2;
 
             List<BlankNode> bnodes = new List<BlankNode>(nodes);
             for (int i = 0; i < nodes; i++)
@@ -286,7 +298,9 @@ namespace VDS.RDF.Test
                 bnodes.RemoveAt(rnd.Next(bnodes.Count));
             }
 
-            if (seed >= bnodes.Count) seed = bnodes.Count - 2;
+            if (seed >= bnodes.Count - 1) seed = bnodes.Count - 2;
+
+            Console.WriteLine("Seed value is " + seed);
 
             //Generate a cycle of Triples starting from the seed
             int counter = 0;

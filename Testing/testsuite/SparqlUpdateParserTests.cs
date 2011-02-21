@@ -17,7 +17,7 @@ namespace dotNetRDFTest
 
             List<String> testQueries = new List<string>()
             {
-                "CLEAR GRAPH DEFAULT",
+                "CLEAR DEFAULT",
                 "CLEAR GRAPH <http://example.org>",
                 "CREATE GRAPH <http://example.org>",
                 "CREATE SILENT GRAPH <http://example.org>",

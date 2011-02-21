@@ -97,8 +97,8 @@ namespace VDS.RDF.Query.Algebra
                                 }
                                 else
                                 {
-                                    //If specifies a specific Graph and not in the Dataset result is an empty multiset
-                                    context.OutputMultiset = new Multiset();
+                                    //If specifies a specific Graph and not in the Dataset result is a null multiset
+                                    context.OutputMultiset = new NullMultiset();
                                     return context.OutputMultiset;
                                 }
                                 break;
@@ -134,7 +134,7 @@ namespace VDS.RDF.Query.Algebra
                         else
                         {
                             //Nothing yet bound to the Graph Variable so the Query is over all the named Graphs
-                            if (context.Query.NamedGraphs.Any())
+                            if (context.Query != null && context.Query.NamedGraphs.Any())
                             {
                                 //Query specifies one/more named Graphs
                                 context.Data.SetActiveGraph(context.Query.NamedGraphs.ToList());

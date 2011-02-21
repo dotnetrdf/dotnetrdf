@@ -46,15 +46,15 @@ namespace VDS.RDF.Query.Datasets
     public abstract class BaseDataset : ISparqlDataset
     {
         /// <summary>
-        /// Reference to the Active Graph being used for executing a Sparql Query
+        /// Reference to the Active Graph being used for executing a SPARQL Query
         /// </summary>
         protected IGraph _activeGraph = null;
         /// <summary>
-        /// Default Graph for executing Sparql Queries against
+        /// Default Graph for executing SPARQL Queries against
         /// </summary>
         protected IGraph _defaultGraph = null;
         /// <summary>
-        /// Stack of Default Graph References used for executing a SPARQL Query
+        /// Stack of Default Graph References used for executing a SPARQL Query when a Query may choose to change the Default Graph from the Dataset defined one
         /// </summary>
         protected Stack<IGraph> _defaultGraphs = new Stack<IGraph>();
         /// <summary>
@@ -139,10 +139,10 @@ namespace VDS.RDF.Query.Datasets
                     {
                         g.Merge(this[u], true);
                     }
-                    else
-                    {
-                        throw new RdfQueryException("A Graph with URI '" + u.ToString() + "' does not exist in this Triple Store, a GRAPH Clause cannot be used to change the Active Graph to a Graph that doesn't exist");
-                    }
+                    //else
+                    //{
+                    //    throw new RdfQueryException("A Graph with URI '" + u.ToString() + "' does not exist in this Triple Store, a GRAPH Clause cannot be used to change the Active Graph to a Graph that doesn't exist");
+                    //}
                 }
 
                 //Push current Active Graph on the Stack

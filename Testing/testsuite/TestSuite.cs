@@ -174,7 +174,7 @@ namespace dotNetRDFTest
             Console.WriteLine("SPARQL Remote Endpoint Tests Done");
 
             //Call the SPARQL Update Test Suite
-            //SparqlUpdateParserTests.Main(args);
+            SparqlUpdateParserTests.Main(args);
             Console.SetOut(stdout);
             Console.WriteLine("SPARQL Update Parser Tests Done");
 

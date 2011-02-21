@@ -206,79 +206,55 @@ namespace VDS.RDF.Update.Commands
         /// <param name="context">Evaluation Context</param>
         public override void Evaluate(SparqlUpdateEvaluationContext context)
         {
-            //First evaluate the WHERE pattern to get the affected bindings
-            ISparqlAlgebra where = this._wherePattern.ToAlgebra();
-            SparqlEvaluationContext queryContext = new SparqlEvaluationContext(null, context.Data);
-            if (this.UsingUris.Any()) context.Data.SetActiveGraph(this._usingUris);
-            BaseMultiset results = where.Evaluate(queryContext);
-            if (this.UsingUris.Any()) context.Data.ResetActiveGraph();
+            bool datasetOk = false;
 
-            //Get the Graph to which we are deleting and inserting
-            IGraph g = context.Data.GetModifiableGraph(this._graphUri);
-
-            //Delete the Triples for each Solution
-            List<Triple> deletedTriples = new List<Triple>();
-            foreach (Set s in queryContext.OutputMultiset.Sets)
+            try
             {
-                try
+                //First evaluate the WHERE pattern to get the affected bindings
+                ISparqlAlgebra where = this._wherePattern.ToAlgebra();
+
+                //We need to make a dummy SparqlQuery object since if the Command has used any 
+                //USING NAMEDs along with GRAPH clauses then the algebra needs to have the
+                //URIs available to it which it gets from the Query property of the Context
+                //object
+                SparqlQuery query = new SparqlQuery();
+                foreach (Uri u in this.UsingNamedUris)
                 {
-                    ConstructContext constructContext = new ConstructContext(g, s, true);
-                    foreach (ITriplePattern p in this._deletePattern.TriplePatterns)
-                    {
-                        deletedTriples.Add(((IConstructTriplePattern)p).Construct(constructContext));
-                    }
-                    g.Retract(deletedTriples);
+                    query.AddNamedGraph(u);
                 }
-                catch (RdfQueryException)
+                SparqlEvaluationContext queryContext = new SparqlEvaluationContext(query, context.Data);
+                if (this.UsingUris.Any())
                 {
-                    //If we throw an error this means we couldn't construct for this solution so the
-                    //solution is discarded
-                    continue;
+                    //If there are USING URIs set the Active Graph to be formed of the Graphs with those URIs
+                    context.Data.SetActiveGraph(this._usingUris);
+                    datasetOk = true;
+                }
+                BaseMultiset results = where.Evaluate(queryContext);
+                if (this.UsingUris.Any())
+                {
+                    //If there are USING URIs reset the Active Graph afterwards
+                    //Also flag the dataset as no longer being OK as this flag is used in the finally 
+                    //block to determine whether the Active Graph needs resetting which it may do if the
+                    //evaluation of the 
+                    context.Data.ResetActiveGraph();
+                    datasetOk = false;
                 }
 
-                //Triples from GRAPH clauses
-                foreach (GraphPattern gp in this._deletePattern.ChildGraphPatterns)
+                //Get the Graph to which we are deleting and inserting
+                IGraph g = context.Data.GetModifiableGraph(this._graphUri);
+
+                //Delete the Triples for each Solution
+                List<Triple> deletedTriples = new List<Triple>();
+                foreach (Set s in queryContext.OutputMultiset.Sets)
                 {
-                    deletedTriples.Clear();
                     try
                     {
-                        String graphUri;
-                        switch (gp.GraphSpecifier.TokenType)
-                        {
-                            case Token.URI:
-                                graphUri = gp.GraphSpecifier.Value;
-                                break;
-                            case Token.VARIABLE:
-                                if (s.ContainsVariable(gp.GraphSpecifier.Value))
-                                {
-                                    INode temp = s[gp.GraphSpecifier.Value.Substring(1)];
-                                    if (temp.NodeType == NodeType.Uri)
-                                    {
-                                        graphUri = temp.ToSafeString();
-                                    }
-                                    else
-                                    {
-                                        //If the Variable is not bound to a URI then skip
-                                        continue;
-                                    }
-                                }
-                                else
-                                {
-                                    //If the Variable is not bound for this solution then skip
-                                    continue;
-                                }
-                                break;
-                            default:
-                                //Any other Graph Specifier we have to ignore this solution
-                                continue;
-                        }
-                        IGraph h = context.Data.GetModifiableGraph(new Uri(graphUri));
-                        ConstructContext constructContext = new ConstructContext(h, s, true);
-                        foreach (ITriplePattern p in gp.TriplePatterns)
+                        ConstructContext constructContext = new ConstructContext(g, s, true);
+                        foreach (ITriplePattern p in this._deletePattern.TriplePatterns)
                         {
                             deletedTriples.Add(((IConstructTriplePattern)p).Construct(constructContext));
                         }
-                        h.Retract(deletedTriples);
+                        g.Retract(deletedTriples);
                     }
                     catch (RdfQueryException)
                     {
@@ -286,77 +262,72 @@ namespace VDS.RDF.Update.Commands
                         //solution is discarded
                         continue;
                     }
-                }
-            }
 
-            //Insert the Triples for each Solution
-            foreach (Set s in queryContext.OutputMultiset.Sets)
-            {
-                List<Triple> insertedTriples = new List<Triple>();
-                try
-                {
-                    ConstructContext constructContext = new ConstructContext(g, s, true);
-                    foreach (ITriplePattern p in this._insertPattern.TriplePatterns)
+                    //Triples from GRAPH clauses
+                    foreach (GraphPattern gp in this._deletePattern.ChildGraphPatterns)
                     {
-                        insertedTriples.Add(((IConstructTriplePattern)p).Construct(constructContext));
-                    }
-                    g.Assert(insertedTriples);
-                }
-                catch (RdfQueryException)
-                {
-                    //If we throw an error this means we couldn't construct for this solution so the
-                    //solution is discarded
-                    continue;
-                }
-
-                //Triples from GRAPH clauses
-                foreach (GraphPattern gp in this._insertPattern.ChildGraphPatterns)
-                {
-                    insertedTriples.Clear();
-                    try
-                    {
-                        String graphUri;
-                        switch (gp.GraphSpecifier.TokenType)
+                        deletedTriples.Clear();
+                        try
                         {
-                            case Token.URI:
-                                graphUri = gp.GraphSpecifier.Value;
-                                break;
-                            case Token.VARIABLE:
-                                if (s.ContainsVariable(gp.GraphSpecifier.Value))
-                                {
-                                    INode temp = s[gp.GraphSpecifier.Value.Substring(1)];
-                                    if (temp == null)
+                            String graphUri;
+                            switch (gp.GraphSpecifier.TokenType)
+                            {
+                                case Token.URI:
+                                    graphUri = gp.GraphSpecifier.Value;
+                                    break;
+                                case Token.VARIABLE:
+                                    if (s.ContainsVariable(gp.GraphSpecifier.Value))
                                     {
-                                        //If the Variable is not bound then skip
-                                        continue;
-                                    }
-                                    else if (temp.NodeType == NodeType.Uri)
-                                    {
-                                        graphUri = temp.ToSafeString();
+                                        INode temp = s[gp.GraphSpecifier.Value.Substring(1)];
+                                        if (temp.NodeType == NodeType.Uri)
+                                        {
+                                            graphUri = temp.ToSafeString();
+                                        }
+                                        else
+                                        {
+                                            //If the Variable is not bound to a URI then skip
+                                            continue;
+                                        }
                                     }
                                     else
                                     {
-                                        //If the Variable is not bound to a URI then skip
+                                        //If the Variable is not bound for this solution then skip
                                         continue;
                                     }
-                                }
-                                else
-                                {
-                                    //If the Variable is not bound for this solution then skip
+                                    break;
+                                default:
+                                    //Any other Graph Specifier we have to ignore this solution
                                     continue;
-                                }
-                                break;
-                            default:
-                                //Any other Graph Specifier we have to ignore this solution
-                                continue;
+                            }
+                            IGraph h = context.Data.GetModifiableGraph(new Uri(graphUri));
+                            ConstructContext constructContext = new ConstructContext(h, s, true);
+                            foreach (ITriplePattern p in gp.TriplePatterns)
+                            {
+                                deletedTriples.Add(((IConstructTriplePattern)p).Construct(constructContext));
+                            }
+                            h.Retract(deletedTriples);
                         }
-                        IGraph h = context.Data.GetModifiableGraph(new Uri(graphUri));
-                        ConstructContext constructContext = new ConstructContext(h, s, true);
-                        foreach (ITriplePattern p in gp.TriplePatterns)
+                        catch (RdfQueryException)
+                        {
+                            //If we throw an error this means we couldn't construct for this solution so the
+                            //solution is discarded
+                            continue;
+                        }
+                    }
+                }
+
+                //Insert the Triples for each Solution
+                foreach (Set s in queryContext.OutputMultiset.Sets)
+                {
+                    List<Triple> insertedTriples = new List<Triple>();
+                    try
+                    {
+                        ConstructContext constructContext = new ConstructContext(g, s, true);
+                        foreach (ITriplePattern p in this._insertPattern.TriplePatterns)
                         {
                             insertedTriples.Add(((IConstructTriplePattern)p).Construct(constructContext));
                         }
-                        h.Assert(insertedTriples);
+                        g.Assert(insertedTriples);
                     }
                     catch (RdfQueryException)
                     {
@@ -364,7 +335,70 @@ namespace VDS.RDF.Update.Commands
                         //solution is discarded
                         continue;
                     }
+
+                    //Triples from GRAPH clauses
+                    foreach (GraphPattern gp in this._insertPattern.ChildGraphPatterns)
+                    {
+                        insertedTriples.Clear();
+                        try
+                        {
+                            String graphUri;
+                            switch (gp.GraphSpecifier.TokenType)
+                            {
+                                case Token.URI:
+                                    graphUri = gp.GraphSpecifier.Value;
+                                    break;
+                                case Token.VARIABLE:
+                                    if (s.ContainsVariable(gp.GraphSpecifier.Value))
+                                    {
+                                        INode temp = s[gp.GraphSpecifier.Value.Substring(1)];
+                                        if (temp == null)
+                                        {
+                                            //If the Variable is not bound then skip
+                                            continue;
+                                        }
+                                        else if (temp.NodeType == NodeType.Uri)
+                                        {
+                                            graphUri = temp.ToSafeString();
+                                        }
+                                        else
+                                        {
+                                            //If the Variable is not bound to a URI then skip
+                                            continue;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        //If the Variable is not bound for this solution then skip
+                                        continue;
+                                    }
+                                    break;
+                                default:
+                                    //Any other Graph Specifier we have to ignore this solution
+                                    continue;
+                            }
+                            IGraph h = context.Data.GetModifiableGraph(new Uri(graphUri));
+                            ConstructContext constructContext = new ConstructContext(h, s, true);
+                            foreach (ITriplePattern p in gp.TriplePatterns)
+                            {
+                                insertedTriples.Add(((IConstructTriplePattern)p).Construct(constructContext));
+                            }
+                            h.Assert(insertedTriples);
+                        }
+                        catch (RdfQueryException)
+                        {
+                            //If we throw an error this means we couldn't construct for this solution so the
+                            //solution is discarded
+                            continue;
+                        }
+                    }
                 }
+            }
+            finally
+            {
+                //If the Dataset was set and an error occurred in doing the WHERE clause then
+                //we'll need to Reset the Active Graph
+                if (datasetOk) context.Data.ResetActiveGraph();
             }
         }
 
@@ -399,6 +433,13 @@ namespace VDS.RDF.Update.Commands
                 foreach (Uri u in this._usingUris)
                 {
                     output.AppendLine("USING <" + u.ToString().Replace(">", "\\>") + ">");
+                }
+            }
+            if (this._usingNamedUris != null)
+            {
+                foreach (Uri u in this._usingNamedUris)
+                {
+                    output.AppendLine("USING NAMED <" + u.ToString().Replace(">", "\\>") + ">");
                 }
             }
             output.AppendLine("WHERE");

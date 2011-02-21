@@ -114,8 +114,8 @@ namespace VDS.RDF.Test.Storage
                         Console.WriteLine(t.ToString(this._formatter));
                     }
 
-                    Assert.IsTrue(diff.AddedTriples.Count() == 1, "Should only be 1 Triple difference due to New Line normalization");
-                    Assert.IsTrue(diff.RemovedTriples.Count() == 1, "Should only be 1 Triple difference due to New Line normalization");
+                    Assert.IsTrue(diff.AddedTriples.Count() == 1, "Should only be 1 Triple difference due to New Line normalization (added)");
+                    Assert.IsTrue(diff.RemovedTriples.Count() == 1, "Should only be 1 Triple difference due to New Line normalization (removed)");
                     Assert.IsFalse(diff.AddedMSGs.Any(), "Should not be any MSG differences");
                     Assert.IsFalse(diff.RemovedMSGs.Any(), "Should not be any MSG differences");
                 }
