@@ -124,6 +124,64 @@ namespace VDS.RDF.Test
             }
         }
 
+        public static void ShowDifferences(GraphDiffReport report)
+        {
+            NTriplesFormatter formatter = new NTriplesFormatter();
+
+            if (report.AreEqual)
+            {
+                Console.WriteLine("Graphs are Equal");
+                Console.WriteLine();
+                Console.WriteLine("Blank Node Mapping between Graphs:");
+                foreach (KeyValuePair<INode, INode> kvp in report.Mapping)
+                {
+                    Console.WriteLine(kvp.Key.ToString(formatter) + " => " + kvp.Value.ToString(formatter));
+                }
+            }
+            else
+            {
+                Console.WriteLine("Graphs are non-equal");
+                Console.WriteLine();
+                Console.WriteLine("Triples added to 1st Graph to give 2nd Graph:");
+                foreach (Triple t in report.AddedTriples)
+                {
+                    Console.WriteLine(t.ToString(formatter));
+                }
+                Console.WriteLine();
+                Console.WriteLine("Triples removed from 1st Graph to given 2nd Graph:");
+                foreach (Triple t in report.RemovedTriples)
+                {
+                    Console.WriteLine(t.ToString(formatter));
+                }
+                Console.WriteLine();
+                Console.WriteLine("Blank Node Mapping between Graphs:");
+                foreach (KeyValuePair<INode, INode> kvp in report.Mapping)
+                {
+                    Console.WriteLine(kvp.Key.ToString(formatter) + " => " + kvp.Value.ToString(formatter));
+                }
+                Console.WriteLine();
+                Console.WriteLine("MSGs added to 1st Graph to give 2nd Graph:");
+                foreach (IGraph msg in report.AddedMSGs)
+                {
+                    foreach (Triple t in msg.Triples)
+                    {
+                        Console.WriteLine(t.ToString(formatter));
+                    }
+                    Console.WriteLine();
+                }
+                Console.WriteLine();
+                Console.WriteLine("MSGs removed from 1st Graph to give 2nd Graph:");
+                foreach (IGraph msg in report.RemovedMSGs)
+                {
+                    foreach (Triple t in msg.Triples)
+                    {
+                        Console.WriteLine(t.ToString(formatter));
+                    }
+                    Console.WriteLine();
+                }
+            }
+        }
+
         public static void WarningPrinter(String message)
         {
             Console.WriteLine(message);

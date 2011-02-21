@@ -50,7 +50,7 @@ namespace VDS.RDF.Query
     /// </summary>
     /// <remarks>
     /// <para>
-    /// This is intended for use in applications which may want to dynamically build SPARQL queries where user input may comprise individual values in the triples patterns and the applications want to avoid SPARQL/SPARUL injection attacks which change the meaning of the query (or in the case of SPARUL change the actual data)
+    /// This is intended for use in applications which may want to dynamically build SPARQL queries/updates where user input may comprise individual values in the triples patterns and the applications want to avoid SPARQL injection attacks which change the meaning of the query/update
     /// </para>
     /// <para>
     /// It works broadly in the same way as a SqlCommand would in that you specify a string with paramters specified in the form <strong>@name</strong> and then use various set methods to set the actual values that should be used.  The values are only substituted for parameters when you actually call the <see cref="SparqlParameterizedString.ToString">ToString()</see> method to get the final string representation of the command. E.g.
@@ -73,7 +73,7 @@ namespace VDS.RDF.Query
     /// }
     /// </code>
     /// <para>
-    /// Calling a Set method to set a parameter that has already been set changes that value and the new value will be used next time you call <see cref="SparqlParameterizedString.ToString">ToString()</see> - this may be useful if you plan to execute a series of queries using a series of values since you need not instantiate a completely new parameterized string each time
+    /// Calling a Set method to set a parameter that has already been set changes that value and the new value will be used next time you call <see cref="SparqlParameterizedString.ToString">ToString()</see> - this may be useful if you plan to execute a series of queries/updates using a series of values since you need not instantiate a completely new parameterized string each time
     /// </para>
     /// <para>
     /// This class was added to a library based on a suggestion by Alexander Sidorov and ideas from slides from <a href="http://www.slideshare.net/Morelab/sparqlrdqlsparul-injection">Slideshare</a> by Almedia et al
@@ -81,7 +81,7 @@ namespace VDS.RDF.Query
     /// </remarks>
     public class SparqlParameterizedString
     {
-        private String _query = String.Empty;
+        private String _command = String.Empty;
         private INamespaceMapper _nsmap = new NamespaceMapper(true);
         private Dictionary<String, INode> _parameters = new Dictionary<string, INode>();
         private Dictionary<String, INode> _variables = new Dictionary<string, INode>();
@@ -101,15 +101,15 @@ namespace VDS.RDF.Query
         /// <summary>
         /// Creates a new parameterized String
         /// </summary>
-        /// <param name="query">Query Text</param>
-        public SparqlParameterizedString(String query)
+        /// <param name="command">Command Text</param>
+        public SparqlParameterizedString(String command)
             : this()
         {
-            this._query = query;
+            this._command = command;
         }
 
         /// <summary>
-        /// Gets/Sets the Namespace Map that is used to prepend PREFIX declarations to the Query
+        /// Gets/Sets the Namespace Map that is used to prepend PREFIX declarations to the Query/Update
         /// </summary>
         public INamespaceMapper Namespaces
         {
@@ -124,17 +124,33 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
+        /// Gets/Sets the parameterized Command Text
+        /// </summary>
+        public String CommandText
+        {
+            get
+            {
+                return this._command;
+            }
+            set
+            {
+                this._command = value;
+            }
+        }
+
+        /// <summary>
         /// Gets/Sets the parameterized Query Text
         /// </summary>
+        [Obsolete("Deprecated - Use the more descriptive synonym CommandText instead")]
         public String QueryText
         {
             get
             {
-                return this._query;
+                return this._command;
             }
             set
             {
-                this._query = value;
+                this._command = value;
             }
         }
 
@@ -198,7 +214,7 @@ namespace VDS.RDF.Query
             //Only allow the setting of valid parameter names
             if (!Regex.IsMatch(name, _validParameterNamePattern)) throw new FormatException("The parameter name '" + name + "' is not a valid parameter name, parameter names must consist only of alphanumeric characters and hypens/underscores");
 
-            //OPT: Could ensure that the parameter name actually appears in the query?
+            //OPT: Could ensure that the parameter name actually appears in the command?
             name = (name.StartsWith("@")) ? name.Substring(1) : name;
 
             //Finally can set/update parameter value
@@ -230,7 +246,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="name">Variable Name</param>
         /// <remarks>
-        /// May be useful if you have a skeleton query into which you sometimes substitute values for variables but don't always do so
+        /// May be useful if you have a skeleton query/update into which you sometimes substitute values for variables but don't always do so
         /// </remarks>
         public void UnsetVariable(String name)
         {
@@ -416,7 +432,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Returns the actual Query String with parameter values inserted
+        /// Returns the actual Query/Update String with parameter and variable values inserted
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -429,8 +445,8 @@ namespace VDS.RDF.Query
                 output += "PREFIX " + prefix + ": <" + this._formatter.FormatUri(this._nsmap.GetNamespaceUri(prefix)) + ">\n";
             }
                 
-            //Then add the actual Query Text
-            output += this._query;
+            //Then add the actual Command Text
+            output += this._command;
 
             //Finally substitue in values for parameters and variables
 

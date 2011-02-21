@@ -20,7 +20,7 @@ namespace VDS.RDF.Test
             h = g;
 
             GraphDiffReport report = g.Difference(h);
-            ShowDifferences(report);
+            TestTools.ShowDifferences(report);
 
             Assert.IsTrue(report.AreEqual, "Graphs should be equal");
         }
@@ -34,7 +34,7 @@ namespace VDS.RDF.Test
             FileLoader.Load(h, "Turtle.ttl");
 
             GraphDiffReport report = g.Difference(h);
-            ShowDifferences(report);
+            TestTools.ShowDifferences(report);
 
             Assert.IsFalse(report.AreEqual, "Graphs should not be equal");
         }
@@ -48,7 +48,7 @@ namespace VDS.RDF.Test
             FileLoader.Load(h, "InferenceTest.ttl");
 
             GraphDiffReport report = g.Difference(h);
-            ShowDifferences(report);
+            TestTools.ShowDifferences(report);
 
             Assert.IsTrue(report.AreEqual, "Graphs should be equal");
         }
@@ -65,7 +65,7 @@ namespace VDS.RDF.Test
             h.Retract(h.GetTriplesWithSubject(new Uri("http://example.org/vehicles/FordFiesta")));
 
             GraphDiffReport report = g.Difference(h);
-            ShowDifferences(report);
+            TestTools.ShowDifferences(report);
 
             Assert.IsFalse(report.AreEqual, "Graphs should not have been reported as equal");
             Assert.IsTrue(report.RemovedTriples.Any(), "Difference should have reported some Removed Triples");
@@ -86,7 +86,7 @@ namespace VDS.RDF.Test
             h.Assert(new Triple(spaceVehicle, subClass, vehicle));
 
             GraphDiffReport report = g.Difference(h);
-            ShowDifferences(report);
+            TestTools.ShowDifferences(report);
 
             Assert.IsFalse(report.AreEqual, "Graphs should not have been reported as equal");
             Assert.IsTrue(report.AddedTriples.Any(), "Difference should have reported some Added Triples");
@@ -107,7 +107,7 @@ namespace VDS.RDF.Test
             h.Assert(new Triple(blank, subClass, vehicle));
 
             GraphDiffReport report = g.Difference(h);
-            ShowDifferences(report);
+            TestTools.ShowDifferences(report);
 
             Assert.IsFalse(report.AreEqual, "Graphs should not have been reported as equal");
             Assert.IsTrue(report.AddedMSGs.Any(), "Difference should have reported some Added MSGs");
@@ -125,68 +125,11 @@ namespace VDS.RDF.Test
             h.Retract(h.GetTriplesWithSubject(h.GetBlankNode("autos1")));
 
             GraphDiffReport report = g.Difference(h);
-            ShowDifferences(report);
+            TestTools.ShowDifferences(report);
 
             Assert.IsFalse(report.AreEqual, "Graphs should not have been reported as equal");
             Assert.IsTrue(report.RemovedMSGs.Any(), "Difference should have reported some Removed MSGs");
         }
 
-        private static void ShowDifferences(GraphDiffReport report)
-        {
-            NTriplesFormatter formatter = new NTriplesFormatter();
-
-            if (report.AreEqual)
-            {
-                Console.WriteLine("Graphs are Equal");
-                Console.WriteLine();
-                Console.WriteLine("Blank Node Mapping between Graphs:");
-                foreach (KeyValuePair<INode, INode> kvp in report.Mapping)
-                {
-                    Console.WriteLine(kvp.Key.ToString(formatter) + " => " + kvp.Value.ToString(formatter));
-                }
-            }
-            else
-            {
-                Console.WriteLine("Graphs are non-equal");
-                Console.WriteLine();
-                Console.WriteLine("Triples added to 1st Graph to give 2nd Graph:");
-                foreach (Triple t in report.AddedTriples)
-                {
-                    Console.WriteLine(t.ToString(formatter));
-                }
-                Console.WriteLine();
-                Console.WriteLine("Triples removed from 1st Graph to given 2nd Graph:");
-                foreach (Triple t in report.RemovedTriples)
-                {
-                    Console.WriteLine(t.ToString(formatter));
-                }
-                Console.WriteLine();
-                Console.WriteLine("Blank Node Mapping between Graphs:");
-                foreach (KeyValuePair<INode, INode> kvp in report.Mapping)
-                {
-                    Console.WriteLine(kvp.Key.ToString(formatter) + " => " + kvp.Value.ToString(formatter));
-                }
-                Console.WriteLine();
-                Console.WriteLine("MSGs added to 1st Graph to give 2nd Graph:");
-                foreach (IGraph msg in report.AddedMSGs)
-                {
-                    foreach (Triple t in msg.Triples)
-                    {
-                        Console.WriteLine(t.ToString(formatter));
-                    }
-                    Console.WriteLine();
-                }
-                Console.WriteLine();
-                Console.WriteLine("MSGs removed from 1st Graph to give 2nd Graph:");
-                foreach (IGraph msg in report.RemovedMSGs)
-                {
-                    foreach (Triple t in msg.Triples)
-                    {
-                        Console.WriteLine(t.ToString(formatter));
-                    }
-                    Console.WriteLine();
-                }
-            }
-        }
     }
 }

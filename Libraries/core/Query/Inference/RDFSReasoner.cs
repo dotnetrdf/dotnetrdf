@@ -308,7 +308,7 @@ namespace VDS.RDF.Query.Inference
         /// </summary>
         /// <param name="input">Graph to apply inference to</param>
         /// <param name="output">Graph inferred information is output to</param>
-        public override void  Apply(IGraph input, IGraph output)
+        public override void Apply(IGraph input, IGraph output)
         {
             //Use this Graph to further initialise the Reasoner
             this.Initialise(input);
