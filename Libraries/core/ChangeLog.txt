@@ -113,6 +113,7 @@ Changed
 - Obsoleted Features
  - All ISqlIOManager features marked as obsolete (but still allowed until 0.5.x most likely at which point they will be removed/replaced)
  - RdfXmlTreeWriter and FastRdfXmlWriter marked as obsolete
+ - SparqlParamaterizedString QueryText property marked obsolete in favour of the more general and descriptive CommandText property
 
 Removed
 - Obsolete VDS.RDF.Web classes removed
