@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Xml;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -14,6 +13,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Xml;
 using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Highlighting;
@@ -26,8 +26,9 @@ using VDS.RDF.Parsing.Validation;
 using VDS.RDF.Query;
 using VDS.RDF.Update;
 using VDS.RDF.Writing;
-using rdfEditor.Syntax;
 using rdfEditor.AutoComplete;
+using rdfEditor.Selection;
+using rdfEditor.Syntax;
 
 namespace rdfEditor
 {
@@ -56,6 +57,10 @@ namespace rdfEditor
         private IAutoCompleter _autoCompleter;
         private int _lastCaretPos = 0;
 
+        //Selection
+        private BaseSelector _selector = new BaseSelector();
+        private MenuItem _select = new MenuItem();
+
         //Context Menu
         private ContextMenu _contextMenu = new ContextMenu();
 
@@ -81,6 +86,12 @@ namespace rdfEditor
             paste.InputGestureText = "Ctrl+V";
             paste.Command = ApplicationCommands.Paste;
             this._contextMenu.Items.Add(paste);
+            Separator sep = new Separator();
+            this._contextMenu.Items.Add(sep);
+            this._select.Header = "Select Symbol";
+            this._select.Click += new RoutedEventHandler(SelectSymbolClick);
+            this._contextMenu.Items.Add(this._select);
+            this._contextMenu.Opened += new RoutedEventHandler(ContextMenuOpened);
             this._editor.ContextMenu = this._contextMenu;
 
             //Register Event Handlers for the Editor
@@ -90,6 +101,7 @@ namespace rdfEditor
             this._editor.TextArea.Caret.PositionChanged += new EventHandler(EditorCaretPositionChanged);
             this._editor.Document.Changed += new EventHandler<DocumentChangeEventArgs>(EditorDocumentChanged);
             this._editor.Document.UpdateFinished += new EventHandler(EditorDocumentUpdateFinished);
+            this._editor.MouseDoubleClick += new MouseButtonEventHandler(EditorTextDoubleClick);
 
             //Add the Validation Error Element Generator
             this._editor.TextArea.TextView.ElementGenerators.Add(new ValidationErrorElementGenerator(this));
@@ -755,11 +767,40 @@ namespace rdfEditor
             this._lastCaretPos = this._editor.CaretOffset;
         }
 
+        private void EditorTextDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (this._selector != null)
+            {
+                this._selector.SelectSymbol(this._editor);
+                e.Handled = true;
+            }
+        }
+
         private void HighlighterClick(object sender, RoutedEventArgs e)
         {
             if (sender is MenuItem)
             {
                 this.ToggleHighlighter(((MenuItem)sender).Tag.ToString());
+            }
+        }
+
+        private void ContextMenuOpened(object sender, RoutedEventArgs e)
+        {
+            if (this._editor.SelectionStart >= 0 && this._editor.SelectionLength > 0)
+            {
+                this._select.IsEnabled = true;
+            }
+            else
+            {
+                this._select.IsEnabled = false;
+            }
+        }
+
+        private void SelectSymbolClick(object sender, RoutedEventArgs e)
+        {
+            if (this._selector != null)
+            {
+                this._selector.SelectSymbol(this._editor);
             }
         }
 
