@@ -585,7 +585,7 @@ namespace VDS.RDF.Configuration
                 else if (_cache[key] is UnloadableObject)
                 {
                     //We don't retry loading if we fail
-                    throw new DotNetRdfConfigurationException("Unable to load the Object identified by the Node '" + objNode.ToString() + "' as previous attempt(s) to load the Object failed");
+                    throw new DotNetRdfConfigurationException("Unable to load the Object identified by the Node '" + objNode.ToString() + "' as previous attempt(s) to load the Object failed.  Call ClearCache() before attempting loading if you wish to retry loading");
                 }
                 else
                 {

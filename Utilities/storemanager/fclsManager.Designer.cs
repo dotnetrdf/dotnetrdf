@@ -46,6 +46,9 @@
             this.stsBar = new System.Windows.Forms.StatusStrip();
             this.sfdConnection = new System.Windows.Forms.SaveFileDialog();
             this.ofdConnection = new System.Windows.Forms.OpenFileDialog();
+            this.mnuRecentConnections = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuClearRecentConnections = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -70,6 +73,7 @@
             this.mnuSeparator1,
             this.mnuSaveConnection,
             this.mnuOpenConnection,
+            this.mnuRecentConnections,
             this.mnuSeparator2,
             this.mnuExit});
             this.mnuFile.ImageTransparentColor = System.Drawing.SystemColors.ActiveBorder;
@@ -80,45 +84,45 @@
             // mnuNewSQLStoreManager
             // 
             this.mnuNewSQLStoreManager.Name = "mnuNewSQLStoreManager";
-            this.mnuNewSQLStoreManager.Size = new System.Drawing.Size(221, 22);
+            this.mnuNewSQLStoreManager.Size = new System.Drawing.Size(227, 22);
             this.mnuNewSQLStoreManager.Text = "New SQL Store Manager";
             this.mnuNewSQLStoreManager.Click += new System.EventHandler(this.mnuNewSQLStoreManager_Click);
             // 
             // mnuNewGenericStoreManager
             // 
             this.mnuNewGenericStoreManager.Name = "mnuNewGenericStoreManager";
-            this.mnuNewGenericStoreManager.Size = new System.Drawing.Size(221, 22);
+            this.mnuNewGenericStoreManager.Size = new System.Drawing.Size(227, 22);
             this.mnuNewGenericStoreManager.Text = "New Generic Store Manager";
             this.mnuNewGenericStoreManager.Click += new System.EventHandler(this.mnuNewGenericStoreManager_Click);
             // 
             // mnuSeparator1
             // 
             this.mnuSeparator1.Name = "mnuSeparator1";
-            this.mnuSeparator1.Size = new System.Drawing.Size(218, 6);
+            this.mnuSeparator1.Size = new System.Drawing.Size(224, 6);
             // 
             // mnuSaveConnection
             // 
             this.mnuSaveConnection.Name = "mnuSaveConnection";
-            this.mnuSaveConnection.Size = new System.Drawing.Size(221, 22);
+            this.mnuSaveConnection.Size = new System.Drawing.Size(227, 22);
             this.mnuSaveConnection.Text = "&Save Connection";
             this.mnuSaveConnection.Click += new System.EventHandler(this.mnuSaveConnection_Click);
             // 
             // mnuOpenConnection
             // 
             this.mnuOpenConnection.Name = "mnuOpenConnection";
-            this.mnuOpenConnection.Size = new System.Drawing.Size(221, 22);
+            this.mnuOpenConnection.Size = new System.Drawing.Size(227, 22);
             this.mnuOpenConnection.Text = "&Open Connection";
             this.mnuOpenConnection.Click += new System.EventHandler(this.mnuOpenConnection_Click);
             // 
             // mnuSeparator2
             // 
             this.mnuSeparator2.Name = "mnuSeparator2";
-            this.mnuSeparator2.Size = new System.Drawing.Size(218, 6);
+            this.mnuSeparator2.Size = new System.Drawing.Size(224, 6);
             // 
             // mnuExit
             // 
             this.mnuExit.Name = "mnuExit";
-            this.mnuExit.Size = new System.Drawing.Size(221, 22);
+            this.mnuExit.Size = new System.Drawing.Size(227, 22);
             this.mnuExit.Text = "E&xit";
             this.mnuExit.Click += new System.EventHandler(this.mnuExit_Click);
             // 
@@ -137,35 +141,35 @@
             // mnuCascade
             // 
             this.mnuCascade.Name = "mnuCascade";
-            this.mnuCascade.Size = new System.Drawing.Size(151, 22);
+            this.mnuCascade.Size = new System.Drawing.Size(152, 22);
             this.mnuCascade.Text = "&Cascade";
             this.mnuCascade.Click += new System.EventHandler(this.mnuCascade_Click);
             // 
             // mnuTileVertical
             // 
             this.mnuTileVertical.Name = "mnuTileVertical";
-            this.mnuTileVertical.Size = new System.Drawing.Size(151, 22);
+            this.mnuTileVertical.Size = new System.Drawing.Size(152, 22);
             this.mnuTileVertical.Text = "Tile &Vertical";
             this.mnuTileVertical.Click += new System.EventHandler(this.mnuTileVertical_Click);
             // 
             // mnuTileHorizontal
             // 
             this.mnuTileHorizontal.Name = "mnuTileHorizontal";
-            this.mnuTileHorizontal.Size = new System.Drawing.Size(151, 22);
+            this.mnuTileHorizontal.Size = new System.Drawing.Size(152, 22);
             this.mnuTileHorizontal.Text = "Tile &Horizontal";
             this.mnuTileHorizontal.Click += new System.EventHandler(this.mnuTileHorizontal_Click);
             // 
             // mnuCloseAll
             // 
             this.mnuCloseAll.Name = "mnuCloseAll";
-            this.mnuCloseAll.Size = new System.Drawing.Size(151, 22);
+            this.mnuCloseAll.Size = new System.Drawing.Size(152, 22);
             this.mnuCloseAll.Text = "C&lose All";
             this.mnuCloseAll.Click += new System.EventHandler(this.mnuCloseAll_Click);
             // 
             // mnuArrangeIcons
             // 
             this.mnuArrangeIcons.Name = "mnuArrangeIcons";
-            this.mnuArrangeIcons.Size = new System.Drawing.Size(151, 22);
+            this.mnuArrangeIcons.Size = new System.Drawing.Size(152, 22);
             this.mnuArrangeIcons.Text = "&Arrange Icons";
             this.mnuArrangeIcons.Click += new System.EventHandler(this.mnuArrangeIcons_Click);
             // 
@@ -186,6 +190,27 @@
             // ofdConnection
             // 
             this.ofdConnection.Title = "Open Connection";
+            // 
+            // mnuRecentConnections
+            // 
+            this.mnuRecentConnections.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnuClearRecentConnections,
+            this.mnuSeparator5});
+            this.mnuRecentConnections.Name = "mnuRecentConnections";
+            this.mnuRecentConnections.Size = new System.Drawing.Size(227, 22);
+            this.mnuRecentConnections.Text = "Recently Used Connections...";
+            // 
+            // mnuClearRecentConnections
+            // 
+            this.mnuClearRecentConnections.Name = "mnuClearRecentConnections";
+            this.mnuClearRecentConnections.Size = new System.Drawing.Size(210, 22);
+            this.mnuClearRecentConnections.Text = "Clear Recent Connections";
+            this.mnuClearRecentConnections.Click += new System.EventHandler(this.mnuClearRecentConnections_Click);
+            // 
+            // mnuSeparator5
+            // 
+            this.mnuSeparator5.Name = "mnuSeparator5";
+            this.mnuSeparator5.Size = new System.Drawing.Size(207, 6);
             // 
             // fclsManager
             // 
@@ -228,6 +253,9 @@
         private System.Windows.Forms.ToolStripMenuItem mnuOpenConnection;
         private System.Windows.Forms.SaveFileDialog sfdConnection;
         private System.Windows.Forms.OpenFileDialog ofdConnection;
+        private System.Windows.Forms.ToolStripMenuItem mnuRecentConnections;
+        private System.Windows.Forms.ToolStripMenuItem mnuClearRecentConnections;
+        private System.Windows.Forms.ToolStripSeparator mnuSeparator5;
     }
 }
 

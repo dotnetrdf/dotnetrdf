@@ -31,11 +31,13 @@ terms.
 using System;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using VDS.RDF;
 using VDS.RDF.GUI;
 using VDS.RDF.GUI.WinForms;
 using VDS.RDF.Parsing;
+using VDS.RDF.Query;
 using VDS.RDF.Storage;
 using VDS.RDF.Configuration;
 using VDS.RDF.Writing;
@@ -44,9 +46,36 @@ namespace dotNetRDFStore
 {
     public partial class fclsManager : Form
     {
+        private IGraph _recentConnections = new Graph();
+        private String _recentConnectionsFile;
+
         public fclsManager()
         {
             InitializeComponent();
+
+            //Check whether we have a Recent Connections Graph
+            try
+            {
+                String appDataDir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                String sepChar = new String(new char[] { Path.DirectorySeparatorChar });
+                if (!appDataDir.EndsWith(sepChar)) appDataDir += sepChar;
+                appDataDir = Path.Combine(appDataDir, "dotNetRDF" + sepChar);
+                if (!Directory.Exists(appDataDir)) Directory.CreateDirectory(appDataDir);
+                appDataDir = Path.Combine(appDataDir, "Store Manager" + sepChar);
+                if (!Directory.Exists(appDataDir)) Directory.CreateDirectory(appDataDir);
+                this._recentConnectionsFile = Path.Combine(appDataDir, "recent.ttl");
+
+                if (File.Exists(this._recentConnectionsFile))
+                {
+                    FileLoader.Load(this._recentConnections, this._recentConnectionsFile);
+
+                    this.FillConnectionsMenu(this.mnuRecentConnections, this._recentConnections, 9);
+                }
+            }
+            catch
+            {
+                //If errors occur then ignore Recent Connections
+            }
         }
 
         private void fclsManager_Load(object sender, EventArgs e)
@@ -135,9 +164,13 @@ namespace dotNetRDFStore
             fclsGenericStoreConnection connector = new fclsGenericStoreConnection();
             if (connector.ShowDialog() == DialogResult.OK)
             {
-                fclsGenericStoreManager storeManager = new fclsGenericStoreManager(connector.Manager);
+                IGenericIOManager manager = connector.Manager;
+                fclsGenericStoreManager storeManager = new fclsGenericStoreManager(manager);
                 storeManager.MdiParent = this;
                 storeManager.Show();
+
+                //Add to Recent Connections
+                this.AddRecentConnection(manager);
 
                 if (this.MdiChildren.Count() > 1)
                 {
@@ -245,6 +278,9 @@ namespace dotNetRDFStore
                         fclsGenericStoreManager genManagerForm = new fclsGenericStoreManager(manager);
                         genManagerForm.MdiParent = this;
                         genManagerForm.Show();
+
+                        //Add to Recent Connections
+                        this.AddRecentConnection(manager);
                     }
                 }
                 catch (RdfParseException)
@@ -256,6 +292,151 @@ namespace dotNetRDFStore
                     MessageBox.Show("Unable to open the given file due to the following error:\n" + ex.Message, "Open Connection Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
+        }
+
+        private void FillConnectionsMenu(ToolStripMenuItem menu, IGraph config, int maxItems)
+        {
+            if (config == null || config.Triples.Count == 0) return;
+
+            SparqlParameterizedString query = new SparqlParameterizedString();
+            query.Namespaces.AddNamespace("rdfs", new Uri(NamespaceMapper.RDFS));
+            query.Namespaces.AddNamespace("dnr", new Uri(ConfigurationLoader.ConfigurationNamespace));
+
+            query.CommandText = "SELECT * WHERE { ?obj a " + ConfigurationLoader.ClassGenericManager + " . OPTIONAL { ?obj rdfs:label ?label } }";
+            query.CommandText += " ORDER BY DESC(?obj)";
+            if (maxItems > 0) query.CommandText += " LIMIT " + maxItems;
+
+            SparqlResultSet results = config.ExecuteQuery(query) as SparqlResultSet;
+            if (results != null)
+            {
+                foreach (SparqlResult r in results)
+                {
+                    ToolStripMenuItem item = new ToolStripMenuItem();
+                    if (r.HasValue("label") && r["label"] != null)
+                    {
+                        INode lblNode = r["label"];
+                        if (lblNode.NodeType == NodeType.Literal)
+                        {
+                            item.Text = ((LiteralNode)lblNode).Value;
+                        }
+                        else
+                        {
+                            item.Text = lblNode.ToString();
+                        }
+                    }
+                    else
+                    {
+                        item.Text = r["obj"].ToString();
+                    }
+                    item.Tag = new QuickConnect(config, r["obj"]);
+                    item.Click += new EventHandler(QuickConnectClick);
+
+                    menu.DropDownItems.Add(item);
+                }
+            }
+        }
+
+        private void QuickConnectClick(object sender, EventArgs e)
+        {
+            if (sender == null) return;
+            Object tag = null;
+            if (sender is Control)
+            {
+                tag = ((Control)sender).Tag;
+            }
+            else if (sender is ToolStripItem)
+            {
+                tag = ((ToolStripItem)sender).Tag;
+            }
+            else if (sender is Menu)
+            {
+                tag = ((Menu)sender).Tag;
+            }
+
+            if (tag != null)
+            {
+                if (tag is QuickConnect)
+                {
+                    QuickConnect qc = (QuickConnect)tag;
+                    try
+                    {
+                        IGenericIOManager manager = qc.GetConnection();
+                        fclsGenericStoreManager genManager = new fclsGenericStoreManager(manager);
+                        genManager.MdiParent = this;
+                        genManager.Show();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Unable to load the Connection due to an error: " + ex.Message, "Quick Connect Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                }
+            }
+        }
+
+        private void AddRecentConnection(IGenericIOManager manager)
+        {
+            INode objNode = this.AddConnection(this._recentConnections, manager, this._recentConnectionsFile);
+
+            if (objNode != null)
+            {
+                ToolStripMenuItem item = new ToolStripMenuItem();
+                item.Text = manager.ToString();
+                item.Tag = new QuickConnect(this._recentConnections, objNode);
+                item.Click += new EventHandler(QuickConnectClick);
+                this.mnuRecentConnections.DropDownItems.Add(item);
+            }
+        }
+
+        private INode AddConnection(IGraph config, IGenericIOManager manager, String persistentFile)
+        {
+            if (config == null) return null;
+
+            ConfigurationSerializationContext context = new ConfigurationSerializationContext(config);
+
+            if (manager is IConfigurationSerializable)
+            {
+                INode objNode = context.Graph.CreateUriNode(new Uri("dotnetrdf:storemanager:" + DateTime.Now.ToString("yyyyMMddhhmmss")));
+                context.NextSubject = objNode;
+                ((IConfigurationSerializable)manager).SerializeConfiguration(context);
+
+                if (persistentFile != null)
+                {
+                    try
+                    {
+                        //Persist the graph to disk
+                        using (StreamWriter writer = new StreamWriter(persistentFile, false, Encoding.UTF8))
+                        {
+                            CompressingTurtleWriter ttlwriter = new CompressingTurtleWriter();
+                            ttlwriter.Save(config, writer);
+                            writer.Close();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Unable to persist a Connections File to disk", "Internal Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+
+                return objNode;
+            }
+
+            return null;
+        }
+
+        private void ClearRecentConnections()
+        {
+            this._recentConnections.Clear();
+            File.Delete(this._recentConnectionsFile);
+
+            while (this.mnuRecentConnections.DropDownItems.Count > 2)
+            {
+                this.mnuRecentConnections.DropDownItems.RemoveAt(2);
+            }
+        }
+
+        private void mnuClearRecentConnections_Click(object sender, EventArgs e)
+        {
+            this.ClearRecentConnections();
         }
     }
 }
