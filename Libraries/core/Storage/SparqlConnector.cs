@@ -446,7 +446,7 @@ namespace VDS.RDF.Storage
         /// <param name="context">Configuration Serialization Context</param>
         public void SerializeConfiguration(ConfigurationSerializationContext context)
         {
-            INode manager = context.Graph.CreateBlankNode();
+            INode manager = context.NextSubject;
             INode rdfType = context.Graph.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
             INode rdfsLabel = context.Graph.CreateUriNode(new Uri(NamespaceMapper.RDFS + "label"));
             INode dnrType = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyType);

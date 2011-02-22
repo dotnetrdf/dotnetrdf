@@ -111,13 +111,31 @@ namespace dotNetRDFStore
 
                 if (this._manager.ListGraphsSupported)
                 {
-                    //Use ListGraphs() if it is supported
-                    foreach (Uri u in this._manager.ListGraphs())
+                    try
                     {
-                        this.CrossThreadAdd(this.lvwGraphs, u.ToString());
-                    }
+                        //Use ListGraphs() if it is supported
+                        foreach (Uri u in this._manager.ListGraphs())
+                        {
+                            this.CrossThreadAdd(this.lvwGraphs, u.ToString());
+                        }
 
-                    this.CrossThreadSetText(this.stsCurrent, "Store is ready");
+                        this.CrossThreadSetText(this.stsCurrent, "Store is ready");
+                    }
+                    catch (RdfStorageException storeEx)
+                    {
+                        this.CrossThreadSetText(this.stsCurrent, "Graph Listing unavailable - Store is ready");
+                        this.CrossThreadMessage("Unable to list Graphs due to the following error:\n" + storeEx.Message, "Graph List Unavailable", MessageBoxIcon.Warning);
+                    }
+                    catch (RdfException rdfEx)
+                    {
+                        this.CrossThreadSetText(this.stsCurrent, "Graph Listing unavailable - Store is ready");
+                        CrossThreadMessage("Unable to list Graphs due to the following error:\n" + rdfEx.Message, "Graph List Unavailable", MessageBoxIcon.Warning);
+                    }
+                    catch (Exception ex)
+                    {
+                        this.CrossThreadSetText(this.stsCurrent, "Graph Listing unavailable - Store is ready");
+                        CrossThreadMessage("Unable to list Graphs due to the following error:\n" + ex.Message, "Graph List Unavailable", MessageBoxIcon.Warning);
+                    }
                 }
                 else
                 {

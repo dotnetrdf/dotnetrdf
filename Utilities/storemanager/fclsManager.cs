@@ -29,6 +29,7 @@ terms.
 */
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -49,11 +50,14 @@ namespace dotNetRDFStore
         private IGraph _recentConnections = new Graph();
         private String _recentConnectionsFile;
 
+        private IGraph _faveConnections = new Graph();
+        private String _faveConnectionsFile;
+
         public fclsManager()
         {
             InitializeComponent();
 
-            //Check whether we have a Recent Connections Graph
+            //Check whether we have a Recent and Favourites Connections Graph
             try
             {
                 String appDataDir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
@@ -64,12 +68,19 @@ namespace dotNetRDFStore
                 appDataDir = Path.Combine(appDataDir, "Store Manager" + sepChar);
                 if (!Directory.Exists(appDataDir)) Directory.CreateDirectory(appDataDir);
                 this._recentConnectionsFile = Path.Combine(appDataDir, "recent.ttl");
+                this._faveConnectionsFile = Path.Combine(appDataDir, "favourite.ttl");
 
                 if (File.Exists(this._recentConnectionsFile))
                 {
+                    //Load Recent Connections
                     FileLoader.Load(this._recentConnections, this._recentConnectionsFile);
-
                     this.FillConnectionsMenu(this.mnuRecentConnections, this._recentConnections, 9);
+                }
+                if (File.Exists(this._faveConnectionsFile))
+                {
+                    //Load Favourite Connections
+                    FileLoader.Load(this._faveConnections, this._faveConnectionsFile);
+                    this.FillConnectionsMenu(this.mnuFavouriteConnections, this._faveConnections, 0);
                 }
             }
             catch
@@ -94,10 +105,12 @@ namespace dotNetRDFStore
                 if (this.ActiveMdiChild is fclsGenericStoreManager)
                 {
                     this.mnuSaveConnection.Enabled = true;
+                    this.mnuAddFavourite.Enabled = true;
                 }
                 else if (this.ActiveMdiChild is fclsSQLStoreManager)
                 {
                     this.mnuSaveConnection.Enabled = true;
+                    this.mnuAddFavourite.Enabled = false;
                 }
                 else
                 {
@@ -336,6 +349,27 @@ namespace dotNetRDFStore
             }
         }
 
+        private void RemoveFromConnectionsMenu(ToolStripMenuItem menu, INode objNode)
+        {
+            if (menu.DropDownItems.Count > 2)
+            {
+                int i = 2;
+                while (i < menu.DropDownItems.Count)
+                {
+                    Object tag = menu.DropDownItems[i].Tag;
+                    if (tag is QuickConnect)
+                    {
+                        if (((QuickConnect)tag).ObjectNode.Equals(objNode))
+                        {
+                            menu.DropDownItems.RemoveAt(i);
+                            i--;
+                        }
+                    }
+                    i++;
+                }
+            }
+        }
+
         private void QuickConnectClick(object sender, EventArgs e)
         {
             if (sender == null) return;
@@ -385,6 +419,51 @@ namespace dotNetRDFStore
                 item.Click += new EventHandler(QuickConnectClick);
                 this.mnuRecentConnections.DropDownItems.Add(item);
             }
+
+            //Check the number of Recent Connections and delete the Oldest if more than 9
+            List<INode> conns = this._recentConnections.GetTriplesWithPredicateObject(this._recentConnections.CreateUriNode(new Uri(RdfSpecsHelper.RdfType)), this._recentConnections.CreateUriNode(new Uri(ConfigurationLoader.ConfigurationNamespace + ConfigurationLoader.ClassGenericManager.Substring(ConfigurationLoader.ClassGenericManager.IndexOf(':') + 1)))).Select(t => t.Subject).ToList();
+            if (conns.Count > 2)
+            {
+                conns.Sort();
+                conns.Reverse();
+
+                conns.RemoveRange(0, 2);
+
+                foreach (INode obj in conns)
+                {
+                    this._recentConnections.Retract(this._recentConnections.GetTriplesWithSubject(obj));
+                    this.RemoveFromConnectionsMenu(this.mnuRecentConnections, obj);
+                }
+
+                try
+                {
+                    //Persist the graph to disk
+                    using (StreamWriter writer = new StreamWriter(this._recentConnectionsFile, false, Encoding.UTF8))
+                    {
+                        CompressingTurtleWriter ttlwriter = new CompressingTurtleWriter();
+                        ttlwriter.Save(this._recentConnections, writer);
+                        writer.Close();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Unable to persist a Connections File to disk", "Internal Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }            
+        }
+
+        private void AddFavouriteConnection(IGenericIOManager manager)
+        {
+            INode objNode = this.AddConnection(this._faveConnections, manager, this._faveConnectionsFile);
+
+            if (objNode != null)
+            {
+                ToolStripMenuItem item = new ToolStripMenuItem();
+                item.Text = manager.ToString();
+                item.Tag = new QuickConnect(this._faveConnections, objNode);
+                item.Click += new EventHandler(QuickConnectClick);
+                this.mnuFavouriteConnections.DropDownItems.Add(item);
+            }
         }
 
         private INode AddConnection(IGraph config, IGenericIOManager manager, String persistentFile)
@@ -425,18 +504,52 @@ namespace dotNetRDFStore
 
         private void ClearRecentConnections()
         {
-            this._recentConnections.Clear();
-            File.Delete(this._recentConnectionsFile);
+            this.ClearConnections(this.mnuRecentConnections, this._recentConnections, this._recentConnectionsFile);
+        }
 
-            while (this.mnuRecentConnections.DropDownItems.Count > 2)
+        private void ClearFavouriteConnections()
+        {
+            if (MessageBox.Show("Are you sure you wish to clear your Favourite Connections?", "Confirm Clear Favourite Connections", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
-                this.mnuRecentConnections.DropDownItems.RemoveAt(2);
+                this.ClearConnections(this.mnuFavouriteConnections, this._faveConnections, this._faveConnectionsFile);
+            }
+        }
+
+        private void ClearConnections(ToolStripMenuItem menu, IGraph g, String persistentFile)
+        {
+            g.Clear();
+            if (persistentFile != null && File.Exists(persistentFile)) File.Delete(persistentFile);
+
+            while (menu.DropDownItems.Count > 2)
+            {
+                menu.DropDownItems.RemoveAt(2);
             }
         }
 
         private void mnuClearRecentConnections_Click(object sender, EventArgs e)
         {
             this.ClearRecentConnections();
+        }
+
+        private void mnuClearFavouriteConnections_Click(object sender, EventArgs e)
+        {
+            this.ClearFavouriteConnections();
+        }
+
+        private void mnuAddFavourite_Click(object sender, EventArgs e)
+        {
+            if (this.ActiveMdiChild != null)
+            {
+                if (this.ActiveMdiChild is fclsGenericStoreManager)
+                {
+                    IGenericIOManager manager = ((fclsGenericStoreManager)this.ActiveMdiChild).Manager;
+                    this.AddFavouriteConnection(manager);
+                }
+                else
+                {
+                    MessageBox.Show("Only Generic Store Connections may be added to your Favourites", "Add To Favourite Connections Failed", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
         }
     }
 }
