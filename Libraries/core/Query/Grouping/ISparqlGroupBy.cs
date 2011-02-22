@@ -72,12 +72,17 @@ namespace VDS.RDF.Query.Grouping
         }
 
         /// <summary>
-        /// Gets the Fixed Variables used in the GROUP BY
+        /// Gets the Variables used in the GROUP BY
         /// </summary>
-        /// <remarks>
-        /// Should only return variables whose raw values are grouped upon not those which are used in expressions
-        /// </remarks>
         IEnumerable<String> Variables
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Gets the Projectable Variables used in the GROUP BY i.e. Variables that are grouped upon and Assigned Variables
+        /// </summary>
+        IEnumerable<String> ProjectableVariables
         {
             get;
         }

@@ -1,0 +1,264 @@
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix : <http://www.w3.org/2009/sparql/docs/tests/data-sparql11/aggregates/manifest#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+@prefix dawgt:   <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:label "Aggregates" ;
+    mf:entries
+    ( 
+    :agg01
+    :agg02
+    :agg03
+    :agg04
+    :agg05
+    :agg06
+    :agg07
+    :agg08
+    :agg08b
+    :agg09
+    :agg10
+    :agg11
+    :agg12
+    :agg-groupconcat-01
+    :agg-groupconcat-02
+    :agg-groupconcat-03
+    :agg-sum-01
+    :agg-sum-02
+    :agg-avg-01
+    :agg-avg-02
+    :agg-min-01
+    :agg-min-02
+    :agg-max-01
+    :agg-max-02
+    :agg-sample-01 
+) .
+
+
+:agg01 rdf:type mf:QueryEvaluationTest ;
+    mf:name "COUNT 1";
+    rdfs:comment    "Simple count" ;
+    dawgt:approval dawgt:NotClassified ;
+    mf:action
+         [ qt:query  <agg01.rq> ;
+           qt:data   <agg01.ttl> ] ;
+    mf:result  <agg01.srx>
+    .
+
+:agg02 rdf:type mf:QueryEvaluationTest ;
+    mf:name "COUNT 2";
+    rdfs:comment    "Count with grouping" ;
+    dawgt:approval dawgt:NotClassified ;
+    mf:action
+         [ qt:query  <agg02.rq> ;
+           qt:data   <agg01.ttl> ] ;
+    mf:result  <agg02.srx>
+    .
+
+:agg03 rdf:type mf:QueryEvaluationTest ;
+    mf:name "COUNT 3";
+    rdfs:comment    "Count with grouping and HAVING clause" ;
+    dawgt:approval dawgt:NotClassified ;
+    mf:action
+         [ qt:query  <agg03.rq> ;
+           qt:data   <agg01.ttl> ] ;
+    mf:result  <agg03.srx>
+    .
+
+
+:agg04 rdf:type mf:QueryEvaluationTest ;
+    mf:name "COUNT 4";
+    rdfs:comment    "Count(*)" ;
+    dawgt:approval dawgt:NotClassified ;
+    mf:action
+         [ qt:query  <agg04.rq> ;
+           qt:data   <agg01.ttl> ] ;
+    mf:result  <agg04.srx>
+    .
+
+:agg05 rdf:type mf:QueryEvaluationTest ;
+    mf:name "COUNT 5";
+    rdfs:comment    "Count(*) with grouping" ;
+    dawgt:approval dawgt:NotClassified ;
+    mf:action
+         [ qt:query  <agg05.rq> ;
+           qt:data   <agg01.ttl> ] ;
+    mf:result  <agg05.srx>
+    .
+
+:agg06 rdf:type mf:QueryEvaluationTest ;
+    mf:name "COUNT 6";
+    rdfs:comment    "Count(*) with HAVING Count(*)" ;
+    dawgt:approval dawgt:NotClassified ;
+    mf:action
+         [ qt:query  <agg06.rq> ;
+           qt:data   <agg01.ttl> ] ;
+    mf:result  <agg06.srx>
+    .
+
+:agg07 rdf:type mf:QueryEvaluationTest;
+    mf:name "COUNT 7";
+    rdfs:comment    "Count(*) with grouping and HAVING Count(*)" ;
+    dawgt:approval dawgt:NotClassified ;
+    mf:action
+         [ qt:query  <agg07.rq> ;
+           qt:data   <agg01.ttl> ] ;
+    mf:result  <agg07.srx>
+    .
+
+:agg08 rdf:type  mf:NegativeSyntaxTest;
+    mf:name    "COUNT 8" ;
+    rdfs:comment "grouping by expression, done wrong";
+    dawgt:approval dawgt:NotClassified ;
+    mf:action  <agg08.rq> .
+
+:agg08b rdf:type  mf:QueryEvaluationTest;
+    mf:name    "COUNT 8b" ;
+    rdfs:comment "grouping by expression, done correctly";
+    dawgt:approval dawgt:NotClassified ;
+    mf:action
+         [ qt:query  <agg08b.rq> ;
+           qt:data   <agg08.ttl> ] ;
+    mf:result  <agg08b.srx> .
+
+:agg09 rdf:type  mf:NegativeSyntaxTest;
+    mf:name    "COUNT 9" ;
+    rdfs:comment "Projection of an ungrouped variable (not appearing in the GROUP BY expression)";
+    dawgt:approval dawgt:NotClassified ;
+    rdf:type   mf:NegativeSyntaxTest ;
+    mf:action  <agg09.rq> .
+
+:agg10 rdf:type  mf:NegativeSyntaxTest;
+    mf:name    "COUNT 10" ;
+    rdfs:comment "Projection of an ungrouped variable (no GROUP BY expression at all)";
+    dawgt:approval dawgt:NotClassified ;
+    rdf:type   mf:NegativeSyntaxTest ;
+    mf:action  <agg10.rq> .
+
+:agg11 rdf:type  mf:NegativeSyntaxTest;
+    mf:name    "COUNT 11" ;
+    rdfs:comment "Use of an ungrouped variable in a project expression";
+    dawgt:approval dawgt:NotClassified ;
+    rdf:type   mf:NegativeSyntaxTest ;
+    mf:action  <agg11.rq> .
+
+:agg12 rdf:type  mf:NegativeSyntaxTest;
+    mf:name    "COUNT 12" ;
+    rdfs:comment "Use of an ungrouped variable in a project expression, where the variable appears in a GROUP BY expression";
+    dawgt:approval dawgt:NotClassified ;
+    rdf:type   mf:NegativeSyntaxTest ;
+    mf:action  <agg12.rq> .
+
+:agg-groupconcat-01 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "GROUP_CONCAT 1" ;
+    dawgt:approval dawgt:Approved;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2010-09-07#resolution_2> ;
+    mf:action
+         [ qt:query  <agg-groupconcat-1.rq> ;
+           qt:data   <agg-groupconcat-1.ttl> ] ;
+    mf:result  <agg-groupconcat-1.srx>
+    .
+
+:agg-groupconcat-02 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "GROUP_CONCAT 2" ;
+    dawgt:approval dawgt:Approved;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2010-09-07#resolution_2> ;
+    mf:action
+         [ qt:query  <agg-groupconcat-2.rq> ;
+           qt:data   <agg-groupconcat-1.ttl> ] ;
+    mf:result  <agg-groupconcat-2.srx>
+    .
+
+:agg-groupconcat-03 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "GROUP_CONCAT with SEPARATOR" ;
+    dawgt:approval dawgt:Approved;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2010-09-07#resolution_2> ;
+    mf:action
+         [ qt:query  <agg-groupconcat-3.rq> ;
+           qt:data   <agg-groupconcat-1.ttl> ] ;
+    mf:result  <agg-groupconcat-3.srx>
+    .
+
+:agg-avg-01 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "AVG" ;
+    dawgt:approval dawgt:NotClassified;
+    mf:action
+         [ qt:query  <agg-avg-01.rq> ;
+           qt:data   <agg-numeric.ttl> ] ;
+    mf:result  <agg-avg-01.srx>
+    .
+
+:agg-avg-02 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "AVG with GROUP BY" ;
+    dawgt:approval dawgt:NotClassified;
+    mf:action
+         [ qt:query  <agg-avg-02.rq> ;
+           qt:data   <agg-numeric2.ttl> ] ;
+    mf:result  <agg-avg-02.srx>
+    .
+
+:agg-min-01 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "MIN" ;
+    dawgt:approval dawgt:NotClassified;
+    mf:action
+         [ qt:query  <agg-min-01.rq> ;
+           qt:data   <agg-numeric.ttl> ] ;
+    mf:result  <agg-min-01.srx>
+    .
+
+:agg-min-02 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "MIN with GROUP BY" ;
+    dawgt:approval dawgt:NotClassified;
+    mf:action
+         [ qt:query  <agg-min-02.rq> ;
+           qt:data   <agg-numeric.ttl> ] ;
+    mf:result  <agg-min-02.srx>
+    .
+
+:agg-max-01 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "MAX" ;
+    dawgt:approval dawgt:NotClassified;
+    mf:action
+         [ qt:query  <agg-max-01.rq> ;
+           qt:data   <agg-numeric.ttl> ] ;
+    mf:result  <agg-max-01.srx>
+    .
+
+:agg-max-02 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "MAX with GROUP BY" ;
+    dawgt:approval dawgt:NotClassified;
+    mf:action
+         [ qt:query  <agg-max-02.rq> ;
+           qt:data   <agg-numeric.ttl> ] ;
+    mf:result  <agg-max-02.srx>
+    .
+
+:agg-sum-01 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "SUM" ;
+    dawgt:approval dawgt:NotClassified;
+    mf:action
+         [ qt:query  <agg-sum-01.rq> ;
+           qt:data   <agg-numeric.ttl> ] ;
+    mf:result  <agg-sum-01.srx>
+    .
+
+:agg-sum-02 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "SUM with GROUP BY" ;
+    dawgt:approval dawgt:NotClassified;
+    mf:action
+         [ qt:query  <agg-sum-02.rq> ;
+           qt:data   <agg-numeric2.ttl> ] ;
+    mf:result  <agg-sum-02.srx>
+    .
+
+:agg-sample-01 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "SAMPLE" ;
+    dawgt:approval dawgt:NotClassified;
+    mf:action
+         [ qt:query  <agg-sample-01.rq> ;
+           qt:data   <agg-numeric.ttl> ] ;
+    mf:result  <agg-sample-01.srx>
+    .
+

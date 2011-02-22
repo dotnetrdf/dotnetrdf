@@ -201,7 +201,7 @@ namespace VDS.RDF.Query.Algebra
                         //If this is an Aggregate without a GROUP BY projected variables are invalid
                         throw new RdfQueryException("Cannot project the variable ?" + v.Name + " since this Query contains Aggregates and no GROUP BY");
                     }
-                    else if (context.Query != null && context.Query.IsAggregate && !context.Query.GroupBy.Variables.Contains(v.Name))
+                    else if (context.Query != null && context.Query.IsAggregate && !context.Query.GroupBy.ProjectableVariables.Contains(v.Name))
                     {
                         //If this is an Aggregate with a GROUP BY projected variables are only valid if they occur in the GROUP BY
                         throw new RdfQueryException("Cannot project the variable ?" + v.Name + " since this Query contains Aggregates but the given Variable is not in the GROUP BY - use the SAMPLE aggregate if you need to access this variable");

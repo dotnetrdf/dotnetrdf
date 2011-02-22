@@ -46,13 +46,6 @@ namespace VDS.RDF.Parsing.Tokens
     /// </summary>
     public class TurtleTokeniser : BaseTokeniser
     {
-        //OPT: Move the following into TurtleSpecsHelper?
-
-        /// <summary>
-        /// Pattern for Valid Plain (Unquoted) Literal Formats
-        /// </summary>
-        public const String ValidPlainLiteralsPattern = @"^(true|false|((\+|\-)?\d+(\.\d+([eE](\+|\-)?\d+)?)?)|(\+|\-)?(\.\d+([eE](\+|\-)?\d+)?))$";
-
         private BlockingStreamReader _in;
 
         /// <summary>
@@ -986,7 +979,7 @@ namespace VDS.RDF.Parsing.Tokens
                 else
                 {
                     //Must be a Plain Literal
-                    if (!this.IsValidPlainLiteral(value))
+                    if (!TurtleSpecsHelper.IsValidPlainLiteral(value))
                     {
                         throw Error("The value of the Plain Literal '" + value + "' is not valid in Turtle.  Turtle supports Boolean, Integer, Decimal and Double Plain Literals");
                     }
@@ -1103,19 +1096,5 @@ namespace VDS.RDF.Parsing.Tokens
             this.ConsumeNewLine(false, true);
             return comment;
         }
-
-        /// <summary>
-        /// Determines whether a given String is a valid Plain Literal
-        /// </summary>
-        /// <param name="value">The String to test</param>
-        /// <returns></returns>
-        private bool IsValidPlainLiteral(String value)
-        {
-            //Use Regular Expression to Validate
-            System.Text.RegularExpressions.Regex regEx = new System.Text.RegularExpressions.Regex(ValidPlainLiteralsPattern);
-
-            return regEx.IsMatch(value);
-        }
-
     }
 }

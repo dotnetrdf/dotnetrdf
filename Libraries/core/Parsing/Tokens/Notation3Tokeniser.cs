@@ -51,10 +51,6 @@ namespace VDS.RDF.Parsing.Tokens
         //OPT: Extract these constants into a Notation3SpecsHelper class
 
         /// <summary>
-        /// Pattern for Valid Plain (Unquoted) Literal Formats
-        /// </summary>
-        public const String ValidPlainLiteralsPattern = @"^(true|false|((\+|\-)?\d+(\.\d+([eE](\+|\-)?\d+)?)?)|(\+|\-)?(\.\d+([eE](\+|\-)?\d+)?))$";
-        /// <summary>
         /// Pattern for Valid QNames that use only the Latin Alphabet
         /// </summary>
         public const String ValidQNamesPattern = "^(([_A-Za-z])|([_A-Za-z][\\w\\-]*))?:?[_A-Za-z][\\w\\-]*$";
@@ -66,7 +62,6 @@ namespace VDS.RDF.Parsing.Tokens
         private BlockingStreamReader _in;
         private List<String> _keywords = new List<string>();
         private bool _keywordsmode = false;
-        private Regex _isValidPlainLiteral = new Regex(ValidPlainLiteralsPattern);
         private Regex _isValidQName = new Regex(ValidQNamesPattern);
         private Regex _isValidVarName = new Regex(ValidVarNamesPattern);
 
@@ -392,7 +387,7 @@ namespace VDS.RDF.Parsing.Tokens
 
             //Validate the final result
             if (this.Value.EndsWith(".")) this.Backtrack();
-            if (!this._isValidPlainLiteral.IsMatch(this.Value)) 
+            if (!TurtleSpecsHelper.IsValidPlainLiteral(this.Value)) 
             {
                 throw Error("The format of the Numeric Literal '" + this.Value + "' is not valid!");
             }
@@ -462,7 +457,7 @@ namespace VDS.RDF.Parsing.Tokens
                     this.LastTokenType = Token.KEYWORDOF;
                     return new KeywordOfToken(this.CurrentLine, this.StartPosition);
                 }
-                else if (this._isValidPlainLiteral.IsMatch(value))
+                else if (TurtleSpecsHelper.IsValidPlainLiteral(value))
                 {
                     //Other Valid Plain Literal
                     this.LastTokenType = Token.PLAINLITERAL;

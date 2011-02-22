@@ -472,6 +472,56 @@ namespace VDS.RDF.Parsing
                 }
             } while (temp.TokenType != Token.EOF);
 
+            //TODO: If not SPARQL 1.0 then need to check Variable usages in the SELECT
+            if (this._syntax != SparqlQuerySyntax.Sparql_1_0)
+            {
+                if (context.Query.QueryType == SparqlQueryType.Select || context.Query.QueryType == SparqlQueryType.SelectDistinct || context.Query.QueryType == SparqlQueryType.SelectReduced || context.Query.QueryType == SparqlQueryType.Describe)
+                {
+                    List<String> projectedSoFar = new List<string>();
+                    foreach (SparqlVariable var in context.Query.Variables)
+                    {
+                        if (!var.IsResultVariable) continue;
+
+                        if (projectedSoFar.Contains(var.Name) && (var.IsAggregate || var.IsProjection))
+                        {
+                            throw new RdfParseException("Cannot assign the results of an Aggregate/Project Expression to the variable " + var.ToString() + " as this Variable is already Projected to earlier in the SELECT");
+                        }
+
+                        if (var.IsProjection)
+                        {
+                            if (context.Query.GroupBy != null)
+                            {
+                                if (!var.Projection.Variables.All(v => context.Query.GroupBy.ProjectableVariables.Contains(v) || projectedSoFar.Contains(v)))
+                                {
+                                    throw new RdfParseException("Your SELECT uses the Project Expression " + var.Projection.ToString() + " which uses one/more Variables which are either not projectable from the GROUP BY or not projected earlier in the SELECT.  All Variables used must be projectable from the GROUP BY or projected earlier in the SELECT");
+                                }
+                            }
+                        }
+                        else if (var.IsAggregate)
+                        {
+                            if (context.Query.GroupBy != null)
+                            {
+                                //TODO: ISparqlAggregate needs to expose a Variables property
+                                //if (!var.Aggregate.Var
+                            }
+                        }
+                        else
+                        {
+                            if (context.Query.GroupBy != null)
+                            {
+                                //If there is a GROUP BY then the Variable must either be projectable from there
+                                if (!context.Query.GroupBy.ProjectableVariables.Contains(var.Name))
+                                {
+                                    throw new RdfParseException("Your SELECT/DESCRIBE query tries to project the variable " + var.ToString() + " but this Variable is not Grouped By");
+                                }
+                            }
+                        }
+
+                        projectedSoFar.Add(var.Name);
+                    }
+                }
+            }
+
             //Optimise the Query - when Optimisation is off this just places all the FILTERs (if any)
             //as a Chain Filter on the Graph Pattern
             context.Query.Optimise();
@@ -790,8 +840,21 @@ namespace VDS.RDF.Parsing
                         {
                             throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Variable as an alias after an AS Keyword", next);
                         }
-                        SparqlVariable projVar = new SparqlVariable(next.Value.Substring(1), expr);
-                        context.Query.AddVariable(projVar);
+
+                        //Turn into the appropriate type of Variable
+                        if (expr is AggregateExpressionTerm)
+                        {
+                            context.Query.AddVariable(new SparqlVariable(next.Value.Substring(1), ((AggregateExpressionTerm)expr).Aggregate));
+                        }
+                        else if (expr is NonNumericAggregateExpressionTerm)
+                        {
+                            context.Query.AddVariable(new SparqlVariable(next.Value.Substring(1), ((NonNumericAggregateExpressionTerm)expr).Aggregate));
+                        }
+                        else
+                        {
+                            context.Query.AddVariable(new SparqlVariable(next.Value.Substring(1), expr));
+                        }
+
                         firstToken = false;
                         if (asTerminated)
                         {

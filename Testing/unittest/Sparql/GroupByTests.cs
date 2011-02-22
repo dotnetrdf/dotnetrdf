@@ -159,5 +159,13 @@ namespace VDS.RDF.Test.Sparql
                 Assert.Fail("Didn't get a Result Set as expected");
             }
         }
+
+        [TestMethod]
+        public void SparqlGroupBySample()
+        {
+            String query = "SELECT ?s SAMPLE(?o) WHERE {?s ?p ?o} GROUP BY ?s";
+            SparqlQueryParser parser = new SparqlQueryParser();
+            SparqlQuery q = parser.ParseFromString(query);
+        }
     }
 }

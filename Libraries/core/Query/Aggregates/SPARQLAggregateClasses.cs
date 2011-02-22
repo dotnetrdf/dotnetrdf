@@ -179,6 +179,7 @@ namespace VDS.RDF.Query.Aggregates
             }
             else
             {
+                long lngavg;
                 decimal decavg;
                 float fltavg;
                 double dblavg;
@@ -190,9 +191,12 @@ namespace VDS.RDF.Query.Aggregates
                         return new LiteralNode(null, "0", new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger));
 
                     case SparqlNumericType.Integer:
+                        //Integer Values
+                        lngavg = lngtotal / (long)count;
+                        return new LiteralNode(null, lngavg.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger));
+
                     case SparqlNumericType.Decimal:
-                        //Integer/Decimal Values
-                        //Sparql promotes integers to decimals when doing division
+                        //Decimal Values
                         decavg = dectotal / (decimal)count;
                         return new LiteralNode(null, decavg.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeDecimal));
 
@@ -751,7 +755,7 @@ namespace VDS.RDF.Query.Aggregates
                 }
             }
 
-            values.Sort();
+            values.Sort(new SparqlOrderingComparer());
             values.Reverse();
             return values.FirstOrDefault();
         }
@@ -851,7 +855,7 @@ namespace VDS.RDF.Query.Aggregates
                 }
             }
 
-            values.Sort();
+            values.Sort(new SparqlOrderingComparer());
             return values.FirstOrDefault();
         }
 

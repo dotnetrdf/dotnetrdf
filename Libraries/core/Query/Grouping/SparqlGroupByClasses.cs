@@ -85,9 +85,17 @@ namespace VDS.RDF.Query.Grouping
         public abstract List<BindingGroup> Apply(SparqlEvaluationContext context, List<BindingGroup> groups);
 
         /// <summary>
-        /// Gets the Fixed Variables involved in this Group By
+        /// Gets the Variables involved in this Group By
         /// </summary>
         public abstract IEnumerable<String> Variables
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Gets the Projectable Variables used in the GROUP BY i.e. Variables that are grouped upon and Assigned Variables
+        /// </summary>
+        public abstract IEnumerable<String> ProjectableVariables
         {
             get;
         }
@@ -255,6 +263,22 @@ namespace VDS.RDF.Query.Grouping
                 {
                     return this._child.Variables.Concat(this._name.AsEnumerable<String>());
                 }
+            }
+        }
+
+        /// <summary>
+        /// Gets the Projectable Variables used in the GROUP BY i.e. Variables that are grouped upon and Assigned Variables
+        /// </summary>
+        public override IEnumerable<String> ProjectableVariables
+        {
+            get
+            {
+                List<String> vars = new List<string>();
+                if (this.AssignVariable != null) vars.Add(this.AssignVariable);
+                vars.Add(this._name);
+
+                if (this._child != null) vars.AddRange(this._child.ProjectableVariables);
+                return vars.Distinct();
             }
         }
 
@@ -463,26 +487,31 @@ namespace VDS.RDF.Query.Grouping
             {
                 if (this._child == null)
                 {
-                    if (this._expr is VariableExpressionTerm)
-                    {
-                        return this._expr.Variables;
-                    }
-                    else
-                    {
-                        return Enumerable.Empty<String>();
-                    }
+                    return this._expr.Variables;
                 }
                 else
                 {
-                    if (this._expr is VariableExpressionTerm)
-                    {
-                        return this._child.Variables.Concat(this._expr.Variables);
-                    }
-                    else
-                    {
-                        return this._child.Variables;
-                    }
+                    return this._expr.Variables.Concat(this._child.Variables);
                 }
+            }
+        }
+
+        /// <summary>
+        /// Gets the Projectable Variables used in the GROUP BY i.e. Variables that are grouped upon and Assigned Variables
+        /// </summary>
+        public override IEnumerable<String> ProjectableVariables
+        {
+            get
+            {
+                List<String> vars = new List<string>();
+                if (this.AssignVariable != null) vars.Add(this.AssignVariable);
+                if (this._expr is VariableExpressionTerm)
+                {
+                    vars.AddRange(this._expr.Variables);
+                }
+
+                if (this._child != null) vars.AddRange(this._child.ProjectableVariables);
+                return vars.Distinct();
             }
         }
 
