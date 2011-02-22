@@ -45,6 +45,8 @@
             this.mnuSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuExit = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuOptions = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuUseUtf8Bom = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuWindows = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuCascade = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuTileVertical = new System.Windows.Forms.ToolStripMenuItem();
@@ -61,6 +63,7 @@
             // 
             this.mnuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuFile,
+            this.mnuOptions,
             this.mnuWindows});
             this.mnuStrip.Location = new System.Drawing.Point(0, 0);
             this.mnuStrip.MdiWindowListItem = this.mnuWindows;
@@ -188,6 +191,24 @@
             this.mnuExit.Text = "E&xit";
             this.mnuExit.Click += new System.EventHandler(this.mnuExit_Click);
             // 
+            // mnuOptions
+            // 
+            this.mnuOptions.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnuUseUtf8Bom});
+            this.mnuOptions.Name = "mnuOptions";
+            this.mnuOptions.Size = new System.Drawing.Size(61, 20);
+            this.mnuOptions.Text = "&Options";
+            // 
+            // mnuUseUtf8Bom
+            // 
+            this.mnuUseUtf8Bom.Checked = true;
+            this.mnuUseUtf8Bom.CheckOnClick = true;
+            this.mnuUseUtf8Bom.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.mnuUseUtf8Bom.Name = "mnuUseUtf8Bom";
+            this.mnuUseUtf8Bom.Size = new System.Drawing.Size(217, 22);
+            this.mnuUseUtf8Bom.Text = "Use BOM for UTF-8 Output";
+            this.mnuUseUtf8Bom.Click += new System.EventHandler(this.mnuUseUtf8Bom_Click);
+            // 
             // mnuWindows
             // 
             this.mnuWindows.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -302,6 +323,8 @@
         private System.Windows.Forms.ToolStripMenuItem mnuClearFavouriteConnections;
         private System.Windows.Forms.ToolStripMenuItem mnuAddFavourite;
         private System.Windows.Forms.ToolStripSeparator mnuSeparator5;
+        private System.Windows.Forms.ToolStripMenuItem mnuOptions;
+        private System.Windows.Forms.ToolStripMenuItem mnuUseUtf8Bom;
     }
 }
 

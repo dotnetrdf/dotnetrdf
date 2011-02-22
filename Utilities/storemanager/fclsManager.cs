@@ -59,6 +59,12 @@ namespace dotNetRDFStore
         {
             InitializeComponent();
 
+            //Disable UTF-8 BOM Output if relevant
+            if (!Properties.Settings.Default.UseUtf8Bom)
+            {
+                this.mnuUseUtf8Bom.Checked = false;
+            }
+
             //Check whether we have a Recent and Favourites Connections Graph
             try
             {
@@ -82,7 +88,7 @@ namespace dotNetRDFStore
                 {
                     //Load Favourite Connections
                     FileLoader.Load(this._faveConnections, this._faveConnectionsFile);
-                    this.FillConnectionsMenu(this.mnuFavouriteConnections, this._faveConnections, 0);
+                    this.FillConnectionsMenu(this.mnuFavouriteConnections, this._faveConnections, 0, true, this._faveConnectionsFile);
                 }
             }
             catch
@@ -117,11 +123,13 @@ namespace dotNetRDFStore
                 else
                 {
                     this.mnuSaveConnection.Enabled = false;
+                    this.mnuAddFavourite.Enabled = false;
                 }
             }
             else
             {
                 this.mnuSaveConnection.Enabled = false;
+                this.mnuAddFavourite.Enabled = false;
             }
         }
 
@@ -309,7 +317,22 @@ namespace dotNetRDFStore
             }
         }
 
+        private void FillConnectionsMenu(ToolStripMenuItem menu, IGraph config)
+        {
+            this.FillConnectionsMenu(menu, config, 0);
+        }
+
         private void FillConnectionsMenu(ToolStripMenuItem menu, IGraph config, int maxItems)
+        {
+            this.FillConnectionsMenu(menu, config, maxItems, false, null);
+        }
+
+        private void FillConnectionsMenu(ToolStripMenuItem menu, IGraph config, int maxItems, bool addRemoveOption)
+        {
+            this.FillConnectionsMenu(menu, config, maxItems, addRemoveOption, null);
+        }
+
+        private void FillConnectionsMenu(ToolStripMenuItem menu, IGraph config, int maxItems, bool addRemoveOption, String persistentFile)
         {
             if (config == null || config.Triples.Count == 0) return;
 
@@ -345,6 +368,21 @@ namespace dotNetRDFStore
                     }
                     item.Tag = new QuickConnect(config, r["obj"]);
                     item.Click += new EventHandler(QuickConnectClick);
+
+                    if (addRemoveOption)
+                    {
+                        ToolStripMenuItem remove = new ToolStripMenuItem();
+                        remove.Text = "Remove Connection from this List";
+                        remove.Tag = new QuickRemove(menu, config, r["obj"], persistentFile);
+                        remove.Click += new EventHandler(QuickRemoveClick);
+                        item.DropDownItems.Add(remove);
+
+                        ToolStripMenuItem connect = new ToolStripMenuItem();
+                        connect.Text = "Open Connection";
+                        connect.Tag = new QuickConnect(config, r["obj"]);
+                        connect.Click += new EventHandler(QuickConnectClick);
+                        item.DropDownItems.Add(connect);
+                    }
 
                     menu.DropDownItems.Add(item);
                 }
@@ -409,6 +447,26 @@ namespace dotNetRDFStore
             }
         }
 
+        private void QuickRemoveClick(object sender, EventArgs e)
+        {
+            if (sender == null) return;
+            Object tag = null;
+            if (sender is ToolStripItem)
+            {
+                tag = ((ToolStripItem)sender).Tag;
+            }
+
+            if (tag != null)
+            {
+                if (tag is QuickRemove)
+                {
+                    QuickRemove rem = (QuickRemove)tag;
+                    rem.Remove();
+                    this.RemoveFromConnectionsMenu(rem.Menu, rem.ObjectNode);
+                }
+            }
+        }
+
         private void AddRecentConnection(IGenericIOManager manager)
         {
             INode objNode = this.AddConnection(this._recentConnections, manager, this._recentConnectionsFile);
@@ -440,12 +498,8 @@ namespace dotNetRDFStore
                 try
                 {
                     //Persist the graph to disk
-                    using (StreamWriter writer = new StreamWriter(this._recentConnectionsFile, false, Encoding.UTF8))
-                    {
-                        CompressingTurtleWriter ttlwriter = new CompressingTurtleWriter();
-                        ttlwriter.Save(this._recentConnections, writer);
-                        writer.Close();
-                    }
+                    CompressingTurtleWriter ttlwriter = new CompressingTurtleWriter();
+                    ttlwriter.Save(this._recentConnections, this._recentConnectionsFile);
                 }
                 catch (Exception ex)
                 {
@@ -464,6 +518,19 @@ namespace dotNetRDFStore
                 item.Text = manager.ToString();
                 item.Tag = new QuickConnect(this._faveConnections, objNode);
                 item.Click += new EventHandler(QuickConnectClick);
+
+                ToolStripMenuItem remove = new ToolStripMenuItem();
+                remove.Text = "Remove Connection from this List";
+                remove.Tag = new QuickRemove(this.mnuFavouriteConnections, this._faveConnections, objNode, this._faveConnectionsFile);
+                remove.Click += new EventHandler(QuickRemoveClick);
+                item.DropDownItems.Add(remove);
+
+                ToolStripMenuItem connect = new ToolStripMenuItem();
+                connect.Text = "Open Connection";
+                connect.Tag = new QuickConnect(this._faveConnections, objNode);
+                connect.Click += new EventHandler(QuickConnectClick);
+                item.DropDownItems.Add(connect);
+
                 this.mnuFavouriteConnections.DropDownItems.Add(item);
             }
         }
@@ -485,12 +552,8 @@ namespace dotNetRDFStore
                     try
                     {
                         //Persist the graph to disk
-                        using (StreamWriter writer = new StreamWriter(persistentFile, false, Encoding.UTF8))
-                        {
-                            CompressingTurtleWriter ttlwriter = new CompressingTurtleWriter();
-                            ttlwriter.Save(config, writer);
-                            writer.Close();
-                        }
+                        CompressingTurtleWriter ttlwriter = new CompressingTurtleWriter();
+                        ttlwriter.Save(config, persistentFile);
                     }
                     catch (Exception ex)
                     {
@@ -552,6 +615,13 @@ namespace dotNetRDFStore
                     MessageBox.Show("Only Generic Store Connections may be added to your Favourites", "Add To Favourite Connections Failed", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
+        }
+
+        private void mnuUseUtf8Bom_Click(object sender, EventArgs e)
+        {
+            Options.UseBomForUtf8 = this.mnuUseUtf8Bom.Checked;
+            Properties.Settings.Default.UseUtf8Bom = Options.UseBomForUtf8;
+            Properties.Settings.Default.Save();
         }
     }
 }

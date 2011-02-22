@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows.Forms;
 using VDS.RDF;
 using VDS.RDF.Configuration;
 using VDS.RDF.Storage;
+using VDS.RDF.Writing;
 
 namespace dotNetRDFStore
 {
@@ -46,6 +48,52 @@ namespace dotNetRDFStore
 
         /// <summary>
         /// Gets the Node that this Connection should be loaded from
+        /// </summary>
+        public INode ObjectNode
+        {
+            get
+            {
+                return this._objNode;
+            }
+        }
+    }
+
+    public class QuickRemove
+    {
+        private ToolStripMenuItem _menu;
+        private IGraph _g;
+        private INode _objNode;
+        private String _file;
+
+        public QuickRemove(ToolStripMenuItem menu, IGraph g, INode objNode, String file)
+        {
+            this._menu = menu;
+            this._g = g;
+            this._objNode = objNode;
+            this._file = file;
+        }
+
+        public void Remove()
+        {
+            this._g.Retract(this._g.GetTriplesWithSubject(this._objNode));
+
+            if (this._file != null)
+            {
+                CompressingTurtleWriter ttlwriter = new CompressingTurtleWriter();
+                ttlwriter.Save(this._g, this._file);
+            }
+        }
+
+        public ToolStripMenuItem Menu
+        {
+            get
+            {
+                return this._menu;
+            }
+        }
+
+        /// <summary>
+        /// Gets the Node for this Connection
         /// </summary>
         public INode ObjectNode
         {

@@ -183,7 +183,14 @@ namespace rdfEditor
             : this(editor, highlightersMenu, currSyntax, validatorStatus)
         {
             this._selectorModeMenu = symbolSelectorsMenu;
-            this.SetSymbolSelector(this._selector);
+            if (Properties.Settings.Default.SymbolSelectionMode.Equals("Default"))
+            {
+                this.SetSymbolSelector(this._selector);
+            }
+            else
+            {
+                this.SetSymbolSelector(Properties.Settings.Default.SymbolSelectionMode);
+            }
 
             //Need to register the Event Handlers for the Menu Items in the Selector Mode Menu
             foreach (MenuItem item in this._selectorModeMenu.Items.OfType<MenuItem>())
@@ -771,6 +778,30 @@ namespace rdfEditor
                 name = String.Empty;
             }
             this.SetCurrentSymbolSelectorChecked(name);
+        }
+
+        /// <summary>
+        /// Sets the Symbol Selector
+        /// </summary>
+        /// <param name="name">Symbol Selection Mode</param>
+        public void SetSymbolSelector(String name)
+        {
+            switch (name)
+            {
+                case "WhiteSpace":
+                    this.SetSymbolSelector(new WhiteSpaceSelector());
+                    break;
+                case "Punctuation":
+                    this.SetSymbolSelector(new PunctuationSelector());
+                    break;
+                case "All":
+                    this.SetSymbolSelector(new WhiteSpaceOrPunctuationSelection());
+                    break;
+                case "Default":
+                default:
+                    this.SetSymbolSelector(new DefaultSelector());
+                    break;
+            }
         }
 
         /// <summary>
