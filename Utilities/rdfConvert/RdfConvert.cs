@@ -515,6 +515,10 @@ namespace rdfConvert
                 {
                     Options.UriLoaderCaching = false;
                 }
+                else if (arg.Equals("-nobom"))
+                {
+                    Options.UseBomForUtf8 = false;
+                }
                 else if (arg.Equals("-warnings"))
                 {
                     this._warnings = true;
@@ -603,6 +607,9 @@ namespace rdfConvert
             Console.WriteLine();
             Console.WriteLine(" -merge");
             Console.WriteLine(" Specifies that all Graphs retrieved from input should be merged into a single Graph and output as such");
+            Console.WriteLine();
+            Console.WriteLine(" -nobom");
+            Console.WriteLine(" Specifies that no BOM should be used for UTF-8 Output");
             Console.WriteLine();
             Console.WriteLine(" -nocache");
             Console.WriteLine(" Specifies that UriLoader caching is disabled");

@@ -19,6 +19,8 @@ namespace soh
     {
         static void Main(string[] args)
         {
+            Console.OutputEncoding = Encoding.UTF8;
+
             if (args.Length < 1)
             {
                 ShowUsage();
@@ -26,6 +28,7 @@ namespace soh
             else
             {
                 Dictionary<String, String> arguments = ParseArguments(args.Skip(1).ToArray());
+                if (arguments.ContainsKey("nobom")) Options.UseBomForUtf8 = false;
 
                 try
                 {
@@ -573,6 +576,8 @@ namespace soh
             Console.WriteLine("  Sets the MIME Type that you want to get the Results as");
             Console.WriteLine("-v, --verbose");
             Console.WriteLine("  Verbose Mode");
+            Console.WriteLine("--nobom");
+            Console.WriteLine("  Disables the use of the BOM for UTF-8 Output");
             Console.WriteLine("--version");
             Console.WriteLine("  Print version and exit");
             Console.WriteLine("--h, --help");
@@ -587,6 +592,8 @@ namespace soh
             Console.WriteLine("  Takes update from a File");
             Console.WriteLine("-v, --verbose");
             Console.WriteLine("  Verbose Mode");
+            Console.WriteLine("--nobom");
+            Console.WriteLine("  Disables the use of the BOM for UTF-8 Output");
             Console.WriteLine("--version");
             Console.WriteLine("  Print version and exit");
             Console.WriteLine("--h, --help");
@@ -597,6 +604,8 @@ namespace soh
             Console.WriteLine();
             Console.WriteLine("--accept MIMETYPE");
             Console.WriteLine("  Sets the MIME Type that you want to receive Graphs as for GET requests");
+            Console.WriteLine("--nobom");
+            Console.WriteLine("  Disables the use of the BOM for UTF-8 Output");
             Console.WriteLine("--nocache");
             Console.WriteLine("  Disables caching of GET requests so that you always see the fresh data from the server");
             Console.WriteLine("-v, --verbose");
@@ -609,8 +618,9 @@ namespace soh
             Console.WriteLine("Note");
             Console.WriteLine("----");
             Console.WriteLine();
-            Console.WriteLine("All supported options should be equivalent to using the soh scripts provided by Fuseki");
             Console.WriteLine("Where a Fuseki soh script option is not present it is not supported");
+            Console.WriteLine("All supported options which are the same as Fuseki soh options should be equivalent to using the soh scripts provided by Fuseki");
+
         }
 
         static void ShowVersion()

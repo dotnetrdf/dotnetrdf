@@ -1115,9 +1115,13 @@ namespace rdfEditor
                         break;
                     case "Default":
                     default:
+                        name = "Default";
                         this.SetSymbolSelector(new DefaultSelector());
                         break;
                 }
+
+                Properties.Settings.Default.SymbolSelectionMode = name;
+                Properties.Settings.Default.Save();
             }
         }
 

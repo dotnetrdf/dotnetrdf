@@ -294,5 +294,17 @@ namespace rdfEditor.Properties {
                 this["SymbolSelectionMode"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool UseUtf8Bom {
+            get {
+                return ((bool)(this["UseUtf8Bom"]));
+            }
+            set {
+                this["UseUtf8Bom"] = value;
+            }
+        }
     }
 }

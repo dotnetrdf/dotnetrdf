@@ -48,6 +48,7 @@
             this.txtQuery = new System.Windows.Forms.TextBox();
             this.ofdBrowse = new System.Windows.Forms.OpenFileDialog();
             this.grpQueryOptions = new System.Windows.Forms.GroupBox();
+            this.chkViewResultsInApp = new System.Windows.Forms.CheckBox();
             this.chkAlgebraOptimisation = new System.Windows.Forms.CheckBox();
             this.chkQueryOptimisation = new System.Windows.Forms.CheckBox();
             this.chkAllowUnknownFunctions = new System.Windows.Forms.CheckBox();
@@ -71,7 +72,7 @@
             this.ofdQuery = new System.Windows.Forms.OpenFileDialog();
             this.sfdQuery = new System.Windows.Forms.SaveFileDialog();
             this.ttpTips = new System.Windows.Forms.ToolTip(this.components);
-            this.chkViewResultsInApp = new System.Windows.Forms.CheckBox();
+            this.chkUseUtf8Bom = new System.Windows.Forms.CheckBox();
             this.grpDataset.SuspendLayout();
             this.grpQuery.SuspendLayout();
             this.grpQueryOptions.SuspendLayout();
@@ -255,6 +256,7 @@
             // 
             // grpQueryOptions
             // 
+            this.grpQueryOptions.Controls.Add(this.chkUseUtf8Bom);
             this.grpQueryOptions.Controls.Add(this.chkViewResultsInApp);
             this.grpQueryOptions.Controls.Add(this.chkAlgebraOptimisation);
             this.grpQueryOptions.Controls.Add(this.chkQueryOptimisation);
@@ -270,6 +272,20 @@
             this.grpQueryOptions.TabIndex = 3;
             this.grpQueryOptions.TabStop = false;
             this.grpQueryOptions.Text = "Query Options";
+            // 
+            // chkViewResultsInApp
+            // 
+            this.chkViewResultsInApp.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.chkViewResultsInApp.Checked = true;
+            this.chkViewResultsInApp.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkViewResultsInApp.Location = new System.Drawing.Point(6, 187);
+            this.chkViewResultsInApp.Name = "chkViewResultsInApp";
+            this.chkViewResultsInApp.Size = new System.Drawing.Size(166, 39);
+            this.chkViewResultsInApp.TabIndex = 9;
+            this.chkViewResultsInApp.Text = "View Results and Graphs in Application";
+            this.chkViewResultsInApp.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.ttpTips.SetToolTip(this.chkViewResultsInApp, resources.GetString("chkViewResultsInApp.ToolTip"));
+            this.chkViewResultsInApp.UseVisualStyleBackColor = true;
             // 
             // chkAlgebraOptimisation
             // 
@@ -523,19 +539,20 @@
             this.sfdQuery.Filter = "SPARQL Query Files|*.rq|All Files|*.*";
             this.sfdQuery.Title = "Load SPARQL Query";
             // 
-            // chkViewResultsInApp
+            // chkUseUtf8Bom
             // 
-            this.chkViewResultsInApp.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.chkViewResultsInApp.Checked = true;
-            this.chkViewResultsInApp.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkViewResultsInApp.Location = new System.Drawing.Point(6, 187);
-            this.chkViewResultsInApp.Name = "chkViewResultsInApp";
-            this.chkViewResultsInApp.Size = new System.Drawing.Size(166, 39);
-            this.chkViewResultsInApp.TabIndex = 9;
-            this.chkViewResultsInApp.Text = "View Results and Graphs in Application";
-            this.chkViewResultsInApp.TextAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.ttpTips.SetToolTip(this.chkViewResultsInApp, resources.GetString("chkViewResultsInApp.ToolTip"));
-            this.chkViewResultsInApp.UseVisualStyleBackColor = true;
+            this.chkUseUtf8Bom.AutoSize = true;
+            this.chkUseUtf8Bom.Checked = true;
+            this.chkUseUtf8Bom.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkUseUtf8Bom.Location = new System.Drawing.Point(6, 219);
+            this.chkUseUtf8Bom.Name = "chkUseUtf8Bom";
+            this.chkUseUtf8Bom.Size = new System.Drawing.Size(155, 17);
+            this.chkUseUtf8Bom.TabIndex = 10;
+            this.chkUseUtf8Bom.Text = "Use BOM for UTF-8 Output";
+            this.ttpTips.SetToolTip(this.chkUseUtf8Bom, "Disable this option if you plan to use data exported from this tool in non-Window" +
+                    "s tools that may have an issue with the UTF-8 BOM");
+            this.chkUseUtf8Bom.UseVisualStyleBackColor = true;
+            this.chkUseUtf8Bom.CheckedChanged += new System.EventHandler(this.chkUseUtf8Bom_CheckedChanged);
             // 
             // fclsSparqlGui
             // 
@@ -617,6 +634,7 @@
         private System.Windows.Forms.CheckBox chkQueryOptimisation;
         private System.Windows.Forms.ToolTip ttpTips;
         private System.Windows.Forms.CheckBox chkViewResultsInApp;
+        private System.Windows.Forms.CheckBox chkUseUtf8Bom;
     }
 }
 

@@ -63,6 +63,7 @@ namespace dotNetRDFStore
             if (!Properties.Settings.Default.UseUtf8Bom)
             {
                 this.mnuUseUtf8Bom.Checked = false;
+                Options.UseBomForUtf8 = false;
             }
 
             //Check whether we have a Recent and Favourites Connections Graph

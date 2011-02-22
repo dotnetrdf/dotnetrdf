@@ -68,6 +68,11 @@ namespace rdfEditor
             textEditor.Background = new SolidColorBrush(Properties.Settings.Default.EditorBackground);
             
             //Setup Options based on the User Config file
+            if (!Properties.Settings.Default.UseUtf8Bom)
+            {
+                this.mnuUseBomForUtf8.IsChecked = false;
+                Options.UseBomForUtf8 = false;
+            }
             if (!Properties.Settings.Default.EnableSymbolSelection)
             {
                 this._manager.IsSymbolSelectionEnabled = false;

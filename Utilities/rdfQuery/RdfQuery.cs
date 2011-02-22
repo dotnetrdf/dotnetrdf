@@ -38,6 +38,7 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Inference;
 using VDS.RDF.Writing;
+using VDS.RDF.Writing.Formatting;
 
 namespace rdfQuery
 {
@@ -139,9 +140,9 @@ namespace rdfQuery
                     {
                         this._resultsWriter.Save((SparqlResultSet)results, output);
                     }
-                    else if (results is Graph)
+                    else if (results is IGraph)
                     {
-                        this._graphWriter.Save((Graph)results, output);
+                        this._graphWriter.Save((IGraph)results, output);
                     }
                     else
                     {
@@ -151,8 +152,9 @@ namespace rdfQuery
                 else
                 {
                     //If Printing Print the Query then the Algebra
+                    SparqlFormatter formatter = new SparqlFormatter(q.NamespaceMap);
                     output.WriteLine("Query");
-                    output.WriteLine(q.ToString());
+                    output.WriteLine(formatter.Format(q));
                     output.WriteLine();
                     output.WriteLine("Algebra");
                     output.WriteLine(q.ToAlgebra().ToString());
@@ -414,6 +416,14 @@ namespace rdfQuery
                         }
                     }
                 }
+                else if (arg.Equals("-nocache"))
+                {
+                    Options.UriLoaderCaching = false;
+                }
+                else if (arg.Equals("-nobom"))
+                {
+                    Options.UseBomForUtf8 = false;
+                }
                 else if (arg.Equals("-print"))
                 {
                     this._print = true;
@@ -510,6 +520,12 @@ namespace rdfQuery
             Console.WriteLine();
             Console.WriteLine(" -debug");
             Console.WriteLine("  Prints more detailed error messages if errors occur");
+            Console.WriteLine();
+            //Console.WriteLine(" -nobom");
+            //Console.WriteLine(" Specifies that no BOM should be used for UTF-8 Output");
+            //Console.WriteLine();
+            Console.WriteLine(" -nocache");
+            Console.WriteLine(" Specifies that UriLoader caching is disabled");
             Console.WriteLine();
             Console.WriteLine(" -noopt[:args]");
             Console.WriteLine("  Disables optimisations, if used as -noopt: then args should be a series of characters indicating optimisations to disable, a/A to disable algebra optimisation and q/Q to disable query optimisation");

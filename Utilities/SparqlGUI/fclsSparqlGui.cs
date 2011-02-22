@@ -54,6 +54,12 @@ namespace SparqlGUI
         public fclsSparqlGui()
         {
             InitializeComponent();
+
+            if (!Properties.Settings.Default.UseUtf8Bom)
+            {
+                Options.UseBomForUtf8 = false;
+                this.chkUseUtf8Bom.Checked = false;
+            }
         }
 
         private void fclsSparqlGui_Load(object sender, EventArgs e)
@@ -210,7 +216,7 @@ namespace SparqlGUI
                     }
                     else
                     {
-                        this._rdfwriter.Save((IGraph)results, new StreamWriter("temp" + this._rdfext));
+                        this._rdfwriter.Save((IGraph)results, "temp" + this._rdfext);
                         System.Diagnostics.Process.Start("temp" + this._rdfext);
                     }
                 }
@@ -223,7 +229,7 @@ namespace SparqlGUI
                     }
                     else
                     {
-                        this._resultswriter.Save((SparqlResultSet)results, new StreamWriter("temp" + this._resultsext));
+                        this._resultswriter.Save((SparqlResultSet)results, "temp" + this._resultsext);
                         System.Diagnostics.Process.Start("temp" + this._resultsext);
                     }
                 }
@@ -493,6 +499,13 @@ namespace SparqlGUI
         private void chkAlgebraOptimisation_CheckedChanged(object sender, EventArgs e)
         {
             Options.AlgebraOptimisation = this.chkAlgebraOptimisation.Checked;
+        }
+
+        private void chkUseUtf8Bom_CheckedChanged(object sender, EventArgs e)
+        {
+            Options.UseBomForUtf8 = this.chkUseUtf8Bom.Checked;
+            Properties.Settings.Default.UseUtf8Bom = this.chkUseUtf8Bom.Checked;
+            Properties.Settings.Default.Save();
         }
     }
 }
