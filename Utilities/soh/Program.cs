@@ -72,6 +72,7 @@ namespace soh
         {
             SparqlRemoteEndpoint endpoint;
             bool verbose = arguments.ContainsKey("verbose") || arguments.ContainsKey("v");
+            if (verbose) Options.HttpDebugging = true;
 
             //First get the Server to which we are going to connect
             try
@@ -264,6 +265,7 @@ namespace soh
         {
             SparqlRemoteUpdateEndpoint endpoint;
             bool verbose = arguments.ContainsKey("verbose") || arguments.ContainsKey("v");
+            if (verbose) Options.HttpDebugging = true;
 
             //First get the Server to which we are going to connect
             try
@@ -297,9 +299,9 @@ namespace soh
             SparqlUpdateCommandSet cmds;
             try
             {
-                if (arguments.ContainsKey("query") && !arguments["query"].Equals(String.Empty))
+                if (arguments.ContainsKey("update") && !arguments["update"].Equals(String.Empty))
                 {
-                    cmds = parser.ParseFromFile(arguments["query"]);
+                    cmds = parser.ParseFromFile(arguments["update"]);
                 }
                 else if (arguments.ContainsKey("file") && !arguments["file"].Equals(String.Empty))
                 {
@@ -350,7 +352,9 @@ namespace soh
             String method;
             SparqlHttpProtocolConnector endpoint;
             bool verbose = arguments.ContainsKey("verbose") || arguments.ContainsKey("v");
+            if (verbose) Options.HttpDebugging = true;
             Options.UriLoaderCaching = !arguments.ContainsKey("nocache");
+            String dataFile;
 
             //First Argument must be HTTP Method
             if (arguments.ContainsKey("$1") && !arguments["$1"].Equals(String.Empty))
@@ -394,15 +398,17 @@ namespace soh
                     if (arguments["$3"].Equals("default"))
                     {
                         graphUri = null;
+                        if (verbose) Console.Error.WriteLine("soh: Graph URI for Protocol request is 'default' (indicates the default unnamed graph)");
                     }
                     else
                     {
                         graphUri = new Uri(arguments["$3"]);
+                        if (verbose) Console.Error.WriteLine("soh: Graph URI for Protocol request is '" + graphUri.ToString() + "'");
                     }
                 }
                 else
                 {
-                    Console.Error.WriteLine("soh: Error: Third argument is required and must be the Graph URI");
+                    Console.Error.WriteLine("soh: Error: Third argument is required and must be the Graph URI or default to indicate the default unnamed Graph");
                     Environment.Exit(-1);
                     return;
                 }
@@ -420,8 +426,17 @@ namespace soh
                 switch (method)
                 {
                     case "GET":
+                        if (arguments.ContainsKey("$4"))
+                        {
+                            Console.Error.WriteLine("soh: Error: Optional file argument for protocol mode is not permitted with the get method");
+                            Environment.Exit(-1);
+                            return;
+                        }
+
+                        if (verbose) Console.Error.WriteLine("soh: Making a GET request to the Protocol endpoint");
                         Graph g = new Graph();
                         endpoint.LoadGraph(g, graphUri);
+                        if (verbose) Console.Error.WriteLine("soh: Received a Graph with " + g.Triples.Count + " Triples");
 
                         //Use users choice of output format otherwise RDF/XML
                         MimeTypeDefinition definition = null;
@@ -447,16 +462,68 @@ namespace soh
                         break;
 
                     case "HEAD":
+                        if (arguments.ContainsKey("$4"))
+                        {
+                            Console.Error.WriteLine("soh: Error: Optional file argument for protocol mode is not permitted with the head method");
+                            Environment.Exit(-1);
+                            return;
+                        }
+
+                        if (verbose) Console.Error.WriteLine("soh: Making a HEAD request to the Protocol endpoint");
+
                         bool exists = endpoint.GraphExists(graphUri);
                         Console.WriteLine(exists.ToString().ToLower());
                         break;
 
                     case "PUT":
-                        Console.Error.WriteLine("soh: Not Yet Implemented");
+                        //Parse in the Graph to be PUT first
+                        if (arguments.ContainsKey("$4") && !arguments["$4"].Equals(String.Empty))
+                        {
+                            dataFile = arguments["$4"];
+                        }
+                        else
+                        {
+                            Console.Error.WriteLine("soh: Error: The file argument for protocol mode is required when using the put method");
+                            Environment.Exit(-1);
+                            return;
+                        }
+                        Graph toPut = new Graph();
+                        FileLoader.Load(toPut, dataFile);
+                        toPut.BaseUri = graphUri;
+
+                        if (verbose)
+                        {
+                            Console.Error.WriteLine("soh: Graph to be uploaded has " + toPut.Triples.Count + " Triples");
+                            Console.Error.WriteLine("soh: Making a PUT request to the Protocol endpoint");
+                        }
+
+                        endpoint.SaveGraph(toPut);
+                        Console.WriteLine("soh: Graph saved to Protocol endpoint OK");
                         break;
 
                     case "POST":
-                        Console.Error.WriteLine("soh: Not Yet Implemented");
+                        //Parse in the Graph to be PUT first
+                        if (arguments.ContainsKey("$4") && !arguments["$4"].Equals(String.Empty))
+                        {
+                            dataFile = arguments["$4"];
+                        }
+                        else
+                        {
+                            Console.Error.WriteLine("soh: Error: The file argument for protocol mode is required when using the post method");
+                            Environment.Exit(-1);
+                            return;
+                        }
+                        Graph toPost = new Graph();
+                        FileLoader.Load(toPost, dataFile);
+
+                        if (verbose)
+                        {
+                            Console.Error.WriteLine("soh: Graph to be uploaded has " + toPost.Triples.Count + " Triples");
+                            Console.Error.WriteLine("soh: Making a POST request to the Protocol endpoint");
+                        }
+
+                        endpoint.UpdateGraph(graphUri, toPost.Triples, null);
+                        Console.WriteLine("soh: Graph updated to Protocol endpoint OK");
                         break;
 
                     default:

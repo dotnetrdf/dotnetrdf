@@ -708,7 +708,8 @@ namespace VDS.RDF.Writing
             }
 
             //Create a Temporary Namespace ID
-            while (context.NamespaceMap.HasNamespace("ns" + context.NextNamespaceID) && context.NamespaceMap.GetNestingLevel("ns" + context.NextNamespaceID) == context.NamespaceMap.NestingLevel)
+            //Can't use an ID if already in the Namespace Map either at top level (nesting == 0) or at the current nesting
+            while (context.NamespaceMap.HasNamespace("ns" + context.NextNamespaceID) && (context.NamespaceMap.GetNestingLevel("ns" + context.NextNamespaceID) == 0 || context.NamespaceMap.GetNestingLevel("ns" + context.NextNamespaceID) == context.NamespaceMap.NestingLevel))
             {
                 context.NextNamespaceID++;
             }

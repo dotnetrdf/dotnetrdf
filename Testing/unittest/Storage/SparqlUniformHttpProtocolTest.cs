@@ -127,6 +127,25 @@ namespace VDS.RDF.Test.Storage
         }
 
         [TestMethod]
+        public void SparqlUniformHttpProtocolGraphExists()
+        {
+            try
+            {
+                Options.UriLoaderCaching = false;
+                //Ensure that the Graph will be there using the SaveGraph() test
+                SparqlUniformHttpProtocolSaveGraph();
+
+                //Check the Graph exists in the Store
+                SparqlHttpProtocolConnector sparql = new SparqlHttpProtocolConnector(new Uri(ProtocolTestUri));
+                Assert.IsTrue(sparql.GraphExists("http://example.org/sparqlTest"));
+            }
+            finally
+            {
+                Options.UriLoaderCaching = true;
+            }
+        }
+
+        [TestMethod]
         public void SparqlUniformHttpProtocolDeleteGraph()
         {
             try

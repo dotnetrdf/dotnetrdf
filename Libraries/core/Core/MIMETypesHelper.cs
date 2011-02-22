@@ -154,6 +154,7 @@ namespace VDS.RDF
         public static void AddDefinition(MimeTypeDefinition definition)
         {
             if (!_init) Init();
+            if (definition == null) throw new ArgumentNullException("definition");
             _mimeTypes.Add(definition);
         }
 
@@ -165,6 +166,8 @@ namespace VDS.RDF
         public static IEnumerable<MimeTypeDefinition> GetDefinitions(String mimeType)
         {
             if (!_init) Init();
+
+            if (mimeType == null) return Enumerable.Empty<MimeTypeDefinition>();
 
             return (from definition in MimeTypesHelper.Definitions
                     where definition.MimeTypes.Contains(mimeType)
@@ -180,6 +183,7 @@ namespace VDS.RDF
         {
             if (!_init) Init();
 
+            if (mimeTypes == null) return Enumerable.Empty<MimeTypeDefinition>();
             if (mimeTypes.Length == 0) return Enumerable.Empty<MimeTypeDefinition>();
 
             //Clean up the MIME Types to remove any Charset/Quality parameters
@@ -643,32 +647,35 @@ namespace VDS.RDF
         {
             String type;
 
-            foreach (String ctype in ctypes)
+            if (ctypes != null)
             {
-                //Strip off the Charset/Quality if specified
-                if (ctype.Contains(";"))
+                foreach (String ctype in ctypes)
                 {
-                    type = ctype.Substring(0, ctype.IndexOf(";"));
-                }
-                else
-                {
-                    type = ctype;
-                }
-                type = type.ToLowerInvariant();
-
-                //See if there are any MIME Type Definitions for this MIME Type
-                foreach (MimeTypeDefinition definition in MimeTypesHelper.GetDefinitions(type))
-                {
-                    //If so return the Writer from the first match found
-                    if (definition.CanWriteRdf)
+                    //Strip off the Charset/Quality if specified
+                    if (ctype.Contains(";"))
                     {
-                        IRdfWriter writer = definition.GetRdfWriter();
-                        if (writer is ICompressingWriter)
+                        type = ctype.Substring(0, ctype.IndexOf(";"));
+                    }
+                    else
+                    {
+                        type = ctype;
+                    }
+                    type = type.ToLowerInvariant();
+
+                    //See if there are any MIME Type Definitions for this MIME Type
+                    foreach (MimeTypeDefinition definition in MimeTypesHelper.GetDefinitions(type))
+                    {
+                        //If so return the Writer from the first match found
+                        if (definition.CanWriteRdf)
                         {
-                            ((ICompressingWriter)writer).CompressionLevel = Options.DefaultCompressionLevel;
+                            IRdfWriter writer = definition.GetRdfWriter();
+                            if (writer is ICompressingWriter)
+                            {
+                                ((ICompressingWriter)writer).CompressionLevel = Options.DefaultCompressionLevel;
+                            }
+                            contentType = definition.CanonicalMimeType;
+                            return writer;
                         }
-                        contentType = definition.CanonicalMimeType;
-                        return writer;
                     }
                 }
             }
@@ -697,14 +704,21 @@ namespace VDS.RDF
             String[] ctypes;
 
             //Parse Accept Header into a String Array
-            acceptHeader = acceptHeader.Trim();
-            if (acceptHeader.Contains(","))
+            if (acceptHeader != null)
             {
-                ctypes = acceptHeader.Split(',');
+                acceptHeader = acceptHeader.Trim();
+                if (acceptHeader.Contains(","))
+                {
+                    ctypes = acceptHeader.Split(',');
+                }
+                else
+                {
+                    ctypes = new String[] { acceptHeader };
+                }
             }
             else
             {
-                ctypes = new String[] { acceptHeader };
+                ctypes = new String[] { };
             }
 
             return GetWriter(ctypes, out contentType);

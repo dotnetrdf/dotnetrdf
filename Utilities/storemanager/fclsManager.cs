@@ -53,6 +53,8 @@ namespace dotNetRDFStore
         private IGraph _faveConnections = new Graph();
         private String _faveConnectionsFile;
 
+        public const int MaxRecentConnections = 9;
+
         public fclsManager()
         {
             InitializeComponent();
@@ -74,7 +76,7 @@ namespace dotNetRDFStore
                 {
                     //Load Recent Connections
                     FileLoader.Load(this._recentConnections, this._recentConnectionsFile);
-                    this.FillConnectionsMenu(this.mnuRecentConnections, this._recentConnections, 9);
+                    this.FillConnectionsMenu(this.mnuRecentConnections, this._recentConnections, MaxRecentConnections);
                 }
                 if (File.Exists(this._faveConnectionsFile))
                 {
@@ -422,12 +424,12 @@ namespace dotNetRDFStore
 
             //Check the number of Recent Connections and delete the Oldest if more than 9
             List<INode> conns = this._recentConnections.GetTriplesWithPredicateObject(this._recentConnections.CreateUriNode(new Uri(RdfSpecsHelper.RdfType)), this._recentConnections.CreateUriNode(new Uri(ConfigurationLoader.ConfigurationNamespace + ConfigurationLoader.ClassGenericManager.Substring(ConfigurationLoader.ClassGenericManager.IndexOf(':') + 1)))).Select(t => t.Subject).ToList();
-            if (conns.Count > 2)
+            if (conns.Count > MaxRecentConnections)
             {
                 conns.Sort();
                 conns.Reverse();
 
-                conns.RemoveRange(0, 2);
+                conns.RemoveRange(0, MaxRecentConnections);
 
                 foreach (INode obj in conns)
                 {
