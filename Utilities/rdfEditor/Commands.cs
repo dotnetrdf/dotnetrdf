@@ -6,6 +6,9 @@ using System.Windows.Input;
 
 namespace rdfEditor
 {
+    /// <summary>
+    /// Editor Commands
+    /// </summary>
     public static class Commands
     {
         public static readonly ICommand SaveWithNTriples = new RoutedCommand();
@@ -37,6 +40,8 @@ namespace rdfEditor
         public static readonly ICommand ToggleLineNumbers = new RoutedCommand();
         public static readonly ICommand ToggleWordWrap = new RoutedCommand();
         public static readonly ICommand ToggleClickableUris = new RoutedCommand();
+
+        public static readonly ICommand ToggleSymbolSelection = new RoutedCommand();
 
         public static readonly ICommand ToggleHighlighting = new RoutedCommand();
         public static readonly ICommand ToggleAutoCompletion = new RoutedCommand();

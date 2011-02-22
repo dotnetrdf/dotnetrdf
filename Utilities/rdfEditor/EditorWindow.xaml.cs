@@ -48,7 +48,7 @@ namespace rdfEditor
         {
             InitializeComponent();
 
-            this._manager = new EditorManager(this.textEditor, this.mnuCurrentHighlighter, this.stsCurrSyntax, this.stsSyntaxValidation);
+            this._manager = new EditorManager(this.textEditor, this.mnuCurrentHighlighter, this.stsCurrSyntax, this.stsSyntaxValidation, this.mnuSymbolBoundaries);
           
             //Set up the Editor Options
             TextEditorOptions options = new TextEditorOptions();
@@ -68,6 +68,16 @@ namespace rdfEditor
             textEditor.Background = new SolidColorBrush(Properties.Settings.Default.EditorBackground);
             
             //Setup Options based on the User Config file
+            if (!Properties.Settings.Default.EnableSymbolSelection)
+            {
+                this._manager.IsSymbolSelectionEnabled = false;
+                this.mnuSymbolSelectEnabled.IsChecked = false;
+            }
+            if (!Properties.Settings.Default.IncludeSymbolBoundaries)
+            {
+                this._manager.IncludeBoundaryInSymbolSelection = false;
+                this.mnuSymbolSelectIncludeBoundary.IsChecked = false;
+            }
             if (!Properties.Settings.Default.EnableAutoComplete) 
             {
                 this._manager.IsAutoCompleteEnabled = false;
@@ -725,6 +735,20 @@ namespace rdfEditor
             }
         }
 
+        private void mnuSymbolSelectEnabled_Click(object sender, RoutedEventArgs e)
+        {
+            this._manager.IsSymbolSelectionEnabled = this.mnuSymbolSelectEnabled.IsChecked;
+            Properties.Settings.Default.EnableSymbolSelection = this.mnuSymbolSelectEnabled.IsChecked;
+            Properties.Settings.Default.Save();
+        }
+
+        private void mnuSymbolSelectIncludeBoundary_Click(object sender, RoutedEventArgs e)
+        {
+            this._manager.IncludeBoundaryInSymbolSelection = this.mnuSymbolSelectIncludeBoundary.IsChecked;
+            Properties.Settings.Default.IncludeSymbolBoundaries = this.mnuSymbolSelectIncludeBoundary.IsChecked;
+            Properties.Settings.Default.Save();
+        }
+
         #endregion
 
         #region View Menu
@@ -1216,5 +1240,6 @@ namespace rdfEditor
 
 
         #endregion
+
     }
 }

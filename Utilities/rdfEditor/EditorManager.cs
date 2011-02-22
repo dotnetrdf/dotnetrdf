@@ -32,6 +32,9 @@ using rdfEditor.Syntax;
 
 namespace rdfEditor
 {
+    /// <summary>
+    /// Editor Manager is a Object that encapsulates all the additional functionality we add to a 'basic' AvalonEdit Text Editor to provide our syntax highlighting, auto-completion, validation and symbol selection services
+    /// </summary>
     public class EditorManager
     {
         private TextEditor _editor;
@@ -58,12 +61,19 @@ namespace rdfEditor
         private int _lastCaretPos = 0;
 
         //Selection
-        private BaseSelector _selector = new BaseSelector();
+        private bool _symbolSelectEnabled = true;
+        private ISymbolSelector _selector = new DefaultSelector();
         private MenuItem _select = new MenuItem();
+        private MenuItem _selectorModeMenu = null;
+        private bool _includeDelim = false;
 
         //Context Menu
         private ContextMenu _contextMenu = new ContextMenu();
 
+        /// <summary>
+        /// Creates a new Editor Manager
+        /// </summary>
+        /// <param name="editor">AvalonEdit Editor</param>
         public EditorManager(TextEditor editor)
         {
             SyntaxManager.Initialise();
@@ -88,7 +98,7 @@ namespace rdfEditor
             this._contextMenu.Items.Add(paste);
             Separator sep = new Separator();
             this._contextMenu.Items.Add(sep);
-            this._select.Header = "Select Symbol";
+            this._select.Header = "Select Surrounding Symbol";
             this._select.Click += new RoutedEventHandler(SelectSymbolClick);
             this._contextMenu.Items.Add(this._select);
             this._contextMenu.Opened += new RoutedEventHandler(ContextMenuOpened);
@@ -101,12 +111,17 @@ namespace rdfEditor
             this._editor.TextArea.Caret.PositionChanged += new EventHandler(EditorCaretPositionChanged);
             this._editor.Document.Changed += new EventHandler<DocumentChangeEventArgs>(EditorDocumentChanged);
             this._editor.Document.UpdateFinished += new EventHandler(EditorDocumentUpdateFinished);
-            this._editor.MouseDoubleClick += new MouseButtonEventHandler(EditorTextDoubleClick);
+            this._editor.TextArea.MouseDoubleClick += new MouseButtonEventHandler(EditorTextDoubleClick);
 
             //Add the Validation Error Element Generator
             this._editor.TextArea.TextView.ElementGenerators.Add(new ValidationErrorElementGenerator(this));
         }
 
+        /// <summary>
+        /// Creates a new Editor Manager
+        /// </summary>
+        /// <param name="editor">AvalonEdit Editor</param>
+        /// <param name="highlightersMenu">MenuItem under which Syntax Highlighting options are displayed</param>
         public EditorManager(TextEditor editor, MenuItem highlightersMenu)
             : this(editor)
         {
@@ -130,12 +145,25 @@ namespace rdfEditor
             }
         }
 
+        /// <summary>
+        /// Creates a new Editor Manager
+        /// </summary>
+        /// <param name="editor">AvalonEdit Editor</param>
+        /// <param name="highlightersMenu">MenuItem under which Syntax Highlighting options are displayed</param>
+        /// <param name="currSyntax">StatusBarItem to display current Syntax in</param>
         public EditorManager(TextEditor editor, MenuItem highlightersMenu, StatusBarItem currSyntax)
             : this(editor, highlightersMenu) 
         {
             this._stsCurrSyntax = currSyntax;
         }
 
+        /// <summary>
+        /// Creates a new Editor Manager
+        /// </summary>
+        /// <param name="editor">AvalonEdit Editor</param>
+        /// <param name="highlightersMenu">MenuItem under which Syntax Highlighting options are displayed</param>
+        /// <param name="currSyntax">StatusBarItem to display current Syntax in</param>
+        /// <param name="validatorStatus">StatusBarItem to display Validation Status in</param>
         public EditorManager(TextEditor editor, MenuItem highlightersMenu, StatusBarItem currSyntax, StatusBarItem validatorStatus)
             : this(editor, highlightersMenu, currSyntax)
         {
@@ -143,6 +171,33 @@ namespace rdfEditor
             this._validateAsYouType = true;
         }
 
+        /// <summary>
+        /// Creates a new Editor Manager
+        /// </summary>
+        /// <param name="editor">AvalonEdit Editor</param>
+        /// <param name="highlightersMenu">MenuItem under which Syntax Highlighting options are displayed</param>
+        /// <param name="currSyntax">StatusBarItem to display current Syntax in</param>
+        /// <param name="validatorStatus">StatusBarItem to display Validation Status in</param>
+        /// <param name="symbolSelectorsMenu">MenuItem under which Symbol Selector Modes are displayed</param>
+        public EditorManager(TextEditor editor, MenuItem highlightersMenu, StatusBarItem currSyntax, StatusBarItem validatorStatus, MenuItem symbolSelectorsMenu)
+            : this(editor, highlightersMenu, currSyntax, validatorStatus)
+        {
+            this._selectorModeMenu = symbolSelectorsMenu;
+            this.SetSymbolSelector(this._selector);
+
+            //Need to register the Event Handlers for the Menu Items in the Selector Mode Menu
+            foreach (MenuItem item in this._selectorModeMenu.Items.OfType<MenuItem>())
+            {
+                if (item.Tag != null)
+                {
+                    item.Click += new RoutedEventHandler(SelectorModeClick);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets/Sets whether the Document has changed
+        /// </summary>
         public bool HasChanged
         {
             get
@@ -155,6 +210,9 @@ namespace rdfEditor
             }
         }
 
+        /// <summary>
+        /// Gets/Sets whether Syntax Highlighting is enabled
+        /// </summary>
         public bool IsHighlightingEnabled
         {
             get
@@ -171,6 +229,9 @@ namespace rdfEditor
             }
         }
 
+        /// <summary>
+        /// Gets/Sets whether Validate as you Type is enabled
+        /// </summary>
         public bool IsValidateAsYouType
         {
             get
@@ -183,6 +244,9 @@ namespace rdfEditor
             }
         }
 
+        /// <summary>
+        /// Gets/Sets whether Error Highlighting is enabled
+        /// </summary>
         public bool IsHighlightErrorsEnabled
         {
             get
@@ -216,6 +280,9 @@ namespace rdfEditor
             }
         }
 
+        /// <summary>
+        /// Gets/Sets whether Auto-Complete is enabled
+        /// </summary>
         public bool IsAutoCompleteEnabled
         {
             get
@@ -239,6 +306,50 @@ namespace rdfEditor
             }
         }
 
+        /// <summary>
+        /// Gets/Sets whether Symbol Selection is enabled
+        /// </summary>
+        public bool IsSymbolSelectionEnabled
+        {
+            get
+            {
+                return this._symbolSelectEnabled;
+            }
+            set
+            {
+                this._symbolSelectEnabled = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets/Sets whether Symbol Boundaries are included when using Symbol Selection
+        /// </summary>
+        public bool IncludeBoundaryInSymbolSelection
+        {
+            get
+            {
+                if (this._selector != null)
+                {
+                    return this._selector.IncludeDeliminator;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            set
+            {
+                this._includeDelim = value;
+                if (this._selector != null)
+                {
+                    this._selector.IncludeDeliminator = value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets/Sets the Current Filename of the Document being edited
+        /// </summary>
         public String CurrentFile
         {
             get
@@ -251,6 +362,9 @@ namespace rdfEditor
             }
         }
 
+        /// <summary>
+        /// Gets the Current Highlighter
+        /// </summary>
         public IHighlightingDefinition CurrentHighlighter
         {
             get
@@ -259,6 +373,9 @@ namespace rdfEditor
             }
         }
 
+        /// <summary>
+        /// Gets the Current Validator
+        /// </summary>
         public ISyntaxValidator CurrentValidator
         {
             get
@@ -267,6 +384,20 @@ namespace rdfEditor
             }
         }
 
+        /// <summary>
+        /// Gets the Current Symbol Selector
+        /// </summary>
+        public ISymbolSelector CurrentSymbolSelector
+        {
+            get
+            {
+                return this._selector;
+            }
+        }
+
+        /// <summary>
+        /// Gets the Last Validation Error
+        /// </summary>
         public Exception LastValidationError
         {
             get
@@ -279,6 +410,9 @@ namespace rdfEditor
             }
         }
 
+        /// <summary>
+        /// Gets the Current Syntax
+        /// </summary>
         public String CurrentSyntax
         {
             get
@@ -287,11 +421,17 @@ namespace rdfEditor
             }
         }
         
+        /// <summary>
+        /// Attempt to auto-detect the syntax of the current document
+        /// </summary>
         public void AutoDetectSyntax()
         {
             this.AutoDetectSyntax(this._currFile);
         }
 
+        /// <summary>
+        /// Attempt to auto-detect the syntax of the current document using the filename as a guide
+        /// </summary>
         public void AutoDetectSyntax(String filename)
         {
             if (this._editor == null) return; //Not yet ready
@@ -372,6 +512,10 @@ namespace rdfEditor
             }
         }
 
+        /// <summary>
+        /// Sets the Syntax Highlighter to a specific Highlighter
+        /// </summary>
+        /// <param name="name">Syntax Name</param>
         public void SetHighlighter(String name)
         {
             String syntax;
@@ -390,6 +534,10 @@ namespace rdfEditor
             this.SetCurrentAutoCompleter(syntax);
         }
 
+        /// <summary>
+        /// Sets the Syntax Highlighter to a specific Highlighter
+        /// </summary>
+        /// <param name="def">Highlighting Definition</param>
         public void SetHighlighter(IHighlightingDefinition def)
         {
             String syntax;
@@ -408,6 +556,10 @@ namespace rdfEditor
             this.SetCurrentAutoCompleter(syntax);
         }
 
+        /// <summary>
+        /// Sets the Syntax Highlighter based on a Parser
+        /// </summary>
+        /// <param name="parser">RDF Parser</param>
         public void SetHighlighter(IRdfReader parser)
         {
             if (parser is NTriplesParser)
@@ -440,6 +592,10 @@ namespace rdfEditor
             }
         }
 
+        /// <summary>
+        /// Sets the Syntax Highlighter based on a Parser
+        /// </summary>
+        /// <param name="parser">SPARQL Results Parser</param>
         public void SetHighlighter(ISparqlResultsReader parser)
         {
             if (parser is SparqlXmlParser)
@@ -456,6 +612,10 @@ namespace rdfEditor
             }
         }
 
+        /// <summary>
+        /// Sets the Syntax Validator
+        /// </summary>
+        /// <param name="validator">Syntax Validator</param>
         public void SetValidator(ISyntaxValidator validator)
         {
             this._currValidator = validator;
@@ -472,6 +632,10 @@ namespace rdfEditor
             }
         }
 
+        /// <summary>
+        /// Sets the Auto-Completer
+        /// </summary>
+        /// <param name="completer">Auto-Completer</param>
         public void SetAutoCompleter(IAutoCompleter completer)
         {
             this._autoCompleter = completer;
@@ -485,11 +649,19 @@ namespace rdfEditor
             }
         }
 
+        /// <summary>
+        /// Sets the Auto-Completer
+        /// </summary>
+        /// <param name="name">Syntax Name</param>
         public void SetAutoCompleter(String name)
         {
             this.SetCurrentAutoCompleter(name);
         }
 
+        /// <summary>
+        /// Toggles a Highlighter on/off
+        /// </summary>
+        /// <param name="name">Syntax Name</param>
         public void ToggleHighlighter(String name)
         {
             if (this._editor.SyntaxHighlighting != null)
@@ -544,6 +716,9 @@ namespace rdfEditor
             }
         }
 
+        /// <summary>
+        /// Sets Syntax Highlighting to be off
+        /// </summary>
         public void SetNoHighlighting()
         {
             if (this._stsCurrSyntax != null)
@@ -558,6 +733,50 @@ namespace rdfEditor
             this.SetCurrentAutoCompleter("None");
         }
 
+        /// <summary>
+        /// Sets the Symbol Selector
+        /// </summary>
+        /// <param name="selector">Symbol Selector</param>
+        public void SetSymbolSelector(ISymbolSelector selector)
+        {
+            this._selector = selector;
+            if (this._selector != null)
+            {
+                this._selector.IncludeDeliminator = this._includeDelim;
+            }
+
+            String name;
+            if (selector == null)
+            {
+                name = String.Empty;
+            }
+            else if (selector is WhiteSpaceSelector)
+            {
+                name = "WhiteSpace";
+            }
+            else if (selector is PunctuationSelector)
+            {
+                name = "Punctuation";
+            }
+            else if (selector is WhiteSpaceOrPunctuationSelection)
+            {
+                name = "All";
+            }
+            else if (selector is DefaultSelector)
+            {
+                name = "Default";
+            }
+            else 
+            {
+                name = String.Empty;
+            }
+            this.SetCurrentSymbolSelectorChecked(name);
+        }
+
+        /// <summary>
+        /// Ensures the current highlighter is checked in the Highlighter Menu
+        /// </summary>
+        /// <param name="name">Syntax Name</param>
         private void SetCurrentHighlighterChecked(String name)
         {
             if (this._stsCurrSyntax != null)
@@ -577,6 +796,28 @@ namespace rdfEditor
             }
         }
 
+        /// <summary>
+        /// Ensures the current symbol selector is checked in the Highlighter Menu
+        /// </summary>
+        /// <param name="name">Symbol Selector Name</param>
+        private void SetCurrentSymbolSelectorChecked(String name)
+        {
+            if (!this._symbolSelectEnabled) return;
+
+            if (this._selectorModeMenu != null)
+            {
+                foreach (MenuItem item in this._selectorModeMenu.Items.OfType<MenuItem>())
+                {
+                    if (item.Tag == null) continue;
+                    item.IsChecked = item.Tag.Equals(name);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Sets the Current Validator
+        /// </summary>
+        /// <param name="name">Syntax Name</param>
         private void SetCurrentValidator(String name)
         {
             this._currValidator = SyntaxManager.GetValidator(name);
@@ -593,6 +834,10 @@ namespace rdfEditor
             }
         }
 
+        /// <summary>
+        /// Sets the Current Auto-Completer
+        /// </summary>
+        /// <param name="name">Syntax Name</param>
         private void SetCurrentAutoCompleter(String name)
         {
             //If disabled then no Auto-Completer will be set
@@ -622,6 +867,10 @@ namespace rdfEditor
             }
         }
 
+        /// <summary>
+        /// Gets the RDF Parser for the current document (if possible)
+        /// </summary>
+        /// <returns></returns>
         public IRdfReader GetParser()
         {
             IRdfReader parser = null;
@@ -661,6 +910,9 @@ namespace rdfEditor
             return parser;
         }
 
+        /// <summary>
+        /// Invokes Syntax Validation
+        /// </summary>
         public void DoValidation()
         {
             if (this._currValidator == null)
@@ -769,6 +1021,7 @@ namespace rdfEditor
 
         private void EditorTextDoubleClick(object sender, MouseButtonEventArgs e)
         {
+            if (!this._symbolSelectEnabled) return;
             if (this._selector != null)
             {
                 this._selector.SelectSymbol(this._editor);
@@ -786,9 +1039,16 @@ namespace rdfEditor
 
         private void ContextMenuOpened(object sender, RoutedEventArgs e)
         {
-            if (this._editor.SelectionStart >= 0 && this._editor.SelectionLength > 0)
+            if (this._symbolSelectEnabled && this._selector != null)
             {
-                this._select.IsEnabled = true;
+                if (this._editor.SelectionStart >= 0 && this._editor.SelectionLength > 0)
+                {
+                    this._select.IsEnabled = true;
+                }
+                else
+                {
+                    this._select.IsEnabled = false;
+                }
             }
             else
             {
@@ -798,9 +1058,35 @@ namespace rdfEditor
 
         private void SelectSymbolClick(object sender, RoutedEventArgs e)
         {
+            if (!this._symbolSelectEnabled) return;
+
             if (this._selector != null)
             {
                 this._selector.SelectSymbol(this._editor);
+            }
+        }
+
+        private void SelectorModeClick(object sender, RoutedEventArgs e)
+        {
+            if (sender is MenuItem)
+            {
+                String name = ((MenuItem)sender).Tag.ToString();
+                switch (name)
+                {
+                    case "All":
+                        this.SetSymbolSelector(new WhiteSpaceOrPunctuationSelection());
+                        break;
+                    case "WhiteSpace":
+                        this.SetSymbolSelector(new WhiteSpaceSelector());
+                        break;
+                    case "Punctuation":
+                        this.SetSymbolSelector(new PunctuationSelector());
+                        break;
+                    case "Default":
+                    default:
+                        this.SetSymbolSelector(new DefaultSelector());
+                        break;
+                }
             }
         }
 

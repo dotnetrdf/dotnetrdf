@@ -17,6 +17,7 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using rdfEditor.Syntax;
 using rdfEditor.AutoComplete;
+using rdfEditor.Selection;
 
 namespace rdfEditor
 {
@@ -36,6 +37,7 @@ namespace rdfEditor
             this._manager = new EditorManager(queryEditor);
             this._manager.SetHighlighter("SparqlQuery11");
             this._manager.SetAutoCompleter("SparqlQuery11");
+            this._manager.SetSymbolSelector(new WhiteSpaceSelector());
         }
 
         private void btnOpenQueryResults_Click(object sender, RoutedEventArgs e)

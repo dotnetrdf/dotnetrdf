@@ -145,6 +145,15 @@
                 <Separator />
                 <MenuItem Header="Comment Selection" Name="mnuCommentSelection" Click="mnuCommentSelection_Click" InputGestureText="Ctrl+K,C" />
                 <MenuItem Header="Uncomment Selection" Name="mnuUncommentSelection" Click="mnuUncommentSelection_Click" InputGestureText="Ctrl+K,U" /> 
+                <Separator />
+                <MenuItem Header="Select Symbol on Double Click" Name="mnuSymbolSelectEnabled" Click="mnuSymbolSelectEnabled_Click" IsCheckable="True" IsChecked="True" />
+                <MenuItem Header="Symbol Boundaries" Name="mnuSymbolBoundaries">
+                    <MenuItem Header="[Default] URI/XML Element boundaries (&lt; and &gt;), Literal/XML Attribute boundaries (&quot;) and New Lines" Tag="Default" IsCheckable="True" IsChecked="True" />
+                    <MenuItem Header="Default plus Punctuation" Tag="Punctuation" IsCheckable="True" IsChecked="False" />
+                    <MenuItem Header="Default plus Whitespace" Tag="WhiteSpace" IsCheckable="True" IsChecked="False" />
+                    <MenuItem Header="Default plus Punctuation and Whitespace" Tag="All" IsCheckable="True" IsChecked="False" />
+                </MenuItem>
+                <MenuItem Header="Include Boundary Character in Selected Symbols" Name="mnuSymbolSelectIncludeBoundary" Click="mnuSymbolSelectIncludeBoundary_Click" IsCheckable="True" IsChecked="False" />
             </MenuItem>
             <MenuItem Header="_View">
                 <MenuItem Header="Show Line Numbers" Name="mnuShowLineNumbers" IsCheckable="True" IsChecked="True"  Click="mnuShowLineNumbers_Click" InputGestureText="Ctrl+E,L" />

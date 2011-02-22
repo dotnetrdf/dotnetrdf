@@ -9,7 +9,7 @@ namespace rdfEditor.Selection
     /// <summary>
     /// Selector which selects the symbol deliminated by a starting &lt; " or new line and by an ending &gt; " or new line.  If there is already a selection it selects the surrounding symbol
     /// </summary>
-    public class BaseSelector
+    public abstract class BaseSelector : ISymbolSelector
     {
         private bool _includeDelim = false;
 
@@ -43,22 +43,38 @@ namespace rdfEditor.Selection
                     selStart--;
                     selLength++;
                 }
-                if (this.IsEndingDeliminator(editor.Document.GetCharAt(selStart + selLength))) selLength++;
+                if (selStart + selLength < editor.Document.TextLength - 1)
+                {
+                    if (this.IsEndingDeliminator(editor.Document.GetCharAt(selStart + selLength))) selLength++;
+                }
             }
 
+            char? endDelim = null;
+
             //Extend the selection backwards
-            while (selStart > 0)
+            while (selStart >= 0)
             {
                 selStart--;
                 selLength++;
 
+                //Start of Document is always a Boundary
+                if (selStart == 0) break;
+
+                //Otherwise check if character at start of selection is a boundary
                 char current = editor.Document.GetCharAt(selStart);
-                if (this.IsStartingDeliminator(current)) break;
+                if (this.IsStartingDeliminator(current))
+                {
+                    endDelim = this.RequireMatchingDeliminator(current);
+                    break;
+                }
             }
             if (!this._includeDelim)
             {
-                selStart++;
-                selLength--;
+                if (selStart > 0 || this.IsStartingDeliminator(editor.Document.GetCharAt(selStart)))
+                {
+                    selStart++;
+                    selLength--;
+                }
             }
 
             //Extend the selection forwards
@@ -66,8 +82,21 @@ namespace rdfEditor.Selection
             {
                 selLength++;
 
+                //End of Document is always a Boundary
+                if (selStart + selLength == editor.Document.TextLength) break;
+
+                //Otherwise check if character after end of selection is a boundary
                 char current = editor.Document.GetCharAt(selStart + selLength);
-                if (this.IsEndingDeliminator(current)) break;
+                if (endDelim != null )
+                {
+                    //If a matching End Deliminator is required then stop when that is reached
+                    if (endDelim == current) break;
+                }
+                else if (this.IsEndingDeliminator(current))
+                {
+                    //Otherwise stop when any End Deliminator is found
+                    break;
+                }
             }
             if (this._includeDelim)
             {
@@ -95,41 +124,24 @@ namespace rdfEditor.Selection
         }
 
         /// <summary>
-        /// Gets whether a Character is a Starting Deliminator
+        /// Gets whether a specific Starting Deliminator should be matched with a specific ending deliminator
         /// </summary>
-        /// <param name="c">Character</param>
+        /// <param name="c">Starting Deliminator</param>
         /// <returns></returns>
-        protected virtual bool IsStartingDeliminator(char c)
-        {
-            switch (c)
-            {
-                case '"':
-                case '<':
-                case '\n':
-                case '\r':
-                    return true;
-                default:
-                    return false;
-            }
-        }
+        protected abstract char? RequireMatchingDeliminator(char c);
 
         /// <summary>
-        /// Gets whether a Character is an Ending Deliminator
+        /// Gets whether the Character is a Starting Deliminator
         /// </summary>
         /// <param name="c">Character</param>
         /// <returns></returns>
-        protected virtual bool IsEndingDeliminator(char c)
-        {
-            switch (c)
-            {
-                case '"':
-                case '>':
-                case '\n':
-                case '\r':
-                    return true;
-                default:
-                    return false;
-            }
-        }
+        protected abstract bool IsStartingDeliminator(char c);
+
+        /// <summary>
+        /// Gets whether the Character is an Ending Deliminator
+        /// </summary>
+        /// <param name="c">Character</param>
+        /// <returns></returns>
+        protected abstract bool IsEndingDeliminator(char c);
     }
 }

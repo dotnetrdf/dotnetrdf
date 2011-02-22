@@ -160,6 +160,8 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="Selection\BaseSelector.cs" />
+    <Compile Include="Selection\DefaultSelector.cs" />
+    <Compile Include="Selection\ISymbolSelector.cs" />
     <Compile Include="Selection\WhiteSpaceSelector.cs" />
     <Compile Include="Syntax\CustomColourBrush.cs" />
     <Compile Include="Syntax\SyntaxDefinition.cs" />
