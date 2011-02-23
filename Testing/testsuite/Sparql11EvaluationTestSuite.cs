@@ -66,7 +66,9 @@ namespace dotNetRDFTest
                     "basic-update/update-04.ru",
                     "basic-update/insert-using-01.ru",
                     "basic-update/insert-03.ru",
-                    "basic-update/insert-04.ru"
+                    "basic-update/insert-04.ru",
+                    //The following are tests that use GRAPH QName outside of a Graph pattern where it is permitted and the current grammar forbids so skipped
+                    "clear/clear-graph-01.ru"
                     
                 };
 
@@ -296,6 +298,8 @@ namespace dotNetRDFTest
 
                         Console.WriteLine();
                         Console.WriteLine(new String('-', 150));
+
+                        Debug.WriteLine(tests + " Tests Completed");
                     }
                 }
             }
@@ -713,6 +717,7 @@ namespace dotNetRDFTest
             try
             {
                 UriNode utData = manifest.CreateUriNode("ut:data");
+                UriNode utGraph = manifest.CreateUriNode("ut:graph");
                 UriNode utGraphData = manifest.CreateUriNode("ut:graphData");
                 UriNode rdfsLabel = manifest.CreateUriNode("rdfs:label");
 
@@ -755,6 +760,8 @@ namespace dotNetRDFTest
                 catch (Exception ex)
                 {
                     this.ReportError("Error Parsing Update Commands", ex);
+
+                    Console.WriteLine("# Test Result - Update Command failed to pass (Test Failed)");
                     testsEvaluationFailed++;
                     testsFailed++;
                     return -1;
@@ -775,7 +782,7 @@ namespace dotNetRDFTest
                     foreach (Triple t in manifest.GetTriplesWithSubjectPredicate(actionNode, utGraphData))
                     {
                         Graph g = new Graph();
-                        INode dataNode = manifest.GetTriplesWithSubjectPredicate(t.Object, utData).Select(x => x.Object).FirstOrDefault();
+                        INode dataNode = manifest.GetTriplesWithSubjectPredicate(t.Object, utData).Concat(manifest.GetTriplesWithSubjectPredicate(t.Object, utGraph)).Select(x => x.Object).FirstOrDefault();
                         UriLoader.Load(g, ((UriNode)dataNode).Uri);
                         INode nameNode = manifest.GetTriplesWithSubjectPredicate(t.Object, rdfsLabel).Select(x => x.Object).FirstOrDefault();
                         g.BaseUri = new Uri(nameNode.ToString());
@@ -786,6 +793,7 @@ namespace dotNetRDFTest
                 catch (Exception ex)
                 {
                     this.ReportError("Error Building Initial Dataset", ex);
+                    Console.WriteLine("# Test Result - Unable to build Initial Dataset (Test Indeterminate)");
                     testsEvaluationIndeterminate++;
                     testsIndeterminate++;
                     return 0;
@@ -809,6 +817,7 @@ namespace dotNetRDFTest
                 {
                     //TODO: Some Update tests might be to test cases where a failure should occur
                     this.ReportError("Unexpected Error while performing Update", updateEx);
+                    Console.WriteLine("# Test Result - Update Failed (Test Failed)");
                     testsEvaluationFailed++;
                     testsFailed++;
                     return -1;
@@ -816,6 +825,7 @@ namespace dotNetRDFTest
                 catch (Exception ex)
                 {
                     this.ReportError("Unexpected Error while performing Update", ex);
+                    Console.WriteLine("# Test Result - Update Failed (Test Failed)");
                     testsEvaluationFailed++;
                     testsFailed++;
                     return -1;
@@ -837,17 +847,22 @@ namespace dotNetRDFTest
                     foreach (Triple t in manifest.GetTriplesWithSubjectPredicate(resultNode, utGraphData))
                     {
                         Graph g = new Graph();
-                        INode dataNode = manifest.GetTriplesWithSubjectPredicate(t.Object, utData).Select(x => x.Object).FirstOrDefault();
+                        INode dataNode = manifest.GetTriplesWithSubjectPredicate(t.Object, utData).Concat(manifest.GetTriplesWithSubjectPredicate(t.Object, utGraph)).Select(x => x.Object).FirstOrDefault();
                         UriLoader.Load(g, ((UriNode)dataNode).Uri);
                         INode nameNode = manifest.GetTriplesWithSubjectPredicate(t.Object, rdfsLabel).Select(x => x.Object).FirstOrDefault();
                         g.BaseUri = new Uri(nameNode.ToString());
                         Console.WriteLine("Uses Result Named Graph File " + dataNode.ToString() + " named as " + nameNode.ToString());
                         resultDataset.AddGraph(g);
                     }
+                    
+                    //Do this just to ensure that if the Result Dataset doesn't have a default unnamed graph it will
+                    //have one
+                    LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(resultDataset);
                 }
                 catch (Exception ex)
                 {
                     this.ReportError("Error Building Result Dataset", ex);
+                    Console.WriteLine("# Test Result - Unable to build Result Dataset (Test Indeterminate)");
                     testsEvaluationIndeterminate++;
                     testsIndeterminate++;
                     return 0;
@@ -862,7 +877,7 @@ namespace dotNetRDFTest
                         {
                             this.ShowGraphs(dataset[u], resultDataset[u]);
 
-                            Console.WriteLine("# Test Failed - Expected Result Dataset Graph '" + this.ToSafeString(u) + "' is different from the Graph with that name in the Updated Dataset");
+                            Console.WriteLine("# Test Result - Expected Result Dataset Graph '" + this.ToSafeString(u) + "' is different from the Graph with that name in the Updated Dataset (Test Failed)");
                             testsEvaluationFailed++;
                             testsFailed++;
                             return -1;
@@ -870,14 +885,21 @@ namespace dotNetRDFTest
                     }
                     else
                     {
-                        Console.WriteLine("# Test Failed - Expected Result Dataset has Graph '" + this.ToSafeString(u) + "' which is not present in the Updated Dataset");
+                        Console.WriteLine("# Test Result - Expected Result Dataset has Graph '" + this.ToSafeString(u) + "' which is not present in the Updated Dataset (Test Failed)");
                         testsEvaluationFailed++;
                         testsFailed++;
                         return -1;
                     }
                 }
+                foreach (Uri u in dataset.GraphUris)
+                {
+                    if (!resultDataset.HasGraph(u))
+                    {
+                        Console.WriteLine("# Test Result - Updated Dataset has additional Graph '" + this.ToSafeString(u) + "' which is not present in the Expected Result Dataset (Test Failed)");
+                    }
+                }
 
-                Console.WriteLine("# Test Passed - Updated Dataset matches Expected Result Dataset");
+                Console.WriteLine("# Test Result - Updated Dataset matches Expected Result Dataset (Test Passed)");
                 testsEvaluationPassed++;
                 testsPassed++;
                 return 1;
@@ -885,6 +907,7 @@ namespace dotNetRDFTest
             catch (Exception ex)
             {
                 this.ReportError("Unexpected Error", ex);
+                Console.WriteLine("# Test Result - Unexpected Error (Test Failed)");
                 testsEvaluationFailed++;
                 testsFailed++;
                 return -1;

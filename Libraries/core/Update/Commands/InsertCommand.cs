@@ -212,7 +212,10 @@ namespace VDS.RDF.Update.Commands
                     datasetOk = false;
                 }
 
+                //TODO: Need to detect when we create a Graph for Insertion but then fail to insert anything since in this case the Inserted Graph should be removed
+
                 //Get the Graph to which we are inserting
+                //HashSet<Uri> insertedGraphs = new HashSet<Uri>();
                 IGraph g;
                 if (context.Data.HasGraph(this._graphUri))
                 {
@@ -220,6 +223,7 @@ namespace VDS.RDF.Update.Commands
                 }
                 else
                 {
+                    //insertedGraphs.Add(this._graphUri);
                     g = new Graph();
                     g.BaseUri = this._graphUri;
                     context.Data.AddGraph(g);
@@ -298,6 +302,7 @@ namespace VDS.RDF.Update.Commands
                             }
                             else
                             {
+                                //insertedGraphs.Add(destUri);
                                 h = new Graph();
                                 h.BaseUri = destUri;
                                 context.Data.AddGraph(h);

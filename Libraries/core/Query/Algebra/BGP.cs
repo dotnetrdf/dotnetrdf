@@ -154,8 +154,8 @@ namespace VDS.RDF.Query.Algebra
                 {
                     if (i == 0)
                     {
-                        //If the 1st thing in a BGP is a LET/FILTER the Input becomes the Identity Multiset
-                        if (this._triplePatterns[i] is FilterPattern || this._triplePatterns[i] is LetPattern)
+                        //If the 1st thing in a BGP is a BIND/LET/FILTER the Input becomes the Identity Multiset
+                        if (this._triplePatterns[i] is FilterPattern || this._triplePatterns[i] is BindPattern || this._triplePatterns[i] is LetPattern)
                         {
                             if (this._triplePatterns[i] is BindPattern)
                             {

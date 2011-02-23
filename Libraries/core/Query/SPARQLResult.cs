@@ -283,6 +283,10 @@ namespace VDS.RDF.Query
                         {
                             return false;
                         }
+                        else if (this._resultValues[v] == null && other[v] == null)
+                        {
+                            continue;
+                        }
                         else if (!this._resultValues[v].Equals(other[v]))
                         {
                             return false;

@@ -76,17 +76,19 @@ namespace VDS.RDF.Query.Patterns
             }
             else if (context.InputMultiset is IdentityMultiset)
             {
+                context.OutputMultiset.AddVariable(this._var);
                 Set s = new Set();
                 try
                 {
                     INode temp = this._expr.Value(context, 0);
                     s.Add(this._var, temp);
-                    context.OutputMultiset.Add(s);
                 }
                 catch
                 {
                     //No assignment if there's an error
+                    s.Add(this._var, null);
                 }
+                context.OutputMultiset.Add(s);
             }
             else
             {
@@ -95,6 +97,7 @@ namespace VDS.RDF.Query.Patterns
                     throw new RdfQueryException("Cannot use a BIND assigment to BIND to a variable that has previously been used in the Query");
                 }
 
+                context.OutputMultiset.AddVariable(this._var);
                 foreach (int id in context.InputMultiset.SetIDs.ToList())
                 {
                     Set s = context.InputMultiset[id];
@@ -110,7 +113,6 @@ namespace VDS.RDF.Query.Patterns
                     }
                     context.OutputMultiset.Add(s);
                 }
-                context.OutputMultiset = new IdentityMultiset();
             }
         }
 

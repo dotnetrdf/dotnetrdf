@@ -1060,15 +1060,31 @@ namespace VDS.RDF.Parsing
         {
             if (context.SubQueryMode) throw new RdfQueryException("CONSTRUCT not permitted as a sub-query");
 
-            bool shortForm = (context.Tokens.Peek().TokenType == Token.WHERE);
+            bool shortForm = (context.Tokens.Peek().TokenType == Token.WHERE || context.Tokens.Peek().TokenType == Token.FROM);
             if (shortForm && context.SyntaxMode == SparqlQuerySyntax.Sparql_1_0)
             {
                 throw ParserHelper.Error("Short Form CONSTRUCT queries are not permitted in SPARQL 1.0", context.Tokens.Peek());
             }
             else if (shortForm)
             {
-                //For Short Form CONSTRUCT discard the WHERE
-                context.Tokens.Dequeue();
+                IToken temp = context.Tokens.Peek();
+                if (context.Tokens.Peek().TokenType == Token.FROM)
+                {
+                    while (temp.TokenType == Token.FROM)
+                    {
+                        this.TryParseFrom(context);
+                        temp = context.Tokens.Peek();
+                    }
+                }
+                if (temp.TokenType == Token.WHERE)
+                {
+                    //For Short Form CONSTRUCT discard the WHERE
+                    context.Tokens.Dequeue();
+                }
+                else
+                {
+                    throw ParserHelper.Error("Unexpected Token '" + temp.GetType().Name + " encountered, expected the WHERE of a Short Form Construct to come after the FROM/FROM NAMED clauses of a Short Form Construct", temp);
+                }
             }
 
             //Discard the opening {

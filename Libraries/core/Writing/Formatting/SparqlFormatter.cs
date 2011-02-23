@@ -41,6 +41,7 @@ using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Aggregates;
 using VDS.RDF.Query.Expressions;
+using VDS.RDF.Query.Filters;
 using VDS.RDF.Query.Grouping;
 using VDS.RDF.Query.Ordering;
 using VDS.RDF.Query.Paths;
@@ -328,7 +329,7 @@ namespace VDS.RDF.Writing.Formatting
                 output.Append("MINUS ");
             }
 
-            if (gp.TriplePatterns.Count > 1 || gp.HasChildGraphPatterns || (gp.TriplePatterns.Count <= 1 && gp.Filter != null))
+            if (gp.TriplePatterns.Count > 1 || gp.HasChildGraphPatterns || (gp.TriplePatterns.Count <= 1 && gp.Filter != null) || gp.UnplacedAssignments.Count > 0 || gp.UnplacedFilters.Count > 0)
             {
                 output.AppendLine("{");
                 foreach (ITriplePattern tp in gp.TriplePatterns)
@@ -338,6 +339,16 @@ namespace VDS.RDF.Writing.Formatting
                 foreach (GraphPattern child in gp.ChildGraphPatterns)
                 {
                     output.AppendLineIndented(this.Format(child), 2);
+                }
+                foreach (IAssignmentPattern ap in gp.UnplacedAssignments)
+                {
+                    output.AppendLineIndented(this.Format(ap), 2);
+                }
+                foreach (ISparqlFilter fp in gp.UnplacedFilters)
+                {
+                    output.AppendIndented("FILTER(", 2);
+                    output.Append(this.FormatExpression(fp.Expression));
+                    output.AppendLine(")");
                 }
                 if (gp.Filter != null)
                 {
