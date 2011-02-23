@@ -306,9 +306,9 @@ namespace VDS.RDF.Writing.Formatting
             }
             else if (gp.IsSubQuery)
             {
-                output.Append('{');
-                output.Append(this.Format(((SubQueryPattern)gp.TriplePatterns[0]).SubQuery));
-                output.Append("}");
+                output.AppendLine("{");
+                output.AppendLineIndented(this.Format(((SubQueryPattern)gp.TriplePatterns[0]).SubQuery), 2);
+                output.AppendLine("}");
                 return output.ToString();
             }
             else if (gp.IsOptional)
@@ -398,9 +398,9 @@ namespace VDS.RDF.Writing.Formatting
             else if (tp is SubQueryPattern)
             {
                 SubQueryPattern subquery = (SubQueryPattern)tp;
-                output.Append("{ ");
-                output.Append(this.Format(subquery.SubQuery));
-                output.Append(" }");
+                output.AppendLine("{");
+                output.AppendLineIndented(this.Format(subquery.SubQuery), 2);
+                output.AppendLine("}");
             }
             else if (tp is PropertyPathPattern)
             {

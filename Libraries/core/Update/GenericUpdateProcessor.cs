@@ -406,7 +406,12 @@ namespace VDS.RDF.Update
                                             if (s.ContainsVariable(gp.GraphSpecifier.Value))
                                             {
                                                 INode temp = s[gp.GraphSpecifier.Value.Substring(1)];
-                                                if (temp.NodeType == NodeType.Uri)
+                                                if (temp == null)
+                                                {
+                                                    //If the Variable is not bound then skip
+                                                    continue;
+                                                }
+                                                else if (temp.NodeType == NodeType.Uri)
                                                 {
                                                     graphUri = temp.ToSafeString();
                                                 }
@@ -661,7 +666,12 @@ namespace VDS.RDF.Update
                                             if (s.ContainsVariable(gp.GraphSpecifier.Value))
                                             {
                                                 INode temp = s[gp.GraphSpecifier.Value.Substring(1)];
-                                                if (temp.NodeType == NodeType.Uri)
+                                                if (temp == null)
+                                                {
+                                                    //If the Variable is not bound then skip
+                                                    continue;
+                                                }
+                                                else if (temp.NodeType == NodeType.Uri)
                                                 {
                                                     graphUri = temp.ToSafeString();
                                                 }
@@ -895,7 +905,12 @@ namespace VDS.RDF.Update
                                             if (s.ContainsVariable(gp.GraphSpecifier.Value))
                                             {
                                                 INode temp = s[gp.GraphSpecifier.Value.Substring(1)];
-                                                if (temp.NodeType == NodeType.Uri)
+                                                if (temp == null)
+                                                {
+                                                    //If the Variable is not bound then skip
+                                                    continue;
+                                                }
+                                                else if (temp.NodeType == NodeType.Uri)
                                                 {
                                                     graphUri = temp.ToSafeString();
                                                 }
@@ -970,7 +985,12 @@ namespace VDS.RDF.Update
                                             if (s.ContainsVariable(gp.GraphSpecifier.Value))
                                             {
                                                 INode temp = s[gp.GraphSpecifier.Value.Substring(1)];
-                                                if (temp.NodeType == NodeType.Uri)
+                                                if (temp == null)
+                                                {
+                                                    //If the Variable is not bound then skip
+                                                    continue;
+                                                }
+                                                else if (temp.NodeType == NodeType.Uri)
                                                 {
                                                     graphUri = temp.ToSafeString();
                                                 }

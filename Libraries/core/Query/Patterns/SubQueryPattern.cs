@@ -104,6 +104,12 @@ namespace VDS.RDF.Query.Patterns
                 try
                 {
                     context.OutputMultiset = query.Evaluate(subcontext);
+
+                    //If the Subquery contains a GROUP BY it may return a Group Multiset in which case we must flatten this to a Multiset
+                    if (context.OutputMultiset is GroupMultiset)
+                    {
+                        context.OutputMultiset = new Multiset((GroupMultiset)context.OutputMultiset);
+                    }
                 }
                 catch (RdfQueryException queryEx)
                 {

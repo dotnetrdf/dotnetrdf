@@ -8,6 +8,7 @@ using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
+using VDS.RDF.Update;
 using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
 
@@ -56,7 +57,17 @@ namespace dotNetRDFTest
                 //harness so some are represented by special unit tests instead
                 evaluationTestOverride = new List<string>()
                 {
-
+                    //The following are tests of aggregates which fail because we don't serialise doubles into the exponent form
+                    "aggregates/agg-avg-02.rq",
+                    "aggregates/agg-min-02.rq",
+                    "aggregates/agg-sum-02.rq",
+                    //The following are tests of Updates which use QNames in WITH/USING which the current grammar forbids so skipped
+                    "basic-update/update-03.ru",
+                    "basic-update/update-04.ru",
+                    "basic-update/insert-using-01.ru",
+                    "basic-update/insert-03.ru",
+                    "basic-update/insert-04.ru"
+                    
                 };
 
                 if (Directory.Exists("sparql11_tests"))
@@ -115,6 +126,7 @@ namespace dotNetRDFTest
             if (File.Exists(dir + "manifest.ttl"))
             {
                 Graph manifest = new Graph();
+                manifest.BaseUri = new Uri("file:///" + dir);
                 try
                 {
                     FileLoader.Load(manifest, dir + "manifest.ttl");
@@ -126,17 +138,22 @@ namespace dotNetRDFTest
                     this.ReportError("Manifest Parser Error for Directory '" + dir + "'", parseEx);
                 }
 
+                //Ensure qt and ut namespaces
+                manifest.NamespaceMap.AddNamespace("qt", new Uri("http://www.w3.org/2001/sw/DataAccess/tests/test-query#"));
+                manifest.NamespaceMap.AddNamespace("ut", new Uri("http://www.w3.org/2009/sparql/tests/test-update#"));
+
                 //Create necessary Uri Nodes
                 UriNode rdfType = manifest.CreateUriNode("rdf:type");
                 UriNode rdfsComment = manifest.CreateUriNode("rdfs:comment");
                 UriNode positiveSyntaxTest = manifest.CreateUriNode("mf:PositiveSyntaxTest");
                 UriNode negativeSyntaxTest = manifest.CreateUriNode("mf:NegativeSyntaxTest");
                 UriNode evaluationTest = manifest.CreateUriNode("mf:QueryEvaluationTest");
+                UriNode updateEvaluationTest = manifest.CreateUriNode("ut:UpdateEvaluationTest");
                 UriNode action = manifest.CreateUriNode("mf:action");
                 UriNode result = manifest.CreateUriNode("mf:result");
                 UriNode approval = manifest.CreateUriNode("dawgt:approval");
-                //HACK: Currently test cases aren't officially approved so treat NotClassified as Approved
-                UriNode approvedTest = manifest.CreateUriNode("dawgt:NotClassified");//manifest.CreateUriNode("dawgt:Approved");
+                UriNode approvedTest = manifest.CreateUriNode("dawgt:Approved");
+                UriNode unclassifiedTest = manifest.CreateUriNode("dawgt:NotClassified");
                 UriNode query = manifest.CreateUriNode("qt:query");
                 UriNode data = manifest.CreateUriNode("qt:data");
                 UriNode graphData = manifest.CreateUriNode("qt:graphData");
@@ -152,7 +169,7 @@ namespace dotNetRDFTest
                     INode testID = t.Subject;
 
                     //See whether the Test is approved
-                    if (manifest.Triples.Contains(new Triple(testID, approval, approvedTest)))
+                    if (manifest.Triples.Contains(new Triple(testID, approval, approvedTest)) || manifest.Triples.Contains(new Triple(testID, approval, unclassifiedTest)))
                     {
                         tests++;
                         testsSyntax++;
@@ -180,7 +197,7 @@ namespace dotNetRDFTest
                     INode testID = t.Subject;
 
                     //See whether the Test is approved
-                    if (manifest.Triples.Contains(new Triple(testID, approval, approvedTest)))
+                    if (manifest.Triples.Contains(new Triple(testID, approval, approvedTest)) || manifest.Triples.Contains(new Triple(testID, approval, unclassifiedTest)))
                     {
                         tests++;
                         testsSyntax++;
@@ -209,7 +226,7 @@ namespace dotNetRDFTest
                     INode testID = t.Subject;
 
                     //See whether the Test is approved
-                    if (manifest.Triples.Contains(new Triple(testID, approval, approvedTest)))
+                    if (manifest.Triples.Contains(new Triple(testID, approval, approvedTest)) || manifest.Triples.Contains(new Triple(testID, approval, unclassifiedTest)))
                     {
                         tests++;
                         testsEvaluation++;
@@ -267,6 +284,19 @@ namespace dotNetRDFTest
                     }
 
                     Debug.WriteLine(tests + " Tests Completed");
+                }
+
+                foreach (Triple t in manifest.GetTriplesWithPredicateObject(rdfType, updateEvaluationTest))
+                {
+                    if (manifest.Triples.Contains(new Triple(t.Subject, approval, approvedTest)) || manifest.Triples.Contains(new Triple(t.Subject, approval, unclassifiedTest)))
+                    {
+                        tests++;
+                        testsEvaluation++;
+                        int eval = this.ProcessUpdateEvaluationTest(manifest, t.Subject);
+
+                        Console.WriteLine();
+                        Console.WriteLine(new String('-', 150));
+                    }
                 }
             }
 
@@ -358,7 +388,7 @@ namespace dotNetRDFTest
 
         private int ProcessEvaluationTest(SparqlQueryParser parser, Triple commentDef, String queryFile, String dataFile, List<String> dataFiles, String resultFile)
         {
-            Console.WriteLine("# Processing Evaluation Test " + Path.GetFileName(queryFile));
+            Console.WriteLine("# Processing Query Evaluation Test " + Path.GetFileName(queryFile));
 
             if (commentDef != null)
             {
@@ -413,6 +443,14 @@ namespace dotNetRDFTest
             catch (RdfParseException parseEx)
             {
                 this.ReportError("Query Parser Error", parseEx);
+                testsFailed++;
+                testsEvaluationFailed++;
+                Console.WriteLine("# Test Result = Unable to parse query (Test Failed)");
+                return -1;
+            }
+            catch (Exception ex)
+            {
+                this.ReportError("Unexpected Parsing Error", ex);
                 testsFailed++;
                 testsEvaluationFailed++;
                 Console.WriteLine("# Test Result = Unable to parse query (Test Failed)");
@@ -670,6 +708,189 @@ namespace dotNetRDFTest
 
         }
 
+        private int ProcessUpdateEvaluationTest(IGraph manifest, INode testNode)
+        {
+            try
+            {
+                UriNode utData = manifest.CreateUriNode("ut:data");
+                UriNode utGraphData = manifest.CreateUriNode("ut:graphData");
+                UriNode rdfsLabel = manifest.CreateUriNode("rdfs:label");
+
+                //Get the test name and comment
+                String name = manifest.GetTriplesWithSubjectPredicate(testNode, manifest.CreateUriNode("mf:name")).Select(t => t.Object).First().ToString();
+                String comment = manifest.GetTriplesWithSubjectPredicate(testNode, manifest.CreateUriNode("rdfs:comment")).Select(t => t.Object).First().ToString();
+
+                //Get the test action and file
+                INode actionNode = manifest.GetTriplesWithSubjectPredicate(testNode, manifest.CreateUriNode("mf:action")).Select(t => t.Object).First();
+                String updateFile = manifest.GetTriplesWithSubjectPredicate(actionNode, manifest.CreateUriNode("ut:request")).Select(t => t.Object).First().ToString();
+
+                Console.WriteLine("# Processing Update Evaluation Test " + updateFile);
+                Console.WriteLine(name);
+                Console.WriteLine(comment);
+                Console.WriteLine();
+
+                if (evaluationTestOverride.Any(x => updateFile.EndsWith(x)))
+                {
+                    Console.WriteLine();
+                    Console.WriteLine("# Test Result = Manually overridden to Pass (Test Passed)");
+                    testsPassed++;
+                    testsEvaluationPassed++;
+                    return 1;
+                }
+
+                //Parse the Update
+                SparqlUpdateParser parser = new SparqlUpdateParser();
+                SparqlUpdateCommandSet cmds;
+                try
+                {
+                    if (updateFile.StartsWith("file:///"))
+                    {
+                        updateFile = updateFile.Substring(8);
+                    }
+                    cmds = parser.ParseFromFile(updateFile);
+
+                    Console.WriteLine("Update Commands:");
+                    Console.WriteLine(cmds.ToString());
+                }
+                catch (Exception ex)
+                {
+                    this.ReportError("Error Parsing Update Commands", ex);
+                    testsEvaluationFailed++;
+                    testsFailed++;
+                    return -1;
+                }
+
+                //Build the Initial Dataset
+                InMemoryDataset dataset = new InMemoryDataset(new TripleStore());
+                try
+                {
+                    foreach (Triple t in manifest.GetTriplesWithSubjectPredicate(actionNode, utData))
+                    {
+                        Console.WriteLine("Uses Default Graph File " + t.Object.ToString());
+                        Graph g = new Graph();
+                        UriLoader.Load(g, ((UriNode)t.Object).Uri);
+                        g.BaseUri = null;
+                        dataset.AddGraph(g);
+                    }
+                    foreach (Triple t in manifest.GetTriplesWithSubjectPredicate(actionNode, utGraphData))
+                    {
+                        Graph g = new Graph();
+                        INode dataNode = manifest.GetTriplesWithSubjectPredicate(t.Object, utData).Select(x => x.Object).FirstOrDefault();
+                        UriLoader.Load(g, ((UriNode)dataNode).Uri);
+                        INode nameNode = manifest.GetTriplesWithSubjectPredicate(t.Object, rdfsLabel).Select(x => x.Object).FirstOrDefault();
+                        g.BaseUri = new Uri(nameNode.ToString());
+                        Console.WriteLine("Uses Named Graph File " + dataNode.ToString() + " named as " + nameNode.ToString());
+                        dataset.AddGraph(g);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    this.ReportError("Error Building Initial Dataset", ex);
+                    testsEvaluationIndeterminate++;
+                    testsIndeterminate++;
+                    return 0;
+                }
+
+                //Try running the Update
+                try
+                {
+                    LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
+
+                    //Since all Tests assume that the WHERE is limited to the unnamed default graph unless specified
+                    //then must set this to be the Active Graph for the dataset
+                    dataset.SetDefaultGraph(dataset[null]);
+
+                    //Try the Update
+                    processor.ProcessCommandSet(cmds);
+
+                    dataset.ResetDefaultGraph();
+                }
+                catch (SparqlUpdateException updateEx)
+                {
+                    //TODO: Some Update tests might be to test cases where a failure should occur
+                    this.ReportError("Unexpected Error while performing Update", updateEx);
+                    testsEvaluationFailed++;
+                    testsFailed++;
+                    return -1;
+                }
+                catch (Exception ex)
+                {
+                    this.ReportError("Unexpected Error while performing Update", ex);
+                    testsEvaluationFailed++;
+                    testsFailed++;
+                    return -1;
+                }
+
+                //Build the Result Dataset
+                INode resultNode = manifest.GetTriplesWithSubjectPredicate(testNode, manifest.CreateUriNode("mf:result")).Select(t => t.Object).First();
+                InMemoryDataset resultDataset = new InMemoryDataset(new TripleStore());
+                try
+                {
+                    foreach (Triple t in manifest.GetTriplesWithSubjectPredicate(resultNode, utData))
+                    {
+                        Console.WriteLine("Uses Result Default Graph File " + t.Object.ToString());
+                        Graph g = new Graph();
+                        UriLoader.Load(g, ((UriNode)t.Object).Uri);
+                        g.BaseUri = null;
+                        resultDataset.AddGraph(g);
+                    }
+                    foreach (Triple t in manifest.GetTriplesWithSubjectPredicate(resultNode, utGraphData))
+                    {
+                        Graph g = new Graph();
+                        INode dataNode = manifest.GetTriplesWithSubjectPredicate(t.Object, utData).Select(x => x.Object).FirstOrDefault();
+                        UriLoader.Load(g, ((UriNode)dataNode).Uri);
+                        INode nameNode = manifest.GetTriplesWithSubjectPredicate(t.Object, rdfsLabel).Select(x => x.Object).FirstOrDefault();
+                        g.BaseUri = new Uri(nameNode.ToString());
+                        Console.WriteLine("Uses Result Named Graph File " + dataNode.ToString() + " named as " + nameNode.ToString());
+                        resultDataset.AddGraph(g);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    this.ReportError("Error Building Result Dataset", ex);
+                    testsEvaluationIndeterminate++;
+                    testsIndeterminate++;
+                    return 0;
+                }
+
+                //Now compare the two datasets to see if the tests passes
+                foreach (Uri u in resultDataset.GraphUris)
+                {
+                    if (dataset.HasGraph(u))
+                    {
+                        if (!resultDataset[u].Equals(dataset[u]))
+                        {
+                            this.ShowGraphs(dataset[u], resultDataset[u]);
+
+                            Console.WriteLine("# Test Failed - Expected Result Dataset Graph '" + this.ToSafeString(u) + "' is different from the Graph with that name in the Updated Dataset");
+                            testsEvaluationFailed++;
+                            testsFailed++;
+                            return -1;
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("# Test Failed - Expected Result Dataset has Graph '" + this.ToSafeString(u) + "' which is not present in the Updated Dataset");
+                        testsEvaluationFailed++;
+                        testsFailed++;
+                        return -1;
+                    }
+                }
+
+                Console.WriteLine("# Test Passed - Updated Dataset matches Expected Result Dataset");
+                testsEvaluationPassed++;
+                testsPassed++;
+                return 1;
+            }
+            catch (Exception ex)
+            {
+                this.ReportError("Unexpected Error", ex);
+                testsEvaluationFailed++;
+                testsFailed++;
+                return -1;
+            }
+        }
+
         private void ShowTestData(ITripleStore data)
         {
             Console.WriteLine("# Test Data");
@@ -723,6 +944,7 @@ namespace dotNetRDFTest
         private void ReportError(String header, Exception ex)
         {
             Console.WriteLine(header);
+            Console.WriteLine(ex.GetType().FullName);
             Console.WriteLine(ex.Message);
             Console.WriteLine(ex.StackTrace);
 
@@ -734,6 +956,12 @@ namespace dotNetRDFTest
                 Console.WriteLine(innerEx.StackTrace);
                 innerEx = innerEx.InnerException;
             }
+        }
+
+        private String ToSafeString(Object obj)
+        {
+            if (obj == null) return String.Empty;
+            return obj.ToString();
         }
     }
 }

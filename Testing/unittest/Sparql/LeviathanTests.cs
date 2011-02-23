@@ -12,6 +12,7 @@ using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Functions;
 using VDS.RDF.Query.Filters;
 using VDS.RDF.Query.Patterns;
+using VDS.RDF.Update;
 
 namespace VDS.RDF.Test.Sparql
 {
@@ -454,6 +455,15 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
             {
                 Assert.Fail("Query should have returned a SPARQL Result Set");
             }
+        }
+
+        [TestMethod]
+        public void SparqlDatasetListGraphs()
+        {
+            InMemoryDataset dataset = new InMemoryDataset(new TripleStore());
+            LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
+
+            Assert.IsTrue(dataset.GraphUris.Count() == 1, "Should be 1 Graph as the Update Processor should ensure a Default unnamed Graph exists");
         }
 
         //[TestMethod]

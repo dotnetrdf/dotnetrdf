@@ -297,6 +297,11 @@ namespace VDS.RDF.Update.Commands
                                     //Any other Graph Specifier we have to ignore this solution
                                     continue;
                             }
+                            
+                            //If the Dataset doesn't contain the Graph then no need to do the Deletions
+                            if (!context.Data.HasGraph(new Uri(graphUri))) continue;
+
+                            //Do the actual Deletions
                             IGraph h = context.Data.GetModifiableGraph(new Uri(graphUri));
                             ConstructContext constructContext = new ConstructContext(h, s, true);
                             foreach (ITriplePattern p in gp.TriplePatterns)

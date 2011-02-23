@@ -139,7 +139,7 @@ namespace VDS.RDF.Query.Patterns
     /// <summary>
     /// Interface for Triple Patterns that represent Assignment operators
     /// </summary>
-    public interface IAssignmentPattern : ITriplePattern
+    public interface IAssignmentPattern : ITriplePattern, IComparable<IAssignmentPattern>
     {
         /// <summary>
         /// Gets the Assignment Expression that is used

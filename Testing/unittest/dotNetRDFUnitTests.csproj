@@ -79,7 +79,7 @@
     <Compile Include="Parsing\LoaderTests.cs" />
     <Compile Include="NamespaceMapperTest.cs" />
     <Compile Include="NativeStoreTests.cs" />
-    <Compile Include="OntologyTests.cs" />
+    <Compile Include="Ontology\OntologyTests.cs" />
     <Compile Include="Parsing\ParserTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sparql\SparqlTests.cs" />

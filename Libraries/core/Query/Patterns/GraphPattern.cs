@@ -874,9 +874,9 @@ namespace VDS.RDF.Query.Patterns
                 if (linebreaks) output.AppendLine();
             }
             //Unplaced Assignments
-            foreach (LetPattern lp in this._unplacedAssignments)
+            foreach (IAssignmentPattern ap in this._unplacedAssignments)
             {
-                output.Append(lp.ToString());
+                output.Append(ap.ToString());
                 if (linebreaks) output.AppendLine();
             }
             //Filters

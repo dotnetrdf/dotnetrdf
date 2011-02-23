@@ -8,7 +8,7 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Query.Inference;
 
 
-namespace VDS.RDF.Test
+namespace VDS.RDF.Test.Ontology
 {
     [TestClass]
     public class OntologyTests
@@ -203,6 +203,48 @@ namespace VDS.RDF.Test
             foreach (Triple t in h.Triples)
             {
                 Console.WriteLine(t.ToString());
+            }
+        }
+
+        [TestMethod]
+        public void OntologyDomainAndRangeOfClass()
+        {
+            OntologyGraph g = new OntologyGraph();
+            //Load your data into the Graph from somewhere...
+            FileLoader.Load(g, "InferenceTest.ttl");
+
+            //Get the Class of interest
+            OntologyClass cls = g.CreateOntologyClass(new Uri("http://example.org/vehicles/Vehicle"));
+
+            //Find Triples where Predicate is rdfs:range or rdfs:domain and the Object is the Class
+            UriNode rdfsRange = g.CreateUriNode(new Uri(NamespaceMapper.RDFS + "range"));
+            UriNode rdfsDomain = g.CreateUriNode(new Uri(NamespaceMapper.RDFS + "domain"));
+            List<OntologyProperty> ranges = new List<OntologyProperty>();
+            List<OntologyProperty> domains = new List<OntologyProperty>();
+            foreach (Triple t in cls.TriplesWithObject)
+            {
+                if (t.Predicate.Equals(rdfsRange))
+                {
+                    ranges.Add(new OntologyProperty(t.Subject, g));
+                }
+                else if (t.Predicate.Equals(rdfsDomain))
+                {
+                    domains.Add(new OntologyProperty(t.Subject, g));
+                }
+            }
+
+            //Do whatever you want with the Ranges and Domains...
+
+            Console.WriteLine("Ranges");
+            foreach (OntologyProperty range in ranges)
+            {
+                Console.WriteLine(range.ToString());
+            }
+            Console.WriteLine();
+            Console.WriteLine("Domains");
+            foreach (OntologyProperty domain in domains)
+            {
+                Console.WriteLine(domain.ToString());
             }
         }
     }

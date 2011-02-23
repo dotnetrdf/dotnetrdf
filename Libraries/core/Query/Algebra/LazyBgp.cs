@@ -229,7 +229,7 @@ namespace VDS.RDF.Query.Algebra
             BaseMultiset initialInput, localOutput, results;
 
             //Determine whether the Pattern modifies the existing Input rather than joining to it
-            bool modifies = (this._triplePatterns[pattern] is FilterPattern || this._triplePatterns[pattern] is BindPattern);
+            bool modifies = (this._triplePatterns[pattern] is FilterPattern);
             bool extended = (pattern > 0 && this._triplePatterns[pattern-1] is BindPattern);
             bool modified = (pattern > 0 && this._triplePatterns[pattern-1] is FilterPattern);
 
@@ -521,7 +521,7 @@ namespace VDS.RDF.Query.Algebra
                         }
                         catch (RdfQueryException)
                         {
-                            //Equivalent to no assignment
+                            //Equivalent to no assignment but the solution is preserved
                         }
                         context.OutputMultiset.Add(x);
                     }

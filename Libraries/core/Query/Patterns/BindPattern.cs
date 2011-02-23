@@ -45,7 +45,7 @@ namespace VDS.RDF.Query.Patterns
     /// <summary>
     /// Class for representing BIND assignments in SPARQL Queries
     /// </summary>
-    public class BindPattern : BaseTriplePattern, IComparable<BindPattern>, IAssignmentPattern
+    public class BindPattern : BaseTriplePattern, IComparable<BindPattern>, IComparable<IAssignmentPattern>, IAssignmentPattern
     {
         private String _var;
         private ISparqlExpression _expr;
@@ -106,8 +106,9 @@ namespace VDS.RDF.Query.Patterns
                     }
                     catch
                     {
-                        //If an error occurs then no assignment occurs
+                        //No assignment if there's an error but the solution is preserved
                     }
+                    context.OutputMultiset.Add(s);
                 }
                 context.OutputMultiset = new IdentityMultiset();
             }
@@ -168,6 +169,16 @@ namespace VDS.RDF.Query.Patterns
         /// <param name="other">Bind to compare to</param>
         /// <returns>Just calls the base compare method since that implements all the logic we need</returns>
         public int CompareTo(BindPattern other)
+        {
+            return base.CompareTo(other);
+        }
+
+        /// <summary>
+        /// Compares this Bind to another Bind
+        /// </summary>
+        /// <param name="other">Bind to compare to</param>
+        /// <returns>Just calls the base compare method since that implements all the logic we need</returns>
+        public int CompareTo(IAssignmentPattern other)
         {
             return base.CompareTo(other);
         }

@@ -279,7 +279,12 @@ namespace VDS.RDF.Update.Commands
                                     if (s.ContainsVariable(gp.GraphSpecifier.Value))
                                     {
                                         INode temp = s[gp.GraphSpecifier.Value.Substring(1)];
-                                        if (temp.NodeType == NodeType.Uri)
+                                        if (temp == null)
+                                        {
+                                            //If the Variable is not bound then skip
+                                            continue;
+                                        }
+                                        else if (temp.NodeType == NodeType.Uri)
                                         {
                                             graphUri = temp.ToSafeString();
                                         }
@@ -299,6 +304,11 @@ namespace VDS.RDF.Update.Commands
                                     //Any other Graph Specifier we have to ignore this solution
                                     continue;
                             }
+
+                            //If the Dataset doesn't contain the Graph then no need to do the Deletions
+                            if (!context.Data.HasGraph(new Uri(graphUri))) continue;
+
+                            //Do the actual Deletions
                             IGraph h = context.Data.GetModifiableGraph(new Uri(graphUri));
                             ConstructContext constructContext = new ConstructContext(h, s, true);
                             foreach (ITriplePattern p in gp.TriplePatterns)
@@ -377,7 +387,23 @@ namespace VDS.RDF.Update.Commands
                                     //Any other Graph Specifier we have to ignore this solution
                                     continue;
                             }
-                            IGraph h = context.Data.GetModifiableGraph(new Uri(graphUri));
+
+                            //Ensure the Graph we're inserting to exists in the dataset creating it if necessary
+                            IGraph h;
+                            Uri destUri = new Uri(graphUri);
+                            if (context.Data.HasGraph(destUri))
+                            {
+                                h = context.Data.GetModifiableGraph(destUri);
+                            }
+                            else
+                            {
+                                h = new Graph();
+                                h.BaseUri = destUri;
+                                context.Data.AddGraph(h);
+                                h = context.Data.GetModifiableGraph(destUri);
+                            }
+
+                            //Do the actual Insertions
                             ConstructContext constructContext = new ConstructContext(h, s, true);
                             foreach (ITriplePattern p in gp.TriplePatterns)
                             {

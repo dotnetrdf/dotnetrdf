@@ -213,7 +213,18 @@ namespace VDS.RDF.Update.Commands
                 }
 
                 //Get the Graph to which we are inserting
-                IGraph g = context.Data.GetModifiableGraph(this._graphUri);
+                IGraph g;
+                if (context.Data.HasGraph(this._graphUri))
+                {
+                    g = context.Data.GetModifiableGraph(this._graphUri);
+                }
+                else
+                {
+                    g = new Graph();
+                    g.BaseUri = this._graphUri;
+                    context.Data.AddGraph(g);
+                    g = context.Data.GetModifiableGraph(this._graphUri);
+                }
 
                 //Insert the Triples for each Solution
                 foreach (Set s in queryContext.OutputMultiset.Sets)
@@ -277,7 +288,23 @@ namespace VDS.RDF.Update.Commands
                                     //Any other Graph Specifier we have to ignore this solution
                                     continue;
                             }
-                            IGraph h = context.Data.GetModifiableGraph(new Uri(graphUri));
+
+                            //Ensure the Graph we're inserting to exists in the dataset creating it if necessary
+                            IGraph h;
+                            Uri destUri = new Uri(graphUri);
+                            if (context.Data.HasGraph(destUri))
+                            {
+                                h = context.Data.GetModifiableGraph(destUri);
+                            }
+                            else
+                            {
+                                h = new Graph();
+                                h.BaseUri = destUri;
+                                context.Data.AddGraph(h);
+                                h = context.Data.GetModifiableGraph(destUri);
+                            }
+
+                            //Do the actual Insertions
                             ConstructContext constructContext = new ConstructContext(h, s, true);
                             foreach (ITriplePattern p in gp.TriplePatterns)
                             {

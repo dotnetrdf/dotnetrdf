@@ -98,6 +98,22 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
+        /// Creates a new Multiset by flattening a Group Multiset
+        /// </summary>
+        /// <param name="multiset">Group Multiset</param>
+        internal Multiset(GroupMultiset multiset)
+        {
+            foreach (String var in multiset.Variables)
+            {
+                this.AddVariable(var);
+            }
+            foreach (Set s in multiset.Sets)
+            {
+                this.Add(s);
+            }
+        }
+
+        /// <summary>
         /// Creates a new Multiset from a Bindings Pattern
         /// </summary>
         /// <param name="bindings">Bindings Pattern</param>
