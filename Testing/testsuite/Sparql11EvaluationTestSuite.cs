@@ -79,6 +79,8 @@ namespace dotNetRDFTest
                     "delete-insert/delete-insert-05.ru",
                     "delete-insert/delete-insert-07.ru",
                     "delete-insert/delete-insert-07b.ru",
+                    //The following are tests where the test cases are in the manifest but missing
+                    "functions/notin01.rq"
                     
                 };
 
@@ -621,37 +623,26 @@ namespace dotNetRDFTest
                     return 0;
                 }
 
-                try
+                ourResults.Trim();
+                expectedResults.Trim();
+                if (ourResults.Equals(expectedResults))
                 {
-                    ourResults.Trim();
-                    expectedResults.Trim();
-                    if (ourResults.Equals(expectedResults))
-                    {
-                        testsPassed++;
-                        testsEvaluationPassed++;
-                        Console.WriteLine("# Test Result - Result Set as expected (Test Passed)");
-                        return 1;
-                    }
-                    else
-                    {
-                        Console.WriteLine("Final Query");
-                        Console.WriteLine(query.ToString());
-                        Console.WriteLine();
-                        this.ShowTestData(store);
-                        this.ShowResultSets(ourResults, expectedResults);
-                        testsFailed++;
-                        testsEvaluationFailed++;
-                        Console.WriteLine("# Test Result - Result Set not as expected (Test Failed)");
-                        return -1;
-                    }
+                    testsPassed++;
+                    testsEvaluationPassed++;
+                    Console.WriteLine("# Test Result - Result Set as expected (Test Passed)");
+                    return 1;
                 }
-                catch (NotImplementedException)
+                else
                 {
+                    Console.WriteLine("Final Query");
+                    Console.WriteLine(query.ToString());
+                    Console.WriteLine();
+                    this.ShowTestData(store);
                     this.ShowResultSets(ourResults, expectedResults);
-                    testsIndeterminate++;
-                    testsEvaluationIndeterminate++;
-                    Console.WriteLine("# Test Result - Unable to establish if Result Set was as expected (Test Indeterminate)");
-                    return 0;
+                    testsFailed++;
+                    testsEvaluationFailed++;
+                    Console.WriteLine("# Test Result - Result Set not as expected (Test Failed)");
+                    return -1;
                 }
             }
             else if (results is Graph)

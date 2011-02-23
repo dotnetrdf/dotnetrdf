@@ -74,6 +74,9 @@ namespace VDS.RDF.Query.Expressions.Functions
                     case SparqlNumericType.Decimal:
                         return Math.Abs(a.DecimalValue(context, bindingID));
 
+                    case SparqlNumericType.Float:
+                        return (float)Math.Abs(a.DoubleValue(context, bindingID));
+
                     case SparqlNumericType.Double:
                         return Math.Abs(a.DoubleValue(context, bindingID));
                         
@@ -155,6 +158,9 @@ namespace VDS.RDF.Query.Expressions.Functions
                     case SparqlNumericType.Integer:
                     case SparqlNumericType.Decimal:
 #endif
+                    case SparqlNumericType.Float:
+                        return (float)Math.Ceiling(a.DoubleValue(context, bindingID));
+
                     case SparqlNumericType.Double:
                         return Math.Ceiling(a.DoubleValue(context, bindingID));
 
@@ -237,6 +243,9 @@ namespace VDS.RDF.Query.Expressions.Functions
                     case SparqlNumericType.Decimal:
 #endif
 
+                    case SparqlNumericType.Float:
+                        return (float)Math.Floor(a.DoubleValue(context, bindingID));
+
                     case SparqlNumericType.Double:
                         return Math.Floor(a.DoubleValue(context, bindingID));
 
@@ -309,13 +318,17 @@ namespace VDS.RDF.Query.Expressions.Functions
                 switch (a.NumericType(context, bindingID))
                 {
                     case SparqlNumericType.Integer:
-                        return (long)Math.Round((decimal)a.IntegerValue(context, bindingID));
+                        //Rounding an Integer has no effect
+                        return a.IntegerValue(context, bindingID);
 
                     case SparqlNumericType.Decimal:
-                        return Math.Round(a.DecimalValue(context, bindingID));
+                        return Math.Round(a.DecimalValue(context, bindingID), MidpointRounding.AwayFromZero);
+
+                    case SparqlNumericType.Float:
+                        return (float)Math.Round(a.DoubleValue(context, bindingID), MidpointRounding.AwayFromZero);
 
                     case SparqlNumericType.Double:
-                        return Math.Round(a.DoubleValue(context, bindingID));
+                        return Math.Round(a.DoubleValue(context, bindingID), MidpointRounding.AwayFromZero);
 
                     default:
                         throw new RdfQueryException("Cannot evalute an Arithmetic Expression when the Numeric Type of the expression cannot be determined");
@@ -416,6 +429,9 @@ namespace VDS.RDF.Query.Expressions.Functions
 
                     case SparqlNumericType.Decimal:
                         return Math.Round(a.DecimalValue(context, bindingID), precision, MidpointRounding.ToEven);
+
+                    case SparqlNumericType.Float:
+                        return (float)Math.Round(a.DoubleValue(context, bindingID), MidpointRounding.ToEven);
 
                     case SparqlNumericType.Double:
                         return Math.Round(a.DoubleValue(context, bindingID), precision, MidpointRounding.ToEven);

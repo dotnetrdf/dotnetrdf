@@ -210,6 +210,8 @@ namespace VDS.RDF.Query
         {
             StringBuilder output = new StringBuilder();
 
+            if (this._resultValues.Count == 0) return "<Empty Result>";
+
             foreach (String var in this._resultValues.Keys)
             {
                 output.Append("?");

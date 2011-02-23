@@ -209,7 +209,7 @@ namespace VDS.RDF.Query.Expressions.Functions
         protected virtual String Hash(String input)
         {
             HashResult r = this._crypto.ComputeString(input, Encoding.UTF8);
-            return r.ToString();
+            return r.ToString().Replace("-","").ToLower();
         }
 
         /// <summary>

@@ -678,6 +678,7 @@ namespace VDS.RDF.Parsing
                         continue;
 
                     case Token.ABS:
+                    case Token.BNODE:
                     case Token.BOUND:
                     case Token.CEIL:
                     case Token.COALESCE:
@@ -702,6 +703,7 @@ namespace VDS.RDF.Parsing
                     case Token.MONTH:
                     case Token.NOTEXISTS:
                     case Token.NOW:
+                    case Token.RAND:
                     case Token.REGEX:
                     case Token.ROUND:
                     case Token.SAMETERM:
@@ -2136,6 +2138,7 @@ namespace VDS.RDF.Parsing
                     break;
 
                 case Token.ABS:
+                case Token.BNODE:
                 case Token.BOUND:
                 case Token.CEIL:
                 case Token.COALESCE:
@@ -2158,6 +2161,7 @@ namespace VDS.RDF.Parsing
                 case Token.MINUTES:
                 case Token.MONTH:
                 case Token.NOW:
+                case Token.RAND:
                 case Token.ROUND:
                 case Token.SAMETERM:
                 case Token.SECONDS:
@@ -2571,6 +2575,7 @@ namespace VDS.RDF.Parsing
                         break;
 
                     case Token.ABS:
+                    case Token.BNODE:
                     case Token.BOUND:
                     case Token.CEIL:
                     case Token.COALESCE:
@@ -2595,6 +2600,7 @@ namespace VDS.RDF.Parsing
                     case Token.MONTH:
                     case Token.NOTEXISTS:
                     case Token.NOW:
+                    case Token.RAND:
                     case Token.REGEX:
                     case Token.ROUND:
                     case Token.SAMETERM:
@@ -2709,23 +2715,55 @@ namespace VDS.RDF.Parsing
                         }
                         break;
 
+                    case Token.ABS:
+                    case Token.BNODE:
                     case Token.BOUND:
+                    case Token.CEIL:
                     case Token.COALESCE:
+                    case Token.CONCAT:
                     case Token.DATATYPEFUNC:
+                    case Token.DAY:
+                    case Token.ENCODEFORURI:
+                    case Token.EXISTS:
+                    case Token.FLOOR:
+                    case Token.HOURS:
                     case Token.IF:
                     case Token.IRI:
                     case Token.ISBLANK:
                     case Token.ISIRI:
                     case Token.ISLITERAL:
+                    case Token.ISNUMERIC:
                     case Token.ISURI:
                     case Token.LANG:
                     case Token.LANGMATCHES:
+                    case Token.LCASE:
+                    case Token.MINUTES:
+                    case Token.MONTH:
+                    case Token.NOTEXISTS:
+                    case Token.NOW:
+                    case Token.RAND:
                     case Token.REGEX:
+                    case Token.ROUND:
                     case Token.SAMETERM:
+                    case Token.SECONDS:
+                    case Token.SHA1:
+                    case Token.SHA224:
+                    case Token.SHA256:
+                    case Token.SHA384:
+                    case Token.SHA512:
                     case Token.STR:
+                    case Token.CONTAINS:
                     case Token.STRDT:
+                    case Token.STRENDS:
                     case Token.STRLANG:
+                    case Token.STRLEN:
+                    case Token.STRSTARTS:
+                    case Token.SUBSTR:
+                    case Token.TIMEZONE:
+                    case Token.TZ:
+                    case Token.UCASE:
                     case Token.URIFUNC:
+                    case Token.YEAR:
                     case Token.URI:
                     case Token.QNAME:
                         //Function Expression Group By
@@ -2836,23 +2874,55 @@ namespace VDS.RDF.Parsing
                     context.ExpressionParser.AllowAggregates = false;
                     break;
 
+                case Token.ABS:
+                case Token.BNODE:
                 case Token.BOUND:
+                case Token.CEIL:
                 case Token.COALESCE:
+                case Token.CONCAT:
                 case Token.DATATYPEFUNC:
+                case Token.DAY:
+                case Token.ENCODEFORURI:
+                case Token.EXISTS:
+                case Token.FLOOR:
+                case Token.HOURS:
                 case Token.IF:
                 case Token.IRI:
                 case Token.ISBLANK:
                 case Token.ISIRI:
                 case Token.ISLITERAL:
+                case Token.ISNUMERIC:
                 case Token.ISURI:
                 case Token.LANG:
                 case Token.LANGMATCHES:
+                case Token.LCASE:
+                case Token.MINUTES:
+                case Token.MONTH:
+                case Token.NOTEXISTS:
+                case Token.NOW:
+                case Token.RAND:
                 case Token.REGEX:
+                case Token.ROUND:
                 case Token.SAMETERM:
+                case Token.SECONDS:
+                case Token.SHA1:
+                case Token.SHA224:
+                case Token.SHA256:
+                case Token.SHA384:
+                case Token.SHA512:
                 case Token.STR:
+                case Token.CONTAINS:
                 case Token.STRDT:
+                case Token.STRENDS:
                 case Token.STRLANG:
+                case Token.STRLEN:
+                case Token.STRSTARTS:
+                case Token.SUBSTR:
+                case Token.TIMEZONE:
+                case Token.TZ:
+                case Token.UCASE:
                 case Token.URIFUNC:
+                case Token.YEAR:
                 case Token.URI:
                 case Token.QNAME:
                     //Built-in function/expression
@@ -3022,23 +3092,55 @@ namespace VDS.RDF.Parsing
                         next = context.Tokens.Peek();
                         switch (next.TokenType)
                         {
+                            case Token.ABS:
+                            case Token.BNODE:
                             case Token.BOUND:
+                            case Token.CEIL:
                             case Token.COALESCE:
+                            case Token.CONCAT:
                             case Token.DATATYPEFUNC:
+                            case Token.DAY:
+                            case Token.ENCODEFORURI:
+                            case Token.EXISTS:
+                            case Token.FLOOR:
+                            case Token.HOURS:
                             case Token.IF:
                             case Token.IRI:
                             case Token.ISBLANK:
                             case Token.ISIRI:
                             case Token.ISLITERAL:
+                            case Token.ISNUMERIC:
                             case Token.ISURI:
                             case Token.LANG:
                             case Token.LANGMATCHES:
+                            case Token.LCASE:
+                            case Token.MINUTES:
+                            case Token.MONTH:
+                            case Token.NOTEXISTS:
+                            case Token.NOW:
+                            case Token.RAND:
                             case Token.REGEX:
+                            case Token.ROUND:
                             case Token.SAMETERM:
+                            case Token.SECONDS:
+                            case Token.SHA1:
+                            case Token.SHA224:
+                            case Token.SHA256:
+                            case Token.SHA384:
+                            case Token.SHA512:
                             case Token.STR:
+                            case Token.CONTAINS:
                             case Token.STRDT:
+                            case Token.STRENDS:
                             case Token.STRLANG:
+                            case Token.STRLEN:
+                            case Token.STRSTARTS:
+                            case Token.SUBSTR:
+                            case Token.TIMEZONE:
+                            case Token.TZ:
+                            case Token.UCASE:
                             case Token.URIFUNC:
+                            case Token.YEAR:
                             case Token.URI:
                             case Token.QNAME:
                                 expr = this.TryParseFunctionExpression(context);

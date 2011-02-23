@@ -834,6 +834,10 @@ namespace VDS.RDF.Parsing.Tokens
                         //Bindings Keyword
                         this._lasttokentype = Token.BINDINGS;
                         return new BindingsKeywordToken(this.CurrentLine, this.StartPosition);
+                    case SparqlSpecsHelper.SparqlKeywordBNode:
+                        //BNode Keyword
+                        this._lasttokentype = Token.BNODE;
+                        return new BNodeKeywordToken(this.CurrentLine, this.StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordBound:
                         //Bound Function Keyword
                         this._lasttokentype = Token.BOUND;
@@ -1117,6 +1121,10 @@ namespace VDS.RDF.Parsing.Tokens
                                 throw Error("Unexpected ORDER encountered, the ORDER Keyword has already occurred in this Query");
                             }
                         }
+                    case SparqlSpecsHelper.SparqlKeywordRand:
+                        //Rand Keyword
+                        this._lasttokentype = Token.RAND;
+                        return new RandKeywordToken(this.CurrentLine, this.StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordReduced:
                         //Reduced Keyword
                         this._lasttokentype = Token.REDUCED;
@@ -1137,6 +1145,10 @@ namespace VDS.RDF.Parsing.Tokens
                         //Sample Keyword
                         this._lasttokentype = Token.SAMPLE;
                         return new SampleKeywordToken(this.CurrentLine, this.StartPosition);
+                    case SparqlSpecsHelper.SparqlKeywordSeconds:
+                        //Seconds Keywords
+                        this._lasttokentype = Token.SECONDS;
+                        return new SecondsKeywordToken(this.CurrentLine, this.StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordSeparator:
                         //Separator Keyword
                         this._lasttokentype = Token.SEPARATOR;

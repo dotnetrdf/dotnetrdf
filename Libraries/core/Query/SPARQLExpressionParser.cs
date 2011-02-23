@@ -376,6 +376,7 @@ namespace VDS.RDF.Query
                     return this.TryParseBrackettedExpression(tokens);
 
                 case Token.ABS:
+                case Token.BNODE:
                 case Token.BOUND:
                 case Token.CEIL:
                 case Token.COALESCE:
@@ -396,10 +397,12 @@ namespace VDS.RDF.Query
                 case Token.LANG:
                 case Token.LANGMATCHES:
                 case Token.LCASE:
+                case Token.MD5:
                 case Token.MINUTES:
                 case Token.MONTH:
                 case Token.NOTEXISTS:
                 case Token.NOW:
+                case Token.RAND:
                 case Token.REGEX:
                 case Token.ROUND:
                 case Token.SAMETERM:
@@ -569,6 +572,8 @@ namespace VDS.RDF.Query
             {
                 case Token.ABS:
                     return new AbsFunction(this.TryParseBrackettedExpression(tokens));
+                case Token.BNODE:
+                    return new BNodeFunction(this.TryParseBrackettedExpression(tokens));                
 
                 case Token.BOUND:
                     //Expect a Left Bracket, Variable and then a Right Bracket
@@ -672,6 +677,16 @@ namespace VDS.RDF.Query
                     if (next.TokenType != Token.RIGHTBRACKET) throw Error("Expected a Right Bracket after NOW( since the NOW() function does not take any arguments", next);
                     return new NowFunction();
 
+                case Token.RAND:
+                    //Expect a () after the Keyword Token
+                    next = tokens.Dequeue();
+                    if (next.TokenType != Token.LEFTBRACKET) throw Error("Expected a Left Bracket after a RAND keyword to call the RAND() function", next);
+                    next = tokens.Dequeue();
+                    if (next.TokenType != Token.RIGHTBRACKET) throw Error("Expected a Right Bracket after RAND( since the RAND() function does not take any arguments", next);
+                    return new RandFunction();
+
+                case Token.REGEX:
+                    return this.TryParseRegexExpression(tokens);
                 case Token.ROUND:
                     return new RoundFunction(this.TryParseBrackettedExpression(tokens));
                 case Token.SAMETERM:
@@ -715,8 +730,10 @@ namespace VDS.RDF.Query
                         return new SubStrFunction(strExpr, startExpr);
                     }
 
-                case Token.REGEX:
-                    return this.TryParseRegexExpression(tokens);
+                case Token.TIMEZONE:
+                    return new TimezoneFunction(this.TryParseBrackettedExpression(tokens));
+                case Token.TZ:
+                    return new TZFunction(this.TryParseBrackettedExpression(tokens));
                 case Token.UCASE:
                     return new UCaseFunction(this.TryParseBrackettedExpression(tokens));
                 case Token.YEAR:

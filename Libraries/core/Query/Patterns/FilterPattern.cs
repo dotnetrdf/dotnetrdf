@@ -80,6 +80,20 @@ namespace VDS.RDF.Query.Patterns
                 {
                     //If we get an IdentityMultiset then the FILTER only has an effect if there are no
                     //variables - otherwise it is not in scope and is ignored
+
+                    try
+                    {
+                        if (!this._filter.Expression.EffectiveBooleanValue(context, 0))
+                        {
+                            context.OutputMultiset = new NullMultiset();
+                            return;
+                        }
+                    }
+                    catch
+                    {
+                        context.OutputMultiset = new NullMultiset();
+                        return;
+                    }
                 }
             }
             else

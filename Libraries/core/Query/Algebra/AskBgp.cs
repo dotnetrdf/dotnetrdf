@@ -252,53 +252,77 @@ namespace VDS.RDF.Query.Algebra
                 ISparqlFilter filter = fp.Filter;
                 ISparqlExpression expr = filter.Expression;
 
-                //Find the first result of those we've got so f
-                foreach (int id in context.InputMultiset.SetIDs)
+                //Find the first result of those we've got so far that matches
+                if (context.InputMultiset is IdentityMultiset || context.InputMultiset.IsEmpty)
                 {
                     try
                     {
-                        if (expr.EffectiveBooleanValue(context, id))
+                        //If the Input is the Identity Multiset then the Output is either
+                        //the Identity/Null Multiset depending on whether the Expression evaluates to true
+                        if (expr.EffectiveBooleanValue(context, 0))
                         {
-                            resultsFound++;
-                            context.OutputMultiset.Add(context.InputMultiset[id]);
-
-                            //Recurse unless we're the last pattern
-                            if (pattern < this._triplePatterns.Count - 1)
-                            {
-                                results = this.StreamingEvaluate(context, pattern + 1, out halt);
-
-                                //If recursion leads to a halt then we halt and return immediately
-                                if (halt) return results;
-
-                                //Otherwise we need to keep going here
-                                //So must reset our input and outputs before continuing
-                                context.InputMultiset = initialInput;
-                                context.OutputMultiset = new Multiset();
-                                resultsFound--;
-                            }
-                            else
-                            {
-                                //If we're at the last pattern and we've found a match then we can halt
-                                halt = true;
-
-                                //Generate the final output and return it
-                                if (context.InputMultiset.IsDisjointWith(context.OutputMultiset))
-                                {
-                                    //Disjoint so do a Product
-                                    context.OutputMultiset = context.InputMultiset.Product(context.OutputMultiset);
-                                }
-                                else
-                                {
-                                    //Normal Join
-                                    context.OutputMultiset = context.InputMultiset.Join(context.OutputMultiset);
-                                }
-                                return context.OutputMultiset;
-                            }
+                            context.OutputMultiset = new IdentityMultiset();
+                        }
+                        else
+                        {
+                            context.OutputMultiset = new NullMultiset();
                         }
                     }
                     catch
                     {
-                        //Ignore expression evaluation errors
+                        //If Expression fails to evaluate then result is NullMultiset
+                        context.OutputMultiset = new NullMultiset();
+                    }
+                } 
+                else
+                {
+                    foreach (int id in context.InputMultiset.SetIDs)
+                    {
+                        try
+                        {
+                            if (expr.EffectiveBooleanValue(context, id))
+                            {
+                                resultsFound++;
+                                context.OutputMultiset.Add(context.InputMultiset[id]);
+
+                                //Recurse unless we're the last pattern
+                                if (pattern < this._triplePatterns.Count - 1)
+                                {
+                                    results = this.StreamingEvaluate(context, pattern + 1, out halt);
+
+                                    //If recursion leads to a halt then we halt and return immediately
+                                    if (halt) return results;
+
+                                    //Otherwise we need to keep going here
+                                    //So must reset our input and outputs before continuing
+                                    context.InputMultiset = initialInput;
+                                    context.OutputMultiset = new Multiset();
+                                    resultsFound--;
+                                }
+                                else
+                                {
+                                    //If we're at the last pattern and we've found a match then we can halt
+                                    halt = true;
+
+                                    //Generate the final output and return it
+                                    if (context.InputMultiset.IsDisjointWith(context.OutputMultiset))
+                                    {
+                                        //Disjoint so do a Product
+                                        context.OutputMultiset = context.InputMultiset.Product(context.OutputMultiset);
+                                    }
+                                    else
+                                    {
+                                        //Normal Join
+                                        context.OutputMultiset = context.InputMultiset.Join(context.OutputMultiset);
+                                    }
+                                    return context.OutputMultiset;
+                                }
+                            }
+                        }
+                        catch
+                        {
+                            //Ignore expression evaluation errors
+                        }
                     }
                 }
             }

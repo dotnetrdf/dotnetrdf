@@ -84,6 +84,22 @@ namespace VDS.RDF.Query.Algebra
                     //variables - otherwise it is not in scope and causes the Output to become Null
                     context.InputMultiset = new NullMultiset();
                 }
+                else
+                {
+                    try
+                    {
+                        if (!this._filter.Expression.EffectiveBooleanValue(context, 0))
+                        {
+                            context.OutputMultiset = new NullMultiset();
+                            return context.OutputMultiset;
+                        }
+                    }
+                    catch
+                    {
+                        context.OutputMultiset = new NullMultiset();
+                        return context.OutputMultiset;
+                    }
+                }
             }
             else
             {

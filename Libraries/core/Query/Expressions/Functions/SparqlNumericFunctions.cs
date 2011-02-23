@@ -136,6 +136,84 @@ namespace VDS.RDF.Query.Expressions.Functions
     }
 
     /// <summary>
+    /// Represents the SPARQL RAND() Function
+    /// </summary>
+    public class RandFunction : BaseArithmeticExpression
+    {
+        private Random _rnd = new Random();
+
+        /// <summary>
+        /// Creates a new SPARQL RAND() Function
+        /// </summary>
+        public RandFunction()
+            : base() { }
+
+        /// <summary>
+        /// Gets the Numeric Value of the Expression as evaluated in the given Context for the given Binding ID
+        /// </summary>
+        /// <param name="context">Evaluation Context</param>
+        /// <param name="bindingID">Binding ID</param>
+        /// <returns></returns>
+        public override object NumericValue(SparqlEvaluationContext context, int bindingID)
+        {
+            return this._rnd.NextDouble();
+        }
+
+        /// <summary>
+        /// Gets the Variables used in this Expression
+        /// </summary>
+        public override IEnumerable<string> Variables
+        {
+            get 
+            {
+                return Enumerable.Empty<String>(); 
+            }
+        }
+
+        /// <summary>
+        /// Gets the Type of this Expression
+        /// </summary>
+        public override SparqlExpressionType Type
+        {
+            get 
+            {
+                return SparqlExpressionType.Function; 
+            }
+        }
+
+        /// <summary>
+        /// Gets the Arguments of this Expression
+        /// </summary>
+        public override IEnumerable<ISparqlExpression> Arguments
+        {
+            get 
+            {
+                return Enumerable.Empty<ISparqlExpression>();
+            }
+        }
+
+        /// <summary>
+        /// Gets the Functor of this Expression
+        /// </summary>
+        public override string Functor
+        {
+            get
+            {
+                return SparqlSpecsHelper.SparqlKeywordRand;
+            }
+        }
+
+        /// <summary>
+        /// Gets the String representation of this Expression
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return SparqlSpecsHelper.SparqlKeywordRand + "()";
+        }
+    }
+
+    /// <summary>
     /// Represents the SPARQL ROUND() Function
     /// </summary>
     public class RoundFunction : XPathRoundFunction

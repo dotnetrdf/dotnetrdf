@@ -90,6 +90,17 @@ namespace VDS.RDF.Query.Expressions.Functions
         }
 
         /// <summary>
+        /// Gets the Type of the Expression
+        /// </summary>
+        public override SparqlExpressionType Type
+        {
+            get
+            {
+                return SparqlExpressionType.Function;
+            }
+        }
+
+        /// <summary>
         /// Gets the Functor of the Expression
         /// </summary>
         public override string Functor

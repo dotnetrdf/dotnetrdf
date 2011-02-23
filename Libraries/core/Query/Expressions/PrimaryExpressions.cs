@@ -363,7 +363,7 @@ namespace VDS.RDF.Query.Expressions
         /// <summary>
         /// Gets the Type of the Expression
         /// </summary>
-        public SparqlExpressionType Type
+        public virtual SparqlExpressionType Type
         {
             get
             {

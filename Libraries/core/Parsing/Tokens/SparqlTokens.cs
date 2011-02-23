@@ -200,6 +200,19 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
+    /// Token which represents the SPARQL BNODE Keyword
+    /// </summary>
+    public class BNodeKeywordToken : BaseToken
+    {
+        /// <summary>
+        /// Creates a new BNODE Keyword Token
+        /// </summary>
+        /// <param name="line">Line the Keyword occurs on</param>
+        /// <param name="pos">Position the Keyword occurs at</param>
+        public BNodeKeywordToken(int line, int pos) : base(Token.BNODE, "BNODE", line, line, pos, pos + 4) { }
+    }
+
+    /// <summary>
     /// Token which represents the SPARQL BOUND Keyword
     /// </summary>
     public class BoundKeywordToken : BaseToken
@@ -863,6 +876,19 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
+    /// Token which represents the SPARQL RAND Keyword
+    /// </summary>
+    public class RandKeywordToken : BaseToken
+    {
+        /// <summary>
+        /// Creates a new RAND Keyword Token
+        /// </summary>
+        /// <param name="line">Line the Keyword occurs on</param>
+        /// <param name="pos">Position the Keyword occurs at</param>
+        public RandKeywordToken(int line, int pos) : base(Token.RAND, "RAND", line, line, pos, pos + 4) { }
+    }
+
+    /// <summary>
     /// Token which represents the SPARQL REDUCED Keyword
     /// </summary>
     public class ReducedKeywordToken : BaseToken
@@ -1236,7 +1262,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// </summary>
         /// <param name="line">Line the Keyword occurs on</param>
         /// <param name="pos">Position the Keyword occurs at</param>
-        public UriKeywordToken(int line, int pos) : base(Token.URI, "URI", line, line, pos, pos + 3) { }
+        public UriKeywordToken(int line, int pos) : base(Token.URIFUNC, "URI", line, line, pos, pos + 3) { }
     }
 
     /// <summary>

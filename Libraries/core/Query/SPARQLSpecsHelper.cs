@@ -129,6 +129,7 @@ namespace VDS.RDF.Query
                       SparqlKeywordStrDt = "STRDT",
                       SparqlKeywordIri = "IRI",
                       SparqlKeywordUri = "URI",
+                      SparqlKeywordBNode = "BNODE",
                       SparqlKeywordIn = "IN",
                       SparqlKeywordNotIn = "NOT IN",
                       SparqlKeywordCoalesce = "COALESCE",
@@ -164,6 +165,7 @@ namespace VDS.RDF.Query
                       SparqlKeywordRound = "ROUND",
                       SparqlKeywordCeil = "CEIL",
                       SparqlKeywordFloor = "FLOOR",
+                      SparqlKeywordRand = "RAND",
                       SparqlKeywordNow = "NOW",
                       SparqlKeywordYear = "YEAR",
                       SparqlKeywordMonth = "MONTH",
@@ -225,6 +227,7 @@ namespace VDS.RDF.Query
         /// </summary>
         public static String[] FunctionKeywords = {   
                                                       SparqlKeywordAbs,
+                                                      SparqlKeywordBNode,
                                                       SparqlKeywordBound,
                                                       SparqlKeywordCeil,
                                                       SparqlKeywordCoalesce,
@@ -250,6 +253,7 @@ namespace VDS.RDF.Query
                                                       SparqlKeywordMonth,
                                                       SparqlKeywordNotIn,
                                                       SparqlKeywordNow,
+                                                      SparqlKeywordRand,
                                                       SparqlKeywordRegex, 
                                                       SparqlKeywordRound,
                                                       SparqlKeywordSameTerm, 
@@ -392,6 +396,7 @@ namespace VDS.RDF.Query
                                                         SparqlKeywordAs,
                                                         SparqlKeywordAvg,
                                                         SparqlKeywordBindings,
+                                                        SparqlKeywordBNode,
                                                         SparqlKeywordCeil,
                                                         SparqlKeywordCoalesce,
                                                         SparqlKeywordConcat,
@@ -421,6 +426,7 @@ namespace VDS.RDF.Query
                                                         SparqlKeywordNotExists,
                                                         SparqlKeywordNotIn,
                                                         SparqlKeywordNow,
+                                                        SparqlKeywordRand,
                                                         SparqlKeywordRound,
                                                         SparqlKeywordSample,
                                                         SparqlKeywordSeconds,
@@ -442,6 +448,7 @@ namespace VDS.RDF.Query
                                                         SparqlKeywordTz,
                                                         SparqlKeywordUCase,
                                                         SparqlKeywordUndef,
+                                                        SparqlKeywordUri,
                                                         SparqlKeywordYear
                                                        };
 
@@ -518,7 +525,8 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="keyword">Keyword to check</param>
         /// <returns></returns>
-        public static bool IsQueryKeyword(String keyword) {
+        public static bool IsQueryKeyword(String keyword)
+        {
             keyword = keyword.ToUpper();
             if (keyword.Equals(SparqlKeywordAsk) || keyword.Equals(SparqlKeywordConstruct) || keyword.Equals(SparqlKeywordDescribe) || keyword.Equals(SparqlKeywordSelect))
             {

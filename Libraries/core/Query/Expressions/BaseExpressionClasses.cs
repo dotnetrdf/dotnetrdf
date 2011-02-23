@@ -121,7 +121,7 @@ namespace VDS.RDF.Query.Expressions
         /// <summary>
         /// Gets the Arguments of the Expression
         /// </summary>
-        public IEnumerable<ISparqlExpression> Arguments
+        public virtual IEnumerable<ISparqlExpression> Arguments
         {
             get
             {

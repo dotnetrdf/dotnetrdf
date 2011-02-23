@@ -39,9 +39,151 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using VDS.RDF.Parsing;
+using VDS.RDF.Query.Construct;
 
 namespace VDS.RDF.Query.Expressions.Functions
 {
+    public class BNodeFunction : BaseUnaryExpression
+    {
+        private Dictionary<int, Dictionary<String, INode>> _bnodes = new Dictionary<int, Dictionary<string, INode>>();
+        private static BlankNodeMapper _mapper = new BlankNodeMapper("bnodeFunc");
+        private static Graph _g = new Graph();
+        private int? _currInput;
+
+        /// <summary>
+        /// Creates a new BNode Function
+        /// </summary>
+        public BNodeFunction()
+            : base(null) { }
+
+        /// <summary>
+        /// Creates a new BNode Function
+        /// </summary>
+        /// <param name="expr">Argument Expression</param>
+        public BNodeFunction(ISparqlExpression expr)
+            : base(expr) { }
+
+        /// <summary>
+        /// Gets the value of the expression as evaluated in a given Context for a given Binding
+        /// </summary>
+        /// <param name="context">Evaluation Context</param>
+        /// <param name="bindingID">Binding ID</param>
+        /// <returns></returns>
+        public override INode Value(SparqlEvaluationContext context, int bindingID)
+        {
+            if (this._currInput == null)
+            {
+                this._currInput = context.InputMultiset.GetHashCode();
+            }
+            else if (this._currInput != context.InputMultiset.GetHashCode())
+            {
+                this._currInput = context.InputMultiset.GetHashCode();
+                this._bnodes = new Dictionary<int, Dictionary<string, INode>>();
+            }
+
+            if (this._expr == null)
+            {
+                //If no argument then always a fresh BNode
+                return new BlankNode(_g, _mapper.GetNextID());
+            }
+            else
+            {
+                INode temp = this._expr.Value(context, bindingID);
+                if (temp != null)
+                {
+                    if (temp.NodeType == NodeType.Literal)
+                    {
+                        LiteralNode lit = (LiteralNode)temp;
+
+                        if (lit.DataType == null)
+                        {
+                            if (lit.Language.Equals(String.Empty))
+                            {
+                                if (!this._bnodes.ContainsKey(bindingID))
+                                {
+                                    this._bnodes.Add(bindingID, new Dictionary<string,INode>());
+                                }
+
+                                if (!this._bnodes[bindingID].ContainsKey(lit.Value))
+                                {
+                                    this._bnodes[bindingID].Add(lit.Value, new BlankNode(_g, _mapper.GetNextID()));
+                                }
+                                return this._bnodes[bindingID][lit.Value];
+                            }
+                            else
+                            {
+                                throw new RdfQueryException("Cannot create a Blank Node whne the argument Expression evaluates to a lanuage specified literal");
+                            }
+                        }
+                        else
+                        {
+                            throw new RdfQueryException("Cannot create a Blank Node when the argument Expression evaluates to a typed literal node");
+                        }
+                    }
+                    else
+                    {
+                        throw new RdfQueryException("Cannot create a Blank Node when the argument Expression evaluates to a non-literal node");
+                    }
+                }
+                else
+                {
+                    throw new RdfQueryException("Cannot create a Blank Node when the argument Expression evaluates to null");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets the Type of the Expression
+        /// </summary>
+        public override SparqlExpressionType Type
+        {
+            get
+            {
+                return SparqlExpressionType.Function;
+            }
+        }
+
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
+        public override string Functor
+        {
+            get 
+            {
+                return SparqlSpecsHelper.SparqlKeywordBNode;
+            }
+        }
+
+        /// <summary>
+        /// Gets the Variables used in the Expression
+        /// </summary>
+        public override IEnumerable<string> Variables
+        {
+            get
+            {
+                if (this._expr == null) return Enumerable.Empty<String>();
+                return base.Variables;
+            }
+        }
+
+        public override IEnumerable<ISparqlExpression> Arguments
+        {
+            get
+            {
+                if (this._expr == null) return Enumerable.Empty<ISparqlExpression>();
+                return base.Arguments;
+            }
+        }
+
+        /// <summary>
+        /// Gets the String representation of the Expression
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return SparqlSpecsHelper.SparqlKeywordBNode + "(" + this._expr.ToSafeString() + ")";
+        }
+    }
 
     /// <summary>
     /// Class representing the SPARQL BOUND() function
@@ -160,7 +302,7 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// <returns></returns>
         public override bool EffectiveBooleanValue(SparqlEvaluationContext context, int bindingID)
         {
-            throw new RdfQueryException("The DATATYPE() function does not have an Effective Boolean Value");
+            return SparqlSpecsHelper.EffectiveBooleanValue(this.Value(context, bindingID));
         }
 
         /// <summary>
@@ -226,16 +368,21 @@ namespace VDS.RDF.Query.Expressions.Functions
                 {
                     case NodeType.Literal:
                         LiteralNode lit = (LiteralNode)result;
+                        String baseUri = String.Empty;
+                        if (context.Query != null) baseUri = context.Query.BaseUri.ToSafeString();
+                        String uri;
                         if (lit.DataType == null)
                         {
-                            return new UriNode(null, new Uri(lit.Value));
+                            uri = Tools.ResolveUri(lit.Value, baseUri);
+                            return new UriNode(null, new Uri(uri));
                         }
                         else
                         {
                             String dt = lit.DataType.ToString();
                             if (dt.Equals(XmlSpecsHelper.XmlSchemaDataTypeString, StringComparison.Ordinal))
                             {
-                                return new UriNode(null, new Uri(lit.Value));
+                                uri = Tools.ResolveUri(lit.Value, baseUri);
+                                return new UriNode(null, new Uri(uri));
                             }
                             else
                             {

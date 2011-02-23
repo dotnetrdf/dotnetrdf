@@ -371,7 +371,7 @@ namespace VDS.RDF.Query.Expressions.Functions
                                     if (dt.Offset.Hours < -14 || dt.Offset.Hours > 14) return null;
 
                                     //Otherwise it has an offset which is a given number of hours (and minutes)
-                                    return new LiteralNode(null, dt.Offset.Hours.ToString("00") + dt.Offset.Minutes.ToString("00"));
+                                    return new LiteralNode(null, dt.Offset.Hours.ToString("00") + ":" + dt.Offset.Minutes.ToString("00"));
                                 }
                             }
                             else

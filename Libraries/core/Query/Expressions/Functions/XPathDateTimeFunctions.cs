@@ -72,8 +72,8 @@ namespace VDS.RDF.Query.Expressions.Functions
                     {
                         if (lit.DataType.ToString().Equals(XmlSpecsHelper.XmlSchemaDataTypeDateTime) || lit.DataType.ToString().Equals(XmlSpecsHelper.XmlSchemaDataTypeDate))
                         {
-                            DateTime dt;
-                            if (DateTime.TryParse(lit.Value, out dt))
+                            DateTimeOffset dt;
+                            if (DateTimeOffset.TryParse(lit.Value, out dt))
                             {
                                 return this.NumericValueInternal(dt);
                             }
@@ -108,7 +108,7 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// </summary>
         /// <param name="dateTime">Date Time</param>
         /// <returns></returns>
-        protected abstract object NumericValueInternal(DateTime dateTime);
+        protected abstract object NumericValueInternal(DateTimeOffset dateTime);
 
         /// <summary>
         /// Gets the String representation of the Function
@@ -145,7 +145,7 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// </summary>
         /// <param name="dateTime">Date Time</param>
         /// <returns></returns>
-        protected override object NumericValueInternal(DateTime dateTime)
+        protected override object NumericValueInternal(DateTimeOffset dateTime)
         {
             return Convert.ToInt64(dateTime.Year);
         }
@@ -188,7 +188,7 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// </summary>
         /// <param name="dateTime">Date Time</param>
         /// <returns></returns>
-        protected override object NumericValueInternal(DateTime dateTime)
+        protected override object NumericValueInternal(DateTimeOffset dateTime)
         {
             return Convert.ToInt64(dateTime.Month);
         }
@@ -231,9 +231,9 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// </summary>
         /// <param name="dateTime">Date Time</param>
         /// <returns></returns>
-        protected override object NumericValueInternal(DateTime dateTime)
+        protected override object NumericValueInternal(DateTimeOffset dateTime)
         {
-            return Convert.ToInt64(dateTime.Date);
+            return Convert.ToInt64(dateTime.Day);
         }
 
         /// <summary>
@@ -274,7 +274,7 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// </summary>
         /// <param name="dateTime">Date Time</param>
         /// <returns></returns>
-        protected override object NumericValueInternal(DateTime dateTime)
+        protected override object NumericValueInternal(DateTimeOffset dateTime)
         {
             return Convert.ToInt64(dateTime.Hour);
         }
@@ -317,7 +317,7 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// </summary>
         /// <param name="dateTime">Date Time</param>
         /// <returns></returns>
-        protected override object NumericValueInternal(DateTime dateTime)
+        protected override object NumericValueInternal(DateTimeOffset dateTime)
         {
             return Convert.ToInt64(dateTime.Minute);
         }
@@ -360,7 +360,7 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// </summary>
         /// <param name="dateTime">Date Time</param>
         /// <returns></returns>
-        protected override object NumericValueInternal(DateTime dateTime)
+        protected override object NumericValueInternal(DateTimeOffset dateTime)
         {
             decimal seconds = Convert.ToDecimal(dateTime.Second);
             seconds += ((decimal)dateTime.Millisecond) / 1000m;

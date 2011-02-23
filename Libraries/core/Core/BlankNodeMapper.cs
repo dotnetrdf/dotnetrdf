@@ -33,7 +33,6 @@ terms.
 
 */
 
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,6 +49,23 @@ namespace VDS.RDF
         private Dictionary<String, String> _remappings = new Dictionary<string, string>();
         private int _nextid = 1;
         private int _nextremap = 1;
+        private String _prefix = "autos";
+
+        /// <summary>
+        /// Creates a new Blank Node Mapper
+        /// </summary>
+        public BlankNodeMapper()
+        { }
+
+        /// <summary>
+        /// Creates a new Blank Node Mapper that uses a custom Prefix
+        /// </summary>
+        /// <param name="prefix">Prefix</param>
+        public BlankNodeMapper(String prefix)
+        {
+            if (prefix == null || prefix.EndsWith(String.Empty)) prefix = "autos";
+            this._prefix = prefix;
+        }
 
         /// <summary>
         /// Gets the next available auto-assigned Blank Node ID
@@ -57,13 +73,13 @@ namespace VDS.RDF
         /// <returns></returns>
         public String GetNextID()
         {
-            String id = "autos" + this._nextid;
+            String id = this._prefix + this._nextid;
 
             //Check it's not in use
             while (this._idmap.ContainsKey(id))
             {
                 this._nextid++;
-                id = "autos" + this._nextid;
+                id = this._prefix + this._nextid;
             }
             this._nextid++;
 

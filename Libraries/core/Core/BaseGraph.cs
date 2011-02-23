@@ -41,6 +41,7 @@ using System.Data;
 #endif
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace VDS.RDF
 {
@@ -266,8 +267,16 @@ namespace VDS.RDF
         /// <returns></returns>
         public virtual BlankNode CreateBlankNode(String nodeId)
         {
-            this._bnodemapper.CheckID(ref nodeId);
-            return new BlankNode(this, nodeId);
+            //try
+            //{
+            //    Monitor.Enter(this._bnodemapper);
+                this._bnodemapper.CheckID(ref nodeId);
+                return new BlankNode(this, nodeId);
+            //}
+            //finally
+            //{
+            //    Monitor.Exit(this._bnodemapper);
+            //}
         }
 
         /// <summary>
@@ -867,7 +876,15 @@ namespace VDS.RDF
         /// <returns></returns>
         public virtual String GetNextBlankNodeID()
         {
-            return this._bnodemapper.GetNextID();
+            //try
+            //{
+            //    Monitor.Enter(this._bnodemapper);
+                return this._bnodemapper.GetNextID();
+            //}
+            //finally
+            //{
+            //    Monitor.Exit(this._bnodemapper);
+            //}
         }
 
         #endregion

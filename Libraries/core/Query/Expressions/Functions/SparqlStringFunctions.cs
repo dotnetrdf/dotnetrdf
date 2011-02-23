@@ -213,7 +213,7 @@ namespace VDS.RDF.Query.Expressions.Functions
                         LiteralNode lit = (LiteralNode)temp;
                         if (langTag == null)
                         {
-                            langTag = lit.Value;
+                            langTag = lit.Language;
                         }
                         else
                         {
@@ -388,14 +388,7 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// <returns></returns>
         protected override INode ValueInternal(LiteralNode stringLit)
         {
-            if (stringLit.DataType != null)
-            {
-                return new LiteralNode(null, Uri.EscapeUriString(stringLit.Value), stringLit.DataType);
-            }
-            else
-            {
-                return new LiteralNode(null, Uri.EscapeDataString(stringLit.Value), stringLit.Language);
-            }
+            return new LiteralNode(null, Uri.EscapeUriString(stringLit.Value));
         }
 
         /// <summary>
