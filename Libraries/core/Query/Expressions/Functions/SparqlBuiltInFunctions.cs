@@ -888,18 +888,18 @@ namespace VDS.RDF.Query.Expressions.Functions
                         LiteralNode lit = (LiteralNode)s;
                         if (lit.DataType == null)
                         {
-                            return new LiteralNode(null, lit.Value, dtUri);
-                        }
-                        else
-                        {
-                            if (lit.DataType.ToString().Equals(XmlSpecsHelper.XmlSchemaDataTypeString))
+                            if (lit.Language.Equals(String.Empty))
                             {
                                 return new LiteralNode(null, lit.Value, dtUri);
                             }
                             else
                             {
-                                throw new RdfQueryException("Cannot create a datatyped literal from a non-string typed literal");
+                                throw new RdfQueryException("Cannot create a datatyped literal from a language specified literal");
                             }
+                        }
+                        else
+                        {
+                            throw new RdfQueryException("Cannot create a datatyped literal from a typed literal");
                         }
                     }
                     else
@@ -1018,18 +1018,18 @@ namespace VDS.RDF.Query.Expressions.Functions
                         LiteralNode lit = (LiteralNode)s;
                         if (lit.DataType == null)
                         {
-                            return new LiteralNode(null, lit.Value, langSpec);
-                        }
-                        else
-                        {
-                            if (lit.DataType.ToString().Equals(XmlSpecsHelper.XmlSchemaDataTypeString))
+                            if (lit.Language.Equals(String.Empty))
                             {
                                 return new LiteralNode(null, lit.Value, langSpec);
                             }
                             else
                             {
-                                throw new RdfQueryException("Cannot create a language specified literal from a non-string typed literal");
+                                throw new RdfQueryException("Cannot create a language specified literal from a language specified literal");
                             }
+                        }
+                        else
+                        {
+                            throw new RdfQueryException("Cannot create a language specified literal from a typed literal");
                         }
                     }
                     else

@@ -247,6 +247,17 @@ namespace VDS.RDF.Query
 
         #endregion
 
+        /// <summary>
+        /// Trims the Result Set to remove unbound variables from results
+        /// </summary>
+        /// <remarks>
+        /// <strong>Note: </strong> This does not remove empty results this only removes unbound variables from individual results
+        /// </remarks>
+        public void Trim()
+        {
+            this._results.ForEach(r => r.Trim());
+        }
+
         #region Internal Methods for filling the ResultSet
 
         /// <summary>

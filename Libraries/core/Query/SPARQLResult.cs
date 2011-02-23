@@ -189,6 +189,20 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
+        /// Removes all Variables Bindings where the Variable is Unbound
+        /// </summary>
+        public void Trim()
+        {
+            foreach (String var in this._resultValues.Keys.ToList())
+            {
+                if (this._resultValues[var] == null)
+                {
+                    this._resultValues.Remove(var);
+                }
+            }
+        }
+
+        /// <summary>
         /// Displays the Result as a comma separated string of pairs of the form ?var = value
         /// </summary>
         /// <returns></returns>
@@ -228,6 +242,8 @@ namespace VDS.RDF.Query
         public String ToString(INodeFormatter formatter)
         {
             StringBuilder output = new StringBuilder();
+
+            if (this._resultValues.Count == 0) return "<Empty Result>";
 
             foreach (String var in this._resultValues.Keys)
             {

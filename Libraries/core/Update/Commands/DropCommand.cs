@@ -34,6 +34,7 @@ terms.
 */
 
 using System;
+using System.Linq;
 using System.Text;
 
 namespace VDS.RDF.Update.Commands
@@ -206,7 +207,7 @@ namespace VDS.RDF.Update.Commands
                         break;
 
                     case ClearMode.Named:
-                        foreach (Uri u in context.Data.GraphUris)
+                        foreach (Uri u in context.Data.GraphUris.ToList())
                         {
                             if (u != null)
                             {
@@ -215,7 +216,7 @@ namespace VDS.RDF.Update.Commands
                         }
                         break;
                     case ClearMode.All:
-                        foreach (Uri u in context.Data.GraphUris)
+                        foreach (Uri u in context.Data.GraphUris.ToList())
                         {
                             if (u != null)
                             {

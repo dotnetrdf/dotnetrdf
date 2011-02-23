@@ -147,7 +147,7 @@ namespace VDS.RDF.Query.Expressions.Functions
                 {
 #if !SILVERLIGHT && !COMPACT
                     case SparqlNumericType.Integer:
-                        return Math.Ceiling((decimal)a.IntegerValue(context, bindingID));
+                        return (long)Math.Ceiling((decimal)a.IntegerValue(context, bindingID));
 
                     case SparqlNumericType.Decimal:
                         return Math.Ceiling(a.DecimalValue(context, bindingID));
@@ -228,7 +228,7 @@ namespace VDS.RDF.Query.Expressions.Functions
                 {
 #if !SILVERLIGHT
                     case SparqlNumericType.Integer:
-                        return Math.Floor((decimal)a.IntegerValue(context, bindingID));
+                        return (long)Math.Floor((decimal)a.IntegerValue(context, bindingID));
 
                     case SparqlNumericType.Decimal:
                         return Math.Floor(a.DecimalValue(context, bindingID));
@@ -309,7 +309,7 @@ namespace VDS.RDF.Query.Expressions.Functions
                 switch (a.NumericType(context, bindingID))
                 {
                     case SparqlNumericType.Integer:
-                        return Math.Round((decimal)a.IntegerValue(context, bindingID));
+                        return (long)Math.Round((decimal)a.IntegerValue(context, bindingID));
 
                     case SparqlNumericType.Decimal:
                         return Math.Round(a.DecimalValue(context, bindingID));

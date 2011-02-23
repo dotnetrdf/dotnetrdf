@@ -71,6 +71,7 @@ namespace dotNetRDFTest
                     "basic-update/insert-04.ru",
                     //The following are tests that use GRAPH QName outside of a Graph pattern where it is permitted and the current grammar forbids so skipped
                     "clear/clear-graph-01.ru",
+                    "drop/drop-graph-01.ru",
                     //The following are tests that use BNodes as wildcards in a DELETE which we don't implement and may
                     //yet be overturned as a WG decision
                     "delete-insert/delete-insert-03.ru",
@@ -622,6 +623,8 @@ namespace dotNetRDFTest
 
                 try
                 {
+                    ourResults.Trim();
+                    expectedResults.Trim();
                     if (ourResults.Equals(expectedResults))
                     {
                         testsPassed++;
@@ -930,7 +933,7 @@ namespace dotNetRDFTest
             Console.WriteLine("# Test Data");
             foreach (Triple t in data.Triples)
             {
-                Console.WriteLine(t.ToString() + " from Graph " + t.GraphUri.Segments.Last());
+                Console.WriteLine(t.ToString(this._formatter) + " from Graph " + t.GraphUri.Segments.Last());
             }
             Console.WriteLine();
         }
@@ -942,7 +945,7 @@ namespace dotNetRDFTest
             Console.WriteLine("Boolean Result = " + actual.Result);
             foreach (SparqlResult r in actual)
             {
-                Console.WriteLine(r.ToString());
+                Console.WriteLine(r.ToString(this._formatter));
             }
             Console.WriteLine();
 
