@@ -30,6 +30,8 @@ namespace dotNetRDFTest
 
         private List<String> evaluationTestOverride;
 
+        private NTriplesFormatter _formatter = new NTriplesFormatter();
+
         public void RunTests()
         {
             StreamWriter output = new StreamWriter("Sparql11EvaluationTestSuite.txt", false, Encoding.UTF8);
@@ -68,7 +70,14 @@ namespace dotNetRDFTest
                     "basic-update/insert-03.ru",
                     "basic-update/insert-04.ru",
                     //The following are tests that use GRAPH QName outside of a Graph pattern where it is permitted and the current grammar forbids so skipped
-                    "clear/clear-graph-01.ru"
+                    "clear/clear-graph-01.ru",
+                    //The following are tests that use BNodes as wildcards in a DELETE which we don't implement and may
+                    //yet be overturned as a WG decision
+                    "delete-insert/delete-insert-03.ru",
+                    "delete-insert/delete-insert-03b.ru",
+                    "delete-insert/delete-insert-05.ru",
+                    "delete-insert/delete-insert-07.ru",
+                    "delete-insert/delete-insert-07b.ru",
                     
                 };
 
@@ -798,6 +807,7 @@ namespace dotNetRDFTest
                     testsIndeterminate++;
                     return 0;
                 }
+                Console.WriteLine();
 
                 //Try running the Update
                 try
@@ -867,6 +877,7 @@ namespace dotNetRDFTest
                     testsIndeterminate++;
                     return 0;
                 }
+                Console.WriteLine();
 
                 //Now compare the two datasets to see if the tests passes
                 foreach (Uri u in resultDataset.GraphUris)
@@ -940,18 +951,18 @@ namespace dotNetRDFTest
             Console.WriteLine("Boolean Result = " + expected.Result);
             foreach (SparqlResult r in expected)
             {
-                Console.WriteLine(r.ToString());
+                Console.WriteLine(r.ToString(this._formatter));
             }
             Console.WriteLine();
         }
 
         private void ShowGraphs(IGraph actual, IGraph expected)
         {
-            Console.WriteLine("# Our Graph");
+            Console.WriteLine("# Result Graph");
             Console.WriteLine("Total Triples = " + actual.Triples.Count);
             foreach (Triple t in actual.Triples)
             {
-                Console.WriteLine(t.ToString());
+                Console.WriteLine(t.ToString(this._formatter));
             }
             Console.WriteLine();
 
@@ -959,9 +970,29 @@ namespace dotNetRDFTest
             Console.WriteLine("Total Triples = " + expected.Triples.Count);
             foreach (Triple t in expected.Triples)
             {
-                Console.WriteLine(t.ToString());
+                Console.WriteLine(t.ToString(this._formatter));
             }
             Console.WriteLine();
+
+            GraphDiffReport diff = expected.Difference(actual);
+            if (diff.RemovedTriples.Any())
+            {
+                Console.WriteLine("# Triples Missing from Expected Graph (" + diff.RemovedTriples.Count() + ")");
+                foreach (Triple t in diff.RemovedTriples)
+                {
+                    Console.WriteLine(t.ToString(this._formatter));
+                }
+                Console.WriteLine();
+            }
+            if (diff.AddedTriples.Any())
+            {
+                Console.WriteLine("# Triples that should not be present in the Result Graph (" + diff.AddedTriples.Count() + ")");
+                foreach (Triple t in diff.AddedTriples)
+                {
+                    Console.WriteLine(t.ToString(this._formatter));
+                }
+                Console.WriteLine();
+            }
         }
 
         private void ReportError(String header, Exception ex)

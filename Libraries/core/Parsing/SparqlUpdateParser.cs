@@ -792,7 +792,7 @@ namespace VDS.RDF.Parsing
         private void TryParseModifyCommand(SparqlUpdateParserContext context)
         {
             //Firstly we expect the URI that the modifications apply to
-            String baseUri = (context.BaseUri == null) ? String.Empty : context.BaseUri.ToString();
+            String baseUri = context.BaseUri.ToSafeString();
             IToken next = context.Tokens.Dequeue();
             if (next.TokenType != Token.URI) throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a URI after a WITH keyword as part of a INSERT/DELETE command", next);
             Uri u = new Uri(Tools.ResolveUri(next.Value, baseUri));

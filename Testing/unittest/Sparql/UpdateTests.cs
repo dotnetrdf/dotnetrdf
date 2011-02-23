@@ -8,6 +8,7 @@ using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Query.Inference;
 using VDS.RDF.Update;
+using VDS.RDF.Update.Commands;
 
 namespace VDS.RDF.Test.Sparql
 {
@@ -482,6 +483,18 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
 
                 Assert.IsTrue(report.RemovedTriples.Count() == 1, "Should have only 1 missing Triple (due to rdfs:domain inference which is hard to encode in an INSERT command)");
             }
+        }
+
+        [TestMethod]
+        public void SparqlUpdateDeleteWithCommand()
+        {
+            String command = "WITH <http://example.org/> DELETE { ?s ?p ?o } WHERE {?s ?p ?o}";
+            SparqlUpdateParser parser = new SparqlUpdateParser();
+            SparqlUpdateCommandSet cmds = parser.ParseFromString(command);
+
+            DeleteCommand delete = (DeleteCommand)cmds[0];
+
+            Assert.AreEqual(new Uri("http://example.org/"), delete.GraphUri, "Graph URI of the Command should be equal to http://example.org/");
         }
     }
 }

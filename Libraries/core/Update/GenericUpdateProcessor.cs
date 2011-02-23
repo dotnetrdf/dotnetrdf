@@ -352,6 +352,7 @@ namespace VDS.RDF.Update
                     String queryText = "SELECT * WHERE " + cmd.WherePattern.ToString();
                     SparqlQueryParser parser = new SparqlQueryParser();
                     SparqlQuery query = parser.ParseFromString(queryText);
+                    if (cmd.GraphUri != null && !cmd.UsingUris.Any()) query.AddDefaultGraph(cmd.GraphUri);
                     foreach (Uri u in cmd.UsingUris)
                     {
                         query.AddDefaultGraph(u);
@@ -613,6 +614,7 @@ namespace VDS.RDF.Update
                     String queryText = "SELECT * WHERE " + cmd.WherePattern.ToString();
                     SparqlQueryParser parser = new SparqlQueryParser();
                     SparqlQuery query = parser.ParseFromString(queryText);
+                    if (cmd.GraphUri != null && !cmd.UsingUris.Any()) query.AddDefaultGraph(cmd.GraphUri);
                     foreach (Uri u in cmd.UsingUris)
                     {
                         query.AddDefaultGraph(u);
@@ -852,6 +854,7 @@ namespace VDS.RDF.Update
                     String queryText = "SELECT * WHERE " + cmd.WherePattern.ToString();
                     SparqlQueryParser parser = new SparqlQueryParser();
                     SparqlQuery query = parser.ParseFromString(queryText);
+                    if (cmd.GraphUri != null && !cmd.UsingUris.Any()) query.AddDefaultGraph(cmd.GraphUri);
                     foreach (Uri u in cmd.UsingUris)
                     {
                         query.AddDefaultGraph(u);

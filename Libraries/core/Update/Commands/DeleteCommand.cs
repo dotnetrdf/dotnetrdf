@@ -197,12 +197,30 @@ namespace VDS.RDF.Update.Commands
         /// <param name="context">Evaluation Context</param>
         public override void Evaluate(SparqlUpdateEvaluationContext context)
         {
+            bool defGraphOk = false;
             bool datasetOk = false;
 
             try
             {
                 //First evaluate the WHERE pattern to get the affected bindings
                 ISparqlAlgebra where = this._wherePattern.ToAlgebra();
+
+                //Set Active Graph for the WHERE
+                //Don't bother if there are USING URIs as these would override any Active Graph we set here
+                //so we can save ourselves the effort of doing this
+                if (!this.UsingUris.Any())
+                {
+                    if (this._graphUri != null)
+                    {
+                        context.Data.SetActiveGraph(this._graphUri);
+                        defGraphOk = true;
+                    }
+                    else
+                    {
+                        context.Data.SetActiveGraph((Uri)null);
+                        defGraphOk = true;
+                    }
+                }
 
                 //We need to make a dummy SparqlQuery object since if the Command has used any 
                 //USING NAMEDs along with GRAPH clauses then the algebra needs to have the
@@ -229,6 +247,13 @@ namespace VDS.RDF.Update.Commands
                     //evaluation of the 
                     context.Data.ResetActiveGraph();
                     datasetOk = false;
+                }
+
+                //Reset Active Graph for the WHERE
+                if (defGraphOk)
+                {
+                    context.Data.ResetActiveGraph();
+                    defGraphOk = false;
                 }
 
                 //Get the Graph from which we are deleting
@@ -324,6 +349,7 @@ namespace VDS.RDF.Update.Commands
                 //If the Dataset was set and an error occurred in doing the WHERE clause then
                 //we'll need to Reset the Active Graph
                 if (datasetOk) context.Data.ResetActiveGraph();
+                if (defGraphOk) context.Data.ResetActiveGraph();
             }
         }
 
