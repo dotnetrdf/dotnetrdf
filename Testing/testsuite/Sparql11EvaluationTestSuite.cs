@@ -80,7 +80,8 @@ namespace dotNetRDFTest
                     "delete-insert/delete-insert-07.ru",
                     "delete-insert/delete-insert-07b.ru",
                     //The following are tests where the test cases are in the manifest but missing
-                    "functions/notin01.rq"
+                    "functions/notin01.rq",
+                    "negation/temporalProximity02.rq"
                     
                 };
 
@@ -439,9 +440,6 @@ namespace dotNetRDFTest
             {
                 query = parser.ParseFromFile(queryFile);
 
-                Console.WriteLine(query.ToString());
-                Console.WriteLine();
-                Console.WriteLine("Formatted with SparqlFormatter");
                 SparqlFormatter formatter = new SparqlFormatter(query.NamespaceMap);
                 Console.WriteLine(formatter.Format(query));
                 Console.WriteLine();
@@ -532,7 +530,7 @@ namespace dotNetRDFTest
             InMemoryDataset dataset = new InMemoryDataset(store);
             if (!query.DefaultGraphs.Any())
             {
-                query.AddDefaultGraph(defaultGraph.BaseUri);
+                if (defaultGraph.BaseUri != null) query.AddDefaultGraph(defaultGraph.BaseUri);
                 //dataset.SetActiveGraph(defaultGraph.BaseUri);
             }
             if (!query.NamedGraphs.Any())
@@ -599,6 +597,22 @@ namespace dotNetRDFTest
                         return 0;
                     }
                 }
+                else if (resultFile.EndsWith(".srj"))
+                {
+                    try
+                    {
+                        SparqlJsonParser resultSetParser = new SparqlJsonParser();
+                        resultSetParser.Load(expectedResults, resultFile);
+                    }
+                    catch (RdfParseException parseEx)
+                    {
+                        this.ReportError("Result Set Parser Error", parseEx);
+                        testsIndeterminate++;
+                        testsEvaluationIndeterminate++;
+                        Console.WriteLine("# Test Result - Error loading expected Result Set (Test Indeterminate)");
+                        return 0;
+                    }
+                }
                 else if (resultFile.EndsWith(".ttl") || resultFile.EndsWith(".rdf"))
                 {
                     try
@@ -635,7 +649,14 @@ namespace dotNetRDFTest
                 else
                 {
                     Console.WriteLine("Final Query");
-                    Console.WriteLine(query.ToString());
+                    SparqlFormatter formatter = new SparqlFormatter();
+                    Console.WriteLine(formatter.Format(query));
+                    Console.WriteLine();
+                    Console.WriteLine("# Graphs in Test Data");
+                    foreach (Uri u in store.Graphs.GraphUris)
+                    {
+                        Console.WriteLine(this.ToSafeString(u));
+                    }
                     Console.WriteLine();
                     this.ShowTestData(store);
                     this.ShowResultSets(ourResults, expectedResults);

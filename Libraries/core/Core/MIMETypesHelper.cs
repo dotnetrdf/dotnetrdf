@@ -109,7 +109,7 @@ namespace VDS.RDF
                 _mimeTypes.Add(new MimeTypeDefinition("SPARQL Results XML", W3CFormatsNamespace + "SPARQL_Results_XML", SparqlXml, new String[] { DefaultSparqlXmlExtension }, null, null, typeof(SparqlXmlParser), null, null, typeof(SparqlXmlWriter)));
 
                 //Define SPARQL Results JSON
-                _mimeTypes.Add(new MimeTypeDefinition("SPARQL Results JSON", W3CFormatsNamespace + "SPARQL_Results_JSON", SparqlJson, new String[] { DefaultJsonExtension }, null, null, typeof(SparqlJsonParser), null, null, typeof(SparqlJsonWriter)));
+                _mimeTypes.Add(new MimeTypeDefinition("SPARQL Results JSON", W3CFormatsNamespace + "SPARQL_Results_JSON", SparqlJson, new String[] { DefaultSparqlJsonExtension, DefaultJsonExtension }, null, null, typeof(SparqlJsonParser), null, null, typeof(SparqlJsonWriter)));
 
                 //Define RDF/JSON - include SPARQL Parsers to support servers that send back incorrect MIME Type for SPARQL JSON Results
                 //We define this after SPARQL Results JSON to ensure we favour the correct MIME type for it
@@ -306,9 +306,13 @@ namespace VDS.RDF
         /// </summary>
         public const String DefaultJsonExtension = "json";
         /// <summary>
-        /// Default File Extension for Sparql XML Results Format
+        /// Default File Extension for SPARQL XML Results Format
         /// </summary>
         public const String DefaultSparqlXmlExtension = "srx";
+        /// <summary>
+        /// Default File Extension for SPARQL JSON Results Format
+        /// </summary>
+        public const String DefaultSparqlJsonExtension = "srj";
         /// <summary>
         /// Default File Extension for TriG
         /// </summary>

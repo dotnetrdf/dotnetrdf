@@ -1,0 +1,29 @@
+{
+  "head": {
+    "vars": [ "s" , "p" , "o" ]
+  } ,
+  "results": {
+    "bindings": [
+      {
+        "s": { "type": "uri" , "value": "http://example.org/s1" } ,
+        "p": { "type": "uri" , "value": "http://example.org/p1" } ,
+        "o": { "type": "uri" , "value": "http://example.org/s2" }
+      } ,
+      {
+        "s": { "type": "uri" , "value": "http://example.org/s2" } ,
+        "p": { "type": "uri" , "value": "http://example.org/p2" } ,
+        "o": { "type": "literal" , "value": "foo" }
+      } ,
+      {
+        "s": { "type": "uri" , "value": "http://example.org/s3" } ,
+        "p": { "type": "uri" , "value": "http://example.org/p3" } ,
+        "o": { "type": "bnode" , "value": "b0" }
+      } ,
+      {
+        "s": { "type": "uri" , "value": "http://example.org/s4" } ,
+        "p": { "type": "uri" , "value": "http://example.org/p4" } ,
+        "o": { "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "type": "typed-literal" , "value": "4" }
+      }
+    ]
+  }
+}

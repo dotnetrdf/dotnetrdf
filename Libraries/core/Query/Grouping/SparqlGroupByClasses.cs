@@ -235,6 +235,7 @@ namespace VDS.RDF.Query.Grouping
                 {
                     outgroups.Add(nulls);
                     if (this.AssignVariable != null) nulls.AddAssignment(this.AssignVariable, null);
+                    nulls = new BindingGroup();
                 }
             }
 
@@ -460,11 +461,13 @@ namespace VDS.RDF.Query.Grouping
                 {
                     outgroups.Add(error);
                     if (this.AssignVariable != null) error.AddAssignment(this.AssignVariable, null);
+                    error = new BindingGroup();
                 }
                 if (nulls.BindingIDs.Any())
                 {
                     outgroups.Add(nulls);
                     if (this.AssignVariable != null) nulls.AddAssignment(this.AssignVariable, null);
+                    nulls = new BindingGroup();
                 }
             }
 

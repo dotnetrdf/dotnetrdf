@@ -43,7 +43,7 @@ using HashLib.Crypto;
 namespace VDS.RDF.Query.Expressions.Functions
 {
 
-#if !SILVERLIGHT && !COMPACT
+#if !SILVERLIGHT
 
     /// <summary>
     /// Represents the SPARQL MD5() Function
@@ -214,7 +214,7 @@ namespace VDS.RDF.Query.Expressions.Functions
         }
     }
 
-#if !SILVERLIGHT && !COMPACT
+#if !SILVERLIGHT
 
     /// <summary>
     /// Represents the SPARQL SHA384() Function

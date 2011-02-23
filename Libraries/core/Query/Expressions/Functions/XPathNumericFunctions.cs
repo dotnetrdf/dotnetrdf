@@ -148,7 +148,7 @@ namespace VDS.RDF.Query.Expressions.Functions
 
                 switch (a.NumericType(context, bindingID))
                 {
-#if !SILVERLIGHT && !COMPACT
+#if !SILVERLIGHT
                     case SparqlNumericType.Integer:
                         return (long)Math.Ceiling((decimal)a.IntegerValue(context, bindingID));
 
@@ -322,13 +322,25 @@ namespace VDS.RDF.Query.Expressions.Functions
                         return a.IntegerValue(context, bindingID);
 
                     case SparqlNumericType.Decimal:
+#if !SILVERLIGHT
                         return Math.Round(a.DecimalValue(context, bindingID), MidpointRounding.AwayFromZero);
+#else
+                        return Math.Round(a.DecimalValue(context, bindingID));
+#endif
 
                     case SparqlNumericType.Float:
+#if !SILVERLIGHT
                         return (float)Math.Round(a.DoubleValue(context, bindingID), MidpointRounding.AwayFromZero);
+#else
+                        return (float)Math.Round(a.DoubleValue(context, bindingID));
+#endif
 
                     case SparqlNumericType.Double:
+#if !SILVERLIGHT
                         return Math.Round(a.DoubleValue(context, bindingID), MidpointRounding.AwayFromZero);
+#else
+                        return Math.Round(a.DoubleValue(context, bindingID));
+#endif
 
                     default:
                         throw new RdfQueryException("Cannot evalute an Arithmetic Expression when the Numeric Type of the expression cannot be determined");

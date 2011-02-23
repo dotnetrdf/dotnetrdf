@@ -38,11 +38,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Security.Cryptography;
+using HashLib.Crypto;
 
 namespace VDS.RDF.Query.Expressions.Functions
 {
 
-#if !SILVERLIGHT && !COMPACT
+#if !SILVERLIGHT
 
     /// <summary>
     /// Represents the Leviathan lfn:md5hash() function
@@ -76,7 +77,36 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
     }
+#else
+    public class LeviathanMD5HashFunction : BaseHashLibFunction
+    {
+        /// <summary>
+        /// Creates a new Leviathan MD5() Function
+        /// </summary>
+        /// <param name="expr">Argument Expression</param>
+        public LeviathanMD5HashFunction(ISparqlExpression expr)
+            : base(expr, new MD5()) { }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
+        public override string Functor
+        {
+            get
+            {
+                return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.MD5Hash;
+            }
+        }
+
+        /// <summary>
+        /// Gets the String representation of the Expression
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.MD5Hash + ">(" + this._expr.ToString() + ")";
+        }
+    }
 #endif
 
     /// <summary>

@@ -240,7 +240,7 @@ namespace VDS.RDF.Writing
             catch (ThreadAbortException)
             {
                 //We've been terminated, don't do anything
-#if !SILVERLIGHT && !COMPACT
+#if !SILVERLIGHT
                 Thread.ResetAbort();
 #endif
             }

@@ -290,7 +290,6 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the Leviathan log() function");
                         }
                         break;
-#if !SILVERLIGHT && !COMPACT
                     case LeviathanFunctionFactory.MD5Hash:
                         if (args.Count == 1)
                         {
@@ -301,7 +300,6 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the Leviathan md5hash() function");
                         }
                         break;
-#endif
                     case LeviathanFunctionFactory.Median:
                         if (args.Count == 1)
                         {

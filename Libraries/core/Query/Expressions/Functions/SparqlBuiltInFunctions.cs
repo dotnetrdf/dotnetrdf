@@ -45,10 +45,7 @@ namespace VDS.RDF.Query.Expressions.Functions
 {
     public class BNodeFunction : BaseUnaryExpression
     {
-        private Dictionary<int, Dictionary<String, INode>> _bnodes = new Dictionary<int, Dictionary<string, INode>>();
-        private static BlankNodeMapper _mapper = new BlankNodeMapper("bnodeFunc");
-        private static Graph _g = new Graph();
-        private int? _currInput;
+        private BNodeFunctionContext _funcContext;
 
         /// <summary>
         /// Creates a new BNode Function
@@ -71,20 +68,23 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// <returns></returns>
         public override INode Value(SparqlEvaluationContext context, int bindingID)
         {
-            if (this._currInput == null)
+            this._funcContext = context[SparqlSpecsHelper.SparqlKeywordBNode] as BNodeFunctionContext;
+
+            if (this._funcContext == null)
             {
-                this._currInput = context.InputMultiset.GetHashCode();
+                this._funcContext = new BNodeFunctionContext(context.InputMultiset.GetHashCode());
+                context[SparqlSpecsHelper.SparqlKeywordBNode] = this._funcContext;
             }
-            else if (this._currInput != context.InputMultiset.GetHashCode())
+            else if (this._funcContext.CurrentInput != context.InputMultiset.GetHashCode())
             {
-                this._currInput = context.InputMultiset.GetHashCode();
-                this._bnodes = new Dictionary<int, Dictionary<string, INode>>();
+                this._funcContext = new BNodeFunctionContext(context.InputMultiset.GetHashCode());
+                context[SparqlSpecsHelper.SparqlKeywordBNode] = this._funcContext;
             }
 
             if (this._expr == null)
             {
                 //If no argument then always a fresh BNode
-                return new BlankNode(_g, _mapper.GetNextID());
+                return new BlankNode(this._funcContext.Graph, this._funcContext.Mapper.GetNextID());
             }
             else
             {
@@ -99,16 +99,16 @@ namespace VDS.RDF.Query.Expressions.Functions
                         {
                             if (lit.Language.Equals(String.Empty))
                             {
-                                if (!this._bnodes.ContainsKey(bindingID))
+                                if (!this._funcContext.BlankNodes.ContainsKey(bindingID))
                                 {
-                                    this._bnodes.Add(bindingID, new Dictionary<string,INode>());
+                                    this._funcContext.BlankNodes.Add(bindingID, new Dictionary<string,INode>());
                                 }
 
-                                if (!this._bnodes[bindingID].ContainsKey(lit.Value))
+                                if (!this._funcContext.BlankNodes[bindingID].ContainsKey(lit.Value))
                                 {
-                                    this._bnodes[bindingID].Add(lit.Value, new BlankNode(_g, _mapper.GetNextID()));
+                                    this._funcContext.BlankNodes[bindingID].Add(lit.Value, new BlankNode(this._funcContext.Graph, this._funcContext.Mapper.GetNextID()));
                                 }
-                                return this._bnodes[bindingID][lit.Value];
+                                return this._funcContext.BlankNodes[bindingID][lit.Value];
                             }
                             else
                             {
@@ -182,6 +182,55 @@ namespace VDS.RDF.Query.Expressions.Functions
         public override string ToString()
         {
             return SparqlSpecsHelper.SparqlKeywordBNode + "(" + this._expr.ToSafeString() + ")";
+        }
+    }
+
+    class BNodeFunctionContext
+    {
+        private Dictionary<int, Dictionary<String, INode>> _bnodes = new Dictionary<int, Dictionary<string, INode>>();
+        private BlankNodeMapper _mapper = new BlankNodeMapper("bnodeFunc");
+        private Graph _g = new Graph();
+        private int _currInput;
+
+        public BNodeFunctionContext(int currInput)
+        {
+            this._currInput = currInput;
+        }
+
+        public int CurrentInput
+        {
+            get
+            {
+                return this._currInput;
+            }
+        }
+
+        public BlankNodeMapper Mapper
+        {
+            get
+            {
+                return this._mapper;
+            }
+        }
+
+        public IGraph Graph
+        {
+            get
+            {
+                return this._g;
+            }
+        }
+
+        public Dictionary<int, Dictionary<String, INode>> BlankNodes
+        {
+            get
+            {
+                return this._bnodes;
+            }
+            set
+            {
+                this._bnodes = value;
+            }
         }
     }
 

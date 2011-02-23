@@ -57,6 +57,7 @@ namespace VDS.RDF.Query
 #else
         private DateTime _start, _end;
 #endif
+        private Dictionary<String, Object> _functionContexts = new Dictionary<string, object>();
 
         /// <summary>
         /// Creates a new Evaluation Context for the given Query over the given Triple Store
@@ -229,5 +230,38 @@ namespace VDS.RDF.Query
             }
         }
 
+        /// <summary>
+        /// Gets/Sets a Object that should be persisted over the entire Evaluation Context
+        /// </summary>
+        /// <param name="key">Key</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// May be used by parts of the Evaluation Process that need to ensure a persistent state across the entire Evaluation Query (e.g. the implementation of the BNODE() function)
+        /// </remarks>
+        public Object this[String key]
+        {
+            get
+            {
+                if (this._functionContexts.ContainsKey(key))
+                {
+                    return this._functionContexts[key];
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            set
+            {
+                if (this._functionContexts.ContainsKey(key))
+                {
+                    this._functionContexts[key] = value;
+                }
+                else
+                {
+                    this._functionContexts.Add(key, value);
+                }
+            }
+        }
     }
 }
