@@ -152,7 +152,7 @@ namespace dotNetRDFTest
 
                 //Create SPARQL Query Parser
                 SparqlQueryParser parser = new SparqlQueryParser();
-                parser.DefaultBaseURI = manifest.NamespaceMap.GetNamespaceUri(String.Empty);
+                parser.DefaultBaseUri = manifest.NamespaceMap.GetNamespaceUri(String.Empty);
 
                 //Find all the Positive Syntax Tests
                 foreach (Triple t in manifest.Triples.WithPredicateObject(rdfType, positiveSyntaxTest))

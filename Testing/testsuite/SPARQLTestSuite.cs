@@ -42,7 +42,7 @@ namespace dotNetRDFTest
 
                 SparqlQueryParser parser = new SparqlQueryParser();
                 parser.TraceTokeniser = true;
-                parser.DefaultBaseURI = TestSuiteURI;
+                parser.DefaultBaseUri = TestSuiteURI;
 
                 output.WriteLine("## SPARQL Test Suite");
                 output.WriteLine();

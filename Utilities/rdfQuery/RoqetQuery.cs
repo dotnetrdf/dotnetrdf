@@ -451,7 +451,7 @@ namespace rdfQuery
         {
             try 
             {
-                this._parser.DefaultBaseURI = new Uri(uri);
+                this._parser.DefaultBaseUri = new Uri(uri);
                 return true;
             } 
             catch (UriFormatException) 

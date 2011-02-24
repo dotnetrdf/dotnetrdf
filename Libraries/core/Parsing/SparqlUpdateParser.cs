@@ -55,6 +55,7 @@ namespace VDS.RDF.Parsing
     {
         private bool _traceTokeniser = false;
         private IEnumerable<ISparqlCustomExpressionFactory> _factories = Enumerable.Empty<ISparqlCustomExpressionFactory>();
+        private Uri _baseUri;
 
         //OPT: Add support to the SPARQL Update Parser for selectable syntax in the future
 
@@ -88,6 +89,21 @@ namespace VDS.RDF.Parsing
                 {
                     this._factories = value;
                 }
+            }
+        }
+
+        /// <summary>
+        /// Gets/Sets the Default Base URI used for Updated Commands parsed by this parser instance
+        /// </summary>
+        public Uri DefaultBaseUri
+        {
+            get
+            {
+                return this._baseUri;
+            }
+            set
+            {
+                this._baseUri = value;
             }
         }
 
@@ -205,7 +221,11 @@ namespace VDS.RDF.Parsing
 
         private SparqlUpdateCommandSet ParseInternal(SparqlUpdateParserContext context)
         {
+            //Set up the Context appropriately
+            context.BaseUri = this.DefaultBaseUri;
             context.QueryParser.ExpressionFactories = context.ExpressionFactories;
+            context.QueryParser.DefaultBaseUri = this.DefaultBaseUri;
+            context.ExpressionParser.BaseUri = this.DefaultBaseUri;
             context.ExpressionParser.NamespaceMap = context.NamespaceMap;
             context.ExpressionParser.QueryParser = context.QueryParser;
             context.ExpressionParser.ExpressionFactories = context.ExpressionFactories;
@@ -311,6 +331,8 @@ namespace VDS.RDF.Parsing
             if (next.TokenType == Token.URI)
             {
                 context.BaseUri = new Uri(next.Value);
+                context.CommandSet.BaseUri = context.BaseUri;
+                context.QueryParser.DefaultBaseUri = context.BaseUri;
                 context.ExpressionParser.BaseUri = context.BaseUri;
             }
             else
@@ -334,12 +356,14 @@ namespace VDS.RDF.Parsing
                     if (prefix.Value.Length == 1)
                     {
                         //Defining prefix for Default Namespace
-                        context.NamespaceMap.AddNamespace("", u);
+                        context.NamespaceMap.AddNamespace(String.Empty, u);
+                        context.CommandSet.NamespaceMap.AddNamespace(String.Empty, u);
                     }
                     else
                     {
                         //Defining prefix for some other Namespace
                         context.NamespaceMap.AddNamespace(prefix.Value.Substring(0, prefix.Value.Length - 1), u);
+                        context.CommandSet.NamespaceMap.AddNamespace(prefix.Value.Substring(0, prefix.Value.Length - 1), u);
                     }
                 }
                 else
@@ -514,6 +538,7 @@ namespace VDS.RDF.Parsing
                 {
                     //Now parse the WHERE pattern
                     SparqlQueryParserContext subContext = new SparqlQueryParserContext(context.Tokens);
+                    subContext.Query.BaseUri = context.BaseUri;
                     subContext.Query.NamespaceMap = context.NamespaceMap;
                     subContext.ExpressionParser.NamespaceMap = context.NamespaceMap;
                     subContext.ExpressionParser.ExpressionFactories = context.ExpressionFactories;
@@ -546,6 +571,7 @@ namespace VDS.RDF.Parsing
             DeleteDataCommand cmd;
 
             SparqlQueryParserContext subContext = new SparqlQueryParserContext(context.Tokens);
+            subContext.Query.BaseUri = context.BaseUri;
             subContext.Query.NamespaceMap = context.NamespaceMap;
             subContext.ExpressionParser.NamespaceMap = context.NamespaceMap;
             subContext.ExpressionParser.ExpressionFactories = context.ExpressionFactories;
@@ -671,6 +697,7 @@ namespace VDS.RDF.Parsing
             
             //Now parse the WHERE pattern
             SparqlQueryParserContext subContext = new SparqlQueryParserContext(context.Tokens);
+            subContext.Query.BaseUri = context.BaseUri;
             subContext.Query.NamespaceMap = context.NamespaceMap;
             subContext.ExpressionParser.NamespaceMap = context.NamespaceMap;
             subContext.ExpressionParser.ExpressionFactories = context.ExpressionFactories;
@@ -689,6 +716,7 @@ namespace VDS.RDF.Parsing
             InsertDataCommand cmd;
 
             SparqlQueryParserContext subContext = new SparqlQueryParserContext(context.Tokens);
+            subContext.Query.BaseUri = context.BaseUri;
             subContext.Query.NamespaceMap = context.NamespaceMap;
             subContext.ExpressionParser.NamespaceMap = context.NamespaceMap;
             subContext.ExpressionParser.ExpressionFactories = context.ExpressionFactories;
@@ -827,6 +855,7 @@ namespace VDS.RDF.Parsing
         private GraphPattern TryParseModifyTemplate(SparqlUpdateParserContext context)
         {
             SparqlQueryParserContext subContext = new SparqlQueryParserContext(context.Tokens);
+            subContext.Query.BaseUri = context.BaseUri;
             subContext.Query.NamespaceMap = context.NamespaceMap;
             subContext.ExpressionParser.NamespaceMap = context.NamespaceMap;
             subContext.ExpressionParser.ExpressionFactories = context.ExpressionFactories;

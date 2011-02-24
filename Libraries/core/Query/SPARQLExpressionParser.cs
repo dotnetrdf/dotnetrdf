@@ -1319,14 +1319,13 @@ namespace VDS.RDF.Query
 
                 case Token.SUM:
                     //SUM Aggregate
-                    if (distinct) throw new RdfParseException("DISTINCT modifier is not valid for the SUM aggregate");
                     if (aggExpr is VariableExpressionTerm)
                     {
-                        return new AggregateExpressionTerm(new SumAggregate((VariableExpressionTerm)aggExpr));
+                        return new AggregateExpressionTerm(new SumAggregate((VariableExpressionTerm)aggExpr, distinct));
                     }
                     else
                     {
-                        return new AggregateExpressionTerm(new SumAggregate(aggExpr));
+                        return new AggregateExpressionTerm(new SumAggregate(aggExpr, distinct));
                     }
 
                 default:

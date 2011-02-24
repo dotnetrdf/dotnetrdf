@@ -47,6 +47,7 @@ namespace VDS.RDF.Update
     {
         private List<SparqlUpdateCommand> _commands = new List<SparqlUpdateCommand>();
         private NamespaceMapper _nsmap = new NamespaceMapper(true);
+        private Uri _baseUri;
 
         /// <summary>
         /// Creates a new empty Command Set
@@ -133,6 +134,21 @@ namespace VDS.RDF.Update
         }
 
         /// <summary>
+        /// Gets/Sets the Base URI for the Command Set
+        /// </summary>
+        public Uri BaseUri
+        {
+            get
+            {
+                return this._baseUri;
+            }
+            internal set
+            {
+                this._baseUri = value;
+            }
+        }
+
+        /// <summary>
         /// Gets the Namespace Map for the Command Set
         /// </summary>
         public NamespaceMapper NamespaceMap
@@ -181,6 +197,21 @@ namespace VDS.RDF.Update
         public override string ToString()
         {
             StringBuilder output = new StringBuilder();
+
+            if (this._baseUri != null)
+            {
+                output.AppendLine("BASE <" + this._baseUri.ToString().Replace(">", "\\>") + ">");
+            }
+
+            foreach (String prefix in this._nsmap.Prefixes)
+            {
+                output.Append("PREFIX ");
+                output.Append(prefix);
+                output.Append(": <");
+                output.Append(this._nsmap.GetNamespaceUri(prefix).ToString().Replace(">", "\\>"));
+                output.AppendLine(">");
+            }
+
             for (int i = 0; i < this._commands.Count; i++)
             {
                 output.Append(this._commands[i].ToString());

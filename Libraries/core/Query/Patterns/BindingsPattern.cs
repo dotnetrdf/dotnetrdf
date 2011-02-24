@@ -41,6 +41,8 @@ using VDS.RDF.Query.Algebra;
 
 namespace VDS.RDF.Query.Patterns
 {
+    //TODO: Would it be better to implement BINDINGS as a conversion to a Multiset and then an ExistsJoin?
+
     /// <summary>
     /// Represents a set of Bindings for a SPARQL Query
     /// </summary>
@@ -48,6 +50,12 @@ namespace VDS.RDF.Query.Patterns
     {
         private List<String> _vars = new List<string>();
         private List<BindingTuple> _tuples = new List<BindingTuple>();
+
+        /// <summary>
+        /// Creates a new Empty Bindings Pattern
+        /// </summary>
+        public BindingsPattern()
+        { }
 
         /// <summary>
         /// Creates a new Bindings Pattern
@@ -107,7 +115,7 @@ namespace VDS.RDF.Query.Patterns
                 {
                     try
                     {
-                        if (this._vars.All(v => s[v].Equals(t[v]))) return true;
+                        if (this._vars.All(v => (s[v] == null && t[v] == null) || s[v].Equals(t[v]))) return true;
                     }
                     catch
                     {
@@ -205,6 +213,17 @@ namespace VDS.RDF.Query.Patterns
                 {
                     return null;
                 }
+            }
+        }
+
+        /// <summary>
+        /// Gets whether this is an empty tuple
+        /// </summary>
+        public bool IsEmpty
+        {
+            get
+            {
+                return this._values.Count == 0;
             }
         }
 

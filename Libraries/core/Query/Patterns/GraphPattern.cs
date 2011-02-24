@@ -58,6 +58,7 @@ namespace VDS.RDF.Query.Patterns
         private bool _isNotExists = false;
         private bool _isMinus = false;
         private bool _isService = false;
+        private bool _isSilent = false;
         private IToken _graphSpecifier = null;
         private List<GraphPattern> _graphPatterns = new List<GraphPattern>();
         private List<ITriplePattern> _triplePatterns = new List<ITriplePattern>();
@@ -289,6 +290,21 @@ namespace VDS.RDF.Query.Patterns
             get
             {
                 return this._isOptimised;
+            }
+        }
+
+        /// <summary>
+        /// Gets whether Evaluation Errors in this Graph Pattern are suppressed (currently only valid with SERVICE)
+        /// </summary>
+        public bool IsSilent
+        {
+            get
+            {
+                return this._isSilent;
+            }
+            internal set
+            {
+                this._isSilent = value;
             }
         }
 
@@ -783,6 +799,7 @@ namespace VDS.RDF.Query.Patterns
                 else
                 {
                     output.Append("SERVICE ");
+                    if (this._isSilent) output.Append("SILENT ");
                 }
                 switch (this._graphSpecifier.TokenType)
                 {

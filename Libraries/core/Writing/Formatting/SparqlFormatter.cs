@@ -41,6 +41,7 @@ using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Aggregates;
 using VDS.RDF.Query.Expressions;
+using VDS.RDF.Query.Expressions.Functions;
 using VDS.RDF.Query.Filters;
 using VDS.RDF.Query.Grouping;
 using VDS.RDF.Query.Ordering;
@@ -233,6 +234,66 @@ namespace VDS.RDF.Writing.Formatting
                 if (query.Limit >= 0) output.AppendLine("LIMIT " + query.Limit);
                 if (query.Offset > 0) output.AppendLine("OFFSET " + query.Offset);
 
+                //Finally BINDINGS
+                if (query.Bindings != null)
+                {
+                    output.Append("BINDINGS ");
+                    foreach (String var in query.Bindings.Variables)
+                    {
+                        output.Append("?" + var);
+                        output.Append(' ');
+                    }
+                    if (query.Bindings.Variables.Any()) output.AppendLine();
+                    output.Append('{');
+                    bool multipleTuples = query.Bindings.Tuples.Count() > 1;
+                    if (multipleTuples) output.AppendLine();
+                    foreach (BindingTuple tuple in query.Bindings.Tuples)
+                    {
+                        if (tuple.IsEmpty)
+                        {
+                            if (multipleTuples)
+                            {
+                                output.AppendLineIndented("()", 2);
+                            }
+                            else
+                            {
+                                output.Append(" () ");
+                            }
+                            continue;
+                        }
+
+                        if (multipleTuples)
+                        {
+                            output.AppendIndented("(", 2);
+                        }
+                        else
+                        {
+                            output.Append("(");
+                        }
+                        foreach (String var in query.Bindings.Variables)
+                        {
+                            output.Append(' ');
+                            if (tuple[var] == null)
+                            {
+                                output.AppendLine(SparqlSpecsHelper.SparqlKeywordUndef);
+                            }
+                            else
+                            {
+                                output.Append(this.Format(tuple[var], null));
+                            }
+                        }
+                        if (multipleTuples)
+                        {
+                            output.AppendLine(")");
+                        }
+                        else
+                        {
+                            output.Append(')');
+                        }
+                    }
+                    output.AppendLine("}");
+                }
+
                 return output.ToString();
             }
             finally
@@ -273,6 +334,7 @@ namespace VDS.RDF.Writing.Formatting
                 else
                 {
                     output.Append("SERVICE ");
+                    if (gp.IsSilent) output.Append("SILENT ");
                 }
 
                 switch (gp.GraphSpecifier.TokenType)
@@ -348,12 +410,6 @@ namespace VDS.RDF.Writing.Formatting
                 {
                     output.AppendIndented("FILTER(", 2);
                     output.Append(this.FormatExpression(fp.Expression));
-                    output.AppendLine(")");
-                }
-                if (gp.Filter != null)
-                {
-                    output.AppendIndented("FILTER(", 2);
-                    output.Append(this.FormatExpression(gp.Filter.Expression));
                     output.AppendLine(")");
                 }
                 output.Append("}");
@@ -703,7 +759,19 @@ namespace VDS.RDF.Writing.Formatting
                         break;
 
                     case SparqlExpressionType.GraphOperator:
+                        output.Append(expr.Functor);
+                        output.Append(' ');
 
+                        List<ISparqlExpression> gArgs = expr.Arguments.ToList();
+                        if (gArgs.Count > 1) throw new RdfOutputException("Error Formatting SPARQL Expression - Expressions of type GraphOperator are only allowed a single argument");
+                        for (int i = 0; i < gArgs.Count; i++)
+                        {
+                            output.Append(this.FormatExpression(gArgs[i]));
+                            if (i < gArgs.Count - 1)
+                            {
+                                output.Append(", ");
+                            }
+                        }
                         break;
 
                     case SparqlExpressionType.Primary:
@@ -721,9 +789,7 @@ namespace VDS.RDF.Writing.Formatting
                         else if (expr is GraphPatternExpressionTerm)
                         {
                             GraphPatternExpressionTerm gp = (GraphPatternExpressionTerm)expr;
-                            output.Append("{ ");
                             output.Append(this.Format(gp.Pattern));
-                            output.Append(" }");
                         }
                         else
                         {
@@ -757,6 +823,10 @@ namespace VDS.RDF.Writing.Formatting
                         output.Append(this.FormatExpression(expr.Arguments.First()));
                         break;
                 }
+            }
+            catch (RdfOutputException)
+            {
+                throw;
             }
             catch (Exception ex)
             {

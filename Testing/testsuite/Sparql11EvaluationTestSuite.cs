@@ -161,7 +161,11 @@ namespace dotNetRDFTest
                 UriNode rdfType = manifest.CreateUriNode("rdf:type");
                 UriNode rdfsComment = manifest.CreateUriNode("rdfs:comment");
                 UriNode positiveSyntaxTest = manifest.CreateUriNode("mf:PositiveSyntaxTest");
+                UriNode positiveSyntaxTest11 = manifest.CreateUriNode("mf:PositiveSyntaxTest11");
+                UriNode positiveUpdateSyntaxTest = manifest.CreateUriNode("mf:PositiveUpdateSyntaxTest11");
                 UriNode negativeSyntaxTest = manifest.CreateUriNode("mf:NegativeSyntaxTest");
+                UriNode negativeSyntaxTest11 = manifest.CreateUriNode("mf:NegativeSyntaxTest11");
+                UriNode negativeUpdateSyntaxTest = manifest.CreateUriNode("mf:NegativeUpdateSyntaxTest11");
                 UriNode evaluationTest = manifest.CreateUriNode("mf:QueryEvaluationTest");
                 UriNode updateEvaluationTest = manifest.CreateUriNode("ut:UpdateEvaluationTest");
                 UriNode action = manifest.CreateUriNode("mf:action");
@@ -174,11 +178,13 @@ namespace dotNetRDFTest
                 UriNode graphData = manifest.CreateUriNode("qt:graphData");
 
                 //Create SPARQL Query Parser
-                SparqlQueryParser parser = new SparqlQueryParser();
-                parser.DefaultBaseURI = manifest.NamespaceMap.GetNamespaceUri(String.Empty);
+                SparqlQueryParser queryParser = new SparqlQueryParser();
+                SparqlUpdateParser updateParser = new SparqlUpdateParser();
+                queryParser.DefaultBaseUri = manifest.NamespaceMap.GetNamespaceUri(String.Empty);
+                updateParser.DefaultBaseUri = manifest.NamespaceMap.GetNamespaceUri(String.Empty);
 
                 //Find all the Positive Syntax Tests
-                foreach (Triple t in manifest.Triples.WithPredicateObject(rdfType, positiveSyntaxTest))
+                foreach (Triple t in manifest.GetTriplesWithPredicateObject(rdfType, positiveSyntaxTest).Concat(manifest.GetTriplesWithPredicateObject(rdfType, positiveSyntaxTest11)).Concat(manifest.GetTriplesWithPredicateObject(rdfType, positiveUpdateSyntaxTest)))
                 {
                     //Test ID
                     INode testID = t.Subject;
@@ -193,7 +199,7 @@ namespace dotNetRDFTest
                         Triple queryDef = manifest.Triples.WithSubjectPredicate(testID, action).FirstOrDefault();
                         if (queryDef != null)
                         {
-                            this.ProcessSyntaxTest(parser, queryDef.Object.ToString(), true);
+                            this.ProcessSyntaxTest(queryParser, updateParser, queryDef.Object.ToString(), true);
                         }
                         else
                         {
@@ -206,7 +212,7 @@ namespace dotNetRDFTest
                 }
 
                 //Find all the Negative Syntax Tests
-                foreach (Triple t in manifest.Triples.WithPredicateObject(rdfType, negativeSyntaxTest))
+                foreach (Triple t in manifest.GetTriplesWithPredicateObject(rdfType, negativeSyntaxTest).Concat(manifest.GetTriplesWithPredicateObject(rdfType, negativeSyntaxTest11)).Concat(manifest.GetTriplesWithPredicateObject(rdfType, negativeUpdateSyntaxTest)))
                 {
                     //Test ID
                     INode testID = t.Subject;
@@ -221,7 +227,7 @@ namespace dotNetRDFTest
                         Triple queryDef = manifest.Triples.WithSubjectPredicate(testID, action).FirstOrDefault();
                         if (queryDef != null)
                         {
-                            this.ProcessSyntaxTest(parser, queryDef.Object.ToString(), false);
+                            this.ProcessSyntaxTest(queryParser, updateParser, queryDef.Object.ToString(), false);
                         }
                         else
                         {
@@ -271,7 +277,7 @@ namespace dotNetRDFTest
                                     Triple commentDef = manifest.Triples.WithSubjectPredicate(testID, rdfsComment).FirstOrDefault();
 
                                     //Run the Evaluation Test
-                                    int eval = this.ProcessEvaluationTest(parser, commentDef, queryDef.Object.ToString(), defGraph, namedGraphs, resultDef.Object.ToString());
+                                    int eval = this.ProcessEvaluationTest(queryParser, commentDef, queryDef.Object.ToString(), defGraph, namedGraphs, resultDef.Object.ToString());
                                 }
                                 else
                                 {
@@ -328,14 +334,14 @@ namespace dotNetRDFTest
             //}
         }
 
-        private void ProcessSyntaxTest(SparqlQueryParser parser, String queryFile, bool shouldParse)
+        private void ProcessSyntaxTest(SparqlQueryParser queryParser, SparqlUpdateParser updateParser, String inputFile, bool shouldParse)
         {
-            if (queryFile.StartsWith("file:///")) queryFile = queryFile.Substring(8);
+            if (inputFile.StartsWith("file:///")) inputFile = inputFile.Substring(8);
 
             bool error = false;
             try
             {
-                Console.WriteLine("# Processing Syntax Test " + Path.GetFileName(queryFile));
+                Console.WriteLine("# Processing Syntax Test " + Path.GetFileName(inputFile));
                 Console.Write("# Result Expected = ");
                 if (shouldParse)
                 {
@@ -346,15 +352,29 @@ namespace dotNetRDFTest
                     Console.WriteLine("Parsing Fails");
                 }
 
-                SparqlQuery q = parser.ParseFromFile(queryFile);
+                if (inputFile.EndsWith(".rq"))
+                {
+                    SparqlQuery q = queryParser.ParseFromFile(inputFile);
 
-                Console.WriteLine(q.ToString());
-                Console.WriteLine();
+                    Console.WriteLine("Formatted with SparqlFormatter");
+                    SparqlFormatter formatter = new SparqlFormatter(q.NamespaceMap);
+                    Console.WriteLine(formatter.Format(q));
+                    Console.WriteLine();
+                }
+                else if (inputFile.EndsWith(".ru"))
+                {
+                    SparqlUpdateCommandSet cmds = updateParser.ParseFromFile(inputFile);
 
-                Console.WriteLine("Formatted with SparqlFormatter");
-                SparqlFormatter formatter = new SparqlFormatter(q.NamespaceMap);
-                Console.WriteLine(formatter.Format(q));
-                Console.WriteLine();
+                    Console.WriteLine(cmds.ToString());
+                    Console.WriteLine();
+                }
+                else
+                {
+                    Console.WriteLine("# Test Result - Unknown Input File for Syntax Test (Test Indeterminate)");
+                    testsFailed++;
+                    testsSyntaxFailed++;
+                    return;
+                }
             }
             catch (RdfParseException parseEx)
             {
@@ -368,7 +388,7 @@ namespace dotNetRDFTest
             }
             finally
             {
-                Console.Write("# Result = ");
+                Console.Write("# Test Result = ");
                 if (error)
                 {
                     if (shouldParse)

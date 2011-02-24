@@ -143,9 +143,9 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Gets/Sets the Default Base Uri for Queries parsed by this Parser instance
+        /// Gets/Sets the Default Base URI for Queries parsed by this Parser instance
         /// </summary>
-        public Uri DefaultBaseURI
+        public Uri DefaultBaseUri
         {
             get
             {
@@ -990,6 +990,8 @@ namespace VDS.RDF.Parsing
             }
             else
             {
+                if (context.SyntaxMode != SparqlQuerySyntax.Extended) throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected an AS keyword after an Aggregate", next);
+
                 int nextID = context.NextAliasID;
                 if (nextID > 0) alias += nextID.ToString();
                 while (context.Query.Variables.Any(v => v.Name.Equals(alias)))
@@ -3303,6 +3305,14 @@ namespace VDS.RDF.Parsing
         {
             if (context.SyntaxMode == SparqlQuerySyntax.Sparql_1_0) throw new RdfParseException("SERVICE clauses are not supported in SPARQL 1.0");
 
+            //May allow an optional SILENT keyword
+            bool silent = false;
+            if (context.Tokens.Peek().TokenType == Token.SILENT)
+            {
+                context.Tokens.Dequeue();
+                silent = true;
+            }
+
             //SERVICE first has a URI/Variable service specifier
             IToken specifier = context.Tokens.Dequeue();
             if (specifier.TokenType != Token.URI && specifier.TokenType != Token.VARIABLE)
@@ -3314,6 +3324,7 @@ namespace VDS.RDF.Parsing
             GraphPattern child = this.TryParseGraphPattern(context);
             child.IsService = true;
             child.GraphSpecifier = specifier;
+            child.IsSilent = silent;
             p.AddGraphPattern(child);
         }
 
@@ -3328,7 +3339,15 @@ namespace VDS.RDF.Parsing
                 context.Tokens.Dequeue();
                 next = context.Tokens.Peek();
             }
-            if (vars.Count == 0) throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected one/more Variable Tokens after a BINDINGS keyword", next);
+            if (vars.Count == 0)
+            {
+                //If No Variables then expect an empty BINDINGS { }
+                next = context.Tokens.Peek();
+                if (next.TokenType != Token.LEFTCURLYBRACKET)
+                {
+                    throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected either one/more Variable Tokens or the empty set { } after a BINDINGS keyword", next);
+                }
+            }
 
             //Then expect a Left Curly Bracket
             if (next.TokenType == Token.LEFTCURLYBRACKET)

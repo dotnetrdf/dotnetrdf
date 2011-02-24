@@ -14,6 +14,20 @@ namespace VDS.RDF.Query.Algebra
     {
         private IToken _endpointSpecifier;
         private GraphPattern _pattern;
+        private bool _silent = false;
+
+        /// <summary>
+        /// Creates a new Service clause with the given Endpoint Specifier and Graph Pattern
+        /// </summary>
+        /// <param name="endpointSpecifier">Endpoint Specifier</param>
+        /// <param name="pattern">Graph Pattern</param>
+        /// <param name="silent">Whether Evaluation Errors are suppressed</param>
+        public Service(IToken endpointSpecifier, GraphPattern pattern, bool silent)
+        {
+            this._endpointSpecifier = endpointSpecifier;
+            this._pattern = pattern;
+            this._silent = silent;
+        }
 
         /// <summary>
         /// Creates a new Service clause with the given Endpoint Specifier and Graph Pattern
@@ -21,10 +35,7 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="endpointSpecifier">Endpoint Specifier</param>
         /// <param name="pattern">Graph Pattern</param>
         public Service(IToken endpointSpecifier, GraphPattern pattern)
-        {
-            this._endpointSpecifier = endpointSpecifier;
-            this._pattern = pattern;
-        }
+            : this(endpointSpecifier, pattern, false) { }
 
         /// <summary>
         /// Evaluates the Service Clause by generating instance(s) of <see cref="SparqlRemoteEndpoint">SparqlRemoteEndpoint</see> as required and issuing the query to the remote endpoint(s)
@@ -33,6 +44,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
+            bool bypassSilent = false;
             try
             {
                 SparqlRemoteEndpoint endpoint;
@@ -81,6 +93,9 @@ namespace VDS.RDF.Query.Algebra
                 }
                 else
                 {
+                    //Note that we must bypass the SILENT operator in this case as this is not an evaluation failure
+                    //but a query syntax error
+                    bypassSilent = true;
                     throw new RdfQueryException("SERVICE Specifier must be a URI/Variable Token but a " + this._endpointSpecifier.GetType().ToString() + " Token was provided");
                 }
 
@@ -123,6 +138,8 @@ namespace VDS.RDF.Query.Algebra
                     //Execute the Query for every possible Binding and build up our Output Multiset from all the results
                     foreach (Set s in bindings)
                     {
+                        //TODO: Should we continue processing here if and when we hit an error?
+
                         foreach (String var in s.Variables)
                         {
                             sparqlQuery.SetVariable(var, s[var]);
@@ -161,7 +178,26 @@ namespace VDS.RDF.Query.Algebra
             }
             catch (Exception ex)
             {
-                throw new RdfQueryException("Query execution failed because evaluating a SERVICE clause failed - this may be due to an error with the remote service", ex);
+                if (this._silent && !bypassSilent)
+                {
+
+                    //If Evaluation Errors are SILENT is specified then a Multiset containing a single set with all values unbound is returned
+                    //Unless some of the SPARQL queries did return results in which we just return the results we did obtain
+                    if (context.OutputMultiset.IsEmpty)
+                    {
+                        Set s = new Set();
+                        foreach (String var in this._pattern.Variables.Distinct())
+                        {
+                            s.Add(var, null);
+                        }
+                        context.OutputMultiset.Add(s);
+                    }
+                    return context.OutputMultiset;
+                }
+                else
+                {
+                    throw new RdfQueryException("Query execution failed because evaluating a SERVICE clause failed - this may be due to an error with the remote service", ex);
+                }
             }
         }
 
