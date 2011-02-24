@@ -694,9 +694,9 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Adds a Default Graph Uri
+        /// Adds a Default Graph URI
         /// </summary>
-        /// <param name="u">Uri</param>
+        /// <param name="u">Graph URI</param>
         public void AddDefaultGraph(Uri u)
         {
             if (!this._defaultGraphs.Contains(u))
@@ -706,15 +706,31 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Adds a Named Graph Uri
+        /// Adds a Named Graph URI
         /// </summary>
-        /// <param name="u"></param>
+        /// <param name="u">Graph URI</param>
         public void AddNamedGraph(Uri u)
         {
             if (!this._namedGraphs.Contains(u))
             {
                 this._namedGraphs.Add(u);
             }
+        }
+
+        /// <summary>
+        /// Removes all Default Graph URIs
+        /// </summary>
+        public void ClearDefaultGraphs()
+        {
+            this._defaultGraphs.Clear();
+        }
+
+        /// <summary>
+        /// Removes all Named Graph URIs
+        /// </summary>
+        public void ClearNamedGraphs()
+        {
+            this._namedGraphs.Clear();
         }
 
         #endregion

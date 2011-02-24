@@ -70,6 +70,8 @@ namespace VDS.RDF.Query.Algebra
         {
             BaseMultiset result;
 
+            //Q: Can we optimise GRAPH when the input is the Null Multiset to just return the Null Multiset?
+
             if (this._pattern is Bgp && ((Bgp)this._pattern).IsEmpty)
             {
                 //Optimise the case where we have GRAPH ?g {} by not setting the Graph and just returning
@@ -138,6 +140,21 @@ namespace VDS.RDF.Query.Algebra
                             {
                                 //Query specifies one/more named Graphs
                                 context.Data.SetActiveGraph(context.Query.NamedGraphs.ToList());
+
+                                //If the Input is Empty then limit Input to be the sets with the Graph
+                                //Variable Bound to the named Graph URI
+                                //Only do this if the Graph Variable occurs in the inner pattern
+                                if (!gvar.AsEnumerable().IsDisjoint(this._pattern.Variables) && (context.InputMultiset is IdentityMultiset || context.InputMultiset.IsEmpty))
+                                {
+                                    context.InputMultiset = new Multiset();
+                                    context.InputMultiset.AddVariable(gvar);
+                                    foreach (Uri u in context.Query.NamedGraphs)
+                                    {
+                                        Set s = new Set();
+                                        s.Add(gvar, new UriNode(null, u));
+                                        context.InputMultiset.Add(s);
+                                    }
+                                }
                             }
                             else
                             {

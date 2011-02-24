@@ -472,53 +472,70 @@ namespace VDS.RDF.Parsing
                 }
             } while (temp.TokenType != Token.EOF);
 
-            //TODO: If not SPARQL 1.0 then need to check Variable usages in the SELECT
+            //If not SPARQL 1.0 then do additional post parsing checks
             if (this._syntax != SparqlQuerySyntax.Sparql_1_0)
             {
-                if (context.Query.QueryType == SparqlQueryType.Select || context.Query.QueryType == SparqlQueryType.SelectDistinct || context.Query.QueryType == SparqlQueryType.SelectReduced || context.Query.QueryType == SparqlQueryType.Describe)
+                switch (context.Query.QueryType)
                 {
-                    List<String> projectedSoFar = new List<string>();
-                    foreach (SparqlVariable var in context.Query.Variables)
-                    {
-                        if (!var.IsResultVariable) continue;
-
-                        if (projectedSoFar.Contains(var.Name) && (var.IsAggregate || var.IsProjection))
+                    case SparqlQueryType.Select:
+                    case SparqlQueryType.SelectDistinct:
+                    case SparqlQueryType.SelectReduced:
+                    case SparqlQueryType.Describe:
+                        //Check Variable Usage
+                        List<String> projectedSoFar = new List<string>();
+                        foreach (SparqlVariable var in context.Query.Variables)
                         {
-                            throw new RdfParseException("Cannot assign the results of an Aggregate/Project Expression to the variable " + var.ToString() + " as this Variable is already Projected to earlier in the SELECT");
-                        }
+                            if (!var.IsResultVariable) continue;
 
-                        if (var.IsProjection)
-                        {
-                            if (context.Query.GroupBy != null)
+                            if (projectedSoFar.Contains(var.Name) && (var.IsAggregate || var.IsProjection))
                             {
-                                if (!var.Projection.Variables.All(v => context.Query.GroupBy.ProjectableVariables.Contains(v) || projectedSoFar.Contains(v)))
+                                throw new RdfParseException("Cannot assign the results of an Aggregate/Project Expression to the variable " + var.ToString() + " as this Variable is already Projected to earlier in the SELECT");
+                            }
+
+                            if (var.IsProjection)
+                            {
+                                if (context.Query.GroupBy != null)
                                 {
-                                    throw new RdfParseException("Your SELECT uses the Project Expression " + var.Projection.ToString() + " which uses one/more Variables which are either not projectable from the GROUP BY or not projected earlier in the SELECT.  All Variables used must be projectable from the GROUP BY or projected earlier in the SELECT");
+                                    if (!var.Projection.Variables.All(v => context.Query.GroupBy.ProjectableVariables.Contains(v) || projectedSoFar.Contains(v)))
+                                    {
+                                        throw new RdfParseException("Your SELECT uses the Project Expression " + var.Projection.ToString() + " which uses one/more Variables which are either not projectable from the GROUP BY or not projected earlier in the SELECT.  All Variables used must be projectable from the GROUP BY or projected earlier in the SELECT");
+                                    }
                                 }
                             }
-                        }
-                        else if (var.IsAggregate)
-                        {
-                            if (context.Query.GroupBy != null)
+                            else if (var.IsAggregate)
                             {
-                                //TODO: ISparqlAggregate needs to expose a Variables property
-                                //if (!var.Aggregate.Var
-                            }
-                        }
-                        else
-                        {
-                            if (context.Query.GroupBy != null)
-                            {
-                                //If there is a GROUP BY then the Variable must either be projectable from there
-                                if (!context.Query.GroupBy.ProjectableVariables.Contains(var.Name))
+                                if (context.Query.GroupBy != null)
                                 {
-                                    throw new RdfParseException("Your SELECT/DESCRIBE query tries to project the variable " + var.ToString() + " but this Variable is not Grouped By");
+                                    //TODO: ISparqlAggregate needs to expose a Variables property
+                                    //if (!var.Aggregate.Var
                                 }
                             }
-                        }
+                            else
+                            {
+                                if (context.Query.GroupBy != null)
+                                {
+                                    //If there is a GROUP BY then the Variable must either be projectable from there
+                                    if (!context.Query.GroupBy.ProjectableVariables.Contains(var.Name))
+                                    {
+                                        throw new RdfParseException("Your SELECT/DESCRIBE query tries to project the variable " + var.ToString() + " but this Variable is not Grouped By");
+                                    }
+                                }
+                            }
 
-                        projectedSoFar.Add(var.Name);
-                    }
+                            projectedSoFar.Add(var.Name);
+                        }
+                        break;
+
+                    case SparqlQueryType.DescribeAll:
+                    case SparqlQueryType.SelectAll:
+                    case SparqlQueryType.SelectAllDistinct:
+                    case SparqlQueryType.SelectAllReduced:
+                        //Check that a GROUP BY has not been used
+                        if (context.Query.GroupBy != null)
+                        {
+                            throw new RdfParseException("SELECT/DESCRIBE * is not permitted when a GROUP BY is used");
+                        }
+                        break;
                 }
             }
 

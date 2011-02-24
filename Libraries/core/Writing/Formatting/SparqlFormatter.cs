@@ -899,7 +899,9 @@ namespace VDS.RDF.Writing.Formatting
             else if (path is FixedCardinality)
             {
                 FixedCardinality card = (FixedCardinality)path;
+                if (card.Path is BaseBinaryPath) output.Append('(');
                 output.Append(this.FormatPath(card.Path));
+                if (card.Path is BaseBinaryPath) output.Append(')');
                 output.Append('{');
                 output.Append(card.MaxCardinality);
                 output.Append('}');
@@ -907,13 +909,17 @@ namespace VDS.RDF.Writing.Formatting
             else if (path is InversePath)
             {
                 InversePath inv = (InversePath)path;
-                output.Append("^ ");
+                output.Append('^');
+                if (inv.Path is BaseBinaryPath) output.Append('(');
                 output.Append(this.FormatPath(inv.Path));
+                if (inv.Path is BaseBinaryPath) output.Append(')');
             }
             else if (path is NOrMore)
             {
                 NOrMore nOrMore = (NOrMore)path;
+                if (nOrMore.Path is BaseBinaryPath) output.Append('(');
                 output.Append(this.FormatPath(nOrMore.Path));
+                if (nOrMore.Path is BaseBinaryPath) output.Append(')');
                 output.Append('{');
                 output.Append(nOrMore.MinCardinality);
                 output.Append(",}");
@@ -921,7 +927,9 @@ namespace VDS.RDF.Writing.Formatting
             else if (path is NToM)
             {
                 NToM nToM = (NToM)path;
+                if (nToM.Path is BaseBinaryPath) output.Append('(');
                 output.Append(this.FormatPath(nToM.Path));
+                if (nToM.Path is BaseBinaryPath) output.Append(')');
                 output.Append('{');
                 output.Append(nToM.MinCardinality);
                 output.Append(',');
@@ -931,7 +939,9 @@ namespace VDS.RDF.Writing.Formatting
             else if (path is OneOrMore)
             {
                 OneOrMore oneOrMore = (OneOrMore)path;
+                if (oneOrMore.Path is BaseBinaryPath) output.Append('(');
                 output.Append(this.FormatPath(oneOrMore.Path));
+                if (oneOrMore.Path is BaseBinaryPath) output.Append(')');
                 output.Append('+');
             }
             else if (path is Property)
@@ -949,19 +959,25 @@ namespace VDS.RDF.Writing.Formatting
             else if (path is ZeroOrMore)
             {
                 ZeroOrMore zeroOrMore = (ZeroOrMore)path;
+                if (zeroOrMore.Path is BaseBinaryPath) output.Append('(');
                 output.Append(this.FormatPath(zeroOrMore.Path));
+                if (zeroOrMore.Path is BaseBinaryPath) output.Append(')');
                 output.Append('*');
             }
             else if (path is ZeroOrOne)
             {
                 ZeroOrOne zeroOrOne = (ZeroOrOne)path;
+                if (zeroOrOne.Path is BaseBinaryPath) output.Append('(');
                 output.Append(this.FormatPath(zeroOrOne.Path));
+                if (zeroOrOne.Path is BaseBinaryPath) output.Append(')');
                 output.Append('?');
             }
             else if (path is ZeroToN)
             {
                 ZeroToN zeroToN = (ZeroToN)path;
+                if (zeroToN.Path is BaseBinaryPath) output.Append('(');
                 output.Append(this.FormatPath(zeroToN.Path));
+                if (zeroToN.Path is BaseBinaryPath) output.Append(')');
                 output.Append("{,");
                 output.Append(zeroToN.MaxCardinality);
                 output.Append('}');

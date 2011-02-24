@@ -100,15 +100,31 @@ namespace VDS.RDF.Query.Patterns
                 SparqlEvaluationContext subcontext = new SparqlEvaluationContext(this._subquery, context.Data);
                 subcontext.InputMultiset = context.InputMultiset;
 
+                //Add any Named Graphs to the subquery
+                if (context.Query != null)
+                {
+                    foreach (Uri u in context.Query.NamedGraphs)
+                    {
+                        this._subquery.AddNamedGraph(u);
+                    }
+                }
+
                 ISparqlAlgebra query = this._subquery.ToAlgebra();
                 try
                 {
+                    //Evaluate the Subquery
                     context.OutputMultiset = query.Evaluate(subcontext);
 
                     //If the Subquery contains a GROUP BY it may return a Group Multiset in which case we must flatten this to a Multiset
                     if (context.OutputMultiset is GroupMultiset)
                     {
                         context.OutputMultiset = new Multiset((GroupMultiset)context.OutputMultiset);
+                    }
+
+                    //Strip out any Named Graphs from the subquery
+                    if (this._subquery.NamedGraphs.Any())
+                    {
+                        this._subquery.ClearNamedGraphs();
                     }
                 }
                 catch (RdfQueryException queryEx)

@@ -594,9 +594,18 @@ namespace VDS.RDF.Parsing
             }
             else if (gp.HasChildGraphPatterns)
             {
-                if (gp.HasChildGraphPatterns && gp.TriplePatterns.Count > 0)
+                if (!gp.ChildGraphPatterns.All(p => p.IsGraph || (!p.IsExists && !p.IsMinus && !p.IsNotExists && !p.IsOptional && !p.IsOptional && !p.IsService && !p.IsSubQuery && !p.IsUnion)))
                 {
-                    throw new RdfParseException("An INSERT DATA Command may contain either Triples Patterns or a GRAPH Clause but not both");
+                    throw new RdfParseException("A DELETE DATA Command may only contain a combination of Triple Patterns and GRAPH clauses");
+                }
+                else if (gp.ChildGraphPatterns.Any(p => p.HasChildGraphPatterns))
+                {
+                    throw new RdfParseException("A DELETE DATA Command may not contain nested Graph Patterns");
+                }
+                else if (gp.HasChildGraphPatterns && gp.TriplePatterns.Count > 0)
+                {
+                    throw new NotSupportedException("Cominations of GRAPH clauses and Triple Patterns is not yet supported");
+                    throw new RdfParseException("A DELETE DATA Command may contain either Triples Patterns or a GRAPH Clause but not both");
                 }
                 else if (gp.ChildGraphPatterns.Count == 1 && gp.ChildGraphPatterns[0].IsGraph)
                 {
@@ -739,8 +748,17 @@ namespace VDS.RDF.Parsing
             }
             else if (gp.HasChildGraphPatterns)
             {
-                if (gp.HasChildGraphPatterns && gp.TriplePatterns.Count > 0)
+                if (!gp.ChildGraphPatterns.All(p => p.IsGraph || (!p.IsExists && !p.IsMinus && !p.IsNotExists && !p.IsOptional && !p.IsOptional && !p.IsService && !p.IsSubQuery && !p.IsUnion)))
                 {
+                    throw new RdfParseException("An INSERT DATA Command may only contain a combination of Triple Patterns and GRAPH clauses");
+                }
+                else if (gp.ChildGraphPatterns.Any(p => p.HasChildGraphPatterns))
+                {
+                    throw new RdfParseException("An INSERT DATA Command may not contain nested Graph Patterns");
+                }
+                else if (gp.HasChildGraphPatterns && gp.TriplePatterns.Count > 0)
+                {
+                    throw new NotSupportedException("Cominations of GRAPH clauses and Triple Patterns is not yet supported");
                     throw new RdfParseException("An INSERT DATA Command may contain either Triples Patterns or a GRAPH Clause but not both");
                 }
                 else if (gp.ChildGraphPatterns.Count == 1 && gp.ChildGraphPatterns[0].IsGraph)

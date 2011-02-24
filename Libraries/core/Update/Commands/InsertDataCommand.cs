@@ -142,9 +142,9 @@ namespace VDS.RDF.Update.Commands
             ConstructContext constructContext = new ConstructContext(target, null, true);
             foreach (IConstructTriplePattern p in this._pattern.TriplePatterns.OfType<IConstructTriplePattern>())
             {
-                subj = p.Subject.Construct(constructContext);//((NodeMatchPattern)tp.Subject).Node.CopyNode(target);
-                pred = p.Predicate.Construct(constructContext);//((NodeMatchPattern)tp.Predicate).Node.CopyNode(target);
-                obj = p.Object.Construct(constructContext);//((NodeMatchPattern)tp.Object).Node.CopyNode(target);
+                subj = p.Subject.Construct(constructContext);
+                pred = p.Predicate.Construct(constructContext);
+                obj = p.Object.Construct(constructContext);
 
                 target.Assert(new Triple(subj, pred, obj));
             }

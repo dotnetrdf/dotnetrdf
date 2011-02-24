@@ -87,7 +87,8 @@ namespace VDS.RDF.Query.Algebra
                 //If we get here then the RHS is not disjoint so it does affect the ouput
 
                 //Only execute the RHS if the LHS had results
-                context.InputMultiset = lhsResult;
+                //context.InputMultiset = lhsResult;
+                context.InputMultiset = initialInput;
                 BaseMultiset rhsResult = this._rhs.Evaluate(context);
                 context.CheckTimeout();
 
