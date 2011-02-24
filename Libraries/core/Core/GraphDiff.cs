@@ -157,7 +157,16 @@ namespace VDS.RDF
                             {
                                 //This MSG has a Match in the 2nd Graph so add the Mapping information
                                 hasMatch = true;
-                                this.MergeMapping(report, tempMapping);
+                                try
+                                {
+                                    this.MergeMapping(report, tempMapping);
+                                }
+                                catch (RdfException)
+                                {
+                                    //If the Mapping cannot be merged it is a bad mapping and we try other candidates
+                                    hasMatch = false;
+                                    continue;
+                                }
 
                                 //Remove the matched MSG from the RHS MSGs so we cannot match another LHS MSG to it later
                                 //We use ReferenceEquals for this remove to avoid potentially costly Graph Equality calculations
@@ -234,16 +243,18 @@ namespace VDS.RDF
 
         private void MergeMapping(GraphDiffReport report, Dictionary<INode, INode> mapping)
         {
+            //This first run through ensures the mappings don't conflict in which case it is an invalid mapping
             foreach (KeyValuePair<INode, INode> kvp in mapping)
             {
                 if (report.Mapping.ContainsKey(kvp.Key))
                 {
                     if (!report.Mapping[kvp.Key].Equals(kvp.Value)) throw new RdfException("Error in GraphDiff - " + kvp.Key.ToString() + " is already mapped to " + report.Mapping[kvp.Key].ToString() + " so cannot be remapped to " + kvp.Value.ToString());
                 }
-                else
-                {
-                    report.Mapping.Add(kvp.Key, kvp.Value);
-                }
+            }
+            //The second run through does the actual merge
+            foreach (KeyValuePair<INode, INode> kvp in mapping)
+            {
+                report.Mapping.Add(kvp.Key, kvp.Value);
             }
         }
     }

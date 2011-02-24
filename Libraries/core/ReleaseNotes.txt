@@ -69,16 +69,16 @@ Query and Update
 - ISparqlDataset is not currently thread safe - queries/updates executing on different threads against the same
   dataset may interfere with each other
 - SPARQL 1.1 Support is as close to the editors drafts at the time of release.  Majority of the test suite is passed
-  but we fail ~22 out of 308 tests due to the following issues:
+  but we fail 20 and ignore a further 11 of 308 tests due to the following issues:
   - Property Path semantics have changed since the previous drafts but our implementation has not so we particularly
     fail tests involving variable and zero length paths
   - MINUS and NOT EXISTS negation work for basic constructs but we fail tests where there are complex
     interactions between them
-  - There are some tests which use syntax which is invalid according to the current drafts so we ignore these tests
   - Blank Nodes used as wildcards in INSERT/DELETE commands is not supported as it is unclear whether the WG
     will endorse this usage or not.  If they do the feature presents a significant implementation hurdle which
     is why it is not currently implemented
- 
+  - There are some tests which use syntax which is invalid according to the current drafts so we ignore these tests
+
 Storage
 - SQL Storage is officially deprecated though still usable - will be removed/rewritten entirely in future releases
 - Virtuoso support is seriously broken due to an issue with the Virtuoso ADO.Net provider

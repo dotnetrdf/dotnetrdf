@@ -390,8 +390,8 @@ namespace VDS.RDF.Query
 
                 //Compare the two Graphs for equality
                 SparqlRdfWriter writer = new SparqlRdfWriter();
-                Graph g = writer.GenerateOutput(local);
-                Graph h = writer.GenerateOutput(other);
+                IGraph g = writer.GenerateOutput(local);
+                IGraph h = writer.GenerateOutput(other);
                 return g.Equals(h);
             }
             else

@@ -284,6 +284,32 @@ namespace VDS.RDF.Test.Sparql
         public void SparqlGraphClause()
         {
             String query = "SELECT * WHERE { GRAPH ?g { ?s ?p ?o } }";
+            SparqlQueryParser parser = new SparqlQueryParser();
+            SparqlQuery q = parser.ParseFromString(query);
+
+            InMemoryDataset dataset = new InMemoryDataset();
+            IGraph ex = new Graph();
+            FileLoader.Load(ex, "InferenceTest.ttl");
+            ex.BaseUri = new Uri("http://example.org/graph");
+            dataset.AddGraph(ex);
+
+            IGraph def = new Graph();
+            dataset.AddGraph(def);
+
+            dataset.SetDefaultGraph(def);
+
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
+            Object results = processor.ProcessQuery(q);
+            if (results is SparqlResultSet)
+            {
+                SparqlResultSet rset = (SparqlResultSet)results;
+                TestTools.ShowResults(rset);
+                Assert.AreEqual(ex.Triples.Count, rset.Count, "Number of Results should have been equal to number of Triples");
+            }
+            else
+            {
+                Assert.Fail("Did not get a SPARQL Result Set as expected");
+            }
         }
     }
 }

@@ -90,10 +90,10 @@ namespace VDS.RDF.Writing
         /// </summary>
         /// <param name="results">Result Set</param>
         /// <returns></returns>
-        public Graph GenerateOutput(SparqlResultSet results)
+        public IGraph GenerateOutput(SparqlResultSet results)
         {
             //Create the Graph for the Output
-            Graph g = new Graph();
+            IGraph g = new Graph();
 
             //Add the relevant namespaces
             g.NamespaceMap.AddNamespace("rs", new Uri(SparqlSpecsHelper.SparqlRdfResultsNamespace));
@@ -134,10 +134,20 @@ namespace VDS.RDF.Writing
                             BlankNode bnd = g.CreateBlankNode();
                             g.Assert(new Triple(sln, binding, bnd));
                             g.Assert(new Triple(bnd, variable, g.CreateLiteralNode(v)));
-                            switch (r[v].NodeType) {
+                            switch (r[v].NodeType) 
+                            {
                                 case NodeType.Blank:
                                     BlankNode b = (BlankNode)r[v];
-                                    g.Assert(new Triple(bnd, value, g.CreateBlankNode(b.InternalID)));
+                                    BlankNode bMapped;
+                                    if (b.GraphUri == null)
+                                    {
+                                        bMapped = g.CreateBlankNode(b.InternalID + "def");
+                                    }
+                                    else
+                                    {
+                                        bMapped = g.CreateBlankNode(b.InternalID + b.GraphUri.GetEnhancedHashCode());
+                                    }
+                                    g.Assert(new Triple(bnd, value, bMapped));
                                     break;
                                 case NodeType.GraphLiteral:
                                     throw new RdfOutputException(WriterErrorMessages.GraphLiteralsUnserializable("SPARQL Results RDF Serialization"));

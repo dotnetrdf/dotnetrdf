@@ -180,7 +180,7 @@ namespace VDS.RDF.Query.Algebra
                             if (this._graphSpecifier.TokenType == Token.VARIABLE)
                             {
                                 String gvar = this._graphSpecifier.Value.Substring(1);
-                                UriNode currGraph = new UriNode(null, currGraphUri);
+                                INode currGraph = (currGraphUri == null) ? null : new UriNode(null, currGraphUri);
                                 foreach (int id in result.SetIDs.ToList())
                                 {
                                     Set s = result[id];
