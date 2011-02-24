@@ -3,7 +3,7 @@
 
 A Library for RDF manipulation and parsing in .Net using C# 3.0
 
-Robert Vesse 2009-10
+Robert Vesse 2009-11
 rvesse@vdesign-studios.com
 
 Change Log
@@ -72,6 +72,7 @@ Changed
  - Validation of Language Tags was overzealous and rejected some valid language tags and in some places language 
    tags weren't validated when they should have been
  - RDF/XML writer failed to properly XML encode URIs which contained multiple unescaped ampersands
+ - Lots of bug fixes around interpretation of the SPARQL 1.1 specifications
 - General Improvements
  - Internal restructuring of how MIME Types are managed
   - Allows for new MIME Types, File Extensions and parsers to be registered with the API and used automatically where appropriate

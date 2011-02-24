@@ -166,7 +166,7 @@ namespace VDS.RDF.Query.Paths
         {
             get 
             {
-                return true;
+                return (this._n > 0);
             }
         }
 

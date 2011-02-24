@@ -496,5 +496,79 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
 
             Assert.AreEqual(new Uri("http://example.org/"), delete.GraphUri, "Graph URI of the Command should be equal to http://example.org/");
         }
+
+        [TestMethod]
+        public void SparqlUpdateInsertDataCombination()
+        {
+            SparqlParameterizedString command = new SparqlParameterizedString();
+            command.Namespaces.AddNamespace("ex", new Uri("http://example.org/"));
+            command.CommandText = "INSERT DATA { ex:a ex:b ex:c GRAPH <http://example.org/graph> { ex:a ex:b ex:c } }";
+
+            SparqlUpdateParser parser = new SparqlUpdateParser();
+            SparqlUpdateCommandSet cmds = parser.ParseFromString(command);
+
+            Assert.IsFalse(cmds.Commands.All(cmd => cmd.AffectsSingleGraph), "Commands should report that they do not affect a single Graph");
+            Assert.IsTrue(cmds.Commands.All(cmd => cmd.AffectsGraph(null)), "Commands should report that they affect the Default Graph");
+            Assert.IsTrue(cmds.Commands.All(cmd => cmd.AffectsGraph(new Uri("http://example.org/graph"))), "Commands should report that they affect the named Graph");
+
+            InMemoryDataset dataset = new InMemoryDataset();
+            LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
+            processor.ProcessCommandSet(cmds);
+
+            Graph g = new Graph();
+            g.NamespaceMap.Import(command.Namespaces);
+            Triple t = new Triple(g.CreateUriNode("ex:a"), g.CreateUriNode("ex:b"), g.CreateUriNode("ex:c"));
+
+            IGraph def = dataset[null];
+            Assert.AreEqual(1, def.Triples.Count, "Should be 1 Triple in the Default Graph");
+            Assert.IsTrue(def.ContainsTriple(t), "Should have the inserted Triple in the Default Graph");
+
+            IGraph ex = dataset[new Uri("http://example.org/graph")];
+            Assert.AreEqual(1, ex.Triples.Count, "Should be 1 Triple in the Named Graph");
+            Assert.IsTrue(ex.ContainsTriple(t), "Should have the inserted Triple in the Named Graph");
+
+        }
+
+        [TestMethod]
+        public void SparqlUpdateDeleteDataCombination()
+        {
+            SparqlParameterizedString command = new SparqlParameterizedString();
+            command.Namespaces.AddNamespace("ex", new Uri("http://example.org/"));
+            command.CommandText = "DELETE DATA { ex:a ex:b ex:c GRAPH <http://example.org/graph> { ex:a ex:b ex:c } }";
+
+            SparqlUpdateParser parser = new SparqlUpdateParser();
+            SparqlUpdateCommandSet cmds = parser.ParseFromString(command);
+
+            Assert.IsFalse(cmds.Commands.All(cmd => cmd.AffectsSingleGraph), "Commands should report that they do not affect a single Graph");
+            Assert.IsTrue(cmds.Commands.All(cmd => cmd.AffectsGraph(null)), "Commands should report that they affect the Default Graph");
+            Assert.IsTrue(cmds.Commands.All(cmd => cmd.AffectsGraph(new Uri("http://example.org/graph"))), "Commands should report that they affect the named Graph");
+
+            InMemoryDataset dataset = new InMemoryDataset();
+            IGraph def = new Graph();
+            def.NamespaceMap.Import(command.Namespaces);
+            def.Assert(new Triple(def.CreateUriNode("ex:a"), def.CreateUriNode("ex:b"), def.CreateUriNode("ex:c")));
+            dataset.AddGraph(def);
+            IGraph ex = new Graph();
+            ex.BaseUri = new Uri("http://example.org/graph");
+            ex.NamespaceMap.Import(command.Namespaces);
+            ex.Assert(new Triple(ex.CreateUriNode("ex:a"), ex.CreateUriNode("ex:b"), ex.CreateUriNode("ex:c")));
+            dataset.AddGraph(ex);
+
+            LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
+            processor.ProcessCommandSet(cmds);
+
+            Graph g = new Graph();
+            g.NamespaceMap.Import(command.Namespaces);
+            Triple t = new Triple(g.CreateUriNode("ex:a"), g.CreateUriNode("ex:b"), g.CreateUriNode("ex:c"));
+
+            def = dataset[null];
+            Assert.AreEqual(0, def.Triples.Count, "Should be 0 Triples in the Default Graph");
+            Assert.IsFalse(def.ContainsTriple(t), "Should not have the deleted Triple in the Default Graph");
+
+            ex = dataset[new Uri("http://example.org/graph")];
+            Assert.AreEqual(0, ex.Triples.Count, "Should be 0 Triples in the Named Graph");
+            Assert.IsFalse(ex.ContainsTriple(t), "Should not have the deleted Triple in the Named Graph");
+
+        }
     }
 }

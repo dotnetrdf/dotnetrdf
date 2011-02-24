@@ -21,6 +21,7 @@ namespace dotNetRDFTest
                     testsIndeterminate = 0,
                     testsFailed = 0,
                     testsSyntax = 0,
+                    testsSyntaxIndeterminate = 0,
                     testsSyntaxPassed = 0,
                     testsSyntaxFailed = 0,
                     testsEvaluation = 0,
@@ -80,11 +81,11 @@ namespace dotNetRDFTest
                     "drop/drop-graph-01.ru",
                     //The following are tests that use BNodes as wildcards in a DELETE which we don't implement and may
                     //yet be overturned as a WG decision
-                    "delete-insert/delete-insert-03.ru",
-                    "delete-insert/delete-insert-03b.ru",
-                    "delete-insert/delete-insert-05.ru",
-                    "delete-insert/delete-insert-07.ru",
-                    "delete-insert/delete-insert-07b.ru",
+                    //"delete-insert/delete-insert-03.ru",
+                    //"delete-insert/delete-insert-03b.ru",
+                    //"delete-insert/delete-insert-05.ru",
+                    //"delete-insert/delete-insert-07.ru",
+                    //"delete-insert/delete-insert-07b.ru",
                     //The following are tests where the test cases are in the manifest but missing
                     "functions/notin01.rq",
                     "negation/temporalProximity02.rq"
@@ -113,6 +114,7 @@ namespace dotNetRDFTest
                     Console.WriteLine();
                     Console.WriteLine("Total Syntax Tests = " + testsSyntax);
                     Console.WriteLine("Syntax Tests Passed = " + testsSyntaxPassed);
+                    Console.WriteLine("Syntax Tests Indeterminate = " + testsSyntaxIndeterminate);
                     Console.WriteLine("Syntax Tests Failed = " + testsSyntaxFailed);
                     Console.WriteLine();
                     Console.WriteLine("Total Evaluation Tests = " + testsEvaluation);
@@ -209,7 +211,9 @@ namespace dotNetRDFTest
                         }
                         else
                         {
-                            Console.WriteLine("Unable to find the Test Query for Test ID '" + testID.ToString() + "' in '" + dir + "'");
+                            Console.WriteLine("Unable to find the Test Query/Update for Syntax Test ID '" + testID.ToString() + "' in '" + dir + "'");
+                            testsIndeterminate++;
+                            testsSyntaxIndeterminate++;
                         }
 
                         Debug.WriteLine(tests + " Tests Completed");
@@ -237,9 +241,9 @@ namespace dotNetRDFTest
                         }
                         else
                         {
-                            Console.WriteLine("Unable to find the Test Query for Test ID '" + testID.ToString() + "' in '" + dir + "'");
+                            Console.WriteLine("Unable to find the Test Query/Update for Syntax Test ID '" + testID.ToString() + "' in '" + dir + "'");
                             testsIndeterminate++;
-                            testsEvaluationIndeterminate++;
+                            testsSyntaxIndeterminate++;
                         }
 
                         Debug.WriteLine(tests + " Tests Completed");
@@ -313,6 +317,7 @@ namespace dotNetRDFTest
                     Debug.WriteLine(tests + " Tests Completed");
                 }
 
+                //Find all the Update Evaluation Tests
                 foreach (Triple t in manifest.GetTriplesWithPredicateObject(rdfType, updateEvaluationTest))
                 {
                     if (manifest.Triples.Contains(new Triple(t.Subject, approval, approvedTest)) || manifest.Triples.Contains(new Triple(t.Subject, approval, unclassifiedTest)))
@@ -345,6 +350,7 @@ namespace dotNetRDFTest
             if (inputFile.StartsWith("file:///")) inputFile = inputFile.Substring(8);
 
             bool error = false;
+            bool skipFinally = false;
             try
             {
                 Console.WriteLine("# Processing Syntax Test " + Path.GetFileName(inputFile));
@@ -362,6 +368,7 @@ namespace dotNetRDFTest
                 {
                     Console.WriteLine();
                     Console.WriteLine("# Test Result = Manually overridden to Pass (Test Passed)");
+                    skipFinally = true;
                     testsPassed++;
                     testsSyntaxPassed++;
                     return;
@@ -386,8 +393,9 @@ namespace dotNetRDFTest
                 else
                 {
                     Console.WriteLine("# Test Result - Unknown Input File for Syntax Test (Test Indeterminate)");
-                    testsFailed++;
-                    testsSyntaxFailed++;
+                    skipFinally = true;
+                    testsIndeterminate++;
+                    testsSyntaxIndeterminate++;
                     return;
                 }
             }
@@ -403,35 +411,38 @@ namespace dotNetRDFTest
             }
             finally
             {
-                Console.Write("# Test Result = ");
-                if (error)
+                if (!skipFinally)
                 {
-                    if (shouldParse)
+                    Console.Write("# Test Result = ");
+                    if (error)
                     {
-                        Console.WriteLine(" Parsing Failed when should have parsed (Test Failed)");
-                        testsFailed++;
-                        testsSyntaxFailed++;
+                        if (shouldParse)
+                        {
+                            Console.WriteLine(" Parsing Failed when should have parsed (Test Failed)");
+                            testsFailed++;
+                            testsSyntaxFailed++;
+                        }
+                        else
+                        {
+                            Console.WriteLine(" Parsing Failed as expected (Test Passed)");
+                            testsPassed++;
+                            testsSyntaxPassed++;
+                        }
                     }
                     else
                     {
-                        Console.WriteLine(" Parsing Failed as expected (Test Passed)");
-                        testsPassed++;
-                        testsSyntaxPassed++;
-                    }
-                }
-                else
-                {
-                    if (shouldParse)
-                    {
-                        Console.WriteLine(" Parsed OK as expected (Test Passed)");
-                        testsPassed++;
-                        testsSyntaxPassed++;
-                    }
-                    else
-                    {
-                        Console.WriteLine(" Parsed OK when should have failed (Test Failed)");
-                        testsFailed++;
-                        testsSyntaxFailed++;
+                        if (shouldParse)
+                        {
+                            Console.WriteLine(" Parsed OK as expected (Test Passed)");
+                            testsPassed++;
+                            testsSyntaxPassed++;
+                        }
+                        else
+                        {
+                            Console.WriteLine(" Parsed OK when should have failed (Test Failed)");
+                            testsFailed++;
+                            testsSyntaxFailed++;
+                        }
                     }
                 }
                 Console.WriteLine(new String('-', 150));

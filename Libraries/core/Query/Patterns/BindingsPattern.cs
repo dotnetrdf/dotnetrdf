@@ -115,6 +115,10 @@ namespace VDS.RDF.Query.Patterns
                 {
                     try
                     {
+                        //Empty Tuples match anything
+                        if (t.IsEmpty) return true;
+
+                        //Non-Empty Tuples must match values on all stated variables
                         if (this._vars.All(v => (s[v] == null && t[v] == null) || s[v].Equals(t[v]))) return true;
                     }
                     catch

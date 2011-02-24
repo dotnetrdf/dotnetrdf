@@ -3,7 +3,7 @@ dotNetRDF
 
 A Library for RDF manipulation and parsing in .Net using C# 3.0
 
-Robert Vesse 2009-10
+Robert Vesse 2009-11
 rvesse@vdesign-studios.com
 
 License

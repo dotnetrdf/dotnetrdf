@@ -498,45 +498,76 @@ namespace VDS.RDF.Update
             }
             else
             {
-                if (!cmd.DataPattern.TriplePatterns.All(p => p is IConstructTriplePattern && ((IConstructTriplePattern)p).HasNoExplicitVariables)) throw new SparqlUpdateException("Cannot evaluate a DELETE DATA command where any of the Triple Patterns are not concrete triples - variables are not permitted");
-
-                Uri graphUri = null;
+                //Split the Pattern into the set of Graph Patterns
+                List<GraphPattern> patterns = new List<GraphPattern>();
                 if (cmd.DataPattern.IsGraph)
                 {
-                    switch (cmd.DataPattern.GraphSpecifier.TokenType)
+                    patterns.Add(cmd.DataPattern);
+                }
+                else if (cmd.DataPattern.TriplePatterns.Count > 0 || cmd.DataPattern.HasChildGraphPatterns)
+                {
+                    if (cmd.DataPattern.TriplePatterns.Count > 0)
                     {
-                        case Token.QNAME:
-                            throw new NotImplementedException("Graph Specifiers as QNames for DELETE DATA Commands are not supported - please specify an absolute URI instead");
-                        case Token.URI:
-                            graphUri = new Uri(cmd.DataPattern.GraphSpecifier.Value);
-                            break;
-                        default:
-                            throw new SparqlUpdateException("Cannot evaluate an DELETE DATA Command as the Graph Specifier is not a QName/URI");
+                        patterns.Add(new GraphPattern());
+                        cmd.DataPattern.TriplePatterns.ForEach(tp => patterns[0].AddTriplePattern(tp));
                     }
-                }
-
-                Graph g = new Graph();
-                if (!this._manager.UpdateSupported) this._manager.LoadGraph(g, graphUri);
-
-                //Delete the actual Triples
-                INode subj, pred, obj;
-                ConstructContext context = new ConstructContext(g, null, true);
-                foreach (IConstructTriplePattern p in cmd.DataPattern.TriplePatterns)
-                {
-                    subj = p.Subject.Construct(context);//((NodeMatchPattern)tp.Subject).Node.CopyNode(g);
-                    pred = p.Predicate.Construct(context);//((NodeMatchPattern)tp.Predicate).Node.CopyNode(g);
-                    obj = p.Object.Construct(context);//((NodeMatchPattern)tp.Object).Node.CopyNode(g);
-
-                    g.Retract(new Triple(subj, pred, obj));
-                }
-
-                if (this._manager.UpdateSupported)
-                {
-                    this._manager.UpdateGraph(graphUri, Enumerable.Empty<Triple>(), g.Triples);
+                    cmd.DataPattern.ChildGraphPatterns.ForEach(gp => patterns.Add(gp));
                 }
                 else
                 {
-                    this._manager.SaveGraph(g);
+                    //If no Triple Patterns and No Child Graph Patterns nothing to do
+                    return;
+                }
+
+                foreach (GraphPattern pattern in patterns)
+                {
+                    if (!this.IsValidDataPattern(pattern, false)) throw new SparqlUpdateException("Cannot evaluate a DELETE DATA command where any of the Triple Patterns are not concrete triples - variables are not permitted");
+
+                    Uri graphUri = null;
+                    if (pattern.IsGraph)
+                    {
+                        switch (pattern.GraphSpecifier.TokenType)
+                        {
+                            case Token.QNAME:
+                                throw new NotImplementedException("Graph Specifiers as QNames for DELETE DATA Commands are not supported - please specify an absolute URI instead");
+                            case Token.URI:
+                                graphUri = new Uri(pattern.GraphSpecifier.Value);
+                                break;
+                            default:
+                                throw new SparqlUpdateException("Cannot evaluate an DELETE DATA Command as the Graph Specifier is not a QName/URI");
+                        }
+                    }
+
+                    Graph g = new Graph();
+                    if (!this._manager.UpdateSupported)
+                    {
+                        //If the Graph to be deleted from is empty then can skip as will have no affect on the Graph
+                        this._manager.LoadGraph(g, graphUri);
+                        if (g.IsEmpty) continue;
+                    }
+                    //Note that if the Manager supports Triple Level updates we won't load the Graph
+                    //so we can't know whether it is empty or not and so can't skip the delete step
+
+                    //Delete the actual Triples
+                    INode subj, pred, obj;
+                    ConstructContext context = new ConstructContext(g, null, true);
+                    foreach (IConstructTriplePattern p in pattern.TriplePatterns.OfType<IConstructTriplePattern>())
+                    {
+                        subj = p.Subject.Construct(context);
+                        pred = p.Predicate.Construct(context);
+                        obj = p.Object.Construct(context);
+
+                        g.Retract(new Triple(subj, pred, obj));
+                    }
+
+                    if (this._manager.UpdateSupported)
+                    {
+                        this._manager.UpdateGraph(graphUri, Enumerable.Empty<Triple>(), g.Triples);
+                    }
+                    else
+                    {
+                        this._manager.SaveGraph(g);
+                    }
                 }
             }
         }
@@ -759,45 +790,69 @@ namespace VDS.RDF.Update
             }
             else
             {
-                if (!cmd.DataPattern.TriplePatterns.All(p => p is IConstructTriplePattern && ((IConstructTriplePattern)p).HasNoExplicitVariables)) throw new SparqlUpdateException("Cannot evaluate a INSERT DATA command where any of the Triple Patterns are not concrete triples - variables are not permitted");
-
-                Uri graphUri = null;
+                //Split the Pattern into the set of Graph Patterns
+                List<GraphPattern> patterns = new List<GraphPattern>();
                 if (cmd.DataPattern.IsGraph)
                 {
-                    switch (cmd.DataPattern.GraphSpecifier.TokenType)
+                    patterns.Add(cmd.DataPattern);
+                }
+                else if (cmd.DataPattern.TriplePatterns.Count > 0 || cmd.DataPattern.HasChildGraphPatterns)
+                {
+                    if (cmd.DataPattern.TriplePatterns.Count > 0)
                     {
-                        case Token.QNAME:
-                            throw new NotImplementedException("Graph Specifiers as QNames for INSERT DATA Commands are not supported - please specify an absolute URI instead");
-                        case Token.URI:
-                            graphUri = new Uri(cmd.DataPattern.GraphSpecifier.Value);
-                            break;
-                        default:
-                            throw new SparqlUpdateException("Cannot evaluate an INSERT DATA Command as the Graph Specifier is not a QName/URI");
+                        patterns.Add(new GraphPattern());
+                        cmd.DataPattern.TriplePatterns.ForEach(tp => patterns[0].AddTriplePattern(tp));
                     }
-                }
-
-                Graph g = new Graph();
-                if (!this._manager.UpdateSupported) this._manager.LoadGraph(g, graphUri);
-
-                //Insert the actual Triples
-                INode subj, pred, obj;
-                ConstructContext context = new ConstructContext(g, null, true);
-                foreach (IConstructTriplePattern p in cmd.DataPattern.TriplePatterns.OfType<IConstructTriplePattern>())
-                {
-                    subj = p.Subject.Construct(context);//((NodeMatchPattern)tp.Subject).Node.CopyNode(target);
-                    pred = p.Predicate.Construct(context);//((NodeMatchPattern)tp.Predicate).Node.CopyNode(target);
-                    obj = p.Object.Construct(context);//((NodeMatchPattern)tp.Object).Node.CopyNode(target);
-
-                    g.Assert(new Triple(subj, pred, obj));
-                }
-
-                if (this._manager.UpdateSupported)
-                {
-                    this._manager.UpdateGraph(graphUri, g.Triples, Enumerable.Empty<Triple>());
+                    cmd.DataPattern.ChildGraphPatterns.ForEach(gp => patterns.Add(gp));
                 }
                 else
                 {
-                    this._manager.SaveGraph(g);
+                    //If no Triple Patterns and No Child Graph Patterns nothing to do
+                    return;
+                }
+
+                foreach (GraphPattern pattern in patterns)
+                {
+                    if (!this.IsValidDataPattern(pattern, false)) throw new SparqlUpdateException("Cannot evaluate an INSERT DATA command where any of the Triple Patterns are not concrete triples - variables are not permitted");
+
+                    Uri graphUri = null;
+                    if (pattern.IsGraph)
+                    {
+                        switch (pattern.GraphSpecifier.TokenType)
+                        {
+                            case Token.QNAME:
+                                throw new NotImplementedException("Graph Specifiers as QNames for INSERT DATA Commands are not supported - please specify an absolute URI instead");
+                            case Token.URI:
+                                graphUri = new Uri(pattern.GraphSpecifier.Value);
+                                break;
+                            default:
+                                throw new SparqlUpdateException("Cannot evaluate an INSERT DATA Command as the Graph Specifier is not a QName/URI");
+                        }
+                    }
+
+                    Graph g = new Graph();
+                    if (!this._manager.UpdateSupported) this._manager.LoadGraph(g, graphUri);
+
+                    //Insert the actual Triples
+                    INode subj, pred, obj;
+                    ConstructContext context = new ConstructContext(g, null, true);
+                    foreach (IConstructTriplePattern p in pattern.TriplePatterns.OfType<IConstructTriplePattern>())
+                    {
+                        subj = p.Subject.Construct(context);
+                        pred = p.Predicate.Construct(context);
+                        obj = p.Object.Construct(context);
+
+                        g.Assert(new Triple(subj, pred, obj));
+                    }
+
+                    if (this._manager.UpdateSupported)
+                    {
+                        this._manager.UpdateGraph(graphUri, g.Triples, Enumerable.Empty<Triple>());
+                    }
+                    else
+                    {
+                        this._manager.SaveGraph(g);
+                    }
                 }
             }
         }
@@ -1138,6 +1193,33 @@ namespace VDS.RDF.Update
                 {
                     if (!cmd.Silent) throw;
                 }
+            }
+        }
+
+        /// <summary>
+        /// Determines whether a Graph Pattern is valid for use in an INSERT/DELETE DATA command
+        /// </summary>
+        /// <param name="p">Graph Pattern</param>
+        /// <param name="top">Is this the top level pattern?</param>
+        /// <returns></returns>
+        private bool IsValidDataPattern(GraphPattern p, bool top)
+        {
+            if (p.IsGraph)
+            {
+                //If a GRAPH clause then all triple patterns must be constructable and have no Child Graph Patterns
+                return !p.HasChildGraphPatterns && p.TriplePatterns.All(tp => tp is IConstructTriplePattern && ((IConstructTriplePattern)tp).HasNoExplicitVariables);
+            }
+            else if (p.IsExists || p.IsMinus || p.IsNotExists || p.IsOptional || p.IsService || p.IsSubQuery || p.IsUnion)
+            {
+                //EXISTS/MINUS/NOT EXISTS/OPTIONAL/SERVICE/Sub queries/UNIONs are not permitted
+                return false;
+            }
+            else
+            {
+                //For other patterns all Triple patterns must be constructable with no explicit variables
+                //If top level then any Child Graph Patterns must be valid
+                //Otherwise must have no Child Graph Patterns
+                return p.TriplePatterns.All(tp => tp is IConstructTriplePattern && ((IConstructTriplePattern)tp).HasNoExplicitVariables) && ((top && p.ChildGraphPatterns.All(gp => IsValidDataPattern(gp, false))) || !p.HasChildGraphPatterns);
             }
         }
     }

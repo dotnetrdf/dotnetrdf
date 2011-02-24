@@ -158,8 +158,8 @@ namespace dotNetRDFTest
             Console.WriteLine("SPARQL Query Parser Tests Done");
 
             //Call the SPARQL Evaluation Test Suite
-            //SparqlEvaluationTestSuite sparqlEvaluation = new SparqlEvaluationTestSuite();
-            //sparqlEvaluation.RunTests();
+            SparqlEvaluationTestSuite sparqlEvaluation = new SparqlEvaluationTestSuite();
+            sparqlEvaluation.RunTests();
             Console.SetOut(stdout);
             Console.WriteLine("SPARQL Evaluation Tests Done");
 

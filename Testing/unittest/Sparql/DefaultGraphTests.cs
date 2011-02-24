@@ -279,5 +279,11 @@ namespace VDS.RDF.Test.Sparql
             Assert.IsFalse(g.IsEmpty, "Graph with null URI should be non-empty as it should have been the Default Graph for the Dataset and so filled by the LOAD Command");
             Assert.IsTrue(h.IsEmpty, "Graph with name should be empty as it should not have been the Default Graph for the Dataset and so shouldn't have been filled by the LOAD Command");
         }
+
+        [TestMethod]
+        public void SparqlGraphClause()
+        {
+            String query = "SELECT * WHERE { GRAPH ?g { ?s ?p ?o } }";
+        }
     }
 }

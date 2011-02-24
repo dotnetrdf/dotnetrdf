@@ -115,6 +115,10 @@ namespace VDS.RDF.Update.Commands
             {
                 affectedUris.Add(this.TargetUri.ToString());
             }
+            else
+            {
+                affectedUris.Add(String.Empty);
+            }
             if (this._insertPattern.IsGraph) affectedUris.Add(this._insertPattern.GraphSpecifier.Value);
             if (this._insertPattern.HasChildGraphPatterns)
             {
@@ -122,7 +126,7 @@ namespace VDS.RDF.Update.Commands
                                       where p.IsGraph
                                       select p.GraphSpecifier.Value);
             }
-            if (affectedUris.Any(u => u.Equals(GraphCollection.DefaultGraphUri))) affectedUris.Add(null);
+            if (affectedUris.Any(u => u != null && u.Equals(GraphCollection.DefaultGraphUri))) affectedUris.Add(String.Empty);
 
             return affectedUris.Contains(graphUri.ToSafeString());
         }

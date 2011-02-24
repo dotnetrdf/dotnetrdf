@@ -57,8 +57,35 @@ namespace VDS.RDF.Update.Commands
         public DeleteDataCommand(GraphPattern pattern)
             : base(SparqlUpdateCommandType.DeleteData, true) 
         {
-            if (!pattern.TriplePatterns.All(p => p is IConstructTriplePattern && ((IConstructTriplePattern)p).HasNoExplicitVariables)) throw new SparqlUpdateException("Cannot create a DELETE DATA command where any of the Triple Patterns are not concrete triples - variables are not permitted");
+            if (!this.IsValidDataPattern(pattern, true)) throw new SparqlUpdateException("Cannot create a DELETE DATA command where any of the Triple Patterns are not concrete triples (variables are not permitted) or a GRAPH clause has nested Graph Patterns");
             this._pattern = pattern;
+        }
+
+        /// <summary>
+        /// Determines whether a Graph Pattern is valid for use in an DELETE DATA command
+        /// </summary>
+        /// <param name="p">Graph Pattern</param>
+        /// <param name="top">Is this the top level pattern?</param>
+        /// <returns></returns>
+        private bool IsValidDataPattern(GraphPattern p, bool top)
+        {
+            if (p.IsGraph)
+            {
+                //If a GRAPH clause then all triple patterns must be constructable and have no Child Graph Patterns
+                return !p.HasChildGraphPatterns && p.TriplePatterns.All(tp => tp is IConstructTriplePattern && ((IConstructTriplePattern)tp).HasNoExplicitVariables);
+            }
+            else if (p.IsExists || p.IsMinus || p.IsNotExists || p.IsOptional || p.IsService || p.IsSubQuery || p.IsUnion)
+            {
+                //EXISTS/MINUS/NOT EXISTS/OPTIONAL/SERVICE/Sub queries/UNIONs are not permitted
+                return false;
+            }
+            else
+            {
+                //For other patterns all Triple patterns must be constructable with no explicit variables
+                //If top level then any Child Graph Patterns must be valid
+                //Otherwise must have no Child Graph Patterns
+                return p.TriplePatterns.All(tp => tp is IConstructTriplePattern && ((IConstructTriplePattern)tp).HasNoExplicitVariables) && ((top && p.ChildGraphPatterns.All(gp => IsValidDataPattern(gp, false))) || !p.HasChildGraphPatterns);
+            }
         }
 
         /// <summary>
@@ -119,7 +146,7 @@ namespace VDS.RDF.Update.Commands
             }
             else
             {
-                affectedUris.Add(null);
+                affectedUris.Add(String.Empty);
             }
             if (this._pattern.HasChildGraphPatterns)
             {
@@ -127,7 +154,7 @@ namespace VDS.RDF.Update.Commands
                                       where p.IsGraph
                                       select p.GraphSpecifier.Value);
             }
-            if (affectedUris.Any(u => u.Equals(GraphCollection.DefaultGraphUri))) affectedUris.Add(null);
+            if (affectedUris.Any(u => u != null && u.Equals(GraphCollection.DefaultGraphUri))) affectedUris.Add(String.Empty);
 
             return affectedUris.Contains(graphUri.ToSafeString());
         }
@@ -138,48 +165,68 @@ namespace VDS.RDF.Update.Commands
         /// <param name="context">Evaluation Context</param>
         public override void Evaluate(SparqlUpdateEvaluationContext context)
         {
-            if (!this._pattern.TriplePatterns.All(p => p is IConstructTriplePattern && ((IConstructTriplePattern)p).HasNoExplicitVariables)) throw new SparqlUpdateException("Cannot evaluate a DELETE DATA command where any of the Triple Patterns are not concrete triples - variables are not permitted");
-
-            //Get the Target Graph
-            IGraph target;
-            Uri graphUri;
+            //Split the Pattern into the set of Graph Patterns
+            List<GraphPattern> patterns = new List<GraphPattern>();
             if (this._pattern.IsGraph)
             {
-                switch (this._pattern.GraphSpecifier.TokenType)
+                patterns.Add(this._pattern);
+            }
+            else if (this._pattern.TriplePatterns.Count > 0 || this._pattern.HasChildGraphPatterns)
+            {
+                if (this._pattern.TriplePatterns.Count > 0)
                 {
-                    case Token.QNAME:
-                        throw new NotImplementedException("Graph Specifiers as QNames for DELETE DATA Commands are not supported - please specify an absolute URI instead");
-                    case Token.URI:
-                        graphUri = new Uri(this._pattern.GraphSpecifier.Value);
-                        break;
-                    default:
-                        throw new SparqlUpdateException("Cannot evaluate an DELETE DATA Command as the Graph Specifier is not a QName/URI");
+                    patterns.Add(new GraphPattern());
+                    this._pattern.TriplePatterns.ForEach(tp => patterns[0].AddTriplePattern(tp));
                 }
+                this._pattern.ChildGraphPatterns.ForEach(gp => patterns.Add(gp));
             }
             else
             {
-                graphUri = null;
+                //If no Triple Patterns and No Child Graph Patterns nothing to do
+                return;
             }
-            if (context.Data.HasGraph(graphUri))
+
+            foreach (GraphPattern pattern in patterns)
             {
+                if (!this.IsValidDataPattern(pattern, false)) throw new SparqlUpdateException("Cannot evaluate a DELETE DATA command where any of the Triple Patterns are not concrete triples (variables are not permitted) or any of the GRAPH clauses have nested Graph Patterns");
+
+                //Get the Target Graph
+                IGraph target;
+                Uri graphUri;
+                if (pattern.IsGraph)
+                {
+                    switch (pattern.GraphSpecifier.TokenType)
+                    {
+                        case Token.QNAME:
+                            throw new NotImplementedException("Graph Specifiers as QNames for DELETE DATA Commands are not supported - please specify an absolute URI instead");
+                        case Token.URI:
+                            graphUri = new Uri(pattern.GraphSpecifier.Value);
+                            break;
+                        default:
+                            throw new SparqlUpdateException("Cannot evaluate an DELETE DATA Command as the Graph Specifier is not a QName/URI");
+                    }
+                }
+                else
+                {
+                    graphUri = null;
+                }
+
+                //If the Pattern affects a non-existent Graph then nothing to DELETE
+                if (!context.Data.HasGraph(graphUri)) continue;
                 target = context.Data.GetModifiableGraph(graphUri);
-            }
-            else
-            {
-                throw new SparqlUpdateException("Cannot evaluate an DELETE DATA Command since the target Graph does not exist");
-            }
 
-            //Delete the actual Triples
-            INode subj, pred, obj;
+                //Delete the actual Triples
+                INode subj, pred, obj;
 
-            ConstructContext constructContext = new ConstructContext(target, null, true);
-            foreach (IConstructTriplePattern p in this._pattern.TriplePatterns)
-            {
-                subj = p.Subject.Construct(constructContext);//((NodeMatchPattern)tp.Subject).Node.CopyNode(target);
-                pred = p.Predicate.Construct(constructContext);//((NodeMatchPattern)tp.Predicate).Node.CopyNode(target);
-                obj = p.Object.Construct(constructContext);//((NodeMatchPattern)tp.Object).Node.CopyNode(target);
+                ConstructContext constructContext = new ConstructContext(target, null, true);
+                foreach (IConstructTriplePattern p in pattern.TriplePatterns.OfType<IConstructTriplePattern>())
+                {
+                    subj = p.Subject.Construct(constructContext);
+                    pred = p.Predicate.Construct(constructContext);
+                    obj = p.Object.Construct(constructContext);
 
-                target.Retract(new Triple(subj, pred, obj));
+                    target.Retract(new Triple(subj, pred, obj));
+                }
             }
         }
 

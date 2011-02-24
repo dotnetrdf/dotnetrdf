@@ -432,6 +432,10 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override BaseMultiset Union(BaseMultiset other)
         {
+            if (other is IdentityMultiset) return this;
+            if (other is NullMultiset) return this;
+            if (other.IsEmpty) return this;
+
             foreach (Set s in other.Sets)
             {
                 this.Add(s);

@@ -48,6 +48,12 @@ namespace VDS.RDF.Query.Datasets
         private IInMemoryQueryableStore _store;
 
         /// <summary>
+        /// Creates a new in-memory dataset using the default in-memory <see cref="TripleStore">TripleStore</see> as the underlying storage
+        /// </summary>
+        public InMemoryDataset()
+            : this(new TripleStore()) { }
+
+        /// <summary>
         /// Creates a new In-Memory dataset
         /// </summary>
         /// <param name="store">In-Memory queryable store</param>
