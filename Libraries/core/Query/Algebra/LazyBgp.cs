@@ -87,7 +87,7 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="requiredResults">The number of Results the BGP should attempt to return</param>
         public LazyBgp(ITriplePattern p, int requiredResults)
         {
-            if (!IsLazilyEvaluablePattern(p)) throw new ArgumentException("Triple Pattern instance must be a Triple Pattern or a Subqyery, BIND, FILTER Pattern", "p");
+            if (!IsLazilyEvaluablePattern(p)) throw new ArgumentException("Triple Pattern instance must be a Triple Pattern, BIND or FILTER Pattern", "p");
             this._requiredResults = requiredResults;
             this._triplePatterns.Add(p);
         }
@@ -99,14 +99,14 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="requiredResults">The number of Results the BGP should attempt to return</param>
         public LazyBgp(IEnumerable<ITriplePattern> ps, int requiredResults)
         {
-            if (!ps.All(p => IsLazilyEvaluablePattern(p))) throw new ArgumentException("Triple Pattern instances must all be Triple Patterns or Subquery, BIND or FILTER Patterns", "ps");
+            if (!ps.All(p => IsLazilyEvaluablePattern(p))) throw new ArgumentException("Triple Pattern instances must all be Triple Patterns, BIND or FILTER Patterns", "ps");
             this._requiredResults = requiredResults;
             this._triplePatterns.AddRange(ps);
         }
 
         private bool IsLazilyEvaluablePattern(ITriplePattern p)
         {
-            return (p is TriplePattern || p is FilterPattern || p is BindPattern);// || p is SubQueryPattern);
+            return (p is TriplePattern || p is FilterPattern || p is BindPattern);
         }
 
         /// <summary>
@@ -444,6 +444,7 @@ namespace VDS.RDF.Query.Algebra
                                 else
                                 {
                                     //Last Pattern and we evaluate to true so can return the input as-is
+                                    halt = true;
                                     return context.InputMultiset;
                                 }
                             }

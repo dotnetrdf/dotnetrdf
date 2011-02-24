@@ -73,25 +73,10 @@ namespace VDS.RDF.Query.Paths
         {
             if (this._patterns.Count > 0)
             {
-                //We appear not to need this but left in so there's a record of it in SVN for when I
-                //later remove it
-                //TriplePattern first = this._patterns[0];
-                //TriplePattern last = this._patterns[this._patterns.Count - 1];
-
-                ////Check the final Path is correct
-                //if (ReferenceEquals(first.Subject, this._start) && !ReferenceEquals(last.Object, this._end))
-                //{
-                //    //Has correct subject but not correct object
-                //    TriplePattern newLast = new TriplePattern(last.Subject, last.Predicate, this._end);
-                //    this._patterns[this._patterns.Count - 1] = newLast;
-                //}
-                //else if (ReferenceEquals(first.Subject, this._end) && !ReferenceEquals(last.Object, this._start))
-                //{
-                //    //Inverse pattern
-                //    //Has correct object but not correct subject
-                //    TriplePattern newLast = new TriplePattern(last.Subject, last.Predicate, this._start);
-                //    this._patterns[this._patterns.Count - 1] = newLast;
-                //}
+                foreach (ITriplePattern tp in this._patterns)
+                {
+                    Console.WriteLine(tp.ToString());
+                }
                 return new Bgp(this._patterns);
             }
             else
@@ -146,6 +131,21 @@ namespace VDS.RDF.Query.Paths
             set
             {
                 this._currObj = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets/Sets the Object at the end of the Pattern
+        /// </summary>
+        public PatternItem End
+        {
+            get
+            {
+                return this._end;
+            }
+            set
+            {
+                this._end = value;
             }
         }
 

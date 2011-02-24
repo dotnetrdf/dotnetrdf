@@ -165,7 +165,7 @@ namespace VDS.RDF.Query.Paths
 
                 //We then reset the Object to be the target Object so that if the RHS is the last part
                 //of the Path then it will complete the path transformation
-                //If it isn't the last part of the path it will 
+                //If it isn't the last part of the path it will be set to a new temporary variable
                 context.Top = top;
                 if (context.Top)
                 {

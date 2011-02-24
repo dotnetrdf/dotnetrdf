@@ -96,8 +96,10 @@ namespace VDS.RDF.Query.Paths
                 //Swap the Subject and Object over
                 PatternItem tempObj = context.Object;
                 PatternItem tempSubj = context.Subject;
+                PatternItem tempEnd = context.End;
                 context.Object = tempSubj;
                 context.Subject = tempObj;
+                context.End = tempSubj;
 
                 //Then transform the path
                 this._path.ToAlgebra(context);
@@ -105,6 +107,7 @@ namespace VDS.RDF.Query.Paths
                 //Then swap the Subject and Object back
                 context.Subject = tempSubj;
                 context.Object = tempObj;
+                context.End = tempEnd;
             }
             else
             {
