@@ -114,22 +114,6 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Creates a new Multiset from a Bindings Pattern
-        /// </summary>
-        /// <param name="bindings">Bindings Pattern</param>
-        internal Multiset(BindingsPattern bindings)
-        {
-            foreach (String var in bindings.Variables)
-            {
-                this.AddVariable(var);
-            }
-            foreach (BindingTuple tuple in bindings.Tuples)
-            {
-                this.Add(new Set(tuple));
-            }
-        }
-
-        /// <summary>
         /// Joins this Multiset to another Multiset
         /// </summary>
         /// <param name="other">Other Multiset</param>
@@ -153,14 +137,6 @@ namespace VDS.RDF.Query.Algebra
             Multiset joinedSet = new Multiset();
             foreach (Set x in this.Sets)
             {
-                //Old way of selecting Sets to join
-                //Code left currently in case the new code proves to break the engine
-                //IEnumerable<Set> ys = from joinVar in joinVars
-                //                      where x[joinVar] != null
-                //                      from s in other.Sets
-                //                      where x[joinVar].Equals(s[joinVar])
-                //                      select s;
-
                 //New way of selecting Sets to join with (means the Distinct() in the next loop is not needed)
                 //For sets to be compatible for every joinable variable they must meet one of the 3 criteria:
                 //1 - Both the LHS and RHS have a null as the value
@@ -168,7 +144,7 @@ namespace VDS.RDF.Query.Algebra
                 //3 - Both the LHS and RHS have the same non-null value
                 IEnumerable<Set> ys = other.Sets.Where(s => joinVars.All(v => (x[v] == null && s[v] == null) || s[v] == null || (x[v] != null && x[v].Equals(s[v]))));
 
-                foreach (Set y in ys/*.Distinct()*/)
+                foreach (Set y in ys)
                 {
                     joinedSet.Add(new Set(x, y));
                 }
@@ -214,17 +190,11 @@ namespace VDS.RDF.Query.Algebra
                         {
                             foreach (Set y in ys)
                             {
-                                //joinedSet.Add(new Set(x, y));
                                 Set z = new Set(x, y);
                                 try
                                 {
                                     joinedSet.Add(z);
-                                    if (expr.EffectiveBooleanValue(subcontext, z.ID))
-                                    {
-                                        //If the Expression evaluates to true we join the Sets
-                                        //joinedSet.Add(new Set(x, y));
-                                    }
-                                    else
+                                    if (!expr.EffectiveBooleanValue(subcontext, z.ID))
                                     {
                                         //If the Expression evaluates to false we just preserve the LHS set
                                         joinedSet.Remove(z.ID);
@@ -257,12 +227,9 @@ namespace VDS.RDF.Query.Algebra
                         try
                         {
                             joinedSet.Add(z);
-                            if (expr.EffectiveBooleanValue(subcontext, z.ID))
+                            if (!expr.EffectiveBooleanValue(subcontext, z.ID))
                             {
-                                //joinedSet.Add(new Set(x, y));
-                            }
-                            else
-                            {
+                                //If the Expression evaluates to false we just preserve the LHS set
                                 joinedSet.Remove(z.ID);
                                 joinedSet.Add(x);
                                 break;
@@ -288,26 +255,44 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override BaseMultiset ExistsJoin(BaseMultiset other, bool mustExist)
         {
+            //For EXISTS and NOT EXISTS if the other is the Identity then it has no effect
             if (other is IdentityMultiset) return this;
             if (mustExist)
             {
+                //If an EXISTS then Null/Empty Other results in Null
                 if (other is NullMultiset) return other;
+                if (other.IsEmpty) return new NullMultiset();
             }
             else
             {
+                //If a NOT EXISTS then Null/Empty results in this
                 if (other is NullMultiset) return this;
+                if (other.IsEmpty) return this;
             }
 
             //Find the Variables that are to be used for Joining
             List<String> joinVars = this._variables.Where(v => other.Variables.Contains(v)).ToList();
-            if (joinVars.Count == 0) return this.Product(other);
+            if (joinVars.Count == 0)
+            {
+                //All Disjoint Solutions are compatible
+                if (mustExist)
+                {
+                    //If an EXISTS and disjoint then result is this
+                    return this;
+                }
+                else
+                {
+                    //If a NOT EXISTS and disjoint then result is null
+                    return new NullMultiset();
+                }
+            }
 
             //Start building the Joined Set
             Multiset joinedSet = new Multiset();
             foreach (Set x in this.Sets)
             {
                 //New ExistsJoin() logic based on the improved Join() logic
-                bool exists = other.Sets.Any(s => joinVars.All(v => x[v] == null || x[v].Equals(s[v])));
+                bool exists = other.Sets.Any(s => joinVars.All(v => x[v] == null || s[v] == null || x[v].Equals(s[v])));
 
                 if (exists)
                 {
@@ -319,32 +304,6 @@ namespace VDS.RDF.Query.Algebra
                     //If there are no compatible sets and this is a NOT EXISTS then preserve the solution
                     if (!mustExist) joinedSet.Add(x);
                 }
-
-                //Old ExistsJoin() logic
-                ////Retrieve the Node that is the value for the Join Variable
-                ////If the value is null for this Set we can't Left Join it
-                //INode joinNode = x[joinVar];
-                //if (joinNode != null)
-                //{
-                //    //Get all the Sets from the Other Multiset which have the given Node as their value
-                //    //for the Join Variable
-                //    IEnumerable<Set> ys = other.Sets.Where(s => joinNode.Equals(s[joinVar]));
-                //    if (ys.Any())
-                //    {
-                //        foreach (Set y in ys)
-                //        {
-                //            //If there are sets we can join with add this Set
-                //            //Only if we're doing an EXISTS
-                //            if (mustExist) joinedSet.Add(x);
-                //        }
-                //    }
-                //    else
-                //    {
-                //        //If there aren't any Sets we can join with then we just add this Set
-                //        //Only if we're doing a NOT EXISTS
-                //        if (!mustExist) joinedSet.Add(x);
-                //    }
-                //}
             }
             return joinedSet;
         }
@@ -371,34 +330,13 @@ namespace VDS.RDF.Query.Algebra
             foreach (Set x in this.Sets)
             {
                 //New Minus logic based on the improved Join() logic
-                bool minus = other.Sets.Any(s => joinVars.All(v => x[v] == null || x[v].Equals(s[v])));
+                bool minus = other.Sets.Any(s => joinVars.All(v => x[v] == null || s[v] == null || x[v].Equals(s[v])));
 
                 //If no compatible sets then this set is preserved
                 if (!minus)
                 {
                     joinedSet.Add(x);
                 }
-
-                //Old Minus Logic
-                ////Retrieve the Node that is the value for the Join Variable
-                ////If the value is null for this Set we can't Left Join it
-                //INode joinNode = x[joinVar];
-                //if (joinNode != null)
-                //{
-                //    //Get all the Sets from the Other Multiset which have the given Node as their value
-                //    //for the Join Variable
-                //    IEnumerable<Set> ys = other.Sets.Where(s => joinNode.Equals(s[joinVar]));
-                //    if (ys.Any())
-                //    {
-                //        //If there are Sets we can join with then this set is eliminated
-                //    }
-                //    else
-                //    {
-                //        //If there aren't any Sets we can join with then this set is kept
-                //        joinedSet.Add(x);
-                //    }
-                //}
-                ////Q: Do we need to do something special to check whether there are any sets with this variable also unbound in the other set and thus eliminate/keep it?
             }
             return joinedSet;
         }

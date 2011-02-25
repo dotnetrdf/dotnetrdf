@@ -41,8 +41,6 @@ using VDS.RDF.Query.Algebra;
 
 namespace VDS.RDF.Query.Patterns
 {
-    //TODO: Would it be better to implement BINDINGS as a conversion to a Multiset and then an ExistsJoin?
-
     /// <summary>
     /// Represents a set of Bindings for a SPARQL Query
     /// </summary>
@@ -98,49 +96,28 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets whether the given Set can be matched with a Tuple
+        /// Converts a Bindings Clause to a Multiset
         /// </summary>
-        /// <param name="s">Set</param>
         /// <returns></returns>
-        internal bool Accepts(Set s)
+        public BaseMultiset ToMultiset()
         {
-            if (this._tuples.Count == 0)
+            if (this._vars.Any())
             {
-                return true;
-            }
-            else if (this._vars.All(v => s.ContainsVariable(v)))
-            {
-                //The Set contains all the Variables we require Bindings on
-                foreach (BindingTuple t in this._tuples)
+                Multiset m = new Multiset();
+                foreach (String var in this._vars)
                 {
-                    try
-                    {
-                        //Empty Tuples match anything
-                        if (t.IsEmpty) return true;
-
-                        //Non-Empty Tuples must match values on all stated variables
-                        if (this._vars.All(v => (s[v] == null && t[v] == null) || s[v].Equals(t[v]))) return true;
-                    }
-                    catch
-                    {
-                        //Ignore errors here as this just means the Set and Tuple are incompatible
-                    }
+                    m.AddVariable(var);
                 }
-                return false;
+                foreach (BindingTuple tuple in this._tuples)
+                {
+                    m.Add(new Set(tuple));
+                }
+                return m;
             }
             else
             {
-                return false;
+                return new IdentityMultiset();
             }
-        }
-
-        /// <summary>
-        /// Gets the Algebra representation of the Pattern
-        /// </summary>
-        /// <returns></returns>
-        public ISparqlAlgebra ToAlgebra()
-        {
-            throw new NotImplementedException();
         }
 
         /// <summary>

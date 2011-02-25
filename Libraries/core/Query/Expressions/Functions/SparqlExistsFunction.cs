@@ -51,6 +51,7 @@ namespace VDS.RDF.Query.Expressions.Functions
         private GraphPattern _pattern;
         private bool _mustExist;
         private BaseMultiset _result;
+        private int? _lastInput;
 
         /// <summary>
         /// Creates a new EXISTS/NOT EXISTS function
@@ -82,24 +83,49 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// <returns></returns>
         public bool EffectiveBooleanValue(SparqlEvaluationContext context, int bindingID)
         {
-            if (this._result == null) this.EvaluateInternal(context);
+            if (this._result == null || this._lastInput == null || (int)this._lastInput != context.InputMultiset.GetHashCode()) this.EvaluateInternal(context);
 
-            Set x = context.InputMultiset[bindingID];
-            List<String> joinVars = x.Variables.Where(v => this._result.ContainsVariable(v)).ToList();
-
-            IEnumerable<Set> ys = from joinVar in joinVars
-                                  where x[joinVar] != null
-                                  from s in this._result.Sets
-                                  where x[joinVar].Equals(s[joinVar])
-                                  select s;
-
+            if (this._result is IdentityMultiset) return true;
             if (this._mustExist)
             {
-                return ys.Any();
+                //If an EXISTS then Null/Empty Other results in false
+                if (this._result is NullMultiset) return false;
+                if (this._result.IsEmpty) return false;
             }
             else
             {
-                return (ys.Count() == 0);
+                //If a NOT EXISTS then Null/Empty results in true
+                if (this._result is NullMultiset) return true;
+                if (this._result.IsEmpty) return true;
+            }
+
+            Set x = context.InputMultiset[bindingID];
+            List<String> joinVars = x.Variables.Where(v => this._result.ContainsVariable(v)).ToList();
+            if (joinVars.Count == 0)
+            {
+                //If Disjoint then all solutions are compatible
+                if (this._mustExist)
+                {
+                    //If Disjoint and must exist then true since
+                    return true;
+                }
+                else
+                {
+                    //If Disjoint and must not exist then false
+                    return false;
+                }
+            }
+
+            bool exists = this._result.Sets.Any(s => joinVars.All(v => x[v] == null || s[v] == null || x[v].Equals(s[v])));
+            if (this._mustExist)
+            {
+                //If an EXISTS then return the value of exists i.e. are there any compatible solutions
+                return exists;
+            }
+            else
+            {
+                //If a NOT EXISTS then return the negation of exists i.e. if compatible solutions exist then we must return false, if none we return true
+                return !exists;
             }
         }
 
@@ -112,6 +138,11 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// </remarks>
         private void EvaluateInternal(SparqlEvaluationContext context)
         {
+            if (this._lastInput != context.InputMultiset.GetHashCode())
+            {
+                this._result = null;
+                this._lastInput = context.InputMultiset.GetHashCode();
+            }
             if (this._result != null) return;
 
             ISparqlAlgebra existsClause = this._pattern.ToAlgebra();
