@@ -30,10 +30,10 @@
         {
             this.btnExport = new System.Windows.Forms.Button();
             this.lnkBaseURI = new System.Windows.Forms.LinkLabel();
-            this.dgvTriples = new System.Windows.Forms.DataGridView();
+            this.dgvResults = new System.Windows.Forms.DataGridView();
             this.lblFormat = new System.Windows.Forms.Label();
             this.cboFormat = new System.Windows.Forms.ComboBox();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvTriples)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvResults)).BeginInit();
             this.SuspendLayout();
             // 
             // btnExport
@@ -55,21 +55,21 @@
             this.lnkBaseURI.Size = new System.Drawing.Size(622, 13);
             this.lnkBaseURI.TabIndex = 1;
             // 
-            // dgvTriples
+            // dgvResults
             // 
-            this.dgvTriples.AllowUserToAddRows = false;
-            this.dgvTriples.AllowUserToDeleteRows = false;
-            this.dgvTriples.AllowUserToOrderColumns = true;
-            this.dgvTriples.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            this.dgvResults.AllowUserToAddRows = false;
+            this.dgvResults.AllowUserToDeleteRows = false;
+            this.dgvResults.AllowUserToOrderColumns = true;
+            this.dgvResults.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.dgvTriples.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.DisplayedCells;
-            this.dgvTriples.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvTriples.Location = new System.Drawing.Point(15, 36);
-            this.dgvTriples.Name = "dgvTriples";
-            this.dgvTriples.ReadOnly = true;
-            this.dgvTriples.Size = new System.Drawing.Size(968, 303);
-            this.dgvTriples.TabIndex = 3;
+            this.dgvResults.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.DisplayedCells;
+            this.dgvResults.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvResults.Location = new System.Drawing.Point(15, 36);
+            this.dgvResults.Name = "dgvResults";
+            this.dgvResults.ReadOnly = true;
+            this.dgvResults.Size = new System.Drawing.Size(968, 303);
+            this.dgvResults.TabIndex = 3;
             // 
             // lblFormat
             // 
@@ -96,13 +96,13 @@
             this.ClientSize = new System.Drawing.Size(995, 375);
             this.Controls.Add(this.cboFormat);
             this.Controls.Add(this.lblFormat);
-            this.Controls.Add(this.dgvTriples);
+            this.Controls.Add(this.dgvResults);
             this.Controls.Add(this.lnkBaseURI);
             this.Controls.Add(this.btnExport);
             this.Name = "ResultSetViewerForm";
-            this.Text = "SPARQL Result Set Viewer";
+            this.Text = "SPARQL Results Viewer";
             this.Load += new System.EventHandler(this.ResultSetViewerForm_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.dgvTriples)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvResults)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -113,7 +113,7 @@
 
         private System.Windows.Forms.Button btnExport;
         private System.Windows.Forms.LinkLabel lnkBaseURI;
-        private System.Windows.Forms.DataGridView dgvTriples;
+        private System.Windows.Forms.DataGridView dgvResults;
         private System.Windows.Forms.Label lblFormat;
         private System.Windows.Forms.ComboBox cboFormat;
     }

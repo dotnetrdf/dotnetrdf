@@ -1270,7 +1270,7 @@ namespace VDS.RDF.Query
                     //These are the following:
                     // 1 - The Ordering is simple i.e. only variables
                     // 2 - All the Variables appear in the first pattern in the query
-                    if (Options.AlgebraOptimisation && this._limit >= 0 && !this.HasDistinctModifier && (this._orderBy == null || this.IsOptimisableOrderBy) && this._groupBy == null && this._having == null)
+                    if (Options.AlgebraOptimisation && this._limit > 0 && !this.HasDistinctModifier && (this._orderBy == null || this.IsOptimisableOrderBy) && this._groupBy == null && this._having == null)
                     {
                         try
                         {

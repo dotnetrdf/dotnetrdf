@@ -32,6 +32,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using VDS.RDF;
 using VDS.RDF.GUI.WinForms;
@@ -39,6 +40,7 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Storage.Params;
 using VDS.RDF.Writing;
+using VDS.RDF.Writing.Formatting;
 
 namespace SparqlGUI
 {
@@ -50,6 +52,7 @@ namespace SparqlGUI
         private String _rdfext = ".ttl";
         private String _resultsext = ".html";
         private bool _noDataWarning = true;
+        private String _logfile;
 
         public fclsSparqlGui()
         {
@@ -60,6 +63,15 @@ namespace SparqlGUI
                 Options.UseBomForUtf8 = false;
                 this.chkUseUtf8Bom.Checked = false;
             }
+
+            String temp = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            String sep = new String(new char[] { Path.DirectorySeparatorChar });
+            if (!temp.EndsWith(sep)) temp += sep;
+            temp = Path.Combine(temp, @"dotNetRDF\");
+            if (!Directory.Exists(temp)) Directory.CreateDirectory(temp);
+            temp = Path.Combine(temp, @"SparqlGUI\");
+            if (!Directory.Exists(temp)) Directory.CreateDirectory(temp);
+            this._logfile = Path.Combine(temp, "SparqlGui.log");
         }
 
         private void fclsSparqlGui_Load(object sender, EventArgs e)
@@ -97,6 +109,7 @@ namespace SparqlGUI
                     IRdfReader parser = MimeTypesHelper.GetParser(MimeTypesHelper.GetMimeType(Path.GetExtension(this.txtSourceFile.Text)));
                     Graph g = new Graph();
                     FileLoader.Load(g, this.txtSourceFile.Text);
+                    this.LogImportSuccess(this.txtSourceFile.Text, 1, g.Triples.Count);
 
                     //Add to Store
                     try
@@ -105,6 +118,7 @@ namespace SparqlGUI
                     }
                     catch (Exception ex)
                     {
+                        this.LogImportFailure(this.txtSourceFile.Text, ex);
                         MessageBox.Show("An error occurred trying to add the RDF Graph to the Dataset:\n" + ex.Message, "File Import Error");
                         return;
                     }
@@ -115,27 +129,34 @@ namespace SparqlGUI
                     {
                         //Try and get a Store Parser and load
                         IStoreReader storeparser = MimeTypesHelper.GetStoreParser(MimeTypesHelper.GetMimeType(Path.GetExtension(this.txtSourceFile.Text)));
+                        int graphsBefore = this._store.Graphs.Count;
+                        int triplesBefore = this._store.Graphs.Sum(g => g.Triples.Count);
                         storeparser.Load(this._store, new StreamParams(this.txtSourceFile.Text));
+
+                        this.LogImportSuccess(this.txtSourceFile.Text, this._store.Graphs.Count - graphsBefore, this._store.Graphs.Sum(g => g.Triples.Count) - triplesBefore);
                     }
-                    catch (RdfParserSelectionException)
+                    catch (RdfParserSelectionException selEx)
                     {
+                        this.LogImportFailure(this.txtSourceFile.Text, selEx);
                         MessageBox.Show("The given file does not appear to be an RDF Graph/Dataset File Format the tool understands", "File Import Error");
                         return;
                     }
                     catch (Exception ex)
                     {
+                        this.LogImportFailure(this.txtSourceFile.Text, ex);
                         MessageBox.Show("An error occurred trying to read an RDF Dataset from the file:\n" + ex.Message, "File Import Error");
                         return;
                     }
                 }
                 catch (Exception ex)
                 {
+                    this.LogImportFailure(this.txtSourceFile.Text, ex);
                     MessageBox.Show("An error occurred trying to read an RDF Graph from the file:\n" + ex.Message, "File Import Error");
                     return;
                 }
 
                 this.stsGraphs.Text = this._store.Graphs.Count + " Graphs";
-                this.stsTriples.Text = this._store.Triples.Count() + " Triples";
+                this.stsTriples.Text = this._store.Graphs.Sum(g => g.Triples.Count) + " Triples";
                 MessageBox.Show("RDF added to the Dataset OK", "File Import Done");
             }
         }
@@ -152,23 +173,32 @@ namespace SparqlGUI
                 try
                 {
                     UriLoader.Load(g, new Uri(this.txtSourceUri.Text));
+
+                    try
+                    {
+                        this._store.Add(g);
+
+                        this.LogImportSuccess(new Uri(this.txtSourceUri.Text), 1, g.Triples.Count);
+                    }
+                    catch (Exception ex)
+                    {
+                        this.LogImportFailure(new Uri(this.txtSourceUri.Text), ex);
+                        MessageBox.Show("An error occurred trying to add the RDF Graph to the Dataset:\n" + ex.Message, "URI Import Error");
+                        return;
+                    }
+                }
+                catch (UriFormatException uriEx)
+                {
+                    MessageBox.Show("The URI you have entered is malformed:\n" + uriEx.Message, "Malformed URI");
                 }
                 catch (Exception ex)
                 {
+                    this.LogImportFailure(new Uri(this.txtSourceUri.Text), ex);
                     MessageBox.Show("An error occurred while loading RDF from the given URI:\n" + ex.Message, "URI Import Error");
                     return;
                 }
-                try
-                {
-                    this._store.Add(g);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("An error occurred trying to add the RDF Graph to the Dataset:\n" + ex.Message, "URI Import Error");
-                    return;
-                }
                 this.stsGraphs.Text = this._store.Graphs.Count + " Graphs";
-                this.stsTriples.Text = this._store.Triples.Count() + " Triples";
+                this.stsTriples.Text = this._store.Graphs.Sum(x => x.Triples.Count) + " Triples";
                 MessageBox.Show("RDF added to the Dataset OK", "URI Import Done");
             }
         }
@@ -178,7 +208,7 @@ namespace SparqlGUI
             this._store.Dispose();
             this._store = new TripleStore();
             this.stsGraphs.Text = this._store.Graphs.Count + " Graphs";
-            this.stsTriples.Text = this._store.Triples.Count() + " Triples";
+            this.stsTriples.Text = this._store.Graphs.Sum(g => g.Triples.Count) + " Triples";
         }
 
         private void btnQuery_Click(object sender, EventArgs e)
@@ -206,9 +236,12 @@ namespace SparqlGUI
                     }
                 }
 
+                this.LogStartQuery(query);
                 Object results = this._store.ExecuteQuery(query);
                 if (results is IGraph)
                 {
+                    this.LogEndQuery(query, (IGraph)results);
+
                     if (this.chkViewResultsInApp.Checked)
                     {
                         GraphViewerForm graphViewer = new GraphViewerForm((IGraph)results, "SPARQL GUI");
@@ -222,6 +255,8 @@ namespace SparqlGUI
                 }
                 else if (results is SparqlResultSet)
                 {
+                    this.LogEndQuery(query, (SparqlResultSet)results);
+
                     if (this.chkViewResultsInApp.Checked)
                     {
                         ResultSetViewerForm resultSetViewer = new ResultSetViewerForm((SparqlResultSet)results, "SPARQL GUI");
@@ -235,21 +270,23 @@ namespace SparqlGUI
                 }
                 else
                 {
-                    MessageBox.Show("Unknown Result returned from the Query", "Query Failed");
-                    return;
+                    throw new RdfException("Unexpected Result Type");
                 }
                 this.stsLastQuery.Text = "Last Query took " + query.QueryTime + " ms";
             }
             catch (RdfParseException parseEx)
             {
+                this.LogMalformedQuery(parseEx);
                 MessageBox.Show("Query failed to parse:\n" + parseEx.Message, "Query Failed");
             }
             catch (RdfQueryException queryEx)
             {
+                this.LogFailedQuery(queryEx);
                 MessageBox.Show("Query failed during Execution:\n" + queryEx.Message, "Query Failed");
             }
             catch (Exception ex)
             {
+                this.LogFailedQuery(ex);
                 MessageBox.Show("Query failed:\n" + ex.Message + "\n" + ex.StackTrace, "Query Failed");
             }
         }
@@ -506,6 +543,95 @@ namespace SparqlGUI
             Options.UseBomForUtf8 = this.chkUseUtf8Bom.Checked;
             Properties.Settings.Default.UseUtf8Bom = this.chkUseUtf8Bom.Checked;
             Properties.Settings.Default.Save();
+        }
+
+        private void Log(String action, String information)
+        {
+            using (StreamWriter writer = new StreamWriter(this._logfile, true, System.Text.Encoding.UTF8))
+            {
+                writer.Write("[" + DateTime.Now + "] " + action);
+                if (information.Contains('\n') || information.Contains('\r'))
+                {
+                    writer.WriteLine();
+                    writer.Write(information);
+                }
+                else
+                {
+                    writer.WriteLine(' ');
+                    writer.WriteLine(information);
+                }
+                writer.Close();
+            }
+        }
+
+        private void LogImportSuccess(String file, int graphs, int triples)
+        {
+            this.Log("IMPORT", "Import from File '" + file + "' - " + graphs + " Graphs with " + triples + " Triples");
+        }
+
+        private void LogImportSuccess(Uri u, int graphs, int triples)
+        {
+            this.Log("IMPORT", "Import from URI '" + u.ToString() + "' - " + graphs + " Graphs with " + triples + " Triples");
+        }
+
+        private void LogImportFailure(String file, Exception ex)
+        {
+            this.Log("IMPORT FAILURE", "Import from File '" + file + "' failed\n" + this.GetFullErrorTrace(ex));
+        }
+
+        private void LogImportFailure(Uri u, Exception ex)
+        {
+            this.Log("IMPORT FAILURE", "Import from URI '" + u.ToString() + "' failed\n" + this.GetFullErrorTrace(ex));
+        }
+
+        private void LogMalformedQuery(Exception ex)
+        {
+            this.Log("QUERY PARSING FAILURE", "Failed to Parse Query\n" + this.GetFullErrorTrace(ex));
+        }
+
+        private void LogStartQuery(SparqlQuery q)
+        {
+            SparqlFormatter formatter = new SparqlFormatter(q.NamespaceMap);
+            this.Log("QUERY START", formatter.Format(q));
+        }
+
+        private void LogFailedQuery(Exception ex)
+        {
+            this.Log("QUERY FAILED", "Query Failed during Execution\n" + this.GetFullErrorTrace(ex));
+        }
+
+        private void LogEndQuery(SparqlQuery q, SparqlResultSet results)
+        {
+            if (results.ResultsType == SparqlResultsType.Boolean)
+            {
+                this.Log("QUERY END", "Query Finished in " + q.QueryTime + " producing a Boolean Result of " + results.Result);
+            }
+            else
+            {
+                this.Log("QUERY END", "Query Finished in " + q.QueryTime + " producing a Result Set containing " + results.Count + " Results");
+            }
+        }
+
+        private void LogEndQuery(SparqlQuery q, IGraph g)
+        {
+            this.Log("QUERY END", "Query Finished in " + q.QueryTime + " producing a Graph contaning " + g.Triples.Count + " Triples");
+        }
+
+        private String GetFullErrorTrace(Exception ex)
+        {
+            StringBuilder output = new StringBuilder();
+            output.AppendLine(ex.Message);
+            output.AppendLine(ex.StackTrace);
+
+            while (ex.InnerException != null)
+            {
+                output.AppendLine();
+                output.AppendLine(ex.InnerException.Message);
+                output.AppendLine(ex.InnerException.StackTrace);
+                ex = ex.InnerException;
+            }
+
+            return output.ToString();
         }
     }
 }

@@ -123,6 +123,7 @@
     <Compile Include="HardGraphMatching.cs" />
     <Compile Include="Hypercube.cs" />
     <Compile Include="Sparql\AlgebraReverseTranslation.cs" />
+    <Compile Include="Sparql\BindingsTests.cs" />
     <Compile Include="Sparql\DataTableTests.cs" />
     <Compile Include="Sparql\NegationTests.cs" />
     <Compile Include="Sparql\RemoteEndpoints.cs" />

@@ -980,5 +980,59 @@ namespace VDS.RDF.Test
                 Assert.Fail("Expected a SPARQL Result Set");
             }
         }
+
+        [TestMethod]
+        public void SparqlLazyWithAndWithoutOffset()
+        {
+            String query = "SELECT * WHERE { ?s a ?vehicle . FILTER (SAMETERM(?vehicle, <http://example.org/vehicles/Car>)) } LIMIT 3";
+            String query2 = "SELECT * WHERE { ?s a ?vehicle . FILTER (SAMETERM(?vehicle, <http://example.org/vehicles/Car>)) } LIMIT 3 OFFSET 3";
+
+            TripleStore store = new TripleStore();
+            Graph g = new Graph();
+            FileLoader.Load(g, "InferenceTest.ttl");
+            store.Add(g);
+
+            SparqlQueryParser parser = new SparqlQueryParser();
+            SparqlQuery q = parser.ParseFromString(query);
+            SparqlQuery q2 = parser.ParseFromString(query2);
+
+            Console.WriteLine(q.ToAlgebra().ToString());
+            Assert.IsTrue(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
+            Console.WriteLine();
+
+            Console.WriteLine(q2.ToAlgebra().ToString());
+            Assert.IsTrue(q2.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
+            Console.WriteLine();
+
+            Object results = q.Evaluate(store);
+            if (results is SparqlResultSet)
+            {
+                SparqlResultSet rset = (SparqlResultSet)results;
+                foreach (SparqlResult r in rset)
+                {
+                    Console.WriteLine(r.ToString());
+                }
+                Assert.IsTrue(rset.Count == 3, "Expected exactly 3 results");
+
+                Object results2 = q2.Evaluate(store);
+                if (results2 is SparqlResultSet)
+                {
+                    SparqlResultSet rset2 = (SparqlResultSet)results2;
+                    foreach (SparqlResult r in rset2)
+                    {
+                        Console.WriteLine(r.ToString());
+                    }
+                    Assert.IsTrue(rset2.Count == 1, "Expected exactly 1 results");
+                }
+                else
+                {
+                    Assert.Fail("Expected a SPARQL Result Set");
+                }
+            }
+            else
+            {
+                Assert.Fail("Expected a SPARQL Result Set");
+            }
+        }
     }
 }

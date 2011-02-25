@@ -86,8 +86,8 @@ namespace VDS.RDF.GUI.WinForms
             this.cboFormat.SelectedItem = this._formatter;
             this.cboFormat.SelectedIndexChanged += new System.EventHandler(this.cboFormat_SelectedIndexChanged);
 
-            this.dgvTriples.CellFormatting += new DataGridViewCellFormattingEventHandler(dgvTriples_CellFormatting);
-            this.dgvTriples.CellContentClick += new DataGridViewCellEventHandler(dgvTriples_CellClick);
+            this.dgvResults.CellFormatting += new DataGridViewCellFormattingEventHandler(dgvTriples_CellFormatting);
+            this.dgvResults.CellContentClick += new DataGridViewCellEventHandler(dgvTriples_CellClick);
 
             this._results = results;
         }
@@ -100,7 +100,7 @@ namespace VDS.RDF.GUI.WinForms
         public ResultSetViewerForm(SparqlResultSet results, String title)
             : this(results)
         {
-            this.Text = String.Format("{0} - Graph Viewer", title);
+            this.Text = String.Format("{0} - SPARQL Results Viewer", title);
         }
 
         /// <summary>
@@ -129,7 +129,7 @@ namespace VDS.RDF.GUI.WinForms
 
         void dgvTriples_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            Object value = this.dgvTriples[e.ColumnIndex, e.RowIndex].Value;
+            Object value = this.dgvResults[e.ColumnIndex, e.RowIndex].Value;
             if (value != null)
             {
                 if (value is INode)
@@ -151,8 +151,20 @@ namespace VDS.RDF.GUI.WinForms
 
         private void LoadInternal()
         {
-            //Show Triples
-            this.dgvTriples.DataSource = (DataTable)this._results;
+            //Show Results
+            if (this._results.ResultsType == SparqlResultsType.Boolean)
+            {
+                DataTable table = new DataTable();
+                table.Columns.Add(new DataColumn("ASK", typeof(String)));
+                DataRow row = table.NewRow();
+                row["ASK"] = this._results.Result.ToString();
+                table.Rows.Add(row);
+                this.dgvResults.DataSource = table;
+            }
+            else
+            {
+                this.dgvResults.DataSource = (DataTable)this._results;
+            }
         }
 
         private void cboFormat_SelectedIndexChanged(object sender, EventArgs e)
@@ -169,10 +181,10 @@ namespace VDS.RDF.GUI.WinForms
 
                     if (!ReferenceEquals(currFormatter, this._formatter) || !currFormatter.GetType().Equals(this._formatter.GetType()))
                     {
-                        DataTable tbl = (DataTable)this.dgvTriples.DataSource;
-                        this.dgvTriples.DataSource = null;
-                        this.dgvTriples.Refresh();
-                        this.dgvTriples.DataSource = tbl;
+                        DataTable tbl = (DataTable)this.dgvResults.DataSource;
+                        this.dgvResults.DataSource = null;
+                        this.dgvResults.Refresh();
+                        this.dgvResults.DataSource = tbl;
                     }
                 }
             }
