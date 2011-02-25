@@ -1012,7 +1012,7 @@ namespace VDS.RDF.Query.Patterns
                     }
                     else if (gp.IsService)
                     {
-                        complex = Join.CreateJoin(complex, new Service(gp.GraphSpecifier, gp));
+                        complex = Join.CreateJoin(complex, new Service(gp.GraphSpecifier, gp, gp.IsSilent));
                     }
                     else
                     {

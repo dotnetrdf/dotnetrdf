@@ -126,6 +126,7 @@
     <Compile Include="Sparql\DataTableTests.cs" />
     <Compile Include="Sparql\NegationTests.cs" />
     <Compile Include="Sparql\RemoteEndpoints.cs" />
+    <Compile Include="Sparql\ServiceTests.cs" />
     <Compile Include="Storage\AllegroGraphTests.cs" />
     <Compile Include="Configuration\ConfigurationApiTests.cs" />
     <Compile Include="Storage\FourStoreTest.cs" />

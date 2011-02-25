@@ -50,7 +50,11 @@ namespace VDS.RDF.Query.Algebra
                 SparqlRemoteEndpoint endpoint;
                 Uri endpointUri;
                 String baseUri = (context.Query.BaseUri == null) ? String.Empty : context.Query.BaseUri.ToString();
-                SparqlParameterizedString sparqlQuery = new SparqlParameterizedString("SELECT * WHERE " + this._pattern.ToString());
+                SparqlParameterizedString sparqlQuery = new SparqlParameterizedString("SELECT * WHERE ");
+
+                String pattern = this._pattern.ToString();
+                pattern = pattern.Substring(pattern.IndexOf('{'));
+                sparqlQuery.CommandText += pattern;
 
                 //Pass through LIMIT and OFFSET to the remote service
                 if (context.Query.Limit >= 0)

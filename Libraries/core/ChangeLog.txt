@@ -93,7 +93,8 @@ Changed
    SPARQL engine which allows for out of memory datasets to be queried and updated with Leviathan
  - Reverse Translation from ISparqlAlgebra to SparqlQuery
  - Optimisation for queries using ORDER BY under some circumstances
- - Various fixes to SPARQL Join Semantics
+ - Loads of fixes to SPARQL Join Semantics
+ - Improvements to GRAPH clause implementation
  - Improved SparqlParameterizedString
   - Can now set values for Variables which are substituted into the query when you call ToString()
   - Has own Namespace Map allowing prefixes to be registered programatically and have the code take care of generating the PREFIX declarations
