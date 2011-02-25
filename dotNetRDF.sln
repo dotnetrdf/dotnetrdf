@@ -19,6 +19,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Build\nant\dotnetrdf.build = Build\nant\dotnetrdf.build
 		dotNetRDF.vsmdi = dotNetRDF.vsmdi
 		dotNetRDF3.vsmdi = dotNetRDF3.vsmdi
+		dotNetRDF4.vsmdi = dotNetRDF4.vsmdi
 		Utilities\ReadMe.txt = Utilities\ReadMe.txt
 		Tests.testrunconfig = Tests.testrunconfig
 		Todo.txt = Todo.txt
@@ -76,7 +77,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.WinForms", "Libra
 EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
-		CategoryFile = dotNetRDF3.vsmdi
+		CategoryFile = dotNetRDF4.vsmdi
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

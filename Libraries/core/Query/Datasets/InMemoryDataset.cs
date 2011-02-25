@@ -54,12 +54,37 @@ namespace VDS.RDF.Query.Datasets
             : this(new TripleStore()) { }
 
         /// <summary>
+        /// Creates a new in-memory dataset using the default in-memory <see cref="TripleStore">TripleStore</see> as the underlying storage
+        /// </summary>
+        /// <param name="unionDefaultGraph">Whether the Default Graph when no Active/Default Graph is explicitly set should be the union of all Graphs in the Dataset</param>
+        public InMemoryDataset(bool unionDefaultGraph)
+            : this(new TripleStore(), unionDefaultGraph) { }
+
+        /// <summary>
         /// Creates a new In-Memory dataset
         /// </summary>
         /// <param name="store">In-Memory queryable store</param>
         public InMemoryDataset(IInMemoryQueryableStore store)
+            : this(store, true) { }
+
+        /// <summary>
+        /// Creates a new In-Memory dataset
+        /// </summary>
+        /// <param name="store">In-Memory queryable store</param>
+        /// <param name="unionDefaultGraph">Whether the Default Graph when no Active/Default Graph is explicitly set should be the union of all Graphs in the Dataset</param>
+        public InMemoryDataset(IInMemoryQueryableStore store, bool unionDefaultGraph)
         {
             this._store = store;
+            this.UsesUnionDefaultGraph = unionDefaultGraph;
+
+            if (!this.UsesUnionDefaultGraph)
+            {
+                if (!store.HasGraph(null))
+                {
+                    store.Add(new Graph());
+                }
+                this._defaultGraph = store.Graph(null);
+            }
         }
 
         #region Graph Existence and Retrieval

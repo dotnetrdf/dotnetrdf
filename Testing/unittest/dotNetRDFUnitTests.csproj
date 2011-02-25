@@ -83,11 +83,11 @@
     <Compile Include="Parsing\ParserTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sparql\SparqlTests.cs" />
-    <Compile Include="Storage\SqlIOTests.cs" />
-    <Compile Include="Storage\TalisTest.cs" />
+    <Compile Include="Web\Storage\SqlIOTests.cs" />
+    <Compile Include="Web\Storage\TalisTest.cs" />
     <Compile Include="TestTools.cs" />
     <Compile Include="UpdateTests.cs" />
-    <Compile Include="Storage\VirtuosoTest.cs" />
+    <Compile Include="Web\Storage\VirtuosoTest.cs" />
     <Compile Include="Writing\WriterTests.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -128,11 +128,11 @@
     <Compile Include="Sparql\NegationTests.cs" />
     <Compile Include="Sparql\RemoteEndpoints.cs" />
     <Compile Include="Sparql\ServiceTests.cs" />
-    <Compile Include="Storage\AllegroGraphTests.cs" />
+    <Compile Include="Web\Storage\AllegroGraphTests.cs" />
     <Compile Include="Configuration\ConfigurationApiTests.cs" />
-    <Compile Include="Storage\FourStoreTest.cs" />
-    <Compile Include="Storage\FusekiTest.cs" />
-    <Compile Include="Storage\SesameTests.cs" />
+    <Compile Include="Web\Storage\FourStoreTest.cs" />
+    <Compile Include="Web\Storage\FusekiTest.cs" />
+    <Compile Include="Web\Storage\SesameTests.cs" />
     <Compile Include="EventTests.cs" />
     <Compile Include="Writing\FormattingTests.cs" />
     <Compile Include="Interop\JenaInteropTests.cs" />
@@ -150,7 +150,7 @@
     <Compile Include="Sparql\ResultSetWriterTests.cs" />
     <Compile Include="Sparql\UpdateTests.cs" />
     <Compile Include="Sparql\ViewTests.cs" />
-    <Compile Include="Storage\SparqlUniformHttpProtocolTest.cs" />
+    <Compile Include="Web\Storage\SparqlUniformHttpProtocolTest.cs" />
     <Compile Include="Parsing\VariableNodeTests.cs" />
     <Compile Include="Web\ETagTests.cs" />
     <Compile Include="Web\ServiceDescription.cs" />

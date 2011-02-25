@@ -85,7 +85,7 @@ namespace VDS.RDF.Query.Algebra
                 {
                     List<String> activeGraphs = new List<string>();
 
-                    //Modify the Active Graph as appropriate
+                    //Get the URIs of Graphs that should be evaluated over
                     if (this._graphSpecifier.TokenType != Token.VARIABLE)
                     {
                         switch (this._graphSpecifier.TokenType)
@@ -162,7 +162,25 @@ namespace VDS.RDF.Query.Algebra
                         //correctly
                         context.InputMultiset = initialInput;
                         Uri currGraphUri = (uri.Equals(String.Empty)) ? null : new Uri(uri);
-                        context.Data.SetActiveGraph(currGraphUri);
+
+                        //This bit of logic takes care of the fact that calling SetActiveGraph((Uri)null) resets the
+                        //Active Graph to be the default graph which if the default graph is null is usually the Union of
+                        //all Graphs in the Store
+                        if (currGraphUri == null && context.Data.DefaultGraph == null && context.Data.UsesUnionDefaultGraph)
+                        {
+                            if (context.Data.HasGraph(null))
+                            {
+                                context.Data.SetActiveGraph(context.Data[null]);
+                            }
+                            else
+                            {
+                                continue;
+                            }
+                        }
+                        else
+                        {
+                            context.Data.SetActiveGraph(currGraphUri);
+                        }
                         datasetOk = true;
 
                         //Evaluate for the current Active Graph

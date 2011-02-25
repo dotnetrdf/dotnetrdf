@@ -62,6 +62,8 @@ namespace VDS.RDF.Query.Datasets
         /// </summary>
         protected Stack<IGraph> _activeGraphs = new Stack<IGraph>();
 
+        private bool _unionDefaultGraph = true;
+
         #region Active and Default Graph Management
 
         /// <summary>
@@ -202,6 +204,21 @@ namespace VDS.RDF.Query.Datasets
             get
             {
                 return this._activeGraph;
+            }
+        }
+
+        /// <summary>
+        /// Gets whether the Default Graph is treated as being the union of all Graphs in the dataset when no Default Graph is otherwise set
+        /// </summary>
+        public bool UsesUnionDefaultGraph
+        {
+            get
+            {
+                return this._unionDefaultGraph;
+            }
+            protected set
+            {
+                this._unionDefaultGraph = value;
             }
         }
 

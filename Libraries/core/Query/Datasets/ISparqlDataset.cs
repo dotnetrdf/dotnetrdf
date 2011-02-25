@@ -47,6 +47,22 @@ namespace VDS.RDF.Query.Datasets
     /// <para>
     /// <strong>Note:</strong> For all operations that take a Graph URI a <em>null</em> Uri should be considered to refer to the Default Graph of the dataset
     /// </para>
+    /// <h3>Default and Active Graph</h3>
+    /// <para>
+    /// Leviathan expects that a Query operates over the Dataset in the following order:
+    /// <ol>
+    ///     <li>If an Active Graph is set then Queries operate over that</li>
+    ///     <li>Otherwise if a Default Graph is set then Queries operate over that</li>
+    ///     <li>Finally the Queries operate over the Union of all Graphs in the Dataset</li>
+    /// </ol>
+    /// Please note that the Query may change the Active and Default Graph over the course of the query depending on the Query e.g. FROM, FROM NAMED and GRAPH all can potentially change these.
+    /// </para>
+    /// <para>
+    /// You can limit your queries to use specific portions of your dataset by using the SetActiveGraph() and SetDefaultGraph() methods on your dataset instance before then passing it to the <see cref="LeviathanQueryProcessor">LeviathanQueryProcessor</see>
+    /// </para>
+    /// <para>
+    /// <strong>Note: </strong> By default the <see cref="InMemoryDataset">InMemoryDataset</see> uses the Union of all Graphs in the Dataset if no Active/Default Graph is otherwise specified.  Use the <see cref="ISparqlDataset.UsesUnionDefaultGraph">UsesUnionDefaultGraph</see> property to see whether a Dataset implementation behaves in this way.
+    /// </para>
     /// </remarks>
     public interface ISparqlDataset
     {
@@ -98,6 +114,14 @@ namespace VDS.RDF.Query.Datasets
         /// Gets the current Active Graph (null if none)
         /// </summary>
         IGraph ActiveGraph
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Gets whether the Default Graph is treated as being the union of all Graphs in the dataset when no Default Graph is otherwise set
+        /// </summary>
+        bool UsesUnionDefaultGraph
         {
             get;
         }
