@@ -1230,7 +1230,7 @@ namespace VDS.RDF.Query
                 pattern = new Bgp();
             }
 
-            //If we have a BINDINGS clause then we'll Join in into the algebra here
+            //If we have a BINDINGS clause then we'll add it into the algebra here
             if (this._bindings != null)
             {
                 pattern = new Bindings(this._bindings, pattern);
@@ -1265,12 +1265,12 @@ namespace VDS.RDF.Query
                 case SparqlQueryType.SelectAllReduced:
                 case SparqlQueryType.SelectDistinct:
                 case SparqlQueryType.SelectReduced:
-                    //Optimise Queries to use LazyBgp's if Algebra Optimisation is enabled and there is a LIMIT but no DISTINCT/ORDER BY/GROUP BY/HAVING
+                    //Optimise Queries to use LazyBgp's if Algebra Optimisation is enabled and there is a LIMIT but no DISTINCT/ORDER BY/GROUP BY/HAVING/BINDINGS
                     //In the case that there is just an ORDER BY we may be able to optimise under certain circumstances
                     //These are the following:
                     // 1 - The Ordering is simple i.e. only variables
                     // 2 - All the Variables appear in the first pattern in the query
-                    if (Options.AlgebraOptimisation && this._limit > 0 && !this.HasDistinctModifier && (this._orderBy == null || this.IsOptimisableOrderBy) && this._groupBy == null && this._having == null)
+                    if (Options.AlgebraOptimisation && this._limit > 0 && !this.HasDistinctModifier && (this._orderBy == null || this.IsOptimisableOrderBy) && this._groupBy == null && this._having == null && this._bindings == null)
                     {
                         try
                         {

@@ -78,8 +78,8 @@ Query and Update
   - There are some tests which use syntax which is invalid according to the current drafts so we ignore these tests
 
 Storage
-- SQL Storage is officially deprecated though still usable - will be removed/rewritten entirely in future releases
-- Virtuoso support is seriously broken due to an issue with the Virtuoso ADO.Net provider
+- SQL Storage is officially deprecated though still usable - will be rewritten entirely in future releases (currently planned for 0.4.3 release)
+- Virtuoso support is seriously broken due to an issue with the 3rd party Virtuoso ADO.Net provider
  
  Change History
  --------------
@@ -111,7 +111,7 @@ Storage
  
  8/10/2010 - Release of Version 0.3.1 Alpha (Build 0.3.1.20277)
  
- ?/2/2011 - Release of Version 0.4.0 Beta (Build 0.4.0.?)
+ 3/3/2011 - Release of Version 0.4.0 Beta (Build 0.4.0.?)
  
 Acknowledgements
 ----------------
