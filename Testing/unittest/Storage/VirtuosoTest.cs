@@ -136,10 +136,26 @@ namespace VDS.RDF.Test.Storage
                     Console.WriteLine(t.ToString(formatter));
                 }
 
-                Assert.Inconclusive("Virtuoso has known issues around not correctly returning datatypes on numeric literals and converts booleans to integers internally");
-
                 Assert.AreEqual(g.Triples.Count, h.Triples.Count, "Graph should have same number of Triples before and after saving");
-                Assert.AreEqual(g, h, "Graph should be equal before and after");
+
+                GraphDiffReport diff = h.Difference(g);
+
+                Console.WriteLine();
+                if (!diff.AreEqual)
+                {
+                    Console.WriteLine("Some Differences in Graphs detected (should only be due to Virtuoso not running xsd:boolean as true/false");
+                    Console.WriteLine();
+
+                    TestTools.ShowDifferences(diff);
+
+                    UriNode allowedDifSubject = g.CreateUriNode(":four");
+                    Assert.IsTrue(diff.RemovedTriples.All(t => t.Subject.Equals(allowedDifSubject) && (t.Object.ToString().Equals("true^^" + XmlSpecsHelper.XmlSchemaDataTypeBoolean) || t.Object.ToString().Equals("false^^" + XmlSpecsHelper.XmlSchemaDataTypeBoolean))), "Removed Triples should only be those with subject :four and boolean object");
+                    Assert.IsTrue(diff.AddedTriples.All(t => t.Subject.Equals(allowedDifSubject) && (t.Object.ToString().Equals("1") || t.Object.ToString().Equals("0"))), "Added Triples should only be those with subject :four and 1/0 in place of boolean object");
+                }
+                else
+                {
+                    Console.WriteLine("Graphs are equal");
+                }
             }
             catch (VirtuosoException virtEx)
             {
