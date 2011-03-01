@@ -60,7 +60,7 @@ relevant DLLs into your output directory if they are required.
 Known Issues
 ------------
 
-We are aware of the following issues with the library.  Please remember that this is an Alpha release and so
+We are aware of the following issues with the library.  Please remember that this is an Beta release and so
 there are things that may be buggy still and the API is subject to change at our discretion.
  
 Query and Update
