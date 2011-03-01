@@ -93,7 +93,7 @@ namespace VDS.RDF
     /// <h4>Alternative Builds</h4>
     /// <h5>Mono Build</h5>
     /// <para>
-    /// We provide a Mono build of dotNetRDF (<em>dotNetRDF.Mono.dll</em>) which is currently targeted at Mono 2.6 - this port is highly experimental and has received little/no testing.  There are some known incompatabilities with Mono mostly regarding the 3rd party libraries that dotNetRDF uses - Virtuoso and MySQL support is likely not to function under Mono.  As far as we are aware all other features should work normally, in terms of roadmap the Mono build is not our main priority currently and we will conduct full testing of the Mono build in the future and make an announcement once we consider that build to be stable or have had time to adapt the build appropriately.
+    /// We provide a Mono build of dotNetRDF (<em>dotNetRDF.Mono.dll</em>) which is currently targeted at Mono 2.10.1 - this port is highly experimental and has received little/no testing.  There are some known incompatabilities with Mono mostly regarding the 3rd party libraries that dotNetRDF uses - Virtuoso and MySQL support is likely not to function under Mono.  As far as we are aware all other features should work normally, in terms of roadmap the Mono build is not our main priority currently and we will conduct full testing of the Mono build in the future and make an announcement once we consider that build to be stable or have had time to adapt the build appropriately.
     /// </para>
     /// <h5>Silverlight/Windows Phone 7 Build</h5>
     /// <para>
