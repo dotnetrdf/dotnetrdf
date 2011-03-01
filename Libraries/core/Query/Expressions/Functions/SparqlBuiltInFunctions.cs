@@ -43,6 +43,9 @@ using VDS.RDF.Query.Construct;
 
 namespace VDS.RDF.Query.Expressions.Functions
 {
+    /// <summary>
+    /// Class representing the SPARQL BNODE() function
+    /// </summary>
     public class BNodeFunction : BaseUnaryExpression
     {
         private BNodeFunctionContext _funcContext;
@@ -166,6 +169,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the Arguments of the Expression
+        /// </summary>
         public override IEnumerable<ISparqlExpression> Arguments
         {
             get

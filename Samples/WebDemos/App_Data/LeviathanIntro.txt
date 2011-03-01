@@ -13,3 +13,6 @@ This demonstration endpoint may often be running a development build of dotNetRD
 </p>
 <p>
 <strong>Note:</strong> This Demo has an initial data set which is a very small graph (58 triples) which we use for testing and debugging.  You can specify Graphs to query with by either using FROM and FROM NAMED clauses or by entering a URI in the Default Graph Uri box.  Loading Graphs may take a couple of seconds for the first query after which they will be temporarily cached for appoximately 15 minutes.
+</p>
+<p>
+<strong>Default Graph:</strong> Unless explicitly specified using FROM clauses in the Query or the Default Graph URI field the Default Graph is the union of all Graphs in the Dataset

@@ -3,6 +3,8 @@ dotNetRDF Toolkit for Windows
 
 A Toolkit of command line utilities and GUI tools for working with RDF data
 
+Version 0.1.2 Alpha
+
 Robert Vesse 2009-10
 rvesse@vdesign-studios.com
 
@@ -12,14 +14,15 @@ Usage
 Unzip this zip package to a folder of your choice.  We recommend adding this folder to your PATH variable so you can access the command line tools from a command prompt regardless of the working directory.
 
 This Toolkit provides the following command line utilities:
-- rdfConvert - A tool for converting RDF Graphs and Datasets between different serializations (Version 1.2)
-- rdfQuery - A tool for querying RDF data using SPARQL (Version 1.2)
-- rdfWebDeploy - A tool for testing and deploying configuration for ASP.Net applications (Version 1.2)
+- rdfConvert - A tool for converting RDF Graphs and Datasets between different serializations (Version 0.1.2)
+- rdfQuery - A tool for querying RDF data using SPARQL (Version 0.1.2)
+- rdfWebDeploy - A tool for testing and deploying configuration for ASP.Net applications (Version 0.1.2)
+- soh - A tool for communicating with servers supporting the SPARQL Protocols over HTTP (Version 0.1.0
 
 This Toolkit provides the following GUI tools:
-- rdfEditor - A Notepad replacement for editing RDF and SPARQL (Version 1.1)
-- SparqlGUI - A GUI for testing SPARQL queries using dotNetRDF's in-memory Leviathan engine (Version 1.2)
-- dotNetRDFStore - A GUI for performing basic management and query tasks on various Triple Stores (Version 1.4)
+- rdfEditor - A Notepad replacement for editing RDF and SPARQL (Version 0.1.1)
+- SparqlGUI - A GUI for testing SPARQL queries using dotNetRDF's in-memory Leviathan engine (Version 0.1.2)
+- dotNetRDFStore - A GUI for performing basic management and query tasks on various Triple Stores (Version 0.1.4)
 
 License
 -------

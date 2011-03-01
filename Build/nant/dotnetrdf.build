@@ -213,7 +213,7 @@
     <copy overwrite="true" todir="../bin/nightly" file="Libraries/core/bin/Debug/Newtonsoft.Json.dll" />
     <copy overwrite="true" todir="../bin/nightly" file="Libraries/core/bin/Debug/Newtonsoft.Json.xml" />
     <copy overwrite="true" todir="../bin/nightly" file="Libraries/core/bin/Debug/MySql.Data.dll" />
-    <copy overwrite="true" todir="../bin/nightly" file="Libraries/core/bin/Debug/virtado3.dll" />
+    <copy overwrite="true" todir="../bin/nightly" file="Libraries/core/bin/Debug/OpenLink.Data.Virtuoso.dll" />
     <copy overwrite="true" todir="../bin/nightly" file="Libraries/core/ChangeLog.txt" />
   </target>
 
@@ -259,7 +259,7 @@
     <copy overwrite="true" todir="../bin/mono-nightly" file="Libraries/core/bin/Debug/Newtonsoft.Json.dll" />
     <copy overwrite="true" todir="../bin/mono-nightly" file="Libraries/core/bin/Debug/Newtonsoft.Json.xml" />
     <copy overwrite="true" todir="../bin/mono-nightly" file="Libraries/core/bin/Debug/MySql.Data.dll" />
-    <copy overwrite="true" todir="../bin/mono-nightly" file="Libraries/core/bin/Debug/virtado3.dll" />
+    <copy overwrite="true" todir="../bin/mono-nightly" file="Libraries/core/bin/Debug/OpenLink.Data.Virtuoso.dll" />
   </target>
 
   <target name="build-linq" description="Copy the latest Linq build to the Linq Nighlty Build directory" unless="${dotnetrdf.nobuild}" depends="compile-linq">
@@ -273,7 +273,7 @@
     <copy overwrite="true" todir="../bin/linq-nightly" file="Libraries/linq/bin/Debug/Newtonsoft.Json.dll" />
     <copy overwrite="true" todir="../bin/linq-nightly" file="Libraries/linq/bin/Debug/Newtonsoft.Json.xml" />
     <copy overwrite="true" todir="../bin/linq-nightly" file="Libraries/core/bin/Debug/MySql.Data.dll" />
-    <copy overwrite="true" todir="../bin/linq-nightly" file="Libraries/linq/bin/Debug/virtado3.dll" />
+    <copy overwrite="true" todir="../bin/linq-nightly" file="Libraries/linq/bin/Debug/OpenLink.Data.Virtuoso.dll" />
   </target>
 
   <target name="build-release" description="Copy the stable build to the Stable Build directory ready for a release" unless="${dotnetrdf.nobuild}"  depends="compile">
@@ -284,7 +284,7 @@
     <copy overwrite="true" todir="../bin/stable" file="Libraries/core/bin/Debug/Newtonsoft.Json.dll" />
     <copy overwrite="true" todir="../bin/stable" file="Libraries/core/bin/Debug/Newtonsoft.Json.xml" />
     <copy overwrite="true" todir="../bin/stable" file="Libraries/core/bin/Debug/MySql.Data.dll" />
-    <copy overwrite="true" todir="../bin/stable" file="Libraries/core/bin/Debug/virtado3.dll" />
+    <copy overwrite="true" todir="../bin/stable" file="Libraries/core/bin/Debug/OpenLink.Data.Virtuoso.dll" />
     <copy overwrite="true" todir="../bin/stable" file="Libraries/core/ChangeLog.txt" />
     <copy overwrite="true" todir="../bin/stable" file="Libraries/core/ReleaseNotes.txt" />
   </target>
@@ -386,15 +386,23 @@
       <!--<fileset basedir="../bin/lite-nightly" prefix="Lite">
         <include name="*" />
       </fileset>-->
+      <fileset basedir="../bin/windowsphone-nightly/" prefix="WindowsPhone7">
+        <include name="*" />
+      </fileset>
     </zip>
     <zip zipfile="${dotnetrdf.srczip}" ziplevel="9">
       <fileset basedir="Libraries/core/" prefix="DotNet">
-        <include name="**/*" />
+        <include name="*/*" />
         <exclude name="bin/" />
         <exclude name="obj/" />
       </fileset>
       <fileset basedir="Libraries/silverlight/" prefix="Silverlight">
-        <include name="**/*" />
+        <include name="*/*" />
+        <exclude name="bin/" />
+        <exclude name="obj/" />
+      </fileset>
+      <fileset basedir="Libraries/windowsphone/" prefix="WindowsPhone7">
+        <include name="*/*" />
         <exclude name="bin/" />
         <exclude name="obj/" />
       </fileset>
@@ -413,6 +421,9 @@
         <include name="*" />
       </fileset>
       <fileset basedir="../bin/lite-nightly" prefix="Lite">
+        <include name="*" />
+      </fileset>
+      <fileset basedir="../bin/windowsphone-nightly" prefix="WindowsPhone7">
         <include name="*" />
       </fileset>
     </zip>
@@ -449,6 +460,11 @@
         <exclude name="*.vshost.*" />
       </fileset>
       <fileset basedir="Utilities/storemanager/bin/Debug">
+        <include name="*" />
+        <exclude name="*.pdb" />
+        <exclude name="*.vshost.*" />
+      </fileset>
+      <fileset basedir="Utilities/soh/bin/Debug">
         <include name="*" />
         <exclude name="*.pdb" />
         <exclude name="*.vshost.*" />
