@@ -148,9 +148,10 @@ namespace VDS.RDF.Test.Storage
 
                     TestTools.ShowDifferences(diff);
 
-                    UriNode allowedDifSubject = g.CreateUriNode(":four");
-                    Assert.IsTrue(diff.RemovedTriples.All(t => t.Subject.Equals(allowedDifSubject) && (t.Object.ToString().Equals("true^^" + XmlSpecsHelper.XmlSchemaDataTypeBoolean) || t.Object.ToString().Equals("false^^" + XmlSpecsHelper.XmlSchemaDataTypeBoolean))), "Removed Triples should only be those with subject :four and boolean object");
-                    Assert.IsTrue(diff.AddedTriples.All(t => t.Subject.Equals(allowedDifSubject) && (t.Object.ToString().Equals("1") || t.Object.ToString().Equals("0"))), "Added Triples should only be those with subject :four and 1/0 in place of boolean object");
+                    UriNode allowedDiffSubject = g.CreateUriNode(":four");
+                    UriNode allowedDiffSubject2 = g.CreateUriNode(":six");
+                    Assert.IsTrue(diff.RemovedTriples.All(t => t.Subject.Equals(allowedDiffSubject2) || (t.Subject.Equals(allowedDiffSubject) && (t.Object.ToString().Equals("true^^" + XmlSpecsHelper.XmlSchemaDataTypeBoolean) || t.Object.ToString().Equals("false^^" + XmlSpecsHelper.XmlSchemaDataTypeBoolean)))), "Removed Triples should only be those with subject :four and boolean object");
+                    Assert.IsTrue(diff.AddedTriples.All(t => t.Subject.Equals(allowedDiffSubject2) || (t.Subject.Equals(allowedDiffSubject) && (t.Object.ToString().Equals("1") || t.Object.ToString().Equals("0")))), "Added Triples should only be those with subject :four and 1/0 in place of boolean object");
                 }
                 else
                 {

@@ -56,7 +56,7 @@ namespace rdfWebDeploy
         private static List<String> _requiredDLLs = new List<string>()
         {
             "dotNetRDF.dll",
-            "virtado3.dll",
+            "OpenLink.Data.Virtuoso.dll",
             "HtmlAgilityPack.dll",
             "Newtonsoft.Json.dll",
             "MySql.Data.dll"

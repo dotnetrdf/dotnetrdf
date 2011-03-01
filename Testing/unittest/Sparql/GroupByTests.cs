@@ -15,7 +15,7 @@ namespace VDS.RDF.Test.Sparql
         [TestMethod]
         public void SparqlGroupByInSubQuery()
         {
-            String query = "SELECT ?s WHERE {{SELECT * WHERE {?s ?p ?o} GROUP BY ?s}} GROUP BY ?s";
+            String query = "SELECT ?s WHERE {{SELECT ?s WHERE {?s ?p ?o} GROUP BY ?s}} GROUP BY ?s";
             SparqlQueryParser parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(query);
         }

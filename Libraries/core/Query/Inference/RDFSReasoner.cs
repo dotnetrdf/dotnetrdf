@@ -75,8 +75,8 @@ namespace VDS.RDF.Query.Inference
             this._rdfsSubClass = g.CreateUriNode("rdfs:subClassOf");
             this._rdfProperty = g.CreateUriNode("rdf:Property");
             this._rdfsSubProperty = g.CreateUriNode("rdfs:subPropertyOf");
-            this._rdfsDomain = g.CreateUriNode("rdfs:range");
-            this._rdfsRange = g.CreateUriNode("rdfs:domain");
+            this._rdfsDomain = g.CreateUriNode("rdfs:domain");
+            this._rdfsRange = g.CreateUriNode("rdfs:range");
         }
 
         /// <summary>

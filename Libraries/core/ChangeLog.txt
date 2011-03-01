@@ -73,6 +73,7 @@ Changed
    tags weren't validated when they should have been
  - RDF/XML writer failed to properly XML encode URIs which contained multiple unescaped ampersands
  - Lots of bug fixes around interpretation of the SPARQL 1.1 specifications
+ - Bug fix for incorrect rdfs:range and rdfs:domain handling in RdfsReasoner
 - General Improvements
  - Internal restructuring of how MIME Types are managed
   - Allows for new MIME Types, File Extensions and parsers to be registered with the API and used automatically where appropriate

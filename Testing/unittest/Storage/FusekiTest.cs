@@ -327,29 +327,70 @@ namespace VDS.RDF.Test.Storage
         [TestMethod]
         public void FusekiUpdate()
         {
-            FusekiConnector fuseki = new FusekiConnector(new Uri(FusekiTestUri));
-            
-            //Try doing a SPARQL Update LOAD command
-            String command = "LOAD <http://dbpedia.org/resource/Ilkeston> INTO GRAPH <http://example.org/Ilson>";
-            fuseki.Update(command);
-
-            //Then see if we can retrieve the newly loaded graph
-            Graph g = new Graph();
-            fuseki.LoadGraph(g, "http://example.org/Ilson");
-            Assert.IsFalse(g.IsEmpty, "Graph should be non-empty");
-            foreach (Triple t in g.Triples)
+            try
             {
-                Console.WriteLine(t.ToString(this._formatter));
-            }
-            Console.WriteLine();
+                Options.HttpDebugging = true;
 
-            //Try a DROP Graph to see if that works
-            command = "DROP GRAPH <http://example.org/Ilson>";
-            fuseki.Update(command);
-            g.Clear();
-            fuseki.LoadGraph(g, "http://example.org/Ilson");
-            Assert.IsTrue(g.IsEmpty, "Graph should be empty as it should have been DROPped by Fuseki");
+                FusekiConnector fuseki = new FusekiConnector(new Uri(FusekiTestUri));
+
+                //Try doing a SPARQL Update LOAD command
+                String command = "LOAD <http://dbpedia.org/resource/Ilkeston> INTO GRAPH <http://example.org/Ilson>";
+                fuseki.Update(command);
+
+                //Then see if we can retrieve the newly loaded graph
+                Graph g = new Graph();
+                fuseki.LoadGraph(g, "http://example.org/Ilson");
+                Assert.IsFalse(g.IsEmpty, "Graph should be non-empty");
+                foreach (Triple t in g.Triples)
+                {
+                    Console.WriteLine(t.ToString(this._formatter));
+                }
+                Console.WriteLine();
+
+                //Try a DROP Graph to see if that works
+                command = "DROP GRAPH <http://example.org/Ilson>";
+                fuseki.Update(command);
+
+                //Have to use a SPARQL CONSTRUCT here to check if the Graph has been dropped as doing a LoadGraph
+                //will get it from the cache as when we use SPARQL Update to remove a Graph the connector doesn't
+                //currently check what Graphs are affected and remove then from the Cache
+                //Also this would be very tricky to do as would involve parsing and analysing the Update Commands
+                SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(new Uri(new Uri(FusekiTestUri), "query"));
+                g = endpoint.QueryWithResultGraph("CONSTRUCT { ?s ?p ?o } WHERE { GRAPH <http://example.org/Ilson> { ?s ?p ?o } }");
+                Assert.IsTrue(g.IsEmpty, "Graph should be empty as it should have been DROPped by Fuseki");
+            }
+            finally
+            {
+                Options.HttpDebugging = false;
+            }
             
+        }
+
+        [TestMethod]
+        public void FusekiDescribe()
+        {
+            try
+            {
+                Options.HttpDebugging = true;
+                Options.HttpFullDebugging = true;
+
+                FusekiConnector fuseki = new FusekiConnector(FusekiTestUri);
+
+                Object results = fuseki.Query("DESCRIBE <http://example.org/vehicles/FordFiesta>");
+                if (results is IGraph)
+                {
+                    TestTools.ShowGraph((IGraph)results);
+                }
+                else
+                {
+                    Assert.Fail("Did not return a Graph as expected");
+                }
+            }
+            finally
+            {
+                Options.HttpFullDebugging = true;
+                Options.HttpDebugging = false;
+            }
         }
     }
 }

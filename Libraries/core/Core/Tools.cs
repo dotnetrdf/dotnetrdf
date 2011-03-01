@@ -458,15 +458,15 @@ namespace VDS.RDF
             if (!Options.HttpDebugging) return;
 
             //Output the Request Headers
-            Console.WriteLine("# HTTP DEBUGGING #");
-            Console.WriteLine("HTTP Request to " + httpRequest.RequestUri);
-            Console.WriteLine();
-            Console.WriteLine(httpRequest.Method);
+            Console.Error.WriteLine("# HTTP DEBUGGING #");
+            Console.Error.WriteLine("HTTP Request to " + httpRequest.RequestUri);
+            Console.Error.WriteLine();
+            Console.Error.WriteLine(httpRequest.Method);
             foreach (String header in httpRequest.Headers.AllKeys)
             {
-                Console.WriteLine(header + ":" + httpRequest.Headers[header]);
+                Console.Error.WriteLine(header + ":" + httpRequest.Headers[header]);
             }
-            Console.WriteLine();
+            Console.Error.WriteLine();
         }
 
         /// <summary>
@@ -479,19 +479,19 @@ namespace VDS.RDF
             if (!Options.HttpDebugging) return;
 
             //Output the Response Uri and Headers
-            Console.WriteLine();
-            Console.WriteLine("HTTP Response from " + httpResponse.ResponseUri);
+            Console.Error.WriteLine();
+            Console.Error.WriteLine("HTTP Response from " + httpResponse.ResponseUri);
 #if SILVERLIGHT
-            Console.WriteLine("HTTP " + (int)httpResponse.StatusCode + " " + httpResponse.StatusDescription);
+            Console.Error.WriteLine("HTTP " + (int)httpResponse.StatusCode + " " + httpResponse.StatusDescription);
 #else
-            Console.WriteLine("HTTP/" + httpResponse.ProtocolVersion + " " + (int)httpResponse.StatusCode + " " + httpResponse.StatusDescription);
+            Console.Error.WriteLine("HTTP/" + httpResponse.ProtocolVersion + " " + (int)httpResponse.StatusCode + " " + httpResponse.StatusDescription);
 #endif
-            Console.WriteLine();
+            Console.Error.WriteLine();
             foreach (String header in httpResponse.Headers.AllKeys)
             {
-                Console.WriteLine(header + ":" + httpResponse.Headers[header]);
+                Console.Error.WriteLine(header + ":" + httpResponse.Headers[header]);
             }
-            Console.WriteLine();
+            Console.Error.WriteLine();
 
             if (Options.HttpFullDebugging)
             {
@@ -500,16 +500,16 @@ namespace VDS.RDF
                 StreamReader reader = new StreamReader(data);
                 while (!reader.EndOfStream)
                 {
-                    Console.WriteLine(reader.ReadLine());
+                    Console.Error.WriteLine(reader.ReadLine());
                 }
-                Console.WriteLine();
+                Console.Error.WriteLine();
 
                 if (data.CanSeek) {
                     data.Seek(0, SeekOrigin.Begin);
                 }
             }
 
-            Console.WriteLine("# END HTTP DEBUGGING #");
+            Console.Error.WriteLine("# END HTTP DEBUGGING #");
         }
 
 #endif

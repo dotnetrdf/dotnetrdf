@@ -360,7 +360,13 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             Graph h = new Graph();
             FileLoader.Load(h, "InferenceTest.ttl");
             RdfsReasoner reasoner = new RdfsReasoner();
-            reasoner.Apply(h); 
+            reasoner.Apply(h);
+
+            GraphDiffReport diff = h.Difference(g);
+            if (!diff.AreEqual)
+            {
+                TestTools.ShowDifferences(diff);
+            }
 
             Assert.AreEqual(h, g, "Graphs should be equal");            
         }
