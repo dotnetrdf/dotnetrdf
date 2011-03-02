@@ -239,7 +239,14 @@ namespace VDS.RDF.Interop.Sesame
 
         public override org.openrdf.repository.RepositoryResult getContextIDs()
         {
-            if (this._manager is IQueryableGenericIOManager)
+            if (this._manager.ListGraphsSupported)
+            {
+                IEnumerable<dotSesame.Resource> resIter = from u in this._manager.ListGraphs()
+                                                          select (dotSesame.Resource)this._mapping.ValueFactory.createURI(u.ToString());
+
+                return new org.openrdf.repository.RepositoryResult(new DotNetAdunaIterationWrapper(resIter));
+            }
+            else if (this._manager is IQueryableGenericIOManager)
             {
                 try 
                 {
