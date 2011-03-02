@@ -458,6 +458,12 @@ namespace VDS.RDF.Test.Storage
                 result = manager.Query("SELECT * FROM <http://example.org/> WHERE {?s ?p ?o}");
                 CheckQueryResult(result, true);
 
+                Console.WriteLine("SELECTing the same Graph using Project Expressions");
+
+                //Try a SELECT query
+                result = manager.Query("SELECT (?s AS ?Subject) (?P as ?Predicate) (?o AS ?Object) FROM <http://example.org/> WHERE {?s ?p ?o}");
+                CheckQueryResult(result, true);
+
                 Console.WriteLine("Now we'll delete a Triple");
 
                 //Try a DELETE DATA

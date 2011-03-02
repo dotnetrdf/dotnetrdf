@@ -566,18 +566,19 @@ namespace VDS.RDF.Storage
         {
             Object finalResult = null;
             DataTable results = new DataTable();
+            results.Columns.CollectionChanged += new System.ComponentModel.CollectionChangeEventHandler(Columns_CollectionChanged);
 
             //See if the query can be parsed into a SparqlQuery object
             //It might not since the user might use Virtuoso's extensions to Sparql in their query
             try
             {
-                //We'll set the Parser to SPARQL 1.0 mode as Virtuoso's SPARQL implementation has
-                //loads of extensions comparative to our SPARQL 1.1 implementation and we'll try and 
+                //We'll set the Parser to SPARQL 1.1 mode even though Virtuoso's SPARQL implementation has
+                //various perculiarties in their SPARQL 1.1 implementation and we'll try and 
                 //handle the potential results in the catch branch if a valid SPARQL 1.0 query
                 //cannot be parsed
                 //Change made in response to a bug report by Aleksandr A. Zaripov [zaripov@tpu.ru]
                 SparqlQueryParser parser = new SparqlQueryParser();
-                parser.SyntaxMode = SparqlQuerySyntax.Sparql_1_0;
+                parser.SyntaxMode = SparqlQuerySyntax.Sparql_1_1;
                 SparqlQuery query = parser.ParseFromString(sparqlQuery);
 
                 switch (query.QueryType)
@@ -874,6 +875,17 @@ namespace VDS.RDF.Storage
             }
 
             return finalResult;
+        }
+
+        void Columns_CollectionChanged(object sender, System.ComponentModel.CollectionChangeEventArgs e)
+        {
+            Type reqType = typeof(Object);
+            if (e.Action != System.ComponentModel.CollectionChangeAction.Add) return;
+            DataColumn column = (DataColumn)e.Element;
+            if (!column.DataType.Equals(reqType))
+            {
+                column.DataType = reqType;
+            }
         }
 
         /// <summary>
