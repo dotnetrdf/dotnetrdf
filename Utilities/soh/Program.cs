@@ -529,6 +529,17 @@ namespace VDS.RDF.Utilities.SparqlOverHttp
                         Console.WriteLine("soh: Graph updated to Protocol endpoint OK");
                         break;
 
+                    case "DELETE":
+                        if (arguments.ContainsKey("$4"))
+                        {
+                            Console.Error.WriteLine("soh: Error: Optional file argument for protocol mode is not permitted with the head method");
+                            Environment.Exit(-1);
+                            return;
+                        }
+                        endpoint.DeleteGraph(graphUri);
+                        Console.WriteLine("soh: Graph deleted from Protocol endpoint OK");
+                        break;
+
                     default:
                         Console.Error.WriteLine("soh: Error: " + method + " is not a HTTP Method supported by this tool");
                         Environment.Exit(-1);

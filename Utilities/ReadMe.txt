@@ -57,6 +57,7 @@ improvements in the code:
 - Andy Seaborne and Steve Harris for excellent answers to various SPARQL and ARQ function library related questions 
   which have contributed to resolving various issues in the Leviathan engine and adding the ARQ function library support
 - Peter Kahle for his efforts in producing a Windows Phone 7 version of the library
+- Paul Hermans for various suggestions related to the improvement of the Toolkit
 - The SPARQL Working Group for useful feedback and responses to my comments
 - The following people who have contributed bug reports and patches on the mailing lists:
  - Tana Isaac
