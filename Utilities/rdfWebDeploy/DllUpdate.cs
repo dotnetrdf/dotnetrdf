@@ -39,7 +39,7 @@ using System.Configuration;
 using System.Web.Configuration;
 using System.IO;
 
-namespace rdfWebDeploy
+namespace VDS.RDF.Utilities.Web.Deploy
 {
     class DllUpdate
     {
@@ -66,7 +66,7 @@ namespace rdfWebDeploy
             if (!this._noLocalIIS)
             {
                 //Open the Configuration File
-                Configuration config = WebConfigurationManager.OpenWebConfiguration(args[1], this._site);
+                System.Configuration.Configuration config = WebConfigurationManager.OpenWebConfiguration(args[1], this._site);
                 Console.Out.WriteLine("rdfWebDeploy: Opened the Web.config file for the specified Web Application");
 
                 appFolder = Path.GetDirectoryName(config.FilePath);

@@ -13,9 +13,9 @@ using System.Windows.Shapes;
 using VDS.RDF;
 using VDS.RDF.Query;
 using VDS.RDF.Writing.Formatting;
-using rdfEditor.Controls;
+using VDS.RDF.Utilities.Editor.Controls;
 
-namespace rdfEditor
+namespace VDS.RDF.Utilities.Editor
 {
     /// <summary>
     /// Interaction logic for ResultSetWindow.xaml

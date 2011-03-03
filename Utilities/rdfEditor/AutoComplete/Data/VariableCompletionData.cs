@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace rdfEditor.AutoComplete.Data
+namespace VDS.RDF.Utilities.Editor.AutoComplete.Data
 {
     public class VariableCompletionData : BaseCompletionData
     {

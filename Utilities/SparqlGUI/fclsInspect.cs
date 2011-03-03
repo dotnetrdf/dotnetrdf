@@ -34,7 +34,7 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Writing.Formatting;
 
-namespace SparqlGUI
+namespace VDS.RDF.Utilities.Sparql
 {
     public partial class fclsInspect : Form
     {

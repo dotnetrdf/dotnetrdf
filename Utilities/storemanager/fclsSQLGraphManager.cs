@@ -37,7 +37,7 @@ using VDS.RDF.GUI.WinForms;
 using VDS.RDF.Parsing;
 using VDS.RDF.Storage;
 
-namespace dotNetRDFStore
+namespace VDS.RDF.Utilities.StoreManager
 {
     public partial class fclsSQLGraphManager : Form
     {

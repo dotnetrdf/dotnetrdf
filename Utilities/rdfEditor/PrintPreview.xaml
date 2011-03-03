@@ -3,14 +3,14 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:PrintEngine"
         Title="Print Preview"
-        Height="600"
-        Width="400"
+        Height="500"
+        Width="734"
         WindowState="Maximized"
         WindowStartupLocation="CenterOwner">
     <Grid>
         <local:PrintPreviewDocumentViewer x:Name="documentViewer"  Grid.Row="0"/>
         <WrapPanel FlowDirection="RightToLeft" Grid.Row="1">
-            <Button Click="closeButton_Click" Margin="7" >Cancel</Button>
+            <Button Click="closeButton_Click" Width="65" Margin="15,7,0,0">Cancel</Button>
         </WrapPanel>
     </Grid>
 </Window>

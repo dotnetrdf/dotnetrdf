@@ -43,7 +43,7 @@ using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using Admin = Microsoft.Web.Administration;
 
-namespace rdfWebDeploy
+namespace VDS.RDF.Utilities.Web.Deploy
 {
     class Deploy
     {
@@ -85,7 +85,7 @@ namespace rdfWebDeploy
                 if (!this._noIntegratedRegistration) manager = new Admin.ServerManager();
 
                 //Open the Configuration File
-                Configuration config = WebConfigurationManager.OpenWebConfiguration(args[1], this._site);
+                System.Configuration.Configuration config = WebConfigurationManager.OpenWebConfiguration(args[1], this._site);
                 Console.Out.WriteLine("rdfWebDeploy: Opened the Web.config file for the specified Web Application");
 
                 //Detect Folders

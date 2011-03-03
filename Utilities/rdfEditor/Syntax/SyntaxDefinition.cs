@@ -6,9 +6,9 @@ using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using VDS.RDF;
 using VDS.RDF.Parsing.Validation;
-using rdfEditor.AutoComplete;
+using VDS.RDF.Utilities.Editor.AutoComplete;
 
-namespace rdfEditor.Syntax
+namespace VDS.RDF.Utilities.Editor.Syntax
 {
     public class SyntaxDefinition
     {

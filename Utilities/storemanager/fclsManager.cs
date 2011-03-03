@@ -43,7 +43,7 @@ using VDS.RDF.Storage;
 using VDS.RDF.Configuration;
 using VDS.RDF.Writing;
 
-namespace dotNetRDFStore
+namespace VDS.RDF.Utilities.StoreManager
 {
     public partial class fclsManager : Form
     {

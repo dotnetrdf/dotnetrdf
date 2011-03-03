@@ -32,7 +32,7 @@ using System;
 using System.Data;
 using System.Threading;
 
-namespace dotNetRDFStore
+namespace VDS.RDF.Utilities.StoreManager
 {
     public class StoreCompacter
     {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Xml.Serialization;
 
-namespace rdfMetal
+namespace VDS.RDF.Utilities.Linq.Metal
 {
     public class ModelWriter
     {

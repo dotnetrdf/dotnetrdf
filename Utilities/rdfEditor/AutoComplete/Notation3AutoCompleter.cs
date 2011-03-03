@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using VDS.RDF.Parsing;
 
-namespace rdfEditor.AutoComplete
+namespace VDS.RDF.Utilities.Editor.AutoComplete
 {
     public class Notation3AutoCompleter : TurtleAutoCompleter
     {

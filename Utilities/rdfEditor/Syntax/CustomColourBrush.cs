@@ -5,7 +5,7 @@ using System.Text;
 using System.Windows.Media;
 using ICSharpCode.AvalonEdit.Highlighting;
 
-namespace rdfEditor.Syntax
+namespace VDS.RDF.Utilities.Editor.Syntax
 {
     public class CustomColourBrush : HighlightingBrush
     {

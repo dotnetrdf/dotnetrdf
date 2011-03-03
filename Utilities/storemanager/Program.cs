@@ -31,7 +31,7 @@ terms.
 using System;
 using System.Windows.Forms;
 
-namespace dotNetRDFStore
+namespace VDS.RDF.Utilities.StoreManager
 {
     static class Program
     {

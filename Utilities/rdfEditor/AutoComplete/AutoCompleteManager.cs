@@ -8,15 +8,15 @@ using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Editing;
-using rdfEditor.Syntax;
+using VDS.RDF.Utilities.Editor.Syntax;
 using VDS.RDF;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Expressions;
-using rdfEditor.AutoComplete.Data;
+using VDS.RDF.Utilities.Editor.AutoComplete.Data;
 
-namespace rdfEditor.AutoComplete
+namespace VDS.RDF.Utilities.Editor.AutoComplete
 {
     public class AutoCompleteManager
     {

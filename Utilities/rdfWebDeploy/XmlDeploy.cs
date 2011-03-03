@@ -44,7 +44,7 @@ using VDS.RDF;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 
-namespace rdfWebDeploy
+namespace VDS.RDF.Utilities.Web.Deploy
 {
     class XmlDeploy
     {

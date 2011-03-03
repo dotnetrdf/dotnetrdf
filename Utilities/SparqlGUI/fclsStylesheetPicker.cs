@@ -31,7 +31,7 @@ terms.
 using System;
 using System.Windows.Forms;
 
-namespace SparqlGUI
+namespace VDS.RDF.Utilities.Sparql
 {
     public partial class fclsStylesheetPicker : Form
     {

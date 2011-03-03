@@ -36,7 +36,7 @@ using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing;
 
-namespace rdfConvert
+namespace VDS.RDF.Utilities.Convert
 {
     /// <summary>
     /// Does RDF Conversions using the dotNetRDF command line syntax

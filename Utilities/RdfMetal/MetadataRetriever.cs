@@ -4,7 +4,7 @@ using System.Linq;
 using VDS.RDF;
 using VDS.RDF.Query;
 
-namespace rdfMetal
+namespace VDS.RDF.Utilities.Linq.Metal
 {
     public class MetadataRetriever
     {
@@ -199,10 +199,10 @@ namespace rdfMetal
 
         public static void ProcessClassRelationships(IEnumerable<OntologyClass> classes)
         {
-            foreach (var ontCls in classes)
+            foreach (OntologyClass ontCls in classes)
             {
                 ontCls.IncomingRelationships = classes
-                    .Map(c => c.OutgoingRelationships.AsEnumerable())
+                    .Map(c => Enumerable.AsEnumerable<OntologyProperty>(c.OutgoingRelationships))
                     .Flatten()
                     .Where(p => p.Range == ontCls.Name)
                     .ToArray();

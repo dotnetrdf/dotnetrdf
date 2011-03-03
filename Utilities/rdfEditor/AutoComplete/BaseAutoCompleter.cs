@@ -10,7 +10,7 @@ using ICSharpCode.AvalonEdit.Editing;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing;
 
-namespace rdfEditor.AutoComplete
+namespace VDS.RDF.Utilities.Editor.AutoComplete
 {
     public abstract class BaseAutoCompleter : IAutoCompleter
     {

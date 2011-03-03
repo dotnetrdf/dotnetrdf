@@ -42,7 +42,7 @@ using VDS.RDF.Storage.Params;
 using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
 
-namespace SparqlGUI
+namespace VDS.RDF.Utilities.Sparql
 {
     public partial class fclsSparqlGui : Form
     {

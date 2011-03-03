@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using VDS.RDF;
 
-namespace rdfEditor
+namespace VDS.RDF.Utilities.Editor
 {
     /// <summary>
     /// Interaction logic for About.xaml

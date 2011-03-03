@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace rdfEditor.AutoComplete
+namespace VDS.RDF.Utilities.Editor.AutoComplete
 {
     public class NamespaceTerm
     {

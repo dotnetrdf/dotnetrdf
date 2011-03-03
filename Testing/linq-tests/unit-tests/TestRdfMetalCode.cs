@@ -5,9 +5,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
-using rdfMetal;
+using VDS.RDF.Utilities.Linq.Metal;
 using Some.Namespace;
-using Option = rdfMetal.Options;
+using Option = VDS.RDF.Utilities.Linq.Metal.Options;
 using VDS.RDF.Linq;
 using VDS.RDF.Linq.Sparql;
 

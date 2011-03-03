@@ -13,7 +13,7 @@ using VDS.RDF.Update;
 using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
 
-namespace soh
+namespace VDS.RDF.Utilities.SparqlOverHttp
 {
     class Program
     {

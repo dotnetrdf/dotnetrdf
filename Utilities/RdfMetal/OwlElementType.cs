@@ -1,4 +1,4 @@
-namespace rdfMetal
+namespace VDS.RDF.Utilities.Linq.Metal
 {
     public enum OwlElementType
     {

@@ -34,7 +34,7 @@ using System.Text;
 
 //REQ: Add command line arguments to import custom parsers and serializers
 
-namespace rdfConvert
+namespace VDS.RDF.Utilities.Convert
 {
     class Program
     {

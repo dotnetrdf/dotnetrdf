@@ -22,7 +22,7 @@ This Toolkit provides the following command line utilities:
 This Toolkit provides the following GUI tools:
 - rdfEditor - A Notepad replacement for editing RDF and SPARQL (Version 0.1.1)
 - SparqlGUI - A GUI for testing SPARQL queries using dotNetRDF's in-memory Leviathan engine (Version 0.1.2)
-- dotNetRDFStore - A GUI for performing basic management and query tasks on various Triple Stores (Version 0.1.4)
+- StoreManager - A GUI for performing basic management and query tasks on various Triple Stores (Version 0.1.4)
 
 License
 -------

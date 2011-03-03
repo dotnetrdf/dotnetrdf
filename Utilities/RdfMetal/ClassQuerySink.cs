@@ -5,7 +5,7 @@ using VDS.RDF;
 using VDS.RDF.Linq;
 using VDS.RDF.Query;
 
-namespace rdfMetal
+namespace VDS.RDF.Utilities.Linq.Metal
 {
     public class ClassQuerySink : BaseLinqResultsSink
     {

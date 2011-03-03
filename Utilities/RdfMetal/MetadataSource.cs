@@ -6,7 +6,7 @@ using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 
-namespace rdfMetal
+namespace VDS.RDF.Utilities.Linq.Metal
 {
     public class MetadataSource
     {

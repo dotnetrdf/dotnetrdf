@@ -15,11 +15,11 @@ using System.Windows.Shapes;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
-using rdfEditor.Syntax;
-using rdfEditor.AutoComplete;
-using rdfEditor.Selection;
+using VDS.RDF.Utilities.Editor.Syntax;
+using VDS.RDF.Utilities.Editor.AutoComplete;
+using VDS.RDF.Utilities.Editor.Selection;
 
-namespace rdfEditor
+namespace VDS.RDF.Utilities.Editor
 {
     /// <summary>
     /// Interaction logic for OpenQueryResults.xaml

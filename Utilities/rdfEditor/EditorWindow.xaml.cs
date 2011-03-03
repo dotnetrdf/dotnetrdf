@@ -24,9 +24,9 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Validation;
 using VDS.RDF.Query;
 using VDS.RDF.Writing;
-using rdfEditor.Syntax;
+using VDS.RDF.Utilities.Editor.Syntax;
 
-namespace rdfEditor
+namespace VDS.RDF.Utilities.Editor
 {
     /// <summary>
     /// Interaction logic for EditorWindow.xaml
@@ -509,19 +509,29 @@ namespace rdfEditor
             Options.UseBomForUtf8 = this.mnuUseBomForUtf8.IsChecked;
         }
 
-        private void mnuPrint_Click(object sender, RoutedEventArgs e)
+        private void mnuPageSetup_Click(object sender, RoutedEventArgs e)
         {
-            this.textEditor.PrintDialog(this._manager.CurrentFile, true);
-        }
-
-        private void mnuPrintNoHightlighting_Click(object sender, RoutedEventArgs e)
-        {
-            this.textEditor.PrintDialog(this._manager.CurrentFile, false);
+            this.textEditor.PageSetupDialog();
         }
 
         private void mnuPrintPreview_Click(object sender, RoutedEventArgs e)
         {
             this.textEditor.PrintPreviewDialog(this._manager.CurrentFile);
+        }
+
+        private void mnuPrintPreviewNoHighlighting_Click(object sender, RoutedEventArgs e)
+        {
+            this.textEditor.PrintPreviewDialog(this._manager.CurrentFile, false);
+        }
+
+        private void mnuPrint_Click(object sender, RoutedEventArgs e)
+        {
+            this.textEditor.PrintDialog(this._manager.CurrentFile, true);
+        }
+
+        private void mnuPrintNoHighlighting_Click(object sender, RoutedEventArgs e)
+        {
+            this.textEditor.PrintDialog(this._manager.CurrentFile, false);
         }
 
         private void mnuClose_Click(object sender, RoutedEventArgs e)

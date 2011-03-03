@@ -8,7 +8,7 @@
     <ProjectGuid>{20AB4681-8D42-459E-84C4-729A9E72BF94}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>rdfWebDeploy</RootNamespace>
+    <RootNamespace>VDS.RDF.Utilities.Web.Deploy</RootNamespace>
     <AssemblyName>rdfWebDeploy</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

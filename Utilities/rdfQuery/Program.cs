@@ -33,7 +33,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace rdfQuery
+namespace VDS.RDF.Utilities.Query
 {
     public class Program
     {

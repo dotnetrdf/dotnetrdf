@@ -43,7 +43,7 @@ using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing;
 
-namespace rdfWebDeploy
+namespace VDS.RDF.Utilities.Web.Deploy
 {
     public class Vocab
     {

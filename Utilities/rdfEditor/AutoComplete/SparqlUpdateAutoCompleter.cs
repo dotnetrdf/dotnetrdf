@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Query;
-using rdfEditor.AutoComplete.Data;
+using VDS.RDF.Utilities.Editor.AutoComplete.Data;
 
-namespace rdfEditor.AutoComplete
+namespace VDS.RDF.Utilities.Editor.AutoComplete
 {
     public class SparqlUpdateAutoCompleter : SparqlAutoCompleter
     {

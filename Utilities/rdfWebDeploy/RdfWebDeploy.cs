@@ -40,7 +40,7 @@ using System.Reflection;
 using VDS.RDF;
 using VDS.RDF.Configuration;
 
-namespace rdfWebDeploy
+namespace VDS.RDF.Utilities.Web.Deploy
 {
     public enum WebDeployMode
     {

@@ -7,7 +7,7 @@ using System.Windows.Media;
 using System.Windows.Media.TextFormatting;
 using ICSharpCode.AvalonEdit.Rendering;
 
-namespace rdfEditor.Syntax
+namespace VDS.RDF.Utilities.Editor.Syntax
 {
     public class ValidationErrorLineText : VisualLineText
     {

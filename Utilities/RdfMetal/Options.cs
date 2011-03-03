@@ -1,7 +1,7 @@
 using Opts = Mono.GetOptions.Options;
 using Opt = Mono.GetOptions.OptionAttribute;
 
-namespace rdfMetal
+namespace VDS.RDF.Utilities.Linq.Metal
 {
     public class Options : Opts
     {

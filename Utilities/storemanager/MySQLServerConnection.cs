@@ -35,7 +35,7 @@ using System.Reflection;
 using MySql.Data.MySqlClient;
 using VDS.RDF.Storage;
 
-namespace dotNetRDFStore
+namespace VDS.RDF.Utilities.StoreManager
 {
     public class MySQLServerConnection : BaseDBConnection 
     {

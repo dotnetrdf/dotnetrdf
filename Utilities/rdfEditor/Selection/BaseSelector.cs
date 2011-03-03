@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using ICSharpCode.AvalonEdit;
 
-namespace rdfEditor.Selection
+namespace VDS.RDF.Utilities.Editor.Selection
 {
     /// <summary>
     /// Selector which selects the symbol deliminated by a starting &lt; " or new line and by an ending &gt; " or new line.  If there is already a selection it selects the surrounding symbol

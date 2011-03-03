@@ -32,7 +32,7 @@ using System;
 using System.Data;
 using VDS.RDF.Storage;
 
-namespace dotNetRDFStore
+namespace VDS.RDF.Utilities.StoreManager
 {
     public delegate void OperationProgress(int operationsCompleted);
 

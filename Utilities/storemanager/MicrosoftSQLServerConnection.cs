@@ -35,7 +35,7 @@ using System.IO;
 using System.Reflection;
 using VDS.RDF.Storage;
 
-namespace dotNetRDFStore
+namespace VDS.RDF.Utilities.StoreManager
 {
     public class MicrosoftSQLServerConnection : BaseDBConnection
     {

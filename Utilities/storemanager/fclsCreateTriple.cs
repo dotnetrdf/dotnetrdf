@@ -33,7 +33,7 @@ using System.ComponentModel;
 using System.Windows.Forms;
 using VDS.RDF;
 
-namespace dotNetRDFStore
+namespace VDS.RDF.Utilities.StoreManager
 {
     public partial class fclsCreateTriple : Form
     {

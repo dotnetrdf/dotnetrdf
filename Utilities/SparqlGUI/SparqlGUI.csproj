@@ -8,7 +8,7 @@
     <ProjectGuid>{BBD4CD30-FCB8-45B5-8AEF-F1D4192BC8B2}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SparqlGUI</RootNamespace>
+    <RootNamespace>VDS.RDF.Utilities.Sparql</RootNamespace>
     <AssemblyName>SparqlGUI</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -80,6 +80,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="app.config" />
     <None Include="default.rq">

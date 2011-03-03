@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Antlr.StringTemplate;
 
-namespace rdfMetal
+namespace VDS.RDF.Utilities.Linq.Metal
 {
     public class CodeGenerator
     {

@@ -32,7 +32,7 @@ using System;
 using System.Windows.Forms;
 using VDS.RDF.Storage;
 
-namespace dotNetRDFStore
+namespace VDS.RDF.Utilities.StoreManager
 {
     public partial class fclsGenericStoreConnection : Form
     {

@@ -40,7 +40,7 @@ using VDS.RDF.Query.Inference;
 using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
 
-namespace rdfQuery
+namespace VDS.RDF.Utilities.Query
 {
     public enum RdfQueryMode
     {

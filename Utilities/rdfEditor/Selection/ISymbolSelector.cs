@@ -1,7 +1,7 @@
 ﻿using System;
 using ICSharpCode.AvalonEdit;
 
-namespace rdfEditor.Selection
+namespace VDS.RDF.Utilities.Editor.Selection
 {
     /// <summary>
     /// Interface for Symbol Selectors

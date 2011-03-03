@@ -32,7 +32,7 @@ using System;
 using System.Collections;
 using System.Windows.Forms;
 
-namespace dotNetRDFStore
+namespace VDS.RDF.Utilities.StoreManager
 {
     public class ListViewColumnSorter : IComparer
     {

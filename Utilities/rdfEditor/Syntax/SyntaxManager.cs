@@ -12,9 +12,9 @@ using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Validation;
 using VDS.RDF.Writing;
-using rdfEditor.AutoComplete;
+using VDS.RDF.Utilities.Editor.AutoComplete;
 
-namespace rdfEditor.Syntax
+namespace VDS.RDF.Utilities.Editor.Syntax
 {
     public static class SyntaxManager
     {
@@ -103,7 +103,7 @@ namespace rdfEditor.Syntax
                 {
 
                     //Try and load it from an embedded resource
-                    Stream resource = Assembly.GetExecutingAssembly().GetManifestResourceStream("rdfEditor.Syntax." + filename);
+                    Stream resource = Assembly.GetExecutingAssembly().GetManifestResourceStream("VDS.RDF.Utilities.Editor.Syntax." + filename);
                     if (resource != null)
                     {
                         return HighlightingLoader.Load(XmlReader.Create(resource), HighlightingManager.Instance);

@@ -1,4 +1,4 @@
-﻿namespace dotNetRDFStore
+﻿namespace VDS.RDF.Utilities.StoreManager
 {
     partial class fclsGenericStoreConnection
     {

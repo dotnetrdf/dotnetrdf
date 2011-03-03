@@ -1,4 +1,4 @@
-﻿namespace SparqlGUI
+﻿namespace VDS.RDF.Utilities.Sparql
 {
     partial class fclsStylesheetPicker
     {

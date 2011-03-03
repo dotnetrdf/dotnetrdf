@@ -15,7 +15,7 @@ using System.Windows.Shapes;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 
-namespace rdfEditor
+namespace VDS.RDF.Utilities.Editor
 {
     /// <summary>
     /// Interaction logic for OpenUri.xaml

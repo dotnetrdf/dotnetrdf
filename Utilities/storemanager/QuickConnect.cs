@@ -8,7 +8,7 @@ using VDS.RDF.Configuration;
 using VDS.RDF.Storage;
 using VDS.RDF.Writing;
 
-namespace dotNetRDFStore
+namespace VDS.RDF.Utilities.StoreManager
 {
     /// <summary>
     /// Class for quickly loading a Connection when the Configuration Graph and Object Node are known

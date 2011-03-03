@@ -39,7 +39,7 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Writing;
 
-namespace rdfQuery
+namespace VDS.RDF.Utilities.Query
 {
     public class RoqetQuery
     {

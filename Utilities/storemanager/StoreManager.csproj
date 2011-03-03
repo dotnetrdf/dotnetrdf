@@ -8,11 +8,11 @@
     <ProjectGuid>{5B73EE4C-D365-437B-B3DC-8D8831BF74F3}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>dotNetRDFStore</RootNamespace>
-    <AssemblyName>dotNetRDFStore</AssemblyName>
+    <RootNamespace>VDS.RDF.Utilities.StoreManager</RootNamespace>
+    <AssemblyName>StoreManager</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <StartupObject>dotNetRDFStore.Program</StartupObject>
+    <StartupObject>VDS.RDF.Utilities.StoreManager.Program</StartupObject>
     <ApplicationIcon>file-manager.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -146,6 +146,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="app.config" />
     <None Include="Properties\Settings.settings">

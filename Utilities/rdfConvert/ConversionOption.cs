@@ -32,7 +32,7 @@ using System;
 using VDS.RDF;
 using VDS.RDF.Writing;
 
-namespace rdfConvert
+namespace VDS.RDF.Utilities.Convert
 {
     /// <summary>
     /// Interface for Conversion Options

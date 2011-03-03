@@ -33,7 +33,7 @@ using System.Windows.Forms;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 
-namespace dotNetRDFStore
+namespace VDS.RDF.Utilities.StoreManager
 {
     public partial class fclsAddTriples : Form
     {

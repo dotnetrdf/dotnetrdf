@@ -7,7 +7,7 @@ using ICSharpCode.AvalonEdit.Rendering;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 
-namespace rdfEditor.Syntax
+namespace VDS.RDF.Utilities.Editor.Syntax
 {
     public class ValidationErrorElementGenerator : VisualLineElementGenerator
     {

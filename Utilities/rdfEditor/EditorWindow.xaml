@@ -1,7 +1,7 @@
-﻿<Window x:Class="rdfEditor.EditorWindow"
+﻿<Window x:Class="VDS.RDF.Utilities.Editor.EditorWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:rdfEditor="clr-namespace:rdfEditor"
+    xmlns:rdfEditor="clr-namespace:VDS.RDF.Utilities.Editor"
     Title="rdfEditor" Height="629" Width="880" 
     Loaded="Window_Loaded" Closing="Window_Closing" SizeChanged="Window_SizeChanged">
     
@@ -122,9 +122,13 @@
                 </MenuItem>
                 <MenuItem Header="Use BOM for UTF-8 Output" Name="mnuUseBomForUtf8" Click="mnuUseBomForUtf8_Click" IsCheckable="True" IsChecked="True" />
                 <Separator />
+                <MenuItem Header="Page Setup" Name="mnuPageSetup" Click="mnuPageSetup_Click" />
+                <Separator />
                 <MenuItem Header="Print Preview" Name="mnuPrintPreview" Click="mnuPrintPreview_Click" />
                 <MenuItem Header="Print" Name="mnuPrint" Click="mnuPrint_Click" InputGestureText="Ctrl+P" />
-                <MenuItem Header="Print without Highlighting" Name="mnuPrintNoHightlighting" Click="mnuPrintNoHightlighting_Click" InputGestureText="Ctrl+Alt+P" />
+                <Separator />
+                <MenuItem Header="Print Preview without Highlighting" Name="mnuPrintPreviewNoHighlighting" Click="mnuPrintPreviewNoHighlighting_Click" />
+                <MenuItem Header="Print without Highlighting" Name="mnuPrintNoHighlighting" Click="mnuPrintNoHighlighting_Click" InputGestureText="Ctrl+Alt+P" />
                 <Separator />
                 <MenuItem Header="Close" Name="mnuClose" Click="mnuClose_Click" InputGestureText="Ctrl+W" />
                 <Separator />

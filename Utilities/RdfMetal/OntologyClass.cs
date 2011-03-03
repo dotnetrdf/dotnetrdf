@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Serialization;
 
-namespace rdfMetal
+namespace VDS.RDF.Utilities.Linq.Metal
 {
     [Serializable]
     public class OntologyClass

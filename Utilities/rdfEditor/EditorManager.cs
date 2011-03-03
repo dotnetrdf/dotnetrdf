@@ -26,11 +26,11 @@ using VDS.RDF.Parsing.Validation;
 using VDS.RDF.Query;
 using VDS.RDF.Update;
 using VDS.RDF.Writing;
-using rdfEditor.AutoComplete;
-using rdfEditor.Selection;
-using rdfEditor.Syntax;
+using VDS.RDF.Utilities.Editor.AutoComplete;
+using VDS.RDF.Utilities.Editor.Selection;
+using VDS.RDF.Utilities.Editor.Syntax;
 
-namespace rdfEditor
+namespace VDS.RDF.Utilities.Editor
 {
     /// <summary>
     /// Editor Manager is a Object that encapsulates all the additional functionality we add to a 'basic' AvalonEdit Text Editor to provide our syntax highlighting, auto-completion, validation and symbol selection services

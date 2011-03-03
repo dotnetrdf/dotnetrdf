@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using VDS.RDF;
 
-namespace rdfMetal
+namespace VDS.RDF.Utilities.Linq.Metal
 {
     public class ClassDetailQuerySink : Graph
     {

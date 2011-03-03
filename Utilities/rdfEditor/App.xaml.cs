@@ -4,7 +4,7 @@ using System.Configuration;
 using System.Linq;
 using System.Windows;
 
-namespace rdfEditor
+namespace VDS.RDF.Utilities.Editor
 {
     /// <summary>
     /// Interaction logic for App.xaml

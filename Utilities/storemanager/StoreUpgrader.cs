@@ -38,7 +38,7 @@ using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Storage;
 
-namespace dotNetRDFStore
+namespace VDS.RDF.Utilities.StoreManager
 {
     public class StoreUpgrader
     {

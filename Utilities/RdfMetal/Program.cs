@@ -9,7 +9,7 @@ using System.Linq;
  * 
  * -i -n http://purl.org/ontology/mo/ -o "C:\shared.datastore\repository\personal\dev\projects\semantic-web\LinqToRdf.Prototypes\TestHarness\mo.cs" -m "C:\shared.datastore\repository\personal\dev\projects\semantic-web\LinqToRdf.Prototypes\TestHarness\meta.xml"
  * */
-namespace rdfMetal
+namespace VDS.RDF.Utilities.Linq.Metal
 {
     internal class Program
     {

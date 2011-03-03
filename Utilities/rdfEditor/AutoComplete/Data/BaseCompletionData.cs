@@ -7,7 +7,7 @@ using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Editing;
 
-namespace rdfEditor.AutoComplete.Data
+namespace VDS.RDF.Utilities.Editor.AutoComplete.Data
 {
     public abstract class BaseCompletionData : ICompletionData, IComparable<ICompletionData>, IComparable, IEquatable<ICompletionData>
     {

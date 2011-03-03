@@ -53,9 +53,9 @@
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="virtado3, Version=6.1.3127.2, Culture=neutral, PublicKeyToken=391bf132017ae989, processorArchitecture=MSIL">
+    <Reference Include="OpenLink.Data.Virtuoso, Version=6.2.3128.1, Culture=neutral, PublicKeyToken=6654f6917d07cb95, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Dependencies\virtado3.dll</HintPath>
+      <HintPath>..\..\Dependencies\OpenLink.Data.Virtuoso.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

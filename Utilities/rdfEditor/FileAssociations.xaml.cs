@@ -14,7 +14,7 @@ using System.Windows.Shapes;
 using BrendanGrant.Helpers.FileAssociation;
 using VDS.RDF;
 
-namespace rdfEditor
+namespace VDS.RDF.Utilities.Editor
 {
     /// <summary>
     /// Interaction logic for FileAssociations.xaml

@@ -32,7 +32,7 @@ using System;
 using System.Threading;
 using System.Windows.Forms;
 
-namespace dotNetRDFStore
+namespace VDS.RDF.Utilities.StoreManager
 {
     public partial class fclsPleaseWait : Form
     {

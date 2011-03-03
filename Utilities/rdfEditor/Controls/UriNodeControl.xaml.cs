@@ -15,7 +15,7 @@ using System.Windows.Shapes;
 using VDS.RDF;
 using VDS.RDF.Writing.Formatting;
 
-namespace rdfEditor.Controls
+namespace VDS.RDF.Utilities.Editor.Controls
 {
     /// <summary>
     /// Interaction logic for UriNodeControl.xaml

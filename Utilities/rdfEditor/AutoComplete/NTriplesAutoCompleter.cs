@@ -11,9 +11,9 @@ using ICSharpCode.AvalonEdit.Editing;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing;
-using rdfEditor.AutoComplete.Data;
+using VDS.RDF.Utilities.Editor.AutoComplete.Data;
 
-namespace rdfEditor.AutoComplete
+namespace VDS.RDF.Utilities.Editor.AutoComplete
 {
     public class NTriplesAutoCompleter : BaseAutoCompleter
     {

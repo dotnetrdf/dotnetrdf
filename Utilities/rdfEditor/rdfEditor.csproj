@@ -8,7 +8,7 @@
     <ProjectGuid>{F8006AE8-6107-4297-9E19-C2E55303FCC6}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>rdfEditor</RootNamespace>
+    <RootNamespace>VDS.RDF.Utilities.Editor</RootNamespace>
     <AssemblyName>rdfEditor</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

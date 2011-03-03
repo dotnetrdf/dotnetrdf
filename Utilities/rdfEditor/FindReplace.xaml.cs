@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using ICSharpCode.AvalonEdit;
 
-namespace rdfEditor
+namespace VDS.RDF.Utilities.Editor
 {
     public enum FindReplaceMode
     {

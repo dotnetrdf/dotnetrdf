@@ -8,6 +8,8 @@
   <!-- Disable Building and Compiling Options -->
   <property name="dotnetrdf.nobuild" value="" />
   <property name="dotnetrdf.nocompile" value="" />
+  <property name="dotnetrdf.nosilverlight" value="" />
+  <property name="dotnetrdf.nowindowsphone" value="${dotnetrdf.nosilverlight}" />
 
   <!-- Set the Compiler Warnings we want to ignore -->
   <property name="dotnetrdf.nowarn" value="1591;0067" />
@@ -34,7 +36,7 @@
   
   <!-- Project Generation Targets which generate some Project Files from others -->
 
-  <target name="projectgen-silverlight" description="Generates the dotNetRDF Silverlight build project file" depends="compile-buildtools">
+  <target name="projectgen-silverlight" description="Generates the dotNetRDF Silverlight build project file" depends="compile-buildtools" unless="${dotnetrdf.nosilverlight}">
     <!-- This exec task syncs the Silverlight project file with the Core Library -->
     <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
       <arg value="Libraries/core/dotNetRDF.csproj" />
@@ -43,7 +45,7 @@
     </exec>    
   </target>
 
-  <target name="projectgen-windowsphone" description="Generates the dotNetRDF Windows Phone build project file" depends="projectgen-silverlight">
+  <target name="projectgen-windowsphone" description="Generates the dotNetRDF Windows Phone build project file" depends="projectgen-silverlight" unless="${dotnetrdf.nowindowsphone}">
     <!-- This exec task syncs the Windows Phone project file with the Core Library -->
     <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
       <arg value="Libraries/core/dotNetRDF.csproj" />
@@ -152,7 +154,7 @@
     </exec>
   </target>
 
-  <target name="compile-windowsphone" description="Compile the dotNetRDF Windows Phone Build"  unless="${dotnetrdf.nocompile}" depends="projectgen-windowsphone">
+  <target name="compile-windowsphone" description="Compile the dotNetRDF Windows Phone Build"  unless="${dotnetrdf.nocompile}" if="${not dotnetrdf.nowindowsphone}" depends="projectgen-windowsphone">
     <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <property name="msBuild.exe" value="${string::replace(msBuild.exe,'Framework64','Framework')}" if="${string::contains(msBuild.exe, 'Framework64')}" />
@@ -225,7 +227,7 @@
     <copy overwrite="true" todir="../bin/silverlight-nightly" file="Libraries/silverlight/bin/Debug/Newtonsoft.Json.Silverlight.xml" />
   </target>
 
-  <target name="build-windowsphone" description="Copy the latest Windows Phone build to the Windows Phone Nightly Build directory" unless="${dotnetrdf.nobuild}"  depends="compile-windowsphone">
+  <target name="build-windowsphone" description="Copy the latest Windows Phone build to the Windows Phone Nightly Build directory" unless="${dotnetrdf.nobuild}" if="${not dotnetrdf.nowindowsphone}"  depends="compile-windowsphone">
     <copy overwrite="true" todir="../bin/windowsphone-nightly" file="Libraries/windowsphone/bin/Debug/dotNetRDF.WindowsPhone.dll" />
     <copy overwrite="true" todir="../bin/windowsphone-nightly" file="Libraries/windowsphone/bin/Debug/dotNetRDF.WindowsPhone.xml" />
     <copy overwrite="true" todir="../bin/windowsphone-nightly" file="Libraries/windowsphone/bin/Debug/HtmlAgilityPack.WindowsPhone.dll" />
@@ -296,13 +298,18 @@
   </target>
 
   <target name="clean-solution" description="Clean the Solution" depends="clean-nightly,clean-silverlight,clean-lite,clean-mono">
-    <delete dir="Libraries/compact/bin" />
-    <delete dir="Libraries/interop/bin" />
+    <delete dir="Libraries/interop.intellidimension/bin" />
+    <delete dir="Libraries/interop.jena/bin" />
+    <delete dir="Libraries/interop.semweb/bin" />
+    <delete dir="Libraries/interop.sesame/bin" />
     <delete dir="Libraries/linkeddata/bin" />
+    <delete dir="Libraries/dotNetRDF.WinForms/bin" />
     <delete dir="Samples/sparqldemo/bin" />
     <delete dir="Samples/virtuoso/bin" />
     <delete dir="Samples/WebDemos/bin" />
     <delete dir="Testing/Compatability/bin" />
+    <delete dir="Testing/linq-tests/bin" />
+    <delete dir="Testing/sesame-test/bin" />
     <delete dir="Testing/testsuite/bin" />
     <delete dir="Testing/unittest/bin" />
     <delete dir="Utilities/AllegroGraphIndexer/bin" />
@@ -310,42 +317,73 @@
     <delete dir="Utilities/parsergui/bin" />
     <delete dir="Utilities/rdfConvert/bin" />
     <delete dir="Utilities/rdfEditor/bin" />
+    <delete dir="Utilities/rdfMetal/bin" />
     <delete dir="Utilities/rdfQuery/bin" />
     <delete dir="Utilities/rdfWebDeploy/bin" />
+    <delete dir="Utilities/soh/bin" />
     <delete dir="Utilities/SparqlGUI/bin" />
     <delete dir="Utilities/storemanager/bin" />
   </target>
 
   <target name="clean-nightly" description="Clean existing Nightly Build">
-    <delete dir="../bin/nightly" />
+    <delete>
+      <fileset basedir="../bin/nightly">
+        <include name="*" />
+      </fileset>
+    </delete>
     <delete dir="Libraries/core/bin" />
   </target>
 
   <target name="clean-silverlight" description="Clean existing Silverlight Nightly Build">
-    <delete dir="../bin/silverlight-nightly" />
+    <delete>
+      <fileset basedir="../bin/silverlight-nightly">
+        <include name="*" />
+      </fileset>
+    </delete>
     <delete dir="Libraries/silverlight/bin" />
   </target>
 
   <target name="clean-windowsphone" description="Clean existing Silverlight Nightly Build">
+    <delete>
+      <fileset basedir="../bin/windowsphone-nightly">
+        <include name="*" />
+      </fileset>
+    </delete>
     <delete dir="Libraries/windowsphone/bin" />
   </target>
 
   <target name="clean-lite" description="Clean existing Lite Nightly Build">
-    <delete dir="../bin/lite-nightly" />
+    <delete>
+      <fileset basedir="../bin/lite-nightly">
+        <include name="*" />
+      </fileset>
+    </delete>
     <delete dir="Libraries/lite/bin" />
   </target>
 
   <target name="clean-mono" description="Clean existing Mono Nightly Build">
-    <delete dir="../bin/mono-nightly" />
+    <delete>
+      <fileset basedir="../bin/mono-nightly">
+        <include name="*" />
+      </fileset>
+    </delete>
   </target>
 
   <target name="clean-release" description="Clean existing Stable Build">
-    <delete dir="../bin/stable" />
+    <delete>
+      <fileset basedir="../bin/stable">
+        <include name="*" />
+      </fileset>
+    </delete>
     <delete dir="Libraries/core/bin" />
   </target>
 
   <target name="clean-linq" description="Clean existing Linq Nightly Build">
-    <delete dir="../bin/linq-nightly" />
+    <delete>
+      <fileset basedir="../bin/linq-nightly">
+        <include name="*" />
+      </fileset>
+    </delete>
     <delete dir="Libraries/linq/bin" />
   </target>
 

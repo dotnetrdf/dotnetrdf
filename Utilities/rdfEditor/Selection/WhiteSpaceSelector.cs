@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace rdfEditor.Selection
+namespace VDS.RDF.Utilities.Editor.Selection
 {
     public class WhiteSpaceSelector : DefaultSelector
     {

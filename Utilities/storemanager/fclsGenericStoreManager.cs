@@ -44,7 +44,7 @@ using VDS.RDF.Storage.Params;
 using VDS.RDF.Update;
 using VDS.RDF.Writing;
 
-namespace dotNetRDFStore
+namespace VDS.RDF.Utilities.StoreManager
 {
     public partial class fclsGenericStoreManager : CrossThreadForm
     {
