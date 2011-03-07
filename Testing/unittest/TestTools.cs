@@ -85,9 +85,9 @@ namespace VDS.RDF.Test
 
         public static void ShowResults(Object results)
         {
-            if (results is Graph)
+            if (results is IGraph)
             {
-                ShowGraph((Graph)results);
+                ShowGraph((IGraph)results);
             }
             else if (results is SparqlResultSet)
             {
