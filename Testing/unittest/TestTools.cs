@@ -30,7 +30,7 @@ namespace VDS.RDF.Test
             }
         }
 
-        public static void CompareNodes(UriNode a, UriNode b, bool expectEquality)
+        public static void CompareNodes(IUriNode a, IUriNode b, bool expectEquality)
         {
             Console.WriteLine("URI Node A has String form: " + a.ToString());
             Console.WriteLine("URI Node B has String form: " + b.ToString());
