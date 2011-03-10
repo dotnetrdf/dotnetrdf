@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.IO;
 using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -30,7 +31,11 @@ namespace VDS.RDF.Test
             }
         }
 
+#if BRANCH
         public static void CompareNodes(IUriNode a, IUriNode b, bool expectEquality)
+#else
+        public static void CompareNodes(UriNode a, UriNode b, bool expectEquality)
+#endif
         {
             Console.WriteLine("URI Node A has String form: " + a.ToString());
             Console.WriteLine("URI Node B has String form: " + b.ToString());
@@ -185,6 +190,14 @@ namespace VDS.RDF.Test
         public static void WarningPrinter(String message)
         {
             Console.WriteLine(message);
+        }
+
+        public static void TestInMTAThread(ThreadStart info)
+        {
+            Thread t = new Thread(info);
+            t.SetApartmentState(ApartmentState.MTA);
+            t.Start();
+            t.Join();
         }
     }
 }
