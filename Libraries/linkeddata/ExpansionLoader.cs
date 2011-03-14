@@ -173,12 +173,10 @@ namespace VDS.RDF.LinkedData
                 if (context.Store.HasGraph(u.Uri)) continue;
 
                 //Try and retrieve RDF from the next URI
+                Graph g = new Graph();
                 try
                 {
-                    Graph g = new Graph();
                     UriLoader.Load(g, u.Uri);
-
-                    ExpandGraph(u, g, context);
                 }
                 catch (RdfException rdfEx)
                 {
@@ -190,6 +188,8 @@ namespace VDS.RDF.LinkedData
                     //Ignore
                     this.DebugErrors("Error: Tried to expand URI <" + u.Uri.ToString() + "> but a HTTP Error occurred", webEx); 
                 }
+
+                ExpandGraph(u, g, context);
 
                 //If we've got any URIs to expand and we're not already multi-threading then spawn some
                 //threads to share out the work
@@ -215,7 +215,7 @@ namespace VDS.RDF.LinkedData
         private void ExpandGraph(UriToExpand u, IGraph g, ExpansionContext context)
         {
             //Can ignore empty Graphs
-            if (g.IsEmpty) return;
+            //if (g.IsEmpty) return;
 
             //If the Graph with the Base URI doesn't already exist we add it to the store
             if (context.Store.HasGraph(g.BaseUri)) return;
