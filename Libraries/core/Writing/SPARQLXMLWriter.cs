@@ -297,12 +297,13 @@ namespace VDS.RDF.Writing
                     {
                         if (r.HasValue(var))
                         {
+                            INode n = r.Value(var);
+                            if (n == null) continue; //NULLs don't get serialized in the XML Format
+
                             //<binding> Element
                             writer.WriteStartElement("binding");
                             writer.WriteAttributeString("name", var);
 
-                            INode n = r.Value(var);
-                            if (n == null) continue; //NULLs don't get serialized in the XML Format
                             switch (n.NodeType)
                             {
                                 case NodeType.Blank:

@@ -7,6 +7,7 @@ using System.Net;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF;
 using VDS.RDF.Parsing;
+using VDS.RDF.Query;
 using VDS.RDF.Writing;
 
 namespace VDS.RDF.Test.Parsing
@@ -505,6 +506,14 @@ namespace VDS.RDF.Test.Parsing
             FileLoader.Load(h, "ttl-without-bom.ttl");
 
             Assert.AreEqual(g, h, "Graphs should be equal as presence (or lack thereof) of UTF-8 BOM should make no difference");
+        }
+
+        [TestMethod, ExpectedException(typeof(RdfParseException))]
+        public void ParsingMalformedSparqlXml()
+        {
+            SparqlResultSet results = new SparqlResultSet();
+            SparqlXmlParser parser = new SparqlXmlParser();
+            parser.Load(results, "bad_srx.srx");
         }
     }
 }
