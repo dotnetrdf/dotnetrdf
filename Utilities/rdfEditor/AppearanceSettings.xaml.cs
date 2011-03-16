@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -64,6 +65,11 @@ namespace VDS.RDF.Utilities.Editor
             this.fontSizeSlider.Value = 13;
             this.txtEditorFontColor.Text = "#FF000000";
             this.txtEditorBackColor.Text = "#FFFFFFFF";
+
+        }
+
+        private void lnkAdvancedSettings_Click(object sender, RoutedEventArgs e)
+        {
 
         }
     }
