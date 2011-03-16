@@ -256,6 +256,39 @@ namespace VDS.RDF.Query.Spin
             INode p = g.CreateBlankNode();
             INode ps = p;
 
+            if (pattern.IsExists)
+            {
+
+            }
+            else if (pattern.IsGraph)
+            {
+                g.Assert(new Triple(p, g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType)), g.CreateUriNode(new Uri(SpinClassOptional))));
+            }
+            else if (pattern.IsMinus)
+            {
+
+            }
+            else if (pattern.IsNotExists)
+            {
+
+            }
+            else if (pattern.IsOptional)
+            {
+                g.Assert(new Triple(p, g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType)), g.CreateUriNode(new Uri(SpinClassOptional))));
+            }
+            else if (pattern.IsService)
+            {
+
+            }
+            else if (pattern.IsSubQuery)
+            {
+
+            }
+            else if (pattern.IsUnion)
+            {
+
+            }
+
             INode rdfFirst = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfListFirst));
             INode rdfRest = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfListRest));
             INode rdfNil = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfListNil));

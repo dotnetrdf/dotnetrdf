@@ -38,9 +38,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\..\..\Trunk\Testing\unittest\TestTools.cs">
+      <Link>TestTools.cs</Link>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SpinSparqlSyntaxTests.cs" />
-    <Compile Include="TestTools.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\Trunk\Libraries\core\dotNetRDF.csproj">
@@ -52,6 +54,83 @@
       <Name>dotNetRDF.Spin</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\..\Dependencies\jena\antlr-2.7.5.jar">
+      <Link>lib\antlr-2.7.5.jar</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Dependencies\jena\arq-extra.jar">
+      <Link>lib\arq-extra.jar</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Dependencies\jena\arq.jar">
+      <Link>lib\arq.jar</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Dependencies\jena\commons-logging-1.1.1.jar">
+      <Link>lib\commons-logging-1.1.1.jar</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Dependencies\jena\concurrent.jar">
+      <Link>lib\concurrent.jar</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Dependencies\jena\icu4j_3_4.jar">
+      <Link>lib\icu4j_3_4.jar</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Dependencies\jena\iri.jar">
+      <Link>lib\iri.jar</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Dependencies\jena\jena.jar">
+      <Link>lib\jena.jar</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Dependencies\jena\jenatest.jar">
+      <Link>lib\jenatest.jar</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Dependencies\jena\json.jar">
+      <Link>lib\json.jar</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Dependencies\jena\junit.jar">
+      <Link>lib\junit.jar</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Dependencies\jena\log4j-1.2.12.jar">
+      <Link>lib\log4j-1.2.12.jar</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Dependencies\jena\lucene-core-2.3.1.jar">
+      <Link>lib\lucene-core-2.3.1.jar</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Dependencies\jena\stax-api-1.0.jar">
+      <Link>lib\stax-api-1.0.jar</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Dependencies\jena\wstx-asl-3.0.0.jar">
+      <Link>lib\wstx-asl-3.0.0.jar</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Dependencies\jena\xercesImpl.jar">
+      <Link>lib\xercesImpl.jar</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Dependencies\jena\xml-apis.jar">
+      <Link>lib\xml-apis.jar</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Dependencies\spinrdf-1.1.2.jar">
+      <Link>spinrdf-1.1.2.jar</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SpinGenerator.java">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
@@ -60,4 +139,7 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <PropertyGroup>
+    <PostBuildEvent>javac -classpath lib/*;spinrdf-1.1.2.jar SpinGenerator.java</PostBuildEvent>
+  </PropertyGroup>
 </Project>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -21,27 +22,28 @@ namespace VDS.RDF.Test.Spin
         private IGraph GetSpinRdf(SparqlQuery q)
         {
             SparqlFormatter formatter = new SparqlFormatter();
+            String query = formatter.Format(q);
 
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(SpinToRdfServiceUri + Uri.EscapeDataString(formatter.Format(q)));
-            request.Method = "GET";
-            request.Accept = MimeTypesHelper.HttpAcceptHeader;
+            //Invoke a process to generate TopBraid SPIN using their java SPIN API implementation
+            ProcessStartInfo info = new ProcessStartInfo();
+            info.FileName = "java";
+            info.Arguments = "-classpath lib/*;spinrdf-1.1.2.jar;. SpinGenerator \"" + query.Replace("\"", "\\\"") + "\"";
+            info.RedirectStandardOutput = true;
+            info.CreateNoWindow = true;
+            info.UseShellExecute = false;
+
+            Process p = new Process();
+            p.StartInfo = info;
+            p.Start();
+            using (StreamWriter writer = new StreamWriter("topbraid-spin.ttl", false, Encoding.UTF8))
+            {
+                writer.Write(p.StandardOutput.ReadToEnd());
+                writer.Close();
+            }
+            p.WaitForExit();
 
             Graph g = new Graph();
-            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
-            {
-                if (response.ContentType == null || response.ContentType.Equals(String.Empty))
-                {
-                    Notation3Parser n3parser = new Notation3Parser();
-                    n3parser.Load(g, new StreamReader(response.GetResponseStream()));
-                }
-                else
-                {
-                    IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
-                    parser.Load(g, new StreamReader(response.GetResponseStream()));
-                }
-                response.Close();
-            }
-
+            g.LoadFromFile("topbraid-spin.ttl");
             return g;
         }
 
@@ -107,6 +109,37 @@ namespace VDS.RDF.Test.Spin
         public void SpinSparqlSyntaxSelect3()
         {
             String query = "SELECT * WHERE {  ?s ?p ?o  {?x ?y ?z } }";
+            SparqlQueryParser parser = new SparqlQueryParser();
+            SparqlQuery q = parser.ParseFromString(query);
+
+            this.CompareSpinRdf(q);
+        }
+
+        [TestMethod]
+        public void SpinSparqlSyntaxSelect4()
+        {
+            String query = "SELECT * WHERE {  ?s ?p ?o  OPTIONAL {?x ?y ?z } }";
+            SparqlQueryParser parser = new SparqlQueryParser();
+            SparqlQuery q = parser.ParseFromString(query);
+
+            this.CompareSpinRdf(q);
+        }
+
+        [TestMethod]
+        public void SpinSparqlSyntaxSelect5()
+        {
+            String query = "SELECT * WHERE {  ?s ?p ?o  GRAPH <http://example.org/graph> {?x ?y ?z } }";
+            SparqlQueryParser parser = new SparqlQueryParser();
+            SparqlQuery q = parser.ParseFromString(query);
+
+            this.CompareSpinRdf(q);
+        }
+
+
+        [TestMethod]
+        public void SpinSparqlSyntaxSelect6()
+        {
+            String query = "SELECT * WHERE {  ?s ?p ?o  GRAPH ?g {?x ?y ?z } }";
             SparqlQueryParser parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(query);
 
