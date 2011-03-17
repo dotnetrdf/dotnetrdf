@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Parsing;
+using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Query.Aggregates;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Filters;
@@ -14,7 +15,7 @@ using VDS.RDF.Query.Patterns;
 namespace VDS.RDF.Query.Spin
 {
     /// <summary>
-    /// Static class containing Extension Methods used to serialize SPARQL Queries into the SPIN SPARQL Syntax
+    /// Static class containing Extension Methods used to serialize SPARQL Queries into the SPIN RDF Syntax
     /// </summary>
     public static class SpinSyntax
     {
@@ -34,6 +35,7 @@ namespace VDS.RDF.Query.Spin
                             SpinClassElement = SpinSparqlSyntaxNamespace + "Element",
                             SpinClassElementGroup = SpinClassElement + "Group",
                             SpinClassElementList = SpinClassElement + "List",
+                            SpinClassExists = SpinSparqlSyntaxNamespace + "Exists",
                             SpinClassFilter = SpinSparqlSyntaxNamespace + "Filter",
                             SpinClassInsert = SpinSparqlSyntaxNamespace + "Insert",
                             SpinClassLet = SpinSparqlSyntaxNamespace + "Let",
@@ -111,7 +113,7 @@ namespace VDS.RDF.Query.Spin
             return g;            
         }
 
-        public static INode ToSpinRdf(this SparqlQuery query, IGraph g)
+        internal static INode ToSpinRdf(this SparqlQuery query, IGraph g)
         {
             INode root = g.CreateBlankNode();
             INode rdfType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
@@ -133,7 +135,7 @@ namespace VDS.RDF.Query.Spin
 
                 case SparqlQueryType.Describe:
                 case SparqlQueryType.DescribeAll:
-                    throw new SpinException("DESCRIBE queries cannot be represented in SPIN SPARQL Syntax");
+                    throw new SpinException("DESCRIBE queries cannot be represented in SPIN RDF Syntax");
 
                 case SparqlQueryType.Select:
                 case SparqlQueryType.SelectAll:
@@ -144,7 +146,7 @@ namespace VDS.RDF.Query.Spin
                     g.Assert(root, rdfType, g.CreateUriNode(new Uri(SpinClassSelect)));
                     break;
                 case SparqlQueryType.Unknown:
-                    throw new SpinException("Unknown query types cannot be represented in SPIN SPARQL Syntax");
+                    throw new SpinException("Unknown query types cannot be represented in SPIN RDF Syntax");
             }
 
             //Process the WHERE clause
@@ -241,52 +243,70 @@ namespace VDS.RDF.Query.Spin
             //Add GROUP BY and HAVING
             if (query.GroupBy != null)
             {
-                throw new SpinException("GROUP BY clauses are not yet representable in SPIN SPARQL Syntax");
+                throw new SpinException("GROUP BY clauses are not yet representable in SPIN RDF Syntax");
             }
             if (query.Having != null)
             {
-                throw new SpinException("HAVING clauses are not yet representable in SPIN SPARQL Syntax");
+                throw new SpinException("HAVING clauses are not yet representable in SPIN RDF Syntax");
             }
 
             return root;
         }
 
-        static INode ToSpinRdf(this GraphPattern pattern, IGraph g, SpinVariableTable varTable)
+        internal static INode ToSpinRdf(this GraphPattern pattern, IGraph g, SpinVariableTable varTable)
         {
             INode p = g.CreateBlankNode();
             INode ps = p;
 
             if (pattern.IsExists)
             {
-
+                g.Assert(new Triple(p, g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType)), g.CreateUriNode(new Uri(SpinClassExists))));
+                ps = g.CreateBlankNode();
+                g.Assert(new Triple(p, g.CreateUriNode(new Uri(SpinPropertyElements)), ps));
             }
             else if (pattern.IsGraph)
             {
-                g.Assert(new Triple(p, g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType)), g.CreateUriNode(new Uri(SpinClassOptional))));
+                g.Assert(new Triple(p, g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType)), g.CreateUriNode(new Uri(SpinClassNamedGraph))));
+                g.Assert(new Triple(p, g.CreateUriNode(new Uri(SpinPropertyGraphNameNode)), pattern.GraphSpecifier.ToSpinRdf(g, varTable)));
+                ps = g.CreateBlankNode();
+                g.Assert(new Triple(p, g.CreateUriNode(new Uri(SpinPropertyElements)), ps));
             }
             else if (pattern.IsMinus)
             {
-
+                g.Assert(new Triple(p, g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType)), g.CreateUriNode(new Uri(SpinClassMinus))));
+                ps = g.CreateBlankNode();
+                g.Assert(new Triple(p, g.CreateUriNode(new Uri(SpinPropertyElements)), ps));
             }
             else if (pattern.IsNotExists)
             {
-
+                g.Assert(new Triple(p, g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType)), g.CreateUriNode(new Uri(SpinClassNotExists))));
+                ps = g.CreateBlankNode();
+                g.Assert(new Triple(p, g.CreateUriNode(new Uri(SpinPropertyElements)), ps));
             }
             else if (pattern.IsOptional)
             {
                 g.Assert(new Triple(p, g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType)), g.CreateUriNode(new Uri(SpinClassOptional))));
+                ps = g.CreateBlankNode();
+                g.Assert(new Triple(p, g.CreateUriNode(new Uri(SpinPropertyElements)), ps));
             }
             else if (pattern.IsService)
             {
-
+                g.Assert(new Triple(p, g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType)), g.CreateUriNode(new Uri(SpinClassService))));
+                g.Assert(new Triple(p, g.CreateUriNode(new Uri(SpinPropertyServiceUri)), pattern.GraphSpecifier.ToSpinRdf(g, varTable)));
+                ps = g.CreateBlankNode();
+                g.Assert(new Triple(p, g.CreateUriNode(new Uri(SpinPropertyElements)), ps));
             }
             else if (pattern.IsSubQuery)
             {
-
+                g.Assert(new Triple(p, g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType)), g.CreateUriNode(new Uri(SpinClassSubQuery))));
+                ps = g.CreateBlankNode();
+                g.Assert(new Triple(p, g.CreateUriNode(new Uri(SpinPropertyQuery)), ps));
             }
             else if (pattern.IsUnion)
             {
-
+                g.Assert(new Triple(p, g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType)), g.CreateUriNode(new Uri(SpinClassUnion))));
+                ps = g.CreateBlankNode();
+                g.Assert(new Triple(p, g.CreateUriNode(new Uri(SpinPropertyElements)), ps));
             }
 
             INode rdfFirst = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfListFirst));
@@ -342,7 +362,7 @@ namespace VDS.RDF.Query.Spin
             return p;
         }
 
-        static INode ToSpinRdf(this ITriplePattern pattern, IGraph g, SpinVariableTable varTable)
+        internal static INode ToSpinRdf(this ITriplePattern pattern, IGraph g, SpinVariableTable varTable)
         {
             INode p = g.CreateBlankNode();
             INode rdfType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
@@ -383,13 +403,13 @@ namespace VDS.RDF.Query.Spin
             }
             else if (pattern is BindPattern)
             {
-                throw new SpinException("SPARQL 1.1 BINDs are not representable in SPIN SPARQL Syntax");
+                throw new SpinException("SPARQL 1.1 BINDs are not representable in SPIN RDF Syntax");
             }
 
             return p;
         }
 
-        static INode ToSpinRdf(this PatternItem item, IGraph g, SpinVariableTable varTable)
+        internal static INode ToSpinRdf(this PatternItem item, IGraph g, SpinVariableTable varTable)
         {
             INode i;
             UriNode varName = g.CreateUriNode(new Uri(SpinPropertyVariableName));
@@ -410,17 +430,17 @@ namespace VDS.RDF.Query.Spin
             }
             else if (item is FixedBlankNodePattern)
             {
-                throw new SpinException("Skolem Blank Node syntax extension is not representable in SPIN SPARQL Syntax");
+                throw new SpinException("Skolem Blank Node syntax extension is not representable in SPIN RDF Syntax");
             }
             else
             {
-                throw new SpinException("Unknown Pattern Items are not representable in SPIN SPARQL Syntax");
+                throw new SpinException("Unknown Pattern Items are not representable in SPIN RDF Syntax");
             }
 
-            return i;
+            return i.CopyNode(g);
         }
 
-        static INode ToSpinRdf(this ISparqlAggregate aggregate, IGraph g, SpinVariableTable varTable)
+        internal static INode ToSpinRdf(this ISparqlAggregate aggregate, IGraph g, SpinVariableTable varTable)
         {
             INode a = g.CreateBlankNode();
             INode rdfType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
@@ -447,11 +467,11 @@ namespace VDS.RDF.Query.Spin
             }
             else if (aggregate is GroupConcatAggregate)
             {
-                throw new SpinException("GROUP_CONCAT aggregates are not yet representable in SPIN SPARQL Syntax");
+                throw new SpinException("GROUP_CONCAT aggregates are not yet representable in SPIN RDF Syntax");
             }
             else if (aggregate is SampleAggregate)
             {
-                throw new SpinException("SAMPLE aggregates are not yet representable in SPIN SPARQL Syntax");
+                throw new SpinException("SAMPLE aggregates are not yet representable in SPIN RDF Syntax");
             }
 
             g.Assert(a, g.CreateUriNode(new Uri(SpinPropertyExpression)), aggregate.Expression.ToSpinRdf(g, varTable));
@@ -459,14 +479,14 @@ namespace VDS.RDF.Query.Spin
             return a;
         }
 
-        static INode ToSpinRdf(this ISparqlExpression expr, IGraph g, SpinVariableTable varTable)
+        internal static INode ToSpinRdf(this ISparqlExpression expr, IGraph g, SpinVariableTable varTable)
         {
             INode e = g.CreateBlankNode();
 
             return e;
         }
 
-        static INode ToSpinRdf(this ISparqlOrderBy ordering, IGraph g, SpinVariableTable varTable)
+        internal static INode ToSpinRdf(this ISparqlOrderBy ordering, IGraph g, SpinVariableTable varTable)
         {
             INode o = g.CreateBlankNode();
 
@@ -497,15 +517,29 @@ namespace VDS.RDF.Query.Spin
             return o;
         }
 
-        static INode ToSpinRdf(this ISparqlPath path, IGraph g, SpinVariableTable varTable)
+        internal static INode ToSpinRdf(this ISparqlPath path, IGraph g, SpinVariableTable varTable)
         {
             INode p = g.CreateBlankNode();
 
             return p;
         }
+
+        internal static INode ToSpinRdf(this IToken t, IGraph g, SpinVariableTable varTable)
+        {
+            switch (t.TokenType)
+            {
+                case Token.QNAME:
+                case Token.URI:
+                    return ParserHelper.TryResolveUri(g, t);
+                case Token.VARIABLE:
+                    return varTable[t.Value];
+                default:
+                    throw new SpinException("Unable to convert a Graph/Service Specifier which is not a QName/URI/Variable to SPIN RDF Syntax");
+            }
+        }
     }
 
-    class SpinVariableTable
+    internal class SpinVariableTable
     {
         private Dictionary<String, INode> _vars = new Dictionary<string, INode>();
         private IGraph _g;
