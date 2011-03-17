@@ -231,6 +231,7 @@ namespace VDS.RDF.Writing
                 for (int i = 0; i < ts.Count; i++)
                 {
                     Triple t = ts[i];
+
                     if (lastSubj == null || !t.Subject.Equals(lastSubj))
                     {
                         //Terminate previous Triples
