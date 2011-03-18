@@ -37,6 +37,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rdfServerGUI", "Utilities\r
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VDS.Web.Server", "Libraries\httpserver\VDS.Web.Server.csproj", "{EEDC2947-D637-4A46-BFBC-BB64BAEC4500}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "adostore", "Libraries\adostore\adostore.csproj", "{9E1D685E-4E8F-4A9D-B073-51FF6C8D8661}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = dotNetRDF.Experimental1.vsmdi
@@ -98,6 +100,10 @@ Global
 		{EEDC2947-D637-4A46-BFBC-BB64BAEC4500}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EEDC2947-D637-4A46-BFBC-BB64BAEC4500}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EEDC2947-D637-4A46-BFBC-BB64BAEC4500}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9E1D685E-4E8F-4A9D-B073-51FF6C8D8661}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E1D685E-4E8F-4A9D-B073-51FF6C8D8661}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E1D685E-4E8F-4A9D-B073-51FF6C8D8661}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E1D685E-4E8F-4A9D-B073-51FF6C8D8661}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
