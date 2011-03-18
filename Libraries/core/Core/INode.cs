@@ -68,7 +68,7 @@ namespace VDS.RDF
         /// <summary>
         /// A Variable Node (currently only used in N3)
         /// </summary>
-        Variable
+        Variable = 4
     }
 
     /// <summary>
