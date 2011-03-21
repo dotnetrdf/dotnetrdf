@@ -182,13 +182,19 @@ namespace VDS.RDF.Storage
             }
 
             //Node Type Parameter
-            if (!cmd.Parameters.Contains(prefix + "Type")) cmd.Parameters.Add(this.GetParameter(prefix + "Type"));
-            cmd.Parameters[prefix + "Type"].DbType = DbType.Byte;
+            if (!cmd.Parameters.Contains(prefix + "Type"))
+            {
+                cmd.Parameters.Add(this.GetParameter(prefix + "Type"));
+                cmd.Parameters[prefix + "Type"].DbType = DbType.Byte;
+            }
             cmd.Parameters[prefix + "Type"].Value = (byte)n.NodeType;
 
             //Node Value Parameter
-            if (!cmd.Parameters.Contains(prefix + "Value")) cmd.Parameters.Add(this.GetParameter(prefix + "Value"));
-            cmd.Parameters[prefix + "Value"].DbType = DbType.String;
+            if (!cmd.Parameters.Contains(prefix + "Value"))
+            {
+                cmd.Parameters.Add(this.GetParameter(prefix + "Value"));
+                cmd.Parameters[prefix + "Value"].DbType = DbType.String;
+            }
             switch (n.NodeType)
             {
                 case NodeType.Blank:
@@ -210,14 +216,20 @@ namespace VDS.RDF.Storage
                 LiteralNode lit = (LiteralNode)n;
                 if (lit.DataType != null)
                 {
-                    if (!cmd.Parameters.Contains(prefix + "Meta")) cmd.Parameters.Add(this.GetParameter(prefix + "Meta"));
-                    cmd.Parameters[prefix + "Meta"].DbType = DbType.String;
+                    if (!cmd.Parameters.Contains(prefix + "Meta"))
+                    {
+                        cmd.Parameters.Add(this.GetParameter(prefix + "Meta"));
+                        cmd.Parameters[prefix + "Meta"].DbType = DbType.String;
+                    }
                     cmd.Parameters[prefix + "Meta"].Value = lit.DataType.ToString();
                 }
                 else if (!lit.Language.Equals(String.Empty))
                 {
-                    if (!cmd.Parameters.Contains(prefix + "Meta")) cmd.Parameters.Add(this.GetParameter(prefix + "Meta"));
-                    cmd.Parameters[prefix + "Meta"].DbType = DbType.String;
+                    if (!cmd.Parameters.Contains(prefix + "Meta"))
+                    {
+                        cmd.Parameters.Add(this.GetParameter(prefix + "Meta"));
+                        cmd.Parameters[prefix + "Meta"].DbType = DbType.String;
+                    }
                     cmd.Parameters[prefix + "Meta"].Value = "@" + lit.Language;
                 }
                 else
@@ -229,6 +241,30 @@ namespace VDS.RDF.Storage
             {
                 if (cmd.Parameters.Contains(prefix + "Meta")) cmd.Parameters.RemoveAt(prefix + "Meta");
             }
+        }
+
+        internal void EncodeNodeID(TCommand cmd, AdoStoreNodeID id, TripleSegment segment)
+        {
+            String prefix = "node";
+            switch (segment)
+            {
+                case TripleSegment.Subject:
+                    prefix = "subject";
+                    break;
+                case TripleSegment.Predicate:
+                    prefix = "predicate";
+                    break;
+                case TripleSegment.Object:
+                    prefix = "object";
+                    break;
+            }
+
+            if (!cmd.Parameters.Contains(prefix + "ID"))
+            {
+                cmd.Parameters.Add(this.GetParameter(prefix + "ID"));
+                cmd.Parameters[prefix + "ID"].DbType = DbType.Int32;
+            }
+            cmd.Parameters[prefix + "ID"].Value = id.ID;
         }
 
         internal INode DecodeNode(IGraph g, byte type, String value, String meta)
@@ -420,21 +456,60 @@ namespace VDS.RDF.Storage
                 cmd.Parameters["graphID"].Value = id;
                 cmd.ExecuteNonQuery();
 
+                //Command for inserting Nodes
+                TCommand nodeCmd = this.GetCommand();
+                nodeCmd.CommandType = CommandType.StoredProcedure;
+                nodeCmd.CommandText = "GetOrCreateNodeID";
+                nodeCmd.Connection = this._connection;
+                nodeCmd.Parameters.Add(this.GetParameter("RC"));
+                nodeCmd.Parameters["RC"].DbType = DbType.Int32;
+                nodeCmd.Parameters["RC"].Direction = ParameterDirection.ReturnValue;
+
                 //Then we can insert the triples
                 cmd = this.GetCommand();
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.CommandText = "AssertQuadData";
+                cmd.CommandText = "AssertQuad";
                 cmd.Connection = this._connection;
                 cmd.Parameters.Add(this.GetParameter("graphID"));
                 cmd.Parameters["graphID"].DbType = DbType.Int32;
                 cmd.Parameters["graphID"].Value = id;
 
+                AdoStoreWriteCache cache = new AdoStoreWriteCache();
+
+                AdoStoreNodeID s, p, o;
                 foreach (Triple t in g.Triples)
                 {
-                    this.EncodeNode(cmd, t.Subject, TripleSegment.Subject);
-                    this.EncodeNode(cmd, t.Predicate, TripleSegment.Predicate);
-                    this.EncodeNode(cmd, t.Object, TripleSegment.Object);
+                    s = cache.GetNodeID(t.Subject);
+                    if (s.ID <= 0)
+                    {
+                        this.EncodeNode(nodeCmd, t.Subject);
+                        nodeCmd.ExecuteNonQuery();
+                        s.ID = (int)nodeCmd.Parameters["RC"].Value;
+                        cache.AddNodeID(s);
+                    }
+                    p = cache.GetNodeID(t.Predicate);
+                    if (p.ID <= 0)
+                    {
+                        this.EncodeNode(nodeCmd, t.Predicate);
+                        nodeCmd.ExecuteNonQuery();
+                        p.ID = (int)nodeCmd.Parameters["RC"].Value;
+                        cache.AddNodeID(p);
+                    }
+                    o = cache.GetNodeID(t.Object);
+                    if (o.ID <= 0)
+                    {
+                        this.EncodeNode(nodeCmd, t.Object);
+                        nodeCmd.ExecuteNonQuery();
+                        o.ID = (int)nodeCmd.Parameters["RC"].Value;
+                        cache.AddNodeID(o);
+                    }
+                    //this.EncodeNode(cmd, t.Subject, TripleSegment.Subject);
+                    //this.EncodeNode(cmd, t.Predicate, TripleSegment.Predicate);
+                    //this.EncodeNode(cmd, t.Object, TripleSegment.Object);
 
+                    this.EncodeNodeID(cmd, s, TripleSegment.Subject);
+                    this.EncodeNodeID(cmd, p, TripleSegment.Predicate);
+                    this.EncodeNodeID(cmd, o, TripleSegment.Object);
                     cmd.ExecuteNonQuery();
                 }
             }

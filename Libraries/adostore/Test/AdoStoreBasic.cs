@@ -141,5 +141,35 @@ namespace VDS.RDF.Test.Storage
 
             Assert.AreEqual(g, h, "Graphs should be equal");
         }
+
+        [TestMethod]
+        public void StorageAdoStoreSaveGraph3()
+        {
+            Graph g = new Graph();
+            g.BaseUri = new Uri("http://example.org/adoStore/savedGraph");
+            g.LoadFromFile("dataset_250.ttl");
+            Console.WriteLine("BSBM Graph has " + g.Triples.Count);
+            Debug.WriteLine("BSBM Graph has " + g.Triples.Count);
+
+            MicrosoftAdoManager manager = new MicrosoftAdoManager("adostore", "example", "password");
+            Stopwatch timer = new Stopwatch();
+            timer.Start();
+            manager.SaveGraph(g);
+            timer.Stop();
+
+            Console.WriteLine("Write Time - " + timer.Elapsed);
+            Debug.WriteLine("Write Time - " + timer.Elapsed);
+
+            Graph h = new Graph();
+            timer.Reset();
+            timer.Start();
+            manager.LoadGraph(h, g.BaseUri);
+            timer.Stop();
+
+            Console.WriteLine("Read Time - " + timer.Elapsed);
+            Debug.WriteLine("Read Time - " + timer.Elapsed);
+
+            Assert.AreEqual(g, h, "Graphs should be equal");
+        }
     }
 }

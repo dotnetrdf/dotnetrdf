@@ -40,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AdoStoreWriteCache.cs" />
     <Compile Include="BaseAdoStoreManager.cs" />
     <Compile Include="MicrosoftAdoManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -50,6 +51,11 @@
       <Project>{BFBAC159-1E60-4D03-8ACA-D34E31EB83BF}</Project>
       <Name>dotNetRDF</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="resources\dataset_250.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
