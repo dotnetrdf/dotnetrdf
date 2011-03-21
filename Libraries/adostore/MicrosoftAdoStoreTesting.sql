@@ -37,6 +37,40 @@ PRINT 'Created Object ID: ' + Str(@o1);
 EXEC @o2 = GetOrCreateNodeID 2, N'Bonjour', '@fr';
 PRINT 'Created Object ID: ' + Str(@o2);
 
+DECLARE @longStr nvarchar(MAX);
+SET @longStr = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+='
+DECLARE @longStr2 nvarchar(MAX);
+SET @longStr2 = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789%='
+
+DECLARE @str nvarchar(MAX) = '';
+DECLARE @i int = 0;
+WHILE @i < 10
+  BEGIN
+    SET @str = @str + @longStr;
+    SET @i = @i + 1;
+  END
+PRINT 'Length of @str is ' + STR(LEN(@str));
+
+DECLARE @oStr int;
+EXEC @oStr = GetOrCreateNodeID 2, @str, NULL;
+PRINT 'Created Node ID ' + Str(@oStr);
+EXEC @oStr = GetNodeID 2, @str, NULL;
+PRINT 'Retrieved Node ID ' + Str(@oStr);
+
+SET @i = 0;
+SET @str = '';
+WHILE @i < 10
+  BEGIN
+    SET @str = @str + @longStr2;
+    SET @i = @i + 1;
+  END
+PRINT 'Length of @str is ' + STR(LEN(@str));
+
+EXEC @oStr = GetOrCreateNodeID 2, @str, NULL;
+PRINT 'Created Node ID ' + Str(@oStr);
+EXEC @oStr = GetNodeID 2, @str, NULL;
+PRINT 'Retrieved Node ID ' + Str(@oStr);
+
 PRINT '';
 
 -- Assert Quads Tests

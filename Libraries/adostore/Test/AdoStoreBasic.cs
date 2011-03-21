@@ -48,7 +48,7 @@ namespace VDS.RDF.Test.Storage
         }
 
         [TestMethod]
-        public void StorageAdoStoreLoadGraph()
+        public void StorageAdoMicrosoftLoadGraph()
         {
             MicrosoftAdoManager manager = new MicrosoftAdoManager("adostore", "example", "password");
             Graph g = new Graph();
@@ -66,7 +66,7 @@ namespace VDS.RDF.Test.Storage
         }
 
         [TestMethod]
-        public void StorageAdoStoreLoadGraph2()
+        public void StorageAdoMicrosoftLoadGraph2()
         {
             MicrosoftAdoManager manager = new MicrosoftAdoManager("adostore", "example", "password");
             Graph g = new Graph();
@@ -85,7 +85,7 @@ namespace VDS.RDF.Test.Storage
         }
 
         [TestMethod]
-        public void StorageAdoStoreSaveGraph()
+        public void StorageAdoMicrosoftSaveGraph()
         {
             Graph g = new Graph();
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
@@ -112,7 +112,7 @@ namespace VDS.RDF.Test.Storage
         }
 
         [TestMethod]
-        public void StorageAdoStoreSaveGraph2()
+        public void StorageAdoMicrosoftSaveGraph2()
         {
             Graph g = new Graph();
             g.BaseUri = new Uri("http://example.org/adoStore/savedGraph");
@@ -143,7 +143,7 @@ namespace VDS.RDF.Test.Storage
         }
 
         [TestMethod]
-        public void StorageAdoStoreSaveGraph3()
+        public void StorageAdoMicrosoftSaveGraph3()
         {
             Graph g = new Graph();
             g.BaseUri = new Uri("http://example.org/adoStore/savedGraph");
@@ -170,6 +170,8 @@ namespace VDS.RDF.Test.Storage
             Debug.WriteLine("Read Time - " + timer.Elapsed);
 
             Assert.AreEqual(g, h, "Graphs should be equal");
+
+            manager.Dispose();
         }
     }
 }

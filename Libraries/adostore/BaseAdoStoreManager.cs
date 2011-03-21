@@ -382,7 +382,7 @@ namespace VDS.RDF.Storage
 
                 cmd = this.GetCommand();
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.CommandText = "GetQuadsData";
+                cmd.CommandText = "GetGraphQuadsData";
                 cmd.Connection = this._connection;
                 cmd.Parameters.Add(this.GetParameter("graphID"));
                 cmd.Parameters["graphID"].DbType = DbType.Int32;
@@ -469,6 +469,7 @@ namespace VDS.RDF.Storage
                 cmd = this.GetCommand();
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.CommandText = "AssertQuad";
+                //cmd.CommandText = "AssertQuadData";
                 cmd.Connection = this._connection;
                 cmd.Parameters.Add(this.GetParameter("graphID"));
                 cmd.Parameters["graphID"].DbType = DbType.Int32;
@@ -503,6 +504,7 @@ namespace VDS.RDF.Storage
                         o.ID = (int)nodeCmd.Parameters["RC"].Value;
                         cache.AddNodeID(o);
                     }
+
                     //this.EncodeNode(cmd, t.Subject, TripleSegment.Subject);
                     //this.EncodeNode(cmd, t.Predicate, TripleSegment.Predicate);
                     //this.EncodeNode(cmd, t.Object, TripleSegment.Object);

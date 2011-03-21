@@ -320,23 +320,97 @@ BEGIN
 	EXEC RetractQuad @s, @p, @o, @graphID;
 END
 
--- GetQuads
+-- GetGraphQuads
 GO
-CREATE PROCEDURE GetQuads @graphID int
+CREATE PROCEDURE GetGraphQuads @graphID int
 AS
 BEGIN
   SET NOCOUNT ON;
   SELECT subjectID, predicateID, objectID FROM QUADS WHERE graphID=@graphID;
 END
 
--- GetQuadsData
+-- GetGraphQuadsData
 GO
-CREATE PROCEDURE GetQuadsData @graphID int
+CREATE PROCEDURE GetGraphQuadsData @graphID int
 AS
 BEGIN
   SET NOCOUNT ON;
   SELECT subjectType, subjectValue, subjectMeta, predicateType, predicateValue, predicateMeta, objectType, objectValue, objectMeta
   FROM QUAD_DATA WHERE graphID=@graphID;
+END
+
+-- GetQuads
+GO
+CREATE PROCEDURE GetQuads
+AS
+BEGIN
+  SET NOCOUNT ON;
+  SELECT subjectID, predicateID, objectID, graphID FROM QUADS;
+END
+
+-- GetQuadsData
+GO
+CREATE PROCEDURE GetQuadsData
+AS
+BEGIN
+  SET NOCOUNT ON;
+  SELECT subjectType, subjectValue, subjectMeta, predicateType, predicateValue, predicateMeta, objectType, objectValue, objectMeta
+  FROM QUAD_DATA;
+END
+
+-- GetQuadsWithSubject
+GO
+CREATE PROCEDURE GetQuadsWithSubject @subjectID int
+AS
+BEGIN
+	SET NOCOUNT ON;
+	SELECT predicateID, objectID, graphID FROM QUADS WHERE subjectID=@subjectID;
+END
+
+-- GetQuadsWithPredicate
+GO
+CREATE PROCEDURE GetQuadsWithPredicate @predicateID int
+AS
+BEGIN
+	SET NOCOUNT ON;
+	SELECT subjectID, objectID, graphID FROM QUADS WHERE predicateID=@predicateID;
+END
+
+-- GetQuadsWithObject
+GO
+CREATE PROCEDURE GetQuadsWithObject @objectID int
+AS
+BEGIN
+	SET NOCOUNT ON;
+	SELECT subjectID, predicateID, graphID FROM QUADS WHERE objectID=@objectID;
+END
+
+-- GetQuadsWithSubjectPredicate
+
+GO
+CREATE PROCEDURE GetQuadsWithSubjectPredicate @subjectID int, @predicateID int
+AS
+BEGIN
+	SET NOCOUNT ON;
+	SELECT objectID, graphID FROM QUADS WHERE subjectID=@subjectID AND predicateID=@predicateID;
+END
+
+-- GetQuadsWithSubjectObject
+GO
+CREATE PROCEDURE GetQuadsWithSubjectObject @subjectID int, @objectID int
+AS
+BEGIN
+	SET NOCOUNT ON;
+	SELECT predicateID, graphID FROM QUADS WHERE subjectID=@subjectID AND objectID=@objectID;
+END
+
+-- GetQuadsWithPredicateObject
+GO
+CREATE PROCEDURE GetQuadsWithPredicateObject @predicateID int, @objectID int
+AS
+BEGIN
+	SET NOCOUNT ON;
+	SELECT subjectID, graphID FROM QUADS WHERE predicateID=@predicateID AND objectID=@objectID;
 END
 
 -- End of Stored Procedure Creation
@@ -375,22 +449,36 @@ GRANT SELECT ON QUAD_DATA TO rdf_readwrite;
 -- Grant Stored Procedures permissions to roles
 
 GRANT EXECUTE ON GetVersion TO rdf_readwrite, rdf_readinsert, rdf_readonly;
+
 GRANT EXECUTE ON GetGraphID TO rdf_readwrite, rdf_readinsert, rdf_readonly;
 GRANT EXECUTE ON GetOrCreateGraphID TO rdf_readwrite, rdf_readinsert;
 GRANT EXECUTE ON ClearGraph TO rdf_readwrite, rdf_readinsert;
 GRANT EXECUTE ON ClearGraph TO rdf_readwrite, rdf_readinsert;
 GRANT EXECUTE ON DeleteGraph TO rdf_readwrite;
 GRANT EXECUTE ON DeleteGraphByUri TO rdf_readwrite;
+
 GRANT EXECUTE ON GetNodeID TO rdf_readwrite, rdf_readinsert, rdf_readonly;
 GRANT EXECUTE ON GetOrCreateNodeID TO rdf_readwrite, rdf_readinsert;
+
 GRANT EXECUTE ON HasQuad TO rdf_readwrite, rdf_readinsert, rdf_readonly;
 GRANT EXECUTE ON HasQuadData TO rdf_readwrite, rdf_readinsert, rdf_readonly;
 GRANT EXECUTE ON AssertQuad TO rdf_readwrite, rdf_readinsert;
 GRANT EXECUTE ON AssertQuadData TO rdf_readwrite, rdf_readinsert;
 GRANT EXECUTE ON RetractQuad TO rdf_readwrite;
 GRANT EXECUTE ON RetractQuadData TO rdf_readwrite;
+
 GRANT EXECUTE ON GetQuads TO rdf_readwrite, rdf_readinsert, rdf_readonly;
 GRANT EXECUTE ON GetQuadsData TO rdf_readwrite, rdf_readinsert, rdf_readonly;
+
+GRANT EXECUTE ON GetGraphQuads TO rdf_readwrite, rdf_readinsert, rdf_readonly;
+GRANT EXECUTE ON GetGraphQuadsData TO rdf_readwrite, rdf_readinsert, rdf_readonly;
+
+GRANT EXECUTE ON GetQuadsWithSubject TO rdf_readwrite, rdf_readinsert, rdf_readonly;
+GRANT EXECUTE ON GetQuadsWithPredicate TO rdf_readwrite, rdf_readinsert, rdf_readonly;
+GRANT EXECUTE ON GetQuadsWithObject TO rdf_readwrite, rdf_readinsert, rdf_readonly;
+GRANT EXECUTE ON GetQuadsWithSubjectPredicate TO rdf_readwrite, rdf_readinsert, rdf_readonly;
+GRANT EXECUTE ON GetQuadsWithSubjectObject TO rdf_readwrite, rdf_readinsert, rdf_readonly;
+GRANT EXECUTE ON GetQuadsWithPredicateObject TO rdf_readwrite, rdf_readinsert, rdf_readonly;
 
 -- TEMP - Grant rdf_readwrite role to example user for testing
 
