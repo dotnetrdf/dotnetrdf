@@ -116,7 +116,7 @@ namespace VDS.RDF.Test.Storage
         {
             Graph g = new Graph();
             g.BaseUri = new Uri("http://example.org/adoStore/savedGraph");
-            for (int i = 1; i < 50000; i++)
+            for (int i = 1; i <= 25000; i++)
             {
                 INode n = g.CreateUriNode(new Uri("http://example.org/" + i));
                 g.Assert(n, n, n);
@@ -132,13 +132,12 @@ namespace VDS.RDF.Test.Storage
             Console.WriteLine("Write Time - " + timer.Elapsed);
 
             Graph h = new Graph();
+            timer.Reset();
+            timer.Start();
             manager.LoadGraph(h, g.BaseUri);
+            timer.Stop();
 
-            NTriplesFormatter formatter = new NTriplesFormatter();
-            foreach (Triple t in h.Triples)
-            {
-                Console.WriteLine(t.ToString(formatter));
-            }
+            Console.WriteLine("Read Time - " + timer.Elapsed);
 
             Assert.AreEqual(g, h, "Graphs should be equal");
         }
