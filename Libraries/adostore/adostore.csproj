@@ -40,6 +40,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\..\..\Trunk\Testing\unittest\TestTools.cs">
+      <Link>TestTools.cs</Link>
+    </Compile>
     <Compile Include="AdoStoreWriteCache.cs" />
     <Compile Include="BaseAdoStoreManager.cs" />
     <Compile Include="MicrosoftAdoManager.cs" />

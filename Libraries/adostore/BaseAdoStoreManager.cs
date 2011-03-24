@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using VDS.RDF;
 using VDS.RDF.Writing;
 
@@ -469,7 +471,6 @@ namespace VDS.RDF.Storage
                 cmd = this.GetCommand();
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.CommandText = "AssertQuad";
-                //cmd.CommandText = "AssertQuadData";
                 cmd.Connection = this._connection;
                 cmd.Parameters.Add(this.GetParameter("graphID"));
                 cmd.Parameters["graphID"].DbType = DbType.Int32;
@@ -480,6 +481,7 @@ namespace VDS.RDF.Storage
                 AdoStoreNodeID s, p, o;
                 foreach (Triple t in g.Triples)
                 {
+                    //Get/Create Node ID for each Node
                     s = cache.GetNodeID(t.Subject);
                     if (s.ID <= 0)
                     {
@@ -504,10 +506,6 @@ namespace VDS.RDF.Storage
                         o.ID = (int)nodeCmd.Parameters["RC"].Value;
                         cache.AddNodeID(o);
                     }
-
-                    //this.EncodeNode(cmd, t.Subject, TripleSegment.Subject);
-                    //this.EncodeNode(cmd, t.Predicate, TripleSegment.Predicate);
-                    //this.EncodeNode(cmd, t.Object, TripleSegment.Object);
 
                     this.EncodeNodeID(cmd, s, TripleSegment.Subject);
                     this.EncodeNodeID(cmd, p, TripleSegment.Predicate);
