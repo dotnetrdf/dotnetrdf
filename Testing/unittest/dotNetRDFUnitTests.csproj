@@ -134,6 +134,7 @@
     <Compile Include="Storage\FusekiTest.cs" />
     <Compile Include="Storage\SesameTests.cs" />
     <Compile Include="EventTests.cs" />
+    <Compile Include="Web\ConnegTests.cs" />
     <Compile Include="Writing\FormattingTests.cs" />
     <Compile Include="Interop\JenaInteropTests.cs" />
     <Compile Include="PelletTests.cs" />

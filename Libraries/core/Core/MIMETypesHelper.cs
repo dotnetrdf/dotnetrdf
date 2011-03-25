@@ -856,9 +856,9 @@ namespace VDS.RDF
                 }
             }
 
-            //Default to HTML Output
-            contentType = MimeTypesHelper.Html[0];
-            return new SparqlHtmlWriter();
+            //Default to SPARQL XML Output
+            contentType = MimeTypesHelper.SparqlXml[0];
+            return new SparqlXmlWriter();
         }
 
         /// <summary>
