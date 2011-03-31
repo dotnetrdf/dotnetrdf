@@ -208,7 +208,7 @@ namespace VDS.RDF.Utilities.StoreManager
                         if (!Directory.Exists("results")) Directory.CreateDirectory("results");
                         if (!File.Exists("results\\sparql.css")) 
                         {
-                            StreamReader reader = new StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream("dotNetRDFStore.sparql.css"));
+                            StreamReader reader = new StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream("VDS.RDF.Utilities.StoreManager.sparql.css"));
                             String css = reader.ReadToEnd();
                             reader.Close();
                             StreamWriter csswriter = new StreamWriter("results\\sparql.css");

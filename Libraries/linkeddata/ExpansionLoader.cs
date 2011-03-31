@@ -219,7 +219,7 @@ namespace VDS.RDF.LinkedData
 
             //If the Graph with the Base URI doesn't already exist we add it to the store
             if (context.Store.HasGraph(g.BaseUri)) return;
-            context.Store.Add(g);
+            context.Store.Add(g, true);
 
             //If it didn't already exist we find URIs to expand upon from this Graph
             this.FindExpandableUris(u, g, context);
