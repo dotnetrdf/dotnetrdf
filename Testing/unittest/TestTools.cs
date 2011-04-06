@@ -194,10 +194,17 @@ namespace VDS.RDF.Test
 
         public static void TestInMTAThread(ThreadStart info)
         {
-            Thread t = new Thread(info);
-            t.SetApartmentState(ApartmentState.MTA);
-            t.Start();
-            t.Join();
+            try
+            {
+                Thread t = new Thread(info);
+                t.SetApartmentState(ApartmentState.MTA);
+                t.Start();
+                t.Join();
+            }
+            catch (Exception ex)
+            {
+                TestTools.ReportError("Error", ex, true);
+            }
         }
     }
 }
