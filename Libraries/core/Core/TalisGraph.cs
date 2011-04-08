@@ -48,9 +48,10 @@ namespace VDS.RDF
     /// A Graph which represents the description that an underlying Talis store has of a given Uri from the Metabox or a Private Graph
     /// </summary>
     /// <remarks>
-    /// Any Changes to this Graph locally are persisted to the Talis platform using a Background Thread, if a process using this class terminates unexpectedly some changes may be lost.
+    /// Any Changes to this Graph locally are persisted to the Talis platform whenever the Graph is disposed or the <see cref="TalisGraph.Flush">Flush()</see> method is called.  Alternatively the <see cref="TalisGraph.Discard">Discard()</see> method may be called to discard the changes that have yet to be persisted
     /// </remarks>
-    public class TalisGraph : BackgroundPersistedGraph, IDisposable
+    [Obsolete("TalisGraph is considered obsolete, use the more general StoreGraphPersistenceWrapper instead", false)]
+    public class TalisGraph : StoreGraphPersistenceWrapper
     {
         private TalisPlatformConnector _talis;
         private String _privateGraphID = String.Empty;
@@ -62,13 +63,8 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="resourceUri">Uri of resource to retrieve a Description of</param>
         /// <param name="connector">Connection to a Talis Store</param>
-        public TalisGraph(String resourceUri, TalisPlatformConnector connector) 
-            : base()
-        {
-            this._talis = connector;
-            this._talis.Describe(this, resourceUri);
-            this.Intialise();
-        }
+        public TalisGraph(String resourceUri, TalisPlatformConnector connector)
+            : this(new Uri(resourceUri), connector) { }
 
         /// <summary>
         /// Creates a new instance of a Talis Graph which contains the description of the given Uri from the given underlying Talis Store
@@ -76,7 +72,10 @@ namespace VDS.RDF
         /// <param name="resourceUri">Uri of resource to retrieve a Description of</param>
         /// <param name="connector">Connection to a Talis Store</param>
         public TalisGraph(Uri resourceUri, TalisPlatformConnector connector)
-            : this(resourceUri.ToString(), connector) { }
+            : base(connector, resourceUri)
+        {
+            this._talis = connector;
+        }
 
         /// <summary>
         /// Creates a new instance of a Talis Graph which contains the description of the given Uri from the given underlying Talis Store
@@ -98,96 +97,7 @@ namespace VDS.RDF
         public TalisGraph(Uri resourceUri, String storeName, String username, String password)
             : this(resourceUri.ToString(), new TalisPlatformConnector(storeName, username, password)) { }
 
-        /// <summary>
-        /// Creates a new instance of a Talis Graph which represents the description of a Resource from one of the Private Graphs from the underlying Talis Store
-        /// </summary>
-        /// <param name="privateGraphID">Private Graph</param>
-        /// <param name="connector">Connection to a Talis Store</param>
-        /// <param name="resourceUri">Uri of the Resource to Describe</param>
-        public TalisGraph(String privateGraphID, String resourceUri, TalisPlatformConnector connector) 
-            : base()
-        {
-            this._talis = connector;
-            this._privateGraphID = privateGraphID;
-            this._talis.Describe(this, privateGraphID, resourceUri);
-            this.Intialise();
-        }
-
-        /// <summary>
-        /// Creates a new instance of a Talis Graph which represents the description of a Resource from one of the Private Graphs from the underlying Talis Store
-        /// </summary>
-        /// <param name="privateGraphID">Private Graph</param>
-        /// <param name="resourceUri">Uri of the Resource to Describe</param>
-        /// <param name="storeName">Name of the Talis Store</param>
-        /// <param name="username">Username for the Talis Store</param>
-        /// <param name="password">Password for the Talis Store</param>
-        public TalisGraph(String privateGraphID, String resourceUri, String storeName, String username, String password) 
-            : this(privateGraphID, resourceUri, new TalisPlatformConnector(storeName, username, password)) { }
-
-        /// <summary>
-        /// Creates a new instance of a Talis Graph which represents the description of a Resource from one of the Private Graphs from the underlying Talis Store
-        /// </summary>
-        /// <param name="privateGraphID">Private Graph</param>
-        /// <param name="connector">Connection to a Talis Store</param>
-        /// <param name="resourceUri">Uri of the Resource to Describe</param>
-        public TalisGraph(String privateGraphID, Uri resourceUri, TalisPlatformConnector connector) 
-            : this(privateGraphID, resourceUri.ToString(), connector) { }
-
-        /// <summary>
-        /// Creates a new instance of a Talis Graph which represents the description of a Resource from one of the Private Graphs from the underlying Talis Store
-        /// </summary>
-        /// <param name="privateGraphID">Private Graph</param>
-        /// <param name="resourceUri">Uri of the Resource to Describe</param>
-        /// <param name="storeName">Name of the Talis Store</param>
-        /// <param name="username">Username for the Talis Store</param>
-        /// <param name="password">Password for the Talis Store</param>
-        public TalisGraph(String privateGraphID, Uri resourceUri, String storeName, String username, String password)
-            : this(privateGraphID, resourceUri, new TalisPlatformConnector(storeName, username, password)) { }
-
         #endregion
-
-        /// <summary>
-        /// Persists the Change Buffers to the Talis Store using the Talis Platform Connector
-        /// </summary>
-        protected override void UpdateStore()
-        {
-            //Make the Update
-            TalisUpdateResult result;
-            if (this._privateGraphID.Equals(String.Empty))
-            {
-                result = this._talis.Update(this._addedTriplesBuffer, this._removedTriplesBuffer);
-            }
-            else
-            {
-                result = this._talis.Update(this._privateGraphID, this._addedTriplesBuffer, this._removedTriplesBuffer);
-            }
-
-            //Handle the Result
-            switch (result)
-            {
-                case TalisUpdateResult.Asynchronous:
-                case TalisUpdateResult.Synchronous:
-                case TalisUpdateResult.NotRequired:
-                case TalisUpdateResult.Done:
-                    //We're OK
-                    break;
-                case TalisUpdateResult.Unknown:
-                default:
-                    //Something went wrong
-                    throw new TalisException("An Unknown Result was received while trying to Update the Talis Store");
-            }
-        }
- 
-        /// <summary>
-        /// Disposes of a Talis Graph
-        /// </summary>
-        public override void Dispose()
-        {
-            //Dispose of the Base Class first which will force the Change Buffers to be persisted
-            base.Dispose();
-            //Then dispose of the Connector as this will be necessary for our Persistence to work
-            this._talis.Dispose();
-        }
     }
 }
 

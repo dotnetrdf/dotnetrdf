@@ -182,7 +182,7 @@ namespace VDS.RDF.Query.Algebra
                         if (context.InputMultiset.IsDisjointWith(context.OutputMultiset))
                         {
                             //Disjoint so do a Product
-                            context.OutputMultiset = context.InputMultiset.Product(context.OutputMultiset);
+                            context.OutputMultiset = context.InputMultiset.ProductWithTimeout(context.OutputMultiset, context.RemainingTimeout);
                         }
                         else
                         {

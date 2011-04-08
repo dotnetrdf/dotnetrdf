@@ -125,6 +125,14 @@ namespace VDS.RDF.Query.Patterns
             }
         }
 
+        public override bool UsesDefaultDataset
+        {
+            get
+            {
+                return this._filter.Expression.UsesDefaultDataset();
+            }
+        }
+
         /// <summary>
         /// Returns the string representation of the Pattern
         /// </summary>

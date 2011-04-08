@@ -48,21 +48,60 @@ namespace VDS.RDF.Query.Datasets
         /// <summary>
         /// Reference to the Active Graph being used for executing a SPARQL Query
         /// </summary>
-        protected IGraph _activeGraph = null;
+        private readonly ThreadSafeReference<IGraph> _activeGraph;
         /// <summary>
         /// Default Graph for executing SPARQL Queries against
         /// </summary>
-        protected IGraph _defaultGraph = null;
+        private readonly ThreadSafeReference<IGraph> _defaultGraph;
         /// <summary>
         /// Stack of Default Graph References used for executing a SPARQL Query when a Query may choose to change the Default Graph from the Dataset defined one
         /// </summary>
-        protected Stack<IGraph> _defaultGraphs = new Stack<IGraph>();
+        private readonly ThreadSafeReference<Stack<IGraph>> _defaultGraphs;
         /// <summary>
         /// Stack of Active Graph References used for executing a SPARQL Query when there are nested GRAPH Clauses
         /// </summary>
-        protected Stack<IGraph> _activeGraphs = new Stack<IGraph>();
+        private readonly ThreadSafeReference<Stack<IGraph>> _activeGraphs;
 
-        private bool _unionDefaultGraph = true;
+        private readonly bool _unionDefaultGraph = true;
+        private readonly Uri _defaultGraphUri;
+
+        public BaseDataset()
+        {
+            this._activeGraph = new ThreadSafeReference<IGraph>();
+            this._defaultGraph = new ThreadSafeReference<IGraph>(this.InitDefaultGraph);
+            this._defaultGraphs = new ThreadSafeReference<Stack<IGraph>>(this.InitGraphStack);
+            this._activeGraphs = new ThreadSafeReference<Stack<IGraph>>(this.InitGraphStack);
+        }
+
+        public BaseDataset(bool unionDefaultGraph)
+            : this()
+        {
+            this._unionDefaultGraph = unionDefaultGraph;
+        }
+
+        public BaseDataset(Uri defaultGraphUri)
+            : this()
+        {
+            this._unionDefaultGraph = false;
+            this._defaultGraphUri = defaultGraphUri;
+        }
+
+        private IGraph InitDefaultGraph()
+        {
+            if (this._unionDefaultGraph)
+            {
+                return null;
+            }
+            else
+            {
+                return this.GetGraphInternal(this._defaultGraphUri);
+            }
+        }
+
+        private Stack<IGraph> InitGraphStack()
+        {
+            return new Stack<IGraph>();
+        }
 
         #region Active and Default Graph Management
 
@@ -72,8 +111,8 @@ namespace VDS.RDF.Query.Datasets
         /// <param name="g"></param>
         public void SetDefaultGraph(IGraph g)
         {
-            this._defaultGraphs.Push(this._defaultGraph);
-            this._defaultGraph = g;
+            this._defaultGraphs.Value.Push(this._defaultGraph.Value);
+            this._defaultGraph.Value = g;
         }
 
         /// <summary>
@@ -82,8 +121,8 @@ namespace VDS.RDF.Query.Datasets
         /// <param name="g">Active Graph</param>
         public void SetActiveGraph(IGraph g)
         {
-            this._activeGraphs.Push(this._activeGraph);
-            this._activeGraph = g;
+            this._activeGraphs.Value.Push(this._activeGraph.Value);
+            this._activeGraph.Value = g;
         }
 
         /// <summary>
@@ -99,22 +138,22 @@ namespace VDS.RDF.Query.Datasets
             {
                 //Change the Active Graph so that the query operates over the default graph
                 //If the default graph is null then it operates over the entire dataset
-                this._activeGraphs.Push(this._activeGraph);
-                this._activeGraph = this._defaultGraph;
+                this._activeGraphs.Value.Push(this._activeGraph.Value);
+                this._activeGraph.Value = this._defaultGraph.Value;
             }
             else if (this.HasGraph(graphUri))
             {
                 //Push current Active Graph on the Stack
-                this._activeGraphs.Push(this._activeGraph);
+                this._activeGraphs.Value.Push(this._activeGraph.Value);
 
                 //Set the new Active Graph
-                this._activeGraph = this[graphUri];
+                this._activeGraph.Value = this[graphUri];
             }
             else
             {
                 //Active Graph is an empty Graph in the case where the Graph is not present in the Dataset
-                this._activeGraphs.Push(this._activeGraph);
-                this._activeGraph = new Graph();
+                this._activeGraphs.Value.Push(this._activeGraph.Value);
+                this._activeGraph.Value = new Graph();
             }
         }
 
@@ -148,10 +187,10 @@ namespace VDS.RDF.Query.Datasets
                 }
 
                 //Push current Active Graph on the Stack
-                this._activeGraphs.Push(this._activeGraph);
+                this._activeGraphs.Value.Push(this._activeGraph.Value);
 
                 //Set the new Active Graph
-                this._activeGraph = g;
+                this._activeGraph.Value = g;
             }
         }
 
@@ -160,9 +199,9 @@ namespace VDS.RDF.Query.Datasets
         /// </summary>
         public void ResetActiveGraph()
         {
-            if (this._activeGraphs.Count > 0)
+            if (this._activeGraphs.Value.Count > 0)
             {
-                this._activeGraph = this._activeGraphs.Pop();
+                this._activeGraph.Value = this._activeGraphs.Value.Pop();
             }
             else
             {
@@ -175,9 +214,9 @@ namespace VDS.RDF.Query.Datasets
         /// </summary>
         public void ResetDefaultGraph()
         {
-            if (this._defaultGraphs.Count > 0)
+            if (this._defaultGraphs.Value.Count > 0)
             {
-                this._defaultGraph = this._defaultGraphs.Pop();
+                this._defaultGraph.Value = this._defaultGraphs.Value.Pop();
             }
             else
             {
@@ -192,7 +231,7 @@ namespace VDS.RDF.Query.Datasets
         {
             get
             {
-                return this._defaultGraph;
+                return this._defaultGraph.Value;
             }
         }
 
@@ -203,7 +242,7 @@ namespace VDS.RDF.Query.Datasets
         {
             get
             {
-                return this._activeGraph;
+                return this._activeGraph.Value;
             }
         }
 
@@ -216,13 +255,11 @@ namespace VDS.RDF.Query.Datasets
             {
                 return this._unionDefaultGraph;
             }
-            protected set
-            {
-                this._unionDefaultGraph = value;
-            }
         }
 
         #endregion
+
+        #region General Implementation
 
         /// <summary>
         /// Adds a Graph to the Dataset
@@ -234,14 +271,52 @@ namespace VDS.RDF.Query.Datasets
         /// Removes a Graph from the Dataset
         /// </summary>
         /// <param name="graphUri">Graph URI</param>
-        public abstract void RemoveGraph(Uri graphUri);
+        public virtual void RemoveGraph(Uri graphUri)
+        {
+            if (graphUri == null || graphUri.ToSafeString().Equals(GraphCollection.DefaultGraphUri))
+            {
+                if (this._defaultGraph != null)
+                {
+                    this._defaultGraph.Value.Clear();
+                }
+                else if (this.HasGraph(graphUri))
+                {
+                    this.RemoveGraphInternal(graphUri);
+                }
+            }
+            else if (this.HasGraph(graphUri))
+            {
+                this.RemoveGraphInternal(graphUri);
+            }
+        }
+
+        protected abstract void RemoveGraphInternal(Uri graphUri);
 
         /// <summary>
         /// Gets whether a Graph with the given URI is the Dataset
         /// </summary>
         /// <param name="graphUri">Graph URI</param>
         /// <returns></returns>
-        public abstract bool HasGraph(Uri graphUri);
+        public bool HasGraph(Uri graphUri)
+        {
+            if (graphUri == null || graphUri.ToSafeString().Equals(GraphCollection.DefaultGraphUri))
+            {
+                if (this._defaultGraph != null)
+                {
+                    return true;
+                }
+                else
+                {
+                    return this.HasGraphInternal(null);
+                }
+            }
+            else
+            {
+                return this.HasGraphInternal(graphUri);
+            }
+        }
+
+        protected abstract bool HasGraphInternal(Uri graphUri);
 
         /// <summary>
         /// Gets all the Graphs in the Dataset
@@ -269,10 +344,29 @@ namespace VDS.RDF.Query.Datasets
         /// This property need only return a read-only view of the Graph, code which wishes to modify Graphs should use the <see cref="ISparqlDataset.GetModifiableGraph">GetModifiableGraph()</see> method to guarantee a Graph they can modify and will be persisted to the underlying storage
         /// </para>
         /// </remarks>
-        public abstract IGraph this[Uri graphUri]
+        public virtual IGraph this[Uri graphUri]
         {
-            get;
+            get
+            {
+                if (graphUri == null || graphUri.ToSafeString().Equals(GraphCollection.DefaultGraphUri))
+                {
+                    if (this._defaultGraph != null)
+                    {
+                        return this._defaultGraph.Value;
+                    }
+                    else
+                    {
+                        return this.GetGraphInternal(null);
+                    }
+                }
+                else
+                {
+                    return this.GetGraphInternal(graphUri);
+                }
+            }
         }
+
+        protected abstract IGraph GetGraphInternal(Uri graphUri);
 
         /// <summary>
         /// Gets the Graph with the given URI from the Dataset
@@ -284,10 +378,7 @@ namespace VDS.RDF.Query.Datasets
         /// Graphs returned from this method must be modifiable and the Dataset must guarantee that when it is Flushed or Disposed of that any changes to the Graph are persisted
         /// </para>
         /// </remarks>
-        public virtual IGraph GetModifiableGraph(Uri graphUri)
-        {
-            return this[graphUri];
-        }
+        public abstract IGraph GetModifiableGraph(Uri graphUri);
 
         /// <summary>
         /// Gets whether the Dataset has any Triples
@@ -305,18 +396,37 @@ namespace VDS.RDF.Query.Datasets
         /// </summary>
         /// <param name="t">Triple</param>
         /// <returns></returns>
-        public abstract bool ContainsTriple(Triple t);
+        public bool ContainsTriple(Triple t)
+        {
+            if (this._activeGraph.Value == null)
+            {
+                if (this._defaultGraph.Value == null)
+                {
+                    return this.ContainsTripleInternal(t);
+                }
+                else
+                {
+                    return this._defaultGraph.Value.ContainsTriple(t);
+                }
+            }
+            else
+            {
+                return this._activeGraph.Value.ContainsTriple(t);
+            }
+        }
+
+        protected abstract bool ContainsTripleInternal(Triple t);
 
         /// <summary>
         /// Gets all the Triples in the Dataset
         /// </summary>
-        public virtual IEnumerable<Triple> Triples
+        public IEnumerable<Triple> Triples
         {
             get
             {
-                if (this._activeGraph == null)
+                if (this._activeGraph.Value == null)
                 {
-                    if (this._defaultGraph == null)
+                    if (this._defaultGraph.Value == null)
                     {
                         //No specific Active Graph which implies that the Default Graph is the entire Triple Store
                         return this.GetAllTriples();
@@ -324,13 +434,13 @@ namespace VDS.RDF.Query.Datasets
                     else
                     {
                         //Specific Default Graph so return that
-                        return this._defaultGraph.Triples;
+                        return this._defaultGraph.Value.Triples;
                     }
                 }
                 else
                 {
                     //Active Graph is used (which may happen to be the Default Graph)
-                    return this._activeGraph.Triples;
+                    return this._activeGraph.Value.Triples;
                 }
             }
         }
@@ -346,21 +456,78 @@ namespace VDS.RDF.Query.Datasets
         /// </summary>
         /// <param name="subj">Subject</param>
         /// <returns></returns>
-        public abstract IEnumerable<Triple> GetTriplesWithSubject(INode subj);
+        public IEnumerable<Triple> GetTriplesWithSubject(INode subj)
+        {
+            if (this._activeGraph.Value == null)
+            {
+                if (this._defaultGraph.Value == null)
+                {
+                    return this.GetTriplesWithSubjectInternal(subj);
+                }
+                else
+                {
+                    return this._defaultGraph.Value.GetTriplesWithSubject(subj);
+                }
+            }
+            else
+            {
+                return this._activeGraph.Value.GetTriplesWithSubject(subj);
+            }
+        }
+
+        protected abstract IEnumerable<Triple> GetTriplesWithSubjectInternal(INode subj);
 
         /// <summary>
         /// Gets all the Triples in the Dataset with the given Predicate
         /// </summary>
         /// <param name="pred">Predicate</param>
         /// <returns></returns>
-        public abstract IEnumerable<Triple> GetTriplesWithPredicate(INode pred);
+        public IEnumerable<Triple> GetTriplesWithPredicate(INode pred)
+        {
+            if (this._activeGraph.Value == null)
+            {
+                if (this._defaultGraph.Value == null)
+                {
+                    return this.GetTriplesWithPredicateInternal(pred);
+                }
+                else
+                {
+                    return this._defaultGraph.Value.GetTriplesWithPredicate(pred);
+                }
+            }
+            else
+            {
+                return this._activeGraph.Value.GetTriplesWithPredicate(pred);
+            }
+        }
+
+        protected abstract IEnumerable<Triple> GetTriplesWithPredicateInternal(INode pred);
 
         /// <summary>
         /// Gets all the Triples in the Dataset with the given Object
         /// </summary>
         /// <param name="obj">Object</param>
         /// <returns></returns>
-        public abstract IEnumerable<Triple> GetTriplesWithObject(INode obj);
+        public IEnumerable<Triple> GetTriplesWithObject(INode obj)
+        {
+            if (this._activeGraph.Value == null)
+            {
+                if (this._defaultGraph.Value == null)
+                {
+                    return this.GetTriplesWithObjectInternal(obj);
+                }
+                else
+                {
+                    return this._defaultGraph.Value.GetTriplesWithObject(obj);
+                }
+            }
+            else
+            {
+                return this._activeGraph.Value.GetTriplesWithObject(obj);
+            }
+        }
+
+        protected abstract IEnumerable<Triple> GetTriplesWithObjectInternal(INode obj);
 
         /// <summary>
         /// Gets all the Triples in the Dataset with the given Subject and Predicate
@@ -368,7 +535,26 @@ namespace VDS.RDF.Query.Datasets
         /// <param name="subj">Subject</param>
         /// <param name="pred">Predicate</param>
         /// <returns></returns>
-        public abstract IEnumerable<Triple> GetTriplesWithSubjectPredicate(INode subj, INode pred);
+        public IEnumerable<Triple> GetTriplesWithSubjectPredicate(INode subj, INode pred)
+        {
+            if (this._activeGraph.Value == null)
+            {
+                if (this._defaultGraph.Value == null)
+                {
+                    return this.GetTriplesWithSubjectPredicateInternal(subj, pred);
+                }
+                else
+                {
+                    return this._defaultGraph.Value.GetTriplesWithSubjectPredicate(subj, pred);
+                }
+            }
+            else
+            {
+                return this._activeGraph.Value.GetTriplesWithSubjectPredicate(subj, pred);
+            }
+        }
+
+        protected abstract IEnumerable<Triple> GetTriplesWithSubjectPredicateInternal(INode subj, INode pred);
 
         /// <summary>
         /// Gets all the Triples in the Dataset with the given Subject and Object
@@ -376,7 +562,26 @@ namespace VDS.RDF.Query.Datasets
         /// <param name="subj">Subject</param>
         /// <param name="obj">Object</param>
         /// <returns></returns>
-        public abstract IEnumerable<Triple> GetTriplesWithSubjectObject(INode subj, INode obj);
+        public IEnumerable<Triple> GetTriplesWithSubjectObject(INode subj, INode obj)
+        {
+            if (this._activeGraph.Value == null)
+            {
+                if (this._defaultGraph.Value == null)
+                {
+                    return this.GetTriplesWithSubjectObjectInternal(subj, obj);
+                }
+                else
+                {
+                    return this._defaultGraph.Value.GetTriplesWithSubjectObject(subj, obj);
+                }
+            }
+            else
+            {
+                return this._activeGraph.Value.GetTriplesWithSubjectObject(subj, obj);
+            }
+        }
+
+        protected abstract IEnumerable<Triple> GetTriplesWithSubjectObjectInternal(INode subj, INode obj);
 
         /// <summary>
         /// Gets all the Triples in the Dataset with the given Predicate and Object
@@ -384,11 +589,259 @@ namespace VDS.RDF.Query.Datasets
         /// <param name="pred">Predicate</param>
         /// <param name="obj">Object</param>
         /// <returns></returns>
-        public abstract IEnumerable<Triple> GetTriplesWithPredicateObject(INode pred, INode obj);
+        public IEnumerable<Triple> GetTriplesWithPredicateObject(INode pred, INode obj)
+        {
+            if (this._activeGraph.Value == null)
+            {
+                if (this._defaultGraph.Value == null)
+                {
+                    return this.GetTriplesWithPredicateObjectInternal(pred, obj);
+                }
+                else
+                {
+                    return this._defaultGraph.Value.GetTriplesWithPredicateObject(pred, obj);
+                }
+            }
+            else
+            {
+                return this._activeGraph.Value.GetTriplesWithPredicateObject(pred, obj);
+            }
+        }
+
+        protected abstract IEnumerable<Triple> GetTriplesWithPredicateObjectInternal(INode pred, INode obj);
+
+        #endregion
 
         /// <summary>
-        /// Ensures that any changes to the Dataset are flushed to the underlying Storage (if any)
+        /// Ensures that any changes to the Dataset (if any) are flushed to the underlying Storage
         /// </summary>
         public abstract void Flush();
+
+        /// <summary>
+        /// Ensures that any changes to the Dataset (if any) are discarded
+        /// </summary>
+        public abstract void Discard();
+    }
+
+    public abstract class BaseImmutableDataset : BaseDataset
+    {
+        public override void AddGraph(IGraph g)
+        {
+            throw new NotSupportedException("Cannot add a Graph to an immutable Dataset");
+        }
+
+        public override void RemoveGraph(Uri graphUri)
+        {
+            throw new NotSupportedException("Cannot remove a Graph from an immutable Dataset");
+        }
+
+        protected override void RemoveGraphInternal(Uri graphUri)
+        {
+            throw new NotSupportedException("Cannot remove a Graph from an immutable Dataset");
+        }
+
+        public override IGraph GetModifiableGraph(Uri graphUri)
+        {
+            throw new NotSupportedException("Cannot retrieve a Modifiable Graph from an immutable Dataset");
+        }
+
+        public sealed override void Flush()
+        {
+            //Does Nothing
+        }
+
+        public sealed override void Discard()
+        {
+            //Does Nothing
+        }
+    }
+
+    public abstract class BaseTransactionalDataset : BaseDataset
+    {
+        private List<GraphPersistenceAction> _actions = new List<GraphPersistenceAction>();
+        private TripleStore _modifiableGraphs = new TripleStore();
+
+        public BaseTransactionalDataset()
+            : base() { }
+
+        public BaseTransactionalDataset(bool unionDefaultGraph)
+            : base(unionDefaultGraph) { }
+
+        public BaseTransactionalDataset(Uri defaultGraphUri)
+            : base(defaultGraphUri) { }
+
+        public sealed override void AddGraph(IGraph g)
+        {
+            if (this.HasGraph(g.BaseUri))
+            {
+                ITransactionalGraph existing = (ITransactionalGraph)this.GetModifiableGraph(g.BaseUri);
+                this._actions.Add(new GraphPersistenceAction(existing, GraphPersistenceActionType.Modified));
+            }
+            else
+            {
+                this._actions.Add(new GraphPersistenceAction(g, GraphPersistenceActionType.Added));
+            }
+            this.AddGraphInternal(g);
+        }
+
+        protected abstract void AddGraphInternal(IGraph g);
+
+        public sealed override void RemoveGraph(Uri graphUri)
+        {
+            if (graphUri == null || graphUri.ToSafeString().Equals(GraphCollection.DefaultGraphUri))
+            {
+                if (this.DefaultGraph != null)
+                {
+                    GraphPersistenceWrapper wrapper = new GraphPersistenceWrapper(DefaultGraph);
+                    wrapper.Clear();
+                    this._actions.Add(new GraphPersistenceAction(wrapper, GraphPersistenceActionType.Modified));
+                }
+                else if (this.HasGraph(graphUri))
+                {
+                    this._actions.Add(new GraphPersistenceAction(this[graphUri], GraphPersistenceActionType.Deleted));
+                    this.RemoveGraphInternal(graphUri);
+                }
+            }
+            else if (this.HasGraph(graphUri))
+            {
+                this._actions.Add(new GraphPersistenceAction(this[graphUri], GraphPersistenceActionType.Deleted));
+                this.RemoveGraphInternal(graphUri);
+            }
+        }
+
+        public sealed override IGraph this[Uri graphUri]
+        {
+            get
+            {
+                if (graphUri == null || graphUri.ToSafeString().Equals(GraphCollection.DefaultGraphUri))
+                {
+                    if (this.DefaultGraph != null)
+                    {
+                        return this.DefaultGraph;
+                    }
+                    else if (this._modifiableGraphs.HasGraph(graphUri))
+                    {
+                        return this._modifiableGraphs.Graph(graphUri);
+                    }
+                    else
+                    {
+                        return this.GetGraphInternal(null);
+                    }
+                }
+                else if (this._modifiableGraphs.HasGraph(graphUri))
+                {
+                    return this._modifiableGraphs.Graph(graphUri);
+                }
+                else
+                {
+                    return this.GetGraphInternal(graphUri);
+                }
+            }
+        }
+
+        public sealed override IGraph GetModifiableGraph(Uri graphUri)
+        {
+            if (!this._modifiableGraphs.HasGraph(graphUri))
+            {
+                this._modifiableGraphs.Add(this.GetModifiableGraphInternal(graphUri));
+            }
+            ITransactionalGraph existing = (ITransactionalGraph)this._modifiableGraphs.Graph(graphUri);
+            this._actions.Add(new GraphPersistenceAction(existing, GraphPersistenceActionType.Modified));
+            return existing;
+        }
+
+        protected abstract ITransactionalGraph GetModifiableGraphInternal(Uri graphUri);
+
+        public sealed override void Flush()
+        {
+            int i = 0;
+            while (i < this._actions.Count)
+            {
+                GraphPersistenceAction action = this._actions[i];
+                switch (action.Action)
+                {
+                    case GraphPersistenceActionType.Added:
+                        //If Graph was added ensure any changes were flushed
+                        action.Graph.Flush();
+                        break;
+                    case GraphPersistenceActionType.Deleted:
+                        //If Graph was deleted can discard any changes
+                        action.Graph.Discard();
+                        break;
+                    case GraphPersistenceActionType.Modified:
+                        //If Graph was modified ensure any changes were flushed
+                        action.Graph.Flush();
+                        break;
+                }
+                i++;
+            }
+            this._actions.Clear();
+            //Ensure any Modifiable Graphs we've looked at have been Flushed()
+            foreach (ITransactionalGraph g in this._modifiableGraphs.Graphs.OfType<ITransactionalGraph>())
+            {
+                g.Flush();
+            }
+            this._modifiableGraphs = new TripleStore();
+
+            this.FlushInternal();
+        }
+
+        public sealed override void Discard()
+        {
+            int i = this._actions.Count - 1;
+            int total = this._actions.Count;
+            while (i >= 0)
+            {
+                GraphPersistenceAction action = this._actions[i];
+                switch (action.Action)
+                {
+                    case GraphPersistenceActionType.Added:
+                        //If a Graph was added we must now remove it
+                        if (this.HasGraphInternal(action.Graph.BaseUri))
+                        {
+                            this.RemoveGraphInternal(action.Graph.BaseUri);
+                        }
+                        break;
+                    case GraphPersistenceActionType.Deleted:
+                        //If a Graph was deleted we must now add it back again
+                        //Don't add the full Graph only an empty Graph with the given URI
+                        Graph g = new Graph();
+                        g.BaseUri = action.Graph.BaseUri;
+                        this.AddGraphInternal(g);
+                        break;
+                    case GraphPersistenceActionType.Modified:
+                        //If a Graph was modified we must discard the changes
+                        action.Graph.Discard();
+                        break;
+                }
+                i--;
+            }
+            if (total == this._actions.Count)
+            {
+                this._actions.Clear();
+            }
+            else
+            {
+                this._actions.RemoveRange(0, total);
+            }
+            //Ensure any modifiable Graphs we've looked at have been Discarded
+            foreach (ITransactionalGraph g in this._modifiableGraphs.Graphs.OfType<ITransactionalGraph>())
+            {
+                g.Discard();
+            }
+            this._modifiableGraphs = new TripleStore();
+
+            this.DiscardInternal();
+        }
+
+        protected virtual void FlushInternal()
+        {
+            //No actions by default
+        }
+
+        protected virtual void DiscardInternal()
+        {
+            //No actions by default
+        }
     }
 }

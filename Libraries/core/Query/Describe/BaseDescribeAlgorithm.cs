@@ -15,7 +15,7 @@ namespace VDS.RDF.Query.Describe
         /// </summary>
         /// <param name="context">SPARQL Evaluation Context</param>
         /// <returns></returns>
-        public abstract Graph Describe(SparqlEvaluationContext context);
+        public abstract IGraph Describe(SparqlEvaluationContext context);
 
         //OPT: Replace with usage of MapTriple instead?
 
@@ -26,7 +26,7 @@ namespace VDS.RDF.Query.Describe
         /// <param name="mapping">Mapping of IDs to new Blank Nodes</param>
         /// <param name="g">Graph of the Description</param>
         /// <returns></returns>
-        protected Triple RewriteDescribeBNodes(Triple t, Dictionary<String, INode> mapping, Graph g)
+        protected Triple RewriteDescribeBNodes(Triple t, Dictionary<String, INode> mapping, IGraph g)
         {
             INode s, p, o;
             String id;

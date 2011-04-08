@@ -37,15 +37,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace VDS.RDF.Query.Datasets
 {
     /// <summary>
     /// Represents an in-memory dataset (i.e. a <see cref="IInMemoryQueryableStore">InMemoryQueryableStore</see>) for querying and updating using SPARQL
     /// </summary>
-    public class InMemoryDataset : BaseDataset
+    public class InMemoryDataset : BaseTransactionalDataset, IThreadSafeDataset
     {
         private IInMemoryQueryableStore _store;
+        private ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
 
         /// <summary>
         /// Creates a new in-memory dataset using the default in-memory <see cref="TripleStore">TripleStore</see> as the underlying storage
@@ -73,17 +75,36 @@ namespace VDS.RDF.Query.Datasets
         /// <param name="store">In-Memory queryable store</param>
         /// <param name="unionDefaultGraph">Whether the Default Graph when no Active/Default Graph is explicitly set should be the union of all Graphs in the Dataset</param>
         public InMemoryDataset(IInMemoryQueryableStore store, bool unionDefaultGraph)
+            : base(unionDefaultGraph)
         {
+            if (store == null) throw new ArgumentNullException("store");
             this._store = store;
-            this.UsesUnionDefaultGraph = unionDefaultGraph;
 
-            if (!this.UsesUnionDefaultGraph)
+            if (!this._store.HasGraph(null))
             {
-                if (!store.HasGraph(null))
-                {
-                    store.Add(new Graph());
-                }
-                this._defaultGraph = store.Graph(null);
+                this._store.Add(new Graph());
+            }
+        }
+
+        public InMemoryDataset(IInMemoryQueryableStore store, Uri defaultGraphUri)
+            : base(defaultGraphUri)
+        {
+            if (store == null) throw new ArgumentNullException("store");
+            this._store = store;
+
+            if (!this._store.HasGraph(defaultGraphUri))
+            {
+                Graph g = new Graph();
+                g.BaseUri = defaultGraphUri;
+                this._store.Add(g);
+            }
+        }
+
+        public ReaderWriterLockSlim Lock
+        {
+            get
+            {
+                return this._lock;
             }
         }
 
@@ -93,7 +114,7 @@ namespace VDS.RDF.Query.Datasets
         /// Adds a Graph to the Dataset merging it with any existing Graph with the same URI
         /// </summary>
         /// <param name="g">Graph</param>
-        public override void AddGraph(IGraph g)
+        protected override void AddGraphInternal(IGraph g)
         {
             this._store.Add(g, true);
         }
@@ -102,15 +123,11 @@ namespace VDS.RDF.Query.Datasets
         /// Removes a Graph from the Dataset
         /// </summary>
         /// <param name="graphUri">Graph URI</param>
-        public override void RemoveGraph(Uri graphUri)
+        protected override void RemoveGraphInternal(Uri graphUri)
         {
             if (graphUri == null || graphUri.ToSafeString().Equals(GraphCollection.DefaultGraphUri))
             {
-                if (this._defaultGraph != null)
-                {
-                    this._defaultGraph.Clear();
-                }
-                else
+                if (this._store.HasGraph(null))
                 {
                     this._store.Graphs[null].Clear();
                 }
@@ -126,23 +143,9 @@ namespace VDS.RDF.Query.Datasets
         /// </summary>
         /// <param name="graphUri">Graph URI</param>
         /// <returns></returns>
-        public override bool HasGraph(Uri graphUri)
+        protected override bool HasGraphInternal(Uri graphUri)
         {
-            if (graphUri == null || graphUri.ToSafeString().Equals(GraphCollection.DefaultGraphUri))
-            {
-                if (this._defaultGraph != null)
-                {
-                    return true;
-                }
-                else
-                {
-                    return this._store.HasGraph(null);
-                }
-            }
-            else
-            {
-                return this._store.HasGraph(graphUri);
-            }
+            return this._store.HasGraph(graphUri);
         }
 
         /// <summary>
@@ -178,26 +181,15 @@ namespace VDS.RDF.Query.Datasets
         /// For In-Memory datasets the Graph returned from this property is no different from the Graph returned by the <see cref="InMemoryDataset.GetModifiableGraph">GetModifiableGraph()</see> method
         /// </para>
         /// </remarks>
-        public override IGraph this[Uri graphUri]
+        protected override IGraph GetGraphInternal(Uri graphUri)
         {
-            get 
-            {
-                if (graphUri == null || graphUri.ToSafeString().Equals(GraphCollection.DefaultGraphUri))
-                {
-                    if (this._defaultGraph != null)
-                    {
-                        return this._defaultGraph;
-                    } 
-                    else 
-                    {
-                        return this._store.Graph(null);
-                    }
-                }
-                else
-                {
-                    return this._store.Graph(graphUri);
-                }
-            }
+            return this._store.Graph(graphUri);
+        }
+
+        protected override ITransactionalGraph GetModifiableGraphInternal(Uri graphUri)
+        {
+            //TODO: Implement Change Tracking and Flush/Discard
+            return new GraphPersistenceWrapper(this._store.Graph(graphUri));
         }
 
         #endregion
@@ -209,23 +201,9 @@ namespace VDS.RDF.Query.Datasets
         /// </summary>
         /// <param name="t">Triple</param>
         /// <returns></returns>
-        public override bool ContainsTriple(Triple t)
+        protected override bool ContainsTripleInternal(Triple t)
         {
-            if (this._activeGraph == null)
-            {
-                if (this._defaultGraph == null)
-                {
-                    return this._store.Contains(t);
-                }
-                else
-                {
-                    return this._defaultGraph.ContainsTriple(t);
-                }
-            }
-            else
-            {
-                return this._activeGraph.ContainsTriple(t);
-            }
+            return this._store.Contains(t);
         }
 
         /// <summary>
@@ -234,21 +212,7 @@ namespace VDS.RDF.Query.Datasets
         /// <returns></returns>
         protected override IEnumerable<Triple> GetAllTriples()
         {
-            if (this._activeGraph == null)
-            {
-                if (this._defaultGraph == null)
-                {
-                    return this._store.Triples;
-                }
-                else
-                {
-                    return this._defaultGraph.Triples;
-                }
-            }
-            else
-            {
-                return this._activeGraph.Triples;
-            }
+            return this._store.Triples;
         }
 
         /// <summary>
@@ -256,25 +220,11 @@ namespace VDS.RDF.Query.Datasets
         /// </summary>
         /// <param name="subj">Subject</param>
         /// <returns></returns>
-        public override IEnumerable<Triple> GetTriplesWithSubject(INode subj)
+        protected override IEnumerable<Triple> GetTriplesWithSubjectInternal(INode subj)
         {
-            if (this._activeGraph == null)
-            {
-                if (this._defaultGraph == null)
-                {
-                    return (from g in this.Graphs
-                            from t in g.GetTriplesWithSubject(subj)
-                            select t);
-                }
-                else
-                {
-                    return this._defaultGraph.GetTriplesWithSubject(subj);
-                }
-            }
-            else
-            {
-                return this._activeGraph.GetTriplesWithSubject(subj);
-            }
+            return (from g in this.Graphs
+                    from t in g.GetTriplesWithSubject(subj)
+                    select t);
         }
 
         /// <summary>
@@ -282,25 +232,11 @@ namespace VDS.RDF.Query.Datasets
         /// </summary>
         /// <param name="pred">Predicate</param>
         /// <returns></returns>
-        public override IEnumerable<Triple> GetTriplesWithPredicate(INode pred)
+        protected override IEnumerable<Triple> GetTriplesWithPredicateInternal(INode pred)
         {
-            if (this._activeGraph == null)
-            {
-                if (this._defaultGraph == null)
-                {
-                    return (from g in this.Graphs
-                            from t in g.GetTriplesWithPredicate(pred)
-                            select t);
-                }
-                else
-                {
-                    return this._defaultGraph.GetTriplesWithPredicate(pred);
-                }
-            }
-            else
-            {
-                return this._activeGraph.GetTriplesWithPredicate(pred);
-            }
+            return (from g in this.Graphs
+                    from t in g.GetTriplesWithPredicate(pred)
+                    select t);
         }
 
         /// <summary>
@@ -308,25 +244,11 @@ namespace VDS.RDF.Query.Datasets
         /// </summary>
         /// <param name="obj">Object</param>
         /// <returns></returns>
-        public override IEnumerable<Triple> GetTriplesWithObject(INode obj)
+        protected override IEnumerable<Triple> GetTriplesWithObjectInternal(INode obj)
         {
-            if (this._activeGraph == null)
-            {
-                if (this._defaultGraph == null)
-                {
-                    return (from g in this.Graphs
-                            from t in g.GetTriplesWithObject(obj)
-                            select t);
-                }
-                else
-                {
-                    return this._defaultGraph.GetTriplesWithObject(obj);
-                }
-            }
-            else
-            {
-                return this._activeGraph.GetTriplesWithObject(obj);
-            }
+            return (from g in this.Graphs
+                    from t in g.GetTriplesWithObject(obj)
+                    select t);
         }
 
         /// <summary>
@@ -335,25 +257,11 @@ namespace VDS.RDF.Query.Datasets
         /// <param name="subj">Subject</param>
         /// <param name="pred">Predicate</param>
         /// <returns></returns>
-        public override IEnumerable<Triple> GetTriplesWithSubjectPredicate(INode subj, INode pred)
+        protected override IEnumerable<Triple> GetTriplesWithSubjectPredicateInternal(INode subj, INode pred)
         {
-            if (this._activeGraph == null)
-            {
-                if (this._defaultGraph == null)
-                {
-                    return (from g in this.Graphs
-                            from t in g.GetTriplesWithSubjectPredicate(subj, pred)
-                            select t);
-                }
-                else
-                {
-                    return this._defaultGraph.GetTriplesWithSubjectPredicate(subj, pred);
-                }
-            }
-            else
-            {
-                return this._activeGraph.GetTriplesWithSubjectPredicate(subj, pred);
-            }
+            return (from g in this.Graphs
+                    from t in g.GetTriplesWithSubjectPredicate(subj, pred)
+                    select t);
         }
 
         /// <summary>
@@ -362,25 +270,11 @@ namespace VDS.RDF.Query.Datasets
         /// <param name="subj">Subject</param>
         /// <param name="obj">Object</param>
         /// <returns></returns>
-        public override IEnumerable<Triple> GetTriplesWithSubjectObject(INode subj, INode obj)
+        protected override IEnumerable<Triple> GetTriplesWithSubjectObjectInternal(INode subj, INode obj)
         {
-            if (this._activeGraph == null)
-            {
-                if (this._defaultGraph == null)
-                {
-                    return (from g in this.Graphs
-                            from t in g.GetTriplesWithSubjectObject(subj, obj)
-                            select t);
-                }
-                else
-                {
-                    return this._defaultGraph.GetTriplesWithSubjectObject(subj, obj);
-                }
-            }
-            else
-            {
-                return this._activeGraph.GetTriplesWithSubjectObject(subj, obj);
-            }
+            return (from g in this.Graphs
+                    from t in g.GetTriplesWithSubjectObject(subj, obj)
+                    select t);
         }
 
         /// <summary>
@@ -389,33 +283,16 @@ namespace VDS.RDF.Query.Datasets
         /// <param name="pred">Predicate</param>
         /// <param name="obj">Object</param>
         /// <returns></returns>
-        public override IEnumerable<Triple> GetTriplesWithPredicateObject(INode pred, INode obj)
+        protected override IEnumerable<Triple> GetTriplesWithPredicateObjectInternal(INode pred, INode obj)
         {
-            if (this._activeGraph == null)
-            {
-                if (this._defaultGraph == null)
-                {
-                    return (from g in this.Graphs
-                            from t in g.GetTriplesWithPredicateObject(pred, obj)
-                            select t);
-                }
-                else
-                {
-                    return this._defaultGraph.GetTriplesWithPredicateObject(pred, obj);
-                }
-            }
-            else
-            {
-                return this._activeGraph.GetTriplesWithPredicateObject(pred, obj);
-            }
+            return (from g in this.Graphs
+                    from t in g.GetTriplesWithPredicateObject(pred, obj)
+                    select t);
         }
 
-        #endregion
+        #endregion       
 
-        /// <summary>
-        /// Flushes any changes to the Dataset to the underlying Store if the Store is an <see cref="IFlushableStore">IFlushableStore</see>
-        /// </summary>
-        public override void Flush()
+        protected override void FlushInternal()
         {
             if (this._store is IFlushableStore)
             {

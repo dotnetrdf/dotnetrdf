@@ -255,14 +255,14 @@ namespace VDS.RDF
         /// <summary>
         /// Gets the enumeration of Blank Nodes
         /// </summary>
-        public override IEnumerable<BlankNode> BlankNodes
+        public override IEnumerable<IBlankNode> BlankNodes
         {
             get 
             {
                 return (from c in this._collections
                         from n in c
                         where n.NodeType == NodeType.Blank
-                        select (BlankNode)n);
+                        select (IBlankNode)n);
             }
         }
 
@@ -293,42 +293,42 @@ namespace VDS.RDF
         /// <summary>
         /// Gets the enumeration of Graph Literal Nodes
         /// </summary>
-        public override IEnumerable<GraphLiteralNode> GraphLiteralNodes
+        public override IEnumerable<IGraphLiteralNode> GraphLiteralNodes
         {
             get 
             {
                 return (from c in this._collections
                         from n in c
                         where n.NodeType == NodeType.GraphLiteral
-                        select (GraphLiteralNode)n); 
+                        select (IGraphLiteralNode)n); 
             }
         }
 
         /// <summary>
         /// Gets the enumeration of Literal Nodes
         /// </summary>
-        public override IEnumerable<LiteralNode> LiteralNodes
+        public override IEnumerable<ILiteralNode> LiteralNodes
         {
             get 
             {
                 return (from c in this._collections
                         from n in c
                         where n.NodeType == NodeType.Literal
-                        select (LiteralNode)n); 
+                        select (ILiteralNode)n); 
             }
         }
 
         /// <summary>
         /// Gets the enumeration of URI Nodes
         /// </summary>
-        public override IEnumerable<UriNode> UriNodes
+        public override IEnumerable<IUriNode> UriNodes
         {
             get 
             {
                 return (from c in this._collections
                         from n in c
                         where n.NodeType == NodeType.Uri
-                        select (UriNode)n);
+                        select (IUriNode)n);
             }
         }
 

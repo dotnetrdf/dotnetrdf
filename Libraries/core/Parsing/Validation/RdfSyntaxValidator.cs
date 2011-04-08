@@ -35,6 +35,8 @@ terms.
 
 using System;
 using System.Collections.Generic;
+using System.IO;
+using VDS.RDF.Parsing.Handlers;
 
 namespace VDS.RDF.Parsing.Validation
 {
@@ -67,11 +69,11 @@ namespace VDS.RDF.Parsing.Validation
             String message;
             try
             {
-                Graph g = new Graph(true);
-                StringParser.Parse(g, data, this._parser);
+                CountHandler handler = new CountHandler();
+                this._parser.Load(handler, new StringReader(data));
 
-                message = "Valid RDF - " + g.Triples.Count + " Triples - Parser: " + this._parser.GetType().Name;
-                return new SyntaxValidationResults(true, message, g);
+                message = "Valid RDF - " + handler.Count + " Triples - Parser: " + this._parser.GetType().Name;
+                return new SyntaxValidationResults(true, message, handler);
             }
             catch (RdfParseException parseEx)
             {
@@ -127,24 +129,24 @@ namespace VDS.RDF.Parsing.Validation
             {
                 this._gotWarning = false;
                 this._messages.Clear();
-                Graph g = new Graph(true);
-                StringParser.Parse(g, data, this._parser);
+                CountHandler handler = new CountHandler();
+                this._parser.Load(handler, new StringReader(data));
 
                 if (!this._gotWarning)
                 {
-                    message = "Valid RDF - " + g.Triples.Count + " Triples - Parser: " + this._parser.GetType().Name;
-                    return new SyntaxValidationResults(true, message, g);
+                    message = "Valid RDF - " + handler.Count + " Triples - Parser: " + this._parser.GetType().Name;
+                    return new SyntaxValidationResults(true, message, handler);
                 }
                 else
                 {
-                    message = "Valid RDF with Warnings - " + g.Triples.Count + " Triples - Parser: " + this._parser.GetType().Name + " - " + this._messages.Count + " Warnings";
+                    message = "Valid RDF with Warnings - " + handler.Count + " Triples - Parser: " + this._parser.GetType().Name + " - " + this._messages.Count + " Warnings";
                     int i = 1;
                     foreach (String m in this._messages)
                     {
                         message += "\n" + i + " - " + m;
                         i++;
                     }
-                    return new SyntaxValidationResults(false, message, g, this._messages);
+                    return new SyntaxValidationResults(false, message, handler, this._messages);
                 }
             }
             catch (RdfParseException parseEx)

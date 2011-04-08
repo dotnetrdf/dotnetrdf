@@ -58,6 +58,7 @@ namespace VDS.RDF
     /// This class is designed to be <strong>completely</strong> agnostic of it's underlying Storage.  The Storage may be SQL Based for example a <see cref="MicrosoftSqlStoreManager">MicrosoftSqlStoreManager</see> supports <see cref="IGenericIOManager">IGenericIOManager</see> and can be used with this class though there are specific classes like <see cref="SqlGraph">SqlGraph</see> for SQL backed stores and a separate interface <see cref="ISqlIOManager">ISqlIOManager</see> dedicated to them.  The Storage may equally be some kind of Native RDF Storage such as a <see cref="VirtuosoManager">VirtuosoManager</see> which stores data in a Native Quad Store or a <see cref="TalisPlatformConnector">TalisPlatformConnector</see> which connects to the Talis paltform to access their SaaS solution for RDF Storage.
     /// </para>
     /// </remarks>
+    [Obsolete("The StoreGraph has been superceded by the StoreGraphPersistenceWrapper", true)]
     public class StoreGraph : BackgroundPersistedGraph
     {
         /// <summary>
@@ -184,6 +185,7 @@ namespace VDS.RDF
     /// Iterating over the Triples/Nodes of this Graph will only return those that have been added to the Graph since its instantiation.
     /// </para>
     /// </remarks>
+    [Obsolete("The WriteOnlyStoreGraph has been superceded by the StoreGraphPersistenceWrapper", true)]
     public class WriteOnlyStoreGraph : StoreGraph
     {
         /// <summary>

@@ -39,6 +39,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using VDS.RDF.Query;
+using VDS.RDF.Storage.Params;
 
 namespace VDS.RDF.Writing
 {
@@ -58,11 +59,18 @@ namespace VDS.RDF.Writing
         /// </remarks>
         public static String Write(IGraph g, IRdfWriter writer)
         {
-            StringBuilder output = new StringBuilder();
-            System.IO.StringWriter sw = new System.IO.StringWriter(output);
+            System.IO.StringWriter sw = new System.IO.StringWriter();
             writer.Save(g, sw);
 
-            return output.ToString();
+            return sw.ToString();
+        }
+
+        public static String Write(ITripleStore store, IStoreWriter writer)
+        {
+            System.IO.StringWriter sw = new System.IO.StringWriter();
+            writer.Save(store, new TextWriterParams(sw));
+
+            return sw.ToString();
         }
 
         /// <summary>
@@ -73,11 +81,10 @@ namespace VDS.RDF.Writing
         /// <returns></returns>
         public static String Write(SparqlResultSet results, ISparqlResultsWriter writer)
         {
-            StringBuilder output = new StringBuilder();
-            System.IO.StringWriter sw = new System.IO.StringWriter(output);
+            System.IO.StringWriter sw = new System.IO.StringWriter();
             writer.Save(results, sw);
 
-            return output.ToString();
+            return sw.ToString();
         }
     }
 }

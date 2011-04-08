@@ -78,7 +78,7 @@ namespace VDS.RDF.Query.Expressions.Functions
                     case NodeType.GraphLiteral:
                         throw new RdfQueryException("Cannot calculate the Hash of a Graph Literal");
                     case NodeType.Literal:
-                        return new LiteralNode(null, this.Hash(((LiteralNode)temp).Value));
+                        return new LiteralNode(null, this.Hash(((ILiteralNode)temp).Value));
                     case NodeType.Uri:
                         return new LiteralNode(null, this.Hash(temp.ToString()));
                     default:
@@ -177,7 +177,7 @@ namespace VDS.RDF.Query.Expressions.Functions
                     case NodeType.GraphLiteral:
                         throw new RdfQueryException("Cannot calculate the Hash of a Graph Literal");
                     case NodeType.Literal:
-                        return new LiteralNode(null, this.Hash(((LiteralNode)temp).Value));
+                        return new LiteralNode(null, this.Hash(((ILiteralNode)temp).Value));
                     case NodeType.Uri:
                         return new LiteralNode(null, this.Hash(temp.ToString()));
                     default:

@@ -61,21 +61,30 @@ namespace VDS.RDF.Writing.Formatting
         /// Creates a new SPARQL Formatter
         /// </summary>
         public SparqlFormatter() 
-            : base("SPARQL", new QNameOutputMapper()) { }
+            : base("SPARQL", new QNameOutputMapper())
+        {
+            this._validEscapes = new char[] { '"', 'n', 't', 'u', 'U', 'r', '\\', '0', 'f', 'b', '\'' };
+        }
 
         /// <summary>
         /// Creates a new SPARQL Formatter using the given Graph
         /// </summary>
         /// <param name="g">Graph</param>
         public SparqlFormatter(IGraph g)
-            : base("SPARQL", new QNameOutputMapper(g.NamespaceMap)) { }
+            : base("SPARQL", new QNameOutputMapper(g.NamespaceMap))
+        {
+            this._validEscapes = new char[] { '"', 'n', 't', 'u', 'U', 'r', '\\', '0', 'f', 'b', '\'' };
+        }
 
         /// <summary>
         /// Creates a new SPARQL Formatter using the given Namespace Map
         /// </summary>
         /// <param name="nsmap">Namespace Map</param>
         public SparqlFormatter(INamespaceMapper nsmap)
-            : base("SPARQL", new QNameOutputMapper(nsmap)) { }
+            : base("SPARQL", new QNameOutputMapper(nsmap)) 
+        {
+            this._validEscapes = new char[] { '"', 'n', 't', 'u', 'U', 'r', '\\', '0', 'f', 'b', '\'' };
+        }
 
         /// <summary>
         /// Formats a Variable Node in SPARQL Syntax
@@ -83,9 +92,19 @@ namespace VDS.RDF.Writing.Formatting
         /// <param name="v">Variable Node</param>
         /// <param name="segment">Triple Segment</param>
         /// <returns></returns>
-        protected override string FormatVariableNode(VariableNode v, TripleSegment? segment)
+        protected override string FormatVariableNode(IVariableNode v, TripleSegment? segment)
         {
             return v.ToString();
+        }
+
+        public override string FormatNamespace(string prefix, Uri namespaceUri)
+        {
+            return "PREFIX " + prefix + ": <" + this.FormatUri(namespaceUri) + ">";
+        }
+
+        public override string FormatBaseUri(Uri u)
+        {
+            return "BASE <" + this.FormatUri(u) + ">";
         }
 
         #region Query Formatting
@@ -495,7 +514,7 @@ namespace VDS.RDF.Writing.Formatting
                 output.Append(this.FormatExpression(bind.AssignExpression));
                 output.Append(" AS ?");
                 output.Append(bind.VariableName);
-                output.Append("}");
+                output.Append(")");
             }
             else
             {

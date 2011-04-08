@@ -55,7 +55,7 @@ namespace VDS.RDF.Ontology
         /// <summary>
         /// Storage of Literal Properties
         /// </summary>
-        protected Dictionary<String, List<LiteralNode>> _literalProperties = new Dictionary<string, List<LiteralNode>>();
+        protected Dictionary<String, List<ILiteralNode>> _literalProperties = new Dictionary<string, List<ILiteralNode>>();
         /// <summary>
         /// Storage of Resource Properties
         /// </summary>
@@ -130,14 +130,14 @@ namespace VDS.RDF.Ontology
         /// <param name="requireLiteral">Whether only Literal values are acceptable</param>
         protected void IntialiseProperty(String propertyUri, bool requireLiteral)
         {
-            UriNode prop = this._graph.CreateUriNode(new Uri(propertyUri));
+            IUriNode prop = this._graph.CreateUriNode(new Uri(propertyUri));
             foreach (Triple t in this._graph.GetTriplesWithSubjectPredicate(this._resource, prop))
             {
                 if (requireLiteral)
                 {
                     if (t.Object.NodeType == NodeType.Literal)
                     {
-                        this.AddLiteralProperty(propertyUri, (LiteralNode)t.Object, false);
+                        this.AddLiteralProperty(propertyUri, (ILiteralNode)t.Object, false);
                     }
                 }
                 else
@@ -155,7 +155,7 @@ namespace VDS.RDF.Ontology
         /// <param name="propertyUri">Property URI</param>
         /// <param name="value">Literal Value</param>
         /// <param name="persist">Whether the new value should be added to the Graph</param>
-        public bool AddLiteralProperty(String propertyUri, LiteralNode value, bool persist) 
+        public bool AddLiteralProperty(String propertyUri, ILiteralNode value, bool persist) 
         {
             if (this._literalProperties.ContainsKey(propertyUri))
             {
@@ -172,7 +172,7 @@ namespace VDS.RDF.Ontology
             }
             else
             {
-                this._literalProperties.Add(propertyUri, new List<LiteralNode>() { value });
+                this._literalProperties.Add(propertyUri, new List<ILiteralNode>() { value });
                 if (persist) this._graph.Assert(new Triple(this._resource, this._graph.CreateUriNode(new Uri(propertyUri)), value));
                 return true;
             }
@@ -184,7 +184,7 @@ namespace VDS.RDF.Ontology
         /// <param name="propertyUri">Property URI</param>
         /// <param name="value">Literal Value</param>
         /// <param name="persist">Whether the new value should be added to the Graph</param>
-        public bool AddLiteralProperty(Uri propertyUri, LiteralNode value, bool persist)
+        public bool AddLiteralProperty(Uri propertyUri, ILiteralNode value, bool persist)
         {
             if (propertyUri == null) throw new ArgumentNullException("propertyUri");
             return this.AddLiteralProperty(propertyUri.ToString(), value, persist);
@@ -297,7 +297,7 @@ namespace VDS.RDF.Ontology
         /// <param name="propertyUri">Property URI</param>
         /// <param name="value">Value to remove</param>
         /// <param name="persist">Whether the removed value is removed from the Graph</param>
-        public bool RemoveLiteralProperty(String propertyUri, LiteralNode value, bool persist)
+        public bool RemoveLiteralProperty(String propertyUri, ILiteralNode value, bool persist)
         {
             if (this._literalProperties.ContainsKey(propertyUri))
             {
@@ -324,7 +324,7 @@ namespace VDS.RDF.Ontology
         /// <param name="propertyUri">Property URI</param>
         /// <param name="value">Value to remove</param>
         /// <param name="persist">Whether the removed value is removed from the Graph</param>
-        public bool RemoveLiteralProperty(Uri propertyUri, LiteralNode value, bool persist)
+        public bool RemoveLiteralProperty(Uri propertyUri, ILiteralNode value, bool persist)
         {
             if (propertyUri == null) throw new ArgumentNullException("propertyUri");
             return this.RemoveLiteralProperty(propertyUri.ToString(), value, persist);
@@ -408,9 +408,9 @@ namespace VDS.RDF.Ontology
         /// </summary>
         /// <param name="comment">Comment</param>
         /// <returns></returns>
-        public bool RemoveComment(LiteralNode comment)
+        public bool RemoveComment(ILiteralNode comment)
         {
-            return this.RemoveLiteralProperty(OntologyHelper.PropertyComment, (LiteralNode)comment.CopyNode(this._graph), true);
+            return this.RemoveLiteralProperty(OntologyHelper.PropertyComment, (ILiteralNode)comment.CopyNode(this._graph), true);
         }
 
         /// <summary>
@@ -620,9 +620,9 @@ namespace VDS.RDF.Ontology
         /// </summary>
         /// <param name="label">Label</param>
         /// <returns></returns>
-        public bool RemoveLabel(LiteralNode label)
+        public bool RemoveLabel(ILiteralNode label)
         {
-            return this.RemoveLiteralProperty(OntologyHelper.PropertyLabel, (LiteralNode)label.CopyNode(this._graph), true);
+            return this.RemoveLiteralProperty(OntologyHelper.PropertyLabel, (ILiteralNode)label.CopyNode(this._graph), true);
         }
 
         /// <summary>
@@ -890,9 +890,9 @@ namespace VDS.RDF.Ontology
         /// </summary>
         /// <param name="info">Version Information</param>
         /// <returns></returns>
-        public bool RemoveVersionInfo(LiteralNode info)
+        public bool RemoveVersionInfo(ILiteralNode info)
         {
-            return this.RemoveLiteralProperty(OntologyHelper.PropertyVersionInfo, (LiteralNode)info.CopyNode(this._graph), true);
+            return this.RemoveLiteralProperty(OntologyHelper.PropertyVersionInfo, (ILiteralNode)info.CopyNode(this._graph), true);
         }
 
         /// <summary>
@@ -914,7 +914,7 @@ namespace VDS.RDF.Ontology
         /// </summary>
         /// <param name="propertyUri">Property URI</param>
         /// <returns></returns>
-        public IEnumerable<LiteralNode> GetLiteralProperty(String propertyUri)
+        public IEnumerable<ILiteralNode> GetLiteralProperty(String propertyUri)
         {
             if (this._literalProperties.ContainsKey(propertyUri))
             {
@@ -922,7 +922,7 @@ namespace VDS.RDF.Ontology
             }
             else
             {
-                return Enumerable.Empty<LiteralNode>();
+                return Enumerable.Empty<ILiteralNode>();
             }
         }
 
@@ -931,7 +931,7 @@ namespace VDS.RDF.Ontology
         /// </summary>
         /// <param name="propertyUri">Property URI</param>
         /// <returns></returns>
-        public IEnumerable<LiteralNode> GetLiteralProperty(Uri propertyUri)
+        public IEnumerable<ILiteralNode> GetLiteralProperty(Uri propertyUri)
         {
             if (propertyUri == null) throw new ArgumentNullException("propertyUri");
             return this.GetLiteralProperty(propertyUri.ToString());
@@ -968,7 +968,7 @@ namespace VDS.RDF.Ontology
         /// <summary>
         /// Gets the Version Information for the Resource
         /// </summary>
-        public IEnumerable<LiteralNode> VersionInfo
+        public IEnumerable<ILiteralNode> VersionInfo
         {
             get
             {
@@ -979,7 +979,7 @@ namespace VDS.RDF.Ontology
         /// <summary>
         /// Gets the Comment(s) for the Resource
         /// </summary>
-        public IEnumerable<LiteralNode> Comment
+        public IEnumerable<ILiteralNode> Comment
         {
             get
             {
@@ -990,7 +990,7 @@ namespace VDS.RDF.Ontology
         /// <summary>
         /// Gets the Label(s) for the Resource
         /// </summary>
-        public IEnumerable<LiteralNode> Label
+        public IEnumerable<ILiteralNode> Label
         {
             get
             {
@@ -1138,6 +1138,12 @@ namespace VDS.RDF.Ontology
             if (results is Graph)
             {
                 return (Graph)results;
+            }
+            else if (results is IGraph)
+            {
+                Graph g = new Graph();
+                g.Merge((IGraph)results);
+                return g;
             }
             else
             {

@@ -66,7 +66,7 @@ namespace VDS.RDF.Update.Commands
             this._graphUri = graphUri;
 
             //Optimise the WHERE
-            this._wherePattern.Optimise(Enumerable.Empty<String>());
+            this._wherePattern.Optimise();
         }
 
         /// <summary>
@@ -190,7 +190,7 @@ namespace VDS.RDF.Update.Commands
         {
             if (!this.IsOptimised)
             {
-                this._wherePattern.Optimise(Enumerable.Empty<String>());
+                this._wherePattern.Optimise();
                 this.IsOptimised = true;
             }
         }
@@ -272,17 +272,24 @@ namespace VDS.RDF.Update.Commands
                     try
                     {
                         ConstructContext constructContext = new ConstructContext(g, s, true);
-                        foreach (ITriplePattern p in this._deletePattern.TriplePatterns)
+                        foreach (IConstructTriplePattern p in this._deletePattern.TriplePatterns.OfType<IConstructTriplePattern>())
                         {
-                            deletedTriples.Add(((IConstructTriplePattern)p).Construct(constructContext));
+                            try
+                            {
+                                deletedTriples.Add(p.Construct(constructContext));
+                            }
+                            catch (RdfQueryException)
+                            {
+                                //If we get an error here then we couldn't construct a specific Triple
+                                //so we continue anyway
+                            }
                         }
                         g.Retract(deletedTriples);
                     }
                     catch (RdfQueryException)
                     {
                         //If we throw an error this means we couldn't construct for this solution so the
-                        //solution is discarded
-                        continue;
+                        //solution is ignored this graph
                     }
 
                     //Triples from GRAPH clauses
@@ -333,17 +340,24 @@ namespace VDS.RDF.Update.Commands
                             //Do the actual Deletions
                             IGraph h = context.Data.GetModifiableGraph(new Uri(graphUri));
                             ConstructContext constructContext = new ConstructContext(h, s, true);
-                            foreach (ITriplePattern p in gp.TriplePatterns)
+                            foreach (IConstructTriplePattern p in gp.TriplePatterns.OfType<IConstructTriplePattern>())
                             {
-                                deletedTriples.Add(((IConstructTriplePattern)p).Construct(constructContext));
+                                try
+                                {
+                                    deletedTriples.Add(p.Construct(constructContext));
+                                }
+                                catch (RdfQueryException)
+                                {
+                                    //If we get an error here then we couldn't construct a specific
+                                    //triple so we continue anyway
+                                }
                             }
                             h.Retract(deletedTriples);
                         }
                         catch (RdfQueryException)
                         {
-                            //If we throw an error this means we couldn't construct for this solution so the
-                            //solution is discarded
-                            continue;
+                            //If we get an error here this means we couldn't construct for this solution so the
+                            //solution is ignored for this graph
                         }
                     }
                 }

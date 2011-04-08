@@ -55,7 +55,7 @@ namespace VDS.RDF
         /// <summary>
         /// Gets all the Blank Nodes in the Collection
         /// </summary>
-        public abstract IEnumerable<BlankNode> BlankNodes
+        public abstract IEnumerable<IBlankNode> BlankNodes
         { 
             get;
         }
@@ -78,7 +78,7 @@ namespace VDS.RDF
         /// <summary>
         /// Gets all the Graph Literal Nodes in the Collection
         /// </summary>
-        public abstract IEnumerable<GraphLiteralNode> GraphLiteralNodes
+        public abstract IEnumerable<IGraphLiteralNode> GraphLiteralNodes
         { 
             get;
         }
@@ -86,7 +86,7 @@ namespace VDS.RDF
         /// <summary>
         /// Gets all the Literal Nodes in the Collection
         /// </summary>
-        public abstract IEnumerable<LiteralNode> LiteralNodes 
+        public abstract IEnumerable<ILiteralNode> LiteralNodes 
         { 
             get; 
         }
@@ -94,7 +94,7 @@ namespace VDS.RDF
         /// <summary>
         /// Gets all the Uri Nodes in the Collection
         /// </summary>
-        public abstract IEnumerable<UriNode> UriNodes 
+        public abstract IEnumerable<IUriNode> UriNodes 
         { 
             get; 
         }

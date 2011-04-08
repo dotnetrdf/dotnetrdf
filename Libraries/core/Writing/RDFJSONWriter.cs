@@ -181,7 +181,7 @@ namespace VDS.RDF.Writing
                     else
                     {
                         //Remap Blank Node IDs as appropriate
-                        writer.WritePropertyName("_:" + bnodeMapper.GetOutputID(((BlankNode)t.Subject).InternalID));
+                        writer.WritePropertyName("_:" + bnodeMapper.GetOutputID(((IBlankNode)t.Subject).InternalID));
                     }
 
                     //Start an Object for the Subject
@@ -254,7 +254,7 @@ namespace VDS.RDF.Writing
                 {
                     case NodeType.Blank:
                         //Remap Blank Node IDs as appropriate
-                        writer.WriteValue("_:" + bnodeMapper.GetOutputID(((BlankNode)obj).InternalID));
+                        writer.WriteValue("_:" + bnodeMapper.GetOutputID(((IBlankNode)obj).InternalID));
                         writer.WritePropertyName("type");
                         writer.WriteValue("bnode");
                         break;
@@ -263,7 +263,7 @@ namespace VDS.RDF.Writing
                         throw new RdfOutputException(WriterErrorMessages.GraphLiteralsUnserializable("RDF/JSON"));
 
                     case NodeType.Literal:
-                        LiteralNode lit = (LiteralNode)obj;
+                        ILiteralNode lit = (ILiteralNode)obj;
                         writer.WriteValue(lit.Value);
 
                         if (!lit.Language.Equals(String.Empty))

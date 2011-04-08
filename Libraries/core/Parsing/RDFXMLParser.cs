@@ -40,6 +40,7 @@ using System.Text;
 using System.Xml;
 using System.IO;
 using VDS.RDF.Parsing.Events;
+using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Parsing.Contexts;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
@@ -146,76 +147,13 @@ namespace VDS.RDF.Parsing
         public void Load(IGraph g, StreamReader input)
         {
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
-            if (input == null) throw new RdfParseException("Cannot read RDF from a null Stream");
+            this.Load(new GraphHandler(g), input);
+        }
 
-            //Issue a Warning if the Encoding of the Stream is not UTF-8
-            if (!input.CurrentEncoding.Equals(Encoding.UTF8))
-            {
-#if !SILVERLIGHT
-                this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
-#else
-                this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.GetType().Name + " - Please be aware that parsing errors may occur as a result");
-#endif
-            }
-
-            try
-            {
-//Silverlight only supports XmlReader not the full XmlDocument API
-#if !NO_XMLDOM
-                if (this._mode == RdfXmlParserMode.DOM)
-                {
-                    //Load XML from Stream
-                    XmlDocument doc = new XmlDocument();
-                    doc.Load(input);
-
-                    //Create a new Parser Context and Parse
-                    if (g.IsEmpty)
-                    {
-                        RdfXmlParserContext context = new RdfXmlParserContext(g, doc, this._traceparsing);
-                        this.Parse(context);
-                    }
-                    else
-                    {
-                        Graph h = new Graph();
-                        RdfXmlParserContext context = new RdfXmlParserContext(h, doc, this._traceparsing);
-                        this.Parse(context);
-                        g.Merge(h);
-                    }
-                }
-                else
-                {
-#endif
-                    if (g.IsEmpty)
-                    {
-                        RdfXmlParserContext context = new RdfXmlParserContext(g, input.BaseStream);
-                        this.Parse(context);
-                    }
-                    else
-                    {
-                        Graph h = new Graph();
-                        RdfXmlParserContext context = new RdfXmlParserContext(h, input.BaseStream);
-                        this.Parse(context);
-                        g.Merge(h);
-                    }
-#if !NO_XMLDOM
-                }
-#endif
-            }
-            catch (XmlException xmlEx)
-            {
-                //Wrap in a RDF Parse Exception
-                throw new RdfParseException("Unable to Parse this RDF/XML since System.Xml was unable to parse the document into a DOM Tree", xmlEx);
-            }
-            catch (IOException ioEx)
-            {
-                //Wrap in a RDF Parse Exception
-                throw new RdfParseException("Unable to Parse this RDF/XML due to an IO Exception", ioEx);
-            }
-            catch (Exception)
-            {
-                //Throw unexpected errors upwards as-is
-                throw;
-            }
+        public void Load(IGraph g, TextReader input)
+        {
+            if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
+            this.Load(new GraphHandler(g), input);
         }
 
         /// <summary>
@@ -232,6 +170,87 @@ namespace VDS.RDF.Parsing
             //Open a Stream for the File and call other variant of Load
             StreamReader input = new StreamReader(filename, Encoding.UTF8);
             this.Load(g, input);
+        }
+
+        public void Load(IRdfHandler handler, StreamReader input)
+        {
+            if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
+            if (input == null) throw new RdfParseException("Cannot read RDF from a null Stream");
+
+            //Issue a Warning if the Encoding of the Stream is not UTF-8
+            if (!input.CurrentEncoding.Equals(Encoding.UTF8))
+            {
+#if !SILVERLIGHT
+                this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
+#else
+                this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.GetType().Name + " - Please be aware that parsing errors may occur as a result");
+#endif
+            }
+
+            this.Load(handler, (TextReader)input);
+        }
+
+        public void Load(IRdfHandler handler, TextReader input)
+        {
+            if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
+            if (input == null) throw new RdfParseException("Cannot read RDF from a null TextReader");
+
+            try
+            {
+                //Silverlight only supports XmlReader not the full XmlDocument API
+#if !NO_XMLDOM
+                if (this._mode == RdfXmlParserMode.DOM)
+                {
+                    //Load XML from Stream
+                    XmlDocument doc = new XmlDocument();
+                    doc.Load(input);
+
+                    //Create a new Parser Context and Parse
+                    RdfXmlParserContext context = new RdfXmlParserContext(handler, doc, this._traceparsing);
+                    this.Parse(context);
+                }
+                else
+                {
+#endif
+                    RdfXmlParserContext context = new RdfXmlParserContext(handler, input);
+                    this.Parse(context);
+#if !NO_XMLDOM
+                }
+#endif
+            }
+            catch (XmlException xmlEx)
+            {
+                //Wrap in a RDF Parse Exception
+                throw new RdfParseException("Unable to Parse this RDF/XML since System.Xml was unable to parse the document, see Inner Exception for details", new PositionInfo(xmlEx.LineNumber, xmlEx.LinePosition), xmlEx);
+            }
+            catch (IOException ioEx)
+            {
+                //Wrap in a RDF Parse Exception
+                throw new RdfParseException("Unable to Parse this RDF/XML due to an IO Exception, see Inner Exception for details", ioEx);
+            }
+            catch (Exception)
+            {
+                //Throw unexpected errors upwards as-is
+                throw;
+            }
+            finally
+            {
+                try
+                {
+                    input.Close();
+                }
+                catch
+                {
+                    //Ignore exceptions here - just trying to clean up properly
+                }
+            }
+        }
+
+        public void Load(IRdfHandler handler, String filename)
+        {
+            if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
+            if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
+            this.Load(handler, new StreamReader(filename, Encoding.UTF8));
         }
 
 #if !NO_XMLDOM
@@ -297,18 +316,34 @@ namespace VDS.RDF.Parsing
         /// <param name="context">Parser Context</param>
         private void Parse(RdfXmlParserContext context)
         {
-            //Trace Parser Information
-            if (this._traceparsing)
+            try
             {
-                Console.WriteLine("Trace Format is as follows:");
-                Console.WriteLine("NestingLevel EventType [Description]");
-                Console.WriteLine();
+                context.Handler.StartRdf();
+
+                //Trace Parser Information
+                if (this._traceparsing)
+                {
+                    Console.WriteLine("Trace Format is as follows:");
+                    Console.WriteLine("NestingLevel EventType [Description]");
+                    Console.WriteLine();
+                }
+
+                //Process the Queue
+                this.ProcessEventQueue(context);
+
+                context.Handler.EndRdf(true);
             }
-
-            //Process the Queue
-            this.ProcessEventQueue(context);
+            catch (RdfParsingTerminatedException)
+            {
+                context.Handler.EndRdf(true);
+                //Discard this - it justs means the Handler told us to stop
+            }
+            catch
+            {
+                context.Handler.EndRdf(false);
+                throw;
+            }
         }
-
 
         #region Queue Processing
 
@@ -319,14 +354,17 @@ namespace VDS.RDF.Parsing
         {
             //Get First Event
             IRdfXmlEvent first = context.Events.Dequeue();
-            bool setBaseUri = (context.Graph.BaseUri == null);
+            bool setBaseUri = (context.BaseUri == null);
+            Uri baseUri;
 
             if (first is RootEvent)
             {
                 this.GrammarProductionDoc(context, (RootEvent)first);
                 if (setBaseUri && !((RootEvent)first).BaseUri.Equals(String.Empty))
                 {
-                    context.Graph.BaseUri = new Uri(Tools.ResolveUri(((RootEvent)first).BaseUri, String.Empty));
+                    baseUri = new Uri(Tools.ResolveUri(((RootEvent)first).BaseUri, String.Empty));
+                    context.BaseUri = baseUri;
+                    if (!context.Handler.HandleBaseUri(baseUri)) ParserHelper.Stop();
                 }
             }
             else
@@ -334,7 +372,9 @@ namespace VDS.RDF.Parsing
                 this.GrammarProductionRDF(context, (ElementEvent)first);
                 if (setBaseUri && !((ElementEvent)first).BaseUri.Equals(String.Empty))
                 {
-                    context.Graph.BaseUri = new Uri(Tools.ResolveUri(((ElementEvent)first).BaseUri, String.Empty));
+                    baseUri = new Uri(Tools.ResolveUri(((ElementEvent)first).BaseUri, String.Empty));
+                    context.BaseUri = baseUri;
+                    if (!context.Handler.HandleBaseUri(baseUri)) ParserHelper.Stop();
                 }
             }
 
@@ -388,12 +428,12 @@ namespace VDS.RDF.Parsing
             //Check Uri is correct (using the QName for simplicity)
             if (!element.QName.Equals("rdf:RDF") && !element.QName.Equals(":RDF"))
             {
-                throw RdfXmlSpecsHelper.Error("Unexpected Node '" + element.QName + "', an 'rdf:RDF' node was expected", "RDF", element);
+                throw ParserHelper.Error("Unexpected Node '" + element.QName + "', an 'rdf:RDF' node was expected", "RDF", element);
             }
             //Check has no Attributes
             if (element.Attributes.Count > 0)
             {
-                throw RdfXmlSpecsHelper.Error("Root Node should not contain any attributes other than XML Namespace Declarations", "RDF", element);
+                throw ParserHelper.Error("Root Node should not contain any attributes other than XML Namespace Declarations", "RDF", element);
             }
 
             //Apply Namespaces
@@ -419,7 +459,7 @@ namespace VDS.RDF.Parsing
             next = context.Events.Dequeue();
             if (!(next is EndElementEvent))
             {
-                throw RdfXmlSpecsHelper.Error("Unexpected Event '" + next.GetType().ToString() + "', an EndElementEvent was expected", "RDF", element);
+                throw ParserHelper.Error("Unexpected Event '" + next.GetType().ToString() + "', an EndElementEvent was expected", "RDF", element);
             }
         }
 
@@ -486,7 +526,7 @@ namespace VDS.RDF.Parsing
             if (!(first is ElementEvent))
             {
                 //Unexpected Event
-                throw RdfXmlSpecsHelper.Error("Expected an ElementEvent but encountered a '" + first.GetType().ToString() + "'", "Node Element", first);
+                throw ParserHelper.Error("Expected an ElementEvent but encountered a '" + first.GetType().ToString() + "'", "Node Element", first);
             }
 
             //Check it has a valid Uri
@@ -494,7 +534,7 @@ namespace VDS.RDF.Parsing
             this.ApplyNamespaces(context, element);
             if (!RdfXmlSpecsHelper.IsNodeElementUri(element.QName))
             {
-                throw RdfXmlSpecsHelper.Error("A Node Element was encountered with an invalid URI '" + element.QName + "' \nCore Syntax Terms, Old Syntax Terms and rdf:li cannot be used as Node Element URIs", "Node Element", element);
+                throw ParserHelper.Error("A Node Element was encountered with an invalid URI '" + element.QName + "' \nCore Syntax Terms, Old Syntax Terms and rdf:li cannot be used as Node Element URIs", "Node Element", element);
             }
 
             //Check the set of Attributes is Valid
@@ -517,7 +557,7 @@ namespace VDS.RDF.Parsing
                     //Validate the Node ID
                     if (!XmlSpecsHelper.IsName(attr.Value))
                     {
-                        throw RdfXmlSpecsHelper.Error("The value '" + attr.Value + "' for rdf:nodeID is not valid, RDF Node IDs can only be valid Names as defined by the W3C XML Specification", "Node Element", attr);
+                        throw ParserHelper.Error("The value '" + attr.Value + "' for rdf:nodeID is not valid, RDF Node IDs can only be valid Names as defined by the W3C XML Specification", "Node Element", attr);
                     }
 
                     //Set the Subject
@@ -537,13 +577,13 @@ namespace VDS.RDF.Parsing
                 else
                 {
                     //Unknown and Unexpected Attribute Type
-                    throw RdfXmlSpecsHelper.Error("Unexpected Attribute '" + attr.QName + "' was encountered!", "Node Element", element);
+                    throw ParserHelper.Error("Unexpected Attribute '" + attr.QName + "' was encountered!", "Node Element", element);
                 }
 
                 //Can't have more than 1 of ID, Node ID or About Attributes
                 if (limitedAttributesFound > 1)
                 {
-                    throw RdfXmlSpecsHelper.Error("A Node Element can only have 1 of the following attributes: rdf:id, rdf:nodeID, rdf:about", "Node Element", element);
+                    throw ParserHelper.Error("A Node Element can only have 1 of the following attributes: rdf:id, rdf:nodeID, rdf:about", "Node Element", element);
                 }
             }
 
@@ -571,16 +611,16 @@ namespace VDS.RDF.Parsing
                     //Note that we let the Graph class handle generation of IDs
                     if (blank.Identifier.Equals(String.Empty))
                     {
-                        subj = context.Graph.CreateBlankNode();
+                        subj = context.Handler.CreateBlankNode();
                     }
                     else
                     {
-                        subj = context.Graph.CreateBlankNode(blank.Identifier);
+                        subj = context.Handler.CreateBlankNode(blank.Identifier);
                     }
                 }
                 else
                 {
-                    throw RdfXmlSpecsHelper.Error("Unexpected Subject generated for a Triple", "Node Element", element.Subject);
+                    throw ParserHelper.Error("Unexpected Subject generated for a Triple", "Node Element", element.Subject);
                 }
             } else {
                 subj = element.SubjectNode;
@@ -598,9 +638,9 @@ namespace VDS.RDF.Parsing
             if (!element.QName.Equals("rdf:Description") && !element.QName.Equals(":Description"))
             {
                 //Assert a Triple regarding Type
-                pred = context.Graph.CreateUriNode("rdf:type");
-                obj = context.Graph.CreateUriNode(element.QName);
-                context.Graph.Assert(new Triple(subj, pred, obj));
+                pred = context.Handler.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
+                obj = this.Resolve(context, element);//context.Handler.CreateUriNode(element.QName);
+                if (!context.Handler.HandleTriple(new Triple(subj, pred, obj))) ParserHelper.Stop();
             }
 
             //Go back over Attributes looking for property attributes
@@ -611,30 +651,30 @@ namespace VDS.RDF.Parsing
                     if (attr.QName.Equals("rdf:type"))
                     {
                         //Generate a Type Triple
-                        pred = context.Graph.CreateUriNode("rdf:type");
+                        pred = context.Handler.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
 
                         //Resolve URIRef into a Uri Node
                         UriReferenceEvent uriref = new UriReferenceEvent(attr.Value, attr.SourceXml);
                         obj = this.Resolve(context, uriref, element.BaseUri);
 
-                        context.Graph.Assert(new Triple(subj, pred, obj));
+                        if (!context.Handler.HandleTriple(new Triple(subj, pred, obj))) ParserHelper.Stop();
                     }
                     else
                     {
                         //Generate a Property Triple
-                        pred = context.Graph.CreateUriNode(attr.QName);
+                        pred = context.Handler.CreateUriNode(new Uri(Tools.ResolveQName(attr.QName, context.Namespaces, context.BaseUri)));
 
                         //Add Language to Literal if necessary
                         if (element.Language.Equals(String.Empty))
                         {
-                            obj = context.Graph.CreateLiteralNode(attr.Value);
+                            obj = context.Handler.CreateLiteralNode(attr.Value);
                         }
                         else
                         {
-                            obj = context.Graph.CreateLiteralNode(attr.Value, element.Language);
+                            obj = context.Handler.CreateLiteralNode(attr.Value, element.Language);
                         }
 
-                        context.Graph.Assert(new Triple(subj, pred, obj));
+                        if (!context.Handler.HandleTriple(new Triple(subj, pred, obj))) ParserHelper.Stop();
                     }
                 }
             }
@@ -651,7 +691,7 @@ namespace VDS.RDF.Parsing
             IRdfXmlEvent last = eventlist.Dequeue();
             if (!(last is EndElementEvent))
             {
-                throw RdfXmlSpecsHelper.Error("Unexpected Event '" + last.GetType().ToString() + "', expected an EndElement Event", "NodeElement", last);
+                throw ParserHelper.Error("Unexpected Event '" + last.GetType().ToString() + "', expected an EndElement Event", "NodeElement", last);
             }
         }
 
@@ -721,7 +761,7 @@ namespace VDS.RDF.Parsing
             if (!(first is ElementEvent))
             {
                 //Unexpected Event
-                throw RdfXmlSpecsHelper.Error("Expected an ElementEvent but encountered a '" + first.GetType().ToString() + "'", "PropertyElement", first);
+                throw ParserHelper.Error("Expected an ElementEvent but encountered a '" + first.GetType().ToString() + "'", "PropertyElement", first);
             }
 
             //Validate the Uri
@@ -730,7 +770,7 @@ namespace VDS.RDF.Parsing
             if (!RdfXmlSpecsHelper.IsPropertyElementURI(element.QName))
             {
                 //Invalid Uri
-                throw RdfXmlSpecsHelper.Error("A Property Element was encountered with an invalid URI '" + element.QName + "'\nCore Syntax Terms, Old Syntax Terms and rdf:Description cannot be used as Property Element URIs", "PropertyElement", element);
+                throw ParserHelper.Error("A Property Element was encountered with an invalid URI '" + element.QName + "'\nCore Syntax Terms, Old Syntax Terms and rdf:Description cannot be used as Property Element URIs", "PropertyElement", element);
             }
 
             //List Expansion
@@ -770,7 +810,7 @@ namespace VDS.RDF.Parsing
                 else
                 {
                     //Error
-                    throw RdfXmlSpecsHelper.Error("An Element which should be Parsed with the Default Parsing Rules was encountered without a valid subsequent Event - Parser cannot proceed!", "Property Element", element);
+                    throw ParserHelper.Error("An Element which should be Parsed with the Default Parsing Rules was encountered without a valid subsequent Event - Parser cannot proceed!", "Property Element", element);
                 }
             }
             else if (element.ParseType == RdfXmlParseType.Literal)
@@ -799,7 +839,7 @@ namespace VDS.RDF.Parsing
             else
             {
                 //Error
-                throw RdfXmlSpecsHelper.Error("An Element without a known Parse Type was encountered Or the Parser was unable to determine what to do based on the subsequent event - Parser cannot proceed!", "Node Element", element);
+                throw ParserHelper.Error("An Element without a known Parse Type was encountered Or the Parser was unable to determine what to do based on the subsequent event - Parser cannot proceed!", "Node Element", element);
             }
         }
 
@@ -831,13 +871,13 @@ namespace VDS.RDF.Parsing
             String ID = String.Empty;
             if (element.Attributes.Count > 1)
             {
-                throw RdfXmlSpecsHelper.Error("A Resource Property Element contains too many Attributes, only rdf:ID is permitted", element);
+                throw ParserHelper.Error("A Resource Property Element contains too many Attributes, only rdf:ID is permitted", element);
             }
             else if (element.Attributes.Count == 1)
             {
                 if (!RdfXmlSpecsHelper.IsIDAttribute(element.Attributes.First()))
                 {
-                    throw RdfXmlSpecsHelper.Error("A Resource Property Element was encountered with a single attribute which was not rdf:ID, only rdf:ID is permitted", element);
+                    throw ParserHelper.Error("A Resource Property Element was encountered with a single attribute which was not rdf:ID, only rdf:ID is permitted", element);
                 }
                 else
                 {
@@ -848,7 +888,7 @@ namespace VDS.RDF.Parsing
             //Next must be an ElementEvent
             if (!(next is ElementEvent))
             {
-                throw RdfXmlSpecsHelper.Error("Unexpected Event '" + next.GetType().ToString() + "', expected an ElementEvent as the first Event in a Resource Property Elements Event list", next);
+                throw ParserHelper.Error("Unexpected Event '" + next.GetType().ToString() + "', expected an ElementEvent as the first Event in a Resource Property Elements Event list", next);
             }
 
             //Get list of Sub Events
@@ -863,7 +903,7 @@ namespace VDS.RDF.Parsing
             IRdfXmlEvent last = eventlist.Dequeue();
             if (!(last is EndElementEvent))
             {
-                throw RdfXmlSpecsHelper.Error("Unexpected Event '" + last.GetType().ToString() + "', expected an EndElement Event", last);
+                throw ParserHelper.Error("Unexpected Event '" + last.GetType().ToString() + "', expected an EndElement Event", last);
             }
 
             //Now we can generate the relevant RDF
@@ -872,7 +912,7 @@ namespace VDS.RDF.Parsing
             //Validate the Type of the Parent
             if (!(parent is ElementEvent))
             {
-                throw RdfXmlSpecsHelper.Error("Unexpected Parent Event '" + parent.GetType().ToString() + "', expected an ElementEvent", parent);
+                throw ParserHelper.Error("Unexpected Parent Event '" + parent.GetType().ToString() + "', expected an ElementEvent", parent);
             }
             ElementEvent parentEl = (ElementEvent)parent;
 
@@ -886,14 +926,14 @@ namespace VDS.RDF.Parsing
             }
 
             //Create a Predicate from this Element
-            pred = context.Graph.CreateUriNode(element.QName);
+            pred = this.Resolve(context, element);//context.Handler.CreateUriNode(element.QName);
 
             //Get the Object Node from the Child Node
             ElementEvent child = (ElementEvent)next;
             obj = child.SubjectNode;
 
             //Assert the Triple
-            context.Graph.Assert(new Triple(subj, pred, obj));
+            if (!context.Handler.HandleTriple(new Triple(subj, pred, obj))) ParserHelper.Stop();
 
             //Add Reification where appropriate
             if (element.Attributes.Count == 1)
@@ -903,7 +943,7 @@ namespace VDS.RDF.Parsing
                 //Get the Attribute Event and generate a Uri from it
                 AttributeEvent attr = element.Attributes.First();
                 UriReferenceEvent uriref = new UriReferenceEvent("#" + attr.Value, attr.SourceXml);
-                UriNode uri = this.Resolve(context, uriref, element.BaseUri);
+                IUriNode uri = this.Resolve(context, uriref, element.BaseUri);
 
                 this.Reify(context, uri, subj, pred, obj);
             }
@@ -932,7 +972,7 @@ namespace VDS.RDF.Parsing
             //If Queue is non-empty then Error
             if (eventlist.Count > 0)
             {
-                throw RdfXmlSpecsHelper.Error("Too many events encountered while trying to parse a Literal Property Element", first);
+                throw ParserHelper.Error("Too many events encountered while trying to parse a Literal Property Element", first);
             }
 
             ElementEvent element = (ElementEvent)first;
@@ -943,7 +983,7 @@ namespace VDS.RDF.Parsing
             //Validate that the middle event is a TextEvent
             if (!(middle is TextEvent))
             {
-                throw RdfXmlSpecsHelper.Error("Unexpected event '" + middle.GetType().ToString() + "', expected a TextEvent in a Literal Property Element", middle);
+                throw ParserHelper.Error("Unexpected event '" + middle.GetType().ToString() + "', expected a TextEvent in a Literal Property Element", middle);
             }
             TextEvent text = (TextEvent)middle;
 
@@ -952,7 +992,7 @@ namespace VDS.RDF.Parsing
             String datatype = String.Empty;
             if (element.Attributes.Count > 2)
             {
-                throw RdfXmlSpecsHelper.Error("A Literal Property Element contains too many attributes, only rdf:ID and rdf:datatype are permitted", element);
+                throw ParserHelper.Error("A Literal Property Element contains too many attributes, only rdf:ID and rdf:datatype are permitted", element);
             }
             else
             {
@@ -968,7 +1008,7 @@ namespace VDS.RDF.Parsing
                     } 
                     else 
                     {
-                        throw RdfXmlSpecsHelper.Error("A Literal Property Element contains an unexpected attribute, only rdf:ID and rdf:datatype are permitted", element);
+                        throw ParserHelper.Error("A Literal Property Element contains an unexpected attribute, only rdf:ID and rdf:datatype are permitted", element);
                     }
                 }
             }
@@ -987,7 +1027,7 @@ namespace VDS.RDF.Parsing
             }
 
             //Create a Predicate from this Element
-            pred = context.Graph.CreateUriNode(element.QName);
+            pred = this.Resolve(context, element);//context.Handler.CreateUriNode(element.QName);
 
             //Create an Object from the Text Event
             if (datatype.Equals(String.Empty))
@@ -995,11 +1035,11 @@ namespace VDS.RDF.Parsing
                 //No Type with possible Language
                 if (element.Language.Equals(String.Empty))
                 {
-                    obj = context.Graph.CreateLiteralNode(text.Value);
+                    obj = context.Handler.CreateLiteralNode(text.Value);
                 }
                 else
                 {
-                    obj = context.Graph.CreateLiteralNode(text.Value, element.Language);
+                    obj = context.Handler.CreateLiteralNode(text.Value, element.Language);
                 }
             }
             else
@@ -1008,20 +1048,20 @@ namespace VDS.RDF.Parsing
 
                 //Resolve the Datatype Uri
                 UriReferenceEvent dtref = new UriReferenceEvent(datatype, String.Empty);
-                UriNode dturi = this.Resolve(context, dtref, element.BaseUri);
+                IUriNode dturi = this.Resolve(context, dtref, element.BaseUri);
 
-                obj = context.Graph.CreateLiteralNode(text.Value, dturi.Uri);
+                obj = context.Handler.CreateLiteralNode(text.Value, dturi.Uri);
             }
 
             //Assert the Triple
-            context.Graph.Assert(new Triple(subj, pred, obj));
+            if (!context.Handler.HandleTriple(new Triple(subj, pred, obj))) ParserHelper.Stop();
 
             //Reify if applicable
             if (!ID.Equals(String.Empty))
             {
                 //Resolve the Uri
                 UriReferenceEvent uriref = new UriReferenceEvent(ID, String.Empty);
-                UriNode uri = this.Resolve(context, uriref,element.BaseUri);
+                IUriNode uri = this.Resolve(context, uriref,element.BaseUri);
 
                 this.Reify(context, uri, subj, pred, obj);
             }
@@ -1054,7 +1094,7 @@ namespace VDS.RDF.Parsing
             if (element.Attributes.Count > 2)
             {
                 //Can't be more than 2 Attributes, only allowed an optional rdf:ID and a required rdf:parseType
-                throw RdfXmlSpecsHelper.Error("An Property Element with Parse Type 'Literal' was encountered with too many Attributes.  Only rdf:ID and rdf:parseType are allowed on Property Elements with Parse Type 'Literal'", "Parse Type Literal Property Element", element);
+                throw ParserHelper.Error("An Property Element with Parse Type 'Literal' was encountered with too many Attributes.  Only rdf:ID and rdf:parseType are allowed on Property Elements with Parse Type 'Literal'", "Parse Type Literal Property Element", element);
             }
             else
             {
@@ -1072,7 +1112,7 @@ namespace VDS.RDF.Parsing
                     else
                     {
                         //Invalid Attribute
-                        throw RdfXmlSpecsHelper.Error("Unexpected Attribute '" + a.QName + "' was encountered on a Property Element with Parse Type 'Literal'.  Only rdf:ID and rdf:parseType are allowed on Property Elements with Parse Type 'Literal'", "Parse Type Literal Property Element", element);
+                        throw ParserHelper.Error("Unexpected Attribute '" + a.QName + "' was encountered on a Property Element with Parse Type 'Literal'.  Only rdf:ID and rdf:parseType are allowed on Property Elements with Parse Type 'Literal'", "Parse Type Literal Property Element", element);
                     }
                 }
             }
@@ -1082,7 +1122,7 @@ namespace VDS.RDF.Parsing
             IRdfXmlEvent lit = eventlist.Dequeue();
             if (!(lit is TypedLiteralEvent))
             {
-                throw RdfXmlSpecsHelper.Error("Unexpected Event '" + lit.GetType().ToString() + "', expected a TypedLiteralEvent after a Property Element with Parse Type 'Literal'", "Parse Type Literal Property Element", lit);
+                throw ParserHelper.Error("Unexpected Event '" + lit.GetType().ToString() + "', expected a TypedLiteralEvent after a Property Element with Parse Type 'Literal'", "Parse Type Literal Property Element", lit);
             }
 
             //Get the Subject from the Parent
@@ -1097,7 +1137,7 @@ namespace VDS.RDF.Parsing
             }
 
             //Create the Predicate from the Element
-            pred = context.Graph.CreateUriNode(element.QName);
+            pred = this.Resolve(context, element);//context.Handler.CreateUriNode(element.QName);
 
             //Create the Object from the Typed Literal
             TypedLiteralEvent tlit = (TypedLiteralEvent)lit;
@@ -1106,17 +1146,17 @@ namespace VDS.RDF.Parsing
 #if !NO_NORM
             xmllit = xmllit.Normalize();
 #endif
-            obj = context.Graph.CreateLiteralNode(xmllit, new Uri(tlit.DataType));
+            obj = context.Handler.CreateLiteralNode(xmllit, new Uri(tlit.DataType));
 
             //Assert the Triple
-            context.Graph.Assert(new Triple(subj, pred, obj));
+            if (!context.Handler.HandleTriple(new Triple(subj, pred, obj))) ParserHelper.Stop();
 
             //Reify if applicable
             if (!ID.Equals(String.Empty))
             {
                 //Resolve the Uri
                 UriReferenceEvent uriref = new UriReferenceEvent(ID, String.Empty);
-                UriNode uri = this.Resolve(context, uriref,element.BaseUri);
+                IUriNode uri = this.Resolve(context, uriref,element.BaseUri);
 
                 this.Reify(context, uri, subj, pred, obj);
             }
@@ -1125,7 +1165,7 @@ namespace VDS.RDF.Parsing
             IRdfXmlEvent next = eventlist.Dequeue();
             if (!(next is EndElementEvent))
             {
-                throw RdfXmlSpecsHelper.Error("Unexpected Event '" + next.GetType().ToString() + "', expected an EndElementEvent to terminate a Parse Type Literal Property Element!", "Parse Type Literal Property Element", next);
+                throw ParserHelper.Error("Unexpected Event '" + next.GetType().ToString() + "', expected an EndElementEvent to terminate a Parse Type Literal Property Element!", "Parse Type Literal Property Element", next);
             }
         }
 
@@ -1156,7 +1196,7 @@ namespace VDS.RDF.Parsing
             if (element.Attributes.Count > 2)
             {
                 //Can't be more than 2 Attributes, only allowed an optional rdf:ID and a required rdf:parseType
-                throw RdfXmlSpecsHelper.Error("An Property Element with Parse Type 'Resource' was encountered with too many Attributes.  Only rdf:ID and rdf:parseType are allowed on Property Elements with Parse Type 'Resource'", "Parse Type Resource Property Element", element);
+                throw ParserHelper.Error("An Property Element with Parse Type 'Resource' was encountered with too many Attributes.  Only rdf:ID and rdf:parseType are allowed on Property Elements with Parse Type 'Resource'", "Parse Type Resource Property Element", element);
             }
             else
             {
@@ -1174,7 +1214,7 @@ namespace VDS.RDF.Parsing
                     else
                     {
                         //Invalid Attribute
-                        throw RdfXmlSpecsHelper.Error("Unexpected Attribute '" + a.QName + "' was encountered on a Property Element with Parse Type 'Resource'.  Only rdf:ID and rdf:parseType are allowed on Property Elements with Parse Type 'Resource'", "Parse Type Resource Property Element", element);
+                        throw ParserHelper.Error("Unexpected Attribute '" + a.QName + "' was encountered on a Property Element with Parse Type 'Resource'.  Only rdf:ID and rdf:parseType are allowed on Property Elements with Parse Type 'Resource'", "Parse Type Resource Property Element", element);
                     }
                 }
             }
@@ -1193,20 +1233,20 @@ namespace VDS.RDF.Parsing
             }
 
             //Create the Predicate from the Element
-            pred = context.Graph.CreateUriNode(element.QName);
+            pred = this.Resolve(context, element);//context.Handler.CreateUriNode(element.QName);
 
             //Generate a Blank Node ID for the Object
-            obj = context.Graph.CreateBlankNode();
+            obj = context.Handler.CreateBlankNode();
 
             //Assert
-            context.Graph.Assert(new Triple(subj, pred, obj));
+            if (!context.Handler.HandleTriple(new Triple(subj, pred, obj))) ParserHelper.Stop();
 
             //Reify if applicable
             if (!ID.Equals(String.Empty))
             {
                 //Resolve the Uri
                 UriReferenceEvent uriref = new UriReferenceEvent(ID, String.Empty);
-                UriNode uri = this.Resolve(context, uriref,element.BaseUri);
+                IUriNode uri = this.Resolve(context, uriref,element.BaseUri);
 
                 this.Reify(context, uri, subj, pred, obj);
             }
@@ -1249,13 +1289,13 @@ namespace VDS.RDF.Parsing
             }
             else
             {
-                throw RdfXmlSpecsHelper.Error("Unexpected Event '" + next.GetType().ToString() + "', expected an ElementEvent or EndElementEvent after a Parse Type Resource Property Element!", "Parse Type Resource Property Element", next);
+                throw ParserHelper.Error("Unexpected Event '" + next.GetType().ToString() + "', expected an ElementEvent or EndElementEvent after a Parse Type Resource Property Element!", "Parse Type Resource Property Element", next);
             }
 
             //Check for the last thing being an EndElement Event
             if (!(next is EndElementEvent))
             {
-                throw RdfXmlSpecsHelper.Error("Unexpected Event '" + next.GetType().ToString() + "', expected an EndElementEvent to terminate a Parse Type Resource Property Element!", "Parse Type Resource Property Element", next);
+                throw ParserHelper.Error("Unexpected Event '" + next.GetType().ToString() + "', expected an EndElementEvent to terminate a Parse Type Resource Property Element!", "Parse Type Resource Property Element", next);
             }
         }
 
@@ -1286,7 +1326,7 @@ namespace VDS.RDF.Parsing
             if (element.Attributes.Count > 2)
             {
                 //Can't be more than 2 Attributes, only allowed an optional rdf:ID and a required rdf:parseType
-                throw RdfXmlSpecsHelper.Error("An Property Element with Parse Type 'Collection' was encountered with too many Attributes.  Only rdf:ID and rdf:parseType are allowed on Property Elements with Parse Type 'Collection'", "Parse Type Collection Property Element", element);
+                throw ParserHelper.Error("An Property Element with Parse Type 'Collection' was encountered with too many Attributes.  Only rdf:ID and rdf:parseType are allowed on Property Elements with Parse Type 'Collection'", "Parse Type Collection Property Element", element);
             }
             else
             {
@@ -1304,7 +1344,7 @@ namespace VDS.RDF.Parsing
                     else
                     {
                         //Invalid Attribute
-                        throw RdfXmlSpecsHelper.Error("Unexpected Attribute '" + a.QName + "' was encountered on a Property Element with Parse Type 'Collection'.  Only rdf:ID and rdf:parseType are allowed on Property Elements with Parse Type 'Collection'", "Parse Type Collection Property Element", element);
+                        throw ParserHelper.Error("Unexpected Attribute '" + a.QName + "' was encountered on a Property Element with Parse Type 'Collection'.  Only rdf:ID and rdf:parseType are allowed on Property Elements with Parse Type 'Collection'", "Parse Type Collection Property Element", element);
                     }
                 }
             }
@@ -1365,7 +1405,7 @@ namespace VDS.RDF.Parsing
             }
 
             //Predicate from the Element
-            pred = context.Graph.CreateUriNode(element.QName);
+            pred = this.Resolve(context, element);//context.Handler.CreateUriNode(element.QName);
 
             if (seqNodes.Count > 0)
             {
@@ -1376,61 +1416,61 @@ namespace VDS.RDF.Parsing
                 node = seqNodes.Dequeue();
 
                 //Object is first thing in the Sequence which we create a Blank Node for
-                b1 = context.Graph.CreateBlankNode();
+                b1 = context.Handler.CreateBlankNode();
 
                 //Assert
-                context.Graph.Assert(new Triple(subj, pred, b1));
+                if (!context.Handler.HandleTriple(new Triple(subj, pred, b1))) ParserHelper.Stop();
 
                 //Reify if applicable
                 if (!ID.Equals(String.Empty))
                 {
                     //Resolve the Uri
                     UriReferenceEvent uriref = new UriReferenceEvent(ID, String.Empty);
-                    UriNode uri = this.Resolve(context, uriref, element.BaseUri);
+                    IUriNode uri = this.Resolve(context, uriref, element.BaseUri);
 
                     this.Reify(context, uri, subj, pred, b1);
                 }
 
                 //Set the first element in the list
                 subj = b1;
-                firstPred = context.Graph.CreateUriNode("rdf:first");
-                context.Graph.Assert(new Triple(subj, firstPred, node.SubjectNode));
+                firstPred = context.Handler.CreateUriNode(new Uri(RdfSpecsHelper.RdfListFirst));
+                if (!context.Handler.HandleTriple(new Triple(subj, firstPred, node.SubjectNode))) ParserHelper.Stop();
 
                 //Middle elements of the list
-                restPred = context.Graph.CreateUriNode("rdf:rest");
+                restPred = context.Handler.CreateUriNode(new Uri(RdfSpecsHelper.RdfListRest));
                 while (seqNodes.Count >= 1)
                 {
                     node = seqNodes.Dequeue();
 
                     //Set Node 2 to be the rest of the previous items list
-                    b2 = context.Graph.CreateBlankNode();
-                    context.Graph.Assert(new Triple(b1, restPred, b2));
+                    b2 = context.Handler.CreateBlankNode();
+                    if (!context.Handler.HandleTriple(new Triple(b1, restPred, b2))) ParserHelper.Stop();
 
                     //Set Node 2 to be the start of it's own list
-                    context.Graph.Assert(new Triple(b2, firstPred, node.SubjectNode));
+                    if (!context.Handler.HandleTriple(new Triple(b2, firstPred, node.SubjectNode))) ParserHelper.Stop();
 
                     b1 = b2;
                 }
 
                 //Set last element of the list to have its rest as nil
-                context.Graph.Assert(new Triple(b1, restPred, context.Graph.CreateUriNode("rdf:nil")));
+                if (!context.Handler.HandleTriple(new Triple(b1, restPred, context.Handler.CreateUriNode(new Uri(RdfSpecsHelper.RdfListNil))))) ParserHelper.Stop();
             }
             else
             {
                 //Empty list
 
                 //Object is therefore rdf:nil
-                obj = context.Graph.CreateUriNode("rdf:nil");
+                obj = context.Handler.CreateUriNode(new Uri(RdfSpecsHelper.RdfListNil));
 
                 //Assert
-                context.Graph.Assert(new Triple(subj, pred, obj));
+                if (!context.Handler.HandleTriple(new Triple(subj, pred, obj))) ParserHelper.Stop();
 
                 //Reify if applicable
                 if (!ID.Equals(String.Empty))
                 {
                     //Resolve the Uri
                     UriReferenceEvent uriref = new UriReferenceEvent(ID, String.Empty);
-                    UriNode uri = this.Resolve(context, uriref, element.BaseUri);
+                    IUriNode uri = this.Resolve(context, uriref, element.BaseUri);
 
                     this.Reify(context, uri, subj, pred, obj);
                 }
@@ -1440,7 +1480,7 @@ namespace VDS.RDF.Parsing
             next = eventlist.Dequeue();
             if (!(next is EndElementEvent))
             {
-                throw RdfXmlSpecsHelper.Error("Unexpected Event '" + next.GetType().ToString() + "', expected an EndElementEvent to terminate a Parse Type Collection Property Element!", "Parse Type Collection Property Element", next);
+                throw ParserHelper.Error("Unexpected Event '" + next.GetType().ToString() + "', expected an EndElementEvent to terminate a Parse Type Collection Property Element!", "Parse Type Collection Property Element", next);
             }
         }
 
@@ -1474,20 +1514,20 @@ namespace VDS.RDF.Parsing
                 subj = parentEl.SubjectNode;
 
                 //Create the Predicate from the Element
-                pred = context.Graph.CreateUriNode(element.QName);
+                pred = this.Resolve(context, element);//context.Handler.CreateUriNode(element.QName);
 
                 //Create the Object
                 if (!element.Language.Equals(String.Empty))
                 {
-                    obj = context.Graph.CreateLiteralNode(String.Empty, element.Language);
+                    obj = context.Handler.CreateLiteralNode(String.Empty, element.Language);
                 }
                 else
                 {
-                    obj = context.Graph.CreateLiteralNode(String.Empty);
+                    obj = context.Handler.CreateLiteralNode(String.Empty);
                 }
 
                 //Make the Assertion
-                context.Graph.Assert(new Triple(subj, pred, obj));
+                if (!context.Handler.HandleTriple(new Triple(subj, pred, obj))) ParserHelper.Stop();
 
                 //Reifiy if applicable
                 if (element.Attributes.Count == 1)
@@ -1497,7 +1537,7 @@ namespace VDS.RDF.Parsing
 
                     //Resolve the Uri
                     UriReferenceEvent uriref = new UriReferenceEvent("#" + element.Attributes[0].Value, String.Empty);
-                    UriNode uri = this.Resolve(context, uriref, element.BaseUri);
+                    IUriNode uri = this.Resolve(context, uriref, element.BaseUri);
 
                     this.Reify(context, uri, subj, pred, obj);
                 }
@@ -1538,7 +1578,7 @@ namespace VDS.RDF.Parsing
                         if (!XmlSpecsHelper.IsName(a.Value))
                         {
                             //Invalid nodeID
-                            throw RdfXmlSpecsHelper.Error("The value '" + a.Value + "' for rdf:nodeID is not valid, RDF Node IDs can only be valid Names as defined by the W3C XML Specification", "Empty Property Element", a);
+                            throw ParserHelper.Error("The value '" + a.Value + "' for rdf:nodeID is not valid, RDF Node IDs can only be valid Names as defined by the W3C XML Specification", "Empty Property Element", a);
                         }
                         res = new BlankNodeIDEvent(a.Value, a.SourceXml);
                         limitedAttributes++;
@@ -1552,7 +1592,7 @@ namespace VDS.RDF.Parsing
                     //Check we haven't got more than 1 of the Limited Attributes
                     if (limitedAttributes > 1)
                     {
-                        throw RdfXmlSpecsHelper.Error("A Property Element can only have 1 of the following attributes: rdf:nodeID or rdf:resource", "Empty Property Element", element);
+                        throw ParserHelper.Error("A Property Element can only have 1 of the following attributes: rdf:nodeID or rdf:resource", "Empty Property Element", element);
                     }
                 }
                 if (res == null)
@@ -1574,19 +1614,19 @@ namespace VDS.RDF.Parsing
                     if (blank.Identifier.Equals(String.Empty))
                     {
                         //Have the Graph generate a Blank Node ID
-                        subj = context.Graph.CreateBlankNode();
+                        subj = context.Handler.CreateBlankNode();
                     }
                     else
                     {
                         //Use the supplied Blank Node ID
-                        subj = context.Graph.CreateBlankNode(blank.Identifier);
+                        subj = context.Handler.CreateBlankNode(blank.Identifier);
                     }
                 }
                 else
                 {
                     //Should never hit this case but required to get the Code to Compile
                     //Have the Graph generate a Blank Node ID
-                    subj = context.Graph.CreateBlankNode();
+                    subj = context.Handler.CreateBlankNode();
                 }
 
                 //Validate the ID (if any)
@@ -1597,15 +1637,15 @@ namespace VDS.RDF.Parsing
 
                 //Relate the Property element to its parent
                 parentEl = (ElementEvent)parent;
-                pred = context.Graph.CreateUriNode(element.QName);
-                context.Graph.Assert(new Triple(parentEl.SubjectNode, pred, subj));
+                pred = this.Resolve(context, element);//context.Handler.CreateUriNode(element.QName);
+                if (!context.Handler.HandleTriple(new Triple(parentEl.SubjectNode, pred, subj))) ParserHelper.Stop();
 
                 //Reify if applicable
                 if (!ID.Equals(String.Empty))
                 {
                     //Resolve the Uri
                     UriReferenceEvent uriref = new UriReferenceEvent(ID, String.Empty);
-                    UriNode uri = this.Resolve(context, uriref, element.BaseUri);
+                    IUriNode uri = this.Resolve(context, uriref, element.BaseUri);
 
                     this.Reify(context, uri, parentEl.SubjectNode, pred, subj);
                 }
@@ -1619,10 +1659,10 @@ namespace VDS.RDF.Parsing
 
                         //Assert a Type Triple
                         UriReferenceEvent type = new UriReferenceEvent(a.Value, a.SourceXml);
-                        pred = context.Graph.CreateUriNode("rdf:type");
+                        pred = context.Handler.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
                         obj = this.Resolve(context, type, element.BaseUri);
 
-                        context.Graph.Assert(new Triple(parentEl.SubjectNode, pred, obj));
+                        if (!context.Handler.HandleTriple(new Triple(parentEl.SubjectNode, pred, obj))) ParserHelper.Stop();
                     }
                     else if (RdfXmlSpecsHelper.IsPropertyAttribute(a))
                     {
@@ -1632,26 +1672,26 @@ namespace VDS.RDF.Parsing
 #if !NO_NORM
                         if (!a.Value.IsNormalized())
                         {
-                            throw RdfXmlSpecsHelper.Error("Encountered a Property Attribute '" + a.QName + "' whose value was not correctly normalized in Unicode Normal Form C", "Empty Property Element", a);
+                            throw ParserHelper.Error("Encountered a Property Attribute '" + a.QName + "' whose value was not correctly normalized in Unicode Normal Form C", "Empty Property Element", a);
                         }
                         else
                         {
 #endif
                             //Create the Predicate from the Attribute QName
-                            pred = context.Graph.CreateUriNode(a.QName);
+                            pred = context.Handler.CreateUriNode(new Uri(Tools.ResolveQName(a.QName, context.Namespaces, context.BaseUri)));
 
                             //Create the Object from the Attribute Value
                             if (element.Language.Equals(String.Empty))
                             {
-                                obj = context.Graph.CreateLiteralNode(a.Value);
+                                obj = context.Handler.CreateLiteralNode(a.Value);
                             }
                             else
                             {
-                                obj = context.Graph.CreateLiteralNode(a.Value, element.Language);
+                                obj = context.Handler.CreateLiteralNode(a.Value, element.Language);
                             }
 
                             //Assert the Property Triple
-                            context.Graph.Assert(new Triple(subj, pred, obj));
+                            if (!context.Handler.HandleTriple(new Triple(subj, pred, obj))) ParserHelper.Stop();
 #if !NO_NORM
                         }
 #endif
@@ -1659,12 +1699,12 @@ namespace VDS.RDF.Parsing
                     else if (RdfXmlSpecsHelper.IsIDAttribute(a) || RdfXmlSpecsHelper.IsNodeIDAttribute(a) || RdfXmlSpecsHelper.IsResourceAttribute(a))
                     {
                         //These have already been processed
-                        //We test for them so that we can then throw RdfXmlSpecsHelper.Errors in the final case for unexpected attributes
+                        //We test for them so that we can then throw ParserHelper.Errors in the final case for unexpected attributes
                     }
                     else
                     {
                         //Unexpected Attribute
-                        throw RdfXmlSpecsHelper.Error("Unexpected Attribute '" + a.QName + "' encountered on a Property Element!  Only rdf:ID, rdf:resource, rdf:nodeID and Property Attributes are permitted on Property Elements", "Empty Property Element", element);
+                        throw ParserHelper.Error("Unexpected Attribute '" + a.QName + "' encountered on a Property Element!  Only rdf:ID, rdf:resource, rdf:nodeID and Property Attributes are permitted on Property Elements", "Empty Property Element", element);
                     }
                 }
             }
@@ -1684,11 +1724,14 @@ namespace VDS.RDF.Parsing
         {
             if (!evt.BaseUri.Equals(String.Empty))
             {
-                context.Graph.BaseUri = new Uri(Tools.ResolveUri(evt.BaseUri, context.Graph.BaseUri.ToSafeString()));
+                Uri baseUri = new Uri(Tools.ResolveUri(evt.BaseUri, context.BaseUri.ToSafeString()));
+                context.BaseUri = baseUri;
+                if (!context.Handler.HandleBaseUri(baseUri)) ParserHelper.Stop();
             }
             foreach (NamespaceAttributeEvent ns in evt.NamespaceAttributes)
             {
-                context.Graph.NamespaceMap.AddNamespace(ns.Prefix, new Uri(ns.Uri));
+                context.Namespaces.AddNamespace(ns.Prefix, new Uri(ns.Uri));
+                if (!context.Handler.HandleNamespace(ns.Prefix, new Uri(ns.Uri))) ParserHelper.Stop();
             }
         }
 
@@ -1699,18 +1742,32 @@ namespace VDS.RDF.Parsing
         /// <param name="uriref">Uri Reference to Resolve</param>
         /// <param name="baseUri">Base Uri to Resolve against</param>
         /// <returns></returns>
-        private UriNode Resolve(RdfXmlParserContext context, UriReferenceEvent uriref, String baseUri)
+        private IUriNode Resolve(RdfXmlParserContext context, UriReferenceEvent uriref, String baseUri)
         {
             try
             {
-                UriNode u = context.Graph.CreateUriNode(new Uri(Tools.ResolveUri(uriref.Identifier, baseUri)));
+                if (baseUri.Equals(String.Empty)) baseUri = context.BaseUri.ToSafeString();
+                IUriNode u = context.Handler.CreateUriNode(new Uri(Tools.ResolveUri(uriref.Identifier, baseUri)));
                 return u;
             }
             catch (Exception ex)
             {
                 //Catch the error so we can wrap in in our own error function
                 //If it fails then we know we got an error caused by this Event
-                throw RdfXmlSpecsHelper.Error(ex.Message, uriref);
+                throw ParserHelper.Error(ex.Message, uriref);
+            }
+        }
+
+        private IUriNode Resolve(RdfXmlParserContext context, ElementEvent el)
+        {
+            try
+            {
+                IUriNode u = context.Handler.CreateUriNode(new Uri(Tools.ResolveQName(el.QName, context.Namespaces, context.BaseUri)));
+                return u;
+            }
+            catch (Exception ex)
+            {
+                throw ParserHelper.Error(ex.Message, el);
             }
         }
 
@@ -1722,11 +1779,12 @@ namespace VDS.RDF.Parsing
         /// <param name="subj">Subject of the Triple</param>
         /// <param name="pred">Predicate of the Triple</param>
         /// <param name="obj">Object of the Triple</param>
-        private void Reify(RdfXmlParserContext context, UriNode uriref, INode subj, INode pred, INode obj) {
-            context.Graph.Assert(new Triple(uriref, context.Graph.CreateUriNode("rdf:subject"), subj));
-            context.Graph.Assert(new Triple(uriref, context.Graph.CreateUriNode("rdf:predicate"), pred));
-            context.Graph.Assert(new Triple(uriref, context.Graph.CreateUriNode("rdf:object"), obj));
-            context.Graph.Assert(new Triple(uriref, context.Graph.CreateUriNode("rdf:type"), context.Graph.CreateUriNode("rdf:Statement")));
+        private void Reify(RdfXmlParserContext context, IUriNode uriref, INode subj, INode pred, INode obj)
+        {
+            if (!context.Handler.HandleTriple(new Triple(uriref, context.Handler.CreateUriNode(new Uri(RdfSpecsHelper.RdfSubject)), subj))) ParserHelper.Stop();
+            if (!context.Handler.HandleTriple(new Triple(uriref, context.Handler.CreateUriNode(new Uri(RdfSpecsHelper.RdfPredicate)), pred))) ParserHelper.Stop();
+            if (!context.Handler.HandleTriple(new Triple(uriref, context.Handler.CreateUriNode(new Uri(RdfSpecsHelper.RdfObject)), obj))) ParserHelper.Stop();
+            if (!context.Handler.HandleTriple(new Triple(uriref, context.Handler.CreateUriNode(new Uri(RdfSpecsHelper.RdfType)), context.Handler.CreateUriNode(new Uri(RdfSpecsHelper.RdfStatement))))) ParserHelper.Stop();
         }
 
         /// <summary>
@@ -1774,7 +1832,7 @@ namespace VDS.RDF.Parsing
             }
             else
             {
-                throw RdfXmlSpecsHelper.Error("Cannot perform List Expansion on an Event which is not an ElementEvent", evt);
+                throw ParserHelper.Error("Cannot perform List Expansion on an Event which is not an ElementEvent", evt);
             }
         }
 

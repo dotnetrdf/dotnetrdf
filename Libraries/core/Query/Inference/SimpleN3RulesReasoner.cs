@@ -159,7 +159,7 @@ namespace VDS.RDF.Query.Inference
             //Generate the INSERT part of the Command
             output.AppendLine("INSERT");
             output.AppendLine("{");
-            foreach (Triple x in ((GraphLiteralNode)t.Object).SubGraph.Triples)
+            foreach (Triple x in ((IGraphLiteralNode)t.Object).SubGraph.Triples)
             {
                 if (vars == null)
                 {
@@ -218,7 +218,7 @@ namespace VDS.RDF.Query.Inference
             output = new StringBuilder();
             output.AppendLine("WHERE");
             output.AppendLine("{");
-            foreach (Triple x in ((GraphLiteralNode)t.Subject).SubGraph.Triples)
+            foreach (Triple x in ((IGraphLiteralNode)t.Subject).SubGraph.Triples)
             {
                 if (vars == null)
                 {

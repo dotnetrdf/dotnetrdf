@@ -44,7 +44,7 @@ namespace VDS.RDF.Writing.Formatting
     /// <summary>
     /// Abstract Base Class for Formatters that can compress URIs to QNames
     /// </summary>
-    public abstract class QNameFormatter : BaseFormatter
+    public abstract class QNameFormatter : BaseFormatter, INamespaceFormatter
     {
         /// <summary>
         /// QName Map used for compressing URIs to QNames
@@ -81,16 +81,16 @@ namespace VDS.RDF.Writing.Formatting
         /// <param name="u">URI</param>
         /// <param name="segment">Triple Segment</param>
         /// <returns></returns>
-        protected override string FormatUriNode(UriNode u, TripleSegment? segment)
+        protected override string FormatUriNode(IUriNode u, TripleSegment? segment)
         {
             StringBuilder output = new StringBuilder();
             String qname;
 
-            if (this._allowAKeyword && segment == TripleSegment.Predicate && u.StringUri.Equals(RdfSpecsHelper.RdfType))
+            if (this._allowAKeyword && segment == TripleSegment.Predicate && u.Uri.ToString().Equals(RdfSpecsHelper.RdfType))
             {
                 output.Append('a');
             }
-            else if (this._qnameMapper.ReduceToQName(u.StringUri, out qname))
+            else if (this._qnameMapper.ReduceToQName(u.Uri.ToString(), out qname))
             {
                 if (TurtleSpecsHelper.IsValidQName(qname))
                 {
@@ -99,14 +99,14 @@ namespace VDS.RDF.Writing.Formatting
                 else
                 {
                     output.Append('<');
-                    output.Append(this.FormatUri(u.StringUri));
+                    output.Append(this.FormatUri(u.Uri));
                     output.Append('>');
                 }
             }
             else
             {
                 output.Append('<');
-                output.Append(this.FormatUri(u.StringUri));
+                output.Append(this.FormatUri(u.Uri));
                 output.Append('>');
             }
             return output.ToString();
@@ -118,6 +118,8 @@ namespace VDS.RDF.Writing.Formatting
         /// <param name="l">Literal Node</param>
         /// <param name="segment">Triple Segment</param>
         /// <returns></returns>
-        protected abstract override string FormatLiteralNode(LiteralNode l, TripleSegment? segment);
+        protected abstract override string FormatLiteralNode(ILiteralNode l, TripleSegment? segment);
+
+        public abstract string FormatNamespace(String prefix, Uri namespaceUri);
     }
 }

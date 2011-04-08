@@ -154,18 +154,18 @@ namespace VDS.RDF.Web
             IGraph g = SparqlServiceDescriber.GetNewGraph();
 
             //Add the Top Level Node representing the Service
-            UriNode descrip = g.CreateUriNode(descripUri);
-            UriNode rdfType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
-            UriNode service = g.CreateUriNode("sd:" + ClassService);
+            IUriNode descrip = g.CreateUriNode(descripUri);
+            IUriNode rdfType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
+            IUriNode service = g.CreateUriNode("sd:" + ClassService);
             g.Assert(descrip, rdfType, service);
 
             //Add its sd:url
-            UriNode url = g.CreateUriNode("sd:" + PropertyUrl);
+            IUriNode url = g.CreateUriNode("sd:" + PropertyUrl);
             g.Assert(descrip, url, descrip);
 
             //Add the sd:supportedLanguage - Requires Query Language to be configurable through the Configuration API
-            UriNode supportedLang = g.CreateUriNode("sd:" + PropertySupportedLanguage);
-            UriNode lang;
+            IUriNode supportedLang = g.CreateUriNode("sd:" + PropertySupportedLanguage);
+            IUriNode lang;
             switch (config.Syntax)
             {
                 case SparqlQuerySyntax.Extended:
@@ -179,7 +179,7 @@ namespace VDS.RDF.Web
             g.Assert(descrip, supportedLang, lang);
 
             //Add the Result Formats
-            UriNode resultFormat = g.CreateUriNode("sd:" + PropertyResultFormat);
+            IUriNode resultFormat = g.CreateUriNode("sd:" + PropertyResultFormat);
             foreach (MimeTypeDefinition definition in MimeTypesHelper.Definitions)
             {
                 if (definition.CanWriteRdf || definition.CanWriteSparqlResults)
@@ -193,8 +193,8 @@ namespace VDS.RDF.Web
 
             //Add Features and Dataset Description
             //First add descriptions for Global Expression Factories
-            UriNode extensionFunction = g.CreateUriNode("sd:" + PropertyExtensionFunction);
-            UriNode extensionAggregate = g.CreateUriNode("sd:" + PropertyExtensionAggregate);
+            IUriNode extensionFunction = g.CreateUriNode("sd:" + PropertyExtensionFunction);
+            IUriNode extensionAggregate = g.CreateUriNode("sd:" + PropertyExtensionAggregate);
             foreach (ISparqlCustomExpressionFactory factory in SparqlExpressionFactory.Factories)
             {
                 foreach (Uri u in factory.AvailableExtensionFunctions)
@@ -227,8 +227,8 @@ namespace VDS.RDF.Web
             if (config.ServiceDescription != null) return config.ServiceDescription;
 
             IGraph g = SparqlServiceDescriber.GetNewGraph();
-            UriNode rdfType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
-            UriNode service = g.CreateUriNode("sd:" + ClassService);
+            IUriNode rdfType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
+            IUriNode service = g.CreateUriNode("sd:" + ClassService);
 
             INode queryNode, updateNode, protocolNode;
 
@@ -240,12 +240,12 @@ namespace VDS.RDF.Web
                 g.Assert(queryNode, rdfType, service);
 
                 //Add its sd:url
-                UriNode url = g.CreateUriNode("sd:" + PropertyUrl);
+                IUriNode url = g.CreateUriNode("sd:" + PropertyUrl);
                 g.Assert(queryNode, url, queryNode);
 
                 //Add the sd:supportedLanguage
-                UriNode supportedLang = g.CreateUriNode("sd:" + PropertySupportedLanguage);
-                UriNode lang;
+                IUriNode supportedLang = g.CreateUriNode("sd:" + PropertySupportedLanguage);
+                IUriNode lang;
                 switch (config.QuerySyntax)
                 {
                     case SparqlQuerySyntax.Extended:
@@ -259,7 +259,7 @@ namespace VDS.RDF.Web
                 g.Assert(queryNode, supportedLang, lang);
 
                 //Add the Result Formats
-                UriNode resultFormat = g.CreateUriNode("sd:" + PropertyResultFormat);
+                IUriNode resultFormat = g.CreateUriNode("sd:" + PropertyResultFormat);
                 foreach (MimeTypeDefinition definition in MimeTypesHelper.Definitions)
                 {
                     if (definition.CanWriteRdf || definition.CanWriteSparqlResults)
@@ -273,8 +273,8 @@ namespace VDS.RDF.Web
 
                 //Add Features and Dataset Description
                 //First add descriptions for Global Expression Factories
-                UriNode extensionFunction = g.CreateUriNode("sd:" + PropertyExtensionFunction);
-                UriNode extensionAggregate = g.CreateUriNode("sd:" + PropertyExtensionAggregate);
+                IUriNode extensionFunction = g.CreateUriNode("sd:" + PropertyExtensionFunction);
+                IUriNode extensionAggregate = g.CreateUriNode("sd:" + PropertyExtensionAggregate);
                 foreach (ISparqlCustomExpressionFactory factory in SparqlExpressionFactory.Factories)
                 {
                     foreach (Uri u in factory.AvailableExtensionFunctions)
@@ -300,17 +300,17 @@ namespace VDS.RDF.Web
                 g.Assert(updateNode, rdfType, service);
 
                 //Add its sd:url
-                UriNode url = g.CreateUriNode("sd:" + PropertyUrl);
+                IUriNode url = g.CreateUriNode("sd:" + PropertyUrl);
                 g.Assert(updateNode, url, updateNode);
 
                 //Add the sd:supportedLanguage
-                UriNode supportedLang = g.CreateUriNode("sd:" + PropertySupportedLanguage);
+                IUriNode supportedLang = g.CreateUriNode("sd:" + PropertySupportedLanguage);
                 g.Assert(updateNode, supportedLang, g.CreateUriNode("sd:" + InstanceSparql11Update));
 
                 //Add Features and Dataset Description
                 //First add descriptions for Global Expression Factories
-                UriNode extensionFunction = g.CreateUriNode("sd:" + PropertyExtensionFunction);
-                UriNode extensionAggregate = g.CreateUriNode("sd:" + PropertyExtensionAggregate);
+                IUriNode extensionFunction = g.CreateUriNode("sd:" + PropertyExtensionFunction);
+                IUriNode extensionAggregate = g.CreateUriNode("sd:" + PropertyExtensionAggregate);
                 foreach (ISparqlCustomExpressionFactory factory in SparqlExpressionFactory.Factories)
                 {
                     foreach (Uri u in factory.AvailableExtensionFunctions)
@@ -345,11 +345,11 @@ namespace VDS.RDF.Web
                 g.Assert(protocolNode, rdfType, service);
 
                 //Add its sd:url
-                UriNode url = g.CreateUriNode("sd:" + PropertyUrl);
+                IUriNode url = g.CreateUriNode("sd:" + PropertyUrl);
                 g.Assert(protocolNode, url, protocolNode);
 
                 //Add the Input Formats
-                UriNode inputFormat = g.CreateUriNode("sd:" + PropertyInputFormat);
+                IUriNode inputFormat = g.CreateUriNode("sd:" + PropertyInputFormat);
                 foreach (MimeTypeDefinition definition in MimeTypesHelper.Definitions)
                 {
                     if (definition.CanParseRdf)
@@ -362,7 +362,7 @@ namespace VDS.RDF.Web
                 }
 
                 //Add the Result Formats
-                UriNode resultFormat = g.CreateUriNode("sd:" + PropertyResultFormat);
+                IUriNode resultFormat = g.CreateUriNode("sd:" + PropertyResultFormat);
                 foreach (MimeTypeDefinition definition in MimeTypesHelper.Definitions)
                 {
                     if (definition.CanWriteRdf)
@@ -400,23 +400,23 @@ namespace VDS.RDF.Web
             IGraph g = SparqlServiceDescriber.GetNewGraph();
 
             //Add the Top Level Node representing the Service
-            UriNode descrip = g.CreateUriNode(descripUri);
-            UriNode rdfType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
-            UriNode service = g.CreateUriNode("sd:" + ClassService);
+            IUriNode descrip = g.CreateUriNode(descripUri);
+            IUriNode rdfType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
+            IUriNode service = g.CreateUriNode("sd:" + ClassService);
             g.Assert(descrip, rdfType, service);
 
             //Add its sd:url
-            UriNode url = g.CreateUriNode("sd:" + PropertyUrl);
+            IUriNode url = g.CreateUriNode("sd:" + PropertyUrl);
             g.Assert(descrip, url, descrip);
 
             //Add the sd:supportedLanguage
-            UriNode supportedLang = g.CreateUriNode("sd:" + PropertySupportedLanguage);
+            IUriNode supportedLang = g.CreateUriNode("sd:" + PropertySupportedLanguage);
             g.Assert(descrip, supportedLang, g.CreateUriNode("sd:" + InstanceSparql11Update));
 
             //Add Features and Dataset Description
             //First add descriptions for Global Expression Factories
-            UriNode extensionFunction = g.CreateUriNode("sd:" + PropertyExtensionFunction);
-            UriNode extensionAggregate = g.CreateUriNode("sd:" + PropertyExtensionAggregate);
+            IUriNode extensionFunction = g.CreateUriNode("sd:" + PropertyExtensionFunction);
+            IUriNode extensionAggregate = g.CreateUriNode("sd:" + PropertyExtensionAggregate);
             foreach (ISparqlCustomExpressionFactory factory in SparqlExpressionFactory.Factories)
             {
                 foreach (Uri u in factory.AvailableExtensionFunctions)
@@ -450,17 +450,17 @@ namespace VDS.RDF.Web
             IGraph g = SparqlServiceDescriber.GetNewGraph();
 
             //Add the Top Level Node representing the Service
-            UriNode descrip = g.CreateUriNode(descripUri);
-            UriNode rdfType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
-            UriNode service = g.CreateUriNode("sd:" + ClassService);
+            IUriNode descrip = g.CreateUriNode(descripUri);
+            IUriNode rdfType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
+            IUriNode service = g.CreateUriNode("sd:" + ClassService);
             g.Assert(descrip, rdfType, service);
 
             //Add its sd:url
-            UriNode url = g.CreateUriNode("sd:" + PropertyUrl);
+            IUriNode url = g.CreateUriNode("sd:" + PropertyUrl);
             g.Assert(descrip, url, descrip);
 
             //Add the Input Formats
-            UriNode inputFormat = g.CreateUriNode("sd:" + PropertyInputFormat);
+            IUriNode inputFormat = g.CreateUriNode("sd:" + PropertyInputFormat);
             foreach (MimeTypeDefinition definition in MimeTypesHelper.Definitions)
             {
                 if (definition.CanParseRdf)
@@ -473,7 +473,7 @@ namespace VDS.RDF.Web
             }
 
             //Add the Result Formats
-            UriNode resultFormat = g.CreateUriNode("sd:" + PropertyResultFormat);
+            IUriNode resultFormat = g.CreateUriNode("sd:" + PropertyResultFormat);
             foreach (MimeTypeDefinition definition in MimeTypesHelper.Definitions)
             {
                 if (definition.CanWriteRdf)

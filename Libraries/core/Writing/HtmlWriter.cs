@@ -392,7 +392,7 @@ namespace VDS.RDF.Writing
                     break;
 
                 case NodeType.Literal:
-                    LiteralNode lit = (LiteralNode)n;
+                    ILiteralNode lit = (ILiteralNode)n;
                     if (lit.DataType != null)
                     {
                         if (rdfASerializable)

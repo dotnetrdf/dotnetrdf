@@ -66,6 +66,14 @@ namespace VDS.RDF.Parsing
         /// </summary>
         public const String RdfXmlLiteral = "http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral";
 
+        public const String RdfSubject = "http://www.w3.org/1999/02/22-rdf-syntax-ns#subject";
+
+        public const String RdfPredicate = "http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate";
+
+        public const String RdfObject = "http://www.w3.org/1999/02/22-rdf-syntax-ns#object";
+
+        public const String RdfStatement = "http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement";
+
         /// <summary>
         /// Pattern for Valid Language Specifiers
         /// </summary>

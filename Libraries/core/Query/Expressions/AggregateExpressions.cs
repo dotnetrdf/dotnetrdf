@@ -243,7 +243,7 @@ namespace VDS.RDF.Query.Expressions
 
             if (aggValue.NodeType == NodeType.Literal)
             {
-                LiteralNode lit = (LiteralNode)aggValue;
+                ILiteralNode lit = (ILiteralNode)aggValue;
                 if (!lit.Language.Equals(String.Empty))
                 {
                     //If there's a Language Tag implied type is string so no numeric value

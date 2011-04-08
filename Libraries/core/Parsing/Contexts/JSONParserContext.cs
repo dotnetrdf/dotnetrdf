@@ -59,6 +59,12 @@ namespace VDS.RDF.Parsing.Contexts
             this._input = input;
         }
 
+        public JsonParserContext(IRdfHandler handler, JsonTextReader input)
+            : base(handler)
+        {
+            this._input = input;
+        }
+
         /// <summary>
         /// Gets the JSON Text Reader which input is read from
         /// </summary>

@@ -42,6 +42,7 @@ using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using VDS.RDF.Parsing.Contexts;
+using VDS.RDF.Parsing.Handlers;
 
 namespace VDS.RDF.Parsing
 {
@@ -59,6 +60,32 @@ namespace VDS.RDF.Parsing
         public void Load(IGraph g, StreamReader input)
         {
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
+
+            this.Load(new GraphHandler(g), input);
+        }
+
+        public void Load(IGraph g, TextReader input)
+        {
+            if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
+
+            this.Load(new GraphHandler(g), input);
+        }
+
+        /// <summary>
+        /// Read RDF/Json Syntax from some File into a Graph
+        /// </summary>
+        /// <param name="g">Graph to read into</param>
+        /// <param name="filename">File to read from</param>
+        public void Load(IGraph g, string filename)
+        {
+            if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
+            if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
+            this.Load(new GraphHandler(g), filename);
+        }
+
+        public void Load(IRdfHandler handler, StreamReader input)
+        {
+            if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
             if (input == null) throw new RdfParseException("Cannot read RDF from a null Stream");
 
             //Issue a Warning if the Encoding of the Stream is not UTF-8
@@ -71,18 +98,17 @@ namespace VDS.RDF.Parsing
 #endif
             }
 
+            this.Load(handler, (TextReader)input);
+        }
+
+        public void Load(IRdfHandler handler, TextReader input)
+        {
+            if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
+            if (input == null) throw new RdfParseException("Cannot read RDF from a null Stream");
+
             try
             {
-                if (g.IsEmpty)
-                {
-                    this.Parse(g, input);
-                }
-                else
-                {
-                    Graph h = new Graph();
-                    this.Parse(h, input);
-                    g.Merge(h);
-                }
+                this.Parse(handler, input);
             }
             catch
             {
@@ -102,17 +128,11 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        /// <summary>
-        /// Read RDF/Json Syntax from some File into a Graph
-        /// </summary>
-        /// <param name="g">Graph to read into</param>
-        /// <param name="filename">File to read from</param>
-        public void Load(IGraph g, string filename)
+        public void Load(IRdfHandler handler, String filename)
         {
-            if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
+            if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
             if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
-            StreamReader input = new StreamReader(filename);
-            this.Load(g, input);
+            this.Load(handler, new StreamReader(filename, Encoding.UTF8));
         }
 
         /// <summary>
@@ -120,11 +140,26 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="g">Graph to read into</param>
         /// <param name="input">Stream to read from</param>
-        private void Parse(IGraph g, StreamReader input)
+        private void Parse(IRdfHandler handler, TextReader input)
         {
-            //Create Parser Context and parse
-            JsonParserContext context = new JsonParserContext(g, new CommentIgnoringJsonTextReader(input));
-            this.ParseGraphObject(context);
+            JsonParserContext context = new JsonParserContext(handler, new CommentIgnoringJsonTextReader(input));
+
+            try
+            {
+                context.Handler.StartRdf();
+                this.ParseGraphObject(context);
+                context.Handler.EndRdf(true);
+            }
+            catch (RdfParsingTerminatedException)
+            {
+                context.Handler.EndRdf(true);
+                //Discard this - it justs means the Handler told us to stop
+            }
+            catch
+            {
+                context.Handler.EndRdf(false);
+                throw;
+            }
         }
 
         /// <summary>
@@ -177,11 +212,11 @@ namespace VDS.RDF.Parsing
                         INode subjNode;
                         if (subjValue.StartsWith("_:"))
                         {
-                            subjNode = context.Graph.CreateBlankNode(subjValue.Substring(subjValue.IndexOf(':') + 1));
+                            subjNode = context.Handler.CreateBlankNode(subjValue.Substring(subjValue.IndexOf(':') + 1));
                         }
                         else
                         {
-                            subjNode = context.Graph.CreateUriNode(new Uri(subjValue));
+                            subjNode = context.Handler.CreateUriNode(new Uri(subjValue));
                         }
 
                         this.ParsePredicateObjectList(context, subjNode);
@@ -219,7 +254,7 @@ namespace VDS.RDF.Parsing
                         if (context.Input.TokenType == JsonToken.PropertyName)
                         {
                             String predValue = context.Input.Value.ToString();
-                            INode predNode = context.Graph.CreateUriNode(new Uri(predValue));
+                            INode predNode = context.Handler.CreateUriNode(new Uri(predValue));
 
                             this.ParseObjectList(context, subj, predNode);
                         }
@@ -363,25 +398,25 @@ namespace VDS.RDF.Parsing
                     INode obj;
                     if (nodeType.Equals("uri"))
                     {
-                        obj = context.Graph.CreateUriNode(new Uri(nodeValue));
+                        obj = context.Handler.CreateUriNode(new Uri(nodeValue));
                     }
                     else if (nodeType.Equals("bnode"))
                     {
-                        obj = context.Graph.CreateBlankNode(nodeValue.Substring(nodeValue.IndexOf(':') + 1));
+                        obj = context.Handler.CreateBlankNode(nodeValue.Substring(nodeValue.IndexOf(':') + 1));
                     }
                     else if (nodeType.Equals("literal"))
                     {
                         if (nodeLang != null)
                         {
-                            obj = context.Graph.CreateLiteralNode(nodeValue, nodeLang);
+                            obj = context.Handler.CreateLiteralNode(nodeValue, nodeLang);
                         }
                         else if (nodeDatatype != null)
                         {
-                            obj = context.Graph.CreateLiteralNode(nodeValue, new Uri(nodeDatatype));
+                            obj = context.Handler.CreateLiteralNode(nodeValue, new Uri(nodeDatatype));
                         }
                         else
                         {
-                            obj = context.Graph.CreateLiteralNode(nodeValue);
+                            obj = context.Handler.CreateLiteralNode(nodeValue);
                         }
                     }
                     else
@@ -390,7 +425,7 @@ namespace VDS.RDF.Parsing
                     }
 
                     //Assert as a Triple
-                    context.Graph.Assert(new Triple(subj, pred, obj));
+                    if (!context.Handler.HandleTriple(new Triple(subj, pred, obj))) ParserHelper.Stop();
                 }
             }
             else

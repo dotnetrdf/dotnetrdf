@@ -112,9 +112,9 @@ namespace VDS.RDF.Writing
 
             //Find the Node that represents the Schema Ontology
             //Assumes there is exactly one thing given rdf:type owl:Ontology
-            UriNode ontology = context.Graph.CreateUriNode(new Uri(NamespaceMapper.OWL + "Ontology"));
-            UriNode rdfType = context.Graph.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
-            UriNode rdfsLabel = context.Graph.CreateUriNode(new Uri(NamespaceMapper.RDFS + "label"));
+            IUriNode ontology = context.Graph.CreateUriNode(new Uri(NamespaceMapper.OWL + "Ontology"));
+            IUriNode rdfType = context.Graph.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
+            IUriNode rdfsLabel = context.Graph.CreateUriNode(new Uri(NamespaceMapper.RDFS + "label"));
             INode ontoNode = context.Graph.GetTriplesWithPredicateObject(rdfType, ontology).Select(t => t.Subject).FirstOrDefault();
             INode ontoLabel = (ontoNode != null) ? context.Graph.GetTriplesWithSubjectPredicate(ontoNode, rdfsLabel).Select(t => t.Object).FirstOrDefault() : null;
 
@@ -195,7 +195,7 @@ namespace VDS.RDF.Writing
                                 if (descrip.NodeType == NodeType.Literal)
                                 {
                                     context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.P);
-                                    context.HtmlWriter.Write(((LiteralNode)descrip).Value);
+                                    context.HtmlWriter.Write(((ILiteralNode)descrip).Value);
                                     context.HtmlWriter.RenderEndTag();
 #if !NO_WEB
                                     context.HtmlWriter.WriteLine();
@@ -213,17 +213,17 @@ namespace VDS.RDF.Writing
                                 context.HtmlWriter.WriteEncodedText("Schema created by ");
                                 if (author.NodeType == NodeType.Uri)
                                 {
-                                    context.HtmlWriter.AddAttribute("href", ((UriNode)author).Uri.ToString());
+                                    context.HtmlWriter.AddAttribute("href", ((IUriNode)author).Uri.ToString());
                                     context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClassUri);
                                     context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.A);
                                 }
                                 switch (authorName.NodeType)
                                 {
                                     case NodeType.Uri:
-                                        context.HtmlWriter.WriteEncodedText(((UriNode)authorName).Uri.ToString());
+                                        context.HtmlWriter.WriteEncodedText(((IUriNode)authorName).Uri.ToString());
                                         break;
                                     case NodeType.Literal:
-                                        context.HtmlWriter.WriteEncodedText(((LiteralNode)authorName).Value);
+                                        context.HtmlWriter.WriteEncodedText(((ILiteralNode)authorName).Value);
                                         break;
                                     default:
                                         context.HtmlWriter.WriteEncodedText(authorName.ToString());
@@ -243,8 +243,8 @@ namespace VDS.RDF.Writing
                                 if (ontoInfo["nsPrefix"].NodeType == NodeType.Literal && ontoInfo["nsUri"].NodeType == NodeType.Uri)
                                 {
                                     //Add this QName to the QName Mapper so we can get nice QNames later on
-                                    String prefix = ((LiteralNode)ontoInfo["nsPrefix"]).Value;
-                                    context.QNameMapper.AddNamespace(prefix, ((UriNode)ontoInfo["nsUri"]).Uri);
+                                    String prefix = ((ILiteralNode)ontoInfo["nsPrefix"]).Value;
+                                    context.QNameMapper.AddNamespace(prefix, ((IUriNode)ontoInfo["nsUri"]).Uri);
 
                                     context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.H4);
                                     context.HtmlWriter.WriteEncodedText("Preferred Namespace Definition");
@@ -458,14 +458,14 @@ namespace VDS.RDF.Writing
 #endif
 
             //Now create the URI Nodes we need for the next stage of Output
-            UriNode rdfsDomain = context.Graph.CreateUriNode(new Uri(NamespaceMapper.RDFS + "domain"));
-            UriNode rdfsRange = context.Graph.CreateUriNode(new Uri(NamespaceMapper.RDFS + "range"));
-            UriNode rdfsSubClassOf = context.Graph.CreateUriNode(new Uri(NamespaceMapper.RDFS + "subClassOf"));
-            UriNode rdfsSubPropertyOf = context.Graph.CreateUriNode(new Uri(NamespaceMapper.RDFS + "subPropertyOf"));
-            UriNode owlDisjointClass = context.Graph.CreateUriNode(new Uri(NamespaceMapper.OWL + "disjointWith"));
-            UriNode owlEquivalentClass = context.Graph.CreateUriNode(new Uri(NamespaceMapper.OWL + "equivalentClass"));
-            UriNode owlEquivalentProperty = context.Graph.CreateUriNode(new Uri(NamespaceMapper.OWL + "equivalentProperty"));
-            UriNode owlInverseProperty = context.Graph.CreateUriNode(new Uri(NamespaceMapper.OWL + "inverseOf"));
+            IUriNode rdfsDomain = context.Graph.CreateUriNode(new Uri(NamespaceMapper.RDFS + "domain"));
+            IUriNode rdfsRange = context.Graph.CreateUriNode(new Uri(NamespaceMapper.RDFS + "range"));
+            IUriNode rdfsSubClassOf = context.Graph.CreateUriNode(new Uri(NamespaceMapper.RDFS + "subClassOf"));
+            IUriNode rdfsSubPropertyOf = context.Graph.CreateUriNode(new Uri(NamespaceMapper.RDFS + "subPropertyOf"));
+            IUriNode owlDisjointClass = context.Graph.CreateUriNode(new Uri(NamespaceMapper.OWL + "disjointWith"));
+            IUriNode owlEquivalentClass = context.Graph.CreateUriNode(new Uri(NamespaceMapper.OWL + "equivalentClass"));
+            IUriNode owlEquivalentProperty = context.Graph.CreateUriNode(new Uri(NamespaceMapper.OWL + "equivalentProperty"));
+            IUriNode owlInverseProperty = context.Graph.CreateUriNode(new Uri(NamespaceMapper.OWL + "inverseOf"));
 
             //Alter our previous getClasses query to get additional details
             getClasses.QueryText = "SELECT ?class (SAMPLE(?label) AS ?classLabel) (SAMPLE(?description) AS ?classDescription) WHERE { { ?class a rdfs:Class } UNION { ?class a owl:Class } OPTIONAL { ?class rdfs:label ?label } OPTIONAL { ?class rdfs:comment ?description } } GROUP BY ?class ORDER BY ?class";
@@ -520,7 +520,7 @@ namespace VDS.RDF.Writing
                             if (r["classLabel"] != null && r["classLabel"].NodeType == NodeType.Literal)
                             {
                                 context.HtmlWriter.WriteEncodedText(" - ");
-                                context.HtmlWriter.WriteEncodedText(((LiteralNode)r["classLabel"]).Value);
+                                context.HtmlWriter.WriteEncodedText(((ILiteralNode)r["classLabel"]).Value);
                             }
                         }
                         context.HtmlWriter.WriteLine();
@@ -554,7 +554,7 @@ namespace VDS.RDF.Writing
                             if (r["classDescription"] != null && r["classDescription"].NodeType == NodeType.Literal)
                             {
                                 context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.P);
-                                context.HtmlWriter.Write(((LiteralNode)r["classDescription"]).Value);
+                                context.HtmlWriter.Write(((ILiteralNode)r["classDescription"]).Value);
                                 context.HtmlWriter.RenderEndTag();
                             }
                         }
@@ -637,7 +637,7 @@ namespace VDS.RDF.Writing
                             if (r["propertyLabel"] != null && r["propertyLabel"].NodeType == NodeType.Literal)
                             {
                                 context.HtmlWriter.WriteEncodedText(" - ");
-                                context.HtmlWriter.WriteEncodedText(((LiteralNode)r["propertyLabel"]).Value);
+                                context.HtmlWriter.WriteEncodedText(((ILiteralNode)r["propertyLabel"]).Value);
                             }
                         }
                         context.HtmlWriter.WriteLine();
@@ -671,7 +671,7 @@ namespace VDS.RDF.Writing
                             if (r["propertyDescription"] != null && r["propertyDescription"].NodeType == NodeType.Literal)
                             {
                                 context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.P);
-                                context.HtmlWriter.Write(((LiteralNode)r["propertyDescription"]).Value);
+                                context.HtmlWriter.Write(((ILiteralNode)r["propertyDescription"]).Value);
                                 context.HtmlWriter.RenderEndTag();
                             }
                         }

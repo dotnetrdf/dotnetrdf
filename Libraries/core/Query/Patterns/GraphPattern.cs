@@ -41,6 +41,7 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Filters;
+using VDS.RDF.Query.Optimisation;
 
 namespace VDS.RDF.Query.Patterns
 {
@@ -70,7 +71,7 @@ namespace VDS.RDF.Query.Patterns
         /// <summary>
         /// Creates a new Graph Pattern
         /// </summary>
-        protected internal GraphPattern()
+        internal GraphPattern()
         {
 
         }
@@ -79,7 +80,7 @@ namespace VDS.RDF.Query.Patterns
         /// Adds a Triple Pattern to the Graph Pattern
         /// </summary>
         /// <param name="p">Triple Pattern</param>
-        protected internal void AddTriplePattern(ITriplePattern p)
+        internal void AddTriplePattern(ITriplePattern p)
         {
             if (this._break)
             {
@@ -104,7 +105,7 @@ namespace VDS.RDF.Query.Patterns
         /// Adds a child Graph Pattern to the Graph Pattern
         /// </summary>
         /// <param name="p"></param>
-        protected internal void AddGraphPattern(GraphPattern p)
+        internal void AddGraphPattern(GraphPattern p)
         {
             if (this._break)
             {
@@ -127,7 +128,7 @@ namespace VDS.RDF.Query.Patterns
         /// <summary>
         /// Tells the Graph Pattern that any subsequent Graph/Triple Patterns added go in a new BGP
         /// </summary>
-        protected internal void BreakBGP()
+        internal void BreakBGP()
         {
             if (this._break)
             {
@@ -140,6 +141,28 @@ namespace VDS.RDF.Query.Patterns
             {
                 this._break = true;
             }
+        }
+
+        public void SwapTriplePatterns(int i, int j)
+        {
+            ITriplePattern temp = this._triplePatterns[i];
+            this._triplePatterns[i] = this._triplePatterns[j];
+            this._triplePatterns[j] = temp;
+        }
+
+        public void InsertFilter(ISparqlFilter filter, int i)
+        {
+            if (!this._unplacedFilters.Contains(filter)) throw new RdfQueryException("Cannot Insert a Filter that is not currentlyy an unplaced Filter in this Graph Pattern");
+            this._unplacedFilters.Remove(filter);
+            FilterPattern p = new FilterPattern(filter);
+            this._triplePatterns.Insert(i, p);
+        }
+
+        public void InsertAssignment(IAssignmentPattern assignment, int i)
+        {
+            if (!this._unplacedAssignments.Contains(assignment)) throw new RdfQueryException("Cannot Insert an Assignment that is not currently an unplaced Assignment in this Graph Pattern");
+            this._unplacedAssignments.Remove(assignment);
+            this._triplePatterns.Insert(i, assignment);
         }
 
         #region Properties
@@ -211,7 +234,7 @@ namespace VDS.RDF.Query.Patterns
         {
             get
             {
-                return (this._triplePatterns.Count == 0 && this._graphPatterns.Count == 0 && !this._isFiltered && !this._isOptional && !this._isUnion);
+                return (this._triplePatterns.Count == 0 && this._graphPatterns.Count == 0 && !this._isFiltered && !this._isOptional && !this._isUnion && this._unplacedFilters.Count == 0 && this._unplacedAssignments.Count == 0);
             }
         }
 
@@ -283,7 +306,7 @@ namespace VDS.RDF.Query.Patterns
         /// Gets whether Optimisation has been applied to this query
         /// </summary>
         /// <remarks>
-        /// Optimisation involves the reordering of Triple Patterns and placement of FILTERs in an attempt to improve performance
+        /// This only indicates that an Optimiser has been applied to the Pattern.  You can always reoptimise by calling the <see cref="SparqlQuert.Optimise">Optimise()</see> method with an optimiser of your choice on the query to which this Pattern belongs
         /// </remarks>
         public bool IsOptimised
         {
@@ -315,7 +338,21 @@ namespace VDS.RDF.Query.Patterns
         {
             get
             {
-                return this._filter;
+                if (this._unplacedFilters.Count > 0)
+                {
+                    if (this._filter == null)
+                    {
+                        return new ChainFilter(this._unplacedFilters);
+                    }
+                    else
+                    {
+                        return new ChainFilter(this._filter, this._unplacedFilters);
+                    }
+                }
+                else
+                {
+                    return this._filter;
+                }
             }
             internal set
             {
@@ -369,7 +406,7 @@ namespace VDS.RDF.Query.Patterns
         /// <summary>
         /// Gets the Last Child Graph Pattern of this Pattern and removes it from this Pattern
         /// </summary>
-        protected internal GraphPattern LastChildPattern()
+        internal GraphPattern LastChildPattern()
         {
             GraphPattern p = this._graphPatterns[this._graphPatterns.Count - 1];
             this._graphPatterns.RemoveAt(this._graphPatterns.Count - 1);
@@ -401,7 +438,7 @@ namespace VDS.RDF.Query.Patterns
         /// <summary>
         /// Gets whether this Pattern can be simplified
         /// </summary>
-        protected internal bool IsSimplifiable
+        internal bool IsSimplifiable
         {
             get
             {
@@ -421,9 +458,26 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
+        /// Gets whether the Graph Pattern uses the Default Dataset
+        /// </summary>
+        /// <remarks>
+        /// Graph Patterns generally use the Default Dataset unless they are a GRAPH pattern or they contain a Triple Pattern, child Graph Pattern or a FILTER/BIND which does not use the default dataset
+        /// </remarks>
+        public bool UsesDefaultDataset
+        {
+            get
+            {
+                //SERVICE patterns are irrelevant as their dataset is irrelevant to whether the query uses the default dataset
+                if (this._isService) return true;
+                //Otherwise a pattern must not be a GRAPH pattern, all its triple patterns and child graph patterns must use the default dataset and any filters/assignments must use the default dataset
+                return !this._isGraph && this._triplePatterns.All(tp => tp.UsesDefaultDataset) && this._graphPatterns.All(gp => gp.UsesDefaultDataset) && (this._filter == null || this._filter.Expression.UsesDefaultDataset()) && this._unplacedAssignments.All(ap => ap.AssignExpression.UsesDefaultDataset()) && this._unplacedFilters.All(f => f.Expression.UsesDefaultDataset());
+            }
+        }
+
+        /// <summary>
         /// Gets the list of Filters that apply to this Graph Pattern which will be placed appropriately later
         /// </summary>
-        protected internal List<ISparqlFilter> UnplacedFilters
+        internal List<ISparqlFilter> UnplacedFilters
         {
             get
             {
@@ -434,7 +488,7 @@ namespace VDS.RDF.Query.Patterns
         /// <summary>
         /// Gets the list of LET assignments that are in this Graph Pattern which will be placed appropriately later
         /// </summary>
-        protected internal List<IAssignmentPattern> UnplacedAssignments
+        internal List<IAssignmentPattern> UnplacedAssignments
         {
             get
             {
@@ -464,10 +518,9 @@ namespace VDS.RDF.Query.Patterns
         /// <summary>
         /// Causes the Graph Pattern to be optimised if it isn't already
         /// </summary>
-        /// <remarks>
-        /// Variables that have occurred prior to this Pattern
-        /// </remarks>
-        protected internal void Optimise(IEnumerable<String> variables)
+        /// <param name="variables">Variables that have occurred prior to this Pattern</param>
+        [Obsolete("This method represents the old fixed optimiser and is no longer used", true)]
+        internal void Optimise(IEnumerable<String> variables)
         {
             if (this._isOptimised) return;
 
@@ -625,6 +678,21 @@ namespace VDS.RDF.Query.Patterns
             //These get processed in the Graph Patterns Execute method
 
             this._isOptimised = true;
+        }
+
+        public void Optimise()
+        {
+            this.Optimise(SparqlOptimiser.QueryOptimiser);
+        }
+
+        public void Optimise(IQueryOptimiser optimiser)
+        {
+            optimiser.Optimise(this, Enumerable.Empty<String>(), this._unplacedFilters, this._unplacedAssignments);
+        }
+
+        public void Optimise(IQueryOptimiser optimiser, IEnumerable<String> vars)
+        {
+            optimiser.Optimise(this, vars, this._unplacedFilters, this._unplacedAssignments);
         }
 
         /// <summary>
@@ -926,9 +994,9 @@ namespace VDS.RDF.Query.Patterns
                     }
                 }
                 //If there's a FILTER apply it over the Union
-                if (this._isFiltered && this._filter != null)
+                if (this._isFiltered && (this._filter != null || this._unplacedFilters.Count > 0))
                 {
-                    return new Filter(union, this._filter);
+                    return new Filter(union, this.Filter);
                 }
                 else
                 {
@@ -944,7 +1012,7 @@ namespace VDS.RDF.Query.Patterns
                     //If we have any unplaced LETs these get Joined onto the BGP
                     bgp = Join.CreateJoin(bgp, new Bgp(this._unplacedAssignments));
                 }
-                if (this._isFiltered && this._filter != null)
+                if (this._isFiltered && (this._filter != null || this._unplacedFilters.Count > 0))
                 {
                     if (this._isOptional && !(this._isExists || this._isNotExists))
                     {
@@ -954,9 +1022,11 @@ namespace VDS.RDF.Query.Patterns
                     }
                     else
                     {
+                        ISparqlAlgebra complex = bgp;
+
                         //If we contain an unplaced FILTER and we're not an OPTIONAL the FILTER
                         //applies here
-                        return new Filter(bgp, this._filter);
+                        return new Filter(bgp, this.Filter);
                     }
                 }
                 else
@@ -1025,7 +1095,7 @@ namespace VDS.RDF.Query.Patterns
                     //Unplaced assignments get Joined as a BGP here
                     complex = Join.CreateJoin(complex, new Bgp(this._unplacedAssignments));
                 }
-                if (this._isFiltered && this._filter != null)
+                if (this._isFiltered && (this._filter != null || this._unplacedFilters.Count > 0))
                 {
                     if (this._isOptional && !(this._isExists || this._isNotExists))
                     {
@@ -1035,9 +1105,16 @@ namespace VDS.RDF.Query.Patterns
                     }
                     else
                     {
-                        //If there's an unplaced FILTER and we're not an OPTIONAL pattern we apply
-                        //the FILTER here
-                        return new Filter(complex, this._filter);
+                        if (this._filter != null || this._unplacedFilters.Count > 0)
+                        {
+                            //If there's an unplaced FILTER and we're not an OPTIONAL pattern we apply
+                            //the FILTER here
+                            return new Filter(complex, this.Filter);
+                        }
+                        else
+                        {
+                            return complex;
+                        }
                     }
                 }
                 else

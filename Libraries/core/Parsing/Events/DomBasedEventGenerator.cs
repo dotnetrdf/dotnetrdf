@@ -123,9 +123,9 @@ namespace VDS.RDF.Parsing.Events
             RootEvent root = new RootEvent(docEl.BaseURI, docEl.OuterXml);
             if (docEl.BaseURI.Equals(String.Empty))
             {
-                if (context.Graph.BaseUri != null)
+                if (context.BaseUri != null)
                 {
-                    root.BaseUri = context.Graph.BaseUri.ToString();
+                    root.BaseUri = context.BaseUri.ToString();
                 }
             }
             ElementEvent element = new ElementEvent(docEl.LocalName, docEl.Prefix, root.BaseUri, docEl.OuterXml);
@@ -165,7 +165,7 @@ namespace VDS.RDF.Parsing.Events
                         //Relative Uri with no Base Uri
                         throw new RdfParseException("Cannot resolve a Relative Namespace URI since there is no in-scope Base URI");
                     }
-                    context.Graph.NamespaceMap.AddNamespace(prefix, new Uri(uri));
+                    if (!context.Handler.HandleNamespace(prefix, new Uri(uri))) ParserHelper.Stop();
                 }
                 else if (attr.Name == "xml:base")
                 {
@@ -289,7 +289,7 @@ namespace VDS.RDF.Parsing.Events
                     }
                     NamespaceAttributeEvent ns = new NamespaceAttributeEvent(attr.LocalName, uri, attr.OuterXml);
                     element.NamespaceAttributes.Add(ns);
-                    //context.Graph.NamespaceMap.AddNamespace(attr.LocalName, new Uri(uri));
+                    //context.Handler.HandleNamespace(attr.LocalName, new Uri(uri));
                 }
                 else if (attr.Prefix == String.Empty && attr.Name == "xmlns")
                 {
@@ -314,7 +314,7 @@ namespace VDS.RDF.Parsing.Events
                     }
                     NamespaceAttributeEvent ns = new NamespaceAttributeEvent(String.Empty, uri, attr.OuterXml);
                     element.NamespaceAttributes.Add(ns);
-                    //context.Graph.NamespaceMap.AddNamespace(String.Empty, new Uri(uri));
+                    //context.Handler.HandleNamespace(String.Empty, new Uri(uri));
                 }
                 else if (attr.Prefix == "xml" || (attr.Prefix == String.Empty && attr.LocalName.StartsWith("xml")))
                 {
@@ -377,14 +377,14 @@ namespace VDS.RDF.Parsing.Events
                     if (RdfXmlSpecsHelper.IsAmbigiousAttributeName(a.LocalName))
                     {
                         //Can't use any of the RDF terms that mandate the rdf: prefix without it
-                        throw RdfXmlSpecsHelper.Error("An Attribute with an ambigious name '" + a.LocalName + "' was encountered.  The following attribute names MUST have the rdf: prefix - about, aboutEach, ID, bagID, type, resource, parseType", element);
+                        throw ParserHelper.Error("An Attribute with an ambigious name '" + a.LocalName + "' was encountered.  The following attribute names MUST have the rdf: prefix - about, aboutEach, ID, bagID, type, resource, parseType", element);
                     }
                 }
 
                 //URIRef encoding check
                 if (!RdfXmlSpecsHelper.IsValidUriRefEncoding(a.Value))
                 {
-                    throw RdfXmlSpecsHelper.Error("An Attribute with an incorrectly encoded URIRef was encountered, URIRef's must be encoded in Unicode Normal Form C", a);
+                    throw ParserHelper.Error("An Attribute with an incorrectly encoded URIRef was encountered, URIRef's must be encoded in Unicode Normal Form C", a);
                 }
             }
 

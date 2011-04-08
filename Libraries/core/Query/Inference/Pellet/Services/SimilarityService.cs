@@ -94,7 +94,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
                     {
                         if (r["similarity"].NodeType == NodeType.Literal)
                         {
-                            similarities.Add(new KeyValuePair<INode, double>(r["ind"], Convert.ToDouble(((LiteralNode)r["similarity"]).Value)));
+                            similarities.Add(new KeyValuePair<INode, double>(r["ind"], Convert.ToDouble(((ILiteralNode)r["similarity"]).Value)));
                         }
                     }
                 }

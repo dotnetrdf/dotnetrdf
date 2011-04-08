@@ -59,7 +59,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// </summary>
         public const String ValidVarNamesPattern = "^\\?[_A-Za-z][\\w\\-]*$";
 
-        private BlockingStreamReader _in;
+        private BlockingTextReader _in;
         private List<String> _keywords = new List<string>();
         private bool _keywordsmode = false;
         private Regex _isValidQName = new Regex(ValidQNamesPattern);
@@ -70,18 +70,21 @@ namespace VDS.RDF.Parsing.Tokens
         /// </summary>
         /// <param name="input">The Input Stream to generate Tokens from</param>
         public Notation3Tokeniser(StreamReader input)
-            : this(new BlockingStreamReader(input)) { }
+            : this(new BlockingTextReader(input)) { }
 
         /// <summary>
         /// Creates a new Instance of the Tokeniser
         /// </summary>
         /// <param name="input">The Input Stream to generate Tokens from</param>
-        public Notation3Tokeniser(BlockingStreamReader input)
+        public Notation3Tokeniser(BlockingTextReader input)
             : base(input)
         {
             this._in = input;
             this.Format = "Notation 3";
         }
+
+        public Notation3Tokeniser(TextReader input)
+            : this(new BlockingTextReader(input)) { }
 
         /// <summary>
         /// Gets the next parseable Token from the Input or raises an Error

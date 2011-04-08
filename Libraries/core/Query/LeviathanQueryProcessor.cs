@@ -34,6 +34,7 @@ terms.
 */
 
 using System;
+using System.Threading;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Datasets;
 
@@ -53,6 +54,7 @@ namespace VDS.RDF.Query
     public class LeviathanQueryProcessor : ISparqlQueryProcessor, ISparqlQueryAlgebraProcessor<BaseMultiset, SparqlEvaluationContext>
     {
         private ISparqlDataset _dataset;
+        private ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
 
         /// <summary>
         /// Creates a new Leviathan Query Processor
@@ -68,6 +70,16 @@ namespace VDS.RDF.Query
         public LeviathanQueryProcessor(ISparqlDataset data)
         {
             this._dataset = data;
+
+            if (!this._dataset.UsesUnionDefaultGraph)
+            {
+                if (!this._dataset.HasGraph(null))
+                {
+                    //Create the Default unnamed Graph if it doesn't exist and then Flush() the change
+                    this._dataset.AddGraph(new Graph());
+                    this._dataset.Flush();
+                }
+            }
         }
 
         /// <summary>
@@ -242,7 +254,18 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public Object ProcessQuery(SparqlQuery query)
         {
-            return query.Evaluate(this._dataset);
+            //Handle the Thread Safety of the Query Evaluation
+            bool threadSafe = query.UsesDefaultDataset;
+            ReaderWriterLockSlim currLock = (this._dataset is IThreadSafeDataset) ? ((IThreadSafeDataset)this._dataset).Lock : this._lock;
+            try
+            {
+                currLock.EnterReadLock();
+                return query.Evaluate(this._dataset);
+            }
+            finally
+            {
+                currLock.ExitReadLock();
+            }
         }
 
         /// <summary>

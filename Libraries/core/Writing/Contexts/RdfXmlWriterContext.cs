@@ -71,7 +71,7 @@ namespace VDS.RDF.Writing.Contexts
 
         private int _nextNamespaceID = 0;
 
-        private Dictionary<INode, OutputRDFCollection> _collections = new Dictionary<INode, OutputRDFCollection>();
+        private Dictionary<INode, OutputRdfCollection> _collections = new Dictionary<INode, OutputRdfCollection>();
         private TripleCollection _triplesDone = new TripleCollection();
 
         /// <summary>
@@ -256,7 +256,7 @@ namespace VDS.RDF.Writing.Contexts
         /// <summary>
         /// Represents the mapping from Blank Nodes to Collections
         /// </summary>
-        public Dictionary<INode, OutputRDFCollection> Collections
+        public Dictionary<INode, OutputRdfCollection> Collections
         {
             get
             {

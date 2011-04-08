@@ -46,25 +46,28 @@ namespace VDS.RDF.Parsing.Tokens
     /// </summary>
     public class TurtleTokeniser : BaseTokeniser
     {
-        private BlockingStreamReader _in;
+        private BlockingTextReader _in;
 
         /// <summary>
         /// Creates a new Instance of the Tokeniser
         /// </summary>
         /// <param name="input">The Input Stream to generate Tokens from</param>
         public TurtleTokeniser(StreamReader input)
-            : this(new BlockingStreamReader(input)) { }
+            : this(new BlockingTextReader(input)) { }
 
         /// <summary>
         /// Creates a new Instance of the Tokeniser
         /// </summary>
         /// <param name="input">The Input Stream to generate Tokens from</param>
-        public TurtleTokeniser(BlockingStreamReader input)
+        public TurtleTokeniser(BlockingTextReader input)
             : base(input)
         {
             this._in = input;
             this.Format = "Turtle";
         }
+
+        public TurtleTokeniser(TextReader input)
+            : this(new BlockingTextReader(input)) { }
 
         /// <summary>
         /// Gets the next parseable Token from the Input or raises an Error
@@ -560,7 +563,7 @@ namespace VDS.RDF.Parsing.Tokens
                                     else
                                     {
                                         //Shouldn't occur outside a String Literal/Uri
-                                        throw Error("Unexpected Character \\, the \\ can only occur inside String Literals and URIs");
+                                        throw Error("Unexpected Character \\, the \\ character can only occur inside String Literals and URIs");
                                     }
 
                                 #endregion

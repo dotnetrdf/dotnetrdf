@@ -49,7 +49,10 @@ namespace VDS.RDF.Writing.Formatting
         /// Creates a new Uncompressed Notation 3 Formatter
         /// </summary>
         public UncompressedNotation3Formatter()
-            : base("Notation 3 (Uncompressed)") { }
+            : base("Notation 3 (Uncompressed)") 
+        {
+            this._validEscapes = new char[] { '"', 'n', 't', 'u', 'U', 'r', '\\', '0', '\'' };
+        }
 
         /// <summary>
         /// Formats a Variable Node for Notation 3
@@ -57,7 +60,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <param name="v">Variable</param>
         /// <param name="segment">Triple Segment</param>
         /// <returns></returns>
-        protected override string FormatVariableNode(VariableNode v, TripleSegment? segment)
+        protected override string FormatVariableNode(IVariableNode v, TripleSegment? segment)
         {
             return v.ToString();
         }
@@ -68,7 +71,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <param name="glit">Graph Literal</param>
         /// <param name="segment">Triple Segment</param>
         /// <returns></returns>
-        protected override string FormatGraphLiteralNode(GraphLiteralNode glit, TripleSegment? segment)
+        protected override string FormatGraphLiteralNode(IGraphLiteralNode glit, TripleSegment? segment)
         {
             if (segment == TripleSegment.Predicate) throw new RdfOutputException(WriterErrorMessages.GraphLiteralPredicatesUnserializable(this.FormatName));
 
@@ -92,21 +95,30 @@ namespace VDS.RDF.Writing.Formatting
         /// Creates a new Notation 3 Formatter
         /// </summary>
         public Notation3Formatter()
-            : base("Notation 3", new QNameOutputMapper()) { }
+            : base("Notation 3", new QNameOutputMapper()) 
+        {
+            this._validEscapes = new char[] { '"', 'n', 't', 'u', 'U', 'r', '\\', '0', '\'' };
+        }
 
         /// <summary>
         /// Creates a new Notation 3 Formatter using the given Graph
         /// </summary>
         /// <param name="g">Graph</param>
         public Notation3Formatter(IGraph g)
-            : base("Notation 3", new QNameOutputMapper(g.NamespaceMap)) { }
+            : base("Notation 3", new QNameOutputMapper(g.NamespaceMap)) 
+        {
+            this._validEscapes = new char[] { '"', 'n', 't', 'u', 'U', 'r', '\\', '0', '\'' };
+        }
 
         /// <summary>
         /// Creates a new Notation 3 Formatter using the given Namespace Map
         /// </summary>
         /// <param name="nsmap">Namespace Map</param>
         public Notation3Formatter(INamespaceMapper nsmap)
-            : base("Notation 3", new QNameOutputMapper(nsmap)) { }
+            : base("Notation 3", new QNameOutputMapper(nsmap)) 
+        {
+            this._validEscapes = new char[] { '"', 'n', 't', 'u', 'U', 'r', '\\', '0', '\'' };
+        }
 
         /// <summary>
         /// Formats a Variable Node for Notation 3
@@ -114,7 +126,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <param name="v">Variable</param>
         /// <param name="segment">Triple Segment</param>
         /// <returns></returns>
-        protected override string FormatVariableNode(VariableNode v, TripleSegment? segment)
+        protected override string FormatVariableNode(IVariableNode v, TripleSegment? segment)
         {
             return v.ToString();
         }
@@ -125,7 +137,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <param name="glit">Graph Literal</param>
         /// <param name="segment">Triple Segment</param>
         /// <returns></returns>
-        protected override string FormatGraphLiteralNode(GraphLiteralNode glit, TripleSegment? segment)
+        protected override string FormatGraphLiteralNode(IGraphLiteralNode glit, TripleSegment? segment)
         {
             if (segment == TripleSegment.Predicate) throw new RdfOutputException(WriterErrorMessages.GraphLiteralPredicatesUnserializable(this.FormatName));
 

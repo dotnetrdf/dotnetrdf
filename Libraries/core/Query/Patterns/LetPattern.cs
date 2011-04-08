@@ -164,6 +164,14 @@ namespace VDS.RDF.Query.Patterns
             }
         }
 
+        public override bool UsesDefaultDataset
+        {
+            get
+            {
+                return this._expr.UsesDefaultDataset();
+            }
+        }
+
         /// <summary>
         /// Gets the string representation of the LET assignment
         /// </summary>

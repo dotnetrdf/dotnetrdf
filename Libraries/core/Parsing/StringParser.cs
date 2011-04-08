@@ -71,13 +71,7 @@ namespace VDS.RDF.Parsing
             {
                 try
                 {
-                    MemoryStream mem = new MemoryStream();
-                    StreamWriter writer = new StreamWriter(mem);
-                    writer.Write(data);
-                    writer.Flush();
-                    mem.Seek(0, SeekOrigin.Begin);
-
-                    reader.Load(g, new StreamReader(mem));
+                    reader.Load(g, new StringReader(data));
                 }
                 catch
                 {
@@ -111,8 +105,8 @@ namespace VDS.RDF.Parsing
         ///     <li>Otherwise it's Turtle</li>
         ///     </ol>
         /// </li>
-        /// <li>If it contains all of a set of terms and symbols that occur in RDF/Json then it's most likely RDF/Json.  These terms are "value","type",{,},[ and ]</li>
-        /// <li>Otherwise try it as NTriples, NTriples has no real distinctive syntax so hard to test if it's NTriples</li>
+        /// <li>If it contains all of a set of terms and symbols that occur in RDF/JSON then it's most likely RDF/JSON.  These terms are "value","type",{,},[ and ]</li>
+        /// <li>Otherwise try it as NTriples, NTriples has no real distinctive syntax so hard to test if it's NTriples other than by parsing it</li>
         /// </ol>
         /// </remarks>
         public static void Parse(IGraph g, String data)
@@ -198,13 +192,7 @@ namespace VDS.RDF.Parsing
             {
                 try
                 {
-                    MemoryStream mem = new MemoryStream();
-                    StreamWriter writer = new StreamWriter(mem);
-                    writer.Write(data);
-                    writer.Flush();
-                    mem.Seek(0, SeekOrigin.Begin);
-
-                    reader.Load(store, new StreamParams(mem));
+                    reader.Load(store, new TextReaderParams(new StringReader(data)));
                 }
                 catch
                 {

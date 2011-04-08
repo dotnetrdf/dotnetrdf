@@ -172,14 +172,7 @@ namespace VDS.RDF.Query.Algebra
         public GraphPattern ToGraphPattern()
         {
             GraphPattern p = this._pattern.ToGraphPattern();
-            if (p.Filter == null)
-            {
-                p.Filter = this._filter;
-            }
-            else
-            {
-                p.Filter = new ChainFilter(p.Filter, this._filter);
-            }
+            p.Filter = this._filter;
             return p;
         }
     }

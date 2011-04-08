@@ -51,13 +51,16 @@ namespace VDS.RDF.Writing
     /// </summary>
     /// <remarks>
     /// <para>
+    /// <strong>Warning:</strong> This class cannot be used from the 0.4.1 release onwards, it has some known syntax bugs in some situations and is very slow so is fully obsolete.  Future releases will removed this writer
+    /// </para>
+    /// <para>
     /// This is a non-streaming Writer which generates an XML DOM Tree and then saves it to a Stream
     /// </para>
     /// <para>
     /// Since this Writer is non-streaming it may be slower particularly for large Graphs since it has to build the entire XML DOM Tree for the output before it can be saved to disk.  While this may be a slight disadvantage this writer is capable of applying more of the RDF/XML syntax compressions than the standard streaming <see cref="RdfXmlWriter">RdfXmlWriter</see> because it can alter the parts of the DOM Tree it has already generated.
     /// </para>
     /// </remarks>
-    [Obsolete("This class is deprecated in favour of the FastRdfXmlWriter or the newer streaming RdfXmlWriter and will be removed in future releases", false)]
+    [Obsolete("The RdfXmlTreeWriter class has been obsoleted in favour of the RdfXmlWriter or the FastRdfXmlWriter (RdfXmlWriter is actually the fastest).  This writer is very slow and has known issues around serializing complex collections and so is no longer supported", true)]
     public class RdfXmlTreeWriter : IRdfWriter, IPrettyPrintingWriter, ICompressingWriter
     {
         private NodeCollection _subjectsDone;
@@ -65,7 +68,7 @@ namespace VDS.RDF.Writing
         private int _compressionlevel = (int)WriterCompressionLevel.Default;
         private bool _prettyprint = true;
         private IGraph _g;
-        private UriNode _rdfType = new UriNode(null, new Uri(NamespaceMapper.RDF + "type"));
+        private IUriNode _rdfType = new UriNode(null, new Uri(NamespaceMapper.RDF + "type"));
         private InternalXmlWriter _writer = new InternalXmlWriter();
         private int _nextNamespaceID = 0;
         private List<String> _tempNamespaceIDs = new List<string>();
@@ -309,7 +312,7 @@ namespace VDS.RDF.Writing
                             if (this._g.GetTriplesWithObject(n).Count() > 0) return;
                         }
 
-                        uriref = this.GenerateUriRef((UriNode)n, UriRefType.UriRef, out type);
+                        uriref = this.GenerateUriRef((IUriNode)n, UriRefType.UriRef, out type);
                         XmlAttribute about = doc.CreateAttribute("rdf:about", NamespaceMapper.RDF);
                         about.InnerXml = WriterHelper.EncodeForXml(uriref);
 
@@ -368,11 +371,11 @@ namespace VDS.RDF.Writing
                     //Get Uri Ref for the Predicate
                     String predRef, typeref;
                     UriRefType type;
-                    predRef = this.GenerateUriRef((UriNode)pred, UriRefType.QName, out type);
+                    predRef = this.GenerateUriRef((IUriNode)pred, UriRefType.QName, out type);
                     if (type != UriRefType.QName)
                     {
-                        this.GenerateTemporaryNamespace((UriNode)pred, doc);
-                        predRef = this.GenerateUriRef((UriNode)pred, UriRefType.QName, out type);
+                        this.GenerateTemporaryNamespace((IUriNode)pred, doc);
+                        predRef = this.GenerateUriRef((IUriNode)pred, UriRefType.QName, out type);
                         if (type != UriRefType.QName)
                         {
                             throw new RdfOutputException(WriterErrorMessages.UnreducablePropertyURIUnserializable + " - '" + pred.ToString() + "'");
@@ -424,6 +427,28 @@ namespace VDS.RDF.Writing
                                 this.GenerateNodeStripe(obj, doc, property, false);
                                 if (property.HasChildNodes)
                                 {
+                                    //Convert any existing literal attributes to nodes
+                                    List<XmlAttribute> attrs = new List<XmlAttribute>();
+                                    System.Collections.IEnumerator e = property.Attributes.GetEnumerator();
+                                    while (e.MoveNext())
+                                    {
+                                        attrs.Add((XmlAttribute)e.Current);
+                                    }
+                                    foreach (XmlAttribute attr in attrs)
+                                    {
+                                        if (attr.Name.StartsWith("xmlns") && !attr.Name.Equals("xmlns"))
+                                        {
+                                            continue;
+                                        }
+                                        else
+                                        {
+                                            XmlElement el = doc.CreateElement(attr.Name);
+                                            el.InnerText = WriterHelper.EncodeForXml(attr.Value);
+                                            property.AppendChild(el);
+                                            property.Attributes.Remove(attr);
+                                        }
+                                    }
+
                                     XmlAttribute parseResource = doc.CreateAttribute("rdf:parseType", NamespaceMapper.RDF);
                                     parseResource.Value = "Resource";
                                     property.Attributes.Append(parseResource);
@@ -431,7 +456,7 @@ namespace VDS.RDF.Writing
                                 else
                                 {
                                     XmlAttribute nodeID = doc.CreateAttribute("rdf:nodeID", NamespaceMapper.RDF);
-                                    nodeID.Value = ((BlankNode)obj).InternalID;
+                                    nodeID.Value = ((IBlankNode)obj).InternalID;
                                     property.Attributes.Append(nodeID);
                                 }
                                 newPropertyNodeNeeded = true;
@@ -442,7 +467,7 @@ namespace VDS.RDF.Writing
 
                             case NodeType.Literal:
 
-                                LiteralNode lit = (LiteralNode)obj;
+                                ILiteralNode lit = (ILiteralNode)obj;
                                 if (!lit.Language.Equals(String.Empty))
                                 {
                                     XmlAttribute lang = doc.CreateAttribute("xml:lang");
@@ -506,7 +531,7 @@ namespace VDS.RDF.Writing
                             case NodeType.Uri:
 
                                 XmlAttribute resource = doc.CreateAttribute("rdf:resource", NamespaceMapper.RDF);
-                                resource.InnerXml = WriterHelper.EncodeForXml(this.GenerateUriRef((UriNode)obj, UriRefType.UriRef, out type));
+                                resource.InnerXml = WriterHelper.EncodeForXml(this.GenerateUriRef((IUriNode)obj, UriRefType.UriRef, out type));
                                 property.Attributes.Append(resource);
 
                                 newPropertyNodeNeeded = true;
@@ -530,7 +555,7 @@ namespace VDS.RDF.Writing
             }
         }
 
-        private String GenerateUriRef(UriNode u, UriRefType type, out UriRefType outType)
+        private String GenerateUriRef(IUriNode u, UriRefType type, out UriRefType outType)
         {
             String uriref, qname;
 
@@ -580,7 +605,7 @@ namespace VDS.RDF.Writing
             return uriref;
         }
 
-        private void GenerateTemporaryNamespace(UriNode u, XmlDocument doc)
+        private void GenerateTemporaryNamespace(IUriNode u, XmlDocument doc)
         {
             String uri = u.Uri.ToString();
             String nsUri;
@@ -655,7 +680,7 @@ namespace VDS.RDF.Writing
                 Triple t = ts.First();
                 if (t.Object.NodeType == NodeType.Uri) {
                     UriRefType type;
-                    String typeref = this.GenerateUriRef((UriNode)t.Object, UriRefType.QName, out type);
+                    String typeref = this.GenerateUriRef((IUriNode)t.Object, UriRefType.QName, out type);
 
                     if (type == UriRefType.QName)
                     {

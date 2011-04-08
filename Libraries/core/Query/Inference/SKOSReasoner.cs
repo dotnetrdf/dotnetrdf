@@ -51,7 +51,7 @@ namespace VDS.RDF.Query.Inference
     public class StaticSkosReasoner : IInferenceEngine
     {
         private Dictionary<INode, INode> _conceptMappings = new Dictionary<INode, INode>();
-        private UriNode _rdfType, _skosConcept, _skosNarrower, _skosBroader;
+        private IUriNode _rdfType, _skosConcept, _skosNarrower, _skosBroader;
 
         /// <summary>
         /// Namespace for SKOS

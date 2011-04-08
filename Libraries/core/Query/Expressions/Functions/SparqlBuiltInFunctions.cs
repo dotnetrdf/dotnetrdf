@@ -96,7 +96,7 @@ namespace VDS.RDF.Query.Expressions.Functions
                 {
                     if (temp.NodeType == NodeType.Literal)
                     {
-                        LiteralNode lit = (LiteralNode)temp;
+                        ILiteralNode lit = (ILiteralNode)temp;
 
                         if (lit.DataType == null)
                         {
@@ -323,7 +323,7 @@ namespace VDS.RDF.Query.Expressions.Functions
                 switch (result.NodeType)
                 {
                     case NodeType.Literal:
-                        LiteralNode lit = (LiteralNode)result;
+                        ILiteralNode lit = (ILiteralNode)result;
                         if (lit.DataType == null)
                         {
                             if (!lit.Language.Equals(String.Empty))
@@ -422,7 +422,7 @@ namespace VDS.RDF.Query.Expressions.Functions
                 switch (result.NodeType)
                 {
                     case NodeType.Literal:
-                        LiteralNode lit = (LiteralNode)result;
+                        ILiteralNode lit = (ILiteralNode)result;
                         String baseUri = String.Empty;
                         if (context.Query != null) baseUri = context.Query.BaseUri.ToSafeString();
                         String uri;
@@ -744,7 +744,7 @@ namespace VDS.RDF.Query.Expressions.Functions
                 switch (result.NodeType)
                 {
                     case NodeType.Literal:
-                        return new LiteralNode(null, ((LiteralNode)result).Language);
+                        return new LiteralNode(null, ((ILiteralNode)result).Language);
 
                     case NodeType.Uri:
                     case NodeType.Blank:
@@ -834,8 +834,8 @@ namespace VDS.RDF.Query.Expressions.Functions
                 }
                 else if (langRange.NodeType == NodeType.Literal)
                 {
-                    String range = ((LiteralNode)langRange).Value;
-                    String lang = ((LiteralNode)result).Value;
+                    String range = ((ILiteralNode)langRange).Value;
+                    String lang = ((ILiteralNode)result).Value;
 
                     if (range.Equals("*"))
                     {
@@ -991,10 +991,10 @@ namespace VDS.RDF.Query.Expressions.Functions
                 switch (result.NodeType)
                 {
                     case NodeType.Literal:
-                        return new LiteralNode(null, ((LiteralNode)result).Value);
+                        return new LiteralNode(null, ((ILiteralNode)result).Value);
 
                     case NodeType.Uri:
-                        return new LiteralNode(null, ((UriNode)result).StringUri);
+                        return new LiteralNode(null, ((IUriNode)result).Uri.ToString());
 
                     case NodeType.Blank:
                     case NodeType.GraphLiteral:
@@ -1079,7 +1079,7 @@ namespace VDS.RDF.Query.Expressions.Functions
                     Uri dtUri;
                     if (dt.NodeType == NodeType.Uri)
                     {
-                        dtUri = ((UriNode)dt).Uri;
+                        dtUri = ((IUriNode)dt).Uri;
                     }
                     else
                     {
@@ -1087,7 +1087,7 @@ namespace VDS.RDF.Query.Expressions.Functions
                     }
                     if (s.NodeType == NodeType.Literal)
                     {
-                        LiteralNode lit = (LiteralNode)s;
+                        ILiteralNode lit = (ILiteralNode)s;
                         if (lit.DataType == null)
                         {
                             if (lit.Language.Equals(String.Empty))
@@ -1194,7 +1194,7 @@ namespace VDS.RDF.Query.Expressions.Functions
                     String langSpec;
                     if (lang.NodeType == NodeType.Literal)
                     {
-                        LiteralNode langLit = (LiteralNode)lang;
+                        ILiteralNode langLit = (ILiteralNode)lang;
                         if (langLit.DataType == null) 
                         {
                             langSpec = langLit.Value;
@@ -1217,7 +1217,7 @@ namespace VDS.RDF.Query.Expressions.Functions
                     }
                     if (s.NodeType == NodeType.Literal)
                     {
-                        LiteralNode lit = (LiteralNode)s;
+                        ILiteralNode lit = (ILiteralNode)s;
                         if (lit.DataType == null)
                         {
                             if (lit.Language.Equals(String.Empty))
@@ -1336,7 +1336,7 @@ namespace VDS.RDF.Query.Expressions.Functions
                     //Try to parse as a Regular Expression
                     try
                     {
-                        String p = ((LiteralNode)n).Value;
+                        String p = ((ILiteralNode)n).Value;
                         Regex temp = new Regex(p);
 
                         //It's a Valid Pattern
@@ -1391,7 +1391,7 @@ namespace VDS.RDF.Query.Expressions.Functions
             {
                 if (n.NodeType == NodeType.Literal)
                 {
-                    String ops = ((LiteralNode)n).Value;
+                    String ops = ((ILiteralNode)n).Value;
                     foreach (char c in ops.ToCharArray())
                     {
                         switch (c)
@@ -1464,7 +1464,7 @@ namespace VDS.RDF.Query.Expressions.Functions
                     {
                         if (p.NodeType == NodeType.Literal)
                         {
-                            this._pattern = ((LiteralNode)p).Value;
+                            this._pattern = ((ILiteralNode)p).Value;
                         }
                         else
                         {
@@ -1491,7 +1491,7 @@ namespace VDS.RDF.Query.Expressions.Functions
             if (textNode.NodeType == NodeType.Literal)
             {
                 //Execute
-                String text = ((LiteralNode)textNode).Value;
+                String text = ((ILiteralNode)textNode).Value;
                 if (this._regex != null)
                 {
                     return this._regex.IsMatch(text);

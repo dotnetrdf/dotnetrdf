@@ -240,6 +240,17 @@ namespace VDS.RDF.Query.Filters
             this._filters.Add(second);
         }
 
+        public ChainFilter(IEnumerable<ISparqlFilter> filters)
+        {
+            this._filters.AddRange(filters);
+        }
+
+        public ChainFilter(ISparqlFilter first, IEnumerable<ISparqlFilter> rest)
+        {
+            this._filters.Add(first);
+            this._filters.AddRange(rest);
+        }
+
         /// <summary>
         /// Evaluates a filter in the given Evaluation Context
         /// </summary>

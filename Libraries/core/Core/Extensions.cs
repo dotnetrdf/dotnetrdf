@@ -324,7 +324,7 @@ namespace VDS.RDF
 
         #endregion
 
-        #region ToString() Extensions
+        #region String related Extensions
 
         /// <summary>
         /// Gets either the String representation of the Object or the Empty String if the object is null
@@ -380,6 +380,197 @@ namespace VDS.RDF
             else
             {
                 builder.AppendLine(new String(' ', indent) + line);
+            }
+        }
+
+        /// <summary>
+        /// Takes a String and escapes any backslashes in it which are not followed by a valid escape character
+        /// </summary>
+        /// <param name="value">String value</param>
+        /// <param name="cs">Valid Escape Characters i.e. characters which may follow a backslash</param>
+        /// <returns></returns>
+        public static String EscapeBackslashes(this String value, char[] cs)
+        {
+            if (value.Length == 0) return value;
+            if (value.Length == 1)
+            {
+                if (value.Equals(@"\"))
+                {
+                    return @"\\";
+                }
+                else
+                {
+                    return value;
+                }
+            }
+            else
+            {
+                StringBuilder output = new StringBuilder();
+                for (int i = 0; i < value.Length; i++)
+                {
+                    if (value[i] == '\\')
+                    {
+                        if (i < value.Length - 1)
+                        {
+                            //Not at end of the input so check whether the next character is a valid escape
+                            char next = value[i + 1];
+                            if (cs.Contains(next))
+                            {
+                                //Valid Escape
+                                output.Append(value[i]);
+                                output.Append(next);
+                                i++;
+                            }
+                            else
+                            {
+                                //Not a Valid Escape so escape the backslash
+                                output.Append(@"\\");
+                            }
+                        }
+                        else
+                        {
+                            //At the end of the input and found a trailing backslash
+                            output.Append(@"\\");
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        output.Append(value[i]);
+                    }
+                }
+                return output.ToString();
+            }
+        }
+
+        /// <summary>
+        /// Determines whether a String is fully escaped
+        /// </summary>
+        /// <param name="value">String value</param>
+        /// <param name="cs">Valid Escape Characters i.e. characters which may follow a backslash</param>
+        /// <param name="ds">Characters which must be escaped i.e. must be preceded by a backslash</param>
+        /// <returns></returns>
+        public static bool IsFullyEscaped(this String value, char[] cs, char[] ds)
+        {
+            if (value.Length == 0) return true;
+            if (value.Length == 1)
+            {
+                if (value[0] == '\\') return false;
+                if (cs.Contains(value[0])) return false;
+            }
+            else
+            {
+                //Work through the characters in pairs
+                for (int i = 0; i < value.Length; i += 2)
+                {
+                    char c = value[i];
+                    if (i < value.Length - 1)
+                    {
+                        char d = value[i + 1];
+                        if (c == '\\')
+                        {
+                            //Only fully escaped if followed by an escape character
+                            if (!cs.Contains(d)) return false;
+                        }
+                        else if (ds.Contains(c))
+                        {
+                            //If c is a character that must be escaped then not fully escaped
+                            return false;
+                        }
+                        else if (d == '\\')
+                        {
+                            //If d is a backslash shift the index back by 1 so that this will be the first
+                            //character of the next character pair we assess
+                            i--;
+                        }
+                        else if (ds.Contains(d))
+                        {
+                            //If d is a character that must be escaped we know that the preceding character
+                            //was not a backslash so the string is not fully escaped
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        //If trailing character is a backslash or a character that must be escaped then not fully escaped
+                        if (c == '\\' || ds.Contains(c)) return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        public static String Escape(this String value, char toEscape)
+        {
+            return value.Escape(toEscape, toEscape);
+        }
+
+        public static String Escape(this String value, char toEscape, char escapeAs)
+        {
+            if (value.Length == 0) return value;
+            if (value.Length == 1)
+            {
+                if (value[0] == toEscape) return new String(new char[] { '\\', toEscape });
+                return value;
+            }
+            else
+            {
+                //Work through the characters in pairs
+                StringBuilder output = new StringBuilder();
+                for (int i = 0; i < value.Length; i += 2)
+                {
+                    char c = value[i];
+                    if (i < value.Length - 1)
+                    {
+                        char d = value[i + 1];
+                        if (c == toEscape)
+                        {
+                            //Must escape this
+                            output.Append('\\');
+                            output.Append(escapeAs);
+                            //Reduce index by 1 as next character is now start of next pair
+                            i--;
+                        }
+                        else if (c == '\\')
+                        {
+                            //Regardless of the next character we append this to the output since it is an escape
+                            //of some kind - whether it relates to the character we want to escape or not is
+                            //irrelevant in this case
+                            output.Append(c);
+                            output.Append(d);
+                        }
+                        else if (d == toEscape)
+                        {
+                            //If d is the character to be escaped and we get to this case then it isn't escaped
+                            //currently so we must escape it
+                            output.Append(c);
+                            output.Append('\\');
+                            output.Append(escapeAs);
+                        }
+                        else if (d == '\\')
+                        {
+                            //If d is a backslash shift the index back by 1 so that this will be the first
+                            //character of the next character pair we assess
+                            output.Append(c);
+                            i--;
+                        }
+                        else
+                        {
+                            output.Append(c);
+                            output.Append(d);
+                        }
+                    }
+                    else
+                    {
+                        //If trailing character is character to escape then do so
+                        if (c == toEscape)
+                        {
+                            output.Append('\\');
+                        }
+                        output.Append(c);
+                    }
+                }
+                return output.ToString();
             }
         }
 
@@ -561,7 +752,7 @@ namespace VDS.RDF
         /// <param name="file">File to save to</param>
         public static void SaveToFile(this IGraph g, String file)
         {
-            IRdfWriter writer = MimeTypesHelper.GetWriter(MimeTypesHelper.GetMimeType(System.IO.Path.GetExtension(file)));
+            IRdfWriter writer = MimeTypesHelper.GetWriter(MimeTypesHelper.GetMimeTypes(System.IO.Path.GetExtension(file)));
             writer.Save(g, file);
         }
     }
@@ -721,7 +912,7 @@ namespace VDS.RDF
         /// <param name="g">Graph to create in</param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException">Thrown if the Graph argument is null</exception>
-        public static LiteralNode ToLiteral(this bool b, IGraph g)
+        public static ILiteralNode ToLiteral(this bool b, IGraph g)
         {
             if (g == null) throw new ArgumentNullException("g", "Cannot create a Literal Node in a null Graph");
 
@@ -737,7 +928,7 @@ namespace VDS.RDF
         /// <remarks>
         /// Byte in .Net is actually equivalent to Unsigned Byte in XML Schema so depending on the value of the Byte the type will either be xsd:byte if it fits or xsd:usignedByte
         /// </remarks>
-        public static LiteralNode ToLiteral(this byte b, IGraph g)
+        public static ILiteralNode ToLiteral(this byte b, IGraph g)
         {
             if (g == null) throw new ArgumentNullException("g", "Cannot create a Literal Node in a null Graph");
 
@@ -762,7 +953,7 @@ namespace VDS.RDF
         /// <remarks>
         /// SByte in .Net is directly equivalent to Byte in XML Schema so the type will always be xsd:byte
         /// </remarks>
-        public static LiteralNode ToLiteral(this sbyte b, IGraph g)
+        public static ILiteralNode ToLiteral(this sbyte b, IGraph g)
         {
             if (g == null) throw new ArgumentNullException("g", "Cannot create a Literal Node in a null Graph");
 
@@ -776,7 +967,7 @@ namespace VDS.RDF
         /// <param name="g">Graph to create in</param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException">Thrown if the Graph argument is null</exception>
-        public static LiteralNode ToLiteral(this DateTime dt, IGraph g)
+        public static ILiteralNode ToLiteral(this DateTime dt, IGraph g)
         {
             if (g == null) throw new ArgumentNullException("g", "Cannot create a Literal Node in a null Graph");
 
@@ -790,7 +981,7 @@ namespace VDS.RDF
         /// <param name="g">Graph to create in</param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException">Thrown if the Graph argument is null</exception>
-        public static LiteralNode ToLiteralDate(this DateTime dt, IGraph g)
+        public static ILiteralNode ToLiteralDate(this DateTime dt, IGraph g)
         {
             if (g == null) throw new ArgumentNullException("g", "Cannot create a Literal Node in a null Graph");
 
@@ -804,7 +995,7 @@ namespace VDS.RDF
         /// <param name="g">Graph to create in</param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException">Thrown if the Graph argument is null</exception>
-        public static LiteralNode ToLiteralTime(this DateTime dt, IGraph g)
+        public static ILiteralNode ToLiteralTime(this DateTime dt, IGraph g)
         {
             if (g == null) throw new ArgumentNullException("g", "Cannot create a Literal Node in a null Graph");
 
@@ -817,7 +1008,7 @@ namespace VDS.RDF
         /// <param name="t">Time Span</param>
         /// <param name="g">Graph to create in</param>
         /// <returns></returns>
-        public static LiteralNode ToLiteral(this TimeSpan t, IGraph g)
+        public static ILiteralNode ToLiteral(this TimeSpan t, IGraph g)
         {
             if (g == null) throw new ArgumentNullException("g", "Cannot create a Literal Node in a null Graph");
 
@@ -831,7 +1022,7 @@ namespace VDS.RDF
         /// <param name="g">Graph to create in</param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException">Thrown if the Graph argument is null</exception>
-        public static LiteralNode ToLiteral(this decimal d, IGraph g)
+        public static ILiteralNode ToLiteral(this decimal d, IGraph g)
         {
             if (g == null) throw new ArgumentNullException("g", "Cannot create a Literal Node in a null Graph");
 
@@ -845,7 +1036,7 @@ namespace VDS.RDF
         /// <param name="g">Graph to create in</param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException">Thrown if the Graph argument is null</exception>
-        public static LiteralNode ToLiteral(this double d, IGraph g)
+        public static ILiteralNode ToLiteral(this double d, IGraph g)
         {
             if (g == null) throw new ArgumentNullException("g", "Cannot create a Literal Node in a null Graph");
 
@@ -859,7 +1050,7 @@ namespace VDS.RDF
         /// <param name="g">Graph to create in</param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException">Thrown if the Graph argument is null</exception>
-        public static LiteralNode ToLiteral(this float f, IGraph g)
+        public static ILiteralNode ToLiteral(this float f, IGraph g)
         {
             if (g == null) throw new ArgumentNullException("g", "Cannot create a Literal Node in a null Graph");
 
@@ -873,7 +1064,7 @@ namespace VDS.RDF
         /// <param name="g">Graph to create in</param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException">Thrown if the Graph argument is null</exception>
-        public static LiteralNode ToLiteral(this short i, IGraph g)
+        public static ILiteralNode ToLiteral(this short i, IGraph g)
         {
             if (g == null) throw new ArgumentNullException("g", "Cannot create a Literal Node in a null Graph");
 
@@ -887,7 +1078,7 @@ namespace VDS.RDF
         /// <param name="g">Graph to create in</param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException">Thrown if the Graph argument is null</exception>
-        public static LiteralNode ToLiteral(this int i, IGraph g)
+        public static ILiteralNode ToLiteral(this int i, IGraph g)
         {
             if (g == null) throw new ArgumentNullException("g", "Cannot create a Literal Node in a null Graph");
 
@@ -901,7 +1092,7 @@ namespace VDS.RDF
         /// <param name="g">Graph to create in</param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException">Thrown if the Graph argument is null</exception>
-        public static LiteralNode ToLiteral(this long l, IGraph g)
+        public static ILiteralNode ToLiteral(this long l, IGraph g)
         {
             if (g == null) throw new ArgumentNullException("g", "Cannot create a Literal Node in a null Graph");
 
@@ -915,7 +1106,7 @@ namespace VDS.RDF
         /// <param name="g">Graph to create in</param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException">Thrown if the Graph/String argument is null</exception>
-        public static LiteralNode ToLiteral(this String s, IGraph g)
+        public static ILiteralNode ToLiteral(this String s, IGraph g)
         {
             if (g == null) throw new ArgumentNullException("g", "Cannot create a Literal Node in a null Graph");
             if (s == null) throw new ArgumentNullException("s", "Cannot create a Literal Node for a null String");

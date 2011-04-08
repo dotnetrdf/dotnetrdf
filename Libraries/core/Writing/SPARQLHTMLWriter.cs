@@ -173,7 +173,7 @@ namespace VDS.RDF.Writing
                                         break;
 
                                     case NodeType.Literal:
-                                        LiteralNode lit = (LiteralNode)value;
+                                        ILiteralNode lit = (ILiteralNode)value;
                                         writer.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClassLiteral);
                                         writer.RenderBeginTag(HtmlTextWriterTag.Span);
                                         if (lit.DataType != null)

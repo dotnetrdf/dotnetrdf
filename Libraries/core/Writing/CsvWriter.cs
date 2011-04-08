@@ -164,11 +164,19 @@ namespace VDS.RDF.Writing
         /// <param name="parameters">A set of <see cref="StreamParams">StreamParams</see></param>
         public void Save(ITripleStore store, IStoreParams parameters)
         {
+            ThreadedStoreWriterContext context = null;
             if (parameters is StreamParams)
             {
                 //Create a new Writer Context
-                ThreadedStoreWriterContext context = new ThreadedStoreWriterContext(store, ((StreamParams)parameters).StreamWriter);
+                context = new ThreadedStoreWriterContext(store, ((StreamParams)parameters).StreamWriter);
+            } 
+            else if (parameters is TextWriterParams)
+            {
+                context = new ThreadedStoreWriterContext(store, ((TextWriterParams)parameters).TextWriter);
+            }
 
+            if (context != null)
+            {
                 //Check there's something to do
                 if (context.Store.Graphs.Count == 0)
                 {
@@ -211,7 +219,7 @@ namespace VDS.RDF.Writing
             }
             else
             {
-                throw new RdfStorageException("Parameters for the CsvStoreWriter must be of the type StreamParams");
+                throw new RdfStorageException("Parameters for the CsvStoreWriter must be of the type StreamParams/TextWriterParams");
             }
         }
 
@@ -229,7 +237,7 @@ namespace VDS.RDF.Writing
         {
             try
             {
-                Uri u = globalContext.GetNextURI();
+                Uri u = globalContext.GetNextUri();
                 while (u != null)
                 {
                     //Get the Graph from the Store
@@ -254,7 +262,7 @@ namespace VDS.RDF.Writing
                     }
 
                     //Get the Next Uri
-                    u = globalContext.GetNextURI();
+                    u = globalContext.GetNextUri();
                 }
             }
             catch (ThreadAbortException)

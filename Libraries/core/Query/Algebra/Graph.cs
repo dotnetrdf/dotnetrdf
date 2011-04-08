@@ -126,7 +126,7 @@ namespace VDS.RDF.Query.Algebra
                                     if (temp.NodeType == NodeType.Uri)
                                     {
                                         activeGraphs.Add(temp.ToString());
-                                        graphUris.Add(((UriNode)temp).Uri);
+                                        graphUris.Add(((IUriNode)temp).Uri);
                                     }
                                 }
                             }

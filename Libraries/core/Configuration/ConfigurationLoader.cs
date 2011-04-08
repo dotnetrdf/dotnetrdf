@@ -136,7 +136,7 @@ namespace VDS.RDF.Configuration
 
         #endregion
 
-        private static Dictionary<String, UriNode> _nodeMap = new Dictionary<string,UriNode>();
+        private static Dictionary<String, IUriNode> _nodeMap = new Dictionary<string,IUriNode>();
         private static Dictionary<CachedObjectKey, Object> _cache = new Dictionary<CachedObjectKey, object>();
         private static NamespaceMapper _nsmap = new NamespaceMapper(true);
         private static List<IObjectFactory> _factories = new List<IObjectFactory>()
@@ -194,7 +194,7 @@ namespace VDS.RDF.Configuration
         /// <param name="g">Configuration Graph</param>
         public static void AutoDetectObjectFactories(IGraph g)
         {
-            UriNode rdfType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
+            IUriNode rdfType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
             INode objLoader = CreateConfigurationNode(g, ClassObjectFactory);
 
             foreach (INode objNode in g.GetTriplesWithPredicateObject(rdfType, objLoader).Select(t => t.Subject))
@@ -261,7 +261,7 @@ namespace VDS.RDF.Configuration
 
             //Create the URI Node
             Uri propertyUri = new Uri(Tools.ResolveQName(qname, _nsmap, null));
-            UriNode u = g.CreateUriNode(propertyUri);
+            IUriNode u = g.CreateUriNode(propertyUri);
             _nodeMap.Add(qname, u);
             return u;
         }
@@ -328,7 +328,7 @@ namespace VDS.RDF.Configuration
             if (n == null) return null;
             if (n.NodeType == NodeType.Literal)
             {
-                return ((LiteralNode)n).Value;
+                return ((ILiteralNode)n).Value;
             }
             else
             {
@@ -336,7 +336,7 @@ namespace VDS.RDF.Configuration
                 if (temp == null) return null;
                 if (temp.NodeType == NodeType.Literal)
                 {
-                    return ((LiteralNode)temp).Value;
+                    return ((ILiteralNode)temp).Value;
                 }
                 else
                 {
@@ -361,13 +361,13 @@ namespace VDS.RDF.Configuration
                 case NodeType.Blank:
                     return n.ToString();
                 case NodeType.Literal:
-                    return ((LiteralNode)n).Value;
+                    return ((ILiteralNode)n).Value;
                 case NodeType.Uri:
                     INode temp = ResolveAppSetting(g, n);
                     if (temp == null) return null;
                     if (temp.NodeType == NodeType.Literal)
                     {
-                        return ((LiteralNode)temp).Value;
+                        return ((ILiteralNode)temp).Value;
                     }
                     else
                     {
@@ -403,7 +403,7 @@ namespace VDS.RDF.Configuration
             if (n.NodeType == NodeType.Literal)
             {
                 bool temp;
-                if (Boolean.TryParse(((LiteralNode)n).Value, out temp))
+                if (Boolean.TryParse(((ILiteralNode)n).Value, out temp))
                 {
                     return temp;
                 }
@@ -443,7 +443,7 @@ namespace VDS.RDF.Configuration
             if (n.NodeType == NodeType.Literal)
             {
                 long temp;
-                if (Int64.TryParse(((LiteralNode)n).Value, out temp))
+                if (Int64.TryParse(((ILiteralNode)n).Value, out temp))
                 {
                     return temp;
                 }
@@ -483,7 +483,7 @@ namespace VDS.RDF.Configuration
             if (n.NodeType == NodeType.Literal)
             {
                 int temp;
-                if (Int32.TryParse(((LiteralNode)n).Value, out temp))
+                if (Int32.TryParse(((ILiteralNode)n).Value, out temp))
                 {
                     return temp;
                 }
@@ -673,7 +673,7 @@ namespace VDS.RDF.Configuration
         /// </remarks>
         public static String GetDefaultType(IGraph g, INode objNode)
         {
-            UriNode rdfType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
+            IUriNode rdfType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
             INode declaredType = ConfigurationLoader.GetConfigurationNode(g, objNode, rdfType);
             if (declaredType.NodeType == NodeType.Uri)
             {
@@ -764,7 +764,7 @@ namespace VDS.RDF.Configuration
             if (n == null) return null;
             if (n.NodeType != NodeType.Uri) return n;
 
-            String uri = ((UriNode)n).StringUri;
+            String uri = ((IUriNode)n).Uri.ToString();
             if (!uri.StartsWith("appsetting:")) return n;
 
             String key = uri.Substring(uri.IndexOf(':') + 1);

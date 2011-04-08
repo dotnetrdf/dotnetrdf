@@ -54,6 +54,7 @@ namespace VDS.RDF.Parsing.Contexts
         private String _folder;
         private int _threads = 8;
         private FolderStoreFormat _format = FolderStoreFormat.Turtle;
+        private bool _terminated = false;
 
         /// <summary>
         /// Creates a new Folder Store Parser Context
@@ -153,6 +154,34 @@ namespace VDS.RDF.Parsing.Contexts
                 Monitor.Exit(this._loadList);
             }
             return temp;
+        }
+
+        public void ClearFilenames()
+        {
+            try
+            {
+                Monitor.Enter(this._loadList);
+                this._loadList.Clear();
+            }
+            finally
+            {
+                Monitor.Exit(this._loadList);
+            }          
+        }
+
+        public bool Terminated
+        {
+            get
+            {
+                return this._terminated;
+            }
+            set
+            {
+                if (!this._terminated)
+                {
+                    this._terminated = value;
+                }
+            }
         }
     }
 }

@@ -66,7 +66,7 @@ namespace VDS.RDF.Update.Commands
             this._graphUri = graphUri;
 
             //Optimise the WHERE
-            this._wherePattern.Optimise(Enumerable.Empty<String>());
+            this._wherePattern.Optimise();
         }
 
         /// <summary>
@@ -171,7 +171,7 @@ namespace VDS.RDF.Update.Commands
         {
             if (!this.IsOptimised)
             {
-                this._wherePattern.Optimise(Enumerable.Empty<String>());
+                this._wherePattern.Optimise();
                 this.IsOptimised = true;
             }
         }
@@ -268,16 +268,24 @@ namespace VDS.RDF.Update.Commands
                     try
                     {
                         ConstructContext constructContext = new ConstructContext(g, s, true);
-                        foreach (ITriplePattern p in this._insertPattern.TriplePatterns)
+                        foreach (IConstructTriplePattern p in this._insertPattern.TriplePatterns.OfType<IConstructTriplePattern>())
                         {
-                            insertedTriples.Add(((IConstructTriplePattern)p).Construct(constructContext));
+                            try
+                            {
+                                insertedTriples.Add(p.Construct(constructContext));
+                            }
+                            catch (RdfQueryException)
+                            {
+                                //If we throw an error this means we couldn't construct a specific Triple
+                                //so we continue anyway
+                            }
                         }
                         g.Assert(insertedTriples);
                     }
                     catch (RdfQueryException)
                     {
                         //If we throw an error this means we couldn't construct for this solution so the
-                        //solution is ignored for inserting into the standard graph
+                        //solution is ignored for this graph
                     }
 
                     //Triples from GRAPH clauses
@@ -340,17 +348,24 @@ namespace VDS.RDF.Update.Commands
 
                             //Do the actual Insertions
                             ConstructContext constructContext = new ConstructContext(h, s, true);
-                            foreach (ITriplePattern p in gp.TriplePatterns)
+                            foreach (IConstructTriplePattern p in gp.TriplePatterns.OfType<IConstructTriplePattern>())
                             {
-                                insertedTriples.Add(((IConstructTriplePattern)p).Construct(constructContext));
+                                try
+                                {
+                                    insertedTriples.Add(p.Construct(constructContext));
+                                }
+                                catch (RdfQueryException)
+                                {
+                                    //If we throw an error this means we couldn't construct a specific Triple
+                                    //so we continue anyway
+                                }
                             }
                             h.Assert(insertedTriples);
                         }
                         catch (RdfQueryException)
                         {
                             //If we throw an error this means we couldn't construct for this solution so the
-                            //solution is discarded
-                            continue;
+                            //solution is ignored for this Graph
                         }
                     }
                 }

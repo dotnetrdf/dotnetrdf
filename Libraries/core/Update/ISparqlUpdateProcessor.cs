@@ -135,6 +135,11 @@ namespace VDS.RDF.Update
         void ProcessMoveCommand(MoveCommand cmd);
 
         /// <summary>
+        /// Causes any outstanding changes to be discarded
+        /// </summary>
+        void Discard();
+
+        /// <summary>
         /// Causes any outstanding changes to be flushed to the underlying storage
         /// </summary>
         void Flush();

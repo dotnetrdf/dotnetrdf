@@ -138,6 +138,11 @@ namespace VDS.RDF.Parsing
             }
         }
 
+        public void Load(IRdfHandler handler, IStoreParams parameters)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Delegate for LoadGraphs method
         /// </summary>
@@ -171,22 +176,19 @@ namespace VDS.RDF.Parsing
                 String file = context.GetNextFilename();
                 while (file != null)
                 {
-
                     //Read from Disk
                     Graph g = new Graph();
                     String sourceFile = Path.Combine(context.Folder, file);
                     parser.Load(g, sourceFile);
 
                     //Add to Graph Collection
-                    try
+                    foreach (Triple t in g.Triples)
                     {
-                        Monitor.Enter(context.Store.Graphs);
-                        context.Store.Graphs.Add(g, false);
+                        if (context.Terminated) break;
+                        if (!context.Handler.HandleTriple(t)) ParserHelper.Stop();
                     }
-                    finally
-                    {
-                        Monitor.Exit(context.Store.Graphs);
-                    }
+
+                    if (context.Terminated) break;
 
                     //Get the Next Filename
                     file = context.GetNextFilename();
@@ -199,6 +201,11 @@ namespace VDS.RDF.Parsing
                 Thread.ResetAbort();
 #endif
             }
+            catch (RdfParsingTerminatedException)
+            {
+                context.Terminated = true;
+                context.ClearFilenames();
+            }
             catch (Exception ex)
             {
                 throw new RdfStorageException("Error in Threaded Reader in Thread ID " + Thread.CurrentThread.ManagedThreadId, ex);
@@ -209,7 +216,7 @@ namespace VDS.RDF.Parsing
         /// Helper method used to raise the Warning event if there is an event handler registered
         /// </summary>
         /// <param name="message">Warning message</param>
-        private void OnWarning(String message)
+        private void RaiseWarning(String message)
         {
             StoreReaderWarning d = this.Warning;
             if (d != null)

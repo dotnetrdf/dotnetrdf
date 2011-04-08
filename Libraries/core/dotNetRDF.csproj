@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{BFBAC159-1E60-4D03-8ACA-D34E31EB83BF}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -39,16 +39,15 @@
   <ItemGroup>
     <Reference Include="HtmlAgilityPack, Version=1.4.0.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Dependencies\HtmlAgilityPack.dll</HintPath>
+      <HintPath>..\..\..\..\Trunk\Dependencies\HtmlAgilityPack.dll</HintPath>
     </Reference>
     <Reference Include="MySql.Data, Version=6.0.3.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Dependencies\MySql.Data.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\..\..\..\Trunk\Dependencies\MySql.Data.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=3.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Dependencies\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\..\..\..\Trunk\Dependencies\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="OpenLink.Data.Virtuoso, Version=6.2.3128.1, Culture=neutral, PublicKeyToken=6654f6917d07cb95, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -212,13 +211,20 @@
     <Compile Include="Configuration\ProxyFactory.cs" />
     <Compile Include="Configuration\ReasonerFactory.cs" />
     <Compile Include="Core\BaseEndpoint.cs" />
+    <Compile Include="Core\BaseNode.cs" />
     <Compile Include="Core\BlankNodeMapper.cs" />
     <Compile Include="Core\DiskDemandTripleStore.cs" />
+    <Compile Include="Core\EqualityHelper.cs" />
     <Compile Include="Core\GraphDiff.cs" />
     <Compile Include="Core\INamespaceMapper.cs" />
+    <Compile Include="Core\INodeFactory.cs" />
+    <Compile Include="Core\IRdfHandler.cs" />
+    <Compile Include="Core\ISparqlResultsHandler.cs" />
     <Compile Include="Core\MimeTypeDefinition.cs" />
+    <Compile Include="Core\GraphPersistenceWrapper.cs" />
     <Compile Include="Core\NestedNamespaceMapper.cs" />
     <Compile Include="Core\NodeFactory.cs" />
+    <Compile Include="Core\PersistenceAction.cs" />
     <Compile Include="Core\SubGraphMatcher.cs" />
     <Compile Include="Core\GraphMatcher.cs" />
     <Compile Include="Core\QueryableGraph.cs" />
@@ -240,21 +246,42 @@
     <Compile Include="Ontology\OntologyProperty.cs" />
     <Compile Include="Ontology\OntologyResource.cs" />
     <Compile Include="Ontology\ReasonerGraph.cs" />
+    <Compile Include="Parsing\BlockingTextReader.cs" />
     <Compile Include="Parsing\Contexts\BaseParserContext.cs" />
+    <Compile Include="Parsing\Contexts\BaseResultsParserContext.cs" />
     <Compile Include="Parsing\Contexts\BaseStoreParserContext.cs" />
     <Compile Include="Parsing\Contexts\FolderStoreParserContext.cs" />
+    <Compile Include="Parsing\Contexts\IParserContext.cs" />
+    <Compile Include="Parsing\Contexts\IResultsParserContext.cs" />
+    <Compile Include="Parsing\Contexts\IStoreParserContext.cs" />
     <Compile Include="Parsing\Contexts\JsonParserContext.cs" />
     <Compile Include="Parsing\Contexts\Notation3ParserContext.cs" />
     <Compile Include="Parsing\Contexts\RdfAParserContext.cs" />
     <Compile Include="Parsing\Contexts\RdfXmlParserContext.cs" />
+    <Compile Include="Parsing\Contexts\SparqlJsonParserContext.cs" />
     <Compile Include="Parsing\Contexts\SparqlQueryParserContext.cs" />
+    <Compile Include="Parsing\Contexts\SparqlRdfParserContext.cs" />
     <Compile Include="Parsing\Contexts\SparqlUpdateParserContext.cs" />
+    <Compile Include="Parsing\Contexts\SparqlXmlParserContext.cs" />
     <Compile Include="Parsing\Contexts\TriGParserContext.cs" />
     <Compile Include="Parsing\EmbeddedResourceLoader.cs" />
     <Compile Include="Parsing\Events\DomBasedEventGenerator.cs" />
     <Compile Include="Parsing\Events\EventQueue.cs" />
     <Compile Include="Parsing\Events\IEventGenerator.cs" />
     <Compile Include="Parsing\Events\IEventQueue.cs" />
+    <Compile Include="Parsing\Handlers\BaseHandler.cs" />
+    <Compile Include="Parsing\Handlers\ResultCountHandler.cs" />
+    <Compile Include="Parsing\Handlers\ResultSetHandler.cs" />
+    <Compile Include="Parsing\Handlers\StoreCountHandler.cs" />
+    <Compile Include="Parsing\Handlers\MultiHandler.cs" />
+    <Compile Include="Parsing\Handlers\ChainedHandler.cs" />
+    <Compile Include="Parsing\Handlers\NullHandler.cs" />
+    <Compile Include="Parsing\Handlers\CountHandler.cs" />
+    <Compile Include="Parsing\Handlers\GraphHandler.cs" />
+    <Compile Include="Parsing\Handlers\PagingHandler.cs" />
+    <Compile Include="Parsing\Handlers\StoreHandler.cs" />
+    <Compile Include="Parsing\Handlers\WriteThroughHandler.cs" />
+    <Compile Include="Parsing\Handlers\WriteToStoreHandler.cs" />
     <Compile Include="Parsing\IRdfAVocabulary.cs" />
     <Compile Include="Parsing\IriSpecsHelper.cs" />
     <Compile Include="Parsing\IUriLoaderCache.cs" />
@@ -286,11 +313,11 @@
     <Compile Include="Query\Aggregates\BaseAggregate.cs" />
     <Compile Include="Query\Aggregates\LeviathanBooleanAggregates.cs" />
     <Compile Include="Query\Aggregates\LeviathanNumericAggregates.cs" />
+    <Compile Include="Query\Algebra\AlgebraExtensions.cs" />
     <Compile Include="Query\Algebra\AskBgp.cs" />
     <Compile Include="Query\Algebra\BaseMultiset.cs" />
     <Compile Include="Query\Algebra\Bgp.cs" />
     <Compile Include="Query\Algebra\Bindings.cs" />
-    <Compile Include="Query\Algebra\IAlgebraTransfomer.cs" />
     <Compile Include="Query\Algebra\LazyBgp.cs" />
     <Compile Include="Query\Algebra\Distinct.cs" />
     <Compile Include="Query\Algebra\Filter.cs" />
@@ -301,7 +328,9 @@
     <Compile Include="Query\Algebra\IdentityMultiset.cs" />
     <Compile Include="Query\Algebra\ISparqlAlgebra.cs" />
     <Compile Include="Query\Algebra\AlgebraJoinClasses.cs" />
-    <Compile Include="Query\Algebra\BgpTransformers.cs" />
+    <Compile Include="Query\Optimisation\BaseAlgebraOptimiser.cs" />
+    <Compile Include="Query\Optimisation\BaseQueryOptimiser.cs" />
+    <Compile Include="Query\Optimisation\BgpOptimisers.cs" />
     <Compile Include="Query\Algebra\Minus.cs" />
     <Compile Include="Query\Algebra\Multiset.cs" />
     <Compile Include="Query\Algebra\NullMultiset.cs" />
@@ -379,6 +408,11 @@
     <Compile Include="Query\Inference\OwlReasonerWrapper.cs" />
     <Compile Include="Query\Inference\PelletReasoner.cs" />
     <Compile Include="Query\Inference\Pellet\Services\NamespaceService.cs" />
+    <Compile Include="Query\Optimisation\IAlgebraOptimiser.cs" />
+    <Compile Include="Query\Optimisation\IQueryOptimiser.cs" />
+    <Compile Include="Query\Optimisation\QueryOptimisers.cs" />
+    <Compile Include="Query\Optimisation\SparqlOptimiser.cs" />
+    <Compile Include="Query\Optimisation\WeightedOptimiser.cs" />
     <Compile Include="Query\Ordering\TripleComparer.cs" />
     <Compile Include="Query\Patterns\BindPattern.cs" />
     <Compile Include="Query\PelletQueryProcessor.cs" />
@@ -420,12 +454,14 @@
     <Compile Include="Query\Expressions\XPathFunctionFactory.cs" />
     <Compile Include="Query\Expressions\Functions\XPathNumericFunctions.cs" />
     <Compile Include="Query\Expressions\Functions\XPathStringFunctions.cs" />
+    <Compile Include="Query\QueryExtensions.cs" />
     <Compile Include="Query\QueryProcessors.cs" />
     <Compile Include="Query\SparqlEvaluationContext.cs" />
     <Compile Include="Query\SparqlNodeComparer.cs" />
     <Compile Include="Query\SparqlParameterizedString.cs" />
     <Compile Include="Query\SparqlPathParser.cs" />
     <Compile Include="Query\SparqlView.cs" />
+    <Compile Include="Storage\StardogConnector.cs" />
     <Compile Include="Storage\DatasetFileManager.cs" />
     <Compile Include="Storage\FusekiConnector.cs" />
     <Compile Include="Storage\GSISHttpProtocolConnector.cs" />
@@ -434,6 +470,7 @@
     <Compile Include="Storage\ReadOnlyConnector.cs" />
     <Compile Include="Storage\SparqlConnector.cs" />
     <Compile Include="Storage\SparqlHttpProtocolConnector.cs" />
+    <Compile Include="ThreadSafeReference.cs" />
     <Compile Include="Update\Commands\AddCommand.cs" />
     <Compile Include="Update\Commands\BaseModifyCommand.cs" />
     <Compile Include="Update\Commands\BaseTransferCommand.cs" />
@@ -481,6 +518,7 @@
     <Compile Include="Web\Configuration\Update\BaseUpdateHandlerConfiguration.cs" />
     <Compile Include="Web\Configuration\WebConfigurationLoader.cs" />
     <Compile Include="Web\DatasetHandler.cs" />
+    <Compile Include="Web\NegotiateByFileExtension.cs" />
     <Compile Include="Web\SchemaGraphHandler.cs" />
     <Compile Include="Web\SparqlServiceDescriber.cs" />
     <Compile Include="Web\WildcardProtocolHandler.cs" />
@@ -517,12 +555,14 @@
     <Compile Include="Writing\Contexts\RdfXmlWriterContext.cs" />
     <Compile Include="Writing\Contexts\SqlStoreWriterContext.cs" />
     <Compile Include="Writing\Contexts\ThreadedStoreWriterContext.cs" />
+    <Compile Include="Writing\Contexts\TriGWriterContext.cs" />
     <Compile Include="Writing\Contexts\TurtleWriterContext.cs" />
     <Compile Include="Writing\Formatting\BaseFormatter.cs" />
     <Compile Include="Writing\Formatting\CsvFormatter.cs" />
     <Compile Include="Writing\Formatting\DeliminatedLineFormatter.cs" />
     <Compile Include="Writing\Formatting\HtmlFormatter.cs" />
     <Compile Include="Writing\Formatting\ICharFormatter.cs" />
+    <Compile Include="Writing\Formatting\INamespaceFormatter.cs" />
     <Compile Include="Writing\Formatting\IQueryFormatter.cs" />
     <Compile Include="Writing\Formatting\IResultFormatter.cs" />
     <Compile Include="Writing\Formatting\ITripleFormatter.cs" />
@@ -554,12 +594,13 @@
     <EmbeddedResource Include="Storage\UpgradeMSSQLStore_010_011.sql" />
     <EmbeddedResource Include="Storage\CreateMySQLStoreTables.sql" />
     <None Include="VDSOpenSourceKey.pfx" />
-    <None Include="Web\LeviathanFunctionLibrary.ttl" />
+    <EmbeddedResource Include="Query\Expressions\Functions\LeviathanFunctionLibrary.ttl" />
     <Compile Include="Writing\Formatting\INodeFormatter.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="ChangeLog.txt" />
     <EmbeddedResource Include="Configuration\configuration.ttl" />
+    <EmbeddedResource Include="Query\Optimisation\OptimiserStats.ttl" />
     <Content Include="ReadMe.txt" />
     <Content Include="ReleaseNotes.txt">
     </Content>

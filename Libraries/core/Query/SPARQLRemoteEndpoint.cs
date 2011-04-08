@@ -296,7 +296,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="sparqlQuery">SPARQL Query String</param>
         /// <returns>RDF Graph</returns>
-        public virtual Graph QueryWithResultGraph(String sparqlQuery)
+        public virtual IGraph QueryWithResultGraph(String sparqlQuery)
         {
             try
             {
@@ -310,7 +310,7 @@ namespace VDS.RDF.Query
                 //Parse into a Graph based on Content Type
                 String ctype = httpResponse.ContentType;
                 IRdfReader parser = MimeTypesHelper.GetParser(ctype);
-                parser.Load(g, new BlockingStreamReader(httpResponse.GetResponseStream()));
+                parser.Load(g, new StreamReader(httpResponse.GetResponseStream()));
                 if (g.BaseUri.ToString().Equals(this.Uri.ToString(), StringComparison.Ordinal)) g.BaseUri = httpResponse.ResponseUri;
                 httpResponse.Close();
                 return g;
@@ -373,7 +373,7 @@ namespace VDS.RDF.Query
         /// <param name="sparqlQuery">Sparql Query String</param>
         /// <returns>RDF Graph</returns>
         /// <remarks>Allows for implementation of asynchronous querying</remarks>
-        public delegate Graph AsyncQueryWithResultGraph(String sparqlQuery);
+        public delegate IGraph AsyncQueryWithResultGraph(String sparqlQuery);
 
         /// <summary>
         /// Internal method which builds the Query Uri and executes it via GET/POST as appropriate
@@ -733,7 +733,7 @@ namespace VDS.RDF.Query
         /// </remarks>
         /// <exception cref="RdfQueryException">Thrown if any of the requests to the endpoints fail</exception>
         /// <exception cref="RdfQueryTimeoutException">Thrown if not all the requests complete within the set timeout</exception>
-        public override Graph QueryWithResultGraph(string sparqlQuery)
+        public override IGraph QueryWithResultGraph(string sparqlQuery)
         {
             //If no endpoints return an Empty Graph
             if (this._endpoints.Count == 0) return new Graph();
@@ -806,7 +806,7 @@ namespace VDS.RDF.Query
             {
                 //Retrieve the result for this call
                 AsyncQueryWithResultGraph call = asyncCalls[i];
-                Graph g;
+                IGraph g;
                 try
                 {
                     g = call.EndInvoke(asyncResults[i]);

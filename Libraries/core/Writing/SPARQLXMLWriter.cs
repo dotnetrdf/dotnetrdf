@@ -156,7 +156,7 @@ namespace VDS.RDF.Writing
                                 case NodeType.Blank:
                                     //<bnode> element
                                     XmlElement bnode = xmlDoc.CreateElement("bnode");
-                                    bnode.InnerText = ((BlankNode)n).InternalID;
+                                    bnode.InnerText = ((IBlankNode)n).InternalID;
                                     binding.AppendChild(bnode);
                                     break;
 
@@ -167,7 +167,7 @@ namespace VDS.RDF.Writing
                                 case NodeType.Literal:
                                     //<literal> element
                                     XmlElement lit = xmlDoc.CreateElement("literal");
-                                    LiteralNode l = (LiteralNode)n;
+                                    ILiteralNode l = (ILiteralNode)n;
                                     lit.InnerText = l.Value;
 
                                     if (!l.Language.Equals(String.Empty))
@@ -189,7 +189,7 @@ namespace VDS.RDF.Writing
                                 case NodeType.Uri:
                                     //<uri> element
                                     XmlElement uri = xmlDoc.CreateElement("uri");
-                                    uri.InnerText = WriterHelper.EncodeForXml(((UriNode)n).StringUri);
+                                    uri.InnerText = WriterHelper.EncodeForXml(((IUriNode)n).StringUri);
                                     binding.AppendChild(uri);
                                     break;
 
@@ -309,7 +309,7 @@ namespace VDS.RDF.Writing
                                 case NodeType.Blank:
                                     //<bnode> element
                                     writer.WriteStartElement("bnode");
-                                    writer.WriteRaw(((BlankNode)n).InternalID);
+                                    writer.WriteRaw(((IBlankNode)n).InternalID);
                                     writer.WriteEndElement();
                                     break;
 
@@ -320,7 +320,7 @@ namespace VDS.RDF.Writing
                                 case NodeType.Literal:
                                     //<literal> element
                                     writer.WriteStartElement("literal");
-                                    LiteralNode l = (LiteralNode)n;
+                                    ILiteralNode l = (ILiteralNode)n;
 
                                     if (!l.Language.Equals(String.Empty))
                                     {
@@ -343,7 +343,7 @@ namespace VDS.RDF.Writing
                                 case NodeType.Uri:
                                     //<uri> element
                                     writer.WriteStartElement("uri");
-                                    writer.WriteRaw(WriterHelper.EncodeForXml(((UriNode)n).StringUri));
+                                    writer.WriteRaw(WriterHelper.EncodeForXml(((IUriNode)n).Uri.ToString()));
                                     writer.WriteEndElement();
                                     break;
 

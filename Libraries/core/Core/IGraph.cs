@@ -49,7 +49,7 @@ namespace VDS.RDF
     /// Most implementations will probably want to inherit from the abstract class <see cref="BaseGraph">BaseGraph</see> since it contains reference implementations of various algorithms (Graph Equality/Graph Difference/Sub-Graph testing etc) which will save considerable work in implementation and ensure consistent behaviour of some methods across implementations.
     /// </para>
     /// </remarks>
-    public interface IGraph : IDisposable
+    public interface IGraph : INodeFactory, IDisposable
     {
         #region Properties
 
@@ -161,86 +161,17 @@ namespace VDS.RDF
         #region Node Creation
 
         /// <summary>
-        /// Creates a Blank Node with the given Node ID
-        /// </summary>
-        /// <param name="nodeId">Node ID</param>
-        /// <returns></returns>
-        BlankNode CreateBlankNode(string nodeId);
-
-        /// <summary>
-        /// Creates a Blank Node with a new automatically generated ID
+        /// Creates a URI Node that corresponds to the Base URI of the Graph
         /// </summary>
         /// <returns></returns>
-        BlankNode CreateBlankNode();
+        IUriNode CreateUriNode();
 
         /// <summary>
-        /// Gets the next available auto-assigned Blank Node ID
-        /// </summary>
-        /// <returns></returns>
-        String GetNextBlankNodeID();
-
-        /// <summary>
-        /// Creates a Graph Literal Node which represents the given Subgraph
-        /// </summary>
-        /// <param name="subgraph">Subgraph</param>
-        /// <returns></returns>
-        GraphLiteralNode CreateGraphLiteralNode(IGraph subgraph);
-
-        /// <summary>
-        /// Creates a Graph Literal Node which represents the empty Subgraph
-        /// </summary>
-        /// <returns></returns>
-        GraphLiteralNode CreateGraphLiteralNode();
-
-        /// <summary>
-        /// Creates a Literal Node with the given Value
-        /// </summary>
-        /// <param name="literal">Value of the Literal</param>
-        /// <returns></returns>
-        LiteralNode CreateLiteralNode(string literal);
-
-        /// <summary>
-        /// Creates a Literal Node with the given Value and Data Type
-        /// </summary>
-        /// <param name="literal">Value of the Literal</param>
-        /// <param name="datatype">Data Type of the Literal</param>
-        /// <returns></returns>
-        LiteralNode CreateLiteralNode(string literal, Uri datatype);
-
-        /// <summary>
-        /// Creates a Literal Node with the given Value and Language
-        /// </summary>
-        /// <param name="literal">Value of the Literal</param>
-        /// <param name="langspec">Language Specifier for the Literal</param>
-        /// <returns></returns>
-        LiteralNode CreateLiteralNode(string literal, string langspec);
-
-        /// <summary>
-        /// Creates a Uri Node that corresponds to the Base Uri of the Graph
-        /// </summary>
-        /// <returns></returns>
-        UriNode CreateUriNode();
-
-        /// <summary>
-        /// Creates a Uri Node for the given QName
+        /// Creates a URI Node for the given QName using the Graphs NamespaceMap to resolve the QName
         /// </summary>
         /// <param name="qname">QName</param>
         /// <returns></returns>
-        UriNode CreateUriNode(string qname);
-
-        /// <summary>
-        /// Creates a Uri Node for the given URI
-        /// </summary>
-        /// <param name="uri">URI</param>
-        /// <returns></returns>
-        UriNode CreateUriNode(Uri uri);
-
-        /// <summary>
-        /// Creates a Variable Node for the given Variable Name
-        /// </summary>
-        /// <param name="varname"></param>
-        /// <returns></returns>
-        VariableNode CreateVariableNode(String varname);
+        IUriNode CreateUriNode(string qname);
 
         #endregion
 
@@ -251,7 +182,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="nodeId">Node ID</param>
         /// <returns></returns>
-        BlankNode GetBlankNode(string nodeId);
+        IBlankNode GetBlankNode(string nodeId);
 
         /// <summary>
         /// Selects the Literal Node with the given Value and Language
@@ -259,14 +190,14 @@ namespace VDS.RDF
         /// <param name="literal">Value of the Literal</param>
         /// <param name="langspec">Language Specifier of the Literal</param>
         /// <returns></returns>
-        LiteralNode GetLiteralNode(string literal, string langspec);
+        ILiteralNode GetLiteralNode(string literal, string langspec);
 
         /// <summary>
         /// Selects the Literal Node with the given Value
         /// </summary>
         /// <param name="literal">Value of the Literal</param>
         /// <returns></returns>
-        LiteralNode GetLiteralNode(string literal);
+        ILiteralNode GetLiteralNode(string literal);
 
         /// <summary>
         /// Selects the Literal Node with the given Value and DataType
@@ -274,7 +205,7 @@ namespace VDS.RDF
         /// <param name="literal">Value of the Literal</param>
         /// <param name="datatype">Data Type of the Literal</param>
         /// <returns></returns>
-        LiteralNode GetLiteralNode(string literal, Uri datatype);
+        ILiteralNode GetLiteralNode(string literal, Uri datatype);
 
         /// <summary>
         /// Selects all Nodes that meet the criteria of a given ISelector
@@ -411,14 +342,14 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="qname">QName</param>
         /// <returns></returns>
-        UriNode GetUriNode(string qname);
+        IUriNode GetUriNode(string qname);
 
         /// <summary>
         /// Selects the Uri Node with the given Uri
         /// </summary>
         /// <param name="uri">Uri</param>
         /// <returns></returns>
-        UriNode GetUriNode(Uri uri);
+        IUriNode GetUriNode(Uri uri);
 
         /// <summary>
         /// Checks whether any Triples meeting the criteria of an ISelector can be found
@@ -581,5 +512,21 @@ namespace VDS.RDF
         event GraphEventHandler Merged;
 
         #endregion
+    }
+
+    /// <summary>
+    /// Interface for RDF Graphs which provide Transactions i.e. changes to them can be Flushed (committed) or Discard (rolled back) as desired
+    /// </summary>
+    public interface ITransactionalGraph : IGraph
+    {
+        /// <summary>
+        /// Flushes any changes to the Graph
+        /// </summary>
+        void Flush();
+
+        /// <summary>
+        /// Discards any changes to the Graph
+        /// </summary>
+        void Discard();
     }
 }

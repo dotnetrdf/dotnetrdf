@@ -37,6 +37,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace VDS.RDF.Query.Datasets
 {
@@ -134,12 +135,14 @@ namespace VDS.RDF.Query.Datasets
         /// Adds a Graph to the Dataset
         /// </summary>
         /// <param name="g">Graph</param>
+        /// <exception cref="NotSupportedException">May be thrown if the Dataset is immutable i.e. Updates not supported</exception>        /// <exception cref="NotSupportedException">May be thrown if the Dataset is immutable</exception>
         void AddGraph(IGraph g);
 
         /// <summary>
         /// Removes a Graph from the Dataset
         /// </summary>
         /// <param name="graphUri">Graph URI</param>
+        /// <exception cref="NotSupportedException">May be thrown if the Dataset is immutable i.e. Updates not supported</exception>        /// <exception cref="NotSupportedException">May be thrown if the Dataset is immutable</exception>
         void RemoveGraph(Uri graphUri);
 
         /// <summary>
@@ -185,6 +188,7 @@ namespace VDS.RDF.Query.Datasets
         /// </summary>
         /// <param name="graphUri">Graph URI</param>
         /// <returns></returns>
+        /// <exception cref="NotSupportedException">May be thrown if the Dataset is immutable i.e. Updates not supported</exception>        /// <exception cref="NotSupportedException">May be thrown if the Dataset is immutable</exception>
         /// <remarks>
         /// <para>
         /// Graphs returned from this method must be modifiable and the Dataset must guarantee that when it is Flushed or Disposed of that any changes to the Graph are persisted
@@ -302,8 +306,27 @@ namespace VDS.RDF.Query.Datasets
         #endregion
 
         /// <summary>
-        /// Ensures that any changes to the Dataset are flushed to the underlying Storage (if any)
+        /// Ensures that any changes to the Dataset (if any) are flushed to the underlying Storage
         /// </summary>
         void Flush();
+
+        /// <summary>
+        /// Ensures that any changes to the Dataset (if any) are discarded
+        /// </summary>
+        void Discard();
+    }
+
+    /// <summary>
+    /// Interface for SPARQL Datasets which also provide a Lock by which threading can be controlled
+    /// </summary>
+    /// <remarks>
+    /// Note that there is no guarantees that consuming code will respect the fact that a Dataset is Thread Safe and use the <see cref="IThreadSafeDataset.Lock">Lock</see> property appropriately.  Additionally some datasets may choose to implement thread safety in other ways which don't rely on this interface
+    /// </remarks>
+    public interface IThreadSafeDataset : ISparqlDataset
+    {
+        ReaderWriterLockSlim Lock
+        {
+            get;
+        }
     }
 }

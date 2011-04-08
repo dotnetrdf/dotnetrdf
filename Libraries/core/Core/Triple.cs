@@ -47,23 +47,25 @@ namespace VDS.RDF
     {
         private INode _subject, _predicate, _object;
         private ITripleContext _context = null;
+        private Uri _u = null;
         private IGraph _g = null;
         private int _hashcode;
         private bool _collides = false;
 
         /// <summary>
-        /// Constructs a Triple from Nodes that belong to the same Graph
+        /// Constructs a Triple from Nodes that belong to the same Graph/Node Factory
         /// </summary>
         /// <param name="subj">Subject of the Triple</param>
         /// <param name="pred">Predicate of the Triple</param>
         /// <param name="obj">Object of the Triple</param>
-        /// <remarks>Will throw an RdfException if the Nodes don't belong to the same Graph</remarks>
+        /// <remarks>Will throw an RdfException if the Nodes don't belong to the same Graph/Node Factory</remarks>
+        /// <exception cref="RdfException">Thrown if the Nodes aren't all from the same Graph/Node Factory</exception>
         public Triple(INode subj, INode pred, INode obj)
         {
             //Require that all Nodes belong to the same Graph
             if (!ReferenceEquals(subj.Graph, pred.Graph) || !ReferenceEquals(pred.Graph, obj.Graph))
             {
-                throw new RdfException("Subject, Predicate and Object Nodes must all come from the same Graph - use Tools.CopyNode() to transfer nodes between Graphs");
+                throw new RdfException("Subject, Predicate and Object Nodes must all come from the same Graph/Node Factory - use Tools.CopyNode() to transfer nodes between Graphs");
             }
             else
             {
@@ -81,12 +83,14 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Constructs a Triple from Nodes that belong to the same Graph and associates this Triple with the given Graph (doesn't assert the Triple)
+        /// Constructs a Triple from Nodes that belong to the same Graph/Node Factory and associates this Triple with the given Graph (doesn't assert the Triple)
         /// </summary>
         /// <param name="subj">Subject</param>
         /// <param name="pred">Predicate</param>
         /// <param name="obj">Object</param>
         /// <param name="g">Graph</param>
+        /// <remarks>Will throw an RdfException if the Nodes don't belong to the same Graph/Node Factory</remarks>
+        /// <exception cref="RdfException">Thrown if the Nodes aren't all from the same Graph/Node Factory</exception>
         public Triple(INode subj, INode pred, INode obj, IGraph g)
             : this(subj, pred, obj)
         {
@@ -94,17 +98,48 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Constructs a Triple from Nodes that belong to the same Graph with some Context
+        /// Constructs a Triple from Nodes that belong to the same Graph/Node Factory with some Context
         /// </summary>
         /// <param name="subj">Subject of the Triple</param>
         /// <param name="pred">Predicate of the Triple</param>
         /// <param name="obj">Object of the Triple</param>
         /// <param name="con">Context Information for the Triple</param>
-        /// <remarks>Will throw an RdfException if the Nodes don't belong to the same Graph</remarks>
-        public Triple(INode subj, INode pred, INode obj, ITripleContext con)
+        /// <remarks>Will throw an RdfException if the Nodes don't belong to the same Graph/Node Factory</remarks>
+        /// <exception cref="RdfException">Thrown if the Nodes aren't all from the same Graph/Node Factory</exception>
+        public Triple(INode subj, INode pred, INode obj, ITripleContext context)
             : this(subj, pred, obj)
         {
-            this._context = con;
+            this._context = context;
+        }
+
+        /// <summary>
+        /// Creates a Triple and associates it with the given Graph URI permanently (though not with a specific Graph as such)
+        /// </summary>
+        /// <param name="subj">Subject of the Triple</param>
+        /// <param name="pred">Predicate of the Triple</param>
+        /// <param name="obj">Object of the Triple</param>
+        /// <param name="graphUri">Graph URI</param>
+        /// <remarks>Will throw an RdfException if the Nodes don't belong to the same Graph/Node Factory</remarks>
+        /// <exception cref="RdfException">Thrown if the Nodes aren't all from the same Graph/Node Factory</exception>
+        public Triple(INode subj, INode pred, INode obj, Uri graphUri)
+            : this(subj, pred, obj)
+        {
+            this._u = graphUri;
+        }
+
+        /// <summary>
+        /// Constructs a Triple from Nodes that belong to the same Graph/Node Factory with some Context
+        /// </summary>
+        /// <param name="subj">Subject of the Triple</param>
+        /// <param name="pred">Predicate of the Triple</param>
+        /// <param name="obj">Object of the Triple</param>
+        /// <param name="con">Context Information for the Triple</param>
+        /// <remarks>Will throw an RdfException if the Nodes don't belong to the same Graph/Node Factory</remarks>
+        /// <exception cref="RdfException">Thrown if the Nodes aren't all from the same Graph/Node Factory</exception>
+        public Triple(INode subj, INode pred, INode obj, ITripleContext context, Uri graphUri)
+            : this(subj, pred, obj, graphUri)
+        {
+            this._context = context;
         }
 
         /// <summary>
@@ -160,7 +195,11 @@ namespace VDS.RDF
         {
             get
             {
-                if (this._g == null)
+                if (this._u != null)
+                {
+                    return this._u;
+                }
+                else if (this._g == null)
                 {
                     return null;
                 }
@@ -236,7 +275,7 @@ namespace VDS.RDF
         /// <returns>True if the Triple has a UriNode with the given Uri</returns>
         public bool Involves(Uri uri)
         {
-            UriNode temp = new UriNode(null, uri);
+            IUriNode temp = new UriNode(null, uri);
 
             //Does the Subject involve this Uri?
             if (this._subject.Equals(temp)) return true;
@@ -297,25 +336,16 @@ namespace VDS.RDF
         {
             if (obj is Triple)
             {
-                //Test Hash Codes to quickly determine if they might be equal
-                if (this._hashcode == obj.GetHashCode())
-                {
-                    Triple temp = (Triple)obj;
+                Triple temp = (Triple)obj;
 
-                    //Subject, Predicate and Object must all be equal
-                    //Either the Nodes must be directly equal or they must both be Blank Nodes with identical Node IDs
-                    bool subjEquals = this._subject.Equals(temp.Subject) || (this._subject.NodeType == NodeType.Blank && temp.Subject.NodeType == NodeType.Blank && this._subject.ToString().Equals(temp.Subject.ToString()));
-                    bool predEquals = this._predicate.Equals(temp.Predicate) || (this._predicate.NodeType == NodeType.Blank && temp.Predicate.NodeType == NodeType.Blank && this._predicate.ToString().Equals(temp.Predicate.ToString()));
-                    bool objEquals = this._object.Equals(temp.Object) || (this._object.NodeType == NodeType.Blank && temp.Object.NodeType == NodeType.Blank && this._object.ToString().Equals(temp.Object.ToString()));
+                //Subject, Predicate and Object must all be equal
+                //Either the Nodes must be directly equal or they must both be Blank Nodes with identical Node IDs
+                //Use lazy evaluation as far as possible
+                return (this._subject.Equals(temp.Subject) || (this._subject.NodeType == NodeType.Blank && temp.Subject.NodeType == NodeType.Blank && this._subject.ToString().Equals(temp.Subject.ToString())))
+                       && (this._predicate.Equals(temp.Predicate) || (this._predicate.NodeType == NodeType.Blank && temp.Predicate.NodeType == NodeType.Blank && this._predicate.ToString().Equals(temp.Predicate.ToString())))
+                       && (this._object.Equals(temp.Object) || (this._object.NodeType == NodeType.Blank && temp.Object.NodeType == NodeType.Blank && this._object.ToString().Equals(temp.Object.ToString())));
 
-                    //Use conjunction on Node equality to decide this
-                    return subjEquals && predEquals && objEquals;
-                }
-                else
-                {
-                    return false;
-                }
-            }
+             }
             else
             {
                 //Can only be equal to other Triples
@@ -369,63 +399,8 @@ namespace VDS.RDF
             }
             else
             {
-                StringBuilder outString = new StringBuilder();
-                String qname;
-
-                //Subject
-                if (this._subject.NodeType == NodeType.Uri)
-                {
-                    if (this._g.NamespaceMap.ReduceToQName(((UriNode)this._subject).Uri.ToString(),out qname)) 
-                    {
-                        outString.Append(qname);
-                    } 
-                    else 
-                    {
-                        outString.Append(this._subject.ToString());
-                    }
-                }
-                else
-                {
-                    outString.Append(this._subject.ToString());
-                }
-                outString.Append(" , ");
-
-                //Predicate
-                if (this._predicate.NodeType == NodeType.Uri)
-                {
-                    if (this._g.NamespaceMap.ReduceToQName(((UriNode)this._predicate).Uri.ToString(),out qname)) 
-                    {
-                        outString.Append(qname);
-                    } 
-                    else 
-                    {
-                        outString.Append(this._predicate.ToString());
-                    }
-                }
-                else
-                {
-                    outString.Append(this._predicate.ToString());
-                }
-                outString.Append(" , ");
-
-                //Object
-                if (this._object.NodeType == NodeType.Uri)
-                {
-                    if (this._g.NamespaceMap.ReduceToQName(((UriNode)this._object).Uri.ToString(),out qname))
-                    {
-                        outString.Append(qname);
-                    } 
-                    else 
-                    {
-                        outString.Append(this._object.ToString());
-                    }
-                }
-                else
-                {
-                    outString.Append(this._object.ToString());
-                }
-
-                return outString.ToString();
+                TurtleFormatter formatter = new TurtleFormatter(this._g.NamespaceMap);
+                return formatter.Format(this);
             }
         }
 

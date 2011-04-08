@@ -335,10 +335,10 @@ namespace VDS.RDF.Query
             try
             {
                 Object results = ((IInMemoryQueryableStore)this._store).ExecuteQuery(this._q);
-                if (results is Graph)
+                if (results is IGraph)
                 {
                     this.DetachEventHandlers(this._triples);
-                    Graph g = (Graph)results;
+                    IGraph g = (IGraph)results;
                     foreach (Triple t in g.Triples)
                     {
                         this._triples.Add(t.CopyTriple(this));
@@ -398,10 +398,10 @@ namespace VDS.RDF.Query
             try
             {
                 Object results = ((INativelyQueryableStore)this._store).ExecuteQuery(this._q.ToString());
-                if (results is Graph)
+                if (results is IGraph)
                 {
                     this.DetachEventHandlers(this._triples);
-                    Graph g = (Graph)results;
+                    IGraph g = (IGraph)results;
                     foreach (Triple t in g.Triples)
                     {
                         this._triples.Add(t.CopyTriple(this));

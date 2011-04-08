@@ -87,7 +87,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="graphURI">Uri of the Graph to Load</param>
         /// <returns></returns>
-        public Graph Load(String graphURI)
+        public IGraph Load(String graphURI)
         {
             Graph g = new Graph();
             try
@@ -125,7 +125,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="graphUri">Uri of the Graph to load</param>
         /// <returns></returns>
-        public Graph Load(Uri graphUri)
+        public IGraph Load(Uri graphUri)
         {
             return this.Load(graphUri.ToString());
         }

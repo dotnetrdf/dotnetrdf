@@ -57,7 +57,8 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="input">Input Stream</param>
         /// <param name="output">Output Stream</param>
-        public static void StreamCopy(Stream input, Stream output) {
+        public static void StreamCopy(Stream input, Stream output)
+        {
             int i;
             byte b;
 
@@ -238,7 +239,7 @@ namespace VDS.RDF
         /// <param name="nsmap">Namespace Map to resolve against</param>
         /// <param name="baseUri">Base Uri to resolve against</param>
         /// <returns></returns>
-        public static String ResolveQName(String qname, NamespaceMapper nsmap, Uri baseUri)
+        public static String ResolveQName(String qname, INamespaceMapper nsmap, Uri baseUri)
         {
             String output;
 
@@ -297,7 +298,7 @@ namespace VDS.RDF
         /// <param name="nsmap">Namespace Map to resolve against</param>
         /// <param name="baseUri">Base Uri to resolve against</param>
         /// <returns></returns>
-        public static String ResolveUriOrQName(IToken t, NamespaceMapper nsmap, Uri baseUri)
+        public static String ResolveUriOrQName(IToken t, INamespaceMapper nsmap, Uri baseUri)
         {
             if (t.TokenType == Token.QNAME)
             {
@@ -353,15 +354,15 @@ namespace VDS.RDF
 
             if (original.NodeType == NodeType.Uri)
             {
-                UriNode u = (UriNode)original;
-                UriNode u2 = new UriNode(target, u.Uri);
+                IUriNode u = (IUriNode)original;
+                IUriNode u2 = new UriNode(target, u.Uri);
 
                 return u2;
             }
             else if (original.NodeType == NodeType.Literal)
             {
-                LiteralNode l = (LiteralNode)original;
-                LiteralNode l2;
+                ILiteralNode l = (ILiteralNode)original;
+                ILiteralNode l2;
                 if (l.Language.Equals(String.Empty))
                 {
                     if (!(l.DataType == null))
@@ -382,15 +383,15 @@ namespace VDS.RDF
             }
             else if (original.NodeType == NodeType.Blank)
             {
-                BlankNode b = (BlankNode)original;
-                BlankNode b2;
+                IBlankNode b = (IBlankNode)original;
+                IBlankNode b2;
 
                 b2 = new BlankNode(target, b.InternalID);
                 return b2;
             }
             else if (original.NodeType == NodeType.Variable)
             {
-                VariableNode v = (VariableNode)original;
+                IVariableNode v = (IVariableNode)original;
                 return new VariableNode(target, v.VariableName);
             }
             else

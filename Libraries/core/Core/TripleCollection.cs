@@ -530,25 +530,49 @@ namespace VDS.RDF
         /// Hash Table storage of Triples
         /// </summary>
         protected HashTable<int, Triple> _triples = new HashTable<int, Triple>();
-        private HashTable<INode, Triple> _predIndex = new HashTable<INode, Triple>(10);
-        private HashTable<INode, Triple> _subjIndex = new HashTable<INode, Triple>(10);
-        private HashTable<INode, Triple> _objIndex = new HashTable<INode, Triple>(10);
+        private HashTable<INode, Triple> _predIndex;
+        private HashTable<INode, Triple> _subjIndex;
+        private HashTable<INode, Triple> _objIndex;
         private HashTable<int, Triple> _subjPredIndex, _subjObjIndex, _predObjIndex;
         private bool _fullyIndexed = false;
 
         /// <summary>
         /// Creates a new Indexed Triple Collection
         /// </summary>
-        public IndexedTripleCollection()
+        /// <param name="capacity">Initial Capacity of Indexes</param>
+        /// <remarks>
+        /// <para>
+        /// Indexes are stored using our <see cref="HashTable">HashTable</see> structure which is in effect a Dictionary where each Key can have multiple values.  The capacity is the initial number of value slots assigned to each Key, value slots grow automatically as desired but setting an appropriate capacity will allow you to tailor memory usage to your data and may make it possible to store data which would cause <see cref="OutOfMemoryException">OutOfMemoryException</see>'s with the default settings.
+        /// </para>
+        /// <para>
+        /// For example if you have 1 million triples where no Triples share any Nodes in common then the memory needing to be allocated would be 1,000,000 * 6 * 10 * 4 bytes just for the object references without taking into account all the overhead for the data structures actually.  Whereas if you set the capacity to 1 you reduce your memory requirements by a factor of 10 instantly.
+        /// </para>
+        /// <para>
+        /// <strong>Note:</strong> Always remember that if you have large quantities of triples (1 million plus) then you are often better not loading them directly into memory and there many be better ways of processing the RDF depending on your application.
+        /// </para>
+        /// </remarks>
+        public IndexedTripleCollection(int capacity)
         {
+            this._subjIndex = new HashTable<INode, Triple>(capacity);
+            this._predIndex = new HashTable<INode, Triple>(capacity);
+            this._objIndex = new HashTable<INode, Triple>(capacity);
             if (Options.FullTripleIndexing)
             {
                 this._fullyIndexed = true;
-                this._subjPredIndex = new HashTable<int, Triple>();
-                this._subjObjIndex = new HashTable<int, Triple>();
-                this._predObjIndex = new HashTable<int, Triple>();
+                this._subjPredIndex = new HashTable<int, Triple>(capacity);
+                this._subjObjIndex = new HashTable<int, Triple>(capacity);
+                this._predObjIndex = new HashTable<int, Triple>(capacity);
             }
         }
+
+        /// <summary>
+        /// Creates a new Indexed Triple Collection
+        /// </summary>
+        /// <remarks>
+        /// Uses a default Index Capacity of 10, see remarks on other constructor overload for details of this
+        /// </remarks>
+        public IndexedTripleCollection()
+            : this(10) { }
 
         /// <summary>
         /// Adds a Triple to the Collection if it doesn't already exist
@@ -877,6 +901,12 @@ namespace VDS.RDF
     public class IndexedThreadSafeTripleCollection : IndexedTripleCollection, IEnumerable<Triple>
     {
         private ReaderWriterLockSlim _lockManager = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
+
+        public IndexedThreadSafeTripleCollection()
+            : base() { }
+
+        public IndexedThreadSafeTripleCollection(int capacity)
+            : base(capacity) { }
 
         /// <summary>
         /// Adds a Triple to the Collection

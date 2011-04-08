@@ -586,5 +586,10 @@ namespace VDS.RDF
         /// Flushes any outstanding changes to the underlying store
         /// </summary>
         void Flush();
+
+        /// <summary>
+        /// Discards any outstanding changes to the underlying store
+        /// </summary>
+        void Discard();
     }
 }

@@ -46,24 +46,29 @@ namespace VDS.RDF.Parsing.Tokens
     /// </summary>
     public class TriGTokeniser : BaseTokeniser
     {
-        private BlockingStreamReader _in;
+        private BlockingTextReader _in;
         private int _lasttokentype = -1;
 
         /// <summary>
         /// Creates a new TriG Tokeniser which reads Tokens from the given Stream
         /// </summary>
         /// <param name="input">Stream to read Tokens from</param>
-        public TriGTokeniser(StreamReader input) : this(new BlockingStreamReader(input)) { }
+        public TriGTokeniser(StreamReader input)
+            : this(new BlockingTextReader(input)) { }
 
         /// <summary>
         /// Creates a new TriG Tokeniser which reads Tokens from the given Stream
         /// </summary>
         /// <param name="input">Stream to read Tokens from</param>
-        public TriGTokeniser(BlockingStreamReader input) : base(input)
+        public TriGTokeniser(BlockingTextReader input)
+            : base(input)
         {
             this._in = input;
             this.Format = "TriG";
         }
+
+        public TriGTokeniser(TextReader input)
+            : this(new BlockingTextReader(input)) { }
 
         /// <summary>
         /// Gets the next available Token from the Input Stream
@@ -436,6 +441,8 @@ namespace VDS.RDF.Parsing.Tokens
                 {
                     //Long Literal
                     longliteral = true;
+                    this.ConsumeCharacter();
+                    next = this.Peek();
                 }
                 else
                 {
@@ -447,6 +454,13 @@ namespace VDS.RDF.Parsing.Tokens
 
             while (true)
             {
+                if (next == '\\')
+                {
+                    this.HandleEscapes(TokeniserEscapeMode.QuotedLiterals);
+                    next = this.Peek();
+                    continue;
+                }
+
                 //Add character to output buffer
                 this.ConsumeCharacter();
 

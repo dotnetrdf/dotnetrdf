@@ -48,7 +48,11 @@ namespace VDS.RDF.Parsing
     /// </summary>
     class CommentIgnoringJsonTextReader : JsonTextReader
     {
-        public CommentIgnoringJsonTextReader(TextReader reader) : base(reader) { }
+        public CommentIgnoringJsonTextReader(BlockingTextReader reader)
+            : base(reader) { }
+
+        public CommentIgnoringJsonTextReader(TextReader reader) 
+            : this(new BlockingTextReader(reader)) { }
 
         /// <summary>
         /// Reads the next non-comment Token if one is available

@@ -923,7 +923,7 @@ namespace VDS.RDF.Query
             {
                 if (n.NodeType == NodeType.Literal)
                 {
-                    LiteralNode lit = (LiteralNode)n;
+                    ILiteralNode lit = (ILiteralNode)n;
 
                     if (lit.DataType == null)
                     {
@@ -1167,7 +1167,7 @@ namespace VDS.RDF.Query
                                 return TimeSpanEquality(x, y);
                             case XmlSpecsHelper.XmlSchemaDataTypeString:
                                 //Both Strings so use Lexical string equality
-                                return ((LiteralNode)x).Value.Equals(((LiteralNode)y).Value);
+                                return ((ILiteralNode)x).Value.Equals(((ILiteralNode)y).Value);
                             default:
                                 //Use value equality
                                 return (x.CompareTo(y) == 0);
@@ -1289,7 +1289,7 @@ namespace VDS.RDF.Query
                                 return !TimeSpanEquality(x, y);
                             case XmlSpecsHelper.XmlSchemaDataTypeString:
                                 //Both Strings so use Lexical string equality
-                                return !((LiteralNode)x).Value.Equals(((LiteralNode)y).Value);
+                                return !((ILiteralNode)x).Value.Equals(((ILiteralNode)y).Value);
                             default:
                                 //Use value equality
                                 return (x.CompareTo(y) != 0);
@@ -1338,8 +1338,8 @@ namespace VDS.RDF.Query
 
             try
             {
-                LiteralNode a = (LiteralNode)x;
-                LiteralNode b = (LiteralNode)y;
+                ILiteralNode a = (ILiteralNode)x;
+                ILiteralNode b = (ILiteralNode)y;
 
                 switch (type)
                 {
@@ -1372,8 +1372,8 @@ namespace VDS.RDF.Query
             if (x == null || y == null) throw new RdfQueryException("Cannot evaluate date time equality when one or both arguments are Null");
             try
             {
-                LiteralNode a = (LiteralNode)x;
-                LiteralNode b = (LiteralNode)y;
+                ILiteralNode a = (ILiteralNode)x;
+                ILiteralNode b = (ILiteralNode)y;
 
                 return ToDateTime(a).Equals(ToDateTime(b));
             }
@@ -1394,8 +1394,8 @@ namespace VDS.RDF.Query
             if (x == null || y == null) throw new RdfQueryException("Cannot evaluate date equality when one or both arguments are Null");
             try
             {
-                LiteralNode a = (LiteralNode)x;
-                LiteralNode b = (LiteralNode)y;
+                ILiteralNode a = (ILiteralNode)x;
+                ILiteralNode b = (ILiteralNode)y;
 
                 DateTimeOffset c = ToDateTimeOffset(a);
                 DateTimeOffset d = ToDateTimeOffset(b);
@@ -1420,8 +1420,8 @@ namespace VDS.RDF.Query
             if (x == null || y == null) throw new RdfQueryException("Cannot evaluate time span equality when one or both arguments are Null");
             try
             {
-                LiteralNode a = (LiteralNode)x;
-                LiteralNode b = (LiteralNode)y;
+                ILiteralNode a = (ILiteralNode)x;
+                ILiteralNode b = (ILiteralNode)y;
 
                 TimeSpan c = ToTimeSpan(a);
                 TimeSpan d = ToTimeSpan(b);
@@ -1439,7 +1439,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="n">Literal Node</param>
         /// <returns></returns>
-        public static Decimal ToDecimal(LiteralNode n)
+        public static Decimal ToDecimal(ILiteralNode n)
         {
             if (n.DataType == null) throw new RdfQueryException("Cannot convert an untyped Literal to a Decimal");
             return Decimal.Parse(n.Value);
@@ -1450,7 +1450,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="n">Literal Node</param>
         /// <returns></returns>
-        public static Double ToDouble(LiteralNode n)
+        public static Double ToDouble(ILiteralNode n)
         {
             if (n.DataType == null) throw new RdfQueryException("Cannot convert an untyped Literal to a Double");
             return Double.Parse(n.Value);
@@ -1461,7 +1461,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="n">Literal Node</param>
         /// <returns></returns>
-        public static Single ToFloat(LiteralNode n)
+        public static Single ToFloat(ILiteralNode n)
         {
             if (n.DataType == null) throw new RdfQueryException("Cannot convert an untyped Literal to a Float");
             return Single.Parse(n.Value);
@@ -1472,7 +1472,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="n">Literal Node</param>
         /// <returns></returns>
-        public static Int64 ToInteger(LiteralNode n)
+        public static Int64 ToInteger(ILiteralNode n)
         {
             if (n.DataType == null) throw new RdfQueryException("Cannot convert an untyped Literal to an Integer");
             return Int64.Parse(n.Value);
@@ -1483,7 +1483,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="n">Literal Node</param>
         /// <returns></returns>
-        public static DateTime ToDateTime(LiteralNode n)
+        public static DateTime ToDateTime(ILiteralNode n)
         {
             if (n.DataType == null) throw new RdfQueryException("Cannot convert an untyped Literal to a Date Time");
             return DateTime.Parse(n.Value, null, System.Globalization.DateTimeStyles.AssumeUniversal);
@@ -1494,7 +1494,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="n">Literal Node</param>
         /// <returns></returns>
-        public static DateTimeOffset ToDateTimeOffset(LiteralNode n)
+        public static DateTimeOffset ToDateTimeOffset(ILiteralNode n)
         {
             if (n.DataType == null) throw new RdfQueryException("Cannot convert an untyped Literal to a Date Time");
             return DateTimeOffset.Parse(n.Value, null, System.Globalization.DateTimeStyles.AssumeUniversal);
@@ -1505,7 +1505,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="n">Literal Node</param>
         /// <returns></returns>
-        public static TimeSpan ToTimeSpan(LiteralNode n)
+        public static TimeSpan ToTimeSpan(ILiteralNode n)
         {
             if (n.DataType == null) throw new RdfQueryException("Cannot convert an untyped Literal to a Time Span");
             return TimeSpan.Parse(n.Value);

@@ -345,7 +345,7 @@ namespace VDS.RDF.Storage
         public override void LoadNamespaces(IGraph g, string graphID)
         {
             //Build the SQL for getting the Namespaces
-            String getNamespaces = "SELECT * FROM NAMESPACES N INNER JOIN NS_PREFIXES P ON N.nsPrefixID=P.nsPrefixID INNER JOIN NS_URIS U ON N.nsUriID=U.nsURIID WHERE graphID=" + graphID;
+            String getNamespaces = "SELECT * FROM NAMESPACES N INNER JOIN NS_PREFIXES P ON N.nsPrefixID=P.nsPrefixID INNER JOIN NS_URIS U ON N.nsUriID=U.nsUriID WHERE graphID=" + graphID;
 
             //Get the Data
             this.Open(false);
@@ -527,7 +527,7 @@ namespace VDS.RDF.Storage
                             if (expectedHash != n.GetHashCode())
                             {
                                 //We've wrongly decoded the info?
-                                LiteralNode ln = (LiteralNode)n;
+                                ILiteralNode ln = (ILiteralNode)n;
                                 if (!ln.Language.Equals(String.Empty))
                                 {
                                     //Wrongly attached a Language Specifier?

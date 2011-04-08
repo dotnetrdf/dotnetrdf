@@ -52,7 +52,7 @@ namespace VDS.RDF.Query.Describe
         /// </summary>
         /// <param name="context">Evaluation Context</param>
         /// <returns></returns>
-        public Graph Describe(SparqlEvaluationContext context)
+        public IGraph Describe(SparqlEvaluationContext context)
         {
             //Get a new empty Graph and import the Base Uri and Namespace Map of the Query
             Graph g = new Graph();
@@ -93,7 +93,7 @@ namespace VDS.RDF.Query.Describe
             {
                 if (n.NodeType == NodeType.Uri)
                 {
-                    UriNode u = (UriNode)n;
+                    IUriNode u = (IUriNode)n;
                     if (context.Data.HasGraph(u.Uri))
                     {
                         g.Merge(context.Data[u.Uri]);

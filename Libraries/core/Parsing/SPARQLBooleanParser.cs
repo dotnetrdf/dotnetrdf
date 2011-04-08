@@ -38,6 +38,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using VDS.RDF.Parsing.Contexts;
+using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
 
 namespace VDS.RDF.Parsing
@@ -55,26 +57,35 @@ namespace VDS.RDF.Parsing
         public void Load(SparqlResultSet results, StreamReader input)
         {
             if (results == null) throw new RdfParseException("Cannot read SPARQL Results into a null Result Set");
-            if (input == null) throw new RdfParseException("Cannot read SPARQL Results from a null Stream");
+            this.Load(new ResultSetHandler(results), input);
+        }
 
-            //Ensure Empty Result Set
-            if (!results.IsEmpty || results.ResultsType != SparqlResultsType.Unknown)
-            {
-                throw new RdfParseException("Cannot load a Result Set from a Stream into a non-empty Result Set");
-            }
+        /// <summary>
+        /// Loads a Result Set from an Input Stream
+        /// </summary>
+        /// <param name="results">Result Set to load into</param>
+        /// <param name="filename">File to read from</param>
+        public void Load(SparqlResultSet results, string filename)
+        {
+            if (results == null) throw new RdfParseException("Cannot read SPARQL Results into a null Result Set");
+            if (filename == null) throw new RdfParseException("Cannot read SPARQL Results from a null File");
+            this.Load(results, new StreamReader(filename));
+        }
+
+        public void Load(SparqlResultSet results, TextReader input)
+        {
+            if (results == null) throw new RdfParseException("Cannot read SPARQL Results into a null Result Set");
+            this.Load(new ResultSetHandler(results), input);
+        }
+
+        public void Load(ISparqlResultsHandler handler, TextReader input)
+        {
+            if (handler == null) throw new RdfParseException("Cannot read SPARQL Results using a null Results Handler");
+            if (input == null) throw new RdfParseException("Cannot read SPARQL Results from a null Input");
 
             try
             {
-                String data = input.ReadToEnd();
-                bool result;
-                if (Boolean.TryParse(data.Trim(), out result))
-                {
-                    results.SetResult(result);
-                }
-                else
-                {
-                    throw new RdfParseException("The input was not a single boolean value as a String");
-                }
+                this.Parse(new BaseResultsParserContext(handler), input);
             }
             catch
             {
@@ -93,16 +104,49 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        /// <summary>
-        /// Loads a Result Set from an Input Stream
-        /// </summary>
-        /// <param name="results">Result Set to load into</param>
-        /// <param name="filename">File to read from</param>
-        public void Load(SparqlResultSet results, string filename)
+        public void Load(ISparqlResultsHandler handler, StreamReader input)
         {
-            if (results == null) throw new RdfParseException("Cannot read SPARQL Results into a null Result Set");
+            this.Load(handler, (TextReader)input);
+        }
+
+        public void Load(ISparqlResultsHandler handler, String filename)
+        {
             if (filename == null) throw new RdfParseException("Cannot read SPARQL Results from a null File");
-            this.Load(results, new StreamReader(filename));
+            this.Load(handler, new StreamReader(filename));
+        }
+
+        private void Parse(IResultsParserContext context, TextReader input)
+        {
+            this.Parse(context, input.ReadToEnd());
+        }
+
+        private void Parse(IResultsParserContext context, String data)
+        {
+            try
+            {
+                context.Handler.StartResults();
+
+                bool result;
+                if (Boolean.TryParse(data.Trim(), out result))
+                {
+                    context.Handler.HandleBooleanResult(result);
+                }
+                else
+                {
+                    throw new RdfParseException("The input was not a single boolean value as a String");
+                }
+
+                context.Handler.EndResults(true);
+            }
+            catch (RdfParsingTerminatedException)
+            {
+                context.Handler.EndResults(true);
+            }
+            catch
+            {
+                context.Handler.EndResults(false);
+                throw;
+            }
         }
 
         /// <summary>

@@ -43,7 +43,7 @@
 				lfn:sqrt,
 				lfn:ten,
 				lfn:cos,
-				lfn:cos-1
+				lfn:cos-1,
 				lfn:cosec,
 				lfn:cosec-1,
 				lfn:cotan,

@@ -62,8 +62,8 @@ namespace VDS.RDF.Query.Expressions.Functions
 
             if (x.NodeType == NodeType.Literal && y.NodeType == NodeType.Literal)
             {
-                LiteralNode stringLit = (LiteralNode)x;
-                LiteralNode argLit = (LiteralNode)y;
+                ILiteralNode stringLit = (ILiteralNode)x;
+                ILiteralNode argLit = (ILiteralNode)y;
 
                 if (IsValidArgumentPair(stringLit, argLit))
                 {
@@ -86,7 +86,7 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// <param name="stringLit"></param>
         /// <param name="argLit"></param>
         /// <returns></returns>
-        protected abstract bool ValueInternal(LiteralNode stringLit, LiteralNode argLit);
+        protected abstract bool ValueInternal(ILiteralNode stringLit, ILiteralNode argLit);
 
         /// <summary>
         /// Determines whether the Arguments are valid
@@ -94,7 +94,7 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// <param name="stringLit">String Literal</param>
         /// <param name="argLit">Argument Literal</param>
         /// <returns></returns>
-        private bool IsValidArgumentPair(LiteralNode stringLit, LiteralNode argLit)
+        private bool IsValidArgumentPair(ILiteralNode stringLit, ILiteralNode argLit)
         {
             if (stringLit.DataType != null)
             {
@@ -210,7 +210,7 @@ namespace VDS.RDF.Query.Expressions.Functions
                     case NodeType.Literal:
                         //Check whether the Language Tags and Types are the same
                         //We need to do this so that we can produce the appropriate output
-                        LiteralNode lit = (LiteralNode)temp;
+                        ILiteralNode lit = (ILiteralNode)temp;
                         if (langTag == null)
                         {
                             langTag = lit.Language;
@@ -343,7 +343,7 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// <param name="stringLit">String Literal</param>
         /// <param name="argLit">Argument Literal</param>
         /// <returns></returns>
-        protected override bool ValueInternal(LiteralNode stringLit, LiteralNode argLit)
+        protected override bool ValueInternal(ILiteralNode stringLit, ILiteralNode argLit)
         {
             return stringLit.Value.Contains(argLit.Value);
         }
@@ -386,7 +386,7 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// </summary>
         /// <param name="stringLit">Simple/String typed Literal</param>
         /// <returns></returns>
-        protected override INode ValueInternal(LiteralNode stringLit)
+        protected override INode ValueInternal(ILiteralNode stringLit)
         {
             return new LiteralNode(null, Uri.EscapeUriString(stringLit.Value));
         }
@@ -429,7 +429,7 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// </summary>
         /// <param name="stringLit"></param>
         /// <returns></returns>
-        protected override INode ValueInternal(LiteralNode stringLit)
+        protected override INode ValueInternal(ILiteralNode stringLit)
         {
             if (stringLit.DataType != null)
             {
@@ -481,7 +481,7 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// <param name="stringLit">String Literal</param>
         /// <param name="argLit">Argument Literal</param>
         /// <returns></returns>
-        protected override bool ValueInternal(LiteralNode stringLit, LiteralNode argLit)
+        protected override bool ValueInternal(ILiteralNode stringLit, ILiteralNode argLit)
         {
             return stringLit.Value.EndsWith(argLit.Value);
         }
@@ -524,7 +524,7 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// </summary>
         /// <param name="stringLit">String Literal</param>
         /// <returns></returns>
-        protected override INode ValueInternal(LiteralNode stringLit)
+        protected override INode ValueInternal(ILiteralNode stringLit)
         {
             return new LiteralNode(null, stringLit.Value.Length.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger));
         }
@@ -569,7 +569,7 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// <param name="stringLit">String Literal</param>
         /// <param name="argLit">Argument Literal</param>
         /// <returns></returns>
-        protected override bool ValueInternal(LiteralNode stringLit, LiteralNode argLit)
+        protected override bool ValueInternal(ILiteralNode stringLit, ILiteralNode argLit)
         {
             return stringLit.Value.StartsWith(argLit.Value);
         }
@@ -631,12 +631,12 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// <returns></returns>
         public INode Value(SparqlEvaluationContext context, int bindingID)
         {
-            LiteralNode input = this.CheckArgument(this._expr, context, bindingID);
-            LiteralNode start = this.CheckArgument(this._start, context, bindingID, XPathFunctionFactory.AcceptNumericArguments);
+            ILiteralNode input = this.CheckArgument(this._expr, context, bindingID);
+            ILiteralNode start = this.CheckArgument(this._start, context, bindingID, XPathFunctionFactory.AcceptNumericArguments);
 
             if (this._length != null)
             {
-                LiteralNode length = this.CheckArgument(this._length, context, bindingID, XPathFunctionFactory.AcceptNumericArguments);
+                ILiteralNode length = this.CheckArgument(this._length, context, bindingID, XPathFunctionFactory.AcceptNumericArguments);
 
                 if (input.Value.Equals(String.Empty)) return new LiteralNode(null, String.Empty, new Uri(XmlSpecsHelper.XmlSchemaDataTypeString));
 
@@ -727,19 +727,19 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
-        private LiteralNode CheckArgument(ISparqlExpression expr, SparqlEvaluationContext context, int bindingID)
+        private ILiteralNode CheckArgument(ISparqlExpression expr, SparqlEvaluationContext context, int bindingID)
         {
             return this.CheckArgument(expr, context, bindingID, XPathFunctionFactory.AcceptStringArguments);
         }
 
-        private LiteralNode CheckArgument(ISparqlExpression expr, SparqlEvaluationContext context, int bindingID, Func<Uri, bool> argumentTypeValidator)
+        private ILiteralNode CheckArgument(ISparqlExpression expr, SparqlEvaluationContext context, int bindingID, Func<Uri, bool> argumentTypeValidator)
         {
             INode temp = expr.Value(context, bindingID);
             if (temp != null)
             {
                 if (temp.NodeType == NodeType.Literal)
                 {
-                    LiteralNode lit = (LiteralNode)temp;
+                    ILiteralNode lit = (ILiteralNode)temp;
                     if (lit.DataType != null)
                     {
                         if (argumentTypeValidator(lit.DataType))
@@ -876,7 +876,7 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// </summary>
         /// <param name="stringLit">String Literal</param>
         /// <returns></returns>
-        protected override INode ValueInternal(LiteralNode stringLit)
+        protected override INode ValueInternal(ILiteralNode stringLit)
         {
             if (stringLit.DataType != null)
             {

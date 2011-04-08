@@ -340,7 +340,7 @@ namespace VDS.RDF.Query.Paths
             switch (this._predicate.NodeType)
             {
                 case NodeType.Literal:
-                    LiteralNode lit = (LiteralNode)this._predicate;
+                    ILiteralNode lit = (ILiteralNode)this._predicate;
                     bool longlit = (lit.Value.Contains('\n') || lit.Value.Contains('\r') || lit.Value.Contains('"'));
 
                     if (longlit)
@@ -378,7 +378,7 @@ namespace VDS.RDF.Query.Paths
                     break;
 
                 case NodeType.Uri:
-                    UriNode uri = (UriNode)this._predicate;
+                    IUriNode uri = (IUriNode)this._predicate;
                     output.Append('<');
                     output.Append(this._predicate.ToString());
                     output.Append('>');

@@ -118,7 +118,7 @@ namespace VDS.RDF.Writing.Contexts
         /// <summary>
         /// Gets the mapping from Blank Nodes to Collections
         /// </summary>
-        Dictionary<INode, OutputRDFCollection> Collections
+        Dictionary<INode, OutputRdfCollection> Collections
         {
             get;
         }

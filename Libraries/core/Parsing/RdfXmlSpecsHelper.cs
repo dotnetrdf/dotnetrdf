@@ -202,7 +202,7 @@ namespace VDS.RDF.Parsing
                 else
                 {
                     //Invalid RDF ID so Error
-                    throw Error("The value '" + attr.Value + "' for rdf:ID is not valid, RDF IDs can only be valid NCNames as defined by the W3C XML Namespaces specification", attr);
+                    throw ParserHelper.Error("The value '" + attr.Value + "' for rdf:ID is not valid, RDF IDs can only be valid NCNames as defined by the W3C XML Namespaces specification", attr);
                 }
             }
             else
@@ -231,7 +231,7 @@ namespace VDS.RDF.Parsing
                 else
                 {
                     //Invalid RDF ID so Error
-                    throw Error("The value '" + attr.Value + "' for rdf:id is not valid, RDF IDs can only be valid NCNames as defined by the W3C XML Namespaces specification", attr);
+                    throw ParserHelper.Error("The value '" + attr.Value + "' for rdf:id is not valid, RDF IDs can only be valid NCNames as defined by the W3C XML Namespaces specification", attr);
                 }
             }
             else
@@ -343,44 +343,6 @@ namespace VDS.RDF.Parsing
                 }
             }
             return true;
-        }
-
-        #endregion
-
-        #region Error Formatting Methods
-
-        /// <summary>
-        /// Helper function which generates standardised Error Messages
-        /// </summary>
-        /// <param name="message">Error Message</param>
-        /// <param name="evt">Event causing the Error</param>
-        /// <returns></returns>
-        internal static RdfParseException Error(String message, IRdfXmlEvent evt)
-        {
-            StringBuilder output = new StringBuilder();
-            output.AppendLine(message);
-            output.AppendLine("[Source XML]");
-            output.AppendLine(evt.SourceXml);
-
-            return new RdfParseException(output.ToString());
-        }
-
-        /// <summary>
-        /// Helper function which generates standardised Error Messages
-        /// </summary>
-        /// <param name="message">Error Message</param>
-        /// <param name="production">The Production where the Error occurred</param>
-        /// <param name="evt">Event causing the Error</param>
-        /// <returns></returns>
-        internal static RdfParseException Error(String message, String production, IRdfXmlEvent evt)
-        {
-            StringBuilder output = new StringBuilder();
-            output.AppendLine(message);
-            output.AppendLine("Occurred in Grammar Production '" + production + "'");
-            output.AppendLine("[Source XML]");
-            output.AppendLine(evt.SourceXml);
-
-            return new RdfParseException(output.ToString());
         }
 
         #endregion

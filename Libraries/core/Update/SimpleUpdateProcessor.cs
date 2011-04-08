@@ -33,6 +33,7 @@ terms.
 
 */
 
+using System;
 using VDS.RDF.Update.Commands;
 
 namespace VDS.RDF.Update
@@ -51,6 +52,11 @@ namespace VDS.RDF.Update
         public SimpleUpdateProcessor(IUpdateableTripleStore store)
         {
             this._store = store;
+        }
+
+        public virtual void Discard()
+        {
+            //Has no effect
         }
 
         /// <summary>
@@ -115,7 +121,17 @@ namespace VDS.RDF.Update
         /// <param name="commands">Command Set</param>
         public void ProcessCommandSet(SparqlUpdateCommandSet commands)
         {
-            this._store.ExecuteUpdate(commands);
+            DateTime start = DateTime.Now;
+            commands.UpdateExecutionTime = null;
+            try
+            {
+                this._store.ExecuteUpdate(commands);
+            }
+            finally
+            {
+                TimeSpan elapsed = (DateTime.Now - start);
+                commands.UpdateExecutionTime = elapsed;
+            }
         }
 
         /// <summary>

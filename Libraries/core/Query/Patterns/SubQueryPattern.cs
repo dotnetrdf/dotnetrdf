@@ -146,6 +146,17 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
+        /// Gets whether the Sub-query is Thread Safe
+        /// </summary>
+        public override bool UsesDefaultDataset
+        {
+            get
+            {
+                return this._subquery.UsesDefaultDataset;
+            }
+        }
+
+        /// <summary>
         /// Gets the string representation of the sub-query
         /// </summary>
         /// <returns></returns>

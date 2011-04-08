@@ -40,10 +40,7 @@ using System.Text;
 
 namespace VDS.RDF
 {
-    /// <summary>
-    /// Class for representing Blank RDF Nodes
-    /// </summary>
-    public class BlankNode : BaseNode, IComparable<BlankNode>
+    public abstract class BaseBlankNode : BaseNode, IBlankNode, IEquatable<BaseBlankNode>, IComparable<BaseBlankNode>
     {
         private String _id;
         private bool _autoassigned;
@@ -52,7 +49,7 @@ namespace VDS.RDF
         /// Internal Only Constructor for Blank Nodes
         /// </summary>
         /// <param name="g">Graph this Node belongs to</param>
-        protected internal BlankNode(IGraph g)
+        protected internal BaseBlankNode(IGraph g)
             : base(g, NodeType.Blank)
         {
             this._id = this._graph.GetNextBlankNodeID();
@@ -67,11 +64,21 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="g">Graph this Node belongs to</param>
         /// <param name="nodeId">Custom Node ID to use</param>
-        protected internal BlankNode(IGraph g, String nodeId)
+        protected internal BaseBlankNode(IGraph g, String nodeId)
             : base(g, NodeType.Blank)
         {
             this._id = nodeId;
             this._autoassigned = false;
+
+            //Compute Hash Code
+            this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
+        }
+
+        protected internal BaseBlankNode(INodeFactory factory)
+            : base(null, NodeType.Blank)
+        {
+            this._id = factory.GetNextBlankNodeID();
+            this._autoassigned = true;
 
             //Compute Hash Code
             this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
@@ -143,10 +150,9 @@ namespace VDS.RDF
 
             if (other.NodeType == NodeType.Blank)
             {
-                BlankNode temp = (BlankNode)other;
+                IBlankNode temp = (IBlankNode)other;
 
-                //Only equal if our internal IDs match and we come from the same Graph
-                return this._id.Equals(temp.InternalID) && ReferenceEquals(this._graph, temp.Graph);
+                return EqualityHelper.AreBlankNodesEqual(this, temp);
             }
             else
             {
@@ -155,13 +161,38 @@ namespace VDS.RDF
             }
         }
 
-        /// <summary>
-        /// Returns a string representation of this Blank Node in QName form
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
+        public override bool Equals(IBlankNode other)
         {
-            return "_:" + this._id;
+            return EqualityHelper.AreBlankNodesEqual(this, other);
+        }
+
+        public override bool Equals(IGraphLiteralNode other)
+        {
+            if (ReferenceEquals(this, other)) return true;
+            return false;
+        }
+
+        public override bool Equals(ILiteralNode other)
+        {
+            if (ReferenceEquals(this, other)) return true;
+            return false;
+        }
+
+        public override bool Equals(IUriNode other)
+        {
+            if (ReferenceEquals(this, other)) return true;
+            return false;
+        }
+
+        public override bool Equals(IVariableNode other)
+        {
+            if (ReferenceEquals(this, other)) return true;
+            return false;
+        }
+
+        public bool Equals(BaseBlankNode other)
+        {
+            return this.Equals((IBlankNode)other);
         }
 
         /// <summary>
@@ -171,6 +202,8 @@ namespace VDS.RDF
         /// <returns></returns>
         public override int CompareTo(INode other)
         {
+            if (ReferenceEquals(this, other)) return 0;
+
             if (other == null)
             {
                 //Blank Nodes are considered greater than nulls
@@ -184,10 +217,8 @@ namespace VDS.RDF
             }
             else if (other.NodeType == NodeType.Blank)
             {
-                if (ReferenceEquals(this, other)) return 0;
-
                 //Order Blank Nodes lexically by their ID
-                return this.InternalID.CompareTo(((BlankNode)other).InternalID);
+                return ComparisonHelper.CompareBlankNodes(this, (IBlankNode)other);
             }
             else
             {
@@ -196,6 +227,103 @@ namespace VDS.RDF
                 return -1;
             }
         }
+
+        public override int CompareTo(IBlankNode other)
+        {
+            if (ReferenceEquals(this, other)) return 0;
+            if (other == null)
+            {
+                //We are always greater than nulls
+                return 1;
+            }
+            else
+            {
+                //Order lexically on ID
+                return ComparisonHelper.CompareBlankNodes(this, other);
+            }
+        }
+
+        public override int CompareTo(IGraphLiteralNode other)
+        {
+            if (ReferenceEquals(this, other)) return 0;
+            if (other == null)
+            {
+                //We are always greater than nulls
+                return 1;
+            }
+            else
+            {
+                //We are less than Graph Literal Nodes
+                return -1;
+            }
+        }
+
+        public override int CompareTo(ILiteralNode other)
+        {
+            if (ReferenceEquals(this, other)) return 0;
+            if (other == null)
+            {
+                //We are always greater than nulls
+                return 1;
+            }
+            else
+            {
+                //We are less than Literal Nodes
+                return -1;
+            }
+        }
+
+        public override int CompareTo(IUriNode other)
+        {
+            if (ReferenceEquals(this, other)) return 0;
+            if (other == null)
+            {
+                //We are always greater than nulls
+                return 1;
+            }
+            else
+            {
+                //We are less than URI Nodes
+                return -1;
+            }
+        }
+
+        public override int CompareTo(IVariableNode other)
+        {
+            if (ReferenceEquals(this, other)) return 0;
+            //We are always greater than Nulls/Variable Nodes
+            return 1;
+        }
+
+        public int CompareTo(BaseBlankNode other)
+        {
+            return this.CompareTo((IBlankNode)other);
+        }
+
+        /// <summary>
+        /// Returns a string representation of this Blank Node in QName form
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return "_:" + this._id;
+        }
+
+    }
+
+    /// <summary>
+    /// Class for representing Blank RDF Nodes
+    /// </summary>
+    public class BlankNode : BaseBlankNode, IEquatable<BlankNode>, IComparable<BlankNode>
+    {
+        protected internal BlankNode(IGraph g)
+            : base(g) { }
+
+        protected internal BlankNode(IGraph g, String id)
+            : base(g, id) { }
+
+        protected internal BlankNode(INodeFactory factory)
+            : base(factory) { }
 
         /// <summary>
         /// Implementation of Compare To for Blank Nodes
@@ -207,7 +335,12 @@ namespace VDS.RDF
         /// </remarks>
         public int CompareTo(BlankNode other)
         {
-            return this.CompareTo((INode)other);
+            return this.CompareTo((IBlankNode)other);
+        }
+
+        public bool Equals(BlankNode other)
+        {
+            return base.Equals((IBlankNode)other);
         }
     }
 }

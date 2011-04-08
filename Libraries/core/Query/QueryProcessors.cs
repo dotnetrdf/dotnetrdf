@@ -62,6 +62,7 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public object ProcessQuery(SparqlQuery query)
         {
+            query.QueryExecutionTime = null;
             query.QueryTime = -1;
             query.QueryTimeTicks = -1;
             DateTime start = DateTime.Now;
@@ -72,9 +73,10 @@ namespace VDS.RDF.Query
             }
             finally
             {
-                query.QueryTime = (DateTime.Now - start).Milliseconds;
-                query.QueryTimeTicks = (DateTime.Now - start).Ticks;
-
+                TimeSpan elapsed = (DateTime.Now - start);
+                query.QueryExecutionTime = elapsed;
+                query.QueryTime = elapsed.Milliseconds;
+                query.QueryTimeTicks = elapsed.Ticks;
             }
         }
     }
@@ -104,6 +106,7 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public object ProcessQuery(SparqlQuery query)
         {
+            query.QueryExecutionTime = null;
             query.QueryTime = -1;
             query.QueryTimeTicks = -1;
             DateTime start = DateTime.Now;
@@ -114,8 +117,10 @@ namespace VDS.RDF.Query
             }
             finally
             {
-                query.QueryTime = (DateTime.Now - start).Milliseconds;
-                query.QueryTimeTicks = (DateTime.Now - start).Ticks;
+                TimeSpan elapsed = (DateTime.Now - start);
+                query.QueryExecutionTime = elapsed;
+                query.QueryTime = elapsed.Milliseconds;
+                query.QueryTimeTicks = elapsed.Ticks;
             }
         }
     }
@@ -145,6 +150,7 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public object ProcessQuery(SparqlQuery query)
         {
+            query.QueryExecutionTime = null;
             query.QueryTime = -1;
             query.QueryTimeTicks = -1;
             DateTime start = DateTime.Now;
@@ -174,8 +180,10 @@ namespace VDS.RDF.Query
             }
             finally
             {
-                query.QueryTime = (DateTime.Now - start).Milliseconds;
-                query.QueryTimeTicks = (DateTime.Now - start).Ticks;
+                TimeSpan elapsed = (DateTime.Now - start);
+                query.QueryExecutionTime = elapsed;
+                query.QueryTime = elapsed.Milliseconds;
+                query.QueryTimeTicks = elapsed.Ticks;
             }
         }
     }

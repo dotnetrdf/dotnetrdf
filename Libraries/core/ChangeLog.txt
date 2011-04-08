@@ -9,122 +9,83 @@ rvesse@vdesign-studios.com
 Change Log
 ----------
 
-This represents a summary of additions, changes and removals for the 0.4.0 release of dotNetRDF
+This represents a summary of additions, changes and removals for the 0.4.1 release of dotNetRDF
 
 Added
-- Graph Difference Algorithm
-- Conversion from IGraph and SparqlResultSet to DataTable
-- More Extension Methods
- - LoadFromFile and LoadFromUri for Graphs and Triple Stores
- - ToLiteral for byte and sbyte
- - ToLiteralDate and ToLiteralTime for DateTime (gives only the xsd:date or xsd:time representation)
-- ASP.Net Integration
- - DatasetHandler for serving RDF datasets
- - QueryHandler, UpdateHandler and SparqlServer all now return SPARQL Service Description where appropriate
-- Configuration API
- - dnr:SparqlDataset and dnr:usingDataset properties
- - All new IGenericIOManager implementations - Fuseki, In-Memory and Read-Only - are now loadable via the ConfigurationLoader
- - dnr:enableCors property for disabling CORS Headers on HTTP Handlers
- - dnr:serviceDescription property for supplying own SPARQL Service Description for SPARQL Handlers
- - dnr:fromEmbedded property for loading data from embedded resources
+- General Improvements
+ - Added a GraphPersistenceWrapper which is an IGraph implementation which tracks changes to the wrapped
+   Graph when those changes pass through it and allow the changes to be Flushed/Discarded as desired
+    - Added a StoreGraphPersistenceWrapper which flushes changes to some underlying IGenericIOManager
+    - Added a FileGraphPersistenceWrapper which flushes changes to a file on disk
+ - Improved the HTTP Accept Headers we send
 - Parsing
- - Additional N3 Feature Support
- - Variable Nodes
- - New SimpleN3RulesReasoner which can process simple N3 rules of the form { } => { }
- - Notation 3 Parser supports Variables, @forSome and @forAll fully
- - New EmbeddedResourceLoader for loading RDF from embedded resources in assemblies
-- Query
- - GROUP BY is now supported in subqueries
- - GROUP BY (?x AS ?y) now supported
- - Short form CONSTRUCT WHERE { } now supported
- - Scalar Arguments for aggregates added when in 1.1 Extended mode (only GROUP_CONCAT allows scalar arguments in 1.1 mode)
- - Added new SPARQL 1.1 functions
-  - String Functions - CONCAT, CONTAINS, ENCODE_FOR_URI, LCASE, STRENDS, STRLEN, STRSTARTS, SUBSTR, UCASE
-  - Date Time Functions - DAY, HOURS, MINUTES, MONTH, NOW, SECONDS, TIMEZONE, TZ and YEAR
-  - Numeric Functions - ABS, CEIL, FLOOR, ROUND and ISNUMERIC
-  - Hash Functions - MD5, SHA1, SHA224, SHA256, SHA384, SHA512
- - Additional Pellet Server Client features
-  - ICV, Cluster, Predict and Similairty Services now supported
+ - New IRdfHandler and ISparqlResultsHandler interface allows parsing to arbitrary RDF/SPARQL Results Handlers
+  - Provided various implementations of this:
+   - CountHandler for just counting triples
+   - GraphHandler for parsing into IGraph instances
+   - NullHandler for discarding the triples (useful for just validating the RDF)
+   - PagingHandler for getting a slice of the triples
+   - ResultCountHandler for counting SPARQL Results
+   - ResultSetHandler for parsing SPARQL Results into SparqlResultSet's
+   - StoreHandler for parsing into ITripleStore instances
+   - StoreCountHandler for counting Triples and Graphs
+   - WriteThroughHandler for generating RDF output while parsing
+   - WriteToStoreHandler for sending the triples in batches to some underlying store
+   - ChainedHandler and MultiHandler for combining multiple RDF handlers
 - Update
- - Added support for HTTP PATCH operation to SPARQL Uniform HTTP Protocol implementations
- - Added support for use of ?default as opposed to ?graph in the SPARQL Uniform HTTP Protocol support
- - Added support for the newly defined SPARQL Update 1.1 ADD, COPY and DELETE commands
-- Storage
- - Expanded the IGenericIOManager interface to include methods for deletings graphs and listing graphs
- - Connector for Fuseki
- - Connector which wraps an in-memory store (i.e. a IInMemoryQueryableStore) or a SPARQL dataset (i.e. a ISparqlDataset)
- - Connector which wraps any IGenericIOManager/IQueryableGenericIOManager and makes it read-only
-- Writing
- - New HtmlSchemaWriter outputs HTML versions of ontologies in a schema specification style rather than as a table like the existing HtmlWriter
- - New IQueryFormatter interface to allow customised formatting of SPARQL Queries
+ - Added support for Timeouts when using the LeviathanUpdateProcessor and the ProcessCommandSet() method
+ - Added support for transactions
 
 Changed
 - Bug Fixes
- - Notation 3 Parser allows variable quantification directives in Graph Literals
- - Queries with a LIMIT modifier containing FILTERs were optimised for lazy evaluation but would return incorrect results
-   in some cases
- - Queries with a DISTINCT modifer and a LIMIT were optimised for lazy evaluation when they shouldn't have been
- - Queries containing GRAPH clauses no longer unintentionally introduce a Product in some places
- - RDF/XML parser now correctly treats empty elements with rdf:datatype as literal properties rather than empty properties
- - SPARQL Query Parser now parses correctly if first item in the WHERE clause is a nested graph pattern
- - Non-Leviathan Query Processors record the time the Query took to execute
- - Some bug fixes around LiteralNode value comparisons regarding equivalences between .Net types and XML Schema types
- - Validation of Language Tags was overzealous and rejected some valid language tags and in some places language 
-   tags weren't validated when they should have been
- - RDF/XML writer failed to properly XML encode URIs which contained multiple unescaped ampersands
- - Lots of bug fixes around interpretation of the SPARQL 1.1 specifications
+ - Improved detection of MIME Type from file extension to allow consideration of all possible types 
+   for an extension
+ - If RDF/XML parsing failed then the input stream is now always closed
+ - Bug fix for malformed SPARQL XML Output when some variables were bound to null for a result
+ - TriX no longer allows anonymous Graph IDs
+ - TriX Parser no longer parses <typedLiteral> elements incorrectly
+ - Bug fix for incorrect literal escaping in some cases for all writers
+ - TriG Parser no longer fails to handle string escapes correctly
+ - RdfXmlWriter would fail to output some collections in some cases
  - Bug fix for incorrect rdfs:range and rdfs:domain handling in RdfsReasoner
 - General Improvements
- - Internal restructuring of how MIME Types are managed
-  - Allows for new MIME Types, File Extensions and parsers to be registered with the API and used automatically where appropriate
- - Can use dotnetrdf:default-graph as a URI to explicitly access the default unnamed graph in a SPARQL dataset for most in-memory datasets
-- Parsing
- - All Parsers should now throw RdfParseExceptions when null Graphs, Stores, filenames, streams etc are passed as arguments
- - SparqlRdfParser can now be created to use a specific RDF Parser rather than just auto-detection
- - UriLoader Caching improved
-  - URIs are santised when being cached
-  - Data is cached under both the request and response URIS
-  - Extracted existing private implementation into an interface so users can choose to slot in alternative caching mechanisms if desired
- - Parsers all open files with the appropriate encoding where possible
-  - Streams in the wrong encoded will cause parsers to issue a warning
- - Added Warning events to ISparqlResultsReader, ISparqlResultsWriter, SparqlQueryParser and SparqlUpdateParser
+ - Improved abstraction in BaseDataset so all the active/default graph management is handlded by the 
+   base class
+- Parsing Improvements
+ - Internal parser subsystem rewritten to use IRdfHandler
+ - Improved buffering of input
+ - IRdfReader expanded
+  - Now has overloads for parsing to an IRdfHandler instance as well as to an IGraph instance
+  - Now has overloads for parsing from any TextReader (not just StreamReader)
+ - IStoreReader expanded
+  - Now has overloads for parsing to an IRdfHandler instance as well as to an ITripleStore instances
+  - IStoreReader implementations which accept StreamParams now also accept TextReaderParams for reading
+    from any TextReader
 - Query Improvements
- - Syntax is now SPARQL 1.1 Standard by default (rather than 1.1 Extended)
- - Leviathan SPARQL engine now operates over an ISparqlDataset which is an abstraction between the data and the
-   SPARQL engine which allows for out of memory datasets to be queried and updated with Leviathan
- - Reverse Translation from ISparqlAlgebra to SparqlQuery
- - Optimisation for queries using ORDER BY under some circumstances
- - Loads of fixes to SPARQL Join Semantics
- - Improvements to GRAPH clause implementation
- - Improved SparqlParameterizedString
-  - Can now set values for Variables which are substituted into the query when you call ToString()
-  - Has own Namespace Map allowing prefixes to be registered programatically and have the code take care of generating the PREFIX declarations
- - Improved ISparqlExpression interface to allow for traversing of expression trees and custom formatting
- - Changes to support latest 1.1 Draft Specifications
-  - IN and NOT IN for SPARQL now support any expressions evaluate properly using SPARQL value equality
-  - COALESCE now errors if none of the arguments evaluate to a non-null value
+ - Ensured proper thread safety for queries when used with appropriately implemented ISparqlDataset's so that Queries
+   can never interfere with each other
+ - Improved Timeout support particularly with regards to getting stuck calculating products
+  - Reduced global timeout setting to 3 minutes (previously 5 minutes)
 - Update Improvements
- - WHERE clauses in Update Commands are now optimised
- - Added support for revised syntax of existing commands based on latest drafts of the SPARQL 1.1 Update specification
+ - InMemoryDataset and SqlDataset now provide transactionality
+ - LeviathanUpdateProcessor now runs each Command Set in a Transaction unless AutoCommit is set to false
 - Writing Improvements
- - Writers all try to ensure correct encoding where possible (most already did this)
+ - Various fixes and improvements to collection compression for compressing writers
+ - IStoreWriter implementations which accept StreamParams now also accept TextWriterParams for writing
+   to any TextWriter
 - ASP.Net Improvements
- - All HTTP Handlers output CORS headers so RDF/SPARQL content is accessible to JS client (may be disabled 
-   using dnr:enableCors if desired on a per HTTP Handler basis)
- - SparqlServer now supports omitting any of the processors (provided at least one is specified) so you can create
-   endpoints with some features explicitly disabled
-- Obsoleted Features
- - All ISqlIOManager features marked as obsolete (but still allowed until 0.5.x most likely at which point they will be removed/replaced)
- - RdfXmlTreeWriter and FastRdfXmlWriter marked as obsolete
- - SparqlParamaterizedString QueryText property marked obsolete in favour of the more general and descriptive CommandText property
+ - SPARQL Update handler improvements
+  - They now check command set for permissible actions prior to evaluating any of the command set
+  - They no longer support the non-standard dnr:haltOnError behaviour
+  - They now evaluate command sets as entire sets rather than 1 command at a time
 
 Removed
-- Obsolete VDS.RDF.Web classes removed
-- Removed obsolete methods related to Labyrinth SPARQL engine
-- Removed dataset management methods from ITripleStore and implementations
-- IBinaryOperator marker interface removed as ISparqlExpression.Type can now be used to determine whether an expression
-  is a binary operator
-- Removed obsolete and unused IRdfTranslator and corresponding VDS.RDF.Translation namespace
+- Following marked obsolete but usable
+ - TalisGraph (suggest use of StoreGraphPersistenceWrapper instead)
+- Following marked as obsolete and unusable
+ - BackgroundPersistedGraph (superceded by GraphPersistenceWrapper)
+ - StoreGraph and WriteOnlyStoreGraph (superceded by StoreGraphPersistenceWrapper)
+ - RdfXmlTreeWriter (superceded by FastRdfXmlWriter and RdfXmlWriter)
 
    
 

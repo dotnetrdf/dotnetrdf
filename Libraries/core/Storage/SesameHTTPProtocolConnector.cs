@@ -611,7 +611,7 @@ namespace VDS.RDF.Storage
                             INode temp = r["g"];
                             if (temp.NodeType == NodeType.Uri)
                             {
-                                graphs.Add(((UriNode)temp).Uri);
+                                graphs.Add(((IUriNode)temp).Uri);
                             }
                         }
                     }

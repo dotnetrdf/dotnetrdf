@@ -34,7 +34,10 @@ terms.
 */
 
 using System;
+using System.IO;
 using System.Linq;
+using VDS.RDF.Parsing.Handlers;
+using VDS.RDF.Storage.Params;
 
 namespace VDS.RDF.Parsing.Validation
 {
@@ -64,11 +67,11 @@ namespace VDS.RDF.Parsing.Validation
             String message;
             try
             {
-                TripleStore store = new TripleStore();
-                StringParser.ParseDataset(store, data, this._parser);
+                StoreCountHandler handler = new StoreCountHandler();
+                this._parser.Load(handler, new TextReaderParams(new StringReader(data)));
 
-                message = "Valid RDF Dataset - " + store.Graphs.Count + " Graphs with " + store.Triples.Count() + " Triples - Parser: " + this._parser.GetType().Name;
-                return new SyntaxValidationResults(true, message, store);
+                message = "Valid RDF Dataset - " + handler.GraphCount + " Graphs with " + handler.TripleCount + " Triples - Parser: " + this._parser.GetType().Name;
+                return new SyntaxValidationResults(true, message, handler);
             }
             catch (RdfParseException parseEx)
             {

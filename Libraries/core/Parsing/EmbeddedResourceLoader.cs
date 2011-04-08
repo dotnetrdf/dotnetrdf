@@ -157,7 +157,7 @@ namespace VDS.RDF.Parsing
                     {
                         //Need to select a Parser or use StringParser
                         String ext = resource.Substring(resource.LastIndexOf("."));
-                        MimeTypeDefinition def = MimeTypesHelper.GetDefinitions(MimeTypesHelper.GetMimeType(ext)).FirstOrDefault(d => d.CanParseRdf);
+                        MimeTypeDefinition def = MimeTypesHelper.GetDefinitions(MimeTypesHelper.GetMimeTypes(ext)).FirstOrDefault(d => d.CanParseRdf);
                         if (def != null)
                         {
                             //Resource has an appropriate file extension and we've found a candidate parser for it
@@ -274,7 +274,7 @@ namespace VDS.RDF.Parsing
                     {
                         //Need to select a Parser or use StringParser
                         String ext = resource.Substring(resource.LastIndexOf("."));
-                        MimeTypeDefinition def = MimeTypesHelper.GetDefinitions(MimeTypesHelper.GetMimeType(ext)).FirstOrDefault(d => d.CanParseRdfDatasets);
+                        MimeTypeDefinition def = MimeTypesHelper.GetDefinitions(MimeTypesHelper.GetMimeTypes(ext)).FirstOrDefault(d => d.CanParseRdfDatasets);
                         if (def != null)
                         {
                             //Resource has an appropriate file extension and we've found a candidate parser for it

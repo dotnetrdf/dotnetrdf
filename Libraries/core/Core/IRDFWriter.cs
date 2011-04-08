@@ -33,7 +33,6 @@ terms.
 
 */
 
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -105,7 +104,7 @@ namespace VDS.RDF.Writing
     }
 
     /// <summary>
-    /// Interface for Writers that Support varying levels of Syntax Compression
+    /// Interface for Writers that support varying levels of Syntax Compression
     /// </summary>
     public interface ICompressingWriter
     {
@@ -114,6 +113,21 @@ namespace VDS.RDF.Writing
         /// </summary>
         /// <remarks>Compression Level is an arbitrary figure that the Writer can interpret as it wants, implementations of this interface should state in the XML Comments for this property what the different values mean.  The Standard Compression levels provided by the <see cref="WriterCompressionLevel">WriterCompressionLevel</see> enumeration are intended as guides and Writers may interpret these as they desire.</remarks>
         int CompressionLevel
+        {
+            get;
+            set;
+        }
+    }
+
+    /// <summary>
+    /// Interface for Writers that support multi-threaded writing
+    /// </summary>
+    public interface IMultiThreadedWriter
+    {
+        /// <summary>
+        /// Gets/Sets whether multi-threading is used
+        /// </summary>
+        bool UseMultiThreadedWriting
         {
             get;
             set;

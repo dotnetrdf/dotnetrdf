@@ -99,17 +99,17 @@ namespace VDS.RDF.Writing
             g.NamespaceMap.AddNamespace("rs", new Uri(SparqlSpecsHelper.SparqlRdfResultsNamespace));
 
             //Create relevant Nodes
-            UriNode rdfType = g.CreateUriNode("rdf:type");
-            UriNode resultSetClass = g.CreateUriNode("rs:ResultSet");
-            UriNode resultVariable = g.CreateUriNode("rs:resultVariable");
-            UriNode solution = g.CreateUriNode("rs:solution");
-            UriNode binding = g.CreateUriNode("rs:binding");
-            UriNode value = g.CreateUriNode("rs:value");
-            UriNode variable = g.CreateUriNode("rs:variable");
-            UriNode boolean = g.CreateUriNode("rs:boolean");
+            IUriNode rdfType = g.CreateUriNode("rdf:type");
+            IUriNode resultSetClass = g.CreateUriNode("rs:ResultSet");
+            IUriNode resultVariable = g.CreateUriNode("rs:resultVariable");
+            IUriNode solution = g.CreateUriNode("rs:solution");
+            IUriNode binding = g.CreateUriNode("rs:binding");
+            IUriNode value = g.CreateUriNode("rs:value");
+            IUriNode variable = g.CreateUriNode("rs:variable");
+            IUriNode boolean = g.CreateUriNode("rs:boolean");
 
             //First we declare a Result Set
-            BlankNode rset = g.CreateBlankNode();
+            IBlankNode rset = g.CreateBlankNode();
             g.Assert(new Triple(rset, rdfType, resultSetClass));
 
             if (results.ResultsType == SparqlResultsType.VariableBindings)
@@ -123,7 +123,7 @@ namespace VDS.RDF.Writing
                 //Then we're going to define a solution for each result
                 foreach (SparqlResult r in results)
                 {
-                    BlankNode sln = g.CreateBlankNode();
+                    IBlankNode sln = g.CreateBlankNode();
                     g.Assert(new Triple(rset, solution, sln));
 
                     foreach (String v in results.Variables)
@@ -131,14 +131,14 @@ namespace VDS.RDF.Writing
                         //Only define Bindings if there is a value and it is non-null
                         if (r.HasValue(v) && r[v] != null)
                         {
-                            BlankNode bnd = g.CreateBlankNode();
+                            IBlankNode bnd = g.CreateBlankNode();
                             g.Assert(new Triple(sln, binding, bnd));
                             g.Assert(new Triple(bnd, variable, g.CreateLiteralNode(v)));
                             switch (r[v].NodeType) 
                             {
                                 case NodeType.Blank:
-                                    BlankNode b = (BlankNode)r[v];
-                                    BlankNode bMapped;
+                                    IBlankNode b = (IBlankNode)r[v];
+                                    IBlankNode bMapped;
                                     if (b.GraphUri == null)
                                     {
                                         bMapped = g.CreateBlankNode(b.InternalID + "def");

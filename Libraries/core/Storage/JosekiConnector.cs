@@ -190,7 +190,10 @@ namespace VDS.RDF.Storage
                     postData.Append(" INTO <" + g.BaseUri.ToString().Replace(">", "\\>") + ">");
                 }
                 postData.AppendLine(" {");
-                postData.AppendLine(VDS.RDF.Writing.StringWriter.Write(g, new NTriplesWriter()));
+                foreach (Triple t in g.Triples)
+                {
+                    postData.AppendLine(t.ToString(this._formatter));
+                }
                 postData.AppendLine("}");
 
                 StreamWriter postWriter = new StreamWriter(request.GetRequestStream());
@@ -251,12 +254,12 @@ namespace VDS.RDF.Storage
                 {
                     if (removals.Any())
                     {
-                        Graph deleteGraph = new Graph();
-                        deleteGraph.Assert(removals);
-                        String deleteData = VDS.RDF.Writing.StringWriter.Write(deleteGraph, new NTriplesWriter());
                         modify.AppendLine("DELETE");
                         modify.AppendLine("{");
-                        modify.AppendLine(deleteData);
+                        foreach (Triple t in removals)
+                        {
+                            modify.AppendLine(t.ToString(this._formatter));
+                        }
                         modify.AppendLine("}");
                     }
                 }
@@ -265,12 +268,12 @@ namespace VDS.RDF.Storage
                 {
                     if (additions.Any())
                     {
-                        Graph insertGraph = new Graph();
-                        insertGraph.Assert(additions);
-                        String insertData = VDS.RDF.Writing.StringWriter.Write(insertGraph, new NTriplesWriter());
                         modify.AppendLine("INSERT");
                         modify.AppendLine("{");
-                        modify.AppendLine(insertData);
+                        foreach (Triple t in additions)
+                        {
+                            modify.AppendLine(t.ToString(this._formatter));
+                        }
                         modify.AppendLine("}");
                     }
                 }
@@ -401,7 +404,7 @@ namespace VDS.RDF.Storage
                             INode temp = r["g"];
                             if (temp.NodeType == NodeType.Uri)
                             {
-                                graphs.Add(((UriNode)temp).Uri);
+                                graphs.Add(((IUriNode)temp).Uri);
                             }
                         }
                     }

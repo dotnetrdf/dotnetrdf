@@ -82,7 +82,7 @@ namespace VDS.RDF
     {
         private static LiteralEqualityMode _litEqualityMode = LiteralEqualityMode.Strict;
         private static bool _litNormalization = true;//, _uriNormalization = true;
-        private static long _queryExecutionTimeout = 300000;
+        private static long _queryExecutionTimeout = 180000;
         private static int _defaultCompressionLevel = WriterCompressionLevel.More;
         private static bool _fullIndexing = true;
         private static bool _queryOptimisation = true;
@@ -156,7 +156,7 @@ namespace VDS.RDF
         /// Gets/Sets the Hard Timeout limit for Sparql Query Execution (in milliseconds)
         /// </summary>
         /// <remarks>
-        /// This is used to stop Sparql queries running away and never completing execution, it defaults to 5 mins (300,000 milliseconds)
+        /// This is used to stop Sparql queries running away and never completing execution, it defaults to 3 mins (180,000 milliseconds)
         /// </remarks>
         public static long QueryExecutionTimeout
         {
@@ -166,10 +166,7 @@ namespace VDS.RDF
             }
             set
             {
-                if (value > 0)
-                {
-                    _queryExecutionTimeout = value;
-                }
+                _queryExecutionTimeout = Math.Max(value, 0);
             }
         }
 

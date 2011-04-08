@@ -52,6 +52,8 @@ improvements in the code:
 - Peter Kahle for his efforts in producing a Windows Phone 7 version of the library
 - Paul Hermans for various suggestions related to the improvement of the Toolkit
 - The SPARQL Working Group for useful feedback and responses to my comments
+- Graham Moore for excellent input on needed changes in the API to better support 3rd party developers
+  plugging their stuff into the API
 - The following people who have contributed bug reports and patches on the mailing lists:
  - Tana Isaac
  - Koos Strydoom

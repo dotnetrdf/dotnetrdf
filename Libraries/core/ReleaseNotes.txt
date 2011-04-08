@@ -3,7 +3,7 @@
 
 A Library for RDF manipulation and parsing in .Net using C# 3.0
 
-Version 0.4.0 Beta
+Version 0.4.1 Beta
 
 Robert Vesse 2009-11
 rvesse@vdesign-studios.com
@@ -66,15 +66,11 @@ there are things that may be buggy still and the API is subject to change at our
 Query and Update
 - Leviathan passes the entire SPARQL 1.0 Test Suite except three of the normalization tests - this is due to how
   .Net handles normalization esp. wrt. URIs
-- ISparqlDataset is not currently thread safe - queries/updates executing on different threads against the same
-  dataset may interfere with each other
+- Queries and Updates are not always thread safe - see User Guide for details on how to guarantee this
 - SPARQL 1.1 Support is as close to the editors drafts as possible at the time of release.  Majority of the test 
   suite is passed but we fail 16 and ignore a further 11 of 308 tests due to the following issues:
   - Property Path semantics have changed since the previous drafts but our implementation has not so we particularly
     fail tests involving variable and zero length paths
-  - Blank Nodes used as wildcards in INSERT/DELETE commands is not supported as it is unclear whether the WG
-    will endorse this usage or not.  If they do the feature presents a significant implementation hurdle which
-    is why it is not currently implemented
   - There are some tests which use syntax which is invalid according to the current drafts so we ignore these tests
 
 Storage
@@ -139,6 +135,7 @@ improvements in the code:
   which have contributed to resolving various issues in the Leviathan engine and adding the ARQ function library support
 - Peter Kahle for his efforts in producing a Windows Phone 7 version of the library
 - Paul Hermans for various suggestions related to the improvement of the Toolkit
+- Graham Moore for excellent input on needed changes in the API to better support 3rd party developers
 - The SPARQL Working Group for useful feedback and responses to my comments
 - The following people who have contributed bug reports and patches on the mailing lists:
  - Tana Isaac

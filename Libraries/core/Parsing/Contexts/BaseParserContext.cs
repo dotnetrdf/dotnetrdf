@@ -33,6 +33,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Parsing.Tokens;
 
 namespace VDS.RDF.Parsing.Contexts
@@ -40,25 +41,26 @@ namespace VDS.RDF.Parsing.Contexts
     /// <summary>
     /// Base Class for Parser Contexts
     /// </summary>
-    public abstract class BaseParserContext
+    public abstract class BaseParserContext : IParserContext
     {
         /// <summary>
-        /// Graph being parsed into
+        /// RDF Handler used to handle the generated RDF
         /// </summary>
-        protected IGraph _g;
+        protected IRdfHandler _handler;
         /// <summary>
         /// Is Parsing Traced?
         /// </summary>
         protected bool _traceParsing = false;
+
+        private NamespaceMapper _nsmap = new NamespaceMapper(true);
+        private Uri _baseUri;
 
         /// <summary>
         /// Creates a new Base Parser Context
         /// </summary>
         /// <param name="g">Graph to parse into</param>
         public BaseParserContext(IGraph g)
-        {
-            this._g = g;
-        }
+            : this(g, false) { }
 
         /// <summary>
         /// Creates a new Base Parser Context
@@ -66,19 +68,31 @@ namespace VDS.RDF.Parsing.Contexts
         /// <param name="g">Graph to parse into</param>
         /// <param name="traceParsing">Whether to trace parsing</param>
         public BaseParserContext(IGraph g, bool traceParsing)
-            : this(g)
+            : this(new GraphHandler(g), traceParsing) { }
+
+        public BaseParserContext(IRdfHandler handler)
+            : this(handler, false) { }
+
+        public BaseParserContext(IRdfHandler handler, bool traceParsing)
         {
+            if (handler == null) throw new ArgumentNullException("handler");
+            this._handler = handler;
             this._traceParsing = traceParsing;
+
+            if (this._handler is GraphHandler)
+            {
+                this._baseUri = ((GraphHandler)this._handler).BaseUri;
+            }
         }
 
         /// <summary>
-        /// Gets the Graph being parsed into
+        /// Gets the Handler used to handle the generated RDF
         /// </summary>
-        public IGraph Graph
+        public IRdfHandler Handler
         {
             get
             {
-                return this._g;
+                return this._handler;
             }
         }
 
@@ -96,12 +110,32 @@ namespace VDS.RDF.Parsing.Contexts
                 this._traceParsing = value;
             }
         }
+
+        public INamespaceMapper Namespaces
+        {
+            get
+            {
+                return this._nsmap;
+            }
+        }
+
+        public Uri BaseUri
+        {
+            get
+            {
+                return this._baseUri;
+            }
+            set
+            {
+                this._baseUri = value;
+            }
+        }
     }
 
     /// <summary>
     /// Class for Parser Contexts for Tokeniser based Parsing
     /// </summary>
-    public class TokenisingParserContext : BaseParserContext
+    public class TokenisingParserContext : BaseParserContext, ITokenisingParserContext
     {
         /// <summary>
         /// Tokeniser
@@ -176,6 +210,84 @@ namespace VDS.RDF.Parsing.Contexts
         /// <param name="traceTokeniser">Whether to trace tokenisation</param>
         public TokenisingParserContext(IGraph g, ITokeniser tokeniser, TokenQueueMode queueMode, bool traceParsing, bool traceTokeniser)
             : base(g, traceParsing)
+        {
+            switch (queueMode)
+            {
+                case TokenQueueMode.AsynchronousBufferDuringParsing:
+                    this._queue = new AsynchronousBufferedTokenQueue(tokeniser);
+                    break;
+                case TokenQueueMode.SynchronousBufferDuringParsing:
+                    this._queue = new BufferedTokenQueue(tokeniser);
+                    break;
+                case TokenQueueMode.QueueAllBeforeParsing:
+                default:
+                    this._queue = new TokenQueue(tokeniser);
+                    break;
+            }
+            this._traceTokeniser = traceTokeniser;
+            this._queue.Tracing = this._traceTokeniser;
+        }
+
+        /// <summary>
+        /// Creates a new Tokenising Parser Context with default settings
+        /// </summary>
+        /// <param name="g">Graph to parse into</param>
+        /// <param name="tokeniser">Tokeniser to use</param>
+        public TokenisingParserContext(IRdfHandler handler, ITokeniser tokeniser)
+            : base(handler)
+        {
+            this._queue = new TokenQueue(tokeniser);
+        }
+
+        /// <summary>
+        /// Creates a new Tokenising Parser Context with custom settings
+        /// </summary>
+        /// <param name="g">Graph to parse into</param>
+        /// <param name="tokeniser">Tokeniser to use</param>
+        /// <param name="queueMode">Tokeniser Queue Mode</param>
+        public TokenisingParserContext(IRdfHandler handler, ITokeniser tokeniser, TokenQueueMode queueMode)
+            : base(handler)
+        {
+            switch (queueMode)
+            {
+                case TokenQueueMode.AsynchronousBufferDuringParsing:
+                    this._queue = new AsynchronousBufferedTokenQueue(tokeniser);
+                    break;
+                case TokenQueueMode.SynchronousBufferDuringParsing:
+                    this._queue = new BufferedTokenQueue(tokeniser);
+                    break;
+                case TokenQueueMode.QueueAllBeforeParsing:
+                default:
+                    this._queue = new TokenQueue(tokeniser);
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Creates a new Tokenising Parser Context with custom settings
+        /// </summary>
+        /// <param name="g">Graph to parse into</param>
+        /// <param name="tokeniser">Tokeniser to use</param>
+        /// <param name="traceParsing">Whether to trace parsing</param>
+        /// <param name="traceTokeniser">Whether to trace tokenisation</param>
+        public TokenisingParserContext(IRdfHandler handler, ITokeniser tokeniser, bool traceParsing, bool traceTokeniser)
+            : this(handler, tokeniser)
+        {
+            this._traceParsing = traceParsing;
+            this._traceTokeniser = traceTokeniser;
+            this._queue.Tracing = this._traceTokeniser;
+        }
+
+        /// <summary>
+        /// Creates a new Tokenising Parser Context with custom settings
+        /// </summary>
+        /// <param name="g">Graph to parse into</param>
+        /// <param name="tokeniser">Tokeniser to use</param>
+        /// <param name="queueMode">Tokeniser Queue Mode</param>
+        /// <param name="traceParsing">Whether to trace parsing</param>
+        /// <param name="traceTokeniser">Whether to trace tokenisation</param>
+        public TokenisingParserContext(IRdfHandler handler, ITokeniser tokeniser, TokenQueueMode queueMode, bool traceParsing, bool traceTokeniser)
+            : base(handler, traceParsing)
         {
             switch (queueMode)
             {

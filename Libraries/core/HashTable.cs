@@ -85,14 +85,23 @@ namespace VDS.RDF
         /// <param name="value">Value</param>
         public void Add(TKey key, TValue value)
         {
-            if (this.ContainsKey(key))
+            HashSlot<TValue> slot;
+            if (this._values.TryGetValue(key, out slot))
             {
-                this._values[key].Add(value);
+                slot.Add(value);
             }
             else
             {
                 this._values.Add(key, new HashSlot<TValue>(value, this._capacity));
             }
+            //if (this.ContainsKey(key))
+            //{
+            //    this._values[key].Add(value);
+            //}
+            //else
+            //{
+            //    this._values.Add(key, new HashSlot<TValue>(value, this._capacity));
+            //}
         }
 
         /// <summary>
@@ -113,14 +122,23 @@ namespace VDS.RDF
         /// <returns></returns>
         public bool Contains(TKey key, TValue value)
         {
-            if (this.ContainsKey(key))
+            HashSlot<TValue> slot;
+            if (this._values.TryGetValue(key, out slot))
             {
-                return this._values[key].Contains(value);
+                return slot.Contains(value);
             }
             else
             {
                 return false;
             }
+            //if (this.ContainsKey(key))
+            //{
+            //    return this._values[key].Contains(value);
+            //}
+            //else
+            //{
+            //    return false;
+            //}
         }
 
         /// <summary>
@@ -141,14 +159,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public bool Remove(TKey key)
         {
-            if (this.ContainsKey(key))
-            {
-                return this._values.Remove(key);
-            }
-            else
-            {
-                return false;
-            }
+            return this._values.Remove(key);
         }
 
         /// <summary>
@@ -159,16 +170,27 @@ namespace VDS.RDF
         /// <returns></returns>
         public bool Remove(TKey key, TValue value)
         {
-            if (this.ContainsKey(key))
+            HashSlot<TValue> slot;
+            if (this._values.TryGetValue(key, out slot))
             {
-                this._values[key].Remove(value);
-                if (this._values[key].Count == 0) this.Remove(key);
-                return true;
+                bool res = slot.Remove(value);
+                if (slot.Count == 0) this.Remove(key);
+                return res;
             }
             else
             {
                 return false;
             }
+            //if (this.ContainsKey(key))
+            //{
+            //    this._values[key].Remove(value);
+            //    if (this._values[key].Count == 0) this.Remove(key);
+            //    return true;
+            //}
+            //else
+            //{
+            //    return false;
+            //}
         }
 
         /// <summary>
@@ -179,9 +201,10 @@ namespace VDS.RDF
         /// <returns></returns>
         public bool TryGetValue(TKey key, out TValue value)
         {
-            if (this.ContainsKey(key))
+            HashSlot<TValue> slot;
+            if (this._values.TryGetValue(key, out slot))
             {
-                value = this._values[key].First();
+                value = slot.First();
                 return true;
             }
             else
@@ -189,6 +212,16 @@ namespace VDS.RDF
                 value = default(TValue);
                 return false;
             }
+            //if (this.ContainsKey(key))
+            //{
+            //    value = this._values[key].First();
+            //    return true;
+            //}
+            //else
+            //{
+            //    value = default(TValue);
+            //    return false;
+            //}
         }
 
         /// <summary>
@@ -200,9 +233,10 @@ namespace VDS.RDF
         /// <returns></returns>
         public bool TryGetValue(TKey key, TValue value, out TValue result)
         {
-            if (this.Contains(key, value))
+            HashSlot<TValue> slot;
+            if (this._values.TryGetValue(key, out slot))
             {
-                result = this._values[key].First(v => v.Equals(value));
+                result = slot.FirstOrDefault(v => v.Equals(value));
                 return true;
             }
             else
@@ -210,6 +244,17 @@ namespace VDS.RDF
                 result = default(TValue);
                 return false;
             }
+
+            //if (this.Contains(key, value))
+            //{
+            //    result = this._values[key].First(v => v.Equals(value));
+            //    return true;
+            //}
+            //else
+            //{
+            //    result = default(TValue);
+            //    return false;
+            //}
         }
 
         /// <summary>
@@ -234,14 +279,23 @@ namespace VDS.RDF
         {
             get
             {
-                if (this.ContainsKey(key))
+                HashSlot<TValue> slot;
+                if (this._values.TryGetValue(key, out slot))
                 {
-                    return this._values[key].First();
+                    return slot.FirstOrDefault();
                 }
                 else
                 {
                     throw new KeyNotFoundException();
                 }
+                //if (this.ContainsKey(key))
+                //{
+                //    return this._values[key].First();
+                //}
+                //else
+                //{
+                //    throw new KeyNotFoundException();
+                //}
             }
             set
             {
@@ -256,14 +310,23 @@ namespace VDS.RDF
         /// <returns></returns>
         public IEnumerable<TValue> GetValues(TKey key)
         {
-            if (this._values.ContainsKey(key))
+            HashSlot<TValue> slot;
+            if (this._values.TryGetValue(key, out slot))
             {
-                return this._values[key];
+                return slot;
             }
             else
             {
                 throw new KeyNotFoundException();
             }
+            //if (this._values.ContainsKey(key))
+            //{
+            //    return this._values[key];
+            //}
+            //else
+            //{
+            //    throw new KeyNotFoundException();
+            //}
         }
 
         /// <summary>
@@ -329,14 +392,23 @@ namespace VDS.RDF
         /// <returns></returns>
         public int ValueCount(TKey key)
         {
-            if (this._values.ContainsKey(key))
+            HashSlot<TValue> slot;
+            if (this._values.TryGetValue(key, out slot))
             {
-                return this._values[key].Count;
+                return slot.Count;
             }
             else
             {
                 return 0;
             }
+            //if (this._values.ContainsKey(key))
+            //{
+            //    return this._values[key].Count;
+            //}
+            //else
+            //{
+            //    return 0;
+            //}
         }
 
         /// <summary>

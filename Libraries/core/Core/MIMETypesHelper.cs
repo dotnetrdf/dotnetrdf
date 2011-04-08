@@ -174,6 +174,13 @@ namespace VDS.RDF
                     select definition);
         }
 
+        public static IEnumerable<MimeTypeDefinition> GetDefinitions(IEnumerable<String> mimeTypes)
+        {
+            if (!_init) Init();
+
+            return GetDefinitions(mimeTypes.ToArray());
+        }
+
         /// <summary>
         /// Gets all MIME Type definition which support the given MIME Types
         /// </summary>
@@ -367,7 +374,7 @@ namespace VDS.RDF
                     }
                 }
                 if (output[output.Length - 1] == ',') output.Remove(output.Length - 1, 1);
-                output.Append(";q=0.9,*/*;q=0.8");
+                output.Append(",*/*");
 
                 return output.ToString();
             }
@@ -394,7 +401,6 @@ namespace VDS.RDF
                     }
                 }
                 if (output[output.Length - 1] == ',') output.Remove(output.Length - 1, 1);
-                output.Append(";q=1.0");
 
                 return output.ToString();
             }
@@ -421,7 +427,7 @@ namespace VDS.RDF
                     }
                 }
                 if (output[output.Length - 1] == ',') output.Remove(output.Length - 1, 1);
-                output.Append(";q=0.9,*/*;q=0.8");
+                output.Append(",*/*");
 
                 return output.ToString();
             }
@@ -447,7 +453,6 @@ namespace VDS.RDF
                     }
                 }
                 if (output[output.Length - 1] == ',') output.Remove(output.Length - 1, 1);
-                output.Append(";q=1.0");
 
                 return output.ToString();
             }
@@ -473,7 +478,7 @@ namespace VDS.RDF
                     }
                 }
                 if (output[output.Length - 1] == ',') output.Remove(output.Length - 1, 1);
-                output.Append(";q=0.9,*/*;q=0.8");
+                output.Append(",*/*");
 
                 return output.ToString();
             }
@@ -633,6 +638,17 @@ namespace VDS.RDF
 
         #region Reader and Writer Selection
 
+        public static IRdfWriter GetWriter(IEnumerable<String> ctypes)
+        {
+            String temp;
+            return GetWriter(ctypes, out temp);
+        }
+
+        public static IRdfWriter GetWriter(IEnumerable<String> ctypes, out String contentType)
+        {
+            return GetWriter(ctypes.ToArray(), out contentType);
+        }
+
         /// <summary>
         /// Selects an appropriate <see cref="IRdfWriter">IRdfWriter</see> based on the HTTP Accept header form a HTTP Request
         /// </summary>
@@ -740,6 +756,28 @@ namespace VDS.RDF
             return GetWriter(acceptHeader, out temp);
         }
 
+        public static IRdfReader GetParser(IEnumerable<String> ctypes)
+        {
+            if (ctypes != null)
+            {
+                foreach (String ctype in ctypes)
+                {
+                    try
+                    {
+                        IRdfReader parser = GetParser(ctype);
+                        return parser;
+                    }
+                    catch (RdfParserSelectionException)
+                    {
+                        //Ignore
+                    }
+                }
+            }
+
+            String types = (ctypes == null) ? String.Empty : String.Join(",", ctypes.ToArray());
+            throw new RdfParserSelectionException("The Library does not contain any Parsers which understand RDF Graphs in any of the following MIME Types: " + types);
+        }
+
         /// <summary>
         /// Selects an appropriate <see cref="IRdfReader">IRdfReader</see> based on the HTTP Content-Type header from a HTTP Response
         /// </summary>
@@ -820,6 +858,17 @@ namespace VDS.RDF
                     throw;
                 }
             }
+        }
+
+        public static ISparqlResultsWriter GetSparqlWriter(IEnumerable<String> ctypes)
+        {
+            String temp;
+            return GetSparqlWriter(ctypes, out temp);
+        }
+
+        public static ISparqlResultsWriter GetSparqlWriter(IEnumerable<String> ctypes, out String contentType)
+        {
+            return GetSparqlWriter(ctypes.ToArray(), out contentType);
         }
 
         /// <summary>
@@ -1024,6 +1073,36 @@ namespace VDS.RDF
 
             //Unknown File Extension
             throw new RdfParserSelectionException("Unable to determine the appropriate MIME Type for the File Extension '" + fileExt + "' as this is not a standard extension for an RDF format");
+        }
+
+        /// <summary>
+        /// Gets all the MIME Types associated with a given File Extension
+        /// </summary>
+        /// <param name="fileExt">File Extension</param>
+        /// <returns></returns>
+        public static IEnumerable<String> GetMimeTypes(String fileExt)
+        {
+            //Only use the last bit of the extension
+            if (fileExt.Contains("."))
+            {
+                fileExt = fileExt.Substring(fileExt.LastIndexOf(".") + 1);
+            }
+
+            if (!_init) Init();
+            List<String> types = new List<string>();
+            foreach (MimeTypeDefinition definition in MimeTypesHelper.Definitions)
+            {
+                if (definition.FileExtensions.Contains(fileExt))
+                {
+                    types.AddRange(definition.MimeTypes);
+                }
+            }
+
+            if (types.Count > 0) return types;
+
+            //Unknown File Extension
+            throw new RdfParserSelectionException("Unable to determine the appropriate MIME Type for the File Extension '" + fileExt + "' as this is not a standard extension for an RDF format");
+
         }
 
         #endregion

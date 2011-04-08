@@ -46,7 +46,7 @@
 
 <> a owl:Ontology ;
    rdfs:label "dotNetRDF Configuration Vocabulary" ;
-   rdfs:comment """dotNetRDF Configuration Vocabulary is used to define configuration information for applications that make use of dotNetRDF in an RDF format.  This allows for automated validation of the Configuration but also allows the vocabulary to be extensible by design.  New Classes and Properties can be added by end users provided they provide an implementation of the <strong>VDS.RDF.Configuration.IObjectFactory</strong> interface in their application and register it in the Configuration Files that need it/within their application.  The use of the vocabulary to describe Configuration for a variety of types of objects is described in the <a href="http://www.dotnetrdf.org/content.asp?pageID=Configuration%20API">User Guide</a>.""" ;
+   rdfs:comment """dotNetRDF Configuration Vocabulary is used to define configuration information for applications that make use of dotNetRDF in an RDF format.  This allows for automated validation of the Configuration but also allows the vocabulary to be extensible by design.  New Classes and Properties can be added by end users provided they provide an implementation of the <strong>VDS.RDF.Configuration.IObjectFactory</strong> interface in their application and register it in the Configuration Files that need it/within their application.  The use of the vocabulary to describe Configuration for a variety of types of objects is described in the <a href=\"http://www.dotnetrdf.org/content.asp?pageID=Configuration%20API\">User Guide</a>.""" ;
    dc:creator [ foaf:name "Rob Vesse" ] ;
    vann:preferredNamespacePrefix "dnr" ;
    vann:preferredNamespaceUri <http://www.dotnetrdf.org/configuration#> .

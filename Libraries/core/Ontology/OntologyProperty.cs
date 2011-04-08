@@ -71,7 +71,7 @@ namespace VDS.RDF.Ontology
             this.IntialiseProperty(OntologyHelper.PropertyInverseOf, false);
 
             //Find derived properties
-            UriNode subPropertyOf = this._graph.CreateUriNode(new Uri(OntologyHelper.PropertySubPropertyOf));
+            IUriNode subPropertyOf = this._graph.CreateUriNode(new Uri(OntologyHelper.PropertySubPropertyOf));
             this._resourceProperties.Add(PropertyDerivedProperty, new List<INode>());
             foreach (Triple t in this._graph.GetTriplesWithPredicateObject(subPropertyOf, this._resource))
             {

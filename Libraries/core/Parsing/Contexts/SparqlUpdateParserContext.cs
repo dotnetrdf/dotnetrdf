@@ -36,6 +36,7 @@ terms.
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Expressions;
@@ -60,7 +61,7 @@ namespace VDS.RDF.Parsing.Contexts
         /// </summary>
         /// <param name="tokeniser">Tokeniser</param>
         public SparqlUpdateParserContext(ITokeniser tokeniser)
-            : base(null, tokeniser) { }
+            : base(new NullHandler(), tokeniser) { }
 
         /// <summary>
         /// Creates a new SPARQL Update Parser Context with custom settings
@@ -68,7 +69,7 @@ namespace VDS.RDF.Parsing.Contexts
         /// <param name="tokeniser">Tokeniser to use</param>
         /// <param name="queueMode">Tokeniser Queue Mode</param>
         public SparqlUpdateParserContext(ITokeniser tokeniser, TokenQueueMode queueMode)
-            : base(null, tokeniser, queueMode) { }
+            : base(new NullHandler(), tokeniser, queueMode) { }
 
         /// <summary>
         /// Creates a new SPARQL Update Parser Context with custom settings
@@ -77,7 +78,7 @@ namespace VDS.RDF.Parsing.Contexts
         /// <param name="traceParsing">Whether to trace parsing</param>
         /// <param name="traceTokeniser">Whether to trace tokenisation</param>
         public SparqlUpdateParserContext(ITokeniser tokeniser, bool traceParsing, bool traceTokeniser)
-            : base(null, tokeniser, traceParsing, traceTokeniser) { }
+            : base(new NullHandler(), tokeniser, traceParsing, traceTokeniser) { }
 
         /// <summary>
         /// Creates a new SPARQL Update Parser Context with custom settings
@@ -87,7 +88,7 @@ namespace VDS.RDF.Parsing.Contexts
         /// <param name="traceParsing">Whether to trace parsing</param>
         /// <param name="traceTokeniser">Whether to trace tokenisation</param>
         public SparqlUpdateParserContext(ITokeniser tokeniser, TokenQueueMode queueMode, bool traceParsing, bool traceTokeniser)
-            : base(null, tokeniser, queueMode, traceParsing, traceTokeniser) { }
+            : base(new NullHandler(), tokeniser, queueMode, traceParsing, traceTokeniser) { }
 
         /// <summary>
         /// Gets the Update Command Set that is being populated
@@ -141,21 +142,6 @@ namespace VDS.RDF.Parsing.Contexts
             get
             {
                 return this._commandSet.NamespaceMap;
-            }
-        }
-
-        /// <summary>
-        /// Gets the Base URI
-        /// </summary>
-        public Uri BaseUri
-        {
-            get
-            {
-                return this._baseUri;
-            }
-            set
-            {
-                this._baseUri = value;
             }
         }
 

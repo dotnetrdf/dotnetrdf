@@ -40,6 +40,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using VDS.RDF.Parsing.Contexts;
+using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Parsing.Tokens;
 
 namespace VDS.RDF.Parsing
@@ -113,6 +114,41 @@ namespace VDS.RDF.Parsing
         public void Load(IGraph g, StreamReader input)
         {
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
+
+            this.Load(new GraphHandler(g), input);
+        }
+
+        public void Load(IGraph g, TextReader input)
+        {
+            if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
+
+            this.Load(new GraphHandler(g), input);
+        }
+
+        /// <summary>
+        /// Parses NTriples Syntax from the given File into Triples in the given Graph
+        /// </summary>
+        /// <param name="g">Graph to create Triples in</param>
+        /// <param name="filename">Name of the file containing Turtle Syntax</param>
+        /// <remarks>Simply opens an StreamReader and uses the overloaded version of this function</remarks>
+        public void Load(IGraph g, string filename)
+        {
+            if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
+            if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
+
+            //Can only open Streams as ASCII when not running under Silverlight as Silverlight has no ASCII support
+#if !SILVERLIGHT
+            StreamReader input = new StreamReader(filename, Encoding.ASCII);
+#else
+            StreamReader input = new StreamReader(filename);
+            this.RaiseWarning("NTriples files are ASCII format but Silverlight does not support ASCII - will open as UTF-8 instead which may cause issues");
+#endif
+            this.Load(g, input);
+        }
+
+        public void Load(IRdfHandler handler, StreamReader input)
+        {
+            if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
             if (input == null) throw new RdfParseException("Cannot read RDF from a null Stream");
 
 #if !SILVERLIGHT
@@ -123,23 +159,18 @@ namespace VDS.RDF.Parsing
             }
 #endif
 
+            this.Load(handler, (TextReader)input);
+        }
+
+        public void Load(IRdfHandler handler, TextReader input)
+        {
+            if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
+            if (input == null) throw new RdfParseException("Cannot read RDF from a null TextReader");
+
             try
             {
-                if (!g.IsEmpty)
-                {
-                    //Parse into a new Graph then merge with the existing Graph
-                    Graph h = new Graph();
-                    h.BaseUri = g.BaseUri;
-                    TokenisingParserContext context = new TokenisingParserContext(h, new NTriplesTokeniser(input), this._queuemode, this._traceparsing, this._tracetokeniser);
-                    this.Parse(context);
-                    g.Merge(h);
-                }
-                else
-                {
-                    //Can parse directly into an empty Graph
-                    TokenisingParserContext context = new TokenisingParserContext(g, new NTriplesTokeniser(input), this._queuemode, this._traceparsing, this._tracetokeniser);
-                    this.Parse(context);
-                }
+                TokenisingParserContext context = new TokenisingParserContext(handler, new NTriplesTokeniser(input), this._queuemode, this._traceparsing, this._tracetokeniser);
+                this.Parse(context);
             }
             catch
             {
@@ -159,30 +190,19 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        /// <summary>
-        /// Parses NTriples Syntax from the given File into Triples in the given Graph
-        /// </summary>
-        /// <param name="g">Graph to create Triples in</param>
-        /// <param name="filename">Name of the file containing Turtle Syntax</param>
-        /// <remarks>Simply opens an StreamReader and uses the overloaded version of this function</remarks>
-        public void Load(IGraph g, string filename)
+        public void Load(IRdfHandler handler, String filename)
         {
-            if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
+            if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
             if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
-
-            //Can only open Streams as ASCII when not running under Silverlight as Silverlight has no ASCII support
-#if !SILVERLIGHT
-            StreamReader input = new StreamReader(filename, Encoding.ASCII);
-#else
-            StreamReader input = new StreamReader(filename);
-#endif
-            this.Load(g, input);
+            this.Load(handler, new StreamReader(filename, Encoding.UTF8));
         }
 
         private void Parse(TokenisingParserContext context)
         {
             try
             {
+                context.Handler.StartRdf();
+
                 //Initialise the Buffer
                 context.Tokens.InitialiseBuffer(10);
 
@@ -209,10 +229,18 @@ namespace VDS.RDF.Parsing
 
                     next = context.Tokens.Peek();
                 }
+
+                context.Handler.EndRdf(true);
+            }
+            catch (RdfParsingTerminatedException)
+            {
+                context.Handler.EndRdf(true);
+                //Discard this - it justs means the Handler told us to stop
             }
             catch (RdfParseException)
             {
                 //We hit some Parsing error
+                context.Handler.EndRdf(false);
                 throw;
             }
         }
@@ -228,7 +256,7 @@ namespace VDS.RDF.Parsing
             this.TryParseLineTerminator(context);
 
             //Assert the Triple
-            context.Graph.Assert(new Triple(subj, pred, obj));
+            if (!context.Handler.HandleTriple(new Triple(subj, pred, obj))) ParserHelper.Stop();
         }
 
         private INode TryParseSubject(TokenisingParserContext context)
@@ -244,11 +272,11 @@ namespace VDS.RDF.Parsing
             switch (subjToken.TokenType)
             {
                 case Token.BLANKNODE:
-                    return context.Graph.CreateBlankNode();
+                    return context.Handler.CreateBlankNode();
                 case Token.BLANKNODEWITHID:
-                    return context.Graph.CreateBlankNode(subjToken.Value.Substring(2));
+                    return context.Handler.CreateBlankNode(subjToken.Value.Substring(2));
                 case Token.URI:
-                    return context.Graph.CreateUriNode(new Uri(subjToken.Value));
+                    return context.Handler.CreateUriNode(new Uri(subjToken.Value));
                 case Token.LITERAL:
                 case Token.LITERALWITHDT:
                 case Token.LITERALWITHLANG:
@@ -274,7 +302,7 @@ namespace VDS.RDF.Parsing
                 case Token.BLANKNODEWITHID:
                     throw Error("Predicate cannot be a Blank Node in NTriples", predToken);
                 case Token.URI:
-                    return context.Graph.CreateUriNode(new Uri(predToken.Value));
+                    return context.Handler.CreateUriNode(new Uri(predToken.Value));
                     //return this.ConvertToNode(g, predToken);
                 case Token.LITERAL:
                 case Token.LITERALWITHDT:
@@ -299,33 +327,33 @@ namespace VDS.RDF.Parsing
             switch (objToken.TokenType)
             {
                 case Token.BLANKNODE:
-                    return context.Graph.CreateBlankNode();
+                    return context.Handler.CreateBlankNode();
                 case Token.BLANKNODEWITHID:
-                    return context.Graph.CreateBlankNode(objToken.Value.Substring(2));
+                    return context.Handler.CreateBlankNode(objToken.Value.Substring(2));
                 case Token.URI:
-                    return context.Graph.CreateUriNode(new Uri(objToken.Value));
+                    return context.Handler.CreateUriNode(new Uri(objToken.Value));
                 case Token.LITERALWITHDT:
                     dt = ((LiteralWithDataTypeToken)objToken).DataType;
                     dt = dt.Substring(1,dt.Length-2);
-                    return context.Graph.CreateLiteralNode(objToken.Value, new Uri(dt));
+                    return context.Handler.CreateLiteralNode(objToken.Value, new Uri(dt));
                 case Token.LITERALWITHLANG:
-                    return context.Graph.CreateLiteralNode(objToken.Value, ((LiteralWithLanguageSpecifierToken)objToken).Language);
+                    return context.Handler.CreateLiteralNode(objToken.Value, ((LiteralWithLanguageSpecifierToken)objToken).Language);
                 case Token.LITERAL:
                     IToken next = context.Tokens.Peek();
                     //Is there a Language Specifier or Data Type?
                     if (next.TokenType == Token.LANGSPEC)
                     {
                         context.Tokens.Dequeue();
-                        return context.Graph.CreateLiteralNode(objToken.Value, next.Value);
+                        return context.Handler.CreateLiteralNode(objToken.Value, next.Value);
                     }
                     else if (next.TokenType == Token.URI)
                     {
                         context.Tokens.Dequeue();
-                        return context.Graph.CreateLiteralNode(objToken.Value, new Uri(Tools.ResolveUriOrQName(next,context.Graph.NamespaceMap,context.Graph.BaseUri)));
+                        return context.Handler.CreateLiteralNode(objToken.Value, new Uri(Tools.ResolveUriOrQName(next, context.Namespaces, context.BaseUri)));
                     }
                     else
                     {
-                        return context.Graph.CreateLiteralNode(objToken.Value);
+                        return context.Handler.CreateLiteralNode(objToken.Value);
                     }
                     
                 default:

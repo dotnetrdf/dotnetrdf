@@ -158,7 +158,7 @@ namespace VDS.RDF
         {
             if (!base.Contains(graphUri))
             {
-                Graph g = this._sqlreader.Load(graphUri);
+                IGraph g = this._sqlreader.Load(graphUri);
                 this.Add(g, false);
             }
         }

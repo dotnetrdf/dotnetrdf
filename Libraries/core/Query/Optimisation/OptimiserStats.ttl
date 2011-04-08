@@ -1,0 +1,26 @@
+﻿@base <http://www.dotnetrdf.org/optimiserStats#> .
+
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix opt: <http://www.dotnetrdf.org/optimiserStats#> .
+
+opt:count a rdf:Property ;
+		   rdfs:label "Count" ;
+		   rdfs:comment "Gives the estimated count of occurrences of a RDF term, specifying this for a term is equivalent to specifying opt:subjectCount, opt:predicateCount and opt:objectCount.  Weighting of Terms is proportional to the count i.e. the higher the count the less selective a term is considered to be" ;
+		   rdfs:range xsd:integer .
+		   
+opt:subjectCount a rdf:Property ;
+				   rdfs:label "Subject Count" ;
+				   rdfs:comment "Gives the estimated count of occurrences of a RDF term in the subject position." ;
+				   rdfs:range xsd:integer .
+				   
+opt:predicateCount a rdf:Property ;
+				     rdfs:label "Predicate Count" ;
+				     rdfs:comment "Gives the estimated count of occurrences of a RDF term in the predicate position." ;
+				     rdfs:range xsd:integer .
+				   
+opt:objectCount a rdf:Property ;
+				  rdfs:label "Object Count" ;
+				  rdfs:comment "Gives the estimated count of occurrences of a RDF term in the object position." ;
+				  rdfs:range xsd:integer .

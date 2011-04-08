@@ -128,13 +128,13 @@ namespace VDS.RDF
         /// <summary>
         /// Gets all the Blank Nodes in the Collection
         /// </summary>
-        public override IEnumerable<BlankNode> BlankNodes
+        public override IEnumerable<IBlankNode> BlankNodes
         {
             get
             {
-                IEnumerable<BlankNode> bs = from n in this
+                IEnumerable<IBlankNode> bs = from n in this
                                             where n.NodeType == NodeType.Blank
-                                            select (BlankNode)n;
+                                            select (IBlankNode)n;
 
                 return bs;
             }
@@ -143,13 +143,13 @@ namespace VDS.RDF
         /// <summary>
         /// Gets all the Literal Nodes in the Collection
         /// </summary>
-        public override IEnumerable<LiteralNode> LiteralNodes
+        public override IEnumerable<ILiteralNode> LiteralNodes
         {
             get
             {
-                IEnumerable<LiteralNode> ls = from n in this
+                IEnumerable<ILiteralNode> ls = from n in this
                                               where n.NodeType == NodeType.Literal
-                                              select (LiteralNode)n;
+                                              select (ILiteralNode)n;
 
                 return ls;
             }
@@ -158,13 +158,13 @@ namespace VDS.RDF
         /// <summary>
         /// Gets all the Uri Nodes in the Collection
         /// </summary>
-        public override IEnumerable<UriNode> UriNodes
+        public override IEnumerable<IUriNode> UriNodes
         {
             get
             {
-                IEnumerable<UriNode> us = from n in this
+                IEnumerable<IUriNode> us = from n in this
                                           where n.NodeType == NodeType.Uri
-                                          select (UriNode)n;
+                                          select (IUriNode)n;
                 return us;
             }
         }
@@ -172,13 +172,13 @@ namespace VDS.RDF
         /// <summary>
         /// Gets all the Graph Literal Nodes in the Collection
         /// </summary>
-        public override IEnumerable<GraphLiteralNode> GraphLiteralNodes
+        public override IEnumerable<IGraphLiteralNode> GraphLiteralNodes
         {
             get
             {
-                IEnumerable<GraphLiteralNode> gs = from n in this
+                IEnumerable<IGraphLiteralNode> gs = from n in this
                                                    where n.NodeType == NodeType.GraphLiteral
-                                                   select (GraphLiteralNode)n;
+                                                   select (IGraphLiteralNode)n;
 
                 return gs;
             }
@@ -266,11 +266,11 @@ namespace VDS.RDF
         /// <summary>
         /// Gets all the Blank Nodes in the Collection
         /// </summary>
-        public override IEnumerable<BlankNode> BlankNodes
+        public override IEnumerable<IBlankNode> BlankNodes
         {
             get
             {
-                List<BlankNode> nodes = new List<BlankNode>();
+                List<IBlankNode> nodes = new List<IBlankNode>();
                 try
                 {
                     this._lockManager.EnterReadLock();
@@ -373,11 +373,11 @@ namespace VDS.RDF
         /// <summary>
         /// Gets all the Graph Literal Nodes in the Collection
         /// </summary>
-        public override IEnumerable<GraphLiteralNode> GraphLiteralNodes
+        public override IEnumerable<IGraphLiteralNode> GraphLiteralNodes
         {
             get
             {
-                List<GraphLiteralNode> nodes = new List<GraphLiteralNode>();
+                List<IGraphLiteralNode> nodes = new List<IGraphLiteralNode>();
                 try
                 {
                     this._lockManager.EnterReadLock();
@@ -394,11 +394,11 @@ namespace VDS.RDF
         /// <summary>
         /// Gets all the Literal Nodes in the Collection
         /// </summary>
-        public override IEnumerable<LiteralNode> LiteralNodes
+        public override IEnumerable<ILiteralNode> LiteralNodes
         {
             get
             {
-                List<LiteralNode> nodes = new List<LiteralNode>();
+                List<ILiteralNode> nodes = new List<ILiteralNode>();
                 try
                 {
                     this._lockManager.EnterReadLock();
@@ -415,11 +415,11 @@ namespace VDS.RDF
         /// <summary>
         /// Gets all the Uri Nodes in the Collection
         /// </summary>
-        public override IEnumerable<UriNode> UriNodes
+        public override IEnumerable<IUriNode> UriNodes
         {
             get
             {
-                List<UriNode> nodes = new List<UriNode>();
+                List<IUriNode> nodes = new List<IUriNode>();
                 try
                 {
                     this._lockManager.EnterReadLock();

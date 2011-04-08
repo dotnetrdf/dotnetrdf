@@ -59,11 +59,7 @@ namespace VDS.RDF.Web.Configuration.Update
         /// Whether Update Form should be shown
         /// </summary>
         protected bool _showUpdateForm = true;
-        /// <summary>
-        /// Whether the Handler should stop processing commands if a command errors
-        /// </summary>
-        protected bool _haltOnError = true;
-        /// <summary>
+         /// <summary>
         /// Default Update Text for the Update Form
         /// </summary>
         protected String _defaultUpdate = String.Empty;
@@ -98,7 +94,6 @@ namespace VDS.RDF.Web.Configuration.Update
             this._processor = processor;
 
             //Handler Settings
-            this._haltOnError = ConfigurationLoader.GetConfigurationBoolean(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyHaltOnError), this._haltOnError);
             this._showUpdateForm = ConfigurationLoader.GetConfigurationBoolean(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyShowUpdateForm), this._showUpdateForm);
             String defUpdateFile = ConfigurationLoader.GetConfigurationString(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyDefaultUpdateFile));
             if (defUpdateFile != null)
@@ -153,17 +148,6 @@ namespace VDS.RDF.Web.Configuration.Update
         }
 
         /// <summary>
-        /// Gets whether to Halt on Errors
-        /// </summary>
-        public bool HaltOnError
-        {
-            get
-            {
-                return this._haltOnError;
-            }
-        }
-
-        /// <summary>
         /// Gets the Default Update for the Update Form
         /// </summary>
         public String DefaultUpdate
@@ -193,8 +177,8 @@ namespace VDS.RDF.Web.Configuration.Update
         public virtual void AddFeatureDescription(IGraph g, INode descripNode)
         {
             //Add Local Extension Function definitions
-            UriNode extensionFunction = g.CreateUriNode("sd:" + SparqlServiceDescriber.PropertyExtensionFunction);
-            UriNode extensionAggregate = g.CreateUriNode("sd:" + SparqlServiceDescriber.PropertyExtensionAggregate);
+            IUriNode extensionFunction = g.CreateUriNode("sd:" + SparqlServiceDescriber.PropertyExtensionFunction);
+            IUriNode extensionAggregate = g.CreateUriNode("sd:" + SparqlServiceDescriber.PropertyExtensionAggregate);
             foreach (ISparqlCustomExpressionFactory factory in this._expressionFactories)
             {
                 foreach (Uri u in factory.AvailableExtensionFunctions)

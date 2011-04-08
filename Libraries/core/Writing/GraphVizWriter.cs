@@ -77,7 +77,7 @@ namespace VDS.RDF.Writing
             //Write all the Triples to the Graph
             foreach (Triple t in g.Triples)
             {
-                output.WriteLine(this.TripleToDOT(t, context));
+                output.WriteLine(this.TripleToDot(t, context));
             }
 
             //End the Graph
@@ -92,7 +92,7 @@ namespace VDS.RDF.Writing
         /// <param name="t">Triple to convert</param>
         /// <param name="context">Writer Context</param>
         /// <returns></returns>
-        private String TripleToDOT(Triple t, BaseWriterContext context)
+        private String TripleToDot(Triple t, BaseWriterContext context)
         {
             StringBuilder output = new StringBuilder();
 
@@ -101,22 +101,22 @@ namespace VDS.RDF.Writing
             //Literals are shown in Boxes, Uri Nodes in ellipses (GraphViz's default shape)
             if (t.Subject.NodeType == NodeType.Literal)
             {
-                output.Append(this.NodeToDOT(t.Subject, context));
+                output.Append(this.NodeToDot(t.Subject, context));
                 output.Append(" [shape=box];\n");
             }
             if (t.Object.NodeType == NodeType.Literal)
             {
-                output.Append(this.NodeToDOT(t.Object, context));
+                output.Append(this.NodeToDot(t.Object, context));
                 output.Append(" [shape=box];\n");
             }
 
             //Output the actual lines that state the relationship between the Nodes
             //We use the Predicate as the Label on the relationship
-            output.Append(this.NodeToDOT(t.Subject, context));
+            output.Append(this.NodeToDot(t.Subject, context));
             output.Append(" -> ");
-            output.Append(this.NodeToDOT(t.Object, context));
+            output.Append(this.NodeToDot(t.Object, context));
             output.Append(" [label=");
-            output.Append(this.NodeToDOT(t.Predicate, context));
+            output.Append(this.NodeToDot(t.Predicate, context));
             output.Append("];");
 
             return output.ToString();
@@ -129,19 +129,19 @@ namespace VDS.RDF.Writing
         /// <param name="context">Writer Context</param>
         /// <returns></returns>
         /// <remarks>Currently Graphs containing Graph Literal Nodes cannot be converted</remarks>
-        private String NodeToDOT(INode n, BaseWriterContext context)
+        private String NodeToDot(INode n, BaseWriterContext context)
         {
             if (n.NodeType == NodeType.Uri)
             {
-                return this.URINodeToDOT((UriNode)n, context);
+                return this.UriNodeToDot((IUriNode)n, context);
             }
             else if (n.NodeType == NodeType.Literal)
             {
-                return this.LiteralNodeToDOT((LiteralNode)n);
+                return this.LiteralNodeToDot((ILiteralNode)n);
             }
             else if (n.NodeType == NodeType.Blank)
             {
-                return this.BlankNodeToDOT((BlankNode)n);
+                return this.BlankNodeToDot((IBlankNode)n);
             }
             else if (n.NodeType == NodeType.GraphLiteral)
             {
@@ -159,7 +159,7 @@ namespace VDS.RDF.Writing
         /// <param name="u">Uri Node to convert</param>
         /// <param name="context">Writer Context</param>
         /// <returns></returns>
-        private String URINodeToDOT(UriNode u, BaseWriterContext context)
+        private String UriNodeToDot(IUriNode u, BaseWriterContext context)
         {
             StringBuilder output = new StringBuilder();
             output.Append("\"");
@@ -187,7 +187,7 @@ namespace VDS.RDF.Writing
         /// </summary>
         /// <param name="b">Blank Node to Convert</param>
         /// <returns></returns>
-        private String BlankNodeToDOT(BlankNode b)
+        private String BlankNodeToDot(IBlankNode b)
         {
             //Generate a _: QName
             StringBuilder output = new StringBuilder();
@@ -203,7 +203,7 @@ namespace VDS.RDF.Writing
         /// </summary>
         /// <param name="l">Literal Node to convert</param>
         /// <returns></returns>
-        private String LiteralNodeToDOT(LiteralNode l)
+        private String LiteralNodeToDot(ILiteralNode l)
         {
             StringBuilder output = new StringBuilder();
             output.Append("\"");

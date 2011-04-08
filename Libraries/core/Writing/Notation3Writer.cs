@@ -148,7 +148,7 @@ namespace VDS.RDF.Writing
             try
             {
                 CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, output, this._compressionLevel, this._prettyprint, this._allowHiSpeed);
-                context.NodeFormatter = new Notation3Formatter();
+                context.NodeFormatter = new Notation3Formatter(g);
                 this.GenerateOutput(context);
             }
             finally
@@ -247,14 +247,21 @@ namespace VDS.RDF.Writing
                         }
 
                         //Start a new set of Triples
-                        temp = this.GenerateNodeOutput(context, t.Subject, TripleSegment.Subject);
+                        temp = this.GenerateNodeOutput(context, t.Subject, TripleSegment.Subject, 0);
                         context.Output.Write(temp);
                         context.Output.Write(" ");
-                        subjIndent = temp.Length + 1;
+                        if (temp.Contains('\n'))
+                        {
+                            subjIndent = temp.Split('\n').Last().Length + 1;
+                        }
+                        else
+                        {
+                            subjIndent = temp.Length + 1;
+                        }
                         lastSubj = t.Subject;
 
                         //Write the first Predicate
-                        temp = this.GenerateNodeOutput(context, t.Predicate, TripleSegment.Predicate);
+                        temp = this.GenerateNodeOutput(context, t.Predicate, TripleSegment.Predicate, subjIndent);
                         context.Output.Write(temp);
                         context.Output.Write(" ");
                         predIndent = temp.Length + 1;
@@ -268,7 +275,7 @@ namespace VDS.RDF.Writing
                         if (context.PrettyPrint) context.Output.Write(new String(' ', subjIndent));
 
                         //Write the next Predicate
-                        temp = this.GenerateNodeOutput(context, t.Predicate, TripleSegment.Predicate);
+                        temp = this.GenerateNodeOutput(context, t.Predicate, TripleSegment.Predicate, subjIndent);
                         context.Output.Write(temp);
                         context.Output.Write(" ");
                         predIndent = temp.Length + 1;
@@ -283,7 +290,7 @@ namespace VDS.RDF.Writing
                     }
 
                     //Write the Object
-                    context.Output.Write(this.GenerateNodeOutput(context, t.Object, TripleSegment.Object));
+                    context.Output.Write(this.GenerateNodeOutput(context, t.Object, TripleSegment.Object, subjIndent + predIndent));
                 }
 
                 //Terminate Triples
@@ -304,11 +311,11 @@ namespace VDS.RDF.Writing
         private String GenerateTripleOutput(CompressingTurtleWriterContext context, Triple t)
         {
             StringBuilder temp = new StringBuilder();
-            temp.Append(this.GenerateNodeOutput(context, t.Subject, TripleSegment.Subject));
+            temp.Append(this.GenerateNodeOutput(context, t.Subject, TripleSegment.Subject, 0));
             temp.Append(' ');
-            temp.Append(this.GenerateNodeOutput(context, t.Predicate, TripleSegment.Predicate));
+            temp.Append(this.GenerateNodeOutput(context, t.Predicate, TripleSegment.Predicate, 0));
             temp.Append(' ');
-            temp.Append(this.GenerateNodeOutput(context, t.Object, TripleSegment.Object));
+            temp.Append(this.GenerateNodeOutput(context, t.Object, TripleSegment.Object, 0));
             temp.Append('.');
 
             return temp.ToString();
@@ -321,7 +328,7 @@ namespace VDS.RDF.Writing
         /// <param name="n">Node to generate output for</param>
         /// <param name="segment">Segment of the Triple being output</param>
         /// <returns></returns>
-        private String GenerateNodeOutput(CompressingTurtleWriterContext context, INode n, TripleSegment segment)
+        private String GenerateNodeOutput(CompressingTurtleWriterContext context, INode n, TripleSegment segment, int indent)
         {
             StringBuilder output = new StringBuilder();
 
@@ -330,7 +337,7 @@ namespace VDS.RDF.Writing
                 case NodeType.Blank:
                     if (context.Collections.ContainsKey(n))
                     {
-                        output.Append(this.GenerateCollectionOutput(context, context.Collections[n]));
+                        output.Append(this.GenerateCollectionOutput(context, context.Collections[n], indent));
                     }
                     else
                     {
@@ -342,7 +349,7 @@ namespace VDS.RDF.Writing
                     if (segment == TripleSegment.Predicate) throw new RdfOutputException(WriterErrorMessages.GraphLiteralPredicatesUnserializable("Notation 3"));
 
                     output.Append("{");
-                    GraphLiteralNode glit = (GraphLiteralNode)n;
+                    IGraphLiteralNode glit = (IGraphLiteralNode)n;
 
                     StringBuilder temp = new StringBuilder();
                     CompressingTurtleWriterContext subcontext = new CompressingTurtleWriterContext(glit.SubGraph, new System.IO.StringWriter(temp));
@@ -358,11 +365,11 @@ namespace VDS.RDF.Writing
                             if (contextWritten) output.Append(temp.ToString());
                         }
 
-                        output.Append(this.GenerateNodeOutput(subcontext, t.Subject, TripleSegment.Subject));
+                        output.Append(this.GenerateNodeOutput(subcontext, t.Subject, TripleSegment.Subject, 0));
                         output.Append(" ");
-                        output.Append(this.GenerateNodeOutput(subcontext, t.Predicate, TripleSegment.Predicate));
+                        output.Append(this.GenerateNodeOutput(subcontext, t.Predicate, TripleSegment.Predicate, 0));
                         output.Append(" ");
-                        output.Append(this.GenerateNodeOutput(subcontext, t.Object, TripleSegment.Object));
+                        output.Append(this.GenerateNodeOutput(subcontext, t.Object, TripleSegment.Object, 0));
                         output.Append(". ");
                     }
 
@@ -392,18 +399,22 @@ namespace VDS.RDF.Writing
         /// <param name="context">Writer Context</param>
         /// <param name="c">Collection to convert</param>
         /// <returns></returns>
-        private String GenerateCollectionOutput(CompressingTurtleWriterContext context, OutputRDFCollection c)
+        private String GenerateCollectionOutput(CompressingTurtleWriterContext context, OutputRdfCollection c, int indent)
         {
             StringBuilder output = new StringBuilder();
+            bool first = true;
 
             if (!c.IsExplicit)
             {
                 output.Append('(');
 
-                while (c.Count > 0)
+                while (c.Triples.Count > 0)
                 {
-                    output.Append(this.GenerateNodeOutput(context, c.Pop(), TripleSegment.Object));
-                    if (c.Count > 0)
+                    if (context.PrettyPrint && !first) output.Append(new String(' ', indent));
+                    first = false;
+                    output.Append(this.GenerateNodeOutput(context, c.Triples.First().Object, TripleSegment.Object, indent));
+                    c.Triples.RemoveAt(0);
+                    if (c.Triples.Count > 0)
                     {
                         output.Append(' ');
                     }
@@ -413,7 +424,7 @@ namespace VDS.RDF.Writing
             }
             else
             {
-                if (c.Count == 0)
+                if (c.Triples.Count == 0)
                 {
                     //Empty Collection
                     //Can represent as a single Blank Node []
@@ -423,15 +434,29 @@ namespace VDS.RDF.Writing
                 {
                     output.Append('[');
 
-                    while (c.Count > 0)
+                    while (c.Triples.Count > 0)
                     {
-                        output.Append(this.GenerateNodeOutput(context, c.Pop(), TripleSegment.Predicate));
-                        output.Append(" ");
-                        output.Append(this.GenerateNodeOutput(context, c.Pop(), TripleSegment.Object));
+                        if (context.PrettyPrint && !first) output.Append(new String(' ', indent));
+                        first = false;
+                        String temp = this.GenerateNodeOutput(context, c.Triples.First().Predicate, TripleSegment.Predicate, indent);
+                        output.Append(temp);
+                        output.Append(' ');
+                        int addIndent;
+                        if (temp.Contains('\n'))
+                        {
+                            addIndent = temp.Split('\n').Last().Length;
+                        }
+                        else
+                        {
+                            addIndent = temp.Length;
+                        }
+                        output.Append(this.GenerateNodeOutput(context, c.Triples.First().Object, TripleSegment.Object, indent + 2 + addIndent));
+                        c.Triples.RemoveAt(0);
 
-                        if (c.Count > 0)
+                        if (c.Triples.Count > 0)
                         {
                             output.AppendLine(" ; ");
+                            output.Append(' ');
                         }
                     }
 

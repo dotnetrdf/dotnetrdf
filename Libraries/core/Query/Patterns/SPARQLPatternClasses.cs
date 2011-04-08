@@ -175,16 +175,16 @@ namespace VDS.RDF.Query.Patterns
                         int hash = value.GraphUri.GetEnhancedHashCode();
                         if (hash >= 0)
                         {
-                            return new BlankNode(null, ((BlankNode)value).InternalID + "-" + value.GraphUri.GetEnhancedHashCode());
+                            return new BlankNode(null, ((IBlankNode)value).InternalID + "-" + value.GraphUri.GetEnhancedHashCode());
                         }
                         else
                         {
-                            return new BlankNode(null, ((BlankNode)value).InternalID + hash);
+                            return new BlankNode(null, ((IBlankNode)value).InternalID + hash);
                         }
                     }
                     else
                     {
-                        return new BlankNode(context.Graph, ((BlankNode)value).InternalID);
+                        return new BlankNode(context.Graph, ((IBlankNode)value).InternalID);
                     }
 
                 default:
@@ -303,7 +303,7 @@ namespace VDS.RDF.Query.Patterns
         {
             if (obj.NodeType == NodeType.Blank)
             {
-                return ((BlankNode)obj).InternalID.Equals(this._id);
+                return ((IBlankNode)obj).InternalID.Equals(this._id);
             }
             else
             {

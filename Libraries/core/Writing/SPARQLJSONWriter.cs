@@ -146,7 +146,7 @@ namespace VDS.RDF.Writing
                                 //Blank Node
                                 writer.WriteValue("bnode");
                                 writer.WritePropertyName("value");
-                                String id = ((BlankNode)value).InternalID;
+                                String id = ((IBlankNode)value).InternalID;
                                 id = id.Substring(id.IndexOf(':') + 1);
                                 writer.WriteValue(id);
                                 break;
@@ -157,7 +157,7 @@ namespace VDS.RDF.Writing
 
                             case NodeType.Literal:
                                 //Literal
-                                LiteralNode lit = (LiteralNode)value;
+                                ILiteralNode lit = (ILiteralNode)value;
                                 if (lit.DataType != null)
                                 {
                                     writer.WriteValue("typed-literal");

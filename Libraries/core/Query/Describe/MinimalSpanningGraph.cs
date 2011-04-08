@@ -52,7 +52,7 @@ namespace VDS.RDF.Query.Describe
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public override Graph Describe(SparqlEvaluationContext context)
+        public override IGraph Describe(SparqlEvaluationContext context)
         {
             //Get a new empty Graph and import the Base Uri and Namespace Map of the Query
             Graph g = new Graph();

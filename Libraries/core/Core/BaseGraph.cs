@@ -255,7 +255,7 @@ namespace VDS.RDF
         /// Creates a New Blank Node with an auto-generated Blank Node ID
         /// </summary>
         /// <returns></returns>
-        public virtual BlankNode CreateBlankNode()
+        public virtual IBlankNode CreateBlankNode()
         {
             return new BlankNode(this);
         }
@@ -265,7 +265,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="nodeId">Node ID to use</param>
         /// <returns></returns>
-        public virtual BlankNode CreateBlankNode(String nodeId)
+        public virtual IBlankNode CreateBlankNode(String nodeId)
         {
             //try
             //{
@@ -284,7 +284,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="literal">String value of the Literal</param>
         /// <returns></returns>
-        public virtual LiteralNode CreateLiteralNode(String literal)
+        public virtual ILiteralNode CreateLiteralNode(String literal)
         {
             return new LiteralNode(this, literal);
         }
@@ -295,7 +295,7 @@ namespace VDS.RDF
         /// <param name="literal">String value of the Literal</param>
         /// <param name="langspec">Language Specifier of the Literal</param>
         /// <returns></returns>
-        public virtual LiteralNode CreateLiteralNode(String literal, String langspec)
+        public virtual ILiteralNode CreateLiteralNode(String literal, String langspec)
         {
             return new LiteralNode(this, literal, langspec);
         }
@@ -306,7 +306,7 @@ namespace VDS.RDF
         /// <param name="literal">String value of the Literal</param>
         /// <param name="datatype">URI of the Data Type</param>
         /// <returns></returns>
-        public virtual LiteralNode CreateLiteralNode(String literal, Uri datatype)
+        public virtual ILiteralNode CreateLiteralNode(String literal, Uri datatype)
         {
             return new LiteralNode(this, literal, datatype);
         }
@@ -315,10 +315,9 @@ namespace VDS.RDF
         /// Creates a new URI Node that refers to the Base Uri of the Graph
         /// </summary>
         /// <returns></returns>
-        public virtual UriNode CreateUriNode()
+        public virtual IUriNode CreateUriNode()
         {
-            String baseUri = (this._baseuri == null) ? String.Empty : this._baseuri.ToString();
-            return new UriNode(this, new Uri(Tools.ResolveUri(String.Empty, baseUri)));
+            return new UriNode(this, new Uri(Tools.ResolveUri(String.Empty, this._baseuri.ToSafeString())));
         }
 
         /// <summary>
@@ -326,7 +325,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="uri">URI for the Node</param>
         /// <returns></returns>
-        public virtual UriNode CreateUriNode(Uri uri)
+        public virtual IUriNode CreateUriNode(Uri uri)
         {
             return new UriNode(this, uri);
         }
@@ -337,7 +336,7 @@ namespace VDS.RDF
         /// <param name="qname">QName for the Node</param>
         /// <returns></returns>
         /// <remarks>Internally the Graph will resolve the QName to a full URI, throws an RDF Exception when this is not possible</remarks>
-        public virtual UriNode CreateUriNode(String qname)
+        public virtual IUriNode CreateUriNode(String qname)
         {
             return new UriNode(this, qname);
         }
@@ -347,7 +346,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="varname">Variable Name</param>
         /// <returns></returns>
-        public virtual VariableNode CreateVariableNode(String varname)
+        public virtual IVariableNode CreateVariableNode(String varname)
         {
             return new VariableNode(this, varname);
         }
@@ -356,7 +355,7 @@ namespace VDS.RDF
         /// Creates a new Graph Literal Node with its value being an Empty Subgraph
         /// </summary>
         /// <returns></returns>
-        public virtual GraphLiteralNode CreateGraphLiteralNode()
+        public virtual IGraphLiteralNode CreateGraphLiteralNode()
         {
             return new GraphLiteralNode(this);
         }
@@ -366,7 +365,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="subgraph">Subgraph this Node represents</param>
         /// <returns></returns>
-        public virtual GraphLiteralNode CreateGraphLiteralNode(IGraph subgraph)
+        public virtual IGraphLiteralNode CreateGraphLiteralNode(IGraph subgraph)
         {
             return new GraphLiteralNode(this, subgraph);
         }
@@ -380,7 +379,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="nodeId">The Identifier of the Blank Node to select</param>
         /// <returns>Either the Blank Node or null if no Node with the given Identifier exists</returns>
-        public abstract BlankNode GetBlankNode(string nodeId);
+        public abstract IBlankNode GetBlankNode(string nodeId);
 
         /// <summary>
         /// Returns the LiteralNode with the given Value in the given Language if it exists
@@ -388,7 +387,7 @@ namespace VDS.RDF
         /// <param name="literal">The literal value of the Node to select</param>
         /// <param name="langspec">The Language Specifier for the Node to select</param>
         /// <returns>Either the LiteralNode Or null if no Node with the given Value and Language Specifier exists</returns>
-        public abstract LiteralNode GetLiteralNode(string literal, string langspec);
+        public abstract ILiteralNode GetLiteralNode(string literal, string langspec);
 
         /// <summary>
         /// Returns the LiteralNode with the given Value if it exists
@@ -396,7 +395,7 @@ namespace VDS.RDF
         /// <param name="literal">The literal value of the Node to select</param>
         /// <returns>Either the LiteralNode Or null if no Node with the given Value exists</returns>
         /// <remarks>The LiteralNode in the Graph must have no Language or DataType set</remarks>
-        public abstract LiteralNode GetLiteralNode(string literal);
+        public abstract ILiteralNode GetLiteralNode(string literal);
 
         /// <summary>
         /// Returns the LiteralNode with the given Value and given Data Type if it exists
@@ -404,7 +403,7 @@ namespace VDS.RDF
         /// <param name="literal">The literal value of the Node to select</param>
         /// <param name="datatype">The Uri for the Data Type of the Literal to select</param>
         /// <returns>Either the LiteralNode Or null if no Node with the given Value and Data Type exists</returns>
-        public abstract LiteralNode GetLiteralNode(string literal, Uri datatype);
+        public abstract ILiteralNode GetLiteralNode(string literal, Uri datatype);
 
         /// <summary>
         /// Gets all the Nodes according to some arbitrary criteria as embodied in a Selector
@@ -418,14 +417,14 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="qname">The QName of the Node to select</param>
         /// <returns></returns>
-        public abstract UriNode GetUriNode(string qname);
+        public abstract IUriNode GetUriNode(string qname);
 
         /// <summary>
         /// Returns the UriNode with the given Uri if it exists
         /// </summary>
         /// <param name="uri">The Uri of the Node to select</param>
         /// <returns>Either the UriNode Or null if no Node with the given Uri exists</returns>
-        public abstract UriNode GetUriNode(Uri uri);
+        public abstract IUriNode GetUriNode(Uri uri);
 
         #endregion
 
@@ -621,7 +620,7 @@ namespace VDS.RDF
             else
             {   
                 //Prepare a mapping of Blank Nodes to Blank Nodes
-                Dictionary<INode, BlankNode> mapping = new Dictionary<INode, BlankNode>();
+                Dictionary<INode, IBlankNode> mapping = new Dictionary<INode, IBlankNode>();
 
                 foreach (Triple t in g.Triples)
                 {
@@ -630,7 +629,7 @@ namespace VDS.RDF
                     {
                         if (!mapping.ContainsKey(t.Subject))
                         {
-                            BlankNode temp = this.CreateBlankNode();
+                            IBlankNode temp = this.CreateBlankNode();
                             if (keepOriginalGraphUri) temp.GraphUri = t.Subject.GraphUri;
                             mapping.Add(t.Subject, temp);
                         }
@@ -645,7 +644,7 @@ namespace VDS.RDF
                     {
                         if (!mapping.ContainsKey(t.Predicate))
                         {
-                            BlankNode temp = this.CreateBlankNode();
+                            IBlankNode temp = this.CreateBlankNode();
                             if (keepOriginalGraphUri) temp.GraphUri = t.Predicate.GraphUri;
                             mapping.Add(t.Predicate, temp);
                         }
@@ -660,7 +659,7 @@ namespace VDS.RDF
                     {
                         if (!mapping.ContainsKey(t.Object))
                         {
-                            BlankNode temp = this.CreateBlankNode();
+                            IBlankNode temp = this.CreateBlankNode();
                             if (keepOriginalGraphUri) temp.GraphUri = t.Object.GraphUri;
                             mapping.Add(t.Object, temp);
                         }
@@ -871,7 +870,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Creates a new Blank Node ID and returns it
+        /// Creates a new unused Blank Node ID and returns it
         /// </summary>
         /// <returns></returns>
         public virtual String GetNextBlankNodeID()

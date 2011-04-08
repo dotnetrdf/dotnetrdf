@@ -97,7 +97,7 @@ namespace VDS.RDF.Configuration
             {
                 if (source.NodeType == NodeType.Literal)
                 {
-                    EmbeddedResourceLoader.Load(output, ((LiteralNode)source).Value);
+                    EmbeddedResourceLoader.Load(output, ((ILiteralNode)source).Value);
                 }
                 else
                 {
@@ -111,7 +111,7 @@ namespace VDS.RDF.Configuration
             {
                 if (source.NodeType == NodeType.Literal)
                 {
-                    FileLoader.Load(output, ConfigurationLoader.ResolvePath(((LiteralNode)source).Value));
+                    FileLoader.Load(output, ConfigurationLoader.ResolvePath(((ILiteralNode)source).Value));
                 }
                 else
                 {
@@ -125,7 +125,7 @@ namespace VDS.RDF.Configuration
             {
                 if (source.NodeType == NodeType.Literal)
                 {
-                    StringParser.Parse(output, ((LiteralNode)source).Value);
+                    StringParser.Parse(output, ((ILiteralNode)source).Value);
                 }
                 else
                 {
@@ -197,11 +197,11 @@ namespace VDS.RDF.Configuration
                     {
                         if (source.NodeType == NodeType.Uri)
                         {
-                            output.Merge(((ITripleStore)store).Graph(((UriNode)source).Uri));
+                            output.Merge(((ITripleStore)store).Graph(((IUriNode)source).Uri));
                         }
                         else if (source.NodeType == NodeType.Literal)
                         {
-                            output.Merge(((ITripleStore)store).Graph(new Uri(((LiteralNode)source).Value)));
+                            output.Merge(((ITripleStore)store).Graph(new Uri(((ILiteralNode)source).Value)));
                         }
                         else
                         {
@@ -223,11 +223,11 @@ namespace VDS.RDF.Configuration
             {
                 if (source.NodeType == NodeType.Uri)
                 {
-                    UriLoader.Load(output, ((UriNode)source).Uri);
+                    UriLoader.Load(output, ((IUriNode)source).Uri);
                 }
                 else if (source.NodeType == NodeType.Literal)
                 {
-                    UriLoader.Load(output, new Uri(((LiteralNode)source).Value));
+                    UriLoader.Load(output, new Uri(((ILiteralNode)source).Value));
                 }
                 else
                 {
@@ -241,11 +241,11 @@ namespace VDS.RDF.Configuration
             {
                 if (baseUri.NodeType == NodeType.Uri)
                 {
-                    output.BaseUri = ((UriNode)baseUri).Uri;
+                    output.BaseUri = ((IUriNode)baseUri).Uri;
                 }
                 else if (baseUri.NodeType == NodeType.Literal)
                 {
-                    output.BaseUri = new Uri(((LiteralNode)baseUri).Value);
+                    output.BaseUri = new Uri(((ILiteralNode)baseUri).Value);
                 }
                 else
                 {
@@ -427,7 +427,7 @@ namespace VDS.RDF.Configuration
                 {
                     if (source.NodeType == NodeType.Literal)
                     {
-                        EmbeddedResourceLoader.Load(store, ((LiteralNode)source).Value);
+                        EmbeddedResourceLoader.Load(store, ((ILiteralNode)source).Value);
                     }
                     else
                     {
@@ -441,7 +441,7 @@ namespace VDS.RDF.Configuration
                 {
                     if (source.NodeType == NodeType.Literal)
                     {
-                        FileLoader.Load(store, ConfigurationLoader.ResolvePath(((LiteralNode)source).Value));
+                        FileLoader.Load(store, ConfigurationLoader.ResolvePath(((ILiteralNode)source).Value));
                     }
                     else
                     {

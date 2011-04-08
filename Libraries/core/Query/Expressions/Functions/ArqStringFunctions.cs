@@ -77,12 +77,12 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// <returns></returns>
         public INode Value(SparqlEvaluationContext context, int bindingID)
         {
-            LiteralNode input = this.CheckArgument(this._expr, context, bindingID);
-            LiteralNode start = this.CheckArgument(this._start, context, bindingID, XPathFunctionFactory.AcceptNumericArguments);
+            ILiteralNode input = this.CheckArgument(this._expr, context, bindingID);
+            ILiteralNode start = this.CheckArgument(this._start, context, bindingID, XPathFunctionFactory.AcceptNumericArguments);
 
             if (this._end != null)
             {
-                LiteralNode end = this.CheckArgument(this._end, context, bindingID, XPathFunctionFactory.AcceptNumericArguments);
+                ILiteralNode end = this.CheckArgument(this._end, context, bindingID, XPathFunctionFactory.AcceptNumericArguments);
 
                 if (input.Value.Equals(String.Empty)) return new LiteralNode(null, String.Empty, new Uri(XmlSpecsHelper.XmlSchemaDataTypeString));
 
@@ -139,19 +139,19 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
-        private LiteralNode CheckArgument(ISparqlExpression expr, SparqlEvaluationContext context, int bindingID)
+        private ILiteralNode CheckArgument(ISparqlExpression expr, SparqlEvaluationContext context, int bindingID)
         {
             return this.CheckArgument(expr, context, bindingID, XPathFunctionFactory.AcceptStringArguments);
         }
 
-        private LiteralNode CheckArgument(ISparqlExpression expr, SparqlEvaluationContext context, int bindingID, Func<Uri, bool> argumentTypeValidator)
+        private ILiteralNode CheckArgument(ISparqlExpression expr, SparqlEvaluationContext context, int bindingID, Func<Uri, bool> argumentTypeValidator)
         {
             INode temp = expr.Value(context, bindingID);
             if (temp != null)
             {
                 if (temp.NodeType == NodeType.Literal)
                 {
-                    LiteralNode lit = (LiteralNode)temp;
+                    ILiteralNode lit = (ILiteralNode)temp;
                     if (lit.DataType != null)
                     {
                         if (argumentTypeValidator(lit.DataType))
@@ -293,7 +293,7 @@ namespace VDS.RDF.Query.Expressions.Functions
                 INode temp = sepExpr.Value(null, 0);
                 if (temp.NodeType == NodeType.Literal)
                 {
-                    this._separator = ((LiteralNode)temp).Value;
+                    this._separator = ((ILiteralNode)temp).Value;
                     this._fixedSeparator = true;
                 }
                 else
@@ -324,7 +324,7 @@ namespace VDS.RDF.Query.Expressions.Functions
                 switch (temp.NodeType)
                 {
                     case NodeType.Literal:
-                        output.Append(((LiteralNode)temp).Value);
+                        output.Append(((ILiteralNode)temp).Value);
                         break;
                     default:
                         throw new RdfQueryException("Cannot evaluate the XPath concat() function when an argument is not a Literal Node");
@@ -341,7 +341,7 @@ namespace VDS.RDF.Query.Expressions.Functions
                         if (sep == null) throw new RdfQueryException("Cannot evaluate the ARQ strjoin() function when the separator expression evaluates to a Null");
                         if (sep.NodeType == NodeType.Literal)
                         {
-                            output.Append(((LiteralNode)sep).Value);
+                            output.Append(((ILiteralNode)sep).Value);
                         }
                         else
                         {

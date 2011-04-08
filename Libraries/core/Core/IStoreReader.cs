@@ -55,6 +55,8 @@ namespace VDS.RDF
         /// <exception cref="RdfStorageException">May be thrown if the Parameters are not valid for this Reader</exception>
         void Load(ITripleStore store, IStoreParams parameters);
 
+        void Load(IRdfHandler handler, IStoreParams parameters);
+
         /// <summary>
         /// Event which Readers can raise when they notice syntax that is ambigious/deprecated etc which can still be parsed
         /// </summary>

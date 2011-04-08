@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Parsing.Contexts;
+using VDS.RDF.Parsing.Events;
 using VDS.RDF.Parsing.Tokens;
 
 namespace VDS.RDF.Parsing
@@ -18,9 +19,122 @@ namespace VDS.RDF.Parsing
         /// <param name="context">Parser Context</param>
         /// <param name="t">Token to resolve</param>
         /// <returns></returns>
-        public static INode TryResolveUri(TokenisingParserContext context, IToken t)
+        public static INode TryResolveUri(IParserContext context, IToken t)
         {
-            return ParserHelper.TryResolveUri(context.Graph, t);
+            switch (t.TokenType)
+            {
+                case Token.QNAME:
+                    try
+                    {
+                        return context.Handler.CreateUriNode(new Uri(Tools.ResolveQName(t.Value, context.Namespaces, context.BaseUri)));
+                    }
+                    catch (UriFormatException formatEx)
+                    {
+                        throw new RdfParseException("Unable to resolve the QName '" + t.Value + "' due to the following error:\n" + formatEx.Message, t, formatEx);
+                    }
+                    catch (RdfException rdfEx)
+                    {
+                        throw new RdfParseException("Unable to resolve the QName '" + t.Value + "' due to the following error:\n" + rdfEx.Message, t, rdfEx);
+                    }
+
+                case Token.URI:
+                    try
+                    {
+                        String uri = Tools.ResolveUri(t.Value, context.BaseUri.ToSafeString());
+                        return context.Handler.CreateUriNode(new Uri(uri));
+                    }
+                    catch (UriFormatException formatEx)
+                    {
+                        throw new RdfParseException("Unable to resolve the URI '" + t.Value + "' due to the following error:\n" + formatEx.Message, t, formatEx);
+                    }
+                    catch (RdfException rdfEx)
+                    {
+                        throw new RdfParseException("Unable to resolve the URI '" + t.Value + "' due to the following error:\n" + rdfEx.Message, t, rdfEx);
+                    }
+
+                default:
+                    throw ParserHelper.Error("Unexpected Token '" + t.GetType().ToString() + "' encountered, expected a URI/QName Token to resolve into a URI", t);
+            }
+        }
+
+        /// <summary>
+        /// Attempts to resolve a QName or URI Token into a URI Node and produces appropriate error messages if this fails
+        /// </summary>
+        /// <param name="context">Parser Context</param>
+        /// <param name="t">Token to resolve</param>
+        /// <returns></returns>
+        public static INode TryResolveUri(IStoreParserContext context, IToken t)
+        {
+            switch (t.TokenType)
+            {
+                case Token.QNAME:
+                    try
+                    {
+                        return context.Handler.CreateUriNode(new Uri(Tools.ResolveQName(t.Value, context.Namespaces, context.BaseUri)));
+                    }
+                    catch (UriFormatException formatEx)
+                    {
+                        throw new RdfParseException("Unable to resolve the QName '" + t.Value + "' due to the following error:\n" + formatEx.Message, t, formatEx);
+                    }
+                    catch (RdfException rdfEx)
+                    {
+                        throw new RdfParseException("Unable to resolve the QName '" + t.Value + "' due to the following error:\n" + rdfEx.Message, t, rdfEx);
+                    }
+
+                case Token.URI:
+                    try
+                    {
+                        String uri = Tools.ResolveUri(t.Value, context.BaseUri.ToSafeString());
+                        return context.Handler.CreateUriNode(new Uri(uri));
+                    }
+                    catch (UriFormatException formatEx)
+                    {
+                        throw new RdfParseException("Unable to resolve the URI '" + t.Value + "' due to the following error:\n" + formatEx.Message, t, formatEx);
+                    }
+                    catch (RdfException rdfEx)
+                    {
+                        throw new RdfParseException("Unable to resolve the URI '" + t.Value + "' due to the following error:\n" + rdfEx.Message, t, rdfEx);
+                    }
+
+                default:
+                    throw ParserHelper.Error("Unexpected Token '" + t.GetType().ToString() + "' encountered, expected a URI/QName Token to resolve into a URI", t);
+            }
+        }
+
+        /// <summary>
+        /// Attempts to resolve a QName or URI Token into a URI Node and produces appropriate error messages if this fails
+        /// </summary>
+        /// <param name="handler">RDF Handler</param>
+        /// <param name="t">Token to resolve</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// It is <strong>not</strong> recommended to use this overload since an <see cref="IRdfHandler">IRdfHandler</see> cannot resolve QNames
+        /// </remarks>
+        internal static INode TryResolveUri(IRdfHandler handler, IToken t)
+        {
+            switch (t.TokenType)
+            {
+                case Token.QNAME:
+                    throw new RdfException("Unable to resolve the QName since an RDF Handler does not have a Namespace Map that can be used to resolve QNames");
+
+                case Token.URI:
+                    try
+                    {
+                        String uri = Tools.ResolveUri(t.Value, String.Empty);
+                        return handler.CreateUriNode(new Uri(uri));
+                    }
+                    catch (UriFormatException formatEx)
+                    {
+                        throw new RdfParseException("Unable to resolve the URI '" + t.Value + "' due to the following error:\n" + formatEx.Message, t, formatEx);
+                    }
+                    catch (RdfException rdfEx)
+                    {
+                        throw new RdfParseException("Unable to resolve the URI '" + t.Value + "' due to the following error:\n" + rdfEx.Message, t, rdfEx);
+                    }
+
+                default:
+                    throw ParserHelper.Error("Unexpected Token '" + t.GetType().ToString() + "' encountered, expected a URI/QName Token to resolve into a URI", t);
+            }
         }
 
         /// <summary>
@@ -36,14 +150,7 @@ namespace VDS.RDF.Parsing
                 case Token.QNAME:
                     try
                     {
-                        //if (Options.UriNormalization)
-                        //{
-                            return g.CreateUriNode(t.Value);
-                        //}
-                        //else
-                        //{
-                        //    return new NonNormalizedUriNode(g, Tools.ResolveQName(t.Value, g.NamespaceMap, g.BaseUri));
-                        //}
+                        return g.CreateUriNode(t.Value);
                     }
                     catch (UriFormatException formatEx)
                     {
@@ -58,15 +165,8 @@ namespace VDS.RDF.Parsing
                     try
                     {
                         String uri = Tools.ResolveUri(t.Value, g.BaseUri.ToSafeString());
-                        //if (Options.UriNormalization)
-                        //{
-                            return g.CreateUriNode(new Uri(uri));
-                        //}
-                        //else
-                        //{
-                        //    return new NonNormalizedUriNode(g, uri);
-                        //}
-                    }
+                        return g.CreateUriNode(new Uri(uri));
+                     }
                     catch (UriFormatException formatEx)
                     {
                         throw new RdfParseException("Unable to resolve the URI '" + t.Value + "' due to the following error:\n" + formatEx.Message, t, formatEx);
@@ -104,6 +204,64 @@ namespace VDS.RDF.Parsing
             output.Append(msg);
 
             return new RdfParseException(output.ToString(), t);
+        }
+
+        /// <summary>
+        /// Helper function which generates standardised Error Messages
+        /// </summary>
+        /// <param name="message">Error Message</param>
+        /// <param name="evt">Event causing the Error</param>
+        /// <returns></returns>
+        public static RdfParseException Error(String message, IRdfXmlEvent evt)
+        {
+            return Error(message, String.Empty, evt);
+        }
+
+        /// <summary>
+        /// Helper function which generates standardised Error Messages
+        /// </summary>
+        /// <param name="message">Error Message</param>
+        /// <param name="production">The Production where the Error occurred</param>
+        /// <param name="evt">Event causing the Error</param>
+        /// <returns></returns>
+        public static RdfParseException Error(String message, String production, IRdfXmlEvent evt)
+        {
+            StringBuilder output = new StringBuilder();
+            if (evt.Position != null)
+            {
+                output.Append('[');
+                output.Append("Line ");
+                output.Append(evt.Position.StartLine);
+                output.Append(" Column ");
+                output.Append(evt.Position.StartPosition);
+                output.Append("] ");
+            }
+            output.AppendLine(message);
+            if (!production.Equals(String.Empty)) output.AppendLine("Occurred in Grammar Production '" + production + "'");
+            if (!evt.SourceXml.Equals(String.Empty))
+            {
+                output.AppendLine("[Source XML]");
+                output.AppendLine(evt.SourceXml);
+            }
+
+            if (evt.Position != null)
+            {
+                return new RdfParseException(output.ToString(), evt.Position);
+            }
+            else
+            {
+                return new RdfParseException(output.ToString());
+            }
+        }
+
+
+        /// <summary>
+        /// Throws a <see cref="RdfParsingTerminatedException">RdfParsingTerminatedException</see> which is used to tell the parser that it should stop parsing.
+        /// </summary>
+        /// <returns></returns>
+        public static RdfParsingTerminatedException Stop()
+        {
+            throw new RdfParsingTerminatedException();
         }
     }
 }

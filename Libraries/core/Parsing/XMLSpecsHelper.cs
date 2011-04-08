@@ -636,7 +636,7 @@ namespace VDS.RDF.Parsing
         /// <returns></returns>
         /// <remarks>
         /// <para>
-        /// Only <see cref="LiteralNode">LiteralNode</see>'s can have a Data Type
+        /// Only <see cref="ILiteralNode">ILiteralNode</see>'s can have a Data Type
         /// </para>
         /// <para>
         /// The function only returns the Data Type Uri (as a String) if the Data Type of the Literal is one of the supported Data Types
@@ -653,7 +653,7 @@ namespace VDS.RDF.Parsing
                 case NodeType.Uri:
                     throw new RdfException("Data Type cannot be determined for non-Literal Nodes");
                 case NodeType.Literal:
-                    LiteralNode l = (LiteralNode)n;
+                    ILiteralNode l = (ILiteralNode)n;
                     if (l.DataType == null)
                     {
                         if (!l.Language.Equals(String.Empty))

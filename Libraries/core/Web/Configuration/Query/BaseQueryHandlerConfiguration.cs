@@ -175,7 +175,7 @@ namespace VDS.RDF.Web.Configuration.Query
             {
                 if (describeNode.NodeType == NodeType.Literal)
                 {
-                    String algoClass = ((LiteralNode)describeNode).Value;
+                    String algoClass = ((ILiteralNode)describeNode).Value;
                     try
                     {
                         Object desc = Activator.CreateInstance(Type.GetType(algoClass));
@@ -374,8 +374,8 @@ namespace VDS.RDF.Web.Configuration.Query
         public virtual void AddFeatureDescription(IGraph g, INode descripNode)
         {
             //Add Local Extension Function definitions
-            UriNode extensionFunction = g.CreateUriNode("sd:" + SparqlServiceDescriber.PropertyExtensionFunction);
-            UriNode extensionAggregate = g.CreateUriNode("sd:" + SparqlServiceDescriber.PropertyExtensionAggregate);
+            IUriNode extensionFunction = g.CreateUriNode("sd:" + SparqlServiceDescriber.PropertyExtensionFunction);
+            IUriNode extensionAggregate = g.CreateUriNode("sd:" + SparqlServiceDescriber.PropertyExtensionAggregate);
             foreach (ISparqlCustomExpressionFactory factory in this._expressionFactories)
             {
                 foreach (Uri u in factory.AvailableExtensionFunctions)

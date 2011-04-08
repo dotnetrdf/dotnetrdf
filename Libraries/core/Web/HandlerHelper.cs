@@ -160,7 +160,7 @@ namespace VDS.RDF.Web
             //Return the Results
             if (result is SparqlResultSet)
             {
-                ISparqlResultsWriter sparqlwriter;      
+                ISparqlResultsWriter sparqlwriter = null;      
        
                 //Try and get a MIME Type Definition using the HTTP Requests Accept Header
                 if (context.Request.AcceptTypes != null)
@@ -197,7 +197,7 @@ namespace VDS.RDF.Web
             }
             else if (result is IGraph)
             {
-                IRdfWriter rdfwriter;
+                IRdfWriter rdfwriter = null;
 
                 //Try and get a MIME Type Definition using the HTTP Requests Accept Header
                 if (context.Request.AcceptTypes != null)
@@ -205,7 +205,7 @@ namespace VDS.RDF.Web
                     definition = MimeTypesHelper.GetDefinitions(context.Request.AcceptTypes).FirstOrDefault(d => d.CanWriteRdf);
                     rdfwriter = definition.GetRdfWriter();
                 } 
-                else
+                if (definition == null)
                 {
                     //If no appropriate definition then use the GetWriter method instead
                     rdfwriter = MimeTypesHelper.GetWriter(context.Request.AcceptTypes, out ctype);
@@ -239,7 +239,7 @@ namespace VDS.RDF.Web
             }
             else if (result is ITripleStore)
             {
-                IStoreWriter storewriter;
+                IStoreWriter storewriter = null;
 
                 //Try and get a MIME Type Definition using the HTTP Requests Accept Header
                 if (context.Request.AcceptTypes != null)
@@ -247,7 +247,7 @@ namespace VDS.RDF.Web
                     definition = MimeTypesHelper.GetDefinitions(context.Request.AcceptTypes).FirstOrDefault(d => d.CanWriteRdfDatasets);
                     storewriter = definition.GetRdfDatasetWriter();
                 } 
-                else
+                if (definition == null)
                 {
                     //If no appropriate definition then use the GetStoreWriter method instead
                     storewriter = MimeTypesHelper.GetStoreWriter(context.Request.AcceptTypes, out ctype);

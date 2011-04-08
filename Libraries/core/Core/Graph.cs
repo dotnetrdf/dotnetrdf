@@ -70,7 +70,7 @@ namespace VDS.RDF
         /// Creates a new instance of a Graph using the given Triple Collection
         /// </summary>
         /// <param name="tripleCollection">Triple Collection</param>
-        protected Graph(BaseTripleCollection tripleCollection)
+        public Graph(BaseTripleCollection tripleCollection)
             : base(tripleCollection) { }
 
         /// <summary>
@@ -78,7 +78,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="tripleCollection">Triple Collection</param>
         /// <param name="nodeCollection">Node Collection</param>
-        protected Graph(BaseTripleCollection tripleCollection, BaseNodeCollection nodeCollection)
+        public Graph(BaseTripleCollection tripleCollection, BaseNodeCollection nodeCollection)
             : base(tripleCollection, nodeCollection) { }
 
         /// <summary>
@@ -86,7 +86,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="tripleCollection">Triple Collection</param>
         /// <param name="emptyNamespaceMap">Whether the Namespace Map should be empty</param>
-        protected Graph(BaseTripleCollection tripleCollection, bool emptyNamespaceMap)
+        public Graph(BaseTripleCollection tripleCollection, bool emptyNamespaceMap)
             : base(tripleCollection)
         {
             if (emptyNamespaceMap) this._nsmapper.Clear();
@@ -98,7 +98,7 @@ namespace VDS.RDF
         /// <param name="tripleCollection">Triple Collection</param>
         /// <param name="nodeCollection">Node Collection</param>
         /// <param name="emptyNamespaceMap">Whether the Namespace Map should be empty</param>
-        protected Graph(BaseTripleCollection tripleCollection, BaseNodeCollection nodeCollection, bool emptyNamespaceMap)
+        public Graph(BaseTripleCollection tripleCollection, BaseNodeCollection nodeCollection, bool emptyNamespaceMap)
             : base(tripleCollection, nodeCollection) 
         {
             if (emptyNamespaceMap) this._nsmapper.Clear();
@@ -238,20 +238,13 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="uri">The Uri of the Node to select</param>
         /// <returns>Either the UriNode Or null if no Node with the given Uri exists</returns>
-        public override UriNode GetUriNode(Uri uri)
+        public override IUriNode GetUriNode(Uri uri)
         {
-            UriNode test = new UriNode(this, uri);
-            IEnumerable<UriNode> us = from u in this._nodes.UriNodes
+            IUriNode test = new UriNode(this, uri);
+            IEnumerable<IUriNode> us = from u in this._nodes.UriNodes
                                           where u.Equals(test)
                                           select u;
-            if (us.Any())
-            {
-                return us.First();
-            }
-            else
-            {
-                return null;
-            }
+            return us.FirstOrDefault();
         }
 
         /// <summary>
@@ -259,20 +252,13 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="qname">The QName of the Node to select</param>
         /// <returns></returns>
-        public override UriNode GetUriNode(String qname)
+        public override IUriNode GetUriNode(String qname)
         {
-            UriNode test = new UriNode(this, qname);
-            IEnumerable<UriNode> us = from u in this._nodes.UriNodes
+            IUriNode test = new UriNode(this, qname);
+            IEnumerable<IUriNode> us = from u in this._nodes.UriNodes
                                       where u.Equals(test)
                                       select u;
-            if (us.Any())
-            {
-                return us.First();
-            }
-            else
-            {
-                return null;
-            }
+            return us.FirstOrDefault();
         }
 
         /// <summary>
@@ -281,20 +267,13 @@ namespace VDS.RDF
         /// <param name="literal">The literal value of the Node to select</param>
         /// <returns>Either the LiteralNode Or null if no Node with the given Value exists</returns>
         /// <remarks>The LiteralNode in the Graph must have no Language or DataType set</remarks>
-        public override LiteralNode GetLiteralNode(String literal)
+        public override ILiteralNode GetLiteralNode(String literal)
         {
-            LiteralNode test = new LiteralNode(this, literal);
-            IEnumerable<LiteralNode> ls = from l in this._nodes.LiteralNodes
+            ILiteralNode test = new LiteralNode(this, literal);
+            IEnumerable<ILiteralNode> ls = from l in this._nodes.LiteralNodes
                                           where l.Equals(test)
                                           select l;
-            if (ls.Any())
-            {
-                return ls.First();
-            }
-            else
-            {
-                return null;
-            }
+            return ls.FirstOrDefault();
         }
 
         /// <summary>
@@ -303,20 +282,13 @@ namespace VDS.RDF
         /// <param name="literal">The literal value of the Node to select</param>
         /// <param name="langspec">The Language Specifier for the Node to select</param>
         /// <returns>Either the LiteralNode Or null if no Node with the given Value and Language Specifier exists</returns>
-        public override LiteralNode GetLiteralNode(String literal, String langspec)
+        public override ILiteralNode GetLiteralNode(String literal, String langspec)
         {
-            LiteralNode test = new LiteralNode(this, literal, langspec);
-            IEnumerable<LiteralNode> ls = from l in this._nodes.LiteralNodes
+            ILiteralNode test = new LiteralNode(this, literal, langspec);
+            IEnumerable<ILiteralNode> ls = from l in this._nodes.LiteralNodes
                                           where l.Equals(test)
                                           select l;
-            if (ls.Any())
-            {
-                return ls.First();
-            }
-            else
-            {
-                return null;
-            }
+            return ls.FirstOrDefault();
         }
 
         /// <summary>
@@ -325,20 +297,13 @@ namespace VDS.RDF
         /// <param name="literal">The literal value of the Node to select</param>
         /// <param name="datatype">The Uri for the Data Type of the Literal to select</param>
         /// <returns>Either the LiteralNode Or null if no Node with the given Value and Data Type exists</returns>
-        public override LiteralNode GetLiteralNode(String literal, Uri datatype)
+        public override ILiteralNode GetLiteralNode(String literal, Uri datatype)
         {
-            LiteralNode test = new LiteralNode(this, literal, datatype);
-            IEnumerable<LiteralNode> ls = from l in this._nodes.LiteralNodes
+            ILiteralNode test = new LiteralNode(this, literal, datatype);
+            IEnumerable<ILiteralNode> ls = from l in this._nodes.LiteralNodes
                                           where l.Equals(test)
                                           select l;
-            if (ls.Any())
-            {
-                return ls.First();
-            }
-            else
-            {
-                return null;
-            }
+            return ls.FirstOrDefault();
         }
 
         /// <summary>
@@ -346,20 +311,13 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="nodeId">The Identifier of the Blank Node to select</param>
         /// <returns>Either the Blank Node or null if no Node with the given Identifier exists</returns>
-        public override BlankNode GetBlankNode(String nodeId)
+        public override IBlankNode GetBlankNode(String nodeId)
         {
-            IEnumerable<BlankNode> bs = from b in this._nodes.BlankNodes
+            IEnumerable<IBlankNode> bs = from b in this._nodes.BlankNodes
                                         where b.InternalID.Equals(nodeId)
                                         select b;
 
-            if (bs.Any())
-            {
-                return bs.First();
-            }
-            else
-            {
-                return null;
-            }
+            return bs.FirstOrDefault();
         }
 
         /// <summary>

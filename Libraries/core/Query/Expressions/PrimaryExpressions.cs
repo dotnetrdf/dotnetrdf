@@ -102,7 +102,7 @@ namespace VDS.RDF.Query.Expressions
             {
                 if (value.NodeType == NodeType.Literal)
                 {
-                    LiteralNode lit = (LiteralNode)value;
+                    ILiteralNode lit = (ILiteralNode)value;
                     if (!lit.Language.Equals(String.Empty))
                     {
                         //If there's a Language Tag implied type is string so no numeric value

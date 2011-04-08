@@ -64,6 +64,12 @@ namespace VDS.RDF.Storage
         private LeviathanUpdateProcessor _updateProcessor;
 
         /// <summary>
+        /// Creates a new In-Memory Manager which is a wrapper around a new empty in-memory store
+        /// </summary>
+        public InMemoryManager()
+            : this(new InMemoryDataset()) { }
+
+        /// <summary>
         /// Creates a new In-Memory Manager which is a wrapper around an in-memory store
         /// </summary>
         /// <param name="store">Triple Store</param>
@@ -149,7 +155,6 @@ namespace VDS.RDF.Storage
                 IGraph g = this._dataset.GetModifiableGraph(graphUri);
                 if (additions != null && additions.Any()) g.Assert(additions);
                 if (removals != null && removals.Any()) g.Retract(removals);
-                g.Dispose();
             }
 
             this._dataset.Flush();

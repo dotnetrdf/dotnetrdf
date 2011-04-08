@@ -61,5 +61,16 @@ namespace VDS.RDF.Parsing.Events
         {
             get;
         }
+
+        /// <summary>
+        /// Gets the Position Information (if any)
+        /// </summary>
+        /// <remarks>
+        /// Availability of Position Information depends on the how the XML was parsed
+        /// </remarks>
+        PositionInfo Position
+        {
+            get;
+        }
     }
 }

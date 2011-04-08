@@ -44,7 +44,7 @@ namespace VDS.RDF.Parsing.Tokens
     /// </summary>
     public class SparqlTokeniser : BaseTokeniser
     {
-        private BlockingStreamReader _in;
+        private BlockingTextReader _in;
         private int _lasttokentype = -1;
         private bool _queryKeywordSeen = false;
         private bool _orderByKeywordSeen = false;
@@ -57,20 +57,23 @@ namespace VDS.RDF.Parsing.Tokens
         /// <param name="input">The Input Stream to generate Tokens from</param>
         /// <param name="syntax">Syntax Mode to use when parsing</param>
         public SparqlTokeniser(StreamReader input, SparqlQuerySyntax syntax)
-            : this(new BlockingStreamReader(input), syntax) { }
+            : this(new BlockingTextReader(input), syntax) { }
 
         /// <summary>
         /// Creates a new Instance of the Tokeniser
         /// </summary>
         /// <param name="input">The Input Stream to generate Tokens from</param>
         /// <param name="syntax">Syntax Mode to use when parsing</param>
-        public SparqlTokeniser(BlockingStreamReader input, SparqlQuerySyntax syntax)
+        public SparqlTokeniser(BlockingTextReader input, SparqlQuerySyntax syntax)
             : base(input)
         {
             this._in = input;
             this.Format = "SPARQL";
             this._syntax = syntax;
         }
+
+        public SparqlTokeniser(TextReader input, SparqlQuerySyntax syntax)
+            : this(new BlockingTextReader(input), syntax) { }
 
         /// <summary>
         /// Gets the next parseable Token from the Input or raises an Error
@@ -767,10 +770,20 @@ namespace VDS.RDF.Parsing.Tokens
             bool colonoccurred = false;
             String value;
 
-            while (UnicodeSpecsHelper.IsLetterOrDigit(next) || UnicodeSpecsHelper.IsLetterModifier(next) || next == '_' || next == '-' || next == ':' || next == '.')
+            while (UnicodeSpecsHelper.IsLetterOrDigit(next) || UnicodeSpecsHelper.IsLetterModifier(next) || next == '_' || next == '-' || next == ':' || next == '.' || next == '\\')
             {
-                //Consume
-                this.ConsumeCharacter();
+                if (next == '\\')
+                {
+                    //Handle Escapes
+                    this.HandleEscapes(TokeniserEscapeMode.QName);
+                    next = this.Peek();
+                    continue;
+                }
+                else
+                {
+                    //Consume
+                    this.ConsumeCharacter();
+                }
 
                 if (next == ':')
                 {
@@ -1334,8 +1347,16 @@ namespace VDS.RDF.Parsing.Tokens
             bool colonoccurred = false;
             bool dotoccurred = false;
 
-            while (UnicodeSpecsHelper.IsLetterOrDigit(next) || UnicodeSpecsHelper.IsLetterModifier(next) || next == '_' || next == '-' || next == ':' || (next == '.' && !dotoccurred && !colonoccurred) || next == '+' || next == '-')
+            while (UnicodeSpecsHelper.IsLetterOrDigit(next) || UnicodeSpecsHelper.IsLetterModifier(next) || next == '_' || next == '-' || next == ':' || next == '\\' || (next == '.' && !dotoccurred && !colonoccurred) || next == '+' || next == '-')
             {
+                if (next == '\\')
+                {
+                    //Handle Escapes
+                    this.HandleEscapes(TokeniserEscapeMode.QName);
+                    next = this.Peek();
+                    continue;
+                }
+
                 if (next == ':')
                 {
                     if (colonoccurred)

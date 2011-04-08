@@ -40,10 +40,7 @@ using System.Text;
 
 namespace VDS.RDF
 {
-    /// <summary>
-    /// Class representing Variable Nodes (only used for N3)
-    /// </summary>
-    public class VariableNode : BaseNode, IComparable<VariableNode>
+    public abstract class BaseVariableNode : BaseNode, IVariableNode, IEquatable<BaseVariableNode>, IComparable<BaseVariableNode>
     {
         private String _var;
 
@@ -52,7 +49,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="g">Graph</param>
         /// <param name="varname">Variable Name</param>
-        protected internal VariableNode(IGraph g, String varname)
+        protected internal BaseVariableNode(IGraph g, String varname)
             : base(g, NodeType.Variable)
         {
             if (varname.StartsWith("?") || varname.StartsWith("$"))
@@ -90,13 +87,51 @@ namespace VDS.RDF
 
             if (other.NodeType == NodeType.Variable)
             {
-                return this._var.Equals(((VariableNode)other).VariableName, StringComparison.Ordinal);
+                return EqualityHelper.AreVariablesEqual(this, (IVariableNode)other);
             }
             else
             {
                 //Can only be equal to other Variables
                 return false;
             }
+        }
+
+        public override bool Equals(IBlankNode other)
+        {
+            if (ReferenceEquals(this, other)) return true;
+            return false;
+        }
+
+        public override bool Equals(IGraphLiteralNode other)
+        {
+            if (ReferenceEquals(this, other)) return true;
+            return false;
+        }
+
+        public override bool Equals(ILiteralNode other)
+        {
+            if (ReferenceEquals(this, other)) return true;
+            return false;
+        }
+
+        public override bool Equals(IUriNode other)
+        {
+            if (ReferenceEquals(this, other)) return true;
+            return false;
+        }
+
+        public override bool Equals(IVariableNode other)
+        {
+            if ((Object)other == null) return false;
+
+            if (ReferenceEquals(this, other)) return true;
+
+            return EqualityHelper.AreVariablesEqual(this, other);
+        }
+
+        public bool Equals(BaseVariableNode other)
+        {
+            return this.Equals((IVariableNode)other);
         }
 
         /// <summary>
@@ -137,6 +172,8 @@ namespace VDS.RDF
         /// <returns></returns>
         public override int CompareTo(INode other)
         {
+            if (ReferenceEquals(this, other)) return 0;
+
             if (other == null)
             {
                 //Variables are considered greater than null
@@ -144,7 +181,7 @@ namespace VDS.RDF
             }
             else if (other.NodeType == NodeType.Variable)
             {
-                return this.CompareTo((VariableNode)other);
+                return this.CompareTo((IVariableNode)other);
             }
             else
             {
@@ -153,6 +190,99 @@ namespace VDS.RDF
             }
         }
 
+        public override int CompareTo(IBlankNode other)
+        {
+            if (ReferenceEquals(this, other)) return 0;
+
+            if (other == null)
+            {
+                //Variables are considered greater than null
+                return 1;
+            }
+            else
+            {
+                //Variable Nodes are less than everything else
+                return -1;
+            }
+        }
+
+        public override int CompareTo(IGraphLiteralNode other)
+        {
+            if (ReferenceEquals(this, other)) return 0;
+
+            if (other == null)
+            {
+                //Variables are considered greater than null
+                return 1;
+            }
+            else
+            {
+                //Variable Nodes are less than everything else
+                return -1;
+            }
+        }
+
+        public override int CompareTo(ILiteralNode other)
+        {
+            if (ReferenceEquals(this, other)) return 0;
+
+            if (other == null)
+            {
+                //Variables are considered greater than null
+                return 1;
+            }
+            else
+            {
+                //Variable Nodes are less than everything else
+                return -1;
+            }
+        }
+
+        public override int CompareTo(IUriNode other)
+        {
+            if (ReferenceEquals(this, other)) return 0;
+
+            if (other == null)
+            {
+                //Variables are considered greater than null
+                return 1;
+            }
+            else
+            {
+                //Variable Nodes are less than everything else
+                return -1;
+            }
+        }
+
+        public override int CompareTo(IVariableNode other)
+        {
+            if (ReferenceEquals(this, other)) return 0;
+
+            if (other == null)
+            {
+                //Variables are considered greater than null
+                return 1;
+            }
+            else
+            {
+                return ComparisonHelper.CompareVariables(this, other);
+            }
+        }
+
+        public int CompareTo(BaseVariableNode other)
+        {
+            return this.CompareTo((IVariableNode)other);
+        }
+    }
+
+    /// <summary>
+    /// Class representing Variable Nodes (only used for N3)
+    /// </summary>
+    public class VariableNode : BaseVariableNode, IEquatable<VariableNode>, IComparable<VariableNode>
+    {
+        protected internal VariableNode(IGraph g, String varname)
+            : base(g, varname) { }
+
         /// <summary>
         /// Compares this Node to another Variable Node
         /// </summary>
@@ -160,7 +290,12 @@ namespace VDS.RDF
         /// <returns></returns>
         public int CompareTo(VariableNode other)
         {
-            return this._var.CompareTo(other.VariableName);
+            return base.CompareTo((IVariableNode)other);
+        }
+
+        public bool Equals(VariableNode other)
+        {
+            return base.Equals((IVariableNode)other);
         }
     }
 }

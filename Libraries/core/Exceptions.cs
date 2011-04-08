@@ -48,14 +48,16 @@ namespace VDS.RDF
         /// Creates a new RDF Exception with the given Message
         /// </summary>
         /// <param name="errorMsg">Error Message</param>
-        public RdfException(String errorMsg) : base(errorMsg) { }
+        public RdfException(String errorMsg)
+            : base(errorMsg) { }
 
         /// <summary>
         /// Creates a new RDF Exception with the given Message and Inner Exception
         /// </summary>
         /// <param name="errorMsg">Error Message</param>
         /// <param name="cause">Inner Exception</param>
-        public RdfException(String errorMsg, Exception cause) : base(errorMsg, cause) { }
+        public RdfException(String errorMsg, Exception cause)
+            : base(errorMsg, cause) { }
     }
 
 }
@@ -101,14 +103,16 @@ namespace VDS.RDF.Ontology
         /// Creates a new RDF Ontology Exception with the given message
         /// </summary>
         /// <param name="errorMsg">Error message</param>
-        public RdfOntologyException(String errorMsg) : base(errorMsg) { }
+        public RdfOntologyException(String errorMsg) 
+            : base(errorMsg) { }
 
         /// <summary>
         /// Creates a new RDF Ontology Exception with the given message and inner exception
         /// </summary>
         /// <param name="errorMsg">Error message</param>
         /// <param name="cause">Inner Exception</param>
-        public RdfOntologyException(String errorMsg, Exception cause) : base(errorMsg, cause) { }
+        public RdfOntologyException(String errorMsg, Exception cause)
+            : base(errorMsg, cause) { }
     }
 }
 
@@ -170,8 +174,8 @@ namespace VDS.RDF.Parsing
         /// <param name="errorMsg">Error Message</param>
         /// <param name="line">Line the error occurred on</param>
         /// <param name="pos">Column Position the error occurred at</param>
-        public RdfParseException(String errorMsg, int line, int pos)
-            : base(errorMsg)
+        public RdfParseException(String errorMsg, int line, int pos, Exception cause)
+            : base(errorMsg, cause)
         {
             this._hasPositionInfo = true;
             this._startLine = this._endLine = line;
@@ -183,11 +187,45 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="errorMsg">Error Message</param>
         /// <param name="line">Line the error occurred on</param>
+        /// <param name="pos">Column Position the error occurred at</param>
+        public RdfParseException(String errorMsg, int line, int pos)
+            : this(errorMsg, line, pos, null) { }
+
+        /// <summary>
+        /// Creates a new RDF Parse Exception which contains Position Information
+        /// </summary>
+        /// <param name="errorMsg">Error Message</param>
+        /// <param name="line">Line the error occurred on</param>
+        /// <param name="startPos">Column Position the error starts at</param>
+        /// <param name="endPos">Column Position the error ends at</param>
+        public RdfParseException(String errorMsg, int line, int startPos, int endPos, Exception cause)
+            : this(errorMsg, line, startPos, cause)
+        {
+            this._endPos = endPos;
+        }
+
+        /// <summary>
+        /// Creates a new RDF Parse Exception which contains Position Information
+        /// </summary>
+        /// <param name="errorMsg">Error Message</param>
+        /// <param name="line">Line the error occurred on</param>
         /// <param name="startPos">Column Position the error starts at</param>
         /// <param name="endPos">Column Position the error ends at</param>
         public RdfParseException(String errorMsg, int line, int startPos, int endPos)
-            : this(errorMsg, line, startPos)
+            : this(errorMsg, line, startPos, endPos, null) { }
+
+        /// <summary>
+        /// Creates a new RDF Parse Exception which contains Position Information
+        /// </summary>
+        /// <param name="errorMsg">Error Message</param>
+        /// <param name="startLine">Line the error starts on</param>
+        /// <param name="endLine">Line the error ends on</param>
+        /// <param name="startPos">Column Position the error starts at</param>
+        /// <param name="endPos">Column Position the error ends at</param>
+        public RdfParseException(String errorMsg, int startLine, int endLine, int startPos, int endPos, Exception cause)
+            : this(errorMsg, startLine, startPos, cause)
         {
+            this._endLine = endLine;
             this._endPos = endPos;
         }
 
@@ -200,11 +238,15 @@ namespace VDS.RDF.Parsing
         /// <param name="startPos">Column Position the error starts at</param>
         /// <param name="endPos">Column Position the error ends at</param>
         public RdfParseException(String errorMsg, int startLine, int endLine, int startPos, int endPos)
-            : this(errorMsg, startLine, startPos)
-        {
-            this._endLine = endLine;
-            this._endPos = endPos;
-        }
+            : this(errorMsg, startLine, endLine, startPos, endPos, null) { }
+
+        /// <summary>
+        /// Creates a new RDF Parse Exception which contains Position Information
+        /// </summary>
+        /// <param name="errorMsg">Error Message</param>
+        /// <param name="position">Position Information</param>
+        public RdfParseException(String errorMsg, PositionInfo position, Exception cause)
+            : this(errorMsg, position.StartLine, position.EndLine, position.StartPosition, position.EndPosition, cause) { }
 
         /// <summary>
         /// Creates a new RDF Parse Exception which contains Position Information
@@ -212,7 +254,7 @@ namespace VDS.RDF.Parsing
         /// <param name="errorMsg">Error Message</param>
         /// <param name="position">Position Information</param>
         public RdfParseException(String errorMsg, PositionInfo position)
-            : this(errorMsg, position.StartLine, position.EndLine, position.StartPosition, position.EndPosition) { }
+            : this(errorMsg, position, null) { }
 
         /// <summary>
         /// Gets whether the Exception has any position information
@@ -271,7 +313,7 @@ namespace VDS.RDF.Parsing
     }
 
     /// <summary>
-    /// Class of exceptions that may occur when doing multi-threaded output of RDF
+    /// Class of exceptions that may occur when doing multi-threaded parsing of RDF
     /// </summary>
     /// <remarks>
     /// <para>
@@ -319,14 +361,31 @@ namespace VDS.RDF.Parsing
         /// Creates a new RDF Parser Selection Exception with the given Message
         /// </summary>
         /// <param name="errorMsg">Error Message</param>
-        public RdfParserSelectionException(String errorMsg) : base(errorMsg) { }
+        public RdfParserSelectionException(String errorMsg)
+            : base(errorMsg) { }
 
         /// <summary>
         /// Creates a new RDF Parser Selection Exception with the given Message and Inner Exception
         /// </summary>
         /// <param name="errorMsg">Error Message</param>
         /// <param name="cause">Inner Exception</param>
-        public RdfParserSelectionException(String errorMsg, Exception cause) : base(errorMsg, cause) { }
+        public RdfParserSelectionException(String errorMsg, Exception cause) 
+            : base(errorMsg, cause) { }
+    }
+
+    /// <summary>
+    /// Class for representing that a parser has been terminated by a <see cref="IRdfHandler">IRdfHandler</see>
+    /// </summary>
+    /// <remarks>
+    /// Used internally to help force execution to jump back to the point where we can handle by safely discarding this exception and stop parsing
+    /// </remarks>
+    public class RdfParsingTerminatedException : RdfParseException
+    {
+        /// <summary>
+        /// Creates a new Parsing Terminated exception
+        /// </summary>
+        public RdfParsingTerminatedException()
+            : base("Parsing was Terminated as the IRdfHandler handling the parsed RDF indicated that it wanted the parser to stop") { }
     }
 }
 
@@ -341,14 +400,16 @@ namespace VDS.RDF.Query
         /// Creates a new RDF Query Exception
         /// </summary>
         /// <param name="errorMsg">Error Message</param>
-        public RdfQueryException(String errorMsg) : base(errorMsg) { }
+        public RdfQueryException(String errorMsg) 
+            : base(errorMsg) { }
 
         /// <summary>
         /// Creates a new RDF Query Exception
         /// </summary>
         /// <param name="errorMsg">Error Message</param>
         /// <param name="cause">Exception that caused this Exception</param>
-        public RdfQueryException(String errorMsg, Exception cause) : base(errorMsg, cause) { }
+        public RdfQueryException(String errorMsg, Exception cause) 
+            : base(errorMsg, cause) { }
     }
 
     /// <summary>
@@ -360,7 +421,8 @@ namespace VDS.RDF.Query
         /// Creates a new RDF Query Timeout Exception
         /// </summary>
         /// <param name="errorMsg">Error Message</param>
-        public RdfQueryTimeoutException(String errorMsg) : base(errorMsg) { }
+        public RdfQueryTimeoutException(String errorMsg)
+            : base(errorMsg) { }
     }
 
     /// <summary>
@@ -372,14 +434,16 @@ namespace VDS.RDF.Query
         /// Creates a new RDF Reasoning Exception
         /// </summary>
         /// <param name="errorMsg">Error Message</param>
-        public RdfReasoningException(String errorMsg) : base(errorMsg) { }
+        public RdfReasoningException(String errorMsg)
+            : base(errorMsg) { }
 
         /// <summary>
         /// Creates a new RDF Reasoning Exception
         /// </summary>
         /// <param name="errorMsg">Error Message</param>
         /// <param name="cause">Exception that caused this exception</param>
-        public RdfReasoningException(String errorMsg, Exception cause) : base(errorMsg, cause) { }
+        public RdfReasoningException(String errorMsg, Exception cause)
+            : base(errorMsg, cause) { }
     }
 
     /// <summary>
@@ -469,6 +533,19 @@ namespace VDS.RDF.Update
         /// <param name="cause">Exception that caused this exception to be thrown</param>
         public SparqlUpdateException(String message, Exception cause)
             : base(message, cause) { }
+    }
+
+    /// <summary>
+    /// Class for representing Timeout errors that occur while updating RDF using SPARQL
+    /// </summary>
+    public class SparqlUpdateTimeoutException : SparqlUpdateException
+    {
+        /// <summary>
+        /// Creates a new SPARQL Update Timeout Exception
+        /// </summary>
+        /// <param name="errorMsg">Error Message</param>
+        public SparqlUpdateTimeoutException(String errorMsg)
+            : base(errorMsg) { }
     }
 }
 

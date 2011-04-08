@@ -41,24 +41,19 @@ using System.Text;
 
 namespace VDS.RDF
 {
-    /// <summary>
-    /// Class for representing URI Nodes
-    /// </summary>
-    public class UriNode : BaseNode, IComparable<UriNode>
+    public abstract class BaseUriNode : BaseNode, IUriNode, IEquatable<BaseUriNode>, IComparable<BaseUriNode>
     {
         private Uri _uri;
-        private String _stringUri;
 
         /// <summary>
         /// Internal Only Constructor for Uri Nodes
         /// </summary>
         /// <param name="g">Graph this Node is in</param>
         /// <param name="uri">Uri for the Node</param>
-        protected internal UriNode(IGraph g, Uri uri)
+        protected internal BaseUriNode(IGraph g, Uri uri)
             : base(g, NodeType.Uri)
         {
             this._uri = uri;
-            this._stringUri = this._uri.ToString();
 
             //Compute Hash Code
             this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
@@ -72,7 +67,7 @@ namespace VDS.RDF
         /// <remarks>
         /// This Constructor tries to resolve the QName using the NamespaceMapper and Base Uri of the Graph it is in.  Exceptions may occur if we cannot resolve the QName correctly.
         /// </remarks>
-        protected internal UriNode(IGraph g, String qname)
+        protected internal BaseUriNode(IGraph g, String qname)
             : base(g, NodeType.Uri)
         {
             if (qname.Contains(':'))
@@ -91,27 +86,12 @@ namespace VDS.RDF
                 throw new RdfException("Cannot create a URI Node since the QName '" + qname + "' appears to be invalid");
             }
 
-            this._stringUri = this._uri.ToString();
-
             //Compute Hash Code
             this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
         }
 
-        /// <summary>
-        /// Protected Constructor for derived classes which want to control the URI more closely
-        /// </summary>
-        /// <param name="g">Graph</param>
-        /// <param name="uri">A form of the URI (derived classes may override Uri property as desired)</param>
-        /// <param name="stringUri">String form of the URI (may be unormalized/relative etc)</param>
-        protected UriNode(IGraph g, Uri uri, String stringUri)
-            : base(g, NodeType.Uri)
-        {
-            this._uri = uri;
-            this._stringUri = stringUri;
-
-            //Compute Hash Code
-            this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
-        }
+        protected internal BaseUriNode(Uri uri)
+            : this(null, uri) { }
 
         /// <summary>
         /// Gets the Uri for this Node
@@ -121,18 +101,6 @@ namespace VDS.RDF
             get
             {
                 return this._uri;
-            }
-        }
-
-        /// <summary>
-        /// Gets the Uri for this Node as a String
-        /// </summary>
-        /// <remarks>Computed at instantiation for efficiency, used in Equals implementation</remarks>
-        protected internal String StringUri
-        {
-            get
-            {
-                return this._stringUri;
             }
         }
 
@@ -177,10 +145,9 @@ namespace VDS.RDF
 
             if (other.NodeType == NodeType.Uri)
             {
-                UriNode temp = (UriNode)other;
+                Uri temp = ((IUriNode)other).Uri;
 
-                //Switched to using straight ordinal string comparison
-                return this.StringUri.Equals(temp.StringUri, StringComparison.Ordinal);
+                return EqualityHelper.AreUrisEqual(this._uri, temp);
             }
             else
             {
@@ -189,13 +156,51 @@ namespace VDS.RDF
             }
         }
 
+        public override bool Equals(IBlankNode other)
+        {
+            if (ReferenceEquals(this, other)) return true;
+            return false;
+        }
+
+        public override bool Equals(IGraphLiteralNode other)
+        {
+            if (ReferenceEquals(this, other)) return true;
+            return false;
+        }
+
+        public override bool Equals(ILiteralNode other)
+        {
+            if (ReferenceEquals(this, other)) return true;
+            return false;
+        }
+
+        public override bool Equals(IUriNode other)
+        {
+            if ((Object)other == null) return false;
+
+            if (ReferenceEquals(this, other)) return true;
+
+            return EqualityHelper.AreUrisEqual(this._uri, other.Uri);
+        }
+
+        public override bool Equals(IVariableNode other)
+        {
+            if (ReferenceEquals(this, other)) return true;
+            return false;
+        }
+
+        public bool Equals(BaseUriNode other)
+        {
+            return this.Equals((IUriNode)other);
+        }
+
         /// <summary>
         /// Gets a String representation of a Uri as a plain text Uri
         /// </summary>
         /// <returns></returns>
         public override string ToString()
         {
-            return this._stringUri;
+            return this._uri.ToString();
         }
 
         /// <summary>
@@ -210,6 +215,8 @@ namespace VDS.RDF
         /// </remarks>
         public override int CompareTo(INode other)
         {
+            if (ReferenceEquals(this, other)) return 0;
+
             if (other == null)
             {
                 //Everything is greater than a null
@@ -224,12 +231,9 @@ namespace VDS.RDF
             }
             else if (other.NodeType == NodeType.Uri)
             {
-                if (ReferenceEquals(this, other)) return 0;
+                //Return the result of CompareTo using the IUriNode comparison method
 
-                //Uri Nodes are ordered lexically
-                //Return the result of CompareTo on the string values of the URIs
-                UriNode u = (UriNode)other;
-                return this._stringUri.CompareTo(u.StringUri);
+                return this.CompareTo((IUriNode)other);
             }
             else
             {
@@ -238,6 +242,80 @@ namespace VDS.RDF
                 return -1;
             }
         }
+
+        public override int CompareTo(IBlankNode other)
+        {
+            if (ReferenceEquals(this, other)) return 0;
+
+            //URI Nodes are greater than nulls and Blank Nodes
+            return 1;
+        }
+
+        public override int CompareTo(IGraphLiteralNode other)
+        {
+            if (ReferenceEquals(this, other)) return 0;
+
+            if (other == null)
+            {
+                //Everything is greater than a null
+                //Return a 1 to indicate this
+                return 1;
+            }
+            else
+            {
+                //URI Nodes are less than Graph Literal Nodes
+                return -1;
+            }
+        }
+
+        public override int CompareTo(ILiteralNode other)
+        {
+            if (ReferenceEquals(this, other)) return 0;
+
+            if (other == null)
+            {
+                //Everything is greater than a null
+                //Return a 1 to indicate this
+                return 1;
+            }
+            else
+            {
+                //URI Nodes are less than Literal Nodes
+                return -1;
+            }
+        }
+
+        public override int CompareTo(IVariableNode other)
+        {
+            if (ReferenceEquals(this, other)) return 0;
+
+            //URI Nodes are greater than nulls and Variable Nodes
+            return 1;
+        }
+
+        public override int CompareTo(IUriNode other)
+        {
+            if (ReferenceEquals(this, other)) return 0;
+
+            return ComparisonHelper.CompareUris(this.Uri, other.Uri);
+        }
+
+        public int CompareTo(BaseUriNode other)
+        {
+            return this.CompareTo((IUriNode)other);
+        }
+    }
+
+    /// <summary>
+    /// Class for representing URI Nodes
+    /// </summary>
+    public class UriNode : BaseUriNode, IEquatable<UriNode>, IComparable<UriNode>
+    {
+        protected internal UriNode(IGraph g, Uri uri)
+            : base(g, uri) { }
+
+        protected internal UriNode(IGraph g, String qname)
+            : base(g, qname) { }
 
         /// <summary>
         /// Implementation of Compare To for URI Nodes
@@ -249,19 +327,12 @@ namespace VDS.RDF
         /// </remarks>
         public int CompareTo(UriNode other)
         {
-            return this.CompareTo((INode)other);
+            return base.CompareTo((IUriNode)other);
+        }
+
+        public bool Equals(UriNode other)
+        {
+            return base.Equals((IUriNode)other);
         }
     }
-
-    ///// <summary>
-    ///// Class for representing URI Nodes where the URI may be non-normalized
-    ///// </summary>
-    //class NonNormalizedUriNode : UriNode
-    //{
-    //    protected internal NonNormalizedUriNode(IGraph g, String uri)
-    //        : base(g, new Uri(uri), uri)
-    //    {
-
-    //    }
-    //}
 }

@@ -37,43 +37,78 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VDS.RDF.Parsing.Tokens;
 
-namespace VDS.RDF.Query.Algebra
+namespace VDS.RDF.Parsing.Contexts
 {
     /// <summary>
-    /// An Algebra Transformer is a class that can transform an algebra from one form to another e.g. for optimisation purposes
+    /// Interface for Parser Contexts
     /// </summary>
-    public interface IAlgebraTransfomer
+    public interface IParserContext
     {
         /// <summary>
-        /// Creates a new Algebra Transformer
+        /// Gets the RDF Handler which is used to instantiate Nodes and to handle the generated RDF
         /// </summary>
-        /// <param name="algebra">Algebra to transform</param>
-        /// <returns></returns>
-        ISparqlAlgebra Transform(ISparqlAlgebra algebra);
-    }
-
-    /// <summary>
-    /// Abstract Base Class for Algebra Transformers where the Transformer may care about the depth of the Algebra in the Algebra Tree
-    /// </summary>
-    public abstract class BaseAlgebraTransformer : IAlgebraTransfomer
-    {
-        /// <summary>
-        /// Attempts to transform an Algebra to another form
-        /// </summary>
-        /// <param name="algebra">Algebra</param>
-        /// <returns></returns>
-        public virtual ISparqlAlgebra Transform(ISparqlAlgebra algebra)
+        IRdfHandler Handler
         {
-            return this.TransformInternal(algebra, 0);
+            get;
         }
 
         /// <summary>
-        /// Transforms the Algebra to another form tracking the depth in the Algebra tree
+        /// Gets/Sets whether Parser Tracing should be used (if the Parser supports it)
         /// </summary>
-        /// <param name="algebra">Algebra</param>
-        /// <param name="depth">Depth</param>
-        /// <returns></returns>
-        protected abstract ISparqlAlgebra TransformInternal(ISparqlAlgebra algebra, int depth);
+        bool TraceParsing
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Gets the Namespace Map for the Handler
+        /// </summary>
+        INamespaceMapper Namespaces
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Gets the Base URI for the Handler
+        /// </summary>
+        Uri BaseUri
+        {
+            get;
+            set;
+        }
+    }
+
+    /// <summary>
+    /// Interface for Parser Contexts which use Tokeniser based parsing
+    /// </summary>
+    public interface ITokenisingParserContext
+    {
+        /// <summary>
+        /// Gets/Sets whether Tokenisation is Traced
+        /// </summary>
+        bool TraceTokeniser
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Gets the Local Tokens Stack
+        /// </summary>
+        Stack<IToken> LocalTokens
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Gets the Token Queue
+        /// </summary>
+        ITokenQueue Tokens
+        {
+            get;
+        }
     }
 }

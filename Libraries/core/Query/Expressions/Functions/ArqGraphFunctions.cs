@@ -65,7 +65,7 @@ namespace VDS.RDF.Query.Expressions.Functions
             {
                 if (temp.NodeType == NodeType.Blank)
                 {
-                    BlankNode b = (BlankNode)temp;
+                    IBlankNode b = (IBlankNode)temp;
                     return new LiteralNode(null, b.InternalID);
                 }
                 else
@@ -147,8 +147,8 @@ namespace VDS.RDF.Query.Expressions.Functions
             {
                 if (temp.NodeType == NodeType.Uri)
                 {
-                    UriNode u = (UriNode)temp;
-                    if (u.StringUri.Contains('#') && !u.Uri.Fragment.Equals(String.Empty))
+                    IUriNode u = (IUriNode)temp;
+                    if (!u.Uri.Fragment.Equals(String.Empty))
                     {
                         return new LiteralNode(null, u.Uri.Fragment.Substring(1));
                     }
@@ -240,14 +240,14 @@ namespace VDS.RDF.Query.Expressions.Functions
             {
                 if (temp.NodeType == NodeType.Uri)
                 {
-                    UriNode u = (UriNode)temp;
-                    if (u.StringUri.Contains('#'))
+                    IUriNode u = (IUriNode)temp;
+                    if (!u.Uri.Fragment.Equals(String.Empty))
                     {
-                        return new LiteralNode(null, u.StringUri.Substring(0, u.StringUri.LastIndexOf('#')+1));
+                        return new LiteralNode(null, u.Uri.ToString().Substring(0, u.Uri.ToString().LastIndexOf('#')+1));
                     }
                     else
                     {
-                        return new LiteralNode(null, u.StringUri.Substring(0, u.StringUri.LastIndexOf('/')+1));
+                        return new LiteralNode(null, u.Uri.ToString().Substring(0, u.Uri.ToString().LastIndexOf('/')+1));
                     }
                 }
                 else

@@ -37,6 +37,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Parsing.Tokens;
 
 namespace VDS.RDF.Parsing.Contexts
@@ -48,7 +49,9 @@ namespace VDS.RDF.Parsing.Contexts
     {
         private bool _keywordsMode = false;
         private List<String> _keywords = new List<string>();
-        private Stack<IGraph> _graphs = new Stack<IGraph>();
+        private Stack<IGraph> _subgraphs = new Stack<IGraph>();
+        private IGraph _g;
+        private Stack<IRdfHandler> _handlers = new Stack<IRdfHandler>();
         private Stack<VariableContext> _varContexts = new Stack<VariableContext>();
         private VariableContext _varContext = new VariableContext(VariableContextType.None);
         
@@ -89,6 +92,44 @@ namespace VDS.RDF.Parsing.Contexts
         /// <param name="traceTokeniser">Whether to trace tokenisation</param>
         public Notation3ParserContext(IGraph g, ITokeniser tokeniser, TokenQueueMode queueMode, bool traceParsing, bool traceTokeniser)
             : base(g, tokeniser, queueMode, traceParsing, traceTokeniser) { }
+
+        /// <summary>
+        /// Creates a new Notation 3 Parser Context with default settings
+        /// </summary>
+        /// <param name="g">Graph to parse into</param>
+        /// <param name="tokeniser">Tokeniser to use</param>
+        public Notation3ParserContext(IRdfHandler handler, ITokeniser tokeniser)
+            : base(handler, tokeniser) { }
+
+        /// <summary>
+        /// Creates a new Notation 3 Parser Context with custom settings
+        /// </summary>
+        /// <param name="g">Graph to parse into</param>
+        /// <param name="tokeniser">Tokeniser to use</param>
+        /// <param name="queueMode">Tokeniser Queue Mode</param>
+        public Notation3ParserContext(IRdfHandler handler, ITokeniser tokeniser, TokenQueueMode queueMode)
+            : base(handler, tokeniser, queueMode) { }
+
+        /// <summary>
+        /// Creates a new Notation 3 Parser Context with custom settings
+        /// </summary>
+        /// <param name="g">Graph to parse into</param>
+        /// <param name="tokeniser">Tokeniser to use</param>
+        /// <param name="traceParsing">Whether to trace parsing</param>
+        /// <param name="traceTokeniser">Whether to trace tokenisation</param>
+        public Notation3ParserContext(IRdfHandler handler, ITokeniser tokeniser, bool traceParsinhandler, bool traceTokeniser)
+            : base(handler, tokeniser, traceParsinhandler, traceTokeniser) { }
+
+        /// <summary>
+        /// Creates a new Notation 3 Parser Context with custom settings
+        /// </summary>
+        /// <param name="g">Graph to parse into</param>
+        /// <param name="tokeniser">Tokeniser to use</param>
+        /// <param name="queueMode">Tokeniser Queue Mode</param>
+        /// <param name="traceParsing">Whether to trace parsing</param>
+        /// <param name="traceTokeniser">Whether to trace tokenisation</param>
+        public Notation3ParserContext(IRdfHandler handler, ITokeniser tokeniser, TokenQueueMode queueMode, bool traceParsinhandler, bool traceTokeniser)
+            : base(handler, tokeniser, queueMode, traceParsinhandler, traceTokeniser) { }
 
         /// <summary>
         /// Gets/Sets whether Keywords Mode is in use
@@ -144,9 +185,13 @@ namespace VDS.RDF.Parsing.Contexts
         public void PushGraph()
         {
             Graph h = new Graph();
-            h.NamespaceMap.Import(this._g.NamespaceMap);
-            h.BaseUri = this._g.BaseUri;
-            this._graphs.Push(this._g);
+            h.NamespaceMap.Import(this.Namespaces);
+            h.BaseUri = this.BaseUri;
+
+            this._handlers.Push(this._handler);
+            this._handler = new GraphHandler(h);
+
+            this._subgraphs.Push(this._g);
             this._g = h;
 
             VariableContext v = new VariableContext(VariableContextType.None);
@@ -162,14 +207,26 @@ namespace VDS.RDF.Parsing.Contexts
         /// </remarks>
         public void PopGraph()
         {
-            if (this._graphs.Count > 0)
+            if (this._handlers.Count > 0)
             {
-                this._g = this._graphs.Pop();
+                this._g = this._subgraphs.Pop();
+                this._handler = this._handlers.Pop();
                 this._varContext = this._varContexts.Pop();
             }
             else
             {
-                throw new RdfParseException("Cannot pop a Graph from the Parser Context to become the in-scope Graph since there are no Graphs on the stack");
+                throw new RdfParseException("Cannot pop a RDF Handler from the Parser Context to become the in-scope RDF Handler since there are no RDF Handlers on the stack");
+            }
+        }
+
+        /// <summary>
+        /// Gets the current sub-graph (if any)
+        /// </summary>
+        public IGraph SubGraph
+        {
+            get
+            {
+                return this._g;
             }
         }
 
@@ -180,7 +237,7 @@ namespace VDS.RDF.Parsing.Contexts
         {
             get
             {
-                return (this._graphs.Count > 0);
+                return (this._handlers.Count > 0);
             }
         }
     }

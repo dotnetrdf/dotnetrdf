@@ -147,4 +147,55 @@ namespace VDS.RDF.Storage.Params
             }
         }
     }
+
+    /// <summary>
+    /// Parameters for Store Readers which read using a TextReader
+    /// </summary>
+    public class TextReaderParams : IStoreParams
+    {
+        private TextReader _reader;
+
+        /// <summary>
+        /// Creates a new set of TextReader Parameters
+        /// </summary>
+        /// <param name="reader">TextReader to read from</param>
+        public TextReaderParams(TextReader reader)
+        {
+            if (reader == null) throw new ArgumentNullException("reader");
+            this._reader = reader;
+        }
+
+        /// <summary>
+        /// Gets the Text Reader to be used
+        /// </summary>
+        public TextReader TextReader
+        {
+            get
+            {
+                return this._reader;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Parameters for Store Writers which write using a TextWriter
+    /// </summary>
+    public class TextWriterParams : IStoreParams
+    {
+        private TextWriter _writer;
+
+        public TextWriterParams(TextWriter writer)
+        {
+            if (writer == null) throw new ArgumentNullException("writer");
+            this._writer = writer;
+        }
+
+        public TextWriter TextWriter
+        {
+            get
+            {
+                return this._writer;
+            }
+        }
+    }
 }

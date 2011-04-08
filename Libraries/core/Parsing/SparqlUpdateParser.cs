@@ -149,6 +149,12 @@ namespace VDS.RDF.Parsing
                 this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.GetType().Name + " - Please be aware that parsing errors may occur as a result");
 #endif            
             }
+            return this.Parse((TextReader)input);
+        }
+
+        public SparqlUpdateCommandSet Parse(TextReader input)
+        {
+            if (input == null) throw new RdfParseException("Cannot parse SPARQL Update Commands from a null TextReader");
 
             try
             {
@@ -193,15 +199,8 @@ namespace VDS.RDF.Parsing
         {
             if (updates == null) throw new RdfParseException("Cannot parse SPARQL Update Commands from a null String");
 
-            //Turn into a Stream which we can pass to ParseFromFile
-            MemoryStream mem = new MemoryStream();
-            StreamWriter writer = new StreamWriter(mem, Encoding.UTF8);
-            writer.Write(updates);
-            writer.Flush();
-            mem.Seek(0, SeekOrigin.Begin);
-            StreamReader reader = new StreamReader(writer.BaseStream);
-
-            return this.Parse(reader);
+            //TODO: Do we need to force this to UTF-8 somehow?
+            return this.Parse(new StringReader(updates));
         }
 
         /// <summary>

@@ -47,6 +47,9 @@ namespace VDS.RDF.Writing.Formatting
     {
         private BlankNodeOutputMapper _bnodeMapper = new BlankNodeOutputMapper(WriterHelper.IsValidBlankNodeID);
 
+        protected char[] _validEscapes = new char[] { '\\', '"', 'n', 'r', 't' };
+        protected char[] _litEscapes = new char[] { '"', '\n', '\r', '\t' };
+
         /// <summary>
         /// Creates a new NTriples Formatter
         /// </summary>
@@ -66,7 +69,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <param name="u">URI Node</param>
         /// <param name="segment">Triple Segment</param>
         /// <returns></returns>
-        protected override string FormatUriNode(UriNode u, TripleSegment? segment)
+        protected override string FormatUriNode(IUriNode u, TripleSegment? segment)
         {
             StringBuilder output = new StringBuilder();
             output.Append('<');
@@ -81,7 +84,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <param name="l">Literal Node</param>
         /// <param name="segment">Triple Segment</param>
         /// <returns></returns>
-        protected override string FormatLiteralNode(LiteralNode l, TripleSegment? segment)
+        protected override string FormatLiteralNode(ILiteralNode l, TripleSegment? segment)
         {
             StringBuilder output = new StringBuilder();
             String value;
@@ -89,17 +92,20 @@ namespace VDS.RDF.Writing.Formatting
             output.Append('"');
             value = l.Value;
 
-            //This first replace escapes all back slashes for good measure
-            if (value.Contains("\\")) value = value.Replace("\\", "\\\\");
+            if (!value.IsFullyEscaped(this._validEscapes, this._litEscapes))
+            {
+                //This first replace escapes all back slashes for good measure
+                value = value.EscapeBackslashes(this._validEscapes);
 
-            //Then these escape characters that can't occur in a NTriples literal
-            value = value.Replace("\n", "\\n");
-            value = value.Replace("\r", "\\r");
-            value = value.Replace("\t", "\\t");
-            value = value.Replace("\"", "\\\"");
+                //Then these escape characters that can't occur in a NTriples literal
+                value = value.Replace("\n", "\\n");
+                value = value.Replace("\r", "\\r");
+                value = value.Replace("\t", "\\t");
+                value = value.Escape('"');
 
-            //Then remove null character since it doesn't change the meaning of the Literal
-            value = value.Replace("\0", "");
+                //Then remove null character since it doesn't change the meaning of the Literal
+                value = value.Replace("\0", "");
+            }
 
             foreach (char c in value.ToCharArray())
             {
@@ -158,7 +164,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <param name="b">Blank Node</param>
         /// <param name="segment">Triple Segment</param>
         /// <returns></returns>
-        protected override string FormatBlankNode(BlankNode b, TripleSegment? segment)
+        protected override string FormatBlankNode(IBlankNode b, TripleSegment? segment)
         {
             return "_:" + this._bnodeMapper.GetOutputID(b.InternalID);
         }

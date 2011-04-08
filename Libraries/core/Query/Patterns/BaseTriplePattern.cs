@@ -158,6 +158,20 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
+        /// Gets whether a Triple Pattern is Thread Safe when evaluated
+        /// </summary>
+        /// <remarks>
+        /// Almost all Triple Patterns are Thread Safe unless they are subquery patterns which themselves are not thread safe
+        /// </remarks>
+        public virtual bool UsesDefaultDataset
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        /// <summary>
         /// Gets the String representation of the Pattern
         /// </summary>
         /// <returns></returns>

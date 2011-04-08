@@ -77,14 +77,14 @@ namespace VDS.RDF.Query.Algebra
                     //Get all the URIs that are bound to this Variable in the Input
                     String var = this._endpointSpecifier.Value.Substring(1);
                     if (!context.InputMultiset.ContainsVariable(var)) throw new RdfQueryException("Cannot evaluate a SERVICE clause which uses a Variable as the Service specifier when the Variable is unbound");
-                    List<UriNode> services = new List<UriNode>();
+                    List<IUriNode> services = new List<IUriNode>();
                     foreach (Set s in context.InputMultiset.Sets)
                     {
                         if (s.ContainsVariable(var))
                         {
                             if (s[var].NodeType == NodeType.Uri)
                             {
-                                services.Add((UriNode)s[var]);
+                                services.Add((IUriNode)s[var]);
                             }
                         }
                     }

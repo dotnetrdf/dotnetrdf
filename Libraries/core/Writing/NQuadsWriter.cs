@@ -80,14 +80,22 @@ namespace VDS.RDF.Writing
         /// <param name="parameters">Parameters indicating a Stream to write to</param>
         public void Save(ITripleStore store, IStoreParams parameters)
         {
+            ThreadedStoreWriterContext context = null;
             if (parameters is StreamParams)
             {
                 //Create a new Writer Context
 #if !SILVERLIGHT
                 ((StreamParams)parameters).Encoding = Encoding.ASCII;
 #endif
-                ThreadedStoreWriterContext context = new ThreadedStoreWriterContext(store, ((StreamParams)parameters).StreamWriter, this._prettyPrint, false);
+                context = new ThreadedStoreWriterContext(store, ((StreamParams)parameters).StreamWriter, this._prettyPrint, false);
+            } 
+            else if (parameters is TextWriterParams)
+            {
+                context = new ThreadedStoreWriterContext(store, ((TextWriterParams)parameters).TextWriter, this._prettyPrint, false);
+            }
 
+            if (context != null)
+            {
                 //Check there's something to do
                 if (context.Store.Graphs.Count == 0)
                 {
@@ -100,7 +108,14 @@ namespace VDS.RDF.Writing
                     //Queue the Graphs to be written
                     foreach (IGraph g in context.Store.Graphs)
                     {
-                        context.Add(g.BaseUri);
+                        if (g.BaseUri == null)
+                        {
+                            context.Add(new Uri(GraphCollection.DefaultGraphUri));
+                        }
+                        else
+                        {
+                            context.Add(g.BaseUri);
+                        }
                     }
 
                     //Start making the async calls
@@ -145,13 +160,14 @@ namespace VDS.RDF.Writing
             }
             else
             {
-                throw new RdfStorageException("Parameters for the NQuadsWriter must be of the type StreamParams");
+                throw new RdfStorageException("Parameters for the NQuadsWriter must be of the type StreamParams/TextWriterParams");
             }
         }
 
         private String GraphToNQuads(ThreadedStoreWriterContext globalContext, NTriplesWriterContext context)
         {
-            if (context.PrettyPrint)
+            if (context.Graph.IsEmpty) return String.Empty;
+            if (context.PrettyPrint && !WriterHelper.IsDefaultGraph(context.Graph.BaseUri))
             {
                 context.Output.WriteLine("# Graph: " + context.Graph.BaseUri.ToString());
             }
@@ -232,32 +248,36 @@ namespace VDS.RDF.Writing
         {
             try
             {
-                Uri u = globalContext.GetNextURI();
+                Uri u = globalContext.GetNextUri();
                 while (u != null)
                 {
                     //Get the Graph from the Store
+                    if (WriterHelper.IsDefaultGraph(u)) u = null;
                     IGraph g = globalContext.Store.Graphs[u];
 
                     //Generate the Graph Output and add to Stream
                     NTriplesWriterContext context = new NTriplesWriterContext(g, new System.IO.StringWriter(), globalContext.PrettyPrint, globalContext.HighSpeedModePermitted);
                     String graphContent = this.GraphToNQuads(globalContext, context);
-                    try
+                    if (!graphContent.Equals(String.Empty))
                     {
-                        Monitor.Enter(globalContext.Output);
-                        globalContext.Output.WriteLine(graphContent);
-                        globalContext.Output.Flush();
-                    }
-                    catch
-                    {
-                        throw;
-                    }
-                    finally
-                    {
-                        Monitor.Exit(globalContext.Output);
+                        try
+                        {
+                            Monitor.Enter(globalContext.Output);
+                            globalContext.Output.WriteLine(graphContent);
+                            globalContext.Output.Flush();
+                        }
+                        catch
+                        {
+                            throw;
+                        }
+                        finally
+                        {
+                            Monitor.Exit(globalContext.Output);
+                        }
                     }
 
                     //Get the Next Uri
-                    u = globalContext.GetNextURI();
+                    u = globalContext.GetNextUri();
                 }
             }
             catch (ThreadAbortException)

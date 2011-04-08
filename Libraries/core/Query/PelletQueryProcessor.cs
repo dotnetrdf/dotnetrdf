@@ -99,12 +99,14 @@ namespace VDS.RDF.Query
             try
             {
                 Object temp = this._svc.Query(query.ToString());
-                 return temp;
+                return temp;
             }
             finally
             {
-                query.QueryTime = (DateTime.Now - start).Milliseconds;
-                query.QueryTimeTicks = (DateTime.Now - start).Ticks;
+                TimeSpan elapsed = (DateTime.Now - start);
+                query.QueryExecutionTime = (DateTime.Now - start);
+                query.QueryTime = elapsed.Milliseconds;
+                query.QueryTimeTicks = elapsed.Ticks;
             }
         }
     }

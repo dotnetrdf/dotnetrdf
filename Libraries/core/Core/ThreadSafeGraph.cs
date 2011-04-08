@@ -228,9 +228,9 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="nodeId">The Identifier of the Blank Node to select</param>
         /// <returns>Either the Blank Node or null if no Node with the given Identifier exists</returns>
-        public override BlankNode GetBlankNode(string nodeId)
+        public override IBlankNode GetBlankNode(string nodeId)
         {
-            BlankNode b = null;
+            IBlankNode b = null;
             try
             {
                 this._lockManager.EnterReadLock();
@@ -249,9 +249,9 @@ namespace VDS.RDF
         /// <param name="literal">The literal value of the Node to select</param>
         /// <returns>Either the LiteralNode Or null if no Node with the given Value exists</returns>
         /// <remarks>The LiteralNode in the Graph must have no Language or DataType set</remarks>
-        public override LiteralNode GetLiteralNode(string literal)
+        public override ILiteralNode GetLiteralNode(string literal)
         {
-            LiteralNode l = null;
+            ILiteralNode l = null;
             try
             {
                 this._lockManager.EnterReadLock();
@@ -270,9 +270,9 @@ namespace VDS.RDF
         /// <param name="literal">The literal value of the Node to select</param>
         /// <param name="langspec">The Language Specifier for the Node to select</param>
         /// <returns>Either the LiteralNode Or null if no Node with the given Value and Language Specifier exists</returns>
-        public override LiteralNode GetLiteralNode(string literal, string langspec)
+        public override ILiteralNode GetLiteralNode(string literal, string langspec)
         {
-            LiteralNode l = null;
+            ILiteralNode l = null;
             try
             {
                 this._lockManager.EnterReadLock();
@@ -291,9 +291,9 @@ namespace VDS.RDF
         /// <param name="literal">The literal value of the Node to select</param>
         /// <param name="datatype">The Uri for the Data Type of the Literal to select</param>
         /// <returns>Either the LiteralNode Or null if no Node with the given Value and Data Type exists</returns>
-        public override LiteralNode GetLiteralNode(string literal, Uri datatype)
+        public override ILiteralNode GetLiteralNode(string literal, Uri datatype)
         {
-            LiteralNode l = null;
+            ILiteralNode l = null;
             try
             {
                 this._lockManager.EnterReadLock();
@@ -311,9 +311,9 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="qname">The QName of the Node to select</param>
         /// <returns></returns>
-        public override UriNode GetUriNode(string qname)
+        public override IUriNode GetUriNode(string qname)
         {
-            UriNode u = null;
+            IUriNode u = null;
             try
             {
                 this._lockManager.EnterReadLock();
@@ -331,9 +331,9 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="uri">The Uri of the Node to select</param>
         /// <returns>Either the UriNode Or null if no Node with the given Uri exists</returns>
-        public override UriNode GetUriNode(Uri uri)
+        public override IUriNode GetUriNode(Uri uri)
         {
-            UriNode u = null;
+            IUriNode u = null;
             try
             {
                 this._lockManager.EnterReadLock();

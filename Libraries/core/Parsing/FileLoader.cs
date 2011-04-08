@@ -113,7 +113,7 @@ namespace VDS.RDF.Parsing
             {
                 try
                 {
-                    parser = MimeTypesHelper.GetParser(MimeTypesHelper.GetMimeType(Path.GetExtension(filename)));
+                    parser = MimeTypesHelper.GetParser(MimeTypesHelper.GetMimeTypes(Path.GetExtension(filename)));
                 }
                 catch (RdfParserSelectionException)
                 {

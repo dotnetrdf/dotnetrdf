@@ -37,6 +37,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Writing.Formatting
@@ -50,14 +51,20 @@ namespace VDS.RDF.Writing.Formatting
         /// Creates a new Uncompressed Turtle Formatter
         /// </summary>
         public UncompressedTurtleFormatter()
-            : base("Turtle (Uncompressed)") { }
+            : base("Turtle (Uncompressed)") 
+        {
+            this._validEscapes = new char[] { '"', 'n', 't', 'u', 'U', 'r', '\\', '0' };
+        }
 
         /// <summary>
         /// Creates a new Uncompressed Formatter
         /// </summary>
-        /// <param name="formatName"></param>
+        /// <param name="formatName">Format Name</param>
         protected UncompressedTurtleFormatter(String formatName)
-            : base(formatName) { }
+            : base(formatName) 
+        {
+            this._validEscapes = new char[] { '"', 'n', 't', 'u', 'U', 'r', '\\', '0' };
+        }
 
         /// <summary>
         /// Formats characters
@@ -73,9 +80,12 @@ namespace VDS.RDF.Writing.Formatting
     /// <summary>
     /// Formatter which formats Turtle with compression
     /// </summary>
-    public class TurtleFormatter : QNameFormatter
+    public class TurtleFormatter : QNameFormatter, IBaseUriFormatter
     {
         private BlankNodeOutputMapper _bnodeMapper = new BlankNodeOutputMapper(WriterHelper.IsValidBlankNodeID);
+        protected char[] _validEscapes = new char[] { '"', 'n', 't', 'u', 'U', 'r', '\\', '0' };
+        protected char[] _longLitMustEscape = new char[] { '"' };
+        protected char[] _litMustEscape = new char[] { '"', '\n', '\r', '\t' };
 
         /// <summary>
         /// Creates a new Turtle Formatter
@@ -141,7 +151,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <param name="l">Literal Node</param>
         /// <param name="segment">Triple Segment</param>
         /// <returns></returns>
-        protected override string FormatLiteralNode(LiteralNode l, TripleSegment? segment)
+        protected override string FormatLiteralNode(ILiteralNode l, TripleSegment? segment)
         {
             StringBuilder output = new StringBuilder();
             String value, qname;
@@ -164,20 +174,26 @@ namespace VDS.RDF.Writing.Formatting
                 if (longlit) output.Append("\"\"");
 
                 value = l.Value;
-                //This first replace escapes all back slashes for good measure
-                if (value.Contains("\\")) value = value.Replace("\\", "\\\\");
 
-                //Then remove null character since it doesn't change the meaning of the Literal
-                value = value.Replace("\0", "");
+                bool fullyEscaped = (longlit) ? value.IsFullyEscaped(this._validEscapes, this._longLitMustEscape) : value.IsFullyEscaped(this._validEscapes, this._litMustEscape);
 
-                //Don't need all the other escapes for long literals as the characters that would be escaped are permitted in long literals
-                //Need to escape " still
-                value = value.Replace("\"", "\\\"");
-
-                if (!longlit)
+                if (!fullyEscaped)
                 {
-                    //Then if we're not a long literal we'll escape tabs
-                    value = value.Replace("\t", "\\t");
+                    //This first replace escapes all back slashes for good measure
+                    value = value.EscapeBackslashes(this._validEscapes);
+
+                    //Then remove null character since it doesn't change the meaning of the Literal
+                    value = value.Replace("\0", "");
+
+                    //Don't need all the other escapes for long literals as the characters that would be escaped are permitted in long literals
+                    //Need to escape " still
+                    value = value.Escape('"');
+
+                    if (!longlit)
+                    {
+                        //Then if we're not a long literal we'll escape tabs
+                        value = value.Replace("\t", "\\t");
+                    }
                 }
                 output.Append(value);
                 output.Append('"');
@@ -222,9 +238,19 @@ namespace VDS.RDF.Writing.Formatting
         /// <param name="b">Blank Node</param>
         /// <param name="segment">Triple Segment</param>
         /// <returns></returns>
-        protected override string FormatBlankNode(BlankNode b, TripleSegment? segment)
+        protected override string FormatBlankNode(IBlankNode b, TripleSegment? segment)
         {
             return "_:" + this._bnodeMapper.GetOutputID(b.InternalID);
+        }
+
+        public override string FormatNamespace(string prefix, Uri namespaceUri)
+        {
+            return "@prefix " + prefix + ": <" + this.FormatUri(namespaceUri) + "> .";
+        }
+
+        public virtual string FormatBaseUri(Uri u)
+        {
+            return "@base <" + this.FormatUri(u) + "> .";
         }
     }
 }

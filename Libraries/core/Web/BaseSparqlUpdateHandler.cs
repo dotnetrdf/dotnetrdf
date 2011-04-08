@@ -155,26 +155,20 @@ namespace VDS.RDF.Web
                 }
                 if (!isAuth) return;
 
-                //Then process each action
+                //First check actions to see whether they are all permissible
                 foreach (SparqlUpdateCommand cmd in commands.Commands)
                 {
                     //Authenticate each action
                     bool actionAuth = true;
                     if (requireActionAuth) actionAuth = HandlerHelper.IsAuthenticated(context, this._config.UserGroups, this.GetPermissionAction(cmd));
-                    if (actionAuth)
+                    if (!actionAuth)
                     {
-                        //Action is permitted so we go ahead and execute it
-                        try
-                        {
-                            this.ProcessUpdate(cmd);
-                        }
-                        catch
-                        {
-                            //If halting on errors (default behaviour) throw the error otherwise ignore and continue
-                            if (this._config.HaltOnError) throw;
-                        }
+                        throw new SparqlUpdateException("You are not authorised to perform the " + this.GetPermissionAction(cmd) + " action");
                     }
                 }
+
+                //Then assuming we got here this means all our actions are permitted so now we can process the updates
+                this.ProcessUpdates(commands);
 
                 //Flush outstanding changes
                 this._config.Processor.Flush();
@@ -210,15 +204,15 @@ namespace VDS.RDF.Web
         /// <summary>
         /// Processes SPARQL Updates
         /// </summary>
-        /// <param name="cmd">Update Command</param>
+        /// <param name="cmd">Update Command Set</param>
         /// <remarks>
         /// <para>
         /// Implementations should override this method if their behaviour requires more than just invoking the configured Update processor
         /// </para>
         /// </remarks>
-        protected virtual void ProcessUpdate(SparqlUpdateCommand cmd)
+        protected virtual void ProcessUpdates(SparqlUpdateCommandSet cmds)
         {
-            this._config.Processor.ProcessCommand(cmd);
+            this._config.Processor.ProcessCommandSet(cmds);
         }
 
         /// <summary>

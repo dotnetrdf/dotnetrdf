@@ -165,7 +165,7 @@ namespace VDS.RDF.Query.Expressions.Functions
 
                 case NodeType.Literal:
                     //See if the value can be cast
-                    LiteralNode lit = (LiteralNode)n;
+                    ILiteralNode lit = (ILiteralNode)n;
                     if (lit.DataType != null)
                     {
                         String dt = lit.DataType.ToString();
@@ -331,7 +331,7 @@ namespace VDS.RDF.Query.Expressions.Functions
 
                 case NodeType.Literal:
                     //See if the value can be cast
-                    LiteralNode lit = (LiteralNode)n;
+                    ILiteralNode lit = (ILiteralNode)n;
                     if (lit.DataType != null)
                     {
                         String dt = lit.DataType.ToString();
@@ -438,7 +438,7 @@ namespace VDS.RDF.Query.Expressions.Functions
 
                 case NodeType.Literal:
                     //See if the value can be cast
-                    LiteralNode lit = (LiteralNode)n;
+                    ILiteralNode lit = (ILiteralNode)n;
                     if (lit.DataType != null)
                     {
                         if (lit.DataType.ToString().Equals(XmlSpecsHelper.XmlSchemaDataTypeFloat))
@@ -539,7 +539,7 @@ namespace VDS.RDF.Query.Expressions.Functions
 
                 case NodeType.Literal:
                     //See if the value can be cast
-                    LiteralNode lit = (LiteralNode)n;
+                    ILiteralNode lit = (ILiteralNode)n;
                     if (lit.DataType != null)
                     {
                         String dt = lit.DataType.ToString();
@@ -646,7 +646,7 @@ namespace VDS.RDF.Query.Expressions.Functions
 
                 case NodeType.Literal:
                     //See if the value can be cast
-                    LiteralNode lit = (LiteralNode)n;
+                    ILiteralNode lit = (ILiteralNode)n;
                     if (lit.DataType != null)
                     {
                         String dt = lit.DataType.ToString();
@@ -753,7 +753,7 @@ namespace VDS.RDF.Query.Expressions.Functions
 
                 case NodeType.Literal:
                     //See if the value can be cast
-                    LiteralNode lit = (LiteralNode)n;
+                    ILiteralNode lit = (ILiteralNode)n;
                     if (lit.DataType != null)
                     {
                         String dt = lit.DataType.ToString();
@@ -853,13 +853,13 @@ namespace VDS.RDF.Query.Expressions.Functions
 
                 case NodeType.Literal:
                     //Just copy the lexical value into a new Literal Node
-                    LiteralNode lit = (LiteralNode)n;
+                    ILiteralNode lit = (ILiteralNode)n;
                     return new LiteralNode(lit.Graph, lit.Value, new Uri(XmlSpecsHelper.XmlSchemaDataTypeString));
 
                 case NodeType.Uri:
                     //Just copy the Uri into a new Literal Node
-                    UriNode uri = (UriNode)n;
-                    return new LiteralNode(uri.Graph, uri.StringUri, new Uri(XmlSpecsHelper.XmlSchemaDataTypeString));
+                    IUriNode uri = (IUriNode)n;
+                    return new LiteralNode(uri.Graph, uri.Uri.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeString));
 
                 default:
                     throw new RdfQueryException("Cannot cast an Unknown Node to a xsd:string");

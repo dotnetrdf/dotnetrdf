@@ -236,6 +236,24 @@ namespace VDS.RDF.Parsing
         public SparqlQuery Parse(StreamReader input)
         {
             if (input == null) throw new RdfParseException("Cannot parse a SPARQL Query from a null Stream");
+
+            //Issue a Warning if the Encoding of the Stream is not UTF-8
+            if (!input.CurrentEncoding.Equals(Encoding.UTF8))
+            {
+#if !SILVERLIGHT
+                this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
+#else
+                this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.GetType().Name + " - Please be aware that parsing errors may occur as a result");
+#endif
+            }
+
+            return this.ParseInternal(input);
+        }
+
+        public SparqlQuery Parse(TextReader input)
+        {
+            if (input == null) throw new RdfParseException("Cannot parse a SPARQL Query from a null TextReader");
+
             return this.ParseInternal(input);
         }
 
@@ -248,16 +266,9 @@ namespace VDS.RDF.Parsing
         {
             if (queryString == null) throw new RdfParseException("Cannot parse a SPARQL Query from a null String");
 
-            //Turn into a Stream which we can pass to ParseFromFile
-            MemoryStream mem = new MemoryStream();
-            StreamWriter writer = new StreamWriter(mem, Encoding.UTF8);
-            writer.Write(queryString);
-            writer.Flush();
-            mem.Seek(0, SeekOrigin.Begin);
-            StreamReader reader = new StreamReader(writer.BaseStream);
-
             //Call the Internal Parser
-            return this.ParseInternal(reader);
+            //TODO: Do we need to force this to UTF-8 somehow?
+            return this.ParseInternal(new StringReader(queryString));
         }
 
         /// <summary>
@@ -278,18 +289,8 @@ namespace VDS.RDF.Parsing
 
         #region Internal Parsing Logic
 
-        private SparqlQuery ParseInternal(StreamReader input)
+        private SparqlQuery ParseInternal(TextReader input)
         {
-            //Issue a Warning if the Encoding of the Stream is not UTF-8
-            if (!input.CurrentEncoding.Equals(Encoding.UTF8))
-            {
-#if !SILVERLIGHT
-                this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
-#else
-                this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.GetType().Name + " - Please be aware that parsing errors may occur as a result");
-#endif
-            }
-
             try
             {
                 //Create the Parser Context
@@ -539,9 +540,12 @@ namespace VDS.RDF.Parsing
                 }
             }
 
-            //Optimise the Query - when Optimisation is off this just places all the FILTERs (if any)
-            //as a Chain Filter on the Graph Pattern
-            context.Query.Optimise();
+            //Optimise the Query if the global option is enabled
+            if (Options.QueryOptimisation)
+            {
+                //REQ: If a locally scoped optimiser is available use that instead
+                context.Query.Optimise();
+            }
 
             return context.Query;
         }
@@ -1996,7 +2000,7 @@ namespace VDS.RDF.Parsing
 
                 bool first = true;
 
-                UriNode rdfFirst, rdfRest, rdfNil;
+                IUriNode rdfFirst, rdfRest, rdfNil;
                 rdfFirst = new UriNode(null, new Uri(NamespaceMapper.RDF + "first"));
                 rdfRest = new UriNode(null, new Uri(NamespaceMapper.RDF + "rest"));
                 rdfNil = new UriNode(null, new Uri(NamespaceMapper.RDF + "nil"));

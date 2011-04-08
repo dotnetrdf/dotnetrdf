@@ -37,6 +37,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Expressions;
@@ -67,7 +68,7 @@ namespace VDS.RDF.Parsing.Contexts
         /// </summary>
         /// <param name="tokeniser">Tokeniser to use</param>
         public SparqlQueryParserContext(ITokeniser tokeniser)
-            : base(null, tokeniser) { }
+            : base(new NullHandler(), tokeniser) { }
 
         /// <summary>
         /// Creates a new SPARQL Query Parser Context with custom settings
@@ -75,7 +76,7 @@ namespace VDS.RDF.Parsing.Contexts
         /// <param name="tokeniser">Tokeniser to use</param>
         /// <param name="queueMode">Tokeniser Queue Mode</param>
         public SparqlQueryParserContext(ITokeniser tokeniser, TokenQueueMode queueMode)
-            : base(null, tokeniser, queueMode) { }
+            : base(new NullHandler(), tokeniser, queueMode) { }
 
         /// <summary>
         /// Creates a new SPARQL Query Parser Context with custom settings
@@ -84,7 +85,7 @@ namespace VDS.RDF.Parsing.Contexts
         /// <param name="traceParsing">Whether to trace parsing</param>
         /// <param name="traceTokeniser">Whether to trace tokenisation</param>
         public SparqlQueryParserContext(ITokeniser tokeniser, bool traceParsing, bool traceTokeniser)
-            : base(null, tokeniser, traceParsing, traceTokeniser) { }
+            : base(new NullHandler(), tokeniser, traceParsing, traceTokeniser) { }
 
         /// <summary>
         /// Creates a new SPARQL Query Parser Context with custom settings
@@ -94,7 +95,7 @@ namespace VDS.RDF.Parsing.Contexts
         /// <param name="traceParsing">Whether to trace parsing</param>
         /// <param name="traceTokeniser">Whether to trace tokenisation</param>
         public SparqlQueryParserContext(ITokeniser tokeniser, TokenQueueMode queueMode, bool traceParsing, bool traceTokeniser)
-            : base(null, tokeniser, queueMode, traceParsing, traceTokeniser) { }
+            : base(new NullHandler(), tokeniser, queueMode, traceParsing, traceTokeniser) { }
 
         /// <summary>
         /// Creates a new SPARQL Query Parser Context for parsing sub-queries
@@ -102,7 +103,7 @@ namespace VDS.RDF.Parsing.Contexts
         /// <param name="parent">Parent Query Parser Context</param>
         /// <param name="tokens">Tokens that need parsing to form a subquery</param>
         protected internal SparqlQueryParserContext(SparqlQueryParserContext parent, ITokenQueue tokens)
-            : base(null, null)
+            : base(new NullHandler(), null)
         {
             this._traceParsing = parent.TraceParsing;
             this._traceTokeniser = parent.TraceTokeniser;
@@ -119,7 +120,7 @@ namespace VDS.RDF.Parsing.Contexts
         /// </summary>
         /// <param name="tokens">Token Queue</param>
         protected internal SparqlQueryParserContext(ITokenQueue tokens)
-            : base(null, null)
+            : base(new NullHandler(), null)
         {
             this._queue = tokens;
             this._query = new SparqlQuery(true);

@@ -72,7 +72,7 @@ namespace VDS.RDF.Configuration
                 case PermissionSet:
                     IEnumerable<String> actions = from n in ConfigurationLoader.GetConfigurationData(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyAction))
                                                   where n.NodeType == NodeType.Literal
-                                                  select ((LiteralNode)n).Value;
+                                                  select ((ILiteralNode)n).Value;
                     result = new PermissionSet(actions);
                     break;
             }

@@ -302,7 +302,7 @@ namespace VDS.RDF.Storage
     /// Marker interface for classes which implement SQL Stores using the dotNetRDF Store Format
     /// </summary>
     [Obsolete("Direct SQL Backed Stores are considered obsolete and are not recommended for anything other than small scale prototyping and will be removed in future versions", false)]
-    public interface IDotNetRDFStoreManager : ISqlIOManager
+    public interface IDotNetRDFStoreManager : ISqlIOManager, IGenericIOManager
     {
 
     }

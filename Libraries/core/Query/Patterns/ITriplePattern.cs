@@ -35,8 +35,6 @@ terms.
 
 using System;
 using System.Collections.Generic;
-using VDS.RDF.Query;
-using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Construct;
 using VDS.RDF.Query.Expressions;
 
@@ -80,6 +78,16 @@ namespace VDS.RDF.Query.Patterns
             get; 
         }
 
+        /// <summary>
+        /// Gets whether a Triple Pattern uses the Default Dataset when evaluated
+        /// </summary>
+        /// <remarks>
+        /// Almost all Triple Patterns use the Default Dataset unless they are sub-query patterns which themselves don't use the Default Dataset or they contain an expression (in the case of BIND/LET/FILTERs) which does not use the Default Dataset
+        /// </remarks>
+        bool UsesDefaultDataset
+        {
+            get;
+        }
         
     }
 

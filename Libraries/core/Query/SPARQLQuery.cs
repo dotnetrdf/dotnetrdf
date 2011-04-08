@@ -47,6 +47,7 @@ using VDS.RDF.Query.Describe;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Filters;
 using VDS.RDF.Query.Grouping;
+using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Query.Ordering;
 using VDS.RDF.Query.Patterns;
 
@@ -164,6 +165,7 @@ namespace VDS.RDF.Query
         private int _limit = -1;
         private int _offset = 0;
         private long _timeout = Options.QueryExecutionTimeout;
+        private TimeSpan? _executionTime = null;
         private long _queryTime = -1;
         private long _queryTimeTicks = -1;
         private bool _partialResultsOnTimeout = false;
@@ -516,10 +518,7 @@ namespace VDS.RDF.Query
             }
             set
             {
-                if (value >= 0)
-                {
-                    this._timeout = value;
-                }
+                this._timeout = Math.Max(value, 0);
             }
         }
 
@@ -547,6 +546,7 @@ namespace VDS.RDF.Query
         /// <summary>
         /// Gets how long the Query took in Milliseconds
         /// </summary>
+        [Obsolete("Use the QueryExecutionTime property instead to get a Timespan which provides more detailed Timing information", false)]
         public long QueryTime
         {
             get
@@ -569,6 +569,7 @@ namespace VDS.RDF.Query
         /// <summary>
         /// Gets how long the Query took in Ticks
         /// </summary>
+        [Obsolete("Use the QueryExecutionTime property instead to get a Timespan which provides more detailed Timing information", false)]
         public long QueryTimeTicks
         {
             get
@@ -588,6 +589,25 @@ namespace VDS.RDF.Query
             }
         }
 
+        public TimeSpan? QueryExecutionTime
+        {
+            get
+            {
+                if (this._executionTime == null)
+                {
+                    throw new InvalidOperationException("Cannot inspect the Query Time as the Query has not yet been processed");
+                }
+                else
+                {
+                    return this._executionTime;
+                }
+            }
+            set
+            {
+                this._executionTime = value;
+            }
+        }
+
         /// <summary>
         /// Gets whether the Query has an Aggregate as its Result
         /// </summary>
@@ -602,6 +622,9 @@ namespace VDS.RDF.Query
         /// <summary>
         /// Gets whether Optimisation has been applied to the query
         /// </summary>
+        /// <remarks>
+        /// This only indicates that an Optimiser has been applied.  You can always reoptimise the query using a different optimiser by using the relevant overload of the <see cref="SparqlQuery.Optimise">Optimise()</see> method.
+        /// </remarks>
         public bool IsOptimised
         {
             get
@@ -752,11 +775,12 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="dataset">Dataset</param>
         /// <returns>
-        /// Either a <see cref="SparqlResultSet">SparqlResultSet</see> or a <see cref="Graph">Graph</see> depending on the type of query executed
+        /// Either a <see cref="SparqlResultSet">SparqlResultSet</see> or a <see cref="IGraph">IGraph</see> depending on the type of query executed
         /// </returns>
         public Object Evaluate(ISparqlDataset dataset)
         {
             //Reset Query Timers
+            this._executionTime = null;
             this._queryTime = -1;
             this._queryTimeTicks = -1;
 
@@ -809,12 +833,14 @@ namespace VDS.RDF.Query
                     result = query.Evaluate(context);
 
                     context.EndExecution();
+                    this._executionTime = new TimeSpan(context.QueryTimeTicks);
                     this._queryTime = context.QueryTime;
                     this._queryTimeTicks = context.QueryTimeTicks;
                 }
                 catch (RdfQueryException)
                 {
                     context.EndExecution();
+                    this._executionTime = new TimeSpan(context.QueryTimeTicks);
                     this._queryTime = context.QueryTime;
                     this._queryTimeTicks = context.QueryTimeTicks;
                     throw;
@@ -822,6 +848,7 @@ namespace VDS.RDF.Query
                 catch
                 {
                     context.EndExecution();
+                    this._executionTime = new TimeSpan(context.QueryTimeTicks);
                     this._queryTime = context.QueryTime;
                     this._queryTimeTicks = context.QueryTimeTicks;
                     throw;
@@ -854,16 +881,24 @@ namespace VDS.RDF.Query
                                 ConstructContext constructContext = new ConstructContext(h, s, false);
                                 foreach (ITriplePattern p in this._constructTemplate.TriplePatterns)
                                 {
-                                    if (p is IConstructTriplePattern)
+                                    try
                                     {
-                                        constructedTriples.Add(((IConstructTriplePattern)p).Construct(constructContext));
+                                        if (p is IConstructTriplePattern)
+                                        {
+                                            constructedTriples.Add(((IConstructTriplePattern)p).Construct(constructContext));
+                                        }
+                                    }
+                                    catch (RdfQueryException)
+                                    {
+                                        //If we get an error here then we could not construct a specific triple
+                                        //so we continue anyway
                                     }
                                 }
                             }
                             catch (RdfQueryException)
                             {
-                                //If we throw an error this means we couldn't construct for this solution so the
-                                //solution is discarded
+                                //If we get an error here this means we couldn't construct for this solution so the
+                                //entire solution is discarded
                                 continue;
                             }
                             h.Assert(constructedTriples);
@@ -903,11 +938,14 @@ namespace VDS.RDF.Query
         /// </summary>
         public void Optimise()
         {
-            if (this._optimised) return;
+            this.Optimise(SparqlOptimiser.QueryOptimiser);
+        }
 
+        public void Optimise(IQueryOptimiser optimiser)
+        {
             if (this._rootGraphPattern != null)
             {
-                this._rootGraphPattern.Optimise(Enumerable.Empty<String>());
+                optimiser.Optimise(this._rootGraphPattern, Enumerable.Empty<String>(), this._rootGraphPattern.UnplacedFilters, this._rootGraphPattern.UnplacedAssignments);
             }
 
             this._optimised = true;
@@ -920,7 +958,8 @@ namespace VDS.RDF.Query
         /// <param name="mapping">Mapping of IDs to new Blank Nodes</param>
         /// <param name="g">Graph of the Description</param>
         /// <returns></returns>
-        private Triple RewriteDescribeBNodes(Triple t, Dictionary<String, INode> mapping, Graph g) {
+        private Triple RewriteDescribeBNodes(Triple t, Dictionary<String, INode> mapping, IGraph g)
+        {
             INode s, p, o;
             String id;
 
@@ -1236,23 +1275,14 @@ namespace VDS.RDF.Query
                 pattern = new Bindings(this._bindings, pattern);
             }
 
-            //Then we apply any 
+            //Then we apply any optimisers followed by relevant solution modifiers
             switch (this._type)
             {
                 case SparqlQueryType.Ask:
-                    //Optimise ASK Queries if Algebra Optimisation is enabled
+                    //Apply Algebra Optimisation is enabled
                     if (Options.AlgebraOptimisation)
                     {
-                        try
-                        {
-                            AskBgpTransformer transformer = new AskBgpTransformer();
-                            ISparqlAlgebra optPattern = transformer.Transform(pattern);
-                            return new Ask(optPattern);
-                        }
-                        catch
-                        {
-                            //Ignore transformation errors
-                        }
+                        pattern = this.ApplyAlgebraOptimisations(pattern);
                     }
                     return new Ask(pattern);
 
@@ -1265,23 +1295,10 @@ namespace VDS.RDF.Query
                 case SparqlQueryType.SelectAllReduced:
                 case SparqlQueryType.SelectDistinct:
                 case SparqlQueryType.SelectReduced:
-                    //Optimise Queries to use LazyBgp's if Algebra Optimisation is enabled and there is a LIMIT but no DISTINCT/ORDER BY/GROUP BY/HAVING/BINDINGS
-                    //In the case that there is just an ORDER BY we may be able to optimise under certain circumstances
-                    //These are the following:
-                    // 1 - The Ordering is simple i.e. only variables
-                    // 2 - All the Variables appear in the first pattern in the query
-                    if (Options.AlgebraOptimisation && this._limit > 0 && !this.HasDistinctModifier && (this._orderBy == null || this.IsOptimisableOrderBy) && this._groupBy == null && this._having == null && this._bindings == null)
+                    //Apply Algebra Optimisation if enabled
+                    if (Options.AlgebraOptimisation)
                     {
-                        try
-                        {
-                            LazyBgpTransformer transformer = new LazyBgpTransformer();
-                            ISparqlAlgebra optPattern = transformer.Transform(pattern);
-                            pattern = optPattern;
-                        }
-                        catch
-                        {
-                            //If errors then can't use LazyBgp
-                        }
+                        pattern = this.ApplyAlgebraOptimisations(pattern);
                     }
                     
                     //GROUP BY is the first thing applied
@@ -1327,6 +1344,24 @@ namespace VDS.RDF.Query
                 default:
                     throw new RdfQueryException("Unable to convert unknown Query Types to SPARQL Algebra");
             }
+        }
+
+        private ISparqlAlgebra ApplyAlgebraOptimisations(ISparqlAlgebra algebra)
+        {
+            //REQ: Add support for locally scoped Optimisers
+
+            foreach (IAlgebraOptimiser opt in SparqlOptimiser.AlgebraOptimisers.Where(o => o.IsApplicable(this)))
+            {
+                try
+                {
+                    algebra = opt.Optimise(algebra);
+                }
+                catch
+                {
+                    //Ignore errors
+                }
+            }
+            return algebra;
         }
 
         /// <summary>
@@ -1387,6 +1422,30 @@ namespace VDS.RDF.Query
                     }
                 }
                 return (bool)this._optimisableOrdering;
+            }
+        }
+
+        /// <summary>
+        /// Gets whether a Query uses the Default Dataset against which it is evaluated
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// If the value is true then the Query will use whatever dataset is it evaluated against.  If the value is false then the query changes the dataset at one/more points during its evaluation.
+        /// </para>
+        /// <para>
+        /// Things that may change the dataset and cause a query not to use the Default Dataset are as follows:
+        /// <ul>
+        ///     <li>FROM clauses (but not FROM NAMED)</li>
+        ///     <li>GRAPH clauses</li>
+        ///     <li>Subqueries which do not use the default dataset</li>
+        /// </ul>
+        /// </para>
+        /// </remarks>
+        public bool UsesDefaultDataset
+        {
+            get
+            {
+                return !this._defaultGraphs.Any() && this._rootGraphPattern.UsesDefaultDataset;
             }
         }
     }

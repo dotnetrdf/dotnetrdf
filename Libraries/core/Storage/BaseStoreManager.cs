@@ -741,8 +741,6 @@ namespace VDS.RDF.Storage
         /// </remarks>
         public virtual void LoadGraph(IGraph g, Uri graphUri)
         {
-            if (graphUri == null) return;
-
             try
             {
                 this.Open(true);
@@ -873,10 +871,6 @@ namespace VDS.RDF.Storage
         {
             try
             {
-                //Validation
-                if (graphUri == null) throw new RdfStorageException("Cannot update a Graph since a Null URI was given as the Graph URI");
-                if (!this.Exists(graphUri)) throw new RdfStorageException("Cannot update a Graph since no Graph with the given URI exists in the Store");
-
                 this.Open(true);
 
                 //Get the Graph ID
@@ -890,6 +884,7 @@ namespace VDS.RDF.Storage
                         this.SaveTriple(t, graphID);
                     }
                 }
+                this.Flush();
 
                 //Delete Triples
                 if (removals != null)
@@ -899,6 +894,7 @@ namespace VDS.RDF.Storage
                         this.RemoveTriple(t, graphID);
                     }
                 }
+                this.Flush();
 
                 this.Close(true);
             }

@@ -49,6 +49,7 @@ using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Writing;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Storage
 {
@@ -71,6 +72,7 @@ namespace VDS.RDF.Storage
         private String _baseUri;
         private SparqlRemoteEndpoint _endpoint;
         private bool _updatesEnabled = true;
+        private SparqlFormatter _formatter = new SparqlFormatter();
 
 #if !NO_RWLOCK
         ReaderWriterLockSlim _lockManager = new ReaderWriterLockSlim();
@@ -302,12 +304,12 @@ namespace VDS.RDF.Storage
                         {
                             //Build up the DELETE command and execute
                             StringBuilder delete = new StringBuilder();
-                            Graph deleteGraph = new Graph();
-                            deleteGraph.Assert(removals);
-                            String deleteData = VDS.RDF.Writing.StringWriter.Write(deleteGraph, new NTriplesWriter());
                             delete.AppendLine("DELETE DATA");
                             delete.AppendLine("{ GRAPH <" + graphUri.Replace(">", "\\>") + "> {");
-                            delete.AppendLine(deleteData);
+                            foreach (Triple t in removals)
+                            {
+                                delete.AppendLine(t.ToString(this._formatter));
+                            }
                             delete.AppendLine("}}");
 
                             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this._baseUri + "update/");
@@ -340,12 +342,12 @@ namespace VDS.RDF.Storage
                         {
                             //Build up the INSERT command and execute
                             StringBuilder insert = new StringBuilder();
-                            Graph insertGraph = new Graph();
-                            insertGraph.Assert(additions);
-                            String insertData = VDS.RDF.Writing.StringWriter.Write(insertGraph, new NTriplesWriter());
                             insert.AppendLine("INSERT DATA");
                             insert.AppendLine("{ GRAPH <" + graphUri.Replace(">", "\\>") + "> {");
-                            insert.AppendLine(insertData);
+                            foreach (Triple t in additions)
+                            {
+                                insert.AppendLine(t.ToString(this._formatter));
+                            }
                             insert.AppendLine("}}");
 
                             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this._baseUri + "update/");
@@ -571,7 +573,7 @@ namespace VDS.RDF.Storage
                             INode temp = r["g"];
                             if (temp.NodeType == NodeType.Uri)
                             {
-                                graphs.Add(((UriNode)temp).Uri);
+                                graphs.Add(((IUriNode)temp).Uri);
                             }
                         }
                     }

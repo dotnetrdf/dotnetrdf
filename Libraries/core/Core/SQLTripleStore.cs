@@ -223,6 +223,11 @@ namespace VDS.RDF
             this._manager.Flush();
         }
 
+        public void Discard()
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Disposes of the Triple Store
         /// </summary>

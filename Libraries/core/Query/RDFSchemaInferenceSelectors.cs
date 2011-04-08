@@ -46,15 +46,15 @@ namespace VDS.RDF.Query
     /// </summary>
     public class ExactClassSelector : ISelector<Triple>
     {
-        private UriNode _targetclass;
-        private UriNode _type;
+        private IUriNode _targetclass;
+        private IUriNode _type;
 
         /// <summary>
         /// Creates a new ExactClassSelector for the given Graph with the given Target Class
         /// </summary>
         /// <param name="g"></param>
         /// <param name="targetClass"></param>
-        public ExactClassSelector(Graph g, UriNode targetClass)
+        public ExactClassSelector(IGraph g, IUriNode targetClass)
         {
             this._targetclass = targetClass;
             this._type = g.CreateUriNode(new Uri(NamespaceMapper.RDF + "type"));
@@ -85,15 +85,15 @@ namespace VDS.RDF.Query
     /// </summary>
     public class SubClassSelector : ISelector<Triple>
     {
-        private UriNode _targetclass;
-        private UriNode _subclassof;
+        private IUriNode _targetclass;
+        private IUriNode _subclassof;
 
         /// <summary>
         /// Creates a new SubClassSelector for the given Graph with the given Target Class
         /// </summary>
         /// <param name="g"></param>
         /// <param name="targetClass"></param>
-        public SubClassSelector(Graph g, UriNode targetClass)
+        public SubClassSelector(IGraph g, IUriNode targetClass)
         {
             this._targetclass = targetClass;
             this._subclassof = g.CreateUriNode(new Uri(NamespaceMapper.RDFS + "subClassOf"));
@@ -124,15 +124,15 @@ namespace VDS.RDF.Query
     /// </summary>
     public class SuperClassSelector : ISelector<Triple>
     {
-        private UriNode _targetclass;
-        private UriNode _subclassof;
+        private IUriNode _targetclass;
+        private IUriNode _subclassof;
 
         /// <summary>
         /// Creates a new SuperClassSelector for the given Graph with the given Target Class
         /// </summary>
         /// <param name="g"></param>
         /// <param name="targetClass"></param>
-        public SuperClassSelector(Graph g, UriNode targetClass)
+        public SuperClassSelector(IGraph g, IUriNode targetClass)
         {
             this._targetclass = targetClass;
             this._subclassof = g.CreateUriNode(new Uri(NamespaceMapper.RDFS + "subClassOf"));
@@ -166,15 +166,15 @@ namespace VDS.RDF.Query
     /// </remarks>
     public class ClassSelector : ISelector<Triple>
     {
-        private List<UriNode> _classes = new List<UriNode>();
-        private UriNode _type;
+        private List<IUriNode> _classes = new List<IUriNode>();
+        private IUriNode _type;
 
         /// <summary>
         /// Creates a new Class Selector for the given Graph and Target Class
         /// </summary>
         /// <param name="g">Graph to infer Class Hierarchy from</param>
         /// <param name="targetClass">Target Class which you want to find all Sub Classes of</param>
-        public ClassSelector(Graph g, UriNode targetClass)
+        public ClassSelector(IGraph g, UriNode targetClass)
         {
             //Add the Target Class to the list of possible classes
             this._classes.Add(targetClass);
@@ -191,7 +191,8 @@ namespace VDS.RDF.Query
         /// <param name="g">Graph to perform inference on</param>
         /// <param name="parent">The Class to find SubClasses of</param>
         /// <remarks>This method is called when the Selector is instantiated and will be called recursively till it has found all SubClasses defined within the given Graph</remarks>
-        private void InferSubClasses(Graph g, UriNode parent) {
+        private void InferSubClasses(IGraph g, IUriNode parent)
+        {
             //Use another Selector to find SubClasses
             SubClassSelector scsel = new SubClassSelector(g, parent);
 
@@ -200,7 +201,7 @@ namespace VDS.RDF.Query
                 //Add newly discovered class to list of classes
                 if (t.Subject.NodeType == NodeType.Uri) 
                 {
-                    UriNode subclass = (UriNode)t.Subject;
+                    IUriNode subclass = (IUriNode)t.Subject;
                     this._classes.Add(subclass);
 
                     //Recurse to find SubClasses of the SubClass
@@ -222,7 +223,7 @@ namespace VDS.RDF.Query
                 //Does the Object match the Target Class or a subclass thereof
                 if (obj.Object.NodeType == NodeType.Uri)
                 {
-                    UriNode test = (UriNode)obj.Object;
+                    IUriNode test = (IUriNode)obj.Object;
                     return this._classes.Contains(test);
                 }
                 else
@@ -246,15 +247,15 @@ namespace VDS.RDF.Query
     /// </remarks>
     public class WideningClassSelector : ISelector<Triple>
     {
-        private List<UriNode> _classes = new List<UriNode>();
-        private UriNode _type;
+        private List<IUriNode> _classes = new List<IUriNode>();
+        private IUriNode _type;
 
         /// <summary>
         /// Creates a new Widening Class Selector for the given Graph and Target Class
         /// </summary>
         /// <param name="g">Graph to infer Class Hierarchy from</param>
         /// <param name="targetClass">Target Class which you want to find all Super Classes of</param>
-        public WideningClassSelector(Graph g, UriNode targetClass)
+        public WideningClassSelector(IGraph g, UriNode targetClass)
         {
             //Add the Target Class to the list of possible classes
             this._classes.Add(targetClass);
@@ -271,7 +272,7 @@ namespace VDS.RDF.Query
         /// <param name="g">Graph to perform inference on</param>
         /// <param name="parent">The Class to find SuperClasses of</param>
         /// <remarks>This method is called when the Selector is instantiated and will be called recursively till it has found all SuperClasses defined within the given Graph</remarks>
-        private void InferSuperClasses(Graph g, UriNode parent)
+        private void InferSuperClasses(IGraph g, IUriNode parent)
         {
             //Use another Selector to find SubClasses
             SuperClassSelector scsel = new SuperClassSelector(g, parent);
@@ -281,7 +282,7 @@ namespace VDS.RDF.Query
                 //Add newly discovered class to list of classes
                 if (t.Object.NodeType == NodeType.Uri)
                 {
-                    UriNode supclass = (UriNode)t.Object;
+                    IUriNode supclass = (IUriNode)t.Object;
                     this._classes.Add(supclass);
 
                     //Recurse to find SuperClasses of the SuperClass
@@ -303,7 +304,7 @@ namespace VDS.RDF.Query
                 //Does the Object match the Target Class or a superclass thereof
                 if (obj.Object.NodeType == NodeType.Uri)
                 {
-                    UriNode test = (UriNode)obj.Object;
+                    IUriNode test = (IUriNode)obj.Object;
                     return this._classes.Contains(test);
                 }
                 else
@@ -324,13 +325,13 @@ namespace VDS.RDF.Query
     /// </summary>
     public class HasExactPropertySelector : ISelector<Triple>
     {
-        private UriNode _targetproperty;
+        private IUriNode _targetproperty;
 
         /// <summary>
         /// Creates a new HasExactPropertySelector which will select Triples with the given Property as the Predicate
         /// </summary>
         /// <param name="targetProperty">The Property Triples to be selected must contain as their Predicate</param>
-        public HasExactPropertySelector(UriNode targetProperty)
+        public HasExactPropertySelector(IUriNode targetProperty)
         {
             this._targetproperty = targetProperty;
         }
@@ -353,15 +354,15 @@ namespace VDS.RDF.Query
     /// </summary>
     public class SubPropertySelector : ISelector<Triple>
     {
-        private UriNode _targetproperty;
-        private UriNode _subpropof;
+        private IUriNode _targetproperty;
+        private IUriNode _subpropof;
 
         /// <summary>
         /// Creates a new SubPropertySelector for the given Graph with the given Target Property
         /// </summary>
         /// <param name="g">Graph selection will occur in</param>
         /// <param name="targetProperty">Property you wish to select upon</param>
-        public SubPropertySelector(Graph g, UriNode targetProperty)
+        public SubPropertySelector(IGraph g, IUriNode targetProperty)
         {
             this._targetproperty = targetProperty;
             this._subpropof = g.CreateUriNode(new Uri(NamespaceMapper.RDFS + "subPropertyOf"));
@@ -392,14 +393,14 @@ namespace VDS.RDF.Query
     /// </summary>
     public class HasPropertySelector : ISelector<Triple>
     {
-        private List<UriNode> _properties = new List<UriNode>();
+        private List<IUriNode> _properties = new List<IUriNode>();
 
         /// <summary>
         /// Creates a new Has Property Selector for the given Graph and Target Property
         /// </summary>
         /// <param name="g">Graph to infer Property hierarchy</param>
         /// <param name="targetProperty">Target Property which you wish to find all sub properties of</param>
-        public HasPropertySelector(Graph g, UriNode targetProperty)
+        public HasPropertySelector(IGraph g, IUriNode targetProperty)
         {
             //Add the Target Class to the list of possible classes
             this._properties.Add(targetProperty);
@@ -408,7 +409,7 @@ namespace VDS.RDF.Query
             this.InferSubProperties(g, targetProperty);
         }
 
-        private void InferSubProperties(Graph g, UriNode parent)
+        private void InferSubProperties(IGraph g, IUriNode parent)
         {
             //Use another Selector to find SubClasses
             SubPropertySelector spsel = new SubPropertySelector(g, parent);
@@ -418,7 +419,7 @@ namespace VDS.RDF.Query
                 //Add newly discovered property to list of properties
                 if (t.Subject.NodeType == NodeType.Uri)
                 {
-                    UriNode subprop = (UriNode)t.Subject;
+                    IUriNode subprop = (IUriNode)t.Subject;
                     this._properties.Add(subprop);
 
                     //Recurse to find SubProperties of the SubProperty
@@ -437,7 +438,7 @@ namespace VDS.RDF.Query
             //Does the Predicate match the Target Property or a subproperty thereof
             if (obj.Predicate.NodeType == NodeType.Uri)
             {
-                UriNode test = (UriNode)obj.Predicate;
+                IUriNode test = (IUriNode)obj.Predicate;
                 return this._properties.Contains(test);
             }
             else

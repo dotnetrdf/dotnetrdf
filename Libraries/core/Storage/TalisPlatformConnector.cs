@@ -384,7 +384,7 @@ namespace VDS.RDF.Storage
             try
             {
                 //Generate the ChangeSet Batch
-                Graph g = this.GenerateChangeSet(additions, removals);
+                IGraph g = this.GenerateChangeSet(additions, removals);
                 if (g == null) return TalisUpdateResult.NotRequired; //Null so no changes need persisting
                 if (g.IsEmpty) return TalisUpdateResult.NotRequired; //Empty so no changes need persisting
 
@@ -455,7 +455,7 @@ namespace VDS.RDF.Storage
         /// <param name="additions">Triple added</param>
         /// <param name="removals">Triples removed</param>
         /// <returns>Null if there are no Changes to be persisted</returns>
-        private Graph GenerateChangeSet(IEnumerable<Triple> additions, IEnumerable<Triple> removals)
+        private IGraph GenerateChangeSet(IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
             //Ensure there are no duplicates in the lists
             List<Triple> toAdd = (additions == null) ? new List<Triple>() : additions.Distinct().ToList();
@@ -483,29 +483,29 @@ namespace VDS.RDF.Storage
             g.NamespaceMap.AddNamespace("cs", new Uri(TalisChangeSetNamespace));
 
             //Make all the Nodes we need
-            UriNode rdfType = g.CreateUriNode("rdf:type");
-            UriNode changeSet = g.CreateUriNode("cs:ChangeSet");
-            UriNode subjOfChange = g.CreateUriNode("cs:subjectOfChange");
-            UriNode createdDate = g.CreateUriNode("cs:createdDate");
-            LiteralNode now = g.CreateLiteralNode(DateTime.Now.ToString(XmlSpecsHelper.XmlSchemaDateTimeFormat));
-            UriNode creator = g.CreateUriNode("cs:creatorName");
-            LiteralNode dotNetRDF = g.CreateLiteralNode("dotNetRDF");
-            UriNode changeReason = g.CreateUriNode("cs:changeReason");
-            LiteralNode dotNetRDFUpdate = g.CreateLiteralNode("Updates to the store were requested by a dotNetRDF powered application");
-            UriNode precedingChangeset = g.CreateUriNode("cs:precedingChangeSet");
-            UriNode removal = g.CreateUriNode("cs:removal");
-            UriNode addition = g.CreateUriNode("cs:addition");
-            UriNode rdfStmt = g.CreateUriNode("rdf:Statement");
-            UriNode rdfSubj = g.CreateUriNode("rdf:subject");
-            UriNode rdfPred = g.CreateUriNode("rdf:predicate");
-            UriNode rdfObj = g.CreateUriNode("rdf:object");
+            IUriNode rdfType = g.CreateUriNode("rdf:type");
+            IUriNode changeSet = g.CreateUriNode("cs:ChangeSet");
+            IUriNode subjOfChange = g.CreateUriNode("cs:subjectOfChange");
+            IUriNode createdDate = g.CreateUriNode("cs:createdDate");
+            ILiteralNode now = g.CreateLiteralNode(DateTime.Now.ToString(XmlSpecsHelper.XmlSchemaDateTimeFormat));
+            IUriNode creator = g.CreateUriNode("cs:creatorName");
+            ILiteralNode dotNetRDF = g.CreateLiteralNode("dotNetRDF");
+            IUriNode changeReason = g.CreateUriNode("cs:changeReason");
+            ILiteralNode dotNetRDFUpdate = g.CreateLiteralNode("Updates to the store were requested by a dotNetRDF powered application");
+            IUriNode precedingChangeset = g.CreateUriNode("cs:precedingChangeSet");
+            IUriNode removal = g.CreateUriNode("cs:removal");
+            IUriNode addition = g.CreateUriNode("cs:addition");
+            IUriNode rdfStmt = g.CreateUriNode("rdf:Statement");
+            IUriNode rdfSubj = g.CreateUriNode("rdf:subject");
+            IUriNode rdfPred = g.CreateUriNode("rdf:predicate");
+            IUriNode rdfObj = g.CreateUriNode("rdf:object");
 
             //Find the Distinct Subjects from the list
             IEnumerable<INode> subjects = (from t in toAdd select t.Subject).Concat(from t in toRemove select t.Subject).Distinct();
             foreach (INode subj in subjects)
             {
                 //Create a ChangeSet for this Subject
-                UriNode report = g.CreateUriNode(new Uri(Tools.ResolveUri(subj.GetHashCode() + "/changes/" + DateTime.Now.ToString(TalisChangeSetIDFormat), g.BaseUri.ToString())));
+                IUriNode report = g.CreateUriNode(new Uri(Tools.ResolveUri(subj.GetHashCode() + "/changes/" + DateTime.Now.ToString(TalisChangeSetIDFormat), g.BaseUri.ToString())));
                 g.Assert(new Triple(report, rdfType, changeSet));
                 g.Assert(new Triple(report, subjOfChange, Tools.CopyNode(subj, g)));
                 g.Assert(new Triple(report, createdDate, now));
@@ -515,7 +515,7 @@ namespace VDS.RDF.Storage
                 //Add Additions to this ChangeSet
                 foreach (Triple t in toAdd.Where(t2 => t2.Subject.Equals(subj)))
                 {
-                    BlankNode b = g.CreateBlankNode();
+                    IBlankNode b = g.CreateBlankNode();
                     g.Assert(new Triple(report, addition, b));
                     g.Assert(new Triple(b, rdfType, rdfStmt));
                     g.Assert(new Triple(b, rdfSubj, Tools.CopyNode(t.Subject, g)));
@@ -526,7 +526,7 @@ namespace VDS.RDF.Storage
                 //Add Removals to this ChangeSet
                 foreach (Triple t in toRemove.Where(t2 => t2.Subject.Equals(subj)))
                 {
-                    BlankNode b = g.CreateBlankNode();
+                    IBlankNode b = g.CreateBlankNode();
                     g.Assert(new Triple(report, removal, b));
                     g.Assert(new Triple(b, rdfType, rdfStmt));
                     g.Assert(new Triple(b, rdfSubj, Tools.CopyNode(t.Subject, g)));
@@ -767,7 +767,7 @@ namespace VDS.RDF.Storage
         /// </remarks>
         public void LoadGraph(IGraph g, Uri graphUri)
         {
-            this.Describe(g, graphUri);
+            this.LoadGraph(g, graphUri.ToSafeString());
         }
 
         /// <summary>
@@ -782,6 +782,7 @@ namespace VDS.RDF.Storage
         /// </remarks>
         public void LoadGraph(IGraph g, string graphUri)
         {
+            if (graphUri == null || graphUri.Equals(String.Empty)) throw new TalisException("Cannot load the Description of a null/empty URI");
             this.Describe(g, graphUri);
         }
 

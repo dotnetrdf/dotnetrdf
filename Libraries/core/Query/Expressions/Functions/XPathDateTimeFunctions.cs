@@ -67,7 +67,7 @@ namespace VDS.RDF.Query.Expressions.Functions
             {
                 if (temp.NodeType == NodeType.Literal)
                 {
-                    LiteralNode lit = (LiteralNode)temp;
+                    ILiteralNode lit = (ILiteralNode)temp;
                     if (lit.DataType != null)
                     {
                         if (lit.DataType.ToString().Equals(XmlSpecsHelper.XmlSchemaDataTypeDateTime) || lit.DataType.ToString().Equals(XmlSpecsHelper.XmlSchemaDataTypeDate))
@@ -421,7 +421,7 @@ namespace VDS.RDF.Query.Expressions.Functions
             {
                 if (temp.NodeType == NodeType.Literal)
                 {
-                    LiteralNode lit = (LiteralNode)temp;
+                    ILiteralNode lit = (ILiteralNode)temp;
                     if (lit.DataType != null)
                     {
                         if (lit.DataType.ToString().Equals(XmlSpecsHelper.XmlSchemaDataTypeDateTime))

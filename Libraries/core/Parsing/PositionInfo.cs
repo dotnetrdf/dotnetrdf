@@ -33,6 +33,8 @@ terms.
 
 */
 
+using System.Xml;
+
 namespace VDS.RDF.Parsing
 {
     /// <summary>
@@ -77,6 +79,13 @@ namespace VDS.RDF.Parsing
         {
             this._endLine = endLine;
         }
+
+        /// <summary>
+        /// Creates a new set of Position Information form some XML Line Information
+        /// </summary>
+        /// <param name="info">XML Line Information</param>
+        public PositionInfo(IXmlLineInfo info)
+            : this(info.LineNumber, info.LinePosition) { }
 
         /// <summary>
         /// Gets the Start Line

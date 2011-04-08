@@ -364,7 +364,7 @@ namespace VDS.RDF.Writing
         /// <param name="c">Collection to convert</param>
         /// <param name="indent">Indentation</param>
         /// <returns></returns>
-        private String GenerateCollectionOutput(CompressingTurtleWriterContext context, OutputRDFCollection c, int indent)
+        private String GenerateCollectionOutput(CompressingTurtleWriterContext context, OutputRdfCollection c, int indent)
         {
             StringBuilder output = new StringBuilder();
             bool first = true;
@@ -373,12 +373,13 @@ namespace VDS.RDF.Writing
             {
                 output.Append('(');
 
-                while (c.Count > 0)
+                while (c.Triples.Count > 0)
                 {
                     if (context.PrettyPrint && !first) output.Append(new String(' ', indent));
                     first = false;
-                    output.Append(this.GenerateNodeOutput(context, c.Pop(), TripleSegment.Object, indent));
-                    if (c.Count > 0)
+                    output.Append(this.GenerateNodeOutput(context, c.Triples.First().Object, TripleSegment.Object, indent));
+                    c.Triples.RemoveAt(0);
+                    if (c.Triples.Count > 0)
                     {
                         output.Append(' ');
                     }
@@ -388,7 +389,7 @@ namespace VDS.RDF.Writing
             }
             else
             {
-                if (c.Count == 0)
+                if (c.Triples.Count == 0)
                 {
                     //Empty Collection
                     //Can represent as a single Blank Node []
@@ -398,13 +399,13 @@ namespace VDS.RDF.Writing
                 {
                     output.Append('[');
 
-                    while (c.Count > 0)
+                    while (c.Triples.Count > 0)
                     {
                         if (context.PrettyPrint && !first) output.Append(new String(' ', indent));
                         first = false;
-                        String temp = this.GenerateNodeOutput(context, c.Pop(), TripleSegment.Predicate, indent);
+                        String temp = this.GenerateNodeOutput(context, c.Triples.First().Predicate, TripleSegment.Predicate, indent);
                         output.Append(temp);
-                        output.Append(" ");
+                        output.Append(' ');
                         int addIndent;
                         if (temp.Contains('\n'))
                         {
@@ -414,9 +415,10 @@ namespace VDS.RDF.Writing
                         {
                             addIndent = temp.Length;
                         }
-                        output.Append(this.GenerateNodeOutput(context, c.Pop(), TripleSegment.Object, indent + 2 + addIndent));
+                        output.Append(this.GenerateNodeOutput(context, c.Triples.First().Object, TripleSegment.Object, indent + 2 + addIndent));
+                        c.Triples.RemoveAt(0);
 
-                        if (c.Count > 0)
+                        if (c.Triples.Count > 0)
                         {
                             output.AppendLine(" ; ");
                             output.Append(' ');

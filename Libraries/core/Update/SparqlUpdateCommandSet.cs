@@ -35,6 +35,7 @@ terms.
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
@@ -48,6 +49,8 @@ namespace VDS.RDF.Update
         private List<SparqlUpdateCommand> _commands = new List<SparqlUpdateCommand>();
         private NamespaceMapper _nsmap = new NamespaceMapper(true);
         private Uri _baseUri;
+        private long _timeout = 0;
+        private TimeSpan? _executionTime = null;
 
         /// <summary>
         /// Creates a new empty Command Set
@@ -167,6 +170,40 @@ namespace VDS.RDF.Update
             get
             {
                 return this._commands.All(c => c.IsOptimised);
+            }
+        }
+
+        /// <summary>
+        /// Gets/Sets the Timeout for the execution of the Updates
+        /// </summary>
+        public long Timeout
+        {
+            get
+            {
+                return this._timeout;
+            }
+            set
+            {
+                this._timeout = Math.Max(value, 0);
+            }
+        }
+
+        public TimeSpan? UpdateExecutionTime
+        {
+            get
+            {
+                if (this._executionTime == null)
+                {
+                    throw new InvalidOperationException("Cannot inspect the Update Time as the Command Set has not yet been processed");
+                }
+                else
+                {
+                    return this._executionTime;
+                }
+            }
+            set
+            {
+                this._executionTime = value;
             }
         }
 

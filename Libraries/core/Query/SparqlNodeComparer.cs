@@ -135,7 +135,7 @@ namespace VDS.RDF.Query
                                 return DateTimeCompare(x, y);
                             case XmlSpecsHelper.XmlSchemaDataTypeString:
                                 //Both Strings so use Lexical string ordering
-                                return ((LiteralNode)x).Value.CompareTo(((LiteralNode)y).Value);
+                                return ((ILiteralNode)x).Value.CompareTo(((ILiteralNode)y).Value);
                             default:
                                 //Use node ordering
                                 return x.CompareTo(y);
@@ -186,8 +186,8 @@ namespace VDS.RDF.Query
 
             try
             {
-                LiteralNode a = (LiteralNode)x;
-                LiteralNode b = (LiteralNode)y;
+                ILiteralNode a = (ILiteralNode)x;
+                ILiteralNode b = (ILiteralNode)y;
 
                 switch (type)
                 {
@@ -220,8 +220,8 @@ namespace VDS.RDF.Query
             if (x == null || y == null) throw new RdfQueryException("Cannot evaluate date time equality when one or both arguments are Null");
             try
             {
-                LiteralNode a = (LiteralNode)x;
-                LiteralNode b = (LiteralNode)y;
+                ILiteralNode a = (ILiteralNode)x;
+                ILiteralNode b = (ILiteralNode)y;
 
                 DateTimeOffset c = SparqlSpecsHelper.ToDateTimeOffset(a);
                 DateTimeOffset d = SparqlSpecsHelper.ToDateTimeOffset(b);
@@ -247,8 +247,8 @@ namespace VDS.RDF.Query
             if (x == null || y == null) throw new RdfQueryException("Cannot evaluate date equality when one or both arguments are Null");
             try
             {
-                LiteralNode a = (LiteralNode)x;
-                LiteralNode b = (LiteralNode)y;
+                ILiteralNode a = (ILiteralNode)x;
+                ILiteralNode b = (ILiteralNode)y;
 
                 DateTimeOffset c = SparqlSpecsHelper.ToDateTimeOffset(a);
                 DateTimeOffset d = SparqlSpecsHelper.ToDateTimeOffset(b);
@@ -333,11 +333,13 @@ namespace VDS.RDF.Query
                         SparqlNumericType numtype = (SparqlNumericType)Math.Max((int)xnumtype, (int)ynumtype);
                         if (numtype != SparqlNumericType.NaN)
                         {
-                            if (xnumtype == SparqlNumericType.NaN || ynumtype == SparqlNumericType.NaN)
+                            if (xnumtype == SparqlNumericType.NaN)
                             {
-                                //If one is non-numeric then we can't assume non-equality
-                                //So fall back to Node Ordering
-                                return x.CompareTo(y);
+                                return 1;
+                            } 
+                            else if (ynumtype == SparqlNumericType.NaN)
+                            {
+                                return -1;
                             }
 
                             //Both are Numeric so use Numeric ordering
@@ -369,7 +371,7 @@ namespace VDS.RDF.Query
                                     return DateTimeCompare(x, y);
                                 case XmlSpecsHelper.XmlSchemaDataTypeString:
                                     //Both Strings so use Lexical string ordering
-                                    return ((LiteralNode)x).Value.CompareTo(((LiteralNode)y).Value);
+                                    return ((ILiteralNode)x).Value.CompareTo(((ILiteralNode)y).Value);
                                 default:
                                     //Use node ordering
                                     return x.CompareTo(y);

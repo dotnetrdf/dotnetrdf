@@ -37,16 +37,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VDS.RDF.Query.Algebra;
 
-namespace VDS.RDF.Query.Algebra
+namespace VDS.RDF.Query.Optimisation
 {
     /// <summary>
-    /// An Algebra Transformer that optimises Algebra to use <see cref="LazyBgp">LazyBgp</see>'s wherever possible
+    /// An Algebra Optimiser that optimises Algebra to use <see cref="LazyBgp">LazyBgp</see>'s wherever possible
     /// </summary>
-    public class LazyBgpTransformer : BaseAlgebraTransformer
+    public class LazyBgpOptimiser : BaseAlgebraOptimiser
     {
         /// <summary>
-        /// Transforms an Algebra to a form that uses <see cref="LazyBgp">LazyBgp</see> where possible
+        /// Optimises an Algebra to a form that uses <see cref="LazyBgp">LazyBgp</see> where possible
         /// </summary>
         /// <param name="algebra">Algebra</param>
         /// <param name="depth">Depth</param>
@@ -56,7 +57,7 @@ namespace VDS.RDF.Query.Algebra
         /// By transforming a query to use <see cref="LazyBgp">LazyBgp</see> we can achieve much more efficient processing of some forms of queries
         /// </para>
         /// </remarks>
-        protected override ISparqlAlgebra TransformInternal(ISparqlAlgebra algebra, int depth)
+        protected override ISparqlAlgebra OptimiseInternal(ISparqlAlgebra algebra, int depth)
         {
             try
             {
@@ -68,12 +69,12 @@ namespace VDS.RDF.Query.Algebra
                 //else if (algebra is ILeftJoin)
                 //{
                 //    ILeftJoin join = (ILeftJoin)algebra;
-                //    temp = new LeftJoin(this.TransformInternal(join.Lhs, depth + 1), join.Rhs, ((LeftJoin)algebra).Filter);
+                //    temp = new LeftJoin(this.OptimiseInternal(join.Lhs, depth + 1), join.Rhs, ((LeftJoin)algebra).Filter);
                 //}
                 else if (algebra is IUnion)
                 {
                     IUnion join = (IUnion)algebra;
-                    temp = new LazyUnion(this.TransformInternal(join.Lhs, depth + 1), this.TransformInternal(join.Rhs, depth + 1));
+                    temp = new LazyUnion(this.OptimiseInternal(join.Lhs, depth + 1), this.OptimiseInternal(join.Rhs, depth + 1));
                 }
                 else if (algebra is IJoin)
                 {
@@ -82,19 +83,19 @@ namespace VDS.RDF.Query.Algebra
                     {
                         //If the sides of the Join are disjoint then can fully transform the join since we only need to find the requisite number of
                         //solutions on either side to guarantee a product which meets/exceeds the required results
-                        temp = new Join(this.TransformInternal(join.Lhs, depth + 1), this.TransformInternal(join.Rhs, depth + 1));
+                        temp = new Join(this.OptimiseInternal(join.Lhs, depth + 1), this.OptimiseInternal(join.Rhs, depth + 1));
                     }
                     else
                     {
                         //If the sides are not disjoint then the LHS must be fully evaluated but the RHS need only produce enough
                         //solutions that match
-                        temp = new Join(join.Lhs, this.TransformInternal(join.Rhs, depth + 1));
+                        temp = new Join(join.Lhs, this.OptimiseInternal(join.Rhs, depth + 1));
                     }
                 }
                 else if (algebra is Algebra.Graph)
                 {
                     Algebra.Graph g = (Algebra.Graph)algebra;
-                    temp = new Graph(this.TransformInternal(g.InnerAlgebra, depth + 1), g.GraphSpecifier);
+                    temp = new Algebra.Graph(this.OptimiseInternal(g.InnerAlgebra, depth + 1), g.GraphSpecifier);
                 }
                 else
                 {
@@ -104,19 +105,28 @@ namespace VDS.RDF.Query.Algebra
             }
             catch
             {
-                //If the Transform fails return the current algebra
+                //If the Optimise fails return the current algebra
                 return algebra;
             }
+        }
+
+        public override bool IsApplicable(SparqlQuery q)
+        {
+            return q.Limit > 0
+                   && !q.HasDistinctModifier
+                   && (q.OrderBy == null || q.IsOptimisableOrderBy)
+                   && q.GroupBy == null && q.Having == null
+                   && q.Bindings == null;
         }
     }
 
     /// <summary>
-    /// An Algebra Transformer that optimises Algebra to use <see cref="AskBgp">AskBgp</see>'s wherever possible
+    /// An Algebra Optimiser that optimises Algebra to use <see cref="AskBgp">AskBgp</see>'s wherever possible
     /// </summary>
-    public class AskBgpTransformer : BaseAlgebraTransformer
+    public class AskBgpOptimiser : BaseAlgebraOptimiser
     {
         /// <summary>
-        /// Transforms an Algebra to a form that uses <see cref="AskBgp">AskBgp</see> where possible
+        /// Optimises an Algebra to a form that uses <see cref="AskBgp">AskBgp</see> where possible
         /// </summary>
         /// <param name="algebra">Algebra</param>
         /// <param name="depth">Depth</param>
@@ -126,7 +136,7 @@ namespace VDS.RDF.Query.Algebra
         /// By transforming a query to use <see cref="AskBgp">AskBgp</see> we can achieve much more efficient processing of some forms of queries
         /// </para>
         /// </remarks>
-        protected override ISparqlAlgebra TransformInternal(ISparqlAlgebra algebra, int depth)
+        protected override ISparqlAlgebra OptimiseInternal(ISparqlAlgebra algebra, int depth)
         {
             try
             {
@@ -140,19 +150,19 @@ namespace VDS.RDF.Query.Algebra
                 //else if (algebra is ILeftJoin)
                 //{
                 //    ILeftJoin join = (ILeftJoin)algebra;
-                //    temp = new LeftJoin(this.TransformInternal(join.Lhs, depth + 1), join.Rhs, ((LeftJoin)algebra).Filter);
+                //    temp = new LeftJoin(this.OptimiseInternal(join.Lhs, depth + 1), join.Rhs, ((LeftJoin)algebra).Filter);
 
                 //    //Q: Is the following Optimisation valid?
                 //    //LeftJoin is transformed to just be the LHS as the RHS is irrelevant for ASK queries
                 //    //UNLESS the LeftJoin occurs inside a Filter/Minus BUT we should never get called to transform a 
-                //    //LeftJoin() for those branches of the algebra as the Transformer does not transform 
+                //    //LeftJoin() for those branches of the algebra as the Optimiseer does not transform 
                 //    //Filter()/Minus() operators
-                //    //temp = this.TransformInternal(join.Lhs, depth + 1);
+                //    //temp = this.OptimiseInternal(join.Lhs, depth + 1);
                 //}
                 else if (algebra is IUnion)
                 {
                     IUnion join = (IUnion)algebra;
-                    temp = new AskUnion(this.TransformInternal(join.Lhs, depth + 1), this.TransformInternal(join.Rhs, depth + 1));
+                    temp = new AskUnion(this.OptimiseInternal(join.Lhs, depth + 1), this.OptimiseInternal(join.Rhs, depth + 1));
                 }
                 else if (algebra is IJoin)
                 {
@@ -161,19 +171,19 @@ namespace VDS.RDF.Query.Algebra
                     {
                         //If the sides of the Join are disjoint then can fully transform the join since we only need to find at least
                         //one solution on either side in order for the query to match
-                        temp = new Join(this.TransformInternal(join.Lhs, depth + 1), this.TransformInternal(join.Rhs, depth + 1));
+                        temp = new Join(this.OptimiseInternal(join.Lhs, depth + 1), this.OptimiseInternal(join.Rhs, depth + 1));
                     } 
                     else 
                     {
                         //If the sides are not disjoint then the LHS must be fully evaluated but the RHS need only produce at least
                         //one solution based on the full input from the LHS for the query to match
-                        temp = new Join(join.Lhs, this.TransformInternal(join.Rhs, depth + 1));
+                        temp = new Join(join.Lhs, this.OptimiseInternal(join.Rhs, depth + 1));
                     }
                 }
                 else if (algebra is Algebra.Graph)
                 {
                     Algebra.Graph g = (Algebra.Graph)algebra;
-                    temp = new Graph(this.TransformInternal(g.InnerAlgebra, depth + 1), g.GraphSpecifier);
+                    temp = new Algebra.Graph(this.OptimiseInternal(g.InnerAlgebra, depth + 1), g.GraphSpecifier);
                 }
                 else
                 {
@@ -183,9 +193,14 @@ namespace VDS.RDF.Query.Algebra
             }
             catch
             {
-                //If the Transform fails return the current algebra
+                //If the Optimise fails return the current algebra
                 return algebra;
             }
+        }
+
+        public override bool IsApplicable(SparqlQuery q)
+        {
+            return q.QueryType == SparqlQueryType.Ask;
         }
     }
 }

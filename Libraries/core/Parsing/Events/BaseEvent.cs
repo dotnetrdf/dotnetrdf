@@ -47,17 +47,28 @@ namespace VDS.RDF.Parsing.Events
     {
         private int _eventtype;
         private String _sourcexml;
+        private PositionInfo _pos;
+
+        /// <summary>
+        /// Creates an Event and fills in its Values
+        /// </summary>
+        /// <param name="eventType">Type of the Event</param>
+        /// <param name="sourceXml">Source XML that generated the Event</param>
+        /// <param name="pos">Position of the XML Event</param>
+        protected BaseEvent(int eventType, String sourceXml, PositionInfo pos)
+        {
+            this._eventtype = eventType;
+            this._sourcexml = sourceXml;
+            this._pos = pos;
+        }
 
         /// <summary>
         /// Creates an Event and fills in its Values
         /// </summary>
         /// <param name="eventType">Type of the Event</param>
         /// <param name="sourceXML">Source XML that generated the Event</param>
-        protected internal BaseEvent(int eventType, String sourceXML)
-        {
-            this._eventtype = eventType;
-            this._sourcexml = sourceXML;
-        }
+        protected BaseEvent(int eventType, String sourceXml)
+            : this(eventType, sourceXml, null) { }
 
         /// <summary>
         /// Gets the Type for this Event
@@ -77,7 +88,21 @@ namespace VDS.RDF.Parsing.Events
         {
             get 
             {
-                return _sourcexml;
+                return this._sourcexml;
+            }
+        }
+
+        /// <summary>
+        /// Gets the Position Information (if any)
+        /// </summary>
+        /// <remarks>
+        /// Availability of Position Information depends on the how the XML was parsed
+        /// </remarks>
+        public PositionInfo Position
+        {
+            get
+            {
+                return this._pos;
             }
         }
     }

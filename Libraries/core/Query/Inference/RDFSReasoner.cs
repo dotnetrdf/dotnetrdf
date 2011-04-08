@@ -62,7 +62,7 @@ namespace VDS.RDF.Query.Inference
         private Dictionary<INode, INode> _propertyMappings = new Dictionary<INode, INode>();
         private HashTable<INode, INode> _domainMappings = new HashTable<INode, INode>();
         private HashTable<INode, INode> _rangeMappings = new HashTable<INode, INode>();
-        private UriNode _rdfType, _rdfsClass, _rdfsSubClass, _rdfProperty, _rdfsSubProperty, _rdfsRange, _rdfsDomain;
+        private IUriNode _rdfType, _rdfsClass, _rdfsSubClass, _rdfProperty, _rdfsSubProperty, _rdfsRange, _rdfsDomain;
 
         /// <summary>
         /// Creates a new instance of the Static RdfsReasoner

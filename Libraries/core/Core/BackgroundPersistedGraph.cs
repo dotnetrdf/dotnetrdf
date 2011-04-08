@@ -50,6 +50,7 @@ namespace VDS.RDF
     /// <remarks>
     /// This class provides a useful general base class for Graphs which are based on some underlying Storage where the persistence to the Store can be done asychronously.
     /// </remarks>
+    [Obsolete("The BackgroundPersistedGraph has been superceded by the GraphPersistenceWrapper", true)]
     public abstract class BackgroundPersistedGraph : Graph, IDisposable
     {
         /// <summary>

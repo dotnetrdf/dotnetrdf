@@ -77,6 +77,30 @@ namespace VDS.RDF.Parsing.Contexts
             }
         }
 
+        /// <summary>
+        /// Creates a new Parser Context
+        /// </summary>
+        /// <param name="g">Graph</param>
+        /// <param name="document">XML Document</param>
+        public RdfXmlParserContext(IRdfHandler handler, XmlDocument document)
+            : this(handler, document, false) { }
+
+        /// <summary>
+        /// Creates a new Parser Context
+        /// </summary>
+        /// <param name="g">Graph</param>
+        /// <param name="document">XML Document</param>
+        /// <param name="traceParsing">Whether to Trace Parsing</param>
+        public RdfXmlParserContext(IRdfHandler handler, XmlDocument document, bool traceParsing)
+            : base(handler)
+        {
+            this._queue = new EventQueue(new DomBasedEventGenerator(document));
+            if (this._queue.EventGenerator is IPreProcessingEventGenerator)
+            {
+                ((IPreProcessingEventGenerator)this._queue.EventGenerator).GetAllEvents(this);
+            }
+        }
+
 #endif
 
         /// <summary>
@@ -88,6 +112,29 @@ namespace VDS.RDF.Parsing.Contexts
             : base(g)
         {
             this._queue = new StreamingEventQueue(new StreamingEventGenerator(stream, g.BaseUri.ToSafeString()));
+        }
+
+        /// <summary>
+        /// Creates a new Parser Context which uses Streaming parsing
+        /// </summary>
+        /// <param name="g">Graph</param>
+        /// <param name="stream">Stream</param>
+        public RdfXmlParserContext(IRdfHandler handler, Stream stream)
+            : base(handler)
+        {
+            this._queue = new StreamingEventQueue(new StreamingEventGenerator(stream, String.Empty));
+        }
+
+        public RdfXmlParserContext(IGraph g, TextReader input)
+            : base(g)
+        {
+            this._queue = new StreamingEventQueue(new StreamingEventGenerator(input, g.BaseUri.ToSafeString()));
+        }
+
+        public RdfXmlParserContext(IRdfHandler handler, TextReader input)
+            : base(handler)
+        {
+            this._queue = new StreamingEventQueue(new StreamingEventGenerator(input, String.Empty));
         }
 
         /// <summary>

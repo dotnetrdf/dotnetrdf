@@ -274,7 +274,7 @@ namespace VDS.RDF.Storage
                 }
             }
 
-            Graph temp = this._endpoint.QueryWithResultGraph(query);
+            IGraph temp = this._endpoint.QueryWithResultGraph(query);
             if (g.IsEmpty) g.BaseUri = new Uri(graphUri);
             g.Merge(temp);
         }
@@ -373,7 +373,7 @@ namespace VDS.RDF.Storage
                             INode temp = r["g"];
                             if (temp.NodeType == NodeType.Uri)
                             {
-                                graphs.Add(((UriNode)temp).Uri);
+                                graphs.Add(((IUriNode)temp).Uri);
                             }
                         }
                     }

@@ -250,10 +250,6 @@ namespace VDS.RDF.Web.Configuration.Server
         /// </summary>
         protected bool _showUpdateForm = true;
         /// <summary>
-        /// Whether the Handler should stop processing commands if a command errors
-        /// </summary>
-        protected bool _haltOnError = true;
-        /// <summary>
         /// Default Update Text for the Update Form
         /// </summary>
         protected String _defaultUpdate = String.Empty;
@@ -266,17 +262,6 @@ namespace VDS.RDF.Web.Configuration.Server
             get
             {
                 return this._showUpdateForm;
-            }
-        }
-
-        /// <summary>
-        /// Gets whether to Halt on Errors
-        /// </summary>
-        public bool HaltOnError
-        {
-            get
-            {
-                return this._haltOnError;
             }
         }
 
@@ -373,7 +358,7 @@ namespace VDS.RDF.Web.Configuration.Server
             {
                 if (describeNode.NodeType == NodeType.Literal)
                 {
-                    String algoClass = ((LiteralNode)describeNode).Value;
+                    String algoClass = ((ILiteralNode)describeNode).Value;
                     try
                     {
                         Object desc = Activator.CreateInstance(Type.GetType(algoClass));
@@ -413,7 +398,6 @@ namespace VDS.RDF.Web.Configuration.Server
             }
 
             //Handler Settings
-            this._haltOnError = ConfigurationLoader.GetConfigurationBoolean(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyHaltOnError), this._haltOnError);
             this._showUpdateForm = ConfigurationLoader.GetConfigurationBoolean(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyShowUpdateForm), this._showUpdateForm);
             String defUpdateFile = ConfigurationLoader.GetConfigurationString(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyDefaultUpdateFile));
             if (defUpdateFile != null)
@@ -515,8 +499,8 @@ namespace VDS.RDF.Web.Configuration.Server
         /// <param name="protocolNode">Node for the SPARQL Uniform HTTP Protocol service</param>
         public virtual void AddFeatureDescription(IGraph g, INode queryNode, INode updateNode, INode protocolNode)
         {
-            UriNode extensionFunction = g.CreateUriNode("sd:" + SparqlServiceDescriber.PropertyExtensionFunction);
-            UriNode extensionAggregate = g.CreateUriNode("sd:" + SparqlServiceDescriber.PropertyExtensionAggregate);
+            IUriNode extensionFunction = g.CreateUriNode("sd:" + SparqlServiceDescriber.PropertyExtensionFunction);
+            IUriNode extensionAggregate = g.CreateUriNode("sd:" + SparqlServiceDescriber.PropertyExtensionAggregate);
 
             if (queryNode != null)
             {

@@ -385,10 +385,10 @@ namespace VDS.RDF.Configuration
                         //Are there any Named/Default Graph URIs
                         IEnumerable<Uri> defGraphs = from def in ConfigurationLoader.GetConfigurationData(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyDefaultGraphUri))
                                                      where def.NodeType == NodeType.Uri
-                                                     select ((UriNode)def).Uri;
+                                                     select ((IUriNode)def).Uri;
                         IEnumerable<Uri> namedGraphs = from named in ConfigurationLoader.GetConfigurationData(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyNamedGraphUri))
                                                        where named.NodeType == NodeType.Uri
-                                                       select ((UriNode)named).Uri;
+                                                       select ((IUriNode)named).Uri;
                         if (defGraphs.Any() || namedGraphs.Any())
                         {
                             manager = new SparqlConnector(new SparqlRemoteEndpoint(new Uri(server), defGraphs, namedGraphs), loadMode);

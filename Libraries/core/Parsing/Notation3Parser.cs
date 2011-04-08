@@ -40,6 +40,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using VDS.RDF.Parsing.Contexts;
+using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Parsing.Tokens;
 
 namespace VDS.RDF.Parsing
@@ -48,12 +49,6 @@ namespace VDS.RDF.Parsing
     /// Parser for Notation 3 syntax
     /// </summary>
     /// <remarks>
-    /// <para>
-    /// This is a newly implemented parser as of 11/12/2009 - it was rewritten from scratch in order to remove an issue with Blank Node Handling which could not be solved with the old parser.  The code is now around a third the size, parses faster and appears to be bug free so far!
-    /// </para>
-    /// <para>
-    /// As with the previous Parser @forSome and @forAll directives are in effect ignored and variables are treated simply as QNames in the default namespace.
-    /// </para>
     /// </remarks>
     /// <threadsafety instance="true">Designed to be Thread Safe - should be able to call Load from multiple threads on different Graphs without issue</threadsafety>
     public class Notation3Parser : IRdfReader, ITraceableParser, ITraceableTokeniser
@@ -124,51 +119,15 @@ namespace VDS.RDF.Parsing
         public void Load(IGraph g, StreamReader input)
         {
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
-            if (input == null) throw new RdfParseException("Cannot read RDF from a null Stream");
-
-            //Issue a Warning if the Encoding of the Stream is not UTF-8
-            if (!input.CurrentEncoding.Equals(Encoding.UTF8))
-            {
-#if !SILVERLIGHT
-                this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
-#else
-                this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.GetType().Name + " - Please be aware that parsing errors may occur as a result");
-#endif
-            }
-
-            try
-            {
-                if (!g.IsEmpty)
-                {
-                    //Parse into a new Graph then merge with the existing Graph
-                    Graph h = new Graph();
-                    h.BaseUri = g.BaseUri;
-                    Notation3ParserContext context = new Notation3ParserContext(h, new Notation3Tokeniser(input), this._queueMode, this._traceParsing, this._traceTokeniser);
-                    this.Parse(context);
-                    g.Merge(h);
-                }
-                else
-                {
-                    //Can parse into the Empty Graph
-                    Notation3ParserContext context = new Notation3ParserContext(g, new Notation3Tokeniser(input), this._queueMode, this._traceParsing, this._traceTokeniser);
-                    this.Parse(context);
-                }
-
-                input.Close();
-            } 
-            catch 
-            {
-                try
-                {
-                    input.Close();
-                }
-                catch
-                {
-                    //No catch actions, just trying to clean up
-                }
-                throw;
-            }
+            this.Load(new GraphHandler(g), input);
         }
+
+        public void Load(IGraph g, TextReader input)
+        {
+            if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
+            this.Load(new GraphHandler(g), input);
+        }
+
 
         /// <summary>
         /// Loads a Graph by reading Notation 3 syntax from the given file
@@ -182,74 +141,141 @@ namespace VDS.RDF.Parsing
             this.Load(g, new StreamReader(filename, Encoding.UTF8));
         }
 
+        public void Load(IRdfHandler handler, StreamReader input)
+        {
+            if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
+            if (input == null) throw new RdfParseException("Cannot read RDF from a null Stream");
+
+            //Issue a Warning if the Encoding of the Stream is not UTF-8
+            if (!input.CurrentEncoding.Equals(Encoding.UTF8))
+            {
+#if !SILVERLIGHT
+                this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
+#else
+                this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + input.CurrentEncoding.GetType().Name + " - Please be aware that parsing errors may occur as a result");
+#endif
+            }
+
+            this.Load(handler, (TextReader)input);
+        }
+
+        public void Load(IRdfHandler handler, TextReader input)
+        {
+            if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
+            if (input == null) throw new RdfParseException("Cannot read RDF from a null TextReader");
+
+            try
+            {
+                Notation3ParserContext context = new Notation3ParserContext(handler, new Notation3Tokeniser(input), this._queueMode, this._traceParsing, this._traceTokeniser);
+                this.Parse(context);
+
+                input.Close();
+            }
+            catch
+            {
+                try
+                {
+                    input.Close();
+                }
+                catch
+                {
+                    //No catch actions, just trying to clean up
+                }
+                throw;
+            }
+        }
+
+        public void Load(IRdfHandler handler, String filename)
+        {
+            if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
+            if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
+            this.Load(handler, new StreamReader(filename, Encoding.UTF8));
+        }
+
         /// <summary>
         /// Internal method which does the parsing of the input
         /// </summary>
         /// <param name="context">Parser Context</param>
         private void Parse(Notation3ParserContext context)
         {
-            //Initialise Buffer and start parsing
-            context.Tokens.InitialiseBuffer(10);
-
-            IToken next = context.Tokens.Dequeue();
-            if (next.TokenType != Token.BOF)
+            try
             {
-                throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a BOF Token", next);
-            }
+                context.Handler.StartRdf();
+                //Initialise Buffer and start parsing
+                context.Tokens.InitialiseBuffer(10);
 
-            do
-            {
-                next = context.Tokens.Peek();
-
-                switch (next.TokenType)
+                IToken next = context.Tokens.Dequeue();
+                if (next.TokenType != Token.BOF)
                 {
-                    case Token.BASEDIRECTIVE:
-                    case Token.PREFIXDIRECTIVE:
-                    case Token.KEYWORDDIRECTIVE:
-                        this.TryParseDirective(context);
-                        break;
-
-                    case Token.FORALL:
-                        this.TryParseForAll(context);
-                        break;
-
-                    case Token.FORSOME:
-                        this.TryParseForSome(context);
-                        break;
-
-                    case Token.COMMENT:
-                        //Discard and ignore
-                        context.Tokens.Dequeue();
-                        break;
-
-                    case Token.BLANKNODE:
-                    case Token.BLANKNODEWITHID:
-                    case Token.LEFTBRACKET:
-                    case Token.LEFTCURLYBRACKET:
-                    case Token.LEFTSQBRACKET:
-                    case Token.LITERAL:
-                    case Token.LITERALWITHDT:
-                    case Token.LITERALWITHLANG:
-                    case Token.LONGLITERAL:
-                    case Token.PLAINLITERAL:
-                    case Token.QNAME:
-                    case Token.URI:
-                        //Valid Subject of a Triple
-                        this.TryParseTriples(context);
-                        break;
-
-                    case Token.KEYWORDA:
-                        //'a' Keyword only valid as Predicate
-                        throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, the 'a' Keyword is only valid as a Predicate in Notation 3", next);
-
-                    case Token.EOF:
-                        //OK - the loop will now terminate since we've seen the End of File
-                        break;
-
-                    default:
-                        throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered", next);
+                    throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a BOF Token", next);
                 }
-            } while (next.TokenType != Token.EOF);
+
+                do
+                {
+                    next = context.Tokens.Peek();
+
+                    switch (next.TokenType)
+                    {
+                        case Token.BASEDIRECTIVE:
+                        case Token.PREFIXDIRECTIVE:
+                        case Token.KEYWORDDIRECTIVE:
+                            this.TryParseDirective(context);
+                            break;
+
+                        case Token.FORALL:
+                            this.TryParseForAll(context);
+                            break;
+
+                        case Token.FORSOME:
+                            this.TryParseForSome(context);
+                            break;
+
+                        case Token.COMMENT:
+                            //Discard and ignore
+                            context.Tokens.Dequeue();
+                            break;
+
+                        case Token.BLANKNODE:
+                        case Token.BLANKNODEWITHID:
+                        case Token.LEFTBRACKET:
+                        case Token.LEFTCURLYBRACKET:
+                        case Token.LEFTSQBRACKET:
+                        case Token.LITERAL:
+                        case Token.LITERALWITHDT:
+                        case Token.LITERALWITHLANG:
+                        case Token.LONGLITERAL:
+                        case Token.PLAINLITERAL:
+                        case Token.QNAME:
+                        case Token.URI:
+                            //Valid Subject of a Triple
+                            this.TryParseTriples(context);
+                            break;
+
+                        case Token.KEYWORDA:
+                            //'a' Keyword only valid as Predicate
+                            throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, the 'a' Keyword is only valid as a Predicate in Notation 3", next);
+
+                        case Token.EOF:
+                            //OK - the loop will now terminate since we've seen the End of File
+                            break;
+
+                        default:
+                            throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered", next);
+                    }
+                } while (next.TokenType != Token.EOF);
+
+                context.Handler.EndRdf(true);
+            }
+            catch (RdfParsingTerminatedException)
+            {
+                context.Handler.EndRdf(true);
+                //Discard this - it justs means the Handler told us to stop
+            }
+            catch
+            {
+                context.Handler.EndRdf(false);
+                throw;
+            }
         }
 
         /// <summary>
@@ -272,7 +298,9 @@ namespace VDS.RDF.Parsing
                 if (u.TokenType == Token.URI)
                 {
                     //Set the Base Uri resolving against the current Base if any
-                    context.Graph.BaseUri = ((UriNode)ParserHelper.TryResolveUri(context, u)).Uri;
+                    Uri baseUri = ((IUriNode)ParserHelper.TryResolveUri(context, u)).Uri;
+                    context.BaseUri = baseUri;
+                    if (!context.Handler.HandleBaseUri(baseUri)) ParserHelper.Stop();
                 }
                 else
                 {
@@ -289,15 +317,10 @@ namespace VDS.RDF.Parsing
                     if (ns.TokenType == Token.URI)
                     {
                         //Register a Namespace resolving the Namespace Uri against the Base Uri
-                        Uri nsURI = ((UriNode)ParserHelper.TryResolveUri(context, ns)).Uri;
-                        if (pre.Value.Length > 1)
-                        {
-                            context.Graph.NamespaceMap.AddNamespace(pre.Value.Substring(0, pre.Value.Length - 1), nsURI);
-                        }
-                        else
-                        {
-                            context.Graph.NamespaceMap.AddNamespace(String.Empty, nsURI);
-                        }
+                        Uri nsUri = ((IUriNode)ParserHelper.TryResolveUri(context, ns)).Uri;
+                        String nsPrefix = (pre.Value.Length > 1) ? pre.Value.Substring(0, pre.Value.Length-1) : String.Empty;
+                        context.Namespaces.AddNamespace(nsPrefix, nsUri);
+                        if (!context.Handler.HandleNamespace(pre.Value.Substring(0, pre.Value.Length - 1), nsUri)) ParserHelper.Stop();
                     }
                     else
                     {
@@ -456,11 +479,11 @@ namespace VDS.RDF.Parsing
             switch (subjToken.TokenType)
             {
                 case Token.BLANKNODE:
-                    subj = context.Graph.CreateBlankNode();
+                    subj = context.Handler.CreateBlankNode();
                     break;
 
                 case Token.BLANKNODEWITHID:
-                    subj = context.Graph.CreateBlankNode(subjToken.Value.Substring(2));
+                    subj = context.Handler.CreateBlankNode(subjToken.Value.Substring(2));
                     break;
 
                 case Token.LEFTBRACKET:
@@ -470,11 +493,11 @@ namespace VDS.RDF.Parsing
                     {
                         //An Empty Collection => rdf:nil
                         context.Tokens.Dequeue();
-                        subj = context.Graph.CreateUriNode(new Uri(NamespaceMapper.RDF + "nil"));
+                        subj = context.Handler.CreateUriNode(new Uri(NamespaceMapper.RDF + "nil"));
                     }
                     else
                     {
-                        subj = context.Graph.CreateBlankNode();
+                        subj = context.Handler.CreateBlankNode();
                         this.TryParseCollection(context, subj);
                     }
                     break;
@@ -486,7 +509,7 @@ namespace VDS.RDF.Parsing
                     {
                         //An Empty Graph Literal
                         context.Tokens.Dequeue();
-                        subj = context.Graph.CreateGraphLiteralNode();
+                        subj = context.Handler.CreateGraphLiteralNode();
                     }
                     else
                     {
@@ -501,12 +524,12 @@ namespace VDS.RDF.Parsing
                     {
                         //An anoynmous Blank Node
                         context.Tokens.Dequeue();
-                        subj = context.Graph.CreateBlankNode();
+                        subj = context.Handler.CreateBlankNode();
                     }
                     else
                     {
                         //Start of a Blank Node Collection
-                        subj = context.Graph.CreateBlankNode();
+                        subj = context.Handler.CreateBlankNode();
                         this.TryParsePredicateObjectList(context, subj, true);
                     }
                     break;
@@ -526,7 +549,7 @@ namespace VDS.RDF.Parsing
                     break;
 
                 case Token.VARIABLE:
-                    subj = context.Graph.CreateVariableNode(subjToken.Value.Substring(1));
+                    subj = context.Handler.CreateVariableNode(subjToken.Value.Substring(1));
                     break;
 
                 default:
@@ -571,11 +594,11 @@ namespace VDS.RDF.Parsing
                 switch (predToken.TokenType)
                 {
                     case Token.BLANKNODE:
-                        pred = context.Graph.CreateBlankNode();
+                        pred = context.Handler.CreateBlankNode();
                         break;
 
                     case Token.BLANKNODEWITHID:
-                        pred = context.Graph.CreateBlankNode(predToken.Value.Substring(2));
+                        pred = context.Handler.CreateBlankNode(predToken.Value.Substring(2));
                         break;
 
                     case Token.COMMENT:
@@ -584,7 +607,7 @@ namespace VDS.RDF.Parsing
 
                     case Token.EQUALS:
                         //= Keyword
-                        pred = context.Graph.CreateUriNode(new Uri(SameAsUri));
+                        pred = context.Handler.CreateUriNode(new Uri(SameAsUri));
                         break;
 
                     case Token.EXCLAMATION:
@@ -596,18 +619,18 @@ namespace VDS.RDF.Parsing
 
                     case Token.IMPLIEDBY:
                         //<= keyword
-                        pred = context.Graph.CreateUriNode(new Uri(ImpliesUri));
+                        pred = context.Handler.CreateUriNode(new Uri(ImpliesUri));
                         reverse = true;
                         break;
 
                     case Token.IMPLIES:
                         //=> keyword
-                        pred = context.Graph.CreateUriNode(new Uri(ImpliesUri));
+                        pred = context.Handler.CreateUriNode(new Uri(ImpliesUri));
                         break;
 
                     case Token.KEYWORDA:
                         //'a' Keyword
-                        pred = context.Graph.CreateUriNode(new Uri(NamespaceMapper.RDF + "type"));
+                        pred = context.Handler.CreateUriNode(new Uri(NamespaceMapper.RDF + "type"));
                         break;
 
                     case Token.LEFTBRACKET:
@@ -617,11 +640,11 @@ namespace VDS.RDF.Parsing
                         {
                             //An Empty Collection => rdf:nil
                             context.Tokens.Dequeue();
-                            pred = context.Graph.CreateUriNode(new Uri(NamespaceMapper.RDF + "nil"));
+                            pred = context.Handler.CreateUriNode(new Uri(NamespaceMapper.RDF + "nil"));
                         }
                         else
                         {
-                            pred = context.Graph.CreateBlankNode();
+                            pred = context.Handler.CreateBlankNode();
                             this.TryParseCollection(context, pred);
                         }
                         break;
@@ -637,12 +660,12 @@ namespace VDS.RDF.Parsing
                         {
                             //An anoynmous Blank Node
                             context.Tokens.Dequeue();
-                            pred = context.Graph.CreateBlankNode();
+                            pred = context.Handler.CreateBlankNode();
                         }
                         else
                         {
                             //Start of a Blank Node Collection
-                            pred = context.Graph.CreateBlankNode();
+                            pred = context.Handler.CreateBlankNode();
                             this.TryParsePredicateObjectList(context, pred, true);
                         }
                         break;
@@ -690,7 +713,7 @@ namespace VDS.RDF.Parsing
                         break;
 
                     case Token.VARIABLE:
-                        pred = context.Graph.CreateVariableNode(predToken.Value.Substring(1));
+                        pred = context.Handler.CreateVariableNode(predToken.Value.Substring(1));
                         break;
 
                     case Token.EOF:
@@ -739,11 +762,11 @@ namespace VDS.RDF.Parsing
                 switch (objToken.TokenType)
                 {
                     case Token.BLANKNODE:
-                        obj = context.Graph.CreateBlankNode();
+                        obj = context.Handler.CreateBlankNode();
                         break;
 
                     case Token.BLANKNODEWITHID:
-                        obj = context.Graph.CreateBlankNode(objToken.Value.Substring(2));
+                        obj = context.Handler.CreateBlankNode(objToken.Value.Substring(2));
                         break;
 
                     case Token.COMMA:
@@ -787,11 +810,11 @@ namespace VDS.RDF.Parsing
                         {
                             //Empty Collection => rdf:nil
                             context.Tokens.Dequeue();
-                            obj = context.Graph.CreateUriNode(new Uri(NamespaceMapper.RDF + "nil"));
+                            obj = context.Handler.CreateUriNode(new Uri(NamespaceMapper.RDF + "nil"));
                         }
                         else
                         {
-                            obj = context.Graph.CreateBlankNode();
+                            obj = context.Handler.CreateBlankNode();
                             this.TryParseCollection(context, obj);
                         }
                         break;
@@ -803,7 +826,7 @@ namespace VDS.RDF.Parsing
                         {
                             //An Empty Graph Literal
                             context.Tokens.Dequeue();
-                            obj = context.Graph.CreateGraphLiteralNode();
+                            obj = context.Handler.CreateGraphLiteralNode();
                         }
                         else
                         {
@@ -818,12 +841,12 @@ namespace VDS.RDF.Parsing
                         {
                             //An anonymous Blank Node
                             context.Tokens.Dequeue();
-                            obj = context.Graph.CreateBlankNode();
+                            obj = context.Handler.CreateBlankNode();
                         }
                         else
                         {
                             //Start of a Blank Node Collection
-                            obj = context.Graph.CreateBlankNode();
+                            obj = context.Handler.CreateBlankNode();
                             this.TryParsePredicateObjectList(context, obj, true);
                         }
                         break;
@@ -881,7 +904,7 @@ namespace VDS.RDF.Parsing
                         break;
 
                     case Token.VARIABLE:
-                        obj = context.Graph.CreateVariableNode(objToken.Value.Substring(1));
+                        obj = context.Handler.CreateVariableNode(objToken.Value.Substring(1));
                         break;
 
                     case Token.EOF:
@@ -902,12 +925,12 @@ namespace VDS.RDF.Parsing
                 //Assert the Triple
                 if (!reverse)
                 {
-                    context.Graph.Assert(new Triple(subj, pred, obj, context.VariableContext));
+                    if (!context.Handler.HandleTriple(new Triple(subj, pred, obj, context.VariableContext))) ParserHelper.Stop();
                 }
                 else
                 {
                     //When reversed this means the predicate was Implied By (<=)
-                    context.Graph.Assert(new Triple(obj, pred, subj, context.VariableContext));
+                    if (!context.Handler.HandleTriple(new Triple(obj, pred, subj, context.VariableContext))) ParserHelper.Stop();
                 }
 
                 //Expect a comma/semicolon/dot terminator if we are to continue
@@ -945,9 +968,9 @@ namespace VDS.RDF.Parsing
             IToken next, temp;
             INode subj = firstSubj;
             INode obj = null, nextSubj;
-            INode rdfFirst = context.Graph.CreateUriNode(new Uri(NamespaceMapper.RDF + "first"));
-            INode rdfRest = context.Graph.CreateUriNode(new Uri(NamespaceMapper.RDF + "rest"));
-            INode rdfNil = context.Graph.CreateUriNode(new Uri(NamespaceMapper.RDF + "nil"));
+            INode rdfFirst = context.Handler.CreateUriNode(new Uri(NamespaceMapper.RDF + "first"));
+            INode rdfRest = context.Handler.CreateUriNode(new Uri(NamespaceMapper.RDF + "rest"));
+            INode rdfNil = context.Handler.CreateUriNode(new Uri(NamespaceMapper.RDF + "nil"));
 
             do
             {
@@ -961,10 +984,10 @@ namespace VDS.RDF.Parsing
                 switch (next.TokenType)
                 {
                     case Token.BLANKNODE:
-                        obj = context.Graph.CreateBlankNode();
+                        obj = context.Handler.CreateBlankNode();
                         break;
                     case Token.BLANKNODEWITHID:
-                        obj = context.Graph.CreateBlankNode(next.Value.Substring(2));
+                        obj = context.Handler.CreateBlankNode(next.Value.Substring(2));
                         break;
                     case Token.COMMENT:
                         //Discard and continue
@@ -981,7 +1004,7 @@ namespace VDS.RDF.Parsing
                         else
                         {
                             //Collection
-                            obj = context.Graph.CreateBlankNode();
+                            obj = context.Handler.CreateBlankNode();
                             this.TryParseCollection(context, obj);
                         }
                         break;
@@ -993,7 +1016,7 @@ namespace VDS.RDF.Parsing
                         {
                             //Empty Graph Literal
                             context.Tokens.Dequeue();
-                            obj = context.Graph.CreateGraphLiteralNode();
+                            obj = context.Handler.CreateGraphLiteralNode();
                         }
                         else
                         {
@@ -1009,12 +1032,12 @@ namespace VDS.RDF.Parsing
                         {
                             //Anonymous Blank Node
                             context.Tokens.Dequeue();
-                            obj = context.Graph.CreateBlankNode();
+                            obj = context.Handler.CreateBlankNode();
                         }
                         else
                         {
                             //Blank Node Collection
-                            obj = context.Graph.CreateBlankNode();
+                            obj = context.Handler.CreateBlankNode();
                             this.TryParsePredicateObjectList(context, obj, true);
                         }
                         break;
@@ -1028,8 +1051,8 @@ namespace VDS.RDF.Parsing
 
                     case Token.RIGHTBRACKET:
                         //We might terminate here if someone put a comment before the end of the Collection
-                        context.Graph.Assert(new Triple(subj, rdfFirst, obj, context.VariableContext));
-                        context.Graph.Assert(new Triple(subj, rdfRest, rdfNil, context.VariableContext));
+                        if (!context.Handler.HandleTriple(new Triple(subj, rdfFirst, obj, context.VariableContext))) ParserHelper.Stop();
+                        if (!context.Handler.HandleTriple(new Triple(subj, rdfRest, rdfNil, context.VariableContext))) ParserHelper.Stop();
                         return;
 
                     case Token.QNAME:
@@ -1038,7 +1061,7 @@ namespace VDS.RDF.Parsing
                         break;
 
                     case Token.VARIABLE:
-                        obj = context.Graph.CreateVariableNode(next.Value.Substring(1));
+                        obj = context.Handler.CreateVariableNode(next.Value.Substring(1));
                         break;
 
                     default:
@@ -1054,19 +1077,19 @@ namespace VDS.RDF.Parsing
                 }
 
                 //Assert the relevant Triples
-                context.Graph.Assert(new Triple(subj, rdfFirst, obj, context.VariableContext));
+                if (!context.Handler.HandleTriple(new Triple(subj, rdfFirst, obj, context.VariableContext))) ParserHelper.Stop();
                 if (context.Tokens.Peek().TokenType == Token.RIGHTBRACKET)
                 {
                     //End of the Collection
                     context.Tokens.Dequeue();
-                    context.Graph.Assert(new Triple(subj, rdfRest, rdfNil, context.VariableContext));
+                    if (!context.Handler.HandleTriple(new Triple(subj, rdfRest, rdfNil, context.VariableContext))) ParserHelper.Stop();
                     return;
                 }
                 else
                 {
                     //More stuff in the collection
-                    nextSubj = context.Graph.CreateBlankNode();
-                    context.Graph.Assert(new Triple(subj, rdfRest, nextSubj, context.VariableContext));
+                    nextSubj = context.Handler.CreateBlankNode();
+                    if (!context.Handler.HandleTriple(new Triple(subj, rdfRest, nextSubj, context.VariableContext))) ParserHelper.Stop();
                     subj = nextSubj;
                 }
             } while (true);
@@ -1119,7 +1142,7 @@ namespace VDS.RDF.Parsing
                 next = context.Tokens.Peek();
             } while (next.TokenType != Token.RIGHTCURLYBRACKET);
 
-            IGraph subgraph = context.Graph;
+            IGraph subgraph = context.SubGraph;
             context.PopGraph();
 
             //Expect the correct number of closing brackets
@@ -1133,7 +1156,7 @@ namespace VDS.RDF.Parsing
                 nesting--;
             }
 
-            return context.Graph.CreateGraphLiteralNode(subgraph);
+            return context.Handler.CreateGraphLiteralNode(subgraph);
         }
 
         private INode TryParsePath(Notation3ParserContext context, INode firstItem)
@@ -1143,7 +1166,7 @@ namespace VDS.RDF.Parsing
             bool forward = (context.Tokens.LastTokenType == Token.EXCLAMATION);
 
             //Actual path is represented by a new Blank Node
-            INode path = context.Graph.CreateBlankNode();
+            INode path = context.Handler.CreateBlankNode();
             INode pathHead = path;
 
             do
@@ -1153,7 +1176,7 @@ namespace VDS.RDF.Parsing
                 switch (next.TokenType)
                 {
                     case Token.QNAME:
-                        secondItem = context.Graph.CreateUriNode(next.Value);
+                        secondItem = context.Handler.CreateUriNode(new Uri(Tools.ResolveQName(next.Value, context.Namespaces, context.BaseUri)));
                         break;
                     case Token.LITERAL:
                     case Token.LONGLITERAL:
@@ -1162,8 +1185,7 @@ namespace VDS.RDF.Parsing
                         secondItem = this.TryParseLiteral(context, next);
                         break;
                     case Token.URI:
-                        String currentBase = (context.Graph.BaseUri == null) ? String.Empty : context.Graph.BaseUri.ToString();
-                        secondItem = context.Graph.CreateUriNode(new Uri(Tools.ResolveUri(next.Value, currentBase)));
+                        secondItem = context.Handler.CreateUriNode(new Uri(Tools.ResolveUri(next.Value, context.BaseUri.ToSafeString())));
                         break;
 
                     default:
@@ -1172,11 +1194,11 @@ namespace VDS.RDF.Parsing
 
                 if (forward)
                 {
-                    context.Graph.Assert(new Triple(firstItem, secondItem, path, context.VariableContext));
+                    if (!context.Handler.HandleTriple(new Triple(firstItem, secondItem, path, context.VariableContext))) ParserHelper.Stop();
                 }
                 else
                 {
-                    context.Graph.Assert(new Triple(path, secondItem, firstItem, context.VariableContext));
+                    if (!context.Handler.HandleTriple(new Triple(path, secondItem, firstItem, context.VariableContext))) ParserHelper.Stop();
                 }
 
                 //Does the Path continue?
@@ -1185,7 +1207,7 @@ namespace VDS.RDF.Parsing
                 {
                     context.Tokens.Dequeue();
                     firstItem = path;
-                    path = context.Graph.CreateBlankNode();
+                    path = context.Handler.CreateBlankNode();
                     forward = (context.Tokens.LastTokenType == Token.EXCLAMATION);
                 }
                 else
@@ -1215,7 +1237,7 @@ namespace VDS.RDF.Parsing
                     {
                         //Has a Language Specifier
                         next = context.Tokens.Dequeue();
-                        return context.Graph.CreateLiteralNode(lit.Value, next.Value);
+                        return context.Handler.CreateLiteralNode(lit.Value, next.Value);
                     }
                     else if (next.TokenType == Token.HATHAT)
                     {
@@ -1231,13 +1253,12 @@ namespace VDS.RDF.Parsing
                                 if (next.Value.StartsWith("<"))
                                 {
                                     dturi = next.Value.Substring(1, next.Value.Length - 2);
-                                    currentBase = (context.Graph.BaseUri == null) ? String.Empty : context.Graph.BaseUri.ToString();
-                                    return context.Graph.CreateLiteralNode(lit.Value, new Uri(Tools.ResolveUri(dturi, currentBase)));
+                                    return context.Handler.CreateLiteralNode(lit.Value, new Uri(Tools.ResolveUri(dturi, context.BaseUri.ToSafeString())));
                                 }
                                 else
                                 {
-                                    dturi = Tools.ResolveQName(next.Value, context.Graph.NamespaceMap, context.Graph.BaseUri);
-                                    return context.Graph.CreateLiteralNode(lit.Value, new Uri(dturi));
+                                    dturi = Tools.ResolveQName(next.Value, context.Namespaces, context.BaseUri);
+                                    return context.Handler.CreateLiteralNode(lit.Value, new Uri(dturi));
                                 }
                             }
                             catch (RdfException rdfEx)
@@ -1253,7 +1274,7 @@ namespace VDS.RDF.Parsing
                     else
                     {
                         //Just an untyped Literal
-                        return context.Graph.CreateLiteralNode(lit.Value);
+                        return context.Handler.CreateLiteralNode(lit.Value);
                     }
 
                 case Token.LITERALWITHDT:
@@ -1263,13 +1284,12 @@ namespace VDS.RDF.Parsing
                         if (litdt.DataType.StartsWith("<"))
                         {
                             dturi = litdt.DataType.Substring(1, litdt.DataType.Length - 2);
-                            currentBase = (context.Graph.BaseUri == null) ? String.Empty : context.Graph.BaseUri.ToString();
-                            return context.Graph.CreateLiteralNode(litdt.Value, new Uri(Tools.ResolveUri(dturi, currentBase)));
+                            return context.Handler.CreateLiteralNode(litdt.Value, new Uri(Tools.ResolveUri(dturi, context.BaseUri.ToSafeString())));
                         }
                         else
                         {
-                            dturi = Tools.ResolveQName(litdt.DataType, context.Graph.NamespaceMap, context.Graph.BaseUri);
-                            return context.Graph.CreateLiteralNode(litdt.Value, new Uri(dturi));
+                            dturi = Tools.ResolveQName(litdt.DataType, context.Namespaces, context.BaseUri);
+                            return context.Handler.CreateLiteralNode(litdt.Value, new Uri(dturi));
                         }
                     }
                     catch (RdfException rdfEx)
@@ -1279,7 +1299,7 @@ namespace VDS.RDF.Parsing
 
                 case Token.LITERALWITHLANG:
                     LiteralWithLanguageSpecifierToken langlit = (LiteralWithLanguageSpecifierToken)lit;
-                    return context.Graph.CreateLiteralNode(langlit.Value, langlit.Language);
+                    return context.Handler.CreateLiteralNode(langlit.Value, langlit.Language);
 
                 case Token.PLAINLITERAL:
                     //Attempt to infer Type
@@ -1287,19 +1307,19 @@ namespace VDS.RDF.Parsing
                     {
                         if (TurtleSpecsHelper.IsValidDouble(lit.Value))
                         {
-                            return context.Graph.CreateLiteralNode(lit.Value, new Uri(XmlSpecsHelper.XmlSchemaDataTypeDouble));
+                            return context.Handler.CreateLiteralNode(lit.Value, new Uri(XmlSpecsHelper.XmlSchemaDataTypeDouble));
                         }
                         else if (TurtleSpecsHelper.IsValidInteger(lit.Value))
                         {
-                            return context.Graph.CreateLiteralNode(lit.Value, new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger));
+                            return context.Handler.CreateLiteralNode(lit.Value, new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger));
                         }
                         else if (TurtleSpecsHelper.IsValidDecimal(lit.Value))
                         {
-                            return context.Graph.CreateLiteralNode(lit.Value, new Uri(XmlSpecsHelper.XmlSchemaDataTypeDecimal));
+                            return context.Handler.CreateLiteralNode(lit.Value, new Uri(XmlSpecsHelper.XmlSchemaDataTypeDecimal));
                         }
                         else
                         {
-                            return context.Graph.CreateLiteralNode(lit.Value, new Uri(XmlSpecsHelper.XmlSchemaDataTypeBoolean));
+                            return context.Handler.CreateLiteralNode(lit.Value, new Uri(XmlSpecsHelper.XmlSchemaDataTypeBoolean));
                         }
                     }
                     else

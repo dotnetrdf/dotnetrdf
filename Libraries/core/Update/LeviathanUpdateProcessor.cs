@@ -33,6 +33,8 @@ terms.
 
 */
 
+using System.Diagnostics;
+using System.Threading;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Update.Commands;
 
@@ -48,10 +50,9 @@ namespace VDS.RDF.Update
     /// </remarks>
     public class LeviathanUpdateProcessor : ISparqlUpdateProcessor
     {
-        /// <summary>
-        /// Update Context that can be passed to commands Evaluate() method
-        /// </summary>
-        protected SparqlUpdateEvaluationContext _context;
+        private ISparqlDataset _dataset;
+        private ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
+        private bool _autoCommit = true, _canCommit = true;
 
         /// <summary>
         /// Creates a new Leviathan Update Processor
@@ -66,55 +67,207 @@ namespace VDS.RDF.Update
         /// <param name="data">SPARQL Dataset</param>
         public LeviathanUpdateProcessor(ISparqlDataset data)
         {
-            this._context = new SparqlUpdateEvaluationContext(data);
-            if (!this._context.Data.HasGraph(null))
+            this._dataset = data;
+            if (!this._dataset.HasGraph(null))
             {
-                this._context.Data.AddGraph(new Graph());
+                //Create the Default unnamed Graph if it doesn't exist and then Flush() the change
+                this._dataset.AddGraph(new Graph());
+                this._dataset.Flush();
             }
         }
 
         /// <summary>
-        /// Flushes any outstanding changes to the underlying store
+        /// Gets/Sets whether Updates are automatically committed
         /// </summary>
-        public virtual void Flush()
+        public bool AutoCommit
         {
-            this._context.Data.Flush();
+            get
+            {
+                return this._autoCommit;
+            }
+            set
+            {
+                this._autoCommit = value;
+            }
+        }
+
+        /// <summary>
+        /// Flushes any outstanding changes to the underlying dataset
+        /// </summary>
+        public void Flush()
+        {
+            if (!this._canCommit) throw new SparqlUpdateException("Unable to commit since one/more Commands executed in the current Transaction failed");
+            this._dataset.Flush();
+            this._canCommit = true;
+        }
+
+        /// <summary>
+        /// Discards and outstanding changes from the underlying dataset
+        /// </summary>
+        public void Discard()
+        {
+            this._dataset.Discard();
+            this._canCommit = true;
         }
 
         /// <summary>
         /// Processes an ADD command
         /// </summary>
         /// <param name="cmd">Add Command</param>
-        public virtual void ProcessAddCommand(AddCommand cmd)
+        public void ProcessAddCommand(AddCommand cmd)
         {
-            cmd.Evaluate(this._context);
+            if (this._autoCommit) this.Flush();
+            ReaderWriterLockSlim currLock = (this._dataset is IThreadSafeDataset) ? ((IThreadSafeDataset)this._dataset).Lock : this._lock;
+            bool mustRelease = false;
+            try
+            {
+                if (!currLock.IsWriteLockHeld)
+                {
+                    currLock.EnterWriteLock();
+                    mustRelease = true;
+                }
+                cmd.Evaluate(new SparqlUpdateEvaluationContext(this._dataset));
+                if (this._autoCommit) this.Flush();
+            }
+            catch
+            {
+                if (this._autoCommit)
+                {
+                    this.Discard();
+                }
+                else
+                {
+                    this._canCommit = false;
+                }
+                throw;
+            }        
+            finally 
+            {
+                if (mustRelease)
+                {
+                    currLock.ExitWriteLock();
+                }
+            }
         }
 
         /// <summary>
         /// Processes a CLEAR command
         /// </summary>
         /// <param name="cmd">Clear Command</param>
-        public virtual void ProcessClearCommand(ClearCommand cmd)
+        public void ProcessClearCommand(ClearCommand cmd)
         {
-            cmd.Evaluate(this._context);
+            if (this._autoCommit) this.Flush();
+            ReaderWriterLockSlim currLock = (this._dataset is IThreadSafeDataset) ? ((IThreadSafeDataset)this._dataset).Lock : this._lock;
+            bool mustRelease = false;
+            try
+            {
+                if (!currLock.IsWriteLockHeld)
+                {
+                    currLock.EnterWriteLock();
+                    mustRelease = true;
+                }
+                cmd.Evaluate(new SparqlUpdateEvaluationContext(this._dataset));
+                if (this._autoCommit) this.Flush();
+            }
+            catch
+            {
+                if (this._autoCommit)
+                {
+                    this.Discard();
+                }
+                else
+                {
+                    this._canCommit = false;
+                }
+                throw;
+            }
+            finally
+            {
+                if (mustRelease)
+                {
+                    currLock.ExitWriteLock();
+                }
+            }
         }
 
         /// <summary>
         /// Processes a COPY command
         /// </summary>
         /// <param name="cmd">Copy Command</param>
-        public virtual void ProcessCopyCommand(CopyCommand cmd)
+        public void ProcessCopyCommand(CopyCommand cmd)
         {
-            cmd.Evaluate(this._context);
+            if (this._autoCommit) this.Flush();
+            ReaderWriterLockSlim currLock = (this._dataset is IThreadSafeDataset) ? ((IThreadSafeDataset)this._dataset).Lock : this._lock;
+            bool mustRelease = false;
+            try
+            {
+                if (!currLock.IsWriteLockHeld)
+                {
+                    currLock.EnterWriteLock();
+                    mustRelease = true;
+                }
+                cmd.Evaluate(new SparqlUpdateEvaluationContext(this._dataset));
+                if (this._autoCommit) this.Flush();
+            }
+            catch
+            {
+                if (this._autoCommit)
+                {
+                    this.Discard();
+                }
+                else
+                {
+                    this._canCommit = false;
+                }
+                throw;
+            }
+            finally
+            {
+                if (mustRelease)
+                {
+                    currLock.ExitWriteLock();
+                }
+            }
         }
 
         /// <summary>
         /// Processes a CREATE command
         /// </summary>
         /// <param name="cmd">Create Command</param>
-        public virtual void ProcessCreateCommand(CreateCommand cmd)
+        public void ProcessCreateCommand(CreateCommand cmd)
         {
-            cmd.Evaluate(this._context);;
+            if (this._autoCommit) this.Flush();
+            ReaderWriterLockSlim currLock = (this._dataset is IThreadSafeDataset) ? ((IThreadSafeDataset)this._dataset).Lock : this._lock;
+            bool mustRelease = false;
+            try
+            {
+                if (!currLock.IsWriteLockHeld)
+                {
+                    currLock.EnterWriteLock();
+                    mustRelease = true;
+                }
+                cmd.Evaluate(new SparqlUpdateEvaluationContext(this._dataset));
+                if (this._autoCommit) this.Flush();
+            }
+            catch
+            {
+                if (this._autoCommit)
+                {
+                    this.Discard();
+                }
+                else
+                {
+                    this._canCommit = false;
+                }
+                throw;
+            }
+            finally
+            {
+                if (mustRelease)
+                {
+                    currLock.ExitWriteLock();
+                }
+            }
         }
 
         /// <summary>
@@ -124,7 +277,7 @@ namespace VDS.RDF.Update
         /// <remarks>
         /// Invokes the type specific method for the command type
         /// </remarks>
-        public virtual void ProcessCommand(SparqlUpdateCommand cmd)
+        public void ProcessCommand(SparqlUpdateCommand cmd)
         {
             switch (cmd.CommandType)
             {
@@ -167,9 +320,7 @@ namespace VDS.RDF.Update
                 default:
                     throw new SparqlUpdateException("Unknown Update Commands cannot be processed by the Leviathan Update Processor");
             }
-            //Flush after every command to ensure that the next command operates on the most up to date data and doesn't see stale/cached data
-            this.Flush();
-        }
+         }
 
         /// <summary>
         /// Processes a command set
@@ -178,11 +329,110 @@ namespace VDS.RDF.Update
         /// <remarks>
         /// Invokes <see cref="LeviathanUpdateProcessor.ProcessCommand">ProcessCommand()</see> on each command in turn
         /// </remarks>
-        public virtual void ProcessCommandSet(SparqlUpdateCommandSet commands)
+        public void ProcessCommandSet(SparqlUpdateCommandSet commands)
         {
-            for (int i = 0; i < commands.CommandCount; i++)
+            //Stuff for checking Timeouts
+#if !NO_STOPWATCH
+            Stopwatch timer = new Stopwatch();
+#else
+            DateTime start, end;
+#endif
+            commands.UpdateExecutionTime = null;
+
+            //Firstly check what Transaction mode we are running in
+            bool autoCommit = this._autoCommit;
+
+            //Remember to handle the Thread Safety
+            //If the Dataset is Thread Safe use its own lock otherwise use our local lock
+            ReaderWriterLockSlim currLock = (this._dataset is IThreadSafeDataset) ? ((IThreadSafeDataset)this._dataset).Lock : this._lock;
+            try
             {
-                this.ProcessCommand(commands[i]);
+                currLock.EnterWriteLock();
+
+                //Regardless of the Transaction Mode we turn auto-commit off for a command set so that individual commands
+                //don't try and commit after each one is applied i.e. either we are in auto-commit mode and all the
+                //commands must be evaluated before flushing/discarding the changes OR we are not in auto-commit mode
+                //so turning it off doesn't matter as it is already turned off
+                this._autoCommit = false;
+
+                if (autoCommit)
+                {
+                    //Do a Flush() before we start to ensure changes from any previous commands are persisted
+                    this._dataset.Flush();
+                }
+
+                //Start timing the operation
+#if !NO_STOPWATCH
+                timer.Start();
+#else 
+                DateTime start = DateTime.Now;
+#endif
+                for (int i = 0; i < commands.CommandCount; i++)
+                {
+                    this.ProcessCommand(commands[i]);
+
+                    //Check for Timeout
+                    if (commands.Timeout > 0)
+                    {
+                        if (i < commands.CommandCount - 1)
+                        {
+#if !NO_STOPWATCH
+                            if (timer.ElapsedMilliseconds >= commands.Timeout)
+                            {
+                                timer.Stop();
+                                throw new SparqlUpdateTimeoutException("Update Execution Time exceeded the Timeout of " + commands.Timeout + "ms, update aborted after " + timer.ElapsedMilliseconds + "ms");
+                            }
+#else
+                            end = DateTime.Now;
+                            TimeSpan elapsed = (end - start);
+                            if (elapsed.Milliseconds >= commands.UpdateTimeout)
+                            {
+                                throw new SparqlUpdateTimeoutException("Update Execution Time exceeded the Timeout of " + commands.UpdateTimeout + "ms, update aborted after " + elapsed.Milliseconds + "ms");
+                            }
+#endif
+                        }
+                    }
+                }
+
+                if (autoCommit)
+                {
+                    //Do a Flush() when command set completed successfully to persist the changes
+                    this._dataset.Flush();
+                }
+
+#if !NO_STOPWATCH
+                timer.Stop();
+                commands.UpdateExecutionTime = timer.Elapsed;
+#else
+                commands.UpdateExecutionTime = (DateTime.Now - start);
+#endif
+            }
+            catch
+            {
+                if (autoCommit)
+                {
+                    //Do a Discard() when a command set fails to discard the changes
+                    this._dataset.Discard();
+                }
+                else
+                {
+                    this._canCommit = false;
+                }
+
+                //Set Update Times
+#if !NO_STOPWATCH
+                timer.Stop();
+                commands.UpdateExecutionTime = timer.Elapsed;
+#else
+                commands.UpdateExecutionTime = (DateTime.Now - start);
+#endif
+                throw;
+            }
+            finally
+            {
+                //Reset auto-commit setting and release our write lock
+                this._autoCommit = autoCommit;
+                currLock.ExitWriteLock();
             }
         }
 
@@ -190,72 +440,320 @@ namespace VDS.RDF.Update
         /// Processes a DELETE command
         /// </summary>
         /// <param name="cmd">Delete Command</param>
-        public virtual void ProcessDeleteCommand(DeleteCommand cmd)
+        public void ProcessDeleteCommand(DeleteCommand cmd)
         {
-            cmd.Evaluate(this._context);;
+            if (this._autoCommit) this.Flush();
+            ReaderWriterLockSlim currLock = (this._dataset is IThreadSafeDataset) ? ((IThreadSafeDataset)this._dataset).Lock : this._lock;
+            bool mustRelease = false;
+            try
+            {
+                if (!currLock.IsWriteLockHeld)
+                {
+                    currLock.EnterWriteLock();
+                    mustRelease = true;
+                }
+                cmd.Evaluate(new SparqlUpdateEvaluationContext(this._dataset));
+                if (this._autoCommit) this.Flush();
+            }
+            catch
+            {
+                if (this._autoCommit)
+                {
+                    this.Discard();
+                }
+                else
+                {
+                    this._canCommit = false;
+                }
+                throw;
+            }
+            finally
+            {
+                if (mustRelease)
+                {
+                    currLock.ExitWriteLock();
+                }
+            }
         }
 
         /// <summary>
         /// Processes a DELETE DATA command
         /// </summary>
         /// <param name="cmd">DELETE Data Command</param>
-        public virtual void ProcessDeleteDataCommand(DeleteDataCommand cmd)
+        public void ProcessDeleteDataCommand(DeleteDataCommand cmd)
         {
-            cmd.Evaluate(this._context);;
+            if (this._autoCommit) this.Flush();
+            ReaderWriterLockSlim currLock = (this._dataset is IThreadSafeDataset) ? ((IThreadSafeDataset)this._dataset).Lock : this._lock;
+            bool mustRelease = false;
+            try
+            {
+                if (!currLock.IsWriteLockHeld)
+                {
+                    currLock.EnterWriteLock();
+                    mustRelease = true;
+                }
+                cmd.Evaluate(new SparqlUpdateEvaluationContext(this._dataset));
+                if (this._autoCommit) this.Flush();
+            }
+            catch
+            {
+                if (this._autoCommit)
+                {
+                    this.Discard();
+                }
+                else
+                {
+                    this._canCommit = false;
+                }
+                throw;
+            }
+            finally
+            {
+                if (mustRelease)
+                {
+                    currLock.ExitWriteLock();
+                }
+            }
         }
 
         /// <summary>
         /// Processes a DROP command
         /// </summary>
         /// <param name="cmd">Drop Command</param>
-        public virtual void ProcessDropCommand(DropCommand cmd)
+        public void ProcessDropCommand(DropCommand cmd)
         {
-            cmd.Evaluate(this._context);;
+            if (this._autoCommit) this.Flush();
+            ReaderWriterLockSlim currLock = (this._dataset is IThreadSafeDataset) ? ((IThreadSafeDataset)this._dataset).Lock : this._lock;
+            bool mustRelease = false;
+            try
+            {
+                if (!currLock.IsWriteLockHeld)
+                {
+                    currLock.EnterWriteLock();
+                    mustRelease = true;
+                }
+                cmd.Evaluate(new SparqlUpdateEvaluationContext(this._dataset));
+                if (this._autoCommit) this.Flush();
+            }
+            catch
+            {
+                if (this._autoCommit)
+                {
+                    this.Discard();
+                }
+                else
+                {
+                    this._canCommit = false;
+                }
+                throw;
+            }
+            finally
+            {
+                if (mustRelease)
+                {
+                    currLock.ExitWriteLock();
+                }
+            }
         }
 
         /// <summary>
         /// Processes an INSERT command
         /// </summary>
         /// <param name="cmd">Insert Command</param>
-        public virtual void ProcessInsertCommand(InsertCommand cmd)
+        public void ProcessInsertCommand(InsertCommand cmd)
         {
-            cmd.Evaluate(this._context);;
+            if (this._autoCommit) this.Flush();
+            ReaderWriterLockSlim currLock = (this._dataset is IThreadSafeDataset) ? ((IThreadSafeDataset)this._dataset).Lock : this._lock;
+            bool mustRelease = false;
+            try
+            {
+                if (!currLock.IsWriteLockHeld)
+                {
+                    currLock.EnterWriteLock();
+                    mustRelease = true;
+                }
+                cmd.Evaluate(new SparqlUpdateEvaluationContext(this._dataset));
+                if (this._autoCommit) this.Flush();
+            }
+            catch
+            {
+                if (this._autoCommit)
+                {
+                    this.Discard();
+                }
+                else
+                {
+                    this._canCommit = false;
+                }
+                throw;
+            }
+            finally
+            {
+                if (mustRelease)
+                {
+                    currLock.ExitWriteLock();
+                }
+            }
         }
 
         /// <summary>
         /// Processes an INSERT DATA command
         /// </summary>
         /// <param name="cmd">Insert Data Command</param>
-        public virtual void ProcessInsertDataCommand(InsertDataCommand cmd)
+        public void ProcessInsertDataCommand(InsertDataCommand cmd)
         {
-            cmd.Evaluate(this._context);;
+            if (this._autoCommit) this.Flush();
+            ReaderWriterLockSlim currLock = (this._dataset is IThreadSafeDataset) ? ((IThreadSafeDataset)this._dataset).Lock : this._lock;
+            bool mustRelease = false;
+            try
+            {
+                if (!currLock.IsWriteLockHeld)
+                {
+                    currLock.EnterWriteLock();
+                    mustRelease = true;
+                }
+                cmd.Evaluate(new SparqlUpdateEvaluationContext(this._dataset));
+                if (this._autoCommit) this.Flush();
+            }
+            catch
+            {
+                if (this._autoCommit)
+                {
+                    this.Discard();
+                }
+                else
+                {
+                    this._canCommit = false;
+                }
+                throw;
+            }
+            finally
+            {
+                if (mustRelease)
+                {
+                    currLock.ExitWriteLock();
+                }
+            }
         }
 
         /// <summary>
         /// Processes a LOAD command
         /// </summary>
         /// <param name="cmd">Load Command</param>
-        public virtual void ProcessLoadCommand(LoadCommand cmd)
+        public void ProcessLoadCommand(LoadCommand cmd)
         {
-            cmd.Evaluate(this._context);;
+            if (this._autoCommit) this.Flush();
+            ReaderWriterLockSlim currLock = (this._dataset is IThreadSafeDataset) ? ((IThreadSafeDataset)this._dataset).Lock : this._lock;
+            bool mustRelease = false;
+            try
+            {
+                if (!currLock.IsWriteLockHeld)
+                {
+                    currLock.EnterWriteLock();
+                    mustRelease = true;
+                }
+                cmd.Evaluate(new SparqlUpdateEvaluationContext(this._dataset));
+                if (this._autoCommit) this.Flush();
+            }
+            catch
+            {
+                if (this._autoCommit)
+                {
+                    this.Discard();
+                }
+                else
+                {
+                    this._canCommit = false;
+                }
+                throw;
+            }
+            finally
+            {
+                if (mustRelease)
+                {
+                    currLock.ExitWriteLock();
+                }
+            }
         }
 
         /// <summary>
         /// Processes an INSERT/DELETE command
         /// </summary>
         /// <param name="cmd">Insert/Delete Command</param>
-        public virtual void ProcessModifyCommand(ModifyCommand cmd)
+        public void ProcessModifyCommand(ModifyCommand cmd)
         {
-            cmd.Evaluate(this._context);;
+            if (this._autoCommit) this.Flush();
+            ReaderWriterLockSlim currLock = (this._dataset is IThreadSafeDataset) ? ((IThreadSafeDataset)this._dataset).Lock : this._lock;
+            bool mustRelease = false;
+            try
+            {
+                if (!currLock.IsWriteLockHeld)
+                {
+                    currLock.EnterWriteLock();
+                    mustRelease = true;
+                }
+                cmd.Evaluate(new SparqlUpdateEvaluationContext(this._dataset));
+                if (this._autoCommit) this.Flush();
+            }
+            catch
+            {
+                if (this._autoCommit)
+                {
+                    this.Discard();
+                }
+                else
+                {
+                    this._canCommit = false;
+                }
+                throw;
+            }
+            finally
+            {
+                if (mustRelease)
+                {
+                    currLock.ExitWriteLock();
+                }
+            }
         }
 
         /// <summary>
         /// Processes a MOVE command
         /// </summary>
         /// <param name="cmd">Move Command</param>
-        public virtual void ProcessMoveCommand(MoveCommand cmd)
+        public void ProcessMoveCommand(MoveCommand cmd)
         {
-            cmd.Evaluate(this._context);
+            if (this._autoCommit) this.Flush();
+            ReaderWriterLockSlim currLock = (this._dataset is IThreadSafeDataset) ? ((IThreadSafeDataset)this._dataset).Lock : this._lock;
+            bool mustRelease = false;
+            try
+            {
+                if (!currLock.IsWriteLockHeld)
+                {
+                    currLock.EnterWriteLock();
+                    mustRelease = true;
+                }
+                cmd.Evaluate(new SparqlUpdateEvaluationContext(this._dataset));
+                if (this._autoCommit) this.Flush();
+            }
+            catch
+            {
+                if (this._autoCommit)
+                {
+                    this.Discard();
+                }
+                else
+                {
+                    this._canCommit = false;
+                }
+                throw;
+            }
+            finally
+            {
+                if (mustRelease)
+                {
+                    currLock.ExitWriteLock();
+                }
+            }
         }
     }
 }

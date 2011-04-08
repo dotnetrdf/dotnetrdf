@@ -51,11 +51,13 @@ namespace VDS.RDF
         /// Method for Loading a Graph from some Concrete RDF Syntax via some arbitrary Stream
         /// </summary>
         /// <param name="g">Graph to load RDF into</param>
-        /// <param name="input">The Stream to read input from</param>
+        /// <param name="input">The reader to read input from</param>
         /// <exception cref="RdfException">Thrown if the Parser tries to output something that is invalid RDF</exception>
         /// <exception cref="Parsing.RdfParseException">Thrown if the Parser cannot Parse the Input</exception>
         /// <exception cref="System.IO.IOException">Thrown if the Parser encounters an IO Error while trying to access/parse the Stream</exception>
         void Load(IGraph g, StreamReader input);
+
+        void Load(IGraph g, TextReader input);
 
         /// <summary>
         /// Method for Loading a Graph from some Concrete RDF Syntax from a given File
@@ -66,6 +68,12 @@ namespace VDS.RDF
         /// <exception cref="Parsing.RdfParseException">Thrown if the Parser cannot Parse the Input</exception>
         /// <exception cref="System.IO.IOException">Thrown if the Parser encounters an IO Error while trying to access/parse the File</exception>
         void Load(IGraph g, String filename);
+
+        void Load(IRdfHandler handler, StreamReader input);
+
+        void Load(IRdfHandler handler, TextReader input);
+
+        void Load(IRdfHandler handler, String filename);
 
         /// <summary>
         /// Event which Readers can raise when they notice syntax that is ambigious/deprecated etc which can still be parsed

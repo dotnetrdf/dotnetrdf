@@ -116,7 +116,7 @@ namespace VDS.RDF.Writing.Contexts
         /// Gets the next Uri for a Graph that is waiting to be written
         /// </summary>
         /// <returns>Uri of next Graph to be written</returns>
-        public Uri GetNextURI()
+        public Uri GetNextUri()
         {
             Uri temp = null;
             try

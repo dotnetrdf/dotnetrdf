@@ -68,10 +68,15 @@ namespace VDS.RDF.Update
             this._endpoint = endpoint;
         }
 
+        public void Discard()
+        {
+            //No discard actions required
+        }
+
         /// <summary>
         /// Flushes any outstanding changes to the underlying store
         /// </summary>
-        public virtual void Flush()
+        public void Flush()
         {
             //No flush actions requied
         }
@@ -127,7 +132,17 @@ namespace VDS.RDF.Update
         /// <param name="commands">Command Set</param>
         public void ProcessCommandSet(SparqlUpdateCommandSet commands)
         {
-            this._endpoint.Update(commands.ToString());
+            DateTime start = DateTime.Now;
+            commands.UpdateExecutionTime = null;
+            try
+            {
+                this._endpoint.Update(commands.ToString());
+            }
+            finally
+            {
+                TimeSpan elapsed = (DateTime.Now - start);
+                commands.UpdateExecutionTime = elapsed;
+            }
         }
 
         /// <summary>

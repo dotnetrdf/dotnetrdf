@@ -50,7 +50,7 @@ namespace VDS.RDF.Query
         private Dictionary<String, INode> _resultValues = new Dictionary<string,INode>();
 
         /// <summary>
-        /// Creates a new empty SPARQLResult which can only be filled by methods internal to the dotNetRDF Library
+        /// Creates a new empty SPARQL Result which can only be filled by methods internal to the dotNetRDF Library
         /// </summary>
         public SparqlResult()
         {

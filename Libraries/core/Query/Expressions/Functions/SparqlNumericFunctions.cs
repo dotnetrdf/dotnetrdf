@@ -274,7 +274,7 @@ namespace VDS.RDF.Query.Expressions.Functions
                 INode temp = this._expr.Value(context, bindingID);
                 if (temp.NodeType == NodeType.Literal)
                 {
-                    LiteralNode lit = (LiteralNode)temp;
+                    ILiteralNode lit = (ILiteralNode)temp;
 
                     //No DatatType means not numeric
                     if (lit.DataType == null) return false;

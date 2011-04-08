@@ -41,10 +41,7 @@ using System.Text;
 
 namespace VDS.RDF
 {
-    /// <summary>
-    /// Class for representing Graph Literal Nodes which are supported in highly expressive RDF syntaxes like Notation 3
-    /// </summary>
-    public class GraphLiteralNode : BaseNode, IComparable<GraphLiteralNode>
+    public abstract class BaseGraphLiteralNode : BaseNode, IGraphLiteralNode, IEquatable<BaseGraphLiteralNode>, IComparable<BaseGraphLiteralNode>
     {
         private IGraph _subgraph;
 
@@ -53,7 +50,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="g">Graph this node is in</param>
         /// <param name="subgraph">Sub Graph this node represents</param>
-        protected internal GraphLiteralNode(IGraph g, IGraph subgraph)
+        protected internal BaseGraphLiteralNode(IGraph g, IGraph subgraph)
             : base(g, NodeType.GraphLiteral)
         {
             this._subgraph = subgraph;
@@ -66,7 +63,7 @@ namespace VDS.RDF
         /// Creates a new Graph Literal Node whose value is an empty Subgraph
         /// </summary>
         /// <param name="g">Graph this node is in</param>
-        protected internal GraphLiteralNode(IGraph g)
+        protected internal BaseGraphLiteralNode(IGraph g)
             : base(g, NodeType.GraphLiteral)
         {
             this._subgraph = new Graph();
@@ -121,16 +118,48 @@ namespace VDS.RDF
 
             if (other.NodeType == NodeType.GraphLiteral)
             {
-                //Use Graph Equality to determine equality
-                GraphLiteralNode temp = (GraphLiteralNode)other;
-
-                return this._subgraph.Equals(temp.SubGraph);
+                return EqualityHelper.AreGraphLiteralsEqual(this, (IGraphLiteralNode)other);
             }
             else
             {
                 //Can only be equal to a Graph Literal Node
                 return false;
             }
+        }
+
+        public override bool Equals(IBlankNode other)
+        {
+            if (ReferenceEquals(this, other)) return true;
+            return false;
+        }
+
+        public override bool Equals(IGraphLiteralNode other)
+        {
+            if (ReferenceEquals(this, other)) return true;
+            return EqualityHelper.AreGraphLiteralsEqual(this, other);
+        }
+
+        public override bool Equals(ILiteralNode other)
+        {
+            if (ReferenceEquals(this, other)) return true;
+            return false;
+        }
+
+        public override bool Equals(IUriNode other)
+        {
+            if (ReferenceEquals(this, other)) return true;
+            return false;
+        }
+
+        public override bool Equals(IVariableNode other)
+        {
+            if (ReferenceEquals(this, other)) return true;
+            return false;
+        }
+
+        public bool Equals(BaseGraphLiteralNode other)
+        {
+            return this.Equals((IGraphLiteralNode)other);
         }
 
         /// <summary>
@@ -164,6 +193,8 @@ namespace VDS.RDF
         /// </remarks>
         public override int CompareTo(INode other)
         {
+            if (ReferenceEquals(this, other)) return 0;
+
             if (other == null)
             {
                 //Everything is greater than a null
@@ -178,8 +209,7 @@ namespace VDS.RDF
             }
             else if (other.NodeType == NodeType.GraphLiteral)
             {
-                //Consider all Graph Literals to be Equal
-                return 0;
+                return ComparisonHelper.CompareGraphLiterals(this, (IGraphLiteralNode)other);
             }
             else
             {
@@ -187,6 +217,60 @@ namespace VDS.RDF
                 return -1;
             }
         }
+
+        public override int CompareTo(IBlankNode other)
+        {
+            if (ReferenceEquals(this, other)) return 0;
+
+            //We are always greater than everything
+            return 1;
+        }
+
+        public override int CompareTo(IGraphLiteralNode other)
+        {
+            return ComparisonHelper.CompareGraphLiterals(this, (IGraphLiteralNode)other);
+        }
+
+        public override int CompareTo(ILiteralNode other)
+        {
+            if (ReferenceEquals(this, other)) return 0;
+
+            //We are always greater than everything
+            return 1;
+        }
+
+        public override int CompareTo(IUriNode other)
+        {
+            if (ReferenceEquals(this, other)) return 0;
+
+            //We are always greater than everything
+            return 1;
+        }
+
+        public override int CompareTo(IVariableNode other)
+        {
+            if (ReferenceEquals(this, other)) return 0;
+
+            //We are always greater than everything
+            return 1;
+        }
+
+        public int CompareTo(BaseGraphLiteralNode other)
+        {
+            return this.CompareTo((IGraphLiteralNode)other);
+        }
+    }
+
+    /// <summary>
+    /// Class for representing Graph Literal Nodes which are supported in highly expressive RDF syntaxes like Notation 3
+    /// </summary>
+    public class GraphLiteralNode : BaseGraphLiteralNode, IEquatable<GraphLiteralNode>, IComparable<GraphLiteralNode>
+    {
+        protected internal GraphLiteralNode(IGraph g)
+            : base(g) { }
+
+        protected internal GraphLiteralNode(IGraph g, IGraph subgraph)
+            : base(g, subgraph) { }
 
         /// <summary>
         /// Implementation of Compare To for Graph Literal Nodes
@@ -198,7 +282,12 @@ namespace VDS.RDF
         /// </remarks>
         public int CompareTo(GraphLiteralNode other)
         {
-            return this.CompareTo((INode)other);
+            return this.CompareTo((IGraphLiteralNode)other);
+        }
+
+        public bool Equals(GraphLiteralNode other)
+        {
+            return base.Equals((IGraphLiteralNode)other);
         }
 
     }

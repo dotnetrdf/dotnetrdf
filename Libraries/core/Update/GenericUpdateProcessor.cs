@@ -74,6 +74,11 @@ namespace VDS.RDF.Update
             this._manager = manager;
         }
 
+        public virtual void Discard()
+        {
+            //Does Nothing
+        }
+
         /// <summary>
         /// Flushes any outstanding changes to the underlying store
         /// </summary>
@@ -323,9 +328,26 @@ namespace VDS.RDF.Update
         /// </remarks>
         public virtual void ProcessCommandSet(SparqlUpdateCommandSet commands)
         {
-            for (int i = 0; i < commands.CommandCount; i++)
+            DateTime start = DateTime.Now;
+            commands.UpdateExecutionTime = null;
+            try
             {
-                this.ProcessCommand(commands[i]);
+                if (this._manager is IUpdateableGenericIOManager)
+                {
+                    ((IUpdateableGenericIOManager)this._manager).Update(commands.ToString());
+                }
+                else
+                {
+                    for (int i = 0; i < commands.CommandCount; i++)
+                    {
+                        this.ProcessCommand(commands[i]);
+                    }
+                }
+            }
+            finally
+            {
+                TimeSpan elapsed = (DateTime.Now - start);
+                commands.UpdateExecutionTime = elapsed;
             }
         }
 
@@ -376,19 +398,25 @@ namespace VDS.RDF.Update
                             List<Triple> tempDeletedTriples = new List<Triple>();
                             try
                             {
-
                                 ConstructContext context = new ConstructContext(null, s, true);
-                                foreach (ITriplePattern p in cmd.DeletePattern.TriplePatterns)
+                                foreach (IConstructTriplePattern p in cmd.DeletePattern.TriplePatterns.OfType<IConstructTriplePattern>())
                                 {
-                                    tempDeletedTriples.Add(((IConstructTriplePattern)p).Construct(context));
+                                    try
+                                    {
+                                        tempDeletedTriples.Add(p.Construct(context));
+                                    }
+                                    catch (RdfQueryException)
+                                    {
+                                        //If we get an error here then it means we couldn't construct a specific
+                                        //triple so we continue anyway
+                                    }
                                 }
                                 deletedTriples.AddRange(tempDeletedTriples);
                             }
                             catch (RdfQueryException)
                             {
-                                //If we throw an error this means we couldn't construct for this solution so the
-                                //solution is discarded
-                                continue;
+                                //If we get an error here this means we couldn't construct for this solution so the
+                                //solution is ignored for this graph
                             }
 
                             //Triples from GRAPH clauses
@@ -434,17 +462,24 @@ namespace VDS.RDF.Update
                                     }
                                     if (!deletedGraphTriples.ContainsKey(graphUri)) deletedGraphTriples.Add(graphUri, new List<Triple>());
                                     ConstructContext context = new ConstructContext(null, s, true);
-                                    foreach (ITriplePattern p in gp.TriplePatterns)
+                                    foreach (IConstructTriplePattern p in gp.TriplePatterns.OfType<IConstructTriplePattern>())
                                     {
-                                        tempDeletedTriples.Add(((IConstructTriplePattern)p).Construct(context));
+                                        try
+                                        {
+                                            tempDeletedTriples.Add(p.Construct(context));
+                                        }
+                                        catch (RdfQueryException)
+                                        {
+                                            //If we get an error here then it means we couldn't construct a specific
+                                            //triple so we continue anyway
+                                        }
                                     }
                                     deletedGraphTriples[graphUri].AddRange(tempDeletedTriples);
                                 }
                                 catch (RdfQueryException)
                                 {
                                     //If we throw an error this means we couldn't construct for this solution so the
-                                    //solution is discarded
-                                    continue;
+                                    //solution is ignore for this graph
                                 }
                             }
                         }
@@ -670,17 +705,24 @@ namespace VDS.RDF.Update
                             try
                             {
                                 ConstructContext context = new ConstructContext(null, s, true);
-                                foreach (ITriplePattern p in cmd.InsertPattern.TriplePatterns)
+                                foreach (IConstructTriplePattern p in cmd.InsertPattern.TriplePatterns.OfType<IConstructTriplePattern>())
                                 {
-                                    tempInsertedTriples.Add(((IConstructTriplePattern)p).Construct(context));
+                                    try
+                                    {
+                                        tempInsertedTriples.Add(p.Construct(context));
+                                    }
+                                    catch (RdfQueryException)
+                                    {
+                                        //If we get an error here then it means we couldn't construct a specific
+                                        //triple so we continue anyway
+                                    }
                                 }
                                 insertedTriples.AddRange(tempInsertedTriples);
                             }
                             catch (RdfQueryException)
                             {
-                                //If we throw an error this means we couldn't construct for this solution so the
-                                //solution is discarded
-                                continue;
+                                //If we get an error here this means we couldn't construct for this solution so the
+                                //solution is ignore for this graph
                             }
 
                             //Triples from GRAPH clauses
@@ -726,17 +768,24 @@ namespace VDS.RDF.Update
                                     }
                                     if (!insertedGraphTriples.ContainsKey(graphUri)) insertedGraphTriples.Add(graphUri, new List<Triple>());
                                     ConstructContext context = new ConstructContext(null, s, true);
-                                    foreach (ITriplePattern p in gp.TriplePatterns)
+                                    foreach (IConstructTriplePattern p in gp.TriplePatterns.OfType<IConstructTriplePattern>())
                                     {
-                                        tempInsertedTriples.Add(((IConstructTriplePattern)p).Construct(context));
+                                        try
+                                        {
+                                            tempInsertedTriples.Add(p.Construct(context));
+                                        }
+                                        catch (RdfQueryException)
+                                        {
+                                            //If we get an error here then it means we couldn't construct a specific
+                                            //triple so we continue anyway
+                                        }
                                     }
                                     insertedGraphTriples[graphUri].AddRange(tempInsertedTriples);
                                 }
                                 catch (RdfQueryException)
                                 {
-                                    //If we throw an error this means we couldn't construct for this solution so the
-                                    //solution is discarded
-                                    continue;
+                                    //If we get an error here this means we couldn't construct for this solution so the
+                                    //solution is ignore for this graph
                                 }
                             }
                         }
@@ -934,17 +983,24 @@ namespace VDS.RDF.Update
                             try
                             {
                                 ConstructContext context = new ConstructContext(null, s, true);
-                                foreach (ITriplePattern p in cmd.DeletePattern.TriplePatterns)
+                                foreach (IConstructTriplePattern p in cmd.DeletePattern.TriplePatterns.OfType<IConstructTriplePattern>())
                                 {
-                                    tempDeletedTriples.Add(((IConstructTriplePattern)p).Construct(context));
+                                    try
+                                    {
+                                        tempDeletedTriples.Add(p.Construct(context));
+                                    }
+                                    catch (RdfQueryException)
+                                    {
+                                        //If we get an error here then it means we could not construct a specific
+                                        //triple so we continue anyway
+                                    }
                                 }
                                 deletedTriples.AddRange(tempDeletedTriples);
                             }
                             catch (RdfQueryException)
                             {
-                                //If we throw an error this means we couldn't construct for this solution so the
-                                //solution is discarded
-                                continue;
+                                //If we get an error here this means we couldn't construct for this solution so the
+                                //solution is ignored for this graph
                             }
 
                             //Triples from GRAPH clauses
@@ -990,17 +1046,24 @@ namespace VDS.RDF.Update
                                     }
                                     if (!deletedGraphTriples.ContainsKey(graphUri)) deletedGraphTriples.Add(graphUri, new List<Triple>());
                                     ConstructContext context = new ConstructContext(null, s, true);
-                                    foreach (ITriplePattern p in gp.TriplePatterns)
+                                    foreach (IConstructTriplePattern p in gp.TriplePatterns.OfType<IConstructTriplePattern>())
                                     {
-                                        tempDeletedTriples.Add(((IConstructTriplePattern)p).Construct(context));
+                                        try
+                                        {
+                                            tempDeletedTriples.Add(p.Construct(context));
+                                        }
+                                        catch (RdfQueryException)
+                                        {
+                                            //If we throw an error this means we couldn't construct a specific
+                                            //triple so we continue anyway
+                                        }
                                     }
                                     deletedGraphTriples[graphUri].AddRange(tempDeletedTriples);
                                 }
                                 catch (RdfQueryException)
                                 {
-                                    //If we throw an error this means we couldn't construct for this solution so the
-                                    //solution is discarded
-                                    continue;
+                                    //If we get an error here this means we couldn't construct for this solution so the
+                                    //solution is ignored for this graph
                                 }
                             }
                         }
@@ -1014,17 +1077,24 @@ namespace VDS.RDF.Update
                             try
                             {
                                 ConstructContext context = new ConstructContext(null, s, true);
-                                foreach (ITriplePattern p in cmd.InsertPattern.TriplePatterns)
+                                foreach (IConstructTriplePattern p in cmd.InsertPattern.TriplePatterns.OfType<IConstructTriplePattern>())
                                 {
-                                    tempInsertedTriples.Add(((IConstructTriplePattern)p).Construct(context));
+                                    try
+                                    {
+                                        tempInsertedTriples.Add(p.Construct(context));
+                                    }
+                                    catch (RdfQueryException)
+                                    {
+                                        //If we get an error here then it means we couldn't construct a specific
+                                        //triple so we continue anyway
+                                    }
                                 }
                                 insertedTriples.AddRange(tempInsertedTriples);
                             }
                             catch (RdfQueryException)
                             {
-                                //If we throw an error this means we couldn't construct for this solution so the
-                                //solution is discarded
-                                continue;
+                                //If we get an error here this means we couldn't construct for this solution so the
+                                //solution is ignored for this graph
                             }
 
                             //Triples from GRAPH clauses
@@ -1070,17 +1140,24 @@ namespace VDS.RDF.Update
                                     }
                                     if (!insertedGraphTriples.ContainsKey(graphUri)) insertedGraphTriples.Add(graphUri, new List<Triple>());
                                     ConstructContext context = new ConstructContext(null, s, true);
-                                    foreach (ITriplePattern p in gp.TriplePatterns)
+                                    foreach (IConstructTriplePattern p in gp.TriplePatterns.OfType<IConstructTriplePattern>())
                                     {
-                                        tempInsertedTriples.Add(((IConstructTriplePattern)p).Construct(context));
+                                        try
+                                        {
+                                            tempInsertedTriples.Add(p.Construct(context));
+                                        }
+                                        catch (RdfQueryException)
+                                        {
+                                            //If we get an error here it means we couldn't construct a specific
+                                            //triple so we continue anyway
+                                        }
                                     }
                                     insertedGraphTriples[graphUri].AddRange(tempInsertedTriples);
                                 }
                                 catch (RdfQueryException)
                                 {
-                                    //If we throw an error this means we couldn't construct for this solution so the
-                                    //solution is discarded
-                                    continue;
+                                    //If we get an error here this means we couldn't construct for this solution so the
+                                    //solution is ignored for this graph
                                 }
                             }
                         }

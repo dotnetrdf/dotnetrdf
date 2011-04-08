@@ -39,6 +39,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using OpenLink.Data.Virtuoso;
 using VDS.RDF.Configuration;
@@ -46,6 +47,7 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Update;
 using VDS.RDF.Writing;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Storage
 {
@@ -81,6 +83,7 @@ namespace VDS.RDF.Storage
 
         private VirtuosoConnection _db;
         private VirtuosoTransaction _dbtrans;
+        private SparqlFormatter _formatter = new SparqlFormatter();
 
         /// <summary>
         /// Variables for Database Connection Properties
@@ -437,20 +440,23 @@ namespace VDS.RDF.Storage
                     if (removals.Any())
                     {
                         VirtuosoCommand deleteCmd = new VirtuosoCommand();
-                        Graph deleteGraph = new Graph();
-                        deleteGraph.Assert(removals);
-                        String deleteData = VDS.RDF.Writing.StringWriter.Write(deleteGraph, new NTriplesWriter());
-                        String delete = "SPARQL define output:format '_JAVA_' DELETE DATA";
+                        StringBuilder delete = new StringBuilder();
+                        delete.AppendLine("SPARQL define output:format '_JAVA_' DELETE DATA");
                         if (graphUri != null)
                         {
-                            delete += " FROM <" + graphUri.ToString() + ">";
+                            delete.AppendLine(" FROM <" + graphUri.ToString() + ">");
                         }
                         else
                         {
                             throw new RdfStorageException("Cannot update an unnamed Graph in a Virtuoso Store using this method - you must specify the URI of a Graph to Update");
                         }
-                        delete += " { " + deleteData + " }";
-                        deleteCmd.CommandText = delete;
+                        delete.AppendLine("{");
+                        foreach (Triple t in removals)
+                        {
+                            delete.AppendLine(t.ToString(this._formatter));
+                        }
+                        delete.AppendLine("}");
+                        deleteCmd.CommandText = delete.ToString();
                         deleteCmd.Connection = this._db;
                         deleteCmd.Transaction = this._dbtrans;
 
@@ -465,20 +471,23 @@ namespace VDS.RDF.Storage
                     if (additions.Any())
                     {
                         VirtuosoCommand insertCmd = new VirtuosoCommand();
-                        Graph insertGraph = new Graph();
-                        insertGraph.Assert(additions);
-                        String insertData = VDS.RDF.Writing.StringWriter.Write(insertGraph, new NTriplesWriter());
-                        String insert = "SPARQL define output:format '_JAVA_' INSERT DATA";
+                        StringBuilder insert = new StringBuilder();
+                        insert.AppendLine("SPARQL define output:format '_JAVA_' INSERT DATA");
                         if (graphUri != null)
                         {
-                            insert += " INTO <" + graphUri.ToString() + ">";
+                            insert.AppendLine(" INTO <" + graphUri.ToString() + ">");
                         }
                         else
                         {
                             throw new RdfStorageException("Cannot update an unnamed Graph in a Virtuoso Store using this method - you must specify the URI of a Graph to Update");
                         }
-                        insert += "{ " + insertData + " }";
-                        insertCmd.CommandText = insert;
+                        insert.AppendLine("{");
+                        foreach (Triple t in additions)
+                        {
+                            insert.AppendLine(t.ToString(this._formatter));
+                        }
+                        insert.AppendLine("}");
+                        insertCmd.CommandText = insert.ToString();
                         insertCmd.Connection = this._db;
                         insertCmd.Transaction = this._dbtrans;
 
@@ -1006,7 +1015,7 @@ namespace VDS.RDF.Storage
                             INode temp = r["g"];
                             if (temp.NodeType == NodeType.Uri)
                             {
-                                graphs.Add(((UriNode)temp).Uri);
+                                graphs.Add(((IUriNode)temp).Uri);
                             }
                             else if (temp.NodeType == NodeType.Literal)
                             {

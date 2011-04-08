@@ -51,6 +51,8 @@ namespace VDS.RDF.Writing.Formatting
         private char _escapeChar = '\\';
         private bool _fullLiteralOutput = true;
 
+        //REQ: Improve support for escape characters
+
         /// <summary>
         /// Creates a new Deliminated Line Formatter
         /// </summary>
@@ -102,7 +104,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <param name="u">URI Node</param>
         /// <param name="segment">Triple Segment</param>
         /// <returns></returns>
-        protected override string FormatUriNode(UriNode u, TripleSegment? segment)
+        protected override string FormatUriNode(IUriNode u, TripleSegment? segment)
         {
             StringBuilder output = new StringBuilder();
             if (this._uriStartChar != null) output.Append(this._uriStartChar);
@@ -124,7 +126,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <param name="lit">Literal Node</param>
         /// <param name="segment">Triple Segment</param>
         /// <returns></returns>
-        protected override string FormatLiteralNode(LiteralNode lit, TripleSegment? segment)
+        protected override string FormatLiteralNode(ILiteralNode lit, TripleSegment? segment)
         {
             StringBuilder output = new StringBuilder();
             if (TurtleSpecsHelper.IsValidPlainLiteral(lit.Value, lit.DataType))
@@ -139,7 +141,7 @@ namespace VDS.RDF.Writing.Formatting
                 {
                     value = value.Replace("\n", "\\n");
                     value = value.Replace("\r", "\\r");
-                    value = value.Replace("\"", "\\\"");
+                    value = value.Escape('"');
                     value = value.Replace("\t", "\\t");
 
                     //If there are no wrapper characters then we must escape the deliminator
