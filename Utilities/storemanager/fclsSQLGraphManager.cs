@@ -44,7 +44,7 @@ namespace VDS.RDF.Utilities.StoreManager
         private ISqlIOManager _manager;
         private Uri _graphUri;
         private String _graphID;
-        private Graph _g;
+        private IGraph _g;
 
         public fclsSQLGraphManager(Uri graphUri, ISqlIOManager manager)
         {

@@ -210,9 +210,9 @@ namespace VDS.RDF.Utilities.Web.Deploy
                 Console.WriteLine();
 
                 //Detect Handlers from the Configution Graph and deploy
-                UriNode rdfType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
-                UriNode dnrType = g.CreateUriNode(new Uri(ConfigurationLoader.ConfigurationNamespace + "type"));
-                UriNode httpHandlerType = g.CreateUriNode(new Uri(ConfigurationLoader.ConfigurationNamespace + "HttpHandler"));
+                IUriNode rdfType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
+                IUriNode dnrType = g.CreateUriNode(new Uri(ConfigurationLoader.ConfigurationNamespace + "type"));
+                IUriNode httpHandlerType = g.CreateUriNode(new Uri(ConfigurationLoader.ConfigurationNamespace + "HttpHandler"));
 
                 //Deploy for IIS Classic Mode
                 if (!this._noClassicRegistration)
@@ -258,7 +258,7 @@ namespace VDS.RDF.Utilities.Web.Deploy
                     {
                         if (n.NodeType == NodeType.Uri)
                         {
-                            String handlerPath = ((UriNode)n).Uri.AbsolutePath;
+                            String handlerPath = ((IUriNode)n).Uri.AbsolutePath;
                             INode type = g.GetTriplesWithSubjectPredicate(n, dnrType).Select(t => t.Object).FirstOrDefault();
                             if (type == null)
                             {
@@ -267,7 +267,7 @@ namespace VDS.RDF.Utilities.Web.Deploy
                             }
                             if (type.NodeType == NodeType.Literal)
                             {
-                                String handlerType = ((LiteralNode)type).Value;
+                                String handlerType = ((ILiteralNode)type).Value;
 
                                 //Add XML to register the Handler
                                 XmlNode reg = null;
@@ -393,7 +393,7 @@ namespace VDS.RDF.Utilities.Web.Deploy
                     {
                         if (n.NodeType == NodeType.Uri)
                         {
-                            String handlerPath = ((UriNode)n).Uri.AbsolutePath;
+                            String handlerPath = ((IUriNode)n).Uri.AbsolutePath;
                             INode type = g.GetTriplesWithSubjectPredicate(n, dnrType).Select(t => t.Object).FirstOrDefault();
                             if (type == null)
                             {
@@ -402,7 +402,7 @@ namespace VDS.RDF.Utilities.Web.Deploy
                             }
                             if (type.NodeType == NodeType.Literal)
                             {
-                                String handlerType = ((LiteralNode)type).Value;
+                                String handlerType = ((ILiteralNode)type).Value;
 
                                 //Add XML to register the Handler
                                 XmlNode reg = null;

@@ -269,8 +269,8 @@ namespace VDS.RDF.Test
             try
             {
                 Graph g = new Graph();
-                BlankNode a = g.CreateBlankNode();
-                BlankNode b = g.CreateBlankNode();
+                IBlankNode a = g.CreateBlankNode();
+                IBlankNode b = g.CreateBlankNode();
 
                 Console.WriteLine("Testing using Equals() method");
                 Assert.IsFalse(a.Equals(b), "Two different Blank Nodes should be non-equal");

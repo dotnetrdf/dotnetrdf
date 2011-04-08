@@ -299,7 +299,7 @@ namespace VDS.RDF.Linq
                     break;
 
                 case NodeType.Literal:
-                    LiteralNode lit = (LiteralNode)n;
+                    ILiteralNode lit = (ILiteralNode)n;
 
                     x.XsdtTypeName = XsdtPrimitiveDataType.XsdtUnknown;
                     x.ValuePart = lit.Value;

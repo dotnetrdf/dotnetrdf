@@ -24,7 +24,7 @@ namespace VDS.RDF.Utilities.Editor.Controls
     {
         private Uri _u;
 
-        public UriNodeControl(UriNode u, INodeFormatter formatter)
+        public UriNodeControl(IUriNode u, INodeFormatter formatter)
         {
             InitializeComponent();
 

@@ -119,7 +119,7 @@ namespace VDS.RDF.Test
             g.BaseUri = null;
             store.Add(g);
 
-            UriNode rdfType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
+            IUriNode rdfType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
 
             Assert.AreNotEqual(0, store.GetTriplesWithPredicate(rdfType).Count(), "Store should contain some rdf:type Triples");
 

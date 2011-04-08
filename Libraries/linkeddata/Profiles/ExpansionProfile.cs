@@ -19,7 +19,7 @@ namespace VDS.RDF.LinkedData.Profiles
         public const String AATNamespace = "http://www.dotnetrdf.org/AllAboutThat/";
 
         private int _maxDepth = 1;
-        private UriNode _node;
+        private IUriNode _node;
 
         /// <summary>
         /// Creates a new Expansion Profile which uses the Default Profile
@@ -94,7 +94,7 @@ namespace VDS.RDF.LinkedData.Profiles
                 {
                     if (maxDepthSpecifier.Object.NodeType == NodeType.Literal)
                     {
-                        LiteralNode l = (LiteralNode)maxDepthSpecifier.Object;
+                        ILiteralNode l = (ILiteralNode)maxDepthSpecifier.Object;
                         if (l.DataType != null && l.DataType.ToString().Equals(XmlSpecsHelper.XmlSchemaDataTypeInteger))
                         {
                             this._maxDepth = Int32.Parse(l.Value);

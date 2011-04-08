@@ -52,7 +52,7 @@ namespace ParserGUI
                     writer = new Notation3Writer();
                     break;
                 case 4:
-                    writer = new RdfXmlTreeWriter();
+                    writer = new RdfXmlWriter();
                     break;
                 case 5:
                     writer = new FastRdfXmlWriter();

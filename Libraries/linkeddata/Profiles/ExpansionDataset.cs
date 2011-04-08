@@ -24,7 +24,7 @@ namespace VDS.RDF.LinkedData.Profiles
             {
                 if (t.Object.NodeType == NodeType.Literal)
                 {
-                    LiteralNode l = (LiteralNode)t.Object;
+                    ILiteralNode l = (ILiteralNode)t.Object;
                     if (l.DataType != null && l.DataType.ToString().Equals(XmlSpecsHelper.XmlSchemaDataTypeBoolean))
                     {
                         this._ignore = Boolean.Parse(l.Value);
@@ -38,7 +38,7 @@ namespace VDS.RDF.LinkedData.Profiles
             {
                 if (endpoint.Object.NodeType == NodeType.Uri)
                 {
-                    this._discoveryEndpoints.Add(((UriNode)endpoint.Object).Uri);
+                    this._discoveryEndpoints.Add(((IUriNode)endpoint.Object).Uri);
                 }
             }
         }

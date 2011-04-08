@@ -151,7 +151,7 @@ namespace VDS.RDF.GUI.WinForms
                     INode n = (INode)value;
                     if (n.NodeType == NodeType.Uri)
                     {
-                        this.RaiseUriClicked(((UriNode)n).Uri);
+                        this.RaiseUriClicked(((IUriNode)n).Uri);
                     }
                 }
             }

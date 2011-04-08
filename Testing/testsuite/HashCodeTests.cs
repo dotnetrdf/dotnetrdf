@@ -25,8 +25,8 @@ namespace dotNetRDFTest
 
                 //Create the Nodes
                 Graph g = new Graph();
-                UriNode u = g.CreateUriNode(new Uri("http://www.google.com"));
-                LiteralNode l = g.CreateLiteralNode("http://www.google.com/");
+                IUriNode u = g.CreateUriNode(new Uri("http://www.google.com"));
+                ILiteralNode l = g.CreateLiteralNode("http://www.google.com/");
 
                 Console.WriteLine("Created a URI and Literal Node both referring to 'http://www.google.com'");
                 Console.WriteLine("String form of URI Node is:");
@@ -39,8 +39,8 @@ namespace dotNetRDFTest
                 Console.WriteLine("Nodes are equal? " + u.Equals(l));
 
                 //Create Triples
-                BlankNode b = g.CreateBlankNode();
-                UriNode type = g.CreateUriNode("rdf:type");
+                IBlankNode b = g.CreateBlankNode();
+                IUriNode type = g.CreateUriNode("rdf:type");
                 Triple t1, t2;
                 t1 = new Triple(b, type, u);
                 t2 = new Triple(b, type, l);

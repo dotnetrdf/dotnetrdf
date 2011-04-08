@@ -29,21 +29,21 @@ namespace VDS.RDF.Test.Writing
                 Uri dtUnknown = new Uri("http://example.org/unknownType");
 
                 //Create Nodes used for our test Triples
-                BlankNode subjBnode = g.CreateBlankNode();
-                UriNode subjUri = g.CreateUriNode(new Uri("http://example.org/subject"));
-                UriNode predUri = g.CreateUriNode(new Uri("http://example.org/predicate"));
-                UriNode predType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
-                BlankNode objBnode = g.CreateBlankNode();
-                UriNode objUri = g.CreateUriNode(new Uri("http://example.org/object"));
-                LiteralNode objString = g.CreateLiteralNode("This is a literal");
-                LiteralNode objStringLang = g.CreateLiteralNode("This is a literal with a language specifier", "en");
-                LiteralNode objInt = g.CreateLiteralNode("123", dtInt);
-                LiteralNode objFloat = g.CreateLiteralNode("12.3e4", dtFloat);
-                LiteralNode objDouble = g.CreateLiteralNode("12.3e4", dtDouble);
-                LiteralNode objDecimal = g.CreateLiteralNode("12.3", dtDecimal);
-                LiteralNode objTrue = g.CreateLiteralNode("true", dtBoolean);
-                LiteralNode objFalse = g.CreateLiteralNode("false", dtBoolean);
-                LiteralNode objUnknown = g.CreateLiteralNode("This is a literal with an unknown type", dtUnknown);
+                IBlankNode subjBnode = g.CreateBlankNode();
+                IUriNode subjUri = g.CreateUriNode(new Uri("http://example.org/subject"));
+                IUriNode predUri = g.CreateUriNode(new Uri("http://example.org/predicate"));
+                IUriNode predType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
+                IBlankNode objBnode = g.CreateBlankNode();
+                IUriNode objUri = g.CreateUriNode(new Uri("http://example.org/object"));
+                ILiteralNode objString = g.CreateLiteralNode("This is a literal");
+                ILiteralNode objStringLang = g.CreateLiteralNode("This is a literal with a language specifier", "en");
+                ILiteralNode objInt = g.CreateLiteralNode("123", dtInt);
+                ILiteralNode objFloat = g.CreateLiteralNode("12.3e4", dtFloat);
+                ILiteralNode objDouble = g.CreateLiteralNode("12.3e4", dtDouble);
+                ILiteralNode objDecimal = g.CreateLiteralNode("12.3", dtDecimal);
+                ILiteralNode objTrue = g.CreateLiteralNode("true", dtBoolean);
+                ILiteralNode objFalse = g.CreateLiteralNode("false", dtBoolean);
+                ILiteralNode objUnknown = g.CreateLiteralNode("This is a literal with an unknown type", dtUnknown);
 
                 List<ITripleFormatter> formatters = new List<ITripleFormatter>()
                 {

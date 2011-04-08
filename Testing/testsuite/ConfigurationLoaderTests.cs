@@ -47,7 +47,7 @@ namespace dotNetRDFTest
                 Console.WriteLine("Actual Int: " + actualInt);
 
                 //Now load the resolved values
-                UriNode objNode = g.GetUriNode(new Uri("dotnetrdf:test"));
+                IUriNode objNode = g.GetUriNode(new Uri("dotnetrdf:test"));
                 String resolvedStr = ConfigurationLoader.GetConfigurationString(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, "dnr:stylesheet"));
                 String resolvedStr2 = ConfigurationLoader.GetConfigurationValue(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, "dnr:stylesheet"));
                 bool resolvedTrue = ConfigurationLoader.GetConfigurationBoolean(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, "dnr:cacheSliding"), false);

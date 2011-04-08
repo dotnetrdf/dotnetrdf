@@ -137,18 +137,18 @@ namespace dotNetRDFTest
                 }
 
                 //Create necessary Uri Nodes
-                UriNode rdfType = manifest.CreateUriNode("rdf:type");
-                UriNode rdfsComment = manifest.CreateUriNode("rdfs:comment");
-                UriNode positiveSyntaxTest = manifest.CreateUriNode("mf:PositiveSyntaxTest");
-                UriNode negativeSyntaxTest = manifest.CreateUriNode("mf:NegativeSyntaxTest");
-                UriNode evaluationTest = manifest.CreateUriNode("mf:QueryEvaluationTest");
-                UriNode action = manifest.CreateUriNode("mf:action");
-                UriNode result = manifest.CreateUriNode("mf:result");
-                UriNode approval = manifest.CreateUriNode("dawgt:approval");
-                UriNode approvedTest = manifest.CreateUriNode("dawgt:Approved");
-                UriNode query = manifest.CreateUriNode("qt:query");
-                UriNode data = manifest.CreateUriNode("qt:data");
-                UriNode graphData = manifest.CreateUriNode("qt:graphData");
+                IUriNode rdfType = manifest.CreateUriNode("rdf:type");
+                IUriNode rdfsComment = manifest.CreateUriNode("rdfs:comment");
+                IUriNode positiveSyntaxTest = manifest.CreateUriNode("mf:PositiveSyntaxTest");
+                IUriNode negativeSyntaxTest = manifest.CreateUriNode("mf:NegativeSyntaxTest");
+                IUriNode evaluationTest = manifest.CreateUriNode("mf:QueryEvaluationTest");
+                IUriNode action = manifest.CreateUriNode("mf:action");
+                IUriNode result = manifest.CreateUriNode("mf:result");
+                IUriNode approval = manifest.CreateUriNode("dawgt:approval");
+                IUriNode approvedTest = manifest.CreateUriNode("dawgt:Approved");
+                IUriNode query = manifest.CreateUriNode("qt:query");
+                IUriNode data = manifest.CreateUriNode("qt:data");
+                IUriNode graphData = manifest.CreateUriNode("qt:graphData");
 
                 //Create SPARQL Query Parser
                 SparqlQueryParser parser = new SparqlQueryParser();

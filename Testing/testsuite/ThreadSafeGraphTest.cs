@@ -60,7 +60,7 @@ namespace dotNetRDFTest
                         }
 
                         //Do some reading of the Graph directly from Triples property
-                        UriNode thread = this._g.CreateUriNode(new Uri("http://threads.org/" + t.ManagedThreadId));
+                        IUriNode thread = this._g.CreateUriNode(new Uri("http://threads.org/" + t.ManagedThreadId));
                         int count = 0;
                         foreach (Triple tri in this._g.Triples)
                         {
@@ -99,8 +99,8 @@ namespace dotNetRDFTest
 
         private void Test()
         {
-            UriNode thread = this._g.CreateUriNode(new Uri("http://threads.org/" + Thread.CurrentThread.ManagedThreadId));
-            UriNode label = this._g.CreateUriNode("rdfs:label");
+            IUriNode thread = this._g.CreateUriNode(new Uri("http://threads.org/" + Thread.CurrentThread.ManagedThreadId));
+            IUriNode label = this._g.CreateUriNode("rdfs:label");
             Uri dateTimeType = new Uri(XmlSpecsHelper.XmlSchemaDataTypeDateTime);
 
             try
@@ -108,7 +108,7 @@ namespace dotNetRDFTest
                 for (int i = 0; i < this._repeats; i++)
                 {
                     //Assert a couple of things
-                    LiteralNode now = this._g.CreateLiteralNode(DateTime.Now.ToString(XmlSpecsHelper.XmlSchemaDateTimeFormat), dateTimeType);
+                    ILiteralNode now = this._g.CreateLiteralNode(DateTime.Now.ToString(XmlSpecsHelper.XmlSchemaDateTimeFormat), dateTimeType);
                     this._g.Assert(new Triple(thread, label, now));
                     this._g.Assert(new Triple(thread, label, this._g.CreateLiteralNode("Repeat #" + i)));
 

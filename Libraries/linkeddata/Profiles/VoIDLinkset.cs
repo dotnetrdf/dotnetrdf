@@ -21,10 +21,10 @@ namespace VDS.RDF.LinkedData.Profiles
 
         public VoIDLinkset(IGraph voidDescription, INode linksetSubj)
         {
-            UriNode target = voidDescription.CreateUriNode("void:target");
-            UriNode subjTarget = voidDescription.CreateUriNode("void:subjectsTarget");
-            UriNode objTarget = voidDescription.CreateUriNode("void:objectsTarget");
-            UriNode linkPredicate = voidDescription.CreateUriNode("void:linkPredicate");
+            IUriNode target = voidDescription.CreateUriNode("void:target");
+            IUriNode subjTarget = voidDescription.CreateUriNode("void:subjectsTarget");
+            IUriNode objTarget = voidDescription.CreateUriNode("void:objectsTarget");
+            IUriNode linkPredicate = voidDescription.CreateUriNode("void:linkPredicate");
 
             if (voidDescription.GetTriplesWithSubjectPredicate(linksetSubj, target).Any())
             {

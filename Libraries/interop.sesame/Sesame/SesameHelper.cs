@@ -273,7 +273,7 @@ namespace VDS.RDF.Interop.Sesame
                 {
                     if (r != null && r is dotSesame.URI)
                     {
-                        results.Add(((UriNode)SesameConverter.FromSesameResource(r, mapping)).Uri);
+                        results.Add(((IUriNode)SesameConverter.FromSesameResource(r, mapping)).Uri);
                     }
                 }
                 return results;

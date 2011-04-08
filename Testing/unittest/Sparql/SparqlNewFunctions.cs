@@ -15,11 +15,11 @@ namespace VDS.RDF.Test.Sparql
     public class SparqlNewFunctions
     {
         [TestMethod]
-        public void SparqlIsNumeric()
+        public void SparqlFunctionsIsNumeric()
         {
             Graph g = new Graph();
-            UriNode subj = g.CreateUriNode(new Uri("http://example.org/subject"));
-            UriNode pred = g.CreateUriNode(new Uri("http://example.org/predicate"));
+            IUriNode subj = g.CreateUriNode(new Uri("http://example.org/subject"));
+            IUriNode pred = g.CreateUriNode(new Uri("http://example.org/predicate"));
 
             g.Assert(subj, pred, (12).ToLiteral(g));
             g.Assert(subj, pred, g.CreateLiteralNode("12"));

@@ -205,7 +205,7 @@ namespace VDS.Alexandria.Utilities
                 Uri contextUri;
                 if (context.NodeType == NodeType.Uri)
                 {
-                    contextUri = ((UriNode)context).Uri;
+                    contextUri = ((IUriNode)context).Uri;
                 }
                 else if (context.NodeType == NodeType.Blank)
                 {

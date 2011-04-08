@@ -110,10 +110,10 @@ namespace VDS.RDF.Utilities.Editor
                     return glit;
 
                 case NodeType.Literal:
-                    return new LiteralNodeControl((LiteralNode)n, this._formatter);
+                    return new LiteralNodeControl((ILiteralNode)n, this._formatter);
 
                 case NodeType.Uri:
-                    return new UriNodeControl((UriNode)n, this._formatter);
+                    return new UriNodeControl((IUriNode)n, this._formatter);
 
                 default:
                     Label unknown = new Label();

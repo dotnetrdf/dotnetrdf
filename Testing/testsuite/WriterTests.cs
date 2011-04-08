@@ -54,7 +54,7 @@ namespace dotNetRDFTest
                     new NTriplesWriter(),
                     new TurtleWriter(),
                     new CompressingTurtleWriter(),
-                    new RdfXmlTreeWriter(),
+                    new RdfXmlWriter(),
                     new FastRdfXmlWriter(),
                     new Notation3Writer(),
                     new RdfJsonWriter(),

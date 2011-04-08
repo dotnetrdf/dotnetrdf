@@ -80,9 +80,9 @@ namespace VDS.RDF.Test
             FileLoader.Load(h, "InferenceTest.ttl");
 
             //Add additional Triple to 2nd Graph
-            UriNode spaceVehicle = h.CreateUriNode("eg:SpaceVehicle");
-            UriNode subClass = h.CreateUriNode("rdfs:subClassOf");
-            UriNode vehicle = h.CreateUriNode("eg:Vehicle");
+            IUriNode spaceVehicle = h.CreateUriNode("eg:SpaceVehicle");
+            IUriNode subClass = h.CreateUriNode("rdfs:subClassOf");
+            IUriNode vehicle = h.CreateUriNode("eg:Vehicle");
             h.Assert(new Triple(spaceVehicle, subClass, vehicle));
 
             GraphDiffReport report = g.Difference(h);
@@ -102,8 +102,8 @@ namespace VDS.RDF.Test
 
             //Add additional Triple to 2nd Graph
             INode blank = h.CreateBlankNode();
-            UriNode subClass = h.CreateUriNode("rdfs:subClassOf");
-            UriNode vehicle = h.CreateUriNode("eg:Vehicle");
+            IUriNode subClass = h.CreateUriNode("rdfs:subClassOf");
+            IUriNode vehicle = h.CreateUriNode("eg:Vehicle");
             h.Assert(new Triple(blank, subClass, vehicle));
 
             GraphDiffReport report = g.Difference(h);

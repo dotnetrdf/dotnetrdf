@@ -3,18 +3,21 @@ using System.Collections.Generic;
 using VDS.RDF;
 using VDS.RDF.Writing;
 
-namespace dotNetRDFTest {
-public class HelloWorld {
+namespace dotNetRDFTest 
+{
+
+public class HelloWorld 
+{
 
     public static void Main(String[] args) 
     {
 	    //Fill in the code shown on this page here to build your hello world application
         Graph g = new Graph();
 
-        UriNode dotNetRDF = g.CreateUriNode(new Uri("http://www.dotnetrdf.org"));
-        UriNode says = g.CreateUriNode(new Uri("http://example.org/says"));
-        LiteralNode helloWorld = g.CreateLiteralNode("Hello World");
-        LiteralNode bonjourMonde = g.CreateLiteralNode("Bonjour tout le Monde", "fr");
+        IUriNode dotNetRDF = g.CreateUriNode(new Uri("http://www.dotnetrdf.org"));
+        IUriNode says = g.CreateUriNode(new Uri("http://example.org/says"));
+        ILiteralNode helloWorld = g.CreateLiteralNode("Hello World");
+        ILiteralNode bonjourMonde = g.CreateLiteralNode("Bonjour tout le Monde", "fr");
 
         g.Assert(new Triple(dotNetRDF, says, helloWorld));
         g.Assert(new Triple(dotNetRDF, says, bonjourMonde));
@@ -27,7 +30,7 @@ public class HelloWorld {
         NTriplesWriter ntwriter = new NTriplesWriter();
         ntwriter.Save(g, "HelloWorld.nt");
 
-        RdfXmlTreeWriter rdfxmlwriter = new RdfXmlTreeWriter();
+        RdfXmlWriter rdfxmlwriter = new RdfXmlWriter();
         rdfxmlwriter.Save(g, "HelloWorld.rdf");
 
     }

@@ -182,7 +182,7 @@ namespace VDS.RDF.Utilities.Web.Deploy
                 Assembly dotnetrdf = Assembly.GetAssembly(typeof(IGraph));
                 foreach (SparqlResult r in rset)
                 {
-                    Type t = dotnetrdf.GetType(((LiteralNode)r["type"]).Value);
+                    Type t = dotnetrdf.GetType(((ILiteralNode)r["type"]).Value);
                     if (t == null)
                     {
                         Console.Error.WriteLine("rdfWebDeploy: Error: The node '" + r["s"].ToString() + "' has a dnr:type of '" + r["type"].ToString() + "' which does not appear to be a valid type in dotNetRDF");
@@ -233,7 +233,7 @@ namespace VDS.RDF.Utilities.Web.Deploy
                 Assembly dotnetrdf = Assembly.GetAssembly(typeof(IGraph));
                 foreach (SparqlResult r in rset)
                 {
-                    Type t = dotnetrdf.GetType(((LiteralNode)r["type"]).Value);
+                    Type t = dotnetrdf.GetType(((ILiteralNode)r["type"]).Value);
                     if (t != null)
                     {
                         if (!t.GetInterfaces().Any(i => i.Equals(typeof(System.Web.IHttpHandler))))

@@ -282,11 +282,11 @@ namespace VDS.RDF.Test
             Console.WriteLine("Generating Cyclic Graph - Nodes " + nodes + " - Seed " + seed + " - Drop " + toDrop);
 
             Graph g = new Graph();
-            UriNode rdfValue = g.CreateUriNode("rdf:value");
+            IUriNode rdfValue = g.CreateUriNode("rdf:value");
 
             if (seed >= nodes - toDrop - 1) seed = nodes - toDrop - 2;
 
-            List<BlankNode> bnodes = new List<BlankNode>(nodes);
+            List<IBlankNode> bnodes = new List<IBlankNode>(nodes);
             for (int i = 0; i < nodes; i++)
             {
                 bnodes.Add(g.CreateBlankNode());
@@ -323,9 +323,9 @@ namespace VDS.RDF.Test
         private IGraph GenerateStarGraph(int nodes)
         {
             Graph g = new Graph();
-            UriNode rdfValue = g.CreateUriNode("rdf:value");
+            IUriNode rdfValue = g.CreateUriNode("rdf:value");
 
-            List<BlankNode> bnodes = new List<BlankNode>();
+            List<IBlankNode> bnodes = new List<IBlankNode>();
             for (int i = 0; i < nodes; i++)
             {
                 bnodes.Add(g.CreateBlankNode());

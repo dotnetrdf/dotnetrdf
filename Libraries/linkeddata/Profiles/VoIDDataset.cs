@@ -35,7 +35,7 @@ namespace VDS.RDF.LinkedData.Profiles
             {
                 if (t.Object.NodeType == NodeType.Literal)
                 {
-                    this._title = ((LiteralNode)t.Object).Value;
+                    this._title = ((ILiteralNode)t.Object).Value;
                 }
             }
             ts = voidDescription.GetTriplesWithSubjectPredicate(datasetSubj, voidDescription.CreateUriNode("dcterms:description"));
@@ -44,7 +44,7 @@ namespace VDS.RDF.LinkedData.Profiles
             {
                 if (t.Object.NodeType == NodeType.Literal)
                 {
-                    this._description = ((LiteralNode)t.Object).Value;
+                    this._description = ((ILiteralNode)t.Object).Value;
                 }
             }
             ts = voidDescription.GetTriplesWithSubjectPredicate(datasetSubj, voidDescription.CreateUriNode("foaf:homepage"));
@@ -53,7 +53,7 @@ namespace VDS.RDF.LinkedData.Profiles
             {
                 if (t.Object.NodeType == NodeType.Uri)
                 {
-                    this._homepage = ((UriNode)t.Object).Uri;
+                    this._homepage = ((IUriNode)t.Object).Uri;
                 }
             }
 
@@ -63,7 +63,7 @@ namespace VDS.RDF.LinkedData.Profiles
             {
                 if (endpoint.Object.NodeType == NodeType.Uri)
                 {
-                    this._sparqlEndpoints.Add(((UriNode)endpoint.Object).Uri);
+                    this._sparqlEndpoints.Add(((IUriNode)endpoint.Object).Uri);
                 }
             }
 
@@ -73,7 +73,7 @@ namespace VDS.RDF.LinkedData.Profiles
             {
                 if (endpoint.Object.NodeType == NodeType.Uri)
                 {
-                    this._lookupEndpoints.Add(((UriNode)endpoint.Object).Uri);
+                    this._lookupEndpoints.Add(((IUriNode)endpoint.Object).Uri);
                 }
             }
         }

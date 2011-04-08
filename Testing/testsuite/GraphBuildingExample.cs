@@ -32,24 +32,24 @@ namespace dotNetRDFTest
             g.BaseUri = g.NamespaceMap.GetNamespaceUri("vds");
 
             //Create Uri Nodes
-            UriNode rav08r, wh, lac, hcd;
+            IUriNode rav08r, wh, lac, hcd;
             rav08r = g.CreateUriNode("ecs:11471");
             wh = g.CreateUriNode("ecs:1650");
             hcd = g.CreateUriNode("ecs:46");
             lac = g.CreateUriNode("ecs:60");
 
             //Create Uri Nodes for some Predicates
-            UriNode supervises, collaborates, advises, has;
+            IUriNode supervises, collaborates, advises, has;
             supervises = g.CreateUriNode("vds:supervises");
             collaborates = g.CreateUriNode("vds:collaborates");
             advises = g.CreateUriNode("vds:advises");
             has = g.CreateUriNode("vds:has");
 
             //Create some Literal Nodes
-            LiteralNode singleLine = g.CreateLiteralNode("Some string");
-            LiteralNode multiLine = g.CreateLiteralNode("This goes over\n\nseveral\n\nlines");
-            LiteralNode french = g.CreateLiteralNode("Bonjour", "fr");
-            LiteralNode number = g.CreateLiteralNode("12", new Uri(g.NamespaceMap.GetNamespaceUri("xsd") + "integer"));
+            ILiteralNode singleLine = g.CreateLiteralNode("Some string");
+            ILiteralNode multiLine = g.CreateLiteralNode("This goes over\n\nseveral\n\nlines");
+            ILiteralNode french = g.CreateLiteralNode("Bonjour", "fr");
+            ILiteralNode number = g.CreateLiteralNode("12", new Uri(g.NamespaceMap.GetNamespaceUri("xsd") + "integer"));
 
             g.Assert(new Triple(wh, supervises, rav08r));
             g.Assert(new Triple(lac, supervises, rav08r));

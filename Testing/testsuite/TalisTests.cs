@@ -100,9 +100,9 @@ namespace dotNetRDFTest
                 if (!i.NamespaceMap.HasNamespace("eg")) {
                     i.NamespaceMap.AddNamespace("eg", new Uri("http://example.org/vehicles/"));
                 }
-                UriNode spaceVehicle = i.CreateUriNode("eg:SpaceVehicle");
-                UriNode subClass = i.CreateUriNode("rdfs:subClassOf");
-                UriNode vehicle = i.CreateUriNode("eg:Vehicle");
+                IUriNode spaceVehicle = i.CreateUriNode("eg:SpaceVehicle");
+                IUriNode subClass = i.CreateUriNode("rdfs:subClassOf");
+                IUriNode vehicle = i.CreateUriNode("eg:Vehicle");
                 i.Assert(new Triple(spaceVehicle, subClass, vehicle));
                 Console.WriteLine("Updated OK");
                 Console.WriteLine();
@@ -114,18 +114,6 @@ namespace dotNetRDFTest
                 Console.WriteLine();
 
                 foreach (Triple t in j.Triples)
-                {
-                    Console.WriteLine(t.ToString());
-                }
-                Console.WriteLine();
-
-                //Use a TalisGraph object to access a Private Graph
-                Console.WriteLine("# Attempting to retrieve a Description from a Private Graph using a TalisGraph object");
-                TalisGraph k = new TalisGraph("1", TestUri, talis);
-                Console.WriteLine("Retrieved OK");
-                Console.WriteLine();
-
-                foreach (Triple t in k.Triples)
                 {
                     Console.WriteLine(t.ToString());
                 }

@@ -175,7 +175,7 @@ namespace VDS.RDF.Test.Ontology
             Console.WriteLine();
 
             Console.WriteLine("Going to do a GetTriplesWithSubject() call on both Graphs to see if ReasonerGraph behaves as expected");
-            UriNode fiesta = g.CreateUriNode(new Uri("http://example.org/vehicles/FordFiesta"));
+            IUriNode fiesta = g.CreateUriNode(new Uri("http://example.org/vehicles/FordFiesta"));
             Console.WriteLine("Original Graph:");
             foreach (Triple t in g.GetTriplesWithSubject(fiesta))
             {
@@ -217,8 +217,8 @@ namespace VDS.RDF.Test.Ontology
             OntologyClass cls = g.CreateOntologyClass(new Uri("http://example.org/vehicles/Vehicle"));
 
             //Find Triples where Predicate is rdfs:range or rdfs:domain and the Object is the Class
-            UriNode rdfsRange = g.CreateUriNode(new Uri(NamespaceMapper.RDFS + "range"));
-            UriNode rdfsDomain = g.CreateUriNode(new Uri(NamespaceMapper.RDFS + "domain"));
+            IUriNode rdfsRange = g.CreateUriNode(new Uri(NamespaceMapper.RDFS + "range"));
+            IUriNode rdfsDomain = g.CreateUriNode(new Uri(NamespaceMapper.RDFS + "domain"));
             List<OntologyProperty> ranges = new List<OntologyProperty>();
             List<OntologyProperty> domains = new List<OntologyProperty>();
             foreach (Triple t in cls.TriplesWithObject)

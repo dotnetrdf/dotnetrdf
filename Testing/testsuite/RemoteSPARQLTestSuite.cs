@@ -69,7 +69,7 @@ namespace dotNetRDFTest
                 output.WriteLine(gquery);
                 output.WriteLine();
                 output.WriteLine("# Results");
-                Graph g = dbpedia.QueryWithResultGraph(gquery);
+                IGraph g = dbpedia.QueryWithResultGraph(gquery);
 
                 foreach (Triple t in g.Triples)
                 {

@@ -36,11 +36,11 @@ namespace VDS.RDF.Test.Writing
 
             Graph g = new Graph();
             g.NamespaceMap.AddNamespace("ex", new Uri("http://example.org"));
-            UriNode subj = g.CreateUriNode("ex:subject");
-            UriNode pred = g.CreateUriNode("ex:predicate");
-            UriNode name = g.CreateUriNode("ex:name");
-            BlankNode b1 = g.CreateBlankNode("autos1");
-            BlankNode b2 = g.CreateBlankNode("1");
+            IUriNode subj = g.CreateUriNode("ex:subject");
+            IUriNode pred = g.CreateUriNode("ex:predicate");
+            IUriNode name = g.CreateUriNode("ex:name");
+            IBlankNode b1 = g.CreateBlankNode("autos1");
+            IBlankNode b2 = g.CreateBlankNode("1");
 
             g.Assert(subj, pred, b1);
             g.Assert(b1, name, g.CreateLiteralNode("First Triple"));

@@ -77,7 +77,7 @@ namespace VDS.RDF.Interop.Sesame
             SesameGraph temp = new SesameGraph(g);
             if (this._repo is IConfigurationSerializable)
             {
-                UriNode subj = temp.CreateUriNode(new Uri("dotnetrdf:interop:sesame:repository:" + this._name));
+                IUriNode subj = temp.CreateUriNode(new Uri("dotnetrdf:interop:sesame:repository:" + this._name));
                 ConfigurationSerializationContext context = new ConfigurationSerializationContext(temp);
                 context.NextSubject = subj;
                 ((IConfigurationSerializable)this._repo).SerializeConfiguration(context);

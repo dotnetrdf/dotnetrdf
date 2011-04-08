@@ -69,7 +69,7 @@ namespace dotNetRDFTest
                 Console.WriteLine("Saved to the SQL Store");
 
                 //Read back from the Store using SqlReader
-                Graph h = new Graph();
+                IGraph h = new Graph();
                 Console.WriteLine("Trying to read the Graph back from the SQL Store");
                 SqlReader sqlreader = new SqlReader("dotnetrdf_experimental", "sa", "20sQl08");
                 h = sqlreader.Load("http://www.dotnetrdf.org/Tests/SQLStore/");

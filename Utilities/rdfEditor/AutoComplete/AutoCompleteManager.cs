@@ -147,11 +147,11 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
                 String termUri;
 
                 //UriNode rdfType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
-                UriNode rdfsClass = g.CreateUriNode(new Uri(NamespaceMapper.RDFS + "Class"));
-                UriNode rdfsLabel = g.CreateUriNode(new Uri(NamespaceMapper.RDFS + "label"));
-                UriNode rdfsComment = g.CreateUriNode(new Uri(NamespaceMapper.RDFS + "comment"));
-                UriNode rdfProperty = g.CreateUriNode(new Uri(NamespaceMapper.RDF + "Property"));
-                UriNode rdfsDatatype = g.CreateUriNode(new Uri(NamespaceMapper.RDFS + "Datatype"));
+                IUriNode rdfsClass = g.CreateUriNode(new Uri(NamespaceMapper.RDFS + "Class"));
+                IUriNode rdfsLabel = g.CreateUriNode(new Uri(NamespaceMapper.RDFS + "label"));
+                IUriNode rdfsComment = g.CreateUriNode(new Uri(NamespaceMapper.RDFS + "comment"));
+                IUriNode rdfProperty = g.CreateUriNode(new Uri(NamespaceMapper.RDF + "Property"));
+                IUriNode rdfsDatatype = g.CreateUriNode(new Uri(NamespaceMapper.RDFS + "Datatype"));
 
                 SparqlParameterizedString queryString = new SparqlParameterizedString();
                 queryString.QueryText = "SELECT ?term STR(?label) AS ?RawLabel STR(?comment) AS ?RawComment WHERE { {{?term a @class} UNION {?term a @property} UNION {?term a @datatype}} OPTIONAL {?term @label ?label} OPTIONAL {?term @comment ?comment} }";

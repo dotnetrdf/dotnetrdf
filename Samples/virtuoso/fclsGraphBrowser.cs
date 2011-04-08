@@ -147,7 +147,7 @@ namespace dotNetRDFVirtuosoSample
                     INode n = (INode)temp;
                     if (n.NodeType == NodeType.Uri)
                     {
-                        Uri u = ((UriNode)n).Uri;
+                        Uri u = ((IUriNode)n).Uri;
                         fclsGraphBrowser browser = new fclsGraphBrowser(u);
                         browser.Show();
                     }

@@ -148,8 +148,8 @@ namespace VDS.RDF.Test.Storage
 
                     TestTools.ShowDifferences(diff);
 
-                    UriNode allowedDiffSubject = g.CreateUriNode(":four");
-                    UriNode allowedDiffSubject2 = g.CreateUriNode(":six");
+                    IUriNode allowedDiffSubject = g.CreateUriNode(":four");
+                    IUriNode allowedDiffSubject2 = g.CreateUriNode(":six");
                     Assert.IsTrue(diff.RemovedTriples.All(t => t.Subject.Equals(allowedDiffSubject2) || (t.Subject.Equals(allowedDiffSubject) && (t.Object.ToString().Equals("true^^" + XmlSpecsHelper.XmlSchemaDataTypeBoolean) || t.Object.ToString().Equals("false^^" + XmlSpecsHelper.XmlSchemaDataTypeBoolean)))), "Removed Triples should only be those with subject :four and boolean object");
                     Assert.IsTrue(diff.AddedTriples.All(t => t.Subject.Equals(allowedDiffSubject2) || (t.Subject.Equals(allowedDiffSubject) && (t.Object.ToString().Equals("1") || t.Object.ToString().Equals("0")))), "Added Triples should only be those with subject :four and 1/0 in place of boolean object");
                 }
@@ -262,9 +262,9 @@ namespace VDS.RDF.Test.Storage
                 Graph g = new Graph();
                 g.BaseUri = new Uri("http://example.org/bnodes/");
 
-                BlankNode b = g.CreateBlankNode("blank");
-                UriNode rdfType = g.CreateUriNode("rdf:type");
-                UriNode bnode = g.CreateUriNode(":BlankNode");
+                IBlankNode b = g.CreateBlankNode("blank");
+                IUriNode rdfType = g.CreateUriNode("rdf:type");
+                IUriNode bnode = g.CreateUriNode(":BlankNode");
 
                 g.Assert(new Triple(b, rdfType, bnode));
 
@@ -588,8 +588,8 @@ namespace VDS.RDF.Test.Storage
             //Make the Test Graph
             Graph g = new Graph();
             g.BaseUri = new Uri("http://example.org/VirtuosoEncodingTest");
-            UriNode encodedString = g.CreateUriNode(new Uri("http://example.org/encodedString"));
-            LiteralNode encodedText = g.CreateLiteralNode("William Jørgensen");
+            IUriNode encodedString = g.CreateUriNode(new Uri("http://example.org/encodedString"));
+            ILiteralNode encodedText = g.CreateLiteralNode("William Jørgensen");
             g.Assert(new Triple(g.CreateUriNode(), encodedString, encodedText));
 
             Console.WriteLine("Test Graph created OK");

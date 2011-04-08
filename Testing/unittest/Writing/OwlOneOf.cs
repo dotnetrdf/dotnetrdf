@@ -19,7 +19,7 @@ namespace VDS.RDF.Test.Writing
         {
             //Create the Graph for the Test and Generate a List of URIs
             Graph g = new Graph();
-            List<UriNode> nodes = new List<UriNode>();
+            List<IUriNode> nodes = new List<IUriNode>();
             for (int i = 1; i <= 10; i++)
             {
                 nodes.Add(g.CreateUriNode(new Uri("http://example.org/Class" + i)));
@@ -68,7 +68,7 @@ namespace VDS.RDF.Test.Writing
             {
                 //Create the Graph for the Test and Generate a List of URIs
                 Graph g = new Graph();
-                List<UriNode> nodes = new List<UriNode>();
+                List<IUriNode> nodes = new List<IUriNode>();
                 for (int i = 1; i <= 10000; i++)
                 {
                     nodes.Add(g.CreateUriNode(new Uri("http://example.org/Class" + i)));
@@ -117,18 +117,18 @@ namespace VDS.RDF.Test.Writing
             }
         }
 
-        public static void thingOneOf(IGraph graph, UriNode[] listInds)
+        public static void thingOneOf(IGraph graph, IUriNode[] listInds)
         {
-            BlankNode oneOfNode = graph.CreateBlankNode();
-            BlankNode chainA = graph.CreateBlankNode();
-            UriNode rdfType = graph.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
-            UriNode rdfFirst = graph.CreateUriNode(new Uri(RdfSpecsHelper.RdfListFirst));
-            UriNode rdfRest = graph.CreateUriNode(new Uri(RdfSpecsHelper.RdfListRest));
-            UriNode rdfNil = graph.CreateUriNode(new Uri(RdfSpecsHelper.RdfListNil));
-            UriNode owlClass = graph.CreateUriNode(new Uri(NamespaceMapper.OWL + "Class"));
-            UriNode owlOneOf = graph.CreateUriNode(new Uri(NamespaceMapper.OWL + "oneOf"));
-            UriNode owlThing = graph.CreateUriNode(new Uri(NamespaceMapper.OWL + "Thing"));
-            UriNode owlEquivClass = graph.CreateUriNode(new Uri(NamespaceMapper.OWL + "equivalentClass"));
+            IBlankNode oneOfNode = graph.CreateBlankNode();
+            IBlankNode chainA = graph.CreateBlankNode();
+            IUriNode rdfType = graph.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
+            IUriNode rdfFirst = graph.CreateUriNode(new Uri(RdfSpecsHelper.RdfListFirst));
+            IUriNode rdfRest = graph.CreateUriNode(new Uri(RdfSpecsHelper.RdfListRest));
+            IUriNode rdfNil = graph.CreateUriNode(new Uri(RdfSpecsHelper.RdfListNil));
+            IUriNode owlClass = graph.CreateUriNode(new Uri(NamespaceMapper.OWL + "Class"));
+            IUriNode owlOneOf = graph.CreateUriNode(new Uri(NamespaceMapper.OWL + "oneOf"));
+            IUriNode owlThing = graph.CreateUriNode(new Uri(NamespaceMapper.OWL + "Thing"));
+            IUriNode owlEquivClass = graph.CreateUriNode(new Uri(NamespaceMapper.OWL + "equivalentClass"));
 
             graph.Assert(new Triple(oneOfNode, rdfType, owlClass));
             graph.Assert(new Triple(oneOfNode, owlOneOf, chainA));
@@ -137,7 +137,7 @@ namespace VDS.RDF.Test.Writing
             for (int i = 0; i < listInds.Length; i++)
             {
                 graph.Assert(new Triple(chainA, rdfFirst, listInds[i]));
-                BlankNode chainB = graph.CreateBlankNode();
+                IBlankNode chainB = graph.CreateBlankNode();
 
                 if (i < listInds.Length - 1)
                 {

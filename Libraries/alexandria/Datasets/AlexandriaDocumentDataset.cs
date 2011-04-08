@@ -17,16 +17,9 @@ namespace VDS.Alexandria.Datasets
             this._docManager = manager;
         }
 
-        public override bool HasGraph(Uri graphUri)
+        protected sealed override bool HasGraphInternal(Uri graphUri)
         {
-            if (this._defaultGraph != null && (graphUri == null || graphUri.ToString().Equals(GraphCollection.DefaultGraphUri)))
-            {
-                return true;
-            }
-            else
-            {
-                return this._docManager.DocumentManager.HasDocument(this._docManager.DocumentManager.GraphRegistry.GetDocumentName(graphUri.ToSafeString()));
-            }
+            return this._docManager.DocumentManager.HasDocument(this._docManager.DocumentManager.GraphRegistry.GetDocumentName(graphUri.ToSafeString()));
         }
 
         public override IEnumerable<IGraph> Graphs
@@ -46,32 +39,17 @@ namespace VDS.Alexandria.Datasets
             }
         }
 
-        public override IGraph this[Uri graphUri]
+        protected override IGraph GetGraphInternal(Uri graphUri)
         {
-            get 
-            {
-                if (this.HasGraph(graphUri))
-                {
-                    if (this._defaultGraph != null && (graphUri == null || graphUri.ToString().Equals(GraphCollection.DefaultGraphUri)))
-                    {
-                        return this._defaultGraph;
-                    }
-
-                    //TODO: Cache retrieved Graphs in-memory?
-                    Graph g = new Graph();
-                    this._docManager.LoadGraph(g, graphUri);
-                    return g;
-                }
-                else
-                {
-                    throw new AlexandriaException("The requested Graph '" + graphUri.ToSafeString() + "' does not exist in this Store");
-                }
-            }
+            //TODO: Cache retrieved Graphs in-memory?
+            Graph g = new Graph();
+            this._docManager.LoadGraph(g, graphUri);
+            return g;
         }
 
-        public override void Flush()
+        protected override void FlushInternal()
         {
-            base.Flush();
+            base.FlushInternal();
             this._docManager.DocumentManager.Flush();
         }
     }

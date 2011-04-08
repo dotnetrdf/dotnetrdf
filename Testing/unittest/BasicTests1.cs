@@ -68,24 +68,24 @@ namespace VDS.RDF.Test
             Assert.AreEqual(g.NamespaceMap.GetNamespaceUri("vds"), g.BaseUri);
 
             //Create Uri Nodes
-            UriNode rav08r, wh, lac, hcd;
+            IUriNode rav08r, wh, lac, hcd;
             rav08r = g.CreateUriNode("ecs:11471");
             wh = g.CreateUriNode("ecs:1650");
             hcd = g.CreateUriNode("ecs:46");
             lac = g.CreateUriNode("ecs:60");
 
             //Create Uri Nodes for some Predicates
-            UriNode supervises, collaborates, advises, has;
+            IUriNode supervises, collaborates, advises, has;
             supervises = g.CreateUriNode("vds:supervises");
             collaborates = g.CreateUriNode("vds:collaborates");
             advises = g.CreateUriNode("vds:advises");
             has = g.CreateUriNode("vds:has");
 
             //Create some Literal Nodes
-            LiteralNode singleLine = g.CreateLiteralNode("Some string");
-            LiteralNode multiLine = g.CreateLiteralNode("This goes over\n\nseveral\n\nlines");
-            LiteralNode french = g.CreateLiteralNode("Bonjour", "fr");
-            LiteralNode number = g.CreateLiteralNode("12", new Uri(g.NamespaceMap.GetNamespaceUri("xsd") + "integer"));
+            ILiteralNode singleLine = g.CreateLiteralNode("Some string");
+            ILiteralNode multiLine = g.CreateLiteralNode("This goes over\n\nseveral\n\nlines");
+            ILiteralNode french = g.CreateLiteralNode("Bonjour", "fr");
+            ILiteralNode number = g.CreateLiteralNode("12", new Uri(g.NamespaceMap.GetNamespaceUri("xsd") + "integer"));
 
             g.Assert(new Triple(wh, supervises, rav08r));
             g.Assert(new Triple(lac, supervises, rav08r));
@@ -167,7 +167,7 @@ namespace VDS.RDF.Test
             Assert.IsTrue(g.NamespaceMap.HasNamespace("pets"));
 
             //Create Uri Nodes
-            UriNode dog, fido, rob, owner, name, species, breed, lab;
+            IUriNode dog, fido, rob, owner, name, species, breed, lab;
             dog = g.CreateUriNode("pets:Dog");
             fido = g.CreateUriNode("pets:abc123");
             rob = g.CreateUriNode("pets:def456");
@@ -302,8 +302,8 @@ namespace VDS.RDF.Test
 
             //Create the Nodes
             Graph g = new Graph();
-            UriNode u = g.CreateUriNode(new Uri("http://www.google.com"));
-            LiteralNode l = g.CreateLiteralNode("http://www.google.com/");
+            IUriNode u = g.CreateUriNode(new Uri("http://www.google.com"));
+            ILiteralNode l = g.CreateLiteralNode("http://www.google.com/");
 
             Console.WriteLine("Created a URI and Literal Node both referring to 'http://www.google.com'");
             Console.WriteLine("String form of URI Node is:");
@@ -319,8 +319,8 @@ namespace VDS.RDF.Test
             Assert.AreNotEqual(u, l);
 
             //Create some plain and typed literals which may have colliding Hash Codes
-            LiteralNode plain = g.CreateLiteralNode("test^^http://example.org/type");
-            LiteralNode typed = g.CreateLiteralNode("test", new Uri("http://example.org/type"));
+            ILiteralNode plain = g.CreateLiteralNode("test^^http://example.org/type");
+            ILiteralNode typed = g.CreateLiteralNode("test", new Uri("http://example.org/type"));
 
             Console.WriteLine();
             Console.WriteLine("Created a Plain and Typed Literal where the String representations are identical");
@@ -337,8 +337,8 @@ namespace VDS.RDF.Test
             Assert.AreNotEqual(plain, typed);
 
             //Create Triples
-            BlankNode b = g.CreateBlankNode();
-            UriNode type = g.CreateUriNode("rdf:type");
+            IBlankNode b = g.CreateBlankNode();
+            IUriNode type = g.CreateUriNode("rdf:type");
             Triple t1, t2;
             t1 = new Triple(b, type, u);
             t2 = new Triple(b, type, l);
@@ -378,37 +378,38 @@ namespace VDS.RDF.Test
         }
 
         [TestMethod]
-        public void NodesUriNodeEquality() {
+        public void NodesUriNodeEquality()
+        {
             //Create the Nodes
             Graph g = new Graph();
             Console.WriteLine("Creating two URIs referring to google - one lowercase, one uppercase - which should be equivalent");
-            UriNode a = g.CreateUriNode(new Uri("http://www.google.com"));
-            UriNode b = g.CreateUriNode(new Uri("http://www.GOOGLE.com/"));
+            IUriNode a = g.CreateUriNode(new Uri("http://www.google.com"));
+            IUriNode b = g.CreateUriNode(new Uri("http://www.GOOGLE.com/"));
 
             TestTools.CompareNodes(a, b, true);
 
             Console.WriteLine("Creating two URIs with the same Fragment ID but differing in case and thus are different since Fragment IDs are case sensitive => not equals");
-            UriNode c = g.CreateUriNode(new Uri("http://www.google.com/#Test"));
-            UriNode d = g.CreateUriNode(new Uri("http://www.GOOGLE.com/#test"));
+            IUriNode c = g.CreateUriNode(new Uri("http://www.google.com/#Test"));
+            IUriNode d = g.CreateUriNode(new Uri("http://www.GOOGLE.com/#test"));
 
             TestTools.CompareNodes(c, d, false);
 
             Console.WriteLine("Creating two identical URIs with unusual characters in them");
-            UriNode e = g.CreateUriNode(new Uri("http://www.google.com/random,_@characters"));
-            UriNode f = g.CreateUriNode(new Uri("http://www.google.com/random,_@characters"));
+            IUriNode e = g.CreateUriNode(new Uri("http://www.google.com/random,_@characters"));
+            IUriNode f = g.CreateUriNode(new Uri("http://www.google.com/random,_@characters"));
 
             TestTools.CompareNodes(e, f, true);
 
             Console.WriteLine("Creating two URIs with similar paths that differ in case");
-            UriNode h = g.CreateUriNode(new Uri("http://www.google.com/path/test/case"));
-            UriNode i = g.CreateUriNode(new Uri("http://www.google.com/path/Test/case"));
+            IUriNode h = g.CreateUriNode(new Uri("http://www.google.com/path/test/case"));
+            IUriNode i = g.CreateUriNode(new Uri("http://www.google.com/path/Test/case"));
 
             TestTools.CompareNodes(h, i, false);
 
             Console.WriteLine("Creating three URIs with equivalent relative paths");
-            UriNode j = g.CreateUriNode(new Uri("http://www.google.com/relative/test/../example.html"));
-            UriNode k = g.CreateUriNode(new Uri("http://www.google.com/relative/test/monkey/../../example.html"));
-            UriNode l = g.CreateUriNode(new Uri("http://www.google.com/relative/./example.html"));
+            IUriNode j = g.CreateUriNode(new Uri("http://www.google.com/relative/test/../example.html"));
+            IUriNode k = g.CreateUriNode(new Uri("http://www.google.com/relative/test/monkey/../../example.html"));
+            IUriNode l = g.CreateUriNode(new Uri("http://www.google.com/relative/./example.html"));
 
             TestTools.CompareNodes(j, k, true);
             TestTools.CompareNodes(k, l, true);
@@ -429,10 +430,10 @@ namespace VDS.RDF.Test
                 Console.WriteLine("Doing some Blank Node Equality Testing");
                 Console.WriteLine("Blank Nodes are equal if they have the same ID and come from the same Graph which is established by Reference Equality between the two Graphs");
 
-                BlankNode b = g.CreateBlankNode();
-                BlankNode c = g.CreateBlankNode();
-                BlankNode d = h.CreateBlankNode();
-                BlankNode e = i.CreateBlankNode();
+                IBlankNode b = g.CreateBlankNode();
+                IBlankNode c = g.CreateBlankNode();
+                IBlankNode d = h.CreateBlankNode();
+                IBlankNode e = i.CreateBlankNode();
 
                 //Shouldn't be equal
                 Assert.AreNotEqual(b, c, "Two Anonymous Blank Nodes created by a Graph should be non-equal");
@@ -448,9 +449,9 @@ namespace VDS.RDF.Test
                 Assert.AreNotEqual(b, e, "First Anonymous Blank Nodes generated by two Graphs with same Graph URI should have same ID but are still not equal");
 
                 //Named Nodes
-                BlankNode one = g.CreateBlankNode("one");
-                BlankNode two = h.CreateBlankNode("one");
-                BlankNode three = i.CreateBlankNode("one");
+                IBlankNode one = g.CreateBlankNode("one");
+                IBlankNode two = h.CreateBlankNode("one");
+                IBlankNode three = i.CreateBlankNode("one");
 
                 Assert.AreNotEqual(one, three, "Two User defined Blank Nodes with identical IDs from two Graphs with the same Graph URI should be non-equal");
                 Assert.AreNotEqual(one, two, "Two User defined Blank Nodes with identical IDs from two Graphs with different Graph URIs should be non-equal");
@@ -474,7 +475,7 @@ namespace VDS.RDF.Test
                 Options.LiteralEqualityMode = LiteralEqualityMode.Strict;
 
                 //Test Literals with Language Tags
-                LiteralNode hello, helloEn, helloEnUS, helloAgain;
+                ILiteralNode hello, helloEn, helloEnUS, helloAgain;
                 hello = g.CreateLiteralNode("hello");
                 helloEn = g.CreateLiteralNode("hello", "en");
                 helloEnUS = g.CreateLiteralNode("hello", "en-US");
@@ -489,7 +490,7 @@ namespace VDS.RDF.Test
                 Assert.AreEqual(hello, helloAgain, "Identical Literals with the same Language Tag are equal");
 
                 //Test Plain Literals
-                LiteralNode plain1, plain2, plain3, plain4;
+                ILiteralNode plain1, plain2, plain3, plain4;
                 plain1 = g.CreateLiteralNode("plain literal");
                 plain2 = g.CreateLiteralNode("another plain literal");
                 plain3 = g.CreateLiteralNode("Plain Literal");
@@ -506,7 +507,7 @@ namespace VDS.RDF.Test
                 Uri intType = new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger);
                 Uri boolType = new Uri(XmlSpecsHelper.XmlSchemaDataTypeBoolean);
 
-                LiteralNode one1, one2, one3, one4;
+                ILiteralNode one1, one2, one3, one4;
                 one1 = g.CreateLiteralNode("1");
                 one2 = g.CreateLiteralNode("1", intType);
                 one3 = g.CreateLiteralNode("0001", intType);
@@ -524,7 +525,7 @@ namespace VDS.RDF.Test
                 Assert.AreEqual(0, one3.CompareTo(one2), "Using the Comparer for Literal Nodes which is used for sorting Literals with equivalent non-identical lexical values are considered equal when their data types are equal");
                 Assert.AreEqual(0, one3.CompareTo(one4), "Using the Comparer for Literal Nodes which is used for sorting Literals with equivalent non-identical lexical values are considered equal when their data types are equal");
 
-                LiteralNode t, f, one5;
+                ILiteralNode t, f, one5;
                 t = g.CreateLiteralNode("true", boolType);
                 f = g.CreateLiteralNode("false", boolType);
                 one5 = g.CreateLiteralNode("1", boolType);
@@ -744,9 +745,9 @@ namespace VDS.RDF.Test
             BlankNode nullBNode = null;
 
             Graph g = new Graph();
-            UriNode someUri = g.CreateUriNode(new Uri("http://example.org"));
-            LiteralNode someLiteral = g.CreateLiteralNode("A Literal");
-            BlankNode someBNode = g.CreateBlankNode();
+            IUriNode someUri = g.CreateUriNode(new Uri("http://example.org"));
+            ILiteralNode someLiteral = g.CreateLiteralNode("A Literal");
+            IBlankNode someBNode = g.CreateBlankNode();
 
             Assert.AreEqual(nullUri, nullUri, "Null URI Node should be equal to self");
             Assert.AreEqual(nullUri, null, "Null URI Node should be equal to a null");

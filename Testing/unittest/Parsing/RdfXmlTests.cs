@@ -17,7 +17,7 @@ namespace VDS.RDF.Test.Parsing
         {
             List<IRdfWriter> writers = new List<IRdfWriter>()
             {
-                new RdfXmlTreeWriter(),
+                new RdfXmlWriter(),
                 new FastRdfXmlWriter()
             };
             IRdfReader parser = new RdfXmlParser();

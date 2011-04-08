@@ -168,24 +168,24 @@ namespace dotNetRDFTest
                 manifest.NamespaceMap.AddNamespace("ut", new Uri("http://www.w3.org/2009/sparql/tests/test-update#"));
 
                 //Create necessary Uri Nodes
-                UriNode rdfType = manifest.CreateUriNode("rdf:type");
-                UriNode rdfsComment = manifest.CreateUriNode("rdfs:comment");
-                UriNode positiveSyntaxTest = manifest.CreateUriNode("mf:PositiveSyntaxTest");
-                UriNode positiveSyntaxTest11 = manifest.CreateUriNode("mf:PositiveSyntaxTest11");
-                UriNode positiveUpdateSyntaxTest = manifest.CreateUriNode("mf:PositiveUpdateSyntaxTest11");
-                UriNode negativeSyntaxTest = manifest.CreateUriNode("mf:NegativeSyntaxTest");
-                UriNode negativeSyntaxTest11 = manifest.CreateUriNode("mf:NegativeSyntaxTest11");
-                UriNode negativeUpdateSyntaxTest = manifest.CreateUriNode("mf:NegativeUpdateSyntaxTest11");
-                UriNode evaluationTest = manifest.CreateUriNode("mf:QueryEvaluationTest");
-                UriNode updateEvaluationTest = manifest.CreateUriNode("ut:UpdateEvaluationTest");
-                UriNode action = manifest.CreateUriNode("mf:action");
-                UriNode result = manifest.CreateUriNode("mf:result");
-                UriNode approval = manifest.CreateUriNode("dawgt:approval");
-                UriNode approvedTest = manifest.CreateUriNode("dawgt:Approved");
-                UriNode unclassifiedTest = manifest.CreateUriNode("dawgt:NotClassified");
-                UriNode query = manifest.CreateUriNode("qt:query");
-                UriNode data = manifest.CreateUriNode("qt:data");
-                UriNode graphData = manifest.CreateUriNode("qt:graphData");
+                IUriNode rdfType = manifest.CreateUriNode("rdf:type");
+                IUriNode rdfsComment = manifest.CreateUriNode("rdfs:comment");
+                IUriNode positiveSyntaxTest = manifest.CreateUriNode("mf:PositiveSyntaxTest");
+                IUriNode positiveSyntaxTest11 = manifest.CreateUriNode("mf:PositiveSyntaxTest11");
+                IUriNode positiveUpdateSyntaxTest = manifest.CreateUriNode("mf:PositiveUpdateSyntaxTest11");
+                IUriNode negativeSyntaxTest = manifest.CreateUriNode("mf:NegativeSyntaxTest");
+                IUriNode negativeSyntaxTest11 = manifest.CreateUriNode("mf:NegativeSyntaxTest11");
+                IUriNode negativeUpdateSyntaxTest = manifest.CreateUriNode("mf:NegativeUpdateSyntaxTest11");
+                IUriNode evaluationTest = manifest.CreateUriNode("mf:QueryEvaluationTest");
+                IUriNode updateEvaluationTest = manifest.CreateUriNode("ut:UpdateEvaluationTest");
+                IUriNode action = manifest.CreateUriNode("mf:action");
+                IUriNode result = manifest.CreateUriNode("mf:result");
+                IUriNode approval = manifest.CreateUriNode("dawgt:approval");
+                IUriNode approvedTest = manifest.CreateUriNode("dawgt:Approved");
+                IUriNode unclassifiedTest = manifest.CreateUriNode("dawgt:NotClassified");
+                IUriNode query = manifest.CreateUriNode("qt:query");
+                IUriNode data = manifest.CreateUriNode("qt:data");
+                IUriNode graphData = manifest.CreateUriNode("qt:graphData");
 
                 //Create SPARQL Query Parser
                 SparqlQueryParser queryParser = new SparqlQueryParser();
@@ -788,10 +788,10 @@ namespace dotNetRDFTest
         {
             try
             {
-                UriNode utData = manifest.CreateUriNode("ut:data");
-                UriNode utGraph = manifest.CreateUriNode("ut:graph");
-                UriNode utGraphData = manifest.CreateUriNode("ut:graphData");
-                UriNode rdfsLabel = manifest.CreateUriNode("rdfs:label");
+                IUriNode utData = manifest.CreateUriNode("ut:data");
+                IUriNode utGraph = manifest.CreateUriNode("ut:graph");
+                IUriNode utGraphData = manifest.CreateUriNode("ut:graphData");
+                IUriNode rdfsLabel = manifest.CreateUriNode("rdfs:label");
 
                 //Get the test name and comment
                 String name = manifest.GetTriplesWithSubjectPredicate(testNode, manifest.CreateUriNode("mf:name")).Select(t => t.Object).First().ToString();
@@ -847,7 +847,7 @@ namespace dotNetRDFTest
                     {
                         Console.WriteLine("Uses Default Graph File " + t.Object.ToString());
                         Graph g = new Graph();
-                        UriLoader.Load(g, ((UriNode)t.Object).Uri);
+                        UriLoader.Load(g, ((IUriNode)t.Object).Uri);
                         g.BaseUri = null;
                         dataset.AddGraph(g);
                     }
@@ -855,7 +855,7 @@ namespace dotNetRDFTest
                     {
                         Graph g = new Graph();
                         INode dataNode = manifest.GetTriplesWithSubjectPredicate(t.Object, utData).Concat(manifest.GetTriplesWithSubjectPredicate(t.Object, utGraph)).Select(x => x.Object).FirstOrDefault();
-                        UriLoader.Load(g, ((UriNode)dataNode).Uri);
+                        UriLoader.Load(g, ((IUriNode)dataNode).Uri);
                         INode nameNode = manifest.GetTriplesWithSubjectPredicate(t.Object, rdfsLabel).Select(x => x.Object).FirstOrDefault();
                         g.BaseUri = new Uri(nameNode.ToString());
                         Console.WriteLine("Uses Named Graph File " + dataNode.ToString() + " named as " + nameNode.ToString());
@@ -913,7 +913,7 @@ namespace dotNetRDFTest
                     {
                         Console.WriteLine("Uses Result Default Graph File " + t.Object.ToString());
                         Graph g = new Graph();
-                        UriLoader.Load(g, ((UriNode)t.Object).Uri);
+                        UriLoader.Load(g, ((IUriNode)t.Object).Uri);
                         g.BaseUri = null;
                         resultDataset.AddGraph(g);
                     }
@@ -921,7 +921,7 @@ namespace dotNetRDFTest
                     {
                         Graph g = new Graph();
                         INode dataNode = manifest.GetTriplesWithSubjectPredicate(t.Object, utData).Concat(manifest.GetTriplesWithSubjectPredicate(t.Object, utGraph)).Select(x => x.Object).FirstOrDefault();
-                        UriLoader.Load(g, ((UriNode)dataNode).Uri);
+                        UriLoader.Load(g, ((IUriNode)dataNode).Uri);
                         INode nameNode = manifest.GetTriplesWithSubjectPredicate(t.Object, rdfsLabel).Select(x => x.Object).FirstOrDefault();
                         g.BaseUri = new Uri(nameNode.ToString());
                         Console.WriteLine("Uses Result Named Graph File " + dataNode.ToString() + " named as " + nameNode.ToString());

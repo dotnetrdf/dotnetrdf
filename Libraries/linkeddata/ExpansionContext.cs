@@ -12,7 +12,7 @@ namespace VDS.RDF.LinkedData
         private TripleStore _store = new TripleStore();
         private Queue<UriToExpand> _uris = new Queue<UriToExpand>();
         private ExpansionProfile _profile;
-        private UriNode _sameAs, _seeAlso;
+        private IUriNode _sameAs, _seeAlso;
         private bool _multithreading = false;
         private ThreadSafeGraph _linkTree = new ThreadSafeGraph();
 
@@ -69,7 +69,7 @@ namespace VDS.RDF.LinkedData
             }
         }
 
-        public UriNode SameAs
+        public IUriNode SameAs
         {
             get
             {
@@ -77,7 +77,7 @@ namespace VDS.RDF.LinkedData
             }
         }
 
-        public UriNode SeeAlso
+        public IUriNode SeeAlso
         {
             get
             {

@@ -19,7 +19,7 @@ namespace dotNetRDFTest
             g.NamespaceMap.AddNamespace("pets", new Uri("http://example.org/pets"));
             
             //Create Uri Nodes
-            UriNode dog, fido, rob, owner, name, species, breed, lab;
+            IUriNode dog, fido, rob, owner, name, species, breed, lab;
             dog = g.CreateUriNode("pets:Dog");
             fido = g.CreateUriNode("pets:abc123");
             rob = g.CreateUriNode("pets:def456");

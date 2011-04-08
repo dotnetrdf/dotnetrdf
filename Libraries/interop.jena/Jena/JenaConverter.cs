@@ -76,7 +76,7 @@ namespace VDS.RDF.Interop.Jena
                     }
                     else
                     {
-                        AnonId id = new AnonId(((BlankNode)n).InternalID);
+                        AnonId id = new AnonId(((IBlankNode)n).InternalID);
                         Resource bnode = mapping.Model.createResource(id);
                         mapping.OutputMapping.Add(n, bnode);
                         if (!mapping.InputMapping.ContainsKey(bnode))
@@ -86,7 +86,7 @@ namespace VDS.RDF.Interop.Jena
                         return bnode;
                     }
                 case NodeType.Literal:
-                    LiteralNode lit = (LiteralNode)n;
+                    ILiteralNode lit = (ILiteralNode)n;
                     if (lit.DataType != null)
                     {
                         return mapping.Model.createTypedLiteral(lit.Value, TypeMapper.getInstance().getSafeTypeByName(lit.DataType.ToString()));
@@ -145,7 +145,7 @@ namespace VDS.RDF.Interop.Jena
                     } 
                     else 
                     {
-                        AnonId id = new AnonId(((BlankNode)n).InternalID);
+                        AnonId id = new AnonId(((IBlankNode)n).InternalID);
                         Resource bnode = mapping.Model.createResource(id);
                         mapping.OutputMapping.Add(n, bnode);
                         if (!mapping.InputMapping.ContainsKey(bnode))

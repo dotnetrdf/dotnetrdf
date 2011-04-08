@@ -34,7 +34,7 @@ namespace VDS.RDF.Utilities.Linq.Metal
 
                 if (resource.NodeType == NodeType.Uri)
                 {
-                    if (string.IsNullOrEmpty(@namespace) || ((UriNode)resource).ToString().StartsWith(@namespace))
+                    if (string.IsNullOrEmpty(@namespace) || ((IUriNode)resource).ToString().StartsWith(@namespace))
                     {
                         nvc[varName] = resource.ToString();
                     }

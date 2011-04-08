@@ -99,13 +99,13 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
             //Create a load of Nodes to use in the tests
             Graph g = new Graph();
             g.NamespaceMap.AddNamespace(String.Empty, new Uri("http://example.org"));
-            UriNode s1 = g.CreateUriNode(":s1");
-            UriNode s2 = g.CreateUriNode(":s2");
-            UriNode p1 = g.CreateUriNode(":p1");
-            UriNode p2 = g.CreateUriNode(":p2");
-            UriNode rdfsLabel = g.CreateUriNode("rdfs:label");
-            LiteralNode o1 = g.CreateLiteralNode("Some Text");
-            LiteralNode o2 = g.CreateLiteralNode("1", new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger));
+            IUriNode s1 = g.CreateUriNode(":s1");
+            IUriNode s2 = g.CreateUriNode(":s2");
+            IUriNode p1 = g.CreateUriNode(":p1");
+            IUriNode p2 = g.CreateUriNode(":p2");
+            IUriNode rdfsLabel = g.CreateUriNode("rdfs:label");
+            ILiteralNode o1 = g.CreateLiteralNode("Some Text");
+            ILiteralNode o2 = g.CreateLiteralNode("1", new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger));
 
             //Create an ID and Null Multiset
             IdentityMultiset id = new IdentityMultiset();
@@ -373,11 +373,11 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
             Console.WriteLine(store.Triples.Count() + " Triples in Store");
 
             //Create the Triple Pattern we want to query with
-            UriNode fordFiesta = g.CreateUriNode(new Uri("http://example.org/vehicles/FordFiesta"));
-            UriNode rdfType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
-            UriNode rdfsLabel = g.CreateUriNode(new Uri(NamespaceMapper.RDFS + "label"));
-            UriNode speed = g.CreateUriNode(new Uri("http://example.org/vehicles/Speed"));
-            UriNode carClass = g.CreateUriNode(new Uri("http://example.org/vehicles/Car"));
+            IUriNode fordFiesta = g.CreateUriNode(new Uri("http://example.org/vehicles/FordFiesta"));
+            IUriNode rdfType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
+            IUriNode rdfsLabel = g.CreateUriNode(new Uri(NamespaceMapper.RDFS + "label"));
+            IUriNode speed = g.CreateUriNode(new Uri("http://example.org/vehicles/Speed"));
+            IUriNode carClass = g.CreateUriNode(new Uri("http://example.org/vehicles/Car"));
 
             TriplePattern allTriples = new TriplePattern(new VariablePattern("?s"), new VariablePattern("?p"), new VariablePattern("?o"));
             TriplePattern allTriples2 = new TriplePattern(new VariablePattern("?x"), new VariablePattern("?y"), new VariablePattern("?z"));

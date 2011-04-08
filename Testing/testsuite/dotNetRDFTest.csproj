@@ -58,7 +58,6 @@
   <ItemGroup>
     <Compile Include="9MReportFigures.cs" />
     <Compile Include="AllegroGraphTest.cs" />
-    <Compile Include="BackgroundPersistedGraphTest.cs" />
     <Compile Include="ConfigurationLoaderTests.cs" />
     <Compile Include="Sparql11EvaluationTestSuite.cs" />
     <Compile Include="MockGenericManager.cs" />

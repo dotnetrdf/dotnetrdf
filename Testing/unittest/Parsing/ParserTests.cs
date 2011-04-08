@@ -127,7 +127,7 @@ namespace VDS.RDF.Test.Parsing
                 new TurtleWriter(),
                 new CompressingTurtleWriter(),
                 new Notation3Writer(),
-                new RdfXmlTreeWriter(),
+                new RdfXmlWriter(),
                 new FastRdfXmlWriter(),
                 new RdfJsonWriter()
             };
@@ -252,7 +252,7 @@ namespace VDS.RDF.Test.Parsing
                 new TurtleWriter(),
                 new CompressingTurtleWriter(),
                 new Notation3Writer(),
-                new RdfXmlTreeWriter(),
+                new RdfXmlWriter(),
                 new FastRdfXmlWriter(),
                 new RdfJsonWriter()
             };
@@ -334,7 +334,7 @@ namespace VDS.RDF.Test.Parsing
 
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
                 IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
-                parser.Load(g, new BlockingStreamReader(response.GetResponseStream()));
+                parser.Load(g, new BlockingTextReader(response.GetResponseStream()));
 
                 foreach (Triple t in g.Triples)
                 {

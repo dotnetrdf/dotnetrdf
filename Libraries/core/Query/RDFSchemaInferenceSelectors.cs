@@ -174,7 +174,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="g">Graph to infer Class Hierarchy from</param>
         /// <param name="targetClass">Target Class which you want to find all Sub Classes of</param>
-        public ClassSelector(IGraph g, UriNode targetClass)
+        public ClassSelector(IGraph g, IUriNode targetClass)
         {
             //Add the Target Class to the list of possible classes
             this._classes.Add(targetClass);
@@ -255,7 +255,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="g">Graph to infer Class Hierarchy from</param>
         /// <param name="targetClass">Target Class which you want to find all Super Classes of</param>
-        public WideningClassSelector(IGraph g, UriNode targetClass)
+        public WideningClassSelector(IGraph g, IUriNode targetClass)
         {
             //Add the Target Class to the list of possible classes
             this._classes.Add(targetClass);

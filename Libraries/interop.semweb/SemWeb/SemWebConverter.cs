@@ -145,11 +145,11 @@ namespace VDS.RDF.Interop.SemWeb
             switch (n.NodeType)
             {
                 case NodeType.Blank:
-                    return new BNode(((BlankNode)n).InternalID);
+                    return new BNode(((IBlankNode)n).InternalID);
                 case NodeType.GraphLiteral:
                     throw new RdfException("Graph Literal Nodes cannot be converted to SemWeb Resources");
                 case NodeType.Literal:
-                    LiteralNode lit = (LiteralNode)n;
+                    ILiteralNode lit = (ILiteralNode)n;
                     if (lit.DataType != null)
                     {
                         return new Literal(lit.Value, null, lit.DataType.ToString());
@@ -163,7 +163,7 @@ namespace VDS.RDF.Interop.SemWeb
                         return new Literal(lit.Value);
                     }
                 case NodeType.Uri:
-                    return new Entity(((UriNode)n).Uri.ToString());
+                    return new Entity(((IUriNode)n).Uri.ToString());
                 default:
                     throw new RdfException("Unknown Node Types cannot be converted to SemWeb Resources");
             }

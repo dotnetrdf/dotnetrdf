@@ -338,7 +338,7 @@ namespace VDS.RDF.Test.Storage
                 fuseki.Update(command);
 
                 //Then see if we can retrieve the newly loaded graph
-                Graph g = new Graph();
+                IGraph g = new Graph();
                 fuseki.LoadGraph(g, "http://example.org/Ilson");
                 Assert.IsFalse(g.IsEmpty, "Graph should be non-empty");
                 foreach (Triple t in g.Triples)

@@ -234,14 +234,14 @@ namespace VDS.RDF.LinkedData
 
             try
             {
-                UriNode current = g.CreateUriNode(u.Uri);
+                IUriNode current = g.CreateUriNode(u.Uri);
 
                 //Find owl:sameAs and rdfs:seeAlso links
                 foreach (Triple t in g.GetTriplesWithSubjectPredicate(current, context.SameAs))
                 {
                     if (t.Object.NodeType == NodeType.Uri)
                     {
-                        context.Uris.Enqueue(new UriToExpand(((UriNode)t.Object).Uri, u.Depth + 1));
+                        context.Uris.Enqueue(new UriToExpand(((IUriNode)t.Object).Uri, u.Depth + 1));
                         context.LinkGraph.Assert(t.CopyTriple(context.LinkGraph));
                     }
                 }
@@ -249,7 +249,7 @@ namespace VDS.RDF.LinkedData
                 {
                     if (t.Subject.NodeType == NodeType.Uri)
                     {
-                        context.Uris.Enqueue(new UriToExpand(((UriNode)t.Subject).Uri, u.Depth + 1));
+                        context.Uris.Enqueue(new UriToExpand(((IUriNode)t.Subject).Uri, u.Depth + 1));
                         context.LinkGraph.Assert(t.CopyTriple(context.LinkGraph));
                     }
                 }
@@ -257,7 +257,7 @@ namespace VDS.RDF.LinkedData
                 {
                     if (t.Object.NodeType == NodeType.Uri)
                     {
-                        context.Uris.Enqueue(new UriToExpand(((UriNode)t.Object).Uri, u.Depth + 1));
+                        context.Uris.Enqueue(new UriToExpand(((IUriNode)t.Object).Uri, u.Depth + 1));
                         context.LinkGraph.Assert(t.CopyTriple(context.LinkGraph));
                     }
                 }
@@ -279,7 +279,7 @@ namespace VDS.RDF.LinkedData
                         {
                             if (t.Object.NodeType == NodeType.Uri)
                             {
-                                context.Uris.Enqueue(new UriToExpand(((UriNode)t.Object).Uri, u.Depth + 1));
+                                context.Uris.Enqueue(new UriToExpand(((IUriNode)t.Object).Uri, u.Depth + 1));
                                 context.LinkGraph.Assert(t.CopyTriple(context.LinkGraph));
                             }
                             if (!linkset.IsDirected)
@@ -287,7 +287,7 @@ namespace VDS.RDF.LinkedData
                                 //If linkset is not directed then follow the link in the reverse direction
                                 if (t.Subject.NodeType == NodeType.Uri)
                                 {
-                                    context.Uris.Enqueue(new UriToExpand(((UriNode)t.Subject).Uri, u.Depth + 1));
+                                    context.Uris.Enqueue(new UriToExpand(((IUriNode)t.Subject).Uri, u.Depth + 1));
                                     context.LinkGraph.Assert(t.CopyTriple(context.LinkGraph));
                                 }
                             }
@@ -301,7 +301,7 @@ namespace VDS.RDF.LinkedData
                             {
                                 if (t.Object.NodeType == NodeType.Uri)
                                 {
-                                    context.Uris.Enqueue(new UriToExpand(((UriNode)t.Object).Uri, u.Depth + 1));
+                                    context.Uris.Enqueue(new UriToExpand(((IUriNode)t.Object).Uri, u.Depth + 1));
                                     context.LinkGraph.Assert(t.CopyTriple(context.LinkGraph));
                                 }
                                 if (!linkset.IsDirected)
@@ -309,7 +309,7 @@ namespace VDS.RDF.LinkedData
                                     //If linkset is not directed then follow the link in the reverse direction
                                     if (t.Subject.NodeType == NodeType.Uri)
                                     {
-                                        context.Uris.Enqueue(new UriToExpand(((UriNode)t.Subject).Uri, u.Depth + 1));
+                                        context.Uris.Enqueue(new UriToExpand(((IUriNode)t.Subject).Uri, u.Depth + 1));
                                         context.LinkGraph.Assert(t.CopyTriple(context.LinkGraph));
                                     }
                                 }

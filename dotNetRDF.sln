@@ -26,8 +26,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Todo.txt = Todo.txt
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParserGUI", "Utilities\parsergui\ParserGUI.csproj", "{8A8256F2-B441-41E1-B9E8-F2FCAEAD012A}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoreManager", "Utilities\storemanager\StoreManager.csproj", "{5B73EE4C-D365-437B-B3DC-8D8831BF74F3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtuosoSample", "Samples\virtuoso\VirtuosoSample.csproj", "{4904C1E6-851F-4910-B947-5A1C3B0E789B}"
@@ -131,14 +129,6 @@ Global
 		{BD80F826-56A3-4A88-B466-DDFA0691FFB8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BD80F826-56A3-4A88-B466-DDFA0691FFB8}.Release|x64.ActiveCfg = Release|Any CPU
 		{BD80F826-56A3-4A88-B466-DDFA0691FFB8}.Release|x86.ActiveCfg = Release|Any CPU
-		{8A8256F2-B441-41E1-B9E8-F2FCAEAD012A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8A8256F2-B441-41E1-B9E8-F2FCAEAD012A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8A8256F2-B441-41E1-B9E8-F2FCAEAD012A}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{8A8256F2-B441-41E1-B9E8-F2FCAEAD012A}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{8A8256F2-B441-41E1-B9E8-F2FCAEAD012A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8A8256F2-B441-41E1-B9E8-F2FCAEAD012A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8A8256F2-B441-41E1-B9E8-F2FCAEAD012A}.Release|x64.ActiveCfg = Release|Any CPU
-		{8A8256F2-B441-41E1-B9E8-F2FCAEAD012A}.Release|x86.ActiveCfg = Release|Any CPU
 		{5B73EE4C-D365-437B-B3DC-8D8831BF74F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5B73EE4C-D365-437B-B3DC-8D8831BF74F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5B73EE4C-D365-437B-B3DC-8D8831BF74F3}.Debug|x64.ActiveCfg = Debug|Any CPU

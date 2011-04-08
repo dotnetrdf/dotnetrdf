@@ -39,7 +39,7 @@ namespace VDS.RDF.Test.Parsing
             StringParser.Parse(g, TestFragment, new Notation3Parser());
 
             Assert.IsTrue(g.Triples.Count == 1, "Should be 1 Triple");
-            Assert.IsTrue(((GraphLiteralNode)g.Triples.First().Subject).SubGraph.Triples.Count == 2, "Should be 2 Triples in the Graph Literal");
+            Assert.IsTrue(((IGraphLiteralNode)g.Triples.First().Subject).SubGraph.Triples.Count == 2, "Should be 2 Triples in the Graph Literal");
         }
 
         [TestMethod]

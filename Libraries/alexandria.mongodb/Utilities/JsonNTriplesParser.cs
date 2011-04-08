@@ -33,7 +33,6 @@ terms.
 
 */
 
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,6 +42,7 @@ using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using VDS.RDF.Parsing.Contexts;
+using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Writing;
 
 namespace VDS.RDF.Parsing
@@ -60,18 +60,41 @@ namespace VDS.RDF.Parsing
         /// <param name="input">Stream to read from</param>
         public void Load(IGraph g, StreamReader input)
         {
+            if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
+            this.Load(new GraphHandler(g), input);
+        }
+
+        /// <summary>
+        /// Read NTriples in JSON Syntax from some File into a Graph
+        /// </summary>
+        /// <param name="g">Graph to read into</param>
+        /// <param name="filename">File to read from</param>
+        public void Load(IGraph g, string filename)
+        {
+            if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
+            this.Load(g, new StreamReader(filename));
+        }
+
+        public void Load(IGraph g, TextReader input)
+        {
+            if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
+            this.Load(new GraphHandler(g), input);
+        }
+
+        public void Load(IRdfHandler handler, String filename)
+        {
+            if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
+            this.Load(handler, new StreamReader(filename));
+        }
+
+        public void Load(IRdfHandler handler, TextReader input)
+        {
+            if (handler == null) throw new RdfParseException("Cannot read RDF using a null RDF Handler");
+            if (input == null) throw new RdfParseException("Cannot read RDF from a null input");
+
             try
             {
-                if (g.IsEmpty)
-                {
-                    this.Parse(g, input);
-                }
-                else
-                {
-                    Graph h = new Graph();
-                    this.Parse(h, input);
-                    g.Merge(h);
-                }
+                this.Parse(handler, input);
                 input.Close();
             }
             catch
@@ -88,15 +111,9 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        /// <summary>
-        /// Read NTriples in JSON Syntax from some File into a Graph
-        /// </summary>
-        /// <param name="g">Graph to read into</param>
-        /// <param name="filename">File to read from</param>
-        public void Load(IGraph g, string filename)
+        public void Load(IRdfHandler handler, StreamReader input)
         {
-            StreamReader input = new StreamReader(filename);
-            this.Load(g, input);
+            this.Load(handler, (TextReader)input);
         }
 
         /// <summary>
@@ -104,10 +121,10 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="g">Graph to read into</param>
         /// <param name="input">Stream to read from</param>
-        private void Parse(IGraph g, StreamReader input)
+        private void Parse(IRdfHandler handler, TextReader input)
         {
             //Create Parser Context and parse
-            JsonParserContext context = new JsonParserContext(g, new CommentIgnoringJsonTextReader(input));
+            JsonParserContext context = new JsonParserContext(handler, new CommentIgnoringJsonTextReader(input));
             this.ParseTriplesArray(context);
         }
 
@@ -117,27 +134,43 @@ namespace VDS.RDF.Parsing
         /// <param name="context">Parser Context</param>
         private void ParseTriplesArray(JsonParserContext context)
         {
-            //Can we read the overall Graph Object
-            PositionInfo startPos = context.CurrentPosition;
-            if (context.Input.Read())
+            try
             {
-                if (context.Input.TokenType == JsonToken.StartArray)
-                {
-                    if (!context.Input.Read()) throw Error(context, "Unexpected End of Input encountered, expected the start of a Triple Object/end of the Triples array");
-                    
-                    if (context.Input.TokenType == JsonToken.StartObject) this.ParseTriples(context);
+                context.Handler.StartRdf();
 
-                    //Should see an End Array when we get back here
-                    if (context.Input.TokenType != JsonToken.EndArray) throw Error(context, "Unexpected Token '" + context.Input.TokenType.ToString() + "' encountered, end of the JSON Array was expected");
+                //Can we read the overall Graph Object
+                PositionInfo startPos = context.CurrentPosition;
+                if (context.Input.Read())
+                {
+                    if (context.Input.TokenType == JsonToken.StartArray)
+                    {
+                        if (!context.Input.Read()) throw Error(context, "Unexpected End of Input encountered, expected the start of a Triple Object/end of the Triples array");
+
+                        if (context.Input.TokenType == JsonToken.StartObject) this.ParseTriples(context);
+
+                        //Should see an End Array when we get back here
+                        if (context.Input.TokenType != JsonToken.EndArray) throw Error(context, "Unexpected Token '" + context.Input.TokenType.ToString() + "' encountered, end of the JSON Array was expected");
+                    }
+                    else
+                    {
+                        throw Error(context, "Unexpected Token '" + context.Input.TokenType.ToString() + "' encountered, start of the JSON Array was expected", startPos);
+                    }
                 }
                 else
                 {
-                    throw Error(context, "Unexpected Token '" + context.Input.TokenType.ToString() + "' encountered, start of the JSON Array was expected", startPos);
+                    throw Error(context, "Unexpected End of Input while trying to parse start of the JSON Triple Array", startPos);
                 }
+
+                context.Handler.EndRdf(true);
             }
-            else
+            catch (RdfParsingTerminatedException)
             {
-                throw Error(context, "Unexpected End of Input while trying to parse start of the JSON Triple Array", startPos);
+                context.Handler.EndRdf(true);
+            }
+            catch
+            {
+                context.Handler.EndRdf(false);
+                throw;
             }
         }
 
@@ -196,7 +229,7 @@ namespace VDS.RDF.Parsing
                         }
                     }
 
-                    context.Graph.Assert(new Triple(s, p, o));
+                    if (!context.Handler.HandleTriple((new Triple(s, p, o)))) throw ParserHelper.Stop();
                 }
                 else
                 {
@@ -263,38 +296,38 @@ namespace VDS.RDF.Parsing
 
         private INode TryParseNodeValue(JsonParserContext context, String value)
         {
-            return TryParseNodeValue(context.Graph, value);
+            return TryParseNodeValue(context.Handler, value);
         }
 
-        internal static INode TryParseNodeValue(IGraph g, String value)
+        internal static INode TryParseNodeValue(INodeFactory factory, String value)
         {
             try
             {
                 if (value.StartsWith("_:"))
                 {
-                    return g.CreateBlankNode(value.Substring(2));
+                    return factory.CreateBlankNode(value.Substring(2));
                 }
                 else if (value.StartsWith("<"))
                 {
-                    return g.CreateUriNode(new Uri(UnescapeValue(value.Substring(1, value.Length - 2))));
+                    return factory.CreateUriNode(new Uri(UnescapeValue(value.Substring(1, value.Length - 2))));
                 }
                 else
                 {
                     if (value.EndsWith("\""))
                     {
-                        return g.CreateLiteralNode(UnescapeValue(value.Substring(1, value.Length - 2)));
+                        return factory.CreateLiteralNode(UnescapeValue(value.Substring(1, value.Length - 2)));
                     }
                     else if (value.EndsWith(">"))
                     {
                         String lit = value.Substring(1, value.LastIndexOf("^^<") - 2);
                         String dt = value.Substring(lit.Length + 5, value.Length - lit.Length - 6);
-                        return g.CreateLiteralNode(UnescapeValue(lit), new Uri(UnescapeValue(dt)));
+                        return factory.CreateLiteralNode(UnescapeValue(lit), new Uri(UnescapeValue(dt)));
                     }
                     else
                     {
                         String lit = value.Substring(1, value.LastIndexOf("\"@") - 1);
                         String lang = value.Substring(lit.Length + 3);
-                        return g.CreateLiteralNode(UnescapeValue(lit), UnescapeValue(lang));
+                        return factory.CreateLiteralNode(UnescapeValue(lit), UnescapeValue(lang));
                     }
                 }
             }

@@ -44,7 +44,7 @@ namespace VDS.RDF.Parsing
     /// <summary>
     /// A wrapper to a Stream which does all its Read() and Peek() calls using ReadBlock() to handle slow underlying streams (eg Network Streams)
     /// </summary>
-    [Obsolete("Please use BlockingTextReader instead which can wrap any TextReader and provides better buffering", true)]
+    [Obsolete("Obsoleted in favour of the new BlockingTextReader which can wrap any TextReader and provides better buffering", true)]
     public sealed class BlockingStreamReader : StreamReader
     {
         private bool _peeked = false;

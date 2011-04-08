@@ -91,7 +91,7 @@ namespace VDS.RDF.Interop.Sesame
             switch (n.NodeType)
             {
                 case NodeType.Uri:
-                    return mapping.ValueFactory.createURI(((UriNode)n).Uri.ToString());
+                    return mapping.ValueFactory.createURI(((IUriNode)n).Uri.ToString());
 
                 case NodeType.Blank:
                     if (mapping.OutputMapping.ContainsKey(n))
@@ -133,7 +133,7 @@ namespace VDS.RDF.Interop.Sesame
             switch (n.NodeType)
             {
                 case NodeType.Uri:
-                    return mapping.ValueFactory.createURI(((UriNode)n).Uri.ToString());
+                    return mapping.ValueFactory.createURI(((IUriNode)n).Uri.ToString());
                 default:
                     throw new RdfException("Only URI Predicates are supported in Sesame");
             }
@@ -161,9 +161,9 @@ namespace VDS.RDF.Interop.Sesame
             switch (n.NodeType)
             {
                 case NodeType.Uri:
-                    return mapping.ValueFactory.createURI(((UriNode)n).Uri.ToString());
+                    return mapping.ValueFactory.createURI(((IUriNode)n).Uri.ToString());
                 case NodeType.Literal:
-                    LiteralNode lit = (LiteralNode)n;
+                    ILiteralNode lit = (ILiteralNode)n;
                     if (lit.DataType != null)
                     {
                         return mapping.ValueFactory.createLiteral(lit.Value, ToSesameUri(lit.DataType, mapping));

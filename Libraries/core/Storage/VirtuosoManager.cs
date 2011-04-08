@@ -1020,7 +1020,7 @@ namespace VDS.RDF.Storage
                             else if (temp.NodeType == NodeType.Literal)
                             {
                                 //HACK: Virtuoso wrongly returns Literals instead of URIs in the results for the above query
-                                graphs.Add(new Uri(((LiteralNode)temp).Value));
+                                graphs.Add(new Uri(((ILiteralNode)temp).Value));
                             }
                         }
                     }

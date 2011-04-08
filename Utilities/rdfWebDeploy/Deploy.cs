@@ -152,9 +152,9 @@ namespace VDS.RDF.Utilities.Web.Deploy
                 }
 
                 //Detect Handlers from the Configution Graph and deploy
-                UriNode rdfType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
-                UriNode dnrType = g.CreateUriNode(new Uri(ConfigurationLoader.ConfigurationNamespace + "type"));
-                UriNode httpHandler = g.CreateUriNode(new Uri(ConfigurationLoader.ConfigurationNamespace + "HttpHandler"));
+                IUriNode rdfType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
+                IUriNode dnrType = g.CreateUriNode(new Uri(ConfigurationLoader.ConfigurationNamespace + "type"));
+                IUriNode httpHandler = g.CreateUriNode(new Uri(ConfigurationLoader.ConfigurationNamespace + "HttpHandler"));
 
                 //Deploy for IIS Classic Mode
                 if (!this._noClassicRegistration)
@@ -164,7 +164,7 @@ namespace VDS.RDF.Utilities.Web.Deploy
                     {
                         if (n.NodeType == NodeType.Uri)
                         {
-                            String handlerPath = ((UriNode)n).Uri.AbsolutePath;
+                            String handlerPath = ((IUriNode)n).Uri.AbsolutePath;
                             INode type = g.GetTriplesWithSubjectPredicate(n, dnrType).Select(t => t.Object).FirstOrDefault();
                             if (type == null)
                             {
@@ -173,7 +173,7 @@ namespace VDS.RDF.Utilities.Web.Deploy
                             }
                             if (type.NodeType == NodeType.Literal)
                             {
-                                String handlerType = ((LiteralNode)type).Value;
+                                String handlerType = ((ILiteralNode)type).Value;
 
                                 //First remove any existing registration
                                 handlersSection.Handlers.Remove("*", handlerPath);
@@ -214,7 +214,7 @@ namespace VDS.RDF.Utilities.Web.Deploy
                     {
                         if (n.NodeType == NodeType.Uri)
                         {
-                            String handlerPath = ((UriNode)n).Uri.AbsolutePath;
+                            String handlerPath = ((IUriNode)n).Uri.AbsolutePath;
                             INode type = g.GetTriplesWithSubjectPredicate(n, dnrType).Select(t => t.Object).FirstOrDefault();
                             if (type == null)
                             {
@@ -223,7 +223,7 @@ namespace VDS.RDF.Utilities.Web.Deploy
                             }
                             if (type.NodeType == NodeType.Literal)
                             {
-                                String handlerType = ((LiteralNode)type).Value;
+                                String handlerType = ((ILiteralNode)type).Value;
 
                                 //First remove any existing registration
                                 foreach (Admin.ConfigurationElement oldReg in newHandlers.Where(el => el.GetAttributeValue("name").Equals(handlerPath)).ToList())

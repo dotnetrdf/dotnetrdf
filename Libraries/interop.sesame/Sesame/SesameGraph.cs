@@ -18,9 +18,9 @@ namespace VDS.RDF.Interop.Sesame
             this._triples = new SesameTripleCollection(this._g, this._mapping);
         }
 
-        public override BlankNode CreateBlankNode()
+        public override IBlankNode CreateBlankNode()
         {
-            BlankNode n = base.CreateBlankNode();
+            IBlankNode n = base.CreateBlankNode();
             dotSesame.BNode bnode = this._mapping.ValueFactory.createBNode();
 
             lock (this._mapping)
@@ -32,9 +32,9 @@ namespace VDS.RDF.Interop.Sesame
             return n;
         }
 
-        public override BlankNode CreateBlankNode(string nodeId)
+        public override IBlankNode CreateBlankNode(string nodeId)
         {
-            BlankNode n = this.GetBlankNode(nodeId);
+            IBlankNode n = this.GetBlankNode(nodeId);
             if (n == null) n = this.CreateBlankNode(nodeId);
             dotSesame.BNode bnode = this._mapping.ValueFactory.createBNode(nodeId);
 

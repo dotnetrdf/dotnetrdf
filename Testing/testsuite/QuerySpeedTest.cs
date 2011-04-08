@@ -33,9 +33,9 @@ namespace dotNetRDFTest
             Console.WriteLine("Test Graphs loaded");
             Console.WriteLine();
 
-            UriNode lookupSubj = g.CreateUriNode(":a999");
-            UriNode lookupPred = g.CreateUriNode(":a500");
-            UriNode lookupObj = g.CreateUriNode(":doesNotExist");
+            IUriNode lookupSubj = g.CreateUriNode(":a999");
+            IUriNode lookupPred = g.CreateUriNode(":a500");
+            IUriNode lookupObj = g.CreateUriNode(":doesNotExist");
             int count = 0;
             Stopwatch timer = new Stopwatch();
 

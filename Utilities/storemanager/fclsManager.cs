@@ -356,7 +356,7 @@ namespace VDS.RDF.Utilities.StoreManager
                         INode lblNode = r["label"];
                         if (lblNode.NodeType == NodeType.Literal)
                         {
-                            item.Text = ((LiteralNode)lblNode).Value;
+                            item.Text = ((ILiteralNode)lblNode).Value;
                         }
                         else
                         {

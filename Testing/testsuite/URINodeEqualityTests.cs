@@ -18,39 +18,39 @@ namespace dotNetRDFTest
             //Create the Nodes
             Graph g = new Graph();
             Console.WriteLine("Creating two URIs referring to google - one lowercase, one uppercase - which should be equivalent");
-            UriNode a = g.CreateUriNode(new Uri("http://www.google.com"));
-            UriNode b = g.CreateUriNode(new Uri("http://www.GOOGLE.com/"));
+            IUriNode a = g.CreateUriNode(new Uri("http://www.google.com"));
+            IUriNode b = g.CreateUriNode(new Uri("http://www.GOOGLE.com/"));
 
             CompareNodes(a, b);
 
             Console.WriteLine("Creating two URIs with the same Fragment ID but differing in case and thus are different since Fragment IDs are case sensitive");
-            UriNode c = g.CreateUriNode(new Uri("http://www.google.com/#Test"));
-            UriNode d = g.CreateUriNode(new Uri("http://www.GOOGLE.com/#test"));
+            IUriNode c = g.CreateUriNode(new Uri("http://www.google.com/#Test"));
+            IUriNode d = g.CreateUriNode(new Uri("http://www.GOOGLE.com/#test"));
 
             CompareNodes(c, d);
 
             Console.WriteLine("Creating two identical URIs with unusual characters in them");
-            UriNode e = g.CreateUriNode(new Uri("http://www.google.com/random,_@characters"));
-            UriNode f = g.CreateUriNode(new Uri("http://www.google.com/random,_@characters"));
+            IUriNode e = g.CreateUriNode(new Uri("http://www.google.com/random,_@characters"));
+            IUriNode f = g.CreateUriNode(new Uri("http://www.google.com/random,_@characters"));
 
             CompareNodes(e, f);
 
             Console.WriteLine("Creating two URIs with similar paths that differ in case");
-            UriNode h = g.CreateUriNode(new Uri("http://www.google.com/path/test/case"));
-            UriNode i = g.CreateUriNode(new Uri("http://www.google.com/path/Test/case"));
+            IUriNode h = g.CreateUriNode(new Uri("http://www.google.com/path/test/case"));
+            IUriNode i = g.CreateUriNode(new Uri("http://www.google.com/path/Test/case"));
 
             CompareNodes(h, i);
 
             Console.WriteLine("Creating three URIs with equivalent relative paths");
-            UriNode j = g.CreateUriNode(new Uri("http://www.google.com/relative/test/../example.html"));
-            UriNode k = g.CreateUriNode(new Uri("http://www.google.com/relative/test/monkey/../../example.html"));
-            UriNode l = g.CreateUriNode(new Uri("http://www.google.com/relative/./example.html"));
+            IUriNode j = g.CreateUriNode(new Uri("http://www.google.com/relative/test/../example.html"));
+            IUriNode k = g.CreateUriNode(new Uri("http://www.google.com/relative/test/monkey/../../example.html"));
+            IUriNode l = g.CreateUriNode(new Uri("http://www.google.com/relative/./example.html"));
 
             CompareNodes(j, k);
             CompareNodes(k, l);
         }
 
-        private static void CompareNodes(UriNode a, UriNode b)
+        private static void CompareNodes(IUriNode a, IUriNode b)
         {
             Console.WriteLine("URI Node A has String form: " + a.ToString());
             Console.WriteLine("URI Node B has String form: " + b.ToString());

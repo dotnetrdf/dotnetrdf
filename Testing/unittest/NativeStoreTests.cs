@@ -52,7 +52,7 @@ namespace VDS.RDF.Test
                 foreach (IGenericIOManager manager in managers)
                 {
                     Console.WriteLine("Loading using '" + manager.GetType().ToString() + "' with a NativeGraph");
-                    StoreGraph native = new StoreGraph(g.BaseUri, manager);
+                    StoreGraphPersistenceWrapper native = new StoreGraphPersistenceWrapper(manager, g.BaseUri);
                     Console.WriteLine("Loaded OK");
 
                     Assert.IsFalse(native.IsEmpty, "Retrieved Graph should contain Triples");
