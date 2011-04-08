@@ -165,7 +165,7 @@ namespace VDS.RDF.Parsing.Events
                         //Relative Uri with no Base Uri
                         throw new RdfParseException("Cannot resolve a Relative Namespace URI since there is no in-scope Base URI");
                     }
-                    if (!context.Handler.HandleNamespace(prefix, new Uri(uri))) ParserHelper.Stop();
+                    context.Namespaces.AddNamespace(prefix, new Uri(uri));
                 }
                 else if (attr.Name == "xml:base")
                 {
@@ -289,7 +289,6 @@ namespace VDS.RDF.Parsing.Events
                     }
                     NamespaceAttributeEvent ns = new NamespaceAttributeEvent(attr.LocalName, uri, attr.OuterXml);
                     element.NamespaceAttributes.Add(ns);
-                    //context.Handler.HandleNamespace(attr.LocalName, new Uri(uri));
                 }
                 else if (attr.Prefix == String.Empty && attr.Name == "xmlns")
                 {
@@ -314,7 +313,6 @@ namespace VDS.RDF.Parsing.Events
                     }
                     NamespaceAttributeEvent ns = new NamespaceAttributeEvent(String.Empty, uri, attr.OuterXml);
                     element.NamespaceAttributes.Add(ns);
-                    //context.Handler.HandleNamespace(String.Empty, new Uri(uri));
                 }
                 else if (attr.Prefix == "xml" || (attr.Prefix == String.Empty && attr.LocalName.StartsWith("xml")))
                 {

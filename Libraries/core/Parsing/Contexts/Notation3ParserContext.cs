@@ -190,6 +190,7 @@ namespace VDS.RDF.Parsing.Contexts
 
             this._handlers.Push(this._handler);
             this._handler = new GraphHandler(h);
+            this._handler.StartRdf();
 
             this._subgraphs.Push(this._g);
             this._g = h;
@@ -210,6 +211,7 @@ namespace VDS.RDF.Parsing.Contexts
             if (this._handlers.Count > 0)
             {
                 this._g = this._subgraphs.Pop();
+                this._handler.EndRdf(true);
                 this._handler = this._handlers.Pop();
                 this._varContext = this._varContexts.Pop();
             }

@@ -784,6 +784,8 @@ namespace VDS.RDF.Writing
                     else
                     {
                         //Got a QName Type Reference OK
+                        //If no prefix drop the leading :
+                        if (typeref.StartsWith(":")) typeref = typeref.Substring(1);
                         typerefs.Add(t.Subject, typeref);
                         if (context.Graph.Triples.WithSubject(t.Subject).Count() > 1)
                         {
