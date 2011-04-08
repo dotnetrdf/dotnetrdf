@@ -19,7 +19,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Build\nant\dotnetrdf.build = Build\nant\dotnetrdf.build
 		Build\ndoc3\dotNetRDF.ndoc = Build\ndoc3\dotNetRDF.ndoc
 		dotNetRDF.vsmdi = dotNetRDF.vsmdi
-		dotNetRDF1.vsmdi = dotNetRDF1.vsmdi
 		Build\ndoc3\Overview.html = Build\ndoc3\Overview.html
 		Utilities\ReadMe.txt = Utilities\ReadMe.txt
 		Tests.testrunconfig = Tests.testrunconfig

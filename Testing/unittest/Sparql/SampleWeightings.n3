@@ -1,0 +1,10 @@
+﻿@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix opt: <http://www.dotnetrdf.org/optimiserStats#>.
+
+rdfs:label opt:predicateCount 100 .
+rdf:type opt:predicateCount 200 .
+rdfs:Class opt:objectCount 100 .
+"example" opt:objectCount 200 .
+rdfs:subClassOf opt:predicateCount 200 .
