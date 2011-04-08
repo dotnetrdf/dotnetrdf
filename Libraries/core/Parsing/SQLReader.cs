@@ -85,9 +85,9 @@ namespace VDS.RDF.Parsing
         /// <summary>
         /// Loads a Graph from a SQL Store
         /// </summary>
-        /// <param name="graphURI">Uri of the Graph to Load</param>
+        /// <param name="graphUri">Uri of the Graph to Load</param>
         /// <returns></returns>
-        public IGraph Load(String graphURI)
+        public IGraph Load(String graphUri)
         {
             Graph g = new Graph();
             try
@@ -96,13 +96,13 @@ namespace VDS.RDF.Parsing
                 this._manager.Open(true);
 
                 //Retrieve the existing Graph ID if any
-                if (!this._manager.Exists(new Uri(graphURI)))
+                if (!this._manager.Exists(new Uri(graphUri)))
                 {
-                    throw new RdfStorageException("The Graph '" + graphURI + "' does not exist in the underlying Store");
+                    throw new RdfStorageException("The Graph '" + graphUri + "' does not exist in the underlying Store");
                 }
-                String graphID = this._manager.GetGraphID(new Uri(graphURI));
+                String graphID = this._manager.GetGraphID(new Uri(graphUri));
 
-                g.BaseUri = new Uri(graphURI);
+                g.BaseUri = new Uri(graphUri);
 
                 //Load Namespaces
                 this._manager.LoadNamespaces(g, graphID);

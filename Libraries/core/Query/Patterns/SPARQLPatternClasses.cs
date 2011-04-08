@@ -175,11 +175,11 @@ namespace VDS.RDF.Query.Patterns
                         int hash = value.GraphUri.GetEnhancedHashCode();
                         if (hash >= 0)
                         {
-                            return new BlankNode(null, ((IBlankNode)value).InternalID + "-" + value.GraphUri.GetEnhancedHashCode());
+                            return new BlankNode(context.Graph, ((IBlankNode)value).InternalID + "-" + value.GraphUri.GetEnhancedHashCode());
                         }
                         else
                         {
-                            return new BlankNode(null, ((IBlankNode)value).InternalID + hash);
+                            return new BlankNode(context.Graph, ((IBlankNode)value).InternalID + hash);
                         }
                     }
                     else

@@ -259,7 +259,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <EmbeddedResource Include="embedded.ttl" />
-    <Content Include="resources\complex-collections.nt" />
+    <Content Include="resources\complex-collections.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="resources\cyrillic.rdf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -296,11 +298,15 @@
     <None Include="resources\empty-string-rdfxml.rdf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="resources\rdfxml-namespaces.rdf" />
+    <Content Include="resources\rdfxml-namespaces.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="resources\multiple-optionals.rq">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\writetostore.nq" />
+    <Content Include="resources\writetostore.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <EmbeddedResource Include="Sparql\SampleWeightings.n3" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
