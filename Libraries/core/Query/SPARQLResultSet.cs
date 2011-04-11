@@ -202,7 +202,7 @@ namespace VDS.RDF.Query
                     case SparqlResultsType.Unknown:
                         return true;
                     case SparqlResultsType.VariableBindings:
-                        return (this._results.Count == 0 && this._variables.Count == 0);
+                        return this._results.Count == 0;
                     default:
                         return true;
                 }

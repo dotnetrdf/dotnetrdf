@@ -89,6 +89,23 @@ namespace VDS.RDF.Parsing
         /// <returns></returns>
         public IGraph Load(String graphUri)
         {
+            if (graphUri.Equals(String.Empty) || graphUri.Equals(GraphCollection.DefaultGraphUri))
+            {
+                return this.Load((Uri)null);
+            }
+            else
+            {
+                return this.Load(new Uri(graphUri));
+            }
+        }
+
+        /// <summary>
+        /// Loads a Graph from the SQL Store into a Graph object
+        /// </summary>
+        /// <param name="graphUri">Uri of the Graph to load</param>
+        /// <returns></returns>
+        public IGraph Load(Uri graphUri)
+        {
             Graph g = new Graph();
             try
             {
@@ -96,13 +113,13 @@ namespace VDS.RDF.Parsing
                 this._manager.Open(true);
 
                 //Retrieve the existing Graph ID if any
-                if (!this._manager.Exists(new Uri(graphUri)))
+                if (!this._manager.Exists(graphUri))
                 {
-                    throw new RdfStorageException("The Graph '" + graphUri + "' does not exist in the underlying Store");
+                    throw new RdfStorageException("The Graph '" + graphUri.ToSafeString() + "' does not exist in the underlying Store");
                 }
-                String graphID = this._manager.GetGraphID(new Uri(graphUri));
+                String graphID = this._manager.GetGraphID(graphUri);
 
-                g.BaseUri = new Uri(graphUri);
+                g.BaseUri = graphUri;
 
                 //Load Namespaces
                 this._manager.LoadNamespaces(g, graphID);
@@ -118,16 +135,6 @@ namespace VDS.RDF.Parsing
                 throw;
             }
             return g;
-        }
-
-        /// <summary>
-        /// Loads a Graph from the SQL Store into a Graph object
-        /// </summary>
-        /// <param name="graphUri">Uri of the Graph to load</param>
-        /// <returns></returns>
-        public IGraph Load(Uri graphUri)
-        {
-            return this.Load(graphUri.ToString());
         }
     }
 }

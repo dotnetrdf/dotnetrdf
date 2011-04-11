@@ -20,7 +20,7 @@ namespace VDS.RDF.Test.Storage
         private NTriplesFormatter _formatter = new NTriplesFormatter();
 
         [TestMethod]
-        public void SparqlUniformHttpProtocolSaveGraph()
+        public void StorageSparqlUniformHttpProtocolSaveGraph()
         {
             try
             {
@@ -74,13 +74,13 @@ namespace VDS.RDF.Test.Storage
         }
 
         [TestMethod]
-        public void SparqlUniformHttpProtocolLoadGraph()
+        public void StorageSparqlUniformHttpProtocolLoadGraph()
         {
             try
             {
                 Options.UriLoaderCaching = false;
                 //Ensure that the Graph will be there using the SaveGraph() test
-                SparqlUniformHttpProtocolSaveGraph();
+                StorageSparqlUniformHttpProtocolSaveGraph();
 
                 Graph g = new Graph();
                 FileLoader.Load(g, "Turtle.ttl");
@@ -127,13 +127,13 @@ namespace VDS.RDF.Test.Storage
         }
 
         [TestMethod]
-        public void SparqlUniformHttpProtocolGraphExists()
+        public void StorageSparqlUniformHttpProtocolGraphExists()
         {
             try
             {
                 Options.UriLoaderCaching = false;
                 //Ensure that the Graph will be there using the SaveGraph() test
-                SparqlUniformHttpProtocolSaveGraph();
+                StorageSparqlUniformHttpProtocolSaveGraph();
 
                 //Check the Graph exists in the Store
                 SparqlHttpProtocolConnector sparql = new SparqlHttpProtocolConnector(new Uri(ProtocolTestUri));
@@ -146,12 +146,12 @@ namespace VDS.RDF.Test.Storage
         }
 
         [TestMethod]
-        public void SparqlUniformHttpProtocolDeleteGraph()
+        public void StorageSparqlUniformHttpProtocolDeleteGraph()
         {
             try
             {
                 Options.UriLoaderCaching = false;
-                SparqlUniformHttpProtocolSaveGraph();
+                StorageSparqlUniformHttpProtocolSaveGraph();
 
                 SparqlHttpProtocolConnector sparql = new SparqlHttpProtocolConnector(new Uri(ProtocolTestUri));
                 sparql.DeleteGraph("http://example.org/sparqlTest");
@@ -180,13 +180,13 @@ namespace VDS.RDF.Test.Storage
         }
 
         [TestMethod]
-        public void SparqlUniformHttpProtocolAddTriples()
+        public void StorageSparqlUniformHttpProtocolAddTriples()
         {
             try
             {
                 Options.UriLoaderCaching = false;
 
-                SparqlUniformHttpProtocolSaveGraph();
+                StorageSparqlUniformHttpProtocolSaveGraph();
 
                 Graph g = new Graph();
                 g.Retract(g.Triples.Where(t => !t.IsGroundTriple));
@@ -212,7 +212,7 @@ namespace VDS.RDF.Test.Storage
         }
 
         [TestMethod]
-        public void SparqlUniformHttpProtocolRemoveTriples()
+        public void StorageSparqlUniformHttpProtocolRemoveTriples()
         {
             try
             {
@@ -245,7 +245,7 @@ namespace VDS.RDF.Test.Storage
         }
 
         [TestMethod]
-        public void SparqlUniformHttpProtocolPostCreate()
+        public void StorageSparqlUniformHttpProtocolPostCreate()
         {
             SparqlHttpProtocolConnector connector = new SparqlHttpProtocolConnector("http://localhost/demos/server/");
 
@@ -290,7 +290,7 @@ namespace VDS.RDF.Test.Storage
         }
 
         [TestMethod]
-        public void SparqlUniformHttpProtocolPostCreateMultiple()
+        public void StorageSparqlUniformHttpProtocolPostCreateMultiple()
         {
             SparqlHttpProtocolConnector connector = new SparqlHttpProtocolConnector("http://localhost/demos/server/");
 

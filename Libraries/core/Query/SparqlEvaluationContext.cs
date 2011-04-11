@@ -90,7 +90,7 @@ namespace VDS.RDF.Query
             {
                 if (this._query.Timeout > 0)
                 {
-                    if (this._query.Timeout <= Options.QueryExecutionTimeout && Options.QueryExecutionTimeout > 0)
+                    if (Options.QueryExecutionTimeout == 0 || (this._query.Timeout <= Options.QueryExecutionTimeout && Options.QueryExecutionTimeout > 0))
                     {
                         //Query Timeout is used provided it is less than global timeout unless global timeout is zero
                         this._timeout = this._query.Timeout;

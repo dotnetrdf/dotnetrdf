@@ -13,7 +13,7 @@ namespace VDS.RDF.Test.Storage
     public class TalisTest : BaseTest
     {
         [TestMethod]
-        public void TalisStoreQuery()
+        public void StorageTalisStoreQuery()
         {
             try
             {

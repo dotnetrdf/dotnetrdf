@@ -14,7 +14,7 @@ namespace VDS.RDF.Test.Storage
     public class AllegroGraphTests
     {
         [TestMethod]
-        public void AllegroGraphSaveLoad()
+        public void StorageAllegroGraphSaveLoad()
         {
             try
             {
@@ -38,7 +38,7 @@ namespace VDS.RDF.Test.Storage
         }
 
         [TestMethod]
-        public void AllegroGraphDeleteTriples()
+        public void StorageAllegroGraphDeleteTriples()
         {
             try
             {
@@ -78,7 +78,7 @@ namespace VDS.RDF.Test.Storage
         }
 
         [TestMethod]
-        public void AllegroGraphAsk()
+        public void StorageAllegroGraphAsk()
         {
             try
             {
@@ -103,7 +103,7 @@ namespace VDS.RDF.Test.Storage
         }
 
         [TestMethod]
-        public void AllegroGraphDescribe()
+        public void StorageAllegroGraphDescribe()
         {
             try
             {

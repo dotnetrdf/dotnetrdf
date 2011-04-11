@@ -14,7 +14,7 @@ namespace VDS.RDF.Test.Storage
     public class SesameTests
     {
         [TestMethod]
-        public void SesameSaveLoad()
+        public void StorageSesameSaveLoad()
         {
             try
             {
@@ -38,7 +38,7 @@ namespace VDS.RDF.Test.Storage
         }
 
         [TestMethod]
-        public void SesameDeleteTriples()
+        public void StorageSesameDeleteTriples()
         {
             try
             {
@@ -78,7 +78,7 @@ namespace VDS.RDF.Test.Storage
         }
 
         [TestMethod]
-        public void SesameCyrillic()
+        public void StorageSesameCyrillic()
         {
             try
             {
@@ -108,7 +108,7 @@ namespace VDS.RDF.Test.Storage
         }
 
         [TestMethod]
-        public void SesameAsk()
+        public void StorageSesameAsk()
         {
             try
             {
@@ -133,7 +133,7 @@ namespace VDS.RDF.Test.Storage
         }
 
         [TestMethod]
-        public void SesameDescribe()
+        public void StorageSesameDescribe()
         {
             try
             {

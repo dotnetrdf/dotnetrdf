@@ -246,8 +246,7 @@ namespace VDS.RDF.Test.Sparql
             h.BaseUri = new Uri("http://example.org/someOtherGraph");
             store.Add(h);
 
-            InMemoryDataset dataset = new InMemoryDataset(store);
-            dataset.SetDefaultGraph(h);
+            InMemoryDataset dataset = new InMemoryDataset(store, h.BaseUri);
             LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
             SparqlUpdateParser parser = new SparqlUpdateParser();
             SparqlUpdateCommandSet cmds = parser.ParseFromString("LOAD <http://dbpedia.org/resource/Ilkeston>");
@@ -256,28 +255,6 @@ namespace VDS.RDF.Test.Sparql
 
             Assert.IsTrue(g.IsEmpty, "Graph with null URI (normally the default Graph) should be empty as the Default Graph for the Dataset should have been a named Graph so this Graph should not have been filled by the LOAD Command");
             Assert.IsFalse(h.IsEmpty, "Graph with name should be non-empty as it should have been the Default Graph for the Dataset and so filled by the LOAD Command");
-        }
-
-        [TestMethod]
-        public void SparqlDatasetDefaultGraphManagementWithUpdate2()
-        {
-            TripleStore store = new TripleStore();
-            Graph g = new Graph();
-            store.Add(g);
-            Graph h = new Graph();
-            h.BaseUri = new Uri("http://example.org/someOtherGraph");
-            store.Add(h);
-
-            InMemoryDataset dataset = new InMemoryDataset(store);
-            dataset.SetDefaultGraph(g);
-            LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
-            SparqlUpdateParser parser = new SparqlUpdateParser();
-            SparqlUpdateCommandSet cmds = parser.ParseFromString("LOAD <http://dbpedia.org/resource/Ilkeston>");
-
-            processor.ProcessCommandSet(cmds);
-
-            Assert.IsFalse(g.IsEmpty, "Graph with null URI should be non-empty as it should have been the Default Graph for the Dataset and so filled by the LOAD Command");
-            Assert.IsTrue(h.IsEmpty, "Graph with name should be empty as it should not have been the Default Graph for the Dataset and so shouldn't have been filled by the LOAD Command");
         }
 
         [TestMethod]

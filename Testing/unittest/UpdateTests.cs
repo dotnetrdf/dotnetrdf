@@ -27,7 +27,7 @@ namespace VDS.RDF.Test
             store.ExecuteUpdate(create1);
             store.ExecuteUpdate(create2);
 
-            Assert.AreEqual(2, store.Graphs.Count, "Store should have now had two Graphs");
+            Assert.AreEqual(3, store.Graphs.Count, "Store should have now had three Graphs");
             Assert.AreEqual(0, store.Triples.Count(), "Store should have no triples at this point");
 
             //Trying the same Create again should cause an error
@@ -55,7 +55,7 @@ namespace VDS.RDF.Test
 
             DropCommand drop1 = new DropCommand(new Uri("http://example.org/1"));
             store.ExecuteUpdate(drop1);
-            Assert.AreEqual(1, store.Graphs.Count, "Store should have only 1 Graph after we executed the DROP command");
+            Assert.AreEqual(2, store.Graphs.Count, "Store should have only 2 Graphs after we executed the DROP command");
 
             try
             {

@@ -30,7 +30,7 @@ SELECT * WHERE
 }";
 
                 Graph weightings = new Graph();
-                weightings.LoadFromEmbeddedResource("VDS.RDF.Test.Sparql.SampleWeightings.n3, dotNetRDF.041.Test");
+                weightings.LoadFromEmbeddedResource("VDS.RDF.Test.Sparql.SampleWeightings.n3, dotNetRDF.Test");
                 SparqlOptimiser.QueryOptimiser = new WeightedOptimiser(weightings);
 
                 SparqlQuery q = this._parser.ParseFromString(query);
@@ -59,7 +59,7 @@ SELECT * WHERE
 }";
 
                 Graph weightings = new Graph();
-                weightings.LoadFromEmbeddedResource("VDS.RDF.Test.Sparql.SampleWeightings.n3, dotNetRDF.041.Test");
+                weightings.LoadFromEmbeddedResource("VDS.RDF.Test.Sparql.SampleWeightings.n3, dotNetRDF.Test");
                 SparqlOptimiser.QueryOptimiser = new WeightedOptimiser(weightings);
 
                 SparqlQuery q = this._parser.ParseFromString(query);
@@ -88,7 +88,7 @@ SELECT * WHERE
 }";
 
                 Graph weightings = new Graph();
-                weightings.LoadFromEmbeddedResource("VDS.RDF.Test.Sparql.SampleWeightings.n3, dotNetRDF.041.Test");
+                weightings.LoadFromEmbeddedResource("VDS.RDF.Test.Sparql.SampleWeightings.n3, dotNetRDF.Test");
                 SparqlOptimiser.QueryOptimiser = new WeightedOptimiser(weightings);
 
                 SparqlQuery q = this._parser.ParseFromString(query);
@@ -117,7 +117,7 @@ SELECT * WHERE
 }";
 
                 Graph weightings = new Graph();
-                weightings.LoadFromEmbeddedResource("VDS.RDF.Test.Sparql.SampleWeightings.n3, dotNetRDF.041.Test");
+                weightings.LoadFromEmbeddedResource("VDS.RDF.Test.Sparql.SampleWeightings.n3, dotNetRDF.Test");
                 SparqlOptimiser.QueryOptimiser = new WeightedOptimiser(weightings);
 
                 SparqlQuery q = this._parser.ParseFromString(query);
@@ -147,7 +147,7 @@ SELECT * WHERE
 }";
 
                 Graph weightings = new Graph();
-                weightings.LoadFromEmbeddedResource("VDS.RDF.Test.Sparql.SampleWeightings.n3, dotNetRDF.041.Test");
+                weightings.LoadFromEmbeddedResource("VDS.RDF.Test.Sparql.SampleWeightings.n3, dotNetRDF.Test");
                 SparqlOptimiser.QueryOptimiser = new WeightedOptimiser(weightings);
 
                 SparqlQuery q = this._parser.ParseFromString(query);
@@ -177,7 +177,7 @@ SELECT * WHERE
 }";
 
                 Graph weightings = new Graph();
-                weightings.LoadFromEmbeddedResource("VDS.RDF.Test.Sparql.SampleWeightings.n3, dotNetRDF.041.Test");
+                weightings.LoadFromEmbeddedResource("VDS.RDF.Test.Sparql.SampleWeightings.n3, dotNetRDF.Test");
                 SparqlOptimiser.QueryOptimiser = new WeightedOptimiser(weightings);
 
                 SparqlQuery q = this._parser.ParseFromString(query);
@@ -208,7 +208,7 @@ SELECT * WHERE
 }";
 
                 Graph weightings = new Graph();
-                weightings.LoadFromEmbeddedResource("VDS.RDF.Test.Sparql.SampleWeightings.n3, dotNetRDF.041.Test");
+                weightings.LoadFromEmbeddedResource("VDS.RDF.Test.Sparql.SampleWeightings.n3, dotNetRDF.Test");
                 SparqlOptimiser.QueryOptimiser = new WeightedOptimiser(weightings);
 
                 SparqlQuery q = this._parser.ParseFromString(query);
@@ -238,7 +238,7 @@ SELECT * WHERE
 }";
 
                 Graph weightings = new Graph();
-                weightings.LoadFromEmbeddedResource("VDS.RDF.Test.Sparql.SampleWeightings.n3, dotNetRDF.041.Test");
+                weightings.LoadFromEmbeddedResource("VDS.RDF.Test.Sparql.SampleWeightings.n3, dotNetRDF.Test");
                 SparqlOptimiser.QueryOptimiser = new WeightedOptimiser(weightings);
 
                 SparqlQuery q = this._parser.ParseFromString(query);

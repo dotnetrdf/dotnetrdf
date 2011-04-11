@@ -22,7 +22,7 @@ namespace VDS.RDF.Test.Storage
                             VirtuosoTestPassword = "dba";
 
         [TestMethod]
-        public void VirtuosoLoadGraph()
+        public void StorageVirtuosoLoadGraph()
         {
             NTriplesFormatter formatter = new NTriplesFormatter();
             try
@@ -91,7 +91,7 @@ namespace VDS.RDF.Test.Storage
         }
 
         [TestMethod]
-        public void VirtuosoSaveGraph()
+        public void StorageVirtuosoSaveGraph()
         {
             NTriplesFormatter formatter = new NTriplesFormatter();
             try
@@ -169,7 +169,7 @@ namespace VDS.RDF.Test.Storage
         }
 
         [TestMethod]
-        public void VirtuosoDataTypes()
+        public void StorageVirtuosoDataTypes()
         {
             VirtuosoManager manager = new VirtuosoManager("DB", VirtuosoTestUsername, VirtuosoTestPassword);
             Assert.IsNotNull(manager);
@@ -191,7 +191,7 @@ namespace VDS.RDF.Test.Storage
         }
 
         [TestMethod]
-        public void VirtuosoDeleteGraph()
+        public void StorageVirtuosoDeleteGraph()
         {
             try
             {
@@ -254,7 +254,7 @@ namespace VDS.RDF.Test.Storage
         }
 
         [TestMethod]
-        public void VirtuosoBlankNodePersistence()
+        public void StorageVirtuosoBlankNodePersistence()
         {
             try
             {
@@ -342,7 +342,7 @@ namespace VDS.RDF.Test.Storage
         /// </summary>
         /// <remarks>Excluded from Unit Tests because while this works it takes an extremely long time since the Default Graph will potentially have a very large number of Triples and the Virtuoso Manager only reads in a single threaded manner</remarks>
         //[TestMethod]
-        public void VirtuosoDefaultGraph()
+        public void StorageVirtuosoDefaultGraph()
         {
             Stopwatch timer = new Stopwatch();
             try
@@ -381,7 +381,7 @@ namespace VDS.RDF.Test.Storage
         }
 
         [TestMethod]
-        public void VirtuosoUpdateGraph()
+        public void StorageVirtuosoUpdateGraph()
         {
             try
             {
@@ -428,7 +428,7 @@ namespace VDS.RDF.Test.Storage
         }
 
         [TestMethod]
-        public void VirtuosoNativeQuery()
+        public void StorageVirtuosoNativeQuery()
         {
             NTriplesFormatter formatter = new NTriplesFormatter();
             try
@@ -533,7 +533,7 @@ namespace VDS.RDF.Test.Storage
         }
 
         [TestMethod]
-        public void VirtuosoNativeUpdate()
+        public void StorageVirtuosoNativeUpdate()
         {
             try
             {
@@ -580,7 +580,7 @@ namespace VDS.RDF.Test.Storage
         }
 
         [TestMethod]
-        public void VirtuosoEncoding()
+        public void StorageVirtuosoEncoding()
         {
             //Get the Virtuoso Manager
             VirtuosoManager manager = new VirtuosoManager("DB", VirtuosoTestUsername, VirtuosoTestPassword);

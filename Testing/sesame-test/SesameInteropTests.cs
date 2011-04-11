@@ -14,7 +14,7 @@ namespace sesame_test
     public class SesameInteropTests
     {
         [TestMethod]
-        public void SesameInteropContextsForVirtuoso()
+        public void InteropSesameContextsForVirtuoso()
         {
             VirtuosoManager virtuoso = new VirtuosoManager("DB", "dba", "dba");
 
@@ -32,7 +32,7 @@ namespace sesame_test
         }
 
         [TestMethod]
-        public void SesameInteropLoadFromVirtuoso()
+        public void InteropSesameLoadFromVirtuoso()
         {
             VirtuosoManager virtuoso = new VirtuosoManager("DB", "dba", "dba");
 

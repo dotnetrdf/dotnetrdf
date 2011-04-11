@@ -21,7 +21,7 @@ namespace VDS.RDF.Test.Storage
         private NTriplesFormatter _formatter = new NTriplesFormatter();
 
         [TestMethod]
-        public void FourStoreSaveGraph()
+        public void StorageFourStoreSaveGraph()
         {
             Graph g = new Graph();
             FileLoader.Load(g, "InferenceTest.ttl");
@@ -37,9 +37,9 @@ namespace VDS.RDF.Test.Storage
         }
 
         [TestMethod]
-        public void FourStoreLoadGraph()
+        public void StorageFourStoreLoadGraph()
         {
-            FourStoreSaveGraph();
+            StorageFourStoreSaveGraph();
 
             Graph g = new Graph();
             FileLoader.Load(g, "InferenceTest.ttl");
@@ -54,9 +54,9 @@ namespace VDS.RDF.Test.Storage
         }
 
         [TestMethod]
-        public void FourStoreDeleteGraph()
+        public void StorageFourStoreDeleteGraph()
         {
-            FourStoreSaveGraph();
+            StorageFourStoreSaveGraph();
 
             FourStoreConnector fourstore = new FourStoreConnector(FourStoreTestUri);
             fourstore.DeleteGraph("http://example.org/4storeTest");
@@ -68,10 +68,10 @@ namespace VDS.RDF.Test.Storage
         }
 
         [TestMethod]
-        public void FourStoreAddTriples()
+        public void StorageFourStoreAddTriples()
         {
-            FourStoreDeleteGraph();
-            FourStoreSaveGraph();
+            StorageFourStoreDeleteGraph();
+            StorageFourStoreSaveGraph();
 
             Graph g = new Graph();
             List<Triple> ts = new List<Triple>();
@@ -86,9 +86,9 @@ namespace VDS.RDF.Test.Storage
         }
 
         [TestMethod]
-        public void FourStoreRemoveTriples()
+        public void StorageFourStoreRemoveTriples()
         {
-            FourStoreAddTriples();
+            StorageFourStoreAddTriples();
 
             Graph g = new Graph();
             List<Triple> ts = new List<Triple>();

@@ -412,7 +412,12 @@ namespace VDS.RDF.Storage
                     if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
                 }
 #endif
-                throw new RdfStorageException("A HTTP Error occurred while trying to delete a Graph from the Store", webEx);
+
+                //Don't throw the error if we get a 404 - this means we couldn't do a delete as the graph didn't exist to start with
+                if (webEx.Response == null || (webEx.Response != null && ((HttpWebResponse)webEx.Response).StatusCode != HttpStatusCode.NotFound))
+                {
+                    throw new RdfStorageException("A HTTP Error occurred while trying to delete a Graph from the Store", webEx);
+                }
             }
         }
 

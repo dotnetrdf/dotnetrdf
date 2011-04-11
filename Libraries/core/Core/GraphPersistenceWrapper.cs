@@ -396,7 +396,7 @@ namespace VDS.RDF
                 //Empty Graph so do a quick copy
                 foreach (Triple t in g.Triples)
                 {
-                    this.Assert(new Triple(Tools.CopyNode(t.Subject, this, keepOriginalGraphUri), Tools.CopyNode(t.Predicate, this, keepOriginalGraphUri), Tools.CopyNode(t.Object, this, keepOriginalGraphUri)));
+                    this.Assert(new Triple(Tools.CopyNode(t.Subject, this._g, keepOriginalGraphUri), Tools.CopyNode(t.Predicate, this._g, keepOriginalGraphUri), Tools.CopyNode(t.Object, this._g, keepOriginalGraphUri)));
                 }
             }
             else
@@ -418,7 +418,7 @@ namespace VDS.RDF
                     }
                     else
                     {
-                        s = Tools.CopyNode(t.Subject, this, keepOriginalGraphUri);
+                        s = Tools.CopyNode(t.Subject, this._g, keepOriginalGraphUri);
                     }
 
                     if (t.Predicate.NodeType == NodeType.Blank)
@@ -433,7 +433,7 @@ namespace VDS.RDF
                     }
                     else
                     {
-                        p = Tools.CopyNode(t.Predicate, this, keepOriginalGraphUri);
+                        p = Tools.CopyNode(t.Predicate, this._g, keepOriginalGraphUri);
                     }
 
                     if (t.Object.NodeType == NodeType.Blank)
@@ -448,7 +448,7 @@ namespace VDS.RDF
                     }
                     else
                     {
-                        o = Tools.CopyNode(t.Object, this, keepOriginalGraphUri);
+                        o = Tools.CopyNode(t.Object, this._g, keepOriginalGraphUri);
                     }
 
                     this.Assert(new Triple(s, p, o));

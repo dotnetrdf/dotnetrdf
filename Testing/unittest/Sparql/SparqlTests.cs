@@ -56,6 +56,8 @@ namespace VDS.RDF.Test.Sparql
             parser.Load(a, "list-3.srx");
             parser.Load(b, "list-3.srx.out");
 
+            a.Trim();
+            b.Trim();
             Assert.IsTrue(a.Equals(b));
 
             a = new SparqlResultSet();
@@ -63,6 +65,8 @@ namespace VDS.RDF.Test.Sparql
             parser.Load(a, "no-distinct-opt.srx");
             parser.Load(b, "no-distinct-opt.srx.out");
 
+            a.Trim();
+            b.Trim();
             Assert.IsTrue(a.Equals(b));
 
             a = new SparqlResultSet();
@@ -70,6 +74,8 @@ namespace VDS.RDF.Test.Sparql
             rdfparser.Load(a, "result-opt-3.ttl");
             parser.Load(b, "result-opt-3.ttl.out");
 
+            a.Trim();
+            b.Trim();
             Assert.IsTrue(a.Equals(b));
         }
 

@@ -17,7 +17,7 @@ namespace VDS.RDF.Test.Interop
     public class SemWebInteropTests
     {
         [TestMethod]
-        public void SemWebReadVia()
+        public void InteropSemWebReadVia()
         {
             MemoryStore mem = new MemoryStore();
             mem.Import(new N3Reader("InferenceTest.ttl"));
@@ -53,7 +53,7 @@ namespace VDS.RDF.Test.Interop
         }
 
         [TestMethod]
-        public void SemWebWriteVia()
+        public void InteropSemWebWriteVia()
         {
             Graph g = new Graph();
             FileLoader.Load(g, "InferenceTest.ttl");
@@ -73,7 +73,7 @@ namespace VDS.RDF.Test.Interop
         }
 
         [TestMethod]
-        public void SemWebGraphConversion()
+        public void InteropSemWebGraphConversion()
         {
             Graph g = new Graph();
             FileLoader.Load(g, "Turtle.ttl");
@@ -96,7 +96,7 @@ namespace VDS.RDF.Test.Interop
         }
 
         [TestMethod]
-        public void SemWebGraphSource()
+        public void InteropSemWebGraphSource()
         {
             Graph g = new Graph();
             //FileLoader.Load(g, "InferenceTest.ttl");
@@ -137,7 +137,7 @@ namespace VDS.RDF.Test.Interop
         }
 
         [TestMethod]
-        public void SemWebInMemoryStoreSource()
+        public void InteropSemWebInMemoryStoreSource()
         {
             MicrosoftSqlStoreManager mssql = new MicrosoftSqlStoreManager("dotnetrdf_experimental", "sa", "20sQl08");
             InMemoryStoreSource source = new InMemoryStoreSource(new SqlTripleStore(mssql));
@@ -178,7 +178,7 @@ namespace VDS.RDF.Test.Interop
         }
 
         [TestMethod]
-        public void SemWebInMemoryStoreConversion()
+        public void InteropSemWebInMemoryStoreConversion()
         {
             //Set up a Store and load 3 Graphs into it
             TripleStore store = new TripleStore();
@@ -218,7 +218,7 @@ namespace VDS.RDF.Test.Interop
         }
 
         [TestMethod]
-        public void SemWebGraphQuery() 
+        public void InteropSemWebGraphQuery() 
         {
             Graph g = new Graph();
             FileLoader.Load(g, "InferenceTest.ttl");
@@ -250,7 +250,7 @@ namespace VDS.RDF.Test.Interop
         }
 
         [TestMethod]
-        public void SemWebGraph()
+        public void InteropSemWebGraph()
         {
             Console.WriteLine("Testing using SemWeb as the underlying Storage for a Graph");
             MemoryStore mem = new MemoryStore();
@@ -287,7 +287,7 @@ namespace VDS.RDF.Test.Interop
         }
 
         [TestMethod]
-        public void SemWebNativeStore()
+        public void InteropSemWebNativeStore()
         {
             //Get the Talis Connection
             TalisPlatformConnector talis = new TalisPlatformConnector("rvesse-dev1", "rvesse", "4kn478wj");

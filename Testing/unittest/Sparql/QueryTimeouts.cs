@@ -12,7 +12,7 @@ namespace VDS.RDF.Test.Sparql
     [TestClass]
     public class QueryTimeouts
     {
-        private long[] _timeouts = new long[] { 50, 100, 250, 500, 1000, 2500, 5000, 10000 };
+        private long[] _timeouts = new long[] { 50, 100, 250, 500, 1000 };
         private SparqlQueryParser _parser = new SparqlQueryParser();
 
         private void TestProductTimeout(IGraph data, String query, bool useGlobal, int expectedResults)
@@ -68,6 +68,10 @@ namespace VDS.RDF.Test.Sparql
                     else
                     {
                         if (Options.QueryExecutionTimeout > 0 && t <= Options.QueryExecutionTimeout)
+                        {
+                            expected = t;
+                        }
+                        else if (Options.QueryExecutionTimeout == 0)
                         {
                             expected = t;
                         }

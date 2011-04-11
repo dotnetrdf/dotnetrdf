@@ -1013,14 +1013,22 @@ namespace VDS.RDF.Storage
                         if (r.HasValue("g"))
                         {
                             INode temp = r["g"];
-                            if (temp.NodeType == NodeType.Uri)
+                            try
                             {
-                                graphs.Add(((IUriNode)temp).Uri);
+                                if (temp.NodeType == NodeType.Uri)
+                                {
+                                    graphs.Add(((IUriNode)temp).Uri);
+                                }
+                                else if (temp.NodeType == NodeType.Literal)
+                                {
+                                    //HACK: Virtuoso wrongly returns Literals instead of URIs in the results for the above query
+                                    graphs.Add(new Uri(((ILiteralNode)temp).Value));
+                                }
                             }
-                            else if (temp.NodeType == NodeType.Literal)
+                            catch
                             {
-                                //HACK: Virtuoso wrongly returns Literals instead of URIs in the results for the above query
-                                graphs.Add(new Uri(((ILiteralNode)temp).Value));
+                                //HACK: Virtuoso has some special Graphs which have non-URI names so ignore these
+                                continue;
                             }
                         }
                     }
