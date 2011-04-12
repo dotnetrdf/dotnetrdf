@@ -161,7 +161,10 @@ namespace VDS.RDF.Query.Algebra
                             {
                                 if (context.InputMultiset.ContainsVariable(((BindPattern)this._triplePatterns[i]).VariableName)) throw new RdfQueryException("Cannot use a BIND assigment to BIND to a variable that has previously been declared");
                             }
-                            context.InputMultiset = new IdentityMultiset();
+                            else
+                            {
+                                context.InputMultiset = new IdentityMultiset();
+                            }
                         }
                     }
 

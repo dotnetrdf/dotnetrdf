@@ -3065,6 +3065,7 @@ namespace VDS.RDF.Parsing
         private void TryParseExistsClause(SparqlQueryParserContext context, GraphPattern p, bool exists)
         {
             if (context.SyntaxMode == SparqlQuerySyntax.Sparql_1_0) throw new RdfParseException("EXISTS and NOT EXISTS clauses are not supported in SPARQL 1.0");
+            if (context.SyntaxMode == SparqlQuerySyntax.Sparql_1_1) throw new RdfParseException("EXISTS and NOT EXISTS clauses can only be used inside FILTER clauses in SPARQL 1.1");
 
             //EXISTS and NOT EXISTS generate a new Child Graph Pattern
             GraphPattern child = this.TryParseGraphPattern(context);
@@ -3249,16 +3250,16 @@ namespace VDS.RDF.Parsing
 
                 if (Options.QueryOptimisation)
                 {
-                    p.UnplacedAssignments.Add(bind);
+                    p.AddAssignment(bind);
                 }
                 else
                 {
                     //When Optimisation is turned off we'll just stick the BIND in the Triples Pattern where it occurs
                     //since we're not going to do any Triple Pattern ordering, Assignment or FILTER placement
                     p.AddTriplePattern(bind);
+                    //In this case the BIND must break the BGP since using AddTriplePattern will not do it automatically
+                    p.BreakBGP();
                 }
-                //A BIND always breaks the BGP it occurs in
-                p.BreakBGP();
 
                 //Ensure the BIND assignment is terminated with a )
                 next = context.Tokens.Dequeue();

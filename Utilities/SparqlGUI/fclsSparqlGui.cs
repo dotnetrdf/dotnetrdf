@@ -633,5 +633,24 @@ namespace VDS.RDF.Utilities.Sparql
 
             return output.ToString();
         }
+
+        private void btnViewLog_Click(object sender, EventArgs e)
+        {
+            if (File.Exists(this._logfile))
+            {
+                try
+                {
+                    Process.Start(this._logfile);
+                }
+                catch
+                {
+                    MessageBox.Show("Error opening log file");
+                }
+            }
+            else
+            {
+                MessageBox.Show("Log File not found!");
+            }
+        }
     }
 }

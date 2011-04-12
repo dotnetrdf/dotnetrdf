@@ -149,6 +149,7 @@ namespace VDS.RDF.Query.Algebra
                             sparqlQuery.SetVariable(var, s[var]);
                         }
                         SparqlResultSet results = endpoint.QueryWithResultSet(sparqlQuery.ToString());
+                        context.CheckTimeout();
 
                         foreach (SparqlResult r in results)
                         {

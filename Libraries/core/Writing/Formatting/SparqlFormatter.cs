@@ -417,13 +417,13 @@ namespace VDS.RDF.Writing.Formatting
                 {
                     output.AppendLineIndented(this.Format(tp), 2);
                 }
-                foreach (GraphPattern child in gp.ChildGraphPatterns)
-                {
-                    output.AppendLineIndented(this.Format(child), 2);
-                }
                 foreach (IAssignmentPattern ap in gp.UnplacedAssignments)
                 {
                     output.AppendLineIndented(this.Format(ap), 2);
+                }
+                foreach (GraphPattern child in gp.ChildGraphPatterns)
+                {
+                    output.AppendLineIndented(this.Format(child), 2);
                 }
                 foreach (ISparqlFilter fp in gp.UnplacedFilters)
                 {

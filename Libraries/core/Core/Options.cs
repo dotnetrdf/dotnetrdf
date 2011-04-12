@@ -87,7 +87,7 @@ namespace VDS.RDF
         private static bool _fullIndexing = true;
         private static bool _queryOptimisation = true;
         private static bool _algebraOptimisation = true;
-        private static SparqlQuerySyntax _queryDefaultSyntax = SparqlQuerySyntax.Extended;
+        private static SparqlQuerySyntax _queryDefaultSyntax = SparqlQuerySyntax.Sparql_1_1;
         private static bool _queryAllowUnknownFunctions = true;
         private static bool _uriLoaderCaching = true;
         private static int _uriLoaderTimeout = 15000;

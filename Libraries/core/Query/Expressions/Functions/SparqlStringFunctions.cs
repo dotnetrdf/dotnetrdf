@@ -289,9 +289,8 @@ namespace VDS.RDF.Query.Expressions.Functions
         public override string ToString()
         {
             StringBuilder output = new StringBuilder();
-            output.Append('<');
             output.Append(SparqlSpecsHelper.SparqlKeywordConcat);
-            output.Append(">(");
+            output.Append('(');
             for (int i = 0; i < this._exprs.Count; i++)
             {
                 output.Append(this._exprs[i].ToString());

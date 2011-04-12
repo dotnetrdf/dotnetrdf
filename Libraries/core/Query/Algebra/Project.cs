@@ -319,24 +319,25 @@ namespace VDS.RDF.Query.Algebra
         {
             context.InputMultiset = this._pattern.Evaluate(context);
 
-            IEnumerable<SparqlVariable> vars;
+            HashSet<SparqlVariable> vars;
             if (context.Query != null)
             {
-                vars = context.Query.Variables;
+                vars = new HashSet<SparqlVariable>(context.Query.Variables);
             }
             else
             {
-                vars = this._variables;
+                vars = new HashSet<SparqlVariable>(this._variables);
             }
 
             //Trim Variables that aren't being SELECTed
-            if (vars.Any(v => !v.IsResultVariable))
+            foreach (String var in context.InputMultiset.Variables.ToList())
             {
-                List<String> removableVars = vars.Where(v => !v.IsResultVariable).Select(v => v.Name).ToList();
-                foreach (String v in removableVars)
+                if (!vars.Any(v => v.Name.Equals(var) && v.IsResultVariable))
                 {
-                    context.InputMultiset.Trim(v);
+                    //If not a Result variable then trim from results
+                    context.InputMultiset.Trim(var);
                 }
+
             }
 
             context.OutputMultiset = context.InputMultiset;

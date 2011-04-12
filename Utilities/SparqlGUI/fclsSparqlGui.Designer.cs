@@ -48,6 +48,7 @@
             this.txtQuery = new System.Windows.Forms.TextBox();
             this.ofdBrowse = new System.Windows.Forms.OpenFileDialog();
             this.grpQueryOptions = new System.Windows.Forms.GroupBox();
+            this.chkUseUtf8Bom = new System.Windows.Forms.CheckBox();
             this.chkViewResultsInApp = new System.Windows.Forms.CheckBox();
             this.chkAlgebraOptimisation = new System.Windows.Forms.CheckBox();
             this.chkQueryOptimisation = new System.Windows.Forms.CheckBox();
@@ -72,7 +73,7 @@
             this.ofdQuery = new System.Windows.Forms.OpenFileDialog();
             this.sfdQuery = new System.Windows.Forms.SaveFileDialog();
             this.ttpTips = new System.Windows.Forms.ToolTip(this.components);
-            this.chkUseUtf8Bom = new System.Windows.Forms.CheckBox();
+            this.btnViewLog = new System.Windows.Forms.Button();
             this.grpDataset.SuspendLayout();
             this.grpQuery.SuspendLayout();
             this.grpQueryOptions.SuspendLayout();
@@ -184,6 +185,7 @@
             // 
             // grpQuery
             // 
+            this.grpQuery.Controls.Add(this.btnViewLog);
             this.grpQuery.Controls.Add(this.btnSaveQuery);
             this.grpQuery.Controls.Add(this.btnLoad);
             this.grpQuery.Controls.Add(this.btnInspect);
@@ -199,7 +201,7 @@
             // btnSaveQuery
             // 
             this.btnSaveQuery.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.btnSaveQuery.Location = new System.Drawing.Point(214, 315);
+            this.btnSaveQuery.Location = new System.Drawing.Point(173, 315);
             this.btnSaveQuery.Name = "btnSaveQuery";
             this.btnSaveQuery.Size = new System.Drawing.Size(75, 23);
             this.btnSaveQuery.TabIndex = 4;
@@ -210,7 +212,7 @@
             // btnLoad
             // 
             this.btnLoad.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.btnLoad.Location = new System.Drawing.Point(133, 315);
+            this.btnLoad.Location = new System.Drawing.Point(92, 315);
             this.btnLoad.Name = "btnLoad";
             this.btnLoad.Size = new System.Drawing.Size(75, 23);
             this.btnLoad.TabIndex = 3;
@@ -221,7 +223,7 @@
             // btnInspect
             // 
             this.btnInspect.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.btnInspect.Location = new System.Drawing.Point(375, 315);
+            this.btnInspect.Location = new System.Drawing.Point(334, 315);
             this.btnInspect.Name = "btnInspect";
             this.btnInspect.Size = new System.Drawing.Size(75, 23);
             this.btnInspect.TabIndex = 2;
@@ -232,7 +234,7 @@
             // btnQuery
             // 
             this.btnQuery.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.btnQuery.Location = new System.Drawing.Point(295, 315);
+            this.btnQuery.Location = new System.Drawing.Point(254, 315);
             this.btnQuery.Name = "btnQuery";
             this.btnQuery.Size = new System.Drawing.Size(75, 23);
             this.btnQuery.TabIndex = 1;
@@ -272,6 +274,21 @@
             this.grpQueryOptions.TabIndex = 3;
             this.grpQueryOptions.TabStop = false;
             this.grpQueryOptions.Text = "Query Options";
+            // 
+            // chkUseUtf8Bom
+            // 
+            this.chkUseUtf8Bom.AutoSize = true;
+            this.chkUseUtf8Bom.Checked = true;
+            this.chkUseUtf8Bom.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkUseUtf8Bom.Location = new System.Drawing.Point(6, 219);
+            this.chkUseUtf8Bom.Name = "chkUseUtf8Bom";
+            this.chkUseUtf8Bom.Size = new System.Drawing.Size(155, 17);
+            this.chkUseUtf8Bom.TabIndex = 10;
+            this.chkUseUtf8Bom.Text = "Use BOM for UTF-8 Output";
+            this.ttpTips.SetToolTip(this.chkUseUtf8Bom, "Disable this option if you plan to use data exported from this tool in non-Window" +
+                    "s tools that may have an issue with the UTF-8 BOM");
+            this.chkUseUtf8Bom.UseVisualStyleBackColor = true;
+            this.chkUseUtf8Bom.CheckedChanged += new System.EventHandler(this.chkUseUtf8Bom_CheckedChanged);
             // 
             // chkViewResultsInApp
             // 
@@ -539,20 +556,16 @@
             this.sfdQuery.Filter = "SPARQL Query Files|*.rq|All Files|*.*";
             this.sfdQuery.Title = "Load SPARQL Query";
             // 
-            // chkUseUtf8Bom
+            // btnViewLog
             // 
-            this.chkUseUtf8Bom.AutoSize = true;
-            this.chkUseUtf8Bom.Checked = true;
-            this.chkUseUtf8Bom.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkUseUtf8Bom.Location = new System.Drawing.Point(6, 219);
-            this.chkUseUtf8Bom.Name = "chkUseUtf8Bom";
-            this.chkUseUtf8Bom.Size = new System.Drawing.Size(155, 17);
-            this.chkUseUtf8Bom.TabIndex = 10;
-            this.chkUseUtf8Bom.Text = "Use BOM for UTF-8 Output";
-            this.ttpTips.SetToolTip(this.chkUseUtf8Bom, "Disable this option if you plan to use data exported from this tool in non-Window" +
-                    "s tools that may have an issue with the UTF-8 BOM");
-            this.chkUseUtf8Bom.UseVisualStyleBackColor = true;
-            this.chkUseUtf8Bom.CheckedChanged += new System.EventHandler(this.chkUseUtf8Bom_CheckedChanged);
+            this.btnViewLog.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.btnViewLog.Location = new System.Drawing.Point(415, 315);
+            this.btnViewLog.Name = "btnViewLog";
+            this.btnViewLog.Size = new System.Drawing.Size(75, 23);
+            this.btnViewLog.TabIndex = 5;
+            this.btnViewLog.Text = "View Log";
+            this.btnViewLog.UseVisualStyleBackColor = true;
+            this.btnViewLog.Click += new System.EventHandler(this.btnViewLog_Click);
             // 
             // fclsSparqlGui
             // 
@@ -635,6 +648,7 @@
         private System.Windows.Forms.ToolTip ttpTips;
         private System.Windows.Forms.CheckBox chkViewResultsInApp;
         private System.Windows.Forms.CheckBox chkUseUtf8Bom;
+        private System.Windows.Forms.Button btnViewLog;
     }
 }
 
