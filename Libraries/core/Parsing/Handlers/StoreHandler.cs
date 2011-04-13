@@ -46,7 +46,6 @@ namespace VDS.RDF.Parsing.Handlers
         private bool _inUse = false;
         private NodeFactory _factory;
         private ITripleStore _store;
-        private Dictionary<INode, INode> _mapping;
 
         public StoreHandler(ITripleStore store)
         {
@@ -60,14 +59,12 @@ namespace VDS.RDF.Parsing.Handlers
         public void StartRdf()
         {
             if (this._inUse) throw new RdfParseException("Cannot use this StoreHandler as an RDF Handler for parsing as it is already in-use");
-            this._mapping = new Dictionary<INode, INode>();
             this._inUse = true;
         }
 
         public void EndRdf(bool ok)
         {
             if (!this._inUse) throw new RdfParseException("Cannot End RDF Handling as this RDF Handler is not currently in-use");
-            this._mapping = null;
             this._inUse = false;
         }
 
@@ -94,43 +91,8 @@ namespace VDS.RDF.Parsing.Handlers
                 this._store.Add(g);
             }
             IGraph target = this._store.Graph(t.GraphUri);
-            if (t.IsGroundTriple)
-            {
-                target.Assert(t.CopyTriple(target));
-            }
-            else
-            {
-                //REQ: Add some tests to see if this is necessary or can be discarded
-                this.PopulateMapping(t);
-                target.Assert(t.MapTriple(target, this._mapping));
-            }
-
+            target.Assert(t.CopyTriple(target));
             return true;
-        }
-
-        private void PopulateMapping(Triple t)
-        {
-            this.PopulateMapping(t.Subject);
-            this.PopulateMapping(t.Predicate);
-            this.PopulateMapping(t.Object);
-        }
-
-        private void PopulateMapping(INode n)
-        {
-            if (n.NodeType != NodeType.Blank) return;
-
-            if (!this._mapping.ContainsKey(n))
-            {
-                try
-                {
-                    Monitor.Enter(this._mapping);
-                    this._mapping.Add(n, this.CreateBlankNode());
-                }
-                finally
-                {
-                    Monitor.Exit(this._mapping);
-                }
-            }
         }
 
         #endregion

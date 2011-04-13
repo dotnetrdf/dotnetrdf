@@ -131,6 +131,7 @@
     <Compile Include="Parsing\Handlers\MultiHandlerTests.cs" />
     <Compile Include="Parsing\Handlers\PagingHandlerTests.cs" />
     <Compile Include="Parsing\Handlers\ResultSetHandlerTests.cs" />
+    <Compile Include="Parsing\Handlers\StoreHandlerBlankNodeTests.cs" />
     <Compile Include="Parsing\Handlers\StoreHandlerTests.cs" />
     <Compile Include="Parsing\Handlers\WriteThroughHandlerTests.cs" />
     <Compile Include="Parsing\Handlers\WriteToStoreHandlerTests.cs" />
@@ -142,6 +143,7 @@
     <Compile Include="Sparql\ConstructWithOptionalTests.cs" />
     <Compile Include="Sparql\DataTableTests.cs" />
     <Compile Include="Sparql\DefaultGraphTests2.cs" />
+    <Compile Include="Sparql\FilterPlacementTests.cs" />
     <Compile Include="Sparql\NegationTests.cs" />
     <Compile Include="Sparql\OptimiserTests.cs" />
     <Compile Include="Sparql\QueryThreadSafety.cs" />

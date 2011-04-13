@@ -41,6 +41,7 @@ using System.Text;
 using VDS.RDF.Storage.Params;
 
 //SLV: Implement a version of the UriLoader that makes the requests asynchronously?
+//REQ: Add support for loading from a URI directly to an IRdfHandler
 
 namespace VDS.RDF.Parsing
 {

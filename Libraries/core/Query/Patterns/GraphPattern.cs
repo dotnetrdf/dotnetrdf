@@ -77,7 +77,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Adds a Triple Pattern to the Graph Pattern
+        /// Adds a Triple Pattern to the Graph Pattern respecting any BGP breaks
         /// </summary>
         /// <param name="p">Triple Pattern</param>
         internal void AddTriplePattern(ITriplePattern p)
@@ -101,6 +101,10 @@ namespace VDS.RDF.Query.Patterns
             }
         }
 
+        /// <summary>
+        /// Adds an Assignment to the Graph Pattern respecting any BGP breaks
+        /// </summary>
+        /// <param name="p">Assignment Pattern</param>
         internal void AddAssignment(IAssignmentPattern p)
         {
             if (this._break)
@@ -124,9 +128,18 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Adds a child Graph Pattern to the Graph Pattern
+        /// Adds a Filter to the Graph Pattern respecting any BGP breaks
         /// </summary>
-        /// <param name="p"></param>
+        /// <param name="filter">Filter</param>
+        internal void AddFilter(ISparqlFilter filter)
+        {
+            this._unplacedFilters.Add(filter);
+        }
+
+        /// <summary>
+        /// Adds a child Graph Pattern to the Graph Pattern respecting any BGP breaks
+        /// </summary>
+        /// <param name="p">Graph Pattern</param>
         internal void AddGraphPattern(GraphPattern p)
         {
             if (this._break)
@@ -497,9 +510,9 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets the list of Filters that apply to this Graph Pattern which will be placed appropriately later
+        /// Gets the enumeration of Filters that apply to this Graph Pattern which will have yet to be placed within the Graph Pattern
         /// </summary>
-        internal List<ISparqlFilter> UnplacedFilters
+        public IEnumerable<ISparqlFilter> UnplacedFilters
         {
             get
             {
@@ -508,9 +521,9 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets the list of LET assignments that are in this Graph Pattern which will be placed appropriately later
+        /// Gets the enumeration of LET assignments that are in this Graph Pattern which will be placed appropriately later
         /// </summary>
-        internal List<IAssignmentPattern> UnplacedAssignments
+        public IEnumerable<IAssignmentPattern> UnplacedAssignments
         {
             get
             {
@@ -554,12 +567,12 @@ namespace VDS.RDF.Query.Patterns
 
         public void Optimise(IQueryOptimiser optimiser)
         {
-            optimiser.Optimise(this, Enumerable.Empty<String>(), this._unplacedFilters, this._unplacedAssignments);
+            optimiser.Optimise(this, Enumerable.Empty<String>());
         }
 
         public void Optimise(IQueryOptimiser optimiser, IEnumerable<String> vars)
         {
-            optimiser.Optimise(this, vars, this._unplacedFilters, this._unplacedAssignments);
+            optimiser.Optimise(this, vars);
         }
 
         #endregion

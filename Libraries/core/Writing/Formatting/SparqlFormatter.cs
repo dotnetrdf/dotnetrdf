@@ -410,7 +410,7 @@ namespace VDS.RDF.Writing.Formatting
                 output.Append("MINUS ");
             }
 
-            if (gp.TriplePatterns.Count > 1 || gp.HasChildGraphPatterns || (gp.TriplePatterns.Count <= 1 && gp.Filter != null) || gp.UnplacedAssignments.Count > 0 || gp.UnplacedFilters.Count > 0)
+            if (gp.TriplePatterns.Count > 1 || gp.HasChildGraphPatterns || (gp.TriplePatterns.Count <= 1 && gp.Filter != null) || gp.UnplacedAssignments.Count() > 0 || gp.UnplacedFilters.Count() > 0)
             {
                 output.AppendLine("{");
                 foreach (ITriplePattern tp in gp.TriplePatterns)

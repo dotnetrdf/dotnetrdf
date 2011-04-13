@@ -46,6 +46,7 @@ using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Functions;
 using VDS.RDF.Query.Filters;
 using VDS.RDF.Query.Grouping;
+using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Query.Ordering;
 using VDS.RDF.Query.Patterns;
 using VDS.RDF.Query.Paths;
@@ -73,11 +74,10 @@ namespace VDS.RDF.Parsing
         /// Extensions include the following:
         /// </para>
         /// <ul>
-        /// <li><strong>LET</strong> assignments</li>
-        /// <li>Additional aggregates - <strong>NMAX</strong>, <strong>NMIN</strong>, <strong>MEDIAN</strong> and <strong>MODE</strong></li>
-        /// <li><strong>UNSAID</strong> alias for <strong>NOT EXISTS</strong></li>
-        /// <li>Most of the XPath Function Library for Strings and Numerics supported</li>
-        /// <li>Most of the ARQ (Jena's SPARQL engine) Function Library supported</li>
+        /// <li><strong>LET</strong> assignments (we recommend using the SPARQL 1.1 standards BIND instead)</li>
+        /// <li>Additional aggregates - <strong>NMAX</strong>, <strong>NMIN</strong>, <strong>MEDIAN</strong> and <strong>MODE</strong> (we recommend using the Leviathan Function Library URIs for these instead to make them usable in SPARQL 1.1 mode)</li>
+        /// <li><strong>UNSAID</strong> alias for <strong>NOT EXISTS</strong> (we recommend using the SPARQL 1.1 standard NOT EXISTS instead</li>
+        /// <li><strong>EXISTS</strong> and <strong>NOT EXISTS</strong> are permitted as Graph Patterns (only allowed in FILTERs in SPARQL 1.1)</li>
         /// </ul>
         /// </remarks>
         Extended
@@ -93,6 +93,7 @@ namespace VDS.RDF.Parsing
         private Uri _defaultBaseUri = null;
         private SparqlQuerySyntax _syntax = Options.QueryDefaultSyntax;
         private IEnumerable<ISparqlCustomExpressionFactory> _factories = Enumerable.Empty<ISparqlCustomExpressionFactory>();
+        private IQueryOptimiser _optimiser = null;
 
         #region Constructors and Properties
 
@@ -187,6 +188,30 @@ namespace VDS.RDF.Parsing
                 {
                     this._factories = value;
                 }
+                else
+                {
+                    this._factories = Enumerable.Empty<ISparqlCustomExpressionFactory>();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets/Sets the locally scoped Query Optimiser applied to queries at the end of the parsing process
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// May be null if no locally scoped optimiser is set in which case the globally scoped optimiser will be used
+        /// </para>
+        /// </remarks>
+        public IQueryOptimiser QueryOptimiser
+        {
+            get
+            {
+                return this._optimiser;
+            }
+            set
+            {
+                this._optimiser = value;
             }
         }
 
@@ -543,8 +568,15 @@ namespace VDS.RDF.Parsing
             //Optimise the Query if the global option is enabled
             if (Options.QueryOptimisation)
             {
-                //REQ: If a locally scoped optimiser is available use that instead
-                context.Query.Optimise();
+                //If a locally scoped optimiser is available use that
+                if (this._optimiser != null)
+                {
+                    context.Query.Optimise(this._optimiser);
+                }
+                else
+                {
+                    context.Query.Optimise();
+                }
             }
 
             return context.Query;
@@ -2236,7 +2268,7 @@ namespace VDS.RDF.Parsing
         {
             UnaryExpressionFilter filter = new UnaryExpressionFilter(this.TryParseExpression(context, false));
             p.IsFiltered = true;
-            p.UnplacedFilters.Add(filter);
+            p.AddFilter(filter);
         }
 
         private void TryParseFilterBuiltInCall(SparqlQueryParserContext context, IToken t, GraphPattern p)
@@ -2281,7 +2313,7 @@ namespace VDS.RDF.Parsing
             }
 
             p.IsFiltered = true;
-            p.UnplacedFilters.Add(filter);
+            p.AddFilter(filter);
         }
 
         private void TryParseFilterRegex(SparqlQueryParserContext context, IToken t, GraphPattern p)
@@ -2311,7 +2343,7 @@ namespace VDS.RDF.Parsing
 
             UnaryExpressionFilter filter = new UnaryExpressionFilter(context.ExpressionParser.Parse(regexTokens));
             p.IsFiltered = true;
-            p.UnplacedFilters.Add(filter);
+            p.AddFilter(filter);
         }
 
         private void TryParseFilterExists(SparqlQueryParserContext context, GraphPattern p, bool exists)
@@ -2323,7 +2355,7 @@ namespace VDS.RDF.Parsing
 
             UnaryExpressionFilter filter = new UnaryExpressionFilter(new ExistsFunction(existsClause, exists));
             p.IsFiltered = true;
-            p.UnplacedFilters.Add(filter);
+            p.AddFilter(filter);
         }
 
         private void TryParseFilterFunctionCall(SparqlQueryParserContext context, IToken t, GraphPattern p)
@@ -2353,7 +2385,7 @@ namespace VDS.RDF.Parsing
 
             UnaryExpressionFilter filter = new UnaryExpressionFilter(context.ExpressionParser.Parse(funcTokens));
             p.IsFiltered = true;
-            p.UnplacedFilters.Add(filter);
+            p.AddFilter(filter);
         }
 
         private void TryParseOptionalClause(SparqlQueryParserContext context, GraphPattern p)
@@ -3192,7 +3224,7 @@ namespace VDS.RDF.Parsing
                         LetPattern let = new LetPattern(variable.Value.Substring(1), expr);
                         if (Options.QueryOptimisation)
                         {
-                            p.UnplacedAssignments.Add(let);
+                            p.AddAssignment(let);
                         }
                         else
                         {

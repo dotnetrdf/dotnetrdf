@@ -173,6 +173,7 @@ namespace VDS.RDF.Query
         private bool? _optimisableOrdering;
         private bool _subquery = false;
         private ISparqlDescribe _describer = null;
+        private IEnumerable<IAlgebraOptimiser> _optimisers = Enumerable.Empty<IAlgebraOptimiser>();
 
         /// <summary>
         /// Creates a new SPARQL Query
@@ -457,6 +458,28 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
+        /// Gets/Sets the locally scoped Algebra Optimisers that are used to optimise the Query Algebra in addition to (but before) any global optimisers (specified by <see cref="SparqlOptimiser.AlgebraOptimisers">SparqlOptimiser.AlgebraOptimisers</see>) that are applied
+        /// </summary>
+        public IEnumerable<IAlgebraOptimiser> AlgebraOptimisers
+        {
+            get
+            {
+                return this._optimisers;
+            }
+            set
+            {
+                if (value != null)
+                {
+                    this._optimisers = value;
+                }
+                else
+                {
+                    this._optimisers = Enumerable.Empty<IAlgebraOptimiser>();
+                }
+            }
+        }
+
+        /// <summary>
         /// Gets the Result Set Limit for the Query
         /// </summary>
         /// <remarks>Values less than zero are counted as -1 which indicates no limit</remarks>
@@ -589,6 +612,10 @@ namespace VDS.RDF.Query
             }
         }
 
+        /// <summary>
+        /// Gets the Time taken to execute a Query
+        /// </summary>
+        /// <exception cref="InvalidOperationException">Thrown if you try and inspect the execution time before the Query has been executed</exception>
         public TimeSpan? QueryExecutionTime
         {
             get
@@ -934,18 +961,23 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Applies optimisation to a Query if it has not already been optimised
+        /// Applies optimisation to a Query using the default global optimiser
         /// </summary>
         public void Optimise()
         {
             this.Optimise(SparqlOptimiser.QueryOptimiser);
         }
 
+        /// <summary>
+        /// Applies optimisation to a Query using the specific optimiser
+        /// </summary>
+        /// <param name="optimiser">Query Optimiser</param>
         public void Optimise(IQueryOptimiser optimiser)
         {
+            if (optimiser == null) throw new ArgumentNullException("Cannot optimise a Query using a null optimiser");
             if (this._rootGraphPattern != null)
             {
-                optimiser.Optimise(this._rootGraphPattern, Enumerable.Empty<String>(), this._rootGraphPattern.UnplacedFilters, this._rootGraphPattern.UnplacedAssignments);
+                optimiser.Optimise(this._rootGraphPattern, Enumerable.Empty<String>());
             }
 
             this._optimised = true;
@@ -1346,10 +1378,26 @@ namespace VDS.RDF.Query
             }
         }
 
+        /// <summary>
+        /// Applies Algebra Optimisations to the Query
+        /// </summary>
+        /// <param name="algebra">Query Algebra</param>
+        /// <returns>The Query Algebra which may have been transformed to a more optimal form</returns>
         private ISparqlAlgebra ApplyAlgebraOptimisations(ISparqlAlgebra algebra)
         {
-            //REQ: Add support for locally scoped Optimisers
-
+            //Apply Local Optimisers
+            foreach (IAlgebraOptimiser opt in this._optimisers.Where(o => o.IsApplicable(this)))
+            {
+                try
+                {
+                    algebra = opt.Optimise(algebra);
+                }
+                catch
+                {
+                    //Ignore errors - if an optimiser errors then we leave the algebra unchanged
+                }
+            }
+            //Apply Global Optimisers
             foreach (IAlgebraOptimiser opt in SparqlOptimiser.AlgebraOptimisers.Where(o => o.IsApplicable(this)))
             {
                 try
@@ -1358,7 +1406,7 @@ namespace VDS.RDF.Query
                 }
                 catch
                 {
-                    //Ignore errors
+                    //Ignore errors - if an optimiser errors then we leave the algebra unchanged
                 }
             }
             return algebra;

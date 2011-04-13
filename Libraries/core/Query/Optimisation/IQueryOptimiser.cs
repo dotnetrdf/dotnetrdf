@@ -52,8 +52,6 @@ namespace VDS.RDF.Query.Optimisation
         /// </summary>
         /// <param name="gp">Graph Pattern</param>
         /// <param name="vars">Variables that are present prior to the pattern</param>
-        /// <param name="unplacedFilters">Filters which require placement</param>
-        /// <param name="unplacedAssignments">Assignments which require placement</param>
-        void Optimise(GraphPattern gp, IEnumerable<String> vars, IEnumerable<ISparqlFilter> unplacedFilters, IEnumerable<IAssignmentPattern> unplacedAssignments);
+        void Optimise(GraphPattern gp, IEnumerable<String> vars);
     }
 }

@@ -33,6 +33,8 @@ terms.
 
 */
 
+//REQ: Add support for loading from a File directly to an IRdfHandler
+
 using System;
 using System.Collections.Generic;
 using System.Linq;

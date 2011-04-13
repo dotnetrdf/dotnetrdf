@@ -56,7 +56,7 @@ namespace VDS.RDF.Query.Optimisation
         /// Causes the Graph Pattern to be optimised if it isn't already
         /// </summary>
         /// <param name="variables">Variables that have occurred prior to this Pattern</param>
-        public void Optimise(GraphPattern gp, IEnumerable<String> variables, IEnumerable<ISparqlFilter> unplacedFilters, IEnumerable<IAssignmentPattern> unplacedAssignments)
+        public void Optimise(GraphPattern gp, IEnumerable<String> variables)
         {
             //Our Variables is initially only those in our Triple Patterns since
             //anything else is considered to be out of scope
@@ -123,11 +123,11 @@ namespace VDS.RDF.Query.Optimisation
             {
                 //First we need to place Assignments (LETs) in appropriate places within the Pattern
                 //This happens before Filter placement since Filters may use variables assigned to in LETs
-                if (unplacedAssignments.Any())
+                if (gp.UnplacedAssignments.Any())
                 {
                     //Need to ensure that we sort Assignments
                     //This way those that use fewer variables get placed first
-                    List<IAssignmentPattern> ps = unplacedAssignments.OrderBy(x => x).ToList();
+                    List<IAssignmentPattern> ps = gp.UnplacedAssignments.OrderBy(x => x).ToList();
 
                     //This next bit goes in a do loop as we want to keep attempting to place assignments while
                     //we are able to do so.  If the count of unplaced assignments has decreased but is not
@@ -160,7 +160,7 @@ namespace VDS.RDF.Query.Optimisation
             }
 
             //Regardless of what we've placed already we now place all remaining assignments
-            foreach (IAssignmentPattern assignment in unplacedAssignments.ToList())
+            foreach (IAssignmentPattern assignment in gp.UnplacedAssignments.ToList())
             {
                 gp.InsertAssignment(assignment, gp.TriplePatterns.Count);
             }
@@ -168,18 +168,16 @@ namespace VDS.RDF.Query.Optimisation
             if (this.ShouldPlaceFilters)
             {
                 //Then we need to place the Filters in appropriate places within the Pattern
-                if (unplacedFilters.Any())
+                if (gp.UnplacedFilters.Any())
                 {
                     if (gp.TriplePatterns.Count == 0)
                     {
                         //Where there are no Triple Patterns the Graph Pattern just contains this Filter and possibly some
-                        //child Graph Patterns.  In such a case all Patterns shold be applied post-commit
-                        //We do nothing here and the next bit of code automatically sets the Filters to the 
-                        //Graph Pattern
+                        //child Graph Patterns.  In such a case then we shouldn't place the Filters
                     }
                     else
                     {
-                        foreach (ISparqlFilter f in unplacedFilters.ToList())
+                        foreach (ISparqlFilter f in gp.UnplacedFilters.ToList())
                         {
                             this.TryPlaceFilter(gp, f);
                         }

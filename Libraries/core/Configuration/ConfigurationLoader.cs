@@ -15,6 +15,8 @@ namespace VDS.RDF.Configuration
     /// </remarks>
     public static class ConfigurationLoader
     {
+        //REQ: Add support for specifying Optimisers
+
         #region Constants
 
         /// <summary>

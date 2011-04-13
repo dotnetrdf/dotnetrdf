@@ -539,8 +539,7 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">URI of the Graph to delete</param>
         public void DeleteGraph(String graphUri)
         {
-            //throw new NotSupportedException("StardogConnector does not yet support deleting Graphs");
-
+            throw new NotSupportedException("Deleting Graphs from Stardog is currently not supportable via dotNetRDF due to an issue with .Net's restrictive URI escaping");
             String tID = null;
             try
             {
@@ -552,8 +551,7 @@ namespace VDS.RDF.Storage
                     throw new NotSupportedException("Stardog does not yet support deleting the Default Graph");
                 }
 
-                //HttpWebRequest request = this.CreateRequest(this._kb + "/" + tID + "/clear/" + Uri.EscapeDataString(graphUri), MimeTypesHelper.Any, "POST", new Dictionary<string,string>());
-                HttpWebRequest request = this.CreateRequest(this._kb + "/" + tID + "/clear/" + graphUri, MimeTypesHelper.Any, "POST", new Dictionary<string, string>());
+                HttpWebRequest request = this.CreateRequest(this._kb + "/" + tID + "/clear/" + Uri.EscapeDataString(graphUri), MimeTypesHelper.Any, "POST", new Dictionary<string,string>());
                 request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
 #if DEBUG
                 if (Options.HttpDebugging)
@@ -623,6 +621,7 @@ namespace VDS.RDF.Storage
         {
             get
             {
+                //BUG: Currently cannot support DeleteGraph on Stardog as .Net won't let me generate the necessary URI due to its restrictive escape handling
                 return false;
                 return true;
             }
