@@ -8,6 +8,7 @@ using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Storage;
 using VDS.Alexandria;
+using VDS.RDF.Parsing.Handlers;
 
 namespace alexandria_tests
 {
@@ -15,71 +16,71 @@ namespace alexandria_tests
     public class PerformanceTests
     {
         [TestMethod]
-        public void FSLargeLoadUsingWriteOnlyGraphAndFullIndices()
+        public void FSLargeLoadUsingWriteToStoreHandlerAndFullIndices()
         {
             //Open an Alexandria Store and save the Graph
             AlexandriaFileManager manager = new AlexandriaFileManager(TestTools.GetNextStoreID(), AlexandriaFileManager.FullIndices);
 
             //Load in our Test Graph
-            WriteOnlyStoreGraph g = new WriteOnlyStoreGraph((Uri)null, manager);
-            FileLoader.Load(g, "dataset_50.ttl");
-            g.Dispose();
+            WriteToStoreHandler handler = new WriteToStoreHandler(manager);
+            TurtleParser parser = new TurtleParser();
+            parser.Load(handler, "dataset_50.ttl");
 
             manager.Dispose();
         }
 
         [TestMethod]
-        public void FSLargeLoadUsingWriteOnlyGraphAndOptimalIndices()
+        public void FSLargeLoadUsingWriteToStoreHandlerAndOptimalIndices()
         {
             //Open an Alexandria Store and save the Graph
             AlexandriaFileManager manager = new AlexandriaFileManager(TestTools.GetNextStoreID(), AlexandriaFileManager.OptimalIndices);
 
             //Load in our Test Graph
-            WriteOnlyStoreGraph g = new WriteOnlyStoreGraph((Uri)null, manager);
-            FileLoader.Load(g, "dataset_50.ttl");
-            g.Dispose();
+            WriteToStoreHandler handler = new WriteToStoreHandler(manager);
+            TurtleParser parser = new TurtleParser();
+            parser.Load(handler, "dataset_50.ttl");
 
             manager.Dispose();
         }
 
         [TestMethod]
-        public void FSLargeLoadUsingWriteOnlyGraphAndSimpleIndices()
+        public void FSLargeLoadUsingWriteToStoreHandlerAndSimpleIndices()
         {
             //Open an Alexandria Store and save the Graph
             AlexandriaFileManager manager = new AlexandriaFileManager(TestTools.GetNextStoreID(), AlexandriaFileManager.SimpleIndices);
 
             //Load in our Test Graph
-            WriteOnlyStoreGraph g = new WriteOnlyStoreGraph((Uri)null, manager);
-            FileLoader.Load(g, "dataset_50.ttl");
-            g.Dispose();
+            WriteToStoreHandler handler = new WriteToStoreHandler(manager);
+            TurtleParser parser = new TurtleParser();
+            parser.Load(handler, "dataset_50.ttl");
 
             manager.Dispose();
         }
 
         [TestMethod]
-        public void FSLargeLoadUsingWriteOnlyGraphAndNoIndices()
+        public void FSLargeLoadUsingWriteToStoreHandlerAndNoIndices()
         {
             //Open an Alexandria Store and save the Graph
             AlexandriaFileManager manager = new AlexandriaFileManager(TestTools.GetNextStoreID(), null);
 
             //Load in our Test Graph
-            WriteOnlyStoreGraph g = new WriteOnlyStoreGraph((Uri)null, manager);
-            FileLoader.Load(g, "dataset_50.ttl");
-            g.Dispose();
+            WriteToStoreHandler handler = new WriteToStoreHandler(manager);
+            TurtleParser parser = new TurtleParser();
+            parser.Load(handler, "dataset_50.ttl");
 
             manager.Dispose();
         }
 
         [TestMethod]
-        public void FSLargeLoadUsingWriteOnlyGraphAndNoIndices2()
+        public void FSLargeLoadUsingWriteToStoreHandlerAndNoIndices2()
         {
             //Open an Alexandria Store and save the Graph
             NonIndexedAlexandriaFileManager manager = new NonIndexedAlexandriaFileManager(TestTools.GetNextStoreID());
 
             //Load in our Test Graph
-            WriteOnlyStoreGraph g = new WriteOnlyStoreGraph((Uri)null, manager);
-            FileLoader.Load(g, "dataset_50.ttl");
-            g.Dispose();
+            WriteToStoreHandler handler = new WriteToStoreHandler(manager);
+            TurtleParser parser = new TurtleParser();
+            parser.Load(handler, "dataset_50.ttl");
 
             manager.Dispose();
         }

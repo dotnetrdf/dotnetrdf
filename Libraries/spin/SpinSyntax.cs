@@ -412,7 +412,7 @@ namespace VDS.RDF.Query.Spin
         internal static INode ToSpinRdf(this PatternItem item, IGraph g, SpinVariableTable varTable)
         {
             INode i;
-            UriNode varName = g.CreateUriNode(new Uri(SpinPropertyVariableName));
+            IUriNode varName = g.CreateUriNode(new Uri(SpinPropertyVariableName));
 
             if (item is NodeMatchPattern)
             {

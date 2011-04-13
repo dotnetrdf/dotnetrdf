@@ -159,9 +159,9 @@ namespace alexandria_tests
             FileLoader.Load(g, "InferenceTest.ttl");
 
             //Get the Triples that we want to add later
-            UriNode spaceShuttle = g.CreateUriNode("eg:SpaceShuttle");
-            UriNode rdfType = g.CreateUriNode("rdf:type");
-            UriNode airVehicle = g.CreateUriNode("eg:AirVehicle");
+            IUriNode spaceShuttle = g.CreateUriNode("eg:SpaceShuttle");
+            IUriNode rdfType = g.CreateUriNode("rdf:type");
+            IUriNode airVehicle = g.CreateUriNode("eg:AirVehicle");
             Triple[] ts = new Triple[] { new Triple(spaceShuttle, rdfType, airVehicle) };
 
             //Open an Alexandria Store and save the original Graph
@@ -342,9 +342,9 @@ namespace alexandria_tests
             FileLoader.Load(g, "InferenceTest.ttl");
 
             //Get the Triples that we want to add later
-            UriNode spaceShuttle = g.CreateUriNode("eg:SpaceShuttle");
-            UriNode rdfType = g.CreateUriNode("rdf:type");
-            UriNode airVehicle = g.CreateUriNode("eg:AirVehicle");
+            IUriNode spaceShuttle = g.CreateUriNode("eg:SpaceShuttle");
+            IUriNode rdfType = g.CreateUriNode("rdf:type");
+            IUriNode airVehicle = g.CreateUriNode("eg:AirVehicle");
             Triple[] ts = new Triple[] { new Triple(spaceShuttle, rdfType, airVehicle) };
 
             //Open an Alexandria Store and save the original Graph
@@ -525,9 +525,9 @@ namespace alexandria_tests
             FileLoader.Load(g, "InferenceTest.ttl");
 
             //Get the Triples that we want to add later
-            UriNode spaceShuttle = g.CreateUriNode("eg:SpaceShuttle");
-            UriNode rdfType = g.CreateUriNode("rdf:type");
-            UriNode airVehicle = g.CreateUriNode("eg:AirVehicle");
+            IUriNode spaceShuttle = g.CreateUriNode("eg:SpaceShuttle");
+            IUriNode rdfType = g.CreateUriNode("rdf:type");
+            IUriNode airVehicle = g.CreateUriNode("eg:AirVehicle");
             Triple[] ts = new Triple[] { new Triple(spaceShuttle, rdfType, airVehicle) };
 
             //Open an Alexandria Store and save the original Graph

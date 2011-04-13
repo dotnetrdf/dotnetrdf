@@ -387,26 +387,8 @@ namespace rdfServer
                 //}
                 //if (!isAuth) return;
 
-                //Then process each action
-                foreach (SparqlUpdateCommand cmd in commands.Commands)
-                {
-                    //Authenticate each action
-                    bool actionAuth = true;
-                    //if (requireActionAuth) actionAuth = HandlerHelper.IsAuthenticated(context, this._config.UserGroups, this.GetUpdatePermissionAction(cmd));
-                    if (actionAuth)
-                    {
-                        //Action is permitted so we go ahead and execute it
-                        try
-                        {
-                            this._config.UpdateProcessor.ProcessCommand(cmd);
-                        }
-                        catch
-                        {
-                            //If halting on errors (default behaviour) throw the error otherwise ignore and continue
-                            if (this._config.HaltOnError) throw;
-                        }
-                    }
-                }
+                //Process Command Set
+                this._config.UpdateProcessor.ProcessCommandSet(commands);
 
                 //Flush outstanding changes
                 this._config.UpdateProcessor.Flush();

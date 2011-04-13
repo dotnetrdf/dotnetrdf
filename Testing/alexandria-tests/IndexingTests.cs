@@ -38,7 +38,7 @@ namespace alexandria_tests
 
             //Try and access an index from the Store
             TestWrapper<StreamReader,TextWriter> wrapper = new TestWrapper<StreamReader,TextWriter>(manager);
-            UriNode fordFiesta = g.CreateUriNode("eg:FordFiesta");
+            IUriNode fordFiesta = g.CreateUriNode("eg:FordFiesta");
             IEnumerable<Triple> ts = wrapper.IndexManager.GetTriplesWithSubject(fordFiesta);
             foreach (Triple t in ts)
             {
@@ -66,7 +66,7 @@ namespace alexandria_tests
 
             //Try and access an index from the Store
             TestWrapper<StreamReader,TextWriter> wrapper = new TestWrapper<StreamReader,TextWriter>(manager);
-            UriNode rdfType = g.CreateUriNode("rdf:type");
+            IUriNode rdfType = g.CreateUriNode("rdf:type");
             IEnumerable<Triple> ts = wrapper.IndexManager.GetTriplesWithPredicate(rdfType);
             foreach (Triple t in ts)
             {
@@ -94,8 +94,8 @@ namespace alexandria_tests
 
             //Try and access an index from the Store
             TestWrapper<StreamReader,TextWriter> wrapper = new TestWrapper<StreamReader,TextWriter>(manager);
-            UriNode fordFiesta = g.CreateUriNode("eg:FordFiesta");
-            UriNode rdfType = g.CreateUriNode("rdf:type");
+            IUriNode fordFiesta = g.CreateUriNode("eg:FordFiesta");
+            IUriNode rdfType = g.CreateUriNode("rdf:type");
             IEnumerable<Triple> ts = wrapper.IndexManager.GetTriplesWithSubjectPredicate(fordFiesta, rdfType);
             foreach (Triple t in ts)
             {
@@ -123,8 +123,8 @@ namespace alexandria_tests
 
             //Try and access an index from the Store
             TestWrapper<StreamReader,TextWriter> wrapper = new TestWrapper<StreamReader,TextWriter>(manager);
-            UriNode fordFiesta = g.CreateUriNode("eg:FordFiesta");
-            UriNode car = g.CreateUriNode("eg:Car");
+            IUriNode fordFiesta = g.CreateUriNode("eg:FordFiesta");
+            IUriNode car = g.CreateUriNode("eg:Car");
             IEnumerable<Triple> ts = wrapper.IndexManager.GetTriplesWithSubjectObject(fordFiesta, car);
             foreach (Triple t in ts)
             {
@@ -152,7 +152,7 @@ namespace alexandria_tests
 
             //Try and access an index from the Store
             TestWrapper<StreamReader,TextWriter> wrapper = new TestWrapper<StreamReader,TextWriter>(manager);
-            UriNode rdfType = g.CreateUriNode("rdf:type");
+            IUriNode rdfType = g.CreateUriNode("rdf:type");
             IEnumerable<Triple> ts = wrapper.IndexManager.GetTriplesWithPredicate(rdfType);
             foreach (Triple t in ts.Skip(5).Take(5))
             {
@@ -180,7 +180,7 @@ namespace alexandria_tests
 
             //Try and access an index from the Store
             TestWrapper<StreamReader,TextWriter> wrapper = new TestWrapper<StreamReader,TextWriter>(manager);
-            UriNode fordFiesta = g.CreateUriNode("eg:FordFiesta");
+            IUriNode fordFiesta = g.CreateUriNode("eg:FordFiesta");
             IEnumerable<Triple> ts = wrapper.IndexManager.GetTriplesWithSubject(fordFiesta);
             foreach (Triple t in ts)
             {
@@ -216,7 +216,7 @@ namespace alexandria_tests
 
             //Try and access an index from the Store
             TestWrapper<Document, Document> wrapper = new TestWrapper<Document, Document>(manager);
-            UriNode fordFiesta = g.CreateUriNode("eg:FordFiesta");
+            IUriNode fordFiesta = g.CreateUriNode("eg:FordFiesta");
             //INode fordFiesta = g.GetBlankNode("autos1");
             IEnumerable<Triple> ts = wrapper.IndexManager.GetTriplesWithSubject(fordFiesta);
             foreach (Triple t in ts)
@@ -252,7 +252,7 @@ namespace alexandria_tests
 
             //Try and access an index from the Store
             TestWrapper<Document, Document> wrapper = new TestWrapper<Document, Document>(manager);
-            UriNode rdfType = g.CreateUriNode("rdf:type");
+            IUriNode rdfType = g.CreateUriNode("rdf:type");
             IEnumerable<Triple> ts = wrapper.IndexManager.GetTriplesWithPredicate(rdfType);
             foreach (Triple t in ts)
             {
@@ -280,8 +280,8 @@ namespace alexandria_tests
 
             //Try and access an index from the Store
             TestWrapper<Document, Document> wrapper = new TestWrapper<Document, Document>(manager);
-            UriNode fordFiesta = g.CreateUriNode("eg:FordFiesta");
-            UriNode rdfType = g.CreateUriNode("rdf:type");
+            IUriNode fordFiesta = g.CreateUriNode("eg:FordFiesta");
+            IUriNode rdfType = g.CreateUriNode("rdf:type");
             IEnumerable<Triple> ts = wrapper.IndexManager.GetTriplesWithSubjectPredicate(fordFiesta, rdfType);
             foreach (Triple t in ts)
             {
@@ -309,8 +309,8 @@ namespace alexandria_tests
 
             //Try and access an index from the Store
             TestWrapper<Document, Document> wrapper = new TestWrapper<Document, Document>(manager);
-            UriNode fordFiesta = g.CreateUriNode("eg:FordFiesta");
-            UriNode car = g.CreateUriNode("eg:Car");
+            IUriNode fordFiesta = g.CreateUriNode("eg:FordFiesta");
+            IUriNode car = g.CreateUriNode("eg:Car");
             IEnumerable<Triple> ts = wrapper.IndexManager.GetTriplesWithSubjectObject(fordFiesta, car);
             foreach (Triple t in ts)
             {
@@ -338,7 +338,7 @@ namespace alexandria_tests
 
             //Try and access an index from the Store
             TestWrapper<Document, Document> wrapper = new TestWrapper<Document, Document>(manager);
-            UriNode rdfType = g.CreateUriNode("rdf:type");
+            IUriNode rdfType = g.CreateUriNode("rdf:type");
             IEnumerable<Triple> ts = wrapper.IndexManager.GetTriplesWithPredicate(rdfType);
             foreach (Triple t in ts.Skip(5).Take(5))
             {
@@ -366,7 +366,7 @@ namespace alexandria_tests
 
             //Try and access an index from the Store
             TestWrapper<Document, Document> wrapper = new TestWrapper<Document, Document>(manager);
-            UriNode fordFiesta = g.CreateUriNode("eg:FordFiesta");
+            IUriNode fordFiesta = g.CreateUriNode("eg:FordFiesta");
             IEnumerable<Triple> ts = wrapper.IndexManager.GetTriplesWithSubject(fordFiesta);
             foreach (Triple t in ts)
             {
@@ -402,7 +402,7 @@ namespace alexandria_tests
 
             //Try and access an index from the Store
             TestWrapper<Document, Document> wrapper = new TestWrapper<Document, Document>(manager);
-            UriNode fordFiesta = g.CreateUriNode("eg:FordFiesta");
+            IUriNode fordFiesta = g.CreateUriNode("eg:FordFiesta");
             //INode fordFiesta = g.GetBlankNode("autos1");
             IEnumerable<Triple> ts = wrapper.IndexManager.GetTriplesWithSubject(fordFiesta);
             foreach (Triple t in ts)
@@ -438,7 +438,7 @@ namespace alexandria_tests
 
             //Try and access an index from the Store
             TestWrapper<Document, Document> wrapper = new TestWrapper<Document, Document>(manager);
-            UriNode rdfType = g.CreateUriNode("rdf:type");
+            IUriNode rdfType = g.CreateUriNode("rdf:type");
             IEnumerable<Triple> ts = wrapper.IndexManager.GetTriplesWithPredicate(rdfType);
             foreach (Triple t in ts)
             {
@@ -466,8 +466,8 @@ namespace alexandria_tests
 
             //Try and access an index from the Store
             TestWrapper<Document, Document> wrapper = new TestWrapper<Document, Document>(manager);
-            UriNode fordFiesta = g.CreateUriNode("eg:FordFiesta");
-            UriNode rdfType = g.CreateUriNode("rdf:type");
+            IUriNode fordFiesta = g.CreateUriNode("eg:FordFiesta");
+            IUriNode rdfType = g.CreateUriNode("rdf:type");
             IEnumerable<Triple> ts = wrapper.IndexManager.GetTriplesWithSubjectPredicate(fordFiesta, rdfType);
             foreach (Triple t in ts)
             {
@@ -495,8 +495,8 @@ namespace alexandria_tests
 
             //Try and access an index from the Store
             TestWrapper<Document, Document> wrapper = new TestWrapper<Document, Document>(manager);
-            UriNode fordFiesta = g.CreateUriNode("eg:FordFiesta");
-            UriNode car = g.CreateUriNode("eg:Car");
+            IUriNode fordFiesta = g.CreateUriNode("eg:FordFiesta");
+            IUriNode car = g.CreateUriNode("eg:Car");
             IEnumerable<Triple> ts = wrapper.IndexManager.GetTriplesWithSubjectObject(fordFiesta, car);
             foreach (Triple t in ts)
             {
@@ -524,7 +524,7 @@ namespace alexandria_tests
 
             //Try and access an index from the Store
             TestWrapper<Document, Document> wrapper = new TestWrapper<Document, Document>(manager);
-            UriNode rdfType = g.CreateUriNode("rdf:type");
+            IUriNode rdfType = g.CreateUriNode("rdf:type");
             IEnumerable<Triple> ts = wrapper.IndexManager.GetTriplesWithPredicate(rdfType);
             foreach (Triple t in ts.Skip(5).Take(5))
             {
@@ -552,7 +552,7 @@ namespace alexandria_tests
 
             //Try and access an index from the Store
             TestWrapper<Document, Document> wrapper = new TestWrapper<Document, Document>(manager);
-            UriNode fordFiesta = g.CreateUriNode("eg:FordFiesta");
+            IUriNode fordFiesta = g.CreateUriNode("eg:FordFiesta");
             IEnumerable<Triple> ts = wrapper.IndexManager.GetTriplesWithSubject(fordFiesta);
             foreach (Triple t in ts)
             {
