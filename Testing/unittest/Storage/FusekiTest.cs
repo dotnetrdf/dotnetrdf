@@ -372,7 +372,6 @@ namespace VDS.RDF.Test.Storage
             try
             {
                 Options.HttpDebugging = true;
-                Options.HttpFullDebugging = true;
 
                 FusekiConnector fuseki = new FusekiConnector(FusekiTestUri);
 
@@ -388,7 +387,6 @@ namespace VDS.RDF.Test.Storage
             }
             finally
             {
-                Options.HttpFullDebugging = true;
                 Options.HttpDebugging = false;
             }
         }

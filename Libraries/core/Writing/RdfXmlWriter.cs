@@ -183,6 +183,10 @@ namespace VDS.RDF.Writing
 
             //Create the rdf:RDF element
             context.Writer.WriteStartElement("rdf", "RDF", NamespaceMapper.RDF);
+            if (context.Graph.BaseUri != null)
+            {
+                context.Writer.WriteAttributeString("xml", "base", null, context.Graph.BaseUri.ToString());
+            }
             context.NamespaceMap.IncrementNesting();
             foreach (String prefix in context.NamespaceMap.Prefixes)
             {

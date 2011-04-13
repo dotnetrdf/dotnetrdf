@@ -659,6 +659,7 @@ namespace VDS.RDF.Query.Datasets
     public abstract class BaseTransactionalDataset : BaseDataset
     {
         private List<GraphPersistenceAction> _actions = new List<GraphPersistenceAction>();
+        //REQ: Rewrite the modifiable Graph store stuff with a Dictionary that allows a null key
         private TripleStore _modifiableGraphs = new TripleStore();
 
         public BaseTransactionalDataset()
@@ -743,7 +744,8 @@ namespace VDS.RDF.Query.Datasets
         {
             if (!this._modifiableGraphs.HasGraph(graphUri))
             {
-                this._modifiableGraphs.Add(this.GetModifiableGraphInternal(graphUri));
+                IGraph current = this.GetModifiableGraphInternal(graphUri);
+                this._modifiableGraphs.Add(current);
             }
             ITransactionalGraph existing = (ITransactionalGraph)this._modifiableGraphs.Graph(graphUri);
             this._actions.Add(new GraphPersistenceAction(existing, GraphPersistenceActionType.Modified));

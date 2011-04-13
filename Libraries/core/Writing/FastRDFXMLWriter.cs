@@ -177,6 +177,13 @@ namespace VDS.RDF.Writing
             //Create the DOCTYPE declaration and the rdf:RDF element
             StringBuilder entities = new StringBuilder();
             XmlElement rdf = doc.CreateElement("rdf:RDF", NamespaceMapper.RDF);
+            if (context.Graph.BaseUri != null)
+            {
+                XmlAttribute baseUri = doc.CreateAttribute("xml:base");
+                baseUri.Value = context.Graph.BaseUri.ToString();
+                rdf.Attributes.Append(baseUri);
+            }
+
             XmlAttribute ns;
             String uri;
             entities.Append('\n');
