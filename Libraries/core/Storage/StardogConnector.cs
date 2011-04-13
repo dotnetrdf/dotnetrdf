@@ -59,7 +59,10 @@ namespace VDS.RDF.Storage
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Has full support for Stardog Transactions, connection is in auto-commit mode be default i.e. all write operations (Delete/Save/Update) will create a transaction for their operation by default.  You can manage Transactions using the
+    /// Has full support for Stardog Transactions, connection is in auto-commit mode be default i.e. all write operations (Delete/Save/Update) will create a transaction for their operation by default.  You can manage Transactions using the <see cref="StardogConnector.Begin">Begin()</see>, <see cref="StardogConnector.Commit">Commit()</see> and <see cref="StardogConnector.Rollback">Rollback()</see> methods.
+    /// </para>
+    /// <para>
+    /// Transactions are always scoped to Managed Threads so each Thread has access to an independent and isolated transaction should you desire.  Attempting to start a new transaction when there is already an existing transaction on the thread will cause an error as will committing/rolling back a transaction when there is none on the current thread.  While the connector allows for multiple transactions and concurrency naturally be mindful that Stardog currently is MRSW (Multiple Reader Single Writer) safe only and you should ensure you adhere to that when using it as the connector will not enforce it for you.
     /// </para>
     /// </remarks>
     /// <threadsafety instance="true">The StardogConnector is designed to be thread safe, each threads transactions are isolated from each other.  A thread may only have one active transaction at any one time, an <see cref="RdfStorageException">RdfStorageException</see> will be thrown if a thread violates this rule.</threadsafety>
@@ -310,11 +313,14 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Saves a Graph into the Store (Warning: Completely replaces any existing Graph with the same URI unless there is no URI - see remarks for details)
+        /// Saves a Graph into the Store (see remarks for notes on merge/overwrite behaviour)
         /// </summary>
         /// <param name="g">Graph to save</param>
         /// <remarks>
-        /// If the Graph has no URI then the contents will be appended to the Store, if the Graph has a URI then existing data associated with that URI will be replaced
+        /// <para>
+        /// In the final version Saving a Graph to the Store will overwrite a Graph of the same name but currently deleting Graphs in Stardog via dotNetRDF is not supportable due to a .Net issue with restrictive URI encoding so saving a Graph adds to any existing Graph of the same name.  This behaviour <strong>will</strong> change in future versions to align with our others connectors
+        /// </para>
+        /// <s>If the Graph has no URI then the contents will be appended to the Store, if the Graph has a URI then existing data associated with that URI will be replaced</s>
         /// </remarks>
         public void SaveGraph(IGraph g)
         {
@@ -394,11 +400,14 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Updates a Graph
+        /// Updates a Graph in the Stardog Store
         /// </summary>
         /// <param name="graphUri">Uri of the Graph to update</param>
         /// <param name="additions">Triples to be added</param>
         /// <param name="removals">Triples to be removed</param>
+        /// <remarks>
+        /// Removals happen before additions
+        /// </remarks>
         public void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
             String tID = null;
@@ -496,7 +505,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Updates a Graph
+        /// Updates a Graph in the Stardog store
         /// </summary>
         /// <param name="graphUri">Uri of the Graph to update</param>
         /// <param name="additions">Triples to be added</param>
@@ -514,7 +523,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Returns that Updates are supported on Sesame HTTP Protocol supporting Stores
+        /// Returns that Updates are supported on Stardog Stores
         /// </summary>
         public bool UpdateSupported
         {
@@ -525,7 +534,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Deletes a Graph from the Sesame store
+        /// Deletes a Graph from the Stardog store
         /// </summary>
         /// <param name="graphUri">URI of the Graph to delete</param>
         public void DeleteGraph(Uri graphUri)
@@ -534,7 +543,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Deletes a Graph from the Sesame store
+        /// Deletes a Graph from the Stardog store
         /// </summary>
         /// <param name="graphUri">URI of the Graph to delete</param>
         public void DeleteGraph(String graphUri)
@@ -615,7 +624,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Returns that deleting graphs from the Sesame store is supported
+        /// Returns that deleting graphs from the Stardog store is not yet supported (due to a .Net specific issue)
         /// </summary>
         public bool DeleteSupported
         {
@@ -628,7 +637,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Gets the list of Graphs in the Sesame store
+        /// Gets the list of Graphs in the Stardog store
         /// </summary>
         /// <returns></returns>
         public IEnumerable<Uri> ListGraphs()
