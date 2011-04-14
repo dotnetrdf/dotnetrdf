@@ -146,6 +146,30 @@ namespace VDS.RDF.Web
 
         #region Results Processing
 
+        public static String[] GetAcceptTypes(HttpContext context)
+        {
+            String accept = context.Request.Headers["Accept"];
+            if (accept != null && !accept.Equals(String.Empty))
+            {
+                //If Accept Header is not null or empty then check to see if it matches up with the AcceptTypes
+                //array
+                String[] acceptTypes = accept.Split(',');
+                if (Array.Equals(acceptTypes, context.Request.AcceptTypes))
+                {
+                    return context.Request.AcceptTypes;
+                }
+                else
+                {
+                    return acceptTypes;
+                }
+            }
+            else
+            {
+                //Otherwise use full accept header
+                return context.Request.AcceptTypes;
+            }
+        }
+
         /// <summary>
         /// Helper function which returns the Results (Graph/Triple Store/SPARQL Results) back to the Client in one of their accepted formats
         /// </summary>
@@ -156,6 +180,7 @@ namespace VDS.RDF.Web
         {
             MimeTypeDefinition definition = null;
             String ctype = "text/plain";
+            String[] acceptTypes = HandlerHelper.GetAcceptTypes(context);
 
             //Return the Results
             if (result is SparqlResultSet)
@@ -163,9 +188,9 @@ namespace VDS.RDF.Web
                 ISparqlResultsWriter sparqlwriter = null;      
        
                 //Try and get a MIME Type Definition using the HTTP Requests Accept Header
-                if (context.Request.AcceptTypes != null)
+                if (acceptTypes != null)
                 {
-                    definition = MimeTypesHelper.GetDefinitions(context.Request.AcceptTypes).FirstOrDefault(d => d.CanWriteSparqlResults);
+                    definition = MimeTypesHelper.GetDefinitions(acceptTypes).FirstOrDefault(d => d.CanWriteSparqlResults);
                 } 
                 //Try and get the registered Definition for SPARQL Results XML
                 if (definition == null)
@@ -200,15 +225,15 @@ namespace VDS.RDF.Web
                 IRdfWriter rdfwriter = null;
 
                 //Try and get a MIME Type Definition using the HTTP Requests Accept Header
-                if (context.Request.AcceptTypes != null)
+                if (acceptTypes != null)
                 {
-                    definition = MimeTypesHelper.GetDefinitions(context.Request.AcceptTypes).FirstOrDefault(d => d.CanWriteRdf);
+                    definition = MimeTypesHelper.GetDefinitions(acceptTypes).FirstOrDefault(d => d.CanWriteRdf);
                     rdfwriter = definition.GetRdfWriter();
                 } 
                 if (definition == null)
                 {
                     //If no appropriate definition then use the GetWriter method instead
-                    rdfwriter = MimeTypesHelper.GetWriter(context.Request.AcceptTypes, out ctype);
+                    rdfwriter = MimeTypesHelper.GetWriter(acceptTypes, out ctype);
                 }
 
                 //Setup the writer
@@ -242,15 +267,15 @@ namespace VDS.RDF.Web
                 IStoreWriter storewriter = null;
 
                 //Try and get a MIME Type Definition using the HTTP Requests Accept Header
-                if (context.Request.AcceptTypes != null)
+                if (acceptTypes != null)
                 {
-                    definition = MimeTypesHelper.GetDefinitions(context.Request.AcceptTypes).FirstOrDefault(d => d.CanWriteRdfDatasets);
+                    definition = MimeTypesHelper.GetDefinitions(acceptTypes).FirstOrDefault(d => d.CanWriteRdfDatasets);
                     storewriter = definition.GetRdfDatasetWriter();
                 } 
                 if (definition == null)
                 {
                     //If no appropriate definition then use the GetStoreWriter method instead
-                    storewriter = MimeTypesHelper.GetStoreWriter(context.Request.AcceptTypes, out ctype);
+                    storewriter = MimeTypesHelper.GetStoreWriter(acceptTypes, out ctype);
                 }
 
                 //Setup the writer

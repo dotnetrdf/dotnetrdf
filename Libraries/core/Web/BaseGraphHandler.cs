@@ -101,8 +101,10 @@ namespace VDS.RDF.Web
 
             try
             {
+                String[] acceptTypes = HandlerHelper.GetAcceptTypes(context);
+
                 //Retrieve an appropriate MIME Type Definition which can be used to get a Writer
-                MimeTypeDefinition definition = MimeTypesHelper.GetDefinitions(context.Request.AcceptTypes).FirstOrDefault(d => d.CanWriteRdf);
+                MimeTypeDefinition definition = MimeTypesHelper.GetDefinitions(acceptTypes).FirstOrDefault(d => d.CanWriteRdf);
                 if (definition == null) throw new RdfWriterSelectionException("No MIME Type Definitions have a registered RDF Writer for the MIME Types specified in the HTTP Accept Header");
                 IRdfWriter writer = this.SelectWriter(definition);
                 if (writer is ICompressingWriter)

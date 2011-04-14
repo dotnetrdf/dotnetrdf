@@ -34,6 +34,7 @@ terms.
 */
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Web;
@@ -81,10 +82,10 @@ namespace VDS.RDF.Web
                 {
                     //Get the File Extension and see if it is for an RDF format
                     String ext = context.Request.Url.AbsolutePath.Substring(context.Request.Url.AbsolutePath.LastIndexOf("."));
-                    MimeTypeDefinition def = MimeTypesHelper.GetDefinitions(MimeTypesHelper.GetMimeTypes(ext)).FirstOrDefault();
-                    if (def == null) return;
+                    List<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions(MimeTypesHelper.GetMimeTypes(ext)).ToList();
+                    if (defs.Count == 0) return;
 
-                    context.Request.Headers["Accept"] = def.CanonicalMimeType;
+                    context.Request.Headers["Accept"] = String.Join(",", defs.Select(d => d.CanonicalMimeType).ToArray());
                     context.RewritePath(Path.GetFileNameWithoutExtension(actualPath), context.Request.PathInfo, context.Request.Url.Query, true);
                 }
             }

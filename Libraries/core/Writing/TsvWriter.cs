@@ -107,6 +107,7 @@ namespace VDS.RDF.Writing
                     throw new RdfOutputException(WriterErrorMessages.GraphLiteralsUnserializable("TSV"));
                 case NodeType.Blank:
                 case NodeType.Literal:
+                case NodeType.Uri:
                     output.Write(this._formatter.Format(n));
                     break;
                 default:
