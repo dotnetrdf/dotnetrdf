@@ -100,7 +100,7 @@ namespace VDS.RDF.Query.Patterns
                 context.OutputMultiset.AddVariable(this._var);
                 foreach (int id in context.InputMultiset.SetIDs.ToList())
                 {
-                    Set s = context.InputMultiset[id];
+                    Set s = new Set(context.InputMultiset[id]);
                     try
                     {
                         //Make a new assignment

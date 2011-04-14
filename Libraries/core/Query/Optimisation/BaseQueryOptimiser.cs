@@ -313,7 +313,7 @@ namespace VDS.RDF.Query.Optimisation
             //This implies that the assignment sets something to a fixed value
             if (variablesNeeded.Count == 0)
             {
-                gp.TriplePatterns.Insert(0, assignment);
+                gp.InsertAssignment(assignment, 0);
                 return true;
             }
 

@@ -320,24 +320,36 @@ namespace VDS.RDF.Query.Algebra
             context.InputMultiset = this._pattern.Evaluate(context);
 
             HashSet<SparqlVariable> vars;
+            bool selectAll = false;
             if (context.Query != null)
             {
                 vars = new HashSet<SparqlVariable>(context.Query.Variables);
+                switch (context.Query.QueryType)
+                {
+                    case SparqlQueryType.DescribeAll:
+                    case SparqlQueryType.SelectAll:
+                    case SparqlQueryType.SelectAllDistinct:
+                    case SparqlQueryType.SelectAllReduced:
+                        selectAll = true;
+                        break;
+                }
             }
             else
             {
                 vars = new HashSet<SparqlVariable>(this._variables);
             }
 
-            //Trim Variables that aren't being SELECTed
-            foreach (String var in context.InputMultiset.Variables.ToList())
+            if (!selectAll)
             {
-                if (!vars.Any(v => v.Name.Equals(var) && v.IsResultVariable))
+                //Trim Variables that aren't being SELECTed
+                foreach (String var in context.InputMultiset.Variables.ToList())
                 {
-                    //If not a Result variable then trim from results
-                    context.InputMultiset.Trim(var);
+                    if (!vars.Any(v => v.Name.Equals(var) && v.IsResultVariable))
+                    {
+                        //If not a Result variable then trim from results
+                        context.InputMultiset.Trim(var);
+                    }
                 }
-
             }
 
             context.OutputMultiset = context.InputMultiset;

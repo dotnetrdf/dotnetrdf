@@ -48,11 +48,13 @@ Changed
  - TriG Parser no longer fails to handle string escapes correctly
  - RdfXmlWriter would fail to output some collections in some cases
  - Bug fix for incorrect rdfs:range and rdfs:domain handling in RdfsReasoner
+ - Bug fix to how BINDs are parsed and placed in SPARQL Queries
+ - Bug fix on converting SPARQL Queries into Strings to ensure BINDs are placed correctly
 - General Improvements
- - Improved abstraction in BaseDataset so all the active/default graph management is handlded by the 
+ - Improved abstraction in BaseDataset so all the active/default graph management is handled by the 
    base class
 - Parsing Improvements
- - Internal parser subsystem rewritten to use IRdfHandler
+ - Internal parser subsystem rewritten to use IRdfHandler and ISparqlResultsHandler
  - Improved buffering of input
  - IRdfReader expanded
   - Now has overloads for parsing to an IRdfHandler instance as well as to an IGraph instance
@@ -61,6 +63,9 @@ Changed
   - Now has overloads for parsing to an IRdfHandler instance as well as to an ITripleStore instances
   - IStoreReader implementations which accept StreamParams now also accept TextReaderParams for reading
     from any TextReader
+ - ISparqlResultsReader expanded
+  - Now has overloads for parsing to an ISparqlResultsHandler instance as well as to a SparqlResultSet instance
+  - Now has overloads for parsing from any TextReader (not just StreamReader)
 - Query Improvements
  - Ensured proper thread safety for queries when used with appropriately implemented ISparqlDataset's so that Queries
    can never interfere with each other
@@ -73,6 +78,7 @@ Changed
  - Various fixes and improvements to collection compression for compressing writers
  - IStoreWriter implementations which accept StreamParams now also accept TextWriterParams for writing
    to any TextWriter
+ - RDF/XML writers now include the Base URI (if any) of the Graph being written on the document element using xml:base
 - ASP.Net Improvements
  - SPARQL Update handler improvements
   - They now check command set for permissible actions prior to evaluating any of the command set

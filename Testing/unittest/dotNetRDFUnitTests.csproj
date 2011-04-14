@@ -301,6 +301,9 @@
     <None Include="resources\empty-string-rdfxml.rdf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <Content Include="resources\now01.rq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="resources\rdfxml-namespaces.rdf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

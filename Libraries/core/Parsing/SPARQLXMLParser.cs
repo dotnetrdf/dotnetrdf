@@ -420,6 +420,12 @@ namespace VDS.RDF.Parsing
                     return context.Handler.CreateBlankNode(bnodeID);
                 }
             }
+            else if (context.Input.Name.Equals("unbound"))
+            {
+                //HACK: This is a really ancient feature of the SPARQL Results XML format (from Working Draft in 2005) which we support to ensure compatability with old pre-standardisation SPARQL endpoints (like 3store based ones)
+                context.Input.ReadInnerXml();
+                return null;
+            }
             else
             {
                 throw new RdfParseException("Unable to Parse a SPARQL Result Set since a <binding> element contains an unexpected element <" + context.Input.Name + ">!");

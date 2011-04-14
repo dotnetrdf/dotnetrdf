@@ -5,6 +5,7 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Test.Sparql
 {
@@ -41,6 +42,32 @@ namespace VDS.RDF.Test.Sparql
 
             Assert.IsTrue(results is SparqlResultSet, "Result should be a SPARQL Result Set");
             TestTools.ShowResults(results);
+        }
+
+        [TestMethod]
+        public void SparqlFunctionsNow()
+        {
+            SparqlQueryParser parser = new SparqlQueryParser();
+            SparqlQuery q = parser.ParseFromFile("now01.rq");
+
+            Console.WriteLine("ToString Output:");
+            Console.WriteLine(q.ToString());
+            Console.WriteLine();
+
+            SparqlFormatter formatter = new SparqlFormatter();
+            Console.WriteLine("SparqlFormatter Output:");
+            Console.WriteLine(formatter.Format(q));
+
+            TripleStore store = new TripleStore();
+            SparqlResultSet results = q.Evaluate(store) as SparqlResultSet;
+            if (results != null)
+            {
+                Assert.IsTrue(results.Result, "Result should be true");
+            }
+            else
+            {
+                Assert.Fail("Expected a non-null result");
+            }
         }
     }
 }
