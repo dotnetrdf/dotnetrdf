@@ -127,6 +127,7 @@
     <Compile Include="Parsing\BlockingTextReaderTests.cs" />
     <Compile Include="Parsing\Handlers\ChainedHandlerTests.cs" />
     <Compile Include="Parsing\Handlers\CountHandlerTests.cs" />
+    <Compile Include="Parsing\Handlers\FileLoaderHandlerTests.cs" />
     <Compile Include="Parsing\Handlers\GraphHandlerTests.cs" />
     <Compile Include="Parsing\Handlers\MultiHandlerTests.cs" />
     <Compile Include="Parsing\Handlers\PagingHandlerTests.cs" />

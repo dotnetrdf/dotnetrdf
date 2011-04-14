@@ -1,6 +1,6 @@
 ﻿/*
 
-Copyright Robert Vesse 2009-10
+Copyright Robert Vesse 2009-11
 rvesse@vdesign-studios.com
 
 ------------------------------------------------------------------------
@@ -33,13 +33,12 @@ terms.
 
 */
 
-//REQ: Add support for loading from a File directly to an IRdfHandler
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Storage.Params;
 
 namespace VDS.RDF.Parsing
@@ -110,6 +109,19 @@ namespace VDS.RDF.Parsing
                 }
             }
 
+            FileLoader.Load(new GraphHandler(g), filename, parser);
+        }
+
+        public static void Load(IRdfHandler handler, String filename)
+        {
+            FileLoader.Load(handler, filename, (IRdfReader)null);
+        }
+
+        public static void Load(IRdfHandler handler, String filename, IRdfReader parser)
+        {
+            if (handler == null) throw new RdfParseException("Cannot read RDF using a null RDF Handler");
+            if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
+
             //Try to get a Parser from the File Extension if one isn't explicitly specified
             if (parser == null)
             {
@@ -127,18 +139,20 @@ namespace VDS.RDF.Parsing
             if (parser == null)
             {
                 //Unable to determine format from File Extension
-                //Read file in locally and use the StringParser
+                //Read file in locally and use the StringParser to select a parser
                 StreamReader reader = new StreamReader(filename);
                 String data = reader.ReadToEnd();
                 reader.Close();
-                RaiseWarning("Attempting parsing using the StringParser");
-                StringParser.Parse(g, data);
+                parser = StringParser.GetParser(data);
+                RaiseWarning("Used the StringParser to guess the parser to use - it guessed " + parser.GetType().Name);
+                parser.Warning += RaiseWarning;
+                parser.Load(handler, new StringReader(data));
             }
             else
             {
                 //Parser was selected based on File Extension or one was explicitly specified
                 parser.Warning += RaiseWarning;
-                parser.Load(g, filename);
+                parser.Load(handler, filename);
             }
         }
 
@@ -156,22 +170,7 @@ namespace VDS.RDF.Parsing
         public static void Load(ITripleStore store, String filename, IStoreReader parser)
         {
             if (store == null) throw new RdfParseException("Cannot read a RDF Dataset into a null Store");
-            if (filename == null) throw new RdfParseException("Cannot read a RDF Dataset from a null File");
-
-            if (!File.Exists(filename))
-            {
-#if SILVERLIGHT
-                throw new FileNotFoundException("Cannot read a RDF Dataset from the File '" + filename + "' since it doesn't exist");
-#else
-                throw new FileNotFoundException("Cannot read a RDF Dataset from a File that doesn't exist", filename);
-#endif
-            }
-
-            if (parser == null)
-            {
-                parser = MimeTypesHelper.GetStoreParser(MimeTypesHelper.GetMimeType(Path.GetExtension(filename)));
-            }
-            parser.Load(store, new StreamParams(filename));
+            FileLoader.Load(new StoreHandler(store), filename, parser);
         }
 
         /// <summary>
@@ -187,6 +186,56 @@ namespace VDS.RDF.Parsing
         public static void Load(ITripleStore store, String filename)
         {
             FileLoader.Load(store, filename, null);
+        }
+
+        public static void Load(IRdfHandler handler, String filename, IStoreReader parser)
+        {
+            if (handler == null) throw new RdfParseException("Cannot read a RDF Dataset using a null RDF Handler");
+            if (filename == null) throw new RdfParseException("Cannot read a RDF Dataset from a null File");
+
+            if (!File.Exists(filename))
+            {
+#if SILVERLIGHT
+                throw new FileNotFoundException("Cannot read a RDF Dataset from the File '" + filename + "' since it doesn't exist");
+#else
+                throw new FileNotFoundException("Cannot read a RDF Dataset from a File that doesn't exist", filename);
+#endif
+            }
+
+            if (parser == null)
+            {
+                try
+                {
+                    parser = MimeTypesHelper.GetStoreParser(MimeTypesHelper.GetMimeType(Path.GetExtension(filename)));
+                }
+                catch (RdfParserSelectionException)
+                {
+                    //If error then we couldn't determine MIME Type from the File Extension
+                    RaiseWarning("Unable to select a parser by determining MIME Type from the File Extension");
+                }
+            }
+            if (parser == null)
+            {
+                //Unable to determine format from File Extension
+                //Read file in locally and use the StringParser to select a parser
+                StreamReader reader = new StreamReader(filename);
+                String data = reader.ReadToEnd();
+                reader.Close();
+                parser = StringParser.GetDatasetParser(data);
+                RaiseWarning("Used the StringParser to guess the parser to use - it guessed " + parser.GetType().Name);
+                parser.Warning += RaiseStoreWarning;
+                parser.Load(handler, new TextReaderParams(new StringReader(data)));
+            }
+            else
+            {
+                parser.Warning += RaiseStoreWarning;
+                parser.Load(handler, new StreamParams(filename));
+            }
+        }
+
+        public static void LoadDataset(IRdfHandler handler, String filename)
+        {
+            FileLoader.Load(handler, filename, (IStoreReader)null);
         }
 
         /// <summary>

@@ -55,13 +55,13 @@ namespace VDS.RDF
     public delegate void RdfWriterWarning(String message);
 
     /// <summary>
-    /// Delegate Type for Warning Events raised by Triple Store Writers
+    /// Delegate Type for Warning Events raised by RDF Dataset Writers
     /// </summary>
     /// <param name="message">Warning Message</param>
     public delegate void StoreWriterWarning(String message);
 
     /// <summary>
-    /// Delegate Type for Warning Events raised by Triple Store Readers
+    /// Delegate Type for Warning Events raised by RDF Dataset Readers
     /// </summary>
     /// <param name="message">Warning Message</param>
     public delegate void StoreReaderWarning(String message);

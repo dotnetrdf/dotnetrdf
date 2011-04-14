@@ -381,6 +381,33 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
+        /// Uses the format detection rules to determine the most likely RDF Dataset Parser
+        /// </summary>
+        /// <param name="data">Raw RDF Dataset String</param>
+        /// <returns></returns>
+        public static IStoreReader GetDatasetParser(String data)
+        {
+            if (data == null) throw new RdfParserSelectionException("Cannot select a Dataset parser for a null String");
+
+            if (data.Contains("<?xml") && data.Contains("<TriX"))
+            {
+                //Probably TriX
+                return new TriXParser();
+            }
+            else if (data.Contains("@prefix") || data.Contains("{") || data.Contains("}"))
+            {
+                //Probably TriG
+                return new TriGParser();
+            }
+            else
+            {
+                //Take a stab at it being NQuads
+                //No real way to test as there's nothing particularly distinctive in NQuads
+                return new NQuadsParser();
+            }
+        }
+
+        /// <summary>
         /// Uses the format detection rules to return the most likely SPARQL Results parser
         /// </summary>
         /// <param name="data">Raw SPARQL Results String</param>

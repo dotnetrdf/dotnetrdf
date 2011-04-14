@@ -71,7 +71,7 @@ namespace VDS.RDF.Test.Parsing.Handlers
         [TestMethod]
         public void ParsingStoreHandlerNQuadsExplicit()
         {
-            TestTools.TestInMTAThread(new ThreadStart(this.ParsingStoreHandlerNQuadsImplicitActual));
+            TestTools.TestInMTAThread(new ThreadStart(this.ParsingStoreHandlerNQuadsExplicitActual));
         }
 
         private void ParsingStoreHandlerNQuadsExplicitActual()
@@ -123,6 +123,55 @@ namespace VDS.RDF.Test.Parsing.Handlers
             Assert.AreEqual(configOrig.Triples.Count + lvnOrig.Triples.Count, counter.TripleCount, "Expected Triple Count to be sum of Triple Counts in two input Graphs");
         }
 
+        [TestMethod]
+        public void ParsingFileLoaderStoreHandlerCounting()
+        {
+            TestTools.TestInMTAThread(new ThreadStart(this.ParsingFileLoaderStoreHandlerCountingActual));
+        }
+
+        private void ParsingFileLoaderStoreHandlerCountingActual()
+        {
+            this.EnsureTestData("test.nq");
+
+            StoreCountHandler counter = new StoreCountHandler();
+            FileLoader.LoadDataset(counter, "test.nq");
+
+            Graph configOrig = new Graph();
+            configOrig.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+            Graph lvnOrig = new Graph();
+            lvnOrig.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.Functions.LeviathanFunctionLibrary.ttl");
+
+            Assert.AreEqual(2, counter.GraphCount, "Expected 2 Graphs to be counted");
+            Assert.AreEqual(configOrig.Triples.Count + lvnOrig.Triples.Count, counter.TripleCount, "Expected Triple Count to be sum of Triple Counts in two input Graphs");
+        }
+
+        [TestMethod]
+        public void ParsingFileLoaderStoreHandlerExplicit()
+        {
+            TestTools.TestInMTAThread(new ThreadStart(this.ParsingFileLoaderStoreHandlerExplicitActual));
+        }
+
+        private void ParsingFileLoaderStoreHandlerExplicitActual()
+        {
+            this.EnsureTestData("test.nq");
+
+            TripleStore store = new TripleStore();
+            FileLoader.LoadDataset(new StoreHandler(store), "test.nq");
+
+            Assert.IsTrue(store.HasGraph(new Uri("http://www.dotnetrdf.org/configuration#")), "Configuration Vocab Graph should have been parsed from Dataset");
+            Graph configOrig = new Graph();
+            configOrig.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+            IGraph config = store.Graph(new Uri("http://www.dotnetrdf.org/configuration#"));
+            Assert.AreEqual(configOrig, config, "Configuration Vocab Graphs should have been equal");
+
+            Assert.IsTrue(store.HasGraph(new Uri("http://www.dotnetrdf.org/leviathan#")), "Leviathan Function Library Graph should have been parsed from Dataset");
+            Graph lvnOrig = new Graph();
+            lvnOrig.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.Functions.LeviathanFunctionLibrary.ttl");
+            IGraph lvn = store.Graph(new Uri("http://www.dotnetrdf.org/leviathan#"));
+            Assert.AreEqual(lvnOrig, lvn, "Leviathan Function Library Graphs should have been equal");
+
+        }
+
         #endregion
 
         #region TriG Tests
@@ -160,7 +209,7 @@ namespace VDS.RDF.Test.Parsing.Handlers
         [TestMethod]
         public void ParsingStoreHandlerTriGExplicit()
         {
-            TestTools.TestInMTAThread(new ThreadStart(this.ParsingStoreHandlerTriGImplicitActual));
+            TestTools.TestInMTAThread(new ThreadStart(this.ParsingStoreHandlerTriGExplicitActual));
         }
 
         private void ParsingStoreHandlerTriGExplicitActual()
@@ -249,7 +298,7 @@ namespace VDS.RDF.Test.Parsing.Handlers
         [TestMethod]
         public void ParsingStoreHandlerTriXExplicit()
         {
-            TestTools.TestInMTAThread(new ThreadStart(this.ParsingStoreHandlerTriXImplicitActual));
+            TestTools.TestInMTAThread(new ThreadStart(this.ParsingStoreHandlerTriXExplicitActual));
         }
 
         private void ParsingStoreHandlerTriXExplicitActual()

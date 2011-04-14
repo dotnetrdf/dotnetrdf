@@ -41,6 +41,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Storage.Params;
 
 namespace VDS.RDF.Parsing
@@ -61,17 +62,13 @@ namespace VDS.RDF.Parsing
         public static void Load(IGraph g, String resource, IRdfReader parser)
         {
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
-            if (resource == null) throw new RdfParseException("Cannot read RDF from a null Resource");
+            EmbeddedResourceLoader.Load(new GraphHandler(g), resource, (IRdfReader)null);
+        }
 
-            IGraph target;
-            if (g.IsEmpty)
-            {
-                target = g;
-            } 
-            else 
-            {
-                target = new Graph();
-            }
+        public static void Load(IRdfHandler handler, String resource, IRdfReader parser)
+        {
+            if (resource == null) throw new RdfParseException("Cannot read RDF from a null Resource");
+            if (handler == null) throw new RdfParseException("Cannot read RDF using a null Handler");
 
             try
             {
@@ -88,7 +85,7 @@ namespace VDS.RDF.Parsing
                     if (asm != null)
                     {
                         //Resource is in the loaded assembly
-                        EmbeddedResourceLoader.LoadInternal(target, asm, resourceName, parser);
+                        EmbeddedResourceLoader.LoadGraphInternal(handler, asm, resourceName, parser);
                     }
                     else
                     {
@@ -98,22 +95,22 @@ namespace VDS.RDF.Parsing
                 else
                 {
                     //Resource is in dotNetRDF
-                    EmbeddedResourceLoader.LoadInternal(target, Assembly.GetExecutingAssembly(), resourceName, parser);
+                    EmbeddedResourceLoader.LoadGraphInternal(handler, Assembly.GetExecutingAssembly(), resourceName, parser);
                 }
             }
             catch (RdfParseException)
             {
-                    throw;
+                throw;
             }
             catch (Exception ex)
             {
                 throw new RdfParseException("Unable to load the Embedded Resource '" + resource + "' as an unexpected error occurred", ex);
             }
+        }
 
-            if (!ReferenceEquals(g, target))
-            {
-                g.Merge(target);
-            }
+        public static void Load(IRdfHandler handler, String resource)
+        {
+            EmbeddedResourceLoader.Load(handler, resource, (IRdfReader)null);
         }
 
         /// <summary>
@@ -136,7 +133,7 @@ namespace VDS.RDF.Parsing
         /// <param name="asm">Assembly to get the resource stream from</param>
         /// <param name="resource">Full name of the Resource (without the Assembly Name)</param>
         /// <param name="parser">Parser to use (if null then will be auto-selected)</param>
-        private static void LoadInternal(IGraph g, Assembly asm, String resource, IRdfReader parser)
+        private static void LoadGraphInternal(IRdfHandler handler, Assembly asm, String resource, IRdfReader parser)
         {
             //Resource is in the given assembly
             using (Stream s = asm.GetManifestResourceStream(resource))
@@ -153,7 +150,7 @@ namespace VDS.RDF.Parsing
                     //Did we get a defined parser to use?
                     if (parser != null)
                     {
-                        parser.Load(g, new StreamReader(s));
+                        parser.Load(handler, new StreamReader(s));
                     }
                     else
                     {
@@ -164,7 +161,7 @@ namespace VDS.RDF.Parsing
                         {
                             //Resource has an appropriate file extension and we've found a candidate parser for it
                             parser = def.GetRdfParser();
-                            parser.Load(g, new StreamReader(s));
+                            parser.Load(handler, new StreamReader(s));
                         }
                         else
                         {
@@ -176,8 +173,8 @@ namespace VDS.RDF.Parsing
                                 data = reader.ReadToEnd();
                                 reader.Close();
                             }
-
-                            StringParser.Parse(g, data);
+                            parser = StringParser.GetParser(data);
+                            parser.Load(handler, new StringReader(data));
                         }
                     }
                 }
@@ -193,44 +190,7 @@ namespace VDS.RDF.Parsing
         public static void Load(ITripleStore store, String resource, IStoreReader parser)
         {
             if (store == null) throw new RdfParseException("Cannot read RDF Dataset into a null Store");
-            if (resource == null) throw new RdfParseException("Cannot read RDF Dataset from a null Resource");
-
-            try
-            {
-                String resourceName = resource;
-
-                if (resource.Contains(','))
-                {
-                    //Resource is an external assembly
-                    String assemblyName = resource.Substring(resource.IndexOf(',') + 1).TrimStart();
-                    resourceName = resourceName.Substring(0, resource.IndexOf(',')).TrimEnd();
-
-                    //Try to load this assembly
-                    Assembly asm = assemblyName.Equals(_currAsmName) ? Assembly.GetExecutingAssembly() : Assembly.Load(assemblyName);
-                    if (asm != null)
-                    {
-                        //Resource is in the loaded assembly
-                        EmbeddedResourceLoader.LoadInternal(store, asm, resourceName, parser);
-                    }
-                    else
-                    {
-                        throw new RdfParseException("The Embedded Resource '" + resourceName + "' cannot be loaded as the required assembly '" + assemblyName + "' could not be loaded");
-                    }
-                }
-                else
-                {
-                    //Resource is in dotNetRDF
-                    EmbeddedResourceLoader.LoadInternal(store, Assembly.GetExecutingAssembly(), resourceName, parser);
-                }
-            }
-            catch (RdfParseException)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                throw new RdfParseException("Unable to load the Embedded Resource '" + resource + "' as an unexpected error occurred", ex);
-            }
+            EmbeddedResourceLoader.Load(new StoreHandler(store), resource, parser);
         }
 
         /// <summary>
@@ -246,6 +206,54 @@ namespace VDS.RDF.Parsing
             EmbeddedResourceLoader.Load(store, resource, null);
         }
 
+        public static void Load(IRdfHandler handler, String resource, IStoreReader parser)
+        {
+            if (resource == null) throw new RdfParseException("Cannot read a RDF Dataset from a null Resource");
+            if (handler == null) throw new RdfParseException("Cannot read a RDF Dataset using a null Handler");
+
+            try
+            {
+                String resourceName = resource;
+
+                if (resource.Contains(','))
+                {
+                    //Resource is an external assembly
+                    String assemblyName = resource.Substring(resource.IndexOf(',') + 1).TrimStart();
+                    resourceName = resourceName.Substring(0, resource.IndexOf(',')).TrimEnd();
+
+                    //Try to load this assembly
+                    Assembly asm = (assemblyName.Equals(_currAsmName) ? Assembly.GetExecutingAssembly() : Assembly.Load(assemblyName)) as Assembly;
+                    if (asm != null)
+                    {
+                        //Resource is in the loaded assembly
+                        EmbeddedResourceLoader.LoadDatasetInternal(handler, asm, resourceName, parser);
+                    }
+                    else
+                    {
+                        throw new RdfParseException("The Embedded Resource '" + resourceName + "' cannot be loaded as the required assembly '" + assemblyName + "' could not be loaded.  Please ensure that the assembly name is correct and that is is referenced/accessible in your application.");
+                    }
+                }
+                else
+                {
+                    //Resource is in dotNetRDF
+                    EmbeddedResourceLoader.LoadDatasetInternal(handler, Assembly.GetExecutingAssembly(), resourceName, parser);
+                }
+            }
+            catch (RdfParseException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                throw new RdfParseException("Unable to load the Embedded Resource '" + resource + "' as an unexpected error occurred", ex);
+            }
+        }
+
+        public static void LoadDataset(IRdfHandler handler, String resource)
+        {
+            EmbeddedResourceLoader.Load(handler, resource, (IStoreReader)null);
+        }
+
         /// <summary>
         /// Internal Helper method which does the actual loading of the Triple Store from the Resource
         /// </summary>
@@ -253,9 +261,8 @@ namespace VDS.RDF.Parsing
         /// <param name="asm">Assembly to get the resource stream from</param>
         /// <param name="resource">Full name of the Resource (without the Assembly Name)</param>
         /// <param name="parser">Parser to use (if null will be auto-selected)</param>
-        private static void LoadInternal(ITripleStore store, Assembly asm, String resource, IStoreReader parser)
+        private static void LoadDatasetInternal(IRdfHandler handler, Assembly asm, String resource, IStoreReader parser)
         {
-
             //Resource is in the given assembly
             using (Stream s = asm.GetManifestResourceStream(resource))
             {
@@ -270,7 +277,7 @@ namespace VDS.RDF.Parsing
                     //Do we have a predefined Parser?
                     if (parser != null)
                     {
-                        parser.Load(store, new StreamParams(s));
+                        parser.Load(handler, new StreamParams(s));
                     }
                     else
                     {
@@ -281,7 +288,7 @@ namespace VDS.RDF.Parsing
                         {
                             //Resource has an appropriate file extension and we've found a candidate parser for it
                             parser = def.GetRdfDatasetParser();
-                            parser.Load(store, new StreamParams(s));
+                            parser.Load(handler, new StreamParams(s));
                         }
                         else
                         {
@@ -293,8 +300,8 @@ namespace VDS.RDF.Parsing
                                 data = reader.ReadToEnd();
                                 reader.Close();
                             }
-
-                            StringParser.ParseDataset(store, data);
+                            parser = StringParser.GetDatasetParser(data);
+                            parser.Load(handler, new TextReaderParams(new StringReader(data)));
                         }
                     }
                 }
