@@ -1,0 +1,101 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{46C34117-D851-4697-924A-2DBA2923C558}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VDS.OWL</RootNamespace>
+    <AssemblyName>dotNetOwl</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\dotNetOwl.XML</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Core\Annotation.cs" />
+    <Compile Include="Core\AnnotationAxiom.cs" />
+    <Compile Include="Core\AnnotationProperty.cs" />
+    <Compile Include="Core\AnnotationValue.cs" />
+    <Compile Include="Core\AnonymousIndividual.cs" />
+    <Compile Include="Core\AssertionAxiom.cs" />
+    <Compile Include="Core\Axiom.cs" />
+    <Compile Include="Core\Class.cs" />
+    <Compile Include="Core\ClassAxiom.cs" />
+    <Compile Include="Core\ClassExpression.cs" />
+    <Compile Include="Core\ClassExpressions.cs" />
+    <Compile Include="Core\DataPropertyAxiom.cs" />
+    <Compile Include="Core\DataPropertyRestrictions.cs" />
+    <Compile Include="Core\DataRanges.cs" />
+    <Compile Include="Core\DataProperty.cs" />
+    <Compile Include="Core\DataPropertyExpression.cs" />
+    <Compile Include="Core\DatatypeDefinitionAxiom.cs" />
+    <Compile Include="Core\DataTypeRestriction.cs" />
+    <Compile Include="Core\FacetRestriction.cs" />
+    <Compile Include="Core\HasKeyAxiom.cs" />
+    <Compile Include="Core\IAnnotation.cs" />
+    <Compile Include="Core\IAnnotationSubject.cs" />
+    <Compile Include="Core\IAxiom.cs" />
+    <Compile Include="Core\IDataRange.cs" />
+    <Compile Include="Core\IDataType.cs" />
+    <Compile Include="Core\IDeclaration.cs" />
+    <Compile Include="Core\IEntity.cs" />
+    <Compile Include="Core\ILiteral.cs" />
+    <Compile Include="Core\Individual.cs" />
+    <Compile Include="Core\InverseObjectProperty.cs" />
+    <Compile Include="Core\Iri.cs" />
+    <Compile Include="Core\NamedIndividual.cs" />
+    <Compile Include="Core\ObjectCardinalityRestrictions.cs" />
+    <Compile Include="Core\ObjectProperty.cs" />
+    <Compile Include="Core\ObjectPropertyAxiom.cs" />
+    <Compile Include="Core\ObjectPropertyExpression.cs" />
+    <Compile Include="Core\ObjectPropertyRestrictions.cs" />
+    <Compile Include="Core\Ontology.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Parsing\" />
+    <Folder Include="Writing\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
