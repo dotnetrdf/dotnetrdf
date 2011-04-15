@@ -260,6 +260,7 @@ namespace VDS.RDF
             return Tools.CopyNode(n, target, keepOriginalGraphUri);
         }
 
+
         /// <summary>
         /// Copies a Triple to the target Graph
         /// </summary>

@@ -93,9 +93,93 @@ namespace VDS.RDF.Query.Algebra
         public ZeroLengthPath(PatternItem start, PatternItem end, ISparqlPath path)
             : base(start, end, path) { }
     
-        public override BaseMultiset  Evaluate(SparqlEvaluationContext context)
+        public override BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
- 	        throw new NotImplementedException();
+            HashSet<KeyValuePair<INode,INode>> matches = new HashSet<KeyValuePair<INode,INode>>();
+
+            if (context.Data.ActiveGraph != null)
+            {
+                this.GetMatches(context, context.Data.ActiveGraph, matches);
+            }
+            else if (context.Data.DefaultGraph != null)
+            {
+                this.GetMatches(context, context.Data.DefaultGraph, matches);
+            }
+            else
+            {
+                bool datasetOk = false;
+                try
+                {
+                    foreach (Uri u in context.Data.GraphUris)
+                    {
+                        //This bit of logic takes care of the fact that calling SetActiveGraph((Uri)null) resets the
+                        //Active Graph to be the default graph which if the default graph is null is usually the Union of
+                        //all Graphs in the Store
+                        if (u == null && context.Data.DefaultGraph == null && context.Data.UsesUnionDefaultGraph)
+                        {
+                            if (context.Data.HasGraph(null))
+                            {
+                                context.Data.SetActiveGraph(context.Data[null]);
+                            }
+                            else
+                            {
+                                continue;
+                            }
+                        }
+                        else
+                        {
+                            context.Data.SetActiveGraph(u);
+                        }
+
+                        datasetOk = true;
+
+                        this.GetMatches(context, context.Data.ActiveGraph, matches);
+                        context.Data.ResetActiveGraph();
+                        datasetOk = false;
+                    }
+                }
+                finally
+                {
+                    if (datasetOk) context.Data.ResetActiveGraph();
+                }
+            }
+
+            if (matches.Count == 0)
+            {
+                context.OutputMultiset = new NullMultiset();
+            }
+            else
+            {
+                if (this.PathStart.VariableName == null && this.PathEnd.VariableName == null)
+                {
+                    context.OutputMultiset = new IdentityMultiset();
+                }
+                else
+                {
+                    context.OutputMultiset = new Multiset();
+                    String subjVar = this.PathStart.VariableName;
+                    String objVar = this.PathEnd.VariableName;
+                    foreach (KeyValuePair<INode, INode> m in matches)
+                    {
+                        Set s = new Set();
+                        if (subjVar != null) s.Add(subjVar, m.Key);
+                        if (objVar != null) s.Add(objVar, m.Value);
+                        context.OutputMultiset.Add(s);
+                    }
+                }
+            }
+            return context.OutputMultiset;
+        }
+
+        private void GetMatches(SparqlEvaluationContext context, IGraph g, HashSet<KeyValuePair<INode, INode>> ms)
+        {
+            foreach (Triple t in g.Triples)
+            {
+                if (this.PathStart.Accepts(context, t.Subject) && this.PathEnd.Accepts(context, t.Object))
+                {
+                    ms.Add(new KeyValuePair<INode, INode>(t.Subject, t.Object));
+                }
+            }
         }
 
         public override string  ToString()

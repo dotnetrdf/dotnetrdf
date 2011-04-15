@@ -8,6 +8,7 @@ using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
+using VDS.RDF.Query.Algebra;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Test
@@ -102,7 +103,26 @@ namespace VDS.RDF.Test
             }
             else
             {
-                throw new ArgumentException("Expected a Graph or a SPARQLResultSet");
+                throw new ArgumentException("Expected a Graph or a SparqlResultSet");
+            }
+        }
+
+        public static void ShowMultiset(BaseMultiset multiset)
+        {
+            if (multiset is NullMultiset)
+            {
+                Console.WriteLine("NULL");
+            }
+            else if (multiset is IdentityMultiset)
+            {
+                Console.WriteLine("IDENTITY");
+            }
+            else
+            {
+                foreach (Set s in multiset.Sets)
+                {
+                    Console.WriteLine(s.ToString());
+                }
             }
         }
 
