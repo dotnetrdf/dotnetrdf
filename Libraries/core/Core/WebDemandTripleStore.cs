@@ -112,7 +112,7 @@ namespace VDS.RDF
             {
                 return true;
             }
-            else
+            else if (graphUri != null)
             {
                 try
                 {
@@ -126,6 +126,10 @@ namespace VDS.RDF
                 {
                     return false;
                 }
+            }
+            else
+            {
+                return false;
             }
         }
 

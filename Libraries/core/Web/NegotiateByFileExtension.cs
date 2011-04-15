@@ -86,7 +86,12 @@ namespace VDS.RDF.Web
                     if (defs.Count == 0) return;
 
                     context.Request.Headers["Accept"] = String.Join(",", defs.Select(d => d.CanonicalMimeType).ToArray());
-                    context.RewritePath(Path.GetFileNameWithoutExtension(actualPath), context.Request.PathInfo, context.Request.Url.Query, true);
+                    String filePath = Path.GetFileNameWithoutExtension(actualPath);
+                    if (filePath == null || filePath.Equals(String.Empty))
+                    {
+                        if (context.Request.Url.AbsolutePath.EndsWith(ext)) filePath = context.Request.Url.AbsolutePath.Substring(0, context.Request.Url.AbsolutePath.Length - ext.Length);
+                    }
+                    context.RewritePath(filePath, context.Request.PathInfo, context.Request.Url.Query.Substring(1), true);
                 }
             }
         }
