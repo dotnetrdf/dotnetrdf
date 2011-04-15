@@ -60,7 +60,7 @@ namespace VDS.RDF.Test.Sparql
         }
 
         [TestMethod]
-        public void SparqlPropertyPathEvaluationZeroLengthAll()
+        public void SparqlPropertyPathEvaluationZeroLength()
         {
             EnsureTestData();
 
@@ -123,6 +123,21 @@ namespace VDS.RDF.Test.Sparql
 
             Assert.IsFalse(results.IsEmpty, "Results should not be empty");
             Assert.IsTrue(results is IdentityMultiset, "Results should be Identity");
+        }
+
+        [TestMethod]
+        public void SparqlPropertyPathEvaluationNegatedPropertySet()
+        {
+            EnsureTestData();
+
+            VDS.RDF.Query.Paths.NegatedPropertySet path = new VDS.RDF.Query.Paths.NegatedPropertySet(new Property[] { new Property(this._factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType))) }, Enumerable.Empty<Property>());
+            ISparqlAlgebra algebra = this.GetAlgebra(path);
+            SparqlEvaluationContext context = new SparqlEvaluationContext(null, this._data);
+            BaseMultiset results = algebra.Evaluate(context);
+
+            TestTools.ShowMultiset(results);
+
+            Assert.IsFalse(results.IsEmpty, "Results should not be empty");
         }
     }
 }

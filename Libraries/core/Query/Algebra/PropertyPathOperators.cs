@@ -95,6 +95,18 @@ namespace VDS.RDF.Query.Algebra
     
         public override BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
+            if (this.AreBothTerms())
+            {
+                if (this.AreSameTerms())
+                {
+                    return new IdentityMultiset();
+                }
+                else
+                {
+                    return new NullMultiset();
+                }
+            }
+
             HashSet<KeyValuePair<INode,INode>> matches = new HashSet<KeyValuePair<INode,INode>>();
 
             if (context.Data.ActiveGraph != null)
@@ -169,6 +181,27 @@ namespace VDS.RDF.Query.Algebra
                 }
             }
             return context.OutputMultiset;
+        }
+
+        private bool AreBothTerms()
+        {
+            return (this.PathStart.VariableName == null && this.PathEnd.VariableName == null);
+        }
+
+        private bool AreSameTerms()
+        {
+            if (this.PathStart is NodeMatchPattern && this.PathEnd is NodeMatchPattern)
+            {
+                return ((NodeMatchPattern)this.PathStart).Node.Equals(((NodeMatchPattern)this.PathEnd).Node);
+            }
+            else if (this.PathStart is FixedBlankNodePattern && this.PathEnd is FixedBlankNodePattern)
+            {
+                return ((FixedBlankNodePattern)this.PathStart).InternalID.Equals(((FixedBlankNodePattern)this.PathEnd).InternalID);
+            }
+            else
+            {
+                return false;
+            }
         }
 
         private void GetMatches(SparqlEvaluationContext context, IGraph g, HashSet<KeyValuePair<INode, INode>> ms)
@@ -246,14 +279,14 @@ namespace VDS.RDF.Query.Algebra
 
     public class NegatedPropertySet : ISparqlAlgebra
     {
-        private List<Property> _properties = new List<Property>();
+        private List<INode> _properties = new List<INode>();
         private PatternItem _start, _end;
 
         public NegatedPropertySet(PatternItem start, PatternItem end, IEnumerable<Property> properties)
         {
             this._start = start;
             this._end = end;
-            this._properties.AddRange(properties);
+            this._properties.AddRange(properties.Select(p => p.Predicate));
         }
 
         public PatternItem PathStart
@@ -272,7 +305,7 @@ namespace VDS.RDF.Query.Algebra
             }
         }
 
-        public IEnumerable<Property> Properties
+        public IEnumerable<INode> Properties
         {
             get
             {
@@ -284,7 +317,63 @@ namespace VDS.RDF.Query.Algebra
 
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
-            throw new NotImplementedException();
+            IEnumerable<Triple> ts;
+            if (this._start.VariableName != null && context.InputMultiset.ContainsVariable(this._start.VariableName))
+            {
+                if (this._end.VariableName != null && context.InputMultiset.ContainsVariable(this._end.VariableName))
+                {
+                    ts = (from s in context.InputMultiset.Sets
+                          where s[this._start.VariableName] != null && s[this._end.VariableName] != null
+                          from t in context.Data.GetTriplesWithSubjectObject(s[this._start.VariableName], s[this._end.VariableName])
+                          select t);
+                }
+                else
+                {
+                    ts = (from s in context.InputMultiset.Sets
+                          where s[this._start.VariableName] != null
+                          from t in context.Data.GetTriplesWithSubject(s[this._start.VariableName])
+                          select t);
+                }
+            }
+            else if (this._end.VariableName != null && context.InputMultiset.ContainsVariable(this._end.VariableName))
+            {
+                ts = (from s in context.InputMultiset.Sets
+                      where s[this._end.VariableName] != null
+                      from t in context.Data.GetTriplesWithObject(s[this._end.VariableName])
+                      select t);
+            }
+            else
+            {
+                ts = context.Data.Triples;
+            }
+
+            context.OutputMultiset = new Multiset();
+            String subjVar = this._start.VariableName;
+            String objVar = this._end.VariableName;
+            foreach (Triple t in ts)
+            {
+                if (!this._properties.Contains(t.Predicate))
+                {
+                    Set s = new Set();
+                    if (subjVar != null) s.Add(subjVar, t.Subject);
+                    if (objVar != null) s.Add(objVar, t.Object);
+                    context.OutputMultiset.Add(s);
+                }
+            }
+
+            if (subjVar == null && objVar == null)
+            {
+                if (context.OutputMultiset.Count == 0)
+                {
+                    context.OutputMultiset = new NullMultiset();
+                }
+                else
+                {
+                    context.OutputMultiset = new IdentityMultiset();
+                }
+            }
+
+            return context.OutputMultiset;
         }
 
         public IEnumerable<string> Variables
@@ -303,7 +392,7 @@ namespace VDS.RDF.Query.Algebra
         public GraphPattern ToGraphPattern()
         {
             GraphPattern gp = new GraphPattern();
-            PropertyPathPattern pp = new PropertyPathPattern(this.PathStart, new VDS.RDF.Query.Paths.NegatedPropertySet(this._properties, Enumerable.Empty<Property>()), this.PathEnd);
+            PropertyPathPattern pp = new PropertyPathPattern(this.PathStart, new VDS.RDF.Query.Paths.NegatedPropertySet(this._properties.Select(p => new Property(p)), Enumerable.Empty<Property>()), this.PathEnd);
             gp.AddTriplePattern(pp);
             return gp;
         }

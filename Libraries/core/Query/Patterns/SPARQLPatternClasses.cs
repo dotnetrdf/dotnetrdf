@@ -294,6 +294,17 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
+        /// Gets the Blank Node ID
+        /// </summary>
+        public String InternalID
+        {
+            get
+            {
+                return this._id;
+            }
+        }
+
+        /// <summary>
         /// Checks whether the pattern accepts the given Node
         /// </summary>
         /// <param name="context">SPARQL Evaluation Context</param>
