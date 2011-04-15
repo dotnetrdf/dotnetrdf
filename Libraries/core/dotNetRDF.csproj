@@ -328,6 +328,7 @@
     <Compile Include="Query\Algebra\IdentityMultiset.cs" />
     <Compile Include="Query\Algebra\ISparqlAlgebra.cs" />
     <Compile Include="Query\Algebra\AlgebraJoinClasses.cs" />
+    <Compile Include="Query\Algebra\PropertyPathOperators.cs" />
     <Compile Include="Query\Optimisation\BaseAlgebraOptimiser.cs" />
     <Compile Include="Query\Optimisation\BaseQueryOptimiser.cs" />
     <Compile Include="Query\Optimisation\BgpOptimisers.cs" />
@@ -414,6 +415,7 @@
     <Compile Include="Query\Optimisation\SparqlOptimiser.cs" />
     <Compile Include="Query\Optimisation\WeightedOptimiser.cs" />
     <Compile Include="Query\Ordering\TripleComparer.cs" />
+    <Compile Include="Query\Paths\NegatedPropertySet.cs" />
     <Compile Include="Query\Patterns\BindPattern.cs" />
     <Compile Include="Query\PelletQueryProcessor.cs" />
     <Compile Include="Query\Inference\Pellet\ServiceEndpoint.cs" />

@@ -103,5 +103,7 @@ namespace VDS.RDF.Query.Paths
         /// <param name="context">Transform Context</param>
         /// <returns></returns>
         public abstract void ToAlgebra(PathTransformContext context);
+
+        public abstract ISparqlAlgebra ToAlgebraOperator(PathTransformContext context);
     }
 }

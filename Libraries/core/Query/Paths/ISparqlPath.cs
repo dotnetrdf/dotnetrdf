@@ -78,5 +78,7 @@ namespace VDS.RDF.Query.Paths
         /// </remarks>
         /// <exception cref="RdfQueryException">Thrown if the path is non-simple and therefore there is no Algebra transform</exception>
         void ToAlgebra(PathTransformContext context);
+
+        ISparqlAlgebra ToAlgebraOperator(PathTransformContext context);
     }
 }

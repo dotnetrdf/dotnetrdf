@@ -336,9 +336,10 @@ namespace VDS.RDF.Writing.Formatting
             {
                 for (int i = 0; i < gp.ChildGraphPatterns.Count; i++)
                 {
-                    output.AppendLine(this.Format(gp.ChildGraphPatterns[i]));
+                    output.Append(this.Format(gp.ChildGraphPatterns[i]));
                     if (i < gp.ChildGraphPatterns.Count - 1)
                     {
+                        output.AppendLine();
                         output.AppendLine("UNION");
                     }
                 }

@@ -76,6 +76,9 @@ namespace VDS.RDF.Parsing
                 case Token.HAT:
                     lastItem = LastPathItemType.Sequencer;
                     break;
+                case Token.NEGATION:
+                    lastItem = LastPathItemType.Negation;
+                    break;
                 default:
                     throw new RdfParseException("Unexpected Token '" + first.GetType().ToString() + "' encountered, this is not valid as the start of a property path");
             } 
@@ -109,9 +112,9 @@ namespace VDS.RDF.Parsing
                                 //Triple pattern so we stop
                                 lastItem = LastPathItemType.End;
                             }
-                            else if (lastItem == LastPathItemType.Sequencer)
+                            else if (lastItem == LastPathItemType.Sequencer || lastItem == LastPathItemType.Negation)
                             {
-                                //This is a new Path Group if it follows a sequencer
+                                //This is a new Path Group if it follows a sequencer/negation
                                 openBrackets++;
                                 context.Tokens.Dequeue();
                                 tokens.Enqueue(next);
@@ -119,7 +122,7 @@ namespace VDS.RDF.Parsing
                             } 
                             else 
                             {
-                                throw new RdfParseException("Path Groups can only follow path sequencing tokens");
+                                throw new RdfParseException("Path Groups can only follow path sequencing tokens", next);
                             }
                                 break;
 
@@ -128,7 +131,7 @@ namespace VDS.RDF.Parsing
 
                             if (lastItem != LastPathItemType.Predicate)
                             {
-                                throw new RdfParseException("Cardinality Modifiers can only follow Predicates/Path Groups");
+                                throw new RdfParseException("Cardinality Modifiers can only follow Predicates/Path Groups", next);
                             }
 
                             //Add the opening { to the tokens
@@ -198,9 +201,10 @@ namespace VDS.RDF.Parsing
                         case Token.KEYWORDA:
                             //Predicates
 
-                            if (lastItem != LastPathItemType.None && lastItem != LastPathItemType.Sequencer)
+                            if (lastItem != LastPathItemType.None && lastItem != LastPathItemType.Sequencer && lastItem != LastPathItemType.Negation)
                             {
-                                //This appears to be the end of the path since we've encountered 
+                                //This appears to be the end of the path since we've encountered something that could be 
+                                //an Object
                                 lastItem = LastPathItemType.End;
                             }
                             else
@@ -208,6 +212,19 @@ namespace VDS.RDF.Parsing
                                 context.Tokens.Dequeue();
                                 tokens.Enqueue(next);
                                 lastItem = LastPathItemType.Predicate;
+                            }
+                            break;
+
+                        case Token.NEGATION:
+                            if (lastItem == LastPathItemType.Sequencer)
+                            {
+                                context.Tokens.Dequeue();
+                                tokens.Enqueue(next);
+                                lastItem = LastPathItemType.Negation;
+                            }
+                            else
+                            {
+                                throw new RdfParseException("Negated Property Sets can only follow path sequencing tokens", next);
                             }
                             break;
 
@@ -355,6 +372,10 @@ namespace VDS.RDF.Parsing
                     path = this.TryParsePath(context, subtokens);
                     break;
 
+                case Token.NEGATION:
+                    path = this.TryParseNegatedPropertySet(context, tokens);
+                    break;
+
                 default:
                     throw new RdfParseException("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a URI/QName, the 'a' keyword or the start of a group path expression", next);
             }
@@ -395,6 +416,7 @@ namespace VDS.RDF.Parsing
                     {
                         if (Int32.TryParse(next.Value, out min))
                         {
+                            if (min < 0) throw new RdfParseException("Cannot specify the minimum cardinality of a path as less than zero", next);
                             next = tokens.Dequeue();
                             if (next.TokenType == Token.COMMA)
                             {
@@ -403,9 +425,17 @@ namespace VDS.RDF.Parsing
                                 {
                                     if (Int32.TryParse(next.Value, out max))
                                     {
+                                        if (max < min) throw new RdfParseException("Cannot specify the maximum cardinality of a path as less than the minimum", next);
                                         next = tokens.Dequeue();
                                         if (next.TokenType != Token.RIGHTCURLYBRACKET) throw new RdfParseException("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a } to terminate a Path Cardinality modifier", next);
-                                        return new NToM(path, min, max);
+                                        if (min == max)
+                                        {
+                                            return new FixedCardinality(path, min);
+                                        }
+                                        else
+                                        {
+                                            return new NToM(path, min, max);
+                                        }
                                     }
                                     else
                                     {
@@ -414,7 +444,18 @@ namespace VDS.RDF.Parsing
                                 }
                                 else if (next.TokenType == Token.RIGHTCURLYBRACKET)
                                 {
-                                    return new NOrMore(path, min);
+                                    if (min == 0)
+                                    {
+                                        return new ZeroOrMore(path);
+                                    }
+                                    else if (min == 1)
+                                    {
+                                        return new OneOrMore(path);
+                                    }
+                                    else
+                                    {
+                                        return new NOrMore(path, min);
+                                    }
                                 }
                                 else
                                 {
@@ -442,9 +483,17 @@ namespace VDS.RDF.Parsing
                         {
                             if (Int32.TryParse(next.Value, out max))
                             {
+                                if (max <= 0) throw new RdfParseException("Cannot specify the maximum cardinality for a path as being less than the minimum", next);
                                 next = tokens.Dequeue();
                                 if (next.TokenType != Token.RIGHTCURLYBRACKET) throw new RdfParseException("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a } to terminate a Path Cardinality modifier", next);
-                                return new ZeroToN(path, max);
+                                if (max == 1)
+                                {
+                                    return new ZeroOrOne(path);
+                                }
+                                else
+                                {
+                                    return new ZeroToN(path, max);
+                                }
                             } 
                             else 
                             {
@@ -464,6 +513,111 @@ namespace VDS.RDF.Parsing
                     throw new RdfParseException("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a token which is valid as a Path Cardinality modifier", next);
             }
         }
+
+        private ISparqlPath TryParseNegatedPropertySet(SparqlQueryParserContext context, Queue<IToken> tokens)
+        {
+            IToken next = tokens.Peek();
+            bool inverse;
+            Property p;
+
+            switch (next.TokenType)
+            {
+                case Token.QNAME:
+                case Token.URI:
+                case Token.KEYWORDA:
+                case Token.HAT:
+                    p = this.TryParsePathOneInPropertySet(context, tokens, out inverse);
+                    if (inverse)
+                    {
+                        return new NegatedPropertySet(Enumerable.Empty<Property>(), p.AsEnumerable());
+                    }
+                    else
+                    {
+                        return new NegatedPropertySet(p.AsEnumerable(), Enumerable.Empty<Property>());
+                    }
+                    break;
+
+                case Token.LEFTBRACKET:
+                    List<Property> ps = new List<Property>();
+                    List<Property> inverses = new List<Property>();
+
+                    tokens.Dequeue();
+                    next = tokens.Peek();
+                    while (next.TokenType != Token.RIGHTBRACKET)
+                    {
+                        //Parse the next item in the set
+                        p = this.TryParsePathOneInPropertySet(context, tokens, out inverse);
+                        if (inverse)
+                        {
+                            inverses.Add(p);
+                        }
+                        else
+                        {
+                            ps.Add(p);
+                        }
+
+                        //Then there may be an optional | which we should discard
+                        next = tokens.Peek();
+                        if (next.TokenType == Token.BITWISEOR)
+                        {
+                            tokens.Dequeue();
+                            next = tokens.Peek();
+                            //If we see this we can't then see a ) immediately
+                            if (next.TokenType == Token.RIGHTBRACKET) throw new RdfParseException("Unexpected ) to end a negated property set encountered immediately after a | which should indicate that further items are in the set", next);
+                        }
+                    }
+                    tokens.Dequeue();
+
+                    if (ps.Count == 0 && inverses.Count == 0)
+                    {
+                        throw new RdfParseException("Unexpected empty negated property set encountered", next);
+                    }
+                    else
+                    {
+                        return new NegatedPropertySet(ps, inverses);
+                    }
+
+                    break;
+
+                default:
+                    throw new RdfParseException("Unexpected Token Type '" + next.GetType().Name + "' encountered, expected the first path in a negated property set", next);
+
+            }
+        }
+
+        private Property TryParsePathOneInPropertySet(SparqlQueryParserContext context, Queue<IToken> tokens, out bool inverse)
+        {
+            IToken next = tokens.Dequeue();
+            inverse = false;
+            switch (next.TokenType)
+            {
+                case Token.URI:
+                case Token.QNAME:
+                    return new Property(new UriNode(null, new Uri(Tools.ResolveUriOrQName(next, context.Query.NamespaceMap, context.Query.BaseUri))));
+
+                case Token.KEYWORDA:
+                    return new Property(new UriNode(null, new Uri(RdfSpecsHelper.RdfType)));
+
+                case Token.HAT:
+                    next = tokens.Dequeue();
+                    inverse = true;
+                    switch (next.TokenType)
+                    {
+                        case Token.URI:
+                        case Token.QNAME:
+                            return new Property(new UriNode(null, new Uri(Tools.ResolveUriOrQName(next, context.Query.NamespaceMap, context.Query.BaseUri))));
+
+                        case Token.KEYWORDA:
+                            return new Property(new UriNode(null, new Uri(RdfSpecsHelper.RdfType)));
+
+                        default:
+                            throw new RdfParseException("Unexpected Token Type '" + next.GetType().Name + "' encountered, expected a QName/URI or the 'a' Keyword after an inverse operator in a negated property set", next);
+                    }
+
+                default:
+                    throw new RdfParseException("Unexpected Token Type '" + next.GetType().Name + "' encountered, expected a QName/URI or the 'a' Keyword or the inverse operator '^' to define a path in a negated property set", next);
+            }
+        }
     }
 
     enum LastPathItemType
@@ -472,6 +626,7 @@ namespace VDS.RDF.Parsing
         Predicate,
         Modifier,
         Sequencer,
+        Negation,
         End
     }
 }

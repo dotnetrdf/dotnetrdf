@@ -402,5 +402,11 @@ namespace VDS.RDF.Query.Paths
             NodeMatchPattern nodeMatch = new NodeMatchPattern(this._predicate);
             context.AddTriplePattern(new TriplePattern(context.Subject, nodeMatch, context.Object));
         }
+
+        public ISparqlAlgebra ToAlgebraOperator(PathTransformContext context)
+        {
+            this.ToAlgebra(context);
+            return context.ToAlgebra();
+        }
     }
 }

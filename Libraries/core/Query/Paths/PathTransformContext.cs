@@ -47,7 +47,7 @@ namespace VDS.RDF.Query.Paths
     /// </summary>
     public class PathTransformContext
     {
-        private List<TriplePattern> _patterns = new List<TriplePattern>();
+        private List<ITriplePattern> _patterns = new List<ITriplePattern>();
         private int _nextID = 0;
         private PatternItem _currSubj, _currObj, _start, _end;
         private bool _top = true;
@@ -65,6 +65,14 @@ namespace VDS.RDF.Query.Paths
             this._currObj = end;
         }
 
+        public PathTransformContext(PathTransformContext context)
+        {
+            this._start = context._start;
+            this._end = context._end;
+            this._currSubj = context._currSubj;
+            this._currObj = context._currObj;
+        }
+
         /// <summary>
         /// Returns the BGP that the Path Transform produces
         /// </summary>
@@ -73,10 +81,6 @@ namespace VDS.RDF.Query.Paths
         {
             if (this._patterns.Count > 0)
             {
-                foreach (ITriplePattern tp in this._patterns)
-                {
-                    Console.WriteLine(tp.ToString());
-                }
                 return new Bgp(this._patterns);
             }
             else
@@ -99,7 +103,7 @@ namespace VDS.RDF.Query.Paths
         /// Adds a Triple Pattern to the Path Transform
         /// </summary>
         /// <param name="p">Triple Pattern</param>
-        public void AddTriplePattern(TriplePattern p)
+        public void AddTriplePattern(ITriplePattern p)
         {
             this._patterns.Add(p);
         }

@@ -91,5 +91,47 @@ namespace VDS.RDF.Test.Sparql
             String query = "PREFIX xsd: <" + NamespaceMapper.XMLSCHEMA + "> SELECT * WHERE { ?s ?p ?o . FILTER(1 + 3 IN (1, 2, 3)) }";
             TestQuery(query);
         }
+
+        [TestMethod]
+        public void SparqlParsingPropertyPathsNegatedSetSimple()
+        {
+            String query = "SELECT * WHERE { ?s !a ?o }";
+            TestQuery(query);
+        }
+
+        [TestMethod]
+        public void SparqlParsingPropertyPathsNegatedSetSimpleInSequence1()
+        {
+            String query = "SELECT * WHERE { ?s a / !a ?o }";
+            TestQuery(query);
+        }
+
+        [TestMethod]
+        public void SparqlParsingPropertyPathsNegatedSetSimpleInSequence2()
+        {
+            String query = "SELECT * WHERE { ?s !a / a ?o }";
+            TestQuery(query);
+        }
+
+        [TestMethod]
+        public void SparqlParsingPropertyPathsNegatedSet()
+        {
+            String query = "PREFIX rdfs: <" + NamespaceMapper.RDFS + "> SELECT * WHERE { ?s !(rdfs:label|rdfs:comment) ?o }";
+            TestQuery(query);
+        }
+
+        [TestMethod]
+        public void SparqlParsingPropertyPathsNegatedSetModified()
+        {
+            String query = "PREFIX rdfs: <" + NamespaceMapper.RDFS + "> SELECT * WHERE { ?s !(rdfs:label|rdfs:comment){1,2} ?o }";
+            TestQuery(query);
+        }
+
+        [TestMethod]
+        public void SparqlParsingPropertyPathsNegatedSetSimpleInAlternative()
+        {
+            String query = "PREFIX rdfs: <" + NamespaceMapper.RDFS + "> SELECT * WHERE { ?s (rdfs:label|!rdfs:comment) ?o }";
+            TestQuery(query);
+        }
     }
 }

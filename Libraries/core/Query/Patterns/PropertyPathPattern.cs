@@ -147,7 +147,7 @@ namespace VDS.RDF.Query.Patterns
                         result.AddVariable(this._lengthVar);
                         foreach (Set s in result.Sets)
                         {
-                            s.Add(this._lengthVar, new LiteralNode(null, ((Bgp)algebra).PatternCount.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger)));
+                            s.Add(this._lengthVar, new LiteralNode(null, ((IBgp)algebra).PatternCount.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger)));
                         }
                     }
 

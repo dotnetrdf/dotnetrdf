@@ -267,7 +267,7 @@ namespace VDS.RDF.Query.Algebra
         public GraphPattern ToGraphPattern()
         {
             GraphPattern p = new GraphPattern();
-            foreach (TriplePattern tp in this._triplePatterns)
+            foreach (ITriplePattern tp in this._triplePatterns)
             {
                 p.AddTriplePattern(tp);
             }

@@ -37,6 +37,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Paths
@@ -206,6 +207,19 @@ namespace VDS.RDF.Query.Paths
             }
         }
 
+        public override ISparqlAlgebra ToAlgebraOperator(PathTransformContext context)
+        {
+            if (this._n > 0)
+            {
+                this.ToAlgebra(context);
+                return context.ToAlgebra();
+            }
+            else
+            {
+                return new ZeroLengthPath(context.Subject, context.Object, this._path);
+            }
+        }
+
         /// <summary>
         /// Gets the String representation of the Path
         /// </summary>
@@ -295,6 +309,11 @@ namespace VDS.RDF.Query.Paths
         {
             return this._path.ToString() + "*";
         }
+
+        public override ISparqlAlgebra ToAlgebraOperator(PathTransformContext context)
+        {
+            return new ZeroOrMorePath(context.Subject, context.Object, this._path);
+        }
     }
 
     /// <summary>
@@ -371,6 +390,16 @@ namespace VDS.RDF.Query.Paths
         {
             return this._path.ToString() + "?";
         }
+
+        public override ISparqlAlgebra ToAlgebraOperator(PathTransformContext context)
+        {
+            PathTransformContext lhsContext = new PathTransformContext(context);
+            PathTransformContext rhsContext = new PathTransformContext(context);
+            ISparqlAlgebra lhs = new ZeroLengthPath(lhsContext.Subject, lhsContext.Object, this._path);
+            ISparqlAlgebra rhs = this._path.ToAlgebraOperator(context);
+
+            return new Union(lhs, rhs);
+        }
     }
 
     /// <summary>
@@ -440,6 +469,11 @@ namespace VDS.RDF.Query.Paths
         public override string ToString()
         {
             return this._path.ToString() + "+";
+        }
+
+        public override ISparqlAlgebra ToAlgebraOperator(PathTransformContext context)
+        {
+            return new OneOrMorePath(context.Subject, context.Object, this._path);
         }
     }
 
@@ -519,6 +553,14 @@ namespace VDS.RDF.Query.Paths
         public override string ToString()
         {
             return this._path.ToString() + "{" + this._n + ",}";
+        }
+
+        public override ISparqlAlgebra ToAlgebraOperator(PathTransformContext context)
+        {
+            PatternItem tempVar = context.GetNextTemporaryVariable();
+            context.AddTriplePattern(new PropertyPathPattern(context.Subject, new FixedCardinality(this._path, this._n), tempVar));
+            context.AddTriplePattern(new PropertyPathPattern(tempVar, new ZeroOrMore(this._path), context.Object));
+            return context.ToAlgebra();
         }
     }
 
@@ -609,6 +651,12 @@ namespace VDS.RDF.Query.Paths
         public override string ToString()
         {
             return this._path.ToString() + "{," + this._n + "}";
+        }
+
+        public override ISparqlAlgebra ToAlgebraOperator(PathTransformContext context)
+        {
+            context.AddTriplePattern(new PropertyPathPattern(context.Subject, new NToM(this._path, 0, this._n), context.Object));
+            return context.ToAlgebra();
         }
     }
 
@@ -704,6 +752,27 @@ namespace VDS.RDF.Query.Paths
         public override string ToString()
         {
             return this._path.ToString() + "{" + this._n + "," + this._m + "}";
+        }
+
+        public override ISparqlAlgebra ToAlgebraOperator(PathTransformContext context)
+        {
+            ISparqlAlgebra complex = null;
+            int i = this._n;
+            while (i <= this._m)
+            {
+                PathTransformContext tempContext = new PathTransformContext(context);
+                tempContext.AddTriplePattern(new PropertyPathPattern(context.Subject, new FixedCardinality(this._path, i), context.Object));
+                if (complex == null)
+                {
+                    complex = tempContext.ToAlgebra();
+                }
+                else
+                {
+                    complex = new Union(complex, tempContext.ToAlgebra());
+                }
+                i++;
+            }
+            return complex;
         }
     }
 }

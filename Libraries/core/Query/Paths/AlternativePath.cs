@@ -37,6 +37,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VDS.RDF.Query.Algebra;
 
 namespace VDS.RDF.Query.Paths
 {
@@ -107,6 +108,15 @@ namespace VDS.RDF.Query.Paths
         public override void ToAlgebra(PathTransformContext context)
         {
             throw new RdfQueryException("Cannot transform a non-simple Path to an Algebra expression");
+        }
+
+        public override ISparqlAlgebra ToAlgebraOperator(PathTransformContext context)
+        {
+            PathTransformContext lhsContext = new PathTransformContext(context);
+            PathTransformContext rhsContext = new PathTransformContext(context);
+            ISparqlAlgebra lhs = this._lhs.ToAlgebraOperator(lhsContext);
+            ISparqlAlgebra rhs = this._rhs.ToAlgebraOperator(rhsContext);
+            return new Union(lhs, rhs);
         }
     }
 }

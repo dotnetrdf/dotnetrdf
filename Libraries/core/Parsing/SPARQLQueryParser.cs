@@ -1461,7 +1461,7 @@ namespace VDS.RDF.Parsing
                     //Variable
                     context.LocalTokens.Push(next);
                     context.Query.AddVariable(next.Value);
-                    this.TryParsePropertyObjectList(context, p,2);
+                    this.TryParsePredicateObjectList(context, p,2);
                     break;
 
                 case Token.URI:
@@ -1471,7 +1471,7 @@ namespace VDS.RDF.Parsing
                 case Token.PLAINLITERAL:
                     //Must then be followed be a non-empty Property List
                     context.LocalTokens.Push(next);
-                    this.TryParsePropertyObjectList(context, p,2);
+                    this.TryParsePredicateObjectList(context, p,2);
                     break;
 
                 case Token.BLANKNODE:
@@ -1491,7 +1491,7 @@ namespace VDS.RDF.Parsing
 
                     //Must then be followed be a non-empty Property List
                     context.LocalTokens.Push(next);
-                    this.TryParsePropertyObjectList(context, p, 2);
+                    this.TryParsePredicateObjectList(context, p, 2);
                     break;
 
                 case Token.LET:
@@ -1519,24 +1519,24 @@ namespace VDS.RDF.Parsing
                         context.Tokens.Dequeue();
 
                         //Parse as Subject of Triples
-                        this.TryParsePropertyObjectList(context, p, 2);
+                        this.TryParsePredicateObjectList(context, p, 2);
                     }
                     else
                     {
 
                         //Parse the Collection
-                        this.TryParsePropertyObjectList(context, p, 2);
+                        this.TryParsePredicateObjectList(context, p, 2);
 
                         //Push again for subject of Triples
                         context.LocalTokens.Push(bnode);
-                        this.TryParsePropertyObjectList(context, p, 2);
+                        this.TryParsePredicateObjectList(context, p, 2);
                     }
                     break;
 
                 case Token.LEFTBRACKET:
                     //Collection
                     this.TryParseCollection(context, p, false);
-                    this.TryParsePropertyObjectList(context, p, 2);
+                    this.TryParsePredicateObjectList(context, p, 2);
                     break;
 
                 case Token.FILTER:
@@ -1632,7 +1632,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        private void TryParsePropertyObjectList(SparqlQueryParserContext context, GraphPattern p, int expectedCount)
+        private void TryParsePredicateObjectList(SparqlQueryParserContext context, GraphPattern p, int expectedCount)
         {
             PatternItem subj, pred, obj;
             
@@ -1677,6 +1677,7 @@ namespace VDS.RDF.Parsing
                     case Token.MULTIPLY:
                     case Token.PLUS:
                     case Token.QUESTION:
+                    case Token.NEGATION:
                         //If we see any of these Tokens then it's a Property Path
                         if (context.SyntaxMode == SparqlQuerySyntax.Sparql_1_0) throw new RdfParseException("Property Paths are not permitted in SPARQL 1.0");
 
@@ -1686,9 +1687,9 @@ namespace VDS.RDF.Parsing
                             PathToken pathToken = new PathToken(path, lengthVar);
                             context.LocalTokens.Push(pathToken);
                         }
-                        else if (next.TokenType == Token.HAT && context.LocalTokens.Count == expectedCount - 2)
+                        else if ((next.TokenType == Token.HAT || next.TokenType == Token.NEGATION) && context.LocalTokens.Count == expectedCount - 2)
                         {
-                            // ^ may be used to start a pattern
+                            // ^ and ! may be used to start a pattern
                             context.Tokens.Dequeue();
                             path = context.PathParser.Parse(context, next, out lengthVar);
                             PathToken pathToken = new PathToken(path, lengthVar);
@@ -1772,7 +1773,7 @@ namespace VDS.RDF.Parsing
                         context.LocalTokens.Push(bnode);
 
                         //Recursively call self to parse the new Triple list
-                        this.TryParsePropertyObjectList(context, p, expectedCount + 2);
+                        this.TryParsePredicateObjectList(context, p, expectedCount + 2);
                         break;
 
                     case Token.RIGHTSQBRACKET:
@@ -2132,7 +2133,7 @@ namespace VDS.RDF.Parsing
 
                                 //Parse the Blank Node Collection
                                 context.LocalTokens.Push(anon);
-                                this.TryParsePropertyObjectList(context, p, context.LocalTokens.Count + 1);
+                                this.TryParsePredicateObjectList(context, p, context.LocalTokens.Count + 1);
                                 continue;
                             }
                             break;
