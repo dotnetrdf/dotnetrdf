@@ -121,8 +121,8 @@ namespace VDS.RDF.Test.Sparql
 
             TestTools.ShowMultiset(results);
 
-            Assert.IsFalse(results.IsEmpty, "Results should not be empty");
-            Assert.IsTrue(results is IdentityMultiset, "Results should be Identity");
+            Assert.IsTrue(results.IsEmpty, "Results should  be empty");
+            Assert.IsTrue(results is NullMultiset, "Results should be Null");
         }
 
         [TestMethod]
@@ -130,7 +130,22 @@ namespace VDS.RDF.Test.Sparql
         {
             EnsureTestData();
 
-            VDS.RDF.Query.Paths.NegatedPropertySet path = new VDS.RDF.Query.Paths.NegatedPropertySet(new Property[] { new Property(this._factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType))) }, Enumerable.Empty<Property>());
+            NegatedSet path = new NegatedSet(new Property[] { new Property(this._factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType))) }, Enumerable.Empty<Property>());
+            ISparqlAlgebra algebra = this.GetAlgebra(path);
+            SparqlEvaluationContext context = new SparqlEvaluationContext(null, this._data);
+            BaseMultiset results = algebra.Evaluate(context);
+
+            TestTools.ShowMultiset(results);
+
+            Assert.IsFalse(results.IsEmpty, "Results should not be empty");
+        }
+
+        [TestMethod]
+        public void SparqlPropertyPathEvaluationInverseNegatedPropertySet()
+        {
+            EnsureTestData();
+
+            NegatedSet path = new NegatedSet(Enumerable.Empty<Property>(), new Property[] { new Property(this._factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType))) });
             ISparqlAlgebra algebra = this.GetAlgebra(path);
             SparqlEvaluationContext context = new SparqlEvaluationContext(null, this._data);
             BaseMultiset results = algebra.Evaluate(context);

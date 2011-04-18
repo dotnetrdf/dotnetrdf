@@ -173,14 +173,14 @@ namespace VDS.RDF.Test.Sparql
         [TestMethod]
         public void SparqlPropertyPathTransformationNegatedPropertySet()
         {
-            VDS.RDF.Query.Paths.NegatedPropertySet path = new VDS.RDF.Query.Paths.NegatedPropertySet(new Property[] { new Property(this._factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType))) }, Enumerable.Empty<Property>());
+            VDS.RDF.Query.Paths.NegatedSet path = new VDS.RDF.Query.Paths.NegatedSet(new Property[] { new Property(this._factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType))) }, Enumerable.Empty<Property>());
             this.RunTest(path, new String[] { "NegatedPropertySet" });
         }
 
         [TestMethod]
         public void SparqlPropertyPathTransformationNegatedPropertyInverseSet()
         {
-            VDS.RDF.Query.Paths.NegatedPropertySet path = new VDS.RDF.Query.Paths.NegatedPropertySet(Enumerable.Empty<Property>(), new Property[] { new Property(this._factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType))) });
+            VDS.RDF.Query.Paths.NegatedSet path = new VDS.RDF.Query.Paths.NegatedSet(Enumerable.Empty<Property>(), new Property[] { new Property(this._factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType))) });
             this.RunTest(path, new String[] { "NegatedPropertySet" });
         }
     }

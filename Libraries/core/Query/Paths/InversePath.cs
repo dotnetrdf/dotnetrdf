@@ -54,27 +54,27 @@ namespace VDS.RDF.Query.Paths
         public InversePath(ISparqlPath path)
             : base(path) { }
 
-        /// <summary>
-        /// Gets whether the path is simple
-        /// </summary>
-        public override bool IsSimple
-        {
-            get 
-            {
-                return this._path.IsSimple;
-            }
-        }
+        ///// <summary>
+        ///// Gets whether the path is simple
+        ///// </summary>
+        //public override bool IsSimple
+        //{
+        //    get 
+        //    {
+        //        return this._path.IsSimple;
+        //    }
+        //}
 
-        /// <summary>
-        /// Evaluates the Path in the given Context
-        /// </summary>
-        /// <param name="context">Path Evaluation Context</param>
-        public override void Evaluate(PathEvaluationContext context)
-        {
-            context.IsReversed = !context.IsReversed;
-            this._path.Evaluate(context);
-            context.IsReversed = !context.IsReversed;
-        }
+        ///// <summary>
+        ///// Evaluates the Path in the given Context
+        ///// </summary>
+        ///// <param name="context">Path Evaluation Context</param>
+        //public override void Evaluate(PathEvaluationContext context)
+        //{
+        //    context.IsReversed = !context.IsReversed;
+        //    this._path.Evaluate(context);
+        //    context.IsReversed = !context.IsReversed;
+        //}
 
         /// <summary>
         /// Gets the String representation of the Path
@@ -85,39 +85,55 @@ namespace VDS.RDF.Query.Paths
             return "^ " + this._path.ToString();
         }
 
-        /// <summary>
-        /// Generates the Path transform to an Algebra expression
-        /// </summary>
-        /// <param name="context">Transform Context</param>
-        public override void ToAlgebra(PathTransformContext context)
-        {
-            if (this.IsSimple)
-            {
-                //Swap the Subject and Object over
-                PatternItem tempObj = context.Object;
-                PatternItem tempSubj = context.Subject;
-                PatternItem tempEnd = context.End;
-                context.Object = tempSubj;
-                context.Subject = tempObj;
-                context.End = tempSubj;
+        ///// <summary>
+        ///// Generates the Path transform to an Algebra expression
+        ///// </summary>
+        ///// <param name="context">Transform Context</param>
+        //public override void ToAlgebra(PathTransformContext context)
+        //{
+        //    //if (this.IsSimple)
+        //    //{
+        //        //Swap the Subject and Object over
+        //        PatternItem tempObj = context.Object;
+        //        PatternItem tempSubj = context.Subject;
+        //        PatternItem tempEnd = context.End;
+        //        context.Object = tempSubj;
+        //        context.Subject = tempObj;
+        //        context.End = tempSubj;
 
-                //Then transform the path
-                this._path.ToAlgebra(context);
+        //        //Then transform the path
+        //        this._path.ToAlgebra(context);
 
-                //Then swap the Subject and Object back
-                context.Subject = tempSubj;
-                context.Object = tempObj;
-                context.End = tempEnd;
-            }
-            else
-            {
-                throw new RdfQueryException("Cannot transform a non-simple Path to an Algebra expression");
-            }
-        }
+        //        //Then swap the Subject and Object back
+        //        context.Subject = tempSubj;
+        //        context.Object = tempObj;
+        //        context.End = tempEnd;
+        //    //}
+        //    //else
+        //    //{
+        //    //    throw new RdfQueryException("Cannot transform a non-simple Path to an Algebra expression");
+        //    //}
+        //}
 
         public override ISparqlAlgebra ToAlgebraOperator(PathTransformContext context)
         {
-            this.ToAlgebra(context);
+            //Swap the Subject and Object over
+            PatternItem tempObj = context.Object;
+            PatternItem tempSubj = context.Subject;
+            PatternItem tempEnd = context.End;
+            context.Object = tempSubj;
+            context.Subject = tempObj;
+            context.End = tempSubj;
+
+            //Then transform the path
+            context.AddTriplePattern(context.GetTriplePattern(context.Subject, this._path, context.Object));
+
+            //Then swap the Subject and Object back
+            context.Subject = tempSubj;
+            context.Object = tempObj;
+            context.End = tempEnd;
+
+
             return context.ToAlgebra();
         }
     }

@@ -54,37 +54,37 @@ namespace VDS.RDF.Query.Paths
         public AlternativePath(ISparqlPath lhs, ISparqlPath rhs)
             : base(lhs, rhs) { }
 
-        /// <summary>
-        /// Alternative paths are complex
-        /// </summary>
-        public override bool IsSimple
-        {
-            get
-            {
-                return false;
-            }
-        }
+        ///// <summary>
+        ///// Alternative paths are complex
+        ///// </summary>
+        //public override bool IsSimple
+        //{
+        //    get
+        //    {
+        //        return false;
+        //    }
+        //}
 
-        /// <summary>
-        /// Evaluates the Path in the given Context
-        /// </summary>
-        /// <param name="context">Path Evaluation Context</param>
-        public override void Evaluate(PathEvaluationContext context)
-        {
-            bool first = context.IsFirst;
+        ///// <summary>
+        ///// Evaluates the Path in the given Context
+        ///// </summary>
+        ///// <param name="context">Path Evaluation Context</param>
+        //public override void Evaluate(PathEvaluationContext context)
+        //{
+        //    bool first = context.IsFirst;
 
-            //Evaluate the LHS using the new context
-            PathEvaluationContext newContext = new PathEvaluationContext(context);
-            this._lhs.Evaluate(newContext);
+        //    //Evaluate the LHS using the new context
+        //    PathEvaluationContext newContext = new PathEvaluationContext(context);
+        //    this._lhs.Evaluate(newContext);
 
-            //Evaluate the RHS using the original context
-            context.IsFirst = first;
-            this._rhs.Evaluate(context);
+        //    //Evaluate the RHS using the original context
+        //    context.IsFirst = first;
+        //    this._rhs.Evaluate(context);
 
-            //Union the results of the two alternatives together
-            context.Paths.UnionWith(newContext.Paths);
-            context.CompletePaths.UnionWith(newContext.CompletePaths);
-        }
+        //    //Union the results of the two alternatives together
+        //    context.Paths.UnionWith(newContext.Paths);
+        //    context.CompletePaths.UnionWith(newContext.CompletePaths);
+        //}
 
         /// <summary>
         /// Gets the String representation of the Path
@@ -101,14 +101,14 @@ namespace VDS.RDF.Query.Paths
             return output.ToString();
         }
 
-        /// <summary>
-        /// Throws an error since a Path with alternatives is not transformable to an Algebra expression
-        /// </summary>
-        /// <param name="context">Transform Context</param>
-        public override void ToAlgebra(PathTransformContext context)
-        {
-            throw new RdfQueryException("Cannot transform a non-simple Path to an Algebra expression");
-        }
+        ///// <summary>
+        ///// Throws an error since a Path with alternatives is not transformable to an Algebra expression
+        ///// </summary>
+        ///// <param name="context">Transform Context</param>
+        //public override void ToAlgebra(PathTransformContext context)
+        //{
+        //    throw new RdfQueryException("Cannot transform a non-simple Path to an Algebra expression");
+        //}
 
         public override ISparqlAlgebra ToAlgebraOperator(PathTransformContext context)
         {

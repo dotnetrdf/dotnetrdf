@@ -529,11 +529,11 @@ namespace VDS.RDF.Parsing
                     p = this.TryParsePathOneInPropertySet(context, tokens, out inverse);
                     if (inverse)
                     {
-                        return new NegatedPropertySet(Enumerable.Empty<Property>(), p.AsEnumerable());
+                        return new NegatedSet(Enumerable.Empty<Property>(), p.AsEnumerable());
                     }
                     else
                     {
-                        return new NegatedPropertySet(p.AsEnumerable(), Enumerable.Empty<Property>());
+                        return new NegatedSet(p.AsEnumerable(), Enumerable.Empty<Property>());
                     }
                     break;
 
@@ -574,7 +574,7 @@ namespace VDS.RDF.Parsing
                     }
                     else
                     {
-                        return new NegatedPropertySet(ps, inverses);
+                        return new NegatedSet(ps, inverses);
                     }
 
                     break;

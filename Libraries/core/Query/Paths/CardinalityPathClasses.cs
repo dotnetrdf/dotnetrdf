@@ -54,13 +54,13 @@ namespace VDS.RDF.Query.Paths
         public Cardinality(ISparqlPath path)
             : base(path) { }
 
-        /// <summary>
-        /// Gets whether the path is simple
-        /// </summary>
-        public override abstract bool IsSimple
-        {
-            get;
-        }
+        ///// <summary>
+        ///// Gets whether the path is simple
+        ///// </summary>
+        //public override abstract bool IsSimple
+        //{
+        //    get;
+        //}
 
         /// <summary>
         /// Gets the Minimum Cardinality of the Path
@@ -78,20 +78,20 @@ namespace VDS.RDF.Query.Paths
             get;
         }
 
-        /// <summary>
-        /// Evaluates the Path in the given Context
-        /// </summary>
-        /// <param name="context">Context</param>
-        public abstract override void Evaluate(PathEvaluationContext context);
+        ///// <summary>
+        ///// Evaluates the Path in the given Context
+        ///// </summary>
+        ///// <param name="context">Context</param>
+        //public abstract override void Evaluate(PathEvaluationContext context);
 
-        /// <summary>
-        /// Throws an error since non-simple Paths cannot be transformed to Algebra expressions
-        /// </summary>
-        /// <param name="context">Transform Context</param>
-        public override void ToAlgebra(PathTransformContext context)
-        {
-            throw new RdfQueryException("Cannot transform a non-simple Path to an Algebra expression");
-        }
+        ///// <summary>
+        ///// Throws an error since non-simple Paths cannot be transformed to Algebra expressions
+        ///// </summary>
+        ///// <param name="context">Transform Context</param>
+        //public override void ToAlgebra(PathTransformContext context)
+        //{
+        //    throw new RdfQueryException("Cannot transform a non-simple Path to an Algebra expression");
+        //}
     }
 
     /// <summary>
@@ -134,53 +134,83 @@ namespace VDS.RDF.Query.Paths
             }
         }
 
-        /// <summary>
-        /// Evaluates the Path in the given Context
-        /// </summary>
-        /// <param name="context">Path Evaluation Context</param>
-        public override void Evaluate(PathEvaluationContext context)
+        ///// <summary>
+        ///// Evaluates the Path in the given Context
+        ///// </summary>
+        ///// <param name="context">Path Evaluation Context</param>
+        //public override void Evaluate(PathEvaluationContext context)
+        //{
+        //    int c = 0, i = 0;
+        //    //Evaluate the path as many times
+        //    do
+        //    {
+        //        c = context.Paths.Count;
+        //        this._path.Evaluate(context);
+
+        //        //If we've not reached the required number of steps yet clear any complete paths
+        //        if (i < this._n) context.CompletePaths.Clear();
+        //        i++;
+
+        //        //If we've reached the required number of steps we can stop
+        //        if (i >= this._n) break;
+        //    } while (c < context.Paths.Count);
+
+        //    //If we've failed to reach sufficient path length to meet the cardinality requirement then
+        //    //we'll also clear incomplete paths as we now can't make any valid paths
+        //    if (i < this._n) context.Paths.Clear();
+        //}
+
+        ///// <summary>
+        ///// Returns true since fixed cardinalities are simple
+        ///// </summary>
+        //public override bool IsSimple
+        //{
+        //    get 
+        //    {
+        //        return (this._n > 0);
+        //    }
+        //}
+
+        ///// <summary>
+        ///// Generates the Path transform to an Algebra expression
+        ///// </summary>
+        ///// <param name="context">Transform Context</param>
+        //public override void ToAlgebra(PathTransformContext context)
+        //{
+        //    if (this._path.IsSimple && this._path is Property)
+        //    {
+        //        NodeMatchPattern nodeMatch = new NodeMatchPattern(((Property)this._path).Predicate);
+
+        //        //Generate a Triple Pattern for each step in the cardinality
+        //        for (int i = 0; i < this._n; i++)
+        //        {
+        //            context.Object = context.GetNextTemporaryVariable();
+
+        //            if (i < this._n - 1 || !context.Top)
+        //            {
+        //                TriplePattern p = new TriplePattern(context.Subject, nodeMatch, context.Object);
+        //                context.AddTriplePattern(p);
+        //                context.Subject = context.Object;
+        //            }
+        //            else
+        //            {
+        //                context.ResetObject();
+        //                TriplePattern p = new TriplePattern(context.Subject, nodeMatch, context.Object);
+        //                context.AddTriplePattern(p);
+        //            }
+        //        }
+
+        //    }
+        //    else
+        //    {
+        //        throw new RdfQueryException("Cannot transform a non-simple Path to an Algebra expression");
+        //    }
+        //}
+
+        public override ISparqlAlgebra ToAlgebraOperator(PathTransformContext context)
         {
-            int c = 0, i = 0;
-            //Evaluate the path as many times
-            do
+            if (this._n > 0)
             {
-                c = context.Paths.Count;
-                this._path.Evaluate(context);
-
-                //If we've not reached the required number of steps yet clear any complete paths
-                if (i < this._n) context.CompletePaths.Clear();
-                i++;
-
-                //If we've reached the required number of steps we can stop
-                if (i >= this._n) break;
-            } while (c < context.Paths.Count);
-
-            //If we've failed to reach sufficient path length to meet the cardinality requirement then
-            //we'll also clear incomplete paths as we now can't make any valid paths
-            if (i < this._n) context.Paths.Clear();
-        }
-
-        /// <summary>
-        /// Returns true since fixed cardinalities are simple
-        /// </summary>
-        public override bool IsSimple
-        {
-            get 
-            {
-                return (this._n > 0);
-            }
-        }
-
-        /// <summary>
-        /// Generates the Path transform to an Algebra expression
-        /// </summary>
-        /// <param name="context">Transform Context</param>
-        public override void ToAlgebra(PathTransformContext context)
-        {
-            if (this._path.IsSimple && this._path is Property)
-            {
-                NodeMatchPattern nodeMatch = new NodeMatchPattern(((Property)this._path).Predicate);
-
                 //Generate a Triple Pattern for each step in the cardinality
                 for (int i = 0; i < this._n; i++)
                 {
@@ -188,30 +218,16 @@ namespace VDS.RDF.Query.Paths
 
                     if (i < this._n - 1 || !context.Top)
                     {
-                        TriplePattern p = new TriplePattern(context.Subject, nodeMatch, context.Object);
-                        context.AddTriplePattern(p);
+                        context.AddTriplePattern(context.GetTriplePattern(context.Subject, this._path, context.Object));
                         context.Subject = context.Object;
                     }
                     else
                     {
                         context.ResetObject();
-                        TriplePattern p = new TriplePattern(context.Subject, nodeMatch, context.Object);
-                        context.AddTriplePattern(p);
+                        context.AddTriplePattern(context.GetTriplePattern(context.Subject, this._path, context.Object));
                     }
                 }
 
-            }
-            else
-            {
-                throw new RdfQueryException("Cannot transform a non-simple Path to an Algebra expression");
-            }
-        }
-
-        public override ISparqlAlgebra ToAlgebraOperator(PathTransformContext context)
-        {
-            if (this._n > 0)
-            {
-                this.ToAlgebra(context);
                 return context.ToAlgebra();
             }
             else
@@ -242,27 +258,27 @@ namespace VDS.RDF.Query.Paths
         public ZeroOrMore(ISparqlPath path)
             : base(path) { }
 
-        /// <summary>
-        /// Zero or More cardinality restrictions are not simple
-        /// </summary>
-        public override bool IsSimple
-        {
-            get
-            {
-                return false;
-            }
-        }
+        ///// <summary>
+        ///// Zero or More cardinality restrictions are not simple
+        ///// </summary>
+        //public override bool IsSimple
+        //{
+        //    get
+        //    {
+        //        return false;
+        //    }
+        //}
 
-        /// <summary>
-        /// Returns that this Path allows zero-length paths
-        /// </summary>
-        public override bool AllowsZeroLength
-        {
-            get
-            {
-                return true;
-            }
-        }
+        ///// <summary>
+        ///// Returns that this Path allows zero-length paths
+        ///// </summary>
+        //public override bool AllowsZeroLength
+        //{
+        //    get
+        //    {
+        //        return true;
+        //    }
+        //}
 
         /// <summary>
         /// Gets the Maximum Cardinality of the Path
@@ -286,20 +302,20 @@ namespace VDS.RDF.Query.Paths
             }
         }
 
-        /// <summary>
-        /// Evaluates the Path in the given Context
-        /// </summary>
-        /// <param name="context">Path Evaluation Context</param>
-        public override void Evaluate(PathEvaluationContext context)
-        {
-            int c = 0;
-            //Evaluate as many times as we can while we are finding more paths
-            do
-            {
-                c = context.Paths.Count;
-                this._path.Evaluate(context);
-            } while (c < context.Paths.Count);
-        }
+        ///// <summary>
+        ///// Evaluates the Path in the given Context
+        ///// </summary>
+        ///// <param name="context">Path Evaluation Context</param>
+        //public override void Evaluate(PathEvaluationContext context)
+        //{
+        //    int c = 0;
+        //    //Evaluate as many times as we can while we are finding more paths
+        //    do
+        //    {
+        //        c = context.Paths.Count;
+        //        this._path.Evaluate(context);
+        //    } while (c < context.Paths.Count);
+        //}
 
         /// <summary>
         /// Gets the String representation of the Path
@@ -328,27 +344,27 @@ namespace VDS.RDF.Query.Paths
         public ZeroOrOne(ISparqlPath path)
             : base(path) { }
 
-        /// <summary>
-        /// Zero or One cardinality restrictions are not simple
-        /// </summary>
-        public override bool IsSimple
-        {
-            get
-            {
-                return false;
-            }
-        }
+        ///// <summary>
+        ///// Zero or One cardinality restrictions are not simple
+        ///// </summary>
+        //public override bool IsSimple
+        //{
+        //    get
+        //    {
+        //        return false;
+        //    }
+        //}
 
-        /// <summary>
-        /// Returns that this Path allows zero-length paths
-        /// </summary>
-        public override bool AllowsZeroLength
-        {
-            get
-            {
-                return true;
-            }
-        }
+        ///// <summary>
+        ///// Returns that this Path allows zero-length paths
+        ///// </summary>
+        //public override bool AllowsZeroLength
+        //{
+        //    get
+        //    {
+        //        return true;
+        //    }
+        //}
 
         /// <summary>
         /// Gets the Maximum Cardinality of the Path
@@ -372,15 +388,15 @@ namespace VDS.RDF.Query.Paths
             }
         }
 
-        /// <summary>
-        /// Evaluates the Path in the given Context
-        /// </summary>
-        /// <param name="context">Path Evaluation Context</param>
-        public override void Evaluate(PathEvaluationContext context)
-        {
-            //Just evaluate once
-            this._path.Evaluate(context);
-        }
+        ///// <summary>
+        ///// Evaluates the Path in the given Context
+        ///// </summary>
+        ///// <param name="context">Path Evaluation Context</param>
+        //public override void Evaluate(PathEvaluationContext context)
+        //{
+        //    //Just evaluate once
+        //    this._path.Evaluate(context);
+        //}
 
         /// <summary>
         /// Gets the String representation of the Path
@@ -414,16 +430,16 @@ namespace VDS.RDF.Query.Paths
         public OneOrMore(ISparqlPath path)
             : base(path) { }
 
-        /// <summary>
-        /// One or More cardinality restrictions are not simple
-        /// </summary>
-        public override bool IsSimple
-        {
-            get
-            {
-                return false;
-            }
-        }
+        ///// <summary>
+        ///// One or More cardinality restrictions are not simple
+        ///// </summary>
+        //public override bool IsSimple
+        //{
+        //    get
+        //    {
+        //        return false;
+        //    }
+        //}
 
         /// <summary>
         /// Gets the Maximum Cardinality of the Path
@@ -447,20 +463,20 @@ namespace VDS.RDF.Query.Paths
             }
         }
 
-        /// <summary>
-        /// Evalutes the Path in the given Context
-        /// </summary>
-        /// <param name="context">Path Evaluation Context</param>
-        public override void Evaluate(PathEvaluationContext context)
-        {
-            int c = 0;
-            //Evaluate as many times as we can while we are finding more paths
-            do
-            {
-                c = context.Paths.Count;
-                this._path.Evaluate(context);
-            } while (c < context.Paths.Count);
-        }
+        ///// <summary>
+        ///// Evalutes the Path in the given Context
+        ///// </summary>
+        ///// <param name="context">Path Evaluation Context</param>
+        //public override void Evaluate(PathEvaluationContext context)
+        //{
+        //    int c = 0;
+        //    //Evaluate as many times as we can while we are finding more paths
+        //    do
+        //    {
+        //        c = context.Paths.Count;
+        //        this._path.Evaluate(context);
+        //    } while (c < context.Paths.Count);
+        //}
 
         /// <summary>
         /// Gets the String representation of the Path
@@ -495,16 +511,16 @@ namespace VDS.RDF.Query.Paths
             this._n = n;
         }
 
-        /// <summary>
-        /// N or More cardinality restrictions are not simple
-        /// </summary>
-        public override bool IsSimple
-        {
-            get
-            {
-                return false;
-            }
-        }
+        ///// <summary>
+        ///// N or More cardinality restrictions are not simple
+        ///// </summary>
+        //public override bool IsSimple
+        //{
+        //    get
+        //    {
+        //        return false;
+        //    }
+        //}
 
         /// <summary>
         /// Gets the Maximum Cardinality of the Path
@@ -528,23 +544,23 @@ namespace VDS.RDF.Query.Paths
             }
         }
 
-        /// <summary>
-        /// Evaluates the Path in the given Context
-        /// </summary>
-        /// <param name="context">Path Evaluation Context</param>
-        public override void Evaluate(PathEvaluationContext context)
-        {
-            int c = 0, i = 0;
-            //Evaluate as many times as we can while we are finding more paths
-            do
-            {
-                //If we haven't reached the minimum cardinality yet we'll clear complete paths
-                if (i < this._n) context.CompletePaths.Clear();
-                c = context.Paths.Count;
-                this._path.Evaluate(context);
-                i++;
-            } while (c < context.Paths.Count);
-        }
+        ///// <summary>
+        ///// Evaluates the Path in the given Context
+        ///// </summary>
+        ///// <param name="context">Path Evaluation Context</param>
+        //public override void Evaluate(PathEvaluationContext context)
+        //{
+        //    int c = 0, i = 0;
+        //    //Evaluate as many times as we can while we are finding more paths
+        //    do
+        //    {
+        //        //If we haven't reached the minimum cardinality yet we'll clear complete paths
+        //        if (i < this._n) context.CompletePaths.Clear();
+        //        c = context.Paths.Count;
+        //        this._path.Evaluate(context);
+        //        i++;
+        //    } while (c < context.Paths.Count);
+        //}
 
         /// <summary>
         /// Gets the String representation of the Path
@@ -582,16 +598,16 @@ namespace VDS.RDF.Query.Paths
             this._n = n;
         }
 
-        /// <summary>
-        /// Zero to N cardinality restrictions are not simple
-        /// </summary>
-        public override bool IsSimple
-        {
-            get
-            {
-                return false;
-            }
-        }
+        ///// <summary>
+        ///// Zero to N cardinality restrictions are not simple
+        ///// </summary>
+        //public override bool IsSimple
+        //{
+        //    get
+        //    {
+        //        return false;
+        //    }
+        //}
 
         /// <summary>
         /// Gets the Maximum Cardinality of the Path
@@ -615,34 +631,34 @@ namespace VDS.RDF.Query.Paths
             }
         }
 
-        /// <summary>
-        /// Returns that this Path allows zero-length paths
-        /// </summary>
-        public override bool AllowsZeroLength
-        {
-            get
-            {
-                return true;
-            }
-        }
+        ///// <summary>
+        ///// Returns that this Path allows zero-length paths
+        ///// </summary>
+        //public override bool AllowsZeroLength
+        //{
+        //    get
+        //    {
+        //        return true;
+        //    }
+        //}
 
-        /// <summary>
-        /// Evaluates the Path in the given Context
-        /// </summary>
-        /// <param name="context">Path Evaluation Context</param>
-        public override void Evaluate(PathEvaluationContext context)
-        {
-            int c = 0, i = 0;
-            //Evaluate as many times as we can while we are finding more paths
-            do
-            {
-                c = context.Paths.Count;
-                this._path.Evaluate(context);
-                i++;
-                //If we've reached the max cardinality then we can stop
-                if (i >= this._n) break;
-            } while (c < context.Paths.Count);
-        }
+        ///// <summary>
+        ///// Evaluates the Path in the given Context
+        ///// </summary>
+        ///// <param name="context">Path Evaluation Context</param>
+        //public override void Evaluate(PathEvaluationContext context)
+        //{
+        //    int c = 0, i = 0;
+        //    //Evaluate as many times as we can while we are finding more paths
+        //    do
+        //    {
+        //        c = context.Paths.Count;
+        //        this._path.Evaluate(context);
+        //        i++;
+        //        //If we've reached the max cardinality then we can stop
+        //        if (i >= this._n) break;
+        //    } while (c < context.Paths.Count);
+        //}
 
         /// <summary>
         /// Gets the String representation of the Path
@@ -680,16 +696,16 @@ namespace VDS.RDF.Query.Paths
             this._m = m;
         }
 
-        /// <summary>
-        /// N to M cardinality restrictions are not simple
-        /// </summary>
-        public override bool IsSimple
-        {
-            get
-            {
-                return false;
-            }
-        }
+        ///// <summary>
+        ///// N to M cardinality restrictions are not simple
+        ///// </summary>
+        //public override bool IsSimple
+        //{
+        //    get
+        //    {
+        //        return false;
+        //    }
+        //}
 
         /// <summary>
         /// Gets the Maximum Cardinality of the Path
@@ -713,37 +729,37 @@ namespace VDS.RDF.Query.Paths
             }
         }
 
-        /// <summary>
-        /// Gets whether the Path allows Zero Length Paths
-        /// </summary>
-        public override bool AllowsZeroLength
-        {
-            get
-            {
-                return (this._n == 0);
-            }
-        }
+        ///// <summary>
+        ///// Gets whether the Path allows Zero Length Paths
+        ///// </summary>
+        //public override bool AllowsZeroLength
+        //{
+        //    get
+        //    {
+        //        return (this._n == 0);
+        //    }
+        //}
 
-        /// <summary>
-        /// Evaluates the Path in the given Context
-        /// </summary>
-        /// <param name="context">Path Evaluation Context</param>
-        public override void Evaluate(PathEvaluationContext context)
-        {
-            int c = 0, i = 0;
-            //Evaluate as many times as we can while we are finding more paths
-            do
-            {
-                //If we haven't reached the minimum cardinality yet then we'll clear completed paths
-                if (i < this._n) context.CompletePaths.Clear();
-                c = context.Paths.Count;
-                this._path.Evaluate(context);
-                i++;
+        ///// <summary>
+        ///// Evaluates the Path in the given Context
+        ///// </summary>
+        ///// <param name="context">Path Evaluation Context</param>
+        //public override void Evaluate(PathEvaluationContext context)
+        //{
+        //    int c = 0, i = 0;
+        //    //Evaluate as many times as we can while we are finding more paths
+        //    do
+        //    {
+        //        //If we haven't reached the minimum cardinality yet then we'll clear completed paths
+        //        if (i < this._n) context.CompletePaths.Clear();
+        //        c = context.Paths.Count;
+        //        this._path.Evaluate(context);
+        //        i++;
 
-                //If we've reached the maximum cardinality then we'll stop
-                if (i >= this._m) break;
-            } while (c < context.Paths.Count);
-        }
+        //        //If we've reached the maximum cardinality then we'll stop
+        //        if (i >= this._m) break;
+        //    } while (c < context.Paths.Count);
+        //}
 
         /// <summary>
         /// Gets the String representation of the Path

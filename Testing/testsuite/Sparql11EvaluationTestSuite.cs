@@ -79,15 +79,12 @@ namespace dotNetRDFTest
                     //The following are tests that use GRAPH QName outside of a Graph pattern where it is permitted and the current grammar forbids so skipped
                     "clear/clear-graph-01.ru",
                     "drop/drop-graph-01.ru",
-                    //The following are tests that use ! as a property path operator which the current grammar forbids
-                    "property-path/pp10.rq",
-                    //The following are tests that use BNodes as wildcards in a DELETE which we don't implement and may
-                    //yet be overturned as a WG decision
-                    //"delete-insert/delete-insert-03.ru",
-                    //"delete-insert/delete-insert-03b.ru",
-                    //"delete-insert/delete-insert-05.ru",
-                    //"delete-insert/delete-insert-07.ru",
-                    //"delete-insert/delete-insert-07b.ru",
+                    //The following are tests that use BNodes as wildcards in a DELETE which was a WG decision that has been reversed
+                    "delete-insert/delete-insert-03.ru",
+                    "delete-insert/delete-insert-03b.ru",
+                    "delete-insert/delete-insert-05.ru",
+                    "delete-insert/delete-insert-07.ru",
+                    "delete-insert/delete-insert-07b.ru",
                     //The following are tests where the test cases are in the manifest but missing
                     "functions/notin01.rq",
                     "negation/temporalProximity02.rq"

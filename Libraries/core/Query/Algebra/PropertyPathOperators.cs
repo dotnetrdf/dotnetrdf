@@ -108,54 +108,72 @@ namespace VDS.RDF.Query.Algebra
             }
 
             HashSet<KeyValuePair<INode,INode>> matches = new HashSet<KeyValuePair<INode,INode>>();
+            String subjVar = this.PathStart.VariableName;
+            String objVar = this.PathEnd.VariableName;
+            if (this.Path is Property)
+            {
+                //For simple Property Paths we can just select the Triples and generate the Matches that way
+                IEnumerable<Triple> ts;
+                if (subjVar != null && context.InputMultiset.ContainsVariable(subjVar))
+                {
+                    if (objVar != null && context.InputMultiset.ContainsVariable(objVar))
+                    {
+                        ts = (from s in context.InputMultiset.Sets
+                              where s[subjVar] != null && s[objVar] != null
+                              from t in context.Data.GetTriplesWithSubjectObject(s[subjVar], s[objVar])
+                              select t);
+                    }
+                    else
+                    {
+                        ts = (from s in context.InputMultiset.Sets
+                              where s[subjVar] != null
+                              from t in context.Data.GetTriplesWithSubject(s[subjVar])
+                              select t);
+                    }
+                }
+                else if (objVar != null && context.InputMultiset.ContainsVariable(objVar))
+                {
+                    ts = (from s in context.InputMultiset.Sets
+                          where s[objVar] != null
+                          from t in context.Data.GetTriplesWithObject(s[objVar])
+                          select t);
+                }
+                else
+                {
+                    ts = context.Data.Triples;
+                }
 
-            if (context.Data.ActiveGraph != null)
-            {
-                this.GetMatches(context, context.Data.ActiveGraph, matches);
-            }
-            else if (context.Data.DefaultGraph != null)
-            {
-                this.GetMatches(context, context.Data.DefaultGraph, matches);
+                //Get the Matches
+                foreach (Triple t in ts)
+                {
+                    if (this.PathStart.Accepts(context, t.Subject) && this.PathEnd.Accepts(context, t.Object))
+                    {
+                        matches.Add(new KeyValuePair<INode, INode>(t.Subject, t.Object));
+                    }
+                }
             }
             else
             {
-                bool datasetOk = false;
-                try
+                //For complex paths need to evaluate the path
+                PathTransformContext transformContext = new PathTransformContext(this.PathStart, this.PathEnd);
+                ISparqlAlgebra algebra = this.Path.ToAlgebraOperator(transformContext);
+                BaseMultiset initialInput = context.InputMultiset;
+                BaseMultiset results = algebra.Evaluate(context);
+
+                context.InputMultiset = initialInput;
+                context.OutputMultiset = new Multiset();
+
+                //Once evaluated then we can get the matches
+                foreach (Set s in results.Sets)
                 {
-                    foreach (Uri u in context.Data.GraphUris)
+                    if (this.PathStart.Accepts(context, s[subjVar]) && this.PathEnd.Accepts(context, s[objVar]))
                     {
-                        //This bit of logic takes care of the fact that calling SetActiveGraph((Uri)null) resets the
-                        //Active Graph to be the default graph which if the default graph is null is usually the Union of
-                        //all Graphs in the Store
-                        if (u == null && context.Data.DefaultGraph == null && context.Data.UsesUnionDefaultGraph)
-                        {
-                            if (context.Data.HasGraph(null))
-                            {
-                                context.Data.SetActiveGraph(context.Data[null]);
-                            }
-                            else
-                            {
-                                continue;
-                            }
-                        }
-                        else
-                        {
-                            context.Data.SetActiveGraph(u);
-                        }
-
-                        datasetOk = true;
-
-                        this.GetMatches(context, context.Data.ActiveGraph, matches);
-                        context.Data.ResetActiveGraph();
-                        datasetOk = false;
+                        matches.Add(new KeyValuePair<INode, INode>(s[subjVar], s[objVar]));
                     }
-                }
-                finally
-                {
-                    if (datasetOk) context.Data.ResetActiveGraph();
                 }
             }
 
+            //Generate the Output based on the mathces
             if (matches.Count == 0)
             {
                 context.OutputMultiset = new NullMultiset();
@@ -169,8 +187,6 @@ namespace VDS.RDF.Query.Algebra
                 else
                 {
                     context.OutputMultiset = new Multiset();
-                    String subjVar = this.PathStart.VariableName;
-                    String objVar = this.PathEnd.VariableName;
                     foreach (KeyValuePair<INode, INode> m in matches)
                     {
                         Set s = new Set();
@@ -201,17 +217,6 @@ namespace VDS.RDF.Query.Algebra
             else
             {
                 return false;
-            }
-        }
-
-        private void GetMatches(SparqlEvaluationContext context, IGraph g, HashSet<KeyValuePair<INode, INode>> ms)
-        {
-            foreach (Triple t in g.Triples)
-            {
-                if (this.PathStart.Accepts(context, t.Subject) && this.PathEnd.Accepts(context, t.Object))
-                {
-                    ms.Add(new KeyValuePair<INode, INode>(t.Subject, t.Object));
-                }
             }
         }
 
@@ -281,13 +286,18 @@ namespace VDS.RDF.Query.Algebra
     {
         private List<INode> _properties = new List<INode>();
         private PatternItem _start, _end;
+        private bool _inverse;
 
-        public NegatedPropertySet(PatternItem start, PatternItem end, IEnumerable<Property> properties)
+        public NegatedPropertySet(PatternItem start, PatternItem end, IEnumerable<Property> properties, bool inverse)
         {
             this._start = start;
             this._end = end;
             this._properties.AddRange(properties.Select(p => p.Predicate));
+            this._inverse = inverse;
         }
+
+        public NegatedPropertySet(PatternItem start, PatternItem end, IEnumerable<Property> properties)
+            : this(start, end, properties, false) { }
 
         public PatternItem PathStart
         {
@@ -318,28 +328,30 @@ namespace VDS.RDF.Query.Algebra
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
             IEnumerable<Triple> ts;
-            if (this._start.VariableName != null && context.InputMultiset.ContainsVariable(this._start.VariableName))
+            String subjVar = this._start.VariableName;
+            String objVar = this._end.VariableName;
+            if (subjVar != null && context.InputMultiset.ContainsVariable(subjVar))
             {
-                if (this._end.VariableName != null && context.InputMultiset.ContainsVariable(this._end.VariableName))
+                if (objVar != null && context.InputMultiset.ContainsVariable(objVar))
                 {
                     ts = (from s in context.InputMultiset.Sets
-                          where s[this._start.VariableName] != null && s[this._end.VariableName] != null
-                          from t in context.Data.GetTriplesWithSubjectObject(s[this._start.VariableName], s[this._end.VariableName])
+                          where s[subjVar] != null && s[objVar] != null
+                          from t in context.Data.GetTriplesWithSubjectObject(s[subjVar], s[objVar])
                           select t);
                 }
                 else
                 {
                     ts = (from s in context.InputMultiset.Sets
-                          where s[this._start.VariableName] != null
-                          from t in context.Data.GetTriplesWithSubject(s[this._start.VariableName])
+                          where s[subjVar] != null
+                          from t in context.Data.GetTriplesWithSubject(s[subjVar])
                           select t);
                 }
             }
-            else if (this._end.VariableName != null && context.InputMultiset.ContainsVariable(this._end.VariableName))
+            else if (objVar != null && context.InputMultiset.ContainsVariable(objVar))
             {
                 ts = (from s in context.InputMultiset.Sets
-                      where s[this._end.VariableName] != null
-                      from t in context.Data.GetTriplesWithObject(s[this._end.VariableName])
+                      where s[objVar] != null
+                      from t in context.Data.GetTriplesWithObject(s[objVar])
                       select t);
             }
             else
@@ -348,8 +360,12 @@ namespace VDS.RDF.Query.Algebra
             }
 
             context.OutputMultiset = new Multiset();
-            String subjVar = this._start.VariableName;
-            String objVar = this._end.VariableName;
+            if (this._inverse)
+            {
+                String temp = objVar;
+                objVar = subjVar;
+                subjVar = temp;
+            }
             foreach (Triple t in ts)
             {
                 if (!this._properties.Contains(t.Predicate))
@@ -392,7 +408,15 @@ namespace VDS.RDF.Query.Algebra
         public GraphPattern ToGraphPattern()
         {
             GraphPattern gp = new GraphPattern();
-            PropertyPathPattern pp = new PropertyPathPattern(this.PathStart, new VDS.RDF.Query.Paths.NegatedPropertySet(this._properties.Select(p => new Property(p)), Enumerable.Empty<Property>()), this.PathEnd);
+            PropertyPathPattern pp;
+            if (this._inverse)
+            {
+                pp = new PropertyPathPattern(this.PathStart, new NegatedSet(Enumerable.Empty<Property>(), this._properties.Select(p => new Property(p))), this.PathEnd);
+            }
+            else
+            {
+                pp = new PropertyPathPattern(this.PathStart, new NegatedSet(this._properties.Select(p => new Property(p)), Enumerable.Empty<Property>()), this.PathEnd);
+            }
             gp.AddTriplePattern(pp);
             return gp;
         }

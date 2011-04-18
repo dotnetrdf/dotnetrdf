@@ -175,5 +175,18 @@ namespace VDS.RDF.Query.Paths
                 this._top = value;
             }
         }
+
+        public ITriplePattern GetTriplePattern(PatternItem subj, ISparqlPath path, PatternItem obj)
+        {
+            if (path is Property)
+            {
+                NodeMatchPattern nodeMatch = new NodeMatchPattern(((Property)path).Predicate);
+                return new TriplePattern(subj, nodeMatch, obj);
+            }
+            else
+            {
+                return new PropertyPathPattern(subj, path, obj);
+            }
+        }
     }
 }

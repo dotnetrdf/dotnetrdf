@@ -128,28 +128,29 @@ namespace VDS.RDF.Query.Patterns
         /// <param name="context">Evaluation Context</param>
         public override void Evaluate(SparqlEvaluationContext context)
         {
-            if (this._path.IsSimple)
-            {
+            //if (this._path.IsSimple)
+            //{
                 try
                 {
                     //Try and generate an Algebra expression
                     PathTransformContext transformContext = new PathTransformContext(this._subj, this._obj);
-                    this._path.ToAlgebra(transformContext);
-                    ISparqlAlgebra algebra = transformContext.ToAlgebra();
+                    //this._path.ToAlgebra(transformContext);
+                    //ISparqlAlgebra algebra = transformContext.ToAlgebra();
+                    ISparqlAlgebra algebra = this._path.ToAlgebraOperator(transformContext);
 
                     //Now we can evaluate the resulting algebra
                     BaseMultiset initialInput = context.InputMultiset;
                     BaseMultiset result = algebra.Evaluate(context);
 
-                    //Bind Length Variable if required
-                    if (!this._lengthVar.Equals(String.Empty))
-                    {
-                        result.AddVariable(this._lengthVar);
-                        foreach (Set s in result.Sets)
-                        {
-                            s.Add(this._lengthVar, new LiteralNode(null, ((IBgp)algebra).PatternCount.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger)));
-                        }
-                    }
+                    ////Bind Length Variable if required
+                    //if (!this._lengthVar.Equals(String.Empty))
+                    //{
+                    //    result.AddVariable(this._lengthVar);
+                    //    foreach (Set s in result.Sets)
+                    //    {
+                    //        s.Add(this._lengthVar, new LiteralNode(null, ((IBgp)algebra).PatternCount.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger)));
+                    //    }
+                    //}
 
                     context.OutputMultiset = initialInput.Join(result);
 
@@ -161,63 +162,63 @@ namespace VDS.RDF.Query.Patterns
                     //Path was non-simple or couldn't be transformed
                     throw;
                 }
-            }
-            else
-            {
-                //It is a complex path so we have to evaluate it properly
-                PathEvaluationContext evalContext = new PathEvaluationContext(context, this._subj, this._obj);
-                try
-                {
-                    this._path.Evaluate(evalContext);
-                }
-                catch (RdfQueryPathFoundException)
-                {
-                    //Ignore this error as this is just an optimisation
-                }
+            //}
+            //else
+            //{
+            //    //It is a complex path so we have to evaluate it properly
+            //    PathEvaluationContext evalContext = new PathEvaluationContext(context, this._subj, this._obj);
+            //    try
+            //    {
+            //        this._path.Evaluate(evalContext);
+            //    }
+            //    catch (RdfQueryPathFoundException)
+            //    {
+            //        //Ignore this error as this is just an optimisation
+            //    }
 
-                //Now we take the results and generate an output multiset from them
-                bool subjVar = (this._subj.VariableName != null);
-                bool objVar = (this._obj.VariableName != null);
-                bool lengthVar = (!this._lengthVar.Equals(String.Empty));
-                if (subjVar || objVar)
-                {
-                    //We only need to do this if the path had variables as the subject and/or object
-                    foreach (PotentialPath p in evalContext.CompletePaths)
-                    {
-                        if (p.IsComplete && !p.IsDeadEnd)
-                        {
-                            Set s = new Set();
-                            if (subjVar)
-                            {
-                                s.Add(this._subj.VariableName, p.Start);
-                            }
-                            if (objVar)
-                            {
-                                s.Add(this._obj.VariableName, p.Current);
-                            }
-                            if (lengthVar)
-                            {
-                                s.Add(this._lengthVar, new LiteralNode(null, p.Length.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger)));
-                            }
+            //    //Now we take the results and generate an output multiset from them
+            //    bool subjVar = (this._subj.VariableName != null);
+            //    bool objVar = (this._obj.VariableName != null);
+            //    bool lengthVar = (!this._lengthVar.Equals(String.Empty));
+            //    if (subjVar || objVar)
+            //    {
+            //        //We only need to do this if the path had variables as the subject and/or object
+            //        foreach (PotentialPath p in evalContext.CompletePaths)
+            //        {
+            //            if (p.IsComplete && !p.IsDeadEnd)
+            //            {
+            //                Set s = new Set();
+            //                if (subjVar)
+            //                {
+            //                    s.Add(this._subj.VariableName, p.Start);
+            //                }
+            //                if (objVar)
+            //                {
+            //                    s.Add(this._obj.VariableName, p.Current);
+            //                }
+            //                if (lengthVar)
+            //                {
+            //                    s.Add(this._lengthVar, new LiteralNode(null, p.Length.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger)));
+            //                }
 
-                            context.OutputMultiset.Add(s);
-                        }
-                    }
-                }
-                else
-                {
-                    //If the path didn't have variables we'll return either an Identity/Null Multiset
-                    //depending on whether any paths were found
-                    if (evalContext.CompletePaths.Any(p => p.IsComplete && !p.IsDeadEnd))
-                    {
-                        context.OutputMultiset = new IdentityMultiset();
-                    }
-                    else
-                    {
-                        context.OutputMultiset = new NullMultiset();
-                    }
-                }
-            }
+            //                context.OutputMultiset.Add(s);
+            //            }
+            //        }
+            //    }
+            //    else
+            //    {
+            //        //If the path didn't have variables we'll return either an Identity/Null Multiset
+            //        //depending on whether any paths were found
+            //        if (evalContext.CompletePaths.Any(p => p.IsComplete && !p.IsDeadEnd))
+            //        {
+            //            context.OutputMultiset = new IdentityMultiset();
+            //        }
+            //        else
+            //        {
+            //            context.OutputMultiset = new NullMultiset();
+            //        }
+            //    }
+            //}
         }
 
         /// <summary>

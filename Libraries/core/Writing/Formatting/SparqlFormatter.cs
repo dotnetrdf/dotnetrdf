@@ -1002,6 +1002,24 @@ namespace VDS.RDF.Writing.Formatting
                 output.Append(zeroToN.MaxCardinality);
                 output.Append('}');
             }
+            else if (path is NegatedSet)
+            {
+                NegatedSet negSet = (NegatedSet)path;
+                output.Append('!');
+                if (negSet.Properties.Count() + negSet.InverseProperties.Count() > 1) output.Append('(');
+                foreach (Property p in negSet.Properties)
+                {
+                    output.Append(this.FormatPath(p));
+                    output.Append(" | ");
+                }
+                foreach (Property p in negSet.InverseProperties)
+                {
+                    output.Append(this.FormatPath(p));
+                    output.Append(" | ");
+                }
+                output.Remove(output.Length - 3, 3);
+                if (negSet.Properties.Count() + negSet.InverseProperties.Count() > 1) output.Append(')');
+            }
             else
             {
                 throw new RdfOutputException("Unable to Format an unknown ISparqlPath implementations as a String");
