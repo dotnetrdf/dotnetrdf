@@ -60,25 +60,6 @@ namespace VDS.RDF.Query.Paths
             this._path = path;
         }
 
-        ///// <summary>
-        ///// Gets whether the path is simple
-        ///// </summary>
-        //public abstract bool IsSimple
-        //{
-        //    get;
-        //}
-
-        ///// <summary>
-        ///// Gets whether the Path permits zero-length paths
-        ///// </summary>
-        //public virtual bool AllowsZeroLength
-        //{
-        //    get
-        //    {
-        //        return false;
-        //    }
-        //}
-
         /// <summary>
         /// Gets the Inner Path
         /// </summary>
@@ -90,19 +71,8 @@ namespace VDS.RDF.Query.Paths
             }
         }
 
-        ///// <summary>
-        ///// Evaluates the Path using the given Path Evaluation Context
-        ///// </summary>
-        ///// <param name="context">Path Evaluation Context</param>
-        //public abstract void Evaluate(PathEvaluationContext context);
+        public abstract ISparqlAlgebra ToAlgebra(PathTransformContext context);
 
-        ///// <summary>
-        ///// Generates the Algebra Transform of the Path
-        ///// </summary>
-        ///// <param name="context">Transform Context</param>
-        ///// <returns></returns>
-        //public abstract void ToAlgebra(PathTransformContext context);
-
-        public abstract ISparqlAlgebra ToAlgebraOperator(PathTransformContext context);
+        public abstract String ToString();
     }
 }

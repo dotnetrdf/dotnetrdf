@@ -59,28 +59,6 @@ namespace VDS.RDF.Query.Paths
         }
 
         /// <summary>
-        /// A Property is always simple
-        /// </summary>
-        public bool IsSimple
-        {
-            get 
-            {
-                return true; 
-            }
-        }
-
-        /// <summary>
-        /// A Property does not allow zero-length paths
-        /// </summary>
-        public bool AllowsZeroLength
-        {
-            get
-            {
-                return false;
-            }
-        }
-
-        /// <summary>
         /// Gets the Predicate this part of the Path represents
         /// </summary>
         public INode Predicate
@@ -392,20 +370,9 @@ namespace VDS.RDF.Query.Paths
             return output.ToString();
         }
 
-        /// <summary>
-        /// Generates the Algebra Transform of the Path
-        /// </summary>
-        /// <param name="context">Transform Context</param>
-        /// <returns></returns>
-        public void ToAlgebra(PathTransformContext context)
+        public ISparqlAlgebra ToAlgebra(PathTransformContext context)
         {
-            NodeMatchPattern nodeMatch = new NodeMatchPattern(this._predicate);
-            context.AddTriplePattern(new TriplePattern(context.Subject, nodeMatch, context.Object));
-        }
-
-        public ISparqlAlgebra ToAlgebraOperator(PathTransformContext context)
-        {
-            this.ToAlgebra(context);
+            context.AddTriplePattern(context.GetTriplePattern(context.Subject, this, context.Object));
             return context.ToAlgebra();
         }
     }

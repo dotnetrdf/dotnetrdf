@@ -44,7 +44,34 @@ namespace VDS.RDF.Test.Sparql
                 y = new NodeMatchPattern(end);
             }
             PathTransformContext context = new PathTransformContext(x, y);
-            return path.ToAlgebraOperator(context);
+            return path.ToAlgebra(context);
+        }
+
+        private ISparqlAlgebra GetAlgebraUntransformed(ISparqlPath path)
+        {
+            return this.GetAlgebraUntransformed(path, null, null);
+        }
+
+        private ISparqlAlgebra GetAlgebraUntransformed(ISparqlPath path, INode start, INode end)
+        {
+            PatternItem x, y;
+            if (start == null)
+            {
+                x = new VariablePattern("?x");
+            }
+            else
+            {
+                x = new NodeMatchPattern(start);
+            }
+            if (end == null)
+            {
+                y = new VariablePattern("?y");
+            }
+            else
+            {
+                y = new NodeMatchPattern(end);
+            }
+            return new Bgp(new PropertyPathPattern(x, path, y));
         }
 
         private void EnsureTestData()
@@ -153,6 +180,23 @@ namespace VDS.RDF.Test.Sparql
             TestTools.ShowMultiset(results);
 
             Assert.IsFalse(results.IsEmpty, "Results should not be empty");
+        }
+
+        [TestMethod]
+        public void SparqlPropertyPathEvaluationSequencedAlternatives()
+        {
+            EnsureTestData();
+
+            INode a = this._factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
+            INode b = this._factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "range"));
+            SequencePath path = new SequencePath(new AlternativePath(new Property(a), new Property(b)), new AlternativePath(new Property(a), new Property(a)));
+            ISparqlAlgebra algebra = this.GetAlgebraUntransformed(path);
+            SparqlEvaluationContext context = new SparqlEvaluationContext(null, this._data);
+            BaseMultiset results = algebra.Evaluate(context);
+
+            TestTools.ShowMultiset(results);
+
+            Assert.IsFalse(results.IsEmpty, "Results should not be empty");            
         }
     }
 }

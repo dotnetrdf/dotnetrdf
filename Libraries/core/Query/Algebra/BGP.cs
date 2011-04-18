@@ -198,8 +198,11 @@ namespace VDS.RDF.Query.Algebra
                     context.InputMultiset = context.OutputMultiset;
                 }
 
-                //Trim the Multiset - this eliminates any temporary variables
-                context.OutputMultiset.Trim();
+                if (context.TrimTemporaryVariables)
+                {
+                    //Trim the Multiset - this eliminates any temporary variables
+                    context.OutputMultiset.Trim();
+                }
             }
             else
             {

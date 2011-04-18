@@ -49,6 +49,7 @@ namespace VDS.RDF.Query
     public class SparqlEvaluationContext
     {
         private BaseMultiset _inputSet, _outputSet;
+        private bool _trimTemporaries = true;
         private ISparqlDataset _data;
         private SparqlQuery _query;
         private SparqlResultBinder _binder;
@@ -178,6 +179,18 @@ namespace VDS.RDF.Query
             set
             {
                 this._binder = value;
+            }
+        }
+
+        public bool TrimTemporaryVariables
+        {
+            get
+            {
+                return this._trimTemporaries;
+            }
+            set
+            {
+                this._trimTemporaries = value;
             }
         }
 

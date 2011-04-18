@@ -110,12 +110,12 @@ namespace VDS.RDF.Query.Paths
         //    throw new RdfQueryException("Cannot transform a non-simple Path to an Algebra expression");
         //}
 
-        public override ISparqlAlgebra ToAlgebraOperator(PathTransformContext context)
+        public override ISparqlAlgebra ToAlgebra(PathTransformContext context)
         {
             PathTransformContext lhsContext = new PathTransformContext(context);
             PathTransformContext rhsContext = new PathTransformContext(context);
-            ISparqlAlgebra lhs = this._lhs.ToAlgebraOperator(lhsContext);
-            ISparqlAlgebra rhs = this._rhs.ToAlgebraOperator(rhsContext);
+            ISparqlAlgebra lhs = this._lhs.ToAlgebra(lhsContext);
+            ISparqlAlgebra rhs = this._rhs.ToAlgebra(rhsContext);
             return new Union(lhs, rhs);
         }
     }

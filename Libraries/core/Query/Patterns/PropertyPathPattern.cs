@@ -51,7 +51,6 @@ namespace VDS.RDF.Query.Patterns
     {
         private PatternItem _subj, _obj;
         private ISparqlPath _path;
-        private String _lengthVar = String.Empty;
 
         /// <summary>
         /// Creates a new Property Path Pattern
@@ -59,14 +58,11 @@ namespace VDS.RDF.Query.Patterns
         /// <param name="subj">Subject</param>
         /// <param name="path">Property Path</param>
         /// <param name="obj">Object</param>
-        /// <param name="lengthVar">Variable to bind the path length to</param>
-        public PropertyPathPattern(PatternItem subj, ISparqlPath path, PatternItem obj, String lengthVar)
+        public PropertyPathPattern(PatternItem subj, ISparqlPath path, PatternItem obj)
         {
             this._subj = subj;
             this._path = path;
             this._obj = obj;
-            if (lengthVar.StartsWith("?") || lengthVar.StartsWith("$")) lengthVar = lengthVar.Substring(1);
-            this._lengthVar = lengthVar;
 
             //Build our list of Variables
             if (this._subj.VariableName != null)
@@ -79,15 +75,6 @@ namespace VDS.RDF.Query.Patterns
             }
             this._vars.Sort();
         }
-
-        /// <summary>
-        /// Creates a new Property Path Pattern
-        /// </summary>
-        /// <param name="subj">Subject</param>
-        /// <param name="path">Property Path</param>
-        /// <param name="obj">Object</param>
-        public PropertyPathPattern(PatternItem subj, ISparqlPath path, PatternItem obj)
-            : this(subj, path, obj, String.Empty) { }
 
         /// <summary>
         /// Gets the Subject of the Property Path
@@ -128,97 +115,33 @@ namespace VDS.RDF.Query.Patterns
         /// <param name="context">Evaluation Context</param>
         public override void Evaluate(SparqlEvaluationContext context)
         {
-            //if (this._path.IsSimple)
-            //{
-                try
-                {
-                    //Try and generate an Algebra expression
-                    PathTransformContext transformContext = new PathTransformContext(this._subj, this._obj);
-                    //this._path.ToAlgebra(transformContext);
-                    //ISparqlAlgebra algebra = transformContext.ToAlgebra();
-                    ISparqlAlgebra algebra = this._path.ToAlgebraOperator(transformContext);
+            //Try and generate an Algebra expression
+            //Make sure we don't generate clashing temporary variable IDs over the life of the
+            //Evaluation
+            PathTransformContext transformContext = new PathTransformContext(this._subj, this._obj);
+            if (context["PathTransformID"] != null)
+            {
+                transformContext.NextID = (int)context["PathTransformID"];
+            }
+            ISparqlAlgebra algebra = this._path.ToAlgebra(transformContext);
+            context["PathTransformID"] = transformContext.NextID;
 
-                    //Now we can evaluate the resulting algebra
-                    BaseMultiset initialInput = context.InputMultiset;
-                    BaseMultiset result = algebra.Evaluate(context);
+            //Now we can evaluate the resulting algebra
+            //Note: We may need to preserve Blank Node variables across evaluations
+            //which we usually don't do because of the way we only translate part of the path
+            //into an algebra at a time and may need to do further nested translate calls
+            BaseMultiset initialInput = context.InputMultiset;
+            bool trimMode = context.TrimTemporaryVariables;
+            context.TrimTemporaryVariables = false;
+            BaseMultiset result = algebra.Evaluate(context);
+            context.TrimTemporaryVariables = trimMode;
+            if (context.TrimTemporaryVariables) result.Trim();
 
-                    ////Bind Length Variable if required
-                    //if (!this._lengthVar.Equals(String.Empty))
-                    //{
-                    //    result.AddVariable(this._lengthVar);
-                    //    foreach (Set s in result.Sets)
-                    //    {
-                    //        s.Add(this._lengthVar, new LiteralNode(null, ((IBgp)algebra).PatternCount.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger)));
-                    //    }
-                    //}
+            //Once we have our results can join then into our input
+            context.OutputMultiset = initialInput.Join(result);
 
-                    context.OutputMultiset = initialInput.Join(result);
-
-                    //If we reach here we've successfully evaluated the simple pattern and can return
-                    return;
-                }
-                catch (RdfQueryException)
-                {
-                    //Path was non-simple or couldn't be transformed
-                    throw;
-                }
-            //}
-            //else
-            //{
-            //    //It is a complex path so we have to evaluate it properly
-            //    PathEvaluationContext evalContext = new PathEvaluationContext(context, this._subj, this._obj);
-            //    try
-            //    {
-            //        this._path.Evaluate(evalContext);
-            //    }
-            //    catch (RdfQueryPathFoundException)
-            //    {
-            //        //Ignore this error as this is just an optimisation
-            //    }
-
-            //    //Now we take the results and generate an output multiset from them
-            //    bool subjVar = (this._subj.VariableName != null);
-            //    bool objVar = (this._obj.VariableName != null);
-            //    bool lengthVar = (!this._lengthVar.Equals(String.Empty));
-            //    if (subjVar || objVar)
-            //    {
-            //        //We only need to do this if the path had variables as the subject and/or object
-            //        foreach (PotentialPath p in evalContext.CompletePaths)
-            //        {
-            //            if (p.IsComplete && !p.IsDeadEnd)
-            //            {
-            //                Set s = new Set();
-            //                if (subjVar)
-            //                {
-            //                    s.Add(this._subj.VariableName, p.Start);
-            //                }
-            //                if (objVar)
-            //                {
-            //                    s.Add(this._obj.VariableName, p.Current);
-            //                }
-            //                if (lengthVar)
-            //                {
-            //                    s.Add(this._lengthVar, new LiteralNode(null, p.Length.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger)));
-            //                }
-
-            //                context.OutputMultiset.Add(s);
-            //            }
-            //        }
-            //    }
-            //    else
-            //    {
-            //        //If the path didn't have variables we'll return either an Identity/Null Multiset
-            //        //depending on whether any paths were found
-            //        if (evalContext.CompletePaths.Any(p => p.IsComplete && !p.IsDeadEnd))
-            //        {
-            //            context.OutputMultiset = new IdentityMultiset();
-            //        }
-            //        else
-            //        {
-            //            context.OutputMultiset = new NullMultiset();
-            //        }
-            //    }
-            //}
+            //If we reach here we've successfully evaluated the simple pattern and can return
+            return;
         }
 
         /// <summary>
@@ -243,12 +166,6 @@ namespace VDS.RDF.Query.Patterns
             output.Append(' ');
             output.Append(this._path.ToString());
             output.Append(' ');
-            if (!this._lengthVar.Equals(String.Empty))
-            {
-                output.Append("LENGTH ?");
-                output.Append(this._lengthVar);
-                output.Append(' ');
-            }
             output.Append(this._obj.ToString());
             return output.ToString();
         }

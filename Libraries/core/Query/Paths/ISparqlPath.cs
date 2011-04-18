@@ -46,39 +46,8 @@ namespace VDS.RDF.Query.Paths
     /// </summary>
     public interface ISparqlPath
     {
-        ///// <summary>
-        ///// Gets whether the Path is a Simple Path
-        ///// </summary>
-        //bool IsSimple
-        //{
-        //    get;
-        //}
+        ISparqlAlgebra ToAlgebra(PathTransformContext context);
 
-        ///// <summary>
-        ///// Gets whether the Path allows for zero-length Paths
-        ///// </summary>
-        //bool AllowsZeroLength
-        //{
-        //    get;
-        //}
-
-        ///// <summary>
-        ///// Evaluates the Path in the given Path Evaluation Context
-        ///// </summary>
-        ///// <param name="context">Evaluation Context</param>
-        //void Evaluate(PathEvaluationContext context);
-
-        ///// <summary>
-        ///// Converts the Path to an Algebra expression
-        ///// </summary>
-        ///// <param name="context">Transform Context</param>
-        ///// <returns></returns>
-        ///// <remarks>
-        ///// If the Path is not simple then this function will throw an error since there is no Algebra transform for the Path
-        ///// </remarks>
-        ///// <exception cref="RdfQueryException">Thrown if the path is non-simple and therefore there is no Algebra transform</exception>
-        //void ToAlgebra(PathTransformContext context);
-
-        ISparqlAlgebra ToAlgebraOperator(PathTransformContext context);
+        String ToString();
     }
 }

@@ -71,6 +71,7 @@ namespace VDS.RDF.Query.Paths
             this._end = context._end;
             this._currSubj = context._currSubj;
             this._currObj = context._currObj;
+            this._nextID = context._nextID;
         }
 
         /// <summary>
@@ -106,6 +107,18 @@ namespace VDS.RDF.Query.Paths
         public void AddTriplePattern(ITriplePattern p)
         {
             this._patterns.Add(p);
+        }
+
+        public int NextID
+        {
+            get
+            {
+                return this._nextID;
+            }
+            set
+            {
+                this._nextID = value;
+            }
         }
 
         /// <summary>

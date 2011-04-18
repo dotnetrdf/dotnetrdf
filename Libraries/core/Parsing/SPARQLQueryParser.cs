@@ -1683,16 +1683,16 @@ namespace VDS.RDF.Parsing
 
                         if (context.LocalTokens.Count == expectedCount - 1)
                         {
-                            path = context.PathParser.Parse(context, context.LocalTokens.Pop(), out lengthVar);
-                            PathToken pathToken = new PathToken(path, lengthVar);
+                            path = context.PathParser.Parse(context, context.LocalTokens.Pop());
+                            PathToken pathToken = new PathToken(path);
                             context.LocalTokens.Push(pathToken);
                         }
                         else if ((next.TokenType == Token.HAT || next.TokenType == Token.NEGATION) && context.LocalTokens.Count == expectedCount - 2)
                         {
                             // ^ and ! may be used to start a pattern
                             context.Tokens.Dequeue();
-                            path = context.PathParser.Parse(context, next, out lengthVar);
-                            PathToken pathToken = new PathToken(path, lengthVar);
+                            path = context.PathParser.Parse(context, next);
+                            PathToken pathToken = new PathToken(path);
                             context.LocalTokens.Push(pathToken);
                         }
                         else
@@ -1810,8 +1810,8 @@ namespace VDS.RDF.Parsing
                             //Property Path
                             if (context.SyntaxMode == SparqlQuerySyntax.Sparql_1_0) throw new RdfParseException("Property Paths are not permitted in SPARQL 1.0");
  
-                            path = context.PathParser.Parse(context, context.Tokens.Dequeue(), out lengthVar);
-                            PathToken pathToken = new PathToken(path, lengthVar);
+                            path = context.PathParser.Parse(context, context.Tokens.Dequeue());
+                            PathToken pathToken = new PathToken(path);
                             context.LocalTokens.Push(pathToken);
                         }
                         else
@@ -1854,7 +1854,7 @@ namespace VDS.RDF.Parsing
                         if (temp.TokenType == Token.PATH)
                         {
                             path = ((PathToken)temp).Path;
-                            p.AddTriplePattern(new PropertyPathPattern(subj, path, obj, ((PathToken)temp).LengthVariable));
+                            p.AddTriplePattern(new PropertyPathPattern(subj, path, obj));
                         }
                         else
                         {
@@ -1887,7 +1887,7 @@ namespace VDS.RDF.Parsing
                         if (temp.TokenType == Token.PATH)
                         {
                             path = ((PathToken)temp).Path;
-                            p.AddTriplePattern(new PropertyPathPattern(subj, path, obj, ((PathToken)temp).LengthVariable));
+                            p.AddTriplePattern(new PropertyPathPattern(subj, path, obj));
                         }
                         else
                         {
@@ -1927,7 +1927,7 @@ namespace VDS.RDF.Parsing
                         if (temp.TokenType == Token.PATH)
                         {
                             path = ((PathToken)temp).Path;
-                            p.AddTriplePattern(new PropertyPathPattern(subj, path, obj, ((PathToken)temp).LengthVariable));
+                            p.AddTriplePattern(new PropertyPathPattern(subj, path, obj));
                         }
                         else
                         {
@@ -1964,8 +1964,8 @@ namespace VDS.RDF.Parsing
                             if (next.TokenType == Token.LEFTCURLYBRACKET && context.SyntaxMode != SparqlQuerySyntax.Sparql_1_0 && context.LocalTokens.Count == expectedCount - 1 && (temp.TokenType == Token.QNAME || temp.TokenType == Token.URI || temp.TokenType == Token.KEYWORDA))
                             {
                                 //In this case this should be a Cardinality Modifier on a path (we hope)
-                                path = context.PathParser.Parse(context, context.LocalTokens.Pop(), out lengthVar);
-                                IToken pathToken = new PathToken(path, lengthVar);
+                                path = context.PathParser.Parse(context, context.LocalTokens.Pop());
+                                IToken pathToken = new PathToken(path);
                                 context.LocalTokens.Push(pathToken);
                                 continue;
                             }
@@ -1983,7 +1983,7 @@ namespace VDS.RDF.Parsing
                         if (temp.TokenType == Token.PATH)
                         {
                             path = ((PathToken)temp).Path;
-                            p.AddTriplePattern(new PropertyPathPattern(subj, path, obj, ((PathToken)temp).LengthVariable));
+                            p.AddTriplePattern(new PropertyPathPattern(subj, path, obj));
                         }
                         else
                         {

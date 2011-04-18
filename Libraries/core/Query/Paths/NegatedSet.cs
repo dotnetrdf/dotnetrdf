@@ -34,29 +34,7 @@ namespace VDS.RDF.Query.Paths
             }
         }
 
-        #region ISparqlPath Members
-
-        public bool IsSimple
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public bool AllowsZeroLength
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public void Evaluate(PathEvaluationContext context)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void ToAlgebra(PathTransformContext context)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ISparqlAlgebra ToAlgebraOperator(PathTransformContext context)
+        public ISparqlAlgebra ToAlgebra(PathTransformContext context)
         {
             if (this._properties.Count > 0 && this._inverseProperties.Count == 0)
             {
@@ -77,8 +55,6 @@ namespace VDS.RDF.Query.Paths
                 return new Union(lhs, rhs);
             }
         }
-
-        #endregion
 
         public override string ToString()
         {

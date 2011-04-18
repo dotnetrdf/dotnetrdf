@@ -49,10 +49,8 @@ namespace VDS.RDF.Parsing
     /// </summary>
     class SparqlPathParser
     {
-        public ISparqlPath Parse(SparqlQueryParserContext context, IToken first, out String lengthVar)
+        public ISparqlPath Parse(SparqlQueryParserContext context, IToken first)
         {
-            lengthVar = String.Empty;
-
             //Need to gather up all the Tokens which make up the path
             int openBrackets = 0;
             Queue<IToken> tokens = new Queue<IToken>();
@@ -247,24 +245,6 @@ namespace VDS.RDF.Parsing
             }
 
             ISparqlPath path = this.TryParsePath(context, tokens);
-
-            //Has the user asked for the Length of the Path to be bound to a variable?
-            next = context.Tokens.Peek();
-            if (next.TokenType == Token.LENGTH)
-            {
-                context.Tokens.Dequeue();
-                next = context.Tokens.Peek();
-                if (next.TokenType == Token.VARIABLE)
-                {
-                    context.Tokens.Dequeue();
-                    lengthVar = next.Value;
-                }
-                else
-                {
-                    throw new RdfParseException("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Variable after a LENGTH keyword to bind the length of the Path to", next);
-                }
-            }
-
             return path;
         }
 

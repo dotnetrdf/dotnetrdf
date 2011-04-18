@@ -62,31 +62,6 @@ namespace VDS.RDF.Query.Paths
             this._rhs = rhs;
         }
 
-        ///// <summary>
-        ///// Gets whether the Path is simple
-        ///// </summary>
-        ///// <remarks>
-        ///// Some derived classes will need to override this appropriately since their operator will automatically imply non-simple
-        ///// </remarks>
-        //public virtual bool IsSimple
-        //{
-        //    get
-        //    {
-        //        return this._lhs.IsSimple && this._rhs.IsSimple;
-        //    }
-        //}
-
-        ///// <summary>
-        ///// Gets whether the Path permits zero-length paths
-        ///// </summary>
-        //public virtual bool AllowsZeroLength
-        //{
-        //    get
-        //    {
-        //        return false;
-        //    }
-        //}
-
         /// <summary>
         /// Gets the LHS Path component
         /// </summary>
@@ -109,19 +84,8 @@ namespace VDS.RDF.Query.Paths
             }
         }
 
-        ///// <summary>
-        ///// Evaluates the Path using the given Path Evaluation Context
-        ///// </summary>
-        ///// <param name="context">Path Evaluation Context</param>
-        //public abstract void Evaluate(PathEvaluationContext context);
+        public abstract ISparqlAlgebra ToAlgebra(PathTransformContext context);
 
-        ///// <summary>
-        ///// Generates the Algebra Transform of the Path
-        ///// </summary>
-        ///// <param name="context">Transform Context</param>
-        ///// <returns></returns>
-        //public abstract void ToAlgebra(PathTransformContext context);
-
-        public abstract ISparqlAlgebra ToAlgebraOperator(PathTransformContext context);
+        public abstract String ToString();
     }
 }

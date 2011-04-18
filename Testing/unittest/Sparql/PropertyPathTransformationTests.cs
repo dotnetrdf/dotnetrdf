@@ -27,7 +27,7 @@ namespace VDS.RDF.Test.Sparql
 
             Console.WriteLine("Path: " + path.ToString());
 
-            ISparqlAlgebra algebra = path.ToAlgebraOperator(context);
+            ISparqlAlgebra algebra = path.ToAlgebra(context);
             String result = algebra.ToString();
             Console.WriteLine("Algebra: " + result);
 
@@ -180,8 +180,19 @@ namespace VDS.RDF.Test.Sparql
         [TestMethod]
         public void SparqlPropertyPathTransformationNegatedPropertyInverseSet()
         {
-            VDS.RDF.Query.Paths.NegatedSet path = new VDS.RDF.Query.Paths.NegatedSet(Enumerable.Empty<Property>(), new Property[] { new Property(this._factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType))) });
+            NegatedSet path = new NegatedSet(Enumerable.Empty<Property>(), new Property[] { new Property(this._factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType))) });
             this.RunTest(path, new String[] { "NegatedPropertySet" });
+        }
+
+        [TestMethod]
+        public void SparqlPropertyPathTransformationSequencedAlternatives()
+        {
+            INode a = this._factory.CreateUriNode(new Uri("ex:a"));
+            INode b = this._factory.CreateUriNode(new Uri("ex:b"));
+            INode c = this._factory.CreateUriNode(new Uri("ex:c"));
+            INode d = this._factory.CreateUriNode(new Uri("ex:d"));
+            SequencePath path = new SequencePath(new AlternativePath(new Property(a), new Property(c)), new AlternativePath(new Property(b), new Property(d)));
+            this.RunTest(path, new String[] { "BGP" });
         }
     }
 }

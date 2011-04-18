@@ -44,18 +44,15 @@ namespace VDS.RDF.Parsing.Tokens
     public class PathToken : BaseToken
     {
         private ISparqlPath _path;
-        private String _var;
 
         /// <summary>
         /// Creates a new Path Token
         /// </summary>
         /// <param name="path">Path</param>
-        /// <param name="lengthVar">Length Variable</param>
-        public PathToken(ISparqlPath path, String lengthVar)
+        public PathToken(ISparqlPath path)
             : base(Token.PATH, path.ToString(), 0, 0, 0, 0)
         {
             this._path = path;
-            this._var = lengthVar;
         }
 
         /// <summary>
@@ -66,17 +63,6 @@ namespace VDS.RDF.Parsing.Tokens
             get
             {
                 return this._path;
-            }
-        }
-
-        /// <summary>
-        /// Gets the Length Variable for this path or the empty string if one is not used
-        /// </summary>
-        public String LengthVariable
-        {
-            get
-            {
-                return this._var;
             }
         }
     }
