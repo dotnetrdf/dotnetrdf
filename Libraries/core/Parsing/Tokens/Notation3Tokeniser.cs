@@ -107,7 +107,12 @@ namespace VDS.RDF.Parsing.Tokens
 
                 try
                 {
-                    if (this.LastTokenType == Token.KEYWORDDIRECTIVE || this.LastTokenType == Token.KEYWORDDEF)
+                    if (this.LastTokenType == Token.BOF && this._in.EndOfStream)
+                    {
+                        //Empty File
+                        return new EOFToken(0,0);
+                    }
+                    else if (this.LastTokenType == Token.KEYWORDDIRECTIVE || this.LastTokenType == Token.KEYWORDDEF)
                     {
                         //Get Keyword Definitions
                         return this.TryGetKeywordDefinition();

@@ -100,6 +100,13 @@ namespace VDS.RDF.Parsing.Tokens
                     {
                         case Token.AT:
                             return this.TryGetDirectiveToken();
+                        case Token.BOF:
+                            if (this._in.EndOfStream)
+                            {
+                                //Empty File
+                                return new EOFToken(0, 0);
+                            }
+                            break;
 
                         case Token.PREFIXDIRECTIVE:
                             return this.TryGetPrefixToken();
@@ -147,6 +154,20 @@ namespace VDS.RDF.Parsing.Tokens
 
                         //Get the Next Character
                         char next = this.Peek();
+                        if (next == Char.MaxValue && this._in.EndOfStream)
+                        {
+                            if (this.Length == 0)
+                            {
+                                //We're at the End of the Stream and not part-way through reading a Token
+                                return new EOFToken(this.CurrentLine, this.CurrentPosition);
+                            }
+                            else
+                            {
+                                //We're at the End of the Stream and part-way through reading a Token
+                                //Raise an error
+                                throw UnexpectedEndOfInput("Token");
+                            }
+                        }
 
                         if (Char.IsLetterOrDigit(next) || UnicodeSpecsHelper.IsLetterOrDigit(next) || UnicodeSpecsHelper.IsLetterModifier(next))
                         {

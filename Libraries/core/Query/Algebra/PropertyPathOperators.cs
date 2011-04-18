@@ -107,43 +107,130 @@ namespace VDS.RDF.Query.Algebra
                 }
             }
 
-            HashSet<KeyValuePair<INode,INode>> matches = new HashSet<KeyValuePair<INode,INode>>();
             String subjVar = this.PathStart.VariableName;
             String objVar = this.PathEnd.VariableName;
-            if (this.Path is Property)
+
+            //Determine the Triples to which this applies
+            IEnumerable<Triple> ts = null;
+            if (subjVar != null)
             {
-                //For simple Property Paths we can just select the Triples and generate the Matches that way
-                IEnumerable<Triple> ts;
-                if (subjVar != null && context.InputMultiset.ContainsVariable(subjVar))
+                //Subject is a Variable
+                if (context.InputMultiset.ContainsVariable(subjVar))
                 {
-                    if (objVar != null && context.InputMultiset.ContainsVariable(objVar))
+                    //Subject is Bound
+                    if (objVar != null)
                     {
-                        ts = (from s in context.InputMultiset.Sets
-                              where s[subjVar] != null && s[objVar] != null
-                              from t in context.Data.GetTriplesWithSubjectObject(s[subjVar], s[objVar])
-                              select t);
+                        //Object is a Variable
+                        if (context.InputMultiset.ContainsVariable(objVar))
+                        {
+                            //Object is Bound
+                            ts = (from s in context.InputMultiset.Sets
+                                  where s[subjVar] != null && s[objVar] != null
+                                  from t in context.Data.GetTriplesWithSubjectObject(s[subjVar], s[objVar])
+                                  select t);
+                        }
+                        else
+                        {
+                            //Object is Unbound
+                            ts = (from s in context.InputMultiset.Sets
+                                  where s[subjVar] != null
+                                  from t in context.Data.GetTriplesWithSubject(s[subjVar])
+                                  select t);
+                        }
                     }
                     else
                     {
-                        ts = (from s in context.InputMultiset.Sets
-                              where s[subjVar] != null
-                              from t in context.Data.GetTriplesWithSubject(s[subjVar])
-                              select t);
+                        //Object is a Term
+                        //Preseve sets where the Object Term is equal to the currently bound Subject
+                        INode objTerm = ((NodeMatchPattern)this.PathEnd).Node;
+                        foreach (Set s in context.InputMultiset.Sets)
+                        {
+                            INode temp = s[subjVar];
+                            if (temp != null && temp.Equals(objTerm))
+                            {
+                                context.OutputMultiset.Add(new Set(s));
+                            }
+                        }
                     }
-                }
-                else if (objVar != null && context.InputMultiset.ContainsVariable(objVar))
-                {
-                    ts = (from s in context.InputMultiset.Sets
-                          where s[objVar] != null
-                          from t in context.Data.GetTriplesWithObject(s[objVar])
-                          select t);
                 }
                 else
                 {
-                    ts = context.Data.Triples;
+                    //Subject is Unbound
+                    if (objVar != null)
+                    {
+                        //Object is a Variable
+                        if (context.InputMultiset.ContainsVariable(objVar))
+                        {
+                            //Object is Bound
+                            ts = (from s in context.InputMultiset.Sets
+                                  where s[objVar] != null
+                                  from t in context.Data.GetTriplesWithObject(s[objVar])
+                                  select t);
+                        }
+                        else
+                        {
+                            //Object is Unbound
+                            HashSet<INode> nodes = new HashSet<INode>();
+                            foreach (Triple t in context.Data.Triples)
+                            {
+                                nodes.Add(t.Subject);
+                                nodes.Add(t.Object);
+                            }
+                            foreach (INode n in nodes)
+                            {
+                                Set s = new Set();
+                                s.Add(subjVar, n);
+                                s.Add(objVar, n);
+                                context.OutputMultiset.Add(s);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        //Object is a Term
+                        //Create a single set with the Variable bound to the Object Term
+                        Set s = new Set();
+                        s.Add(subjVar, ((NodeMatchPattern)this.PathEnd).Node);
+                        context.OutputMultiset.Add(s);
+                    }
                 }
+            }
+            else if (objVar != null)
+            {
+                //Subject is a Term but Object is a Variable
+                if (context.InputMultiset.ContainsVariable(objVar))
+                {
+                    //Object is Bound
+                    //Preseve sets where the Subject Term is equal to the currently bound Object
+                    INode subjTerm = ((NodeMatchPattern)this.PathStart).Node;
+                    foreach (Set s in context.InputMultiset.Sets)
+                    {
+                        INode temp = s[objVar];
+                        if (temp != null && temp.Equals(subjTerm))
+                        {
+                            context.OutputMultiset.Add(new Set(s));
+                        }
+                    }
+                }
+                else
+                {
+                    //Object is Unbound
+                    //Create a single set with the Variable bound to the Suject Term
+                    Set s = new Set();
+                    s.Add(objVar, ((NodeMatchPattern)this.PathStart).Node);
+                    context.OutputMultiset.Add(s);
+                }
+            }
+            else
+            {
+                //Should already have dealt with this earlier (the AreBothTerms() and AreSameTerms() branch)
+                throw new RdfQueryException("Reached unexpected point of ZeroLengthPath evaluation");
+            }
 
-                //Get the Matches
+            //Get the Matches only if we haven't already generated the output
+            if (ts != null)
+            {
+                HashSet<KeyValuePair<INode, INode>> matches = new HashSet<KeyValuePair<INode, INode>>();
                 foreach (Triple t in ts)
                 {
                     if (this.PathStart.Accepts(context, t.Subject) && this.PathEnd.Accepts(context, t.Object))
@@ -151,48 +238,28 @@ namespace VDS.RDF.Query.Algebra
                         matches.Add(new KeyValuePair<INode, INode>(t.Subject, t.Object));
                     }
                 }
-            }
-            else
-            {
-                //For complex paths need to evaluate the path
-                PathTransformContext transformContext = new PathTransformContext(this.PathStart, this.PathEnd);
-                ISparqlAlgebra algebra = this.Path.ToAlgebraOperator(transformContext);
-                BaseMultiset initialInput = context.InputMultiset;
-                BaseMultiset results = algebra.Evaluate(context);
 
-                context.InputMultiset = initialInput;
-                context.OutputMultiset = new Multiset();
-
-                //Once evaluated then we can get the matches
-                foreach (Set s in results.Sets)
+                //Generate the Output based on the mathces
+                if (matches.Count == 0)
                 {
-                    if (this.PathStart.Accepts(context, s[subjVar]) && this.PathEnd.Accepts(context, s[objVar]))
-                    {
-                        matches.Add(new KeyValuePair<INode, INode>(s[subjVar], s[objVar]));
-                    }
-                }
-            }
-
-            //Generate the Output based on the mathces
-            if (matches.Count == 0)
-            {
-                context.OutputMultiset = new NullMultiset();
-            }
-            else
-            {
-                if (this.PathStart.VariableName == null && this.PathEnd.VariableName == null)
-                {
-                    context.OutputMultiset = new IdentityMultiset();
+                    context.OutputMultiset = new NullMultiset();
                 }
                 else
                 {
-                    context.OutputMultiset = new Multiset();
-                    foreach (KeyValuePair<INode, INode> m in matches)
+                    if (this.PathStart.VariableName == null && this.PathEnd.VariableName == null)
                     {
-                        Set s = new Set();
-                        if (subjVar != null) s.Add(subjVar, m.Key);
-                        if (objVar != null) s.Add(objVar, m.Value);
-                        context.OutputMultiset.Add(s);
+                        context.OutputMultiset = new IdentityMultiset();
+                    }
+                    else
+                    {
+                        context.OutputMultiset = new Multiset();
+                        foreach (KeyValuePair<INode, INode> m in matches)
+                        {
+                            Set s = new Set();
+                            if (subjVar != null) s.Add(subjVar, m.Key);
+                            if (objVar != null) s.Add(objVar, m.Value);
+                            context.OutputMultiset.Add(s);
+                        }
                     }
                 }
             }

@@ -166,7 +166,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// <param name="t"></param>
         protected void PrintTrace(IToken t)
         {
-            Console.WriteLine("[Lines " + t.StartLine + "-" + t.EndLine + " Columns " + t.StartPosition + "-" + t.EndPosition + "] " + t.GetType().ToString() + " " + t.Value);
+            Console.WriteLine("[Lines " + t.StartLine + "-" + t.EndLine + " Columns " + t.StartPosition + "-" + t.EndPosition + "] " + t.GetType().Name + " " + t.Value);
         }
     }
 
@@ -342,7 +342,6 @@ namespace VDS.RDF.Parsing.Tokens
 
                 if (this._tracing)
                 {
-                    //Console.WriteLine("[Lines " + t.StartLine + "-" + t.EndLine + " Columns " + t.StartPosition + "-" + t.EndPosition + "] " + t.GetType().ToString());
                     this.PrintTrace(t);
                 }
             } while (t.TokenType != Token.EOF && i < this._bufferAmount);
@@ -501,7 +500,6 @@ namespace VDS.RDF.Parsing.Tokens
 
                 if (this._tracing)
                 {
-                    //Console.WriteLine("[Lines " + t.StartLine + "-" + t.EndLine + " Columns " + t.StartPosition + "-" + t.EndPosition + "] " + t.GetType().ToString());
                     this.PrintTrace(t);
                 }
             } while (t.TokenType != Token.EOF);

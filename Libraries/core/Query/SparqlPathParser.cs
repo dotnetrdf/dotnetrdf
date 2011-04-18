@@ -180,9 +180,9 @@ namespace VDS.RDF.Parsing
 
                             if (lastItem != LastPathItemType.Predicate && lastItem != LastPathItemType.Modifier)
                             {
-                                if (lastItem == LastPathItemType.Sequencer && next.TokenType == Token.HAT && lastSequencer == Token.DIVIDE)
+                                if (lastItem == LastPathItemType.Sequencer && next.TokenType == Token.HAT && (lastSequencer == Token.DIVIDE || lastSequencer == Token.BITWISEOR))
                                 {
-                                    // / ^ is a valid sequencing
+                                    // / ^ or | ^ is a valid sequencing
                                 }
                                 else
                                 {

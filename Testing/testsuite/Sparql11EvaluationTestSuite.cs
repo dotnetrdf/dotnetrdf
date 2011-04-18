@@ -85,6 +85,9 @@ namespace dotNetRDFTest
                     "delete-insert/delete-insert-05.ru",
                     "delete-insert/delete-insert-07.ru",
                     "delete-insert/delete-insert-07b.ru",
+                    //The following are tests for property paths which fail because of SparqlResultSet equality algorithm
+                    //doesn't cope well with lots of BNodes in the results
+                    "property-path/pp05.rq",
                     //The following are tests where the test cases are in the manifest but missing
                     "functions/notin01.rq",
                     "negation/temporalProximity02.rq"

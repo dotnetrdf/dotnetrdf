@@ -91,7 +91,12 @@ namespace VDS.RDF.Parsing.Tokens
                 try
                 {
                     //Certain Last Tokens restrict what we expect next
-                    if (this._lasttokentype == Token.PREFIXDIRECTIVE)
+                    if (this.LastTokenType == Token.BOF && this._in.EndOfStream)
+                    {
+                        //Empty File
+                        return new EOFToken(0, 0);
+                    }
+                    else if (this._lasttokentype == Token.PREFIXDIRECTIVE)
                     {
                         //Discard any white space first
                         this.DiscardWhiteSpace();

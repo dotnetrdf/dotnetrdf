@@ -97,7 +97,12 @@ namespace VDS.RDF.Parsing.Tokens
 
                 try
                 {
-                    if (!this._queryKeywordSeen)
+                    if (this.LastTokenType == Token.BOF && this._in.EndOfStream)
+                    {
+                        //Empty File
+                        return new EOFToken(0, 0);
+                    }
+                    else if (!this._queryKeywordSeen)
                     {
                         //Expecting the Prologue/Keyword of the Query
                         return this.TryGetPrologueOrQueryKeyword();
