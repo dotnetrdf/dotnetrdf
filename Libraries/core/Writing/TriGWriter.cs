@@ -469,7 +469,7 @@ namespace VDS.RDF.Writing
                 while (u != null)
                 {
                     //Get the Graph from the Store
-                    if (WriterHelper.IsDefaultGraph(u)) u = null;
+                    if (WriterHelper.IsDefaultGraph(u) && !globalContext.Store.HasGraph(u)) u = null;
                     IGraph g = globalContext.Store.Graphs[u];
 
                     //Generate the Graph Output and add to Stream
