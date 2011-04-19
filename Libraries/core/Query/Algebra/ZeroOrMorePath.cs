@@ -156,6 +156,36 @@ namespace VDS.RDF.Query.Algebra
                     }
                 }
 
+                //Now add the zero length paths into
+                IEnumerable<INode> nodes;
+                if (subjVar != null)
+                {
+                    if (objVar != null)
+                    {
+                        nodes = (from s in context.OutputMultiset.Sets
+                                 where s[subjVar] != null
+                                 select s[subjVar]).Concat(from s in context.OutputMultiset.Sets
+                                                           where s[objVar] != null
+                                                           select s[objVar]).Distinct();
+                    }
+                    else
+                    {
+                        nodes = (from s in context.OutputMultiset.Sets
+                                 where s[subjVar] != null
+                                 select s[subjVar]).Distinct();
+                    }
+                }
+                else if (objVar != null)
+                {
+                    nodes = (from s in context.OutputMultiset.Sets
+                             where s[objVar] != null
+                             select s[objVar]).Distinct();
+                }
+                else
+                {
+                    nodes = Enumerable.Empty<INode>();
+                }
+
                 if (bothTerms)
                 {
                     //If both were terms transform to an Identity/Null Multiset as appropriate
@@ -166,6 +196,20 @@ namespace VDS.RDF.Query.Algebra
                     else
                     {
                         context.OutputMultiset = new IdentityMultiset();
+                    }
+                }
+
+                //Then union in the zero length paths
+                ZeroLengthPath zeroPath = new ZeroLengthPath(this.PathStart, this.PathEnd, this.Path);
+                BaseMultiset currResults = context.OutputMultiset;
+                context.OutputMultiset = new Multiset();
+                BaseMultiset results = zeroPath.Evaluate(context);
+                context.OutputMultiset = currResults;
+                foreach (Set s in results.Sets)
+                {
+                    if (!context.OutputMultiset.Sets.Contains(s))
+                    {
+                        context.OutputMultiset.Add(new Set(s));
                     }
                 }
             }

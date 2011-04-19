@@ -141,12 +141,6 @@ namespace dotNetRDFTest
         {
             Console.WriteLine("## Processing Directory '" + dir + "'");
 
-            //if (dir.EndsWith("il8n\\"))
-            //{
-            //    Console.WriteLine("Disabling URI Normalization for the Internationalization Tests");
-            //    Options.UriNormalization = false;
-            //}
-
             //First need to find the manifest file
             if (File.Exists(dir + "manifest.ttl"))
             {
@@ -190,7 +184,7 @@ namespace dotNetRDFTest
                 //Create SPARQL Query Parser
                 SparqlQueryParser queryParser = new SparqlQueryParser();
                 SparqlUpdateParser updateParser = new SparqlUpdateParser();
-                queryParser.DefaultBaseUri = manifest.NamespaceMap.GetNamespaceUri(String.Empty);
+                queryParser.DefaultBaseUri = (manifest.BaseUri != null ? manifest.BaseUri : manifest.NamespaceMap.GetNamespaceUri(String.Empty));
                 updateParser.DefaultBaseUri = manifest.NamespaceMap.GetNamespaceUri(String.Empty);
 
                 //Find all the Positive Syntax Tests
