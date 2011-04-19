@@ -328,7 +328,11 @@
     <Compile Include="Query\Algebra\IdentityMultiset.cs" />
     <Compile Include="Query\Algebra\ISparqlAlgebra.cs" />
     <Compile Include="Query\Algebra\AlgebraJoinClasses.cs" />
+    <Compile Include="Query\Algebra\NegatedPropertySet.cs" />
+    <Compile Include="Query\Algebra\OneOrMorePath.cs" />
     <Compile Include="Query\Algebra\PropertyPathOperators.cs" />
+    <Compile Include="Query\Algebra\ZeroLengthPath.cs" />
+    <Compile Include="Query\Algebra\ZeroOrMorePath.cs" />
     <Compile Include="Query\Optimisation\BaseAlgebraOptimiser.cs" />
     <Compile Include="Query\Optimisation\BaseQueryOptimiser.cs" />
     <Compile Include="Query\Optimisation\BgpOptimisers.cs" />

@@ -198,5 +198,117 @@ namespace VDS.RDF.Test.Sparql
 
             Assert.IsFalse(results.IsEmpty, "Results should not be empty");            
         }
+
+        [TestMethod]
+        public void SparqlPropertyPathEvaluationOneOrMorePath()
+        {
+            TripleStore store = new TripleStore();
+            Graph g = new Graph();
+            g.LoadFromFile("InferenceTest.ttl");
+            store.Add(g);
+            InMemoryDataset dataset = new InMemoryDataset(store);
+
+            OneOrMore path = new OneOrMore(new Property(this._factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "subClassOf"))));
+            ISparqlAlgebra algebra = this.GetAlgebra(path);
+            BaseMultiset results = algebra.Evaluate(new SparqlEvaluationContext(null, dataset));
+
+            TestTools.ShowMultiset(results);
+
+            Assert.IsFalse(results.IsEmpty, "Results should not be empty");
+        }
+
+        [TestMethod]
+        public void SparqlPropertyPathEvaluationOneOrMorePathForward()
+        {
+            TripleStore store = new TripleStore();
+            Graph g = new Graph();
+            g.LoadFromFile("InferenceTest.ttl");
+            store.Add(g);
+            InMemoryDataset dataset = new InMemoryDataset(store);
+
+            OneOrMore path = new OneOrMore(new Property(this._factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "subClassOf"))));
+            INode sportsCar = this._factory.CreateUriNode(new Uri("http://example.org/vehicles/SportsCar"));
+            ISparqlAlgebra algebra = this.GetAlgebra(path, sportsCar, null);
+            BaseMultiset results = algebra.Evaluate(new SparqlEvaluationContext(null, dataset));
+
+            TestTools.ShowMultiset(results);
+
+            Assert.IsFalse(results.IsEmpty, "Results should not be empty");
+        }
+
+        [TestMethod]
+        public void SparqlPropertyPathEvaluationOneOrMorePathReverse()
+        {
+            TripleStore store = new TripleStore();
+            Graph g = new Graph();
+            g.LoadFromFile("InferenceTest.ttl");
+            store.Add(g);
+            InMemoryDataset dataset = new InMemoryDataset(store);
+
+            OneOrMore path = new OneOrMore(new Property(this._factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "subClassOf"))));
+            INode airVehicle = this._factory.CreateUriNode(new Uri("http://example.org/vehicles/AirVehicle"));
+            ISparqlAlgebra algebra = this.GetAlgebra(path, null, airVehicle);
+            BaseMultiset results = algebra.Evaluate(new SparqlEvaluationContext(null, dataset));
+
+            TestTools.ShowMultiset(results);
+
+            Assert.IsFalse(results.IsEmpty, "Results should not be empty");
+        }
+
+        [TestMethod]
+        public void SparqlPropertyPathEvaluationZeroOrMorePath()
+        {
+            TripleStore store = new TripleStore();
+            Graph g = new Graph();
+            g.LoadFromFile("InferenceTest.ttl");
+            store.Add(g);
+            InMemoryDataset dataset = new InMemoryDataset(store);
+
+            ZeroOrMore path = new ZeroOrMore(new Property(this._factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "subClassOf"))));
+            ISparqlAlgebra algebra = this.GetAlgebra(path);
+            BaseMultiset results = algebra.Evaluate(new SparqlEvaluationContext(null, dataset));
+
+            TestTools.ShowMultiset(results);
+
+            Assert.IsFalse(results.IsEmpty, "Results should not be empty");
+        }
+
+        [TestMethod]
+        public void SparqlPropertyPathEvaluationZeroOrMorePathForward()
+        {
+            TripleStore store = new TripleStore();
+            Graph g = new Graph();
+            g.LoadFromFile("InferenceTest.ttl");
+            store.Add(g);
+            InMemoryDataset dataset = new InMemoryDataset(store);
+
+            ZeroOrMore path = new ZeroOrMore(new Property(this._factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "subClassOf"))));
+            INode sportsCar = this._factory.CreateUriNode(new Uri("http://example.org/vehicles/SportsCar"));
+            ISparqlAlgebra algebra = this.GetAlgebra(path, sportsCar, null);
+            BaseMultiset results = algebra.Evaluate(new SparqlEvaluationContext(null, dataset));
+
+            TestTools.ShowMultiset(results);
+
+            Assert.IsFalse(results.IsEmpty, "Results should not be empty");
+        }
+
+        [TestMethod]
+        public void SparqlPropertyPathEvaluationZeroOrMorePathReverse()
+        {
+            TripleStore store = new TripleStore();
+            Graph g = new Graph();
+            g.LoadFromFile("InferenceTest.ttl");
+            store.Add(g);
+            InMemoryDataset dataset = new InMemoryDataset(store);
+
+            ZeroOrMore path = new ZeroOrMore(new Property(this._factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "subClassOf"))));
+            INode airVehicle = this._factory.CreateUriNode(new Uri("http://example.org/vehicles/AirVehicle"));
+            ISparqlAlgebra algebra = this.GetAlgebra(path, null, airVehicle);
+            BaseMultiset results = algebra.Evaluate(new SparqlEvaluationContext(null, dataset));
+
+            TestTools.ShowMultiset(results);
+
+            Assert.IsFalse(results.IsEmpty, "Results should not be empty");
+        }
     }
 }
