@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+#if !NO_DATA
 using System.Data;
+#endif
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -518,10 +520,14 @@ namespace VDS.RDF
 
         public event GraphEventHandler Merged;
 
+#if !NO_DATA
+
         public DataTable ToDataTable()
         {
             return this._g.ToDataTable();
         }
+
+#endif
 
         #endregion
 

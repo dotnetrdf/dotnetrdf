@@ -51,7 +51,9 @@ namespace VDS.RDF.Update
     public class LeviathanUpdateProcessor : ISparqlUpdateProcessor
     {
         private ISparqlDataset _dataset;
+#if !NO_RWLOCK
         private ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
+#endif
         private bool _autoCommit = true, _canCommit = true;
 
         /// <summary>
@@ -117,15 +119,21 @@ namespace VDS.RDF.Update
         public void ProcessAddCommand(AddCommand cmd)
         {
             if (this._autoCommit) this.Flush();
+#if !NO_RWLOCK
             ReaderWriterLockSlim currLock = (this._dataset is IThreadSafeDataset) ? ((IThreadSafeDataset)this._dataset).Lock : this._lock;
+#endif
             bool mustRelease = false;
             try
             {
+#if !NO_RWLOCK
                 if (!currLock.IsWriteLockHeld)
                 {
                     currLock.EnterWriteLock();
                     mustRelease = true;
                 }
+#else
+                Monitor.Enter(this._dataset);
+#endif
                 cmd.Evaluate(new SparqlUpdateEvaluationContext(this._dataset));
                 if (this._autoCommit) this.Flush();
             }
@@ -145,7 +153,11 @@ namespace VDS.RDF.Update
             {
                 if (mustRelease)
                 {
+#if !NO_RWLOCK
                     currLock.ExitWriteLock();
+#else
+                    Monitor.Exit(this._dataset);
+#endif
                 }
             }
         }
@@ -157,15 +169,21 @@ namespace VDS.RDF.Update
         public void ProcessClearCommand(ClearCommand cmd)
         {
             if (this._autoCommit) this.Flush();
+#if !NO_RWLOCK
             ReaderWriterLockSlim currLock = (this._dataset is IThreadSafeDataset) ? ((IThreadSafeDataset)this._dataset).Lock : this._lock;
+#endif
             bool mustRelease = false;
             try
             {
+#if !NO_RWLOCK
                 if (!currLock.IsWriteLockHeld)
                 {
                     currLock.EnterWriteLock();
                     mustRelease = true;
                 }
+#else
+                Monitor.Enter(this._dataset);
+#endif
                 cmd.Evaluate(new SparqlUpdateEvaluationContext(this._dataset));
                 if (this._autoCommit) this.Flush();
             }
@@ -185,7 +203,11 @@ namespace VDS.RDF.Update
             {
                 if (mustRelease)
                 {
+#if !NO_RWLOCK
                     currLock.ExitWriteLock();
+#else
+                    Monitor.Exit(this._dataset);
+#endif
                 }
             }
         }
@@ -197,15 +219,21 @@ namespace VDS.RDF.Update
         public void ProcessCopyCommand(CopyCommand cmd)
         {
             if (this._autoCommit) this.Flush();
+#if !NO_RWLOCK
             ReaderWriterLockSlim currLock = (this._dataset is IThreadSafeDataset) ? ((IThreadSafeDataset)this._dataset).Lock : this._lock;
+#endif
             bool mustRelease = false;
             try
             {
+#if !NO_RWLOCK
                 if (!currLock.IsWriteLockHeld)
                 {
                     currLock.EnterWriteLock();
                     mustRelease = true;
                 }
+#else
+                Monitor.Enter(this._dataset);
+#endif
                 cmd.Evaluate(new SparqlUpdateEvaluationContext(this._dataset));
                 if (this._autoCommit) this.Flush();
             }
@@ -225,7 +253,11 @@ namespace VDS.RDF.Update
             {
                 if (mustRelease)
                 {
+#if !NO_RWLOCK
                     currLock.ExitWriteLock();
+#else
+                    Monitor.Exit(this._dataset);
+#endif
                 }
             }
         }
@@ -237,15 +269,21 @@ namespace VDS.RDF.Update
         public void ProcessCreateCommand(CreateCommand cmd)
         {
             if (this._autoCommit) this.Flush();
+#if !NO_RWLOCK
             ReaderWriterLockSlim currLock = (this._dataset is IThreadSafeDataset) ? ((IThreadSafeDataset)this._dataset).Lock : this._lock;
+#endif
             bool mustRelease = false;
             try
             {
+#if !NO_RWLOCK
                 if (!currLock.IsWriteLockHeld)
                 {
                     currLock.EnterWriteLock();
                     mustRelease = true;
                 }
+#else
+                Monitor.Enter(this._dataset);
+#endif
                 cmd.Evaluate(new SparqlUpdateEvaluationContext(this._dataset));
                 if (this._autoCommit) this.Flush();
             }
@@ -265,7 +303,11 @@ namespace VDS.RDF.Update
             {
                 if (mustRelease)
                 {
+#if !NO_RWLOCK
                     currLock.ExitWriteLock();
+#else
+                    Monitor.Exit(this._dataset);
+#endif
                 }
             }
         }
@@ -344,10 +386,16 @@ namespace VDS.RDF.Update
 
             //Remember to handle the Thread Safety
             //If the Dataset is Thread Safe use its own lock otherwise use our local lock
+#if !NO_RWLOCK
             ReaderWriterLockSlim currLock = (this._dataset is IThreadSafeDataset) ? ((IThreadSafeDataset)this._dataset).Lock : this._lock;
+#endif
             try
             {
+#if !NO_RWLOCK
                 currLock.EnterWriteLock();
+#else
+                Monitor.Enter(this._dataset);
+#endif
 
                 //Regardless of the Transaction Mode we turn auto-commit off for a command set so that individual commands
                 //don't try and commit after each one is applied i.e. either we are in auto-commit mode and all the
@@ -385,7 +433,7 @@ namespace VDS.RDF.Update
 #else
                             end = DateTime.Now;
                             TimeSpan elapsed = (end - start);
-                            if (elapsed.Milliseconds >= commands.UpdateTimeout)
+                            if (elapsed.Milliseconds >= commands.Timeout)
                             {
                                 throw new SparqlUpdateTimeoutException("Update Execution Time exceeded the Timeout of " + commands.UpdateTimeout + "ms, update aborted after " + elapsed.Milliseconds + "ms");
                             }
@@ -432,7 +480,11 @@ namespace VDS.RDF.Update
             {
                 //Reset auto-commit setting and release our write lock
                 this._autoCommit = autoCommit;
+#if !NO_RWLOCK
                 currLock.ExitWriteLock();
+#else
+                Monitor.Exit(this._dataset);
+#endif
             }
         }
 
@@ -443,15 +495,21 @@ namespace VDS.RDF.Update
         public void ProcessDeleteCommand(DeleteCommand cmd)
         {
             if (this._autoCommit) this.Flush();
+#if !NO_RWLOCK
             ReaderWriterLockSlim currLock = (this._dataset is IThreadSafeDataset) ? ((IThreadSafeDataset)this._dataset).Lock : this._lock;
+#endif
             bool mustRelease = false;
             try
             {
+#if !NO_RWLOCK
                 if (!currLock.IsWriteLockHeld)
                 {
                     currLock.EnterWriteLock();
                     mustRelease = true;
                 }
+#else
+                Monitor.Enter(this._dataset);
+#endif
                 cmd.Evaluate(new SparqlUpdateEvaluationContext(this._dataset));
                 if (this._autoCommit) this.Flush();
             }
@@ -471,7 +529,11 @@ namespace VDS.RDF.Update
             {
                 if (mustRelease)
                 {
+#if !NO_RWLOCK
                     currLock.ExitWriteLock();
+#else
+                    Monitor.Exit(this._dataset);
+#endif
                 }
             }
         }
@@ -483,15 +545,21 @@ namespace VDS.RDF.Update
         public void ProcessDeleteDataCommand(DeleteDataCommand cmd)
         {
             if (this._autoCommit) this.Flush();
+#if !NO_RWLOCK
             ReaderWriterLockSlim currLock = (this._dataset is IThreadSafeDataset) ? ((IThreadSafeDataset)this._dataset).Lock : this._lock;
+#endif
             bool mustRelease = false;
             try
             {
+#if !NO_RWLOCK
                 if (!currLock.IsWriteLockHeld)
                 {
                     currLock.EnterWriteLock();
                     mustRelease = true;
                 }
+#else
+                Monitor.Enter(this._dataset);
+#endif
                 cmd.Evaluate(new SparqlUpdateEvaluationContext(this._dataset));
                 if (this._autoCommit) this.Flush();
             }
@@ -511,7 +579,11 @@ namespace VDS.RDF.Update
             {
                 if (mustRelease)
                 {
+#if !NO_RWLOCK
                     currLock.ExitWriteLock();
+#else
+                    Monitor.Exit(this._dataset);
+#endif
                 }
             }
         }
@@ -523,15 +595,21 @@ namespace VDS.RDF.Update
         public void ProcessDropCommand(DropCommand cmd)
         {
             if (this._autoCommit) this.Flush();
+#if !NO_RWLOCK
             ReaderWriterLockSlim currLock = (this._dataset is IThreadSafeDataset) ? ((IThreadSafeDataset)this._dataset).Lock : this._lock;
+#endif
             bool mustRelease = false;
             try
             {
+#if !NO_RWLOCK
                 if (!currLock.IsWriteLockHeld)
                 {
                     currLock.EnterWriteLock();
                     mustRelease = true;
                 }
+#else
+                Monitor.Enter(this._dataset);
+#endif
                 cmd.Evaluate(new SparqlUpdateEvaluationContext(this._dataset));
                 if (this._autoCommit) this.Flush();
             }
@@ -551,7 +629,11 @@ namespace VDS.RDF.Update
             {
                 if (mustRelease)
                 {
+#if !NO_RWLOCK
                     currLock.ExitWriteLock();
+#else
+                    Monitor.Exit(this._dataset);
+#endif
                 }
             }
         }
@@ -563,15 +645,21 @@ namespace VDS.RDF.Update
         public void ProcessInsertCommand(InsertCommand cmd)
         {
             if (this._autoCommit) this.Flush();
+#if !NO_RWLOCK
             ReaderWriterLockSlim currLock = (this._dataset is IThreadSafeDataset) ? ((IThreadSafeDataset)this._dataset).Lock : this._lock;
+#endif
             bool mustRelease = false;
             try
             {
+#if !NO_RWLOCK
                 if (!currLock.IsWriteLockHeld)
                 {
                     currLock.EnterWriteLock();
                     mustRelease = true;
                 }
+#else
+                Monitor.Enter(this._dataset);
+#endif
                 cmd.Evaluate(new SparqlUpdateEvaluationContext(this._dataset));
                 if (this._autoCommit) this.Flush();
             }
@@ -591,7 +679,11 @@ namespace VDS.RDF.Update
             {
                 if (mustRelease)
                 {
+#if !NO_RWLOCK
                     currLock.ExitWriteLock();
+#else
+                    Monitor.Exit(this._dataset);
+#endif
                 }
             }
         }
@@ -603,15 +695,21 @@ namespace VDS.RDF.Update
         public void ProcessInsertDataCommand(InsertDataCommand cmd)
         {
             if (this._autoCommit) this.Flush();
+#if !NO_RWLOCK
             ReaderWriterLockSlim currLock = (this._dataset is IThreadSafeDataset) ? ((IThreadSafeDataset)this._dataset).Lock : this._lock;
+#endif
             bool mustRelease = false;
             try
             {
+#if !NO_RWLOCK
                 if (!currLock.IsWriteLockHeld)
                 {
                     currLock.EnterWriteLock();
                     mustRelease = true;
                 }
+#else
+                Monitor.Enter(this._dataset);
+#endif
                 cmd.Evaluate(new SparqlUpdateEvaluationContext(this._dataset));
                 if (this._autoCommit) this.Flush();
             }
@@ -631,7 +729,11 @@ namespace VDS.RDF.Update
             {
                 if (mustRelease)
                 {
+#if !NO_RWLOCK
                     currLock.ExitWriteLock();
+#else
+                    Monitor.Exit(this._dataset);
+#endif
                 }
             }
         }
@@ -643,15 +745,21 @@ namespace VDS.RDF.Update
         public void ProcessLoadCommand(LoadCommand cmd)
         {
             if (this._autoCommit) this.Flush();
+#if !NO_RWLOCK
             ReaderWriterLockSlim currLock = (this._dataset is IThreadSafeDataset) ? ((IThreadSafeDataset)this._dataset).Lock : this._lock;
+#endif
             bool mustRelease = false;
             try
             {
+#if !NO_RWLOCK
                 if (!currLock.IsWriteLockHeld)
                 {
                     currLock.EnterWriteLock();
                     mustRelease = true;
                 }
+#else
+                Monitor.Enter(this._dataset);
+#endif
                 cmd.Evaluate(new SparqlUpdateEvaluationContext(this._dataset));
                 if (this._autoCommit) this.Flush();
             }
@@ -671,7 +779,11 @@ namespace VDS.RDF.Update
             {
                 if (mustRelease)
                 {
+#if !NO_RWLOCK
                     currLock.ExitWriteLock();
+#else
+                    Monitor.Exit(this._dataset);
+#endif
                 }
             }
         }
@@ -683,15 +795,21 @@ namespace VDS.RDF.Update
         public void ProcessModifyCommand(ModifyCommand cmd)
         {
             if (this._autoCommit) this.Flush();
+#if !NO_RWLOCK
             ReaderWriterLockSlim currLock = (this._dataset is IThreadSafeDataset) ? ((IThreadSafeDataset)this._dataset).Lock : this._lock;
+#endif
             bool mustRelease = false;
             try
             {
+#if !NO_RWLOCK
                 if (!currLock.IsWriteLockHeld)
                 {
                     currLock.EnterWriteLock();
                     mustRelease = true;
                 }
+#else
+                Monitor.Enter(this._dataset);
+#endif
                 cmd.Evaluate(new SparqlUpdateEvaluationContext(this._dataset));
                 if (this._autoCommit) this.Flush();
             }
@@ -711,7 +829,11 @@ namespace VDS.RDF.Update
             {
                 if (mustRelease)
                 {
+#if !NO_RWLOCK
                     currLock.ExitWriteLock();
+#else
+                    Monitor.Exit(this._dataset);
+#endif
                 }
             }
         }
@@ -723,15 +845,21 @@ namespace VDS.RDF.Update
         public void ProcessMoveCommand(MoveCommand cmd)
         {
             if (this._autoCommit) this.Flush();
+#if !NO_RWLOCK
             ReaderWriterLockSlim currLock = (this._dataset is IThreadSafeDataset) ? ((IThreadSafeDataset)this._dataset).Lock : this._lock;
+#endif
             bool mustRelease = false;
             try
             {
+#if !NO_RWLOCK
                 if (!currLock.IsWriteLockHeld)
                 {
                     currLock.EnterWriteLock();
                     mustRelease = true;
                 }
+#else
+                Monitor.Enter(this._dataset);
+#endif
                 cmd.Evaluate(new SparqlUpdateEvaluationContext(this._dataset));
                 if (this._autoCommit) this.Flush();
             }
@@ -751,7 +879,11 @@ namespace VDS.RDF.Update
             {
                 if (mustRelease)
                 {
+#if !NO_RWLOCK
                     currLock.ExitWriteLock();
+#else
+                    Monitor.Exit(this._dataset);
+#endif
                 }
             }
         }

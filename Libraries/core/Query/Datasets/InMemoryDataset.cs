@@ -44,10 +44,15 @@ namespace VDS.RDF.Query.Datasets
     /// <summary>
     /// Represents an in-memory dataset (i.e. a <see cref="IInMemoryQueryableStore">InMemoryQueryableStore</see>) for querying and updating using SPARQL
     /// </summary>
-    public class InMemoryDataset : BaseTransactionalDataset, IThreadSafeDataset
+    public class InMemoryDataset : BaseTransactionalDataset
+#if !NO_RWLOCK
+        , IThreadSafeDataset
+#endif
     {
         private IInMemoryQueryableStore _store;
+#if !NO_RWLOCK
         private ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
+#endif
 
         /// <summary>
         /// Creates a new in-memory dataset using the default in-memory <see cref="TripleStore">TripleStore</see> as the underlying storage
@@ -100,6 +105,7 @@ namespace VDS.RDF.Query.Datasets
             }
         }
 
+#if !NO_RWLOCK
         public ReaderWriterLockSlim Lock
         {
             get
@@ -107,6 +113,7 @@ namespace VDS.RDF.Query.Datasets
                 return this._lock;
             }
         }
+#endif
 
         #region Graph Existence and Retrieval
 

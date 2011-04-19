@@ -54,7 +54,9 @@ namespace VDS.RDF.Query
     public class LeviathanQueryProcessor : ISparqlQueryProcessor, ISparqlQueryAlgebraProcessor<BaseMultiset, SparqlEvaluationContext>
     {
         private ISparqlDataset _dataset;
+#if !NO_RWLOCK
         private ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
+#endif
 
         /// <summary>
         /// Creates a new Leviathan Query Processor
@@ -255,17 +257,20 @@ namespace VDS.RDF.Query
         public Object ProcessQuery(SparqlQuery query)
         {
             //Handle the Thread Safety of the Query Evaluation
-            bool threadSafe = query.UsesDefaultDataset;
+#if !NO_RWLOCK
             ReaderWriterLockSlim currLock = (this._dataset is IThreadSafeDataset) ? ((IThreadSafeDataset)this._dataset).Lock : this._lock;
             try
             {
                 currLock.EnterReadLock();
+#endif
                 return query.Evaluate(this._dataset);
+#if !NO_RWLOCK
             }
             finally
             {
                 currLock.ExitReadLock();
             }
+#endif
         }
 
         /// <summary>

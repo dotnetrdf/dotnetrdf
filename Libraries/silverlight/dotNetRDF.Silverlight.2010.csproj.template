@@ -93,8 +93,8 @@
     <Resource Include="..\core\Storage\UpgradeMSSQLStore_010_011.sql">
       <Link>Storage\UpgradeMSSQLStore_010_011.sql</Link>
     </Resource>
-    <Resource Include="..\core\Web\LeviathanFunctionLibrary.ttl">
-      <Link>Web\LeviathanFunctionLibrary.ttl</Link>
+    <Resource Include="..\core\Query\Expressions\Functions\LeviathanFunctionLibrary.ttl">
+      <Link>Query\Expressions\Functions\LeviathanFunctionLibrary.ttl</Link>
     </Resource>
   </ItemGroup>
 

@@ -33,6 +33,8 @@ terms.
 
 */
 
+#if !NO_ASP && !NO_WEB
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -97,3 +99,5 @@ namespace VDS.RDF.Web
         }
     }
 }
+
+#endif
