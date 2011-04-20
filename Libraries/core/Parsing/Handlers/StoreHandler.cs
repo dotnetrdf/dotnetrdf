@@ -39,6 +39,8 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 
+//REQ: Refactor to extend BaseHandler
+
 namespace VDS.RDF.Parsing.Handlers
 {
     public class StoreHandler : IRdfHandler
@@ -93,6 +95,14 @@ namespace VDS.RDF.Parsing.Handlers
             IGraph target = this._store.Graph(t.GraphUri);
             target.Assert(t.CopyTriple(target));
             return true;
+        }
+
+        public bool AcceptsAll
+        {
+            get
+            {
+                return true;
+            }
         }
 
         #endregion

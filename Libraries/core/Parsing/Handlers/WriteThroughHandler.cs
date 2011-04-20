@@ -59,7 +59,7 @@ namespace VDS.RDF.Parsing.Handlers
             if (this._formatterType != null)
             {
                 this._formatter = null;
-                this._formattingMapper = null;
+                this._formattingMapper = new QNameOutputMapper();
 
                 //Instantiate a new Formatter
                 ConstructorInfo[] cs = this._formatterType.GetConstructors();
@@ -137,6 +137,14 @@ namespace VDS.RDF.Parsing.Handlers
         {
             this._writer.WriteLine(this._formatter.Format(t));
             return true;
+        }
+
+        public override bool AcceptsAll
+        {
+            get 
+            {
+                return true;
+            }
         }
     }
 }

@@ -58,5 +58,13 @@ namespace VDS.RDF.Parsing.Handlers
         {
             return this._handlers.All(h => h.HandleTriple(t));
         }
+
+        public override bool AcceptsAll
+        {
+            get
+            {
+                return this._handlers.All(h => h.AcceptsAll);
+            }
+        }
     }
 }

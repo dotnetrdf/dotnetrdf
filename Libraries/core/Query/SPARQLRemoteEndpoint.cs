@@ -360,6 +360,32 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
+        /// Makes a Query to a SPARQL Endpoint and returns the raw Response
+        /// </summary>
+        /// <param name="sparqlQuery">SPARQL Query String</param>
+        /// <param name="mimeTypes">MIME Types to use for the Accept Header</param>
+        /// <returns></returns>
+        public virtual HttpWebResponse QueryRaw(String sparqlQuery, String[] mimeTypes)
+        {
+            try
+            {
+                //Make the Query
+                return this.QueryInternal(sparqlQuery, MimeTypesHelper.CustomHttpAcceptHeader(mimeTypes));
+            }
+            catch (WebException webEx)
+            {
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                }
+#endif
+                //Some sort of HTTP Error occurred
+                throw new RdfQueryException("A HTTP Error occurred while trying to make the SPARQL Query", webEx);
+            }
+        }
+
+        /// <summary>
         /// Makes a Query where the expected Result is a SparqlResultSet ie. SELECT and ASK Queries
         /// </summary>
         /// <param name="sparqlQuery">SPARQL Query String</param>
@@ -713,6 +739,23 @@ namespace VDS.RDF.Query
         {
             //If we only have a single endpoint then we can still return a raw response
             if (this._endpoints.Count == 1) return this._endpoints[0].QueryRaw(sparqlQuery);
+
+            //If we have any other number of endpoints we either have no responses or no way of logically/sensibly combining responses
+            throw new NotSupportedException("Raw Query is not supported by the Federated Remote Endpoint");
+        }
+
+
+        /// <summary>
+        /// Makes a Query to a Sparql Endpoint and returns the raw Response
+        /// </summary>
+        /// <param name="sparqlQuery">Sparql Query String</param>
+        /// <param name="mimeTypes">MIME Types to use for the Accept Header</param>
+        /// <returns></returns>
+        /// <exception cref="NotSupportedException">Thrown if more than one endpoint is in use since for any federated endpoint which used more than one endpoint there is no logical/sensible way to combine the result streams</exception>
+        public override HttpWebResponse QueryRaw(string sparqlQuery, string[] mimeTypes)
+        {
+            //If we only have a single endpoint then we can still return a raw response
+            if (this._endpoints.Count == 1) return this._endpoints[0].QueryRaw(sparqlQuery, mimeTypes);
 
             //If we have any other number of endpoints we either have no responses or no way of logically/sensibly combining responses
             throw new NotSupportedException("Raw Query is not supported by the Federated Remote Endpoint");

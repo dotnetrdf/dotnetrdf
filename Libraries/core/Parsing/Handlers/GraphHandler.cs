@@ -104,5 +104,13 @@ namespace VDS.RDF.Parsing.Handlers
             this._target.Assert(t);
             return true;
         }
+
+        public override bool AcceptsAll
+        {
+            get 
+            {
+                return true; 
+            }
+        }
     }
 }

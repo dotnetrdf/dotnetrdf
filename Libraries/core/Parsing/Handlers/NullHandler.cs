@@ -20,5 +20,13 @@ namespace VDS.RDF.Parsing.Handlers
         {
             return true;
         }
+
+        public override bool AcceptsAll
+        {
+            get 
+            {
+                return true;
+            }
+        }
     }
 }

@@ -44,5 +44,13 @@ namespace VDS.RDF.Parsing.Handlers
                 return this._graphs.Count;
             }
         }
+
+        public override bool AcceptsAll
+        {
+            get 
+            {
+                return true; 
+            }
+        }
     }
 }

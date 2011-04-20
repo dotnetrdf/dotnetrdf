@@ -1730,8 +1730,11 @@ namespace VDS.RDF.Parsing
             }
             foreach (NamespaceAttributeEvent ns in evt.NamespaceAttributes)
             {
-                context.Namespaces.AddNamespace(ns.Prefix, new Uri(ns.Uri));
-                if (!context.Handler.HandleNamespace(ns.Prefix, new Uri(ns.Uri))) ParserHelper.Stop();
+                if (!context.Namespaces.HasNamespace(ns.Prefix) || !context.Namespaces.GetNamespaceUri(ns.Prefix).ToString().Equals(ns.Uri))
+                {
+                    context.Namespaces.AddNamespace(ns.Prefix, new Uri(ns.Uri));
+                    if (!context.Handler.HandleNamespace(ns.Prefix, new Uri(ns.Uri))) ParserHelper.Stop();
+                }
             }
         }
 

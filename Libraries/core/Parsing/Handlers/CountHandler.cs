@@ -33,5 +33,13 @@ namespace VDS.RDF.Parsing.Handlers
                 return this._counter;
             }
         }
+
+        public override bool AcceptsAll
+        {
+            get 
+            {
+                return true; 
+            }
+        }
     }
 }

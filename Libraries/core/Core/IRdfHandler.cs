@@ -40,5 +40,13 @@ namespace VDS.RDF
         /// <param name="t">Triple</param>
         /// <returns>Should return <strong>true</strong> if parsing should continue or <strong>false</strong> if it should be aborted</returns>
         bool HandleTriple(Triple t);
+
+        /// <summary>
+        /// Gets whether the Handler will always handle all data (i.e. won't terminate parsing early)
+        /// </summary>
+        bool AcceptsAll
+        {
+            get;
+        }
     }
 }

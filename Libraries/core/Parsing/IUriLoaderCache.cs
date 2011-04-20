@@ -36,6 +36,7 @@ terms.
 #if !NO_URICACHE
 
 using System;
+using VDS.RDF.Parsing.Handlers;
 
 namespace VDS.RDF.Parsing
 {
@@ -123,13 +124,23 @@ namespace VDS.RDF.Parsing
         void RemoveLocalCopy(Uri u);
 
         /// <summary>
+        /// Associates an ETag (if any) with the Request and Response URIs plus returns an IRdfHandler that can be used to write to the cache
+        /// </summary>
+        /// <param name="requestUri">URI from which the RDF Graph was requested</param>
+        /// <param name="responseUri">The actual URI which responded to the request</param>
+        /// <param name="etag">ETag of the response (if any)</param>
+        /// <returns>Either an instance of an <see cref="IRdfHandler">IRdfHandler</see> that will do the caching or null if no caching is possible</returns>
+        IRdfHandler ToCache(Uri requestUri, Uri responseUri, String etag);
+
+        /// <summary>
         /// Caches a Graph in the Cache
         /// </summary>
         /// <param name="requestUri">URI from which the Graph was requested</param>
         /// <param name="responseUri">The actual URI which responded to the request</param>
         /// <param name="g">Graph</param>
         /// <param name="etag">ETag</param>
-        void ToCache(Uri requestUri, Uri responseUri, VDS.RDF.IGraph g, string etag);
+        [Obsolete("This form of the ToCache() method is obsolete and should not be used", true)]
+        void ToCache(Uri requestUri, Uri responseUri, IGraph g, String etag);
     }
 }
 

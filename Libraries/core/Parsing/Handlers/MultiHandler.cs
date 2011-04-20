@@ -61,5 +61,13 @@ namespace VDS.RDF.Parsing.Handlers
             List<bool> results = this._handlers.Select(h => h.HandleTriple(t)).ToList();
             return results.All(x => x);
         }
+
+        public override bool AcceptsAll
+        {
+            get 
+            {
+                return this._handlers.All(h => h.AcceptsAll);
+            }
+        }
     }
 }

@@ -38,6 +38,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Storage.Params;
 
 //SLV: Implement a version of the UriLoader that makes the requests asynchronously?
@@ -59,6 +60,7 @@ namespace VDS.RDF.Parsing
     /// </remarks>
     public static class UriLoader
     {
+        #region URI Caching
 #if !NO_URICACHE
         private static IUriLoaderCache _cache = new UriLoaderCache();
 
@@ -115,7 +117,24 @@ namespace VDS.RDF.Parsing
                 }
             }
         }
+
+        /// <summary>
+        /// Determines whether the RDF behind the given URI is cached
+        /// </summary>
+        /// <param name="u">URI</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// <para>
+        /// <strong>Note:</strong> This does not guarantee that the cached content will be used if you load from the URI using the UriLoader.  Whether the cached copy is used will depend on whether 
+        /// </para>
+        /// </remarks>
+        public static bool IsCached(Uri u)
+        {
+            Uri temp = Tools.StripUriFragment(u);
+            return _cache.HasLocalCopy(temp, false);
+        }
 #endif
+        #endregion
 
         /// <summary>
         /// Attempts to load a RDF Graph from the given URI into the given Graph
@@ -157,26 +176,66 @@ namespace VDS.RDF.Parsing
         /// </remarks>
         public static void Load(IGraph g, Uri u, IRdfReader parser)
         {
+            if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
+            if (u == null) throw new RdfParseException("Cannot load RDF from a null URI");
+#if SILVERLIGHT
+            if (u.IsFile())
+#else
+            if (u.IsFile)
+#endif
+            {
+                //Invoke FileLoader instead
+                RaiseWarning("This is a file: URI so invoking the FileLoader instead");
+                if (Path.DirectorySeparatorChar == '/')
+                {
+                    FileLoader.Load(g, u.ToString().Substring(7), parser);
+                }
+                else
+                {
+                    FileLoader.Load(g, u.ToString().Substring(8), parser);
+                }
+                return;
+            }
+            if (u.Scheme.Equals("data"))
+            {
+                //Invoke DataUriLoader instead
+                RaiseWarning("This is a data: URI so invoking the DataUriLoader instead");
+                DataUriLoader.Load(g, u);
+                return;
+            }
+
+            //Set Base Uri if necessary
+            if (g.BaseUri == null && g.IsEmpty) g.BaseUri = u;
+
+            UriLoader.Load(new GraphHandler(g), u, parser);
+        }
+
+        public static void Load(IRdfHandler handler, Uri u)
+        {
+            UriLoader.Load(handler, u, (IRdfReader)null);
+        }
+
+        public static void Load(IRdfHandler handler, Uri u, IRdfReader parser)
+        {
+            if (handler == null) throw new RdfParseException("Cannot read RDF using a null RDF Handler");
+            if (u == null) throw new RdfParseException("Cannot load RDF from a null URI");
             try
             {
-                if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
-                if (u == null) throw new RdfParseException("Cannot load RDF from a null URI");
 #if SILVERLIGHT
                 if (u.IsFile())
 #else
                 if (u.IsFile)
 #endif
-
                 {
                     //Invoke FileLoader instead
                     RaiseWarning("This is a file: URI so invoking the FileLoader instead");
                     if (Path.DirectorySeparatorChar == '/')
                     {
-                        FileLoader.Load(g, u.ToString().Substring(7), parser);
+                        FileLoader.Load(handler, u.ToString().Substring(7), parser);
                     }
                     else
                     {
-                        FileLoader.Load(g, u.ToString().Substring(8), parser);
+                        FileLoader.Load(handler, u.ToString().Substring(8), parser);
                     }
                     return;
                 }
@@ -184,21 +243,17 @@ namespace VDS.RDF.Parsing
                 {
                     //Invoke DataUriLoader instead
                     RaiseWarning("This is a data: URI so invoking the DataUriLoader instead");
-                    DataUriLoader.Load(g, u);
+                    DataUriLoader.Load(handler, u);
                     return;
                 }
-
-                //Set Base Uri if necessary
-                if (g.BaseUri == null) g.BaseUri = u;
 
                 //Sanitise the URI to remove any Fragment ID
                 u = Tools.StripUriFragment(u);
 
+#if !NO_URICACHE
                 //Use Cache if possible
                 String etag = String.Empty;
                 String local = null;
-                bool cacheable = g.IsEmpty;
-#if !NO_URICACHE
                 if (Options.UriLoaderCaching)
                 {
                     if (_cache.HasETag(u))
@@ -214,14 +269,14 @@ namespace VDS.RDF.Parsing
                         {
                             try
                             {
-                                FileLoader.Load(g, local, new TurtleParser());
+                                FileLoader.Load(handler, local, new TurtleParser());
                             }
                             catch
                             {
                                 //If we get an Exception we failed to access the file successfully
                                 _cache.RemoveETag(u);
                                 _cache.RemoveLocalCopy(u);
-                                UriLoader.Load(g, u);
+                                UriLoader.Load(handler, u, parser);
                             }
                             return;
                         }
@@ -293,14 +348,14 @@ namespace VDS.RDF.Parsing
                                     local = _cache.GetLocalCopy(u);
                                     try
                                     {
-                                        FileLoader.Load(g, local, new TurtleParser());
+                                        FileLoader.Load(handler, local, new TurtleParser());
                                     }
                                     catch
                                     {
                                         //If we get an Exception we failed to access the file successfully
                                         _cache.RemoveETag(u);
                                         _cache.RemoveLocalCopy(u);
-                                        UriLoader.Load(g, u);
+                                        UriLoader.Load(handler, u, parser);
                                     }
                                     return;
                                 }
@@ -309,7 +364,7 @@ namespace VDS.RDF.Parsing
                                     //If the local copy didn't exist then we need to redo the response without
                                     //the ETag as we've lost the cached copy somehow
                                     _cache.RemoveETag(u);
-                                    UriLoader.Load(g, u);
+                                    UriLoader.Load(handler, u, parser);
                                     return;
                                 }
                             }
@@ -325,14 +380,36 @@ namespace VDS.RDF.Parsing
                         parser = MimeTypesHelper.GetParser(httpResponse.ContentType);
                     }
                     parser.Warning += RaiseWarning;
-                    parser.Load(g, new StreamReader(httpResponse.GetResponseStream()));
+#if !NO_URICACHE
+                    //To do caching we ask the cache to give us a handler and then we tie it to
+                    IRdfHandler cacheHandler = _cache.ToCache(u, Tools.StripUriFragment(httpResponse.ResponseUri), httpResponse.Headers["ETag"]);
+                    if (cacheHandler != null)
+                    {
+                        //Note: We can ONLY use caching when we know that the Handler will accept all the data returned
+                        //i.e. if the Handler may trim the data in some way then we shouldn't cache the data returned
+                        if (handler.AcceptsAll)
+                        {
+                            handler = new MultiHandler(new IRdfHandler[] { handler, cacheHandler });
+                        }
+                        else
+                        {
+                            cacheHandler = null;
+                        }
+                    }
+                    try
+                    {
+#endif
+                        parser.Load(handler, new StreamReader(httpResponse.GetResponseStream()));
 
 #if !NO_URICACHE
-                    if (Options.UriLoaderCaching && cacheable)
+                    }
+                    catch
                     {
-                        //Cache the response only if caching is enabled and the Graph we parsed into was empty to start with
-                        //If it was non-empty then we can't cache as this Graph doesn't just represent the URI we just retrieved
-                        _cache.ToCache(u, Tools.StripUriFragment(httpResponse.ResponseUri), g, httpResponse.Headers["ETag"]);
+                        //If we were trying to cache the response and something went wrong discard the cached copy
+                        _cache.RemoveETag(u);
+                        _cache.RemoveETag(Tools.StripUriFragment(httpResponse.ResponseUri));
+                        _cache.RemoveLocalCopy(u);
+                        _cache.RemoveLocalCopy(Tools.StripUriFragment(httpResponse.ResponseUri));
                     }
 #endif
                 }
@@ -360,14 +437,14 @@ namespace VDS.RDF.Parsing
                             String local = _cache.GetLocalCopy(u);
                             try
                             {
-                                FileLoader.Load(g, local, new TurtleParser());
+                                FileLoader.Load(handler, local, new TurtleParser());
                             }
                             catch
                             {
                                 //If we get an Exception we failed to access the file successfully
                                 _cache.RemoveETag(u);
                                 _cache.RemoveLocalCopy(u);
-                                UriLoader.Load(g, u);
+                                UriLoader.Load(handler, u, parser);
                             }
                             return;
                         }
@@ -376,7 +453,7 @@ namespace VDS.RDF.Parsing
                             //If the local copy didn't exist then we need to redo the response without
                             //the ETag as we've lost the cached copy somehow
                             _cache.RemoveETag(u);
-                            UriLoader.Load(g, u);
+                            UriLoader.Load(handler, u, parser);
                             return;
                         }
                     }
@@ -385,16 +462,6 @@ namespace VDS.RDF.Parsing
 
                 //Some sort of HTTP Error occurred
                 throw new WebException("A HTTP Error occurred resolving the URI '" + u.ToString() + "'", webEx);
-            }
-            catch (RdfException)
-            {
-                //Some problem with the RDF or Parsing thereof
-                throw;
-            }
-            catch (Exception)
-            {
-                //Other Exception
-                throw;
             }
         }
 
@@ -535,20 +602,7 @@ namespace VDS.RDF.Parsing
             UriLoader.Load(store, u, null);
         }
 
-#if !NO_URICACHE
-
-        /// <summary>
-        /// Determines whether the RDF behind the given URI is cached (<strong>Note</strong> that this does not guarantee that the cached content will be used if you load from the URI using the UriLoader)
-        /// </summary>
-        /// <param name="u">URI</param>
-        /// <returns></returns>
-        public static bool IsCached(Uri u)
-        {
-            Uri temp = Tools.StripUriFragment(u);
-            return _cache.HasLocalCopy(temp, false);
-        }
-
-#endif
+        #region Warning Events
 
         /// <summary>
         /// Raises warning messages
@@ -585,137 +639,7 @@ namespace VDS.RDF.Parsing
         /// Event which is raised when a store parser that is invoked by the UriLoader notices a non-fatal issue with the RDF dataset syntax
         /// </summary>
         public static event StoreReaderWarning StoreWarning;
-    }
 
-    /// <summary>
-    /// A Class for parsing RDF data from Data URIs
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    /// Data URIs use the data: scheme and are defined by the IETF in <a href="http://tools.ietf.org/html/rfc2397">RFC 2397</a> and provide a means to embed data directly in a URI either in Base64 or ASCII encoded format.  This class can extract the data from such URIs and attempt to parse it as RDF using the <see cref="StringParser">StringParser</see>
-    /// </para>
-    /// <para>
-    /// The parsing process for data: URIs involves first extracting and decoding the data embedded in the URI - this may either be in Base64 or ASCII encoding - and then using the <see cref="StringParser">StringParser</see> to actually parse the data string.  If the data: URI defines a MIME type then a parser is selected (if one exists for the given MIME type) and that is used to parse the data, in the event that no MIME type is given or the one given does not have a corresponding parser then the <see cref="StringParser">StringParser</see> will use its basic heuristics to attempt to auto-detect the format and select an appropriate parser.
-    /// </para>
-    /// <para>
-    /// If you attempt to use this loader for non data: URIs then the standard <see cref="UriLoader">UriLoader</see> is used instead.
-    /// </para>
-    /// </remarks>
-    public static class DataUriLoader
-    {
-        /// <summary>
-        /// Loads RDF data into a Graph from a data: URI
-        /// </summary>
-        /// <param name="g">Graph to load into</param>
-        /// <param name="u">URI to load from</param>
-        /// <remarks>
-        /// Invokes the normal <see cref="UriLoader">UriLoader</see> instead if a the URI provided is not a data: URI
-        /// </remarks>
-        /// <exception cref="UriFormatException">Thrown if the metadata portion of the URI which indicates the MIME Type, Character Set and whether Base64 encoding is used is malformed</exception>
-        public static void Load(IGraph g, Uri u)
-        {
-            if (u == null) throw new RdfParseException("Cannot load RDF from a null URI");
-            if (!u.Scheme.Equals("data"))
-            {
-                //Invoke the normal URI Loader if not a data: URI
-                UriLoader.Load(g, u);
-                return;
-            }
-
-            String mimetype = "text/plain";
-            bool mimeSet = false;
-            bool base64 = false;
-            String[] uri = u.AbsolutePath.Split(',');
-            String metadata = uri[0];
-            String data = uri[1];
-
-            //Process the metadata
-            if (metadata.Equals(String.Empty))
-            {
-                //Nothing to do
-            }
-            else if (metadata.Contains(';'))
-            {
-                if (metadata.StartsWith(";")) metadata = metadata.Substring(1);
-                String[] meta = metadata.Split(';');
-                for (int i = 0; i < meta.Length; i++)
-                {
-                    if (meta[i].StartsWith("charset="))
-                    {
-                        //OPT: Do we need to process the charset parameter here at all?
-                        //String charset = meta[i].Substring(meta[i].IndexOf('=') + 1);
-                    }
-                    else if (meta[i].Equals("base64"))
-                    {
-                        base64 = true;
-                    }
-                    else if (meta[i].Contains('/'))
-                    {
-                        mimetype = meta[i];
-                        mimeSet = true;
-                    }
-                    else
-                    {
-                        throw new UriFormatException("This data: URI appears to be malformed as encountered the parameter value '" + meta[i] + "' in the metadata section of the URI");
-                    }
-                }
-            }
-            else
-            {
-                if (metadata.StartsWith("charset="))
-                {
-                    //OPT: Do we need to process the charset parameter here at all?
-                }
-                else if (metadata.Equals(";base64"))
-                {
-                    base64 = true;
-                }
-                else if (metadata.Contains('/'))
-                {
-                    mimetype = metadata;
-                    mimeSet = true;
-                }
-                else
-                {
-                    throw new UriFormatException("This data: URI appears to be malformed as encountered the parameter value '" + metadata + "' in the metadata section of the URI");
-                }
-            }
-
-            //Process the data
-            if (base64)
-            {
-                StringWriter temp = new StringWriter();
-                foreach (byte b in Convert.FromBase64String(data))
-                {
-                    temp.Write((char)((int)b));
-                }
-                data = temp.ToString();
-            }
-            else
-            {
-                data = Uri.UnescapeDataString(data);
-            }
-
-            //Now either select a parser based on the MIME type or let StringParser guess the format
-            try
-            {
-                if (mimeSet)
-                {
-                    //If the MIME Type was explicitly set then we'll try and get a parser and use it
-                    IRdfReader reader = MimeTypesHelper.GetParser(mimetype);
-                    StringParser.Parse(g, data, reader);
-                }
-                else
-                {
-                    //If the MIME Type was not explicitly set we'll let the StringParser guess the format
-                    StringParser.Parse(g, data);
-                }
-            }
-            catch (RdfParserSelectionException)
-            {
-                //If we fail to get a parser then we'll let the StringParser guess the format
-                StringParser.Parse(g, data);
-            }
-        }
+        #endregion
     }
 }

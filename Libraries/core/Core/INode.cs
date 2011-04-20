@@ -118,6 +118,8 @@ namespace VDS.RDF
             set;
         }
 
+        String ToString();
+
         /// <summary>
         /// Gets the String representation of the Node formatted with the given Node formatter
         /// </summary>

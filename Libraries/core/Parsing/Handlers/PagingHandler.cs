@@ -84,5 +84,13 @@ namespace VDS.RDF.Parsing.Handlers
         {
             return this._handler.HandleBaseUri(baseUri);
         }
+
+        public override bool AcceptsAll
+        {
+            get 
+            {
+                return this._limit < 0;
+            }
+        }
     }
 }

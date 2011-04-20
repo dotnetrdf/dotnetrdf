@@ -264,6 +264,7 @@
     <Compile Include="Parsing\Contexts\SparqlUpdateParserContext.cs" />
     <Compile Include="Parsing\Contexts\SparqlXmlParserContext.cs" />
     <Compile Include="Parsing\Contexts\TriGParserContext.cs" />
+    <Compile Include="Parsing\DataUriLoader.cs" />
     <Compile Include="Parsing\EmbeddedResourceLoader.cs" />
     <Compile Include="Parsing\Events\DomBasedEventGenerator.cs" />
     <Compile Include="Parsing\Events\EventQueue.cs" />

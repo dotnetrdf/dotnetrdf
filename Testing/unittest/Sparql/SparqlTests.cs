@@ -21,28 +21,91 @@ namespace VDS.RDF.Test.Sparql
         [TestMethod]
         public void SparqlDBPedia()
         {
-            Options.HttpDebugging = true;
-
-            String query = "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> SELECT * WHERE {?s a rdfs:Class } LIMIT 50";
-
-            SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(new Uri("http://dbpedia.org/sparql"), "http://dbpedia.org");
-            SparqlResultSet results = endpoint.QueryWithResultSet(query);
-            TestTools.ShowResults(results);
-
-           using (HttpWebResponse response = endpoint.QueryRaw(query))
+            try
             {
-                using (StreamReader reader = new StreamReader(response.GetResponseStream()))
-                {
-                    while (!reader.EndOfStream)
-                    {
-                        Console.WriteLine(reader.ReadLine());
-                    }
-                    reader.Close();
-                }
-                response.Close();
-            }
+                Options.HttpDebugging = true;
 
-           Options.HttpDebugging = false;
+                String query = "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> SELECT * WHERE {?s a rdfs:Class } LIMIT 50";
+
+                SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(new Uri("http://dbpedia.org/sparql"), "http://dbpedia.org");
+                SparqlResultSet results = endpoint.QueryWithResultSet(query);
+                TestTools.ShowResults(results);
+
+                using (HttpWebResponse response = endpoint.QueryRaw(query))
+                {
+                    using (StreamReader reader = new StreamReader(response.GetResponseStream()))
+                    {
+                        while (!reader.EndOfStream)
+                        {
+                            Console.WriteLine(reader.ReadLine());
+                        }
+                        reader.Close();
+                    }
+                    response.Close();
+                }
+
+            }
+            finally
+            {
+                Options.HttpDebugging = false;
+            }
+        }
+
+        [TestMethod]
+        public void SparqlDbPediaDotIssue()
+        {
+            try
+            {
+                Options.HttpDebugging = true;
+
+                String query = @"PREFIX dbpediaO: <http://dbpedia.org/ontology/>
+select distinct ?entity ?redirectedEntity
+where {
+ ?entity rdfs:label 'Apple Computer'@en .
+ ?entity dbpediaO:wikiPageRedirects ?redirectedEntity .
+}";
+
+                SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(new Uri("http://dbpedia.org/sparql"), "http://dbpedia.org");
+                Console.WriteLine("Results obtained with QueryWithResultSet()");
+                SparqlResultSet results = endpoint.QueryWithResultSet(query);
+                TestTools.ShowResults(results);
+                Console.WriteLine();
+
+                Console.WriteLine("Results obtained with QueryRaw()");
+                using (HttpWebResponse response = endpoint.QueryRaw(query))
+                {
+                    using (StreamReader reader = new StreamReader(response.GetResponseStream()))
+                    {
+                        while (!reader.EndOfStream)
+                        {
+                            Console.WriteLine(reader.ReadLine());
+                        }
+                        reader.Close();
+                    }
+                    response.Close();
+                }
+                Console.WriteLine();
+
+                Console.WriteLine("Results obtained with QueryRaw() requesting JSON");
+                using (HttpWebResponse response = endpoint.QueryRaw(query, new String[] { "application/sparql-results+json" }))
+                {
+                    using (StreamReader reader = new StreamReader(response.GetResponseStream()))
+                    {
+                        while (!reader.EndOfStream)
+                        {
+                            Console.WriteLine(reader.ReadLine());
+                        }
+                        reader.Close();
+                    }
+                    response.Close();
+                }
+                Console.WriteLine();
+
+            } 
+            finally 
+            {
+                Options.HttpDebugging = false;
+            }
         }
 
         [TestMethod]

@@ -40,7 +40,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Writing;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Parsing
 {
@@ -55,8 +57,9 @@ namespace VDS.RDF.Parsing
         private String _graphDir;
         private String _etagFile;
         private Dictionary<int, String> _etags = new Dictionary<int, string>();
-        private CompressingTurtleWriter _ttlwriter = new CompressingTurtleWriter(WriterCompressionLevel.High);
+        private CompressingTurtleWriter _ttlwriter = new CompressingTurtleWriter(WriterCompressionLevel.Medium);
         private HashSet<String> _nocache = new HashSet<string>();
+        private Type _formatterType = typeof(TurtleFormatter);
 
         /// <summary>
         /// Creates a new Cache which uses the system temporary directory as the cache location
@@ -401,6 +404,97 @@ namespace VDS.RDF.Parsing
             }
         }
 
+        public IRdfHandler ToCache(Uri requestUri, Uri responseUri, String etag)
+        {
+            IRdfHandler handler = null;
+            try
+            {
+                bool cacheTwice = !requestUri.ToString().Equals(responseUri.ToString(), StringComparison.OrdinalIgnoreCase);
+
+                //Cache the ETag if present
+                if (this._canCacheETag && etag != null && !etag.Equals(String.Empty))
+                {
+                    int id = requestUri.GetEnhancedHashCode();
+                    bool requireAdd = false;
+                    if (this._etags.ContainsKey(id))
+                    {
+                        if (!this._etags[id].Equals(etag))
+                        {
+                            //If the ETag has changed remove it and then re-add it
+                            this.RemoveETag(requestUri);
+                            requireAdd = true;
+                        }
+                    }
+                    else
+                    {
+                        requireAdd = true;
+                    }
+
+                    if (requireAdd)
+                    {
+                        //Add a New ETag
+                        this._etags.Add(id, etag);
+                        using (StreamWriter writer = new StreamWriter(this._etagFile, true, Encoding.UTF8))
+                        {
+                            writer.WriteLine(id + "\t" + etag);
+                            writer.Close();
+                        }
+                    }
+
+                    //Cache under the Response URI as well if applicable
+                    if (cacheTwice)
+                    {
+                        id = responseUri.GetEnhancedHashCode();
+                        requireAdd = false;
+                        if (this._etags.ContainsKey(id))
+                        {
+                            if (!this._etags[id].Equals(etag))
+                            {
+                                //If the ETag has changed remove it and then re-add it
+                                this.RemoveETag(responseUri);
+                                requireAdd = true;
+                            }
+                        }
+                        else
+                        {
+                            requireAdd = true;
+                        }
+
+                        if (requireAdd)
+                        {
+                            using (StreamWriter writer = new StreamWriter(this._etagFile, true, Encoding.UTF8))
+                            {
+                                writer.WriteLine(id + "\t" + etag);
+                                writer.Close();
+                            }
+                        }
+                    }
+                }
+
+                //Then if we are caching Graphs return WriteThroughHandlers to do the caching for us
+                if (this._canCacheGraphs)
+                {
+                    String graph = Path.Combine(this._graphDir, requestUri.GetSha256Hash());
+                    handler = new WriteThroughHandler(this._formatterType, new StreamWriter(graph), true);
+
+                    if (cacheTwice)
+                    {
+                        graph = Path.Combine(this._graphDir, responseUri.GetSha256Hash());
+                        handler = new MultiHandler(new IRdfHandler[] { handler, new WriteThroughHandler(this._formatterType, new StreamWriter(graph), true) });
+                    }
+                }
+            }
+            catch (IOException)
+            {
+                //Ignore - if we get an IO Exception we failed to cache somehow
+            }
+            catch (RdfOutputException)
+            {
+                //Ignore - if we get an RDF Output Exception then we failed to cache
+            }
+            return handler;
+        }
+
         /// <summary>
         /// Caches a Graph in the Cache
         /// </summary>
@@ -408,6 +502,7 @@ namespace VDS.RDF.Parsing
         /// <param name="responseUri">The actual URI which responded to the request</param>
         /// <param name="g">Graph</param>
         /// <param name="etag">ETag</param>
+        [Obsolete("This form of the ToCache() method is obsolete and should not be used", true)]
         public void ToCache(Uri requestUri, Uri responseUri, IGraph g, String etag)
         {
             //Cache a local copy of the Graph

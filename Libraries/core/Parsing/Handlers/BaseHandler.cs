@@ -156,6 +156,11 @@ namespace VDS.RDF.Parsing.Handlers
 
         protected abstract bool HandleTripleInternal(Triple t);
 
+        public abstract bool AcceptsAll
+        {
+            get;
+        }
+
         #endregion
     }
 

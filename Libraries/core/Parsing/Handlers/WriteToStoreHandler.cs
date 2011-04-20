@@ -125,6 +125,14 @@ namespace VDS.RDF.Parsing.Handlers
                 this._actions.Clear();
             }
         }
+
+        public override bool AcceptsAll
+        {
+            get 
+            {
+                return true;
+            }
+        }
     }
 }
 
