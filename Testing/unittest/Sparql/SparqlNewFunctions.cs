@@ -69,5 +69,45 @@ namespace VDS.RDF.Test.Sparql
                 Assert.Fail("Expected a non-null result");
             }
         }
+
+        [TestMethod]
+        public void SparqlFunctionsRand()
+        {
+            String query = "SELECT ?s (RAND() AS ?rand) WHERE { ?s ?p ?o } ORDER BY ?rand";
+            Graph g = new Graph();
+            g.LoadFromFile("InferenceTest.ttl");
+
+            Object results = g.ExecuteQuery(query);
+            if (results is SparqlResultSet)
+            {
+                SparqlResultSet rset = (SparqlResultSet)results;
+                TestTools.ShowResults(rset);
+            }
+            else
+            {
+                Assert.Fail("Did not get a SPARQL Result Set as expected");
+            }
+        }
+
+        [TestMethod]
+        public void SparqlOrderByNonDeterministic()
+        {
+            String query = "SELECT * WHERE { ?s ?p ?o } ORDER BY " + SparqlSpecsHelper.SparqlKeywordRand + "()";
+            Graph g = new Graph();
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+
+            for (int i = 0; i < 50; i++)
+            {
+                Object results = g.ExecuteQuery(query);
+                if (results is SparqlResultSet)
+                {
+                    Console.WriteLine("Run #" + (i+1) + " OK");
+                }
+                else
+                {
+                    Assert.Fail("Did not get a SPARQL Result Set as expected");
+                }
+            }
+        }
     }
 }
