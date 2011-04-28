@@ -53,6 +53,8 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Storage
 {
+    //REQ: Add IUpdateableGenericIOManager implementation for 4store
+
     /// <summary>
     /// Class for connecting to 4store
     /// </summary>
@@ -61,10 +63,7 @@ namespace VDS.RDF.Storage
     /// Depending on the version of <a href="http://librdf.org/rasqal/">RASQAL</a> used for your 4store instance and the options it was built with some kinds of queries may not suceed or return unexpected results.
     /// </para>
     /// <para>
-    /// The default build of 4store does not permit the saving of unamed Graphs to the Store or Triple level updates.  There is a branch of 4store that supports Triple level updates and you can tell the connector if your 4store instance supports this when you instantiate it.
-    /// </para>
-    /// <para>
-    /// <strong>Warning</strong> - The Triple level update support added to this connector is entirely experimental and has not been tested since I don't have time to experiment with the non-standard builds of 4store that support this feature.
+    /// Prior to the 1.x releases 4store did not permit the saving of unamed Graphs to the Store or Triple level updates.  There was a branch of 4store that supports Triple level updates and you could tell the connector if your 4store instance supports this when you instantiate it.  From the 0.4.0 release of the library onwards this support was enabled by default since the 1.x builds of 4store have this feature integrated into them by default.
     /// </para>
     /// </remarks>
     public class FourStoreConnector : IQueryableGenericIOManager, IConfigurationSerializable
