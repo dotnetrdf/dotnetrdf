@@ -745,7 +745,11 @@ namespace VDS.RDF.Query.Datasets
             if (!this._modifiableGraphs.HasGraph(graphUri))
             {
                 IGraph current = this.GetModifiableGraphInternal(graphUri);
-                this._modifiableGraphs.Add(current);
+                if (!this._modifiableGraphs.HasGraph(current.BaseUri))
+                {
+                    this._modifiableGraphs.Add(current);
+                }
+                graphUri = current.BaseUri;
             }
             ITransactionalGraph existing = (ITransactionalGraph)this._modifiableGraphs.Graph(graphUri);
             this._actions.Add(new GraphPersistenceAction(existing, GraphPersistenceActionType.Modified));

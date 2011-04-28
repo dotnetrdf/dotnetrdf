@@ -249,12 +249,103 @@ namespace VDS.RDF.Test.Sparql
             InMemoryDataset dataset = new InMemoryDataset(store, h.BaseUri);
             LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
             SparqlUpdateParser parser = new SparqlUpdateParser();
-            SparqlUpdateCommandSet cmds = parser.ParseFromString("LOAD <http://dbpedia.org/resource/Ilkeston>");
+            SparqlUpdateCommandSet cmds = parser.ParseFromString("LOAD <http://www.dotnetrdf.org/configuration#>");
 
             processor.ProcessCommandSet(cmds);
 
             Assert.IsTrue(g.IsEmpty, "Graph with null URI (normally the default Graph) should be empty as the Default Graph for the Dataset should have been a named Graph so this Graph should not have been filled by the LOAD Command");
             Assert.IsFalse(h.IsEmpty, "Graph with name should be non-empty as it should have been the Default Graph for the Dataset and so filled by the LOAD Command");
+        }
+
+        [TestMethod]
+        public void SparqlDatasetDefaultGraphManagementWithUpdate2()
+        {
+            TripleStore store = new TripleStore();
+            Graph g = new Graph();
+            g.BaseUri = new Uri("http://example.org/graph");
+            store.Add(g);
+            Graph h = new Graph();
+            h.BaseUri = new Uri("http://example.org/someOtherGraph");
+            store.Add(h);
+
+            InMemoryDataset dataset = new InMemoryDataset(store, h.BaseUri);
+            LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
+            SparqlUpdateParser parser = new SparqlUpdateParser();
+            SparqlUpdateCommandSet cmds = parser.ParseFromString("LOAD <http://www.dotnetrdf.org/configuration#> INTO GRAPH <http://example.org/graph>");
+
+            processor.ProcessCommandSet(cmds);
+
+            Assert.IsFalse(g.IsEmpty, "First Graph should not be empty as should have been filled by the LOAD command");
+            Assert.IsTrue(h.IsEmpty, "Second Graph should be empty as should not have been filled by the LOAD command");
+        }
+
+        [TestMethod]
+        public void SparqlDatasetDefaultGraphManagementWithUpdate3()
+        {
+            TripleStore store = new TripleStore();
+            Graph g = new Graph();
+            g.BaseUri = new Uri("http://example.org/graph");
+            store.Add(g);
+            Graph h = new Graph();
+            h.BaseUri = new Uri("http://example.org/someOtherGraph");
+            store.Add(h);
+
+            InMemoryDataset dataset = new InMemoryDataset(store, h.BaseUri);
+            LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
+            SparqlUpdateParser parser = new SparqlUpdateParser();
+            SparqlUpdateCommandSet cmds = parser.ParseFromString("LOAD <http://www.dotnetrdf.org/configuration#> INTO GRAPH <http://example.org/graph>; LOAD <http://www.dotnetrdf.org/configuration#> INTO GRAPH <http://example.org/someOtherGraph>");
+
+            processor.ProcessCommandSet(cmds);
+
+            Assert.IsFalse(g.IsEmpty, "First Graph should not be empty as should have been filled by the first LOAD command");
+            Assert.IsFalse(h.IsEmpty, "Second Graph should not be empty as should not have been filled by the second LOAD command");
+            Assert.AreEqual(g, h, "Graphs should be equal");
+        }
+
+        [TestMethod]
+        public void SparqlDatasetDefaultGraphManagementWithUpdate4()
+        {
+            TripleStore store = new TripleStore();
+            Graph g = new Graph();
+            g.BaseUri = new Uri("http://example.org/graph");
+            store.Add(g);
+            Graph h = new Graph();
+            h.BaseUri = new Uri("http://example.org/someOtherGraph");
+            store.Add(h);
+
+            InMemoryDataset dataset = new InMemoryDataset(store, h.BaseUri);
+            LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
+            SparqlUpdateParser parser = new SparqlUpdateParser();
+            SparqlUpdateCommandSet cmds = parser.ParseFromString("LOAD <http://www.dotnetrdf.org/configuration#>; WITH <http://example.org/graph> INSERT { ?s a ?type } USING <http://example.org/someOtherGraph> WHERE { ?s a ?type }");
+
+            processor.ProcessCommandSet(cmds);
+
+            Assert.IsFalse(g.IsEmpty, "First Graph should not be empty as should have been filled by the INSERT command");
+            Assert.IsFalse(h.IsEmpty, "Second Graph should not be empty as should not have been filled by the LOAD command");
+            Assert.IsTrue(h.HasSubGraph(g), "First Graph should be a subgraph of the Second Graph");
+        }
+
+        [TestMethod]
+        public void SparqlDatasetDefaultGraphManagementWithUpdate5()
+        {
+            TripleStore store = new TripleStore();
+            Graph g = new Graph();
+            g.BaseUri = new Uri("http://example.org/graph");
+            store.Add(g);
+            Graph h = new Graph();
+            h.BaseUri = new Uri("http://example.org/someOtherGraph");
+            store.Add(h);
+
+            InMemoryDataset dataset = new InMemoryDataset(store, h.BaseUri);
+            LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
+            SparqlUpdateParser parser = new SparqlUpdateParser();
+            SparqlUpdateCommandSet cmds = parser.ParseFromString("LOAD <http://www.dotnetrdf.org/configuration#>; WITH <http://example.org/graph> INSERT { ?s a ?type } USING <http://example.org/someOtherGraph> WHERE { ?s a ?type }; DELETE WHERE { ?s a ?type }");
+
+            processor.ProcessCommandSet(cmds);
+
+            Assert.IsFalse(g.IsEmpty, "First Graph should not be empty as should have been filled by the INSERT command");
+            Assert.IsFalse(h.IsEmpty, "Second Graph should not be empty as should not have been filled by the  LOAD command");
+            Assert.IsFalse(h.HasSubGraph(g), "First Graph should not be a subgraph of the Second Graph as the DELETE should have eliminated the subgraph relationship");
         }
 
         [TestMethod]

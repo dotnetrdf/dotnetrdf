@@ -10,6 +10,9 @@ namespace VDS.RDF.Parsing.Handlers
     {
         private INodeFactory _factory;
 
+        public BaseHandler()
+            : this(new NodeFactory()) { }
+
         public BaseHandler(INodeFactory factory)
         {
             if (factory == null) throw new ArgumentNullException("factory");

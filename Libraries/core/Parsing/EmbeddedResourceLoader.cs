@@ -33,14 +33,10 @@ terms.
 
 */
 
-//REQ: Add support for loading from an embedded resource directly to an IRdfHandler
-
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Storage.Params;
 

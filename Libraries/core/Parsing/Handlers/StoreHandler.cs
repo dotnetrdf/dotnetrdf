@@ -39,53 +39,23 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 
-//REQ: Refactor to extend BaseHandler
-
 namespace VDS.RDF.Parsing.Handlers
 {
-    public class StoreHandler : IRdfHandler
+    public class StoreHandler : BaseRdfHandler
     {
-        private bool _inUse = false;
-        private NodeFactory _factory;
         private ITripleStore _store;
 
         public StoreHandler(ITripleStore store)
+            : base()
         {
             if (store == null) throw new ArgumentNullException("store");
             this._store = store;
-            this._factory = new NodeFactory();
         }
 
         #region IRdfHandler Members
 
-        public void StartRdf()
+        protected override bool HandleTripleInternal(Triple t)
         {
-            if (this._inUse) throw new RdfParseException("Cannot use this StoreHandler as an RDF Handler for parsing as it is already in-use");
-            this._inUse = true;
-        }
-
-        public void EndRdf(bool ok)
-        {
-            if (!this._inUse) throw new RdfParseException("Cannot End RDF Handling as this RDF Handler is not currently in-use");
-            this._inUse = false;
-        }
-
-        public bool HandleNamespace(string prefix, Uri namespaceUri)
-        {
-            if (!this._inUse) throw new RdfParseException("Cannot Handle Namespace as this RDF Handler is not currently in-use");
-            return true;
-        }
-
-        public bool HandleBaseUri(Uri baseUri)
-        {
-            if (!this._inUse) throw new RdfParseException("Cannot Handle Base URI as this RDF Handler is not currently in-use");
-            return true;
-        }
-
-        public bool HandleTriple(Triple t)
-        {
-            if (!this._inUse) throw new RdfParseException("Cannot Handle Triple as this RDF Handler is not currently in-use");
-
             if (!this._store.HasGraph(t.GraphUri))
             {
                 Graph g = new Graph();
@@ -97,66 +67,12 @@ namespace VDS.RDF.Parsing.Handlers
             return true;
         }
 
-        public bool AcceptsAll
+        public override bool AcceptsAll
         {
             get
             {
                 return true;
             }
-        }
-
-        #endregion
-
-        #region INodeFactory Members
-
-        public IBlankNode CreateBlankNode()
-        {
-            return this._factory.CreateBlankNode();
-        }
-
-        public IBlankNode CreateBlankNode(string nodeId)
-        {
-            return this._factory.CreateBlankNode(nodeId);
-        }
-
-        public IGraphLiteralNode CreateGraphLiteralNode()
-        {
-            return this._factory.CreateGraphLiteralNode();
-        }
-
-        public IGraphLiteralNode CreateGraphLiteralNode(IGraph subgraph)
-        {
-            return this._factory.CreateGraphLiteralNode(subgraph);
-        }
-
-        public ILiteralNode CreateLiteralNode(string literal, Uri datatype)
-        {
-            return this._factory.CreateLiteralNode(literal, datatype);
-        }
-
-        public ILiteralNode CreateLiteralNode(string literal)
-        {
-            return this._factory.CreateLiteralNode(literal);
-        }
-
-        public ILiteralNode CreateLiteralNode(string literal, string langspec)
-        {
-            return this._factory.CreateLiteralNode(literal, langspec);
-        }
-
-        public IUriNode CreateUriNode(Uri uri)
-        {
-            return this._factory.CreateUriNode(uri);
-        }
-
-        public IVariableNode CreateVariableNode(string varname)
-        {
-            return this._factory.CreateVariableNode(varname);
-        }
-
-        public string GetNextBlankNodeID()
-        {
-            return this._factory.GetNextBlankNodeID();
         }
 
         #endregion
