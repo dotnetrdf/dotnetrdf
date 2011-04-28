@@ -83,7 +83,7 @@ namespace VDS.RDF.Configuration
                             PropertyAllow = "dnr:allow",
                             PropertyDeny = "dnr:deny",
                             PropertyAction = "dnr:action",
-                            //Properties for HTTP Handler configuration
+                            //Properties for HTTP Handler configuration primarily around SPARQL endpoint configuration
                             PropertyEnableCors = "dnr:enableCors",
                             PropertySyntax = "dnr:syntax",
                             PropertyTimeout = "dnr:timeout",
@@ -100,7 +100,9 @@ namespace VDS.RDF.Configuration
                             PropertyCacheSliding = "dnr:cacheSliding",
                             PropertyExpressionFactory = "dnr:expressionFactory",
                             PropertyDescribeAlgorithm = "dnr:describeAlgorithm",
-                            PropertyServiceDescription = "dnr:serviceDescription"
+                            PropertyServiceDescription = "dnr:serviceDescription",
+                            PropertyQueryOptimiser = "dnr:queryOptimiser",
+                            PropertyAlgebraOptimiser = "dnr:algebraOptimiser"
                             ;
 
         /// <summary>
@@ -118,6 +120,8 @@ namespace VDS.RDF.Configuration
                             ClassSparqlHttpProtocolProcessor = "dnr:SparqlHttpProtocolProcessor",
                             ClassSparqlExpressionFactory = "dnr:SparqlExpressionFactory",
                             ClassSparqlDataset = "dnr:SparqlDataset",
+                            ClassQueryOptimiser = "dnr:QueryOptimiser",
+                            ClassAlgebraOptimiser = "dnr:AlgebraOptimiser",
                             ClassReasoner = "dnr:Reasoner",
                             ClassOwlReasoner = "dnr:OwlReasoner",
                             ClassProxy = "dnr:Proxy",
@@ -170,6 +174,7 @@ namespace VDS.RDF.Configuration
             new ProxyFactory(),
 #endif
             //SPARQL Extension related Factories
+            new OptimiserFactory(),
             new ReasonerFactory(),
             new ExpressionFactoryFactory(),
             //ObjectFactory Factory

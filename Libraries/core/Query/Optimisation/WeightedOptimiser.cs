@@ -15,6 +15,9 @@ namespace VDS.RDF.Query.Optimisation
         public const double DefaultObjectWeight = 0.6d;
         public const double DefaultVariableWeight = 1d;
 
+        public WeightedOptimiser()
+        { }
+
         public WeightedOptimiser(IGraph g)
         {
             this._weights = new Weightings(g);
@@ -36,9 +39,9 @@ namespace VDS.RDF.Query.Optimisation
 
     class Weightings
     {
-        private Dictionary<INode, int> _subjectWeightings = new Dictionary<INode, int>();
-        private Dictionary<INode, int> _predicateWeightings = new Dictionary<INode, int>();
-        private Dictionary<INode, int> _objectWeightings = new Dictionary<INode, int>();
+        private Dictionary<INode, long> _subjectWeightings = new Dictionary<INode, long>();
+        private Dictionary<INode, long> _predicateWeightings = new Dictionary<INode, long>();
+        private Dictionary<INode, long> _objectWeightings = new Dictionary<INode, long>();
 
         private double _defSubjWeight = WeightedOptimiser.DefaultSubjectWeight;
         private double _defPredWeight = WeightedOptimiser.DefaultPredicateWeight;
@@ -80,10 +83,10 @@ namespace VDS.RDF.Query.Optimisation
         {
             if (count.NodeType == NodeType.Literal)
             {
-                int i;
-                if (Int32.TryParse(((ILiteralNode)count).Value, out i))
+                long i;
+                if (Int64.TryParse(((ILiteralNode)count).Value, out i))
                 {
-                    int current;
+                    long current;
                     if (this._subjectWeightings.TryGetValue(n, out current))
                     {
                         this._subjectWeightings[n] = Math.Max(current, i);
@@ -100,10 +103,10 @@ namespace VDS.RDF.Query.Optimisation
         {
             if (count.NodeType == NodeType.Literal)
             {
-                int i;
-                if (Int32.TryParse(((ILiteralNode)count).Value, out i))
+                long i;
+                if (Int64.TryParse(((ILiteralNode)count).Value, out i))
                 {
-                    int current;
+                    long current;
                     if (this._predicateWeightings.TryGetValue(n, out current))
                     {
                         this._predicateWeightings[n] = Math.Max(current, i);
@@ -120,10 +123,10 @@ namespace VDS.RDF.Query.Optimisation
         {
             if (count.NodeType == NodeType.Literal)
             {
-                int i;
-                if (Int32.TryParse(((ILiteralNode)count).Value, out i))
+                long i;
+                if (Int64.TryParse(((ILiteralNode)count).Value, out i))
                 {
-                    int current;
+                    long current;
                     if (this._objectWeightings.TryGetValue(n, out current))
                     {
                         this._objectWeightings[n] = Math.Max(current, i);
@@ -138,7 +141,7 @@ namespace VDS.RDF.Query.Optimisation
 
         public double SubjectWeighting(INode n)
         {
-            int temp = 1;
+            long temp = 1;
             if (this._subjectWeightings.TryGetValue(n, out temp))
             {
                 temp = Math.Max(1, temp);
@@ -152,7 +155,7 @@ namespace VDS.RDF.Query.Optimisation
 
         public double PredicateWeighting(INode n)
         {
-            int temp = 1;
+            long temp = 1;
             if (this._predicateWeightings.TryGetValue(n, out temp))
             {
                 temp = Math.Max(1, temp);
@@ -166,7 +169,7 @@ namespace VDS.RDF.Query.Optimisation
 
         public double ObjectWeighting(INode n)
         {
-            int temp = 1;
+            long temp = 1;
             if (this._objectWeightings.TryGetValue(n, out temp))
             {
                 temp = Math.Max(1, temp);

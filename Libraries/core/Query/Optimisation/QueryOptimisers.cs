@@ -75,4 +75,5 @@ namespace VDS.RDF.Query.Optimisation
             return 0;
         }
     }
+
 }

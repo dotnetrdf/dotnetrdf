@@ -76,6 +76,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.WinForms", "Libra
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sesame-test", "Testing\sesame-test\sesame-test.csproj", "{DE26649D-6E79-4528-AB9B-671F4AC70C24}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rdfOptStats", "Utilities\rdfOptStats\rdfOptStats.csproj", "{7F8C8890-F2EB-479B-94ED-74377045FCB6}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = dotNetRDF2.vsmdi
@@ -329,6 +331,14 @@ Global
 		{DE26649D-6E79-4528-AB9B-671F4AC70C24}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DE26649D-6E79-4528-AB9B-671F4AC70C24}.Release|x64.ActiveCfg = Release|Any CPU
 		{DE26649D-6E79-4528-AB9B-671F4AC70C24}.Release|x86.ActiveCfg = Release|Any CPU
+		{7F8C8890-F2EB-479B-94ED-74377045FCB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F8C8890-F2EB-479B-94ED-74377045FCB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F8C8890-F2EB-479B-94ED-74377045FCB6}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{7F8C8890-F2EB-479B-94ED-74377045FCB6}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7F8C8890-F2EB-479B-94ED-74377045FCB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F8C8890-F2EB-479B-94ED-74377045FCB6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F8C8890-F2EB-479B-94ED-74377045FCB6}.Release|x64.ActiveCfg = Release|Any CPU
+		{7F8C8890-F2EB-479B-94ED-74377045FCB6}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

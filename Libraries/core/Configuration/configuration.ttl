@@ -44,7 +44,7 @@
 
 # Definition of this Schema
 
-<> a owl:Ontology ;
+<http://www.dotnetrdf.org/configuration#> a owl:Ontology ;
    rdfs:label "dotNetRDF Configuration Vocabulary" ;
    rdfs:comment """dotNetRDF Configuration Vocabulary is used to define configuration information for applications that make use of dotNetRDF in an RDF format.  This allows for automated validation of the Configuration but also allows the vocabulary to be extensible by design.  New Classes and Properties can be added by end users provided they provide an implementation of the <strong>VDS.RDF.Configuration.IObjectFactory</strong> interface in their application and register it in the Configuration Files that need it/within their application.  The use of the vocabulary to describe Configuration for a variety of types of objects is described in the <a href=\"http://www.dotnetrdf.org/content.asp?pageID=Configuration%20API\">User Guide</a>.""" ;
    dc:creator [ foaf:name "Rob Vesse" ] ;
@@ -100,6 +100,14 @@ dnr:SparqlExpressionFactory a rdfs:Class ;
 dnr:SparqlDataset a rdfs:Class ;
 				  rdfs:label "Class of SPARQL Datasets" ;
 				  rdfs:comment "A SPARQL Dataset is a dataset that can be used to execute SPARQL queries against using dotNetRDF's Leviathan Query engine" .
+				  
+dnr:QueryOptimiser a rdfs:Class ;
+					rdfs:label "Class of Query Optimisers" ;
+					rdfs:comment "A Query Optimiser is a class that can optimise the Graph Patterns of a Query to improve evaluation speed.  Optimisers may use information about the data being queried to help them better optimise queries" .
+					
+dnr:AlgebraOptimiser a rdfs:Class ;
+						rdfs:label "Class of Algebra Optimisers" ;
+						rdfs:comment "A Algebra Optimiser is a class that can optimise the SPARQL Algebra form of a query to improve evaluation speed.  These typically use static optimisation based on things like substituting alternative implementations of some algebra operators e.g. the AskBgp() in place of Bgp() in ASK queries" .
 								
 dnr:Reasoner a rdfs:Class ;
 			 rdfs:label "Class of Forward Chaining Reasoners" ;
@@ -403,6 +411,7 @@ dnr:action a rdf:Property ;
 		   rdfs:domain dnr:Permission .
 		   
 # Properties for HTTP Handler Configuration
+# Most of these properties pertain to SPARQL Endpoint configuration but some are more general
 
 dnr:enableCors a rdf:Property ;
 				rdfs:label "Enable CORS" ;
@@ -434,9 +443,10 @@ dnr:showErrors a rdf:Property ;
 			   
 dnr:haltOnError a rdf:Property ;
 				rdfs:label "Halt on Error" ;
-				rdfs:comment "This property sets whether processing should halt on errors." ;
+				rdfs:comment "This property sets whether processing should halt on errors.  It was originally intended for use with SPARQL Update endpoints but was later removed from that use as disabling this option (i.e. allowing continuation on error) would go against the stated semantics of SPARQL Update that a set of commands is applied atomically." ;
 				rdfs:domain dnr:HttpHandler ;
-			    rdfs:range xsd:boolean .
+			    rdfs:range xsd:boolean ;
+			    vs:term-status "archaic" .
 				
 dnr:showQueryForm a rdf:Property ;
 				  rdfs:label "Show Query Form" ;
@@ -498,3 +508,15 @@ dnr:serviceDescription a rdf:Property ;
 						 rdfs:comment "This property allows a Graph containing a user defined SPARQL Service Description be used as the Service Description Graph rather than having dotNetRDF auto-generate the Description" ;
 						 rdfs:domain dnr:HttpHandler ;
 						 rdfs:range dnr:Graph .
+						 
+dnr:queryOptimiser a rdf:Property ;
+					 rdfs:label "Query Optimiser" ;
+					 rdfs:comment "This property allows a Query Optimiser to be associated with a HTTP Handler.  If the HTTP Handler is a SPARQL Query supporting handler then it will use the given Query Optimiser instead of the Default Optimiser for the optimisation of SPARQL Queries.  Note that only one Query Optimiser is allowed per Handler at any time so if more than one is specified only the first the ConfigurationLoader encounters will be used." ;
+					 rdfs:range dnr:QueryOptimiser ;
+					 rdfs:domain dnr:HttpHandler .
+					 
+dnr:algebraOptimiser a rdf:Property ;
+						rdfs:label "Algebra Optimiser" ;
+						rdfs:comment "This property allows Algebra Optimisers to be associated with a HTTP Handler.  If the HTTP Handler is a SPARQL Query supported handler then it will use these optimisers to help optimise SPARQL Algebra generated from queries.  Multiple algebra optimisers can be specified and these will be used in addition to the libraries own default optimisers." ;
+						rdfs:domain dnr:HttpHandler ;
+						rdfs:range dnr:Graph .
