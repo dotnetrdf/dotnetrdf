@@ -142,7 +142,7 @@ namespace VDS.RDF.Query.Algebra
                     //Execute the Query for every possible Binding and build up our Output Multiset from all the results
                     foreach (Set s in bindings)
                     {
-                        //TODO: Should we continue processing here if and when we hit an error?
+                        //Q: Should we continue processing here if and when we hit an error?
 
                         foreach (String var in s.Variables)
                         {

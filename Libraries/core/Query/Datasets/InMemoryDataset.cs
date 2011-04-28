@@ -195,7 +195,6 @@ namespace VDS.RDF.Query.Datasets
 
         protected override ITransactionalGraph GetModifiableGraphInternal(Uri graphUri)
         {
-            //TODO: Implement Change Tracking and Flush/Discard
             return new GraphPersistenceWrapper(this[graphUri]);
         }
 

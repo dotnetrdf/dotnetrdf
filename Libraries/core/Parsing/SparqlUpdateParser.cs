@@ -198,8 +198,6 @@ namespace VDS.RDF.Parsing
         public SparqlUpdateCommandSet ParseFromString(String updates)
         {
             if (updates == null) throw new RdfParseException("Cannot parse SPARQL Update Commands from a null String");
-
-            //TODO: Do we need to force this to UTF-8 somehow?
             return this.Parse(new StringReader(updates));
         }
 

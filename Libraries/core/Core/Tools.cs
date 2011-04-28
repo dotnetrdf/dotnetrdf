@@ -115,10 +115,9 @@ namespace VDS.RDF
         {
             if (uriref.StartsWith("file:/"))
             {
-                //HACK: This is something of a Hack as a workaround to the issue that some systems may generate RDF which 
-                //have technically malformed file:// scheme URIs in it.  This is because *nix style filesystems use
-                //paths of the form /path/to/somewhere and some serializers will serialize such a file path by just prepending
-                //file: when they should be prepending file://
+                //HACK: This is something of a Hack as a workaround to the issue that some systems may generate RDF which have technically malformed file:// scheme URIs in it
+                //This is because *nix style filesystems use paths of the form /path/to/somewhere and some serializers will serialize such
+                //a file path by just prepending file: when they should be prepending file://
                 if (uriref.Length > 6)
                 {
                     if (uriref[6] != '/')

@@ -42,8 +42,6 @@ using System.Threading;
 
 namespace VDS.RDF
 {
-    //OPT: Can the persistence model of this class be rewritten in terms of a Timer and the IAsyncResult pattern for better stability?
-
     /// <summary>
     /// Base Class for Graphs which have their persistence to some underlying Store handled by a background thread
     /// </summary>

@@ -16,7 +16,7 @@ namespace VDS.RDF.Test.Update
         [TestMethod]
         public void SparqlUpdateTimeout()
         {
-            String update = "CREATE GRAPH <http://example.org/1>; CREATE GRAPH <http://example.org/2>";
+            String update = "CREATE GRAPH <http://example.org/1>; LOAD <http://www.dotnetrdf.org/configuration#>; CREATE GRAPH <http://example.org/2>";
             SparqlUpdateCommandSet cmds = this._parser.ParseFromString(update);
             cmds.Timeout = 1;
 

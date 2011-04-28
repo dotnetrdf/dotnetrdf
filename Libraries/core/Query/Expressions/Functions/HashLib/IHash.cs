@@ -4,8 +4,6 @@ using System.IO;
 
 namespace HashLib
 {
-    // TODO: przetestowac poprawnosc danych testow w porownaniu do innych implementacji, szczegolnie 4GB+
-
     /// <summary>
     /// Code incorporated from the <a href="http://hashlib.codeplex.com">HashLib</a> project to support SHA224 and provide support for all Hash functions under Silverlight
     /// </summary>

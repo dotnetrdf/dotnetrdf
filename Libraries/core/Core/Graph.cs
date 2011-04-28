@@ -626,8 +626,6 @@ namespace VDS.RDF
         /// Creates a new Graph which is not indexed
         /// </summary>
         public NonIndexedGraph()
-        {
-            this._triples = new TripleCollection();
-        }
+            : base(new TripleCollection()) { }
     }
 }

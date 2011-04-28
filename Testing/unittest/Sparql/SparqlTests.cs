@@ -19,6 +19,37 @@ namespace VDS.RDF.Test.Sparql
     public class SparqlTests
     {
         [TestMethod]
+        public void SparqlParameterizedStringWithNulls()
+        {
+            SparqlParameterizedString query = new SparqlParameterizedString();
+            query.CommandText = "SELECT * WHERE { @s ?p ?o }";
+
+            //Set a URI to a valid value
+            query.SetUri("s", new Uri("http://example.org"));
+            Console.WriteLine(query.ToString());
+            Console.WriteLine();
+
+            //Set the parameter to a null
+            query.SetParameter("s", null);
+            Console.WriteLine(query.ToString());
+        }
+
+        [TestMethod, ExpectedException(typeof(ArgumentNullException))]
+        public void SparqlParameterizedStringWithNulls2()
+        {
+            SparqlParameterizedString query = new SparqlParameterizedString();
+            query.CommandText = "SELECT * WHERE { @s ?p ?o }";
+
+            //Set a URI to a valid value
+            query.SetUri("s", new Uri("http://example.org"));
+            Console.WriteLine(query.ToString());
+            Console.WriteLine();
+
+            //Set the URI to a null
+            query.SetUri("s", null);
+        }
+
+        [TestMethod]
         public void SparqlDBPedia()
         {
             try

@@ -43,7 +43,7 @@ using System.Threading;
 namespace VDS.RDF
 {
     /// <summary>
-    /// Basic Triple Collection
+    /// Basic Triple Collection which is not indexed
     /// </summary>
     public class TripleCollection : BaseTripleCollection, IEnumerable<Triple>
     {

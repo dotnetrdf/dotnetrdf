@@ -43,8 +43,6 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query
 {
-    //TODO: Validate for null values in all the Set methods
-
     /// <summary>
     /// A SPARQL Parameterized String is a String that can contain parameters in the same fashion as a SQL command string
     /// </summary>
@@ -86,7 +84,7 @@ namespace VDS.RDF.Query
         private Dictionary<String, INode> _parameters = new Dictionary<string, INode>();
         private Dictionary<String, INode> _variables = new Dictionary<string, INode>();
         private SparqlFormatter _formatter = new SparqlFormatter();
-        private Graph _g = new Graph();
+        private IGraph _g = new NonIndexedGraph();
 
         private const String _validParameterNamePattern = "^@?[\\w\\-_]+$";
         private const String _validVariableNamePattern = "^[?$]?[\\w\\-_]+$";
@@ -371,6 +369,7 @@ namespace VDS.RDF.Query
         /// <param name="value">Integer</param>
         public void SetLiteral(String name, String value)
         {
+            if (value == null) throw new ArgumentNullException("value", "Cannot set a Literal to be null");
             this.SetParameter(name, new LiteralNode(this._g, value));
         }
 
@@ -382,7 +381,15 @@ namespace VDS.RDF.Query
         /// <param name="datatype">Datatype URI</param>
         public void SetLiteral(String name, String value, Uri datatype)
         {
-            this.SetParameter(name, new LiteralNode(this._g, value, datatype));
+            if (value == null) throw new ArgumentNullException("value", "Cannot set a Literal to be null");
+            if (datatype == null)
+            {
+                this.SetParameter(name, new LiteralNode(this._g, value));
+            }
+            else
+            {
+                this.SetParameter(name, new LiteralNode(this._g, value, datatype));
+            }
         }
 
         /// <summary>
@@ -393,6 +400,8 @@ namespace VDS.RDF.Query
         /// <param name="lang">Language Specifier</param>
         public void SetLiteral(String name, String value, String lang)
         {
+            if (value == null) throw new ArgumentNullException("value", "Cannot set a Literal to be null");
+            if (lang == null) throw new ArgumentNullException("lang", "Cannot set a Literal to have a null Language");
             this.SetParameter(name, new LiteralNode(this._g, value, lang));
         }
 
@@ -403,6 +412,7 @@ namespace VDS.RDF.Query
         /// <param name="value">URI</param>
         public void SetUri(String name, Uri value)
         {
+            if (value == null) throw new ArgumentNullException("value", "Cannot set a URI to be null");
             this.SetParameter(name, new UriNode(this._g, value));
         }
 
@@ -416,6 +426,8 @@ namespace VDS.RDF.Query
         /// </remarks>
         public void SetBlankNode(String name, String value)
         {
+            if (value == null) throw new ArgumentNullException("value", "Cannot set a Blank Node to have a null ID");
+            if (value.Equals(String.Empty)) throw new ArgumentException("value", "Cannot set a Blank Node to have an empty ID");
             this.SetParameter(name, this._g.CreateBlankNode(value));
         }
 
@@ -455,15 +467,21 @@ namespace VDS.RDF.Query
             //first
             foreach (String param in this._parameters.Keys.OrderByDescending(k => k.Length))
             {
-                //Do a Regex based replace to avoid replacing other parameters whose names may be suffixes/prefixes of this name
-                output = Regex.Replace(output, "(@" + param + ")([^\\w]|$)", this._formatter.Format(this._parameters[param]) + "$2");
+                if (this._parameters[param] != null)
+                {
+                    //Do a Regex based replace to avoid replacing other parameters whose names may be suffixes/prefixes of this name
+                    output = Regex.Replace(output, "(@" + param + ")([^\\w]|$)", this._formatter.Format(this._parameters[param]) + "$2");
+                }
             }
 
             //Do Variable replacements after Parameter replacements
             foreach (String var in this._variables.Keys.OrderByDescending(k => k.Length))
             {
-                //Do a Reged based replace to avoid replacing other variables whose names may be suffixes/prefixes of this name
-                output = Regex.Replace(output, "([?$]" + var + ")([^\\w]|$)", this._formatter.Format(this._variables[var]) + "$2");
+                if (this._variables[var] != null)
+                {
+                    //Do a Reged based replace to avoid replacing other variables whose names may be suffixes/prefixes of this name
+                    output = Regex.Replace(output, "([?$]" + var + ")([^\\w]|$)", this._formatter.Format(this._variables[var]) + "$2");
+                }
             }
 
             return output;

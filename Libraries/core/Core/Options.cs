@@ -82,7 +82,7 @@ namespace VDS.RDF
     {
         private static LiteralEqualityMode _litEqualityMode = LiteralEqualityMode.Strict;
         private static bool _litNormalization = true;//, _uriNormalization = true;
-        private static long _queryExecutionTimeout = 180000;
+        private static long _queryExecutionTimeout = 180000, _updateExecutionTimeout = 180000;
         private static int _defaultCompressionLevel = WriterCompressionLevel.More;
         private static bool _fullIndexing = true;
         private static bool _queryOptimisation = true;
@@ -153,10 +153,10 @@ namespace VDS.RDF
         //}
 
         /// <summary>
-        /// Gets/Sets the Hard Timeout limit for Sparql Query Execution (in milliseconds)
+        /// Gets/Sets the Hard Timeout limit for SPARQL Query Execution (in milliseconds)
         /// </summary>
         /// <remarks>
-        /// This is used to stop Sparql queries running away and never completing execution, it defaults to 3 mins (180,000 milliseconds)
+        /// This is used to stop SPARQL queries running away and never completing execution, it defaults to 3 mins (180,000 milliseconds)
         /// </remarks>
         public static long QueryExecutionTimeout
         {
@@ -203,6 +203,9 @@ namespace VDS.RDF
         /// <summary>
         /// Gets/Sets the default syntax used for parsing SPARQL queries
         /// </summary>
+        /// <remarks>
+        /// The default is SPARQL 1.1 unless you use this property to change it
+        /// </remarks>
         public static SparqlQuerySyntax QueryDefaultSyntax
         {
             get
@@ -228,6 +231,24 @@ namespace VDS.RDF
             set
             {
                 _queryAllowUnknownFunctions = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets/Sets the Hard Timeout limit for SPARQL Update Execution (in milliseconds)
+        /// </summary>
+        /// <remarks>
+        /// This is used to stop SPARQL Updates running away and never completing execution, it defaults to 3 mins (180,000 milliseconds)
+        /// </remarks>
+        public static long UpdateExecutionTimeout
+        {
+            get
+            {
+                return _updateExecutionTimeout;
+            }
+            set
+            {
+                _updateExecutionTimeout = Math.Max(0, value);
             }
         }
 

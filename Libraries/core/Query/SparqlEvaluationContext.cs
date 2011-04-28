@@ -316,7 +316,7 @@ namespace VDS.RDF.Query
                 return this._timer.ElapsedTicks;
 #else
                 if (this._end == null || this._end < this._start) this._end = DateTime.Now;
-                return (this._end - this._start).Milliseconds;
+                return (this._end - this._start).Ticks;
 #endif
             }
         }

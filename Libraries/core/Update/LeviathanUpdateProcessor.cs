@@ -33,6 +33,7 @@ terms.
 
 */
 
+using System;
 using System.Diagnostics;
 using System.Threading;
 using VDS.RDF.Query.Datasets;
@@ -45,7 +46,7 @@ namespace VDS.RDF.Update
     /// </summary>
     /// <remarks>
     /// <para>
-    /// The Leviathan Update Processor simply invokes the <see cref="SparqlUpdateCommand.Update">Update</see> method of the SPARQL Commands it is asked to process
+    /// The Leviathan Update Processor simply invokes the <see cref="SparqlUpdateCommand.Evaluate">Evaluate</see> method of the SPARQL Commands it is asked to process.  Derived implementations may override the relevant virtual protected methods to substitute their own evaluation of an update for our default standards compliant implementations.
     /// </para>
     /// </remarks>
     public class LeviathanUpdateProcessor : ISparqlUpdateProcessor
@@ -100,7 +101,6 @@ namespace VDS.RDF.Update
         {
             if (!this._canCommit) throw new SparqlUpdateException("Unable to commit since one/more Commands executed in the current Transaction failed");
             this._dataset.Flush();
-            this._canCommit = true;
         }
 
         /// <summary>
@@ -232,6 +232,7 @@ namespace VDS.RDF.Update
 #else
                 //If ReaderWriteLockSlim is not available use a Monitor instead
                 Monitor.Enter(this._dataset);
+                mustRelease = true;
 #endif
 
                 //Then based on the command type call the appropriate protected method
@@ -277,10 +278,12 @@ namespace VDS.RDF.Update
                         throw new SparqlUpdateException("Unknown Update Commands cannot be processed by the Leviathan Update Processor");
                 }
 
+                //If auto-committing flush after every command
                 if (this._autoCommit) this.Flush();
             }
             catch
             {
+                //If auto-committing discard if an error occurs, if not then mark the transaction as uncomittable
                 if (this._autoCommit)
                 {
                     this.Discard();
@@ -293,6 +296,7 @@ namespace VDS.RDF.Update
             }
             finally
             {
+                //Release locks if necessary
                 if (mustRelease)
                 {
 #if !NO_RWLOCK
@@ -313,19 +317,13 @@ namespace VDS.RDF.Update
         /// </remarks>
         public void ProcessCommandSet(SparqlUpdateCommandSet commands)
         {
-            //Stuff for checking Timeouts
-#if !NO_STOPWATCH
-            Stopwatch timer = new Stopwatch();
-#else
-            DateTime start, end;
-#endif
             commands.UpdateExecutionTime = null;
 
             //Firstly check what Transaction mode we are running in
             bool autoCommit = this._autoCommit;
 
             //Then create an Evaluation Context
-            SparqlUpdateEvaluationContext context = new SparqlUpdateEvaluationContext(this._dataset);
+            SparqlUpdateEvaluationContext context = new SparqlUpdateEvaluationContext(commands, this._dataset);
 
             //Remember to handle the Thread Safety
             //If the Dataset is Thread Safe use its own lock otherwise use our local lock
@@ -354,36 +352,13 @@ namespace VDS.RDF.Update
                 }
 
                 //Start the operation
-#if !NO_STOPWATCH
-                timer.Start();
-#else 
-                DateTime start = DateTime.Now;
-#endif
+                context.StartExecution();
                 for (int i = 0; i < commands.CommandCount; i++)
                 {
                     this.ProcessCommandInternal(commands[i], context);
 
                     //Check for Timeout
-                    if (commands.Timeout > 0)
-                    {
-                        if (i < commands.CommandCount - 1)
-                        {
-#if !NO_STOPWATCH
-                            if (timer.ElapsedMilliseconds >= commands.Timeout)
-                            {
-                                timer.Stop();
-                                throw new SparqlUpdateTimeoutException("Update Execution Time exceeded the Timeout of " + commands.Timeout + "ms, update aborted after " + timer.ElapsedMilliseconds + "ms");
-                            }
-#else
-                            end = DateTime.Now;
-                            TimeSpan elapsed = (end - start);
-                            if (elapsed.Milliseconds >= commands.Timeout)
-                            {
-                                throw new SparqlUpdateTimeoutException("Update Execution Time exceeded the Timeout of " + commands.UpdateTimeout + "ms, update aborted after " + elapsed.Milliseconds + "ms");
-                            }
-#endif
-                        }
-                    }
+                    context.CheckTimeout();
                 }
 
                 if (autoCommit)
@@ -392,12 +367,9 @@ namespace VDS.RDF.Update
                     this._dataset.Flush();
                 }
 
-#if !NO_STOPWATCH
-                timer.Stop();
-                commands.UpdateExecutionTime = timer.Elapsed;
-#else
-                commands.UpdateExecutionTime = (DateTime.Now - start);
-#endif
+                //Set Update Times
+                context.EndExecution();
+                commands.UpdateExecutionTime = new TimeSpan(context.UpdateTimeTicks);
             }
             catch
             {
@@ -412,12 +384,8 @@ namespace VDS.RDF.Update
                 }
 
                 //Set Update Times
-#if !NO_STOPWATCH
-                timer.Stop();
-                commands.UpdateExecutionTime = timer.Elapsed;
-#else
-                commands.UpdateExecutionTime = (DateTime.Now - start);
-#endif
+                context.EndExecution();
+                commands.UpdateExecutionTime = new TimeSpan(context.UpdateTimeTicks);
                 throw;
             }
             finally

@@ -292,7 +292,6 @@ namespace VDS.RDF.Parsing
             if (queryString == null) throw new RdfParseException("Cannot parse a SPARQL Query from a null String");
 
             //Call the Internal Parser
-            //TODO: Do we need to force this to UTF-8 somehow?
             return this.ParseInternal(new StringReader(queryString));
         }
 
@@ -532,7 +531,7 @@ namespace VDS.RDF.Parsing
                             {
                                 if (context.Query.GroupBy != null)
                                 {
-                                    //TODO: ISparqlAggregate needs to expose a Variables property
+                                    //Q: Does ISparqlAggregate needs to expose a Variables property?
                                     //if (!var.Aggregate.Var
                                 }
                             }

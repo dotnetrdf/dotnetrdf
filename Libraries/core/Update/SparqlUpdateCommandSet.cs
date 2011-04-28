@@ -42,7 +42,7 @@ using System.Text;
 namespace VDS.RDF.Update
 {
     /// <summary>
-    /// Represents a sequence of SPARQL Update Commands to be executed on a Store
+    /// Represents a sequence of SPARQL Update Commands to be executed on a Dataset
     /// </summary>
     public class SparqlUpdateCommandSet
     {

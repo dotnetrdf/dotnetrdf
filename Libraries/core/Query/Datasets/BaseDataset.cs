@@ -659,7 +659,6 @@ namespace VDS.RDF.Query.Datasets
     public abstract class BaseTransactionalDataset : BaseDataset
     {
         private List<GraphPersistenceAction> _actions = new List<GraphPersistenceAction>();
-        //REQ: Write some tests that check how this behaves when the default graph changes over the course of a Transaction
         private TripleStore _modifiableGraphs = new TripleStore();
 
         public BaseTransactionalDataset()
