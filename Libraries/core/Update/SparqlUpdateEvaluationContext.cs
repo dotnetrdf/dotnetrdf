@@ -37,6 +37,8 @@ using VDS.RDF.Query.Datasets;
 
 namespace VDS.RDF.Update
 {
+    //REQ: Add the necessary stuff for Timeout management to the SparqlUpdateEvaluationContext
+
     /// <summary>
     /// Evaluation Context for SPARQL Updates evaluated by the libraries Leviathan SPARQL Engine
     /// </summary>

@@ -35,6 +35,9 @@ Added
 - Update
  - Added support for Timeouts when using the LeviathanUpdateProcessor and the ProcessCommandSet() method
  - Added support for transactions
+- ASP.Net Integration
+ - Added NegotiateByFileExtension which is an IHttpModule that can be used to provide content negotiation by file extension
+   seamlessly for all existing IHttpHandler implementations
 
 Changed
 - Bug Fixes
@@ -66,11 +69,14 @@ Changed
  - ISparqlResultsReader expanded
   - Now has overloads for parsing to an ISparqlResultsHandler instance as well as to a SparqlResultSet instance
   - Now has overloads for parsing from any TextReader (not just StreamReader)
+ - All static loaders (DataUriLoader, EmbeddedResourceLoader, FileLoad and UriLoader) now have overloads that take
+   IRdfHandler instances
 - Query Improvements
  - Ensured proper thread safety for queries when used with appropriately implemented ISparqlDataset's so that Queries
    can never interfere with each other
  - Improved Timeout support particularly with regards to getting stuck calculating products
   - Reduced global timeout setting to 3 minutes (previously 5 minutes)
+  - Ensured that timeouts still apply during lazy evaluation of appropriate SELECT/ASK queries
 - Update Improvements
  - InMemoryDataset and SqlDataset now provide transactionality
  - LeviathanUpdateProcessor now runs each Command Set in a Transaction unless AutoCommit is set to false

@@ -118,48 +118,16 @@ namespace VDS.RDF.Update
         /// <param name="cmd">Add Command</param>
         public void ProcessAddCommand(AddCommand cmd)
         {
-            if (this._autoCommit) this.Flush();
-#if !NO_RWLOCK
-            ReaderWriterLockSlim currLock = (this._dataset is IThreadSafeDataset) ? ((IThreadSafeDataset)this._dataset).Lock : this._lock;
-#endif
-            bool mustRelease = false;
-            try
-            {
-#if !NO_RWLOCK
-                if (!currLock.IsWriteLockHeld)
-                {
-                    currLock.EnterWriteLock();
-                    mustRelease = true;
-                }
-#else
-                Monitor.Enter(this._dataset);
-#endif
-                cmd.Evaluate(new SparqlUpdateEvaluationContext(this._dataset));
-                if (this._autoCommit) this.Flush();
-            }
-            catch
-            {
-                if (this._autoCommit)
-                {
-                    this.Discard();
-                }
-                else
-                {
-                    this._canCommit = false;
-                }
-                throw;
-            }        
-            finally 
-            {
-                if (mustRelease)
-                {
-#if !NO_RWLOCK
-                    currLock.ExitWriteLock();
-#else
-                    Monitor.Exit(this._dataset);
-#endif
-                }
-            }
+            this.ProcessAddCommandInternal(cmd, new SparqlUpdateEvaluationContext(this._dataset));
+        }
+
+        /// <summary>
+        /// Processes an ADD command
+        /// </summary>
+        /// <param name="cmd">Add Command</param>
+        protected virtual void ProcessAddCommandInternal(AddCommand cmd, SparqlUpdateEvaluationContext context)
+        {
+            cmd.Evaluate(context);
         }
 
         /// <summary>
@@ -168,48 +136,16 @@ namespace VDS.RDF.Update
         /// <param name="cmd">Clear Command</param>
         public void ProcessClearCommand(ClearCommand cmd)
         {
-            if (this._autoCommit) this.Flush();
-#if !NO_RWLOCK
-            ReaderWriterLockSlim currLock = (this._dataset is IThreadSafeDataset) ? ((IThreadSafeDataset)this._dataset).Lock : this._lock;
-#endif
-            bool mustRelease = false;
-            try
-            {
-#if !NO_RWLOCK
-                if (!currLock.IsWriteLockHeld)
-                {
-                    currLock.EnterWriteLock();
-                    mustRelease = true;
-                }
-#else
-                Monitor.Enter(this._dataset);
-#endif
-                cmd.Evaluate(new SparqlUpdateEvaluationContext(this._dataset));
-                if (this._autoCommit) this.Flush();
-            }
-            catch
-            {
-                if (this._autoCommit)
-                {
-                    this.Discard();
-                }
-                else
-                {
-                    this._canCommit = false;
-                }
-                throw;
-            }
-            finally
-            {
-                if (mustRelease)
-                {
-#if !NO_RWLOCK
-                    currLock.ExitWriteLock();
-#else
-                    Monitor.Exit(this._dataset);
-#endif
-                }
-            }
+            this.ProcessClearCommandInternal(cmd, new SparqlUpdateEvaluationContext(this._dataset));
+        }
+
+        /// <summary>
+        /// Processes a CLEAR command
+        /// </summary>
+        /// <param name="cmd">Clear Command</param>
+        protected virtual void ProcessClearCommandInternal(ClearCommand cmd, SparqlUpdateEvaluationContext context)
+        {
+            cmd.Evaluate(context);
         }
 
         /// <summary>
@@ -218,48 +154,16 @@ namespace VDS.RDF.Update
         /// <param name="cmd">Copy Command</param>
         public void ProcessCopyCommand(CopyCommand cmd)
         {
-            if (this._autoCommit) this.Flush();
-#if !NO_RWLOCK
-            ReaderWriterLockSlim currLock = (this._dataset is IThreadSafeDataset) ? ((IThreadSafeDataset)this._dataset).Lock : this._lock;
-#endif
-            bool mustRelease = false;
-            try
-            {
-#if !NO_RWLOCK
-                if (!currLock.IsWriteLockHeld)
-                {
-                    currLock.EnterWriteLock();
-                    mustRelease = true;
-                }
-#else
-                Monitor.Enter(this._dataset);
-#endif
-                cmd.Evaluate(new SparqlUpdateEvaluationContext(this._dataset));
-                if (this._autoCommit) this.Flush();
-            }
-            catch
-            {
-                if (this._autoCommit)
-                {
-                    this.Discard();
-                }
-                else
-                {
-                    this._canCommit = false;
-                }
-                throw;
-            }
-            finally
-            {
-                if (mustRelease)
-                {
-#if !NO_RWLOCK
-                    currLock.ExitWriteLock();
-#else
-                    Monitor.Exit(this._dataset);
-#endif
-                }
-            }
+            this.ProcessCopyCommandInternal(cmd, new SparqlUpdateEvaluationContext(this._dataset));
+        }
+
+        /// <summary>
+        /// Processes a COPY command
+        /// </summary>
+        /// <param name="cmd">Copy Command</param>
+        protected virtual void ProcessCopyCommandInternal(CopyCommand cmd, SparqlUpdateEvaluationContext context)
+        {
+            cmd.Evaluate(context);
         }
 
         /// <summary>
@@ -268,7 +172,51 @@ namespace VDS.RDF.Update
         /// <param name="cmd">Create Command</param>
         public void ProcessCreateCommand(CreateCommand cmd)
         {
+            this.ProcessCreateCommandInternal(cmd, new SparqlUpdateEvaluationContext(this._dataset));
+        }
+
+        /// <summary>
+        /// Processes a CREATE command
+        /// </summary>
+        /// <param name="cmd">Create Command</param>
+        protected virtual void ProcessCreateCommandInternal(CreateCommand cmd, SparqlUpdateEvaluationContext context)
+        {
+            cmd.Evaluate(context);
+        }
+
+        public void ProcessCommand(SparqlUpdateCommand cmd)
+        {
+            this.ProcessCommandInternal(cmd, new SparqlUpdateEvaluationContext(this._dataset));
+        }
+
+        /// <summary>
+        /// Processes a CLEAR command
+        /// </summary>
+        /// <param name="cmd">Clear Command</param>
+
+        /// <summary>
+        /// Processes a COPY command
+        /// </summary>
+        /// <param name="cmd">Copy Command</param>
+
+        /// <summary>
+        /// Processes a CREATE command
+        /// </summary>
+        /// <param name="cmd">Create Command</param>
+
+        /// <summary>
+        /// Processes a command
+        /// </summary>
+        /// <param name="cmd">Command</param>
+        /// <remarks>
+        /// Invokes the type specific method for the command type
+        /// </remarks>
+        private void ProcessCommandInternal(SparqlUpdateCommand cmd, SparqlUpdateEvaluationContext context)
+        {
+            //If auto-committing then Flush() any existing Transaction first
             if (this._autoCommit) this.Flush();
+
+            //Then if possible attempt to get the lock and determine whether it needs releasing
 #if !NO_RWLOCK
             ReaderWriterLockSlim currLock = (this._dataset is IThreadSafeDataset) ? ((IThreadSafeDataset)this._dataset).Lock : this._lock;
 #endif
@@ -282,9 +230,53 @@ namespace VDS.RDF.Update
                     mustRelease = true;
                 }
 #else
+                //If ReaderWriteLockSlim is not available use a Monitor instead
                 Monitor.Enter(this._dataset);
 #endif
-                cmd.Evaluate(new SparqlUpdateEvaluationContext(this._dataset));
+
+                //Then based on the command type call the appropriate protected method
+                switch (cmd.CommandType)
+                {
+                    case SparqlUpdateCommandType.Add:
+                        this.ProcessAddCommandInternal((AddCommand)cmd, context);
+                        break;
+                    case SparqlUpdateCommandType.Clear:
+                        this.ProcessClearCommandInternal((ClearCommand)cmd, context);
+                        break;
+                    case SparqlUpdateCommandType.Copy:
+                        this.ProcessCopyCommandInternal((CopyCommand)cmd, context);
+                        break;
+                    case SparqlUpdateCommandType.Create:
+                        this.ProcessCreateCommandInternal((CreateCommand)cmd, context);
+                        break;
+                    case SparqlUpdateCommandType.Delete:
+                        this.ProcessDeleteCommandInternal((DeleteCommand)cmd, context);
+                        break;
+                    case SparqlUpdateCommandType.DeleteData:
+                        this.ProcessDeleteDataCommandInternal((DeleteDataCommand)cmd, context);
+                        break;
+                    case SparqlUpdateCommandType.Drop:
+                        this.ProcessDropCommandInternal((DropCommand)cmd, context);
+                        break;
+                    case SparqlUpdateCommandType.Insert:
+                        this.ProcessInsertCommandInternal((InsertCommand)cmd, context);
+                        break;
+                    case SparqlUpdateCommandType.InsertData:
+                        this.ProcessInsertDataCommandInternal((InsertDataCommand)cmd, context);
+                        break;
+                    case SparqlUpdateCommandType.Load:
+                        this.ProcessLoadCommandInternal((LoadCommand)cmd, context);
+                        break;
+                    case SparqlUpdateCommandType.Modify:
+                        this.ProcessModifyCommandInternal((ModifyCommand)cmd, context);
+                        break;
+                    case SparqlUpdateCommandType.Move:
+                        this.ProcessMoveCommandInternal((MoveCommand)cmd, context);
+                        break;
+                    default:
+                        throw new SparqlUpdateException("Unknown Update Commands cannot be processed by the Leviathan Update Processor");
+                }
+
                 if (this._autoCommit) this.Flush();
             }
             catch
@@ -309,58 +301,6 @@ namespace VDS.RDF.Update
                     Monitor.Exit(this._dataset);
 #endif
                 }
-            }
-        }
-
-        /// <summary>
-        /// Processes a command
-        /// </summary>
-        /// <param name="cmd">Command</param>
-        /// <remarks>
-        /// Invokes the type specific method for the command type
-        /// </remarks>
-        public void ProcessCommand(SparqlUpdateCommand cmd)
-        {
-            switch (cmd.CommandType)
-            {
-                case SparqlUpdateCommandType.Add:
-                    this.ProcessAddCommand((AddCommand)cmd);
-                    break;
-                case SparqlUpdateCommandType.Clear:
-                    this.ProcessClearCommand((ClearCommand)cmd);
-                    break;
-                case SparqlUpdateCommandType.Copy:
-                    this.ProcessCopyCommand((CopyCommand)cmd);
-                    break;
-                case SparqlUpdateCommandType.Create:
-                    this.ProcessCreateCommand((CreateCommand)cmd);
-                    break;
-                case SparqlUpdateCommandType.Delete:
-                    this.ProcessDeleteCommand((DeleteCommand)cmd);
-                    break;
-                case SparqlUpdateCommandType.DeleteData:
-                    this.ProcessDeleteDataCommand((DeleteDataCommand)cmd);
-                    break;
-                case SparqlUpdateCommandType.Drop:
-                    this.ProcessDropCommand((DropCommand)cmd);
-                    break;
-                case SparqlUpdateCommandType.Insert:
-                    this.ProcessInsertCommand((InsertCommand)cmd);
-                    break;
-                case SparqlUpdateCommandType.InsertData:
-                    this.ProcessInsertDataCommand((InsertDataCommand)cmd);
-                    break;
-                case SparqlUpdateCommandType.Load:
-                    this.ProcessLoadCommand((LoadCommand)cmd);
-                    break;
-                case SparqlUpdateCommandType.Modify:
-                    this.ProcessModifyCommand((ModifyCommand)cmd);
-                    break;
-                case SparqlUpdateCommandType.Move:
-                    this.ProcessMoveCommand((MoveCommand)cmd);
-                    break;
-                default:
-                    throw new SparqlUpdateException("Unknown Update Commands cannot be processed by the Leviathan Update Processor");
             }
          }
 
@@ -384,6 +324,9 @@ namespace VDS.RDF.Update
             //Firstly check what Transaction mode we are running in
             bool autoCommit = this._autoCommit;
 
+            //Then create an Evaluation Context
+            SparqlUpdateEvaluationContext context = new SparqlUpdateEvaluationContext(this._dataset);
+
             //Remember to handle the Thread Safety
             //If the Dataset is Thread Safe use its own lock otherwise use our local lock
 #if !NO_RWLOCK
@@ -394,6 +337,7 @@ namespace VDS.RDF.Update
 #if !NO_RWLOCK
                 currLock.EnterWriteLock();
 #else
+                //Have to make do with a Monitor if ReaderWriterLockSlim is not available
                 Monitor.Enter(this._dataset);
 #endif
 
@@ -409,7 +353,7 @@ namespace VDS.RDF.Update
                     this._dataset.Flush();
                 }
 
-                //Start timing the operation
+                //Start the operation
 #if !NO_STOPWATCH
                 timer.Start();
 #else 
@@ -417,7 +361,7 @@ namespace VDS.RDF.Update
 #endif
                 for (int i = 0; i < commands.CommandCount; i++)
                 {
-                    this.ProcessCommand(commands[i]);
+                    this.ProcessCommandInternal(commands[i], context);
 
                     //Check for Timeout
                     if (commands.Timeout > 0)
@@ -494,48 +438,16 @@ namespace VDS.RDF.Update
         /// <param name="cmd">Delete Command</param>
         public void ProcessDeleteCommand(DeleteCommand cmd)
         {
-            if (this._autoCommit) this.Flush();
-#if !NO_RWLOCK
-            ReaderWriterLockSlim currLock = (this._dataset is IThreadSafeDataset) ? ((IThreadSafeDataset)this._dataset).Lock : this._lock;
-#endif
-            bool mustRelease = false;
-            try
-            {
-#if !NO_RWLOCK
-                if (!currLock.IsWriteLockHeld)
-                {
-                    currLock.EnterWriteLock();
-                    mustRelease = true;
-                }
-#else
-                Monitor.Enter(this._dataset);
-#endif
-                cmd.Evaluate(new SparqlUpdateEvaluationContext(this._dataset));
-                if (this._autoCommit) this.Flush();
-            }
-            catch
-            {
-                if (this._autoCommit)
-                {
-                    this.Discard();
-                }
-                else
-                {
-                    this._canCommit = false;
-                }
-                throw;
-            }
-            finally
-            {
-                if (mustRelease)
-                {
-#if !NO_RWLOCK
-                    currLock.ExitWriteLock();
-#else
-                    Monitor.Exit(this._dataset);
-#endif
-                }
-            }
+            this.ProcessDeleteCommandInternal(cmd, new SparqlUpdateEvaluationContext(this._dataset));
+        }
+
+        /// <summary>
+        /// Processes a DELETE command
+        /// </summary>
+        /// <param name="cmd">Delete Command</param>
+        protected virtual void ProcessDeleteCommandInternal(DeleteCommand cmd, SparqlUpdateEvaluationContext context)
+        {
+            cmd.Evaluate(context);
         }
 
         /// <summary>
@@ -544,48 +456,16 @@ namespace VDS.RDF.Update
         /// <param name="cmd">DELETE Data Command</param>
         public void ProcessDeleteDataCommand(DeleteDataCommand cmd)
         {
-            if (this._autoCommit) this.Flush();
-#if !NO_RWLOCK
-            ReaderWriterLockSlim currLock = (this._dataset is IThreadSafeDataset) ? ((IThreadSafeDataset)this._dataset).Lock : this._lock;
-#endif
-            bool mustRelease = false;
-            try
-            {
-#if !NO_RWLOCK
-                if (!currLock.IsWriteLockHeld)
-                {
-                    currLock.EnterWriteLock();
-                    mustRelease = true;
-                }
-#else
-                Monitor.Enter(this._dataset);
-#endif
-                cmd.Evaluate(new SparqlUpdateEvaluationContext(this._dataset));
-                if (this._autoCommit) this.Flush();
-            }
-            catch
-            {
-                if (this._autoCommit)
-                {
-                    this.Discard();
-                }
-                else
-                {
-                    this._canCommit = false;
-                }
-                throw;
-            }
-            finally
-            {
-                if (mustRelease)
-                {
-#if !NO_RWLOCK
-                    currLock.ExitWriteLock();
-#else
-                    Monitor.Exit(this._dataset);
-#endif
-                }
-            }
+            this.ProcessDeleteDataCommandInternal(cmd, new SparqlUpdateEvaluationContext(this._dataset));
+        }
+
+        /// <summary>
+        /// Processes a DELETE DATA command
+        /// </summary>
+        /// <param name="cmd">Delete Data Command</param>
+        protected virtual void ProcessDeleteDataCommandInternal(DeleteDataCommand cmd, SparqlUpdateEvaluationContext context)
+        {
+            cmd.Evaluate(context);
         }
 
         /// <summary>
@@ -594,48 +474,16 @@ namespace VDS.RDF.Update
         /// <param name="cmd">Drop Command</param>
         public void ProcessDropCommand(DropCommand cmd)
         {
-            if (this._autoCommit) this.Flush();
-#if !NO_RWLOCK
-            ReaderWriterLockSlim currLock = (this._dataset is IThreadSafeDataset) ? ((IThreadSafeDataset)this._dataset).Lock : this._lock;
-#endif
-            bool mustRelease = false;
-            try
-            {
-#if !NO_RWLOCK
-                if (!currLock.IsWriteLockHeld)
-                {
-                    currLock.EnterWriteLock();
-                    mustRelease = true;
-                }
-#else
-                Monitor.Enter(this._dataset);
-#endif
-                cmd.Evaluate(new SparqlUpdateEvaluationContext(this._dataset));
-                if (this._autoCommit) this.Flush();
-            }
-            catch
-            {
-                if (this._autoCommit)
-                {
-                    this.Discard();
-                }
-                else
-                {
-                    this._canCommit = false;
-                }
-                throw;
-            }
-            finally
-            {
-                if (mustRelease)
-                {
-#if !NO_RWLOCK
-                    currLock.ExitWriteLock();
-#else
-                    Monitor.Exit(this._dataset);
-#endif
-                }
-            }
+            this.ProcessDropCommandInternal(cmd, new SparqlUpdateEvaluationContext(this._dataset));
+        }
+
+        /// <summary>
+        /// Processes a DROP command
+        /// </summary>
+        /// <param name="cmd">Drop Command</param>
+        protected virtual void ProcessDropCommandInternal(DropCommand cmd, SparqlUpdateEvaluationContext context)
+        {
+            cmd.Evaluate(context);
         }
 
         /// <summary>
@@ -644,48 +492,16 @@ namespace VDS.RDF.Update
         /// <param name="cmd">Insert Command</param>
         public void ProcessInsertCommand(InsertCommand cmd)
         {
-            if (this._autoCommit) this.Flush();
-#if !NO_RWLOCK
-            ReaderWriterLockSlim currLock = (this._dataset is IThreadSafeDataset) ? ((IThreadSafeDataset)this._dataset).Lock : this._lock;
-#endif
-            bool mustRelease = false;
-            try
-            {
-#if !NO_RWLOCK
-                if (!currLock.IsWriteLockHeld)
-                {
-                    currLock.EnterWriteLock();
-                    mustRelease = true;
-                }
-#else
-                Monitor.Enter(this._dataset);
-#endif
-                cmd.Evaluate(new SparqlUpdateEvaluationContext(this._dataset));
-                if (this._autoCommit) this.Flush();
-            }
-            catch
-            {
-                if (this._autoCommit)
-                {
-                    this.Discard();
-                }
-                else
-                {
-                    this._canCommit = false;
-                }
-                throw;
-            }
-            finally
-            {
-                if (mustRelease)
-                {
-#if !NO_RWLOCK
-                    currLock.ExitWriteLock();
-#else
-                    Monitor.Exit(this._dataset);
-#endif
-                }
-            }
+            this.ProcessInsertCommandInternal(cmd, new SparqlUpdateEvaluationContext(this._dataset));
+        }
+
+        /// <summary>
+        /// Processes an INSERT command
+        /// </summary>
+        /// <param name="cmd">Insert Command</param>
+        protected virtual void ProcessInsertCommandInternal(InsertCommand cmd, SparqlUpdateEvaluationContext context)
+        {
+            cmd.Evaluate(context);
         }
 
         /// <summary>
@@ -694,48 +510,16 @@ namespace VDS.RDF.Update
         /// <param name="cmd">Insert Data Command</param>
         public void ProcessInsertDataCommand(InsertDataCommand cmd)
         {
-            if (this._autoCommit) this.Flush();
-#if !NO_RWLOCK
-            ReaderWriterLockSlim currLock = (this._dataset is IThreadSafeDataset) ? ((IThreadSafeDataset)this._dataset).Lock : this._lock;
-#endif
-            bool mustRelease = false;
-            try
-            {
-#if !NO_RWLOCK
-                if (!currLock.IsWriteLockHeld)
-                {
-                    currLock.EnterWriteLock();
-                    mustRelease = true;
-                }
-#else
-                Monitor.Enter(this._dataset);
-#endif
-                cmd.Evaluate(new SparqlUpdateEvaluationContext(this._dataset));
-                if (this._autoCommit) this.Flush();
-            }
-            catch
-            {
-                if (this._autoCommit)
-                {
-                    this.Discard();
-                }
-                else
-                {
-                    this._canCommit = false;
-                }
-                throw;
-            }
-            finally
-            {
-                if (mustRelease)
-                {
-#if !NO_RWLOCK
-                    currLock.ExitWriteLock();
-#else
-                    Monitor.Exit(this._dataset);
-#endif
-                }
-            }
+            this.ProcessInsertDataCommandInternal(cmd, new SparqlUpdateEvaluationContext(this._dataset));
+        }
+
+        /// <summary>
+        /// Processes an INSERT DATA command
+        /// </summary>
+        /// <param name="cmd">Insert Data Command</param>
+        protected virtual void ProcessInsertDataCommandInternal(InsertDataCommand cmd, SparqlUpdateEvaluationContext context)
+        {
+            cmd.Evaluate(context);
         }
 
         /// <summary>
@@ -744,48 +528,16 @@ namespace VDS.RDF.Update
         /// <param name="cmd">Load Command</param>
         public void ProcessLoadCommand(LoadCommand cmd)
         {
-            if (this._autoCommit) this.Flush();
-#if !NO_RWLOCK
-            ReaderWriterLockSlim currLock = (this._dataset is IThreadSafeDataset) ? ((IThreadSafeDataset)this._dataset).Lock : this._lock;
-#endif
-            bool mustRelease = false;
-            try
-            {
-#if !NO_RWLOCK
-                if (!currLock.IsWriteLockHeld)
-                {
-                    currLock.EnterWriteLock();
-                    mustRelease = true;
-                }
-#else
-                Monitor.Enter(this._dataset);
-#endif
-                cmd.Evaluate(new SparqlUpdateEvaluationContext(this._dataset));
-                if (this._autoCommit) this.Flush();
-            }
-            catch
-            {
-                if (this._autoCommit)
-                {
-                    this.Discard();
-                }
-                else
-                {
-                    this._canCommit = false;
-                }
-                throw;
-            }
-            finally
-            {
-                if (mustRelease)
-                {
-#if !NO_RWLOCK
-                    currLock.ExitWriteLock();
-#else
-                    Monitor.Exit(this._dataset);
-#endif
-                }
-            }
+            this.ProcessLoadCommandInternal(cmd, new SparqlUpdateEvaluationContext(this._dataset));
+        }
+
+        /// <summary>
+        /// Processes a LOAD command
+        /// </summary>
+        /// <param name="cmd">Load Command</param>
+        protected virtual void ProcessLoadCommandInternal(LoadCommand cmd, SparqlUpdateEvaluationContext context)
+        {
+            cmd.Evaluate(context);
         }
 
         /// <summary>
@@ -794,48 +546,16 @@ namespace VDS.RDF.Update
         /// <param name="cmd">Insert/Delete Command</param>
         public void ProcessModifyCommand(ModifyCommand cmd)
         {
-            if (this._autoCommit) this.Flush();
-#if !NO_RWLOCK
-            ReaderWriterLockSlim currLock = (this._dataset is IThreadSafeDataset) ? ((IThreadSafeDataset)this._dataset).Lock : this._lock;
-#endif
-            bool mustRelease = false;
-            try
-            {
-#if !NO_RWLOCK
-                if (!currLock.IsWriteLockHeld)
-                {
-                    currLock.EnterWriteLock();
-                    mustRelease = true;
-                }
-#else
-                Monitor.Enter(this._dataset);
-#endif
-                cmd.Evaluate(new SparqlUpdateEvaluationContext(this._dataset));
-                if (this._autoCommit) this.Flush();
-            }
-            catch
-            {
-                if (this._autoCommit)
-                {
-                    this.Discard();
-                }
-                else
-                {
-                    this._canCommit = false;
-                }
-                throw;
-            }
-            finally
-            {
-                if (mustRelease)
-                {
-#if !NO_RWLOCK
-                    currLock.ExitWriteLock();
-#else
-                    Monitor.Exit(this._dataset);
-#endif
-                }
-            }
+            this.ProcessModifyCommandInternal(cmd, new SparqlUpdateEvaluationContext(this._dataset));
+        }
+
+        /// <summary>
+        /// Processes an INSERT/DELETE command
+        /// </summary>
+        /// <param name="cmd">Insert/Delete Command</param>
+        protected virtual void ProcessModifyCommandInternal(ModifyCommand cmd, SparqlUpdateEvaluationContext context)
+        {
+            cmd.Evaluate(context);
         }
 
         /// <summary>
@@ -844,48 +564,16 @@ namespace VDS.RDF.Update
         /// <param name="cmd">Move Command</param>
         public void ProcessMoveCommand(MoveCommand cmd)
         {
-            if (this._autoCommit) this.Flush();
-#if !NO_RWLOCK
-            ReaderWriterLockSlim currLock = (this._dataset is IThreadSafeDataset) ? ((IThreadSafeDataset)this._dataset).Lock : this._lock;
-#endif
-            bool mustRelease = false;
-            try
-            {
-#if !NO_RWLOCK
-                if (!currLock.IsWriteLockHeld)
-                {
-                    currLock.EnterWriteLock();
-                    mustRelease = true;
-                }
-#else
-                Monitor.Enter(this._dataset);
-#endif
-                cmd.Evaluate(new SparqlUpdateEvaluationContext(this._dataset));
-                if (this._autoCommit) this.Flush();
-            }
-            catch
-            {
-                if (this._autoCommit)
-                {
-                    this.Discard();
-                }
-                else
-                {
-                    this._canCommit = false;
-                }
-                throw;
-            }
-            finally
-            {
-                if (mustRelease)
-                {
-#if !NO_RWLOCK
-                    currLock.ExitWriteLock();
-#else
-                    Monitor.Exit(this._dataset);
-#endif
-                }
-            }
+            this.ProcessMoveCommandInternal(cmd, new SparqlUpdateEvaluationContext(this._dataset));
+        }
+
+        /// <summary>
+        /// Processes a MOVE command
+        /// </summary>
+        /// <param name="cmd">Move Command</param>
+        protected virtual void ProcessMoveCommandInternal(MoveCommand cmd, SparqlUpdateEvaluationContext context)
+        {
+            cmd.Evaluate(context);
         }
     }
 }

@@ -177,12 +177,14 @@ namespace VDS.RDF
 
         public IBlankNode CreateBlankNode(string nodeId)
         {
-            return this._g.CreateBlankNode(nodeId);
+            IBlankNode b = this._g.CreateBlankNode(nodeId);
+            return (IBlankNode)b.CopyNode(this);
         }
 
         public IBlankNode CreateBlankNode()
         {
-            return this._g.CreateBlankNode();
+            IBlankNode b = this._g.CreateBlankNode();
+            return (IBlankNode)b.CopyNode(this);
         }
 
         public string GetNextBlankNodeID()
