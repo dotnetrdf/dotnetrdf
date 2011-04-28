@@ -206,6 +206,9 @@ namespace VDS.RDF.Query.Algebra
                 TriplePattern tp = (TriplePattern)temp;
                 foreach (Triple t in tp.GetTriples(context))
                 {
+                    //Remember to check for Timeout during lazy evaluation
+                    context.CheckTimeout();
+
                     if (tp.Accepts(context, t))
                     {
                         resultsFound++;
@@ -278,6 +281,9 @@ namespace VDS.RDF.Query.Algebra
                 {
                     foreach (int id in context.InputMultiset.SetIDs)
                     {
+                        //Remember to check for Timeout during lazy evaluation
+                        context.CheckTimeout();
+
                         try
                         {
                             if (expr.EffectiveBooleanValue(context, id))
@@ -331,8 +337,8 @@ namespace VDS.RDF.Query.Algebra
             if (resultsFound == 0) return new NullMultiset();
 
             //We should never reach here so throw an error to that effect
-            //The reason we'll never reach here is that this call should always return earlier
-            throw new RdfQueryException("Unexpected control flow in evaluating a Streamed BGP");
+            //The reason we'll never reach here is that this method should always return earlier
+            throw new RdfQueryException("Unexpected control flow in evaluating a Streamed BGP for an ASK query");
         }
 
         /// <summary>

@@ -224,6 +224,58 @@ namespace VDS.RDF.Test.Sparql
         }
 
         [TestMethod]
+        public void SparqlQueryTimeoutDuringProductLazy()
+        {
+            String query = "SELECT * WHERE { ?s ?p ?o . ?x ?y ?z } LIMIT 5000";
+            SparqlQuery q = this._parser.ParseFromString(query);
+            q.Timeout = 100;
+
+            TripleStore store = new TripleStore();
+            Graph g = new Graph();
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+            store.Add(g);
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(store);
+            try
+            {
+                processor.ProcessQuery(q);
+                Assert.Fail("Did not throw a RdfQueryTimeoutException as expected");
+            }
+            catch (RdfQueryTimeoutException timeoutEx)
+            {
+                TestTools.ReportError("Timeout", timeoutEx, false);
+
+                Console.WriteLine();
+                Console.WriteLine("Execution Time: " + q.QueryExecutionTime.Value.ToString());
+            }
+        }
+
+        [TestMethod]
+        public void SparqlQueryTimeoutDuringProductLazy2()
+        {
+            String query = "ASK WHERE { ?s ?p ?o . ?x ?y ?z }";
+            SparqlQuery q = this._parser.ParseFromString(query);
+            q.Timeout = 1;
+
+            TripleStore store = new TripleStore();
+            Graph g = new Graph();
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+            store.Add(g);
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(store);
+            try
+            {
+                processor.ProcessQuery(q);
+                Assert.Fail("Did not throw a RdfQueryTimeoutException as expected");
+            }
+            catch (RdfQueryTimeoutException timeoutEx)
+            {
+                TestTools.ReportError("Timeout", timeoutEx, false);
+
+                Console.WriteLine();
+                Console.WriteLine("Execution Time: " + q.QueryExecutionTime.Value.ToString());
+            }
+        }
+
+        [TestMethod]
         public void SparqlQueryTimeoutNone()
         {
             Graph g = new Graph();

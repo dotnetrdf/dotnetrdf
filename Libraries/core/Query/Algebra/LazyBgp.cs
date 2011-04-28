@@ -318,6 +318,9 @@ namespace VDS.RDF.Query.Algebra
 
                 foreach (Triple t in ts)
                 {
+                    //Remember to check for Timeouts during Lazy Evaluation
+                    context.CheckTimeout();
+
                     if (tp.Accepts(context, t))
                     {
                         resultsFound++;
@@ -410,6 +413,9 @@ namespace VDS.RDF.Query.Algebra
 
                 if (filter.Variables.IsDisjoint(context.InputMultiset.Variables))
                 {
+                    //Remember to check for Timeouts during Lazy Evaluation
+                    context.CheckTimeout();
+
                     //Filter is Disjoint so determine whether it has any affect or not
                     if (filter.Variables.Any())
                     {
@@ -460,6 +466,9 @@ namespace VDS.RDF.Query.Algebra
                 } 
                 else
                 {
+                    //Remember to check for Timeouts during Lazy Evaluation
+                    context.CheckTimeout();
+
                     //Test each solution found so far against the Filter and eliminate those that evalute to false/error
                     foreach (int id in context.InputMultiset.SetIDs.ToList())
                     {
@@ -476,6 +485,9 @@ namespace VDS.RDF.Query.Algebra
                             //Error means we ignore the solution
                         }
                     }
+
+                    //Remember to check for Timeouts during Lazy Evaluation
+                    context.CheckTimeout();
                     
                     //Decide whether to recurse or not
                     resultsFound = context.OutputMultiset.Count;
@@ -510,6 +522,9 @@ namespace VDS.RDF.Query.Algebra
                 }
                 else
                 {
+                    //Remember to check for Timeouts during Lazy Evaluation
+                    context.CheckTimeout();
+
                     //Compute the Binding for every value
                     context.OutputMultiset.AddVariable(bindVar);
                     foreach (Set s in context.InputMultiset.Sets)
@@ -526,6 +541,9 @@ namespace VDS.RDF.Query.Algebra
                         }
                         context.OutputMultiset.Add(x);
                     }
+
+                    //Remember to check for Timeouts during Lazy Evaluation
+                    context.CheckTimeout();
 
                     //Decide whether to recurse or not
                     resultsFound = context.OutputMultiset.Count;
