@@ -46,6 +46,7 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Describe;
 using VDS.RDF.Query.Expressions;
+using VDS.RDF.Query.Optimisation;
 
 namespace VDS.RDF.Web.Configuration.Query
 {
@@ -109,6 +110,15 @@ namespace VDS.RDF.Web.Configuration.Query
         /// Service Description Graph
         /// </summary>
         protected IGraph _serviceDescription = null;
+
+        /// <summary>
+        /// Query Optimiser to use (null indicates default is used)
+        /// </summary>
+        protected IQueryOptimiser _queryOptimiser = null;
+        /// <summary>
+        /// Algebra Optimisers to use (empty list means only standard optimisers apply)
+        /// </summary>
+        protected List<IAlgebraOptimiser> _algebraOptimisers = new List<IAlgebraOptimiser>();
 
         /// <summary>
         /// Creates a new Query Handler Configuration
@@ -211,6 +221,35 @@ namespace VDS.RDF.Web.Configuration.Query
                 else
                 {
                     throw new DotNetRdfConfigurationException("Unable to set the Service Description Graph for the HTTP Handler identified by the Node '" + objNode.ToString() + "' as the value given for the dnr:serviceDescription property points to an Object which could not be loaded as an object which implements the required IGraph interface");
+                }
+            }
+
+            //Get the Query Optimiser
+            INode queryOptNode = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyQueryOptimiser));
+            if (queryOptNode != null)
+            {
+                Object queryOpt = ConfigurationLoader.LoadObject(g, queryOptNode);
+                if (queryOpt is IQueryOptimiser)
+                {
+                    this._queryOptimiser = (IQueryOptimiser)queryOpt;
+                }
+                else
+                {
+                    throw new DotNetRdfConfigurationException("Unable to set the Query Optimiser for the HTTP Handler identified by the Node '" + queryOptNode.ToString() + "' as the value given for the dnr:queryOptimiser property points to an Object which could not be loaded as an object which implements the required IQueryOptimiser interface");
+                }
+            }
+
+            //Get the Algebra Optimisers
+            foreach (INode algOptNode in ConfigurationLoader.GetConfigurationData(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyAlgebraOptimiser)))
+            {
+                Object algOpt = ConfigurationLoader.LoadObject(g, algOptNode);
+                if (algOpt is IAlgebraOptimiser)
+                {
+                    this._algebraOptimisers.Add((IAlgebraOptimiser)algOpt);
+                }
+                else
+                {
+                    throw new DotNetRdfConfigurationException("Unable to set the Algebra Optimiser for the HTTP Handler identified by the Node '" + algOptNode.ToString() + "' as the value given for the dnr:algebraOptimiser property points to an Object which could not be loaded as an object which implements the required IAlgebraOptimiser interface");
                 }
             }
         }
@@ -363,6 +402,28 @@ namespace VDS.RDF.Web.Configuration.Query
             get
             {
                 return this._serviceDescription;
+            }
+        }
+
+        /// <summary>
+        /// Gets the Query Optimiser associated with the Configuration
+        /// </summary>
+        public IQueryOptimiser QueryOptimiser
+        {
+            get
+            {
+                return this._queryOptimiser;
+            }
+        }
+
+        /// <summary>
+        /// Gets the Algebra Optimisers associated with the Configuration
+        /// </summary>
+        public IEnumerable<IAlgebraOptimiser> AlgebraOptimisers
+        {
+            get
+            {
+                return this._algebraOptimisers;
             }
         }
 

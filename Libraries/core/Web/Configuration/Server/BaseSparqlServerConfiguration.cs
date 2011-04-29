@@ -36,6 +36,7 @@ terms.
 #if !NO_WEB && !NO_ASP
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Web;
 using VDS.RDF.Configuration;
@@ -43,6 +44,7 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Describe;
 using VDS.RDF.Query.Expressions;
+using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Update;
 using VDS.RDF.Update.Protocol;
 
@@ -118,6 +120,15 @@ namespace VDS.RDF.Web.Configuration.Server
         /// SPARQL Syntax to use (defaults to library default which is SPARQL 1.1 unless changed)
         /// </summary>
         protected SparqlQuerySyntax _syntax = Options.QueryDefaultSyntax;
+
+        /// <summary>
+        /// Query Optimiser to use (null indicates default is used)
+        /// </summary>
+        protected IQueryOptimiser _queryOptimiser = null;
+        /// <summary>
+        /// Algebra Optimisers to use (empty list means only standard optimisers apply)
+        /// </summary>
+        protected List<IAlgebraOptimiser> _algebraOptimisers = new List<IAlgebraOptimiser>();
 
         /// <summary>
         /// Gets the Default Graph Uri
@@ -196,7 +207,6 @@ namespace VDS.RDF.Web.Configuration.Server
             }
         }
 
-
         /// <summary>
         /// Gets whether the Query Form should be shown to users
         /// </summary>
@@ -238,6 +248,28 @@ namespace VDS.RDF.Web.Configuration.Server
             get
             {
                 return this._syntax;
+            }
+        }
+
+        /// <summary>
+        /// Gets the Query Optimiser associated with the Configuration
+        /// </summary>
+        public IQueryOptimiser QueryOptimiser
+        {
+            get
+            {
+                return this._queryOptimiser;
+            }
+        }
+
+        /// <summary>
+        /// Gets the Algebra Optimisers associated with the Configuration
+        /// </summary>
+        public IEnumerable<IAlgebraOptimiser> AlgebraOptimisers
+        {
+            get
+            {
+                return this._algebraOptimisers;
             }
         }
 
@@ -379,6 +411,35 @@ namespace VDS.RDF.Web.Configuration.Server
                     {
                         throw new DotNetRdfConfigurationException("Unable to set the Describe Algorithm for the HTTP Handler identified by the Node '" + objNode.ToString() + "' as the value given for the dnr:describeAlgorithm property was not a type name for a type that can be instantiated", ex);
                     }
+                }
+            }
+
+            //Get the Query Optimiser
+            INode queryOptNode = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyQueryOptimiser));
+            if (queryOptNode != null)
+            {
+                Object queryOpt = ConfigurationLoader.LoadObject(g, queryOptNode);
+                if (queryOpt is IQueryOptimiser)
+                {
+                    this._queryOptimiser = (IQueryOptimiser)queryOpt;
+                }
+                else
+                {
+                    throw new DotNetRdfConfigurationException("Unable to set the Query Optimiser for the HTTP Handler identified by the Node '" + queryOptNode.ToString() + "' as the value given for the dnr:queryOptimiser property points to an Object which could not be loaded as an object which implements the required IQueryOptimiser interface");
+                }
+            }
+
+            //Get the Algebra Optimisers
+            foreach (INode algOptNode in ConfigurationLoader.GetConfigurationData(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyAlgebraOptimiser)))
+            {
+                Object algOpt = ConfigurationLoader.LoadObject(g, algOptNode);
+                if (algOpt is IAlgebraOptimiser)
+                {
+                    this._algebraOptimisers.Add((IAlgebraOptimiser)algOpt);
+                }
+                else
+                {
+                    throw new DotNetRdfConfigurationException("Unable to set the Algebra Optimiser for the HTTP Handler identified by the Node '" + algOptNode.ToString() + "' as the value given for the dnr:algebraOptimiser property points to an Object which could not be loaded as an object which implements the required IAlgebraOptimiser interface");
                 }
             }
 

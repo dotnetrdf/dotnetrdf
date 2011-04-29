@@ -42,7 +42,6 @@ using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Storage.Params;
 
 //SLV: Implement a version of the UriLoader that makes the requests asynchronously?
-//REQ: Add support for loading from a URI directly to an IRdfHandler
 
 namespace VDS.RDF.Parsing
 {
@@ -481,11 +480,33 @@ namespace VDS.RDF.Parsing
         /// </remarks>
         public static void Load(ITripleStore store, Uri u, IStoreReader parser)
         {
+            if (store == null) throw new RdfParseException("Cannot read a RDF dataset into a null Graph");
+            if (u == null) throw new RdfParseException("Cannot read a RDF dataset from a null URI");
+            UriLoader.Load(new StoreHandler(store), u, parser);
+        }
+
+        /// <summary>
+        /// Attempts to load a RDF dataset from the given Uri into the given Triple Store
+        /// </summary>
+        /// <param name="store">Triple Store to load into</param>
+        /// <param name="u">Uri to attempt to get a RDF dataset from</param>
+        /// <remarks>
+        /// <para>
+        /// Attempts to select the relevant Store Parser based on the Content Type header returned in the HTTP Response.
+        /// </para>
+        /// </remarks>
+        public static void Load(ITripleStore store, Uri u)
+        {
+            UriLoader.Load(store, u, null);
+        }
+
+        public static void Load(IRdfHandler handler, Uri u, IStoreReader parser)
+        {
+            if (u == null) throw new RdfParseException("Cannot read a RDF dataset from a null URI");
+            if (handler == null) throw new RdfParseException("Cannot read RDF using a null RDF handler");
+
             try
             {
-                if (store == null) throw new RdfParseException("Cannot read a RDF dataset into a null Graph");
-                if (u == null) throw new RdfParseException("Cannot read a RDF dataset from a null URI");
-
 #if SILVERLIGHT
                 if (u.IsFile())
 #else
@@ -497,11 +518,11 @@ namespace VDS.RDF.Parsing
                     RaiseWarning("This is a file: URI so invoking the FileLoader instead");
                     if (Path.DirectorySeparatorChar == '/')
                     {
-                        FileLoader.Load(store, u.ToString().Substring(7), parser);
+                        FileLoader.Load(handler, u.ToString().Substring(7), parser);
                     }
                     else
                     {
-                        FileLoader.Load(store, u.ToString().Substring(8), parser);
+                        FileLoader.Load(handler, u.ToString().Substring(8), parser);
                     }
                     return;
                 }
@@ -521,9 +542,8 @@ namespace VDS.RDF.Parsing
                 }
                 else
                 {
-                    httpRequest.Accept = MimeTypesHelper.HttpAcceptHeader;
+                    httpRequest.Accept = MimeTypesHelper.HttpRdfDatasetAcceptHeader;
                 }
-                httpRequest.Accept = MimeTypesHelper.HttpRdfDatasetAcceptHeader;
 
                 //Use HTTP GET
                 httpRequest.Method = "GET";
@@ -541,7 +561,6 @@ namespace VDS.RDF.Parsing
 
                 using (HttpWebResponse httpResponse = (HttpWebResponse)httpRequest.GetResponse())
                 {
-
 #if DEBUG
                     //HTTP Debugging
                     if (Options.HttpDebugging)
@@ -553,10 +572,24 @@ namespace VDS.RDF.Parsing
                     //Get a Parser and Load the RDF
                     if (parser == null)
                     {
-                        parser = MimeTypesHelper.GetStoreParser(httpResponse.ContentType);
+                        try
+                        {
+                            parser = MimeTypesHelper.GetStoreParser(httpResponse.ContentType);
+                            parser.Warning += RaiseStoreWarning;
+                            parser.Load(handler, new StreamParams(httpResponse.GetResponseStream()));
+                        }
+                        catch (RdfParserSelectionException selEx)
+                        {
+                            String data = new StreamReader(httpResponse.GetResponseStream()).ReadToEnd();
+                            parser = StringParser.GetDatasetParser(data);
+                            parser.Load(handler, new TextReaderParams(new StringReader(data)));
+                        }
                     }
-                    parser.Warning += RaiseStoreWarning;
-                    parser.Load(store, new StreamParams(httpResponse.GetResponseStream()));
+                    else
+                    {
+                        parser.Warning += RaiseStoreWarning;
+                        parser.Load(handler, new StreamParams(httpResponse.GetResponseStream()));
+                    }
                 }
             }
             catch (UriFormatException uriEx)
@@ -587,19 +620,9 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        /// <summary>
-        /// Attempts to load a RDF dataset from the given Uri into the given Triple Store
-        /// </summary>
-        /// <param name="store">Triple Store to load into</param>
-        /// <param name="u">Uri to attempt to get a RDF dataset from</param>
-        /// <remarks>
-        /// <para>
-        /// Attempts to select the relevant Store Parser based on the Content Type header returned in the HTTP Response.
-        /// </para>
-        /// </remarks>
-        public static void Load(ITripleStore store, Uri u)
+        public static void LoadDataset(IRdfHandler handler, Uri u)
         {
-            UriLoader.Load(store, u, null);
+            UriLoader.Load(handler, u, (IStoreReader)null);
         }
 
         #region Warning Events

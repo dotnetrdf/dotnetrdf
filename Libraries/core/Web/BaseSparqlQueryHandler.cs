@@ -199,7 +199,9 @@ namespace VDS.RDF.Web
                 //Now we're going to parse the Query
                 SparqlQueryParser parser = new SparqlQueryParser(this._config.Syntax);
                 parser.ExpressionFactories = this._config.ExpressionFactories;
+                parser.QueryOptimiser = this._config.QueryOptimiser;
                 SparqlQuery query = parser.ParseFromString(queryText);
+                query.AlgebraOptimisers = this._config.AlgebraOptimisers;
 
                 //Check whether we need to use authentication
                 //If there are no user groups then no authentication is in use so we default to authenticated with no per-action authentication needed

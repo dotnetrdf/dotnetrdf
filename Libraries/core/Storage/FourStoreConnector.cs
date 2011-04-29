@@ -48,13 +48,12 @@ using System.Web;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
+using VDS.RDF.Update;
 using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Storage
 {
-    //REQ: Add IUpdateableGenericIOManager implementation for 4store
-
     /// <summary>
     /// Class for connecting to 4store
     /// </summary>
@@ -66,10 +65,11 @@ namespace VDS.RDF.Storage
     /// Prior to the 1.x releases 4store did not permit the saving of unamed Graphs to the Store or Triple level updates.  There was a branch of 4store that supports Triple level updates and you could tell the connector if your 4store instance supports this when you instantiate it.  From the 0.4.0 release of the library onwards this support was enabled by default since the 1.x builds of 4store have this feature integrated into them by default.
     /// </para>
     /// </remarks>
-    public class FourStoreConnector : IQueryableGenericIOManager, IConfigurationSerializable
+    public class FourStoreConnector : IQueryableGenericIOManager, IUpdateableGenericIOManager, IConfigurationSerializable
     {
         private String _baseUri;
         private SparqlRemoteEndpoint _endpoint;
+        private SparqlRemoteUpdateEndpoint _updateEndpoint;
         private bool _updatesEnabled = true;
         private SparqlFormatter _formatter = new SparqlFormatter();
 
@@ -105,7 +105,9 @@ namespace VDS.RDF.Storage
             }
 
             this._endpoint = new SparqlRemoteEndpoint(new Uri(this._baseUri + "sparql/"));
+            this._updateEndpoint = new SparqlRemoteUpdateEndpoint(new Uri(this._baseUri + "update/"));
             this._endpoint.Timeout = 60000;
+            this._updateEndpoint.Timeout = 60000;
         }
 
         /// <summary>
@@ -296,6 +298,7 @@ namespace VDS.RDF.Storage
 #if !NO_RWLOCK
                     this._lockManager.EnterWriteLock();
 #endif
+                    //TODO: Change this to use the SparqlRemoteUpdateEndpoint 
 
                     if (removals != null)
                     {
@@ -598,6 +601,18 @@ namespace VDS.RDF.Storage
             {
                 return true;
             }
+        }
+
+        /// <summary>
+        /// Applies a SPARQL Update against 4store
+        /// </summary>
+        /// <param name="sparqlUpdate">SPARQL Update</param>
+        /// <remarks>
+        /// <strong>Note:</strong> Please be aware that some valid SPARQL Updates may not be accepted by 4store since the SPARQL parser used by 4store does not support some of the latest editors draft syntax changes.
+        /// </remarks>
+        public void Update(String sparqlUpdate)
+        {
+            this._updateEndpoint.Update(sparqlUpdate);
         }
 
         /// <summary>

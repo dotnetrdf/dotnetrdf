@@ -147,18 +147,14 @@ namespace VDS.RDF.Query.Optimisation
                     //This tries to find 1 possible solution
                     temp = new AskBgp(((Bgp)algebra).TriplePatterns);
                 }
-                //else if (algebra is ILeftJoin)
-                //{
-                //    ILeftJoin join = (ILeftJoin)algebra;
-                //    temp = new LeftJoin(this.OptimiseInternal(join.Lhs, depth + 1), join.Rhs, ((LeftJoin)algebra).Filter);
-
-                //    //Q: Is the following Optimisation valid?
-                //    //LeftJoin is transformed to just be the LHS as the RHS is irrelevant for ASK queries
-                //    //UNLESS the LeftJoin occurs inside a Filter/Minus BUT we should never get called to transform a 
-                //    //LeftJoin() for those branches of the algebra as the Optimiseer does not transform 
-                //    //Filter()/Minus() operators
-                //    //temp = this.OptimiseInternal(join.Lhs, depth + 1);
-                //}
+                else if (algebra is ILeftJoin)
+                {
+                    //LeftJoin is transformed to just be the LHS as the RHS is irrelevant for ASK queries
+                    //UNLESS the LeftJoin occurs inside a Filter/Minus BUT we should never get called to transform a 
+                    //LeftJoin() for those branches of the algebra as the Optimiseer does not transform 
+                    //Filter()/Minus() operators
+                    temp = this.OptimiseInternal(((ILeftJoin)algebra).Lhs, depth + 1);
+                }
                 else if (algebra is IUnion)
                 {
                     IUnion join = (IUnion)algebra;
