@@ -580,6 +580,8 @@ namespace dotNetRDFTest
 
                 try
                 {
+                    ourResults.Trim();
+                    expectedResults.Trim();
                     if (ourResults.Equals(expectedResults))
                     {
                         testsPassed++;
