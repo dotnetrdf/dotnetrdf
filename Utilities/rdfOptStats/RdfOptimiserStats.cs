@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
+using VDS.RDF.Writing;
 
 namespace VDS.RDF.Utilities.OptimiserStats
 {
@@ -50,11 +52,15 @@ namespace VDS.RDF.Utilities.OptimiserStats
                 {
                     handlers.Add(new SPStatsHandler(this._literals));
                 }
-                //TODO: Add in cases for other combinations
-
+                else
+                {
+                    if (this._subjects) handlers.Add(new SubjectStatsHandler(this._literals));
+                    if (this._predicates) handlers.Add(new PredicateStatsHandler(this._literals));
+                    if (this._objects) handlers.Add(new ObjectStatsHandler(this._literals));
+                }
                 if (this._nodes)
                 {
-                    //TODO: Add in node count handler
+                    handlers.Add(new NodeStatsHandler());
                 }
 
                 bool ok = true;
@@ -68,6 +74,8 @@ namespace VDS.RDF.Utilities.OptimiserStats
                     handler = new MultiHandler(handlers.OfType<IRdfHandler>());
                 }
 
+                Stopwatch timer = new Stopwatch();
+                timer.Start();
                 for (int i = 0; i < this._inputs.Count; i++)
                 {
                     Console.WriteLine("rdfOptStats: Processing Input " + (i + 1) + " of " + this._inputs.Count + " - '" + this._inputs[i] + "'");
@@ -102,20 +110,36 @@ namespace VDS.RDF.Utilities.OptimiserStats
                     }
                 }
                 Console.WriteLine("rdfOptStats: Finished Processing Inputs");
+                timer.Stop();
+                Console.WriteLine("rdfOptStats: Took " + timer.Elapsed + " to process inputs");
+                timer.Reset();
 
                 if (ok)
                 {
                     //Output the Stats
+                    timer.Start();
                     Graph g = new Graph();
+                    g.NamespaceMap.Import(handlers.First().Namespaces);
                     try
                     {
                         foreach (BaseStatsHandler h in handlers)
                         {
                             h.GetStats(g);
                         }
-                        g.SaveToFile(this._file);
+                        IRdfWriter writer = MimeTypesHelper.GetWriter(MimeTypesHelper.GetMimeTypes(Path.GetExtension(this._file)));
+                        if (writer is ICompressingWriter)
+                        {
+                            ((ICompressingWriter)writer).CompressionLevel = WriterCompressionLevel.High;
+                        }
+                        if (writer is IHighSpeedWriter)
+                        {
+                            ((IHighSpeedWriter)writer).HighSpeedModePermitted = false;
+                        }
+                        writer.Save(g, this._file);
 
                         Console.WriteLine("rdfOptStats: Statistics output to " + this._file);
+                        timer.Stop();
+                        Console.WriteLine("rdfOptStats: Took " + timer.Elapsed + " to output statistics");
                     }
                     catch (Exception ex)
                     {

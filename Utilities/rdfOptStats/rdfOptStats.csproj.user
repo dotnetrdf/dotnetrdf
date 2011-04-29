@@ -1,0 +1,5 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <StartArguments>-all -output stats_10.ttl ../../../bsbm/App_Data/dataset_10.ttl</StartArguments>
+  </PropertyGroup>
+</Project>

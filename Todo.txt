@@ -3,6 +3,8 @@ dotNetRDF To Do
 
 This is a summary of the various TODOs currently in the source organised by project.
 
+NOTE - This may not be up to date!
+
 We use the following grades of To Dos:
 
 REQ - This task is a requirement for the next release.  Often used when stub classes are added for
@@ -43,7 +45,6 @@ Q: What should the behaviour be when the payload is null for a POST? Assuming a 
 OPT: Replace with usage of MapTriple instead?
 OPT: Extract these constants into a Notation3SpecsHelper class
 OPT: Add Some more validation of Uri References here?
-OPT: Could ensure that the parameter name actually appears in the query?
 OPT: Add support to the SPARQL Update Parser for selectable syntax in the future
 OPT: Do this multi-threaded?
 OPT: Move the following into TurtleSpecsHelper?

@@ -7,6 +7,7 @@ using System.Net;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF;
 using VDS.RDF.Parsing;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Test
 {
@@ -355,6 +356,21 @@ namespace VDS.RDF.Test
                     Console.Write(col.ColumnName + " = " + row[col].ToString() + " , ");
                 }
                 Console.WriteLine();
+            }
+        }
+
+        public void SimpleExample()
+        {
+            Graph g = new Graph();
+            g.LoadFromFile("example.rdf");
+
+            NTriplesFormatter formatter = new NTriplesFormatter();
+            foreach (Triple t in g.Triples)
+            {
+                if (t.Subject.NodeType == NodeType.Blank)
+                {
+                    Console.WriteLine(t.ToString(formatter));
+                }
             }
         }
     }

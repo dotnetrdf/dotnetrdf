@@ -64,14 +64,7 @@ We are aware of the following issues with the library.  Please remember that thi
 there are things that may be buggy still and the API is subject to change at our discretion.
  
 Query and Update
-- Leviathan passes the entire SPARQL 1.0 Test Suite except three of the normalization tests - this is due to how
-  .Net handles normalization esp. wrt. URIs
 - Queries and Updates are not always thread safe - see User Guide for details on how to guarantee this
-- SPARQL 1.1 Support is as close to the editors drafts as possible at the time of release.  Majority of the test 
-  suite is passed but we fail 16 and ignore a further 11 of 308 tests due to the following issues:
-  - Property Path semantics have changed since the previous drafts but our implementation has not so we particularly
-    fail tests involving variable and zero length paths
-  - There are some tests which use syntax which is invalid according to the current drafts so we ignore these tests
 
 Storage
 - SQL Storage is officially deprecated though still usable - will be rewritten entirely in future releases (currently planned for 0.4.3 release)
@@ -107,6 +100,8 @@ Storage
  8/10/2010 - Release of Version 0.3.1 Alpha (Build 0.3.1.20277)
  
  1/3/2011 - Release of Version 0.4.0 Beta (Build 0.4.0.23346)
+ 
+ ?/5/2011 - Release of Version 0.4.1 Beta (Build 0.4.1.?)
  
 Acknowledgements
 ----------------

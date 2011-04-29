@@ -10,6 +10,7 @@ namespace VDS.RDF.Utilities.OptimiserStats
     abstract class BaseStatsHandler : BaseRdfHandler
     {
         private bool _literals = false;
+        private INamespaceMapper _nsmap = new NamespaceMapper();
 
         public BaseStatsHandler()
         { }
@@ -43,6 +44,12 @@ namespace VDS.RDF.Utilities.OptimiserStats
 
         protected abstract override bool HandleTripleInternal(Triple t);
 
+        protected sealed override bool HandleNamespaceInternal(string prefix, Uri namespaceUri)
+        {
+            this._nsmap.AddNamespace(prefix, namespaceUri);
+            return true;
+        }
+
         public override bool AcceptsAll
         {
 	        get 
@@ -61,6 +68,14 @@ namespace VDS.RDF.Utilities.OptimiserStats
                     return true;
                 default:
                     return false;
+            }
+        }
+
+        public INamespaceMapper Namespaces
+        {
+            get
+            {
+                return this._nsmap;
             }
         }
 
@@ -235,6 +250,155 @@ namespace VDS.RDF.Utilities.OptimiserStats
             get
             {
                 return this._subjectCount;
+            }
+        }
+    }
+
+    class SubjectStatsHandler : BaseStatsHandler
+    {
+        private Dictionary<INode, long> _subjectCount = new Dictionary<INode, long>();
+
+        public SubjectStatsHandler()
+            : base() { }
+
+        public SubjectStatsHandler(bool literals)
+            : base(literals) { }
+
+        protected override bool HandleTripleInternal(Triple t)
+        {
+            if (this.IsCountableNode(t.Subject))
+            {
+                if (!this._subjectCount.ContainsKey(t.Subject))
+                {
+                    this._subjectCount.Add(t.Subject, 0);
+                }
+                this._subjectCount[t.Subject]++;
+            }
+            return true;
+        }
+
+        protected override IEnumerable<KeyValuePair<INode, long>> SubjectCounts
+        {
+            get
+            {
+                return this._subjectCount;
+            }
+        }
+    }
+
+    class PredicateStatsHandler : BaseStatsHandler
+    {
+        private Dictionary<INode, long> _predicateCount = new Dictionary<INode, long>();
+
+        public PredicateStatsHandler()
+            : base() { }
+
+        public PredicateStatsHandler(bool literals)
+            : base(literals) { }
+
+        protected override bool HandleTripleInternal(Triple t)
+        {
+            if (this.IsCountableNode(t.Predicate))
+            {
+                if (!this._predicateCount.ContainsKey(t.Predicate))
+                {
+                    this._predicateCount.Add(t.Predicate, 0);
+                }
+                this._predicateCount[t.Predicate]++;
+            }
+
+            return true;
+        }
+
+        protected override IEnumerable<KeyValuePair<INode, long>> PredicateCounts
+        {
+            get
+            {
+                return this._predicateCount;
+            }
+        }
+    }
+
+    class ObjectStatsHandler : BaseStatsHandler
+    {
+        private Dictionary<INode, long> _objectCount = new Dictionary<INode, long>();
+
+        public ObjectStatsHandler()
+            : base() { }
+
+        public ObjectStatsHandler(bool literals)
+            : base(literals) { }
+
+        protected override bool HandleTripleInternal(Triple t)
+        {
+            if (this.IsCountableNode(t.Object))
+            {
+                if (!this._objectCount.ContainsKey(t.Object))
+                {
+                    this._objectCount.Add(t.Object, 0);
+                }
+                this._objectCount[t.Object]++;
+            }
+
+            return true;
+        }
+
+        protected override IEnumerable<KeyValuePair<INode, long>> ObjectCounts
+        {
+            get
+            {
+                return this._objectCount;
+            }
+        }
+    }
+
+    class NodeStatsHandler : BaseStatsHandler
+    {
+        private Dictionary<INode, long> _nodeCount = new Dictionary<INode, long>();
+
+        public NodeStatsHandler()
+            : base() { }
+
+        public NodeStatsHandler(bool literals)
+            : base(literals) { }
+
+        protected override bool HandleTripleInternal(Triple t)
+        {
+            if (this.IsCountableNode(t.Subject))
+            {
+                if (!this._nodeCount.ContainsKey(t.Subject))
+                {
+                    this._nodeCount.Add(t.Subject, 0);
+                }
+                this._nodeCount[t.Subject]++;
+            }
+
+            if (this.IsCountableNode(t.Predicate))
+            {
+                if (!this._nodeCount.ContainsKey(t.Predicate))
+                {
+                    this._nodeCount.Add(t.Predicate, 0);
+                }
+                this._nodeCount[t.Predicate]++;
+            }
+
+            if (this.IsCountableNode(t.Object))
+            {
+                if (!this._nodeCount.ContainsKey(t.Object))
+                {
+                    this._nodeCount.Add(t.Object, 0);
+                }
+                this._nodeCount[t.Object]++;
+            }
+
+            return true;
+        }
+
+        protected override IEnumerable<KeyValuePair<INode, long>> NodeCounts
+        {
+            get
+            {
+                return this._nodeCount;
             }
         }
     }

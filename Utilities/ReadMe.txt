@@ -17,7 +17,7 @@ This Toolkit provides the following command line utilities:
 - rdfConvert - A tool for converting RDF Graphs and Datasets between different serializations (Version 0.1.2)
 - rdfQuery - A tool for querying RDF data using SPARQL (Version 0.1.2)
 - rdfWebDeploy - A tool for testing and deploying configuration for ASP.Net applications (Version 0.1.2)
-- soh - A tool for communicating with servers supporting the SPARQL Protocols over HTTP (Version 0.1.0
+- soh - A tool for communicating with servers supporting the SPARQL Protocols over HTTP (Version 0.1.0)
 
 This Toolkit provides the following GUI tools:
 - rdfEditor - A Notepad replacement for editing RDF and SPARQL (Version 0.1.1)
