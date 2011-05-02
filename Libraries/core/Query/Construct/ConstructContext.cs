@@ -15,6 +15,7 @@ namespace VDS.RDF.Query.Construct
         private IGraph _g;
         private bool _preserveBNodes = false;
         private Dictionary<String, INode> _bnodeMap;
+        private Dictionary<INode, INode> _nodeMap;
 
         /// <summary>
         /// Creates a new Construct Context
@@ -97,6 +98,57 @@ namespace VDS.RDF.Query.Construct
                temp = new BlankNode(this._g, id.Substring(2));
             }
             this._bnodeMap.Add(id, temp);
+            return temp;
+        }
+
+        public INode GetNode(INode n)
+        {
+            if (this._nodeMap == null) this._nodeMap = new Dictionary<INode,INode>();
+
+            if (this._nodeMap.ContainsKey(n)) return this._nodeMap[n];
+
+            INode temp;
+            switch (n.NodeType)
+            {
+                case NodeType.Blank:
+                    temp = this.GetBlankNode(((IBlankNode)n).InternalID);
+                    break;
+
+                case NodeType.Variable:
+                    IVariableNode v = (IVariableNode)n;
+                    temp = this._g.CreateVariableNode(v.VariableName);
+                    break;
+
+                case NodeType.GraphLiteral:
+                    IGraphLiteralNode g = (IGraphLiteralNode)n;
+                    temp = this._g.CreateGraphLiteralNode(g.SubGraph);
+                    break;
+
+                case NodeType.Uri:
+                    IUriNode u = (IUriNode)n;
+                    temp = this._g.CreateUriNode(u.Uri);
+                    break;
+
+                case NodeType.Literal:
+                    ILiteralNode l = (ILiteralNode)n;
+                    if (l.DataType != null)
+                    {
+                        temp = this._g.CreateLiteralNode(l.Value, l.DataType);
+                    } 
+                    else if (!l.Language.Equals(String.Empty))
+                    {
+                        temp = this._g.CreateLiteralNode(l.Value, l.Language);
+                    } 
+                    else
+                    {
+                        temp = this._g.CreateLiteralNode(l.Value);
+                    }
+                    break;
+                
+                default:
+                    throw new RdfQueryException("Cannot construct unknown Node Types");
+            }
+            this._nodeMap.Add(n, temp);
             return temp;
         }
     }

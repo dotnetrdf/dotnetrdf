@@ -359,6 +359,19 @@ namespace VDS.RDF.Test
             }
         }
 
+        [TestMethod]
+        public void GraphPersistenceWrapperNodeCreation()
+        {
+            Graph g = new Graph();
+            GraphPersistenceWrapper wrapper = new GraphPersistenceWrapper(g);
+
+            INode s = wrapper.CreateBlankNode();
+            INode p = wrapper.CreateUriNode("rdf:type");
+            INode o = wrapper.CreateUriNode("rdfs:Class");
+
+            wrapper.Assert(s, p, o);
+        }
+
         public void SimpleExample()
         {
             Graph g = new Graph();

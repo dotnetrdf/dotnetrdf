@@ -37,82 +37,64 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using VDS.RDF.Parsing;
-using VDS.RDF.Parsing.Tokens;
-using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Construct;
 
 namespace VDS.RDF.Query.Patterns
 {
     /// <summary>
-    /// Class for representing Node Patterns in Sparql Queries
+    /// Pattern which matches specific Nodes
     /// </summary>
-    public abstract class PatternItem
+    public class NodeMatchPattern : PatternItem
     {
+        private INode _node;
+
         /// <summary>
-        /// Binding Context for Pattern Item
+        /// Creates a new Node Match Pattern
         /// </summary>
-        protected SparqlResultBinder _context = null;
-
-        private bool _repeated = false;
+        /// <param name="n">Exact Node to match</param>
+        public NodeMatchPattern(INode n)
+        {
+            this._node = n;
+        }
 
         /// <summary>
-        /// Checks whether the Pattern Item accepts the given Node in the given Context
+        /// Checks whether the given Node matches the Node this pattern was instantiated with
         /// </summary>
         /// <param name="context">Evaluation Context</param>
         /// <param name="obj">Node to test</param>
         /// <returns></returns>
-        protected internal abstract bool Accepts(SparqlEvaluationContext context, INode obj);
+        protected internal override bool Accepts(SparqlEvaluationContext context, INode obj)
+        {
+            return this._node.Equals(obj);
+        }
 
         /// <summary>
-        /// Constructs a Node based on this Pattern for the given Set
+        /// Constructs a Node based on the given Set
         /// </summary>
         /// <param name="context">Construct Context</param>
-        /// <returns></returns>
-        protected internal abstract INode Construct(ConstructContext context);
-
-        /// <summary>
-        /// Sets the Binding Context for the Pattern Item
-        /// </summary>
-        public SparqlResultBinder BindingContext
+        protected internal override INode Construct(ConstructContext context)
         {
-            set
-            {
-                this._context = value;
-            }
+            return context.GetNode(this._node);
         }
 
         /// <summary>
-        /// Gets the String representation of the Pattern
+        /// Gets a String representation of the Node
         /// </summary>
         /// <returns></returns>
-        public abstract override string ToString();
+        public override string ToString()
+        {
+            return SparqlSpecsHelper.Formatter.Format(this._node);
+        }
 
         /// <summary>
-        /// Gets the Variable Name if this is a Variable Pattern or null otherwise
+        /// Gets the Node that this Pattern matches
         /// </summary>
-        public virtual String VariableName
+        public INode Node
         {
             get
             {
-                return null;
+                return this._node;
             }
         }
-
-        /// <summary>
-        /// Gets/Sets whether the Variable is repeated in the Pattern
-        /// </summary>
-        public virtual bool Repeated
-        {
-            get
-            {
-                return this._repeated;
-            }
-            set
-            {
-                this._repeated = value;
-            }
-        }
-
     }
 }

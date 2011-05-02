@@ -37,82 +37,87 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using VDS.RDF.Parsing;
-using VDS.RDF.Parsing.Tokens;
-using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Construct;
 
 namespace VDS.RDF.Query.Patterns
 {
     /// <summary>
-    /// Class for representing Node Patterns in Sparql Queries
+    /// Pattern which matches Blank Nodes
     /// </summary>
-    public abstract class PatternItem
+    public class BlankNodePattern : PatternItem
     {
+        private String _name;
+
         /// <summary>
-        /// Binding Context for Pattern Item
+        /// Creates a new Pattern representing a Blank Node
         /// </summary>
-        protected SparqlResultBinder _context = null;
-
-        private bool _repeated = false;
+        /// <param name="name">Blank Node ID</param>
+        public BlankNodePattern(String name)
+        {
+            this._name = "_:" + name;
+        }
 
         /// <summary>
-        /// Checks whether the Pattern Item accepts the given Node in the given Context
+        /// Gets the Blank Node ID
+        /// </summary>
+        public String ID
+        {
+            get
+            {
+                return this._name;
+            }
+        }
+
+        /// <summary>
+        /// Checks whether the given Node is a valid value for the Temporary Variable
         /// </summary>
         /// <param name="context">Evaluation Context</param>
         /// <param name="obj">Node to test</param>
         /// <returns></returns>
-        protected internal abstract bool Accepts(SparqlEvaluationContext context, INode obj);
+        protected internal override bool Accepts(SparqlEvaluationContext context, INode obj)
+        {
+            if (context.InputMultiset.ContainsVariable(this._name))
+            {
+                return context.InputMultiset.ContainsValue(this._name, obj);
+            }
+            else if (this.Repeated)
+            {
+                return true;
+            }
+            else
+            {
+                return true;
+            }
+        }
 
         /// <summary>
-        /// Constructs a Node based on this Pattern for the given Set
+        /// Constructs a Node based on the given Set
         /// </summary>
         /// <param name="context">Construct Context</param>
         /// <returns></returns>
-        protected internal abstract INode Construct(ConstructContext context);
-
-        /// <summary>
-        /// Sets the Binding Context for the Pattern Item
-        /// </summary>
-        public SparqlResultBinder BindingContext
+        protected internal override INode Construct(ConstructContext context)
         {
-            set
-            {
-                this._context = value;
-            }
+            return context.GetBlankNode(this._name);
         }
 
         /// <summary>
-        /// Gets the String representation of the Pattern
+        /// Gets the String representation of this Pattern
         /// </summary>
         /// <returns></returns>
-        public abstract override string ToString();
-
-        /// <summary>
-        /// Gets the Variable Name if this is a Variable Pattern or null otherwise
-        /// </summary>
-        public virtual String VariableName
+        public override string ToString()
         {
-            get
-            {
-                return null;
-            }
+            return this._name;
         }
 
         /// <summary>
-        /// Gets/Sets whether the Variable is repeated in the Pattern
+        /// Gets the Temporary Variable Name of this Pattern
         /// </summary>
-        public virtual bool Repeated
+        public override string VariableName
         {
             get
             {
-                return this._repeated;
-            }
-            set
-            {
-                this._repeated = value;
+                return this._name;
             }
         }
-
     }
 }

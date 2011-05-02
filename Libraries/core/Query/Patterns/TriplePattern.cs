@@ -446,9 +446,9 @@ namespace VDS.RDF.Query.Patterns
         {
             get
             {
-                return (this._subj is NodeMatchPattern || this._subj is BlankNodePattern) &&
-                       (this._pred is NodeMatchPattern || this._pred is BlankNodePattern) &&
-                       (this._obj is NodeMatchPattern || this._obj is BlankNodePattern);
+                return (this._subj is NodeMatchPattern || this._subj is BlankNodePattern || this._subj is FixedBlankNodePattern) &&
+                       (this._pred is NodeMatchPattern || this._pred is BlankNodePattern || this._pred is FixedBlankNodePattern) &&
+                       (this._obj is NodeMatchPattern || this._obj is BlankNodePattern || this._obj is FixedBlankNodePattern);
             }
         }
 

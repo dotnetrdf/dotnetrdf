@@ -51,6 +51,29 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
         }
 
         [TestMethod]
+        public void SparqlUpdateInsertDataWithSkolemBNodes()
+        {
+            TripleStore store = new TripleStore();
+            Graph g = new Graph();
+            store.Add(g);
+
+            String prefixes = "PREFIX rdf: <" + NamespaceMapper.RDF + ">\n PREFIX xsd: <" + NamespaceMapper.XMLSCHEMA + ">\n PREFIX ex: <http://example.org/>\n PREFIX rdl: <http://example.org/roles>\n PREFIX tpl: <http://example.org/template/>\n";
+            String insert = prefixes + "INSERT DATA { " + InsertPatterns1 + "}";
+            Console.WriteLine(insert.Replace("_:template","<_:template>"));
+            Console.WriteLine();
+            store.ExecuteUpdate(insert.Replace("_:template", "<_:template>"));
+            insert = prefixes + "INSERT DATA {" + InsertPatterns2 + "}";
+            Console.WriteLine(insert);
+            Console.WriteLine();
+            store.ExecuteUpdate(insert);
+
+            foreach (Triple t in g.Triples)
+            {
+                Console.WriteLine(t.ToString());
+            }
+        }
+
+        [TestMethod]
         public void SparqlUpdateAddCommand()
         {
             IGraph g = new Graph();
