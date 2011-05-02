@@ -309,19 +309,40 @@ namespace VDS.RDF.Utilities.OptimiserStats
             Console.WriteLine("e.g. rdfOptStats -all -output stats.ttl data1.rdf data2.rdf");
             Console.WriteLine("e.g. rdfOptStats -all -output stats.nt data\\*");
             Console.WriteLine();
+            Console.WriteLine("Notes");
+            Console.WriteLine("-----");
+            Console.WriteLine("Only simple wildcard patterns are supported as inputs e.g.");
+            Console.WriteLine("data\\*");
+            Console.WriteLine("some\\path\\*.rdf");
+            Console.WriteLine("*.*");
+            Console.WriteLine("*.ttl");
+            Console.WriteLine();
+            Console.WriteLine("Any other wildcard pattern will be rejected");
+            Console.WriteLine();
             Console.WriteLine("Supported Options");
             Console.WriteLine("-----------------");
             Console.WriteLine();
             Console.WriteLine(" -all");
-            Console.WriteLine("  Specifies that counts of Subjects, Predicate and Objects should be generated");
+            Console.WriteLine("  Specifies that counts of Subjects, Predicates and Objects should be generated");
             Console.WriteLine();
             Console.WriteLine(" -literals");
-            Console.WriteLine("  Specifies that counts for Literals should be generated");
+            Console.WriteLine("  Specifies that counts should include Literals (default is URIs only) - this requires an output format that supports Literal Subjects e.g. N3");
+            Console.WriteLine();
+            Console.WriteLine(" -nodes");
+            Console.WriteLine("  Specifies that aggregated for Nodes should be generated i.e. counts that don't specify which position the URI/Literal occurs in");
+            Console.WriteLine();
+            Console.WriteLine(" -p");
+            Console.WriteLine("  Specifies that counts for Predicates should be generated");
+            Console.WriteLine();
+            Console.WriteLine(" -o");
+            Console.WriteLine("  Specifies that counts for Objects should be generated");
             Console.WriteLine();
             Console.WriteLine(" -output file");
             Console.WriteLine("  Specifies the file to output the statistics to");
             Console.WriteLine();
-
+            Console.WriteLine(" -s");
+            Console.WriteLine("  Specifies that counts for Subjects should be generated");
+            Console.WriteLine();
         }
     }
 }

@@ -54,6 +54,16 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Data\bsbm.ttl" />
+    <Content Include="App_Data\stats_10.ttl" />
+    <Content Include="App_Data\stats_100.ttl" />
+    <Content Include="App_Data\stats_1000.ttl" />
+    <Content Include="App_Data\stats_1500.ttl" />
+    <Content Include="App_Data\stats_2000.ttl" />
+    <Content Include="App_Data\stats_250.ttl" />
+    <Content Include="App_Data\stats_2500.ttl" />
+    <Content Include="App_Data\stats_2785.ttl" />
+    <Content Include="App_Data\stats_50.ttl" />
+    <Content Include="App_Data\stats_500.ttl" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>

@@ -83,6 +83,18 @@ namespace VDS.RDF.Test.Sparql
         }
 
         [TestMethod]
+        public void SparqlRemoteVirtuosoWithSponging()
+        {
+            SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(new Uri("http://localhost:8890/sparql?should-sponge=soft"));
+            endpoint.HttpMode = "POST";
+            String query = "CONSTRUCT { ?s ?p ?o } FROM <http://www.dotnetrdf.org/configuration#> WHERE { ?s ?p ?o }";
+
+            IGraph g = endpoint.QueryWithResultGraph(query);
+            TestTools.ShowGraph(g);
+            Assert.IsFalse(g.IsEmpty, "Graph should not be empty");
+        }
+
+        [TestMethod]
         public void SparqlDbPediaDotIssue()
         {
             try

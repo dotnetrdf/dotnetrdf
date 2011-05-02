@@ -28,7 +28,7 @@ namespace VDS.RDF.Configuration
                     break;
 
                 case QueryOptimiserWeighted:
-                    INode statsObj = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyFromGraph));
+                    INode statsObj = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyUsingGraph));
                     if (statsObj != null)
                     {
                         temp = ConfigurationLoader.LoadObject(g, statsObj);
@@ -38,7 +38,7 @@ namespace VDS.RDF.Configuration
                         }
                         else
                         {
-                            throw new DotNetRdfConfigurationException("Unable to create the Weighted Query Optimiser identified by the Node '" + objNode.ToString() + "' since the dnr:fromGraph property points to an object that cannot be loaded as an Object that imlements the required IGraph interface");
+                            throw new DotNetRdfConfigurationException("Unable to create the Weighted Query Optimiser identified by the Node '" + objNode.ToString() + "' since the dnr:usingGraph property points to an object that cannot be loaded as an Object that imlements the required IGraph interface");
                         }
                     }
                     else
