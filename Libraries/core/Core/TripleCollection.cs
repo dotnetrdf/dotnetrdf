@@ -624,7 +624,7 @@ namespace VDS.RDF
         {
             this._subjIndex.Remove(t.Subject, t);
             this._predIndex.Remove(t.Predicate, t);
-            this._objIndex.Add(t.Object, t);
+            this._objIndex.Remove(t.Object, t);
 
             if (this._fullyIndexed)
             {
