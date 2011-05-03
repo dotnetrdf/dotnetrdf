@@ -39,6 +39,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VDS.Web.Server", "Libraries
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "adostore", "Libraries\adostore\adostore.csproj", "{9E1D685E-4E8F-4A9D-B073-51FF6C8D8661}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sparqlDown", "Utilities\sparqlDown\sparqlDown.csproj", "{FFD4CA16-FF47-40B4-9200-2FC53FEAC0E5}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = dotNetRDF.Experimental1.vsmdi
@@ -104,6 +106,10 @@ Global
 		{9E1D685E-4E8F-4A9D-B073-51FF6C8D8661}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9E1D685E-4E8F-4A9D-B073-51FF6C8D8661}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9E1D685E-4E8F-4A9D-B073-51FF6C8D8661}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FFD4CA16-FF47-40B4-9200-2FC53FEAC0E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FFD4CA16-FF47-40B4-9200-2FC53FEAC0E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FFD4CA16-FF47-40B4-9200-2FC53FEAC0E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FFD4CA16-FF47-40B4-9200-2FC53FEAC0E5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
