@@ -162,8 +162,18 @@ namespace VDS.RDF.Query.Algebra
         {
             GraphPattern p = this._lhs.ToGraphPattern();
             GraphPattern opt = this._rhs.ToGraphPattern();
-            opt.IsMinus = true;
-            p.AddGraphPattern(opt);
+            if (!opt.HasModifier)
+            {
+                opt.IsMinus = true;
+                p.AddGraphPattern(opt);
+            }
+            else
+            {
+                GraphPattern parent = new GraphPattern();
+                parent.AddGraphPattern(opt);
+                parent.IsMinus = true;
+                p.AddGraphPattern(parent);
+            }
             return p;
         }
     }

@@ -44,7 +44,7 @@ namespace VDS.RDF.Query.Algebra
     /// <summary>
     /// Represents a Distinct modifier on a SPARQL Query
     /// </summary>
-    public class Distinct : ISparqlAlgebra
+    public class Distinct : IUnaryOperator
     {
         private ISparqlAlgebra _pattern;
 
@@ -162,7 +162,7 @@ namespace VDS.RDF.Query.Algebra
     /// <summary>
     /// Represents a Reduced modifier on a SPARQL Query
     /// </summary>
-    public class Reduced : ISparqlAlgebra
+    public class Reduced : IUnaryOperator
     {
         private ISparqlAlgebra _pattern;
 

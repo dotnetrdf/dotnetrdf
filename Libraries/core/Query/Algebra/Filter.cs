@@ -45,7 +45,7 @@ namespace VDS.RDF.Query.Algebra
     /// <summary>
     /// Represents a Filter
     /// </summary>
-    public class Filter : ISparqlAlgebra
+    public class Filter : IUnaryOperator
     {
         private ISparqlAlgebra _pattern;
         private ISparqlFilter _filter;
@@ -172,7 +172,9 @@ namespace VDS.RDF.Query.Algebra
         public GraphPattern ToGraphPattern()
         {
             GraphPattern p = this._pattern.ToGraphPattern();
-            p.Filter = this._filter;
+            GraphPattern f = new GraphPattern();
+            f.AddFilter(this._filter);
+            p.AddGraphPattern(f);
             return p;
         }
     }

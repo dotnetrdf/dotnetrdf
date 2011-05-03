@@ -44,7 +44,7 @@ namespace VDS.RDF.Query.Algebra
     /// <summary>
     /// Represents a BINDINGS modifier on a SPARQL Query
     /// </summary>
-    public class Bindings : ISparqlAlgebra
+    public class Bindings : IUnaryOperator
     {
         private BindingsPattern _bindings;
         private ISparqlAlgebra _pattern;

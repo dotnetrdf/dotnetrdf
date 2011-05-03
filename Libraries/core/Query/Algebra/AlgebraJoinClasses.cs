@@ -131,6 +131,14 @@ namespace VDS.RDF.Query.Algebra
             }
         }
 
+        public bool MustExist
+        {
+            get
+            {
+                return this._mustExist;
+            }
+        }
+
         /// <summary>
         /// Gets the String representation of the Algebra
         /// </summary>

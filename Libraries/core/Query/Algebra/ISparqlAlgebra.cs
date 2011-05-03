@@ -77,6 +77,14 @@ namespace VDS.RDF.Query.Algebra
         GraphPattern ToGraphPattern();
     }
 
+    public interface IUnaryOperator : ISparqlAlgebra
+    {
+        ISparqlAlgebra InnerAlgebra
+        {
+            get;
+        }
+    }
+
     /// <summary>
     /// Represents an Algebra construct which is a BGP
     /// </summary>
@@ -164,6 +172,9 @@ namespace VDS.RDF.Query.Algebra
     /// </summary>
     public interface IExistsJoin : IAbstractJoin
     {
-
+        bool MustExist
+        {
+            get;
+        }
     }
 }

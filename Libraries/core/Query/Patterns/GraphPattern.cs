@@ -76,6 +76,28 @@ namespace VDS.RDF.Query.Patterns
 
         }
 
+        internal GraphPattern(GraphPattern gp)
+        {
+            this._break = gp._break;
+            this._broken = gp._broken;
+            this._filter = gp._filter;
+            this._graphPatterns.AddRange(gp._graphPatterns);
+            this._graphSpecifier = gp._graphSpecifier;
+            this._isExists = gp._isExists;
+            this._isFiltered = gp._isFiltered;
+            this._isGraph = gp._isGraph;
+            this._isMinus = gp._isMinus;
+            this._isNotExists = gp._isExists;
+            this._isOptimised = gp._isOptimised;
+            this._isOptional = gp._isOptional;
+            this._isService = gp._isService;
+            this._isSilent = gp._isSilent;
+            this._isUnion = gp._isUnion;
+            this._triplePatterns.AddRange(gp._triplePatterns);
+            this._unplacedAssignments.AddRange(gp._unplacedAssignments);
+            this._unplacedFilters.AddRange(gp._unplacedFilters);
+        }
+
         /// <summary>
         /// Adds a Triple Pattern to the Graph Pattern respecting any BGP breaks
         /// </summary>
@@ -363,6 +385,14 @@ namespace VDS.RDF.Query.Patterns
             internal set
             {
                 this._isSilent = value;
+            }
+        }
+
+        public bool HasModifier
+        {
+            get
+            {
+                return (this.IsExists || this.IsGraph || this.IsMinus || this.IsNotExists || this.IsOptional || this.IsService || this.IsSubQuery);
             }
         }
 

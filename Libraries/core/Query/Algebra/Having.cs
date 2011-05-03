@@ -45,7 +45,7 @@ namespace VDS.RDF.Query.Algebra
     /// <summary>
     /// Represents a Having Clause
     /// </summary>
-    public class Having : ISparqlAlgebra
+    public class Having : IUnaryOperator
     {
         private ISparqlAlgebra _pattern;
         private ISparqlFilter _having;

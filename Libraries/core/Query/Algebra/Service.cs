@@ -274,13 +274,21 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public GraphPattern ToGraphPattern()
         {
-            GraphPattern p = this._pattern;
-            if (!p.IsService)
+            GraphPattern p = new GraphPattern(this._pattern);
+            if (!p.HasModifier)
             {
                 p.IsService = true;
                 p.GraphSpecifier = this._endpointSpecifier;
+                return p;
             }
-            return p;
+            else
+            {
+                GraphPattern parent = new GraphPattern();
+                parent.IsService = true;
+                parent.GraphSpecifier = this._endpointSpecifier;
+                parent.AddGraphPattern(p);
+                return parent;
+            }
         }
     }
 }

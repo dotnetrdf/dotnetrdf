@@ -45,7 +45,7 @@ namespace VDS.RDF.Query.Algebra
     /// <summary>
     /// Represents an Order By clause
     /// </summary>
-    public class OrderBy : ISparqlAlgebra
+    public class OrderBy : IUnaryOperator
     {
         private ISparqlAlgebra _pattern;
         private ISparqlOrderBy _ordering;

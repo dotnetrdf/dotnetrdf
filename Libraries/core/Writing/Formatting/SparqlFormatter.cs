@@ -222,6 +222,10 @@ namespace VDS.RDF.Writing.Formatting
                     else
                     {
                         output.AppendLine("WHERE");
+                        if (query.RootGraphPattern.HasModifier)
+                        {
+                            output.AppendLine("{");
+                        }
                         output.AppendLine(this.Format(query.RootGraphPattern));
                     }
                 }

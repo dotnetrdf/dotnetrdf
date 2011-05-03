@@ -45,7 +45,7 @@ namespace VDS.RDF.Query.Algebra
     /// <summary>
     /// Represents a Grouping
     /// </summary>
-    public class GroupBy : ISparqlAlgebra
+    public class GroupBy : IUnaryOperator
     {
         private ISparqlAlgebra _pattern;
         private ISparqlGroupBy _grouping;

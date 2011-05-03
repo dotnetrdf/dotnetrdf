@@ -44,7 +44,7 @@ namespace VDS.RDF.Query.Algebra
     /// <summary>
     /// Represents the Slice Operation in the SPARQL Algebra
     /// </summary>
-    public class Slice : ISparqlAlgebra
+    public class Slice : IUnaryOperator
     {
         private ISparqlAlgebra _pattern;
         private int _limit = -1, _offset = 0;

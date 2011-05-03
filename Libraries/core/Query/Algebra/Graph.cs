@@ -45,7 +45,7 @@ namespace VDS.RDF.Query.Algebra
     /// <summary>
     /// Represents a GRAPH clause
     /// </summary>
-    public class Graph : ISparqlAlgebra
+    public class Graph : IUnaryOperator
     {
         private ISparqlAlgebra _pattern;
         private IToken _graphSpecifier;
