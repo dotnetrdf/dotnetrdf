@@ -163,7 +163,7 @@ namespace VDS.RDF.Test.Sparql
         [TestMethod]
         public void SparqlGroupBySample()
         {
-            String query = "SELECT ?s SAMPLE(?o) WHERE {?s ?p ?o} GROUP BY ?s";
+            String query = "SELECT ?s (SAMPLE(?o) AS ?object) WHERE {?s ?p ?o} GROUP BY ?s";
             SparqlQueryParser parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(query);
         }

@@ -13,7 +13,7 @@ namespace VDS.RDF.Parsing.Handlers
     /// This differs from the <see cref="MultiHandler">MultiHandler</see> in that as soon as any Handler indicates that handling should stop by returning false handling is <strong>immediately</strong> terminated.  All Handlers will always have their StartRdf and EndRdf methods called
     /// </para>
     /// </remarks>
-    public class ChainedHandler : BaseRdfHandler
+    public class ChainedHandler : BaseRdfHandler, IWrappingRdfHandler
     {
         private List<IRdfHandler> _handlers = new List<IRdfHandler>();
 
@@ -31,6 +31,14 @@ namespace VDS.RDF.Parsing.Handlers
                 {
                     if (ReferenceEquals(this._handlers[i], this._handlers[j])) throw new ArgumentException("All Handlers must be distinct IRdfHandler instances", "handlers");
                 }
+            }
+        }
+
+        public IEnumerable<IRdfHandler> InnerHandlers
+        {
+            get
+            {
+                return this._handlers;
             }
         }
 

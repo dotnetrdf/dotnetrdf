@@ -16,6 +16,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDFUnitTests", "Testi
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8AF0B3BE-7B01-45FF-8EA5-CCF0C596F7E7}"
 	ProjectSection(SolutionItems) = preProject
+		dotNetRDF.vsmdi = dotNetRDF.vsmdi
+		Tests.testrunconfig = Tests.testrunconfig
 		Todo.txt = Todo.txt
 	EndProjectSection
 EndProject
@@ -98,13 +100,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Toolkit", "Toolkit", "{C5B8
 		Utilities\ReadMe.txt = Utilities\ReadMe.txt
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Testing", "Testing", "{F3E98E05-E64D-4F7B-8802-CA98B436FDC4}"
-	ProjectSection(SolutionItems) = preProject
-		dotNetRDF.vsmdi = dotNetRDF.vsmdi
-		Tests.testrunconfig = Tests.testrunconfig
-	EndProjectSection
-EndProject
 Global
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = dotNetRDF.vsmdi
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|x64 = Debug|x64
@@ -369,7 +368,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{3CDA014A-AA30-48E7-84C6-44BA1AA0C7DD} = {8AF0B3BE-7B01-45FF-8EA5-CCF0C596F7E7}
 		{05FF69EA-EC65-4CD6-AC82-12D110E6D626} = {8AF0B3BE-7B01-45FF-8EA5-CCF0C596F7E7}
-		{F3E98E05-E64D-4F7B-8802-CA98B436FDC4} = {8AF0B3BE-7B01-45FF-8EA5-CCF0C596F7E7}
 		{D0EBD311-D634-4254-B787-3573CE8E808C} = {05FF69EA-EC65-4CD6-AC82-12D110E6D626}
 		{C5B85D93-6717-4270-9C36-79EFC18441C5} = {05FF69EA-EC65-4CD6-AC82-12D110E6D626}
 		{BF556CC4-9192-4D6B-9BA4-CDFF06FD0E53} = {D0EBD311-D634-4254-B787-3573CE8E808C}

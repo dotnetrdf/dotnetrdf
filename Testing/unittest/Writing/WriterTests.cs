@@ -21,7 +21,6 @@ namespace VDS.RDF.Test.Writing
                 ":newline-longliteral-escapes :string \"\"\"this is a long literal\nwhich contains\nmultiple new lines\"\"\".",
                 ":newline-escapes-alt :string \"this contains another \\rnew line\".",
                 ":newline-longliteral-escapes-alt :string \"\"\"this is another long literal which mixes both\n \\r and \\n\rnew line escapes\"\"\".",
-                ":not-escapes :string \"this string contains unintentional escapes like \\\\n and \\\\r and \\\\t\".",
                 ":tabs :string \"this string contains   unescaped tabs\".",
                 ":tabs-escaped :string \"this string contains \\t escaped tabs\"."
             };

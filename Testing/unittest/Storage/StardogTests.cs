@@ -14,11 +14,18 @@ namespace VDS.RDF.Test.Storage
     {
         private const String StardogTestUri = "http://localhost:2011/";
         private const String StardogTestKB = "test";
+        private const String StardogUser = "anonymous";
+        private const String StardogPassword = "anonymous";
+
+        private StardogConnector GetConnection()
+        {
+            return new StardogConnector(StardogTestUri, StardogTestKB, StardogUser, StardogPassword);
+        }
 
         [TestMethod]
         public void StorageStardogLoadDefaultGraph()
         {
-            StardogConnector stardog = new StardogConnector(StardogTestUri, StardogTestKB);
+            StardogConnector stardog = this.GetConnection();
             Graph g = new Graph();
             stardog.LoadGraph(g, (Uri)null);
 
@@ -34,7 +41,7 @@ namespace VDS.RDF.Test.Storage
         [TestMethod]
         public void StorageStardogLoadNamedGraph()
         {
-            StardogConnector stardog = new StardogConnector(StardogTestUri, StardogTestKB);
+            StardogConnector stardog = this.GetConnection();
             Graph g = new Graph();
             stardog.LoadGraph(g, new Uri("http://example.org/graph"));
 
@@ -54,7 +61,7 @@ namespace VDS.RDF.Test.Storage
             {
                 Options.UseBomForUtf8 = false;
 
-                StardogConnector stardog = new StardogConnector(StardogTestUri, StardogTestKB);
+                StardogConnector stardog = this.GetConnection();
                 Graph g = new Graph();
                 g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
                 g.BaseUri = null;
@@ -85,7 +92,7 @@ namespace VDS.RDF.Test.Storage
             {
                 Options.UseBomForUtf8 = false;
 
-                StardogConnector stardog = new StardogConnector(StardogTestUri, StardogTestKB);
+                StardogConnector stardog = this.GetConnection();
                 Graph g = new Graph();
                 g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
                 g.BaseUri = new Uri("http://example.org/graph");
@@ -116,7 +123,7 @@ namespace VDS.RDF.Test.Storage
             {
                 Options.UseBomForUtf8 = false;
 
-                StardogConnector stardog = new StardogConnector(StardogTestUri, StardogTestKB);
+                StardogConnector stardog = this.GetConnection();
                 Graph g = new Graph();
                 g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
                 g.BaseUri = new Uri("http://example.org/graph");
@@ -153,7 +160,7 @@ namespace VDS.RDF.Test.Storage
             {
                 Options.UseBomForUtf8 = false;
 
-                StardogConnector stardog = new StardogConnector(StardogTestUri, StardogTestKB);
+                StardogConnector stardog = this.GetConnection();
                 Graph g = new Graph();
                 g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
                 g.BaseUri = new Uri("http://example.org/addGraph");
@@ -187,14 +194,14 @@ namespace VDS.RDF.Test.Storage
             }
         }
 
-        [TestMethod]
+        [TestMethod, ExpectedException(typeof(NotSupportedException))]
         public void StorageStardogDeleteNamedGraph()
         {
             try
             {
                 Options.UseBomForUtf8 = false;
 
-                StardogConnector stardog = new StardogConnector(StardogTestUri, StardogTestKB);
+                StardogConnector stardog = this.GetConnection();
                 Graph g = new Graph();
                 g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
                 g.BaseUri = new Uri("http://example.org/tempGraph");

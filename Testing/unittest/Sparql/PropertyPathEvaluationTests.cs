@@ -107,18 +107,16 @@ namespace VDS.RDF.Test.Sparql
             EnsureTestData();
 
             FixedCardinality path = new FixedCardinality(new Property(this._factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType))), 0);
-            ISparqlAlgebra algebra = this.GetAlgebra(path, null, this._factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "Class")));
+            INode rdfsClass = this._factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "Class"));
+            ISparqlAlgebra algebra = this.GetAlgebra(path, null, rdfsClass);
             SparqlEvaluationContext context = new SparqlEvaluationContext(null, this._data);
             BaseMultiset results = algebra.Evaluate(context);
 
             TestTools.ShowMultiset(results);
 
             Assert.IsFalse(results.IsEmpty, "Results should not be empty");
-
-            INode rdfType = this._factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
-            INode rdfsClass = this._factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "Class"));
-
-            Assert.IsTrue(results.Sets.All(s => this._data.ContainsTriple(new Triple(s["x"].CopyNode(null), rdfType, rdfsClass))), "All returned values should be of rdf:type rdfs:Class");
+            Assert.AreEqual(1, results.Count, "Expected 1 Result");
+            Assert.AreEqual(rdfsClass, results[1]["x"], "Expected 1 Result set to rdfs:Class");
         }
 
         [TestMethod]

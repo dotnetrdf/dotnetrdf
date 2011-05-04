@@ -29,6 +29,7 @@ namespace VDS.RDF.Query.Algebra
 
             String subjVar = this.PathStart.VariableName;
             String objVar = this.PathEnd.VariableName;
+            context.OutputMultiset = new Multiset();
 
             //Determine the Triples to which this applies
             IEnumerable<Triple> ts = null;

@@ -21,6 +21,7 @@ namespace VDS.RDF.Test.Sparql
             {
                 TripleStore store = new TripleStore();
                 SparqlView view = new SparqlView("CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o . FILTER(IsLiteral(?o)) }", store);
+                view.BaseUri = new Uri("http://example.org/view");
                 store.Add(view);
 
                 Console.WriteLine("SPARQL View Empty");
@@ -30,6 +31,7 @@ namespace VDS.RDF.Test.Sparql
                 //Load a Graph into the Store to cause the SPARQL View to update
                 Graph g = new Graph();
                 FileLoader.Load(g, "InferenceTest.ttl");
+                g.BaseUri = new Uri("http://example.org/data");
                 store.Add(g);
 
                 Thread.Sleep(200);
@@ -57,6 +59,7 @@ namespace VDS.RDF.Test.Sparql
             {
                 TripleStore store = new TripleStore();
                 SparqlView view = new SparqlView("DESCRIBE <http://example.org/vehicles/FordFiesta>", store);
+                view.BaseUri = new Uri("http://example.org/view");
                 store.Add(view);
 
                 Console.WriteLine("SPARQL View Empty");
@@ -66,7 +69,7 @@ namespace VDS.RDF.Test.Sparql
                 //Load a Graph into the Store to cause the SPARQL View to update
                 Graph g = new Graph();
                 FileLoader.Load(g, "InferenceTest.ttl");
-                g.BaseUri = new Uri("http://example.org/inferenceTest");
+                g.BaseUri = new Uri("http://example.org/data");
                 store.Add(g);
 
                 Thread.Sleep(200);
@@ -94,6 +97,7 @@ namespace VDS.RDF.Test.Sparql
             {
                 TripleStore store = new TripleStore();
                 SparqlView view = new SparqlView("SELECT ?s (<http://example.org/vehicles/TurbochargedSpeed>) AS ?p (?speed * 1.25) AS ?o  WHERE { ?s <http://example.org/vehicles/Speed> ?speed }", store);
+                view.BaseUri = new Uri("http://example.org/view");
                 store.Add(view);
 
                 Console.WriteLine("SPARQL View Empty");
@@ -103,6 +107,7 @@ namespace VDS.RDF.Test.Sparql
                 //Load a Graph into the Store to cause the SPARQL View to update
                 Graph g = new Graph();
                 FileLoader.Load(g, "InferenceTest.ttl");
+                g.BaseUri = new Uri("http://example.org/data");
                 store.Add(g);
 
                 Thread.Sleep(200);
@@ -130,6 +135,7 @@ namespace VDS.RDF.Test.Sparql
             {
                 TripleStore store = new TripleStore();
                 SparqlView view = new SparqlView("CONSTRUCT { ?s a ?type } WHERE { ?s a ?type }", store);
+                view.BaseUri = new Uri("http://example.org/view");
                 store.Add(view);
 
                 Console.WriteLine("SPARQL View Empty");
@@ -139,6 +145,7 @@ namespace VDS.RDF.Test.Sparql
                 //Load a Graph into the Store to cause the SPARQL View to update
                 Graph g = new Graph();
                 FileLoader.Load(g, "InferenceTest.ttl");
+                g.BaseUri = new Uri("http://example.org/data");
                 store.Add(g);
 
                 Thread.Sleep(200);
@@ -207,7 +214,8 @@ namespace VDS.RDF.Test.Sparql
             try
             {
                 TripleStore store = new TripleStore();
-                SparqlView view = new SparqlView("CONSTRUCT { ?s ?p ?o } FROM <http://example.org/1> WHERE { ?s ?p ?o . FILTER(IsLiteral(?o)) }", store);
+                SparqlView view = new SparqlView("CONSTRUCT { ?s ?p ?o } FROM <http://example.org/data> WHERE { ?s ?p ?o . FILTER(IsLiteral(?o)) }", store);
+                view.BaseUri = new Uri("http://example.org/view");
                 store.Add(view);
 
                 Console.WriteLine("SPARQL View Empty");
@@ -216,8 +224,8 @@ namespace VDS.RDF.Test.Sparql
 
                 //Load a Graph into the Store to cause the SPARQL View to update
                 Graph g = new Graph();
-                g.BaseUri = new Uri("http://example.org/1");
                 FileLoader.Load(g, "InferenceTest.ttl");
+                g.BaseUri = new Uri("http://example.org/data");
                 store.Add(g);
 
                 Thread.Sleep(200);

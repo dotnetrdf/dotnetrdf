@@ -70,9 +70,9 @@ namespace VDS.RDF.Storage
     {
         private String _baseUri;
         protected String _kb;
-        //private String _username;
-        //private String _pwd;
-        //private bool _hasCredentials = false;
+        private String _username;
+        private String _pwd;
+        private bool _hasCredentials = false;
 
         private ThreadSafeReference<String> _activeTrans = new ThreadSafeReference<string>();
 
@@ -97,20 +97,20 @@ namespace VDS.RDF.Storage
             this._writer.UseMultiThreadedWriting = false;
         }
 
-        ///// <summary>
-        ///// Creates a new connection to a Sesame HTTP Protocol supporting Store
-        ///// </summary>
-        ///// <param name="baseUri">Base Uri of the Store</param>
-        ///// <param name="storeID">Store ID</param>
-        ///// <param name="username">Username to use for requests that require authentication</param>
-        ///// <param name="password">Password to use for requests that require authentication</param>
-        //public StardogConnector(String baseUri, String storeID, String username, String password)
-        //    : this(baseUri, storeID)
-        //{
-        //    this._username = username;
-        //    this._pwd = password;
-        //    this._hasCredentials = true;
-        //}
+        /// <summary>
+        /// Creates a new connection to a Stardog Store
+        /// </summary>
+        /// <param name="baseUri">Base Uri of the Server</param>
+        /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
+        /// <param name="username">Username</param>
+        /// <param name="password">Password</param>
+        public StardogConnector(String baseUri, String kbID, String username, String password)
+            : this(baseUri, kbID)
+        {
+            this._username = username;
+            this._pwd = password;
+            this._hasCredentials = true;
+        }
 
         /// <summary>
         /// Gets the Base URI of the Stardog server
@@ -736,12 +736,12 @@ namespace VDS.RDF.Storage
             request.Headers.Add("SD-Connection-String", "kb=" + this._kb + "; persist=sync");
             request.Headers.Add("SD-Protocol", "1.0");
 
-            ////Add Credentials if needed
-            //if (this._hasCredentials)
-            //{
-            //    NetworkCredential credentials = new NetworkCredential(this._username, this._pwd);
-            //    request.Credentials = credentials;                
-            //}
+            //Add Credentials if needed
+            if (this._hasCredentials)
+            {
+                NetworkCredential credentials = new NetworkCredential(this._username, this._pwd);
+                request.Credentials = credentials;
+            }
 
             return request;
         }

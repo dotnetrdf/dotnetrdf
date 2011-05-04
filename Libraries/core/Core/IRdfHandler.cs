@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace VDS.RDF
 {
@@ -45,6 +46,17 @@ namespace VDS.RDF
         /// Gets whether the Handler will always handle all data (i.e. won't terminate parsing early)
         /// </summary>
         bool AcceptsAll
+        {
+            get;
+        }
+    }
+
+    /// <summary>
+    /// Interface for Handlers which wrap other Handlers
+    /// </summary>
+    public interface IWrappingRdfHandler : IRdfHandler
+    {
+        IEnumerable<IRdfHandler> InnerHandlers
         {
             get;
         }

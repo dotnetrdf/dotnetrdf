@@ -519,4 +519,4 @@ dnr:algebraOptimiser a rdf:Property ;
 						rdfs:label "Algebra Optimiser" ;
 						rdfs:comment "This property allows Algebra Optimisers to be associated with a HTTP Handler.  If the HTTP Handler is a SPARQL Query supported handler then it will use these optimisers to help optimise SPARQL Algebra generated from queries.  Multiple algebra optimisers can be specified and these will be used in addition to the libraries own default optimisers." ;
 						rdfs:domain dnr:HttpHandler ;
-						rdfs:range dnr:Graph .
+						rdfs:range dnr:AlgebraOptimiser .

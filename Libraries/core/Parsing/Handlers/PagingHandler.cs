@@ -8,7 +8,7 @@ namespace VDS.RDF.Parsing.Handlers
     /// <summary>
     /// A RDF Handler which wraps another Handler passing only the Triples falling within a given Limit and Offset to the underlying Handler
     /// </summary>
-    public class PagingHandler : BaseRdfHandler
+    public class PagingHandler : BaseRdfHandler, IWrappingRdfHandler
     {
         private IRdfHandler _handler;
         private int _limit = 0, _offset = 0;
@@ -25,6 +25,14 @@ namespace VDS.RDF.Parsing.Handlers
 
         public PagingHandler(IRdfHandler handler, int limit)
             : this(handler, limit, 0) { }
+
+        public IEnumerable<IRdfHandler> InnerHandlers
+        {
+            get
+            {
+                return this._handler.AsEnumerable();
+            }
+        }
 
         protected override void StartRdfInternal()
         {

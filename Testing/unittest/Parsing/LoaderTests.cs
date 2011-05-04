@@ -179,7 +179,7 @@ namespace VDS.RDF.Test.Parsing
         public void ParsingEmbeddedResourceInExternalAssembly()
         {
             Graph g = new Graph();
-            EmbeddedResourceLoader.Load(g, "VDS.RDF.Test.embedded.ttl, dotNetRDFUnitTests");
+            EmbeddedResourceLoader.Load(g, "VDS.RDF.Test.embedded.ttl, dotNetRDF.Test");
 
             TestTools.ShowGraph(g);
 

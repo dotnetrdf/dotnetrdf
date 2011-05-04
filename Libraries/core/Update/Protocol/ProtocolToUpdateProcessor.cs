@@ -45,6 +45,7 @@ using System.Web;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Writing;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Update.Protocol
 {
@@ -126,9 +127,11 @@ namespace VDS.RDF.Update.Protocol
                 insert.AppendLine("INSERT DATA {");
             }
 
-            System.IO.StringWriter writer = new System.IO.StringWriter(insert);
-            CompressingTurtleWriter ttlwriter = new CompressingTurtleWriter(WriterCompressionLevel.High);
-            ttlwriter.Save(g, writer);
+            TurtleFormatter formatter = new TurtleFormatter(g.NamespaceMap);
+            foreach (Triple t in g.Triples)
+            {
+                insert.AppendLine(t.ToString(formatter));
+            }
 
             if (graphUri != null)
             {
@@ -141,6 +144,7 @@ namespace VDS.RDF.Update.Protocol
 
             //Parse and evaluate the command
             SparqlParameterizedString insertCmd = new SparqlParameterizedString(insert.ToString());
+            insertCmd.Namespaces = g.NamespaceMap;
             if (graphUri != null) insertCmd.SetUri("graph", graphUri);
             SparqlUpdateCommandSet cmds = this._parser.ParseFromString(insertCmd);
             this._updateProcessor.ProcessCommandSet(cmds);
@@ -175,14 +179,17 @@ namespace VDS.RDF.Update.Protocol
             if (g != null)
             {
                 insert.AppendLine("INSERT DATA { GRAPH @graph {");
-                System.IO.StringWriter writer = new System.IO.StringWriter(insert);
-                CompressingTurtleWriter ttlwriter = new CompressingTurtleWriter(WriterCompressionLevel.High);
-                ttlwriter.Save(g, writer);
+                TurtleFormatter formatter = new TurtleFormatter(g.NamespaceMap);
+                foreach (Triple t in g.Triples)
+                {
+                    insert.AppendLine(t.ToString(formatter));
+                }
                 insert.AppendLine("} }");
             }
 
             //Parse and evaluate the command
             SparqlParameterizedString insertCmd = new SparqlParameterizedString(insert.ToString());
+            insertCmd.Namespaces = g.NamespaceMap;
             insertCmd.SetUri("graph", graphUri);
             SparqlUpdateCommandSet cmds = this._parser.ParseFromString(insertCmd);
             this._updateProcessor.ProcessCommandSet(cmds);
@@ -256,9 +263,11 @@ namespace VDS.RDF.Update.Protocol
                     cmdSequence.AppendLine("INSERT DATA { ");
                 }
 
-                System.IO.StringWriter writer = new System.IO.StringWriter(cmdSequence);
-                CompressingTurtleWriter ttlwriter = new CompressingTurtleWriter(WriterCompressionLevel.High);
-                ttlwriter.Save(g, writer);
+                TurtleFormatter formatter = new TurtleFormatter(g.NamespaceMap);
+                foreach (Triple t in g.Triples)
+                {
+                    cmdSequence.AppendLine(t.ToString(formatter));
+                }
 
                 if (graphUri != null)
                 {
@@ -271,6 +280,7 @@ namespace VDS.RDF.Update.Protocol
             }
 
             SparqlParameterizedString put = new SparqlParameterizedString(cmdSequence.ToString());
+            put.Namespaces = g.NamespaceMap;
             if (graphUri != null) put.SetUri("graph", graphUri);
             SparqlUpdateCommandSet putCmds = this._parser.ParseFromString(put);
             this._updateProcessor.ProcessCommandSet(putCmds);

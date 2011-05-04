@@ -35,40 +35,48 @@ namespace VDS.RDF.Test.Parsing
         [TestMethod]
         public void ParsingRdfAGoodRelations()
         {
-            List<String> tests = new List<string>()
+            try
             {
-                "gr1",
-                "gr2",
-                "gr3"
-            };
+                Options.UriLoaderCaching = false;
+                List<String> tests = new List<string>()
+                {
+                    "gr1",
+                    "gr2",
+                    "gr3"
+                };
 
-            FileLoader.Warning += TestTools.WarningPrinter;
+                FileLoader.Warning += TestTools.WarningPrinter;
 
-            foreach (String test in tests)
+                foreach (String test in tests)
+                {
+                    Console.WriteLine("Test '" + test + "'");
+                    Console.WriteLine();
+
+                    Graph g = new Graph();
+                    g.BaseUri = new Uri("http://example.org/goodrelations");
+                    Graph h = new Graph();
+                    h.BaseUri = g.BaseUri;
+
+                    Console.WriteLine("Graph A Warnings:");
+                    FileLoader.Load(g, test + ".xhtml");
+                    Console.WriteLine();
+                    Console.WriteLine("Graph B Warnings:");
+                    FileLoader.Load(h, test + "b.xhtml");
+                    Console.WriteLine();
+
+                    Console.WriteLine("Graph A (RDFa 1.0)");
+                    TestTools.ShowGraph(g);
+                    Console.WriteLine();
+                    Console.WriteLine("Graph B (RDFa 1.1)");
+                    TestTools.ShowGraph(h);
+                    Console.WriteLine();
+
+                    Assert.AreEqual(g, h, "Graphs should have been equal");
+                }
+            }
+            finally
             {
-                Console.WriteLine("Test '" + test + "'");
-                Console.WriteLine();
-
-                Graph g = new Graph();
-                g.BaseUri = new Uri("http://example.org/goodrelations");
-                Graph h = new Graph();
-                h.BaseUri = g.BaseUri;
-
-                Console.WriteLine("Graph A Warnings:");
-                FileLoader.Load(g, test + ".xhtml");
-                Console.WriteLine();
-                Console.WriteLine("Graph B Warnings:");
-                FileLoader.Load(h, test + "b.xhtml");
-                Console.WriteLine();
-
-                Console.WriteLine("Graph A (RDFa 1.0)");
-                TestTools.ShowGraph(g);
-                Console.WriteLine();
-                Console.WriteLine("Graph B (RDFa 1.1)");
-                TestTools.ShowGraph(h);
-                Console.WriteLine();
-
-                Assert.AreEqual(g, h, "Graphs should have been equal");
+                Options.UriLoaderCaching = true;
             }
         }
 

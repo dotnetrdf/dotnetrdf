@@ -79,10 +79,7 @@ namespace VDS.RDF.Parsing.Contexts
             this._handler = handler;
             this._traceParsing = traceParsing;
 
-            if (this._handler is GraphHandler)
-            {
-                this._baseUri = ((GraphHandler)this._handler).BaseUri;
-            }
+            this._baseUri = this._handler.GetBaseUri();
         }
 
         /// <summary>
