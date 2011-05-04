@@ -84,7 +84,6 @@ namespace VDS.RDF.Update
                 bool longUpdate = false;
                 if (!this.HttpMode.Equals("POST") && sparqlUpdate.Length <= LongUpdateLength)
                 {
-                    longUpdate = true;
                     requestUri.Append("?update=");
                     requestUri.Append(HttpUtility.UrlEncode(sparqlUpdate));
                 }

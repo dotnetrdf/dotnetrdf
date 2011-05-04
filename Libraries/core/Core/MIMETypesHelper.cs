@@ -374,7 +374,7 @@ namespace VDS.RDF
                     }
                 }
                 if (output[output.Length - 1] == ',') output.Remove(output.Length - 1, 1);
-                output.Append(",*/*");
+                output.Append(";q=1.0,*/*;q=0.5");
 
                 return output.ToString();
             }
@@ -427,7 +427,7 @@ namespace VDS.RDF
                     }
                 }
                 if (output[output.Length - 1] == ',') output.Remove(output.Length - 1, 1);
-                output.Append(",*/*");
+                output.Append(";q=1.0,*/*;q=0.5");
 
                 return output.ToString();
             }
@@ -478,7 +478,7 @@ namespace VDS.RDF
                     }
                 }
                 if (output[output.Length - 1] == ',') output.Remove(output.Length - 1, 1);
-                output.Append(",*/*");
+                output.Append(";q=1.0,*/*;q=0.5");
 
                 return output.ToString();
             }
@@ -849,7 +849,7 @@ namespace VDS.RDF
             }
             catch (RdfParserSelectionException)
             {
-                if (allowPlainTextResults && contentType.Equals("text/plain"))
+                if (allowPlainTextResults && (contentType.Equals("text/plain") || contentType.Equals("text/boolean")))
                 {
                     return new SparqlBooleanParser();
                 }

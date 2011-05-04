@@ -104,5 +104,24 @@ namespace VDS.RDF.Test.Storage
 
             Assert.IsTrue(ts.All(t => !g.ContainsTriple(t)), "Removed Triple should not have been in the Graph");
         }
+
+        [TestMethod]
+        public void StorageFourStoreUpdate()
+        {
+            FourStoreConnector fourstore = new FourStoreConnector(FourStoreTestUri);
+            fourstore.Update("CREATE SILENT GRAPH <http://example.org/update>; INSERT DATA { GRAPH <http://example.org/update> { <http://example.org/subject> <http://example.org/predicate> <http://example.org/object> } }");
+
+            Graph g = new Graph();
+            fourstore.LoadGraph(g, "http://example.org/update");
+
+            Assert.AreEqual(1, g.Triples.Count, "The CREATE GRAPH and INSERT DATA commands should result in 1 Triple in the Graph");
+
+            fourstore.Update("DROP SILENT GRAPH <http://example.org/update>");
+            Graph h = new Graph();
+            fourstore.LoadGraph(h, "http://example.org/update");
+
+            Assert.IsTrue(h.IsEmpty, "Graph should be empty after the DROP GRAPH update was issued");
+            Assert.AreNotEqual(g, h, "Graphs should not be equal");
+        }
     }
 }

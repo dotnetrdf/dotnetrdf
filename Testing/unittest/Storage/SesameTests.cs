@@ -25,6 +25,9 @@ namespace VDS.RDF.Test.Storage
                 SesameHttpProtocolConnector sesame = new SesameHttpProtocolConnector("http://nottm-virtual.ecs.soton.ac.uk:8080/openrdf-sesame/", "unit-test");
                 sesame.SaveGraph(g);
 
+                //Options.HttpDebugging = true;
+                //Options.HttpFullDebugging = true;
+
                 Graph h = new Graph();
                 sesame.LoadGraph(h, "http://example.org/SesameTest");
                 Assert.IsFalse(h.IsEmpty, "Graph should not be empty after loading");
@@ -34,6 +37,11 @@ namespace VDS.RDF.Test.Storage
             catch (Exception ex)
             {
                 TestTools.ReportError("Error", ex, true);
+            }
+            finally
+            {
+                //Options.HttpFullDebugging = false;
+                //Options.HttpDebugging = true;
             }
         }
 
@@ -139,7 +147,7 @@ namespace VDS.RDF.Test.Storage
             {
                 SesameHttpProtocolConnector sesame = new SesameHttpProtocolConnector("http://nottm-virtual.ecs.soton.ac.uk:8080/openrdf-sesame/", "unit-test");
 
-                String describe = "DESCRIBE <http://example.org/Vehicles/FordFiesta>";
+                String describe = "DESCRIBE <http://example.org/vehicles/FordFiesta>";
 
                 Object results = sesame.Query(describe);
                 if (results is IGraph)
