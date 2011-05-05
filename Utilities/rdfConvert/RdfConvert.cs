@@ -35,6 +35,7 @@ using System.Linq;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing;
+using VDS.RDF.Utilities.Convert.Inputs;
 
 namespace VDS.RDF.Utilities.Convert
 {
@@ -44,23 +45,17 @@ namespace VDS.RDF.Utilities.Convert
     public class RdfConvert
     {
         //Option Variables
-        private List<String> _inputs = new List<string>();
-        private String _output = String.Empty;
+        private List<IConversionInput> _inputs = new List<IConversionInput>();
         private List<IConversionOption> _options = new List<IConversionOption>();
-        private bool _merge = false;
         private bool _overwrite = false;
-        private bool _dataset = false;
         private bool _debug = false;
         private bool _warnings = false;
+        private bool _best = false;
  
-        //Writers we'll configure as necessary
-        private IRdfWriter _writer = null;
-        private IStoreWriter _storeWriter = null;
-        private String _outExt = String.Empty;
-
-        //Temporary Store where we'll put the Graphs we've been asked to convert if necessary
-        //We may not need this
-        private TripleStore _store = new TripleStore();
+        //Output Variables
+        private String _outputFilename = String.Empty;
+        private String _outFormat = null;
+        private String _outExt = null;
 
         public void RunConvert(String[] args)
         {
@@ -71,235 +66,8 @@ namespace VDS.RDF.Utilities.Convert
                 return;
             }
 
-            //Then we'll read in our inputs
-            foreach (String input in this._inputs)
-            {
-                try
-                {
-                    Graph g = new Graph();
-                    if (input.StartsWith("-uri:"))
-                    {
-                        UriLoader.Load(g, new Uri(input.Substring(input.IndexOf(':') + 1)));
-                    }
-                    else
-                    {
-                        FileLoader.Load(g, input);
-                    }
 
-                    //If not merging we'll output now
-                    if (!this._merge)
-                    {
-                        String destFile;
-                        if (input.StartsWith("-uri:"))
-                        {
-                            if (this._inputs.Count == 1)
-                            {
-                                //For a single URI input we require a Filename
-                                if (this._output.Equals(String.Empty))
-                                {
-                                    Console.Error.WriteLine("rdfConvert: When converting a single URI you must specify an output file with the -out:filename argument");
-                                    return;
-                                }
-                                destFile = Path.GetFileNameWithoutExtension(this._output) + this._outExt;
-                            }
-                            else
-                            {
-                                //For multiple inputs where some are URIs the output file is the SHA256 hash of the URI plus the extension
-                                destFile = new Uri(input.Substring(input.IndexOf(':') + 1)).GetSha256Hash() + this._outExt;
-                            }
-                        }
-                        else
-                        {
-                            if (this._inputs.Count == 1 && !this._output.Equals(String.Empty))
-                            {
-                                //For a single input we'll just change the extension as appropriate
-                                if (!this._outExt.Equals(String.Empty))
-                                {
-                                    destFile = Path.GetFileNameWithoutExtension(this._output) + this._outExt;
-                                }
-                                else
-                                {
-                                    destFile = this._output;
-                                }
-                            }
-                            else
-                            {
-                                destFile = Path.GetFileNameWithoutExtension(input) + this._outExt;
-                            }
-                        }
-                        if (File.Exists(destFile) && !this._overwrite)
-                        {
-                            Console.Error.WriteLine("rdfConvert: Unable to output to '" + destFile + "' because a file already exists at this location and the -overwrite argument was not used");
-                        }
-                        else
-                        {
-                            try
-                            {
-                                this._writer.Save(g, destFile);
-                            }
-                            catch (Exception ex)
-                            {
-                                Console.Error.WriteLine("rdfConvert: Unable to output to '" + destFile + "' due to the following error:"); 
-                                Console.Error.WriteLine("rdfConvert: Error: " + ex.Message);
-                                if (this._debug) this.DebugErrors(ex);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        //Add to the Store and we'll merge it all together later and output it at the end
-                        this._store.Add(g);
-                    }
-                }
-                catch (RdfParserSelectionException parseEx)
-                {
-                    //If this happens then this may be a datset instead of a graph
-                    try
-                    {
-                        if (input.StartsWith("-uri:"))
-                        {
-                            UriLoader.Load(this._store, new Uri(input.Substring(input.IndexOf(':') + 1)));
-                        }
-                        else
-                        {
-                            FileLoader.Load(this._store, input);
-                        }
-
-                        //If not merging we'll output now
-                        if (!this._merge)
-                        {
-                            foreach (IGraph g in this._store.Graphs)
-                            {
-                                String destFile = (g.BaseUri == null) ? "default-graph" : g.BaseUri.GetSha256Hash();
-                                destFile += this._outExt;
-
-                                if (File.Exists(destFile))
-                                {
-                                    Console.Error.WriteLine("rdfConvert: Unable to output to '" + destFile + "' because a file already exists at this location and the -overwrite argument was not used");
-                                }
-                                else
-                                {
-                                    try
-                                    {
-                                        this._writer.Save(g, destFile);
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        Console.Error.WriteLine("rdfConvert: Unable to output to '" + destFile + "' due to the following error:");
-                                        Console.Error.WriteLine("rdfConvert: Error: " + ex.Message);
-                                        if (this._debug) this.DebugErrors(ex);
-                                    }
-                                }
-                            }
-
-                            //Reset the Triple Store after outputting
-                            this._store.Dispose();
-                            this._store = new TripleStore();
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.Error.WriteLine("rdfConvert: Unable to read from input '" + input + "' due to the following error:");
-                        Console.Error.WriteLine("rdfConvert: Error: " + ex.Message);
-                        if (this._debug) this.DebugErrors(ex);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.Error.WriteLine("rdfConvert: Unable to read from input '" + input + "' due to the following error:");
-                    Console.Error.WriteLine("rdfConvert: Error: " + ex.Message);
-                    if (this._debug) this.DebugErrors(ex);
-                }
-            }
-
-            //Then we'll apply merging if applicable
-            //If merge was false then we've already done the outputting as we had no need to keep
-            //stuff in memory
-            if (this._merge)
-            {
-                if (this._storeWriter != null && (this._writer == null || this._dataset))
-                {
-                    //We only have a StoreWriter so we output a Dataset rather than merging
-                    if (!this._output.Equals(String.Empty))
-                    {
-                        if (File.Exists(this._output) && !this._overwrite)
-                        {
-                            Console.Error.WriteLine("rdfConvert: Unable to output to '" + this._output + "' because a file already exists at this location and the -overwrite argument was not used");
-                        }
-                        else
-                        {
-                            try
-                            {
-                                this._storeWriter.Save(this._store, new VDS.RDF.Storage.Params.StreamParams(this._output));
-                            }
-                            catch (Exception ex)
-                            {
-                                Console.Error.WriteLine("rdfConvert: Unable to output to '" + this._output + "' due to the following error:");
-                                Console.Error.WriteLine("rdfConvert: Error: " + ex.Message);
-                                if (this._debug) this.DebugErrors(ex);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        String destFile = (this._inputs.Count == 1 && !this._inputs[0].StartsWith("-uri:")) ? Path.GetFileNameWithoutExtension(this._inputs[0]) + this._outExt : "dataset" + this._outExt;
-                        if (File.Exists(destFile) && !this._overwrite)
-                        {
-                            Console.Error.WriteLine("rdfConvert: Unable to output to '" + destFile + "' because a file already exists at this location and the -overwrite argument was not used");
-                        }
-                        else
-                        {
-                            try
-                            {
-                                this._storeWriter.Save(this._store, new VDS.RDF.Storage.Params.StreamParams(destFile));
-                            }
-                            catch (Exception ex)
-                            {
-                                Console.Error.WriteLine("rdfConvert: Unable to output to '" + destFile + "' due to the following error:");
-                                Console.Error.WriteLine("rdfConvert: Error: " + ex.Message);
-                                if (this._debug) this.DebugErrors(ex);
-                            }
-                        }
-                     }
-                }
-                else
-                {
-                    //Merge all the Graphs together and produce a single Graph
-                    Graph mergedGraph = new Graph();
-                    foreach (IGraph g in this._store.Graphs)
-                    {
-                        mergedGraph.Merge(g);
-                    }
-
-                    //Work out the output file and output the Graph
-                    String destFile;
-                    if (!this._output.Equals(String.Empty))
-                    {
-                        destFile = this._output;
-                    } 
-                    else 
-                    {
-                        destFile = "merged-graph" + this._outExt;
-                    }
-                    if (File.Exists(destFile) && !this._overwrite)
-                    {
-                        Console.Error.WriteLine("rdfConvert: Unable to output to '" + destFile + "' because a file already exists at this location and the -overwrite argument was not used");
-                    }
-                    else
-                    {
-                        try
-                        {
-                            this._writer.Save(mergedGraph, destFile);
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.Error.WriteLine("rdfConvert: Unable to output to '" + destFile + "' due to the following error:");
-                            Console.Error.WriteLine("rdfConvert: Error: " + ex.Message);
-                            if (this._debug) this.DebugErrors(ex);
-                        }
-                    }
-                }
-            }
+            Console.WriteLine("rdfConvert: Not Yet Implemented");
         }
 
         private bool SetOptions(String[] args)
@@ -313,11 +81,7 @@ namespace VDS.RDF.Utilities.Convert
             //Look through the arguments to see what we've been asked to do
             foreach (String arg in args)
             {
-                if (arg.StartsWith("-uri:"))
-                {
-                    this._inputs.Add(arg);
-                }
-                else if (arg.StartsWith("-hs"))
+                if (arg.StartsWith("-hs"))
                 {
                     if (arg.Contains(':'))
                     {
@@ -380,68 +144,15 @@ namespace VDS.RDF.Utilities.Convert
                     this._options.Add(new StylesheetOption(stylesheet));
 
                 }
-                else if (arg.Equals("-merge"))
-                {
-                    this._merge = true;
-                }
                 else if (arg.Equals("-overwrite"))
                 {
                     this._overwrite = true;
                 }
-                else if (arg.Equals("-dataset"))
-                {
-                    this._dataset = true;
-                    this._merge = true;
-                }
                 else if (arg.StartsWith("-out:") || arg.StartsWith("-output:"))
                 {
-                    this._output = arg.Substring(arg.IndexOf(':') + 1);
-                    //If the Writers have not been set then we'll set them now
-                    if (this._writer == null && this._storeWriter == null)
-                    {
-                        String format;
-                        try
-                        {
-                            format = MimeTypesHelper.GetMimeType(Path.GetExtension(this._output));
-                        }
-                        catch (RdfException)
-                        {
-                            Console.Error.WriteLine("rdfConvert: The File Extension '" + Path.GetExtension(this._output) + "' is not permissible since dotNetRDF cannot infer a MIME type from the extension");
-                            return false;
-                        }
-                        try
-                        {
-                            this._writer = MimeTypesHelper.GetWriter(format);
-                        }
-                        catch (RdfException)
-                        {
-                            //Supress this error
-                        }
-                        try
-                        {
-                            this._storeWriter = MimeTypesHelper.GetStoreWriter(format);
-                            if (this._writer == null)
-                            {
-                                this._merge = true;
-                            }
-                            else if (this._writer is NTriplesWriter && !Path.GetExtension(this._output).Equals(".nt"))
-                            {
-                                this._writer = null;
-                                this._merge = true;
-                            }
-                        }
-                        catch (RdfException)
-                        {
-                            //Suppress this error
-                        }
-                        if (this._writer == null && this._storeWriter == null)
-                        {
-                            Console.Error.WriteLine("rdfConvert: The MIME Type '" + format + "' is not permissible since dotNetRDF does not support outputting in that format");
-                            return false;
-                        }
-                    }
+                    this._outputFilename = arg.Substring(arg.IndexOf(':') + 1);
                 }
-                else if (arg.StartsWith("-outformat:"))
+                else if (arg.StartsWith("-format:"))
                 {
                     String format = arg.Substring(arg.IndexOf(':') + 1);
                     if (!format.Contains("/"))
@@ -450,53 +161,19 @@ namespace VDS.RDF.Utilities.Convert
                         {
                             format = MimeTypesHelper.GetMimeType(format);
                         }
-                        catch (RdfException)
+                        catch
                         {
-                            Console.Error.WriteLine("rdfConvert: The File Extension '" + format + "' is not permissible since dotNetRDF cannot infer a MIME type from the extension");
+                            Console.Error.WriteLine("rdfConvert: Error: The File Extension '" + format + "' is not permissible since dotNetRDF cannot infer a MIME type from the extension");
                             return false;
                         }
                     }
                     //Validate the MIME Type
                     if (!IsValidMimeType(format))
                     {
-                        Console.Error.WriteLine("rdfConvert: The MIME Type '" + format + "' is not permissible since dotNetRDF does not support outputting in that format");
+                        Console.Error.WriteLine("rdfConvert: Error: The MIME Type '" + format + "' is not permissible since dotNetRDF does not support outputting in that format");
                         return false;
                     }
-                    try
-                    {
-                        this._writer = MimeTypesHelper.GetWriter(format);
-                        this._outExt = MimeTypesHelper.GetFileExtension(this._writer);
-                    }
-                    catch (RdfException)
-                    {
-                        //Supress this error
-                    }
-                    try
-                    {
-                        this._storeWriter = MimeTypesHelper.GetStoreWriter(format);
-                        if (this._writer == null)
-                        {
-                            //In the event that we can't get a valid Writer then individual graphs
-                            //will be put into a Store and output as a Dataset
-                            this._merge = true;
-                            this._outExt = MimeTypesHelper.GetFileExtension(this._storeWriter);
-                        }
-                        else if (this._writer is NTriplesWriter && (!format.Equals("nt") || !format.Equals(".nt") || !format.Equals("text/plain")))
-                        {
-                            this._writer = null;
-                            this._merge = true;
-                            this._outExt = MimeTypesHelper.GetFileExtension(this._storeWriter);
-                        }
-                    }
-                    catch (RdfException)
-                    {
-                        //Suppress this error
-                    }
-                    if (this._writer == null && this._storeWriter == null)
-                    {
-                        Console.Error.WriteLine("rdfConvert: The MIME Type '" + format + "' is not permissible since dotNetRDF does not support outputting in that format");
-                        return false;
-                    }
+                    this._outFormat = format;
                 }
                 else if (arg.StartsWith("-outext:"))
                 {
@@ -529,39 +206,50 @@ namespace VDS.RDF.Utilities.Convert
                 }
                 else
                 {
-                    //Anything else is treated as an input file
-                    this._inputs.Add(arg);
+                    //Anything else is treated as an input
+                    if (arg.Contains("://"))
+                    {
+                        try
+                        {
+                            this._inputs.Add(new UriInput(new Uri(arg)));
+                        }
+                        catch (UriFormatException uriEx)
+                        {
+                            Console.Error.WriteLine("rdfConvert: Error: The Input '" + arg + "' which rdfConvert assumed to be a URI is not a valid URI - " + uriEx.Message);
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        this._inputs.Add(new FileInput(arg));
+                    }
                 }
             }
 
             //If there are no this._inputs then we'll abort
             if (this._inputs.Count == 0)
             {
-                Console.Error.WriteLine("rdfConvert: No Inputs were provided - please provide one/more files or URIs you wish to convert");
+                Console.Error.WriteLine("rdfConvert: Abort: No Inputs were provided - please provide one/more files or URIs you wish to convert");
                 return false;
             }
 
             //If there are no writers specified then we'll abort
-            if (this._writer == null && this._storeWriter == null)
+            if (this._outFormat == null)
             {
-                Console.Error.WriteLine("rdfConvert: Aborting since no output options have been specified, use the -out:filename or -outformat: arguments to specify output format");
+                Console.Error.WriteLine("rdfConvert: Abort: Aborting since no output options have been specified, use the -out:filename or -outformat: arguments to specify output format");
                 return false;
             }
 
+            //Ensure Output Extension (if specified) is OK
             if (!this._outExt.Equals(String.Empty))
             {
                 if (!this._outExt.StartsWith(".")) this._outExt = "." + this._outExt;
             }
-            else if (!this._output.Equals(String.Empty))
-            {
-                this._outExt = Path.GetExtension(this._output);
-            }
 
-            //Apply the Options to the Writers
-            foreach (IConversionOption option in this._options)
+            //If more than one input and an Output Filename be sure to strip any Extension from the Filename
+            if (this._inputs.Count > 1 && !this._outputFilename.Equals(String.Empty))
             {
-                if (this._writer != null) option.Apply(this._writer);
-                if (this._storeWriter != null) option.Apply(this._storeWriter);
+                this._outputFilename = Path.GetFileNameWithoutExtension(this._outputFilename);
             }
 
             return true;
@@ -576,65 +264,62 @@ namespace VDS.RDF.Utilities.Convert
             Console.WriteLine("rdfConvert input1 [input2 [input3 [...]]] (-out:filename.ext | -outformat:mime/type) [options]");
             Console.WriteLine();
             Console.WriteLine("e.g. rdfConvert input.rdf -out:output.ttl");
-            Console.WriteLine("e.g. rdfConvert input1.rdf input2.ttl input3.n3 -outformat:text/html");
+            Console.WriteLine("e.g. rdfConvert input1.rdf input2.ttl input3.n3 -format:text/html");
+            Console.WriteLine("e.g. rdfConvert input.rdf -ext:n3");
             Console.WriteLine();
-            Console.WriteLine("You can use URIs as input by prefixing the uri with the -uri: flag e.g.");
-            Console.WriteLine("rdfConvert -uri:http://example.org/something -out:something.rdf");
+            Console.WriteLine("You can use URIs as input just by stating URIs (anything with a :// in it will be assumed to be a URI) e.g.");
+            Console.WriteLine("rdfConvert http://example.org/something -out:something.rdf");
             Console.WriteLine();
             Console.WriteLine("Notes");
             Console.WriteLine("-----");
             Console.WriteLine();
-            Console.WriteLine("1. If you retrieve a single URI then you must use the -out:filename.ext option to set the file to output to");
-            Console.WriteLine("2. If your inputs are a mixture of Graphs and Datasets and the output format may be used for Graphs/Datasets (e.g. CSV) then you must specify the -dataset option to batch convert datasets or each graph in the dataset will be output individually");
+            Console.WriteLine("rdfConvert may be used to convert between Dataset (NQuads, TriG etc) formats as well as Graph formats");
             Console.WriteLine();
             Console.WriteLine("Supported Options");
             Console.WriteLine("-----------------");
             Console.WriteLine();
-            Console.WriteLine(" -c[:integer]");
-            Console.WriteLine(" Sets the Compression Level used by compressing writers, if specified without an integer parameter then defaults to default compression");
+            Console.WriteLine("-best");
+            Console.WriteLine("Causes the utility to attempt the best conversion it can (i.e. most compressed syntax) taking into account other options like compression level.  May cause conversions to be slower and require more memory");
             Console.WriteLine();
-            Console.WriteLine(" -dataset");
-            Console.WriteLine(" Specifies that all Graphs retrieved from input should be output as an RDF Dataset");
+            Console.WriteLine("-c[:integer]");
+            Console.WriteLine("Sets the Compression Level used by compressing writers, if specified without an integer parameter then defaults to default compression");
             Console.WriteLine();
-            Console.WriteLine(" -debug");
-            Console.WriteLine(" Prints more detailed error messages if errors occur");
+            Console.WriteLine("-debug");
+            Console.WriteLine("Prints more detailed error messages if errors occur");
             Console.WriteLine();
-            Console.WriteLine(" -help");
-            Console.WriteLine(" Prints this usage summary if it is the only argument, otherwise ignored");
+            Console.WriteLine("-ext:ext");
+            Console.WriteLine("Overrides the default file extension which will be automatically determined based on the -out/-format option.  Must occur after the -out/-format option or it may be ignored");
             Console.WriteLine();
-            Console.WriteLine(" -hs[:(true|false)]");
-            Console.WriteLine(" Enables/Disables High Speed write mode, if specified without a boolean parameter then defaults to enabled");
+            Console.WriteLine("-format:(mime/type|ext)");
+            Console.WriteLine("Specifies an output format in terms of a MIME Type or a file extension, if the MIME type/file extension does not correspond to a supported RDF Graph/Dataset format then the utility aborts.");
             Console.WriteLine();
-            Console.WriteLine(" -merge");
-            Console.WriteLine(" Specifies that all Graphs retrieved from input should be merged into a single Graph and output as such");
+            Console.WriteLine("-help");
+            Console.WriteLine("Prints this usage summary if it is the only argument, otherwise ignored");
             Console.WriteLine();
-            Console.WriteLine(" -nobom");
-            Console.WriteLine(" Specifies that no BOM should be used for UTF-8 Output");
+            Console.WriteLine("-hs[:(true|false)]");
+            Console.WriteLine("Enables/Disables High Speed write mode, if specified without a boolean parameter then defaults to enabled");
             Console.WriteLine();
-            Console.WriteLine(" -nocache");
-            Console.WriteLine(" Specifies that UriLoader caching is disabled");
+            Console.WriteLine("-nobom");
+            Console.WriteLine("Specifies that no BOM should be used for UTF-8 Output");
             Console.WriteLine();
-            Console.WriteLine(" -out:filename.ext");
-            Console.WriteLine(" -output:filename.ext");
-            Console.WriteLine(" Specifies a specific file to output to, if more than one input is specified then this parameter may not be honoured depending on the inputs and other options");
+            Console.WriteLine("-nocache");
+            Console.WriteLine("Specifies that caching of input URIs is disabled i.e. forces the RDF to be retrieved directly from the URI bypassing any locally cached copy");
             Console.WriteLine();
-            Console.WriteLine(" -outext:ext");
-            Console.WriteLine(" Overrides the default file extension which will be automatically determined based on the -out/-outformat option.  Must occur after the -out/-outformat option or it may be ignored");
+            Console.WriteLine("-out:filename.ext");
+            Console.WriteLine("-output:filename.ext");
+            Console.WriteLine("Specifies a specific file to output to (assuming only 1 input), if more than one input is specified then this parameter sets the base filename for outputs (extension ignored in this case)");
             Console.WriteLine();
-            Console.WriteLine(" -outformat:(mime/type|ext)");
-            Console.WriteLine(" Specifies an output format in terms of a MIME Type (or a file extension), if the MIME type/file extension does not correspond to a supported RDF Graph/Dataset format then the utility aborts.");
+            Console.WriteLine("-overwrite");
+            Console.WriteLine("Specifies that the utility can overwrite existing files");
             Console.WriteLine();
-            Console.WriteLine(" -overwrite");
-            Console.WriteLine(" Specifies that the utility can overwrite existing files");
+            Console.WriteLine("-pp[:(true|false)]");
+            Console.WriteLine("Enables/Disables Pretty Printing, if specified without a boolean parameter then defaults to enabled");
             Console.WriteLine();
-            Console.WriteLine(" -pp[:(true|false)]");
-            Console.WriteLine(" Enables/Disables Pretty Printing, if specified without a boolean parameter then defaults to enabled");
+            Console.WriteLine("-rapper");
+            Console.WriteLine("Runs rdfConvert in rapper compatibility mode, type rdfConvert -rapper -h for further information.  Must be the first argument or ignored");
             Console.WriteLine();
-            Console.WriteLine(" -rapper");
-            Console.WriteLine(" Runs rdfConvert in rapper compatibility mode, type rdfConvert -rapper -h for further information.  Must be the first argument or ignored");
-            Console.WriteLine();
-            Console.WriteLine(" -warnings");
-            Console.WriteLine(" Shows Warning Messages output by Parsers and Serializers");
+            Console.WriteLine("-warnings");
+            Console.WriteLine("Shows Warning Messages output by Parsers and Serializers");
         }
 
         public static bool IsValidMimeType(String mimeType)
