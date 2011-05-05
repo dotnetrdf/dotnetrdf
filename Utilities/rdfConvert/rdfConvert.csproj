@@ -47,10 +47,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConversionOption.cs" />
+    <Compile Include="Inputs\BaseInput.cs" />
+    <Compile Include="Inputs\FileInput.cs" />
+    <Compile Include="Inputs\IInput.cs" />
+    <Compile Include="Inputs\UriInput.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RapperConvert.cs" />
     <Compile Include="RdfConvert.cs" />
+    <Compile Include="SaveOnCompletionHandler.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Libraries\core\dotNetRDF.csproj">

@@ -36,6 +36,14 @@ namespace VDS.RDF.Parsing.Handlers
             }
         }
 
+        protected IGraph Graph
+        {
+            get
+            {
+                return this._g;
+            }
+        }
+
         protected override void StartRdfInternal()
         {
             if (this._g.IsEmpty)
