@@ -591,6 +591,7 @@ namespace VDS.RDF.Writing
         private void GenerateLiteralOutput(RdfXmlWriterContext context, ILiteralNode lit, XmlElement pred, XmlDocument doc)
         {
             pred.InnerText = WriterHelper.EncodeForXml(lit.Value);
+            //pred.InnerText = XmlConvert.ToString(lit.Value);
 
             if (!lit.Language.Equals(String.Empty))
             {
@@ -614,7 +615,7 @@ namespace VDS.RDF.Writing
                 else
                 {
                     XmlAttribute dt = doc.CreateAttribute("rdf:datatype");
-                    dt.Value = WriterHelper.EncodeForXml(lit.DataType.ToString());
+                    dt.Value = lit.DataType.ToString();//WriterHelper.EncodeForXml(lit.DataType.ToString());
                     pred.Attributes.Append(dt);
                 }
             }

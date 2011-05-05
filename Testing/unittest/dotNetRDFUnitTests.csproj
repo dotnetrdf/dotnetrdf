@@ -188,6 +188,7 @@
     <Compile Include="Web\ETagTests.cs" />
     <Compile Include="Web\ServiceDescription.cs" />
     <Compile Include="Writing\OwlOneOf.cs" />
+    <Compile Include="Writing\RdfXmlWriterTests.cs" />
     <Compile Include="Writing\SchemaWriter.cs" />
     <Compile Include="Writing\SparqlXmlTests.cs" />
     <Compile Include="Writing\StringEscapingTest.cs" />

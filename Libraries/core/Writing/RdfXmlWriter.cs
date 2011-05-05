@@ -218,7 +218,7 @@ namespace VDS.RDF.Writing
 
             //Get the Triples as a Sorted List
             List<Triple> ts = context.Graph.Triples.Where(t => !context.TriplesDone.Contains(t)).ToList();
-            ts.Sort();
+            ts.Sort(new RdfXmlTripleComparer());
 
             //Variables we need to track our writing
             INode lastSubj, lastPred, lastObj;
@@ -593,7 +593,7 @@ namespace VDS.RDF.Writing
             if (!lit.Language.Equals(String.Empty))
             {
                 context.Writer.WriteAttributeString("xml", "lang", null, lit.Language);
-                context.Writer.WriteRaw(WriterHelper.EncodeForXml(lit.Value));
+                context.Writer.WriteString(lit.Value);
             }
             else if (lit.DataType != null)
             {
@@ -608,7 +608,7 @@ namespace VDS.RDF.Writing
                     String dtUri = this.GenerateUriRef(context, lit.DataType, UriRefType.UriRef, out refType);
                     if (refType == UriRefType.Uri)
                     {
-                        context.Writer.WriteAttributeString("rdf", "datatype", null, WriterHelper.EncodeForXml(lit.DataType.ToString()));
+                        context.Writer.WriteAttributeString("rdf", "datatype", null, lit.DataType.ToString());
                     }
                     else if (refType == UriRefType.UriRef)
                     {
@@ -616,12 +616,13 @@ namespace VDS.RDF.Writing
                         context.Writer.WriteRaw(dtUri);
                         context.Writer.WriteEndAttribute();
                     }
-                    context.Writer.WriteRaw(lit.Value);
+                    context.Writer.WriteString(lit.Value);
                 }
             }
             else
             {
-                context.Writer.WriteRaw(WriterHelper.EncodeForXml(lit.Value));
+                //context.Writer.WriteRaw(WriterHelper.EncodeForXml(lit.Value));
+                context.Writer.WriteString(lit.Value);
             }
         }
 
@@ -672,10 +673,12 @@ namespace VDS.RDF.Writing
                     {
                         //Can only use entities for non-temporary Namespaces as Temporary Namespaces won't have Entities defined
                         uriref = "&" + uriref.Replace(':', ';');
+                        outType = UriRefType.UriRef;
                     }
                     else
                     {
                         uriref = context.NamespaceMap.GetNamespaceUri(prefix).ToString() + uriref.Substring(uriref.IndexOf(':') + 1);
+                        outType = UriRefType.Uri;
                     }
                 }
                 else
@@ -683,15 +686,17 @@ namespace VDS.RDF.Writing
                     if (context.NamespaceMap.HasNamespace(String.Empty))
                     {
                         uriref = context.NamespaceMap.GetNamespaceUri(String.Empty).ToString() + uriref.Substring(1);
+                        outType = UriRefType.Uri;
                     }
                     else
                     {
                         String baseUri = context.Graph.BaseUri.ToString();
                         if (!baseUri.EndsWith("#")) baseUri += "#";
                         uriref = baseUri + uriref;
+                        outType = UriRefType.Uri;
                     }
                 }
-                outType = UriRefType.UriRef;
+                //outType = UriRefType.UriRef;
             }
 
             return uriref;
@@ -748,25 +753,6 @@ namespace VDS.RDF.Writing
                 context.Writer.WriteStartElement(qname);
             }
         }
-
-        //private XmlAttribute GenerateAttribute(IGraph g, String qname, XmlDocument doc)
-        //{
-        //    if (qname.Contains(':'))
-        //    {
-        //        if (qname.StartsWith(":"))
-        //        {
-        //            return doc.CreateAttribute(qname.Substring(1));
-        //        }
-        //        else
-        //        {
-        //            return doc.CreateAttribute(qname, g.NamespaceMap.GetNamespaceUri(qname.Substring(0, qname.IndexOf(':'))).ToString());
-        //        }
-        //    }
-        //    else
-        //    {
-        //        return doc.CreateAttribute(qname);
-        //    }
-        //}
 
         private Dictionary<INode, String> FindTypeReferences(RdfXmlWriterContext context)
         {
@@ -848,5 +834,72 @@ namespace VDS.RDF.Writing
         {
             return "RDF/XML (Streaming Writer)";
         }
+    }
+
+    class RdfXmlTripleComparer : IComparer<Triple>, IComparer<INode>
+    {
+
+        #region IComparer<Triple> Members
+
+        public int Compare(Triple x, Triple y)
+        {
+            int c = this.Compare(x.Subject, y.Subject);
+            if (c == 0)
+            {
+                c = this.Compare(x.Predicate, y.Predicate);
+                if (c == 0)
+                {
+                    c = this.Compare(x.Object, y.Object);
+                }
+            }
+            return c;
+        }
+
+        #endregion
+
+        #region IComparer<INode> Members
+
+        public int Compare(INode x, INode y)
+        {
+            if (x.NodeType == y.NodeType)
+            {
+                return x.CompareTo(y);
+            }
+            else
+            {
+                switch (x.NodeType)
+                {
+                    case NodeType.Uri:
+                        //URIs are less than everything
+                        return -1;
+                    case NodeType.Blank:
+                        if (y.NodeType == NodeType.Uri)
+                        {
+                            //Blanks and greater than URIs
+                            return 1;
+                        }
+                        else
+                        {
+                            //Blanks are less than everything else
+                            return -1;
+                        }
+                    case NodeType.Literal:
+                        if (y.NodeType == NodeType.Uri || y.NodeType == NodeType.Blank)
+                        {
+                            //Literals are greater than Blanks and URIs
+                            return 1;
+                        }
+                        else
+                        {
+                            //Literals are less than than everything else
+                            return -1;
+                        }
+                    default:
+                        throw new RdfOutputException("Cannot output an RDF Graph containing non-standard Node types as RDF/XML");
+                }
+            }
+        }
+
+        #endregion
     }
 }

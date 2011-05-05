@@ -5,6 +5,7 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
+using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Test
@@ -744,5 +745,36 @@ namespace VDS.RDF.Test
             c = v.CompareTo(u);
             Assert.AreEqual(c * -1, u.CompareTo(v), "Expected u compareTo v to be inverse of v compareTo u");
         }
+
+        //[TestMethod]
+        //public void NodeCompareToRdfXml()
+        //{
+        //    Graph g = new Graph();
+        //    List<INode> nodes = new List<INode>()
+        //    {
+        //        g.CreateBlankNode(),
+        //        g.CreateUriNode("rdf:type"),
+        //        g.CreateBlankNode("node"),
+        //        g.CreateUriNode("rdfs:Class"),
+        //        g.CreateLiteralNode("string")
+        //    };
+
+        //    NTriplesFormatter formatter = new NTriplesFormatter();
+
+        //    Console.WriteLine("Normal Sort Order:");
+        //    nodes.Sort();
+        //    foreach (INode n in nodes)
+        //    {
+        //        Console.WriteLine(n.ToString(formatter));
+        //    }
+
+        //    Console.WriteLine();
+        //    Console.WriteLine("RDF/XML Sort Order:");
+        //    nodes.Sort(new RdfXmlTripleComparer());
+        //    foreach (INode n in nodes)
+        //    {
+        //        Console.WriteLine(n.ToString(formatter));
+        //    }
+        //}
     }
 }
