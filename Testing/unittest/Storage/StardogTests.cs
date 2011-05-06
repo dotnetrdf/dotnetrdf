@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using VDS.RDF.Query;
 using VDS.RDF.Storage;
 using VDS.RDF.Writing.Formatting;
 
@@ -195,6 +196,7 @@ namespace VDS.RDF.Test.Storage
         }
 
         [TestMethod, ExpectedException(typeof(NotSupportedException))]
+        //[TestMethod]
         public void StorageStardogDeleteNamedGraph()
         {
             try
@@ -224,6 +226,55 @@ namespace VDS.RDF.Test.Storage
                 stardog.LoadGraph(i, new Uri("http://example.org/tempGraph"));
 
                 Assert.IsTrue(i.IsEmpty, "Retrieved Graph should be empty since it has been deleted");
+            }
+            finally
+            {
+                Options.UseBomForUtf8 = true;
+            }
+        }
+
+        [TestMethod]
+        public void StorageStardogReasoningQL()
+        {
+            try
+            {
+                Options.UseBomForUtf8 = false;
+
+                StardogConnector stardog = this.GetConnection();
+
+                Graph g = new Graph();
+                g.LoadFromFile("InferenceTest.ttl");
+                g.BaseUri = new Uri("http://example.org/reasoning");
+                stardog.SaveGraph(g);
+
+                String query = "PREFIX rdfs: <" + NamespaceMapper.RDFS + "> SELECT * WHERE { GRAPH <http://example.org/reasoning> { ?class rdfs:subClassOf <http://example.org/vehicles/Vehicle> } }";
+                Console.WriteLine(query);
+                Console.WriteLine();
+
+                SparqlResultSet resultsNoReasoning = stardog.Query(query) as SparqlResultSet;
+                if (resultsNoReasoning != null)
+                {
+                    Console.WriteLine("Results without Reasoning");
+                    TestTools.ShowResults(resultsNoReasoning);
+                }
+                else
+                {
+                    Assert.Fail("Did not get a SPARQL Result Set as expected");
+                }
+
+                stardog.Reasoning = StardogReasoningMode.QL;
+                SparqlResultSet resultsWithReasoning = stardog.Query(query) as SparqlResultSet;
+                if (resultsWithReasoning != null)
+                {
+                    Console.WriteLine("Results with Reasoning");
+                    TestTools.ShowResults(resultsWithReasoning);
+                }
+                else
+                {
+                    Assert.Fail("Did not get a SPARQL Result Set as expected");
+                }
+
+                Assert.IsTrue(resultsWithReasoning.Count >= resultsNoReasoning.Count, "Reasoning should yield as many if not more results");
             }
             finally
             {

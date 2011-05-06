@@ -55,6 +55,17 @@ using VDS.RDF.Writing.Formatting;
 namespace VDS.RDF.Storage
 {
     /// <summary>
+    /// Reasoning modes supported by Stardog
+    /// </summary>
+    public enum StardogReasoningMode
+    {
+        //No Reasoning (default)
+        None,
+        //OWL-QL Reasoning
+        QL
+    }
+
+    /// <summary>
     /// Class for connecting to a Stardog store via HTTP
     /// </summary>
     /// <remarks>
@@ -73,6 +84,7 @@ namespace VDS.RDF.Storage
         private String _username;
         private String _pwd;
         private bool _hasCredentials = false;
+        private StardogReasoningMode _reasoning = StardogReasoningMode.None;
 
         private ThreadSafeReference<String> _activeTrans = new ThreadSafeReference<string>();
 
@@ -85,7 +97,8 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="baseUri">Base Uri of the Server</param>
         /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
-        public StardogConnector(String baseUri, String kbID)
+        /// <param name="reasoning">Reasoning Mode</param>
+        public StardogConnector(String baseUri, String kbID, StardogReasoningMode reasoning)
         {
             this._baseUri = baseUri;
             if (!this._baseUri.EndsWith("/")) this._baseUri += "/";
@@ -102,15 +115,34 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="baseUri">Base Uri of the Server</param>
         /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
+        public StardogConnector(String baseUri, String kbID)
+            : this(baseUri, kbID, StardogReasoningMode.None) { }
+
+        /// <summary>
+        /// Creates a new connection to a Stardog Store
+        /// </summary>
+        /// <param name="baseUri">Base Uri of the Server</param>
+        /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
         /// <param name="username">Username</param>
         /// <param name="password">Password</param>
-        public StardogConnector(String baseUri, String kbID, String username, String password)
+        /// <param name="reasoning">Reasoning Mode</param>
+        public StardogConnector(String baseUri, String kbID, StardogReasoningMode reasoning, String username, String password)
             : this(baseUri, kbID)
         {
             this._username = username;
             this._pwd = password;
             this._hasCredentials = true;
         }
+
+        /// <summary>
+        /// Creates a new connection to a Stardog Store
+        /// </summary>
+        /// <param name="baseUri">Base Uri of the Server</param>
+        /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
+        /// <param name="username">Username</param>
+        /// <param name="password">Password</param>
+        public StardogConnector(String baseUri, String kbID, String username, String password)
+            : this(baseUri, kbID, StardogReasoningMode.None, username, password) { }
 
         /// <summary>
         /// Gets the Base URI of the Stardog server
@@ -124,7 +156,22 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Makes a SPARQL Query against the underlying Store
+        /// Gets/Sets the reasoning mode to use for queries
+        /// </summary>
+        public StardogReasoningMode Reasoning
+        {
+            get
+            {
+                return this._reasoning;
+            }
+            set
+            {
+                this._reasoning = value;
+            }
+        }
+
+        /// <summary>
+        /// Makes a SPARQL Query against the underlying Store using whatever reasoning mode is currently in-use
         /// </summary>
         /// <param name="sparqlQuery">Sparql Query</param>
         /// <returns></returns>
@@ -142,11 +189,13 @@ namespace VDS.RDF.Storage
                 {
                     queryParams.Add("query", sparqlQuery);
 
-                    request = this.CreateRequest(this._kb + tID + "/query", MimeTypesHelper.HttpRdfOrSparqlAcceptHeader, "GET", queryParams);
+                    //request = this.CreateRequest(this._kb + tID + "/query", MimeTypesHelper.HttpRdfOrSparqlAcceptHeader, "GET", queryParams);
+                    request = this.CreateRequest(this._kb + tID + "/query", MimeTypesHelper.Any, "GET", queryParams);
                 }
                 else
                 {
-                    request = this.CreateRequest(this._kb + tID + "/query", MimeTypesHelper.HttpRdfOrSparqlAcceptHeader, "POST", queryParams);
+                    //request = this.CreateRequest(this._kb + tID + "/query", MimeTypesHelper.HttpRdfOrSparqlAcceptHeader, "POST", queryParams);
+                    request = this.CreateRequest(this._kb + tID + "/query", MimeTypesHelper.Any, "POST", queryParams);
 
                     //Build the Post Data and add to the Request Body
                     request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
@@ -733,7 +782,7 @@ namespace VDS.RDF.Storage
             request.Method = method;
 
             //Add the special Stardog Headers
-            request.Headers.Add("SD-Connection-String", "kb=" + this._kb + "; persist=sync");
+            request.Headers.Add("SD-Connection-String", "kb=" + this._kb + ";persist=sync" + this.GetReasoningParameter());
             request.Headers.Add("SD-Protocol", "1.0");
 
             //Add Credentials if needed
@@ -744,6 +793,18 @@ namespace VDS.RDF.Storage
             }
 
             return request;
+        }
+
+        private String GetReasoningParameter()
+        {
+            switch (this._reasoning)
+            {
+                case StardogReasoningMode.QL:
+                    return ";reasoning=QL";
+                case StardogReasoningMode.None:
+                default:
+                    return String.Empty;
+            }
         }
 
         #region Stardog Transaction Support

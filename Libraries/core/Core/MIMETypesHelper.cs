@@ -374,7 +374,7 @@ namespace VDS.RDF
                     }
                 }
                 if (output[output.Length - 1] == ',') output.Remove(output.Length - 1, 1);
-                output.Append(";q=1.0,*/*;q=0.5");
+                output.Append(",*/*;q=0.5");
 
                 return output.ToString();
             }
@@ -427,7 +427,7 @@ namespace VDS.RDF
                     }
                 }
                 if (output[output.Length - 1] == ',') output.Remove(output.Length - 1, 1);
-                output.Append(";q=1.0,*/*;q=0.5");
+                output.Append(",*/*;q=0.5");
 
                 return output.ToString();
             }
