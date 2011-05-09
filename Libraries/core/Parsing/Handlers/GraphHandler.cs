@@ -21,6 +21,9 @@ namespace VDS.RDF.Parsing.Handlers
             this._g = g;
         }
 
+        /// <summary>
+        /// Gets the Base URI of the Graph currently being parsed into
+        /// </summary>
         public Uri BaseUri
         {
             get
@@ -36,6 +39,9 @@ namespace VDS.RDF.Parsing.Handlers
             }
         }
 
+        /// <summary>
+        /// Gets the Graph that this handler wraps
+        /// </summary>
         protected IGraph Graph
         {
             get
@@ -113,6 +119,9 @@ namespace VDS.RDF.Parsing.Handlers
             return true;
         }
 
+        /// <summary>
+        /// Gets that this Handler accepts all Triples
+        /// </summary>
         public override bool AcceptsAll
         {
             get 

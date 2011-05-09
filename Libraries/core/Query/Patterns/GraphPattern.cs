@@ -200,6 +200,14 @@ namespace VDS.RDF.Query.Patterns
             }
         }
 
+        /// <summary>
+        /// Swaps the position of the two given Triple Patterns
+        /// </summary>
+        /// <param name="i">First Position</param>
+        /// <param name="j">Second Position</param>
+        /// <remarks>
+        /// Intended for use by Query Optimisers
+        /// </remarks>
         public void SwapTriplePatterns(int i, int j)
         {
             ITriplePattern temp = this._triplePatterns[i];
@@ -207,6 +215,14 @@ namespace VDS.RDF.Query.Patterns
             this._triplePatterns[j] = temp;
         }
 
+        /// <summary>
+        /// Inserts a Filter at a given position
+        /// </summary>
+        /// <param name="filter">Filter</param>
+        /// <param name="i">Position to insert at</param>
+        /// <remarks>
+        /// Intended for use by Query Optimisers
+        /// </remarks>
         public void InsertFilter(ISparqlFilter filter, int i)
         {
             if (!this._unplacedFilters.Contains(filter)) throw new RdfQueryException("Cannot Insert a Filter that is not currentlyy an unplaced Filter in this Graph Pattern");
@@ -215,6 +231,14 @@ namespace VDS.RDF.Query.Patterns
             this._triplePatterns.Insert(i, p);
         }
 
+        /// <summary>
+        /// Inserts an Assignment at a given position
+        /// </summary>
+        /// <param name="assignment">Assignment</param>
+        /// <param name="i">Position to insert at</param>
+        /// <remarks>
+        /// Intended for use by Query Optimisers
+        /// </remarks>
         public void InsertAssignment(IAssignmentPattern assignment, int i)
         {
             if (!this._unplacedAssignments.Contains(assignment)) throw new RdfQueryException("Cannot Insert an Assignment that is not currently an unplaced Assignment in this Graph Pattern");
@@ -388,6 +412,9 @@ namespace VDS.RDF.Query.Patterns
             }
         }
 
+        /// <summary>
+        /// Determines whether the Graph Pattern has any kind of Modifier (GRAPH, MINUS, OPTIONAL etc) applied
+        /// </summary>
         public bool HasModifier
         {
             get
@@ -590,16 +617,31 @@ namespace VDS.RDF.Query.Patterns
             throw new NotSupportedException("The old fixed optimiser is no longer supported");
         }
 
+        /// <summary>
+        /// Optimises the Graph Pattern using the current global optimiser
+        /// </summary>
         public void Optimise()
         {
             this.Optimise(SparqlOptimiser.QueryOptimiser);
         }
 
+        /// <summary>
+        /// Optimises the Graph Pattern using the given optimiser
+        /// </summary>
+        /// <param name="optimiser">Query Optimiser</param>
         public void Optimise(IQueryOptimiser optimiser)
         {
             optimiser.Optimise(this, Enumerable.Empty<String>());
         }
 
+        /// <summary>
+        /// Optimises the Graph Pattern using the given optimiser and with the given variables
+        /// </summary>
+        /// <param name="optimiser">Query Optimiser</param>
+        /// <param name="vars">Variables</param>
+        /// <remarks>
+        /// The <paramref name="vars">vars</paramref> parameter contains Variables mentioned in the parent Graph Pattern (if any) that can be used to guide optimisation of child graph patterns
+        /// </remarks>
         public void Optimise(IQueryOptimiser optimiser, IEnumerable<String> vars)
         {
             optimiser.Optimise(this, vars);

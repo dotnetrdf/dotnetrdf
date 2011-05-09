@@ -131,6 +131,9 @@ namespace VDS.RDF.Query.Algebra
             }
         }
 
+        /// <summary>
+        /// Gets whether this is an EXISTS join
+        /// </summary>
         public bool MustExist
         {
             get

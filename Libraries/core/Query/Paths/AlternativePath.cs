@@ -101,15 +101,11 @@ namespace VDS.RDF.Query.Paths
             return output.ToString();
         }
 
-        ///// <summary>
-        ///// Throws an error since a Path with alternatives is not transformable to an Algebra expression
-        ///// </summary>
-        ///// <param name="context">Transform Context</param>
-        //public override void ToAlgebra(PathTransformContext context)
-        //{
-        //    throw new RdfQueryException("Cannot transform a non-simple Path to an Algebra expression");
-        //}
-
+        /// <summary>
+        /// Converts a Path into its Algebra Form
+        /// </summary>
+        /// <param name="context">Path Transformation Context</param>
+        /// <returns></returns>
         public override ISparqlAlgebra ToAlgebra(PathTransformContext context)
         {
             PathTransformContext lhsContext = new PathTransformContext(context);

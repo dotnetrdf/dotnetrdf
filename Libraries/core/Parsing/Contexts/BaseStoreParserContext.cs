@@ -57,6 +57,11 @@ namespace VDS.RDF.Parsing.Contexts
         private NamespaceMapper _nsmap = new NamespaceMapper(true);
         private Uri _baseUri;
 
+        /// <summary>
+        /// Creates a new Store Parser Context
+        /// </summary>
+        /// <param name="handler">RDF Handler</param>
+        /// <param name="traceParsing">Whether to trace parsing</param>
         public BaseStoreParserContext(IRdfHandler handler, bool traceParsing)
         {
             if (handler == null) throw new ArgumentNullException("handler", "RDF Handler cannot be null");
@@ -64,6 +69,10 @@ namespace VDS.RDF.Parsing.Contexts
             this._traceParsing = traceParsing;
         }
 
+        /// <summary>
+        /// Creates a new Store Parser Context
+        /// </summary>
+        /// <param name="handler">RDF Handler</param>
         public BaseStoreParserContext(IRdfHandler handler)
             : this(handler, false) { }
 
@@ -97,6 +106,9 @@ namespace VDS.RDF.Parsing.Contexts
             }
         }
 
+        /// <summary>
+        /// Gets the RDF Handler that is in-use
+        /// </summary>
         public IRdfHandler Handler
         {
             get
@@ -105,6 +117,9 @@ namespace VDS.RDF.Parsing.Contexts
             }
         }
 
+        /// <summary>
+        /// Gets the Namespace Map for the parser context
+        /// </summary>
         public INamespaceMapper Namespaces
         {
             get
@@ -113,6 +128,9 @@ namespace VDS.RDF.Parsing.Contexts
             }
         }
 
+        /// <summary>
+        /// Gets the Base URI for the parser context
+        /// </summary>
         public Uri BaseUri
         {
             get

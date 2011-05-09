@@ -111,6 +111,11 @@ namespace VDS.RDF.Query.Paths
             }
         }
 
+        /// <summary>
+        /// Converts a Path into its Algebra Form
+        /// </summary>
+        /// <param name="context">Path Transformation Context</param>
+        /// <returns></returns>
         public override ISparqlAlgebra ToAlgebra(PathTransformContext context)
         {
             if (this._n > 0)
@@ -193,6 +198,11 @@ namespace VDS.RDF.Query.Paths
             return this._path.ToString() + "*";
         }
 
+        /// <summary>
+        /// Converts a Path into its Algebra Form
+        /// </summary>
+        /// <param name="context">Path Transformation Context</param>
+        /// <returns></returns>
         public override ISparqlAlgebra ToAlgebra(PathTransformContext context)
         {
             return new ZeroOrMorePath(context.Subject, context.Object, this._path);
@@ -242,6 +252,11 @@ namespace VDS.RDF.Query.Paths
             return this._path.ToString() + "?";
         }
 
+        /// <summary>
+        /// Converts a Path into its Algebra Form
+        /// </summary>
+        /// <param name="context">Path Transformation Context</param>
+        /// <returns></returns>
         public override ISparqlAlgebra ToAlgebra(PathTransformContext context)
         {
             PathTransformContext lhsContext = new PathTransformContext(context);
@@ -296,6 +311,11 @@ namespace VDS.RDF.Query.Paths
             return this._path.ToString() + "+";
         }
 
+        /// <summary>
+        /// Converts a Path into its Algebra Form
+        /// </summary>
+        /// <param name="context">Path Transformation Context</param>
+        /// <returns></returns>
         public override ISparqlAlgebra ToAlgebra(PathTransformContext context)
         {
             return new OneOrMorePath(context.Subject, context.Object, this._path);
@@ -351,6 +371,11 @@ namespace VDS.RDF.Query.Paths
             return this._path.ToString() + "{" + this._n + ",}";
         }
 
+        /// <summary>
+        /// Converts a Path into its Algebra Form
+        /// </summary>
+        /// <param name="context">Path Transformation Context</param>
+        /// <returns></returns>
         public override ISparqlAlgebra ToAlgebra(PathTransformContext context)
         {
             PatternItem tempVar = context.GetNextTemporaryVariable();
@@ -409,6 +434,11 @@ namespace VDS.RDF.Query.Paths
             return this._path.ToString() + "{," + this._n + "}";
         }
 
+        /// <summary>
+        /// Converts a Path into its Algebra Form
+        /// </summary>
+        /// <param name="context">Path Transformation Context</param>
+        /// <returns></returns>
         public override ISparqlAlgebra ToAlgebra(PathTransformContext context)
         {
             context.AddTriplePattern(new PropertyPathPattern(context.Subject, new NToM(this._path, 0, this._n), context.Object));
@@ -467,6 +497,11 @@ namespace VDS.RDF.Query.Paths
             return this._path.ToString() + "{" + this._n + "," + this._m + "}";
         }
 
+        /// <summary>
+        /// Converts a Path into its Algebra Form
+        /// </summary>
+        /// <param name="context">Path Transformation Context</param>
+        /// <returns></returns>
         public override ISparqlAlgebra ToAlgebra(PathTransformContext context)
         {
             ISparqlAlgebra complex = null;

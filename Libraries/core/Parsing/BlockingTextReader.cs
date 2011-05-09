@@ -57,8 +57,16 @@ namespace VDS.RDF.Parsing
         private bool _finished = false;
         private TextReader _reader;
 
+        /// <summary>
+        /// Default Buffer Size
+        /// </summary>
         public const int DefaultBufferSize = 1024;
 
+        /// <summary>
+        /// Creates a new Blocking Text Reader
+        /// </summary>
+        /// <param name="reader">Text Reader to wrap</param>
+        /// <param name="bufferSize">Buffer Size</param>
         public BlockingTextReader(TextReader reader, int bufferSize)
         {
             if (reader == null) throw new ArgumentNullException("reader", "Cannot read from a null TextReader");
@@ -67,15 +75,31 @@ namespace VDS.RDF.Parsing
             this._buffer = new char[bufferSize];
         }
 
+        /// <summary>
+        /// Creates a new Blocking Text Reader
+        /// </summary>
+        /// <param name="reader">Text Reader to wrap</param>
         public BlockingTextReader(TextReader reader)
             : this(reader, DefaultBufferSize) { }
 
+        /// <summary>
+        /// Creates a new Blocking Text Reader
+        /// </summary>
+        /// <param name="input">Input Stream</param>
+        /// <param name="bufferSize">Buffer Size</param>
         public BlockingTextReader(Stream input, int bufferSize)
             : this(new StreamReader(input), bufferSize) { }
 
+        /// <summary>
+        /// Creates a new Blocking Text Reader
+        /// </summary>
+        /// <param name="input">Input Stream</param>
         public BlockingTextReader(Stream input)
             : this(new StreamReader(input)) { }
 
+        /// <summary>
+        /// Fills the Buffer
+        /// </summary>
         private void FillBuffer()
         {
             this._pos = -1;
@@ -90,6 +114,13 @@ namespace VDS.RDF.Parsing
             }
         }
 
+        /// <summary>
+        /// Reads a sequence of characters from the underlying Text Reader in a blocking way
+        /// </summary>
+        /// <param name="buffer">Buffer</param>
+        /// <param name="index">Index at which to start writing to the Buffer</param>
+        /// <param name="count">Number of characters to read</param>
+        /// <returns>Number of characters read</returns>
         public override int ReadBlock(char[] buffer, int index, int count)
         {
             if (count == 0) return 0;
@@ -159,11 +190,25 @@ namespace VDS.RDF.Parsing
             }
         }
 
+        /// <summary>
+        /// Reads a sequence of characters from the underlying Text Reader
+        /// </summary>
+        /// <param name="buffer">Buffer</param>
+        /// <param name="index">Index at which to start writing to the Buffer</param>
+        /// <param name="count">Number of characters to read</param>
+        /// <returns>Number of characters read</returns>
+        /// <remarks>
+        /// Since this reader must always read in a blocking fashion this is equivalent to calling <see cref="BlockingTextReader.ReadBlock">ReadBlock()</see>
+        /// </remarks>
         public override int Read(char[] buffer, int index, int count)
         {
             return this.ReadBlock(buffer, index, count);
         }
 
+        /// <summary>
+        /// Reads a single character from the underlying Text Reader
+        /// </summary>
+        /// <returns>Character read or -1 if at end of input</returns>
         public override int Read()
         {
             if (this._bufferAmount == -1 || this._pos >= this._bufferAmount - 1)
@@ -183,6 +228,10 @@ namespace VDS.RDF.Parsing
             return (int)this._buffer[this._pos];
         }
 
+        /// <summary>
+        /// Peeks at the next character from the underlying Text Reader
+        /// </summary>
+        /// <returns>Character peeked or -1 if at end of input</returns>
         public override int Peek()
         {
             if (this._bufferAmount == -1 || this._pos >= this._bufferAmount - 1)
@@ -201,6 +250,9 @@ namespace VDS.RDF.Parsing
             return (int)this._buffer[this._pos + 1];
         }
 
+        /// <summary>
+        /// Gets whether the end of the input has been reached
+        /// </summary>
         public bool EndOfStream
         {
             get
@@ -209,13 +261,21 @@ namespace VDS.RDF.Parsing
             }
         }
 
+        /// <summary>
+        /// Closes the reader and the underlying reader
+        /// </summary>
         public override void Close()
         {
             this._reader.Close();
         }
 
+        /// <summary>
+        /// Disposes of the reader and the underlying reader
+        /// </summary>
+        /// <param name="disposing">Whether this was called from the Dispose() method</param>
         protected override void Dispose(bool disposing)
         {
+            if (disposing) GC.SuppressFinalize(this);
             this.Close();
             this._reader.Dispose();
             base.Dispose(disposing);

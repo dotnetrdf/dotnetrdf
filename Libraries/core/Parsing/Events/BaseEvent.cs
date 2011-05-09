@@ -66,7 +66,7 @@ namespace VDS.RDF.Parsing.Events
         /// Creates an Event and fills in its Values
         /// </summary>
         /// <param name="eventType">Type of the Event</param>
-        /// <param name="sourceXML">Source XML that generated the Event</param>
+        /// <param name="sourceXml">Source XML that generated the Event</param>
         protected BaseEvent(int eventType, String sourceXml)
             : this(eventType, sourceXml, null) { }
 

@@ -65,6 +65,11 @@ namespace VDS.RDF.Query.Optimisation
         /// <returns></returns>
         protected abstract ISparqlAlgebra OptimiseInternal(ISparqlAlgebra algebra, int depth);
 
+        /// <summary>
+        /// Determines whether the Optimiser can be applied to a given Query
+        /// </summary>
+        /// <param name="q">Query</param>
+        /// <returns></returns>
         public abstract bool IsApplicable(SparqlQuery q);
     }
 }

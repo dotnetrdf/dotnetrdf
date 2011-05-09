@@ -40,6 +40,9 @@ using System.Text;
 
 namespace VDS.RDF
 {
+    /// <summary>
+    /// Abstract Base Class for Blank Nodes
+    /// </summary>
     public abstract class BaseBlankNode : BaseNode, IBlankNode, IEquatable<BaseBlankNode>, IComparable<BaseBlankNode>
     {
         private String _id;

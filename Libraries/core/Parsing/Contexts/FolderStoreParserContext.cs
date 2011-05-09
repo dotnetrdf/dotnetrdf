@@ -156,6 +156,9 @@ namespace VDS.RDF.Parsing.Contexts
             return temp;
         }
 
+        /// <summary>
+        /// Clears the Filenames that were queued to be loaded
+        /// </summary>
         public void ClearFilenames()
         {
             try
@@ -169,6 +172,9 @@ namespace VDS.RDF.Parsing.Contexts
             }          
         }
 
+        /// <summary>
+        /// Gets whether parsing has been terminated
+        /// </summary>
         public bool Terminated
         {
             get

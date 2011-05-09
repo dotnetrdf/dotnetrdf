@@ -55,6 +55,7 @@ namespace VDS.RDF.Query.Optimisation
         /// <summary>
         /// Causes the Graph Pattern to be optimised if it isn't already
         /// </summary>
+        /// <param name="gp">Graph Pattern</param>
         /// <param name="variables">Variables that have occurred prior to this Pattern</param>
         public void Optimise(GraphPattern gp, IEnumerable<String> variables)
         {
@@ -202,8 +203,17 @@ namespace VDS.RDF.Query.Optimisation
         /// Gets a comparer on Triple Patterns that is used to rank Triple Patterns
         /// </summary>
         /// <returns></returns>
+        /// <remarks>
+        /// By overriding this in derived classes you can change how the Optimiser weights different patterns and thus the resultant ordering of Triple Patterns
+        /// </remarks>
         protected abstract IComparer<ITriplePattern> GetRankingComparer();
 
+        /// <summary>
+        /// Controls whether the Optimiser will attempt to reorder Triple Patterns
+        /// </summary>
+        /// <remarks>
+        /// It is recommended that derived classes do not change this setting as this may hurt performance.  If you want to control the optimisation process in detail we suggest you implement <see cref="IQueryOptimiser">IQueryOptimiser</see> directly in your own class and not derive from this implementation.
+        /// </remarks>
         protected virtual bool ShouldReorder
         {
             get
@@ -212,6 +222,12 @@ namespace VDS.RDF.Query.Optimisation
             }
         }
 
+        /// <summary>
+        /// Controls whether the Optimiser will place Filters
+        /// </summary>
+        /// <remarks>
+        /// It is recommended that derived classes do not change this setting as this may hurt performance.  If you want to control the optimisation process in detail we suggest you implement <see cref="IQueryOptimiser">IQueryOptimiser</see> directly in your own class and not derive from this implementation.
+        /// </remarks>
         protected virtual bool ShouldPlaceFilters
         {
             get
@@ -220,6 +236,12 @@ namespace VDS.RDF.Query.Optimisation
             }
         }
 
+        /// <summary>
+        /// Controls whether the Optimiser will place Assignments
+        /// </summary>
+        /// <remarks>
+        /// It is recommended that derived classes do not change this setting as this may hurt performance.  If you want to control the optimisation process in detail we suggest you implement <see cref="IQueryOptimiser">IQueryOptimiser</see> directly in your own class and not derive from this implementation.
+        /// </remarks>
         protected virtual bool ShouldPlaceAssignments
         {
             get
@@ -300,6 +322,7 @@ namespace VDS.RDF.Query.Optimisation
         /// <summary>
         /// Tries to place assignments at the earliest point possible i.e. the first point after which all required variables have occurred
         /// </summary>
+        /// <param name="gp">Graph Pattern</param>
         /// <param name="assignment">Assignment (LET/BIND)</param>
         /// <returns></returns>
         private bool TryPlaceAssignment(GraphPattern gp, IAssignmentPattern assignment)

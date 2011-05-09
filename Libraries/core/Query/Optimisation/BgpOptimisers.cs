@@ -110,6 +110,11 @@ namespace VDS.RDF.Query.Optimisation
             }
         }
 
+        /// <summary>
+        /// Determines whether the query can be optimised for lazy evaluation
+        /// </summary>
+        /// <param name="q">Query</param>
+        /// <returns></returns>
         public override bool IsApplicable(SparqlQuery q)
         {
             return q.Limit > 0
@@ -194,6 +199,11 @@ namespace VDS.RDF.Query.Optimisation
             }
         }
 
+        /// <summary>
+        /// Determines whether the query can be optimised for ASK evaluation
+        /// </summary>
+        /// <param name="q">Query</param>
+        /// <returns></returns>
         public override bool IsApplicable(SparqlQuery q)
         {
             return q.QueryType == SparqlQueryType.Ask;

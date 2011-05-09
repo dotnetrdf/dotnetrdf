@@ -6,6 +6,9 @@ using VDS.RDF.Parsing;
 
 namespace VDS.RDF
 {
+    /// <summary>
+    /// Static Helper class containing standard implementations of Equality between various Node types
+    /// </summary>
     public static class EqualityHelper
     {
         /// <summary>
@@ -109,6 +112,12 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Determines whether two Blank Nodes are equal
+        /// </summary>
+        /// <param name="a">First Blank Node</param>
+        /// <param name="b">Second Blank Node</param>
+        /// <returns></returns>
         public static bool AreBlankNodesEqual(IBlankNode a, IBlankNode b)
         {
             if (ReferenceEquals(a, b)) return true;
@@ -125,6 +134,12 @@ namespace VDS.RDF
             return a.InternalID.Equals(b.InternalID) && ReferenceEquals(a.Graph, b.Graph);
         }
 
+        /// <summary>
+        /// Determines whether two Graph Literals are equal
+        /// </summary>
+        /// <param name="a">First Blank Node</param>
+        /// <param name="b">Second Blank Node</param>
+        /// <returns></returns>
         public static bool AreGraphLiteralsEqual(IGraphLiteralNode a, IGraphLiteralNode b)
         {
             if (ReferenceEquals(a, b)) return true;
@@ -141,6 +156,12 @@ namespace VDS.RDF
             return a.SubGraph.Equals(b.SubGraph);
         }
 
+        /// <summary>
+        /// Determines whether two Variable Nodes are equal
+        /// </summary>
+        /// <param name="a">First Variable Node</param>
+        /// <param name="b">Second Variable Node</param>
+        /// <returns></returns>
         public static bool AreVariablesEqual(IVariableNode a, IVariableNode b)
         {
             if (ReferenceEquals(a, b)) return true;
@@ -158,8 +179,17 @@ namespace VDS.RDF
         }
     }
 
+    /// <summary>
+    /// Static Helper class containing standard implementations of Comparison between various Node types
+    /// </summary>
     public static class ComparisonHelper
     {
+        /// <summary>
+        /// Compares two URIs
+        /// </summary>
+        /// <param name="a">First URI</param>
+        /// <param name="b">Second URI</param>
+        /// <returns></returns>
         public static int CompareUris(Uri a, Uri b)
         {
             if (ReferenceEquals(a, b)) return 0;
@@ -201,6 +231,12 @@ namespace VDS.RDF
             return c;
         }
 
+        /// <summary>
+        /// Compares two Literal Nodes
+        /// </summary>
+        /// <param name="a">First Literal Node</param>
+        /// <param name="b">Second Literal Node</param>
+        /// <returns></returns>
         public static int CompareLiterals(ILiteralNode a, ILiteralNode b)
         {
             if (ReferenceEquals(a, b)) return 0;
@@ -634,6 +670,12 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Compares two Blank Nodes
+        /// </summary>
+        /// <param name="a">First Blank Node</param>
+        /// <param name="b">Second Blank Node</param>
+        /// <returns></returns>
         public static int CompareBlankNodes(IBlankNode a, IBlankNode b)
         {
             if (ReferenceEquals(a, b)) return 0;
@@ -650,6 +692,12 @@ namespace VDS.RDF
             return a.InternalID.CompareTo(b.InternalID);
         }
 
+        /// <summary>
+        /// Compares two Graph Literals
+        /// </summary>
+        /// <param name="a">First Graph Literal</param>
+        /// <param name="b">Second Graph Literal</param>
+        /// <returns></returns>
         public static int CompareGraphLiterals(IGraphLiteralNode a, IGraphLiteralNode b)
         {
             if (ReferenceEquals(a, b)) return 0;
@@ -666,6 +714,12 @@ namespace VDS.RDF
             return a.SubGraph.Triples.Count.CompareTo(b.SubGraph.Triples.Count);
         }
 
+        /// <summary>
+        /// Compares two Variable Nodes
+        /// </summary>
+        /// <param name="a">First Variable Node</param>
+        /// <param name="b">Second Variable Node</param>
+        /// <returns></returns>
         public static int CompareVariables(IVariableNode a, IVariableNode b)
         {
             if (ReferenceEquals(a, b)) return 0;

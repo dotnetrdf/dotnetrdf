@@ -599,7 +599,7 @@ namespace VDS.RDF.Web
         /// <summary>
         /// Processes SPARQL Updates
         /// </summary>
-        /// <param name="cmd">Update Command Set</param>
+        /// <param name="cmds">Update Command Set</param>
         /// <remarks>
         /// <para>
         /// Implementations should override this method if their behaviour requires more than just invoking the configured Update processor

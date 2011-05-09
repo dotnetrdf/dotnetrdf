@@ -26,6 +26,12 @@ namespace VDS.RDF.Parsing.Handlers
             return true;
         }
 
+        /// <summary>
+        /// Gets the Count of Triples handled in the most recent parsing operation
+        /// </summary>
+        /// <remarks>
+        /// Note that each time you reuse the handler the count is reset to 0
+        /// </remarks>
         public int Count
         {
             get
@@ -34,6 +40,9 @@ namespace VDS.RDF.Parsing.Handlers
             }
         }
 
+        /// <summary>
+        /// Gets that the Handler accepts all Triples
+        /// </summary>
         public override bool AcceptsAll
         {
             get 

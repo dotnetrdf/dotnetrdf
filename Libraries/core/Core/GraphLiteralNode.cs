@@ -41,6 +41,9 @@ using System.Text;
 
 namespace VDS.RDF
 {
+    /// <summary>
+    /// Abstract Base Class for Graph Literal Nodes
+    /// </summary>
     public abstract class BaseGraphLiteralNode : BaseNode, IGraphLiteralNode, IEquatable<BaseGraphLiteralNode>, IComparable<BaseGraphLiteralNode>
     {
         private IGraph _subgraph;

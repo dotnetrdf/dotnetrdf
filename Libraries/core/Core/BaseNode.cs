@@ -201,18 +201,58 @@ namespace VDS.RDF
         /// <param name="other">Node to compare self to</param>
         /// <returns></returns>
         /// <remarks>
-        /// Implementations should use the SPARQL Term Sort Order for ordering nodes (as opposed to value sort order)
+        /// Implementations should use the SPARQL Term Sort Order for ordering nodes (as opposed to value sort order).  Standard implementations of Node type specific comparisons can be found in <see cref="ComparisonHelper">ComparisonHelper</see>
         /// </remarks>
         public abstract int CompareTo(INode other);
 
+        /// <summary>
+        /// Nodes must implement a CompareTo method to allow them to be Sorted
+        /// </summary>
+        /// <param name="other">Node to compare self to</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Implementations should use the SPARQL Term Sort Order for ordering nodes (as opposed to value sort order).  Standard implementations of Node type specific comparisons can be found in <see cref="ComparisonHelper">ComparisonHelper</see>
+        /// </remarks>
         public abstract int CompareTo(IBlankNode other);
 
+        /// <summary>
+        /// Nodes must implement a CompareTo method to allow them to be Sorted
+        /// </summary>
+        /// <param name="other">Node to compare self to</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Implementations should use the SPARQL Term Sort Order for ordering nodes (as opposed to value sort order).  Standard implementations of Node type specific comparisons can be found in <see cref="ComparisonHelper">ComparisonHelper</see>
+        /// </remarks>
         public abstract int CompareTo(IGraphLiteralNode other);
 
+        /// <summary>
+        /// Nodes must implement a CompareTo method to allow them to be Sorted
+        /// </summary>
+        /// <param name="other">Node to compare self to</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Implementations should use the SPARQL Term Sort Order for ordering nodes (as opposed to value sort order).  Standard implementations of Node type specific comparisons can be found in <see cref="ComparisonHelper">ComparisonHelper</see>
+        /// </remarks>
         public abstract int CompareTo(ILiteralNode other);
 
+        /// <summary>
+        /// Nodes must implement a CompareTo method to allow them to be Sorted
+        /// </summary>
+        /// <param name="other">Node to compare self to</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Implementations should use the SPARQL Term Sort Order for ordering nodes (as opposed to value sort order).  Standard implementations of Node type specific comparisons can be found in <see cref="ComparisonHelper">ComparisonHelper</see>
+        /// </remarks>
         public abstract int CompareTo(IUriNode other);
 
+        /// <summary>
+        /// Nodes must implement a CompareTo method to allow them to be Sorted
+        /// </summary>
+        /// <param name="other">Node to compare self to</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Implementations should use the SPARQL Term Sort Order for ordering nodes (as opposed to value sort order).  Standard implementations of Node type specific comparisons can be found in <see cref="ComparisonHelper">ComparisonHelper</see>
+        /// </remarks>
         public abstract int CompareTo(IVariableNode other);
 
         /// <summary>
@@ -221,18 +261,58 @@ namespace VDS.RDF
         /// <param name="other">Node to check for equality</param>
         /// <returns></returns>
         /// <remarks>
-        /// Nodes implementations are also required to implement an override of the non-generic Equals method
+        /// Nodes implementations are also required to implement an override of the non-generic Equals method.  Standard implementations of some equality comparisons can be found in <see cref="EqualityHelper">EqualityHelper</see>
         /// </remarks>
         public abstract bool Equals(INode other);
 
+        /// <summary>
+        /// Nodes must implement an Equals method so we can do type specific equality
+        /// </summary>
+        /// <param name="other">Node to check for equality</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Nodes implementations are also required to implement an override of the non-generic Equals method.  Standard implementations of some equality comparisons can be found in <see cref="EqualityHelper">EqualityHelper</see>
+        /// </remarks>
         public abstract bool Equals(IBlankNode other);
 
+        /// <summary>
+        /// Nodes must implement an Equals method so we can do type specific equality
+        /// </summary>
+        /// <param name="other">Node to check for equality</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Nodes implementations are also required to implement an override of the non-generic Equals method.  Standard implementations of some equality comparisons can be found in <see cref="EqualityHelper">EqualityHelper</see>
+        /// </remarks>
         public abstract bool Equals(IGraphLiteralNode other);
 
+        /// <summary>
+        /// Nodes must implement an Equals method so we can do type specific equality
+        /// </summary>
+        /// <param name="other">Node to check for equality</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Nodes implementations are also required to implement an override of the non-generic Equals method.  Standard implementations of some equality comparisons can be found in <see cref="EqualityHelper">EqualityHelper</see>
+        /// </remarks>
         public abstract bool Equals(ILiteralNode other);
 
+        /// <summary>
+        /// Nodes must implement an Equals method so we can do type specific equality
+        /// </summary>
+        /// <param name="other">Node to check for equality</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Nodes implementations are also required to implement an override of the non-generic Equals method.  Standard implementations of some equality comparisons can be found in <see cref="EqualityHelper">EqualityHelper</see>
+        /// </remarks>
         public abstract bool Equals(IUriNode other);
 
+        /// <summary>
+        /// Nodes must implement an Equals method so we can do type specific equality
+        /// </summary>
+        /// <param name="other">Node to check for equality</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Nodes implementations are also required to implement an override of the non-generic Equals method.  Standard implementations of some equality comparisons can be found in <see cref="EqualityHelper">EqualityHelper</see>
+        /// </remarks>
         public abstract bool Equals(IVariableNode other);
     }
 }

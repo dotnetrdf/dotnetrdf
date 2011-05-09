@@ -17,6 +17,10 @@ namespace VDS.RDF.Parsing.Handlers
     {
         private List<IRdfHandler> _handlers = new List<IRdfHandler>();
 
+        /// <summary>
+        /// Creates a new Chained Handler
+        /// </summary>
+        /// <param name="handlers">Inner Handlers to use</param>
         public ChainedHandler(IEnumerable<IRdfHandler> handlers)
         {
             if (handlers == null) throw new ArgumentNullException("handlers", "Must be at least 1 Handler for use by the ChainedHandler");
@@ -34,6 +38,9 @@ namespace VDS.RDF.Parsing.Handlers
             }
         }
 
+        /// <summary>
+        /// Gets the Inner Handlers used by this Handler
+        /// </summary>
         public IEnumerable<IRdfHandler> InnerHandlers
         {
             get
@@ -42,11 +49,18 @@ namespace VDS.RDF.Parsing.Handlers
             }
         }
 
+        /// <summary>
+        /// Starts the Handling of RDF for each inner handler
+        /// </summary>
         protected override void StartRdfInternal()
         {
             this._handlers.ForEach(h => h.StartRdf());
         }
 
+        /// <summary>
+        /// Ends the Handling of RDF for each inner handler
+        /// </summary>
+        /// <param name="ok">Whether parsing completed without errors</param>
         protected override void EndRdfInternal(bool ok)
         {
             this._handlers.ForEach(h => h.EndRdf(ok));
@@ -67,6 +81,9 @@ namespace VDS.RDF.Parsing.Handlers
             return this._handlers.All(h => h.HandleTriple(t));
         }
 
+        /// <summary>
+        /// Gets that this Handler accepts all Triples if all inner handlers do so
+        /// </summary>
         public override bool AcceptsAll
         {
             get

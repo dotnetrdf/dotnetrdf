@@ -174,6 +174,7 @@ namespace VDS.RDF.Parsing
         /// <param name="errorMsg">Error Message</param>
         /// <param name="line">Line the error occurred on</param>
         /// <param name="pos">Column Position the error occurred at</param>
+        /// <param name="cause">Exeception that caused this exception</param>
         public RdfParseException(String errorMsg, int line, int pos, Exception cause)
             : base(errorMsg, cause)
         {
@@ -222,6 +223,7 @@ namespace VDS.RDF.Parsing
         /// <param name="endLine">Line the error ends on</param>
         /// <param name="startPos">Column Position the error starts at</param>
         /// <param name="endPos">Column Position the error ends at</param>
+        /// <param name="cause">Error that caused this exception</param>
         public RdfParseException(String errorMsg, int startLine, int endLine, int startPos, int endPos, Exception cause)
             : this(errorMsg, startLine, startPos, cause)
         {
@@ -245,6 +247,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="errorMsg">Error Message</param>
         /// <param name="position">Position Information</param>
+        /// <param name="cause">Error that caused this exception</param>
         public RdfParseException(String errorMsg, PositionInfo position, Exception cause)
             : this(errorMsg, position.StartLine, position.EndLine, position.StartPosition, position.EndPosition, cause) { }
 
