@@ -69,6 +69,8 @@ namespace VDS.RDF.Writing.Contexts
         /// </summary>
         private NestedNamespaceMapper _nsmapper = new NestedNamespaceMapper(true);
 
+        private int _compressionLevel = WriterCompressionLevel.Default;
+
         private int _nextNamespaceID = 0;
 
         private Dictionary<INode, OutputRdfCollection> _collections = new Dictionary<INode, OutputRdfCollection>();
@@ -230,11 +232,11 @@ namespace VDS.RDF.Writing.Contexts
         {
             get
             {
-                return WriterCompressionLevel.Default;
+                return this._compressionLevel;
             }
             set
             {
-                //Do Nothing
+                this._compressionLevel = value;
             }
         }
 

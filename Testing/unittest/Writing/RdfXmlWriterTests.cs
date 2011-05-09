@@ -168,6 +168,37 @@ namespace VDS.RDF.Test.Writing
             this.CheckRoundTrip(g);
         }
 
+        [TestMethod]
+        public void WritingRdfXmlSimpleBNodeCollection()
+        {
+            String fragment = "@prefix : <http://example.org/>. :subj :pred [ :something :else ].";
 
+            Graph g = new Graph();
+            g.LoadFromString(fragment);
+
+            this.CheckRoundTrip(g);
+        }
+
+        [TestMethod]
+        public void WritingRdfXmlSimpleBNodeCollection2()
+        {
+            String fragment = "@prefix : <http://example.org/>. :subj :pred [ :something :else ; :another :thing ].";
+
+            Graph g = new Graph();
+            g.LoadFromString(fragment);
+
+            this.CheckRoundTrip(g);
+        }
+
+        [TestMethod]
+        public void WritingRdfXmlSimpleCollection()
+        {
+            String fragment = "@prefix : <http://example.org/>. :subj :pred ( 1 2 3 ).";
+
+            Graph g = new Graph();
+            g.LoadFromString(fragment);
+
+            this.CheckRoundTrip(g);
+        }
     }
 }
