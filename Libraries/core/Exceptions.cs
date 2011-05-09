@@ -199,6 +199,7 @@ namespace VDS.RDF.Parsing
         /// <param name="line">Line the error occurred on</param>
         /// <param name="startPos">Column Position the error starts at</param>
         /// <param name="endPos">Column Position the error ends at</param>
+        /// <param name="cause">Error that caused this exception</param>
         public RdfParseException(String errorMsg, int line, int startPos, int endPos, Exception cause)
             : this(errorMsg, line, startPos, cause)
         {

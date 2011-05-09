@@ -72,6 +72,15 @@ namespace VDS.RDF.Parsing
             DataUriLoader.Load(new GraphHandler(g), u);
         }
 
+        /// <summary>
+        /// Loads RDF data using an RDF Handler from a data: URI
+        /// </summary>
+        /// <param name="handler">RDF Handler</param>
+        /// <param name="u">URI to load from</param>
+        /// <remarks>
+        /// Invokes the normal <see cref="UriLoader">UriLoader</see> instead if a the URI provided is not a data: URI
+        /// </remarks>
+        /// <exception cref="UriFormatException">Thrown if the metadata portion of the URI which indicates the MIME Type, Character Set and whether Base64 encoding is used is malformed</exception>
         public static void Load(IRdfHandler handler, Uri u)
         {
             if (u == null) throw new RdfParseException("Cannot load RDF from a null URI");

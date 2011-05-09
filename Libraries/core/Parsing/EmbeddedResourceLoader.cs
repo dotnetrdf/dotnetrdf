@@ -61,6 +61,12 @@ namespace VDS.RDF.Parsing
             EmbeddedResourceLoader.Load(new GraphHandler(g), resource, (IRdfReader)null);
         }
 
+        /// <summary>
+        /// Loads a Graph from an Embedded Resource
+        /// </summary>
+        /// <param name="handler">RDF Handler to use</param>
+        /// <param name="resource">Assembly Qualified Name of the Resource to load</param>
+        /// <param name="parser">Parser to use (leave null for auto-selection)</param>
         public static void Load(IRdfHandler handler, String resource, IRdfReader parser)
         {
             if (resource == null) throw new RdfParseException("Cannot read RDF from a null Resource");
@@ -104,6 +110,11 @@ namespace VDS.RDF.Parsing
             }
         }
 
+        /// <summary>
+        /// Loads a Graph from an Embedded Resource
+        /// </summary>
+        /// <param name="handler">RDF Handler to use</param>
+        /// <param name="resource">Assembly Qualified Name of the Resource to load</param>
         public static void Load(IRdfHandler handler, String resource)
         {
             EmbeddedResourceLoader.Load(handler, resource, (IRdfReader)null);
@@ -178,7 +189,7 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Loads a Triple Store from an Embedded Resource
+        /// Loads a RDF Dataset from an Embedded Resource
         /// </summary>
         /// <param name="store">Store to load into</param>
         /// <param name="resource">Assembly Qualified Name of the Resource to load</param>
@@ -190,7 +201,7 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Loads a Triple Store from an Embedded Resource
+        /// Loads a RDF Dataset from an Embedded Resource
         /// </summary>
         /// <param name="store">Store to load into</param>
         /// <param name="resource">Assembly Qualified Name of the Resource to load</param>
@@ -202,6 +213,12 @@ namespace VDS.RDF.Parsing
             EmbeddedResourceLoader.Load(store, resource, null);
         }
 
+        /// <summary>
+        /// Loads a RDF Dataset from an Embedded Resource
+        /// </summary>
+        /// <param name="handler">RDF Handler to use</param>
+        /// <param name="resource">Assembly Qualified Name of the Resource to load</param>
+        /// <param name="parser">Parser to use (leave null for auto-selection)</param>
         public static void Load(IRdfHandler handler, String resource, IStoreReader parser)
         {
             if (resource == null) throw new RdfParseException("Cannot read a RDF Dataset from a null Resource");
@@ -245,6 +262,11 @@ namespace VDS.RDF.Parsing
             }
         }
 
+        /// <summary>
+        /// Loads a RDF Dataset from an Embedded Resource
+        /// </summary>
+        /// <param name="handler">RDF Handler to use</param>
+        /// <param name="resource">Assembly Qualified Name of the Resource to load</param>
         public static void LoadDataset(IRdfHandler handler, String resource)
         {
             EmbeddedResourceLoader.Load(handler, resource, (IStoreReader)null);
