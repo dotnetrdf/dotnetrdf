@@ -17,7 +17,8 @@ namespace VDS.RDF.Test.Writing
         private List<IRdfWriter> _writers = new List<IRdfWriter>()
         {
             new RdfXmlWriter(WriterCompressionLevel.High),
-            new FastRdfXmlWriter(WriterCompressionLevel.High)
+            new FastRdfXmlWriter(WriterCompressionLevel.High),
+            new PrettyRdfXmlWriter(WriterCompressionLevel.High)
         };
 
         private IRdfReader _parser = new RdfXmlParser();
@@ -191,12 +192,32 @@ namespace VDS.RDF.Test.Writing
         }
 
         [TestMethod]
+        public void WritingRdfXmlSimpleBNodeCollection3()
+        {
+            String fragment = "@prefix : <http://example.org/>. :subj :pred [ a :BNode ; :another :thing ].";
+
+            Graph g = new Graph();
+            g.LoadFromString(fragment);
+
+            this.CheckRoundTrip(g);
+        }
+
+        [TestMethod]
         public void WritingRdfXmlSimpleCollection()
         {
             String fragment = "@prefix : <http://example.org/>. :subj :pred ( 1 2 3 ).";
 
             Graph g = new Graph();
             g.LoadFromString(fragment);
+
+            this.CheckRoundTrip(g);
+        }
+
+        [TestMethod]
+        public void WritingRdfXmlComplex()
+        {
+            Graph g = new Graph();
+            g.LoadFromFile("chado-in-owl.ttl");
 
             this.CheckRoundTrip(g);
         }

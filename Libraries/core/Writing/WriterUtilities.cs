@@ -261,7 +261,7 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Gets whether the Collection has been written
+        /// Gets/Sets whether the Collection has been written
         /// </summary>
         public bool HasBeenWritten
         {

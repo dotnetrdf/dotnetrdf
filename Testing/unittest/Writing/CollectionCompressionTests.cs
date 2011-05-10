@@ -21,7 +21,8 @@ namespace VDS.RDF.Test.Writing
             new KeyValuePair<IRdfWriter, IRdfReader>(new FastRdfXmlWriter(), new RdfXmlParser()),
             new KeyValuePair<IRdfWriter, IRdfReader>(new Notation3Writer(), new Notation3Parser()),
             //new KeyValuePair<IRdfWriter, IRdfReader>(new RdfXmlTreeWriter(), new RdfXmlParser()),
-            new KeyValuePair<IRdfWriter, IRdfReader>(new RdfXmlWriter(), new RdfXmlParser())
+            new KeyValuePair<IRdfWriter, IRdfReader>(new RdfXmlWriter(), new RdfXmlParser()),
+            new KeyValuePair<IRdfWriter, IRdfReader>(new PrettyRdfXmlWriter(), new RdfXmlParser())
         };
 
         private void CheckCompressionRoundTrip(IGraph g)

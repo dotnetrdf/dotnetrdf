@@ -570,6 +570,7 @@
     <Compile Include="Writing\Contexts\ThreadedStoreWriterContext.cs" />
     <Compile Include="Writing\Contexts\TriGWriterContext.cs" />
     <Compile Include="Writing\Contexts\TurtleWriterContext.cs" />
+    <Compile Include="Writing\PrettyRdfXmlWriter.cs" />
     <Compile Include="Writing\Formatting\BaseFormatter.cs" />
     <Compile Include="Writing\Formatting\CsvFormatter.cs" />
     <Compile Include="Writing\Formatting\DeliminatedLineFormatter.cs" />

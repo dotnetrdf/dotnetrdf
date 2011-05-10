@@ -128,8 +128,9 @@ namespace VDS.RDF.Query.Patterns
 
             //Now we can evaluate the resulting algebra
             //Note: We may need to preserve Blank Node variables across evaluations
-            //which we usually don't do because of the way we only translate part of the path
-            //into an algebra at a time and may need to do further nested translate calls
+            //which we usually don't do BUT because of the way we translate only part of the path
+            //into an algebra at a time and may need to do further nested translate calls we do
+            //need to do this here
             BaseMultiset initialInput = context.InputMultiset;
             bool trimMode = context.TrimTemporaryVariables;
             context.TrimTemporaryVariables = false;

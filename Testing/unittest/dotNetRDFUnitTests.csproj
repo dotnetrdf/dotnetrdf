@@ -267,6 +267,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <EmbeddedResource Include="embedded.ttl" />
+    <Content Include="resources\chado-in-owl.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="resources\complex-collections.nt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

@@ -491,7 +491,7 @@ namespace VDS.RDF.Utilities.Editor
 
         private void mnuSaveWithRdfXml_Click(object sender, RoutedEventArgs e)
         {
-            this.SaveWith(new RdfXmlWriter());
+            this.SaveWith(new PrettyRdfXmlWriter());
         }
 
         private void mnuSaveWithRdfJson_Click(object sender, RoutedEventArgs e)
@@ -943,24 +943,64 @@ namespace VDS.RDF.Utilities.Editor
                 ISyntaxValidationResults results = validator.Validate(textEditor.Text);
                 if (results.IsValid)
                 {
-                    if (results.Result is IGraph)
+                    if (!this._manager.CurrentSyntax.Equals("None"))
                     {
-                        TriplesWindow window = new TriplesWindow((IGraph)results.Result);
-                        window.ShowDialog();
-                    }
-                    else if (results.Result is SparqlResultSet)
-                    {
-                        SparqlResultSet sparqlResults = (SparqlResultSet)results.Result;
-                        if (sparqlResults.ResultsType == SparqlResultsType.VariableBindings)
+                        try 
                         {
-                            ResultSetWindow window = new ResultSetWindow(sparqlResults);
-                            window.ShowDialog();
-                        }
-                        else
+                            SyntaxDefinition def = SyntaxManager.GetDefinition(this._manager.CurrentSyntax);
+                            if (def.DefaultParser != null)
+                            {
+                                NonIndexedGraph g = new NonIndexedGraph();
+                                def.DefaultParser.Load(g, new StringReader(textEditor.Text));
+                                TriplesWindow window = new TriplesWindow(g);
+                            }
+                            else if (def.Validator is RdfDatasetSyntaxValidator)
+                            {
+                                TripleStore store = new TripleStore();
+                                StringParser.ParseDataset(store, textEditor.Text);
+                            }
+                            else if (def.Validator is SparqlResultsValidator)
+                            {
+                                SparqlResultSet sparqlResults = new SparqlResultSet();
+                                StringParser.ParseResultSet(sparqlResults, textEditor.Text);
+                                if (sparqlResults.ResultsType == SparqlResultsType.VariableBindings)
+                                {
+                                    ResultSetWindow window = new ResultSetWindow(sparqlResults);
+                                    window.ShowDialog();
+                                }
+                                else
+                                {
+                                    MessageBox.Show("Cannot open Structured View since this form of SPARQL Results is not structured");
+                                }
+                            }
+                            else
+                            {
+                                MessageBox.Show("Cannot open Structured View since this is not a syntax for which Structure view is available");
+                            }
+                        } 
+                        catch (Exception ex)
                         {
-                            MessageBox.Show("Cannot open Structured View since this form of SPARQL Results is not structed");
+                            MessageBox.Show("Unable to open Structured View as could not parse the Syntax successfully for structured display");
                         }
                     }
+                    //if (results.Result is IGraph)
+                    //{
+                    //    TriplesWindow window = new TriplesWindow((IGraph)results.Result);
+                    //    window.ShowDialog();
+                    //}
+                    //else if (results.Result is SparqlResultSet)
+                    //{
+                    //    SparqlResultSet sparqlResults = (SparqlResultSet)results.Result;
+                    //    if (sparqlResults.ResultsType == SparqlResultsType.VariableBindings)
+                    //    {
+                    //        ResultSetWindow window = new ResultSetWindow(sparqlResults);
+                    //        window.ShowDialog();
+                    //    }
+                    //    else
+                    //    {
+                    //        MessageBox.Show("Cannot open Structured View since this form of SPARQL Results is not structured");
+                    //    }
+                    //}
                     else
                     {
                         MessageBox.Show("Cannot open Structured View since this is not a syntax for which Structure view is available");
