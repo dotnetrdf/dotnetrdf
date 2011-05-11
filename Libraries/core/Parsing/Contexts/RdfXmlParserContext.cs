@@ -80,7 +80,7 @@ namespace VDS.RDF.Parsing.Contexts
         /// <summary>
         /// Creates a new Parser Context
         /// </summary>
-        /// <param name="g">Graph</param>
+        /// <param name="handler">RDF Handler</param>
         /// <param name="document">XML Document</param>
         public RdfXmlParserContext(IRdfHandler handler, XmlDocument document)
             : this(handler, document, false) { }
@@ -88,7 +88,7 @@ namespace VDS.RDF.Parsing.Contexts
         /// <summary>
         /// Creates a new Parser Context
         /// </summary>
-        /// <param name="g">Graph</param>
+        /// <param name="handler">RDF Handler</param>
         /// <param name="document">XML Document</param>
         /// <param name="traceParsing">Whether to Trace Parsing</param>
         public RdfXmlParserContext(IRdfHandler handler, XmlDocument document, bool traceParsing)
@@ -117,7 +117,7 @@ namespace VDS.RDF.Parsing.Contexts
         /// <summary>
         /// Creates a new Parser Context which uses Streaming parsing
         /// </summary>
-        /// <param name="g">Graph</param>
+        /// <param name="handler">RDF Handler</param>
         /// <param name="stream">Stream</param>
         public RdfXmlParserContext(IRdfHandler handler, Stream stream)
             : base(handler)
@@ -125,12 +125,22 @@ namespace VDS.RDF.Parsing.Contexts
             this._queue = new StreamingEventQueue(new StreamingEventGenerator(stream, String.Empty));
         }
 
+        /// <summary>
+        /// Creates a new Parser Context which uses Streaming parsing
+        /// </summary>
+        /// <param name="g">Graph</param>
+        /// <param name="input">Input</param>
         public RdfXmlParserContext(IGraph g, TextReader input)
             : base(g)
         {
             this._queue = new StreamingEventQueue(new StreamingEventGenerator(input, g.BaseUri.ToSafeString()));
         }
 
+        /// <summary>
+        /// Creates a new Parser Context which uses Streaming parsing
+        /// </summary>
+        /// <param name="handler">RDF Handler</param>
+        /// <param name="input">Input</param>
         public RdfXmlParserContext(IRdfHandler handler, TextReader input)
             : base(handler)
         {

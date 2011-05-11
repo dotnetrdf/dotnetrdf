@@ -71,12 +71,23 @@ namespace VDS.RDF.Parsing.Contexts
             this._document = document;
         }
 
+        /// <summary>
+        /// Creates a new Parser Context
+        /// </summary>
+        /// <param name="handler">RDF Handler to use</param>
+        /// <param name="document">HTML Document</param>
+        /// <param name="traceParsing">Whether to Trace Parsing</param>
         public RdfAParserContext(IRdfHandler handler, HtmlDocument document, bool traceParsing)
             : base(handler, traceParsing)
         {
             this._document = document;
         }
 
+        /// <summary>
+        /// Creates a new Parser Context
+        /// </summary>
+        /// <param name="handler">RDF Handler to use</param>
+        /// <param name="document">HTML Document</param>
         public RdfAParserContext(IRdfHandler handler, HtmlDocument document)
             : this(handler, document, false) { }
 

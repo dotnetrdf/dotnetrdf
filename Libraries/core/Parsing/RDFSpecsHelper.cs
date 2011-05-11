@@ -65,13 +65,21 @@ namespace VDS.RDF.Parsing
         /// URI for rdf:XMLLiteral
         /// </summary>
         public const String RdfXmlLiteral = "http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral";
-
+        /// <summary>
+        /// URI for rdf:subject
+        /// </summary>
         public const String RdfSubject = "http://www.w3.org/1999/02/22-rdf-syntax-ns#subject";
-
+        /// <summary>
+        /// URI for rdf:predicate
+        /// </summary>
         public const String RdfPredicate = "http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate";
-
+        /// <summary>
+        /// URI for rdf:object
+        /// </summary>
         public const String RdfObject = "http://www.w3.org/1999/02/22-rdf-syntax-ns#object";
-
+        /// <summary>
+        /// URI for rdf:Statement
+        /// </summary>
         public const String RdfStatement = "http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement";
 
         /// <summary>

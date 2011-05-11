@@ -137,6 +137,11 @@ namespace VDS.RDF.Parsing
             this.Load(new GraphHandler(g), input);
         }
 
+        /// <summary>
+        /// Parses RDFa by extracting it from the HTML from the given input
+        /// </summary>
+        /// <param name="g">Graph to load into</param>
+        /// <param name="input">Input to read from</param>
         public void Load(IGraph g, TextReader input)
         {
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
@@ -155,6 +160,11 @@ namespace VDS.RDF.Parsing
             this.Load(new GraphHandler(g), filename);
         }
 
+        /// <summary>
+        /// Parses RDFa by extracting it from the HTML from the given input
+        /// </summary>
+        /// <param name="handler">RDF Handler to use</param>
+        /// <param name="input">Stream to read from</param>
         public void Load(IRdfHandler handler, StreamReader input)
         {
             if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
@@ -162,6 +172,11 @@ namespace VDS.RDF.Parsing
             this.Load(handler, (TextReader)input);
         }
 
+        /// <summary>
+        /// Parses RDFa by extracting it from the HTML from the given input
+        /// </summary>
+        /// <param name="handler">RDF Handler to use</param>
+        /// <param name="input">Input to read from</param>
         public void Load(IRdfHandler handler, TextReader input)
         {
             if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
@@ -193,6 +208,11 @@ namespace VDS.RDF.Parsing
             }
         }
 
+        /// <summary>
+        /// Parses RDFa by extracting it from the HTML from the given input
+        /// </summary>
+        /// <param name="handler">RDF Handler to use</param>
+        /// <param name="filename">File to read from</param>
         public void Load(IRdfHandler handler, String filename)
         {
             if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");

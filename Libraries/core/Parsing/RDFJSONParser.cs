@@ -33,14 +33,10 @@ terms.
 
 */
 
-
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.IO;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using VDS.RDF.Parsing.Contexts;
 using VDS.RDF.Parsing.Handlers;
 
@@ -64,6 +60,11 @@ namespace VDS.RDF.Parsing
             this.Load(new GraphHandler(g), input);
         }
 
+        /// <summary>
+        /// Read RDF/JSON Syntax from some Input into a Graph
+        /// </summary>
+        /// <param name="g">Graph to read into</param>
+        /// <param name="input">Input to read from</param>
         public void Load(IGraph g, TextReader input)
         {
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
@@ -83,6 +84,11 @@ namespace VDS.RDF.Parsing
             this.Load(new GraphHandler(g), filename);
         }
 
+        /// <summary>
+        /// Read RDF/JSON Syntax from some Stream using a RDF Handler
+        /// </summary>
+        /// <param name="handler">RDF Handler to use</param>
+        /// <param name="input">Stream to read from</param>
         public void Load(IRdfHandler handler, StreamReader input)
         {
             if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
@@ -101,6 +107,11 @@ namespace VDS.RDF.Parsing
             this.Load(handler, (TextReader)input);
         }
 
+        /// <summary>
+        /// Read RDF/JSON Syntax from some Input using a RDF Handler
+        /// </summary>
+        /// <param name="handler">RDF Handler to use</param>
+        /// <param name="input">Input to read from</param>
         public void Load(IRdfHandler handler, TextReader input)
         {
             if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
@@ -128,6 +139,11 @@ namespace VDS.RDF.Parsing
             }
         }
 
+        /// <summary>
+        /// Read RDF/JSON Syntax from a file using a RDF Handler
+        /// </summary>
+        /// <param name="handler">RDF Handler to use</param>
+        /// <param name="filename">File to read from</param>
         public void Load(IRdfHandler handler, String filename)
         {
             if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
@@ -138,7 +154,7 @@ namespace VDS.RDF.Parsing
         /// <summary>
         /// Internal top level Parse method which parses the Json
         /// </summary>
-        /// <param name="g">Graph to read into</param>
+        /// <param name="handler">RDF Handler to use</param>
         /// <param name="input">Stream to read from</param>
         private void Parse(IRdfHandler handler, TextReader input)
         {
@@ -486,6 +502,10 @@ namespace VDS.RDF.Parsing
         /// </summary>
         public event RdfReaderWarning Warning;
 
+        /// <summary>
+        /// Gets the String representation of the Parser which is a description of the syntax it parses
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return "RDF/JSON (Talis Specification)";

@@ -150,6 +150,11 @@ namespace VDS.RDF.Parsing
             this.Load(new GraphHandler(g), input);
         }
 
+        /// <summary>
+        /// Reads RDF/XML syntax from some Input into the given Graph
+        /// </summary>
+        /// <param name="g">Graph to create Triples in</param>
+        /// <param name="input">Input to read from</param>
         public void Load(IGraph g, TextReader input)
         {
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
@@ -172,6 +177,11 @@ namespace VDS.RDF.Parsing
             this.Load(g, input);
         }
 
+        /// <summary>
+        /// Reads RDF/XML syntax from some Stream using a RDF Handler
+        /// </summary>
+        /// <param name="handler">RDF Handler to use</param>
+        /// <param name="input">Input Stream</param>
         public void Load(IRdfHandler handler, StreamReader input)
         {
             if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
@@ -190,6 +200,11 @@ namespace VDS.RDF.Parsing
             this.Load(handler, (TextReader)input);
         }
 
+        /// <summary>
+        /// Reads RDF/XML syntax from some Input using a RDF Handler
+        /// </summary>
+        /// <param name="handler">RDF Handler to use</param>
+        /// <param name="input">Input to read from</param>
         public void Load(IRdfHandler handler, TextReader input)
         {
             if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
@@ -246,6 +261,11 @@ namespace VDS.RDF.Parsing
             }
         }
 
+        /// <summary>
+        /// Reads RDF/XML syntax from a file using a RDF Handler
+        /// </summary>
+        /// <param name="handler">RDF Handler to use</param>
+        /// <param name="filename">File to read from</param>
         public void Load(IRdfHandler handler, String filename)
         {
             if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
@@ -1887,6 +1907,10 @@ namespace VDS.RDF.Parsing
 
         #endregion
 
+        /// <summary>
+        /// Gets the String representation of the Parser which is a description of the syntax it parses
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             switch (this._mode)
