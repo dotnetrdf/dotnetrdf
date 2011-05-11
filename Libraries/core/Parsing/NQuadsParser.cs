@@ -34,8 +34,6 @@ terms.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.IO;
 using VDS.RDF.Parsing.Handlers;
@@ -90,7 +88,7 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Loads the named Graphs from the NQuads input into the given Triple Store
+        /// Loads a RDF Dataset from the NQuads input into the given Triple Store
         /// </summary>
         /// <param name="store">Triple Store to load into</param>
         /// <param name="parameters">Parameters indicating the Stream to read from</param>
@@ -101,6 +99,11 @@ namespace VDS.RDF.Parsing
             this.Load(new StoreHandler(store), parameters);
         }
 
+        /// <summary>
+        /// Loads a RDF Dataset from the NQuads input using a RDF Handler
+        /// </summary>
+        /// <param name="handler">RDF Handler to use</param>
+        /// <param name="parameters">Parameters indicating the Stream to read from</param>
         public void Load(IRdfHandler handler, IStoreParams parameters)
         {
             if (handler == null) throw new ArgumentNullException("handler", "Cannot parse an RDF Dataset using a null RDF Handler");
@@ -405,6 +408,10 @@ namespace VDS.RDF.Parsing
         /// </summary>
         public event StoreReaderWarning Warning;
 
+        /// <summary>
+        /// Gets the String representation of the Parser which is a description of the syntax it parses
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return "NQuads";

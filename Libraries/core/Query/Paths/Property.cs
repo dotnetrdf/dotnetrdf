@@ -370,6 +370,11 @@ namespace VDS.RDF.Query.Paths
             return output.ToString();
         }
 
+        /// <summary>
+        /// Converts a Path into its Algebra Form
+        /// </summary>
+        /// <param name="context">Path Transformation Context</param>
+        /// <returns></returns>
         public ISparqlAlgebra ToAlgebra(PathTransformContext context)
         {
             context.AddTriplePattern(context.GetTriplePattern(context.Subject, this, context.Object));

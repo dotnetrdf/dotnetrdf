@@ -83,6 +83,10 @@ namespace VDS.RDF.Parsing.Tokens
             this.Format = "Notation 3";
         }
 
+        /// <summary>
+        /// Creates a new Instance of the Tokeniser
+        /// </summary>
+        /// <param name="input">The Input to generate Tokens from</param>
         public Notation3Tokeniser(TextReader input)
             : this(new BlockingTextReader(input)) { }
 

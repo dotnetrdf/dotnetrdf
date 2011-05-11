@@ -327,6 +327,7 @@ namespace VDS.RDF.Writing
         /// <param name="context">Writer Context</param>
         /// <param name="n">Node to generate output for</param>
         /// <param name="segment">Segment of the Triple being output</param>
+        /// <param name="indent">Indent to use for pretty printing</param>
         /// <returns></returns>
         private String GenerateNodeOutput(CompressingTurtleWriterContext context, INode n, TripleSegment segment, int indent)
         {
@@ -398,6 +399,7 @@ namespace VDS.RDF.Writing
         /// </summary>
         /// <param name="context">Writer Context</param>
         /// <param name="c">Collection to convert</param>
+        /// <param name="indent">Indent to use for pretty printing</param>
         /// <returns></returns>
         private String GenerateCollectionOutput(CompressingTurtleWriterContext context, OutputRdfCollection c, int indent)
         {

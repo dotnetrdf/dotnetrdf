@@ -33,10 +33,7 @@ terms.
 
 */
 
-
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.IO;
 using VDS.RDF.Parsing.Contexts;
@@ -1245,7 +1242,7 @@ namespace VDS.RDF.Parsing
         private INode TryParseLiteral(Notation3ParserContext context, IToken lit)
         {
             IToken next;
-            String dturi, currentBase;
+            String dturi;
 
             switch (lit.TokenType)
             {

@@ -1,36 +1,91 @@
-﻿using System;
+﻿/*
+
+Copyright Robert Vesse 2009-11
+rvesse@vdesign-studios.com
+
+------------------------------------------------------------------------
+
+This file is part of dotNetRDF.
+
+dotNetRDF is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+dotNetRDF is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with dotNetRDF.  If not, see <http://www.gnu.org/licenses/>.
+
+------------------------------------------------------------------------
+
+dotNetRDF may alternatively be used under the LGPL or MIT License
+
+http://www.gnu.org/licenses/lgpl.html
+http://www.opensource.org/licenses/mit-license.php
+
+If these licenses are not suitable for your intended use please contact
+us at the above stated email address to discuss alternative
+terms.
+
+*/
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using VDS.RDF.Query.Paths;
 using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Algebra
 {
+    /// <summary>
+    /// Interface for Property Path Operators
+    /// </summary>
     public interface IPathOperator : ISparqlAlgebra
     {
+        /// <summary>
+        /// Gets the Path Start
+        /// </summary>
         PatternItem PathStart
         {
             get;
         }
 
+        /// <summary>
+        /// Gets the Path End
+        /// </summary>
         PatternItem PathEnd
         {
             get;
         }
 
+        /// <summary>
+        /// Gets the Property Path
+        /// </summary>
         ISparqlPath Path
         {
             get;
         }
     }
 
+    /// <summary>
+    /// Abstract Base Class for Path Operators
+    /// </summary>
     public abstract class BasePathOperator : IPathOperator
     {
         private PatternItem _start, _end;
         private ISparqlPath _path;
         private HashSet<String> _vars = new HashSet<string>();
 
+        /// <summary>
+        /// Creates a new Path Operator
+        /// </summary>
+        /// <param name="start">Path Start</param>
+        /// <param name="end">Path End</param>
+        /// <param name="path">Property Path</param>
         public BasePathOperator(PatternItem start, PatternItem end, ISparqlPath path)
         {
             this._start = start;
@@ -41,6 +96,9 @@ namespace VDS.RDF.Query.Algebra
             if (this._end.VariableName != null) this._vars.Add(this._end.VariableName);
         }
 
+        /// <summary>
+        /// Gets the Path Start
+        /// </summary>
         public PatternItem PathStart
         {
             get 
@@ -49,6 +107,9 @@ namespace VDS.RDF.Query.Algebra
             }
         }
 
+        /// <summary>
+        /// Gets the Path End
+        /// </summary>
         public PatternItem PathEnd
         {
             get 
@@ -57,6 +118,9 @@ namespace VDS.RDF.Query.Algebra
             }
         }
 
+        /// <summary>
+        /// Gets the Property Path
+        /// </summary>
         public ISparqlPath Path
         {
             get 
@@ -65,8 +129,16 @@ namespace VDS.RDF.Query.Algebra
             }
         }
 
+        /// <summary>
+        /// Evaluates the Property Path
+        /// </summary>
+        /// <param name="context">SPARQL Evaluation Context</param>
+        /// <returns></returns>
         public abstract BaseMultiset Evaluate(SparqlEvaluationContext context);
 
+        /// <summary>
+        /// Gets the Variables used in the Algebra
+        /// </summary>
         public IEnumerable<string> Variables
         {
             get 
@@ -75,6 +147,10 @@ namespace VDS.RDF.Query.Algebra
             }
         }
 
+        /// <summary>
+        /// Transforms the Algebra back into a Query
+        /// </summary>
+        /// <returns></returns>
         public SparqlQuery ToQuery()
         {
             SparqlQuery q = new SparqlQuery();
@@ -83,16 +159,39 @@ namespace VDS.RDF.Query.Algebra
             return q;
         }
 
+        /// <summary>
+        /// Transforms the Algebra back into a Graph Pattern
+        /// </summary>
+        /// <returns></returns>
         public abstract GraphPattern ToGraphPattern();
 
+        /// <summary>
+        /// Gets the String representation of the Algebra
+        /// </summary>
+        /// <returns></returns>
         public abstract override string ToString();
     }
 
+    /// <summary>
+    /// Abstract Base Class for Arbitrary Length Path Operators
+    /// </summary>
     public abstract class BaseArbitraryLengthPathOperator : BasePathOperator
     {
+        /// <summary>
+        /// Creates a new Arbitrary Lengh Path Operator
+        /// </summary>
+        /// <param name="start">Path Start</param>
+        /// <param name="end">Path End</param>
+        /// <param name="path">Property Path</param>
         public BaseArbitraryLengthPathOperator(PatternItem start, PatternItem end, ISparqlPath path)
             : base(start, end, path) { }
 
+        /// <summary>
+        /// Determines the starting points for Path evaluation
+        /// </summary>
+        /// <param name="context">Evaluation Context</param>
+        /// <param name="paths">Paths</param>
+        /// <param name="reverse">Whether to evaluate Paths in reverse</param>
         protected void GetPathStarts(SparqlEvaluationContext context, List<List<INode>> paths, bool reverse)
         {
             HashSet<KeyValuePair<INode, INode>> nodes = new HashSet<KeyValuePair<INode, INode>>();
@@ -144,6 +243,13 @@ namespace VDS.RDF.Query.Algebra
             paths.AddRange(nodes.Select(kvp => new List<INode>(new INode[] { kvp.Key, kvp.Value })));
         }
 
+        /// <summary>
+        /// Evaluates a setp of the Path
+        /// </summary>
+        /// <param name="context">Context</param>
+        /// <param name="path">Paths</param>
+        /// <param name="reverse">Whether to evaluate Paths in reverse</param>
+        /// <returns></returns>
         protected List<INode> EvaluateStep(SparqlEvaluationContext context, List<INode> path, bool reverse)
         {
             if (this.Path is Property)

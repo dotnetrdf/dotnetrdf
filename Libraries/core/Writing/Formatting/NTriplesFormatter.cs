@@ -47,7 +47,13 @@ namespace VDS.RDF.Writing.Formatting
     {
         private BlankNodeOutputMapper _bnodeMapper = new BlankNodeOutputMapper(WriterHelper.IsValidBlankNodeID);
 
+        /// <summary>
+        /// Set of characters that may follow a backslash and are legal escapes
+        /// </summary>
         protected char[] _validEscapes = new char[] { '\\', '"', 'n', 'r', 't' };
+        /// <summary>
+        /// Set of characters which must be escaped in Literals
+        /// </summary>
         protected char[] _litEscapes = new char[] { '"', '\n', '\r', '\t' };
 
         /// <summary>

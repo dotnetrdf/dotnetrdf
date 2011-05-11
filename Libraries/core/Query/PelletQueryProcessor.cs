@@ -95,6 +95,7 @@ namespace VDS.RDF.Query
         {
             query.QueryTime = -1;
             query.QueryTimeTicks = -1;
+            query.QueryExecutionTime = null;
             DateTime start = DateTime.Now;
             try
             {

@@ -120,6 +120,12 @@ namespace VDS.RDF.Writing.Formatting
         /// <returns></returns>
         protected abstract override string FormatLiteralNode(ILiteralNode l, TripleSegment? segment);
 
+        /// <summary>
+        /// Formats a Namespace as a String
+        /// </summary>
+        /// <param name="prefix">Namespace Prefix</param>
+        /// <param name="namespaceUri">Namespace URI</param>
+        /// <returns></returns>
         public abstract string FormatNamespace(String prefix, Uri namespaceUri);
     }
 }

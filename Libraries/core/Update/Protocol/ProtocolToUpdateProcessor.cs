@@ -225,7 +225,7 @@ namespace VDS.RDF.Update.Protocol
             {
                 SparqlQueryParser parser = new SparqlQueryParser();
                 SparqlParameterizedString graphExistsQuery = new SparqlParameterizedString();
-                graphExistsQuery.QueryText = "ASK WHERE { GRAPH @graph { } }";
+                graphExistsQuery.CommandText = "ASK WHERE { GRAPH @graph { } }";
                 graphExistsQuery.SetUri("graph", graphUri);
 
                 Object temp = this._queryProcessor.ProcessQuery(parser.ParseFromString(graphExistsQuery));
@@ -306,12 +306,12 @@ namespace VDS.RDF.Update.Protocol
             SparqlParameterizedString drop = new SparqlParameterizedString("DROP ");
             if (graphUri != null)
             {
-                drop.QueryText += "GRAPH @graph";
+                drop.CommandText += "GRAPH @graph";
                 drop.SetUri("graph", graphUri);
             }
             else
             {
-                drop.QueryText += "DEFAULT";
+                drop.CommandText += "DEFAULT";
             }
             SparqlUpdateCommandSet dropCmd = this._parser.ParseFromString(drop);
             this._updateProcessor.ProcessCommandSet(dropCmd);
@@ -411,12 +411,12 @@ namespace VDS.RDF.Update.Protocol
             SparqlParameterizedString construct = new SparqlParameterizedString();
             if (graphUri != null)
             {
-                construct.QueryText = "CONSTRUCT { ?s ?p ?o . } WHERE { GRAPH @graph { ?s ?p ?o . } }";
+                construct.CommandText = "CONSTRUCT { ?s ?p ?o . } WHERE { GRAPH @graph { ?s ?p ?o . } }";
                 construct.SetUri("graph", graphUri);
             }
             else
             {
-                construct.QueryText = "CONSTRUCT { ?s ?p ?o . } WHERE { ?s ?p ?o }";
+                construct.CommandText = "CONSTRUCT { ?s ?p ?o . } WHERE { ?s ?p ?o }";
             }
             SparqlQueryParser parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(construct);

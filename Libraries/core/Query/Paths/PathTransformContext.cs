@@ -65,6 +65,10 @@ namespace VDS.RDF.Query.Paths
             this._currObj = end;
         }
 
+        /// <summary>
+        /// Creates a new Path Transform Context from an existing context
+        /// </summary>
+        /// <param name="context">Context</param>
         public PathTransformContext(PathTransformContext context)
         {
             this._start = context._start;
@@ -109,6 +113,9 @@ namespace VDS.RDF.Query.Paths
             this._patterns.Add(p);
         }
 
+        /// <summary>
+        /// Gets the Next ID to be used
+        /// </summary>
         public int NextID
         {
             get
@@ -189,6 +196,13 @@ namespace VDS.RDF.Query.Paths
             }
         }
 
+        /// <summary>
+        /// Creates a Triple Pattern
+        /// </summary>
+        /// <param name="subj">Subject</param>
+        /// <param name="path">Property Path</param>
+        /// <param name="obj">Object</param>
+        /// <returns></returns>
         public ITriplePattern GetTriplePattern(PatternItem subj, ISparqlPath path, PatternItem obj)
         {
             if (path is Property)

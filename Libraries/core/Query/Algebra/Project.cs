@@ -310,6 +310,9 @@ namespace VDS.RDF.Query.Algebra
             this._variables.AddRange(variables);
         }
 
+        /// <summary>
+        /// Gets the Inner Algebra
+        /// </summary>
         public ISparqlAlgebra InnerAlgebra
         {
             get
