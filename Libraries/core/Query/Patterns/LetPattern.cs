@@ -164,6 +164,9 @@ namespace VDS.RDF.Query.Patterns
             }
         }
 
+        /// <summary>
+        /// Gets whether the Pattern uses the Default Dataset
+        /// </summary>
         public override bool UsesDefaultDataset
         {
             get

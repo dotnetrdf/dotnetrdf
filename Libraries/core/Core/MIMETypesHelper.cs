@@ -174,6 +174,11 @@ namespace VDS.RDF
                     select definition);
         }
 
+        /// <summary>
+        /// Gets all MIME Type definitions which support the given MIME Types
+        /// </summary>
+        /// <param name="mimeTypes">MIME Types</param>
+        /// <returns></returns>
         public static IEnumerable<MimeTypeDefinition> GetDefinitions(IEnumerable<String> mimeTypes)
         {
             if (!_init) Init();
@@ -638,12 +643,31 @@ namespace VDS.RDF
 
         #region Reader and Writer Selection
 
+        /// <summary>
+        /// Selects an appropriate <see cref="IRdfWriter">IRdfWriter</see> based on the given MIME Types
+        /// </summary>
+        /// <param name="ctypes">MIME Types</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// <para>
+        /// This method does not take account of any quality/charset preference parameters included in the Accept Header
+        /// </para>
+        /// <para>
+        /// For writers which support <see cref="ICompressingWriter">ICompressingWriter</see> they will be instantiated with the Compression Level specified by <see cref="Options.DefaultCompressionLevel">Options.DefaultCompressionLevel</see>
+        /// </para>
+        /// </remarks>
         public static IRdfWriter GetWriter(IEnumerable<String> ctypes)
         {
             String temp;
             return GetWriter(ctypes, out temp);
         }
 
+        /// <summary>
+        /// Selects an appropriate <see cref="IRdfWriter">IRdfWriter</see> based on the given MIME Types
+        /// </summary>
+        /// <param name="ctypes">MIME Types</param>
+        /// <param name="contentType">The Content Type header that should be sent in the Response to the Request</param>
+        /// <returns></returns>
         public static IRdfWriter GetWriter(IEnumerable<String> ctypes, out String contentType)
         {
             return GetWriter(ctypes.ToArray(), out contentType);
@@ -756,6 +780,11 @@ namespace VDS.RDF
             return GetWriter(acceptHeader, out temp);
         }
 
+        /// <summary>
+        /// Selects an appropriate <see cref="IRdfReader">IRdfReader</see> based on the given MIME Types
+        /// </summary>
+        /// <param name="ctypes">MIME TYpes</param>
+        /// <returns></returns>
         public static IRdfReader GetParser(IEnumerable<String> ctypes)
         {
             if (ctypes != null)
@@ -860,12 +889,25 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Selects an appropriate <see cref="ISparqlResultsWriter">ISparqlResultsWriter</see> based on the given MIME Types
+        /// </summary>
+        /// <param name="ctypes">MIME Types</param>
+        /// <returns>A Writer for a Content Type the client accepts</returns>
+        /// <remarks>This method does not take account of any quality/charset preference parameters included in the Accept Header</remarks>
         public static ISparqlResultsWriter GetSparqlWriter(IEnumerable<String> ctypes)
         {
             String temp;
             return GetSparqlWriter(ctypes, out temp);
         }
 
+        /// <summary>
+        /// Selects an appropriate <see cref="ISparqlResultsWriter">ISparqlResultsWriter</see> based on the HTTP Accept header form a HTTP Request
+        /// </summary>
+        /// <param name="ctypes">String array of accepted Content Types</param>
+        /// <param name="contentType">The Content Type header that should be sent in the Response to the Request</param>
+        /// <returns>A Writer for a Content Type the client accepts and the Content Type that should be sent to the client</returns>
+        /// <remarks>This method does not take account of any quality/charset preference parameters included in the Accept Header</remarks>
         public static ISparqlResultsWriter GetSparqlWriter(IEnumerable<String> ctypes, out String contentType)
         {
             return GetSparqlWriter(ctypes.ToArray(), out contentType);

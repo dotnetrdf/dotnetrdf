@@ -63,6 +63,11 @@ namespace VDS.RDF.Query.Paths
             return "^ " + this._path.ToString();
         }
 
+        /// <summary>
+        /// Converts a Path into its Algebra Form
+        /// </summary>
+        /// <param name="context">Path Transformation Context</param>
+        /// <returns></returns>
         public override ISparqlAlgebra ToAlgebra(PathTransformContext context)
         {
             //Swap the Subject and Object over
@@ -80,7 +85,6 @@ namespace VDS.RDF.Query.Paths
             context.Subject = tempSubj;
             context.Object = tempObj;
             context.End = tempEnd;
-
 
             return context.ToAlgebra();
         }

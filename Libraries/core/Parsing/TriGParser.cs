@@ -777,5 +777,10 @@ namespace VDS.RDF.Parsing
         /// Event which Readers can raise when they notice syntax that is ambigious/deprecated etc which can still be parsed
         /// </summary>
         public event StoreReaderWarning Warning;
+
+        public override string ToString()
+        {
+            return "TriG";
+        }
     }
 }

@@ -33,11 +33,6 @@ terms.
 
 */
 
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using VDS.RDF.Storage.Params;
 
 namespace VDS.RDF
@@ -48,13 +43,19 @@ namespace VDS.RDF
     public interface IStoreReader
     {
         /// <summary>
-        /// Method for loading data into a Triple Store
+        /// Loads a RDF dataset into a Triple Store
         /// </summary>
         /// <param name="store">Triple Store</param>
         /// <param name="parameters">Parameters indicating where the Reader should read from</param>
         /// <exception cref="RdfStorageException">May be thrown if the Parameters are not valid for this Reader</exception>
         void Load(ITripleStore store, IStoreParams parameters);
 
+        /// <summary>
+        /// Loads a RDF dataset using a RDF Handler
+        /// </summary>
+        /// <param name="handler">RDF Handler to use</param>
+        /// <param name="parameters">Parameters indicating where the Reader should read from</param>
+        /// <exception cref="RdfStorageException">May be thrown if the Parameters are not valid for this Reader</exception>
         void Load(IRdfHandler handler, IStoreParams parameters);
 
         /// <summary>

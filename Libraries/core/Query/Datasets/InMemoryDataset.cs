@@ -91,6 +91,11 @@ namespace VDS.RDF.Query.Datasets
             }
         }
 
+        /// <summary>
+        /// Creates a new In-Memory dataset
+        /// </summary>
+        /// <param name="store">In-Memory queryable store</param>
+        /// <param name="defaultGraphUri">Default Graph URI</param>
         public InMemoryDataset(IInMemoryQueryableStore store, Uri defaultGraphUri)
             : base(defaultGraphUri)
         {
@@ -106,6 +111,9 @@ namespace VDS.RDF.Query.Datasets
         }
 
 #if !NO_RWLOCK
+        /// <summary>
+        /// Gets the Lock used to ensure MRSW concurrency on the dataset when available
+        /// </summary>
         public ReaderWriterLockSlim Lock
         {
             get
@@ -193,6 +201,11 @@ namespace VDS.RDF.Query.Datasets
             return this._store.Graph(graphUri);
         }
 
+        /// <summary>
+        /// Gets a Modifiable wrapper around a Graph in the Dataset
+        /// </summary>
+        /// <param name="graphUri">Graph URI</param>
+        /// <returns></returns>
         protected override ITransactionalGraph GetModifiableGraphInternal(Uri graphUri)
         {
             return new GraphPersistenceWrapper(this[graphUri]);
@@ -298,6 +311,9 @@ namespace VDS.RDF.Query.Datasets
 
         #endregion       
 
+        /// <summary>
+        /// If there have been changes made to the Dataset and the underlying in-memory store is a <see cref="IFlushableStore">IFlushableStore</see> ensures the underlying store is notified to flush those changes
+        /// </summary>
         protected override void FlushInternal()
         {
             if (this._store is IFlushableStore)

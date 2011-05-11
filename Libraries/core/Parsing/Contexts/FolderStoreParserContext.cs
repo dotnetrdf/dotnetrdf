@@ -89,6 +89,38 @@ namespace VDS.RDF.Parsing.Contexts
             : this(store, folder, format, 8) { }
 
         /// <summary>
+        /// Creates a new Folder Store Parser Context
+        /// </summary>
+        /// <param name="handler">RDF Handler to use</param>
+        /// <param name="params">Folder Store Parameters</param>
+        public FolderStoreParserContext(IRdfHandler handler, FolderStoreParams @params)
+            : this(handler, @params.Folder, @params.Format, @params.Threads) { }
+
+        /// <summary>
+        /// Creates a new Folder Store Parser Context
+        /// </summary>
+        /// <param name="handler">RDF Handler to use</param>
+        /// <param name="folder">Folder</param>
+        /// <param name="format">Format</param>
+        /// <param name="threads">Threads to use</param>
+        public FolderStoreParserContext(IRdfHandler handler, String folder, FolderStoreFormat format, int threads)
+            : base(handler)
+        {
+            this._folder = folder;
+            this._format = format;
+            this._threads = threads;
+        }
+
+        /// <summary>
+        /// Creates a new Folder Store Parser Context
+        /// </summary>
+        /// <param name="handler">RDF Handler to use</param>
+        /// <param name="folder">Folder</param>
+        /// <param name="format">Format</param>
+        public FolderStoreParserContext(IRdfHandler handler, String folder, FolderStoreFormat format)
+            : this(handler, folder, format, 8) { }
+
+        /// <summary>
         /// Gets the Folder containing the Store
         /// </summary>
         public String Folder

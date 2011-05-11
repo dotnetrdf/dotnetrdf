@@ -101,6 +101,16 @@ namespace VDS.RDF.Query.Construct
             return temp;
         }
 
+        /// <summary>
+        /// Creates a Node for the Context
+        /// </summary>
+        /// <param name="n">Node</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// <para>
+        /// In effect all this does is ensure that all Nodes end up in the same Graph which may occassionally not happen otherwise when Graph wrappers are involved
+        /// </para>
+        /// </remarks>
         public INode GetNode(INode n)
         {
             if (this._nodeMap == null) this._nodeMap = new Dictionary<INode,INode>();

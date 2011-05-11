@@ -33,10 +33,7 @@ terms.
 
 */
 
-
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace VDS.RDF
@@ -130,36 +127,66 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Determines whether this Node is equal to a Blank Node (should always be false)
+        /// </summary>
+        /// <param name="other">Blank Node</param>
+        /// <returns></returns>
         public override bool Equals(IBlankNode other)
         {
             if (ReferenceEquals(this, other)) return true;
             return false;
         }
 
+        /// <summary>
+        /// Determines whether this Node is equal to a Graph Literal Node
+        /// </summary>
+        /// <param name="other">Graph Literal Node</param>
+        /// <returns></returns>
         public override bool Equals(IGraphLiteralNode other)
         {
             if (ReferenceEquals(this, other)) return true;
             return EqualityHelper.AreGraphLiteralsEqual(this, other);
         }
 
+        /// <summary>
+        /// Determines whether this Node is equal to a Literal Node (should always be false)
+        /// </summary>
+        /// <param name="other">Literal Node</param>
+        /// <returns></returns>
         public override bool Equals(ILiteralNode other)
         {
             if (ReferenceEquals(this, other)) return true;
             return false;
         }
 
+        /// <summary>
+        /// Determines whether this Node is equal to a URI Node (should always be false)
+        /// </summary>
+        /// <param name="other">URI Node</param>
+        /// <returns></returns>
         public override bool Equals(IUriNode other)
         {
             if (ReferenceEquals(this, other)) return true;
             return false;
         }
 
+        /// <summary>
+        /// Determines whether this Node is equal to a Variable Node (should always be false)
+        /// </summary>
+        /// <param name="other">Variable Node</param>
+        /// <returns></returns>
         public override bool Equals(IVariableNode other)
         {
             if (ReferenceEquals(this, other)) return true;
             return false;
         }
 
+        /// <summary>
+        /// Determines whether this Node is equal to a Graph Literal Node
+        /// </summary>
+        /// <param name="other">Graph Literal Node</param>
+        /// <returns></returns>
         public bool Equals(BaseGraphLiteralNode other)
         {
             return this.Equals((IGraphLiteralNode)other);
@@ -221,6 +248,11 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Returns an Integer indicating the Ordering of this Node compared to another Node
+        /// </summary>
+        /// <param name="other">Node to test against</param>
+        /// <returns></returns>
         public override int CompareTo(IBlankNode other)
         {
             if (ReferenceEquals(this, other)) return 0;
@@ -229,11 +261,21 @@ namespace VDS.RDF
             return 1;
         }
 
+        /// <summary>
+        /// Returns an Integer indicating the Ordering of this Node compared to another Node
+        /// </summary>
+        /// <param name="other">Node to test against</param>
+        /// <returns></returns>
         public override int CompareTo(IGraphLiteralNode other)
         {
             return ComparisonHelper.CompareGraphLiterals(this, (IGraphLiteralNode)other);
         }
 
+        /// <summary>
+        /// Returns an Integer indicating the Ordering of this Node compared to another Node
+        /// </summary>
+        /// <param name="other">Node to test against</param>
+        /// <returns></returns>
         public override int CompareTo(ILiteralNode other)
         {
             if (ReferenceEquals(this, other)) return 0;
@@ -242,6 +284,11 @@ namespace VDS.RDF
             return 1;
         }
 
+        /// <summary>
+        /// Returns an Integer indicating the Ordering of this Node compared to another Node
+        /// </summary>
+        /// <param name="other">Node to test against</param>
+        /// <returns></returns>
         public override int CompareTo(IUriNode other)
         {
             if (ReferenceEquals(this, other)) return 0;
@@ -250,6 +297,11 @@ namespace VDS.RDF
             return 1;
         }
 
+        /// <summary>
+        /// Returns an Integer indicating the Ordering of this Node compared to another Node
+        /// </summary>
+        /// <param name="other">Node to test against</param>
+        /// <returns></returns>
         public override int CompareTo(IVariableNode other)
         {
             if (ReferenceEquals(this, other)) return 0;
@@ -258,6 +310,11 @@ namespace VDS.RDF
             return 1;
         }
 
+        /// <summary>
+        /// Returns an Integer indicating the Ordering of this Node compared to another Node
+        /// </summary>
+        /// <param name="other">Node to test against</param>
+        /// <returns></returns>
         public int CompareTo(BaseGraphLiteralNode other)
         {
             return this.CompareTo((IGraphLiteralNode)other);
@@ -269,9 +326,18 @@ namespace VDS.RDF
     /// </summary>
     public class GraphLiteralNode : BaseGraphLiteralNode, IEquatable<GraphLiteralNode>, IComparable<GraphLiteralNode>
     {
+        /// <summary>
+        /// Creates a new Graph Literal Node in the given Graph which represents the given Subgraph
+        /// </summary>
+        /// <param name="g">Graph this node is in</param>
         protected internal GraphLiteralNode(IGraph g)
             : base(g) { }
 
+        /// <summary>
+        /// Creates a new Graph Literal Node whose value is an empty Subgraph
+        /// </summary>
+        /// <param name="g">Graph this node is in</param>
+        /// <param name="subgraph">Sub-graph this node represents</param>
         protected internal GraphLiteralNode(IGraph g, IGraph subgraph)
             : base(g, subgraph) { }
 
@@ -288,6 +354,11 @@ namespace VDS.RDF
             return this.CompareTo((IGraphLiteralNode)other);
         }
 
+        /// <summary>
+        /// Determines whether this Node is equal to a Graph Literal Node
+        /// </summary>
+        /// <param name="other">Graph Literal Node</param>
+        /// <returns></returns>
         public bool Equals(GraphLiteralNode other)
         {
             return base.Equals((IGraphLiteralNode)other);

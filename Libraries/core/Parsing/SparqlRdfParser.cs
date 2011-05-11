@@ -343,5 +343,17 @@ namespace VDS.RDF.Parsing
         /// Event raised when a non-fatal issue with the SPARQL Results being parsed is detected
         /// </summary>
         public event SparqlWarning Warning;
+
+        public override string ToString()
+        {
+            if (this._parser != null)
+            {
+                return "SPARQL Results in RDF (" + this._parser.ToString() + ")";
+            }
+            else
+            {
+                return "SPARQL Results in RDF (Auto-detect)";
+            }
+        }
     }
 }

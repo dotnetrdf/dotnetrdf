@@ -41,33 +41,33 @@ namespace dotNetRDFTest
             //Call Graph Building Example
             //GraphBuildingExample.Main(args);
             Console.SetOut(stdout);
-            Console.WriteLine("Graph Building Example 1 Done");
+            //Console.WriteLine("Graph Building Example 1 Done");
 
             //Call 2nd Graph Build Example
             //GraphBuildingExample2.Main(args);
             Console.SetOut(stdout);
-            Console.WriteLine("Graph Building Example 2 Done");
+            //Console.WriteLine("Graph Building Example 2 Done");
 
             //Call Uri Resolution Test
             //URIResolutionTest.Main(args);
             Console.SetOut(stdout);
-            Console.WriteLine("URI Resolution Test Done");
+            //Console.WriteLine("URI Resolution Test Done");
 
             //Call Hash Code Test
             //HashCodeTests.Main(args);
             Console.SetOut(stdout);
-            Console.WriteLine("Hash Code Tests Done");
+            //Console.WriteLine("Hash Code Tests Done");
 
             //Call Uri Node Equality Tests
             //URINodeEqualityTests.Main(args);
             Console.SetOut(stdout);
-            Console.WriteLine("URI Node Equality Test Done");
+            //Console.WriteLine("URI Node Equality Test Done");
 
             //Call Thread Safe Graph Test
             //ThreadSafeGraphTest test = new ThreadSafeGraphTest(8,100);
             //test.RunTest();
             Console.SetOut(stdout);
-            Console.WriteLine("Thread Safe Graph Test Done");
+            //Console.WriteLine("Thread Safe Graph Test Done");
 
             //Call Query Speed Tests
             //while (!optionlist.Equals("n"))
@@ -95,67 +95,67 @@ namespace dotNetRDFTest
             //    optionlist = Console.ReadLine();
             //}
             Console.SetOut(stdout);
-            Console.WriteLine("Query Speed Tests Done");
+            //Console.WriteLine("Query Speed Tests Done");
 
             //Call Inference Tests
             //InferenceTest.Main(args);
             Console.SetOut(stdout);
-            Console.WriteLine("Inference Tests Done");
+            //Console.WriteLine("Inference Tests Done");
 
             //Call Merge Tests
             //MergeTest.Main(args);
             Console.SetOut(stdout);
-            Console.WriteLine("Graph Merging Tests Done");
+            //Console.WriteLine("Graph Merging Tests Done");
 
             //Call XML/RDF Test Suite
             //RdfXmlTestSuite.Main(args);
             Console.SetOut(stdout);
-            Console.WriteLine("RDF/XML Parser Tests Done");
+            //Console.WriteLine("RDF/XML Parser Tests Done");
 
             //Call Notation3 Test Suite
             //Notation3TestSuite.Main(args);
             Console.SetOut(stdout);
-            Console.WriteLine("Notation 3 Parser Tests Done");
+            //Console.WriteLine("Notation 3 Parser Tests Done");
 
             //Call Turtle Test Suite
             //TurtleTestSuite.Main(args);
             Console.SetOut(stdout);
-            Console.WriteLine("Turtle Parser Tests Done");
+            //Console.WriteLine("Turtle Parser Tests Done");
 
             //Call the NTriples Test Suite
             //NTriplesTestSuite.Main(args);
             Console.SetOut(stdout);
-            Console.WriteLine("NTriples Parser Tests Done");
+            //Console.WriteLine("NTriples Parser Tests Done");
 
             //Call the Json Test Suite
             //JsonTest.Main(args);
             Console.SetOut(stdout);
-            Console.WriteLine("JSON Tests Done");
+            //Console.WriteLine("JSON Tests Done");
 
             //Call the RDFa Test Suite
             //RdfATestSuite.Main(args);
             Console.SetOut(stdout);
-            Console.Write("RDFa Tests Done");
+            //Console.WriteLine("RDFa Tests Done");
 
             //Call the TriG Test Suite
             //TriGTestSuite.Main(args);
             Console.SetOut(stdout);
-            Console.WriteLine("TriG Tests Done");
+            //Console.WriteLine("TriG Tests Done");
 
             //Call the NQuads Test Suite
             //NQuadsTestSuite.Main(args);
             Console.SetOut(stdout);
-            Console.WriteLine("NQuads Tests Done");
+            //Console.WriteLine("NQuads Tests Done");
 
             //Call the TriX Test Suite
             //TriXTestSuite.Main(args);
             Console.SetOut(stdout);
-            Console.WriteLine("TriX Tests Done");
+            //Console.WriteLine("TriX Tests Done");
 
             //Call the Sparql Parser Test Suite
             //SparqlTestSuite.Main(args);
-            //Console.SetOut(stdout);
-            Console.WriteLine("SPARQL Query Parser Tests Done");
+            Console.SetOut(stdout);
+            //Console.WriteLine("SPARQL Query Parser Tests Done");
 
             //Call the SPARQL Evaluation Test Suite
             SparqlEvaluationTestSuite sparqlEvaluation = new SparqlEvaluationTestSuite();
@@ -172,7 +172,7 @@ namespace dotNetRDFTest
             //Call the Local Sparql Test Suite
             //LocalSparqlTests.Main(args);
             Console.SetOut(stdout);
-            Console.WriteLine("SPARQL Local Query Tests Done");
+            //Console.WriteLine("SPARQL Local Query Tests Done");
 
             //Call the Remote Sparql Test Suite
             //RemoteSparqlTestSuite.Main(args);
@@ -182,17 +182,17 @@ namespace dotNetRDFTest
             //Call the SPARQL Update Test Suite
             //SparqlUpdateParserTests.Main(args);
             Console.SetOut(stdout);
-            Console.WriteLine("SPARQL Update Parser Tests Done");
+            //Console.WriteLine("SPARQL Update Parser Tests Done");
 
             //Call Parser Speed Tests
             //ParserSpeedTest.Main(args);
             Console.SetOut(stdout);
-            Console.WriteLine("Parser Speed Comparison Tests Done");
+            //Console.WriteLine("Parser Speed Comparison Tests Done");
 
             //Call Sorting Tests
             //SortingTests.Main(args);
             Console.SetOut(stdout);
-            Console.WriteLine("Node Sorting Tests Done");
+            //Console.WriteLine("Node Sorting Tests Done");
 
             //Call SQL Store Test
             //Parameters are {TestMode,Runs,ReuseManager,UseThreading,NoThreads}
@@ -214,27 +214,27 @@ namespace dotNetRDFTest
             //    SqlStoreTest.Main(options);
             //}
             Console.SetOut(stdout);
-            Console.WriteLine("SQL Store Tests Done");
+           // Console.WriteLine("SQL Store Tests Done");
 
             //Call MySQL Store Test
             //MySQLStoreTest.Main(args);
             Console.SetOut(stdout);
-            Console.WriteLine("MySQL Store Tests Done");
+            //Console.WriteLine("MySQL Store Tests Done");
 
             //Call Serialization Tests
             //WriterTests.Main(args);
             Console.SetOut(stdout);
-            Console.WriteLine("RDF Serializers Tests Done");
+            //Console.WriteLine("RDF Serializers Tests Done");
 
             //Call Triple Store Tests
             //TripleStoreTest.Main(args);
             Console.SetOut(stdout);
-            Console.WriteLine("Triple Store Tests Done");
+            //Console.WriteLine("Triple Store Tests Done");
 
             //Call Folder Store Tests
             //FolderStoreTest.Main(args);
             Console.SetOut(stdout);
-            Console.WriteLine("Folder Store Tests Done");
+            //Console.WriteLine("Folder Store Tests Done");
 
             //Call Read/Write Speed Tests
             //Parameters are {TestMode,Runs,AllowHighSpeedWrites}
@@ -255,43 +255,43 @@ namespace dotNetRDFTest
             //    String[] options = optionlist.Split(',');
             //    DiskIOSpeedTests.Main(options);
             //}
-            Console.SetOut(stdout);
-            Console.WriteLine("Parser & Serializer Speed Benchmarking Tests Done");
+            //Console.SetOut(stdout);
+            //Console.WriteLine("Parser & Serializer Speed Benchmarking Tests Done");
 
             //Call Talis Tests
             //TalisTests.Main(args);
             Console.SetOut(stdout);
-            Console.WriteLine("Talis Platform Tests Done");
+            //Console.WriteLine("Talis Platform Tests Done");
 
             //Call 4store Tests
             //FourStoreTest.Main(args);
             Console.SetOut(stdout);
-            Console.WriteLine("4store Tests Done");
+            //Console.WriteLine("4store Tests Done");
 
             //Call AllegroGraph Tests
             //AllegroGraphTest.Main(args);
             Console.SetOut(stdout);
-            Console.WriteLine("AllegroGraph Tests Done");
+            //Console.WriteLine("AllegroGraph Tests Done");
 
             //Call Joseki Tests
             //JosekiTest.Main(args);
             Console.SetOut(stdout);
-            Console.WriteLine("Joseki Tests Done");
+            //Console.WriteLine("Joseki Tests Done");
 
             //Call Hash Code Check
             //StoreHashCodeChecker.Main(args);
             Console.SetOut(stdout);
-            Console.WriteLine("Hash Code Check Done");
+            //Console.WriteLine("Hash Code Check Done");
 
             //Background Persisted Graph Test
             //BackgroundPersistedGraphTest.Main(args);
             Console.SetOut(stdout);
-            Console.WriteLine("Background persisted Graph Test Done");
+            //Console.WriteLine("Background persisted Graph Test Done");
 
             //Call ConfigurationLoader Test
             //ConfigurationLoaderTests.Main(args);
             Console.SetOut(stdout);
-            Console.WriteLine("Configuration Loader Tests Done");
+            //Console.WriteLine("Configuration Loader Tests Done");
 
             //Create the Figures for my 9 Month Report
             //NineMonthReportFigures.Main(args);

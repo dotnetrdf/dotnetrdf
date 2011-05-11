@@ -136,7 +136,7 @@ namespace VDS.RDF.Parsing
         /// <summary>
         /// Internal Helper method which does the actual loading of the Graph from the Resource
         /// </summary>
-        /// <param name="g">Graph to load into</param>
+        /// <param name="handler">RDF Handler to use</param>
         /// <param name="asm">Assembly to get the resource stream from</param>
         /// <param name="resource">Full name of the Resource (without the Assembly Name)</param>
         /// <param name="parser">Parser to use (if null then will be auto-selected)</param>
@@ -275,7 +275,7 @@ namespace VDS.RDF.Parsing
         /// <summary>
         /// Internal Helper method which does the actual loading of the Triple Store from the Resource
         /// </summary>
-        /// <param name="store">Store to load into</param>
+        /// <param name="handler">RDF Handler to use</param>
         /// <param name="asm">Assembly to get the resource stream from</param>
         /// <param name="resource">Full name of the Resource (without the Assembly Name)</param>
         /// <param name="parser">Parser to use (if null will be auto-selected)</param>

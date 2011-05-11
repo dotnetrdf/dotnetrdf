@@ -34,12 +34,12 @@ terms.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace VDS.RDF
 {
+    /// <summary>
+    /// Abstract Base Class for Variable Nodes
+    /// </summary>
     public abstract class BaseVariableNode : BaseNode, IVariableNode, IEquatable<BaseVariableNode>, IComparable<BaseVariableNode>
     {
         private String _var;
@@ -96,30 +96,55 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Determines whether this Node is equal to a Blank Node (should always be false)
+        /// </summary>
+        /// <param name="other">Blank Node</param>
+        /// <returns></returns>
         public override bool Equals(IBlankNode other)
         {
             if (ReferenceEquals(this, other)) return true;
             return false;
         }
 
+        /// <summary>
+        /// Determines whether this Node is equal to a Graph Literal Node (should always be false)
+        /// </summary>
+        /// <param name="other">Graph Literal Node</param>
+        /// <returns></returns>
         public override bool Equals(IGraphLiteralNode other)
         {
             if (ReferenceEquals(this, other)) return true;
             return false;
         }
 
+        /// <summary>
+        /// Determines whether this Node is equal to a Literal Node (should always be false)
+        /// </summary>
+        /// <param name="other">Literal Node</param>
+        /// <returns></returns>
         public override bool Equals(ILiteralNode other)
         {
             if (ReferenceEquals(this, other)) return true;
             return false;
         }
 
+        /// <summary>
+        /// Determines whether this Node is equal to a URI Node (should always be false)
+        /// </summary>
+        /// <param name="other">URI Node</param>
+        /// <returns></returns>
         public override bool Equals(IUriNode other)
         {
             if (ReferenceEquals(this, other)) return true;
             return false;
         }
 
+        /// <summary>
+        /// Determines whether this Node is equal to a Variable Node
+        /// </summary>
+        /// <param name="other">Variable Node</param>
+        /// <returns></returns>
         public override bool Equals(IVariableNode other)
         {
             if ((Object)other == null) return false;
@@ -129,6 +154,11 @@ namespace VDS.RDF
             return EqualityHelper.AreVariablesEqual(this, other);
         }
 
+        /// <summary>
+        /// Determines whether this Node is equal to a Variable Node
+        /// </summary>
+        /// <param name="other">Variable Node</param>
+        /// <returns></returns>
         public bool Equals(BaseVariableNode other)
         {
             return this.Equals((IVariableNode)other);
@@ -190,6 +220,11 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Returns an Integer indicating the Ordering of this Node compared to another Node
+        /// </summary>
+        /// <param name="other">Node to test against</param>
+        /// <returns></returns>
         public override int CompareTo(IBlankNode other)
         {
             if (ReferenceEquals(this, other)) return 0;
@@ -206,6 +241,11 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Returns an Integer indicating the Ordering of this Node compared to another Node
+        /// </summary>
+        /// <param name="other">Node to test against</param>
+        /// <returns></returns>
         public override int CompareTo(IGraphLiteralNode other)
         {
             if (ReferenceEquals(this, other)) return 0;
@@ -222,6 +262,11 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Returns an Integer indicating the Ordering of this Node compared to another Node
+        /// </summary>
+        /// <param name="other">Node to test against</param>
+        /// <returns></returns>
         public override int CompareTo(ILiteralNode other)
         {
             if (ReferenceEquals(this, other)) return 0;
@@ -238,6 +283,11 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Returns an Integer indicating the Ordering of this Node compared to another Node
+        /// </summary>
+        /// <param name="other">Node to test against</param>
+        /// <returns></returns>
         public override int CompareTo(IUriNode other)
         {
             if (ReferenceEquals(this, other)) return 0;
@@ -254,6 +304,11 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Returns an Integer indicating the Ordering of this Node compared to another Node
+        /// </summary>
+        /// <param name="other">Node to test against</param>
+        /// <returns></returns>
         public override int CompareTo(IVariableNode other)
         {
             if (ReferenceEquals(this, other)) return 0;
@@ -269,6 +324,11 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Returns an Integer indicating the Ordering of this Node compared to another Node
+        /// </summary>
+        /// <param name="other">Node to test against</param>
+        /// <returns></returns>
         public int CompareTo(BaseVariableNode other)
         {
             return this.CompareTo((IVariableNode)other);
@@ -280,6 +340,11 @@ namespace VDS.RDF
     /// </summary>
     public class VariableNode : BaseVariableNode, IEquatable<VariableNode>, IComparable<VariableNode>
     {
+        /// <summary>
+        /// Creates a new Variable Node
+        /// </summary>
+        /// <param name="g">Graph</param>
+        /// <param name="varname">Variable Name</param>
         protected internal VariableNode(IGraph g, String varname)
             : base(g, varname) { }
 
@@ -293,6 +358,11 @@ namespace VDS.RDF
             return base.CompareTo((IVariableNode)other);
         }
 
+        /// <summary>
+        /// Determines whether this Node is equal to a Variable Node
+        /// </summary>
+        /// <param name="other">Variable Node</param>
+        /// <returns></returns>
         public bool Equals(VariableNode other)
         {
             return base.Equals((IVariableNode)other);

@@ -501,11 +501,30 @@ namespace VDS.RDF
             return true;
         }
 
+        /// <summary>
+        /// Escapes all occurrences of a given character in a String
+        /// </summary>
+        /// <param name="value">String</param>
+        /// <param name="toEscape">Character to escape</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Ignores all existing escapes (indicated by a \) and so avoids double escaping as far as possible
+        /// </remarks>
         public static String Escape(this String value, char toEscape)
         {
             return value.Escape(toEscape, toEscape);
         }
 
+        /// <summary>
+        /// Escapes all occurrences of a given character in a String using the given escape character
+        /// </summary>
+        /// <param name="value">String</param>
+        /// <param name="toEscape">Character to escape</param>
+        /// <param name="escapeAs">Character to escape as</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Ignores all existing escapes (indicated by a \) and so avoids double escaping as far as possible
+        /// </remarks>
         public static String Escape(this String value, char toEscape, char escapeAs)
         {
             if (value.Length == 0) return value;

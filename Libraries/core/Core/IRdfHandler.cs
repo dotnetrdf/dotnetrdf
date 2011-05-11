@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace VDS.RDF
 {
     /// <summary>
-    /// Interface for Handlers which handle the RDF retrieved from Parsing
+    /// Interface for Handlers which handle the RDF produced by parsers
     /// </summary>
     public interface IRdfHandler : INodeFactory
     {
@@ -56,6 +56,9 @@ namespace VDS.RDF
     /// </summary>
     public interface IWrappingRdfHandler : IRdfHandler
     {
+        /// <summary>
+        /// Gets the Inner Handlers used by this Handler
+        /// </summary>
         IEnumerable<IRdfHandler> InnerHandlers
         {
             get;

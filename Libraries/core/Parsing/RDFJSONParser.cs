@@ -485,5 +485,10 @@ namespace VDS.RDF.Parsing
         /// Event which is raised if there's a non-fatal issue with the RDF/Json Syntax
         /// </summary>
         public event RdfReaderWarning Warning;
+
+        public override string ToString()
+        {
+            return "RDF/JSON (Talis Specification)";
+        }
     }
 }

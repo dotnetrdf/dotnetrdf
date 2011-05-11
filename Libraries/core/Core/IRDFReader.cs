@@ -57,6 +57,14 @@ namespace VDS.RDF
         /// <exception cref="System.IO.IOException">Thrown if the Parser encounters an IO Error while trying to access/parse the Stream</exception>
         void Load(IGraph g, StreamReader input);
 
+        /// <summary>
+        /// Method for Loading a Graph from some Concrete RDF Syntax via some arbitrary Input
+        /// </summary>
+        /// <param name="g">Graph to load RDF into</param>
+        /// <param name="input">The reader to read input from</param>
+        /// <exception cref="RdfException">Thrown if the Parser tries to output something that is invalid RDF</exception>
+        /// <exception cref="Parsing.RdfParseException">Thrown if the Parser cannot Parse the Input</exception>
+        /// <exception cref="System.IO.IOException">Thrown if the Parser encounters an IO Error while trying to access/parse the Stream</exception>
         void Load(IGraph g, TextReader input);
 
         /// <summary>
@@ -69,10 +77,34 @@ namespace VDS.RDF
         /// <exception cref="System.IO.IOException">Thrown if the Parser encounters an IO Error while trying to access/parse the File</exception>
         void Load(IGraph g, String filename);
 
+        /// <summary>
+        /// Method for Loading RDF using a RDF Handler from some Concrete RDF Syntax via some arbitrary Stream
+        /// </summary>
+        /// <param name="handler">RDF Handler to use</param>
+        /// <param name="input">The reader to read input from</param>
+        /// <exception cref="RdfException">Thrown if the Parser tries to output something that is invalid RDF</exception>
+        /// <exception cref="Parsing.RdfParseException">Thrown if the Parser cannot Parse the Input</exception>
+        /// <exception cref="System.IO.IOException">Thrown if the Parser encounters an IO Error while trying to access/parse the Stream</exception>
         void Load(IRdfHandler handler, StreamReader input);
 
+        /// <summary>
+        /// Method for Loading RDF using a RDF Handler from some Concrete RDF Syntax via some arbitrary Stream
+        /// </summary>
+        /// <param name="handler">RDF Handler to use</param>
+        /// <param name="input">The reader to read input from</param>
+        /// <exception cref="RdfException">Thrown if the Parser tries to output something that is invalid RDF</exception>
+        /// <exception cref="Parsing.RdfParseException">Thrown if the Parser cannot Parse the Input</exception>
+        /// <exception cref="System.IO.IOException">Thrown if the Parser encounters an IO Error while trying to access/parse the Stream</exception>
         void Load(IRdfHandler handler, TextReader input);
 
+        /// <summary>
+        /// Method for Loading RDF using a RDF Handler from some Concrete RDF Syntax from a given File
+        /// </summary>
+        /// <param name="handler">RDF Handler to use</param>
+        /// <param name="filename">The Filename of the File to read from</param>
+        /// <exception cref="RdfException">Thrown if the Parser tries to output something that is invalid RDF</exception>
+        /// <exception cref="Parsing.RdfParseException">Thrown if the Parser cannot Parse the Input</exception>
+        /// <exception cref="System.IO.IOException">Thrown if the Parser encounters an IO Error while trying to access/parse the Stream</exception>
         void Load(IRdfHandler handler, String filename);
 
         /// <summary>

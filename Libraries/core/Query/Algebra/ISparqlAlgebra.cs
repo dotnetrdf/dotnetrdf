@@ -77,8 +77,14 @@ namespace VDS.RDF.Query.Algebra
         GraphPattern ToGraphPattern();
     }
 
+    /// <summary>
+    /// Interface for SPARQL Algebra constructs which are unary operators i.e. they apply over a single inner Algebra
+    /// </summary>
     public interface IUnaryOperator : ISparqlAlgebra
     {
+        /// <summary>
+        /// Gets the Inner Algebra
+        /// </summary>
         ISparqlAlgebra InnerAlgebra
         {
             get;
@@ -172,6 +178,9 @@ namespace VDS.RDF.Query.Algebra
     /// </summary>
     public interface IExistsJoin : IAbstractJoin
     {
+        /// <summary>
+        /// Gets whether the Join requires compatible solutions to exist on the RHS
+        /// </summary>
         bool MustExist
         {
             get;

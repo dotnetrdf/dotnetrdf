@@ -753,5 +753,10 @@ namespace VDS.RDF.Parsing
         /// Event raised when a non-fatal issue with the SPARQL Results being parsed is detected
         /// </summary>
         public event SparqlWarning Warning;
+
+        public override string ToString()
+        {
+            return "SPARQL Results JSON";
+        }
     }
 }

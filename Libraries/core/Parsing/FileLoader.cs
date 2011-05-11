@@ -112,11 +112,36 @@ namespace VDS.RDF.Parsing
             FileLoader.Load(new GraphHandler(g), filename, parser);
         }
 
+        /// <summary>
+        /// Loads the contents of the given File using a RDF Handler providing the RDF format can be determined
+        /// </summary>
+        /// <param name="handler">RDF Handler to use</param>
+        /// <param name="filename">File to load from</param>
+        /// <remarks>
+        /// <para>
+        /// The <see cref="FileLoader">FileLoader</see> first attempts to select a RDF Parser by examining the file extension to select the most likely MIME type for the file.  This assumes that the file extension corresponds to one of the recognized file extensions for a RDF format the library supports.  If this suceeds then a parser is chosen and will be used to attempt to parse the input.
+        /// </para>
+        /// <para>
+        /// Should this fail then the contents of the file will be read into a String, the <see cref="StringParser">StringParser</see> is then used to attempt to parse it.  The <see cref="StringParser">StringParser</see> uses some simple rules to guess which format the input is likely to be and chooses a parser based on it's guess.
+        /// </para>
+        /// <para>
+        /// <strong>Note:</strong> FileLoader will assign the Graph a file Uri prior to attempting Parsing, any Base Uri specified in the RDF contained in the file will override this Uri.
+        /// </para>
+        /// <para>
+        /// The File Uri assigned will always be an absolute Uri for the File
+        /// </para>
+        /// </remarks>
         public static void Load(IRdfHandler handler, String filename)
         {
             FileLoader.Load(handler, filename, (IRdfReader)null);
         }
 
+        /// <summary>
+        /// Loads the contents of the given File using a RDF Handler using the given RDF Parser
+        /// </summary>
+        /// <param name="handler">RDF Handler to use</param>
+        /// <param name="filename">File to load from</param>
+        /// <param name="parser">Parser to use</param>
         public static void Load(IRdfHandler handler, String filename, IRdfReader parser)
         {
             if (handler == null) throw new RdfParseException("Cannot read RDF using a null RDF Handler");
@@ -188,6 +213,17 @@ namespace VDS.RDF.Parsing
             FileLoader.Load(store, filename, null);
         }
 
+        /// <summary>
+        /// Loads the contents of the given File using a RDF Handler providing the RDF dataset format can be determined
+        /// </summary>
+        /// <param name="handler">RDF Handler to use</param>
+        /// <param name="filename">File to load from</param>
+        /// <param name="parser">Parser to use to parse the given file</param>
+        /// <remarks>
+        /// <para>
+        /// If the <paramref name="parser"/> parameter is set to null then the <see cref="FileLoader">FileLoader</see> attempts to select a Store Parser by examining the file extension to select the most likely MIME type for the file.  This assume that the file extension corresponds to one of the recognized file extensions for a RDF dataset format the library supports.  If this suceeds then a parser is chosen and used to parse the input file.
+        /// </para>
+        /// </remarks>
         public static void Load(IRdfHandler handler, String filename, IStoreReader parser)
         {
             if (handler == null) throw new RdfParseException("Cannot read a RDF Dataset using a null RDF Handler");
@@ -233,6 +269,16 @@ namespace VDS.RDF.Parsing
             }
         }
 
+        /// <summary>
+        /// Loads the contents of the given File using a RDF Handler providing the RDF dataset format can be determined
+        /// </summary>
+        /// <param name="handler">RDF Handler to use</param>
+        /// <param name="filename">File to load from</param>
+        /// <remarks>
+        /// <para>
+        /// The <see cref="FileLoader">FileLoader</see> attempts to select a Store Parser by examining the file extension to select the most likely MIME type for the file.  This assume that the file extension corresponds to one of the recognized file extensions for a RDF dataset format the library supports.  If this suceeds then a parser is chosen and used to parse the input file.
+        /// </para>
+        /// </remarks>
         public static void LoadDataset(IRdfHandler handler, String filename)
         {
             FileLoader.Load(handler, filename, (IStoreReader)null);

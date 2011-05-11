@@ -51,7 +51,7 @@ namespace dotNetRDFTest
                         new RdfXmlParser(RdfXmlParserMode.DOM),
                         new RdfXmlParser(RdfXmlParserMode.Streaming),
                         new RdfJsonParser()/*,
-                        new JsonNTriplesParser()*/
+                        new RdfAParser()*/
                     };
                     List<String> files = new List<string>() { 
                         "test.nt", 
@@ -60,7 +60,8 @@ namespace dotNetRDFTest
                         "test.rdf",
                         "test.rdf",
                         "test.json",
-                        "test.nt.json"
+                        "test.nt.json"/*,
+                        "test.html"*/
                     };
                     IRdfReader reader;
 
@@ -73,8 +74,8 @@ namespace dotNetRDFTest
                         int triples;
                         DateTime start, finish;
                         double diff;
-                        Console.WriteLine("# Profiling Reader '" + reader.GetType().ToString() + "'");
-                        Debug.WriteLine("# Profiling Reader '" + reader.GetType().ToString() + "'");
+                        Console.WriteLine("# Profiling Reader '" + reader.GetType().ToString() + "' - " + reader.ToString());
+                        Debug.WriteLine("# Profiling Reader '" + reader.GetType().ToString() + "' - " + reader.ToString());
                         Console.WriteLine("Test File is " + files[i]);
                         Console.WriteLine();
 
@@ -170,17 +171,18 @@ namespace dotNetRDFTest
                     Console.WriteLine();
                     Debug.WriteLine("Test Graph Loaded");
 
-                    List<IRdfWriter> writers = new List<IRdfWriter>();
-                    writers.Add(new RdfXmlWriter());
-                    writers.Add(new FastRdfXmlWriter());
-                    writers.Add(new NTriplesWriter());
-                    writers.Add(new TurtleWriter());
-                    writers.Add(new CompressingTurtleWriter());
-                    writers.Add(new Notation3Writer());
-                    //writers.Add(new RdfXmlTreeWriter());
-                    writers.Add(new RdfJsonWriter());
-                    //writers.Add(new JsonNTriplesWriter());
-                    writers.Add(new HtmlWriter());
+                    List<IRdfWriter> writers = new List<IRdfWriter>()
+                    {
+                        new RdfXmlWriter(),
+                        new FastRdfXmlWriter(),
+                        new PrettyRdfXmlWriter(),
+                        new NTriplesWriter(),
+                        new TurtleWriter(),
+                        new CompressingTurtleWriter(),
+                        new Notation3Writer(),
+                        new RdfJsonWriter(),
+                        new HtmlWriter()
+                    };
 
                     foreach (IRdfWriter writer in writers)
                     {
@@ -188,8 +190,8 @@ namespace dotNetRDFTest
                         int totalTriples = 0;
                         DateTime start, finish;
                         long diff;
-                        Console.WriteLine("# Profiling Writer '" + writer.GetType().ToString() + "'");
-                        Debug.WriteLine("# Profiling Writer '" + writer.GetType().ToString() + "'");
+                        Console.WriteLine("# Profiling Writer '" + writer.GetType().ToString() + "' - " + writer.ToString());
+                        Debug.WriteLine("# Profiling Writer '" + writer.GetType().ToString() + "' - " + writer.ToString());
                         if (writer is ICompressingWriter)
                         {
                             Console.WriteLine("Compression Level is " + ((ICompressingWriter)writer).CompressionLevel);

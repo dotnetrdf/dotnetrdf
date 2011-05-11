@@ -52,7 +52,7 @@ namespace VDS.RDF.Parsing
     {
         public void Load(SparqlResultSet results, TextReader input)
         {
-
+            this.Load(new ResultSetHandler(results), input);
         }
 
         /// <summary>
@@ -108,6 +108,7 @@ namespace VDS.RDF.Parsing
 
         public void Load(ISparqlResultsHandler handler, StreamReader input)
         {
+            if (input == null) throw new RdfParseException("Cannot read SPARQL Results from a null input");
             this.Load(handler, (TextReader)input);
         }
 
@@ -449,5 +450,10 @@ namespace VDS.RDF.Parsing
         /// Event raised when a non-fatal issue with the SPARQL Results being parsed is detected
         /// </summary>
         public event SparqlWarning Warning;
+
+        public override string ToString()
+        {
+            return "SPARQL Results XML";
+        }
     }
 }

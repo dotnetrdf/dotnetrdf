@@ -33,10 +33,6 @@ terms.
 
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Newtonsoft.Json;
 
 namespace VDS.RDF.Parsing.Contexts
@@ -59,6 +55,11 @@ namespace VDS.RDF.Parsing.Contexts
             this._input = input;
         }
 
+        /// <summary>
+        /// Creates a new JSON Parser Context
+        /// </summary>
+        /// <param name="handler">RDF Handler to use</param>
+        /// <param name="input">JSON Text Reader to read from</param>
         public JsonParserContext(IRdfHandler handler, JsonTextReader input)
             : base(handler)
         {

@@ -1886,5 +1886,19 @@ namespace VDS.RDF.Parsing
         }
 
         #endregion
+
+        public override string ToString()
+        {
+            switch (this._mode)
+            {
+#if !NO_XMLDOM
+                case RdfXmlParserMode.DOM:
+                    return "RDF/XML (DOM)";
+#endif
+                case RdfXmlParserMode.Streaming:
+                default:
+                    return "RDF/XML (Streaming)";
+            }
+        }
     }
 }

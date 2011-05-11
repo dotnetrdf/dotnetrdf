@@ -31,10 +31,12 @@ Added
    - StoreCountHandler for counting Triples and Graphs
    - WriteThroughHandler for generating RDF output while parsing
    - WriteToStoreHandler for sending the triples in batches to some underlying store
-   - ChainedHandler and MultiHandler for combining multiple RDF handlers
+   - ChainedHandler and MultiHandler for combining multiple RDF handlers together
 - Update
  - Added support for Timeouts when using the LeviathanUpdateProcessor and the ProcessCommandSet() method
  - Added support for transactions
+- Writing
+ - Added a PrettyRdfXmlWriter which is a streaming writer which writes more readable RDF/XML than the other RDF/XML writers
 - ASP.Net Integration
  - Added NegotiateByFileExtension which is an IHttpModule that can be used to provide content negotiation by file extension
    seamlessly for all existing IHttpHandler implementations
@@ -97,7 +99,7 @@ Removed
 - Following marked as obsolete and unusable
  - BackgroundPersistedGraph (superceded by GraphPersistenceWrapper)
  - StoreGraph and WriteOnlyStoreGraph (superceded by StoreGraphPersistenceWrapper)
- - RdfXmlTreeWriter (superceded by FastRdfXmlWriter and RdfXmlWriter)
+ - RdfXmlTreeWriter (superceded by FastRdfXmlWriter, RdfXmlWriter and PrettyRdfXmlWriter)
 
    
 

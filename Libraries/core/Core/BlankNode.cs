@@ -34,9 +34,6 @@ terms.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace VDS.RDF
 {
@@ -78,6 +75,10 @@ namespace VDS.RDF
             this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
         }
 
+        /// <summary>
+        /// Internal Only constructor for Blank Nodes
+        /// </summary>
+        /// <param name="factory">Node Factory from which to obtain a Node ID</param>
         protected internal BaseBlankNode(INodeFactory factory)
             : base(null, NodeType.Blank)
         {
@@ -165,35 +166,65 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Determines whether this Node is equal to another
+        /// </summary>
+        /// <param name="other">Other Blank Node</param>
+        /// <returns></returns>
         public override bool Equals(IBlankNode other)
         {
             return EqualityHelper.AreBlankNodesEqual(this, other);
         }
 
+        /// <summary>
+        /// Determines whether this Node is equal to a Graph Literal Node (should always be false)
+        /// </summary>
+        /// <param name="other">Graph Literal Node</param>
+        /// <returns></returns>
         public override bool Equals(IGraphLiteralNode other)
         {
             if (ReferenceEquals(this, other)) return true;
             return false;
         }
 
+        /// <summary>
+        /// Determines whether this Node is equal to a Literal Node (should always be false)
+        /// </summary>
+        /// <param name="other">Literal Node</param>
+        /// <returns></returns>
         public override bool Equals(ILiteralNode other)
         {
             if (ReferenceEquals(this, other)) return true;
             return false;
         }
 
+        /// <summary>
+        /// Determines whether this Node is equal to a URI Node (should always be false)
+        /// </summary>
+        /// <param name="other">URI Node</param>
+        /// <returns></returns>
         public override bool Equals(IUriNode other)
         {
             if (ReferenceEquals(this, other)) return true;
             return false;
         }
 
+        /// <summary>
+        /// Determines whether this Node is equal to a Variable Node (should always be false)
+        /// </summary>
+        /// <param name="other">Variable Node</param>
+        /// <returns></returns>
         public override bool Equals(IVariableNode other)
         {
             if (ReferenceEquals(this, other)) return true;
             return false;
         }
 
+        /// <summary>
+        /// Determines whether this Node is equal to a Blank Node
+        /// </summary>
+        /// <param name="other">Blank Node</param>
+        /// <returns></returns>
         public bool Equals(BaseBlankNode other)
         {
             return this.Equals((IBlankNode)other);
@@ -232,6 +263,11 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Returns an Integer indicating the Ordering of this Node compared to another Node
+        /// </summary>
+        /// <param name="other">Node to test against</param>
+        /// <returns></returns>
         public override int CompareTo(IBlankNode other)
         {
             if (ReferenceEquals(this, other)) return 0;
@@ -247,6 +283,11 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Returns an Integer indicating the Ordering of this Node compared to another Node
+        /// </summary>
+        /// <param name="other">Node to test against</param>
+        /// <returns></returns>
         public override int CompareTo(IGraphLiteralNode other)
         {
             if (ReferenceEquals(this, other)) return 0;
@@ -262,6 +303,11 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Returns an Integer indicating the Ordering of this Node compared to another Node
+        /// </summary>
+        /// <param name="other">Node to test against</param>
+        /// <returns></returns>
         public override int CompareTo(ILiteralNode other)
         {
             if (ReferenceEquals(this, other)) return 0;
@@ -277,6 +323,11 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Returns an Integer indicating the Ordering of this Node compared to another Node
+        /// </summary>
+        /// <param name="other">Node to test against</param>
+        /// <returns></returns>
         public override int CompareTo(IUriNode other)
         {
             if (ReferenceEquals(this, other)) return 0;
@@ -292,6 +343,11 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Returns an Integer indicating the Ordering of this Node compared to another Node
+        /// </summary>
+        /// <param name="other">Node to test against</param>
+        /// <returns></returns>
         public override int CompareTo(IVariableNode other)
         {
             if (ReferenceEquals(this, other)) return 0;
@@ -299,6 +355,11 @@ namespace VDS.RDF
             return 1;
         }
 
+        /// <summary>
+        /// Returns an Integer indicating the Ordering of this Node compared to another Node
+        /// </summary>
+        /// <param name="other">Node to test against</param>
+        /// <returns></returns>
         public int CompareTo(BaseBlankNode other)
         {
             return this.CompareTo((IBlankNode)other);
@@ -320,12 +381,25 @@ namespace VDS.RDF
     /// </summary>
     public class BlankNode : BaseBlankNode, IEquatable<BlankNode>, IComparable<BlankNode>
     {
+        /// <summary>
+        /// Internal Only Constructor for Blank Nodes
+        /// </summary>
+        /// <param name="g">Graph this Node belongs to</param>
         protected internal BlankNode(IGraph g)
             : base(g) { }
 
+        /// <summary>
+        /// Internal Only constructor for Blank Nodes
+        /// </summary>
+        /// <param name="g">Graph this Node belongs to</param>
+        /// <param name="id">Custom Node ID to use</param>
         protected internal BlankNode(IGraph g, String id)
             : base(g, id) { }
 
+        /// <summary>
+        /// Internal Only constructor for Blank Nodes
+        /// </summary>
+        /// <param name="factory">Node Factory from which to obtain a Node ID</param>
         protected internal BlankNode(INodeFactory factory)
             : base(factory) { }
 
@@ -342,6 +416,11 @@ namespace VDS.RDF
             return this.CompareTo((IBlankNode)other);
         }
 
+        /// <summary>
+        /// Determines whether this Node is equal to a Blank Node
+        /// </summary>
+        /// <param name="other">Blank Node</param>
+        /// <returns></returns>
         public bool Equals(BlankNode other)
         {
             return base.Equals((IBlankNode)other);

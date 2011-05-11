@@ -41,6 +41,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using VDS.RDF.Parsing.Contexts;
+using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Storage;
 using VDS.RDF.Storage.Params;
 
@@ -49,7 +50,7 @@ namespace VDS.RDF.Parsing
     /// <summary>
     /// Class for reading Triple Stores that are saved on disk as a set of files in a Folder
     /// </summary>
-    [Obsolete("This class is deprecated in favour of using the Alexandria Filesystem store provided by the dotNetRDF.Alexandria library", false)]
+    //[Obsolete("This class is deprecated in favour of using the Alexandria Filesystem store provided by the dotNetRDF.Alexandria library", false)]
     public class FolderStoreReader : IStoreReader
     {
         /// <summary>
@@ -59,10 +60,21 @@ namespace VDS.RDF.Parsing
         /// <param name="parameters">Parameters indicating where to read from</param>
         public void Load(ITripleStore store, IStoreParams parameters)
         {
+            if (store == null) throw new RdfParseException("Cannot read RDF from a Folder Store into a null Triple Store");
+            this.Load(new StoreHandler(store), parameters);
+        }
+
+        /// <summary>
+        /// Loads RDF using the RDF Handler using the settings the Reader was instantiated with
+        /// </summary>
+        /// <param name="handler">RDF Handler to use</param>
+        /// <param name="parameters">Parameters indicating where to read from</param>
+        public void Load(IRdfHandler handler, IStoreParams parameters)
+        {
             if (parameters is FolderStoreParams)
             {
                 //Create the Parser Context
-                FolderStoreParserContext context = new FolderStoreParserContext(store, (FolderStoreParams)parameters);
+                FolderStoreParserContext context = new FolderStoreParserContext(handler, (FolderStoreParams)parameters);
 
                 //Create the Folder
                 if (!Directory.Exists(context.Folder))
@@ -71,7 +83,7 @@ namespace VDS.RDF.Parsing
                 }
 
                 //Read list of Graphs and Queue Filenames of Graphs for reading by the Threads
-                StreamReader graphlist = new StreamReader(Path.Combine(context.Folder,"graphs.fstore"));
+                StreamReader graphlist = new StreamReader(Path.Combine(context.Folder, "graphs.fstore"));
 
                 //First line contains format information
                 String ext = graphlist.ReadLine();
@@ -136,11 +148,6 @@ namespace VDS.RDF.Parsing
             {
                 throw new RdfStorageException("Parameters for the FolderStoreReader must be of type FolderStoreParams");
             }
-        }
-
-        public void Load(IRdfHandler handler, IStoreParams parameters)
-        {
-            throw new NotImplementedException();
         }
 
         /// <summary>

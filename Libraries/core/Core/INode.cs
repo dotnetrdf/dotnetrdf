@@ -118,6 +118,10 @@ namespace VDS.RDF
             set;
         }
 
+        /// <summary>
+        /// Gets the String representation of the Node
+        /// </summary>
+        /// <returns></returns>
         String ToString();
 
         /// <summary>
@@ -141,48 +145,81 @@ namespace VDS.RDF
     /// </summary>
     public interface IUriNode : INode
     {
+        /// <summary>
+        /// Gets the URI the Node represents
+        /// </summary>
         Uri Uri
         {
             get;
         }
     }
 
+    /// <summary>
+    /// Interface for Blank Nodes
+    /// </summary>
     public interface IBlankNode : INode
     {
+        /// <summary>
+        /// Gets the Internal ID of the Blank Node
+        /// </summary>
         String InternalID
         {
             get;
         }
     }
 
+    /// <summary>
+    /// Interface for Literal Nodes
+    /// </summary>
     public interface ILiteralNode : INode
     {
+        /// <summary>
+        /// Gets the Lexical Value of the Literal
+        /// </summary>
         String Value
         {
             get;
         }
 
+        /// <summary>
+        /// Gets the Language specifier (if any) of the Literal or the Empty String
+        /// </summary>
         String Language
         {
             get;
         }
 
+        /// <summary>
+        /// Gets the DataType URI (if any) of the Literal or null
+        /// </summary>
         Uri DataType
         {
             get;
         }
     }
 
+    /// <summary>
+    /// Interface for Graph Literal Nodes
+    /// </summary>
     public interface IGraphLiteralNode : INode
     {
+        /// <summary>
+        /// Gets the Sub-graph the Graph Literal represents
+        /// </summary>
         IGraph SubGraph
         {
             get;
         }
     }
 
+    /// <summary>
+    /// Interface for Variable Nodes
+    /// </summary>
     public interface IVariableNode : INode
     {
+        /// <summary>
+        /// Gets the Variable Name
+        /// </summary>
         String VariableName
         {
             get;

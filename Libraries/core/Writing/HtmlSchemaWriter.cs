@@ -176,7 +176,7 @@ namespace VDS.RDF.Writing
             {
                 SparqlParameterizedString getOntoDescrip = new SparqlParameterizedString();
                 getOntoDescrip.Namespaces = context.QNameMapper;
-                getOntoDescrip.QueryText = "SELECT * WHERE { @onto a owl:Ontology . OPTIONAL { @onto rdfs:comment ?description } . OPTIONAL { @onto vann:preferredNamespacePrefix ?nsPrefix ; vann:preferredNamespaceUri ?nsUri } . OPTIONAL { @onto dc:creator ?creator . ?creator (foaf:name | rdfs:label) ?creatorName } }";
+                getOntoDescrip.CommandText = "SELECT * WHERE { @onto a owl:Ontology . OPTIONAL { @onto rdfs:comment ?description } . OPTIONAL { @onto vann:preferredNamespacePrefix ?nsPrefix ; vann:preferredNamespaceUri ?nsUri } . OPTIONAL { @onto dc:creator ?creator . ?creator (foaf:name | rdfs:label) ?creatorName } }";
                 getOntoDescrip.SetParameter("onto", ontoNode);
 
                 try 
@@ -354,7 +354,7 @@ namespace VDS.RDF.Writing
             //Get the Classes and Display
             SparqlParameterizedString getClasses = new SparqlParameterizedString();
             getClasses.Namespaces = context.QNameMapper;
-            getClasses.QueryText = "SELECT DISTINCT ?class WHERE { { ?class a rdfs:Class } UNION { ?class a owl:Class } } ORDER BY ?class";
+            getClasses.CommandText = "SELECT DISTINCT ?class WHERE { { ?class a rdfs:Class } UNION { ?class a owl:Class } } ORDER BY ?class";
             try
             {
                 results = context.Graph.ExecuteQuery(getClasses);
@@ -408,7 +408,7 @@ namespace VDS.RDF.Writing
             //Get the Properties and Display
             SparqlParameterizedString getProperties = new SparqlParameterizedString();
             getProperties.Namespaces = context.QNameMapper;
-            getProperties.QueryText = "SELECT DISTINCT ?property WHERE { { ?property a rdf:Property } UNION { ?property a owl:DatatypeProperty } UNION { ?property a owl:ObjectProperty } } ORDER BY ?property";
+            getProperties.CommandText = "SELECT DISTINCT ?property WHERE { { ?property a rdf:Property } UNION { ?property a owl:DatatypeProperty } UNION { ?property a owl:ObjectProperty } } ORDER BY ?property";
             try
             {
                 results = context.Graph.ExecuteQuery(getProperties);
@@ -468,7 +468,7 @@ namespace VDS.RDF.Writing
             IUriNode owlInverseProperty = context.Graph.CreateUriNode(new Uri(NamespaceMapper.OWL + "inverseOf"));
 
             //Alter our previous getClasses query to get additional details
-            getClasses.QueryText = "SELECT ?class (SAMPLE(?label) AS ?classLabel) (SAMPLE(?description) AS ?classDescription) WHERE { { ?class a rdfs:Class } UNION { ?class a owl:Class } OPTIONAL { ?class rdfs:label ?label } OPTIONAL { ?class rdfs:comment ?description } } GROUP BY ?class ORDER BY ?class";
+            getClasses.CommandText = "SELECT ?class (SAMPLE(?label) AS ?classLabel) (SAMPLE(?description) AS ?classDescription) WHERE { { ?class a rdfs:Class } UNION { ?class a owl:Class } OPTIONAL { ?class rdfs:label ?label } OPTIONAL { ?class rdfs:comment ?description } } GROUP BY ?class ORDER BY ?class";
             try
             {
                 results = context.Graph.ExecuteQuery(getClasses);
@@ -585,7 +585,7 @@ namespace VDS.RDF.Writing
 #endif
 
             //Alter our previous getClasses query to get additional details
-            getProperties.QueryText = "SELECT ?property (SAMPLE(?label) AS ?propertyLabel) (SAMPLE(?description) AS ?propertyDescription) WHERE { { ?property a rdf:Property } UNION { ?property a owl:ObjectProperty } UNION { ?property a owl:DatatypeProperty } OPTIONAL { ?property rdfs:label ?label } OPTIONAL { ?property rdfs:comment ?description } } GROUP BY ?property ORDER BY ?property";
+            getProperties.CommandText = "SELECT ?property (SAMPLE(?label) AS ?propertyLabel) (SAMPLE(?description) AS ?propertyDescription) WHERE { { ?property a rdf:Property } UNION { ?property a owl:ObjectProperty } UNION { ?property a owl:DatatypeProperty } OPTIONAL { ?property rdfs:label ?label } OPTIONAL { ?property rdfs:comment ?description } } GROUP BY ?property ORDER BY ?property";
             try
             {
                 results = context.Graph.ExecuteQuery(getProperties);

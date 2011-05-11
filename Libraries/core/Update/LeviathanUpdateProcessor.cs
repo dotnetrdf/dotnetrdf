@@ -125,6 +125,7 @@ namespace VDS.RDF.Update
         /// Processes an ADD command
         /// </summary>
         /// <param name="cmd">Add Command</param>
+        /// <param name="context">SPARQL Update Evaluation Context</param>
         protected virtual void ProcessAddCommandInternal(AddCommand cmd, SparqlUpdateEvaluationContext context)
         {
             cmd.Evaluate(context);
@@ -143,6 +144,7 @@ namespace VDS.RDF.Update
         /// Processes a CLEAR command
         /// </summary>
         /// <param name="cmd">Clear Command</param>
+        /// <param name="context">SPARQL Update Evaluation Context</param>
         protected virtual void ProcessClearCommandInternal(ClearCommand cmd, SparqlUpdateEvaluationContext context)
         {
             cmd.Evaluate(context);
@@ -161,6 +163,7 @@ namespace VDS.RDF.Update
         /// Processes a COPY command
         /// </summary>
         /// <param name="cmd">Copy Command</param>
+        /// <param name="context">SPARQL Update Evaluation Context</param>
         protected virtual void ProcessCopyCommandInternal(CopyCommand cmd, SparqlUpdateEvaluationContext context)
         {
             cmd.Evaluate(context);
@@ -179,35 +182,26 @@ namespace VDS.RDF.Update
         /// Processes a CREATE command
         /// </summary>
         /// <param name="cmd">Create Command</param>
+        /// <param name="context">SPARQL Update Evaluation Context</param>
         protected virtual void ProcessCreateCommandInternal(CreateCommand cmd, SparqlUpdateEvaluationContext context)
         {
             cmd.Evaluate(context);
         }
 
+        /// <summary>
+        /// Processes a command
+        /// </summary>
+        /// <param name="cmd">Command</param>
         public void ProcessCommand(SparqlUpdateCommand cmd)
         {
             this.ProcessCommandInternal(cmd, new SparqlUpdateEvaluationContext(this._dataset));
         }
 
         /// <summary>
-        /// Processes a CLEAR command
-        /// </summary>
-        /// <param name="cmd">Clear Command</param>
-
-        /// <summary>
-        /// Processes a COPY command
-        /// </summary>
-        /// <param name="cmd">Copy Command</param>
-
-        /// <summary>
-        /// Processes a CREATE command
-        /// </summary>
-        /// <param name="cmd">Create Command</param>
-
-        /// <summary>
         /// Processes a command
         /// </summary>
         /// <param name="cmd">Command</param>
+        /// <param name="context">SPARQL Update Evaluation Context</param>
         /// <remarks>
         /// Invokes the type specific method for the command type
         /// </remarks>
@@ -413,6 +407,7 @@ namespace VDS.RDF.Update
         /// Processes a DELETE command
         /// </summary>
         /// <param name="cmd">Delete Command</param>
+        /// <param name="context">SPARQL Update Evaluation Context</param>
         protected virtual void ProcessDeleteCommandInternal(DeleteCommand cmd, SparqlUpdateEvaluationContext context)
         {
             cmd.Evaluate(context);
@@ -431,6 +426,7 @@ namespace VDS.RDF.Update
         /// Processes a DELETE DATA command
         /// </summary>
         /// <param name="cmd">Delete Data Command</param>
+        /// <param name="context">SPARQL Update Evaluation Context</param>
         protected virtual void ProcessDeleteDataCommandInternal(DeleteDataCommand cmd, SparqlUpdateEvaluationContext context)
         {
             cmd.Evaluate(context);
@@ -449,6 +445,7 @@ namespace VDS.RDF.Update
         /// Processes a DROP command
         /// </summary>
         /// <param name="cmd">Drop Command</param>
+        /// <param name="context">SPARQL Update Evaluation Context</param>
         protected virtual void ProcessDropCommandInternal(DropCommand cmd, SparqlUpdateEvaluationContext context)
         {
             cmd.Evaluate(context);
@@ -467,6 +464,7 @@ namespace VDS.RDF.Update
         /// Processes an INSERT command
         /// </summary>
         /// <param name="cmd">Insert Command</param>
+        /// <param name="context">SPARQL Update Evaluation Context</param>
         protected virtual void ProcessInsertCommandInternal(InsertCommand cmd, SparqlUpdateEvaluationContext context)
         {
             cmd.Evaluate(context);
@@ -485,6 +483,7 @@ namespace VDS.RDF.Update
         /// Processes an INSERT DATA command
         /// </summary>
         /// <param name="cmd">Insert Data Command</param>
+        /// <param name="context">SPARQL Update Evaluation Context</param>
         protected virtual void ProcessInsertDataCommandInternal(InsertDataCommand cmd, SparqlUpdateEvaluationContext context)
         {
             cmd.Evaluate(context);
@@ -503,6 +502,7 @@ namespace VDS.RDF.Update
         /// Processes a LOAD command
         /// </summary>
         /// <param name="cmd">Load Command</param>
+        /// <param name="context">SPARQL Update Evaluation Context</param>
         protected virtual void ProcessLoadCommandInternal(LoadCommand cmd, SparqlUpdateEvaluationContext context)
         {
             cmd.Evaluate(context);
@@ -521,6 +521,7 @@ namespace VDS.RDF.Update
         /// Processes an INSERT/DELETE command
         /// </summary>
         /// <param name="cmd">Insert/Delete Command</param>
+        /// <param name="context">SPARQL Update Evaluation Context</param>
         protected virtual void ProcessModifyCommandInternal(ModifyCommand cmd, SparqlUpdateEvaluationContext context)
         {
             cmd.Evaluate(context);
@@ -539,6 +540,7 @@ namespace VDS.RDF.Update
         /// Processes a MOVE command
         /// </summary>
         /// <param name="cmd">Move Command</param>
+        /// <param name="context">SPARQL Update Evaluation Context</param>
         protected virtual void ProcessMoveCommandInternal(MoveCommand cmd, SparqlUpdateEvaluationContext context)
         {
             cmd.Evaluate(context);

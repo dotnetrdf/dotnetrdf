@@ -884,6 +884,10 @@ namespace VDS.RDF
 
 #if !NO_DATA
 
+        /// <summary>
+        /// Converts the wrapped graph into a DataTable
+        /// </summary>
+        /// <returns></returns>
         public DataTable ToDataTable()
         {
             return this._g.ToDataTable();

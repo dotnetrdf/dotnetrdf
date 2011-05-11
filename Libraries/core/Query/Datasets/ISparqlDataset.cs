@@ -326,6 +326,9 @@ namespace VDS.RDF.Query.Datasets
     /// </remarks>
     public interface IThreadSafeDataset : ISparqlDataset
     {
+        /// <summary>
+        /// Gets the Lock used to ensure MRSW concurrency of the Dataset when used with the Leviathan SPARQL processors
+        /// </summary>
         ReaderWriterLockSlim Lock
         {
             get;

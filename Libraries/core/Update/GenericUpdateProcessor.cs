@@ -74,6 +74,9 @@ namespace VDS.RDF.Update
             this._manager = manager;
         }
 
+        /// <summary>
+        /// Discards any outstanding changes
+        /// </summary>
         public virtual void Discard()
         {
             //Does Nothing

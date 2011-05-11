@@ -877,5 +877,10 @@ namespace VDS.RDF.Parsing
         /// Event which is raised when the parser detects issues with the input which are non-fatal
         /// </summary>
         public event RdfReaderWarning Warning;
+
+        public override string ToString()
+        {
+            return "Turtle";
+        }
     }
 }

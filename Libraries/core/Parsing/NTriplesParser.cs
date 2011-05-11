@@ -424,5 +424,10 @@ namespace VDS.RDF.Parsing
         /// Event which is raised when there is a non-fatal issue with the NTriples being parsed
         /// </summary>
         public event RdfReaderWarning Warning;
+
+        public override string ToString()
+        {
+            return "NTriples";
+        }
     }
 }

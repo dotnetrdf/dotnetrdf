@@ -146,6 +146,16 @@ namespace VDS.RDF.Web
 
         #region Results Processing
 
+        /// <summary>
+        /// Retrieves the Accept Types to be used to determine the content format to be used in responding to requests
+        /// </summary>
+        /// <param name="context">HTTP Context</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// <para>
+        /// This method was added in 0.4.1 to allow for the <see cref="NegotiateByFileExtension">NegotiateByFileExtension</see> module to work properly.  Essentially the module may rewrite the <strong>Accept</strong> header of the HTTP request but this will not be visible directly via the <em>AcceptTypes</em> property of the HTTP request as that is fixed at the time the HTTP request is parsed and enters the ASP.Net pipeline.  This method checks whether the <strong>Accept</strong> header is present and if it has been modified from the <em>AcceptTypes</em> property uses the header instead of the property
+        /// </para>
+        /// </remarks>
         public static String[] GetAcceptTypes(HttpContext context)
         {
             String accept = context.Request.Headers["Accept"];
