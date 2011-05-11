@@ -33,6 +33,8 @@ terms.
 
 */
 
+//#define SILVERLIGHT
+
 #if SILVERLIGHT
 
 using System;
@@ -113,6 +115,16 @@ namespace VDS.RDF
                 }
                 return segments;
             }
+        }
+
+        /// <summary>
+        /// Gets the Path and Query of the URI
+        /// </summary>
+        /// <param name="u">URI</param>
+        /// <returns></returns>
+        public static String PathAndQuery(this Uri u)
+        {
+            return u.AbsolutePath + u.Query;
         }
 
         /// <summary>

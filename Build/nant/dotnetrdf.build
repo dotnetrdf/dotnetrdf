@@ -154,7 +154,7 @@
     </exec>
   </target>
 
-  <target name="compile-windowsphone" description="Compile the dotNetRDF Windows Phone Build"  unless="${dotnetrdf.nocompile}" if="${not dotnetrdf.nowindowsphone}" depends="projectgen-windowsphone">
+  <target name="compile-windowsphone" description="Compile the dotNetRDF Windows Phone Build"  unless="${dotnetrdf.nocompile == 'true' or dotnetrdf.nowindowsphone == 'true'}" depends="projectgen-windowsphone">
     <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <property name="msBuild.exe" value="${string::replace(msBuild.exe,'Framework64','Framework')}" if="${string::contains(msBuild.exe, 'Framework64')}" />

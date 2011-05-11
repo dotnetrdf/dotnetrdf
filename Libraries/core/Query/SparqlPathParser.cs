@@ -515,7 +515,6 @@ namespace VDS.RDF.Parsing
                     {
                         return new NegatedSet(p.AsEnumerable(), Enumerable.Empty<Property>());
                     }
-                    break;
 
                 case Token.LEFTBRACKET:
                     List<Property> ps = new List<Property>();
@@ -556,8 +555,6 @@ namespace VDS.RDF.Parsing
                     {
                         return new NegatedSet(ps, inverses);
                     }
-
-                    break;
 
                 default:
                     throw new RdfParseException("Unexpected Token Type '" + next.GetType().Name + "' encountered, expected the first path in a negated property set", next);

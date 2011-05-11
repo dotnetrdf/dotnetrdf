@@ -140,7 +140,7 @@ namespace VDS.RDF.Parsing
         /// Parser method which parses the Stream as Json
         /// </summary>
         /// <param name="input">Input Stream</param>
-        /// <param name="results">Result Set to parse into</param>
+        /// <param name="handler">Results Handler</param>
         private void Parse(TextReader input, ISparqlResultsHandler handler)
         {
             this.ParseResultSetObject(new SparqlJsonParserContext(new CommentIgnoringJsonTextReader(input), handler));
@@ -563,7 +563,7 @@ namespace VDS.RDF.Parsing
         /// <summary>
         /// Parser method which parses a Bound Variable Object which occurs within a Binding Object
         /// </summary>
-        /// <param name="context.Input">Json Text Reader</param>
+        /// <param name="context">Parser Context</param>
         /// <param name="var">Variable Name</param>
         /// <param name="r">Result Object that is being constructed from the Binding Object</param>
         private void ParseBoundVariable(SparqlJsonParserContext context, String var, SparqlResult r)
@@ -774,6 +774,10 @@ namespace VDS.RDF.Parsing
         /// </summary>
         public event SparqlWarning Warning;
 
+        /// <summary>
+        /// Gets the String representation of the Parser which is a description of the syntax it parses
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return "SPARQL Results JSON";

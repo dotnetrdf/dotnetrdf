@@ -50,6 +50,9 @@ namespace VDS.RDF.Query.Optimisation
             new LazyBgpOptimiser()
         };
 
+        /// <summary>
+        /// Namespace URI for the Optimiser Statistics vocabulary
+        /// </summary>
         public const String OptimiserStatsNamespace = "http://www.dotnetrdf.org/optimiserStats#";
 
         /// <summary>

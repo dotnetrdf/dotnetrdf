@@ -275,10 +275,14 @@ namespace VDS.RDF.Parsing
             return this.ParseInternal(input);
         }
 
+        /// <summary>
+        /// Parses a SPARQL Query from an arbitrary Input
+        /// </summary>
+        /// <param name="input">Input</param>
+        /// <returns></returns>
         public SparqlQuery Parse(TextReader input)
         {
             if (input == null) throw new RdfParseException("Cannot parse a SPARQL Query from a null TextReader");
-
             return this.ParseInternal(input);
         }
 
@@ -290,8 +294,6 @@ namespace VDS.RDF.Parsing
         public SparqlQuery ParseFromString(String queryString)
         {
             if (queryString == null) throw new RdfParseException("Cannot parse a SPARQL Query from a null String");
-
-            //Call the Internal Parser
             return this.ParseInternal(new StringReader(queryString));
         }
 
@@ -1641,7 +1643,6 @@ namespace VDS.RDF.Parsing
             //Start grabbing other stuff off the Stack and Parsing
             IToken next, lit, temp;
             ISparqlPath path;
-            String lengthVar;
 
             do
             {

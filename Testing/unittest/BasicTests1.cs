@@ -946,6 +946,20 @@ namespace VDS.RDF.Test
             }
         }
 
+        [TestMethod]
+        public void UriPathAndQuery()
+        {
+            Uri u = new Uri("http://example.org/some/path/with?query=some&param=values");
+
+            String pathAndQuery = u.PathAndQuery;
+            String absPathPlusQuery = u.AbsolutePath + u.Query;
+
+            Console.WriteLine("PathAndQuery - " + pathAndQuery);
+            Console.WriteLine("AbsolutePath + Query - " + absPathPlusQuery);
+
+            Assert.AreEqual(pathAndQuery, absPathPlusQuery);
+        }
+
         //[TestMethod]
         //public void UriTrailingDot()
         //{

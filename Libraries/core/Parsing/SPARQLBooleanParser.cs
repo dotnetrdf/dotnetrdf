@@ -187,6 +187,10 @@ namespace VDS.RDF.Parsing
         /// </summary>
         public event SparqlWarning Warning;
 
+        /// <summary>
+        /// Gets the String representation of the Parser which is a description of the syntax it parses
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return "SPARQL Boolean Result";

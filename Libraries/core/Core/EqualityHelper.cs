@@ -40,7 +40,11 @@ namespace VDS.RDF
                    && a.Host.Equals(b.Host, StringComparison.OrdinalIgnoreCase)
                    && a.Port.Equals(b.Port)
                    && a.UserInfo.Equals(b.UserInfo, StringComparison.Ordinal)
+#if !SILVERLIGHT
                    && a.PathAndQuery.Equals(b.PathAndQuery, StringComparison.Ordinal)
+#else
+                   && a.PathAndQuery().Equals(b.PathAndQuery(), StringComparison.Ordinal)
+#endif
                    && a.Fragment.Equals(b.Fragment, StringComparison.Ordinal);
         }
 
@@ -207,22 +211,26 @@ namespace VDS.RDF
             //Scheme, UserInfo, Host the Port (all case insensitive except UserInfo)
             //Path, Query and Fragment (all case sensitive)
 
-            int c = String.Compare(a.Scheme, b.Scheme, true);
+            int c = String.Compare(a.Scheme, b.Scheme, StringComparison.OrdinalIgnoreCase);
             if (c == 0)
             {
-                c = String.Compare(a.UserInfo, b.UserInfo, false);
+                c = String.Compare(a.UserInfo, b.UserInfo, StringComparison.Ordinal);
                 if (c == 0)
                 {
-                    c = String.Compare(a.Host, b.Host, true);
+                    c = String.Compare(a.Host, b.Host, StringComparison.OrdinalIgnoreCase);
                     if (c == 0)
                     {
                         c = a.Port.CompareTo(b.Port);
                         if (c == 0)
                         {
-                            c = String.Compare(a.PathAndQuery, b.PathAndQuery, false);
+#if !SILVERLIGHT
+                            c = String.Compare(a.PathAndQuery, b.PathAndQuery, StringComparison.Ordinal);
+#else
+                            c = String.Compare(a.PathAndQuery(), b.PathAndQuery(), StringComparison.Ordinal);
+#endif
                             if (c == 0)
                             {
-                                c = String.Compare(a.Fragment, b.Fragment, false);
+                                c = String.Compare(a.Fragment, b.Fragment, StringComparison.Ordinal);
                             }
                         }
                     }
@@ -733,7 +741,7 @@ namespace VDS.RDF
                 return 1;
             }
 
-            return String.Compare(a.VariableName, b.VariableName, false);
+            return String.Compare(a.VariableName, b.VariableName, StringComparison.Ordinal);
         }
     }
 }
