@@ -28,12 +28,8 @@ terms.
 
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using VDS.RDF.Query.Algebra;
-using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Paths
 {
@@ -63,6 +59,11 @@ namespace VDS.RDF.Query.Paths
             return output.ToString();
         }
 
+        /// <summary>
+        /// Converts a Path into its Algebra Form
+        /// </summary>
+        /// <param name="context">Path Transformation Context</param>
+        /// <returns></returns>
         public override ISparqlAlgebra ToAlgebra(PathTransformContext context)
         {
             bool top = context.Top;

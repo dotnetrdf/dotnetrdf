@@ -63,7 +63,7 @@ namespace VDS.RDF.Query.Algebra
                     //We'll apply OFFSET locally so don't pass that through explicitly
                     int limit = context.Query.Limit;
                     if (context.Query.Offset > 0) limit += context.Query.Offset;
-                    sparqlQuery.QueryText += " LIMIT " + limit;
+                    sparqlQuery.CommandText += " LIMIT " + limit;
                 }
 
                 //Select which service to use

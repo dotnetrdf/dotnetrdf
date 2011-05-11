@@ -54,6 +54,9 @@ namespace VDS.RDF.Update
             this._store = store;
         }
 
+        /// <summary>
+        /// Discards any outstanding changes
+        /// </summary>
         public virtual void Discard()
         {
             //Has no effect

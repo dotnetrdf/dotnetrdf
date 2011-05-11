@@ -83,7 +83,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
 
             SparqlParameterizedString query = new SparqlParameterizedString();
             query.Namespaces = g.NamespaceMap;
-            query.QueryText = "SELECT ?ind ?similarity WHERE { ?s cp:isSimilarTo ?ind ; cp:similarityValue ?similarity }";
+            query.CommandText = "SELECT ?ind ?similarity WHERE { ?s cp:isSimilarTo ?ind ; cp:similarityValue ?similarity }";
 
             try
             {

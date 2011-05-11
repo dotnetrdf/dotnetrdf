@@ -97,11 +97,22 @@ namespace VDS.RDF.Writing.Formatting
             return v.ToString();
         }
 
+        /// <summary>
+        /// Formats a Namespace Declaration
+        /// </summary>
+        /// <param name="prefix">Namespace Prefix</param>
+        /// <param name="namespaceUri">Namespace URI</param>
+        /// <returns></returns>
         public override string FormatNamespace(string prefix, Uri namespaceUri)
         {
             return "PREFIX " + prefix + ": <" + this.FormatUri(namespaceUri) + ">";
         }
 
+        /// <summary>
+        /// Formats a Base URI Declaration
+        /// </summary>
+        /// <param name="u">Base URI</param>
+        /// <returns></returns>
         public override string FormatBaseUri(Uri u)
         {
             return "BASE <" + this.FormatUri(u) + ">";

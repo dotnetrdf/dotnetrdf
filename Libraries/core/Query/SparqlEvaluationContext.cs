@@ -182,6 +182,9 @@ namespace VDS.RDF.Query
             }
         }
 
+        /// <summary>
+        /// Gets/Sets whether BGPs should trim temporary variables
+        /// </summary>
         public bool TrimTemporaryVariables
         {
             get

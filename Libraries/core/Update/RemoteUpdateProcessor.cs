@@ -68,6 +68,9 @@ namespace VDS.RDF.Update
             this._endpoint = endpoint;
         }
 
+        /// <summary>
+        /// Discards any outstanding changes
+        /// </summary>
         public void Discard()
         {
             //No discard actions required

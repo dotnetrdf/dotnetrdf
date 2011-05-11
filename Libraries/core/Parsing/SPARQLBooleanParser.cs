@@ -72,12 +72,22 @@ namespace VDS.RDF.Parsing
             this.Load(results, new StreamReader(filename));
         }
 
+        /// <summary>
+        /// Loads a Result Set from an Input 
+        /// </summary>
+        /// <param name="results">Result Set to load into</param>
+        /// <param name="input">Input to read from</param>
         public void Load(SparqlResultSet results, TextReader input)
         {
             if (results == null) throw new RdfParseException("Cannot read SPARQL Results into a null Result Set");
             this.Load(new ResultSetHandler(results), input);
         }
 
+        /// <summary>
+        /// Loads a Result Set from an Input using a Results Handler
+        /// </summary>
+        /// <param name="handler">Results Handler to use</param>
+        /// <param name="input">Input to read from</param>
         public void Load(ISparqlResultsHandler handler, TextReader input)
         {
             if (handler == null) throw new RdfParseException("Cannot read SPARQL Results using a null Results Handler");
@@ -104,11 +114,21 @@ namespace VDS.RDF.Parsing
             }
         }
 
+        /// <summary>
+        /// Loads a Result Set from an Input Stream using a Results Handler
+        /// </summary>
+        /// <param name="handler">Results Handler to use</param>
+        /// <param name="input">Input Stream to read from</param>
         public void Load(ISparqlResultsHandler handler, StreamReader input)
         {
             this.Load(handler, (TextReader)input);
         }
 
+        /// <summary>
+        /// Loads a Result Set from a file using a Results Handler
+        /// </summary>
+        /// <param name="handler">Results Handler to use</param>
+        /// <param name="filename">File to read from</param>
         public void Load(ISparqlResultsHandler handler, String filename)
         {
             if (filename == null) throw new RdfParseException("Cannot read SPARQL Results from a null File");
