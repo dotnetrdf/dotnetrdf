@@ -609,7 +609,8 @@ namespace VDS.RDF.Storage
                     throw new NotSupportedException("Stardog does not yet support deleting the Default Graph");
                 }
 
-                HttpWebRequest request = this.CreateRequest(this._kb + "/" + tID + "/clear/" + Uri.EscapeDataString(graphUri), MimeTypesHelper.Any, "POST", new Dictionary<string,string>());
+                //HttpWebRequest request = this.CreateRequest(this._kb + "/" + tID + "/clear/" + Uri.EscapeDataString(graphUri), MimeTypesHelper.Any, "POST", new Dictionary<string,string>());
+                HttpWebRequest request = this.CreateRequest(this._kb + "/" + tID + "/clear/" + graphUri, MimeTypesHelper.Any, "POST", new Dictionary<string, string>());
                 request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
 #if DEBUG
                 if (Options.HttpDebugging)

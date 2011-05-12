@@ -595,7 +595,19 @@ namespace VDS.RDF.Update
                         pred = p.Predicate.Construct(context);
                         obj = p.Object.Construct(context);
 
-                        g.Retract(new Triple(subj, pred, obj));
+                        if (!this._manager.UpdateSupported)
+                        {
+                            //If we don't support update then we'll have loaded the existing graph
+                            //so we'll use this to remove the relevant triples to get to the intended state of
+                            //the graph
+                            g.Retract(new Triple(subj, pred, obj));
+                        }
+                        else
+                        {
+                            //If we do support update then we'll have an empty graph which we'll use to store
+                            //up the set of triples to be removed
+                            g.Assert(new Triple(subj, pred, obj));
+                        }
                     }
 
                     if (this._manager.UpdateSupported)

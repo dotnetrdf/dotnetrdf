@@ -6,12 +6,14 @@ using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Query;
 using VDS.RDF.Storage;
+using VDS.RDF.Update;
 using VDS.RDF.Writing.Formatting;
+using VDS.RDF.Test.Update;
 
 namespace VDS.RDF.Test.Storage
 {
     [TestClass]
-    public class StardogTests
+    public class StardogTests : GenericUpdateProcessorTests
     {
         private const String StardogTestUri = "http://localhost:2011/";
         private const String StardogTestKB = "test";
@@ -21,6 +23,11 @@ namespace VDS.RDF.Test.Storage
         private StardogConnector GetConnection()
         {
             return new StardogConnector(StardogTestUri, StardogTestKB, StardogUser, StardogPassword);
+        }
+
+        protected override IGenericIOManager GetManager()
+        {
+            return (IGenericIOManager)this.GetConnection();
         }
 
         [TestMethod]
@@ -247,7 +254,7 @@ namespace VDS.RDF.Test.Storage
                 g.BaseUri = new Uri("http://example.org/reasoning");
                 stardog.SaveGraph(g);
 
-                String query = "PREFIX rdfs: <" + NamespaceMapper.RDFS + "> SELECT * WHERE { GRAPH <http://example.org/reasoning> { ?class rdfs:subClassOf <http://example.org/vehicles/Vehicle> } }";
+                String query = "PREFIX rdfs: <" + NamespaceMapper.RDFS + "> SELECT * WHERE { { ?class rdfs:subClassOf <http://example.org/vehicles/Vehicle> } UNION { GRAPH <http://example.org/reasoning> { ?class rdfs:subClassOf <http://example.org/vehicles/Vehicle> } } }";
                 Console.WriteLine(query);
                 Console.WriteLine();
 
