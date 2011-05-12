@@ -68,7 +68,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
         };
 
         private static List<NamespaceTerm> _terms = new List<NamespaceTerm>();
-        private static HashSet<String> _loadedNamespaces = new HashSet<string>();
+        private static HashSet<String> _loadedNamespaces = new HashSet<String>();
         private static LoadNamespaceTermsDelegate _namespaceLoader = new LoadNamespaceTermsDelegate(AutoCompleteManager.LoadNamespaceTerms);
 
         public static void Initialise()
@@ -205,7 +205,14 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             {
                 //Ignore Exceptions - just means we won't have those namespace terms available
             }
-            _loadedNamespaces.Add(namespaceUri);
+            try
+            {
+                _loadedNamespaces.Add(namespaceUri);
+            }
+            catch (NullReferenceException)
+            {
+                //For some reason .Net sometimes throws a NullReferenceException here which we shall ignore
+            }
             return GetNamespaceTerms(namespaceUri);
         }
 

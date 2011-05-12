@@ -164,6 +164,8 @@
     <Compile Include="Selection\ISymbolSelector.cs" />
     <Compile Include="Selection\WhiteSpaceSelector.cs" />
     <Compile Include="Syntax\CustomColourBrush.cs" />
+    <Compile Include="Syntax\CustomHighlightingBrush.cs" />
+    <Compile Include="Syntax\FakeTextRunContext.cs" />
     <Compile Include="Syntax\SyntaxDefinition.cs" />
     <Compile Include="Syntax\SyntaxManager.cs" />
     <Compile Include="Syntax\ValidationErrorElementGenerator.cs" />

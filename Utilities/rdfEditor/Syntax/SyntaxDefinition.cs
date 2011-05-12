@@ -10,6 +10,9 @@ using VDS.RDF.Utilities.Editor.AutoComplete;
 
 namespace VDS.RDF.Utilities.Editor.Syntax
 {
+    /// <summary>
+    /// Represents a Syntax Definition
+    /// </summary>
     public class SyntaxDefinition
     {
         private String _name;
@@ -20,6 +23,7 @@ namespace VDS.RDF.Utilities.Editor.Syntax
         private IRdfWriter _writer;
         private ISyntaxValidator _validator;
         private String _singleLineComment, _multiLineCommentStart, _multiLineCommentEnd;
+        private bool _isXml = false;
 
         #region Constructors which take an explicit Highlighting Definition
 
@@ -115,6 +119,9 @@ namespace VDS.RDF.Utilities.Editor.Syntax
 
         #endregion
 
+        /// <summary>
+        /// Gets the Name of the Syntax
+        /// </summary>
         public String Name
         {
             get
@@ -123,6 +130,9 @@ namespace VDS.RDF.Utilities.Editor.Syntax
             }
         }
 
+        /// <summary>
+        /// Gets the Syntax Highlighting Definition
+        /// </summary>
         public IHighlightingDefinition Highlighter
         {
             get
@@ -135,6 +145,9 @@ namespace VDS.RDF.Utilities.Editor.Syntax
             }
         }
 
+        /// <summary>
+        /// Gets the File Extensions associated with the Syntax
+        /// </summary>
         public String[] FileExtensions
         {
             get
@@ -143,6 +156,9 @@ namespace VDS.RDF.Utilities.Editor.Syntax
             }
         }
 
+        /// <summary>
+        /// Gets the Default RDF Parser for the format
+        /// </summary>
         public IRdfReader DefaultParser
         {
             get
@@ -151,6 +167,9 @@ namespace VDS.RDF.Utilities.Editor.Syntax
             }
         }
 
+        /// <summary>
+        /// Gets the Default RDF Writer for the format
+        /// </summary>
         public IRdfWriter DefaultWriter
         {
             get
@@ -159,6 +178,9 @@ namespace VDS.RDF.Utilities.Editor.Syntax
             }
         }
 
+        /// <summary>
+        /// Gets the Syntax Validator for the format
+        /// </summary>
         public ISyntaxValidator Validator
         {
             get
@@ -167,6 +189,9 @@ namespace VDS.RDF.Utilities.Editor.Syntax
             }
         }
 
+        /// <summary>
+        /// Gets/Sets single line comment character
+        /// </summary>
         public String SingleLineComment
         {
             get
@@ -179,6 +204,9 @@ namespace VDS.RDF.Utilities.Editor.Syntax
             }
         }
 
+        /// <summary>
+        /// Gets/Sets multi-line comment start characters
+        /// </summary>
         public String MultiLineCommentStart
         {
             get
@@ -191,6 +219,9 @@ namespace VDS.RDF.Utilities.Editor.Syntax
             }
         }
 
+        /// <summary>
+        /// Gets/Sets multi-line comment end characters
+        /// </summary>
         public String MultiLineCommentEnd
         {
             get
@@ -203,11 +234,29 @@ namespace VDS.RDF.Utilities.Editor.Syntax
             }
         }
 
+        /// <summary>
+        /// Gets whether the Syntax supports comments
+        /// </summary>
         public bool CanComment
         {
             get
             {
                 return this._singleLineComment != null || (this._multiLineCommentStart != null && this._multiLineCommentEnd != null);
+            }
+        }
+
+        /// <summary>
+        /// Gets/Sets whether the format uses XML based highlighting
+        /// </summary>
+        public bool IsXmlFormat
+        {
+            get
+            {
+                return this._isXml;
+            }
+            set
+            {
+                this._isXml = value;
             }
         }
     }

@@ -898,6 +898,7 @@ namespace VDS.RDF.Utilities.Editor
         private void mnuCustomiseAppearance_Click(object sender, RoutedEventArgs e)
         {
             AppearanceSettings settings = new AppearanceSettings(textEditor);
+            settings.Owner = this;
             if (settings.ShowDialog() == true)
             {
                 if (Properties.Settings.Default.EditorFontFace != null)
@@ -953,12 +954,13 @@ namespace VDS.RDF.Utilities.Editor
                                 NonIndexedGraph g = new NonIndexedGraph();
                                 def.DefaultParser.Load(g, new StringReader(textEditor.Text));
                                 TriplesWindow window = new TriplesWindow(g);
+                                window.ShowDialog();
                             }
-                            else if (def.Validator is RdfDatasetSyntaxValidator)
-                            {
-                                TripleStore store = new TripleStore();
-                                StringParser.ParseDataset(store, textEditor.Text);
-                            }
+                            //else if (def.Validator is RdfDatasetSyntaxValidator)
+                            //{
+                            //    TripleStore store = new TripleStore();
+                            //    StringParser.ParseDataset(store, textEditor.Text);
+                            //}
                             else if (def.Validator is SparqlResultsValidator)
                             {
                                 SparqlResultSet sparqlResults = new SparqlResultSet();
