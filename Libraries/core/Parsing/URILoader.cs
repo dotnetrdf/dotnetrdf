@@ -139,7 +139,7 @@ namespace VDS.RDF.Parsing
         /// Attempts to load a RDF Graph from the given URI into the given Graph
         /// </summary>
         /// <param name="g">Graph to assert Triples in</param>
-        /// <param name="u">Uri to attempt to get RDF from</param>
+        /// <param name="u">URI to attempt to get RDF from</param>
         /// <remarks>
         /// <para>
         /// Attempts to select the relevant Parser based on the Content Type header returned in the HTTP Response.
@@ -157,17 +157,17 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Attempts to load a RDF Graph from the given Uri into the given Graph
+        /// Attempts to load a RDF Graph from the given URI into the given Graph
         /// </summary>
         /// <param name="g">Graph to assert Triples in</param>
-        /// <param name="u">Uri to attempt to get RDF from</param>
+        /// <param name="u">URI to attempt to get RDF from</param>
         /// <param name="parser">Parser to use</param>
         /// <remarks>
         /// <para>
         /// Uses the supplied parser to attempt parsing regardless of the actual Content Type returned
         /// </para>
         /// <para>
-        /// In the event that the Uri is a File Uri the <see cref="FileLoader">FileLoader</see> will be used instead
+        /// In the event that the URI is a File URI the <see cref="FileLoader">FileLoader</see> will be used instead
         /// </para>
         /// <para>
         /// If the URI is a Data URI then the <see cref="DataUriLoader">DataUriLoader</see> will be used instead.
@@ -209,11 +209,44 @@ namespace VDS.RDF.Parsing
             UriLoader.Load(new GraphHandler(g), u, parser);
         }
 
+        /// <summary>
+        /// Attempts to load a RDF Graph from the given URI using a RDF Handler
+        /// </summary>
+        /// <param name="handler">RDF Handler to use</param>
+        /// <param name="u">URI to attempt to get RDF from</param>
+        /// <remarks>
+        /// <para>
+        /// Attempts to select the relevant Parser based on the Content Type header returned in the HTTP Response.
+        /// </para>
+        /// <para>
+        /// If you know ahead of time the Content Type you can just open a HTTP Stream yourself and pass it to an instance of the correct Parser.
+        /// </para>
+        /// <para>
+        /// In the event that the URI is a File URI the <see cref="FileLoader">FileLoader</see> will be used instead.  If the URI is a Data URI then the <see cref="DataUriLoader">DataUriLoader</see> will be used instead.
+        /// </para>
+        /// </remarks>
         public static void Load(IRdfHandler handler, Uri u)
         {
             UriLoader.Load(handler, u, (IRdfReader)null);
         }
 
+        /// <summary>
+        /// Attempts to load a RDF Graph from the given URI using a RDF Handler
+        /// </summary>
+        /// <param name="handler">RDF Handler to use</param>
+        /// <param name="u">URI to attempt to get RDF from</param>
+        /// <param name="parser">Parser to use</param>
+        /// <remarks>
+        /// <para>
+        /// Uses the supplied parser to attempt parsing regardless of the actual Content Type returned
+        /// </para>
+        /// <para>
+        /// In the event that the URI is a File URI the <see cref="FileLoader">FileLoader</see> will be used instead
+        /// </para>
+        /// <para>
+        /// If the URI is a Data URI then the <see cref="DataUriLoader">DataUriLoader</see> will be used instead.
+        /// </para>
+        /// </remarks>
         public static void Load(IRdfHandler handler, Uri u, IRdfReader parser)
         {
             if (handler == null) throw new RdfParseException("Cannot read RDF using a null RDF Handler");
@@ -465,10 +498,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Attempts to load a RDF dataset from the given Uri into the given Triple Store
+        /// Attempts to load a RDF dataset from the given URI into the given Triple Store
         /// </summary>
         /// <param name="store">Triple Store to load into</param>
-        /// <param name="u">Uri to attempt to get a RDF dataset from</param>
+        /// <param name="u">URI to attempt to get a RDF dataset from</param>
         /// <param name="parser">Parser to use to parse the RDF dataset</param>
         /// <remarks>
         /// <para>
@@ -486,10 +519,10 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Attempts to load a RDF dataset from the given Uri into the given Triple Store
+        /// Attempts to load a RDF dataset from the given URI into the given Triple Store
         /// </summary>
         /// <param name="store">Triple Store to load into</param>
-        /// <param name="u">Uri to attempt to get a RDF dataset from</param>
+        /// <param name="u">URI to attempt to get a RDF dataset from</param>
         /// <remarks>
         /// <para>
         /// Attempts to select the relevant Store Parser based on the Content Type header returned in the HTTP Response.
@@ -500,6 +533,20 @@ namespace VDS.RDF.Parsing
             UriLoader.Load(store, u, null);
         }
 
+        /// <summary>
+        /// Attempts to load a RDF dataset from the given URI using a RDF Handler
+        /// </summary>
+        /// <param name="handler">RDF Handler to use</param>
+        /// <param name="u">URI to attempt to get a RDF dataset from</param>
+        /// <param name="parser">Parser to use to parse the RDF dataset</param>
+        /// <remarks>
+        /// <para>
+        /// If the <paramref name="parser"/> parameter is set to null then this method attempts to select the relevant Store Parser based on the Content Type header returned in the HTTP Response.
+        /// </para>
+        /// <para>
+        /// If you know ahead of time the Content Type you can explicitly pass in the parser to use.
+        /// </para>
+        /// </remarks>
         public static void Load(IRdfHandler handler, Uri u, IStoreReader parser)
         {
             if (u == null) throw new RdfParseException("Cannot read a RDF dataset from a null URI");
@@ -620,6 +667,16 @@ namespace VDS.RDF.Parsing
             }
         }
 
+        /// <summary>
+        /// Attempts to load a RDF dataset from the given URI using a RDF Handler
+        /// </summary>
+        /// <param name="handler">RDF Handler to use</param>
+        /// <param name="u">URI to attempt to get a RDF dataset from</param>
+        /// <remarks>
+        /// <para>
+        /// Attempts to select the relevant Store Parser based on the Content Type header returned in the HTTP Response.
+        /// </para>
+        /// </remarks>
         public static void LoadDataset(IRdfHandler handler, Uri u)
         {
             UriLoader.Load(handler, u, (IStoreReader)null);

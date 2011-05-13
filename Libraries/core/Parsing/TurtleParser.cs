@@ -109,14 +109,17 @@ namespace VDS.RDF.Parsing
         public void Load(IGraph g, StreamReader input)
         {
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
-
             this.Load(new GraphHandler(g), input);
         }
 
+        /// <summary>
+        /// Loads a Graph by reading Turtle syntax from the given input
+        /// </summary>
+        /// <param name="g">Graph to load into</param>
+        /// <param name="input">Input to read from</param>
         public void Load(IGraph g, TextReader input)
         {
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
-
             this.Load(new GraphHandler(g), input);
         }
 
@@ -132,6 +135,11 @@ namespace VDS.RDF.Parsing
             this.Load(g, new StreamReader(filename, Encoding.UTF8));
         }
 
+        /// <summary>
+        /// Loads RDF by reading Turtle syntax from the given input using a RDF Handler
+        /// </summary>
+        /// <param name="handler">RDF Handle to use</param>
+        /// <param name="input">Stream to read from</param>
         public void Load(IRdfHandler handler, StreamReader input)
         {
             if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
@@ -150,6 +158,11 @@ namespace VDS.RDF.Parsing
             this.Load(handler, (TextReader)input);
         }
 
+        /// <summary>
+        /// Loads RDF by reading Turtle syntax from the given input using a RDF Handler
+        /// </summary>
+        /// <param name="handler">RDF Handle to use</param>
+        /// <param name="input">Input to read from</param>
         public void Load(IRdfHandler handler, TextReader input)
         {
             if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
@@ -178,6 +191,11 @@ namespace VDS.RDF.Parsing
             }
         }
 
+        /// <summary>
+        /// Loads RDF by reading Turtle syntax from the given file using a RDF Handler
+        /// </summary>
+        /// <param name="handler">RDF Handle to use</param>
+        /// <param name="filename">File to read from</param>
         public void Load(IRdfHandler handler, String filename)
         {
             if (handler == null) throw new RdfParseException("Cannot read RDF into a null RDF Handler");
@@ -765,7 +783,7 @@ namespace VDS.RDF.Parsing
         private INode TryParseLiteral(TokenisingParserContext context, IToken lit)
         {
             IToken next;
-            String dturi, currentBase;
+            String dturi;
 
             switch (lit.TokenType)
             {
@@ -878,6 +896,10 @@ namespace VDS.RDF.Parsing
         /// </summary>
         public event RdfReaderWarning Warning;
 
+        /// <summary>
+        /// Gets the String representation of the Parser which is a description of the syntax it parses
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return "Turtle";

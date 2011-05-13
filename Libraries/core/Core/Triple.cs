@@ -134,6 +134,7 @@ namespace VDS.RDF
         /// <param name="pred">Predicate of the Triple</param>
         /// <param name="obj">Object of the Triple</param>
         /// <param name="context">Context Information for the Triple</param>
+        /// <param name="graphUri">Graph URI</param>
         /// <remarks>Will throw an RdfException if the Nodes don't belong to the same Graph/Node Factory</remarks>
         /// <exception cref="RdfException">Thrown if the Nodes aren't all from the same Graph/Node Factory</exception>
         public Triple(INode subj, INode pred, INode obj, ITripleContext context, Uri graphUri)
