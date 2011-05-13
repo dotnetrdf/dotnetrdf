@@ -223,9 +223,12 @@ namespace VDS.RDF
             this._manager.Flush();
         }
 
+        /// <summary>
+        /// Discards any outstanding changes
+        /// </summary>
         public void Discard()
         {
-            throw new NotImplementedException();
+            //Does nothing
         }
 
         /// <summary>

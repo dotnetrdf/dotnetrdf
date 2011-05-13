@@ -184,12 +184,19 @@ namespace VDS.RDF.Storage.Params
     {
         private TextWriter _writer;
 
+        /// <summary>
+        /// Creates new TextWriter paramters
+        /// </summary>
+        /// <param name="writer">Text Writer</param>
         public TextWriterParams(TextWriter writer)
         {
             if (writer == null) throw new ArgumentNullException("writer");
             this._writer = writer;
         }
 
+        /// <summary>
+        /// Gets the Text Writer in use
+        /// </summary>
         public TextWriter TextWriter
         {
             get

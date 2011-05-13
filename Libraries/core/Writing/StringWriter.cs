@@ -49,7 +49,7 @@ namespace VDS.RDF.Writing
     public static class StringWriter
     {
         /// <summary>
-        /// Writes the Graph to a String and returns the Output in your chosen concrete RDF Syntax
+        /// Writes the Graph to a String and returns the output in your chosen concrete RDF Syntax
         /// </summary>
         /// <param name="g">Graph to save</param>
         /// <param name="writer">Writer to use to generate the concrete RDF Syntax</param>
@@ -65,6 +65,12 @@ namespace VDS.RDF.Writing
             return sw.ToString();
         }
 
+        /// <summary>
+        /// Writes the given Triple Store to a String and returns the output in your chosen concrete RDF dataset syntax
+        /// </summary>
+        /// <param name="store">Triple Store</param>
+        /// <param name="writer">Writer to use to generate conrete RDF Syntax</param>
+        /// <returns></returns>
         public static String Write(ITripleStore store, IStoreWriter writer)
         {
             System.IO.StringWriter sw = new System.IO.StringWriter();

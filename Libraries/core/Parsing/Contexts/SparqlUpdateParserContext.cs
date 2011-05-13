@@ -53,7 +53,7 @@ namespace VDS.RDF.Parsing.Contexts
         private SparqlQueryParser _queryParser = new SparqlQueryParser();
         private SparqlExpressionParser _exprParser = new SparqlExpressionParser();
         private SparqlPathParser _pathParser = new SparqlPathParser();
-        private Uri _baseUri;
+        //private Uri _baseUri;
         private IEnumerable<ISparqlCustomExpressionFactory> _factories = Enumerable.Empty<ISparqlCustomExpressionFactory>();
 
         /// <summary>

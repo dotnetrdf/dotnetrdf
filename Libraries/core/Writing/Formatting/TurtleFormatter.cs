@@ -83,8 +83,17 @@ namespace VDS.RDF.Writing.Formatting
     public class TurtleFormatter : QNameFormatter, IBaseUriFormatter
     {
         private BlankNodeOutputMapper _bnodeMapper = new BlankNodeOutputMapper(WriterHelper.IsValidBlankNodeID);
+        /// <summary>
+        /// Set of characters which are valid as escapes when preceded by a backslash
+        /// </summary>
         protected char[] _validEscapes = new char[] { '"', 'n', 't', 'u', 'U', 'r', '\\', '0' };
+        /// <summary>
+        /// Set of characters that must be escaped for Long Literals
+        /// </summary>
         protected char[] _longLitMustEscape = new char[] { '"' };
+        /// <summary>
+        /// Set of characters that must be escaped for Literals
+        /// </summary>
         protected char[] _litMustEscape = new char[] { '"', '\n', '\r', '\t' };
 
         /// <summary>
@@ -257,11 +266,22 @@ namespace VDS.RDF.Writing.Formatting
             return "_:" + this._bnodeMapper.GetOutputID(b.InternalID);
         }
 
+        /// <summary>
+        /// Formats a Namespace Decalaration as a @prefix declaration
+        /// </summary>
+        /// <param name="prefix">Namespace Prefix</param>
+        /// <param name="namespaceUri">Namespace URI</param>
+        /// <returns></returns>
         public override string FormatNamespace(string prefix, Uri namespaceUri)
         {
             return "@prefix " + prefix + ": <" + this.FormatUri(namespaceUri) + "> .";
         }
 
+        /// <summary>
+        /// Formats a Base URI declaration as a @base declaration
+        /// </summary>
+        /// <param name="u">Base URI</param>
+        /// <returns></returns>
         public virtual string FormatBaseUri(Uri u)
         {
             return "@base <" + this.FormatUri(u) + "> .";

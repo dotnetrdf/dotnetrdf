@@ -67,6 +67,10 @@ namespace VDS.RDF.Parsing.Tokens
             this.Format = "TriG";
         }
 
+        /// <summary>
+        /// Creates a new TriG Tokeniser which reads Tokens from the given Input
+        /// </summary>
+        /// <param name="input">Input to read Tokens from</param>
         public TriGTokeniser(TextReader input)
             : this(new BlockingTextReader(input)) { }
 

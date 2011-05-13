@@ -188,6 +188,10 @@ namespace VDS.RDF.Update
             }
         }
 
+        /// <summary>
+        /// Gets/Sets the Time the updates took to execute
+        /// </summary>
+        /// <exception cref="InvalidOperationException">Thrown if you try to inspect the execution time before/during the execution of updates</exception>
         public TimeSpan? UpdateExecutionTime
         {
             get

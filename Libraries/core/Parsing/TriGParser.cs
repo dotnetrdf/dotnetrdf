@@ -78,13 +78,18 @@ namespace VDS.RDF.Parsing
         /// Loads the named Graphs from the TriG input into the given Triple Store
         /// </summary>
         /// <param name="store">Triple Store to load into</param>
-        /// <param name="parameters">Parameters indicating the Stream to read from</param>
+        /// <param name="parameters">Parameters indicating the input to read from</param>
         public void Load(ITripleStore store, IStoreParams parameters)
         {
             if (store == null) throw new RdfParseException("Cannot read a RDF dataset into a null Store");
             this.Load(new StoreHandler(store), parameters);
         }
 
+        /// <summary>
+        /// Loads the named Graphs from the TriG input using the given RDF Handler
+        /// </summary>
+        /// <param name="handler">RDF Handler to use</param>
+        /// <param name="parameters">Parameters indicating the input to read from</param>
         public void Load(IRdfHandler handler, IStoreParams parameters)
         {
             if (handler == null) throw new ArgumentNullException("handler", "Cannot parse an RDF Dataset using a null RDF Handler");
@@ -778,6 +783,10 @@ namespace VDS.RDF.Parsing
         /// </summary>
         public event StoreReaderWarning Warning;
 
+        /// <summary>
+        /// Gets the String representation of the Parser which is a description of the syntax it parses
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return "TriG";

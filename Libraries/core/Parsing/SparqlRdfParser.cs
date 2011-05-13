@@ -192,8 +192,7 @@ namespace VDS.RDF.Parsing
         /// <summary>
         /// Internal method which actually parses the Result Set by traversing the RDF Graph appropriately
         /// </summary>
-        /// <param name="results">SPARQL Result Set to populate</param>
-        /// <param name="g">RDF Graph of the Result Set</param>
+        /// <param name="context">Parser Context</param>
         private void Parse(SparqlRdfParserContext context)
         {
             try

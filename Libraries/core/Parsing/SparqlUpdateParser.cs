@@ -152,6 +152,11 @@ namespace VDS.RDF.Parsing
             return this.Parse((TextReader)input);
         }
 
+        /// <summary>
+        /// Parses a SPARQL Update Command Set from the input
+        /// </summary>
+        /// <param name="input">Input</param>
+        /// <returns></returns>
         public SparqlUpdateCommandSet Parse(TextReader input)
         {
             if (input == null) throw new RdfParseException("Cannot parse SPARQL Update Commands from a null TextReader");

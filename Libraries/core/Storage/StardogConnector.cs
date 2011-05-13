@@ -59,9 +59,13 @@ namespace VDS.RDF.Storage
     /// </summary>
     public enum StardogReasoningMode
     {
-        //No Reasoning (default)
+        /// <summary>
+        /// No Reasoning (default)
+        /// </summary>
         None,
-        //OWL-QL Reasoning
+        /// <summary>
+        /// OWL-QL Reasoning
+        /// </summary>
         QL
     }
 
@@ -80,7 +84,7 @@ namespace VDS.RDF.Storage
     public class StardogConnector : IQueryableGenericIOManager, IConfigurationSerializable
     {
         private String _baseUri;
-        protected String _kb;
+        private String _kb;
         private String _username;
         private String _pwd;
         private bool _hasCredentials = false;

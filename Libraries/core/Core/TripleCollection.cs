@@ -539,7 +539,7 @@ namespace VDS.RDF
         /// <summary>
         /// Creates a new Indexed Triple Collection
         /// </summary>
-        /// <param name="capacity">Initial Capacity of Indexes</param>
+        /// <param name="capacity">Initial Capacity of Index Slots</param>
         /// <remarks>
         /// <para>
         /// Indexes are stored using our <see cref="HashTable">HashTable</see> structure which is in effect a Dictionary where each Key can have multiple values.  The capacity is the initial number of value slots assigned to each Key, value slots grow automatically as desired but setting an appropriate capacity will allow you to tailor memory usage to your data and may make it possible to store data which would cause <see cref="OutOfMemoryException">OutOfMemoryException</see>'s with the default settings.
@@ -548,7 +548,7 @@ namespace VDS.RDF
         /// For example if you have 1 million triples where no Triples share any Nodes in common then the memory needing to be allocated would be 1,000,000 * 6 * 10 * 4 bytes just for the object references without taking into account all the overhead for the data structures actually.  Whereas if you set the capacity to 1 you reduce your memory requirements by a factor of 10 instantly.
         /// </para>
         /// <para>
-        /// <strong>Note:</strong> Always remember that if you have large quantities of triples (1 million plus) then you are often better not loading them directly into memory and there many be better ways of processing the RDF depending on your application.
+        /// <strong>Note:</strong> Always remember that if you have large quantities of triples (1 million plus) then you are often better not loading them directly into memory and there many be better ways of processing the RDF depending on your application.  For example if you just want to do simple things with the data like validate it, count it etc you may be better using a <see cref="IRdfHandler">IRdfHandler</see> to process your data.
         /// </para>
         /// </remarks>
         public IndexedTripleCollection(int capacity)
@@ -902,9 +902,16 @@ namespace VDS.RDF
     {
         private ReaderWriterLockSlim _lockManager = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
 
+        /// <summary>
+        /// Creates a new Indexed Thread Safe Triple Collection
+        /// </summary>
         public IndexedThreadSafeTripleCollection()
             : base() { }
 
+        /// <summary>
+        /// Creates a new Indexed Thread Safe Triple Collection with the given index slot capacity
+        /// </summary>
+        /// <param name="capacity">Index Slot Capacity</param>
         public IndexedThreadSafeTripleCollection(int capacity)
             : base(capacity) { }
 

@@ -41,10 +41,17 @@ using System.Threading;
 
 namespace VDS.RDF.Parsing.Handlers
 {
+    /// <summary>
+    /// A RDF Handler that loads Quads into a <see cref="ITripleStore">ITripleStore</see> instance
+    /// </summary>
     public class StoreHandler : BaseRdfHandler
     {
         private ITripleStore _store;
 
+        /// <summary>
+        /// Creates a new Store Handler
+        /// </summary>
+        /// <param name="store">Triple Store</param>
         public StoreHandler(ITripleStore store)
             : base()
         {
@@ -54,6 +61,11 @@ namespace VDS.RDF.Parsing.Handlers
 
         #region IRdfHandler Members
 
+        /// <summary>
+        /// Handles Triples by asserting them into the appropriate Graph creating the Graph if necessary
+        /// </summary>
+        /// <param name="t">Triple</param>
+        /// <returns></returns>
         protected override bool HandleTripleInternal(Triple t)
         {
             if (!this._store.HasGraph(t.GraphUri))
@@ -67,6 +79,9 @@ namespace VDS.RDF.Parsing.Handlers
             return true;
         }
 
+        /// <summary>
+        /// Gets that the Handler accepts all Triples
+        /// </summary>
         public override bool AcceptsAll
         {
             get

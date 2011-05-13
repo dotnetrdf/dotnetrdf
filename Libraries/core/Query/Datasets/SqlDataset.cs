@@ -146,6 +146,11 @@ namespace VDS.RDF.Query.Datasets
             return this._reader.Load(graphUri);
         }
 
+        /// <summary>
+        /// Gets a modifiable wrapper around the Graph from the store
+        /// </summary>
+        /// <param name="graphUri">Graph URI</param>
+        /// <returns></returns>
         protected override ITransactionalGraph GetModifiableGraphInternal(Uri graphUri)
         {
             return new StoreGraphPersistenceWrapper(this._manager, this.GetGraphInternal(graphUri));
@@ -278,6 +283,9 @@ namespace VDS.RDF.Query.Datasets
             return ts;
         }
 
+        /// <summary>
+        /// Flushes outstanding changes to the store
+        /// </summary>
         protected override void FlushInternal()
         {
             this._manager.Flush();

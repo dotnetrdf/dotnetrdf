@@ -53,6 +53,11 @@ namespace VDS.RDF.Update
 #endif
         private long _timeout;
 
+        /// <summary>
+        /// Creates a new SPARQL Update Evaluation Context
+        /// </summary>
+        /// <param name="commands">Command Set</param>
+        /// <param name="data">SPARQL Dataset</param>
         public SparqlUpdateEvaluationContext(SparqlUpdateCommandSet commands, ISparqlDataset data)
             : this(data)
         {

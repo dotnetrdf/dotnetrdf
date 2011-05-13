@@ -97,6 +97,9 @@ namespace VDS.RDF.Writing
             }
         }
 
+        /// <summary>
+        /// Gets/Sets the Compression Level for the writer
+        /// </summary>
         public int CompressionLevel
         {
             get
@@ -127,6 +130,9 @@ namespace VDS.RDF.Writing
             }
         }
 
+        /// <summary>
+        /// Gets/Sets whether multi-threaded writing will be used to generate output faster
+        /// </summary>
         public bool UseMultiThreadedWriting
         {
             get
