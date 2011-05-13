@@ -69,39 +69,39 @@ Query and Update
 Storage
 - SQL Storage is officially deprecated though still usable - will be rewritten entirely in future releases (currently planned for 0.4.3 release)
  
- Change History
- --------------
- 
- Please see ChangeLog.txt included in this release
- 
- Release History
- ---------------
- 
- 31/07/2009 - First public Alpha release (Version 0.1.0 Alpha)
- 
- 03/08/2009 - Rerelease to fix a bug with SQL based storage which occurs when multi-threaded writing is performed
- 
- 25/09/2009 - Release of Version 0.1.1 Alpha (Build 0.1.1.18640)
- 
- 5/10/2009 - Re-release of Version 0.1.1 Alpha (Build 0.1.1.20361) which fixes issues with Blank Node IDs and Fast writers when Compression Level is None
- 
- 27/11/2009 - Release of Version 0.1.2 Alpha (Build 0.1.2.16009)
- 
- 18/11/2009 - Release of Version 0.1.3 Alpha (Build 0.1.3.20723)
- 
- 3/2/2010 - Release of Version 0.2.0 Alpha (Build 0.2.0.27063)
- 
- 11/3/2010 - Release of Version 0.2.1 Alpha (Build 0.2.1.24471)
- 
- 16/4/2010 - Release of Version 0.2.2 Alpha (Build 0.2.2.24625)
- 
- 10/8/2010 - Release of Version 0.3.0 Alpha (Build 0.3.0.23092)
- 
- 8/10/2010 - Release of Version 0.3.1 Alpha (Build 0.3.1.20277)
- 
- 1/3/2011 - Release of Version 0.4.0 Beta (Build 0.4.0.23346)
- 
- ?/5/2011 - Release of Version 0.4.1 Beta (Build 0.4.1.?)
+Change History
+--------------
+
+Please see ChangeLog.txt included in this release
+
+Release History
+---------------
+
+31/07/2009 - First public Alpha release (Version 0.1.0 Alpha)
+
+03/08/2009 - Rerelease to fix a bug with SQL based storage which occurs when multi-threaded writing is performed
+
+25/09/2009 - Release of Version 0.1.1 Alpha (Build 0.1.1.18640)
+
+5/10/2009 - Re-release of Version 0.1.1 Alpha (Build 0.1.1.20361) which fixes issues with Blank Node IDs and Fast writers when Compression Level is None
+
+27/11/2009 - Release of Version 0.1.2 Alpha (Build 0.1.2.16009)
+
+18/11/2009 - Release of Version 0.1.3 Alpha (Build 0.1.3.20723)
+
+3/2/2010 - Release of Version 0.2.0 Alpha (Build 0.2.0.27063)
+
+11/3/2010 - Release of Version 0.2.1 Alpha (Build 0.2.1.24471)
+
+16/4/2010 - Release of Version 0.2.2 Alpha (Build 0.2.2.24625)
+
+10/8/2010 - Release of Version 0.3.0 Alpha (Build 0.3.0.23092)
+
+8/10/2010 - Release of Version 0.3.1 Alpha (Build 0.3.1.20277)
+
+1/3/2011 - Release of Version 0.4.0 Beta (Build 0.4.0.23346)
+
+?/5/2011 - Release of Version 0.4.1 Beta (Build 0.4.1.?)
  
 Acknowledgements
 ----------------
@@ -130,9 +130,11 @@ improvements in the code:
   which have contributed to resolving various issues in the Leviathan engine and adding the ARQ function library support
 - Peter Kahle for his efforts in producing a Windows Phone 7 version of the library
 - Paul Hermans for various suggestions related to the improvement of the Toolkit
-- Graham Moore for excellent input on needed changes in the API to better support 3rd party developers
 - The SPARQL Working Group for useful feedback and responses to my comments
-- The following people who have contributed bug reports and patches on the mailing lists:
+- Graham Moore for excellent input on needed changes in the API to better support 3rd party developers
+  plugging their stuff into the API
+- Laurent Lefort for feedback and suggestions regarding rdfEditor
+- The following people who have contributed bug reports, patches, ideas etc on the mailing lists:
  - Tana Isaac
  - Koos Strydoom
  - Alexander Sidorov
@@ -145,3 +147,5 @@ improvements in the code:
  - Clive Emberey
  - Anton Andreev
  - Steve Fraleigh
+ - Felipe Santos
+ - Bob Morris

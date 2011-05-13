@@ -3,7 +3,7 @@ dotNetRDF Toolkit for Windows
 
 A Toolkit of command line utilities and GUI tools for working with RDF data
 
-Version 0.1.2 Alpha
+Version 0.2.0 Alpha
 
 Robert Vesse 2009-10
 rvesse@vdesign-studios.com
@@ -14,15 +14,16 @@ Usage
 Unzip this zip package to a folder of your choice.  We recommend adding this folder to your PATH variable so you can access the command line tools from a command prompt regardless of the working directory.
 
 This Toolkit provides the following command line utilities:
-- rdfConvert - A tool for converting RDF Graphs and Datasets between different serializations (Version 0.1.2)
-- rdfQuery - A tool for querying RDF data using SPARQL (Version 0.1.2)
-- rdfWebDeploy - A tool for testing and deploying configuration for ASP.Net applications (Version 0.1.2)
-- soh - A tool for communicating with servers supporting the SPARQL Protocols over HTTP (Version 0.1.0)
+- rdfConvert - A tool for converting RDF Graphs and Datasets between different serializations (Version 0.2.0)
+- rdfOptStats - A tool for generating statistics on RDF for use with the new optional Weighted Optimiser (Version 0.1.0)
+- rdfQuery - A tool for querying RDF data using SPARQL (Version 0.2.0)
+- rdfWebDeploy - A tool for testing and deploying configuration for ASP.Net applications (Version 0.2.0)
+- soh - A tool for communicating with servers supporting the SPARQL Protocols over HTTP (Version 0.2.0)
 
 This Toolkit provides the following GUI tools:
-- rdfEditor - A Notepad replacement for editing RDF and SPARQL (Version 0.1.1)
-- SparqlGUI - A GUI for testing SPARQL queries using dotNetRDF's in-memory Leviathan engine (Version 0.1.2)
-- StoreManager - A GUI for performing basic management and query tasks on various Triple Stores (Version 0.1.4)
+- rdfEditor - A Notepad replacement for editing RDF and SPARQL (Version 0.2.0)
+- SparqlGUI - A GUI for testing SPARQL queries using dotNetRDF's in-memory Leviathan engine (Version 0.2.0)
+- StoreManager - A GUI for performing basic management and query tasks on various Triple Stores (Version 0.2.0)
 
 License
 -------
@@ -59,7 +60,10 @@ improvements in the code:
 - Peter Kahle for his efforts in producing a Windows Phone 7 version of the library
 - Paul Hermans for various suggestions related to the improvement of the Toolkit
 - The SPARQL Working Group for useful feedback and responses to my comments
-- The following people who have contributed bug reports and patches on the mailing lists:
+- Graham Moore for excellent input on needed changes in the API to better support 3rd party developers
+  plugging their stuff into the API
+- Laurent Lefort for feedback and suggestions regarding rdfEditor
+- The following people who have contributed bug reports, patches, ideas etc on the mailing lists:
  - Tana Isaac
  - Koos Strydoom
  - Alexander Sidorov
@@ -72,3 +76,5 @@ improvements in the code:
  - Clive Emberey
  - Anton Andreev
  - Steve Fraleigh
+ - Felipe Santos
+ - Bob Morris

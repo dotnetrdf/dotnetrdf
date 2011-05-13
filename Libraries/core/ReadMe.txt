@@ -54,7 +54,8 @@ improvements in the code:
 - The SPARQL Working Group for useful feedback and responses to my comments
 - Graham Moore for excellent input on needed changes in the API to better support 3rd party developers
   plugging their stuff into the API
-- The following people who have contributed bug reports and patches on the mailing lists:
+- Laurent Lefort for feedback and suggestions regarding rdfEditor
+- The following people who have contributed bug reports, patches, ideas etc on the mailing lists:
  - Tana Isaac
  - Koos Strydoom
  - Alexander Sidorov
@@ -67,3 +68,5 @@ improvements in the code:
  - Clive Emberey
  - Anton Andreev
  - Steve Fraleigh
+ - Felipe Santos
+ - Bob Morris

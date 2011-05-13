@@ -126,6 +126,9 @@
   <data name="lblImport.Text" xml:space="preserve">
     <value>You can use this tool to import data into your Store.  You can either Import a single Graph from a File/URI or you can import multiple Graphs from a File/URI.  This tool will attempt to detect the format of the input and handle it appropriately.  Please note that in many cases it may be more efficient to import data using the management tools provided with the Store you are using than using this tool.</value>
   </data>
+  <data name="label1.Text" xml:space="preserve">
+    <value>All Tasks performed on a Store (Query/Update/Import/Export etc) are performed in the background and you may have one task of each type running at any time.  Monitor the progress of Tasks here, right click on a Task to see options associated with it.</value>
+  </data>
   <metadata name="ofdImport.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>

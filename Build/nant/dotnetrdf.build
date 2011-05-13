@@ -16,10 +16,10 @@
 
   <!-- Version Properties -->
   <!-- When generating ZIP files with the dist targets use the command line -d option to set these appropriately -->
-  <property name="dotnetrdf.version" value="000" />
+  <property name="dotnetrdf.version" value="041" />
   <property name="dotnetrdf.releasetype" value="beta" />
-  <property name="dotnetrdf.toolsversion" value="000" />
-  <property name="dotnetrdf.toolsreleasetype" value="alpha" />
+  <property name="dotnetrdf.toolsversion" value="020" />
+  <property name="dotnetrdf.toolsreleasetype" value="beta" />
 
   <!-- Note that FTP credentials are not included in the file for obvious reasons -->
   <!-- If you want to use the upload targets then use the command line -d option to set these appropriately -->

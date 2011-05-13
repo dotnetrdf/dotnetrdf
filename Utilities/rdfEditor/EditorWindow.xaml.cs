@@ -985,24 +985,6 @@ namespace VDS.RDF.Utilities.Editor
                             MessageBox.Show("Unable to open Structured View as could not parse the Syntax successfully for structured display");
                         }
                     }
-                    //if (results.Result is IGraph)
-                    //{
-                    //    TriplesWindow window = new TriplesWindow((IGraph)results.Result);
-                    //    window.ShowDialog();
-                    //}
-                    //else if (results.Result is SparqlResultSet)
-                    //{
-                    //    SparqlResultSet sparqlResults = (SparqlResultSet)results.Result;
-                    //    if (sparqlResults.ResultsType == SparqlResultsType.VariableBindings)
-                    //    {
-                    //        ResultSetWindow window = new ResultSetWindow(sparqlResults);
-                    //        window.ShowDialog();
-                    //    }
-                    //    else
-                    //    {
-                    //        MessageBox.Show("Cannot open Structured View since this form of SPARQL Results is not structured");
-                    //    }
-                    //}
                     else
                     {
                         MessageBox.Show("Cannot open Structured View since this is not a syntax for which Structure view is available");

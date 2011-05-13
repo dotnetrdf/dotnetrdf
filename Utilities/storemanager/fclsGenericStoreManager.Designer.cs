@@ -59,18 +59,26 @@
             this.txtImportFile = new System.Windows.Forms.TextBox();
             this.lblFile = new System.Windows.Forms.Label();
             this.lblImport = new System.Windows.Forms.Label();
+            this.tabTasks = new System.Windows.Forms.TabPage();
+            this.listView1 = new System.Windows.Forms.ListView();
+            this.colTask = new System.Windows.Forms.ColumnHeader();
+            this.colState = new System.Windows.Forms.ColumnHeader();
+            this.colInfo = new System.Windows.Forms.ColumnHeader();
+            this.label1 = new System.Windows.Forms.Label();
             this.ofdImport = new System.Windows.Forms.OpenFileDialog();
             this.stsStatus = new System.Windows.Forms.StatusStrip();
             this.stsCurrent = new System.Windows.Forms.ToolStripStatusLabel();
             this.timStartup = new System.Windows.Forms.Timer(this.components);
             this.ofdQuery = new System.Windows.Forms.OpenFileDialog();
             this.sfdQuery = new System.Windows.Forms.SaveFileDialog();
+            this.colID = new System.Windows.Forms.ColumnHeader();
             this.tabFunctions.SuspendLayout();
             this.tabGraphs.SuspendLayout();
             this.tabSparqlQuery.SuspendLayout();
             this.tabSparqlUpdate.SuspendLayout();
             this.tabImportExport.SuspendLayout();
             this.grpImport.SuspendLayout();
+            this.tabTasks.SuspendLayout();
             this.stsStatus.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -80,6 +88,7 @@
             this.tabFunctions.Controls.Add(this.tabSparqlQuery);
             this.tabFunctions.Controls.Add(this.tabSparqlUpdate);
             this.tabFunctions.Controls.Add(this.tabImportExport);
+            this.tabFunctions.Controls.Add(this.tabTasks);
             this.tabFunctions.Location = new System.Drawing.Point(12, 12);
             this.tabFunctions.Name = "tabFunctions";
             this.tabFunctions.SelectedIndex = 0;
@@ -223,7 +232,7 @@
             // 
             // lblQueryIntro
             // 
-            this.lblQueryIntro.Location = new System.Drawing.Point(3, 13);
+            this.lblQueryIntro.Location = new System.Drawing.Point(3, 12);
             this.lblQueryIntro.Name = "lblQueryIntro";
             this.lblQueryIntro.Size = new System.Drawing.Size(505, 61);
             this.lblQueryIntro.TabIndex = 0;
@@ -378,6 +387,57 @@
             this.lblImport.TabIndex = 0;
             this.lblImport.Text = resources.GetString("lblImport.Text");
             // 
+            // tabTasks
+            // 
+            this.tabTasks.Controls.Add(this.listView1);
+            this.tabTasks.Controls.Add(this.label1);
+            this.tabTasks.Location = new System.Drawing.Point(4, 22);
+            this.tabTasks.Name = "tabTasks";
+            this.tabTasks.Padding = new System.Windows.Forms.Padding(3);
+            this.tabTasks.Size = new System.Drawing.Size(514, 274);
+            this.tabTasks.TabIndex = 4;
+            this.tabTasks.Text = "Tasks";
+            this.tabTasks.UseVisualStyleBackColor = true;
+            // 
+            // listView1
+            // 
+            this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.colID,
+            this.colTask,
+            this.colState,
+            this.colInfo});
+            this.listView1.FullRowSelect = true;
+            this.listView1.GridLines = true;
+            this.listView1.Location = new System.Drawing.Point(6, 59);
+            this.listView1.Name = "listView1";
+            this.listView1.Size = new System.Drawing.Size(502, 209);
+            this.listView1.Sorting = System.Windows.Forms.SortOrder.Descending;
+            this.listView1.TabIndex = 1;
+            this.listView1.UseCompatibleStateImageBehavior = false;
+            this.listView1.View = System.Windows.Forms.View.Details;
+            // 
+            // colTask
+            // 
+            this.colTask.Text = "Task";
+            // 
+            // colState
+            // 
+            this.colState.Text = "Task State";
+            this.colState.Width = 78;
+            // 
+            // colInfo
+            // 
+            this.colInfo.Text = "Task Information";
+            this.colInfo.Width = 316;
+            // 
+            // label1
+            // 
+            this.label1.Location = new System.Drawing.Point(3, 12);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(505, 52);
+            this.label1.TabIndex = 0;
+            this.label1.Text = resources.GetString("label1.Text");
+            // 
             // ofdImport
             // 
             this.ofdImport.FileName = "example.rdf";
@@ -417,6 +477,11 @@
             this.sfdQuery.FileName = "query.rq";
             this.sfdQuery.Title = "Load SPARQL Query";
             // 
+            // colID
+            // 
+            this.colID.Text = "ID";
+            this.colID.Width = 44;
+            // 
             // fclsGenericStoreManager
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -439,6 +504,7 @@
             this.tabImportExport.ResumeLayout(false);
             this.grpImport.ResumeLayout(false);
             this.grpImport.PerformLayout();
+            this.tabTasks.ResumeLayout(false);
             this.stsStatus.ResumeLayout(false);
             this.stsStatus.PerformLayout();
             this.ResumeLayout(false);
@@ -483,5 +549,12 @@
         private System.Windows.Forms.TextBox txtSparqlUpdate;
         private System.Windows.Forms.Button btnSparqlUpdate;
         private System.Windows.Forms.Label lblUpdateMode;
+        private System.Windows.Forms.TabPage tabTasks;
+        private System.Windows.Forms.ListView listView1;
+        private System.Windows.Forms.ColumnHeader colTask;
+        private System.Windows.Forms.ColumnHeader colState;
+        private System.Windows.Forms.ColumnHeader colInfo;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.ColumnHeader colID;
     }
 }

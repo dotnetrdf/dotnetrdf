@@ -161,6 +161,13 @@
     <Compile Include="QuickConnect.cs" />
     <Compile Include="StoreCompacter.cs" />
     <Compile Include="StoreUpgrader.cs" />
+    <Compile Include="Tasks\BaseImportTask.cs" />
+    <Compile Include="Tasks\BaseTask.cs" />
+    <Compile Include="Tasks\ImportTasks.cs" />
+    <Compile Include="Tasks\ITask.cs" />
+    <Compile Include="Tasks\ListGraphsTasks.cs" />
+    <Compile Include="Tasks\QueryTask.cs" />
+    <Compile Include="Tasks\UpdateTask.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Libraries\core\dotNetRDF.csproj">
