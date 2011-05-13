@@ -72,6 +72,11 @@ namespace VDS.RDF.Parsing.Tokens
             this._syntax = syntax;
         }
 
+        /// <summary>
+        /// Creates a new Instance of the Tokeniser
+        /// </summary>
+        /// <param name="input">The Input to generate Tokens from</param>
+        /// <param name="syntax">Syntax Mode to use when parsing</param>
         public SparqlTokeniser(TextReader input, SparqlQuerySyntax syntax)
             : this(new BlockingTextReader(input), syntax) { }
 
@@ -1392,10 +1397,24 @@ namespace VDS.RDF.Parsing.Tokens
 //#endif
 
             //Backtrack if necessary
-            if (!Char.IsDigit(value[0]) && value.EndsWith("."))
+            if (value.EndsWith("."))
             {
-                this.Backtrack();
-                value = value.Substring(0, value.Length - 1);
+                if (this._syntax == SparqlQuerySyntax.Sparql_1_0)
+                {
+                    //For SPARQL 1.0 only QNames can end with an ignorable .
+                    if (!Char.IsDigit(value[0]) && value[0] != '+' && value[0] != '-')
+                    {
+                        //Backtrack only for QNames ending in a .
+                        this.Backtrack();
+                        value = value.Substring(0, value.Length - 1);
+                    }
+                }
+                else
+                {
+                    //For SPARQL 1.1 backtrack regardless
+                    this.Backtrack();
+                    value = value.Substring(0, value.Length - 1);
+                }
             }
 
             if (colonoccurred)
@@ -1659,7 +1678,13 @@ namespace VDS.RDF.Parsing.Tokens
                 next = this.Peek();
             }
 
-            //if (this.Value.EndsWith(".")) this.Backtrack();
+            //If not SPARQL 1.0 then decimals can no longer end with a .
+            if (this._syntax != SparqlQuerySyntax.Sparql_1_0)
+            {
+                //Decimals can't end with a . so backtrack
+                if (this.Value.EndsWith(".")) this.Backtrack();
+            }
+
             String value = this.Value;
             if (value.Equals("+"))
             {

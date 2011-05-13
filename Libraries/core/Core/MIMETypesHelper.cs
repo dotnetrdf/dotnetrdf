@@ -122,7 +122,7 @@ namespace VDS.RDF
                 _mimeTypes.Add(new MimeTypeDefinition("TSV", Tsv, new String[] { DefaultTsvExtension }, null, null, null, typeof(TsvWriter), typeof(TsvStoreWriter), typeof(SparqlTsvWriter)));
 
                 //Define HTML
-                _mimeTypes.Add(new MimeTypeDefinition("HTML", Html, new String[] { DefaultHtmlExtension, DefaultXHtmlExtension, ".htm" }, typeof(RdfAParser), null, null, typeof(HtmlWriter), null, typeof(SparqlHtmlWriter)));
+                _mimeTypes.Add(new MimeTypeDefinition("HTML", W3CFormatsNamespace + "RDFa", Html, new String[] { DefaultHtmlExtension, DefaultXHtmlExtension, ".htm" }, typeof(RdfAParser), null, null, typeof(HtmlWriter), null, typeof(SparqlHtmlWriter)));
 
                 //Q: Define SPARQL Query?
 
