@@ -129,7 +129,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
                 {
                     UriLoader.Load(g, new Uri(namespaceUri));
                 }
-                catch (Exception ex)
+                catch
                 {
                     //Try and load from our local copy if there is one
                     String prefix = GetDefaultPrefix(namespaceUri);
@@ -154,7 +154,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
                 IUriNode rdfsDatatype = g.CreateUriNode(new Uri(NamespaceMapper.RDFS + "Datatype"));
 
                 SparqlParameterizedString queryString = new SparqlParameterizedString();
-                queryString.QueryText = "SELECT ?term STR(?label) AS ?RawLabel STR(?comment) AS ?RawComment WHERE { {{?term a @class} UNION {?term a @property} UNION {?term a @datatype}} OPTIONAL {?term @label ?label} OPTIONAL {?term @comment ?comment} }";
+                queryString.CommandText = "SELECT ?term STR(?label) AS ?RawLabel STR(?comment) AS ?RawComment WHERE { {{?term a @class} UNION {?term a @property} UNION {?term a @datatype}} OPTIONAL {?term @label ?label} OPTIONAL {?term @comment ?comment} }";
                 queryString.SetParameter("class", rdfsClass);
                 queryString.SetParameter("property", rdfProperty);
                 queryString.SetParameter("datatype", rdfsDatatype);
@@ -201,7 +201,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
                     _terms.AddRange(terms.Distinct());
                 }
             }
-            catch (Exception ex)
+            catch
             {
                 //Ignore Exceptions - just means we won't have those namespace terms available
             }

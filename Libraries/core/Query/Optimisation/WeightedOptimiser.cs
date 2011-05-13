@@ -46,9 +46,21 @@ namespace VDS.RDF.Query.Optimisation
     {
         private Weightings _weights;
 
+        /// <summary>
+        /// Default Weight for Subject Terms
+        /// </summary>
         public const double DefaultSubjectWeight = 0.8d;
+        /// <summary>
+        /// Default Weight for Predicate Terms
+        /// </summary>
         public const double DefaultPredicateWeight = 0.4d;
+        /// <summary>
+        /// Default Weight for Object Terms
+        /// </summary>
         public const double DefaultObjectWeight = 0.6d;
+        /// <summary>
+        /// Default Weight for Variables
+        /// </summary>
         public const double DefaultVariableWeight = 1d;
 
         /// <summary>

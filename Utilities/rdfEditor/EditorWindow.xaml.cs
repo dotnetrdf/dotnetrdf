@@ -980,7 +980,7 @@ namespace VDS.RDF.Utilities.Editor
                                 MessageBox.Show("Cannot open Structured View since this is not a syntax for which Structure view is available");
                             }
                         } 
-                        catch (Exception ex)
+                        catch
                         {
                             MessageBox.Show("Unable to open Structured View as could not parse the Syntax successfully for structured display");
                         }

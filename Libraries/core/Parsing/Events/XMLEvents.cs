@@ -88,12 +88,18 @@ namespace VDS.RDF.Parsing.Events
         /// </summary>
         /// <param name="baseUri">Base Uri of the Document</param>
         /// <param name="sourceXml">Source XML of the Document</param>
+        /// <param name="pos">Position Info</param>
         public RootEvent(String baseUri, String sourceXml, PositionInfo pos) 
             : base(Event.Root, sourceXml, pos)
         {
             this._baseuri = baseUri;
         }
 
+        /// <summary>
+        /// Creates a new Root Event
+        /// </summary>
+        /// <param name="baseUri">Base Uri of the Document</param>
+        /// <param name="sourceXml">Source XML of the Document</param>
         public RootEvent(String baseUri, String sourceXml)
             : this(baseUri, sourceXml, null) { }
 
@@ -177,6 +183,7 @@ namespace VDS.RDF.Parsing.Events
         /// <param name="qname">QName of the XML Node</param>
         /// <param name="baseUri">Base Uri of the XML Node</param>
         /// <param name="sourceXml">Source XML of the XML Node</param>
+        /// <param name="pos">Position Info</param>
         public ElementEvent(String qname, String baseUri, String sourceXml, PositionInfo pos)
             : base(Event.Element, sourceXml, pos) {
             this._baseuri = baseUri;
@@ -197,6 +204,12 @@ namespace VDS.RDF.Parsing.Events
             }
         }
 
+        /// <summary>
+        /// Creates a new Element Event
+        /// </summary>
+        /// <param name="qname">QName of the XML Node</param>
+        /// <param name="baseUri">Base Uri of the XML Node</param>
+        /// <param name="sourceXml">Source XML of the XML Node</param>
         public ElementEvent(String qname, String baseUri, String sourceXml)
             : this(qname, baseUri, sourceXml, (PositionInfo)null) { }
 
@@ -206,17 +219,25 @@ namespace VDS.RDF.Parsing.Events
         /// <param name="localname">Local Name of the XML Node</param>
         /// <param name="ns">Namespace Prefix of the XML Node</param>
         /// <param name="baseUri">Base Uri of the XML Node</param>
-        /// <param name="sourceXML">Source XML of the XML Node</param>
-        public ElementEvent(String localname, String ns, String baseUri, String sourceXML, PositionInfo pos)
-            : base(Event.Element, sourceXML, pos)
+        /// <param name="sourceXml">Source XML of the XML Node</param>
+        /// <param name="pos">Position Info</param>
+        public ElementEvent(String localname, String ns, String baseUri, String sourceXml, PositionInfo pos)
+            : base(Event.Element, sourceXml, pos)
         {
             this._baseuri = baseUri;
             this._localname = localname;
             this._namespace = ns;
         }
 
-        public ElementEvent(String localname, String ns, String baseUri, String sourceXML)
-            : this(localname, ns, baseUri, sourceXML, null) { }
+        /// <summary>
+        /// Creates new Element Event
+        /// </summary>
+        /// <param name="localname">Local Name of the XML Node</param>
+        /// <param name="ns">Namespace Prefix of the XML Node</param>
+        /// <param name="baseUri">Base Uri of the XML Node</param>
+        /// <param name="sourceXml">Source XML of the XML Node</param>
+        public ElementEvent(String localname, String ns, String baseUri, String sourceXml)
+            : this(localname, ns, baseUri, sourceXml, null) { }
 
         /// <summary>
         /// Gets the Local Name of this Element Event
@@ -445,6 +466,7 @@ namespace VDS.RDF.Parsing.Events
         /// <param name="qname">QName of the Attribute</param>
         /// <param name="value">Value of the Attribute</param>
         /// <param name="sourceXml">Source XML of the Attribute</param>
+        /// <param name="pos">Position Info</param>
         public AttributeEvent(String qname, String value, String sourceXml, PositionInfo pos)
             : base(Event.Attribute, sourceXml, pos)
         {
@@ -465,6 +487,12 @@ namespace VDS.RDF.Parsing.Events
             }
         }
 
+        /// <summary>
+        /// Creates a new Attribute Event from an XML Attribute
+        /// </summary>
+        /// <param name="qname">QName of the Attribute</param>
+        /// <param name="value">Value of the Attribute</param>
+        /// <param name="sourceXml">Source XML of the Attribute</param>
         public AttributeEvent(String qname, String value, String sourceXml)
             : this(qname, value, sourceXml, (PositionInfo)null) { }
 
@@ -475,6 +503,7 @@ namespace VDS.RDF.Parsing.Events
         /// <param name="ns">Namespace Prefix of the Attribute</param>
         /// <param name="value">Value of the Attribute</param>
         /// <param name="sourceXml">Source XML of the Attribute</param>
+        /// <param name="pos">Position Info</param>
         public AttributeEvent(String localname, String ns, String value, String sourceXml, PositionInfo pos)
             : base(Event.Attribute, sourceXml, pos)
         {
@@ -483,6 +512,13 @@ namespace VDS.RDF.Parsing.Events
             this._namespace = ns;
         }
 
+        /// <summary>
+        /// Creates a new Attribute Event from an XML Attribute
+        /// </summary>
+        /// <param name="localname">Local Name of the Attribute</param>
+        /// <param name="ns">Namespace Prefix of the Attribute</param>
+        /// <param name="value">Value of the Attribute</param>
+        /// <param name="sourceXml">Source XML of the Attribute</param>
         public AttributeEvent(String localname, String ns, String value, String sourceXml)
             : this(localname, ns, value, sourceXml, null) { }
 
@@ -543,7 +579,8 @@ namespace VDS.RDF.Parsing.Events
         /// </summary>
         /// <param name="prefix">Namespace Prefix</param>
         /// <param name="uri">Namespace Uri</param>
-        /// <param name="sourceXML">Source XML</param>
+        /// <param name="sourceXml">Source XML</param>
+        /// <param name="pos">Position Info</param>
         public NamespaceAttributeEvent(String prefix, String uri, String sourceXml, PositionInfo pos)
             : base(Event.NamespaceAttribute, sourceXml, pos)
         {
@@ -551,6 +588,12 @@ namespace VDS.RDF.Parsing.Events
             this._uri = uri;
         }
 
+        /// <summary>
+        /// Creates a new Namespace Attribute Event
+        /// </summary>
+        /// <param name="prefix">Namespace Prefix</param>
+        /// <param name="uri">Namespace Uri</param>
+        /// <param name="sourceXml">Source XML</param>
         public NamespaceAttributeEvent(String prefix, String uri, String sourceXml)
             : this(prefix, uri, sourceXml, null) { }
 
@@ -589,12 +632,18 @@ namespace VDS.RDF.Parsing.Events
         /// </summary>
         /// <param name="lang">Language</param>
         /// <param name="sourceXml">Source XML</param>
+        /// <param name="pos">Position Info</param>
         public LanguageAttributeEvent(String lang, String sourceXml, PositionInfo pos)
             : base(Event.LanguageAttribute, sourceXml, pos)
         {
             this._lang = lang;
         }
 
+        /// <summary>
+        /// Creates a new Language Attribute Event
+        /// </summary>
+        /// <param name="lang">Language</param>
+        /// <param name="sourceXml">Source XML</param>
         public LanguageAttributeEvent(String lang, String sourceXml)
             : this(lang, sourceXml, null) { }
 
@@ -622,12 +671,18 @@ namespace VDS.RDF.Parsing.Events
         /// </summary>
         /// <param name="type">Parse Type</param>
         /// <param name="sourceXml">Source XML</param>
+        /// <param name="pos">Position Info</param>
         public ParseTypeAttributeEvent(RdfXmlParseType type, String sourceXml, PositionInfo pos)
             : base(Event.ParseTypeAttribute, sourceXml, pos)
         {
             this._type = type;
         }
 
+        /// <summary>
+        /// Creates a new Parse Type Attribute Event
+        /// </summary>
+        /// <param name="type">Parse Type</param>
+        /// <param name="sourceXml">Source XML</param>
         public ParseTypeAttributeEvent(RdfXmlParseType type, String sourceXml)
             : this(type, sourceXml, null) { }
 
@@ -655,12 +710,18 @@ namespace VDS.RDF.Parsing.Events
         /// </summary>
         /// <param name="baseUri">Base URI</param>
         /// <param name="sourceXml">Source XML</param>
+        /// <param name="pos">Position Info</param>
         public XmlBaseAttributeEvent(String baseUri, String sourceXml, PositionInfo pos)
             : base(Event.XmlBaseAttribute, sourceXml, pos)
         {
             this._baseUri = baseUri;
         }
 
+        /// <summary>
+        /// Creates a new XML Base Attribute
+        /// </summary>
+        /// <param name="baseUri">Base URI</param>
+        /// <param name="sourceXml">Source XML</param>
         public XmlBaseAttributeEvent(String baseUri, String sourceXml)
             : this(baseUri, sourceXml, null) { }
 
@@ -688,12 +749,18 @@ namespace VDS.RDF.Parsing.Events
         /// </summary>
         /// <param name="value">Textual Content of the XML Text Node</param>
         /// <param name="sourceXml">Source XML of the Node</param>
+        /// <param name="pos">Position Info</param>
         public TextEvent(String value, String sourceXml, PositionInfo pos)
             : base(Event.Text, sourceXml, pos)
         {
             this._value = value;
         }
 
+        /// <summary>
+        /// Creates a new Text Node
+        /// </summary>
+        /// <param name="value">Textual Content of the XML Text Node</param>
+        /// <param name="sourceXml">Source XML of the Node</param>
         public TextEvent(String value, String sourceXml)
             : this(value, sourceXml, null) { }
 
@@ -730,12 +797,18 @@ namespace VDS.RDF.Parsing.Events
         /// </summary>
         /// <param name="identifier">URIRef</param>
         /// <param name="sourceXml">Source XML of the URIRef</param>
+        /// <param name="pos">Position Info</param>
         public UriReferenceEvent(String identifier, String sourceXml, PositionInfo pos)
             : base(Event.UriReference, sourceXml, pos)
         {
             this._id = identifier;
         }
 
+        /// <summary>
+        /// Creates a new URIRef Event from a URIRef in an XML Attribute value or similar
+        /// </summary>
+        /// <param name="identifier">URIRef</param>
+        /// <param name="sourceXml">Source XML of the URIRef</param>
         public UriReferenceEvent(String identifier, String sourceXml)
             : this(identifier, sourceXml, null) { }
 
@@ -763,12 +836,18 @@ namespace VDS.RDF.Parsing.Events
         /// </summary>
         /// <param name="qname">QName</param>
         /// <param name="sourceXml">Source XML of the QName</param>
+        /// <param name="pos">Position Info</param>
         public QNameEvent(String qname, String sourceXml, PositionInfo pos)
             : base(Event.QName, sourceXml, pos)
         {
             this._qname = qname;
         }
 
+        /// <summary>
+        /// Creates a new QName Event
+        /// </summary>
+        /// <param name="qname">QName</param>
+        /// <param name="sourceXml">Source XML of the QName</param>
         public QNameEvent(String qname, String sourceXml)
             : this(qname, sourceXml, null) { }
 
@@ -797,12 +876,18 @@ namespace VDS.RDF.Parsing.Events
         /// </summary>
         /// <param name="identifier">Node ID for the Blank Node</param>
         /// <param name="sourceXml">Source XML</param>
+        /// <param name="pos">Position Info</param>
         public BlankNodeIDEvent(String identifier, String sourceXml, PositionInfo pos)
             : base(Event.BlankNodeID, sourceXml, pos)
         {
             this._id = identifier;
         }
 
+        /// <summary>
+        /// Creates a new Blank Node ID Event for a named Blank Node
+        /// </summary>
+        /// <param name="identifier">Node ID for the Blank Node</param>
+        /// <param name="sourceXml">Source XML</param>
         public BlankNodeIDEvent(String identifier, String sourceXml)
             : this(identifier, sourceXml, null) { }
 
@@ -810,12 +895,17 @@ namespace VDS.RDF.Parsing.Events
         /// Creates a new Blank Node ID Event for an anonymous Blank Node
         /// </summary>
         /// <param name="sourceXml">Source XML</param>
+        /// <param name="pos">Position Info</param>
         public BlankNodeIDEvent(String sourceXml, PositionInfo pos)
             : base(Event.BlankNodeID, sourceXml, pos)
         {
             this._id = String.Empty;
         }
 
+        /// <summary>
+        /// Creates a new Blank Node ID Event for an anonymous Blank Node
+        /// </summary>
+        /// <param name="sourceXml">Source XML</param>
         public BlankNodeIDEvent(String sourceXml)
             : this(sourceXml, (PositionInfo)null) { }
 
@@ -845,6 +935,7 @@ namespace VDS.RDF.Parsing.Events
         /// <param name="value">Value of the Literal</param>
         /// <param name="language">Language Specifier of the Literal</param>
         /// <param name="sourceXml">Source XML of the Event</param>
+        /// <param name="pos">Position Info</param>
         public PlainLiteralEvent(String value, String language, String sourceXml, PositionInfo pos)
             : base(Event.Literal, sourceXml, pos)
         {
@@ -852,6 +943,12 @@ namespace VDS.RDF.Parsing.Events
             this._language = language;
         }
 
+        /// <summary>
+        /// Creates a new Plain Literal Event
+        /// </summary>
+        /// <param name="value">Value of the Literal</param>
+        /// <param name="language">Language Specifier of the Literal</param>
+        /// <param name="sourceXml">Source XML of the Event</param>
         public PlainLiteralEvent(String value, String language, String sourceXml)
             : this(value, language, sourceXml, null) { }
 
@@ -896,6 +993,7 @@ namespace VDS.RDF.Parsing.Events
         /// <param name="value">Value of the Literal</param>
         /// <param name="datatype">DataType Uri of the Literal</param>
         /// <param name="sourceXml">Source XML of the Event</param>
+        /// <param name="pos">Position Info</param>
         public TypedLiteralEvent(String value, String datatype, String sourceXml, PositionInfo pos)
             : base(Event.TypedLiteral, sourceXml, pos)
         {
@@ -903,6 +1001,12 @@ namespace VDS.RDF.Parsing.Events
             this._datatype = datatype;
         }
 
+        /// <summary>
+        /// Creates a new Typed Literal Event
+        /// </summary>
+        /// <param name="value">Value of the Literal</param>
+        /// <param name="datatype">DataType Uri of the Literal</param>
+        /// <param name="sourceXml">Source XML of the Event</param>
         public TypedLiteralEvent(String value, String datatype, String sourceXml)
             : this(value, datatype, sourceXml, null) { }
 

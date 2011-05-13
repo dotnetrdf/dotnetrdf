@@ -48,6 +48,9 @@ namespace VDS.RDF.Parsing.Handlers
     /// </summary>
     public class WriteToStoreHandler : BaseRdfHandler
     {
+        /// <summary>
+        /// Default Batch Size for writes
+        /// </summary>
         public const int DefaultBatchSize = 1000;
 
         private IGenericIOManager _manager;
@@ -84,18 +87,34 @@ namespace VDS.RDF.Parsing.Handlers
         public WriteToStoreHandler(IGenericIOManager manager, Uri defaultGraphUri)
             : this(manager, defaultGraphUri, DefaultBatchSize) { }
 
+        /// <summary>
+        /// Creates a new Write to Store Handler
+        /// </summary>
+        /// <param name="manager">Manager to write to</param>
+        /// <param name="batchSize">Batch Size</param>
         public WriteToStoreHandler(IGenericIOManager manager, int batchSize)
             : this(manager, null, batchSize) { }
 
+        /// <summary>
+        /// Creates a new Write to Store Handler
+        /// </summary>
+        /// <param name="manager">Manager to write to</param>
         public WriteToStoreHandler(IGenericIOManager manager)
             : this(manager, null, DefaultBatchSize) { }
 
+        /// <summary>
+        /// Starts RDF Handling by ensuring the queue of Triples to write is empty
+        /// </summary>
         protected override void StartRdfInternal()
         {
             this._actions.Clear();
             this._currGraphUri = this._defaultGraphUri;
         }
 
+        /// <summary>
+        /// Ends RDF Handling by ensuring the queue of Triples to write has been processed
+        /// </summary>
+        /// <param name="ok">Indicates whether parsing completed without error</param>
         protected override void EndRdfInternal(bool ok)
         {
             if (this._actions.Count > 0)
@@ -104,6 +123,11 @@ namespace VDS.RDF.Parsing.Handlers
             }
         }
 
+        /// <summary>
+        /// Handles Triples by queuing them for writing and enacting the writing if the Batch Size has been reached/exceeded
+        /// </summary>
+        /// <param name="t">Triple</param>
+        /// <returns></returns>
         protected override bool HandleTripleInternal(Triple t)
         {
             if (t.GraphUri != null && !EqualityHelper.AreUrisEqual(t.GraphUri, this._currGraphUri))
@@ -140,6 +164,9 @@ namespace VDS.RDF.Parsing.Handlers
             }
         }
 
+        /// <summary>
+        /// Gets that the Handler accepts all Triples
+        /// </summary>
         public override bool AcceptsAll
         {
             get 
