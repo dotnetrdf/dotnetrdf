@@ -40,8 +40,6 @@
             this.btnLoadQuery = new System.Windows.Forms.Button();
             this.btnSaveQuery = new System.Windows.Forms.Button();
             this.btnSparqlQuery = new System.Windows.Forms.Button();
-            this.cboSPARQLResultFormat = new System.Windows.Forms.ComboBox();
-            this.lblResultsFormat = new System.Windows.Forms.Label();
             this.txtSparqlQuery = new System.Windows.Forms.TextBox();
             this.lblQueryIntro = new System.Windows.Forms.Label();
             this.tabSparqlUpdate = new System.Windows.Forms.TabPage();
@@ -60,7 +58,8 @@
             this.lblFile = new System.Windows.Forms.Label();
             this.lblImport = new System.Windows.Forms.Label();
             this.tabTasks = new System.Windows.Forms.TabPage();
-            this.listView1 = new System.Windows.Forms.ListView();
+            this.lvwTasks = new System.Windows.Forms.ListView();
+            this.colID = new System.Windows.Forms.ColumnHeader();
             this.colTask = new System.Windows.Forms.ColumnHeader();
             this.colState = new System.Windows.Forms.ColumnHeader();
             this.colInfo = new System.Windows.Forms.ColumnHeader();
@@ -71,7 +70,6 @@
             this.timStartup = new System.Windows.Forms.Timer(this.components);
             this.ofdQuery = new System.Windows.Forms.OpenFileDialog();
             this.sfdQuery = new System.Windows.Forms.SaveFileDialog();
-            this.colID = new System.Windows.Forms.ColumnHeader();
             this.tabFunctions.SuspendLayout();
             this.tabGraphs.SuspendLayout();
             this.tabSparqlQuery.SuspendLayout();
@@ -154,8 +152,6 @@
             this.tabSparqlQuery.Controls.Add(this.btnLoadQuery);
             this.tabSparqlQuery.Controls.Add(this.btnSaveQuery);
             this.tabSparqlQuery.Controls.Add(this.btnSparqlQuery);
-            this.tabSparqlQuery.Controls.Add(this.cboSPARQLResultFormat);
-            this.tabSparqlQuery.Controls.Add(this.lblResultsFormat);
             this.tabSparqlQuery.Controls.Add(this.txtSparqlQuery);
             this.tabSparqlQuery.Controls.Add(this.lblQueryIntro);
             this.tabSparqlQuery.Location = new System.Drawing.Point(4, 22);
@@ -196,35 +192,13 @@
             this.btnSparqlQuery.UseVisualStyleBackColor = true;
             this.btnSparqlQuery.Click += new System.EventHandler(this.btnSparqlQuery_Click);
             // 
-            // cboSPARQLResultFormat
-            // 
-            this.cboSPARQLResultFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboSPARQLResultFormat.FormattingEnabled = true;
-            this.cboSPARQLResultFormat.Items.AddRange(new object[] {
-            "HTML",
-            "XML Results Format",
-            "JSON Results Format"});
-            this.cboSPARQLResultFormat.Location = new System.Drawing.Point(159, 217);
-            this.cboSPARQLResultFormat.Name = "cboSPARQLResultFormat";
-            this.cboSPARQLResultFormat.Size = new System.Drawing.Size(135, 21);
-            this.cboSPARQLResultFormat.TabIndex = 3;
-            // 
-            // lblResultsFormat
-            // 
-            this.lblResultsFormat.AutoSize = true;
-            this.lblResultsFormat.Location = new System.Drawing.Point(3, 220);
-            this.lblResultsFormat.Name = "lblResultsFormat";
-            this.lblResultsFormat.Size = new System.Drawing.Size(150, 13);
-            this.lblResultsFormat.TabIndex = 2;
-            this.lblResultsFormat.Text = "SELECT/ASK Results Format:";
-            // 
             // txtSparqlQuery
             // 
             this.txtSparqlQuery.Location = new System.Drawing.Point(6, 69);
             this.txtSparqlQuery.Multiline = true;
             this.txtSparqlQuery.Name = "txtSparqlQuery";
             this.txtSparqlQuery.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.txtSparqlQuery.Size = new System.Drawing.Size(502, 139);
+            this.txtSparqlQuery.Size = new System.Drawing.Size(502, 169);
             this.txtSparqlQuery.TabIndex = 1;
             this.txtSparqlQuery.Text = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\nPREFIX rdfs: <http://w" +
                 "ww.w3.org/2000/01/rdf-schema#>\r\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\r" +
@@ -389,7 +363,7 @@
             // 
             // tabTasks
             // 
-            this.tabTasks.Controls.Add(this.listView1);
+            this.tabTasks.Controls.Add(this.lvwTasks);
             this.tabTasks.Controls.Add(this.label1);
             this.tabTasks.Location = new System.Drawing.Point(4, 22);
             this.tabTasks.Name = "tabTasks";
@@ -399,36 +373,42 @@
             this.tabTasks.Text = "Tasks";
             this.tabTasks.UseVisualStyleBackColor = true;
             // 
-            // listView1
+            // lvwTasks
             // 
-            this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.lvwTasks.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.colID,
             this.colTask,
             this.colState,
             this.colInfo});
-            this.listView1.FullRowSelect = true;
-            this.listView1.GridLines = true;
-            this.listView1.Location = new System.Drawing.Point(6, 59);
-            this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(502, 209);
-            this.listView1.Sorting = System.Windows.Forms.SortOrder.Descending;
-            this.listView1.TabIndex = 1;
-            this.listView1.UseCompatibleStateImageBehavior = false;
-            this.listView1.View = System.Windows.Forms.View.Details;
+            this.lvwTasks.FullRowSelect = true;
+            this.lvwTasks.GridLines = true;
+            this.lvwTasks.Location = new System.Drawing.Point(6, 59);
+            this.lvwTasks.Name = "lvwTasks";
+            this.lvwTasks.Size = new System.Drawing.Size(502, 209);
+            this.lvwTasks.Sorting = System.Windows.Forms.SortOrder.Descending;
+            this.lvwTasks.TabIndex = 1;
+            this.lvwTasks.UseCompatibleStateImageBehavior = false;
+            this.lvwTasks.View = System.Windows.Forms.View.Details;
+            // 
+            // colID
+            // 
+            this.colID.Text = "ID";
+            this.colID.Width = 44;
             // 
             // colTask
             // 
             this.colTask.Text = "Task";
+            this.colTask.Width = 87;
             // 
             // colState
             // 
             this.colState.Text = "Task State";
-            this.colState.Width = 78;
+            this.colState.Width = 98;
             // 
             // colInfo
             // 
             this.colInfo.Text = "Task Information";
-            this.colInfo.Width = 316;
+            this.colInfo.Width = 259;
             // 
             // label1
             // 
@@ -477,11 +457,6 @@
             this.sfdQuery.FileName = "query.rq";
             this.sfdQuery.Title = "Load SPARQL Query";
             // 
-            // colID
-            // 
-            this.colID.Text = "ID";
-            this.colID.Width = 44;
-            // 
             // fclsGenericStoreManager
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -524,8 +499,6 @@
         private System.Windows.Forms.Label lblGraphListUnavailable;
         private System.Windows.Forms.Label lblQueryIntro;
         private System.Windows.Forms.TextBox txtSparqlQuery;
-        private System.Windows.Forms.Label lblResultsFormat;
-        private System.Windows.Forms.ComboBox cboSPARQLResultFormat;
         private System.Windows.Forms.Button btnSparqlQuery;
         private System.Windows.Forms.GroupBox grpImport;
         private System.Windows.Forms.Label lblImport;
@@ -550,7 +523,7 @@
         private System.Windows.Forms.Button btnSparqlUpdate;
         private System.Windows.Forms.Label lblUpdateMode;
         private System.Windows.Forms.TabPage tabTasks;
-        private System.Windows.Forms.ListView listView1;
+        private System.Windows.Forms.ListView lvwTasks;
         private System.Windows.Forms.ColumnHeader colTask;
         private System.Windows.Forms.ColumnHeader colState;
         private System.Windows.Forms.ColumnHeader colInfo;

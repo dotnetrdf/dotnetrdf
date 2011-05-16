@@ -29,6 +29,7 @@ terms.
 */
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
@@ -43,12 +44,14 @@ using VDS.RDF.Storage;
 using VDS.RDF.Storage.Params;
 using VDS.RDF.Update;
 using VDS.RDF.Writing;
+using VDS.RDF.Utilities.StoreManager.Tasks;
 
 namespace VDS.RDF.Utilities.StoreManager
 {
     public partial class fclsGenericStoreManager : CrossThreadForm
     {
         private IGenericIOManager _manager;
+        private int _taskID = 1;
 
         public fclsGenericStoreManager(IGenericIOManager manager)
         {
@@ -68,8 +71,6 @@ namespace VDS.RDF.Utilities.StoreManager
 
         private void fclsGenericStoreManager_Load(object sender, EventArgs e)
         {
-            this.cboSPARQLResultFormat.SelectedIndex = 0;
-
             //Determine whether SPARQL Query is supported
             if (!(this._manager is IQueryableGenericIOManager))
             {
@@ -97,92 +98,15 @@ namespace VDS.RDF.Utilities.StoreManager
             }
         }
 
+        #region Store Operations
+
         private void ListGraphs()
         {
-            if (!this._manager.IsReady) return;
-
-            if (this._manager is IQueryableGenericIOManager)
-            {
-                this.CrossThreadSetText(this.stsCurrent, "Retrieving Graph List from the Store...");
-
-                this.CrossThreadSetVisibility(this.lvwGraphs, true);
-                this.CrossThreadBeginUpdate(this.lvwGraphs);
-                this.CrossThreadClear(this.lvwGraphs);
-
-                if (this._manager.ListGraphsSupported)
-                {
-                    try
-                    {
-                        //Use ListGraphs() if it is supported
-                        foreach (Uri u in this._manager.ListGraphs())
-                        {
-                            this.CrossThreadAdd(this.lvwGraphs, u.ToString());
-                        }
-
-                        this.CrossThreadSetText(this.stsCurrent, "Store is ready");
-                    }
-                    catch (RdfStorageException storeEx)
-                    {
-                        this.CrossThreadSetText(this.stsCurrent, "Graph Listing unavailable - Store is ready");
-                        this.CrossThreadMessage("Unable to list Graphs due to the following error:\n" + storeEx.Message, "Graph List Unavailable", MessageBoxIcon.Warning);
-                    }
-                    catch (RdfException rdfEx)
-                    {
-                        this.CrossThreadSetText(this.stsCurrent, "Graph Listing unavailable - Store is ready");
-                        CrossThreadMessage("Unable to list Graphs due to the following error:\n" + rdfEx.Message, "Graph List Unavailable", MessageBoxIcon.Warning);
-                    }
-                    catch (Exception ex)
-                    {
-                        this.CrossThreadSetText(this.stsCurrent, "Graph Listing unavailable - Store is ready");
-                        CrossThreadMessage("Unable to list Graphs due to the following error:\n" + ex.Message, "Graph List Unavailable", MessageBoxIcon.Warning);
-                    }
-                }
-                else
-                {
-                    //Otherwise List Graphs by issuing SELECT DISTINCT ?g WHERE {GRAPH ?g {?s ?p ?o}}
-                    IQueryableGenericIOManager queryManager = (IQueryableGenericIOManager)this._manager;
-                    try
-                    {
-                        Object results = queryManager.Query("SELECT DISTINCT ?g WHERE {GRAPH ?g {?s ?p ?o}}");
-                        if (results is SparqlResultSet)
-                        {
-                            SparqlResultSet rset = (SparqlResultSet)results;
-                            foreach (SparqlResult res in rset)
-                            {
-                                this.CrossThreadAdd(this.lvwGraphs, res["g"].ToString());
-                            }
-                        }
-                        this.CrossThreadSetText(this.stsCurrent, "Store is ready");
-                    }
-                    catch (RdfStorageException storeEx)
-                    {
-                        this.CrossThreadSetText(this.stsCurrent, "Graph Listing unavailable - Store is ready");
-                        this.CrossThreadMessage("Unable to list Graphs due to the following error:\n" + storeEx.Message, "Graph List Unavailable", MessageBoxIcon.Warning);
-                    }
-                    catch (RdfException rdfEx)
-                    {
-                        this.CrossThreadSetText(this.stsCurrent, "Graph Listing unavailable - Store is ready");
-                        CrossThreadMessage("Unable to list Graphs due to the following error:\n" + rdfEx.Message, "Graph List Unavailable", MessageBoxIcon.Warning);
-                    }
-                    catch (Exception ex)
-                    {
-                        this.CrossThreadSetText(this.stsCurrent, "Graph Listing unavailable - Store is ready");
-                        CrossThreadMessage("Unable to list Graphs due to the following error:\n" + ex.Message, "Graph List Unavailable", MessageBoxIcon.Warning);
-                    }
-                }
-
-                this.CrossThreadEndUpdate(this.lvwGraphs);
-                this.CrossThreadSetEnabled(this.btnGraphRefresh, true);
-            } 
-            else
-            {
-                this.CrossThreadSetVisibility(this.lvwGraphs, false);
-                this.CrossThreadSetVisibility(this.lblGraphListUnavailable, true);
-                this.CrossThreadRefresh(this.tabGraphs);
-            }
+            ListGraphsTasks task = new ListGraphsTasks(this._manager);
+            this.AddTask<IEnumerable<Uri>>(task, this.ListGraphsCallback);
         }
 
-        private void btnSparqlQuery_Click(object sender, EventArgs e)
+        private void Query()
         {
             if (!this._manager.IsReady)
             {
@@ -192,98 +116,20 @@ namespace VDS.RDF.Utilities.StoreManager
 
             if (this._manager is IQueryableGenericIOManager)
             {
-                this.stsCurrent.Text = "Processing SPARQL Query...";
-                IQueryableGenericIOManager queryManager = (IQueryableGenericIOManager)this._manager;
-
-                Stopwatch timer = new Stopwatch();
-
-                try
-                {
-                    timer.Start();
-                    Object results = queryManager.Query(this.txtSparqlQuery.Text);
-                    timer.Stop();
-
-                    if (results is SparqlResultSet)
-                    {
-                        if (!Directory.Exists("results")) Directory.CreateDirectory("results");
-                        if (!File.Exists("results\\sparql.css")) 
-                        {
-                            StreamReader reader = new StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream("VDS.RDF.Utilities.StoreManager.sparql.css"));
-                            String css = reader.ReadToEnd();
-                            reader.Close();
-                            StreamWriter csswriter = new StreamWriter("results\\sparql.css");
-                            csswriter.Write(css);
-                            csswriter.Close();
-                        }
-
-                        ISparqlResultsWriter writer;
-                        String destFile = "results\\" + DateTime.Now.ToString("yyyyMMddHHmmssffff");
-                        switch (this.cboSPARQLResultFormat.SelectedIndex)
-                        {
-                            case 1:
-                                writer = new SparqlXmlWriter();
-                                destFile += ".srx";
-                                break;
-                            case 2:
-                                writer = new SparqlJsonWriter();
-                                destFile += ".json";
-                                break;
-                            case 0:
-                            default:
-                                writer = new SparqlHtmlWriter();
-                                ((IHtmlWriter)writer).Stylesheet = "sparql.css";
-                                destFile += ".html";
-                                break;
-                        }
-
-                        try
-                        {
-                            writer.Save((SparqlResultSet)results, destFile);
-                            this.stsCurrent.Text = "SPARQL Query Complete (Took " + timer.Elapsed + ") - Store is ready";
-                            System.Diagnostics.Process.Start(destFile);
-                        }
-                        catch (Exception ex)
-                        {
-                            this.stsCurrent.Text = "Unable to display SPARQL Query results (Took " + timer.Elapsed + ") - Store is ready";
-                            MessageBox.Show("Unable to display results due to the following error during output:\n" + ex.Message, "Output Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        }
-                    }
-                    else if (results is Graph)
-                    {
-                        this.stsCurrent.Text = "SPARQL Query Complete (Took " + timer.Elapsed + ") - Store is ready";
-                        GraphViewerForm graphViewer = new GraphViewerForm((Graph)results, "dotNetRDF Store Manager");
-                        graphViewer.MdiParent = this.MdiParent;
-                        graphViewer.Show();
-                    }
-                    else
-                    {
-                        this.stsCurrent.Text = "SPARQL Query returned unknown result (Took " + timer.Elapsed + ") - Store is ready";
-                        MessageBox.Show("Received an unknown result from the SPARQL Query", "SPARQL Query Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                }
-                catch (RdfStorageException storeEx)
-                {
-                    if (timer.IsRunning) timer.Stop();
-                    this.stsCurrent.Text = "SPARQL Query Failed (Took " + timer.Elapsed + ") - Store is ready";
-                    MessageBox.Show("SPARQL Query failed due to the following error:\n" + storeEx.Message, "SPARQL Query Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                catch (RdfParseException parseEx)
-                {
-                    if (timer.IsRunning) timer.Stop();
-                    this.stsCurrent.Text = "Unable to parse SPARQL Query Results (Took " + timer.Elapsed + ") - Store is ready";
-                    MessageBox.Show("Parsing the results of the SPARQL Query failed due to the following error:\n" + parseEx.Message, "SPARQL Query Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                catch (Exception ex)
-                {
-                    if (timer.IsRunning) timer.Stop();
-                    this.stsCurrent.Text = "SPARQL Query Failed (Took " + timer.Elapsed + ") - Store is ready";
-                    MessageBox.Show("SPARQL Query failed due to the following error:\n" + ex.Message, "SPARQL Query Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                QueryTask task = new QueryTask((IQueryableGenericIOManager)this._manager, this.txtSparqlQuery.Text);
+                this.AddTask<Object>(task, this.QueryCallback);
             }
             else
             {
                 MessageBox.Show("Unable to execute a SPARQL Query since your Store does not support SPARQL", "SPARQL Query Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        #endregion
+
+        private void btnSparqlQuery_Click(object sender, EventArgs e)
+        {
+            this.Query();
         }
 
         private void btnGraphRefresh_Click(object sender, EventArgs e)
@@ -458,9 +304,7 @@ namespace VDS.RDF.Utilities.StoreManager
             if (this._manager.IsReady)
             {
                 this.stsCurrent.Text = "Store is ready";
-                Thread t = new Thread(new ThreadStart(this.ListGraphs));
-                t.IsBackground = true;
-                t.Start();
+                this.ListGraphs();
                 this.timStartup.Stop();
             }
         }
@@ -528,5 +372,125 @@ namespace VDS.RDF.Utilities.StoreManager
                 MessageBox.Show("SPARQL Update failed due to the following error:\n" + ex.Message, "SPARQL Update Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+        #region Task Management
+
+        private void AddTask<T>(ITask<T> task, TaskCallback<T> callback) where T : class
+        {
+            String[] items = new String[]
+            {
+                this._taskID.ToString(),
+                task.Name,
+                task.State.GetStateDescription(),
+                task.Information
+            };
+            ListViewItem item = new ListViewItem(items);
+            this.lvwTasks.Items.Add(item);
+
+            //Ensure that the Task Information gets updated automatically when the Task State changes
+            TaskStateChanged d = delegate()
+            {
+                CrossThreadAlterSubItem(item, 2, task.State.GetStateDescription());
+                CrossThreadAlterSubItem(item, 3, task.Information);
+                CrossThreadRefresh(this.lvwTasks);
+            };
+            task.StateChanged += d;
+
+            //Start the Task
+            task.RunTask(callback);
+        }
+
+        private void ListGraphsCallback(ITask<IEnumerable<Uri>> task)
+        {
+            if (task.State == TaskState.Completed && task.Result != null)
+            {
+                this.CrossThreadSetText(this.stsCurrent, "Rendering Graph List...");
+                this.CrossThreadSetVisibility(this.lvwGraphs, true);
+                this.CrossThreadBeginUpdate(this.lvwGraphs);
+                this.CrossThreadClear(this.lvwGraphs);
+
+                foreach (Uri u in task.Result)
+                {
+                    this.CrossThreadAdd(this.lvwGraphs, u.ToString());
+                }
+
+                this.CrossThreadEndUpdate(this.lvwGraphs);
+
+                this.CrossThreadSetText(this.stsCurrent, "Store is ready");
+                this.CrossThreadSetEnabled(this.btnGraphRefresh, true);
+            }
+            else
+            {
+                this.CrossThreadSetText(this.stsCurrent, "Graph Listing unavailable - Store is ready");
+                if (task.Error != null)
+                {
+                    CrossThreadMessage("Unable to list Graphs due to the following error:\n" + task.Error.Message, "Graph List Unavailable", MessageBoxIcon.Warning);
+                }
+                this.CrossThreadSetVisibility(this.lvwGraphs, false);
+                this.CrossThreadSetVisibility(this.lblGraphListUnavailable, true);
+                this.CrossThreadRefresh(this.tabGraphs);
+            }
+        }
+
+        private void QueryCallback(ITask<Object> task)
+        {
+            if (task is QueryTask)
+            {
+                QueryTask qTask = (QueryTask)task;
+                if (qTask.Query != null)
+                {
+                    try
+                    {
+                        if (task.State == TaskState.Completed)
+                        {
+                            this.CrossThreadSetText(this.stsCurrent, "Query Completed OK (Took " + qTask.Query.QueryExecutionTime.Value.ToString() + ")");
+                        } 
+                        else 
+                        {
+                            this.CrossThreadSetText(this.stsCurrent, "Query Failed (Took " + qTask.Query.QueryExecutionTime.Value.ToString() + ")");
+                        }
+                    }
+                    catch
+                    {
+                        //Ignore Exceptions in reporting Execution Time
+                    }
+                }
+            }
+
+            if (task.State == TaskState.Completed)
+            {
+                Object result = task.Result;
+
+                if (result is IGraph)
+                {
+                    GraphViewerForm graphViewer = new GraphViewerForm((IGraph)result);
+                    CrossThreadSetMdiParent(graphViewer);
+                    CrossThreadShow(graphViewer);
+                }
+                else if (result is SparqlResultSet)
+                {
+                    ResultSetViewerForm resultsViewer = new ResultSetViewerForm((SparqlResultSet)result);
+                    CrossThreadSetMdiParent(resultsViewer);
+                    CrossThreadShow(resultsViewer);
+                }
+                else
+                {
+                    CrossThreadMessage("Unable to show Query Results as did not get a Graph/Result Set as expected", "Unable to Show Results", MessageBoxIcon.Error);
+                }
+            }
+            else
+            {
+                if (task.Error != null)
+                {
+                    CrossThreadMessage("Query Failed due to the following error: " + task.Error.Message, "Query Failed", MessageBoxIcon.Error);
+                }
+                else
+                {
+                    CrossThreadMessage("Query Failed due to an unknown error", "Query Failed", MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        #endregion
     }
 }

@@ -73,8 +73,10 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         {
             this._callback = callback;
             this._state = TaskState.Starting;
+            this.RaiseStateChanged();
             this._delegate.BeginInvoke(new AsyncCallback(this.CompleteTask), null);
             this._state = TaskState.Running;
+            this.RaiseStateChanged();
         }
 
         private delegate TResult RunTaskInternalDelegate();
@@ -88,6 +90,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
                 //End the Invoke saving the Result
                 this._result = this._delegate.EndInvoke(result);
                 this._state = TaskState.Completed;
+                this.RaiseStateChanged();
             }
             catch (Exception ex)
             {
@@ -95,6 +98,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
                 this._state = TaskState.CompletedWithErrors;
                 this._information = "Error - " + ex.Message;
                 this._error = ex;
+                this.RaiseStateChanged();
             }
             finally
             {
@@ -109,6 +113,17 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         }
 
         public abstract void Cancel();
+
+        public event TaskStateChanged StateChanged;
+
+        protected void RaiseStateChanged()
+        {
+            TaskStateChanged d = this.StateChanged;
+            if (d != null)
+            {
+                d();
+            }
+        }
     }
 
     public abstract class CancellableTask<T> : BaseTask<T> where T : class
@@ -126,10 +141,25 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
             }
         }
 
-        public override void Cancel()
+        public sealed override void Cancel()
         {
             this._cancelled = true;
             this.State = TaskState.RunningCancelled;
+            this.RaiseStateChanged();
+            this.CancelInternal();
+        }
+
+        public bool HasBeenCancelled
+        {
+            get
+            {
+                return this._cancelled;
+            }
+        }
+
+        protected virtual void CancelInternal()
+        {
+
         }
     }
 

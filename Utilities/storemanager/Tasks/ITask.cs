@@ -37,6 +37,8 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
 
     public delegate void TaskCallback<T>(ITask<T> task) where T : class;
 
+    public delegate void TaskStateChanged();
+
     public interface ITask<TResult> where TResult : class
     {
         TaskState State
@@ -72,5 +74,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         }
 
         void Cancel();
+
+        event TaskStateChanged StateChanged;
     }
 }

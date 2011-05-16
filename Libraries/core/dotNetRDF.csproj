@@ -272,6 +272,7 @@
     <Compile Include="Parsing\Events\IEventGenerator.cs" />
     <Compile Include="Parsing\Events\IEventQueue.cs" />
     <Compile Include="Parsing\Handlers\BaseHandler.cs" />
+    <Compile Include="Parsing\Handlers\CancellableHandler.cs" />
     <Compile Include="Parsing\Handlers\HandlerExtensions.cs" />
     <Compile Include="Parsing\Handlers\ResultCountHandler.cs" />
     <Compile Include="Parsing\Handlers\ResultSetHandler.cs" />

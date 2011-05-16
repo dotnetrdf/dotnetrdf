@@ -21,13 +21,6 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         {
             FileLoader.Load(handler, this._file);
         }
-
-        protected override IGraph ImportUsingGraph()
-        {
-            Graph g = new Graph();
-            FileLoader.Load(g, this._file);
-            return g;
-        }
     }
 
     public class ImportUriTask : BaseImportTask
@@ -43,13 +36,6 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         protected override void ImportUsingHandler(IRdfHandler handler)
         {
             UriLoader.Load(handler, this._u);
-        }
-
-        protected override IGraph ImportUsingGraph()
-        {
-            Graph g = new Graph();
-            UriLoader.Load(g, this._u);
-            return g;
         }
     }
 

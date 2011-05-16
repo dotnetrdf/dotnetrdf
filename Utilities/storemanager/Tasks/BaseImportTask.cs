@@ -10,6 +10,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
     public abstract class BaseImportTask : CancellableTask<TaskResult>
     {
         private IGenericIOManager _manager;
+        private CancellableHandler _canceller;
 
         public BaseImportTask(String name, IGenericIOManager manager)
             : base(name)
@@ -21,11 +22,17 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         {
             if (this._manager.UpdateSupported)
             {
-                this.ImportUsingHandler(new WriteToStoreHandler(this._manager));
+                this._canceller = new CancellableHandler(new WriteToStoreHandler(this._manager));
+                if (this.HasBeenCancelled) this._canceller.Cancel();
+                this.ImportUsingHandler(this._canceller);
             }
             else
             {
-                IGraph g = this.ImportUsingGraph();
+                Graph g = new Graph();
+                GraphHandler h = new GraphHandler(g);
+                this._canceller = new CancellableHandler(h);
+                if (this.HasBeenCancelled) this._canceller.Cancel();
+                this.ImportUsingHandler(this._canceller);
                 this._manager.SaveGraph(g);
             }
             return new TaskResult(true);
@@ -33,6 +40,12 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
 
         protected abstract void ImportUsingHandler(IRdfHandler handler);
 
-        protected abstract IGraph ImportUsingGraph();
+        protected override void CancelInternal()
+        {
+            if (this._canceller != null)
+            {
+                this._canceller.Cancel();
+            }
+        }
     }
 }

@@ -35,7 +35,7 @@ namespace VDS.RDF.Utilities.StoreManager
 {
     public class CrossThreadForm : Form
     {
-        #region Cross Thread UI
+        #region Cross Thread Messaging
 
         private delegate void CrossThreadMessageDelegate(String message, String title, MessageBoxIcon icon);
 
@@ -51,6 +51,10 @@ namespace VDS.RDF.Utilities.StoreManager
                 MessageBox.Show(message, title, MessageBoxButtons.OK, icon);
             }
         }
+
+#endregion
+
+        #region Cross Thread Set Text properties
 
         private delegate void CrossThreadSetTextDelegate(Control c, String text);
 
@@ -82,6 +86,10 @@ namespace VDS.RDF.Utilities.StoreManager
             }
         }
 
+#endregion
+
+        #region Cross Thread Set Visibility properties
+
         private delegate void CrossThreadSetVisibilityDelegate(Control c, bool visible);
 
         protected void CrossThreadSetVisibility(Control c, bool visible)
@@ -97,6 +105,10 @@ namespace VDS.RDF.Utilities.StoreManager
             }
         }
 
+#endregion
+
+        #region Cross Thread Refresh
+
         private delegate void CrossThreadRefreshDelegate(Control c);
 
         protected void CrossThreadRefresh(Control c)
@@ -111,6 +123,10 @@ namespace VDS.RDF.Utilities.StoreManager
                 c.Refresh();
             }
         }
+
+#endregion
+
+        #region Cross Thread ListView manipulation
 
         private delegate void CrossThreadBeginUpdateDelegate(ListView lview);
 
@@ -172,6 +188,25 @@ namespace VDS.RDF.Utilities.StoreManager
             }
         }
 
+        private delegate void CrossThreadAlterSubItemDelegate(ListViewItem item, int index, String text);
+
+        protected void CrossThreadAlterSubItem(ListViewItem item, int index, String text)
+        {
+            if (this.InvokeRequired)
+            {
+                CrossThreadAlterSubItemDelegate d = new CrossThreadAlterSubItemDelegate(this.CrossThreadAlterSubItem);
+                this.Invoke(d, new Object[] { item, index, text });
+            }
+            else
+            {
+                item.SubItems[index] = new ListViewItem.ListViewSubItem(item, text);
+            }
+        }
+
+        #endregion
+
+        #region Cross Thread Set Enabled
+
         private delegate void CrossThreadSetEnabledDelegate(Control c, bool enabled);
 
         protected void CrossThreadSetEnabled(Control c, bool enabled)
@@ -184,6 +219,40 @@ namespace VDS.RDF.Utilities.StoreManager
             else
             {
                 c.Enabled = enabled;
+            }
+        }
+
+        #endregion
+
+        #region Cross Thread Form Management
+
+        private delegate void CrossThreadSetMdiParentDelegate(Form f);
+
+        protected void CrossThreadSetMdiParent(Form f)
+        {
+            if (this.InvokeRequired)
+            {
+                CrossThreadSetMdiParentDelegate d = new CrossThreadSetMdiParentDelegate(this.CrossThreadSetMdiParent);
+                this.Invoke(d, new Object[] { f });
+            }
+            else
+            {
+                f.MdiParent = this.MdiParent;
+            }
+        }
+
+        private delegate void CrossThreadShowDelegate(Form f);
+
+        protected void CrossThreadShow(Form f)
+        {
+            if (this.InvokeRequired)
+            {
+                CrossThreadShowDelegate d = new CrossThreadShowDelegate(this.CrossThreadShow);
+                this.Invoke(d, new Object[] { f });
+            }
+            else
+            {
+                f.Show();
             }
         }
 
