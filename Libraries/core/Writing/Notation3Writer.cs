@@ -179,13 +179,16 @@ namespace VDS.RDF.Writing
             //Prefix Directives
             foreach (String prefix in context.Graph.NamespaceMap.Prefixes)
             {
-                if (!prefix.Equals(String.Empty))
+                if (TurtleSpecsHelper.IsValidQName(prefix + ":"))
                 {
-                    context.Output.WriteLine("@prefix " + prefix + ": <" + context.UriFormatter.FormatUri(context.Graph.NamespaceMap.GetNamespaceUri(prefix)) + ">.");
-                }
-                else
-                {
-                    context.Output.WriteLine("@prefix : <" + context.UriFormatter.FormatUri(context.Graph.NamespaceMap.GetNamespaceUri(String.Empty)) + ">.");
+                    if (!prefix.Equals(String.Empty))
+                    {
+                        context.Output.WriteLine("@prefix " + prefix + ": <" + context.UriFormatter.FormatUri(context.Graph.NamespaceMap.GetNamespaceUri(prefix)) + ">.");
+                    }
+                    else
+                    {
+                        context.Output.WriteLine("@prefix : <" + context.UriFormatter.FormatUri(context.Graph.NamespaceMap.GetNamespaceUri(String.Empty)) + ">.");
+                    }
                 }
             }
             context.Output.WriteLine();

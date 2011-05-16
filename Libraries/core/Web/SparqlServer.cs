@@ -45,14 +45,14 @@ using VDS.RDF.Web.Configuration.Server;
 namespace VDS.RDF.Web
 {
     /// <summary>
-    /// HTTP Handler for adding SPARQL Servers to ASP.Net applications - SPARQL Servers provide combined Query, Update and Uniform HTTP Protocol for RDF Graph Management endpoints
+    /// HTTP Handler for adding SPARQL Servers to ASP.Net applications - SPARQL Servers provide combined Query, Update and Graph Store HTTP Protocol for RDF Graph Management endpoints
     /// </summary>
     /// <remarks>
     /// <para>
     /// Used to create a SPARQL Server with a base URI where any URI under this URI is handled by this Server
     /// </para>
     /// <para>
-    /// For example given a Base URI of <strong>http://example.org/server/</strong> then the Handler would treat requests to <strong>http://example.org/server/query</strong> as SPARQL Query requests, requests to <strong>http://example.org/server/update</strong> as SPARQL Update requests and requests to any other URL covered by this base URL as SPARQL Uniform HTTP Protocol requests
+    /// For example given a Base URI of <strong>http://example.org/server/</strong> then the Handler would treat requests to <strong>http://example.org/server/query</strong> as SPARQL Query requests, requests to <strong>http://example.org/server/update</strong> as SPARQL Update requests and requests to any other URL covered by this base URL as SPARQL Graph Store HTTP Protocol requests
     /// </para>
     /// <para>
     /// This Handler is configured using the new Configuration API introduced in the 0.3.0 release.  This requires just one setting to be defined in the &lt;appSettings&gt; section of your Web.config file which points to a Configuration Graph like so:

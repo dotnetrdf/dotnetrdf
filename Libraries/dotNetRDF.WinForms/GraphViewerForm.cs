@@ -88,7 +88,14 @@ namespace VDS.RDF.GUI.WinForms
             this.dgvTriples.CellFormatting += new DataGridViewCellFormattingEventHandler(dgvTriples_CellFormatting);
             this.dgvTriples.CellContentClick += new DataGridViewCellEventHandler(dgvTriples_CellClick);
 
+            if (g.BaseUri != null)
+            {
+                this.lnkBaseURI.Text = g.BaseUri.ToString();
+            }
+
             this._g = g;
+
+            this.Text = String.Format("Graph Viewer - {0} Triple(s)", g.Triples.Count);
         }
 
         /// <summary>
@@ -99,7 +106,7 @@ namespace VDS.RDF.GUI.WinForms
         public GraphViewerForm(IGraph g, String title)
             : this(g)
         {
-            this.Text = String.Format("{0} - Graph Viewer", title);
+            this.Text = String.Format("{0} - Graph Viewer - {1} Triple(s)", title, g.Triples.Count);
         }
 
         /// <summary>

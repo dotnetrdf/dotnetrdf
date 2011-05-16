@@ -87,6 +87,16 @@ namespace VDS.RDF.Writing.Formatting
         }
 
         /// <summary>
+        /// Determines whether a QName is valid
+        /// </summary>
+        /// <param name="value">Value</param>
+        /// <returns></returns>
+        protected override bool IsValidQName(string value)
+        {
+            return SparqlSpecsHelper.IsValidQName(value);
+        }
+
+        /// <summary>
         /// Formats a Variable Node in SPARQL Syntax
         /// </summary>
         /// <param name="v">Variable Node</param>

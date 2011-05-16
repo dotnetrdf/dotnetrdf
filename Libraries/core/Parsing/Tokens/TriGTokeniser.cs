@@ -310,7 +310,7 @@ namespace VDS.RDF.Parsing.Tokens
         {
             //Get the prefix
             char next = this.Peek();
-            while (Char.IsLetterOrDigit(next) || next == '-' || next == '_' || next == ':')
+            while (!Char.IsWhiteSpace(next))
             {
                 this.ConsumeCharacter();
                 next = this.Peek();
@@ -320,6 +320,10 @@ namespace VDS.RDF.Parsing.Tokens
             if (!this.Value.EndsWith(":"))
             {
                 throw this.UnexpectedCharacter(next, "expected a : to end a Prefix specification");
+            }
+            if (!TurtleSpecsHelper.IsValidQName(this.Value))
+            {
+                throw new RdfParseException("The value '" + this.Value + "' is not a valid Prefix in TriG", new PositionInfo(this.StartLine, this.CurrentLine, this.StartPosition, this.EndPosition));
             }
 
             this._lasttokentype = Token.PREFIX;

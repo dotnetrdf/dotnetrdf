@@ -298,7 +298,7 @@ namespace VDS.RDF.Configuration
 #if !NO_WEB
 
     /// <summary>
-    /// Factory class for producing SPARQL Uniform HTTP Protocol Processors from Configuration Graphs
+    /// Factory class for producing SPARQL Graph Store HTTP Protocol Processors from Configuration Graphs
     /// </summary>
     public class ProtocolProcessorFactory : IObjectFactory
     {
@@ -307,7 +307,7 @@ namespace VDS.RDF.Configuration
                              GenericProtocolProcessor = "VDS.RDF.Update.Protocol.GenericProtocolProcessor";
 
         /// <summary>
-        /// Tries to load a SPARQL Uniform HTTP Protocol Processor based on information from the Configuration Graph
+        /// Tries to load a SPARQL Graph Store HTTP Protocol Processor based on information from the Configuration Graph
         /// </summary>
         /// <param name="g">Configuration Graph</param>
         /// <param name="objNode">Object Node</param>

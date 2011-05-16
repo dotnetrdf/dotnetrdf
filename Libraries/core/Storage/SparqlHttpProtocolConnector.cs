@@ -47,14 +47,14 @@ using VDS.RDF.Writing;
 namespace VDS.RDF.Storage
 {
     /// <summary>
-    /// Class for connecting to any store that implements the SPARQL Uniform HTTP Protocol for Managing Graphs
+    /// Class for connecting to any store that implements the SPARQL Graph Store HTTP Protocol for Managing Graphs
     /// </summary>
     /// <remarks>
     /// <para>
-    /// The <a href="http://www.w3.org/TR/sparql11-http-rdf-update/">SPARQL Uniform HTTP Protocol for Managing Graphs</a> is defined as part of SPARQL 1.1 and is currently a working draft so implementations are not guaranteed to be fully compliant with the draft and the protocol may change in the future.
+    /// The <a href="http://www.w3.org/TR/sparql11-http-rdf-update/">SPARQL Graph Store HTTP Protocol</a> is defined as part of SPARQL 1.1 and is currently a working draft so implementations are not guaranteed to be fully compliant with the draft and the protocol may change in the future.
     /// </para>
     /// <para>
-    /// <strong>Note:</strong> While this connector supports the update of a Graph the Uniform HTTP Protocol only allows for the addition of data to an existing Graph and not the removal of data, therefore any calls to <see cref="SparqlHttpProtocolConnector.UpdateGraph">UpdateGraph()</see> that would require the removal of Triple(s) will result in an error.
+    /// <strong>Note:</strong> While this connector supports the update of a Graph the Graph Store HTTP Protocol only allows for the addition of data to an existing Graph and not the removal of data, therefore any calls to <see cref="SparqlHttpProtocolConnector.UpdateGraph">UpdateGraph()</see> that would require the removal of Triple(s) will result in an error.
     /// </para>
     /// </remarks>
     public class SparqlHttpProtocolConnector : IGenericIOManager, IConfigurationSerializable
@@ -65,19 +65,19 @@ namespace VDS.RDF.Storage
         protected String _serviceUri;
 
         /// <summary>
-        /// Creates a new SPARQL Uniform HTTP Protocol Connector
+        /// Creates a new SPARQL Graph Store HTTP Protocol Connector
         /// </summary>
         /// <param name="serviceUri">URI of the Protocol Server</param>
         public SparqlHttpProtocolConnector(String serviceUri)
         {
-            if (serviceUri == null) throw new ArgumentNullException("serviceUri", "Cannot create a connection to a Uniform HTTP Protocol store if the Service URI is null");
-            if (serviceUri.Equals(String.Empty)) throw new ArgumentException("Cannot create a connection to a Uniform HTTP Protocol store if the Service URI is null/empty", "serviceUri");
+            if (serviceUri == null) throw new ArgumentNullException("serviceUri", "Cannot create a connection to a Graph Store HTTP Protocol store if the Service URI is null");
+            if (serviceUri.Equals(String.Empty)) throw new ArgumentException("Cannot create a connection to a Graph Store HTTP Protocol store if the Service URI is null/empty", "serviceUri");
 
             this._serviceUri = serviceUri;
         }
 
         /// <summary>
-        /// Creates a new SPARQL Uniform HTTP Protocol Connector
+        /// Creates a new SPARQL Graph Store HTTP Protocol Connector
         /// </summary>
         /// <param name="serviceUri">URI of the Protocol Server</param>
         public SparqlHttpProtocolConnector(Uri serviceUri)
@@ -113,6 +113,10 @@ namespace VDS.RDF.Storage
         {
             String retrievalUri = this._serviceUri;
             Uri origUri = g.BaseUri;
+            if (origUri == null && g.IsEmpty && !graphUri.Equals(String.Empty))
+            {
+                origUri = new Uri(graphUri);
+            }
             if (graphUri != null && !graphUri.Equals(String.Empty))
             {
                 retrievalUri += "?graph=" + Uri.EscapeDataString(graphUri);
@@ -256,7 +260,7 @@ namespace VDS.RDF.Storage
         /// <param name="additions">Triples to be added</param>
         /// <param name="removals">Triples to be removed</param>
         /// <remarks>
-        /// <strong>Note:</strong> The SPARQL Uniform HTTP Protocol for Graph Management only supports the addition of Triples to a Graph and does not support removal of Triples from a Graph.  If you attempt to remove Triples then an <see cref="RdfStorageException">RdfStorageException</see> will be thrown
+        /// <strong>Note:</strong> The SPARQL Graph Store HTTP Protocol for Graph Management only supports the addition of Triples to a Graph and does not support removal of Triples from a Graph.  If you attempt to remove Triples then an <see cref="RdfStorageException">RdfStorageException</see> will be thrown
         /// </remarks>
         public virtual void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
@@ -270,11 +274,11 @@ namespace VDS.RDF.Storage
         /// <param name="additions">Triples to be added</param>
         /// <param name="removals">Triples to be removed</param>
         /// <remarks>
-        /// <strong>Note:</strong> The SPARQL Uniform HTTP Protocol for Graph Management only supports the addition of Triples to a Graph and does not support removal of Triples from a Graph.  If you attempt to remove Triples then an <see cref="RdfStorageException">RdfStorageException</see> will be thrown
+        /// <strong>Note:</strong> The SPARQL Graph Store HTTP Protocol for Graph Management only supports the addition of Triples to a Graph and does not support removal of Triples from a Graph.  If you attempt to remove Triples then an <see cref="RdfStorageException">RdfStorageException</see> will be thrown
         /// </remarks>
         public virtual void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
-            if (removals != null && removals.Any()) throw new RdfStorageException("Unable to Update a Graph since this update requests that Triples be removed from the Graph which the SPARQL Uniform HTTP Protocol for Graph Management does not support");
+            if (removals != null && removals.Any()) throw new RdfStorageException("Unable to Update a Graph since this update requests that Triples be removed from the Graph which the SPARQL Graph Store HTTP Protocol for Graph Management does not support");
 
             if (additions == null || !additions.Any()) return;
 
@@ -433,10 +437,10 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Throws an exception as listing graphs in a SPARQL Uniform HTTP Protocol does not support listing graphs
+        /// Throws an exception as listing graphs in a SPARQL Graph Store HTTP Protocol does not support listing graphs
         /// </summary>
         /// <returns></returns>
-        /// <exception cref="NotSupportedException">Thrown since SPARQL Uniform HTTP Protocol does not support listing graphs</exception>
+        /// <exception cref="NotSupportedException">Thrown since SPARQL Graph Store HTTP Protocol does not support listing graphs</exception>
         public IEnumerable<Uri> ListGraphs()
         {
             throw new NotSupportedException("SPARQL HTTP Protocol Connector does not support listing Graphs");
@@ -489,7 +493,7 @@ namespace VDS.RDF.Storage
         /// <returns></returns>
         public override string ToString()
         {
-            return "[SPARQL Uniform HTTP Protocol] " + this._serviceUri;
+            return "[SPARQL Graph Store HTTP Protocol] " + this._serviceUri;
         }
 
         /// <summary>

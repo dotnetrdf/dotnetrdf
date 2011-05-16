@@ -46,7 +46,7 @@ using VDS.RDF.Storage;
 namespace VDS.RDF.Update.Protocol
 {
     /// <summary>
-    /// A processor for the SPARQL Uniform HTTP Protocol which operates by performing the desired operations on some arbitrary underlying Store for which an <see cref="IGenericIOManager">IGenericIOManager</see> is available
+    /// A processor for the SPARQL Graph Store HTTP Protocol which operates by performing the desired operations on some arbitrary underlying Store for which an <see cref="IGenericIOManager">IGenericIOManager</see> is available
     /// </summary>
     public class GenericProtocolProcessor : BaseProtocolProcessor
     {

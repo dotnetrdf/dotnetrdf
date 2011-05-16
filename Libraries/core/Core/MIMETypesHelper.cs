@@ -1015,6 +1015,44 @@ namespace VDS.RDF
         }
 
         /// <summary>
+        /// Selects an appropriate <see cref="IStoreWriter">IStoreWriter</see> based on the given MIME Types
+        /// </summary>
+        /// <param name="ctypes">MIME Types</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// <para>
+        /// This method does not take account of any quality/charset preference parameters included in the Accept Header
+        /// </para>
+        /// <para>
+        /// For writers which support <see cref="ICompressingWriter">ICompressingWriter</see> they will be instantiated with the Compression Level specified by <see cref="Options.DefaultCompressionLevel">Options.DefaultCompressionLevel</see>
+        /// </para>
+        /// </remarks>
+        public static IStoreWriter GetStoreWriter(IEnumerable<String> ctypes)
+        {
+            String temp;
+            return GetStoreWriter(ctypes, out temp);
+        }
+
+        /// <summary>
+        /// Selects an appropriate <see cref="IStoreWriter">IStoreWriter</see> based on the given MIME Types
+        /// </summary>
+        /// <param name="ctypes">MIME Types</param>
+        /// <param name="contentType">The Content Type header that should be sent in the Response to the Request</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// <para>
+        /// This method does not take account of any quality/charset preference parameters included in the Accept Header
+        /// </para>
+        /// <para>
+        /// For writers which support <see cref="ICompressingWriter">ICompressingWriter</see> they will be instantiated with the Compression Level specified by <see cref="Options.DefaultCompressionLevel">Options.DefaultCompressionLevel</see>
+        /// </para>
+        /// </remarks>
+        public static IStoreWriter GetStoreWriter(IEnumerable<String> ctypes, out String contentType)
+        {
+            return GetStoreWriter(ctypes.ToArray(), out contentType);
+        }
+
+        /// <summary>
         /// Selects an appropriate <see cref="IStoreWriter">IStoreWriter</see> based on the HTTP Accept header form a HTTP Request
         /// </summary>
         /// <param name="ctypes">String array of accepted Content Types</param>

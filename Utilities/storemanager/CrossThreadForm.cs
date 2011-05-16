@@ -188,6 +188,21 @@ namespace VDS.RDF.Utilities.StoreManager
             }
         }
 
+        private delegate void CrossThreadAddItemDelegate(ListView lview, ListViewItem item);
+
+        protected void CrossThreadAddItem(ListView lview, ListViewItem item)
+        {
+            if (this.InvokeRequired)
+            {
+                CrossThreadAddItemDelegate d = new CrossThreadAddItemDelegate(this.CrossThreadAddItem);
+                this.Invoke(d, new Object[] { lview, item });
+            }
+            else
+            {
+                lview.Items.Add(item);
+            }
+        }
+
         private delegate void CrossThreadAlterSubItemDelegate(ListViewItem item, int index, String text);
 
         protected void CrossThreadAlterSubItem(ListViewItem item, int index, String text)

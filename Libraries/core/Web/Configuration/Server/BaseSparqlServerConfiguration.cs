@@ -541,7 +541,7 @@ namespace VDS.RDF.Web.Configuration.Server
         }
 
         /// <summary>
-        /// Gets the SPARQL Uniform HTTP Protocol Processor
+        /// Gets the SPARQL Graph Store HTTP Protocol Processor
         /// </summary>
         public ISparqlHttpProtocolProcessor ProtocolProcessor
         {
@@ -557,7 +557,7 @@ namespace VDS.RDF.Web.Configuration.Server
         /// <param name="g">Service Description Graph</param>
         /// <param name="queryNode">Node for the SPARQL Query service</param>
         /// <param name="updateNode">Node for the SPARQL Update service</param>
-        /// <param name="protocolNode">Node for the SPARQL Uniform HTTP Protocol service</param>
+        /// <param name="protocolNode">Node for the SPARQL Graph Store HTTP Protocol service</param>
         public virtual void AddFeatureDescription(IGraph g, INode queryNode, INode updateNode, INode protocolNode)
         {
             IUriNode extensionFunction = g.CreateUriNode("sd:" + SparqlServiceDescriber.PropertyExtensionFunction);

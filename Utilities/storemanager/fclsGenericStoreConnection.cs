@@ -348,5 +348,38 @@ namespace VDS.RDF.Utilities.StoreManager
             }
         }
 
+        private void btnConnectInMemory_Click(object sender, EventArgs e)
+        {
+            this._manager = new InMemoryManager();
+            this.DialogResult = DialogResult.OK;
+            this.Close();
+        }
+
+        private void btnConnectStardog_Click(object sender, EventArgs e)
+        {
+            if (this.txtStardogServer.Text.Equals(String.Empty))
+            {
+                this.ParameterRequired("Server URI", "Stardog");
+            }
+            else if (this.txtStardogStore.Equals(String.Empty))
+            {
+                this.ParameterRequired("Store ID", "Stardog");
+            }
+            else
+            {
+                if (!this.txtStardogUsername.Text.Equals(String.Empty) && !this.txtStardogPassword.Equals(String.Empty))
+                {
+                    this._manager = new StardogConnector(this.txtStardogServer.Text, this.txtStardogStore.Text, this.txtStardogUsername.Text, this.txtStardogPassword.Text);
+                }
+                else
+                {
+                    this._manager = new StardogConnector(this.txtStardogServer.Text, this.txtStardogStore.Text);
+                }
+
+                this.DialogResult = DialogResult.OK;
+                this.Close();
+            }
+        }
+
     }
 }

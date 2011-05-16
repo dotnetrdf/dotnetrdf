@@ -45,7 +45,7 @@ using VDS.RDF.Web.Configuration.Protocol;
 namespace VDS.RDF.Web
 {
     /// <summary>
-    /// HTTP Handler for adding SPARQL Uniform HTTP Protocol for RDF Graph Management endpoints to ASP.Net applications
+    /// HTTP Handler for adding SPARQL Graph Store HTTP Protocol for RDF Graph Management endpoints to ASP.Net applications
     /// </summary>
     /// <remarks>
     /// <para>

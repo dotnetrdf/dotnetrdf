@@ -41,7 +41,7 @@ using VDS.RDF.Query.Datasets;
 namespace VDS.RDF.Update.Protocol
 {
     /// <summary>
-    /// A processor for the SPARQL Uniform HTTP Protocol which operates by using the libraries in-memory Leviathan SPARQL engine and converting protocol actions to SPARQL Query/Update commands as appropriate
+    /// A processor for the SPARQL Graph Store HTTP Protocol which operates by using the libraries in-memory Leviathan SPARQL engine and converting protocol actions to SPARQL Query/Update commands as appropriate
     /// </summary>
     public class LeviathanProtocolProcessor : ProtocolToUpdateProcessor
     {

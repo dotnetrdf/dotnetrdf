@@ -328,7 +328,7 @@ namespace VDS.RDF.Web
                 updateNode = null;
             }
 
-            //Uniform HTTP Protocol Description
+            //Graph Store HTTP Protocol Description
             if (config.ProtocolProcessor != null && (type == ServiceDescriptionType.Protocol || type == ServiceDescriptionType.All))
             {
                 //Add the Top Level Node representing the Service

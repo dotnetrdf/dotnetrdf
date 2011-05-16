@@ -556,19 +556,19 @@ namespace VDS.RDF.Update
 namespace VDS.RDF.Update.Protocol
 {
     /// <summary>
-    /// Class of exceptions that may occur when using the SPARQL Uniform HTTP Protocol for Graph Management
+    /// Class of exceptions that may occur when using the SPARQL Graph Store HTTP Protocol for Graph Management
     /// </summary>
     public class SparqlHttpProtocolException : RdfException
     {
         /// <summary>
-        /// Creates a new SPARQL Uniform HTTP Protocol Exception
+        /// Creates a new SPARQL Graph Store HTTP Protocol Exception
         /// </summary>
         /// <param name="message">Error Message</param>
         public SparqlHttpProtocolException(String message)
             : base(message) { }
 
         /// <summary>
-        /// Creates a new SPARQL Uniform HTTP Protocol Exception
+        /// Creates a new SPARQL Graph Store HTTP Protocol Exception
         /// </summary>
         /// <param name="message">Error Message</param>
         /// <param name="cause">Exception that caused this Exception</param>

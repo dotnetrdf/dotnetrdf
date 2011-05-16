@@ -45,7 +45,7 @@ using VDS.RDF.Update.Protocol;
 namespace VDS.RDF.Web.Configuration.Protocol
 {
     /// <summary>
-    /// Abstract Base Class for representing SPARQL Uniform HTTP Protocol for Graph Management Handler configurations
+    /// Abstract Base Class for representing SPARQL Graph Store HTTP Protocol for Graph Management Handler configurations
     /// </summary>
     public abstract class BaseProtocolHandlerConfiguration : BaseHandlerConfiguration
     {
@@ -99,7 +99,7 @@ namespace VDS.RDF.Web.Configuration.Protocol
         }
 
         /// <summary>
-        /// Gets the SPARQL Uniform HTTP Protocol for Graph Management processor which is to be used
+        /// Gets the SPARQL Graph Store HTTP Protocol for Graph Management processor which is to be used
         /// </summary>
         public ISparqlHttpProtocolProcessor Processor
         {

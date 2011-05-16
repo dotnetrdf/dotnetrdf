@@ -185,7 +185,10 @@ namespace VDS.RDF.Writing
                     context.QNameMapper = new ThreadSafeQNameOutputMapper(context.NamespaceMap);
                     foreach (String prefix in context.NamespaceMap.Prefixes)
                     {
-                        context.Output.WriteLine("@prefix " + prefix + ": <" + context.FormatUri(context.NamespaceMap.GetNamespaceUri(prefix)) + ">.");
+                        if (TurtleSpecsHelper.IsValidQName(prefix + ":"))
+                        {
+                            context.Output.WriteLine("@prefix " + prefix + ": <" + context.FormatUri(context.NamespaceMap.GetNamespaceUri(prefix)) + ">.");
+                        }
                     }
                     context.Output.WriteLine();
                 }

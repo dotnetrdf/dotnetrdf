@@ -32,13 +32,11 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
             {
                 Object result = this._processor.ProcessQuery(this._q);
                 this.Information = "Query Completed OK (Took " + this._q.QueryExecutionTime.Value.ToString() + ")";
-                this.RaiseStateChanged();
                 return result;
             }
             catch
             {
                 this.Information = "Query Failed (Took " + this._q.QueryExecutionTime.Value.ToString() + ")";
-                this.RaiseStateChanged();
                 throw;
             }
         }

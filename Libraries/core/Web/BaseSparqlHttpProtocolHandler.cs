@@ -51,7 +51,7 @@ using VDS.RDF.Writing;
 namespace VDS.RDF.Web
 {
     /// <summary>
-    /// Abstract Base Class for creating SPARQL Uniform HTTP Protocol Handler implementations
+    /// Abstract Base Class for creating SPARQL Graph Store HTTP Protocol Handler implementations
     /// </summary>
     public abstract class BaseSparqlHttpProtocolHandler : IHttpHandler
     {
@@ -76,7 +76,7 @@ namespace VDS.RDF.Web
         }
 
         /// <summary>
-        /// Processes requests made to the Uniform HTTP Protocol endpoint and invokes the appropriate methods on the Protocol Processor that is in use
+        /// Processes requests made to the Graph Store HTTP Protocol endpoint and invokes the appropriate methods on the Protocol Processor that is in use
         /// </summary>
         /// <param name="context">HTTP Context</param>
         /// <remarks>

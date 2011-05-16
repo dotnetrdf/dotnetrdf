@@ -90,6 +90,8 @@ namespace VDS.RDF.GUI.WinForms
             this.dgvResults.CellContentClick += new DataGridViewCellEventHandler(dgvTriples_CellClick);
 
             this._results = results;
+
+            this.Text = this.GetTitle();
         }
 
         /// <summary>
@@ -100,7 +102,28 @@ namespace VDS.RDF.GUI.WinForms
         public ResultSetViewerForm(SparqlResultSet results, String title)
             : this(results)
         {
-            this.Text = String.Format("{0} - SPARQL Results Viewer", title);
+            this.Text = this.GetTitle(title);
+        }
+
+        private String GetTitle()
+        {
+            if (this._results.ResultsType == SparqlResultsType.Boolean)
+            {
+                return "SPARQL Results Viewer - Boolean Result";
+            }
+            else if (this._results.ResultsType == SparqlResultsType.VariableBindings)
+            {
+                return String.Format("SPARQL Results Viewer - {0} Result(s)", this._results.Count);
+            }
+            else
+            {
+                return "SPARQL Results Viewer";
+            }
+        }
+
+        private String GetTitle(String title)
+        {
+            return String.Format("{0} - " + this.GetTitle(), title);
         }
 
         /// <summary>

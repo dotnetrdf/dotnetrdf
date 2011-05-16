@@ -46,7 +46,7 @@ namespace VDS.RDF
     /// Support for querying RDF is provided in the <see cref="VDS.RDF.Query">Query</see> namespace which includes SPARQL Query, limited reasoning support in the <see cref="VDS.RDF.Query.Inference">Query.Inference</see> namespace and a Pellet Server client in the <see cref="VDS.RDF.Query.Inference.Pellet">Query.Inference.Pellet</see> namespace.
     /// </para>
     /// <para>
-    /// Support for updating RDF based on the SPARQL 1.1 Update and Uniform HTTP Protocol for RDF Graph Management is provided in the <see cref="VDS.RDF.Update">Update</see> and <see cref="VDS.RDF.Update.Protocol">Update.Protocol</see> namespaces.
+    /// Support for updating RDF based on the SPARQL 1.1 Update and Graph Store HTTP Protocol for RDF Graph Management is provided in the <see cref="VDS.RDF.Update">Update</see> and <see cref="VDS.RDF.Update.Protocol">Update.Protocol</see> namespaces.
     /// </para>
     /// <para>For communicating with arbitrary Triple Stores we have a dedicated <see cref="VDS.RDF.Storage">Storage</see> namespace.  As of this release we support the following Triple Stores:
     /// <ul>
@@ -55,7 +55,7 @@ namespace VDS.RDF
     ///     <li>Fuseki</li>
     ///     <li>Joseki</li>
     ///     <li>Any Sesame HTTP Protocol compliant store</li>
-    ///     <li>Any SPARQL Uniform HTTP Protocol for RDF Graph Management compliant stores</li>
+    ///     <li>Any SPARQL Graph Store HTTP Protocol for RDF Graph Management compliant stores</li>
     ///     <li>Talis Platform</li>
     ///     <li>Virtuoso</li>
     /// </ul>
@@ -534,7 +534,7 @@ namespace VDS.RDF.Update.Protocol
 {
     /// <summary>
     /// <para>
-    /// Namespaces containing classes which implement the SPARQL Uniform HTTP Protocol for RDF Graph Management
+    /// Namespaces containing classes which implement the SPARQL Graph Store HTTP Protocol for RDF Graph Management
     /// </para>
     /// </summary>
     class NamespaceDoc
@@ -583,7 +583,7 @@ namespace VDS.RDF.Web.Configuration.Protocol
 {
     /// <summary>
     /// <para>
-    /// Namespace for Configuration classes which are used to load and store the configuration settings for SPARQL Uniform HTTP Protocol for RDF Graph Management handlers
+    /// Namespace for Configuration classes which are used to load and store the configuration settings for SPARQL Graph Store HTTP Protocol
     /// </para>
     /// </summary>
     class NamespaceDoc

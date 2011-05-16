@@ -140,9 +140,12 @@ namespace VDS.RDF.Writing
             //Write Prefixes
             foreach (String prefix in context.Graph.NamespaceMap.Prefixes)
             {
-                context.Output.Write("@prefix " + prefix + ": <");
-                String nsUri = context.UriFormatter.FormatUri(context.Graph.NamespaceMap.GetNamespaceUri(prefix));
-                context.Output.WriteLine(nsUri + ">.");
+                if (TurtleSpecsHelper.IsValidQName(prefix + ":"))
+                {
+                    context.Output.Write("@prefix " + prefix + ": <");
+                    String nsUri = context.UriFormatter.FormatUri(context.Graph.NamespaceMap.GetNamespaceUri(prefix));
+                    context.Output.WriteLine(nsUri + ">.");
+                }
             }
             context.Output.WriteLine();
 

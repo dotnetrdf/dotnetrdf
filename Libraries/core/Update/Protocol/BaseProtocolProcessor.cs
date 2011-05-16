@@ -45,7 +45,7 @@ using VDS.RDF.Writing;
 namespace VDS.RDF.Update.Protocol
 {
     /// <summary>
-    /// Abstract Base class for SPARQL Uniform HTTP Protocol for Graph Management implementations
+    /// Abstract Base class for SPARQL Graph Store HTTP Protocol for Graph Management implementations
     /// </summary>
     public abstract class BaseProtocolProcessor : ISparqlHttpProtocolProcessor
     {

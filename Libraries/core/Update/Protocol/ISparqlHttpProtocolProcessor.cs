@@ -45,7 +45,7 @@ using System.Web;
 namespace VDS.RDF.Update.Protocol
 {
     /// <summary>
-    /// Interface for SPARQL Uniform HTTP Protocol for Graph Management processors
+    /// Interface for SPARQL Graph Store HTTP Protocol for Graph Management processors
     /// </summary>
     public interface ISparqlHttpProtocolProcessor
     {

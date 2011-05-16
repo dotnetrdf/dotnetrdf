@@ -61,6 +61,13 @@ namespace VDS.RDF.Writing.Formatting
             : base(formatName)
         {
             this._qnameMapper = qnameMapper;
+            foreach (String prefix in this._qnameMapper.Prefixes.ToList())
+            {
+                if (!this.IsValidQName(prefix + ":"))
+                {
+                    this._qnameMapper.RemoveNamespace(prefix);
+                }
+            }
         }
 
         /// <summary>
@@ -73,6 +80,16 @@ namespace VDS.RDF.Writing.Formatting
             : this(formatName, qnameMapper)
         {
             this._allowAKeyword = allowAKeyword;
+        }
+
+        /// <summary>
+        /// Determines whether a QName is valid
+        /// </summary>
+        /// <param name="value">Value</param>
+        /// <returns></returns>
+        protected virtual bool IsValidQName(String value)
+        {
+            return TurtleSpecsHelper.IsValidQName(value);
         }
 
         /// <summary>
@@ -92,7 +109,7 @@ namespace VDS.RDF.Writing.Formatting
             }
             else if (this._qnameMapper.ReduceToQName(u.Uri.ToString(), out qname))
             {
-                if (TurtleSpecsHelper.IsValidQName(qname))
+                if (this.IsValidQName(qname))
                 {
                     output.Append(qname);
                 }

@@ -47,9 +47,13 @@
             this.txt4StoreServer = new System.Windows.Forms.TextBox();
             this.lbl4StoreServer = new System.Windows.Forms.Label();
             this.tabFuseki = new System.Windows.Forms.TabPage();
+            this.lblFusekiIntro = new System.Windows.Forms.Label();
             this.btnConnectFuseki = new System.Windows.Forms.Button();
             this.txtFusekiUri = new System.Windows.Forms.TextBox();
             this.lblFusekiUri = new System.Windows.Forms.Label();
+            this.tabInMemory = new System.Windows.Forms.TabPage();
+            this.btnConnectInMemory = new System.Windows.Forms.Button();
+            this.lblInMemoryIntro = new System.Windows.Forms.Label();
             this.tabJoseki = new System.Windows.Forms.TabPage();
             this.chkJosekiReadOnly = new System.Windows.Forms.CheckBox();
             this.txtJosekiUpdatePath = new System.Windows.Forms.TextBox();
@@ -97,6 +101,16 @@
             this.lblTalisUsername = new System.Windows.Forms.Label();
             this.txtTalisStoreID = new System.Windows.Forms.TextBox();
             this.lblTalisStoreID = new System.Windows.Forms.Label();
+            this.tabStardog = new System.Windows.Forms.TabPage();
+            this.txtStardogPassword = new System.Windows.Forms.TextBox();
+            this.lblStardogPassword = new System.Windows.Forms.Label();
+            this.txtStardogUsername = new System.Windows.Forms.TextBox();
+            this.lblStardogUsername = new System.Windows.Forms.Label();
+            this.txtStardogStore = new System.Windows.Forms.TextBox();
+            this.lblStardogStore = new System.Windows.Forms.Label();
+            this.btnConnectStardog = new System.Windows.Forms.Button();
+            this.txtStardogServer = new System.Windows.Forms.TextBox();
+            this.lblStardogServer = new System.Windows.Forms.Label();
             this.tabVirtuoso = new System.Windows.Forms.TabPage();
             this.btnConnectVirtuoso = new System.Windows.Forms.Button();
             this.txtVirtuosoPort = new System.Windows.Forms.TextBox();
@@ -116,12 +130,14 @@
             this.tabAllegroGraph.SuspendLayout();
             this.tabFourStore.SuspendLayout();
             this.tabFuseki.SuspendLayout();
+            this.tabInMemory.SuspendLayout();
             this.tabJoseki.SuspendLayout();
             this.tabDataset.SuspendLayout();
             this.tabSesame.SuspendLayout();
             this.tabSparqlEndpoint.SuspendLayout();
             this.tabSparqlHttpProtocol.SuspendLayout();
             this.tabTalis.SuspendLayout();
+            this.tabStardog.SuspendLayout();
             this.tabVirtuoso.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -130,11 +146,13 @@
             this.tabStores.Controls.Add(this.tabAllegroGraph);
             this.tabStores.Controls.Add(this.tabFourStore);
             this.tabStores.Controls.Add(this.tabFuseki);
+            this.tabStores.Controls.Add(this.tabInMemory);
             this.tabStores.Controls.Add(this.tabJoseki);
             this.tabStores.Controls.Add(this.tabDataset);
             this.tabStores.Controls.Add(this.tabSesame);
             this.tabStores.Controls.Add(this.tabSparqlEndpoint);
             this.tabStores.Controls.Add(this.tabSparqlHttpProtocol);
+            this.tabStores.Controls.Add(this.tabStardog);
             this.tabStores.Controls.Add(this.tabTalis);
             this.tabStores.Controls.Add(this.tabVirtuoso);
             this.tabStores.Location = new System.Drawing.Point(12, 10);
@@ -265,10 +283,10 @@
             this.tabFourStore.Controls.Add(this.btnConnect4Store);
             this.tabFourStore.Controls.Add(this.txt4StoreServer);
             this.tabFourStore.Controls.Add(this.lbl4StoreServer);
-            this.tabFourStore.Location = new System.Drawing.Point(4, 40);
+            this.tabFourStore.Location = new System.Drawing.Point(4, 22);
             this.tabFourStore.Name = "tabFourStore";
             this.tabFourStore.Padding = new System.Windows.Forms.Padding(3);
-            this.tabFourStore.Size = new System.Drawing.Size(475, 156);
+            this.tabFourStore.Size = new System.Drawing.Size(475, 174);
             this.tabFourStore.TabIndex = 1;
             this.tabFourStore.Text = "4store";
             this.tabFourStore.UseVisualStyleBackColor = true;
@@ -276,11 +294,13 @@
             // chk4storeUpdates
             // 
             this.chk4storeUpdates.AutoSize = true;
+            this.chk4storeUpdates.Checked = true;
+            this.chk4storeUpdates.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chk4storeUpdates.Location = new System.Drawing.Point(9, 38);
             this.chk4storeUpdates.Name = "chk4storeUpdates";
-            this.chk4storeUpdates.Size = new System.Drawing.Size(250, 17);
+            this.chk4storeUpdates.Size = new System.Drawing.Size(390, 17);
             this.chk4storeUpdates.TabIndex = 2;
-            this.chk4storeUpdates.Text = "This 4store Server supports Triple level updates";
+            this.chk4storeUpdates.Text = "This 4store Server supports Triple level updates (requires 4store 1.0 or higher)";
             this.chk4storeUpdates.UseVisualStyleBackColor = true;
             // 
             // btnConnect4Store
@@ -312,15 +332,24 @@
             // 
             // tabFuseki
             // 
+            this.tabFuseki.Controls.Add(this.lblFusekiIntro);
             this.tabFuseki.Controls.Add(this.btnConnectFuseki);
             this.tabFuseki.Controls.Add(this.txtFusekiUri);
             this.tabFuseki.Controls.Add(this.lblFusekiUri);
-            this.tabFuseki.Location = new System.Drawing.Point(4, 40);
+            this.tabFuseki.Location = new System.Drawing.Point(4, 22);
             this.tabFuseki.Name = "tabFuseki";
-            this.tabFuseki.Size = new System.Drawing.Size(475, 156);
+            this.tabFuseki.Size = new System.Drawing.Size(475, 174);
             this.tabFuseki.TabIndex = 9;
             this.tabFuseki.Text = "Fuseki";
             this.tabFuseki.UseVisualStyleBackColor = true;
+            // 
+            // lblFusekiIntro
+            // 
+            this.lblFusekiIntro.Location = new System.Drawing.Point(3, 10);
+            this.lblFusekiIntro.Name = "lblFusekiIntro";
+            this.lblFusekiIntro.Size = new System.Drawing.Size(461, 20);
+            this.lblFusekiIntro.TabIndex = 9;
+            this.lblFusekiIntro.Text = "URI must end with the /data URI of the Fuseki dataset e.g /yourdata/data";
             // 
             // btnConnectFuseki
             // 
@@ -334,20 +363,51 @@
             // 
             // txtFusekiUri
             // 
-            this.txtFusekiUri.Location = new System.Drawing.Point(121, 10);
+            this.txtFusekiUri.Location = new System.Drawing.Point(106, 30);
             this.txtFusekiUri.Name = "txtFusekiUri";
             this.txtFusekiUri.Size = new System.Drawing.Size(348, 20);
             this.txtFusekiUri.TabIndex = 3;
-            this.txtFusekiUri.Text = "http://localhost:3030/";
+            this.txtFusekiUri.Text = "http://localhost:3030/dataset/data";
             // 
             // lblFusekiUri
             // 
             this.lblFusekiUri.AutoSize = true;
-            this.lblFusekiUri.Location = new System.Drawing.Point(6, 13);
+            this.lblFusekiUri.Location = new System.Drawing.Point(3, 33);
             this.lblFusekiUri.Name = "lblFusekiUri";
             this.lblFusekiUri.Size = new System.Drawing.Size(97, 13);
             this.lblFusekiUri.TabIndex = 2;
             this.lblFusekiUri.Text = "Fuseki Server URI:";
+            // 
+            // tabInMemory
+            // 
+            this.tabInMemory.Controls.Add(this.btnConnectInMemory);
+            this.tabInMemory.Controls.Add(this.lblInMemoryIntro);
+            this.tabInMemory.Location = new System.Drawing.Point(4, 40);
+            this.tabInMemory.Name = "tabInMemory";
+            this.tabInMemory.Padding = new System.Windows.Forms.Padding(3);
+            this.tabInMemory.Size = new System.Drawing.Size(475, 156);
+            this.tabInMemory.TabIndex = 10;
+            this.tabInMemory.Text = "In-Memory";
+            this.tabInMemory.UseVisualStyleBackColor = true;
+            // 
+            // btnConnectInMemory
+            // 
+            this.btnConnectInMemory.Location = new System.Drawing.Point(342, 130);
+            this.btnConnectInMemory.Name = "btnConnectInMemory";
+            this.btnConnectInMemory.Size = new System.Drawing.Size(130, 23);
+            this.btnConnectInMemory.TabIndex = 2;
+            this.btnConnectInMemory.Text = "Create In-Memory Store";
+            this.btnConnectInMemory.UseVisualStyleBackColor = true;
+            this.btnConnectInMemory.Click += new System.EventHandler(this.btnConnectInMemory_Click);
+            // 
+            // lblInMemoryIntro
+            // 
+            this.lblInMemoryIntro.Location = new System.Drawing.Point(3, 10);
+            this.lblInMemoryIntro.Name = "lblInMemoryIntro";
+            this.lblInMemoryIntro.Size = new System.Drawing.Size(461, 22);
+            this.lblInMemoryIntro.TabIndex = 1;
+            this.lblInMemoryIntro.Text = "Creates a non-persistent in-memory store for experimentation and testing purposes" +
+                ".";
             // 
             // tabJoseki
             // 
@@ -359,9 +419,9 @@
             this.tabJoseki.Controls.Add(this.btnConnectJoseki);
             this.tabJoseki.Controls.Add(this.txtJosekiServer);
             this.tabJoseki.Controls.Add(this.lblJosekiServer);
-            this.tabJoseki.Location = new System.Drawing.Point(4, 40);
+            this.tabJoseki.Location = new System.Drawing.Point(4, 22);
             this.tabJoseki.Name = "tabJoseki";
-            this.tabJoseki.Size = new System.Drawing.Size(475, 156);
+            this.tabJoseki.Size = new System.Drawing.Size(475, 174);
             this.tabJoseki.TabIndex = 2;
             this.tabJoseki.Text = "Joseki";
             this.tabJoseki.UseVisualStyleBackColor = true;
@@ -444,9 +504,9 @@
             this.tabDataset.Controls.Add(this.txtDatasetFile);
             this.tabDataset.Controls.Add(this.lblDatasetFile);
             this.tabDataset.Controls.Add(this.lblDatasetFileIntro);
-            this.tabDataset.Location = new System.Drawing.Point(4, 40);
+            this.tabDataset.Location = new System.Drawing.Point(4, 22);
             this.tabDataset.Name = "tabDataset";
-            this.tabDataset.Size = new System.Drawing.Size(475, 156);
+            this.tabDataset.Size = new System.Drawing.Size(475, 174);
             this.tabDataset.TabIndex = 6;
             this.tabDataset.Text = "RDF Dataset File";
             this.tabDataset.UseVisualStyleBackColor = true;
@@ -507,9 +567,9 @@
             this.tabSesame.Controls.Add(this.btnConnectSesame);
             this.tabSesame.Controls.Add(this.txtSesameServer);
             this.tabSesame.Controls.Add(this.lblSesameServer);
-            this.tabSesame.Location = new System.Drawing.Point(4, 40);
+            this.tabSesame.Location = new System.Drawing.Point(4, 22);
             this.tabSesame.Name = "tabSesame";
-            this.tabSesame.Size = new System.Drawing.Size(475, 156);
+            this.tabSesame.Size = new System.Drawing.Size(475, 174);
             this.tabSesame.TabIndex = 3;
             this.tabSesame.Text = "Sesame";
             this.tabSesame.UseVisualStyleBackColor = true;
@@ -692,16 +752,16 @@
             this.tabSparqlHttpProtocol.Name = "tabSparqlHttpProtocol";
             this.tabSparqlHttpProtocol.Size = new System.Drawing.Size(475, 156);
             this.tabSparqlHttpProtocol.TabIndex = 8;
-            this.tabSparqlHttpProtocol.Text = "SPARQL Uniform HTTP Protocol";
+            this.tabSparqlHttpProtocol.Text = "SPARQL Graph Store HTTP Protocol";
             this.tabSparqlHttpProtocol.UseVisualStyleBackColor = true;
             // 
             // btnSparqlHttpConnect
             // 
-            this.btnSparqlHttpConnect.Location = new System.Drawing.Point(207, 128);
+            this.btnSparqlHttpConnect.Location = new System.Drawing.Point(190, 128);
             this.btnSparqlHttpConnect.Name = "btnSparqlHttpConnect";
-            this.btnSparqlHttpConnect.Size = new System.Drawing.Size(265, 23);
+            this.btnSparqlHttpConnect.Size = new System.Drawing.Size(282, 23);
             this.btnSparqlHttpConnect.TabIndex = 3;
-            this.btnSparqlHttpConnect.Text = "Connect to SPARQL Uniform HTTP Protocol Server";
+            this.btnSparqlHttpConnect.Text = "Connect to SPARQL Graph Store HTTP Protocol Server";
             this.btnSparqlHttpConnect.UseVisualStyleBackColor = true;
             this.btnSparqlHttpConnect.Click += new System.EventHandler(this.btnSparqlHttpConnect_Click);
             // 
@@ -727,8 +787,8 @@
             this.lblSparqlHttpIntro.Name = "lblSparqlHttpIntro";
             this.lblSparqlHttpIntro.Size = new System.Drawing.Size(461, 30);
             this.lblSparqlHttpIntro.TabIndex = 0;
-            this.lblSparqlHttpIntro.Text = "Connect to a Server which supports the SPARQL Uniform HTTP Protocol for Graph Man" +
-                "agement";
+            this.lblSparqlHttpIntro.Text = "Connect to a Server which supports the SPARQL Graph Store HTTP Protocol for Graph" +
+                " Management";
             // 
             // tabTalis
             // 
@@ -805,6 +865,101 @@
             this.lblTalisStoreID.Size = new System.Drawing.Size(49, 13);
             this.lblTalisStoreID.TabIndex = 0;
             this.lblTalisStoreID.Text = "Store ID:";
+            // 
+            // tabStardog
+            // 
+            this.tabStardog.Controls.Add(this.txtStardogPassword);
+            this.tabStardog.Controls.Add(this.lblStardogPassword);
+            this.tabStardog.Controls.Add(this.txtStardogUsername);
+            this.tabStardog.Controls.Add(this.lblStardogUsername);
+            this.tabStardog.Controls.Add(this.txtStardogStore);
+            this.tabStardog.Controls.Add(this.lblStardogStore);
+            this.tabStardog.Controls.Add(this.btnConnectStardog);
+            this.tabStardog.Controls.Add(this.txtStardogServer);
+            this.tabStardog.Controls.Add(this.lblStardogServer);
+            this.tabStardog.Location = new System.Drawing.Point(4, 40);
+            this.tabStardog.Name = "tabStardog";
+            this.tabStardog.Size = new System.Drawing.Size(475, 156);
+            this.tabStardog.TabIndex = 11;
+            this.tabStardog.Text = "Stardog";
+            this.tabStardog.UseVisualStyleBackColor = true;
+            // 
+            // txtStardogPassword
+            // 
+            this.txtStardogPassword.Location = new System.Drawing.Point(70, 89);
+            this.txtStardogPassword.Name = "txtStardogPassword";
+            this.txtStardogPassword.PasswordChar = '*';
+            this.txtStardogPassword.Size = new System.Drawing.Size(100, 20);
+            this.txtStardogPassword.TabIndex = 18;
+            // 
+            // lblStardogPassword
+            // 
+            this.lblStardogPassword.AutoSize = true;
+            this.lblStardogPassword.Location = new System.Drawing.Point(4, 92);
+            this.lblStardogPassword.Name = "lblStardogPassword";
+            this.lblStardogPassword.Size = new System.Drawing.Size(56, 13);
+            this.lblStardogPassword.TabIndex = 17;
+            this.lblStardogPassword.Text = "Password:";
+            // 
+            // txtStardogUsername
+            // 
+            this.txtStardogUsername.Location = new System.Drawing.Point(70, 63);
+            this.txtStardogUsername.Name = "txtStardogUsername";
+            this.txtStardogUsername.Size = new System.Drawing.Size(100, 20);
+            this.txtStardogUsername.TabIndex = 16;
+            // 
+            // lblStardogUsername
+            // 
+            this.lblStardogUsername.AutoSize = true;
+            this.lblStardogUsername.Location = new System.Drawing.Point(4, 66);
+            this.lblStardogUsername.Name = "lblStardogUsername";
+            this.lblStardogUsername.Size = new System.Drawing.Size(58, 13);
+            this.lblStardogUsername.TabIndex = 15;
+            this.lblStardogUsername.Text = "Username:";
+            // 
+            // txtStardogStore
+            // 
+            this.txtStardogStore.Location = new System.Drawing.Point(70, 37);
+            this.txtStardogStore.Name = "txtStardogStore";
+            this.txtStardogStore.Size = new System.Drawing.Size(100, 20);
+            this.txtStardogStore.TabIndex = 14;
+            this.txtStardogStore.Text = "store";
+            // 
+            // lblStardogStore
+            // 
+            this.lblStardogStore.AutoSize = true;
+            this.lblStardogStore.Location = new System.Drawing.Point(4, 40);
+            this.lblStardogStore.Name = "lblStardogStore";
+            this.lblStardogStore.Size = new System.Drawing.Size(49, 13);
+            this.lblStardogStore.TabIndex = 13;
+            this.lblStardogStore.Text = "Store ID:";
+            // 
+            // btnConnectStardog
+            // 
+            this.btnConnectStardog.Location = new System.Drawing.Point(357, 126);
+            this.btnConnectStardog.Name = "btnConnectStardog";
+            this.btnConnectStardog.Size = new System.Drawing.Size(113, 23);
+            this.btnConnectStardog.TabIndex = 19;
+            this.btnConnectStardog.Text = "Connect to Stardog";
+            this.btnConnectStardog.UseVisualStyleBackColor = true;
+            this.btnConnectStardog.Click += new System.EventHandler(this.btnConnectStardog_Click);
+            // 
+            // txtStardogServer
+            // 
+            this.txtStardogServer.Location = new System.Drawing.Point(113, 8);
+            this.txtStardogServer.Name = "txtStardogServer";
+            this.txtStardogServer.Size = new System.Drawing.Size(354, 20);
+            this.txtStardogServer.TabIndex = 12;
+            this.txtStardogServer.Text = "http://localhost";
+            // 
+            // lblStardogServer
+            // 
+            this.lblStardogServer.AutoSize = true;
+            this.lblStardogServer.Location = new System.Drawing.Point(4, 11);
+            this.lblStardogServer.Name = "lblStardogServer";
+            this.lblStardogServer.Size = new System.Drawing.Size(103, 13);
+            this.lblStardogServer.TabIndex = 11;
+            this.lblStardogServer.Text = "Stardog Server URI:";
             // 
             // tabVirtuoso
             // 
@@ -969,6 +1124,7 @@
             this.tabFourStore.PerformLayout();
             this.tabFuseki.ResumeLayout(false);
             this.tabFuseki.PerformLayout();
+            this.tabInMemory.ResumeLayout(false);
             this.tabJoseki.ResumeLayout(false);
             this.tabJoseki.PerformLayout();
             this.tabDataset.ResumeLayout(false);
@@ -981,6 +1137,8 @@
             this.tabSparqlHttpProtocol.PerformLayout();
             this.tabTalis.ResumeLayout(false);
             this.tabTalis.PerformLayout();
+            this.tabStardog.ResumeLayout(false);
+            this.tabStardog.PerformLayout();
             this.tabVirtuoso.ResumeLayout(false);
             this.tabVirtuoso.PerformLayout();
             this.ResumeLayout(false);
@@ -1074,5 +1232,30 @@
         private System.Windows.Forms.Label lblFusekiUri;
         private System.Windows.Forms.Button btnConnectFuseki;
         private System.Windows.Forms.CheckBox chkReadOnly;
+        private System.Windows.Forms.Label lblFusekiIntro;
+        private System.Windows.Forms.TabPage tabInMemory;
+        private System.Windows.Forms.TabPage tabStardog;
+        private System.Windows.Forms.Label lblInMemoryIntro;
+        private System.Windows.Forms.Button btnConnectInMemory;
+        private System.Windows.Forms.TextBox txtStardogPassword;
+        private System.Windows.Forms.Label lblStardogPassword;
+        private System.Windows.Forms.TextBox txtStardogUsername;
+        private System.Windows.Forms.Label lblStardogUsername;
+        private System.Windows.Forms.TextBox txtStardogStore;
+        private System.Windows.Forms.Label lblStardogStore;
+        private System.Windows.Forms.Button btnConnectStardog;
+        private System.Windows.Forms.TextBox txtStardogServer;
+        private System.Windows.Forms.Label lblStardogServer;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.TextBox textBox3;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TextBox textBox4;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.TextBox textBox5;
+        private System.Windows.Forms.Label label5;
     }
 }

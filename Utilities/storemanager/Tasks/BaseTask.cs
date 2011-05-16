@@ -30,6 +30,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
             protected set
             {
                 this._state = value;
+                this.RaiseStateChanged();
             }
         }
 
@@ -47,9 +48,10 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
             {
                return this._information;
             }
-            protected set
+            set
             {
                 this._information = value;
+                this.RaiseStateChanged();
             }
         }
 
@@ -58,6 +60,11 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
             get
             {
                 return this._error;
+            }
+            protected set
+            {
+                this._error = value;
+                this.RaiseStateChanged();
             }
         }
 
@@ -72,11 +79,9 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         public void RunTask(TaskCallback<TResult> callback)
         {
             this._callback = callback;
-            this._state = TaskState.Starting;
-            this.RaiseStateChanged();
+            this.State = TaskState.Starting;
             this._delegate.BeginInvoke(new AsyncCallback(this.CompleteTask), null);
-            this._state = TaskState.Running;
-            this.RaiseStateChanged();
+            this.State = TaskState.Running;
         }
 
         private delegate TResult RunTaskInternalDelegate();
@@ -89,16 +94,14 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
             {
                 //End the Invoke saving the Result
                 this._result = this._delegate.EndInvoke(result);
-                this._state = TaskState.Completed;
-                this.RaiseStateChanged();
+                this.State = TaskState.Completed;
             }
             catch (Exception ex)
             {
                 //Invoke errored so save the Error
-                this._state = TaskState.CompletedWithErrors;
-                this._information = "Error - " + ex.Message;
-                this._error = ex;
-                this.RaiseStateChanged();
+                this.State = TaskState.CompletedWithErrors;
+                this.Information = "Error - " + ex.Message;
+                this.Error = ex;
             }
             finally
             {
@@ -145,7 +148,6 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         {
             this._cancelled = true;
             this.State = TaskState.RunningCancelled;
-            this.RaiseStateChanged();
             this.CancelInternal();
         }
 

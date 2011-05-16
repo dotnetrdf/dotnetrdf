@@ -51,7 +51,7 @@ namespace VDS.RDF.Utilities.StoreManager
     public partial class fclsGenericStoreManager : CrossThreadForm
     {
         private IGenericIOManager _manager;
-        private int _taskID = 1;
+        private int _taskID = 0;
 
         public fclsGenericStoreManager(IGenericIOManager manager)
         {
@@ -125,7 +125,110 @@ namespace VDS.RDF.Utilities.StoreManager
             }
         }
 
+        private void Update()
+        {
+            if (!this._manager.IsReady)
+            {
+                MessageBox.Show("Please wait for Store to be ready before attempting to make a SPARQL Update", "Store Not Ready", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            UpdateTask task = new UpdateTask(this._manager, this.txtSparqlUpdate.Text);
+            this.AddTask<TaskResult>(task, this.UpdateCallback);
+        }
+
+        private void ImportFile()
+        {
+            if (!this._manager.IsReady)
+            {
+                MessageBox.Show("Please wait for Store to be ready before attempting to Import Data", "Store Not Ready", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            if (this.txtImportFile.Text.Equals(String.Empty))
+            {
+                MessageBox.Show("Please enter a File to import from!", "No File to Import", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            Uri targetUri = null;
+            try
+            {
+                if (this.chkImportDefaultUri.Checked)
+                {
+                    targetUri = new Uri(this.txtImportDefaultGraph.Text);
+                }
+            }
+            catch (UriFormatException uriEx)
+            {
+                MessageBox.Show("Cannot import data to an Invalid Default Target Graph URI - " + uriEx.Message, "Invalid Default Target Graph URI", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            ImportFileTask task = new ImportFileTask(this._manager, this.txtImportFile.Text, targetUri);
+            this.AddTask<TaskResult>(task, this.ImportCallback);
+        }
+
+        private void ImportUri()
+        {
+            if (!this._manager.IsReady)
+            {
+                MessageBox.Show("Please wait for Store to be ready before attempting to Import Data", "Store Not Ready", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            if (this.txtImportUri.Text.Equals(String.Empty))
+            {
+                MessageBox.Show("Please enter a URI to import from!", "No URI to Import", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            Uri targetUri = null;
+            try
+            {
+                if (this.chkImportDefaultUri.Checked)
+                {
+                    targetUri = new Uri(this.txtImportDefaultGraph.Text);
+                }
+            }
+            catch (UriFormatException uriEx)
+            {
+                MessageBox.Show("Cannot import data to an Invalid Default Target Graph URI - " + uriEx.Message, "Invalid Default Target Graph URI", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            try 
+            {
+                ImportUriTask task = new ImportUriTask(this._manager, new Uri(this.txtImportUri.Text), targetUri);
+                this.AddTask<TaskResult>(task, this.ImportCallback);
+            }
+            catch (UriFormatException uriEx)
+            {
+                MessageBox.Show("Cannot import data from an invalid URI - " + uriEx.Message, "Invalid Import URI", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        private void Export()
+        {
+            if (!this._manager.IsReady)
+            {
+                MessageBox.Show("Please wait for Store to be ready before attempting to Import Data", "Store Not Ready", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            if (this.txtExportFile.Text.Equals(String.Empty))
+            {
+                MessageBox.Show("Please enter a File to export to!", "No Export Destination", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            ExportTask task = new ExportTask(this._manager, this.txtExportFile.Text);
+            this.AddTask<TaskResult>(task, this.ExportCallback);
+        }
+
         #endregion
+
+        #region Control Event Handlers
 
         private void btnSparqlQuery_Click(object sender, EventArgs e)
         {
@@ -148,142 +251,12 @@ namespace VDS.RDF.Utilities.StoreManager
 
         private void btnImportFile_Click(object sender, EventArgs e)
         {
-            if (!this.txtImportFile.Text.Equals(String.Empty))
-            {
-                try
-                {
-                    IRdfReader parser = MimeTypesHelper.GetParser(MimeTypesHelper.GetMimeType(Path.GetExtension(this.txtImportFile.Text)));
-                    Graph g = new Graph();
-                    parser.Load(g, this.txtImportFile.Text);
-
-                    this._manager.SaveGraph(g);
-
-                    MessageBox.Show("Successfully imported a Graph into the Store", "Import Completed", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                    this.ListGraphs();
-                }
-                catch (RdfParserSelectionException)
-                {
-                    //Should be an RDF dataset instead?
-                    try
-                    {
-                        //Push into a Background Thread here and show a modal dialog while it's processing
-                        Thread importer = new Thread(new ThreadStart(delegate { this.ImportStore(this.txtImportFile.Text); }));
-                        fclsPleaseWait wait = new fclsPleaseWait("Import", importer);
-                        wait.ShowDialog();
-
-                        this.ListGraphs();
-                    }
-                    catch (RdfParserSelectionException)
-                    {
-                        MessageBox.Show("Unable to perform an import as the format of the file could not be determined", "Import Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                    catch (RdfParseException)
-                    {
-                        MessageBox.Show("Unable to parse RDF Graphs from the selected file as a Parsing Error occurred", "Import Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                }
-                catch (RdfParseException)
-                {
-                    MessageBox.Show("Unable to parse an RDF Graph from the selected file as a Parsing Error occurred", "Import Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                catch (RdfStorageException storeEx)
-                {
-                    MessageBox.Show("Import failed due to the following error:\n" + storeEx.Message, "Import Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
+            this.ImportFile();
         }
 
         private void btnImportUri_Click(object sender, EventArgs e)
         {
-            if (!this.txtImportUri.Text.Equals(String.Empty))
-            {
-                try
-                {
-                    Graph g = new Graph();
-                    UriLoader.Load(g, new Uri(this.txtImportUri.Text));
-
-                    this._manager.SaveGraph(g);
-
-                    MessageBox.Show("Successfully imported a Graph into the Store", "Import Completed", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                    this.ListGraphs();
-                }
-                catch (UriFormatException)
-                {
-                    MessageBox.Show("Unable to perform an import as the URI specified was not a valid URI", "Import Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                catch (RdfParserSelectionException)
-                {
-                    //Should be an RDF dataset instead?
-                    try
-                    {
-                        //Push into a Background Thread here and show a modal dialog while it's processing
-                        Thread importer = new Thread(new ThreadStart(delegate { this.ImportStore(new Uri(this.txtImportUri.Text)); }));
-                        fclsPleaseWait wait = new fclsPleaseWait("Import", importer);
-                        wait.ShowDialog();
-
-                        this.ListGraphs();
-                    }
-                    catch (UriFormatException)
-                    {
-                        MessageBox.Show("Unable to perform an import as the URI specified was not a valid URI", "Import Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                    catch (RdfParserSelectionException)
-                    {
-                        MessageBox.Show("Unable to perform an import as the format of the RDF from the URI could not be determined", "Import Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                    catch (RdfParseException)
-                    {
-                        MessageBox.Show("Unable to parse RDF Graphs from the selected URI as a Parsing Error occurred", "Import Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                }
-                catch (RdfParseException)
-                {
-                    MessageBox.Show("Unable to parse an RDF Graph from the selected URI as a Parsing Error occurred", "Import Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                catch (RdfStorageException storeEx)
-                {
-                    MessageBox.Show("Import failed due to the following error:\n" + storeEx.Message, "Import Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
-        }
-
-        private void ImportStore(String filename)
-        {
-            try
-            {
-                IStoreReader storeparser = MimeTypesHelper.GetStoreParser(MimeTypesHelper.GetMimeType(Path.GetExtension(filename)));
-                TripleStore store = new TripleStore();
-                storeparser.Load(store, new StreamParams(filename));
-
-                GenericStoreWriter writer = new GenericStoreWriter();
-                writer.Save(store, new GenericIOParams(this._manager, 4));
-
-                this.CrossThreadMessage("Successfully imported " + store.Graphs.Count + " Graphs into the Store", "Import Completed", MessageBoxIcon.Information);
-            }
-            catch (RdfStorageException storeEx)
-            {
-                this.CrossThreadMessage("An error occurred during import:\n" + storeEx.Message, "Import Failed", MessageBoxIcon.Error);
-            }
-        }
-
-        private void ImportStore(Uri u)
-        {
-            try
-            {
-                TripleStore store = new TripleStore();
-                UriLoader.Load(store, u);
-
-                GenericStoreWriter writer = new GenericStoreWriter();
-                writer.Save(store, new GenericIOParams(this._manager, 4));
-
-                this.CrossThreadMessage("Successfully imported " + store.Graphs.Count + " Graphs into the Store", "Import Completed", MessageBoxIcon.Information);
-            }
-            catch (RdfStorageException storeEx)
-            {
-                this.CrossThreadMessage("An error occurred during import:\n" + storeEx.Message, "Import Failed", MessageBoxIcon.Error);
-            }
+            this.ImportUri();
         }
 
         private void lvwGraphs_DoubleClick(object sender, System.EventArgs e)
@@ -293,6 +266,10 @@ namespace VDS.RDF.Utilities.StoreManager
                 String graphUri = this.lvwGraphs.SelectedItems[0].Text;
                 Graph g = new Graph();
                 this._manager.LoadGraph(g, graphUri);
+                if (!graphUri.Equals(String.Empty))
+                {
+                    g.BaseUri = new Uri(graphUri);
+                }
                 GraphViewerForm graphViewer = new GraphViewerForm(g, "dotNetRDF Store Manager");
                 graphViewer.MdiParent = this.MdiParent;
                 graphViewer.Show();
@@ -335,43 +312,95 @@ namespace VDS.RDF.Utilities.StoreManager
 
         private void btnSparqlUpdate_Click(object sender, EventArgs e)
         {
-            if (!this._manager.IsReady)
-            {
-                MessageBox.Show("Please wait for Store to be ready before attempting to make a SPARQL Update", "Store Not Ready", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
+            this.Update();
+        }
 
-            this.stsCurrent.Text = "Processing SPARQL Update...";
+        private void chkImportDefaultUri_CheckedChanged(object sender, EventArgs e)
+        {
+            this.txtImportDefaultGraph.Enabled = this.chkImportDefaultUri.Checked;
+        }
 
-            try
+        private void mnuTasks_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (this.lvwTasks.SelectedItems.Count > 0)
             {
-                GenericUpdateProcessor processor = new GenericUpdateProcessor(this._manager);      
-      
-                //Parse the commands
-                SparqlUpdateParser parser = new SparqlUpdateParser();
-                SparqlUpdateCommandSet commands = parser.ParseFromString(this.txtSparqlUpdate.Text);
-
-                //Process the Update
-                processor.ProcessCommandSet(commands);
-
-                this.stsCurrent.Text = "SPARQL Update completed - Store is ready";
+                ListViewItem item = this.lvwTasks.SelectedItems[0];
+                Object tag = item.Tag;
+                if (tag != null)
+                {
+                    if (tag is QueryTask)
+                    {
+                        QueryTask qTask = (QueryTask)tag;
+                        this.mnuViewErrors.Enabled = qTask.Error != null;
+                        this.mnuViewResults.Enabled = (qTask.State == TaskState.Completed && qTask.Result != null);
+                        this.mnuCancel.Enabled = qTask.IsCancellable;
+                    }
+                    else if (tag is BaseImportTask)
+                    {
+                        BaseImportTask importTask = (BaseImportTask)tag;
+                        this.mnuViewErrors.Enabled = importTask.Error != null;
+                        this.mnuViewResults.Enabled = false;
+                        this.mnuCancel.Enabled = (importTask.IsCancellable && importTask.State != TaskState.Completed && importTask.State != TaskState.CompletedWithErrors);
+                    }
+                    else if (tag is ListGraphsTasks)
+                    {
+                        ListGraphsTasks graphsTask = (ListGraphsTasks)tag;
+                        this.mnuViewErrors.Enabled = graphsTask.Error != null;
+                        this.mnuViewResults.Enabled = false;
+                        this.mnuCancel.Enabled = graphsTask.IsCancellable;
+                    }
+                    else if (tag is ITask<TaskResult>)
+                    {
+                        ITask<TaskResult> basicTask = (ITask<TaskResult>)tag;
+                        this.mnuViewErrors.Enabled = basicTask.Error != null;
+                        this.mnuViewResults.Enabled = false;
+                        this.mnuCancel.Enabled = (basicTask.IsCancellable && basicTask.State != TaskState.Completed && basicTask.State != TaskState.CompletedWithErrors);
+                    }
+                    else
+                    {
+                        e.Cancel = true;
+                    }
+                }
+                else
+                {
+                    e.Cancel = true;
+                }
             }
-            catch (RdfStorageException storeEx)
+            else
             {
-                this.stsCurrent.Text = "SPARQL Update failed - Store is ready";
-                MessageBox.Show("SPARQL Update failed due to the following error:\n" + storeEx.Message, "SPARQL Update Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            catch (RdfParseException parseEx)
-            {
-                this.stsCurrent.Text = "Unable to parse SPARQL Update  - Store is ready";
-                MessageBox.Show("Parsing the SPARQL Update failed due to the following error:\n" + parseEx.Message, "SPARQL Update Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            catch (Exception ex)
-            {
-                this.stsCurrent.Text = "SPARQL Update failed - Store is ready";
-                MessageBox.Show("SPARQL Update failed due to the following error:\n" + ex.Message, "SPARQL Update Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                e.Cancel = true;
             }
         }
+
+        private void mnuCancel_Click(object sender, EventArgs e)
+        {
+            if (this.lvwTasks.SelectedItems.Count > 0)
+            {
+                ListViewItem item = this.lvwTasks.SelectedItems[0];
+                Object tag = item.Tag;
+
+                if (tag is CancellableTask<TaskResult>)
+                {
+                    ((CancellableTask<TaskResult>)tag).Cancel();
+                }
+            }
+        }
+
+        private void btnBrowseExport_Click(object sender, EventArgs e)
+        {
+            this.sfdExport.Filter = Constants.RdfDatasetFilter;
+            if (this.sfdExport.ShowDialog() == DialogResult.OK)
+            {
+                this.txtExportFile.Text = this.sfdExport.FileName;
+            }
+        }
+
+        private void btnExportStore_Click(object sender, EventArgs e)
+        {
+            this.Export();
+        }
+
+        #endregion
 
         #region Task Management
 
@@ -379,13 +408,14 @@ namespace VDS.RDF.Utilities.StoreManager
         {
             String[] items = new String[]
             {
-                this._taskID.ToString(),
+                (++this._taskID).ToString(),
                 task.Name,
                 task.State.GetStateDescription(),
                 task.Information
             };
             ListViewItem item = new ListViewItem(items);
-            this.lvwTasks.Items.Add(item);
+            item.Tag = task;
+            CrossThreadAddItem(this.lvwTasks, item);
 
             //Ensure that the Task Information gets updated automatically when the Task State changes
             TaskStateChanged d = delegate()
@@ -418,6 +448,8 @@ namespace VDS.RDF.Utilities.StoreManager
 
                 this.CrossThreadSetText(this.stsCurrent, "Store is ready");
                 this.CrossThreadSetEnabled(this.btnGraphRefresh, true);
+
+                task.Information = this.lvwGraphs.Items.Count + " Graph URI(s) were returned";
             }
             else
             {
@@ -491,6 +523,88 @@ namespace VDS.RDF.Utilities.StoreManager
             }
         }
 
+        private void UpdateCallback(ITask<TaskResult> task)
+        {
+            if (task is UpdateTask)
+            {
+                UpdateTask uTask = (UpdateTask)task;
+                if (uTask.Updates != null)
+                {
+                    try
+                    {
+                        if (task.State == TaskState.Completed)
+                        {
+                            this.CrossThreadSetText(this.stsCurrent, "Updates Completed OK (Took " + uTask.Updates.UpdateExecutionTime.Value.ToString() + ")");
+                        }
+                        else
+                        {
+                            this.CrossThreadSetText(this.stsCurrent, "Updates Failed (Took " + uTask.Updates.UpdateExecutionTime.Value.ToString() + ")");
+                        }
+                    }
+                    catch
+                    {
+                        //Ignore Exceptions in reporting Execution Time
+                    }
+                }
+            }
+
+            if (task.State == TaskState.Completed)
+            {
+                CrossThreadMessage("Updates Completed successfully", "Updates Completed", MessageBoxIcon.Information);
+            }
+            else
+            {
+                if (task.Error != null)
+                {
+                    CrossThreadMessage("Updates Failed due to the following error: " + task.Error.Message, "Updates Failed", MessageBoxIcon.Error);
+                }
+                else
+                {
+                    CrossThreadMessage("Updates Failed due to an unknown error", "Updates Failed", MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        private void ImportCallback(ITask<TaskResult> task)
+        {
+            if (task.State == TaskState.Completed)
+            {
+                CrossThreadMessage("Import Completed OK - " + task.Information, "Import Completed", MessageBoxIcon.Information);
+            }
+            else
+            {
+                if (task.Error != null)
+                {
+                    CrossThreadMessage("Import Failed due to the following error: " + task.Error.Message, "Import Failed", MessageBoxIcon.Error);
+                }
+                else
+                {
+                    CrossThreadMessage("Import Failed due to an unknown error", "Import Failed", MessageBoxIcon.Error);
+                }
+            }
+            this.ListGraphs();
+        }
+
+        private void ExportCallback(ITask<TaskResult> task)
+        {
+            if (task.State == TaskState.Completed)
+            {
+                CrossThreadMessage("Export Completed OK - " + task.Information, "Export Completed", MessageBoxIcon.Information);
+            }
+            else
+            {
+                if (task.Error != null)
+                {
+                    CrossThreadMessage("Export Failed due to the following error: " + task.Error.Message, "Export Failed", MessageBoxIcon.Error);
+                }
+                else
+                {
+                    CrossThreadMessage("Export Failed due to an unknown error", "Export Failed", MessageBoxIcon.Error);
+                }
+            }
+        }
+
         #endregion
+
     }
 }

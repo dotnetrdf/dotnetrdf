@@ -90,8 +90,8 @@ dnr:SparqlUpdateProcessor a rdfs:Class ;
 						  rdfs:comment "A SPARQL Update Processor is a class that can process SPARQL updates.  You must define one of these in order to attach it to any Update Handlers you define." .
 						  
 dnr:SparqlHttpProtocolProcessor a rdfs:Class ;
-								rdfs:label "Class of SPARQL Uniform HTTP Protocol Processors" ;
-								rdfs:comment "A SPARQL Uniform HTTP Protocol Processor is a class that can process Uniform HTTP Protocol requets.  You must define one of these in order to attach it to any Protocol Handlers you define." .
+								rdfs:label "Class of SPARQL Graph Store HTTP Protocol Processors" ;
+								rdfs:comment "A SPARQL Graph Store HTTP Protocol Processor is a class that can process Graph Store HTTP Protocol requets.  You must define one of these in order to attach it to any Protocol Handlers you define." .
 								
 dnr:SparqlExpressionFactory a rdfs:Class ;
 							rdfs:label "Class of Custom SPARQL Expression factories" ;

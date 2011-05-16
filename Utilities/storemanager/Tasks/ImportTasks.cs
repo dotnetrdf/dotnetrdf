@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Parsing;
@@ -11,15 +12,25 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
     {
         private String _file;
 
-        public ImportFileTask(IGenericIOManager manager, String file)
-            : base("Import File", manager)
+        public ImportFileTask(IGenericIOManager manager, String file, Uri targetUri)
+            : base("Import File", manager, targetUri)
         {
             this._file = file;
         }
 
         protected override void ImportUsingHandler(IRdfHandler handler)
         {
-            FileLoader.Load(handler, this._file);
+            try
+            {
+                //Assume a RDF Graph
+                IRdfReader reader = MimeTypesHelper.GetParser(MimeTypesHelper.GetMimeTypes(Path.GetExtension(this._file)));
+                FileLoader.Load(handler, this._file, reader);
+            }
+            catch (RdfParserSelectionException)
+            {
+                //Assume a RDF Dataset
+                FileLoader.LoadDataset(handler, this._file);
+            }
         }
     }
 
@@ -27,16 +38,29 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
     {
         private Uri _u;
 
-        public ImportUriTask(IGenericIOManager manager, Uri u)
-            : base("Import URI", manager)
+        public ImportUriTask(IGenericIOManager manager, Uri u, Uri targetUri)
+            : base("Import URI", manager, targetUri)
         {
             this._u = u;
         }
 
         protected override void ImportUsingHandler(IRdfHandler handler)
         {
-            UriLoader.Load(handler, this._u);
+            try
+            {
+                //Assume a RDF Graph
+                UriLoader.Load(handler, this._u);
+            }
+            catch (RdfParserSelectionException)
+            {
+                //Assume a RDF Dataset
+                UriLoader.LoadDataset(handler, this._u);
+            }
+        }
+
+        protected override Uri GetDefaultTargetUri()
+        {
+            return this._u;
         }
     }
-
 }

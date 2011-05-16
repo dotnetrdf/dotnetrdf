@@ -54,6 +54,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         String Information
         {
             get;
+            set;
         }
 
         Exception Error

@@ -47,36 +47,57 @@
             this.btnSparqlUpdate = new System.Windows.Forms.Button();
             this.txtSparqlUpdate = new System.Windows.Forms.TextBox();
             this.lblUpdateIntro = new System.Windows.Forms.Label();
-            this.tabImportExport = new System.Windows.Forms.TabPage();
+            this.tabImport = new System.Windows.Forms.TabPage();
+            this.grpImportOptions = new System.Windows.Forms.GroupBox();
+            this.txtImportDefaultGraph = new System.Windows.Forms.TextBox();
+            this.chkImportDefaultUri = new System.Windows.Forms.CheckBox();
+            this.lblImport = new System.Windows.Forms.Label();
             this.grpImport = new System.Windows.Forms.GroupBox();
             this.btnImportUri = new System.Windows.Forms.Button();
             this.txtImportUri = new System.Windows.Forms.TextBox();
             this.lblUri = new System.Windows.Forms.Label();
             this.btnImportFile = new System.Windows.Forms.Button();
-            this.btnBrowse = new System.Windows.Forms.Button();
+            this.btnBrowseImport = new System.Windows.Forms.Button();
             this.txtImportFile = new System.Windows.Forms.TextBox();
             this.lblFile = new System.Windows.Forms.Label();
-            this.lblImport = new System.Windows.Forms.Label();
+            this.tabExport = new System.Windows.Forms.TabPage();
+            this.grpExport = new System.Windows.Forms.GroupBox();
+            this.lblExport = new System.Windows.Forms.Label();
             this.tabTasks = new System.Windows.Forms.TabPage();
             this.lvwTasks = new System.Windows.Forms.ListView();
             this.colID = new System.Windows.Forms.ColumnHeader();
             this.colTask = new System.Windows.Forms.ColumnHeader();
             this.colState = new System.Windows.Forms.ColumnHeader();
             this.colInfo = new System.Windows.Forms.ColumnHeader();
-            this.label1 = new System.Windows.Forms.Label();
+            this.mnuTasks = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.mnuViewDetail = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuViewResults = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuViewErrors = new System.Windows.Forms.ToolStripMenuItem();
+            this.View = new System.Windows.Forms.ToolStripSeparator();
+            this.mnuCancel = new System.Windows.Forms.ToolStripMenuItem();
+            this.lblTasks = new System.Windows.Forms.Label();
             this.ofdImport = new System.Windows.Forms.OpenFileDialog();
             this.stsStatus = new System.Windows.Forms.StatusStrip();
             this.stsCurrent = new System.Windows.Forms.ToolStripStatusLabel();
             this.timStartup = new System.Windows.Forms.Timer(this.components);
             this.ofdQuery = new System.Windows.Forms.OpenFileDialog();
             this.sfdQuery = new System.Windows.Forms.SaveFileDialog();
+            this.btnBrowseExport = new System.Windows.Forms.Button();
+            this.txtExportFile = new System.Windows.Forms.TextBox();
+            this.lblExportFile = new System.Windows.Forms.Label();
+            this.sfdExport = new System.Windows.Forms.SaveFileDialog();
+            this.btnExportStore = new System.Windows.Forms.Button();
             this.tabFunctions.SuspendLayout();
             this.tabGraphs.SuspendLayout();
             this.tabSparqlQuery.SuspendLayout();
             this.tabSparqlUpdate.SuspendLayout();
-            this.tabImportExport.SuspendLayout();
+            this.tabImport.SuspendLayout();
+            this.grpImportOptions.SuspendLayout();
             this.grpImport.SuspendLayout();
+            this.tabExport.SuspendLayout();
+            this.grpExport.SuspendLayout();
             this.tabTasks.SuspendLayout();
+            this.mnuTasks.SuspendLayout();
             this.stsStatus.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -85,7 +106,8 @@
             this.tabFunctions.Controls.Add(this.tabGraphs);
             this.tabFunctions.Controls.Add(this.tabSparqlQuery);
             this.tabFunctions.Controls.Add(this.tabSparqlUpdate);
-            this.tabFunctions.Controls.Add(this.tabImportExport);
+            this.tabFunctions.Controls.Add(this.tabImport);
+            this.tabFunctions.Controls.Add(this.tabExport);
             this.tabFunctions.Controls.Add(this.tabTasks);
             this.tabFunctions.Location = new System.Drawing.Point(12, 12);
             this.tabFunctions.Name = "tabFunctions";
@@ -264,15 +286,56 @@
             this.lblUpdateIntro.TabIndex = 0;
             this.lblUpdateIntro.Text = resources.GetString("lblUpdateIntro.Text");
             // 
-            // tabImportExport
+            // tabImport
             // 
-            this.tabImportExport.Controls.Add(this.grpImport);
-            this.tabImportExport.Location = new System.Drawing.Point(4, 22);
-            this.tabImportExport.Name = "tabImportExport";
-            this.tabImportExport.Size = new System.Drawing.Size(514, 274);
-            this.tabImportExport.TabIndex = 2;
-            this.tabImportExport.Text = "Import/Export";
-            this.tabImportExport.UseVisualStyleBackColor = true;
+            this.tabImport.Controls.Add(this.grpImportOptions);
+            this.tabImport.Controls.Add(this.lblImport);
+            this.tabImport.Controls.Add(this.grpImport);
+            this.tabImport.Location = new System.Drawing.Point(4, 22);
+            this.tabImport.Name = "tabImport";
+            this.tabImport.Size = new System.Drawing.Size(514, 274);
+            this.tabImport.TabIndex = 2;
+            this.tabImport.Text = "Import Data";
+            this.tabImport.UseVisualStyleBackColor = true;
+            // 
+            // grpImportOptions
+            // 
+            this.grpImportOptions.Controls.Add(this.txtImportDefaultGraph);
+            this.grpImportOptions.Controls.Add(this.chkImportDefaultUri);
+            this.grpImportOptions.Location = new System.Drawing.Point(6, 171);
+            this.grpImportOptions.Name = "grpImportOptions";
+            this.grpImportOptions.Size = new System.Drawing.Size(502, 89);
+            this.grpImportOptions.TabIndex = 9;
+            this.grpImportOptions.TabStop = false;
+            this.grpImportOptions.Text = "Default Target Graph URI";
+            // 
+            // txtImportDefaultGraph
+            // 
+            this.txtImportDefaultGraph.Enabled = false;
+            this.txtImportDefaultGraph.Location = new System.Drawing.Point(20, 63);
+            this.txtImportDefaultGraph.Name = "txtImportDefaultGraph";
+            this.txtImportDefaultGraph.Size = new System.Drawing.Size(476, 20);
+            this.txtImportDefaultGraph.TabIndex = 1;
+            // 
+            // chkImportDefaultUri
+            // 
+            this.chkImportDefaultUri.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.chkImportDefaultUri.Location = new System.Drawing.Point(6, 19);
+            this.chkImportDefaultUri.Name = "chkImportDefaultUri";
+            this.chkImportDefaultUri.Size = new System.Drawing.Size(490, 51);
+            this.chkImportDefaultUri.TabIndex = 0;
+            this.chkImportDefaultUri.Text = resources.GetString("chkImportDefaultUri.Text");
+            this.chkImportDefaultUri.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.chkImportDefaultUri.UseVisualStyleBackColor = true;
+            this.chkImportDefaultUri.CheckedChanged += new System.EventHandler(this.chkImportDefaultUri_CheckedChanged);
+            // 
+            // lblImport
+            // 
+            this.lblImport.Location = new System.Drawing.Point(3, 14);
+            this.lblImport.Name = "lblImport";
+            this.lblImport.Size = new System.Drawing.Size(508, 73);
+            this.lblImport.TabIndex = 8;
+            this.lblImport.Text = resources.GetString("lblImport.Text");
             // 
             // grpImport
             // 
@@ -280,20 +343,19 @@
             this.grpImport.Controls.Add(this.txtImportUri);
             this.grpImport.Controls.Add(this.lblUri);
             this.grpImport.Controls.Add(this.btnImportFile);
-            this.grpImport.Controls.Add(this.btnBrowse);
+            this.grpImport.Controls.Add(this.btnBrowseImport);
             this.grpImport.Controls.Add(this.txtImportFile);
             this.grpImport.Controls.Add(this.lblFile);
-            this.grpImport.Controls.Add(this.lblImport);
-            this.grpImport.Location = new System.Drawing.Point(3, 3);
+            this.grpImport.Location = new System.Drawing.Point(6, 90);
             this.grpImport.Name = "grpImport";
-            this.grpImport.Size = new System.Drawing.Size(508, 139);
+            this.grpImport.Size = new System.Drawing.Size(505, 76);
             this.grpImport.TabIndex = 0;
             this.grpImport.TabStop = false;
-            this.grpImport.Text = "Import";
+            this.grpImport.Text = "Data Source";
             // 
             // btnImportUri
             // 
-            this.btnImportUri.Location = new System.Drawing.Point(427, 99);
+            this.btnImportUri.Location = new System.Drawing.Point(427, 45);
             this.btnImportUri.Name = "btnImportUri";
             this.btnImportUri.Size = new System.Drawing.Size(75, 23);
             this.btnImportUri.TabIndex = 7;
@@ -303,7 +365,7 @@
             // 
             // txtImportUri
             // 
-            this.txtImportUri.Location = new System.Drawing.Point(38, 101);
+            this.txtImportUri.Location = new System.Drawing.Point(38, 47);
             this.txtImportUri.Name = "txtImportUri";
             this.txtImportUri.Size = new System.Drawing.Size(383, 20);
             this.txtImportUri.TabIndex = 6;
@@ -311,7 +373,7 @@
             // lblUri
             // 
             this.lblUri.AutoSize = true;
-            this.lblUri.Location = new System.Drawing.Point(6, 104);
+            this.lblUri.Location = new System.Drawing.Point(6, 50);
             this.lblUri.Name = "lblUri";
             this.lblUri.Size = new System.Drawing.Size(23, 13);
             this.lblUri.TabIndex = 5;
@@ -319,27 +381,27 @@
             // 
             // btnImportFile
             // 
-            this.btnImportFile.Location = new System.Drawing.Point(427, 73);
+            this.btnImportFile.Location = new System.Drawing.Point(427, 19);
             this.btnImportFile.Name = "btnImportFile";
             this.btnImportFile.Size = new System.Drawing.Size(75, 23);
             this.btnImportFile.TabIndex = 4;
-            this.btnImportFile.Text = "Import";
+            this.btnImportFile.Text = "Import File";
             this.btnImportFile.UseVisualStyleBackColor = true;
             this.btnImportFile.Click += new System.EventHandler(this.btnImportFile_Click);
             // 
-            // btnBrowse
+            // btnBrowseImport
             // 
-            this.btnBrowse.Location = new System.Drawing.Point(346, 73);
-            this.btnBrowse.Name = "btnBrowse";
-            this.btnBrowse.Size = new System.Drawing.Size(75, 23);
-            this.btnBrowse.TabIndex = 3;
-            this.btnBrowse.Text = "&Browse";
-            this.btnBrowse.UseVisualStyleBackColor = true;
-            this.btnBrowse.Click += new System.EventHandler(this.btnBrowse_Click);
+            this.btnBrowseImport.Location = new System.Drawing.Point(346, 19);
+            this.btnBrowseImport.Name = "btnBrowseImport";
+            this.btnBrowseImport.Size = new System.Drawing.Size(75, 23);
+            this.btnBrowseImport.TabIndex = 3;
+            this.btnBrowseImport.Text = "&Browse";
+            this.btnBrowseImport.UseVisualStyleBackColor = true;
+            this.btnBrowseImport.Click += new System.EventHandler(this.btnBrowse_Click);
             // 
             // txtImportFile
             // 
-            this.txtImportFile.Location = new System.Drawing.Point(38, 75);
+            this.txtImportFile.Location = new System.Drawing.Point(38, 21);
             this.txtImportFile.Name = "txtImportFile";
             this.txtImportFile.Size = new System.Drawing.Size(302, 20);
             this.txtImportFile.TabIndex = 2;
@@ -347,24 +409,48 @@
             // lblFile
             // 
             this.lblFile.AutoSize = true;
-            this.lblFile.Location = new System.Drawing.Point(6, 78);
+            this.lblFile.Location = new System.Drawing.Point(6, 24);
             this.lblFile.Name = "lblFile";
             this.lblFile.Size = new System.Drawing.Size(26, 13);
             this.lblFile.TabIndex = 1;
             this.lblFile.Text = "File:";
             // 
-            // lblImport
+            // tabExport
             // 
-            this.lblImport.Location = new System.Drawing.Point(6, 16);
-            this.lblImport.Name = "lblImport";
-            this.lblImport.Size = new System.Drawing.Size(502, 62);
-            this.lblImport.TabIndex = 0;
-            this.lblImport.Text = resources.GetString("lblImport.Text");
+            this.tabExport.Controls.Add(this.grpExport);
+            this.tabExport.Controls.Add(this.lblExport);
+            this.tabExport.Location = new System.Drawing.Point(4, 22);
+            this.tabExport.Name = "tabExport";
+            this.tabExport.Size = new System.Drawing.Size(514, 274);
+            this.tabExport.TabIndex = 5;
+            this.tabExport.Text = "Export Data";
+            this.tabExport.UseVisualStyleBackColor = true;
+            // 
+            // grpExport
+            // 
+            this.grpExport.Controls.Add(this.btnExportStore);
+            this.grpExport.Controls.Add(this.btnBrowseExport);
+            this.grpExport.Controls.Add(this.txtExportFile);
+            this.grpExport.Controls.Add(this.lblExportFile);
+            this.grpExport.Location = new System.Drawing.Point(6, 72);
+            this.grpExport.Name = "grpExport";
+            this.grpExport.Size = new System.Drawing.Size(505, 82);
+            this.grpExport.TabIndex = 10;
+            this.grpExport.TabStop = false;
+            this.grpExport.Text = "Export Destination";
+            // 
+            // lblExport
+            // 
+            this.lblExport.Location = new System.Drawing.Point(3, 14);
+            this.lblExport.Name = "lblExport";
+            this.lblExport.Size = new System.Drawing.Size(508, 64);
+            this.lblExport.TabIndex = 9;
+            this.lblExport.Text = resources.GetString("lblExport.Text");
             // 
             // tabTasks
             // 
             this.tabTasks.Controls.Add(this.lvwTasks);
-            this.tabTasks.Controls.Add(this.label1);
+            this.tabTasks.Controls.Add(this.lblTasks);
             this.tabTasks.Location = new System.Drawing.Point(4, 22);
             this.tabTasks.Name = "tabTasks";
             this.tabTasks.Padding = new System.Windows.Forms.Padding(3);
@@ -380,12 +466,14 @@
             this.colTask,
             this.colState,
             this.colInfo});
+            this.lvwTasks.ContextMenuStrip = this.mnuTasks;
             this.lvwTasks.FullRowSelect = true;
             this.lvwTasks.GridLines = true;
             this.lvwTasks.Location = new System.Drawing.Point(6, 59);
+            this.lvwTasks.MultiSelect = false;
             this.lvwTasks.Name = "lvwTasks";
             this.lvwTasks.Size = new System.Drawing.Size(502, 209);
-            this.lvwTasks.Sorting = System.Windows.Forms.SortOrder.Descending;
+            this.lvwTasks.Sorting = System.Windows.Forms.SortOrder.Ascending;
             this.lvwTasks.TabIndex = 1;
             this.lvwTasks.UseCompatibleStateImageBehavior = false;
             this.lvwTasks.View = System.Windows.Forms.View.Details;
@@ -410,13 +498,56 @@
             this.colInfo.Text = "Task Information";
             this.colInfo.Width = 259;
             // 
-            // label1
+            // mnuTasks
             // 
-            this.label1.Location = new System.Drawing.Point(3, 12);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(505, 52);
-            this.label1.TabIndex = 0;
-            this.label1.Text = resources.GetString("label1.Text");
+            this.mnuTasks.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnuViewDetail,
+            this.mnuViewResults,
+            this.mnuViewErrors,
+            this.View,
+            this.mnuCancel});
+            this.mnuTasks.Name = "mnuTasks";
+            this.mnuTasks.ShowImageMargin = false;
+            this.mnuTasks.Size = new System.Drawing.Size(187, 98);
+            this.mnuTasks.Opening += new System.ComponentModel.CancelEventHandler(this.mnuTasks_Opening);
+            // 
+            // mnuViewDetail
+            // 
+            this.mnuViewDetail.Name = "mnuViewDetail";
+            this.mnuViewDetail.Size = new System.Drawing.Size(186, 22);
+            this.mnuViewDetail.Text = "View Detailed Information";
+            // 
+            // mnuViewResults
+            // 
+            this.mnuViewResults.Name = "mnuViewResults";
+            this.mnuViewResults.Size = new System.Drawing.Size(186, 22);
+            this.mnuViewResults.Text = "View Results";
+            // 
+            // mnuViewErrors
+            // 
+            this.mnuViewErrors.Name = "mnuViewErrors";
+            this.mnuViewErrors.Size = new System.Drawing.Size(186, 22);
+            this.mnuViewErrors.Text = "View Error Trace";
+            // 
+            // View
+            // 
+            this.View.Name = "View";
+            this.View.Size = new System.Drawing.Size(183, 6);
+            // 
+            // mnuCancel
+            // 
+            this.mnuCancel.Name = "mnuCancel";
+            this.mnuCancel.Size = new System.Drawing.Size(186, 22);
+            this.mnuCancel.Text = "Cancel";
+            this.mnuCancel.Click += new System.EventHandler(this.mnuCancel_Click);
+            // 
+            // lblTasks
+            // 
+            this.lblTasks.Location = new System.Drawing.Point(3, 12);
+            this.lblTasks.Name = "lblTasks";
+            this.lblTasks.Size = new System.Drawing.Size(505, 52);
+            this.lblTasks.TabIndex = 0;
+            this.lblTasks.Text = resources.GetString("lblTasks.Text");
             // 
             // ofdImport
             // 
@@ -457,6 +588,46 @@
             this.sfdQuery.FileName = "query.rq";
             this.sfdQuery.Title = "Load SPARQL Query";
             // 
+            // btnBrowseExport
+            // 
+            this.btnBrowseExport.Location = new System.Drawing.Point(424, 19);
+            this.btnBrowseExport.Name = "btnBrowseExport";
+            this.btnBrowseExport.Size = new System.Drawing.Size(75, 23);
+            this.btnBrowseExport.TabIndex = 6;
+            this.btnBrowseExport.Text = "&Browse";
+            this.btnBrowseExport.UseVisualStyleBackColor = true;
+            this.btnBrowseExport.Click += new System.EventHandler(this.btnBrowseExport_Click);
+            // 
+            // txtExportFile
+            // 
+            this.txtExportFile.Location = new System.Drawing.Point(39, 21);
+            this.txtExportFile.Name = "txtExportFile";
+            this.txtExportFile.Size = new System.Drawing.Size(379, 20);
+            this.txtExportFile.TabIndex = 5;
+            // 
+            // lblExportFile
+            // 
+            this.lblExportFile.AutoSize = true;
+            this.lblExportFile.Location = new System.Drawing.Point(7, 24);
+            this.lblExportFile.Name = "lblExportFile";
+            this.lblExportFile.Size = new System.Drawing.Size(26, 13);
+            this.lblExportFile.TabIndex = 4;
+            this.lblExportFile.Text = "File:";
+            // 
+            // sfdExport
+            // 
+            this.sfdExport.Title = "Export Store As...";
+            // 
+            // btnExportStore
+            // 
+            this.btnExportStore.Location = new System.Drawing.Point(215, 47);
+            this.btnExportStore.Name = "btnExportStore";
+            this.btnExportStore.Size = new System.Drawing.Size(75, 23);
+            this.btnExportStore.TabIndex = 7;
+            this.btnExportStore.Text = "Export Store";
+            this.btnExportStore.UseVisualStyleBackColor = true;
+            this.btnExportStore.Click += new System.EventHandler(this.btnExportStore_Click);
+            // 
             // fclsGenericStoreManager
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -476,10 +647,16 @@
             this.tabSparqlQuery.PerformLayout();
             this.tabSparqlUpdate.ResumeLayout(false);
             this.tabSparqlUpdate.PerformLayout();
-            this.tabImportExport.ResumeLayout(false);
+            this.tabImport.ResumeLayout(false);
+            this.grpImportOptions.ResumeLayout(false);
+            this.grpImportOptions.PerformLayout();
             this.grpImport.ResumeLayout(false);
             this.grpImport.PerformLayout();
+            this.tabExport.ResumeLayout(false);
+            this.grpExport.ResumeLayout(false);
+            this.grpExport.PerformLayout();
             this.tabTasks.ResumeLayout(false);
+            this.mnuTasks.ResumeLayout(false);
             this.stsStatus.ResumeLayout(false);
             this.stsStatus.PerformLayout();
             this.ResumeLayout(false);
@@ -492,7 +669,7 @@
         private System.Windows.Forms.TabControl tabFunctions;
         private System.Windows.Forms.TabPage tabGraphs;
         private System.Windows.Forms.TabPage tabSparqlQuery;
-        private System.Windows.Forms.TabPage tabImportExport;
+        private System.Windows.Forms.TabPage tabImport;
         private System.Windows.Forms.Button btnGraphRefresh;
         private System.Windows.Forms.ListView lvwGraphs;
         private System.Windows.Forms.ColumnHeader colGraphURI;
@@ -500,12 +677,6 @@
         private System.Windows.Forms.Label lblQueryIntro;
         private System.Windows.Forms.TextBox txtSparqlQuery;
         private System.Windows.Forms.Button btnSparqlQuery;
-        private System.Windows.Forms.GroupBox grpImport;
-        private System.Windows.Forms.Label lblImport;
-        private System.Windows.Forms.Button btnImportFile;
-        private System.Windows.Forms.Button btnBrowse;
-        private System.Windows.Forms.TextBox txtImportFile;
-        private System.Windows.Forms.Label lblFile;
         private System.Windows.Forms.OpenFileDialog ofdImport;
         private System.Windows.Forms.StatusStrip stsStatus;
         private System.Windows.Forms.ToolStripStatusLabel stsCurrent;
@@ -514,9 +685,6 @@
         private System.Windows.Forms.Button btnSaveQuery;
         private System.Windows.Forms.OpenFileDialog ofdQuery;
         private System.Windows.Forms.SaveFileDialog sfdQuery;
-        private System.Windows.Forms.Button btnImportUri;
-        private System.Windows.Forms.TextBox txtImportUri;
-        private System.Windows.Forms.Label lblUri;
         private System.Windows.Forms.TabPage tabSparqlUpdate;
         private System.Windows.Forms.Label lblUpdateIntro;
         private System.Windows.Forms.TextBox txtSparqlUpdate;
@@ -527,7 +695,33 @@
         private System.Windows.Forms.ColumnHeader colTask;
         private System.Windows.Forms.ColumnHeader colState;
         private System.Windows.Forms.ColumnHeader colInfo;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lblTasks;
         private System.Windows.Forms.ColumnHeader colID;
+        private System.Windows.Forms.Label lblImport;
+        private System.Windows.Forms.GroupBox grpImport;
+        private System.Windows.Forms.Button btnImportUri;
+        private System.Windows.Forms.TextBox txtImportUri;
+        private System.Windows.Forms.Label lblUri;
+        private System.Windows.Forms.Button btnImportFile;
+        private System.Windows.Forms.Button btnBrowseImport;
+        private System.Windows.Forms.TextBox txtImportFile;
+        private System.Windows.Forms.Label lblFile;
+        private System.Windows.Forms.GroupBox grpImportOptions;
+        private System.Windows.Forms.TextBox txtImportDefaultGraph;
+        private System.Windows.Forms.CheckBox chkImportDefaultUri;
+        private System.Windows.Forms.TabPage tabExport;
+        private System.Windows.Forms.ContextMenuStrip mnuTasks;
+        private System.Windows.Forms.ToolStripMenuItem mnuViewDetail;
+        private System.Windows.Forms.ToolStripMenuItem mnuViewResults;
+        private System.Windows.Forms.ToolStripMenuItem mnuViewErrors;
+        private System.Windows.Forms.ToolStripSeparator View;
+        private System.Windows.Forms.ToolStripMenuItem mnuCancel;
+        private System.Windows.Forms.Label lblExport;
+        private System.Windows.Forms.GroupBox grpExport;
+        private System.Windows.Forms.Button btnBrowseExport;
+        private System.Windows.Forms.TextBox txtExportFile;
+        private System.Windows.Forms.Label lblExportFile;
+        private System.Windows.Forms.SaveFileDialog sfdExport;
+        private System.Windows.Forms.Button btnExportStore;
     }
 }

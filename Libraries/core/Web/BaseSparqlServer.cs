@@ -54,7 +54,7 @@ using VDS.RDF.Writing;
 namespace VDS.RDF.Web
 {
     /// <summary>
-    /// Abstract Base class for SPARQL Servers which provide combined SPARQL Query, Update and Uniform HTTP Protocol endpoints
+    /// Abstract Base class for SPARQL Servers which provide combined SPARQL Query, Update and Graph Store HTTP Protocol endpoints
     /// </summary>
     public abstract class BaseSparqlServer : IHttpHandler
     {
