@@ -105,6 +105,12 @@
     <Compile Include="fclsSQLStoreManager.Designer.cs">
       <DependentUpon>fclsSQLStoreManager.cs</DependentUpon>
     </Compile>
+    <Compile Include="fclsTaskInformation.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fclsTaskInformation.Designer.cs">
+      <DependentUpon>fclsTaskInformation.cs</DependentUpon>
+    </Compile>
     <Compile Include="ListViewColumnSorter.cs" />
     <Compile Include="MicrosoftSQLServerConnection.cs" />
     <Compile Include="MySQLServerConnection.cs" />
@@ -185,6 +191,9 @@
     <EmbeddedResource Include="fclsPleaseWait.resx">
       <DependentUpon>fclsPleaseWait.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fclsTaskInformation.resx">
+      <DependentUpon>fclsTaskInformation.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="sparql.css" />
     <Content Include="database_gear.ico" />

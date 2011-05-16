@@ -320,6 +320,22 @@ namespace VDS.RDF.Utilities.StoreManager
             this.txtImportDefaultGraph.Enabled = this.chkImportDefaultUri.Checked;
         }
 
+        private void btnBrowseExport_Click(object sender, EventArgs e)
+        {
+            this.sfdExport.Filter = Constants.RdfDatasetFilter;
+            if (this.sfdExport.ShowDialog() == DialogResult.OK)
+            {
+                this.txtExportFile.Text = this.sfdExport.FileName;
+            }
+        }
+
+        private void btnExportStore_Click(object sender, EventArgs e)
+        {
+            this.Export();
+        }
+
+        #region Context Menu
+
         private void mnuTasks_Opening(object sender, System.ComponentModel.CancelEventArgs e)
         {
             if (this.lvwTasks.SelectedItems.Count > 0)
@@ -386,19 +402,79 @@ namespace VDS.RDF.Utilities.StoreManager
             }
         }
 
-        private void btnBrowseExport_Click(object sender, EventArgs e)
+
+        private void mnuViewDetail_Click(object sender, EventArgs e)
         {
-            this.sfdExport.Filter = Constants.RdfDatasetFilter;
-            if (this.sfdExport.ShowDialog() == DialogResult.OK)
+            if (this.lvwTasks.SelectedItems.Count > 0)
             {
-                this.txtExportFile.Text = this.sfdExport.FileName;
+                ListViewItem item = this.lvwTasks.SelectedItems[0];
+                Object tag = item.Tag;
+
+                if (tag is ITask<TaskResult>)
+                {
+                    fclsTaskInformation<TaskResult> simpleInfo = new fclsTaskInformation<TaskResult>((ITask<TaskResult>)tag);
+                    simpleInfo.MdiParent = this.MdiParent;
+                    simpleInfo.Show();
+                }
+                else if (tag is QueryTask)
+                {
+                    fclsTaskInformation<Object> queryInfo = new fclsTaskInformation<object>((ITask<Object>)tag);
+                    queryInfo.MdiParent = this.MdiParent;
+                    queryInfo.Show();
+                }
+                else if (tag is ListGraphsTasks)
+                {
+                    fclsTaskInformation<IEnumerable<Uri>> listInfo = new fclsTaskInformation<IEnumerable<Uri>>((ITask<IEnumerable<Uri>>)tag);
+                    listInfo.MdiParent = this.MdiParent;
+                    listInfo.Show();
+                }
+                else
+                {
+                    MessageBox.Show("Task Information cannot be shown as the Task type is unknown", "Task Information Unavailable", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
             }
         }
 
-        private void btnExportStore_Click(object sender, EventArgs e)
+        private void mnuViewResults_Click(object sender, EventArgs e)
         {
-            this.Export();
+            if (this.lvwTasks.SelectedItems.Count > 0)
+            {
+                ListViewItem item = this.lvwTasks.SelectedItems[0];
+                Object tag = item.Tag;
+
+                if (tag is QueryTask)
+                {
+                    QueryTask qTask = (QueryTask)tag;
+                    if (qTask.State == TaskState.Completed && qTask.Result != null)
+                    {
+                        Object result = qTask.Result;
+
+                        if (result is IGraph)
+                        {
+                            GraphViewerForm graphViewer = new GraphViewerForm((IGraph)result);
+                            CrossThreadSetMdiParent(graphViewer);
+                            CrossThreadShow(graphViewer);
+                        }
+                        else if (result is SparqlResultSet)
+                        {
+                            ResultSetViewerForm resultsViewer = new ResultSetViewerForm((SparqlResultSet)result);
+                            CrossThreadSetMdiParent(resultsViewer);
+                            CrossThreadShow(resultsViewer);
+                        }
+                        else
+                        {
+                            CrossThreadMessage("Unable to show Query Results as did not get a Graph/Result Set as expected", "Unable to Show Results", MessageBoxIcon.Error);
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Query Results are unavailable", "Results Unavailable", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+            }
         }
+
+        #endregion
 
         #endregion
 
@@ -605,6 +681,5 @@ namespace VDS.RDF.Utilities.StoreManager
         }
 
         #endregion
-
     }
 }

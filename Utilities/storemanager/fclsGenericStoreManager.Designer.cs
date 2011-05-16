@@ -62,6 +62,10 @@
             this.lblFile = new System.Windows.Forms.Label();
             this.tabExport = new System.Windows.Forms.TabPage();
             this.grpExport = new System.Windows.Forms.GroupBox();
+            this.btnExportStore = new System.Windows.Forms.Button();
+            this.btnBrowseExport = new System.Windows.Forms.Button();
+            this.txtExportFile = new System.Windows.Forms.TextBox();
+            this.lblExportFile = new System.Windows.Forms.Label();
             this.lblExport = new System.Windows.Forms.Label();
             this.tabTasks = new System.Windows.Forms.TabPage();
             this.lvwTasks = new System.Windows.Forms.ListView();
@@ -82,11 +86,7 @@
             this.timStartup = new System.Windows.Forms.Timer(this.components);
             this.ofdQuery = new System.Windows.Forms.OpenFileDialog();
             this.sfdQuery = new System.Windows.Forms.SaveFileDialog();
-            this.btnBrowseExport = new System.Windows.Forms.Button();
-            this.txtExportFile = new System.Windows.Forms.TextBox();
-            this.lblExportFile = new System.Windows.Forms.Label();
             this.sfdExport = new System.Windows.Forms.SaveFileDialog();
-            this.btnExportStore = new System.Windows.Forms.Button();
             this.tabFunctions.SuspendLayout();
             this.tabGraphs.SuspendLayout();
             this.tabSparqlQuery.SuspendLayout();
@@ -439,6 +439,42 @@
             this.grpExport.TabStop = false;
             this.grpExport.Text = "Export Destination";
             // 
+            // btnExportStore
+            // 
+            this.btnExportStore.Location = new System.Drawing.Point(215, 47);
+            this.btnExportStore.Name = "btnExportStore";
+            this.btnExportStore.Size = new System.Drawing.Size(75, 23);
+            this.btnExportStore.TabIndex = 7;
+            this.btnExportStore.Text = "Export Store";
+            this.btnExportStore.UseVisualStyleBackColor = true;
+            this.btnExportStore.Click += new System.EventHandler(this.btnExportStore_Click);
+            // 
+            // btnBrowseExport
+            // 
+            this.btnBrowseExport.Location = new System.Drawing.Point(424, 19);
+            this.btnBrowseExport.Name = "btnBrowseExport";
+            this.btnBrowseExport.Size = new System.Drawing.Size(75, 23);
+            this.btnBrowseExport.TabIndex = 6;
+            this.btnBrowseExport.Text = "&Browse";
+            this.btnBrowseExport.UseVisualStyleBackColor = true;
+            this.btnBrowseExport.Click += new System.EventHandler(this.btnBrowseExport_Click);
+            // 
+            // txtExportFile
+            // 
+            this.txtExportFile.Location = new System.Drawing.Point(39, 21);
+            this.txtExportFile.Name = "txtExportFile";
+            this.txtExportFile.Size = new System.Drawing.Size(379, 20);
+            this.txtExportFile.TabIndex = 5;
+            // 
+            // lblExportFile
+            // 
+            this.lblExportFile.AutoSize = true;
+            this.lblExportFile.Location = new System.Drawing.Point(7, 24);
+            this.lblExportFile.Name = "lblExportFile";
+            this.lblExportFile.Size = new System.Drawing.Size(26, 13);
+            this.lblExportFile.TabIndex = 4;
+            this.lblExportFile.Text = "File:";
+            // 
             // lblExport
             // 
             this.lblExport.Location = new System.Drawing.Point(3, 14);
@@ -473,7 +509,7 @@
             this.lvwTasks.MultiSelect = false;
             this.lvwTasks.Name = "lvwTasks";
             this.lvwTasks.Size = new System.Drawing.Size(502, 209);
-            this.lvwTasks.Sorting = System.Windows.Forms.SortOrder.Ascending;
+            this.lvwTasks.Sorting = System.Windows.Forms.SortOrder.Descending;
             this.lvwTasks.TabIndex = 1;
             this.lvwTasks.UseCompatibleStateImageBehavior = false;
             this.lvwTasks.View = System.Windows.Forms.View.Details;
@@ -508,7 +544,7 @@
             this.mnuCancel});
             this.mnuTasks.Name = "mnuTasks";
             this.mnuTasks.ShowImageMargin = false;
-            this.mnuTasks.Size = new System.Drawing.Size(187, 98);
+            this.mnuTasks.Size = new System.Drawing.Size(187, 120);
             this.mnuTasks.Opening += new System.ComponentModel.CancelEventHandler(this.mnuTasks_Opening);
             // 
             // mnuViewDetail
@@ -516,12 +552,14 @@
             this.mnuViewDetail.Name = "mnuViewDetail";
             this.mnuViewDetail.Size = new System.Drawing.Size(186, 22);
             this.mnuViewDetail.Text = "View Detailed Information";
+            this.mnuViewDetail.Click += new System.EventHandler(this.mnuViewDetail_Click);
             // 
             // mnuViewResults
             // 
             this.mnuViewResults.Name = "mnuViewResults";
             this.mnuViewResults.Size = new System.Drawing.Size(186, 22);
             this.mnuViewResults.Text = "View Results";
+            this.mnuViewResults.Click += new System.EventHandler(this.mnuViewResults_Click);
             // 
             // mnuViewErrors
             // 
@@ -588,45 +626,9 @@
             this.sfdQuery.FileName = "query.rq";
             this.sfdQuery.Title = "Load SPARQL Query";
             // 
-            // btnBrowseExport
-            // 
-            this.btnBrowseExport.Location = new System.Drawing.Point(424, 19);
-            this.btnBrowseExport.Name = "btnBrowseExport";
-            this.btnBrowseExport.Size = new System.Drawing.Size(75, 23);
-            this.btnBrowseExport.TabIndex = 6;
-            this.btnBrowseExport.Text = "&Browse";
-            this.btnBrowseExport.UseVisualStyleBackColor = true;
-            this.btnBrowseExport.Click += new System.EventHandler(this.btnBrowseExport_Click);
-            // 
-            // txtExportFile
-            // 
-            this.txtExportFile.Location = new System.Drawing.Point(39, 21);
-            this.txtExportFile.Name = "txtExportFile";
-            this.txtExportFile.Size = new System.Drawing.Size(379, 20);
-            this.txtExportFile.TabIndex = 5;
-            // 
-            // lblExportFile
-            // 
-            this.lblExportFile.AutoSize = true;
-            this.lblExportFile.Location = new System.Drawing.Point(7, 24);
-            this.lblExportFile.Name = "lblExportFile";
-            this.lblExportFile.Size = new System.Drawing.Size(26, 13);
-            this.lblExportFile.TabIndex = 4;
-            this.lblExportFile.Text = "File:";
-            // 
             // sfdExport
             // 
             this.sfdExport.Title = "Export Store As...";
-            // 
-            // btnExportStore
-            // 
-            this.btnExportStore.Location = new System.Drawing.Point(215, 47);
-            this.btnExportStore.Name = "btnExportStore";
-            this.btnExportStore.Size = new System.Drawing.Size(75, 23);
-            this.btnExportStore.TabIndex = 7;
-            this.btnExportStore.Text = "Export Store";
-            this.btnExportStore.UseVisualStyleBackColor = true;
-            this.btnExportStore.Click += new System.EventHandler(this.btnExportStore_Click);
             // 
             // fclsGenericStoreManager
             // 
