@@ -344,7 +344,9 @@ namespace VDS.RDF.LinkedData
                 SparqlRemoteEndpoint sparqlEndpoint = new SparqlRemoteEndpoint(endpoint);
                 try
                 {
-                    Object temp = sparqlEndpoint.QueryWithResultGraph("DESCRIBE <" + u.Uri.ToString().Replace(">","\\>") + ">");
+                    SparqlParameterizedString queryString = new SparqlParameterizedString("DESCRIBE @uri");
+                    queryString.SetUri("uri", u.Uri);
+                    Object temp = sparqlEndpoint.QueryWithResultGraph(queryString.ToString());
                     if (temp is Graph)
                     {
                         Graph g = (Graph)temp;

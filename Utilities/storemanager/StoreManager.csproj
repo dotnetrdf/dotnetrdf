@@ -105,6 +105,12 @@
     <Compile Include="fclsSQLStoreManager.Designer.cs">
       <DependentUpon>fclsSQLStoreManager.cs</DependentUpon>
     </Compile>
+    <Compile Include="fclsTaskErrorTrace.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fclsTaskErrorTrace.Designer.cs">
+      <DependentUpon>fclsTaskErrorTrace.cs</DependentUpon>
+    </Compile>
     <Compile Include="fclsTaskInformation.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -191,6 +197,9 @@
     <EmbeddedResource Include="fclsPleaseWait.resx">
       <DependentUpon>fclsPleaseWait.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fclsTaskErrorTrace.resx">
+      <DependentUpon>fclsTaskErrorTrace.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="fclsTaskInformation.resx">
       <DependentUpon>fclsTaskInformation.cs</DependentUpon>

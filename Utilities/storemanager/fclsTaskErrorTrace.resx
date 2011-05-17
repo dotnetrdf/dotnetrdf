@@ -117,45 +117,4 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="lblQueryIntro.Text" xml:space="preserve">
-    <value>Enter a SPARQL Query in the following box, select the format for SPARQL Results (SELECT/ASK) queries using the subsequent dropdown list.  Queries that return Graphs (CONSTRUCT/DESCRIBE) will display the Graph as a list of Triples in a new window from where you can then save the Graph in a format of your choice.</value>
-  </data>
-  <data name="lblUpdateIntro.Text" xml:space="preserve">
-    <value>Enter a SPARQL Update Command in the following box.  If this Store supports SPARQL Update natively then the Stores implementation will be used, if not then dotNetRDFs update processor will be used to apply the updates which depending on the capabilities of the Store may be slower/incomplete.</value>
-  </data>
-  <data name="chkImportDefaultUri.Text" xml:space="preserve">
-    <value>If Imported Data does not explicitly define Graphs to insert Triples into (i.e. is a RDF Graph rather than a RDF Dataset) use the following Graph URI.  Note that when Importing from a URI the URI will be used as the destination URI unless overridden by this option.</value>
-  </data>
-  <data name="lblImport.Text" xml:space="preserve">
-    <value>You can use this tool to import data into your Store.  You can either Import a RDF Graph from a File/URI or you can import a RDF Dataset (may contain multiple graphs e.g. NQuads) from a File/URI.  This tool will attempt to detect the format of the input and handle it appropriately.
-Please note that in many cases it may be more efficient to import data using the management tools provided with the Store rather than using this tool.</value>
-  </data>
-  <data name="lblExport.Text" xml:space="preserve">
-    <value>You can use this tool to export data from a Store into a RDF Dataset format (e.g. NQuads).  If you want to export individual graphs double click on the Graph in the Graphs list and use the Export button there.
-Please note that depending on your store it may be more efficient to export data using the management tools provided with the Store rather than using this tool.</value>
-  </data>
-  <metadata name="mnuTasks.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>510, 20</value>
-  </metadata>
-  <data name="lblTasks.Text" xml:space="preserve">
-    <value>All Tasks performed on a Store (Query/Update/Import/Export etc) are performed in the background and you may have any number of tasks running simultaneously.  You can monitor the progress of Tasks here, right click on a Task to see options associated with it.</value>
-  </data>
-  <metadata name="ofdImport.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 17</value>
-  </metadata>
-  <metadata name="stsStatus.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>124, 17</value>
-  </metadata>
-  <metadata name="timStartup.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>224, 17</value>
-  </metadata>
-  <metadata name="ofdQuery.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>323, 16</value>
-  </metadata>
-  <metadata name="sfdQuery.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>414, 18</value>
-  </metadata>
-  <metadata name="sfdExport.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>616, 20</value>
-  </metadata>
 </root>

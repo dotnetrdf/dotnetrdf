@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -22,6 +23,12 @@ namespace VDS.RDF.Utilities.StoreManager
             : this()
         {
             this.Text = task.Name + " on " + subtitle;
+            this.btnErrorTrace.Click += new EventHandler(delegate(Object sender, EventArgs e)
+                {
+                    fclsTaskErrorTrace<T> errorTrace = new fclsTaskErrorTrace<T>(task, subtitle);
+                    errorTrace.MdiParent = this.MdiParent;
+                    errorTrace.Show();
+                });
             this.ShowInformation(task);
 
             task.StateChanged += new TaskStateChanged(delegate()
@@ -77,7 +84,12 @@ namespace VDS.RDF.Utilities.StoreManager
             if (task.Query != null)
             {
                 SparqlFormatter formatter = new SparqlFormatter(task.Query.NamespaceMap);
-                CrossThreadSetText(this.txtAdvInfo, "Parsed Query:\n" + formatter.Format(task.Query) + "\nSPARQL Algebra:\n" + task.Query.ToAlgebra().ToString());
+                StringWriter writer = new StringWriter();
+                writer.WriteLine("Parsed Query:");
+                writer.WriteLine(formatter.Format(task.Query));
+                writer.WriteLine("SPARQL Algebra:");
+                writer.WriteLine(task.Query.ToAlgebra().ToString());
+                CrossThreadSetText(this.txtAdvInfo, writer.ToString());
             }
         }
 
@@ -85,7 +97,10 @@ namespace VDS.RDF.Utilities.StoreManager
         {
             if (task.Updates != null)
             {
-                CrossThreadSetText(this.txtAdvInfo, "Parsed Updates:\n" + task.Updates.ToString());
+                StringWriter writer = new StringWriter();
+                writer.WriteLine("Parsed Updates:");
+                writer.WriteLine(task.Updates.ToString());
+                CrossThreadSetText(this.txtAdvInfo, writer.ToString());
             }
         }
 

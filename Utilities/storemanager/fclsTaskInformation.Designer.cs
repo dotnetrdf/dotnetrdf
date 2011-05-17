@@ -34,8 +34,8 @@
             this.btnErrorTrace = new System.Windows.Forms.Button();
             this.tabInfo = new System.Windows.Forms.TabControl();
             this.tabBasicInfo = new System.Windows.Forms.TabPage();
-            this.tabAdvInfo = new System.Windows.Forms.TabPage();
             this.txtBasicInfo = new System.Windows.Forms.TextBox();
+            this.tabAdvInfo = new System.Windows.Forms.TabPage();
             this.txtAdvInfo = new System.Windows.Forms.TextBox();
             this.btnViewResults = new System.Windows.Forms.Button();
             this.tabInfo.SuspendLayout();
@@ -61,18 +61,18 @@
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(102, 201);
+            this.btnCancel.Location = new System.Drawing.Point(72, 201);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(81, 23);
+            this.btnCancel.Size = new System.Drawing.Size(97, 23);
             this.btnCancel.TabIndex = 3;
             this.btnCancel.Text = "&Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             // 
             // btnErrorTrace
             // 
-            this.btnErrorTrace.Location = new System.Drawing.Point(264, 201);
+            this.btnErrorTrace.Location = new System.Drawing.Point(278, 201);
             this.btnErrorTrace.Name = "btnErrorTrace";
-            this.btnErrorTrace.Size = new System.Drawing.Size(81, 23);
+            this.btnErrorTrace.Size = new System.Drawing.Size(97, 23);
             this.btnErrorTrace.TabIndex = 4;
             this.btnErrorTrace.Text = "View &Error Trace";
             this.btnErrorTrace.UseVisualStyleBackColor = true;
@@ -98,6 +98,16 @@
             this.tabBasicInfo.Text = "Basic Information";
             this.tabBasicInfo.UseVisualStyleBackColor = true;
             // 
+            // txtBasicInfo
+            // 
+            this.txtBasicInfo.Location = new System.Drawing.Point(6, 6);
+            this.txtBasicInfo.Multiline = true;
+            this.txtBasicInfo.Name = "txtBasicInfo";
+            this.txtBasicInfo.ReadOnly = true;
+            this.txtBasicInfo.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.txtBasicInfo.Size = new System.Drawing.Size(418, 105);
+            this.txtBasicInfo.TabIndex = 6;
+            // 
             // tabAdvInfo
             // 
             this.tabAdvInfo.Controls.Add(this.txtAdvInfo);
@@ -108,16 +118,6 @@
             this.tabAdvInfo.TabIndex = 1;
             this.tabAdvInfo.Text = "Advanced Information";
             this.tabAdvInfo.UseVisualStyleBackColor = true;
-            // 
-            // txtBasicInfo
-            // 
-            this.txtBasicInfo.Location = new System.Drawing.Point(6, 6);
-            this.txtBasicInfo.Multiline = true;
-            this.txtBasicInfo.Name = "txtBasicInfo";
-            this.txtBasicInfo.ReadOnly = true;
-            this.txtBasicInfo.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtBasicInfo.Size = new System.Drawing.Size(418, 105);
-            this.txtBasicInfo.TabIndex = 6;
             // 
             // txtAdvInfo
             // 
@@ -131,9 +131,9 @@
             // 
             // btnViewResults
             // 
-            this.btnViewResults.Location = new System.Drawing.Point(183, 201);
+            this.btnViewResults.Location = new System.Drawing.Point(175, 201);
             this.btnViewResults.Name = "btnViewResults";
-            this.btnViewResults.Size = new System.Drawing.Size(81, 23);
+            this.btnViewResults.Size = new System.Drawing.Size(97, 23);
             this.btnViewResults.TabIndex = 7;
             this.btnViewResults.Text = "View &Results";
             this.btnViewResults.UseVisualStyleBackColor = true;
@@ -149,7 +149,7 @@
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.lblElapsed);
             this.Controls.Add(this.lblTaskState);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "fclsTaskInformation";

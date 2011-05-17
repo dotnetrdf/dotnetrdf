@@ -440,6 +440,38 @@ namespace VDS.RDF.Utilities.StoreManager
             }
         }
 
+        private void mnuViewErrors_Click(object sender, EventArgs e)
+        {
+            if (this.lvwTasks.SelectedItems.Count > 0)
+            {
+                ListViewItem item = this.lvwTasks.SelectedItems[0];
+                Object tag = item.Tag;
+
+                if (tag is QueryTask)
+                {
+                    fclsTaskErrorTrace<Object> queryInfo = new fclsTaskErrorTrace<object>((ITask<Object>)tag, this._manager.ToString());
+                    queryInfo.MdiParent = this.MdiParent;
+                    queryInfo.Show();
+                }
+                else if (tag is ListGraphsTask)
+                {
+                    fclsTaskErrorTrace<IEnumerable<Uri>> listInfo = new fclsTaskErrorTrace<IEnumerable<Uri>>((ITask<IEnumerable<Uri>>)tag, this._manager.ToString());
+                    listInfo.MdiParent = this.MdiParent;
+                    listInfo.Show();
+                }
+                else if (tag is ITask<TaskResult>)
+                {
+                    fclsTaskErrorTrace<TaskResult> simpleInfo = new fclsTaskErrorTrace<TaskResult>((ITask<TaskResult>)tag, this._manager.ToString());
+                    simpleInfo.MdiParent = this.MdiParent;
+                    simpleInfo.Show();
+                }
+                else
+                {
+                    MessageBox.Show("Task Information cannot be shown as the Task type is unknown", "Task Information Unavailable", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            }
+        }
+
         private void mnuViewResults_Click(object sender, EventArgs e)
         {
             if (this.lvwTasks.SelectedItems.Count > 0)
@@ -686,5 +718,6 @@ namespace VDS.RDF.Utilities.StoreManager
         }
 
         #endregion
+
     }
 }

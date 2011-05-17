@@ -130,13 +130,14 @@
             // 
             // lblGraphListUnavailable
             // 
-            this.lblGraphListUnavailable.AutoSize = true;
             this.lblGraphListUnavailable.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblGraphListUnavailable.Location = new System.Drawing.Point(26, 112);
+            this.lblGraphListUnavailable.Location = new System.Drawing.Point(26, 117);
             this.lblGraphListUnavailable.Name = "lblGraphListUnavailable";
-            this.lblGraphListUnavailable.Size = new System.Drawing.Size(463, 13);
+            this.lblGraphListUnavailable.Size = new System.Drawing.Size(463, 40);
             this.lblGraphListUnavailable.TabIndex = 6;
-            this.lblGraphListUnavailable.Text = "Unable to list Graphs since your selected Store does not support SPARQL Query";
+            this.lblGraphListUnavailable.Text = "Unable to list Graphs since your selected Store does not support this feature fro" +
+                "m within this Tool";
+            this.lblGraphListUnavailable.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.lblGraphListUnavailable.Visible = false;
             // 
             // btnGraphRefresh
@@ -566,6 +567,7 @@
             this.mnuViewErrors.Name = "mnuViewErrors";
             this.mnuViewErrors.Size = new System.Drawing.Size(186, 22);
             this.mnuViewErrors.Text = "View Error Trace";
+            this.mnuViewErrors.Click += new System.EventHandler(this.mnuViewErrors_Click);
             // 
             // View
             // 
@@ -644,7 +646,6 @@
             this.Load += new System.EventHandler(this.fclsGenericStoreManager_Load);
             this.tabFunctions.ResumeLayout(false);
             this.tabGraphs.ResumeLayout(false);
-            this.tabGraphs.PerformLayout();
             this.tabSparqlQuery.ResumeLayout(false);
             this.tabSparqlQuery.PerformLayout();
             this.tabSparqlUpdate.ResumeLayout(false);

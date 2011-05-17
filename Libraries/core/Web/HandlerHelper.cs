@@ -185,6 +185,16 @@ namespace VDS.RDF.Web
         /// </summary>
         /// <param name="context">Context of the HTTP Request</param>
         /// <param name="result">Results of the Sparql Query</param>
+        public static void SendToClient(HttpContext context, Object result)
+        {
+            HandlerHelper.SendToClient(context, result, null);
+        }
+
+        /// <summary>
+        /// Helper function which returns the Results (Graph/Triple Store/SPARQL Results) back to the Client in one of their accepted formats
+        /// </summary>
+        /// <param name="context">Context of the HTTP Request</param>
+        /// <param name="result">Results of the Sparql Query</param>
         /// <param name="config">Handler Configuration</param>
         public static void SendToClient(HttpContext context, Object result, BaseHandlerConfiguration config)
         {
@@ -218,7 +228,7 @@ namespace VDS.RDF.Web
                 sparqlwriter = definition.GetSparqlResultsWriter();
 
                 context.Response.ContentType = definition.CanonicalMimeType;
-                if (sparqlwriter is IHtmlWriter)
+                if (config != null && sparqlwriter is IHtmlWriter)
                 {
                     ((IHtmlWriter)sparqlwriter).Stylesheet = config.Stylesheet;
                 }
@@ -253,7 +263,7 @@ namespace VDS.RDF.Web
                 {
                     ((ICompressingWriter)rdfwriter).CompressionLevel = Options.DefaultCompressionLevel;
                 }
-                if (rdfwriter is IHtmlWriter)
+                if (config != null && rdfwriter is IHtmlWriter)
                 {
                     ((IHtmlWriter)rdfwriter).Stylesheet = config.Stylesheet;
                 }
@@ -291,7 +301,7 @@ namespace VDS.RDF.Web
                 //Setup the writer
                 if (definition != null) ctype = definition.CanonicalMimeType;
                 context.Response.ContentType = ctype;
-                if (storewriter is IHtmlWriter)
+                if (config != null && storewriter is IHtmlWriter)
                 {
                     ((IHtmlWriter)storewriter).Stylesheet = config.Stylesheet;
                 }
