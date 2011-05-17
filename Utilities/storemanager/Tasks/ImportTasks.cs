@@ -20,6 +20,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
 
         protected override void ImportUsingHandler(IRdfHandler handler)
         {
+            this.Information = "Importing from File " + this._file;
             try
             {
                 //Assume a RDF Graph
@@ -46,6 +47,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
 
         protected override void ImportUsingHandler(IRdfHandler handler)
         {
+            this.Information = "Importing from URI " + this._u.ToString();
             try
             {
                 //Assume a RDF Graph

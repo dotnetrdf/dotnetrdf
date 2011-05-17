@@ -176,11 +176,6 @@ namespace VDS.RDF.Utilities.StoreManager
             fclsSQLStoreManager storeManager = new fclsSQLStoreManager();
             storeManager.MdiParent = this;
             storeManager.Show();
-
-            if (this.MdiChildren.Count() > 1)
-            {
-                this.LayoutMdi(MdiLayout.Cascade);
-            }
         }
 
         private void mnuNewGenericStoreManager_Click(object sender, EventArgs e)
@@ -195,11 +190,6 @@ namespace VDS.RDF.Utilities.StoreManager
 
                 //Add to Recent Connections
                 this.AddRecentConnection(manager);
-
-                if (this.MdiChildren.Count() > 1)
-                {
-                    this.LayoutMdi(MdiLayout.Cascade);
-                }
             }
         }
 

@@ -102,7 +102,7 @@ namespace VDS.RDF.Utilities.StoreManager
 
         private void ListGraphs()
         {
-            ListGraphsTasks task = new ListGraphsTasks(this._manager);
+            ListGraphsTask task = new ListGraphsTask(this._manager);
             this.AddTask<IEnumerable<Uri>>(task, this.ListGraphsCallback);
         }
 
@@ -270,7 +270,7 @@ namespace VDS.RDF.Utilities.StoreManager
                 {
                     g.BaseUri = new Uri(graphUri);
                 }
-                GraphViewerForm graphViewer = new GraphViewerForm(g, "dotNetRDF Store Manager");
+                GraphViewerForm graphViewer = new GraphViewerForm(g, this._manager.ToString());
                 graphViewer.MdiParent = this.MdiParent;
                 graphViewer.Show();
             }
@@ -358,9 +358,9 @@ namespace VDS.RDF.Utilities.StoreManager
                         this.mnuViewResults.Enabled = false;
                         this.mnuCancel.Enabled = (importTask.IsCancellable && importTask.State != TaskState.Completed && importTask.State != TaskState.CompletedWithErrors);
                     }
-                    else if (tag is ListGraphsTasks)
+                    else if (tag is ListGraphsTask)
                     {
-                        ListGraphsTasks graphsTask = (ListGraphsTasks)tag;
+                        ListGraphsTask graphsTask = (ListGraphsTask)tag;
                         this.mnuViewErrors.Enabled = graphsTask.Error != null;
                         this.mnuViewResults.Enabled = false;
                         this.mnuCancel.Enabled = graphsTask.IsCancellable;
@@ -402,7 +402,6 @@ namespace VDS.RDF.Utilities.StoreManager
             }
         }
 
-
         private void mnuViewDetail_Click(object sender, EventArgs e)
         {
             if (this.lvwTasks.SelectedItems.Count > 0)
@@ -410,23 +409,29 @@ namespace VDS.RDF.Utilities.StoreManager
                 ListViewItem item = this.lvwTasks.SelectedItems[0];
                 Object tag = item.Tag;
 
-                if (tag is ITask<TaskResult>)
+                if (tag is QueryTask)
                 {
-                    fclsTaskInformation<TaskResult> simpleInfo = new fclsTaskInformation<TaskResult>((ITask<TaskResult>)tag);
-                    simpleInfo.MdiParent = this.MdiParent;
-                    simpleInfo.Show();
-                }
-                else if (tag is QueryTask)
-                {
-                    fclsTaskInformation<Object> queryInfo = new fclsTaskInformation<object>((ITask<Object>)tag);
+                    fclsTaskInformation<Object> queryInfo = new fclsTaskInformation<object>((QueryTask)tag, this._manager.ToString());
                     queryInfo.MdiParent = this.MdiParent;
                     queryInfo.Show();
                 }
-                else if (tag is ListGraphsTasks)
+                else if (tag is UpdateTask)
                 {
-                    fclsTaskInformation<IEnumerable<Uri>> listInfo = new fclsTaskInformation<IEnumerable<Uri>>((ITask<IEnumerable<Uri>>)tag);
+                    fclsTaskInformation<TaskResult> updateInfo = new fclsTaskInformation<TaskResult>((UpdateTask)tag, this._manager.ToString());
+                    updateInfo.MdiParent = this.MdiParent;
+                    updateInfo.Show();
+                }
+                else if (tag is ListGraphsTask)
+                {
+                    fclsTaskInformation<IEnumerable<Uri>> listInfo = new fclsTaskInformation<IEnumerable<Uri>>((ListGraphsTask)tag, this._manager.ToString());
                     listInfo.MdiParent = this.MdiParent;
                     listInfo.Show();
+                }
+                else if (tag is ITask<TaskResult>)
+                {
+                    fclsTaskInformation<TaskResult> simpleInfo = new fclsTaskInformation<TaskResult>((ITask<TaskResult>)tag, this._manager.ToString());
+                    simpleInfo.MdiParent = this.MdiParent;
+                    simpleInfo.Show();
                 }
                 else
                 {
@@ -571,13 +576,13 @@ namespace VDS.RDF.Utilities.StoreManager
 
                 if (result is IGraph)
                 {
-                    GraphViewerForm graphViewer = new GraphViewerForm((IGraph)result);
+                    GraphViewerForm graphViewer = new GraphViewerForm((IGraph)result, this._manager.ToString());
                     CrossThreadSetMdiParent(graphViewer);
                     CrossThreadShow(graphViewer);
                 }
                 else if (result is SparqlResultSet)
                 {
-                    ResultSetViewerForm resultsViewer = new ResultSetViewerForm((SparqlResultSet)result);
+                    ResultSetViewerForm resultsViewer = new ResultSetViewerForm((SparqlResultSet)result, this._manager.ToString());
                     CrossThreadSetMdiParent(resultsViewer);
                     CrossThreadShow(resultsViewer);
                 }

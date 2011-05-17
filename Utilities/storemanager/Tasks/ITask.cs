@@ -62,6 +62,11 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
             get;
         }
 
+        TimeSpan? Elapsed
+        {
+            get;
+        }
+
         TResult Result
         {
             get;

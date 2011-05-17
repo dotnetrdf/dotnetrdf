@@ -8,7 +8,7 @@ using VDS.RDF.Update;
 
 namespace VDS.RDF.Utilities.StoreManager.Tasks
 {
-    class UpdateTask : NonCancellableTask<TaskResult>
+    public class UpdateTask : NonCancellableTask<TaskResult>
     {
         private IGenericIOManager _manager;
         private String _update;

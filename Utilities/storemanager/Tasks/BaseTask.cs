@@ -13,6 +13,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         private Exception _error;
         private TResult _result;
         private TaskCallback<TResult> _callback;
+        private DateTime? _start = null, _end = null;
 
         public BaseTask(String name)
         {
@@ -68,6 +69,25 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
             }
         }
 
+        public TimeSpan? Elapsed
+        {
+            get
+            {
+                if (this._start == null)
+                {
+                    return null;
+                }
+                else if (this._end != null)
+                {
+                    return (this._end.Value - this._start.Value);
+                }
+                else
+                {
+                    return (DateTime.Now - this._start.Value);
+                }
+            }
+        }
+
         public TResult Result
         {
             get
@@ -78,6 +98,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
 
         public void RunTask(TaskCallback<TResult> callback)
         {
+            this._start = DateTime.Now;
             this._callback = callback;
             this.State = TaskState.Starting;
             this._delegate.BeginInvoke(new AsyncCallback(this.CompleteTask), null);
@@ -105,6 +126,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
             }
             finally
             {
+                this._end = DateTime.Now;
                 //Invoke the Callback
                 this._callback(this);
             }

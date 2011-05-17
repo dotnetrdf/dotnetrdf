@@ -8,11 +8,11 @@ using VDS.RDF.Storage;
 
 namespace VDS.RDF.Utilities.StoreManager.Tasks
 {
-    public class ListGraphsTasks : NonCancellableTask<IEnumerable<Uri>>
+    public class ListGraphsTask : NonCancellableTask<IEnumerable<Uri>>
     {
         private IGenericIOManager _manager;
 
-        public ListGraphsTasks(IGenericIOManager manager)
+        public ListGraphsTask(IGenericIOManager manager)
             : base("List Graphs")
         {
             this._manager = manager;
