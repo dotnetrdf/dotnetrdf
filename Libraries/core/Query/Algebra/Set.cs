@@ -102,7 +102,7 @@ namespace VDS.RDF.Query.Algebra
             this._values = new Dictionary<string, INode>();
             foreach (KeyValuePair<String, PatternItem> binding in tuple.Values)
             {
-                this.Add(binding.Key, ((NodeMatchPattern)binding.Value).Node);
+                this.Add(binding.Key, tuple[binding.Key]);
             }
         }
 

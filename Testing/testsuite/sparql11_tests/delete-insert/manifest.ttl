@@ -24,6 +24,8 @@
 	:dawg-delete-insert-06b
 	:dawg-delete-insert-07
 	:dawg-delete-insert-07b
+	:dawg-delete-insert-08
+	:dawg-delete-insert-09
    ).
 
 :dawg-delete-insert-01 a ut:UpdateEvaluationTest ;
@@ -67,25 +69,19 @@
     mf:result [ ut:data <delete-insert-post-02.ttl>
               ] .
 
-:dawg-delete-insert-03 a ut:UpdateEvaluationTest ;
+:dawg-delete-insert-03
+    a mf:NegativeSyntaxTest11 ;
     mf:name    "DELETE INSERT 3" ;
     rdfs:comment "This deletes all foaf:knows relations from anyone named 'Alan' using an unnamed bnode as wildcard" ;
     dawgt:approval dawgt:NotClassified ;
-    mf:action [ ut:request <delete-insert-03.ru> ; 
-                ut:data <delete-insert-pre-01.ttl>
-              ] ;
-    mf:result [ ut:data <delete-insert-post-02.ttl>
-              ] .
+    mf:action <delete-insert-03.ru> .
 
-:dawg-delete-insert-03b a ut:UpdateEvaluationTest ;
+:dawg-delete-insert-03b
+    a mf:NegativeSyntaxTest11 ;
     mf:name    "DELETE INSERT 3b" ;
     rdfs:comment "This deletes all foaf:knows relations from anyone named 'Alan' using a named bnode as wildcard" ;
     dawgt:approval dawgt:NotClassified ;
-    mf:action [ ut:request <delete-insert-03b.ru> ; 
-                ut:data <delete-insert-pre-01.ttl>
-              ] ;
-    mf:result [ ut:data <delete-insert-post-02.ttl>
-              ] .
+    mf:action <delete-insert-03b.ru> .
 
 :dawg-delete-insert-04 a ut:UpdateEvaluationTest ;
     mf:name    "DELETE INSERT 4" ;
@@ -107,15 +103,12 @@
     mf:result [ ut:data <delete-insert-post-02.ttl>
               ] .
 
-:dawg-delete-insert-05 a ut:UpdateEvaluationTest ;
+:dawg-delete-insert-05
+    a mf:NegativeSyntaxTest11 ;
     mf:name    "DELETE INSERT 5" ;
     rdfs:comment "This deletes all foaf:knows relations from anyone named 'Alan' and inserts that all 'Alans' know themselves only." ;
     dawgt:approval dawgt:NotClassified ;
-    mf:action [ ut:request <delete-insert-05.ru> ; 
-                ut:data <delete-insert-pre-01.ttl>
-              ] ;
-    mf:result [ ut:data <delete-insert-post-05.ttl>
-              ] .
+    mf:action <delete-insert-05.ru> .
 
 :dawg-delete-insert-05b a ut:UpdateEvaluationTest ;
     mf:name    "DELETE INSERT 5b" ;
@@ -127,15 +120,12 @@
     mf:result [ ut:data <delete-insert-post-05.ttl>
               ] .
 
-:dawg-delete-insert-06 a ut:UpdateEvaluationTest ;
+:dawg-delete-insert-06
+    a mf:NegativeSyntaxTest11 ;
     mf:name    "DELETE INSERT 6" ;
     rdfs:comment "dawg-delete-insert-06 and dawg-delete-insert-06b show that the rewriting in dawg-delete-insert-05b.ru isn't equivalent to dawg-delete-insert-05.ru in case Alan doesn't know anybody." ;
     dawgt:approval dawgt:NotClassified ;
-    mf:action [ ut:request <delete-insert-05.ru> ; 
-                ut:data <delete-insert-pre-06.ttl>
-              ] ;
-    mf:result [ ut:data <delete-insert-post-05.ttl>
-              ] .
+    mf:action <delete-insert-05.ru> .
 
 :dawg-delete-insert-06b a ut:UpdateEvaluationTest ;
     mf:name    "DELETE INSERT 6b" ;
@@ -147,22 +137,31 @@
     mf:result [ ut:data <delete-insert-pre-06.ttl>
               ] .
 
-:dawg-delete-insert-07 a ut:UpdateEvaluationTest ;
+:dawg-delete-insert-07
+    a mf:NegativeSyntaxTest11 ;
     mf:name    "DELETE INSERT 7" ;
     rdfs:comment "This deletes all foaf:knows relations from anyone named 'Alan' and inserts a single foaf:knows triple with a blank node as object for 'Alan'. This shows the different behavior of bnodes in INSERT (similar to CONSTRUCT) and DELETE (bnodes act as wildcards) templates." ;
     dawgt:approval dawgt:NotClassified ;
-    mf:action [ ut:request <delete-insert-07.ru> ; 
-                ut:data <delete-insert-pre-01.ttl>
-              ] ;
-    mf:result [ ut:data <delete-insert-post-07.ttl>
-              ] .
+    mf:action <delete-insert-07.ru> .
 
-:dawg-delete-insert-07b a ut:UpdateEvaluationTest ;
+:dawg-delete-insert-07b 
+    a mf:NegativeSyntaxTest11 ;
     mf:name    "DELETE INSERT 7b" ;
     rdfs:comment "This deletes all foaf:knows relations from anyone named 'Alan' and replaces them by bnodes. This shows the different behavior of bnodes in INSERT (similar to CONSTRUCT) and DELETE (bnodes act as wildcards) templates. As opposed to test case dawg-delete-insert-7, note that the result graph in this example is non-lean." ;
     dawgt:approval dawgt:NotClassified ;
-    mf:action [ ut:request <delete-insert-07b.ru> ; 
-                ut:data <delete-insert-pre-01.ttl>
-              ] ;
-    mf:result [ ut:data <delete-insert-post-07b.ttl>
-              ] .
+    mf:action <delete-insert-07b.ru> .
+
+
+:dawg-delete-insert-08
+    a mf:NegativeSyntaxTest11 ;
+    mf:name    "DELETE INSERT 8" ;
+    rdfs:comment "This DELETE test was first brought up in http://lists.w3.org/Archives/Public/public-rdf-dawg/2011JanMar/0290.html. It demonstrates how unbound variables (from an OPTIONAL) are handled in DELETE templates" ;
+    dawgt:approval dawgt:NotClassified ;
+    mf:action <delete-insert-08.ru> .
+
+:dawg-delete-insert-09
+    a mf:NegativeSyntaxTest11 ;
+    mf:name    "DELETE INSERT 9" ;
+    rdfs:comment "This DELETE test was first brought up in http://lists.w3.org/Archives/Public/public-rdf-dawg/2011JanMar/0317.html. It demonstrates the behavior of shared bnodes in a DELETE template." ;
+    dawgt:approval dawgt:NotClassified ;
+    mf:action <delete-insert-09.ru> .

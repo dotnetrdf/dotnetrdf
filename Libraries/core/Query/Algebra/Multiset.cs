@@ -137,12 +137,10 @@ namespace VDS.RDF.Query.Algebra
             Multiset joinedSet = new Multiset();
             foreach (Set x in this.Sets)
             {
-                //New way of selecting Sets to join with (means the Distinct() in the next loop is not needed)
-                //For sets to be compatible for every joinable variable they must meet one of the 3 criteria:
-                //1 - Both the LHS and RHS have a null as the value
-                //2 - The RHS is null (this allows for situations where the RHS may not return a value for some variables as they may be in an OPTIONAL
-                //3 - Both the LHS and RHS have the same non-null value
-                IEnumerable<Set> ys = other.Sets.Where(s => joinVars.All(v => (x[v] == null && s[v] == null) || s[v] == null || (x[v] != null && x[v].Equals(s[v]))));
+                //For sets to be compatible for every joinable variable they must either have a null for the
+                //variable in one of the sets or if they have values the values must be equal
+
+                IEnumerable<Set> ys = other.Sets.Where(s => joinVars.All(v => x[v] == null || s[v] == null || x[v].Equals(s[v])));
 
                 foreach (Set y in ys)
                 {

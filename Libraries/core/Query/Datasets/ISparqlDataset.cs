@@ -308,11 +308,21 @@ namespace VDS.RDF.Query.Datasets
         /// <summary>
         /// Ensures that any changes to the Dataset (if any) are flushed to the underlying Storage
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// While partly intended for use in implementations which support transactions though other implementations may wish to use this to ensure that changes to the dataset are persisted properly
+        /// </para>
+        /// </remarks>
         void Flush();
 
         /// <summary>
         /// Ensures that any changes to the Dataset (if any) are discarded
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Primarily intended for use in implementations which support transactions though other implementations may wish to use this to ensure that changes to the dataset are persisted properly
+        /// </para>
+        /// </remarks>
         void Discard();
     }
 

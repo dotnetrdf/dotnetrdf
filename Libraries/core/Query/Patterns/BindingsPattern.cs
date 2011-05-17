@@ -209,6 +209,17 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
+        /// Gets whether the Tuple is complete i.e. has no undefined entries
+        /// </summary>
+        public bool IsComplete
+        {
+            get
+            {
+                return this._values.Values.All(v => v != null);
+            }
+        }
+
+        /// <summary>
         /// Gets the String representation of the Tuple
         /// </summary>
         /// <returns></returns>

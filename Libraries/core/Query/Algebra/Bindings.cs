@@ -67,9 +67,6 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
-            //Setup the Input Multiset appropriately
-            context.InputMultiset = this._bindings.ToMultiset();
-
             //Evalute the Pattern
             BaseMultiset results = this._pattern.Evaluate(context);
 
@@ -81,9 +78,9 @@ namespace VDS.RDF.Query.Algebra
             }
             else
             {
-                //Result is an ExistsJoin from the results to the Input Bindings
-                context.OutputMultiset = results.ExistsJoin(this._bindings.ToMultiset(), true);
-                return results;
+                //Result is an Join from the results to the Input Bindings
+                context.OutputMultiset = results.Join(this._bindings.ToMultiset());
+                return context.OutputMultiset;
             }
         }
 
