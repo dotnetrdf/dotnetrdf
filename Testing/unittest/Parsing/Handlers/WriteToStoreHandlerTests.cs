@@ -1,8 +1,9 @@
 ﻿using System;
-using System.Text;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
@@ -18,6 +19,7 @@ namespace VDS.RDF.Test.Parsing.Handlers
     public class WriteToStoreHandlerTests
     {
         private readonly Uri TestGraphUri = new Uri("http://example.org/WriteToStoreHandlerTest");
+        private readonly Uri TestBNodeUri = new Uri("http://example.org/WriteToStoreHandlerTest/BNodes");
 
         private void EnsureTestData()
         {
@@ -114,6 +116,43 @@ namespace VDS.RDF.Test.Parsing.Handlers
             Assert.IsTrue(gD.ContainsTriple(new Triple(d, d, d)), "d Graph should have the d triple");
         }
 
+        private void TestWriteToStoreHandlerWithBNodes(IGenericIOManager manager)
+        {
+            String fragment = "@prefix : <http://example.org/>. :subj :has [ a :BNode ; :with \"value\" ] .";
+
+            //Try to ensure that the target Graph does not exist
+            if (manager.DeleteSupported)
+            {
+                manager.DeleteGraph(TestBNodeUri);
+            } 
+            else 
+            {
+                Graph temp = new Graph();
+                temp.BaseUri = TestBNodeUri;
+                manager.SaveGraph(temp);
+            }
+
+            //Then write to the store
+            TurtleParser parser = new TurtleParser();
+            WriteToStoreHandler handler = new WriteToStoreHandler(manager, TestBNodeUri, 1);
+            parser.Load(handler, new StringReader(fragment));
+
+            //Then load back the data and check it
+            Graph g = new Graph();
+            manager.LoadGraph(g, TestBNodeUri);
+
+            Assert.AreEqual(3, g.Triples.Count, "Should be 3 Triples");
+            List<IBlankNode> nodes = g.Nodes.BlankNodes.ToList();
+            for (int i = 0; i < nodes.Count; i++)
+            {
+                for (int j = 0; j < nodes.Count; j++)
+                {
+                    if (i == j) continue;
+                    Assert.AreEqual(nodes[i], nodes[j], "All Blank Nodes should be the same");
+                }
+            }
+        }
+
         [TestMethod, ExpectedException(typeof(ArgumentNullException))]
         public void ParsingWriteToStoreHandlerBadInstantiation()
         {
@@ -186,6 +225,42 @@ namespace VDS.RDF.Test.Parsing.Handlers
         {
             VirtuosoManager virtuoso = new VirtuosoManager("DB", "dba", "dba");
             this.TestWriteToStoreDatasetsHandler(virtuoso);
+        }
+
+        [TestMethod]
+        public void ParsingWriteToStoreHandlerBNodesAcrossBatchesAllegroGraph()
+        {
+            AllegroGraphConnector agraph = new AllegroGraphConnector("http://localhost:9875", "test", "unittest");
+            this.TestWriteToStoreHandlerWithBNodes(agraph);
+        }
+
+        [TestMethod]
+        public void ParsingWriteToStoreHandlerBNodesAcrossBatchesFuseki()
+        {
+            FusekiConnector fuseki = new FusekiConnector("http://localhost:3030/dataset/data");
+            this.TestWriteToStoreHandlerWithBNodes(fuseki);
+        }
+
+        [TestMethod]
+        public void ParsingWriteToStoreHandlerBNodesAcrossBatchesInMemory()
+        {
+            InMemoryManager manager = new InMemoryManager();
+            this.TestWriteToStoreHandlerWithBNodes(manager);
+        }
+
+        [TestMethod]
+        public void ParsingWriteToStoreHandlerBNodesAcrossBatchesSql()
+        {
+            MicrosoftSqlStoreManager sql = new MicrosoftSqlStoreManager("unit_test", "example", "password");
+            this.TestWriteToStoreHandlerWithBNodes(sql);
+            sql.Dispose();
+        }
+
+        [TestMethod]
+        public void ParsingWriteToStoreHandlerBNodesAcrossBatchesVirtuoso()
+        {
+            VirtuosoManager virtuoso = new VirtuosoManager("DB", "dba", "dba");
+            this.TestWriteToStoreHandlerWithBNodes(virtuoso);
         }
     }
 }
