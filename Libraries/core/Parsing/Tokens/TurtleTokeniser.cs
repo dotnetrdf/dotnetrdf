@@ -158,6 +158,8 @@ namespace VDS.RDF.Parsing.Tokens
 
                         //Get the Next Character
                         char next = this.Peek();
+
+                        //Always need to do a check for End of Stream after Peeking to handle empty files OK
                         if (next == Char.MaxValue && this._in.EndOfStream)
                         {
                             if (this.Length == 0)

@@ -125,6 +125,7 @@
     <Compile Include="Hypercube.cs" />
     <Compile Include="Parsing\BaseUriAssignmentTests.cs" />
     <Compile Include="Parsing\BlockingTextReaderTests.cs" />
+    <Compile Include="Parsing\EmptyFileParsing.cs" />
     <Compile Include="Parsing\Handlers\ChainedHandlerTests.cs" />
     <Compile Include="Parsing\Handlers\UriLoaderHandlerTests.cs" />
     <Compile Include="Parsing\Handlers\CountHandlerTests.cs" />
