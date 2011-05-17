@@ -302,6 +302,13 @@ namespace VDS.RDF.Update.Protocol
             //Get the Graph URI of the Graph to delete
             Uri graphUri = this.ResolveGraphUri(context);
 
+            //Must return a 404 if the Graph doesn't exist
+            if (!this.HasGraph(graphUri))
+            {
+                context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                return;
+            }
+
             //Generate a DROP GRAPH command based on this
             SparqlParameterizedString drop = new SparqlParameterizedString("DROP ");
             if (graphUri != null)
@@ -329,13 +336,18 @@ namespace VDS.RDF.Update.Protocol
 
             try
             {
-                //Send the Content Type we'd select based on the Accept header to the user
-                IGraph g = this.GetGraph(graphUri);
-                String ctype;
-                IRdfWriter writer = MimeTypesHelper.GetWriter(context.Request.AcceptTypes, out ctype);
-                context.Response.ContentType = ctype;
-
-                //We don't send the Graph as this is a HEAD request and that would be the body
+                bool exists = this.HasGraph(graphUri);
+                if (exists)
+                {
+                    //Send the Content Type we'd select based on the Accept header to the user
+                    String ctype;
+                    IRdfWriter writer = MimeTypesHelper.GetWriter(context.Request.AcceptTypes, out ctype);
+                    context.Response.ContentType = ctype;
+                }
+                else
+                {
+                    context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                }
             }
             catch (RdfQueryException)
             {
@@ -407,7 +419,7 @@ namespace VDS.RDF.Update.Protocol
         /// <returns></returns>
         protected override IGraph GetGraph(Uri graphUri)
         {
-            //Then generate a CONSTRUCT query based on this
+            //Generate a CONSTRUCT query based on the Graph URI
             SparqlParameterizedString construct = new SparqlParameterizedString();
             if (graphUri != null)
             {
@@ -429,6 +441,38 @@ namespace VDS.RDF.Update.Protocol
             else
             {
                 throw new SparqlHttpProtocolException("Failed to retrieve a Graph since the query processor did not return a valid Graph as expected");
+            }
+        }
+
+        /// <summary>
+        /// Determines whether a Graph with the given URI exists
+        /// </summary>
+        /// <param name="graphUri">Graph URI</param>
+        /// <returns></returns>
+        protected override bool HasGraph(Uri graphUri)
+        {
+            //Generate an ASK query based on the Graph URI
+            SparqlParameterizedString ask = new SparqlParameterizedString();
+            if (graphUri != null)
+            {
+                ask.CommandText = "ASK WHERE { GRAPH @graph { ?s ?p ?o . } }";
+                ask.SetUri("graph", graphUri);
+            }
+            else
+            {
+                ask.CommandText = "ASK WHERE { ?s ?p ?o }";
+            }
+            SparqlQueryParser parser = new SparqlQueryParser();
+            SparqlQuery q = parser.ParseFromString(ask);
+
+            Object results = this._queryProcessor.ProcessQuery(q);
+            if (results is SparqlResultSet)
+            {
+                return ((SparqlResultSet)results).Result;
+            }
+            else
+            {
+                throw new SparqlHttpProtocolException("Failed to retrieve a Boolean Result since the query processor did not return a valid SPARQL Result Set as expected");
             }
         }
     }

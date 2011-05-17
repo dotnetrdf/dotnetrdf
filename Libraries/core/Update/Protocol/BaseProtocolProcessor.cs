@@ -290,6 +290,13 @@ namespace VDS.RDF.Update.Protocol
         /// </para>
         /// </remarks>
         protected abstract IGraph GetGraph(Uri graphUri);
+
+        /// <summary>
+        /// Determines whether a Graph with the given URI exists
+        /// </summary>
+        /// <param name="graphUri">Graph URI</param>
+        /// <returns></returns>
+        protected abstract bool HasGraph(Uri graphUri);
     }
 }
 

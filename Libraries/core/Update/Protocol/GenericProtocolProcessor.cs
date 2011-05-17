@@ -41,6 +41,7 @@ using System.IO;
 using System.Net;
 using System.Web;
 using VDS.RDF.Parsing;
+using VDS.RDF.Query;
 using VDS.RDF.Storage;
 
 namespace VDS.RDF.Update.Protocol
@@ -215,11 +216,28 @@ namespace VDS.RDF.Update.Protocol
                 return;
             }
 
-            IGraph g = new Graph();
-            Uri graphUri = this.ResolveGraphUri(context);
-            g.BaseUri = graphUri;
 
-            this._manager.SaveGraph(g);
+            Uri graphUri = this.ResolveGraphUri(context);
+            if (this.HasGraph(graphUri))
+            {
+                if (this._manager.DeleteSupported)
+                {
+                    this._manager.DeleteGraph(graphUri);
+                }
+                else
+                {
+                    //Have to simulate deletion by replacing with an empty graph
+                    IGraph g = new Graph();
+                    g.BaseUri = graphUri;
+
+                    this._manager.SaveGraph(g);
+                }
+            }
+            else
+            {
+                //If no Graph MUST respond 404
+                context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+            }
         }
 
         /// <summary>
@@ -228,23 +246,31 @@ namespace VDS.RDF.Update.Protocol
         /// <param name="context">HTTP Context</param>
         public override void ProcessHead(HttpContext context)
         {
+            //Work out the Graph URI we want to get
             Uri graphUri = this.ResolveGraphUri(context);
-            IGraph g;
+
             try
             {
-                g = this.GetGraph(graphUri);
+                bool exists = this.HasGraph(graphUri);
+                if (exists)
+                {
+                    //Send the Content Type we'd select based on the Accept header to the user
+                    String ctype;
+                    IRdfWriter writer = MimeTypesHelper.GetWriter(context.Request.AcceptTypes, out ctype);
+                    context.Response.ContentType = ctype;
+                }
+                else
+                {
+                    context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                }
             }
-            catch
+            catch (RdfQueryException)
             {
-                //If there is an error then we assume the Graph does not exist
+                //If the GetGraph() method errors this implies that the Store does not contain the Graph
+                //In such a case we should return a 404
                 context.Response.StatusCode = (int)HttpStatusCode.NotFound;
                 return;
             }
-
-            String ctype;
-            IRdfWriter writer = MimeTypesHelper.GetWriter(context.Request.AcceptTypes, out ctype);
-            context.Response.ContentType = ctype;
-            //Same as ProcessGet except we don't send the Body
         }
 
         /// <summary>
@@ -313,6 +339,44 @@ namespace VDS.RDF.Update.Protocol
             Graph g = new Graph();
             this._manager.LoadGraph(g, graphUri);
             return g;
+        }
+
+        /// <summary>
+        /// Determines whether a Graph with the given URI exists
+        /// </summary>
+        /// <param name="graphUri">Graph URI</param>
+        /// <returns></returns>
+        protected override bool HasGraph(Uri graphUri)
+        {
+            if (this._manager is IQueryableGenericIOManager)
+            {
+                //Generate an ASK query based on this
+                SparqlParameterizedString ask = new SparqlParameterizedString();
+                if (graphUri != null)
+                {
+                    ask.CommandText = "ASK WHERE { GRAPH @graph { ?s ?p ?o . } }";
+                    ask.SetUri("graph", graphUri);
+                }
+                else
+                {
+                    ask.CommandText = "ASK WHERE { ?s ?p ?o }";
+                }
+
+                Object results = ((IQueryableGenericIOManager)this._manager).Query(ask.ToString());
+                if (results is SparqlResultSet)
+                {
+                    return ((SparqlResultSet)results).Result;
+                }
+                else
+                {
+                    throw new SparqlHttpProtocolException("Failed to retrieve a Boolean Result since the query processor did not return a valid SPARQL Result Set as expected");
+                }
+            }
+            else
+            {
+                IGraph g = this.GetGraph(graphUri);
+                return !g.IsEmpty;
+            }
         }
     }
 }
