@@ -24,8 +24,18 @@ namespace VDS.RDF.Utilities.Editor
         private List<String> _colours = new List<String>();
         private TextEditor _editor;
 
+        private List<String> _decorations;
+
         public AppearanceSettings(TextEditor editor)
         {
+            this._decorations = new List<string>()
+            {
+                "None",
+                "Baseline",
+                "OverLine",
+                "Strikethrough",
+                "Underline"
+            };
             InitializeComponent();
 
             this._editor = editor;
@@ -49,9 +59,18 @@ namespace VDS.RDF.Utilities.Editor
                 }
             }
 
-
             //Show current settings
             this.ShowSettings();
+        }
+
+        #region Display Settings
+
+        public IEnumerable<String> Decorations
+        {
+            get
+            {
+                return this._decorations;
+            }
         }
 
         private void ShowSettings()
@@ -60,8 +79,8 @@ namespace VDS.RDF.Utilities.Editor
             FontFamily font = (Properties.Settings.Default.EditorFontFace == null) ? this._editor.FontFamily : Properties.Settings.Default.EditorFontFace;
             this.cboFont.SelectedItem = font;
             this.fontSizeSlider.Value = Math.Round(Properties.Settings.Default.EditorFontSize);
-            this.txtEditorFontColor.Text = Properties.Settings.Default.EditorForeground.ToString();
-            this.txtEditorBackColor.Text = Properties.Settings.Default.EditorBackground.ToString();
+            this.ShowColour(this.cboEditorForeground, Properties.Settings.Default.EditorForeground);
+            this.ShowColour(this.cboEditorBackground, Properties.Settings.Default.EditorBackground);
 
             //Show Syntax Highlighting Settings
             this.ShowColour(this.cboColourXmlAttrName, Properties.Settings.Default.SyntaxColourXmlAttrName);
@@ -84,6 +103,13 @@ namespace VDS.RDF.Utilities.Editor
             this.ShowColour(this.cboColourStrings, Properties.Settings.Default.SyntaxColourString);
             this.ShowColour(this.cboColourURIs, Properties.Settings.Default.SyntaxColourURI);
             this.ShowColour(this.cboColourVariable, Properties.Settings.Default.SyntaxColourVariables);
+
+            //Show Error Highlighting Settings
+            font = (Properties.Settings.Default.EditorFontFace == null) ? this._editor.FontFamily : Properties.Settings.Default.ErrorHighlightFontFamily;
+            this.cboErrorFont.SelectedItem = font;
+            this.ShowDecoration(this.cboErrorDecoration, Properties.Settings.Default.ErrorHighlightDecoration);
+            this.ShowColour(this.cboColourErrorFont, Properties.Settings.Default.ErrorHighlightForeground);
+            this.ShowColour(this.cboColourErrorBackground, Properties.Settings.Default.ErrorHighlightBackground);
         }
 
         private void ShowColour(ComboBox combo, Color c)
@@ -99,6 +125,55 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
+        private Color GetColour(Color def, ComboBox combo)
+        {
+            try
+            {
+                if (combo.SelectedIndex < 0 || combo.SelectedIndex >= this._colours.Count)
+                {
+                    return def;
+                }
+                else
+                {
+                    return (Color)ColorConverter.ConvertFromString(this._colours[combo.SelectedIndex]);
+                }
+            }
+            catch
+            {
+                return def;
+            }
+        }
+
+        private void ShowDecoration(ComboBox combo, String decoration)
+        {
+            if (decoration == null || decoration.Equals(String.Empty))
+            {
+                decoration = "None";
+            }
+            for (int i = 0; i < this._decorations.Count; i++)
+            {
+                if (decoration.Equals(this._decorations[i]))
+                {
+                    combo.SelectedIndex = i;
+                    return;
+                }
+            }
+        }
+
+        private String GetDecoration(ComboBox combo)
+        {
+            if (combo.SelectedItem == null || combo.SelectedIndex < 0)
+            {
+                return null;
+            }
+            else
+            {
+                return _decorations[combo.SelectedIndex];
+            }
+        }
+
+        #endregion
+
         private void btnOK_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -106,8 +181,8 @@ namespace VDS.RDF.Utilities.Editor
                 //First save general Editor Appearance Settings
                 Properties.Settings.Default.EditorFontFace = (FontFamily)this.cboFont.SelectedItem;
                 Properties.Settings.Default.EditorFontSize = this.fontSizeSlider.Value;
-                Properties.Settings.Default.EditorForeground = (Color)ColorConverter.ConvertFromString(this.txtEditorFontColor.Text);
-                Properties.Settings.Default.EditorBackground = (Color)ColorConverter.ConvertFromString(this.txtEditorBackColor.Text);
+                Properties.Settings.Default.EditorForeground = this.GetColour(Properties.Settings.Default.EditorForeground, this.cboEditorForeground);
+                Properties.Settings.Default.EditorBackground = this.GetColour(Properties.Settings.Default.EditorBackground, this.cboEditorBackground);
                 Properties.Settings.Default.Save();
 
                 //Then save Syntax Highlighting Settings
@@ -132,6 +207,12 @@ namespace VDS.RDF.Utilities.Editor
                 Properties.Settings.Default.SyntaxColourURI = this.GetColour(Properties.Settings.Default.SyntaxColourURI, this.cboColourURIs);
                 Properties.Settings.Default.SyntaxColourVariables = this.GetColour(Properties.Settings.Default.SyntaxColourVariables, this.cboColourVariable);
 
+                //Then save the Error Highlighting Settings
+                Properties.Settings.Default.ErrorHighlightBackground = this.GetColour(Properties.Settings.Default.ErrorHighlightBackground, this.cboColourErrorBackground);
+                Properties.Settings.Default.ErrorHighlightDecoration = this.GetDecoration(this.cboErrorDecoration);
+                Properties.Settings.Default.ErrorHighlightFontFamily = (FontFamily)this.cboErrorFont.SelectedItem;
+                Properties.Settings.Default.ErrorHighlightForeground = this.GetColour(Properties.Settings.Default.ErrorHighlightForeground, this.cboColourErrorFont);
+
                 //Finally save the updated settings
                 Properties.Settings.Default.Save();
 
@@ -144,25 +225,6 @@ namespace VDS.RDF.Utilities.Editor
             catch (Exception ex)
             {
                 MessageBox.Show("An error occurred trying to save your settings: " + ex.Message, "Save Settings Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        private Color GetColour(Color def, ComboBox combo)
-        {
-            try
-            {
-                if (combo.SelectedIndex < 0 || combo.SelectedIndex >= this._colours.Count)
-                {
-                    return def;
-                }
-                else
-                {
-                    return (Color)ColorConverter.ConvertFromString(this._colours[combo.SelectedIndex]);
-                }
-            }
-            catch
-            {
-                return def;
             }
         }
 
@@ -235,6 +297,29 @@ namespace VDS.RDF.Utilities.Editor
         {
             this.DialogResult = false;
             this.Close();
+        }
+
+        private void btnErrorReset_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Properties.Settings.Default.ErrorHighlightBackground = Colors.DarkRed;
+                Properties.Settings.Default.ErrorHighlightForeground = Colors.White;
+                Properties.Settings.Default.ErrorHighlightDecoration = null;
+                Properties.Settings.Default.ErrorHighlightFontFamily = null;
+            }
+            catch
+            {
+                //Can't reset settings
+            }
+            this.ShowSettings();
+        }
+
+        private void btnResetAll_Click(object sender, RoutedEventArgs e)
+        {
+            btnReset_Click(sender, e);
+            btnResetSyntaxChanges_Click(sender, e);
+            btnErrorReset_Click(sender, e);
         }
     }
 }

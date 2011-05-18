@@ -573,5 +573,56 @@ namespace VDS.RDF.Utilities.Editor.Properties {
                 this["SyntaxColourEscapedChar"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FF8B0000")]
+        [global::System.Configuration.SettingsManageabilityAttribute(global::System.Configuration.SettingsManageability.Roaming)]
+        public global::System.Windows.Media.Color ErrorHighlightBackground {
+            get {
+                return ((global::System.Windows.Media.Color)(this["ErrorHighlightBackground"]));
+            }
+            set {
+                this["ErrorHighlightBackground"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FFFFFFFF")]
+        [global::System.Configuration.SettingsManageabilityAttribute(global::System.Configuration.SettingsManageability.Roaming)]
+        public global::System.Windows.Media.Color ErrorHighlightForeground {
+            get {
+                return ((global::System.Windows.Media.Color)(this["ErrorHighlightForeground"]));
+            }
+            set {
+                this["ErrorHighlightForeground"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.SettingsManageabilityAttribute(global::System.Configuration.SettingsManageability.Roaming)]
+        public global::System.Windows.Media.FontFamily ErrorHighlightFontFamily {
+            get {
+                return ((global::System.Windows.Media.FontFamily)(this["ErrorHighlightFontFamily"]));
+            }
+            set {
+                this["ErrorHighlightFontFamily"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("None")]
+        [global::System.Configuration.SettingsManageabilityAttribute(global::System.Configuration.SettingsManageability.Roaming)]
+        public string ErrorHighlightDecoration {
+            get {
+                return ((string)(this["ErrorHighlightDecoration"]));
+            }
+            set {
+                this["ErrorHighlightDecoration"] = value;
+            }
+        }
     }
 }

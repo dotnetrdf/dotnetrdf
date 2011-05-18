@@ -54,6 +54,8 @@
             this.mnuTileHorizontal = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuCloseAll = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuArrangeIcons = new System.Windows.Forms.ToolStripMenuItem();
+            this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.stsBar = new System.Windows.Forms.StatusStrip();
             this.sfdConnection = new System.Windows.Forms.SaveFileDialog();
             this.ofdConnection = new System.Windows.Forms.OpenFileDialog();
@@ -65,7 +67,8 @@
             this.mnuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuFile,
             this.mnuOptions,
-            this.mnuWindows});
+            this.mnuWindows,
+            this.helpToolStripMenuItem});
             this.mnuStrip.Location = new System.Drawing.Point(0, 0);
             this.mnuStrip.MdiWindowListItem = this.mnuWindows;
             this.mnuStrip.Name = "mnuStrip";
@@ -257,6 +260,21 @@
             this.mnuArrangeIcons.Text = "&Arrange Icons";
             this.mnuArrangeIcons.Click += new System.EventHandler(this.mnuArrangeIcons_Click);
             // 
+            // helpToolStripMenuItem
+            // 
+            this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.aboutToolStripMenuItem});
+            this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
+            this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
+            this.helpToolStripMenuItem.Text = "&Help";
+            // 
+            // aboutToolStripMenuItem
+            // 
+            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.aboutToolStripMenuItem.Text = "&About";
+            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
+            // 
             // stsBar
             // 
             this.stsBar.Location = new System.Drawing.Point(0, 431);
@@ -327,6 +345,8 @@
         private System.Windows.Forms.ToolStripSeparator mnuSeparator5;
         private System.Windows.Forms.ToolStripMenuItem mnuOptions;
         private System.Windows.Forms.ToolStripMenuItem mnuUseUtf8Bom;
+        private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
     }
 }
 

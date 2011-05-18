@@ -131,5 +131,17 @@
     <Setting Name="SyntaxColourEscapedChar" Roaming="true" Type="System.Windows.Media.Color" Scope="User">
       <Value Profile="(Default)">#FF008080</Value>
     </Setting>
+    <Setting Name="ErrorHighlightBackground" Roaming="true" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#FF8B0000</Value>
+    </Setting>
+    <Setting Name="ErrorHighlightForeground" Roaming="true" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#FFFFFFFF</Value>
+    </Setting>
+    <Setting Name="ErrorHighlightFontFamily" Roaming="true" Type="System.Windows.Media.FontFamily" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="ErrorHighlightDecoration" Roaming="true" Type="System.String" Scope="User">
+      <Value Profile="(Default)">None</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

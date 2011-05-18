@@ -57,6 +57,12 @@
     <Compile Include="CrossThreadForm.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="fclsAbout.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fclsAbout.Designer.cs">
+      <DependentUpon>fclsAbout.cs</DependentUpon>
+    </Compile>
     <Compile Include="fclsAddTriples.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -196,6 +202,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="fclsAbout.resx">
+      <DependentUpon>fclsAbout.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="fclsPleaseWait.resx">
       <DependentUpon>fclsPleaseWait.cs</DependentUpon>
       <SubType>Designer</SubType>

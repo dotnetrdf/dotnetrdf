@@ -615,5 +615,11 @@ namespace VDS.RDF.Utilities.StoreManager
             Properties.Settings.Default.UseUtf8Bom = Options.UseBomForUtf8;
             Properties.Settings.Default.Save();
         }
+
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            fclsAbout about = new fclsAbout();
+            about.ShowDialog();
+        }
     }
 }
