@@ -161,64 +161,22 @@ namespace VDS.RDF.Query.Algebra
             //If the Other is the Identity/Null Multiset the result is this Multiset
             if (other is IdentityMultiset) return this;
             if (other is NullMultiset) return this;
+            if (other.IsEmpty) return this;
 
-            //Find the First Variable from this Multiset which is in both Multisets
-            List<String> joinableVars = this._variables.Where(v => other.Variables.Contains(v)).ToList();
-            String joinVar = joinableVars.FirstOrDefault();
-            if (joinVar != null) joinableVars.RemoveAt(0);
-            bool disjoint = this.IsDisjointWith(other);
-
-            //Start building the Joined Set
             Multiset joinedSet = new Multiset();
             LeviathanLeftJoinBinder binder = new LeviathanLeftJoinBinder(joinedSet);
             SparqlEvaluationContext subcontext = new SparqlEvaluationContext(binder);
-            foreach (Set x in this.Sets)
+
+            //Find the First Variable from this Multiset which is in both Multisets
+            //If there is no Variable from this Multiset in the other Multiset then this
+            //should be a Join operation instead of a LeftJoin
+            List<String> joinVars = this._variables.Where(v => other.Variables.Contains(v)).ToList();
+            if (joinVars.Count == 0)
             {
-                if (joinVar != null)
+                //Calculate a Product filtering as we go
+                foreach (Set x in this.Sets)
                 {
-                    //Retrieve the Node that is the value for the Join Variable
-                    //If the value is null for this Set we can't Left Join it
-                    INode joinNode = x[joinVar];
-                    if (joinNode != null)
-                    {
-                        //Get all the Sets from the Other Multiset which have the given Node as their value
-                        //for the Join Variable
-                        IEnumerable<Set> ys = other.Sets.Where(s => joinNode.Equals(s[joinVar]) && joinableVars.All(v => x[v] == null || (x[v] != null && x[v].Equals(s[v]))));
-                        if (ys.Any())
-                        {
-                            foreach (Set y in ys)
-                            {
-                                Set z = new Set(x, y);
-                                try
-                                {
-                                    joinedSet.Add(z);
-                                    if (!expr.EffectiveBooleanValue(subcontext, z.ID))
-                                    {
-                                        //If the Expression evaluates to false we just preserve the LHS set
-                                        joinedSet.Remove(z.ID);
-                                        joinedSet.Add(x);
-                                        break;
-                                    }
-                                }
-                                catch (RdfQueryException)
-                                {
-                                    //Only add LHS to Joined Set if the Expression errors
-                                    joinedSet.Remove(z.ID);
-                                    joinedSet.Add(x);
-                                    break;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            //If there's no possible joins then the value of the expression is irrelevant
-                            //since we just keep the LHS since the RHS is irrelevant to us
-                            joinedSet.Add(x);
-                        }
-                    }
-                }
-                else if (disjoint)
-                {
+                    bool standalone = false;
                     foreach (Set y in other.Sets)
                     {
                         Set z = new Set(x, y);
@@ -227,19 +185,46 @@ namespace VDS.RDF.Query.Algebra
                             joinedSet.Add(z);
                             if (!expr.EffectiveBooleanValue(subcontext, z.ID))
                             {
-                                //If the Expression evaluates to false we just preserve the LHS set
                                 joinedSet.Remove(z.ID);
-                                joinedSet.Add(x);
-                                break;
+                                standalone = true;
                             }
                         }
-                        catch (RdfQueryException)
+                        catch
                         {
                             joinedSet.Remove(z.ID);
-                            joinedSet.Add(x);
-                            break;
+                            standalone = true;
                         }
                     }
+                    if (standalone) joinedSet.Add(x);
+                }
+            }
+            else
+            {
+                foreach (Set x in this.Sets)
+                {
+                    IEnumerable<Set> ys = other.Sets.Where(s => joinVars.All(v => x[v] == null || s[v] == null || x[v].Equals(s[v])));
+                    bool standalone = false;
+                    int i = 0;
+                    foreach (Set y in ys)
+                    {
+                        i++;
+                        Set z = new Set(x, y);
+                        try
+                        {
+                            joinedSet.Add(z);
+                            if (!expr.EffectiveBooleanValue(subcontext, z.ID))
+                            {
+                                joinedSet.Remove(z.ID);
+                                standalone = true;
+                            }
+                        }
+                        catch
+                        {
+                            joinedSet.Remove(z.ID);
+                            standalone = true;
+                        }
+                    }
+                    if (standalone || i == 0) joinedSet.Add(x);
                 }
             }
             return joinedSet;

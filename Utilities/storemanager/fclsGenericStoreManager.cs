@@ -264,6 +264,7 @@ namespace VDS.RDF.Utilities.StoreManager
             if (this.lvwGraphs.SelectedItems.Count > 0)
             {
                 String graphUri = this.lvwGraphs.SelectedItems[0].Text;
+                if (graphUri.Equals("Default Graph")) graphUri = String.Empty;
                 Graph g = new Graph();
                 this._manager.LoadGraph(g, graphUri);
                 if (!graphUri.Equals(String.Empty))
@@ -554,7 +555,14 @@ namespace VDS.RDF.Utilities.StoreManager
 
                 foreach (Uri u in task.Result)
                 {
-                    this.CrossThreadAdd(this.lvwGraphs, u.ToString());
+                    if (u != null)
+                    {
+                        this.CrossThreadAdd(this.lvwGraphs, u.ToString());
+                    }
+                    else
+                    {
+                        this.CrossThreadAdd(this.lvwGraphs, "Default Graph");
+                    }
                 }
 
                 this.CrossThreadEndUpdate(this.lvwGraphs);
