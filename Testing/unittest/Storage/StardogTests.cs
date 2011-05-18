@@ -67,7 +67,7 @@ namespace VDS.RDF.Test.Storage
         {
             try
             {
-                Options.UseBomForUtf8 = false;
+                //Options.UseBomForUtf8 = false;
 
                 StardogConnector stardog = this.GetConnection();
                 Graph g = new Graph();
@@ -89,7 +89,7 @@ namespace VDS.RDF.Test.Storage
             }
             finally
             {
-                Options.UseBomForUtf8 = true;
+                //Options.UseBomForUtf8 = true;
             }
         }
 
@@ -98,7 +98,7 @@ namespace VDS.RDF.Test.Storage
         {
             try
             {
-                Options.UseBomForUtf8 = false;
+                //Options.UseBomForUtf8 = false;
 
                 StardogConnector stardog = this.GetConnection();
                 Graph g = new Graph();
@@ -113,7 +113,7 @@ namespace VDS.RDF.Test.Storage
             }
             finally
             {
-                Options.UseBomForUtf8 = true;
+                //Options.UseBomForUtf8 = true;
             }
         }
 
@@ -122,7 +122,7 @@ namespace VDS.RDF.Test.Storage
         {
             try
             {
-                Options.UseBomForUtf8 = false;
+                //Options.UseBomForUtf8 = false;
 
                 StardogConnector stardog = this.GetConnection();
                 Graph g = new Graph();
@@ -138,7 +138,7 @@ namespace VDS.RDF.Test.Storage
             }
             finally
             {
-                Options.UseBomForUtf8 = true;
+                //Options.UseBomForUtf8 = true;
             }
         }
 
@@ -147,7 +147,7 @@ namespace VDS.RDF.Test.Storage
         {
             try
             {
-                Options.UseBomForUtf8 = false;
+                //Options.UseBomForUtf8 = false;
 
                 StardogConnector stardog = this.GetConnection();
                 Graph g = new Graph();
@@ -173,7 +173,7 @@ namespace VDS.RDF.Test.Storage
             }
             finally
             {
-                Options.UseBomForUtf8 = true;
+                //Options.UseBomForUtf8 = true;
             }
         }
 
@@ -182,7 +182,7 @@ namespace VDS.RDF.Test.Storage
         {
             try
             {
-                Options.UseBomForUtf8 = false;
+                //Options.UseBomForUtf8 = false;
 
                 StardogConnector stardog = this.GetConnection();
                 Graph g = new Graph();
@@ -210,7 +210,7 @@ namespace VDS.RDF.Test.Storage
             }
             finally
             {
-                Options.UseBomForUtf8 = true;
+                //Options.UseBomForUtf8 = true;
             }
         }
 
@@ -219,7 +219,7 @@ namespace VDS.RDF.Test.Storage
         {
             try
             {
-                Options.UseBomForUtf8 = false;
+                //Options.UseBomForUtf8 = false;
 
                 StardogConnector stardog = this.GetConnection();
                 Graph g = new Graph();
@@ -251,7 +251,7 @@ namespace VDS.RDF.Test.Storage
             }
             finally
             {
-                Options.UseBomForUtf8 = true;
+                //Options.UseBomForUtf8 = true;
             }
         }
 
@@ -261,7 +261,7 @@ namespace VDS.RDF.Test.Storage
         {
             try
             {
-                Options.UseBomForUtf8 = false;
+                //Options.UseBomForUtf8 = false;
 
                 StardogConnector stardog = this.GetConnection();
                 Graph g = new Graph();
@@ -289,7 +289,7 @@ namespace VDS.RDF.Test.Storage
             }
             finally
             {
-                Options.UseBomForUtf8 = true;
+                //Options.UseBomForUtf8 = true;
             }
         }
 
@@ -298,7 +298,7 @@ namespace VDS.RDF.Test.Storage
         {
             try
             {
-                Options.UseBomForUtf8 = false;
+                //Options.UseBomForUtf8 = false;
 
                 StardogConnector stardog = this.GetConnection();
 
@@ -338,7 +338,7 @@ namespace VDS.RDF.Test.Storage
             }
             finally
             {
-                Options.UseBomForUtf8 = true;
+                //Options.UseBomForUtf8 = true;
             }
         }
     }
