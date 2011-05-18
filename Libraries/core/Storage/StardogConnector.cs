@@ -601,7 +601,6 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">URI of the Graph to delete</param>
         public void DeleteGraph(String graphUri)
         {
-            //throw new NotSupportedException("Deleting Graphs from Stardog is currently not supportable via dotNetRDF due to an issue with .Net's restrictive URI escaping");
             String tID = null;
             try
             {
@@ -686,8 +685,6 @@ namespace VDS.RDF.Storage
         {
             get
             {
-                //BUG: Currently cannot support DeleteGraph on Stardog as .Net won't let me generate the necessary URI due to its restrictive escape handling
-                return false;
                 return true;
             }
         }
@@ -724,7 +721,7 @@ namespace VDS.RDF.Storage
             }
             catch (Exception ex)
             {
-                throw new RdfStorageException("Underlying Store returned an error while trying to List Graphs", ex);
+                throw new RdfStorageException("Stardog returned an error while trying to List Graphs, see inner exception for details", ex);
             }
         }
 

@@ -37,6 +37,14 @@ namespace VDS.RDF.Utilities.StoreManager
                 {
                     this.ShowInformation(task);
                 });
+
+            if (task is CancellableTask<T>)
+            {
+                this.btnCancel.Click += new EventHandler(delegate(Object sender, EventArgs e)
+                    {
+                        ((CancellableTask<T>)task).Cancel();
+                    });
+            }
         }
 
         public fclsTaskInformation(QueryTask task, String subtitle)
