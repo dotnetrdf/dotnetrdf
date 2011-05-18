@@ -74,13 +74,20 @@ namespace VDS.RDF.Storage
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Has full support for Stardog Transactions, connection is in auto-commit mode be default i.e. all write operations (Delete/Save/Update) will create a transaction for their operation by default.  You can manage Transactions using the <see cref="StardogConnector.Begin">Begin()</see>, <see cref="StardogConnector.Commit">Commit()</see> and <see cref="StardogConnector.Rollback">Rollback()</see> methods.
+    /// Has full support for Stardog Transactions, connection is in auto-commit mode by default i.e. all write operations (Delete/Save/Update) will create and use a dedicated transaction for their operation.  You can manage Transactions using the <see cref="StardogConnector.Begin">Begin()</see>, <see cref="StardogConnector.Commit">Commit()</see> and <see cref="StardogConnector.Rollback">Rollback()</see> methods.
     /// </para>
     /// <para>
     /// Transactions are always scoped to Managed Threads so each Thread has access to an independent and isolated transaction should you desire.  Attempting to start a new transaction when there is already an existing transaction on the thread will cause an error as will committing/rolling back a transaction when there is none on the current thread.  While the connector allows for multiple transactions and concurrency naturally be mindful that Stardog currently is MRSW (Multiple Reader Single Writer) safe only and you should ensure you adhere to that when using it as the connector will not enforce it for you.
     /// </para>
     /// </remarks>
-    /// <threadsafety instance="true">The StardogConnector is designed to be thread safe, each threads transactions are isolated from each other.  A thread may only have one active transaction at any one time, an <see cref="RdfStorageException">RdfStorageException</see> will be thrown if a thread violates this rule.</threadsafety>
+    /// <threadsafety instance="true">
+    /// <para>
+    /// The StardogConnector is designed to be thread safe, each threads transactions are isolated from each other.  A thread may only have one active transaction at any one time, an <see cref="RdfStorageException">RdfStorageException</see> will be thrown if a thread violates this rule.
+    /// </para>
+    /// <para>
+    /// <strong>Note:</strong> As per the remarks Stardog currently is only MRSW safe, this connector does not enforce this so please be mindful of this when coding
+    /// </para>
+    /// </threadsafety>
     public class StardogConnector : IQueryableGenericIOManager, IConfigurationSerializable
     {
         private String _baseUri;
@@ -193,12 +200,10 @@ namespace VDS.RDF.Storage
                 {
                     queryParams.Add("query", sparqlQuery);
 
-                    //request = this.CreateRequest(this._kb + tID + "/query", MimeTypesHelper.HttpRdfOrSparqlAcceptHeader, "GET", queryParams);
                     request = this.CreateRequest(this._kb + tID + "/query", MimeTypesHelper.Any, "GET", queryParams);
                 }
                 else
                 {
-                    //request = this.CreateRequest(this._kb + tID + "/query", MimeTypesHelper.HttpRdfOrSparqlAcceptHeader, "POST", queryParams);
                     request = this.CreateRequest(this._kb + tID + "/query", MimeTypesHelper.Any, "POST", queryParams);
 
                     //Build the Post Data and add to the Request Body
@@ -308,7 +313,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="g">Graph to load into</param>
         /// <param name="graphUri">Uri of the Graph to load</param>
-        /// <remarks>If an empty Uri is specified then the entire contents of the Store will be loaded</remarks>
+        /// <remarks>If an empty/null Uri is specified then the default Graph of the Store will be loaded</remarks>
         public void LoadGraph(IGraph g, string graphUri)
         {
             try
@@ -371,9 +376,8 @@ namespace VDS.RDF.Storage
         /// <param name="g">Graph to save</param>
         /// <remarks>
         /// <para>
-        /// In the final version Saving a Graph to the Store will overwrite a Graph of the same name but currently deleting Graphs in Stardog via dotNetRDF is not supportable due to a .Net issue with restrictive URI encoding so saving a Graph adds to any existing Graph of the same name.  This behaviour <strong>will</strong> change in future versions to align with our others connectors
+        /// If the Graph has no URI then the contents will be appended to the Store's Default Graph.  If the Graph has a URI then existing Graph associated with that URI will be replaced.  To append to a named Graph use the <see cref="StardogConnector.UpdateGraph">UpdateGraph()</see> method instead
         /// </para>
-        /// <s>If the Graph has no URI then the contents will be appended to the Store, if the Graph has a URI then existing data associated with that URI will be replaced</s>
         /// </remarks>
         public void SaveGraph(IGraph g)
         {
@@ -385,6 +389,18 @@ namespace VDS.RDF.Storage
 
                 HttpWebRequest request = this.CreateRequest(this._kb + "/" + tID + "/add", MimeTypesHelper.Any, "POST", new Dictionary<string,string>());
                 request.ContentType = MimeTypesHelper.TriG[0];
+
+                if (g.BaseUri != null)
+                {
+                    try
+                    {
+                        this.DeleteGraph(g.BaseUri);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new RdfStorageException("Unable to save a Named Graph to the Store as this requires deleting any existing Named Graph with this name which failed, see inner exception for more detail", ex);
+                    }
+                }
                 
                 //Save the Data as TriG to the Request Stream
                 TripleStore store = new TripleStore();

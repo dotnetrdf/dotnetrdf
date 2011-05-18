@@ -109,14 +109,67 @@ namespace VDS.RDF.Test.Storage
                 Graph h = new Graph();
                 stardog.LoadGraph(h, new Uri("http://example.org/graph"));
 
-                if (g.Triples.Count == h.Triples.Count)
-                {
-                    Assert.AreEqual(g, h, "Retrieved Graph should be equal to the Saved Graph");
-                }
-                else
-                {
-                    Assert.IsTrue(h.HasSubGraph(g), "Retrieved Graph should have the Saved Graph as a subgraph");
-                }
+                Assert.AreEqual(g, h, "Retrieved Graph should be equal to the Saved Graph");
+            }
+            finally
+            {
+                Options.UseBomForUtf8 = true;
+            }
+        }
+
+        [TestMethod]
+        public void StorageStardogSaveToNamedGraph2()
+        {
+            try
+            {
+                Options.UseBomForUtf8 = false;
+
+                StardogConnector stardog = this.GetConnection();
+                Graph g = new Graph();
+                g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+                Uri u = new Uri("http://example.org/graph/" + DateTime.Now.Ticks);
+                g.BaseUri = u;
+                stardog.SaveGraph(g);
+
+                Graph h = new Graph();
+                stardog.LoadGraph(h, u);
+
+                Assert.AreEqual(g, h, "Retrieved Graph should be equal to the Saved Graph");
+            }
+            finally
+            {
+                Options.UseBomForUtf8 = true;
+            }
+        }
+
+        [TestMethod]
+        public void StorageStardogSaveToNamedGraphOverwrite()
+        {
+            try
+            {
+                Options.UseBomForUtf8 = false;
+
+                StardogConnector stardog = this.GetConnection();
+                Graph g = new Graph();
+                g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+                g.BaseUri = new Uri("http://example.org/namedGraph");
+                stardog.SaveGraph(g);
+
+                Graph h = new Graph();
+                stardog.LoadGraph(h, new Uri("http://example.org/namedGraph"));
+
+                Assert.AreEqual(g, h, "Retrieved Graph should be equal to the Saved Graph");
+
+                Graph i = new Graph();
+                i.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.Functions.LeviathanFunctionLibrary.ttl");
+                i.BaseUri = new Uri("http://example.org/namedGraph");
+                stardog.SaveGraph(i);
+
+                Graph j = new Graph();
+                stardog.LoadGraph(j, "http://example.org/namedGraph");
+
+                Assert.AreNotEqual(g, j, "Retrieved Graph should not be equal to overwritten Graph");
+                Assert.AreEqual(i, j, "Retrieved Graph should be equal to Saved Graph");
             }
             finally
             {
