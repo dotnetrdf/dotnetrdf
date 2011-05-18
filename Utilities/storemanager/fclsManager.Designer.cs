@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(fclsManager));
             this.mnuStrip = new System.Windows.Forms.MenuStrip();
             this.mnuFile = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuNewSQLStoreManager = new System.Windows.Forms.ToolStripMenuItem();
@@ -281,6 +282,7 @@
             this.ClientSize = new System.Drawing.Size(632, 453);
             this.Controls.Add(this.stsBar);
             this.Controls.Add(this.mnuStrip);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.IsMdiContainer = true;
             this.MainMenuStrip = this.mnuStrip;
             this.Name = "fclsManager";

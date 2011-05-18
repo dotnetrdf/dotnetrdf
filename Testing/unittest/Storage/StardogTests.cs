@@ -202,8 +202,8 @@ namespace VDS.RDF.Test.Storage
             }
         }
 
-        [TestMethod, ExpectedException(typeof(NotSupportedException))]
-        //[TestMethod]
+        //[TestMethod, ExpectedException(typeof(NotSupportedException))]
+        [TestMethod]
         public void StorageStardogDeleteNamedGraph()
         {
             try

@@ -7,8 +7,10 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using VDS.RDF.Query;
 using VDS.RDF.Writing.Formatting;
 using VDS.RDF.Utilities.StoreManager.Tasks;
+using VDS.RDF.GUI.WinForms;
 
 namespace VDS.RDF.Utilities.StoreManager
 {
@@ -48,6 +50,32 @@ namespace VDS.RDF.Utilities.StoreManager
                         this.ShowQueryInformation(task);
                     });
             }
+            this.btnViewResults.Click += new EventHandler(delegate(Object sender, EventArgs e)
+                {
+                    if (task.Result != null)
+                    {
+                        if (task.Result is IGraph)
+                        {
+                            GraphViewerForm graphViewer = new GraphViewerForm((IGraph)task.Result, subtitle);
+                            graphViewer.MdiParent = this.MdiParent;
+                            graphViewer.Show();
+                        }
+                        else if (task.Result is SparqlResultSet)
+                        {
+                            ResultSetViewerForm resultsViewer = new ResultSetViewerForm((SparqlResultSet)task.Result, subtitle);
+                            resultsViewer.MdiParent = this.MdiParent;
+                            resultsViewer.Show();
+                        }
+                        else
+                        {
+                            MessageBox.Show("Unable to show Query Results as did not get a Graph/Result Set as expected", "Unable to Show Results", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Query Results are not available", "Results Unavailable", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                });
         }
 
         public fclsTaskInformation(UpdateTask task, String subtitle)
@@ -67,6 +95,31 @@ namespace VDS.RDF.Utilities.StoreManager
             : this((ITask<T>)task, subtitle)
         {
 
+        }
+
+        public fclsTaskInformation(ITask<IGraph> task, String subtitle)
+            : this((ITask<T>)task, subtitle)
+        {
+            this.btnViewResults.Click += new EventHandler(delegate(Object sender, EventArgs e)
+                {
+                    if (task.Result != null)
+                    {
+                        if (task.Result is IGraph)
+                        {
+                            GraphViewerForm graphViewer = new GraphViewerForm((IGraph)task.Result, subtitle);
+                            graphViewer.MdiParent = this.MdiParent;
+                            graphViewer.Show();
+                        }
+                        else
+                        {
+                            MessageBox.Show("Unable to show Results as did not get a Graph as expected", "Unable to Show Results", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Results are not available", "Results Unavailable", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                });
         }
 
         private void ShowInformation(ITask<T> task)

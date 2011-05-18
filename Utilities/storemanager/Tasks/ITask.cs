@@ -39,7 +39,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
 
     public delegate void TaskStateChanged();
 
-    public interface ITask<TResult> where TResult : class
+    public interface ITaskBase
     {
         TaskState State
         {
@@ -67,13 +67,6 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
             get;
         }
 
-        TResult Result
-        {
-            get;
-        }
-
-        void RunTask(TaskCallback<TResult> callback);
-
         bool IsCancellable
         {
             get;
@@ -82,5 +75,18 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         void Cancel();
 
         event TaskStateChanged StateChanged;
+    }
+
+    public interface ITask<TResult> : ITaskBase
+        where TResult : class
+    {
+
+        TResult Result
+        {
+            get;
+        }
+
+        void RunTask(TaskCallback<TResult> callback);
+
     }
 }

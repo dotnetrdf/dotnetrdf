@@ -35,6 +35,7 @@ terms.
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 
 namespace VDS.RDF.GUI
 {
@@ -43,6 +44,8 @@ namespace VDS.RDF.GUI
     /// </summary>
     public static class Constants
     {
+        private static Icon _windowIcon = null;
+
         /// <summary>
         /// Filename Filter for RDF Graphs for Open/Save Dialogs
         /// </summary>
@@ -81,6 +84,18 @@ namespace VDS.RDF.GUI
             get
             {
                 return RdfFilter + "|" + RdfDatasetFilter;
+            }
+        }
+
+        public static Icon WindowIcon
+        {
+            get
+            {
+                return _windowIcon;
+            }
+            set
+            {
+                _windowIcon = value;
             }
         }
     }

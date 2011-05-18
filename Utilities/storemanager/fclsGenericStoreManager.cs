@@ -29,6 +29,7 @@ terms.
 */
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -59,6 +60,7 @@ namespace VDS.RDF.Utilities.StoreManager
 
             this._manager = manager;
             this.Text = this._manager.ToString();
+            this.lvwTasks.ListViewItemSorter = new SortTasksByID();
         }
 
         public IGenericIOManager Manager
@@ -94,7 +96,7 @@ namespace VDS.RDF.Utilities.StoreManager
             //Disable Import for Read-Only stores
             if (this._manager.IsReadOnly)
             {
-                this.grpImport.Enabled = false;
+                this.tabFunctions.TabPages.Remove(this.tabImport);
             }
         }
 
@@ -104,6 +106,18 @@ namespace VDS.RDF.Utilities.StoreManager
         {
             ListGraphsTask task = new ListGraphsTask(this._manager);
             this.AddTask<IEnumerable<Uri>>(task, this.ListGraphsCallback);
+        }
+
+        private void ViewGraph(String graphUri)
+        {
+            ViewGraphTask task = new ViewGraphTask(this._manager, graphUri);
+            this.AddTask<IGraph>(task, this.ViewGraphCallback);
+        }
+
+        private void DeleteGraph(String graphUri)
+        {
+            DeleteGraphTask task = new DeleteGraphTask(this._manager, graphUri);
+            this.AddTask<TaskResult>(task, this.DeleteGraphCallback);
         }
 
         private void Query()
@@ -165,7 +179,7 @@ namespace VDS.RDF.Utilities.StoreManager
                 return;
             }
 
-            ImportFileTask task = new ImportFileTask(this._manager, this.txtImportFile.Text, targetUri);
+            ImportFileTask task = new ImportFileTask(this._manager, this.txtImportFile.Text, targetUri, (int)this.numBatchSize.Value);
             this.AddTask<TaskResult>(task, this.ImportCallback);
         }
 
@@ -197,7 +211,7 @@ namespace VDS.RDF.Utilities.StoreManager
                 return;
             }
 
-            try 
+            try
             {
                 ImportUriTask task = new ImportUriTask(this._manager, new Uri(this.txtImportUri.Text), targetUri);
                 this.AddTask<TaskResult>(task, this.ImportCallback);
@@ -264,16 +278,9 @@ namespace VDS.RDF.Utilities.StoreManager
             if (this.lvwGraphs.SelectedItems.Count > 0)
             {
                 String graphUri = this.lvwGraphs.SelectedItems[0].Text;
-                if (graphUri.Equals("Default Graph")) graphUri = String.Empty;
-                Graph g = new Graph();
-                this._manager.LoadGraph(g, graphUri);
-                if (!graphUri.Equals(String.Empty))
-                {
-                    g.BaseUri = new Uri(graphUri);
-                }
-                GraphViewerForm graphViewer = new GraphViewerForm(g, this._manager.ToString());
-                graphViewer.MdiParent = this.MdiParent;
-                graphViewer.Show();
+                if (graphUri.Equals("Default Graph")) graphUri = null;
+
+                this.ViewGraph(graphUri);
             }
         }
 
@@ -335,7 +342,46 @@ namespace VDS.RDF.Utilities.StoreManager
             this.Export();
         }
 
-        #region Context Menu
+        #region Graphs Context Menu
+
+        private void mnuGraphs_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (this.lvwGraphs.SelectedItems.Count > 0)
+            {
+                this.mnuDeleteGraph.Enabled = this._manager.DeleteSupported;
+            }
+            else
+            {
+                e.Cancel = true;
+            }
+        }
+
+        private void mnuViewGraph_Click(object sender, EventArgs e)
+        {
+            if (this.lvwGraphs.SelectedItems.Count > 0)
+            {
+                String graphUri = this.lvwGraphs.SelectedItems[0].Text;
+                if (graphUri.Equals("Default Graph")) graphUri = null;
+
+                this.ViewGraph(graphUri);
+            }
+        }
+
+
+        private void mnuDeleteGraph_Click(object sender, EventArgs e)
+        {
+            if (this.lvwGraphs.SelectedItems.Count > 0)
+            {
+                String graphUri = this.lvwGraphs.SelectedItems[0].Text;
+                if (graphUri.Equals("Default Graph")) graphUri = null;
+
+                this.DeleteGraph(graphUri);
+            }
+        }
+
+        #endregion
+
+        #region Tasks Context Menu
 
         private void mnuTasks_Opening(object sender, System.ComponentModel.CancelEventArgs e)
         {
@@ -357,7 +403,7 @@ namespace VDS.RDF.Utilities.StoreManager
                         BaseImportTask importTask = (BaseImportTask)tag;
                         this.mnuViewErrors.Enabled = importTask.Error != null;
                         this.mnuViewResults.Enabled = false;
-                        this.mnuCancel.Enabled = (importTask.IsCancellable && importTask.State != TaskState.Completed && importTask.State != TaskState.CompletedWithErrors);
+                        this.mnuCancel.Enabled = importTask.IsCancellable;
                     }
                     else if (tag is ListGraphsTask)
                     {
@@ -366,12 +412,19 @@ namespace VDS.RDF.Utilities.StoreManager
                         this.mnuViewResults.Enabled = false;
                         this.mnuCancel.Enabled = graphsTask.IsCancellable;
                     }
+                    else if (tag is ITask<IGraph>)
+                    {
+                        ITask<IGraph> graphTask = (ITask<IGraph>)tag;
+                        this.mnuViewErrors.Enabled = graphTask.Error != null;
+                        this.mnuViewResults.Enabled = (graphTask.State == TaskState.Completed && graphTask.Result != null);
+                        this.mnuCancel.Enabled = graphTask.IsCancellable;
+                    }
                     else if (tag is ITask<TaskResult>)
                     {
                         ITask<TaskResult> basicTask = (ITask<TaskResult>)tag;
                         this.mnuViewErrors.Enabled = basicTask.Error != null;
                         this.mnuViewResults.Enabled = false;
-                        this.mnuCancel.Enabled = (basicTask.IsCancellable && basicTask.State != TaskState.Completed && basicTask.State != TaskState.CompletedWithErrors);
+                        this.mnuCancel.Enabled = basicTask.IsCancellable;
                     }
                     else
                     {
@@ -428,6 +481,12 @@ namespace VDS.RDF.Utilities.StoreManager
                     listInfo.MdiParent = this.MdiParent;
                     listInfo.Show();
                 }
+                else if (tag is ITask<IGraph>)
+                {
+                    fclsTaskInformation<IGraph> graphInfo = new fclsTaskInformation<IGraph>((ITask<IGraph>)tag, this._manager.ToString());
+                    graphInfo.MdiParent = this.MdiParent;
+                    graphInfo.Show();
+                }
                 else if (tag is ITask<TaskResult>)
                 {
                     fclsTaskInformation<TaskResult> simpleInfo = new fclsTaskInformation<TaskResult>((ITask<TaskResult>)tag, this._manager.ToString());
@@ -460,6 +519,12 @@ namespace VDS.RDF.Utilities.StoreManager
                     listInfo.MdiParent = this.MdiParent;
                     listInfo.Show();
                 }
+                else if (tag is ITask<IGraph>)
+                {
+                    fclsTaskErrorTrace<IGraph> graphInfo = new fclsTaskErrorTrace<IGraph>((ITask<IGraph>)tag, this._manager.ToString());
+                    graphInfo.MdiParent = this.MdiParent;
+                    graphInfo.Show();
+                }
                 else if (tag is ITask<TaskResult>)
                 {
                     fclsTaskErrorTrace<TaskResult> simpleInfo = new fclsTaskErrorTrace<TaskResult>((ITask<TaskResult>)tag, this._manager.ToString());
@@ -489,13 +554,13 @@ namespace VDS.RDF.Utilities.StoreManager
 
                         if (result is IGraph)
                         {
-                            GraphViewerForm graphViewer = new GraphViewerForm((IGraph)result);
+                            GraphViewerForm graphViewer = new GraphViewerForm((IGraph)result, this._manager.ToString());
                             CrossThreadSetMdiParent(graphViewer);
                             CrossThreadShow(graphViewer);
                         }
                         else if (result is SparqlResultSet)
                         {
-                            ResultSetViewerForm resultsViewer = new ResultSetViewerForm((SparqlResultSet)result);
+                            ResultSetViewerForm resultsViewer = new ResultSetViewerForm((SparqlResultSet)result, this._manager.ToString());
                             CrossThreadSetMdiParent(resultsViewer);
                             CrossThreadShow(resultsViewer);
                         }
@@ -507,6 +572,20 @@ namespace VDS.RDF.Utilities.StoreManager
                     else
                     {
                         MessageBox.Show("Query Results are unavailable", "Results Unavailable", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+                else if (tag is ITask<IGraph>)
+                {
+                    ITask<IGraph> graphTask = (ITask<IGraph>)tag;
+                    if (graphTask.Result != null)
+                    {
+                        GraphViewerForm graphViewer = new GraphViewerForm(graphTask.Result, this._manager.ToString());
+                        CrossThreadSetMdiParent(graphViewer);
+                        CrossThreadShow(graphViewer);
+                    }
+                    else
+                    {
+                        CrossThreadMessage("Unable to show Graph as there is no Graph as expected", "Unable to Show Graph", MessageBoxIcon.Error);
                     }
                 }
             }
@@ -539,6 +618,30 @@ namespace VDS.RDF.Utilities.StoreManager
                 CrossThreadRefresh(this.lvwTasks);
             };
             task.StateChanged += d;
+
+            //Clear old Tasks if necessary and enabled
+            if (this.chkRemoveOldTasks.Checked)
+            {
+                if (this.lvwTasks.Items.Count > 10)
+                {
+                    int i = this.lvwTasks.Items.Count - 1;
+                    do
+                    {
+                        ListViewItem oldItem = this.lvwTasks.Items[i];
+                        if (oldItem.Tag is ITaskBase)
+                        {
+                            ITaskBase t = (ITaskBase)oldItem.Tag;
+                            if (t.State == TaskState.Completed || t.State == TaskState.CompletedWithErrors)
+                            {
+                                this.lvwTasks.Items.RemoveAt(i);
+                                i--;
+                            }
+                        }
+
+                        i--;
+                    } while (this.lvwTasks.Items.Count > 10 && i >= 0);
+                }
+            }
 
             //Start the Task
             task.RunTask(callback);
@@ -585,6 +688,47 @@ namespace VDS.RDF.Utilities.StoreManager
             }
         }
 
+        private void ViewGraphCallback(ITask<IGraph> task)
+        {
+            if (task.State == TaskState.Completed && task.Result != null)
+            {
+                GraphViewerForm graphViewer = new GraphViewerForm(task.Result, this._manager.ToString());
+                CrossThreadSetMdiParent(graphViewer);
+                CrossThreadShow(graphViewer);
+            }
+            else
+            {
+                if (task.Error != null)
+                {
+                    CrossThreadMessage("View Graph Failed due to the following error: " + task.Error.Message, "View Graph Failed", MessageBoxIcon.Error);
+                }
+                else
+                {
+                    CrossThreadMessage("View Graph Failed due to an unknown error", "View Graph Failed", MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        private void DeleteGraphCallback(ITask<TaskResult> task)
+        {
+            if (task.State == TaskState.Completed)
+            {
+                CrossThreadMessage(task.Information, "Deleted Graph OK", MessageBoxIcon.Information);
+                ListGraphs();
+            }
+            else
+            {
+                if (task.Error != null)
+                {
+                    CrossThreadMessage("Delete Graph Failed due to the following error: " + task.Error.Message, "Delete Graph Failed", MessageBoxIcon.Error);
+                }
+                else
+                {
+                    CrossThreadMessage("Delete Graph Failed due to an unknown error", "Delete Graph Failed", MessageBoxIcon.Error);
+                }
+            }
+        }
+
         private void QueryCallback(ITask<Object> task)
         {
             if (task is QueryTask)
@@ -597,8 +741,8 @@ namespace VDS.RDF.Utilities.StoreManager
                         if (task.State == TaskState.Completed)
                         {
                             this.CrossThreadSetText(this.stsCurrent, "Query Completed OK (Took " + qTask.Query.QueryExecutionTime.Value.ToString() + ")");
-                        } 
-                        else 
+                        }
+                        else
                         {
                             this.CrossThreadSetText(this.stsCurrent, "Query Failed (Took " + qTask.Query.QueryExecutionTime.Value.ToString() + ")");
                         }
@@ -690,7 +834,7 @@ namespace VDS.RDF.Utilities.StoreManager
         {
             if (task.State == TaskState.Completed)
             {
-                CrossThreadMessage("Import Completed OK - " + task.Information, "Import Completed", MessageBoxIcon.Information);
+                CrossThreadMessage("Import Completed OK\n" + task.Information, "Import Completed", MessageBoxIcon.Information);
             }
             else
             {
@@ -726,6 +870,45 @@ namespace VDS.RDF.Utilities.StoreManager
         }
 
         #endregion
+    }
 
+    class SortTasksByID : IComparer, IComparer<ListViewItem>
+    {
+
+        public int Compare(ListViewItem x, ListViewItem y)
+        {
+            int a, b;
+            if (Int32.TryParse(x.SubItems[0].Text, out a))
+            {
+                if (Int32.TryParse(y.SubItems[0].Text, out b))
+                {
+                    return -1 * a.CompareTo(b);
+                }
+                else
+                {
+                    return 1;
+                }
+            } 
+            else
+            {
+                return -1;
+            }
+        }
+
+        #region IComparer Members
+
+        public int Compare(object x, object y)
+        {
+            if (x is ListViewItem && y is ListViewItem)
+            {
+                return this.Compare((ListViewItem)x, (ListViewItem)y);
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
+        #endregion
     }
 }

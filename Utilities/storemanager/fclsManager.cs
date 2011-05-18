@@ -58,6 +58,7 @@ namespace VDS.RDF.Utilities.StoreManager
         public fclsManager()
         {
             InitializeComponent();
+            Constants.WindowIcon = this.Icon;
 
             //Disable UTF-8 BOM Output if relevant
             if (!Properties.Settings.Default.UseUtf8Bom)

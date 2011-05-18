@@ -55,6 +55,10 @@ namespace VDS.RDF.GUI.WinForms
         public GraphViewerForm(IGraph g)
         {
             InitializeComponent();
+            if (Constants.WindowIcon != null)
+            {
+                this.Icon = Constants.WindowIcon;
+            }
 
             //Load Formatters
             List<INodeFormatter> formatters = new List<INodeFormatter>();

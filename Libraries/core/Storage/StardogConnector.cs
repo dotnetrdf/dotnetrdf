@@ -601,20 +601,22 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">URI of the Graph to delete</param>
         public void DeleteGraph(String graphUri)
         {
-            throw new NotSupportedException("Deleting Graphs from Stardog is currently not supportable via dotNetRDF due to an issue with .Net's restrictive URI escaping");
+            //throw new NotSupportedException("Deleting Graphs from Stardog is currently not supportable via dotNetRDF due to an issue with .Net's restrictive URI escaping");
             String tID = null;
             try
             {
                 //Get a Transaction ID, if there is no active Transaction then this operation will be auto-committed
                 tID = (this._activeTrans.Value != null) ? this._activeTrans.Value : this.BeginTransaction();
 
-                if (graphUri.Equals(String.Empty))
+                HttpWebRequest request;
+                if (!graphUri.Equals(String.Empty))
                 {
-                    throw new NotSupportedException("Stardog does not yet support deleting the Default Graph");
+                    request = this.CreateRequest(this._kb + "/" + tID + "/clear/?graph-uri=" + Uri.EscapeDataString(graphUri), MimeTypesHelper.Any, "POST", new Dictionary<string, string>());
                 }
-
-                //HttpWebRequest request = this.CreateRequest(this._kb + "/" + tID + "/clear/" + Uri.EscapeDataString(graphUri), MimeTypesHelper.Any, "POST", new Dictionary<string,string>());
-                HttpWebRequest request = this.CreateRequest(this._kb + "/" + tID + "/clear/" + graphUri, MimeTypesHelper.Any, "POST", new Dictionary<string, string>());
+                else
+                {
+                    request = this.CreateRequest(this._kb + "/" + tID + "/clear/?graph-uri=DEFAULT", MimeTypesHelper.Any, "POST", new Dictionary<string, string>());
+                }
                 request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
 #if DEBUG
                 if (Options.HttpDebugging)
@@ -956,13 +958,13 @@ namespace VDS.RDF.Storage
             context.Graph.Assert(new Triple(manager, server, context.Graph.CreateLiteralNode(this._baseUri)));
             context.Graph.Assert(new Triple(manager, store, context.Graph.CreateLiteralNode(this._kb)));
 
-            //if (this._username != null && this._pwd != null)
-            //{
-            //    INode username = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyUser);
-            //    INode pwd = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyPassword);
-            //    context.Graph.Assert(new Triple(manager, username, context.Graph.CreateLiteralNode(this._username)));
-            //    context.Graph.Assert(new Triple(manager, pwd, context.Graph.CreateLiteralNode(this._pwd)));
-            //}
+            if (this._username != null && this._pwd != null)
+            {
+                INode username = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyUser);
+                INode pwd = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyPassword);
+                context.Graph.Assert(new Triple(manager, username, context.Graph.CreateLiteralNode(this._username)));
+                context.Graph.Assert(new Triple(manager, pwd, context.Graph.CreateLiteralNode(this._pwd)));
+            }
         }
     }
 }

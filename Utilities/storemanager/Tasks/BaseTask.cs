@@ -158,11 +158,11 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         public CancellableTask(String name)
             : base(name) { }
 
-        public override bool IsCancellable
+        public sealed override bool IsCancellable
         {
             get 
             {
-                return true;
+                return this.State != TaskState.Completed && this.State != TaskState.CompletedWithErrors;
             }
         }
 

@@ -159,13 +159,14 @@ namespace VDS.RDF.Configuration
                              DatasetFile = "VDS.RDF.Storage.DatasetFileManager",
                              FourStore = "VDS.RDF.Storage.FourStoreConnector",
                              Fuseki = "VDS.RDF.Storage.FusekiConnector",
-                             InMemory = "VDS.RDF.Storage.InMemoryConnector",
+                             InMemory = "VDS.RDF.Storage.InMemoryManager",
                              Joseki = "VDS.RDF.Storage.JosekiConnector",
                              ReadOnly = "VDS.RDF.Storage.ReadOnlyConnector",
                              ReadOnlyQueryable = "VDS.RDF.Storage.QueryableReadOnlyConnector",
                              Sesame = "VDS.RDF.Storage.SesameHttpProtocolConnector",
                              Sparql = "VDS.RDF.Storage.SparqlConnector",
                              SparqlHttpProtocol = "VDS.RDF.Storage.SparqlHttpProtocolConnector",
+                             Stardog = "VDS.RDF.Storage.StardogConnector",
                              Talis = "VDS.RDF.Storage.TalisPlatformConnector",
                              Virtuoso = "VDS.RDF.Storage.VirtuosoManager";
 
@@ -276,7 +277,7 @@ namespace VDS.RDF.Configuration
                         else
                         {
                             //If no dnr:usingStore either then create a new empty store
-                            manager = new InMemoryManager(new TripleStore());
+                            manager = new InMemoryManager();
                         }
                     }
                     break;
@@ -407,6 +408,26 @@ namespace VDS.RDF.Configuration
                     manager = new SparqlHttpProtocolConnector(new Uri(server));
                     break;
 
+                case Stardog:
+                    //Get the Server and Store
+                    server = ConfigurationLoader.GetConfigurationString(g, objNode, propServer);
+                    if (server == null) return false;
+                    store = ConfigurationLoader.GetConfigurationString(g, objNode, propStore);
+                    if (store == null) return false;
+
+                    //Get User Credentials
+                    ConfigurationLoader.GetUsernameAndPassword(g, objNode, true, out user, out pwd);
+
+                    if (user != null && pwd != null)
+                    {
+                        manager = new StardogConnector(server, store, user, pwd);
+                    }
+                    else
+                    {
+                        manager = new StardogConnector(server, store);
+                    }
+                    break;
+
                 case Talis:
                     //Get the Store Name and User credentials
                     store = ConfigurationLoader.GetConfigurationString(g, objNode, propStore);
@@ -480,6 +501,7 @@ namespace VDS.RDF.Configuration
                 case ReadOnlyQueryable:
                 case Sparql:
                 case SparqlHttpProtocol:
+                case Stardog:
                 case Talis:
                 case Virtuoso:
                     return true;
