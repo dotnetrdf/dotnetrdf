@@ -7,7 +7,7 @@ namespace VDS.RDF.Utilities.Linq.Metal
     {
 		EmbeddedResourceTemplateLoader templateLoader;
 		StringTemplateGroup stringTemplateGroup;
-		private static readonly string TemplateNamespace = "rdfMetal.template";
+		private static readonly string TemplateNamespace = "VDS.RDF.Utilities.Linq.Metal.template";
 		
 //		private readonly StringTemplateGroup group = new StringTemplateGroup("myGroup", @"C:\shared.datastore\repository\personal\dev\projects\semantic-web\LinqToRdf.Prototypes\RdfMetal\template");
 		
