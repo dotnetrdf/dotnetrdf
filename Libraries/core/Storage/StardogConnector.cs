@@ -295,7 +295,9 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="g">Graph to load into</param>
         /// <param name="graphUri">Uri of the Graph to load</param>
-        /// <remarks>If a Null Uri is specified then the entire contents of the Store will be loaded</remarks>
+        /// <remarks>
+        /// If an empty/null Uri is specified then the Default Graph of the Store will be loaded
+        /// </remarks>
         public void LoadGraph(IGraph g, Uri graphUri)
         {
             if (graphUri != null)
@@ -313,7 +315,9 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="g">Graph to load into</param>
         /// <param name="graphUri">Uri of the Graph to load</param>
-        /// <remarks>If an empty/null Uri is specified then the default Graph of the Store will be loaded</remarks>
+        /// <remarks>
+        /// If an empty/null Uri is specified then the Default Graph of the Store will be loaded
+        /// </remarks>
         public void LoadGraph(IGraph g, string graphUri)
         {
             try
