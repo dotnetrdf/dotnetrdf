@@ -49,8 +49,15 @@ namespace VDS.RDF.Test.Parsing.Handlers
             }
 
             Graph temp = new Graph();
-            manager.LoadGraph(temp, TestGraphUri);
-            Assert.IsTrue(temp.IsEmpty, "Unable to ensure that Target Graph in Store is empty prior to running Test");
+            try
+            {
+                manager.LoadGraph(temp, TestGraphUri);
+                Assert.IsTrue(temp.IsEmpty, "Unable to ensure that Target Graph in Store is empty prior to running Test");
+            }
+            catch
+            {
+                //An Error Loading the Graph is OK
+            }
 
             WriteToStoreHandler handler = new WriteToStoreHandler(manager, TestGraphUri, 100);
             TurtleParser parser = new TurtleParser();
@@ -194,8 +201,16 @@ namespace VDS.RDF.Test.Parsing.Handlers
         [TestMethod]
         public void ParsingWriteToStoreHandlerFuseki()
         {
-            FusekiConnector fuseki = new FusekiConnector("http://localhost:3030/dataset/data");
-            this.TestWriteToStoreHandler(fuseki);
+            try
+            {
+                Options.UriLoaderCaching = false;
+                FusekiConnector fuseki = new FusekiConnector("http://localhost:3030/dataset/data");
+                this.TestWriteToStoreHandler(fuseki);
+            }
+            finally
+            {
+                Options.UriLoaderCaching = true;
+            }
         }
 
         [TestMethod]

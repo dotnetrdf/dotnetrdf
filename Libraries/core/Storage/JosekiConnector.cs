@@ -144,15 +144,17 @@ namespace VDS.RDF.Storage
                     if (Options.HttpDebugging) Tools.HttpDebugRequest(request);
                 #endif
 
-                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                    using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                    {
 
-                #if DEBUG
-                    if (Options.HttpDebugging) Tools.HttpDebugResponse(response);
-                #endif
+#if DEBUG
+                        if (Options.HttpDebugging) Tools.HttpDebugResponse(response);
+#endif
 
-                IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
-                parser.Load(g, new StreamReader(response.GetResponseStream()));
-                response.Close();
+                        IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
+                        parser.Load(g, new StreamReader(response.GetResponseStream()));
+                        response.Close();
+                    }
             }
             catch (WebException webEx)
             {

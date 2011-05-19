@@ -90,18 +90,7 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">URI of the Graph to load</param>
         public virtual void LoadGraph(IGraph g, Uri graphUri)
         {
-            String retrievalUri = this._serviceUri;
-            Uri origUri = g.BaseUri;
-            if (graphUri != null)
-            {
-                retrievalUri += "?graph=" + Uri.EscapeDataString(graphUri.ToString());
-            }
-            else
-            {
-                retrievalUri += "?default";
-            }
-            UriLoader.Load(g, new Uri(retrievalUri));
-            g.BaseUri = origUri;
+            this.LoadGraph(g, graphUri.ToSafeString());
         }
 
         /// <summary>
@@ -113,7 +102,7 @@ namespace VDS.RDF.Storage
         {
             String retrievalUri = this._serviceUri;
             Uri origUri = g.BaseUri;
-            if (origUri == null && g.IsEmpty && !graphUri.Equals(String.Empty))
+            if (origUri == null && g.IsEmpty && graphUri != null && !graphUri.Equals(String.Empty))
             {
                 origUri = new Uri(graphUri);
             }
@@ -125,7 +114,50 @@ namespace VDS.RDF.Storage
             {
                 retrievalUri += "?default";
             }
-            UriLoader.Load(g, new Uri(retrievalUri));
+            try
+            {
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(retrievalUri);
+                request.Method = "GET";
+                request.Accept = MimeTypesHelper.HttpAcceptHeader;
+
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    Tools.HttpDebugRequest(request);
+                }
+#endif
+
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                {
+#if DEBUG
+                    if (Options.HttpDebugging)
+                    {
+                        Tools.HttpDebugResponse(response);
+                    }
+#endif
+                    //Parse the retrieved RDF
+                    IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
+                    parser.Load(g, new StreamReader(response.GetResponseStream()));
+
+                    //If we get here then it was OK
+                    response.Close();
+                }
+            }
+            catch (WebException webEx)
+            {
+                //If the error is a 404 then return false
+                //Any other error caused the function to throw an error
+                if (webEx.Response != null)
+                {
+#if DEBUG
+                    if (Options.HttpDebugging)
+                    {
+                        Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                    }
+#endif
+                }
+                throw new RdfStorageException("A HTTP Error occurred while trying to load a Graph from the Store", webEx);
+            }
             g.BaseUri = origUri;
         }
 
@@ -319,12 +351,12 @@ namespace VDS.RDF.Storage
 #endif
                     //If we get here then it was OK
 
-#if !NO_URICACHE
-                    //Must invalidate the UriLoader Cache
-                    Uri cacheUri = new Uri(updateUri);
-                    UriLoader.Cache.RemoveETag(cacheUri);
-                    UriLoader.Cache.RemoveLocalCopy(cacheUri);
-#endif
+//#if !NO_URICACHE
+//                    //Must invalidate the UriLoader Cache
+//                    Uri cacheUri = new Uri(updateUri);
+//                    UriLoader.Cache.RemoveETag(cacheUri);
+//                    UriLoader.Cache.RemoveLocalCopy(cacheUri);
+//#endif
                     response.Close();
                 }
             }
@@ -398,12 +430,12 @@ namespace VDS.RDF.Storage
 #endif
                     //If we get here then it was OK
 
-#if !NO_URICACHE
-                    //Make sure we remove the URI from the UriLoader Cache!
-                    Uri cacheUri = new Uri(deleteUri);
-                    UriLoader.Cache.RemoveETag(cacheUri);
-                    UriLoader.Cache.RemoveLocalCopy(cacheUri);
-#endif
+//#if !NO_URICACHE
+//                    //Make sure we remove the URI from the UriLoader Cache!
+//                    Uri cacheUri = new Uri(deleteUri);
+//                    UriLoader.Cache.RemoveETag(cacheUri);
+//                    UriLoader.Cache.RemoveLocalCopy(cacheUri);
+//#endif
 
                     response.Close();
                 }

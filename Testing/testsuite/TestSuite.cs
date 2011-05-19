@@ -110,22 +110,22 @@ namespace dotNetRDFTest
             //Call XML/RDF Test Suite
             //RdfXmlTestSuite.Main(args);
             Console.SetOut(stdout);
-            //Console.WriteLine("RDF/XML Parser Tests Done");
+            Console.WriteLine("RDF/XML Parser Tests Done");
 
             //Call Notation3 Test Suite
             //Notation3TestSuite.Main(args);
             Console.SetOut(stdout);
-            //Console.WriteLine("Notation 3 Parser Tests Done");
+            Console.WriteLine("Notation 3 Parser Tests Done");
 
             //Call Turtle Test Suite
             //TurtleTestSuite.Main(args);
             Console.SetOut(stdout);
-            //Console.WriteLine("Turtle Parser Tests Done");
+            Console.WriteLine("Turtle Parser Tests Done");
 
             //Call the NTriples Test Suite
             //NTriplesTestSuite.Main(args);
             Console.SetOut(stdout);
-            //Console.WriteLine("NTriples Parser Tests Done");
+            Console.WriteLine("NTriples Parser Tests Done");
 
             //Call the Json Test Suite
             //JsonTest.Main(args);
@@ -135,7 +135,7 @@ namespace dotNetRDFTest
             //Call the RDFa Test Suite
             //RdfATestSuite.Main(args);
             Console.SetOut(stdout);
-            //Console.WriteLine("RDFa Tests Done");
+            Console.WriteLine("RDFa Tests Done");
 
             //Call the TriG Test Suite
             //TriGTestSuite.Main(args);

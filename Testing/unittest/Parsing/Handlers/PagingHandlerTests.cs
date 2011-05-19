@@ -20,8 +20,8 @@ namespace VDS.RDF.Test.Parsing.Handlers
 
             Graph h = new Graph();
             PagingHandler handler = new PagingHandler(new GraphHandler(h), 25);
-
             parser.Load(handler, tempFile);
+            h.Retract(h.Triples.Where(t => !t.IsGroundTriple));
 
             NTriplesFormatter formatter = new NTriplesFormatter();
             foreach (Triple t in h.Triples)
@@ -31,11 +31,12 @@ namespace VDS.RDF.Test.Parsing.Handlers
             Console.WriteLine();
 
             Assert.IsFalse(h.IsEmpty, "Graph should not be empty");
-            Assert.AreEqual(25, h.Triples.Count, "Graphs should have exactly 25 Triples");
+            Assert.IsTrue(h.Triples.Count <= 25, "Graphs should have <= 25 Triples");
 
             Graph i = new Graph();
             handler = new PagingHandler(new GraphHandler(i), 25, 25);
             parser.Load(handler, tempFile);
+            i.Retract(i.Triples.Where(t => !t.IsGroundTriple));
 
             foreach (Triple t in i.Triples)
             {
@@ -44,14 +45,12 @@ namespace VDS.RDF.Test.Parsing.Handlers
             Console.WriteLine();
 
             Assert.IsFalse(i.IsEmpty, "Graph should not be empty");
-            Assert.AreEqual(25, i.Triples.Count, "Graphs should have exactly 25 Triples");
+            Assert.IsTrue(i.Triples.Count <= 25, "Graphs should have <= 25 Triples");
 
             GraphDiffReport report = h.Difference(i);
             Assert.IsFalse(report.AreEqual, "Graphs should not be equal");
-            Assert.AreEqual(25, report.AddedTriples.Count(), "Should be 25 added Triples");
-            Assert.AreEqual(23, report.RemovedTriples.Count(), "Should be 23 removed Triples");
-            Assert.AreEqual(1, report.RemovedMSGs.Count(), "Should be 1 removed MSG");
-            Assert.AreEqual(2, report.RemovedMSGs.First().Triples.Count, "Removed MSG should have 2 Triples");
+            Assert.AreEqual(i.Triples.Count, report.AddedTriples.Count(), "Should be " + i.Triples.Count + " added Triples");
+            Assert.AreEqual(h.Triples.Count, report.RemovedTriples.Count(), "Should be " + h.Triples.Count + " removed Triples");
         }
 
         public void ParsingUsingPagingHandler2(String tempFile, IRdfReader parser)
