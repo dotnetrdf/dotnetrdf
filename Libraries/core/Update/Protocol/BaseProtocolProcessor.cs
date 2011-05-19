@@ -40,6 +40,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
+using VDS.RDF.Web;
 using VDS.RDF.Writing;
 
 namespace VDS.RDF.Update.Protocol
@@ -249,7 +250,7 @@ namespace VDS.RDF.Update.Protocol
             String ctype;
 
             //Look up the MIME Type Definition - if none use GetWriter instead
-            MimeTypeDefinition definition = MimeTypesHelper.GetDefinitions(context.Request.AcceptTypes).FirstOrDefault(d => d.CanWriteRdf);
+            MimeTypeDefinition definition = MimeTypesHelper.GetDefinitions(HandlerHelper.GetAcceptTypes(context)).FirstOrDefault(d => d.CanWriteRdf);
             if (definition != null)
             {
                 writer = definition.GetRdfWriter();
@@ -257,7 +258,7 @@ namespace VDS.RDF.Update.Protocol
             }
             else
             {
-                writer = MimeTypesHelper.GetWriter(context.Request.AcceptTypes, out ctype);
+                writer = MimeTypesHelper.GetWriter(HandlerHelper.GetAcceptTypes(context), out ctype);
             }
 
             //Set up the Writer

@@ -43,6 +43,7 @@ using System.Web;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Storage;
+using VDS.RDF.Web;
 
 namespace VDS.RDF.Update.Protocol
 {
@@ -256,7 +257,7 @@ namespace VDS.RDF.Update.Protocol
                 {
                     //Send the Content Type we'd select based on the Accept header to the user
                     String ctype;
-                    IRdfWriter writer = MimeTypesHelper.GetWriter(context.Request.AcceptTypes, out ctype);
+                    IRdfWriter writer = MimeTypesHelper.GetWriter(HandlerHelper.GetAcceptTypes(context), out ctype);
                     context.Response.ContentType = ctype;
                 }
                 else

@@ -51,6 +51,7 @@ namespace VDS.RDF.Utilities.Web.Deploy
         private bool _noClassicRegistration = false;
         private bool _noIntegratedRegistration = false;
         private bool _noLocalIIS = false;
+        private bool _negotiate = false;
 
         public void RunXmlDeploy(String[] args)
         {
@@ -111,6 +112,8 @@ namespace VDS.RDF.Utilities.Web.Deploy
                     config.Save(args[1]);
                 }
                 Console.Out.WriteLine("rdfWebDeploy: Opened the Web.Config file for the specified Web Application");
+                
+                XmlNode reg = null;
 
                 //Detect Folders
                 String appFolder = Path.GetDirectoryName(args[1]);
@@ -270,7 +273,7 @@ namespace VDS.RDF.Utilities.Web.Deploy
                                 String handlerType = ((ILiteralNode)type).Value;
 
                                 //Add XML to register the Handler
-                                XmlNode reg = null;
+                                reg = null;
                                 foreach (XmlNode existingReg in httpHandlers.ChildNodes)
                                 {
                                     if (existingReg.Attributes.GetNamedItem("path") != null)
@@ -313,6 +316,51 @@ namespace VDS.RDF.Utilities.Web.Deploy
                         {
                             Console.Error.WriteLine("rdfWebDeploy: Error: Cannot deploy a Handler which is not specified as a URI Node");
                         }
+                    }
+
+                    //Deploy Negotiate by File Extension
+                    if (this._negotiate)
+                    {
+                        XmlNodeList httpModulesNodes = systemWeb.GetElementsByTagName("httpModules");
+                        XmlElement httpModules;
+                        if (httpModulesNodes.Count == 0)
+                        {
+                            httpModules = config.CreateElement("httpModules");
+                            systemWeb.AppendChild(httpModules);
+                        }
+                        else if (httpModulesNodes.Count > 1)
+                        {
+                            Console.Error.WriteLine("rdfWebDeploy: Error: The Configuration File for the Web Application appears to be invalid as more than one <httpModules> node exists");
+                            return;
+                        }
+                        else
+                        {
+                            httpModules = (XmlElement)httpModulesNodes[0];
+                        }
+                        reg = null;
+                        foreach (XmlNode existingReg in httpModules.ChildNodes)
+                        {
+                            if (existingReg.Attributes.GetNamedItem("name") != null)
+                            {
+                                if (existingReg.Attributes["name"].Value.Equals("NegotiateByExtension"))
+                                {
+                                    reg = existingReg;
+                                    break;
+                                }
+                            }
+                        }
+                        if (reg == null)
+                        {
+                            reg = config.CreateElement("add");
+                            XmlAttribute name = config.CreateAttribute("name");
+                            name.Value = "NegotiateByExtension";
+                            reg.Attributes.Append(name);
+                            XmlAttribute type = config.CreateAttribute("type");
+                            type.Value = "VDS.RDF.Web.NegotiateByFileExtension";
+                            reg.Attributes.Append(type);
+                            httpModules.AppendChild(reg);
+                        }
+                        Console.WriteLine("rdfWebDeploy: Deployed the Negotiate by File Extension Module");
                     }
 
                     config.Save(args[1]);
@@ -405,7 +453,7 @@ namespace VDS.RDF.Utilities.Web.Deploy
                                 String handlerType = ((ILiteralNode)type).Value;
 
                                 //Add XML to register the Handler
-                                XmlNode reg = null;
+                                reg = null;
                                 foreach (XmlNode existingReg in httpHandlers.ChildNodes)
                                 {
                                     if (existingReg.Attributes.GetNamedItem("path") != null)
@@ -453,6 +501,51 @@ namespace VDS.RDF.Utilities.Web.Deploy
                         }
                     }
 
+                    //Deploy Negotiate by File Extension
+                    if (this._negotiate)
+                    {
+                        XmlNodeList httpModulesNodes = systemWebServer.GetElementsByTagName("modules");
+                        XmlElement httpModules;
+                        if (httpModulesNodes.Count == 0)
+                        {
+                            httpModules = config.CreateElement("modules");
+                            systemWebServer.AppendChild(httpModules);
+                        }
+                        else if (httpModulesNodes.Count > 1)
+                        {
+                            Console.Error.WriteLine("rdfWebDeploy: Error: The Configuration File for the Web Application appears to be invalid as more than one <modules> node exists");
+                            return;
+                        }
+                        else
+                        {
+                            httpModules = (XmlElement)httpModulesNodes[0];
+                        }
+                        reg = null;
+                        foreach (XmlNode existingReg in httpModules.ChildNodes)
+                        {
+                            if (existingReg.Attributes.GetNamedItem("name") != null)
+                            {
+                                if (existingReg.Attributes["name"].Value.Equals("NegotiateByExtension"))
+                                {
+                                    reg = existingReg;
+                                    break;
+                                }
+                            }
+                        }
+                        if (reg == null)
+                        {
+                            reg = config.CreateElement("add");
+                            XmlAttribute name = config.CreateAttribute("name");
+                            name.Value = "NegotiateByExtension";
+                            reg.Attributes.Append(name);
+                            XmlAttribute type = config.CreateAttribute("type");
+                            type.Value = "VDS.RDF.Web.NegotiateByFileExtension";
+                            reg.Attributes.Append(type);
+                            httpModules.AppendChild(reg);
+                        }
+                        Console.WriteLine("rdfWebDeploy: Deployed the Negotiate by File Extension Module");
+                    }
+
                     config.Save(args[1]);
                     Console.WriteLine("rdfWebDeploy: Successfully deployed for IIS Integrated Mode");
                 }
@@ -476,6 +569,10 @@ namespace VDS.RDF.Utilities.Web.Deploy
             {
                 switch (args[i])
                 {
+                    case "-negotiate":
+                        this._negotiate = true;
+                        Console.WriteLine("rdfWebDeploy: Negotiate by File Extension Module will be performed");
+                        break;
                     case "-nointreg":
                         this._noIntegratedRegistration = true;
                         Console.WriteLine("rdfWebDeploy: IIS Integrated Mode Handler registration will not be performed");

@@ -50,6 +50,7 @@ namespace VDS.RDF.Utilities.Web.Deploy
         private bool _noClassicRegistration = false;
         private bool _noIntegratedRegistration = false;
         private bool _noLocalIIS = false;
+        private bool _negotiate = false;
         private String _site = "Default Web Site";
 
         public void RunDeploy(String[] args)
@@ -144,7 +145,7 @@ namespace VDS.RDF.Utilities.Web.Deploy
                 Console.WriteLine();
 
                 //Get the sections of the Configuration File we want to edit
-                HttpHandlersSection handlersSection = (HttpHandlersSection)config.GetSection("system.web/httpHandlers");
+                HttpHandlersSection handlersSection = config.GetSection("system.web/httpHandlers") as HttpHandlersSection;
                 if (handlersSection == null)
                 {
                     Console.Error.WriteLine("rdfWebDeploy: Error: Unable to access the Handlers section of the web applications Web.Config file");
@@ -193,6 +194,20 @@ namespace VDS.RDF.Utilities.Web.Deploy
                         {
                             Console.Error.WriteLine("rdfWebDeploy: Error: Cannot deploy a Handler which is not specified as a URI Node");
                         }
+                    }
+
+                    //Deploy Negotiate by File Extension if appropriate
+                    if (this._negotiate)
+                    {
+                        HttpModulesSection modulesSection = config.GetSection("system.web/httpModules") as HttpModulesSection;
+                        if (modulesSection == null)
+                        {
+                            Console.Error.WriteLine("rdfWebDeploy: Error: Unable to access the Modules section of the web applications Web.Config file");
+                            return;
+                        }
+                        modulesSection.Modules.Remove("NegotiateByExtension");
+                        modulesSection.Modules.Add(new HttpModuleAction("NegotiateByExtension", "VDS.RDF.Web.NegotiateByFileExtension"));
+                        Console.WriteLine("rdfWebDeploy: Deployed the Negotiate by File Extension Module");
                     }
 
                     Console.WriteLine("rdfWebDeploy: Successfully deployed for IIS Classic Mode");
@@ -251,6 +266,32 @@ namespace VDS.RDF.Utilities.Web.Deploy
                         {
                             Console.Error.WriteLine("rdfWebDeploy: Error: Cannot deploy a Handler which is not specified as a URI Node");
                         }
+
+                        //Deploy Negotiate by File Extension if appropriate
+                        if (this._negotiate)
+                        {
+                            Admin.ConfigurationSection newModulesSection = adminConfig.GetSection("system.webServer/modules");
+                            if (newModulesSection == null)
+                            {
+                                Console.Error.WriteLine("rdfWebDeploy: Error: Unable to access the Modules section of the web applications Web.Config file");
+                                return;
+                            }
+
+                            //First remove the Old Module
+                            Admin.ConfigurationElementCollection newModules = newModulesSection.GetCollection();
+                            foreach (Admin.ConfigurationElement oldReg in newModules.Where(el => el.GetAttribute("name").Equals("NegotiateByExtension")).ToList())
+                            {
+                                newModules.Remove(oldReg);
+                            }
+
+                            //Then add the new Module
+                            Admin.ConfigurationElement reg = newHandlers.CreateElement("add");
+                            reg["name"] = "NegotiateByFileExtension";
+                            reg["type"] = "VDS.RDF.Web.NegotiateByFileExtension";
+                            newModules.AddAt(0, reg);
+
+                            Console.WriteLine("rdfWebDeploy: Deployed the Negotiate by File Extension Module");
+                        }
                     }
 
                     manager.CommitChanges();
@@ -279,13 +320,17 @@ namespace VDS.RDF.Utilities.Web.Deploy
             {
                 switch (args[i])
                 {
+                    case "-negotiate":
+                        this._negotiate = true;
+                        Console.WriteLine("rdfWebDeploy: Negotiate by File Extension Module will be performed");
+                        break;
                     case "-nointreg":
                         this._noIntegratedRegistration = true;
-                        Console.WriteLine("rdfWebDeploy: IIS Integrated Mode Handler registration will not be performed");
+                        Console.WriteLine("rdfWebDeploy: IIS Integrated Mode Handler and Module registration will not be performed");
                         break;
                     case "-noclassicreg":
                         this._noClassicRegistration = true;
-                        Console.WriteLine("rdfWebDeploy: IIS Classic Handler registration will not be performed");
+                        Console.WriteLine("rdfWebDeploy: IIS Classic Handler and Module registration will not be performed");
                         break;
                     case "-noiis":
                         this._noLocalIIS = true;

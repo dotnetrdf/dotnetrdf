@@ -1,0 +1,49 @@
+dotNetRDF Toolkit for Windows
+=============================
+
+A Toolkit of command line utilities and GUI tools for working with RDF data
+
+Version 0.2.0 Alpha
+
+Robert Vesse 2009-11
+rvesse@vdesign-studios.com
+
+Change Log
+----------
+
+This represents a summary of additions, changes and removals for the 0.2.0 release of the dotNetRDF Toolkit
+for Windows detailed by Tool:
+
+rdfConvert
+- Reworked default mode (reduced complexity of command line syntax) - note -rapper mode is unchanged
+- Faster converions in default mode
+
+rdfEditor
+- Added Recent Files List
+- Added more Appearance Customisation
+- Made most user settings roaming
+- Improved auto-completion
+ 
+rdfOptStats 
+- New tool for generating statistics files for use with our WeightedOptimiser in the core dotNetRDF library
+   
+rdfQuery
+- No Direct Changes
+- Upgrade to using dotNetRDF 0.4.1 allows full SPARQL 1.1 including property paths when using local endpoints
+ 
+rdfWebDeploy
+- Added a -negotiate flag for the -deploy and -xmldeploy modes which will automatically include the Negotiate by
+  File Extension module in the Web.config file
+
+soh 
+- No Changes
+
+SparqlGUI
+- Added a View Log button for reviewing the Log File
+
+StoreManager
+- Added support for In-Memory and Stardog connections
+- Significantly reworked internals to perform most operations in Background
+- Added Export Data feature for Generic Stores
+- Added Delete Graph feature for Generic Stores
+- Improved Import feature for Generic Stores

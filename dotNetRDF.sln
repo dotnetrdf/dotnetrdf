@@ -100,6 +100,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NDoc", "NDoc", "{BF556CC4-9
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Toolkit", "Toolkit", "{C5B85D93-6717-4270-9C36-79EFC18441C5}"
 	ProjectSection(SolutionItems) = preProject
+		Utilities\ChangeLog.txt = Utilities\ChangeLog.txt
 		Utilities\ReadMe.txt = Utilities\ReadMe.txt
 	EndProjectSection
 EndProject

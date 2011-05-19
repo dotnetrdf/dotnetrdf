@@ -104,7 +104,7 @@ namespace VDS.RDF.Web
                 {
                     //If we might show the Update Form only show the Description if the selected writer is
                     //not a HTML writer
-                    MimeTypeDefinition definition = MimeTypesHelper.GetDefinitions(context.Request.AcceptTypes).FirstOrDefault(d => d.CanWriteRdf);
+                    MimeTypeDefinition definition = MimeTypesHelper.GetDefinitions(HandlerHelper.GetAcceptTypes(context)).FirstOrDefault(d => d.CanWriteRdf);
                     if (definition != null)
                     {
                         IRdfWriter writer = definition.GetRdfWriter();
