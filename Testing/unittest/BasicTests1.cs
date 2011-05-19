@@ -960,6 +960,16 @@ namespace VDS.RDF.Test
             Assert.AreEqual(pathAndQuery, absPathPlusQuery);
         }
 
+        [TestMethod]
+        public void UriQuery()
+        {
+            Uri withQuery = new Uri("http://example.org/with?some=query");
+            Uri withoutQuery = new Uri("http://example.org/without");
+
+            Assert.AreNotEqual(String.Empty, withQuery.Query);
+            Assert.AreEqual(String.Empty, withoutQuery.Query);
+        }
+
         //[TestMethod]
         //public void UriTrailingDot()
         //{

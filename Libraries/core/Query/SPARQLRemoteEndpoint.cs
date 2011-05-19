@@ -421,7 +421,7 @@ namespace VDS.RDF.Query
                 longQuery = false;
                 try
                 {
-                    if (this.Uri.ToString().Contains("?"))
+                    if (!this.Uri.Query.Equals(String.Empty))
                     {
                         queryUri.Append("&query=");
                     }
