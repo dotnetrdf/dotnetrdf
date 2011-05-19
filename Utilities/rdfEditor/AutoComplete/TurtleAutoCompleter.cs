@@ -8,6 +8,7 @@ using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Editing;
+using ICSharpCode.AvalonEdit.Highlighting;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing;
@@ -48,11 +49,8 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
 
         #region State Detection
 
-        public override void DetectState(TextEditor editor)
+        protected override void DetectStateInternal(TextEditor editor)
         {
-            //Don't do anything if currently disabled
-            if (this.State == AutoCompleteState.Disabled) return;
-
             //Look for defined Prefixes - we have to clear the list of namespaces and prefixes since they might have been altered
             this.DetectNamespaces(editor);
             this.DetectBlankNodes(editor);

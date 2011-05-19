@@ -11,14 +11,11 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
     public class ImportFileTask : BaseImportTask
     {
         private String _file;
-        private int _batchSize;
 
         public ImportFileTask(IGenericIOManager manager, String file, Uri targetUri, int batchSize)
-            : base("Import File", manager, targetUri)
+            : base("Import File", manager, targetUri, batchSize)
         {
             this._file = file;
-            this._batchSize = batchSize;
-            if (this._batchSize < 0) this._batchSize = 100;
         }
 
         protected override void ImportUsingHandler(IRdfHandler handler)
@@ -42,8 +39,8 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
     {
         private Uri _u;
 
-        public ImportUriTask(IGenericIOManager manager, Uri u, Uri targetUri)
-            : base("Import URI", manager, targetUri)
+        public ImportUriTask(IGenericIOManager manager, Uri u, Uri targetUri, int batchSize)
+            : base("Import URI", manager, targetUri, batchSize)
         {
             this._u = u;
         }

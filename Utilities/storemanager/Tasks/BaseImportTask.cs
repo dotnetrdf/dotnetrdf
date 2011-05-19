@@ -14,19 +14,26 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         private CancellableHandler _canceller;
         private StoreCountHandler _counter = new StoreCountHandler();
         private ImportProgressHandler _progress;
+        private int _batchSize;
 
-        public BaseImportTask(String name, IGenericIOManager manager, Uri targetGraph)
+        public BaseImportTask(String name, IGenericIOManager manager, Uri targetGraph, int batchSize)
             : base(name)
         {
             this._manager = manager;
             this._targetUri = targetGraph;
+            this._batchSize = batchSize;
+            if (this._batchSize <= 0) this._batchSize = 100;
+
             this._progress = new ImportProgressHandler(this._counter);
             this._progress.Progress += new ImportProgressEventHandler(_progress_Progress);
         }
 
         void _progress_Progress()
         {
-            this.Information = "Imported " + this._counter.TripleCount + " Triple(s) in " + this._counter.GraphCount + " Graph(s) so far...";
+            StringBuilder output = new StringBuilder();
+            int readTriples = this._counter.TripleCount;
+            int importedTriples = (readTriples / this._batchSize) * this._batchSize;
+            this.Information = "Read " + readTriples + " Triple(s), Imported " + importedTriples + " Triple(s) in " + this._counter.GraphCount + " Graph(s) so far...";
         }
 
 
@@ -35,7 +42,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
             if (this._manager.UpdateSupported)
             {
                 //Use a WriteToStoreHandler for direct writing
-                this._canceller = new CancellableHandler(new WriteToStoreHandler(this._manager, this.GetTargetUri()));
+                this._canceller = new CancellableHandler(new WriteToStoreHandler(this._manager, this.GetTargetUri(), this._batchSize));
                 if (this.HasBeenCancelled) this._canceller.Cancel();
 
                 //Wrap in a ChainedHandler to ensure we permit cancellation but also count imported triples

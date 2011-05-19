@@ -125,6 +125,7 @@
     <Compile Include="GoToLine.xaml.cs">
       <DependentUpon>GoToLine.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MruList.cs" />
     <Compile Include="Printing.cs" />
     <Compile Include="PrintPreview.xaml.cs">
       <DependentUpon>PrintPreview.xaml</DependentUpon>

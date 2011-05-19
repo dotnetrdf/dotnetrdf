@@ -3,7 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <DockPanel LastChildFill="False">
         <Label Name="txtValue" DockPanel.Dock="Left" Padding="2"></Label>
-        <Label Name="txtModifier" DockPanel.Dock="Right" Padding="2">
+        <Label Name="txtModifier" DockPanel.Dock="Left" Padding="2" HorizontalAlignment="Left" HorizontalContentAlignment="Left">
             <Hyperlink Click="Hyperlink_Click">
                 <Run Name="lnkDatatypeUri" />
             </Hyperlink>

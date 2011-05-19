@@ -35,11 +35,8 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
 
         #region State Detection
 
-        public override void DetectState(TextEditor editor)
+        protected override void DetectStateInternal(TextEditor editor)
         {
-            //Don't do anything if currently disabled
-            if (this.State == AutoCompleteState.Disabled) return;
-
             //Look for Blank Nodes
             this.DetectBlankNodes(editor);
         }

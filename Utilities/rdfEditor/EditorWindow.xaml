@@ -109,6 +109,10 @@
                 <MenuItem Header="Open" Name="mnuOpen" Click="mnuOpen_Click" InputGestureText="Ctrl+O" />
                 <MenuItem Header="Open URI" Name="mnuOpenUri" Click="mnuOpenUri_Click" />
                 <MenuItem Header="Open Query Results" Name="mnuOpenQueryResults" Click="mnuOpenQueryResults_Click" />
+                <MenuItem Header="Open Recent..." Name="mnuRecentFiles">
+                    <MenuItem Header="Clear Recent Files" Name="mnuClearRecentFiles" Click="mnuClearRecentFiles_Click" />
+                    <Separator />
+                </MenuItem>
                 <Separator />
                 <MenuItem Header="Save" Name="mnuSave" Click="mnuSave_Click" InputGestureText="Ctrl+S" />
                 <MenuItem Header="Save As..." Name="mnuSaveAs" Click="mnuSaveAs_Click" InputGestureText="Ctrl+Alt+S" />

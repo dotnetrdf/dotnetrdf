@@ -58,10 +58,9 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             this._keywords.Sort();
         }
 
-        public override void DetectState(TextEditor editor)
+        protected override void DetectStateInternal(TextEditor editor)
         {
-            base.DetectState(editor);
-
+            base.DetectStateInternal(editor);
             this.DetectVariables(editor);
         }
 

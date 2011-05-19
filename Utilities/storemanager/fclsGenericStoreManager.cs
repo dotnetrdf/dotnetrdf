@@ -213,7 +213,7 @@ namespace VDS.RDF.Utilities.StoreManager
 
             try
             {
-                ImportUriTask task = new ImportUriTask(this._manager, new Uri(this.txtImportUri.Text), targetUri);
+                ImportUriTask task = new ImportUriTask(this._manager, new Uri(this.txtImportUri.Text), targetUri, (int)this.numBatchSize.Value);
                 this.AddTask<TaskResult>(task, this.ImportCallback);
             }
             catch (UriFormatException uriEx)

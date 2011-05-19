@@ -48,6 +48,7 @@ namespace VDS.RDF.Utilities.Editor
         {
             InitializeComponent();
 
+            //Create the Editor Manager
             this._manager = new EditorManager(this.textEditor, this.mnuCurrentHighlighter, this.stsCurrSyntax, this.stsSyntaxValidation, this.mnuSymbolBoundaries);
           
             //Set up the Editor Options
@@ -217,6 +218,7 @@ namespace VDS.RDF.Utilities.Editor
                     this._manager.CurrentFile = _ofd.FileName;
                     this.Title = "rdfEditor - " + System.IO.Path.GetFileName(this._manager.CurrentFile);
                     this._manager.HasChanged = false;
+                    this.UpdateMruList(_ofd.FileName);
                 }
                 catch (Exception ex)
                 {
@@ -293,6 +295,20 @@ namespace VDS.RDF.Utilities.Editor
 
         private bool PreOpenCheck(String file)
         {
+            if (this._manager.HasChanged)
+            {
+                //Prompt user to save
+                MessageBoxResult result = MessageBox.Show("Do you wish to save changes to the current file before opening another file?", "Save Changes", MessageBoxButton.YesNoCancel);
+                if (result == MessageBoxResult.Cancel)
+                {
+                    return false;
+                }
+                else if (result == MessageBoxResult.Yes)
+                {
+                    mnuSave_Click(null, new RoutedEventArgs());
+                }
+            }
+
             FileInfo info = new FileInfo(file);
             long sizeInMB = info.Length / 1024 / 1024;
 
@@ -339,6 +355,8 @@ namespace VDS.RDF.Utilities.Editor
         {
             if (this._manager.CurrentFile != null)
             {
+                this.UpdateMruList(this._manager.CurrentFile);
+
                 StreamWriter fileWriter;
                 try
                 {
@@ -383,9 +401,16 @@ namespace VDS.RDF.Utilities.Editor
         {
             if (this._sfd.ShowDialog() == true)
             {
-                this._manager.CurrentFile = this._sfd.FileName;
-                mnuSave_Click(sender, e);
-                this._manager.AutoDetectSyntax(this._manager.CurrentFile);
+                if (!this._sfd.FileName.Equals(this._manager.CurrentFile))
+                {
+                    this._manager.CurrentFile = this._sfd.FileName;
+                    mnuSave_Click(sender, e);
+                    this._manager.AutoDetectSyntax(this._manager.CurrentFile);
+                }
+                else
+                {
+                    mnuSave_Click(sender, e);
+                }
             }
         }
 
@@ -427,6 +452,7 @@ namespace VDS.RDF.Utilities.Editor
             {
                 if (_sfd.ShowDialog() == true)
                 {
+                    this.UpdateMruList(this._sfd.FileName);
                     this._manager.CurrentFile = _sfd.FileName;
                 }
                 else
@@ -1223,6 +1249,7 @@ namespace VDS.RDF.Utilities.Editor
                         this._manager.CurrentFile = args[1];
                         this.Title = "rdfEditor - " + System.IO.Path.GetFileName(this._manager.CurrentFile);
                         this._manager.HasChanged = false;
+                        this.UpdateMruList(args[1]);
                     }
                     catch (Exception ex)
                     {
@@ -1254,6 +1281,9 @@ namespace VDS.RDF.Utilities.Editor
                 this.Width = Properties.Settings.Default.WindowWidth;
             }
             this._saveWindowSize = true;
+
+            //Fill The MRU List
+            this.ShowMruList();
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -1277,8 +1307,91 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
+        #endregion
+
+        #region MRU List
+
+        private void ShowMruList()
+        {
+            if (VDS.RDF.Utilities.Editor.App.RecentFiles != null)
+            {
+                while (this.mnuRecentFiles.Items.Count > 2)
+                {
+                    this.mnuRecentFiles.Items.RemoveAt(2);
+                }
+
+                int i = 0;
+                foreach (String file in VDS.RDF.Utilities.Editor.App.RecentFiles.Files)
+                {
+                    i++;
+                    MenuItem item = new MenuItem();
+                    item.Header = i + ": " + MruList.ShortenFilename(file);
+                    item.Tag = file;
+                    item.Click += new RoutedEventHandler(this.MruListFileClicked);
+                    this.mnuRecentFiles.Items.Add(item);
+                }
+            }
+        }
+
+        private void UpdateMruList(String file)
+        {
+            if (VDS.RDF.Utilities.Editor.App.RecentFiles != null)
+            {
+                VDS.RDF.Utilities.Editor.App.RecentFiles.Add(file);
+                this.ShowMruList();
+            }
+        }
+
+        private void MruListFileClicked(object sender, RoutedEventArgs e)
+        {
+            if (sender is MenuItem)
+            {
+                MenuItem item = (MenuItem)sender;
+                if (item.Tag != null)
+                {
+                    String file = item.Tag as String;
+                    if (file != null)
+                    {
+                        if (File.Exists(file))
+                        {
+                            try
+                            {
+                                if (!PreOpenCheck(file)) return;
+                                using (StreamReader reader = new StreamReader(file))
+                                {
+                                    String text = reader.ReadToEnd();
+                                    textEditor.Text = String.Empty;
+                                    textEditor.Text = text;
+                                    this._manager.AutoDetectSyntax(file);
+                                }
+                                this._manager.CurrentFile = file;
+                                this.Title = "rdfEditor - " + System.IO.Path.GetFileName(this._manager.CurrentFile);
+                                this._manager.HasChanged = false;
+                                this.UpdateMruList(file);
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show("An error occurred while opening the selected file: " + ex.Message, "Unable to Open File");
+                            }
+                        }
+                        else
+                        {
+                            System.Windows.MessageBox.Show("Cannot Open the Recent File '" + file + "' as it no longer exists!", "Unable to Open File", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        }
+                    }
+                }
+            }
+        }
 
         #endregion
+
+        private void mnuClearRecentFiles_Click(object sender, RoutedEventArgs e)
+        {
+            if (VDS.RDF.Utilities.Editor.App.RecentFiles != null)
+            {
+                VDS.RDF.Utilities.Editor.App.RecentFiles.Clear();
+            }
+        }
 
     }
 }

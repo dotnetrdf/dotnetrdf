@@ -7,6 +7,7 @@ using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Editing;
+using ICSharpCode.AvalonEdit.Highlighting;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing;
 
@@ -192,7 +193,78 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
 
         public abstract void Initialise(TextEditor editor);
 
-        public abstract void DetectState(TextEditor editor);
+        public void DetectState(TextEditor editor)
+        {
+            //Don't do anything if currently disabled
+            if (this.State == AutoCompleteState.Disabled) return;
+
+            //Then call the derived classes internal state detection (if any)
+            this.DetectStateInternal(editor);
+
+            //Work out what sort of token we are currently in and set our State appropriately
+            DocumentHighlighter h = new DocumentHighlighter(editor.Document, Syntax.SyntaxManager.GetHighlighter("Turtle").MainRuleSet);
+            DocumentLine line = editor.Document.GetLineByOffset(editor.CaretOffset);
+            HighlightedLine result = h.HighlightLine(line);
+
+            HighlightedSection current = result.Sections.FirstOrDefault(s => s.Offset <= editor.CaretOffset && (s.Offset + s.Length) > editor.CaretOffset);
+            if (current != null)
+            {
+                if (current.Color != null)
+                {
+                    switch (current.Color.Name)
+                    {
+                        case "Keyword":
+                            this.State = AutoCompleteState.Keyword;
+                            this.StartOffset = current.Offset;
+                            break;
+
+                        case "URI":
+                            this.State = AutoCompleteState.Uri;
+                            this.StartOffset = current.Offset;
+                            break;
+
+                        case "QName":
+                            this.State = AutoCompleteState.QName;
+                            this.StartOffset = current.Offset;
+                            break;
+
+                        case "String":
+                            String lit = editor.Document.GetText(current.Offset, current.Length);
+                            if (lit.StartsWith("\"\"\""))
+                            {
+                                this.State = AutoCompleteState.LongLiteral;
+                            }
+                            else
+                            {
+                                this.State = AutoCompleteState.Literal;
+                            }
+                            break;
+
+                        case "Comment":
+                            this.State = AutoCompleteState.Comment;
+                            this.StartOffset = current.Offset;
+                            break;
+
+                        case "BNode":
+                            this.State = AutoCompleteState.BNode;
+                            this.StartOffset = current.Offset;
+                            break;
+
+                        case "Variables":
+                            this.State = AutoCompleteState.Variable;
+                            this.StartOffset = current.Offset;
+                            break;
+
+                        default:
+                            this.State = AutoCompleteState.None;
+                            break;
+                    }
+                }
+            }
+        }
+
+        protected virtual void DetectStateInternal(TextEditor editor)
+        { }
 
         public abstract void TryAutoComplete(TextEditor editor, TextCompositionEventArgs e);
 
