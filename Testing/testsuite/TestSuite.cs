@@ -110,22 +110,22 @@ namespace dotNetRDFTest
             //Call XML/RDF Test Suite
             //RdfXmlTestSuite.Main(args);
             Console.SetOut(stdout);
-            Console.WriteLine("RDF/XML Parser Tests Done");
+            //Console.WriteLine("RDF/XML Parser Tests Done");
 
             //Call Notation3 Test Suite
             //Notation3TestSuite.Main(args);
             Console.SetOut(stdout);
-            Console.WriteLine("Notation 3 Parser Tests Done");
+            //Console.WriteLine("Notation 3 Parser Tests Done");
 
             //Call Turtle Test Suite
             //TurtleTestSuite.Main(args);
             Console.SetOut(stdout);
-            Console.WriteLine("Turtle Parser Tests Done");
+            //Console.WriteLine("Turtle Parser Tests Done");
 
             //Call the NTriples Test Suite
             //NTriplesTestSuite.Main(args);
             Console.SetOut(stdout);
-            Console.WriteLine("NTriples Parser Tests Done");
+            //Console.WriteLine("NTriples Parser Tests Done");
 
             //Call the Json Test Suite
             //JsonTest.Main(args);
@@ -133,7 +133,7 @@ namespace dotNetRDFTest
             //Console.WriteLine("JSON Tests Done");
 
             //Call the RDFa Test Suite
-            //RdfATestSuite.Main(args);
+            RdfATestSuite.Main(args);
             Console.SetOut(stdout);
             Console.WriteLine("RDFa Tests Done");
 
@@ -158,10 +158,10 @@ namespace dotNetRDFTest
             //Console.WriteLine("SPARQL Query Parser Tests Done");
 
             //Call the SPARQL Evaluation Test Suite
-            SparqlEvaluationTestSuite sparqlEvaluation = new SparqlEvaluationTestSuite();
-            sparqlEvaluation.RunTests();
+            //SparqlEvaluationTestSuite sparqlEvaluation = new SparqlEvaluationTestSuite();
+            //sparqlEvaluation.RunTests();
             Console.SetOut(stdout);
-            Console.WriteLine("SPARQL Evaluation Tests Done");
+            //Console.WriteLine("SPARQL Evaluation Tests Done");
 
             //Call the SPARQL 1.1 Evaluation Test Suite
             Sparql11EvaluationTestSuite sparql11Evaluation = new Sparql11EvaluationTestSuite();

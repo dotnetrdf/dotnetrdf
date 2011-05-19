@@ -62,6 +62,8 @@ namespace VDS.RDF.Update.Commands
         public ModifyCommand(GraphPattern deletions, GraphPattern insertions, GraphPattern where, Uri graphUri)
             : base(SparqlUpdateCommandType.Modify)
         {
+            if (!this.IsValidDeletePattern(deletions, true)) throw new SparqlUpdateException("Cannot create a DELETE command where any of the Triple Patterns are not constructable triple patterns (Blank Node Variables are not permitted) or a GRAPH clause has nested Graph Patterns");
+
             this._deletePattern = deletions;
             this._insertPattern = insertions;
             this._wherePattern = where;

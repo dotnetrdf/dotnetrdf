@@ -429,7 +429,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets whether the Pattern contains no Variables
+        /// Gets whether the Pattern contains no Variables of any kind
         /// </summary>
         public bool HasNoVariables
         {
@@ -449,6 +449,19 @@ namespace VDS.RDF.Query.Patterns
                 return (this._subj is NodeMatchPattern || this._subj is BlankNodePattern || this._subj is FixedBlankNodePattern) &&
                        (this._pred is NodeMatchPattern || this._pred is BlankNodePattern || this._pred is FixedBlankNodePattern) &&
                        (this._obj is NodeMatchPattern || this._obj is BlankNodePattern || this._obj is FixedBlankNodePattern);
+            }
+        }
+
+        /// <summary>
+        /// Gets whether the Pattern contains no Explicit Variables (i.e. Blank Node Variables are ignored)
+        /// </summary>
+        public bool HasNoBlankVariables
+        {
+            get
+            {
+                return (this._subj is NodeMatchPattern || this._subj is VariablePattern || this._subj is FixedBlankNodePattern) &&
+                       (this._pred is NodeMatchPattern || this._pred is VariablePattern || this._pred is FixedBlankNodePattern) &&
+                       (this._obj is NodeMatchPattern || this._obj is VariablePattern || this._obj is FixedBlankNodePattern);
             }
         }
 

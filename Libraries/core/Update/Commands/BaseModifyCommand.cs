@@ -36,6 +36,7 @@ terms.
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Update.Commands
 {
@@ -133,6 +134,33 @@ namespace VDS.RDF.Update.Commands
         {
             if (this._usingNamedUris == null) this._usingNamedUris = new List<Uri>();
             this._usingNamedUris.Add(u);
+        }
+
+        /// <summary>
+        /// Determines whether a Graph Pattern is valid for use in an DELETE pattern
+        /// </summary>
+        /// <param name="p">Graph Pattern</param>
+        /// <param name="top">Is this the top level pattern?</param>
+        /// <returns></returns>
+        protected bool IsValidDeletePattern(GraphPattern p, bool top)
+        {
+            if (p.IsGraph)
+            {
+                //If a GRAPH clause then all triple patterns must be constructable and have no Child Graph Patterns
+                return !p.HasChildGraphPatterns && p.TriplePatterns.All(tp => tp is IConstructTriplePattern && ((IConstructTriplePattern)tp).HasNoBlankVariables);
+            }
+            else if (p.IsExists || p.IsMinus || p.IsNotExists || p.IsOptional || p.IsService || p.IsSubQuery || p.IsUnion)
+            {
+                //EXISTS/MINUS/NOT EXISTS/OPTIONAL/SERVICE/Sub queries/UNIONs are not permitted
+                return false;
+            }
+            else
+            {
+                //For other patterns all Triple patterns must be constructable with no blank variables
+                //If top level then any Child Graph Patterns must be valid
+                //Otherwise must have no Child Graph Patterns
+                return p.TriplePatterns.All(tp => tp is IConstructTriplePattern && ((IConstructTriplePattern)tp).HasNoBlankVariables) && ((top && p.ChildGraphPatterns.All(gp => IsValidDeletePattern(gp, false))) || !p.HasChildGraphPatterns);
+            }
         }
     }
 }

@@ -128,7 +128,7 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Gets whether the Pattern contains no Variables
+        /// Gets whether the Pattern contains no Variables of any kind
         /// </summary>
         bool HasNoVariables
         {
@@ -139,6 +139,14 @@ namespace VDS.RDF.Query.Patterns
         /// Gets whether the Pattern contains no Explicit Variables (i.e. Blank Node Variables are ignored)
         /// </summary>
         bool HasNoExplicitVariables
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Gets whether the Pattern contains no Blank Node Variables (i.e. Explicit Variables are ignored)
+        /// </summary>
+        bool HasNoBlankVariables
         {
             get;
         }

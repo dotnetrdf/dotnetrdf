@@ -67,30 +67,14 @@ namespace dotNetRDFTest
                     //The following are tests that fail simply because our SparqlResultSet equality algorithm doesn't cope well
                     //with lots of BNodes in the results
                     "functions/bnode01.rq",
-                    //The following are tests of Updates which use QNames in WITH/USING which the current grammar forbids so skipped
-                    "basic-update/update-03.ru",
-                    "basic-update/update-04.ru",
-                    "basic-update/insert-using-01.ru",
-                    "basic-update/insert-03.ru",
-                    "basic-update/insert-04.ru",
-                    "syntax-update-1/syntax-update-32.ru",
-                    "syntax-update-1/syntax-update-33.ru",
-                    "syntax-update-1/syntax-update-34.ru",
-                    //The following are tests that use GRAPH QName outside of a Graph pattern where it is permitted and the current grammar forbids so skipped
-                    "clear/clear-graph-01.ru",
-                    "drop/drop-graph-01.ru",
-                    //The following are tests that use BNodes as wildcards in a DELETE which was a WG decision that has been reversed
-                    "delete-insert/delete-insert-03.ru",
-                    "delete-insert/delete-insert-03b.ru",
-                    "delete-insert/delete-insert-05.ru",
-                    "delete-insert/delete-insert-07.ru",
-                    "delete-insert/delete-insert-07b.ru",
                     //The following are tests for property paths which fail because of SparqlResultSet equality algorithm
                     //doesn't cope well with lots of BNodes in the results
                     "property-path/pp05.rq",
                     //The following are tests where the test cases are in the manifest but missing
                     "functions/notin01.rq",
-                    "negation/temporalProximity02.rq"
+                    "negation/temporalProximity02.rq",
+                    //The following is a BINDINGS test which myself and Andy Seaborne believe to be incorrect
+                    "bindings/bindings07.rq"
                     
                 };
 

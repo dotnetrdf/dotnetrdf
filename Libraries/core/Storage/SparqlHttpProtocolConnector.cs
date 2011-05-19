@@ -350,13 +350,6 @@ namespace VDS.RDF.Storage
                     }
 #endif
                     //If we get here then it was OK
-
-//#if !NO_URICACHE
-//                    //Must invalidate the UriLoader Cache
-//                    Uri cacheUri = new Uri(updateUri);
-//                    UriLoader.Cache.RemoveETag(cacheUri);
-//                    UriLoader.Cache.RemoveLocalCopy(cacheUri);
-//#endif
                     response.Close();
                 }
             }
@@ -429,14 +422,6 @@ namespace VDS.RDF.Storage
                     }
 #endif
                     //If we get here then it was OK
-
-//#if !NO_URICACHE
-//                    //Make sure we remove the URI from the UriLoader Cache!
-//                    Uri cacheUri = new Uri(deleteUri);
-//                    UriLoader.Cache.RemoveETag(cacheUri);
-//                    UriLoader.Cache.RemoveLocalCopy(cacheUri);
-//#endif
-
                     response.Close();
                 }
             }

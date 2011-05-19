@@ -943,7 +943,14 @@ namespace VDS.RDF.Parsing
             if (curie.StartsWith("_:"))
             {
                 //The CURIE is for a Blank Node
-                return context.Handler.CreateBlankNode(curie.Substring(2));
+                if (curie.Equals("_:"))
+                {
+                    return context.Handler.CreateBlankNode("_");
+                }
+                else
+                {
+                    return context.Handler.CreateBlankNode(curie.Substring(2));
+                }
             }
             else
             {

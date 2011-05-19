@@ -57,7 +57,7 @@ namespace VDS.RDF.Update.Commands
         public DeleteDataCommand(GraphPattern pattern)
             : base(SparqlUpdateCommandType.DeleteData, true) 
         {
-            if (!this.IsValidDataPattern(pattern, true)) throw new SparqlUpdateException("Cannot create a DELETE DATA command where any of the Triple Patterns are not concrete triples (variables are not permitted) or a GRAPH clause has nested Graph Patterns");
+            if (!this.IsValidDataPattern(pattern, true)) throw new SparqlUpdateException("Cannot create a DELETE DATA command where any of the Triple Patterns are not concrete triples (Variables/Blank Nodes are not permitted) or a GRAPH clause has nested Graph Patterns");
             this._pattern = pattern;
         }
 
@@ -72,7 +72,7 @@ namespace VDS.RDF.Update.Commands
             if (p.IsGraph)
             {
                 //If a GRAPH clause then all triple patterns must be constructable and have no Child Graph Patterns
-                return !p.HasChildGraphPatterns && p.TriplePatterns.All(tp => tp is IConstructTriplePattern && ((IConstructTriplePattern)tp).HasNoExplicitVariables);
+                return !p.HasChildGraphPatterns && p.TriplePatterns.All(tp => tp is IConstructTriplePattern && ((IConstructTriplePattern)tp).HasNoVariables);
             }
             else if (p.IsExists || p.IsMinus || p.IsNotExists || p.IsOptional || p.IsService || p.IsSubQuery || p.IsUnion)
             {
@@ -84,7 +84,7 @@ namespace VDS.RDF.Update.Commands
                 //For other patterns all Triple patterns must be constructable with no explicit variables
                 //If top level then any Child Graph Patterns must be valid
                 //Otherwise must have no Child Graph Patterns
-                return p.TriplePatterns.All(tp => tp is IConstructTriplePattern && ((IConstructTriplePattern)tp).HasNoExplicitVariables) && ((top && p.ChildGraphPatterns.All(gp => IsValidDataPattern(gp, false))) || !p.HasChildGraphPatterns);
+                return p.TriplePatterns.All(tp => tp is IConstructTriplePattern && ((IConstructTriplePattern)tp).HasNoVariables) && ((top && p.ChildGraphPatterns.All(gp => IsValidDataPattern(gp, false))) || !p.HasChildGraphPatterns);
             }
         }
 
