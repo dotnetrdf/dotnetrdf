@@ -21,5 +21,7 @@ namespace VDS.RDF.Utilities.Convert.Inputs
         }
 
         public abstract void Convert();
+
+        public abstract override string ToString();
     }
 }

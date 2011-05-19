@@ -34,7 +34,9 @@ using System.IO;
 using System.Linq;
 using VDS.RDF;
 using VDS.RDF.Parsing;
+using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Writing;
+using VDS.RDF.Writing.Formatting;
 using VDS.RDF.Utilities.Convert.Inputs;
 
 namespace VDS.RDF.Utilities.Convert
@@ -54,8 +56,8 @@ namespace VDS.RDF.Utilities.Convert
  
         //Output Variables
         private String _outputFilename = String.Empty;
-        private String _outFormat = null;
-        private String _outExt = null;
+        private List<String> _outFormats = new List<string>();
+        private String _outExt = String.Empty;
 
         public void RunConvert(String[] args)
         {
@@ -66,8 +68,150 @@ namespace VDS.RDF.Utilities.Convert
                 return;
             }
 
+            //First grab the MIME Type Definitions for the conversion
+            List<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions(this._outFormats).ToList();
 
-            Console.WriteLine("rdfConvert: Not Yet Implemented");
+            //Process each input to determine the Conversion Handler to use
+            foreach (IConversionInput input in this._inputs)
+            {
+                String outFile;
+                String ext = this._outExt;
+
+                //First determine the writer we'll use
+                MimeTypeDefinition graphDef = defs.FirstOrDefault(d => d.CanWriteRdf);
+                if (graphDef != null)
+                {
+                    //Then generate the output filename
+                    if (ext.Equals(String.Empty))
+                    {
+                        ext = "." + graphDef.CanonicalFileExtension;
+                    }
+                    outFile = input.GetFilename(this._outputFilename, ext);
+
+                    //Check it doesn't already exist or overwrite is enabled
+                    if (File.Exists(outFile) && !this._overwrite)
+                    {
+                        Console.Error.WriteLine("rdfConvert: Warning: Skipping Conversion of Input " + input.ToString() + " as this would generate the Output File '" + outFile + "' which already exists and the -overwrite option was not specified");
+                        continue;
+                    }
+
+                    //Get the Writer and apply Conversion Options
+                    IRdfWriter writer = graphDef.GetRdfWriter();
+                    foreach (IConversionOption option in this._options)
+                    {
+                        option.Apply(writer);
+                    }
+
+                    //If -best always use SaveOnCompletionHandler
+                    if (this._best)
+                    {
+                        input.ConversionHandler = new SaveOnCompletionHandler(writer, new StreamWriter(outFile, false, graphDef.Encoding));
+                    }
+                    else
+                    {
+                        //Use the fast WriteThroughHandler where possible
+                        if (writer is RdfJsonWriter || writer is RdfXmlWriter || writer is FastRdfXmlWriter || writer is PrettyRdfXmlWriter)
+                        {
+                            //Can't use it in this case
+                            input.ConversionHandler = new SaveOnCompletionHandler(writer, new StreamWriter(outFile, false, graphDef.Encoding));
+                        } 
+                        else if (writer is CompressingTurtleWriter || writer is TurtleWriter)
+                        {
+                            input.ConversionHandler = new WriteThroughHandler(typeof(TurtleFormatter), new StreamWriter(outFile, false, graphDef.Encoding), false);
+                        }
+                        else if (writer is CsvWriter)
+                        {
+                            input.ConversionHandler = new WriteThroughHandler(typeof(CsvFormatter), new StreamWriter(outFile, false, graphDef.Encoding), false);
+                        }
+                        else if (writer is Notation3Writer)
+                        {
+                            input.ConversionHandler = new WriteThroughHandler(typeof(Notation3Formatter), new StreamWriter(outFile, false, graphDef.Encoding), false);
+                        }
+                        else if (writer is NTriplesWriter)
+                        {
+                            input.ConversionHandler = new WriteThroughHandler(typeof(NTriplesFormatter), new StreamWriter(outFile, false, graphDef.Encoding));
+                        }
+                        else if (writer is TsvWriter)
+                        {
+                            input.ConversionHandler = new WriteThroughHandler(typeof(TsvFormatter), new StreamWriter(outFile, false, graphDef.Encoding));
+                        }
+                        else
+                        {
+                            Console.Error.WriteLine("rdfConvert: Warning: Skipping Conversion of Input " + input.ToString() + " as unable to determine how to convert it");
+                            continue;
+                        }
+                    }
+                }
+                else
+                {
+                    MimeTypeDefinition storeDef = defs.FirstOrDefault(d => d.CanWriteRdfDatasets);
+                    if (storeDef != null)
+                    {
+                        //Then generate the output filename
+                        if (ext.Equals(String.Empty))
+                        {
+                            ext = "." + storeDef.CanonicalFileExtension;
+                        }
+                        outFile = input.GetFilename(this._outputFilename, ext);
+
+                        //Get the Writer and apply conversion options
+                        IStoreWriter writer = storeDef.GetRdfDatasetWriter();
+                        foreach (IConversionOption option in this._options)
+                        {
+                            option.Apply(writer);
+                        }
+
+                        //If -best always use SaveOnCompletionHandler
+                        if (this._best)
+                        {
+                            input.ConversionHandler = new SaveStoreOnCompletionHandler(writer, new StreamWriter(outFile, false, storeDef.Encoding));
+                        }
+                        else
+                        {
+                            //Use the fast WriteThroughHandler where possible
+                            if (writer is NQuadsWriter)
+                            {
+                                input.ConversionHandler = new WriteThroughHandler(typeof(NQuadsFormatter), new StreamWriter(outFile, false, storeDef.Encoding));
+                            }
+                            else
+                            {
+                                input.ConversionHandler = new SaveStoreOnCompletionHandler(writer, new StreamWriter(outFile, false, storeDef.Encoding));
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Console.Error.WriteLine("rdfConvert: Warning: Skipping Conversion of Input " + input.ToString() + " as unable to determine how to convert it");
+                        continue;
+                    }
+                } 
+               
+                //Then do the Conversion
+                Console.WriteLine("rdfConvert: Converting Input " + input.ToString() + " to '" + outFile + "'...");
+                try
+                {
+                    input.Convert();
+                    Console.WriteLine("rdfConvert: Converted Input " + input.ToString() + " to '" + outFile + "' OK");
+                }
+                catch (RdfParseException parseEx)
+                {
+                    Console.Error.WriteLine("rdfConvert: Error: Error Converting Input " + input.ToString() + " due to a RDF Parse Exception");
+                    Console.Error.WriteLine(parseEx.Message);
+                    if (this._debug) this.DebugErrors(parseEx);
+                }
+                catch (RdfException rdfEx)
+                {
+                    Console.Error.WriteLine("rdfConvert: Error: Error Converting Input " + input.ToString() + " due to a RDF Exception");
+                    Console.Error.WriteLine(rdfEx.Message);
+                    if (this._debug) this.DebugErrors(rdfEx);
+                }
+                catch (Exception ex)
+                {
+                    Console.Error.WriteLine("rdfConvert: Error: Error Converting Input " + input.ToString() + " due to a Unexpected Exception");
+                    Console.Error.WriteLine(ex.Message);
+                    if (this._debug) this.DebugErrors(ex);
+                }
+            }
         }
 
         private bool SetOptions(String[] args)
@@ -159,7 +303,10 @@ namespace VDS.RDF.Utilities.Convert
                     {
                         try
                         {
-                            format = MimeTypesHelper.GetMimeType(format);
+                            foreach (String mimeType in MimeTypesHelper.GetMimeTypes(format))
+                            {
+                                this._outFormats.Add(mimeType);
+                            }
                         }
                         catch
                         {
@@ -167,13 +314,16 @@ namespace VDS.RDF.Utilities.Convert
                             return false;
                         }
                     }
-                    //Validate the MIME Type
-                    if (!IsValidMimeType(format))
+                    else
                     {
-                        Console.Error.WriteLine("rdfConvert: Error: The MIME Type '" + format + "' is not permissible since dotNetRDF does not support outputting in that format");
-                        return false;
+                        //Validate the MIME Type
+                        if (!IsValidMimeType(format))
+                        {
+                            Console.Error.WriteLine("rdfConvert: Error: The MIME Type '" + format + "' is not permissible since dotNetRDF does not support outputting in that format");
+                            return false;
+                        }
+                        this._outFormats.Add(format);
                     }
-                    this._outFormat = format;
                 }
                 else if (arg.StartsWith("-outext:"))
                 {
@@ -195,6 +345,10 @@ namespace VDS.RDF.Utilities.Convert
                 else if (arg.Equals("-nobom"))
                 {
                     Options.UseBomForUtf8 = false;
+                }
+                else if (arg.Equals("-best"))
+                {
+                    this._best = true;
                 }
                 else if (arg.Equals("-warnings"))
                 {
@@ -234,7 +388,7 @@ namespace VDS.RDF.Utilities.Convert
             }
 
             //If there are no writers specified then we'll abort
-            if (this._outFormat == null)
+            if (this._outFormats.Count == 0)
             {
                 Console.Error.WriteLine("rdfConvert: Abort: Aborting since no output options have been specified, use the -out:filename or -outformat: arguments to specify output format");
                 return false;
@@ -282,7 +436,7 @@ namespace VDS.RDF.Utilities.Convert
             Console.WriteLine("Causes the utility to attempt the best conversion it can (i.e. most compressed syntax) taking into account other options like compression level.  May cause conversions to be slower and require more memory");
             Console.WriteLine();
             Console.WriteLine("-c[:integer]");
-            Console.WriteLine("Sets the Compression Level used by compressing writers, if specified without an integer parameter then defaults to default compression");
+            Console.WriteLine("Sets the Compression Level used by compressing writers, if specified without an integer parameter then defaults to default compression.  Specify -best to ensure the setting is respected");
             Console.WriteLine();
             Console.WriteLine("-debug");
             Console.WriteLine("Prints more detailed error messages if errors occur");

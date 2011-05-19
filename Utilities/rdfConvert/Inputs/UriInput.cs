@@ -17,9 +17,21 @@ namespace VDS.RDF.Utilities.Convert.Inputs
 
         public override void Convert()
         {
-            if (this.ConversionHandler == null) throw new RdfParseException("Cannot convert the Input URI '" + this.SourceUri.ToString() + "' as rdfConvert could not determine a Conversion Handler to use for the Conversion");
+            if (this.ConversionHandler == null) throw new Exception("Cannot convert the Input URI '" + this.SourceUri.ToString() + "' as rdfConvert could not determine a Conversion Handler to use for the Conversion");
 
-            UriLoader.Load(this.ConversionHandler, this.SourceUri);
+            try
+            {
+                UriLoader.Load(this.ConversionHandler, this.SourceUri);
+            }
+            catch
+            {
+                UriLoader.LoadDataset(this.ConversionHandler, this.SourceUri);
+            }
+        }
+
+        public override string ToString()
+        {
+            return "URI '" + this.SourceUri.ToString() + "'";
         }
     }
 }

@@ -97,6 +97,14 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         /// <summary>
+        /// Creates a new Write-Through Handler
+        /// </summary>
+        /// <param name="formatterType">Type of the formatter to create</param>
+        /// <param name="writer">Text Writer to write to</param>
+        public WriteThroughHandler(Type formatterType, TextWriter writer)
+            : this(formatterType, writer, true) { }
+
+        /// <summary>
         /// Starts RDF Handling instantiating a Triple Formatter if necessary
         /// </summary>
         protected override void StartRdfInternal()

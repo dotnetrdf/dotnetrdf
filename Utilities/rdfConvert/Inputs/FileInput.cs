@@ -21,9 +21,21 @@ namespace VDS.RDF.Utilities.Convert.Inputs
 
         public override void Convert()
         {
-            if (this.ConversionHandler == null) throw new RdfParseException("Cannot convert the Input File '" + this.SourceFile + "' as rdfConvert could not determine a Conversion Handler to use for the Conversion");
+            if (this.ConversionHandler == null) throw new Exception("Cannot convert the Input File '" + this.SourceFile + "' as rdfConvert could not determine a Conversion Handler to use for the Conversion");
 
-            FileLoader.Load(this.ConversionHandler, this.SourceFile);
+            try
+            {
+                FileLoader.Load(this.ConversionHandler, this.SourceFile);
+            }
+            catch
+            {
+                FileLoader.LoadDataset(this.ConversionHandler, this.SourceFile);
+            }
+        }
+
+        public override string ToString()
+        {
+            return "File '" + this.SourceFile + "'";
         }
     }
 }

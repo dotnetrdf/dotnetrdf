@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConversionExtensions.cs" />
     <Compile Include="ConversionOption.cs" />
     <Compile Include="RdfConvert.cs" />
     <Compile Include="Inputs\BaseInput.cs" />

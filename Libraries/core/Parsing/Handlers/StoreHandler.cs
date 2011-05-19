@@ -59,6 +59,14 @@ namespace VDS.RDF.Parsing.Handlers
             this._store = store;
         }
 
+        protected ITripleStore Store
+        {
+            get
+            {
+                return this._store;
+            }
+        }
+
         #region IRdfHandler Members
 
         /// <summary>
