@@ -58,6 +58,7 @@
     <Compile Include="RapperConvert.cs" />
     <None Include="OldRdfConvert.cs" />
     <Compile Include="SaveOnCompletionHandler.cs" />
+    <Compile Include="WriteToFileHandler.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Libraries\core\dotNetRDF.csproj">

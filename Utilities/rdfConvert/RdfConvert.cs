@@ -117,23 +117,23 @@ namespace VDS.RDF.Utilities.Convert
                         } 
                         else if (writer is CompressingTurtleWriter || writer is TurtleWriter)
                         {
-                            input.ConversionHandler = new WriteThroughHandler(typeof(TurtleFormatter), new StreamWriter(outFile, false, graphDef.Encoding), false);
+                            input.ConversionHandler = new WriteToFileHandler(outFile, graphDef.Encoding, typeof(TurtleFormatter));
                         }
                         else if (writer is CsvWriter)
                         {
-                            input.ConversionHandler = new WriteThroughHandler(typeof(CsvFormatter), new StreamWriter(outFile, false, graphDef.Encoding), false);
+                            input.ConversionHandler = new WriteToFileHandler(outFile, graphDef.Encoding, typeof(CsvFormatter));
                         }
                         else if (writer is Notation3Writer)
                         {
-                            input.ConversionHandler = new WriteThroughHandler(typeof(Notation3Formatter), new StreamWriter(outFile, false, graphDef.Encoding), false);
+                            input.ConversionHandler = new WriteToFileHandler(outFile, graphDef.Encoding, typeof(Notation3Formatter));
                         }
                         else if (writer is NTriplesWriter)
                         {
-                            input.ConversionHandler = new WriteThroughHandler(typeof(NTriplesFormatter), new StreamWriter(outFile, false, graphDef.Encoding));
+                            input.ConversionHandler = new WriteToFileHandler(outFile, graphDef.Encoding, typeof(NTriplesFormatter));
                         }
                         else if (writer is TsvWriter)
                         {
-                            input.ConversionHandler = new WriteThroughHandler(typeof(TsvFormatter), new StreamWriter(outFile, false, graphDef.Encoding));
+                            input.ConversionHandler = new WriteToFileHandler(outFile, graphDef.Encoding, typeof(TsvFormatter));
                         }
                         else
                         {
@@ -171,7 +171,7 @@ namespace VDS.RDF.Utilities.Convert
                             //Use the fast WriteThroughHandler where possible
                             if (writer is NQuadsWriter)
                             {
-                                input.ConversionHandler = new WriteThroughHandler(typeof(NQuadsFormatter), new StreamWriter(outFile, false, storeDef.Encoding));
+                                input.ConversionHandler = new WriteToFileHandler(outFile, graphDef.Encoding, typeof(NQuadsFormatter));
                             }
                             else
                             {
