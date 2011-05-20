@@ -59,6 +59,9 @@ namespace VDS.RDF.Parsing.Handlers
             this._store = store;
         }
 
+        /// <summary>
+        /// Gets the Triple Store that this Handler is populating
+        /// </summary>
         protected ITripleStore Store
         {
             get

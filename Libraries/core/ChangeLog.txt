@@ -32,6 +32,7 @@ Added
    - WriteThroughHandler for generating RDF output while parsing
    - WriteToStoreHandler for sending the triples in batches to some underlying store
    - ChainedHandler and MultiHandler for combining multiple RDF handlers together
+   - CancellableHandler for wrapping other Handlers and being able to cancel parsing (assuming async code)
 - Update
  - Added support for Timeouts when using the LeviathanUpdateProcessor and the ProcessCommandSet() method
  - Added support for transactions

@@ -56,6 +56,10 @@ namespace VDS.RDF.GUI.WinForms
         public ResultSetViewerForm(SparqlResultSet results)
         {
             InitializeComponent();
+            if (Constants.WindowIcon != null)
+            {
+                this.Icon = Constants.WindowIcon;
+            }
 
             //Load Formatters
             List<INodeFormatter> formatters = new List<INodeFormatter>();

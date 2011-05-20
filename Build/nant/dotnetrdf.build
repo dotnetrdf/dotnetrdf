@@ -224,7 +224,7 @@
     <copy overwrite="true" todir="../bin/silverlight-nightly" file="Libraries/silverlight/bin/Debug/Newtonsoft.Json.Silverlight.dll" />
   </target>
 
-  <target name="build-windowsphone" description="Copy the latest Windows Phone build to the Windows Phone Nightly Build directory" unless="${dotnetrdf.nobuild}" if="${not dotnetrdf.nowindowsphone}"  depends="compile-windowsphone">
+  <target name="build-windowsphone" description="Copy the latest Windows Phone build to the Windows Phone Nightly Build directory" unless="${dotnetrdf.nobuild}" if="${dotnetrdf.nowindowsphone != 'true'}"  depends="compile-windowsphone">
     <copy overwrite="true" todir="../bin/windowsphone-nightly" file="Libraries/windowsphone/bin/Debug/dotNetRDF.WindowsPhone.dll" />
     <copy overwrite="true" todir="../bin/windowsphone-nightly" file="Libraries/windowsphone/bin/Debug/dotNetRDF.WindowsPhone.xml" />
     <copy overwrite="true" todir="../bin/windowsphone-nightly" file="Libraries/windowsphone/bin/Debug/HtmlAgilityPack.WindowsPhone.dll" />

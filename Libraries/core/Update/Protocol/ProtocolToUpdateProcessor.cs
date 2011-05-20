@@ -54,7 +54,7 @@ namespace VDS.RDF.Update.Protocol
     /// A processor for the SPARQL Graph Store HTTP Protocol which operates by translating the requests into SPARQL Query/Update commands as specified by the SPARQL Graph Store HTTP Protocol specification and passing the generated commands to a <see cref="ISparqlUpdateProcessor">ISparqlUpdateProcessor</see> which will handle the actual application of the updates
     /// </summary>
     /// <remarks>
-    /// The conversion from HTTP operation to SPARQL Query/Update is as defined in the <a href="http://www.w3.org/TR/sparql11-http-rdf-update/">SPARQL 1.1 Graph Store HTTP Protocol/a> specification
+    /// The conversion from HTTP operation to SPARQL Query/Update is as defined in the <a href="http://www.w3.org/TR/sparql11-http-rdf-update/">SPARQL 1.1 Graph Store HTTP Protocol</a> specification
     /// </remarks>
     public class ProtocolToUpdateProcessor : BaseProtocolProcessor
     {

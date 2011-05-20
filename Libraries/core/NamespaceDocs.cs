@@ -78,6 +78,10 @@ namespace VDS.RDF
     /// <para>
     /// Be aware that the SPARQL support <em>in particular</em> represents our efforts to match the latest editors drafts of the SPARQL 1.1 specifications.  These specifications are changing all the time and the SPARQL support in this release will not necessarily reflect the very latest features at your time of reading until SPARQL 1.1 becomes fully standardised.
     /// </para>
+    /// <h4>Breaking Changes in 0.4.1</h4>
+    /// <para>
+    /// The 0.4.1 release makes some significant breaking changes to the API though these are mostly fixable with simple find and replace.  Essentially it introduces interfaces for each of the Node Types (e.g. <see cref="IUriNode">IUriNode</see>) are encourages use of these instead of the concrete implementations.  There is a blog post detailing the change and how to adjust your code <a href="http://www.dotnetrdf.org/blogitem.asp?blogID=43">here</a>.
+    /// </para>
     /// <h4>Breaking Changes vs 0.3.x API</h4>
     /// <para>
     /// The 0.4.x release makes some breaking changes vs the 0.3.x API though mostly these are internal changes or exposure of previously private information in the public API:
@@ -93,11 +97,11 @@ namespace VDS.RDF
     /// <h4>Alternative Builds</h4>
     /// <h5>Mono Build</h5>
     /// <para>
-    /// We provide a Mono build of dotNetRDF (<em>dotNetRDF.Mono.dll</em>) which is currently targeted at Mono 2.10.1 - this port is highly experimental and has received little/no testing.  There are some known incompatabilities with Mono mostly regarding the 3rd party libraries that dotNetRDF uses - Virtuoso and MySQL support is likely not to function under Mono.  As far as we are aware all other features should work normally, in terms of roadmap the Mono build is not our main priority currently and we will conduct full testing of the Mono build in the future and make an announcement once we consider that build to be stable or have had time to adapt the build appropriately.
+    /// As of the 0.4.1 release there is no longer a separate build for Mono, changes in our code mean that dotNetRDF can now run directly on Mono.  Note that there may still be some features of .Net we use that Mono does not fully support, see the <a href="http://www.dotnetrdf.org/content.asp?pageID=Mono%20Issues">Mono Issues</a> page for more details.  We recommend Mono 2.10 or higher though the library should run on recent 2.6/2.8 releases.
     /// </para>
     /// <h5>Silverlight/Windows Phone 7 Build</h5>
     /// <para>
-    /// We provide a Silverlight and Windows Phone 7 builds of dotNetRDF (<em>dotNetRDF.Silverlight.dll</em> and <em>dotNetRDF.WindowsPhone.dll</em>) which is an experimental build which has been tested by external users but not internally as we don't do any Silverlight development currently.  This build runs on Silverlight 4 and omits the following features since they can't be supported under Silverlight:
+    /// We provide a Silverlight and Windows Phone 7 builds of dotNetRDF (<em>dotNetRDF.Silverlight.dll</em> and <em>dotNetRDF.WindowsPhone.dll</em>) which are experimental builds that have been tested by external users but not internally as we don't do any Silverlight/Windows Phone development currently.  This build runs on Silverlight 4/Windows Phone 7 and omits the following features since they can't be supported on these platforms:
     /// </para>
     /// <ul>
     /// <li>Most of the <see cref="VDS.RDF.Storage">Storage</see> namespace and the <see cref="VDS.RDF.Web">Web</see> namespaces</li>
@@ -214,6 +218,22 @@ namespace VDS.RDF.Parsing.Events
     class NamespaceDoc
     {
        
+    }
+}
+
+namespace VDS.RDF.Parsing.Handlers
+{
+    /// <summary>
+    /// <para>
+    /// Namespace for RDF and SPARQL Results Handlers
+    /// </para>
+    /// <para>
+    /// Handlers are part of a major parser subsystem rewrite introduced in the 0.4.1 release.  They allow you to parse RDF, RDF Datasets and SPARQL Results in such a way that you can both take arbitrary actions with the data and choose to end parsing early.
+    /// </para>
+    /// </summary>
+    class NamespaceDoc
+    {
+
     }
 }
 
@@ -426,6 +446,19 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
     /// <summary>
     /// <para>
     /// Namespace which provides classes which represent the Services offered by a Pellet Server knowledge base
+    /// </para>
+    /// </summary>
+    class NamespaceDoc
+    {
+
+    }
+}
+
+namespace VDS.RDF.Query.Optimisation
+{
+    /// <summary>
+    /// <para>
+    /// Namespace containing classes that are used in the Optimisation of SPARQL Queries.  Includes the interfaces <see cref="IQueryOptimiser">IQueryOptimiser</see> and <see cref="IAlgebraOptimiser">IAlgebraOptimiser</see> which can be used to implement custom query optimisation. 
     /// </para>
     /// </summary>
     class NamespaceDoc

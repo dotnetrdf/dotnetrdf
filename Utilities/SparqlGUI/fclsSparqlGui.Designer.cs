@@ -41,6 +41,7 @@
             this.lblSourceFile = new System.Windows.Forms.Label();
             this.lblDataset = new System.Windows.Forms.Label();
             this.grpQuery = new System.Windows.Forms.GroupBox();
+            this.btnViewLog = new System.Windows.Forms.Button();
             this.btnSaveQuery = new System.Windows.Forms.Button();
             this.btnLoad = new System.Windows.Forms.Button();
             this.btnInspect = new System.Windows.Forms.Button();
@@ -73,7 +74,6 @@
             this.ofdQuery = new System.Windows.Forms.OpenFileDialog();
             this.sfdQuery = new System.Windows.Forms.SaveFileDialog();
             this.ttpTips = new System.Windows.Forms.ToolTip(this.components);
-            this.btnViewLog = new System.Windows.Forms.Button();
             this.grpDataset.SuspendLayout();
             this.grpQuery.SuspendLayout();
             this.grpQueryOptions.SuspendLayout();
@@ -197,6 +197,17 @@
             this.grpQuery.TabIndex = 4;
             this.grpQuery.TabStop = false;
             this.grpQuery.Text = "Query";
+            // 
+            // btnViewLog
+            // 
+            this.btnViewLog.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.btnViewLog.Location = new System.Drawing.Point(415, 315);
+            this.btnViewLog.Name = "btnViewLog";
+            this.btnViewLog.Size = new System.Drawing.Size(75, 23);
+            this.btnViewLog.TabIndex = 5;
+            this.btnViewLog.Text = "View Log";
+            this.btnViewLog.UseVisualStyleBackColor = true;
+            this.btnViewLog.Click += new System.EventHandler(this.btnViewLog_Click);
             // 
             // btnSaveQuery
             // 
@@ -556,17 +567,6 @@
             this.sfdQuery.Filter = "SPARQL Query Files|*.rq|All Files|*.*";
             this.sfdQuery.Title = "Load SPARQL Query";
             // 
-            // btnViewLog
-            // 
-            this.btnViewLog.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.btnViewLog.Location = new System.Drawing.Point(415, 315);
-            this.btnViewLog.Name = "btnViewLog";
-            this.btnViewLog.Size = new System.Drawing.Size(75, 23);
-            this.btnViewLog.TabIndex = 5;
-            this.btnViewLog.Text = "View Log";
-            this.btnViewLog.UseVisualStyleBackColor = true;
-            this.btnViewLog.Click += new System.EventHandler(this.btnViewLog_Click);
-            // 
             // fclsSparqlGui
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -580,6 +580,7 @@
             this.Controls.Add(this.grpQuery);
             this.Controls.Add(this.grpDataset);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "fclsSparqlGui";
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;

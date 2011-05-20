@@ -58,6 +58,9 @@ namespace VDS.RDF.Parsing.Handlers
             this._handler = handler;
         }
 
+        /// <summary>
+        /// Gets the Inner Handler wrapped by this Handler
+        /// </summary>
         public IEnumerable<IRdfHandler> InnerHandlers
         {
             get

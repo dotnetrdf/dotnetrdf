@@ -35,6 +35,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using VDS.RDF;
+using VDS.RDF.GUI;
 using VDS.RDF.GUI.WinForms;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
@@ -57,6 +58,7 @@ namespace VDS.RDF.Utilities.Sparql
         public fclsSparqlGui()
         {
             InitializeComponent();
+            Constants.WindowIcon = this.Icon;
 
             if (!Properties.Settings.Default.UseUtf8Bom)
             {
