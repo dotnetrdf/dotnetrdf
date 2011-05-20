@@ -19,7 +19,7 @@
   <property name="dotnetrdf.version" value="041" />
   <property name="dotnetrdf.releasetype" value="beta" />
   <property name="dotnetrdf.toolsversion" value="020" />
-  <property name="dotnetrdf.toolsreleasetype" value="beta" />
+  <property name="dotnetrdf.toolsreleasetype" value="alpha" />
 
   <!-- Note that FTP credentials are not included in the file for obvious reasons -->
   <!-- If you want to use the upload targets then use the command line -d option to set these appropriately -->
@@ -398,21 +398,21 @@
 
   <target name="dist-release" description="Creates the ZIP files for the Release" depends="build-release">
     <zip zipfile="${dotnetrdf.libzip}" ziplevel="9">
-      <fileset basedir="../bin/stable/" prefix="DotNet">
+      <fileset basedir="../bin/stable/" prefix="DotNet_And_Mono">
         <include name="*" />
       </fileset>
       <fileset basedir="../bin/silverlight-nightly/" prefix="Silverlight">
         <include name="*" />
       </fileset>
-      <fileset basedir="../bin/mono-nightly" prefix="Mono">
+      <!--<fileset basedir="../bin/mono-nightly" prefix="Mono">
         <include name="*" />
-      </fileset>
+      </fileset>-->
       <!--<fileset basedir="../bin/lite-nightly" prefix="Lite">
         <include name="*" />
       </fileset>-->
-      <!--<fileset basedir="../bin/windowsphone-nightly/" prefix="WindowsPhone7">
+      <fileset basedir="../bin/windowsphone-nightly/" prefix="WindowsPhone7">
         <include name="*" />
-      </fileset>-->
+      </fileset>
     </zip>
     <zip zipfile="${dotnetrdf.srczip}" ziplevel="9">
       <fileset basedir="Libraries/core/" prefix="DotNet">
@@ -425,11 +425,11 @@
         <exclude name="bin/" />
         <exclude name="obj/" />
       </fileset>
-      <!--<fileset basedir="Libraries/windowsphone/" prefix="WindowsPhone7">
+      <fileset basedir="Libraries/windowsphone/" prefix="WindowsPhone7">
         <include name="*/*" />
         <exclude name="bin/" />
         <exclude name="obj/" />
-      </fileset>-->
+      </fileset>
     </zip>
   </target>
 
@@ -465,7 +465,7 @@
         <exclude name="temp.*" />
       </fileset>
       <fileset basedir="Utilities/rdfEditor/bin/Debug">
-        <include name="*" />
+        <include name="**/*" />
         <exclude name="*.pdb" />
         <exclude name="*.vshost.*" />
         <exclude name="temp.*" />
