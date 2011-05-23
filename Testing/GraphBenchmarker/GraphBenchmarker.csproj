@@ -1,0 +1,163 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{456524B8-7F2A-45B9-9642-5CD4737D051F}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VDS.RDF.Utilities.GraphBenchmarker</RootNamespace>
+    <AssemblyName>GraphBenchmarker</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\Utilities\storemanager\CrossThreadForm.cs">
+      <Link>CrossThreadForm.cs</Link>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fclsGraphBenchmarker.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fclsGraphBenchmarker.Designer.cs">
+      <DependentUpon>fclsGraphBenchmarker.cs</DependentUpon>
+    </Compile>
+    <Compile Include="fclsTestRunner.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fclsTestRunner.Designer.cs">
+      <DependentUpon>fclsTestRunner.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="fclsGraphBenchmarker.resx">
+      <DependentUpon>fclsGraphBenchmarker.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="fclsTestRunner.resx">
+      <DependentUpon>fclsTestRunner.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="Test\Actual\LoadDataTest.cs" />
+    <Compile Include="Test\Actual\SubjectLookupTest.cs" />
+    <Compile Include="Test\BaseTest.cs" />
+    <Compile Include="Test\Actual\EnumerateTriplesTest.cs" />
+    <Compile Include="Test\ITest.cs" />
+    <Compile Include="Test\TestCase.cs" />
+    <Compile Include="Test\TestResult.cs" />
+    <Compile Include="Test\TestSuite.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\..\Utilities\bsbm\App_Data\dataset_10.ttl">
+      <Link>Data\dataset_10.ttl</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Utilities\bsbm\App_Data\dataset_100.ttl">
+      <Link>Data\dataset_100.ttl</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Utilities\bsbm\App_Data\dataset_1000.ttl">
+      <Link>Data\dataset_1000.ttl</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Utilities\bsbm\App_Data\dataset_1500.ttl">
+      <Link>Data\dataset_1500.ttl</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Utilities\bsbm\App_Data\dataset_2000.ttl">
+      <Link>Data\dataset_2000.ttl</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Utilities\bsbm\App_Data\dataset_250.ttl">
+      <Link>Data\dataset_250.ttl</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Utilities\bsbm\App_Data\dataset_2500.ttl">
+      <Link>Data\dataset_2500.ttl</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Utilities\bsbm\App_Data\dataset_2785.ttl">
+      <Link>Data\dataset_2785.ttl</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Utilities\bsbm\App_Data\dataset_50.ttl">
+      <Link>Data\dataset_50.ttl</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\Utilities\bsbm\App_Data\dataset_500.ttl">
+      <Link>Data\dataset_500.ttl</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Libraries\core\dotNetRDF.csproj">
+      <Project>{BFBAC159-1E60-4D03-8ACA-D34E31EB83BF}</Project>
+      <Name>dotNetRDF</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Libraries\dotNetRDF.WinForms\dotNetRDF.WinForms.csproj">
+      <Project>{0D1B8423-44F6-4ACE-8055-58D66E574F9D}</Project>
+      <Name>dotNetRDF.WinForms</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

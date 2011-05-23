@@ -81,7 +81,7 @@ namespace VDS.RDF
                 _mimeTypes = new List<MimeTypeDefinition>();
                 
                 //Define RDF/XML
-                _mimeTypes.Add(new MimeTypeDefinition("RDF/XML", W3CFormatsNamespace + "RDF_XML", RdfXml, new String[] { DefaultRdfXmlExtension, ".owl" }, typeof(RdfXmlParser), null, null, typeof(RdfXmlWriter), null, null));                
+                _mimeTypes.Add(new MimeTypeDefinition("RDF/XML", W3CFormatsNamespace + "RDF_XML", RdfXml, new String[] { DefaultRdfXmlExtension, "owl" }, typeof(RdfXmlParser), null, null, typeof(RdfXmlWriter), null, null));                
 
                 //Define NTriples
                 MimeTypeDefinition ntriples = new MimeTypeDefinition("NTriples", W3CFormatsNamespace + "N-Triples", NTriples, new String[] { DefaultNTriplesExtension }, typeof(NTriplesParser), null, null, typeof(NTriplesWriter), null, null);

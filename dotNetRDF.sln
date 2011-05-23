@@ -104,6 +104,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Toolkit", "Toolkit", "{C5B8
 		Utilities\ReadMe.txt = Utilities\ReadMe.txt
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphBenchmarker", "Testing\GraphBenchmarker\GraphBenchmarker.csproj", "{456524B8-7F2A-45B9-9642-5CD4737D051F}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = dotNetRDF.vsmdi
@@ -365,6 +367,14 @@ Global
 		{7F8C8890-F2EB-479B-94ED-74377045FCB6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7F8C8890-F2EB-479B-94ED-74377045FCB6}.Release|x64.ActiveCfg = Release|Any CPU
 		{7F8C8890-F2EB-479B-94ED-74377045FCB6}.Release|x86.ActiveCfg = Release|Any CPU
+		{456524B8-7F2A-45B9-9642-5CD4737D051F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{456524B8-7F2A-45B9-9642-5CD4737D051F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{456524B8-7F2A-45B9-9642-5CD4737D051F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{456524B8-7F2A-45B9-9642-5CD4737D051F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{456524B8-7F2A-45B9-9642-5CD4737D051F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{456524B8-7F2A-45B9-9642-5CD4737D051F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{456524B8-7F2A-45B9-9642-5CD4737D051F}.Release|x64.ActiveCfg = Release|Any CPU
+		{456524B8-7F2A-45B9-9642-5CD4737D051F}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

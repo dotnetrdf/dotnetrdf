@@ -220,6 +220,40 @@ namespace VDS.RDF.Utilities.StoreManager
 
         #endregion
 
+        #region Cross Thead ListBox manipulation
+
+        private delegate Object CrossThreadGetSelectedItemDelegate(ListBox lbox);
+
+        protected Object CrossThreadGetSelectedItem(ListBox lbox)
+        {
+            if (this.InvokeRequired)
+            {
+                CrossThreadGetSelectedItemDelegate d = new CrossThreadGetSelectedItemDelegate(this.CrossThreadGetSelectedItem);
+                return this.Invoke(d, new Object[] { lbox });
+            } 
+            else 
+            {
+                return lbox.SelectedItem;
+            }
+        }
+
+        private delegate int CrossThreadGetSelectedIndexDelegate(ListControl c);
+
+        protected int CrossThreadGetSelectedIndex(ListControl c)
+        {
+            if (this.InvokeRequired)
+            {
+                CrossThreadGetSelectedIndexDelegate d = new CrossThreadGetSelectedIndexDelegate(this.CrossThreadGetSelectedIndex);
+                return (int)this.Invoke(d, new Object[] { c });
+            }
+            else
+            {
+                return c.SelectedIndex;
+            }
+        }
+
+        #endregion
+
         #region Cross Thread Set Enabled
 
         private delegate void CrossThreadSetEnabledDelegate(Control c, bool enabled);
@@ -234,6 +268,25 @@ namespace VDS.RDF.Utilities.StoreManager
             else
             {
                 c.Enabled = enabled;
+            }
+        }
+
+        #endregion
+
+        #region Cross Thread Progress Bars
+
+        private delegate void CrossThreadUpdateProgressDelegate(ProgressBar prg, int value);
+
+        protected void CrossThreadUpdateProgress(ProgressBar prg, int value)
+        {
+            if (this.InvokeRequired)
+            {
+                CrossThreadUpdateProgressDelegate d = new CrossThreadUpdateProgressDelegate(this.CrossThreadUpdateProgress);
+                this.Invoke(d, new Object[] { prg, value });
+            }
+            else
+            {
+                prg.Value = value;
             }
         }
 
