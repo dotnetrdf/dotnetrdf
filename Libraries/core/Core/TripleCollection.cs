@@ -876,6 +876,12 @@ namespace VDS.RDF
             this._subjIndex.Clear();
             this._predIndex.Clear();
             this._objIndex.Clear();
+            if (this._fullyIndexed)
+            {
+                this._subjPredIndex.Clear();
+                this._predObjIndex.Clear();
+                this._subjObjIndex.Clear();
+            }
         }
 
         /// <summary>

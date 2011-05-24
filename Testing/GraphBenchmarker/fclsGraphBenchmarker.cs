@@ -147,7 +147,7 @@ namespace VDS.RDF.Utilities.GraphBenchmarker
                 {
                     TestSuite suite = new TestSuite(this._testCases, (String)this.lstTestData.SelectedItem, (int)this.numIterations.Value);
                     fclsTestRunner runner = new fclsTestRunner(suite);
-                    runner.Show();
+                    runner.ShowDialog();
                 }
                 else
                 {

@@ -62,6 +62,7 @@ namespace VDS.RDF.Utilities.GraphBenchmarker
             this.lstTestCases.FormattingEnabled = true;
             this.lstTestCases.Location = new System.Drawing.Point(6, 19);
             this.lstTestCases.Name = "lstTestCases";
+            this.lstTestCases.ScrollAlwaysVisible = true;
             this.lstTestCases.Size = new System.Drawing.Size(200, 251);
             this.lstTestCases.TabIndex = 0;
             this.lstTestCases.SelectedIndexChanged += new System.EventHandler(this.lstTestCases_SelectedIndexChanged);
@@ -83,7 +84,7 @@ namespace VDS.RDF.Utilities.GraphBenchmarker
             this.grpTestResult.Controls.Add(this.txtResults);
             this.grpTestResult.Location = new System.Drawing.Point(6, 201);
             this.grpTestResult.Name = "grpTestResult";
-            this.grpTestResult.Size = new System.Drawing.Size(452, 78);
+            this.grpTestResult.Size = new System.Drawing.Size(458, 78);
             this.grpTestResult.TabIndex = 3;
             this.grpTestResult.TabStop = false;
             this.grpTestResult.Text = "Test Result";
@@ -122,9 +123,11 @@ namespace VDS.RDF.Utilities.GraphBenchmarker
             // 
             this.lstTests.ColumnWidth = 150;
             this.lstTests.FormattingEnabled = true;
+            this.lstTests.HorizontalScrollbar = true;
             this.lstTests.Location = new System.Drawing.Point(6, 19);
             this.lstTests.MultiColumn = true;
             this.lstTests.Name = "lstTests";
+            this.lstTests.ScrollAlwaysVisible = true;
             this.lstTests.Size = new System.Drawing.Size(458, 95);
             this.lstTests.TabIndex = 1;
             this.lstTests.SelectedIndexChanged += new System.EventHandler(this.lstTests_SelectedIndexChanged);

@@ -54,9 +54,10 @@ namespace VDS.RDF
     {
         private Dictionary<TKey, HashSlot<TValue>> _values = new Dictionary<TKey, HashSlot<TValue>>();
         private int _capacity = 1;
+        private bool _emptyKeys = false;
 
         /// <summary>
-        /// Crestes a new HashTable
+        /// Creates a new HashTable
         /// </summary>
         /// <remarks>
         /// Use this constructor if you expect to use this primarily as a dictionary i.e. there is a mostly 1:1 mapping of keys to values with minimal collisions
@@ -64,6 +65,15 @@ namespace VDS.RDF
         public HashTable()
         {
 
+        }
+
+        /// <summary>
+        /// Creates a new HashTable
+        /// </summary>
+        /// <param name="emptyKeys">Whether Keys are allowed to have no values associated with them</param>
+        public HashTable(bool emptyKeys)
+        {
+            this._emptyKeys = emptyKeys;
         }
 
         /// <summary>
@@ -76,6 +86,32 @@ namespace VDS.RDF
         public HashTable(int capacity)
         {
             if (capacity >= 1) this._capacity = capacity;
+        }
+
+        /// <summary>
+        /// Creates a new HashTable where the initial capacity at each key is specified
+        /// </summary>
+        /// <param name="capacity">Initial Capacity at each Key</param>
+        /// <remarks>
+        /// Use this if you expect to use this as a true HashTable i.e. there is a 1:Many mapping of keys to values.  Choose a capcity value that seems reasonable for the data you expect to store.
+        /// </remarks>
+        public HashTable(int capacity, bool emptyKeys)
+            : this(emptyKeys)
+        {
+            if (capacity >= 1) this._capacity = capacity;
+        }
+
+        /// <summary>
+        /// Adds a Key with an empty value set to the Hash Table
+        /// </summary>
+        /// <param name="key">Key</param>
+        public void AddEmpty(TKey key)
+        {
+            if (!this._values.ContainsKey(key))
+            {
+                if (!this._emptyKeys) throw new InvalidOperationException("HashTable must be instantiated with the emptyKeys parameter set to true in order to allow empty keys");
+                this._values.Add(key, new HashSlot<TValue>(this._capacity));
+            }
         }
 
         /// <summary>
@@ -94,14 +130,6 @@ namespace VDS.RDF
             {
                 this._values.Add(key, new HashSlot<TValue>(value, this._capacity));
             }
-            //if (this.ContainsKey(key))
-            //{
-            //    this._values[key].Add(value);
-            //}
-            //else
-            //{
-            //    this._values.Add(key, new HashSlot<TValue>(value, this._capacity));
-            //}
         }
 
         /// <summary>
@@ -131,14 +159,6 @@ namespace VDS.RDF
             {
                 return false;
             }
-            //if (this.ContainsKey(key))
-            //{
-            //    return this._values[key].Contains(value);
-            //}
-            //else
-            //{
-            //    return false;
-            //}
         }
 
         /// <summary>
@@ -174,23 +194,14 @@ namespace VDS.RDF
             if (this._values.TryGetValue(key, out slot))
             {
                 bool res = slot.Remove(value);
-                if (slot.Count == 0) this.Remove(key);
+                //Remove the Key if it has no values and emptyKeys is set to false
+                if (slot.Count == 0 && !this._emptyKeys) this.Remove(key);
                 return res;
             }
             else
             {
                 return false;
             }
-            //if (this.ContainsKey(key))
-            //{
-            //    this._values[key].Remove(value);
-            //    if (this._values[key].Count == 0) this.Remove(key);
-            //    return true;
-            //}
-            //else
-            //{
-            //    return false;
-            //}
         }
 
         /// <summary>
@@ -212,16 +223,6 @@ namespace VDS.RDF
                 value = default(TValue);
                 return false;
             }
-            //if (this.ContainsKey(key))
-            //{
-            //    value = this._values[key].First();
-            //    return true;
-            //}
-            //else
-            //{
-            //    value = default(TValue);
-            //    return false;
-            //}
         }
 
         /// <summary>
@@ -244,17 +245,6 @@ namespace VDS.RDF
                 result = default(TValue);
                 return false;
             }
-
-            //if (this.Contains(key, value))
-            //{
-            //    result = this._values[key].First(v => v.Equals(value));
-            //    return true;
-            //}
-            //else
-            //{
-            //    result = default(TValue);
-            //    return false;
-            //}
         }
 
         /// <summary>
@@ -288,18 +278,13 @@ namespace VDS.RDF
                 {
                     throw new KeyNotFoundException();
                 }
-                //if (this.ContainsKey(key))
-                //{
-                //    return this._values[key].First();
-                //}
-                //else
-                //{
-                //    throw new KeyNotFoundException();
-                //}
             }
             set
             {
-                throw new InvalidOperationException("A HashTable may only be updated by using the Add() and Remove() methods");
+                if (!this.Contains(key, value))
+                {
+                    this.Add(key, value);
+                }
             }
         }
 
@@ -319,14 +304,6 @@ namespace VDS.RDF
             {
                 throw new KeyNotFoundException();
             }
-            //if (this._values.ContainsKey(key))
-            //{
-            //    return this._values[key];
-            //}
-            //else
-            //{
-            //    throw new KeyNotFoundException();
-            //}
         }
 
         /// <summary>
@@ -401,14 +378,6 @@ namespace VDS.RDF
             {
                 return 0;
             }
-            //if (this._values.ContainsKey(key))
-            //{
-            //    return this._values[key].Count;
-            //}
-            //else
-            //{
-            //    return 0;
-            //}
         }
 
         /// <summary>
@@ -436,7 +405,7 @@ namespace VDS.RDF
         /// <summary>
         /// Removes a Key Value pair from the Hash Table
         /// </summary>
-        /// <param name="item"></param>
+        /// <param name="item">Key Value Pair to remove</param>
         /// <returns></returns>
         public bool Remove(KeyValuePair<TKey, TValue> item)
         {
@@ -501,6 +470,15 @@ namespace VDS.RDF
         {
             this._values = new List<T>(1);
             this._values.Add(value);
+        }
+
+        /// <summary>
+        /// Creates a new Hash Slot which is an empty
+        /// </summary>
+        /// <param name="capacity">Initial Capacity of Slot</param>
+        public HashSlot(int capacity)
+        {
+            this._values = new List<T>(capacity);
         }
 
         /// <summary>

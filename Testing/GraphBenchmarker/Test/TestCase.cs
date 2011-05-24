@@ -13,6 +13,7 @@ namespace VDS.RDF.Utilities.GraphBenchmarker.Test
         private Type _graphType, _tripleCollectionType;
         private IGraph _instance;
         private BindingList<TestResult> _results = new BindingList<TestResult>();
+        private long _initMemory = 0;
 
         public TestCase(Type graphType)
         {
@@ -52,12 +53,25 @@ namespace VDS.RDF.Utilities.GraphBenchmarker.Test
             }
         }
 
+        public long InitialMemory
+        {
+            get
+            {
+                return this._initMemory;
+            }
+            set
+            {
+                this._initMemory = value;
+            }
+        }
+
         public void Reset(bool clearResults)
         {
             if (this._instance != null)
             {
                 this._instance.Dispose();
                 this._instance = null;
+                this._initMemory = 0;
             }
             if (clearResults) this._results.Clear();
         }

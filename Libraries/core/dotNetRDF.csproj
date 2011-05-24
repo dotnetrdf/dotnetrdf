@@ -212,6 +212,7 @@
     <Compile Include="Configuration\ObjectFactoryFactory.cs" />
     <Compile Include="Configuration\ProxyFactory.cs" />
     <Compile Include="Configuration\ReasonerFactory.cs" />
+    <Compile Include="Core\AdvancedTripleCollections.cs" />
     <Compile Include="Core\BaseEndpoint.cs" />
     <Compile Include="Core\BaseNode.cs" />
     <Compile Include="Core\BlankNodeMapper.cs" />
@@ -230,6 +231,7 @@
     <Compile Include="Core\SubGraphMatcher.cs" />
     <Compile Include="Core\GraphMatcher.cs" />
     <Compile Include="Core\QueryableGraph.cs" />
+    <Compile Include="Core\TripleComparers.cs" />
     <Compile Include="Core\UnionCollections.cs" />
     <Compile Include="Core\UnionGraph.cs" />
     <Compile Include="Core\VariableNode.cs" />

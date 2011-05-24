@@ -101,7 +101,7 @@ namespace VDS.RDF.Utilities.GraphBenchmarker
                         TestResult r = testCase.Results[i];
                         StringBuilder output = new StringBuilder();
                         output.AppendLine("Total Elapsed Time: " + r.Elapsed.ToString());
-                        output.AppendLine("Action Rate: " + r.ToString());
+                        output.AppendLine("Performance Metric: " + r.ToString());
                         this.CrossThreadSetText(this.txtResults, output.ToString());
                     }
                     else

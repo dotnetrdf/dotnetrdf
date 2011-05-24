@@ -43,7 +43,7 @@ namespace VDS.RDF
     /// <summary>
     /// Class for representing RDF Triples in memory
     /// </summary>
-    public class Triple : IComparable<Triple>
+    public sealed class Triple : IComparable<Triple>
     {
         private INode _subject, _predicate, _object;
         private ITripleContext _context = null;

@@ -8,7 +8,7 @@ namespace VDS.RDF.Utilities.GraphBenchmarker.Test.Actual
     public class EnumerateTriplesTest : IterationTest
     {
         public EnumerateTriplesTest(int iterations)
-            : base("Enumerate Triples", "Enumerates Triples by foreach over the Triple Collection of the Graph", iterations, "Triples") { }
+            : base("Enumerate Triples", "Enumerates Triples by foreach over the Triple Collection of the Graph", iterations, "Triples/Second") { }
 
         protected override int RunIteration(TestCase testCase)
         {

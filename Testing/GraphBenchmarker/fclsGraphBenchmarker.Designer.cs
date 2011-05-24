@@ -80,6 +80,7 @@
             this.lstTripleCollectionImpl.FormattingEnabled = true;
             this.lstTripleCollectionImpl.Location = new System.Drawing.Point(6, 170);
             this.lstTripleCollectionImpl.Name = "lstTripleCollectionImpl";
+            this.lstTripleCollectionImpl.ScrollAlwaysVisible = true;
             this.lstTripleCollectionImpl.Size = new System.Drawing.Size(329, 69);
             this.lstTripleCollectionImpl.TabIndex = 3;
             // 
@@ -99,6 +100,7 @@
             this.lstIGraphImpl.FormattingEnabled = true;
             this.lstIGraphImpl.Location = new System.Drawing.Point(6, 42);
             this.lstIGraphImpl.Name = "lstIGraphImpl";
+            this.lstIGraphImpl.ScrollAlwaysVisible = true;
             this.lstIGraphImpl.Size = new System.Drawing.Size(329, 95);
             this.lstIGraphImpl.TabIndex = 1;
             this.lstIGraphImpl.SelectedIndexChanged += new System.EventHandler(this.lstIGraphImpl_SelectedIndexChanged);
@@ -169,7 +171,7 @@
             this.numIterations.TabIndex = 3;
             this.numIterations.ThousandsSeparator = true;
             this.numIterations.Value = new decimal(new int[] {
-            10000,
+            1000,
             0,
             0,
             0});
@@ -187,6 +189,7 @@
             this.lstTestData.FormattingEnabled = true;
             this.lstTestData.Location = new System.Drawing.Point(9, 42);
             this.lstTestData.Name = "lstTestData";
+            this.lstTestData.ScrollAlwaysVisible = true;
             this.lstTestData.Size = new System.Drawing.Size(280, 134);
             this.lstTestData.TabIndex = 1;
             // 
@@ -225,6 +228,7 @@
             this.lstTestCases.FormattingEnabled = true;
             this.lstTestCases.Location = new System.Drawing.Point(6, 19);
             this.lstTestCases.Name = "lstTestCases";
+            this.lstTestCases.ScrollAlwaysVisible = true;
             this.lstTestCases.Size = new System.Drawing.Size(200, 212);
             this.lstTestCases.TabIndex = 0;
             // 

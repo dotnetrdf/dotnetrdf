@@ -119,10 +119,14 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\Libraries\core\Core\TripleComparers.cs">
+      <Link>TripleComparers.cs</Link>
+    </Compile>
     <Compile Include="CompareToTests.cs" />
     <Compile Include="GraphDiffTests.cs" />
     <Compile Include="HardGraphMatching.cs" />
     <Compile Include="Hypercube.cs" />
+    <Compile Include="IndexingTests.cs" />
     <Compile Include="Parsing\BaseUriAssignmentTests.cs" />
     <Compile Include="Parsing\BlockingTextReaderTests.cs" />
     <Compile Include="Parsing\EmptyFileParsing.cs" />

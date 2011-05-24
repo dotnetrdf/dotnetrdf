@@ -595,6 +595,7 @@ namespace VDS.RDF
         }
 
         #endregion
+
     }
 
     /// <summary>

@@ -23,9 +23,25 @@ namespace VDS.RDF.Utilities.GraphBenchmarker.Test
             {
                 this._cases.Add(c);
             }
+
+            //Firstly add the Initial Memory Usage Check
+            this._tests.Add(new InitialMemoryUsageCheck());
+
+            //Then do a Load Test and a further Memory Usage Check
             this._tests.Add(new LoadDataTest(data));
+            this._tests.Add(new MemoryUsageCheck());
+
+            //Then add the actual tests
             this._tests.Add(new EnumerateTriplesTest(iterations));
             this._tests.Add(new SubjectLookupTest(iterations));
+            this._tests.Add(new PredicateLookupTest(iterations));
+            this._tests.Add(new ObjectLookupTest(iterations));
+
+            //Do an Enumerate Test again to see if index population has changed performance
+            this._tests.Add(new EnumerateTriplesTest(iterations));
+
+            //Finally add the final Memory Usage Check
+            this._tests.Add(new MemoryUsageCheck());
         }
 
         public BindingList<TestCase> TestCases
@@ -71,6 +87,9 @@ namespace VDS.RDF.Utilities.GraphBenchmarker.Test
                 this._cases[c].Reset(true);
 
                 this.RaiseProgress();
+
+                //Get the Initial Memory Usage allowing the GC to clean up as necessary
+                this._cases[c].InitialMemory = GC.GetTotalMemory(true);
 
                 //Do this to ensure we've created the Graph instance
                 IGraph temp = this._cases[c].Instance;

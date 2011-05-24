@@ -35,6 +35,7 @@ terms.
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace VDS.RDF
 {
@@ -122,6 +123,73 @@ namespace VDS.RDF
             b = (int)y;
 
             return a.CompareTo(b);
+        }
+    }
+
+    public static class IndexHelper
+    {
+        public static IEnumerable<T> SearchIndex<T>(this List<T> index, IComparer<T> comparer, T search)
+        {
+            //If Index is empty then there are no results
+            if (index.Count == 0) return Enumerable.Empty<T>();
+
+            int lower = 0;
+            int upper = index.Count - 1;
+            int middle, c;
+            int start = upper + 1, end = upper;
+
+            //Find the First point at which the Search Triple occurs
+            do
+            {
+                if (lower > upper) return Enumerable.Empty<T>();
+                middle = (lower + upper) / 2;
+
+                c = comparer.Compare(index[middle], search);
+                if (c < 0)
+                {
+                    //Increment lower bound
+                    lower = middle + 1;
+                }
+                else
+                {
+                    //If equal record possible start point
+                    if (c == 0) start = middle;
+
+                    //Decrement upper bound and end
+                    upper = middle - 1;
+                    if (c != 0) end = middle;
+                }
+            } while (lower < start);
+
+            if (start >= index.Count) return Enumerable.Empty<T>();
+
+            //Find the Last point at which the Search Triple occurs
+            lower = start;
+            upper = end;
+            do
+            {
+                if (lower > upper) break;
+                middle = (lower + upper) / 2;
+
+                c = comparer.Compare(index[middle], search);
+                if (c > 0)
+                {
+                    //Decrement upper bound
+                    upper = middle - 1;
+                }
+                else
+                {
+                    //If equal record possible end point
+                    if (c == 0) end = middle;
+
+                    //Increment lower bound
+                    lower = middle + 1;
+                }
+            } while (true);
+
+            end++;
+            return (from i in Enumerable.Range(start, end - start)
+                    select index[i]);
         }
     }
 }

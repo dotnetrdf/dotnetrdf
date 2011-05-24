@@ -10,12 +10,40 @@ namespace VDS.RDF.Utilities.GraphBenchmarker.Test
         private TimeSpan _elapsed;
         private int _actions;
         private String _unit;
+        private double _memory = 0d;
 
         public TestResult(TimeSpan elapsed, int actions, String unit)
         {
             this._elapsed = elapsed;
             this._actions = actions;
             this._unit = unit;
+        }
+
+        public TestResult(TimeSpan elapsed, long memory)
+            : this(elapsed, 0, "Bytes")
+        {
+            this._memory = (double)memory;
+
+            //Convert up to KB if possible
+            if (this._memory > 1024d)
+            {
+                this._memory /= 1024d;
+                this._unit = "Kilobytes";
+
+                //Convert up to MB if possible
+                if (this._memory > 1024d)
+                {
+                    this._memory /= 1024d;
+                    this._unit = "Megabytes";
+
+                    //Convert up to GB if possible
+                    if (this._memory > 1024d)
+                    {
+                        this._memory /= 1024d;
+                        this._unit = "Gigabytes";
+                    }
+                }
+            }
         }
 
         public TimeSpan Elapsed
@@ -38,7 +66,7 @@ namespace VDS.RDF.Utilities.GraphBenchmarker.Test
         {
             get
             {
-                return this._unit + "/Second";
+                return this._unit;
             }
         }
 
@@ -46,14 +74,36 @@ namespace VDS.RDF.Utilities.GraphBenchmarker.Test
         {
             get
             {
-                double seconds = ((double)this._elapsed.TotalMilliseconds) / 1000d;
-                return ((double)this._actions) / seconds;
+                if (this._actions > 0)
+                {
+                    double seconds = ((double)this._elapsed.TotalMilliseconds) / 1000d;
+                    return ((double)this._actions) / seconds;
+                }
+                else
+                {
+                    return Double.NaN;
+                }
+            }
+        }
+
+        public double Memory
+        {
+            get
+            {
+                return this._memory;
             }
         }
 
         public override string ToString()
         {
-            return this.Speed + " " + this.Unit;
+            if (this._actions > 0)
+            {
+                return this.Speed.ToString("N3") + " " + this.Unit;
+            }
+            else
+            {
+                return this.Memory.ToString("F3") + " " + this.Unit + "";
+            }
         }
     }
 }
