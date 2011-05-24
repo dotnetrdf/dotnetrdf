@@ -41,6 +41,8 @@ namespace VDS.RDF.Utilities.GraphBenchmarker
             this.prgTests = new System.Windows.Forms.ProgressBar();
             this.lblProgress = new System.Windows.Forms.Label();
             this.btnCancel = new System.Windows.Forms.Button();
+            this.btnExport = new System.Windows.Forms.Button();
+            this.sfdExport = new System.Windows.Forms.SaveFileDialog();
             this.grpTestCases.SuspendLayout();
             this.grpTests.SuspendLayout();
             this.grpTestResult.SuspendLayout();
@@ -151,13 +153,30 @@ namespace VDS.RDF.Utilities.GraphBenchmarker
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(319, 361);
+            this.btnCancel.Location = new System.Drawing.Point(263, 361);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(75, 23);
+            this.btnCancel.Size = new System.Drawing.Size(90, 23);
             this.btnCancel.TabIndex = 7;
             this.btnCancel.Text = "&Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
+            // 
+            // btnExport
+            // 
+            this.btnExport.Enabled = false;
+            this.btnExport.Location = new System.Drawing.Point(359, 361);
+            this.btnExport.Name = "btnExport";
+            this.btnExport.Size = new System.Drawing.Size(90, 23);
+            this.btnExport.TabIndex = 8;
+            this.btnExport.Text = "Export Results";
+            this.btnExport.UseVisualStyleBackColor = true;
+            this.btnExport.Click += new System.EventHandler(this.btnExport_Click);
+            // 
+            // sfdExport
+            // 
+            this.sfdExport.DefaultExt = "csv";
+            this.sfdExport.Filter = "CSV Files|*.csv";
+            this.sfdExport.Title = "Export Results as...";
             // 
             // fclsTestRunner
             // 
@@ -165,6 +184,7 @@ namespace VDS.RDF.Utilities.GraphBenchmarker
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(712, 388);
             this.ControlBox = false;
+            this.Controls.Add(this.btnExport);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.lblProgress);
             this.Controls.Add(this.prgTests);
@@ -198,5 +218,7 @@ namespace VDS.RDF.Utilities.GraphBenchmarker
         private System.Windows.Forms.ProgressBar prgTests;
         private System.Windows.Forms.Label lblProgress;
         private System.Windows.Forms.Button btnCancel;
+        private System.Windows.Forms.Button btnExport;
+        private System.Windows.Forms.SaveFileDialog sfdExport;
     }
 }

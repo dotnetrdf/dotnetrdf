@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -158,6 +159,72 @@ namespace VDS.RDF.Utilities.GraphBenchmarker
                 this.CrossThreadMessage("Test Suite failed due to the following error: " + ex.Message, "Tests Failed", MessageBoxIcon.Error);
             }
             this.CrossThreadSetText(this.btnCancel, "Close");
+            this.CrossThreadSetEnabled(this.btnExport, true);
+        }
+
+        private void btnExport_Click(object sender, EventArgs e)
+        {
+            if (this.sfdExport.ShowDialog() == DialogResult.OK)
+            {
+                String file = this.sfdExport.FileName;
+                try
+                {
+                    using (StreamWriter writer = new StreamWriter(file))
+                    {
+                        //First write a couple of Rows detailing the Test Setup
+                        writer.WriteLine("Test Data," + this._suite.Data);
+                        writer.WriteLine("Test Iterations," + this._suite.Iterations);
+                        writer.WriteLine(",");
+
+                        //Then write Header Row listing the Test Cases
+                        writer.WriteLine(",Test Cases");
+                        writer.Write(',');
+                        foreach (TestCase c in this._suite.TestCases)
+                        {
+                            writer.Write(c.ToString());
+                            writer.Write(',');
+                        }
+                        writer.WriteLine();
+
+                        //Then for each Test dump the results
+                        for (int i = 0; i < this._suite.Tests.Count; i++)
+                        {
+                            //First remember to show the Test Name in the Leftmost column
+                            writer.Write(this._suite.Tests[i].Name);
+                            writer.Write(',');
+
+                            //Then show a Result for each Test Case
+                            foreach (TestCase c in this._suite.TestCases)
+                            {
+                                if (i < c.Results.Count)
+                                {
+                                    TestResult r = c.Results[i];
+                                    if (r.Actions > 0)
+                                    {
+                                        writer.Write(r.Speed);
+                                    }
+                                    else
+                                    {
+                                        writer.Write(r.Memory);
+                                    }
+                                }
+                                else
+                                {
+                                    writer.Write("N/A,");
+                                }
+                                writer.Write(',');
+                            }
+                            writer.WriteLine();
+                        }
+
+                        writer.Close();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error Exporting Results: " + ex.Message, "Export Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
         }
     }
 }

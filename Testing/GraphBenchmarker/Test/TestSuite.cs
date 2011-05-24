@@ -16,9 +16,14 @@ namespace VDS.RDF.Utilities.GraphBenchmarker.Test
         private BindingList<TestCase> _cases = new BindingList<TestCase>();
         private int _currTest = 0, _currTestCase = 0;
         private bool _cancelled = false;
+        private String _data;
+        private int _iterations;
 
         public TestSuite(IEnumerable<TestCase> testCases, String data, int iterations)
         {
+            this._data = data;
+            this._iterations = iterations;
+
             foreach (TestCase c in testCases)
             {
                 this._cases.Add(c);
@@ -42,6 +47,22 @@ namespace VDS.RDF.Utilities.GraphBenchmarker.Test
 
             //Finally add the final Memory Usage Check
             this._tests.Add(new MemoryUsageCheck());
+        }
+
+        public String Data
+        {
+            get
+            {
+                return this._data;
+            }
+        }
+
+        public int Iterations
+        {
+            get
+            {
+                return this._iterations;
+            }
         }
 
         public BindingList<TestCase> TestCases

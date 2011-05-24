@@ -598,7 +598,7 @@ namespace VDS.RDF
         public override IEnumerable<Triple> WithSubject(INode subj)
         {
             this.PrepareSubjectIndex();
-            return this._subjIndex.SearchIndex<Triple>(this._s, new Triple(subj, this._varPred.CopyNode(subj.Graph), this._varObj));
+            return this._subjIndex.SearchIndex<Triple>(this._s, new Triple(subj, this._varPred.CopyNode(subj.Graph), this._varObj.CopyNode(subj.Graph)));
         }
 
         public override IEnumerable<Triple> WithSubjectObject(INode subj, INode obj)
