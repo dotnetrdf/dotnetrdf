@@ -170,7 +170,14 @@ namespace VDS.RDF.Utilities.Editor
                 if (!info.Exists) 
                 {
                     info.Create();
-                    info.ContentType = MimeTypesHelper.GetMimeType(info.Extension);
+                    try
+                    {
+                        info.ContentType = MimeTypesHelper.GetMimeType(info.Extension);
+                    }
+                    catch
+                    {
+                        //Ignore error, just means we don't know the MIME type for the Extension
+                    }
                     info.PerceivedType = PerceivedTypes.Text;
                 } 
                 
