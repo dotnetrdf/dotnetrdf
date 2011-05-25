@@ -47,7 +47,6 @@ namespace VDS.RDF.Parsing.Tokens
         private BlockingTextReader _in;
         private int _lasttokentype = -1;
         private bool _queryKeywordSeen = false;
-        private bool _orderByKeywordSeen = false;
         private bool _baseDeclared = false;
         private SparqlQuerySyntax _syntax = Options.QueryDefaultSyntax;
 
@@ -1158,27 +1157,12 @@ namespace VDS.RDF.Parsing.Tokens
                         if (this.GetExpectedKeyword(SparqlSpecsHelper.SparqlKeywordOrderBy))
                         {
                             //Order By Keyword
-                            if (!this._orderByKeywordSeen)
-                            {
-                                this._lasttokentype = Token.ORDERBY;
-                                this._orderByKeywordSeen = true;
-                                return new OrderByKeywordToken(this.CurrentLine, this.StartPosition);
-                            }
-                            else
-                            {
-                                throw Error("Unexpected ORDER BY encountered, the ORDER BY Keyword has already occurred in this Query");
-                            }
+                            this._lasttokentype = Token.ORDERBY;
+                            return new OrderByKeywordToken(this.CurrentLine, this.StartPosition);
                         }
                         else
                         {
-                            if (!this._orderByKeywordSeen)
-                            {
-                                throw Error("Unexpected content while attempting to parse an ORDER BY keyword from Content:\n" + this.Value);
-                            }
-                            else
-                            {
-                                throw Error("Unexpected ORDER encountered, the ORDER Keyword has already occurred in this Query");
-                            }
+                            throw Error("Unexpected content while attempting to parse an ORDER BY keyword from Content:\n" + this.Value);
                         }
                     case SparqlSpecsHelper.SparqlKeywordRand:
                         //Rand Keyword
@@ -1344,7 +1328,7 @@ namespace VDS.RDF.Parsing.Tokens
                     throw Error("Unexpected String '" + value + "' encountered while trying to parse a SPARQL Keyword.  This appears to be an attempt to use an ASK/CONSTRUCT/DESCRIBE as a sub-query which is not supported");
                 }
             }
-            else if (!colonoccurred && (this._lasttokentype == Token.ORDERBY || (this._orderByKeywordSeen && this._lasttokentype == Token.RIGHTBRACKET)))
+            else if (!colonoccurred && (this._lasttokentype == Token.ORDERBY || (/*this._orderByKeywordSeen && */this._lasttokentype == Token.RIGHTBRACKET)))
             {
                 //Should be an ASC/DESC Keyword
                 if (value.Equals(SparqlSpecsHelper.SparqlKeywordAsc, StringComparison.OrdinalIgnoreCase))

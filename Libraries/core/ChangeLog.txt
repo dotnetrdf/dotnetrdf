@@ -9,98 +9,15 @@ rvesse@vdesign-studios.com
 Change Log
 ----------
 
-This represents a summary of additions, changes and removals for the 0.4.1 release of dotNetRDF
+This represents a summary of additions, changes and removals for the 0.4.2 release of dotNetRDF
 
 Added
-- General Improvements
- - Added a GraphPersistenceWrapper which is an IGraph implementation which tracks changes to the wrapped
-   Graph when those changes pass through it and allow the changes to be Flushed/Discarded as desired
-    - Added a StoreGraphPersistenceWrapper which flushes changes to some underlying IGenericIOManager
-    - Added a FileGraphPersistenceWrapper which flushes changes to a file on disk
- - Improved the HTTP Accept Headers we send
-- Parsing
- - New IRdfHandler and ISparqlResultsHandler interface allows parsing to arbitrary RDF/SPARQL Results Handlers
-  - Provided various implementations of this:
-   - CountHandler for just counting triples
-   - GraphHandler for parsing into IGraph instances
-   - NullHandler for discarding the triples (useful for just validating the RDF)
-   - PagingHandler for getting a slice of the triples
-   - ResultCountHandler for counting SPARQL Results
-   - ResultSetHandler for parsing SPARQL Results into SparqlResultSet's
-   - StoreHandler for parsing into ITripleStore instances
-   - StoreCountHandler for counting Triples and Graphs
-   - WriteThroughHandler for generating RDF output while parsing
-   - WriteToStoreHandler for sending the triples in batches to some underlying store
-   - ChainedHandler and MultiHandler for combining multiple RDF handlers together
-   - CancellableHandler for wrapping other Handlers and being able to cancel parsing (assuming async code)
-- Update
- - Added support for Timeouts when using the LeviathanUpdateProcessor and the ProcessCommandSet() method
- - Added support for transactions
-- Writing
- - Added a PrettyRdfXmlWriter which is a streaming writer which writes more readable RDF/XML than the other RDF/XML writers
-- ASP.Net Integration
- - Added NegotiateByFileExtension which is an IHttpModule that can be used to provide content negotiation by file extension
-   seamlessly for all existing IHttpHandler implementations
 
 Changed
 - Bug Fixes
- - Improved detection of MIME Type from file extension to allow consideration of all possible types 
-   for an extension
- - If RDF/XML parsing failed then the input stream is now always closed
- - Bug fix for malformed SPARQL XML Output when some variables were bound to null for a result
- - TriX no longer allows anonymous Graph IDs
- - TriX Parser no longer parses <typedLiteral> elements incorrectly
- - Bug fix for incorrect literal escaping in some cases for all writers
- - TriG Parser no longer fails to handle string escapes correctly
- - RdfXmlWriter would fail to output some collections in some cases
- - Bug fix for incorrect rdfs:range and rdfs:domain handling in RdfsReasoner
- - Bug fix to how BINDs are parsed and placed in SPARQL Queries
- - Bug fix on converting SPARQL Queries into Strings to ensure BINDs are placed correctly
-- General Improvements
- - Improved abstraction in BaseDataset so all the active/default graph management is handled by the 
-   base class
-- Parsing Improvements
- - Internal parser subsystem rewritten to use IRdfHandler and ISparqlResultsHandler
- - Improved buffering of input
- - IRdfReader expanded
-  - Now has overloads for parsing to an IRdfHandler instance as well as to an IGraph instance
-  - Now has overloads for parsing from any TextReader (not just StreamReader)
- - IStoreReader expanded
-  - Now has overloads for parsing to an IRdfHandler instance as well as to an ITripleStore instances
-  - IStoreReader implementations which accept StreamParams now also accept TextReaderParams for reading
-    from any TextReader
- - ISparqlResultsReader expanded
-  - Now has overloads for parsing to an ISparqlResultsHandler instance as well as to a SparqlResultSet instance
-  - Now has overloads for parsing from any TextReader (not just StreamReader)
- - All static loaders (DataUriLoader, EmbeddedResourceLoader, FileLoad and UriLoader) now have overloads that take
-   IRdfHandler instances
-- Query Improvements
- - Ensured proper thread safety for queries when used with appropriately implemented ISparqlDataset's so that Queries
-   can never interfere with each other
- - Improved Timeout support particularly with regards to getting stuck calculating products
-  - Reduced global timeout setting to 3 minutes (previously 5 minutes)
-  - Ensured that timeouts still apply during lazy evaluation of appropriate SELECT/ASK queries
-- Update Improvements
- - InMemoryDataset and SqlDataset now provide transactionality
- - LeviathanUpdateProcessor now runs each Command Set in a Transaction unless AutoCommit is set to false
-- Writing Improvements
- - Various fixes and improvements to collection compression for compressing writers
- - IStoreWriter implementations which accept StreamParams now also accept TextWriterParams for writing
-   to any TextWriter
- - RDF/XML writers now include the Base URI (if any) of the Graph being written on the document element using xml:base
-- ASP.Net Improvements
- - SPARQL Update handler improvements
-  - They now check command set for permissible actions prior to evaluating any of the command set
-  - They no longer support the non-standard dnr:haltOnError behaviour
-  - They now evaluate command sets as entire sets rather than 1 command at a time
+ - SPARQL Tokeniser allows more than one ORDER BY keyword
 
 Removed
-- Following marked obsolete but usable
- - TalisGraph (suggest use of StoreGraphPersistenceWrapper instead)
-- Following marked as obsolete and unusable
- - BackgroundPersistedGraph (superceded by GraphPersistenceWrapper)
- - StoreGraph and WriteOnlyStoreGraph (superceded by StoreGraphPersistenceWrapper)
- - RdfXmlTreeWriter (superceded by FastRdfXmlWriter, RdfXmlWriter and PrettyRdfXmlWriter)
 
    
 
