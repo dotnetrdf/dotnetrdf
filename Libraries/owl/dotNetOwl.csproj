@@ -53,6 +53,7 @@
     <Compile Include="Core\AnonymousIndividual.cs" />
     <Compile Include="Core\AssertionAxiom.cs" />
     <Compile Include="Core\Axiom.cs" />
+    <Compile Include="Core\Collections.cs" />
     <Compile Include="Core\Class.cs" />
     <Compile Include="Core\ClassAxiom.cs" />
     <Compile Include="Core\ClassExpression.cs" />
@@ -64,6 +65,7 @@
     <Compile Include="Core\DataPropertyExpression.cs" />
     <Compile Include="Core\DatatypeDefinitionAxiom.cs" />
     <Compile Include="Core\DataTypeRestriction.cs" />
+    <Compile Include="Core\Events.cs" />
     <Compile Include="Core\FacetRestriction.cs" />
     <Compile Include="Core\HasKeyAxiom.cs" />
     <Compile Include="Core\IAnnotation.cs" />
@@ -76,6 +78,7 @@
     <Compile Include="Core\ILiteral.cs" />
     <Compile Include="Core\Individual.cs" />
     <Compile Include="Core\InverseObjectProperty.cs" />
+    <Compile Include="Core\IOntology.cs" />
     <Compile Include="Core\Iri.cs" />
     <Compile Include="Core\NamedIndividual.cs" />
     <Compile Include="Core\ObjectCardinalityRestrictions.cs" />

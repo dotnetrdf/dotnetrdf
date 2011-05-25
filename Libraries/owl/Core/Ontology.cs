@@ -5,7 +5,7 @@ using System.Text;
 
 namespace VDS.OWL
 {
-    class Ontology
+    class Ontology : IOntology
     {
         public Iri OntologyIri { get; protected set; }
 
@@ -13,8 +13,8 @@ namespace VDS.OWL
 
         public IEnumerable<Iri> Imports { get; protected set; }
 
-        public IAnnotation Annotations { get; protected set; }
+        public BaseAnnotationCollection Annotations { get; protected set; }
 
-        public IAxiom Axioms { get; protected set; }
+        public BaseAxiomCollection Axioms { get; protected set; }
     }
 }
