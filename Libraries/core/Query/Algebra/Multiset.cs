@@ -63,6 +63,8 @@ namespace VDS.RDF.Query.Algebra
         /// List of IDs that is used to return the Sets in order if the Multiset has been sorted
         /// </summary>
         protected List<int> _orderedIDs = null;
+        private Dictionary<String, HashSet<INode>> _containsCache;
+        private int _cacheSize = 0;
 
         /// <summary>
         /// Creates a new Empty Multiset
@@ -374,7 +376,18 @@ namespace VDS.RDF.Query.Algebra
         {
             if (this._variables.Contains(var))
             {
-                return this._sets.Values.Any(s => n.Equals(s[var]));
+                //Create the Cache if necessary and reset it when necessary
+                if (this._containsCache == null || this._cacheSize != this._sets.Count)
+                {
+                    this._containsCache = new Dictionary<string, HashSet<INode>>();
+                    this._cacheSize = this._sets.Count;
+                }
+                if (!this._containsCache.ContainsKey(var))
+                {
+                    this._containsCache.Add(var, new HashSet<INode>(this._sets.Values.Select(s => s[var])));
+                }
+                //return this._sets.Values.Any(s => n.Equals(s[var]));
+                return this._containsCache[var].Contains(n);
             }
             else
             {

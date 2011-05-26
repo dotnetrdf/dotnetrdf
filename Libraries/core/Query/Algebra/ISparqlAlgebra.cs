@@ -92,9 +92,17 @@ namespace VDS.RDF.Query.Algebra
     }
 
     /// <summary>
+    /// Marker Interface for SPARQL Algebra constructs which are terminal operators i.e. they contain no inner algebra operators
+    /// </summary>
+    public interface ITerminalOperator : ISparqlAlgebra
+    {
+
+    }
+
+    /// <summary>
     /// Represents an Algebra construct which is a BGP
     /// </summary>
-    public interface IBgp : ISparqlAlgebra
+    public interface IBgp : ISparqlAlgebra, ITerminalOperator
     {
         /// <summary>
         /// Gets the Number of Patterns in the BGP
@@ -114,8 +122,11 @@ namespace VDS.RDF.Query.Algebra
     }
 
     /// <summary>
-    /// Represents an Algebra construct which is an Abstract Join
+    /// Represents an Algebra construct which is an Abstract Join (i.e. any kind of Join over two algebra operators)
     /// </summary>
+    /// <remarks>
+    /// Specific sub-interfaces are used to mark specific kinds of Join
+    /// </remarks>
     public interface IAbstractJoin : ISparqlAlgebra
     {
         /// <summary>

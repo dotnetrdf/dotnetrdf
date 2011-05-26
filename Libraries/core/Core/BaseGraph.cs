@@ -1178,11 +1178,7 @@ namespace VDS.RDF
         /// </summary>
         public virtual void Dispose()
         {
-            //this._blanknodeids.Clear();
             this.DetachEventHandlers(this._triples);
-            this._triples.Dispose();
-            this._nodes.Dispose();
-            this._nsmapper.Dispose();
         }
     }
 }
