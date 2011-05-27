@@ -150,6 +150,7 @@
     <Compile Include="Sparql\ConstructWithOptionalTests.cs" />
     <Compile Include="Sparql\DataTableTests.cs" />
     <Compile Include="Sparql\DefaultGraphTests2.cs" />
+    <Compile Include="Sparql\ExplainProcessorTests.cs" />
     <Compile Include="Sparql\FilterPlacementTests.cs" />
     <Compile Include="Sparql\NegationTests.cs" />
     <Compile Include="Sparql\OptimiserTests.cs" />
