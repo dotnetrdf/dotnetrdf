@@ -39,6 +39,7 @@ using System.Linq;
 using System.Text;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Filters;
+using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Algebra
@@ -181,6 +182,36 @@ namespace VDS.RDF.Query.Algebra
             }
             p.AddGraphPattern(opt);
             return p;
+        }
+
+        /// <summary>
+        /// Transforms both sides of the Join using the given Optimiser
+        /// </summary>
+        /// <param name="optimiser">Optimser</param>
+        /// <returns></returns>
+        public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
+        {
+            return new ExistsJoin(optimiser.Optimise(this._lhs), optimiser.Optimise(this._rhs), this._mustExist);
+        }
+
+        /// <summary>
+        /// Transforms the LHS of the Join using the given Optimiser
+        /// </summary>
+        /// <param name="optimiser">Optimser</param>
+        /// <returns></returns>
+        public ISparqlAlgebra TransformLhs(IAlgebraOptimiser optimiser)
+        {
+            return new ExistsJoin(optimiser.Optimise(this._lhs), this._rhs, this._mustExist);
+        }
+
+        /// <summary>
+        /// Transforms the RHS of the Join using the given Optimiser
+        /// </summary>
+        /// <param name="optimiser">Optimser</param>
+        /// <returns></returns>
+        public ISparqlAlgebra TransformRhs(IAlgebraOptimiser optimiser)
+        {
+            return new ExistsJoin(this._lhs, optimiser.Optimise(this._rhs), this._mustExist);
         }
     }
 
@@ -339,6 +370,36 @@ namespace VDS.RDF.Query.Algebra
             }
             p.AddGraphPattern(opt);
             return p;
+        }
+
+        /// <summary>
+        /// Transforms both sides of the Join using the given Optimiser
+        /// </summary>
+        /// <param name="optimiser">Optimser</param>
+        /// <returns></returns>
+        public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
+        {
+            return new LeftJoin(optimiser.Optimise(this._lhs), optimiser.Optimise(this._rhs), this._filter);
+        }
+
+        /// <summary>
+        /// Transforms the LHS of the Join using the given Optimiser
+        /// </summary>
+        /// <param name="optimiser">Optimser</param>
+        /// <returns></returns>
+        public ISparqlAlgebra TransformLhs(IAlgebraOptimiser optimiser)
+        {
+            return new LeftJoin(optimiser.Optimise(this._lhs), this._rhs, this._filter);
+        }
+
+        /// <summary>
+        /// Transforms the RHS of the Join using the given Optimiser
+        /// </summary>
+        /// <param name="optimiser">Optimser</param>
+        /// <returns></returns>
+        public ISparqlAlgebra TransformRhs(IAlgebraOptimiser optimiser)
+        {
+            return new LeftJoin(this._lhs, optimiser.Optimise(this._rhs), this._filter);
         }
     }
 
@@ -505,6 +566,36 @@ namespace VDS.RDF.Query.Algebra
             p.AddGraphPattern(this._rhs.ToGraphPattern());
             return p;
         }
+
+        /// <summary>
+        /// Transforms both sides of the Join using the given Optimiser
+        /// </summary>
+        /// <param name="optimiser">Optimser</param>
+        /// <returns></returns>
+        public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
+        {
+            return new Join(optimiser.Optimise(this._lhs), optimiser.Optimise(this._rhs));
+        }
+
+        /// <summary>
+        /// Transforms the LHS of the Join using the given Optimiser
+        /// </summary>
+        /// <param name="optimiser">Optimser</param>
+        /// <returns></returns>
+        public ISparqlAlgebra TransformLhs(IAlgebraOptimiser optimiser)
+        {
+            return new Join(optimiser.Optimise(this._lhs), this._rhs);
+        }
+
+        /// <summary>
+        /// Transforms the RHS of the Join using the given Optimiser
+        /// </summary>
+        /// <param name="optimiser">Optimser</param>
+        /// <returns></returns>
+        public ISparqlAlgebra TransformRhs(IAlgebraOptimiser optimiser)
+        {
+            return new Join(this._lhs, optimiser.Optimise(this._rhs));
+        }
     }
 
     /// <summary>
@@ -612,6 +703,36 @@ namespace VDS.RDF.Query.Algebra
             p.AddGraphPattern(this._lhs.ToGraphPattern());
             p.AddGraphPattern(this._rhs.ToGraphPattern());
             return p;
+        }
+
+        /// <summary>
+        /// Transforms both sides of the Join using the given Optimiser
+        /// </summary>
+        /// <param name="optimiser">Optimser</param>
+        /// <returns></returns>
+        public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
+        {
+            return new Union(optimiser.Optimise(this._lhs), optimiser.Optimise(this._rhs));
+        }
+
+        /// <summary>
+        /// Transforms the LHS of the Join using the given Optimiser
+        /// </summary>
+        /// <param name="optimiser">Optimser</param>
+        /// <returns></returns>
+        public ISparqlAlgebra TransformLhs(IAlgebraOptimiser optimiser)
+        {
+            return new Union(optimiser.Optimise(this._lhs), this._rhs);
+        }
+
+        /// <summary>
+        /// Transforms the RHS of the Join using the given Optimiser
+        /// </summary>
+        /// <param name="optimiser">Optimser</param>
+        /// <returns></returns>
+        public ISparqlAlgebra TransformRhs(IAlgebraOptimiser optimiser)
+        {
+            return new Union(this._lhs, optimiser.Optimise(this._rhs));
         }
     }
 }

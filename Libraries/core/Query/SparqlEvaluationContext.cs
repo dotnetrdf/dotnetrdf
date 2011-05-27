@@ -48,6 +48,7 @@ namespace VDS.RDF.Query
     /// </summary>
     public class SparqlEvaluationContext
     {
+        private ISparqlQueryAlgebraProcessor<BaseMultiset, SparqlEvaluationContext> _processor;
         private BaseMultiset _inputSet, _outputSet;
         private bool _trimTemporaries = true;
         private ISparqlDataset _data;
@@ -62,7 +63,7 @@ namespace VDS.RDF.Query
         private long _timeout;
 
         /// <summary>
-        /// Creates a new Evaluation Context for the given Query over the given Triple Store
+        /// Creates a new Evaluation Context for the given Query over the given Dataset
         /// </summary>
         /// <param name="q">Query</param>
         /// <param name="data">Dataset</param>
@@ -74,6 +75,18 @@ namespace VDS.RDF.Query
             this._binder = new LeviathanResultBinder(this);
 
             this.CalculateTimeout();
+        }
+
+        /// <summary>
+        /// Creates a new Evaluation Context for the given Query over the given Dataset using a specific processor
+        /// </summary>
+        /// <param name="q">Query</param>
+        /// <param name="data">Dataset</param>
+        /// <param name="processor">Query Processor</param>
+        public SparqlEvaluationContext(SparqlQuery q, ISparqlDataset data, ISparqlQueryAlgebraProcessor<BaseMultiset, SparqlEvaluationContext> processor)
+            : this(q, data)
+        {
+            this._processor = processor;
         }
 
         /// <summary>
@@ -355,6 +368,23 @@ namespace VDS.RDF.Query
                 {
                     this._functionContexts.Add(key, value);
                 }
+            }
+        }
+
+        /// <summary>
+        /// Evalutes an Algebra Operator in this Context using the current Query Processor (if any) or the default <see cref="ISparqlAlgebra.Evaluate">Evaluate()</see> method
+        /// </summary>
+        /// <param name="algebra">Algebra</param>
+        /// <returns></returns>
+        public BaseMultiset Evaluate(ISparqlAlgebra algebra)
+        {
+            if (this._processor == null)
+            {
+                return algebra.Evaluate(this);
+            }
+            else
+            {
+                return this._processor.ProcessAlgebra(algebra, this);
             }
         }
     }

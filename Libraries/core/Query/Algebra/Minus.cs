@@ -36,6 +36,7 @@ terms.
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Algebra
@@ -175,6 +176,36 @@ namespace VDS.RDF.Query.Algebra
                 p.AddGraphPattern(parent);
             }
             return p;
+        }
+
+        /// <summary>
+        /// Transforms both sides of the Join using the given Optimiser
+        /// </summary>
+        /// <param name="optimiser">Optimser</param>
+        /// <returns></returns>
+        public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
+        {
+            return new Minus(optimiser.Optimise(this._lhs), optimiser.Optimise(this._rhs));
+        }
+
+        /// <summary>
+        /// Transforms the LHS of the Join using the given Optimiser
+        /// </summary>
+        /// <param name="optimiser">Optimser</param>
+        /// <returns></returns>
+        public ISparqlAlgebra TransformLhs(IAlgebraOptimiser optimiser)
+        {
+            return new Minus(optimiser.Optimise(this._lhs), this._rhs);
+        }
+
+        /// <summary>
+        /// Transforms the RHS of the Join using the given Optimiser
+        /// </summary>
+        /// <param name="optimiser">Optimser</param>
+        /// <returns></returns>
+        public ISparqlAlgebra TransformRhs(IAlgebraOptimiser optimiser)
+        {
+            return new Minus(this._lhs, optimiser.Optimise(this._rhs));
         }
     }
 }

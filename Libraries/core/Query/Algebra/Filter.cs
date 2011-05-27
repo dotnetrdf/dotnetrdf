@@ -38,6 +38,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Query.Filters;
+using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Algebra
@@ -176,6 +177,16 @@ namespace VDS.RDF.Query.Algebra
             f.AddFilter(this._filter);
             p.AddGraphPattern(f);
             return p;
+        }
+
+        /// <summary>
+        /// Transforms the Inner Algebra using the given Optimiser
+        /// </summary>
+        /// <param name="optimiser">Optimiser</param>
+        /// <returns></returns>
+        public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
+        {
+            return new Filter(this._pattern, this._filter);
         }
     }
 }

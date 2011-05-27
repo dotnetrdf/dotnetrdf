@@ -39,6 +39,7 @@ using System.Linq;
 using System.Text;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Filters;
+using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Query.Ordering;
 using VDS.RDF.Query.Patterns;
 
@@ -226,7 +227,7 @@ namespace VDS.RDF.Query.Algebra
                 return context.OutputMultiset;
             }
 
-            BaseMultiset initialInput, localOutput, results;
+            BaseMultiset initialInput, localOutput, results = null;
 
             //Determine whether the Pattern modifies the existing Input rather than joining to it
             bool modifies = (this._triplePatterns[pattern] is FilterPattern);
@@ -461,8 +462,6 @@ namespace VDS.RDF.Query.Algebra
                             return new Multiset();
                         }
                     }
-
-                    throw new RdfQueryException("Encountered a Filter which is disjoint with the Input Data and so cannot be lazily evaluated");
                 } 
                 else
                 {
@@ -761,6 +760,36 @@ namespace VDS.RDF.Query.Algebra
             p.AddGraphPattern(this._lhs.ToGraphPattern());
             p.AddGraphPattern(this._rhs.ToGraphPattern());
             return p;
+        }
+
+        /// <summary>
+        /// Transforms both sides of the Join using the given Optimiser
+        /// </summary>
+        /// <param name="optimiser">Optimser</param>
+        /// <returns></returns>
+        public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
+        {
+            return new LazyUnion(optimiser.Optimise(this._lhs), optimiser.Optimise(this._rhs));
+        }
+
+        /// <summary>
+        /// Transforms the LHS of the Join using the given Optimiser
+        /// </summary>
+        /// <param name="optimiser">Optimser</param>
+        /// <returns></returns>
+        public ISparqlAlgebra TransformLhs(IAlgebraOptimiser optimiser)
+        {
+            return new LazyUnion(optimiser.Optimise(this._lhs), this._rhs);
+        }
+
+        /// <summary>
+        /// Transforms the RHS of the Join using the given Optimiser
+        /// </summary>
+        /// <param name="optimiser">Optimser</param>
+        /// <returns></returns>
+        public ISparqlAlgebra TransformRhs(IAlgebraOptimiser optimiser)
+        {
+            return new LazyUnion(this._lhs, optimiser.Optimise(this._rhs));
         }
     }
 }

@@ -37,6 +37,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Algebra
@@ -227,6 +228,16 @@ namespace VDS.RDF.Query.Algebra
         public GraphPattern ToGraphPattern()
         {
             throw new NotSupportedException("A Slice() cannot be converted to a Graph Pattern");
+        }
+
+        /// <summary>
+        /// Transforms the Inner Algebra using the given Optimiser
+        /// </summary>
+        /// <param name="optimiser">Optimiser</param>
+        /// <returns></returns>
+        public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
+        {
+            return new Slice(this._pattern, this._limit, this._offset);
         }
     }
 }

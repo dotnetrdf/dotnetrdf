@@ -38,6 +38,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Query.Filters;
+using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Algebra
@@ -89,6 +90,16 @@ namespace VDS.RDF.Query.Algebra
         {
             get;
         }
+
+        /// <summary>
+        /// Transforms the Inner Algebra using the given Optimiser
+        /// </summary>
+        /// <param name="optimiser">Optimiser</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// The operator should retain all it's existing properties and just return a new version of itself with the inner algebra having had the given optimiser applied to it
+        /// </remarks>
+        ISparqlAlgebra Transform(IAlgebraOptimiser optimiser);
     }
 
     /// <summary>
@@ -144,6 +155,36 @@ namespace VDS.RDF.Query.Algebra
         {
             get;
         }
+
+        /// <summary>
+        /// Transforms both sides of the Join using the given Optimiser
+        /// </summary>
+        /// <param name="optimiser">Optimser</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// The join should retain all it's existing properties and just return a new version of itself with the two sides of the join having had the given optimiser applied to them
+        /// </remarks>
+        ISparqlAlgebra Transform(IAlgebraOptimiser optimiser);
+
+        /// <summary>
+        /// Transforms the LHS of the Join using the given Optimiser
+        /// </summary>
+        /// <param name="optimiser">Optimser</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// The join should retain all it's existing properties and just return a new version of itself with LHS side of the join having had the given optimiser applied to them
+        /// </remarks>
+        ISparqlAlgebra TransformLhs(IAlgebraOptimiser optimiser);
+
+        /// <summary>
+        /// Transforms the RHS of the Join using the given Optimiser
+        /// </summary>
+        /// <param name="optimiser">Optimser</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// The join should retain all it's existing properties and just return a new version of itself with RHS side of the join having had the given optimiser applied to them
+        /// </remarks>
+        ISparqlAlgebra TransformRhs(IAlgebraOptimiser optimiser);
     }
 
     /// <summary>

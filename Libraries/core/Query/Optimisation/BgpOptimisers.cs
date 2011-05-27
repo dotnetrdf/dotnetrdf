@@ -62,6 +62,10 @@ namespace VDS.RDF.Query.Optimisation
             try
             {
                 ISparqlAlgebra temp;
+
+                //Note this first test is specifically for the default BGP implementation since other optimisers
+                //may run before us and replace with other BGP implementations which we don't want to replace hence
+                //why we don't check for IBgp here
                 if (algebra is Bgp)
                 {
                     temp = new LazyBgp(((Bgp)algebra).TriplePatterns);
@@ -83,19 +87,23 @@ namespace VDS.RDF.Query.Optimisation
                     {
                         //If the sides of the Join are disjoint then can fully transform the join since we only need to find the requisite number of
                         //solutions on either side to guarantee a product which meets/exceeds the required results
-                        temp = new Join(this.OptimiseInternal(join.Lhs, depth + 1), this.OptimiseInternal(join.Rhs, depth + 1));
+                        //temp = new Join(this.OptimiseInternal(join.Lhs, depth + 1), this.OptimiseInternal(join.Rhs, depth + 1));
+                        temp = join.Transform(this);
                     }
                     else
                     {
                         //If the sides are not disjoint then the LHS must be fully evaluated but the RHS need only produce enough
                         //solutions that match
-                        temp = new Join(join.Lhs, this.OptimiseInternal(join.Rhs, depth + 1));
+                        //temp = new Join(join.Lhs, this.OptimiseInternal(join.Rhs, depth + 1));
+                        temp = join.TransformRhs(this);
                     }
                 }
                 else if (algebra is Algebra.Graph)
                 {
-                    Algebra.Graph g = (Algebra.Graph)algebra;
-                    temp = new Algebra.Graph(this.OptimiseInternal(g.InnerAlgebra, depth + 1), g.GraphSpecifier);
+                    //Algebra.Graph g = (Algebra.Graph)algebra;
+                    //temp = new Algebra.Graph(this.OptimiseInternal(g.InnerAlgebra, depth + 1), g.GraphSpecifier);
+                    IUnaryOperator op = (IUnaryOperator)algebra;
+                    temp = op.Transform(this);
                 }
                 else
                 {
@@ -172,19 +180,23 @@ namespace VDS.RDF.Query.Optimisation
                     {
                         //If the sides of the Join are disjoint then can fully transform the join since we only need to find at least
                         //one solution on either side in order for the query to match
-                        temp = new Join(this.OptimiseInternal(join.Lhs, depth + 1), this.OptimiseInternal(join.Rhs, depth + 1));
+                        //temp = new Join(this.OptimiseInternal(join.Lhs, depth + 1), this.OptimiseInternal(join.Rhs, depth + 1));
+                        temp = join.Transform(this);
                     } 
                     else 
                     {
                         //If the sides are not disjoint then the LHS must be fully evaluated but the RHS need only produce at least
                         //one solution based on the full input from the LHS for the query to match
-                        temp = new Join(join.Lhs, this.OptimiseInternal(join.Rhs, depth + 1));
+                        //temp = new Join(join.Lhs, this.OptimiseInternal(join.Rhs, depth + 1));
+                        temp = join.TransformRhs(this);
                     }
                 }
                 else if (algebra is Algebra.Graph)
                 {
-                    Algebra.Graph g = (Algebra.Graph)algebra;
-                    temp = new Algebra.Graph(this.OptimiseInternal(g.InnerAlgebra, depth + 1), g.GraphSpecifier);
+                    //Algebra.Graph g = (Algebra.Graph)algebra;
+                    //temp = new Algebra.Graph(this.OptimiseInternal(g.InnerAlgebra, depth + 1), g.GraphSpecifier);
+                    IUnaryOperator op = (IUnaryOperator)algebra;
+                    temp = op.Transform(this);
                 }
                 else
                 {

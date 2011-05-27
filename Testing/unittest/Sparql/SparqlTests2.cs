@@ -916,7 +916,51 @@ namespace VDS.RDF.Test
         [TestMethod]
         public void SparqlFilterLazy3()
         {
-            String query = "SELECT * WHERE { ?s a ?vehicle . FILTER (SAMETERM(?vehicle, <http://example.org/vehicles/Car>)) . ?s <http://example.org/vehicles/Speed> ?speed } LIMIT 3";
+            long currTimeout = Options.QueryExecutionTimeout;
+            try
+            {
+                Options.QueryExecutionTimeout = 0;
+
+                String query = "SELECT * WHERE { ?s a ?vehicle . FILTER (SAMETERM(?vehicle, <http://example.org/vehicles/Car>)) . ?s <http://example.org/vehicles/Speed> ?speed } LIMIT 3";
+
+                TripleStore store = new TripleStore();
+                Graph g = new Graph();
+                FileLoader.Load(g, "InferenceTest.ttl");
+                store.Add(g);
+
+                SparqlQueryParser parser = new SparqlQueryParser();
+                SparqlQuery q = parser.ParseFromString(query);
+                q.Timeout = 0;
+
+                Console.WriteLine(q.ToAlgebra().ToString());
+                Assert.IsTrue(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
+                Console.WriteLine();
+
+                Object results = q.Evaluate(store);
+                if (results is SparqlResultSet)
+                {
+                    SparqlResultSet rset = (SparqlResultSet)results;
+                    foreach (SparqlResult r in rset)
+                    {
+                        Console.WriteLine(r.ToString());
+                    }
+                    Assert.IsTrue(rset.Count == 3, "Expected exactly 3 results");
+                }
+                else
+                {
+                    Assert.Fail("Expected a SPARQL Result Set");
+                }
+            }
+            finally
+            {
+                Options.QueryExecutionTimeout = currTimeout;
+            }
+        }
+
+        [TestMethod]
+        public void SparqlFilterLazy4()
+        {
+            String query = "SELECT * WHERE { ?s a <http://example.org/vehicles/Car> ; <http://example.org/vehicles/Speed> ?speed } LIMIT 3";
 
             TripleStore store = new TripleStore();
             Graph g = new Graph();

@@ -37,6 +37,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Algebra
@@ -286,6 +287,16 @@ namespace VDS.RDF.Query.Algebra
         {
             throw new NotSupportedException("A Project() cannot be converted to a GraphPattern");
         }
+
+        /// <summary>
+        /// Transforms the Inner Algebra using the given Optimiser
+        /// </summary>
+        /// <param name="optimiser">Optimiser</param>
+        /// <returns></returns>
+        public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
+        {
+            return new Project(this._pattern, this._variables);
+        }
     }
 
     /// <summary>
@@ -432,6 +443,16 @@ namespace VDS.RDF.Query.Algebra
         {
             throw new NotSupportedException("A Select() cannot be converted to a GraphPattern");
         }
+
+        /// <summary>
+        /// Transforms the Inner Algebra using the given Optimiser
+        /// </summary>
+        /// <param name="optimiser">Optimiser</param>
+        /// <returns></returns>
+        public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
+        {
+            return new Select(this._pattern, this._variables);
+        }
     }
 
     /// <summary>
@@ -440,7 +461,7 @@ namespace VDS.RDF.Query.Algebra
     /// <remarks>
     /// Used only for ASK queries.  Turns the final Multiset into either an <see cref="IdentityMultiset">IdentityMultiset</see> if the ASK succeeds or a <see cref="NullMultiset">NullMultiset</see> if the ASK fails
     /// </remarks>
-    public class Ask : ISparqlAlgebra
+    public class Ask : IUnaryOperator
     {
         private ISparqlAlgebra _pattern;
 
@@ -488,6 +509,14 @@ namespace VDS.RDF.Query.Algebra
             return context.OutputMultiset;
         }
 
+        public ISparqlAlgebra InnerAlgebra
+        {
+            get
+            {
+                return this._pattern;
+            }
+        }
+
         /// <summary>
         /// Gets the Variables used in the Algebra
         /// </summary>
@@ -527,6 +556,16 @@ namespace VDS.RDF.Query.Algebra
         public GraphPattern ToGraphPattern()
         {
             throw new NotSupportedException("An Ask() cannot be converted to a GraphPattern");
+        }
+
+        /// <summary>
+        /// Transforms the Inner Algebra using the given Optimiser
+        /// </summary>
+        /// <param name="optimiser">Optimiser</param>
+        /// <returns></returns>
+        public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
+        {
+            return new Ask(this._pattern);
         }
     }
 }

@@ -64,7 +64,7 @@ namespace VDS.RDF.Query.Algebra
         /// </summary>
         protected List<int> _orderedIDs = null;
         private Dictionary<String, HashSet<INode>> _containsCache;
-        private int _cacheSize = 0;
+        private bool _cacheInvalid = true;
 
         /// <summary>
         /// Creates a new Empty Multiset
@@ -377,10 +377,10 @@ namespace VDS.RDF.Query.Algebra
             if (this._variables.Contains(var))
             {
                 //Create the Cache if necessary and reset it when necessary
-                if (this._containsCache == null || this._cacheSize != this._sets.Count)
+                if (this._containsCache == null || this._cacheInvalid)
                 {
                     this._containsCache = new Dictionary<string, HashSet<INode>>();
-                    this._cacheSize = this._sets.Count;
+                    this._cacheInvalid = true;
                 }
                 if (!this._containsCache.ContainsKey(var))
                 {
@@ -430,6 +430,7 @@ namespace VDS.RDF.Query.Algebra
             {
                 if (!this._variables.Contains(var)) this._variables.Add(var);
             }
+            this._cacheInvalid = true;
         }
 
         /// <summary>
@@ -454,6 +455,7 @@ namespace VDS.RDF.Query.Algebra
                 {
                     this._orderedIDs.Remove(id);
                 }
+                this._cacheInvalid = true;
             }
         }
 
