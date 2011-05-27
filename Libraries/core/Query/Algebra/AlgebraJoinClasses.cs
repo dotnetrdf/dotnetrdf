@@ -73,7 +73,7 @@ namespace VDS.RDF.Query.Algebra
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
             BaseMultiset initialInput = context.InputMultiset;
-            BaseMultiset lhsResult = this._lhs.Evaluate(context);
+            BaseMultiset lhsResult = context.Evaluate(this._lhs);//this._lhs.Evaluate(context);
             context.CheckTimeout();
 
             if (lhsResult is NullMultiset)
@@ -88,7 +88,7 @@ namespace VDS.RDF.Query.Algebra
             {
                 //Only execute the RHS if the LHS had results
                 context.InputMultiset = lhsResult;
-                BaseMultiset rhsResult = this._rhs.Evaluate(context);
+                BaseMultiset rhsResult = context.Evaluate(this._rhs);//this._rhs.Evaluate(context);
                 context.CheckTimeout();
 
                 context.OutputMultiset = lhsResult.ExistsJoin(rhsResult, this._mustExist);
@@ -255,7 +255,7 @@ namespace VDS.RDF.Query.Algebra
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
             BaseMultiset initialInput = context.InputMultiset;
-            BaseMultiset lhsResult = this._lhs.Evaluate(context);
+            BaseMultiset lhsResult = context.Evaluate(this._lhs);//this._lhs.Evaluate(context);
             context.CheckTimeout();
 
             if (lhsResult is NullMultiset)
@@ -270,7 +270,7 @@ namespace VDS.RDF.Query.Algebra
             {
                 //Only execute the RHS if the LHS had some results
                 context.InputMultiset = lhsResult;
-                BaseMultiset rhsResult = this._rhs.Evaluate(context);
+                BaseMultiset rhsResult = context.Evaluate(this._rhs);//this._rhs.Evaluate(context);
                 context.CheckTimeout();
 
                 context.OutputMultiset = lhsResult.LeftJoin(rhsResult, this._filter.Expression);
@@ -476,7 +476,7 @@ namespace VDS.RDF.Query.Algebra
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
             BaseMultiset initialInput = context.InputMultiset;
-            BaseMultiset lhsResult = this._lhs.Evaluate(context);
+            BaseMultiset lhsResult = context.Evaluate(this._lhs);//this._lhs.Evaluate(context);
             context.CheckTimeout();
 
             if (lhsResult is NullMultiset)
@@ -491,7 +491,7 @@ namespace VDS.RDF.Query.Algebra
             {
                 //Only Execute the RHS if the LHS has some results
                 context.InputMultiset = lhsResult;
-                BaseMultiset rhsResult = this._rhs.Evaluate(context);
+                BaseMultiset rhsResult = context.Evaluate(this._rhs);//this._rhs.Evaluate(context);
                 context.CheckTimeout();
 
                 context.OutputMultiset = lhsResult.Join(rhsResult);
@@ -624,11 +624,11 @@ namespace VDS.RDF.Query.Algebra
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
             BaseMultiset initialInput = context.InputMultiset;
-            BaseMultiset lhsResult = this._lhs.Evaluate(context);
+            BaseMultiset lhsResult = context.Evaluate(this._lhs);//this._lhs.Evaluate(context);
             context.CheckTimeout();
 
             context.InputMultiset = initialInput;
-            BaseMultiset rhsResult = this._rhs.Evaluate(context);
+            BaseMultiset rhsResult = context.Evaluate(this._rhs);//this._rhs.Evaluate(context);
             context.CheckTimeout();
 
             context.OutputMultiset = lhsResult.Union(rhsResult);

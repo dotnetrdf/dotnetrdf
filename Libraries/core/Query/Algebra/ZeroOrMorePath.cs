@@ -250,7 +250,7 @@ namespace VDS.RDF.Query.Algebra
                 ZeroLengthPath zeroPath = new ZeroLengthPath(this.PathStart, this.PathEnd, this.Path);
                 BaseMultiset currResults = context.OutputMultiset;
                 context.OutputMultiset = new Multiset();
-                BaseMultiset results = zeroPath.Evaluate(context);
+                BaseMultiset results = context.Evaluate(zeroPath);//zeroPath.Evaluate(context);
                 context.OutputMultiset = currResults;
                 foreach (Set s in results.Sets)
                 {

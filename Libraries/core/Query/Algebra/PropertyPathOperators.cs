@@ -218,7 +218,7 @@ namespace VDS.RDF.Query.Algebra
                 VariablePattern y = new VariablePattern("?y");
                 Bgp bgp = new Bgp(new PropertyPathPattern(x, this.Path, y));
 
-                BaseMultiset results = bgp.Evaluate(context);
+                BaseMultiset results = context.Evaluate(bgp);//bgp.Evaluate(context);
                 context.InputMultiset = initialInput;
 
                 if (!results.IsEmpty)
@@ -297,7 +297,7 @@ namespace VDS.RDF.Query.Algebra
                 context.InputMultiset = currInput;
 
                 Bgp bgp = new Bgp(new PropertyPathPattern(x, this.Path, y));
-                BaseMultiset results = bgp.Evaluate(context);
+                BaseMultiset results = context.Evaluate(bgp);//bgp.Evaluate(context);
                 context.InputMultiset = initialInput;
 
                 if (!results.IsEmpty)

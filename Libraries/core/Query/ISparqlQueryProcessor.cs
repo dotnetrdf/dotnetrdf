@@ -164,6 +164,10 @@ namespace VDS.RDF.Query
         /// <param name="context">Evaluation Context</param>
         TResult ProcessMinus(IMinus minus, TContext context);
 
+        TResult ProcessNegatedPropertySet(NegatedPropertySet negPropSet, TContext context);
+
+        TResult ProcessOneOrMorePath(OneOrMorePath path, TContext context);
+
         /// <summary>
         /// Processes an Order By
         /// </summary>
@@ -219,5 +223,9 @@ namespace VDS.RDF.Query
         /// <param name="union">Union</param>
         /// <param name="context">Evaluation Context</param>
         TResult ProcessUnion(IUnion union, TContext context);
+
+        TResult ProcessZeroLengthPath(ZeroLengthPath path, TContext context);
+
+        TResult ProcessZeroOrMorePath(ZeroOrMorePath path, TContext context);
     }
 }

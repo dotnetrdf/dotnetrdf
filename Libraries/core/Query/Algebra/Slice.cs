@@ -110,7 +110,7 @@ namespace VDS.RDF.Query.Algebra
             }
             else
             {
-                context.InputMultiset = this._pattern.Evaluate(context);
+                context.InputMultiset = context.Evaluate(this._pattern);//this._pattern.Evaluate(context);
 
                 if (offset > 0)
                 {

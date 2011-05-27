@@ -857,7 +857,7 @@ namespace VDS.RDF.Query
                 {
                     context.StartExecution();
                     ISparqlAlgebra query = this.ToAlgebra();
-                    result = query.Evaluate(context);
+                    result = context.Evaluate(query);//query.Evaluate(context);
 
                     context.EndExecution();
                     this._executionTime = new TimeSpan(context.QueryTimeTicks);

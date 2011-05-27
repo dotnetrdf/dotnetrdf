@@ -673,14 +673,14 @@ namespace VDS.RDF.Query.Algebra
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
             BaseMultiset initialInput = context.InputMultiset;
-            BaseMultiset lhsResult = this._lhs.Evaluate(context);
+            BaseMultiset lhsResult = context.Evaluate(this._lhs);//this._lhs.Evaluate(context);
             context.CheckTimeout();
 
             if (lhsResult.Count >= this._requiredResults || this._requiredResults == -1)
             {
                 //Only evaluate the RHS if the LHS didn't yield sufficient results
                 context.InputMultiset = initialInput;
-                BaseMultiset rhsResult = this._rhs.Evaluate(context);
+                BaseMultiset rhsResult = context.Evaluate(this._rhs);//this._rhs.Evaluate(context);
                 context.CheckTimeout();
 
                 context.OutputMultiset = lhsResult.Union(rhsResult);

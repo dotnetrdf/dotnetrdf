@@ -185,7 +185,7 @@ namespace VDS.RDF.Query.Algebra
                         datasetOk = true;
 
                         //Evaluate for the current Active Graph
-                        result = this._pattern.Evaluate(context);
+                        result = context.Evaluate(this._pattern);//this._pattern.Evaluate(context);
 
                         //Merge the Results into our overall Results
                         if (result is NullMultiset || result is IdentityMultiset)

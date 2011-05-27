@@ -147,7 +147,7 @@ namespace VDS.RDF.Query.Expressions.Functions
 
             ISparqlAlgebra existsClause = this._pattern.ToAlgebra();
             BaseMultiset initialInput = context.InputMultiset;
-            this._result = existsClause.Evaluate(context);
+            this._result = context.Evaluate(existsClause);//existsClause.Evaluate(context);
             context.InputMultiset = initialInput;
         }
 

@@ -70,8 +70,7 @@ namespace VDS.RDF.Query.Algebra
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
             //Apply the Pattern first
-            this._pattern.Evaluate(context);
-            context.InputMultiset = context.OutputMultiset;
+            context.InputMultiset = context.Evaluate(this._pattern);//this._pattern.Evaluate(context);
 
             if (context.InputMultiset is NullMultiset)
             {

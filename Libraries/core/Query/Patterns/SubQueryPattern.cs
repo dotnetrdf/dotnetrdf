@@ -97,7 +97,7 @@ namespace VDS.RDF.Query.Patterns
             }
             else
             {
-                SparqlEvaluationContext subcontext = new SparqlEvaluationContext(this._subquery, context.Data);
+                SparqlEvaluationContext subcontext = new SparqlEvaluationContext(this._subquery, context.Data, context.Processor);
                 subcontext.InputMultiset = context.InputMultiset;
 
                 //Add any Named Graphs to the subquery
@@ -113,7 +113,7 @@ namespace VDS.RDF.Query.Patterns
                 try
                 {
                     //Evaluate the Subquery
-                    context.OutputMultiset = query.Evaluate(subcontext);
+                    context.OutputMultiset = subcontext.Evaluate(query);//query.Evaluate(subcontext);
 
                     //If the Subquery contains a GROUP BY it may return a Group Multiset in which case we must flatten this to a Multiset
                     if (context.OutputMultiset is GroupMultiset)

@@ -151,6 +151,17 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
+        /// Gets the custom query processor that is in use (if any)
+        /// </summary>
+        public ISparqlQueryAlgebraProcessor<BaseMultiset, SparqlEvaluationContext> Processor
+        {
+            get
+            {
+                return this._processor;
+            }
+        }
+
+        /// <summary>
         /// Gets/Sets the Input Multiset
         /// </summary>
         public BaseMultiset InputMultiset

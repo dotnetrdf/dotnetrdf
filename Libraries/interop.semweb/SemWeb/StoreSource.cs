@@ -745,7 +745,7 @@ namespace VDS.RDF.Interop.SemWeb
             ISparqlAlgebra algebra = this.ToAlgebra(graph);
 
             SparqlEvaluationContext context = new SparqlEvaluationContext(null, new InMemoryDataset(this._store));
-            BaseMultiset results = algebra.Evaluate(context);
+            BaseMultiset results = context.Evaluate(algebra);//algebra.Evaluate(context);
 
             sink.Init(results.Variables.Select(v => new Variable(v)).ToArray());
             if (results.Count > 0)

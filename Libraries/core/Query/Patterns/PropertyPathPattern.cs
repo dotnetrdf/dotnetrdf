@@ -134,7 +134,7 @@ namespace VDS.RDF.Query.Patterns
             BaseMultiset initialInput = context.InputMultiset;
             bool trimMode = context.TrimTemporaryVariables;
             context.TrimTemporaryVariables = false;
-            BaseMultiset result = algebra.Evaluate(context);
+            BaseMultiset result = context.Evaluate(algebra);//algebra.Evaluate(context);
             context.TrimTemporaryVariables = trimMode;
             //Also note that we don't trim temporary variables here even if we've set the setting back
             //to enabled since a Trim will be done at the end of whatever BGP we are being evaluated in
