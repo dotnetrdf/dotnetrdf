@@ -34,9 +34,14 @@ terms.
 */
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using VDS.RDF.Query.Algebra;
+using VDS.RDF.Query.Construct;
+using VDS.RDF.Query.Describe;
 using VDS.RDF.Query.Datasets;
+using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query
 {
@@ -99,7 +104,150 @@ namespace VDS.RDF.Query
             {
                 currLock.EnterReadLock();
 #endif
-                return query.Evaluate(this._dataset);
+                //return query.Evaluate(this._dataset);
+
+                //Reset Query Timers
+                query.QueryExecutionTime = null;
+                query.QueryTime = -1;
+                query.QueryTimeTicks = -1;
+
+                bool datasetOk = false, defGraphOk = false;
+
+                try
+                {
+                    //Set up the Default and Active Graphs
+                    IGraph defGraph;
+                    if (query.DefaultGraphs.Any())
+                    {
+                        //Default Graph is the Merge of all the Graphs specified by FROM clauses
+                        Graph g = new Graph();
+                        foreach (Uri u in query.DefaultGraphs)
+                        {
+                            if (this._dataset.HasGraph(u))
+                            {
+                                g.Merge(this._dataset[u], true);
+                            }
+                            else
+                            {
+                                throw new RdfQueryException("A Graph with URI '" + u.ToString() + "' does not exist in this Triple Store, this URI cannot be used in a FROM clause in SPARQL queries to this Triple Store");
+                            }
+                        }
+                        defGraph = g;
+                        this._dataset.SetDefaultGraph(defGraph);
+                    }
+                    else if (query.NamedGraphs.Any())
+                    {
+                        //No FROM Clauses but one/more FROM NAMED means the Default Graph is the empty graph
+                        defGraph = new Graph();
+                        this._dataset.SetDefaultGraph(defGraph);
+                    }
+                    else
+                    {
+                        defGraph = this._dataset.DefaultGraph;
+                        this._dataset.SetDefaultGraph(defGraph);
+                    }
+                    defGraphOk = true;
+                    this._dataset.SetActiveGraph(defGraph);
+                    datasetOk = true;
+
+                    //Convert to Algebra and execute the Query
+                    SparqlEvaluationContext context = this.GetContext(query);
+                    BaseMultiset result;
+                    try
+                    {
+                        context.StartExecution();
+                        ISparqlAlgebra algebra = query.ToAlgebra();
+                        result = context.Evaluate(algebra);//query.Evaluate(context);
+
+                        context.EndExecution();
+                        query.QueryExecutionTime = new TimeSpan(context.QueryTimeTicks);
+                        query.QueryTime = context.QueryTime;
+                        query.QueryTimeTicks = context.QueryTimeTicks;
+                    }
+                    catch (RdfQueryException)
+                    {
+                        context.EndExecution();
+                        query.QueryExecutionTime = new TimeSpan(context.QueryTimeTicks);
+                        query.QueryTime = context.QueryTime;
+                        query.QueryTimeTicks = context.QueryTimeTicks;
+                        throw;
+                    }
+                    catch
+                    {
+                        context.EndExecution();
+                        query.QueryExecutionTime = new TimeSpan(context.QueryTimeTicks);
+                        query.QueryTime = context.QueryTime;
+                        query.QueryTimeTicks = context.QueryTimeTicks;
+                        throw;
+                    }
+
+                    //Return the Results
+                    switch (query.QueryType)
+                    {
+                        case SparqlQueryType.Ask:
+                        case SparqlQueryType.Select:
+                        case SparqlQueryType.SelectAll:
+                        case SparqlQueryType.SelectAllDistinct:
+                        case SparqlQueryType.SelectAllReduced:
+                        case SparqlQueryType.SelectDistinct:
+                        case SparqlQueryType.SelectReduced:
+                            //For SELECT and ASK can populate a Result Set directly from the Evaluation Context
+                            return new SparqlResultSet(context);
+
+                        case SparqlQueryType.Construct:
+                            //Create a new Empty Graph for the Results
+                            Graph h = new Graph();
+                            h.NamespaceMap.Import(query.NamespaceMap);
+
+                            //Construct the Triples for each Solution
+                            foreach (Set s in context.OutputMultiset.Sets)
+                            {
+                                List<Triple> constructedTriples = new List<Triple>();
+                                try
+                                {
+                                    ConstructContext constructContext = new ConstructContext(h, s, false);
+                                    foreach (ITriplePattern p in query.ConstructTemplate.TriplePatterns)
+                                    {
+                                        try
+                                        {
+                                            if (p is IConstructTriplePattern)
+                                            {
+                                                constructedTriples.Add(((IConstructTriplePattern)p).Construct(constructContext));
+                                            }
+                                        }
+                                        catch (RdfQueryException)
+                                        {
+                                            //If we get an error here then we could not construct a specific triple
+                                            //so we continue anyway
+                                        }
+                                    }
+                                }
+                                catch (RdfQueryException)
+                                {
+                                    //If we get an error here this means we couldn't construct for this solution so the
+                                    //entire solution is discarded
+                                    continue;
+                                }
+                                h.Assert(constructedTriples);
+                            }
+
+                            return h;
+
+                        case SparqlQueryType.Describe:
+                        case SparqlQueryType.DescribeAll:
+                            //For DESCRIBE we retrieve the Describe algorithm and apply it
+                            ISparqlDescribe describer = query.Describer;
+                            return describer.Describe(context);
+
+                        default:
+                            throw new NotImplementedException("Unknown query types cannot be processed by Leviathan");
+                    }
+                }
+                finally
+                {
+                    if (defGraphOk) this._dataset.ResetDefaultGraph();
+                    if (datasetOk) this._dataset.ResetActiveGraph();
+                }
 #if !NO_RWLOCK
             }
             finally
