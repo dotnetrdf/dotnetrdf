@@ -133,17 +133,26 @@ namespace VDS.RDF.Query.Patterns
             //need to do this here
             BaseMultiset initialInput = context.InputMultiset;
             bool trimMode = context.TrimTemporaryVariables;
-            context.TrimTemporaryVariables = false;
-            BaseMultiset result = context.Evaluate(algebra);//algebra.Evaluate(context);
-            context.TrimTemporaryVariables = trimMode;
-            //Also note that we don't trim temporary variables here even if we've set the setting back
-            //to enabled since a Trim will be done at the end of whatever BGP we are being evaluated in
+            //bool rigMode = context.RigorousEvaluation;
+            try
+            {
+                //context.RigorousEvaluation = true;
+                context.TrimTemporaryVariables = false;
+                BaseMultiset result = context.Evaluate(algebra);//algebra.Evaluate(context);
+                //Also note that we don't trim temporary variables here even if we've set the setting back
+                //to enabled since a Trim will be done at the end of whatever BGP we are being evaluated in
 
-            //Once we have our results can join then into our input
-            context.OutputMultiset = initialInput.Join(result);
+                //Once we have our results can join then into our input
+                context.OutputMultiset = initialInput.Join(result);
 
-            //If we reach here we've successfully evaluated the simple pattern and can return
-            return;
+                //If we reach here we've successfully evaluated the simple pattern and can return
+                return;
+            }
+            finally
+            {
+                context.TrimTemporaryVariables = trimMode;
+                //context.RigorousEvaluation = rigMode;
+            }
         }
 
         /// <summary>

@@ -65,18 +65,25 @@ namespace VDS.RDF.Query.Patterns
         /// <returns></returns>
         protected internal override bool Accepts(SparqlEvaluationContext context, INode obj)
         {
-            if (context.InputMultiset.ContainsVariable(this._varname))
-            {
-                return context.InputMultiset.ContainsValue(this._varname, obj);
-            }
-            else if (this.Repeated)
-            {
-                return true;
-            }
-            else
-            {
-                return true;
-            }
+            //if (context.RigorousEvaluation)
+            //{
+                if (context.InputMultiset.ContainsVariable(this._varname))
+                {
+                    return context.InputMultiset.ContainsValue(this._varname, obj);
+                }
+                else if (this.Repeated)
+                {
+                    return true;
+                }
+                else
+                {
+                    return true;
+                }
+            //}
+            //else
+            //{
+            //    return true;
+            //}
         }
 
         /// <summary>

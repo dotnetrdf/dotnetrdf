@@ -92,6 +92,7 @@ namespace VDS.RDF
         private static bool _uriLoaderCaching = true;
         private static int _uriLoaderTimeout = 15000;
         private static bool _utf8Bom = true;
+        //private static bool _rigorousQuery = false;
 
         #if DEBUG
         //Debug Build Only
@@ -233,6 +234,26 @@ namespace VDS.RDF
                 _queryAllowUnknownFunctions = value;
             }
         }
+
+        ///// <summary>
+        ///// Controls whether rigorours query evaluation should be used
+        ///// </summary>
+        ///// <remarks>
+        ///// <para>
+        ///// Rigorous Query Evaluation essentially introduces more value checking into the Query Engine which has a certain performance penalty associated with it.  Most of the time this setting is not needed (it is disabled by default) but if you have data that generates a lot of hash code collisions you may get incorrect results in your queries due to the default operation of our indexes.
+        ///// </para>
+        ///// </remarks>
+        //public static bool RigorousQueryEvaluation
+        //{
+        //    get
+        //    {
+        //        return _rigorousQuery;
+        //    }
+        //    set
+        //    {
+        //        _rigorousQuery = value;
+        //    }
+        //}
 
         /// <summary>
         /// Gets/Sets the Hard Timeout limit for SPARQL Update Execution (in milliseconds)

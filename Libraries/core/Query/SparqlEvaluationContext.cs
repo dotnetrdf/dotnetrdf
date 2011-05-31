@@ -50,7 +50,7 @@ namespace VDS.RDF.Query
     {
         private ISparqlQueryAlgebraProcessor<BaseMultiset, SparqlEvaluationContext> _processor;
         private BaseMultiset _inputSet, _outputSet;
-        private bool _trimTemporaries = true;
+        private bool _trimTemporaries = true;//, _rigorous = Options.RigorousQueryEvaluation;
         private ISparqlDataset _data;
         private SparqlQuery _query;
         private SparqlResultBinder _binder;
@@ -220,6 +220,21 @@ namespace VDS.RDF.Query
                 this._trimTemporaries = value;
             }
         }
+
+        ///// <summary>
+        ///// Gets/Sets whether additional checks should be made during evaluation
+        ///// </summary>
+        //public bool RigorousEvaluation
+        //{
+        //    get
+        //    {
+        //        return this._rigorous;
+        //    }
+        //    set
+        //    {
+        //        this._rigorous = value;
+        //    }
+        //}
 
         /// <summary>
         /// Starts the Execution Timer
