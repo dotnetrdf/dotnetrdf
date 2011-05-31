@@ -1328,10 +1328,10 @@ namespace VDS.RDF.Parsing.Tokens
                     throw Error("Unexpected String '" + value + "' encountered while trying to parse a SPARQL Keyword.  This appears to be an attempt to use an ASK/CONSTRUCT/DESCRIBE as a sub-query which is not supported");
                 }
             }
-            else if (!colonoccurred && (this._lasttokentype == Token.ORDERBY || (/*this._orderByKeywordSeen && */this._lasttokentype == Token.RIGHTBRACKET)))
-            {
+            //else if (!colonoccurred && (this._lasttokentype == Token.ORDERBY || (/*this._orderByKeywordSeen && */this._lasttokentype == Token.RIGHTBRACKET)))
+            //{
                 //Should be an ASC/DESC Keyword
-                if (value.Equals(SparqlSpecsHelper.SparqlKeywordAsc, StringComparison.OrdinalIgnoreCase))
+                else if (value.Equals(SparqlSpecsHelper.SparqlKeywordAsc, StringComparison.OrdinalIgnoreCase))
                 {
                     this._lasttokentype = Token.ASC;
                     return new AscKeywordToken(this.CurrentLine, this.StartPosition);
@@ -1340,11 +1340,11 @@ namespace VDS.RDF.Parsing.Tokens
                 {
                     this._lasttokentype = Token.DESC;
                     return new DescKeywordToken(this.CurrentLine, this.StartPosition);
-                }
-                else
-                {
-                    throw Error("Unexpected String '" + value + "' encountered after an Order By which is not a valid QName/Keyword");
-                }
+                //}
+                //else
+                //{
+                //    throw Error("Unexpected String '" + value + "' encountered after an Order By which is not a valid QName/Keyword");
+                //}
             }
             else if (value.Equals("a"))
             {

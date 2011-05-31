@@ -387,7 +387,7 @@ namespace VDS.RDF.Query
             else
             {
                 //Unknown Algebra
-                return algebra.Evaluate(context);
+                return this.ProcessUnknownOperator(algebra, context);
             }
         }
 
@@ -621,6 +621,12 @@ namespace VDS.RDF.Query
         {
             if (context == null) context = this.GetContext();
             return union.Evaluate(context);
+        }
+
+        public virtual BaseMultiset ProcessUnknownOperator(ISparqlAlgebra algebra, SparqlEvaluationContext context)
+        {
+            if (context == null) context = this.GetContext();
+            return algebra.Evaluate(context);
         }
 
         public virtual BaseMultiset ProcessZeroLengthPath(ZeroLengthPath path, SparqlEvaluationContext context)

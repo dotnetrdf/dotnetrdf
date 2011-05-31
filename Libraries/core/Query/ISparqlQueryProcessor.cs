@@ -38,6 +38,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Query.Algebra;
+using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query
 {
@@ -224,8 +225,15 @@ namespace VDS.RDF.Query
         /// <param name="context">Evaluation Context</param>
         TResult ProcessUnion(IUnion union, TContext context);
 
+        TResult ProcessUnknownOperator(ISparqlAlgebra algebra, TContext context);
+
         TResult ProcessZeroLengthPath(ZeroLengthPath path, TContext context);
 
         TResult ProcessZeroOrMorePath(ZeroOrMorePath path, TContext context);
     }
+
+    //public interface ISparqlPatternProcessor<TResult, TContext> : ISparqlQueryAlgebraProcessor<TResult, TContext>
+    //{
+    //    void ProcessPattern(ITriplePattern
+    //}
 }
