@@ -355,10 +355,23 @@ namespace VDS.RDF.Query
             this._depthCounter.Value++;
 
             StringBuilder output = new StringBuilder();
-            if (this.HasFlag(ExplanationLevel.ShowThreadID)) output.Append("[Thread ID " + Thread.CurrentThread.ManagedThreadId + "]");
-            if (this.HasFlag(ExplanationLevel.ShowDepth)) output.Append(" Depth " + this._depthCounter.Value);
-            if (this.HasFlag(ExplanationLevel.ShowOperator)) output.Append(" " + algebra.GetType().FullName);
-            if (this.HasFlag(ExplanationLevel.ShowAction)) output.Append(" Start");
+            if (this.HasFlag(ExplanationLevel.ShowThreadID)) output.Append("[Thread ID " + Thread.CurrentThread.ManagedThreadId + "] ");
+            if (this.HasFlag(ExplanationLevel.ShowDepth)) output.Append("Depth " + this._depthCounter.Value + " ");
+            if (this.HasFlag(ExplanationLevel.ShowOperator)) output.Append(algebra.GetType().FullName + " ");
+            if (this.HasFlag(ExplanationLevel.ShowAction)) output.Append("Start");
+
+            this.PrintExplanations(output);
+        }
+
+        private void ExplainEvaluationAction(ISparqlAlgebra algebra, SparqlEvaluationContext context, String action)
+        {
+            if (this._level == ExplanationLevel.None) return;
+
+            StringBuilder output = new StringBuilder();
+            if (this.HasFlag(ExplanationLevel.ShowThreadID)) output.Append("[Thread ID " + Thread.CurrentThread.ManagedThreadId + "] ");
+            if (this.HasFlag(ExplanationLevel.ShowDepth)) output.Append("Depth " + this._depthCounter.Value + " ");
+            if (this.HasFlag(ExplanationLevel.ShowOperator)) output.Append(algebra.GetType().FullName + " ");
+            if (this.HasFlag(ExplanationLevel.ShowAction)) output.Append(action);
 
             this.PrintExplanations(output);
         }
@@ -370,10 +383,10 @@ namespace VDS.RDF.Query
             this._depthCounter.Value--;
 
             StringBuilder output = new StringBuilder();
-            output.Append("[Thread ID " + Thread.CurrentThread.ManagedThreadId + "]");
-            output.Append(" Depth " + this._depthCounter.Value);
-            output.Append(" " + algebra.GetType().FullName);
-            output.Append(" End");
+            if (this.HasFlag(ExplanationLevel.ShowThreadID)) output.Append("[Thread ID " + Thread.CurrentThread.ManagedThreadId + "] ");
+            if (this.HasFlag(ExplanationLevel.ShowDepth)) output.Append("Depth " + this._depthCounter.Value + " ");
+            if (this.HasFlag(ExplanationLevel.ShowOperator)) output.Append(algebra.GetType().FullName + " ");
+            if (this.HasFlag(ExplanationLevel.ShowAction)) output.Append("End");
 
             this.PrintExplanations(output);
         }
@@ -401,23 +414,26 @@ namespace VDS.RDF.Query
             {
                 DateTime start = this._startTimes.Value.Pop();
                 TimeSpan elapsed = DateTime.Now - start;
-                this.PrintExplanations("Took " + elapsed.ToString());
+                //this.PrintExplanations("Took " + elapsed.ToString());
+                this.ExplainEvaluationAction(algebra, context, "Took " + elapsed.ToString());
             }
             //Show Intermediate Result Count (if enabled)
             if (this.HasFlag(ExplanationLevel.ShowIntermediateResultCount))
             {
+                String result;
                 if (results is NullMultiset)
                 {
-                    this.PrintExplanations("Result is Null");
+                    result = "Result is Null";
                 }
                 else if (results is IdentityMultiset)
                 {
-                    this.PrintExplanations("Result is Identity");
+                    result = "Result is Identity";
                 }
                 else
                 {
-                    this.PrintExplanations(results.Count + " Results(s)");
+                    result = results.Count + " Results(s)";
                 }
+                this.ExplainEvaluationAction(algebra, context, result);
             }
 
             //Print the basic evaluation end information

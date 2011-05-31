@@ -52,7 +52,7 @@ namespace VDS.RDF.Utilities.Sparql
         private ISparqlResultsWriter _resultswriter = new SparqlHtmlWriter();
         private String _rdfext = ".ttl";
         private String _resultsext = ".html";
-        private bool _noDataWarning = true;
+        private bool _noDataWarning = true, _logExplain = false;
         private String _logfile;
 
         public fclsSparqlGui()
@@ -73,7 +73,7 @@ namespace VDS.RDF.Utilities.Sparql
             if (!Directory.Exists(temp)) Directory.CreateDirectory(temp);
             temp = Path.Combine(temp, @"SparqlGUI\");
             if (!Directory.Exists(temp)) Directory.CreateDirectory(temp);
-            this._logfile = Path.Combine(temp, "SparqlGui.log");
+            this._logfile = Path.Combine(temp, "SparqlGui-" + DateTime.Now.ToString("MMM-yyyy") + ".log");
         }
 
         private void fclsSparqlGui_Load(object sender, EventArgs e)
@@ -239,7 +239,34 @@ namespace VDS.RDF.Utilities.Sparql
                 }
 
                 this.LogStartQuery(query);
-                Object results = this._store.ExecuteQuery(query);
+
+                //Evaluate the Query
+                Object results;
+                if (this._logExplain)
+                {
+                    using (StreamWriter writer = new StreamWriter(this._logfile, true, Encoding.UTF8))
+                    {
+                        ExplainQueryProcessor explainer = new ExplainQueryProcessor(this._store, (ExplanationLevel.OutputToTrace | ExplanationLevel.ShowAll | ExplanationLevel.AnalyseAll ) ^ ExplanationLevel.ShowThreadID);
+                        TextWriterTraceListener listener = new TextWriterTraceListener(writer, "SparqlGUI");
+                        Trace.Listeners.Add(listener);
+                        try
+                        {
+                            results = explainer.ProcessQuery(query);
+                        }
+                        finally
+                        {
+                            Trace.Listeners.Remove(listener);
+                        }
+
+                        writer.Close();
+                    }
+                }
+                else
+                {
+                    results = this._store.ExecuteQuery(query);
+                }
+
+                //Process the Results
                 if (results is IGraph)
                 {
                     this.LogEndQuery(query, (IGraph)results);
@@ -606,11 +633,11 @@ namespace VDS.RDF.Utilities.Sparql
         {
             if (results.ResultsType == SparqlResultsType.Boolean)
             {
-                this.Log("QUERY END", "Query Finished in " + q.QueryTime + " producing a Boolean Result of " + results.Result);
+                this.Log("QUERY END", "Query Finished in " + q.QueryExecutionTime + " producing a Boolean Result of " + results.Result);
             }
             else
             {
-                this.Log("QUERY END", "Query Finished in " + q.QueryTime + " producing a Result Set containing " + results.Count + " Results");
+                this.Log("QUERY END", "Query Finished in " + q.QueryExecutionTime + " producing a Result Set containing " + results.Count + " Results");
             }
         }
 
@@ -652,6 +679,26 @@ namespace VDS.RDF.Utilities.Sparql
             else
             {
                 MessageBox.Show("Log File not found!");
+            }
+        }
+
+        private void chkLogExplanation_CheckedChanged(object sender, EventArgs e)
+        {
+            this._logExplain = this.chkLogExplanation.Checked;
+        }
+
+        private void btnClearLog_Click(object sender, EventArgs e)
+        {
+            if (File.Exists(this._logfile))
+            {
+                try
+                {
+                    File.Delete(this._logfile);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error clearing Log File - " + ex.Message, "Clear Log Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
     }

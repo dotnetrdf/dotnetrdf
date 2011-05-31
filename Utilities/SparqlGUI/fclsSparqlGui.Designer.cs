@@ -49,6 +49,7 @@
             this.txtQuery = new System.Windows.Forms.TextBox();
             this.ofdBrowse = new System.Windows.Forms.OpenFileDialog();
             this.grpQueryOptions = new System.Windows.Forms.GroupBox();
+            this.chkLogExplanation = new System.Windows.Forms.CheckBox();
             this.chkUseUtf8Bom = new System.Windows.Forms.CheckBox();
             this.chkViewResultsInApp = new System.Windows.Forms.CheckBox();
             this.chkAlgebraOptimisation = new System.Windows.Forms.CheckBox();
@@ -74,6 +75,7 @@
             this.ofdQuery = new System.Windows.Forms.OpenFileDialog();
             this.sfdQuery = new System.Windows.Forms.SaveFileDialog();
             this.ttpTips = new System.Windows.Forms.ToolTip(this.components);
+            this.btnClearLog = new System.Windows.Forms.Button();
             this.grpDataset.SuspendLayout();
             this.grpQuery.SuspendLayout();
             this.grpQueryOptions.SuspendLayout();
@@ -185,6 +187,7 @@
             // 
             // grpQuery
             // 
+            this.grpQuery.Controls.Add(this.btnClearLog);
             this.grpQuery.Controls.Add(this.btnViewLog);
             this.grpQuery.Controls.Add(this.btnSaveQuery);
             this.grpQuery.Controls.Add(this.btnLoad);
@@ -201,7 +204,7 @@
             // btnViewLog
             // 
             this.btnViewLog.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.btnViewLog.Location = new System.Drawing.Point(415, 315);
+            this.btnViewLog.Location = new System.Drawing.Point(375, 315);
             this.btnViewLog.Name = "btnViewLog";
             this.btnViewLog.Size = new System.Drawing.Size(75, 23);
             this.btnViewLog.TabIndex = 5;
@@ -212,7 +215,7 @@
             // btnSaveQuery
             // 
             this.btnSaveQuery.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.btnSaveQuery.Location = new System.Drawing.Point(173, 315);
+            this.btnSaveQuery.Location = new System.Drawing.Point(133, 315);
             this.btnSaveQuery.Name = "btnSaveQuery";
             this.btnSaveQuery.Size = new System.Drawing.Size(75, 23);
             this.btnSaveQuery.TabIndex = 4;
@@ -223,7 +226,7 @@
             // btnLoad
             // 
             this.btnLoad.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.btnLoad.Location = new System.Drawing.Point(92, 315);
+            this.btnLoad.Location = new System.Drawing.Point(52, 315);
             this.btnLoad.Name = "btnLoad";
             this.btnLoad.Size = new System.Drawing.Size(75, 23);
             this.btnLoad.TabIndex = 3;
@@ -234,7 +237,7 @@
             // btnInspect
             // 
             this.btnInspect.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.btnInspect.Location = new System.Drawing.Point(334, 315);
+            this.btnInspect.Location = new System.Drawing.Point(294, 315);
             this.btnInspect.Name = "btnInspect";
             this.btnInspect.Size = new System.Drawing.Size(75, 23);
             this.btnInspect.TabIndex = 2;
@@ -245,7 +248,7 @@
             // btnQuery
             // 
             this.btnQuery.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.btnQuery.Location = new System.Drawing.Point(254, 315);
+            this.btnQuery.Location = new System.Drawing.Point(214, 315);
             this.btnQuery.Name = "btnQuery";
             this.btnQuery.Size = new System.Drawing.Size(75, 23);
             this.btnQuery.TabIndex = 1;
@@ -269,6 +272,7 @@
             // 
             // grpQueryOptions
             // 
+            this.grpQueryOptions.Controls.Add(this.chkLogExplanation);
             this.grpQueryOptions.Controls.Add(this.chkUseUtf8Bom);
             this.grpQueryOptions.Controls.Add(this.chkViewResultsInApp);
             this.grpQueryOptions.Controls.Add(this.chkAlgebraOptimisation);
@@ -279,12 +283,25 @@
             this.grpQueryOptions.Controls.Add(this.lblMilliseconds);
             this.grpQueryOptions.Controls.Add(this.numTimeout);
             this.grpQueryOptions.Controls.Add(this.lblTimeout);
-            this.grpQueryOptions.Location = new System.Drawing.Point(600, 116);
+            this.grpQueryOptions.Location = new System.Drawing.Point(600, 110);
             this.grpQueryOptions.Name = "grpQueryOptions";
-            this.grpQueryOptions.Size = new System.Drawing.Size(189, 258);
+            this.grpQueryOptions.Size = new System.Drawing.Size(189, 264);
             this.grpQueryOptions.TabIndex = 3;
             this.grpQueryOptions.TabStop = false;
             this.grpQueryOptions.Text = "Query Options";
+            // 
+            // chkLogExplanation
+            // 
+            this.chkLogExplanation.AutoSize = true;
+            this.chkLogExplanation.Location = new System.Drawing.Point(6, 241);
+            this.chkLogExplanation.Name = "chkLogExplanation";
+            this.chkLogExplanation.Size = new System.Drawing.Size(138, 17);
+            this.chkLogExplanation.TabIndex = 11;
+            this.chkLogExplanation.Text = "Log Query Explanations";
+            this.ttpTips.SetToolTip(this.chkLogExplanation, "Enable this option if you wish to have detailed query explanations logged to the " +
+                    "log file");
+            this.chkLogExplanation.UseVisualStyleBackColor = true;
+            this.chkLogExplanation.CheckedChanged += new System.EventHandler(this.chkLogExplanation_CheckedChanged);
             // 
             // chkUseUtf8Bom
             // 
@@ -424,7 +441,7 @@
             this.grpQuerySyntax.Controls.Add(this.radSparqlExtended);
             this.grpQuerySyntax.Controls.Add(this.radSparql11);
             this.grpQuerySyntax.Controls.Add(this.radSparql10);
-            this.grpQuerySyntax.Location = new System.Drawing.Point(600, 18);
+            this.grpQuerySyntax.Location = new System.Drawing.Point(600, 12);
             this.grpQuerySyntax.Name = "grpQuerySyntax";
             this.grpQuerySyntax.Size = new System.Drawing.Size(189, 92);
             this.grpQuerySyntax.TabIndex = 2;
@@ -567,6 +584,17 @@
             this.sfdQuery.Filter = "SPARQL Query Files|*.rq|All Files|*.*";
             this.sfdQuery.Title = "Load SPARQL Query";
             // 
+            // btnClearLog
+            // 
+            this.btnClearLog.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.btnClearLog.Location = new System.Drawing.Point(455, 315);
+            this.btnClearLog.Name = "btnClearLog";
+            this.btnClearLog.Size = new System.Drawing.Size(75, 23);
+            this.btnClearLog.TabIndex = 6;
+            this.btnClearLog.Text = "Clear Log";
+            this.btnClearLog.UseVisualStyleBackColor = true;
+            this.btnClearLog.Click += new System.EventHandler(this.btnClearLog_Click);
+            // 
             // fclsSparqlGui
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -650,6 +678,8 @@
         private System.Windows.Forms.CheckBox chkViewResultsInApp;
         private System.Windows.Forms.CheckBox chkUseUtf8Bom;
         private System.Windows.Forms.Button btnViewLog;
+        private System.Windows.Forms.CheckBox chkLogExplanation;
+        private System.Windows.Forms.Button btnClearLog;
     }
 }
 
