@@ -54,6 +54,7 @@ namespace VDS.RDF.Storage
         {
             this._repositoriesPrefix = String.Empty;
             this._queryPath = "/sparql";
+            this._fullContextEncoding = false;
         }
 
         public DydraConnector(String accountID, String repositoryID, String apiKey)
@@ -62,6 +63,7 @@ namespace VDS.RDF.Storage
             this._apiKey = apiKey;
             this._username = this._apiKey;
             this._pwd = DydraApiKeyPassword;
+            this._hasCredentials = true;
         }
 
         public DydraConnector(String accountID, String repositoryID, String username, String password)
@@ -69,6 +71,7 @@ namespace VDS.RDF.Storage
         {
             this._username = username;
             this._pwd = password;
+            this._hasCredentials = true;
         }
 
         public override IEnumerable<Uri> ListGraphs()
@@ -107,6 +110,78 @@ namespace VDS.RDF.Storage
             catch (Exception ex)
             {
                 throw new RdfStorageException("An error occurred while attempting to retrieve the Graph List from the Store, see inner exception for details", ex);
+            }
+        }
+
+        /// <summary>
+        /// Helper method for creating HTTP Requests to the Store
+        /// </summary>
+        /// <param name="servicePath">Path to the Service requested</param>
+        /// <param name="accept">Acceptable Content Types</param>
+        /// <param name="method">HTTP Method</param>
+        /// <param name="queryParams">Querystring Parameters</param>
+        /// <returns></returns>
+        protected override HttpWebRequest CreateRequest(String servicePath, String accept, String method, Dictionary<String, String> queryParams)
+        {
+            //Build the Request Uri
+            String requestUri = this._baseUri + servicePath;//this.GetCredentialedUri() + servicePath;
+            if (this._apiKey != null)
+            {
+                requestUri += "?auth_token=" + Uri.EscapeDataString(this._apiKey);
+            }
+            if (queryParams.Count > 0)
+            {
+                if (requestUri.Contains("?"))
+                {
+                    if (!requestUri.EndsWith("&")) requestUri += "&";
+                }
+                else
+                {
+                    requestUri += "?";
+                }
+                foreach (String p in queryParams.Keys)
+                {
+                    requestUri += p + "=" + Uri.EscapeDataString(queryParams[p]) + "&";
+                }
+                requestUri = requestUri.Substring(0, requestUri.Length - 1);
+            }
+
+            //Create our Request
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(requestUri);
+            request.Accept = accept;
+            request.Method = method;
+
+            ////Add Credentials if needed
+            //if (this._hasCredentials)
+            //{
+            //    NetworkCredential credentials = new NetworkCredential(this._username, this._pwd);
+            //    request.Credentials = credentials;
+            //}
+
+            return request;
+        }
+
+        protected override string EscapeQuery(string query)
+        {
+            return query;
+        }
+
+        private String GetCredentialedUri()
+        {
+            if (this._hasCredentials)
+            {
+                if (this._apiKey != null)
+                {
+                    return this._baseUri.Substring(0, 7) + Uri.EscapeUriString(this._apiKey) + "@" + this._baseUri.Substring(7);
+                }
+                else
+                {
+                    return this._baseUri.Substring(0, 7) + Uri.EscapeUriString(this._username) + ":" + Uri.EscapeUriString(this._pwd) + "@" + this._baseUri.Substring(7);
+                }
+            }
+            else
+            {
+                return this._baseUri;
             }
         }
     }

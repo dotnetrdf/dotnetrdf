@@ -83,6 +83,7 @@ namespace VDS.RDF.Storage
 
         protected String _repositoriesPrefix = "repositories/";
         protected String _queryPath = String.Empty;
+        protected bool _fullContextEncoding = true;
 
         private StringBuilder _output = new StringBuilder();
         private NTriplesFormatter _formatter = new NTriplesFormatter();
@@ -294,7 +295,14 @@ namespace VDS.RDF.Storage
                 String requestUri = this._repositoriesPrefix + this._store + "/statements";
                 if (!graphUri.Equals(String.Empty))
                 {
-                    serviceParams.Add("context", "<" + graphUri + ">");
+                    //if (this._fullContextEncoding)
+                    //{
+                        serviceParams.Add("context", "<" + graphUri + ">");
+                    //}
+                    //else
+                    //{
+                    //    serviceParams.Add("context", graphUri);
+                    //}
                     if (g.IsEmpty) g.BaseUri = new Uri(graphUri);
                 }
 
@@ -348,7 +356,14 @@ namespace VDS.RDF.Storage
 
                 if (g.BaseUri != null)
                 {
-                    serviceParams.Add("context", "<" + g.BaseUri.ToString() + ">");
+                    if (this._fullContextEncoding)
+                    {
+                        serviceParams.Add("context", "<" + g.BaseUri.ToString() + ">");
+                    }
+                    else
+                    {
+                        serviceParams.Add("context", g.BaseUri.ToString());
+                    }
                     request = this.CreateRequest(this._repositoriesPrefix + this._store + "/statements", "*/*", "PUT", serviceParams);
                 }
                 else

@@ -164,6 +164,7 @@
     <Compile Include="Sparql\WeightedOptimiserTests.cs" />
     <Compile Include="Storage\AllegroGraphTests.cs" />
     <Compile Include="Configuration\ConfigurationApiTests.cs" />
+    <Compile Include="Storage\DydraTests.cs" />
     <Compile Include="Storage\FourStoreTest.cs" />
     <Compile Include="Storage\FusekiTest.cs" />
     <Compile Include="Storage\SesameTests.cs" />
@@ -298,6 +299,9 @@
     </Content>
     <Content Include="resources\childgraphpattern2.rq">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\dydra-api-key.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="resources\multiple-options.trig">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
