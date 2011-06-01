@@ -86,7 +86,14 @@ namespace VDS.RDF.Utilities.Convert
                     {
                         ext = "." + graphDef.CanonicalFileExtension;
                     }
-                    outFile = input.GetFilename(this._outputFilename, ext);
+                    if (this._inputs.Count == 1 && !this._outputFilename.Equals(String.Empty))
+                    {
+                        outFile = this._outputFilename;
+                    }
+                    else
+                    {
+                        outFile = input.GetFilename(this._outputFilename, ext);
+                    }
 
                     //Check it doesn't already exist or overwrite is enabled
                     if (File.Exists(outFile) && !this._overwrite)
@@ -296,7 +303,7 @@ namespace VDS.RDF.Utilities.Convert
                 {
                     this._outputFilename = arg.Substring(arg.IndexOf(':') + 1);
                 }
-                else if (arg.StartsWith("-format:"))
+                else if (arg.StartsWith("-format:") || arg.StartsWith("-outformat:"))
                 {
                     String format = arg.Substring(arg.IndexOf(':') + 1);
                     if (!format.Contains("/"))
@@ -325,7 +332,7 @@ namespace VDS.RDF.Utilities.Convert
                         this._outFormats.Add(format);
                     }
                 }
-                else if (arg.StartsWith("-outext:"))
+                else if (arg.StartsWith("-outext:") || arg.StartsWith("-ext:"))
                 {
                     this._outExt = arg.Substring(arg.IndexOf(':') + 1);
                     if (!this._outExt.StartsWith(".")) this._outExt = "." + this._outExt;
@@ -390,8 +397,16 @@ namespace VDS.RDF.Utilities.Convert
             //If there are no writers specified then we'll abort
             if (this._outFormats.Count == 0)
             {
-                Console.Error.WriteLine("rdfConvert: Abort: Aborting since no output options have been specified, use the -out:filename or -outformat: arguments to specify output format");
-                return false;
+                if (this._inputs.Count == 1 && !this._outputFilename.Equals(String.Empty))
+                {
+                    //If only 1 input and an output filename can detect the output format from that filename
+                    this._outFormats.AddRange(MimeTypesHelper.GetMimeTypes(Path.GetExtension(this._outputFilename)));
+                }
+                else
+                {
+                    Console.Error.WriteLine("rdfConvert: Abort: Aborting since no output options have been specified, use either the -format:[mime/type|ext] argument to specify output format for multiple inputs of use -out:filename.ext to specify the output for a single input");
+                    return false;
+                }
             }
 
             //Ensure Output Extension (if specified) is OK

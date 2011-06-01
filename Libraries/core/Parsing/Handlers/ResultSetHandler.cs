@@ -98,4 +98,22 @@ namespace VDS.RDF.Parsing.Handlers
             return true;
         }
     }
+
+    /// <summary>
+    /// A SPARQL Results Handler which allows you to load multiple Result Sets into a single <see cref="SparqlResultSet">SparqlResultSet</see> which the standard <see cref="ResultSetHandler">ResultSetHandler</see> does not permit
+    /// </summary>
+    public class MergingResultSetHandler : ResultSetHandler
+    {
+        /// <summary>
+        /// Creates a new Merging Result Set Handler
+        /// </summary>
+        /// <param name="results">Result Set</param>
+        public MergingResultSetHandler(SparqlResultSet results)
+            : base(results) { }
+
+        protected override void StartResultsInternal()
+        {
+            //Don't do an empty check
+        }
+    }
 }

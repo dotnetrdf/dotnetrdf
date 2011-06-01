@@ -81,6 +81,9 @@ namespace VDS.RDF.Storage
         /// </summary>
         protected bool _hasCredentials = false;
 
+        protected String _repositoriesPrefix = "repositories/";
+        protected String _queryPath = String.Empty;
+
         private StringBuilder _output = new StringBuilder();
         private NTriplesFormatter _formatter = new NTriplesFormatter();
 
@@ -139,11 +142,11 @@ namespace VDS.RDF.Storage
                 {
                     queryParams.Add("query", EscapeQuery(sparqlQuery));
 
-                    request = this.CreateRequest("repositories/" + this._store, MimeTypesHelper.HttpRdfOrSparqlAcceptHeader, "GET", queryParams);
+                    request = this.CreateRequest(this._repositoriesPrefix + this._store + this._queryPath, MimeTypesHelper.HttpRdfOrSparqlAcceptHeader, "GET", queryParams);
                 }
                 else
                 {
-                    request = this.CreateRequest("repositories/" + this._store, MimeTypesHelper.HttpRdfOrSparqlAcceptHeader, "POST", queryParams);
+                    request = this.CreateRequest(this._repositoriesPrefix + this._store + this._queryPath, MimeTypesHelper.HttpRdfOrSparqlAcceptHeader, "POST", queryParams);
 
                     //Build the Post Data and add to the Request Body
                     request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
@@ -288,7 +291,7 @@ namespace VDS.RDF.Storage
                 HttpWebRequest request;
                 Dictionary<String, String> serviceParams = new Dictionary<string, string>();
 
-                String requestUri = "repositories/" + this._store + "/statements";
+                String requestUri = this._repositoriesPrefix + this._store + "/statements";
                 if (!graphUri.Equals(String.Empty))
                 {
                     serviceParams.Add("context", "<" + graphUri + ">");
@@ -346,11 +349,11 @@ namespace VDS.RDF.Storage
                 if (g.BaseUri != null)
                 {
                     serviceParams.Add("context", "<" + g.BaseUri.ToString() + ">");
-                    request = this.CreateRequest("repositories/" + this._store + "/statements", "*/*", "PUT", serviceParams);
+                    request = this.CreateRequest(this._repositoriesPrefix + this._store + "/statements", "*/*", "PUT", serviceParams);
                 }
                 else
                 {
-                    request = this.CreateRequest("repositories/" + this._store + "/statements", "*/*", "POST", serviceParams);
+                    request = this.CreateRequest(this._repositoriesPrefix + this._store + "/statements", "*/*", "POST", serviceParams);
                 }
 
                 request.ContentType = MimeTypesHelper.NTriples[0];
@@ -437,7 +440,7 @@ namespace VDS.RDF.Storage
                             serviceParams["subj"] = this._formatter.Format(t.Subject);
                             serviceParams["pred"] = this._formatter.Format(t.Predicate);
                             serviceParams["obj"] = this._formatter.Format(t.Object);
-                            request = this.CreateRequest("repositories/" + this._store + "/statements", "*/*", "DELETE", serviceParams);
+                            request = this.CreateRequest(this._repositoriesPrefix + this._store + "/statements", "*/*", "DELETE", serviceParams);
 
 #if DEBUG
                             if (Options.HttpDebugging)
@@ -469,7 +472,7 @@ namespace VDS.RDF.Storage
                     if (additions.Any())
                     {
                         //Add the new Triples
-                        request = this.CreateRequest("repositories/" + this._store + "/statements", "*/*", "POST", serviceParams);
+                        request = this.CreateRequest(this._repositoriesPrefix + this._store + "/statements", "*/*", "POST", serviceParams);
                         Graph h = new Graph();
                         h.Assert(additions);
                         request.ContentType = MimeTypesHelper.NTriples[0];
@@ -550,7 +553,7 @@ namespace VDS.RDF.Storage
                     serviceParams.Add("context", "null");
                 }
 
-                request = this.CreateRequest("repositories/" + this._store + "/statements", "*/*", "DELETE", serviceParams);
+                request = this.CreateRequest(this._repositoriesPrefix + this._store + "/statements", "*/*", "DELETE", serviceParams);
 #if DEBUG
                 if (Options.HttpDebugging)
                 {

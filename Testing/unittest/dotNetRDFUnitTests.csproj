@@ -160,6 +160,7 @@
     <Compile Include="Sparql\QueryTimeouts.cs" />
     <Compile Include="Sparql\RemoteEndpoints.cs" />
     <Compile Include="Sparql\ServiceTests.cs" />
+    <Compile Include="Sparql\StrictOptimiserTest.cs" />
     <Compile Include="Sparql\WeightedOptimiserTests.cs" />
     <Compile Include="Storage\AllegroGraphTests.cs" />
     <Compile Include="Configuration\ConfigurationApiTests.cs" />

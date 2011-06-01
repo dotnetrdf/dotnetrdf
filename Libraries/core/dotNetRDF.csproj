@@ -277,6 +277,7 @@
     <Compile Include="Parsing\Handlers\BaseHandler.cs" />
     <Compile Include="Parsing\Handlers\CancellableHandler.cs" />
     <Compile Include="Parsing\Handlers\HandlerExtensions.cs" />
+    <Compile Include="Parsing\Handlers\MultisetHandler.cs" />
     <Compile Include="Parsing\Handlers\ResultCountHandler.cs" />
     <Compile Include="Parsing\Handlers\ResultSetHandler.cs" />
     <Compile Include="Parsing\Handlers\StoreCountHandler.cs" />
@@ -325,6 +326,7 @@
     <Compile Include="Query\Algebra\BaseMultiset.cs" />
     <Compile Include="Query\Algebra\Bgp.cs" />
     <Compile Include="Query\Algebra\Bindings.cs" />
+    <Compile Include="Query\Algebra\Extend.cs" />
     <Compile Include="Query\Algebra\LazyBgp.cs" />
     <Compile Include="Query\Algebra\Distinct.cs" />
     <Compile Include="Query\Algebra\Filter.cs" />
@@ -425,6 +427,7 @@
     <Compile Include="Query\Optimisation\IQueryOptimiser.cs" />
     <Compile Include="Query\Optimisation\QueryOptimisers.cs" />
     <Compile Include="Query\Optimisation\SparqlOptimiser.cs" />
+    <Compile Include="Query\Optimisation\StrictAlgebraOptimiser.cs" />
     <Compile Include="Query\Optimisation\WeightedOptimiser.cs" />
     <Compile Include="Query\Ordering\TripleComparer.cs" />
     <Compile Include="Query\Paths\NegatedSet.cs" />
@@ -479,6 +482,7 @@
     <Compile Include="Query\SparqlParameterizedString.cs" />
     <Compile Include="Query\SparqlPathParser.cs" />
     <Compile Include="Query\SparqlView.cs" />
+    <Compile Include="Storage\DydraConnector.cs" />
     <Compile Include="Storage\StardogConnector.cs" />
     <Compile Include="Storage\DatasetFileManager.cs" />
     <Compile Include="Storage\FusekiConnector.cs" />
