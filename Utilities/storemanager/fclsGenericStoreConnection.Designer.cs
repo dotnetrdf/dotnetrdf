@@ -93,14 +93,6 @@
             this.txtSparqlHttpServer = new System.Windows.Forms.TextBox();
             this.lblSparqlHttpServer = new System.Windows.Forms.Label();
             this.lblSparqlHttpIntro = new System.Windows.Forms.Label();
-            this.tabTalis = new System.Windows.Forms.TabPage();
-            this.btnConnectTalis = new System.Windows.Forms.Button();
-            this.txtTalisPassword = new System.Windows.Forms.TextBox();
-            this.lblTalisPassword = new System.Windows.Forms.Label();
-            this.txtTalisUsername = new System.Windows.Forms.TextBox();
-            this.lblTalisUsername = new System.Windows.Forms.Label();
-            this.txtTalisStoreID = new System.Windows.Forms.TextBox();
-            this.lblTalisStoreID = new System.Windows.Forms.Label();
             this.tabStardog = new System.Windows.Forms.TabPage();
             this.txtStardogPassword = new System.Windows.Forms.TextBox();
             this.lblStardogPassword = new System.Windows.Forms.Label();
@@ -111,6 +103,14 @@
             this.btnConnectStardog = new System.Windows.Forms.Button();
             this.txtStardogServer = new System.Windows.Forms.TextBox();
             this.lblStardogServer = new System.Windows.Forms.Label();
+            this.tabTalis = new System.Windows.Forms.TabPage();
+            this.btnConnectTalis = new System.Windows.Forms.Button();
+            this.txtTalisPassword = new System.Windows.Forms.TextBox();
+            this.lblTalisPassword = new System.Windows.Forms.Label();
+            this.txtTalisUsername = new System.Windows.Forms.TextBox();
+            this.lblTalisUsername = new System.Windows.Forms.Label();
+            this.txtTalisStoreID = new System.Windows.Forms.TextBox();
+            this.lblTalisStoreID = new System.Windows.Forms.Label();
             this.tabVirtuoso = new System.Windows.Forms.TabPage();
             this.btnConnectVirtuoso = new System.Windows.Forms.Button();
             this.txtVirtuosoPort = new System.Windows.Forms.TextBox();
@@ -126,6 +126,14 @@
             this.btnCancel = new System.Windows.Forms.Button();
             this.ofdDatasetFile = new System.Windows.Forms.OpenFileDialog();
             this.chkReadOnly = new System.Windows.Forms.CheckBox();
+            this.tabDydra = new System.Windows.Forms.TabPage();
+            this.lblDydraAccount = new System.Windows.Forms.Label();
+            this.txtDydraAccount = new System.Windows.Forms.TextBox();
+            this.txtDydraRepository = new System.Windows.Forms.TextBox();
+            this.lblDydraRepository = new System.Windows.Forms.Label();
+            this.txtDydraApiKey = new System.Windows.Forms.TextBox();
+            this.lblDydraApiKey = new System.Windows.Forms.Label();
+            this.btnDydraConnect = new System.Windows.Forms.Button();
             this.tabStores.SuspendLayout();
             this.tabAllegroGraph.SuspendLayout();
             this.tabFourStore.SuspendLayout();
@@ -136,14 +144,16 @@
             this.tabSesame.SuspendLayout();
             this.tabSparqlEndpoint.SuspendLayout();
             this.tabSparqlHttpProtocol.SuspendLayout();
-            this.tabTalis.SuspendLayout();
             this.tabStardog.SuspendLayout();
+            this.tabTalis.SuspendLayout();
             this.tabVirtuoso.SuspendLayout();
+            this.tabDydra.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabStores
             // 
             this.tabStores.Controls.Add(this.tabAllegroGraph);
+            this.tabStores.Controls.Add(this.tabDydra);
             this.tabStores.Controls.Add(this.tabFourStore);
             this.tabStores.Controls.Add(this.tabFuseki);
             this.tabStores.Controls.Add(this.tabInMemory);
@@ -382,10 +392,10 @@
             // 
             this.tabInMemory.Controls.Add(this.btnConnectInMemory);
             this.tabInMemory.Controls.Add(this.lblInMemoryIntro);
-            this.tabInMemory.Location = new System.Drawing.Point(4, 40);
+            this.tabInMemory.Location = new System.Drawing.Point(4, 22);
             this.tabInMemory.Name = "tabInMemory";
             this.tabInMemory.Padding = new System.Windows.Forms.Padding(3);
-            this.tabInMemory.Size = new System.Drawing.Size(475, 156);
+            this.tabInMemory.Size = new System.Drawing.Size(475, 174);
             this.tabInMemory.TabIndex = 10;
             this.tabInMemory.Text = "In-Memory";
             this.tabInMemory.UseVisualStyleBackColor = true;
@@ -790,82 +800,6 @@
             this.lblSparqlHttpIntro.Text = "Connect to a Server which supports the SPARQL Graph Store HTTP Protocol for Graph" +
                 " Management";
             // 
-            // tabTalis
-            // 
-            this.tabTalis.Controls.Add(this.btnConnectTalis);
-            this.tabTalis.Controls.Add(this.txtTalisPassword);
-            this.tabTalis.Controls.Add(this.lblTalisPassword);
-            this.tabTalis.Controls.Add(this.txtTalisUsername);
-            this.tabTalis.Controls.Add(this.lblTalisUsername);
-            this.tabTalis.Controls.Add(this.txtTalisStoreID);
-            this.tabTalis.Controls.Add(this.lblTalisStoreID);
-            this.tabTalis.Location = new System.Drawing.Point(4, 40);
-            this.tabTalis.Name = "tabTalis";
-            this.tabTalis.Size = new System.Drawing.Size(475, 156);
-            this.tabTalis.TabIndex = 4;
-            this.tabTalis.Text = "Talis";
-            this.tabTalis.UseVisualStyleBackColor = true;
-            // 
-            // btnConnectTalis
-            // 
-            this.btnConnectTalis.Location = new System.Drawing.Point(368, 128);
-            this.btnConnectTalis.Name = "btnConnectTalis";
-            this.btnConnectTalis.Size = new System.Drawing.Size(104, 23);
-            this.btnConnectTalis.TabIndex = 6;
-            this.btnConnectTalis.Text = "Connect to Talis";
-            this.btnConnectTalis.UseVisualStyleBackColor = true;
-            this.btnConnectTalis.Click += new System.EventHandler(this.btnConnectTalis_Click);
-            // 
-            // txtTalisPassword
-            // 
-            this.txtTalisPassword.Location = new System.Drawing.Point(68, 65);
-            this.txtTalisPassword.Name = "txtTalisPassword";
-            this.txtTalisPassword.PasswordChar = '*';
-            this.txtTalisPassword.Size = new System.Drawing.Size(100, 20);
-            this.txtTalisPassword.TabIndex = 5;
-            // 
-            // lblTalisPassword
-            // 
-            this.lblTalisPassword.AutoSize = true;
-            this.lblTalisPassword.Location = new System.Drawing.Point(6, 68);
-            this.lblTalisPassword.Name = "lblTalisPassword";
-            this.lblTalisPassword.Size = new System.Drawing.Size(56, 13);
-            this.lblTalisPassword.TabIndex = 4;
-            this.lblTalisPassword.Text = "Password:";
-            // 
-            // txtTalisUsername
-            // 
-            this.txtTalisUsername.Location = new System.Drawing.Point(68, 37);
-            this.txtTalisUsername.Name = "txtTalisUsername";
-            this.txtTalisUsername.Size = new System.Drawing.Size(100, 20);
-            this.txtTalisUsername.TabIndex = 3;
-            // 
-            // lblTalisUsername
-            // 
-            this.lblTalisUsername.AutoSize = true;
-            this.lblTalisUsername.Location = new System.Drawing.Point(6, 40);
-            this.lblTalisUsername.Name = "lblTalisUsername";
-            this.lblTalisUsername.Size = new System.Drawing.Size(58, 13);
-            this.lblTalisUsername.TabIndex = 2;
-            this.lblTalisUsername.Text = "Username:";
-            // 
-            // txtTalisStoreID
-            // 
-            this.txtTalisStoreID.Location = new System.Drawing.Point(68, 10);
-            this.txtTalisStoreID.Name = "txtTalisStoreID";
-            this.txtTalisStoreID.Size = new System.Drawing.Size(100, 20);
-            this.txtTalisStoreID.TabIndex = 1;
-            this.txtTalisStoreID.Text = "store";
-            // 
-            // lblTalisStoreID
-            // 
-            this.lblTalisStoreID.AutoSize = true;
-            this.lblTalisStoreID.Location = new System.Drawing.Point(6, 13);
-            this.lblTalisStoreID.Name = "lblTalisStoreID";
-            this.lblTalisStoreID.Size = new System.Drawing.Size(49, 13);
-            this.lblTalisStoreID.TabIndex = 0;
-            this.lblTalisStoreID.Text = "Store ID:";
-            // 
             // tabStardog
             // 
             this.tabStardog.Controls.Add(this.txtStardogPassword);
@@ -960,6 +894,82 @@
             this.lblStardogServer.Size = new System.Drawing.Size(103, 13);
             this.lblStardogServer.TabIndex = 11;
             this.lblStardogServer.Text = "Stardog Server URI:";
+            // 
+            // tabTalis
+            // 
+            this.tabTalis.Controls.Add(this.btnConnectTalis);
+            this.tabTalis.Controls.Add(this.txtTalisPassword);
+            this.tabTalis.Controls.Add(this.lblTalisPassword);
+            this.tabTalis.Controls.Add(this.txtTalisUsername);
+            this.tabTalis.Controls.Add(this.lblTalisUsername);
+            this.tabTalis.Controls.Add(this.txtTalisStoreID);
+            this.tabTalis.Controls.Add(this.lblTalisStoreID);
+            this.tabTalis.Location = new System.Drawing.Point(4, 40);
+            this.tabTalis.Name = "tabTalis";
+            this.tabTalis.Size = new System.Drawing.Size(475, 156);
+            this.tabTalis.TabIndex = 4;
+            this.tabTalis.Text = "Talis";
+            this.tabTalis.UseVisualStyleBackColor = true;
+            // 
+            // btnConnectTalis
+            // 
+            this.btnConnectTalis.Location = new System.Drawing.Point(368, 128);
+            this.btnConnectTalis.Name = "btnConnectTalis";
+            this.btnConnectTalis.Size = new System.Drawing.Size(104, 23);
+            this.btnConnectTalis.TabIndex = 6;
+            this.btnConnectTalis.Text = "Connect to Talis";
+            this.btnConnectTalis.UseVisualStyleBackColor = true;
+            this.btnConnectTalis.Click += new System.EventHandler(this.btnConnectTalis_Click);
+            // 
+            // txtTalisPassword
+            // 
+            this.txtTalisPassword.Location = new System.Drawing.Point(68, 65);
+            this.txtTalisPassword.Name = "txtTalisPassword";
+            this.txtTalisPassword.PasswordChar = '*';
+            this.txtTalisPassword.Size = new System.Drawing.Size(100, 20);
+            this.txtTalisPassword.TabIndex = 5;
+            // 
+            // lblTalisPassword
+            // 
+            this.lblTalisPassword.AutoSize = true;
+            this.lblTalisPassword.Location = new System.Drawing.Point(6, 68);
+            this.lblTalisPassword.Name = "lblTalisPassword";
+            this.lblTalisPassword.Size = new System.Drawing.Size(56, 13);
+            this.lblTalisPassword.TabIndex = 4;
+            this.lblTalisPassword.Text = "Password:";
+            // 
+            // txtTalisUsername
+            // 
+            this.txtTalisUsername.Location = new System.Drawing.Point(68, 37);
+            this.txtTalisUsername.Name = "txtTalisUsername";
+            this.txtTalisUsername.Size = new System.Drawing.Size(100, 20);
+            this.txtTalisUsername.TabIndex = 3;
+            // 
+            // lblTalisUsername
+            // 
+            this.lblTalisUsername.AutoSize = true;
+            this.lblTalisUsername.Location = new System.Drawing.Point(6, 40);
+            this.lblTalisUsername.Name = "lblTalisUsername";
+            this.lblTalisUsername.Size = new System.Drawing.Size(58, 13);
+            this.lblTalisUsername.TabIndex = 2;
+            this.lblTalisUsername.Text = "Username:";
+            // 
+            // txtTalisStoreID
+            // 
+            this.txtTalisStoreID.Location = new System.Drawing.Point(68, 10);
+            this.txtTalisStoreID.Name = "txtTalisStoreID";
+            this.txtTalisStoreID.Size = new System.Drawing.Size(100, 20);
+            this.txtTalisStoreID.TabIndex = 1;
+            this.txtTalisStoreID.Text = "store";
+            // 
+            // lblTalisStoreID
+            // 
+            this.lblTalisStoreID.AutoSize = true;
+            this.lblTalisStoreID.Location = new System.Drawing.Point(6, 13);
+            this.lblTalisStoreID.Name = "lblTalisStoreID";
+            this.lblTalisStoreID.Size = new System.Drawing.Size(49, 13);
+            this.lblTalisStoreID.TabIndex = 0;
+            this.lblTalisStoreID.Text = "Store ID:";
             // 
             // tabVirtuoso
             // 
@@ -1101,6 +1111,81 @@
             this.chkReadOnly.Text = "Force connection to be Read Only";
             this.chkReadOnly.UseVisualStyleBackColor = true;
             // 
+            // tabDydra
+            // 
+            this.tabDydra.Controls.Add(this.btnDydraConnect);
+            this.tabDydra.Controls.Add(this.txtDydraApiKey);
+            this.tabDydra.Controls.Add(this.lblDydraApiKey);
+            this.tabDydra.Controls.Add(this.txtDydraRepository);
+            this.tabDydra.Controls.Add(this.lblDydraRepository);
+            this.tabDydra.Controls.Add(this.txtDydraAccount);
+            this.tabDydra.Controls.Add(this.lblDydraAccount);
+            this.tabDydra.Location = new System.Drawing.Point(4, 40);
+            this.tabDydra.Name = "tabDydra";
+            this.tabDydra.Padding = new System.Windows.Forms.Padding(3);
+            this.tabDydra.Size = new System.Drawing.Size(475, 156);
+            this.tabDydra.TabIndex = 12;
+            this.tabDydra.Text = "Dydra";
+            this.tabDydra.UseVisualStyleBackColor = true;
+            // 
+            // lblDydraAccount
+            // 
+            this.lblDydraAccount.AutoSize = true;
+            this.lblDydraAccount.Location = new System.Drawing.Point(4, 10);
+            this.lblDydraAccount.Name = "lblDydraAccount";
+            this.lblDydraAccount.Size = new System.Drawing.Size(81, 13);
+            this.lblDydraAccount.TabIndex = 0;
+            this.lblDydraAccount.Text = "Account Name:";
+            // 
+            // txtDydraAccount
+            // 
+            this.txtDydraAccount.Location = new System.Drawing.Point(91, 7);
+            this.txtDydraAccount.Name = "txtDydraAccount";
+            this.txtDydraAccount.Size = new System.Drawing.Size(171, 20);
+            this.txtDydraAccount.TabIndex = 1;
+            // 
+            // txtDydraRepository
+            // 
+            this.txtDydraRepository.Location = new System.Drawing.Point(91, 33);
+            this.txtDydraRepository.Name = "txtDydraRepository";
+            this.txtDydraRepository.Size = new System.Drawing.Size(171, 20);
+            this.txtDydraRepository.TabIndex = 3;
+            // 
+            // lblDydraRepository
+            // 
+            this.lblDydraRepository.AutoSize = true;
+            this.lblDydraRepository.Location = new System.Drawing.Point(4, 36);
+            this.lblDydraRepository.Name = "lblDydraRepository";
+            this.lblDydraRepository.Size = new System.Drawing.Size(60, 13);
+            this.lblDydraRepository.TabIndex = 2;
+            this.lblDydraRepository.Text = "Repository:";
+            // 
+            // txtDydraApiKey
+            // 
+            this.txtDydraApiKey.Location = new System.Drawing.Point(91, 59);
+            this.txtDydraApiKey.Name = "txtDydraApiKey";
+            this.txtDydraApiKey.Size = new System.Drawing.Size(171, 20);
+            this.txtDydraApiKey.TabIndex = 5;
+            // 
+            // lblDydraApiKey
+            // 
+            this.lblDydraApiKey.AutoSize = true;
+            this.lblDydraApiKey.Location = new System.Drawing.Point(4, 62);
+            this.lblDydraApiKey.Name = "lblDydraApiKey";
+            this.lblDydraApiKey.Size = new System.Drawing.Size(48, 13);
+            this.lblDydraApiKey.TabIndex = 4;
+            this.lblDydraApiKey.Text = "API Key:";
+            // 
+            // btnDydraConnect
+            // 
+            this.btnDydraConnect.Location = new System.Drawing.Point(366, 127);
+            this.btnDydraConnect.Name = "btnDydraConnect";
+            this.btnDydraConnect.Size = new System.Drawing.Size(103, 23);
+            this.btnDydraConnect.TabIndex = 6;
+            this.btnDydraConnect.Text = "Connect to Dydra";
+            this.btnDydraConnect.UseVisualStyleBackColor = true;
+            this.btnDydraConnect.Click += new System.EventHandler(this.btnDydraConnect_Click);
+            // 
             // fclsGenericStoreConnection
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1135,12 +1220,14 @@
             this.tabSparqlEndpoint.PerformLayout();
             this.tabSparqlHttpProtocol.ResumeLayout(false);
             this.tabSparqlHttpProtocol.PerformLayout();
-            this.tabTalis.ResumeLayout(false);
-            this.tabTalis.PerformLayout();
             this.tabStardog.ResumeLayout(false);
             this.tabStardog.PerformLayout();
+            this.tabTalis.ResumeLayout(false);
+            this.tabTalis.PerformLayout();
             this.tabVirtuoso.ResumeLayout(false);
             this.tabVirtuoso.PerformLayout();
+            this.tabDydra.ResumeLayout(false);
+            this.tabDydra.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1257,5 +1344,13 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.TextBox textBox5;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.TabPage tabDydra;
+        private System.Windows.Forms.TextBox txtDydraAccount;
+        private System.Windows.Forms.Label lblDydraAccount;
+        private System.Windows.Forms.TextBox txtDydraRepository;
+        private System.Windows.Forms.Label lblDydraRepository;
+        private System.Windows.Forms.TextBox txtDydraApiKey;
+        private System.Windows.Forms.Label lblDydraApiKey;
+        private System.Windows.Forms.Button btnDydraConnect;
     }
 }

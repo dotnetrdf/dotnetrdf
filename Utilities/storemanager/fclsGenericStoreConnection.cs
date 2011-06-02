@@ -381,5 +381,31 @@ namespace VDS.RDF.Utilities.StoreManager
             }
         }
 
+        private void btnDydraConnect_Click(object sender, EventArgs e)
+        {
+            if (this.txtDydraAccount.Text.Equals(String.Empty))
+            {
+                this.ParameterRequired("Account Name", "Dydra");
+            }
+            else if (this.txtDydraRepository.Text.Equals(String.Empty))
+            {
+                this.ParameterRequired("Repository", "Dydra");
+            }
+            else
+            {
+                if (this.txtDydraApiKey.Text.Equals(String.Empty))
+                {
+                    this._manager = new DydraConnector(this.txtDydraAccount.Text, this.txtDydraRepository.Text);
+                }
+                else
+                {
+                    this._manager = new DydraConnector(this.txtDydraAccount.Text, this.txtDydraRepository.Text, this.txtDydraApiKey.Text);
+                }
+
+                this.DialogResult = DialogResult.OK;
+                this.Close();
+            }
+        }
+
     }
 }

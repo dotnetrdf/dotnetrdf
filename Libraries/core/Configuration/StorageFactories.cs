@@ -157,6 +157,7 @@ namespace VDS.RDF.Configuration
     {
         private const String AllegroGraph = "VDS.RDF.Storage.AllegroGraphConnector",
                              DatasetFile = "VDS.RDF.Storage.DatasetFileManager",
+                             Dydra = "VDS.RDF.Storage.DydraConnector",
                              FourStore = "VDS.RDF.Storage.FourStoreConnector",
                              Fuseki = "VDS.RDF.Storage.FusekiConnector",
                              InMemory = "VDS.RDF.Storage.InMemoryManager",
@@ -226,6 +227,26 @@ namespace VDS.RDF.Configuration
                     file = ConfigurationLoader.ResolvePath(file);
                     async = ConfigurationLoader.GetConfigurationBoolean(g, objNode, propAsync, false);
                     manager = new DatasetFileManager(file, async);
+                    break;
+
+                case Dydra:
+                    //Get the Account Name and Store
+                    String account = ConfigurationLoader.GetConfigurationString(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyCatalog));
+                    if (account == null) return false;
+                    store = ConfigurationLoader.GetConfigurationString(g, objNode, propStore);
+                    if (store == null) return false;
+
+                    //Get User Credentials
+                    ConfigurationLoader.GetUsernameAndPassword(g, objNode, true, out user, out pwd);
+
+                    if (user != null)
+                    {
+                        manager = new DydraConnector(account, store, user);
+                    }
+                    else
+                    {
+                        manager = new DydraConnector(account, store);
+                    }
                     break;
 
                 case FourStore:
@@ -492,6 +513,7 @@ namespace VDS.RDF.Configuration
             {
                 case AllegroGraph:
                 case DatasetFile:
+                case Dydra:
                 case FourStore:
                 case Fuseki:
                 case InMemory:

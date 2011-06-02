@@ -84,6 +84,7 @@ namespace VDS.RDF.Storage
         protected String _repositoriesPrefix = "repositories/";
         protected String _queryPath = String.Empty;
         protected bool _fullContextEncoding = true;
+        protected bool _postAllQueries = false;
 
         private StringBuilder _output = new StringBuilder();
         private NTriplesFormatter _formatter = new NTriplesFormatter();
@@ -139,7 +140,7 @@ namespace VDS.RDF.Storage
 
                 //Create the Request
                 Dictionary<String, String> queryParams = new Dictionary<string, string>();
-                if (sparqlQuery.Length < 2048)
+                if (sparqlQuery.Length < 2048 && !this._postAllQueries)
                 {
                     queryParams.Add("query", EscapeQuery(sparqlQuery));
 

@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using VDS.RDF.Query;
 using VDS.RDF.Storage;
 
 namespace VDS.RDF.Test.Storage
@@ -100,6 +101,52 @@ namespace VDS.RDF.Test.Storage
             }
             finally
             {
+                Options.HttpDebugging = false;
+            }
+        }
+
+        [TestMethod]
+        public void StorageDydraListGraphs()
+        {
+            DydraConnector dydra = this.GetConnection();
+            List<Uri> graphUris = dydra.ListGraphs().ToList();
+
+            Console.WriteLine("Dydra returned " + graphUris.Count + " Graph URIs");
+            foreach (Uri u in graphUris)
+            {
+                Console.WriteLine(u.ToString());
+            }
+        }
+
+        [TestMethod]
+        public void StorageDydraQuery()
+        {
+            try
+            {
+                Options.HttpDebugging = true;
+                Options.HttpFullDebugging = true;
+
+                DydraConnector dydra = this.GetConnection();
+                Object results = dydra.Query("SELECT * WHERE { ?s a ?type }");
+                if (results is SparqlResultSet)
+                {
+                    SparqlResultSet rset = (SparqlResultSet)results;
+                    TestTools.ShowResults(rset);
+
+                    Assert.IsFalse(rset.IsEmpty, "Results should not be empty");
+                }
+                else
+                {
+                    Assert.Fail("Did not get a SPARQL Result Set as expected");
+                }
+            }
+            catch (Exception ex)
+            {
+                TestTools.ReportError("Error", ex, true);
+            }
+            finally
+            {
+                Options.HttpFullDebugging = false;
                 Options.HttpDebugging = false;
             }
         }

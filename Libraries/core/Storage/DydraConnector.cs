@@ -39,22 +39,29 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using VDS.RDF.Configuration;
+using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 
 namespace VDS.RDF.Storage
 {
+    /// <summary>
+    /// Class for connecting to repositories hosted on Dydra
+    /// </summary>
     public class DydraConnector : SesameHttpProtocolConnector
     {
         private const String DydraBaseUri = "http://dydra.com/";
         private const String DydraApiKeyPassword = "X";
-        private String _apiKey;
+        private String _account, _apiKey;
 
         public DydraConnector(String accountID, String repositoryID)
             : base(DydraBaseUri + accountID + "/", repositoryID)
         {
+            this._account = accountID;
             this._repositoriesPrefix = String.Empty;
             this._queryPath = "/sparql";
             this._fullContextEncoding = false;
+            //this._postAllQueries = true;
         }
 
         public DydraConnector(String accountID, String repositoryID, String apiKey)
@@ -66,20 +73,21 @@ namespace VDS.RDF.Storage
             this._hasCredentials = true;
         }
 
-        public DydraConnector(String accountID, String repositoryID, String username, String password)
-            : this(accountID, repositoryID)
-        {
-            this._username = username;
-            this._pwd = password;
-            this._hasCredentials = true;
-        }
+        //public DydraConnector(String accountID, String repositoryID, String username, String password)
+        //    : this(accountID, repositoryID)
+        //{
+        //    this._username = username;
+        //    this._pwd = password;
+        //    this._hasCredentials = true;
+        //}
 
         public override IEnumerable<Uri> ListGraphs()
         {
             try
             {
                 //Use the /contexts method to get the Graph URIs
-                HttpWebRequest request = this.CreateRequest("/contexts", MimeTypesHelper.HttpSparqlAcceptHeader, "GET", new Dictionary<string, string>());
+                //HACK: Have to use SPARQL JSON as currently Dydra's SPARQL XML Results are malformed
+                HttpWebRequest request = this.CreateRequest(this._store + "/contexts", MimeTypesHelper.CustomHttpAcceptHeader(MimeTypesHelper.SparqlJson), "GET", new Dictionary<string, string>());
                 SparqlResultSet results = new SparqlResultSet();
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
@@ -124,7 +132,8 @@ namespace VDS.RDF.Storage
         protected override HttpWebRequest CreateRequest(String servicePath, String accept, String method, Dictionary<String, String> queryParams)
         {
             //Build the Request Uri
-            String requestUri = this._baseUri + servicePath;//this.GetCredentialedUri() + servicePath;
+            String requestUri = this._baseUri + servicePath;
+            //String requestUri = this.GetCredentialedUri() + servicePath;
             if (this._apiKey != null)
             {
                 requestUri += "?auth_token=" + Uri.EscapeDataString(this._apiKey);
@@ -151,12 +160,12 @@ namespace VDS.RDF.Storage
             request.Accept = accept;
             request.Method = method;
 
-            ////Add Credentials if needed
-            //if (this._hasCredentials)
-            //{
-            //    NetworkCredential credentials = new NetworkCredential(this._username, this._pwd);
-            //    request.Credentials = credentials;
-            //}
+            //Add Credentials if needed
+            if (this._hasCredentials)
+            {
+                NetworkCredential credentials = new NetworkCredential(this._username, this._pwd);
+                request.Credentials = credentials;
+            }
 
             return request;
         }
@@ -166,23 +175,64 @@ namespace VDS.RDF.Storage
             return query;
         }
 
-        private String GetCredentialedUri()
+        //private String GetCredentialedUri()
+        //{
+        //    if (this._hasCredentials)
+        //    {
+        //        if (this._apiKey != null)
+        //        {
+        //            return this._baseUri.Substring(0, 7) + Uri.EscapeUriString(this._apiKey) + "@" + this._baseUri.Substring(7);
+        //        }
+        //        else
+        //        {
+        //            return this._baseUri.Substring(0, 7) + Uri.EscapeUriString(this._username) + ":" + Uri.EscapeUriString(this._pwd) + "@" + this._baseUri.Substring(7);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        return this._baseUri;
+        //    }
+        //}
+
+        /// <summary>
+        /// Serializes the connection's configuration
+        /// </summary>
+        /// <param name="context">Configuration Serialization Context</param>
+        public override void SerializeConfiguration(ConfigurationSerializationContext context)
         {
-            if (this._hasCredentials)
+            INode manager = context.NextSubject;
+            INode rdfType = context.Graph.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
+            INode rdfsLabel = context.Graph.CreateUriNode(new Uri(NamespaceMapper.RDFS + "label"));
+            INode dnrType = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyType);
+            INode genericManager = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.ClassGenericManager);
+            INode catalog = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyCatalog);
+            INode store = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyStore);
+
+            context.Graph.Assert(new Triple(manager, rdfType, genericManager));
+            context.Graph.Assert(new Triple(manager, rdfsLabel, context.Graph.CreateLiteralNode(this.ToString())));
+            context.Graph.Assert(new Triple(manager, dnrType, context.Graph.CreateLiteralNode(this.GetType().FullName)));
+            context.Graph.Assert(new Triple(manager, catalog, context.Graph.CreateLiteralNode(this._account)));
+            context.Graph.Assert(new Triple(manager, store, context.Graph.CreateLiteralNode(this._store)));
+
+            if (this._apiKey != null || (this._username != null && this._pwd != null))
             {
+                INode username = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyUser);
+                INode pwd = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyPassword);
                 if (this._apiKey != null)
                 {
-                    return this._baseUri.Substring(0, 7) + Uri.EscapeUriString(this._apiKey) + "@" + this._baseUri.Substring(7);
+                    context.Graph.Assert(new Triple(manager, username, context.Graph.CreateLiteralNode(this._apiKey)));
                 }
                 else
                 {
-                    return this._baseUri.Substring(0, 7) + Uri.EscapeUriString(this._username) + ":" + Uri.EscapeUriString(this._pwd) + "@" + this._baseUri.Substring(7);
+                    context.Graph.Assert(new Triple(manager, username, context.Graph.CreateLiteralNode(this._username)));
+                    context.Graph.Assert(new Triple(manager, pwd, context.Graph.CreateLiteralNode(this._pwd)));
                 }
             }
-            else
-            {
-                return this._baseUri;
-            }
+        }
+
+        public override string ToString()
+        {
+            return "[Dydra] Repository '" + this._store + "' on Account '" + this._account + "'";
         }
     }
 }
