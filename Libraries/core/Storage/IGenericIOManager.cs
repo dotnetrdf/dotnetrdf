@@ -250,6 +250,13 @@ namespace VDS.RDF.Storage
         /// <param name="sparqlUpdate">SPARQL Update</param>
         void Update(String sparqlUpdate);
     }
+
+    public interface IMultiStoreGenericIOManager : IGenericIOManager
+    {
+        void CreateStore(string storeID);
+
+        void DeleteStore(string storeID);
+    }
 }
 
 #endif

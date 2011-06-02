@@ -55,7 +55,7 @@ namespace VDS.RDF.Storage
     /// Connection to AllegroGraph is based on their new HTTP Protocol which is an extension of the <a href="http://www.openrdf.org/doc/sesame2/system/ch08.html">Sesame 2.0 HTTP Protocol</a>.  The specification for the AllegroGraph protocol can be found <a href="http://www.franz.com/agraph/support/documentation/current/new-http-server.html">here</a>
     /// </para>
     /// </remarks>
-    public class AllegroGraphConnector : SesameHttpProtocolConnector, IConfigurationSerializable
+    public class AllegroGraphConnector : SesameHttpProtocolConnector, IConfigurationSerializable, IMultiStoreGenericIOManager
     {
         private String _catalog;
 
