@@ -88,6 +88,11 @@ namespace VDS.RDF.Test.Storage
 
                 if (orig.Triples.Count == g.Triples.Count)
                 {
+                    GraphDiffReport report = orig.Difference(g);
+                    if (!report.AreEqual)
+                    {
+                        TestTools.ShowDifferences(report);
+                    }
                     Assert.AreEqual(orig, g, "Graphs should be equal");
                 }
                 else

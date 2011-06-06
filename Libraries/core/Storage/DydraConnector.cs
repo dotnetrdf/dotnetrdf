@@ -131,13 +131,35 @@ namespace VDS.RDF.Storage
         /// <returns></returns>
         protected override HttpWebRequest CreateRequest(String servicePath, String accept, String method, Dictionary<String, String> queryParams)
         {
-            //Build the Request Uri
-            String requestUri = this._baseUri + servicePath;
-            //String requestUri = this.GetCredentialedUri() + servicePath;
-            if (this._apiKey != null)
+            //Modify the Accept header appropriately to remove any mention of HTML
+            //HACK: Have to do this otherwise Dydra won't HTTP authenticate nicely
+            if (accept.Contains("application/xhtml+xml"))
             {
-                requestUri += "?auth_token=" + Uri.EscapeDataString(this._apiKey);
+                accept = accept.Replace("application/xhtml+xml,", String.Empty);
+                if (accept.Contains(",,")) accept = accept.Replace(",,", ",");
             }
+            if (accept.Contains("text/html"))
+            {
+                accept = accept.Replace("text/html", String.Empty);
+                if (accept.Contains(",,")) accept = accept.Replace(",,", ",");
+            }
+            if (accept.Contains(",;")) accept = accept.Replace(",;", ",");
+
+            //HACK: If the Accept header is */* switch it for application/rdf+xml to make Dydra HTTP authenticate nicely
+            if (accept.Equals(MimeTypesHelper.Any)) accept = MimeTypesHelper.RdfXml[0];
+
+            //HACK: If the Accept header contains */* strip that part of the header
+            if (accept.Contains("*/*")) accept = accept.Substring(0, accept.IndexOf("*/*"));
+
+            if (accept.EndsWith(",")) accept = accept.Substring(0, accept.Length - 1);
+
+            //Build the Request Uri
+            //String requestUri = this._baseUri + servicePath;
+            String requestUri = this.GetCredentialedUri() + servicePath;
+            //if (this._apiKey != null)
+            //{
+            //    requestUri += "?auth_token=" + Uri.EscapeDataString(this._apiKey);
+            //}
             if (queryParams.Count > 0)
             {
                 if (requestUri.Contains("?"))
@@ -175,24 +197,24 @@ namespace VDS.RDF.Storage
             return query;
         }
 
-        //private String GetCredentialedUri()
-        //{
-        //    if (this._hasCredentials)
-        //    {
-        //        if (this._apiKey != null)
-        //        {
-        //            return this._baseUri.Substring(0, 7) + Uri.EscapeUriString(this._apiKey) + "@" + this._baseUri.Substring(7);
-        //        }
-        //        else
-        //        {
-        //            return this._baseUri.Substring(0, 7) + Uri.EscapeUriString(this._username) + ":" + Uri.EscapeUriString(this._pwd) + "@" + this._baseUri.Substring(7);
-        //        }
-        //    }
-        //    else
-        //    {
-        //        return this._baseUri;
-        //    }
-        //}
+        private String GetCredentialedUri()
+        {
+            if (this._hasCredentials)
+            {
+                if (this._apiKey != null)
+                {
+                    return this._baseUri.Substring(0, 7) + Uri.EscapeUriString(this._apiKey) + "@" + this._baseUri.Substring(7);
+                }
+                else
+                {
+                    return this._baseUri.Substring(0, 7) + Uri.EscapeUriString(this._username) + ":" + Uri.EscapeUriString(this._pwd) + "@" + this._baseUri.Substring(7);
+                }
+            }
+            else
+            {
+                return this._baseUri;
+            }
+        }
 
         /// <summary>
         /// Serializes the connection's configuration
