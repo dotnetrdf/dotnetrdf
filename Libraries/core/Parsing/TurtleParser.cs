@@ -714,8 +714,21 @@ namespace VDS.RDF.Parsing
                         //Discard and continue
                         continue;
                     case Token.LEFTBRACKET:
-                        //Nested Collections forbidden in Turtle
-                        throw ParserHelper.Error("Unexpected Left Bracket encountered, nested collections are forbidden in Turtle", next);
+                        //Start of a collection so create a new Blank Node to be it's first subject
+                        next = context.Tokens.Peek();
+                        if (next.TokenType == Token.RIGHTBRACKET)
+                        {
+                            //Empty Collection => rdf:nil
+                            context.Tokens.Dequeue();
+                            obj = context.Handler.CreateUriNode(new Uri(RdfSpecsHelper.RdfListNil));
+                        }
+                        else
+                        {
+                            obj = context.Handler.CreateBlankNode();
+                            this.TryParseCollection(context, obj);
+                        }
+                        break;
+
                     case Token.LEFTSQBRACKET:
                         //Allowed Blank Node Collections as part of a Collection
                         IToken temp = context.Tokens.Peek();
