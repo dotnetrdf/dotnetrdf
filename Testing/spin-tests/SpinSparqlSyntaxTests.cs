@@ -18,37 +18,22 @@ namespace VDS.RDF.Test.Spin
     [TestClass]
     public class SpinSparqlSyntaxTests
     {
-        private const String SpinToRdfServiceUri = "http://sparqlpedia.org:8080/tbl/tbl/actions?action=sparqlmotion&id=sparql2spin&format=n3&text=";
+        private const String SpinToRdfServiceUri = "http://spinservices.org:8080/spin/sparqlmotion?id=sparql2spin&format=turtle&text=";
         private SparqlQueryParser _parser = new SparqlQueryParser();
 
         private IGraph GetSpinRdf(SparqlQuery q)
         {
-            //TODO: Get this code working properly
-            return new Graph();
-
-            SparqlFormatter formatter = new SparqlFormatter();
-            String query = formatter.Format(q);
-
-            //Invoke a process to generate TopBraid SPIN using their java SPIN API implementation
-            ProcessStartInfo info = new ProcessStartInfo();
-            info.FileName = "java";
-            info.Arguments = "-classpath lib/*;spinrdf-1.1.2.jar;. SpinGenerator \"" + query.Replace("\"", "\\\"") + "\"";
-            info.RedirectStandardOutput = true;
-            info.CreateNoWindow = true;
-            info.UseShellExecute = false;
-
-            Process p = new Process();
-            p.StartInfo = info;
-            p.Start();
-            using (StreamWriter writer = new StreamWriter("topbraid-spin.ttl", false, Encoding.UTF8))
-            {
-                writer.Write(p.StandardOutput.ReadToEnd());
-                writer.Close();
-            }
-            p.WaitForExit();
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(SpinToRdfServiceUri + Uri.EscapeDataString(q.ToString()));
+            request.Accept = MimeTypesHelper.Any;
 
             Graph g = new Graph();
-            g.LoadFromFile("topbraid-spin.ttl");
+            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+            {
+                TurtleParser parser = new TurtleParser();
+                parser.Load(g, new StreamReader(response.GetResponseStream()));
+                response.Close();
+            }
+
             return g;
         }
 
@@ -111,11 +96,12 @@ namespace VDS.RDF.Test.Spin
                 Console.WriteLine(t.ToString(formatter));
             }
             Console.WriteLine();
-            Console.WriteLine("As Compressed Turtle:");
-            System.IO.StringWriter strWriter = new System.IO.StringWriter();
-            writer.Save(g, strWriter);
-            Console.WriteLine(strWriter.ToString());
-            Console.WriteLine();
+
+            //Console.WriteLine("As Compressed Turtle:");
+            //System.IO.StringWriter strWriter = new System.IO.StringWriter();
+            //writer.Save(g, strWriter);
+            //Console.WriteLine(strWriter.ToString());
+            //Console.WriteLine();
 
             Console.WriteLine(new String('-', 30));
 
@@ -132,11 +118,12 @@ namespace VDS.RDF.Test.Spin
                 Console.WriteLine(t.ToString(formatter));
             }
             Console.WriteLine();
-            Console.WriteLine("As Compressed Turtle:");
-            strWriter = new System.IO.StringWriter();
-            writer.Save(h, strWriter);
-            Console.WriteLine(strWriter.ToString());
-            Console.WriteLine();
+
+            //Console.WriteLine("As Compressed Turtle:");
+            //strWriter = new System.IO.StringWriter();
+            //writer.Save(h, strWriter);
+            //Console.WriteLine(strWriter.ToString());
+            //Console.WriteLine();
 
             //Show Differences (if any)
             GraphDiffReport report = h.Difference(g);
