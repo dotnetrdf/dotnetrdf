@@ -17,6 +17,7 @@ namespace VDS.RDF.Test.Writing
         private List<IRdfWriter> _writers = new List<IRdfWriter>()
         {
             new RdfXmlWriter(WriterCompressionLevel.High),
+            new RdfXmlWriter(WriterCompressionLevel.High, false),
             new FastRdfXmlWriter(WriterCompressionLevel.High),
             new PrettyRdfXmlWriter(WriterCompressionLevel.High)
         };
@@ -218,6 +219,16 @@ namespace VDS.RDF.Test.Writing
         {
             Graph g = new Graph();
             g.LoadFromFile("chado-in-owl.ttl");
+
+            this.CheckRoundTrip(g);
+        }
+
+        [TestMethod]
+        public void WritingRdfXmlWithDtds()
+        {
+            String fragment = "@prefix xsd: <" + NamespaceMapper.XMLSCHEMA + ">. @prefix : <http://example.org/>. :subj a :obj ; :has \"string\"^^xsd:string ; :has 23 .";
+            Graph g = new Graph();
+            g.LoadFromString(fragment);
 
             this.CheckRoundTrip(g);
         }

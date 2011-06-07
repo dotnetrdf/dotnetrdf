@@ -68,6 +68,7 @@ namespace VDS.RDF.Writing.Contexts
         /// Nested Namespace Mapper
         /// </summary>
         private NestedNamespaceMapper _nsmapper = new NestedNamespaceMapper(true);
+        private bool _useDTD = Options.UseDtd;
 
         private int _compressionLevel = WriterCompressionLevel.Default;
 
@@ -252,6 +253,21 @@ namespace VDS.RDF.Writing.Contexts
             set
             {
                 this._nextNamespaceID = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets/Sets whether a DTD is used
+        /// </summary>
+        public bool UseDtd
+        {
+            get
+            {
+                return this._useDTD;
+            }
+            set
+            {
+                this._useDTD = value;
             }
         }
 

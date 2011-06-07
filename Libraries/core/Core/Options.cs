@@ -93,6 +93,7 @@ namespace VDS.RDF
         private static int _uriLoaderTimeout = 15000;
         private static bool _utf8Bom = true;
         //private static bool _rigorousQuery = false;
+        private static bool _useDTDs = true;
 
         #if DEBUG
         //Debug Build Only
@@ -359,6 +360,21 @@ namespace VDS.RDF
             set
             {
                 _utf8Bom = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets/Sets whether a DTD should be used for some XML formats to compress output
+        /// </summary>
+        public static bool UseDtd
+        {
+            get
+            {
+                return _useDTDs;
+            }
+            set
+            {
+                _useDTDs = value;
             }
         }
 

@@ -120,6 +120,18 @@ namespace VDS.RDF.Writing
     }
 
     /// <summary>
+    /// Interface for Writers that support use of DTDs to compress output
+    /// </summary>
+    public interface IDtdWriter
+    {
+        bool UseDtd
+        {
+            get;
+            set;
+        }
+    }
+
+    /// <summary>
     /// Interface for Writers that support multi-threaded writing
     /// </summary>
     public interface IMultiThreadedWriter
