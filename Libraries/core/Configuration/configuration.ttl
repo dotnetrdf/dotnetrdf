@@ -52,25 +52,30 @@
    vann:preferredNamespaceUri <http://www.dotnetrdf.org/configuration#> .
 
 # Classes of things whose Configuration is understood by default
-
-dnr:Parser a rdfs:Class ;
-			rdfs:label "Class of Parsers" ;
-			rdfs:comment "A Parser is the super class of all parsers, parsers may read a variety of different formats" .
 			
 dnr:RdfParser a rdfs:Class ;
-				rdfs:subClassOf dnr:Parser ;
 				rdfs:label "Class of RDF Parsers" ;
 				rdfs:comment "A RDF Parser is a parser that reads a concrete RDF syntax e.g. Turtle into a Graph" .
 				
 dnr:DatasetParser a rdfs:Class ;
-					rdfs:subClassOf dnr:Parser ;
 					rdfs:label "Class of RDF Dataset Parsers" ;
 					rdfs:comment "A RDF Dataset Parser is a parser that read a concrete RDF dataset syntax e.g. NQuads into a set of Graphs" .
 					
 dnr:SparqlResultsParser a rdfs:Class ;
-						rdfs:subClassOf dnr:Parser ;
 						rdfs:label "Class of SPARQL Results Parsers" ;
 						rdfs:comment "A SPARQL Results Parser is a parser that reads a concrete SPARQL Results syntax e.g. SPARQL Results XML" .
+						
+dnr:RdfWriter a rdfs:class ;
+				rdfs:label "Class of RDF Writers" ;
+				rdfs:comment "A RDF Writer is a writer that writes a concrete RDF syntax e.g. NTriples" .
+				
+dnr:DatasetWriter a rdfs:Class ;
+					rdfs:label "Class of RDF Dataset Writers" ;
+					rdfs:comment "A RDF Dataset Writer is a writer that writes a concrete RDF dataset syntax e.g. TriG" .
+					
+dnr:SparqlResultsWriter a rdfs:Class ;
+							rdfs:label "Class of SPARQL Results Writers" ;
+							rdfs:comment "A SPARQL Results Writer is a writer that writes a concrete SPARQL Results syntax e.g. SPARQL Results JSON" .
 
 dnr:ObjectFactory a rdfs:Class ;
 				  rdfs:label "Class of Object Factories" ;
@@ -156,15 +161,15 @@ dnr:Proxy a rdfs:Class ;
 
 dnr:type a rdf:Property ;
 		 rdfs:label "Type" ;
-		 rdfs:comment "This property is used to declare the fully qualified type name of an object whose configuration is defined in this vocabulary.  This type name can then be used with reflection to ensure that objects of valid types are generated." .
+		 rdfs:comment "This property is used to declare the fully qualified type name (including assembly if not from the core dotNetRDF.dll library) of an object whose configuration is defined in this vocabulary.  This type name can then be used with reflection to ensure that objects of valid types are generated." .
 		 
 dnr:user a rdf:Property ;
 		 rdfs:label "Username" ;
-		 rdfs:comment "This property is used to define usernames." .
+		 rdfs:comment "This property is used to state usernames." .
 		 
 dnr:password a rdf:Property ;
 			 rdfs:label "Password" ;
-			 rdfs:comment "This property is used to define passwords." .
+			 rdfs:comment "This property is used to state passwords." .
 			 
 dnr:credentials a rdf:Property ;
 				rdfs:label "Credentials" ;
@@ -539,3 +544,30 @@ dnr:algebraOptimiser a rdf:Property ;
 						rdfs:comment "This property allows Algebra Optimisers to be associated with a HTTP Handler.  If the HTTP Handler is a SPARQL Query supported handler then it will use these optimisers to help optimise SPARQL Algebra generated from queries.  Multiple algebra optimisers can be specified and these will be used in addition to the libraries own default optimisers." ;
 						rdfs:domain dnr:HttpHandler ;
 						rdfs:range dnr:AlgebraOptimiser .
+						
+# Properties pertaining to options for RDF writers
+
+dnr:compressionLevel a rdf:Property ;
+						rdfs:label "Compression Level" ;
+						rdfs:comment "Specifies the compression level to be used for writers that support compression.  Defaults to a limited level of compression which has an integer value of 1" ;
+						rdfs:range xsd:integer .
+
+dnr:prettyPrinting a rdf:Property ;
+					rdfs:label "Pretty Printing" ;
+					rdfs:comment "Specifies whether Pretty Printing should be used for writers that support it.  Default is true for most writers" ;
+					rdfs:range xsd:boolean .
+					
+dnr:highSpeedWriting a rdf:Property ;
+						rdfs:label "High Speed Writing" ;
+						rdfs:comment "Specifies whether supporting writers can use high speed writing mode if the RDF is not suited to normal syntax compressions.  Default is true for most writers" ;
+						rdfs:range xsd:boolean .
+						
+dnr:dtdWriting a rdf:Property ;
+				rdfs:label "DTD Writing" ;
+				rdfs:comment "Specifies whether supporting writers should use DTDs in their output.  Default is true for most writers" ;
+				rdfs:range xsd:boolean .
+
+dnr:multiThreadedWriting a rdf:Property ;
+							rdfs:label "Multi-Threaded Writing" ;
+							rdfs:comment "Specifies whether supporting writers should use multi-threaded writing.  Defualt is true for most supporting writers" ;
+							rdfs:range xsd:boolean .
