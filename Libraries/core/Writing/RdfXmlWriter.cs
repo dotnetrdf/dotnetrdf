@@ -80,6 +80,11 @@ namespace VDS.RDF.Writing
             this._compressionLevel = compressionLevel;
         }
 
+        /// <summary>
+        /// Creates a new RDF/XML Writer
+        /// </summary>
+        /// <param name="compressionLevel">Compression Level</param>
+        /// <param name="useDtd">Whether to use DTDs to further compress output</param>
         public RdfXmlWriter(int compressionLevel, bool useDtd)
             : this(compressionLevel)
         {
@@ -121,6 +126,9 @@ namespace VDS.RDF.Writing
             }
         }
 
+        /// <summary>
+        /// Gets/Sets whether DTDs are used in the output
+        /// </summary>
         public bool UseDtd
         {
             get

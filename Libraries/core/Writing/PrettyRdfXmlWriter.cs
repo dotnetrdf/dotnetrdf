@@ -56,10 +56,11 @@ namespace VDS.RDF.Writing
     /// <strong>Note:</strong> If the Graph to be serialized makes heavy use of collections it may result in a StackOverflowException.  To address this set the <see cref="RdfXmlWriter.CompressionLevel">CompressionLevel</see> property to &lt; 5
     /// </para>
     /// </remarks>
-    public class PrettyRdfXmlWriter : IRdfWriter, IPrettyPrintingWriter, ICompressingWriter
+    public class PrettyRdfXmlWriter : IRdfWriter, IPrettyPrintingWriter, ICompressingWriter, IDtdWriter
     {
         private bool _prettyprint = true;
         private int _compressionLevel = WriterCompressionLevel.High;
+        private bool _useDTD = Options.UseDtd;
 
         /// <summary>
         /// Creates a new RDF/XML Writer
@@ -77,6 +78,18 @@ namespace VDS.RDF.Writing
             : this()
         {
             this._compressionLevel = compressionLevel;
+        }
+
+        
+        /// <summary>
+        /// Creates a new RDF/XML Writer
+        /// </summary>
+        /// <param name="compressionLevel">Compression Level</param>
+        /// <param name="useDtd">Whether to use DTDs to further compress output</param>
+        public PrettyRdfXmlWriter(int compressionLevel, bool useDtd)
+            : this(compressionLevel)
+        {
+            this._useDTD = useDtd;
         }
 
         /// <summary>
@@ -111,6 +124,21 @@ namespace VDS.RDF.Writing
             set
             {
                 this._compressionLevel = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets/Sets whether DTDs are used in the output
+        /// </summary>
+        public bool UseDtd
+        {
+            get
+            {
+                return this._useDTD;
+            }
+            set
+            {
+                this._useDTD = value;
             }
         }
 
@@ -165,21 +193,25 @@ namespace VDS.RDF.Writing
             //Create our Writer Context and start the XML Document
             RdfXmlWriterContext context = new RdfXmlWriterContext(g, output);
             context.CompressionLevel = this._compressionLevel;
+            context.UseDtd = this._useDTD;
             context.Writer.WriteStartDocument();
 
-            //Create the DOCTYPE declaration
-            StringBuilder entities = new StringBuilder();
-            String uri;
-            entities.Append('\n');
-            foreach (String prefix in context.NamespaceMap.Prefixes)
+            if (context.UseDtd)
             {
-                uri = context.NamespaceMap.GetNamespaceUri(prefix).ToString();
-                if (!prefix.Equals(String.Empty))
+                //Create the DOCTYPE declaration
+                StringBuilder entities = new StringBuilder();
+                String uri;
+                entities.Append('\n');
+                foreach (String prefix in context.NamespaceMap.Prefixes)
                 {
-                    entities.AppendLine("\t<!ENTITY " + prefix + " '" + uri + "'>");
+                    uri = context.NamespaceMap.GetNamespaceUri(prefix).ToString();
+                    if (!prefix.Equals(String.Empty))
+                    {
+                        entities.AppendLine("\t<!ENTITY " + prefix + " '" + uri + "'>");
+                    }
                 }
+                context.Writer.WriteDocType("rdf:RDF", null, null, entities.ToString());
             }
-            context.Writer.WriteDocType("rdf:RDF", null, null, entities.ToString());
 
             //Create the rdf:RDF element
             context.Writer.WriteStartElement("rdf", "RDF", NamespaceMapper.RDF);
@@ -672,8 +704,9 @@ namespace VDS.RDF.Writing
                 if (uriref.Contains(':') && !uriref.StartsWith(":"))
                 {
                     String prefix = uriref.Substring(0, uriref.IndexOf(':'));
-                    if (context.NamespaceMap.GetNestingLevel(prefix) == 0)
+                    if (context.UseDtd && context.NamespaceMap.GetNestingLevel(prefix) == 0)
                     {
+                        //Muse have used a DTD to generate this style of URI Reference
                         //Can only use entities for non-temporary Namespaces as Temporary Namespaces won't have Entities defined
                         uriref = "&" + uriref.Replace(':', ';');
                         outType = UriRefType.UriRef;

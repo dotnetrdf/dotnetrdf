@@ -59,13 +59,14 @@ namespace VDS.RDF.Writing
     /// </para>
     /// </remarks>
     [Obsolete("This writer is obsoleted in favour of the RdfXmlWriter and the PrettyRdfXmlWriter as both are now faster than this writer", false)]
-    public class FastRdfXmlWriter : IRdfWriter, IPrettyPrintingWriter, ICompressingWriter
+    public class FastRdfXmlWriter : IRdfWriter, IPrettyPrintingWriter, ICompressingWriter, IDtdWriter
     {
         private bool _prettyprint = true;
         private int _compressionLevel = WriterCompressionLevel.High;
+        private bool _useDTD = Options.UseDtd;
 
         /// <summary>
-        /// Creates a new Fast RDF/XML Writer
+        /// Creates a new RDF/XML Writer
         /// </summary>
         public FastRdfXmlWriter()
         {
@@ -73,13 +74,25 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Creates a new Fast RDF/XML Writer
+        /// Creates a new RDF/XML Writer
         /// </summary>
         /// <param name="compressionLevel">Compression Level</param>
         public FastRdfXmlWriter(int compressionLevel)
             : this()
         {
             this._compressionLevel = compressionLevel;
+        }
+
+        
+        /// <summary>
+        /// Creates a new RDF/XML Writer
+        /// </summary>
+        /// <param name="compressionLevel">Compression Level</param>
+        /// <param name="useDtd">Whether to use DTDs to further compress output</param>
+        public FastRdfXmlWriter(int compressionLevel, bool useDtd)
+            : this(compressionLevel)
+        {
+            this._useDTD = useDtd;
         }
 
         /// <summary>
@@ -114,6 +127,21 @@ namespace VDS.RDF.Writing
             set
             {
                 this._compressionLevel = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets/Sets whether DTDs are used in the output
+        /// </summary>
+        public bool UseDtd
+        {
+            get
+            {
+                return this._useDTD;
+            }
+            set
+            {
+                this._useDTD = value;
             }
         }
 
@@ -162,6 +190,8 @@ namespace VDS.RDF.Writing
         /// <param name="context">Writer Context</param>
         private void GenerateOutput(RdfXmlWriterContext context)
         {
+            context.UseDtd = this._useDTD;
+
             //Create required variables
             int nextNamespaceID = 0;
             List<String> tempNamespaces = new List<String>();
@@ -203,8 +233,11 @@ namespace VDS.RDF.Writing
                 }
                 rdf.Attributes.Append(ns);
             }
-            XmlDocumentType doctype = doc.CreateDocumentType("rdf:RDF", null, null, entities.ToString());
-            doc.AppendChild(doctype);
+            if (context.UseDtd)
+            {
+                XmlDocumentType doctype = doc.CreateDocumentType("rdf:RDF", null, null, entities.ToString());
+                doc.AppendChild(doctype);
+            }
             doc.AppendChild(rdf);
 
             //Find the Collections
@@ -656,8 +689,9 @@ namespace VDS.RDF.Writing
                 if (uriref.Contains(':') && !uriref.StartsWith(":"))
                 {
                     String prefix = uriref.Substring(0, uriref.IndexOf(':'));
-                    if (!tempNamespaceIDs.Contains(prefix))
+                    if (context.UseDtd && !tempNamespaceIDs.Contains(prefix))
                     {
+                        //Must be using a DTD to use references of this form
                         //Can only use entities for non-temporary Namespaces as Temporary Namespaces won't have Entities defined
                         uriref = "&" + uriref.Replace(':', ';');
                     }
