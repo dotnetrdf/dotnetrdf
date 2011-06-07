@@ -42,6 +42,7 @@ using System.Web;
 using VDS.RDF.Configuration;
 using VDS.RDF.Configuration.Permissions;
 using VDS.RDF.Query.Expressions;
+using VDS.RDF.Writing;
 
 namespace VDS.RDF.Web.Configuration
 {
@@ -84,6 +85,12 @@ namespace VDS.RDF.Web.Configuration
         /// Sets whether CORS headers are output
         /// </summary>
         protected bool _corsEnabled = true;
+
+        protected int _writerCompressionLevel = Options.DefaultCompressionLevel;
+        protected bool _writerPrettyPrinting = true;
+        protected bool _writerHighSpeed = true;
+        protected bool _writerDtds = false;
+        protected bool _writerMultiThreading = true;
 
         /// <summary>
         /// Creates a new Base Handler Configuration which loads common Handler settings from a Configuration Graph
@@ -159,6 +166,13 @@ namespace VDS.RDF.Web.Configuration
                     throw new DotNetRdfConfigurationException("Unable to load Handler Configuration as the RDF Configuration file specifies a value for the Handlers dnr:expressionFactory property which cannot be loaded as an object which is a SPARQL Expression Factory");
                 }
             }
+
+            //Writer Properties
+            this._writerCompressionLevel = ConfigurationLoader.GetConfigurationInt32(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyCompressionLevel), this._writerCompressionLevel);
+            this._writerDtds = ConfigurationLoader.GetConfigurationBoolean(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyDtdWriting), this._writerDtds);
+            this._writerHighSpeed = ConfigurationLoader.GetConfigurationBoolean(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyHighSpeedWriting), this._writerHighSpeed);
+            this._writerMultiThreading = ConfigurationLoader.GetConfigurationBoolean(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyMultiThreadedWriting), this._writerMultiThreading);
+            this._writerPrettyPrinting = ConfigurationLoader.GetConfigurationBoolean(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyPrettyPrinting), this._writerPrettyPrinting);
         }
 
         /// <summary>
@@ -268,6 +282,46 @@ namespace VDS.RDF.Web.Configuration
             get
             {
                 return this._expressionFactories;
+            }
+        }
+
+        public int WriterCompressionLevel
+        {
+            get
+            {
+                return this._writerCompressionLevel;
+            }
+        }
+
+        public bool WriterUseDtds
+        {
+            get
+            {
+                return this._writerDtds;
+            }
+        }
+
+        public bool WriterHighSpeedMode
+        {
+            get
+            {
+                return this._writerHighSpeed;
+            }
+        }
+
+        public bool WriterMultiThreading
+        {
+            get
+            {
+                return this._writerMultiThreading;
+            }
+        }
+
+        public bool WriterPrettyPrinting
+        {
+            get
+            {
+                return this._writerPrettyPrinting;
             }
         }
     }

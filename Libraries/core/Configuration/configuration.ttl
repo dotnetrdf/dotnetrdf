@@ -41,6 +41,7 @@
 @prefix vann: <http://purl.org/vocab/vann/>.
 @prefix vs: <http://www.w3.org/2003/06/sw-vocab-status/ns#>.
 @prefix foaf: <http://xmlns.com/foaf/0.1/>.
+@prefix fmt: <http://www.w3.org/ns/formats/>.
 
 # Definition of this Schema
 
@@ -55,31 +56,31 @@
 			
 dnr:RdfParser a rdfs:Class ;
 				rdfs:label "Class of RDF Parsers" ;
-				rdfs:comment "A RDF Parser is a parser that reads a concrete RDF syntax e.g. Turtle into a Graph" .
+				rdfs:comment "A RDF Parser is a parser that reads a concrete RDF syntax e.g. Turtle into a Graph.  Parsers can be automatically loaded by calling ConfigurationLoader.AutoDetectReadersAndWriters(), parsers may be associated with specific MIME types and/or file extensions by using the fmt:media_type and fmt:preferred_suffix properties from the W3C Formats namespace." .
 				
 dnr:DatasetParser a rdfs:Class ;
 					rdfs:label "Class of RDF Dataset Parsers" ;
-					rdfs:comment "A RDF Dataset Parser is a parser that read a concrete RDF dataset syntax e.g. NQuads into a set of Graphs" .
+					rdfs:comment "A RDF Dataset Parser is a parser that read a concrete RDF dataset syntax e.g. NQuads into a set of Graphs.  Parsers can be automatically loaded by calling ConfigurationLoader.AutoDetectReadersAndWriters(), parsers may be associated with specific MIME types and/or file extensions by using the fmt:media_type and fmt:preferred_suffix properties from the W3C Formats namespace." .
 					
 dnr:SparqlResultsParser a rdfs:Class ;
 						rdfs:label "Class of SPARQL Results Parsers" ;
-						rdfs:comment "A SPARQL Results Parser is a parser that reads a concrete SPARQL Results syntax e.g. SPARQL Results XML" .
+						rdfs:comment "A SPARQL Results Parser is a parser that reads a concrete SPARQL Results syntax e.g. SPARQL Results XML.  Parsers can be automatically loaded by calling ConfigurationLoader.AutoDetectReadersAndWriters(), parsers may be associated with specific MIME types and/or file extensions by using the fmt:media_type and fmt:preferred_suffix properties from the W3C Formats namespace." .
 						
 dnr:RdfWriter a rdfs:class ;
 				rdfs:label "Class of RDF Writers" ;
-				rdfs:comment "A RDF Writer is a writer that writes a concrete RDF syntax e.g. NTriples" .
+				rdfs:comment "A RDF Writer is a writer that writes a concrete RDF syntax e.g. NTriples.  Writers can be automatically loaded by calling ConfigurationLoader.AutoDetectReadersAndWriters(), writers may be associated with specific MIME types and/or file extensions by using the fmt:media_type and fmt:preferred_suffix properties from the W3C Formats namespace." .
 				
 dnr:DatasetWriter a rdfs:Class ;
 					rdfs:label "Class of RDF Dataset Writers" ;
-					rdfs:comment "A RDF Dataset Writer is a writer that writes a concrete RDF dataset syntax e.g. TriG" .
+					rdfs:comment "A RDF Dataset Writer is a writer that writes a concrete RDF dataset syntax e.g. TriG.  Writers can be automatically loaded by calling ConfigurationLoader.AutoDetectReadersAndWriters(), writers may be associated with specific MIME types and/or file extensions by using the fmt:media_type and fmt:preferred_suffix properties from the W3C Formats namespace." .
 					
 dnr:SparqlResultsWriter a rdfs:Class ;
 							rdfs:label "Class of SPARQL Results Writers" ;
-							rdfs:comment "A SPARQL Results Writer is a writer that writes a concrete SPARQL Results syntax e.g. SPARQL Results JSON" .
+							rdfs:comment "A SPARQL Results Writer is a writer that writes a concrete SPARQL Results syntax e.g. SPARQL Results JSON.  Writers can be automatically loaded by calling ConfigurationLoader.AutoDetectReadersAndWriters(), writers may be associated with specific MIME types and/or file extensions by using the fmt:media_type and fmt:preferred_suffix properties from the W3C Formats namespace." .
 
 dnr:ObjectFactory a rdfs:Class ;
 				  rdfs:label "Class of Object Factories" ;
-				  rdfs:comment "An Object Factory is a class that can load objects from a Configuration Graph.  Defining an Object Factory allows additional objects beyond those supported by default to be loaded from a Configuration Graph" .
+				  rdfs:comment "An Object Factory is a class that can load objects from a Configuration Graph.  Defining an Object Factory allows additional objects beyond those supported by default to be loaded from a Configuration Graph.  Object Factories can be automatically loaded by calling ConfigurationLoader.AutoDetectObjectFactories()" .
 
 dnr:TripleStore a rdfs:Class ;
 				rdfs:label "Class of Triple Stores" ;
@@ -569,5 +570,5 @@ dnr:dtdWriting a rdf:Property ;
 
 dnr:multiThreadedWriting a rdf:Property ;
 							rdfs:label "Multi-Threaded Writing" ;
-							rdfs:comment "Specifies whether supporting writers should use multi-threaded writing.  Defualt is true for most supporting writers" ;
+							rdfs:comment "Specifies whether supporting writers should use multi-threaded writing.  Default is true for most supporting writers" ;
 							rdfs:range xsd:boolean .

@@ -107,10 +107,7 @@ namespace VDS.RDF.Web
                 MimeTypeDefinition definition = MimeTypesHelper.GetDefinitions(acceptTypes).FirstOrDefault(d => d.CanWriteRdf);
                 if (definition == null) throw new RdfWriterSelectionException("No MIME Type Definitions have a registered RDF Writer for the MIME Types specified in the HTTP Accept Header");
                 IRdfWriter writer = this.SelectWriter(definition);
-                if (writer is ICompressingWriter)
-                {
-                    ((ICompressingWriter)writer).CompressionLevel = Options.DefaultCompressionLevel;
-                }
+                HandlerHelper.ApplyWriterOptions(writer, this._config);
 
                 IGraph g = this.ProcessGraph(this._config.Graph);
                 if (this._config.ETag == null)

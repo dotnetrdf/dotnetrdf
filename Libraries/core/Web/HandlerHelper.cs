@@ -228,10 +228,7 @@ namespace VDS.RDF.Web
                 sparqlwriter = definition.GetSparqlResultsWriter();
 
                 context.Response.ContentType = definition.CanonicalMimeType;
-                if (config != null && sparqlwriter is IHtmlWriter)
-                {
-                    ((IHtmlWriter)sparqlwriter).Stylesheet = config.Stylesheet;
-                }
+                HandlerHelper.ApplyWriterOptions(sparqlwriter, config);
 
                 //Clear any existing Response
                 context.Response.Clear();
@@ -259,14 +256,7 @@ namespace VDS.RDF.Web
                 //Setup the writer
                 if (definition != null) ctype = definition.CanonicalMimeType;
                 context.Response.ContentType = ctype;
-                if (rdfwriter is ICompressingWriter)
-                {
-                    ((ICompressingWriter)rdfwriter).CompressionLevel = Options.DefaultCompressionLevel;
-                }
-                if (config != null && rdfwriter is IHtmlWriter)
-                {
-                    ((IHtmlWriter)rdfwriter).Stylesheet = config.Stylesheet;
-                }
+                HandlerHelper.ApplyWriterOptions(rdfwriter, config);
 
                 //Clear any existing Response
                 context.Response.Clear();
@@ -301,10 +291,7 @@ namespace VDS.RDF.Web
                 //Setup the writer
                 if (definition != null) ctype = definition.CanonicalMimeType;
                 context.Response.ContentType = ctype;
-                if (config != null && storewriter is IHtmlWriter)
-                {
-                    ((IHtmlWriter)storewriter).Stylesheet = config.Stylesheet;
-                }
+                HandlerHelper.ApplyWriterOptions(storewriter, config);
 
                 //Clear any existing Response
                 context.Response.Clear();
@@ -329,6 +316,36 @@ namespace VDS.RDF.Web
             else
             {
                 throw new RdfOutputException("Unexpected Result Object of Type '" + result.GetType().ToString() + "' returned - unable to write Objects of this Type to the HTTP Response");
+            }
+        }
+
+        public static void ApplyWriterOptions(Object writer, BaseHandlerConfiguration config)
+        {
+            if (config != null)
+            {
+                //Apply Stylesheet to HTML writers
+                if (writer is IHtmlWriter)
+                {
+                    ((IHtmlWriter)writer).Stylesheet = config.Stylesheet;
+                }
+
+                //Apply Compression Options
+                if (writer is ICompressingWriter)
+                {
+                    ((ICompressingWriter)writer).CompressionLevel = config.WriterCompressionLevel;
+                }
+                if (writer is IDtdWriter)
+                {
+                    ((IDtdWriter)writer).UseDtd = config.WriterUseDtds;
+                }
+                if (writer is IHighSpeedWriter)
+                {
+                    ((IHighSpeedWriter)writer).HighSpeedModePermitted = config.WriterHighSpeedMode;
+                }
+                if (writer is IPrettyPrintingWriter)
+                {
+                    ((IPrettyPrintingWriter)writer).PrettyPrintMode = config.WriterPrettyPrinting;
+                }
             }
         }
 

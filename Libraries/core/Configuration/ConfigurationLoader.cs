@@ -100,7 +100,13 @@ namespace VDS.RDF.Configuration
                             PropertyDescribeAlgorithm = "dnr:describeAlgorithm",
                             PropertyServiceDescription = "dnr:serviceDescription",
                             PropertyQueryOptimiser = "dnr:queryOptimiser",
-                            PropertyAlgebraOptimiser = "dnr:algebraOptimiser"
+                            PropertyAlgebraOptimiser = "dnr:algebraOptimiser",
+                            //Properties for writers
+                            PropertyCompressionLevel = "dnr:compressionLevel",
+                            PropertyPrettyPrinting = "dnr:prettyPrinting",
+                            PropertyHighSpeedWriting = "dnr:highSpeedWriting",
+                            PropertyDtdWriting = "dnr:dtdWriting",
+                            PropertyMultiThreadedWriting = "dnr:multiThreadedWriting"
                             ;
 
         /// <summary>
@@ -214,6 +220,11 @@ namespace VDS.RDF.Configuration
                     throw new DotNetRdfConfigurationException("Auto-detection of Object Loaders failed as the Node '" + objNode.ToString() + "' was stated to be rdf:type or dnr:ConfigurationLoader but failed to load as an object which implements the IObjectLoader interface");
                 }
             }
+        }
+
+        public static void AutoDetectReadersAndWriters(IGraph g)
+        {
+
         }
 
         /// <summary>

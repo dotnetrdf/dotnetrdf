@@ -74,7 +74,11 @@ namespace VDS.RDF.Web.Configuration
                 Graph g = new Graph();
                 FileLoader.Load(g, configFile);
                 context.Cache.Add(WebConfigGraphCacheKey + Path.GetFileName(configFile), g, new System.Web.Caching.CacheDependency(configFile), System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(0, WebConfigGraphCacheDuration, 0), System.Web.Caching.CacheItemPriority.Normal, null);
+
+                //Make sure to auto-detect any Object Factories and custom Parsers/Writers from the Graph
                 ConfigurationLoader.AutoDetectObjectFactories(g);
+                ConfigurationLoader.AutoDetectReadersAndWriters(g);
+
                 return g;
             }
             else
@@ -82,7 +86,8 @@ namespace VDS.RDF.Web.Configuration
                 Object temp = context.Cache[WebConfigGraphCacheKey + Path.GetFileName(configFile)];
                 if (temp is IGraph)
                 {
-                    ConfigurationLoader.AutoDetectObjectFactories((IGraph)temp);
+                    //Q: Do we need to call the AutoDetectX() methods again here or not?
+                    //ConfigurationLoader.AutoDetectObjectFactories((IGraph)temp);
                     return (IGraph)temp;
                 }
                 else
@@ -90,7 +95,11 @@ namespace VDS.RDF.Web.Configuration
                     Graph g = new Graph();
                     FileLoader.Load(g, configFile);
                     context.Cache.Add(WebConfigGraphCacheKey + Path.GetFileName(configFile), g, new System.Web.Caching.CacheDependency(configFile), System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(0, WebConfigGraphCacheDuration, 0), System.Web.Caching.CacheItemPriority.Normal, null);
+
+                    //Make sure to auto-detect any Object Factories and custom Parsers/Writers from the Graph
                     ConfigurationLoader.AutoDetectObjectFactories(g);
+                    ConfigurationLoader.AutoDetectReadersAndWriters(g);
+
                     return g;
                 }
             }
