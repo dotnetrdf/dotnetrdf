@@ -53,6 +53,7 @@ namespace VDS.RDF.Storage
         private const String DydraBaseUri = "http://dydra.com/";
         private const String DydraApiKeyPassword = "X";
         private String _account, _apiKey;
+        private SparqlQueryParser _parser = new SparqlQueryParser();
 
         public DydraConnector(String accountID, String repositoryID)
             : base(DydraBaseUri + accountID + "/", repositoryID)
@@ -60,7 +61,7 @@ namespace VDS.RDF.Storage
             this._account = accountID;
             this._repositoriesPrefix = String.Empty;
             this._queryPath = "/sparql";
-            this._fullContextEncoding = false;
+            //this._fullContextEncoding = false;
             //this._postAllQueries = true;
         }
 
@@ -118,6 +119,128 @@ namespace VDS.RDF.Storage
             catch (Exception ex)
             {
                 throw new RdfStorageException("An error occurred while attempting to retrieve the Graph List from the Store, see inner exception for details", ex);
+            }
+        }
+
+        /// <summary>
+        /// Makes a SPARQL Query against the underlying Store
+        /// </summary>
+        /// <param name="sparqlQuery">SPARQL Query</param>
+        /// <returns></returns>
+        public override object Query(string sparqlQuery)
+        {
+            try
+            {
+                //First off parse the Query to see what kind of query it is
+                SparqlQuery q;
+                try
+                {
+                    q = this._parser.ParseFromString(sparqlQuery);
+                }
+                catch (RdfParseException parseEx)
+                {
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    throw new RdfStorageException("An unexpected error occurred while trying to parse the SPARQL Query prior to sending it to the Store, see inner exception for details", ex);
+                }
+
+                //Now select the Accept Header based on the query type
+                String accept = (SparqlSpecsHelper.IsSelectQuery(q.QueryType) || q.QueryType == SparqlQueryType.Ask) ? MimeTypesHelper.HttpSparqlAcceptHeader : MimeTypesHelper.HttpAcceptHeader;
+
+                //Create the Request
+                HttpWebRequest request;
+                Dictionary<String, String> queryParams = new Dictionary<string, string>();
+                if (sparqlQuery.Length < 2048 && !this._postAllQueries)
+                {
+                    queryParams.Add("query", EscapeQuery(sparqlQuery));
+
+                    request = this.CreateRequest(this._repositoriesPrefix + this._store + this._queryPath, accept, "GET", queryParams);
+                }
+                else
+                {
+                    request = this.CreateRequest(this._repositoriesPrefix + this._store + this._queryPath, accept, "POST", queryParams);
+
+                    //Build the Post Data and add to the Request Body
+                    request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
+                    StringBuilder postData = new StringBuilder();
+                    postData.Append("query=");
+                    postData.Append(Uri.EscapeDataString(EscapeQuery(sparqlQuery)));
+                    StreamWriter writer = new StreamWriter(request.GetRequestStream());
+                    writer.Write(postData);
+                    writer.Close();
+                }
+
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    Tools.HttpDebugRequest(request);
+                }
+#endif
+
+                //Get the Response and process based on the Content Type
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                {
+#if DEBUG
+                    if (Options.HttpDebugging)
+                    {
+                        Tools.HttpDebugResponse(response);
+                    }
+#endif
+                    StreamReader data = new StreamReader(response.GetResponseStream());
+                    String ctype = response.ContentType;
+                    if (SparqlSpecsHelper.IsSelectQuery(q.QueryType) || q.QueryType == SparqlQueryType.Ask)
+                    {
+                        //ASK/SELECT should return SPARQL Results
+                        ISparqlResultsReader resreader = MimeTypesHelper.GetSparqlParser(ctype, q.QueryType == SparqlQueryType.Ask);
+                        SparqlResultSet results = new SparqlResultSet();
+                        resreader.Load(results, data);
+                        response.Close();
+                        return results;
+                    }
+                    else
+                    {
+                        //CONSTRUCT/DESCRIBE should return a Graph
+                        IRdfReader rdfreader = MimeTypesHelper.GetParser(ctype);
+                        Graph g = new Graph();
+                        rdfreader.Load(g, data);
+                        response.Close();
+                        return g;
+                    }
+                }
+            }
+            catch (WebException webEx)
+            {
+                if (webEx.Response != null)
+                {
+#if DEBUG
+                    if (Options.HttpDebugging)
+                    {
+                        Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                    }
+#endif
+                    if (webEx.Response.ContentLength > 0)
+                    {
+                        try
+                        {
+                            String responseText = new StreamReader(webEx.Response.GetResponseStream()).ReadToEnd();
+                            throw new RdfQueryException("A HTTP error occured while querying the Store.  Store returned the following error message: " + responseText, webEx);
+                        }
+                        catch
+                        {
+                            throw new RdfQueryException("A HTTP error occurred while querying the Store", webEx);
+                        }
+                    }
+                    else
+                    {
+                        throw new RdfQueryException("A HTTP error occurred while querying the Store", webEx);
+                    }
+                }
+                else
+                {
+                    throw new RdfQueryException("A HTTP error occurred while querying the Store", webEx);
+                }
             }
         }
 

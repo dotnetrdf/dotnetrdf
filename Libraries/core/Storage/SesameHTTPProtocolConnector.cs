@@ -128,11 +128,11 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Makes a Sparql Query against the underlying Store
+        /// Makes a SPARQL Query against the underlying Store
         /// </summary>
         /// <param name="sparqlQuery">Sparql Query</param>
         /// <returns></returns>
-        public object Query(string sparqlQuery)
+        public virtual object Query(string sparqlQuery)
         {
             try
             {

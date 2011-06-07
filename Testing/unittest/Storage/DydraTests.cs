@@ -45,6 +45,8 @@ namespace VDS.RDF.Test.Storage
         {
             try
             {
+                Options.HttpDebugging = true;
+
                 Graph orig = new Graph();
                 orig.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
                 orig.BaseUri = null;
@@ -67,6 +69,10 @@ namespace VDS.RDF.Test.Storage
             catch (Exception ex)
             {
                 TestTools.ReportError("Error", ex, true);
+            }
+            finally
+            {
+                Options.HttpDebugging = false;
             }
         }
 
@@ -129,7 +135,7 @@ namespace VDS.RDF.Test.Storage
             try
             {
                 Options.HttpDebugging = true;
-                Options.HttpFullDebugging = true;
+                //Options.HttpFullDebugging = true;
 
                 DydraConnector dydra = this.GetConnection();
                 Object results = dydra.Query("SELECT * WHERE { ?s a ?type }");
