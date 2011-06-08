@@ -57,8 +57,21 @@ namespace VDS.RDF.Writing
     /// If you encode Triples which have values datatyped as XML Literals with this writer then round-trip Graph equality is not guaranteed as the RDFa parser will add appropriate Namespace declarations to elements as required by the specification
     /// </para>
     /// </remarks>
-    public class HtmlWriter : BaseHtmlWriter, IRdfWriter
+    public class HtmlWriter : BaseHtmlWriter, IRdfWriter, INamespaceWriter
     {
+        private INamespaceMapper _defaultNamespaces = new NamespaceMapper();
+
+        public INamespaceMapper DefaultNamespaces
+        {
+            get
+            {
+                return this._defaultNamespaces;
+            }
+            set
+            {
+                this._defaultNamespaces = value;
+            }
+        }
 
         /// <summary>
         /// Saves the Graph to the given File as an XHTML Table with embedded RDFa
@@ -80,6 +93,7 @@ namespace VDS.RDF.Writing
         {
             try
             {
+                g.NamespaceMap.Import(this._defaultNamespaces);
                 HtmlWriterContext context = new HtmlWriterContext(g, output);
                 this.GenerateOutput(context);
                 output.Close();
