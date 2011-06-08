@@ -106,7 +106,8 @@ namespace VDS.RDF.Configuration
                             PropertyPrettyPrinting = "dnr:prettyPrinting",
                             PropertyHighSpeedWriting = "dnr:highSpeedWriting",
                             PropertyDtdWriting = "dnr:dtdWriting",
-                            PropertyMultiThreadedWriting = "dnr:multiThreadedWriting"
+                            PropertyMultiThreadedWriting = "dnr:multiThreadedWriting",
+                            PropertyImportNamespacesFrom = "dnr:importNamespacesFrom"
                             ;
 
         /// <summary>

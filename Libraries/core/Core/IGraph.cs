@@ -73,7 +73,7 @@ namespace VDS.RDF
         /// <summary>
         /// Gets the Namespace Map for the Graph
         /// </summary>
-        NamespaceMapper NamespaceMap 
+        INamespaceMapper NamespaceMap 
         {
             get;
         }

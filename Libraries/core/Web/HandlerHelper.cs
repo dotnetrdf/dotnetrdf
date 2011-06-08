@@ -261,6 +261,12 @@ namespace VDS.RDF.Web
                 //Clear any existing Response
                 context.Response.Clear();
 
+                //TODO: Move this elsewhere by defining a INamespaceWriter interface
+                if (config != null)
+                {
+                    ((IGraph)result).NamespaceMap.Import(config.DefaultNamespaces);
+                }
+
                 //Send Graph to Client
                 if (definition != null)
                 {

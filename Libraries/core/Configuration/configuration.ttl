@@ -572,3 +572,9 @@ dnr:multiThreadedWriting a rdf:Property ;
 							rdfs:label "Multi-Threaded Writing" ;
 							rdfs:comment "Specifies whether supporting writers should use multi-threaded writing.  Default is true for most supporting writers" ;
 							rdfs:range xsd:boolean .
+							
+dnr:importNamespacesFrom a rdf:Property ;
+							rdfs:label "Import Namespaces From" ;
+							rdfs:comment "Specifies a Graph from which default namespace declarations will be taken" ;
+							rdfs:range dnr:Graph ;
+							rdfs:domain dnr:HttpHandler .

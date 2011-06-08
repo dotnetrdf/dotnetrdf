@@ -119,7 +119,7 @@ namespace VDS.RDF
         /// <summary>
         /// Gets the Namespace Map for the Graph
         /// </summary>
-        public NamespaceMapper NamespaceMap
+        public INamespaceMapper NamespaceMap
         {
             get
             { 

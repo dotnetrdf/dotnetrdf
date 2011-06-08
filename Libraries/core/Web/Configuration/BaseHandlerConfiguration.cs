@@ -92,6 +92,8 @@ namespace VDS.RDF.Web.Configuration
         protected bool _writerDtds = false;
         protected bool _writerMultiThreading = true;
 
+        protected INamespaceMapper _defaultNamespaces = new NamespaceMapper();
+
         /// <summary>
         /// Creates a new Base Handler Configuration which loads common Handler settings from a Configuration Graph
         /// </summary>
@@ -173,6 +175,16 @@ namespace VDS.RDF.Web.Configuration
             this._writerHighSpeed = ConfigurationLoader.GetConfigurationBoolean(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyHighSpeedWriting), this._writerHighSpeed);
             this._writerMultiThreading = ConfigurationLoader.GetConfigurationBoolean(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyMultiThreadedWriting), this._writerMultiThreading);
             this._writerPrettyPrinting = ConfigurationLoader.GetConfigurationBoolean(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyPrettyPrinting), this._writerPrettyPrinting);
+
+            INode nsNode = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyImportNamespacesFrom));
+            if (nsNode != null)
+            {
+                Object nsTemp = ConfigurationLoader.LoadObject(g, nsNode);
+                if (nsTemp is IGraph)
+                {
+                    this._defaultNamespaces.Import(((IGraph)nsTemp).NamespaceMap);
+                }
+            }
         }
 
         /// <summary>
@@ -322,6 +334,14 @@ namespace VDS.RDF.Web.Configuration
             get
             {
                 return this._writerPrettyPrinting;
+            }
+        }
+
+        public INamespaceMapper DefaultNamespaces
+        {
+            get
+            {
+                return this._defaultNamespaces;
             }
         }
     }

@@ -140,7 +140,7 @@ namespace VDS.RDF
         /// Gets the Namespace Mapper for this Graph which contains all in use Namespace Prefixes and their URIs
         /// </summary>
         /// <returns></returns>
-        public virtual NamespaceMapper NamespaceMap
+        public virtual INamespaceMapper NamespaceMap
         {
             get
             {
