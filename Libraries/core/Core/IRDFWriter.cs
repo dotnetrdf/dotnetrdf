@@ -132,6 +132,18 @@ namespace VDS.RDF.Writing
     }
 
     /// <summary>
+    /// Interface for Writers that support the use of Namespaces and allows a set of Default Namespaces to be defined
+    /// </summary>
+    public interface INamespaceWriter
+    {
+        INamespaceMapper DefaultNamespaces
+        {
+            get;
+            set;
+        }
+    }
+
+    /// <summary>
     /// Interface for Writers that support multi-threaded writing
     /// </summary>
     public interface IMultiThreadedWriter

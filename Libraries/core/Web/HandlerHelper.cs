@@ -340,6 +340,10 @@ namespace VDS.RDF.Web
                 {
                     ((ICompressingWriter)writer).CompressionLevel = config.WriterCompressionLevel;
                 }
+                if (writer is INamespaceWriter)
+                {
+                    ((INamespaceWriter)writer).DefaultNamespaces = config.DefaultNamespaces;
+                }
                 if (writer is IDtdWriter)
                 {
                     ((IDtdWriter)writer).UseDtd = config.WriterUseDtds;

@@ -49,11 +49,13 @@ namespace VDS.RDF.Writing
     /// Class for generating Notation 3 Concrete RDF Syntax which provides varying levels of Syntax Compression
     /// </summary>
     /// <threadsafety instance="true">Designed to be Thread Safe - should be able to call the Save() method from multiple threads on different Graphs without issue</threadsafety>
-    public class Notation3Writer : IRdfWriter, IPrettyPrintingWriter, IHighSpeedWriter, ICompressingWriter
+    public class Notation3Writer 
+        : IRdfWriter, IPrettyPrintingWriter, IHighSpeedWriter, ICompressingWriter, INamespaceWriter
     {
         private bool _prettyprint = true;
         private bool _allowHiSpeed = true;
         private int _compressionLevel = WriterCompressionLevel.Default;
+        private INamespaceMapper _defaultNamespaces = new NamespaceMapper();
 
         /// <summary>
         /// Creates a new Notation 3 Writer which uses the Default Compression Level
@@ -125,6 +127,21 @@ namespace VDS.RDF.Writing
             set
             {
                 this._compressionLevel = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets/Sets the Default Namespaces that are always available
+        /// </summary>
+        public INamespaceMapper DefaultNamespaces
+        {
+            get
+            {
+                return this._defaultNamespaces;
+            }
+            set
+            {
+                this._defaultNamespaces = value;
             }
         }
 

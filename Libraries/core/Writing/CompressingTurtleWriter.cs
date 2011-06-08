@@ -53,11 +53,13 @@ namespace VDS.RDF.Writing
     /// Similar in speed to the standard <see cref="TurtleWriter">TurtleWriter</see> but capable of using more syntax compressions depending on the Compression level set
     /// </remarks>
     /// <threadsafety instance="true">Designed to be Thread Safe - should be able to call the Save() method from multiple threads on different Graphs without issue</threadsafety>
-    public class CompressingTurtleWriter : IRdfWriter, IPrettyPrintingWriter, IHighSpeedWriter, ICompressingWriter
+    public class CompressingTurtleWriter 
+        : IRdfWriter, IPrettyPrintingWriter, IHighSpeedWriter, ICompressingWriter, INamespaceWriter
     {
         private bool _prettyprint = true;
         private bool _allowHiSpeed = true;
         private int _compressionLevel = WriterCompressionLevel.Default;
+        private INamespaceMapper _defaultNamespaces = new NamespaceMapper();
 
         /// <summary>
         /// Creates a new Compressing Turtle Writer which uses the Default Compression Level
@@ -133,6 +135,21 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
+        /// Gets/Sets the Default Namespaces that are always available
+        /// </summary>
+        public INamespaceMapper DefaultNamespaces
+        {
+            get
+            {
+                return this._defaultNamespaces;
+            }
+            set
+            {
+                this._defaultNamespaces = value;
+            }
+        }
+
+        /// <summary>
         /// Saves a Graph to a file using Turtle Syntax
         /// </summary>
         /// <param name="g">Graph to save</param>
@@ -173,6 +190,8 @@ namespace VDS.RDF.Writing
         /// </summary>
         private void GenerateOutput(CompressingTurtleWriterContext context)
         {
+            //Add Default Namespaces
+
             //Create the Header
             //Base Directive
             if (context.Graph.BaseUri != null)

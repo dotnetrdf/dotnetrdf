@@ -56,11 +56,13 @@ namespace VDS.RDF.Writing
     /// <strong>Note:</strong> If the Graph to be serialized makes heavy use of collections it may result in a StackOverflowException.  To address this set the <see cref="RdfXmlWriter.CompressionLevel">CompressionLevel</see> property to &lt; 5
     /// </para>
     /// </remarks>
-    public class PrettyRdfXmlWriter : IRdfWriter, IPrettyPrintingWriter, ICompressingWriter, IDtdWriter
+    public class PrettyRdfXmlWriter 
+        : IRdfWriter, IPrettyPrintingWriter, ICompressingWriter, IDtdWriter, INamespaceWriter
     {
         private bool _prettyprint = true;
         private int _compressionLevel = WriterCompressionLevel.High;
         private bool _useDTD = Options.UseDtd;
+        private INamespaceMapper _defaultNamespaces = new NamespaceMapper();
 
         /// <summary>
         /// Creates a new RDF/XML Writer
@@ -139,6 +141,21 @@ namespace VDS.RDF.Writing
             set
             {
                 this._useDTD = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets/Sets the Default Namespaces that are always available
+        /// </summary>
+        public INamespaceMapper DefaultNamespaces
+        {
+            get
+            {
+                return this._defaultNamespaces;
+            }
+            set
+            {
+                this._defaultNamespaces = value;
             }
         }
 

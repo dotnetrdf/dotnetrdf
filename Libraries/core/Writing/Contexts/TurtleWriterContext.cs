@@ -92,7 +92,8 @@ namespace VDS.RDF.Writing.Contexts
     /// <summary>
     /// Writer Context for Compressing Turtle Writers
     /// </summary>
-    public class CompressingTurtleWriterContext : TurtleWriterContext, ICollectionCompressingWriterContext
+    public class CompressingTurtleWriterContext 
+        : TurtleWriterContext, ICollectionCompressingWriterContext
     {
         private Dictionary<INode, OutputRdfCollection> _collections = new Dictionary<INode, OutputRdfCollection>();
         private TripleCollection _triplesDone = new TripleCollection();

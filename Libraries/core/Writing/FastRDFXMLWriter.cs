@@ -59,11 +59,13 @@ namespace VDS.RDF.Writing
     /// </para>
     /// </remarks>
     [Obsolete("This writer is obsoleted in favour of the RdfXmlWriter and the PrettyRdfXmlWriter as both are now faster than this writer", false)]
-    public class FastRdfXmlWriter : IRdfWriter, IPrettyPrintingWriter, ICompressingWriter, IDtdWriter
+    public class FastRdfXmlWriter 
+        : IRdfWriter, IPrettyPrintingWriter, ICompressingWriter, IDtdWriter, INamespaceWriter
     {
         private bool _prettyprint = true;
         private int _compressionLevel = WriterCompressionLevel.High;
         private bool _useDTD = Options.UseDtd;
+        private INamespaceMapper _defaultNamespaces = new NamespaceMapper();
 
         /// <summary>
         /// Creates a new RDF/XML Writer
@@ -142,6 +144,21 @@ namespace VDS.RDF.Writing
             set
             {
                 this._useDTD = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets/Sets the Default Namespaces that are always available
+        /// </summary>
+        public INamespaceMapper DefaultNamespaces
+        {
+            get
+            {
+                return this._defaultNamespaces;
+            }
+            set
+            {
+                this._defaultNamespaces = value;
             }
         }
 
