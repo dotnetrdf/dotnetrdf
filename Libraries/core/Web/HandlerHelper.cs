@@ -245,12 +245,15 @@ namespace VDS.RDF.Web
                 if (acceptTypes != null)
                 {
                     definition = MimeTypesHelper.GetDefinitions(acceptTypes).FirstOrDefault(d => d.CanWriteRdf);
-                    rdfwriter = definition.GetRdfWriter();
-                } 
+                }
                 if (definition == null)
                 {
                     //If no appropriate definition then use the GetWriter method instead
                     rdfwriter = MimeTypesHelper.GetWriter(acceptTypes, out ctype);
+                }
+                else
+                {
+                    rdfwriter = definition.GetRdfWriter();
                 }
 
                 //Setup the writer
@@ -260,12 +263,6 @@ namespace VDS.RDF.Web
 
                 //Clear any existing Response
                 context.Response.Clear();
-
-                //TODO: Move this elsewhere by defining a INamespaceWriter interface
-                if (config != null)
-                {
-                    ((IGraph)result).NamespaceMap.Import(config.DefaultNamespaces);
-                }
 
                 //Send Graph to Client
                 if (definition != null)

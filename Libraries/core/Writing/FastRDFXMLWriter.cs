@@ -182,6 +182,8 @@ namespace VDS.RDF.Writing
         {
             try
             {
+                g.NamespaceMap.Import(this._defaultNamespaces);
+                g.NamespaceMap.AddNamespace("rdf", new Uri(NamespaceMapper.RDF));
                 RdfXmlWriterContext context = new RdfXmlWriterContext(g, output);
                 this.GenerateOutput(context);
                 output.Close();

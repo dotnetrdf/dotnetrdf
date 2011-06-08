@@ -205,6 +205,7 @@ namespace VDS.RDF.Writing
         private void GenerateOutput(IGraph g, TextWriter output)
         {
             //Always force RDF Namespace to be correctly defined
+            g.NamespaceMap.Import(this._defaultNamespaces);
             g.NamespaceMap.AddNamespace("rdf", new Uri(NamespaceMapper.RDF));
 
             //Create our Writer Context and start the XML Document

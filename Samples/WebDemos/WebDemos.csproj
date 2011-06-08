@@ -56,6 +56,7 @@
     <Content Include="App_Data\BooksIntro.txt" />
     <Content Include="App_Data\FederatedIntro.txt" />
     <Content Include="App_Data\LeviathanIntro.txt" />
+    <Content Include="App_Data\namespaces.ttl" />
     <Content Include="App_Data\PelletIntro.txt" />
     <Content Include="App_Data\ServerIntro.txt" />
     <Content Include="sparql.css" />

@@ -6,7 +6,9 @@
 							  dnr:introText "~/App_Data/LeviathanIntro.txt" ;
 							  dnr:stylesheet "/demos/sparql.css" ;
 							  dnr:defaultQueryFile "~/App_Data/default.rq" ;
-							  dnr:timeout 15000 . #;
+							  dnr:timeout 15000 ;
+							  dnr:dtdWriting false ;
+							  dnr:importNamespacesFrom [ a dnr:Graph ; dnr:fromFile "~/App_Data/namespaces.ttl" ] .
 							  #dnr:expressionFactory _:monkey .
 							  
 <dotnetrdf:/demos/secure/> a dnr:HttpHandler ;

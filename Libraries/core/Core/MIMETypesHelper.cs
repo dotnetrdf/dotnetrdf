@@ -170,7 +170,7 @@ namespace VDS.RDF
             if (mimeType == null) return Enumerable.Empty<MimeTypeDefinition>();
 
             return (from definition in MimeTypesHelper.Definitions
-                    where definition.MimeTypes.Contains(mimeType)
+                    where definition.SupportsMimeType(mimeType)
                     select definition);
         }
 

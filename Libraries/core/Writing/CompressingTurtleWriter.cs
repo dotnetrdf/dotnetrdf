@@ -169,6 +169,7 @@ namespace VDS.RDF.Writing
             try
             {
                 //Create the Writing Context
+                g.NamespaceMap.Import(this._defaultNamespaces);
                 CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, output, this._compressionLevel, this._prettyprint, this._allowHiSpeed);
                 this.GenerateOutput(context);
             }
@@ -190,8 +191,6 @@ namespace VDS.RDF.Writing
         /// </summary>
         private void GenerateOutput(CompressingTurtleWriterContext context)
         {
-            //Add Default Namespaces
-
             //Create the Header
             //Base Directive
             if (context.Graph.BaseUri != null)

@@ -252,6 +252,16 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Determines whether the Definition supports a particular MIME type
+        /// </summary>
+        /// <param name="mimeType">MIME Type</param>
+        /// <returns></returns>
+        public bool SupportsMimeType(String mimeType)
+        {
+            return this._mimeTypes.Contains(mimeType) || mimeType.Equals(MimeTypesHelper.Any);
+        }
+
         #endregion
 
         #region File Extension Management

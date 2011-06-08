@@ -164,6 +164,7 @@ namespace VDS.RDF.Writing
         {
             try
             {
+                g.NamespaceMap.Import(this._defaultNamespaces);
                 CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, output, this._compressionLevel, this._prettyprint, this._allowHiSpeed);
                 context.NodeFormatter = new Notation3Formatter(g);
                 this.GenerateOutput(context);
