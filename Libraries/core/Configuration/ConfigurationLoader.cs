@@ -132,7 +132,13 @@ namespace VDS.RDF.Configuration
                             ClassProxy = "dnr:Proxy",
                             ClassUserGroup = "dnr:UserGroup",
                             ClassUser = "dnr:User",
-                            ClassPermission = "dnr:Permission";
+                            ClassPermission = "dnr:Permission",
+                            ClassRdfParser = "dnr:RdfParser",
+                            ClassDatasetParser = "dnr:DatasetParser",
+                            ClassSparqlResultsParser = "dnr:SparqlResultsParser",
+                            ClassRdfWriter = "dnr:RdfWriter",
+                            ClassDatasetWriter = "dnr:DatasetWriter",
+                            ClassSparqlResultsWriter = "dnr:SparqlResultsWriter";
 
         /// <summary>
         /// QName Constants for Default Types for some configuration classes
@@ -146,6 +152,8 @@ namespace VDS.RDF.Configuration
                             DefaultTypeUserGroup = "VDS.RDF.Configuration.Permissions";
 
         #endregion
+
+        #region Member Variables
 
         private static Dictionary<String, IUriNode> _nodeMap = new Dictionary<string,IUriNode>();
         private static Dictionary<CachedObjectKey, Object> _cache = new Dictionary<CachedObjectKey, object>();
@@ -183,9 +191,14 @@ namespace VDS.RDF.Configuration
             new ReasonerFactory(),
             new ExpressionFactoryFactory(),
             //ObjectFactory Factory
-            new ObjectFactoryFactory()
+            new ObjectFactoryFactory(),
+            //Parser and Writer Factories
+            new ParserFactory(),
+            new WriterFactory()
         };
         private static IPathResolver _resolver = null;
+
+        #endregion
 
         /// <summary>
         /// Registers an Object Factory with the Configuration Loader
@@ -218,14 +231,69 @@ namespace VDS.RDF.Configuration
                 }
                 else
                 {
-                    throw new DotNetRdfConfigurationException("Auto-detection of Object Loaders failed as the Node '" + objNode.ToString() + "' was stated to be rdf:type or dnr:ConfigurationLoader but failed to load as an object which implements the IObjectLoader interface");
+                    throw new DotNetRdfConfigurationException("Auto-detection of Object Loaders failed as the Node '" + objNode.ToString() + "' was stated to be rdf:type of dnr:ObjectFactory but failed to load as an object which implements the IObjectFactory interface");
                 }
             }
         }
 
+        /// <summary>
+        /// Given a Configuration Graph will detect Readers and Writers for RDF and SPARQL syntaxes and register them with <see cref="MimeTypesHelper">MimeTypesHelper</see>.  This will cause the library defaults to be overridden where appropriate.
+        /// </summary>
+        /// <param name="g">Configuration Graph</param>
         public static void AutoDetectReadersAndWriters(IGraph g)
         {
+            IUriNode rdfType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
+            INode desiredType = CreateConfigurationNode(g, ClassRdfParser);
+            INode formatMimeType = g.CreateUriNode(new Uri("http://www.w3.org/ns/formats/media_type"));
+            INode formatExtension = g.CreateUriNode(new Uri("http://www.w3.org/ns/formats/preferred_suffix"));
+            Object temp;
+            String[] mimeTypes, extensions;
 
+            //Load RDF Parsers
+            foreach (INode objNode in g.GetTriplesWithPredicateObject(rdfType, desiredType).Select(t => t.Subject))
+            {
+                temp = LoadObject(g, objNode);
+                if (temp is IRdfReader)
+                {
+                    //Get the formats to associate this with
+                    mimeTypes = ConfigurationLoader.GetConfigurationArray(g, objNode, formatMimeType);
+                    if (mimeTypes.Length == 0) throw new DotNetRdfConfigurationException("Auto-detection of Readers and Writers failed as the Parser specified by the Node '" + objNode.ToString() + "' is not associated with any MIME types");
+                    extensions = ConfigurationLoader.GetConfigurationArray(g, objNode, formatExtension);
+
+                    //Register
+                    MimeTypesHelper.RegisterParser((IRdfReader)temp, mimeTypes, extensions);
+                }
+                else
+                {
+                    throw new DotNetRdfConfigurationException("Auto-detection of Readers and Writers failed as the Node '" + objNode.ToString() + "' was stated to be rdf:type of dnr:RdfParser but failed to load as an object which implements the required IRdfParser interface");
+                }
+            }
+
+            //REQ: Load Dataset parsers
+
+            //REQ: Load SPARQL Result parsers
+
+
+            //Load RDF Writers
+            desiredType = CreateConfigurationNode(g, ClassRdfWriter);
+            foreach (INode objNode in g.GetTriplesWithPredicateObject(rdfType, desiredType).Select(t => t.Subject))
+            {
+                temp = LoadObject(g, objNode);
+                if (temp is IRdfWriter)
+                {
+                    //Get the formats to associate this with
+                    mimeTypes = ConfigurationLoader.GetConfigurationArray(g, objNode, formatMimeType);
+                    if (mimeTypes.Length == 0) throw new DotNetRdfConfigurationException("Auto-detection of Readers and Writers failed as the Writer specified by the Node '" + objNode.ToString() + "' is not associated with any MIME types");
+                    extensions = ConfigurationLoader.GetConfigurationArray(g, objNode, formatExtension);
+
+                    //Register
+                    MimeTypesHelper.RegisterWriter((IRdfWriter)temp, mimeTypes, extensions);
+                }
+                else
+                {
+                    throw new DotNetRdfConfigurationException("Auto-detection of Readers and Writers failed as the Node '" + objNode.ToString() + "' was stated to be rdf:type of dnr:RdfWriter but failed to load as an object which implements the required IRdfWriter interface");
+                }
+            }
         }
 
         /// <summary>
@@ -308,6 +376,23 @@ namespace VDS.RDF.Configuration
         public static IEnumerable<INode> GetConfigurationData(IGraph g, INode objNode, INode property)
         {
             return g.GetTriplesWithSubjectPredicate(objNode, property).Select(t => ResolveAppSetting(g, t.Object));
+        }
+
+        /// <summary>
+        /// Gets all the literal values given for a property of a given Object in the Configuration Graph
+        /// </summary>
+        /// <param name="g">Configuration Graph</param>
+        /// <param name="objNode">Object Node</param>
+        /// <param name="property">Property Node</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// <para>
+        /// Only returns the value part of Literal Nodes which are given as values for the property i.e. ignores all non-Literals and discards any language/data type from Literals
+        /// </para>
+        /// </remarks>
+        public static String[] GetConfigurationArray(IGraph g, INode objNode, INode property)
+        {
+            return g.GetTriplesWithSubjectPredicate(objNode, property).Select(t => t.Object).Where(n => n.NodeType == NodeType.Literal).Select(n => ((ILiteralNode)n).Value).ToArray();
         }
 
         /// <summary>

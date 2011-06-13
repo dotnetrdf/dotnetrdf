@@ -137,12 +137,17 @@ namespace VDS.RDF.Query
         AnalyseJoins = 2048,
 
         /// <summary>
+        /// Sets whether Evaluation should be simulated (means timings will not be accurate but allows you to explain queries without needing actual data to evaluate them against)
+        /// </summary>
+        Simulate = 4096,
+
+        /// <summary>
         /// Shows all analysis information
         /// </summary>
         AnalyseAll = AnalyseBgps | AnalyseJoins,
 
         /// <summary>
-        /// Basic Explanation Level (Console Standard Output and Basic Information
+        /// Basic Explanation Level (Console Standard Output and Basic Information)
         /// </summary>
         Basic = OutputToConsoleStdOut | ShowBasic,
         /// <summary>
@@ -156,7 +161,15 @@ namespace VDS.RDF.Query
         /// <summary>
         /// Full Explanation Level (All Outputs, All Information and All Analysis)
         /// </summary>
-        All = OutputAll | ShowAll | AnalyseAll
+        Full = OutputAll | ShowAll | AnalyseAll,
+
+        BasicSimulation = Basic | Simulate,
+
+        DefaultSimulation = Default | Simulate,
+
+        DetailedSimulation = Detailed | Simulate,
+
+        FullSimulation = Full | Simulate
     }
 
     /// <summary>
@@ -407,7 +420,15 @@ namespace VDS.RDF.Query
             if (this.HasFlag(ExplanationLevel.ShowTimings)) this._startTimes.Value.Push(DateTime.Now);
 
             //Do the actual Evaluation
-            BaseMultiset results = evaluator(algebra, context);
+            BaseMultiset results;// = evaluator(algebra, context);
+            if (this.HasFlag(ExplanationLevel.Simulate))
+            {
+                results = (algebra is ITerminalOperator) ? new SingletonMultiset(algebra.Variables) : evaluator(algebra, context);
+            }
+            else
+            {
+                results = evaluator(algebra, context);
+            }
 
             //End Timing and Print (if enabled)
             if (this.HasFlag(ExplanationLevel.ShowTimings))

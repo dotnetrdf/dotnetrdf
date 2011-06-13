@@ -432,9 +432,9 @@ namespace VDS.RDF.Utilities.Convert
             Console.WriteLine("Command usage is as follows:");
             Console.WriteLine("rdfConvert input1 [input2 [input3 [...]]] (-out:filename.ext | -outformat:mime/type) [options]");
             Console.WriteLine();
-            Console.WriteLine("e.g. rdfConvert input.rdf -out:output.ttl");
+            Console.WriteLine("e.g. rdfConvert input.rdf -format:ttl");
             Console.WriteLine("e.g. rdfConvert input1.rdf input2.ttl input3.n3 -format:text/html");
-            Console.WriteLine("e.g. rdfConvert input.rdf -ext:n3");
+            Console.WriteLine("e.g. rdfConvert input.rdf -output:output.n3");
             Console.WriteLine();
             Console.WriteLine("You can use URIs as input just by stating URIs (anything with a :// in it will be assumed to be a URI) e.g.");
             Console.WriteLine("rdfConvert http://example.org/something -out:something.rdf");
@@ -442,6 +442,7 @@ namespace VDS.RDF.Utilities.Convert
             Console.WriteLine("Notes");
             Console.WriteLine("-----");
             Console.WriteLine();
+            Console.WriteLine("The -format argument must always be used to specify the target format unless there is only 1 input.  In this case the -output argument may be used to specify an entire filename and the output format will be determined from that filename.  Under normal circumstances the -output argument serves only to set a filename prefix for ouput files with the output filenames being generated based on the input files/URIs.");
             Console.WriteLine("rdfConvert may be used to convert between Dataset (NQuads, TriG etc) formats as well as Graph formats");
             Console.WriteLine();
             Console.WriteLine("Supported Options");

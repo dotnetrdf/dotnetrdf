@@ -1,5 +1,5 @@
-dotNetRDF Toolkit for Windows
-=============================
+dotNetRDF Toolkit for Mono
+==========================
 
 A Toolkit of command line utilities and GUI tools for working with RDF data
 
@@ -13,6 +13,10 @@ Usage
 
 Unzip this zip package to a folder of your choice.  We recommend adding this folder to your PATH variable so you can access the command line tools from a command prompt regardless of the working directory.
 
+To run this utilities under mono prefix the utility name with mono and add .exe to the end of the command e.g.
+
+> mono rdfConvert.exe input.rdf -format:ttl
+
 This Toolkit provides the following command line utilities:
 - rdfConvert - A tool for converting RDF Graphs and Datasets between different serializations (Version 0.2.0)
 - rdfOptStats - A tool for generating statistics on RDF for use with the new optional Weighted Optimiser (Version 0.1.0)
@@ -21,7 +25,6 @@ This Toolkit provides the following command line utilities:
 - soh - A tool for communicating with servers supporting the SPARQL Protocols over HTTP (Version 0.2.0)
 
 This Toolkit provides the following GUI tools:
-- rdfEditor - A Notepad replacement for editing RDF and SPARQL (Version 0.2.0)
 - SparqlGUI - A GUI for testing SPARQL queries using dotNetRDF's in-memory Leviathan engine (Version 0.2.0)
 - StoreManager - A GUI for performing basic management and query tasks on various Triple Stores (Version 0.2.0)
 

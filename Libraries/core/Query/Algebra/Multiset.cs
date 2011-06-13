@@ -602,4 +602,19 @@ namespace VDS.RDF.Query.Algebra
             }
         }
     }
+
+    internal class SingletonMultiset : Multiset
+    {
+        public SingletonMultiset()
+            : base()
+        {
+            this.Add(new Set());
+        }
+
+        public SingletonMultiset(IEnumerable<String> vars)
+            : base(vars)
+        {
+            this.Add(new Set());
+        }
+    }
 }

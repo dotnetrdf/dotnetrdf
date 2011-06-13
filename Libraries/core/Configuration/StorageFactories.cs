@@ -203,7 +203,6 @@ namespace VDS.RDF.Configuration
                     server = ConfigurationLoader.GetConfigurationString(g, objNode, propServer);
                     if (server == null) return false;
                     String catalog = ConfigurationLoader.GetConfigurationString(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyCatalog));
-                    if (catalog == null) return false;
                     store = ConfigurationLoader.GetConfigurationString(g, objNode, propStore);
                     if (store == null) return false;
 

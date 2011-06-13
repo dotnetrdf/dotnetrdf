@@ -63,6 +63,8 @@ namespace VDS.RDF.Utilities.Query
         private String _query;
         private bool _print = false;
         private bool _debug = false;
+        private bool _explain = false;
+        private ExplanationLevel _level = (ExplanationLevel.Default | ExplanationLevel.OutputToConsoleStdErr) ^ ExplanationLevel.OutputToConsoleStdOut;
 
         public void RunQuery(String[] args) 
         {
@@ -99,9 +101,18 @@ namespace VDS.RDF.Utilities.Query
                     switch (this._mode)
                     {
                         case RdfQueryMode.Local:
-                            results = this._store.ExecuteQuery(q);
+                            if (this._explain)
+                            {
+                                ExplainQueryProcessor processor = new ExplainQueryProcessor(this._store, this._level);
+                                results = processor.ProcessQuery(q);
+                            }
+                            else
+                            {
+                                results = this._store.ExecuteQuery(q);
+                            }
                             break;
                         case RdfQueryMode.Remote:
+                            if (this._explain) Console.Error.WriteLine("rdfQuery: Warning: Cannot explain queries when the query is being sent to a remote endpoint");
                             this._endpoint.Timeout = Convert.ToInt32(this._timeout);
                             switch (q.QueryType)
                             {
@@ -117,7 +128,15 @@ namespace VDS.RDF.Utilities.Query
                             break;
                         case RdfQueryMode.Unknown:
                         default:
-                            Console.Error.WriteLine("rdfQuery: There were no inputs or a remote endpoint specified in the arguments so no query can be executed");
+                            if (this._explain)
+                            {
+                                ExplainQueryProcessor processor = new ExplainQueryProcessor(new TripleStore(), this._level);
+                                processor.ProcessQuery(q);
+                            }
+                            else
+                            {
+                                Console.Error.WriteLine("rdfQuery: There were no inputs or a remote endpoint specified in the arguments so no query can be executed");
+                            }
                             return;
                     }
                 }
@@ -432,6 +451,23 @@ namespace VDS.RDF.Utilities.Query
                 {
                     this._debug = true;
                 }
+                else if (arg.StartsWith("-explain"))
+                {
+                    this._explain = true;
+                    if (arg.Length > 9)
+                    {
+                        try
+                        {
+                            this._level = (ExplanationLevel)Enum.Parse(typeof(ExplanationLevel), arg.Substring(9));
+                            this._level = (this._level | ExplanationLevel.OutputToConsoleStdErr | ExplanationLevel.Simulate) ^ ExplanationLevel.OutputToConsoleStdOut;
+                        }
+                        catch
+                        {
+                            Console.Error.WriteLine("rdfQuery: The argument '" + arg + "' does not specify a valid Explanation Level");
+                            return false;
+                        }
+                    }
+                }
                 else if (arg.Equals("-help"))
                 {
                     //Ignore Help Argument if other arguments present
@@ -518,39 +554,42 @@ namespace VDS.RDF.Utilities.Query
             Console.WriteLine("Supported Options");
             Console.WriteLine("-----------------");
             Console.WriteLine();
-            Console.WriteLine(" -debug");
-            Console.WriteLine("  Prints more detailed error messages if errors occur");
+            Console.WriteLine("-debug");
+            Console.WriteLine("Prints more detailed error messages if errors occur");
+            Console.WriteLine();
+            Console.WriteLine("-explain[:level]");
+            Console.WriteLine("Prints query evaluation explanation to Standard Error");
             Console.WriteLine();
             //Console.WriteLine(" -nobom");
             //Console.WriteLine(" Specifies that no BOM should be used for UTF-8 Output");
             //Console.WriteLine();
-            Console.WriteLine(" -nocache");
-            Console.WriteLine(" Specifies that UriLoader caching is disabled");
+            Console.WriteLine("-nocache");
+            Console.WriteLine("Specifies that UriLoader caching is disabled");
             Console.WriteLine();
-            Console.WriteLine(" -noopt[:args]");
-            Console.WriteLine("  Disables optimisations, if used as -noopt: then args should be a series of characters indicating optimisations to disable, a/A to disable algebra optimisation and q/Q to disable query optimisation");
+            Console.WriteLine("-noopt[:args]");
+            Console.WriteLine("Disables optimisations, if used as -noopt: then args should be a series of characters indicating optimisations to disable, a/A to disable algebra optimisation and q/Q to disable query optimisation");
             Console.WriteLine();
-            Console.WriteLine(" -partialResults[:(true|false)]");
-            Console.WriteLine("  Specifies whether partial results should be returned in the event of a query timeout.  Only valid for queries over local files and URIs");
+            Console.WriteLine("-partialResults[:(true|false)]");
+            Console.WriteLine("Specifies whether partial results should be returned in the event of a query timeout.  Only valid for queries over local files and URIs");
             Console.WriteLine();
-            Console.WriteLine(" -print");
-            Console.WriteLine("  Just prints the Query and it's SPARQL Algebra and doesn't execute the Query");
+            Console.WriteLine("-print");
+            Console.WriteLine("Just prints the Query and it's SPARQL Algebra and doesn't execute the Query");
             Console.WriteLine();
-            Console.WriteLine(" -r:(skos|rdfs)");
-            Console.WriteLine("  Applies a SKOS/RDFS reasoner to the input data.  SKOS Concept Hierarchy/RDFS class & property hierarchies are dynamically determined based on the input data.  You may need to reorder the input files and URIs in order to get correct inference results e.g. if your schema was the last input it would result in little/no inferences being made");
+            Console.WriteLine("-r:(skos|rdfs)");
+            Console.WriteLine("Applies a SKOS/RDFS reasoner to the input data.  SKOS Concept Hierarchy/RDFS class & property hierarchies are dynamically determined based on the input data.  You may need to reorder the input files and URIs in order to get correct inference results e.g. if your schema was the last input it would result in little/no inferences being made");
             Console.WriteLine();
-            Console.WriteLine(" -roqet");
-            Console.WriteLine(" Runs rdfQuery in roqet compatibility mode, type rdfQuery -roqet -h for more information.  Must be the first argument or ignored.");
+            Console.WriteLine("-roqet");
+            Console.WriteLine("Runs rdfQuery in roqet compatibility mode, type rdfQuery -roqet -h for more information.  Must be the first argument or ignored.");
             Console.WriteLine();
-            Console.WriteLine(" -syntax[:(1|1.0|1.1|E)]");
-            Console.WriteLine("  Specifies what Query Syntax should be permitted");
-            Console.WriteLine("     1       SPARQL 1.0 Standard");
-            Console.WriteLine("     1.0     SPARQL 1.0 Standard");
-            Console.WriteLine("     1.1     SPARQL 1.1 Standard (Current Working Draft)");
-            Console.WriteLine("     E       SPARQL 1.1 with Extensions (LET and additional aggregates)");
+            Console.WriteLine("-syntax[:(1|1.0|1.1|E)]");
+            Console.WriteLine("Specifies what Query Syntax should be permitted");
+            Console.WriteLine(" 1       SPARQL 1.0 Standard");
+            Console.WriteLine(" 1.0     SPARQL 1.0 Standard");
+            Console.WriteLine(" 1.1     SPARQL 1.1 Standard (Current Working Draft)");
+            Console.WriteLine(" E       SPARQL 1.1 with Extensions (LET and additional aggregates)");
             Console.WriteLine();
-            Console.WriteLine(" -timeout:i");
-            Console.WriteLine("  Specifies the Query Timeout in milliseconds");
+            Console.WriteLine("-timeout:i");
+            Console.WriteLine("Specifies the Query Timeout in milliseconds");
         }
 
         private void DebugErrors(Exception ex)

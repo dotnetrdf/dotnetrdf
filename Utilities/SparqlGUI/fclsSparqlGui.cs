@@ -701,5 +701,32 @@ namespace VDS.RDF.Utilities.Sparql
                 }
             }
         }
+
+        private void btnExplain_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                SparqlQueryParser parser = new SparqlQueryParser();
+                Stopwatch timer = new Stopwatch();
+                timer.Start();
+                SparqlQuery query = parser.ParseFromString(this.txtQuery.Text);
+                timer.Stop();
+
+                fclsExplanation explain = new fclsExplanation(query, timer.ElapsedMilliseconds);
+                explain.Show();
+            }
+            catch (RdfParseException parseEx)
+            {
+                MessageBox.Show("Query failed to parse:\n" + parseEx.Message, "Query Failed");
+            }
+            catch (RdfQueryException queryEx)
+            {
+                MessageBox.Show("Query failed during Execution:\n" + queryEx.Message, "Query Failed");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Query failed:\n" + ex.Message + "\n" + ex.StackTrace, "Query Failed");
+            }
+        }
     }
 }

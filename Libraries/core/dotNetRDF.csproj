@@ -204,6 +204,7 @@
     <Compile Include="Configuration\EndpointFactories.cs" />
     <Compile Include="Configuration\ExpressionFactoryFactory.cs" />
     <Compile Include="Configuration\OptimiserFactory.cs" />
+    <Compile Include="Configuration\ParserFactory.cs" />
     <Compile Include="Configuration\PermissionFactories.cs" />
     <Compile Include="Configuration\Permissions\Permission.cs" />
     <Compile Include="Configuration\Permissions\UserGroup.cs" />

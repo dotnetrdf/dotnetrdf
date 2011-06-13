@@ -1,4 +1,14 @@
 ﻿@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
+@prefix fmt: <http://www.w3.org/ns/formats/>.
+
+# Customise to use PrettyRdfXmlWriter
+
+[] a dnr:RdfWriter ;
+	dnr:type "VDS.RDF.Writing.PrettyRdfXmlWriter" ;
+	fmt:media_type "application/rdf+xml" ;
+	fmt:preferred_suffix "rdf" .
+
+# HTTP Handlers
 
 <dotnetrdf:/demos/leviathan/> a dnr:HttpHandler ;
 							  dnr:type "VDS.RDF.Web.QueryHandler" ;
@@ -7,6 +17,7 @@
 							  dnr:stylesheet "/demos/sparql.css" ;
 							  dnr:defaultQueryFile "~/App_Data/default.rq" ;
 							  dnr:timeout 15000 ;
+							  dnr:compressionLevel 10 ;
 							  dnr:dtdWriting false ;
 							  dnr:importNamespacesFrom [ a dnr:Graph ; dnr:fromFile "~/App_Data/namespaces.ttl" ] .
 							  #dnr:expressionFactory _:monkey .

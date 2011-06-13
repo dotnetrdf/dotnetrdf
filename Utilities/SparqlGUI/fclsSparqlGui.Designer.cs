@@ -41,6 +41,7 @@
             this.lblSourceFile = new System.Windows.Forms.Label();
             this.lblDataset = new System.Windows.Forms.Label();
             this.grpQuery = new System.Windows.Forms.GroupBox();
+            this.btnClearLog = new System.Windows.Forms.Button();
             this.btnViewLog = new System.Windows.Forms.Button();
             this.btnSaveQuery = new System.Windows.Forms.Button();
             this.btnLoad = new System.Windows.Forms.Button();
@@ -75,7 +76,7 @@
             this.ofdQuery = new System.Windows.Forms.OpenFileDialog();
             this.sfdQuery = new System.Windows.Forms.SaveFileDialog();
             this.ttpTips = new System.Windows.Forms.ToolTip(this.components);
-            this.btnClearLog = new System.Windows.Forms.Button();
+            this.btnExplain = new System.Windows.Forms.Button();
             this.grpDataset.SuspendLayout();
             this.grpQuery.SuspendLayout();
             this.grpQueryOptions.SuspendLayout();
@@ -187,6 +188,7 @@
             // 
             // grpQuery
             // 
+            this.grpQuery.Controls.Add(this.btnExplain);
             this.grpQuery.Controls.Add(this.btnClearLog);
             this.grpQuery.Controls.Add(this.btnViewLog);
             this.grpQuery.Controls.Add(this.btnSaveQuery);
@@ -201,21 +203,32 @@
             this.grpQuery.TabStop = false;
             this.grpQuery.Text = "Query";
             // 
+            // btnClearLog
+            // 
+            this.btnClearLog.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.btnClearLog.Location = new System.Drawing.Point(495, 315);
+            this.btnClearLog.Name = "btnClearLog";
+            this.btnClearLog.Size = new System.Drawing.Size(75, 23);
+            this.btnClearLog.TabIndex = 6;
+            this.btnClearLog.Text = "&Clear Log";
+            this.btnClearLog.UseVisualStyleBackColor = true;
+            this.btnClearLog.Click += new System.EventHandler(this.btnClearLog_Click);
+            // 
             // btnViewLog
             // 
             this.btnViewLog.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.btnViewLog.Location = new System.Drawing.Point(375, 315);
+            this.btnViewLog.Location = new System.Drawing.Point(414, 315);
             this.btnViewLog.Name = "btnViewLog";
             this.btnViewLog.Size = new System.Drawing.Size(75, 23);
             this.btnViewLog.TabIndex = 5;
-            this.btnViewLog.Text = "View Log";
+            this.btnViewLog.Text = "View &Log";
             this.btnViewLog.UseVisualStyleBackColor = true;
             this.btnViewLog.Click += new System.EventHandler(this.btnViewLog_Click);
             // 
             // btnSaveQuery
             // 
             this.btnSaveQuery.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.btnSaveQuery.Location = new System.Drawing.Point(133, 315);
+            this.btnSaveQuery.Location = new System.Drawing.Point(90, 315);
             this.btnSaveQuery.Name = "btnSaveQuery";
             this.btnSaveQuery.Size = new System.Drawing.Size(75, 23);
             this.btnSaveQuery.TabIndex = 4;
@@ -226,7 +239,7 @@
             // btnLoad
             // 
             this.btnLoad.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.btnLoad.Location = new System.Drawing.Point(52, 315);
+            this.btnLoad.Location = new System.Drawing.Point(9, 315);
             this.btnLoad.Name = "btnLoad";
             this.btnLoad.Size = new System.Drawing.Size(75, 23);
             this.btnLoad.TabIndex = 3;
@@ -237,18 +250,18 @@
             // btnInspect
             // 
             this.btnInspect.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.btnInspect.Location = new System.Drawing.Point(294, 315);
+            this.btnInspect.Location = new System.Drawing.Point(252, 315);
             this.btnInspect.Name = "btnInspect";
             this.btnInspect.Size = new System.Drawing.Size(75, 23);
             this.btnInspect.TabIndex = 2;
-            this.btnInspect.Text = "Inspect";
+            this.btnInspect.Text = "&Inspect";
             this.btnInspect.UseVisualStyleBackColor = true;
             this.btnInspect.Click += new System.EventHandler(this.btnInspect_Click);
             // 
             // btnQuery
             // 
             this.btnQuery.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.btnQuery.Location = new System.Drawing.Point(214, 315);
+            this.btnQuery.Location = new System.Drawing.Point(171, 315);
             this.btnQuery.Name = "btnQuery";
             this.btnQuery.Size = new System.Drawing.Size(75, 23);
             this.btnQuery.TabIndex = 1;
@@ -299,7 +312,7 @@
             this.chkLogExplanation.TabIndex = 11;
             this.chkLogExplanation.Text = "Log Query Explanations";
             this.ttpTips.SetToolTip(this.chkLogExplanation, "Enable this option if you wish to have detailed query explanations logged to the " +
-                    "log file");
+                    "log file, this may make queries significantly slower in some cases");
             this.chkLogExplanation.UseVisualStyleBackColor = true;
             this.chkLogExplanation.CheckedChanged += new System.EventHandler(this.chkLogExplanation_CheckedChanged);
             // 
@@ -584,16 +597,16 @@
             this.sfdQuery.Filter = "SPARQL Query Files|*.rq|All Files|*.*";
             this.sfdQuery.Title = "Load SPARQL Query";
             // 
-            // btnClearLog
+            // btnExplain
             // 
-            this.btnClearLog.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.btnClearLog.Location = new System.Drawing.Point(455, 315);
-            this.btnClearLog.Name = "btnClearLog";
-            this.btnClearLog.Size = new System.Drawing.Size(75, 23);
-            this.btnClearLog.TabIndex = 6;
-            this.btnClearLog.Text = "Clear Log";
-            this.btnClearLog.UseVisualStyleBackColor = true;
-            this.btnClearLog.Click += new System.EventHandler(this.btnClearLog_Click);
+            this.btnExplain.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.btnExplain.Location = new System.Drawing.Point(333, 315);
+            this.btnExplain.Name = "btnExplain";
+            this.btnExplain.Size = new System.Drawing.Size(75, 23);
+            this.btnExplain.TabIndex = 7;
+            this.btnExplain.Text = "&Explain";
+            this.btnExplain.UseVisualStyleBackColor = true;
+            this.btnExplain.Click += new System.EventHandler(this.btnExplain_Click);
             // 
             // fclsSparqlGui
             // 
@@ -680,6 +693,7 @@
         private System.Windows.Forms.Button btnViewLog;
         private System.Windows.Forms.CheckBox chkLogExplanation;
         private System.Windows.Forms.Button btnClearLog;
+        private System.Windows.Forms.Button btnExplain;
     }
 }
 

@@ -135,6 +135,24 @@ namespace VDS.RDF
         #region MIME Types
 
         /// <summary>
+        /// Resets the MIME Type Definitions (the associations between file extensions, MIME types and their respective parsers and writers) to the library defaults
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// May be useful if you've altered the definitions and caused something to stop working as a result
+        /// </para>
+        /// </remarks>
+        public static void ResetDefinitions()
+        {
+            if (_init)
+            {
+                _init = false;
+                _mimeTypes.Clear();
+                Init();
+            }
+        }
+
+        /// <summary>
         /// Gets the available MIME Type Definitions
         /// </summary>
         public static IEnumerable<MimeTypeDefinition> Definitions
@@ -156,6 +174,64 @@ namespace VDS.RDF
             if (!_init) Init();
             if (definition == null) throw new ArgumentNullException("definition");
             _mimeTypes.Add(definition);
+        }
+
+        /// <summary>
+        /// Registers a Parser as the default RDF Parser for all the given MIME types and updates relevant definitions to include the MIME types and file extensions
+        /// </summary>
+        /// <param name="parser"></param>
+        /// <param name="mimeTypes"></param>
+        /// <param name="fileExtensions"></param>
+        public static void RegisterParser(IRdfReader parser, IEnumerable<String> mimeTypes, IEnumerable<String> fileExtensions)
+        {
+            if (!_init) Init();
+
+            if (!mimeTypes.Any()) throw new RdfException("Cannot register a parser without specifying at least 1 MIME Type");
+
+            //Get any existing defintions that are to be altered
+            IEnumerable<MimeTypeDefinition> existing = GetDefinitions(mimeTypes);
+            foreach (MimeTypeDefinition def in existing)
+            {
+                foreach (String type in mimeTypes)
+                {
+                    def.AddMimeType(type);
+                }
+                foreach (String ext in fileExtensions)
+                {
+                    def.AddFileExtension(ext);
+                }
+                def.RdfParserType = parser.GetType();
+            }
+
+            //Create any new defintions
+            IEnumerable<String> newTypes = mimeTypes.Where(t => !GetDefinitions(t).Any());
+            AddDefinition(new MimeTypeDefinition(String.Empty, newTypes, fileExtensions));
+        }
+
+        public static void RegisterWriter(IRdfWriter writer, IEnumerable<String> mimeTypes, IEnumerable<String> fileExtensions)
+        {
+            if (!_init) Init();
+
+            if (!mimeTypes.Any()) throw new RdfException("Cannot register a writer without specifying at least 1 MIME Type");
+
+            //Get any existing defintions that are to be altered
+            IEnumerable<MimeTypeDefinition> existing = GetDefinitions(mimeTypes);
+            foreach (MimeTypeDefinition def in existing)
+            {
+                foreach (String type in mimeTypes)
+                {
+                    def.AddMimeType(type);
+                }
+                foreach (String ext in fileExtensions)
+                {
+                    def.AddFileExtension(ext);
+                }
+                def.RdfWriterType = writer.GetType();
+            }
+
+            //Create any new defintions
+            IEnumerable<String> newTypes = mimeTypes.Where(t => !GetDefinitions(t).Any());
+            AddDefinition(new MimeTypeDefinition(String.Empty, newTypes, fileExtensions));
         }
 
         /// <summary>

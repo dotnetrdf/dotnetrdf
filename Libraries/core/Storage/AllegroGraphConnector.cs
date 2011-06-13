@@ -54,6 +54,9 @@ namespace VDS.RDF.Storage
     /// <para>
     /// Connection to AllegroGraph is based on their new HTTP Protocol which is an extension of the <a href="http://www.openrdf.org/doc/sesame2/system/ch08.html">Sesame 2.0 HTTP Protocol</a>.  The specification for the AllegroGraph protocol can be found <a href="http://www.franz.com/agraph/support/documentation/current/new-http-server.html">here</a>
     /// </para>
+    /// <para>
+    /// If you wish to use a Store which is part of the Root Catalog on an AllegroGraph 4.x and higher server you can either use the constructor overloads that omit the <strong>catalogID</strong> parameter or pass in null as the value for that parameter
+    /// </para>
     /// </remarks>
     public class AllegroGraphConnector : SesameHttpProtocolConnector, IConfigurationSerializable, IMultiStoreGenericIOManager
     {
@@ -70,11 +73,22 @@ namespace VDS.RDF.Storage
         {
             this._baseUri = baseUri;
             if (!this._baseUri.EndsWith("/")) this._baseUri += "/";
-            this._baseUri += "catalogs/" + catalogID + "/";
+            if (catalogID != null)
+            {
+                this._baseUri += "catalogs/" + catalogID + "/";
+            }
             this._store = storeID;
             this._catalog = catalogID;
             this.CreateStore(storeID);
         }
+
+        /// <summary>
+        /// Creates a new Connection to an AllegroGraph store in the Root Catalog (AllegroGraph 4.x and higher)
+        /// </summary>
+        /// <param name="baseUri">Base Uri for the Store</param>
+        /// <param name="storeID">Store ID</param>
+        public AllegroGraphConnector(String baseUri, String storeID)
+            : this(baseUri, null, storeID) { }
 
         /// <summary>
         /// Creates a new Connection to an AllegroGraph store
@@ -89,11 +103,24 @@ namespace VDS.RDF.Storage
         {
             this._baseUri = baseUri;
             if (!this._baseUri.EndsWith("/")) this._baseUri += "/";
-            this._baseUri += "catalogs/" + catalogID + "/";
+            if (catalogID != null)
+            {
+                this._baseUri += "catalogs/" + catalogID + "/";
+            }
             this._store = storeID;
             this._catalog = catalogID;
             this.CreateStore(storeID);
         }
+
+        /// <summary>
+        /// Creates a new Connection to an AllegroGraph store in the Root Catalog (AllegroGraph 4.x and higher)
+        /// </summary>
+        /// <param name="baseUri">Base Uri for the Store</param>
+        /// <param name="storeID">Store ID</param>
+        /// <param name="username">Username for connecting to the Store</param>
+        /// <param name="password">Password for connecting to the Store</param>
+        public AllegroGraphConnector(String baseUri, String storeID, String username, String password)
+            : this(baseUri, null, storeID, username, password) { }
 
         /// <summary>
         /// Creates a new Store (if it doesn't exist) and switches the connector to use that Store
@@ -105,7 +132,9 @@ namespace VDS.RDF.Storage
             HttpWebResponse response = null;
             try
             {
-                request = this.CreateRequest("repositories/" + storeID, "*/*", "PUT", new Dictionary<string, string>());
+                Dictionary<String, String> createParams = new Dictionary<string, string>();
+                createParams.Add("overwrite", "false");
+                request = this.CreateRequest("repositories/" + storeID, "*/*", "PUT", createParams);
 
 #if DEBUG
                 if (Options.HttpDebugging)
@@ -144,12 +173,12 @@ namespace VDS.RDF.Storage
                     }
                     else
                     {
-                        throw webEx;
+                        throw;
                     }
                 }
                 else
                 {
-                    throw webEx;
+                    throw;
                 }
             }
             finally
@@ -293,7 +322,14 @@ namespace VDS.RDF.Storage
         /// <returns></returns>
         public override string ToString()
         {
-            return "[AllegroGraph] Store '" + this._store + "' in Catalog '" + this._catalog + "' on Server '" + this._baseUri.Substring(0, this._baseUri.IndexOf("catalogs/")) + "'";
+            if (this._catalog != null)
+            {
+                return "[AllegroGraph] Store '" + this._store + "' in Catalog '" + this._catalog + "' on Server '" + this._baseUri.Substring(0, this._baseUri.IndexOf("catalogs/")) + "'";
+            }
+            else
+            {
+                return "[AllegroGraph] Store '" + this._store + "' in Root Catalog on Server '" + this._baseUri + "'";
+            }
         }
 
         /// <summary>
@@ -314,8 +350,15 @@ namespace VDS.RDF.Storage
             context.Graph.Assert(new Triple(manager, rdfType, genericManager));
             context.Graph.Assert(new Triple(manager, rdfsLabel, context.Graph.CreateLiteralNode(this.ToString())));
             context.Graph.Assert(new Triple(manager, dnrType, context.Graph.CreateLiteralNode(this.GetType().FullName)));
-            context.Graph.Assert(new Triple(manager, server, context.Graph.CreateLiteralNode(this._baseUri.Substring(0, this._baseUri.IndexOf("catalogs/")))));
-            context.Graph.Assert(new Triple(manager, catalog, context.Graph.CreateLiteralNode(this._catalog)));
+            if (this._catalog != null)
+            {
+                context.Graph.Assert(new Triple(manager, server, context.Graph.CreateLiteralNode(this._baseUri.Substring(0, this._baseUri.IndexOf("catalogs/")))));
+                context.Graph.Assert(new Triple(manager, catalog, context.Graph.CreateLiteralNode(this._catalog)));
+            }
+            else
+            {
+                context.Graph.Assert(new Triple(manager, server, context.Graph.CreateLiteralNode(this._baseUri)));
+            }
             context.Graph.Assert(new Triple(manager, store, context.Graph.CreateLiteralNode(this._store)));
             
             if (this._username != null && this._pwd != null)

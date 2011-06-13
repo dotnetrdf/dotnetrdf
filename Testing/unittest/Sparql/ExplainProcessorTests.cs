@@ -30,17 +30,23 @@ namespace VDS.RDF.Test.Sparql
             }
 
             SparqlQuery q = this._parser.ParseFromString(query);
+            Object results;
             Console.WriteLine("Input Query:");
             Console.WriteLine(this._formatter.Format(q));
             Console.WriteLine();
 
+            Console.WriteLine("Explanation with Default Options (Simulated):");
+            this._processor.ExplanationLevel = ExplanationLevel.DefaultSimulation;
+            results = this._processor.ProcessQuery(q);
+
+            Console.WriteLine();
             Console.WriteLine("Explanation with Default Options:");
             this._processor.ExplanationLevel = ExplanationLevel.Default;
-            Object results = this._processor.ProcessQuery(q);
+            results = this._processor.ProcessQuery(q);
 
             Console.WriteLine();
             Console.WriteLine("Explanation with Full Options:");
-            this._processor.ExplanationLevel = ExplanationLevel.All;
+            this._processor.ExplanationLevel = ExplanationLevel.Full;
             results = this._processor.ProcessQuery(q);
         }
 

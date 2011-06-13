@@ -139,7 +139,7 @@ namespace VDS.RDF.Utilities.StoreManager
             {
                 this.ParameterRequired("Server URI", "Allegro Graph");
             }
-            else if (this.txtAllegroCatalogID.Text.Equals(String.Empty))
+            else if (this.txtAllegroCatalogID.Text.Equals(String.Empty) && !this.chkAGraphRootCatalog.Checked)
             {
                 this.ParameterRequired("Catalog ID", "Allegro Graph");
             }
@@ -149,13 +149,14 @@ namespace VDS.RDF.Utilities.StoreManager
             }
             else
             {
+                String catalog = this.chkAGraphRootCatalog.Checked ? null : this.txtAllegroCatalogID.Text;
                 if (!this.txtAllegroUsername.Text.Equals(String.Empty) && !this.txtAllegroPassword.Equals(String.Empty))
                 {
-                    this._manager = new AllegroGraphConnector(this.txtAllegroGraphServer.Text, this.txtAllegroCatalogID.Text, this.txtAllegroStoreID.Text, this.txtAllegroUsername.Text, this.txtAllegroPassword.Text);
+                    this._manager = new AllegroGraphConnector(this.txtAllegroGraphServer.Text, catalog, this.txtAllegroStoreID.Text, this.txtAllegroUsername.Text, this.txtAllegroPassword.Text);
                 }
                 else
                 {
-                    this._manager = new AllegroGraphConnector(this.txtAllegroGraphServer.Text, this.txtAllegroCatalogID.Text, this.txtAllegroStoreID.Text);
+                    this._manager = new AllegroGraphConnector(this.txtAllegroGraphServer.Text, catalog, this.txtAllegroStoreID.Text);
                 }
 
                 this.DialogResult = DialogResult.OK;
@@ -405,6 +406,11 @@ namespace VDS.RDF.Utilities.StoreManager
                 this.DialogResult = DialogResult.OK;
                 this.Close();
             }
+        }
+
+        private void chkAGraphRootCatalog_CheckedChanged(object sender, EventArgs e)
+        {
+            this.txtAllegroCatalogID.Enabled = !this.chkAGraphRootCatalog.Checked;
         }
 
     }

@@ -41,6 +41,14 @@
             this.btnConnectAllegroGraph = new System.Windows.Forms.Button();
             this.txtAllegroGraphServer = new System.Windows.Forms.TextBox();
             this.lblAllegroGraphServer = new System.Windows.Forms.Label();
+            this.tabDydra = new System.Windows.Forms.TabPage();
+            this.btnDydraConnect = new System.Windows.Forms.Button();
+            this.txtDydraApiKey = new System.Windows.Forms.TextBox();
+            this.lblDydraApiKey = new System.Windows.Forms.Label();
+            this.txtDydraRepository = new System.Windows.Forms.TextBox();
+            this.lblDydraRepository = new System.Windows.Forms.Label();
+            this.txtDydraAccount = new System.Windows.Forms.TextBox();
+            this.lblDydraAccount = new System.Windows.Forms.Label();
             this.tabFourStore = new System.Windows.Forms.TabPage();
             this.chk4storeUpdates = new System.Windows.Forms.CheckBox();
             this.btnConnect4Store = new System.Windows.Forms.Button();
@@ -126,16 +134,11 @@
             this.btnCancel = new System.Windows.Forms.Button();
             this.ofdDatasetFile = new System.Windows.Forms.OpenFileDialog();
             this.chkReadOnly = new System.Windows.Forms.CheckBox();
-            this.tabDydra = new System.Windows.Forms.TabPage();
-            this.lblDydraAccount = new System.Windows.Forms.Label();
-            this.txtDydraAccount = new System.Windows.Forms.TextBox();
-            this.txtDydraRepository = new System.Windows.Forms.TextBox();
-            this.lblDydraRepository = new System.Windows.Forms.Label();
-            this.txtDydraApiKey = new System.Windows.Forms.TextBox();
-            this.lblDydraApiKey = new System.Windows.Forms.Label();
-            this.btnDydraConnect = new System.Windows.Forms.Button();
+            this.lblAGraphOr = new System.Windows.Forms.Label();
+            this.chkAGraphRootCatalog = new System.Windows.Forms.CheckBox();
             this.tabStores.SuspendLayout();
             this.tabAllegroGraph.SuspendLayout();
+            this.tabDydra.SuspendLayout();
             this.tabFourStore.SuspendLayout();
             this.tabFuseki.SuspendLayout();
             this.tabInMemory.SuspendLayout();
@@ -147,7 +150,6 @@
             this.tabStardog.SuspendLayout();
             this.tabTalis.SuspendLayout();
             this.tabVirtuoso.SuspendLayout();
-            this.tabDydra.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabStores
@@ -174,6 +176,8 @@
             // 
             // tabAllegroGraph
             // 
+            this.tabAllegroGraph.Controls.Add(this.chkAGraphRootCatalog);
+            this.tabAllegroGraph.Controls.Add(this.lblAGraphOr);
             this.tabAllegroGraph.Controls.Add(this.txtAllegroPassword);
             this.tabAllegroGraph.Controls.Add(this.lblAllegroPassword);
             this.tabAllegroGraph.Controls.Add(this.txtAllegroUsername);
@@ -199,7 +203,7 @@
             this.txtAllegroPassword.Name = "txtAllegroPassword";
             this.txtAllegroPassword.PasswordChar = '*';
             this.txtAllegroPassword.Size = new System.Drawing.Size(100, 20);
-            this.txtAllegroPassword.TabIndex = 9;
+            this.txtAllegroPassword.TabIndex = 11;
             // 
             // lblAllegroPassword
             // 
@@ -207,7 +211,7 @@
             this.lblAllegroPassword.Location = new System.Drawing.Point(6, 116);
             this.lblAllegroPassword.Name = "lblAllegroPassword";
             this.lblAllegroPassword.Size = new System.Drawing.Size(56, 13);
-            this.lblAllegroPassword.TabIndex = 8;
+            this.lblAllegroPassword.TabIndex = 10;
             this.lblAllegroPassword.Text = "Password:";
             // 
             // txtAllegroUsername
@@ -215,7 +219,7 @@
             this.txtAllegroUsername.Location = new System.Drawing.Point(72, 87);
             this.txtAllegroUsername.Name = "txtAllegroUsername";
             this.txtAllegroUsername.Size = new System.Drawing.Size(100, 20);
-            this.txtAllegroUsername.TabIndex = 7;
+            this.txtAllegroUsername.TabIndex = 9;
             // 
             // lblAllegroUsername
             // 
@@ -223,7 +227,7 @@
             this.lblAllegroUsername.Location = new System.Drawing.Point(6, 90);
             this.lblAllegroUsername.Name = "lblAllegroUsername";
             this.lblAllegroUsername.Size = new System.Drawing.Size(58, 13);
-            this.lblAllegroUsername.TabIndex = 6;
+            this.lblAllegroUsername.TabIndex = 8;
             this.lblAllegroUsername.Text = "Username:";
             // 
             // txtAllegroStoreID
@@ -231,7 +235,7 @@
             this.txtAllegroStoreID.Location = new System.Drawing.Point(72, 61);
             this.txtAllegroStoreID.Name = "txtAllegroStoreID";
             this.txtAllegroStoreID.Size = new System.Drawing.Size(100, 20);
-            this.txtAllegroStoreID.TabIndex = 5;
+            this.txtAllegroStoreID.TabIndex = 7;
             this.txtAllegroStoreID.Text = "store";
             // 
             // lblAllegroStoreID
@@ -240,7 +244,7 @@
             this.lblAllegroStoreID.Location = new System.Drawing.Point(6, 64);
             this.lblAllegroStoreID.Name = "lblAllegroStoreID";
             this.lblAllegroStoreID.Size = new System.Drawing.Size(49, 13);
-            this.lblAllegroStoreID.TabIndex = 4;
+            this.lblAllegroStoreID.TabIndex = 6;
             this.lblAllegroStoreID.Text = "Store ID:";
             // 
             // txtAllegroCatalogID
@@ -265,7 +269,7 @@
             this.btnConnectAllegroGraph.Location = new System.Drawing.Point(335, 128);
             this.btnConnectAllegroGraph.Name = "btnConnectAllegroGraph";
             this.btnConnectAllegroGraph.Size = new System.Drawing.Size(137, 23);
-            this.btnConnectAllegroGraph.TabIndex = 10;
+            this.btnConnectAllegroGraph.TabIndex = 12;
             this.btnConnectAllegroGraph.Text = "Connect to AllegroGraph";
             this.btnConnectAllegroGraph.UseVisualStyleBackColor = true;
             this.btnConnectAllegroGraph.Click += new System.EventHandler(this.btnConnectAllegroGraph_Click);
@@ -287,16 +291,91 @@
             this.lblAllegroGraphServer.TabIndex = 0;
             this.lblAllegroGraphServer.Text = "AllegroGraph Server URI:";
             // 
+            // tabDydra
+            // 
+            this.tabDydra.Controls.Add(this.btnDydraConnect);
+            this.tabDydra.Controls.Add(this.txtDydraApiKey);
+            this.tabDydra.Controls.Add(this.lblDydraApiKey);
+            this.tabDydra.Controls.Add(this.txtDydraRepository);
+            this.tabDydra.Controls.Add(this.lblDydraRepository);
+            this.tabDydra.Controls.Add(this.txtDydraAccount);
+            this.tabDydra.Controls.Add(this.lblDydraAccount);
+            this.tabDydra.Location = new System.Drawing.Point(4, 40);
+            this.tabDydra.Name = "tabDydra";
+            this.tabDydra.Padding = new System.Windows.Forms.Padding(3);
+            this.tabDydra.Size = new System.Drawing.Size(475, 156);
+            this.tabDydra.TabIndex = 12;
+            this.tabDydra.Text = "Dydra";
+            this.tabDydra.UseVisualStyleBackColor = true;
+            // 
+            // btnDydraConnect
+            // 
+            this.btnDydraConnect.Location = new System.Drawing.Point(366, 127);
+            this.btnDydraConnect.Name = "btnDydraConnect";
+            this.btnDydraConnect.Size = new System.Drawing.Size(103, 23);
+            this.btnDydraConnect.TabIndex = 6;
+            this.btnDydraConnect.Text = "Connect to Dydra";
+            this.btnDydraConnect.UseVisualStyleBackColor = true;
+            this.btnDydraConnect.Click += new System.EventHandler(this.btnDydraConnect_Click);
+            // 
+            // txtDydraApiKey
+            // 
+            this.txtDydraApiKey.Location = new System.Drawing.Point(91, 59);
+            this.txtDydraApiKey.Name = "txtDydraApiKey";
+            this.txtDydraApiKey.Size = new System.Drawing.Size(171, 20);
+            this.txtDydraApiKey.TabIndex = 5;
+            // 
+            // lblDydraApiKey
+            // 
+            this.lblDydraApiKey.AutoSize = true;
+            this.lblDydraApiKey.Location = new System.Drawing.Point(4, 62);
+            this.lblDydraApiKey.Name = "lblDydraApiKey";
+            this.lblDydraApiKey.Size = new System.Drawing.Size(48, 13);
+            this.lblDydraApiKey.TabIndex = 4;
+            this.lblDydraApiKey.Text = "API Key:";
+            // 
+            // txtDydraRepository
+            // 
+            this.txtDydraRepository.Location = new System.Drawing.Point(91, 33);
+            this.txtDydraRepository.Name = "txtDydraRepository";
+            this.txtDydraRepository.Size = new System.Drawing.Size(171, 20);
+            this.txtDydraRepository.TabIndex = 3;
+            // 
+            // lblDydraRepository
+            // 
+            this.lblDydraRepository.AutoSize = true;
+            this.lblDydraRepository.Location = new System.Drawing.Point(4, 36);
+            this.lblDydraRepository.Name = "lblDydraRepository";
+            this.lblDydraRepository.Size = new System.Drawing.Size(60, 13);
+            this.lblDydraRepository.TabIndex = 2;
+            this.lblDydraRepository.Text = "Repository:";
+            // 
+            // txtDydraAccount
+            // 
+            this.txtDydraAccount.Location = new System.Drawing.Point(91, 7);
+            this.txtDydraAccount.Name = "txtDydraAccount";
+            this.txtDydraAccount.Size = new System.Drawing.Size(171, 20);
+            this.txtDydraAccount.TabIndex = 1;
+            // 
+            // lblDydraAccount
+            // 
+            this.lblDydraAccount.AutoSize = true;
+            this.lblDydraAccount.Location = new System.Drawing.Point(4, 10);
+            this.lblDydraAccount.Name = "lblDydraAccount";
+            this.lblDydraAccount.Size = new System.Drawing.Size(81, 13);
+            this.lblDydraAccount.TabIndex = 0;
+            this.lblDydraAccount.Text = "Account Name:";
+            // 
             // tabFourStore
             // 
             this.tabFourStore.Controls.Add(this.chk4storeUpdates);
             this.tabFourStore.Controls.Add(this.btnConnect4Store);
             this.tabFourStore.Controls.Add(this.txt4StoreServer);
             this.tabFourStore.Controls.Add(this.lbl4StoreServer);
-            this.tabFourStore.Location = new System.Drawing.Point(4, 22);
+            this.tabFourStore.Location = new System.Drawing.Point(4, 40);
             this.tabFourStore.Name = "tabFourStore";
             this.tabFourStore.Padding = new System.Windows.Forms.Padding(3);
-            this.tabFourStore.Size = new System.Drawing.Size(475, 174);
+            this.tabFourStore.Size = new System.Drawing.Size(475, 156);
             this.tabFourStore.TabIndex = 1;
             this.tabFourStore.Text = "4store";
             this.tabFourStore.UseVisualStyleBackColor = true;
@@ -346,9 +425,9 @@
             this.tabFuseki.Controls.Add(this.btnConnectFuseki);
             this.tabFuseki.Controls.Add(this.txtFusekiUri);
             this.tabFuseki.Controls.Add(this.lblFusekiUri);
-            this.tabFuseki.Location = new System.Drawing.Point(4, 22);
+            this.tabFuseki.Location = new System.Drawing.Point(4, 40);
             this.tabFuseki.Name = "tabFuseki";
-            this.tabFuseki.Size = new System.Drawing.Size(475, 174);
+            this.tabFuseki.Size = new System.Drawing.Size(475, 156);
             this.tabFuseki.TabIndex = 9;
             this.tabFuseki.Text = "Fuseki";
             this.tabFuseki.UseVisualStyleBackColor = true;
@@ -392,10 +471,10 @@
             // 
             this.tabInMemory.Controls.Add(this.btnConnectInMemory);
             this.tabInMemory.Controls.Add(this.lblInMemoryIntro);
-            this.tabInMemory.Location = new System.Drawing.Point(4, 22);
+            this.tabInMemory.Location = new System.Drawing.Point(4, 40);
             this.tabInMemory.Name = "tabInMemory";
             this.tabInMemory.Padding = new System.Windows.Forms.Padding(3);
-            this.tabInMemory.Size = new System.Drawing.Size(475, 174);
+            this.tabInMemory.Size = new System.Drawing.Size(475, 156);
             this.tabInMemory.TabIndex = 10;
             this.tabInMemory.Text = "In-Memory";
             this.tabInMemory.UseVisualStyleBackColor = true;
@@ -429,9 +508,9 @@
             this.tabJoseki.Controls.Add(this.btnConnectJoseki);
             this.tabJoseki.Controls.Add(this.txtJosekiServer);
             this.tabJoseki.Controls.Add(this.lblJosekiServer);
-            this.tabJoseki.Location = new System.Drawing.Point(4, 22);
+            this.tabJoseki.Location = new System.Drawing.Point(4, 40);
             this.tabJoseki.Name = "tabJoseki";
-            this.tabJoseki.Size = new System.Drawing.Size(475, 174);
+            this.tabJoseki.Size = new System.Drawing.Size(475, 156);
             this.tabJoseki.TabIndex = 2;
             this.tabJoseki.Text = "Joseki";
             this.tabJoseki.UseVisualStyleBackColor = true;
@@ -514,9 +593,9 @@
             this.tabDataset.Controls.Add(this.txtDatasetFile);
             this.tabDataset.Controls.Add(this.lblDatasetFile);
             this.tabDataset.Controls.Add(this.lblDatasetFileIntro);
-            this.tabDataset.Location = new System.Drawing.Point(4, 22);
+            this.tabDataset.Location = new System.Drawing.Point(4, 40);
             this.tabDataset.Name = "tabDataset";
-            this.tabDataset.Size = new System.Drawing.Size(475, 174);
+            this.tabDataset.Size = new System.Drawing.Size(475, 156);
             this.tabDataset.TabIndex = 6;
             this.tabDataset.Text = "RDF Dataset File";
             this.tabDataset.UseVisualStyleBackColor = true;
@@ -577,9 +656,9 @@
             this.tabSesame.Controls.Add(this.btnConnectSesame);
             this.tabSesame.Controls.Add(this.txtSesameServer);
             this.tabSesame.Controls.Add(this.lblSesameServer);
-            this.tabSesame.Location = new System.Drawing.Point(4, 22);
+            this.tabSesame.Location = new System.Drawing.Point(4, 40);
             this.tabSesame.Name = "tabSesame";
-            this.tabSesame.Size = new System.Drawing.Size(475, 174);
+            this.tabSesame.Size = new System.Drawing.Size(475, 156);
             this.tabSesame.TabIndex = 3;
             this.tabSesame.Text = "Sesame";
             this.tabSesame.UseVisualStyleBackColor = true;
@@ -1091,7 +1170,7 @@
             this.btnCancel.Location = new System.Drawing.Point(420, 210);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
-            this.btnCancel.TabIndex = 1;
+            this.btnCancel.TabIndex = 2;
             this.btnCancel.Text = "&Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
@@ -1107,84 +1186,29 @@
             this.chkReadOnly.Location = new System.Drawing.Point(16, 216);
             this.chkReadOnly.Name = "chkReadOnly";
             this.chkReadOnly.Size = new System.Drawing.Size(189, 17);
-            this.chkReadOnly.TabIndex = 2;
+            this.chkReadOnly.TabIndex = 1;
             this.chkReadOnly.Text = "Force connection to be Read Only";
             this.chkReadOnly.UseVisualStyleBackColor = true;
             // 
-            // tabDydra
+            // lblAGraphOr
             // 
-            this.tabDydra.Controls.Add(this.btnDydraConnect);
-            this.tabDydra.Controls.Add(this.txtDydraApiKey);
-            this.tabDydra.Controls.Add(this.lblDydraApiKey);
-            this.tabDydra.Controls.Add(this.txtDydraRepository);
-            this.tabDydra.Controls.Add(this.lblDydraRepository);
-            this.tabDydra.Controls.Add(this.txtDydraAccount);
-            this.tabDydra.Controls.Add(this.lblDydraAccount);
-            this.tabDydra.Location = new System.Drawing.Point(4, 40);
-            this.tabDydra.Name = "tabDydra";
-            this.tabDydra.Padding = new System.Windows.Forms.Padding(3);
-            this.tabDydra.Size = new System.Drawing.Size(475, 156);
-            this.tabDydra.TabIndex = 12;
-            this.tabDydra.Text = "Dydra";
-            this.tabDydra.UseVisualStyleBackColor = true;
+            this.lblAGraphOr.AutoSize = true;
+            this.lblAGraphOr.Location = new System.Drawing.Point(178, 39);
+            this.lblAGraphOr.Name = "lblAGraphOr";
+            this.lblAGraphOr.Size = new System.Drawing.Size(16, 13);
+            this.lblAGraphOr.TabIndex = 4;
+            this.lblAGraphOr.Text = "or";
             // 
-            // lblDydraAccount
+            // chkAGraphRootCatalog
             // 
-            this.lblDydraAccount.AutoSize = true;
-            this.lblDydraAccount.Location = new System.Drawing.Point(4, 10);
-            this.lblDydraAccount.Name = "lblDydraAccount";
-            this.lblDydraAccount.Size = new System.Drawing.Size(81, 13);
-            this.lblDydraAccount.TabIndex = 0;
-            this.lblDydraAccount.Text = "Account Name:";
-            // 
-            // txtDydraAccount
-            // 
-            this.txtDydraAccount.Location = new System.Drawing.Point(91, 7);
-            this.txtDydraAccount.Name = "txtDydraAccount";
-            this.txtDydraAccount.Size = new System.Drawing.Size(171, 20);
-            this.txtDydraAccount.TabIndex = 1;
-            // 
-            // txtDydraRepository
-            // 
-            this.txtDydraRepository.Location = new System.Drawing.Point(91, 33);
-            this.txtDydraRepository.Name = "txtDydraRepository";
-            this.txtDydraRepository.Size = new System.Drawing.Size(171, 20);
-            this.txtDydraRepository.TabIndex = 3;
-            // 
-            // lblDydraRepository
-            // 
-            this.lblDydraRepository.AutoSize = true;
-            this.lblDydraRepository.Location = new System.Drawing.Point(4, 36);
-            this.lblDydraRepository.Name = "lblDydraRepository";
-            this.lblDydraRepository.Size = new System.Drawing.Size(60, 13);
-            this.lblDydraRepository.TabIndex = 2;
-            this.lblDydraRepository.Text = "Repository:";
-            // 
-            // txtDydraApiKey
-            // 
-            this.txtDydraApiKey.Location = new System.Drawing.Point(91, 59);
-            this.txtDydraApiKey.Name = "txtDydraApiKey";
-            this.txtDydraApiKey.Size = new System.Drawing.Size(171, 20);
-            this.txtDydraApiKey.TabIndex = 5;
-            // 
-            // lblDydraApiKey
-            // 
-            this.lblDydraApiKey.AutoSize = true;
-            this.lblDydraApiKey.Location = new System.Drawing.Point(4, 62);
-            this.lblDydraApiKey.Name = "lblDydraApiKey";
-            this.lblDydraApiKey.Size = new System.Drawing.Size(48, 13);
-            this.lblDydraApiKey.TabIndex = 4;
-            this.lblDydraApiKey.Text = "API Key:";
-            // 
-            // btnDydraConnect
-            // 
-            this.btnDydraConnect.Location = new System.Drawing.Point(366, 127);
-            this.btnDydraConnect.Name = "btnDydraConnect";
-            this.btnDydraConnect.Size = new System.Drawing.Size(103, 23);
-            this.btnDydraConnect.TabIndex = 6;
-            this.btnDydraConnect.Text = "Connect to Dydra";
-            this.btnDydraConnect.UseVisualStyleBackColor = true;
-            this.btnDydraConnect.Click += new System.EventHandler(this.btnDydraConnect_Click);
+            this.chkAGraphRootCatalog.AutoSize = true;
+            this.chkAGraphRootCatalog.Location = new System.Drawing.Point(200, 38);
+            this.chkAGraphRootCatalog.Name = "chkAGraphRootCatalog";
+            this.chkAGraphRootCatalog.Size = new System.Drawing.Size(108, 17);
+            this.chkAGraphRootCatalog.TabIndex = 5;
+            this.chkAGraphRootCatalog.Text = "use Root Catalog";
+            this.chkAGraphRootCatalog.UseVisualStyleBackColor = true;
+            this.chkAGraphRootCatalog.CheckedChanged += new System.EventHandler(this.chkAGraphRootCatalog_CheckedChanged);
             // 
             // fclsGenericStoreConnection
             // 
@@ -1205,6 +1229,8 @@
             this.tabStores.ResumeLayout(false);
             this.tabAllegroGraph.ResumeLayout(false);
             this.tabAllegroGraph.PerformLayout();
+            this.tabDydra.ResumeLayout(false);
+            this.tabDydra.PerformLayout();
             this.tabFourStore.ResumeLayout(false);
             this.tabFourStore.PerformLayout();
             this.tabFuseki.ResumeLayout(false);
@@ -1226,8 +1252,6 @@
             this.tabTalis.PerformLayout();
             this.tabVirtuoso.ResumeLayout(false);
             this.tabVirtuoso.PerformLayout();
-            this.tabDydra.ResumeLayout(false);
-            this.tabDydra.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1352,5 +1376,7 @@
         private System.Windows.Forms.TextBox txtDydraApiKey;
         private System.Windows.Forms.Label lblDydraApiKey;
         private System.Windows.Forms.Button btnDydraConnect;
+        private System.Windows.Forms.CheckBox chkAGraphRootCatalog;
+        private System.Windows.Forms.Label lblAGraphOr;
     }
 }

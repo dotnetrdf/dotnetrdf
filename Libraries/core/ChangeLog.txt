@@ -24,6 +24,7 @@ Changed
 - Bug Fixes
  - SPARQL Tokeniser allows more than one ORDER BY keyword
  - Turtle Parser now permits nested collections i.e. ( "item" ( "subcollection" ) )
+ - Fixes to AllegroGraphConnector to support 4.x HTTP protocol changes based on bug reports from Sascha Dech
 - Query
  - Further refactored the Leviathan engine to make it even easier to extend
 
