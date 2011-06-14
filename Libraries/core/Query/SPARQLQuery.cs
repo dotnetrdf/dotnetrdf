@@ -489,7 +489,7 @@ namespace VDS.RDF.Query
             {
                 return this._limit;
             }
-            internal set
+            set
             {
                 if (value > -1)
                 {
@@ -512,7 +512,7 @@ namespace VDS.RDF.Query
             {
                 return this._offset;
             }
-            internal set
+            set
             {
                 if (value > 0)
                 {

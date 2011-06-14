@@ -41,6 +41,8 @@
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuDeleteGraph = new System.Windows.Forms.ToolStripMenuItem();
             this.tabSparqlQuery = new System.Windows.Forms.TabPage();
+            this.numPageSize = new System.Windows.Forms.NumericUpDown();
+            this.chkPageQuery = new System.Windows.Forms.CheckBox();
             this.btnLoadQuery = new System.Windows.Forms.Button();
             this.btnSaveQuery = new System.Windows.Forms.Button();
             this.btnSparqlQuery = new System.Windows.Forms.Button();
@@ -100,6 +102,7 @@
             this.tabGraphs.SuspendLayout();
             this.mnuGraphs.SuspendLayout();
             this.tabSparqlQuery.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numPageSize)).BeginInit();
             this.tabSparqlUpdate.SuspendLayout();
             this.tabImport.SuspendLayout();
             this.grpImportBatchSize.SuspendLayout();
@@ -214,6 +217,8 @@
             // 
             // tabSparqlQuery
             // 
+            this.tabSparqlQuery.Controls.Add(this.numPageSize);
+            this.tabSparqlQuery.Controls.Add(this.chkPageQuery);
             this.tabSparqlQuery.Controls.Add(this.btnLoadQuery);
             this.tabSparqlQuery.Controls.Add(this.btnSaveQuery);
             this.tabSparqlQuery.Controls.Add(this.btnSparqlQuery);
@@ -227,12 +232,46 @@
             this.tabSparqlQuery.Text = "SPARQL Query";
             this.tabSparqlQuery.UseVisualStyleBackColor = true;
             // 
+            // numPageSize
+            // 
+            this.numPageSize.Location = new System.Drawing.Point(388, 259);
+            this.numPageSize.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.numPageSize.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numPageSize.Name = "numPageSize";
+            this.numPageSize.Size = new System.Drawing.Size(120, 20);
+            this.numPageSize.TabIndex = 3;
+            this.numPageSize.ThousandsSeparator = true;
+            this.numPageSize.Value = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            // 
+            // chkPageQuery
+            // 
+            this.chkPageQuery.AutoSize = true;
+            this.chkPageQuery.Location = new System.Drawing.Point(6, 260);
+            this.chkPageQuery.Name = "chkPageQuery";
+            this.chkPageQuery.Size = new System.Drawing.Size(390, 17);
+            this.chkPageQuery.TabIndex = 2;
+            this.chkPageQuery.Text = "Issue this query repeatedly until there are no further results using page size of" +
+                " ";
+            this.chkPageQuery.UseVisualStyleBackColor = true;
+            // 
             // btnLoadQuery
             // 
             this.btnLoadQuery.Location = new System.Drawing.Point(220, 279);
             this.btnLoadQuery.Name = "btnLoadQuery";
             this.btnLoadQuery.Size = new System.Drawing.Size(75, 23);
-            this.btnLoadQuery.TabIndex = 6;
+            this.btnLoadQuery.TabIndex = 5;
             this.btnLoadQuery.Text = "Load Query";
             this.btnLoadQuery.UseVisualStyleBackColor = true;
             this.btnLoadQuery.Click += new System.EventHandler(this.btnLoadQuery_Click);
@@ -242,7 +281,7 @@
             this.btnSaveQuery.Location = new System.Drawing.Point(139, 279);
             this.btnSaveQuery.Name = "btnSaveQuery";
             this.btnSaveQuery.Size = new System.Drawing.Size(75, 23);
-            this.btnSaveQuery.TabIndex = 5;
+            this.btnSaveQuery.TabIndex = 4;
             this.btnSaveQuery.Text = "Save Query";
             this.btnSaveQuery.UseVisualStyleBackColor = true;
             this.btnSaveQuery.Click += new System.EventHandler(this.btnSaveQuery_Click);
@@ -252,7 +291,7 @@
             this.btnSparqlQuery.Location = new System.Drawing.Point(301, 279);
             this.btnSparqlQuery.Name = "btnSparqlQuery";
             this.btnSparqlQuery.Size = new System.Drawing.Size(75, 23);
-            this.btnSparqlQuery.TabIndex = 4;
+            this.btnSparqlQuery.TabIndex = 6;
             this.btnSparqlQuery.Text = "Run Query";
             this.btnSparqlQuery.UseVisualStyleBackColor = true;
             this.btnSparqlQuery.Click += new System.EventHandler(this.btnSparqlQuery_Click);
@@ -263,7 +302,7 @@
             this.txtSparqlQuery.Multiline = true;
             this.txtSparqlQuery.Name = "txtSparqlQuery";
             this.txtSparqlQuery.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.txtSparqlQuery.Size = new System.Drawing.Size(502, 204);
+            this.txtSparqlQuery.Size = new System.Drawing.Size(502, 185);
             this.txtSparqlQuery.TabIndex = 1;
             this.txtSparqlQuery.Text = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\nPREFIX rdfs: <http://w" +
                 "ww.w3.org/2000/01/rdf-schema#>\r\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\r" +
@@ -764,6 +803,7 @@
             this.mnuGraphs.ResumeLayout(false);
             this.tabSparqlQuery.ResumeLayout(false);
             this.tabSparqlQuery.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numPageSize)).EndInit();
             this.tabSparqlUpdate.ResumeLayout(false);
             this.tabSparqlUpdate.PerformLayout();
             this.tabImport.ResumeLayout(false);
@@ -855,5 +895,7 @@
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem mnuDeleteGraph;
         private System.Windows.Forms.CheckBox chkRemoveOldTasks;
+        private System.Windows.Forms.NumericUpDown numPageSize;
+        private System.Windows.Forms.CheckBox chkPageQuery;
     }
 }

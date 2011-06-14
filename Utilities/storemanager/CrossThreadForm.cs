@@ -290,6 +290,21 @@ namespace VDS.RDF.Utilities.StoreManager
             }
         }
 
+        private delegate void CrossThreadSetProgressMaximumDelegate(ProgressBar prg, int value);
+
+        protected void CrossThreadSetProgressMaximum(ProgressBar prg, int value)
+        {
+            if (this.InvokeRequired)
+            {
+                CrossThreadSetProgressMaximumDelegate d = new CrossThreadSetProgressMaximumDelegate(this.CrossThreadSetProgressMaximum);
+                this.Invoke(d, new Object[] { prg, value });
+            }
+            else
+            {
+                prg.Maximum = value;
+            }
+        }
+
         #endregion
 
         #region Cross Thread Form Management
@@ -322,6 +337,26 @@ namespace VDS.RDF.Utilities.StoreManager
             {
                 f.Show();
             }
+        }
+
+        private delegate void CrossThreadCloseDelegate(Form f);
+
+        protected void CrossThreadClose(Form f)
+        {
+            if (this.InvokeRequired)
+            {
+                CrossThreadCloseDelegate d = new CrossThreadCloseDelegate(this.CrossThreadClose);
+                this.Invoke(d, new Object[] { f });
+            }
+            else
+            {
+                f.Close();
+            }
+        }
+
+        protected void CrossThreadClose()
+        {
+            this.CrossThreadClose(this);
         }
 
         #endregion

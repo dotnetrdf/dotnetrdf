@@ -130,8 +130,16 @@ namespace VDS.RDF.Utilities.StoreManager
 
             if (this._manager is IQueryableGenericIOManager)
             {
-                QueryTask task = new QueryTask((IQueryableGenericIOManager)this._manager, this.txtSparqlQuery.Text);
-                this.AddTask<Object>(task, this.QueryCallback);
+                if (this.chkPageQuery.Checked)
+                {
+                    QueryTask task = new QueryTask((IQueryableGenericIOManager)this._manager, this.txtSparqlQuery.Text, (int)this.numPageSize.Value);
+                    this.AddTask<Object>(task, this.QueryCallback);
+                }
+                else
+                {
+                    QueryTask task = new QueryTask((IQueryableGenericIOManager)this._manager, this.txtSparqlQuery.Text);
+                    this.AddTask<Object>(task, this.QueryCallback);
+                }
             }
             else
             {
