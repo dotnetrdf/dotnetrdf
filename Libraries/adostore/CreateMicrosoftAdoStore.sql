@@ -48,9 +48,9 @@ CREATE INDEX NodesIndexValue ON NODES (nodeValueIndex);
 GO
 CREATE PROCEDURE GetVersion
 AS
-  BEGIN
-    RETURN 1;
-  END
+BEGIN
+  RETURN 1;
+END
   
 -- GetGraphID
 GO

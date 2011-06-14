@@ -12,7 +12,8 @@ using VDS.RDF.Writing;
 
 namespace VDS.RDF.Storage
 {
-    public abstract class BaseAdoStore<TConn,TCommand,TParameter,TAdaptor,TException> : IGenericIOManager, IDisposable
+    public abstract class BaseAdoStore<TConn,TCommand,TParameter,TAdaptor,TException> 
+        : IGenericIOManager, IDisposable
         where TConn : DbConnection
         where TCommand : DbCommand
         where TParameter : DbParameter
