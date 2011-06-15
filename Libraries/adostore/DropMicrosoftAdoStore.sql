@@ -29,22 +29,30 @@ DROP PROCEDURE RetractQuad;
 DROP PROCEDURE RetractQuadData;
 
 DROP PROCEDURE GetQuads;
+DROP PROCEDURE GetQuadsVirtual;
 DROP PROCEDURE GetQuadsData;
 
 DROP PROCEDURE GetGraphQuads;
+DROP PROCEDURE GetGraphQuadsVirtual;
 DROP PROCEDURE GetGraphQuadsData;
 
 DROP PROCEDURE GetQuadsWithSubject;
+DROP PROCEDURE GetQuadsWithSubjectVirtual;
 DROP PROCEDURE GetQuadsWithSubjectData;
 DROP PROCEDURE GetQuadsWithPredicate;
+DROP PROCEDURE GetQuadsWithPredicateVirtual;
 DROP PROCEDURE GetQuadsWithPredicateData;
 DROP PROCEDURE GetQuadsWithObject;
+DROP PROCEDURE GetQuadsWithObjectVirtual;
 DROP PROCEDURE GetQuadsWithObjectData;
 DROP PROCEDURE GetQuadsWithSubjectPredicate;
+DROP PROCEDURE GetQuadsWithSubjectPredicateVirtual;
 DROP PROCEDURE GetQuadsWithSubjectPredicateData;
 DROP PROCEDURE GetQuadsWithSubjectObject;
+DROP PROCEDURE GetQuadsWithSubjectObjectVirtual;
 DROP PROCEDURE GetQuadsWithSubjectObjectData;
 DROP PROCEDURE GetQuadsWithPredicateObject;
+DROP PROCEDURE GetQuadsWithPredicateObjectVirtual;
 DROP PROCEDURE GetQuadsWithPredicateObjectData;
 
 -- TEMP - Remove example user from rdf_readwrite role

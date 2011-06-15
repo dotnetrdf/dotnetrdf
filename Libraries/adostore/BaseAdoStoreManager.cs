@@ -21,6 +21,7 @@ namespace VDS.RDF.Storage
         where TException : DbException
     {
         private TConn _connection;
+        private SimpleVirtualNodeCache<int> _cache = new SimpleVirtualNodeCache<int>();
 
         #region Constructor and Destructor
 
@@ -311,6 +312,21 @@ namespace VDS.RDF.Storage
             }
         }
 
+        internal INode DecodeVirtualNode(IGraph g, byte type, int id)
+        {
+            switch (type)
+            {
+                case 0:
+                    return new SimpleVirtualBlankNode(g, id, this);
+                case 1:
+                    return new SimpleVirtualUriNode(g, id, this);
+                case 2:
+                    return new SimpleVirtualLiteralNode(g, id, this);
+                default:
+                    throw new NotSupportedException("Only Blank, URI and Literal Nodes are currently supported");
+            }
+        }
+
         internal String DecodeMeta(Object meta)
         {
             if (Convert.IsDBNull(meta))
@@ -444,7 +460,60 @@ namespace VDS.RDF.Storage
 
         internal void LoadGraphVirtual(IGraph g, Uri graphUri)
         {
+            //First need to get the Graph ID (if any)
+            TCommand cmd = this.GetCommand();
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.CommandText = "GetGraphID";
+            cmd.Connection = this._connection;
+            if (graphUri != null)
+            {
+                cmd.Parameters.Add(this.GetParameter("graphUri"));
+                cmd.Parameters["graphUri"].DbType = DbType.String;
+                cmd.Parameters["graphUri"].Value = graphUri.ToString();
+            }
+            cmd.Parameters.Add(this.GetParameter("RC"));
+            cmd.Parameters["RC"].DbType = DbType.Int32;
+            cmd.Parameters["RC"].Direction = ParameterDirection.ReturnValue;
+            cmd.ExecuteNonQuery();
 
+            int id = (int)cmd.Parameters["RC"].Value;
+
+            if (id > 0)
+            {
+                //We got an ID so can start the load process
+                //Set the Target Graph
+                IGraph target = (g.IsEmpty) ? g : new Graph();
+
+                cmd = this.GetCommand();
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.CommandText = "GetGraphQuadsData";
+                cmd.Connection = this._connection;
+                cmd.Parameters.Add(this.GetParameter("graphID"));
+                cmd.Parameters["graphID"].DbType = DbType.Int32;
+                cmd.Parameters["graphID"].Value = id;
+
+                using (DbDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            INode s = this.DecodeVirtualNode(target, (byte)reader["subjectType"], (int)reader["subjectID"]);
+                            INode p = this.DecodeVirtualNode(target, (byte)reader["predicateType"], (int)reader["predicateID"]);
+                            INode o = this.DecodeVirtualNode(target, (byte)reader["objectType"], (int)reader["objectID"]);
+
+                            target.Assert(new Triple(s, p, o));
+                        }
+                    }
+                    reader.Close();
+                    reader.Dispose();
+                }
+
+                if (!ReferenceEquals(target, g))
+                {
+                    g.Merge(target);
+                }
+            }
         }
 
         public void SaveGraph(IGraph g)
@@ -649,21 +718,31 @@ namespace VDS.RDF.Storage
 
         public INode GetValue(IGraph g, int id)
         {
-            TCommand command = this.GetCommand();
-            command.CommandType = CommandType.StoredProcedure;
-            command.CommandText = "GetNodeData";
-            command.Parameters.Add(this.GetParameter("nodeID"));
-            command.Parameters["nodeID"].DbType = DbType.Int32;
-            command.Parameters["nodeID"].Value = id;
-
-            DbDataReader reader = command.ExecuteReader();
-            if (reader.HasRows && reader.Read())
+            INode value = this._cache[id];
+            if (value == null)
             {
-                return this.DecodeNode(g, (byte)reader["nodeType"], (String)reader["nodeValue"], this.DecodeMeta(reader["nodeMeta"]));
+                TCommand command = this.GetCommand();
+                command.CommandType = CommandType.StoredProcedure;
+                command.CommandText = "GetNodeData";
+                command.Parameters.Add(this.GetParameter("nodeID"));
+                command.Parameters["nodeID"].DbType = DbType.Int32;
+                command.Parameters["nodeID"].Value = id;
+
+                DbDataReader reader = command.ExecuteReader();
+                if (reader.HasRows && reader.Read())
+                {
+                    INode temp = this.DecodeNode(g, (byte)reader["nodeType"], (String)reader["nodeValue"], this.DecodeMeta(reader["nodeMeta"]));
+                    this._cache[id] = temp;
+                    return temp;
+                }
+                else
+                {
+                    throw new RdfStorageException("The ADO Store does not contain a Node with ID " + id);
+                }
             }
             else
             {
-                throw new RdfStorageException("The ADO Store does not contain a Node with ID " + id);
+                return value.CopyNode(g);
             }
         }
 

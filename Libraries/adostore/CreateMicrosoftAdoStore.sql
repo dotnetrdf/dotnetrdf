@@ -356,6 +356,22 @@ BEGIN
   SELECT subjectID, predicateID, objectID FROM QUADS WHERE graphID=@graphID;
 END
 
+-- GetGraphQuadsVirtual
+GO
+CREATE PROCEDURE GetGraphQuadsVirtual @graphID int
+AS
+BEGIN
+  SET NOCOUNT ON;
+  SELECT subjectID, S.nodeType AS subjectType,
+         predicateID, P.nodeType AS predicateType,
+         objectID, O.nodeType AS objectType
+  FROM QUADS Q
+  INNER JOIN NODES S ON Q.subjectID=S.nodeID
+  INNER JOIN NODES P ON Q.predicateID=P.nodeID
+  INNER JOIN NODES O ON Q.objectID=O.nodeID
+  WHERE graphID=@graphID;  
+END
+
 -- GetGraphQuadsData
 GO
 CREATE PROCEDURE GetGraphQuadsData @graphID int
@@ -397,6 +413,22 @@ BEGIN
   INNER JOIN NODES O ON Q.objectID=O.nodeID;    
 END
 
+-- GetQuadsVirtual
+GO
+CREATE PROCEDURE GetQuadsVirtual
+AS
+BEGIN
+  SET NOCOUNT ON;
+  SELECT subjectID, S.nodeType AS subjectType,
+         predicateID, P.nodeType AS predicateType,
+         objectID, O.nodeType AS objectType,
+         graphID
+  FROM QUADS Q
+  INNER JOIN NODES S ON Q.subjectID=S.nodeID
+  INNER JOIN NODES P ON Q.predicateID=P.nodeID
+  INNER JOIN NODES O ON Q.objectID=O.nodeID;    
+END
+
 -- GetQuadsWithSubject
 GO
 CREATE PROCEDURE GetQuadsWithSubject @subjectID int
@@ -404,6 +436,21 @@ AS
 BEGIN
 	SET NOCOUNT ON;
 	SELECT predicateID, objectID, graphID FROM QUADS WHERE subjectID=@subjectID;
+END
+
+-- GetQuadsWithSubjectVirtual
+GO
+CREATE PROCEDURE GetQuadsWithSubjectVirtual @subjectID int
+AS
+BEGIN
+  SET NOCOUNT ON;
+  SELECT predicateID, P.nodeType AS predicateType,
+         objectID, O.nodeType AS objectType,
+         graphID
+  FROM QUADS Q
+  INNER JOIN NODES P ON Q.predicateID=P.nodeID
+  INNER JOIN NODES O ON Q.objectID=O.nodeID
+  WHERE subjectID=@subjectID;
 END
 
 -- GetQuadsWithSubjectData
@@ -430,6 +477,21 @@ BEGIN
 	SELECT subjectID, objectID, graphID FROM QUADS WHERE predicateID=@predicateID;
 END
 
+-- GetQuadsWithPredicateVirtual
+GO
+CREATE PROCEDURE GetQuadsWithPredicateVirtual @predicateID int
+AS
+BEGIN
+  SET NOCOUNT ON;
+  SELECT subjectID, S.nodeType AS subjectType,
+         objectID, O.nodeType AS objectType,
+         graphID
+  FROM QUADS Q
+  INNER JOIN NODES S ON Q.subjectID=S.nodeID
+  INNER JOIN NODES O ON Q.objectID=O.nodeID
+  WHERE predicateID=@predicateID;
+END
+
 -- GetQuadsWithPredicateData
 GO
 CREATE PROCEDURE GetQuadsWithPredicateData @predicateID int
@@ -453,6 +515,21 @@ BEGIN
 	SET NOCOUNT ON;
 	SELECT subjectID, predicateID, graphID FROM QUADS WHERE objectID=@objectID;
 END
+
+-- GetQuadsWithObjectVirtual
+GO
+CREATE PROCEDURE GetQuadsWithObjectVirtual @objectID int
+AS
+BEGIN
+  SET NOCOUNT ON;
+  SELECT subjectID, S.nodeType AS subjectType,
+         predicateID, P.nodeType AS predicateType,
+         graphID
+  FROM QUADS Q
+  INNER JOIN NODES S ON Q.subjectID=S.nodeID
+  INNER JOIN NODES P ON Q.predicateID=P.nodeID
+  WHERE objectID=@objectID;
+END  
 
 -- GetQuadsWithObjectData
 GO
@@ -478,6 +555,19 @@ BEGIN
 	SELECT objectID, graphID FROM QUADS WHERE subjectID=@subjectID AND predicateID=@predicateID;
 END
 
+-- GetQuadsWithSubjectPredicateVirtual
+GO
+CREATE PROCEDURE GetQuadsWithSubjectPredicateVirtual @subjectID int, @predicateID int
+AS
+BEGIN
+  SET NOCOUNT ON;
+  SELECT objectID, nodeType AS objectType,
+         graphID
+  FROM QUADS Q
+  INNER JOIN NODES O ON Q.objectID=O.nodeID
+  WHERE subjectID=@subjectID AND predicateID=@predicateID;  
+END  
+
 -- GetQuadsWithSubjectPredicateData
 GO
 CREATE PROCEDURE GetQuadsWithSubjectPredicateData @subjectID int, @predicateID int
@@ -500,6 +590,19 @@ BEGIN
 	SELECT predicateID, graphID FROM QUADS WHERE subjectID=@subjectID AND objectID=@objectID;
 END
 
+-- GetQuadsWithSubjectObjectVirtual
+GO
+CREATE PROCEDURE GetQuadsWithSubjectObjectVirtual @subjectID int, @objectID int
+AS
+BEGIN
+  SET NOCOUNT ON;
+  SELECT predicateID, nodeType AS predicateType,
+         graphID
+  FROM QUADS Q
+  INNER JOIN NODES P ON Q.predicateID=P.nodeID
+  WHERE subjectID=@subjectID AND objectID=@objectID;
+END
+
 -- GetQuadsWithSubjectObjectData
 GO
 CREATE PROCEDURE GetQuadsWithSubjectObjectData @subjectID int, @objectID int
@@ -520,6 +623,19 @@ AS
 BEGIN
 	SET NOCOUNT ON;
 	SELECT subjectID, graphID FROM QUADS WHERE predicateID=@predicateID AND objectID=@objectID;
+END
+
+-- GetQuadsWithPredicateObjectVirtual
+GO
+CREATE PROCEDURE GetQuadsWithPredicateObjectVirtual @predicateID int, @objectID int
+AS
+BEGIN
+  SET NOCOUNT ON;
+  SELECT subjectID, nodeType AS subjectType,
+         graphID
+  FROM QUADS Q
+  INNER JOIN NODES O ON Q.objectID=O.nodeID
+  WHERE predicateID=@predicateID AND objectID=@objectID;    
 END
 
 -- GetQuadsWithPredicateObjectData
@@ -589,22 +705,30 @@ GRANT EXECUTE ON RetractQuad TO rdf_readwrite;
 GRANT EXECUTE ON RetractQuadData TO rdf_readwrite;
 
 GRANT EXECUTE ON GetQuads TO rdf_readwrite, rdf_readinsert, rdf_readonly;
+GRANT EXECUTE ON GetQuadsVirtual TO rdf_readwrite, rdf_readinsert, rdf_readonly;
 GRANT EXECUTE ON GetQuadsData TO rdf_readwrite, rdf_readinsert, rdf_readonly;
 
 GRANT EXECUTE ON GetGraphQuads TO rdf_readwrite, rdf_readinsert, rdf_readonly;
+GRANT EXECUTE ON GetGraphQuadsVirtual TO rdf_readwrite, rdf_readinsert, rdf_readonly;
 GRANT EXECUTE ON GetGraphQuadsData TO rdf_readwrite, rdf_readinsert, rdf_readonly;
 
 GRANT EXECUTE ON GetQuadsWithSubject TO rdf_readwrite, rdf_readinsert, rdf_readonly;
+GRANT EXECUTE ON GetQuadsWithSubjectVirtual TO rdf_readwrite, rdf_readinsert, rdf_readonly;
 GRANT EXECUTE ON GetQuadsWithSubjectData TO rdf_readwrite, rdf_readinsert, rdf_readonly;
 GRANT EXECUTE ON GetQuadsWithPredicate TO rdf_readwrite, rdf_readinsert, rdf_readonly;
+GRANT EXECUTE ON GetQuadsWithPredicateVirtual TO rdf_readwrite, rdf_readinsert, rdf_readonly;
 GRANT EXECUTE ON GetQuadsWithPredicateData TO rdf_readwrite, rdf_readinsert, rdf_readonly;
 GRANT EXECUTE ON GetQuadsWithObject TO rdf_readwrite, rdf_readinsert, rdf_readonly;
+GRANT EXECUTE ON GetQuadsWithObjectVirtual TO rdf_readwrite, rdf_readinsert, rdf_readonly;
 GRANT EXECUTE ON GetQuadsWithObjectData TO rdf_readwrite, rdf_readinsert, rdf_readonly;
 GRANT EXECUTE ON GetQuadsWithSubjectPredicate TO rdf_readwrite, rdf_readinsert, rdf_readonly;
+GRANT EXECUTE ON GetQuadsWithSubjectPredicateVirtual TO rdf_readwrite, rdf_readinsert, rdf_readonly;
 GRANT EXECUTE ON GetQuadsWithSubjectPredicateData TO rdf_readwrite, rdf_readinsert, rdf_readonly;
 GRANT EXECUTE ON GetQuadsWithSubjectObject TO rdf_readwrite, rdf_readinsert, rdf_readonly;
+GRANT EXECUTE ON GetQuadsWithSubjectObjectVirtual TO rdf_readwrite, rdf_readinsert, rdf_readonly;
 GRANT EXECUTE ON GetQuadsWithSubjectObjectData TO rdf_readwrite, rdf_readinsert, rdf_readonly;
 GRANT EXECUTE ON GetQuadsWithPredicateObject TO rdf_readwrite, rdf_readinsert, rdf_readonly;
+GRANT EXECUTE ON GetQuadsWithPredicateObjectVirtual TO rdf_readwrite, rdf_readinsert, rdf_readonly;
 GRANT EXECUTE ON GetQuadsWithPredicateObjectData TO rdf_readwrite, rdf_readinsert, rdf_readonly;
 
 -- TEMP - Grant rdf_readwrite role to example user for testing

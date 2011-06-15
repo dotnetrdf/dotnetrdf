@@ -53,6 +53,7 @@
     <Compile Include="Virtualisation\VirtualNode.cs" />
     <Compile Include="Virtualisation\IVirtualRdfProvider.cs" />
     <Compile Include="Virtualisation\IVirtualNode.cs" />
+    <Compile Include="Virtualisation\VirtualNodeCache.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\Trunk\Libraries\core\dotNetRDF.csproj">
