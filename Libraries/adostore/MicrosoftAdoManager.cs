@@ -50,19 +50,19 @@ namespace VDS.RDF.Storage
             return new SqlConnection(CreateConnectionString(server, db, user, password));
         }
 
-        protected override SqlCommand GetCommand()
+        protected internal override SqlCommand GetCommand()
         {
             return new SqlCommand();
         }
 
-        protected override SqlParameter GetParameter(string name)
+        protected internal override SqlParameter GetParameter(string name)
         {
             SqlParameter param = new SqlParameter();
             param.ParameterName = name;
             return param;
         }
 
-        protected override SqlDataAdapter GetAdaptor()
+        protected internal override SqlDataAdapter GetAdaptor()
         {
             return new SqlDataAdapter();
         }

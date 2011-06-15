@@ -43,11 +43,13 @@
     <Compile Include="..\..\..\..\Trunk\Testing\unittest\TestTools.cs">
       <Link>TestTools.cs</Link>
     </Compile>
+    <Compile Include="AdoDataset.cs" />
     <Compile Include="AdoStoreWriteCache.cs" />
     <Compile Include="BaseAdoStoreManager.cs" />
     <Compile Include="MicrosoftAdoManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Test\AdoStoreBasic.cs" />
+    <Compile Include="Virtualisation\SimpleVirtualNodes.cs" />
     <Compile Include="Virtualisation\VirtualNode.cs" />
     <Compile Include="Virtualisation\IVirtualRdfProvider.cs" />
     <Compile Include="Virtualisation\IVirtualNode.cs" />

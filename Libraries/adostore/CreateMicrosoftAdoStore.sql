@@ -30,12 +30,15 @@ CREATE INDEX QuadIndexO ON QUADS (objectID);
 
 CREATE INDEX QuadIndexG ON QUADS (graphID);
 
--- Create the Nodes Table
+-- Create the Nodes Tables
 CREATE TABLE NODES (nodeID INT IDENTITY(1,1) CONSTRAINT NodePKey PRIMARY KEY,
 					nodeType TINYINT NOT NULL,
 					nodeValue NVARCHAR(MAX) COLLATE Latin1_General_BIN NOT NULL,
 					nodeMeta NVARCHAR(MAX) COLLATE Latin1_General_BIN NULL,
 					nodeValueIndex AS CAST(nodeValue AS NVARCHAR(450)));
+					
+CREATE TABLE BNODES (bnodeID INT IDENTITY(1,1) CONSTRAINT BNodePKey PRIMARY KEY,
+					 graphID INT NOT NULL);
 					
 -- Create Indexes on the Nodes Table
 CREATE INDEX NodesIndexType ON NODES (nodeType);
@@ -203,11 +206,31 @@ BEGIN
 	EXEC @id = GetNodeID @nodeType, @nodeValue, @nodeMeta;
 	IF @id = 0
 	  BEGIN
+	    -- Blank Node IDs must be Graph Scoped where possible
+	    -- In this case we won't know the Graph Scope so create in the empty graph (i.e. ID = 0)
+	    IF @nodeType = 0
+	    BEGIN
+			INSERT INTO BNODES (graphID) VALUES (0);
+			SET @nodeValue = STR('_:' + SCOPE_IDENTITY());
+	    END
 	    INSERT INTO NODES (nodeType, nodeValue, nodeMeta) VALUES (@nodeType, @nodeValue, @nodeMeta);
 	    RETURN SCOPE_IDENTITY();
 	  END
 	ELSE
 	  RETURN @id;
+END
+
+-- CreateBlankNodeID
+GO
+CREATE PROCEDURE CreateBlankNodeID @graphID int
+AS
+BEGIN
+	SET NOCOUNT ON;
+	INSERT INTO BNODES (graphID) VALUES (@graphID);
+	DECLARE @id int = SCOPE_IDENTITY();
+	DECLARE @nodeValue nvarchar(MAX) = STR('_:' + @id);
+	INSERT INTO NODES (nodeType, nodeValue) VALUES (0, @nodeValue);
+	RETURN SCOPE_IDENTITY();
 END
 
 -- GetNodeData
@@ -555,6 +578,7 @@ GRANT EXECUTE ON DeleteGraphByUri TO rdf_readwrite;
 
 GRANT EXECUTE ON GetNodeID TO rdf_readwrite, rdf_readinsert, rdf_readonly;
 GRANT EXECUTE ON GetOrCreateNodeID TO rdf_readwrite, rdf_readinsert;
+GRANT EXECUTE ON CreateBlankNodeID TO rdf_readwrite, rdf_readinsert;
 GRANT EXECUTE ON GetNodeData TO rdf_readwrite, rdf_readinsert, rdf_readonly;
 
 GRANT EXECUTE ON HasQuad TO rdf_readwrite, rdf_readinsert, rdf_readonly;

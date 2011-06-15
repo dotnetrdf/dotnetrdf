@@ -43,6 +43,10 @@ namespace VDS.RDF.Storage.Virtualisation
 
         TGraphID GetGraphID(IGraph g, bool createIfNotExists);
 
+        TGraphID GetGraphID(Uri graphUri);
+
+        TGraphID GetGraphID(Uri graphUri, bool createIfNotExists);
+
         /// <summary>
         /// Given a non-blank Node returns the Node ID
         /// </summary>
