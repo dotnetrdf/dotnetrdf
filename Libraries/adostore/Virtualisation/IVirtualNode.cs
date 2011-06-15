@@ -5,7 +5,8 @@ using System.Text;
 
 namespace VDS.RDF.Storage.Virtualisation
 {
-    public interface IVirtualNode<TNodeID, TGraphID> : INode
+    public interface IVirtualNode<TNodeID, TGraphID> 
+        : INode, IEquatable<IVirtualNode<TNodeID, TGraphID>>, IComparable<IVirtualNode<TNodeID, TGraphID>>
     {
         TNodeID VirtualID
         {

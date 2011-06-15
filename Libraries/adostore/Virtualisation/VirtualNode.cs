@@ -20,59 +20,46 @@ namespace VDS.RDF.Storage.Virtualisation
     /// Note that this class does not implement any of the specialised Node interfaces and instead relies on the casting of its materialised value to an appropriately typed node to provide the true values to code that needs it
     /// </para>
     /// </remarks>
-    public class VirtualNode<TNodeID, TGraphID> : IVirtualNode<TNodeID, TGraphID>
+    public abstract class BaseVirtualNode<TNodeID, TGraphID> 
+        : IVirtualNode<TNodeID, TGraphID>, IEquatable<BaseVirtualNode<TNodeID, TGraphID>>, IComparable<BaseVirtualNode<TNodeID, TGraphID>>
     {
         private IGraph _g;
         private Uri _graphUri;
         private TNodeID _id;
         private IVirtualRdfProvider<TNodeID, TGraphID> _provider;
-        private NodeType? _type;
-        private INode _value;
+        private NodeType _type;
+        protected INode _value;
         private bool _collides = false;
 
-        public VirtualNode(IGraph g, TNodeID id, IVirtualRdfProvider<TNodeID, TGraphID> provider)
+        public BaseVirtualNode(IGraph g, NodeType type, TNodeID id, IVirtualRdfProvider<TNodeID, TGraphID> provider)
         {
             this._g = g;
             this._graphUri = this._g.BaseUri;
+            this._type = type;
             this._id = id;
             this._provider = provider;
         }
 
-        public VirtualNode(IGraph g, INode value, IVirtualRdfProvider<TNodeID, TGraphID> provider)
-        {
-            this._g = g;
-            this._graphUri = this._g.BaseUri;
-            this._value = value;
-            this._type = this._value.NodeType;
-            this._provider = provider;
-            if (this._value.NodeType != NodeType.Blank)
-            {
-                this._id = this._provider.GetID(this._value, true);
-            }
-            else
-            {
-                throw new RdfException("Cannot create a Virtual RDF Node with a predefined value when that value is a Blank Node using this constructor overload");
-            }
-        }
-
-        public VirtualNode(IGraph g, IBlankNode value, IVirtualRdfProvider<TNodeID, TGraphID> provider)
-        {
-            this._g = g;
-            this._graphUri = this._g.BaseUri;
-            this._value = value;
-            this._type = this._value.NodeType;
-            this._provider = provider;
-            this._id = this._provider.GetBlankNodeID(value, true);
-        }
-
-        private void EnsureValue()
+        /// <summary>
+        /// Materialises the Value if it is not already materialised
+        /// </summary>
+        protected void MaterialiseValue()
         {
             if (this._value == null)
             {
                 //Materialise the value
                 this._value = this._provider.GetValue(this._g, this._id);
-                this._type = this._value.NodeType;
+                if (this._value.NodeType != this._type) throw new RdfException("The Virtual RDF Provider materialised a Node of the wrong type! Expected " + this._type.ToString() + " but got " + this._value.NodeType.ToString());
+                this.OnMaterialise();
             }
+        }
+
+        /// <summary>
+        /// Called after the value is materialised for the first time
+        /// </summary>
+        protected virtual void OnMaterialise()
+        {
+
         }
 
         #region IVirtualNode<TNodeID,TGraphID> Members
@@ -105,7 +92,7 @@ namespace VDS.RDF.Storage.Virtualisation
         {
             get
             {
-                if (this._value == null) this.EnsureValue();
+                if (this._value == null) this.MaterialiseValue();
                 return this._value;
             }
         }
@@ -118,11 +105,7 @@ namespace VDS.RDF.Storage.Virtualisation
         {
             get
             {
-                if (this._type == null)
-                {
-                    this.EnsureValue();
-                }
-                return this._type.Value;
+                return this._type;
             }
         }
 
@@ -170,87 +153,207 @@ namespace VDS.RDF.Storage.Virtualisation
 
         #endregion
 
-        #region IComparable<INode> Members
+        #region IComparable Implementations
+
+        public int CompareTo(IVirtualNode<TNodeID, TGraphID> other)
+        {
+            if (ReferenceEquals(this, other)) return 0;
+            if (other == null) return 1;
+
+            if (this.VirtualEquality(other))
+            {
+                return 0;
+            }
+            else
+            {
+                return this.CompareTo((INode)other);
+            }
+        }
+
+        public int CompareTo(BaseVirtualNode<TNodeID, TGraphID> other)
+        {
+            return this.CompareTo((IVirtualNode<TNodeID, TGraphID>)other);
+        }
 
         public int CompareTo(INode other)
         {
-            throw new NotImplementedException();
+            if (ReferenceEquals(this, other)) return 0;
+            if (other == null) return 1;
+            if (this.VirtualEquality(other)) return 0;
+
+            switch (this._type)
+            {
+                case NodeType.Blank:
+                    if (other.NodeType == NodeType.Variable)
+                    {
+                        //Blank Nodes are greater than variables
+                        return 1;
+                    }
+                    else if (other.NodeType == NodeType.Blank)
+                    {
+                        //Compare Blank Node appropriately
+                        return ComparisonHelper.CompareBlankNodes((IBlankNode)this, (IBlankNode)other);
+                    }
+                    else
+                    {
+                        //Blank Nodes are less than everything else
+                        return -1;
+                    }
+                    break;
+
+                case NodeType.GraphLiteral:
+                    if (other.NodeType == NodeType.GraphLiteral)
+                    {
+                        //Compare Graph Literals appropriately
+                        return ComparisonHelper.CompareGraphLiterals((IGraphLiteralNode)this, (IGraphLiteralNode)other);
+                    }
+                    else
+                    {
+                        //Graph Literals are greater than everything else
+                        return 1;
+                    }
+                    break;
+
+                case NodeType.Literal:
+                    if (other.NodeType == NodeType.GraphLiteral)
+                    {
+                        //Literals are less than Graph Literals
+                        return -1;
+                    }
+                    else if (other.NodeType == NodeType.Literal)
+                    {
+                        //Compare Literals appropriately
+                        return ComparisonHelper.CompareLiterals((ILiteralNode)this, (ILiteralNode)other);
+                    }
+                    else
+                    {
+                        //Literals are greater than anything else (i.e. Blanks, Variables and URIs)
+                        return 1;
+                    }
+                    break;
+
+                case NodeType.Uri:
+                    if (other.NodeType == NodeType.GraphLiteral || other.NodeType == NodeType.Literal)
+                    {
+                        //URIs are less than Literals and Graph Literals
+                        return -1;
+                    }
+                    else if (other.NodeType == NodeType.Uri)
+                    {
+                        //Compare URIs appropriately
+                        return ComparisonHelper.CompareUris((IUriNode)this, (IUriNode)other);
+                    }
+                    else
+                    {
+                        //URIs are greater than anything else (i.e. Blanks and Variables)
+                        return 1;
+                    }
+                    break;
+
+                case NodeType.Variable:
+                    if (other.NodeType == NodeType.Variable)
+                    {
+                        //Compare Variables accordingly
+                        return ComparisonHelper.CompareVariables((IVariableNode)this, (IVariableNode)other);
+                    }
+                    else
+                    {
+                        //Variables are less than anything else
+                        return -1;
+                    }
+                    break;
+
+                default:
+                    //Things are always greater than unknown node types
+                    return 1;
+            }
         }
 
-        #endregion
-
-        #region IComparable<IBlankNode> Members
-
-        public int CompareTo(IBlankNode other)
+        public virtual int CompareTo(IBlankNode other)
         {
-            throw new NotImplementedException();
+            return this.CompareTo((INode)other);
         }
 
-        #endregion
-
-        #region IComparable<IGraphLiteralNode> Members
-
-        public int CompareTo(IGraphLiteralNode other)
+        public virtual int CompareTo(IGraphLiteralNode other)
         {
-            throw new NotImplementedException();
+            return this.CompareTo((INode)other);
         }
 
-        #endregion
-
-        #region IComparable<ILiteralNode> Members
-
-        public int CompareTo(ILiteralNode other)
+        public virtual int CompareTo(ILiteralNode other)
         {
-            throw new NotImplementedException();
+            return this.CompareTo((INode)other);
         }
 
-        #endregion
-
-        #region IComparable<IUriNode> Members
-
-        public int CompareTo(IUriNode other)
+        public virtual int CompareTo(IUriNode other)
         {
-            throw new NotImplementedException();
+            return this.CompareTo((INode)other);
         }
 
-        #endregion
-
-        #region IComparable<IVariableNode> Members
-
-        public int CompareTo(IVariableNode other)
+        public virtual int CompareTo(IVariableNode other)
         {
-            throw new NotImplementedException();
+            return this.CompareTo((INode)other);
         }
 
         #endregion
 
-        #region IEquatable Implementation
+        #region IEquatable Implementations
+
+        public sealed override bool Equals(object obj)
+        {
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj == null) return false;
+
+            if (obj is INode)
+            {
+                return this.Equals((INode)obj);
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public bool Equals(IVirtualNode<TNodeID, TGraphID> other)
+        {
+            if (ReferenceEquals(this, other)) return true;
+            if (other == null) return false;
+
+            return ReferenceEquals(this._provider, other.Provider) && this._id.Equals(other.VirtualID);
+        }
+
+        public bool Equals(BaseVirtualNode<TNodeID, TGraphID> other)
+        {
+            return this.Equals((IVirtualNode<TNodeID, TGraphID>)other);
+        }
 
         public bool Equals(INode other)
         {
             if (ReferenceEquals(this, other)) return true;
             if (other == null) return false;
 
-            if (other is IVirtualNode<TNodeID, TGraphID>)
+            if (this.VirtualEquality(other))
             {
-                IVirtualNode<TNodeID, TGraphID> virt = (IVirtualNode<TNodeID, TGraphID>)other;
-                return ReferenceEquals(this._provider, virt.Provider) && this._id.Equals(virt.VirtualID);
+                return true;
             }
             else
             {
                 //If not both virtual the only way to determine equality is to
                 //materialise the value of this node and then check that against the other node
-                if (this._value == null) this.EnsureValue();
+                if (this._value == null) this.MaterialiseValue();
                 return this._value.Equals(other);
             }
         }
 
+        /// <summary>
+        /// Checks the Node Types and if they are equal invokes the INode based comparison
+        /// </summary>
+        /// <param name="other">Node to compare with for equality</param>
+        /// <returns></returns>
         private bool TypedEquality(INode other)
         {
             if (ReferenceEquals(this, other)) return true;
             if (other == null) return false;
 
-            if (this._type == null) this.EnsureValue();
             if (this._type == other.NodeType)
             {
                 return this.Equals(other);
@@ -261,95 +364,344 @@ namespace VDS.RDF.Storage.Virtualisation
             }
         }
 
-        public bool Equals(IBlankNode other)
+        protected bool VirtualEquality(INode other)
+        {
+            if (other is IVirtualNode<TNodeID, TGraphID>)
+            {
+                IVirtualNode<TNodeID, TGraphID> virt = (IVirtualNode<TNodeID, TGraphID>)other;
+                return ReferenceEquals(this._provider, virt.Provider) && this._id.Equals(virt.VirtualID);
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public virtual bool Equals(IBlankNode other)
         {
             return this.TypedEquality(other);
         }
 
-        public bool Equals(IGraphLiteralNode other)
+        public virtual bool Equals(IGraphLiteralNode other)
         {
             return this.TypedEquality(other);
         }
 
-        public bool Equals(ILiteralNode other)
+        public virtual bool Equals(ILiteralNode other)
         {
             return this.TypedEquality(other);
         }
 
-        public bool Equals(IUriNode other)
+        public virtual bool Equals(IUriNode other)
         {
             return this.TypedEquality(other);
         }
 
-        public bool Equals(IVariableNode other)
+        public virtual bool Equals(IVariableNode other)
         {
             return this.TypedEquality(other);
         }
 
         #endregion
 
-        //#region Cast Implemenations
+        public sealed override int GetHashCode()
+        {
+            return this._id.GetHashCode();
+        }
 
-        //public static explicit operator IBlankNode(VirtualNode<TNodeID, TGraphID> node)
-        //{
-        //    if (node.NodeType == NodeType.Blank)
-        //    {
-        //        return (IBlankNode)node.MaterialisedValue;
-        //    } 
-        //    else 
-        //    {
-        //        throw new InvalidCastException("Cannot cast a non-Blank Node to a Blank Node");
-        //    }
-        //}
+        public sealed override string ToString()
+        {
+            if (this._value == null) this.MaterialiseValue();
+            return this._value.ToString();
+        }
+    }
 
-        //public static explicit operator IGraphLiteralNode(VirtualNode<TNodeID, TGraphID> node)
-        //{
-        //    if (node.NodeType == NodeType.GraphLiteral)
-        //    {
-        //        return (IGraphLiteralNode)node.MaterialisedValue;
-        //    }
-        //    else
-        //    {
-        //        throw new InvalidCastException("Cannot cast a non-Graph Literal Node to a Graph Literal Node");
-        //    }
-        //}
+    public abstract class BaseVirtualBlankNode<TNodeID, TGraphID>
+        : BaseVirtualNode<TNodeID, TGraphID>, IBlankNode, 
+          IEquatable<BaseVirtualBlankNode<TNodeID, TGraphID>>, IComparable<BaseVirtualBlankNode<TNodeID, TGraphID>>
+    {
+        private String _internalID;
 
-        //public static explicit operator ILiteralNode(VirtualNode<TNodeID, TGraphID> node)
-        //{
-        //    if (node.NodeType == NodeType.Literal)
-        //    {
-        //        return (ILiteralNode)node.MaterialisedValue;
-        //    }
-        //    else
-        //    {
-        //        throw new InvalidCastException("Cannot cast a non-Literal Node to a Literal Node");
-        //    }
-        //}
+        public BaseVirtualBlankNode(IGraph g, TNodeID id, IVirtualRdfProvider<TNodeID, TGraphID> provider)
+            : base(g, NodeType.Blank, id, provider) { }
 
-        //public static explicit operator IUriNode(VirtualNode<TNodeID, TGraphID> node)
-        //{
-        //    if (node.NodeType == NodeType.Uri)
-        //    {
-        //        return (IUriNode)node.MaterialisedValue;
-        //    }
-        //    else
-        //    {
-        //        throw new InvalidCastException("Cannot cast a non-URI Node to a URI Node");
-        //    }
-        //}
+        protected sealed override void OnMaterialise()
+        {
+            IBlankNode temp = (IBlankNode)this._value;
+            this._internalID = temp.InternalID;
+        }
 
-        //public static explicit operator IVariableNode(VirtualNode<TNodeID, TGraphID> node)
-        //{
-        //    if (node.NodeType == NodeType.Variable)
-        //    {
-        //        return (IVariableNode)node.MaterialisedValue;
-        //    }
-        //    else
-        //    {
-        //        throw new InvalidCastException("Cannot cast a non-Variable Node to a Variable Node");
-        //    }
-        //}
+        public string InternalID
+        {
+            get 
+            {
+                if (this._value == null) this.MaterialiseValue();
+                return this._internalID;
+            }
+        }
 
-        //#endregion
+        public override int CompareTo(IBlankNode other)
+        {
+            if (ReferenceEquals(this, other)) return 0;
+            if (other == null) return 1;
+            if (this.VirtualEquality(other)) return 0;
+
+            return ComparisonHelper.CompareBlankNodes(this, other);
+        }
+
+        public override bool Equals(IBlankNode other)
+        {
+            if (ReferenceEquals(this, other)) return true;
+            if (other == null) return false;
+            if (this.VirtualEquality(other)) return true;
+
+            return EqualityHelper.AreBlankNodesEqual(this, other);
+        }
+
+        public bool Equals(BaseVirtualBlankNode<TNodeID, TGraphID> other)
+        {
+            return this.Equals((IBlankNode)other);
+        }
+
+        public int CompareTo(BaseVirtualBlankNode<TNodeID, TGraphID> other)
+        {
+            return this.CompareTo((IBlankNode)other);
+        }
+    }
+
+    public abstract class BaseVirtualGraphLiteralNode<TNodeID, TGraphID>
+        : BaseVirtualNode<TNodeID, TGraphID>, IGraphLiteralNode,
+          IEquatable<BaseVirtualGraphLiteralNode<TNodeID, TGraphID>>, IComparable<BaseVirtualGraphLiteralNode<TNodeID, TGraphID>>
+    {
+        private IGraph _subgraph;
+
+        public BaseVirtualGraphLiteralNode(IGraph g, TNodeID id, IVirtualRdfProvider<TNodeID, TGraphID> provider)
+            : base(g, NodeType.GraphLiteral, id, provider) { }
+
+        protected sealed override void OnMaterialise()
+        {
+            IGraphLiteralNode temp = (IGraphLiteralNode)this._value;
+            this._subgraph = temp.SubGraph;
+        }
+
+        public IGraph SubGraph
+        {
+            get
+            {
+                if (this._value == null) this.MaterialiseValue();
+                return this._subgraph;
+            }
+        }
+
+        public override int CompareTo(IGraphLiteralNode other)
+        {
+            if (ReferenceEquals(this, other)) return 0;
+            if (other == null) return 1;
+            if (this.VirtualEquality(other)) return 0;
+
+            return ComparisonHelper.CompareGraphLiterals(this, other);
+        }
+
+        public override bool Equals(IGraphLiteralNode other)
+        {
+            if (ReferenceEquals(this, other)) return true;
+            if (other == null) return false;
+            if (this.VirtualEquality(other)) return true;
+
+            return EqualityHelper.AreGraphLiteralsEqual(this, other);
+        }
+
+        public bool Equals(BaseVirtualGraphLiteralNode<TNodeID, TGraphID> other)
+        {
+            return this.Equals((IGraphLiteralNode)other);
+        }
+
+        public int CompareTo(BaseVirtualGraphLiteralNode<TNodeID, TGraphID> other)
+        {
+            return this.CompareTo((IGraphLiteralNode)other);
+        }
+    }
+
+    public abstract class BaseVirtualLiteralNode<TNodeID, TGraphID>
+        : BaseVirtualNode<TNodeID, TGraphID>, ILiteralNode,
+          IEquatable<BaseVirtualLiteralNode<TNodeID, TGraphID>>, IComparable<BaseVirtualLiteralNode<TNodeID, TGraphID>>
+    {
+        private String _litValue, _lang;
+        private Uri _datatype;
+
+        public BaseVirtualLiteralNode(IGraph g, TNodeID id, IVirtualRdfProvider<TNodeID, TGraphID> provider)
+            : base(g, NodeType.Literal, id, provider) { }
+
+        protected sealed override void  OnMaterialise()
+        {
+            ILiteralNode temp = (ILiteralNode)this._value;
+            this._litValue = temp.Value;
+            this._lang = temp.Language;
+            this._datatype = temp.DataType;
+        }
+
+        public String Value
+        {
+            get
+            {
+                if (this._value == null) this.MaterialiseValue();
+                return this._litValue;
+            }
+        }
+
+        public String Language
+        {
+            get
+            {
+                if (this._value == null) this.MaterialiseValue();
+                return this._lang;
+            }
+        }
+
+        public Uri DataType
+        {
+            get
+            {
+                if (this._value == null) this.MaterialiseValue();
+                return this._datatype;
+            }
+        }
+
+
+        public override int CompareTo(ILiteralNode other)
+        {
+            if (ReferenceEquals(this, other)) return 0;
+            if (other == null) return 1;
+            if (this.VirtualEquality(other)) return 0;
+
+            return ComparisonHelper.CompareLiterals(this, other);
+        }
+
+        public override bool Equals(ILiteralNode other)
+        {
+            if (ReferenceEquals(this, other)) return true;
+            if (other == null) return false;
+            if (this.VirtualEquality(other)) return true;
+
+            return EqualityHelper.AreLiteralsEqual(this, other);
+        }
+
+        public bool Equals(BaseVirtualLiteralNode<TNodeID, TGraphID> other)
+        {
+            return this.Equals((ILiteralNode)other);
+        }
+
+        public int CompareTo(BaseVirtualLiteralNode<TNodeID, TGraphID> other)
+        {
+            return this.CompareTo((ILiteralNode)other);
+        }
+        
+    }
+
+    public abstract class BaseVirtualUriNode<TNodeID, TGraphID>
+        : BaseVirtualNode<TNodeID, TGraphID>, IUriNode,
+          IEquatable<BaseVirtualUriNode<TNodeID, TGraphID>>, IComparable<BaseVirtualUriNode<TNodeID, TGraphID>>
+    {
+        private Uri _u;
+
+        public BaseVirtualUriNode(IGraph g, TNodeID id, IVirtualRdfProvider<TNodeID, TGraphID> provider)
+            : base(g, NodeType.Uri, id, provider) { }
+
+        protected sealed override void OnMaterialise()
+        {
+            IUriNode temp = (IUriNode)this._value;
+            this._u = temp.Uri;
+        }
+
+        public Uri Uri
+        {
+            get
+            {
+                if (this._value == null) this.MaterialiseValue();
+                return this._u;
+            }
+        }
+
+
+        public override int CompareTo(IUriNode other)
+        {
+            if (ReferenceEquals(this, other)) return 0;
+            if (other == null) return 1;
+            if (this.VirtualEquality(other)) return 0;
+
+            return ComparisonHelper.CompareUris(this, other);
+        }
+
+        public override bool Equals(IUriNode other)
+        {
+            if (ReferenceEquals(this, other)) return true;
+            if (other == null) return false;
+            if (this.VirtualEquality(other)) return true;
+
+            return EqualityHelper.AreUrisEqual(this, other);
+        }
+
+        public bool Equals(BaseVirtualUriNode<TNodeID, TGraphID> other)
+        {
+            return this.Equals((IUriNode)other);
+        }
+
+        public int CompareTo(BaseVirtualUriNode<TNodeID, TGraphID> other)
+        {
+            return this.CompareTo((IUriNode)other);
+        }
+    }
+
+    public abstract class BaseVirtualVariableNode<TNodeID, TGraphID>
+        : BaseVirtualNode<TNodeID, TGraphID>, IVariableNode,
+          IEquatable<BaseVirtualVariableNode<TNodeID, TGraphID>>, IComparable<BaseVirtualVariableNode<TNodeID, TGraphID>>
+    {
+        private String _var;
+
+        public BaseVirtualVariableNode(IGraph g, TNodeID id, IVirtualRdfProvider<TNodeID, TGraphID> provider)
+            : base(g, NodeType.Variable, id, provider) { }
+
+        protected sealed override void OnMaterialise()
+        {
+            IVariableNode temp = (IVariableNode)this._value;
+            this._var = temp.VariableName;
+        }
+
+        public String VariableName
+        {
+            get
+            {
+                if (this._value == null) this.MaterialiseValue();
+                return this._var;
+            }
+        }
+
+        public override int CompareTo(IVariableNode other)
+        {
+            if (ReferenceEquals(this, other)) return 0;
+            if (other == null) return 1;
+            if (this.VirtualEquality(other)) return 0;
+
+            return ComparisonHelper.CompareVariables(this, other);
+        }
+
+        public override bool Equals(IVariableNode other)
+        {
+            if (ReferenceEquals(this, other)) return true;
+            if (other == null) return false;
+            if (this.VirtualEquality(other)) return true;
+
+            return EqualityHelper.AreVariablesEqual(this, other);
+        }
+
+        public bool Equals(BaseVirtualVariableNode<TNodeID, TGraphID> other)
+        {
+            return this.Equals((IVariableNode)other);
+        }
+
+        public int CompareTo(BaseVirtualVariableNode<TNodeID, TGraphID> other)
+        {
+            return this.CompareTo((IVariableNode)other);
+        }
     }
 }
