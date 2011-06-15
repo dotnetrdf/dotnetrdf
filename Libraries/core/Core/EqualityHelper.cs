@@ -48,6 +48,22 @@ namespace VDS.RDF
                    && a.Fragment.Equals(b.Fragment, StringComparison.Ordinal);
         }
 
+        public static bool AreUrisEqual(IUriNode a, IUriNode b)
+        {
+            if (ReferenceEquals(a, b)) return true;
+            if (a == null)
+            {
+                if (b == null) return true;
+                return false;
+            }
+            else if (b == null)
+            {
+                return false;
+            }
+
+            return EqualityHelper.AreUrisEqual(a.Uri, b.Uri);
+        }
+
         /// <summary>
         /// Determines whether two Literals are equal
         /// </summary>
@@ -237,6 +253,28 @@ namespace VDS.RDF
                 }
             }
             return c;
+        }
+
+        /// <summary>
+        /// Compares two URI Nodes
+        /// </summary>
+        /// <param name="a">First URI Node</param>
+        /// <param name="b">Second URI Node</param>
+        /// <returns></returns>
+        public static int CompareUris(IUriNode a, IUriNode b)
+        {
+            if (ReferenceEquals(a, b)) return 0;
+            if (a == null)
+            {
+                if (b == null) return 0;
+                return -1;
+            }
+            else if (b == null)
+            {
+                return 1;
+            }
+
+            return ComparisonHelper.CompareUris(a.Uri, b.Uri);
         }
 
         /// <summary>
