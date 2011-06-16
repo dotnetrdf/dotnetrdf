@@ -458,64 +458,6 @@ namespace VDS.RDF.Storage
             }
         }
 
-        internal void LoadGraphVirtual(IGraph g, Uri graphUri)
-        {
-            //First need to get the Graph ID (if any)
-            TCommand cmd = this.GetCommand();
-            cmd.CommandType = CommandType.StoredProcedure;
-            cmd.CommandText = "GetGraphID";
-            cmd.Connection = this._connection;
-            if (graphUri != null)
-            {
-                cmd.Parameters.Add(this.GetParameter("graphUri"));
-                cmd.Parameters["graphUri"].DbType = DbType.String;
-                cmd.Parameters["graphUri"].Value = graphUri.ToString();
-            }
-            cmd.Parameters.Add(this.GetParameter("RC"));
-            cmd.Parameters["RC"].DbType = DbType.Int32;
-            cmd.Parameters["RC"].Direction = ParameterDirection.ReturnValue;
-            cmd.ExecuteNonQuery();
-
-            int id = (int)cmd.Parameters["RC"].Value;
-
-            if (id > 0)
-            {
-                //We got an ID so can start the load process
-                //Set the Target Graph
-                IGraph target = (g.IsEmpty) ? g : new Graph();
-
-                cmd = this.GetCommand();
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.CommandText = "GetGraphQuadsData";
-                cmd.Connection = this._connection;
-                cmd.Parameters.Add(this.GetParameter("graphID"));
-                cmd.Parameters["graphID"].DbType = DbType.Int32;
-                cmd.Parameters["graphID"].Value = id;
-
-                using (DbDataReader reader = cmd.ExecuteReader())
-                {
-                    if (reader.HasRows)
-                    {
-                        while (reader.Read())
-                        {
-                            INode s = this.DecodeVirtualNode(target, (byte)reader["subjectType"], (int)reader["subjectID"]);
-                            INode p = this.DecodeVirtualNode(target, (byte)reader["predicateType"], (int)reader["predicateID"]);
-                            INode o = this.DecodeVirtualNode(target, (byte)reader["objectType"], (int)reader["objectID"]);
-
-                            target.Assert(new Triple(s, p, o));
-                        }
-                    }
-                    reader.Close();
-                    reader.Dispose();
-                }
-
-                if (!ReferenceEquals(target, g))
-                {
-                    g.Merge(target);
-                }
-            }
-        }
-
         public void SaveGraph(IGraph g)
         {
             //First need to get/create the Graph ID (if any)
@@ -746,6 +688,11 @@ namespace VDS.RDF.Storage
             }
         }
 
+        public Uri GetGraphUri(int graphID)
+        {
+            throw new NotImplementedException();
+        }
+
         public int GetID(INode value)
         {
             return this.GetID(value, false);
@@ -803,6 +750,13 @@ namespace VDS.RDF.Storage
         {
             if (value.NodeType == NodeType.Blank) throw new RdfStorageException("Cannot use the GetID() method to generate an ID for a Blank Node as Blank Nodes must be scoped to a specific Graph");
 
+            //If already a Virtual Node getting the ID is dead easy provided we are the provider
+            if (value is IVirtualNode<int, int>)
+            {
+                IVirtualNode<int, int> virt = (IVirtualNode<int, int>)value;
+                if (ReferenceEquals(this, virt.Provider)) return virt.VirtualID;
+            }
+
             TCommand cmd = this.GetCommand();
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.CommandText = createIfNotExists ? "GetOrCreateNodeID" : "GetNodeID";
@@ -817,6 +771,13 @@ namespace VDS.RDF.Storage
 
         public int GetBlankNodeID(IBlankNode value, bool createIfNotExists)
         {
+            //If already a Virtual Node getting the ID is dead easy provided we are the provider
+            if (value is IVirtualNode<int, int>)
+            {
+                IVirtualNode<int, int> virt = (IVirtualNode<int, int>)value;
+                if (ReferenceEquals(this, virt.Provider)) return virt.VirtualID;
+            }
+
             int graphID = this.GetGraphID(value.Graph, createIfNotExists);
             if (graphID == 0) return 0;
 
@@ -837,6 +798,72 @@ namespace VDS.RDF.Storage
         public int GetBlankNodeID(IBlankNode value)
         {
             return this.GetBlankNodeID(value, false);
+        }
+
+        public int NullID
+        {
+            get
+            {
+                return 0;
+            }
+        }
+
+        public void LoadGraphVirtual(IGraph g, Uri graphUri)
+        {
+            //First need to get the Graph ID (if any)
+            TCommand cmd = this.GetCommand();
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.CommandText = "GetGraphID";
+            cmd.Connection = this._connection;
+            if (graphUri != null)
+            {
+                cmd.Parameters.Add(this.GetParameter("graphUri"));
+                cmd.Parameters["graphUri"].DbType = DbType.String;
+                cmd.Parameters["graphUri"].Value = graphUri.ToString();
+            }
+            cmd.Parameters.Add(this.GetParameter("RC"));
+            cmd.Parameters["RC"].DbType = DbType.Int32;
+            cmd.Parameters["RC"].Direction = ParameterDirection.ReturnValue;
+            cmd.ExecuteNonQuery();
+
+            int id = (int)cmd.Parameters["RC"].Value;
+
+            if (id > 0)
+            {
+                //We got an ID so can start the load process
+                //Set the Target Graph
+                IGraph target = (g.IsEmpty) ? g : new Graph();
+
+                cmd = this.GetCommand();
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.CommandText = "GetGraphQuadsData";
+                cmd.Connection = this._connection;
+                cmd.Parameters.Add(this.GetParameter("graphID"));
+                cmd.Parameters["graphID"].DbType = DbType.Int32;
+                cmd.Parameters["graphID"].Value = id;
+
+                using (DbDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            INode s = this.DecodeVirtualNode(target, (byte)reader["subjectType"], (int)reader["subjectID"]);
+                            INode p = this.DecodeVirtualNode(target, (byte)reader["predicateType"], (int)reader["predicateID"]);
+                            INode o = this.DecodeVirtualNode(target, (byte)reader["objectType"], (int)reader["objectID"]);
+
+                            target.Assert(new Triple(s, p, o));
+                        }
+                    }
+                    reader.Close();
+                    reader.Dispose();
+                }
+
+                if (!ReferenceEquals(target, g))
+                {
+                    g.Merge(target);
+                }
+            }
         }
 
         #endregion

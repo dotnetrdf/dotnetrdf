@@ -20,10 +20,8 @@ namespace VDS.RDF.Query.Datasets
     {
         #region Member Variables
 
-        //
-
         private BaseAdoStore<TConn, TCommand, TParameter, TAdaptor, TException> _manager;
-        private TripleStore _store = new TripleStore();
+        private GraphFactory _factory = new GraphFactory();
 
         #endregion
 
@@ -39,8 +37,7 @@ namespace VDS.RDF.Query.Datasets
 
         protected sealed override ITransactionalGraph GetModifiableGraphInternal(Uri graphUri)
         {
-            Graph g = new Graph();
-            this._manager.LoadGraphVirtual(g, graphUri);
+            IGraph g = this.GetGraphInternal(graphUri);
             return new StoreGraphPersistenceWrapper(this._manager, g, graphUri, false);
         }
 
@@ -74,8 +71,22 @@ namespace VDS.RDF.Query.Datasets
 
         protected sealed override IGraph GetGraphInternal(Uri graphUri)
         {
-            Graph g = new Graph();
-            this._manager.LoadGraphVirtual(g, graphUri);
+            bool created;
+            IGraph g = this._factory.TryGetGraph(graphUri, out created);
+            if (created || g.IsEmpty)
+            {
+                //If it was just created or is empty then fill it with data
+
+                //Note: For genuinely empty graphs we may make unecessary round trips to the server
+                //to try loading the data but as there will be nothing to load this should be
+                //relatively cheap
+                //The problem is that the factory gets used in other places such as the triple
+                //enumerators so we can't distinguish whether the graph reference was created in
+                //this method or if it was created in an enumerator.  In the latter case the graph
+                //won't be loaded so we must try doing this now (even if we tried and the graph is
+                //actually empty)
+                this._manager.LoadGraphVirtual(g, graphUri);
+            }
             return g;
         }
 
@@ -104,37 +115,122 @@ namespace VDS.RDF.Query.Datasets
 
         protected sealed override IEnumerable<Triple> GetAllTriples()
         {
-            throw new NotImplementedException();
+            TCommand cmd = this._manager.GetCommand();
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.CommandText = "GetQuadsVirtual";
+            return new AdoTripleEnumerable<TConn, TCommand, TParameter, TAdaptor, TException>(this._manager, this._factory, cmd);
         }
 
         protected sealed override IEnumerable<Triple> GetTriplesWithSubjectInternal(INode subj)
         {
-            throw new NotImplementedException();
+            //Get the ID of the fixed nodes
+            int s = (subj.NodeType != NodeType.Blank) ? this._manager.GetID(subj) : this._manager.GetBlankNodeID((IBlankNode)subj);
+
+            TCommand cmd = this._manager.GetCommand();
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.CommandText = "GetQuadsWithSubjectVirtual";
+            cmd.Parameters.Add(this._manager.GetParameter("subjectID"));
+            cmd.Parameters["subjectID"].DbType = DbType.Int32;
+            cmd.Parameters["subjectID"].Value = s;
+
+            return new AdoTripleEnumerable<TConn, TCommand, TParameter, TAdaptor, TException>(this._manager, this._factory, cmd, subj, null, null);
         }
 
         protected sealed override IEnumerable<Triple> GetTriplesWithPredicateInternal(INode pred)
         {
-            throw new NotImplementedException();
+            //Get the ID of the fixed nodes
+            int p = (pred.NodeType != NodeType.Blank) ? this._manager.GetID(pred) : this._manager.GetBlankNodeID((IBlankNode)pred);
+
+            TCommand cmd = this._manager.GetCommand();
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.CommandText = "GetQuadsWithPredicateVirtual";
+            cmd.Parameters.Add(this._manager.GetParameter("predicateID"));
+            cmd.Parameters["predicateID"].DbType = DbType.Int32;
+            cmd.Parameters["predicateID"].Value = p;
+
+            return new AdoTripleEnumerable<TConn, TCommand, TParameter, TAdaptor, TException>(this._manager, this._factory, cmd, null, pred, null);
         }
 
         protected sealed override IEnumerable<Triple> GetTriplesWithObjectInternal(INode obj)
         {
-            throw new NotImplementedException();
+            //Get the ID of the fixed nodes
+            int o = (obj.NodeType != NodeType.Blank) ? this._manager.GetID(obj) : this._manager.GetBlankNodeID((IBlankNode)obj);
+
+            TCommand cmd = this._manager.GetCommand();
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.CommandText = "GetQuadsWithObjectVirtual";
+            cmd.Parameters.Add(this._manager.GetParameter("objectID"));
+            cmd.Parameters["objectID"].DbType = DbType.Int32;
+            cmd.Parameters["objectID"].Value = o;
+
+            return new AdoTripleEnumerable<TConn, TCommand, TParameter, TAdaptor, TException>(this._manager, this._factory, cmd, null, null, obj);
         }
 
         protected sealed override IEnumerable<Triple> GetTriplesWithSubjectPredicateInternal(INode subj, INode pred)
         {
-            throw new NotImplementedException();
+            //Get the ID of the fixed nodes
+            int s = (subj.NodeType != NodeType.Blank) ? this._manager.GetID(subj) : this._manager.GetBlankNodeID((IBlankNode)subj);
+            int p = (pred.NodeType != NodeType.Blank) ? this._manager.GetID(pred) : this._manager.GetBlankNodeID((IBlankNode)pred);
+
+            TCommand cmd = this._manager.GetCommand();
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.CommandText = "GetQuadsWithSubjectPredicateVirtual";
+            cmd.Parameters.Add(this._manager.GetParameter("subjectID"));
+            cmd.Parameters["subjectID"].DbType = DbType.Int32;
+            cmd.Parameters["subjectID"].Value = s;
+            cmd.Parameters.Add(this._manager.GetParameter("predicateID"));
+            cmd.Parameters["predicateID"].DbType = DbType.Int32;
+            cmd.Parameters["predicateID"].Value = p;
+
+            return new AdoTripleEnumerable<TConn, TCommand, TParameter, TAdaptor, TException>(this._manager, this._factory, cmd, subj, pred, null);
         }
 
         protected sealed override IEnumerable<Triple> GetTriplesWithSubjectObjectInternal(INode subj, INode obj)
         {
-            throw new NotImplementedException();
+            //Get the ID of the fixed nodes
+            int s = (subj.NodeType != NodeType.Blank) ? this._manager.GetID(subj) : this._manager.GetBlankNodeID((IBlankNode)subj);
+            int o = (obj.NodeType != NodeType.Blank) ? this._manager.GetID(obj) : this._manager.GetBlankNodeID((IBlankNode)obj);
+
+            TCommand cmd = this._manager.GetCommand();
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.CommandText = "GetQuadsWithSubjectObjectVirtual";
+            cmd.Parameters.Add(this._manager.GetParameter("subjectID"));
+            cmd.Parameters["subjectID"].DbType = DbType.Int32;
+            cmd.Parameters["subjectID"].Value = s;
+            cmd.Parameters.Add(this._manager.GetParameter("objectID"));
+            cmd.Parameters["objectID"].DbType = DbType.Int32;
+            cmd.Parameters["objectID"].Value = o;
+
+            return new AdoTripleEnumerable<TConn, TCommand, TParameter, TAdaptor, TException>(this._manager, this._factory, cmd, subj, null, obj);
         }
 
         protected sealed override IEnumerable<Triple> GetTriplesWithPredicateObjectInternal(INode pred, INode obj)
         {
-            throw new NotImplementedException();
+            //Get the ID of the fixed nodes
+            int p = (pred.NodeType != NodeType.Blank) ? this._manager.GetID(pred) : this._manager.GetBlankNodeID((IBlankNode)pred);
+            int o = (obj.NodeType != NodeType.Blank) ? this._manager.GetID(obj) : this._manager.GetBlankNodeID((IBlankNode)obj);
+
+            TCommand cmd = this._manager.GetCommand();
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.CommandText = "GetQuadsWithPredicateObjectVirtual";
+            cmd.Parameters.Add(this._manager.GetParameter("predicateID"));
+            cmd.Parameters["predicateID"].DbType = DbType.Int32;
+            cmd.Parameters["predicateID"].Value = p;
+            cmd.Parameters.Add(this._manager.GetParameter("objectID"));
+            cmd.Parameters["objectID"].DbType = DbType.Int32;
+            cmd.Parameters["objectID"].Value = o;
+
+            return new AdoTripleEnumerable<TConn, TCommand, TParameter, TAdaptor, TException>(this._manager, this._factory, cmd, null, pred, obj);
+        }
+
+        protected override void FlushInternal()
+        {
+            this._factory.Reset();
+        }
+
+        protected override void DiscardInternal()
+        {
+            this._factory.Reset();
         }
     }
 

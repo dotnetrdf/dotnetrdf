@@ -31,6 +31,13 @@ namespace VDS.RDF.Storage.Virtualisation
         INode GetValue(IGraph g, TNodeID id);
 
         /// <summary>
+        /// Given a Graph ID returns the value of the Graph URI
+        /// </summary>
+        /// <param name="id">Graph ID</param>
+        /// <returns></returns>
+        Uri GetGraphUri(TGraphID id);
+
+        /// <summary>
         /// Given a non-blank Node returns the Node ID
         /// </summary>
         /// <param name="value">Node</param>
@@ -72,5 +79,15 @@ namespace VDS.RDF.Storage.Virtualisation
         /// Should function as equivalent to the two argument version with the <strong>createIfNotExists</strong> parameter set to false
         /// </remarks>
         TNodeID GetBlankNodeID(IBlankNode value);
+
+        /// <summary>
+        /// Gets the Node ID that is used to indicate that a Node does not exist in the underlying storage
+        /// </summary>
+        TNodeID NullID
+        {
+            get;
+        }
+
+        void LoadGraphVirtual(IGraph g, Uri graphUri);
     }
 }
