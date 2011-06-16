@@ -338,6 +338,7 @@
     <Compile Include="Query\Algebra\ISparqlAlgebra.cs" />
     <Compile Include="Query\Algebra\AlgebraJoinClasses.cs" />
     <Compile Include="Query\Algebra\NegatedPropertySet.cs" />
+    <Compile Include="Query\Algebra\NullOperator.cs" />
     <Compile Include="Query\Algebra\OneOrMorePath.cs" />
     <Compile Include="Query\Algebra\PropertyPathOperators.cs" />
     <Compile Include="Query\Algebra\ZeroLengthPath.cs" />

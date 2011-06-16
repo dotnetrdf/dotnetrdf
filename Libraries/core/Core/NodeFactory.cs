@@ -74,5 +74,54 @@ namespace VDS.RDF
                 }
             }
         }
+
+        /// <summary>
+        /// Gets a Graph Reference for the given Graph URI
+        /// </summary>
+        /// <param name="graphUri">Graph URI</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Synonym for the index access method i.e. factory[graphUri]
+        /// </remarks>
+        public IGraph GetGraph(Uri graphUri)
+        {
+            return this[graphUri];
+        }
+
+        /// <summary>
+        /// Gets a Graph Reference for the given Graph URI and indicates whether this was a new Graph reference
+        /// </summary>
+        /// <param name="graphUri">Graph URI</param>
+        /// <returns></returns>
+        public IGraph TryGetGraph(Uri graphUri, out bool created)
+        {
+            if (this._store.HasGraph(graphUri))
+            {
+                created = false;
+                return this._store.Graph(graphUri);
+            }
+            else
+            {
+                created = true;
+                Graph g = new Graph();
+                g.BaseUri = graphUri;
+                this._store.Add(g);
+                return g;
+            }
+        }
+
+        /// <summary>
+        /// Resets the Factory so any Graphs with contents are emptied
+        /// </summary>
+        /// <remarks>
+        /// May be useful if your use of this class requires that you
+        /// </remarks>
+        public void Reset()
+        {
+            foreach (IGraph g in this._store.Graphs)
+            {
+                g.Clear();
+            }
+        }
     }
 }
