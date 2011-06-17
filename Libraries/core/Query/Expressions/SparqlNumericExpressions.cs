@@ -136,6 +136,11 @@ namespace VDS.RDF.Query.Expressions
                 return "+"; 
             }
         }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new AdditionExpression(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
+        }
     }
 
     /// <summary>
@@ -234,6 +239,11 @@ namespace VDS.RDF.Query.Expressions
                 return "-";
             }
         }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new SubtractionExpression(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
+        }
     }
 
     /// <summary>
@@ -331,6 +341,11 @@ namespace VDS.RDF.Query.Expressions
             {
                 return "*";
             }
+        }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new MultiplicationExpression(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
         }
     }
 
@@ -436,6 +451,11 @@ namespace VDS.RDF.Query.Expressions
             {
                 return "/";
             }
+        }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new DivisionExpression(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
         }
     }
 
@@ -552,6 +572,11 @@ namespace VDS.RDF.Query.Expressions
             {
                 return "-";
             }
+        }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new MinusExpression(transformer.Transform(this._expr));
         }
     }
 }

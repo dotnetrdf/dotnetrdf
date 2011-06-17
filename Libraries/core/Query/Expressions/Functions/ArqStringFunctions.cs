@@ -269,6 +269,18 @@ namespace VDS.RDF.Query.Expressions.Functions
                 }
             }
         }
+
+        public ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            if (this._end != null)
+            {
+                return new ArqSubstringFunction(transformer.Transform(this._expr), transformer.Transform(this._start), transformer.Transform(this._end));
+            }
+            else
+            {
+                return new ArqSubstringFunction(transformer.Transform(this._end), transformer.Transform(this._start));
+            }
+        }
     }
 
     /// <summary>

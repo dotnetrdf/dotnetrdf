@@ -128,6 +128,8 @@ namespace VDS.RDF.Query.Expressions.Functions
                 return this._expr.AsEnumerable();
             }
         }
+
+        public abstract ISparqlExpression Transform(IExpressionTransformer transformer);
     }
 
     /// <summary>

@@ -189,6 +189,11 @@ namespace VDS.RDF.Query.Expressions.Functions
         {
             return SparqlSpecsHelper.SparqlKeywordBNode + "(" + this._expr.ToSafeString() + ")";
         }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new BNodeFunction(transformer.Transform(this._expr));
+        }
     }
 
     class BNodeFunctionContext
@@ -249,7 +254,8 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// Creates a new Bound() function expression
         /// </summary>
         /// <param name="varExpr">Variable Expression</param>
-        public BoundFunction(VariableExpressionTerm varExpr) : base(varExpr) { }
+        public BoundFunction(VariableExpressionTerm varExpr) 
+            : base(varExpr) { }
 
         /// <summary>
         /// Computes the Effective Boolean Value of this Expression as evaluated for a given Binding
@@ -292,6 +298,11 @@ namespace VDS.RDF.Query.Expressions.Functions
                 return SparqlSpecsHelper.SparqlKeywordBound;
             }
         }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new BoundFunction((VariableExpressionTerm)transformer.Transform(this._expr));
+        }
     }
 
     /// <summary>
@@ -303,7 +314,8 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// Creates a new Datatype() function expression
         /// </summary>
         /// <param name="expr">Expression to apply the function to</param>
-        public DataTypeFunction(ISparqlExpression expr) : base(expr) { }
+        public DataTypeFunction(ISparqlExpression expr)
+            : base(expr) { }
 
         /// <summary>
         /// Returns the value of the Expression as evaluated for a given Binding as a Literal Node
@@ -389,6 +401,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             {
                 return SparqlSpecsHelper.SparqlKeywordDataType;
             }
+        }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new DataTypeFunction(transformer.Transform(this._expr));
         }
     }
 
@@ -495,6 +512,11 @@ namespace VDS.RDF.Query.Expressions.Functions
                 return SparqlSpecsHelper.SparqlKeywordIri;
             }
         }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new IriFunction(transformer.Transform(this._expr));
+        }
     }
 
     /// <summary>
@@ -557,6 +579,11 @@ namespace VDS.RDF.Query.Expressions.Functions
                 return SparqlSpecsHelper.SparqlKeywordIsBlank;
             }
         }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new IsBlankFunction(transformer.Transform(this._expr));
+        }
     }
 
     /// <summary>
@@ -568,7 +595,8 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// Creates a new IsIRI() function expression
         /// </summary>
         /// <param name="expr">Expression to apply the function to</param>
-        public IsIriFunction(ISparqlExpression expr) : base(expr) { }
+        public IsIriFunction(ISparqlExpression expr) 
+            : base(expr) { }
 
         /// <summary>
         /// Computes the Effective Boolean Value of this Expression as evaluated for a given Binding
@@ -619,6 +647,11 @@ namespace VDS.RDF.Query.Expressions.Functions
                 return SparqlSpecsHelper.SparqlKeywordIsIri;
             }
         }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new IsIriFunction(transformer.Transform(this._expr));
+        }
     }
 
     /// <summary>
@@ -630,7 +663,8 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// Creates a new IsLiteral() function expression
         /// </summary>
         /// <param name="expr">Expression to apply the function to</param>
-        public IsLiteralFunction(ISparqlExpression expr) : base(expr) { }
+        public IsLiteralFunction(ISparqlExpression expr) 
+            : base(expr) { }
 
         /// <summary>
         /// Computes the Effective Boolean Value of this Expression as evaluated for a given Binding
@@ -681,6 +715,11 @@ namespace VDS.RDF.Query.Expressions.Functions
                 return SparqlSpecsHelper.SparqlKeywordIsLiteral;
             }
         }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new IsLiteralFunction(transformer.Transform(this._expr));
+        }
     }
 
     /// <summary>
@@ -692,7 +731,8 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// Creates a new IsURI() function expression
         /// </summary>
         /// <param name="expr">Expression to apply the function to</param>
-        public IsUriFunction(ISparqlExpression expr) : base(expr) { }
+        public IsUriFunction(ISparqlExpression expr)
+            : base(expr) { }
 
         /// <summary>
         /// Gets the String representation of this Expression
@@ -713,6 +753,11 @@ namespace VDS.RDF.Query.Expressions.Functions
                 return SparqlSpecsHelper.SparqlKeywordIsUri;
             }
         }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new IsUriFunction(transformer.Transform(this._expr));
+        }
     }
 
     /// <summary>
@@ -724,7 +769,8 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// Creates a new Lang() function expression
         /// </summary>
         /// <param name="expr">Expression to apply the function to</param>
-        public LangFunction(ISparqlExpression expr) : base(expr) { }
+        public LangFunction(ISparqlExpression expr) 
+            : base(expr) { }
 
         /// <summary>
         /// Returns the value of the Expression as evaluated for a given Binding as a Literal Node
@@ -797,6 +843,11 @@ namespace VDS.RDF.Query.Expressions.Functions
                 return SparqlSpecsHelper.SparqlKeywordLang;
             }
         }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new LangFunction(transformer.Transform(this._expr));
+        }
     }
 
     /// <summary>
@@ -809,7 +860,8 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// </summary>
         /// <param name="term">Expression to obtain the Language of</param>
         /// <param name="langRange">Expression representing the Language Range to match</param>
-        public LangMatchesFunction(ISparqlExpression term, ISparqlExpression langRange) : base(term, langRange) { }
+        public LangMatchesFunction(ISparqlExpression term, ISparqlExpression langRange) 
+            : base(term, langRange) { }
 
         /// <summary>
         /// Computes the Effective Boolean Value of this Expression as evaluated for a given Binding
@@ -887,6 +939,11 @@ namespace VDS.RDF.Query.Expressions.Functions
                 return SparqlSpecsHelper.SparqlKeywordLangMatches;
             }
         }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new LangMatchesFunction(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
+        }
     }
 
     /// <summary>
@@ -899,7 +956,8 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// </summary>
         /// <param name="term1">First Term</param>
         /// <param name="term2">Second Term</param>
-        public SameTermFunction(ISparqlExpression term1, ISparqlExpression term2) : base(term1, term2) { }
+        public SameTermFunction(ISparqlExpression term1, ISparqlExpression term2)
+            : base(term1, term2) { }
 
         /// <summary>
         /// Computes the Effective Boolean Value of this Expression as evaluated for a given Binding
@@ -959,6 +1017,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             {
                 return SparqlSpecsHelper.SparqlKeywordSameTerm;
             }
+        }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new SameTermFunction(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
         }
     }
 
@@ -1045,6 +1108,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             {
                 return SparqlSpecsHelper.SparqlKeywordStr; 
             }
+        }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new StrFunction(transformer.Transform(this._expr));
         }
     }
 
@@ -1160,6 +1228,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             {
                 return SparqlSpecsHelper.SparqlKeywordStrDt;
             }
+        }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new StrDtFunction(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
         }
     }
 
@@ -1290,6 +1363,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             {
                 return SparqlSpecsHelper.SparqlKeywordStrLang;
             }
+        }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new StrLangFunction(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
         }
     }
 
@@ -1589,6 +1667,18 @@ namespace VDS.RDF.Query.Expressions.Functions
                 {
                     return new ISparqlExpression[] { this._textExpr, this._patternExpr };
                 }
+            }
+        }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            if (this._optionExpr != null)
+            {
+                return new RegexFunction(transformer.Transform(this._textExpr), transformer.Transform(this._patternExpr), transformer.Transform(this._optionExpr));
+            }
+            else
+            {
+                return new RegexFunction(transformer.Transform(this._textExpr), transformer.Transform(this._patternExpr));
             }
         }
     }

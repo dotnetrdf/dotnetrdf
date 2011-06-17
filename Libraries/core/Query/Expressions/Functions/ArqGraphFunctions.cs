@@ -120,6 +120,11 @@ namespace VDS.RDF.Query.Expressions.Functions
                 return ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.BNode;
             }
         }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new ArqBNodeFunction(transformer.Transform(this._expr));
+        }
     }
 
     /// <summary>
@@ -213,6 +218,11 @@ namespace VDS.RDF.Query.Expressions.Functions
                 return ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.LocalName;
             }
         }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new ArqLocalNameFunction(transformer.Transform(this._expr));
+        }
     }
 
     /// <summary>
@@ -301,6 +311,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             {
                 return ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.Namespace;
             }
+        }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new ArqNamespaceFunction(transformer.Transform(this._expr));
         }
     }
 }

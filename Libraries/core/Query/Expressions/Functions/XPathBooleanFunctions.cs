@@ -93,5 +93,10 @@ namespace VDS.RDF.Query.Expressions.Functions
                 return SparqlExpressionType.Function;
             }
         }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new XPathBooleanFunction(transformer.Transform(this._expr));
+        }
     }
 }

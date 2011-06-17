@@ -145,6 +145,7 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
             if (this._result != null) return;
 
+            //REQ: Optimise the algebra here
             ISparqlAlgebra existsClause = this._pattern.ToAlgebra();
             BaseMultiset initialInput = context.InputMultiset;
             this._result = context.Evaluate(existsClause);//existsClause.Evaluate(context);
@@ -220,6 +221,19 @@ namespace VDS.RDF.Query.Expressions.Functions
             get
             {
                 return new ISparqlExpression[] { new GraphPatternExpressionTerm(this._pattern) };
+            }
+        }
+
+        public ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            ISparqlExpression temp = transformer.Transform(new GraphPatternExpressionTerm(this._pattern));
+            if (temp is GraphPatternExpressionTerm)
+            {
+                return new ExistsFunction(((GraphPatternExpressionTerm)temp).Pattern, this._mustExist);
+            }
+            else
+            {
+                throw new RdfQueryException("Unable to transform an EXISTS/NOT EXISTS function since the expression transformer in use failed to transform the inner Graph Pattern Expression to another Graph Pattern Expression");
             }
         }
     }

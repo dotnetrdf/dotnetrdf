@@ -283,6 +283,11 @@ namespace VDS.RDF.Query.Expressions
                 return Enumerable.Empty<ISparqlExpression>();
             }
         }
+
+        public ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return transformer.Transform(this);
+        }
     }
 
     /// <summary>
@@ -392,6 +397,11 @@ namespace VDS.RDF.Query.Expressions
                 return Enumerable.Empty<ISparqlExpression>();
             }
         }
+
+        public ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return transformer.Transform(this);
+        }
     }
 
     /// <summary>
@@ -485,6 +495,11 @@ namespace VDS.RDF.Query.Expressions
             {
                 return Enumerable.Empty<ISparqlExpression>();
             }
+        }
+
+        public ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return transformer.Transform(this);
         }
     }
 
@@ -732,6 +747,11 @@ namespace VDS.RDF.Query.Expressions
                 return Enumerable.Empty<ISparqlExpression>();
             }
         }
+
+        public ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return transformer.Transform(this);
+        }
     }
 
     /// <summary>
@@ -825,6 +845,11 @@ namespace VDS.RDF.Query.Expressions
             {
                 return Enumerable.Empty<ISparqlExpression>(); 
             }
+        }
+
+        public ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return transformer.Transform(this);
         }
     }
 }

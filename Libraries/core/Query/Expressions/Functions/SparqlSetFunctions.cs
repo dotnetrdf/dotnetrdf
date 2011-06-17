@@ -134,6 +134,8 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// </summary>
         /// <returns></returns>
         public abstract override string ToString();
+
+        public abstract ISparqlExpression Transform(IExpressionTransformer transformer);
     }
 
     /// <summary>

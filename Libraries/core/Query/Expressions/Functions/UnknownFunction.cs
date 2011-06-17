@@ -175,5 +175,10 @@ namespace VDS.RDF.Query.Expressions.Functions
             output.Append(')');
             return output.ToString();
         }
+
+        public ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new UnknownFunction(this._funcUri, this._args.Select(e => transformer.Transform(e)));
+        }
     }
 }

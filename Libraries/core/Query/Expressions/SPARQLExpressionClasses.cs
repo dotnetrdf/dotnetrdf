@@ -144,6 +144,11 @@ namespace VDS.RDF.Query.Expressions
                 return "||";
             }
         }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new OrExpression(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
+        }
     }
 
     /// <summary>
@@ -245,6 +250,11 @@ namespace VDS.RDF.Query.Expressions
                 return "&&";
             }
         }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new AndExpression(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
+        }
     }
 
     /// <summary>
@@ -298,6 +308,11 @@ namespace VDS.RDF.Query.Expressions
             {
                 return "!";
             }
+        }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new NegationExpression(transformer.Transform(this._expr));
         }
     }
 
@@ -379,6 +394,11 @@ namespace VDS.RDF.Query.Expressions
                 return "=";
             }
         }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new EqualsExpression(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
+        }
     }
 
     /// <summary>
@@ -454,6 +474,11 @@ namespace VDS.RDF.Query.Expressions
             {
                 return "!=";
             }
+        }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new NotEqualsExpression(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
         }
     }
 
@@ -535,6 +560,11 @@ namespace VDS.RDF.Query.Expressions
             {
                 return "<";
             }
+        }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new LessThanExpression(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
         }
     }
 
@@ -628,6 +658,11 @@ namespace VDS.RDF.Query.Expressions
                 return "<=";
             }
         }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new LessThanOrEqualToExpression(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
+        }
     }
 
     /// <summary>
@@ -709,6 +744,11 @@ namespace VDS.RDF.Query.Expressions
             {
                 return ">";
             }
+        }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new GreaterThanExpression(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
         }
 
     }
@@ -802,6 +842,11 @@ namespace VDS.RDF.Query.Expressions
             {
                 return ">=";
             }
+        }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new GreaterThanOrEqualToExpression(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
         }
     }
 

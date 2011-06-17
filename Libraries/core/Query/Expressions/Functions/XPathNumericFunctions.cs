@@ -120,6 +120,11 @@ namespace VDS.RDF.Query.Expressions.Functions
                 return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Absolute; 
             }
         }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new XPathAbsoluteFunction(transformer.Transform(this._expr));
+        }
     }
 
     /// <summary>
@@ -203,6 +208,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             {
                 return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Ceiling;
             }
+        }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new XPathCeilingFunction(transformer.Transform(this._expr));
         }
     }
 
@@ -288,6 +298,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             {
                 return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Floor;
             }
+        }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new XPathFloorFunction(transformer.Transform(this._expr));
         }
     }
 
@@ -381,6 +396,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             {
                 return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Round;
             }
+        }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new XPathRoundFunction(transformer.Transform(this._expr));
         }
     }
 
@@ -487,6 +507,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             {
                 return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.RoundHalfToEven;
             }
+        }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new XPathRoundHalfToEvenFunction(transformer.Transform(this._expr));
         }
     }
 

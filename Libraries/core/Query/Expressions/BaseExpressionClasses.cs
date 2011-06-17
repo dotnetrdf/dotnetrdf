@@ -129,6 +129,12 @@ namespace VDS.RDF.Query.Expressions
             }
         }
 
+        /// <summary>
+        /// Transforms the arguments of the expression using the given transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
+        public abstract ISparqlExpression Transform(IExpressionTransformer transformer);
     }
 
     /// <summary>
@@ -218,6 +224,13 @@ namespace VDS.RDF.Query.Expressions
                 return new ISparqlExpression[] { this._leftExpr, this._rightExpr };
             }
         }
+
+        /// <summary>
+        /// Transforms the arguments of the expression using the given transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
+        public abstract ISparqlExpression Transform(IExpressionTransformer transformer);
     }
 
     /// <summary>
@@ -408,6 +421,13 @@ namespace VDS.RDF.Query.Expressions
         {
             get;
         }
+
+        /// <summary>
+        /// Transforms the arguments of the expression using the given transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
+        public abstract ISparqlExpression Transform(IExpressionTransformer transformer);
     }
 
     /// <summary>

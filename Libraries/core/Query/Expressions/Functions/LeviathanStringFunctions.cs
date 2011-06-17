@@ -76,6 +76,11 @@ namespace VDS.RDF.Query.Expressions.Functions
                 return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.MD5Hash;
             }
         }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new LeviathanMD5HashFunction(transformer.Transform(this._expr));
+        }
     }
 #else
     public class LeviathanMD5HashFunction : BaseHashLibFunction
@@ -105,6 +110,11 @@ namespace VDS.RDF.Query.Expressions.Functions
         public override string ToString()
         {
             return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.MD5Hash + ">(" + this._expr.ToString() + ")";
+        }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new LeviathanMD5HashFunction(transformer.Transform(this._expr));
         }
     }
 #endif
@@ -139,6 +149,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             {
                 return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.Sha256Hash; 
             }
+        }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new LeviathanSha256HashFunction(transformer.Transform(this._expr));
         }
     }
 }

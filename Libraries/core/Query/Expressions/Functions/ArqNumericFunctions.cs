@@ -117,6 +117,11 @@ namespace VDS.RDF.Query.Expressions.Functions
                 return ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.Max; 
             }
         }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new ArqMaxFunction(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
+        }
     }
 
     /// <summary>
@@ -196,6 +201,11 @@ namespace VDS.RDF.Query.Expressions.Functions
                 return ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.Min;
             }
         }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new ArqMinFunction(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
+        }
     }
 
     /// <summary>
@@ -227,6 +237,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             {
                 return ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.Pi;
             }
+        }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return transformer.Transform(this);
         }
     }
 

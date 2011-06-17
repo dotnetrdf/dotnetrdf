@@ -243,5 +243,17 @@ namespace VDS.RDF.Query.Expressions.Functions
                 }
             }
         }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            if (this._3d)
+            {
+                return new LeviathanCartesianFunction(transformer.Transform(this._x1), transformer.Transform(this._y1), transformer.Transform(this._z1), transformer.Transform(this._x2), transformer.Transform(this._y2), transformer.Transform(this._z2));
+            }
+            else
+            {
+                return new LeviathanCartesianFunction(transformer.Transform(this._x1), transformer.Transform(this._y1), transformer.Transform(this._x2), transformer.Transform(this._y2));
+            }
+        }
     }
 }

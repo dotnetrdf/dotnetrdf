@@ -120,6 +120,11 @@ namespace VDS.RDF.Query.Expressions
         {
             return "DISTINCT";
         }
+
+        public ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return transformer.Transform(this);
+        }
     }
 
     /// <summary>
@@ -200,6 +205,11 @@ namespace VDS.RDF.Query.Expressions
         public override string  ToString()
         {
  	        return "*";
+        }
+
+        public ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return transformer.Transform(this);
         }
     }
 

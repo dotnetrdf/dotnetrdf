@@ -163,5 +163,10 @@ namespace VDS.RDF.Query.Expressions.Functions
                 return this._expressions;
             }
         }
+
+        public ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new CoalesceFunction(this._expressions.Select(e => transformer.Transform(e)));
+        }
     }
 }

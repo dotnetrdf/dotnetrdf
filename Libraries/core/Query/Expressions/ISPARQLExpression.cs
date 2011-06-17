@@ -154,7 +154,12 @@ namespace VDS.RDF.Query.Expressions
             get;
         }
 
-        
+        /// <summary>
+        /// Transforms the arguments of the expression using the given transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
+        ISparqlExpression Transform(IExpressionTransformer transformer);
     }
 
     /// <summary>
