@@ -133,6 +133,17 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
+        /// Gets the Connection to the underlying database
+        /// </summary>
+        internal DbConnection Connection
+        {
+            get
+            {
+                return this._connection;
+            }
+        }
+
+        /// <summary>
         /// Executes a Scalar Query on the Database
         /// </summary>
         /// <param name="query">SQL Query</param>
@@ -666,6 +677,7 @@ namespace VDS.RDF.Storage
                 TCommand command = this.GetCommand();
                 command.CommandType = CommandType.StoredProcedure;
                 command.CommandText = "GetNodeData";
+                command.Connection = this._connection;
                 command.Parameters.Add(this.GetParameter("nodeID"));
                 command.Parameters["nodeID"].DbType = DbType.Int32;
                 command.Parameters["nodeID"].Value = id;
@@ -708,6 +720,7 @@ namespace VDS.RDF.Storage
             TCommand cmd = this.GetCommand();
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.CommandText = createIfNotExists ? "GetOrCreateGraphID" : "GetGraphID";
+            cmd.Connection = this._connection;
             if (g != null && g.BaseUri != null)
             {
                 cmd.Parameters.Add(this.GetParameter("graphUri"));
@@ -732,6 +745,7 @@ namespace VDS.RDF.Storage
             TCommand cmd = this.GetCommand();
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.CommandText = createIfNotExists ? "GetOrCreateGraphID" : "GetGraphID";
+            cmd.Connection = this._connection;
             if (graphUri != null)
             {
                 cmd.Parameters.Add(this.GetParameter("graphUri"));
@@ -760,6 +774,7 @@ namespace VDS.RDF.Storage
             TCommand cmd = this.GetCommand();
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.CommandText = createIfNotExists ? "GetOrCreateNodeID" : "GetNodeID";
+            cmd.Connection = this._connection;
             this.EncodeNode(cmd, value);
             cmd.Parameters.Add(this.GetParameter("RC"));
             cmd.Parameters["RC"].DbType = DbType.Int32;
@@ -778,12 +793,15 @@ namespace VDS.RDF.Storage
                 if (ReferenceEquals(this, virt.Provider)) return virt.VirtualID;
             }
 
+            if (!createIfNotExists) return 0;
+
             int graphID = this.GetGraphID(value.Graph, createIfNotExists);
             if (graphID == 0) return 0;
 
             TCommand cmd = this.GetCommand();
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.CommandText = "CreateBlankNodeID";
+            cmd.Connection = this._connection;
             cmd.Parameters.Add(this.GetParameter("graphID"));
             cmd.Parameters["graphID"].DbType = DbType.Int32;
             cmd.Parameters["graphID"].Value = graphID;
@@ -836,7 +854,7 @@ namespace VDS.RDF.Storage
 
                 cmd = this.GetCommand();
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.CommandText = "GetGraphQuadsData";
+                cmd.CommandText = "GetGraphQuadsVirtual";
                 cmd.Connection = this._connection;
                 cmd.Parameters.Add(this.GetParameter("graphID"));
                 cmd.Parameters["graphID"].DbType = DbType.Int32;

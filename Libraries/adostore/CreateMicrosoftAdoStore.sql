@@ -228,7 +228,7 @@ BEGIN
 	SET NOCOUNT ON;
 	INSERT INTO BNODES (graphID) VALUES (@graphID);
 	DECLARE @id int = SCOPE_IDENTITY();
-	DECLARE @nodeValue nvarchar(MAX) = STR('_:' + @id);
+	DECLARE @nodeValue nvarchar(MAX) = '_:' + LTRIM(STR(@id));
 	INSERT INTO NODES (nodeType, nodeValue) VALUES (0, @nodeValue);
 	RETURN SCOPE_IDENTITY();
 END

@@ -102,6 +102,7 @@ namespace VDS.RDF.Query.Datasets
             TCommand cmd = this._manager.GetCommand();
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.CommandText = "HasQuad";
+            cmd.Connection = this._manager.Connection;
             this._manager.EncodeNodeID(cmd, s, TripleSegment.Subject);
             this._manager.EncodeNodeID(cmd, p, TripleSegment.Predicate);
             this._manager.EncodeNodeID(cmd, o, TripleSegment.Object);
@@ -118,6 +119,7 @@ namespace VDS.RDF.Query.Datasets
             TCommand cmd = this._manager.GetCommand();
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.CommandText = "GetQuadsVirtual";
+            cmd.Connection = this._manager.Connection;
             return new AdoTripleEnumerable<TConn, TCommand, TParameter, TAdaptor, TException>(this._manager, this._factory, cmd);
         }
 
@@ -129,6 +131,7 @@ namespace VDS.RDF.Query.Datasets
             TCommand cmd = this._manager.GetCommand();
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.CommandText = "GetQuadsWithSubjectVirtual";
+            cmd.Connection = this._manager.Connection;
             cmd.Parameters.Add(this._manager.GetParameter("subjectID"));
             cmd.Parameters["subjectID"].DbType = DbType.Int32;
             cmd.Parameters["subjectID"].Value = s;
@@ -144,6 +147,7 @@ namespace VDS.RDF.Query.Datasets
             TCommand cmd = this._manager.GetCommand();
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.CommandText = "GetQuadsWithPredicateVirtual";
+            cmd.Connection = this._manager.Connection;
             cmd.Parameters.Add(this._manager.GetParameter("predicateID"));
             cmd.Parameters["predicateID"].DbType = DbType.Int32;
             cmd.Parameters["predicateID"].Value = p;
@@ -159,6 +163,7 @@ namespace VDS.RDF.Query.Datasets
             TCommand cmd = this._manager.GetCommand();
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.CommandText = "GetQuadsWithObjectVirtual";
+            cmd.Connection = this._manager.Connection;
             cmd.Parameters.Add(this._manager.GetParameter("objectID"));
             cmd.Parameters["objectID"].DbType = DbType.Int32;
             cmd.Parameters["objectID"].Value = o;
@@ -175,6 +180,7 @@ namespace VDS.RDF.Query.Datasets
             TCommand cmd = this._manager.GetCommand();
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.CommandText = "GetQuadsWithSubjectPredicateVirtual";
+            cmd.Connection = this._manager.Connection;
             cmd.Parameters.Add(this._manager.GetParameter("subjectID"));
             cmd.Parameters["subjectID"].DbType = DbType.Int32;
             cmd.Parameters["subjectID"].Value = s;
@@ -194,6 +200,7 @@ namespace VDS.RDF.Query.Datasets
             TCommand cmd = this._manager.GetCommand();
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.CommandText = "GetQuadsWithSubjectObjectVirtual";
+            cmd.Connection = this._manager.Connection;
             cmd.Parameters.Add(this._manager.GetParameter("subjectID"));
             cmd.Parameters["subjectID"].DbType = DbType.Int32;
             cmd.Parameters["subjectID"].Value = s;
@@ -213,6 +220,7 @@ namespace VDS.RDF.Query.Datasets
             TCommand cmd = this._manager.GetCommand();
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.CommandText = "GetQuadsWithPredicateObjectVirtual";
+            cmd.Connection = this._manager.Connection;
             cmd.Parameters.Add(this._manager.GetParameter("predicateID"));
             cmd.Parameters["predicateID"].DbType = DbType.Int32;
             cmd.Parameters["predicateID"].Value = p;

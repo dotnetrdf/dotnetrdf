@@ -44,6 +44,7 @@
       <Link>TestTools.cs</Link>
     </Compile>
     <Compile Include="AdoDataset.cs" />
+    <Compile Include="Test\AdoStoreVirtualRdf.cs" />
     <Compile Include="AdoEnumerators.cs" />
     <Compile Include="AdoStoreWriteCache.cs" />
     <Compile Include="BaseAdoStoreManager.cs" />
