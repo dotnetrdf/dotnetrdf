@@ -702,7 +702,23 @@ namespace VDS.RDF.Storage
 
         public Uri GetGraphUri(int graphID)
         {
-            throw new NotImplementedException();
+            TCommand cmd = this.GetCommand();
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.CommandText = "GetGraphUri";
+            cmd.Connection = this._connection;
+            cmd.Parameters.Add(this.GetParameter("graphID"));
+            cmd.Parameters["graphID"].DbType = DbType.Int32;
+            cmd.Parameters["graphID"].Value = graphID;
+
+            Object res = cmd.ExecuteScalar();
+            if (Convert.IsDBNull(res))
+            {
+                return null;
+            }
+            else
+            {
+                return new Uri((String)res);
+            }
         }
 
         public int GetID(INode value)

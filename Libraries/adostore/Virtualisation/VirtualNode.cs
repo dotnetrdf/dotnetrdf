@@ -34,7 +34,7 @@ namespace VDS.RDF.Storage.Virtualisation
         public BaseVirtualNode(IGraph g, NodeType type, TNodeID id, IVirtualRdfProvider<TNodeID, TGraphID> provider)
         {
             this._g = g;
-            this._graphUri = this._g.BaseUri;
+            if (this._g != null) this._graphUri = this._g.BaseUri;
             this._type = type;
             this._id = id;
             this._provider = provider;
@@ -160,7 +160,8 @@ namespace VDS.RDF.Storage.Virtualisation
             if (ReferenceEquals(this, other)) return 0;
             if (other == null) return 1;
 
-            if (this.VirtualEquality(other))
+            bool areEqual;
+            if (this.TryVirtualEquality(other, out areEqual) && areEqual)
             {
                 return 0;
             }
@@ -179,7 +180,8 @@ namespace VDS.RDF.Storage.Virtualisation
         {
             if (ReferenceEquals(this, other)) return 0;
             if (other == null) return 1;
-            if (this.VirtualEquality(other)) return 0;
+            bool areEqual;
+            if (this.TryVirtualEquality(other, out areEqual) && areEqual) return 0;
 
             switch (this._type)
             {
@@ -331,13 +333,19 @@ namespace VDS.RDF.Storage.Virtualisation
             if (ReferenceEquals(this, other)) return true;
             if (other == null) return false;
 
-            if (this.VirtualEquality(other))
+            bool areEqual;
+            if (this.TryVirtualEquality(other, out areEqual))
             {
-                return true;
+                return areEqual;
+            }
+            else if (this._type != other.NodeType)
+            {
+                //Non-equal node types cannot be equal
+                return false;
             }
             else
             {
-                //If not both virtual the only way to determine equality is to
+                //If not both virtual and are of the same type the only way to determine equality is to
                 //materialise the value of this node and then check that against the other node
                 if (this._value == null) this.MaterialiseValue();
                 return this._value.Equals(other);
@@ -364,12 +372,29 @@ namespace VDS.RDF.Storage.Virtualisation
             }
         }
 
-        protected bool VirtualEquality(INode other)
+        /// <summary>
+        /// Tries to check for equality using virtual node IDs
+        /// </summary>
+        /// <param name="other">Node to test against</param>
+        /// <param name="areEqual">Whether the virtual nodes are equal</param>
+        /// <returns>
+        /// Whether the virtual equality test was valid, if false then other means must be used to determine equality
+        /// </returns>
+        protected bool TryVirtualEquality(INode other, out bool areEqual)
         {
+            areEqual = false;
             if (other is IVirtualNode<TNodeID, TGraphID>)
             {
                 IVirtualNode<TNodeID, TGraphID> virt = (IVirtualNode<TNodeID, TGraphID>)other;
-                return ReferenceEquals(this._provider, virt.Provider) && this._id.Equals(virt.VirtualID);
+                if (ReferenceEquals(this._provider, virt.Provider))
+                {
+                    areEqual = this._id.Equals(virt.VirtualID);
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
             else
             {
@@ -444,7 +469,8 @@ namespace VDS.RDF.Storage.Virtualisation
         {
             if (ReferenceEquals(this, other)) return 0;
             if (other == null) return 1;
-            if (this.VirtualEquality(other)) return 0;
+            bool areEqual;
+            if (this.TryVirtualEquality(other, out areEqual) && areEqual) return 0;
 
             return ComparisonHelper.CompareBlankNodes(this, other);
         }
@@ -453,7 +479,8 @@ namespace VDS.RDF.Storage.Virtualisation
         {
             if (ReferenceEquals(this, other)) return true;
             if (other == null) return false;
-            if (this.VirtualEquality(other)) return true;
+            bool areEqual;
+            if (this.TryVirtualEquality(other, out areEqual)) return areEqual;
 
             return EqualityHelper.AreBlankNodesEqual(this, other);
         }
@@ -497,7 +524,8 @@ namespace VDS.RDF.Storage.Virtualisation
         {
             if (ReferenceEquals(this, other)) return 0;
             if (other == null) return 1;
-            if (this.VirtualEquality(other)) return 0;
+            bool areEqual;
+            if (this.TryVirtualEquality(other, out areEqual) && areEqual) return 0;
 
             return ComparisonHelper.CompareGraphLiterals(this, other);
         }
@@ -506,7 +534,8 @@ namespace VDS.RDF.Storage.Virtualisation
         {
             if (ReferenceEquals(this, other)) return true;
             if (other == null) return false;
-            if (this.VirtualEquality(other)) return true;
+            bool areEqual;
+            if (this.TryVirtualEquality(other, out areEqual)) return areEqual;
 
             return EqualityHelper.AreGraphLiteralsEqual(this, other);
         }
@@ -572,7 +601,8 @@ namespace VDS.RDF.Storage.Virtualisation
         {
             if (ReferenceEquals(this, other)) return 0;
             if (other == null) return 1;
-            if (this.VirtualEquality(other)) return 0;
+            bool areEqual;
+            if (this.TryVirtualEquality(other, out areEqual) && areEqual) return 0;
 
             return ComparisonHelper.CompareLiterals(this, other);
         }
@@ -581,7 +611,8 @@ namespace VDS.RDF.Storage.Virtualisation
         {
             if (ReferenceEquals(this, other)) return true;
             if (other == null) return false;
-            if (this.VirtualEquality(other)) return true;
+            bool areEqual;
+            if (this.TryVirtualEquality(other, out areEqual)) return areEqual;
 
             return EqualityHelper.AreLiteralsEqual(this, other);
         }
@@ -627,7 +658,8 @@ namespace VDS.RDF.Storage.Virtualisation
         {
             if (ReferenceEquals(this, other)) return 0;
             if (other == null) return 1;
-            if (this.VirtualEquality(other)) return 0;
+            bool areEqual;
+            if (this.TryVirtualEquality(other, out areEqual) && areEqual) return 0;
 
             return ComparisonHelper.CompareUris(this, other);
         }
@@ -636,7 +668,8 @@ namespace VDS.RDF.Storage.Virtualisation
         {
             if (ReferenceEquals(this, other)) return true;
             if (other == null) return false;
-            if (this.VirtualEquality(other)) return true;
+            bool areEqual;
+            if (this.TryVirtualEquality(other, out areEqual)) return areEqual;
 
             return EqualityHelper.AreUrisEqual(this, other);
         }
@@ -680,7 +713,8 @@ namespace VDS.RDF.Storage.Virtualisation
         {
             if (ReferenceEquals(this, other)) return 0;
             if (other == null) return 1;
-            if (this.VirtualEquality(other)) return 0;
+            bool areEqual;
+            if (this.TryVirtualEquality(other, out areEqual) && areEqual) return 0;
 
             return ComparisonHelper.CompareVariables(this, other);
         }
@@ -689,7 +723,8 @@ namespace VDS.RDF.Storage.Virtualisation
         {
             if (ReferenceEquals(this, other)) return true;
             if (other == null) return false;
-            if (this.VirtualEquality(other)) return true;
+            bool areEqual;
+            if (this.TryVirtualEquality(other, out areEqual)) return areEqual;
 
             return EqualityHelper.AreVariablesEqual(this, other);
         }

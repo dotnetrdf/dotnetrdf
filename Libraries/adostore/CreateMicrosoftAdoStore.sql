@@ -96,6 +96,15 @@ BEGIN
     RETURN @id;
 END
 
+-- GetGraphUri
+GO
+CREATE PROCEDURE GetGraphUri @graphID int
+AS
+BEGIN
+  SET NOCOUNT ON;
+  SELECT graphUri FROM GRAPHS WHERE graphID=@graphID;
+END
+
 -- ClearGraph
 GO
 CREATE PROCEDURE ClearGraph @graphID int
@@ -687,6 +696,7 @@ GRANT EXECUTE ON GetVersion TO rdf_readwrite, rdf_readinsert, rdf_readonly;
 
 GRANT EXECUTE ON GetGraphID TO rdf_readwrite, rdf_readinsert, rdf_readonly;
 GRANT EXECUTE ON GetOrCreateGraphID TO rdf_readwrite, rdf_readinsert;
+GRANT EXECUTE ON GetGraphUri TO rdf_readwrite, rdf_readinsert, rdf_readonly;
 GRANT EXECUTE ON ClearGraph TO rdf_readwrite, rdf_readinsert;
 GRANT EXECUTE ON ClearGraph TO rdf_readwrite, rdf_readinsert;
 GRANT EXECUTE ON DeleteGraph TO rdf_readwrite;

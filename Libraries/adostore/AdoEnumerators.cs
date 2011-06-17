@@ -69,6 +69,9 @@ namespace VDS.RDF.Query.Datasets
             this._manager = manager;
             this._factory = factory;
             this._cmd = cmd;
+            this._s = subj;
+            this._p = pred;
+            this._o = obj;
         }
 
         public Triple Current
@@ -115,9 +118,9 @@ namespace VDS.RDF.Query.Datasets
 
                 //Then get the component parts of the Triple using the fixed parts where known
                 IGraph g = this._factory[graphUri];
-                INode subj = (this._s != null) ? this._s : this._manager.DecodeVirtualNode(g, (byte)this._reader["subjectType"], (int)this._reader["subjectID"]);
-                INode pred = (this._p != null) ? this._p : this._manager.DecodeVirtualNode(g, (byte)this._reader["predicateType"], (int)this._reader["predicateID"]);
-                INode obj = (this._o != null) ? this._o : this._manager.DecodeVirtualNode(g, (byte)this._reader["objectType"], (int)this._reader["objectID"]);
+                INode subj = (this._s != null) ? this._s.CopyNode(g) : this._manager.DecodeVirtualNode(g, (byte)this._reader["subjectType"], (int)this._reader["subjectID"]);
+                INode pred = (this._p != null) ? this._p.CopyNode(g) : this._manager.DecodeVirtualNode(g, (byte)this._reader["predicateType"], (int)this._reader["predicateID"]);
+                INode obj = (this._o != null) ? this._o.CopyNode(g) : this._manager.DecodeVirtualNode(g, (byte)this._reader["objectType"], (int)this._reader["objectID"]);
                 this._current = new Triple(subj, pred, obj);
 
                 return true;

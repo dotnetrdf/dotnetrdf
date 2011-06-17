@@ -5,10 +5,11 @@ using System.Diagnostics;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Parsing;
+using VDS.RDF.Storage;
 using VDS.RDF.Storage.Virtualisation;
 using VDS.RDF.Writing.Formatting;
 
-namespace VDS.RDF.Storage.Test
+namespace VDS.RDF.Test.Storage
 {
     [TestClass]
     public class AdoStoreVirtualRdf
