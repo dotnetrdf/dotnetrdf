@@ -48,8 +48,16 @@ namespace VDS.RDF.Query.Expressions
         ISparqlExpression Transform(ISparqlExpression expr);
     }
 
+    /// <summary>
+    /// Abstract implementation of an Expression Transformer which substitutes primary expressions
+    /// </summary>
     public abstract class PrimaryExpressionSubstituter : IExpressionTransformer
     {
+        /// <summary>
+        /// Transforms an expression into a form where primary expressions may be substituted
+        /// </summary>
+        /// <param name="expr">Expression</param>
+        /// <returns></returns>
         public ISparqlExpression Transform(ISparqlExpression expr)
         {
             if (expr.Type == SparqlExpressionType.Primary)
@@ -62,6 +70,11 @@ namespace VDS.RDF.Query.Expressions
             }
         }
 
+        /// <summary>
+        /// Returns the substitution for a given primary expression
+        /// </summary>
+        /// <param name="expr">Expression</param>
+        /// <returns></returns>
         protected abstract ISparqlExpression SubstitutePrimaryExpression(ISparqlExpression expr);
     }
 }
