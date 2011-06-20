@@ -3,14 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Query.Algebra;
+using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Patterns;
 using VDS.RDF.Storage.Virtualisation;
 
 namespace VDS.RDF.Query.Optimisation
 {
-    public abstract class VirtualAlgebraOptimiser<TNodeID, TGraphID> : IAlgebraOptimiser
+    public abstract class VirtualAlgebraOptimiser<TNodeID, TGraphID> : IAlgebraOptimiser, IExpressionTransformer
     {
         protected IVirtualRdfProvider<TNodeID, TGraphID> _provider;
+        private Type _exprType = typeof(NodeExpressionTerm);
 
         public VirtualAlgebraOptimiser(IVirtualRdfProvider<TNodeID, TGraphID> provider)
         {
@@ -151,6 +153,42 @@ namespace VDS.RDF.Query.Optimisation
             else
             {
                 return algebra;
+            }
+        }
+
+        public ISparqlExpression Transform(ISparqlExpression expr)
+        {
+            try
+            {
+                if (expr.Type == SparqlExpressionType.Primary)
+                {
+                    return this.SubstitutePrimaryExpression(expr);
+                }
+                else
+                {
+                    return expr.Transform(this);
+                }
+            }
+            catch
+            {
+                return expr;
+            }
+        }
+
+        protected ISparqlExpression SubstitutePrimaryExpression(ISparqlExpression expr)
+        {
+            if (expr.GetType().Equals(this._exprType))
+            {
+                NodeExpressionTerm term = (NodeExpressionTerm)expr;
+                INode curr = term.Value(null, 0);
+                TNodeID id = this._provider.GetID(curr);
+                if (id == null || id.Equals(this._provider.NullID)) throw new RdfQueryException("Cannot transform the Expression to use Virtual Nodes");
+                INode virt = this.CreateVirtualNode(id, curr.NodeType);
+                return new NodeExpressionTerm(virt);
+            }
+            else
+            {
+                return expr;
             }
         }
 

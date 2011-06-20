@@ -24,6 +24,7 @@ namespace VDS.RDF.Test.Storage
         private IEnumerable<IAlgebraOptimiser> _optimisers;
         private LeviathanQueryProcessor _procMem, _procDb;
         private SparqlParameterizedString _baseQuery;
+        private SparqlFormatter _formatter = new SparqlFormatter();
 
         private void EnsureTestData()
         {
@@ -43,7 +44,7 @@ namespace VDS.RDF.Test.Storage
             {
                 if (this._manager != null) this._manager.Dispose();
                 this._manager = new MicrosoftAdoManager("adostore", "example", "password");
-                this._optimisers = new IAlgebraOptimiser[] { new SimpleVirtualAlgebraOptimiser(this._manager) };
+                this._optimisers = new IAlgebraOptimiser[] { new StrictAlgebraOptimiser(), new IdentityFilterOptimiser(), new SimpleVirtualAlgebraOptimiser(this._manager) };
                 this._manager.SaveGraph(g);
                 this._db = new MicrosoftAdoDataset(this._manager);
                 this._procDb = new LeviathanQueryProcessor(this._db);
@@ -53,9 +54,16 @@ namespace VDS.RDF.Test.Storage
         private void TestQuery(String query)
         {
             SparqlQuery q = this._parser.ParseFromString(query);
+
+            Console.WriteLine("Query:");
+            Console.WriteLine(this._formatter.Format(q));
+            Console.WriteLine();
+
             Stopwatch timer = new Stopwatch();
 
             //Do in-memory
+            Console.WriteLine("In-Memory Algebra:");
+            Console.WriteLine(q.ToAlgebra().ToString());
             timer.Start();
             SparqlResultSet memResults = this._procMem.ProcessQuery(q) as SparqlResultSet;
             timer.Stop();
@@ -68,6 +76,8 @@ namespace VDS.RDF.Test.Storage
             try
             {
                 q.AlgebraOptimisers = this._optimisers;
+                Console.WriteLine("ADO Dataset Algebra:");
+                Console.WriteLine(q.ToAlgebra().ToString());
                 timer.Start();
                 Object results = this._procDb.ProcessQuery(q);
                 timer.Stop();
@@ -191,6 +201,16 @@ namespace VDS.RDF.Test.Storage
 
             SparqlParameterizedString query = this.GetBaseQuery();
             query.CommandText = "SELECT * WHERE { ?s ?p ?o . FILTER(SAMETERM(?s, dnr:HttpHandler)) }";
+            this.TestQuery(query);
+        }
+
+        [TestMethod]
+        public void StorageVirtualAdoMicrosoftSparql9()
+        {
+            this.EnsureTestData();
+
+            SparqlParameterizedString query = this.GetBaseQuery();
+            query.CommandText = "SELECT * WHERE { ?s ?p ?o . FILTER(?s = dnr:HttpHandler) }";
             this.TestQuery(query);
         }
 

@@ -22,6 +22,7 @@ namespace VDS.RDF.Storage
     {
         private TConn _connection;
         private SimpleVirtualNodeCache<int> _cache = new SimpleVirtualNodeCache<int>();
+        private NonIndexedGraph _g = new NonIndexedGraph();
 
         #region Constructor and Destructor
 
@@ -299,6 +300,7 @@ namespace VDS.RDF.Storage
 
         internal INode DecodeNode(IGraph g, byte type, String value, String meta)
         {
+            if (g == null) g = this._g;
             switch (type)
             {
                 case 0:
