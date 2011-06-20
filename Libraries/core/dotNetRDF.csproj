@@ -426,6 +426,7 @@
     <Compile Include="Query\Inference\PelletReasoner.cs" />
     <Compile Include="Query\Inference\Pellet\Services\NamespaceService.cs" />
     <Compile Include="Query\Optimisation\IAlgebraOptimiser.cs" />
+    <Compile Include="Query\Optimisation\IdentityFilterOptimiser.cs" />
     <Compile Include="Query\Optimisation\IQueryOptimiser.cs" />
     <Compile Include="Query\Optimisation\QueryOptimisers.cs" />
     <Compile Include="Query\Optimisation\SparqlOptimiser.cs" />

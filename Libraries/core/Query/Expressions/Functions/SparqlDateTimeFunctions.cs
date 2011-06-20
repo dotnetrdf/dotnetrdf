@@ -100,6 +100,11 @@ namespace VDS.RDF.Query.Expressions.Functions
         {
             return SparqlSpecsHelper.SparqlKeywordYear + "(" + this._expr.ToString() + ")";
         }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new YearFunction(transformer.Transform(this._expr));
+        }
     }
 
     /// <summary>
@@ -132,6 +137,11 @@ namespace VDS.RDF.Query.Expressions.Functions
         public override string ToString()
         {
             return SparqlSpecsHelper.SparqlKeywordMonth + "(" + this._expr.ToString() + ")";
+        }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new MonthFunction(transformer.Transform(this._expr));
         }
     }
 
@@ -166,6 +176,11 @@ namespace VDS.RDF.Query.Expressions.Functions
         {
             return SparqlSpecsHelper.SparqlKeywordDay + "(" + this._expr.ToString() + ")";
         }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new DayFunction(transformer.Transform(this._expr));
+        }
     }
 
     /// <summary>
@@ -198,6 +213,11 @@ namespace VDS.RDF.Query.Expressions.Functions
         public override string ToString()
         {
             return SparqlSpecsHelper.SparqlKeywordHours + "(" + this._expr.ToString() + ")";
+        }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new HoursFunction(transformer.Transform(this._expr));
         }
     }
 
@@ -232,6 +252,11 @@ namespace VDS.RDF.Query.Expressions.Functions
         {
             return SparqlSpecsHelper.SparqlKeywordMinutes + "(" + this._expr.ToString() + ")";
         }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new MinutesFunction(transformer.Transform(this._expr));
+        }
     }
 
     /// <summary>
@@ -264,6 +289,11 @@ namespace VDS.RDF.Query.Expressions.Functions
         public override string ToString()
         {
             return SparqlSpecsHelper.SparqlKeywordSeconds + "(" + this._expr.ToString() + ")";
+        }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new SecondsFunction(transformer.Transform(this._expr));
         }
     }
 
@@ -319,6 +349,11 @@ namespace VDS.RDF.Query.Expressions.Functions
         public override string ToString()
         {
             return SparqlSpecsHelper.SparqlKeywordTimezone + "(" + this._expr.ToString() + ")";
+        }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new TimezoneFunction(transformer.Transform(this._expr));
         }
     }
 
@@ -440,6 +475,11 @@ namespace VDS.RDF.Query.Expressions.Functions
         public override string ToString()
         {
             return SparqlSpecsHelper.SparqlKeywordTz + "(" + this._expr.ToString() + ")";
+        }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new TZFunction(transformer.Transform(this._expr));
         }
     }
 }

@@ -169,6 +169,11 @@ namespace VDS.RDF.Query.Expressions.Functions
                 return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.YearFromDateTime;
             }
         }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new XPathYearFromDateTimeFunction(transformer.Transform(this._expr));
+        }
     }
 
     /// <summary>
@@ -211,6 +216,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             {
                 return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.MonthFromDateTime;
             }
+        }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new XPathMonthFromDateTimeFunction(transformer.Transform(this._expr));
         }
     }
 
@@ -255,6 +265,11 @@ namespace VDS.RDF.Query.Expressions.Functions
                 return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.DayFromDateTime;
             }
         }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new XPathDayFromDateTimeFunction(transformer.Transform(this._expr));
+        }
     }
 
     /// <summary>
@@ -298,6 +313,11 @@ namespace VDS.RDF.Query.Expressions.Functions
                 return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.HoursFromDateTime;
             }
         }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new XPathHoursFromDateTimeFunction(transformer.Transform(this._expr));
+        }
     }
 
     /// <summary>
@@ -340,6 +360,12 @@ namespace VDS.RDF.Query.Expressions.Functions
             {
                 return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.MinutesFromDateTime;
             }
+        }
+
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new XPathMinutesFromDateTimeFunction(transformer.Transform(this._expr));
         }
     }
 
@@ -386,6 +412,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             {
                 return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.SecondsFromDateTime;
             }
+        }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new XPathSecondsFromDateTimeFunction(transformer.Transform(this._expr));
         }
     }
 
@@ -541,6 +572,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             {
                 return this._expr.AsEnumerable();
             }
+        }
+
+        public virtual ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new XPathTimezoneFromDateTimeFunction(transformer.Transform(this._expr));
         }
 
     }

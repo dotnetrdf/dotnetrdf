@@ -296,6 +296,11 @@ namespace VDS.RDF.Query.Expressions.Functions
                 return XmlSpecsHelper.XmlSchemaDataTypeBoolean; 
             }
         }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new XPathBooleanCast(transformer.Transform(this._expr));
+        }
     }
 
     /// <summary>
@@ -403,6 +408,11 @@ namespace VDS.RDF.Query.Expressions.Functions
                 return XmlSpecsHelper.XmlSchemaDataTypeDouble;
             }
         }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new XPathDoubleCast(transformer.Transform(this._expr));
+        }
     }
 
     /// <summary>
@@ -503,6 +513,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             {
                 return XmlSpecsHelper.XmlSchemaDataTypeFloat;
             }
+        }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new XPathFloatCast(transformer.Transform(this._expr));
         }
     }
 
@@ -611,6 +626,11 @@ namespace VDS.RDF.Query.Expressions.Functions
                 return XmlSpecsHelper.XmlSchemaDataTypeDecimal;
             }
         }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new XPathDecimalCast(transformer.Transform(this._expr));
+        }
     }
 
     /// <summary>
@@ -718,6 +738,11 @@ namespace VDS.RDF.Query.Expressions.Functions
                 return XmlSpecsHelper.XmlSchemaDataTypeInteger;
             }
         }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new XPathIntegerCast(transformer.Transform(this._expr));
+        }
     }
 
     /// <summary>
@@ -819,6 +844,11 @@ namespace VDS.RDF.Query.Expressions.Functions
                 return XmlSpecsHelper.XmlSchemaDataTypeDateTime;
             }
         }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new XPathDateTimeCast(transformer.Transform(this._expr));
+        }
     }
 
     /// <summary>
@@ -886,6 +916,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             {
                 return XmlSpecsHelper.XmlSchemaDataTypeString;
             }
+        }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new XPathStringCast(transformer.Transform(this._expr));
         }
     }
 }

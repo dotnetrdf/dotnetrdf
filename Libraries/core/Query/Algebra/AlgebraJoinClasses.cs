@@ -379,7 +379,14 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
         {
-            return new LeftJoin(optimiser.Optimise(this._lhs), optimiser.Optimise(this._rhs), this._filter);
+            if (optimiser is IExpressionTransformer)
+            {
+                return new LeftJoin(optimiser.Optimise(this._lhs), optimiser.Optimise(this._rhs), new UnaryExpressionFilter(((IExpressionTransformer)optimiser).Transform(this._filter.Expression)));
+            }
+            else
+            {
+                return new LeftJoin(optimiser.Optimise(this._lhs), optimiser.Optimise(this._rhs), this._filter);
+            }
         }
 
         /// <summary>
@@ -389,7 +396,14 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public ISparqlAlgebra TransformLhs(IAlgebraOptimiser optimiser)
         {
-            return new LeftJoin(optimiser.Optimise(this._lhs), this._rhs, this._filter);
+            if (optimiser is IExpressionTransformer)
+            {
+                return new LeftJoin(optimiser.Optimise(this._lhs), this._rhs, new UnaryExpressionFilter(((IExpressionTransformer)optimiser).Transform(this._filter.Expression)));
+            }
+            else
+            {
+                return new LeftJoin(optimiser.Optimise(this._lhs), this._rhs, this._filter);
+            }
         }
 
         /// <summary>
@@ -399,7 +413,14 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public ISparqlAlgebra TransformRhs(IAlgebraOptimiser optimiser)
         {
-            return new LeftJoin(this._lhs, optimiser.Optimise(this._rhs), this._filter);
+            if (optimiser is IExpressionTransformer)
+            {
+                return new LeftJoin(this._lhs, optimiser.Optimise(this._rhs), new UnaryExpressionFilter(((IExpressionTransformer)optimiser).Transform(this._filter.Expression)));
+            }
+            else
+            {
+                return new LeftJoin(this._lhs, optimiser.Optimise(this._rhs), this._filter);
+            }
         }
     }
 

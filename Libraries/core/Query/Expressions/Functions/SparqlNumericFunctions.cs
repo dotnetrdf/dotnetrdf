@@ -67,6 +67,11 @@ namespace VDS.RDF.Query.Expressions.Functions
         {
             return SparqlSpecsHelper.SparqlKeywordAbs + "(" + this._expr.ToString() + ")";
         }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new AbsFunction(transformer.Transform(this._expr));
+        }
     }
 
     /// <summary>
@@ -100,6 +105,11 @@ namespace VDS.RDF.Query.Expressions.Functions
         {
             return SparqlSpecsHelper.SparqlKeywordCeil + "(" + this._expr.ToString() + ")";
         }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new CeilFunction(transformer.Transform(this._expr));
+        }
     }
 
     /// <summary>
@@ -132,6 +142,11 @@ namespace VDS.RDF.Query.Expressions.Functions
         public override string ToString()
         {
             return SparqlSpecsHelper.SparqlKeywordFloor + "(" + this._expr.ToString() + ")";
+        }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new FloorFunction(transformer.Transform(this._expr));
         }
     }
 
@@ -211,6 +226,11 @@ namespace VDS.RDF.Query.Expressions.Functions
         {
             return SparqlSpecsHelper.SparqlKeywordRand + "()";
         }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return this;
+        }
     }
 
     /// <summary>
@@ -243,6 +263,11 @@ namespace VDS.RDF.Query.Expressions.Functions
         public override string ToString()
         {
             return SparqlSpecsHelper.SparqlKeywordRound + "(" + this._expr.ToString() + ")";
+        }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new RoundFunction(transformer.Transform(this._expr));
         }
     }
 
@@ -379,6 +404,11 @@ namespace VDS.RDF.Query.Expressions.Functions
         public override string ToString()
         {
             return SparqlSpecsHelper.SparqlKeywordIsNumeric + "(" + this._expr.ToString() + ")";
+        }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new IsNumericFunction(transformer.Transform(this._expr));
         }
     }
 }

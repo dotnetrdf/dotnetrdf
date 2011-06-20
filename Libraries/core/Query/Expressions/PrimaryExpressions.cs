@@ -286,7 +286,7 @@ namespace VDS.RDF.Query.Expressions
 
         public ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return transformer.Transform(this);
+            return this;
         }
     }
 
@@ -400,7 +400,7 @@ namespace VDS.RDF.Query.Expressions
 
         public ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return transformer.Transform(this);
+            return this;
         }
     }
 
@@ -499,7 +499,7 @@ namespace VDS.RDF.Query.Expressions
 
         public ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return transformer.Transform(this);
+            return this;
         }
     }
 
@@ -748,9 +748,9 @@ namespace VDS.RDF.Query.Expressions
             }
         }
 
-        public ISparqlExpression Transform(IExpressionTransformer transformer)
+        public virtual ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return transformer.Transform(this);
+            return this;
         }
     }
 
@@ -849,7 +849,7 @@ namespace VDS.RDF.Query.Expressions
 
         public ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return transformer.Transform(this);
+            return this;
         }
     }
 }

@@ -1670,7 +1670,7 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
-        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        public ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             if (this._optionExpr != null)
             {

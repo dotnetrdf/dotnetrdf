@@ -152,5 +152,10 @@ namespace VDS.RDF.Query.Expressions.Functions
                 return ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.Sha1Sum; 
             }
         }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new ArqSha1SumFunction(transformer.Transform(this._expr));
+        }
     }
 }

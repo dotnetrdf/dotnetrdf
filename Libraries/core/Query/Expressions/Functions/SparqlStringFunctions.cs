@@ -321,6 +321,11 @@ namespace VDS.RDF.Query.Expressions.Functions
                 return SparqlSpecsHelper.SparqlKeywordConcat;
             }
         }
+
+        public ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new ConcatFunction(this._exprs.Select(e => transformer.Transform(e)));
+        }
     }
 
     /// <summary>
@@ -366,6 +371,11 @@ namespace VDS.RDF.Query.Expressions.Functions
         {
             return SparqlSpecsHelper.SparqlKeywordContains + "(" + this._leftExpr.ToString() + ", " + this._rightExpr.ToString() + ")";
         }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new ContainsFunction(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
+        }
     }
 
     /// <summary>
@@ -408,6 +418,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             {
                 return SparqlSpecsHelper.SparqlKeywordEncodeForUri;
             }
+        }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new EncodeForUriFunction(transformer.Transform(this._expr));
         }
     }
 
@@ -459,6 +474,11 @@ namespace VDS.RDF.Query.Expressions.Functions
         {
             return SparqlSpecsHelper.SparqlKeywordLCase + "(" + this._expr.ToString() + ")";
         }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new LCaseFunction(transformer.Transform(this._expr));
+        }
     }
 
     /// <summary>
@@ -504,6 +524,11 @@ namespace VDS.RDF.Query.Expressions.Functions
         {
             return SparqlSpecsHelper.SparqlKeywordStrEnds + "(" + this._leftExpr.ToString() + ", " + this._rightExpr.ToString() + ")";
         }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new StrEndsFunction(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
+        }
     }
 
     /// <summary>
@@ -546,6 +571,11 @@ namespace VDS.RDF.Query.Expressions.Functions
         public override string ToString()
         {
             return SparqlSpecsHelper.SparqlKeywordStrLen + "(" + this._expr.ToString() + ")";
+        }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new StrLenFunction(transformer.Transform(this._expr));
         }
     }
 
@@ -591,6 +621,11 @@ namespace VDS.RDF.Query.Expressions.Functions
         public override string ToString()
         {
             return SparqlSpecsHelper.SparqlKeywordStrStarts + "(" + this._leftExpr.ToString() + ", " + this._rightExpr.ToString() + ")";
+        }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new StrStartsFunction(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
         }
     }
 
@@ -856,6 +891,18 @@ namespace VDS.RDF.Query.Expressions.Functions
                 }
             }
         }
+
+        public ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            if (this._length != null)
+            {
+                return new SubStrFunction(transformer.Transform(this._expr), transformer.Transform(this._start), transformer.Transform(this._length));
+            }
+            else
+            {
+                return new SubStrFunction(transformer.Transform(this._expr), transformer.Transform(this._start));
+            }
+        }
     }
 
     /// <summary>
@@ -906,5 +953,11 @@ namespace VDS.RDF.Query.Expressions.Functions
         {
             return SparqlSpecsHelper.SparqlKeywordUCase + "(" + this._expr.ToString() + ")";
         }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new UCaseFunction(transformer.Transform(this._expr));
+        }
+
     }
 }

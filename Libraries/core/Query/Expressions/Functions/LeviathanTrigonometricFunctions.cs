@@ -166,6 +166,11 @@ namespace VDS.RDF.Query.Expressions.Functions
                 return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.DegreesToRadians; 
             }
         }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new LeviathanDegreesToRadiansFunction(transformer.Transform(this._expr));
+        }
     }
 
     /// <summary>
@@ -228,6 +233,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             {
                 return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.RadiansToDegrees;
             }
+        }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new LeviathanRadiansToDegreesFunction(transformer.Transform(this._expr));
         }
     }
 
@@ -297,6 +307,11 @@ namespace VDS.RDF.Query.Expressions.Functions
                 }
             }
         }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new LeviathanSineFunction(transformer.Transform(this._expr), this._inverse);
+        }
     }
 
     /// <summary>
@@ -365,6 +380,11 @@ namespace VDS.RDF.Query.Expressions.Functions
                 }
             }
         }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new LeviathanCosineFunction(transformer.Transform(this._expr), this._inverse);
+        }
     }
 
     /// <summary>
@@ -432,6 +452,11 @@ namespace VDS.RDF.Query.Expressions.Functions
                     return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigTan;
                 }
             }
+        }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new LeviathanTangentFunction(transformer.Transform(this._expr), this._inverse);
         }
     }
 
@@ -503,6 +528,11 @@ namespace VDS.RDF.Query.Expressions.Functions
                 }
             }
         }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new LeviathanSecantFunction(transformer.Transform(this._expr), this._inverse);
+        }
     }
 
     /// <summary>
@@ -573,6 +603,11 @@ namespace VDS.RDF.Query.Expressions.Functions
                 }
             }
         }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new LeviathanCosecantFunction(transformer.Transform(this._expr), this._inverse);
+        }
     }
 
     /// <summary>
@@ -642,6 +677,11 @@ namespace VDS.RDF.Query.Expressions.Functions
                     return LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.TrigCotan;
                 }
             }
+        }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new LeviathanCotangentFunction(transformer.Transform(this._expr), this._inverse);
         }
     }
 }

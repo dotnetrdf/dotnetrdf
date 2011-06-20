@@ -165,7 +165,7 @@ namespace VDS.RDF.Query.Expressions.Functions
 
         public ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new IfElseFunction(transformer.Transform(this._condition), transformer.Transform(this._ifBranch), this.Transform(this._elseBranch));
+            return new IfElseFunction(transformer.Transform(this._condition), transformer.Transform(this._ifBranch), transformer.Transform(this._elseBranch));
         }
     }
 }

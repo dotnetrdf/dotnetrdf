@@ -444,5 +444,10 @@ namespace VDS.RDF.Query.Expressions.Functions
                 return this._sep.AsEnumerable().Concat(this._exprs);
             }
         }
+
+        public ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new ArqStringJoinFunction(transformer.Transform(this._sep), this._exprs.Select(e => transformer.Transform(e)));
+        }
     }
 }

@@ -228,6 +228,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             output.Append(")");
             return output.ToString();
         }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new SparqlInFunction(transformer.Transform(this._expr), this._expressions.Select(e => transformer.Transform(e)));
+        }
     }
 
     /// <summary>
@@ -317,6 +322,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
             output.Append(")");
             return output.ToString();
+        }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new SparqlNotInFunction(transformer.Transform(this._expr), this._expressions.Select(e => transformer.Transform(e)));
         }
     }
 }

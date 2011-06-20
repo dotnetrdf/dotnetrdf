@@ -76,6 +76,11 @@ namespace VDS.RDF.Query.Expressions.Functions
         {
             return SparqlSpecsHelper.SparqlKeywordMD5 + "(" + this._expr.ToString() + ")";
         }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new MD5HashFunction(transformer.Transform(this._expr));
+        }
     }
 
 #else
@@ -110,6 +115,11 @@ namespace VDS.RDF.Query.Expressions.Functions
         public override string ToString()
         {
             return SparqlSpecsHelper.SparqlKeywordMD5 + "(" + this._expr.ToString() + ")";
+        }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new MD5HashFunction(transformer.Transform(this._expr));
         }
     }
 
@@ -146,6 +156,11 @@ namespace VDS.RDF.Query.Expressions.Functions
         {
             return SparqlSpecsHelper.SparqlKeywordSha1 + "(" + this._expr.ToString() + ")";
         }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new Sha1HashFunction(transformer.Transform(this._expr));
+        }
     }
 
     /// <summary>
@@ -179,6 +194,11 @@ namespace VDS.RDF.Query.Expressions.Functions
         {
             return SparqlSpecsHelper.SparqlKeywordSha224 + "(" + this._expr.ToString() + ")";
         }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new Sha224HashFunction(transformer.Transform(this._expr));
+        }
     }
 
     /// <summary>
@@ -211,6 +231,11 @@ namespace VDS.RDF.Query.Expressions.Functions
         public override string ToString()
         {
             return SparqlSpecsHelper.SparqlKeywordSha256 + "(" + this._expr.ToString() + ")";
+        }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new Sha256HashFunction(transformer.Transform(this._expr));
         }
     }
 
@@ -247,6 +272,11 @@ namespace VDS.RDF.Query.Expressions.Functions
         {
             return SparqlSpecsHelper.SparqlKeywordSha384 + "(" + this._expr.ToString() + ")";
         }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new Sha384HashFunction(transformer.Transform(this._expr));
+        }
     }
 
     /// <summary>
@@ -279,6 +309,11 @@ namespace VDS.RDF.Query.Expressions.Functions
         public override string ToString()
         {
             return SparqlSpecsHelper.SparqlKeywordSha512 + "(" + this._expr.ToString() + ")";
+        }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new Sha512HashFunction(transformer.Transform(this._expr));
         }
     }
 
@@ -315,6 +350,11 @@ namespace VDS.RDF.Query.Expressions.Functions
         {
             return SparqlSpecsHelper.SparqlKeywordSha384 + "(" + this._expr.ToString() + ")";
         }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new Sha384HashFunction(transformer.Transform(this._expr));
+        }
     }
 
     /// <summary>
@@ -347,6 +387,11 @@ namespace VDS.RDF.Query.Expressions.Functions
         public override string ToString()
         {
             return SparqlSpecsHelper.SparqlKeywordSha512 + "(" + this._expr.ToString() + ")";
+        }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new Sha512HashFunction(transformer.Transform(this._expr));
         }
     }
 

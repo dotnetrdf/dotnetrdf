@@ -374,6 +374,61 @@ namespace VDS.RDF.Query.Patterns
                         return Enumerable.Empty<Triple>();
                     }
 
+                case TripleIndexType.None:
+                    //REQ: Code the additional cases for this
+                    if (boundSubj)
+                    {
+                        if (boundPred)
+                        {
+                            return context.Data.Triples;
+                        }
+                        else if (boundObj)
+                        {
+                            return context.Data.Triples;
+                        }
+                        else
+                        {
+                            values = (from set in context.InputMultiset.Sets
+                                      where set.ContainsVariable(subjVar)
+                                      select set[subjVar]).Distinct();
+                            return (from value in values
+                                    where value != null
+                                    from t in context.Data.GetTriplesWithSubject(value)
+                                    select t);
+                        }
+                    }
+                    else if (boundPred)
+                    {
+                        if (boundObj)
+                        {
+                            return context.Data.Triples;
+                        }
+                        else
+                        {
+                            values = (from set in context.InputMultiset.Sets
+                                      where set.ContainsVariable(predVar)
+                                      select set[predVar]).Distinct();
+                            return (from value in values
+                                    where value != null
+                                    from t in context.Data.GetTriplesWithPredicate(value)
+                                    select t);
+                        }
+                    }
+                    else if (boundObj)
+                    {
+                        values = (from set in context.InputMultiset.Sets
+                                  where set.ContainsVariable(objVar)
+                                  select set[objVar]).Distinct();
+                        return (from value in values
+                                where value != null
+                                from t in context.Data.GetTriplesWithObject(value)
+                                select t);
+                    }
+                    else
+                    {
+                        return context.Data.Triples;
+                    }
+
                 default:
                     return context.Data.Triples;
             }

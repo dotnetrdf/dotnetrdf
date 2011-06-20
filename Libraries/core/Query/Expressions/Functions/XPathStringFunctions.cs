@@ -369,6 +369,8 @@ namespace VDS.RDF.Query.Expressions.Functions
                 return new ISparqlExpression[] { this._expr, this._arg };
             }
         }
+
+        public abstract ISparqlExpression Transform(IExpressionTransformer transformer);
     }
 
     #endregion
@@ -416,6 +418,11 @@ namespace VDS.RDF.Query.Expressions.Functions
                 return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.StringLength;
             }
         }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new XPathStringLengthFunction(transformer.Transform(this._expr));
+        }
     }
 
     /// <summary>
@@ -458,6 +465,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             {
                 return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.EncodeForURI;
             }
+        }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new XPathEncodeForUriFunction(transformer.Transform(this._expr));
         }
     }
 
@@ -503,6 +515,11 @@ namespace VDS.RDF.Query.Expressions.Functions
                 return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.EscapeHtmlURI;
             }
         }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new XPathEscapeHtmlUriFunction(transformer.Transform(this._expr));
+        }
     }
 
     /// <summary>
@@ -546,6 +563,11 @@ namespace VDS.RDF.Query.Expressions.Functions
                 return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.LowerCase;
             }
         }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new XPathLowerCaseFunction(transformer.Transform(this._expr));
+        }
     }
 
     /// <summary>
@@ -588,6 +610,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             {
                 return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.UpperCase;
             }
+        }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new XPathUpperCaseFunction(transformer.Transform(this._expr));
         }
     }
 
@@ -635,6 +662,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             {
                 return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.NormalizeSpace;
             }
+        }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new XPathNormalizeSpaceFunction(transformer.Transform(this._expr));
         }
     }
 
@@ -743,6 +775,18 @@ namespace VDS.RDF.Query.Expressions.Functions
                 return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.NormalizeUnicode;
             }
         }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            if (this._arg != null)
+            {
+                return new XPathNormalizeUnicodeFunction(transformer.Transform(this._expr), transformer.Transform(this._arg));
+            }
+            else
+            {
+                return new XPathNormalizeUnicodeFunction(transformer.Transform(this._expr));
+            }
+        }
     }
 
 #endif
@@ -803,6 +847,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             {
                 return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Contains;
             }
+        }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new XPathContainsFunction(transformer.Transform(this._expr), transformer.Transform(this._arg));
         }
     }
 
@@ -871,6 +920,11 @@ namespace VDS.RDF.Query.Expressions.Functions
                 return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.EndsWith;
             }
         }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new XPathEndsWithFunction(transformer.Transform(this._expr), transformer.Transform(this._arg));
+        }
     }
 
     /// <summary>
@@ -938,6 +992,11 @@ namespace VDS.RDF.Query.Expressions.Functions
                 return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.StartsWith;
             }
         }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new XPathStartsWithFunction(transformer.Transform(this._expr), transformer.Transform(this._arg));
+        }
     }
 
     /// <summary>
@@ -1001,6 +1060,11 @@ namespace VDS.RDF.Query.Expressions.Functions
                 return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.SubstringBefore;
             }
         }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new XPathSubstringBeforeFunction(transformer.Transform(this._expr), transformer.Transform(this._arg));
+        }
     }
 
     /// <summary>
@@ -1063,6 +1127,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             {
                 return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.SubstringAfter;
             }
+        }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new XPathSubstringAfterFunction(transformer.Transform(this._expr), transformer.Transform(this._arg));
         }
     }
 
@@ -1184,6 +1253,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             {
                 return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Compare;
             }
+        }
+
+        public override ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new XPathCompareFunction(transformer.Transform(this._expr), transformer.Transform(this._arg));
         }
     }
 
@@ -1417,6 +1491,18 @@ namespace VDS.RDF.Query.Expressions.Functions
                 }
             }
         }
+
+        public ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            if (this._length != null)
+            {
+                return new XPathSubstringFunction(transformer.Transform(this._expr), transformer.Transform(this._start), transformer.Transform(this._length));
+            }
+            else
+            {
+                return new XPathSubstringFunction(transformer.Transform(this._expr), transformer.Transform(this._start));
+            }
+        }
     }
 
     /// <summary>
@@ -1440,7 +1526,8 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// <param name="text">Text Expression</param>
         /// <param name="find">Search Expression</param>
         /// <param name="replace">Replace Expression</param>
-        public XPathReplaceFunction(ISparqlExpression text, ISparqlExpression find, ISparqlExpression replace) : this(text, find, replace, null) { }
+        public XPathReplaceFunction(ISparqlExpression text, ISparqlExpression find, ISparqlExpression replace)
+            : this(text, find, replace, null) { }
 
         /// <summary>
         /// Creates a new XPath Replace function
@@ -1766,6 +1853,18 @@ namespace VDS.RDF.Query.Expressions.Functions
                 }
             }
         }
+
+        public ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            if (this._optionExpr != null)
+            {
+                return new XPathReplaceFunction(transformer.Transform(this._textExpr), transformer.Transform(this._findExpr), transformer.Transform(this._replaceExpr), transformer.Transform(this._optionExpr));
+            }
+            else
+            {
+                return new XPathReplaceFunction(transformer.Transform(this._textExpr), transformer.Transform(this._findExpr), transformer.Transform(this._replaceExpr));
+            }
+        }
     }
 
     /// <summary>
@@ -1896,6 +1995,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             {
                 return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.Concat;
             }
+        }
+
+        public ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new XPathConcatFunction(this._exprs.Select(e => transformer.Transform(e)));
         }
     }
 
@@ -2082,5 +2186,7 @@ namespace VDS.RDF.Query.Expressions.Functions
                 return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.StringJoin;
             }
         }
+
+        
     }
 }
