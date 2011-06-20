@@ -64,7 +64,14 @@ namespace VDS.RDF.Query.Optimisation
                     {
                         var = lhs.Variables.First();
                         term = rhs.Value(null, 0);
-                        return true;
+                        if (term.NodeType == NodeType.Uri)
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
                     }
                     else
                     {
@@ -77,7 +84,14 @@ namespace VDS.RDF.Query.Optimisation
                     {
                         var = rhs.Variables.First();
                         term = lhs.Value(null, 0);
-                        return true;
+                        if (term.NodeType == NodeType.Uri)
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
                     }
                     else
                     {
