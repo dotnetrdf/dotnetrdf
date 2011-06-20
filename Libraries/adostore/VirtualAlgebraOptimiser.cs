@@ -79,7 +79,7 @@ namespace VDS.RDF.Query.Optimisation
                                 }
                                 else
                                 {
-                                    subj = new NodeMatchPattern(this.CreateVirtualNode(id, ((NodeMatchPattern)tp.Subject).Node.NodeType));
+                                    subj = new NodeMatchPattern(this.CreateVirtualNode(id, ((NodeMatchPattern)tp.Subject).Node));
                                 }
                             }
                             else
@@ -96,7 +96,7 @@ namespace VDS.RDF.Query.Optimisation
                                 }
                                 else
                                 {
-                                    pred = new NodeMatchPattern(this.CreateVirtualNode(id, ((NodeMatchPattern)tp.Predicate).Node.NodeType));
+                                    pred = new NodeMatchPattern(this.CreateVirtualNode(id, ((NodeMatchPattern)tp.Predicate).Node));
                                 }
                             }
                             else
@@ -113,7 +113,7 @@ namespace VDS.RDF.Query.Optimisation
                                 }
                                 else
                                 {
-                                    obj = new NodeMatchPattern(this.CreateVirtualNode(id, ((NodeMatchPattern)tp.Object).Node.NodeType));
+                                    obj = new NodeMatchPattern(this.CreateVirtualNode(id, ((NodeMatchPattern)tp.Object).Node));
                                 }
                             }
                             else
@@ -183,7 +183,7 @@ namespace VDS.RDF.Query.Optimisation
                 INode curr = term.Value(null, 0);
                 TNodeID id = this._provider.GetID(curr);
                 if (id == null || id.Equals(this._provider.NullID)) throw new RdfQueryException("Cannot transform the Expression to use Virtual Nodes");
-                INode virt = this.CreateVirtualNode(id, curr.NodeType);
+                INode virt = this.CreateVirtualNode(id, curr);
                 return new NodeExpressionTerm(virt);
             }
             else
@@ -192,7 +192,7 @@ namespace VDS.RDF.Query.Optimisation
             }
         }
 
-        protected abstract INode CreateVirtualNode(TNodeID id, NodeType type);
+        protected abstract INode CreateVirtualNode(TNodeID id, INode value);
 
         public bool IsApplicable(SparqlQuery q)
         {
@@ -205,20 +205,20 @@ namespace VDS.RDF.Query.Optimisation
         public SimpleVirtualAlgebraOptimiser(IVirtualRdfProvider<int, int> provider)
             : base(provider) { }
 
-        protected override INode CreateVirtualNode(int id, NodeType type)
+        protected override INode CreateVirtualNode(int id, INode value)
         {
-            switch (type)
+            switch (value.NodeType)
             {
                 case NodeType.Blank:
-                    return new SimpleVirtualBlankNode(null, id, this._provider);
+                    return new SimpleVirtualBlankNode(null, id, this._provider, (IBlankNode)value);
                 case NodeType.GraphLiteral:
-                    return new SimpleVirtualGraphLiteralNode(null, id, this._provider);
+                    return new SimpleVirtualGraphLiteralNode(null, id, this._provider, (IGraphLiteralNode)value);
                 case NodeType.Literal:
-                    return new SimpleVirtualLiteralNode(null, id, this._provider);
+                    return new SimpleVirtualLiteralNode(null, id, this._provider, (ILiteralNode)value);
                 case NodeType.Uri:
-                    return new SimpleVirtualUriNode(null, id, this._provider);
+                    return new SimpleVirtualUriNode(null, id, this._provider, (IUriNode)value);
                 case NodeType.Variable:
-                    return new SimpleVirtualVariableNode(null, id, this._provider);
+                    return new SimpleVirtualVariableNode(null, id, this._provider, (IVariableNode)value);
                 default:
                     throw new RdfException("Cannot create Virtual Nodes from unknown Node Types");
             }

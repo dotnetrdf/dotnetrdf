@@ -118,9 +118,9 @@ namespace VDS.RDF.Query.Datasets
 
                 //Then get the component parts of the Triple using the fixed parts where known
                 IGraph g = this._factory[graphUri];
-                INode subj = (this._s != null) ? this._s.CopyNode(g) : this._manager.DecodeVirtualNode(g, (byte)this._reader["subjectType"], (int)this._reader["subjectID"]);
-                INode pred = (this._p != null) ? this._p.CopyNode(g) : this._manager.DecodeVirtualNode(g, (byte)this._reader["predicateType"], (int)this._reader["predicateID"]);
-                INode obj = (this._o != null) ? this._o.CopyNode(g) : this._manager.DecodeVirtualNode(g, (byte)this._reader["objectType"], (int)this._reader["objectID"]);
+                INode subj = (this._s != null) ? this.CopyNode(g, this._s) : this._manager.DecodeVirtualNode(g, (byte)this._reader["subjectType"], (int)this._reader["subjectID"]);
+                INode pred = (this._p != null) ? this.CopyNode(g, this._p) : this._manager.DecodeVirtualNode(g, (byte)this._reader["predicateType"], (int)this._reader["predicateID"]);
+                INode obj = (this._o != null) ? this.CopyNode(g, this._o) : this._manager.DecodeVirtualNode(g, (byte)this._reader["objectType"], (int)this._reader["objectID"]);
                 this._current = new Triple(subj, pred, obj);
 
                 return true;
@@ -135,6 +135,18 @@ namespace VDS.RDF.Query.Datasets
         public void Reset()
         {
             throw new NotSupportedException("The Reset() operation is not supported by the AdoTripleEnumerator");
+        }
+
+        private INode CopyNode(IGraph target, INode n)
+        {
+            if (n is BaseVirtualNode<int, int>)
+            {
+                return ((BaseVirtualNode<int, int>)n).CopyNode(target);
+            }
+            else
+            {
+                return n.CopyNode(target);
+            }
         }
     }
 }

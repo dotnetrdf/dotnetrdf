@@ -40,6 +40,14 @@ namespace VDS.RDF.Storage.Virtualisation
             this._provider = provider;
         }
 
+        public BaseVirtualNode(IGraph g, NodeType type, TNodeID id, IVirtualRdfProvider<TNodeID, TGraphID> provider, INode value)
+            : this(g, type, id, provider)
+        {
+            this._value = value;
+            if (this._value.NodeType != this._type) throw new RdfException("Cannot create a pre-materialised Virtual Node where the materialised value is a Node of the wrong type! Expected " + this._type.ToString() + " but got " + this._value.NodeType.ToString());
+            this.OnMaterialise();
+        }
+
         /// <summary>
         /// Materialises the Value if it is not already materialised
         /// </summary>
@@ -429,6 +437,8 @@ namespace VDS.RDF.Storage.Virtualisation
 
         #endregion
 
+        public abstract INode CopyNode(IGraph target);
+
         public sealed override int GetHashCode()
         {
             return this._id.GetHashCode();
@@ -449,6 +459,9 @@ namespace VDS.RDF.Storage.Virtualisation
 
         public BaseVirtualBlankNode(IGraph g, TNodeID id, IVirtualRdfProvider<TNodeID, TGraphID> provider)
             : base(g, NodeType.Blank, id, provider) { }
+
+        public BaseVirtualBlankNode(IGraph g, TNodeID id, IVirtualRdfProvider<TNodeID, TGraphID> provider, IBlankNode value)
+            : base(g, NodeType.Blank, id, provider, value) { }
 
         protected sealed override void OnMaterialise()
         {
@@ -504,6 +517,9 @@ namespace VDS.RDF.Storage.Virtualisation
 
         public BaseVirtualGraphLiteralNode(IGraph g, TNodeID id, IVirtualRdfProvider<TNodeID, TGraphID> provider)
             : base(g, NodeType.GraphLiteral, id, provider) { }
+
+        public BaseVirtualGraphLiteralNode(IGraph g, TNodeID id, IVirtualRdfProvider<TNodeID, TGraphID> provider, IGraphLiteralNode value)
+            : base(g, NodeType.GraphLiteral, id, provider, value) { }
 
         protected sealed override void OnMaterialise()
         {
@@ -561,6 +577,9 @@ namespace VDS.RDF.Storage.Virtualisation
         public BaseVirtualLiteralNode(IGraph g, TNodeID id, IVirtualRdfProvider<TNodeID, TGraphID> provider)
             : base(g, NodeType.Literal, id, provider) { }
 
+        public BaseVirtualLiteralNode(IGraph g, TNodeID id, IVirtualRdfProvider<TNodeID, TGraphID> provider, ILiteralNode value)
+            : base(g, NodeType.Literal, id, provider, value) { }
+
         protected sealed override void  OnMaterialise()
         {
             ILiteralNode temp = (ILiteralNode)this._value;
@@ -595,7 +614,6 @@ namespace VDS.RDF.Storage.Virtualisation
                 return this._datatype;
             }
         }
-
 
         public override int CompareTo(ILiteralNode other)
         {
@@ -637,6 +655,9 @@ namespace VDS.RDF.Storage.Virtualisation
 
         public BaseVirtualUriNode(IGraph g, TNodeID id, IVirtualRdfProvider<TNodeID, TGraphID> provider)
             : base(g, NodeType.Uri, id, provider) { }
+
+        public BaseVirtualUriNode(IGraph g, TNodeID id, IVirtualRdfProvider<TNodeID, TGraphID> provider, IUriNode value)
+            : base(g, NodeType.Uri, id, provider, value) { }
 
         protected sealed override void OnMaterialise()
         {
@@ -693,6 +714,9 @@ namespace VDS.RDF.Storage.Virtualisation
 
         public BaseVirtualVariableNode(IGraph g, TNodeID id, IVirtualRdfProvider<TNodeID, TGraphID> provider)
             : base(g, NodeType.Variable, id, provider) { }
+
+        public BaseVirtualVariableNode(IGraph g, TNodeID id, IVirtualRdfProvider<TNodeID, TGraphID> provider, IVariableNode value)
+            : base(g, NodeType.Variable, id, provider, value) { }
 
         protected sealed override void OnMaterialise()
         {
