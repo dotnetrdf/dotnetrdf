@@ -174,5 +174,61 @@ namespace VDS.RDF.Test.Storage
 
             manager.Dispose();
         }
+
+        [TestMethod]
+        public void StorageAdoMicrosoftListGraphs()
+        {
+            MicrosoftAdoManager manager = new MicrosoftAdoManager("adostore", "example", "password");
+
+            foreach (Uri u in manager.ListGraphs())
+            {
+                if (u != null)
+                {
+                    Console.WriteLine(u.ToString());
+                }
+                else
+                {
+                    Console.WriteLine("Default Graph");
+                }
+            }
+
+            manager.Dispose();
+        }
+
+        [TestMethod]
+        public void StorageAdoMicrosoftDeleteGraph()
+        {
+            Graph g = new Graph();
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+            g.BaseUri = new Uri("http://example.org/adoStore/savedGraph");
+
+            MicrosoftAdoManager manager = new MicrosoftAdoManager("adostore", "example", "password");
+            Stopwatch timer = new Stopwatch();
+            timer.Start();
+            manager.SaveGraph(g);
+            timer.Stop();
+
+            Console.WriteLine("Write Time - " + timer.Elapsed);
+
+            Graph h = new Graph();
+            manager.LoadGraph(h, g.BaseUri);
+
+            NTriplesFormatter formatter = new NTriplesFormatter();
+            foreach (Triple t in h.Triples)
+            {
+                Console.WriteLine(t.ToString(formatter));
+            }
+
+            Assert.AreEqual(g, h, "Graphs should be equal");
+
+            //Now delete the Graph
+            manager.DeleteGraph(g.BaseUri);
+            Graph i = new Graph();
+            manager.LoadGraph(i, g.BaseUri);
+
+            Assert.IsTrue(i.IsEmpty, "Graph should be empty as was deleted from the store");
+            Assert.AreNotEqual(g, i, "Graphs should not be equal");
+            Assert.AreNotEqual(h, i, "Graphs should not be equal");
+        }
     }
 }

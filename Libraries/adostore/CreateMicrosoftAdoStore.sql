@@ -54,6 +54,29 @@ AS
 BEGIN
   RETURN 1;
 END
+
+-- ClearStore
+GO
+CREATE PROCEDURE ClearStore
+AS
+BEGIN
+  SET NOCOUNT ON;
+  DELETE FROM QUADS;
+  DELETE FROM BNODES;
+  DELETE FROM GRAPHS;
+END
+
+-- ClearStoreFull
+GO
+CREATE PROCEDURE ClearStoreFull
+AS
+BEGIN
+  SET NOCOUNT ON;
+  DELETE FROM QUADS;
+  DELETE FROM BNODES;
+  DELETE FROM NODES;
+  DELETE FROM GRAPHS;
+END
   
 -- GetGraphID
 GO
@@ -103,6 +126,15 @@ AS
 BEGIN
   SET NOCOUNT ON;
   SELECT graphUri FROM GRAPHS WHERE graphID=@graphID;
+END
+
+-- GetGraphUris
+GO
+CREATE PROCEDURE GetGraphUris
+AS
+BEGIN
+  SET NOCOUNT ON;
+  SELECT graphUri FROM GRAPHS;
 END
 
 -- ClearGraph
@@ -665,6 +697,7 @@ GO
 
 -- Create roles
 
+CREATE ROLE rdf_admin;
 CREATE ROLE rdf_readwrite;
 CREATE ROLE rdf_readinsert;
 CREATE ROLE rdf_readonly;
@@ -690,57 +723,68 @@ GRANT SELECT, INSERT, DELETE ON GRAPHS TO rdf_readwrite;
 GRANT SELECT, INSERT, DELETE ON QUADS TO rdf_readwrite;
 GRANT SELECT, INSERT, DELETE ON NODES TO rdf_readwrite;
 
+-- Grant Table and View related permissions for rdf_admin
+
+GRANT SELECT, INSERT, DELETE ON GRAPHS TO rdf_admin;
+GRANT SELECT, INSERT, DELETE ON QUADS TO rdf_admin;
+GRANT SELECT, INSERT, DELETE ON NODES TO rdf_admin;
+
 -- Grant Stored Procedures permissions to roles
 
-GRANT EXECUTE ON GetVersion TO rdf_readwrite, rdf_readinsert, rdf_readonly;
+GRANT EXECUTE ON GetVersion TO rdf_admin, rdf_readwrite, rdf_readinsert, rdf_readonly;
 
-GRANT EXECUTE ON GetGraphID TO rdf_readwrite, rdf_readinsert, rdf_readonly;
-GRANT EXECUTE ON GetOrCreateGraphID TO rdf_readwrite, rdf_readinsert;
-GRANT EXECUTE ON GetGraphUri TO rdf_readwrite, rdf_readinsert, rdf_readonly;
-GRANT EXECUTE ON ClearGraph TO rdf_readwrite, rdf_readinsert;
-GRANT EXECUTE ON ClearGraph TO rdf_readwrite, rdf_readinsert;
-GRANT EXECUTE ON DeleteGraph TO rdf_readwrite;
-GRANT EXECUTE ON DeleteGraphByUri TO rdf_readwrite;
+GRANT EXECUTE ON ClearStore TO rdf_admin;
+GRANT EXECUTE ON ClearStoreFull TO rdf_admin;
 
-GRANT EXECUTE ON GetNodeID TO rdf_readwrite, rdf_readinsert, rdf_readonly;
-GRANT EXECUTE ON GetOrCreateNodeID TO rdf_readwrite, rdf_readinsert;
-GRANT EXECUTE ON CreateBlankNodeID TO rdf_readwrite, rdf_readinsert;
-GRANT EXECUTE ON GetNodeData TO rdf_readwrite, rdf_readinsert, rdf_readonly;
+GRANT EXECUTE ON GetGraphID TO rdf_admin, rdf_readwrite, rdf_readinsert, rdf_readonly;
+GRANT EXECUTE ON GetOrCreateGraphID TO rdf_admin, rdf_readwrite, rdf_readinsert;
+GRANT EXECUTE ON GetGraphUri TO rdf_admin, rdf_readwrite, rdf_readinsert, rdf_readonly;
+GRANT EXECUTE ON GetGraphUris TO rdf_admin, rdf_readwrite, rdf_readinsert, rdf_readonly;
 
-GRANT EXECUTE ON HasQuad TO rdf_readwrite, rdf_readinsert, rdf_readonly;
-GRANT EXECUTE ON HasQuadData TO rdf_readwrite, rdf_readinsert, rdf_readonly;
-GRANT EXECUTE ON AssertQuad TO rdf_readwrite, rdf_readinsert;
-GRANT EXECUTE ON AssertQuadData TO rdf_readwrite, rdf_readinsert;
-GRANT EXECUTE ON RetractQuad TO rdf_readwrite;
-GRANT EXECUTE ON RetractQuadData TO rdf_readwrite;
+GRANT EXECUTE ON ClearGraph TO rdf_admin, rdf_readwrite, rdf_readinsert;
+GRANT EXECUTE ON ClearGraph TO rdf_admin, rdf_readwrite, rdf_readinsert;
+GRANT EXECUTE ON DeleteGraph TO rdf_admin, rdf_readwrite;
+GRANT EXECUTE ON DeleteGraphByUri TO rdf_admin, rdf_readwrite;
 
-GRANT EXECUTE ON GetQuads TO rdf_readwrite, rdf_readinsert, rdf_readonly;
-GRANT EXECUTE ON GetQuadsVirtual TO rdf_readwrite, rdf_readinsert, rdf_readonly;
-GRANT EXECUTE ON GetQuadsData TO rdf_readwrite, rdf_readinsert, rdf_readonly;
+GRANT EXECUTE ON GetNodeID TO rdf_admin, rdf_readwrite, rdf_readinsert, rdf_readonly;
+GRANT EXECUTE ON GetOrCreateNodeID TO rdf_admin, rdf_readwrite, rdf_readinsert;
+GRANT EXECUTE ON CreateBlankNodeID TO rdf_admin, rdf_readwrite, rdf_readinsert;
+GRANT EXECUTE ON GetNodeData TO rdf_admin, rdf_readwrite, rdf_readinsert, rdf_readonly;
 
-GRANT EXECUTE ON GetGraphQuads TO rdf_readwrite, rdf_readinsert, rdf_readonly;
-GRANT EXECUTE ON GetGraphQuadsVirtual TO rdf_readwrite, rdf_readinsert, rdf_readonly;
-GRANT EXECUTE ON GetGraphQuadsData TO rdf_readwrite, rdf_readinsert, rdf_readonly;
+GRANT EXECUTE ON HasQuad TO rdf_admin, rdf_readwrite, rdf_readinsert, rdf_readonly;
+GRANT EXECUTE ON HasQuadData TO rdf_admin, rdf_readwrite, rdf_readinsert, rdf_readonly;
+GRANT EXECUTE ON AssertQuad TO rdf_admin, rdf_readwrite, rdf_readinsert;
+GRANT EXECUTE ON AssertQuadData TO rdf_admin, rdf_readwrite, rdf_readinsert;
+GRANT EXECUTE ON RetractQuad TO rdf_admin, rdf_readwrite;
+GRANT EXECUTE ON RetractQuadData TO rdf_admin, rdf_readwrite;
 
-GRANT EXECUTE ON GetQuadsWithSubject TO rdf_readwrite, rdf_readinsert, rdf_readonly;
-GRANT EXECUTE ON GetQuadsWithSubjectVirtual TO rdf_readwrite, rdf_readinsert, rdf_readonly;
-GRANT EXECUTE ON GetQuadsWithSubjectData TO rdf_readwrite, rdf_readinsert, rdf_readonly;
-GRANT EXECUTE ON GetQuadsWithPredicate TO rdf_readwrite, rdf_readinsert, rdf_readonly;
-GRANT EXECUTE ON GetQuadsWithPredicateVirtual TO rdf_readwrite, rdf_readinsert, rdf_readonly;
-GRANT EXECUTE ON GetQuadsWithPredicateData TO rdf_readwrite, rdf_readinsert, rdf_readonly;
-GRANT EXECUTE ON GetQuadsWithObject TO rdf_readwrite, rdf_readinsert, rdf_readonly;
-GRANT EXECUTE ON GetQuadsWithObjectVirtual TO rdf_readwrite, rdf_readinsert, rdf_readonly;
-GRANT EXECUTE ON GetQuadsWithObjectData TO rdf_readwrite, rdf_readinsert, rdf_readonly;
-GRANT EXECUTE ON GetQuadsWithSubjectPredicate TO rdf_readwrite, rdf_readinsert, rdf_readonly;
-GRANT EXECUTE ON GetQuadsWithSubjectPredicateVirtual TO rdf_readwrite, rdf_readinsert, rdf_readonly;
-GRANT EXECUTE ON GetQuadsWithSubjectPredicateData TO rdf_readwrite, rdf_readinsert, rdf_readonly;
-GRANT EXECUTE ON GetQuadsWithSubjectObject TO rdf_readwrite, rdf_readinsert, rdf_readonly;
-GRANT EXECUTE ON GetQuadsWithSubjectObjectVirtual TO rdf_readwrite, rdf_readinsert, rdf_readonly;
-GRANT EXECUTE ON GetQuadsWithSubjectObjectData TO rdf_readwrite, rdf_readinsert, rdf_readonly;
-GRANT EXECUTE ON GetQuadsWithPredicateObject TO rdf_readwrite, rdf_readinsert, rdf_readonly;
-GRANT EXECUTE ON GetQuadsWithPredicateObjectVirtual TO rdf_readwrite, rdf_readinsert, rdf_readonly;
-GRANT EXECUTE ON GetQuadsWithPredicateObjectData TO rdf_readwrite, rdf_readinsert, rdf_readonly;
+GRANT EXECUTE ON GetQuads TO rdf_admin, rdf_readwrite, rdf_readinsert, rdf_readonly;
+GRANT EXECUTE ON GetQuadsVirtual TO rdf_admin, rdf_readwrite, rdf_readinsert, rdf_readonly;
+GRANT EXECUTE ON GetQuadsData TO rdf_admin, rdf_readwrite, rdf_readinsert, rdf_readonly;
 
--- TEMP - Grant rdf_readwrite role to example user for testing
+GRANT EXECUTE ON GetGraphQuads TO rdf_admin, rdf_readwrite, rdf_readinsert, rdf_readonly;
+GRANT EXECUTE ON GetGraphQuadsVirtual TO rdf_admin, rdf_readwrite, rdf_readinsert, rdf_readonly;
+GRANT EXECUTE ON GetGraphQuadsData TO rdf_admin, rdf_readwrite, rdf_readinsert, rdf_readonly;
 
-EXEC sp_addrolemember 'rdf_readwrite', 'example';
+GRANT EXECUTE ON GetQuadsWithSubject TO rdf_admin, rdf_readwrite, rdf_readinsert, rdf_readonly;
+GRANT EXECUTE ON GetQuadsWithSubjectVirtual TO rdf_admin, rdf_readwrite, rdf_readinsert, rdf_readonly;
+GRANT EXECUTE ON GetQuadsWithSubjectData TO rdf_admin, rdf_readwrite, rdf_readinsert, rdf_readonly;
+GRANT EXECUTE ON GetQuadsWithPredicate TO rdf_admin, rdf_readwrite, rdf_readinsert, rdf_readonly;
+GRANT EXECUTE ON GetQuadsWithPredicateVirtual TO rdf_admin, rdf_readwrite, rdf_readinsert, rdf_readonly;
+GRANT EXECUTE ON GetQuadsWithPredicateData TO rdf_admin, rdf_readwrite, rdf_readinsert, rdf_readonly;
+GRANT EXECUTE ON GetQuadsWithObject TO rdf_admin, rdf_readwrite, rdf_readinsert, rdf_readonly;
+GRANT EXECUTE ON GetQuadsWithObjectVirtual TO rdf_admin, rdf_readwrite, rdf_readinsert, rdf_readonly;
+GRANT EXECUTE ON GetQuadsWithObjectData TO rdf_admin, rdf_readwrite, rdf_readinsert, rdf_readonly;
+GRANT EXECUTE ON GetQuadsWithSubjectPredicate TO rdf_admin, rdf_readwrite, rdf_readinsert, rdf_readonly;
+GRANT EXECUTE ON GetQuadsWithSubjectPredicateVirtual TO rdf_admin, rdf_readwrite, rdf_readinsert, rdf_readonly;
+GRANT EXECUTE ON GetQuadsWithSubjectPredicateData TO rdf_admin, rdf_readwrite, rdf_readinsert, rdf_readonly;
+GRANT EXECUTE ON GetQuadsWithSubjectObject TO rdf_admin, rdf_readwrite, rdf_readinsert, rdf_readonly;
+GRANT EXECUTE ON GetQuadsWithSubjectObjectVirtual TO rdf_admin, rdf_readwrite, rdf_readinsert, rdf_readonly;
+GRANT EXECUTE ON GetQuadsWithSubjectObjectData TO rdf_admin, rdf_readwrite, rdf_readinsert, rdf_readonly;
+GRANT EXECUTE ON GetQuadsWithPredicateObject TO rdf_admin, rdf_readwrite, rdf_readinsert, rdf_readonly;
+GRANT EXECUTE ON GetQuadsWithPredicateObjectVirtual TO rdf_admin, rdf_readwrite, rdf_readinsert, rdf_readonly;
+GRANT EXECUTE ON GetQuadsWithPredicateObjectData TO rdf_admin, rdf_readwrite, rdf_readinsert, rdf_readonly;
+
+-- TEMP - Grant rdf_admin role to example user for testing
+
+EXEC sp_addrolemember 'rdf_admin', 'example';

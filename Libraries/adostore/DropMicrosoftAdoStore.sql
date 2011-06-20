@@ -9,9 +9,14 @@ DROP TABLE BNODES;
 
 DROP PROCEDURE GetVersion;
 
+DROP PROCEDURE ClearStore;
+DROP PROCEDURE ClearStoreFull;
+
 DROP PROCEDURE GetGraphID;
 DROP PROCEDURE GetOrCreateGraphID;
 DROP PROCEDURE GetGraphUri;
+DROP PROCEDURE GetGraphUris;
+
 DROP PROCEDURE ClearGraph;
 DROP PROCEDURE ClearGraphByUri;
 DROP PROCEDURE DeleteGraph;
@@ -56,12 +61,13 @@ DROP PROCEDURE GetQuadsWithPredicateObject;
 DROP PROCEDURE GetQuadsWithPredicateObjectVirtual;
 DROP PROCEDURE GetQuadsWithPredicateObjectData;
 
--- TEMP - Remove example user from rdf_readwrite role
+-- TEMP - Remove example user from rdf_admin role
 
-EXEC sp_droprolemember 'rdf_readwrite', 'example';
+EXEC sp_droprolemember 'rdf_admin', 'example';
 
 -- Drop the Roles
 
+DROP ROLE rdf_admin;
 DROP ROLE rdf_readwrite;
 DROP ROLE rdf_readinsert;
 DROP ROLE rdf_readonly;

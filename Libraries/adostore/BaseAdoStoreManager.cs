@@ -1,17 +1,57 @@
-﻿using System;
+﻿/*
+
+Copyright Robert Vesse 2009-11
+rvesse@vdesign-studios.com
+
+------------------------------------------------------------------------
+
+This file is part of dotNetRDF.
+
+dotNetRDF is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+dotNetRDF is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with dotNetRDF.  If not, see <http://www.gnu.org/licenses/>.
+
+------------------------------------------------------------------------
+
+dotNetRDF may alternatively be used under the LGPL or MIT License
+
+http://www.gnu.org/licenses/lgpl.html
+http://www.opensource.org/licenses/mit-license.php
+
+If these licenses are not suitable for your intended use please contact
+us at the above stated email address to discuss alternative
+terms.
+
+*/
+
+using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using VDS.RDF.Storage.Virtualisation;
 using VDS.RDF.Writing;
 
 namespace VDS.RDF.Storage
 {
+    /// <summary>
+    /// Abstract Base implementation of the ADO Store
+    /// </summary>
+    /// <typeparam name="TConn">Connection Type</typeparam>
+    /// <typeparam name="TCommand">Command Type</typeparam>
+    /// <typeparam name="TParameter">Parameter Type</typeparam>
+    /// <typeparam name="TAdaptor">Adaptor Type</typeparam>
+    /// <typeparam name="TException">Exception Type</typeparam>
     public abstract class BaseAdoStore<TConn,TCommand,TParameter,TAdaptor,TException> 
         : IGenericIOManager, IVirtualRdfProvider<int, int>, IDisposable
         where TConn : DbConnection
@@ -26,6 +66,10 @@ namespace VDS.RDF.Storage
 
         #region Constructor and Destructor
 
+        /// <summary>
+        /// Creates a new ADO Store
+        /// </summary>
+        /// <param name="connection">Database Connection</param>
         public BaseAdoStore(TConn connection)
         {
             this._connection = connection;
@@ -36,7 +80,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Finalizer for the Store Manager which ensures the
+        /// Finalizer for the ADO Store Manager which ensures that it is disposed of properly
         /// </summary>
         ~BaseAdoStore()
         {
@@ -53,6 +97,11 @@ namespace VDS.RDF.Storage
         /// <returns></returns>
         protected internal abstract TCommand GetCommand();
 
+        /// <summary>
+        /// Gets a Parameter with the given name for sending parameters with SQL Commands to the underlying Database
+        /// </summary>
+        /// <param name="name">Parameter Name</param>
+        /// <returns></returns>
         protected internal abstract TParameter GetParameter(String name);
 
         /// <summary>
@@ -77,7 +126,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <remarks>
         /// <para>
-        /// This is intended for two purposes
+        /// This is intended for two purposes:
         /// <ol>
         ///     <li>Future proofing so later versions of the library can add additional stored procedures to the database and the code can decide which are available to it</li>
         ///     <li>Detecting when users try to use the class to connect to legacy databases created with the old Schema which are not compatible with this code</li>
@@ -158,26 +207,22 @@ namespace VDS.RDF.Storage
             return cmd.ExecuteScalar();
         }
 
-        internal DbDataReader GetReader(String query)
-        {
-            return this.GetReader(query, CommandType.Text);
-        }
-
-        internal DbDataReader GetReader(String query, CommandType type)
-        {
-            TCommand cmd = this.GetCommand();
-            cmd.CommandType = type;
-            cmd.CommandText = query;
-            cmd.Connection = this._connection;
-
-            return cmd.ExecuteReader();
-        }
-
+        /// <summary>
+        /// Encodes the values for a Node onto a command
+        /// </summary>
+        /// <param name="cmd">Command</param>
+        /// <param name="n">Node</param>
         internal void EncodeNode(TCommand cmd, INode n)
         {
             this.EncodeNode(cmd, n, null);
         }
 
+        /// <summary>
+        /// Encodes the values for a Node onto a command for the given triple segment
+        /// </summary>
+        /// <param name="cmd">Command</param>
+        /// <param name="n">Node</param>
+        /// <param name="segment">Triple Segment</param>
         internal void EncodeNode(TCommand cmd, INode n, TripleSegment? segment)
         {
             String prefix = "node";
@@ -259,21 +304,43 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Encodes the ID for a Node onto a command
+        /// </summary>
+        /// <param name="cmd">Command</param>
+        /// <param name="id">Node ID</param>
         internal void EncodeNodeID(TCommand cmd, AdoStoreNodeID id)
         {
             this.EncodeNodeID(cmd, id, null);
         }
 
+        /// <summary>
+        /// Encodes the ID for a Node onto a command
+        /// </summary>
+        /// <param name="cmd">Command</param>
+        /// <param name="id">Node ID</param>
         internal void EncodeNodeID(TCommand cmd, int id)
         {
             this.EncodeNodeID(cmd, id, null);
         }
 
+        /// <summary>
+        /// Encodes the ID for a Node onto a command for a given triple segment
+        /// </summary>
+        /// <param name="cmd">Command</param>
+        /// <param name="id">Node ID</param>
+        /// <param name="segment">Triple Segment</param>
         internal void EncodeNodeID(TCommand cmd, AdoStoreNodeID id, TripleSegment? segment)
         {
             this.EncodeNodeID(cmd, id.ID, segment);
         }
 
+        /// <summary>
+        /// Encodes the ID for a Node onto a command for a given triple segment
+        /// </summary>
+        /// <param name="cmd">Command</param>
+        /// <param name="id">Node ID</param>
+        /// <param name="segment">Triple segment</param>
         internal void EncodeNodeID(TCommand cmd, int id, TripleSegment? segment)
         {
             String prefix = "node";
@@ -298,6 +365,14 @@ namespace VDS.RDF.Storage
             cmd.Parameters[prefix + "ID"].Value = id;
         }
 
+        /// <summary>
+        /// Decodes a Node from the constituent values in the database
+        /// </summary>
+        /// <param name="g">Graph</param>
+        /// <param name="type">Node Type</param>
+        /// <param name="value">Node Value</param>
+        /// <param name="meta">Node Meta</param>
+        /// <returns></returns>
         internal INode DecodeNode(IGraph g, byte type, String value, String meta)
         {
             if (g == null) g = this._g;
@@ -325,6 +400,13 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Decodes a Virtual Node from ID and type
+        /// </summary>
+        /// <param name="g">Graph</param>
+        /// <param name="type">Node Type</param>
+        /// <param name="id">Node ID</param>
+        /// <returns></returns>
         internal INode DecodeVirtualNode(IGraph g, byte type, int id)
         {
             switch (type)
@@ -340,6 +422,11 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Decodes the Node Meta information
+        /// </summary>
+        /// <param name="meta">Meta Object</param>
+        /// <returns></returns>
         internal String DecodeMeta(Object meta)
         {
             if (Convert.IsDBNull(meta))
@@ -401,6 +488,11 @@ namespace VDS.RDF.Storage
 
         #region IGenericIOManager Members
 
+        /// <summary>
+        /// Loads a Graph from the store
+        /// </summary>
+        /// <param name="g">Graph to load into</param>
+        /// <param name="graphUri">Graph URI</param>
         public void LoadGraph(IGraph g, Uri graphUri)
         {
             //First need to get the Graph ID (if any)
@@ -459,6 +551,11 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Loads a Graph from the store
+        /// </summary>
+        /// <param name="g">Graph to load into</param>
+        /// <param name="graphUri">Graph URI</param>
         public void LoadGraph(IGraph g, string graphUri)
         {
             if (graphUri == null || graphUri.Equals(String.Empty))
@@ -471,6 +568,10 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Saves a Graph to the store
+        /// </summary>
+        /// <param name="g">Graph to save</param>
         public void SaveGraph(IGraph g)
         {
             //First need to get/create the Graph ID (if any)
@@ -611,9 +712,16 @@ namespace VDS.RDF.Storage
 
         public bool UpdateSupported
         {
-            get { throw new NotImplementedException(); }
+            get 
+            { 
+                throw new NotImplementedException(); 
+            }
         }
 
+        /// <summary>
+        /// Deletes a Graph from the store
+        /// </summary>
+        /// <param name="graphUri">Graph URI</param>
         public void DeleteGraph(Uri graphUri)
         {
             //Delete the Graph by URI
@@ -630,6 +738,10 @@ namespace VDS.RDF.Storage
             cmd.ExecuteNonQuery();
         }
 
+        /// <summary>
+        /// Deletes a Graph from the store
+        /// </summary>
+        /// <param name="graphUri">Graph URI</param>
         public void DeleteGraph(string graphUri)
         {
             if (graphUri == null || graphUri.Equals(String.Empty))
@@ -642,29 +754,87 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Returns that deleting graphs is supported
+        /// </summary>
         public bool DeleteSupported
         {
-            get { throw new NotImplementedException(); }
+            get 
+            {
+                return true;
+            }
         }
 
+        /// <summary>
+        /// Lists the Graphs in the store
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<Uri> ListGraphs()
         {
-            throw new NotImplementedException();
+            TCommand cmd = this.GetCommand();
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.CommandText = "GetGraphUris";
+            cmd.Connection = this._connection;
+
+            using (DbDataReader reader = cmd.ExecuteReader())
+            {
+                if (reader.HasRows)
+                {
+                    List<Uri> uris = new List<Uri>();
+                    while (reader.Read())
+                    {
+                        String u = this.DecodeMeta(reader["graphUri"]);
+                        if (u == null)
+                        {
+                            uris.Add((Uri)null);
+                        }
+                        else
+                        {
+                            uris.Add(new Uri(u));
+                        }
+                    }
+                    reader.Close();
+
+                    return uris;
+                }
+                else
+                {
+                    return Enumerable.Empty<Uri>();
+                }
+            }
         }
 
+        /// <summary>
+        /// Returns that listing graphs is supported
+        /// </summary>
         public bool ListGraphsSupported
         {
-            get { throw new NotImplementedException(); }
+            get 
+            {
+                return true;
+            }
         }
 
+        /// <summary>
+        /// Returns that the store is ready
+        /// </summary>
         public bool IsReady
         {
-            get { throw new NotImplementedException(); }
+            get
+            {
+                return true;
+            }
         }
 
+        /// <summary>
+        /// Returns that the store is not read-only
+        /// </summary>
         public bool IsReadOnly
         {
-            get { throw new NotImplementedException(); }
+            get 
+            {
+                return false;
+            }
         }
 
         #endregion
