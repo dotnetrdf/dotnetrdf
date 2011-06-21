@@ -340,6 +340,7 @@
     <Compile Include="Query\Algebra\NegatedPropertySet.cs" />
     <Compile Include="Query\Algebra\NullOperator.cs" />
     <Compile Include="Query\Algebra\OneOrMorePath.cs" />
+    <Compile Include="Query\Algebra\ParallelisedJoinClasses.cs" />
     <Compile Include="Query\Algebra\PropertyPathOperators.cs" />
     <Compile Include="Query\Algebra\RestrictionFilters.cs" />
     <Compile Include="Query\Algebra\ZeroLengthPath.cs" />
@@ -429,6 +430,7 @@
     <Compile Include="Query\Optimisation\IAlgebraOptimiser.cs" />
     <Compile Include="Query\Optimisation\IdentityFilterOptimiser.cs" />
     <Compile Include="Query\Optimisation\IQueryOptimiser.cs" />
+    <Compile Include="Query\Optimisation\ParallelEvaluationOptimiser.cs" />
     <Compile Include="Query\Optimisation\QueryOptimisers.cs" />
     <Compile Include="Query\Optimisation\SparqlOptimiser.cs" />
     <Compile Include="Query\Optimisation\StrictAlgebraOptimiser.cs" />

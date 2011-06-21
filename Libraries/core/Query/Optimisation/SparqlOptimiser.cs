@@ -47,7 +47,10 @@ namespace VDS.RDF.Query.Optimisation
         private static List<IAlgebraOptimiser> _algebraOpt = new List<IAlgebraOptimiser>()
         {
             new AskBgpOptimiser(),
-            new LazyBgpOptimiser()
+            new LazyBgpOptimiser(),
+            //These optimisers can be used but currently don't seem to result in any overall performance boost
+            /*new StrictAlgebraOptimiser(),
+            new IdentityFilterOptimiser()*/
         };
 
         /// <summary>

@@ -154,6 +154,7 @@
     <Compile Include="Sparql\FilterPlacementTests.cs" />
     <Compile Include="Sparql\NegationTests.cs" />
     <Compile Include="Sparql\OptimiserTests.cs" />
+    <Compile Include="Sparql\ParallelEvaluation.cs" />
     <Compile Include="Sparql\PropertyPathEvaluationTests.cs" />
     <Compile Include="Sparql\PropertyPathTransformationTests.cs" />
     <Compile Include="Sparql\QueryThreadSafety.cs" />
