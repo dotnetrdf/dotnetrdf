@@ -705,6 +705,15 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Updates a Graph in the Store
+        /// </summary>
+        /// <param name="graphUri">URI of the Graph to update</param>
+        /// <param name="additions">Triples to add</param>
+        /// <param name="removals">Triples to remove</param>
+        /// <remarks>
+        /// Removals happen prior to additions, if you wish to change this order then make separate calls providing only additions/removals to each call
+        /// </remarks>
         public void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
             //First need to get/create the Graph ID (if any)
@@ -768,6 +777,15 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Updates a Graph in the Store
+        /// </summary>
+        /// <param name="graphUri">URI of the Graph to update</param>
+        /// <param name="additions">Triples to add</param>
+        /// <param name="removals">Triples to remove</param>
+        /// <remarks>
+        /// Removals happen prior to additions, if you wish to change this order then make separate calls providing only additions/removals to each call
+        /// </remarks>
         public void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
             if (graphUri == null || graphUri.Equals(String.Empty))
@@ -780,6 +798,9 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Returns that Updates are supported
+        /// </summary>
         public bool UpdateSupported
         {
             get 
@@ -911,6 +932,12 @@ namespace VDS.RDF.Storage
 
         #region IVirtualRdfProvider<int,int> Members
 
+        /// <summary>
+        /// Gets the materialised value based on a Node ID
+        /// </summary>
+        /// <param name="g">Graph to materialise the value in</param>
+        /// <param name="id">Node ID</param>
+        /// <returns></returns>
         public INode GetValue(IGraph g, int id)
         {
             INode value = this._cache[id];
@@ -942,6 +969,11 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Gets the Graph URI based on a Graph ID
+        /// </summary>
+        /// <param name="graphID">Graph ID</param>
+        /// <returns></returns>
         public Uri GetGraphUri(int graphID)
         {
             TCommand cmd = this.GetCommand();
@@ -963,16 +995,45 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Gets the Node ID for a value (if such a value exists in the store)
+        /// </summary>
+        /// <param name="value">Value</param>
+        /// <returns>Either a Node ID or zero if the value does not exist in the store</returns>
+        /// <remarks>
+        /// <para>
+        /// This overload does not create Node IDs if the value does not exist, if you need to create a value use the overload which allows you to specify whether to create new Node IDs as needed
+        /// </para>
+        /// <para>
+        /// <strong>Cannot be used to get IDs for Blank Nodes</strong>
+        /// </para>
+        /// </remarks>
         public int GetID(INode value)
         {
             return this.GetID(value, false);
         }
 
+        /// <summary>
+        /// Gets the Graph ID for a Graph (if such a graph exists in the store)
+        /// </summary>
+        /// <param name="g">Graph</param>
+        /// <returns>Either a Graph ID or zero if the Graph does not exist in the store</returns>
+        /// <remarks>
+        /// This overload does not create Graph IDs if the value does not exist, if you need to create a value use the overload which allows you to specify whether to create new Graph IDs as needed
+        /// </remarks>
         public int GetGraphID(IGraph g)
         {
             return this.GetGraphID(g, false);
         }
 
+        /// <summary>
+        /// Gets the Graph ID for a Graph potentially creating a new ID if <paramref name="createIfNotExists"/> was set to true and the graph does not exist in the store
+        /// </summary>
+        /// <param name="g">Graph</param>
+        /// <param name="createIfNotExists">Whether to create a new Graph ID if there is no existing ID for the graph</param>
+        /// <returns>
+        /// Either a Graph ID or zero if such a graph does not exist and <paramref name="createIfNotExists"/> was set to false
+        /// </returns>
         public int GetGraphID(IGraph g, bool createIfNotExists)
         {
             TCommand cmd = this.GetCommand();
@@ -993,11 +1054,27 @@ namespace VDS.RDF.Storage
             return (int)cmd.Parameters["RC"].Value;
         }
 
+        /// <summary>
+        /// Gets the Graph ID for a Graph (if such a graph exists in the store)
+        /// </summary>
+        /// <param name="graphUri">Graph URI</param>
+        /// <returns>Either a Graph ID or zero if the Graph does not exist in the store</returns>
+        /// <remarks>
+        /// This overload does not create Graph IDs if the value does not exist, if you need to create a value use the overload which allows you to specify whether to create new Graph IDs as needed
+        /// </remarks>
         public int GetGraphID(Uri graphUri)
         {
             return this.GetGraphID(graphUri, false);
         }
 
+        /// <summary>
+        /// Gets the Graph ID for a Graph potentially creating a new ID if <paramref name="createIfNotExists"/> was set to true and the graph does not exist in the store
+        /// </summary>
+        /// <param name="graphUri">Graph URI</param>
+        /// <param name="createIfNotExists">Whether to create a new Graph ID if there is no existing ID for the graph</param>
+        /// <returns>
+        /// Either a Graph ID or zero if such a graph does not exist and <paramref name="createIfNotExists"/> was set to false
+        /// </returns>
         public int GetGraphID(Uri graphUri, bool createIfNotExists)
         {
             TCommand cmd = this.GetCommand();
@@ -1018,6 +1095,17 @@ namespace VDS.RDF.Storage
             return (int)cmd.Parameters["RC"].Value;
         }
 
+        /// <summary>
+        /// Gets the Node ID for a value potentially creating a new ID if <paramref name="createIfNotExists"/> was set to true and the value does not exist in the store
+        /// </summary>
+        /// <param name="value">Value</param>
+        /// <param name="createIfNotExists">Whether to create a new Node ID if there is no existing ID for the value</param>
+        /// <returns>
+        /// Either a Node ID or zero if such a value does not exist and <paramref name="createIfNotExists"/> was set to false
+        /// </returns>
+        /// <remarks>
+        /// <strong>Cannot be used to get IDs for Blank Nodes</strong>
+        /// </remarks>
         public int GetID(INode value, bool createIfNotExists)
         {
             if (value.NodeType == NodeType.Blank) throw new RdfStorageException("Cannot use the GetID() method to generate an ID for a Blank Node as Blank Nodes must be scoped to a specific Graph");
@@ -1042,6 +1130,14 @@ namespace VDS.RDF.Storage
             return (int)cmd.Parameters["RC"].Value;
         }
 
+        /// <summary>
+        /// Gets the Node ID for a blank node value potentially creating a new ID if <paramref name="createIfNotExists"/> was set to true and the value does not exist in the store
+        /// </summary>
+        /// <param name="value">Value</param>
+        /// <param name="createIfNotExists">Whether to create a new Node ID if there is no existing ID for the value</param>
+        /// <returns>
+        /// Either a Node ID or zero if such a value does not exist and <paramref name="createIfNotExists"/> was set to false
+        /// </returns>
         public int GetBlankNodeID(IBlankNode value, bool createIfNotExists)
         {
             //If already a Virtual Node getting the ID is dead easy provided we are the provider
@@ -1071,11 +1167,18 @@ namespace VDS.RDF.Storage
             return (int)cmd.Parameters["RC"].Value;
         }
 
+        /// <summary>
+        /// Gets the Node ID for a blank node value (if it already exists in the store)
+        /// </summary>
+        /// <param name="value">Value</param>
         public int GetBlankNodeID(IBlankNode value)
         {
             return this.GetBlankNodeID(value, false);
         }
 
+        /// <summary>
+        /// Gets the ID which signifies that no ID exists for the input (Is zero for ADO Stores)
+        /// </summary>
         public int NullID
         {
             get
@@ -1084,6 +1187,11 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Loads a Graph from the store as virtual nodes
+        /// </summary>
+        /// <param name="g">Graph to load into</param>
+        /// <param name="graphUri">URI of the Graph to load</param>
         public void LoadGraphVirtual(IGraph g, Uri graphUri)
         {
             //First need to get the Graph ID (if any)
