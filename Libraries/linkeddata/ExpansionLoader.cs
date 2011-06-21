@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using VDS.RDF.LinkedData.Profiles;
@@ -17,8 +18,9 @@ namespace VDS.RDF.LinkedData
     public class ExpansionLoader
     {
         private ExpansionCache _cache;
-        private int _threadsToUse = 8;
+        private int _threadsToUse = 4;
         private const int ThreadPollingInterval = 250;
+        private const int HttpRequestInterval = 250;
 
         /// <summary>
         /// Creates a new Expansion Loader which uses the default Cache directory
@@ -26,6 +28,7 @@ namespace VDS.RDF.LinkedData
         public ExpansionLoader()
         {
             this._cache = new ExpansionCache("expansion_cache\\");
+            UriLoader.UserAgent = "Expander/dotNetRDF " + Assembly.GetAssembly(typeof(IGraph)).GetName().Version + "/.Net Framework " + Environment.Version + " (rav08r@ecs.soton.ac.uk)";
         }
 
         /// <summary>
@@ -35,6 +38,7 @@ namespace VDS.RDF.LinkedData
         public ExpansionLoader(String cacheDir)
         {
             this._cache = new ExpansionCache(cacheDir);
+            UriLoader.UserAgent = "Expander/dotNetRDF " + Assembly.GetAssembly(typeof(IGraph)).GetName().Version + "/.Net Framework " + Environment.Version + " (rav08r@ecs.soton.ac.uk)";
         }
 
         /// <summary>
@@ -45,6 +49,7 @@ namespace VDS.RDF.LinkedData
         public ExpansionLoader(String cacheDir, int freshness)
         {
             this._cache = new ExpansionCache(cacheDir, freshness);
+            UriLoader.UserAgent = "Expander/dotNetRDF " + Assembly.GetAssembly(typeof(IGraph)).GetName().Version + "/.Net Framework " + Environment.Version + " (rav08r@ecs.soton.ac.uk)";
         }
 
         /// <summary>
@@ -57,6 +62,7 @@ namespace VDS.RDF.LinkedData
         {
             this._cache = new ExpansionCache(cacheDir, freshness);
             this._threadsToUse = threads;
+            UriLoader.UserAgent = "Expander/dotNetRDF " + Assembly.GetAssembly(typeof(IGraph)).GetName().Version + "/.Net Framework " + Environment.Version + " (rav08r@ecs.soton.ac.uk)";
         }
 
         /// <summary>
@@ -341,6 +347,7 @@ namespace VDS.RDF.LinkedData
 
             foreach (Uri endpoint in dataset.SparqlEndpoints)
             {
+                Thread.Sleep(HttpRequestInterval);
                 SparqlRemoteEndpoint sparqlEndpoint = new SparqlRemoteEndpoint(endpoint);
                 try
                 {
@@ -383,6 +390,7 @@ namespace VDS.RDF.LinkedData
             requestUri.Append(Uri.EscapeDataString(u.Uri.ToString()));
 
             Graph g = new Graph();
+            Thread.Sleep(HttpRequestInterval);
             UriLoader.Load(g, new Uri(requestUri.ToString()));
 
             this.FindExpandableUris(u, g, context);
@@ -397,6 +405,7 @@ namespace VDS.RDF.LinkedData
             requestUri.Append(Uri.EscapeDataString(u.Uri.ToString()));
 
             Graph g = new Graph();
+            Thread.Sleep(HttpRequestInterval);
             UriLoader.Load(g, new Uri(requestUri.ToString()));
 
             this.ExpandGraph(u, g, context);

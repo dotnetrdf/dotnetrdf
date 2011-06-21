@@ -341,6 +341,7 @@
     <Compile Include="Query\Algebra\NullOperator.cs" />
     <Compile Include="Query\Algebra\OneOrMorePath.cs" />
     <Compile Include="Query\Algebra\PropertyPathOperators.cs" />
+    <Compile Include="Query\Algebra\RestrictionFilters.cs" />
     <Compile Include="Query\Algebra\ZeroLengthPath.cs" />
     <Compile Include="Query\Algebra\ZeroOrMorePath.cs" />
     <Compile Include="Query\ExplainQueryProcessor.cs" />

@@ -59,6 +59,8 @@ namespace VDS.RDF.Parsing
     /// </remarks>
     public static class UriLoader
     {
+        private static String _userAgent;
+
         #region URI Caching
 #if !NO_URICACHE
         private static IUriLoaderCache _cache = new UriLoaderCache();
@@ -134,6 +136,21 @@ namespace VDS.RDF.Parsing
         }
 #endif
         #endregion
+
+        /// <summary>
+        /// Gets/Sets an optional User Agent string that will be appended to HTTP Requests
+        /// </summary>
+        public static String UserAgent
+        {
+            get
+            {
+                return _userAgent;
+            }
+            set
+            {
+                _userAgent = value;
+            }
+        }
 
         /// <summary>
         /// Attempts to load a RDF Graph from the given URI into the given Graph
@@ -346,7 +363,10 @@ namespace VDS.RDF.Parsing
 #if !SILVERLIGHT
                 httpRequest.Timeout = Options.UriLoaderTimeout;
 #endif
-
+                if (_userAgent != null && !_userAgent.Equals(String.Empty))
+                {
+                    httpRequest.UserAgent = _userAgent;
+                }
 #if DEBUG
                 //HTTP Debugging
                 if (Options.HttpDebugging)
@@ -597,6 +617,10 @@ namespace VDS.RDF.Parsing
 #if !SILVERLIGHT
                 httpRequest.Timeout = Options.UriLoaderTimeout;
 #endif
+                if (_userAgent != null && !_userAgent.Equals(String.Empty))
+                {
+                    httpRequest.UserAgent = _userAgent;
+                }
 
 #if DEBUG
                 //HTTP Debugging

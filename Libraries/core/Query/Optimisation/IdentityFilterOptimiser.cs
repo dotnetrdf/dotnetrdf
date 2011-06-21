@@ -37,6 +37,7 @@ using System;
 using System.Linq;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Expressions;
+using VDS.RDF.Query.Expressions.Functions;
 
 namespace VDS.RDF.Query.Optimisation
 {
@@ -61,9 +62,17 @@ namespace VDS.RDF.Query.Optimisation
                     Filter f = (Filter)algebra;
                     String var;
                     INode term;
-                    if (this.IsIdentityExpression(f.SparqlFilter.Expression, out var, out term))
+                    bool equals = false;
+                    if (this.IsIdentityExpression(f.SparqlFilter.Expression, out var, out term, out equals))
                     {
-                        return new IdentityFilter(this.Optimise(f.InnerAlgebra), var, new NodeExpressionTerm(term));
+                        if (equals)
+                        {
+                            return new IdentityFilter(this.Optimise(f.InnerAlgebra), var, new NodeExpressionTerm(term));
+                        }
+                        else
+                        {
+                            return new SameTermFilter(this.Optimise(f.InnerAlgebra), var, new NodeExpressionTerm(term));
+                        }
                     }
                     else
                     {
@@ -96,50 +105,59 @@ namespace VDS.RDF.Query.Optimisation
         /// <param name="var">Variable</param>
         /// <param name="term">Term</param>
         /// <returns></returns>
-        private bool IsIdentityExpression(ISparqlExpression expr, out String var, out INode term)
+        private bool IsIdentityExpression(ISparqlExpression expr, out String var, out INode term, out bool equals)
         {
             var = null;
             term = null;
+            equals = false;
+            ISparqlExpression lhs, rhs;
             if (expr is EqualsExpression)
             {
+                equals = true;
                 EqualsExpression eq = (EqualsExpression)expr;
-                ISparqlExpression lhs = eq.Arguments.First();
-                ISparqlExpression rhs = eq.Arguments.Last();
+                lhs = eq.Arguments.First();
+                rhs = eq.Arguments.Last();
+            } 
+            else if (expr is SameTermFunction)
+            {
+                SameTermFunction st = (SameTermFunction)expr;
+                lhs = st.Arguments.First();
+                rhs = st.Arguments.Last();
+            }
+            else 
+            {
+                return false;
+            }
 
-                if (lhs is VariableExpressionTerm)
+            if (lhs is VariableExpressionTerm)
+            {
+                if (rhs.GetType().Equals(this._exprType))
                 {
-                    if (rhs.GetType().Equals(this._exprType))
+                    var = lhs.Variables.First();
+                    term = rhs.Value(null, 0);
+                    if (term.NodeType == NodeType.Uri)
                     {
-                        var = lhs.Variables.First();
-                        term = rhs.Value(null, 0);
-                        if (term.NodeType == NodeType.Uri)
-                        {
-                            return true;
-                        }
-                        else
-                        {
-                            return false;
-                        }
+                        return true;
                     }
                     else
                     {
                         return false;
                     }
                 }
-                else if (lhs.GetType().Equals(this._exprType))
+                else
                 {
-                    if (rhs is VariableExpressionTerm)
+                    return false;
+                }
+            }
+            else if (lhs.GetType().Equals(this._exprType))
+            {
+                if (rhs is VariableExpressionTerm)
+                {
+                    var = rhs.Variables.First();
+                    term = lhs.Value(null, 0);
+                    if (term.NodeType == NodeType.Uri)
                     {
-                        var = rhs.Variables.First();
-                        term = lhs.Value(null, 0);
-                        if (term.NodeType == NodeType.Uri)
-                        {
-                            return true;
-                        }
-                        else
-                        {
-                            return false;
-                        }
+                        return true;
                     }
                     else
                     {
