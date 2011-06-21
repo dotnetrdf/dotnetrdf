@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.Common;
+using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -44,6 +47,14 @@ namespace VDS.RDF.Test.Storage
             {
                 if (this._manager != null) this._manager.Dispose();
                 this._manager = new MicrosoftAdoManager("adostore", "example", "password");
+
+                //Ensure the Store is clear
+                DbCommand cmd = this._manager.GetCommand();
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.CommandText = "ClearStore";
+                cmd.Connection = this._manager.Connection;
+                cmd.ExecuteNonQuery();
+
                 this._optimisers = new IAlgebraOptimiser[] { new StrictAlgebraOptimiser(), new IdentityFilterOptimiser(), new SimpleVirtualAlgebraOptimiser(this._manager) };
                 this._manager.SaveGraph(g);
                 this._db = new MicrosoftAdoDataset(this._manager);

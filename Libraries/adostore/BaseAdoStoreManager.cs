@@ -207,6 +207,68 @@ namespace VDS.RDF.Storage
             return cmd.ExecuteScalar();
         }
 
+        private void ApplyNodeCommands(IEnumerable<Triple> ts, AdoStoreWriteCache cache, TCommand cmd, TCommand nodeCmd, TCommand bnodeCmd)
+        {
+            AdoStoreNodeID s, p, o;
+            foreach (Triple t in ts)
+            {
+                //Get/Create Node ID for each Node
+                s = cache.GetNodeID(t.Subject);
+                if (s.ID <= 0)
+                {
+                    if (t.Subject.NodeType != NodeType.Blank)
+                    {
+                        this.EncodeNode(nodeCmd, t.Subject);
+                        nodeCmd.ExecuteNonQuery();
+                        s.ID = (int)nodeCmd.Parameters["RC"].Value;
+                    }
+                    else
+                    {
+                        bnodeCmd.ExecuteNonQuery();
+                        s.ID = (int)bnodeCmd.Parameters["RC"].Value;
+                    }
+                    cache.AddNodeID(s);
+                }
+                p = cache.GetNodeID(t.Predicate);
+                if (p.ID <= 0)
+                {
+                    if (t.Predicate.NodeType != NodeType.Blank)
+                    {
+                        this.EncodeNode(nodeCmd, t.Predicate);
+                        nodeCmd.ExecuteNonQuery();
+                        p.ID = (int)nodeCmd.Parameters["RC"].Value;
+                    }
+                    else
+                    {
+                        bnodeCmd.ExecuteNonQuery();
+                        s.ID = (int)bnodeCmd.Parameters["RC"].Value;
+                    }
+                    cache.AddNodeID(p);
+                }
+                o = cache.GetNodeID(t.Object);
+                if (o.ID <= 0)
+                {
+                    if (t.Object.NodeType != NodeType.Blank)
+                    {
+                        this.EncodeNode(nodeCmd, t.Object);
+                        nodeCmd.ExecuteNonQuery();
+                        o.ID = (int)nodeCmd.Parameters["RC"].Value;
+                    }
+                    else
+                    {
+                        bnodeCmd.ExecuteNonQuery();
+                        s.ID = (int)bnodeCmd.Parameters["RC"].Value;
+                    }
+                    cache.AddNodeID(o);
+                }
+
+                this.EncodeNodeID(cmd, s, TripleSegment.Subject);
+                this.EncodeNodeID(cmd, p, TripleSegment.Predicate);
+                this.EncodeNodeID(cmd, o, TripleSegment.Object);
+                cmd.ExecuteNonQuery();
+            }
+        }
+
         /// <summary>
         /// Encodes the values for a Node onto a command
         /// </summary>
@@ -633,66 +695,9 @@ namespace VDS.RDF.Storage
                 cmd.Parameters["graphID"].DbType = DbType.Int32;
                 cmd.Parameters["graphID"].Value = id;
 
+                //Create a cache and call the method to do the insertions
                 AdoStoreWriteCache cache = new AdoStoreWriteCache();
-
-                AdoStoreNodeID s, p, o;
-                foreach (Triple t in g.Triples)
-                {
-                    //Get/Create Node ID for each Node
-                    s = cache.GetNodeID(t.Subject);
-                    if (s.ID <= 0)
-                    {
-                        if (t.Subject.NodeType != NodeType.Blank)
-                        {
-                            this.EncodeNode(nodeCmd, t.Subject);
-                            nodeCmd.ExecuteNonQuery();
-                            s.ID = (int)nodeCmd.Parameters["RC"].Value;
-                        } 
-                        else 
-                        {
-                            bnodeCmd.ExecuteNonQuery();
-                            s.ID = (int)bnodeCmd.Parameters["RC"].Value;
-                        }
-                        cache.AddNodeID(s);
-                    }
-                    p = cache.GetNodeID(t.Predicate);
-                    if (p.ID <= 0)
-                    {
-                        if (t.Predicate.NodeType != NodeType.Blank)
-                        {
-                            this.EncodeNode(nodeCmd, t.Predicate);
-                            nodeCmd.ExecuteNonQuery();
-                            p.ID = (int)nodeCmd.Parameters["RC"].Value;
-                        }
-                        else
-                        {
-                            bnodeCmd.ExecuteNonQuery();
-                            s.ID = (int)bnodeCmd.Parameters["RC"].Value;
-                        }
-                        cache.AddNodeID(p);
-                    }
-                    o = cache.GetNodeID(t.Object);
-                    if (o.ID <= 0)
-                    {
-                        if (t.Object.NodeType != NodeType.Blank)
-                        {
-                            this.EncodeNode(nodeCmd, t.Object);
-                            nodeCmd.ExecuteNonQuery();
-                            o.ID = (int)nodeCmd.Parameters["RC"].Value;
-                        }
-                        else
-                        {
-                            bnodeCmd.ExecuteNonQuery();
-                            s.ID = (int)bnodeCmd.Parameters["RC"].Value;
-                        }
-                        cache.AddNodeID(o);
-                    }
-
-                    this.EncodeNodeID(cmd, s, TripleSegment.Subject);
-                    this.EncodeNodeID(cmd, p, TripleSegment.Predicate);
-                    this.EncodeNodeID(cmd, o, TripleSegment.Object);
-                    cmd.ExecuteNonQuery();
-                }
+                this.ApplyNodeCommands(g.Triples, cache, cmd, nodeCmd, bnodeCmd);
             }
             else
             {
@@ -702,19 +707,84 @@ namespace VDS.RDF.Storage
 
         public void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
-            throw new NotImplementedException();
+            //First need to get/create the Graph ID (if any)
+            TCommand cmd = this.GetCommand();
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.CommandText = "GetOrCreateGraphID";
+            cmd.Connection = this._connection;
+            if (graphUri != null)
+            {
+                cmd.Parameters.Add(this.GetParameter("graphUri"));
+                cmd.Parameters["graphUri"].DbType = DbType.String;
+                cmd.Parameters["graphUri"].Value = graphUri.ToString();
+            }
+            cmd.Parameters.Add(this.GetParameter("RC"));
+            cmd.Parameters["RC"].DbType = DbType.Int32;
+            cmd.Parameters["RC"].Direction = ParameterDirection.ReturnValue;
+            cmd.ExecuteNonQuery();
+
+            int id = (int)cmd.Parameters["RC"].Value;
+
+            if (id > 0)
+            {
+                //Commands for inserting Nodes
+                TCommand nodeCmd = this.GetCommand();
+                nodeCmd.CommandType = CommandType.StoredProcedure;
+                nodeCmd.CommandText = "GetOrCreateNodeID";
+                nodeCmd.Connection = this._connection;
+                nodeCmd.Parameters.Add(this.GetParameter("RC"));
+                nodeCmd.Parameters["RC"].DbType = DbType.Int32;
+                nodeCmd.Parameters["RC"].Direction = ParameterDirection.ReturnValue;
+
+                TCommand bnodeCmd = this.GetCommand();
+                bnodeCmd.CommandType = CommandType.StoredProcedure;
+                bnodeCmd.CommandText = "CreateBlankNodeID";
+                bnodeCmd.Connection = this._connection;
+                bnodeCmd.Parameters.Add(this.GetParameter("graphID"));
+                bnodeCmd.Parameters["graphID"].DbType = DbType.Int32;
+                bnodeCmd.Parameters["graphID"].Value = id;
+                bnodeCmd.Parameters.Add(this.GetParameter("RC"));
+                bnodeCmd.Parameters["RC"].DbType = DbType.Int32;
+                bnodeCmd.Parameters["RC"].Direction = ParameterDirection.ReturnValue;
+
+                //Then we can update the Graph
+                cmd = this.GetCommand();
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.CommandText = "RetractQuad";
+                cmd.Connection = this._connection;
+                cmd.Parameters.Add(this.GetParameter("graphID"));
+                cmd.Parameters["graphID"].DbType = DbType.Int32;
+                cmd.Parameters["graphID"].Value = id;
+
+                //Create a Cache, do the retractions then the assertions
+                AdoStoreWriteCache cache = new AdoStoreWriteCache();
+                if (removals != null && removals.Any()) this.ApplyNodeCommands(removals, cache, cmd, nodeCmd, bnodeCmd);
+                cmd.CommandText = "AssertQuad";
+                if (additions != null && additions.Any()) this.ApplyNodeCommands(additions, cache, cmd, nodeCmd, bnodeCmd);
+            }
+            else
+            {
+                throw new RdfStorageException("Unable to Update a Graph as the underlying Store failed to generate a Graph ID");
+            }
         }
 
         public void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
-            throw new NotImplementedException();
+            if (graphUri == null || graphUri.Equals(String.Empty))
+            {
+                this.UpdateGraph((Uri)null, additions, removals);
+            }
+            else
+            {
+                this.UpdateGraph(new Uri(graphUri), additions, removals);
+            }
         }
 
         public bool UpdateSupported
         {
             get 
-            { 
-                throw new NotImplementedException(); 
+            {
+                return true;
             }
         }
 
