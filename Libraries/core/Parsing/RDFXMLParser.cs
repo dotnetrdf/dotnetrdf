@@ -35,15 +35,16 @@ terms.
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
-using System.Xml;
-using System.IO;
-using VDS.RDF.Parsing.Events;
-using VDS.RDF.Parsing.Handlers;
-using VDS.RDF.Parsing.Contexts;
-using System.Diagnostics;
 using System.Text.RegularExpressions;
+using System.Xml;
+using VDS.RDF.Parsing.Contexts;
+using VDS.RDF.Parsing.Events;
+using VDS.RDF.Parsing.Events.RdfXml;
+using VDS.RDF.Parsing.Handlers;
 
 namespace VDS.RDF.Parsing
 {
@@ -460,7 +461,7 @@ namespace VDS.RDF.Parsing
             this.ApplyNamespaces(context, element);
 
             //Build a Sublist of all Nodes up to the matching EndElement
-            IEventQueue subevents = new EventQueue();
+            IEventQueue<IRdfXmlEvent> subevents = new EventQueue<IRdfXmlEvent>();
             IRdfXmlEvent next;
 
             //Make sure we discard the current ElementEvent which will be at the front of the queue
@@ -488,7 +489,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="context">Parser Context</param>
         /// <param name="eventlist">Queue of Events to apply the Production to</param>
-        private void GrammarProductionNodeElementList(RdfXmlParserContext context, IEventQueue eventlist)
+        private void GrammarProductionNodeElementList(RdfXmlParserContext context, IEventQueue<IRdfXmlEvent> eventlist)
         {
             //Tracing
             if (this._traceparsing)
@@ -502,7 +503,7 @@ namespace VDS.RDF.Parsing
             while (eventlist.Count > 0) 
             {
                 //Create a new Sublist
-                IEventQueue subevents = new EventQueue();
+                IEventQueue<IRdfXmlEvent> subevents = new EventQueue<IRdfXmlEvent>();
                 int nesting = 0;
 
                 //Gather the Sublist taking account of nesting
@@ -531,7 +532,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="context">Parser Context</param>
         /// <param name="eventlist">Queue of Events that make up the Node Element and its Children to apply the Production to</param>
-        private void GrammarProductionNodeElement(RdfXmlParserContext context, IEventQueue eventlist)
+        private void GrammarProductionNodeElement(RdfXmlParserContext context, IEventQueue<IRdfXmlEvent> eventlist)
         {
             //Tracing
             if (this._traceparsing)
@@ -700,7 +701,7 @@ namespace VDS.RDF.Parsing
             }
 
             //Handle Child Elements
-            IEventQueue children = new EventQueue();
+            IEventQueue<IRdfXmlEvent> children = new EventQueue<IRdfXmlEvent>();
             while (eventlist.Count > 1)
             {
                 children.Enqueue(eventlist.Dequeue());
@@ -721,7 +722,7 @@ namespace VDS.RDF.Parsing
         /// <param name="context">Parser Context</param>
         /// <param name="eventlist">Queue of Events to apply the Production to</param>
         /// <param name="parent">Parent Event (ie. Node) of the Property Elements</param>
-        private void GrammarProductionPropertyElementList(RdfXmlParserContext context, IEventQueue eventlist, IRdfXmlEvent parent)
+        private void GrammarProductionPropertyElementList(RdfXmlParserContext context, IEventQueue<IRdfXmlEvent> eventlist, IRdfXmlEvent parent)
         {
             //Tracing
             if (this._traceparsing)
@@ -735,7 +736,7 @@ namespace VDS.RDF.Parsing
             while (eventlist.Count > 0)
             {
                 //Create a new Sublist
-                IEventQueue subevents = new EventQueue();
+                IEventQueue<IRdfXmlEvent> subevents = new EventQueue<IRdfXmlEvent>();
                 int nesting = 0;
 
                 //Gather the Sublist taking account of nesting
@@ -765,7 +766,7 @@ namespace VDS.RDF.Parsing
         /// <param name="context">Parser Context</param>
         /// <param name="eventlist">Queue of Events that make up the Property Element and its Children</param>
         /// <param name="parent">Parent Event (ie. Node) of the Property Element</param>
-        private void GrammarProductionPropertyElement(RdfXmlParserContext context, IEventQueue eventlist, IRdfXmlEvent parent)
+        private void GrammarProductionPropertyElement(RdfXmlParserContext context, IEventQueue<IRdfXmlEvent> eventlist, IRdfXmlEvent parent)
         {
             //Tracing
             if (this._traceparsing)
@@ -869,7 +870,7 @@ namespace VDS.RDF.Parsing
         /// <param name="context">Parser Context</param>
         /// <param name="eventlist">Queue of Events that make up the Resource Property Element and its Children</param>
         /// <param name="parent">Parent Event (ie. Node) of the Property Element</param>
-        private void GrammarProductionResourcePropertyElement(RdfXmlParserContext context, IEventQueue eventlist, IRdfXmlEvent parent)
+        private void GrammarProductionResourcePropertyElement(RdfXmlParserContext context, IEventQueue<IRdfXmlEvent> eventlist, IRdfXmlEvent parent)
         {
             //Tracing
             if (this._traceparsing)
@@ -912,7 +913,7 @@ namespace VDS.RDF.Parsing
             }
 
             //Get list of Sub Events
-            IEventQueue subevents = new EventQueue();
+            IEventQueue<IRdfXmlEvent> subevents = new EventQueue<IRdfXmlEvent>();
             while (eventlist.Count > 1)
             {
                 subevents.Enqueue(eventlist.Dequeue());
@@ -975,7 +976,7 @@ namespace VDS.RDF.Parsing
         /// <param name="context">Parser Context</param>
         /// <param name="eventlist">Queue of Events that make up the Literal Property Element and its Children</param>
         /// <param name="parent">Parent Event (ie. Node) of the Property Element</param>
-        private void GrammarProductionLiteralPropertyElement(RdfXmlParserContext context, IEventQueue eventlist, IRdfXmlEvent parent)
+        private void GrammarProductionLiteralPropertyElement(RdfXmlParserContext context, IEventQueue<IRdfXmlEvent> eventlist, IRdfXmlEvent parent)
         {
             //Tracing
             if (this._traceparsing)
@@ -1093,7 +1094,7 @@ namespace VDS.RDF.Parsing
         /// <param name="context">Parser Context</param>
         /// <param name="eventlist">Queue of Events that make up the Literal Parse Type Property Element and its Children</param>
         /// <param name="parent">Parent Event (ie. Node) of the Property Element</param>
-        private void GrammarProductionParseTypeLiteralPropertyElement(RdfXmlParserContext context, IEventQueue eventlist, IRdfXmlEvent parent)
+        private void GrammarProductionParseTypeLiteralPropertyElement(RdfXmlParserContext context, IEventQueue<IRdfXmlEvent> eventlist, IRdfXmlEvent parent)
         {
             //Tracing
             if (this._traceparsing)
@@ -1195,7 +1196,7 @@ namespace VDS.RDF.Parsing
         /// <param name="context">Parser Context</param>
         /// <param name="eventlist">Queue of Events that make up the Resource Parse Type Property Element and its Children</param>
         /// <param name="parent">Parent Event (ie. Node) of the Property Element</param>
-        private void GrammarProductionParseTypeResourcePropertyElement(RdfXmlParserContext context, IEventQueue eventlist, IRdfXmlEvent parent)
+        private void GrammarProductionParseTypeResourcePropertyElement(RdfXmlParserContext context, IEventQueue<IRdfXmlEvent> eventlist, IRdfXmlEvent parent)
         {
             //Tracing
             if (this._traceparsing)
@@ -1281,7 +1282,7 @@ namespace VDS.RDF.Parsing
             else if (next is ElementEvent)
             {
                 //Non-Empty Content so need to build a sequence of new events
-                IEventQueue subEvents = new EventQueue();
+                IEventQueue<IRdfXmlEvent> subEvents = new EventQueue<IRdfXmlEvent>();
 
                 //Create an rdf:Description event as the container
                 ElementEvent descrip = new ElementEvent("rdf:Description", element.BaseUri, String.Empty);
@@ -1325,7 +1326,7 @@ namespace VDS.RDF.Parsing
         /// <param name="context">Parser Context</param>
         /// <param name="eventlist">Queue of Events that make up the Collection Parse Type Property Element and its Children</param>
         /// <param name="parent">Parent Event (ie. Node) of the Property Element</param>
-        private void GrammarProductionParseTypeCollectionPropertyElement(RdfXmlParserContext context, IEventQueue eventlist, IRdfXmlEvent parent)
+        private void GrammarProductionParseTypeCollectionPropertyElement(RdfXmlParserContext context, IEventQueue<IRdfXmlEvent> eventlist, IRdfXmlEvent parent)
         {
             //Tracing
             if (this._traceparsing)
@@ -1380,7 +1381,7 @@ namespace VDS.RDF.Parsing
                 //Need to process the Node Element first
 
                 //Create a new Sublist
-                IEventQueue subevents = new EventQueue();
+                IEventQueue<IRdfXmlEvent> subevents = new EventQueue<IRdfXmlEvent>();
                 int nesting = 0;
                 nodeElement = eventlist.Peek();
 
@@ -1566,7 +1567,7 @@ namespace VDS.RDF.Parsing
             else if (element.Attributes.Count > 0 && element.Attributes.Where(a => RdfXmlSpecsHelper.IsDataTypeAttribute(a)).Count() == 1)
             {
                 //Should be processed as a Typed Literal Event instead
-                EventQueue temp = new EventQueue();
+                EventQueue<IRdfXmlEvent> temp = new EventQueue<IRdfXmlEvent>();
                 temp.Enqueue(element);
                 temp.Enqueue(new TextEvent(String.Empty, String.Empty));
                 temp.Enqueue(new EndElementEvent());
@@ -1815,7 +1816,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="eventlist">Queue to insert onto the Front of</param>
         /// <param name="evt">Event to put on the front of the Queue</param>
-        private void QueueJump(IEventQueue eventlist, IRdfXmlEvent evt)
+        private void QueueJump(IEventQueue<IRdfXmlEvent> eventlist, IRdfXmlEvent evt)
         {
             Stack<IRdfXmlEvent> temp = new Stack<IRdfXmlEvent>();
             temp.Push(evt);

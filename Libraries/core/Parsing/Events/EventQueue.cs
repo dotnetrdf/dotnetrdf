@@ -34,18 +34,19 @@ terms.
 */
 
 using System.Collections.Generic;
+using VDS.RDF.Parsing.Events.RdfXml;
 
 namespace VDS.RDF.Parsing.Events
 {
     /// <summary>
-    /// Represents a Queue of <see cref="IRdfXmlEvent">IRdfXmlEvent</see>'s for use by RDF/XML parsers
+    /// Represents a Queue of events for use by event based parsers
     /// </summary>
-    public class EventQueue : BaseEventQueue
+    public class EventQueue<T> : BaseEventQueue<T> where T : IEvent
     {
         /// <summary>
         /// Queue of Events
         /// </summary>
-        protected Queue<IRdfXmlEvent> _events = new Queue<IRdfXmlEvent>();
+        protected Queue<T> _events = new Queue<T>();
 
         /// <summary>
         /// Creates a new Event Queue
@@ -68,9 +69,11 @@ namespace VDS.RDF.Parsing.Events
         /// Dequeues and returns the next event in the Queue
         /// </summary>
         /// <returns></returns>
-        public override IRdfXmlEvent Dequeue()
+        public override T Dequeue()
         {
             this._lasteventtype = this._events.Peek().EventType;
+            //REQ: Add proper tracing support to this
+            //if (this._tracing) this.PrintTrace(this._events.Peek());
             return this._events.Dequeue();
         }
 
@@ -78,7 +81,7 @@ namespace VDS.RDF.Parsing.Events
         /// Adds an event to the end of the Queue
         /// </summary>
         /// <param name="e">Event</param>
-        public override void Enqueue(IRdfXmlEvent e)
+        public override void Enqueue(T e)
         {
             this._events.Enqueue(e);
         }
@@ -87,7 +90,7 @@ namespace VDS.RDF.Parsing.Events
         /// Peeks and returns the next event in the Queue
         /// </summary>
         /// <returns></returns>
-        public override IRdfXmlEvent Peek()
+        public override T Peek()
         {
             return this._events.Peek();
         }
@@ -114,7 +117,7 @@ namespace VDS.RDF.Parsing.Events
         /// <summary>
         /// Gets the underlying Queue of Events
         /// </summary>
-        public override Queue<IRdfXmlEvent> Events
+        public override Queue<T> Events
         {
             get 
             {
@@ -124,18 +127,18 @@ namespace VDS.RDF.Parsing.Events
     }
 
     /// <summary>
-    /// Represents a Queue of <see cref="IRdfXmlEvent">IRdfXmlEvent</see>'s which are streamed from an instance of a <see cref="IJitEventGenerator">IJitEventGenerator</see> for use by RDF/XML parsers
+    /// Represents a Queue of events which are streamed from an instance of a <see cref="IJitEventGenerator">IJitEventGenerator</see> for use by an event based parser
     /// </summary>
-    public class StreamingEventQueue : EventQueue
+    public class StreamingEventQueue<T> : EventQueue<T> where T : IEvent
     {
-        private IJitEventGenerator _jitgen;
+        private IJitEventGenerator<T> _jitgen;
         private int _buffer = 10;
 
         /// <summary>
         /// Creates a new Streaming Event Queue
         /// </summary>
         /// <param name="generator">Event Generator</param>
-        public StreamingEventQueue(IJitEventGenerator generator)
+        public StreamingEventQueue(IJitEventGenerator<T> generator)
             : base(generator)
         {
             this._jitgen = generator;
@@ -162,7 +165,7 @@ namespace VDS.RDF.Parsing.Events
         /// Adds an event to the Queue
         /// </summary>
         /// <param name="e">Event</param>
-        public override void Enqueue(IRdfXmlEvent e)
+        public override void Enqueue(T e)
         {
             if (e != null)
             {
@@ -181,7 +184,7 @@ namespace VDS.RDF.Parsing.Events
         /// Gets the next event from the Queue and removes it from the Queue
         /// </summary>
         /// <returns></returns>
-        public override IRdfXmlEvent Dequeue()
+        public override T Dequeue()
         {
             while (!this._jitgen.Finished && this._events.Count < this._buffer)
             {
@@ -194,7 +197,7 @@ namespace VDS.RDF.Parsing.Events
         /// Gets the next event from the Queue while leaving the Queue unchanged
         /// </summary>
         /// <returns></returns>
-        public override IRdfXmlEvent Peek()
+        public override T Peek()
         {
             while (!this._jitgen.Finished && this._events.Count < this._buffer)
             {

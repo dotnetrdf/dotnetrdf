@@ -24,30 +24,21 @@ namespace VDS.RDF.Parsing.Events
 
     }
 
-    /// <summary>
-    /// Interface for event generators which generate all events in one go prior to parsing taking place
-    /// </summary>
-    public interface IPreProcessingEventGenerator : IEventGenerator
+    public interface IPreProcessingEventGenerator<T> : IEventGenerator
     {
-        /// <summary>
-        /// Gets all the Events
-        /// </summary>
-        /// <param name="context">Parser Context</param>
-        void GetAllEvents(RdfXmlParserContext context);
+        void GetAllEvents(T context);
     }
 
     /// <summary>
-    /// Interface for event generators which generate events as required during the parsing process
+    /// Interface for event generators which generate all events in one go prior to parsing taking place
     /// </summary>
-    public interface IJitEventGenerator : IEventGenerator
+    public interface IRdfXmlPreProcessingEventGenerator : IPreProcessingEventGenerator<RdfXmlParserContext>
     {
-        /// <summary>
-        /// Causes the Event Generator to attempt to retrieve the next Event
-        /// </summary>
-        /// <returns></returns>
-        /// <exception cref="IOException">Thrown if there is a problem reading the input</exception>
-        /// <exception cref="XmlException">Thrown if there is a problem with the XML being read</exception>
-        IRdfXmlEvent GetNextEvent();
+    }
+
+    public interface IJitEventGenerator<T> : IEventGenerator
+    {
+        T GetNextEvent();
 
         /// <summary>
         /// Gets whether the Event Generator has finished reading events i.e. there are no further events available
@@ -56,5 +47,12 @@ namespace VDS.RDF.Parsing.Events
         {
             get;
         }
+    }
+
+    /// <summary>
+    /// Interface for event generators which generate events as required during the parsing process
+    /// </summary>
+    public interface IRdfXmlJitEventGenerator : IJitEventGenerator<IRdfXmlEvent>
+    {
     }
 }

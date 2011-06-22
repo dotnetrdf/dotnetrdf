@@ -187,7 +187,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Core\Triple.cs" />
     <Compile Include="Core\TripleCollection.cs" />
-    <Compile Include="Parsing\Events\XmlEvents.cs" />
+    <Compile Include="Parsing\Events\RdfXml\XmlEvents.cs" />
     <Compile Include="Parsing\RdfXmlParser.cs" />
     <Compile Include="Parsing\XmlSpecsHelper.cs" />
     <Compile Include="Writing\WriterUtilities.cs" />
@@ -270,10 +270,13 @@
     <Compile Include="Parsing\Contexts\TriGParserContext.cs" />
     <Compile Include="Parsing\DataUriLoader.cs" />
     <Compile Include="Parsing\EmbeddedResourceLoader.cs" />
-    <Compile Include="Parsing\Events\DomBasedEventGenerator.cs" />
+    <Compile Include="Parsing\Events\RdfXml\DomBasedEventGenerator.cs" />
     <Compile Include="Parsing\Events\EventQueue.cs" />
+    <Compile Include="Parsing\Events\IEvent.cs" />
     <Compile Include="Parsing\Events\IEventGenerator.cs" />
     <Compile Include="Parsing\Events\IEventQueue.cs" />
+    <Compile Include="Parsing\Events\IRdfAEvent.cs" />
+    <Compile Include="Parsing\Events\RdfA\RdfAEvents.cs" />
     <Compile Include="Parsing\Handlers\BaseHandler.cs" />
     <Compile Include="Parsing\Handlers\CancellableHandler.cs" />
     <Compile Include="Parsing\Handlers\HandlerExtensions.cs" />
@@ -299,7 +302,7 @@
     <Compile Include="Parsing\PositionInfo.cs" />
     <Compile Include="Parsing\RdfAParser.cs" />
     <Compile Include="Parsing\RdfXmlSpecsHelper.cs" />
-    <Compile Include="Parsing\Events\StreamingEventGenerator.cs" />
+    <Compile Include="Parsing\Events\RdfXml\StreamingEventGenerator.cs" />
     <Compile Include="Parsing\SparqlRdfParser.cs" />
     <Compile Include="Parsing\SparqlUpdateParser.cs" />
     <Compile Include="Parsing\Tokens\PathToken.cs" />

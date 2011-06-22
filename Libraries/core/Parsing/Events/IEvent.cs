@@ -1,6 +1,6 @@
 ﻿/*
 
-Copyright Robert Vesse 2009-10
+Copyright Robert Vesse 2009-11
 rvesse@vdesign-studios.com
 
 ------------------------------------------------------------------------
@@ -41,17 +41,28 @@ using System.Text;
 namespace VDS.RDF.Parsing.Events
 {
     /// <summary>
-    /// Interface for RDF/XML events as defined by the RDF/XML Specification
+    /// Interface for parser events
     /// </summary>
-    /// <remarks>Used to provide polymorphism for the XML/RDF Parser</remarks>
-    public interface IRdfXmlEvent : IEvent
+    public interface IEvent
     {
         /// <summary>
-        /// Gets the XML that produced the given event (if any)
+        /// Gives some Integer representing the Event Type as understood by a specific Parser implementation
         /// </summary>
-        String SourceXml
+        int EventType
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Gets the Position Information (if any)
+        /// </summary>
+        /// <remarks>
+        /// Availability of Position Information depends on the how the source document was parsed
+        /// </remarks>
+        PositionInfo Position
         {
             get;
         }
     }
+
 }

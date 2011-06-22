@@ -43,25 +43,25 @@ namespace VDS.RDF.Parsing.Events
     /// <summary>
     /// Interface for implementing Event Queues which provide Bufferable wrappers to Event Generators
     /// </summary>
-    public interface IEventQueue
+    public interface IEventQueue<T> where T : IEvent
     {
         /// <summary>
         /// Removes the first Event from the Queue
         /// </summary>
         /// <returns></returns>
-        IRdfXmlEvent Dequeue();
+        T Dequeue();
 
         /// <summary>
         /// Adds an Event to the end of the Queue
         /// </summary>
         /// <param name="e">Event to add</param>
-        void Enqueue(IRdfXmlEvent e);
+        void Enqueue(T e);
 
         /// <summary>
         /// Gets the first Event from the Queue without removing it
         /// </summary>
         /// <returns></returns>
-        IRdfXmlEvent Peek();
+        T Peek();
 
         /// <summary>
         /// Gets the Event Generator that this Queue uses
@@ -87,7 +87,7 @@ namespace VDS.RDF.Parsing.Events
         /// <summary>
         /// Gets the underlying Queue of Events
         /// </summary>
-        Queue<IRdfXmlEvent> Events
+        Queue<T> Events
         {
             get;
         }
@@ -113,7 +113,7 @@ namespace VDS.RDF.Parsing.Events
     /// <summary>
     /// Abstract base implementation of an Event Queue
     /// </summary>
-    public abstract class BaseEventQueue : IEventQueue
+    public abstract class BaseEventQueue<T> : IEventQueue<T> where T : IEvent
     {
         /// <summary>
         /// Generator used to fill the Event Queue
@@ -132,19 +132,19 @@ namespace VDS.RDF.Parsing.Events
         /// Dequeues an Event from the Queue
         /// </summary>
         /// <returns></returns>
-        public abstract IRdfXmlEvent Dequeue();
+        public abstract T Dequeue();
 
         /// <summary>
         /// Adds an Event to the Queue
         /// </summary>
         /// <param name="e">Event</param>
-        public abstract void Enqueue(IRdfXmlEvent e);
+        public abstract void Enqueue(T e);
 
         /// <summary>
         /// Gets the next Event from the Queue without removing it from the queue
         /// </summary>
         /// <returns></returns>
-        public abstract IRdfXmlEvent Peek();
+        public abstract T Peek();
 
         /// <summary>
         /// Gets the Event Generator used by the Queue
@@ -173,7 +173,7 @@ namespace VDS.RDF.Parsing.Events
         /// <summary>
         /// Gets the underlying Queue of Events
         /// </summary>
-        public abstract Queue<IRdfXmlEvent> Events
+        public abstract Queue<T> Events
         {
             get;
         }

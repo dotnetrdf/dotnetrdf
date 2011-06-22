@@ -1,6 +1,6 @@
 ﻿/*
 
-Copyright Robert Vesse 2009-10
+Copyright Robert Vesse 2009-11
 rvesse@vdesign-studios.com
 
 ------------------------------------------------------------------------
@@ -40,16 +40,16 @@ using System.Text;
 
 namespace VDS.RDF.Parsing.Events
 {
+
     /// <summary>
-    /// Interface for RDF/XML events as defined by the RDF/XML Specification
+    /// Interface for RDFa events
     /// </summary>
-    /// <remarks>Used to provide polymorphism for the XML/RDF Parser</remarks>
-    public interface IRdfXmlEvent : IEvent
+    public interface IRdfAEvent : IEvent
     {
         /// <summary>
-        /// Gets the XML that produced the given event (if any)
+        /// Gets the attributes of the event i.e. the attributes of the source element
         /// </summary>
-        String SourceXml
+        IEnumerable<KeyValuePair<String, String>> Attributes
         {
             get;
         }

@@ -40,14 +40,51 @@ using System.Text;
 
 namespace VDS.RDF.Parsing.Events
 {
-    /// <summary>
-    /// Abstract Base Class for IRdfXmlEvent implementations
-    /// </summary>
-    public abstract class BaseEvent : IRdfXmlEvent
+    public abstract class BaseEvent : IEvent
     {
         private int _eventtype;
-        private String _sourcexml;
         private PositionInfo _pos;
+
+        public BaseEvent(int eventType, PositionInfo info)
+        {
+            this._eventtype = eventType;
+        }
+
+        public BaseEvent(int eventType)
+            : this(eventType, null) { }
+
+        /// <summary>
+        /// Gets the Type for this Event
+        /// </summary>
+        public int EventType
+        {
+            get
+            {
+                return this._eventtype;
+            }
+        }
+
+        /// <summary>
+        /// Gets the Position Information (if any)
+        /// </summary>
+        /// <remarks>
+        /// Availability of Position Information depends on the how the source document was parsed
+        /// </remarks>
+        public PositionInfo Position
+        {
+            get
+            {
+                return this._pos;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Abstract Base Class for <see cref="IRdfXmlEvent">IRdfXmlEvent</see> implementations
+    /// </summary>
+    public abstract class BaseRdfXmlEvent : BaseEvent, IRdfXmlEvent
+    {
+        private String _sourcexml;
 
         /// <summary>
         /// Creates an Event and fills in its Values
@@ -55,11 +92,10 @@ namespace VDS.RDF.Parsing.Events
         /// <param name="eventType">Type of the Event</param>
         /// <param name="sourceXml">Source XML that generated the Event</param>
         /// <param name="pos">Position of the XML Event</param>
-        protected BaseEvent(int eventType, String sourceXml, PositionInfo pos)
+        public BaseRdfXmlEvent(int eventType, String sourceXml, PositionInfo pos)
+            : base(eventType, pos)
         {
-            this._eventtype = eventType;
             this._sourcexml = sourceXml;
-            this._pos = pos;
         }
 
         /// <summary>
@@ -67,19 +103,8 @@ namespace VDS.RDF.Parsing.Events
         /// </summary>
         /// <param name="eventType">Type of the Event</param>
         /// <param name="sourceXml">Source XML that generated the Event</param>
-        protected BaseEvent(int eventType, String sourceXml)
+        public BaseRdfXmlEvent(int eventType, String sourceXml)
             : this(eventType, sourceXml, null) { }
-
-        /// <summary>
-        /// Gets the Type for this Event
-        /// </summary>
-        public int EventType
-        {
-            get 
-            {
-                return this._eventtype;
-            }
-        }
 
         /// <summary>
         /// Gets the XML that this Event was generated from
@@ -91,18 +116,35 @@ namespace VDS.RDF.Parsing.Events
                 return this._sourcexml;
             }
         }
+    }
+
+    /// <summary>
+    /// Abstract Base Class for <see cref="IRdfAEvent">IRdfAEvent</see> implementations
+    /// </summary>
+    public abstract class BaseRdfAEvent : BaseEvent, IRdfAEvent
+    {
+        private List<KeyValuePair<String, String>> _attributes = new List<KeyValuePair<string, string>>();
 
         /// <summary>
-        /// Gets the Position Information (if any)
+        /// Creates a new RDFa Event
         /// </summary>
-        /// <remarks>
-        /// Availability of Position Information depends on the how the XML was parsed
-        /// </remarks>
-        public PositionInfo Position
+        /// <param name="eventType">Event Type</param>
+        /// <param name="pos">Position Info</param>
+        /// <param name="attributes">Attributes</param>
+        public BaseRdfAEvent(int eventType, PositionInfo pos, IEnumerable<KeyValuePair<String, String>> attributes)
+            : base(eventType, pos)
         {
-            get
+            this._attributes.AddRange(attributes);
+        }
+
+        /// <summary>
+        /// Gets the attributes of the event i.e. the attributes of the source element
+        /// </summary>
+        public IEnumerable<KeyValuePair<string, string>> Attributes
+        {
+            get 
             {
-                return this._pos;
+                return this._attributes; 
             }
         }
     }
