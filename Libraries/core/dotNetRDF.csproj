@@ -242,6 +242,7 @@
     <Compile Include="Events.cs" />
     <Compile Include="HashTable.cs" />
     <Compile Include="Indexing.cs" />
+    <Compile Include="NestedReference.cs" />
     <Compile Include="Ontology\Individual.cs" />
     <Compile Include="Ontology\Ontology.cs" />
     <Compile Include="Ontology\OntologyClass.cs" />
@@ -255,11 +256,13 @@
     <Compile Include="Parsing\Contexts\BaseResultsParserContext.cs" />
     <Compile Include="Parsing\Contexts\BaseStoreParserContext.cs" />
     <Compile Include="Parsing\Contexts\FolderStoreParserContext.cs" />
+    <Compile Include="Parsing\Contexts\IEventParserContext.cs" />
     <Compile Include="Parsing\Contexts\IParserContext.cs" />
     <Compile Include="Parsing\Contexts\IResultsParserContext.cs" />
     <Compile Include="Parsing\Contexts\IStoreParserContext.cs" />
     <Compile Include="Parsing\Contexts\JsonParserContext.cs" />
     <Compile Include="Parsing\Contexts\Notation3ParserContext.cs" />
+    <Compile Include="Parsing\Contexts\RdfACoreParserContext.cs" />
     <Compile Include="Parsing\Contexts\RdfAParserContext.cs" />
     <Compile Include="Parsing\Contexts\RdfXmlParserContext.cs" />
     <Compile Include="Parsing\Contexts\SparqlJsonParserContext.cs" />
@@ -270,6 +273,7 @@
     <Compile Include="Parsing\Contexts\TriGParserContext.cs" />
     <Compile Include="Parsing\DataUriLoader.cs" />
     <Compile Include="Parsing\EmbeddedResourceLoader.cs" />
+    <Compile Include="Parsing\Events\RdfA\IRdfAHostLanguage.cs" />
     <Compile Include="Parsing\Events\RdfXml\DomBasedEventGenerator.cs" />
     <Compile Include="Parsing\Events\EventQueue.cs" />
     <Compile Include="Parsing\Events\IEvent.cs" />

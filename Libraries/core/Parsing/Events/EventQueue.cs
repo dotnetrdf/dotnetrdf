@@ -60,7 +60,7 @@ namespace VDS.RDF.Parsing.Events
         /// Creates a new Event Queue with the given Event Generator
         /// </summary>
         /// <param name="generator">Event Generator</param>
-        public EventQueue(IEventGenerator generator)
+        public EventQueue(IEventGenerator<T> generator)
         {
             this._eventgen = generator;
         }

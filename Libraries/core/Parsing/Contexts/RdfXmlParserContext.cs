@@ -47,7 +47,7 @@ namespace VDS.RDF.Parsing.Contexts
     /// <summary>
     /// Parser Context for RDF/XML Parser
     /// </summary>
-    public class RdfXmlParserContext : BaseParserContext
+    public class RdfXmlParserContext : BaseParserContext, IEventParserContext<IRdfXmlEvent>
     {
         private IEventQueue<IRdfXmlEvent> _queue;
         private Dictionary<String, List<INode>> _usedIDs = new Dictionary<String, List<INode>>();

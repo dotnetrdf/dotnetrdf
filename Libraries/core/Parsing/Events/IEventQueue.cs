@@ -66,7 +66,7 @@ namespace VDS.RDF.Parsing.Events
         /// <summary>
         /// Gets the Event Generator that this Queue uses
         /// </summary>
-        IEventGenerator EventGenerator
+        IEventGenerator<T> EventGenerator
         {
             get;
         }
@@ -118,7 +118,7 @@ namespace VDS.RDF.Parsing.Events
         /// <summary>
         /// Generator used to fill the Event Queue
         /// </summary>
-        protected IEventGenerator _eventgen;
+        protected IEventGenerator<T> _eventgen;
         /// <summary>
         /// Variable indicating whether Generator Tracing is enabled
         /// </summary>
@@ -149,7 +149,7 @@ namespace VDS.RDF.Parsing.Events
         /// <summary>
         /// Gets the Event Generator used by the Queue
         /// </summary>
-        public IEventGenerator EventGenerator
+        public IEventGenerator<T> EventGenerator
         {
             get
             {

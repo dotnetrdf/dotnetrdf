@@ -19,25 +19,36 @@ namespace VDS.RDF.Parsing.Events
     /// This interface is a marker interface which indicates that the class is an event generator, implementations should implement one of the concrete derived interfaces as appropriate to their mode of operation.
     /// </para>
     /// </remarks>
-    public interface IEventGenerator
+    public interface IEventGenerator<T> where T : IEvent
     {
 
     }
 
-    public interface IPreProcessingEventGenerator<T> : IEventGenerator
+    public interface IPreProcessingEventGenerator<TEvent, TContext>
+        : IEventGenerator<TEvent> 
+          where TEvent : IEvent
+          where TContext : IEventParserContext<TEvent>
     {
-        void GetAllEvents(T context);
+        /// <summary>
+        /// Gets all available events
+        /// </summary>
+        /// <param name="context">Context</param>
+        void GetAllEvents(TContext context);
     }
 
     /// <summary>
     /// Interface for event generators which generate all events in one go prior to parsing taking place
     /// </summary>
-    public interface IRdfXmlPreProcessingEventGenerator : IPreProcessingEventGenerator<RdfXmlParserContext>
+    public interface IRdfXmlPreProcessingEventGenerator : IPreProcessingEventGenerator<IRdfXmlEvent, RdfXmlParserContext>
     {
     }
 
-    public interface IJitEventGenerator<T> : IEventGenerator
+    public interface IJitEventGenerator<T> : IEventGenerator<T> where T : IEvent
     {
+        /// <summary>
+        /// Gets the next available event
+        /// </summary>
+        /// <returns></returns>
         T GetNextEvent();
 
         /// <summary>
