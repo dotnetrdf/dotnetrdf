@@ -273,7 +273,9 @@
     <Compile Include="Parsing\Contexts\TriGParserContext.cs" />
     <Compile Include="Parsing\DataUriLoader.cs" />
     <Compile Include="Parsing\EmbeddedResourceLoader.cs" />
+    <Compile Include="Parsing\Events\RdfA\HtmlEventGenerator.cs" />
     <Compile Include="Parsing\Events\RdfA\IRdfAHostLanguage.cs" />
+    <Compile Include="Parsing\Events\RdfA\XHtmlHost.cs" />
     <Compile Include="Parsing\Events\RdfXml\DomBasedEventGenerator.cs" />
     <Compile Include="Parsing\Events\EventQueue.cs" />
     <Compile Include="Parsing\Events\IEvent.cs" />
@@ -304,6 +306,7 @@
     <Compile Include="Parsing\FileLoader.cs" />
     <Compile Include="Parsing\ParserHelper.cs" />
     <Compile Include="Parsing\PositionInfo.cs" />
+    <Compile Include="Parsing\RdfACoreParser.cs" />
     <Compile Include="Parsing\RdfAParser.cs" />
     <Compile Include="Parsing\RdfXmlSpecsHelper.cs" />
     <Compile Include="Parsing\Events\RdfXml\StreamingEventGenerator.cs" />

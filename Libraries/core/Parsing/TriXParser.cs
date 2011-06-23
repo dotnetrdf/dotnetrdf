@@ -427,7 +427,7 @@ namespace VDS.RDF.Parsing
             }
 
             //Assert the resulting Triple
-            if (!handler.HandleTriple(new Triple(subj, pred, obj, graphUri))) throw ParserHelper.Stop(); ;
+            if (!handler.HandleTriple(new Triple(subj, pred, obj, graphUri))) ParserHelper.Stop(); ;
         }
 
         /// <summary>

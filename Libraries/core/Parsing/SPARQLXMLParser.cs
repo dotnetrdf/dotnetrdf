@@ -231,7 +231,7 @@ namespace VDS.RDF.Parsing
                             {
                                 //Add the Variable to the list
                                 context.Input.MoveToNextAttribute();
-                                if (!context.Handler.HandleVariable(context.Input.Value)) throw ParserHelper.Stop();
+                                if (!context.Handler.HandleVariable(context.Input.Value)) ParserHelper.Stop();
                                 context.Variables.Add(context.Input.Value);
                             }
                         }
@@ -273,7 +273,7 @@ namespace VDS.RDF.Parsing
                             //Empty Elements generate an Empty Result
                             if (context.Input.IsEmptyElement)
                             {
-                                if (!context.Handler.HandleResult(new SparqlResult())) throw ParserHelper.Stop();
+                                if (!context.Handler.HandleResult(new SparqlResult())) ParserHelper.Stop();
                                 continue;
                             }
 
@@ -329,7 +329,7 @@ namespace VDS.RDF.Parsing
                             }
 
                             //Add to results set
-                            if (!context.Handler.HandleResult(result)) throw ParserHelper.Stop();
+                            if (!context.Handler.HandleResult(result)) ParserHelper.Stop();
                         }
                     }
 

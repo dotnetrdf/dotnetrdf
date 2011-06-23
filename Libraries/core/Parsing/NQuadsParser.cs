@@ -387,7 +387,7 @@ namespace VDS.RDF.Parsing
                         throw ParserHelper.Error("Unexpected Token '" + o.GetType().ToString() + "' encountered, expected a Blank Node/Literal/URI as the Object of a Triple", o);
             }
 
-            if (!handler.HandleTriple(new Triple(subj, pred, obj, graphUri))) throw ParserHelper.Stop();
+            if (!handler.HandleTriple(new Triple(subj, pred, obj, graphUri))) ParserHelper.Stop();
         }
 
         /// <summary>

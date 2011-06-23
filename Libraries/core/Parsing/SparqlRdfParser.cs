@@ -268,7 +268,7 @@ namespace VDS.RDF.Parsing
                             {
                                 if (t.Object.NodeType == NodeType.Literal)
                                 {
-                                    if (!context.Handler.HandleVariable(((ILiteralNode)t.Object).Value)) throw ParserHelper.Stop();
+                                    if (!context.Handler.HandleVariable(((ILiteralNode)t.Object).Value)) ParserHelper.Stop();
                                     context.Variables.Add(((ILiteralNode)t.Object).Value);
                                 }
                                 else
@@ -335,7 +335,7 @@ namespace VDS.RDF.Parsing
                                 }
                             }
 
-                            if (!context.Handler.HandleResult(r)) throw ParserHelper.Stop();
+                            if (!context.Handler.HandleResult(r)) ParserHelper.Stop();
                         }
                     }
                 }

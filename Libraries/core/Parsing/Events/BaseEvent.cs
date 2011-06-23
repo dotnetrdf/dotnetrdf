@@ -123,7 +123,7 @@ namespace VDS.RDF.Parsing.Events
     /// </summary>
     public abstract class BaseRdfAEvent : BaseEvent, IRdfAEvent
     {
-        private List<KeyValuePair<String, String>> _attributes = new List<KeyValuePair<string, string>>();
+        private Dictionary<String, String> _attributes;
 
         /// <summary>
         /// Creates a new RDFa Event
@@ -134,7 +134,11 @@ namespace VDS.RDF.Parsing.Events
         public BaseRdfAEvent(int eventType, PositionInfo pos, IEnumerable<KeyValuePair<String, String>> attributes)
             : base(eventType, pos)
         {
-            this._attributes.AddRange(attributes);
+            this._attributes = new Dictionary<string, string>();
+            foreach (KeyValuePair<String, String> attr in attributes)
+            {
+                this._attributes.Add(attr.Key, attr.Value);
+            }
         }
 
         /// <summary>
@@ -145,6 +149,29 @@ namespace VDS.RDF.Parsing.Events
             get 
             {
                 return this._attributes; 
+            }
+        }
+
+        /// <summary>
+        /// Gets whether the Event has a given attribute
+        /// </summary>
+        /// <param name="name">Attribute Name</param>
+        /// <returns></returns>
+        public bool HasAttribute(String name)
+        {
+            return this._attributes.ContainsKey(name);
+        }
+
+        /// <summary>
+        /// Gets the value of a specific attribute
+        /// </summary>
+        /// <param name="name">Attribute Name</param>
+        /// <returns></returns>
+        public String this[String name]
+        {
+            get
+            {
+                return this._attributes[name];
             }
         }
     }

@@ -61,11 +61,13 @@ namespace VDS.RDF.Parsing.Contexts
 
         private NestedReference<Uri> _baseUri;
         private NestedReference<Uri> _defaultVocabUri = new NestedReference<Uri>();
-        private NestedReference<String> _literalLang = new NestedReference<string>();
+        private NestedReference<Uri> _defaultPrefixMapping = new NestedReference<Uri>(new Uri(RdfAParser.XHtmlVocabNamespace));
+        private NestedReference<String> _literalLang = new NestedReference<string>(String.Empty);
         private NestedNamespaceMapper _nsmap = new NestedNamespaceMapper(true);
         private NestedNamespaceMapper _termMap = new NestedNamespaceMapper(true);
         private INode _parentSubj, _parentObj;
         private List<IncompleteTriple> _incompleteTriples = new List<IncompleteTriple>();
+        private bool _specialBNodeSeen = false;
 
         public RdfACoreParserContext(IGraph g, IRdfAHostLanguage language, TextReader reader, bool traceParsing)
             : this(new GraphHandler(g), language, reader, traceParsing) { }
@@ -166,6 +168,18 @@ namespace VDS.RDF.Parsing.Contexts
             }
         }
 
+        public Uri DefaultPrefixMapping
+        {
+            get
+            {
+                return this._defaultPrefixMapping.Value;
+            }
+            set
+            {
+                this._defaultPrefixMapping.Value = value;
+            }
+        }
+
         public Uri DefaultVocabularyUri
         {
             get
@@ -214,11 +228,26 @@ namespace VDS.RDF.Parsing.Contexts
             }
         }
 
-        private List<IncompleteTriple> IncompleteTriples
+        public List<IncompleteTriple> IncompleteTriples
         {
             get
             {
                 return this._incompleteTriples;
+            }
+        }
+
+        public bool SpecialBNodeSeen
+        {
+            get
+            {
+                return this._specialBNodeSeen;
+            }
+            set
+            {
+                if (!this._specialBNodeSeen)
+                {
+                    this._specialBNodeSeen = value;
+                }
             }
         }
 

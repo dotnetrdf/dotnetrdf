@@ -233,7 +233,7 @@ namespace VDS.RDF.Parsing
                             Uri u = new Uri(uri.Value, UriKind.Absolute);
                             String pre = (prefix.Value.Equals(":")) ? String.Empty : prefix.Value.Substring(0, prefix.Value.Length-1);
                             context.Namespaces.AddNamespace(pre, u);
-                            if (!context.Handler.HandleNamespace(pre, u)) throw ParserHelper.Stop();
+                            if (!context.Handler.HandleNamespace(pre, u)) ParserHelper.Stop();
 
                             //Expect a DOT to Terminate
                             IToken dot = context.Tokens.Dequeue();
@@ -660,7 +660,7 @@ namespace VDS.RDF.Parsing
 
                 ok = true;
 
-                if (!context.Handler.HandleTriple(new Triple(subj, pred, objNode, graphUri))) throw ParserHelper.Stop();
+                if (!context.Handler.HandleTriple(new Triple(subj, pred, objNode, graphUri))) ParserHelper.Stop();
 
             } while (context.Tokens.Peek().TokenType == Token.COMMA); //Expect a comma if we are to continue
         }
@@ -744,21 +744,21 @@ namespace VDS.RDF.Parsing
                 }
 
                 //Create the subj rdf:first item Triple
-                if (context.Handler.HandleTriple((new Triple(subj, rdfFirst, item, graphUri)))) throw ParserHelper.Stop();
+                if (!context.Handler.HandleTriple((new Triple(subj, rdfFirst, item, graphUri)))) ParserHelper.Stop();
 
                 //Create the rdf:rest Triple
                 if (context.Tokens.Peek().TokenType == Token.RIGHTBRACKET)
                 {
                     //End of Collection
                     context.Tokens.Dequeue();
-                    if (!context.Handler.HandleTriple(new Triple(subj, rdfRest, rdfNil, graphUri))) throw ParserHelper.Stop();
+                    if (!context.Handler.HandleTriple(new Triple(subj, rdfRest, rdfNil, graphUri))) ParserHelper.Stop();
                     return;
                 }
                 else
                 {
                     //Continuing Collection
                     temp = context.Handler.CreateBlankNode();
-                    if (!context.Handler.HandleTriple(new Triple(subj, rdfRest, temp, graphUri))) throw ParserHelper.Stop();
+                    if (!context.Handler.HandleTriple(new Triple(subj, rdfRest, temp, graphUri))) ParserHelper.Stop();
                     subj = temp;
                 }
             } while (true);

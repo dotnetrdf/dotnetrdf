@@ -259,7 +259,7 @@ namespace VDS.RDF.Parsing
         /// Throws a <see cref="RdfParsingTerminatedException">RdfParsingTerminatedException</see> which is used to tell the parser that it should stop parsing.
         /// </summary>
         /// <returns></returns>
-        public static RdfParsingTerminatedException Stop()
+        public static void Stop()
         {
             throw new RdfParsingTerminatedException();
         }

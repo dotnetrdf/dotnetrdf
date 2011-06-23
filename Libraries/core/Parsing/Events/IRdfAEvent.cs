@@ -53,5 +53,22 @@ namespace VDS.RDF.Parsing.Events
         {
             get;
         }
+
+        /// <summary>
+        /// Gets whether the Event has a given attribute
+        /// </summary>
+        /// <param name="name">Attribute Name</param>
+        /// <returns></returns>
+        bool HasAttribute(String name);
+
+        /// <summary>
+        /// Gets the value of a specific attribute
+        /// </summary>
+        /// <param name="name">Attribute Name</param>
+        /// <returns></returns>
+        String this[String name]
+        {
+            get;
+        }
     }
 }

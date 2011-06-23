@@ -321,7 +321,7 @@ namespace VDS.RDF.Parsing
                         if (context.Input.TokenType == JsonToken.String)
                         {
                             //Add to Variables
-                            if (!context.Handler.HandleVariable(context.Input.Value.ToString())) throw ParserHelper.Stop();
+                            if (!context.Handler.HandleVariable(context.Input.Value.ToString())) ParserHelper.Stop();
                             context.Variables.Add(context.Input.Value.ToString());
                         }
                         else
@@ -552,7 +552,7 @@ namespace VDS.RDF.Parsing
                 }
 
                 //Add to Results
-                if (!context.Handler.HandleResult(result)) throw ParserHelper.Stop();
+                if (!context.Handler.HandleResult(result)) ParserHelper.Stop();
             }
             else
             {
