@@ -60,7 +60,7 @@ namespace VDS.RDF.Parsing.Contexts
         private IRdfAHostLanguage _language;
 
         private NestedReference<Uri> _baseUri;
-        private NestedReference<Uri> _defaultVocabUri = new NestedReference<Uri>();
+        private NestedReference<Uri> _defaultVocabUri;
         private NestedReference<Uri> _defaultPrefixMapping = new NestedReference<Uri>(new Uri(RdfAParser.XHtmlVocabNamespace));
         private NestedReference<String> _literalLang = new NestedReference<string>(String.Empty);
         private NestedNamespaceMapper _nsmap = new NestedNamespaceMapper(true);
@@ -78,7 +78,6 @@ namespace VDS.RDF.Parsing.Contexts
         public RdfACoreParserContext(IRdfHandler handler, IRdfAHostLanguage language, TextReader reader, bool traceParsing)
         {
             this._handler = handler;
-            this._baseUri = new NestedReference<Uri>(this._handler.GetBaseUri());
             this._traceParsing = traceParsing;
             this._language = language;
 
@@ -93,6 +92,10 @@ namespace VDS.RDF.Parsing.Contexts
                 this._events = new EventQueue<IRdfAEvent>(generator);
                 ((IPreProcessingEventGenerator<IRdfAEvent, RdfACoreParserContext>)generator).GetAllEvents(this);
             }
+
+            //Setup final things
+            this._baseUri = new NestedReference<Uri>((this._language.InitialBaseUri != null ? this._language.InitialBaseUri : this._handler.GetBaseUri()));
+            this._defaultVocabUri = new NestedReference<Uri>(this._language.DefaultVocabularyUri);
         }
 
         public RdfACoreParserContext(IRdfHandler handler, IRdfAHostLanguage language, TextReader reader)

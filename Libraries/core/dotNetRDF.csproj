@@ -276,6 +276,7 @@
     <Compile Include="Parsing\Events\RdfA\HtmlEventGenerator.cs" />
     <Compile Include="Parsing\Events\RdfA\IRdfAHostLanguage.cs" />
     <Compile Include="Parsing\Events\RdfA\XHtmlHost.cs" />
+    <Compile Include="Parsing\Events\RdfA\XmlHost.cs" />
     <Compile Include="Parsing\Events\RdfXml\DomBasedEventGenerator.cs" />
     <Compile Include="Parsing\Events\EventQueue.cs" />
     <Compile Include="Parsing\Events\IEvent.cs" />
