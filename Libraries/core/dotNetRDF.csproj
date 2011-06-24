@@ -338,6 +338,7 @@
     <Compile Include="Query\Algebra\Bgp.cs" />
     <Compile Include="Query\Algebra\Bindings.cs" />
     <Compile Include="Query\Algebra\Extend.cs" />
+    <Compile Include="Query\Algebra\ISet.cs" />
     <Compile Include="Query\Algebra\LazyBgp.cs" />
     <Compile Include="Query\Algebra\Distinct.cs" />
     <Compile Include="Query\Algebra\Filter.cs" />

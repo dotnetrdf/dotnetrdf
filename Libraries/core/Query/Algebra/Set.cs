@@ -44,10 +44,9 @@ namespace VDS.RDF.Query.Algebra
     /// <summary>
     /// Represents one possible set of values which is a solution to the query
     /// </summary>
-    public class Set : IEquatable<Set>
+    public sealed class Set : BaseSet, IEquatable<Set>
     {
         private Dictionary<String, INode> _values;
-        private int _id = 0;
 
         /// <summary>
         /// Creates a new Set
@@ -111,7 +110,7 @@ namespace VDS.RDF.Query.Algebra
         /// </summary>
         /// <param name="variable">Variable</param>
         /// <returns>Either a Node or a null</returns>
-        public INode this[String variable]
+        public override INode this[String variable]
         {
             get
             {
@@ -131,7 +130,7 @@ namespace VDS.RDF.Query.Algebra
         /// </summary>
         /// <param name="variable">Variable</param>
         /// <param name="value">Value</param>
-        public void Add(String variable, INode value)
+        public override void Add(String variable, INode value)
         {
             if (!this._values.ContainsKey(variable))
             {
@@ -147,7 +146,7 @@ namespace VDS.RDF.Query.Algebra
         /// Removes a Value for a Variable from the Set
         /// </summary>
         /// <param name="variable">Variable</param>
-        public void Remove(String variable)
+        public override void Remove(String variable)
         {
             if (this._values.ContainsKey(variable)) this._values.Remove(variable);
         }
@@ -157,7 +156,7 @@ namespace VDS.RDF.Query.Algebra
         /// </summary>
         /// <param name="variable">Variable</param>
         /// <returns></returns>
-        public bool ContainsVariable(String variable)
+        public override bool ContainsVariable(String variable)
         {
             return this._values.ContainsKey(variable);
         }
@@ -165,7 +164,7 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the Variables in the Set
         /// </summary>
-        public IEnumerable<String> Variables
+        public override IEnumerable<String> Variables
         {
             get
             {
@@ -177,27 +176,12 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the Values in the Set
         /// </summary>
-        public IEnumerable<INode> Values
+        public override IEnumerable<INode> Values
         {
             get
             {
                 return (from value in this._values.Values
                         select value);
-            }
-        }
-
-        /// <summary>
-        /// Gets/Sets the ID of the Set
-        /// </summary>
-        public int ID
-        {
-            get
-            {
-                return this._id;
-            }
-            set
-            {
-                this._id = value;
             }
         }
 
@@ -210,29 +194,11 @@ namespace VDS.RDF.Query.Algebra
             StringBuilder output = new StringBuilder();
             foreach (KeyValuePair<String, INode> pair in this._values)
             {
-                output.Append("?" + pair.Key + " = " + pair.Value);
+                output.Append("?" + pair.Key + " = " + pair.Value.ToSafeString());
                 output.Append(" , ");
             }
             if (this._values.Count > 0) output.Remove(output.Length - 3, 3);
             return output.ToString();
-        }
-
-        /// <summary>
-        /// Gets whether a Set is equal to another Set
-        /// </summary>
-        /// <param name="obj">Object to compare against</param>
-        /// <returns></returns>
-        public override bool Equals(object obj)
-        {
-            if (obj == null) return false;
-            if (obj is Set)
-            {
-                return this.Equals((Set)obj);
-            }
-            else
-            {
-                return false;
-            }
         }
 
         /// <summary>
@@ -244,7 +210,6 @@ namespace VDS.RDF.Query.Algebra
         {
             if (other == null) return false;
             return this._values.All(pair => other.ContainsVariable(pair.Key) && ((pair.Value == null && other[pair.Key] == null) || pair.Value.Equals(other[pair.Key])));
-            //return this._values.All(pair => (other.ContainsVariable(pair.Key) && ((pair.Value == null && other[pair.Key] == null) || pair.Value.Equals(other[pair.Key]))) || (pair.Value == null && other[pair.Key] == null));
         }
 
         /// <summary>
@@ -254,6 +219,75 @@ namespace VDS.RDF.Query.Algebra
         public override int GetHashCode()
         {
             return this.ToString().GetHashCode();
+        }
+    }
+
+    public sealed class JoinedSet : BaseSet, IEquatable<JoinedSet>
+    {
+        private ISet _lhs, _rhs;
+
+        public override void Add(string variable, INode value)
+        {
+            //Joined Sets are left associative so always add to the LHS set
+            this._lhs.Add(variable, value);
+        }
+
+        public override bool ContainsVariable(string variable)
+        {
+            return this._lhs.ContainsVariable(variable) || this._rhs.ContainsVariable(variable);
+        }
+
+        public override void Remove(string variable)
+        {
+            this._lhs.Remove(variable);
+            this._rhs.Remove(variable);
+        }
+
+        public override INode this[string variable]
+        {
+            get 
+            {
+                INode temp = this._lhs[variable];
+                return (temp != null ? temp : this._rhs[variable]);
+            }
+        }
+
+        public override IEnumerable<INode> Values
+        {
+            get 
+            {
+                return (from v in this.Variables
+                        select this[v]);
+            }
+        }
+
+        public override IEnumerable<string> Variables
+        {
+            get 
+            {
+                return this._lhs.Variables.Concat(this._rhs.Variables).Distinct();
+            }
+        }
+
+        public override int GetHashCode()
+        {
+            return this.ToString().GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            StringBuilder output = new StringBuilder();
+            foreach (String v in this.Variables)
+            {
+                if (output.Length > 0) output.Append(" , ");
+                output.Append("?" + v + " = " + this[v].ToSafeString());
+            }
+            return output.ToString();
+        }
+
+        public bool Equals(JoinedSet other)
+        {
+            return this.Equals((ISet)other);
         }
     }
 }
