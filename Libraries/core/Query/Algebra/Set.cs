@@ -61,12 +61,23 @@ namespace VDS.RDF.Query.Algebra
         /// </summary>
         /// <param name="x">A Set</param>
         /// <param name="y">A Set</param>
-        public Set(Set x, Set y)
+        private Set(ISet x, ISet y)
         {
-            this._values = new Dictionary<string, INode>(x._values);
-            foreach (KeyValuePair<string, INode> pair in y._values)
+            this._values = new Dictionary<string, INode>();
+            foreach (String var in x.Variables)
             {
-                if (!this._values.ContainsKey(pair.Key)) this._values.Add(pair.Key, pair.Value);
+                this._values.Add(var, x[var]);
+            }
+            foreach (String var in y.Variables)
+            {
+                if (!this._values.ContainsKey(var))
+                {
+                    this._values.Add(var, y[var]);
+                }
+                else if (this._values[var] == null)
+                {
+                    this._values[var] = y[var];
+                }
             }
         }
 
@@ -74,9 +85,13 @@ namespace VDS.RDF.Query.Algebra
         /// Creates a new Set which is a copy of an existing Set
         /// </summary>
         /// <param name="x">Set to copy</param>
-        public Set(Set x)
+        internal Set(ISet x)
         {
-            this._values = new Dictionary<string, INode>(x._values);
+            this._values = new Dictionary<string, INode>();
+            foreach (String var in x.Variables)
+            {
+                this._values.Add(var, x[var]);
+            }
         }
 
         /// <summary>
@@ -185,6 +200,18 @@ namespace VDS.RDF.Query.Algebra
             }
         }
 
+        public override ISet Join(ISet other)
+        {
+            //return new Set(this, other);
+            return new JoinedSet(other, this);
+        }
+
+        public override ISet Copy()
+        {
+            return new Set(this);
+            //return new CopiedSet(this);
+        }
+
         /// <summary>
         /// Gets the String representation of the Set
         /// </summary>
@@ -222,9 +249,18 @@ namespace VDS.RDF.Query.Algebra
         }
     }
 
+    /// <summary>
+    /// Represents one possible set of values which is a solution to the query where those values are the result of joining two possible sets
+    /// </summary>
     public sealed class JoinedSet : BaseSet, IEquatable<JoinedSet>
     {
         private ISet _lhs, _rhs;
+
+        public JoinedSet(ISet x, ISet y)
+        {
+            this._lhs = new Set(x);
+            this._rhs = y;
+        }
 
         public override void Add(string variable, INode value)
         {
@@ -269,6 +305,17 @@ namespace VDS.RDF.Query.Algebra
             }
         }
 
+        public override ISet Join(ISet other)
+        {
+            return new JoinedSet(other, this);
+        }
+
+        public override ISet Copy()
+        {
+            return new Set(this);
+            //return new CopiedSet(this);
+        }
+
         public override int GetHashCode()
         {
             return this.ToString().GetHashCode();
@@ -286,6 +333,84 @@ namespace VDS.RDF.Query.Algebra
         }
 
         public bool Equals(JoinedSet other)
+        {
+            return this.Equals((ISet)other);
+        }
+    }
+
+    /// <summary>
+    /// Represents one possible set of values which is a solution to the query where those values are the copy of another possible set
+    /// </summary>
+    public sealed class CopiedSet : BaseSet, IEquatable<CopiedSet>
+    {
+        private ISet _s;
+
+        public CopiedSet(ISet s)
+        {
+            this._s = s;
+        }
+
+        public override void Add(string variable, INode value)
+        {
+            this._s.Add(variable, value);
+        }
+
+        public override bool ContainsVariable(string variable)
+        {
+            return this._s.ContainsVariable(variable);
+        }
+
+        public override void Remove(string variable)
+        {
+            this._s.Remove(variable);
+        }
+
+        public override INode this[string variable]
+        {
+            get 
+            {
+                return this._s[variable];
+            }
+        }
+
+        public override IEnumerable<INode> Values
+        {
+            get 
+            {
+                return this._s.Values; 
+            }
+        }
+
+        public override IEnumerable<string> Variables
+        {
+            get 
+            {
+                return this._s.Variables; 
+            }
+        }
+
+        public override ISet Join(ISet other)
+        {
+            return new JoinedSet(other, this);
+        }
+
+        public override ISet Copy()
+        {
+            return new Set(this);
+            //return new CopiedSet(this);
+        }
+
+        public override string ToString()
+        {
+            return this._s.ToString();
+        }
+
+        public override int GetHashCode()
+        {
+            return this._s.GetHashCode();
+        }
+
+        public bool Equals(CopiedSet other)
         {
             return this.Equals((ISet)other);
         }

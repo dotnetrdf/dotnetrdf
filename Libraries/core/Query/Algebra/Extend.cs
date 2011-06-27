@@ -91,7 +91,7 @@ namespace VDS.RDF.Query.Algebra
                 context.OutputMultiset.AddVariable(this._var);
                 foreach (int id in results.SetIDs.ToList())
                 {
-                    Set s = new Set(results[id]);
+                    ISet s = results[id].Copy();
                     try
                     {
                         //Make a new assignment

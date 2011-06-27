@@ -76,7 +76,7 @@ namespace VDS.RDF.Query.Describe
                         String var = t.Value.Substring(1);
                         if (context.OutputMultiset.ContainsVariable(var))
                         {
-                            foreach (Set s in context.OutputMultiset.Sets)
+                            foreach (ISet s in context.OutputMultiset.Sets)
                             {
                                 INode temp = s[var];
                                 if (temp != null) nodes.Add(temp);

@@ -99,7 +99,7 @@ namespace VDS.RDF.Query.Expressions.Functions
                 if (this._result.IsEmpty) return true;
             }
 
-            Set x = context.InputMultiset[bindingID];
+            ISet x = context.InputMultiset[bindingID];
             List<String> joinVars = x.Variables.Where(v => this._result.ContainsVariable(v)).ToList();
             if (joinVars.Count == 0)
             {

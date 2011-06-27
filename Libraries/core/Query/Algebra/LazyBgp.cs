@@ -526,9 +526,9 @@ namespace VDS.RDF.Query.Algebra
 
                     //Compute the Binding for every value
                     context.OutputMultiset.AddVariable(bindVar);
-                    foreach (Set s in context.InputMultiset.Sets)
+                    foreach (ISet s in context.InputMultiset.Sets)
                     {
-                        Set x = new Set(s);
+                        ISet x = s.Copy();
                         try
                         {
                             INode val = bindExpr.Value(context, s.ID);

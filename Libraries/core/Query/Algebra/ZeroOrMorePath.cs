@@ -252,11 +252,11 @@ namespace VDS.RDF.Query.Algebra
                 context.OutputMultiset = new Multiset();
                 BaseMultiset results = context.Evaluate(zeroPath);//zeroPath.Evaluate(context);
                 context.OutputMultiset = currResults;
-                foreach (Set s in results.Sets)
+                foreach (ISet s in results.Sets)
                 {
                     if (!context.OutputMultiset.Sets.Contains(s))
                     {
-                        context.OutputMultiset.Add(new Set(s));
+                        context.OutputMultiset.Add(s.Copy());
                     }
                 }
             }

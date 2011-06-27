@@ -144,7 +144,7 @@ namespace VDS.RDF.Query.Ordering
         /// <param name="x">A Set</param>
         /// <param name="y">A Set</param>
         /// <returns></returns>
-        public abstract int Compare(Set x, Set y);
+        public abstract int Compare(ISet x, ISet y);
 
         /// <summary>
         /// Generates a Comparer than can be used to do Ordering based on the given Triple Pattern
@@ -183,7 +183,7 @@ namespace VDS.RDF.Query.Ordering
         /// <param name="x">A Set</param>
         /// <param name="y">A Set</param>
         /// <returns></returns>
-        public override int Compare(Set x, Set y)
+        public override int Compare(ISet x, ISet y)
         {
             INode xval;
             xval = x[this._varname];
@@ -346,7 +346,7 @@ namespace VDS.RDF.Query.Ordering
         /// <param name="x">A Set</param>
         /// <param name="y">A Set</param>
         /// <returns></returns>
-        public override int Compare(Set x, Set y)
+        public override int Compare(ISet x, ISet y)
         {
             if (this._context == null)
             {

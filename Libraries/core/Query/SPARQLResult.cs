@@ -60,7 +60,7 @@ namespace VDS.RDF.Query
         /// Creates a new SPARQL Result from the given Set
         /// </summary>
         /// <param name="s">Set</param>
-        public SparqlResult(Set s)
+        public SparqlResult(ISet s)
         {
             foreach (String var in s.Variables)
             {

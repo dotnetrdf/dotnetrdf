@@ -182,7 +182,7 @@ namespace VDS.RDF.Query.Algebra
                         //Compute the Value of the Projection Expression for each Set
                         foreach (int id in context.InputMultiset.SetIDs)
                         {
-                            Set s = context.InputMultiset[id];
+                            ISet s = context.InputMultiset[id];
                             try
                             {
                                 INode temp = v.Projection.Value(context, id);

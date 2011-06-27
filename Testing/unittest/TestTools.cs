@@ -119,7 +119,7 @@ namespace VDS.RDF.Test
             }
             else
             {
-                foreach (Set s in multiset.Sets)
+                foreach (ISet s in multiset.Sets)
                 {
                     Console.WriteLine(s.ToString());
                 }

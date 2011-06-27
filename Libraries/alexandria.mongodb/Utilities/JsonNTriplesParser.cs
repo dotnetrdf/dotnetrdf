@@ -229,7 +229,7 @@ namespace VDS.RDF.Parsing
                         }
                     }
 
-                    if (!context.Handler.HandleTriple((new Triple(s, p, o)))) throw ParserHelper.Stop();
+                    if (!context.Handler.HandleTriple((new Triple(s, p, o)))) ParserHelper.Stop();
                 }
                 else
                 {

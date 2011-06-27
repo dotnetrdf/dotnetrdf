@@ -200,7 +200,7 @@ namespace VDS.RDF.Query
                             h.NamespaceMap.Import(query.NamespaceMap);
 
                             //Construct the Triples for each Solution
-                            foreach (Set s in context.OutputMultiset.Sets)
+                            foreach (ISet s in context.OutputMultiset.Sets)
                             {
                                 List<Triple> constructedTriples = new List<Triple>();
                                 try

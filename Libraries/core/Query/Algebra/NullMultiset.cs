@@ -158,7 +158,7 @@ namespace VDS.RDF.Query.Algebra
         /// </summary>
         /// <param name="s">Set</param>
         /// <exception cref="RdfQueryException">Thrown since the operation is invalid on a Null Multiset</exception>
-        public override void Add(Set s)
+        public override void Add(ISet s)
         {
             throw new RdfQueryException("Cannot add a Set to the Null Multiset");
         }
@@ -208,11 +208,11 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Returns an empty enumerable as the Null Multiset contains no Sets
         /// </summary>
-        public override IEnumerable<Set> Sets
+        public override IEnumerable<ISet> Sets
         {
             get 
             {
-                return Enumerable.Empty<Set>();
+                return Enumerable.Empty<ISet>();
             }
         }
 
@@ -233,7 +233,7 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="index">Set ID</param>
         /// <returns></returns>
         /// <exception cref="RdfQueryException">Thrown since the Null Multiset contains no Sets</exception>
-        public override Set this[int index]
+        public override ISet this[int index]
         {
             get 
             {

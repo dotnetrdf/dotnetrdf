@@ -47,7 +47,7 @@ namespace VDS.RDF.Query.Ordering
     /// Interface for classes that represent SPARQL ORDER BY clauses
     /// </summary>
     /// <remarks>A SPARQL Order By clause provides a list of orderings, when parsed into the dotNetRDF model this is represented as a single <see cref="ISparqlOrderBy">ISparqlOrderBy</see> for the first term in the clause chained to <see cref="ISparqlOrderBy">ISparqlOrderBy</see>'s for each subsequent term via the <see cref="ISparqlOrderBy.Child">Child</see> property.</remarks>
-    public interface ISparqlOrderBy : IComparer<Set>
+    public interface ISparqlOrderBy : IComparer<ISet>
     {
         /// <summary>
         /// Gets/Sets the Child Ordering that applies if the two Objects are considered equal

@@ -223,7 +223,7 @@ namespace VDS.RDF.Query.Algebra
 
                 if (!results.IsEmpty)
                 {
-                    foreach (Set s in results.Sets)
+                    foreach (ISet s in results.Sets)
                     {
                         if (s["x"] != null && s["y"] != null)
                         {
@@ -302,7 +302,7 @@ namespace VDS.RDF.Query.Algebra
 
                 if (!results.IsEmpty)
                 {
-                    foreach (Set s in results.Sets)
+                    foreach (ISet s in results.Sets)
                     {
                         if (reverse)
                         {

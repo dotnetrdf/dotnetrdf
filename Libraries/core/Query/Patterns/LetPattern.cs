@@ -92,7 +92,7 @@ namespace VDS.RDF.Query.Patterns
             {
                 foreach (int id in context.InputMultiset.SetIDs.ToList())
                 {
-                    Set s = context.InputMultiset[id];
+                    ISet s = context.InputMultiset[id];
                     if (s.ContainsVariable(this._var))
                     {
                         try

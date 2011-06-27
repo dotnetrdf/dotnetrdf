@@ -109,7 +109,7 @@ namespace VDS.RDF.Query.Algebra
         /// </summary>
         /// <param name="s">Set</param>
         /// <exception cref="RdfQueryException">Thrown since this action is invalid on a Group Multiset</exception>
-        public override void Add(Set s)
+        public override void Add(ISet s)
         {
             throw new RdfQueryException("Cannot add a Set to a Group Multiset");
         }

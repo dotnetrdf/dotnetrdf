@@ -260,7 +260,7 @@ namespace VDS.RDF.Update.Commands
                 }
 
                 //Insert the Triples for each Solution
-                foreach (Set s in queryContext.OutputMultiset.Sets)
+                foreach (ISet s in queryContext.OutputMultiset.Sets)
                 {
                     List<Triple> insertedTriples = new List<Triple>();
 

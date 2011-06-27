@@ -119,7 +119,7 @@ namespace VDS.RDF.Query.Algebra
                         {
                             //If there are already values bound to the Graph variable for all Input Solutions then we limit the Query to those Graphs
                             List<Uri> graphUris = new List<Uri>();
-                            foreach (Set s in context.InputMultiset.Sets)
+                            foreach (ISet s in context.InputMultiset.Sets)
                             {
                                 INode temp = s[gvar];
                                 if (temp != null)
@@ -202,7 +202,7 @@ namespace VDS.RDF.Query.Algebra
                                 INode currGraph = (currGraphUri == null) ? null : new UriNode(null, currGraphUri);
                                 foreach (int id in result.SetIDs.ToList())
                                 {
-                                    Set s = result[id];
+                                    ISet s = result[id];
                                     if (s[gvar] == null)
                                     {
                                         //If Graph Variable is not yet bound for solution bind it

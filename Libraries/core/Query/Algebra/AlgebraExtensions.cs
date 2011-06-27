@@ -98,11 +98,11 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="stop">Stop Token</param>
         private static void GenerateProduct(BaseMultiset multiset, BaseMultiset other, BaseMultiset target, StopToken stop)
         {
-            foreach (Set x in multiset.Sets)
+            foreach (ISet x in multiset.Sets)
             {
-                foreach (Set y in other.Sets)
+                foreach (ISet y in other.Sets)
                 {
-                    target.Add(new Set(x, y));
+                    target.Add(x.Join(y));
                     //if (stop.ShouldStop) break;
                 }
                 if (stop.ShouldStop) break;

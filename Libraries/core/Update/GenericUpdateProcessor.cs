@@ -396,7 +396,7 @@ namespace VDS.RDF.Update
                         //Generate the Triples for each Solution
                         List<Triple> deletedTriples = new List<Triple>();
                         Dictionary<String, List<Triple>> deletedGraphTriples = new Dictionary<string, List<Triple>>();
-                        foreach (Set s in mset.Sets)
+                        foreach (ISet s in mset.Sets)
                         {
                             List<Triple> tempDeletedTriples = new List<Triple>();
                             try
@@ -714,7 +714,7 @@ namespace VDS.RDF.Update
                         //Generate the Triples for each Solution
                         List<Triple> insertedTriples = new List<Triple>();
                         Dictionary<String, List<Triple>> insertedGraphTriples = new Dictionary<string, List<Triple>>();
-                        foreach (Set s in mset.Sets)
+                        foreach (ISet s in mset.Sets)
                         {
                             List<Triple> tempInsertedTriples = new List<Triple>();
                             try
@@ -992,7 +992,7 @@ namespace VDS.RDF.Update
                         //Generate the Triples for each Solution
                         List<Triple> deletedTriples = new List<Triple>();
                         Dictionary<String, List<Triple>> deletedGraphTriples = new Dictionary<string, List<Triple>>();
-                        foreach (Set s in mset.Sets)
+                        foreach (ISet s in mset.Sets)
                         {
                             List<Triple> tempDeletedTriples = new List<Triple>();
                             try
@@ -1086,7 +1086,7 @@ namespace VDS.RDF.Update
                         //Generate the Triples for each Solution
                         List<Triple> insertedTriples = new List<Triple>();
                         Dictionary<String, List<Triple>> insertedGraphTriples = new Dictionary<string, List<Triple>>();
-                        foreach (Set s in mset.Sets)
+                        foreach (ISet s in mset.Sets)
                         {
                             List<Triple> tempInsertedTriples = new List<Triple>();
                             try

@@ -27,7 +27,7 @@ namespace VDS.RDF.Linq
 
         public void Fill(BaseMultiset multiset)
         {
-            foreach (Set s in multiset.Sets)
+            foreach (ISet s in multiset.Sets)
             {
                 this.ProcessResult(new SparqlResult(s));
             }

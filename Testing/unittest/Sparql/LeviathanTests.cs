@@ -146,19 +146,19 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
 
             //Show the Sets
             Console.WriteLine("LHS");
-            foreach (Set set in m.Sets)
+            foreach (ISet set in m.Sets)
             {
                 Console.WriteLine(set.ToString());
             }
             Console.WriteLine();
             Console.WriteLine("RHS");
-            foreach (Set set in n.Sets)
+            foreach (ISet set in n.Sets)
             {
                 Console.WriteLine(set.ToString());
             }
             Console.WriteLine();
             Console.WriteLine("D");
-            foreach (Set set in d.Sets)
+            foreach (ISet set in d.Sets)
             {
                 Console.WriteLine(set.ToString());
             }
@@ -167,7 +167,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
             //Try a Join to Identity
             Console.WriteLine("Join ID-LHS");
             BaseMultiset join = id.Join(m);
-            foreach (Set set in join.Sets)
+            foreach (ISet set in join.Sets)
             {
                 Console.WriteLine(set.ToString());
             }
@@ -176,7 +176,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
             //Try a Join to Identity
             Console.WriteLine("Join LHS-ID");
             join = m.Join(id);
-            foreach (Set set in join.Sets)
+            foreach (ISet set in join.Sets)
             {
                 Console.WriteLine(set.ToString());
             }
@@ -185,7 +185,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
             //Try a Join to Null
             Console.WriteLine("Join NULL-LHS");
             join = nullset.Join(m);
-            foreach (Set set in join.Sets)
+            foreach (ISet set in join.Sets)
             {
                 Console.WriteLine(set.ToString());
             }
@@ -194,7 +194,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
             //Try a Join to Null
             Console.WriteLine("Join LHS-NULL");
             join = m.Join(nullset);
-            foreach (Set set in join.Sets)
+            foreach (ISet set in join.Sets)
             {
                 Console.WriteLine(set.ToString());
             }
@@ -203,7 +203,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
             //Try a LeftJoin
             Console.WriteLine("LeftJoin NULL-LHS");
             BaseMultiset leftjoin = nullset.LeftJoin(m, new BooleanExpressionTerm(true));
-            foreach (Set set in leftjoin.Sets)
+            foreach (ISet set in leftjoin.Sets)
             {
                 Console.WriteLine(set.ToString());
             }
@@ -212,7 +212,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
             //Try a LeftJoin
             Console.WriteLine("LeftJoin LHS-NULL");
             leftjoin = m.LeftJoin(nullset, new BooleanExpressionTerm(true));
-            foreach (Set set in leftjoin.Sets)
+            foreach (ISet set in leftjoin.Sets)
             {
                 Console.WriteLine(set.ToString());
             }
@@ -221,7 +221,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
             //Try a Join
             Console.WriteLine("Join LHS-RHS");
             join = m.Join(n);
-            foreach (Set set in join.Sets)
+            foreach (ISet set in join.Sets)
             {
                 Console.WriteLine(set.ToString());
             }
@@ -230,7 +230,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
             //Try a LeftOuterJoin
             Console.WriteLine("LeftJoin LHS-RHS");
             leftjoin = m.LeftJoin(n, new BooleanExpressionTerm(true));
-            foreach (Set set in leftjoin.Sets)
+            foreach (ISet set in leftjoin.Sets)
             {
                 Console.WriteLine(set.ToString());
             }
@@ -239,7 +239,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
             //Try a Produce
             Console.WriteLine("Product LHS-RHS");
             BaseMultiset product = m.Product(n);
-            foreach (Set set in product.Sets)
+            foreach (ISet set in product.Sets)
             {
                 Console.WriteLine(set.ToString());
             }
@@ -248,7 +248,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
             //Try a Join to Self
             Console.WriteLine("Product LHS-D");
             product = m.Product(d);
-            foreach (Set set in product.Sets)
+            foreach (ISet set in product.Sets)
             {
                 Console.WriteLine(set.ToString());
             }
@@ -257,7 +257,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
             //Try a Union
             Console.WriteLine("Union LHS-RHS");
             BaseMultiset union = m.Union(n);
-            foreach (Set set in union.Sets)
+            foreach (ISet set in union.Sets)
             {
                 Console.WriteLine(set.ToString());
             }
@@ -540,7 +540,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
 
                 Console.WriteLine();
                 Console.WriteLine("Optimised Results");
-                foreach (Set s in results2.Sets)
+                foreach (ISet s in results2.Sets)
                 {
                     Console.WriteLine(s.ToString());
                 }
@@ -554,7 +554,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
         private void ShowMultiset(BaseMultiset multiset) 
         {
             Console.WriteLine(multiset.GetType().ToString());
-            foreach (Set s in multiset.Sets)
+            foreach (ISet s in multiset.Sets)
             {
                 Console.WriteLine(s.ToString());
             }

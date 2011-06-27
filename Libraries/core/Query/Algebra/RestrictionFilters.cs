@@ -212,7 +212,7 @@ namespace VDS.RDF.Query.Algebra
                     //If the Input Multiset contains the variable then pre-filter
                     foreach (int id in context.InputMultiset.SetIDs.ToList())
                     {
-                        Set x = context.InputMultiset[id];
+                        ISet x = context.InputMultiset[id];
                         try
                         {
                             if (x.ContainsVariable(this.RestrictionVariable))
@@ -235,7 +235,7 @@ namespace VDS.RDF.Query.Algebra
                 else
                 {
                     //If it doesn't contain the variable then bind for each existing set
-                    foreach (Set x in context.InputMultiset.Sets)
+                    foreach (ISet x in context.InputMultiset.Sets)
                     {
                         x.Add(this.RestrictionVariable, term);
                     }
@@ -249,7 +249,7 @@ namespace VDS.RDF.Query.Algebra
             //Filter the results to ensure that the variable is indeed bound to the term
             foreach (int id in results.SetIDs.ToList())
             {
-                Set x = results[id];
+                ISet x = results[id];
                 try
                 {
                     if (!term.Equals(x[this.RestrictionVariable]))

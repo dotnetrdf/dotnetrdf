@@ -75,8 +75,8 @@ namespace VDS.RDF.Query.Algebra
             else
             {
                 context.OutputMultiset = new Multiset(context.InputMultiset.Variables);
-                IEnumerable<Set> sets = context.InputMultiset.Sets.Distinct();
-                foreach (Set s in context.InputMultiset.Sets.Distinct())
+                IEnumerable<ISet> sets = context.InputMultiset.Sets.Distinct();
+                foreach (ISet s in context.InputMultiset.Sets.Distinct())
                 {
                     context.OutputMultiset.Add(s);
                 }
@@ -205,7 +205,7 @@ namespace VDS.RDF.Query.Algebra
                 if (context.Query.Limit > 0)
                 {
                     context.OutputMultiset = new Multiset(context.InputMultiset.Variables);
-                    foreach (Set s in context.InputMultiset.Sets.Distinct())
+                    foreach (ISet s in context.InputMultiset.Sets.Distinct())
                     {
                         context.OutputMultiset.Add(s);
                     }

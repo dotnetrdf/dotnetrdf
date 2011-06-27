@@ -111,12 +111,12 @@ namespace VDS.RDF.Query.Algebra
                         //Object is a Term
                         //Preseve sets where the Object Term is equal to the currently bound Subject
                         INode objTerm = ((NodeMatchPattern)this.PathEnd).Node;
-                        foreach (Set s in context.InputMultiset.Sets)
+                        foreach (ISet s in context.InputMultiset.Sets)
                         {
                             INode temp = s[subjVar];
                             if (temp != null && temp.Equals(objTerm))
                             {
-                                context.OutputMultiset.Add(new Set(s));
+                                context.OutputMultiset.Add(s.Copy());
                             }
                         }
                     }
@@ -171,12 +171,12 @@ namespace VDS.RDF.Query.Algebra
                     //Object is Bound
                     //Preseve sets where the Subject Term is equal to the currently bound Object
                     INode subjTerm = ((NodeMatchPattern)this.PathStart).Node;
-                    foreach (Set s in context.InputMultiset.Sets)
+                    foreach (ISet s in context.InputMultiset.Sets)
                     {
                         INode temp = s[objVar];
                         if (temp != null && temp.Equals(subjTerm))
                         {
-                            context.OutputMultiset.Add(new Set(s));
+                            context.OutputMultiset.Add(s.Copy());
                         }
                     }
                 }

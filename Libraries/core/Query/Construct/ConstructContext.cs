@@ -11,7 +11,7 @@ namespace VDS.RDF.Query.Construct
     /// </summary>
     public class ConstructContext
     {
-        private Set _s;
+        private ISet _s;
         private IGraph _g;
         private bool _preserveBNodes = false;
         private Dictionary<String, INode> _bnodeMap;
@@ -28,7 +28,7 @@ namespace VDS.RDF.Query.Construct
         /// Either the <paramref name="s">Set</paramref>  or <paramref name="g">Graph</paramref> parameters may be null if required
         /// </para>
         /// </remarks>
-        public ConstructContext(IGraph g, Set s, bool preserveBNodes)
+        public ConstructContext(IGraph g, ISet s, bool preserveBNodes)
         {
             this._g = g;
             this._s = s;
@@ -38,7 +38,7 @@ namespace VDS.RDF.Query.Construct
         /// <summary>
         /// Gets the Set that this Context pertains to
         /// </summary>
-        public Set Set
+        public ISet Set
         {
             get
             {

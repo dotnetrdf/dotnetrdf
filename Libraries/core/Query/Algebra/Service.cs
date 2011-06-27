@@ -112,7 +112,7 @@ namespace VDS.RDF.Query.Algebra
                     String var = this._endpointSpecifier.Value.Substring(1);
                     if (!context.InputMultiset.ContainsVariable(var)) throw new RdfQueryException("Cannot evaluate a SERVICE clause which uses a Variable as the Service specifier when the Variable is unbound");
                     List<IUriNode> services = new List<IUriNode>();
-                    foreach (Set s in context.InputMultiset.Sets)
+                    foreach (ISet s in context.InputMultiset.Sets)
                     {
                         if (s.ContainsVariable(var))
                         {
@@ -148,7 +148,7 @@ namespace VDS.RDF.Query.Algebra
                     //Pre-bound variables/BINDINGS clause so do substitution and execution
 
                     //Build the set of possible bindings
-                    HashSet<Set> bindings = new HashSet<Set>();
+                    HashSet<ISet> bindings = new HashSet<ISet>();
                     if (context.Query.Bindings != null && !this._pattern.Variables.IsDisjoint(context.Query.Bindings.Variables))
                     {
                         //Possible Bindings comes from BINDINGS clause
@@ -162,7 +162,7 @@ namespace VDS.RDF.Query.Algebra
                     {
                         //Possible Bindings get built from current input (if there was a BINDINGS clause the variables it defines are not in this SERVICE clause)
                         //In this case each possibility only contains Variables bound so far
-                        foreach (Set s in context.InputMultiset.Sets)
+                        foreach (ISet s in context.InputMultiset.Sets)
                         {
                             Set t = new Set();
                             foreach (String var in existingVars)
@@ -174,7 +174,7 @@ namespace VDS.RDF.Query.Algebra
                     }
 
                     //Execute the Query for every possible Binding and build up our Output Multiset from all the results
-                    foreach (Set s in bindings)
+                    foreach (ISet s in bindings)
                     {
                         //Q: Should we continue processing here if and when we hit an error?
 

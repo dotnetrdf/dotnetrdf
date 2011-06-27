@@ -268,7 +268,7 @@ namespace VDS.RDF.Update.Commands
                 IGraph g = context.Data.GetModifiableGraph(this._graphUri);
 
                 //Delete the Triples for each Solution
-                foreach (Set s in queryContext.OutputMultiset.Sets)
+                foreach (ISet s in queryContext.OutputMultiset.Sets)
                 {
                     List<Triple> deletedTriples = new List<Triple>();
 

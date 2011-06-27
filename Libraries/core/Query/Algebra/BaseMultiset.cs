@@ -119,7 +119,7 @@ namespace VDS.RDF.Query.Algebra
         /// Adds a Set to the Mutliset
         /// </summary>
         /// <param name="s">Set to add</param>
-        public abstract void Add(Set s);
+        public abstract void Add(ISet s);
 
         /// <summary>
         /// Adds a Variable to the Multiset
@@ -137,7 +137,7 @@ namespace VDS.RDF.Query.Algebra
         /// Sorts the Multiset
         /// </summary>
         /// <param name="comparer"></param>
-        public virtual void Sort(IComparer<Set> comparer)
+        public virtual void Sort(IComparer<ISet> comparer)
         {
             //Sorting does nothing by default
         }
@@ -189,7 +189,7 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the Sets in the Multiset
         /// </summary>
-        public abstract IEnumerable<Set> Sets
+        public abstract IEnumerable<ISet> Sets
         {
             get;
         }
@@ -207,7 +207,7 @@ namespace VDS.RDF.Query.Algebra
         /// </summary>
         /// <param name="id">ID</param>
         /// <returns></returns>
-        public abstract Set this[int id]
+        public abstract ISet this[int id]
         {
             get;
         }

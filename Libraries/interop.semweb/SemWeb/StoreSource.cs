@@ -751,7 +751,7 @@ namespace VDS.RDF.Interop.SemWeb
             if (results.Count > 0)
             {
                 int c = 0;
-                foreach (Set s in results.Sets)
+                foreach (ISet s in results.Sets)
                 {
                     //Apply Limit if applicable
                     if (options.Limit > 0 && c >= options.Limit)

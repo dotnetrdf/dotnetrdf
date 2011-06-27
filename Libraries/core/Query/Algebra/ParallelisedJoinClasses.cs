@@ -73,9 +73,9 @@ namespace VDS.RDF.Query.Algebra
             if (!(context.InputMultiset is IdentityMultiset))
             {
                 context2.InputMultiset = new Multiset();
-                foreach (Set s in context.InputMultiset.Sets)
+                foreach (ISet s in context.InputMultiset.Sets)
                 {
-                    context2.InputMultiset.Add(new Set(s));
+                    context2.InputMultiset.Add(s.Copy());
                 }
             }
 
@@ -307,9 +307,9 @@ namespace VDS.RDF.Query.Algebra
             if (!(context.InputMultiset is IdentityMultiset))
             {
                 context2.InputMultiset = new Multiset();
-                foreach (Set s in context.InputMultiset.Sets)
+                foreach (ISet s in context.InputMultiset.Sets)
                 {
-                    context2.InputMultiset.Add(new Set(s));
+                    context2.InputMultiset.Add(s.Copy());
                 }
             }
 

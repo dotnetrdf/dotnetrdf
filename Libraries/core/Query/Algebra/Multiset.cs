@@ -54,7 +54,7 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Dictionary of Sets in the Multiset
         /// </summary>
-        protected Dictionary<int, Set> _sets = new Dictionary<int,Set>();
+        protected Dictionary<int, ISet> _sets = new Dictionary<int,ISet>();
         /// <summary>
         /// Counter used to assign Set IDs
         /// </summary>
@@ -109,7 +109,7 @@ namespace VDS.RDF.Query.Algebra
             {
                 this.AddVariable(var);
             }
-            foreach (Set s in multiset.Sets)
+            foreach (ISet s in multiset.Sets)
             {
                 this.Add(s);
             }
@@ -137,16 +137,16 @@ namespace VDS.RDF.Query.Algebra
 
             //Start building the Joined Set
             Multiset joinedSet = new Multiset();
-            foreach (Set x in this.Sets)
+            foreach (ISet x in this.Sets)
             {
                 //For sets to be compatible for every joinable variable they must either have a null for the
                 //variable in one of the sets or if they have values the values must be equal
 
-                IEnumerable<Set> ys = other.Sets.Where(s => joinVars.All(v => x[v] == null || s[v] == null || x[v].Equals(s[v])));
+                IEnumerable<ISet> ys = other.Sets.Where(s => joinVars.All(v => x[v] == null || s[v] == null || x[v].Equals(s[v])));
 
-                foreach (Set y in ys)
+                foreach (ISet y in ys)
                 {
-                    joinedSet.Add(new Set(x, y));
+                    joinedSet.Add(x.Join(y));
                 }
             }
             return joinedSet;
@@ -176,12 +176,12 @@ namespace VDS.RDF.Query.Algebra
             if (joinVars.Count == 0)
             {
                 //Calculate a Product filtering as we go
-                foreach (Set x in this.Sets)
+                foreach (ISet x in this.Sets)
                 {
                     bool standalone = false;
-                    foreach (Set y in other.Sets)
+                    foreach (ISet y in other.Sets)
                     {
-                        Set z = new Set(x, y);
+                        ISet z = x.Join(y);
                         try
                         {
                             joinedSet.Add(z);
@@ -202,15 +202,15 @@ namespace VDS.RDF.Query.Algebra
             }
             else
             {
-                foreach (Set x in this.Sets)
+                foreach (ISet x in this.Sets)
                 {
-                    IEnumerable<Set> ys = other.Sets.Where(s => joinVars.All(v => x[v] == null || s[v] == null || x[v].Equals(s[v])));
+                    IEnumerable<ISet> ys = other.Sets.Where(s => joinVars.All(v => x[v] == null || s[v] == null || x[v].Equals(s[v])));
                     bool standalone = false;
                     int i = 0;
-                    foreach (Set y in ys)
+                    foreach (ISet y in ys)
                     {
                         i++;
-                        Set z = new Set(x, y);
+                        ISet z = x.Join(y);
                         try
                         {
                             joinedSet.Add(z);
@@ -274,7 +274,7 @@ namespace VDS.RDF.Query.Algebra
 
             //Start building the Joined Set
             Multiset joinedSet = new Multiset();
-            foreach (Set x in this.Sets)
+            foreach (ISet x in this.Sets)
             {
                 //New ExistsJoin() logic based on the improved Join() logic
                 bool exists = other.Sets.Any(s => joinVars.All(v => x[v] == null || s[v] == null || x[v].Equals(s[v])));
@@ -312,7 +312,7 @@ namespace VDS.RDF.Query.Algebra
 
             //Start building the Joined Set
             Multiset joinedSet = new Multiset();
-            foreach (Set x in this.Sets)
+            foreach (ISet x in this.Sets)
             {
                 //New Minus logic based on the improved Join() logic
                 bool minus = other.Sets.Any(s => joinVars.All(v => x[v] == null || s[v] == null || x[v].Equals(s[v])));
@@ -338,11 +338,11 @@ namespace VDS.RDF.Query.Algebra
             if (other.IsEmpty) return new NullMultiset();
 
             Multiset productSet = new Multiset();
-            foreach (Set x in this.Sets)
+            foreach (ISet x in this.Sets)
             {
-                foreach (Set y in other.Sets)
+                foreach (ISet y in other.Sets)
                 {
-                    productSet.Add(new Set(x, y));
+                    productSet.Add(x.Join(y));
                 }
             }
             return productSet;
@@ -359,7 +359,7 @@ namespace VDS.RDF.Query.Algebra
             if (other is NullMultiset) return this;
             if (other.IsEmpty) return this;
 
-            foreach (Set s in other.Sets)
+            foreach (ISet s in other.Sets)
             {
                 this.Add(s);
             }
@@ -421,7 +421,7 @@ namespace VDS.RDF.Query.Algebra
         /// Adds a Set to the Multiset
         /// </summary>
         /// <param name="s">Set</param>
-        public override void Add(Set s)
+        public override void Add(ISet s)
         {
             this._counter++;
             this._sets.Add(this._counter, s);
@@ -463,7 +463,7 @@ namespace VDS.RDF.Query.Algebra
         /// Sorts a Set based on the given Comparer
         /// </summary>
         /// <param name="comparer">Comparer on Sets</param>
-        public override void Sort(IComparer<Set> comparer)
+        public override void Sort(IComparer<ISet> comparer)
         {
             if (comparer != null)
             {
@@ -485,7 +485,7 @@ namespace VDS.RDF.Query.Algebra
             {
                 if (var.StartsWith("_:"))
                 {
-                    foreach (Set s in this._sets.Values)
+                    foreach (ISet s in this._sets.Values)
                     {
                         s.Remove(var);
                     }
@@ -502,7 +502,7 @@ namespace VDS.RDF.Query.Algebra
         {
             if (this._variables.Remove(variable))
             {
-                foreach (Set s in this._sets.Values)
+                foreach (ISet s in this._sets.Values)
                 {
                     s.Remove(variable);
                 }
@@ -546,7 +546,7 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the Sets in the Multiset
         /// </summary>
-        public override IEnumerable<Set> Sets
+        public override IEnumerable<ISet> Sets
         {
             get 
             {
@@ -587,7 +587,7 @@ namespace VDS.RDF.Query.Algebra
         /// </summary>
         /// <param name="id">Set ID</param>
         /// <returns></returns>
-        public override Set this[int id]
+        public override ISet this[int id]
         {
             get 
             {

@@ -133,7 +133,7 @@ namespace VDS.RDF.Query
                 {
                     this._variables.Add(var);
                 }
-                foreach (Set s in context.OutputMultiset.Sets)
+                foreach (ISet s in context.OutputMultiset.Sets)
                 {
                     this.AddResult(new SparqlResult(s));
                 }
