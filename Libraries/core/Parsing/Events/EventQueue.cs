@@ -113,17 +113,6 @@ namespace VDS.RDF.Parsing.Events
                 return this._events.Count; 
             }
         }
-
-        /// <summary>
-        /// Gets the underlying Queue of Events
-        /// </summary>
-        public override Queue<T> Events
-        {
-            get 
-            {
-                return this._events; 
-            }
-        }
     }
 
     /// <summary>

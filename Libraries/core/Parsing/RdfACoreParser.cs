@@ -148,7 +148,9 @@ namespace VDS.RDF.Parsing
                             nesting--;
                             continue;
                         default:
-                            throw new RdfParseException("Encountered an unexpected event of type '" + current.GetType().ToString() + "' when an Element/End Element event was expected", current.Position);
+                            //Otherwise skip the event and continue
+                            continue;
+                            //throw new RdfParseException("Encountered an unexpected event of type '" + current.GetType().ToString() + "' when an Element/End Element event was expected", current.Position);
                     }
                     //Stop when nesting level returns to 0
                     if (nesting == 0) break;
@@ -257,7 +259,7 @@ namespace VDS.RDF.Parsing
                     }
 
                     //Step 11 - Establish the current object literal
-                    if (current.HasAttribute("property"))
+                    if (newSubj != null && current.HasAttribute("property"))
                     {
                         //Must be an @property attribute in order for any triples to be generated
                         List<INode> ps = this.ParsePropertyAttribute(context, current).ToList();
@@ -284,15 +286,23 @@ namespace VDS.RDF.Parsing
                             {
                                 //Typed literal
                                 dtUri = this.ParseUri(context, current["datatype"], RdfACurieMode.TermOrCurieOrAbsUri);
-                                if (dtUri.ToString().Equals(RdfSpecsHelper.RdfXmlLiteral))
+                                if (dtUri != null)
                                 {
-                                    //XML Literal using element content
-                                    currObjLiteral = context.Handler.CreateLiteralNode(this.ParseXmlContent(context), dtUri);
+                                    if (dtUri.ToString().Equals(RdfSpecsHelper.RdfXmlLiteral))
+                                    {
+                                        //XML Literal using element content
+                                        currObjLiteral = context.Handler.CreateLiteralNode(this.ParseXmlContent(context), dtUri);
+                                    }
+                                    else
+                                    {
+                                        //Typed Literal using element content
+                                        currObjLiteral = context.Handler.CreateLiteralNode(this.ParseTextContent(context), dtUri);
+                                    }
                                 }
                                 else
                                 {
-                                    //Typed Literal using element content
-                                    currObjLiteral = context.Handler.CreateLiteralNode(this.ParseTextContent(context), dtUri);
+                                    //If datatype does not resolve fall back to plain literal using element content
+                                    currObjLiteral = context.Handler.CreateLiteralNode(this.ParseTextContent(context), context.Language);
                                 }
                             }
                             else
@@ -573,27 +583,86 @@ namespace VDS.RDF.Parsing
 
         private String ParseTextContent(RdfACoreParserContext context)
         {
-            throw new NotImplementedException();   
+            int i = 1;
+            IRdfAEvent next;
+            StringBuilder output = new StringBuilder();
+            List<IRdfAEvent> events = new List<IRdfAEvent>();
+            do
+            {
+                next = context.Events.Dequeue();
+                switch (next.EventType)
+                {
+                    case Event.Element:
+                        i++;
+                        break;
+                    case Event.EndElement:
+                        i--;
+                        break;
+                    case Event.Text:
+                        output.Append(((TextEvent)next).Text);
+                        break;
+                }
+                events.Add(next);
+            } while (i > 0);
+
+            foreach (IRdfAEvent evt in events)
+            {
+                context.Requeue(evt);
+            }
+
+            return output.ToString();
         }
 
         private String ParseXmlContent(RdfACoreParserContext context)
         {
-            throw new NotImplementedException();
-        }
-
-        protected virtual void ParseHostSpecificPrefixMappings(RdfACoreParserContext context, IRdfAEvent evt)
-        {
-            foreach (KeyValuePair<String, String> attr in evt.Attributes)
+            int i = 1;
+            IRdfAEvent next;
+            Stack<String> openElements = new Stack<string>();
+            StringBuilder output = new StringBuilder();
+            do
             {
-                if (attr.Key.Equals("xmlns"))
+                next = context.Events.Peek();
+                switch (next.EventType)
                 {
+                    case Event.Element:
+                        i++;
+                        output.Append("<" + ((ElementEvent)next).Name);
+                        openElements.Push(((ElementEvent)next).Name);
+                        foreach (KeyValuePair<String, String> attr in next.Attributes)
+                        {
+                            output.Append(" " + attr.Key + "=\"" + attr.Value + "\"");
+                        }
+                        context.Events.Dequeue();
+                        if (context.Events.Peek().EventType == Event.EndElement)
+                        {
+                            context.Events.Dequeue();
+                            i--;
+                            output.Append(" />");
+                            openElements.Pop();
+                        }
+                        else
+                        {
+                            output.Append(">");
+                        }
+                        continue;
 
-                }
-                else if (attr.Key.StartsWith("xmlns:"))
-                {
+                    case Event.EndElement:
+                        i--;
+                        if (i == 0)
+                        {
+                            break;
+                        }
+                        output.Append("</" + openElements.Pop() + ">");
+                        break;
 
+                    case Event.Text:
+                        output.Append(((TextEvent)next).Text);
+                        break;
                 }
-            }
+                context.Events.Dequeue();
+            } while (i > 0);
+
+            return output.ToString();
         }
 
         #region Helper Functions for parsing Terms, CURIEs and URIs
@@ -607,6 +676,7 @@ namespace VDS.RDF.Parsing
             else if (u.Scheme.Equals("rdfa"))
             {
                 String id = u.ToString().Substring(11);
+                if (id.Equals(String.Empty)) id = "rdfa-special-bnode";
                 return context.Handler.CreateBlankNode(id);
             }
             else
@@ -745,7 +815,7 @@ namespace VDS.RDF.Parsing
             }
             else
             {
-                return new Uri(context.DefaultPrefixMapping.ToString() + value);
+                return null;
             }
         }
 

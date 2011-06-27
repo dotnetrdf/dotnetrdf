@@ -198,6 +198,8 @@ namespace VDS.RDF.Parsing
             //Get the Characters
             char[] cs = name.ToCharArray();
 
+            if (cs.Length == 0) return false;
+
             //Check first Character is a valid NCNameStartChar
             if (!IsNCNameStartChar(cs[0]))
             {

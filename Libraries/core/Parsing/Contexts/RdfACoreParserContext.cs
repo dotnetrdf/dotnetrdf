@@ -92,6 +92,7 @@ namespace VDS.RDF.Parsing.Contexts
                 this._events = new EventQueue<IRdfAEvent>(generator);
                 ((IPreProcessingEventGenerator<IRdfAEvent, RdfACoreParserContext>)generator).GetAllEvents(this);
             }
+            this._events = new DualEventQueue<IRdfAEvent>(this._events);
 
             //Setup final things
             this._baseUri = new NestedReference<Uri>((this._language.InitialBaseUri != null ? this._language.InitialBaseUri : this._handler.GetBaseUri()));
@@ -255,6 +256,18 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         #endregion
+
+        public void Requeue(IRdfAEvent evt)
+        {
+            if (this._events is DualEventQueue<IRdfAEvent>)
+            {
+                ((DualEventQueue<IRdfAEvent>)this._events).Requeue(evt);
+            }
+            else
+            {
+                throw new RdfParseException("Cannot requeue an event as the event queue is not of the correct type");
+            }
+        }
 
         public void IncrementNesting()
         {

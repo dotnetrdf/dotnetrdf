@@ -19,6 +19,22 @@ namespace VDS.RDF.Parsing.Events.RdfA
             //TODO: Load the RDFa default terms
         }
 
+        public override void ParsePrefixMappings(RdfACoreParserContext context, IRdfAEvent evt)
+        {
+            foreach (KeyValuePair<String, String> attr in evt.Attributes)
+            {
+                if (attr.Key.Equals("xmlns"))
+                {
+                    context.Namespaces.AddNamespace(String.Empty, new Uri(Tools.ResolveUri(attr.Value, context.BaseUri.ToSafeString())));
+                }
+                else if (attr.Key.StartsWith("xmlns:"))
+                {
+                    String prefix = attr.Key.Substring(attr.Key.IndexOf(':') + 1);
+                    context.Namespaces.AddNamespace(prefix, new Uri(Tools.ResolveUri(attr.Value, context.BaseUri.ToSafeString())));
+                }
+            }
+        }
+
         public override void ParseExtensions(RdfACoreParserContext context, IRdfAEvent evt)
         {
             if (evt.HasAttribute("xml:base"))

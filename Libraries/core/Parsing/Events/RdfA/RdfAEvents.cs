@@ -75,6 +75,11 @@ namespace VDS.RDF.Parsing.Events.RdfA
                 return this._name;
             }
         }
+
+        public override string ToString()
+        {
+            return "[Element] " + this._name;
+        }
     }
 
     public class EndElementEvent : BaseRdfAEvent
@@ -84,6 +89,11 @@ namespace VDS.RDF.Parsing.Events.RdfA
 
         public EndElementEvent()
             : this(null) { }
+
+        public override string ToString()
+        {
+            return "[End Element]";
+        }
     }
 
     public class XmlLiteralEvent : BaseRdfAEvent
@@ -127,6 +137,11 @@ namespace VDS.RDF.Parsing.Events.RdfA
             {
                 return this._text;
             }
+        }
+
+        public override string ToString()
+        {
+            return "[Text] " + this._text;
         }
     }
 }

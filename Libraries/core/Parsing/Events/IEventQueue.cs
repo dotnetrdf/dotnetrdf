@@ -85,14 +85,6 @@ namespace VDS.RDF.Parsing.Events
         }
 
         /// <summary>
-        /// Gets the underlying Queue of Events
-        /// </summary>
-        Queue<T> Events
-        {
-            get;
-        }
-
-        /// <summary>
         /// Gets/Sets whether Generator Tracing should be used
         /// </summary>
         bool Tracing
@@ -166,14 +158,6 @@ namespace VDS.RDF.Parsing.Events
         /// Gets the number of Events in the Queue
         /// </summary>
         public abstract int Count
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Gets the underlying Queue of Events
-        /// </summary>
-        public abstract Queue<T> Events
         {
             get;
         }

@@ -31,7 +31,15 @@ namespace VDS.RDF.Parsing.Events.RdfA
 
         private void GenerateEvents(RdfACoreParserContext context, HtmlNode node)
         {
-            context.Events.Enqueue(new ElementEvent(node.Name, this.GetAttributes(node), new PositionInfo(node.Line, node.LinePosition)));
+            bool noEnd = false;
+            if (node.Name.Equals("#document") || node.Name.Equals("?xml"))
+            {
+                noEnd = true;
+            }
+            else
+            {
+                context.Events.Enqueue(new ElementEvent(node.Name, this.GetAttributes(node), new PositionInfo(node.Line, node.LinePosition)));
+            }
 
             if (node.ChildNodes.Count > 0)
             {
@@ -72,7 +80,7 @@ namespace VDS.RDF.Parsing.Events.RdfA
                 }
             }
 
-            context.Events.Enqueue(new EndElementEvent());
+            if (!noEnd) context.Events.Enqueue(new EndElementEvent());
         }
 
         private IEnumerable<KeyValuePair<String, String>> GetAttributes(HtmlNode node)
