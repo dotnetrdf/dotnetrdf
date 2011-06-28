@@ -106,8 +106,6 @@ namespace VDS.RDF.Configuration
                 //Any error means this loader can't load this type
                 return false;
             }
-
-            //REQ: Add support for using all the writer properties to specify default options for a writer
         }
 
         public bool CanLoadObject(Type t)
