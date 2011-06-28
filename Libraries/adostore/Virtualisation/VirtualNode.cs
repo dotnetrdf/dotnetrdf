@@ -342,14 +342,15 @@ namespace VDS.RDF.Storage.Virtualisation
             if (other == null) return false;
 
             bool areEqual;
-            if (this.TryVirtualEquality(other, out areEqual))
-            {
-                return areEqual;
-            }
-            else if (this._type != other.NodeType)
+            if (this._type != other.NodeType)
             {
                 //Non-equal node types cannot be equal
                 return false;
+            }
+            else if (this.TryVirtualEquality(other, out areEqual))
+            {
+                //If Virtual Nodes originate from same virtual RDF provider can compare based on their virtual Node IDs
+                return areEqual;
             }
             else
             {
