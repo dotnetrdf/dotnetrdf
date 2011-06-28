@@ -1245,31 +1245,38 @@ namespace VDS.RDF.Query
         /// <returns>The Query Algebra which may have been transformed to a more optimal form</returns>
         private ISparqlAlgebra ApplyAlgebraOptimisations(ISparqlAlgebra algebra)
         {
-            //Apply Local Optimisers
-            foreach (IAlgebraOptimiser opt in this._optimisers.Where(o => o.IsApplicable(this)))
+            try
             {
-                try
+                //Apply Local Optimisers
+                foreach (IAlgebraOptimiser opt in this._optimisers.Where(o => o.IsApplicable(this)))
                 {
-                    algebra = opt.Optimise(algebra);
+                    try
+                    {
+                        algebra = opt.Optimise(algebra);
+                    }
+                    catch
+                    {
+                        //Ignore errors - if an optimiser errors then we leave the algebra unchanged
+                    }
                 }
-                catch
+                //Apply Global Optimisers
+                foreach (IAlgebraOptimiser opt in SparqlOptimiser.AlgebraOptimisers.Where(o => o.IsApplicable(this)))
                 {
-                    //Ignore errors - if an optimiser errors then we leave the algebra unchanged
+                    try
+                    {
+                        algebra = opt.Optimise(algebra);
+                    }
+                    catch
+                    {
+                        //Ignore errors - if an optimiser errors then we leave the algebra unchanged
+                    }
                 }
+                return algebra;
             }
-            //Apply Global Optimisers
-            foreach (IAlgebraOptimiser opt in SparqlOptimiser.AlgebraOptimisers.Where(o => o.IsApplicable(this)))
+            catch
             {
-                try
-                {
-                    algebra = opt.Optimise(algebra);
-                }
-                catch
-                {
-                    //Ignore errors - if an optimiser errors then we leave the algebra unchanged
-                }
+                return algebra;
             }
-            return algebra;
         }
 
         /// <summary>

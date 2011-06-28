@@ -38,6 +38,7 @@ using System.Linq;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Functions;
+using VDS.RDF.Update;
 
 namespace VDS.RDF.Query.Optimisation
 {
@@ -181,6 +182,11 @@ namespace VDS.RDF.Query.Optimisation
         /// <param name="q">Query</param>
         /// <returns></returns>
         public bool IsApplicable(SparqlQuery q)
+        {
+            return true;
+        }
+
+        public bool IsApplicable(SparqlUpdateCommandSet cmds)
         {
             return true;
         }

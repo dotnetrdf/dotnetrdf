@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Query.Algebra;
+using VDS.RDF.Update;
 
 namespace VDS.RDF.Query.Optimisation
 {
     public class ParallelEvaluationOptimiser : IAlgebraOptimiser
     {
-
         public ISparqlAlgebra Optimise(ISparqlAlgebra algebra)
         {
             if (algebra is IAbstractJoin)
@@ -48,6 +48,11 @@ namespace VDS.RDF.Query.Optimisation
         public bool IsApplicable(SparqlQuery q)
         {
             return true;
+        }
+
+        public bool IsApplicable(SparqlUpdateCommandSet cmds)
+        {
+            return false;
         }
     }
 }

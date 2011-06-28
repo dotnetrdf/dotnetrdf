@@ -42,6 +42,7 @@ using VDS.RDF.Parsing.Contexts;
 using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Expressions;
+using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Query.Patterns;
 using VDS.RDF.Update;
 using VDS.RDF.Update.Commands;
@@ -56,6 +57,7 @@ namespace VDS.RDF.Parsing
         private bool _traceTokeniser = false;
         private IEnumerable<ISparqlCustomExpressionFactory> _factories = Enumerable.Empty<ISparqlCustomExpressionFactory>();
         private Uri _baseUri;
+        private IQueryOptimiser _optimiser;
 
         //OPT: Add support to the SPARQL Update Parser for selectable syntax in the future
 
@@ -104,6 +106,26 @@ namespace VDS.RDF.Parsing
             set
             {
                 this._baseUri = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets/Sets the locally scoped Query Optimiser applied to graph patterns in update commands at the end of the parsing process
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// May be null if no locally scoped optimiser is set in which case the globally scoped optimiser will be used
+        /// </para>
+        /// </remarks>
+        public IQueryOptimiser QueryOptimiser
+        {
+            get
+            {
+                return this._optimiser;
+            }
+            set
+            {
+                this._optimiser = value;
             }
         }
 

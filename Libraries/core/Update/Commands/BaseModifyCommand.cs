@@ -63,7 +63,7 @@ namespace VDS.RDF.Update.Commands
         /// </summary>
         /// <param name="type">Update Command Type</param>
         public BaseModificationCommand(SparqlUpdateCommandType type)
-            : base(type, false) { }
+            : base(type) { }
 
         /// <summary>
         /// Gets the URIs specified in USING clauses

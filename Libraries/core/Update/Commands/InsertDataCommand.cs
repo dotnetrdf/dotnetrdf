@@ -20,7 +20,7 @@ namespace VDS.RDF.Update.Commands
         /// </summary>
         /// <param name="pattern">Pattern containing concrete Triples to insert</param>
         public InsertDataCommand(GraphPattern pattern)
-            : base(SparqlUpdateCommandType.InsertData, true) 
+            : base(SparqlUpdateCommandType.InsertData) 
         {
             if (!this.IsValidDataPattern(pattern, true)) throw new SparqlUpdateException("Cannot create a INSERT DATA command where any of the Triple Patterns are not concrete triples (variables are not permitted) or a GRAPH clause has nested Graph Patterns");
             this._pattern = pattern;

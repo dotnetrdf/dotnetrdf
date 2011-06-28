@@ -78,7 +78,7 @@ namespace VDS.RDF.Update.Commands
         /// <param name="sourceUri">Source Graph URI</param>
         /// <param name="destUri">Destination Graph URI</param>
         public BaseTransferCommand(SparqlUpdateCommandType type, Uri sourceUri, Uri destUri)
-            : base(type, true)
+            : base(type)
         {
             this._sourceUri = sourceUri;
             this._destUri = destUri;

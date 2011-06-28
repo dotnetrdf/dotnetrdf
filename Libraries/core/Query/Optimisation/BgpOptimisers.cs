@@ -38,6 +38,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Query.Algebra;
+using VDS.RDF.Update;
 
 namespace VDS.RDF.Query.Optimisation
 {
@@ -131,6 +132,11 @@ namespace VDS.RDF.Query.Optimisation
                    && q.GroupBy == null && q.Having == null
                    && q.Bindings == null;
         }
+
+        public override bool IsApplicable(SparqlUpdateCommandSet cmds)
+        {
+            return false;
+        }
     }
 
     /// <summary>
@@ -219,6 +225,11 @@ namespace VDS.RDF.Query.Optimisation
         public override bool IsApplicable(SparqlQuery q)
         {
             return q.QueryType == SparqlQueryType.Ask;
+        }
+
+        public override bool IsApplicable(SparqlUpdateCommandSet cmds)
+        {
+            return false;
         }
     }
 }

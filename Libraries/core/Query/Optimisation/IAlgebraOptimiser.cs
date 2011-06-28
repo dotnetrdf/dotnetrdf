@@ -38,11 +38,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Query.Algebra;
+using VDS.RDF.Update;
 
 namespace VDS.RDF.Query.Optimisation
 {
     /// <summary>
-    /// An Algebra Optimiser is a class that can transform an algebra from one form to another typically for optimisation purposes
+    /// An Algebra Optimiser is a class that can transform a SPARQL algebra from one form to another typically for optimisation purposes
     /// </summary>
     public interface IAlgebraOptimiser
     {
@@ -62,5 +63,12 @@ namespace VDS.RDF.Query.Optimisation
         /// <param name="q">SPARQL Query</param>
         /// <returns></returns>
         bool IsApplicable(SparqlQuery q);
+
+        /// <summary>
+        /// Determines whether an Optimiser is applicable based on the Update Command Set being optimised
+        /// </summary>
+        /// <param name="cmds">Update Command Set</param>
+        /// <returns></returns>
+        bool IsApplicable(SparqlUpdateCommandSet cmds);
     }
 }

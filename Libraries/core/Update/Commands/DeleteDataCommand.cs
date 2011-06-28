@@ -55,7 +55,7 @@ namespace VDS.RDF.Update.Commands
         /// </summary>
         /// <param name="pattern">Pattern composed of concrete Triples to delete</param>
         public DeleteDataCommand(GraphPattern pattern)
-            : base(SparqlUpdateCommandType.DeleteData, true) 
+            : base(SparqlUpdateCommandType.DeleteData) 
         {
             if (!this.IsValidDataPattern(pattern, true)) throw new SparqlUpdateException("Cannot create a DELETE DATA command where any of the Triple Patterns are not concrete triples (Variables/Blank Nodes are not permitted) or a GRAPH clause has nested Graph Patterns");
             this._pattern = pattern;

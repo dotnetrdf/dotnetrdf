@@ -38,6 +38,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using VDS.RDF.Query.Algebra;
+using VDS.RDF.Query.Optimisation;
 
 namespace VDS.RDF.Update
 {
@@ -51,6 +53,7 @@ namespace VDS.RDF.Update
         private Uri _baseUri;
         private long _timeout = 0;
         private TimeSpan? _executionTime = null;
+        private IEnumerable<IAlgebraOptimiser> _optimisers = Enumerable.Empty<IAlgebraOptimiser>();
 
         /// <summary>
         /// Creates a new empty Command Set
@@ -163,17 +166,6 @@ namespace VDS.RDF.Update
         }
 
         /// <summary>
-        /// Gets whether the Commands in the Command Set are optimised
-        /// </summary>
-        public bool IsOptimised
-        {
-            get
-            {
-                return this._commands.All(c => c.IsOptimised);
-            }
-        }
-
-        /// <summary>
         /// Gets/Sets the Timeout for the execution of the Updates
         /// </summary>
         public long Timeout
@@ -211,14 +203,46 @@ namespace VDS.RDF.Update
             }
         }
 
+        public IEnumerable<IAlgebraOptimiser> AlgebraOptimisers
+        {
+            get
+            {
+                return this._optimisers;
+            }
+            set
+            {
+                if (value == null)
+                {
+                    this._optimisers = Enumerable.Empty<IAlgebraOptimiser>();
+                }
+                else
+                {
+                    this._optimisers = value;
+                }
+            }
+        }
+
         /// <summary>
         /// Optimises the Commands in the Command Set
         /// </summary>
+        /// <param name="optimiser">Optimiser to use</param>
+        public void Optimise(IQueryOptimiser optimiser)
+        {
+            foreach (SparqlUpdateCommand c in this._commands)
+            {
+                c.Optimise(optimiser);
+            }
+        }
+
+        /// <summary>
+        /// Optimises the Commands in the Command Set
+        /// </summary>
+        /// <remarks>Uses the globally registered query optimiser from <see cref="SparqlOptimiser.QueryOptimiser">SparqlOptimiser.QueryOptimiser</see></remarks>
         public void Optimise()
         {
             foreach (SparqlUpdateCommand c in this._commands)
             {
-                c.Optimise();
+                c.Optimise(SparqlOptimiser.QueryOptimiser);
             }
         }
 
@@ -229,6 +253,42 @@ namespace VDS.RDF.Update
         public void Process(ISparqlUpdateProcessor processor)
         {
             processor.ProcessCommandSet(this);
+        }
+
+        internal ISparqlAlgebra ApplyAlgebraOptimisers(ISparqlAlgebra algebra)
+        {
+            try
+            {
+                //Apply Local Optimisers
+                foreach (IAlgebraOptimiser opt in this._optimisers.Where(o => o.IsApplicable(this)))
+                {
+                    try
+                    {
+                        algebra = opt.Optimise(algebra);
+                    }
+                    catch
+                    {
+                        //Ignore errors - if an optimiser errors then we leave the algebra unchanged
+                    }
+                }
+                //Apply Global Optimisers
+                foreach (IAlgebraOptimiser opt in SparqlOptimiser.AlgebraOptimisers.Where(o => o.IsApplicable(this)))
+                {
+                    try
+                    {
+                        algebra = opt.Optimise(algebra);
+                    }
+                    catch
+                    {
+                        //Ignore errors - if an optimiser errors then we leave the algebra unchanged
+                    }
+                }
+                return algebra;
+            }
+            catch
+            {
+                return algebra;
+            }
         }
 
         /// <summary>

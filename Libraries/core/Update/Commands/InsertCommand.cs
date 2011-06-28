@@ -41,6 +41,7 @@ using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Construct;
+using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Update.Commands
@@ -167,13 +168,9 @@ namespace VDS.RDF.Update.Commands
         /// <summary>
         /// Optimises the Commands WHERE pattern
         /// </summary>
-        public override void Optimise()
+        public override void Optimise(IQueryOptimiser optimiser)
         {
-            if (!this.IsOptimised)
-            {
-                this._wherePattern.Optimise();
-                this.IsOptimised = true;
-            }
+            this._wherePattern.Optimise(optimiser);
         }
 
         /// <summary>
@@ -189,6 +186,10 @@ namespace VDS.RDF.Update.Commands
             {
                 //First evaluate the WHERE pattern to get the affected bindings
                 ISparqlAlgebra where = this._wherePattern.ToAlgebra();
+                if (context.Commands != null)
+                {
+                    where = context.Commands.ApplyAlgebraOptimisers(where);
+                }
 
                 //Set Active Graph for the WHERE
                 //Don't bother if there are USING URIs as these would override any Active Graph we set here

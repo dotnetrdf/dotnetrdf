@@ -34,6 +34,7 @@ terms.
 */
 
 using System;
+using VDS.RDF.Query.Optimisation;
 
 namespace VDS.RDF.Update
 {
@@ -102,24 +103,14 @@ namespace VDS.RDF.Update
     public abstract class SparqlUpdateCommand
     {
         private SparqlUpdateCommandType _type = SparqlUpdateCommandType.Unknown;
-        private bool _optimised = false;
 
         /// <summary>
         /// Creates a new SPARQL Update Command
         /// </summary>
         /// <param name="type">Command Type</param>
         public SparqlUpdateCommand(SparqlUpdateCommandType type)
-            : this(type, false) { }
-
-        /// <summary>
-        /// Creates a new SPARQL Update Command
-        /// </summary>
-        /// <param name="type">Command Type</param>
-        /// <param name="optimised">Whether the Command is optimised</param>
-        public SparqlUpdateCommand(SparqlUpdateCommandType type, bool optimised)
         {
             this._type = type;
-            this._optimised = optimised;
         }
 
         /// <summary>
@@ -152,27 +143,11 @@ namespace VDS.RDF.Update
         public abstract bool AffectsGraph(Uri graphUri);
 
         /// <summary>
-        /// Gets whether this Command is optimised
-        /// </summary>
-        public bool IsOptimised
-        {
-            get 
-            {
-                return this._optimised;
-            }
-            internal set
-            {
-                this._optimised = value;
-            }
-        }
-
-        /// <summary>
         /// Optimises the Command
         /// </summary>
-        public virtual void Optimise()
+        public virtual void Optimise(IQueryOptimiser optimiser)
         {
-            //Does Nothing by Default except set the Optimised Flag to true if it wasn't already
-            this._optimised = true;
+            //Does Nothing by Default
         }
 
         /// <summary>

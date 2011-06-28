@@ -74,6 +74,17 @@ namespace VDS.RDF.Update
         }
 
         /// <summary>
+        /// Gets the Command Set (if any) that this context pertains to
+        /// </summary>
+        public SparqlUpdateCommandSet Commands
+        {
+            get
+            {
+                return this._commands;
+            }
+        }
+
+        /// <summary>
         /// Dataset upon which the Updates are applied
         /// </summary>
         public ISparqlDataset Data
