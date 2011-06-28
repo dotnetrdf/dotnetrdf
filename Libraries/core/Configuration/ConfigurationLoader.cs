@@ -265,14 +265,51 @@ namespace VDS.RDF.Configuration
                 }
                 else
                 {
-                    throw new DotNetRdfConfigurationException("Auto-detection of Readers and Writers failed as the Node '" + objNode.ToString() + "' was stated to be rdf:type of dnr:RdfParser but failed to load as an object which implements the required IRdfParser interface");
+                    throw new DotNetRdfConfigurationException("Auto-detection of Readers and Writers failed as the Node '" + objNode.ToString() + "' was stated to be rdf:type of dnr:RdfParser but failed to load as an object which implements the required IRdfReader interface");
                 }
             }
 
-            //REQ: Load Dataset parsers
+            //Load Dataset parsers
+            desiredType = CreateConfigurationNode(g, ClassDatasetParser);
+            foreach (INode objNode in g.GetTriplesWithPredicateObject(rdfType, desiredType).Select(t => t.Subject))
+            {
+                temp = LoadObject(g, objNode);
+                if (temp is IStoreReader)
+                {
+                    //Get the formats to associate this with
+                    mimeTypes = ConfigurationLoader.GetConfigurationArray(g, objNode, formatMimeType);
+                    if (mimeTypes.Length == 0) throw new DotNetRdfConfigurationException("Auto-detection of Readers and Writers failed as the Parser specified by the Node '" + objNode.ToString() + "' is not associated with any MIME types");
+                    extensions = ConfigurationLoader.GetConfigurationArray(g, objNode, formatExtension);
 
-            //REQ: Load SPARQL Result parsers
+                    //Register
+                    MimeTypesHelper.RegisterParser((IStoreReader)temp, mimeTypes, extensions);
+                }
+                else
+                {
+                    throw new DotNetRdfConfigurationException("Auto-detection of Readers and Writers failed as the Node '" + objNode.ToString() + "' was stated to be rdf:type of dnr:DatasetParser but failed to load as an object which implements the required IStoreReader interface");
+                }
+            }
 
+            //Load SPARQL Result parsers
+            desiredType = CreateConfigurationNode(g, ClassSparqlResultsParser);
+            foreach (INode objNode in g.GetTriplesWithPredicateObject(rdfType, desiredType).Select(t => t.Subject))
+            {
+                temp = LoadObject(g, objNode);
+                if (temp is ISparqlResultsReader)
+                {
+                    //Get the formats to associate this with
+                    mimeTypes = ConfigurationLoader.GetConfigurationArray(g, objNode, formatMimeType);
+                    if (mimeTypes.Length == 0) throw new DotNetRdfConfigurationException("Auto-detection of Readers and Writers failed as the Parser specified by the Node '" + objNode.ToString() + "' is not associated with any MIME types");
+                    extensions = ConfigurationLoader.GetConfigurationArray(g, objNode, formatExtension);
+
+                    //Register
+                    MimeTypesHelper.RegisterParser((ISparqlResultsReader)temp, mimeTypes, extensions);
+                }
+                else
+                {
+                    throw new DotNetRdfConfigurationException("Auto-detection of Readers and Writers failed as the Node '" + objNode.ToString() + "' was stated to be rdf:type of dnr:SparqlResultsParser but failed to load as an object which implements the required ISparqlResultsReader interface");
+                }
+            }
 
             //Load RDF Writers
             desiredType = CreateConfigurationNode(g, ClassRdfWriter);
@@ -292,6 +329,48 @@ namespace VDS.RDF.Configuration
                 else
                 {
                     throw new DotNetRdfConfigurationException("Auto-detection of Readers and Writers failed as the Node '" + objNode.ToString() + "' was stated to be rdf:type of dnr:RdfWriter but failed to load as an object which implements the required IRdfWriter interface");
+                }
+            }
+
+            //Load Dataset Writers
+            desiredType = CreateConfigurationNode(g, ClassDatasetWriter);
+            foreach (INode objNode in g.GetTriplesWithPredicateObject(rdfType, desiredType).Select(t => t.Subject))
+            {
+                temp = LoadObject(g, objNode);
+                if (temp is IStoreWriter)
+                {
+                    //Get the formats to associate this with
+                    mimeTypes = ConfigurationLoader.GetConfigurationArray(g, objNode, formatMimeType);
+                    if (mimeTypes.Length == 0) throw new DotNetRdfConfigurationException("Auto-detection of Readers and Writers failed as the Writer specified by the Node '" + objNode.ToString() + "' is not associated with any MIME types");
+                    extensions = ConfigurationLoader.GetConfigurationArray(g, objNode, formatExtension);
+
+                    //Register
+                    MimeTypesHelper.RegisterWriter((IStoreWriter)temp, mimeTypes, extensions);
+                }
+                else
+                {
+                    throw new DotNetRdfConfigurationException("Auto-detection of Readers and Writers failed as the Node '" + objNode.ToString() + "' was stated to be rdf:type of dnr:DatasetWriter but failed to load as an object which implements the required IStoreWriter interface");
+                }
+            }
+
+            //Load SPARQL Result Writers
+            desiredType = CreateConfigurationNode(g, ClassDatasetWriter);
+            foreach (INode objNode in g.GetTriplesWithPredicateObject(rdfType, desiredType).Select(t => t.Subject))
+            {
+                temp = LoadObject(g, objNode);
+                if (temp is ISparqlResultsWriter)
+                {
+                    //Get the formats to associate this with
+                    mimeTypes = ConfigurationLoader.GetConfigurationArray(g, objNode, formatMimeType);
+                    if (mimeTypes.Length == 0) throw new DotNetRdfConfigurationException("Auto-detection of Readers and Writers failed as the Writer specified by the Node '" + objNode.ToString() + "' is not associated with any MIME types");
+                    extensions = ConfigurationLoader.GetConfigurationArray(g, objNode, formatExtension);
+
+                    //Register
+                    MimeTypesHelper.RegisterWriter((ISparqlResultsWriter)temp, mimeTypes, extensions);
+                }
+                else
+                {
+                    throw new DotNetRdfConfigurationException("Auto-detection of Readers and Writers failed as the Node '" + objNode.ToString() + "' was stated to be rdf:type of dnr:SparqlResultsWriter but failed to load as an object which implements the required ISparqlResultsWriter interface");
                 }
             }
         }

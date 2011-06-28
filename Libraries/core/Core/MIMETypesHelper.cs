@@ -208,6 +208,58 @@ namespace VDS.RDF
             AddDefinition(new MimeTypeDefinition(String.Empty, newTypes, fileExtensions));
         }
 
+        public static void RegisterParser(IStoreReader parser, IEnumerable<String> mimeTypes, IEnumerable<String> fileExtensions)
+        {
+            if (!_init) Init();
+
+            if (!mimeTypes.Any()) throw new RdfException("Cannot register a parser without specifying at least 1 MIME Type");
+
+            //Get any existing defintions that are to be altered
+            IEnumerable<MimeTypeDefinition> existing = GetDefinitions(mimeTypes);
+            foreach (MimeTypeDefinition def in existing)
+            {
+                foreach (String type in mimeTypes)
+                {
+                    def.AddMimeType(type);
+                }
+                foreach (String ext in fileExtensions)
+                {
+                    def.AddFileExtension(ext);
+                }
+                def.RdfDatasetParserType = parser.GetType();
+            }
+
+            //Create any new defintions
+            IEnumerable<String> newTypes = mimeTypes.Where(t => !GetDefinitions(t).Any());
+            AddDefinition(new MimeTypeDefinition(String.Empty, newTypes, fileExtensions));
+        }
+
+        public static void RegisterParser(ISparqlResultsReader parser, IEnumerable<String> mimeTypes, IEnumerable<String> fileExtensions)
+        {
+            if (!_init) Init();
+
+            if (!mimeTypes.Any()) throw new RdfException("Cannot register a parser without specifying at least 1 MIME Type");
+
+            //Get any existing defintions that are to be altered
+            IEnumerable<MimeTypeDefinition> existing = GetDefinitions(mimeTypes);
+            foreach (MimeTypeDefinition def in existing)
+            {
+                foreach (String type in mimeTypes)
+                {
+                    def.AddMimeType(type);
+                }
+                foreach (String ext in fileExtensions)
+                {
+                    def.AddFileExtension(ext);
+                }
+                def.SparqlResultsParserType = parser.GetType();
+            }
+
+            //Create any new defintions
+            IEnumerable<String> newTypes = mimeTypes.Where(t => !GetDefinitions(t).Any());
+            AddDefinition(new MimeTypeDefinition(String.Empty, newTypes, fileExtensions));
+        }
+
         public static void RegisterWriter(IRdfWriter writer, IEnumerable<String> mimeTypes, IEnumerable<String> fileExtensions)
         {
             if (!_init) Init();
@@ -227,6 +279,58 @@ namespace VDS.RDF
                     def.AddFileExtension(ext);
                 }
                 def.RdfWriterType = writer.GetType();
+            }
+
+            //Create any new defintions
+            IEnumerable<String> newTypes = mimeTypes.Where(t => !GetDefinitions(t).Any());
+            AddDefinition(new MimeTypeDefinition(String.Empty, newTypes, fileExtensions));
+        }
+
+        public static void RegisterWriter(IStoreWriter writer, IEnumerable<String> mimeTypes, IEnumerable<String> fileExtensions)
+        {
+            if (!_init) Init();
+
+            if (!mimeTypes.Any()) throw new RdfException("Cannot register a writer without specifying at least 1 MIME Type");
+
+            //Get any existing defintions that are to be altered
+            IEnumerable<MimeTypeDefinition> existing = GetDefinitions(mimeTypes);
+            foreach (MimeTypeDefinition def in existing)
+            {
+                foreach (String type in mimeTypes)
+                {
+                    def.AddMimeType(type);
+                }
+                foreach (String ext in fileExtensions)
+                {
+                    def.AddFileExtension(ext);
+                }
+                def.RdfDatasetWriterType = writer.GetType();
+            }
+
+            //Create any new defintions
+            IEnumerable<String> newTypes = mimeTypes.Where(t => !GetDefinitions(t).Any());
+            AddDefinition(new MimeTypeDefinition(String.Empty, newTypes, fileExtensions));
+        }
+
+        public static void RegisterWriter(ISparqlResultsWriter writer, IEnumerable<String> mimeTypes, IEnumerable<String> fileExtensions)
+        {
+            if (!_init) Init();
+
+            if (!mimeTypes.Any()) throw new RdfException("Cannot register a writer without specifying at least 1 MIME Type");
+
+            //Get any existing defintions that are to be altered
+            IEnumerable<MimeTypeDefinition> existing = GetDefinitions(mimeTypes);
+            foreach (MimeTypeDefinition def in existing)
+            {
+                foreach (String type in mimeTypes)
+                {
+                    def.AddMimeType(type);
+                }
+                foreach (String ext in fileExtensions)
+                {
+                    def.AddFileExtension(ext);
+                }
+                def.SparqlResultsWriterType = writer.GetType();
             }
 
             //Create any new defintions
