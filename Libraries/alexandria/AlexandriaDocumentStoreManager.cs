@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF;
+using VDS.RDF.Parsing;
+using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Storage;
 using VDS.Alexandria.Documents;
 using VDS.Alexandria.Indexing;
@@ -54,6 +56,11 @@ namespace VDS.Alexandria
             this.LoadGraph(g, graphUri.ToSafeString());
         }
 
+        public override void LoadGraph(IRdfHandler handler, Uri graphUri)
+        {
+            this.LoadGraph(handler, graphUri.ToSafeString());
+        }
+
         public override void LoadGraph(IGraph g, string graphUri)
         {
             String name = this._docManager.GraphRegistry.GetDocumentName(graphUri);
@@ -92,6 +99,11 @@ namespace VDS.Alexandria
                     this._docManager.ReleaseDocument(name);
                 }
             }
+        }
+
+        public override void LoadGraph(IRdfHandler handler, string graphUri)
+        {
+            throw new NotImplementedException();
         }
 
         public override void SaveGraph(IGraph g)

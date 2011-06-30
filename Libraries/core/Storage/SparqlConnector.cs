@@ -43,6 +43,7 @@ using System.Net;
 using System.Text;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
+using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
 
 namespace VDS.RDF.Storage
@@ -162,7 +163,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="sparqlQuery">SPARQL Query</param>
         /// <returns></returns>
-        public object Query(string sparqlQuery)
+        public object Query(String sparqlQuery)
         {
             if (!this._skipLocalParsing)
             {
@@ -230,14 +231,12 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">URI of the Graph to load</param>
         public void LoadGraph(IGraph g, Uri graphUri)
         {
-            if (graphUri == null)
-            {
-                this.LoadGraph(g, String.Empty);
-            }
-            else
-            {
-                this.LoadGraph(g, graphUri.ToString());
-            }
+            this.LoadGraph(g, graphUri.ToSafeString());
+        }
+
+        public void LoadGraph(IRdfHandler handler, Uri graphUri)
+        {
+            this.LoadGraph(handler, graphUri.ToSafeString());
         }
 
         /// <summary>
@@ -245,7 +244,16 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="g">Graph to load into</param>
         /// <param name="graphUri">URI of the Graph to load</param>
-        public void LoadGraph(IGraph g, string graphUri)
+        public void LoadGraph(IGraph g, String graphUri)
+        {
+            if (g.IsEmpty && graphUri != null && !graphUri.Equals(String.Empty))
+            {
+                g.BaseUri = new Uri(graphUri);
+            }
+            this.LoadGraph(new GraphHandler(g), graphUri);
+        }
+
+        public void LoadGraph(IRdfHandler handler, String graphUri)
         {
             String query;
 
@@ -274,9 +282,7 @@ namespace VDS.RDF.Storage
                 }
             }
 
-            IGraph temp = this._endpoint.QueryWithResultGraph(query);
-            if (g.IsEmpty) g.BaseUri = new Uri(graphUri);
-            g.Merge(temp);
+            this._endpoint.QueryWithResultGraph(handler, query);
         }
 
         /// <summary>
@@ -307,7 +313,7 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">Graph URI</param>
         /// <param name="additions">Triples to be added</param>
         /// <param name="removals">Triples to be removed</param>
-        public void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
+        public void UpdateGraph(String graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
             throw new RdfStorageException("The SparqlConnector provides a read-only connection");
         }

@@ -41,6 +41,7 @@ using System.Linq;
 using System.Text;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
+using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Update;
@@ -94,10 +95,17 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">Graph URI to load</param>
         public void LoadGraph(IGraph g, Uri graphUri)
         {
+            this.LoadGraph(new GraphHandler(g), graphUri);
+        }
+
+        public void LoadGraph(IRdfHandler handler, Uri graphUri)
+        {
+            IGraph g = null;
             if (this._dataset.HasGraph(graphUri))
             {
-                g.Merge(this._dataset[graphUri]);
+                g = this._dataset[graphUri];
             }
+            handler.Apply(g);
         }
 
         /// <summary>
@@ -107,17 +115,25 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">Graph URI to load</param>
         public void LoadGraph(IGraph g, string graphUri)
         {
-            if (graphUri == null)
-            {
-                this.LoadGraph(g, (Uri)null);
-            }
-            else if (graphUri.Equals(String.Empty))
+            if (graphUri == null || graphUri.Equals(String.Empty))
             {
                 this.LoadGraph(g, (Uri)null);
             }
             else
             {
                 this.LoadGraph(g, new Uri(graphUri));
+            }
+        }
+
+        public void LoadGraph(IRdfHandler handler, String graphUri)
+        {
+            if (graphUri == null || graphUri.Equals(String.Empty))
+            {
+                this.LoadGraph(handler, (Uri)null);
+            }
+            else
+            {
+                this.LoadGraph(handler, new Uri(graphUri));
             }
         }
 

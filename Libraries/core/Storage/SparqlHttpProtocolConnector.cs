@@ -42,6 +42,7 @@ using System.Linq;
 using System.Net;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
+using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Writing;
 
 namespace VDS.RDF.Storage
@@ -93,19 +94,30 @@ namespace VDS.RDF.Storage
             this.LoadGraph(g, graphUri.ToSafeString());
         }
 
+        public virtual void LoadGraph(IRdfHandler handler, Uri graphUri)
+        {
+            this.LoadGraph(handler, graphUri.ToSafeString());
+        }
+
         /// <summary>
         /// Loads a Graph from the Protocol Server
         /// </summary>
         /// <param name="g">Graph to load into</param>
         /// <param name="graphUri">URI of the Graph to load</param>
-        public virtual void LoadGraph(IGraph g, string graphUri)
+        public virtual void LoadGraph(IGraph g, String graphUri)
         {
-            String retrievalUri = this._serviceUri;
             Uri origUri = g.BaseUri;
             if (origUri == null && g.IsEmpty && graphUri != null && !graphUri.Equals(String.Empty))
             {
                 origUri = new Uri(graphUri);
             }
+
+            g.BaseUri = origUri;
+        }
+
+        public virtual void LoadGraph(IRdfHandler handler, String graphUri)
+        {
+            String retrievalUri = this._serviceUri;
             if (graphUri != null && !graphUri.Equals(String.Empty))
             {
                 retrievalUri += "?graph=" + Uri.EscapeDataString(graphUri);
@@ -137,7 +149,7 @@ namespace VDS.RDF.Storage
 #endif
                     //Parse the retrieved RDF
                     IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
-                    parser.Load(g, new StreamReader(response.GetResponseStream()));
+                    parser.Load(handler, new StreamReader(response.GetResponseStream()));
 
                     //If we get here then it was OK
                     response.Close();
@@ -158,7 +170,6 @@ namespace VDS.RDF.Storage
                 }
                 throw new RdfStorageException("A HTTP Error occurred while trying to load a Graph from the Store", webEx);
             }
-            g.BaseUri = origUri;
         }
 
         /// <summary>

@@ -45,6 +45,7 @@ using System.Threading;
 using System.Text.RegularExpressions;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
+using VDS.RDF.Parsing.Handlers;
 
 namespace VDS.RDF.Storage
 {
@@ -741,35 +742,30 @@ namespace VDS.RDF.Storage
         /// </remarks>
         public virtual void LoadGraph(IGraph g, Uri graphUri)
         {
+            this.LoadGraph(new GraphHandler(g), graphUri);
+        }
+
+        public virtual void LoadGraph(IRdfHandler handler, Uri graphUri)
+        {
             try
             {
                 this.Open(true);
 
                 if (this.Exists(graphUri))
                 {
-                    if (!g.IsEmpty)
-                    {
-                        //Load into an Empty Graph and then Merge
-                        Graph h = new Graph();
-                        this.LoadGraph(h, graphUri);
-                        g.Merge(h);
-
-                        //Safe to return as our recursive call will already have closed the connection
-                        return;
-                    }
-                    else
-                    {
-                        g.BaseUri = graphUri;
-                    }
+                    //Load into an Empty Graph and then Merge
+                    IGraph g = new Graph();
 
                     //Load Namespaces and Triples
                     String graphID = this.GetGraphID(graphUri);
                     this.LoadNamespaces(g, graphID);
                     this.LoadTriples(g, graphID);
+
+                    handler.Apply(g);
                 }
                 else
                 {
-                    if (g.IsEmpty) g.BaseUri = graphUri;
+                    handler.Apply((IGraph)null);
                 }
 
                 this.Close(true);
@@ -793,6 +789,12 @@ namespace VDS.RDF.Storage
         {
             Uri u = (graphUri.Equals(String.Empty)) ? null : new Uri(graphUri);
             this.LoadGraph(g, u);
+        }
+
+        public virtual void LoadGraph(IRdfHandler handler, String graphUri)
+        {
+            Uri u = (graphUri.Equals(String.Empty)) ? null : new Uri(graphUri);
+            this.LoadGraph(handler, u);
         }
 
         /// <summary>

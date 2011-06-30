@@ -43,6 +43,7 @@ using System.Threading;
 using System.IO;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
+using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Storage.Params;
 using VDS.RDF.Writing;
 
@@ -115,25 +116,36 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">URI of the Graph to load</param>
         public void LoadGraph(IGraph g, Uri graphUri)
         {
+            this.LoadGraph(new GraphHandler(g), graphUri);
+        }
+
+        public void LoadGraph(IRdfHandler handler, Uri graphUri)
+        {
+            IGraph g = null;
             if (graphUri == null)
             {
-                foreach (Uri u in WriterHelper.StoreDefaultGraphURIs.Select(s => new Uri(s)))
+                if (this._store.HasGraph(graphUri))
                 {
-                    if (this._store.HasGraph(u))
+                    g = this._store.Graph(graphUri);
+                }
+                else
+                {
+                    foreach (Uri u in WriterHelper.StoreDefaultGraphURIs.Select(s => new Uri(s)))
                     {
-                        g.Merge(this._store.Graph(u));
-                        return;
+                        if (this._store.HasGraph(u))
+                        {
+                            g = this._store.Graph(u);
+                            break;
+                        }
                     }
                 }
             }
-            else
+            else if (this._store.HasGraph(graphUri))
             {
-                if (g.IsEmpty) g.BaseUri = graphUri;
-                if (this._store.HasGraph(graphUri))
-                {
-                    g.Merge(this._store.Graph(graphUri));
-                }
+                g = this._store.Graph(graphUri);
             }
+
+            handler.Apply(g);
         }
 
         /// <summary>
@@ -150,6 +162,18 @@ namespace VDS.RDF.Storage
             else
             {
                 this.LoadGraph(g, new Uri(graphUri));
+            }
+        }
+
+        public void LoadGraph(IRdfHandler handler, string graphUri)
+        {
+            if (graphUri.Equals(String.Empty))
+            {
+                this.LoadGraph(handler, (Uri)null);
+            }
+            else
+            {
+                this.LoadGraph(handler, new Uri(graphUri));
             }
         }
 

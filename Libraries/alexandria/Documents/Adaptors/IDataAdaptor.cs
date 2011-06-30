@@ -18,6 +18,8 @@ namespace VDS.Alexandria.Documents.Adaptors
         /// <param name="document">Document to convert from</param>
         void ToGraph(IGraph g, IDocument<TReader,TWriter> document);
 
+        void ToHandler(IRdfHandler handler, IDocument<TReader, TWriter> document);
+
         /// <summary>
         /// Converts the contents of a Graph into a Document
         /// </summary>

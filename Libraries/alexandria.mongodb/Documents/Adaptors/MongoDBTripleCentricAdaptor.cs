@@ -5,6 +5,8 @@ using System.Text;
 using MongoDB;
 using VDS.Alexandria.Utilities;
 using VDS.RDF;
+using VDS.RDF.Parsing;
+using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.Alexandria.Documents.Adaptors
@@ -31,6 +33,17 @@ namespace VDS.Alexandria.Documents.Adaptors
             {
                 g.Assert(Tools.CopyTriple(t, g));
             }
+        }
+
+        public void ToHandler(IRdfHandler handler, IDocument<Document, Document> document)
+        {
+            Document mongoDoc = document.BeginRead();
+            Document lookup = new Document();
+            lookup["graphuri"] = mongoDoc["uri"];
+            document.EndRead();
+
+            IEnumerable<Triple> ts = new MongoDBTripleCentricEnumerable(this._manager, lookup);
+            handler.Apply(ts);
         }
 
         public void ToDocument(IGraph g, IDocument<Document, Document> document)

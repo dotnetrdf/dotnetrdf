@@ -80,6 +80,10 @@ namespace VDS.RDF.Storage
         /// </remarks>
         void LoadGraph(IGraph g, String graphUri);
 
+        void LoadGraph(IRdfHandler handler, Uri graphUri);
+
+        void LoadGraph(IRdfHandler handler, String graphUri);
+
         /// <summary>
         /// Saves a Graph to the Store
         /// </summary>

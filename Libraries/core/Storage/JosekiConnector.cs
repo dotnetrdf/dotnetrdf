@@ -46,6 +46,7 @@ using System.Web;
 #endif
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
+using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
 using VDS.RDF.Update;
 using VDS.RDF.Writing;
@@ -61,7 +62,7 @@ namespace VDS.RDF.Storage
     /// <strong>Experimental and partially untested</strong>
     /// </para>
     /// <para>
-    /// Since Joseki can be used to expose practically any type of Jena based model via Sparql and SPARUL endpoints some/all operations may fail depending on the underlying storage model of the Joseki instance.  For example not all models support named graphs and not all Joseki instances provide full read/write capabilities.
+    /// Since Joseki can be used to expose practically any type of Jena based model via SPARQL and SPARUL endpoints some/all operations may fail depending on the underlying storage model of the Joseki instance.  For example not all models support named graphs and not all Joseki instances provide full read/write capabilities.
     /// </para>
     /// <para>
     /// The Joseki connector permits use in a read-only mode in the event when you only specify a Query Service path to the constructor (or enter null for the Update Service path).  When instantiated in read-only mode any attempt to use the <see cref="JosekiConnector.SaveGraph">SaveGraph</see> or <see cref="JosekiConnector.UpdateGraph">UpdateGraph</see> methods will result in errors and the <see cref="JosekiConnector.UpdateSupported">UpdateSupported</see> property will return false.
@@ -107,14 +108,12 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">Uri of the Graph to load</param>
         public void LoadGraph(IGraph g, Uri graphUri)
         {
-            if (graphUri != null)
-            {
-                this.LoadGraph(g, graphUri.ToString());
-            }
-            else
-            {
-                this.LoadGraph(g, String.Empty);
-            }
+            this.LoadGraph(g, graphUri.ToSafeString());
+        }
+
+        public void LoadGraph(IRdfHandler handler, Uri graphUri)
+        {
+            this.LoadGraph(handler, graphUri.ToSafeString());
         }
 
         /// <summary>
@@ -122,7 +121,16 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="g">Graph to load into</param>
         /// <param name="graphUri">Uri of the Graph to load</param>
-        public void LoadGraph(IGraph g, string graphUri)
+        public void LoadGraph(IGraph g, String graphUri)
+        {
+            if (g.IsEmpty && graphUri != null && !graphUri.Equals(String.Empty))
+            {
+                g.BaseUri = new Uri(graphUri);
+            }
+            this.LoadGraph(new GraphHandler(g), graphUri);
+        }
+
+        public void LoadGraph(IRdfHandler handler, String graphUri)
         {
             try
             {
@@ -132,29 +140,27 @@ namespace VDS.RDF.Storage
                 String query = "CONSTRUCT {?s ?p ?o}";
                 if (!graphUri.Equals(String.Empty))
                 {
-                    query += " FROM <" + graphUri.ToString().Replace(">","\\>") + ">";
-                    if (g.IsEmpty) g.BaseUri = new Uri(graphUri);
+                    query += " FROM <" + graphUri.ToString().Replace(">", "\\>") + ">";
                 }
                 query += " WHERE {?s ?p ?o}";
                 serviceParams.Add("query", query);
 
                 request = this.CreateRequest(this._queryService, MimeTypesHelper.HttpAcceptHeader, "GET", serviceParams);
 
-                #if DEBUG
-                    if (Options.HttpDebugging) Tools.HttpDebugRequest(request);
-                #endif
-
-                    using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
-                    {
-
 #if DEBUG
-                        if (Options.HttpDebugging) Tools.HttpDebugResponse(response);
+                if (Options.HttpDebugging) Tools.HttpDebugRequest(request);
 #endif
 
-                        IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
-                        parser.Load(g, new StreamReader(response.GetResponseStream()));
-                        response.Close();
-                    }
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                {
+#if DEBUG
+                    if (Options.HttpDebugging) Tools.HttpDebugResponse(response);
+#endif
+
+                    IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
+                    parser.Load(handler, new StreamReader(response.GetResponseStream()));
+                    response.Close();
+                }
             }
             catch (WebException webEx)
             {
@@ -325,7 +331,7 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">Graph Uri</param>
         /// <param name="additions">Triples to be added</param>
         /// <param name="removals">Triples to be removed</param>
-        public void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
+        public void UpdateGraph(String graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
             if (graphUri.ToSafeString().Equals(String.Empty))
             {

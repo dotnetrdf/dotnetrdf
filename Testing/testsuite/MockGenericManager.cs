@@ -24,6 +24,20 @@ namespace dotNetRDFTest
             if (g.IsEmpty) g.BaseUri = new Uri(graphUri);
         }
 
+        public void LoadGraph(IRdfHandler handler, Uri graphUri)
+        {
+            handler.StartRdf();
+            Thread.Sleep(1000);
+            handler.EndRdf(true);
+        }
+
+        public void LoadGraph(IRdfHandler handler, String graphUri)
+        {
+            handler.StartRdf();
+            Thread.Sleep(1000);
+            handler.EndRdf(true);
+        }
+
         public void SaveGraph(IGraph g)
         {
             Thread.Sleep(2000);

@@ -35,6 +35,7 @@ using System.Linq;
 using System.Net;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
+using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
 using VDS.RDF.Writing;
 
@@ -146,6 +147,14 @@ namespace VDS.RDF.Storage
             }
         }
 
+        public void Describe(IRdfHandler handler, String resourceUri)
+        {
+            if (!resourceUri.Equals(String.Empty))
+            {
+                this.DescribeInternal(handler, resourceUri, "meta");
+            }
+        }
+
         /// <summary>
         /// Gets the Graph describing the given resource from the Store
         /// </summary>
@@ -156,6 +165,14 @@ namespace VDS.RDF.Storage
             if (resourceUri != null)
             {
                 this.Describe(g, resourceUri.ToString());
+            }
+        }
+
+        public void Describe(IRdfHandler handler, Uri resourceUri)
+        {
+            if (!resourceUri.Equals(String.Empty))
+            {
+                this.DescribeInternal(handler, resourceUri.ToSafeString(), "meta");
             }
         }
 
@@ -173,6 +190,14 @@ namespace VDS.RDF.Storage
             }
         }
 
+        public void Describe(IRdfHandler handler, String privateGraphID, String resourceUri)
+        {
+            if (!resourceUri.Equals(String.Empty))
+            {
+                this.DescribeInternal(handler, resourceUri, "meta/graphs/" + privateGraphID);
+            }
+        }
+
         /// <summary>
         /// Gets the Graph describing the given resource from a particular Private Graph in the Store
         /// </summary>
@@ -187,6 +212,14 @@ namespace VDS.RDF.Storage
             }
         }
 
+        public void Describe(IRdfHandler handler, String privateGraphID, Uri resourceUri)
+        {
+            if (resourceUri != null)
+            {
+                this.Describe(handler, privateGraphID, resourceUri.ToString());
+            }
+        }        
+
         /// <summary>
         /// Internal implementation of the Describe function which can describe a resource at various service paths
         /// </summary>
@@ -194,6 +227,12 @@ namespace VDS.RDF.Storage
         /// <param name="resourceUri">Uri of resource to describe</param>
         /// <param name="servicePath">Service to get the resource from</param>
         private void DescribeInternal(IGraph g, String resourceUri, String servicePath)
+        {
+            if (g.IsEmpty) g.BaseUri = new Uri(resourceUri);
+            this.DescribeInternal(new GraphHandler(g), resourceUri, servicePath);
+        }
+
+        private void DescribeInternal(IRdfHandler handler, String resourceUri, String servicePath)
         {
             //Single about param
             Dictionary<String, String> ps = new Dictionary<string, string>();
@@ -223,11 +262,10 @@ namespace VDS.RDF.Storage
                         Tools.HttpDebugResponse(response);
                     }
 #endif
-                    if (g.IsEmpty) g.BaseUri = new Uri(resourceUri);
 
                     //Get the relevant Parser
                     IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
-                    parser.Load(g, new StreamReader(response.GetResponseStream()));
+                    parser.Load(handler, new StreamReader(response.GetResponseStream()));
                     response.Close();
                 }
             }
@@ -770,6 +808,11 @@ namespace VDS.RDF.Storage
             this.LoadGraph(g, graphUri.ToSafeString());
         }
 
+        public void LoadGraph(IRdfHandler handler, Uri graphUri)
+        {
+            this.LoadGraph(handler, graphUri.ToSafeString());
+        }
+
         /// <summary>
         /// Loads a Graph which is the Description of the given Uri from the Metabox of the Talis Store
         /// </summary>
@@ -780,10 +823,16 @@ namespace VDS.RDF.Storage
         /// <br /><br />
         /// Equivalent to calling the <see cref="TalisPlatformConnector.Describe">Describe()</see> method
         /// </remarks>
-        public void LoadGraph(IGraph g, string graphUri)
+        public void LoadGraph(IGraph g, String graphUri)
         {
             if (graphUri == null || graphUri.Equals(String.Empty)) throw new TalisException("Cannot load the Description of a null/empty URI");
             this.Describe(g, graphUri);
+        }
+
+        public void LoadGraph(IRdfHandler handler, String graphUri)
+        {
+            if (graphUri == null || graphUri.Equals(String.Empty)) throw new TalisException("Cannot load the Description of a null/empty URI");
+            this.Describe(handler, graphUri);
         }
 
         /// <summary>
@@ -827,7 +876,7 @@ namespace VDS.RDF.Storage
         /// <br /><br />
         /// Equivalent to calling the <see cref="TalisPlatformConnector.Update">Update()</see> method
         /// </remarks>
-        public void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
+        public void UpdateGraph(String graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
             this.Update(additions, removals);
         }

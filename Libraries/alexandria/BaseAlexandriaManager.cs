@@ -17,13 +17,17 @@ namespace VDS.Alexandria
 
         public abstract void LoadGraph(IGraph g, Uri graphUri);
 
-        public abstract void LoadGraph(IGraph g, string graphUri);
+        public abstract void LoadGraph(IGraph g, String graphUri);
+
+        public abstract void LoadGraph(IRdfHandler handler, Uri graphUri);
+
+        public abstract void LoadGraph(IRdfHandler handler, String graphUri);
 
         public abstract void SaveGraph(IGraph g);
 
         public abstract void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals);
 
-        public abstract void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals);
+        public abstract void UpdateGraph(String graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals);
 
         public abstract void DeleteGraph(String graphUri);
 

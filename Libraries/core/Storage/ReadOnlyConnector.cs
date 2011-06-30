@@ -88,6 +88,16 @@ namespace VDS.RDF.Storage
             this._manager.LoadGraph(g, graphUri);
         }
 
+        public void LoadGraph(IRdfHandler handler, Uri graphUri)
+        {
+            this._manager.LoadGraph(handler, graphUri);
+        }
+
+        public void LoadGraph(IRdfHandler handler, String graphUri)
+        {
+            this._manager.LoadGraph(handler, graphUri);
+        }
+
         /// <summary>
         /// Throws an exception since you cannot save a Graph using a read-only connection
         /// </summary>

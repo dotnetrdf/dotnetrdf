@@ -47,6 +47,7 @@ using System.Web;
 #endif
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
+using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
 using VDS.RDF.Update;
 using VDS.RDF.Writing;
@@ -131,14 +132,12 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">Uri of the Graph to load</param>
         public void LoadGraph(IGraph g, Uri graphUri)
         {
-            if (graphUri != null)
-            {
-                this.LoadGraph(g, graphUri.ToString());
-            }
-            else
-            {
-                this.LoadGraph(g, String.Empty);
-            }
+            this.LoadGraph(g, graphUri.ToSafeString());
+        }
+
+        public void LoadGraph(IRdfHandler handler, Uri graphUri)
+        {
+            this.LoadGraph(handler, graphUri.ToSafeString());
         }
 
         /// <summary>
@@ -147,7 +146,16 @@ namespace VDS.RDF.Storage
         /// <param name="g">Graph to load into</param>
         /// <param name="graphUri">Uri of the Graph to load</param>
         /// <exception cref="RDFStorageExeception"></exception>
-        public void LoadGraph(IGraph g, string graphUri)
+        public void LoadGraph(IGraph g, String graphUri)
+        {
+            if (g.IsEmpty && graphUri != null & !graphUri.Equals(String.Empty))
+            {
+                g.BaseUri = new Uri(graphUri);
+            }
+            this.LoadGraph(new GraphHandler(g), graphUri);
+        }
+
+        public void LoadGraph(IRdfHandler handler, String graphUri)
         {
             try
             {
@@ -157,8 +165,7 @@ namespace VDS.RDF.Storage
 
                 if (!graphUri.Equals(String.Empty))
                 {
-                    if (g.IsEmpty) g.BaseUri = new Uri(graphUri);
-                    g.Merge(this._endpoint.QueryWithResultGraph("CONSTRUCT {?s ?p ?o} FROM <" + graphUri.Replace(">", "\\>") + "> WHERE {?s ?p ?o}"));
+                    this._endpoint.QueryWithResultGraph(handler, "CONSTRUCT { ?s ?p ?o } FROM <" + graphUri.Replace(">", "\\>") + "> WHERE { ?s ?p ?o }");
                 }
                 else
                 {
@@ -281,7 +288,7 @@ namespace VDS.RDF.Storage
         /// <remarks>
         /// May throw an error since the default builds of 4store don't support Triple level updates.  There are builds that do support this and the user can instantiate the connector with support for this enabled if they wish, if they do so and the underlying 4store doesn't support updates errors will occur when updates are attempted.
         /// </remarks>
-        public void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
+        public void UpdateGraph(String graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
             if (!this._updatesEnabled)
             {

@@ -44,6 +44,7 @@ using System.Text.RegularExpressions;
 using OpenLink.Data.Virtuoso;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
+using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
 using VDS.RDF.Update;
 using VDS.RDF.Writing;
@@ -159,20 +160,20 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">Uri of the Graph to Load</param>
         public void LoadGraph(IGraph g, Uri graphUri)
         {
-            if (graphUri == null) throw new RdfStorageException("Cannot load an unnamed Graph from Virtuoso as this would require loading the entirety of the Virtuoso Quad Store into memory!");
-
-            if (!g.IsEmpty)
+            if (g.IsEmpty && graphUri != null)
             {
-                //Do the load into a new Empty Graph and then do a merge
-                Graph h = new Graph();
-                this.LoadGraph(h, graphUri);
-                g.Merge(h);
-                return;
+                g.BaseUri = graphUri;
             }
+            this.LoadGraph(new GraphHandler(g), graphUri);
+        }
+
+        public void LoadGraph(IRdfHandler handler, Uri graphUri)
+        {
+            if (graphUri == null) throw new RdfStorageException("Cannot load an unnamed Graph from Virtuoso as this would require loading the entirety of the Virtuoso Quad Store into memory!");
 
             try
             {
-                g.BaseUri = graphUri;
+                handler.StartRdf();
 
                 //Need to keep Database Open as Literals require extra trips to the Database to get additional
                 //information about Language and Type
@@ -191,17 +192,24 @@ namespace VDS.RDF.Storage
                     o = row["O"];
 
                     //Create Nodes
-                    subj = this.LoadNode(g, s);
-                    pred = this.LoadNode(g, p);
-                    obj = this.LoadNode(g, o);
+                    subj = this.LoadNode(handler, s);
+                    pred = this.LoadNode(handler, p);
+                    obj = this.LoadNode(handler, o);
 
                     //Assert Triple
-                    g.Assert(new Triple(subj, pred, obj));
+                    if (!handler.HandleTriple(new Triple(subj, pred, obj))) ParserHelper.Stop();
                 }
+                handler.EndRdf(true);
+                this.Close(false);
+            }
+            catch (RdfParsingTerminatedException)
+            {
+                handler.EndRdf(true);
                 this.Close(false);
             }
             catch
             {
+                handler.EndRdf(false);
                 this.Close(true);
                 throw;
             }
@@ -221,6 +229,18 @@ namespace VDS.RDF.Storage
             else
             {
                 this.LoadGraph(g, new Uri(graphUri));
+            }
+        }
+
+        public void LoadGraph(IRdfHandler handler, String graphUri)
+        {
+            if (graphUri == null || graphUri.Equals(String.Empty))
+            {
+                this.LoadGraph(handler, (Uri)null);
+            }
+            else
+            {
+                this.LoadGraph(handler, new Uri(graphUri));
             }
         }
 
@@ -271,7 +291,7 @@ namespace VDS.RDF.Storage
         /// <param name="g">Graph to create the Node in</param>
         /// <param name="n">Object to convert</param>
         /// <returns></returns>
-        private INode LoadNode(IGraph g, Object n)
+        private INode LoadNode(INodeFactory factory, Object n)
         {
             INode temp;
             if (n is SqlExtendedString)
@@ -280,13 +300,13 @@ namespace VDS.RDF.Storage
                 if (iri.IriType == SqlExtendedStringType.BNODE)
                 {
                     //Blank Node
-                    temp = g.CreateBlankNode(n.ToString().Substring(9));
+                    temp = factory.CreateBlankNode(n.ToString().Substring(9));
 
                 }
                 else if (iri.IriType != iri.StrType)
                 {
                     //Literal
-                    temp = g.CreateLiteralNode(n.ToString());
+                    temp = factory.CreateLiteralNode(n.ToString());
                 }
                 else if (iri.IriType == SqlExtendedStringType.IRI)
                 {
@@ -294,14 +314,14 @@ namespace VDS.RDF.Storage
                     Uri u = new Uri(n.ToString(), UriKind.RelativeOrAbsolute);
                     if (!u.IsAbsoluteUri)
                     {
-                        u = new Uri(Tools.ResolveUri(u, g.BaseUri));
+                        throw new RdfParseException("Virtuoso returned a URI Node which has a relative URI, unable to resolve the URI for this node");
                     }
-                    temp = g.CreateUriNode(u);
+                    temp = factory.CreateUriNode(u);
                 }
                 else
                 {
                     //Assume a Literal
-                    temp = g.CreateLiteralNode(n.ToString());
+                    temp = factory.CreateLiteralNode(n.ToString());
                 }
             }
             else if (n is SqlRdfBox)
@@ -310,17 +330,17 @@ namespace VDS.RDF.Storage
                 if (lit.StrLang != null)
                 {
                     //Language Specified Literal
-                    temp = g.CreateLiteralNode(n.ToString(), lit.StrLang);
+                    temp = factory.CreateLiteralNode(n.ToString(), lit.StrLang);
                 }
                 else if (lit.StrType != null)
                 {
                     //Data Typed Literal
-                    temp = g.CreateLiteralNode(n.ToString(), new Uri(lit.StrType));
+                    temp = factory.CreateLiteralNode(n.ToString(), new Uri(lit.StrType));
                 }
                 else
                 {
                     //Literal
-                    temp = g.CreateLiteralNode(n.ToString());
+                    temp = factory.CreateLiteralNode(n.ToString());
                 }
             }
             else if (n is String)
@@ -329,45 +349,45 @@ namespace VDS.RDF.Storage
                 if (s.StartsWith("nodeID://"))
                 {
                     //Blank Node
-                    temp = g.CreateBlankNode(s.Substring(9));
+                    temp = factory.CreateBlankNode(s.Substring(9));
                 }
                 else
                 {
                     //Literal
-                    temp = g.CreateLiteralNode(s);
+                    temp = factory.CreateLiteralNode(s);
                 }
             }
             else if (n is Int32)
             {
-                temp = ((Int32)n).ToLiteral(g);
+                temp = ((Int32)n).ToLiteral(factory);
             }
             else if (n is Int16)
             {
-                temp = ((Int16)n).ToLiteral(g);
+                temp = ((Int16)n).ToLiteral(factory);
             }
             else if (n is Single)
             {
-                temp = ((Single)n).ToLiteral(g);
+                temp = ((Single)n).ToLiteral(factory);
             }
             else if (n is Double)
             {
-                temp = ((Double)n).ToLiteral(g);
+                temp = ((Double)n).ToLiteral(factory);
             }
             else if (n is Decimal)
             {
-                temp = ((Decimal)n).ToLiteral(g);
+                temp = ((Decimal)n).ToLiteral(factory);
             }
             else if (n is DateTime)
             {
-                temp = ((DateTime)n).ToLiteral(g);
+                temp = ((DateTime)n).ToLiteral(factory);
             }
             else if (n is TimeSpan)
             {
-                temp = ((TimeSpan)n).ToLiteral(g);
+                temp = ((TimeSpan)n).ToLiteral(factory);
             }
             else if (n is Boolean)
             {
-                temp = ((Boolean)n).ToLiteral(g);
+                temp = ((Boolean)n).ToLiteral(factory);
             }
             else if (n is DBNull)
             {
@@ -376,7 +396,7 @@ namespace VDS.RDF.Storage
             }
             else
             {
-                throw new RdfStorageException("Unexpected Object Type '" + n.GetType().ToString() + "' returned from SPASQL SELECT query to the Virtuono Quad Store");
+                throw new RdfStorageException("Unexpected Object Type '" + n.GetType().ToString() + "' returned from SPASQL SELECT query to the Virtuoso Quad Store");
             }
             return temp;
         }

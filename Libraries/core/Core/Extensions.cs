@@ -930,38 +930,38 @@ namespace VDS.RDF
         /// Creates a new Boolean typed literal
         /// </summary>
         /// <param name="b">Boolean</param>
-        /// <param name="g">Graph to create in</param>
+        /// <param name="factory">Node Factory create in</param>
         /// <returns></returns>
-        /// <exception cref="ArgumentNullException">Thrown if the Graph argument is null</exception>
-        public static ILiteralNode ToLiteral(this bool b, IGraph g)
+        /// <exception cref="ArgumentNullException">Thrown if the Factory argument is null</exception>
+        public static ILiteralNode ToLiteral(this bool b, INodeFactory factory)
         {
-            if (g == null) throw new ArgumentNullException("g", "Cannot create a Literal Node in a null Graph");
+            if (factory == null) throw new ArgumentNullException("factory", "Cannot create a Literal Node in a null Node Factory");
 
-            return g.CreateLiteralNode(b.ToString().ToLower(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeBoolean));
+            return factory.CreateLiteralNode(b.ToString().ToLower(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeBoolean));
         }
 
         /// <summary>
         /// Creates a new Byte typed literal
         /// </summary>
         /// <param name="b">Byte</param>
-        /// <param name="g">Graph to create in</param>
+        /// <param name="factory">Node Factory create in</param>
         /// <returns></returns>
         /// <remarks>
         /// Byte in .Net is actually equivalent to Unsigned Byte in XML Schema so depending on the value of the Byte the type will either be xsd:byte if it fits or xsd:usignedByte
         /// </remarks>
-        public static ILiteralNode ToLiteral(this byte b, IGraph g)
+        public static ILiteralNode ToLiteral(this byte b, INodeFactory factory)
         {
-            if (g == null) throw new ArgumentNullException("g", "Cannot create a Literal Node in a null Graph");
+            if (factory == null) throw new ArgumentNullException("factory", "Cannot create a Literal Node in a null Node Factory");
 
             if (b > 128)
             {
                 //If value is > 128 must use unsigned byte as the type as xsd:byte has range -127 to 128 
                 //while .Net byte has range 0-255
-                return g.CreateLiteralNode(XmlConvert.ToString(b), new Uri(XmlSpecsHelper.XmlSchemaDataTypeUnsignedByte));
+                return factory.CreateLiteralNode(XmlConvert.ToString(b), new Uri(XmlSpecsHelper.XmlSchemaDataTypeUnsignedByte));
             }
             else
             {
-                return g.CreateLiteralNode(XmlConvert.ToString(b), new Uri(XmlSpecsHelper.XmlSchemaDataTypeByte));
+                return factory.CreateLiteralNode(XmlConvert.ToString(b), new Uri(XmlSpecsHelper.XmlSchemaDataTypeByte));
             }
         }
 
@@ -969,170 +969,170 @@ namespace VDS.RDF
         /// Creates a new Byte typed literal
         /// </summary>
         /// <param name="b">Byte</param>
-        /// <param name="g">Graph to create in</param>
+        /// <param name="factory">Node Factory create in</param>
         /// <returns></returns>
         /// <remarks>
         /// SByte in .Net is directly equivalent to Byte in XML Schema so the type will always be xsd:byte
         /// </remarks>
-        public static ILiteralNode ToLiteral(this sbyte b, IGraph g)
+        public static ILiteralNode ToLiteral(this sbyte b, INodeFactory factory)
         {
-            if (g == null) throw new ArgumentNullException("g", "Cannot create a Literal Node in a null Graph");
+            if (factory == null) throw new ArgumentNullException("factory", "Cannot create a Literal Node in a null Node Factory");
 
-            return g.CreateLiteralNode(XmlConvert.ToString(b), new Uri(XmlSpecsHelper.XmlSchemaDataTypeByte));
+            return factory.CreateLiteralNode(XmlConvert.ToString(b), new Uri(XmlSpecsHelper.XmlSchemaDataTypeByte));
         }
 
         /// <summary>
         /// Creates a new Date Time typed literal
         /// </summary>
         /// <param name="dt">Date Time</param>
-        /// <param name="g">Graph to create in</param>
+        /// <param name="factory">Node Factory create in</param>
         /// <returns></returns>
-        /// <exception cref="ArgumentNullException">Thrown if the Graph argument is null</exception>
-        public static ILiteralNode ToLiteral(this DateTime dt, IGraph g)
+        /// <exception cref="ArgumentNullException">Thrown if the Factory argument is null</exception>
+        public static ILiteralNode ToLiteral(this DateTime dt, INodeFactory factory)
         {
-            if (g == null) throw new ArgumentNullException("g", "Cannot create a Literal Node in a null Graph");
+            if (factory == null) throw new ArgumentNullException("factory", "Cannot create a Literal Node in a null Node Factory");
 
-            return g.CreateLiteralNode(dt.ToString(XmlSpecsHelper.XmlSchemaDateTimeFormat), new Uri(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
+            return factory.CreateLiteralNode(dt.ToString(XmlSpecsHelper.XmlSchemaDateTimeFormat), new Uri(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
         }
 
         /// <summary>
         /// Creates a new Date typed literal
         /// </summary>
         /// <param name="dt">Date Time</param>
-        /// <param name="g">Graph to create in</param>
+        /// <param name="factory">Node Factory create in</param>
         /// <returns></returns>
-        /// <exception cref="ArgumentNullException">Thrown if the Graph argument is null</exception>
-        public static ILiteralNode ToLiteralDate(this DateTime dt, IGraph g)
+        /// <exception cref="ArgumentNullException">Thrown if the Factory argument is null</exception>
+        public static ILiteralNode ToLiteralDate(this DateTime dt, INodeFactory factory)
         {
-            if (g == null) throw new ArgumentNullException("g", "Cannot create a Literal Node in a null Graph");
+            if (factory == null) throw new ArgumentNullException("factory", "Cannot create a Literal Node in a null Node Factory");
 
-            return g.CreateLiteralNode(dt.ToString(XmlSpecsHelper.XmlSchemaDateFormat), new Uri(XmlSpecsHelper.XmlSchemaDataTypeDate));
+            return factory.CreateLiteralNode(dt.ToString(XmlSpecsHelper.XmlSchemaDateFormat), new Uri(XmlSpecsHelper.XmlSchemaDataTypeDate));
         }
 
         /// <summary>
         /// Creates a new Time typed literal
         /// </summary>
         /// <param name="dt">Date Time</param>
-        /// <param name="g">Graph to create in</param>
+        /// <param name="factory">Node Factory create in</param>
         /// <returns></returns>
-        /// <exception cref="ArgumentNullException">Thrown if the Graph argument is null</exception>
-        public static ILiteralNode ToLiteralTime(this DateTime dt, IGraph g)
+        /// <exception cref="ArgumentNullException">Thrown if the Factory argument is null</exception>
+        public static ILiteralNode ToLiteralTime(this DateTime dt, INodeFactory factory)
         {
-            if (g == null) throw new ArgumentNullException("g", "Cannot create a Literal Node in a null Graph");
+            if (factory == null) throw new ArgumentNullException("factory", "Cannot create a Literal Node in a null Node Factory");
 
-            return g.CreateLiteralNode(dt.ToString(XmlSpecsHelper.XmlSchemaTimeFormat), new Uri(XmlSpecsHelper.XmlSchemaDataTypeTime));
+            return factory.CreateLiteralNode(dt.ToString(XmlSpecsHelper.XmlSchemaTimeFormat), new Uri(XmlSpecsHelper.XmlSchemaDataTypeTime));
         }
         
         /// <summary>
         /// Creates a new duration typed literal
         /// </summary>
         /// <param name="t">Time Span</param>
-        /// <param name="g">Graph to create in</param>
+        /// <param name="factory">Node Factory create in</param>
         /// <returns></returns>
-        public static ILiteralNode ToLiteral(this TimeSpan t, IGraph g)
+        public static ILiteralNode ToLiteral(this TimeSpan t, INodeFactory factory)
         {
-            if (g == null) throw new ArgumentNullException("g", "Cannot create a Literal Node in a null Graph");
+            if (factory == null) throw new ArgumentNullException("factory", "Cannot create a Literal Node in a null Node Factory");
 
-            return g.CreateLiteralNode(XmlConvert.ToString(t), new Uri(XmlSpecsHelper.XmlSchemaDataTypeDayTimeDuration));
+            return factory.CreateLiteralNode(XmlConvert.ToString(t), new Uri(XmlSpecsHelper.XmlSchemaDataTypeDayTimeDuration));
         }
 
         /// <summary>
         /// Creates a new Decimal typed literal
         /// </summary>
         /// <param name="d">Decimal</param>
-        /// <param name="g">Graph to create in</param>
+        /// <param name="factory">Node Factory create in</param>
         /// <returns></returns>
-        /// <exception cref="ArgumentNullException">Thrown if the Graph argument is null</exception>
-        public static ILiteralNode ToLiteral(this decimal d, IGraph g)
+        /// <exception cref="ArgumentNullException">Thrown if the Factory argument is null</exception>
+        public static ILiteralNode ToLiteral(this decimal d, INodeFactory factory)
         {
-            if (g == null) throw new ArgumentNullException("g", "Cannot create a Literal Node in a null Graph");
+            if (factory == null) throw new ArgumentNullException("factory", "Cannot create a Literal Node in a null Node Factory");
 
-            return g.CreateLiteralNode(d.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeDecimal));
+            return factory.CreateLiteralNode(d.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeDecimal));
         }
 
         /// <summary>
         /// Creates a new Double typed literal
         /// </summary>
         /// <param name="d">Double</param>
-        /// <param name="g">Graph to create in</param>
+        /// <param name="factory">Node Factory create in</param>
         /// <returns></returns>
-        /// <exception cref="ArgumentNullException">Thrown if the Graph argument is null</exception>
-        public static ILiteralNode ToLiteral(this double d, IGraph g)
+        /// <exception cref="ArgumentNullException">Thrown if the Factory argument is null</exception>
+        public static ILiteralNode ToLiteral(this double d, INodeFactory factory)
         {
-            if (g == null) throw new ArgumentNullException("g", "Cannot create a Literal Node in a null Graph");
+            if (factory == null) throw new ArgumentNullException("factory", "Cannot create a Literal Node in a null Node Factory");
 
-            return g.CreateLiteralNode(d.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeDouble));
+            return factory.CreateLiteralNode(d.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeDouble));
         }
 
         /// <summary>
         /// Creates a new Float typed literal
         /// </summary>
         /// <param name="f">Float</param>
-        /// <param name="g">Graph to create in</param>
+        /// <param name="factory">Node Factory create in</param>
         /// <returns></returns>
-        /// <exception cref="ArgumentNullException">Thrown if the Graph argument is null</exception>
-        public static ILiteralNode ToLiteral(this float f, IGraph g)
+        /// <exception cref="ArgumentNullException">Thrown if the Factory argument is null</exception>
+        public static ILiteralNode ToLiteral(this float f, INodeFactory factory)
         {
-            if (g == null) throw new ArgumentNullException("g", "Cannot create a Literal Node in a null Graph");
+            if (factory == null) throw new ArgumentNullException("factory", "Cannot create a Literal Node in a null Node Factory");
 
-            return g.CreateLiteralNode(f.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeFloat));
+            return factory.CreateLiteralNode(f.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeFloat));
         }
 
         /// <summary>
         /// Creates a new Integer typed literal
         /// </summary>
         /// <param name="i">Integer</param>
-        /// <param name="g">Graph to create in</param>
+        /// <param name="factory">Node Factory create in</param>
         /// <returns></returns>
-        /// <exception cref="ArgumentNullException">Thrown if the Graph argument is null</exception>
-        public static ILiteralNode ToLiteral(this short i, IGraph g)
+        /// <exception cref="ArgumentNullException">Thrown if the Factory argument is null</exception>
+        public static ILiteralNode ToLiteral(this short i, INodeFactory factory)
         {
-            if (g == null) throw new ArgumentNullException("g", "Cannot create a Literal Node in a null Graph");
+            if (factory == null) throw new ArgumentNullException("factory", "Cannot create a Literal Node in a null Node Factory");
 
-            return g.CreateLiteralNode(i.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger));
+            return factory.CreateLiteralNode(i.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger));
         }
 
         /// <summary>
         /// Creates a new Integer typed literal
         /// </summary>
         /// <param name="i">Integer</param>
-        /// <param name="g">Graph to create in</param>
+        /// <param name="factory">Node Factory create in</param>
         /// <returns></returns>
-        /// <exception cref="ArgumentNullException">Thrown if the Graph argument is null</exception>
-        public static ILiteralNode ToLiteral(this int i, IGraph g)
+        /// <exception cref="ArgumentNullException">Thrown if the Factory argument is null</exception>
+        public static ILiteralNode ToLiteral(this int i, INodeFactory factory)
         {
-            if (g == null) throw new ArgumentNullException("g", "Cannot create a Literal Node in a null Graph");
+            if (factory == null) throw new ArgumentNullException("factory", "Cannot create a Literal Node in a null Node Factory");
 
-            return g.CreateLiteralNode(i.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger));
+            return factory.CreateLiteralNode(i.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger));
         }
 
         /// <summary>
         /// Creates a new Integer typed literal
         /// </summary>
         /// <param name="l">Integer</param>
-        /// <param name="g">Graph to create in</param>
+        /// <param name="factory">Node Factory create in</param>
         /// <returns></returns>
-        /// <exception cref="ArgumentNullException">Thrown if the Graph argument is null</exception>
-        public static ILiteralNode ToLiteral(this long l, IGraph g)
+        /// <exception cref="ArgumentNullException">Thrown if the Factory argument is null</exception>
+        public static ILiteralNode ToLiteral(this long l, INodeFactory factory)
         {
-            if (g == null) throw new ArgumentNullException("g", "Cannot create a Literal Node in a null Graph");
+            if (factory == null) throw new ArgumentNullException("factory", "Cannot create a Literal Node in a null Node Factory");
 
-            return g.CreateLiteralNode(l.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger));
+            return factory.CreateLiteralNode(l.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger));
         }
 
         /// <summary>
         /// Creates a new String typed literal
         /// </summary>
         /// <param name="s">String</param>
-        /// <param name="g">Graph to create in</param>
+        /// <param name="factory">Node Factory create in</param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException">Thrown if the Graph/String argument is null</exception>
-        public static ILiteralNode ToLiteral(this String s, IGraph g)
+        public static ILiteralNode ToLiteral(this String s, INodeFactory factory)
         {
-            if (g == null) throw new ArgumentNullException("g", "Cannot create a Literal Node in a null Graph");
+            if (factory == null) throw new ArgumentNullException("factory", "Cannot create a Literal Node in a null Node Factory");
             if (s == null) throw new ArgumentNullException("s", "Cannot create a Literal Node for a null String");
 
-            return g.CreateLiteralNode(s, new Uri(XmlSpecsHelper.XmlSchemaDataTypeString));
+            return factory.CreateLiteralNode(s, new Uri(XmlSpecsHelper.XmlSchemaDataTypeString));
         }
 
     }

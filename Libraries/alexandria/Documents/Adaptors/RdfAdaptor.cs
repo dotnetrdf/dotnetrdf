@@ -43,6 +43,27 @@ namespace VDS.Alexandria.Documents.Adaptors
             }
         }
 
+        public virtual void ToHandler(IRdfHandler handler, IDocument<StreamReader, TextWriter> document)
+        {
+            if (document.Exists)
+            {
+                try
+                {
+                    this._parser.Load(handler, document.BeginRead());
+                    document.EndRead();
+                }
+                catch (AlexandriaException)
+                {
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    document.EndRead();
+                    throw new AlexandriaException("Error reading Document " + document.Name + " with a RDF Handler", ex);
+                }
+            }
+        }
+
         public virtual void ToDocument(IGraph g, IDocument<StreamReader,TextWriter> document)
         {
             try

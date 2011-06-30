@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using MongoDB;
@@ -24,13 +25,25 @@ namespace VDS.Alexandria.Documents.Adaptors
             if (json.Equals(String.Empty)) return;
 
             //Then parse this
-            StringParser.Parse(g, json, this._parser);
+            this._parser.Load(g, new StringReader(json));
+        }
+
+        public void ToHandler(IRdfHandler handler, IDocument<Document, Document> document)
+        {
+            //Get our JSON String
+            Document mongoDoc = document.BeginRead();
+            String json = MongoDBHelper.DocumentListToJsonArray(mongoDoc["graph"]);
+            document.EndRead();
+            if (json.Equals(String.Empty)) return;
+
+            //Then parse this
+            this._parser.Load(handler, new StringReader(json));
         }
 
         public void ToDocument(IGraph g, IDocument<Document, Document> document)
         {
             //Generate our JSON String
-            String json = StringWriter.Write(g, this._writer);
+            String json = VDS.RDF.Writing.StringWriter.Write(g, this._writer);
 
             //Then convert this to a Document
             Document mongoDoc = document.BeginWrite(false);
@@ -43,7 +56,7 @@ namespace VDS.Alexandria.Documents.Adaptors
             //Generate our JSON String
             Graph g = new Graph();
             g.Assert(ts);
-            String json = StringWriter.Write(g, this._writer);
+            String json = VDS.RDF.Writing.StringWriter.Write(g, this._writer);
 
             //Then convert this to a Document
             Document mongoDoc = document.BeginWrite(false);
@@ -67,7 +80,7 @@ namespace VDS.Alexandria.Documents.Adaptors
             //Generate the JSON String
             Graph g = new Graph();
             g.Assert(ts);
-            String json = StringWriter.Write(g, this._writer);
+            String json = VDS.RDF.Writing.StringWriter.Write(g, this._writer);
             Object[] toDelete = MongoDBHelper.JsonArrayToObjects(json);
 
             //Then load the existing Triples from the Document
