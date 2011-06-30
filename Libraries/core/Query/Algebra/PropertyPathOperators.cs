@@ -84,9 +84,9 @@ namespace VDS.RDF.Query.Algebra
         /// Creates a new Path Operator
         /// </summary>
         /// <param name="start">Path Start</param>
-        /// <param name="end">Path End</param>
         /// <param name="path">Property Path</param>
-        public BasePathOperator(PatternItem start, PatternItem end, ISparqlPath path)
+        /// <param name="end">Path End</param>
+        public BasePathOperator(PatternItem start, ISparqlPath path, PatternItem end)
         {
             this._start = start;
             this._end = end;
@@ -184,7 +184,7 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="end">Path End</param>
         /// <param name="path">Property Path</param>
         public BaseArbitraryLengthPathOperator(PatternItem start, PatternItem end, ISparqlPath path)
-            : base(start, end, path) { }
+            : base(start, path, end) { }
 
         /// <summary>
         /// Determines the starting points for Path evaluation

@@ -85,7 +85,11 @@ namespace VDS.RDF.Query.Patterns
         /// <param name="context">Evaluation Context</param>
         public override void Evaluate(SparqlEvaluationContext context)
         {
-            this._subquery.Optimise();
+            //Use the same algebra optimisers as the parent query (if any)
+            if (context.Query != null)
+            {
+                this._subquery.AlgebraOptimisers = context.Query.AlgebraOptimisers;
+            }
 
             if (context.InputMultiset is NullMultiset)
             {
@@ -113,7 +117,7 @@ namespace VDS.RDF.Query.Patterns
                 try
                 {
                     //Evaluate the Subquery
-                    context.OutputMultiset = subcontext.Evaluate(query);//query.Evaluate(subcontext);
+                    context.OutputMultiset = subcontext.Evaluate(query);
 
                     //If the Subquery contains a GROUP BY it may return a Group Multiset in which case we must flatten this to a Multiset
                     if (context.OutputMultiset is GroupMultiset)

@@ -53,7 +53,7 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="end">Path End</param>
         /// <param name="path">Property Path</param>
         public ZeroLengthPath(PatternItem start, PatternItem end, ISparqlPath path)
-            : base(start, end, path) { }
+            : base(start, path, end) { }
 
         /// <summary>
         /// Evaluates a Zero Length Path

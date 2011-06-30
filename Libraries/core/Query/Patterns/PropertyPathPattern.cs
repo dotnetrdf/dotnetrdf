@@ -133,10 +133,8 @@ namespace VDS.RDF.Query.Patterns
             //need to do this here
             BaseMultiset initialInput = context.InputMultiset;
             bool trimMode = context.TrimTemporaryVariables;
-            //bool rigMode = context.RigorousEvaluation;
             try
             {
-                //context.RigorousEvaluation = true;
                 context.TrimTemporaryVariables = false;
                 BaseMultiset result = context.Evaluate(algebra);//algebra.Evaluate(context);
                 //Also note that we don't trim temporary variables here even if we've set the setting back

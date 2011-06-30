@@ -75,7 +75,7 @@ namespace VDS.RDF.Query.Optimisation
                     List<ITriplePattern> ps = new List<ITriplePattern>(current.TriplePatterns.ToList());
                     for (int i = 0; i < current.PatternCount; i++)
                     {
-                        if (ps[i] is FilterPattern || ps[i] is BindPattern)
+                        if (!(ps[i] is TriplePattern))
                         {
                             //First ensure that if we've found any other Triple Patterns up to this point
                             //we dump this into a BGP and join with the result so far
@@ -84,14 +84,31 @@ namespace VDS.RDF.Query.Optimisation
                                 result = Join.CreateJoin(result, new Bgp(patterns));
                                 patterns.Clear();
                             }
+
+                            //Then generate the appropriate strict algebra operator
                             if (ps[i] is FilterPattern)
                             {
                                 result = new Filter(result, ((FilterPattern)ps[i]).Filter);
                             }
-                            else
+                            else if (ps[i] is BindPattern)
                             {
                                 BindPattern bind = (BindPattern)ps[i];
                                 result = new Extend(result, bind.AssignExpression, bind.VariableName);
+                            }
+                            else if (ps[i] is LetPattern)
+                            {
+                                LetPattern let = (LetPattern)ps[i];
+                                result = new Extend(result, let.AssignExpression, let.VariableName);
+                            }
+                            else if (ps[i] is SubQueryPattern)
+                            {
+                                SubQueryPattern sq = (SubQueryPattern)ps[i];
+                                result = Join.CreateJoin(result, new SubQuery(sq.SubQuery));
+                            }
+                            else if (ps[i] is PropertyPathPattern)
+                            {
+                                PropertyPathPattern pp = (PropertyPathPattern)ps[i];
+                                result = Join.CreateJoin(result, new PropertyPath(pp.Subject, pp.Path, pp.Object));
                             }
                         }
                         else
