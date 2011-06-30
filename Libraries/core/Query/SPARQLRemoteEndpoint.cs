@@ -45,6 +45,7 @@ using System.Web;
 #endif
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
+using VDS.RDF.Parsing.Handlers;
 
 namespace VDS.RDF.Query
 {
@@ -237,19 +238,29 @@ namespace VDS.RDF.Query
         #region Query Methods
 
         /// <summary>
-        /// Makes a Query where the expected Result is a SparqlResultSet ie. SELECT and ASK Queries
+        /// Makes a Query where the expected Result is a <see cref="SparqlResultSet">SparqlResultSet</see> i.e. SELECT and ASK Queries
         /// </summary>
         /// <param name="sparqlQuery">SPARQL Query String</param>
         /// <returns>A SPARQL Result Set</returns>
         public virtual SparqlResultSet QueryWithResultSet(String sparqlQuery)
         {
+            //Ready a ResultSet then invoke the other overload
+            SparqlResultSet results = new SparqlResultSet();
+            this.QueryWithResultSet(new ResultSetHandler(results), sparqlQuery);
+            return results;
+        }
+
+        /// <summary>
+        /// Makes a Query where the expected Result is a <see cref="SparqlResultSet">SparqlResultSet</see> i.e. SELECT and ASK Queries
+        /// </summary>
+        /// <param name="handler">Results Handler</param>
+        /// <param name="sparqlQuery">SPARQL Query String</param>
+        public virtual void QueryWithResultSet(ISparqlResultsHandler handler, String sparqlQuery)
+        {
             try
             {
                 //Make the Query
                 HttpWebResponse httpResponse = this.QueryInternal(sparqlQuery, MimeTypesHelper.HttpSparqlAcceptHeader);
-
-                //Ready a ResultSet
-                SparqlResultSet results = new SparqlResultSet();
 
                 //Parse into a ResultSet based on Content Type
                 String ctype = httpResponse.ContentType;
@@ -262,7 +273,7 @@ namespace VDS.RDF.Query
                 if (MimeTypesHelper.Sparql.Contains(ctype))
                 {
                     ISparqlResultsReader resultsParser = MimeTypesHelper.GetSparqlParser(ctype);
-                    resultsParser.Load(results, new StreamReader(httpResponse.GetResponseStream()));
+                    resultsParser.Load(handler, new StreamReader(httpResponse.GetResponseStream()));
                     httpResponse.Close();
                 }
                 else
@@ -270,8 +281,6 @@ namespace VDS.RDF.Query
                     httpResponse.Close();
                     throw new RdfParseException("The SPARQL Endpoint returned unexpected Content Type '" + ctype + "', this error may be due to the given URI not returning a SPARQL Result Set");
                 }
-
-                return results;
             }
             catch (WebException webEx)
             {
@@ -282,7 +291,7 @@ namespace VDS.RDF.Query
                 }
 #endif
                 //Some sort of HTTP Error occurred
-                throw new RdfQueryException("A HTTP Error occurred while trying to make the SPARQL Query", webEx);
+                throw new RdfQueryException("A HTTP Error occurred while trying to make the SPARQL Query, see inner exception for details", webEx);
             }
             catch (RdfException)
             {
@@ -298,22 +307,31 @@ namespace VDS.RDF.Query
         /// <returns>RDF Graph</returns>
         public virtual IGraph QueryWithResultGraph(String sparqlQuery)
         {
+            //Set up an Empty Graph then invoke the other overload
+            Graph g = new Graph();
+            g.BaseUri = this.Uri;
+            this.QueryWithResultGraph(new GraphHandler(g), sparqlQuery);
+            return g;
+        }
+
+        /// <summary>
+        /// Makes a Query where the expected Result is an RDF Graph ie. CONSTRUCT and DESCRIBE Queries
+        /// </summary>
+        /// <param name="handler">RDF Handler</param>
+        /// <param name="sparqlQuery">SPARQL Query String</param>
+        public virtual void QueryWithResultGraph(IRdfHandler handler, String sparqlQuery)
+        {
             try
             {
                 //Make the Query
-                HttpWebResponse httpResponse = this.QueryInternal(sparqlQuery, MimeTypesHelper.HttpAcceptHeader);
-
-                //Set up an Empty Graph ready
-                Graph g = new Graph();
-                g.BaseUri = this.Uri;
-
-                //Parse into a Graph based on Content Type
-                String ctype = httpResponse.ContentType;
-                IRdfReader parser = MimeTypesHelper.GetParser(ctype);
-                parser.Load(g, new StreamReader(httpResponse.GetResponseStream()));
-                if (g.BaseUri.ToString().Equals(this.Uri.ToString(), StringComparison.Ordinal)) g.BaseUri = httpResponse.ResponseUri;
-                httpResponse.Close();
-                return g;
+                using (HttpWebResponse httpResponse = this.QueryInternal(sparqlQuery, MimeTypesHelper.HttpAcceptHeader))
+                {
+                    //Parse into a Graph based on Content Type
+                    String ctype = httpResponse.ContentType;
+                    IRdfReader parser = MimeTypesHelper.GetParser(ctype);
+                    parser.Load(handler, new StreamReader(httpResponse.GetResponseStream()));
+                    httpResponse.Close();
+                }
             }
             catch (WebException webEx)
             {
@@ -324,7 +342,7 @@ namespace VDS.RDF.Query
                 }
 #endif
                 //Some sort of HTTP Error occurred
-                throw new RdfQueryException("A HTTP Error occurred when trying to make the SPARQL Query", webEx);
+                throw new RdfQueryException("A HTTP Error occurred when trying to make the SPARQL Query, see inner exception for details", webEx);
             }
             catch (RdfException)
             {
@@ -744,7 +762,6 @@ namespace VDS.RDF.Query
             throw new NotSupportedException("Raw Query is not supported by the Federated Remote Endpoint");
         }
 
-
         /// <summary>
         /// Makes a Query to a Sparql Endpoint and returns the raw Response
         /// </summary>
@@ -886,6 +903,11 @@ namespace VDS.RDF.Query
             }
 
             return merged;
+        }
+
+        public override void QueryWithResultGraph(IRdfHandler handler, string sparqlQuery)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -1032,6 +1054,11 @@ namespace VDS.RDF.Query
             }
 
             return mergedResult;
+        }
+
+        public override void QueryWithResultSet(ISparqlResultsHandler handler, string sparqlQuery)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>

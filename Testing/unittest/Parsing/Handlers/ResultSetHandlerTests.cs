@@ -299,5 +299,26 @@ namespace VDS.RDF.Test.Parsing.Handlers
             Assert.IsFalse(results.IsEmpty, "Result Set should not be empty");
             Assert.AreEqual(SparqlResultsType.VariableBindings, results.ResultsType, "Results Type should be VariableBindings");
         }
+
+        [TestMethod]
+        public void ParsingResultSetHandlerMerging()
+        {
+            this.EnsureTestData("test.srx", new SparqlXmlWriter());
+
+            SparqlXmlParser parser = new SparqlXmlParser();
+            SparqlResultSet results = new SparqlResultSet();
+            MergingResultSetHandler handler = new MergingResultSetHandler(results);
+            parser.Load(handler, "test.srx");
+
+            Assert.IsFalse(results.IsEmpty, "Result Set should not be empty");
+            Assert.AreEqual(SparqlResultsType.VariableBindings, results.ResultsType, "Results Type should be VariableBindings");
+
+            int count = results.Count;
+
+            //Load again
+            parser.Load(handler, "test.srx");
+
+            Assert.AreEqual(count * 2, results.Count, "Expected result count to have doubled");
+        }
     }
 }
