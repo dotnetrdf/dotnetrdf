@@ -246,6 +246,7 @@ namespace VDS.RDF.Parsing.Handlers
         private INamespaceMapper _formattingMapper = new QNameOutputMapper();
         private SparqlResultsType _currentType = SparqlResultsType.Boolean;
         private List<String> _currVariables = new List<String>();
+        private bool _headerWritten = false;
 
         /// <summary>
         /// Creates a new Write-Through Handler
@@ -304,6 +305,7 @@ namespace VDS.RDF.Parsing.Handlers
             if (this._closeOnEnd && this._writer == null) throw new RdfParseException("Cannot use this ResultWriteThroughHandler as an Results Handler for parsing as you set closeOnEnd to true and you have already used this Handler and so the provided TextWriter was closed");
             this._currentType = SparqlResultsType.Unknown;
             this._currVariables.Clear();
+            this._headerWritten = false;
 
             if (this._formatterType != null)
             {
@@ -361,15 +363,17 @@ namespace VDS.RDF.Parsing.Handlers
             }
             this._currentType = SparqlResultsType.Unknown;
             this._currVariables.Clear();
+            this._headerWritten = false;
         }
 
         protected override void HandleBooleanResultInternal(bool result)
         {
             if (this._currentType != SparqlResultsType.Unknown) throw new RdfParseException("Cannot handle a Boolean Result when the handler has already handled other types of results");
             this._currentType = SparqlResultsType.Boolean;
-            if (this._formatter is IResultSetFormatter)
+            if (!this._headerWritten && this._formatter is IResultSetFormatter)
             {
                 this._writer.WriteLine(((IResultSetFormatter)this._formatter).FormatResultSetHeader());
+                this._headerWritten = true;
             }
 
             this._writer.WriteLine(this._formatter.FormatBooleanResult(result));
@@ -387,9 +391,10 @@ namespace VDS.RDF.Parsing.Handlers
         {
             if (this._currentType == SparqlResultsType.Boolean) throw new RdfParseException("Cannot handle a Result when the handler has already handled a boolean result");
             this._currentType = SparqlResultsType.VariableBindings;
-            if (this._formatter is IResultSetFormatter)
+            if (!this._headerWritten && this._formatter is IResultSetFormatter)
             {
                 this._writer.WriteLine(((IResultSetFormatter)this._formatter).FormatResultSetHeader(this._currVariables.Distinct()));
+                this._headerWritten = true;
             }
             this._writer.WriteLine(this._formatter.Format(result));
             return true;

@@ -27,6 +27,7 @@ namespace VDS.RDF.Test.Parsing.Handlers
             {
                 Graph g = new Graph();
                 g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+                g.Retract(g.Triples.Where(t => !t.IsGroundTriple));
                 SparqlResultSet results = g.ExecuteQuery("SELECT * WHERE { ?s ?p ?o }") as SparqlResultSet;
                 if (results == null) Assert.Fail("Failed to generate sample SPARQL Results");
 
@@ -301,7 +302,7 @@ namespace VDS.RDF.Test.Parsing.Handlers
         }
 
         [TestMethod]
-        public void ParsingResultSetHandlerMerging()
+        public void ParsingMergingResultSetHandler()
         {
             this.EnsureTestData("test.srx", new SparqlXmlWriter());
 
@@ -319,6 +320,31 @@ namespace VDS.RDF.Test.Parsing.Handlers
             parser.Load(handler, "test.srx");
 
             Assert.AreEqual(count * 2, results.Count, "Expected result count to have doubled");
+        }
+
+        [TestMethod]
+        public void ParsingResultsWriteThroughHandlerSparqlXml()
+        {
+            Graph g = new Graph();
+            g.LoadFromEmbeddedResource("VDS.RDF.Query.Optimisation.OptimiserStats.ttl");
+            SparqlResultSet original = g.ExecuteQuery("SELECT * WHERE { ?s ?p ?o }") as SparqlResultSet;
+            SparqlXmlWriter sparqlWriter = new SparqlXmlWriter();
+            sparqlWriter.Save(original, "test.custom.srx");
+
+            SparqlXmlParser parser = new SparqlXmlParser();
+            System.IO.StringWriter writer = new System.IO.StringWriter();
+            ResultWriteThroughHandler handler = new ResultWriteThroughHandler(new SparqlXmlFormatter(), writer, false);
+            parser.Load(handler, "test.custom.srx");
+
+            Console.WriteLine(writer.ToString());
+
+            SparqlResultSet results = new SparqlResultSet();
+            parser.Load(results, new StringReader(writer.ToString()));
+
+            Console.WriteLine("Original Result Count: " + original.Count);
+            Console.WriteLine("Round Trip Result Count: " + results.Count);
+
+            Assert.AreEqual(original, results, "Result Sets should be equal");
         }
     }
 }

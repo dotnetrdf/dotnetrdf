@@ -89,6 +89,18 @@ namespace VDS.RDF.Test.Parsing.Handlers
         }
 
         [TestMethod]
+        public void ParsingWriteThroughHandlerRdfXml()
+        {
+            this.ParsingUsingWriteThroughHandler(new RdfXmlFormatter());
+        }
+
+        [TestMethod]
+        public void ParsingWriteThroughHandlerRdfXml2()
+        {
+            this.ParsingUsingWriteThroughHandler(typeof(RdfXmlFormatter));
+        }
+
+        [TestMethod]
         public void ParsingWriteThroughHandlerSparql()
         {
             this.ParsingUsingWriteThroughHandler(new SparqlFormatter());
