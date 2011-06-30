@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
 using VDS.RDF.Update;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Test.Sparql
 {
@@ -61,6 +63,36 @@ namespace VDS.RDF.Test.Sparql
             {
                 Options.HttpDebugging = false;
             }
+        }
+
+        [TestMethod]
+        public void SparqlRemoteEndpointCountHandler()
+        {
+            SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(new Uri(TestQueryUri));
+            CountHandler handler = new CountHandler();
+            endpoint.QueryWithResultGraph(handler, "CONSTRUCT WHERE { ?s ?p ?o }");
+
+            Console.WriteLine("Triple Count: " + handler.Count);
+            Assert.AreNotEqual(0, handler.Count, "Count should not be zero");
+        }
+
+        [TestMethod]
+        public void SparqlRemoteEndpointResultCountHandler()
+        {
+            SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(new Uri(TestQueryUri));
+            ResultCountHandler handler = new ResultCountHandler();
+            endpoint.QueryWithResultSet(handler, "SELECT * WHERE { ?s ?p ?o }");
+
+            Console.WriteLine("Result Count: " + handler.Count);
+            Assert.AreNotEqual(0, handler.Count, "Count should not be zero");
+        }
+
+        [TestMethod]
+        public void SparqlRemoteEndpointWriteThroughHandler()
+        {
+            SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(new Uri(TestQueryUri));
+            WriteThroughHandler handler = new WriteThroughHandler(typeof(NTriplesFormatter), Console.Out, false);
+            endpoint.QueryWithResultGraph(handler, "CONSTRUCT WHERE { ?s ?p ?o }");
         }
     }
 }

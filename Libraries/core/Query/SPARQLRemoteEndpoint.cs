@@ -798,6 +798,16 @@ namespace VDS.RDF.Query
             //If no endpoints return an Empty Graph
             if (this._endpoints.Count == 0) return new Graph();
 
+            Graph g = new Graph();
+            this.QueryWithResultGraph(new GraphHandler(g), sparqlQuery);
+            return g;
+        }
+
+        public override void QueryWithResultGraph(IRdfHandler handler, string sparqlQuery)
+        {
+            //If no endpoints do nothing
+            if (this._endpoints.Count == 0) return;
+
             //Fire off all the Asychronous Requests
             List<AsyncQueryWithResultGraph> asyncCalls = new List<AsyncQueryWithResultGraph>();
             List<IAsyncResult> asyncResults = new List<IAsyncResult>();
@@ -861,7 +871,7 @@ namespace VDS.RDF.Query
 
             //Now merge all the results together
             HashSet<String> varsSeen = new HashSet<string>();
-            Graph merged = new Graph();
+            bool cont = true;
             for (int i = 0; i < asyncCalls.Count; i++)
             {
                 //Retrieve the result for this call
@@ -899,15 +909,19 @@ namespace VDS.RDF.Query
                 }
 
                 //Merge the result into the final results
-                merged.Merge(g);
+                //If the handler has previously told us to stop we skip this step
+                if (cont)
+                {
+                    handler.StartRdf();
+                    foreach (Triple t in g.Triples)
+                    {
+                        cont = handler.HandleTriple(t);
+                        //Stop if the Handler tells us to
+                        if (!cont) break;
+                    }
+                    handler.EndRdf(true);
+                }
             }
-
-            return merged;
-        }
-
-        public override void QueryWithResultGraph(IRdfHandler handler, string sparqlQuery)
-        {
-            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -929,6 +943,17 @@ namespace VDS.RDF.Query
         {
             //If no endpoints return an empty Result Set
             if (this._endpoints.Count == 0) return new SparqlResultSet();
+
+            //Declare a result set and invoke the other overload
+            SparqlResultSet results = new SparqlResultSet();
+            this.QueryWithResultSet(new MergingResultSetHandler(results), sparqlQuery);
+            return results;
+        }
+
+        public override void QueryWithResultSet(ISparqlResultsHandler handler, string sparqlQuery)
+        {
+            //If no endpoints do nothing
+            if (this._endpoints.Count == 0) return;
 
             //Fire off all the Asychronous Requests
             List<AsyncQueryWithResultSet> asyncCalls = new List<AsyncQueryWithResultSet>();
@@ -993,7 +1018,7 @@ namespace VDS.RDF.Query
 
             //Now merge all the results together
             HashSet<String> varsSeen = new HashSet<string>();
-            SparqlResultSet mergedResult = null;
+            bool cont = true;
             for (int i = 0; i < asyncCalls.Count; i++)
             {
                 //Retrieve the result for this call
@@ -1031,34 +1056,27 @@ namespace VDS.RDF.Query
                 }
 
                 //Merge the result into the final results
-                if (mergedResult == null)
-                {
-                    mergedResult = partialResult;
-                } 
-                else
+                //If the handler has previously told us to stop we skip this step
+                if (cont)
                 {
                     foreach (String variable in partialResult.Variables)
                     {
-                        if (!varsSeen.Contains(variable))
-                        {
-                            mergedResult.AddVariable(variable);
-                            varsSeen.Add(variable);
-                        }
+                        cont = handler.HandleVariable(variable);
+                        //Stop if handler tells us to
+                        if (!cont) break;
                     }
 
-                    foreach (SparqlResult result in partialResult.Results)
+                    if (cont)
                     {
-                        mergedResult.AddResult(result);
+                        foreach (SparqlResult result in partialResult.Results)
+                        {
+                            cont = handler.HandleResult(result);
+                            //Stop if handler tells us to
+                            if (!cont) break;
+                        }
                     }
                 }
             }
-
-            return mergedResult;
-        }
-
-        public override void QueryWithResultSet(ISparqlResultsHandler handler, string sparqlQuery)
-        {
-            throw new NotImplementedException();
         }
 
         /// <summary>

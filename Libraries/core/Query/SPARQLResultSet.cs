@@ -266,7 +266,10 @@ namespace VDS.RDF.Query
         /// <param name="var">Variable Name</param>
         protected internal void AddVariable(String var)
         {
-            this._variables.Add(var);
+            if (!this._variables.Contains(var))
+            {
+                this._variables.Add(var);
+            }
             this._type = SparqlResultsType.VariableBindings;
         }
 
