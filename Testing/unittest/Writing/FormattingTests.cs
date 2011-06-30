@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -12,7 +13,7 @@ namespace VDS.RDF.Test.Writing
     public class FormattingTests
     {
         [TestMethod]
-        public void WritingTripleFormatting()
+        public void WritingFormattingTriples()
         {
             try
             {
@@ -113,6 +114,53 @@ namespace VDS.RDF.Test.Writing
             {
                 TestTools.ReportError("Error", ex, true);
             }       
+        }
+
+        [TestMethod]
+        public void WritingFormattingGraphs()
+        {
+            Graph g = new Graph();
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+
+            List<IGraphFormatter> formatters = new List<IGraphFormatter>()
+            {
+                new RdfXmlFormatter()
+            };
+
+            List<IRdfReader> parsers = new List<IRdfReader>()
+            {
+                new RdfXmlParser()
+            };
+
+            Console.WriteLine("Using Formatter " + formatters.GetType().ToString());
+            for (int i = 0; i < formatters.Count; i++)
+            {
+                IGraphFormatter formatter = formatters[i];
+
+                StringBuilder output = new StringBuilder();
+                output.AppendLine(formatter.FormatGraphHeader(g));
+                foreach (Triple t in g.Triples)
+                {
+                    output.AppendLine(formatter.Format(t));
+                }
+                output.AppendLine(formatter.FormatGraphFooter());
+
+                Console.WriteLine(output.ToString());
+
+                //Try parsing to check it round trips
+                Graph h = new Graph();
+                IRdfReader parser = parsers[i];
+                parser.Load(h, new StringReader(output.ToString()));
+
+                GraphDiffReport diff = g.Difference(h);
+                if (!diff.AreEqual)
+                {
+                    TestTools.ShowDifferences(diff);
+                }
+
+                Assert.AreEqual(g, h, "Graphs should be equal after round tripping");
+            }
+            Console.WriteLine();
         }
     }
 }

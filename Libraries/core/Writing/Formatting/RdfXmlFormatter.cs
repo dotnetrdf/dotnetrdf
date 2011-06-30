@@ -12,14 +12,17 @@ namespace VDS.RDF.Writing.Formatting
     /// </summary>
     public class RdfXmlFormatter : IGraphFormatter
     {
+        private QNameOutputMapper _mapper;
+
         private String GetGraphHeaderBase()
         {
-            return @"<?xml version=""1.0\"" charset=\""utf-8\""?>
-<rdf:RDF xmlns:rdf=" + NamespaceMapper.RDF + "\"";
+            return @"<?xml version=""1.0"" encoding=""utf-8""?>
+<rdf:RDF xmlns:rdf=""" + NamespaceMapper.RDF + "\"";
         }
 
         public string FormatGraphHeader(IGraph g)
         {
+            this._mapper = new QNameOutputMapper(g.NamespaceMap);
             StringBuilder output = new StringBuilder();
             output.Append(this.GetGraphHeaderBase());
             foreach (String prefix in g.NamespaceMap.Prefixes)
@@ -46,6 +49,7 @@ namespace VDS.RDF.Writing.Formatting
 
         public string FormatGraphHeader(INamespaceMapper namespaces)
         {
+            this._mapper = new QNameOutputMapper(namespaces);
             StringBuilder output = new StringBuilder();
             output.Append(this.GetGraphHeaderBase());
             foreach (String prefix in namespaces.Prefixes)
@@ -73,7 +77,29 @@ namespace VDS.RDF.Writing.Formatting
 
         public string FormatGraphFooter()
         {
+            this._mapper = null;
             return "</rdf:RDF>";
+        }
+
+        private void GetQName(Uri u, out String qname, out String ns)
+        {
+            if (this._mapper != null && this._mapper.ReduceToQName(u.ToString(), out qname))
+            {
+                //Succesfully reduced to a QName using the known namespaces
+                ns = String.Empty;
+                return;
+            }
+            else if (!u.Fragment.Equals(String.Empty))
+            {
+                ns = u.ToString().Substring(0, u.ToString().Length - u.Fragment.Length + 1);
+                qname = u.Fragment.Substring(1);
+            }
+            else
+            {
+                qname = u.Segments.LastOrDefault();
+                if (qname == null) throw new RdfOutputException(WriterErrorMessages.UnreducablePropertyURIUnserializable);
+                ns = u.ToString().Substring(0, u.ToString().Length - qname.Length);
+            }
         }
 
         public string Format(Triple t)
@@ -86,7 +112,7 @@ namespace VDS.RDF.Writing.Formatting
                     output.Append("rdf:about=\"" + WriterHelper.EncodeForXml(t.Subject.ToString()) + "\"");
                     break;
                 case NodeType.Blank:
-                    output.Append("rdf:nodeId=\"" + ((IBlankNode)t.Subject).InternalID + "\"");
+                    output.Append("rdf:nodeID=\"" + ((IBlankNode)t.Subject).InternalID + "\"");
                     break;
                 case NodeType.Literal:
                     throw new RdfOutputException(WriterErrorMessages.LiteralSubjectsUnserializable("RDF/XML"));
@@ -105,19 +131,16 @@ namespace VDS.RDF.Writing.Formatting
             {
                 case NodeType.Uri:
                     Uri u = ((IUriNode)t.Predicate).Uri;
-                    if (!u.Fragment.Equals(String.Empty))
+                    this.GetQName(u, out qname, out ns);
+                    output.Append('\t');
+                    if (ns.Equals(String.Empty))
                     {
-                        ns = u.ToString().Substring(0, u.ToString().Length - u.Fragment.Length + 1);
-                        qname = u.Fragment.Substring(1);
+                        output.Append("<" + qname);
                     }
                     else
                     {
-                        qname = u.Segments.LastOrDefault();
-                        if (qname == null) throw new RdfOutputException(WriterErrorMessages.UnreducablePropertyURIUnserializable);
-                        ns = u.ToString().Substring(0, u.ToString().Length - qname.Length);
+                        output.Append("<" + qname + " xmlns=\"" + WriterHelper.EncodeForXml(ns) + "\"");
                     }
-                    output.Append('\t');
-                    output.Append("<" + qname + " xmlns=\"" + WriterHelper.EncodeForXml(ns) + "\"");
                     break;
                 case NodeType.Blank:
                     throw new RdfOutputException(WriterErrorMessages.BlankPredicatesUnserializable("RDF/XML"));
