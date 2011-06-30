@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Parsing;
+using VDS.RDF.Query;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Test.Writing
@@ -159,6 +160,48 @@ namespace VDS.RDF.Test.Writing
                 }
 
                 Assert.AreEqual(g, h, "Graphs should be equal after round tripping");
+            }
+            Console.WriteLine();
+        }
+
+        [TestMethod]
+        public void WritingFormattingResultSets()
+        {
+            Graph g = new Graph();
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+            SparqlResultSet expected = g.ExecuteQuery("SELECT * WHERE { ?s a ?type }") as SparqlResultSet;
+
+            List<IResultSetFormatter> formatters = new List<IResultSetFormatter>()
+            {
+                new SparqlXmlFormatter()
+            };
+
+            List<ISparqlResultsReader> parsers = new List<ISparqlResultsReader>()
+            {
+                new SparqlXmlParser()
+            };
+
+            Console.WriteLine("Using Formatter " + formatters.GetType().ToString());
+            for (int i = 0; i < formatters.Count; i++)
+            {
+                IResultSetFormatter formatter = formatters[i];
+
+                StringBuilder output = new StringBuilder();
+                output.AppendLine(formatter.FormatResultSetHeader(expected.Variables));
+                foreach (SparqlResult r in expected)
+                {
+                    output.AppendLine(formatter.Format(r));
+                }
+                output.AppendLine(formatter.FormatResultSetFooter());
+
+                Console.WriteLine(output.ToString());
+
+                //Try parsing to check it round trips
+                SparqlResultSet actual = new SparqlResultSet();
+                ISparqlResultsReader parser = parsers[i];
+                parser.Load(actual, new StringReader(output.ToString()));
+
+                Assert.AreEqual(expected, actual, "Result Sets should be equal after round tripping");
             }
             Console.WriteLine();
         }

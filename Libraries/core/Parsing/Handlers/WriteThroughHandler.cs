@@ -352,7 +352,7 @@ namespace VDS.RDF.Parsing.Handlers
         {
             if (this._formatter is IResultSetFormatter)
             {
-                this._writer.WriteLine(((IResultSetFormatter)this._formatter).FormatResultSetFooter(this._currentType));
+                this._writer.WriteLine(((IResultSetFormatter)this._formatter).FormatResultSetFooter());
             }
             if (this._closeOnEnd)
             {
@@ -369,7 +369,7 @@ namespace VDS.RDF.Parsing.Handlers
             this._currentType = SparqlResultsType.Boolean;
             if (this._formatter is IResultSetFormatter)
             {
-                this._writer.WriteLine(((IResultSetFormatter)this._formatter).FormatResultSetHeader(this._currentType));
+                this._writer.WriteLine(((IResultSetFormatter)this._formatter).FormatResultSetHeader());
             }
 
             this._writer.WriteLine(this._formatter.FormatBooleanResult(result));

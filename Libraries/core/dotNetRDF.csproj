@@ -605,6 +605,7 @@
     <Compile Include="Writing\Formatting\IGraphFormatter.cs" />
     <Compile Include="Writing\Formatting\IResultSetFormatter.cs" />
     <Compile Include="Writing\Formatting\RdfXmlFormatter.cs" />
+    <Compile Include="Writing\Formatting\SparqlXmlFormatter.cs" />
     <Compile Include="Writing\PrettyRdfXmlWriter.cs" />
     <Compile Include="Writing\Formatting\BaseFormatter.cs" />
     <Compile Include="Writing\Formatting\CsvFormatter.cs" />

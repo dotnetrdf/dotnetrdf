@@ -196,5 +196,10 @@ namespace VDS.RDF.Writing.Formatting
             output.Append("</rdf:Description>");
             return output.ToString();
         }
+
+        public override string ToString()
+        {
+            return "RDF/XML";
+        }
     }
 }

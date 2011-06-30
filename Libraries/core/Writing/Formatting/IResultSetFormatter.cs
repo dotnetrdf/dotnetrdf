@@ -19,13 +19,6 @@ namespace VDS.RDF.Writing.Formatting
         String FormatResultSetHeader(IEnumerable<String> variables);
 
         /// <summary>
-        /// Generates a header section of the appropriate type with no variables
-        /// </summary>
-        /// <param name="type">Result Set Type</param>
-        /// <returns></returns>
-        String FormatResultSetHeader(SparqlResultsType type);
-
-        /// <summary>
         /// Generates a header section assuming no variables
         /// </summary>
         /// <returns></returns>
@@ -33,13 +26,6 @@ namespace VDS.RDF.Writing.Formatting
         /// Formatter should assume a boolean result set if this overload is called
         /// </remarks>
         String FormatResultSetHeader();
-
-        /// <summary>
-        /// Generates a footer section of the appropriate type
-        /// </summary>
-        /// <param name="type">Result Set Type</param>
-        /// <returns></returns>
-        String FormatResultSetFooter(SparqlResultsType type);
 
         /// <summary>
         /// Generates a footer section

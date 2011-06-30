@@ -207,7 +207,7 @@ namespace VDS.RDF.Writing.Formatting
 
         public virtual String FormatBooleanResult(bool result)
         {
-            return result.ToString();
+            return result.ToString().ToLower();
         }
 
         /// <summary>
