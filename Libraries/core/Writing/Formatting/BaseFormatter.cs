@@ -37,13 +37,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VDS.RDF.Query;
 
 namespace VDS.RDF.Writing.Formatting
 {
     /// <summary>
     /// Abstract Base Class for Formatters
     /// </summary>
-    public abstract class BaseFormatter : INodeFormatter, ITripleFormatter, IUriFormatter, ICharFormatter
+    public abstract class BaseFormatter : INodeFormatter, ITripleFormatter, IUriFormatter, ICharFormatter, IResultFormatter
     {
         private String _format;
 
@@ -192,6 +193,21 @@ namespace VDS.RDF.Writing.Formatting
         public virtual String FormatChar(char c)
         {
             return c.ToString();
+        }
+
+        /// <summary>
+        /// Formats a SPARQL Result for the given format
+        /// </summary>
+        /// <param name="result">SPARQL Result</param>
+        /// <returns></returns>
+        public virtual String Format(SparqlResult result)
+        {
+            return result.ToString(this);
+        }
+
+        public virtual String FormatBooleanResult(bool result)
+        {
+            return result.ToString();
         }
 
         /// <summary>

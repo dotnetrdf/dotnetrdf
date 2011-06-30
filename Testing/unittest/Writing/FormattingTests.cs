@@ -27,11 +27,12 @@ namespace VDS.RDF.Test.Writing
                 Uri dtDecimal = new Uri(XmlSpecsHelper.XmlSchemaDataTypeDecimal);
                 Uri dtBoolean = new Uri(XmlSpecsHelper.XmlSchemaDataTypeBoolean);
                 Uri dtUnknown = new Uri("http://example.org/unknownType");
+                Uri dtXmlLiteral = new Uri(RdfSpecsHelper.RdfXmlLiteral);
 
                 //Create Nodes used for our test Triples
                 IBlankNode subjBnode = g.CreateBlankNode();
                 IUriNode subjUri = g.CreateUriNode(new Uri("http://example.org/subject"));
-                IUriNode predUri = g.CreateUriNode(new Uri("http://example.org/predicate"));
+                IUriNode predUri = g.CreateUriNode(new Uri("http://example.org/vocab#predicate"));
                 IUriNode predType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
                 IBlankNode objBnode = g.CreateBlankNode();
                 IUriNode objUri = g.CreateUriNode(new Uri("http://example.org/object"));
@@ -44,6 +45,7 @@ namespace VDS.RDF.Test.Writing
                 ILiteralNode objTrue = g.CreateLiteralNode("true", dtBoolean);
                 ILiteralNode objFalse = g.CreateLiteralNode("false", dtBoolean);
                 ILiteralNode objUnknown = g.CreateLiteralNode("This is a literal with an unknown type", dtUnknown);
+                ILiteralNode objXmlLiteral = g.CreateLiteralNode("<strong>XML Literal</strong>", dtXmlLiteral);
 
                 List<ITripleFormatter> formatters = new List<ITripleFormatter>()
                 {
@@ -53,7 +55,8 @@ namespace VDS.RDF.Test.Writing
                     new TurtleFormatter(g),
                     new Notation3Formatter(g),
                     new CsvFormatter(),
-                    new TsvFormatter()
+                    new TsvFormatter(),
+                    new RdfXmlFormatter()
                 };
                 List<INode> subjects = new List<INode>()
                 {
@@ -77,7 +80,8 @@ namespace VDS.RDF.Test.Writing
                     objDecimal,
                     objTrue,
                     objFalse,
-                    objUnknown
+                    objUnknown,
+                    objXmlLiteral
                 };
                 List<Triple> testTriples = new List<Triple>();
                 foreach (INode s in subjects)

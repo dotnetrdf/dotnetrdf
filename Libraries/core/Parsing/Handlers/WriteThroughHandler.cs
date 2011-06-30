@@ -34,9 +34,11 @@ terms.
 */
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using VDS.RDF.Query;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Parsing.Handlers
@@ -152,6 +154,11 @@ namespace VDS.RDF.Parsing.Handlers
                 //If we get out here and the formatter is null then we throw an error
                 if (this._formatter == null) throw new RdfParseException("Unable to instantiate a ITripleFormatter from the given Formatter Type " + this._formatterType.FullName);
             }
+
+            if (this._formatter is IGraphFormatter)
+            {
+                this._writer.WriteLine(((IGraphFormatter)this._formatter).FormatGraphHeader(this._formattingMapper));
+            }
         }
 
         /// <summary>
@@ -160,6 +167,10 @@ namespace VDS.RDF.Parsing.Handlers
         /// <param name="ok">Indicates whether parsing completed without error</param>
         protected override void EndRdfInternal(bool ok)
         {
+            if (this._formatter is IGraphFormatter)
+            {
+                this._writer.WriteLine(((IGraphFormatter)this._formatter).FormatGraphFooter());
+            }
             if (this._closeOnEnd)
             {
                 this._writer.Close();
@@ -223,6 +234,165 @@ namespace VDS.RDF.Parsing.Handlers
             {
                 return true;
             }
+        }
+    }
+
+    public class ResultWriteThroughHandler : BaseResultsHandler
+    {
+        private Type _formatterType;
+        private IResultFormatter _formatter;
+        private TextWriter _writer;
+        private bool _closeOnEnd = true;
+        private INamespaceMapper _formattingMapper = new QNameOutputMapper();
+        private SparqlResultsType _currentType = SparqlResultsType.Boolean;
+        private List<String> _currVariables = new List<String>();
+
+        /// <summary>
+        /// Creates a new Write-Through Handler
+        /// </summary>
+        /// <param name="formatter">Triple Formatter to use</param>
+        /// <param name="writer">Text Writer to write to</param>
+        /// <param name="closeOnEnd">Whether to close the writer at the end of RDF handling</param>
+        public ResultWriteThroughHandler(IResultFormatter formatter, TextWriter writer, bool closeOnEnd)
+        {
+            if (writer == null) throw new ArgumentNullException("writer", "Cannot use a null TextWriter with the Result Write Through Handler");
+            if (formatter != null)
+            {
+                this._formatter = formatter;
+            }
+            else
+            {
+                this._formatter = new NTriplesFormatter();
+            }
+            this._writer = writer;
+            this._closeOnEnd = closeOnEnd;
+        }
+
+        /// <summary>
+        /// Creates a new Write-Through Handler
+        /// </summary>
+        /// <param name="formatter">Triple Formatter to use</param>
+        /// <param name="writer">Text Writer to write to</param>
+        public ResultWriteThroughHandler(IResultFormatter formatter, TextWriter writer)
+            : this(formatter, writer, true) { }
+
+        /// <summary>
+        /// Creates a new Write-Through Handler
+        /// </summary>
+        /// <param name="formatterType">Type of the formatter to create</param>
+        /// <param name="writer">Text Writer to write to</param>
+        /// <param name="closeOnEnd">Whether to close the writer at the end of RDF handling</param>
+        public ResultWriteThroughHandler(Type formatterType, TextWriter writer, bool closeOnEnd)
+        {
+            if (writer == null) throw new ArgumentNullException("writer", "Cannot use a null TextWriter with the Result Write Through Handler");
+            if (formatterType == null) throw new ArgumentNullException("formatterType", "Cannot use a null formatter type");
+            this._formatterType = formatterType;
+            this._writer = writer;
+            this._closeOnEnd = closeOnEnd;
+        }
+
+        /// <summary>
+        /// Creates a new Write-Through Handler
+        /// </summary>
+        /// <param name="formatterType">Type of the formatter to create</param>
+        /// <param name="writer">Text Writer to write to</param>
+        public ResultWriteThroughHandler(Type formatterType, TextWriter writer)
+            : this(formatterType, writer, true) { }
+
+        protected override void StartResultsInternal()
+        {
+            if (this._closeOnEnd && this._writer == null) throw new RdfParseException("Cannot use this ResultWriteThroughHandler as an Results Handler for parsing as you set closeOnEnd to true and you have already used this Handler and so the provided TextWriter was closed");
+            this._currentType = SparqlResultsType.Unknown;
+            this._currVariables.Clear();
+
+            if (this._formatterType != null)
+            {
+                this._formatter = null;
+                this._formattingMapper = new QNameOutputMapper();
+
+                //Instantiate a new Formatter
+                ConstructorInfo[] cs = this._formatterType.GetConstructors();
+                Type qnameMapperType = typeof(QNameOutputMapper);
+                Type nsMapperType = typeof(INamespaceMapper);
+                foreach (ConstructorInfo c in cs.OrderByDescending(c => c.GetParameters().Count()))
+                {
+                    ParameterInfo[] ps = c.GetParameters();
+                    try
+                    {
+                        if (ps.Length == 1)
+                        {
+                            if (ps[0].ParameterType.Equals(qnameMapperType))
+                            {
+                                this._formatter = Activator.CreateInstance(this._formatterType, new Object[] { this._formattingMapper }) as IResultFormatter;
+                            }
+                            else if (ps[0].ParameterType.Equals(nsMapperType))
+                            {
+                                this._formatter = Activator.CreateInstance(this._formatterType, new Object[] { this._formattingMapper }) as IResultFormatter;
+                            }
+                        }
+                        else if (ps.Length == 0)
+                        {
+                            this._formatter = Activator.CreateInstance(this._formatterType) as IResultFormatter;
+                        }
+
+                        if (this._formatter != null) break;
+                    }
+                    catch
+                    {
+                        //Suppress errors since we'll throw later if necessary
+                    }
+                }
+
+                //If we get out here and the formatter is null then we throw an error
+                if (this._formatter == null) throw new RdfParseException("Unable to instantiate a IResultFormatter from the given Formatter Type " + this._formatterType.FullName);
+            }
+        }
+
+        protected override void EndResultsInternal(bool ok)
+        {
+            if (this._formatter is IResultSetFormatter)
+            {
+                this._writer.WriteLine(((IResultSetFormatter)this._formatter).FormatResultSetFooter(this._currentType));
+            }
+            if (this._closeOnEnd)
+            {
+                this._writer.Close();
+                this._writer = null;
+            }
+            this._currentType = SparqlResultsType.Unknown;
+            this._currVariables.Clear();
+        }
+
+        protected override void HandleBooleanResultInternal(bool result)
+        {
+            if (this._currentType != SparqlResultsType.Unknown) throw new RdfParseException("Cannot handle a Boolean Result when the handler has already handled other types of results");
+            this._currentType = SparqlResultsType.Boolean;
+            if (this._formatter is IResultSetFormatter)
+            {
+                this._writer.WriteLine(((IResultSetFormatter)this._formatter).FormatResultSetHeader(this._currentType));
+            }
+
+            this._writer.WriteLine(this._formatter.FormatBooleanResult(result));
+        }
+
+        protected override bool HandleVariableInternal(string var)
+        {
+            if (this._currentType == SparqlResultsType.Boolean) throw new RdfParseException("Cannot handler a Variable when the handler has already handled a boolean result");
+            this._currentType = SparqlResultsType.VariableBindings;
+            this._currVariables.Add(var);
+            return true;
+        }
+
+        protected override bool HandleResultInternal(SparqlResult result)
+        {
+            if (this._currentType == SparqlResultsType.Boolean) throw new RdfParseException("Cannot handle a Result when the handler has already handled a boolean result");
+            this._currentType = SparqlResultsType.VariableBindings;
+            if (this._formatter is IResultSetFormatter)
+            {
+                this._writer.WriteLine(((IResultSetFormatter)this._formatter).FormatResultSetHeader(this._currVariables.Distinct()));
+            }
+            this._writer.WriteLine(this._formatter.Format(result));
+            return true;
         }
     }
 }

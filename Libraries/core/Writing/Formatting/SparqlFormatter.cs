@@ -1130,6 +1130,11 @@ namespace VDS.RDF.Writing.Formatting
             return result.ToString(this);
         }
 
+        public virtual String FormatBooleanResult(bool result)
+        {
+            return result.ToString();
+        }
+
         #endregion
     }
 }
