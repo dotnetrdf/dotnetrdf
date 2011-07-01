@@ -40,6 +40,11 @@ namespace VDS.RDF.Linq
             return this._underlyingProcessor.ProcessQuery(query);
         }
 
+        public void ProcessQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query)
+        {
+            this._underlyingProcessor.ProcessQuery(rdfHandler, resultsHandler, query);
+        }
+
         /// <summary>
         /// Processes the SPARQL Query using the underlying processor and then
         /// </summary>

@@ -37,7 +37,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using VDS.RDF.Parsing.Tokens;
+using VDS.RDF.Parsing;
 using VDS.RDF.Query.Algebra;
 
 namespace VDS.RDF.Query.Describe
@@ -52,48 +52,8 @@ namespace VDS.RDF.Query.Describe
     /// </remarks>
     public class ConciseBoundedDescription : BaseDescribeAlgorithm
     {
-        /// <summary>
-        /// Returns the Graph which is the Result of the Describe Query by computing the Concise Bounded Description for all Results
-        /// </summary>
-        /// <param name="context">SPARQL Evaluation Context</param>
-        /// <returns></returns>
-        public override IGraph Describe(SparqlEvaluationContext context)
+        protected override void DescribeInternal(IRdfHandler handler, SparqlEvaluationContext context, IEnumerable<INode> nodes)
         {
-            //Get a new empty Graph and import the Base Uri and Namespace Map of the Query
-            Graph g = new Graph();
-            g.BaseUri = context.Query.BaseUri;
-            g.NamespaceMap.Import(context.Query.NamespaceMap);
-
-            //Build a list of INodes to describe
-            List<INode> nodes = new List<INode>();
-            foreach (IToken t in context.Query.DescribeVariables)
-            {
-                switch (t.TokenType)
-                {
-                    case Token.QNAME:
-                    case Token.URI:
-                        //Resolve Uri/QName
-                        nodes.Add(new UriNode(g, new Uri(Tools.ResolveUriOrQName(t, g.NamespaceMap, g.BaseUri))));
-                        break;
-
-                    case Token.VARIABLE:
-                        //Get Variable Values
-                        String var = t.Value.Substring(1);
-                        if (context.OutputMultiset.ContainsVariable(var))
-                        {
-                            foreach (ISet s in context.OutputMultiset.Sets)
-                            {
-                                INode temp = s[var];
-                                if (temp != null) nodes.Add(temp);
-                            }
-                        }
-                        break;
-
-                    default:
-                        throw new RdfQueryException("Unexpected Token '" + t.GetType().ToString() + "' in DESCRIBE Variables list");
-                }
-            }
-
             //Rewrite Blank Node IDs for DESCRIBE Results
             Dictionary<String, INode> bnodeMapping = new Dictionary<string, INode>();
 
@@ -109,7 +69,7 @@ namespace VDS.RDF.Query.Describe
                     {
                         if (!expandedBNodes.Contains(t.Object)) bnodes.Enqueue(t.Object);
                     }
-                    g.Assert(this.RewriteDescribeBNodes(t, bnodeMapping, g));
+                    if (handler.HandleTriple(this.RewriteDescribeBNodes(t, bnodeMapping, handler))) ParserHelper.Stop();
                 }
 
                 //Compute the Blank Node Closure for this Subject
@@ -125,14 +85,10 @@ namespace VDS.RDF.Query.Describe
                         {
                             if (!expandedBNodes.Contains(t2.Object)) bnodes.Enqueue(t2.Object);
                         }
-                        g.Assert(this.RewriteDescribeBNodes(t2, bnodeMapping, g));
+                        if (!handler.HandleTriple(this.RewriteDescribeBNodes(t2, bnodeMapping, handler))) ParserHelper.Stop();
                     }
                 }
             }
-
-            //Return the Graph
-            g.BaseUri = null;
-            return g;
         }
     }
 }

@@ -257,6 +257,11 @@ namespace VDS.RDF.Query
 #endif
         }
 
+        public void ProcessQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query)
+        {
+            throw new NotImplementedException();
+        }
+
         protected SparqlEvaluationContext GetContext()
         {
             return this.GetContext(null);

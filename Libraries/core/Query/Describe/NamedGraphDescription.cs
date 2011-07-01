@@ -47,11 +47,7 @@ namespace VDS.RDF.Query.Describe
     /// </summary>
     public class NamedGraphDescription : ISparqlDescribe
     {
-        /// <summary>
-        /// Returns the Graph which is the merge of all the Graphs which are named with URIs contained in the Results
-        /// </summary>
-        /// <param name="context">Evaluation Context</param>
-        /// <returns></returns>
+
         public IGraph Describe(SparqlEvaluationContext context)
         {
             //Get a new empty Graph and import the Base Uri and Namespace Map of the Query
@@ -102,6 +98,11 @@ namespace VDS.RDF.Query.Describe
             }
 
             return g;
+        }
+
+        public void Describe(IRdfHandler handler, SparqlEvaluationContext context)
+        {
+            throw new NotImplementedException();
         }
     }
 }

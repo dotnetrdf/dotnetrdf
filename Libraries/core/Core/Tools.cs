@@ -399,6 +399,39 @@ namespace VDS.RDF
             }
         }
 
+        public static INode CopyNode(INode original, INodeFactory target)
+        {
+            if (ReferenceEquals(original.Graph, target)) return original;
+
+            switch (original.NodeType)
+            {
+                case NodeType.Blank:
+                    return target.CreateBlankNode(((IBlankNode)original).InternalID);
+                case NodeType.GraphLiteral:
+                    return target.CreateGraphLiteralNode(((IGraphLiteralNode)original).SubGraph);
+                case NodeType.Literal:
+                    ILiteralNode lit = (ILiteralNode)original;
+                    if (lit.DataType != null)
+                    {
+                        return target.CreateLiteralNode(lit.Value, lit.DataType);
+                    }
+                    else if (!lit.Language.Equals(String.Empty))
+                    {
+                        return target.CreateLiteralNode(lit.Value, lit.Language);
+                    }
+                    else
+                    {
+                        return target.CreateLiteralNode(lit.Value);
+                    }
+                case NodeType.Uri:
+                    return target.CreateUriNode(((IUriNode)original).Uri);
+                case NodeType.Variable:
+                    return target.CreateVariableNode(((IVariableNode)original).VariableName);
+                default:
+                    throw new RdfException("Unable to Copy '" + original.GetType().ToString() + "' Nodes between Node Factories");
+            }
+        }
+
         /// <summary>
         /// Copies a Triple from one Graph to another
         /// </summary>

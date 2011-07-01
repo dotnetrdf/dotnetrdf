@@ -110,5 +110,10 @@ namespace VDS.RDF.Query
                 query.QueryTimeTicks = elapsed.Ticks;
             }
         }
+
+        public void ProcessQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

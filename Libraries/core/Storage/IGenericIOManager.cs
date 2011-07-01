@@ -238,6 +238,14 @@ namespace VDS.RDF.Storage
         /// <param name="sparqlQuery">SPARQL Query</param>
         /// <returns><see cref="SparqlResultSet">SparqlResultSet</see> or a <see cref="Graph">Graph</see> depending on the Sparql Query</returns>
         Object Query(String sparqlQuery);
+
+        /// <summary>
+        /// Makes a SPARQL Query against the underlying store processing the resulting Graph/Result Set with a handler of your choice
+        /// </summary>
+        /// <param name="rdfHandler">RDF Handler</param>
+        /// <param name="resultsHandler">SPARQL Results Handler</param>
+        /// <param name="sparqlQuery">SPARQL Query</param>
+        //void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery);
     }
 
     /// <summary>

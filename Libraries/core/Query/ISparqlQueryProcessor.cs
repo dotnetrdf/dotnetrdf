@@ -56,11 +56,21 @@ namespace VDS.RDF.Query
     public interface ISparqlQueryProcessor
     {
         /// <summary>
-        /// Processes a SPARQL Query
+        /// Processes a SPARQL Query returning a <see cref="IGraph">IGraph</see> instance or a <see cref="SparqlResultSet">SparqlResultSet</see> depending on the type of the query
         /// </summary>
         /// <param name="query">SPARQL Query</param>
-        /// <returns></returns>
+        /// <returns>
+        /// Either an <see cref="IGraph">IGraph</see> instance of a <see cref="SparqlResultSet">SparqlResultSet</see> depending on the type of the query
+        /// </returns>
         Object ProcessQuery(SparqlQuery query);
+
+        /// <summary>
+        /// Processes a SPARQL Query passing the results to the RDF or Results handler as appropriate
+        /// </summary>
+        /// <param name="rdfHandler">RDF Handler</param>
+        /// <param name="resultsHandler">Results Handler</param>
+        /// <param name="query">SPARQL Query</param>
+        void ProcessQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query);
 
     }
 

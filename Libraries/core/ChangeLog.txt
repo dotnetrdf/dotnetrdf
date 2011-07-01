@@ -42,6 +42,8 @@ Changed
  - Fixes to AllegroGraphConnector to support 4.x HTTP protocol changes based on bug reports from Sascha Dech
 - Query
  - Further refactored the Leviathan engine to make it even easier to extend
+ - Describe API Changes
+  - Breaking changes to the Describe API to allow for use of RDF Handlers for streaming processing of the returned results
  - Optimisation Improvements
   - Improvements to internal data structures for faster evaluation
   - Subqueries now get the parent queries Algebra Optimisers applied to them

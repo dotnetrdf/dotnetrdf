@@ -56,5 +56,7 @@ namespace VDS.RDF.Query.Describe
         /// <param name="context">SPARQL Evaluation Context</param>
         /// <returns></returns>
         IGraph Describe(SparqlEvaluationContext context);
+
+        void Describe(IRdfHandler handler, SparqlEvaluationContext context);
     }
 }
