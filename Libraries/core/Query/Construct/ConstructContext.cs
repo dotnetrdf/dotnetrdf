@@ -11,7 +11,9 @@ namespace VDS.RDF.Query.Construct
     /// </summary>
     public class ConstructContext
     {
+        private static ThreadSafeReference<NodeFactory> _globalFactory = new ThreadSafeReference<NodeFactory>(() => new NodeFactory());
         private ISet _s;
+        private INodeFactory _factory;
         private IGraph _g;
         private bool _preserveBNodes = false;
         private Dictionary<String, INode> _bnodeMap;
@@ -31,6 +33,14 @@ namespace VDS.RDF.Query.Construct
         public ConstructContext(IGraph g, ISet s, bool preserveBNodes)
         {
             this._g = g;
+            this._factory = (this._g != null ? (INodeFactory)this._g : _globalFactory.Value);
+            this._s = s;
+            this._preserveBNodes = preserveBNodes;
+        }
+
+        public ConstructContext(INodeFactory factory, ISet s, bool preserveBNodes)
+        {
+            this._factory = (factory != null ? factory : _globalFactory.Value);
             this._s = s;
             this._preserveBNodes = preserveBNodes;
         }
@@ -54,6 +64,14 @@ namespace VDS.RDF.Query.Construct
             get
             {
                 return this._g;
+            }
+        }
+
+        private INodeFactory NodeFactory
+        {
+            get
+            {
+                return this._factory;
             }
         }
 
@@ -89,13 +107,17 @@ namespace VDS.RDF.Query.Construct
             {
                 temp = this._g.CreateBlankNode();
             }
+            else if (this._factory != null)
+            {
+                temp = this._factory.CreateBlankNode();
+            }
             else if (this._s != null)
             {
                 temp = new BlankNode(this._g, id.Substring(2) + "-" + this._s.ID);
             }
             else
             {
-               temp = new BlankNode(this._g, id.Substring(2));
+                temp = new BlankNode(this._g, id.Substring(2));
             }
             this._bnodeMap.Add(id, temp);
             return temp;
@@ -126,32 +148,32 @@ namespace VDS.RDF.Query.Construct
 
                 case NodeType.Variable:
                     IVariableNode v = (IVariableNode)n;
-                    temp = this._g.CreateVariableNode(v.VariableName);
+                    temp = this._factory.CreateVariableNode(v.VariableName);
                     break;
 
                 case NodeType.GraphLiteral:
                     IGraphLiteralNode g = (IGraphLiteralNode)n;
-                    temp = this._g.CreateGraphLiteralNode(g.SubGraph);
+                    temp = this._factory.CreateGraphLiteralNode(g.SubGraph);
                     break;
 
                 case NodeType.Uri:
                     IUriNode u = (IUriNode)n;
-                    temp = this._g.CreateUriNode(u.Uri);
+                    temp = this._factory.CreateUriNode(u.Uri);
                     break;
 
                 case NodeType.Literal:
                     ILiteralNode l = (ILiteralNode)n;
                     if (l.DataType != null)
                     {
-                        temp = this._g.CreateLiteralNode(l.Value, l.DataType);
+                        temp = this._factory.CreateLiteralNode(l.Value, l.DataType);
                     } 
                     else if (!l.Language.Equals(String.Empty))
                     {
-                        temp = this._g.CreateLiteralNode(l.Value, l.Language);
+                        temp = this._factory.CreateLiteralNode(l.Value, l.Language);
                     } 
                     else
                     {
-                        temp = this._g.CreateLiteralNode(l.Value);
+                        temp = this._factory.CreateLiteralNode(l.Value);
                     }
                     break;
                 

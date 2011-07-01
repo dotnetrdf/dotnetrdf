@@ -37,6 +37,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using VDS.RDF.Parsing;
+using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Construct;
 using VDS.RDF.Query.Describe;
@@ -97,6 +99,36 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public Object ProcessQuery(SparqlQuery query)
         {
+            switch (query.QueryType)
+            {
+                case SparqlQueryType.Ask:
+                case SparqlQueryType.Select:
+                case SparqlQueryType.SelectAll:
+                case SparqlQueryType.SelectAllDistinct:
+                case SparqlQueryType.SelectAllReduced:
+                case SparqlQueryType.SelectDistinct:
+                case SparqlQueryType.SelectReduced:
+                    SparqlResultSet results = new SparqlResultSet();
+                    this.ProcessQuery(null, new ResultSetHandler(results), query);
+                    return results;
+                case SparqlQueryType.Construct:
+                case SparqlQueryType.Describe:
+                case SparqlQueryType.DescribeAll:
+                    IGraph g = new Graph();
+                    this.ProcessQuery(new GraphHandler(g), null, query);
+                    return g;
+                default:
+                    throw new RdfQueryException("Cannot process unknown query types");
+            }
+        }
+
+        public void ProcessQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query)
+        {
+            //Do Handler null checks before evaluating the query
+            if (query == null) throw new ArgumentNullException("query", "Cannot evaluate a null query");
+            if (rdfHandler == null && (query.QueryType == SparqlQueryType.Construct || query.QueryType == SparqlQueryType.Describe || query.QueryType == SparqlQueryType.DescribeAll)) throw new ArgumentNullException("rdfHandler", "Cannot use a null RDF Handler when the Query is a CONSTRUCT/DESCRIBE");
+            if (resultsHandler == null && (query.QueryType == SparqlQueryType.Ask || SparqlSpecsHelper.IsSelectQuery(query.QueryType))) throw new ArgumentNullException("resultsHandler", "Cannot use a null resultsHandler when the Query is an ASK/SELECT");
+
             //Handle the Thread Safety of the Query Evaluation
 #if !NO_RWLOCK
             ReaderWriterLockSlim currLock = (this._dataset is IThreadSafeDataset) ? ((IThreadSafeDataset)this._dataset).Lock : this._lock;
@@ -192,52 +224,71 @@ namespace VDS.RDF.Query
                         case SparqlQueryType.SelectDistinct:
                         case SparqlQueryType.SelectReduced:
                             //For SELECT and ASK can populate a Result Set directly from the Evaluation Context
-                            return new SparqlResultSet(context);
+                            //return new SparqlResultSet(context);
+                            resultsHandler.Apply(context);
+                            break;
 
                         case SparqlQueryType.Construct:
                             //Create a new Empty Graph for the Results
-                            Graph h = new Graph();
-                            h.NamespaceMap.Import(query.NamespaceMap);
-
-                            //Construct the Triples for each Solution
-                            foreach (ISet s in context.OutputMultiset.Sets)
+                            try
                             {
-                                List<Triple> constructedTriples = new List<Triple>();
-                                try
+                                rdfHandler.StartRdf();
+
+                                foreach (String prefix in query.NamespaceMap.Prefixes)
                                 {
-                                    ConstructContext constructContext = new ConstructContext(h, s, false);
-                                    foreach (ITriplePattern p in query.ConstructTemplate.TriplePatterns)
+                                    if (!rdfHandler.HandleNamespace(prefix, query.NamespaceMap.GetNamespaceUri(prefix))) ParserHelper.Stop();
+                                }
+
+                                //Construct the Triples for each Solution
+                                foreach (ISet s in context.OutputMultiset.Sets)
+                                {
+                                    //List<Triple> constructedTriples = new List<Triple>();
+                                    try
                                     {
-                                        try
+                                        ConstructContext constructContext = new ConstructContext(rdfHandler, s, false);
+                                        foreach (IConstructTriplePattern p in query.ConstructTemplate.TriplePatterns.OfType<IConstructTriplePattern>())
                                         {
-                                            if (p is IConstructTriplePattern)
+                                            try
+
                                             {
-                                                constructedTriples.Add(((IConstructTriplePattern)p).Construct(constructContext));
+                                                if (!rdfHandler.HandleTriple(p.Construct(constructContext))) ParserHelper.Stop();
+                                                //constructedTriples.Add(((IConstructTriplePattern)p).Construct(constructContext));
+                                            }
+                                            catch (RdfQueryException)
+                                            {
+                                                //If we get an error here then we could not construct a specific triple
+                                                //so we continue anyway
                                             }
                                         }
-                                        catch (RdfQueryException)
-                                        {
-                                            //If we get an error here then we could not construct a specific triple
-                                            //so we continue anyway
-                                        }
                                     }
+                                    catch (RdfQueryException)
+                                    {
+                                        //If we get an error here this means we couldn't construct for this solution so the
+                                        //entire solution is discarded
+                                        continue;
+                                    }
+                                    //h.Assert(constructedTriples);
                                 }
-                                catch (RdfQueryException)
-                                {
-                                    //If we get an error here this means we couldn't construct for this solution so the
-                                    //entire solution is discarded
-                                    continue;
-                                }
-                                h.Assert(constructedTriples);
+                                rdfHandler.EndRdf(true);
                             }
-
-                            return h;
+                            catch (RdfParsingTerminatedException)
+                            {
+                                rdfHandler.EndRdf(true);
+                            }
+                            catch
+                            {
+                                rdfHandler.EndRdf(false);
+                                throw;
+                            }
+                            break;
 
                         case SparqlQueryType.Describe:
                         case SparqlQueryType.DescribeAll:
                             //For DESCRIBE we retrieve the Describe algorithm and apply it
                             ISparqlDescribe describer = query.Describer;
-                            return describer.Describe(context);
+                            //return describer.Describe(context);
+                            describer.Describe(rdfHandler, context);
+                            break;
 
                         default:
                             throw new NotImplementedException("Unknown query types cannot be processed by Leviathan");
@@ -255,11 +306,6 @@ namespace VDS.RDF.Query
                 currLock.ExitReadLock();
             }
 #endif
-        }
-
-        public void ProcessQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query)
-        {
-            throw new NotImplementedException();
         }
 
         protected SparqlEvaluationContext GetContext()
