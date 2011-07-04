@@ -126,6 +126,7 @@ namespace VDS.RDF.Web
                     }
                 }
                 context.Response.ContentEncoding = definition.Encoding;
+                HandlerHelper.ApplyWriterOptions(writer, this._config);
                 writer.Save(g, new StreamWriter(context.Response.OutputStream, definition.Encoding));
 
                 this.UpdateConfig(context);
