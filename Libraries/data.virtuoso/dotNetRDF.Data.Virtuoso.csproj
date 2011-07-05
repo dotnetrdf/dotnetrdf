@@ -32,14 +32,25 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="OpenLink.Data.Virtuoso, Version=6.2.3128.1, Culture=neutral, PublicKeyToken=6654f6917d07cb95, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Dependencies\OpenLink.Data.Virtuoso.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="NonNativeVirtuosoManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="DataExtensions.cs" />
+    <Compile Include="VirtuosoManager.cs" />
+    <Compile Include="VirtuosoObjectFactory.cs" />
+    <Compile Include="VirtuosoReader.cs" />
+    <Compile Include="VirtuosoTripleStore.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\core\dotNetRDF.csproj">

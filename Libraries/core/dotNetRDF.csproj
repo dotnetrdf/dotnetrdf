@@ -50,10 +50,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\Trunk\Dependencies\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="OpenLink.Data.Virtuoso, Version=6.2.3128.1, Culture=neutral, PublicKeyToken=6654f6917d07cb95, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Dependencies\OpenLink.Data.Virtuoso.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core">
@@ -98,7 +94,6 @@
     <Compile Include="Parsing\TriGParser.cs" />
     <Compile Include="Parsing\Tokens\TriGTokeniser.cs" />
     <Compile Include="Parsing\TurtleSpecsHelper.cs" />
-    <Compile Include="Parsing\VirtuosoReader.cs" />
     <Compile Include="Query\Patterns\GraphPattern.cs" />
     <Compile Include="Query\Expressions\ISparqlCustomExpressionFactory.cs" />
     <Compile Include="Query\Expressions\SparqlExpressionClasses.cs" />
@@ -133,7 +128,6 @@
     <Compile Include="Storage\Params\IStoreParams.cs" />
     <Compile Include="Storage\Params\SqlIOParams.cs" />
     <Compile Include="Storage\TalisPlatformConnector.cs" />
-    <Compile Include="Storage\VirtuosoManager.cs" />
     <Compile Include="Web\HandlerConstants.cs" />
     <Compile Include="Writing\CompressingTurtleWriter.cs" />
     <Compile Include="Writing\FolderStoreWriter.cs" />
@@ -238,7 +232,6 @@
     <Compile Include="Core\VariableContext.cs" />
     <Compile Include="Core\WebDemandTripleStore.cs" />
     <Compile Include="Core\NativeTripleStore.cs" />
-    <Compile Include="Core\VirtuosoTripleStore.cs" />
     <Compile Include="Events.cs" />
     <Compile Include="HashTable.cs" />
     <Compile Include="Indexing.cs" />
@@ -598,7 +591,6 @@
     <Compile Include="Storage\JosekiConnector.cs" />
     <Compile Include="Storage\MicrosoftSqlStoreManager.cs" />
     <Compile Include="Storage\MySqlStoreManager.cs" />
-    <Compile Include="Storage\NonNativeVirtuosoManager.cs" />
     <Compile Include="Storage\SesameHttpProtocolConnector.cs" />
     <Compile Include="Writing\Contexts\FolderStoreWriterContext.cs" />
     <Compile Include="Writing\Contexts\HtmlWriterContext.cs" />

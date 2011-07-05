@@ -39,6 +39,7 @@ using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
 using System.Linq;
+using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Storage.Virtualisation;
@@ -55,7 +56,7 @@ namespace VDS.RDF.Storage
     /// <typeparam name="TAdaptor">Adaptor Type</typeparam>
     /// <typeparam name="TException">Exception Type</typeparam>
     public abstract class BaseAdoStore<TConn,TCommand,TParameter,TAdaptor,TException> 
-        : IGenericIOManager, IVirtualRdfProvider<int, int>, IDisposable
+        : IGenericIOManager, IVirtualRdfProvider<int, int>, IConfigurationSerializable, IDisposable
         where TConn : DbConnection
         where TCommand : DbCommand
         where TParameter : DbParameter
@@ -1321,6 +1322,14 @@ namespace VDS.RDF.Storage
         }
 
         #endregion
+
+        #region IConfigurationSerializable Members
+
+        public abstract void SerializeConfiguration(ConfigurationSerializationContext context);
+
+        #endregion
+
+        public abstract override string ToString();
     }
 
     public abstract class BaseAdoSqlClientStore

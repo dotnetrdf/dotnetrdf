@@ -5,6 +5,8 @@ using System.Data.Common;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
+using VDS.RDF.Configuration;
+using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Storage
 {
@@ -12,11 +14,16 @@ namespace VDS.RDF.Storage
         : BaseAdoSqlClientStore
     {
         private String _connString;
+        private String _server, _db, _user, _password;
 
         public MicrosoftAdoManager(String server, String db, String user, String password)
             : base(CreateConnection(server, db, user, password))
         {
             this._connString = CreateConnectionString(server, db, user, password);
+            this._server = server;
+            this._db = db;
+            this._user = user;
+            this._password = password;
         }
 
         public MicrosoftAdoManager(String db, String user, String password)
@@ -70,6 +77,47 @@ namespace VDS.RDF.Storage
         protected override int EnsureSetup(SqlConnection connection)
         {
             throw new NotImplementedException("Automatic Store Setup is not yet implemented");
+        }
+
+        public override void SerializeConfiguration(ConfigurationSerializationContext context)
+        {
+            //Firstly need to ensure our object factory has been referenced
+            context.EnsureObjectFactory(typeof(AdoObjectFactory));
+
+            //Then serialize the actual configuration
+            INode dnrType = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyType);
+            INode rdfType = context.Graph.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
+            INode manager = context.NextSubject;
+            INode rdfsLabel = context.Graph.CreateUriNode(new Uri(NamespaceMapper.RDFS + "label"));
+            INode genericManager = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.ClassGenericManager);
+            INode server = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyServer);
+            INode db = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyDatabase);
+
+            context.Graph.Assert(new Triple(manager, rdfType, genericManager));
+            context.Graph.Assert(new Triple(manager, rdfsLabel, context.Graph.CreateLiteralNode(this.ToString())));
+            context.Graph.Assert(new Triple(manager, dnrType, context.Graph.CreateLiteralNode(this.GetType().FullName + ", dotNetRDF.Data.Sql")));
+            context.Graph.Assert(new Triple(manager, server, context.Graph.CreateLiteralNode(this._server)));
+            context.Graph.Assert(new Triple(manager, db, context.Graph.CreateLiteralNode(this._db)));
+
+            if (this._user != null && this._password != null)
+            {
+                INode username = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyUser);
+                INode pwd = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyPassword);
+                context.Graph.Assert(new Triple(manager, username, context.Graph.CreateLiteralNode(this._user)));
+                context.Graph.Assert(new Triple(manager, pwd, context.Graph.CreateLiteralNode(this._password)));
+            }
+        }
+
+        public override string ToString()
+        {
+            if (this._user != null)
+            {
+                return "[ADO Store (MS SQL)] '" + this._db + "' on '" + this._server + "' as User '" + this._user + "'";
+            }
+            else
+            {
+                return "[ADO Store (MS SQL)] '" + this._db + "' on '" + this._server + "'";
+            }
         }
     }
 }

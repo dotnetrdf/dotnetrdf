@@ -52,7 +52,6 @@ namespace VDS.RDF.Configuration
     {
         private const String MicrosoftSqlManager = "VDS.RDF.Storage.MicrosoftSqlStoreManager";
         private const String MySqlManager = "VDS.RDF.Storage.MySqlStoreManager";
-        private const String NonNativeVirtuosoManager = "VDS.RDF.Storage.NonNativeVirtuosoManager";
 
         /// <summary>
         /// Tries to load a SQL IO Manager based on information from the Configuration Graph
@@ -105,23 +104,6 @@ namespace VDS.RDF.Configuration
                     }
                     break;
 
-                case NonNativeVirtuosoManager:
-                    if (user != null && pwd != null)
-                    {
-                        int p = -1;
-                        port = ConfigurationLoader.GetConfigurationString(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyPort));
-                        if (port != null)
-                        {
-                            if (!Int32.TryParse(port, out p)) break;
-                            manager = new NonNativeVirtuosoManager(server, p, db, user, pwd);
-                        }
-                        else
-                        {
-                            manager = new NonNativeVirtuosoManager(server, db, user, pwd);
-                        }
-                    }
-                    break;
-
             }
             obj = manager;
             return (manager != null);
@@ -138,7 +120,6 @@ namespace VDS.RDF.Configuration
             {
                 case MicrosoftSqlManager:
                 case MySqlManager:
-                case NonNativeVirtuosoManager:
                     return true;
                 default:
                     return false;
@@ -168,8 +149,8 @@ namespace VDS.RDF.Configuration
                              Sparql = "VDS.RDF.Storage.SparqlConnector",
                              SparqlHttpProtocol = "VDS.RDF.Storage.SparqlHttpProtocolConnector",
                              Stardog = "VDS.RDF.Storage.StardogConnector",
-                             Talis = "VDS.RDF.Storage.TalisPlatformConnector",
-                             Virtuoso = "VDS.RDF.Storage.VirtuosoManager";
+                             Talis = "VDS.RDF.Storage.TalisPlatformConnector"
+                             ;
 
         /// <summary>
         /// Tries to load a Generic IO Manager based on information from the Configuration Graph
@@ -462,39 +443,6 @@ namespace VDS.RDF.Configuration
                         manager = new TalisPlatformConnector(store);
                     }
                     break;
-
-#if !NO_DATA
-                case Virtuoso:
-                    //Get Server settings
-                    server = ConfigurationLoader.GetConfigurationString(g, objNode, propServer);
-                    if (server == null) return false;
-                    String port = ConfigurationLoader.GetConfigurationString(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyPort));
-                    store = ConfigurationLoader.GetConfigurationString(g, objNode, propStore);
-                    if (store == null) store = VirtuosoManager.DefaultDB;
-
-                    //Get User Credentials
-                    ConfigurationLoader.GetUsernameAndPassword(g, objNode, true, out user, out pwd);
-                    if (user == null || pwd == null) return false;
-
-                    if (port != null)
-                    {
-                        int p = -1;
-                        if (Int32.TryParse(port, out p))
-                        {
-                            manager = new VirtuosoManager(server, p, store, user, pwd);
-                        }
-                        else
-                        {
-                            return false;
-                        }
-                    }
-                    else
-                    {
-                        manager = new VirtuosoManager(server, VirtuosoManager.DefaultPort, store, user, pwd);
-                    }
-
-                    break;
-#endif
             }
 
             obj = manager;
@@ -524,7 +472,6 @@ namespace VDS.RDF.Configuration
                 case SparqlHttpProtocol:
                 case Stardog:
                 case Talis:
-                case Virtuoso:
                     return true;
                 default:
                     return false;

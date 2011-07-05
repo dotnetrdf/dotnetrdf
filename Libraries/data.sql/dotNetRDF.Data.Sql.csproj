@@ -37,10 +37,15 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\data.virtuoso\DataExtensions.cs">
+      <Link>DataExtensions.cs</Link>
+    </Compile>
     <Compile Include="AdoDataset.cs" />
     <Compile Include="AdoEnumerators.cs" />
+    <Compile Include="AdoObjectFactory.cs" />
     <Compile Include="AdoStoreWriteCache.cs" />
     <Compile Include="BaseAdoStoreManager.cs" />
     <Compile Include="MicrosoftAdoManager.cs" />

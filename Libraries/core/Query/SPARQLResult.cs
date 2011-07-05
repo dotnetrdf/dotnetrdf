@@ -47,14 +47,13 @@ namespace VDS.RDF.Query
     /// </summary>
     public sealed class SparqlResult : IEnumerable<KeyValuePair<String, INode>>
     {
-        private Dictionary<String, INode> _resultValues = new Dictionary<string,INode>();
+        private Dictionary<String, INode> _resultValues = new Dictionary<string, INode>();
 
         /// <summary>
         /// Creates a new empty SPARQL Result which can only be filled by methods internal to the dotNetRDF Library
         /// </summary>
         public SparqlResult()
-        {
-        }
+        { }
 
         /// <summary>
         /// Creates a new SPARQL Result from the given Set

@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using VDS.RDF.Configuration;
+using VDS.RDF.Parsing;
 using VDS.RDF.Storage;
 using VDS.RDF.Writing.Formatting;
 
@@ -288,6 +290,77 @@ namespace VDS.RDF.Test.Storage
             Assert.IsTrue(h.HasSubGraph(i), "Loaded Graph should have the added Triples as a sub-graph");
 
             manager.Dispose();
+        }
+
+        [TestMethod]
+        public void StorageAdoMicrosoftConfigSerialization()
+        {
+            NTriplesFormatter formatter = new NTriplesFormatter();
+            try
+            {
+                MicrosoftAdoManager manager = new MicrosoftAdoManager("adostore", "example", "password");
+                Assert.IsNotNull(manager);
+
+                Graph g = new Graph();
+                INode rdfType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
+                INode dnrType = ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyType);
+                INode objFactory = ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.ClassObjectFactory);
+                INode adoFactory = g.CreateLiteralNode("VDS.RDF.Configuration.AdoObjectFactory, dotNetRDF.Data.Sql");
+                INode genericManager = ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.ClassGenericManager);
+                INode mssqlManager = g.CreateLiteralNode("VDS.RDF.Storage.MicrosoftAdoManager, dotNetRDF.Data.Sql");
+
+                //Serialize Configuration
+                ConfigurationSerializationContext context = new ConfigurationSerializationContext(g);
+                manager.SerializeConfiguration(context);
+
+                Console.WriteLine("Serialized Configuration");
+                foreach (Triple t in g.Triples)
+                {
+                    Console.WriteLine(t.ToString(formatter));
+                }
+                Console.WriteLine();
+
+                //Ensure that it was serialized
+                INode factory = g.GetTriplesWithPredicateObject(rdfType, objFactory).Select(t => t.Subject).FirstOrDefault();
+                Assert.IsNotNull(factory, "Should be an object factory in the serialized configuration");
+                Assert.IsTrue(g.ContainsTriple(new Triple(factory, dnrType, adoFactory)), "Should contain a Triple declaring the dnr:type to be the ADO Object factory type");
+                INode objNode = g.GetTriplesWithPredicateObject(rdfType, genericManager).Select(t => t.Subject).FirstOrDefault();
+                Assert.IsNotNull(objNode, "Should be a generic manager in the serialized configuration");
+                Assert.IsTrue(g.ContainsTriple(new Triple(objNode, dnrType, mssqlManager)), "Should contain a Triple declaring the dnr:type to be the Microsoft ADO Manager type");
+
+                //Serialize again
+                manager.SerializeConfiguration(context);
+
+                Console.WriteLine("Serialized Configuration (after 2nd pass)");
+                foreach (Triple t in g.Triples)
+                {
+                    Console.WriteLine(t.ToString(formatter));
+                }
+                Console.WriteLine();
+
+                //Ensure that object factory has not been serialized again 
+                Assert.AreEqual(1, g.GetTriplesWithPredicateObject(rdfType, objFactory).Count(), "Should only be 1 Object Factory registered even after a 2nd serializer pass");
+
+                //Now try to load the object
+                ConfigurationLoader.AutoDetectObjectFactories(g);
+                Object loadedObj = ConfigurationLoader.LoadObject(g, objNode);
+                if (loadedObj is MicrosoftAdoManager)
+                {
+                    Assert.AreEqual(manager.ToString(), loadedObj.ToString(), "String forms should be equal");
+                }
+                else
+                {
+                    Assert.Fail("Returned an object of type '" + loadedObj.GetType().FullName + "' when deserializing");
+                }
+            }
+            catch (DotNetRdfConfigurationException configEx)
+            {
+                TestTools.ReportError("Config Error", configEx, true);
+            }
+            catch (Exception ex)
+            {
+                TestTools.ReportError("Other Error", ex, true);
+            }
         }
     }
 }
