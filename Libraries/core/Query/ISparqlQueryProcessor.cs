@@ -126,12 +126,14 @@ namespace VDS.RDF.Query
         /// <param name="context">Evaluation Context</param>
         TResult ProcessExistsJoin(IExistsJoin existsJoin, TContext context);
 
+        TResult ProcessExtend(Extend extend, TContext context);
+
         /// <summary>
         /// Processes a Filter
         /// </summary>
         /// <param name="filter">Filter</param>
         /// <param name="context">Evaluation Context</param>
-        TResult ProcessFilter(Filter filter, TContext context);
+        TResult ProcessFilter(IFilter filter, TContext context);
 
         /// <summary>
         /// Processes a Graph
@@ -177,6 +179,8 @@ namespace VDS.RDF.Query
 
         TResult ProcessNegatedPropertySet(NegatedPropertySet negPropSet, TContext context);
 
+        TResult ProcessNullOperator(NullOperator nullOp, TContext context);
+
         TResult ProcessOneOrMorePath(OneOrMorePath path, TContext context);
 
         /// <summary>
@@ -192,6 +196,8 @@ namespace VDS.RDF.Query
         /// <param name="project">Projection</param>
         /// <param name="context">Evaluation Context</param>
         TResult ProcessProject(Project project, TContext context);
+
+        TResult ProcessPropertyPath(PropertyPath path, TContext context);
 
         /// <summary>
         /// Processes a Reduced modifier
@@ -227,6 +233,8 @@ namespace VDS.RDF.Query
         /// <param name="slice">Slice modifier</param>
         /// <param name="context">Evaluation Context</param>
         TResult ProcessSlice(Slice slice, TContext context);
+
+        TResult ProcessSubQuery(SubQuery subquery, TContext context);
 
         /// <summary>
         /// Processes a Union

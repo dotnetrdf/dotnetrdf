@@ -91,7 +91,6 @@ namespace VDS.RDF.Query
             }
         }
 
-
         /// <summary>
         /// Processes a SPARQL Query
         /// </summary>
@@ -355,13 +354,17 @@ namespace VDS.RDF.Query
             {
                 return this.ProcessDistinct((Distinct)algebra, context);
             }
+            else if (algebra is Extend)
+            {
+                return this.ProcessExtend((Extend)algebra, context);
+            }
             else if (algebra is IExistsJoin)
             {
                 return this.ProcessExistsJoin((IExistsJoin)algebra, context);
             }
-            else if (algebra is Filter)
+            else if (algebra is IFilter)
             {
-                return this.ProcessFilter((Filter)algebra, context);
+                return this.ProcessFilter((IFilter)algebra, context);
             }
             else if (algebra is Algebra.Graph)
             {
@@ -391,6 +394,10 @@ namespace VDS.RDF.Query
             {
                 return this.ProcessNegatedPropertySet((NegatedPropertySet)algebra, context);
             }
+            else if (algebra is NullOperator)
+            {
+                return this.ProcessNullOperator((NullOperator)algebra, context);
+            }
             else if (algebra is OneOrMorePath)
             {
                 return this.ProcessOneOrMorePath((OneOrMorePath)algebra, context);
@@ -402,7 +409,11 @@ namespace VDS.RDF.Query
             else if (algebra is Project)
             {
                 return this.ProcessProject((Project)algebra, context);
-            } 
+            }
+            else if (algebra is PropertyPath)
+            {
+                return this.ProcessPropertyPath((PropertyPath)algebra, context);
+            }
             else if (algebra is Reduced)
             {
                 return this.ProcessReduced((Reduced)algebra, context);
@@ -422,6 +433,10 @@ namespace VDS.RDF.Query
             else if (algebra is Slice)
             {
                 return this.ProcessSlice((Slice)algebra, context);
+            }
+            else if (algebra is SubQuery)
+            {
+                return this.ProcessSubQuery((SubQuery)algebra, context);
             }
             else if (algebra is IUnion)
             {
@@ -486,6 +501,12 @@ namespace VDS.RDF.Query
             return distinct.Evaluate(context);
         }
 
+        public virtual BaseMultiset ProcessExtend(Extend extend, SparqlEvaluationContext context)
+        {
+            if (context == null) context = this.GetContext();
+            return extend.Evaluate(context);
+        }
+
         /// <summary>
         /// Processes an Exists Join
         /// </summary>
@@ -502,7 +523,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="filter">Filter</param>
         /// <param name="context">SPARQL Evaluation Context</param>
-        public virtual BaseMultiset ProcessFilter(Filter filter, SparqlEvaluationContext context)
+        public virtual BaseMultiset ProcessFilter(IFilter filter, SparqlEvaluationContext context)
         {
             if (context == null) context = this.GetContext();
             return filter.Evaluate(context);
@@ -580,6 +601,12 @@ namespace VDS.RDF.Query
             return negPropSet.Evaluate(context);
         }
 
+        public virtual BaseMultiset ProcessNullOperator(NullOperator nullOp, SparqlEvaluationContext context)
+        {
+            if (context == null) context = this.GetContext();
+            return nullOp.Evaluate(context);
+        }
+
         public virtual BaseMultiset ProcessOneOrMorePath(OneOrMorePath path, SparqlEvaluationContext context)
         {
             if (context == null) context = this.GetContext();
@@ -606,6 +633,12 @@ namespace VDS.RDF.Query
         {
             if (context == null) context = this.GetContext();
             return project.Evaluate(context);
+        }
+
+        public virtual BaseMultiset ProcessPropertyPath(PropertyPath path, SparqlEvaluationContext context)
+        {
+            if (context == null) context = this.GetContext();
+            return path.Evaluate(context);
         }
 
         /// <summary>
@@ -661,6 +694,12 @@ namespace VDS.RDF.Query
         {
             if (context == null) context = this.GetContext();
             return slice.Evaluate(context);
+        }
+
+        public virtual BaseMultiset ProcessSubQuery(SubQuery subquery, SparqlEvaluationContext context)
+        {
+            if (context == null) context = this.GetContext();
+            return subquery.Evaluate(context);
         }
 
         /// <summary>

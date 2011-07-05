@@ -48,7 +48,7 @@ namespace VDS.RDF.Query.Algebra
     /// <summary>
     /// Abstract Base Class for specialised Filters which restrict the value of a variable to some values
     /// </summary>
-    public abstract class VariableRestrictionFilter : IUnaryOperator
+    public abstract class VariableRestrictionFilter : IFilter
     {
         private ISparqlAlgebra _pattern;
         private String _var;

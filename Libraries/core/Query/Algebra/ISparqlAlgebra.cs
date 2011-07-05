@@ -133,6 +133,18 @@ namespace VDS.RDF.Query.Algebra
     }
 
     /// <summary>
+    /// Represents an Algebra construct which is a Filter
+    /// </summary>
+    public interface IFilter : IUnaryOperator
+    {
+        ISparqlFilter SparqlFilter 
+        { 
+            get;
+        }
+    }
+
+
+    /// <summary>
     /// Represents an Algebra construct which is an Abstract Join (i.e. any kind of Join over two algebra operators)
     /// </summary>
     /// <remarks>

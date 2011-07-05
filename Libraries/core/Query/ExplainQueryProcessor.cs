@@ -489,9 +489,14 @@ namespace VDS.RDF.Query
             return this.ExplainAndEvaluate<IExistsJoin>(existsJoin, context, base.ProcessExistsJoin);
         }
 
-        public override BaseMultiset ProcessFilter(Filter filter, SparqlEvaluationContext context)
+        public override BaseMultiset ProcessExtend(Extend extend, SparqlEvaluationContext context)
         {
-            return this.ExplainAndEvaluate<Filter>(filter, context, base.ProcessFilter);
+            return this.ExplainAndEvaluate<Extend>(extend, context, base.ProcessExtend);
+        }
+
+        public override BaseMultiset ProcessFilter(IFilter filter, SparqlEvaluationContext context)
+        {
+            return this.ExplainAndEvaluate<IFilter>(filter, context, base.ProcessFilter);
         }
 
         public override BaseMultiset ProcessGraph(Algebra.Graph graph, SparqlEvaluationContext context)
@@ -529,6 +534,11 @@ namespace VDS.RDF.Query
             return this.ExplainAndEvaluate<NegatedPropertySet>(negPropSet, context, base.ProcessNegatedPropertySet);
         }
 
+        public override BaseMultiset ProcessNullOperator(NullOperator nullOp, SparqlEvaluationContext context)
+        {
+            return this.ExplainAndEvaluate<NullOperator>(nullOp, context, base.ProcessNullOperator);
+        }
+
         public override BaseMultiset ProcessOneOrMorePath(OneOrMorePath path, SparqlEvaluationContext context)
         {
             return this.ExplainAndEvaluate<OneOrMorePath>(path, context, base.ProcessOneOrMorePath);
@@ -542,6 +552,11 @@ namespace VDS.RDF.Query
         public override BaseMultiset ProcessProject(Project project, SparqlEvaluationContext context)
         {
             return this.ExplainAndEvaluate<Project>(project, context, base.ProcessProject);
+        }
+
+        public override BaseMultiset ProcessPropertyPath(PropertyPath path, SparqlEvaluationContext context)
+        {
+            return this.ExplainAndEvaluate<PropertyPath>(path, context, base.ProcessPropertyPath);
         }
 
         public override BaseMultiset ProcessReduced(Reduced reduced, SparqlEvaluationContext context)
@@ -567,6 +582,11 @@ namespace VDS.RDF.Query
         public override BaseMultiset ProcessSlice(Slice slice, SparqlEvaluationContext context)
         {
             return this.ExplainAndEvaluate<Slice>(slice, context, base.ProcessSlice);
+        }
+
+        public override BaseMultiset ProcessSubQuery(SubQuery subquery, SparqlEvaluationContext context)
+        {
+            return this.ExplainAndEvaluate<SubQuery>(subquery, context, base.ProcessSubQuery);
         }
 
         public override BaseMultiset ProcessUnion(IUnion union, SparqlEvaluationContext context)

@@ -47,7 +47,7 @@ namespace VDS.RDF.Query.Algebra
     /// <summary>
     /// Represents a Filter
     /// </summary>
-    public class Filter : IUnaryOperator
+    public class Filter : IFilter
     {
         private ISparqlAlgebra _pattern;
         private ISparqlFilter _filter;
