@@ -47,6 +47,8 @@ namespace VDS.Alexandria
 
         public abstract Object Query(String sparqlQuery);
 
+        public abstract void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery);
+
         public abstract bool UpdateSupported
         {
             get;

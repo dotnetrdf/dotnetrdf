@@ -198,7 +198,7 @@ namespace VDS.RDF.Update.Commands
                     switch (pattern.GraphSpecifier.TokenType)
                     {
                         case Token.QNAME:
-                            throw new NotImplementedException("Graph Specifiers as QNames for DELETE DATA Commands are not supported - please specify an absolute URI instead");
+                            throw new NotSupportedException("Graph Specifiers as QNames for DELETE DATA Commands are not supported - please specify an absolute URI instead");
                         case Token.URI:
                             graphUri = new Uri(pattern.GraphSpecifier.Value);
                             break;

@@ -103,9 +103,9 @@ namespace VDS.RDF
             return this._talis.Query(query);
         }
 
-        public void ExecuteQuery(IRdfHandler handler, ISparqlResultsHandler resultsHandler, string query)
+        public void ExecuteQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string query)
         {
-            throw new NotImplementedException();
+            this._talis.Query(rdfHandler, resultsHandler, query);
         }
 
         /// <summary>

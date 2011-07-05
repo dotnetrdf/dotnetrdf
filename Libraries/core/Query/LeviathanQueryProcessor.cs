@@ -290,7 +290,7 @@ namespace VDS.RDF.Query
                             break;
 
                         default:
-                            throw new NotImplementedException("Unknown query types cannot be processed by Leviathan");
+                            throw new RdfQueryException("Unknown query types cannot be processed by Leviathan");
                     }
                 }
                 finally

@@ -119,9 +119,9 @@ namespace VDS.RDF
             return this._manager.Query(query);
         }
 
-        public void ExecuteQuery(IRdfHandler handler, ISparqlResultsHandler resultsHandler, string query)
+        public void ExecuteQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string query)
         {
-            throw new NotImplementedException();
+            this._manager.Query(rdfHandler, resultsHandler, query);
         }
 
         /// <summary>

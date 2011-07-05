@@ -202,7 +202,25 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                throw new NotImplementedException();
+                if (this._start.VariableName != null)
+                {
+                    if (this._end.VariableName != null)
+                    {
+                        return this._start.VariableName.AsEnumerable().Concat(this._end.VariableName.AsEnumerable());
+                    }
+                    else
+                    {
+                        return this._start.VariableName.AsEnumerable();
+                    }
+                }
+                else if (this._end.VariableName != null)
+                {
+                    return this._end.VariableName.AsEnumerable();
+                }
+                else
+                {
+                    return Enumerable.Empty<String>();
+                }
             }
         }
 

@@ -591,6 +591,11 @@ namespace VDS.RDF.Storage
             return this.QueryInternal(query, "services/sparql");
         }
 
+        public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String query)
+        {
+            this.QueryInternal(rdfHandler, resultsHandler, query, "services/sparql");
+        }
+
         /// <summary>
         /// Makes a Sparql query against the Talis Store Metabox and Private Graphs using the Store Multi-Sparql Service
         /// </summary>
@@ -602,6 +607,11 @@ namespace VDS.RDF.Storage
             return this.QueryInternal(query, "services/multisparql");
         }
 
+        public void QueryAll(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String query)
+        {
+            this.QueryInternal(rdfHandler, resultsHandler, query, "services/multisparql");
+        }
+
         /// <summary>
         /// Internal implementation of querying the Store 
         /// </summary>
@@ -609,6 +619,22 @@ namespace VDS.RDF.Storage
         /// <param name="servicePath">Service to Query</param>
         /// <returns></returns>
         private Object QueryInternal(String query, String servicePath)
+        {
+            Graph g = new Graph();
+            SparqlResultSet results = new SparqlResultSet();
+            this.QueryInternal(new GraphHandler(g), new ResultSetHandler(results), query, servicePath);
+
+            if (results.ResultsType != SparqlResultsType.Unknown)
+            {
+                return results;
+            }
+            else
+            {
+                return g;
+            }
+        }
+
+        private void QueryInternal(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String query, String servicePath)
         {
             HttpWebRequest request = null;
             HttpWebResponse response = null;
@@ -656,11 +682,10 @@ namespace VDS.RDF.Storage
                             }
 #endif
                             ISparqlResultsReader resultsParser = MimeTypesHelper.GetSparqlParser(response.ContentType);
-                            SparqlResultSet results = new SparqlResultSet();
-                            resultsParser.Load(results, new StreamReader(response.GetResponseStream()));
+                            resultsParser.Load(resultsHandler, new StreamReader(response.GetResponseStream()));
                             response.Close();
-                            return results;
                         }
+                        break;
 
                     case SparqlQueryType.Construct:
                     case SparqlQueryType.Describe:
@@ -685,13 +710,11 @@ namespace VDS.RDF.Storage
                             }
 #endif
                             IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
-                            Graph g = new Graph();
-                            parser.Load(g, new StreamReader(response.GetResponseStream()));
+                            parser.Load(rdfHandler, new StreamReader(response.GetResponseStream()));
                             response.Close();
-                            return g;
                         }
+                        break;
 
-                    case SparqlQueryType.Unknown:
                     default:
                         //Error
                         throw new RdfQueryException("Unknown Query Type was used, unable to determine how to process the response from Talis");

@@ -245,7 +245,7 @@ namespace VDS.RDF.Storage
         /// <param name="rdfHandler">RDF Handler</param>
         /// <param name="resultsHandler">SPARQL Results Handler</param>
         /// <param name="sparqlQuery">SPARQL Query</param>
-        //void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery);
+        void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery);
     }
 
     /// <summary>

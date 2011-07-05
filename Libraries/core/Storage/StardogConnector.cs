@@ -187,7 +187,23 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="sparqlQuery">Sparql Query</param>
         /// <returns></returns>
-        public object Query(string sparqlQuery)
+        public object Query(String sparqlQuery)
+        {
+            Graph g = new Graph();
+            SparqlResultSet results = new SparqlResultSet();
+            this.Query(new GraphHandler(g), new ResultSetHandler(results), sparqlQuery);
+
+            if (results.ResultsType != SparqlResultsType.Unknown)
+            {
+                return results;
+            }
+            else
+            {
+                return g;
+            }
+        }
+
+        public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery)
         {
             try
             {
@@ -239,10 +255,8 @@ namespace VDS.RDF.Storage
                     {
                         //Is the Content Type referring to a Sparql Result Set format?
                         ISparqlResultsReader resreader = MimeTypesHelper.GetSparqlParser(ctype, Regex.IsMatch(sparqlQuery, "ASK", RegexOptions.IgnoreCase));
-                        SparqlResultSet results = new SparqlResultSet();
-                        resreader.Load(results, data);
+                        resreader.Load(resultsHandler, data);
                         response.Close();
-                        return results;
                     }
                     catch (RdfParserSelectionException)
                     {
@@ -250,10 +264,8 @@ namespace VDS.RDF.Storage
 
                         //Is the Content Type referring to a RDF format?
                         IRdfReader rdfreader = MimeTypesHelper.GetParser(ctype);
-                        Graph g = new Graph();
-                        rdfreader.Load(g, data);
+                        rdfreader.Load(rdfHandler, data);
                         response.Close();
-                        return g;
                     }
                 }
             }
@@ -269,12 +281,12 @@ namespace VDS.RDF.Storage
 #endif
                     if (webEx.Response.ContentLength > 0)
                     {
-                        try 
+                        try
                         {
                             String responseText = new StreamReader(webEx.Response.GetResponseStream()).ReadToEnd();
                             throw new RdfQueryException("A HTTP error occured while querying the Store.  Store returned the following error message: " + responseText, webEx);
-                        } 
-                        catch 
+                        }
+                        catch
                         {
                             throw new RdfQueryException("A HTTP error occurred while querying the Store", webEx);
                         }

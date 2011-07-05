@@ -513,7 +513,7 @@ namespace VDS.RDF
         /// </remarks>
         Object ExecuteQuery(String query);
 
-        void ExecuteQuery(IRdfHandler handler, ISparqlResultsHandler resultsHandler, String query);
+        void ExecuteQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String query);
     }
 
     /// <summary>

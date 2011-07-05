@@ -77,6 +77,17 @@ namespace VDS.Alexandria
             if (this._parser == null) this._parser = new SparqlQueryParser();
             return this._processor.ProcessQuery(this._parser.ParseFromString(sparqlQuery));
         }
+
+        public override void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery)
+        {
+            if (this._processor == null)
+            {
+                AlexandriaFileDataset dataset = new AlexandriaFileDataset(this);
+                this._processor = new LeviathanQueryProcessor(dataset);
+            }
+            if (this._parser == null) this._parser = new SparqlQueryParser();
+            this._processor.ProcessQuery(rdfHandler, resultsHandler, this._parser.ParseFromString(sparqlQuery));
+        }
     }
 
     public class NonIndexedAlexandriaFileManager : AlexandriaFileManager

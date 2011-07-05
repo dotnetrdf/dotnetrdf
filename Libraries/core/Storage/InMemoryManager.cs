@@ -315,6 +315,15 @@ namespace VDS.RDF.Storage
             return this._queryProcessor.ProcessQuery(q);
         }
 
+        public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery)
+        {
+            if (this._queryParser == null) this._queryParser = new SparqlQueryParser();
+            SparqlQuery q = this._queryParser.ParseFromString(sparqlQuery);
+
+            if (this._queryProcessor == null) this._queryProcessor = new LeviathanQueryProcessor(this._dataset);
+            this._queryProcessor.ProcessQuery(rdfHandler, resultsHandler, q);
+        }
+
         /// <summary>
         /// Applies SPARQL Updates to the Store
         /// </summary>

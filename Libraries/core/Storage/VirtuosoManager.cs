@@ -38,6 +38,7 @@ terms.
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -593,317 +594,334 @@ namespace VDS.RDF.Storage
         /// <exception cref="RdfQueryException">Thrown if an error occurs in making the query</exception>
         public Object Query(String sparqlQuery)
         {
-            Object finalResult = null;
-            DataTable results = new DataTable();
-            results.Columns.CollectionChanged += new System.ComponentModel.CollectionChangeEventHandler(Columns_CollectionChanged);
+            Graph g = new Graph();
+            SparqlResultSet results = new SparqlResultSet();
+            this.Query(new GraphHandler(g), new ResultSetHandler(results), sparqlQuery);
 
-            //See if the query can be parsed into a SparqlQuery object
-            //It might not since the user might use Virtuoso's extensions to Sparql in their query
+            if (results.ResultsType != SparqlResultsType.Unknown)
+            {
+                return results;
+            }
+            else
+            {
+                return g;
+            }
+        }
+
+        public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery)
+        {
             try
             {
-                //We'll set the Parser to SPARQL 1.1 mode even though Virtuoso's SPARQL implementation has
-                //various perculiarties in their SPARQL 1.1 implementation and we'll try and 
-                //handle the potential results in the catch branch if a valid SPARQL 1.0 query
-                //cannot be parsed
-                //Change made in response to a bug report by Aleksandr A. Zaripov [zaripov@tpu.ru]
-                SparqlQueryParser parser = new SparqlQueryParser();
-                parser.SyntaxMode = SparqlQuerySyntax.Sparql_1_1;
-                SparqlQuery query = parser.ParseFromString(sparqlQuery);
+                if (resultsHandler != null) resultsHandler.StartResults();
 
-                switch (query.QueryType)
+                DataTable results = new DataTable();
+                results.Columns.CollectionChanged += new System.ComponentModel.CollectionChangeEventHandler(Columns_CollectionChanged);
+
+                //See if the query can be parsed into a SparqlQuery object
+                //It might not since the user might use Virtuoso's extensions to Sparql in their query
+                try
                 {
-                    case SparqlQueryType.Select:
-                    case SparqlQueryType.SelectAll:
-                    case SparqlQueryType.SelectAllDistinct:
-                    case SparqlQueryType.SelectAllReduced:
-                    case SparqlQueryType.SelectDistinct:
-                    case SparqlQueryType.SelectReduced:
-                        //Type the Tables columns as System.Object
-                        foreach (SparqlVariable var in query.Variables)
-                        {
-                            if (var.IsResultVariable)
-                            {
-                                results.Columns.Add(var.Name, typeof(System.Object));
-                            }
-                        }
-                        break;
-                }
+                    //We'll set the Parser to SPARQL 1.1 mode even though Virtuoso's SPARQL implementation has
+                    //various perculiarties in their SPARQL 1.1 implementation and we'll try and 
+                    //handle the potential results in the catch branch if a valid SPARQL 1.0 query
+                    //cannot be parsed
+                    //Change made in response to a bug report by Aleksandr A. Zaripov [zaripov@tpu.ru]
+                    SparqlQueryParser parser = new SparqlQueryParser();
+                    parser.SyntaxMode = SparqlQuerySyntax.Sparql_1_1;
+                    SparqlQuery query = parser.ParseFromString(sparqlQuery);
 
-                try 
-                {
-                    this.Open(false);
-
-                    //Make the Query against Virtuoso
-                    VirtuosoCommand cmd = this._db.CreateCommand();
-                    cmd.CommandText = "SPARQL " + sparqlQuery;
-                    VirtuosoDataAdapter adapter = new VirtuosoDataAdapter(cmd);
-                    adapter.Fill(results);
-
-                    //Decide how to process the results based on the return type
                     switch (query.QueryType)
                     {
-                        case SparqlQueryType.Ask:
-                            //Expect a DataTable containing a single row and column which contains a boolean
-
-                            if (results.Rows.Count == 1 && results.Columns.Count == 1)
-                            {
-                                bool result;
-                                int r;
-                                if (Boolean.TryParse(results.Rows[0][0].ToString(), out result))
-                                {
-                                    finalResult = new SparqlResultSet(result);
-                                }
-                                else if (Int32.TryParse(results.Rows[0][0].ToString(), out r))
-                                {
-                                    if (r == 1)
-                                    {
-                                        finalResult = new SparqlResultSet(true);
-                                    }
-                                    else
-                                    {
-                                        finalResult = new SparqlResultSet(false);
-                                    }
-                                }
-                                else
-                                {
-                                    throw new RdfQueryException("Expected a Boolean as the result of an ASK query but the non-boolean value '" + results.Rows[0][0].ToString() + "' was received");
-                                }
-                            }
-                            else
-                            {
-                                //If we get anything else then we'll return that the result was False
-                                finalResult = new SparqlResultSet(false);
-                            }
-
-                            break;
-                        case SparqlQueryType.Construct:
-                        case SparqlQueryType.Describe:
-                        case SparqlQueryType.DescribeAll:
-                            //Expect a DataTable containing a single row and column which contains a String
-                            //That string will be a Turtle serialization of the Graph
-
-                            if (results.Rows.Count == 1 && results.Columns.Count == 1)
-                            {
-                                try
-                                {
-                                    //Use StringParser to parse
-                                    String data = results.Rows[0][0].ToString();
-                                    TurtleParser ttlparser = new TurtleParser();
-                                    Graph g = new Graph();
-                                    StringParser.Parse(g, data, ttlparser);
-
-                                    finalResult = g;
-                                }
-                                catch (RdfParseException parseEx)
-                                {
-                                    throw new RdfQueryException("Expected a valid Turtle serialization of the Graph resulting from a CONSTRUCT/DESCRIBE query but the result failed to parse", parseEx);
-                                }
-                            }
-                            else
-                            {
-                                throw new RdfQueryException("Expected a single string value representing the serialization of the Graph resulting from a CONSTRUCT/DESCRIBE query but this was not received");
-                            }
-
-                            break;
                         case SparqlQueryType.Select:
                         case SparqlQueryType.SelectAll:
                         case SparqlQueryType.SelectAllDistinct:
                         case SparqlQueryType.SelectAllReduced:
                         case SparqlQueryType.SelectDistinct:
                         case SparqlQueryType.SelectReduced:
-                            //Expect a DataTable containing columns for each Result Variable and a row for each solution
-                            SparqlResultSet rset = new SparqlResultSet();
-                            rset.SetResult(true);
-
-                            //Get Result Variables
-                            List<SparqlVariable> resultVars = query.Variables.Where(v => v.IsResultVariable).ToList();
-                            foreach (SparqlVariable var in resultVars)
+                            //Type the Tables columns as System.Object
+                            foreach (SparqlVariable var in query.Variables)
                             {
-                                rset.AddVariable(var.Name);
-                            }
-                            Graph temp = new Graph();
-
-                            //Convert each solution into a SPARQLResult
-                            foreach (DataRow r in results.Rows)
-                            {
-                                SparqlResult result = new SparqlResult();
-                                foreach (SparqlVariable var in resultVars)
+                                if (var.IsResultVariable)
                                 {
-                                    if (r[var.Name] != null)
+                                    results.Columns.Add(var.Name, typeof(System.Object));
+                                }
+                            }
+                            break;
+                    }
+
+                    try
+                    {
+                        this.Open(false);
+
+                        //Make the Query against Virtuoso
+                        VirtuosoCommand cmd = this._db.CreateCommand();
+                        cmd.CommandText = "SPARQL " + sparqlQuery;
+                        VirtuosoDataAdapter adapter = new VirtuosoDataAdapter(cmd);
+                        adapter.Fill(results);
+
+                        //Decide how to process the results based on the return type
+                        switch (query.QueryType)
+                        {
+                            case SparqlQueryType.Ask:
+                                //Expect a DataTable containing a single row and column which contains a boolean
+
+                                //Ensure Results Handler is not null
+                                if (resultsHandler == null) throw new ArgumentNullException("Cannot handle a Boolean Result with a null SPARQL Results Handler");
+
+                                if (results.Rows.Count == 1 && results.Columns.Count == 1)
+                                {
+                                    //Try and parse the result
+                                    bool result;
+                                    int r;
+                                    if (Boolean.TryParse(results.Rows[0][0].ToString(), out result))
                                     {
-                                        result.SetValue(var.Name, this.LoadNode(temp, r[var.Name]));
+                                        resultsHandler.HandleBooleanResult(result);
+                                    }
+                                    else if (Int32.TryParse(results.Rows[0][0].ToString(), out r))
+                                    {
+                                        if (r == 1)
+                                        {
+                                            resultsHandler.HandleBooleanResult(true);
+                                        }
+                                        else
+                                        {
+                                            resultsHandler.HandleBooleanResult(false);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        throw new RdfQueryException("Expected a Boolean as the result of an ASK query but the non-boolean value '" + results.Rows[0][0].ToString() + "' was received");
                                     }
                                 }
-                                rset.AddResult(result);
+                                else
+                                {
+                                    //If we get anything else then we'll return that the result was False
+                                    resultsHandler.HandleBooleanResult(false);
+                                }
+                                break;
+
+                            case SparqlQueryType.Construct:
+                            case SparqlQueryType.Describe:
+                            case SparqlQueryType.DescribeAll:
+                                //Expect a DataTable containing a single row and column which contains a String
+                                //That string will be a Turtle serialization of the Graph
+
+                                //Ensure that RDF Handler is not null
+                                if (rdfHandler == null) throw new ArgumentNullException("Cannot handle a Graph result with a null RDF Handler");
+
+                                if (results.Rows.Count == 1 && results.Columns.Count == 1)
+                                {
+                                    try
+                                    {
+                                        //Use StringParser to parse
+                                        String data = results.Rows[0][0].ToString();
+                                        TurtleParser ttlparser = new TurtleParser();
+                                        ttlparser.Load(rdfHandler, new StringReader(data));
+                                    }
+                                    catch (RdfParseException parseEx)
+                                    {
+                                        throw new RdfQueryException("Expected a valid Turtle serialization of the Graph resulting from a CONSTRUCT/DESCRIBE query but the result failed to parse", parseEx);
+                                    }
+                                }
+                                else
+                                {
+                                    throw new RdfQueryException("Expected a single string value representing the serialization of the Graph resulting from a CONSTRUCT/DESCRIBE query but this was not received");
+                                }
+                                break;
+
+                            case SparqlQueryType.Select:
+                            case SparqlQueryType.SelectAll:
+                            case SparqlQueryType.SelectAllDistinct:
+                            case SparqlQueryType.SelectAllReduced:
+                            case SparqlQueryType.SelectDistinct:
+                            case SparqlQueryType.SelectReduced:
+                                //Ensure Results Handler is not null
+                                if (resultsHandler == null) throw new ArgumentNullException("Cannot handle SPARQL Results with a null Results Handler");
+
+                                //Get Result Variables
+                                List<SparqlVariable> resultVars = query.Variables.Where(v => v.IsResultVariable).ToList();
+                                foreach (SparqlVariable var in resultVars)
+                                {
+                                    if (!resultsHandler.HandleVariable(var.Name)) ParserHelper.Stop();
+                                }
+                                Graph temp = new Graph();
+
+                                //Convert each solution into a SPARQLResult
+                                foreach (DataRow r in results.Rows)
+                                {
+                                    SparqlResult result = new SparqlResult();
+                                    foreach (SparqlVariable var in resultVars)
+                                    {
+                                        if (r[var.Name] != null)
+                                        {
+                                            result.SetValue(var.Name, this.LoadNode(temp, r[var.Name]));
+                                        }
+                                    }
+                                    if (!resultsHandler.HandleResult(result)) ParserHelper.Stop();
+                                }
+                                break;
+
+                            default:
+                                throw new RdfQueryException("Unable to process the Results of an Unknown query type");
+                        }
+
+                        this.Close(false);
+                    }
+                    catch
+                    {
+                        this.Close(true, true);
+                        throw;
+                    }
+                }
+                catch (RdfParseException)
+                {
+                    //Unable to parse a SPARQL 1.0 query
+                    //Have to attempt to detect the return type based on the DataTable that
+                    //the SPASQL (Sparql+SQL) query gives back
+
+                    //Make the Query against Virtuoso
+                    VirtuosoCommand cmd = this._db.CreateCommand();
+                    cmd.CommandText = "SPARQL " /*define output:format '_JAVA_' "*/ + sparqlQuery;
+                    VirtuosoDataAdapter adapter = new VirtuosoDataAdapter(cmd);
+                    adapter.Fill(results);
+
+                    //Try to detect the return type based on the DataTable configuration
+                    if (results.Rows.Count == 0 && results.Columns.Count > 0)
+                    {
+                        if (resultsHandler == null) throw new ArgumentNullException("Cannot handler SPARQL Results with a null Results Handler");
+
+                        //No Rows but some columns implies empty SELECT results
+                        SparqlResultSet rset = new SparqlResultSet();
+                        foreach (DataColumn col in results.Columns)
+                        {
+                            if (!resultsHandler.HandleVariable(col.ColumnName)) ParserHelper.Stop();
+                        }
+                    }
+                    else if (results.Rows.Count == 1 && results.Columns.Count == 1 && !Regex.IsMatch(sparqlQuery, "SELECT", RegexOptions.IgnoreCase))
+                    {
+                        //Added a fix here suggested by Alexander Sidorov - not entirely happy with this fix as what happens if SELECT just happens to occur in a URI/Variable Name?
+
+                        //Single Row and Column implies ASK/DESCRIBE/CONSTRUCT results
+                        bool result;
+                        int r;
+                        decimal rdec;
+                        double rdbl;
+                        float rflt;
+
+                        if (results.Rows[0][0].ToString().Equals(String.Empty))
+                        {
+                            //Empty Results - no need to do anything
+                        }
+                        else if (Boolean.TryParse(results.Rows[0][0].ToString(), out result))
+                        {
+                            //Parseable Boolean so ASK Results
+                            if (resultsHandler == null) throw new ArgumentNullException("Cannot handle a Boolean result with a null Results Handler");
+                            resultsHandler.HandleBooleanResult(result);
+                        }
+                        else if (Int32.TryParse(results.Rows[0][0].ToString(), out r))
+                        {
+                            if (resultsHandler == null) throw new ArgumentNullException("Cannot handle SPARQL results with a null Results Handler");
+
+                            //Parseable Integer so Aggregate SELECT Query Results
+                            if (!resultsHandler.HandleVariable("Result")) ParserHelper.Stop();
+                            SparqlResult res = new SparqlResult();
+                            res.SetValue("Result", new LiteralNode(null, r.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger)));
+                            if (!resultsHandler.HandleResult(res)) ParserHelper.Stop();
+                        }
+                        else if (Single.TryParse(results.Rows[0][0].ToString(), out rflt))
+                        {
+                            if (resultsHandler == null) throw new ArgumentNullException("Cannot handle SPARQL results with a null Results Handler");
+
+                            //Parseable Single so Aggregate SELECT Query Results
+                            if (!resultsHandler.HandleVariable("Result")) ParserHelper.Stop();
+                            SparqlResult res = new SparqlResult();
+                            res.SetValue("Result", new LiteralNode(null, rflt.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeFloat)));
+                            if (!resultsHandler.HandleResult(res)) ParserHelper.Stop();
+                        }
+                        else if (Double.TryParse(results.Rows[0][0].ToString(), out rdbl))
+                        {
+                            if (resultsHandler == null) throw new ArgumentNullException("Cannot handle SPARQL results with a null Results Handler");
+
+                            //Parseable Double so Aggregate SELECT Query Results
+                            if (!resultsHandler.HandleVariable("Result")) ParserHelper.Stop();
+                            SparqlResult res = new SparqlResult();
+                            res.SetValue("Result", new LiteralNode(null, rdbl.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeDouble)));
+                            if (!resultsHandler.HandleResult(res)) ParserHelper.Stop();
+                        }
+                        else if (Decimal.TryParse(results.Rows[0][0].ToString(), out rdec))
+                        {
+                            //Parseable Decimal so Aggregate SELECT Query Results
+                            if (!resultsHandler.HandleVariable("Result")) ParserHelper.Stop();
+                            SparqlResult res = new SparqlResult();
+                            res.SetValue("Result", new LiteralNode(null, rdec.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeDecimal)));
+                            if (!resultsHandler.HandleResult(res)) ParserHelper.Stop();
+                        }
+                        else
+                        {
+                            //String so try and parse as Turtle
+                            try
+                            {
+                                //Use StringParser to parse
+                                String data = results.Rows[0][0].ToString();
+                                TurtleParser ttlparser = new TurtleParser();
+                                ttlparser.Load(rdfHandler, new StringReader(data));
                             }
+                            catch (RdfParseException)
+                            {
+                                if (resultsHandler == null) throw new ArgumentNullException("Cannot handle SPARQL results with a null Results Handler");
 
-                            finalResult = rset;
-
-                            break;
-                        default:
-                            throw new RdfQueryException("Unable to process the Results of an Unknown query type");
-                    }
-
-                    this.Close(false);
-                } 
-                catch
-                {
-                    this.Close(true, true);
-                    throw;
-                }
-            }
-            catch (RdfParseException)
-            {
-                //Unable to parse a SPARQL 1.0 query
-                //Have to attempt to detect the return type based on the DataTable that
-                //the SPASQL (Sparql+SQL) query gives back
-
-                //Make the Query against Virtuoso
-                VirtuosoCommand cmd = this._db.CreateCommand();
-                cmd.CommandText = "SPARQL " /*define output:format '_JAVA_' "*/ + sparqlQuery;
-                VirtuosoDataAdapter adapter = new VirtuosoDataAdapter(cmd);
-                adapter.Fill(results);
-
-                //Try to detect the return type based on the DataTable configuration
-                if (results.Rows.Count == 0 && results.Columns.Count > 0)
-                {
-                    //No Rows but some columns implies empty SELECT results
-                    SparqlResultSet rset = new SparqlResultSet();
-                    foreach (DataColumn col in results.Columns)
-                    {
-                        rset.AddVariable(col.ColumnName);
-                    }
-
-                    finalResult = rset;
-                }
-                else if (results.Rows.Count == 1 && results.Columns.Count == 1 && !Regex.IsMatch(sparqlQuery, "SELECT", RegexOptions.IgnoreCase))
-                {
-                    //Added a fix here suggested by Alexander Sidorov - not entirely happy with this fix as what happens if SELECT just happens to occur in a URI/Variable Name?
-
-                    //Single Row and Column implies ASK/DESCRIBE/CONSTRUCT results
-                    bool result;
-                    int r;
-                    decimal rdec;
-                    double rdbl;
-                    float rflt;
-
-                    if (results.Rows[0][0].ToString().Equals(String.Empty))
-                    {
-                        //Empty Results
-                        finalResult = new SparqlResultSet();
-                    }
-                    else if (Boolean.TryParse(results.Rows[0][0].ToString(), out result))
-                    {
-                        //Parseable Boolean so ASK Results
-                        finalResult = new SparqlResultSet(result);
-                    }
-                    else if (Int32.TryParse(results.Rows[0][0].ToString(), out r))
-                    {
-                        //Parseable Integer so Aggregate SELECT Query Results
-                        SparqlResultSet rset = new SparqlResultSet();
-                        rset.AddVariable("Result");
-                        SparqlResult res = new SparqlResult();
-                        res.SetValue("Result", new LiteralNode(null, r.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger)));
-                        rset.AddResult(res);
-
-                        finalResult = rset;
-                    }
-                    else if (Single.TryParse(results.Rows[0][0].ToString(), out rflt))
-                    {
-                        //Parseable Single so Aggregate SELECT Query Results
-                        SparqlResultSet rset = new SparqlResultSet();
-                        rset.AddVariable("Result");
-                        SparqlResult res = new SparqlResult();
-                        res.SetValue("Result", new LiteralNode(null, rflt.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeFloat)));
-                        rset.AddResult(res);
-
-                        finalResult = rset;
-                    }
-                    else if (Double.TryParse(results.Rows[0][0].ToString(), out rdbl))
-                    {
-                        //Parseable Double so Aggregate SELECT Query Results
-                        SparqlResultSet rset = new SparqlResultSet();
-                        rset.AddVariable("Result");
-                        SparqlResult res = new SparqlResult();
-                        res.SetValue("Result", new LiteralNode(null, rdbl.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeDouble)));
-                        rset.AddResult(res);
-
-                        finalResult = rset;
-                    }
-                    else if (Decimal.TryParse(results.Rows[0][0].ToString(), out rdec))
-                    {
-                        //Parseable Decimal so Aggregate SELECT Query Results
-                        SparqlResultSet rset = new SparqlResultSet();
-                        rset.AddVariable("Result");
-                        SparqlResult res = new SparqlResult();
-                        res.SetValue("Result", new LiteralNode(null, rdec.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeDecimal)));
-                        rset.AddResult(res);
-
-                        finalResult = rset;
+                                //If it failed to parse then it might be the result of one of the aggregate
+                                //functions that Virtuoso extends Sparql with
+                                if (!resultsHandler.HandleVariable(results.Columns[0].ColumnName)) ParserHelper.Stop();
+                                SparqlResult res = new SparqlResult();
+                                res.SetValue(results.Columns[0].ColumnName, this.LoadNode(resultsHandler, results.Rows[0][0]));
+                                //Nothing was returned here previously - fix submitted by Aleksandr A. Zaripov [zaripov@tpu.ru]
+                                if (!resultsHandler.HandleResult(res)) ParserHelper.Stop();
+                            }
+                        }
                     }
                     else
                     {
-                        //String so try and parse as Turtle
-                        try
-                        {
-                            //Use StringParser to parse
-                            String data = results.Rows[0][0].ToString();
-                            TurtleParser ttlparser = new TurtleParser();
-                            Graph g = new Graph();
-                            StringParser.Parse(g, data, ttlparser);
+                        //Any other number of rows/columns we have to assume that it's normal SELECT results
+                        //Changed in response to bug report by Aleksandr A. Zaripov [zaripov@tpu.ru]
 
-                            finalResult = g;
+                        if (resultsHandler == null) throw new ArgumentNullException("Cannot handle SPARQL results with a null Results Handler");
+
+                        //Get Result Variables
+                        List<String> vars = new List<string>();
+                        foreach (DataColumn col in results.Columns)
+                        {
+                            vars.Add(col.ColumnName);
+                            if (!resultsHandler.HandleVariable(col.ColumnName)) ParserHelper.Stop();
                         }
-                        catch (RdfParseException)
+
+                        //Convert each solution into a SPARQLResult
+                        foreach (DataRow r in results.Rows)
                         {
-                            //If it failed to parse then it might be the result of one of the aggregate
-                            //functions that Virtuoso extends Sparql with
-                            Graph temp = new Graph();
-                            SparqlResultSet rset = new SparqlResultSet();
-                            rset.AddVariable(results.Columns[0].ColumnName);
-                            SparqlResult res = new SparqlResult();
-                            res.SetValue(results.Columns[0].ColumnName, this.LoadNode(temp, results.Rows[0][0]));
-                            //Nothing was returned here previously - fix submitted by Aleksandr A. Zaripov [zaripov@tpu.ru]
-                            rset.AddResult(res);
-                            finalResult = rset;
-                        }
-                    }
-                }
-                else
-                {
-                    //Any other number of rows/columns we have to assume that it's normal SELECT results
-                    //Changed in response to bug report by Aleksandr A. Zaripov [zaripov@tpu.ru]
-
-                    //SELECT Query Results
-                    SparqlResultSet rset = new SparqlResultSet();
-                    rset.SetResult(true);
-
-                    //Get Result Variables
-                    foreach (DataColumn col in results.Columns)
-                    {
-                        rset.AddVariable(col.ColumnName);
-                    }
-                    Graph temp = new Graph();
-
-                    //Convert each solution into a SPARQLResult
-                    foreach (DataRow r in results.Rows)
-                    {
-                        SparqlResult result = new SparqlResult();
-                        foreach (String var in rset.Variables)
-                        {
-                            if (r[var] != null)
+                            SparqlResult result = new SparqlResult();
+                            foreach (String var in vars)
                             {
-                                result.SetValue(var, this.LoadNode(temp, r[var]));
+                                if (r[var] != null)
+                                {
+                                    result.SetValue(var, this.LoadNode(resultsHandler, r[var]));
+                                }
                             }
+                            if (!resultsHandler.HandleResult(result)) ParserHelper.Stop();
                         }
-                        rset.AddResult(result);
                     }
-
-                    finalResult = rset;
                 }
-            }
 
-            return finalResult;
+                if (resultsHandler != null) resultsHandler.EndResults(true);
+            }
+            catch (RdfParsingTerminatedException)
+            {
+                if (resultsHandler != null) resultsHandler.EndResults(true);
+            }
+            catch
+            {
+                if (resultsHandler != null) resultsHandler.EndResults(false);
+                throw;
+            }
         }
 
         void Columns_CollectionChanged(object sender, System.ComponentModel.CollectionChangeEventArgs e)

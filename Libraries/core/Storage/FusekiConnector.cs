@@ -43,6 +43,7 @@ using System.Net;
 using System.Text;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
+using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
 using VDS.RDF.Update;
 using VDS.RDF.Writing.Formatting;
@@ -207,6 +208,22 @@ namespace VDS.RDF.Storage
         /// <returns></returns>
         public Object Query(String sparqlQuery)
         {
+            Graph g = new Graph();
+            SparqlResultSet results = new SparqlResultSet();
+            this.Query(new GraphHandler(g), new ResultSetHandler(results), sparqlQuery);
+
+            if (results.ResultsType != SparqlResultsType.Unknown)
+            {
+                return results;
+            }
+            else
+            {
+                return g;
+            }
+        }
+
+        public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery)
+        {
             try
             {
                 HttpWebRequest request;
@@ -259,10 +276,8 @@ namespace VDS.RDF.Storage
                     {
                         //Is the Content Type referring to a Sparql Result Set format?
                         ISparqlResultsReader resreader = MimeTypesHelper.GetSparqlParser(ctype, true);
-                        SparqlResultSet results = new SparqlResultSet();
-                        resreader.Load(results, data);
+                        resreader.Load(resultsHandler, data);
                         response.Close();
-                        return results;
                     }
                     catch (RdfParserSelectionException)
                     {
@@ -270,10 +285,8 @@ namespace VDS.RDF.Storage
 
                         //Is the Content Type referring to a RDF format?
                         IRdfReader rdfreader = MimeTypesHelper.GetParser(ctype);
-                        Graph g = new Graph();
-                        rdfreader.Load(g, data);
+                        rdfreader.Load(rdfHandler, data);
                         response.Close();
-                        return g;
                     }
                 }
             }

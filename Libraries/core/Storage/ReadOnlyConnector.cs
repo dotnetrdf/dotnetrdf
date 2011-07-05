@@ -302,6 +302,11 @@ namespace VDS.RDF.Storage
             return this._queryManager.Query(sparqlQuery);
         }
 
+        public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery)
+        {
+            this._queryManager.Query(rdfHandler, resultsHandler, sparqlQuery);
+        }
+
         /// <summary>
         /// Lists the Graphs in the Store
         /// </summary>

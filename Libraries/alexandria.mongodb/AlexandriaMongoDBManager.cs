@@ -9,6 +9,7 @@ using VDS.Alexandria.Datasets;
 using VDS.Alexandria.Documents;
 using VDS.Alexandria.Indexing;
 using VDS.Alexandria.Utilities;
+using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 
@@ -94,6 +95,17 @@ namespace VDS.Alexandria
             }
             if (this._parser == null) this._parser = new SparqlQueryParser();
             return this._processor.ProcessQuery(this._parser.ParseFromString(sparqlQuery));
+        }
+
+        public override void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery)
+        {
+            if (this._processor == null)
+            {
+                AlexandriaMongoDBDataset dataset = new AlexandriaMongoDBDataset(this);
+                this._processor = new LeviathanQueryProcessor(dataset);
+            }
+            if (this._parser == null) this._parser = new SparqlQueryParser();
+            this._processor.ProcessQuery(rdfHandler, resultsHandler, this._parser.ParseFromString(sparqlQuery));
         }
     }
 }

@@ -105,9 +105,14 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="sparqlQuery">SPARQL Query</param>
         /// <returns></returns>
-        public object Query(string sparqlQuery)
+        public object Query(String sparqlQuery)
         {
             return this._store.ExecuteQuery(sparqlQuery);
+        }
+
+        public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery)
+        {
+            this._store.ExecuteQuery(rdfHandler, resultsHandler, sparqlQuery);
         }
 
         /// <summary>
@@ -154,7 +159,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="g">Graph to load into</param>
         /// <param name="graphUri">URI of the Graph to load</param>
-        public void LoadGraph(IGraph g, string graphUri)
+        public void LoadGraph(IGraph g, String graphUri)
         {
             if (graphUri.Equals(String.Empty))
             {
@@ -166,7 +171,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        public void LoadGraph(IRdfHandler handler, string graphUri)
+        public void LoadGraph(IRdfHandler handler, String graphUri)
         {
             if (graphUri.Equals(String.Empty))
             {
@@ -205,7 +210,7 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">Graph URI</param>
         /// <param name="additions">Triples to be added</param>
         /// <param name="removals">Triples to be removed</param>
-        public void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
+        public void UpdateGraph(String graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
             throw new RdfStorageException("The DatasetFileManager provides a read-only connection");
         }

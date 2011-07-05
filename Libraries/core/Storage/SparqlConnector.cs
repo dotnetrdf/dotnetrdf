@@ -165,6 +165,22 @@ namespace VDS.RDF.Storage
         /// <returns></returns>
         public object Query(String sparqlQuery)
         {
+            Graph g = new Graph();
+            SparqlResultSet results = new SparqlResultSet();
+            this.Query(new GraphHandler(g), new ResultSetHandler(results), sparqlQuery);
+
+            if (results.ResultsType != SparqlResultsType.Unknown)
+            {
+                return results;
+            }
+            else
+            {
+                return g;
+            }
+        }
+
+        public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery)
+        {
             if (!this._skipLocalParsing)
             {
                 //Parse the query locally to validate it and so we can decide what to do
@@ -183,13 +199,15 @@ namespace VDS.RDF.Storage
                     case SparqlQueryType.SelectDistinct:
                     case SparqlQueryType.SelectReduced:
                         //Some kind of Sparql Result Set
-                        return this._endpoint.QueryWithResultSet(sparqlQuery);
+                        this._endpoint.QueryWithResultSet(resultsHandler, sparqlQuery);
+                        break;
 
                     case SparqlQueryType.Construct:
                     case SparqlQueryType.Describe:
                     case SparqlQueryType.DescribeAll:
                         //Some kind of Graph
-                        return this._endpoint.QueryWithResultGraph(sparqlQuery);
+                        this._endpoint.QueryWithResultGraph(rdfHandler, sparqlQuery);
+                        break;
 
                     case SparqlQueryType.Unknown:
                     default:
@@ -204,21 +222,19 @@ namespace VDS.RDF.Storage
                 {
                     try
                     {
-                        //If we can get a RDF Parser successfully then it'll be a Graph
-                        IRdfReader rdfParser = MimeTypesHelper.GetParser(response.ContentType);
-                        Graph g = new Graph();
-                        rdfParser.Load(g, new StreamReader(response.GetResponseStream()));
+                        //Is the Content Type referring to a Sparql Result Set format?
+                        ISparqlResultsReader sparqlParser = MimeTypesHelper.GetSparqlParser(response.ContentType);
+                        sparqlParser.Load(resultsHandler, new StreamReader(response.GetResponseStream()));
                         response.Close();
-                        return g;
                     }
                     catch (RdfParserSelectionException)
                     {
-                        //If we get the Parser Selection Exception then it'll be a Result Set
-                        ISparqlResultsReader sparqlParser = MimeTypesHelper.GetSparqlParser(response.ContentType);
-                        SparqlResultSet rset = new SparqlResultSet();
-                        sparqlParser.Load(rset, new StreamReader(response.GetResponseStream()));
+                        //If we get a Parser Selection exception then the Content Type isn't valid for a Sparql Result Set
+
+                        //Is the Content Type referring to a RDF format?
+                        IRdfReader rdfParser = MimeTypesHelper.GetParser(response.ContentType);
+                        rdfParser.Load(rdfHandler, new StreamReader(response.GetResponseStream()));
                         response.Close();
-                        return rset;
                     }
                 }
             }
