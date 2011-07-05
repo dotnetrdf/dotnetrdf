@@ -451,6 +451,7 @@
     <Compile Include="Query\Optimisation\QueryOptimisers.cs" />
     <Compile Include="Query\Optimisation\SparqlOptimiser.cs" />
     <Compile Include="Query\Optimisation\StrictAlgebraOptimiser.cs" />
+    <Compile Include="Query\Optimisation\VirtualAlgebraOptimiser.cs" />
     <Compile Include="Query\Optimisation\WeightedOptimiser.cs" />
     <Compile Include="Query\Ordering\TripleComparer.cs" />
     <Compile Include="Query\Paths\NegatedSet.cs" />
@@ -515,6 +516,11 @@
     <Compile Include="Storage\ReadOnlyConnector.cs" />
     <Compile Include="Storage\SparqlConnector.cs" />
     <Compile Include="Storage\SparqlHttpProtocolConnector.cs" />
+    <Compile Include="Storage\Virtualisation\IVirtualNode.cs" />
+    <Compile Include="Storage\Virtualisation\IVirtualRdfProvider.cs" />
+    <Compile Include="Storage\Virtualisation\SimpleVirtualNodes.cs" />
+    <Compile Include="Storage\Virtualisation\VirtualNode.cs" />
+    <Compile Include="Storage\Virtualisation\VirtualNodeCache.cs" />
     <Compile Include="ThreadSafeReference.cs" />
     <Compile Include="Update\Commands\AddCommand.cs" />
     <Compile Include="Update\Commands\BaseModifyCommand.cs" />

@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
@@ -49,11 +50,7 @@ namespace VDS.RDF.Test.Storage
                 this._manager = new MicrosoftAdoManager("adostore", "example", "password");
 
                 //Ensure the Store is clear
-                DbCommand cmd = this._manager.GetCommand();
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.CommandText = "ClearStore";
-                cmd.Connection = this._manager.Connection;
-                cmd.ExecuteNonQuery();
+                this._manager.ClearStore(false);
 
                 this._optimisers = new IAlgebraOptimiser[] { new StrictAlgebraOptimiser(), new IdentityFilterOptimiser(), new SimpleVirtualAlgebraOptimiser(this._manager) };
                 this._manager.SaveGraph(g);
@@ -132,7 +129,7 @@ namespace VDS.RDF.Test.Storage
             {
                 this._baseQuery = new SparqlParameterizedString();
                 this._baseQuery.Namespaces = new NamespaceMapper();
-                this._baseQuery.Namespaces.AddNamespace("dnr", new Uri(Configuration.ConfigurationLoader.ConfigurationNamespace));
+                this._baseQuery.Namespaces.AddNamespace("dnr", new Uri(ConfigurationLoader.ConfigurationNamespace));
             }
             return this._baseQuery;
         }

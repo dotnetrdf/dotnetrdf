@@ -67,8 +67,10 @@ namespace VDS.RDF.Test.Storage
         }
 
         [TestMethod]
-        public void StorageAdoMicrosoftLoadGraph2()
+        public void StorageAdoMicrosoftLoadDefaultGraph()
         {
+            this.StorageAdoMicrosoftSaveDefaultGraph();
+
             MicrosoftAdoManager manager = new MicrosoftAdoManager("adostore", "example", "password");
             Graph g = new Graph();
             manager.LoadGraph(g, (Uri)null);
@@ -80,7 +82,10 @@ namespace VDS.RDF.Test.Storage
             }
 
             Assert.IsFalse(g.IsEmpty, "Graph should not be empty");
-            Assert.AreEqual(2, g.Triples.Count, "Expected 2 Triples");
+
+            Graph orig = new Graph();
+            orig.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+            Assert.AreEqual(orig, g, "Graphs should be equal");
 
             manager.Dispose();
         }
@@ -91,6 +96,27 @@ namespace VDS.RDF.Test.Storage
             Graph g = new Graph();
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             g.BaseUri = new Uri("http://example.org/adoStore/savedGraph");
+
+            MicrosoftAdoManager manager = new MicrosoftAdoManager("adostore", "example", "password");
+            Stopwatch timer = new Stopwatch();
+            timer.Start();
+            manager.SaveGraph(g);
+            timer.Stop();
+
+            Console.WriteLine("Write Time - " + timer.Elapsed);
+
+            Graph h = new Graph();
+            manager.LoadGraph(h, g.BaseUri);
+
+            Assert.AreEqual(g, h, "Graphs should be equal");
+        }
+
+        [TestMethod]
+        public void StorageAdoMicrosoftSaveDefaultGraph()
+        {
+            Graph g = new Graph();
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+            g.BaseUri = null;
 
             MicrosoftAdoManager manager = new MicrosoftAdoManager("adostore", "example", "password");
             Stopwatch timer = new Stopwatch();
@@ -137,37 +163,37 @@ namespace VDS.RDF.Test.Storage
             Assert.AreEqual(g, h, "Graphs should be equal");
         }
 
-        [TestMethod]
-        public void StorageAdoMicrosoftSaveGraph3()
-        {
-            Graph g = new Graph();
-            g.BaseUri = new Uri("http://example.org/adoStore/savedGraph");
-            g.LoadFromFile("dataset_250.ttl");
-            Console.WriteLine("BSBM Graph has " + g.Triples.Count + " Triples");
-            Debug.WriteLine("BSBM Graph has " + g.Triples.Count);
+        //[TestMethod]
+        //public void StorageAdoMicrosoftSaveGraph3()
+        //{
+        //    Graph g = new Graph();
+        //    g.BaseUri = new Uri("http://example.org/adoStore/savedGraph");
+        //    g.LoadFromFile("dataset_250.ttl");
+        //    Console.WriteLine("BSBM Graph has " + g.Triples.Count + " Triples");
+        //    Debug.WriteLine("BSBM Graph has " + g.Triples.Count);
 
-            MicrosoftAdoManager manager = new MicrosoftAdoManager("adostore", "example", "password");
-            Stopwatch timer = new Stopwatch();
-            timer.Start();
-            manager.SaveGraph(g);
-            timer.Stop();
+        //    MicrosoftAdoManager manager = new MicrosoftAdoManager("adostore", "example", "password");
+        //    Stopwatch timer = new Stopwatch();
+        //    timer.Start();
+        //    manager.SaveGraph(g);
+        //    timer.Stop();
 
-            Console.WriteLine("Write Time - " + timer.Elapsed);
-            Debug.WriteLine("Write Time - " + timer.Elapsed);
+        //    Console.WriteLine("Write Time - " + timer.Elapsed);
+        //    Debug.WriteLine("Write Time - " + timer.Elapsed);
 
-            Graph h = new Graph();
-            timer.Reset();
-            timer.Start();
-            manager.LoadGraph(h, g.BaseUri);
-            timer.Stop();
+        //    Graph h = new Graph();
+        //    timer.Reset();
+        //    timer.Start();
+        //    manager.LoadGraph(h, g.BaseUri);
+        //    timer.Stop();
 
-            Console.WriteLine("Read Time - " + timer.Elapsed);
-            Debug.WriteLine("Read Time - " + timer.Elapsed);
+        //    Console.WriteLine("Read Time - " + timer.Elapsed);
+        //    Debug.WriteLine("Read Time - " + timer.Elapsed);
 
-            Assert.AreEqual(g, h, "Graphs should be equal");
+        //    Assert.AreEqual(g, h, "Graphs should be equal");
 
-            manager.Dispose();
-        }
+        //    manager.Dispose();
+        //}
 
         [TestMethod]
         public void StorageAdoMicrosoftListGraphs()

@@ -28,11 +28,7 @@ namespace VDS.RDF.Test.Storage
             this.EnsureConnection();
 
             //Ensure the Store is clear
-            DbCommand cmd = this._manager.GetCommand();
-            cmd.CommandType = CommandType.StoredProcedure;
-            cmd.CommandText = "ClearStore";
-            cmd.Connection = this._manager.Connection;
-            cmd.ExecuteNonQuery();
+            this._manager.ClearStore(false);
 
             return new MicrosoftAdoDataset(this._manager);
         }
@@ -42,11 +38,7 @@ namespace VDS.RDF.Test.Storage
             this.EnsureConnection();
 
             //Ensure the Store is clear
-            DbCommand cmd = this._manager.GetCommand();
-            cmd.CommandType = CommandType.StoredProcedure;
-            cmd.CommandText = "ClearStore";
-            cmd.Connection = this._manager.Connection;
-            cmd.ExecuteNonQuery();
+            this._manager.ClearStore(false);
 
             Graph g = new Graph();
             g.BaseUri = this.TestGraphUri;

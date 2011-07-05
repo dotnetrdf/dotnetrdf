@@ -6,6 +6,7 @@ using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Patterns;
 using VDS.RDF.Storage.Virtualisation;
+using VDS.RDF.Update;
 
 namespace VDS.RDF.Query.Optimisation
 {
@@ -195,6 +196,11 @@ namespace VDS.RDF.Query.Optimisation
         protected abstract INode CreateVirtualNode(TNodeID id, INode value);
 
         public bool IsApplicable(SparqlQuery q)
+        {
+            return true;
+        }
+
+        public bool IsApplicable(SparqlUpdateCommandSet cmds)
         {
             return true;
         }

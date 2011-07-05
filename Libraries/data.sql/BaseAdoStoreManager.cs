@@ -39,6 +39,8 @@ using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
 using System.Linq;
+using VDS.RDF.Parsing;
+using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Storage.Virtualisation;
 using VDS.RDF.Writing;
 
@@ -62,7 +64,7 @@ namespace VDS.RDF.Storage
     {
         private TConn _connection;
         private SimpleVirtualNodeCache<int> _cache = new SimpleVirtualNodeCache<int>();
-        private NonIndexedGraph _g = new NonIndexedGraph();
+        private NodeFactory _factory = new NodeFactory();
 
         #region Constructor and Destructor
 
@@ -180,6 +182,20 @@ namespace VDS.RDF.Storage
                     return this.EnsureSetup(this._connection);
                 }
             }
+        }
+
+        public void ClearStore()
+        {
+            this.ClearStore(false);
+        }
+
+        public void ClearStore(bool fullClear)
+        {
+            TCommand cmd = this.GetCommand();
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.CommandText = fullClear ? "ClearStoreFull" : "ClearStore";
+            cmd.Connection = this._connection;
+            cmd.ExecuteNonQuery();
         }
 
         /// <summary>
@@ -427,6 +443,11 @@ namespace VDS.RDF.Storage
             cmd.Parameters[prefix + "ID"].Value = id;
         }
 
+        internal INode DecodeNode(IGraph g, byte type, String value, String meta)
+        {
+            return this.DecodeNode((INodeFactory)g, type, value, meta);
+        }
+
         /// <summary>
         /// Decodes a Node from the constituent values in the database
         /// </summary>
@@ -435,28 +456,50 @@ namespace VDS.RDF.Storage
         /// <param name="value">Node Value</param>
         /// <param name="meta">Node Meta</param>
         /// <returns></returns>
-        internal INode DecodeNode(IGraph g, byte type, String value, String meta)
+        internal INode DecodeNode(INodeFactory factory, byte type, String value, String meta)
         {
-            if (g == null) g = this._g;
+            if (factory == null) factory = this._factory;
             switch (type)
             {
                 case 0:
-                    return g.CreateBlankNode(value.Substring(2));
+                    return factory.CreateBlankNode(value.Substring(2));
                 case 1:
-                    return g.CreateUriNode(new Uri(value));
+                    return factory.CreateUriNode(new Uri(value));
                 case 2:
                     if (meta == null)
                     {
-                        return g.CreateLiteralNode(value);
+                        return factory.CreateLiteralNode(value);
                     }
                     else if (meta.StartsWith("@"))
                     {
-                        return g.CreateLiteralNode(value, meta.Substring(1));
+                        return factory.CreateLiteralNode(value, meta.Substring(1));
                     }
                     else
                     {
-                        return g.CreateLiteralNode(value, new Uri(meta));
+                        return factory.CreateLiteralNode(value, new Uri(meta));
                     }
+                default:
+                    throw new NotSupportedException("Only Blank, URI and Literal Nodes are currently supported");
+            }
+        }
+
+        /// <summary>
+        /// Decodes a Virtual Node from ID and type
+        /// </summary>
+        /// <param name="g">Graph</param>
+        /// <param name="type">Node Type</param>
+        /// <param name="id">Node ID</param>
+        /// <returns></returns>
+        internal INode DecodeVirtualNode(INodeFactory factory, byte type, int id)
+        {
+            switch (type)
+            {
+                case 0:
+                    return new SimpleVirtualBlankNode(null, id, this);
+                case 1:
+                    return new SimpleVirtualUriNode(null, id, this);
+                case 2:
+                    return new SimpleVirtualLiteralNode(null, id, this);
                 default:
                     throw new NotSupportedException("Only Blank, URI and Literal Nodes are currently supported");
             }
@@ -557,59 +600,74 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">Graph URI</param>
         public void LoadGraph(IGraph g, Uri graphUri)
         {
-            //First need to get the Graph ID (if any)
-            TCommand cmd = this.GetCommand();
-            cmd.CommandType = CommandType.StoredProcedure;
-            cmd.CommandText = "GetGraphID";
-            cmd.Connection = this._connection;
-            if (graphUri != null)
+            this.LoadGraph(new GraphHandler(g), graphUri);
+        }
+
+        public void LoadGraph(IRdfHandler handler, Uri graphUri)
+        {
+            if (handler == null) throw new RdfStorageException("Cannot load a Graph using a null RDF Handler");
+
+            try
             {
-                cmd.Parameters.Add(this.GetParameter("graphUri"));
-                cmd.Parameters["graphUri"].DbType = DbType.String;
-                cmd.Parameters["graphUri"].Value = graphUri.ToString();
-            }
-            cmd.Parameters.Add(this.GetParameter("RC"));
-            cmd.Parameters["RC"].DbType = DbType.Int32;
-            cmd.Parameters["RC"].Direction = ParameterDirection.ReturnValue;
-            cmd.ExecuteNonQuery();
+                handler.StartRdf();
 
-            int id = (int)cmd.Parameters["RC"].Value;
-
-            if (id > 0)
-            {
-                //We got an ID so can start the load process
-                //Set the Target Graph
-                IGraph target = (g.IsEmpty) ? g : new Graph();
-
-                cmd = this.GetCommand();
+                //First need to get the Graph ID (if any)
+                TCommand cmd = this.GetCommand();
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.CommandText = "GetGraphQuadsData";
+                cmd.CommandText = "GetGraphID";
                 cmd.Connection = this._connection;
-                cmd.Parameters.Add(this.GetParameter("graphID"));
-                cmd.Parameters["graphID"].DbType = DbType.Int32;
-                cmd.Parameters["graphID"].Value = id;
-
-                using (DbDataReader reader = cmd.ExecuteReader())
+                if (graphUri != null)
                 {
-                    if (reader.HasRows)
+                    cmd.Parameters.Add(this.GetParameter("graphUri"));
+                    cmd.Parameters["graphUri"].DbType = DbType.String;
+                    cmd.Parameters["graphUri"].Value = graphUri.ToString();
+                }
+                cmd.Parameters.Add(this.GetParameter("RC"));
+                cmd.Parameters["RC"].DbType = DbType.Int32;
+                cmd.Parameters["RC"].Direction = ParameterDirection.ReturnValue;
+                cmd.ExecuteNonQuery();
+
+                int id = (int)cmd.Parameters["RC"].Value;
+
+                if (id > 0)
+                {
+                    //We got an ID so can start the load process
+                    cmd = this.GetCommand();
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandText = "GetGraphQuadsData";
+                    cmd.Connection = this._connection;
+                    cmd.Parameters.Add(this.GetParameter("graphID"));
+                    cmd.Parameters["graphID"].DbType = DbType.Int32;
+                    cmd.Parameters["graphID"].Value = id;
+
+                    using (DbDataReader reader = cmd.ExecuteReader())
                     {
-                        while (reader.Read())
+                        if (reader.HasRows)
                         {
-                            INode s = this.DecodeNode(target, (byte)reader["subjectType"], (String)reader["subjectValue"], this.DecodeMeta(reader["subjectMeta"]));
-                            INode p = this.DecodeNode(target, (byte)reader["predicateType"], (String)reader["predicateValue"], this.DecodeMeta(reader["predicateMeta"]));
-                            INode o = this.DecodeNode(target, (byte)reader["objectType"], (String)reader["objectValue"], this.DecodeMeta(reader["objectMeta"]));
+                            while (reader.Read())
+                            {
+                                INode s = this.DecodeNode(handler, (byte)reader["subjectType"], (String)reader["subjectValue"], this.DecodeMeta(reader["subjectMeta"]));
+                                INode p = this.DecodeNode(handler, (byte)reader["predicateType"], (String)reader["predicateValue"], this.DecodeMeta(reader["predicateMeta"]));
+                                INode o = this.DecodeNode(handler, (byte)reader["objectType"], (String)reader["objectValue"], this.DecodeMeta(reader["objectMeta"]));
 
-                            target.Assert(new Triple(s, p, o));
+                                if (!handler.HandleTriple(new Triple(s, p, o))) ParserHelper.Stop();
+                            }
                         }
+                        reader.Close();
+                        reader.Dispose();
                     }
-                    reader.Close();
-                    reader.Dispose();
                 }
 
-                if (!ReferenceEquals(target, g))
-                {
-                    g.Merge(target);
-                }
+                handler.EndRdf(true);
+            }
+            catch (RdfParsingTerminatedException)
+            {
+                handler.EndRdf(true);
+            }
+            catch
+            {
+                handler.EndRdf(false);
+                throw;
             }
         }
 
@@ -618,7 +676,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="g">Graph to load into</param>
         /// <param name="graphUri">Graph URI</param>
-        public void LoadGraph(IGraph g, string graphUri)
+        public void LoadGraph(IGraph g, String graphUri)
         {
             if (graphUri == null || graphUri.Equals(String.Empty))
             {
@@ -627,6 +685,18 @@ namespace VDS.RDF.Storage
             else
             {
                 this.LoadGraph(g, new Uri(graphUri));
+            }
+        }
+
+        public void LoadGraph(IRdfHandler handler, String graphUri)
+        {
+            if (graphUri == null || graphUri.Equals(String.Empty))
+            {
+                this.LoadGraph(handler, (Uri)null);
+            }
+            else
+            {
+                this.LoadGraph(handler, new Uri(graphUri));
             }
         }
 
