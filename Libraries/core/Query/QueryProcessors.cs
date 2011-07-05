@@ -82,7 +82,21 @@ namespace VDS.RDF.Query
 
         public void ProcessQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query)
         {
-            throw new NotImplementedException();
+            query.QueryExecutionTime = null;
+            query.QueryTime = -1;
+            query.QueryTimeTicks = -1;
+            DateTime start = DateTime.Now;
+            try
+            {
+                this._store.ExecuteQuery(rdfHandler, resultsHandler, query.ToString());
+            }
+            finally
+            {
+                TimeSpan elapsed = (DateTime.Now - start);
+                query.QueryExecutionTime = elapsed;
+                query.QueryTime = elapsed.Milliseconds;
+                query.QueryTimeTicks = elapsed.Ticks;
+            }
         }
     }
 
@@ -199,7 +213,40 @@ namespace VDS.RDF.Query
 
         public void ProcessQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query)
         {
-            throw new NotImplementedException();
+            query.QueryExecutionTime = null;
+            query.QueryTime = -1;
+            query.QueryTimeTicks = -1;
+            DateTime start = DateTime.Now;
+            Object temp;
+            try
+            {
+                switch (query.QueryType)
+                {
+                    case SparqlQueryType.Ask:
+                    case SparqlQueryType.Select:
+                    case SparqlQueryType.SelectAll:
+                    case SparqlQueryType.SelectAllDistinct:
+                    case SparqlQueryType.SelectAllReduced:
+                    case SparqlQueryType.SelectDistinct:
+                    case SparqlQueryType.SelectReduced:
+                        this._endpoint.QueryWithResultSet(resultsHandler, query.ToString());
+                        break;
+                    case SparqlQueryType.Construct:
+                    case SparqlQueryType.Describe:
+                    case SparqlQueryType.DescribeAll:
+                        this._endpoint.QueryWithResultGraph(rdfHandler, query.ToString());
+                        break;
+                    default:
+                        throw new RdfQueryException("Unable to execute an unknown query type against a Remote Endpoint");
+                }
+            }
+            finally
+            {
+                TimeSpan elapsed = (DateTime.Now - start);
+                query.QueryExecutionTime = elapsed;
+                query.QueryTime = elapsed.Milliseconds;
+                query.QueryTimeTicks = elapsed.Ticks;
+            }
         }
     }
 }

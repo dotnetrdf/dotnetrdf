@@ -79,6 +79,11 @@ namespace VDS.RDF
             return this._manager.Query(query);
         }
 
+        public void ExecuteQuery(IRdfHandler handler, ISparqlResultsHandler resultsHandler, string query)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Disposes of a Native Triple Store
         /// </summary>

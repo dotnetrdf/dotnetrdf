@@ -92,6 +92,27 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
                     response.Close();
                     return g;
                 }
+                response.Close();
+            }
+        }
+
+        public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery)
+        {
+            SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(new Uri(this._sparqlUri));
+
+            using (HttpWebResponse response = endpoint.QueryRaw(sparqlQuery))
+            {
+                try
+                {
+                    ISparqlResultsReader sparqlParser = MimeTypesHelper.GetSparqlParser(response.ContentType);
+                    sparqlParser.Load(resultsHandler, new StreamReader(response.GetResponseStream()));
+                }
+                catch (RdfParserSelectionException)
+                {
+                    IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
+                    parser.Load(rdfHandler, new StreamReader(response.GetResponseStream()));
+                }
+                response.Close();
             }
         }
     }

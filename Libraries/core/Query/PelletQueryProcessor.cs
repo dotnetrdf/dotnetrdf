@@ -113,7 +113,21 @@ namespace VDS.RDF.Query
 
         public void ProcessQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query)
         {
-            throw new NotImplementedException();
+            query.QueryTime = -1;
+            query.QueryTimeTicks = -1;
+            query.QueryExecutionTime = null;
+            DateTime start = DateTime.Now;
+            try
+            {
+                this._svc.Query(rdfHandler, resultsHandler, query.ToString());
+            }
+            finally
+            {
+                TimeSpan elapsed = (DateTime.Now - start);
+                query.QueryExecutionTime = (DateTime.Now - start);
+                query.QueryTime = elapsed.Milliseconds;
+                query.QueryTimeTicks = elapsed.Ticks;
+            }
         }
     }
 }

@@ -792,9 +792,16 @@ namespace VDS.RDF.Query
         /// <returns>
         /// Either a <see cref="SparqlResultSet">SparqlResultSet</see> or a <see cref="Graph">Graph</see> depending on the type of query executed
         /// </returns>
+        [Obsolete("This method is considered obsolete, you should create an ISparqlQueryProcessor instance and invoke the ProcessQuery() method instead",false)]
         public Object Evaluate(IInMemoryQueryableStore data)
         {
             return this.Evaluate(new InMemoryDataset(data));
+        }
+
+        [Obsolete("This method is considered obsolete, you should create an ISparqlQueryProcessor instance and invoke the ProcessQuery() method instead",false)]
+        public void Evaluate(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, IInMemoryQueryableStore data)
+        {
+            this.Evaluate(rdfHandler, resultsHandler, new InMemoryDataset(data));
         }
 
         /// <summary>
@@ -804,10 +811,18 @@ namespace VDS.RDF.Query
         /// <returns>
         /// Either a <see cref="SparqlResultSet">SparqlResultSet</see> or a <see cref="IGraph">IGraph</see> depending on the type of query executed
         /// </returns>
+        [Obsolete("This method is considered obsolete, you should create an ISparqlQueryProcessor instance and invoke the ProcessQuery() method instead",false)]
         public Object Evaluate(ISparqlDataset dataset)
         {
             LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
             return processor.ProcessQuery(this);
+        }
+
+        [Obsolete("This method is considered obsolete, you should create an ISparqlQueryProcessor instance and invoke the ProcessQuery() method instead",false)]
+        public void Evaluate(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, ISparqlDataset dataset)
+        {
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
+            processor.ProcessQuery(rdfHandler, resultsHandler, this);
         }
 
         /// <summary>

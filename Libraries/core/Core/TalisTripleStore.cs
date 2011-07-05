@@ -58,6 +58,7 @@ namespace VDS.RDF
     /// If you wish to alter the Store you must use either work exclusively with <see cref="TalisGraph">TalisGraph</see> instances or manipulate the Store directly using the <see cref="TalisPlatformConnector">TalisPlatformConnector</see>.
     /// </para>
     /// </remarks>
+    [Obsolete("This class is considered obsolete, use the more general NativeTripleStore instead",false)]
     public class TalisTripleStore : BaseTripleStore, INativelyQueryableStore
     {
         private TalisPlatformConnector _talis;
@@ -100,6 +101,11 @@ namespace VDS.RDF
         public object ExecuteQuery(String query)
         {
             return this._talis.Query(query);
+        }
+
+        public void ExecuteQuery(IRdfHandler handler, ISparqlResultsHandler resultsHandler, string query)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>

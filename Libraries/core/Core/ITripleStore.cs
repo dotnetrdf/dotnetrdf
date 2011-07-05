@@ -488,6 +488,10 @@ namespace VDS.RDF
         /// </remarks>
         Object ExecuteQuery(SparqlQuery query);
 
+        void ExecuteQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String query);
+
+        void ExecuteQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query);
+
         #endregion
     }
 
@@ -508,6 +512,8 @@ namespace VDS.RDF
         /// This assumes that the Store has access to some native Sparql query processor on/at the Store which will be used to return the results.  Implementations should parse the returned result into a <see cref="SparqlResultSet">SparqlResultSet</see> or <see cref="Graph">Graph</see>.
         /// </remarks>
         Object ExecuteQuery(String query);
+
+        void ExecuteQuery(IRdfHandler handler, ISparqlResultsHandler resultsHandler, String query);
     }
 
     /// <summary>

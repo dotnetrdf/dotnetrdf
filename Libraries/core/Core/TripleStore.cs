@@ -694,21 +694,21 @@ namespace VDS.RDF
 
         #endregion
 
-        #region Sparql Selection
+        #region SPARQL Selection
 
         /// <summary>
         /// Executes a SPARQL Query on the Triple Store
         /// </summary>
-        /// <param name="strSparqlQuery">SPARQL Query as unparsed String</param>
+        /// <param name="query">SPARQL Query as unparsed String</param>
         /// <returns></returns>
-        public virtual Object ExecuteQuery(String strSparqlQuery)
+        public virtual Object ExecuteQuery(String query)
         {
             //Parse the Query
             SparqlQueryParser sparqlparser = new SparqlQueryParser();
-            SparqlQuery query = sparqlparser.ParseFromString(strSparqlQuery);
+            SparqlQuery q = sparqlparser.ParseFromString(query);
 
             //Invoke other execute method
-            return this.ExecuteQuery(query);
+            return this.ExecuteQuery(q);
         }
 
         /// <summary>
@@ -720,6 +720,21 @@ namespace VDS.RDF
         {
             //Invoke Query's Evaluate method
             return query.Evaluate(this);
+        }
+
+        public virtual void ExecuteQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String query)
+        {
+            //Parse the Query
+            SparqlQueryParser sparqlparser = new SparqlQueryParser();
+            SparqlQuery q = sparqlparser.ParseFromString(query);
+
+            //Invoke other execute method
+            this.ExecuteQuery(rdfHandler, resultsHandler, q);
+        }
+
+        public virtual void ExecuteQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query)
+        {
+            query.Evaluate(rdfHandler, resultsHandler, this);
         }
 
         #endregion
