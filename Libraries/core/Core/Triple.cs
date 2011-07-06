@@ -36,6 +36,7 @@ terms.
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Xml;
 using System.Xml.Schema;
@@ -48,8 +49,8 @@ namespace VDS.RDF
     /// <summary>
     /// Class for representing RDF Triples in memory
     /// </summary>
-    [XmlRoot(ElementName="triple")]
-    public sealed class Triple : IComparable<Triple>, IXmlSerializable
+    [Serializable,XmlRoot(ElementName="triple")]
+    public sealed class Triple : IComparable<Triple>, ISerializable, IXmlSerializable
     {
         private INode _subject, _predicate, _object;
         private ITripleContext _context = null;
@@ -155,6 +156,16 @@ namespace VDS.RDF
 
         private Triple()
         { }
+
+        private Triple(SerializationInfo info, StreamingContext context)
+        {
+            this._subject = (INode)info.GetValue("s", typeof(INode));
+            this._predicate = (INode)info.GetValue("p", typeof(INode));
+            this._object = (INode)info.GetValue("o", typeof(INode));
+
+            //Compute Hash Code
+            this._hashcode = (this._subject.GetHashCode().ToString() + this._predicate.GetHashCode().ToString() + this._object.GetHashCode().ToString()).GetHashCode();
+        }
 
         /// <summary>
         /// Gets the Subject of the Triple
@@ -483,6 +494,17 @@ namespace VDS.RDF
                 this._collides = value;
             }
         }
+
+        #region ISerializable Members
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("s", this._subject);
+            info.AddValue("p", this._predicate);
+            info.AddValue("o", this._object);
+        }
+
+        #endregion
 
         #region IXmlSerializable Members
 

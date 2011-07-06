@@ -74,6 +74,14 @@ namespace VDS.RDF.Test.Writing.Serialization
             stream.Dispose();
         }
 
+        private void TestNodeBinarySerialization(IEnumerable<INode> nodes, bool fullEquality)
+        {
+            foreach (INode n in nodes)
+            {
+                this.TestNodeBinarySerialization(n, fullEquality);
+            }
+        }
+
         [TestMethod]
         public void NodeXmlSerializationBlankNodes()
         {
@@ -90,8 +98,7 @@ namespace VDS.RDF.Test.Writing.Serialization
             this.TestNodeBinarySerialization(b, false);
         }
 
-        [TestMethod]
-        public void NodeXmlSerializationLiteralNodes()
+        private IEnumerable<INode> GetLiteralNodes()
         {
             Graph g = new Graph();
             List<INode> nodes = new List<INode>()
@@ -105,12 +112,22 @@ namespace VDS.RDF.Test.Writing.Serialization
                 (123.45).ToLiteral(g),
                 (123.45m).ToLiteral(g)
             };
-
-            this.TestNodeXmlSerialization(nodes, typeof(LiteralNode), true);
+            return nodes;
         }
 
         [TestMethod]
-        public void NodeXmlSerializationUriNodes()
+        public void NodeXmlSerializationLiteralNodes()
+        {
+            this.TestNodeXmlSerialization(this.GetLiteralNodes(), typeof(LiteralNode), true);
+        }
+
+        [TestMethod]
+        public void NodeBinarySerializationLiteralNodes()
+        {
+            this.TestNodeBinarySerialization(this.GetLiteralNodes(), true);
+        }
+
+        private IEnumerable<INode> GetUriNodes()
         {
             Graph g = new Graph();
             List<INode> nodes = new List<INode>()
@@ -122,9 +139,19 @@ namespace VDS.RDF.Test.Writing.Serialization
                 g.CreateUriNode(new Uri("mailto:example@example.org")),
                 g.CreateUriNode(new Uri("ftp://ftp.example.org"))
             };
-
-            this.TestNodeXmlSerialization(nodes, typeof(UriNode), true);
+            return nodes;
         }
 
+        [TestMethod]
+        public void NodeXmlSerializationUriNodes()
+        {
+            this.TestNodeXmlSerialization(this.GetUriNodes(), typeof(UriNode), true);
+        }
+
+        [TestMethod]
+        public void NodeBinarySerializationUriNodes()
+        {
+            this.TestNodeBinarySerialization(this.GetUriNodes(), true);
+        }
     }
 }

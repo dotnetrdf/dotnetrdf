@@ -35,6 +35,7 @@ terms.
 
 using System;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
@@ -44,7 +45,7 @@ namespace VDS.RDF
     /// <summary>
     /// Abstract Base Class for URI Nodes
     /// </summary>
-    [XmlRoot(ElementName="uri")]
+    [Serializable,XmlRoot(ElementName="uri")]
     public abstract class BaseUriNode : BaseNode, IUriNode, IEquatable<BaseUriNode>, IComparable<BaseUriNode>, IXmlSerializable
     {
         private Uri _uri;
@@ -103,6 +104,15 @@ namespace VDS.RDF
 
         protected BaseUriNode()
             : base(null, NodeType.Uri) { }
+
+        protected BaseUriNode(SerializationInfo info, StreamingContext context)
+            : base(null, NodeType.Uri)
+        {
+            this._uri = new Uri(info.GetString("uri"));
+
+            //Compute Hash Code
+            this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
+        }
 
         /// <summary>
         /// Gets the Uri for this Node
@@ -376,6 +386,15 @@ namespace VDS.RDF
             return this.CompareTo((IUriNode)other);
         }
 
+        #region ISerializable Members
+
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("uri", this._uri.ToString());
+        }
+
+        #endregion
+
         #region IXmlSerializable Members
 
         public override void ReadXml(XmlReader reader)
@@ -396,7 +415,7 @@ namespace VDS.RDF
     /// <summary>
     /// Class for representing URI Nodes
     /// </summary>
-    [XmlRoot(ElementName="uri")]
+    [Serializable,XmlRoot(ElementName="uri")]
     public class UriNode : BaseUriNode, IEquatable<UriNode>, IComparable<UriNode>
     {
         /// <summary>
@@ -420,6 +439,9 @@ namespace VDS.RDF
 
         protected UriNode()
             : base() { }
+
+        protected UriNode(SerializationInfo info, StreamingContext context)
+            : base(info, context) { }
 
         /// <summary>
         /// Implementation of Compare To for URI Nodes

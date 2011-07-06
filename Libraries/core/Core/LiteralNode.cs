@@ -34,17 +34,19 @@ terms.
 */
 
 using System;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
+using VDS.RDF.Parsing;
 
 namespace VDS.RDF
 {
     /// <summary>
     /// Abstract Base Class for Literal Nodes
     /// </summary>
-    [XmlRoot(ElementName="literal")]
+    [Serializable,XmlRoot(ElementName="literal")]
     public abstract class BaseLiteralNode : BaseNode, ILiteralNode, IEquatable<BaseLiteralNode>, IComparable<BaseLiteralNode>, IXmlSerializable
     {
         private String _value;
@@ -178,6 +180,32 @@ namespace VDS.RDF
 
         protected BaseLiteralNode()
             : base(null, NodeType.Literal) { }
+
+        protected BaseLiteralNode(SerializationInfo info, StreamingContext context)
+            : base(null, NodeType.Literal)
+        {
+            this._value = info.GetString("value");
+            byte mode = info.GetByte("mode");
+            switch (mode)
+            {
+                case 0:
+                    //Nothing more to do - plain literal
+                    this._hashcode = (this._nodetype + this.ToString() + PlainLiteralHashCodeSalt).GetHashCode();
+                    break;
+                case 1:
+                    //Get the Language
+                    this._language = info.GetString("lang");
+                    this._hashcode = (this._nodetype + this.ToString() + LangSpecLiteralHashCodeSalt).GetHashCode();
+                    break;
+                case 2:
+                    //Get the Datatype
+                    this._datatype = new Uri(info.GetString("datatype"));
+                    this._hashcode = (this._nodetype + this.ToString() + DataTypedLiteralHashCodeSalt).GetHashCode();
+                    break;
+                default:
+                    throw new RdfParseException("Unable to deserialize a Literal Node");
+            }
+        }
 
         /// <summary>
         /// Gives the String Value of the Literal
@@ -480,6 +508,29 @@ namespace VDS.RDF
             return this.CompareTo((ILiteralNode)other);
         }
 
+        #region ISerializable Members
+
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("value", this._value);
+            if (this._datatype != null)
+            {
+                info.AddValue("mode", (byte)2);
+                info.AddValue("datatype", this._datatype.ToString());
+            }
+            else if (!this._language.Equals(String.Empty))
+            {
+                info.AddValue("mode", (byte)1);
+                info.AddValue("lang", this._language);
+            }
+            else
+            {
+                info.AddValue("mode", (byte)0);
+            }
+        }
+
+        #endregion
+
         #region IXmlSerializable Members
 
         public override void ReadXml(XmlReader reader)
@@ -541,7 +592,7 @@ namespace VDS.RDF
     /// <summary>
     /// Class for representing Literal Nodes
     /// </summary>
-    [XmlRoot(ElementName="literal")]
+    [Serializable,XmlRoot(ElementName="literal")]
     public class LiteralNode : BaseLiteralNode, IEquatable<LiteralNode>, IComparable<LiteralNode>
     {
         /// <summary>
@@ -609,6 +660,9 @@ namespace VDS.RDF
         protected LiteralNode()
             : base() { }
 
+        protected LiteralNode(SerializationInfo info, StreamingContext context)
+            : base(info, context) { }
+
         /// <summary>
         /// Implementation of Compare To for Literal Nodes
         /// </summary>
@@ -636,7 +690,7 @@ namespace VDS.RDF
     /// <summary>
     /// Class for representing Literal Nodes where the Literal values are not normalized
     /// </summary>
-    [XmlRoot(ElementName="literal")]
+    [Serializable,XmlRoot(ElementName="literal")]
     class NonNormalizedLiteralNode : LiteralNode, IComparable<NonNormalizedLiteralNode>
     {
         /// <summary>
@@ -667,6 +721,9 @@ namespace VDS.RDF
 
         protected NonNormalizedLiteralNode()
             : base() { }
+
+        protected NonNormalizedLiteralNode(SerializationInfo info, StreamingContext context)
+            : base(info, context) { }
 
         /// <summary>
         /// Implementation of Compare To for Literal Nodes

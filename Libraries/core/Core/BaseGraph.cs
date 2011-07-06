@@ -40,6 +40,7 @@ using System.Collections.Generic;
 using System.Data;
 #endif
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading;
 using System.Xml;
@@ -52,8 +53,8 @@ namespace VDS.RDF
     /// <summary>
     /// Abstract Base Implementation of the <see cref="IGraph">IGraph</see> interface
     /// </summary>
-    [XmlRoot(ElementName="graph")]
-    public abstract class BaseGraph : IGraph, IXmlSerializable
+    [Serializable,XmlRoot(ElementName="graph")]
+    public abstract class BaseGraph : IGraph, ISerializable, IXmlSerializable
     {
         #region Variables
 
@@ -114,6 +115,14 @@ namespace VDS.RDF
         /// </summary>
         protected BaseGraph()
             : this(new IndexedTripleCollection()) { }
+
+        protected BaseGraph(SerializationInfo info, StreamingContext context)
+            : this()
+        {
+            List<Triple> ts = (List<Triple>)info.GetValue("triples", typeof(List<Triple>));
+            ts.RemoveAll(t => t == null);
+            this.Assert(ts);
+        }
 
         #endregion
 
@@ -1185,6 +1194,15 @@ namespace VDS.RDF
         {
             this.DetachEventHandlers(this._triples);
         }
+
+        #region ISerializable Members
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("triples", this.Triples.ToList(), typeof(List<Triple>));
+        }
+
+        #endregion
 
         #region IXmlSerializable Members
 
