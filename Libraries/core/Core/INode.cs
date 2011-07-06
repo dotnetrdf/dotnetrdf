@@ -33,10 +33,10 @@ terms.
 
 */
 
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Xml;
 using System.Xml.Schema;
@@ -82,7 +82,7 @@ namespace VDS.RDF
           IComparable<IUriNode>, IComparable<IVariableNode>,
           IEquatable<INode>, IEquatable<IBlankNode>, IEquatable<IGraphLiteralNode>, IEquatable<ILiteralNode>,
           IEquatable<IUriNode>, IEquatable<IVariableNode>,
-          IXmlSerializable
+          ISerializable, IXmlSerializable
     {
         /// <summary>
         /// Nodes have a Type

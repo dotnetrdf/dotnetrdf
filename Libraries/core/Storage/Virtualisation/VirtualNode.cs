@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Xml;
 using System.Xml.Schema;
@@ -452,6 +453,11 @@ namespace VDS.RDF.Storage.Virtualisation
         {
             if (this._value == null) this.MaterialiseValue();
             return this._value.ToString();
+        }
+
+        public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            throw new NotImplementedException("This INode implementation does not support Serialization");
         }
 
         public XmlSchema GetSchema()

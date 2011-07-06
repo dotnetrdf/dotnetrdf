@@ -35,6 +35,7 @@ terms.
 
 using System;
 using System.Reflection;
+using System.Runtime.Serialization;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
@@ -44,11 +45,11 @@ namespace VDS.RDF
     /// <summary>
     /// Abstract Base Class for Blank Nodes
     /// </summary>
-    [XmlRoot(ElementName="bnode")]
-    public abstract class BaseBlankNode : BaseNode, IBlankNode, IEquatable<BaseBlankNode>, IComparable<BaseBlankNode>, IXmlSerializable
+    [Serializable,XmlRoot(ElementName="bnode")]
+    public abstract class BaseBlankNode : BaseNode, IBlankNode, IEquatable<BaseBlankNode>, IComparable<BaseBlankNode>
     {
         private String _id;
-        private bool _autoassigned;
+        private bool _autoassigned = false;
 
         /// <summary>
         /// Internal Only Constructor for Blank Nodes
@@ -74,7 +75,6 @@ namespace VDS.RDF
         {
             if (nodeId.Equals(String.Empty)) throw new RdfException("Cannot create a Blank Node with an empty ID");
             this._id = nodeId;
-            this._autoassigned = false;
 
             //Compute Hash Code
             this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
@@ -97,6 +97,15 @@ namespace VDS.RDF
         protected BaseBlankNode()
             : base(null, NodeType.Blank)
         { }
+
+        protected BaseBlankNode(SerializationInfo info, StreamingContext context)
+            : base(null, NodeType.Blank)
+        {
+            this._id = info.GetString("id");
+
+            //Compute Hash Code
+            this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
+        }
 
         /// <summary>
         /// Returns the Internal Blank Node ID this Node has in the Graph
@@ -383,6 +392,15 @@ namespace VDS.RDF
             return "_:" + this._id;
         }
 
+        #region ISerializable Members
+
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("id", this._id);
+        }
+
+        #endregion
+
         #region IXmlSerializable Members
 
         public override void ReadXml(XmlReader reader)
@@ -403,7 +421,7 @@ namespace VDS.RDF
     /// <summary>
     /// Class for representing Blank RDF Nodes
     /// </summary>
-    [XmlRoot(ElementName = "bnode")]
+    [Serializable,XmlRoot(ElementName = "bnode")]
     public class BlankNode : BaseBlankNode, IEquatable<BlankNode>, IComparable<BlankNode>
     {
         /// <summary>
@@ -431,6 +449,9 @@ namespace VDS.RDF
         protected BlankNode()
             : base()
         { }
+
+        protected BlankNode(SerializationInfo info, StreamingContext context)
+            : base(info, context) { }
 
         /// <summary>
         /// Implementation of Compare To for Blank Nodes

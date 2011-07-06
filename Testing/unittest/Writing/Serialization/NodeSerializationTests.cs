@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Xml.Serialization;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -11,7 +14,7 @@ namespace VDS.RDF.Test.Writing.Serialization
     [TestClass]
     public class NodeSerializationTests
     {
-        private void TestNodeSerialization(INode n, Type t, bool fullEquality)
+        private void TestNodeXmlSerialization(INode n, Type t, bool fullEquality)
         {
             Console.WriteLine("Input: " + n.ToString());
 
@@ -35,12 +38,40 @@ namespace VDS.RDF.Test.Writing.Serialization
             }
         }
 
-        private void TestNodeSerialization(IEnumerable<INode> nodes, Type t, bool fullEquality)
+        private void TestNodeXmlSerialization(IEnumerable<INode> nodes, Type t, bool fullEquality)
         {
             foreach (INode n in nodes)
             {
-                this.TestNodeSerialization(n, t, fullEquality);
+                this.TestNodeXmlSerialization(n, t, fullEquality);
             }
+        }
+
+        private void TestNodeBinarySerialization(INode n, bool fullEquality)
+        {
+            MemoryStream stream = new MemoryStream();
+            BinaryFormatter serializer = new BinaryFormatter(null, new StreamingContext());
+            serializer.Serialize(stream, n);
+
+            stream.Seek(0, SeekOrigin.Begin);
+            Console.WriteLine("Serialized Form:");
+            StreamReader reader = new StreamReader(stream);
+            Console.WriteLine(reader.ReadToEnd());
+
+            stream.Seek(0, SeekOrigin.Begin);
+            INode m = serializer.Deserialize(stream) as INode;
+
+            reader.Close();
+
+            if (fullEquality)
+            {
+                Assert.AreEqual(n, m, "Nodes should be equal");
+            }
+            else
+            {
+                Assert.AreEqual(n.ToString(), m.ToString(), "String forms should be equal");
+            }
+
+            stream.Dispose();
         }
 
         [TestMethod]
@@ -48,7 +79,15 @@ namespace VDS.RDF.Test.Writing.Serialization
         {
             Graph g = new Graph();
             INode b = g.CreateBlankNode();
-            this.TestNodeSerialization(b, typeof(BlankNode), false);
+            this.TestNodeXmlSerialization(b, typeof(BlankNode), false);
+        }
+
+        [TestMethod]
+        public void NodeBinarySerializationBlankNodes()
+        {
+            Graph g = new Graph();
+            INode b = g.CreateBlankNode();
+            this.TestNodeBinarySerialization(b, false);
         }
 
         [TestMethod]
@@ -67,7 +106,7 @@ namespace VDS.RDF.Test.Writing.Serialization
                 (123.45m).ToLiteral(g)
             };
 
-            this.TestNodeSerialization(nodes, typeof(LiteralNode), true);
+            this.TestNodeXmlSerialization(nodes, typeof(LiteralNode), true);
         }
 
         [TestMethod]
@@ -84,7 +123,7 @@ namespace VDS.RDF.Test.Writing.Serialization
                 g.CreateUriNode(new Uri("ftp://ftp.example.org"))
             };
 
-            this.TestNodeSerialization(nodes, typeof(UriNode), true);
+            this.TestNodeXmlSerialization(nodes, typeof(UriNode), true);
         }
 
     }
