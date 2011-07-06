@@ -79,6 +79,8 @@ namespace VDS.RDF
         /// </summary>
         protected BlankNodeMapper _bnodemapper;
 
+        private List<Triple> _temp;
+
         private TripleEventHandler TripleAddedHandler, TripleRemovedHandler;
 
         #endregion
@@ -119,9 +121,17 @@ namespace VDS.RDF
         protected BaseGraph(SerializationInfo info, StreamingContext context)
             : this()
         {
-            List<Triple> ts = (List<Triple>)info.GetValue("triples", typeof(List<Triple>));
-            ts.RemoveAll(t => t == null);
-            this.Assert(ts);
+            this._temp = (List<Triple>)info.GetValue("triples", typeof(List<Triple>));
+        }
+
+        [OnDeserialized]
+        private void OnDeserialized(StreamingContext context)
+        {
+            if (this._temp != null)
+            {
+                this.Assert(this._temp);
+                this._temp = null;
+            }
         }
 
         #endregion
