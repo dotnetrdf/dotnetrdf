@@ -35,13 +35,17 @@ terms.
 
 using System;
 using System.Linq;
+using System.Xml;
+using System.Xml.Schema;
+using System.Xml.Serialization;
 
 namespace VDS.RDF
 {
     /// <summary>
     /// Abstract Base Class for URI Nodes
     /// </summary>
-    public abstract class BaseUriNode : BaseNode, IUriNode, IEquatable<BaseUriNode>, IComparable<BaseUriNode>
+    [XmlRoot(ElementName="uri")]
+    public abstract class BaseUriNode : BaseNode, IUriNode, IEquatable<BaseUriNode>, IComparable<BaseUriNode>, IXmlSerializable
     {
         private Uri _uri;
 
@@ -96,6 +100,9 @@ namespace VDS.RDF
         /// <param name="uri">URI</param>
         protected internal BaseUriNode(Uri uri)
             : this(null, uri) { }
+
+        protected BaseUriNode()
+            : base(null, NodeType.Uri) { }
 
         /// <summary>
         /// Gets the Uri for this Node
@@ -368,11 +375,28 @@ namespace VDS.RDF
         {
             return this.CompareTo((IUriNode)other);
         }
+
+        #region IXmlSerializable Members
+
+        public override void ReadXml(XmlReader reader)
+        {
+            this._uri = new Uri(reader.ReadElementContentAsString());
+            //Compute Hash Code
+            this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
+        }
+
+        public override void WriteXml(XmlWriter writer)
+        {
+            writer.WriteString(this._uri.ToString());
+        }
+
+        #endregion
     }
 
     /// <summary>
     /// Class for representing URI Nodes
     /// </summary>
+    [XmlRoot(ElementName="uri")]
     public class UriNode : BaseUriNode, IEquatable<UriNode>, IComparable<UriNode>
     {
         /// <summary>
@@ -393,6 +417,9 @@ namespace VDS.RDF
         /// </remarks>
         protected internal UriNode(IGraph g, String qname)
             : base(g, qname) { }
+
+        protected UriNode()
+            : base() { }
 
         /// <summary>
         /// Implementation of Compare To for URI Nodes

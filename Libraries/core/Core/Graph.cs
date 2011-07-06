@@ -38,6 +38,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml;
+using System.Xml.Serialization;
 using VDS.RDF.Query;
 
 namespace VDS.RDF
@@ -46,6 +48,7 @@ namespace VDS.RDF
     /// Class for representing RDF Graphs
     /// </summary>
     /// <threadsafety instance="false">Safe for multi-threaded read-only access but unsafe if one/more threads may modify the Graph by using the <see cref="Graph.Assert">Assert</see>, <see cref="Graph.Retract">Retract</see> or <see cref="BaseGraph.Merge">Merge</see> methods</threadsafety>
+    [XmlRoot(ElementName="graph")]
     public class Graph : BaseGraph
     {
         #region Constructor

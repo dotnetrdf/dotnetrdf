@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml;
+using System.Xml.Schema;
+using System.Xml.Serialization;
 using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF
 {
-
     /// <summary>
     /// Abstract Class for Nodes, implements the two basic properties of the INode Interface
     /// </summary>
@@ -314,5 +316,20 @@ namespace VDS.RDF
         /// Nodes implementations are also required to implement an override of the non-generic Equals method.  Standard implementations of some equality comparisons can be found in <see cref="EqualityHelper">EqualityHelper</see>
         /// </remarks>
         public abstract bool Equals(IVariableNode other);
+
+        public XmlSchema GetSchema()
+        {
+            return null;
+        }
+
+        public virtual void ReadXml(XmlReader reader)
+        {
+            throw new NotImplementedException("This INode implementation does not support XML Serialization");
+        }
+
+        public virtual void WriteXml(XmlWriter writer)
+        {
+            throw new NotImplementedException("This INode implementation does not support XML Serialization");
+        }
     }
 }

@@ -212,6 +212,9 @@
     <Compile Include="Writing\OwlOneOf.cs" />
     <Compile Include="Writing\RdfXmlWriterTests.cs" />
     <Compile Include="Writing\SchemaWriter.cs" />
+    <Compile Include="Writing\Serialization\GraphSerializationTests.cs" />
+    <Compile Include="Writing\Serialization\NodeSerializationTests.cs" />
+    <Compile Include="Writing\Serialization\TripleSerializationTests.cs" />
     <Compile Include="Writing\SparqlXmlTests.cs" />
     <Compile Include="Writing\StringEscapingTest.cs" />
     <Compile Include="Writing\TriGWriterTests.cs" />

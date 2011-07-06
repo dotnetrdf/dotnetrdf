@@ -35,16 +35,20 @@ terms.
 
 using System;
 using System.Text;
+using System.Xml;
+using System.Xml.Schema;
+using System.Xml.Serialization;
 
 namespace VDS.RDF
 {
     /// <summary>
     /// Abstract Base Class for Literal Nodes
     /// </summary>
-    public abstract class BaseLiteralNode : BaseNode, ILiteralNode, IEquatable<BaseLiteralNode>, IComparable<BaseLiteralNode>
+    [XmlRoot(ElementName="literal")]
+    public abstract class BaseLiteralNode : BaseNode, ILiteralNode, IEquatable<BaseLiteralNode>, IComparable<BaseLiteralNode>, IXmlSerializable
     {
         private String _value;
-        private String _language;
+        private String _language = String.Empty;
         private Uri _datatype;
 
         /// <summary>
@@ -83,7 +87,6 @@ namespace VDS.RDF
             {
                 this._value = literal;
             }
-            this._language = String.Empty;
             this._datatype = null;
 
             //Compute Hash Code
@@ -167,12 +170,14 @@ namespace VDS.RDF
             {
                 this._value = literal;
             }
-            this._language = String.Empty;
             this._datatype = datatype;
 
             //Compute Hash Code
             this._hashcode = (this._nodetype + this.ToString() + DataTypedLiteralHashCodeSalt).GetHashCode();
         }
+
+        protected BaseLiteralNode()
+            : base(null, NodeType.Literal) { }
 
         /// <summary>
         /// Gives the String Value of the Literal
@@ -474,11 +479,69 @@ namespace VDS.RDF
         {
             return this.CompareTo((ILiteralNode)other);
         }
+
+        #region IXmlSerializable Members
+
+        public override void ReadXml(XmlReader reader)
+        {
+            if (reader.HasAttributes)
+            {
+                bool exit = false;
+                while (!exit && reader.MoveToNextAttribute())
+                {
+                    switch (reader.Name)
+                    {
+                        case "lang":
+                            this._language = reader.Value;
+                            exit = true;
+                            break;
+                        case "datatype":
+                            this._datatype = new Uri(reader.Value);
+                            exit = true;
+                            break;
+                    }
+                }
+            }
+            reader.MoveToContent();
+            this._value = reader.ReadElementContentAsString();
+
+            if (this._datatype != null)
+            {            
+                //Compute Hash Code
+                this._hashcode = (this._nodetype + this.ToString() + DataTypedLiteralHashCodeSalt).GetHashCode();
+            }
+            else if (!this._language.Equals(String.Empty))
+            {
+                //Compute Hash Code
+                this._hashcode = (this._nodetype + this.ToString() + LangSpecLiteralHashCodeSalt).GetHashCode();
+            }
+            else
+            {
+                //Compute Hash Code
+                this._hashcode = (this._nodetype + this.ToString() + PlainLiteralHashCodeSalt).GetHashCode();
+            }
+        }
+
+        public override void WriteXml(XmlWriter writer)
+        {
+            if (this._datatype != null)
+            {
+                writer.WriteAttributeString("datatype", this._datatype.ToString());
+            }
+            else if (!this._language.Equals(String.Empty))
+            {
+                writer.WriteAttributeString("lang", this._language);
+            }
+            writer.WriteString(this._value);
+        }
+
+        #endregion
     }
 
     /// <summary>
     /// Class for representing Literal Nodes
     /// </summary>
+    [XmlRoot(ElementName="literal")]
     public class LiteralNode : BaseLiteralNode, IEquatable<LiteralNode>, IComparable<LiteralNode>
     {
         /// <summary>
@@ -543,6 +606,9 @@ namespace VDS.RDF
         protected internal LiteralNode(IGraph g, String literal, Uri datatype, bool normalize)
             : base(g, literal, datatype, normalize) { }
 
+        protected LiteralNode()
+            : base() { }
+
         /// <summary>
         /// Implementation of Compare To for Literal Nodes
         /// </summary>
@@ -570,6 +636,7 @@ namespace VDS.RDF
     /// <summary>
     /// Class for representing Literal Nodes where the Literal values are not normalized
     /// </summary>
+    [XmlRoot(ElementName="literal")]
     class NonNormalizedLiteralNode : LiteralNode, IComparable<NonNormalizedLiteralNode>
     {
         /// <summary>
@@ -597,6 +664,9 @@ namespace VDS.RDF
         /// <param name="datatype">Uri for the Literals Data Type</param>
         protected internal NonNormalizedLiteralNode(IGraph g, String literal, Uri datatype)
             : base(g, literal, datatype, false) { }
+
+        protected NonNormalizedLiteralNode()
+            : base() { }
 
         /// <summary>
         /// Implementation of Compare To for Literal Nodes

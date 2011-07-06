@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml;
+using System.Xml.Schema;
+using System.Xml.Serialization;
 using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
 
@@ -449,6 +452,21 @@ namespace VDS.RDF.Storage.Virtualisation
         {
             if (this._value == null) this.MaterialiseValue();
             return this._value.ToString();
+        }
+
+        public XmlSchema GetSchema()
+        {
+            return null;
+        }
+
+        public virtual void ReadXml(XmlReader reader)
+        {
+            throw new NotImplementedException("This INode implementation does not support XML Serialization");
+        }
+
+        public virtual void WriteXml(XmlWriter writer)
+        {
+            throw new NotImplementedException("This INode implementation does not support XML Serialization");
         }
     }
 

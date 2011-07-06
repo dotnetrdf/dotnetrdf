@@ -38,6 +38,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml;
+using System.Xml.Schema;
+using System.Xml.Serialization;
 using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
 
@@ -78,7 +81,8 @@ namespace VDS.RDF
         : IComparable<INode>, IComparable<IBlankNode>, IComparable<IGraphLiteralNode>, IComparable<ILiteralNode>,
           IComparable<IUriNode>, IComparable<IVariableNode>,
           IEquatable<INode>, IEquatable<IBlankNode>, IEquatable<IGraphLiteralNode>, IEquatable<ILiteralNode>,
-          IEquatable<IUriNode>, IEquatable<IVariableNode>
+          IEquatable<IUriNode>, IEquatable<IVariableNode>,
+          IXmlSerializable
     {
         /// <summary>
         /// Nodes have a Type

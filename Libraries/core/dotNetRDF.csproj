@@ -642,6 +642,7 @@
     <EmbeddedResource Include="Storage\UpgradeMSSQLStore_010_011.sql" />
     <EmbeddedResource Include="Storage\CreateMySQLStoreTables.sql" />
     <None Include="VDSOpenSourceKey.pfx" />
+    <EmbeddedResource Include="Writing\Serialization\SerializationSchema.xsd" />
     <EmbeddedResource Include="Query\Expressions\Functions\LeviathanFunctionLibrary.ttl" />
     <Compile Include="Writing\Formatting\INodeFormatter.cs" />
   </ItemGroup>

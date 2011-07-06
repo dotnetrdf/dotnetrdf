@@ -42,13 +42,18 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Xml;
+using System.Xml.Schema;
+using System.Xml.Serialization;
+using VDS.RDF.Parsing;
 
 namespace VDS.RDF
 {
     /// <summary>
     /// Abstract Base Implementation of the <see cref="IGraph">IGraph</see> interface
     /// </summary>
-    public abstract class BaseGraph : IGraph
+    [XmlRoot(ElementName="graph")]
+    public abstract class BaseGraph : IGraph, IXmlSerializable
     {
         #region Variables
 
@@ -1180,5 +1185,54 @@ namespace VDS.RDF
         {
             this.DetachEventHandlers(this._triples);
         }
+
+        #region IXmlSerializable Members
+
+        public XmlSchema GetSchema()
+        {
+            return null;
+        }
+
+        public void ReadXml(XmlReader reader)
+        {
+            XmlSerializer tripleDeserializer = new XmlSerializer(typeof(Triple));
+            reader.Read();
+            if (reader.Name.Equals("triples"))
+            {
+                if (!reader.IsEmptyElement)
+                {
+                    reader.Read();
+                    while (reader.Name.Equals("triple"))
+                    {
+                        try
+                        {
+                            Object temp = tripleDeserializer.Deserialize(reader);
+                            this.Assert((Triple)temp);
+                        }
+                        catch
+                        {
+                            throw;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                throw new RdfParseException("Expected a <triples> element inside a <graph> element");
+            }
+        }
+
+        public void WriteXml(XmlWriter writer)
+        {
+            XmlSerializer tripleSerializer = new XmlSerializer(typeof(Triple));
+            writer.WriteStartElement("triples");
+            foreach (Triple t in this.Triples)
+            {
+                tripleSerializer.Serialize(writer, t);
+            }
+            writer.WriteEndElement();
+        }
+
+        #endregion
     }
 }
