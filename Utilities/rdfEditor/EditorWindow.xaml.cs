@@ -452,7 +452,14 @@ namespace VDS.RDF.Utilities.Editor
             {
                 if (_sfd.ShowDialog() == true)
                 {
-                    this.UpdateMruList(this._sfd.FileName);
+                    try
+                    {
+                        this.UpdateMruList(this._sfd.FileName);
+                    }
+                    catch
+                    {
+                        //Ignore Errors here
+                    }
                     this._manager.CurrentFile = _sfd.FileName;
                 }
                 else

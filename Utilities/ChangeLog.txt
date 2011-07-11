@@ -30,6 +30,7 @@ soh
 
 SparqlGUI
 - Added the ability to have query explanations logged to the log file
+- Added the ability to view query explanations
 
 StoreManager
 - Added support for Dydra

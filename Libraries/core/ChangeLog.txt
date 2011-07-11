@@ -12,6 +12,9 @@ Change Log
 This represents a summary of additions, changes and removals for the 0.4.2 release of dotNetRDF
 
 Added
+- Core API
+ - Added .Net serialization support to INode, IGraph, SparqlResultSet and SparqlResult
+  - Support for both IXmlSerializable and ISerializable
 - Configuration API
  - Added a bunch of new properties which can be attached to HTTP Handler definitions to define writer behaviour
  - Added new classes that can be used to define Parsers and Writers, ASP.Net configuration auto-detects these
