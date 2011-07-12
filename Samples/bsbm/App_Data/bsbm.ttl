@@ -2,6 +2,13 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
 @prefix dnr: <http://www.dotnetrdf.org/configuration#>.
 
+_:adoUser a dnr:User ;
+			dnr:user "example" ;
+			dnr:password "password" .
+			
+_:adoFactory a dnr:ObjectFactory ;
+	dnr:type "VDS.RDF.Configuration.AdoObjectFactory, dotNetRDF.Data.Sql" .
+
 <dotnetrdf:/dotNetRDFBSBM/bsbm10> a dnr:HttpHandler ;
 									 dnr:type "VDS.RDF.Web.QueryHandler" ;
 									 dnr:queryProcessor _:bsbm10 .
@@ -13,14 +20,32 @@
 														  dnr:type "VDS.RDF.Query.Optimisation.WeightedOptimiser" ;
 														  dnr:usingGraph [ a dnr:Graph ;
 																		   dnr:type "VDS.RDF.Graph" ;
-																		   dnr:fromFile "~/App_Data/stats_10.ttl" ] ] .
-									 									 
+																		   dnr:fromFile "~/App_Data/stats_10.ttl" ] ] .								 									 
 _:bsbm10 a dnr:SparqlQueryProcessor ;
 		   dnr:usingStore [ a dnr:TripleStore ;
 		   					dnr:type "VDS.RDF.TripleStore" ;
  							dnr:usingGraph [ a dnr:Graph ; 
  											 dnr:type "VDS.RDF.Graph" ; 
  											 dnr:fromFile "~/App_Data/dataset_10.ttl" ] ] .
+ 											 
+																		   
+<dotnetrdf:/dotNetRDFBSBM/bsbm10ado> a dnr:HttpHandler ;
+										 dnr:type "VDS.RDF.Web.QueryHandler" ;
+										 dnr:queryProcessor _:bsbm10ado ;
+										 dnr:algebraOptimiser [ a dnr:AlgebraOptimiser ;
+										 						  dnr:type "VDS.RDF.Query.Optimisation.AdoOptimiser, dotNetRDF.Data.Sql" ;
+										 						  dnr:genericManager _:ado10 ] .
+										 						  
+_:bsbm10ado a dnr:SparqlQueryProcessor ;
+			 dnr:usingDataset [ a dnr:SparqlDataset ;
+			 					  dnr:type "VDS.RDF.Query.Datasets.MicrosoftAdoDataset, dotNetRDF.Data.Sql" ;
+			 					  dnr:genericManager _:ado10 ] .
+			 					  
+_:ado10 a dnr:GenericIOManager ;
+		dnr:type "VDS.RDF.Storage.MicrosoftAdoManager, dotNetRDF.Data.Sql" ;
+		dnr:server "localhost" ;
+		dnr:database "ado_bsbm10" ;
+		dnr:credentials _:adoUser .
  											 
 <dotnetrdf:/dotNetRDFBSBM/bsbm50> a dnr:HttpHandler ;
 									 dnr:type "VDS.RDF.Web.QueryHandler" ;

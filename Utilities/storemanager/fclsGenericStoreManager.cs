@@ -878,6 +878,11 @@ namespace VDS.RDF.Utilities.StoreManager
         }
 
         #endregion
+
+        protected override void OnClosed(EventArgs e)
+        {
+            this._manager.Dispose();
+        }
     }
 
     class SortTasksByID : IComparer, IComparer<ListViewItem>

@@ -30,6 +30,8 @@
         {
             this.tabStores = new System.Windows.Forms.TabControl();
             this.tabAllegroGraph = new System.Windows.Forms.TabPage();
+            this.chkAGraphRootCatalog = new System.Windows.Forms.CheckBox();
+            this.lblAGraphOr = new System.Windows.Forms.Label();
             this.txtAllegroPassword = new System.Windows.Forms.TextBox();
             this.lblAllegroPassword = new System.Windows.Forms.Label();
             this.txtAllegroUsername = new System.Windows.Forms.TextBox();
@@ -77,6 +79,16 @@
             this.txtDatasetFile = new System.Windows.Forms.TextBox();
             this.lblDatasetFile = new System.Windows.Forms.Label();
             this.lblDatasetFileIntro = new System.Windows.Forms.Label();
+            this.tabMicrosoftAdo = new System.Windows.Forms.TabPage();
+            this.txtMicrosoftAdoPassword = new System.Windows.Forms.TextBox();
+            this.label11 = new System.Windows.Forms.Label();
+            this.txtMicrosoftAdoUser = new System.Windows.Forms.TextBox();
+            this.label12 = new System.Windows.Forms.Label();
+            this.txtMicrosoftAdoDb = new System.Windows.Forms.TextBox();
+            this.label13 = new System.Windows.Forms.Label();
+            this.txtMicrosoftAdoServer = new System.Windows.Forms.TextBox();
+            this.label14 = new System.Windows.Forms.Label();
+            this.lblMicrosoftAdo = new System.Windows.Forms.Label();
             this.tabSesame = new System.Windows.Forms.TabPage();
             this.txtSesamePassword = new System.Windows.Forms.TextBox();
             this.lblSesamePassword = new System.Windows.Forms.Label();
@@ -134,8 +146,18 @@
             this.btnCancel = new System.Windows.Forms.Button();
             this.ofdDatasetFile = new System.Windows.Forms.OpenFileDialog();
             this.chkReadOnly = new System.Windows.Forms.CheckBox();
-            this.lblAGraphOr = new System.Windows.Forms.Label();
-            this.chkAGraphRootCatalog = new System.Windows.Forms.CheckBox();
+            this.button2 = new System.Windows.Forms.Button();
+            this.textBox6 = new System.Windows.Forms.TextBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.textBox7 = new System.Windows.Forms.TextBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.textBox8 = new System.Windows.Forms.TextBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.textBox9 = new System.Windows.Forms.TextBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.textBox10 = new System.Windows.Forms.TextBox();
+            this.label10 = new System.Windows.Forms.Label();
+            this.btnConnectMicrosoftAdo = new System.Windows.Forms.Button();
             this.tabStores.SuspendLayout();
             this.tabAllegroGraph.SuspendLayout();
             this.tabDydra.SuspendLayout();
@@ -144,6 +166,7 @@
             this.tabInMemory.SuspendLayout();
             this.tabJoseki.SuspendLayout();
             this.tabDataset.SuspendLayout();
+            this.tabMicrosoftAdo.SuspendLayout();
             this.tabSesame.SuspendLayout();
             this.tabSparqlEndpoint.SuspendLayout();
             this.tabSparqlHttpProtocol.SuspendLayout();
@@ -161,6 +184,7 @@
             this.tabStores.Controls.Add(this.tabInMemory);
             this.tabStores.Controls.Add(this.tabJoseki);
             this.tabStores.Controls.Add(this.tabDataset);
+            this.tabStores.Controls.Add(this.tabMicrosoftAdo);
             this.tabStores.Controls.Add(this.tabSesame);
             this.tabStores.Controls.Add(this.tabSparqlEndpoint);
             this.tabStores.Controls.Add(this.tabSparqlHttpProtocol);
@@ -171,7 +195,7 @@
             this.tabStores.Multiline = true;
             this.tabStores.Name = "tabStores";
             this.tabStores.SelectedIndex = 0;
-            this.tabStores.Size = new System.Drawing.Size(483, 200);
+            this.tabStores.Size = new System.Drawing.Size(483, 214);
             this.tabStores.TabIndex = 0;
             // 
             // tabAllegroGraph
@@ -189,13 +213,33 @@
             this.tabAllegroGraph.Controls.Add(this.btnConnectAllegroGraph);
             this.tabAllegroGraph.Controls.Add(this.txtAllegroGraphServer);
             this.tabAllegroGraph.Controls.Add(this.lblAllegroGraphServer);
-            this.tabAllegroGraph.Location = new System.Drawing.Point(4, 40);
+            this.tabAllegroGraph.Location = new System.Drawing.Point(4, 58);
             this.tabAllegroGraph.Name = "tabAllegroGraph";
             this.tabAllegroGraph.Padding = new System.Windows.Forms.Padding(3);
-            this.tabAllegroGraph.Size = new System.Drawing.Size(475, 156);
+            this.tabAllegroGraph.Size = new System.Drawing.Size(475, 152);
             this.tabAllegroGraph.TabIndex = 0;
             this.tabAllegroGraph.Text = "Allegro Graph";
             this.tabAllegroGraph.UseVisualStyleBackColor = true;
+            // 
+            // chkAGraphRootCatalog
+            // 
+            this.chkAGraphRootCatalog.AutoSize = true;
+            this.chkAGraphRootCatalog.Location = new System.Drawing.Point(200, 38);
+            this.chkAGraphRootCatalog.Name = "chkAGraphRootCatalog";
+            this.chkAGraphRootCatalog.Size = new System.Drawing.Size(108, 17);
+            this.chkAGraphRootCatalog.TabIndex = 5;
+            this.chkAGraphRootCatalog.Text = "use Root Catalog";
+            this.chkAGraphRootCatalog.UseVisualStyleBackColor = true;
+            this.chkAGraphRootCatalog.CheckedChanged += new System.EventHandler(this.chkAGraphRootCatalog_CheckedChanged);
+            // 
+            // lblAGraphOr
+            // 
+            this.lblAGraphOr.AutoSize = true;
+            this.lblAGraphOr.Location = new System.Drawing.Point(178, 39);
+            this.lblAGraphOr.Name = "lblAGraphOr";
+            this.lblAGraphOr.Size = new System.Drawing.Size(16, 13);
+            this.lblAGraphOr.TabIndex = 4;
+            this.lblAGraphOr.Text = "or";
             // 
             // txtAllegroPassword
             // 
@@ -300,10 +344,10 @@
             this.tabDydra.Controls.Add(this.lblDydraRepository);
             this.tabDydra.Controls.Add(this.txtDydraAccount);
             this.tabDydra.Controls.Add(this.lblDydraAccount);
-            this.tabDydra.Location = new System.Drawing.Point(4, 40);
+            this.tabDydra.Location = new System.Drawing.Point(4, 58);
             this.tabDydra.Name = "tabDydra";
             this.tabDydra.Padding = new System.Windows.Forms.Padding(3);
-            this.tabDydra.Size = new System.Drawing.Size(475, 156);
+            this.tabDydra.Size = new System.Drawing.Size(475, 152);
             this.tabDydra.TabIndex = 12;
             this.tabDydra.Text = "Dydra";
             this.tabDydra.UseVisualStyleBackColor = true;
@@ -372,10 +416,10 @@
             this.tabFourStore.Controls.Add(this.btnConnect4Store);
             this.tabFourStore.Controls.Add(this.txt4StoreServer);
             this.tabFourStore.Controls.Add(this.lbl4StoreServer);
-            this.tabFourStore.Location = new System.Drawing.Point(4, 40);
+            this.tabFourStore.Location = new System.Drawing.Point(4, 58);
             this.tabFourStore.Name = "tabFourStore";
             this.tabFourStore.Padding = new System.Windows.Forms.Padding(3);
-            this.tabFourStore.Size = new System.Drawing.Size(475, 156);
+            this.tabFourStore.Size = new System.Drawing.Size(475, 152);
             this.tabFourStore.TabIndex = 1;
             this.tabFourStore.Text = "4store";
             this.tabFourStore.UseVisualStyleBackColor = true;
@@ -425,9 +469,9 @@
             this.tabFuseki.Controls.Add(this.btnConnectFuseki);
             this.tabFuseki.Controls.Add(this.txtFusekiUri);
             this.tabFuseki.Controls.Add(this.lblFusekiUri);
-            this.tabFuseki.Location = new System.Drawing.Point(4, 40);
+            this.tabFuseki.Location = new System.Drawing.Point(4, 58);
             this.tabFuseki.Name = "tabFuseki";
-            this.tabFuseki.Size = new System.Drawing.Size(475, 156);
+            this.tabFuseki.Size = new System.Drawing.Size(475, 152);
             this.tabFuseki.TabIndex = 9;
             this.tabFuseki.Text = "Fuseki";
             this.tabFuseki.UseVisualStyleBackColor = true;
@@ -471,10 +515,10 @@
             // 
             this.tabInMemory.Controls.Add(this.btnConnectInMemory);
             this.tabInMemory.Controls.Add(this.lblInMemoryIntro);
-            this.tabInMemory.Location = new System.Drawing.Point(4, 40);
+            this.tabInMemory.Location = new System.Drawing.Point(4, 58);
             this.tabInMemory.Name = "tabInMemory";
             this.tabInMemory.Padding = new System.Windows.Forms.Padding(3);
-            this.tabInMemory.Size = new System.Drawing.Size(475, 156);
+            this.tabInMemory.Size = new System.Drawing.Size(475, 152);
             this.tabInMemory.TabIndex = 10;
             this.tabInMemory.Text = "In-Memory";
             this.tabInMemory.UseVisualStyleBackColor = true;
@@ -508,9 +552,9 @@
             this.tabJoseki.Controls.Add(this.btnConnectJoseki);
             this.tabJoseki.Controls.Add(this.txtJosekiServer);
             this.tabJoseki.Controls.Add(this.lblJosekiServer);
-            this.tabJoseki.Location = new System.Drawing.Point(4, 40);
+            this.tabJoseki.Location = new System.Drawing.Point(4, 58);
             this.tabJoseki.Name = "tabJoseki";
-            this.tabJoseki.Size = new System.Drawing.Size(475, 156);
+            this.tabJoseki.Size = new System.Drawing.Size(475, 152);
             this.tabJoseki.TabIndex = 2;
             this.tabJoseki.Text = "Joseki";
             this.tabJoseki.UseVisualStyleBackColor = true;
@@ -593,9 +637,9 @@
             this.tabDataset.Controls.Add(this.txtDatasetFile);
             this.tabDataset.Controls.Add(this.lblDatasetFile);
             this.tabDataset.Controls.Add(this.lblDatasetFileIntro);
-            this.tabDataset.Location = new System.Drawing.Point(4, 40);
+            this.tabDataset.Location = new System.Drawing.Point(4, 58);
             this.tabDataset.Name = "tabDataset";
-            this.tabDataset.Size = new System.Drawing.Size(475, 156);
+            this.tabDataset.Size = new System.Drawing.Size(475, 152);
             this.tabDataset.TabIndex = 6;
             this.tabDataset.Text = "RDF Dataset File";
             this.tabDataset.UseVisualStyleBackColor = true;
@@ -645,6 +689,102 @@
             this.lblDatasetFileIntro.Text = "Allows you to view a RDF Dataset File in one of the formats supported by dotNetRD" +
                 "F - NQuads, TriG or TriX -  as a read-only Store.";
             // 
+            // tabMicrosoftAdo
+            // 
+            this.tabMicrosoftAdo.Controls.Add(this.btnConnectMicrosoftAdo);
+            this.tabMicrosoftAdo.Controls.Add(this.txtMicrosoftAdoPassword);
+            this.tabMicrosoftAdo.Controls.Add(this.label11);
+            this.tabMicrosoftAdo.Controls.Add(this.txtMicrosoftAdoUser);
+            this.tabMicrosoftAdo.Controls.Add(this.label12);
+            this.tabMicrosoftAdo.Controls.Add(this.txtMicrosoftAdoDb);
+            this.tabMicrosoftAdo.Controls.Add(this.label13);
+            this.tabMicrosoftAdo.Controls.Add(this.txtMicrosoftAdoServer);
+            this.tabMicrosoftAdo.Controls.Add(this.label14);
+            this.tabMicrosoftAdo.Controls.Add(this.lblMicrosoftAdo);
+            this.tabMicrosoftAdo.Location = new System.Drawing.Point(4, 58);
+            this.tabMicrosoftAdo.Name = "tabMicrosoftAdo";
+            this.tabMicrosoftAdo.Padding = new System.Windows.Forms.Padding(3);
+            this.tabMicrosoftAdo.Size = new System.Drawing.Size(475, 152);
+            this.tabMicrosoftAdo.TabIndex = 13;
+            this.tabMicrosoftAdo.Text = "Microsoft SQL Server";
+            this.tabMicrosoftAdo.UseVisualStyleBackColor = true;
+            // 
+            // txtMicrosoftAdoPassword
+            // 
+            this.txtMicrosoftAdoPassword.Location = new System.Drawing.Point(78, 107);
+            this.txtMicrosoftAdoPassword.Name = "txtMicrosoftAdoPassword";
+            this.txtMicrosoftAdoPassword.PasswordChar = '*';
+            this.txtMicrosoftAdoPassword.Size = new System.Drawing.Size(100, 20);
+            this.txtMicrosoftAdoPassword.TabIndex = 17;
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(12, 110);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(56, 13);
+            this.label11.TabIndex = 16;
+            this.label11.Text = "Password:";
+            // 
+            // txtMicrosoftAdoUser
+            // 
+            this.txtMicrosoftAdoUser.Location = new System.Drawing.Point(78, 81);
+            this.txtMicrosoftAdoUser.Name = "txtMicrosoftAdoUser";
+            this.txtMicrosoftAdoUser.Size = new System.Drawing.Size(100, 20);
+            this.txtMicrosoftAdoUser.TabIndex = 15;
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(12, 84);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(58, 13);
+            this.label12.TabIndex = 14;
+            this.label12.Text = "Username:";
+            // 
+            // txtMicrosoftAdoDb
+            // 
+            this.txtMicrosoftAdoDb.Location = new System.Drawing.Point(78, 55);
+            this.txtMicrosoftAdoDb.Name = "txtMicrosoftAdoDb";
+            this.txtMicrosoftAdoDb.Size = new System.Drawing.Size(100, 20);
+            this.txtMicrosoftAdoDb.TabIndex = 13;
+            this.txtMicrosoftAdoDb.Text = "DB";
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(12, 58);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(56, 13);
+            this.label13.TabIndex = 12;
+            this.label13.Text = "Database:";
+            // 
+            // txtMicrosoftAdoServer
+            // 
+            this.txtMicrosoftAdoServer.Location = new System.Drawing.Point(108, 29);
+            this.txtMicrosoftAdoServer.Name = "txtMicrosoftAdoServer";
+            this.txtMicrosoftAdoServer.Size = new System.Drawing.Size(290, 20);
+            this.txtMicrosoftAdoServer.TabIndex = 11;
+            this.txtMicrosoftAdoServer.Text = "localhost";
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(12, 32);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(90, 13);
+            this.label14.TabIndex = 10;
+            this.label14.Text = "Database Server:";
+            // 
+            // lblMicrosoftAdo
+            // 
+            this.lblMicrosoftAdo.AutoSize = true;
+            this.lblMicrosoftAdo.Location = new System.Drawing.Point(6, 13);
+            this.lblMicrosoftAdo.Name = "lblMicrosoftAdo";
+            this.lblMicrosoftAdo.Size = new System.Drawing.Size(384, 13);
+            this.lblMicrosoftAdo.TabIndex = 0;
+            this.lblMicrosoftAdo.Text = "Connect to a database on Microsoft SQL Server that uses our ADO Store format";
+            // 
             // tabSesame
             // 
             this.tabSesame.Controls.Add(this.txtSesamePassword);
@@ -656,9 +796,9 @@
             this.tabSesame.Controls.Add(this.btnConnectSesame);
             this.tabSesame.Controls.Add(this.txtSesameServer);
             this.tabSesame.Controls.Add(this.lblSesameServer);
-            this.tabSesame.Location = new System.Drawing.Point(4, 40);
+            this.tabSesame.Location = new System.Drawing.Point(4, 58);
             this.tabSesame.Name = "tabSesame";
-            this.tabSesame.Size = new System.Drawing.Size(475, 156);
+            this.tabSesame.Size = new System.Drawing.Size(475, 152);
             this.tabSesame.TabIndex = 3;
             this.tabSesame.Text = "Sesame";
             this.tabSesame.UseVisualStyleBackColor = true;
@@ -750,9 +890,9 @@
             this.tabSparqlEndpoint.Controls.Add(this.txtSparqlEndpoint);
             this.tabSparqlEndpoint.Controls.Add(this.lblSparqlEndpoint);
             this.tabSparqlEndpoint.Controls.Add(this.lblSparqlIntro);
-            this.tabSparqlEndpoint.Location = new System.Drawing.Point(4, 40);
+            this.tabSparqlEndpoint.Location = new System.Drawing.Point(4, 58);
             this.tabSparqlEndpoint.Name = "tabSparqlEndpoint";
-            this.tabSparqlEndpoint.Size = new System.Drawing.Size(475, 156);
+            this.tabSparqlEndpoint.Size = new System.Drawing.Size(475, 152);
             this.tabSparqlEndpoint.TabIndex = 7;
             this.tabSparqlEndpoint.Text = "SPARQL Endpoint";
             this.tabSparqlEndpoint.UseVisualStyleBackColor = true;
@@ -837,9 +977,9 @@
             this.tabSparqlHttpProtocol.Controls.Add(this.txtSparqlHttpServer);
             this.tabSparqlHttpProtocol.Controls.Add(this.lblSparqlHttpServer);
             this.tabSparqlHttpProtocol.Controls.Add(this.lblSparqlHttpIntro);
-            this.tabSparqlHttpProtocol.Location = new System.Drawing.Point(4, 40);
+            this.tabSparqlHttpProtocol.Location = new System.Drawing.Point(4, 58);
             this.tabSparqlHttpProtocol.Name = "tabSparqlHttpProtocol";
-            this.tabSparqlHttpProtocol.Size = new System.Drawing.Size(475, 156);
+            this.tabSparqlHttpProtocol.Size = new System.Drawing.Size(475, 152);
             this.tabSparqlHttpProtocol.TabIndex = 8;
             this.tabSparqlHttpProtocol.Text = "SPARQL Graph Store HTTP Protocol";
             this.tabSparqlHttpProtocol.UseVisualStyleBackColor = true;
@@ -890,9 +1030,9 @@
             this.tabStardog.Controls.Add(this.btnConnectStardog);
             this.tabStardog.Controls.Add(this.txtStardogServer);
             this.tabStardog.Controls.Add(this.lblStardogServer);
-            this.tabStardog.Location = new System.Drawing.Point(4, 40);
+            this.tabStardog.Location = new System.Drawing.Point(4, 58);
             this.tabStardog.Name = "tabStardog";
-            this.tabStardog.Size = new System.Drawing.Size(475, 156);
+            this.tabStardog.Size = new System.Drawing.Size(475, 152);
             this.tabStardog.TabIndex = 11;
             this.tabStardog.Text = "Stardog";
             this.tabStardog.UseVisualStyleBackColor = true;
@@ -983,9 +1123,9 @@
             this.tabTalis.Controls.Add(this.lblTalisUsername);
             this.tabTalis.Controls.Add(this.txtTalisStoreID);
             this.tabTalis.Controls.Add(this.lblTalisStoreID);
-            this.tabTalis.Location = new System.Drawing.Point(4, 40);
+            this.tabTalis.Location = new System.Drawing.Point(4, 58);
             this.tabTalis.Name = "tabTalis";
-            this.tabTalis.Size = new System.Drawing.Size(475, 156);
+            this.tabTalis.Size = new System.Drawing.Size(475, 152);
             this.tabTalis.TabIndex = 4;
             this.tabTalis.Text = "Talis";
             this.tabTalis.UseVisualStyleBackColor = true;
@@ -1063,9 +1203,9 @@
             this.tabVirtuoso.Controls.Add(this.lblVirtuosoDatabase);
             this.tabVirtuoso.Controls.Add(this.txtVirtuosoServer);
             this.tabVirtuoso.Controls.Add(this.lblVirtuosoServer);
-            this.tabVirtuoso.Location = new System.Drawing.Point(4, 40);
+            this.tabVirtuoso.Location = new System.Drawing.Point(4, 58);
             this.tabVirtuoso.Name = "tabVirtuoso";
-            this.tabVirtuoso.Size = new System.Drawing.Size(475, 156);
+            this.tabVirtuoso.Size = new System.Drawing.Size(475, 152);
             this.tabVirtuoso.TabIndex = 5;
             this.tabVirtuoso.Text = "Virtuoso";
             this.tabVirtuoso.UseVisualStyleBackColor = true;
@@ -1167,7 +1307,7 @@
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(420, 210);
+            this.btnCancel.Location = new System.Drawing.Point(420, 230);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 2;
@@ -1183,39 +1323,122 @@
             // chkReadOnly
             // 
             this.chkReadOnly.AutoSize = true;
-            this.chkReadOnly.Location = new System.Drawing.Point(16, 216);
+            this.chkReadOnly.Location = new System.Drawing.Point(12, 234);
             this.chkReadOnly.Name = "chkReadOnly";
             this.chkReadOnly.Size = new System.Drawing.Size(189, 17);
             this.chkReadOnly.TabIndex = 1;
             this.chkReadOnly.Text = "Force connection to be Read Only";
             this.chkReadOnly.UseVisualStyleBackColor = true;
             // 
-            // lblAGraphOr
+            // button2
             // 
-            this.lblAGraphOr.AutoSize = true;
-            this.lblAGraphOr.Location = new System.Drawing.Point(178, 39);
-            this.lblAGraphOr.Name = "lblAGraphOr";
-            this.lblAGraphOr.Size = new System.Drawing.Size(16, 13);
-            this.lblAGraphOr.TabIndex = 4;
-            this.lblAGraphOr.Text = "or";
+            this.button2.Location = new System.Drawing.Point(358, 128);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(114, 23);
+            this.button2.TabIndex = 10;
+            this.button2.Text = "Connect to Virtuoso";
+            this.button2.UseVisualStyleBackColor = true;
             // 
-            // chkAGraphRootCatalog
+            // textBox6
             // 
-            this.chkAGraphRootCatalog.AutoSize = true;
-            this.chkAGraphRootCatalog.Location = new System.Drawing.Point(200, 38);
-            this.chkAGraphRootCatalog.Name = "chkAGraphRootCatalog";
-            this.chkAGraphRootCatalog.Size = new System.Drawing.Size(108, 17);
-            this.chkAGraphRootCatalog.TabIndex = 5;
-            this.chkAGraphRootCatalog.Text = "use Root Catalog";
-            this.chkAGraphRootCatalog.UseVisualStyleBackColor = true;
-            this.chkAGraphRootCatalog.CheckedChanged += new System.EventHandler(this.chkAGraphRootCatalog_CheckedChanged);
+            this.textBox6.Location = new System.Drawing.Point(420, 10);
+            this.textBox6.Name = "textBox6";
+            this.textBox6.Size = new System.Drawing.Size(52, 20);
+            this.textBox6.TabIndex = 3;
+            this.textBox6.Text = "1111";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(385, 13);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(29, 13);
+            this.label6.TabIndex = 2;
+            this.label6.Text = "Port:";
+            // 
+            // textBox7
+            // 
+            this.textBox7.Location = new System.Drawing.Point(72, 88);
+            this.textBox7.Name = "textBox7";
+            this.textBox7.PasswordChar = '*';
+            this.textBox7.Size = new System.Drawing.Size(100, 20);
+            this.textBox7.TabIndex = 9;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(6, 91);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(56, 13);
+            this.label7.TabIndex = 8;
+            this.label7.Text = "Password:";
+            // 
+            // textBox8
+            // 
+            this.textBox8.Location = new System.Drawing.Point(72, 62);
+            this.textBox8.Name = "textBox8";
+            this.textBox8.Size = new System.Drawing.Size(100, 20);
+            this.textBox8.TabIndex = 7;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(6, 65);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(58, 13);
+            this.label8.TabIndex = 6;
+            this.label8.Text = "Username:";
+            // 
+            // textBox9
+            // 
+            this.textBox9.Location = new System.Drawing.Point(72, 36);
+            this.textBox9.Name = "textBox9";
+            this.textBox9.Size = new System.Drawing.Size(100, 20);
+            this.textBox9.TabIndex = 5;
+            this.textBox9.Text = "DB";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(6, 39);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(56, 13);
+            this.label9.TabIndex = 4;
+            this.label9.Text = "Database:";
+            // 
+            // textBox10
+            // 
+            this.textBox10.Location = new System.Drawing.Point(94, 10);
+            this.textBox10.Name = "textBox10";
+            this.textBox10.Size = new System.Drawing.Size(290, 20);
+            this.textBox10.TabIndex = 1;
+            this.textBox10.Text = "localhost";
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(6, 13);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(82, 13);
+            this.label10.TabIndex = 0;
+            this.label10.Text = "Virtuoso Server:";
+            // 
+            // btnConnectMicrosoftAdo
+            // 
+            this.btnConnectMicrosoftAdo.Location = new System.Drawing.Point(297, 123);
+            this.btnConnectMicrosoftAdo.Name = "btnConnectMicrosoftAdo";
+            this.btnConnectMicrosoftAdo.Size = new System.Drawing.Size(172, 23);
+            this.btnConnectMicrosoftAdo.TabIndex = 18;
+            this.btnConnectMicrosoftAdo.Text = "Connect to Microsoft SQL Server";
+            this.btnConnectMicrosoftAdo.UseVisualStyleBackColor = true;
+            this.btnConnectMicrosoftAdo.Click += new System.EventHandler(this.btnConnectMicrosoftAdo_Click);
             // 
             // fclsGenericStoreConnection
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(507, 236);
+            this.ClientSize = new System.Drawing.Size(507, 265);
             this.ControlBox = false;
             this.Controls.Add(this.chkReadOnly);
             this.Controls.Add(this.btnCancel);
@@ -1240,6 +1463,8 @@
             this.tabJoseki.PerformLayout();
             this.tabDataset.ResumeLayout(false);
             this.tabDataset.PerformLayout();
+            this.tabMicrosoftAdo.ResumeLayout(false);
+            this.tabMicrosoftAdo.PerformLayout();
             this.tabSesame.ResumeLayout(false);
             this.tabSesame.PerformLayout();
             this.tabSparqlEndpoint.ResumeLayout(false);
@@ -1378,5 +1603,27 @@
         private System.Windows.Forms.Button btnDydraConnect;
         private System.Windows.Forms.CheckBox chkAGraphRootCatalog;
         private System.Windows.Forms.Label lblAGraphOr;
+        private System.Windows.Forms.TabPage tabMicrosoftAdo;
+        private System.Windows.Forms.TextBox txtMicrosoftAdoPassword;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.TextBox txtMicrosoftAdoUser;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.TextBox txtMicrosoftAdoDb;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.TextBox txtMicrosoftAdoServer;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.Label lblMicrosoftAdo;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.TextBox textBox6;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.TextBox textBox7;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.TextBox textBox8;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.TextBox textBox9;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.TextBox textBox10;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Button btnConnectMicrosoftAdo;
     }
 }

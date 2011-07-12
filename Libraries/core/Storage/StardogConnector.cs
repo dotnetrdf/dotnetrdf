@@ -407,12 +407,7 @@ namespace VDS.RDF.Storage
             String tID = null;
             try
             {
-                //Get a Transaction ID, if there is no active Transaction then this operation will be auto-committed
-                tID = (this._activeTrans.Value != null) ? this._activeTrans.Value : this.BeginTransaction();
-
-                HttpWebRequest request = this.CreateRequest(this._kb + "/" + tID + "/add", MimeTypesHelper.Any, "POST", new Dictionary<string,string>());
-                request.ContentType = MimeTypesHelper.TriG[0];
-
+                //Have to do the delete first as that requires a separate transaction
                 if (g.BaseUri != null)
                 {
                     try
@@ -424,6 +419,12 @@ namespace VDS.RDF.Storage
                         throw new RdfStorageException("Unable to save a Named Graph to the Store as this requires deleting any existing Named Graph with this name which failed, see inner exception for more detail", ex);
                     }
                 }
+
+                //Get a Transaction ID, if there is no active Transaction then this operation will be auto-committed
+                tID = (this._activeTrans.Value != null) ? this._activeTrans.Value : this.BeginTransaction();
+
+                HttpWebRequest request = this.CreateRequest(this._kb + "/" + tID + "/add", MimeTypesHelper.Any, "POST", new Dictionary<string,string>());
+                request.ContentType = MimeTypesHelper.TriG[0];
                 
                 //Save the Data as TriG to the Request Stream
                 TripleStore store = new TripleStore();

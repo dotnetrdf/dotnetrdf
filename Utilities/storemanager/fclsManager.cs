@@ -97,6 +97,10 @@ namespace VDS.RDF.Utilities.StoreManager
             {
                 //If errors occur then ignore Recent Connections
             }
+
+            //Ensure Configuration Loader has any required Object Factorires registered
+            ConfigurationLoader.AddObjectFactory(new AdoObjectFactory());
+            ConfigurationLoader.AddObjectFactory(new VirtuosoObjectFactory());
         }
 
         private void fclsManager_Load(object sender, EventArgs e)

@@ -77,6 +77,7 @@ namespace VDS.RDF.Test.Storage
 
                 Graph h = new Graph();
                 stardog.LoadGraph(h, (Uri)null);
+                Console.WriteLine("Retrieved " + h.Triples.Count + " Triple(s) from Stardog");
 
                 if (g.Triples.Count == h.Triples.Count)
                 {

@@ -413,5 +413,31 @@ namespace VDS.RDF.Utilities.StoreManager
             this.txtAllegroCatalogID.Enabled = !this.chkAGraphRootCatalog.Checked;
         }
 
+        private void btnConnectMicrosoftAdo_Click(object sender, EventArgs e)
+        {
+            if (this.txtMicrosoftAdoServer.Text.Equals(String.Empty))
+            {
+                this.ParameterRequired("Database Server", "Microsoft SQL Server");
+            }
+            else if (this.txtMicrosoftAdoDb.Text.Equals(String.Empty))
+            {
+                this.ParameterRequired("Database", "Microsoft SQL Server");
+            }
+            else
+            {
+                if (!this.txtMicrosoftAdoUser.Equals(String.Empty) && !this.txtMicrosoftAdoPassword.Equals(String.Empty))
+                {
+                    this._manager = new MicrosoftAdoManager(this.txtMicrosoftAdoServer.Text, this.txtMicrosoftAdoDb.Text, this.txtMicrosoftAdoUser.Text, this.txtMicrosoftAdoPassword.Text);
+                }
+                else
+                {
+                    this._manager = new MicrosoftAdoManager(this.txtMicrosoftAdoServer.Text, this.txtMicrosoftAdoDb.Text);
+                }
+
+                this.DialogResult = DialogResult.OK;
+                this.Close();
+            }
+        }
+
     }
 }
