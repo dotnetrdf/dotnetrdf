@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Query.Algebra;
@@ -10,7 +11,7 @@ using VDS.RDF.Update;
 
 namespace VDS.RDF.Query.Optimisation
 {
-    public class AdoOptimiser<TConn, TCommand, TParameter, TAdaptor, TException> 
+    public abstract class BaseAdoOptimiser<TConn, TCommand, TParameter, TAdaptor, TException> 
         : IAlgebraOptimiser
         where TConn : DbConnection
         where TCommand : DbCommand
@@ -20,7 +21,7 @@ namespace VDS.RDF.Query.Optimisation
     {
         private List<IAlgebraOptimiser> _optimisers = new List<IAlgebraOptimiser>();
 
-        public AdoOptimiser(BaseAdoStore<TConn, TCommand, TParameter, TAdaptor, TException> manager)
+        public BaseAdoOptimiser(BaseAdoStore<TConn, TCommand, TParameter, TAdaptor, TException> manager)
         {
             this._optimisers.Add(new SimpleVirtualAlgebraOptimiser(manager));
         }
@@ -43,5 +44,19 @@ namespace VDS.RDF.Query.Optimisation
         {
             return true;
         }
+    }
+
+    public abstract class BaseAdoSqlClientOptimiser
+        : BaseAdoOptimiser<SqlConnection, SqlCommand, SqlParameter, SqlDataAdapter, SqlException>
+    {
+        public BaseAdoSqlClientOptimiser(BaseAdoStore<SqlConnection, SqlCommand, SqlParameter, SqlDataAdapter, SqlException> manager)
+            : base(manager) { }
+    }
+
+    public class MicrosoftAdoOptimiser
+        : BaseAdoSqlClientOptimiser
+    {
+        public MicrosoftAdoOptimiser(MicrosoftAdoManager manager)
+            : base(manager) { }
     }
 }

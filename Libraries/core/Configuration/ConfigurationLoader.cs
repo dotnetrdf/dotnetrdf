@@ -751,7 +751,6 @@ namespace VDS.RDF.Configuration
                 throw new DotNetRdfConfigurationException("Unable to load an Object as the Object Node was not a URI/Blank Node as required");
             }
 
-
             //Use an Object caching mechanism to avoid instantiating the same thing multiple times since this could be VERY costly
             CachedObjectKey key = new CachedObjectKey(objNode, g);
             if (_cache.ContainsKey(key))
@@ -876,6 +875,8 @@ namespace VDS.RDF.Configuration
                             return DefaultTypeSqlManager;
                         case ClassTripleStore:
                             return DefaultTypeTripleStore;
+                        case ClassUser:
+                            return typeof(System.Net.NetworkCredential).AssemblyQualifiedName;
                         case ClassUserGroup:
                             return DefaultTypeUserGroup;
 #if !NO_PROXY

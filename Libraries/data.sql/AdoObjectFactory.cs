@@ -13,7 +13,7 @@ namespace VDS.RDF.Configuration
     {
         private const String MicrosoftAdoManager = "VDS.RDF.Storage.MicrosoftAdoManager",
                              MicrosoftAdoDataset = "VDS.RDF.Query.Datasets.MicrosoftAdoDataset",
-                             AdoOptimiser = "VDS.RDF.Query.Datasets.AdoOptimiser";
+                             MicrosoftAdoOptimiser = "VDS.RDF.Query.Optimisation.MicrosoftAdoOptimiser";
 
         public bool TryLoadObject(IGraph g, INode objNode, Type targetType, out object obj)
         {
@@ -29,26 +29,6 @@ namespace VDS.RDF.Configuration
 
             switch (targetType.FullName)
             {
-                case AdoOptimiser:
-                    managerNode = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyGenericManager));
-                    if (managerNode != null)
-                    {
-                        temp = ConfigurationLoader.LoadObject(g, managerNode);
-                        if (temp is MicrosoftAdoManager)
-                        {
-                            obj = new AdoOptimiser<SqlConnection, SqlCommand, SqlParameter, SqlDataAdapter, SqlException>((MicrosoftAdoManager)temp);
-                        }
-                        else
-                        {
-                            throw new DotNetRdfConfigurationException("Unable to load the object identified by the Node '" + objNode.ToString() + "' since the object pointed to by the dnr:genericManager property could not be loaded as an instance of a class that derives from the required BaseAdoStoreManager base class");
-                        }
-                    }
-                    else
-                    {
-                        throw new DotNetRdfConfigurationException("Unable to load the object identified by the Node '" + objNode.ToString() + "' as it specified a dnr:type of AdoOptimiser but failed to specify a dnr:genericManager property to point to a BaseAdoStoreManager derived class");
-                    }
-                    break;
-
                 case MicrosoftAdoDataset:
                     managerNode = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyGenericManager));
                     if (managerNode != null)
@@ -90,6 +70,26 @@ namespace VDS.RDF.Configuration
                         obj = new MicrosoftAdoManager(server, db);
                     }
                     break;
+
+                case MicrosoftAdoOptimiser:
+                    managerNode = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyGenericManager));
+                    if (managerNode != null)
+                    {
+                        temp = ConfigurationLoader.LoadObject(g, managerNode);
+                        if (temp is MicrosoftAdoManager)
+                        {
+                            obj = new MicrosoftAdoOptimiser((MicrosoftAdoManager)temp);
+                        }
+                        else
+                        {
+                            throw new DotNetRdfConfigurationException("Unable to load the object identified by the Node '" + objNode.ToString() + "' since the object pointed to by the dnr:genericManager property could not be loaded as a MicrosoftAdoManager instance");
+                        }
+                    }
+                    else
+                    {
+                        throw new DotNetRdfConfigurationException("Unable to load the object identified by the Node '" + objNode.ToString() + "' as it specified a dnr:type of AdoOptimiser but failed to specify a dnr:genericManager property to point to a MicrosoftAdoManager instance");
+                    }
+                    break;
             }
 
             return (obj != null);
@@ -99,9 +99,9 @@ namespace VDS.RDF.Configuration
         {
             switch (t.FullName)
             {
-                case AdoOptimiser:
                 case MicrosoftAdoDataset:
                 case MicrosoftAdoManager:
+                case MicrosoftAdoOptimiser:
                     return true;
                 default:
                     return false;
