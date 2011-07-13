@@ -388,7 +388,7 @@ namespace VDS.RDF
 
         #region ISerializable Members
 
-        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        public sealed override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("uri", this._uri.ToString());
         }
@@ -397,14 +397,14 @@ namespace VDS.RDF
 
         #region IXmlSerializable Members
 
-        public override void ReadXml(XmlReader reader)
+        public sealed override void ReadXml(XmlReader reader)
         {
             this._uri = new Uri(reader.ReadElementContentAsString());
             //Compute Hash Code
             this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
         }
 
-        public override void WriteXml(XmlWriter writer)
+        public sealed override void WriteXml(XmlWriter writer)
         {
             writer.WriteString(this._uri.ToString());
         }

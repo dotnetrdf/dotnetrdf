@@ -38,15 +38,19 @@ using System.Collections.Generic;
 #if !NO_DATA
 using System.Data;
 #endif
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Xml;
-using System.IO;
+using System.Xml.Serialization;
+using System.Xml.Schema;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Aggregates;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Patterns;
 using VDS.RDF.Writing;
+using VDS.RDF.Writing.Serialization;
 
 namespace VDS.RDF.Query
 {
@@ -72,6 +76,7 @@ namespace VDS.RDF.Query
     /// <summary>
     /// Class for representing Sparql Result Sets
     /// </summary>
+    [Serializable,XmlRoot(ElementName="resultSet")]
     public sealed class SparqlResultSet : IEnumerable<SparqlResult>, IDisposable
     {
         /// <summary>
@@ -138,6 +143,12 @@ namespace VDS.RDF.Query
                     this.AddResult(new SparqlResult(s));
                 }
             }
+        }
+
+        private SparqlResultSet(SerializationInfo info, StreamingContext context)
+        {
+            this._variables.AddRange((List<String>)info.GetValue("variables", typeof(List<String>)));
+            this._results.AddRange((List<SparqlResult>)info.GetValue("results", typeof(List<SparqlResult>)));
         }
 
         #region Properties
@@ -512,5 +523,74 @@ namespace VDS.RDF.Query
             this._variables.Clear();
             this._result = false;
         }
+
+        #region Serialization
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("variables", this._variables);
+            info.AddValue("results", this._results);
+        }
+
+        public void WriteXml(XmlWriter writer)
+        {
+            switch (this._type)
+            {
+                case SparqlResultsType.Boolean:
+                    writer.WriteStartElement("boolean");
+                    writer.WriteValue(this._result);
+                    writer.WriteEndElement();
+                    break;
+                case SparqlResultsType.VariableBindings:
+                    writer.WriteStartElement("variables");
+                    foreach (String var in this._variables)
+                    {
+                        writer.WriteStartElement("variable");
+                        writer.WriteValue(var);
+                        writer.WriteEndElement();
+                    }
+                    writer.WriteEndElement();
+                    writer.WriteStartElement("results");
+                    foreach (SparqlResult r in this._results)
+                    {
+                        writer.WriteStartElement("result");
+                        foreach (KeyValuePair<String, INode> binding in r)
+                        {
+                            writer.WriteStartElement("binding");
+                            writer.WriteAttributeString("name", binding.Key);
+                            binding.Value.SerializeNode(writer);
+                            writer.WriteEndElement();
+                        }
+                        writer.WriteEndElement();
+                    }
+                    writer.WriteEndElement();
+                    break;
+
+                default:
+                    throw new NotSupportedException("Cannot serialize a SparqlResultSet which has not been filled with results");
+            }
+        }
+
+        public void ReadXml(XmlReader reader)
+        {
+            reader.Read();
+            switch (reader.Name)
+            {
+                case "boolean":
+                    this._type = SparqlResultsType.Boolean;
+
+                    break;
+
+                case "results":
+                    this._type = SparqlResultsType.VariableBindings;
+
+                    break;
+
+                default:
+                    throw new RdfParseException("Unable to deserialize a SparqlResultSet, expected a <boolean> or <results> element after the <resultSet> element");
+            }
+        }
+
+        #endregion
     }
 }

@@ -8,6 +8,8 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Xml.Serialization;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using VDS.RDF.Parsing;
+using VDS.RDF.Parsing.Handlers;
 
 namespace VDS.RDF.Test.Writing.Serialization
 {
@@ -152,6 +154,63 @@ namespace VDS.RDF.Test.Writing.Serialization
         public void NodeBinarySerializationUriNodes()
         {
             this.TestNodeBinarySerialization(this.GetUriNodes(), true);
+        }
+
+        private IEnumerable<INode> GetGraphLiteralNodes()
+        {
+            Graph g = new Graph();
+            Graph h = new Graph();
+            EmbeddedResourceLoader.Load(new PagingHandler(new GraphHandler(h), 10), "VDS.RDF.Configuration.configuration.ttl");
+            Graph i = new Graph();
+            EmbeddedResourceLoader.Load(new PagingHandler(new GraphHandler(i), 5, 25), "VDS.RDF.Configuration.configuration.ttl");
+
+            List<INode> nodes = new List<INode>()
+            {
+                g.CreateGraphLiteralNode(),
+                g.CreateGraphLiteralNode(h),
+                g.CreateGraphLiteralNode(i)
+
+            };
+            return nodes;
+        }
+
+        [TestMethod]
+        public void NodeXmlSerializationGraphLiteralNodes()
+        {
+            this.TestNodeXmlSerialization(this.GetGraphLiteralNodes(), typeof(GraphLiteralNode), true);
+        }
+
+        [TestMethod]
+        public void NodeBinarySerializationGraphLiteralNodes()
+        {
+            this.TestNodeBinarySerialization(this.GetGraphLiteralNodes(), true);
+        }
+
+        private IEnumerable<INode> GetVariableNodes()
+        {
+            Graph g = new Graph();
+            List<INode> nodes = new List<INode>()
+            {
+                g.CreateVariableNode("a"),
+                g.CreateVariableNode("b"),
+                g.CreateVariableNode("c"),
+                g.CreateVariableNode("variable"),
+                g.CreateVariableNode("some123"),
+                g.CreateVariableNode("this-that")
+            };
+            return nodes;
+        }
+
+        [TestMethod]
+        public void NodeXmlSerializationVariableNodes()
+        {
+            this.TestNodeXmlSerialization(this.GetVariableNodes(), typeof(VariableNode), true);
+        }
+
+        [TestMethod]
+        public void NodeBinarySerializationVariableNodes()
+        {
+            this.TestNodeBinarySerialization(this.GetVariableNodes(), true);
         }
     }
 }

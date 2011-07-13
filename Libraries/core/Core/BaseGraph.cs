@@ -54,7 +54,7 @@ namespace VDS.RDF
     /// Abstract Base Implementation of the <see cref="IGraph">IGraph</see> interface
     /// </summary>
     [Serializable,XmlRoot(ElementName="graph")]
-    public abstract class BaseGraph : IGraph, ISerializable, IXmlSerializable
+    public abstract class BaseGraph : IGraph, ISerializable
     {
         #region Variables
 
@@ -1236,6 +1236,7 @@ namespace VDS.RDF
                         {
                             Object temp = tripleDeserializer.Deserialize(reader);
                             this.Assert((Triple)temp);
+                            reader.Read();
                         }
                         catch
                         {

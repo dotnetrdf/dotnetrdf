@@ -61,26 +61,35 @@
     <xs:complexType>
       <xs:choice>
         <xs:element name="boolean" type="xs:boolean" />
-        <xs:element name="results">
-          <xs:complexType>
-            <xs:sequence>
-              <xs:element name="result">
-                <xs:complexType>
-                  <xs:sequence>
-                    <xs:element name="binding">
-                      <xs:complexType>
-                        <xs:sequence>
-                          <xs:group ref="node" maxOccurs="1" minOccurs="0" />
-                        </xs:sequence>
-                        <xs:attribute name="name" type="xs:string" />
-                      </xs:complexType>
-                    </xs:element>
-                  </xs:sequence>
-                </xs:complexType>
-              </xs:element>
-            </xs:sequence>
-          </xs:complexType>
-        </xs:element>
+        <xs:sequence>
+          <xs:element name="variables">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="variable" type="xs:string" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="results">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="result">
+                  <xs:complexType>
+                    <xs:sequence>
+                      <xs:element name="binding">
+                        <xs:complexType>
+                          <xs:sequence>
+                            <xs:group ref="node" maxOccurs="1" minOccurs="0" />
+                          </xs:sequence>
+                          <xs:attribute name="name" type="xs:string" />
+                        </xs:complexType>
+                      </xs:element>
+                    </xs:sequence>
+                  </xs:complexType>
+                </xs:element>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
       </xs:choice>
     </xs:complexType>
   </xs:element>

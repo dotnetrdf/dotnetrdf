@@ -34,13 +34,18 @@ terms.
 */
 
 using System;
+using System.Runtime.Serialization;
 using System.Text;
+using System.Xml;
+using System.Xml.Serialization;
+using VDS.RDF.Writing.Serialization;
 
 namespace VDS.RDF
 {
     /// <summary>
     /// Abstract Base Class for Graph Literal Nodes
     /// </summary>
+    [Serializable,XmlRoot(ElementName="graphliteral")]
     public abstract class BaseGraphLiteralNode : BaseNode, IGraphLiteralNode, IEquatable<BaseGraphLiteralNode>, IComparable<BaseGraphLiteralNode>
     {
         private IGraph _subgraph;
@@ -71,6 +76,17 @@ namespace VDS.RDF
             //Compute Hash Code
             this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
         }
+
+        protected BaseGraphLiteralNode(SerializationInfo info, StreamingContext context)
+            : base(null, NodeType.GraphLiteral)
+        {
+            this._subgraph = (IGraph)info.GetValue("subgraph", typeof(Graph));
+            //Compute Hash Code
+            this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
+        }
+
+        protected BaseGraphLiteralNode()
+            : base(null, NodeType.GraphLiteral) { }
 
         /// <summary>
         /// Gets the Subgraph that this Node represents
@@ -319,11 +335,34 @@ namespace VDS.RDF
         {
             return this.CompareTo((IGraphLiteralNode)other);
         }
+
+        #region Serialization
+
+        public sealed override void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("subgraph", this._subgraph);
+        }
+
+        public sealed override void ReadXml(XmlReader reader)
+        {
+            reader.Read();
+            this._subgraph = reader.DeserializeGraph();
+            //Compute Hash Code
+            this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
+        }
+
+        public sealed override void WriteXml(XmlWriter writer)
+        {
+            this._subgraph.SerializeGraph(writer);
+        }
+
+        #endregion
     }
 
     /// <summary>
     /// Class for representing Graph Literal Nodes which are supported in highly expressive RDF syntaxes like Notation 3
     /// </summary>
+    [Serializable,XmlRoot(ElementName="graphliteral")]
     public class GraphLiteralNode : BaseGraphLiteralNode, IEquatable<GraphLiteralNode>, IComparable<GraphLiteralNode>
     {
         /// <summary>
@@ -340,6 +379,12 @@ namespace VDS.RDF
         /// <param name="subgraph">Sub-graph this node represents</param>
         protected internal GraphLiteralNode(IGraph g, IGraph subgraph)
             : base(g, subgraph) { }
+
+        protected GraphLiteralNode(SerializationInfo info, StreamingContext context)
+            : base(info, context) { }
+
+        protected GraphLiteralNode()
+            : base() { }
 
         /// <summary>
         /// Implementation of Compare To for Graph Literal Nodes

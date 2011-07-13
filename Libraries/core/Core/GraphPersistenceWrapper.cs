@@ -5,7 +5,12 @@ using System.Data;
 #endif
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
+using System.Xml;
+using System.Xml.Schema;
+using System.Xml.Serialization;
+using VDS.RDF.Parsing;
 using VDS.RDF.Storage;
 
 namespace VDS.RDF
@@ -25,6 +30,7 @@ namespace VDS.RDF
     /// Note that the wrapper does not automatically dispose of the wrapped graph when the wrapper is Dispose, this is by design since disposing of the wrapped Graph can have unintended consequences
     /// </para>
     /// </remarks>
+    [Serializable,XmlRoot(ElementName="graph")]
     public class GraphPersistenceWrapper : IGraph, ITransactionalGraph
     {
         /// <summary>
@@ -34,6 +40,7 @@ namespace VDS.RDF
         private List<TriplePersistenceAction> _actions = new List<TriplePersistenceAction>();
         private bool _alwaysQueueActions = false;
         private TripleEventHandler TripleAddedHandler, TripleRemovedHandler;
+        private List<Triple> _temp;
 
         /// <summary>
         /// Creates a new Graph Persistence Wrapper around a new Graph
@@ -78,6 +85,22 @@ namespace VDS.RDF
             : this(g)
         {
             this._alwaysQueueActions = alwaysQueueActions;
+        }
+
+        protected GraphPersistenceWrapper(SerializationInfo info, StreamingContext context)
+            : this()
+        {
+            this._temp = (List<Triple>)info.GetValue("triples", typeof(List<Triple>));   
+        }
+
+        [OnDeserialized]
+        private void OnDeserialized(StreamingContext context)
+        {
+            if (this._temp != null)
+            {
+                this.Assert(this._temp);
+                this._temp = null;
+            }
         }
 
         /// <summary>
@@ -1282,6 +1305,65 @@ namespace VDS.RDF
             if (disposing) GC.SuppressFinalize(this);
             this.Flush();
         }
+
+        #region ISerializable Members
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("triples", this.Triples.ToList(), typeof(List<Triple>));
+        }
+
+        #endregion
+
+        #region IXmlSerializable Members
+
+        public XmlSchema GetSchema()
+        {
+            return null;
+        }
+
+        public void ReadXml(XmlReader reader)
+        {
+            XmlSerializer tripleDeserializer = new XmlSerializer(typeof(Triple));
+            reader.Read();
+            if (reader.Name.Equals("triples"))
+            {
+                if (!reader.IsEmptyElement)
+                {
+                    reader.Read();
+                    while (reader.Name.Equals("triple"))
+                    {
+                        try
+                        {
+                            Object temp = tripleDeserializer.Deserialize(reader);
+                            this.Assert((Triple)temp);
+                            reader.Read();
+                        }
+                        catch
+                        {
+                            throw;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                throw new RdfParseException("Expected a <triples> element inside a <graph> element");
+            }
+        }
+
+        public void WriteXml(XmlWriter writer)
+        {
+            XmlSerializer tripleSerializer = new XmlSerializer(typeof(Triple));
+            writer.WriteStartElement("triples");
+            foreach (Triple t in this.Triples)
+            {
+                tripleSerializer.Serialize(writer, t);
+            }
+            writer.WriteEndElement();
+        }
+
+        #endregion
     }
 
 #if !NO_STORAGE
@@ -1377,6 +1459,8 @@ namespace VDS.RDF
         /// <param name="graphUri">Graph URI (the URI the Graph will be persisted as)</param>
         public StoreGraphPersistenceWrapper(IGenericIOManager manager, Uri graphUri)
             : this(manager, graphUri, false) { }
+
+
 
         /// <summary>
         /// Gets whether the in-use <see cref="IGenericIOManager">IGenericIOMnager</see> supports triple level updates

@@ -631,6 +631,7 @@
     <Compile Include="Writing\Notation3Writer.cs" />
     <Compile Include="Writing\NQuadsWriter.cs" />
     <Compile Include="Writing\RdfJsonWriter.cs" />
+    <Compile Include="Writing\Serialization\SerializationHelper.cs" />
     <Compile Include="Writing\SparqlCsvWriter.cs" />
     <Compile Include="Writing\SparqlRdfWriter.cs" />
     <Compile Include="Writing\SparqlTsvWriter.cs" />

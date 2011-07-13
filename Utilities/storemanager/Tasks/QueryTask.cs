@@ -56,46 +56,18 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
                 int offset = 0;
                 TimeSpan totalTime = TimeSpan.Zero;
 
-                if (!SparqlSpecsHelper.IsSelectQuery(this._q.QueryType))
+                switch (this._q.QueryType)
                 {
-                    Graph g = new Graph();
+                    case SparqlQueryType.Ask:
+                        SparqlResultSet blnResult = this._processor.ProcessQuery(this._q) as SparqlResultSet;
+                        if (blnResult == null) throw new RdfQueryException("Store did not return a SPARQL Result Set for the ASK query as was expected");
+                        return blnResult;
 
-                    do
-                    {
-                        if (this._usePaging)
-                        {
-                            this._q.Limit = this._pageSize;
-                            this._q.Offset = offset;
-                        }
-                        Object result = this._processor.ProcessQuery(this._q);
-                        totalTime += this._q.QueryExecutionTime.Value;
-
-                        if (!(result is IGraph)) throw new RdfQueryException("SPARQL Query did not return a RDF Graph as expected");
-                        IGraph temp = (IGraph)result;
-
-                        //If no further results can halt
-                        if (temp.Triples.Count == 0) break;
-                        offset += this._pageSize;
-
-                        //Merge the partial result into the final result
-                        g.Merge(temp);
-
-                    } while (this._usePaging);
-
-                    this.Information = "Query Completed OK (Took " + totalTime.ToString() + ")";
-                    return g;
-                }
-                else
-                {
-                    SparqlResultSet results = new SparqlResultSet();
-                    ResultSetHandler handler = new ResultSetHandler(results);
-                    try
-                    {
-                        handler.StartResults();
-                        foreach (SparqlVariable v in this._q.Variables)
-                        {
-                            if (v.IsResultVariable) handler.HandleVariable(v.Name);
-                        }
+                    case SparqlQueryType.Construct:
+                    case SparqlQueryType.Describe:
+                    case SparqlQueryType.DescribeAll:
+                        Graph g = new Graph();
+                        g.NamespaceMap.Import(this._q.NamespaceMap);
 
                         do
                         {
@@ -107,29 +79,73 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
                             Object result = this._processor.ProcessQuery(this._q);
                             totalTime += this._q.QueryExecutionTime.Value;
 
-                            if (!(result is SparqlResultSet)) throw new RdfQueryException("SPARQL Query did not return a SPARQL Result Set as expected");
-                            SparqlResultSet rset = (SparqlResultSet)result;
+                            if (!(result is IGraph)) throw new RdfQueryException("SPARQL Query did not return a RDF Graph as expected");
+                            IGraph temp = (IGraph)result;
 
                             //If no further results can halt
-                            if (rset.Count == 0) break;
+                            if (temp.Triples.Count == 0) break;
                             offset += this._pageSize;
 
                             //Merge the partial result into the final result
-                            foreach (SparqlResult r in rset)
-                            {
-                                handler.HandleResult(r);
-                            }
+                            g.Merge(temp);
+
                         } while (this._usePaging);
 
-                        handler.EndResults(true);
-                    }
-                    catch
-                    {
-                        handler.EndResults(false);
-                        throw;
-                    }
-                    this.Information = "Query Completed OK (Took " + totalTime.ToString() + ")";
-                    return results;
+                        this.Information = "Query Completed OK (Took " + totalTime.ToString() + ")";
+                        return g;
+
+                    case SparqlQueryType.Select:
+                    case SparqlQueryType.SelectAll:
+                    case SparqlQueryType.SelectAllDistinct:
+                    case SparqlQueryType.SelectAllReduced:
+                    case SparqlQueryType.SelectDistinct:
+                    case SparqlQueryType.SelectReduced:
+                        SparqlResultSet results = new SparqlResultSet();
+                        ResultSetHandler handler = new ResultSetHandler(results);
+                        try
+                        {
+                            handler.StartResults();
+                            foreach (SparqlVariable v in this._q.Variables)
+                            {
+                                if (v.IsResultVariable) handler.HandleVariable(v.Name);
+                            }
+
+                            do
+                            {
+                                if (this._usePaging)
+                                {
+                                    this._q.Limit = this._pageSize;
+                                    this._q.Offset = offset;
+                                }
+                                Object result = this._processor.ProcessQuery(this._q);
+                                totalTime += this._q.QueryExecutionTime.Value;
+
+                                if (!(result is SparqlResultSet)) throw new RdfQueryException("SPARQL Query did not return a SPARQL Result Set as expected");
+                                SparqlResultSet rset = (SparqlResultSet)result;
+
+                                //If no further results can halt
+                                if (rset.Count == 0) break;
+                                offset += this._pageSize;
+
+                                //Merge the partial result into the final result
+                                foreach (SparqlResult r in rset)
+                                {
+                                    handler.HandleResult(r);
+                                }
+                            } while (this._usePaging);
+
+                            handler.EndResults(true);
+                        }
+                        catch
+                        {
+                            handler.EndResults(false);
+                            throw;
+                        }
+                        this.Information = "Query Completed OK (Took " + totalTime.ToString() + ")";
+                        return results;
+
+                    default:
+                        throw new RdfQueryException("Cannot evaluate an unknown query type");
                 }
             }
             catch

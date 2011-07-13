@@ -510,7 +510,7 @@ namespace VDS.RDF
 
         #region ISerializable Members
 
-        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        public sealed override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("value", this._value);
             if (this._datatype != null)
@@ -533,7 +533,7 @@ namespace VDS.RDF
 
         #region IXmlSerializable Members
 
-        public override void ReadXml(XmlReader reader)
+        public sealed override void ReadXml(XmlReader reader)
         {
             if (reader.HasAttributes)
             {
@@ -573,7 +573,7 @@ namespace VDS.RDF
             }
         }
 
-        public override void WriteXml(XmlWriter writer)
+        public sealed override void WriteXml(XmlWriter writer)
         {
             if (this._datatype != null)
             {

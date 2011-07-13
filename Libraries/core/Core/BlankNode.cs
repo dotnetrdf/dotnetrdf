@@ -394,7 +394,7 @@ namespace VDS.RDF
 
         #region ISerializable Members
 
-        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        public sealed override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("id", this._id);
         }
@@ -403,14 +403,14 @@ namespace VDS.RDF
 
         #region IXmlSerializable Members
 
-        public override void ReadXml(XmlReader reader)
+        public sealed override void ReadXml(XmlReader reader)
         {
             this._id = reader.ReadElementContentAsString();
             //Compute Hash Code
             this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
         }
 
-        public override void WriteXml(XmlWriter writer)
+        public sealed override void WriteXml(XmlWriter writer)
         {
             writer.WriteString(this._id);
         }

@@ -34,12 +34,16 @@ terms.
 */
 
 using System;
+using System.Runtime.Serialization;
+using System.Xml;
+using System.Xml.Serialization;
 
 namespace VDS.RDF
 {
     /// <summary>
     /// Abstract Base Class for Variable Nodes
     /// </summary>
+    [Serializable,XmlRoot(ElementName="variable")]
     public abstract class BaseVariableNode : BaseNode, IVariableNode, IEquatable<BaseVariableNode>, IComparable<BaseVariableNode>
     {
         private String _var;
@@ -60,6 +64,16 @@ namespace VDS.RDF
             {
                 this._var = varname;
             }
+            this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
+        }
+
+        protected BaseVariableNode()
+            : base(null, NodeType.Variable) { }
+
+        protected BaseVariableNode(SerializationInfo info, StreamingContext context)
+            : base(null, NodeType.Variable)
+        {
+            this._var = info.GetString("name");
             this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
         }
 
@@ -333,11 +347,28 @@ namespace VDS.RDF
         {
             return this.CompareTo((IVariableNode)other);
         }
+
+        public sealed override void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("name", this._var);
+        }
+
+        public sealed override void ReadXml(XmlReader reader)
+        {
+            this._var = reader.ReadElementContentAsString();
+            this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
+        }
+
+        public sealed override void WriteXml(XmlWriter writer)
+        {
+            writer.WriteValue(this._var);
+        }
     }
 
     /// <summary>
     /// Class representing Variable Nodes (only used for N3)
     /// </summary>
+    [Serializable,XmlRoot(ElementName="variable")]
     public class VariableNode : BaseVariableNode, IEquatable<VariableNode>, IComparable<VariableNode>
     {
         /// <summary>
@@ -347,6 +378,12 @@ namespace VDS.RDF
         /// <param name="varname">Variable Name</param>
         protected internal VariableNode(IGraph g, String varname)
             : base(g, varname) { }
+
+        protected VariableNode()
+            : base() { }
+
+        protected VariableNode(SerializationInfo info, StreamingContext context)
+            : base(info, context) { }
 
         /// <summary>
         /// Compares this Node to another Variable Node

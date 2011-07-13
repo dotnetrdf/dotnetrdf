@@ -43,6 +43,7 @@ using System.Xml.Schema;
 using System.Xml.Serialization;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing.Formatting;
+using VDS.RDF.Writing.Serialization;
 
 namespace VDS.RDF
 {
@@ -58,10 +59,6 @@ namespace VDS.RDF
         private IGraph _g = null;
         private int _hashcode;
         private bool _collides = false;
-
-        private static Dictionary<Type, XmlSerializer> _nodeSerializers = new Dictionary<Type, XmlSerializer>();
-        private static Dictionary<String, XmlSerializer> _nodeDeserializers = new Dictionary<String, XmlSerializer>();
-        private static bool _dsInit = false;
 
         /// <summary>
         /// Constructs a Triple from Nodes that belong to the same Graph/Node Factory
@@ -516,9 +513,9 @@ namespace VDS.RDF
         public void ReadXml(XmlReader reader)
         {
             reader.Read();
-            this._subject = this.DeserializeNode(reader);
-            this._predicate = this.DeserializeNode(reader);
-            this._object = this.DeserializeNode(reader);
+            this._subject = reader.DeserializeNode();
+            this._predicate = reader.DeserializeNode();
+            this._object = reader.DeserializeNode();
 
             //Compute Hash Code
             this._hashcode = (this._subject.GetHashCode().ToString() + this._predicate.GetHashCode().ToString() + this._object.GetHashCode().ToString()).GetHashCode();
@@ -526,57 +523,9 @@ namespace VDS.RDF
 
         public void WriteXml(XmlWriter writer)
         {
-            this.SerializeNode(writer, this._subject);
-            this.SerializeNode(writer, this._predicate);
-            this.SerializeNode(writer, this._object);
-        }
-
-        private void SerializeNode(XmlWriter writer, INode n)
-        {
-            Type t = n.GetType();
-            //Get the Serializer if necessary
-            if (!_nodeSerializers.ContainsKey(t))
-            {
-                _nodeSerializers.Add(t, new XmlSerializer(t));
-                String el = t.GetCustomAttributes(typeof(XmlRootAttribute), false).FirstOrDefault().ToSafeString();
-                if (el.Equals(String.Empty)) el = t.Name;
-                if (!_nodeDeserializers.ContainsKey(el))
-                {
-                    _nodeDeserializers.Add(el, _nodeSerializers[t]);
-                }
-            }
-            //Do the serialization
-            _nodeSerializers[t].Serialize(writer, n);
-        }
-
-        private INode DeserializeNode(XmlReader reader)
-        {
-            String el = reader.Name;
-            //Get the deserializer if necessary
-            if (!_nodeDeserializers.ContainsKey(el))
-            {
-                if (!_dsInit)
-                {
-                    if (!_nodeDeserializers.ContainsKey("bnode")) _nodeDeserializers.Add("bnode", new XmlSerializer(typeof(BlankNode)));
-                    if (!_nodeDeserializers.ContainsKey("literal")) _nodeDeserializers.Add("literal", new XmlSerializer(typeof(LiteralNode)));
-                    if (!_nodeDeserializers.ContainsKey("uri")) _nodeDeserializers.Add("uri", new XmlSerializer(typeof(UriNode)));
-                    _dsInit = true;
-                }
-            }
-            if (!_nodeDeserializers.ContainsKey(el))
-            {
-                throw new RdfParseException("No deserializer is known for elements named '" + el + "'");
-            }
-            //Do the deserialization
-            Object temp = _nodeDeserializers[el].Deserialize(reader);
-            if (temp is INode)
-            {
-                return (INode)temp;
-            }
-            else
-            {
-                throw new RdfParseException("Failed to deserialize a node correctly");
-            }
+            this._subject.SerializeNode(writer);
+            this._predicate.SerializeNode(writer);
+            this._object.SerializeNode(writer);
         }
 
         #endregion
