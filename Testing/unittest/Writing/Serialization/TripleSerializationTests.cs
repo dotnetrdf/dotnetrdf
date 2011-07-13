@@ -17,7 +17,7 @@ namespace VDS.RDF.Test.Writing.Serialization
     public class TripleSerializationTests
     {
         [TestMethod]
-        public void TripleXmlSerialization()
+        public void SerializationXmlTriple()
         {
             StringWriter writer = new StringWriter();
             XmlSerializer serializer = new XmlSerializer(typeof(Triple));
@@ -41,7 +41,7 @@ namespace VDS.RDF.Test.Writing.Serialization
         }
 
         [TestMethod]
-        public void TripleBinarySerialization()
+        public void SerializationBinaryTriple()
         {
             MemoryStream stream = new MemoryStream();
             BinaryFormatter serializer = new BinaryFormatter();

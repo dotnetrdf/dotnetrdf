@@ -6,6 +6,7 @@ using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
 using VDS.RDF.Parsing;
+using VDS.RDF.Query;
 
 namespace VDS.RDF.Writing.Serialization
 {
@@ -17,6 +18,7 @@ namespace VDS.RDF.Writing.Serialization
         private static Dictionary<Type, XmlSerializer> _nodeSerializers = new Dictionary<Type, XmlSerializer>();
         private static Dictionary<String, XmlSerializer> _nodeDeserializers = new Dictionary<String, XmlSerializer>();
         private static XmlSerializer _graphSerializer = new XmlSerializer(typeof(Graph));
+        private static XmlSerializer _resultSerializer = new XmlSerializer(typeof(SparqlResult));
         private static bool _init = false;
 
         private static void Init()
@@ -86,6 +88,24 @@ namespace VDS.RDF.Writing.Serialization
             else
             {
                 throw new RdfParseException("Failed to deserialize a graph correctly");
+            }
+        }
+
+        internal static void SerializeResult(this SparqlResult result, XmlWriter writer)
+        {
+            _resultSerializer.Serialize(writer, result);
+        }
+
+        internal static SparqlResult DeserializeResult(this XmlReader reader)
+        {
+            Object temp = _resultSerializer.Deserialize(reader);
+            if (temp is SparqlResult)
+            {
+                return (SparqlResult)temp;
+            }
+            else
+            {
+                throw new RdfParseException("Failed to deserialize a SPARQL Result correctly");
             }
         }
     }

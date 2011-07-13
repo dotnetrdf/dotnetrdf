@@ -17,7 +17,7 @@ namespace VDS.RDF.Test.Writing.Serialization
     public class GraphSerializationTests
     {
         [TestMethod]
-        public void GraphXmlSerialization()
+        public void SerializationXmlGraph()
         {
             StringWriter writer = new StringWriter();
             XmlSerializer serializer = new XmlSerializer(typeof(Graph));
@@ -35,7 +35,7 @@ namespace VDS.RDF.Test.Writing.Serialization
         }
 
         [TestMethod]
-        public void GraphBinarySerialization()
+        public void SerializationBinaryGraph()
         {
             MemoryStream stream = new MemoryStream();
             BinaryFormatter serializer = new BinaryFormatter();

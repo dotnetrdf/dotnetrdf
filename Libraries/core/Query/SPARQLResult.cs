@@ -36,16 +36,22 @@ terms.
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
+using System.Xml;
+using System.Xml.Schema;
+using System.Xml.Serialization;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Writing.Formatting;
+using VDS.RDF.Writing.Serialization;
 
 namespace VDS.RDF.Query
 {
     /// <summary>
     /// Class for representing a Row of a Sparql Result Set
     /// </summary>
-    public sealed class SparqlResult : IEnumerable<KeyValuePair<String, INode>>
+    [Serializable,XmlRoot(ElementName="result")]
+    public sealed class SparqlResult : IEnumerable<KeyValuePair<String, INode>>, ISerializable, IXmlSerializable
     {
         private Dictionary<String, INode> _resultValues = new Dictionary<string, INode>();
 
@@ -65,6 +71,11 @@ namespace VDS.RDF.Query
             {
                 this._resultValues.Add(var, s[var]);
             }
+        }
+
+        private SparqlResult(SerializationInfo info, StreamingContext context)
+        {
+            this._resultValues = (Dictionary<String,INode>)info.GetValue("bindings", typeof(Dictionary<String, INode>));
         }
 
         /// <summary>
@@ -369,6 +380,47 @@ namespace VDS.RDF.Query
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
             return this._resultValues.GetEnumerator();
+        }
+
+        #endregion
+
+        #region Serialization
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("bindings", this._resultValues);
+        }
+
+        public XmlSchema GetSchema()
+        {
+            return null;
+        }
+
+        public void WriteXml(XmlWriter writer)
+        {
+            foreach (KeyValuePair<String, INode> binding in this._resultValues)
+            {
+                writer.WriteStartElement("binding");
+                writer.WriteAttributeString("name", binding.Key);
+                binding.Value.SerializeNode(writer);
+                writer.WriteEndElement();
+            }
+        }
+
+        public void ReadXml(XmlReader reader)
+        {
+            if (reader.IsEmptyElement) return;
+            reader.Read();
+            while (reader.Name.Equals("binding"))
+            {
+                reader.MoveToAttribute("name");
+                String var = reader.Value;
+                reader.MoveToElement();
+                reader.Read();
+                INode value = reader.DeserializeNode();
+                this._resultValues.Add(var, value);
+                reader.Read();
+            }
         }
 
         #endregion

@@ -77,7 +77,7 @@ namespace VDS.RDF.Query
     /// Class for representing Sparql Result Sets
     /// </summary>
     [Serializable,XmlRoot(ElementName="resultSet")]
-    public sealed class SparqlResultSet : IEnumerable<SparqlResult>, IDisposable
+    public sealed class SparqlResultSet : IEnumerable<SparqlResult>, IDisposable, ISerializable, IXmlSerializable
     {
         /// <summary>
         /// Lists of Sparql Results
@@ -532,6 +532,11 @@ namespace VDS.RDF.Query
             info.AddValue("results", this._results);
         }
 
+        public XmlSchema GetSchema()
+        {
+            return null;
+        }
+
         public void WriteXml(XmlWriter writer)
         {
             switch (this._type)
@@ -541,6 +546,7 @@ namespace VDS.RDF.Query
                     writer.WriteValue(this._result);
                     writer.WriteEndElement();
                     break;
+
                 case SparqlResultsType.VariableBindings:
                     writer.WriteStartElement("variables");
                     foreach (String var in this._variables)
@@ -553,15 +559,7 @@ namespace VDS.RDF.Query
                     writer.WriteStartElement("results");
                     foreach (SparqlResult r in this._results)
                     {
-                        writer.WriteStartElement("result");
-                        foreach (KeyValuePair<String, INode> binding in r)
-                        {
-                            writer.WriteStartElement("binding");
-                            writer.WriteAttributeString("name", binding.Key);
-                            binding.Value.SerializeNode(writer);
-                            writer.WriteEndElement();
-                        }
-                        writer.WriteEndElement();
+                        r.SerializeResult(writer);
                     }
                     writer.WriteEndElement();
                     break;
@@ -578,12 +576,30 @@ namespace VDS.RDF.Query
             {
                 case "boolean":
                     this._type = SparqlResultsType.Boolean;
-
+                    this._result = reader.ReadElementContentAsBoolean();
                     break;
 
-                case "results":
+                case "variables":
                     this._type = SparqlResultsType.VariableBindings;
-
+                    this._result = true;
+                    reader.Read();
+                    while (reader.Name.Equals("variable"))
+                    {
+                        this._variables.Add(reader.ReadElementContentAsString());
+                        reader.Read();
+                    }
+                    if (reader.Name.Equals("results"))
+                    {
+                        reader.Read();
+                        while (reader.Name.Equals("result"))
+                        {
+                            this._results.Add(reader.DeserializeResult());
+                        }
+                    }
+                    else
+                    {
+                        throw new RdfParseException("Unable to deserialize a SparqlResultSet as did not get the expected <results> element after the <variables> element");
+                    }
                     break;
 
                 default:

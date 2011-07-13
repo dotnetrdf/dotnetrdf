@@ -16,7 +16,7 @@ namespace VDS.RDF.Test.Writing.Serialization
     [TestClass]
     public class NodeSerializationTests
     {
-        private void TestNodeXmlSerialization(INode n, Type t, bool fullEquality)
+        private void TestSerializationXml(INode n, Type t, bool fullEquality)
         {
             Console.WriteLine("Input: " + n.ToString());
 
@@ -40,15 +40,15 @@ namespace VDS.RDF.Test.Writing.Serialization
             }
         }
 
-        private void TestNodeXmlSerialization(IEnumerable<INode> nodes, Type t, bool fullEquality)
+        private void TestSerializationXml(IEnumerable<INode> nodes, Type t, bool fullEquality)
         {
             foreach (INode n in nodes)
             {
-                this.TestNodeXmlSerialization(n, t, fullEquality);
+                this.TestSerializationXml(n, t, fullEquality);
             }
         }
 
-        private void TestNodeBinarySerialization(INode n, bool fullEquality)
+        private void TestSerializationBinary(INode n, bool fullEquality)
         {
             MemoryStream stream = new MemoryStream();
             BinaryFormatter serializer = new BinaryFormatter(null, new StreamingContext());
@@ -76,28 +76,28 @@ namespace VDS.RDF.Test.Writing.Serialization
             stream.Dispose();
         }
 
-        private void TestNodeBinarySerialization(IEnumerable<INode> nodes, bool fullEquality)
+        private void TestSerializationBinary(IEnumerable<INode> nodes, bool fullEquality)
         {
             foreach (INode n in nodes)
             {
-                this.TestNodeBinarySerialization(n, fullEquality);
+                this.TestSerializationBinary(n, fullEquality);
             }
         }
 
         [TestMethod]
-        public void NodeXmlSerializationBlankNodes()
+        public void SerializationXmlBlankNodes()
         {
             Graph g = new Graph();
             INode b = g.CreateBlankNode();
-            this.TestNodeXmlSerialization(b, typeof(BlankNode), false);
+            this.TestSerializationXml(b, typeof(BlankNode), false);
         }
 
         [TestMethod]
-        public void NodeBinarySerializationBlankNodes()
+        public void SerializationBinaryBlankNodes()
         {
             Graph g = new Graph();
             INode b = g.CreateBlankNode();
-            this.TestNodeBinarySerialization(b, false);
+            this.TestSerializationBinary(b, false);
         }
 
         private IEnumerable<INode> GetLiteralNodes()
@@ -118,15 +118,15 @@ namespace VDS.RDF.Test.Writing.Serialization
         }
 
         [TestMethod]
-        public void NodeXmlSerializationLiteralNodes()
+        public void SerializationXmlLiteralNodes()
         {
-            this.TestNodeXmlSerialization(this.GetLiteralNodes(), typeof(LiteralNode), true);
+            this.TestSerializationXml(this.GetLiteralNodes(), typeof(LiteralNode), true);
         }
 
         [TestMethod]
-        public void NodeBinarySerializationLiteralNodes()
+        public void SerializationBinaryLiteralNodes()
         {
-            this.TestNodeBinarySerialization(this.GetLiteralNodes(), true);
+            this.TestSerializationBinary(this.GetLiteralNodes(), true);
         }
 
         private IEnumerable<INode> GetUriNodes()
@@ -145,15 +145,15 @@ namespace VDS.RDF.Test.Writing.Serialization
         }
 
         [TestMethod]
-        public void NodeXmlSerializationUriNodes()
+        public void SerializationXmlUriNodes()
         {
-            this.TestNodeXmlSerialization(this.GetUriNodes(), typeof(UriNode), true);
+            this.TestSerializationXml(this.GetUriNodes(), typeof(UriNode), true);
         }
 
         [TestMethod]
-        public void NodeBinarySerializationUriNodes()
+        public void SerializationBinaryUriNodes()
         {
-            this.TestNodeBinarySerialization(this.GetUriNodes(), true);
+            this.TestSerializationBinary(this.GetUriNodes(), true);
         }
 
         private IEnumerable<INode> GetGraphLiteralNodes()
@@ -175,15 +175,15 @@ namespace VDS.RDF.Test.Writing.Serialization
         }
 
         [TestMethod]
-        public void NodeXmlSerializationGraphLiteralNodes()
+        public void SerializationXmlGraphLiteralNodes()
         {
-            this.TestNodeXmlSerialization(this.GetGraphLiteralNodes(), typeof(GraphLiteralNode), true);
+            this.TestSerializationXml(this.GetGraphLiteralNodes(), typeof(GraphLiteralNode), true);
         }
 
         [TestMethod]
-        public void NodeBinarySerializationGraphLiteralNodes()
+        public void SerializationBinaryGraphLiteralNodes()
         {
-            this.TestNodeBinarySerialization(this.GetGraphLiteralNodes(), true);
+            this.TestSerializationBinary(this.GetGraphLiteralNodes(), true);
         }
 
         private IEnumerable<INode> GetVariableNodes()
@@ -202,15 +202,15 @@ namespace VDS.RDF.Test.Writing.Serialization
         }
 
         [TestMethod]
-        public void NodeXmlSerializationVariableNodes()
+        public void SerializationXmlVariableNodes()
         {
-            this.TestNodeXmlSerialization(this.GetVariableNodes(), typeof(VariableNode), true);
+            this.TestSerializationXml(this.GetVariableNodes(), typeof(VariableNode), true);
         }
 
         [TestMethod]
-        public void NodeBinarySerializationVariableNodes()
+        public void SerializationBinaryVariableNodes()
         {
-            this.TestNodeBinarySerialization(this.GetVariableNodes(), true);
+            this.TestSerializationBinary(this.GetVariableNodes(), true);
         }
     }
 }
