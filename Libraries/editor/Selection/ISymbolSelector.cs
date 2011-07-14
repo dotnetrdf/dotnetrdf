@@ -1,5 +1,4 @@
 ﻿using System;
-using ICSharpCode.AvalonEdit;
 
 namespace VDS.RDF.Utilities.Editor.Selection
 {
@@ -20,7 +19,7 @@ namespace VDS.RDF.Utilities.Editor.Selection
         /// <summary>
         /// Selects a Symbol around the current Selection (if any) or Caret Position in the given Text Editor
         /// </summary>
-        /// <param name="editor">Text Editor</param>
-        void SelectSymbol(TextEditor editor);
+        /// <param name="doc">Document</param>
+        void SelectSymbol(Document doc);
     }
 }

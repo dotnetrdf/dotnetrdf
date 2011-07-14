@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VDS.RDF.Utilities.Editor.Selection;
 
 namespace VDS.RDF.Utilities.Editor
 {
@@ -15,6 +16,8 @@ namespace VDS.RDF.Utilities.Editor
         //Validation
         private bool _validateAsYouType = false;
         private bool _highlightErrors = true;
+
+        #region Selection
 
         /// <summary>
         /// Gets/Sets whether Symbol Selection is enabled
@@ -56,5 +59,52 @@ namespace VDS.RDF.Utilities.Editor
                 }
             }
         }
+
+        /// <summary>
+        /// Gets the Current Symbol Selector
+        /// </summary>
+        public ISymbolSelector CurrentSymbolSelector
+        {
+            get
+            {
+                return this._selector;
+            }
+        }
+
+        #endregion
+
+        #region Validation
+
+        /// <summary>
+        /// Gets/Sets whether Validate as you Type is enabled
+        /// </summary>
+        public bool IsValidateAsYouType
+        {
+            get
+            {
+                return this._validateAsYouType;
+            }
+            set
+            {
+                this._validateAsYouType = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets/Sets whether Error Highlighting is enabled
+        /// </summary>
+        public bool IsHighlightErrorsEnabled
+        {
+            get
+            {
+                return this._highlightErrors;
+            }
+            set
+            {
+                this._highlightErrors = value;
+            }
+        }
+
+        #endregion
     }
 }

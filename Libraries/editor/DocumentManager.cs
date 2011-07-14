@@ -19,7 +19,7 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
-        public Document Current
+        public Document ActiveDocument
         {
             get
             {
@@ -65,11 +65,21 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
+        #region Document Management
+
         private void CorrectIndex()
         {
-            if (this._current > this._documents.Count && this._documents.Count > 0)
+            if (this._documents.Count > 0)
             {
-                this._current = this._documents.Count - 1;
+                if (this._current >= this._documents.Count)
+                {
+                    this._current = this._documents.Count - 1;
+                }
+                else if (this._current < 0)
+                {
+                    this._current = this._documents.Count - 1;
+                }
+                this.RaiseActiveDocumentChanged(this.ActiveDocument);
             }
         }
 
@@ -84,6 +94,7 @@ namespace VDS.RDF.Utilities.Editor
             if (switchTo)
             {
                 this._current = this._documents.Count - 1;
+                this.RaiseActiveDocumentChanged(this.ActiveDocument);
             }
         }
 
@@ -110,9 +121,82 @@ namespace VDS.RDF.Utilities.Editor
             this._documents.Clear();
         }
 
+        public void ReloadAll()
+        {
+            this._documents.ForEach(d => d.Reload());
+        }
+
         public void SaveAll()
         {
-
+            this._documents.ForEach(d => d.Save());
         }
+
+        public void SwitchTo(int index)
+        {
+            if (index >= 0 && index < this._documents.Count)
+            {
+                if (index != this._current)
+                {
+                    this._current = index;
+                    this.RaiseActiveDocumentChanged(this.ActiveDocument);
+                }
+            }
+            else
+            {
+                throw new IndexOutOfRangeException();
+            }
+        }
+
+        public void PrevDocument()
+        {
+            if (this._documents.Count > 1)
+            {
+                this._current--;
+                this.CorrectIndex();
+            }
+        }
+
+        public void NextDocument()
+        {
+            if (this._documents.Count > 1)
+            {
+                this._current++;
+                this.CorrectIndex();
+            }
+        }
+
+        public void Copy()
+        {
+            this.Copy(this.ActiveDocument, false);
+        }
+
+        public void Copy(bool switchTo)
+        {
+            this.Copy(this.ActiveDocument, switchTo);
+        }
+
+        public void Copy(Document doc, bool switchTo)
+        {
+            Document clonedDoc = new Document(doc);
+            this._documents.Add(clonedDoc);
+            if (switchTo)
+            {
+                this._current = this._documents.Count - 1;
+                this.RaiseActiveDocumentChanged(this.ActiveDocument);
+            }
+        }
+
+        #endregion
+
+        private void RaiseActiveDocumentChanged(Document doc)
+        {
+            DocumentChangedHandler d = this.ActiveDocumentChanged;
+            if (d != null)
+            {
+                d(this, new DocumentChangedEventArgs(doc));
+            }
+        }
+
+        public event DocumentChangedHandler ActiveDocumentChanged;
     }
 }

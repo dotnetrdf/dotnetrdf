@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using ICSharpCode.AvalonEdit;
+//using ICSharpCode.AvalonEdit;
 
 namespace VDS.RDF.Utilities.Editor.Selection
 {
@@ -16,19 +16,18 @@ namespace VDS.RDF.Utilities.Editor.Selection
         /// <summary>
         /// Selects a Symbol around the current selection (if any) or caret position
         /// </summary>
-        /// <param name="editor">Text Editor</param>
-        public void SelectSymbol(TextEditor editor)
+        public void SelectSymbol(Document doc)
         {
             int selStart, selLength;
 
-            if (editor.SelectionStart >= 0 && editor.SelectionLength > 0)
+            if (doc.SelectionStart >= 0 && doc.SelectionLength > 0)
             {
-                selStart = editor.SelectionStart;
-                selLength = editor.SelectionLength;
+                selStart = doc.SelectionStart;
+                selLength = doc.SelectionLength;
             }
             else
             {
-                selStart = editor.CaretOffset;
+                selStart = doc.CaretOffset;
                 selLength = 0;
             }
 
@@ -38,14 +37,14 @@ namespace VDS.RDF.Utilities.Editor.Selection
             //select won't select the surrounding symbol properly
             if (selStart > 0 && selLength > 0 && !this._includeDelim)
             {
-                if (this.IsStartingDeliminator(editor.Document.GetCharAt(selStart-1)))
+                if (this.IsStartingDeliminator(doc.GetCharAt(selStart-1)))
                 {
                     selStart--;
                     selLength++;
                 }
-                if (selStart + selLength < editor.Document.TextLength - 1)
+                if (selStart + selLength < doc.TextLength - 1)
                 {
-                    if (this.IsEndingDeliminator(editor.Document.GetCharAt(selStart + selLength))) selLength++;
+                    if (this.IsEndingDeliminator(doc.GetCharAt(selStart + selLength))) selLength++;
                 }
             }
 
@@ -61,7 +60,7 @@ namespace VDS.RDF.Utilities.Editor.Selection
                 if (selStart == 0) break;
 
                 //Otherwise check if character at start of selection is a boundary
-                char current = editor.Document.GetCharAt(selStart);
+                char current = doc.GetCharAt(selStart);
                 if (this.IsStartingDeliminator(current))
                 {
                     endDelim = this.RequireMatchingDeliminator(current);
@@ -70,7 +69,7 @@ namespace VDS.RDF.Utilities.Editor.Selection
             }
             if (!this._includeDelim)
             {
-                if (selStart > 0 || this.IsStartingDeliminator(editor.Document.GetCharAt(selStart)))
+                if (selStart > 0 || this.IsStartingDeliminator(doc.GetCharAt(selStart)))
                 {
                     selStart++;
                     selLength--;
@@ -78,15 +77,15 @@ namespace VDS.RDF.Utilities.Editor.Selection
             }
 
             //Extend the selection forwards
-            while (selStart + selLength < editor.Document.TextLength)
+            while (selStart + selLength < doc.TextLength)
             {
                 selLength++;
 
                 //End of Document is always a Boundary
-                if (selStart + selLength == editor.Document.TextLength) break;
+                if (selStart + selLength == doc.TextLength) break;
 
                 //Otherwise check if character after end of selection is a boundary
-                char current = editor.Document.GetCharAt(selStart + selLength);
+                char current = doc.GetCharAt(selStart + selLength);
                 if (endDelim != null )
                 {
                     //If a matching End Deliminator is required then stop when that is reached
@@ -104,8 +103,8 @@ namespace VDS.RDF.Utilities.Editor.Selection
             }
 
             //Select the Symbol Text
-            editor.Select(selStart, selLength);
-            editor.ScrollToLine(editor.Document.GetLineByOffset(selStart).LineNumber);
+            doc.Select(selStart, selLength);
+            doc.ScrollToLine(doc.GetLineByOffset(selStart));
         }
 
         /// <summary>
