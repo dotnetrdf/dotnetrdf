@@ -48,6 +48,7 @@ namespace VDS.RDF.GUI.WinForms
     {
         private SparqlResultSet _results;
         private INodeFormatter _formatter = new SparqlFormatter();
+        private INamespaceMapper _nsmap;
 
         /// <summary>
         /// Displays the given SPARQL Result Set
@@ -107,6 +108,20 @@ namespace VDS.RDF.GUI.WinForms
             : this(results)
         {
             this.Text = this.GetTitle(title);
+        }
+
+        public ResultSetViewerForm(SparqlResultSet results, INamespaceMapper nsmap)
+            : this(results)
+        {
+            this._nsmap = nsmap;
+            if (nsmap != null) this._formatter = new SparqlFormatter(nsmap);
+        }
+
+        public ResultSetViewerForm(SparqlResultSet results, String title, INamespaceMapper nsmap)
+            : this(results, title)
+        {
+            this._nsmap = nsmap;
+            if (nsmap != null) this._formatter = new SparqlFormatter(nsmap);
         }
 
         private String GetTitle()
@@ -204,7 +219,29 @@ namespace VDS.RDF.GUI.WinForms
                     INodeFormatter currFormatter = this._formatter;
 
                     Type t = formatter.GetType();
-                    this._formatter = formatter;
+                    if (this._nsmap != null)
+                    {
+                        Type nsmapType = typeof(INamespaceMapper);
+                        if (t.GetConstructors().Any(c => c.IsPublic && c.GetParameters().Any() && c.GetParameters().All(p => p.ParameterType.Equals(nsmapType))))
+                        {
+                            try
+                            {
+                                this._formatter = (INodeFormatter)Activator.CreateInstance(t, new object[] { this._nsmap });
+                            }
+                            catch
+                            {
+                                this._formatter = formatter;
+                            }
+                        }
+                        else
+                        {
+                            this._formatter = formatter;
+                        }
+                    }
+                    else
+                    {
+                        this._formatter = formatter;
+                    }
 
                     if (!ReferenceEquals(currFormatter, this._formatter) || !currFormatter.GetType().Equals(this._formatter.GetType()))
                     {

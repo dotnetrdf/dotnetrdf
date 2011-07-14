@@ -288,7 +288,7 @@ namespace VDS.RDF.Utilities.Sparql
 
                     if (this.chkViewResultsInApp.Checked)
                     {
-                        ResultSetViewerForm resultSetViewer = new ResultSetViewerForm((SparqlResultSet)results, "SPARQL GUI");
+                        ResultSetViewerForm resultSetViewer = new ResultSetViewerForm((SparqlResultSet)results, "SPARQL GUI", query.NamespaceMap);
                         resultSetViewer.Show();
                     }
                     else

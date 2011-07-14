@@ -568,7 +568,7 @@ namespace VDS.RDF.Utilities.StoreManager
                         }
                         else if (result is SparqlResultSet)
                         {
-                            ResultSetViewerForm resultsViewer = new ResultSetViewerForm((SparqlResultSet)result, this._manager.ToString());
+                            ResultSetViewerForm resultsViewer = new ResultSetViewerForm((SparqlResultSet)result, this._manager.ToString(), qTask.Query.NamespaceMap);
                             CrossThreadSetMdiParent(resultsViewer);
                             CrossThreadShow(resultsViewer);
                         }
@@ -739,9 +739,10 @@ namespace VDS.RDF.Utilities.StoreManager
 
         private void QueryCallback(ITask<Object> task)
         {
+            QueryTask qTask = null;
             if (task is QueryTask)
             {
-                QueryTask qTask = (QueryTask)task;
+                qTask = (QueryTask)task;
                 if (qTask.Query != null)
                 {
                     try
@@ -761,6 +762,11 @@ namespace VDS.RDF.Utilities.StoreManager
                     }
                 }
             }
+            else
+            {
+                CrossThreadMessage("Unexpected Error - QueryCallback was invoked but the given task was not a QueryTask", "Unexpected Error", MessageBoxIcon.Exclamation);
+                return;
+            }
 
             if (task.State == TaskState.Completed)
             {
@@ -774,7 +780,7 @@ namespace VDS.RDF.Utilities.StoreManager
                 }
                 else if (result is SparqlResultSet)
                 {
-                    ResultSetViewerForm resultsViewer = new ResultSetViewerForm((SparqlResultSet)result, this._manager.ToString());
+                    ResultSetViewerForm resultsViewer = new ResultSetViewerForm((SparqlResultSet)result, this._manager.ToString(), qTask.Query.NamespaceMap);
                     CrossThreadSetMdiParent(resultsViewer);
                     CrossThreadShow(resultsViewer);
                 }

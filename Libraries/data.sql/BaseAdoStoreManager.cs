@@ -42,7 +42,11 @@ using System.Linq;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
+using VDS.RDF.Query;
+using VDS.RDF.Query.Datasets;
+using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Storage.Virtualisation;
+using VDS.RDF.Update;
 using VDS.RDF.Writing;
 
 namespace VDS.RDF.Storage
@@ -56,7 +60,7 @@ namespace VDS.RDF.Storage
     /// <typeparam name="TAdaptor">Adaptor Type</typeparam>
     /// <typeparam name="TException">Exception Type</typeparam>
     public abstract class BaseAdoStore<TConn,TCommand,TParameter,TAdaptor,TException> 
-        : IGenericIOManager, IVirtualRdfProvider<int, int>, IConfigurationSerializable, IDisposable
+        : IUpdateableGenericIOManager, IVirtualRdfProvider<int, int>, IConfigurationSerializable, IDisposable
         where TConn : DbConnection
         where TCommand : DbCommand
         where TParameter : DbParameter
@@ -66,6 +70,11 @@ namespace VDS.RDF.Storage
         private TConn _connection;
         private SimpleVirtualNodeCache<int> _cache = new SimpleVirtualNodeCache<int>();
         private NodeFactory _factory = new NodeFactory();
+        private ISparqlDataset _dataset;
+        private SparqlQueryParser _queryParser;
+        private LeviathanQueryProcessor _queryProcessor;
+        private SparqlUpdateParser _updateParser;
+        private LeviathanUpdateProcessor _updateProcessor;
 
         #region Constructor and Destructor
 
@@ -997,6 +1006,87 @@ namespace VDS.RDF.Storage
             {
                 return false;
             }
+        }
+
+        #endregion
+
+        #region IQueryableGenericIOManager Members
+
+        public Object Query(String sparqlQuery)
+        {
+            Graph g = new Graph();
+            SparqlResultSet results = new SparqlResultSet();
+            this.Query(new GraphHandler(g), new ResultSetHandler(results), sparqlQuery);
+
+            if (results.ResultsType != SparqlResultsType.Unknown)
+            {
+                return results;
+            }
+            else
+            {
+                return g;
+            }
+        }
+
+        public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery)
+        {
+            //Parse the Query
+            if (this._queryParser == null)
+            {
+                this._queryParser = new SparqlQueryParser();
+            }
+
+            SparqlQuery q = this._queryParser.ParseFromString(sparqlQuery);
+
+            //Initialise Dataset if necessary
+            if (this._dataset == null)
+            {
+                this._dataset = this.GetDataset();
+            }
+
+            //Process the Query
+            if (this._queryProcessor == null)
+            {
+                this._queryProcessor = new LeviathanQueryProcessor(this._dataset);
+            }
+            q.AlgebraOptimisers = this.GetOptimisers();
+            this._queryProcessor.ProcessQuery(rdfHandler, resultsHandler, q);
+        }
+
+        protected abstract ISparqlDataset GetDataset();
+
+        protected virtual IEnumerable<IAlgebraOptimiser> GetOptimisers()
+        {
+            return Enumerable.Empty<IAlgebraOptimiser>();
+        }
+
+        #endregion
+
+        #region IUpdateableGenericIOManager Members
+
+        public void Update(String sparqlUpdate)
+        {
+            //Parse the Updates
+            if (this._updateParser == null)
+            {
+                this._updateParser = new SparqlUpdateParser();
+            }
+
+            SparqlUpdateCommandSet cmds = this._updateParser.ParseFromString(sparqlUpdate);
+
+            //Initialise Dataset if necessary
+            if (this._dataset == null)
+            {
+                this._dataset = this.GetDataset();
+            }
+
+            //Process the Updates
+            if (this._updateProcessor == null)
+            {
+                this._updateProcessor = new LeviathanUpdateProcessor(this._dataset);
+            }
+            cmds.AlgebraOptimisers = this.GetOptimisers();
+            this._updateProcessor.ProcessCommandSet(cmds);
         }
 
         #endregion

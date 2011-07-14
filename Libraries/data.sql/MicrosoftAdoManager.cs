@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
+using VDS.RDF.Query.Datasets;
+using VDS.RDF.Query.Optimisation;
 
 namespace VDS.RDF.Storage
 {
@@ -15,6 +17,7 @@ namespace VDS.RDF.Storage
     {
         private String _connString;
         private String _server, _db, _user, _password;
+        private IEnumerable<IAlgebraOptimiser> _optimisers;
 
         public MicrosoftAdoManager(String server, String db, String user, String password)
             : base(CreateConnection(server, db, user, password))
@@ -77,6 +80,20 @@ namespace VDS.RDF.Storage
         protected override int EnsureSetup(SqlConnection connection)
         {
             throw new NotImplementedException("Automatic Store Setup is not yet implemented");
+        }
+
+        protected override ISparqlDataset GetDataset()
+        {
+            return new MicrosoftAdoDataset(this);
+        }
+
+        protected override IEnumerable<IAlgebraOptimiser> GetOptimisers()
+        {
+            if (this._optimisers == null)
+            {
+                this._optimisers = new IAlgebraOptimiser[] { new SimpleVirtualAlgebraOptimiser(this) };
+            }
+            return this._optimisers;
         }
 
         public override void SerializeConfiguration(ConfigurationSerializationContext context)
