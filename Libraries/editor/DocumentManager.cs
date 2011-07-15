@@ -165,19 +165,19 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
-        public void Copy()
+        public void Copy(ITextEditorAdaptorFactory factory)
         {
-            this.Copy(this.ActiveDocument, false);
+            this.Copy(factory, this.ActiveDocument, false);
         }
 
-        public void Copy(bool switchTo)
+        public void Copy(ITextEditorAdaptorFactory factory, bool switchTo)
         {
-            this.Copy(this.ActiveDocument, switchTo);
+            this.Copy(factory, this.ActiveDocument, switchTo);
         }
 
-        public void Copy(Document doc, bool switchTo)
+        public void Copy(ITextEditorAdaptorFactory factory, Document doc, bool switchTo)
         {
-            Document clonedDoc = new Document(doc);
+            Document clonedDoc = new Document(factory.CreateAdaptor());
             this._documents.Add(clonedDoc);
             if (switchTo)
             {

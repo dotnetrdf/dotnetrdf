@@ -19,6 +19,12 @@ namespace VDS.RDF.Utilities.Editor
         private ISyntaxValidator _currValidator;
         private Exception _lastError = null;
 
+        public Document(ITextEditorAdaptorFactory factory)
+            : this(factory.CreateAdaptor()) { }
+
+        public Document(ITextEditorAdaptorFactory factory, String filename)
+            : this(factory.CreateAdaptor(), filename) { }
+
         public Document(ITextEditorAdaptor editor)
             : this(editor, null) { }
 
@@ -30,13 +36,15 @@ namespace VDS.RDF.Utilities.Editor
             //TODO: Syntax auto-detection here
         }
 
-        public Document(Document doc)
-            : this(doc.CloneEditor(), null)
-        {
-            //TODO: Add any other copy actions that are required
-        }
-
         #region General State
+
+        public ITextEditorAdaptor TextEditor
+        {
+            get
+            {
+                return this._editor;
+            }
+        }
 
         public bool HasChanged
         {
@@ -218,11 +226,6 @@ namespace VDS.RDF.Utilities.Editor
         public void Redo()
         {
             this._editor.Redo();
-        }
-
-        public ITextEditorAdaptor CloneEditor()
-        {
-            throw new NotImplementedException();
         }
 
         #endregion

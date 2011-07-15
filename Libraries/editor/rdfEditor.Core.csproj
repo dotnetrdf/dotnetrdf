@@ -45,8 +45,10 @@
     <Compile Include="DocumentEvents.cs" />
     <Compile Include="DocumentManager.cs" />
     <None Include="EditorManager.cs" />
+    <Compile Include="Editor.cs" />
     <Compile Include="GlobalOptions.cs" />
     <Compile Include="ITextEditorAdaptor.cs" />
+    <Compile Include="ITextEditorAdaptorFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Selection\BaseSelector.cs" />
     <Compile Include="Selection\DefaultSelector.cs" />
