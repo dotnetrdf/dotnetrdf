@@ -87,6 +87,16 @@ namespace VDS.RDF.GUI
             }
         }
 
+        public static String AllFilter
+        {
+            get
+            {
+                String temp = RdfFilter + "|" + RdfDatasetFilter + "|" + SparqlResultsFilter + "|" + SparqlQueryFilter + "|" + SparqlUpdateFilter;
+                temp = temp.Replace("All Files|*.*|", "");
+                return temp;
+            }
+        }
+
         public static Icon WindowIcon
         {
             get

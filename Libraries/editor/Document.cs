@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Parsing.Validation;
@@ -32,8 +33,7 @@ namespace VDS.RDF.Utilities.Editor
         {
             if (editor == null) throw new ArgumentNullException("editor");
             this._editor = editor;
-
-            //TODO: Syntax auto-detection here
+            this._currFile = filename;
         }
 
         #region General State
@@ -57,7 +57,7 @@ namespace VDS.RDF.Utilities.Editor
         /// <summary>
         /// Gets/Sets the Current Filename of the Document
         /// </summary>
-        public String CurrentFile
+        public String Filename
         {
             get
             {
@@ -66,6 +66,7 @@ namespace VDS.RDF.Utilities.Editor
             set
             {
                 this._currFile = value;
+                this.RaiseEvent(this.FilenameChanged);
             }
         }
 
@@ -74,6 +75,10 @@ namespace VDS.RDF.Utilities.Editor
             get
             {
                 return this._editor.Text;
+            }
+            set
+            {
+                this._editor.Text = value;
             }
         }
 
@@ -110,6 +115,13 @@ namespace VDS.RDF.Utilities.Editor
         }
 
         #endregion
+
+        #region Syntax
+
+        public void AutoDetectSyntax()
+        {
+
+        }
 
         #region Validation
 
@@ -166,6 +178,8 @@ namespace VDS.RDF.Utilities.Editor
 
         #endregion
 
+        #endregion
+
         #region Actions
 
         public char GetCharAt(int index)
@@ -190,12 +204,25 @@ namespace VDS.RDF.Utilities.Editor
 
         public void Save()
         {
-
+            if (this._currFile != null || !this._currFile.Equals(String.Empty))
+            {
+                //TODO: Get the target Encoding from somewhere
+                using (StreamWriter writer = new StreamWriter(this._currFile))
+                {
+                    writer.Write(this.Text);
+                    writer.Close();
+                }
+                this.RaiseEvent(this.Saved);
+            }
         }
 
         public void SaveAs(String filename)
         {
-
+            if (filename == null) throw new ArgumentNullException("filename");
+            if (filename.Equals(String.Empty)) throw new ArgumentException("filename", "Filename cannot be empty");
+            this._currFile = filename;
+            this.RaiseEvent(this.FilenameChanged);
+            this.Save();
         }
 
         public void Reload()
@@ -232,9 +259,28 @@ namespace VDS.RDF.Utilities.Editor
 
         #region Events
 
+        private void RaiseEvent(DocumentChangedHandler<T> evt)
+        {
+            this.RaiseEvent(this, evt);
+        }
+
+        private void RaiseEvent(Object sender, DocumentChangedHandler<T> evt)
+        {
+            if (evt != null)
+            {
+                evt(sender, new DocumentChangedEventArgs<T>(this));
+            }
+        }
+
         public event DocumentChangedHandler<T> TextChanged;
 
         public event DocumentChangedHandler<T> Reloaded;
+
+        public event DocumentChangedHandler<T> DetectedSyntaxChanged;
+
+        public event DocumentChangedHandler<T> FilenameChanged;
+
+        public event DocumentChangedHandler<T> Saved;
 
         #endregion
     }

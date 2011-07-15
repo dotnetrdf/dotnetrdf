@@ -178,6 +178,7 @@ namespace VDS.RDF.Utilities.Editor
         public void Copy(ITextEditorAdaptorFactory<T> factory, Document<T> doc, bool switchTo)
         {
             Document<T> clonedDoc = new Document<T>(factory.CreateAdaptor());
+            clonedDoc.Text = doc.Text;
             this._documents.Add(clonedDoc);
             if (switchTo)
             {

@@ -55,6 +55,8 @@
     <Compile Include="Selection\DefaultSelector.cs" />
     <Compile Include="Selection\ISymbolSelector.cs" />
     <Compile Include="Selection\WhiteSpaceSelector.cs" />
+    <Compile Include="Syntax\SyntaxDefinition.cs" />
+    <Compile Include="Syntax\SyntaxManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\core\dotNetRDF.csproj">
