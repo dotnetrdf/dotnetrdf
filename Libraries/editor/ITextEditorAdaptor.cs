@@ -5,8 +5,13 @@ using System.Text;
 
 namespace VDS.RDF.Utilities.Editor
 {
-    public interface ITextEditorAdaptor
+    public interface ITextEditorAdaptor<T>
     {
+        T Control
+        {
+            get;
+        }
+
         String Text
         {
             get;
@@ -45,6 +50,6 @@ namespace VDS.RDF.Utilities.Editor
 
         void Redo();
 
-        ITextEditorAdaptor Clone();
+        void SetHighlighter(String name);
     }
 }

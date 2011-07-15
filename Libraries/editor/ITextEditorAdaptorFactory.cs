@@ -5,8 +5,8 @@ using System.Text;
 
 namespace VDS.RDF.Utilities.Editor
 {
-    public interface ITextEditorAdaptorFactory
+    public interface ITextEditorAdaptorFactory<T>
     {
-        ITextEditorAdaptor CreateAdaptor();
+        ITextEditorAdaptor<T> CreateAdaptor();
     }
 }

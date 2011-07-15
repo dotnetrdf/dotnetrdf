@@ -5,16 +5,16 @@ using System.Text;
 
 namespace VDS.RDF.Utilities.Editor
 {
-    public class DocumentChangedEventArgs
+    public class DocumentChangedEventArgs<T>
     {
-        private Document _doc;
+        private Document<T> _doc;
 
-        public DocumentChangedEventArgs(Document doc)
+        public DocumentChangedEventArgs(Document<T> doc)
         {
             this._doc = doc;
         }
 
-        public Document Document
+        public Document<T> Document
         {
             get
             {
@@ -23,5 +23,5 @@ namespace VDS.RDF.Utilities.Editor
         }
     }
 
-    public delegate void DocumentChangedHandler(Object sender, DocumentChangedEventArgs args);
+    public delegate void DocumentChangedHandler<T>(Object sender, DocumentChangedEventArgs<T> args);
 }

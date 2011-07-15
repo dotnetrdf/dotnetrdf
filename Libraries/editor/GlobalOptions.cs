@@ -6,11 +6,11 @@ using VDS.RDF.Utilities.Editor.Selection;
 
 namespace VDS.RDF.Utilities.Editor
 {
-    public class GlobalOptions
+    public class GlobalOptions<T>
     {
         //Selection
         private bool _symbolSelectEnabled = true;
-        private ISymbolSelector _selector = new DefaultSelector();
+        private ISymbolSelector<T> _selector = new DefaultSelector<T>();
         private bool _includeDelim = false;
 
         //Validation
@@ -63,7 +63,7 @@ namespace VDS.RDF.Utilities.Editor
         /// <summary>
         /// Gets the Current Symbol Selector
         /// </summary>
-        public ISymbolSelector CurrentSymbolSelector
+        public ISymbolSelector<T> CurrentSymbolSelector
         {
             get
             {

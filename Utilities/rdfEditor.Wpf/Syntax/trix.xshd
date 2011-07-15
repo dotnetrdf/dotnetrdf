@@ -1,0 +1,5 @@
+﻿<SyntaxDefinition name="TriX" xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
+	<RuleSet>
+		<Import ruleSet="XML/" />
+	</RuleSet>
+</SyntaxDefinition>

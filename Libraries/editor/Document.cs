@@ -6,29 +6,29 @@ using VDS.RDF.Parsing.Validation;
 
 namespace VDS.RDF.Utilities.Editor
 {
-    public class Document
+    public class Document<T>
     {
         //General State
         private bool _changed = false;
         private bool _enableHighlighting = true;
         private String _currFile;
         private String _currSyntax = "None";
-        private ITextEditorAdaptor _editor;
+        private ITextEditorAdaptor<T> _editor;
 
         //Validation
         private ISyntaxValidator _currValidator;
         private Exception _lastError = null;
 
-        public Document(ITextEditorAdaptorFactory factory)
+        public Document(ITextEditorAdaptorFactory<T> factory)
             : this(factory.CreateAdaptor()) { }
 
-        public Document(ITextEditorAdaptorFactory factory, String filename)
+        public Document(ITextEditorAdaptorFactory<T> factory, String filename)
             : this(factory.CreateAdaptor(), filename) { }
 
-        public Document(ITextEditorAdaptor editor)
+        public Document(ITextEditorAdaptor<T> editor)
             : this(editor, null) { }
 
-        public Document(ITextEditorAdaptor editor, String filename)
+        public Document(ITextEditorAdaptor<T> editor, String filename)
         {
             if (editor == null) throw new ArgumentNullException("editor");
             this._editor = editor;
@@ -38,7 +38,7 @@ namespace VDS.RDF.Utilities.Editor
 
         #region General State
 
-        public ITextEditorAdaptor TextEditor
+        public ITextEditorAdaptor<T> TextEditor
         {
             get
             {
@@ -161,7 +161,7 @@ namespace VDS.RDF.Utilities.Editor
 
         public void SetHighlighter(String name)
         {
-            
+            this._editor.SetHighlighter(name);
         }
 
         #endregion
@@ -232,9 +232,9 @@ namespace VDS.RDF.Utilities.Editor
 
         #region Events
 
-        public event DocumentChangedHandler TextChanged;
+        public event DocumentChangedHandler<T> TextChanged;
 
-        public event DocumentChangedHandler Reloaded;
+        public event DocumentChangedHandler<T> Reloaded;
 
         #endregion
     }

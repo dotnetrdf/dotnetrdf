@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BaseTextEditorAdaptor.cs" />
     <Compile Include="Document.cs" />
     <Compile Include="DocumentEvents.cs" />
     <Compile Include="DocumentManager.cs" />

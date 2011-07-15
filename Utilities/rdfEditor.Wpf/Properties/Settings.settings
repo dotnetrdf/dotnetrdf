@@ -1,0 +1,147 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="VDS.RDF.Utilities.Editor.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="EnableHighlighting" Roaming="true" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="EnableAutoComplete" Roaming="true" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="EnableValidateAsYouType" Roaming="true" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="ShowLineNumbers" Roaming="true" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="WordWrap" Roaming="true" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="AlwaysCheckFileAssociations" Roaming="true" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="FirstRun" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="EnableClickableUris" Roaming="true" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="EnableErrorHighlighting" Roaming="true" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="DefaultHighlighter" Roaming="true" Type="System.String" Scope="User">
+      <Value Profile="(Default)">None</Value>
+    </Setting>
+    <Setting Name="ShowEndOfLine" Roaming="true" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="ShowSpaces" Roaming="true" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="ShowTabs" Roaming="true" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="WindowHeight" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">-1</Value>
+    </Setting>
+    <Setting Name="WindowWidth" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">-1</Value>
+    </Setting>
+    <Setting Name="EditorFontFace" Roaming="true" Type="System.Windows.Media.FontFamily" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="EditorFontSize" Roaming="true" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">13</Value>
+    </Setting>
+    <Setting Name="EditorForeground" Roaming="true" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#FF000000</Value>
+    </Setting>
+    <Setting Name="EditorBackground" Roaming="true" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#FFFFFFFF</Value>
+    </Setting>
+    <Setting Name="EnableSymbolSelection" Roaming="true" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="IncludeSymbolBoundaries" Roaming="true" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="SymbolSelectionMode" Roaming="true" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Default</Value>
+    </Setting>
+    <Setting Name="UseUtf8Bom" Roaming="true" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="SyntaxColourXmlComments" Roaming="true" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#FF008000</Value>
+    </Setting>
+    <Setting Name="SyntaxColourXmlCData" Roaming="true" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#FF0000FF</Value>
+    </Setting>
+    <Setting Name="SyntaxColourXmlDocType" Roaming="true" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#FF0000FF</Value>
+    </Setting>
+    <Setting Name="SyntaxColourXmlTag" Roaming="true" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#FF8B008B</Value>
+    </Setting>
+    <Setting Name="SyntaxColourXmlAttrName" Roaming="true" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#FFFF0000</Value>
+    </Setting>
+    <Setting Name="SyntaxColourXmlAttrValue" Roaming="true" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#FF0000FF</Value>
+    </Setting>
+    <Setting Name="SyntaxColourXmlEntity" Roaming="true" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#FF008080</Value>
+    </Setting>
+    <Setting Name="SyntaxColourXmlBrokenEntity" Roaming="true" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#FF808000</Value>
+    </Setting>
+    <Setting Name="SyntaxColourComment" Roaming="true" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#FF008000</Value>
+    </Setting>
+    <Setting Name="SyntaxColourKeyword" Roaming="true" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#FFFF0000</Value>
+    </Setting>
+    <Setting Name="SyntaxColourString" Roaming="true" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#FF0000FF</Value>
+    </Setting>
+    <Setting Name="SyntaxColourQName" Roaming="true" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#FF8B008B</Value>
+    </Setting>
+    <Setting Name="SyntaxColourURI" Roaming="true" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#FF8B008B</Value>
+    </Setting>
+    <Setting Name="SyntaxColourPunctuation" Roaming="true" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#FF006400</Value>
+    </Setting>
+    <Setting Name="SyntaxColourBNode" Roaming="true" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#FF4682B4</Value>
+    </Setting>
+    <Setting Name="SyntaxColourLangSpec" Roaming="true" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#FF006400</Value>
+    </Setting>
+    <Setting Name="SyntaxColourNumbers" Roaming="true" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#FF00008B</Value>
+    </Setting>
+    <Setting Name="SyntaxColourVariables" Roaming="true" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#FFFF8C00</Value>
+    </Setting>
+    <Setting Name="SyntaxColourEscapedChar" Roaming="true" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#FF008080</Value>
+    </Setting>
+    <Setting Name="ErrorHighlightBackground" Roaming="true" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#FF8B0000</Value>
+    </Setting>
+    <Setting Name="ErrorHighlightForeground" Roaming="true" Type="System.Windows.Media.Color" Scope="User">
+      <Value Profile="(Default)">#FFFFFFFF</Value>
+    </Setting>
+    <Setting Name="ErrorHighlightFontFamily" Roaming="true" Type="System.Windows.Media.FontFamily" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="ErrorHighlightDecoration" Roaming="true" Type="System.String" Scope="User">
+      <Value Profile="(Default)">None</Value>
+    </Setting>
+    <Setting Name="UseCustomisedXshdFiles" Type="System.Boolean" Scope="Application">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

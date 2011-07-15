@@ -1,0 +1,12 @@
+﻿<Window x:Class="VDS.RDF.Utilities.Editor.ResultSetWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:rdfEditor="clr-namespace:VDS.RDF.Utilities.Editor.Controls"
+    Title="Result Set View" Height="392" Width="877" ResizeMode="NoResize">
+       
+    <ScrollViewer Name="scroll" ScrollViewer.CanContentScroll="True" HorizontalScrollBarVisibility="Auto" Height="325">
+        <Grid ScrollViewer.CanContentScroll="True" Name="gridResults">
+
+        </Grid>
+    </ScrollViewer>
+</Window>

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace VDS.RDF.Utilities.Editor.Selection
 {
-    public class WhiteSpaceSelector : DefaultSelector
+    public class WhiteSpaceSelector<T> : DefaultSelector<T>
     {
         protected override bool IsStartingDeliminator(char c)
         {
@@ -23,7 +23,7 @@ namespace VDS.RDF.Utilities.Editor.Selection
         }
     }
 
-    public class PunctuationSelector : DefaultSelector
+    public class PunctuationSelector<T> : DefaultSelector<T>
     {
         protected override bool IsStartingDeliminator(char c)
         {
@@ -41,7 +41,7 @@ namespace VDS.RDF.Utilities.Editor.Selection
         }
     }
 
-    public class WhiteSpaceOrPunctuationSelection : DefaultSelector
+    public class WhiteSpaceOrPunctuationSelection<T> : DefaultSelector<T>
     {
         protected override bool IsStartingDeliminator(char c)
         {

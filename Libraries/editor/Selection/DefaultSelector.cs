@@ -5,7 +5,7 @@ using System.Text;
 
 namespace VDS.RDF.Utilities.Editor.Selection
 {
-    public class DefaultSelector : BaseSelector
+    public class DefaultSelector<T> : BaseSelector<T>
     {
         /// <summary>
         /// Gets whether a Character is a Starting Deliminator

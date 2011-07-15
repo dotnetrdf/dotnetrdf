@@ -5,13 +5,13 @@ using System.Text;
 
 namespace VDS.RDF.Utilities.Editor
 {
-    public class DocumentManager
+    public class DocumentManager<T>
     {
-        private List<Document> _documents = new List<Document>();
+        private List<Document<T>> _documents = new List<Document<T>>();
         private int _current = 0;
-        private GlobalOptions _options = new GlobalOptions();
+        private GlobalOptions<T> _options = new GlobalOptions<T>();
 
-        public GlobalOptions Options
+        public GlobalOptions<T> Options
         {
             get
             {
@@ -19,7 +19,7 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
-        public Document ActiveDocument
+        public Document<T> ActiveDocument
         {
             get
             {
@@ -34,7 +34,7 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
-        public Document this[int index]
+        public Document<T> this[int index]
         {
             get
             {
@@ -49,7 +49,7 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
-        public IEnumerable<Document> Documents
+        public IEnumerable<Document<T>> Documents
         {
             get
             {
@@ -83,12 +83,12 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
-        public void Add(Document doc)
+        public void Add(Document<T> doc)
         {
             this.Add(doc, false);
         }
 
-        public void Add(Document doc, bool switchTo)
+        public void Add(Document<T> doc, bool switchTo)
         {
             this._documents.Add(doc);
             if (switchTo)
@@ -165,19 +165,19 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
-        public void Copy(ITextEditorAdaptorFactory factory)
+        public void Copy(ITextEditorAdaptorFactory<T> factory)
         {
             this.Copy(factory, this.ActiveDocument, false);
         }
 
-        public void Copy(ITextEditorAdaptorFactory factory, bool switchTo)
+        public void Copy(ITextEditorAdaptorFactory<T> factory, bool switchTo)
         {
             this.Copy(factory, this.ActiveDocument, switchTo);
         }
 
-        public void Copy(ITextEditorAdaptorFactory factory, Document doc, bool switchTo)
+        public void Copy(ITextEditorAdaptorFactory<T> factory, Document<T> doc, bool switchTo)
         {
-            Document clonedDoc = new Document(factory.CreateAdaptor());
+            Document<T> clonedDoc = new Document<T>(factory.CreateAdaptor());
             this._documents.Add(clonedDoc);
             if (switchTo)
             {
@@ -188,15 +188,15 @@ namespace VDS.RDF.Utilities.Editor
 
         #endregion
 
-        private void RaiseActiveDocumentChanged(Document doc)
+        private void RaiseActiveDocumentChanged(Document<T> doc)
         {
-            DocumentChangedHandler d = this.ActiveDocumentChanged;
+            DocumentChangedHandler<T> d = this.ActiveDocumentChanged;
             if (d != null)
             {
-                d(this, new DocumentChangedEventArgs(doc));
+                d(this, new DocumentChangedEventArgs<T>(doc));
             }
         }
 
-        public event DocumentChangedHandler ActiveDocumentChanged;
+        public event DocumentChangedHandler<T> ActiveDocumentChanged;
     }
 }

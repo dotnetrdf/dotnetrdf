@@ -1,0 +1,39 @@
+﻿<Window x:Class="VDS.RDF.Utilities.Editor.FindReplace"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="Find and Replace" Height="314" Width="300" ResizeMode="NoResize" GotFocus="Window_GotFocus" Loaded="Window_Loaded" Closing="Window_Closing">
+    <StackPanel Name="stkDialog">
+        <Label Name="lblFind">Find what:</Label>
+        <ComboBox Name="cboFind" IsEditable="True"></ComboBox>
+        <Label Name="lblReplace" Visibility="Collapsed">Replace with:</Label>
+        <ComboBox Name="cboReplace" IsEditable="True" Visibility="Collapsed" GotFocus="cboReplace_GotFocus"></ComboBox>
+        <Label Name="lblLookIn">Look in:</Label>
+        <ComboBox Name="cboLookIn">
+            <ComboBoxItem Tag="Current Document" Selector.IsSelected="True">Current Document</ComboBoxItem>
+            <ComboBoxItem Tag="Selection">Selection</ComboBoxItem>
+        </ComboBox>
+        <GroupBox Header="Find Options">
+            <StackPanel>
+                <CheckBox Name="chkMatchCase" IsChecked="True">Match Case</CheckBox>
+                <CheckBox Name="chkMatchWholeWord" IsChecked="False">Match whole word</CheckBox>
+                <CheckBox Name="chkSearchUp" IsChecked="False">Search up</CheckBox>
+                <CheckBox Name="chkRegex" IsChecked="False">Use Regular Expression</CheckBox>
+            </StackPanel>
+        </GroupBox>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="125*"></ColumnDefinition>
+                <ColumnDefinition Width="125*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            
+            <Grid.RowDefinitions>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+            </Grid.RowDefinitions>
+            
+            <Button Name="btnFindNext" Grid.Row="0" Grid.Column="0" Click="btnFindNext_Click" IsDefault="True">Find Next</Button>
+            <Button Name="btnReplace" Grid.Row="0" Grid.Column="1" Visibility="Collapsed" Click="btnReplace_Click" GotFocus="btnReplace_GotFocus">Replace</Button>
+            <Button Name="btnReplaceAll" Grid.Row="1" Grid.Column="1" Visibility="Collapsed" Click="btnReplaceAll_Click" GotFocus="btnReplaceAll_GotFocus">Replace All</Button>
+        </Grid>
+    </StackPanel>
+</Window>

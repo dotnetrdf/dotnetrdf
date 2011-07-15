@@ -1,0 +1,18 @@
+﻿<SyntaxDefinition name="NQuads" xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
+	<Color name="Comment" foreground="Green" />
+	<Color name="Keyword" foreground="Red" />
+	<Color name="String" foreground="Blue" />
+	<Color name="QName" foreground="DarkMagenta" />
+	<Color name="URI" foreground="DarkMagenta" />
+	<Color name="Punctuation" foreground="DarkGreen" />
+	<Color name="BNode" foreground="SteelBlue" />
+	<Color name="LangSpec" foreground="DarkGreen" />
+  <Color name="EscapedChar" foreground="Teal" />
+	
+	<RuleSet>
+
+    <Import ruleSet="NTriples/" />
+	
+	</RuleSet>
+	
+</SyntaxDefinition>

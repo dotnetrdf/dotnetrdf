@@ -9,14 +9,14 @@ namespace VDS.RDF.Utilities.Editor.Selection
     /// <summary>
     /// Selector which selects the symbol deliminated by a starting &lt; " or new line and by an ending &gt; " or new line.  If there is already a selection it selects the surrounding symbol
     /// </summary>
-    public abstract class BaseSelector : ISymbolSelector
+    public abstract class BaseSelector<T> : ISymbolSelector<T>
     {
         private bool _includeDelim = false;
 
         /// <summary>
         /// Selects a Symbol around the current selection (if any) or caret position
         /// </summary>
-        public void SelectSymbol(Document doc)
+        public void SelectSymbol(Document<T> doc)
         {
             int selStart, selLength;
 

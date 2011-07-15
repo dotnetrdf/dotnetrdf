@@ -1,0 +1,241 @@
+﻿<Window x:Class="VDS.RDF.Utilities.Editor.EditorWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:rdfEditor="clr-namespace:VDS.RDF.Utilities.Editor"
+    Title="rdfEditor" Height="629" Width="880" 
+    Loaded="Window_Loaded" Closing="Window_Closing" SizeChanged="Window_SizeChanged">
+    
+    <Window.CommandBindings>
+        <CommandBinding Command="New" Executed="NewCommandExecuted" />
+        <CommandBinding Command="Open" Executed="OpenCommandExecuted" />
+        <CommandBinding Command="Save" Executed="SaveCommandExecuted" />
+        <CommandBinding Command="SaveAs" Executed="SaveAsCommandExecuted" />
+        <CommandBinding Command="{x:Static rdfEditor:Commands.SaveWithNTriples}" Executed="SaveWithNTriplesExecuted" />
+        <CommandBinding Command="{x:Static rdfEditor:Commands.SaveWithTurtle}" Executed="SaveWithTurtleExecuted" />
+        <CommandBinding Command="{x:Static rdfEditor:Commands.SaveWithN3}" Executed="SaveWithN3Executed" />
+        <CommandBinding Command="{x:Static rdfEditor:Commands.SaveWithRdfXml}" Executed="SaveWithRdfXmlExecuted" />
+        <CommandBinding Command="{x:Static rdfEditor:Commands.SaveWithRdfJson}" Executed="SaveWithRdfJsonExecuted" />
+        <CommandBinding Command="{x:Static rdfEditor:Commands.SaveWithXHtmlRdfA}" Executed="SaveWithXHtmlRdfAExecuted" />
+        <CommandBinding Command="Close" Executed="CloseCommandExecuted" />
+        
+        <CommandBinding Command="Undo" Executed="UndoCommandExecuted" />
+        <CommandBinding Command="Redo" Executed="RedoCommandExecuted" />
+        <CommandBinding Command="Cut" Executed="CutCommandExecuted" />
+        <CommandBinding Command="Copy" Executed="CopyCommandExecuted" />
+        <CommandBinding Command="Paste" Executed="PasteCommandExecuted" />
+        <CommandBinding Command="{x:Static rdfEditor:Commands.Find}" Executed="FindCommandExecuted" />
+        <CommandBinding Command="{x:Static rdfEditor:Commands.FindNext}" Executed="FindNextCommandExecuted"  />
+        <CommandBinding Command="{x:Static rdfEditor:Commands.Replace}" Executed="ReplaceCommandExecuted" />
+        <CommandBinding Command="{x:Static rdfEditor:Commands.GoToLine}" Executed="GoToLineCommandExecuted" />
+        <CommandBinding Command="{x:Static rdfEditor:Commands.CommentSelection}" Executed="CommentSelectionExecuted" />
+        <CommandBinding Command="{x:Static rdfEditor:Commands.UncommentSelection}" Executed="UncommentSelectionExecuted" />
+        
+        <CommandBinding Command="{x:Static rdfEditor:Commands.ToggleLineNumbers}" Executed="ToggleLineNumbersExecuted" />
+        <CommandBinding Command="{x:Static rdfEditor:Commands.ToggleWordWrap}" Executed="ToggleWordWrapExecuted" />
+        <CommandBinding Command="{x:Static rdfEditor:Commands.ToggleClickableUris}" Executed="ToggleClickableUrisExecuted" />
+        <CommandBinding Command="{x:Static rdfEditor:Commands.IncreaseTextSize}" Executed="IncreaseTextSizeExecuted" />
+        <CommandBinding Command="{x:Static rdfEditor:Commands.DecreaseTextSize}" Executed="DecreaseTextSizeExecuted" />
+        <CommandBinding Command="{x:Static rdfEditor:Commands.ResetTextSize}" Executed="ResetTextSizeExecuted" />
+        
+        <CommandBinding Command="{x:Static rdfEditor:Commands.ToggleHighlighting}" Executed="ToggleHighlightingExecuted" />
+        <CommandBinding Command="{x:Static rdfEditor:Commands.ToggleValidateAsYouType}" Executed="ToggleValidateAsYouTypeExecuted" />
+        <CommandBinding Command="{x:Static rdfEditor:Commands.ToggleValidationErrorHighlighting}" Executed="ToggleValidationErrorHighlighting" />
+        <CommandBinding Command="{x:Static rdfEditor:Commands.ToggleAutoCompletion}" Executed="ToggleAutoCompletionExecuted" />
+        
+        <CommandBinding Command="{x:Static rdfEditor:Commands.ValidateSyntax}" Executed="ValidateSyntaxExecuted" />
+    </Window.CommandBindings>
+    
+    <Window.InputBindings>
+        <KeyBinding Command="New" Key="N" Modifiers="Ctrl" />
+        <KeyBinding Command="Open" Key="O" Modifiers="Ctrl" />
+        <KeyBinding Command="Save" Key="S" Modifiers="Ctrl" />
+        <KeyBinding Command="SaveAs" Key="S" Modifiers="Ctrl+Alt" />
+        <rdfEditor:ComplexInputBinding Command="{x:Static rdfEditor:Commands.SaveWithNTriples}" Gesture="Alt+S,1" />
+        <rdfEditor:ComplexInputBinding Command="{x:Static rdfEditor:Commands.SaveWithTurtle}" Gesture="Alt+S,2" />
+        <rdfEditor:ComplexInputBinding Command="{x:Static rdfEditor:Commands.SaveWithN3}" Gesture="Alt+S,3" />
+        <rdfEditor:ComplexInputBinding Command="{x:Static rdfEditor:Commands.SaveWithRdfXml}" Gesture="Alt+S,4" />
+        <rdfEditor:ComplexInputBinding Command="{x:Static rdfEditor:Commands.SaveWithRdfJson}" Gesture="Alt+S,5" />
+        <rdfEditor:ComplexInputBinding Command="{x:Static rdfEditor:Commands.SaveWithXHtmlRdfA}" Gesture="Alt+S,6" />
+        <KeyBinding Command="Close" Key="W" Modifiers="Ctrl" />
+        
+        <KeyBinding Command="Undo" Key="Z" Modifiers="Ctrl" />
+        <KeyBinding Command="Redo" Key="Y" Modifiers="Ctrl" />
+        <KeyBinding Command="Cut" Key="X" Modifiers="Ctrl" />
+        <KeyBinding Command="Copy" Key="C" Modifiers="Ctrl" />
+        <KeyBinding Command="Paste" Key="V" Modifiers="Ctrl" />
+        <KeyBinding Command="{x:Static rdfEditor:Commands.Find}" Key="F" Modifiers="Ctrl" />
+        <KeyBinding Command="{x:Static rdfEditor:Commands.FindNext}" Key="F3" />
+        <KeyBinding Command="{x:Static rdfEditor:Commands.Replace}" Key="H" Modifiers="Ctrl" />
+        <KeyBinding Command="{x:Static rdfEditor:Commands.GoToLine}" Key="G" Modifiers="Ctrl" />
+        <rdfEditor:ComplexInputBinding Command="{x:Static rdfEditor:Commands.CommentSelection}" Gesture="Ctrl+K,C" />
+        <rdfEditor:ComplexInputBinding Command="{x:Static rdfEditor:Commands.UncommentSelection}" Gesture="Ctrl+K,U" />
+        
+        <rdfEditor:ComplexInputBinding Command="{x:Static rdfEditor:Commands.ToggleLineNumbers}" Gesture="Ctrl+E,L" />
+        <rdfEditor:ComplexInputBinding Command="{x:Static rdfEditor:Commands.ToggleWordWrap}" Gesture="Ctrl+E,W" />
+        <rdfEditor:ComplexInputBinding Command="{x:Static rdfEditor:Commands.ToggleClickableUris}" Gesture="Ctrl+E,U" />
+        <rdfEditor:ComplexInputBinding Command="{x:Static rdfEditor:Commands.IncreaseTextSize}" Gesture="Ctrl++" />
+        <rdfEditor:ComplexInputBinding Command="{x:Static rdfEditor:Commands.DecreaseTextSize}" Gesture="Ctrl+-" />
+        <rdfEditor:ComplexInputBinding Command="{x:Static rdfEditor:Commands.ResetTextSize}" Gesture="Ctrl+0" />
+        
+        <rdfEditor:ComplexInputBinding Command="{x:Static rdfEditor:Commands.ToggleHighlighting}" Gesture="Ctrl+E,H" />
+        <rdfEditor:ComplexInputBinding Command="{x:Static rdfEditor:Commands.ToggleValidateAsYouType}" Gesture="Ctrl+E,V" />
+        <rdfEditor:ComplexInputBinding Command="{x:Static rdfEditor:Commands.ToggleValidationErrorHighlighting}" Gesture="Ctrl+E,Shift+V" />
+        <rdfEditor:ComplexInputBinding Command="{x:Static rdfEditor:Commands.ToggleAutoCompletion}" Gesture="Ctrl+E,A" />
+        
+        <rdfEditor:ComplexInputBinding Command="{x:Static rdfEditor:Commands.ValidateSyntax}" Gesture="Ctrl+T,V" />
+    </Window.InputBindings>
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="22"></RowDefinition>
+            <RowDefinition Height="545*"></RowDefinition>
+            <RowDefinition Height="24"></RowDefinition>
+        </Grid.RowDefinitions>
+        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        
+         <Menu Height="22" 
+              HorizontalAlignment="Left" 
+              Name="menu1" 
+              VerticalAlignment="Top" 
+              Grid.Row="0"
+              Grid.Column="0"
+              >
+            <MenuItem Header="_File">
+                <MenuItem Header="New" Name="mnuNew" Click="mnuNew_Click" InputGestureText="Ctrl+N" />
+                <Separator />
+                <MenuItem Header="Open" Name="mnuOpen" Click="mnuOpen_Click" InputGestureText="Ctrl+O" />
+                <MenuItem Header="Open URI" Name="mnuOpenUri" Click="mnuOpenUri_Click" />
+                <MenuItem Header="Open Query Results" Name="mnuOpenQueryResults" Click="mnuOpenQueryResults_Click" />
+                <MenuItem Header="Open Recent..." Name="mnuRecentFiles">
+                    <MenuItem Header="Clear Recent Files" Name="mnuClearRecentFiles" Click="mnuClearRecentFiles_Click" />
+                    <Separator />
+                </MenuItem>
+                <Separator />
+                <MenuItem Header="Save" Name="mnuSave" Click="mnuSave_Click" InputGestureText="Ctrl+S" />
+                <MenuItem Header="Save As..." Name="mnuSaveAs" Click="mnuSaveAs_Click" InputGestureText="Ctrl+Alt+S" />
+                <MenuItem Header="Save With...">
+                    <MenuItem Header="NTriples Writer" Name="mnuSaveWithNTriples" Click="mnuSaveWithNTriples_Click" InputGestureText="Alt+S,1" />
+                    <MenuItem Header="Turtle Writer" Name="mnuSaveWithTurtle" Click="mnuSaveWithTurtle_Click" InputGestureText="Alt+S,2" />
+                    <MenuItem Header="Notation 3 Writer" Name="mnuSaveWithN3" Click="mnuSaveWithN3_Click" InputGestureText="Alt+S,3" />
+                    <MenuItem Header="RDF/XML Writer" Name="mnuSaveWithRdfXml" Click="mnuSaveWithRdfXml_Click" InputGestureText="Alt+S,4" />
+                    <MenuItem Header="RDF/JSON Writer" Name="mnuSaveWithRdfJson" Click="mnuSaveWithRdfJson_Click" InputGestureText="Alt+S,5" />
+                    <MenuItem Header="XHTML+RDFa Writer" Name="mnuSaveWithRdfa" Click="mnuSaveWithRdfa_Click" InputGestureText="Alt+S,6" />
+                </MenuItem>
+                <MenuItem Header="Use BOM for UTF-8 Output" Name="mnuUseBomForUtf8" Click="mnuUseBomForUtf8_Click" IsCheckable="True" IsChecked="True" />
+                <Separator />
+                <MenuItem Header="Page Setup" Name="mnuPageSetup" Click="mnuPageSetup_Click" />
+                <Separator />
+                <MenuItem Header="Print Preview" Name="mnuPrintPreview" Click="mnuPrintPreview_Click" />
+                <MenuItem Header="Print" Name="mnuPrint" Click="mnuPrint_Click" InputGestureText="Ctrl+P" />
+                <Separator />
+                <MenuItem Header="Print Preview without Highlighting" Name="mnuPrintPreviewNoHighlighting" Click="mnuPrintPreviewNoHighlighting_Click" />
+                <MenuItem Header="Print without Highlighting" Name="mnuPrintNoHighlighting" Click="mnuPrintNoHighlighting_Click" InputGestureText="Ctrl+Alt+P" />
+                <Separator />
+                <MenuItem Header="Close" Name="mnuClose" Click="mnuClose_Click" InputGestureText="Ctrl+W" />
+                <Separator />
+                <MenuItem Header="Exit" Name="mnuExit" Click="mnuExit_Click" />
+            </MenuItem>
+            <MenuItem Header="_Edit">
+                <MenuItem Header="Undo" Name="mnuUndo" Click="mnuUndo_Click" InputGestureText="Ctrl+Z" />
+                <MenuItem Header="Redo" Name="mnuRedo" Click="mnuRedo_Click" InputGestureText="Ctrl+Y" />
+                <Separator />
+                <MenuItem Header="Cut" Name="mnuCut" Click="mnuCut_Click" InputGestureText="Ctrl+X"/>
+                <MenuItem Header="Copy" Name="mnuCopy" Click="mnuCopy_Click" InputGestureText="Ctrl+C" />
+                <MenuItem Header="Paste" Name="mnuPaste" Click="mnuPaste_Click" InputGestureText="Ctrl+V" />
+                <Separator />
+                <MenuItem Header="Find" Name="mnuFind" Click="mnuFind_Click" InputGestureText="Ctrl+F" />
+                <MenuItem Header="Find Next" Name="mnuFindNext" Click="mnuFindNext_Click" InputGestureText="F3" />
+                <MenuItem Header="Find and Replace" Name="mnuReplace" Click="mnuReplace_Click" InputGestureText="Ctrl+H" />
+                <MenuItem Header="Go to Line" Name="mnuGoToLine" Click="mnuGoToLine_Click" InputGestureText="Ctrl+G" />
+                <Separator />
+                <MenuItem Header="Comment Selection" Name="mnuCommentSelection" Click="mnuCommentSelection_Click" InputGestureText="Ctrl+K,C" />
+                <MenuItem Header="Uncomment Selection" Name="mnuUncommentSelection" Click="mnuUncommentSelection_Click" InputGestureText="Ctrl+K,U" /> 
+                <Separator />
+                <MenuItem Header="Select Symbol on Double Click" Name="mnuSymbolSelectEnabled" Click="mnuSymbolSelectEnabled_Click" IsCheckable="True" IsChecked="True" />
+                <MenuItem Header="Symbol Boundaries" Name="mnuSymbolBoundaries">
+                    <MenuItem Header="[Default] URI/XML Element boundaries (&lt; and &gt;), Literal/XML Attribute boundaries (&quot;) and New Lines" Tag="Default" IsCheckable="True" IsChecked="True" />
+                    <MenuItem Header="Default plus Punctuation" Tag="Punctuation" IsCheckable="True" IsChecked="False" />
+                    <MenuItem Header="Default plus Whitespace" Tag="WhiteSpace" IsCheckable="True" IsChecked="False" />
+                    <MenuItem Header="Default plus Punctuation and Whitespace" Tag="All" IsCheckable="True" IsChecked="False" />
+                </MenuItem>
+                <MenuItem Header="Include Boundary Character in Selected Symbols" Name="mnuSymbolSelectIncludeBoundary" Click="mnuSymbolSelectIncludeBoundary_Click" IsCheckable="True" IsChecked="False" />
+            </MenuItem>
+            <MenuItem Header="_View">
+                <MenuItem Header="Show Line Numbers" Name="mnuShowLineNumbers" IsCheckable="True" IsChecked="True"  Click="mnuShowLineNumbers_Click" InputGestureText="Ctrl+E,L" />
+                <MenuItem Header="Word Wrap" Name="mnuWordWrap" IsCheckable="True" IsChecked="False" Click="mnuWordWrap_Click" InputGestureText="Ctrl+E,W" />
+                <Separator />
+                <MenuItem Header="Make URIs Clickable" Name="mnuClickableUris" IsCheckable="True" IsChecked="False" Click="mnuClickableUris_Click" InputGestureText="Ctrl+E,U" />
+                <Separator />
+                <MenuItem Header="Show Special Characters">
+                    <MenuItem Header="Show All" Name="mnuShowSpecialAll" Click="mnuShowSpecialAll_Click" />
+                    <Separator />
+                    <MenuItem Header="Show End of Line" Name="mnuShowSpecialEOL" IsCheckable="True" IsChecked="False" Click="mnuShowSpecialEOL_Click" />
+                    <MenuItem Header="Show Spaces" Name="mnuShowSpecialSpaces" IsCheckable="True" IsChecked="False" Click="mnuShowSpecialSpaces_Click" />
+                    <MenuItem Header="Show Tabs" Name="mnuShowSpecialTabs" IsCheckable="True" IsChecked="False" Click="mnuShowSpecialTabs_Click" />
+                </MenuItem>
+                <Separator/>
+                <MenuItem Header="Increase Text Size" Name="mnuIncreaseTextSize" Command="{x:Static rdfEditor:Commands.IncreaseTextSize}" InputGestureText="Ctrl++" />
+                <MenuItem Header="Decrease Text Size" Name="mnuDecreaseTextSize" Command="{x:Static rdfEditor:Commands.DecreaseTextSize}" InputGestureText="Ctrl+-"/>
+                <MenuItem Header="Reset Text Size" Name="mnuResetTextSize" Command="{x:Static rdfEditor:Commands.ResetTextSize}" InputGestureText="Ctrl+0"/>
+            </MenuItem>
+            <MenuItem Header="_Options">
+                    <MenuItem Header="Enable Syntax Highlighting" Name="mnuEnableHighlighting" IsCheckable="True" IsChecked="True" Click="mnuEnableHighlighting_Click" InputGestureText="Ctrl+E,H" />
+                    <MenuItem Header="Syntax" Name="mnuCurrentHighlighter">
+                    <MenuItem Header="Set Current Syntax as Default for Startup" IsCheckable="False" Name="mnuSetDefaultHighlighter" Click="mnuSetDefaultHighlighter_Click" />
+                    <MenuItem Header="None" IsCheckable="True" IsChecked="True" Tag="None" />
+                        <Separator />
+                        <MenuItem Header="RDF/XML" IsCheckable="True" Tag="RdfXml" />
+                        <MenuItem Header="RDF/JSON" IsCheckable="True" Tag="RdfJson" />
+                        <MenuItem Header="NTriples" IsCheckable="True" Tag="NTriples" />
+                        <MenuItem Header="Turtle" IsCheckable="True" Tag="Turtle" />
+                        <MenuItem Header="Notation 3" IsCheckable="True" Tag="Notation3"/>
+                        <MenuItem Header="(X)HTML+RDFa" IsCheckable="True" Tag="XHtmlRdfA" />
+                        <Separator />
+                        <MenuItem Header="SPARQL Query 1.0" IsCheckable="True" Tag="SparqlQuery10" />
+                        <MenuItem Header="SPARQL Query 1.1" IsCheckable="True" Tag="SparqlQuery11" />
+                        <Separator />
+                        <MenuItem Header="SPARQL Update 1.1" IsCheckable="True" Tag="SparqlUpdate11" />
+                        <Separator />
+                        <MenuItem Header="SPARQL Results Format XML" IsCheckable="True" Tag="SparqlResultsXml"/>
+                        <MenuItem Header="SPARQL Results Format JSON" IsCheckable="True" Tag="SparqlResultsJson" />
+                        <Separator />
+                        <MenuItem Header="NQuads" IsCheckable="True" Tag="NQuads" />
+                        <MenuItem Header="TriG" IsCheckable="True" Tag="TriG" />
+                        <MenuItem Header="TriX" IsCheckable="True" Tag="TriX" />
+                </MenuItem>
+                <Separator />
+                <MenuItem Header="Validate Syntax as you Type" Name="mnuValidateAsYouType" IsCheckable="True" IsChecked="True" Click="mnuValidateAsYouType_Click" InputGestureText="Ctrl+E,V" />
+                <MenuItem Header="Highlight Validation Errors" Name="mnuHighlightErrors" IsCheckable="True" IsChecked="True" Click="mnuHighlightErrors_Click" InputGestureText="Ctrl+E,Shift+V"/>
+                <Separator />
+                <MenuItem Header="Enable Auto-completion" Name="mnuAutoComplete" IsCheckable="True" IsChecked="True" Click="mnuAutoComplete_Click" InputGestureText="Ctrl+E,A" />
+                <Separator />
+                <MenuItem Header="Customise Appearance Settings" Name="mnuCustomiseAppearance" Click="mnuCustomiseAppearance_Click" />
+                <MenuItem Header="Customise File Associations" Name="mnuCustomiseFileAssociations" Click="mnuCustomiseFileAssociations_Click" />
+            </MenuItem>
+            <MenuItem Header="_Tools">
+                <MenuItem Header="Validate Syntax" Name="mnuValidateSyntax" Click="mnuValidateSyntax_Click" InputGestureText="Ctrl+T,V" />
+                <MenuItem Header="Show Structured View" Name="mnuStructureView" Click="mnuStructureView_Click" />
+            </MenuItem>
+            <MenuItem Header="_Help">
+                <MenuItem Header="About rdfEditor" Name="mnuAbout" Click="mnuAbout_Click" />
+            </MenuItem>
+        </Menu>
+        
+        <avalonEdit:TextEditor
+            xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
+            Name="textEditor"
+            FontFamily="Consolas"
+            FontSize="10pt" 
+            Grid.Row="1" TextChanged="textEditor_TextChanged"
+            />
+        
+        <StatusBar Name="stsBar" DockPanel.Dock="Bottom" Grid.Row="2" Grid.Column="0">
+            <StatusBarItem Name="stsCurrSyntax">Syntax: None</StatusBarItem>
+            <Separator/>
+            <StatusBarItem Name="stsSyntaxValidation" HorizontalContentAlignment="Left">Validate Syntax as you Type Enabled</StatusBarItem>
+        </StatusBar>
+    </Grid>
+</Window>

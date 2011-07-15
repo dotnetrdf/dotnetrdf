@@ -5,18 +5,18 @@ using System.Text;
 
 namespace VDS.RDF.Utilities.Editor
 {
-    public class Editor
+    public class Editor<T>
     {
-        private DocumentManager _docManager = new DocumentManager();
-        private ITextEditorAdaptorFactory _factory;
+        private DocumentManager<T> _docManager = new DocumentManager<T>();
+        private ITextEditorAdaptorFactory<T> _factory;
 
-        public Editor(ITextEditorAdaptorFactory factory)
+        public Editor(ITextEditorAdaptorFactory<T> factory)
         {
             if (factory == null) throw new ArgumentNullException("factory");
             this._factory = factory;
         }
 
-        public DocumentManager DocumentManager
+        public DocumentManager<T> DocumentManager
         {
             get
             {
@@ -24,7 +24,7 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
-        public ITextEditorAdaptorFactory TextEditorFactory
+        public ITextEditorAdaptorFactory<T> TextEditorFactory
         {
             get
             {

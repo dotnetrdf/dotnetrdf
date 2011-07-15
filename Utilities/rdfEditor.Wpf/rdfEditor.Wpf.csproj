@@ -1,0 +1,308 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{F8006AE8-6107-4297-9E19-C2E55303FCC6}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VDS.RDF.Utilities.Editor</RootNamespace>
+    <AssemblyName>rdfEditor</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <ApplicationIcon>package_editors.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="FileAssociation, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Dependencies\FileAssociation.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.AvalonEdit, Version=4.0.0.6361, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Dependencies\ICSharpCode.AvalonEdit.dll</HintPath>
+    </Reference>
+    <Reference Include="ReachFramework">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Printing">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="UIAutomationProvider">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="PresentationCore">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="PresentationFramework">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="About.xaml.cs">
+      <DependentUpon>About.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AppearanceSettings.xaml.cs">
+      <DependentUpon>AppearanceSettings.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AutoComplete\AutoCompleteDefinition.cs" />
+    <Compile Include="AutoComplete\AutoCompleteManager.cs" />
+    <Compile Include="AutoComplete\AutoCompleteState.cs" />
+    <Compile Include="AutoComplete\BaseAutoCompleter.cs" />
+    <Compile Include="AutoComplete\NTriplesAutoCompleter.cs" />
+    <Compile Include="AutoComplete\Data\BaseCompletionData.cs" />
+    <Compile Include="AutoComplete\Data\BlankNodeCompletionData.cs" />
+    <Compile Include="AutoComplete\Data\NewBlankNode.cs" />
+    <Compile Include="AutoComplete\Data\NewDefaultPrefixDeclaration.cs" />
+    <Compile Include="AutoComplete\Data\NewPrefixDeclaration.cs" />
+    <Compile Include="AutoComplete\IAutoCompleter.cs" />
+    <Compile Include="AutoComplete\Data\KeywordCompletionData.cs" />
+    <Compile Include="AutoComplete\NamespaceTerm.cs" />
+    <Compile Include="AutoComplete\Data\NewBaseDeclaration.cs" />
+    <Compile Include="AutoComplete\Notation3AutoCompleter.cs" />
+    <Compile Include="AutoComplete\Data\PrefixCompletionData.cs" />
+    <Compile Include="AutoComplete\Data\QNameCompletionData.cs" />
+    <Compile Include="AutoComplete\SparqlAutoCompleter.cs" />
+    <Compile Include="AutoComplete\SparqlUpdateAutoCompleter.cs" />
+    <Compile Include="AutoComplete\TurtleAutoCompleter.cs" />
+    <Compile Include="AutoComplete\Data\VariableCompletionData.cs" />
+    <EmbeddedResource Include="AutoComplete\Vocabularies\xsd.ttl" />
+    <Compile Include="Commands.cs" />
+    <Compile Include="ComplexInputBinding.cs" />
+    <Compile Include="ComplexInputGesture.cs" />
+    <Compile Include="ComplexInputGestureConverter.cs" />
+    <Compile Include="Controls\LiteralNodeControl.xaml.cs">
+      <DependentUpon>LiteralNodeControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DocumentPaginatorWrapper.cs" />
+    <Compile Include="FindReplace.xaml.cs">
+      <DependentUpon>FindReplace.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GoToLine.xaml.cs">
+      <DependentUpon>GoToLine.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MruList.cs" />
+    <Compile Include="Printing.cs" />
+    <Compile Include="PrintPreview.xaml.cs">
+      <DependentUpon>PrintPreview.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ResultSetWindow.xaml.cs">
+      <DependentUpon>ResultSetWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="EditorWindow.xaml.cs">
+      <DependentUpon>EditorWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="FileAssociations.xaml.cs">
+      <DependentUpon>FileAssociations.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="OffsetScopedNamespaceMapper.cs" />
+    <Compile Include="OpenQueryResults.xaml.cs">
+      <DependentUpon>OpenQueryResults.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="OpenUri.xaml.cs">
+      <DependentUpon>OpenUri.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="EditorManager.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="Selection\BaseSelector.cs" />
+    <Compile Include="Selection\DefaultSelector.cs" />
+    <Compile Include="Selection\ISymbolSelector.cs" />
+    <Compile Include="Selection\WhiteSpaceSelector.cs" />
+    <Compile Include="Syntax\CustomColourBrush.cs" />
+    <Compile Include="Syntax\CustomHighlightingBrush.cs" />
+    <Compile Include="Syntax\FakeTextRunContext.cs" />
+    <Compile Include="Syntax\SyntaxDefinition.cs" />
+    <Compile Include="Syntax\SyntaxManager.cs" />
+    <Compile Include="Syntax\ValidationErrorElementGenerator.cs" />
+    <Compile Include="Syntax\ValidationErrorLineText.cs" />
+    <Compile Include="TriplesWindow.xaml.cs">
+      <DependentUpon>TriplesWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\UriNodeControl.xaml.cs">
+      <DependentUpon>UriNodeControl.xaml</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Syntax\n3.xshd">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Syntax\ntriples.xshd">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Syntax\sparql-query-11.xshd">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <None Include="app.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <EmbeddedResource Include="Syntax\trix.xshd">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Syntax\trig.xshd">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Syntax\nquads.xshd">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Syntax\xhtml-rdfa.xshd">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Syntax\sparql-update.xshd">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Syntax\sparql-results-json.xshd">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Syntax\sparql-results-xml.xshd">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Syntax\rdfxml.xshd">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Syntax\rdfjson.xshd">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Syntax\sparql-query.xshd">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Syntax\turtle.xshd">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <AppDesigner Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Libraries\core\dotNetRDF.csproj">
+      <Project>{BFBAC159-1E60-4D03-8ACA-D34E31EB83BF}</Project>
+      <Name>dotNetRDF</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="About.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AppearanceSettings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\LiteralNodeControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="FindReplace.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GoToLine.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PrintPreview.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ResultSetWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="EditorWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="FileAssociations.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="OpenQueryResults.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="OpenUri.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="TriplesWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\UriNodeControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="page_edit.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="package_editors.ico" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,0 +1,96 @@
+﻿<SyntaxDefinition name="Turtle" extensions=".ttl">
+  <RuleSets>
+
+    <RuleSet ignorecase="false">
+      
+      <!-- Literals -->
+
+      <Span name="LongLiteral" color="Blue" stopateol="false" rule="StringEscapes">
+        <Begin>"""</Begin>
+        <End>"""</End>
+      </Span>
+
+      <Span name="Literal" color="Blue" rule="StringEscapes">
+        <Begin>"</Begin>
+        <End>"(?&lt;!\\)</End>
+      </Span>
+
+      <!-- URIs and QNames -->
+
+      <Span name="Uri" color="DarkMagenta" rule="UriEscapes">
+        <Begin>&lt;</Begin>
+        <End>&gt;(?&lt;!\\)</End>
+      </Span>
+
+      <Span name="QName" color="DarkMagenta">
+        (\p{L}(\p{L}|\p{N}|-|_)*)?:\p{L}(\p{L}|\p{N}|-|_)*
+      </Span>
+
+      <!-- Blank Nodes -->
+
+      <Span name="BNode" color="SteelBlue">
+        _:\p{L}(\p{L}|\p{N}|-|_)*
+      </Span>
+
+      <Span name="AnonBNode" color="SteelBlue">
+        \[|\]|\(|\)
+      </Span>
+
+      <!-- Language Specifiers -->
+
+      <Span name="LangSpec" color="DarkGreen">
+        @[A-Za-z]{2}(-[A-Za-z]+)*
+      </Span>
+
+      <!-- Plain Literals -->
+
+      <Span name="Double" color="DarkBlue">
+        [\-+](\d+\.\d*[eE][\-+]?\d+|\.\d+[eE][\-+]?\d+|\d+[eE]?[\-+]\d+)
+      </Span>
+
+      <Span name="Decimal" color="DarkBlue">
+        [\-+]?(\d+\.\d*|\.\d+)
+      </Span>
+
+      <Span name="Integer" color="DarkBlue">
+        [\-+]?\d+
+      </Span>
+
+      <!-- Punctuation Characters -->
+
+      <Span name="Punctuation" color="DarkGreen">
+        [.;,]|\^\^
+      </Span>
+
+      <!-- Comments -->
+
+      <Span name="Comment" color="Green">
+        <Begin>\#</Begin>
+      </Span>
+
+      <!-- Keywords -->
+
+      <KeyWords color="Red" bold="true">
+        <Key word="@prefix" />
+        <Key word="@base" />
+        <Key word="a" />
+        <Key word="true" />
+        <Key word="false" />
+      </KeyWords>
+      
+    </RuleSet>
+
+    <RuleSet name="StringEscapes">
+      <Span name="StringCharEscape" color="Teal">
+        \\([trn"\\]|u[a-fA-F0-9]{4}|U[a-fA-F0-9]{8})
+      </Span>
+    </RuleSet>
+
+    <RuleSet name="UriEscapes">
+      <Span name="UriCharEscape" color="Teal">
+        \\([trn&gt;\\]|u[a-fA-F0-9]{4}|U[a-fA-F0-9]{8})
+      </Span>
+    </RuleSet>
+
+  </RuleSets>
+</SyntaxDefinition>
