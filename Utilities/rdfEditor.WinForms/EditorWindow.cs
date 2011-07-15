@@ -24,6 +24,14 @@ namespace VDS.RDF.Utilities.Editor.WinForms
 
             this._editor.DocumentManager.ActiveDocument.TextEditor.Control.Dock = DockStyle.Fill;
             this.tabFile1.Controls.Add(this._editor.DocumentManager.ActiveDocument.TextEditor.Control);
+
+            this.tabFile1.Enter += 
+                new EventHandler((sender, e) =>
+                {
+                    var page = ((TabPage)sender);
+                    page.BeginInvoke(new Action<TabPage>(p => p.Controls[0].Focus()), page);
+                }); ;
         }
+
     }
 }

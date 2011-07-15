@@ -1,72 +1,51 @@
 ﻿<SyntaxDefinition name="Turtle" extensions=".ttl">
+  <Digits color="DarkBlue" />
+  
   <RuleSets>
 
     <RuleSet ignorecase="false">
+      <Delimiters>.;,:_@</Delimiters>
       
       <!-- Literals -->
 
-      <Span name="LongLiteral" color="Blue" stopateol="false" rule="StringEscapes">
+      <Span name="LongLiteral" color="Blue" escapecharacter="\" stopateol="false" rule="StringEscapes">
         <Begin>"""</Begin>
         <End>"""</End>
       </Span>
 
-      <Span name="Literal" color="Blue" rule="StringEscapes">
+      <Span name="Literal" color="Blue" escapecharacter="\" stopateol="true" rule="StringEscapes">
         <Begin>"</Begin>
-        <End>"(?&lt;!\\)</End>
+        <End>"</End>
       </Span>
 
-      <!-- URIs and QNames -->
+      <!-- URIs -->
 
-      <Span name="Uri" color="DarkMagenta" rule="UriEscapes">
+      <Span name="Uri" color="DarkMagenta" escapecharacter="\" rule="UriEscapes">
         <Begin>&lt;</Begin>
-        <End>&gt;(?&lt;!\\)</End>
-      </Span>
-
-      <Span name="QName" color="DarkMagenta">
-        (\p{L}(\p{L}|\p{N}|-|_)*)?:\p{L}(\p{L}|\p{N}|-|_)*
-      </Span>
-
-      <!-- Blank Nodes -->
-
-      <Span name="BNode" color="SteelBlue">
-        _:\p{L}(\p{L}|\p{N}|-|_)*
-      </Span>
-
-      <Span name="AnonBNode" color="SteelBlue">
-        \[|\]|\(|\)
-      </Span>
-
-      <!-- Language Specifiers -->
-
-      <Span name="LangSpec" color="DarkGreen">
-        @[A-Za-z]{2}(-[A-Za-z]+)*
-      </Span>
-
-      <!-- Plain Literals -->
-
-      <Span name="Double" color="DarkBlue">
-        [\-+](\d+\.\d*[eE][\-+]?\d+|\.\d+[eE][\-+]?\d+|\d+[eE]?[\-+]\d+)
-      </Span>
-
-      <Span name="Decimal" color="DarkBlue">
-        [\-+]?(\d+\.\d*|\.\d+)
-      </Span>
-
-      <Span name="Integer" color="DarkBlue">
-        [\-+]?\d+
-      </Span>
-
-      <!-- Punctuation Characters -->
-
-      <Span name="Punctuation" color="DarkGreen">
-        [.;,]|\^\^
+        <End>&gt;</End>
       </Span>
 
       <!-- Comments -->
 
-      <Span name="Comment" color="Green">
-        <Begin>\#</Begin>
+      <Span name="Comments" color="Green" stopateol="true">
+        <Begin>#</Begin>
       </Span>
+
+      <!-- QName Prefixes -->
+      
+      <MarkPrevious color="DarkMagenta">:</MarkPrevious>
+
+      <!-- Blank Nodes -->
+
+      <MarkFollowing color="SteelBlue">_:</MarkFollowing>
+      
+      <!-- QName Local Names -->
+
+      <MarkFollowing color="DarkMagenta">:</MarkFollowing>
+
+      <!-- Language Specifiers -->
+
+      <MarkFollowing color="DarkGreen">@</MarkFollowing>
 
       <!-- Keywords -->
 
@@ -78,18 +57,52 @@
         <Key word="false" />
       </KeyWords>
       
+      <!-- Anonymous Blank Node -->
+
+      <KeyWords color="SteelBlue">
+        <Key word="[]" />
+      </KeyWords>
+
+      <!-- Punctuation Characters -->
+
+      <KeyWords color="DarkGreen">
+        <Key word="[" />
+        <Key word="]" />
+        <Key word="." />
+        <Key word=";" />
+        <Key word="," />
+        <Key word="^^" />
+        <Key word="@" />
+      </KeyWords>
+
+      <KeyWords color="DarkMagenta">
+        <Key word=":" />
+      </KeyWords>
+      
     </RuleSet>
 
     <RuleSet name="StringEscapes">
-      <Span name="StringCharEscape" color="Teal">
-        \\([trn"\\]|u[a-fA-F0-9]{4}|U[a-fA-F0-9]{8})
-      </Span>
+      <KeyWords color="Teal">
+        <Key word="\t" />
+        <Key word="\r" />
+        <Key word="\n" />
+        <Key word="\&quot;" />
+        <Key word="\\" />
+        <Key word="\u" />
+        <Key word="\U" />
+      </KeyWords>
     </RuleSet>
 
     <RuleSet name="UriEscapes">
-      <Span name="UriCharEscape" color="Teal">
-        \\([trn&gt;\\]|u[a-fA-F0-9]{4}|U[a-fA-F0-9]{8})
-      </Span>
+      <KeyWords color="Teal">
+        <Key word="\t" />
+        <Key word="\r" />
+        <Key word="\n" />
+        <Key word="\&gt;" />
+        <Key word="\\" />
+        <Key word="\u" />
+        <Key word="\U" />
+      </KeyWords>
     </RuleSet>
 
   </RuleSets>
