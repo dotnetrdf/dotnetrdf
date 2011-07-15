@@ -177,6 +177,7 @@
             this.mnuSaveAll.Name = "mnuSaveAll";
             this.mnuSaveAll.Size = new System.Drawing.Size(257, 22);
             this.mnuSaveAll.Text = "Save All";
+            this.mnuSaveAll.Click += new System.EventHandler(this.mnuSaveAll_Click);
             // 
             // mnuFileSaveAs
             // 
@@ -246,12 +247,14 @@
             this.mnuFileClose.Name = "mnuFileClose";
             this.mnuFileClose.Size = new System.Drawing.Size(257, 22);
             this.mnuFileClose.Text = "Close";
+            this.mnuFileClose.Click += new System.EventHandler(this.mnuFileClose_Click);
             // 
             // mnuFileCloseAll
             // 
             this.mnuFileCloseAll.Name = "mnuFileCloseAll";
             this.mnuFileCloseAll.Size = new System.Drawing.Size(257, 22);
             this.mnuFileCloseAll.Text = "Close All";
+            this.mnuFileCloseAll.Click += new System.EventHandler(this.mnuFileCloseAll_Click);
             // 
             // toolStripMenuItem5
             // 

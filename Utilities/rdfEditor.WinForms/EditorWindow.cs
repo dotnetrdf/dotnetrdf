@@ -138,7 +138,7 @@ namespace VDS.RDF.Utilities.Editor.WinForms
                 sfdSave.Filter = Constants.AllFilter;
                 if (doc.Filename == null || doc.Filename.Equals(String.Empty))
                 {
-                    sfdSave.Title = "Save As...";
+                    sfdSave.Title = "Save " + this.tabFiles.SelectedTab.Text + " As...";
                 }
                 else
                 {
@@ -181,6 +181,44 @@ namespace VDS.RDF.Utilities.Editor.WinForms
                 if (!ReferenceEquals(active, doc))
                 {
                     this.AddTextEditor(this.GetTab(), doc);
+                }
+            }
+        }
+
+        private void mnuFileClose_Click(object sender, EventArgs e)
+        {
+            if (this._editor.DocumentManager.ActiveDocument != null)
+            {
+                //TODO: Prompt user to save changes (if any)
+                this._editor.DocumentManager.Close();
+                this.tabFiles.TabPages.RemoveAt(this.tabFiles.SelectedIndex);
+            }
+        }
+
+        private void mnuFileCloseAll_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < this._editor.DocumentManager.Count; i++)
+            {
+                //TODO: Prompt user to save changes (if any)
+            }
+            this._editor.DocumentManager.CloseAll();
+            this.tabFiles.TabPages.Clear();
+        }
+
+        private void mnuSaveAll_Click(object sender, EventArgs e)
+        {
+            this._editor.DocumentManager.SaveAll();
+            for (int i = 0; i < this._editor.DocumentManager.Count; i++)
+            {
+                Document<TextEditorControl> doc = this._editor.DocumentManager[i];
+                if (doc.Filename == null || doc.Filename.Equals(String.Empty))
+                {
+                    this.sfdSave.Filter = Constants.AllFilter;
+                    this.sfdSave.Title = "Save " + this.tabFiles.TabPages[i].Text + " As...";
+                    if (this.sfdSave.ShowDialog() == DialogResult.OK)
+                    {
+                        doc.SaveAs(this.sfdSave.FileName);
+                    }
                 }
             }
         }

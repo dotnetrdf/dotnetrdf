@@ -204,7 +204,7 @@ namespace VDS.RDF.Utilities.Editor
 
         public void Save()
         {
-            if (this._currFile != null || !this._currFile.Equals(String.Empty))
+            if (this._currFile != null && !this._currFile.Equals(String.Empty))
             {
                 //TODO: Get the target Encoding from somewhere
                 using (StreamWriter writer = new StreamWriter(this._currFile))
