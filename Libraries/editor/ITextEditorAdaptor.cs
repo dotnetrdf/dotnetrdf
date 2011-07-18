@@ -52,6 +52,10 @@ namespace VDS.RDF.Utilities.Editor
 
         void SetHighlighter(String name);
 
+        void ClearErrorHighlights();
+
+        void AddErrorHighlight(Exception ex);
+
         event TextEditorChangedHandler<T> TextChanged;
     }
 }

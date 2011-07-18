@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VDS.RDF.Parsing.Validation;
 
 namespace VDS.RDF.Utilities.Editor
 {
@@ -11,7 +12,7 @@ namespace VDS.RDF.Utilities.Editor
         private ITextEditorAdaptorFactory<T> _factory;
         private List<Document<T>> _documents = new List<Document<T>>();
         private int _current = 0;
-        private GlobalOptions<T> _options = new GlobalOptions<T>();
+        private ManagerOptions<T> _options = new ManagerOptions<T>();
         private String _defaultTitle = "Untitled";
         private int _nextID = 0;
 
@@ -39,7 +40,7 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
-        public GlobalOptions<T> Options
+        public ManagerOptions<T> Options
         {
             get
             {
@@ -160,7 +161,15 @@ namespace VDS.RDF.Utilities.Editor
         public Document<T> New(String title, bool switchTo)
         {
             Document<T> doc = new Document<T>(this._factory.CreateAdaptor(), null, title);
+
+            //Add the document to the collection of documents
+            //Register for appropriate events on the document
             this._documents.Add(doc);
+            doc.ValidatorChanged += new DocumentChangedHandler<T>(this.HandleValidatorChanged);
+            doc.Opened += new DocumentChangedHandler<T>(this.HandleTextChanged);
+            doc.TextChanged += new DocumentChangedHandler<T>(this.HandleTextChanged);
+
+            //Switch to the new document if required
             if (switchTo)
             {
                 this._current = this._documents.Count - 1;
@@ -349,6 +358,54 @@ namespace VDS.RDF.Utilities.Editor
 
         #endregion
 
+        #region Handling of Document Events
+
+        private void HandleValidatorChanged(Object sender, DocumentChangedEventArgs<T> args)
+        {
+            //Update Syntax Validation if appropriate
+            if (args.Document.SyntaxValidator != null && this._options.IsValidateAsYouTypeEnabled)
+            {
+                ISyntaxValidationResults results = args.Document.Validate();
+                if (results != null)
+                {
+                    if (results.Error != null && !results.IsValid)
+                    {
+                        args.Document.TextEditor.ClearErrorHighlights();
+                        args.Document.TextEditor.AddErrorHighlight(results.Error);
+                    }
+                    else
+                    {
+                        args.Document.TextEditor.ClearErrorHighlights();
+                    }
+                }
+            }
+        }
+
+        private void HandleTextChanged(Object sender, DocumentChangedEventArgs<T> args)
+        {
+            //Update Syntax Validation if appropriate
+            if (args.Document.SyntaxValidator != null && this._options.IsValidateAsYouTypeEnabled)
+            {
+                ISyntaxValidationResults results = args.Document.Validate();
+                if (results != null)
+                {
+                    if (results.Error != null && !results.IsValid)
+                    {
+                        args.Document.TextEditor.ClearErrorHighlights();
+                        args.Document.TextEditor.AddErrorHighlight(results.Error);
+                    }
+                    else
+                    {
+                        args.Document.TextEditor.ClearErrorHighlights();
+                    }
+                }
+            }
+        }
+
+        #endregion
+
+        #region Events
+
         private void RaiseActiveDocumentChanged(Document<T> doc)
         {
             DocumentChangedHandler<T> d = this.ActiveDocumentChanged;
@@ -359,5 +416,7 @@ namespace VDS.RDF.Utilities.Editor
         }
 
         public event DocumentChangedHandler<T> ActiveDocumentChanged;
+
+        #endregion
     }
 }

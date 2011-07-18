@@ -4,11 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using ICSharpCode.TextEditor;
+using ICSharpCode.TextEditor.Document;
+using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Utilities.Editor.WinForms
 {
     public class WinFormsEditorAdaptor : BaseTextEditorAdaptor<TextEditorControl>
     {
+        private List<TextMarker> _markers = new List<TextMarker>();
+
         public WinFormsEditorAdaptor()
             : base(new TextEditorControl())
         {
@@ -131,6 +135,33 @@ namespace VDS.RDF.Utilities.Editor.WinForms
         public override void SetHighlighter(string name)
         {
             this.Control.SetHighlighting(name);
+        }
+
+        public override void ClearErrorHighlights()
+        {
+            if (this._markers.Count > 0)
+            {
+                this._markers.ForEach(m => this.Control.Document.MarkerStrategy.RemoveMarker(m));
+                this._markers.Clear();
+            }
+        }
+
+        public override void AddErrorHighlight(Exception ex)
+        {
+            RdfParseException parseEx = ex as RdfParseException;
+            if (parseEx != null)
+            {
+                if (parseEx.HasPositionInformation)
+                {
+                    LineSegment startLine = this.Control.Document.GetLineSegment(parseEx.StartLine);
+                    LineSegment endLine = this.Control.Document.GetLineSegment(parseEx.EndLine);
+                    int startOffset = (startLine.Offset - startLine.Length) + parseEx.StartPosition;
+                    int endOffset = (endLine.Offset - endLine.Length) + parseEx.EndPosition;
+                    TextMarker m = new TextMarker(startOffset, endOffset - startOffset, TextMarkerType.WaveLine);
+                    this._markers.Add(m);
+                    this.Control.Document.MarkerStrategy.AddMarker(m);
+                }
+            }
         }
 
         private void HandleTextChanged(Object sender, EventArgs args)

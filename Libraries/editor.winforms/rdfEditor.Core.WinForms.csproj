@@ -8,8 +8,8 @@
     <ProjectGuid>{5A46BF04-125D-48DF-8E24-F7C733628E57}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>editor.winforms</RootNamespace>
-    <AssemblyName>editor.winforms</AssemblyName>
+    <RootNamespace>VDS.RDF.Utilities.Editor.WinForms</RootNamespace>
+    <AssemblyName>rdfEditor.Core.WinForms</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

@@ -62,6 +62,10 @@ namespace VDS.RDF.Utilities.Editor
 
         public abstract void SetHighlighter(String name);
 
+        public abstract void AddErrorHighlight(Exception ex);
+
+        public abstract void ClearErrorHighlights();
+
         private void RaiseEvent(TextEditorChangedHandler<T> evt)
         {
             this.RaiseEvent(this, evt);

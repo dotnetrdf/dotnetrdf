@@ -6,7 +6,24 @@ using VDS.RDF.Utilities.Editor.Selection;
 
 namespace VDS.RDF.Utilities.Editor
 {
-    public class GlobalOptions<T>
+    public static class GlobalOptions
+    {
+        private static bool _useBomForUtf8 = true;
+
+        public static bool UseBomForUtf8
+        {
+            get
+            {
+                return _useBomForUtf8;
+            }
+            set
+            {
+                _useBomForUtf8 = value;
+            }
+        }
+    }
+
+    public class ManagerOptions<T>
     {
         //Selection
         private bool _symbolSelectEnabled = true;
@@ -14,7 +31,7 @@ namespace VDS.RDF.Utilities.Editor
         private bool _includeDelim = false;
 
         //Validation
-        private bool _validateAsYouType = false;
+        private bool _validateAsYouType = true;
         private bool _highlightErrors = true;
 
         #region Selection
@@ -78,7 +95,7 @@ namespace VDS.RDF.Utilities.Editor
         /// <summary>
         /// Gets/Sets whether Validate as you Type is enabled
         /// </summary>
-        public bool IsValidateAsYouType
+        public bool IsValidateAsYouTypeEnabled
         {
             get
             {

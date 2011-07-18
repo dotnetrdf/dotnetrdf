@@ -55,6 +55,33 @@ namespace VDS.RDF.Utilities.Editor.WinForms
             this._editor.DocumentManager.SwitchTo(this.tabFiles.SelectedIndex);
         }
 
+        private void HandleValidatorChanged(Object sender, DocumentChangedEventArgs<TextEditorControl> args)
+        {
+            if (ReferenceEquals(args.Document, this._editor.DocumentManager.ActiveDocument))
+            {
+                if (args.Document.SyntaxValidator == null)
+                {
+                    this.stsValidation.Text = "No Syntax Validator available for the currently selected syntax";
+                }
+            }
+        }
+
+        private void HandleValidation(Object sender, DocumentValidatedEventArgs<TextEditorControl> args)
+        {
+            if (ReferenceEquals(args.Document, this._editor.DocumentManager.ActiveDocument))
+            {
+                if (args.ValidationResults != null)
+                {
+                    this.stsValidation.Text = args.ValidationResults.Message;
+                    //TODO: Display fuller information in ToolTip
+                }
+                else
+                {
+                    this.stsValidation.Text = "Syntax Validation unavailable";
+                }
+            }
+        }
+
         #endregion
 
         private void AddTextEditor()
@@ -86,6 +113,15 @@ namespace VDS.RDF.Utilities.Editor.WinForms
                         tab.Text = e.Document.Title;
                     }
                 });
+            doc.SyntaxChanged += new DocumentChangedHandler<TextEditorControl>((sender, e) =>
+                {
+                    if (ReferenceEquals(this._editor.DocumentManager.ActiveDocument, e.Document))
+                    {
+                        this.stsSyntax.Text = "Syntax: " + e.Document.Syntax;
+                    }
+                });
+            doc.Validated += new DocumentValidatedHandler<TextEditorControl>(this.HandleValidation);
+            doc.ValidatorChanged += new DocumentChangedHandler<TextEditorControl>(this.HandleValidatorChanged);
 
             //Set Tab title where appropriate
             if (doc.Filename != null && !doc.Filename.Equals(String.Empty))

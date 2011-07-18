@@ -56,6 +56,7 @@
     <Compile Include="Selection\ISymbolSelector.cs" />
     <Compile Include="Selection\WhiteSpaceSelector.cs" />
     <Compile Include="Syntax\SyntaxDefinition.cs" />
+    <Compile Include="Syntax\SyntaxExtensions.cs" />
     <Compile Include="Syntax\SyntaxManager.cs" />
     <Compile Include="TextEditorEvents.cs" />
   </ItemGroup>

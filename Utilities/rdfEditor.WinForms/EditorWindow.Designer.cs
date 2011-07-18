@@ -63,7 +63,10 @@
             this.stsInfo = new System.Windows.Forms.StatusStrip();
             this.sfdSave = new System.Windows.Forms.SaveFileDialog();
             this.ofdOpen = new System.Windows.Forms.OpenFileDialog();
+            this.stsSyntax = new System.Windows.Forms.ToolStripStatusLabel();
+            this.stsValidation = new System.Windows.Forms.ToolStripStatusLabel();
             this.mnuMain.SuspendLayout();
+            this.stsInfo.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabFiles
@@ -294,6 +297,9 @@
             // 
             // stsInfo
             // 
+            this.stsInfo.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.stsSyntax,
+            this.stsValidation});
             this.stsInfo.Location = new System.Drawing.Point(0, 434);
             this.stsInfo.Name = "stsInfo";
             this.stsInfo.Size = new System.Drawing.Size(679, 22);
@@ -308,6 +314,17 @@
             // 
             this.ofdOpen.Title = "Open File";
             // 
+            // stsSyntax
+            // 
+            this.stsSyntax.Name = "stsSyntax";
+            this.stsSyntax.Size = new System.Drawing.Size(47, 17);
+            this.stsSyntax.Text = "Syntax: ";
+            // 
+            // stsValidation
+            // 
+            this.stsValidation.Name = "stsValidation";
+            this.stsValidation.Size = new System.Drawing.Size(0, 17);
+            // 
             // EditorWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -321,6 +338,8 @@
             this.Text = "rdfEditor";
             this.mnuMain.ResumeLayout(false);
             this.mnuMain.PerformLayout();
+            this.stsInfo.ResumeLayout(false);
+            this.stsInfo.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -362,6 +381,8 @@
         private System.Windows.Forms.ToolStripMenuItem mnuSaveAll;
         private System.Windows.Forms.SaveFileDialog sfdSave;
         private System.Windows.Forms.OpenFileDialog ofdOpen;
+        private System.Windows.Forms.ToolStripStatusLabel stsSyntax;
+        private System.Windows.Forms.ToolStripStatusLabel stsValidation;
     }
 }
 
