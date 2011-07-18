@@ -12,28 +12,30 @@ namespace VDS.RDF.Utilities.Editor
         //General State
         private bool _changed = false;
         private bool _enableHighlighting = true;
-        private String _currFile;
-        private String _currSyntax = "None";
+        private String _filename, _title;
+        private String _syntax = "None";
         private ITextEditorAdaptor<T> _editor;
+        private Encoding _encoding = Encoding.UTF8;
 
         //Validation
         private ISyntaxValidator _currValidator;
         private Exception _lastError = null;
 
-        public Document(ITextEditorAdaptorFactory<T> factory)
-            : this(factory.CreateAdaptor()) { }
+        internal Document(ITextEditorAdaptor<T> editor)
+            : this(editor, null, null) { }
 
-        public Document(ITextEditorAdaptorFactory<T> factory, String filename)
-            : this(factory.CreateAdaptor(), filename) { }
+        internal Document(ITextEditorAdaptor<T> editor, String filename)
+            : this(editor, filename, Path.GetFileName(filename)) { }
 
-        public Document(ITextEditorAdaptor<T> editor)
-            : this(editor, null) { }
-
-        public Document(ITextEditorAdaptor<T> editor, String filename)
+        internal Document(ITextEditorAdaptor<T> editor, String filename, String title)
         {
             if (editor == null) throw new ArgumentNullException("editor");
             this._editor = editor;
-            this._currFile = filename;
+            this._filename = filename;
+            this._title = title;
+
+            //Subscribe to relevant events on the Editor
+            this._editor.TextChanged += new TextEditorChangedHandler<T>(this.HandleTextChanged);
         }
 
         #region General State
@@ -52,6 +54,10 @@ namespace VDS.RDF.Utilities.Editor
             {
                 return this._changed;
             }
+            private set
+            {
+                this._changed = value;
+            }
         }
 
         /// <summary>
@@ -61,12 +67,42 @@ namespace VDS.RDF.Utilities.Editor
         {
             get
             {
-                return this._currFile;
+                return this._filename;
             }
             set
             {
-                this._currFile = value;
-                this.RaiseEvent(this.FilenameChanged);
+                if (this._filename != value)
+                {
+                    this._filename = value;
+                    this.HasChanged = true;
+                    this.RaiseEvent(this.FilenameChanged);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets/Sets the Title of the Document, if a filename is present that is always returned instead of any set title
+        /// </summary>
+        public String Title
+        {
+            get
+            {
+                if (this._filename != null && !this._filename.Equals(String.Empty))
+                {
+                    return Path.GetFileName(this._filename);
+                }
+                else
+                {
+                    return this._title;
+                }
+            }
+            set
+            {
+                if (this._title != value)
+                {
+                    this._title = value;
+                    this.RaiseEvent(this.TitleChanged);
+                }
             }
         }
 
@@ -123,8 +159,6 @@ namespace VDS.RDF.Utilities.Editor
 
         }
 
-        #region Validation
-
         /// <summary>
         /// Gets/Sets the Current Validator
         /// </summary>
@@ -155,10 +189,6 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
-        #endregion
-
-        #region Highlighting
-
         public bool IsHighlightingEnabled
         {
             get
@@ -171,16 +201,9 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
-        public void SetHighlighter(String name)
-        {
-            this._editor.SetHighlighter(name);
-        }
-
         #endregion
 
-        #endregion
-
-        #region Actions
+        #region Text Manipulation
 
         public char GetCharAt(int index)
         {
@@ -198,34 +221,6 @@ namespace VDS.RDF.Utilities.Editor
         }
 
         public void ScrollToLine(int line)
-        {
-
-        }
-
-        public void Save()
-        {
-            if (this._currFile != null && !this._currFile.Equals(String.Empty))
-            {
-                //TODO: Get the target Encoding from somewhere
-                using (StreamWriter writer = new StreamWriter(this._currFile))
-                {
-                    writer.Write(this.Text);
-                    writer.Close();
-                }
-                this.RaiseEvent(this.Saved);
-            }
-        }
-
-        public void SaveAs(String filename)
-        {
-            if (filename == null) throw new ArgumentNullException("filename");
-            if (filename.Equals(String.Empty)) throw new ArgumentException("filename", "Filename cannot be empty");
-            this._currFile = filename;
-            this.RaiseEvent(this.FilenameChanged);
-            this.Save();
-        }
-
-        public void Reload()
         {
 
         }
@@ -257,7 +252,62 @@ namespace VDS.RDF.Utilities.Editor
 
         #endregion
 
-        #region Events
+        #region File Actions
+
+        public void Save()
+        {
+            if (this._filename != null && !this._filename.Equals(String.Empty))
+            {
+                //TODO: Get the target Encoding from somewhere
+                using (StreamWriter writer = new StreamWriter(this._filename, false, this._encoding))
+                {
+                    writer.Write(this.Text);
+                    writer.Close();
+                }
+                this.RaiseEvent(this.Saved);
+                this.HasChanged = false;
+            }
+        }
+
+        public void SaveAs(String filename)
+        {
+            if (filename == null) throw new ArgumentNullException("filename");
+            if (filename.Equals(String.Empty)) throw new ArgumentException("filename", "Filename cannot be empty");
+            this._filename = filename;
+            this.RaiseEvent(this.FilenameChanged);
+            this.Save();
+        }
+
+        public void Open(String filename)
+        {
+            this.Filename = filename;
+            using (StreamReader reader = new StreamReader(this._filename))
+            {
+                this._encoding = reader.CurrentEncoding;
+                this.Text = reader.ReadToEnd();
+                reader.Close();
+            }
+            this.RaiseEvent(this.Opened);
+        }
+
+        public void Reload()
+        {
+
+        }
+
+        #endregion
+
+        #region Text Editor Events
+
+        private void HandleTextChanged(Object sender, TextEditorEventArgs<T> args)
+        {
+            this.HasChanged = true;
+            this.RaiseEvent(sender, this.TextChanged);
+        }
+
+        #endregion
+
+        #region Document Events
 
         private void RaiseEvent(DocumentChangedHandler<T> evt)
         {
@@ -276,9 +326,13 @@ namespace VDS.RDF.Utilities.Editor
 
         public event DocumentChangedHandler<T> Reloaded;
 
-        public event DocumentChangedHandler<T> DetectedSyntaxChanged;
+        public event DocumentChangedHandler<T> Opened;
+
+        public event DocumentChangedHandler<T> SyntaxChanged;
 
         public event DocumentChangedHandler<T> FilenameChanged;
+
+        public event DocumentChangedHandler<T> TitleChanged;
 
         public event DocumentChangedHandler<T> Saved;
 

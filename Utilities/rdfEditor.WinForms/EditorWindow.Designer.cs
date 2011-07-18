@@ -266,6 +266,7 @@
             this.mnuFileExit.Name = "mnuFileExit";
             this.mnuFileExit.Size = new System.Drawing.Size(257, 22);
             this.mnuFileExit.Text = "Exit";
+            this.mnuFileExit.Click += new System.EventHandler(this.mnuFileExit_Click);
             // 
             // mnuEdit
             // 

@@ -12,7 +12,8 @@ namespace VDS.RDF.Utilities.Editor.WinForms
         public WinFormsEditorAdaptor()
             : base(new TextEditorControl())
         {
-
+            this.Control.Dock = DockStyle.Fill;
+            this.Control.TextChanged += new EventHandler(this.HandleTextChanged);
         }
 
         public override string Text
@@ -130,6 +131,11 @@ namespace VDS.RDF.Utilities.Editor.WinForms
         public override void SetHighlighter(string name)
         {
             this.Control.SetHighlighting(name);
+        }
+
+        private void HandleTextChanged(Object sender, EventArgs args)
+        {
+            this.RaiseTextChanged(sender);
         }
     }
 }

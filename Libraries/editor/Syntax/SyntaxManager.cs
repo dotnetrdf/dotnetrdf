@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Xml;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Validation;

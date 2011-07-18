@@ -15,17 +15,39 @@ namespace VDS.RDF.Utilities.Editor.WinForms
     public partial class EditorWindow : Form
     {
         private Editor<TextEditorControl> _editor;
-        private int _nextID = 0;
 
         public EditorWindow()
         {
             InitializeComponent();
+
+            //Initialise Highlighting
             WinFormsHighlightingManager.Initialise();
 
+            //Configure the Editor object appropriately
             this._editor = new Editor<TextEditorControl>(new WinFormsEditorFactory());
+            this._editor.DocumentManager.DefaultSaveChangesCallback = new SaveChangesCallback<TextEditorControl>(this.SaveChangesCallback);
+            this._editor.DocumentManager.DefaultSaveAsCallback = new SaveAsCallback<TextEditorControl>(this.SaveAsCallback);
+
+            //Display an initial document for editing
             this.AddTextEditor();
 
+            //Register event handlers
+            this.FormClosing += new FormClosingEventHandler(EditorWindow_FormClosing);
             this.tabFiles.TabIndexChanged += new EventHandler(tabFiles_TabIndexChanged);
+        }
+
+        #region Event Handlers
+
+        void EditorWindow_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (this._editor.DocumentManager.Count > 0)
+            {
+                this.mnuFileCloseAll_Click(sender, e);
+                if (this._editor.DocumentManager.Count > 0)
+                {
+                    e.Cancel = true;
+                }
+            }
         }
 
         void tabFiles_TabIndexChanged(object sender, EventArgs e)
@@ -33,25 +55,16 @@ namespace VDS.RDF.Utilities.Editor.WinForms
             this._editor.DocumentManager.SwitchTo(this.tabFiles.SelectedIndex);
         }
 
-        private TabPage GetTab()
-        {
-            return new TabPage("Untitled " + (++this._nextID));
-        }
+        #endregion
 
         private void AddTextEditor()
         {
-            this.AddTextEditor(this.GetTab());
+            this.AddTextEditor(new TabPage());
         }
 
         private void AddTextEditor(TabPage tab)
         {
-            //Create the Document
-            Document<TextEditorControl> doc = new Document<TextEditorControl>(this._editor.TextEditorFactory);
-            doc.TextEditor.Control.Dock = DockStyle.Fill;
-
-            //Add to Document Manager
-            this._editor.DocumentManager.Add(doc);
-
+            Document<TextEditorControl> doc = this._editor.DocumentManager.New();
             this.AddTextEditor(tab, doc);
         }
 
@@ -66,16 +79,29 @@ namespace VDS.RDF.Utilities.Editor.WinForms
                         tab.Text = Path.GetFileName(e.Document.Filename);
                     }
                 });
+            doc.TitleChanged +=new DocumentChangedHandler<TextEditorControl>((sender, e) =>
+                {
+                    if (e.Document.Title != null && !e.Document.Title.Equals(String.Empty))
+                    {
+                        tab.Text = e.Document.Title;
+                    }
+                });
 
             //Set Tab title where appropriate
             if (doc.Filename != null && !doc.Filename.Equals(String.Empty))
             {
                 tab.Text = Path.GetFileName(doc.Filename);
             }
+            else if (doc.Title != null && !doc.Title.Equals(String.Empty))
+            {
+                tab.Text = doc.Title;
+            }
 
             //Add to Tabs
             this.tabFiles.TabPages.Add(tab);
             tab.Controls.Add(doc.TextEditor.Control);
+
+            //Add appropriate event handlers on tabs
             tab.Enter +=
                 new EventHandler((sender, e) =>
                 {
@@ -94,19 +120,16 @@ namespace VDS.RDF.Utilities.Editor.WinForms
             this.AddTextEditor();
         }
 
-        #endregion
-
         private void mnuFileNewFromActive_Click(object sender, EventArgs e)
         {
             Document<TextEditorControl> doc = this._editor.DocumentManager.ActiveDocument;
             if (doc != null)
             {
-                this._editor.DocumentManager.Copy(this._editor.TextEditorFactory, true);
-                Document<TextEditorControl> newDoc = this._editor.DocumentManager.ActiveDocument;
-                newDoc.TextEditor.Control.Dock = DockStyle.Fill;
+                Document<TextEditorControl> newDoc = this._editor.DocumentManager.NewFromActive(true);
 
-                TabPage tab = this.GetTab();
+                TabPage tab = new TabPage(newDoc.Title);
                 this.AddTextEditor(tab, newDoc);
+                this.tabFiles.SelectedIndex = this.tabFiles.TabCount - 1;
             }
             else
             {
@@ -135,19 +158,8 @@ namespace VDS.RDF.Utilities.Editor.WinForms
             Document<TextEditorControl> doc = this._editor.DocumentManager.ActiveDocument;
             if (doc != null)
             {
-                sfdSave.Filter = Constants.AllFilter;
-                if (doc.Filename == null || doc.Filename.Equals(String.Empty))
-                {
-                    sfdSave.Title = "Save " + this.tabFiles.SelectedTab.Text + " As...";
-                }
-                else
-                {
-                    sfdSave.Title = "Save " + Path.GetFileName(doc.Filename) + " As...";
-                    sfdSave.InitialDirectory = Path.GetDirectoryName(doc.Filename);
-                    sfdSave.FileName = doc.Filename;
-                }
-
-                if (sfdSave.ShowDialog() == DialogResult.OK)
+                String filename = this.SaveAsCallback(doc);
+                if (filename != null)
                 {
                     doc.SaveAs(sfdSave.FileName);
                 }
@@ -168,19 +180,14 @@ namespace VDS.RDF.Utilities.Editor.WinForms
                 } 
                 else
                 {
-                    doc = new Document<TextEditorControl>(this._editor.TextEditorFactory, this.ofdOpen.FileName);
-                    this._editor.DocumentManager.Add(doc, true);
-                    doc.TextEditor.Control.Dock = DockStyle.Fill;
-                }
- 
-                using (StreamReader reader = new StreamReader(doc.Filename))
-                {
-                    doc.Text = reader.ReadToEnd();
+                    doc = this._editor.DocumentManager.New(Path.GetFileName(this.ofdOpen.FileName), true);
                 }
 
+                //Open the file and display in new tab if necessary
+                doc.Open(this.ofdOpen.FileName);
                 if (!ReferenceEquals(active, doc))
                 {
-                    this.AddTextEditor(this.GetTab(), doc);
+                    this.AddTextEditor(new TabPage(doc.Title), doc);
                 }
             }
         }
@@ -189,39 +196,82 @@ namespace VDS.RDF.Utilities.Editor.WinForms
         {
             if (this._editor.DocumentManager.ActiveDocument != null)
             {
-                //TODO: Prompt user to save changes (if any)
-                this._editor.DocumentManager.Close();
-                this.tabFiles.TabPages.RemoveAt(this.tabFiles.SelectedIndex);
+                if (this._editor.DocumentManager.Close())
+                {
+                    this.tabFiles.TabPages.RemoveAt(this.tabFiles.SelectedIndex);
+                }
             }
         }
 
         private void mnuFileCloseAll_Click(object sender, EventArgs e)
         {
-            for (int i = 0; i < this._editor.DocumentManager.Count; i++)
-            {
-                //TODO: Prompt user to save changes (if any)
-            }
             this._editor.DocumentManager.CloseAll();
             this.tabFiles.TabPages.Clear();
+
+            //Recreate new Tabs for any Documents that were not closed
+            foreach (Document<TextEditorControl> doc in this._editor.DocumentManager.Documents)
+            {
+                this.AddTextEditor(new TabPage(doc.Title), doc);
+            }
         }
 
         private void mnuSaveAll_Click(object sender, EventArgs e)
         {
             this._editor.DocumentManager.SaveAll();
-            for (int i = 0; i < this._editor.DocumentManager.Count; i++)
+        }
+
+        private void mnuFileExit_Click(object sender, EventArgs e)
+        {
+            mnuFileCloseAll_Click(sender, e);
+            if (this.tabFiles.TabCount > 0)
             {
-                Document<TextEditorControl> doc = this._editor.DocumentManager[i];
-                if (doc.Filename == null || doc.Filename.Equals(String.Empty))
-                {
-                    this.sfdSave.Filter = Constants.AllFilter;
-                    this.sfdSave.Title = "Save " + this.tabFiles.TabPages[i].Text + " As...";
-                    if (this.sfdSave.ShowDialog() == DialogResult.OK)
-                    {
-                        doc.SaveAs(this.sfdSave.FileName);
-                    }
-                }
+                Application.Exit();
             }
         }
 
+        #endregion
+
+        #region Callbacks
+
+        private SaveChangesMode SaveChangesCallback(Document<TextEditorControl> doc)
+        {
+            DialogResult result = MessageBox.Show(doc.Title + " has unsaved changes, do you wish to save these changes before closing the document?", "Save Changes", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+            switch (result)
+            {
+                case DialogResult.Yes:
+                    return SaveChangesMode.Save;
+                case DialogResult.Cancel:
+                    return SaveChangesMode.Cancel;
+                case DialogResult.No:
+                default:
+                    return SaveChangesMode.Discard;
+            }
+        }
+
+        private String SaveAsCallback(Document<TextEditorControl> doc)
+        {
+            sfdSave.Filter = Constants.AllFilter;
+            if (doc.Filename == null || doc.Filename.Equals(String.Empty))
+            {
+                sfdSave.Title = "Save " + doc.Title + " As...";
+            }
+            else
+            {
+                sfdSave.Title = "Save " + Path.GetFileName(doc.Filename) + " As...";
+                sfdSave.InitialDirectory = Path.GetDirectoryName(doc.Filename);
+                sfdSave.FileName = doc.Filename;
+            }
+
+            if (this.sfdSave.ShowDialog() == DialogResult.OK)
+            {
+                return this.sfdSave.FileName;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
     }
 }

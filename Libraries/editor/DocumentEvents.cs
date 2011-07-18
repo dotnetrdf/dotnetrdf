@@ -5,7 +5,7 @@ using System.Text;
 
 namespace VDS.RDF.Utilities.Editor
 {
-    public class DocumentChangedEventArgs<T>
+    public class DocumentChangedEventArgs<T> : EventArgs
     {
         private Document<T> _doc;
 
@@ -24,4 +24,17 @@ namespace VDS.RDF.Utilities.Editor
     }
 
     public delegate void DocumentChangedHandler<T>(Object sender, DocumentChangedEventArgs<T> args);
+
+    public delegate bool DocumentCallback<T>(Document<T> doc);
+
+    public enum SaveChangesMode
+    {
+        Save,
+        Discard,
+        Cancel
+    }
+
+    public delegate SaveChangesMode SaveChangesCallback<T>(Document<T> doc);
+
+    public delegate String SaveAsCallback<T>(Document<T> doc);
 }

@@ -7,9 +7,37 @@ namespace VDS.RDF.Utilities.Editor
 {
     public class DocumentManager<T>
     {
+        //General State
+        private ITextEditorAdaptorFactory<T> _factory;
         private List<Document<T>> _documents = new List<Document<T>>();
         private int _current = 0;
         private GlobalOptions<T> _options = new GlobalOptions<T>();
+        private String _defaultTitle = "Untitled";
+        private int _nextID = 0;
+
+        //Default Callbacks
+        private SaveChangesCallback<T> _defaultSaveChangesCallback = new SaveChangesCallback<T>(d => SaveChangesMode.Discard);
+        private SaveAsCallback<T> _defaultSaveAsCallback = new SaveAsCallback<T>(d => null);
+
+        public DocumentManager(ITextEditorAdaptorFactory<T> factory)
+        {
+            if (factory == null) throw new ArgumentNullException("factory");
+            this._factory = factory;
+        }
+
+        #region General State
+
+        public String DefaultTitle
+        {
+            get
+            {
+                return this._defaultTitle;
+            }
+            set
+            {
+                this._defaultTitle = value;
+            }
+        }
 
         public GlobalOptions<T> Options
         {
@@ -65,6 +93,42 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
+        #endregion
+
+        #region Default Callbacks
+
+        public SaveChangesCallback<T> DefaultSaveChangesCallback
+        {
+            get
+            {
+                return this._defaultSaveChangesCallback;
+            }
+            set
+            {
+                if (value != null)
+                {
+                    this._defaultSaveChangesCallback = value;
+                }
+            }
+        }
+
+        public SaveAsCallback<T> DefaultSaveAsCallback
+        {
+            get
+            {
+                return this._defaultSaveAsCallback;
+            }
+            set
+            {
+                if (value != null)
+                {
+                    this._defaultSaveAsCallback = value;
+                }
+            }
+        }
+
+        #endregion
+
         #region Document Management
 
         private void CorrectIndex()
@@ -83,42 +147,141 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
-        public void Add(Document<T> doc)
+        public Document<T> New()
         {
-            this.Add(doc, false);
+            return this.New(this._defaultTitle + (++this._nextID));
         }
 
-        public void Add(Document<T> doc, bool switchTo)
+        public Document<T> New(String title)
         {
+            return this.New(title, false);
+        }
+
+        public Document<T> New(String title, bool switchTo)
+        {
+            Document<T> doc = new Document<T>(this._factory.CreateAdaptor(), null, title);
             this._documents.Add(doc);
             if (switchTo)
             {
                 this._current = this._documents.Count - 1;
                 this.RaiseActiveDocumentChanged(this.ActiveDocument);
             }
+            return doc;
         }
 
-        public void Close()
+        public Document<T> NewFromActive()
+        {
+            return this.NewFromExisting(this.ActiveDocument, false);
+        }
+
+        public Document<T> NewFromActive(bool switchTo)
+        {
+            return this.NewFromExisting(this.ActiveDocument, switchTo);
+        }
+
+        public Document<T> NewFromExisting(Document<T> doc)
+        {
+            return this.NewFromExisting(doc, false);
+        }
+
+        public Document<T> NewFromExisting(Document<T> doc, bool switchTo)
+        {
+            Document<T> clonedDoc = this.New();
+            clonedDoc.Text = doc.Text;
+            if (switchTo)
+            {
+                this._current = this._documents.Count - 1;
+                this.RaiseActiveDocumentChanged(this.ActiveDocument);
+            }
+            return clonedDoc;
+        }
+
+        public bool Close()
+        {
+            return this.Close(this._defaultSaveChangesCallback, this._defaultSaveAsCallback);
+        }
+
+        public bool Close(SaveChangesCallback<T> callback, SaveAsCallback<T> saveAs)
         {
             if (this._documents.Count > 0)
             {
+                if (!this.Close(this.ActiveDocument, callback, saveAs)) return false;
                 this._documents.RemoveAt(this._current);
                 this.CorrectIndex();
+                return true;
+            }
+            else
+            {
+                return false;
             }
         }
 
-        public void Close(int index)
+        public bool Close(int index, SaveChangesCallback<T> callback, SaveAsCallback<T> saveAs)
         {
             if (index >= 0 && index < this._documents.Count)
             {
+                Document<T> doc = this._documents[index];
+                if (!this.Close(doc, callback, saveAs)) return false;
                 this._documents.RemoveAt(index);
                 this.CorrectIndex();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        private bool Close(Document<T> doc, SaveChangesCallback<T> callback, SaveAsCallback<T> saveAs)
+        {
+            //Get Confirmation to save/discard changes - allows application to cancel close
+            if (doc.HasChanged)
+            {
+                switch (callback(doc))
+                {
+                    case SaveChangesMode.Cancel:
+                        return false;
+                    case SaveChangesMode.Discard:
+                        //Do nothing
+                        return true;
+                    case SaveChangesMode.Save:
+                        if (doc.Filename != null && !doc.Filename.Equals(String.Empty))
+                        {
+                            doc.Save();
+                        }
+                        else
+                        {
+                            String filename = saveAs(doc);
+                            if (filename != null && !filename.Equals(String.Empty))
+                            {
+                                doc.SaveAs(filename);
+                            }
+                        }
+                        return true;
+                    default:
+                        return true;
+                }
+            }
+            else
+            {
+                return true;
             }
         }
 
         public void CloseAll()
         {
-            this._documents.Clear();
+            this.CloseAll(this._defaultSaveChangesCallback, this._defaultSaveAsCallback);
+        }
+
+        public void CloseAll(SaveChangesCallback<T> callback, SaveAsCallback<T> saveAs)
+        {
+            while (this._documents.Count > 0)
+            {
+                //Get Confirmation to save/discard changes - allows application to cancel close
+                Document<T> doc = this._documents[0];
+                if (!this.Close(doc, callback, saveAs)) return;
+                this._documents.RemoveAt(0);
+            }
         }
 
         public void ReloadAll()
@@ -128,7 +291,26 @@ namespace VDS.RDF.Utilities.Editor
 
         public void SaveAll()
         {
-            this._documents.ForEach(d => d.Save());
+            this.SaveAll(this._defaultSaveAsCallback);
+        }
+
+        public void SaveAll(SaveAsCallback<T> saveAs)
+        {
+            foreach (Document<T> doc in this._documents)
+            {
+                if (doc.Filename != null && !doc.Filename.Equals(String.Empty))
+                {
+                    doc.Save();
+                }
+                else
+                {
+                    String filename = saveAs(doc);
+                    if (filename != null && !filename.Equals(String.Empty))
+                    {
+                        doc.SaveAs(filename);
+                    }
+                }
+            }
         }
 
         public void SwitchTo(int index)
@@ -162,28 +344,6 @@ namespace VDS.RDF.Utilities.Editor
             {
                 this._current++;
                 this.CorrectIndex();
-            }
-        }
-
-        public void Copy(ITextEditorAdaptorFactory<T> factory)
-        {
-            this.Copy(factory, this.ActiveDocument, false);
-        }
-
-        public void Copy(ITextEditorAdaptorFactory<T> factory, bool switchTo)
-        {
-            this.Copy(factory, this.ActiveDocument, switchTo);
-        }
-
-        public void Copy(ITextEditorAdaptorFactory<T> factory, Document<T> doc, bool switchTo)
-        {
-            Document<T> clonedDoc = new Document<T>(factory.CreateAdaptor());
-            clonedDoc.Text = doc.Text;
-            this._documents.Add(clonedDoc);
-            if (switchTo)
-            {
-                this._current = this._documents.Count - 1;
-                this.RaiseActiveDocumentChanged(this.ActiveDocument);
             }
         }
 
