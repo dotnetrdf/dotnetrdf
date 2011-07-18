@@ -568,23 +568,23 @@ namespace VDS.RDF.Query
             }
 #endif
 
-            #if DEBUG
+#if DEBUG
             //HTTP Debugging
             if (Options.HttpDebugging)
             {
                 Tools.HttpDebugRequest(httpRequest);
             }
-            #endif
+#endif
 
             httpResponse = (HttpWebResponse)httpRequest.GetResponse();
 
-            #if DEBUG
+#if DEBUG
             //HTTP Debugging
             if (Options.HttpDebugging)
             {
                 Tools.HttpDebugResponse(httpResponse);
             }
-            #endif
+#endif
 
             return httpResponse;
         }
