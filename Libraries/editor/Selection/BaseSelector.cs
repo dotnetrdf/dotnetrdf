@@ -37,14 +37,14 @@ namespace VDS.RDF.Utilities.Editor.Selection
             //select won't select the surrounding symbol properly
             if (selStart > 0 && selLength > 0 && !this._includeDelim)
             {
-                if (this.IsStartingDeliminator(doc.GetCharAt(selStart-1)))
+                if (this.IsStartingDeliminator(doc.TextEditor.GetCharAt(selStart-1)))
                 {
                     selStart--;
                     selLength++;
                 }
                 if (selStart + selLength < doc.TextLength - 1)
                 {
-                    if (this.IsEndingDeliminator(doc.GetCharAt(selStart + selLength))) selLength++;
+                    if (this.IsEndingDeliminator(doc.TextEditor.GetCharAt(selStart + selLength))) selLength++;
                 }
             }
 
@@ -60,7 +60,7 @@ namespace VDS.RDF.Utilities.Editor.Selection
                 if (selStart == 0) break;
 
                 //Otherwise check if character at start of selection is a boundary
-                char current = doc.GetCharAt(selStart);
+                char current = doc.TextEditor.GetCharAt(selStart);
                 if (this.IsStartingDeliminator(current))
                 {
                     endDelim = this.RequireMatchingDeliminator(current);
@@ -69,7 +69,7 @@ namespace VDS.RDF.Utilities.Editor.Selection
             }
             if (!this._includeDelim)
             {
-                if (selStart > 0 || this.IsStartingDeliminator(doc.GetCharAt(selStart)))
+                if (selStart > 0 || this.IsStartingDeliminator(doc.TextEditor.GetCharAt(selStart)))
                 {
                     selStart++;
                     selLength--;
@@ -85,7 +85,7 @@ namespace VDS.RDF.Utilities.Editor.Selection
                 if (selStart + selLength == doc.TextLength) break;
 
                 //Otherwise check if character after end of selection is a boundary
-                char current = doc.GetCharAt(selStart + selLength);
+                char current = doc.TextEditor.GetCharAt(selStart + selLength);
                 if (endDelim != null )
                 {
                     //If a matching End Deliminator is required then stop when that is reached
@@ -103,8 +103,8 @@ namespace VDS.RDF.Utilities.Editor.Selection
             }
 
             //Select the Symbol Text
-            doc.Select(selStart, selLength);
-            doc.ScrollToLine(doc.GetLineByOffset(selStart));
+            doc.TextEditor.Select(selStart, selLength);
+            doc.TextEditor.ScrollToLine(doc.TextEditor.GetLineByOffset(selStart));
         }
 
         /// <summary>

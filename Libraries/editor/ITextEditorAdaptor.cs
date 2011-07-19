@@ -40,6 +40,46 @@ namespace VDS.RDF.Utilities.Editor
             set;
         }
 
+        bool WordWrap
+        {
+            get;
+            set;
+        }
+
+        bool ShowLineNumbers
+        {
+            get;
+            set;
+        }
+
+        bool ShowEndOfLine
+        {
+            get;
+            set;
+        }
+
+        bool ShowSpaces
+        {
+            get;
+            set;
+        }
+
+        bool ShowTabs
+        {
+            get;
+            set;
+        }
+
+        char GetCharAt(int offset);
+
+        String GetText(int offset, int length);
+
+        void Select(int offset, int length);
+
+        int GetLineByOffset(int offset);
+
+        void ScrollToLine(int line);
+
         void Cut();
 
         void Copy();

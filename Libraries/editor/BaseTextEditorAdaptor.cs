@@ -22,6 +22,8 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
+        #region State
+
         public abstract string Text
         {
             get;
@@ -50,6 +52,63 @@ namespace VDS.RDF.Utilities.Editor
             set;
         }
 
+        public abstract bool WordWrap
+        {
+            get;
+            set;
+        }
+
+        public abstract bool ShowLineNumbers
+        {
+            get;
+            set;
+        }
+
+        public abstract bool ShowEndOfLine
+        {
+            get;
+            set;
+        }
+
+        public abstract bool ShowSpaces
+        {
+            get;
+            set;
+        }
+
+        public abstract bool ShowTabs
+        {
+            get;
+            set;
+        }
+        #endregion
+
+        #region Visual Manuipulation
+
+        public abstract void ScrollToLine(int line);
+
+        #endregion
+
+        #region Text Manipulation
+
+        public abstract int GetLineByOffset(int offset);
+
+        public virtual String GetText(int offset, int length)
+        {
+            return this.Text.Substring(offset, length);
+        }
+
+        public virtual char GetCharAt(int offset)
+        {
+            return this.Text[offset];
+        }
+
+        public virtual void Select(int offset, int length)
+        {
+            this.SelectionStart = offset;
+            this.SelectionLength = length;
+        }
+
         public abstract void Cut();
 
         public abstract void Copy();
@@ -60,11 +119,19 @@ namespace VDS.RDF.Utilities.Editor
 
         public abstract void Redo();
 
+        #endregion
+
+        #region Highlighting
+
         public abstract void SetHighlighter(String name);
 
         public abstract void AddErrorHighlight(Exception ex);
 
         public abstract void ClearErrorHighlights();
+
+        #endregion
+
+        #region Events
 
         private void RaiseEvent(TextEditorChangedHandler<T> evt)
         {
@@ -85,5 +152,7 @@ namespace VDS.RDF.Utilities.Editor
         }
 
         public event TextEditorChangedHandler<T> TextChanged;
+
+        #endregion
     }
 }

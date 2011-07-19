@@ -41,6 +41,28 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AutoComplete\AutoCompleteDefinition.cs" />
+    <Compile Include="AutoComplete\AutoCompleteManager.cs" />
+    <Compile Include="AutoComplete\AutoCompleteState.cs" />
+    <Compile Include="AutoComplete\BaseAutoCompleter.cs" />
+    <Compile Include="AutoComplete\Data\BaseCompletionData.cs" />
+    <Compile Include="AutoComplete\Data\BlankNodeData.cs" />
+    <Compile Include="AutoComplete\Data\ICompletionData.cs" />
+    <Compile Include="AutoComplete\Data\KeywordData.cs" />
+    <Compile Include="AutoComplete\Data\BaseDeclarationData.cs" />
+    <Compile Include="AutoComplete\Data\NewBlankNodeData.cs" />
+    <Compile Include="AutoComplete\Data\DefaultPrefixDeclarationData.cs" />
+    <Compile Include="AutoComplete\Data\PrefixCompletionData.cs" />
+    <Compile Include="AutoComplete\Data\QNameData.cs" />
+    <Compile Include="AutoComplete\Data\VariableData.cs" />
+    <Compile Include="AutoComplete\IAutoCompleter.cs" />
+    <Compile Include="AutoComplete\NamespaceTerm.cs" />
+    <None Include="AutoComplete\Notation3AutoCompleter.cs" />
+    <None Include="AutoComplete\NTriplesAutoCompleter.cs" />
+    <None Include="AutoComplete\SparqlAutoCompleter.cs" />
+    <None Include="AutoComplete\SparqlUpdateAutoCompleter.cs" />
+    <None Include="AutoComplete\TurtleAutoCompleter.cs" />
+    <Compile Include="AutoComplete\Vocabularies\VocabularyDefinition.cs" />
     <Compile Include="BaseTextEditorAdaptor.cs" />
     <Compile Include="Document.cs" />
     <Compile Include="DocumentEvents.cs" />
@@ -65,6 +87,9 @@
       <Project>{BFBAC159-1E60-4D03-8ACA-D34E31EB83BF}</Project>
       <Name>dotNetRDF</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="AutoComplete\Vocabularies\xsd.ttl" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -33,7 +33,7 @@ namespace VDS.RDF.Utilities.Editor.WinForms
 
             //Register event handlers
             this.FormClosing += new FormClosingEventHandler(EditorWindow_FormClosing);
-            this.tabFiles.TabIndexChanged += new EventHandler(tabFiles_TabIndexChanged);
+            this.tabFiles.SelectedIndexChanged += new EventHandler(tabFiles_SelectedIndexChanged);
         }
 
         #region Event Handlers
@@ -50,9 +50,20 @@ namespace VDS.RDF.Utilities.Editor.WinForms
             }
         }
 
-        void tabFiles_TabIndexChanged(object sender, EventArgs e)
+        void tabFiles_SelectedIndexChanged(object sender, EventArgs e)
         {
-            this._editor.DocumentManager.SwitchTo(this.tabFiles.SelectedIndex);
+            if (this.tabFiles.SelectedIndex >= 0)
+            {
+                try
+                {
+                    this._editor.DocumentManager.SwitchTo(this.tabFiles.SelectedIndex);
+                }
+                catch (IndexOutOfRangeException)
+                {
+                    //Ignore this since we may get this when existing because of events firing after objects have already
+                    //been thrown away
+                }
+            }
         }
 
         private void HandleValidatorChanged(Object sender, DocumentChangedEventArgs<TextEditorControl> args)
@@ -92,6 +103,8 @@ namespace VDS.RDF.Utilities.Editor.WinForms
         }
 
         #endregion
+
+        #region Text Editor Management
 
         private void AddTextEditor()
         {
@@ -158,11 +171,15 @@ namespace VDS.RDF.Utilities.Editor.WinForms
                 });
         }
 
+        #endregion
+
         #region File Menu
 
         private void mnuFileNew_Click(object sender, EventArgs e)
         {
             this.AddTextEditor();
+            this._editor.DocumentManager.SwitchTo(this._editor.DocumentManager.Count - 1);
+            this.tabFiles.SelectedIndex = this.tabFiles.TabCount - 1;
         }
 
         private void mnuFileNewFromActive_Click(object sender, EventArgs e)
@@ -209,6 +226,11 @@ namespace VDS.RDF.Utilities.Editor.WinForms
                     doc.SaveAs(sfdSave.FileName);
                 }
             }
+        }
+
+        private void mnuFileUseUtf8Bom_Click(object sender, EventArgs e)
+        {
+            GlobalOptions.UseBomForUtf8 = this.mnuFileUseUtf8Bom.Checked;
         }
 
         private void mnuFileOpen_Click(object sender, EventArgs e)
@@ -268,9 +290,135 @@ namespace VDS.RDF.Utilities.Editor.WinForms
         private void mnuFileExit_Click(object sender, EventArgs e)
         {
             mnuFileCloseAll_Click(sender, e);
-            if (this.tabFiles.TabCount > 0)
+            if (this.tabFiles.TabCount == 0)
             {
                 Application.Exit();
+            }
+        }
+
+        #endregion
+
+        #region Edit Menu
+
+        private void mnuEditUndo_Click(object sender, EventArgs e)
+        {
+            if (this._editor.DocumentManager.ActiveDocument != null)
+            {
+                this._editor.DocumentManager.ActiveDocument.TextEditor.Undo();
+            }
+        }
+
+        private void mnuEditRedo_Click(object sender, EventArgs e)
+        {
+            if (this._editor.DocumentManager.ActiveDocument != null)
+            {
+                this._editor.DocumentManager.ActiveDocument.TextEditor.Redo();
+            }
+        }
+
+        private void mnuEditCut_Click(object sender, EventArgs e)
+        {
+            if (this._editor.DocumentManager.ActiveDocument != null)
+            {
+                this._editor.DocumentManager.ActiveDocument.TextEditor.Cut();
+            }
+        }
+
+        private void mnuEditCopy_Click(object sender, EventArgs e)
+        {
+            if (this._editor.DocumentManager.ActiveDocument != null)
+            {
+                this._editor.DocumentManager.ActiveDocument.TextEditor.Copy();
+            }
+        }
+
+        private void mnuEditPaste_Click(object sender, EventArgs e)
+        {
+            if (this._editor.DocumentManager.ActiveDocument != null)
+            {
+                this._editor.DocumentManager.ActiveDocument.TextEditor.Paste();
+            }
+        }
+
+        #endregion
+
+        #region View Menu
+
+        private void mnuViewNextDocument_Click(object sender, EventArgs e)
+        {
+            if (this._editor.DocumentManager.Count > 1)
+            {
+                this._editor.DocumentManager.NextDocument();
+                if (this.tabFiles.SelectedIndex < this.tabFiles.TabCount - 1)
+                {
+                    this.tabFiles.SelectedIndex++;
+                }
+                else
+                {
+                    this.tabFiles.SelectedIndex = 0;
+                }
+            }
+        }
+
+        private void mnuViewPrevDocument_Click(object sender, EventArgs e)
+        {
+            if (this._editor.DocumentManager.Count > 1)
+            {
+                this._editor.DocumentManager.PrevDocument();
+                if (this.tabFiles.SelectedIndex > 0)
+                {
+                    this.tabFiles.SelectedIndex--;
+                }
+                else
+                {
+                    this.tabFiles.SelectedIndex = this.tabFiles.TabCount - 1;
+                }
+            }
+        }
+
+        private void mnuViewLineNumbers_Click(object sender, EventArgs e)
+        {
+            if (this._editor.DocumentManager.ActiveDocument != null)
+            {
+                this._editor.DocumentManager.ActiveDocument.TextEditor.ShowLineNumbers = this.mnuViewLineNumbers.Checked;
+            }
+        }
+
+        private void mnuShowSpecialEol_Click(object sender, EventArgs e)
+        {
+            if (this._editor.DocumentManager.ActiveDocument != null)
+            {
+                this._editor.DocumentManager.ActiveDocument.TextEditor.ShowEndOfLine = this.mnuShowSpecialEol.Checked;
+            }
+        }
+
+        private void mnuShowSpecialSpaces_Click(object sender, EventArgs e)
+        {
+            if (this._editor.DocumentManager.ActiveDocument != null)
+            {
+                this._editor.DocumentManager.ActiveDocument.TextEditor.ShowSpaces = this.mnuShowSpecialSpaces.Checked;
+            }
+        }
+
+        private void mnuShowSpecialTabs_Click(object sender, EventArgs e)
+        {
+            if (this._editor.DocumentManager.ActiveDocument != null)
+            {
+                this._editor.DocumentManager.ActiveDocument.TextEditor.ShowTabs = this.mnuShowSpecialTabs.Checked;
+            }
+        }
+
+        private void mnuShowSpecialAll_Click(object sender, EventArgs e)
+        {
+            if (this._editor.DocumentManager.ActiveDocument != null)
+            {
+                bool flag = this.mnuShowSpecialAll.Checked;
+                this.mnuShowSpecialEol.Checked = flag;
+                this.mnuShowSpecialSpaces.Checked = flag;
+                this.mnuShowSpecialTabs.Checked = flag;
+                this._editor.DocumentManager.ActiveDocument.TextEditor.ShowEndOfLine = flag;
+                this._editor.DocumentManager.ActiveDocument.TextEditor.ShowSpaces = flag;
+                this._editor.DocumentManager.ActiveDocument.TextEditor.ShowTabs = flag;
             }
         }
 

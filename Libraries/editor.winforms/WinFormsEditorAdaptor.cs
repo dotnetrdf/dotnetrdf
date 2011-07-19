@@ -20,6 +20,8 @@ namespace VDS.RDF.Utilities.Editor.WinForms
             this.Control.TextChanged += new EventHandler(this.HandleTextChanged);
         }
 
+        #region State
+
         public override string Text
         {
             get
@@ -96,6 +98,100 @@ namespace VDS.RDF.Utilities.Editor.WinForms
             }
         }
 
+        public override bool ShowLineNumbers
+        {
+            get
+            {
+                return this.Control.ShowLineNumbers;
+            }
+            set
+            {
+                this.Control.ShowLineNumbers = value;
+            }
+        }
+
+        public override bool ShowEndOfLine
+        {
+            get
+            {
+                return this.Control.ShowEOLMarkers;
+            }
+            set
+            {
+                this.Control.ShowEOLMarkers = value;
+            }
+        }
+
+        public override bool ShowSpaces
+        {
+            get
+            {
+                return this.Control.ShowSpaces;
+            }
+            set
+            {
+                this.Control.ShowSpaces = value;
+            }
+        }
+
+        public override bool ShowTabs
+        {
+            get
+            {
+                return this.Control.ShowTabs;
+            }
+            set
+            {
+                this.Control.ShowTabs = value;
+            }
+        }
+
+        public override bool WordWrap
+        {
+            get
+            {
+                return false;
+            }
+            set
+            {
+                //Do Nothing
+            }
+        }
+
+        #endregion
+
+        #region Visual Manipulation
+
+        public override void ScrollToLine(int line)
+        {
+            this.Control.ActiveTextAreaControl.ScrollTo(line);
+        }
+
+        #endregion
+
+        #region Text Manipulation
+
+        public override char GetCharAt(int offset)
+        {
+            return this.Control.Document.GetCharAt(offset);
+        }
+
+        public override int GetLineByOffset(int offset)
+        {
+            return this.Control.Document.GetLineSegmentForOffset(offset).LineNumber;
+        }
+
+        public override string GetText(int offset, int length)
+        {
+            return this.Control.Document.GetText(offset, length);
+        }
+
+        public override void Select(int offset, int length)
+        {
+            this.Control.ActiveTextAreaControl.SelectionManager.ClearSelection();
+            this.Control.ActiveTextAreaControl.SelectionManager.SetSelection(this.Control.Document.OffsetToPosition(offset), this.Control.Document.OffsetToPosition(offset + length));
+        }
+
         public override void Cut()
         {
             if (this.Control.ActiveTextAreaControl.SelectionManager.HasSomethingSelected)
@@ -131,6 +227,10 @@ namespace VDS.RDF.Utilities.Editor.WinForms
         {
             this.Control.Redo();
         }
+
+        #endregion
+
+        #region Highlighting
 
         public override void SetHighlighter(string name)
         {
@@ -177,9 +277,15 @@ namespace VDS.RDF.Utilities.Editor.WinForms
             }
         }
 
+        #endregion
+
+        #region Event Handling
+
         private void HandleTextChanged(Object sender, EventArgs args)
         {
             this.RaiseTextChanged(sender);
         }
+
+        #endregion
     }
 }

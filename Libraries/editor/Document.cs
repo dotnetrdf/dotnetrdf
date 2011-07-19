@@ -279,55 +279,6 @@ namespace VDS.RDF.Utilities.Editor
 
         #endregion
 
-        #region Text Manipulation
-
-        public char GetCharAt(int index)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Select(int start, int length)
-        {
-            throw new NotImplementedException();
-        }
-
-        public int GetLineByOffset(int offset)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void ScrollToLine(int line)
-        {
-
-        }
-
-        public void Cut()
-        {
-            this._editor.Cut();
-        }
-
-        public void Copy()
-        {
-            this._editor.Copy();
-        }
-
-        public void Paste()
-        {
-            this._editor.Paste();
-        }
-
-        public void Undo()
-        {
-            this._editor.Undo();
-        }
-
-        public void Redo()
-        {
-            this._editor.Redo();
-        }
-
-        #endregion
-
         #region File Actions
 
         private Encoding GetEncoding()
