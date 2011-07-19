@@ -63,6 +63,10 @@ namespace VDS.RDF.Utilities.Editor.WinForms
                 {
                     this.stsValidation.Text = "No Syntax Validator available for the currently selected syntax";
                 }
+                else
+                {
+                    this.stsValidation.Text = "Syntax Validation available, enable Validate as you Type or select Tools > Validate to validate";
+                }
             }
         }
 
@@ -70,10 +74,15 @@ namespace VDS.RDF.Utilities.Editor.WinForms
         {
             if (ReferenceEquals(args.Document, this._editor.DocumentManager.ActiveDocument))
             {
+                this.stsValidation.ToolTipText = String.Empty;
                 if (args.ValidationResults != null)
                 {
                     this.stsValidation.Text = args.ValidationResults.Message;
-                    //TODO: Display fuller information in ToolTip
+                    this.stsValidation.ToolTipText = args.ValidationResults.Message;
+                    if (args.ValidationResults.Warnings.Any())
+                    {
+                        this.stsValidation.ToolTipText += "\n" + String.Join("\n", args.ValidationResults.Warnings.ToArray());
+                    }
                 }
                 else
                 {

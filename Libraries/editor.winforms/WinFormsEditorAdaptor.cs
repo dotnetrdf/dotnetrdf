@@ -153,13 +153,26 @@ namespace VDS.RDF.Utilities.Editor.WinForms
             {
                 if (parseEx.HasPositionInformation)
                 {
-                    LineSegment startLine = this.Control.Document.GetLineSegment(parseEx.StartLine);
-                    LineSegment endLine = this.Control.Document.GetLineSegment(parseEx.EndLine);
-                    int startOffset = (startLine.Offset - startLine.Length) + parseEx.StartPosition;
-                    int endOffset = (endLine.Offset - endLine.Length) + parseEx.EndPosition;
-                    TextMarker m = new TextMarker(startOffset, endOffset - startOffset, TextMarkerType.WaveLine);
-                    this._markers.Add(m);
-                    this.Control.Document.MarkerStrategy.AddMarker(m);
+                    if (parseEx.StartLine != parseEx.EndLine)
+                    {
+                        //Get Start and End Lines and use these to calculate the offsets
+                        LineSegment startLine = this.Control.Document.GetLineSegment(parseEx.StartLine - 1);
+                        LineSegment endLine = this.Control.Document.GetLineSegment(parseEx.EndLine - 1);
+                        int startOffset = startLine.Offset + parseEx.StartPosition - 1;
+                        int endOffset = endLine.Offset + parseEx.EndPosition - 1;
+                        TextMarker m = new TextMarker(startOffset, endOffset - startOffset, TextMarkerType.WaveLine);
+                        this._markers.Add(m);
+                        this.Control.Document.MarkerStrategy.AddMarker(m);
+                    }
+                    else
+                    {
+                        //Get Start Line and use to calculate offset
+                        LineSegment startLine = this.Control.Document.GetLineSegment(parseEx.StartLine - 1);
+                        int startOffset = startLine.Offset + parseEx.StartPosition - 1;
+                        TextMarker m = new TextMarker(startOffset, parseEx.EndPosition - parseEx.StartPosition, TextMarkerType.WaveLine);
+                        this._markers.Add(m);
+                        this.Control.Document.MarkerStrategy.AddMarker(m);
+                    }
                 }
             }
         }

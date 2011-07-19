@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EditorWindow));
             this.tabFiles = new System.Windows.Forms.TabControl();
             this.mnuMain = new System.Windows.Forms.MenuStrip();
@@ -61,10 +62,11 @@
             this.mnuOptions = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuHelp = new System.Windows.Forms.ToolStripMenuItem();
             this.stsInfo = new System.Windows.Forms.StatusStrip();
-            this.sfdSave = new System.Windows.Forms.SaveFileDialog();
-            this.ofdOpen = new System.Windows.Forms.OpenFileDialog();
             this.stsSyntax = new System.Windows.Forms.ToolStripStatusLabel();
             this.stsValidation = new System.Windows.Forms.ToolStripStatusLabel();
+            this.sfdSave = new System.Windows.Forms.SaveFileDialog();
+            this.ofdOpen = new System.Windows.Forms.OpenFileDialog();
+            this.ttpTips = new System.Windows.Forms.ToolTip(this.components);
             this.mnuMain.SuspendLayout();
             this.stsInfo.SuspendLayout();
             this.SuspendLayout();
@@ -306,6 +308,19 @@
             this.stsInfo.TabIndex = 2;
             this.stsInfo.Text = "statusStrip1";
             // 
+            // stsSyntax
+            // 
+            this.stsSyntax.Name = "stsSyntax";
+            this.stsSyntax.Size = new System.Drawing.Size(76, 17);
+            this.stsSyntax.Text = "Syntax: None";
+            // 
+            // stsValidation
+            // 
+            this.stsValidation.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.stsValidation.Name = "stsValidation";
+            this.stsValidation.Size = new System.Drawing.Size(0, 17);
+            this.stsValidation.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
             // sfdSave
             // 
             this.sfdSave.Title = "Save As...";
@@ -314,16 +329,9 @@
             // 
             this.ofdOpen.Title = "Open File";
             // 
-            // stsSyntax
+            // ttpTips
             // 
-            this.stsSyntax.Name = "stsSyntax";
-            this.stsSyntax.Size = new System.Drawing.Size(47, 17);
-            this.stsSyntax.Text = "Syntax: ";
-            // 
-            // stsValidation
-            // 
-            this.stsValidation.Name = "stsValidation";
-            this.stsValidation.Size = new System.Drawing.Size(0, 17);
+            this.ttpTips.IsBalloon = true;
             // 
             // EditorWindow
             // 
@@ -383,6 +391,7 @@
         private System.Windows.Forms.OpenFileDialog ofdOpen;
         private System.Windows.Forms.ToolStripStatusLabel stsSyntax;
         private System.Windows.Forms.ToolStripStatusLabel stsValidation;
+        private System.Windows.Forms.ToolTip ttpTips;
     }
 }
 
