@@ -91,8 +91,8 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
                 {
                     try
                     {
-                        Type ctype = typeof(IAutoCompleter<>);
-                        Type target = ctype.MakeGenericType(new Type[] { def.Type });
+                        Type ctype = def.Type;
+                        Type target = ctype.MakeGenericType(new Type[] { typeof(T) });
                         IAutoCompleter<T> completer = (IAutoCompleter<T>)Activator.CreateInstance(target, new Object[] { editor });
                         return completer;
                     }

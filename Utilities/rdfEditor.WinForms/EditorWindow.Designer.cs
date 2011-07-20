@@ -68,6 +68,15 @@
             this.mnuView = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuViewNextDocument = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuViewPrevDocument = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.mnuViewLineNumbers = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+            this.mnuViewSpecialChars = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuShowSpecialAll = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
+            this.mnuShowSpecialEol = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuShowSpecialSpaces = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuShowSpecialTabs = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuOptions = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuHelp = new System.Windows.Forms.ToolStripMenuItem();
             this.stsInfo = new System.Windows.Forms.StatusStrip();
@@ -76,15 +85,6 @@
             this.sfdSave = new System.Windows.Forms.SaveFileDialog();
             this.ofdOpen = new System.Windows.Forms.OpenFileDialog();
             this.ttpTips = new System.Windows.Forms.ToolTip(this.components);
-            this.mnuViewLineNumbers = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-            this.mnuViewSpecialChars = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
-            this.mnuShowSpecialAll = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuShowSpecialEol = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuShowSpecialSpaces = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuShowSpecialTabs = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuMain.SuspendLayout();
             this.stsInfo.SuspendLayout();
             this.SuspendLayout();
@@ -394,6 +394,75 @@
             this.mnuViewPrevDocument.Text = "Previous Document";
             this.mnuViewPrevDocument.Click += new System.EventHandler(this.mnuViewPrevDocument_Click);
             // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(199, 6);
+            // 
+            // mnuViewLineNumbers
+            // 
+            this.mnuViewLineNumbers.Checked = true;
+            this.mnuViewLineNumbers.CheckOnClick = true;
+            this.mnuViewLineNumbers.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.mnuViewLineNumbers.Name = "mnuViewLineNumbers";
+            this.mnuViewLineNumbers.Size = new System.Drawing.Size(202, 22);
+            this.mnuViewLineNumbers.Text = "Show Line Numbers";
+            this.mnuViewLineNumbers.Click += new System.EventHandler(this.mnuViewLineNumbers_Click);
+            // 
+            // toolStripSeparator4
+            // 
+            this.toolStripSeparator4.Name = "toolStripSeparator4";
+            this.toolStripSeparator4.Size = new System.Drawing.Size(199, 6);
+            // 
+            // mnuViewSpecialChars
+            // 
+            this.mnuViewSpecialChars.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnuShowSpecialAll,
+            this.toolStripSeparator5,
+            this.mnuShowSpecialEol,
+            this.mnuShowSpecialSpaces,
+            this.mnuShowSpecialTabs});
+            this.mnuViewSpecialChars.Name = "mnuViewSpecialChars";
+            this.mnuViewSpecialChars.Size = new System.Drawing.Size(202, 22);
+            this.mnuViewSpecialChars.Text = "Show Special Characters";
+            // 
+            // mnuShowSpecialAll
+            // 
+            this.mnuShowSpecialAll.CheckOnClick = true;
+            this.mnuShowSpecialAll.Name = "mnuShowSpecialAll";
+            this.mnuShowSpecialAll.Size = new System.Drawing.Size(165, 22);
+            this.mnuShowSpecialAll.Text = "Show All";
+            this.mnuShowSpecialAll.Click += new System.EventHandler(this.mnuShowSpecialAll_Click);
+            // 
+            // toolStripSeparator5
+            // 
+            this.toolStripSeparator5.Name = "toolStripSeparator5";
+            this.toolStripSeparator5.Size = new System.Drawing.Size(162, 6);
+            // 
+            // mnuShowSpecialEol
+            // 
+            this.mnuShowSpecialEol.CheckOnClick = true;
+            this.mnuShowSpecialEol.Name = "mnuShowSpecialEol";
+            this.mnuShowSpecialEol.Size = new System.Drawing.Size(165, 22);
+            this.mnuShowSpecialEol.Text = "Show End of Line";
+            this.mnuShowSpecialEol.Click += new System.EventHandler(this.mnuShowSpecialEol_Click);
+            // 
+            // mnuShowSpecialSpaces
+            // 
+            this.mnuShowSpecialSpaces.CheckOnClick = true;
+            this.mnuShowSpecialSpaces.Name = "mnuShowSpecialSpaces";
+            this.mnuShowSpecialSpaces.Size = new System.Drawing.Size(165, 22);
+            this.mnuShowSpecialSpaces.Text = "Show Spaces";
+            this.mnuShowSpecialSpaces.Click += new System.EventHandler(this.mnuShowSpecialSpaces_Click);
+            // 
+            // mnuShowSpecialTabs
+            // 
+            this.mnuShowSpecialTabs.CheckOnClick = true;
+            this.mnuShowSpecialTabs.Name = "mnuShowSpecialTabs";
+            this.mnuShowSpecialTabs.Size = new System.Drawing.Size(165, 22);
+            this.mnuShowSpecialTabs.Text = "Show Tabs";
+            this.mnuShowSpecialTabs.Click += new System.EventHandler(this.mnuShowSpecialTabs_Click);
+            // 
             // mnuOptions
             // 
             this.mnuOptions.Name = "mnuOptions";
@@ -438,81 +507,13 @@
             // 
             // ofdOpen
             // 
+            this.ofdOpen.Multiselect = true;
             this.ofdOpen.Title = "Open File";
             // 
             // ttpTips
             // 
             this.ttpTips.AutomaticDelay = 200;
             this.ttpTips.IsBalloon = true;
-            // 
-            // mnuViewLineNumbers
-            // 
-            this.mnuViewLineNumbers.Checked = true;
-            this.mnuViewLineNumbers.CheckOnClick = true;
-            this.mnuViewLineNumbers.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.mnuViewLineNumbers.Name = "mnuViewLineNumbers";
-            this.mnuViewLineNumbers.Size = new System.Drawing.Size(202, 22);
-            this.mnuViewLineNumbers.Text = "Show Line Numbers";
-            this.mnuViewLineNumbers.Click += new System.EventHandler(this.mnuViewLineNumbers_Click);
-            // 
-            // toolStripSeparator3
-            // 
-            this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(199, 6);
-            // 
-            // mnuViewSpecialChars
-            // 
-            this.mnuViewSpecialChars.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.mnuShowSpecialAll,
-            this.toolStripSeparator5,
-            this.mnuShowSpecialEol,
-            this.mnuShowSpecialSpaces,
-            this.mnuShowSpecialTabs});
-            this.mnuViewSpecialChars.Name = "mnuViewSpecialChars";
-            this.mnuViewSpecialChars.Size = new System.Drawing.Size(202, 22);
-            this.mnuViewSpecialChars.Text = "Show Special Characters";
-            // 
-            // toolStripSeparator4
-            // 
-            this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(199, 6);
-            // 
-            // mnuShowSpecialAll
-            // 
-            this.mnuShowSpecialAll.CheckOnClick = true;
-            this.mnuShowSpecialAll.Name = "mnuShowSpecialAll";
-            this.mnuShowSpecialAll.Size = new System.Drawing.Size(165, 22);
-            this.mnuShowSpecialAll.Text = "Show All";
-            this.mnuShowSpecialAll.Click += new System.EventHandler(this.mnuShowSpecialAll_Click);
-            // 
-            // mnuShowSpecialEol
-            // 
-            this.mnuShowSpecialEol.CheckOnClick = true;
-            this.mnuShowSpecialEol.Name = "mnuShowSpecialEol";
-            this.mnuShowSpecialEol.Size = new System.Drawing.Size(165, 22);
-            this.mnuShowSpecialEol.Text = "Show End of Line";
-            this.mnuShowSpecialEol.Click += new System.EventHandler(this.mnuShowSpecialEol_Click);
-            // 
-            // mnuShowSpecialSpaces
-            // 
-            this.mnuShowSpecialSpaces.CheckOnClick = true;
-            this.mnuShowSpecialSpaces.Name = "mnuShowSpecialSpaces";
-            this.mnuShowSpecialSpaces.Size = new System.Drawing.Size(165, 22);
-            this.mnuShowSpecialSpaces.Text = "Show Spaces";
-            this.mnuShowSpecialSpaces.Click += new System.EventHandler(this.mnuShowSpecialSpaces_Click);
-            // 
-            // mnuShowSpecialTabs
-            // 
-            this.mnuShowSpecialTabs.CheckOnClick = true;
-            this.mnuShowSpecialTabs.Name = "mnuShowSpecialTabs";
-            this.mnuShowSpecialTabs.Size = new System.Drawing.Size(165, 22);
-            this.mnuShowSpecialTabs.Text = "Show Tabs";
-            this.mnuShowSpecialTabs.Click += new System.EventHandler(this.mnuShowSpecialTabs_Click);
-            // 
-            // toolStripSeparator5
-            // 
-            this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(162, 6);
             // 
             // EditorWindow
             // 

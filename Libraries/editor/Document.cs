@@ -176,12 +176,19 @@ namespace VDS.RDF.Utilities.Editor
         {
             if (this._filename != null && !this._filename.Equals(String.Empty))
             {
-                //Try filename based syntax detection
-                MimeTypeDefinition def = MimeTypesHelper.GetDefinitions(MimeTypesHelper.GetMimeTypes(Path.GetExtension(this._filename))).FirstOrDefault();
-                if (def != null)
+                try
                 {
-                    this.Syntax = def.SyntaxName.GetSyntaxName();
-                    return;
+                    //Try filename based syntax detection
+                    MimeTypeDefinition def = MimeTypesHelper.GetDefinitions(MimeTypesHelper.GetMimeTypes(Path.GetExtension(this._filename))).FirstOrDefault();
+                    if (def != null)
+                    {
+                        this.Syntax = def.SyntaxName.GetSyntaxName();
+                        return;
+                    }
+                }
+                catch (RdfParserSelectionException)
+                {
+                    //Ignore and use string based detection instead
                 }
             }
 
@@ -194,17 +201,27 @@ namespace VDS.RDF.Utilities.Editor
             }
             catch (RdfParserSelectionException)
             {
-                //Then take a guess at it being a RDF format
-                try
+                //Then see whether it may be a SPARQL query
+                String text = this.Text;
+                if (text.Contains("SELECT") || text.Contains("CONSTRUCT") || text.Contains("DESCRIBE") || text.Contains("ASK"))
                 {
-                    IRdfReader rdfReader = StringParser.GetParser(this.Text);
-                    this.Syntax = rdfReader.GetSyntaxName();
+                    //Likely a SPARQL Query
+                    this.Syntax = "SparqlQuery11";
                 }
-                catch (RdfParserSelectionException)
+                else
                 {
-                    //Finally take a guess at it being a RDF Dataset format
-                    IStoreReader datasetReader = StringParser.GetDatasetParser(this.Text);
-                    this.Syntax = datasetReader.GetSyntaxName();
+                    //Then take a guess at it being a RDF format
+                    try
+                    {
+                        IRdfReader rdfReader = StringParser.GetParser(this.Text);
+                        this.Syntax = rdfReader.GetSyntaxName();
+                    }
+                    catch (RdfParserSelectionException)
+                    {
+                        //Finally take a guess at it being a RDF Dataset format
+                        IStoreReader datasetReader = StringParser.GetDatasetParser(this.Text);
+                        this.Syntax = datasetReader.GetSyntaxName();
+                    }
                 }
             }
         }

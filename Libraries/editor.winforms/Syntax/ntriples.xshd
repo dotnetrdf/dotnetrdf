@@ -1,17 +1,11 @@
-﻿<SyntaxDefinition name="Turtle" extensions=".ttl">
-  <Digits color="DarkBlue" />
+﻿<SyntaxDefinition name="NTriples" extensions=".nt">
   
   <RuleSets>
 
     <RuleSet ignorecase="false">
-      <Delimiters>.;,:@()[]</Delimiters>
+      <Delimiters>.:@</Delimiters>
       
       <!-- Literals -->
-
-      <Span name="LongLiteral" color="Blue" escapecharacter="\" stopateol="false" rule="StringEscapes">
-        <Begin>"""</Begin>
-        <End>"""</End>
-      </Span>
 
       <Span name="Literal" color="Blue" escapecharacter="\" stopateol="true" rule="StringEscapes">
         <Begin>"</Begin>
@@ -31,46 +25,26 @@
         <Begin>#</Begin>
       </Span>
 
-      <!-- QName Prefixes -->
-      
-      <MarkPrevious color="DarkMagenta">:</MarkPrevious>
-      
-      <!-- QName Local Names -->
+      <!-- Blank Nodes -->
 
-      <MarkFollowing color="DarkMagenta">:</MarkFollowing>
+      <MarkFollowing color="SteelBlue">:</MarkFollowing>
 
-      <!-- Keywords -->
+      <!-- Language Specifiers -->
 
-      <KeyWords color="Red" bold="true">
-        <Key word="@prefix" />
-        <Key word="@base" />
-        <Key word="a" />
-        <Key word="true" />
-        <Key word="false" />
-      </KeyWords>
-      
+      <MarkFollowing color="DarkGreen">@</MarkFollowing>
+
       <!-- Blank Nodes -->
 
       <KeyWords color="SteelBlue">
-        <Key word="[]" />
-        <Key word="[" />
-        <Key word="]" />
-        <Key word="(" />
-        <Key word=")" />
+        <Key word="_" />
       </KeyWords>
 
       <!-- Punctuation Characters -->
 
       <KeyWords color="DarkGreen">
         <Key word="." />
-        <Key word=";" />
-        <Key word="," />
         <Key word="^^" />
         <Key word="@" />
-      </KeyWords>
-
-      <KeyWords color="DarkMagenta">
-        <Key word=":" />
       </KeyWords>
       
     </RuleSet>

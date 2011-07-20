@@ -57,6 +57,9 @@ namespace VDS.RDF.Utilities.Editor.WinForms
                 try
                 {
                     this._editor.DocumentManager.SwitchTo(this.tabFiles.SelectedIndex);
+                    this.stsValidation.Text = String.Empty;
+                    this.stsValidation.ToolTipText = String.Empty;
+                    this._editor.DocumentManager.ActiveDocument.Validate();
                 }
                 catch (IndexOutOfRangeException)
                 {
@@ -238,23 +241,36 @@ namespace VDS.RDF.Utilities.Editor.WinForms
             this.ofdOpen.Filter = Constants.AllFilter;
             if (this.ofdOpen.ShowDialog() == DialogResult.OK)
             {
-                Document<TextEditorControl> doc, active;
-                active = this._editor.DocumentManager.ActiveDocument;
-                if (active.TextLength == 0 && (active.Filename == null || active.Filename.Equals(String.Empty)))
+                if (this.ofdOpen.FileNames.Length == 1)
                 {
-                    doc = active;
-                    doc.Filename = this.ofdOpen.FileName;
-                } 
+                    Document<TextEditorControl> doc, active;
+                    active = this._editor.DocumentManager.ActiveDocument;
+                    if (active.TextLength == 0 && (active.Filename == null || active.Filename.Equals(String.Empty)))
+                    {
+                        doc = active;
+                        doc.Filename = this.ofdOpen.FileName;
+                    }
+                    else
+                    {
+                        doc = this._editor.DocumentManager.New(Path.GetFileName(this.ofdOpen.FileName), true);
+                    }
+
+                    //Open the file and display in new tab if necessary
+                    doc.Open(this.ofdOpen.FileName);
+                    if (!ReferenceEquals(active, doc))
+                    {
+                        this.AddTextEditor(new TabPage(doc.Title), doc);
+                        this.tabFiles.SelectedIndex = this.tabFiles.TabCount - 1;
+                    }
+                }
                 else
                 {
-                    doc = this._editor.DocumentManager.New(Path.GetFileName(this.ofdOpen.FileName), true);
-                }
-
-                //Open the file and display in new tab if necessary
-                doc.Open(this.ofdOpen.FileName);
-                if (!ReferenceEquals(active, doc))
-                {
-                    this.AddTextEditor(new TabPage(doc.Title), doc);
+                    foreach (String filename in this.ofdOpen.FileNames)
+                    {
+                        Document<TextEditorControl> doc = this._editor.DocumentManager.New(Path.GetFileName(filename), false);
+                        doc.Open(filename);
+                        this.AddTextEditor(new TabPage(doc.Title), doc);
+                    }
                 }
             }
         }
@@ -265,7 +281,9 @@ namespace VDS.RDF.Utilities.Editor.WinForms
             {
                 if (this._editor.DocumentManager.Close())
                 {
+                    int index = this._editor.DocumentManager.ActiveDocumentIndex;
                     this.tabFiles.TabPages.RemoveAt(this.tabFiles.SelectedIndex);
+                    this.tabFiles.SelectedIndex = index;
                 }
             }
         }

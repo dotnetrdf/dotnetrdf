@@ -63,6 +63,21 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
+        public int ActiveDocumentIndex
+        {
+            get
+            {
+                if (this._documents.Count > 0)
+                {
+                    return this._current;
+                }
+                else
+                {
+                    return -1;
+                }
+            }
+        }
+
         public Document<T> this[int index]
         {
             get

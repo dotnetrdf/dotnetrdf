@@ -5,14 +5,23 @@ using System.Text;
 using System.Windows.Forms;
 using ICSharpCode.TextEditor;
 using ICSharpCode.TextEditor.Document;
+using ICSharpCode.TextEditor.Gui.CompletionWindow;
 using VDS.RDF.Parsing;
+using Data = VDS.RDF.Utilities.Editor.AutoComplete.Data;
 
 namespace VDS.RDF.Utilities.Editor.WinForms
 {
+    /// <summary>
+    /// An text editor adaptor which uses <strong>ICSharpCode.TextEditor</strong> from the <a href="http://www.sharpdevelop.com">SharpDevelop</a> project to provide a Windows Forms editor
+    /// </summary>
     public class WinFormsEditorAdaptor : BaseTextEditorAdaptor<TextEditorControl>
     {
         private List<TextMarker> _markers = new List<TextMarker>();
+        private CodeCompletionWindow _c;
 
+        /// <summary>
+        /// Creates a new Windows Forms Editor
+        /// </summary>
         public WinFormsEditorAdaptor()
             : base(new TextEditorControl())
         {
@@ -275,6 +284,29 @@ namespace VDS.RDF.Utilities.Editor.WinForms
                     }
                 }
             }
+        }
+
+        #endregion
+
+        #region Auto-Completion
+
+        public override bool CanAutoComplete
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        public override void Suggest(IEnumerable<Data.ICompletionData> suggestions)
+        {
+            if (this._c != null) this.EndSuggestion();
+            this.CreateCompletionWindow(suggestions);
+        }
+
+        private void CreateCompletionWindow(IEnumerable<Data.ICompletionData> suggestions)
+        {
+            //this._c = CodeCompletionWindow.ShowCompletionWindow(this.Control.ParentForm, this.Control, String.Empty, 
         }
 
         #endregion
