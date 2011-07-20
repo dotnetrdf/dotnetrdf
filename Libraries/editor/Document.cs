@@ -194,15 +194,15 @@ namespace VDS.RDF.Utilities.Editor
 
             //Otherwise try and use string based detection
             //First take a guess at it being a SPARQL Results format
+            String text = this.Text;
             try
             {
-                ISparqlResultsReader resultsReader = StringParser.GetResultSetParser(this.Text);
+                ISparqlResultsReader resultsReader = StringParser.GetResultSetParser(text);
                 this.Syntax = resultsReader.GetSyntaxName();
             }
             catch (RdfParserSelectionException)
             {
                 //Then see whether it may be a SPARQL query
-                String text = this.Text;
                 if (text.Contains("SELECT") || text.Contains("CONSTRUCT") || text.Contains("DESCRIBE") || text.Contains("ASK"))
                 {
                     //Likely a SPARQL Query
@@ -213,13 +213,13 @@ namespace VDS.RDF.Utilities.Editor
                     //Then take a guess at it being a RDF format
                     try
                     {
-                        IRdfReader rdfReader = StringParser.GetParser(this.Text);
+                        IRdfReader rdfReader = StringParser.GetParser(text);
                         this.Syntax = rdfReader.GetSyntaxName();
                     }
                     catch (RdfParserSelectionException)
                     {
                         //Finally take a guess at it being a RDF Dataset format
-                        IStoreReader datasetReader = StringParser.GetDatasetParser(this.Text);
+                        IStoreReader datasetReader = StringParser.GetDatasetParser(text);
                         this.Syntax = datasetReader.GetSyntaxName();
                     }
                 }

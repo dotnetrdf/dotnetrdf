@@ -62,7 +62,8 @@
         <Key word="CONSTRUCT" />
         <Key word="ASK" />
         <Key word="DESCRIBE" />
-        <Key word="ORDER BY" />
+        <Key word="BY" />
+        <Key word="ORDER" />
         <Key word="LIMIT" />
         <Key word="OFFSET" />
         <Key word="DISTINCT" />
@@ -91,7 +92,7 @@
         <Key word="MINUS" />
         <Key word="EXISTS" />
         <Key word="NOT EXISTS" />
-        <Key word="GROUP BY" />
+        <Key word="GROUP" />
         <Key word="HAVING" />
         <Key word="COUNT" />
         <Key word="AVG" />
