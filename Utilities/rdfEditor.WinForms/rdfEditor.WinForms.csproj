@@ -87,14 +87,6 @@
       <Project>{0D1B8423-44F6-4ACE-8055-58D66E574F9D}</Project>
       <Name>dotNetRDF.WinForms</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Libraries\editor.winforms\rdfEditor.Core.WinForms.csproj">
-      <Project>{5A46BF04-125D-48DF-8E24-F7C733628E57}</Project>
-      <Name>rdfEditor.Core.WinForms</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Libraries\editor\rdfEditor.Core.csproj">
-      <Project>{D381CE62-3B23-4BFE-847B-912F7992075B}</Project>
-      <Name>rdfEditor.Core</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="package_editors.ico" />
