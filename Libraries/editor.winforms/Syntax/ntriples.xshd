@@ -1,0 +1,77 @@
+﻿<SyntaxDefinition name="NTriples" extensions=".nt">
+  
+  <RuleSets>
+
+    <RuleSet ignorecase="false">
+      <Delimiters>.:@</Delimiters>
+      
+      <!-- Literals -->
+
+      <Span name="Literal" color="Blue" escapecharacter="\" stopateol="true" rule="StringEscapes">
+        <Begin>"</Begin>
+        <End>"</End>
+      </Span>
+
+      <!-- URIs -->
+
+      <Span name="Uri" color="DarkMagenta" escapecharacter="\" rule="UriEscapes">
+        <Begin>&lt;</Begin>
+        <End>&gt;</End>
+      </Span>
+
+      <!-- Comments -->
+
+      <Span name="Comments" color="Green" stopateol="true">
+        <Begin>#</Begin>
+      </Span>
+
+      <!-- Blank Nodes -->
+
+      <MarkFollowing color="SteelBlue">:</MarkFollowing>
+
+      <!-- Language Specifiers -->
+
+      <MarkFollowing color="DarkGreen">@</MarkFollowing>
+
+      <!-- Blank Nodes -->
+
+      <KeyWords color="SteelBlue">
+        <Key word="_" />
+      </KeyWords>
+
+      <!-- Punctuation Characters -->
+
+      <KeyWords color="DarkGreen">
+        <Key word="." />
+        <Key word="^^" />
+        <Key word="@" />
+      </KeyWords>
+      
+    </RuleSet>
+
+    <RuleSet name="StringEscapes">
+      <KeyWords color="Teal">
+        <Key word="\t" />
+        <Key word="\r" />
+        <Key word="\n" />
+        <Key word="\&quot;" />
+        <Key word="\\" />
+        <Key word="\u" />
+        <Key word="\U" />
+      </KeyWords>
+    </RuleSet>
+
+    <RuleSet name="UriEscapes">
+      <KeyWords color="Teal">
+        <Key word="\t" />
+        <Key word="\r" />
+        <Key word="\n" />
+        <Key word="\&gt;" />
+        <Key word="\\" />
+        <Key word="\u" />
+        <Key word="\U" />
+      </KeyWords>
+    </RuleSet>
+
+  </RuleSets>
+</SyntaxDefinition>

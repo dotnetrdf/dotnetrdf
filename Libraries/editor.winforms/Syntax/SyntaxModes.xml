@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<SyntaxModes version="1.0">
+  <Mode file="ntriples.xshd" name="NTriples" extensions=".nt" />
+  <Mode file="turtle.xshd" name="Turtle" extensions=".ttl" />
+  <Mode file="n3.xshd" name="Notation3" extensions=".n3" />
+  <Mode file="sparql-query-10.xshd" name="SparqlQuery10" extensions=".rq" />
+  <Mode file="sparql-query-11.xshd" name="SparqlQuery11" extensions=".rq" />
+</SyntaxModes>
