@@ -40,8 +40,8 @@
     <!-- This exec task syncs the Silverlight project file with the Core Library -->
     <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
       <arg value="Libraries/core/dotNetRDF.csproj" />
-      <arg value="Libraries/silverlight/dotNetRDF.Silverlight.2010.csproj.template" />
-      <arg value="Libraries/silverlight/dotNetRDF.Silverlight.2010.csproj" />
+      <arg value="Libraries/core.silverlight/dotNetRDF.Silverlight.2010.csproj.template" />
+      <arg value="Libraries/core.silverlight/dotNetRDF.Silverlight.2010.csproj" />
     </exec>    
   </target>
 
@@ -49,14 +49,14 @@
     <!-- This exec task syncs the Windows Phone project file with the Core Library -->
     <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
       <arg value="Libraries/core/dotNetRDF.csproj" />
-      <arg value="Libraries/windowsphone/dotNetRDF.WindowsPhone.2010.csproj.template" />
-      <arg value="Libraries/windowsphone/dotNetRDF.WindowsPhone.2010.csproj.temp" />
+      <arg value="Libraries/core.windowsphone/dotNetRDF.WindowsPhone.2010.csproj.template" />
+      <arg value="Libraries/core.windowsphone/dotNetRDF.WindowsPhone.2010.csproj.temp" />
     </exec>
     <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
-      <arg value="Libraries/silverlight/dotNetRDF.Silverlight.2010.csproj" />
-      <arg value="Libraries/windowsphone/dotNetRDF.WindowsPhone.2010.csproj.temp" />
-      <arg value="Libraries/windowsphone/dotNetRDF.WindowsPhone.2010.csproj" />
-      <arg value="..\silverlight\" />
+      <arg value="Libraries/core.silverlight/dotNetRDF.Silverlight.2010.csproj" />
+      <arg value="Libraries/core.windowsphone/dotNetRDF.WindowsPhone.2010.csproj.temp" />
+      <arg value="Libraries/core.windowsphone/dotNetRDF.WindowsPhone.2010.csproj" />
+      <arg value="..\core.silverlight\" />
     </exec>
   </target>
 
@@ -64,14 +64,14 @@
     <!-- This exec task syncs the Client Profile project file with the Core Library and Silverlight (for the System.Web compatability stuff) -->
     <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
       <arg value="Libraries/core/dotNetRDF.csproj" />
-      <arg value="Libraries/clientprofile/dotNetRDF.ClientProfile.csproj.template" />
-      <arg value="Libraries/clientprofile/dotNetRDF.ClientProfile.csproj.temp" />
+      <arg value="Libraries/core.clientprofile/dotNetRDF.ClientProfile.csproj.template" />
+      <arg value="Libraries/core.clientprofile/dotNetRDF.ClientProfile.csproj.temp" />
     </exec>
     <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
-      <arg value="Libraries/silverlight/dotNetRDF.Silverlight.2010.csproj" />
-      <arg value="Libraries/clientprofile/dotNetRDF.ClientProfile.csproj.temp" />
-      <arg value="Libraries/clientprofile/dotNetRDF.ClientProfile.csproj" />
-      <arg value="..\silverlight\" />
+      <arg value="Libraries/core.silverlight/dotNetRDF.Silverlight.2010.csproj" />
+      <arg value="Libraries/core.clientprofile/dotNetRDF.ClientProfile.csproj.temp" />
+      <arg value="Libraries/core.clientprofile/dotNetRDF.ClientProfile.csproj" />
+      <arg value="..\core.silverlight\" />
     </exec>
   </target>
 
@@ -79,8 +79,8 @@
     <!-- This exec task syncs the Lite project file with the Core Library -->
     <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
       <arg value="Libraries/core/dotNetRDF.csproj" />
-      <arg value="Libraries/lite/dotNetRDF.Lite.csproj.template" />
-      <arg value="Libraries/lite/dotNetRDF.Lite.csproj" />
+      <arg value="Libraries/core.lite/dotNetRDF.Lite.csproj.template" />
+      <arg value="Libraries/core.lite/dotNetRDF.Lite.csproj" />
     </exec>
   </target>
   
@@ -109,7 +109,7 @@
     <property name="nant.settings.currentframework" value="net-3.5" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
-      <arg value="Libraries/lite/dotNetRDF.Lite.csproj" />
+      <arg value="Libraries/core.lite/dotNetRDF.Lite.csproj" />
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent="/>
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
@@ -147,7 +147,7 @@
     <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
-      <arg value="Libraries/silverlight/dotNetRDF.Silverlight.2010.csproj" />
+      <arg value="Libraries/core.silverlight/dotNetRDF.Silverlight.2010.csproj" />
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent="/>
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
@@ -159,7 +159,7 @@
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <property name="msBuild.exe" value="${string::replace(msBuild.exe,'Framework64','Framework')}" if="${string::contains(msBuild.exe, 'Framework64')}" />
     <exec program="${msBuild.exe}" failonerror="true">
-      <arg value="Libraries/windowsphone/dotNetRDF.WindowsPhone.2010.csproj" />
+      <arg value="Libraries/core.windowsphone/dotNetRDF.WindowsPhone.2010.csproj" />
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent="/>
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
@@ -190,7 +190,7 @@
     <property name="nant.settings.currentframework" value="net-3.5" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
-      <arg value="Libraries/clientprofile/dotNetRDF.ClientProfile.csproj" />
+      <arg value="Libraries/core.clientprofile/dotNetRDF.ClientProfile.csproj" />
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent="/>
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
@@ -213,36 +213,35 @@
     <copy overwrite="true" todir="../bin/nightly" file="Libraries/core/bin/Debug/HtmlAgilityPack.dll" />
     <copy overwrite="true" todir="../bin/nightly" file="Libraries/core/bin/Debug/Newtonsoft.Json.dll" />
     <copy overwrite="true" todir="../bin/nightly" file="Libraries/core/bin/Debug/MySql.Data.dll" />
-    <copy overwrite="true" todir="../bin/nightly" file="Libraries/core/bin/Debug/OpenLink.Data.Virtuoso.dll" />
     <copy overwrite="true" todir="../bin/nightly" file="Libraries/core/ChangeLog.txt" />
   </target>
 
   <target name="build-silverlight" description="Copy the latest Silverlight build to the Silverlight Nightly Build directory" unless="${dotnetrdf.nobuild}"  depends="compile-silverlight">
-    <copy overwrite="true" todir="../bin/silverlight-nightly" file="Libraries/silverlight/bin/Debug/dotNetRDF.Silverlight.dll" />
-    <copy overwrite="true" todir="../bin/silverlight-nightly" file="Libraries/silverlight/bin/Debug/dotNetRDF.Silverlight.xml" />
-    <copy overwrite="true" todir="../bin/silverlight-nightly" file="Libraries/silverlight/bin/Debug/HtmlAgilityPack.Silverlight.dll" />
-    <copy overwrite="true" todir="../bin/silverlight-nightly" file="Libraries/silverlight/bin/Debug/Newtonsoft.Json.Silverlight.dll" />
+    <copy overwrite="true" todir="../bin/silverlight-nightly" file="Libraries/core.silverlight/bin/Debug/dotNetRDF.Silverlight.dll" />
+    <copy overwrite="true" todir="../bin/silverlight-nightly" file="Libraries/core.silverlight/bin/Debug/dotNetRDF.Silverlight.xml" />
+    <copy overwrite="true" todir="../bin/silverlight-nightly" file="Libraries/core.silverlight/bin/Debug/HtmlAgilityPack.Silverlight.dll" />
+    <copy overwrite="true" todir="../bin/silverlight-nightly" file="Libraries/core.silverlight/bin/Debug/Newtonsoft.Json.Silverlight.dll" />
   </target>
 
   <target name="build-windowsphone" description="Copy the latest Windows Phone build to the Windows Phone Nightly Build directory" unless="${dotnetrdf.nobuild}" if="${dotnetrdf.nowindowsphone != 'true'}"  depends="compile-windowsphone">
-    <copy overwrite="true" todir="../bin/windowsphone-nightly" file="Libraries/windowsphone/bin/Debug/dotNetRDF.WindowsPhone.dll" />
-    <copy overwrite="true" todir="../bin/windowsphone-nightly" file="Libraries/windowsphone/bin/Debug/dotNetRDF.WindowsPhone.xml" />
-    <copy overwrite="true" todir="../bin/windowsphone-nightly" file="Libraries/windowsphone/bin/Debug/HtmlAgilityPack.WindowsPhone.dll" />
-    <copy overwrite="true" todir="../bin/windowsphone-nightly" file="Libraries/windowsphone/bin/Debug/Newtonsoft.Json.Silverlight.dll" />
+    <copy overwrite="true" todir="../bin/windowsphone-nightly" file="Libraries/core.windowsphone/bin/Debug/dotNetRDF.WindowsPhone.dll" />
+    <copy overwrite="true" todir="../bin/windowsphone-nightly" file="Libraries/core.windowsphone/bin/Debug/dotNetRDF.WindowsPhone.xml" />
+    <copy overwrite="true" todir="../bin/windowsphone-nightly" file="Libraries/core.windowsphone/bin/Debug/HtmlAgilityPack.WindowsPhone.dll" />
+    <copy overwrite="true" todir="../bin/windowsphone-nightly" file="Libraries/core.windowsphone/bin/Debug/Newtonsoft.Json.Silverlight.dll" />
   </target>
 
   <target name="build-lite" description="Copy the latest Lite build to the Lite Nightly Build directory" unless="${dotnetrdf.nobuild}" depends="compile-lite">
-    <copy overwrite="true" todir="../bin/lite-nightly" file="Libraries/lite/bin/Debug/dotNetRDF.Lite.dll" />
-    <copy overwrite="true" todir="../bin/lite-nightly" file="Libraries/lite/bin/Debug/dotNetRDF.Lite.xml" />
-    <copy overwrite="true" todir="../bin/lite-nightly" file="Libraries/lite/bin/Debug/HtmlAgilityPack.dll" />
-    <copy overwrite="true" todir="../bin/lite-nightly" file="Libraries/lite/bin/Debug/Newtonsoft.Json.dll" />
+    <copy overwrite="true" todir="../bin/lite-nightly" file="Libraries/core.lite/bin/Debug/dotNetRDF.Lite.dll" />
+    <copy overwrite="true" todir="../bin/lite-nightly" file="Libraries/core.lite/bin/Debug/dotNetRDF.Lite.xml" />
+    <copy overwrite="true" todir="../bin/lite-nightly" file="Libraries/core.lite/bin/Debug/HtmlAgilityPack.dll" />
+    <copy overwrite="true" todir="../bin/lite-nightly" file="Libraries/core.lite/bin/Debug/Newtonsoft.Json.dll" />
   </target>
 
   <target name="build-clientprofile" description="Copy the latest Client Profile build to the Client Profile Nightly Build directory" unless="${dotnetrdf.nobuild}" depends="compile-clientprofile">
-    <copy overwrite="true" todir="../bin/clientprofile-nightly" file="Libraries/clientprofile/bin/Debug/dotNetRDF.ClientProfile.dll" />
-    <copy overwrite="true" todir="../bin/clientprofile-nightly" file="Libraries/clientprofile/bin/Debug/dotNetRDF.ClientProfile.xml" />
-    <copy overwrite="true" todir="../bin/clientprofile-nightly" file="Libraries/clientprofile/bin/Debug/HtmlAgilityPack.dll" />
-    <copy overwrite="true" todir="../bin/clientprofile-nightly" file="Libraries/clientprofile/bin/Debug/Newtonsoft.Json.dll" />
+    <copy overwrite="true" todir="../bin/clientprofile-nightly" file="Libraries/core.clientprofile/bin/Debug/dotNetRDF.ClientProfile.dll" />
+    <copy overwrite="true" todir="../bin/clientprofile-nightly" file="Libraries/core.clientprofile/bin/Debug/dotNetRDF.ClientProfile.xml" />
+    <copy overwrite="true" todir="../bin/clientprofile-nightly" file="Libraries/core.clientprofile/bin/Debug/HtmlAgilityPack.dll" />
+    <copy overwrite="true" todir="../bin/clientprofile-nightly" file="Libraries/core.clientprofile/bin/Debug/Newtonsoft.Json.dll" />
   </target>
 
   <target name="build-mono" description="Copy the latest Mono build to the Mono Nightly Build directory" unless="${dotnetrdf.nobuild}"  depends="compile-mono">
@@ -251,7 +250,6 @@
     <copy overwrite="true" todir="../bin/mono-nightly" file="Libraries/core/bin/Debug/HtmlAgilityPack.dll" />
     <copy overwrite="true" todir="../bin/mono-nightly" file="Libraries/core/bin/Debug/Newtonsoft.Json.dll" />
     <copy overwrite="true" todir="../bin/mono-nightly" file="Libraries/core/bin/Debug/MySql.Data.dll" />
-    <copy overwrite="true" todir="../bin/mono-nightly" file="Libraries/core/bin/Debug/OpenLink.Data.Virtuoso.dll" />
   </target>
 
   <target name="build-linq" description="Copy the latest Linq build to the Linq Nightly Build directory" unless="${dotnetrdf.nobuild}" depends="compile-linq">
@@ -289,7 +287,7 @@
     <delete dir="Libraries/interop.semweb/bin" />
     <delete dir="Libraries/interop.sesame/bin" />
     <delete dir="Libraries/linkeddata/bin" />
-    <delete dir="Libraries/dotNetRDF.WinForms/bin" />
+    <delete dir="Libraries/gui.winforms/bin" />
     <delete dir="Samples/sparqldemo/bin" />
     <delete dir="Samples/virtuoso/bin" />
     <delete dir="Samples/WebDemos/bin" />
@@ -326,7 +324,7 @@
         <include name="*" />
       </fileset>
     </delete>
-    <delete dir="Libraries/silverlight/bin" />
+    <delete dir="Libraries/core.silverlight/bin" />
   </target>
 
   <target name="clean-windowsphone" description="Clean existing Silverlight Nightly Build">
@@ -335,7 +333,7 @@
         <include name="*" />
       </fileset>
     </delete>
-    <delete dir="Libraries/windowsphone/bin" />
+    <delete dir="Libraries/core.windowsphone/bin" />
   </target>
 
   <target name="clean-lite" description="Clean existing Lite Nightly Build">
@@ -344,7 +342,7 @@
         <include name="*" />
       </fileset>
     </delete>
-    <delete dir="Libraries/lite/bin" />
+    <delete dir="Libraries/core.lite/bin" />
   </target>
 
   <target name="clean-mono" description="Clean existing Mono Nightly Build">
@@ -415,17 +413,8 @@
       </fileset>
     </zip>
     <zip zipfile="${dotnetrdf.srczip}" ziplevel="9">
-      <fileset basedir="Libraries/core/" prefix="DotNet">
-        <include name="**/*" />
-        <exclude name="bin/" />
-        <exclude name="obj/" />
-      </fileset>
-      <fileset basedir="Libraries/silverlight/" prefix="Silverlight">
-        <include name="**/*" />
-        <exclude name="bin/" />
-        <exclude name="obj/" />
-      </fileset>
-      <fileset basedir="Libraries/windowsphone/" prefix="WindowsPhone7">
+      
+      <fileset basedir="Trunk/">
         <include name="*/*" />
         <exclude name="bin/" />
         <exclude name="obj/" />

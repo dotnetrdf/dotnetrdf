@@ -33,7 +33,7 @@ terms.
 
 */
 
-#if !NO_WEB
+#if !NO_WEB && !NO_ASP
 
 using System;
 using System.Collections.Generic;

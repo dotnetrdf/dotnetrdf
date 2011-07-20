@@ -295,7 +295,7 @@ namespace VDS.RDF.Configuration
         }
     }
 
-#if !NO_WEB
+#if !NO_WEB && !NO_ASP
 
     /// <summary>
     /// Factory class for producing SPARQL Graph Store HTTP Protocol Processors from Configuration Graphs

@@ -33,7 +33,7 @@ terms.
 
 */
 
-#if !NO_WEB && !NO_STORAGE
+#if !NO_WEB && !NO_ASP && !NO_STORAGE
 
 using System;
 using System.Linq;
