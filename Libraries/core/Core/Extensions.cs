@@ -617,6 +617,20 @@ namespace VDS.RDF
         }
 
         /// <summary>
+        /// Executes a SPARQL Query on a Graph handling the results using the handlers provided
+        /// </summary>
+        /// <param name="g">Graph to query</param>
+        /// <param name="rdfHandler">RDF Handler</param>
+        /// <param name="resultsHandler">SPARQL Results Handler</param>
+        /// <param name="sparqlQuery">SPARQL Query</param>
+        public static void ExecuteQuery(this IGraph g, IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery)
+        {
+            TripleStore store = new TripleStore();
+            store.Add(g);
+            store.ExecuteQuery(rdfHandler, resultsHandler, sparqlQuery);
+        }
+
+        /// <summary>
         /// Executes a SPARQL Query on a Graph
         /// </summary>
         /// <param name="g">Graph to query</param>
@@ -625,6 +639,18 @@ namespace VDS.RDF
         public static Object ExecuteQuery(this IGraph g, SparqlParameterizedString sparqlQuery)
         {
             return g.ExecuteQuery(sparqlQuery.ToString());
+        }
+
+        /// <summary>
+        /// Executes a SPARQL Query on a Graph handling the results using the handlers provided
+        /// </summary>
+        /// <param name="g">Graph to query</param>
+        /// <param name="rdfHandler">RDF Handler</param>
+        /// <param name="resultsHandler">SPARQL Results Handler</param>
+        /// <param name="sparqlQuery">SPARQL Query</param>
+        public static void ExecuteQuery(this IGraph g, IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlParameterizedString sparqlQuery)
+        {
+            g.ExecuteQuery(rdfHandler, resultsHandler, sparqlQuery.ToString());
         }
 
         /// <summary>
@@ -638,6 +664,20 @@ namespace VDS.RDF
             TripleStore store = new TripleStore();
             store.Add(g);
             return store.ExecuteQuery(query);
+        }
+
+        /// <summary>
+        /// Executes a SPARQL Query on a Graph handling the results using the handlers provided
+        /// </summary>
+        /// <param name="g">Graph to query</param>
+        /// <param name="rdfHandler">RDF Handler</param>
+        /// <param name="resultsHandler">SPARQL Results Handler</param>
+        /// <param name="query">SPARQL Query</param>
+        public static void ExecuteQuery(this IGraph g, IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query)
+        {
+            TripleStore store = new TripleStore();
+            store.Add(g);
+            store.ExecuteQuery(rdfHandler, resultsHandler, query);
         }
 
         /// <summary>

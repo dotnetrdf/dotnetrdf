@@ -71,6 +71,22 @@ namespace VDS.RDF
         }
 
         /// <summary>
+        /// Executes a SPARQL Query on the Graph handling the results with the given handlers
+        /// </summary>
+        /// <param name="rdfHandler">RDF Handler</param>
+        /// <param name="resultsHandler">SPARQL Results Handler</param>
+        /// <param name="sparqlQuery">SPARQL Query</param>
+        public void ExecuteQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery)
+        {
+            if (this._store == null)
+            {
+                this._store = new TripleStore();
+                this._store.Add(this);
+            }
+            this._store.ExecuteQuery(rdfHandler, resultsHandler, sparqlQuery);
+        }
+
+        /// <summary>
         /// Executes a SPARQL Query on the Graph
         /// </summary>
         /// <param name="query">SPARQL Query</param>
@@ -83,6 +99,22 @@ namespace VDS.RDF
                 this._store.Add(this);
             }
             return this._store.ExecuteQuery(query);
+        }
+
+        /// <summary>
+        /// Executes a SPARQL Query on the Graph handling the results with the given handlers
+        /// </summary>
+        /// <param name="rdfHandler">RDF Handler</param>
+        /// <param name="resultsHandler">SPARQL Results Handler</param>
+        /// <param name="query">SPARQL Query</param>
+        public void ExecuteQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query)
+        {
+            if (this._store == null)
+            {
+                this._store = new TripleStore();
+                this._store.Add(this);
+            }
+            this._store.ExecuteQuery(rdfHandler, resultsHandler, query);
         }
     }
 }
