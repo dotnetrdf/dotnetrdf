@@ -49,19 +49,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\..\..\Trunk\Libraries\silverlight\Compatability\HtmlTextWriter.cs">
+    <Compile Include="..\..\..\..\Trunk\Libraries\core.silverlight\Compatability\HtmlTextWriter.cs">
       <Link>HtmlTextWriter.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\Trunk\Libraries\silverlight\Compatability\HtmlTextWriterAttribute.cs">
+    <Compile Include="..\..\..\..\Trunk\Libraries\core.silverlight\Compatability\HtmlTextWriterAttribute.cs">
       <Link>HtmlTextWriterAttribute.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\Trunk\Libraries\silverlight\Compatability\HtmlTextWriterStyle.cs">
+    <Compile Include="..\..\..\..\Trunk\Libraries\core.silverlight\Compatability\HtmlTextWriterStyle.cs">
       <Link>HtmlTextWriterStyle.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\Trunk\Libraries\silverlight\Compatability\HtmlTextWriterTag.cs">
+    <Compile Include="..\..\..\..\Trunk\Libraries\core.silverlight\Compatability\HtmlTextWriterTag.cs">
       <Link>HtmlTextWriterTag.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\Trunk\Libraries\silverlight\Compatability\HttpUtility.cs">
+    <Compile Include="..\..\..\..\Trunk\Libraries\core.silverlight\Compatability\HttpUtility.cs">
       <Link>HttpUtility.cs</Link>
     </Compile>
     <Compile Include="HandlerHelper.cs" />

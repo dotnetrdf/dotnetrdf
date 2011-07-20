@@ -7,6 +7,7 @@ using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Optimisation;
+using VDS.RDF.Update;
 
 namespace sparqlDown
 {
@@ -201,6 +202,11 @@ namespace sparqlDown
         public override bool IsApplicable(SparqlQuery q)
         {
             return true;
+        }
+
+        public override bool IsApplicable(SparqlUpdateCommandSet cmds)
+        {
+            return false;
         }
     }
 }
