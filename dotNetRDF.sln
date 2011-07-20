@@ -63,7 +63,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.Alexandria.MongoD
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "soh", "Utilities\soh\soh.csproj", "{158872DD-31B7-4DF7-8950-A9547CC220C2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.WinForms", "Libraries\dotNetRDF.WinForms\dotNetRDF.WinForms.csproj", "{0D1B8423-44F6-4ACE-8055-58D66E574F9D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.WinForms", "Libraries\gui.winforms\dotNetRDF.WinForms.csproj", "{0D1B8423-44F6-4ACE-8055-58D66E574F9D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sesame-test", "Testing\sesame-test\sesame-test.csproj", "{DE26649D-6E79-4528-AB9B-671F4AC70C24}"
 EndProject
