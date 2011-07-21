@@ -9,7 +9,7 @@ rvesse@vdesign-studios.com
 Change Log
 ----------
 
-This represents a summary of additions, changes and removals for the 0.4.2 release of dotNetRDF
+This represents a summary of additions, changes and removals for the 0.5.0 release of dotNetRDF
 
 Added
 - Core API
@@ -45,6 +45,8 @@ Changed
  - Fixes to AllegroGraphConnector to support 4.x HTTP protocol changes based on bug reports from Sascha Dech
 - Query
  - Further refactored the Leviathan engine to make it even easier to extend
+ - RDF and Results Handler may now be used to process query results in all places where an IGraph or SparqlResultSet can be returned
+   i.e. new overloads for all relevant query related methods
  - Describe API Changes
   - Breaking changes to the Describe API to allow for use of RDF Handlers for streaming processing of the returned results
  - Optimisation Improvements
