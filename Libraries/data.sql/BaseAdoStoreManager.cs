@@ -171,7 +171,7 @@ namespace VDS.RDF.Storage
             {
                 if (ex.Message.IndexOf("permission", StringComparison.OrdinalIgnoreCase) >= 0)
                 {
-                    throw new RdfStorageException("Unable to connect to an ADO Store as it appears you may not have the necessary permissions on this database, see inner exception for details.  Users for ADO stores should be added to one of the roles rdf_readwrite, rdf_readinsert or rdf_readonly", ex);
+                    throw new RdfStorageException("Unable to connect to an ADO Store as it appears you may not have the necessary permissions on this database, see inner exception for details.  Users for ADO stores should be added to one of the roles rdf_admin, rdf_readwrite, rdf_readinsert or rdf_readonly", ex);
                 }
 
                 //If we get an SQL Exception then it may mean we've been used to try to connect to a legacy
@@ -736,10 +736,10 @@ namespace VDS.RDF.Storage
 
             if (id > 0)
             {
-                //Then we need to ensure that all Quads associated with the Graph currently are removed
+                //Then we need to ensure that all Quads associated with the Graph currently are removed before we overwrite the graph
                 cmd = this.GetCommand();
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.CommandText = "ClearGraph";
+                cmd.CommandText = "ClearGraphForOverwrite";
                 cmd.Connection = this._connection;
                 cmd.Parameters.Add(this.GetParameter("graphID"));
                 cmd.Parameters["graphID"].DbType = DbType.Int32;

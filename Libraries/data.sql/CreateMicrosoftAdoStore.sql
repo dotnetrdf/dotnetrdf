@@ -169,6 +169,39 @@ BEGIN
 	  RETURN 0;
 END
 
+-- ClearGraphForOverwrite
+GO
+CREATE PROCEDURE ClearGraphForOverwrite @graphID int 
+AS
+BEGIN
+	SET NOCOUNT ON;
+	DECLARE @count int = (SELECT COUNT(*) FROM QUADS WHERE graphID=@graphID);
+	IF @count > 0
+	  BEGIN
+		EXEC ClearGraph @graphID
+		RETURN 1;
+      END
+	ELSE
+		RETURN 0;
+END
+
+-- ClearGraphForOverwriteByUri
+GO
+CREATE PROCEDURE ClearGraphForOverwriteByUri @graphUri nvarchar(MAX) = NULL
+AS
+BEGIN
+	SET NOCOUNT ON;
+	DECLARE @id int;
+	EXEC @id = GetGraphID @graphUri;
+	IF @id > 0
+	  BEGIN
+	    EXEC @id = ClearGraphForOverwrite @id;
+	    RETURN @id;
+	  END
+	ELSE
+	  RETURN 0;
+END
+
 -- DeleteGraph
 GO
 CREATE PROCEDURE DeleteGraph @graphID int
@@ -709,12 +742,9 @@ GRANT SELECT ON QUADS TO rdf_readonly;
 GRANT SELECT ON NODES TO rdf_readonly;
 
 -- Grant Table and View related permissions for rdf_readinsert
--- Node that it still needs DELETE permission of the QUADS table since
--- inserting a Graph with the same URI as a previous graph requires deleting
--- the existing Quads from that Graph
 
 GRANT SELECT, INSERT ON GRAPHS TO rdf_readinsert;
-GRANT SELECT, INSERT, DELETE ON QUADS TO rdf_readinsert;
+GRANT SELECT, INSERT ON QUADS TO rdf_readinsert;
 GRANT SELECT, INSERT ON NODES TO rdf_readinsert;
 
 -- Grant Table and View related permissions for rdf_readwrite
@@ -741,8 +771,16 @@ GRANT EXECUTE ON GetOrCreateGraphID TO rdf_admin, rdf_readwrite, rdf_readinsert;
 GRANT EXECUTE ON GetGraphUri TO rdf_admin, rdf_readwrite, rdf_readinsert, rdf_readonly;
 GRANT EXECUTE ON GetGraphUris TO rdf_admin, rdf_readwrite, rdf_readinsert, rdf_readonly;
 
-GRANT EXECUTE ON ClearGraph TO rdf_admin, rdf_readwrite, rdf_readinsert;
-GRANT EXECUTE ON ClearGraph TO rdf_admin, rdf_readwrite, rdf_readinsert;
+-- Note - ClearGraph and ClearGraphForOverwrite are designed for use in different contexts
+-- The rdf_readinsert role has permission to execute the ForOverwrite variants and execution
+-- will only succeed if the graph to be cleared is empty since if it is not the procedure attempts
+-- to execute ClearGraph to which the role does not have permissions
+-- This way the role can insert new graphs but not overwrite existing ones
+GRANT EXECUTE ON ClearGraph TO rdf_admin, rdf_readwrite;
+GRANT EXECUTE ON ClearGraphForOverwrite TO rdf_admin, rdf_readwrite, rdf_readinsert;
+GRANT EXECUTE ON ClearGraphByUri TO rdf_admin, rdf_readwrite;
+GRANT EXECUTE ON ClearGraphForOverwrite TO rdf_admin, rdf_readwrite, rdf_readinsert;
+
 GRANT EXECUTE ON DeleteGraph TO rdf_admin, rdf_readwrite;
 GRANT EXECUTE ON DeleteGraphByUri TO rdf_admin, rdf_readwrite;
 
@@ -785,6 +823,6 @@ GRANT EXECUTE ON GetQuadsWithPredicateObject TO rdf_admin, rdf_readwrite, rdf_re
 GRANT EXECUTE ON GetQuadsWithPredicateObjectVirtual TO rdf_admin, rdf_readwrite, rdf_readinsert, rdf_readonly;
 GRANT EXECUTE ON GetQuadsWithPredicateObjectData TO rdf_admin, rdf_readwrite, rdf_readinsert, rdf_readonly;
 
--- TEMP - Grant rdf_admin role to example user for testing
+-- TEMP Grant rdf_admin role to example user
 
 EXEC sp_addrolemember 'rdf_admin', 'example';

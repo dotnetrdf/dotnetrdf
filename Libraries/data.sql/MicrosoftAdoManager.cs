@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
@@ -79,7 +81,56 @@ namespace VDS.RDF.Storage
 
         protected override int EnsureSetup(SqlConnection connection)
         {
-            throw new NotImplementedException("Automatic Store Setup is not yet implemented");
+            Stream s = Assembly.GetExecutingAssembly().GetManifestResourceStream("VDS.RDF.Storage.CreateMicrosoftAdoStore.sql");
+            if (s != null)
+            {
+                String commands;
+                using (StreamReader reader = new StreamReader(s))
+                {
+                    commands = reader.ReadToEnd();
+                    reader.Close();
+                }
+
+                SqlCommand cmd = this.GetCommand();
+                cmd.Connection = this.Connection as SqlConnection;
+                cmd.CommandType = CommandType.Text;
+                cmd.CommandText = commands;
+                try
+                {
+                    cmd.ExecuteNonQuery();
+
+                    //Now try and add the user to the rdf_readwrite role
+                    if (this._user != null)
+                    {
+                        try
+                        {
+                            cmd.CommandText = "EXEC sp_addrolemember 'rdf_readwrite', @user;";
+                            cmd.Parameters.Add(this.GetParameter("user"));
+                            cmd.Parameters["user"].Value = this._user;
+                            cmd.ExecuteNonQuery();
+
+                            //Succeeded - return 1
+                            return 1;
+                        }
+                        catch (SqlException sqlEx)
+                        {
+                            throw new RdfStorageException("ADO Store database for Microsoft SQL Server was created successfully but we were unable to add you to an appropriate ADO Store role automatically.  Please manually add yourself to one of the following roles - rdf_admin, rdf_readwrite, rdf_readinsert or rdf_readonly - before attempting to use the store", sqlEx);
+                        }
+                    }
+                    else
+                    {
+                        throw new RdfStorageException("ADO Store database for Microsoft SQL Server was created successfully but you are using a trusted connection so the system was unable to add you to an appropriate ADO Store role.  Please manually add yourself to one of the following roles - rdf_admin, rdf_readwrite, rdf_readinsert or rdf_readonly - before attempting to use the store");
+                    }
+                }
+                catch (SqlException sqlEx)
+                {
+                    throw new RdfStorageException("Failed to create ADO Store database for Microsoft SQL Server due to errors executing the creation script, please see inner exception for details.", sqlEx);
+                }
+            }
+            else
+            {
+                throw new RdfStorageException("Unable to setup ADO Store for Microsoft SQL Server as database creation script is missing from the DLL");
+            }
         }
 
         protected override ISparqlDataset GetDataset()

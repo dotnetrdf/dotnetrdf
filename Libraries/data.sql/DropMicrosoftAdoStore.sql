@@ -18,7 +18,10 @@ DROP PROCEDURE GetGraphUri;
 DROP PROCEDURE GetGraphUris;
 
 DROP PROCEDURE ClearGraph;
+DROP PROCEDURE ClearGraphForOverwrite;
 DROP PROCEDURE ClearGraphByUri;
+DROP PROCEDURE ClearGraphForOverwriteByUri;
+
 DROP PROCEDURE DeleteGraph;
 DROP PROCEDURE DeleteGraphByUri;
 
