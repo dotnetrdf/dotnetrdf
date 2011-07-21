@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<stetic-interface>
+  <configuration>
+    <images-root-path>..</images-root-path>
+    <target-gtk-version>2.12</target-gtk-version>
+  </configuration>
+  <import>
+    <widget-library name="glade-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <widget-library name="..\..\..\Libraries\editor.gtk\bin\Debug\rdfEditor.Core.Gtk.dll" />
+    <widget-library name="..\bin\Debug\rdfEditor.Gtk.exe" internal="true" />
+    <widget-library name="C:\Program Files (x86)\MonoDevelop\bin\Mono.TextEditor.dll" />
+  </import>
+  <widget class="Gtk.Window" id="MainWindow" design-size="400 300">
+    <property name="MemberName" />
+    <property name="Title" translatable="yes">MainWindow</property>
+    <property name="WindowPosition">CenterOnParent</property>
+    <signal name="DeleteEvent" handler="OnDeleteEvent" />
+    <child>
+      <placeholder />
+    </child>
+  </widget>
+</stetic-interface>

@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rdfEditor.Core.Gtk", "Libraries\editor.gtk\rdfEditor.Core.Gtk.csproj", "{AEB0B195-7475-4A12-BDD1-E15B95C0DF83}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rdfEditor.Gtk", "Utilities\rdfEditor.Gtk\rdfEditor.Gtk.csproj", "{58A6DFCE-F1DF-4987-AE64-7924B3E5005F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{58A6DFCE-F1DF-4987-AE64-7924B3E5005F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58A6DFCE-F1DF-4987-AE64-7924B3E5005F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58A6DFCE-F1DF-4987-AE64-7924B3E5005F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58A6DFCE-F1DF-4987-AE64-7924B3E5005F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AEB0B195-7475-4A12-BDD1-E15B95C0DF83}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AEB0B195-7475-4A12-BDD1-E15B95C0DF83}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AEB0B195-7475-4A12-BDD1-E15B95C0DF83}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AEB0B195-7475-4A12-BDD1-E15B95C0DF83}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = Utilities\rdfEditor.Gtk\rdfEditor.Gtk.csproj
+	EndGlobalSection
+EndGlobal
