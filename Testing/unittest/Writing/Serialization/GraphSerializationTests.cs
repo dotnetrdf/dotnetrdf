@@ -178,6 +178,7 @@ namespace VDS.RDF.Test.Writing.Serialization
 
             this.TestGraphSerializationDataContract(g);
         }
+
         [TestMethod]
         public void SerializationJsonGraph()
         {
