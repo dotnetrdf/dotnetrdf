@@ -594,14 +594,15 @@ namespace VDS.RDF.Query
                     while (reader.Name.Equals("variable"))
                     {
                         this._variables.Add(reader.ReadElementContentAsString());
-                        reader.Read();
                     }
+                    reader.Read();
                     if (reader.Name.Equals("results"))
                     {
                         reader.Read();
                         while (reader.Name.Equals("result"))
                         {
                             this._results.Add(reader.DeserializeResult());
+                            reader.Read();
                         }
                     }
                     else

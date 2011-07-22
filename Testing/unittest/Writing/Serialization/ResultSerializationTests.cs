@@ -48,6 +48,21 @@ namespace VDS.RDF.Test.Writing.Serialization
             }
         }
 
+        private void TestXmlSerialization(SparqlResultSet results)
+        {
+            StringWriter writer = new StringWriter();
+            XmlSerializer serializer = new XmlSerializer(typeof(SparqlResultSet));
+
+            serializer.Serialize(writer, results);
+            Console.WriteLine("Serialized Form:");
+            Console.WriteLine(writer.ToString());
+            Console.WriteLine();
+
+            SparqlResultSet results2 = serializer.Deserialize(new StringReader(writer.ToString())) as SparqlResultSet;
+
+            Assert.AreEqual(results, results2, "Expected Result Sets to be equal");
+        }
+
         private void TestBinarySerialization(SparqlResult r, bool fullEquality)
         {
             MemoryStream stream = new MemoryStream();
@@ -103,6 +118,53 @@ namespace VDS.RDF.Test.Writing.Serialization
             Assert.AreEqual(results, results2, "Expected Result Sets to be equal");
         }
 
+        private void TestDataContractSerialization(SparqlResult r, bool fullEquality)
+        {
+            Console.WriteLine("Input: " + r.ToString());
+
+            StringWriter writer = new StringWriter();
+            DataContractSerializer serializer = new DataContractSerializer(typeof(SparqlResult));
+            serializer.WriteObject(new XmlTextWriter(writer), r);
+            Console.WriteLine("Serialized Form:");
+            Console.WriteLine(writer.ToString());
+
+            SparqlResult s = serializer.ReadObject(XmlTextReader.Create(new StringReader(writer.ToString()))) as SparqlResult;
+            Console.WriteLine("Deserialized Form: " + s.ToString());
+            Console.WriteLine();
+
+            if (fullEquality)
+            {
+                Assert.AreEqual(r, s, "Results should be equal");
+            }
+            else
+            {
+                Assert.AreEqual(r.ToString(), s.ToString(), "String forms should be equal");
+            }
+        }
+
+        private void TestDataContractSerialization(SparqlResultSet results, bool fullEquality)
+        {
+            foreach (SparqlResult r in results)
+            {
+                this.TestDataContractSerialization(r, fullEquality);
+            }
+        }
+
+        private void TestDataContractSerialization(SparqlResultSet results)
+        {
+            StringWriter writer = new StringWriter();
+            DataContractSerializer serializer = new DataContractSerializer(typeof(SparqlResultSet));
+
+            serializer.WriteObject(new XmlTextWriter(writer), results);
+            Console.WriteLine("Serialized Form:");
+            Console.WriteLine(writer.ToString());
+            Console.WriteLine();
+
+            SparqlResultSet results2 = serializer.ReadObject(XmlTextReader.Create(new StringReader(writer.ToString()))) as SparqlResultSet;
+
+            Assert.AreEqual(results, results2, "Expected Result Sets to be equal");
+        }
+
         private SparqlResultSet GetResults(String query)
         {
             Graph g = new Graph();
@@ -131,6 +193,24 @@ namespace VDS.RDF.Test.Writing.Serialization
         public void SerializationXmlSparqlResult()
         {
             this.TestXmlSerialization(this.GetResults(), true);
+        }
+
+        [TestMethod]
+        public void SerializationXmlSparqlResultSet()
+        {
+            this.TestXmlSerialization(this.GetResults());
+        }
+
+        [TestMethod]
+        public void SerializationDataContractSparqlResult()
+        {
+            this.TestDataContractSerialization(this.GetResults(), true);
+        }
+
+        [TestMethod]
+        public void SerializationDataContractSparqlResultSet()
+        {
+            this.TestDataContractSerialization(this.GetResults());
         }
     }
 }

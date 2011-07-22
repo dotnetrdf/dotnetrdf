@@ -116,6 +116,15 @@
   <xs:element name="result">
     <xs:complexType>
       <xs:sequence>
+        <xs:element ref="bindings" minOccurs="1" maxOccurs="1" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  
+  <!-- bindings element -->
+  <xs:element name="bindings">
+    <xs:complexType>
+      <xs:sequence>
         <xs:element ref="binding" minOccurs="0" maxOccurs="unbounded" />
       </xs:sequence>
     </xs:complexType>

@@ -41,6 +41,7 @@ using System.Text;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
+using VDS.RDF.Parsing;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Writing.Formatting;
 using VDS.RDF.Writing.Serialization;
@@ -398,6 +399,7 @@ namespace VDS.RDF.Query
 
         public void WriteXml(XmlWriter writer)
         {
+            writer.WriteStartElement("bindings");
             foreach (KeyValuePair<String, INode> binding in this._resultValues)
             {
                 writer.WriteStartElement("binding");
@@ -405,21 +407,50 @@ namespace VDS.RDF.Query
                 binding.Value.SerializeNode(writer);
                 writer.WriteEndElement();
             }
+            writer.WriteEndElement();
         }
 
         public void ReadXml(XmlReader reader)
         {
+            //<result> may be empty
             if (reader.IsEmptyElement) return;
+
+            //Otherwise expect a <bindings> element
             reader.Read();
-            while (reader.Name.Equals("binding"))
+            if (reader.Name.Equals("bindings"))
             {
-                reader.MoveToAttribute("name");
-                String var = reader.Value;
-                reader.MoveToElement();
+                //<bindings> may be empty
+                if (reader.IsEmptyElement) return;
+
+                //Otherwise expect some values
                 reader.Read();
-                INode value = reader.DeserializeNode();
-                this._resultValues.Add(var, value);
+                while (reader.Name.Equals("binding"))
+                {
+                    //Get the attribute name
+                    reader.MoveToAttribute("name");
+                    String var = reader.Value;
+                    reader.MoveToElement();
+
+                    if (reader.IsEmptyElement)
+                    {
+                        //May be empty indicating a null
+                        this._resultValues.Add(var, null);
+                    }
+                    else
+                    {
+                        //Otherwise expect a deserializable node
+                        reader.Read();
+                        INode value = reader.DeserializeNode();
+                        this._resultValues.Add(var, value);
+                    }
+                    //Read to the next binding
+                    reader.Read();
+                }
                 reader.Read();
+            }
+            else
+            {
+                throw new RdfParseException("Expected a <bindings> element as the child of a <result> element");
             }
         }
 
