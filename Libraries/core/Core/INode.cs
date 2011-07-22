@@ -46,7 +46,6 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF
 {
-
     /// <summary>
     /// Node Type Values
     /// </summary>

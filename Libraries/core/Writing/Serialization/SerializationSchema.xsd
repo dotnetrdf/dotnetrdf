@@ -11,20 +11,28 @@
     <xs:complexType>
       <!-- graph contains a single triples element -->
       <xs:sequence>
-        <xs:element name="triples" minOccurs="1" maxOccurs="1">
-          <xs:complexType>
-            <!-- triples contains a sequence of triple elements which may be empty -->
-            <xs:sequence minOccurs="0">
-              <xs:element name="triple">
-                <xs:complexType>
-                  <xs:sequence>
-                    <xs:group ref="node" minOccurs="3" maxOccurs="3" />
-                  </xs:sequence>
-                </xs:complexType>
-              </xs:element>
-            </xs:sequence>
-          </xs:complexType>
-        </xs:element>
+        <xs:element ref="namespaces" minOccurs="0" maxOccurs="1" />
+        <xs:element ref="triples" minOccurs="1" maxOccurs="1" />
+      </xs:sequence>
+      <xs:attribute name="base" type="xs:anyURI" use="optional" />
+    </xs:complexType>
+  </xs:element>
+  
+  <!-- triples element -->
+  <xs:element name="triples">
+    <xs:complexType>
+      <!-- triples contains a sequence of triple elements which may be empty -->
+      <xs:sequence>
+        <xs:element ref="triple" minOccurs="0" maxOccurs="unbounded" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  
+  <!-- triple element -->
+  <xs:element name="triple">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:group ref="node" minOccurs="3" maxOccurs="3" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -55,6 +63,23 @@
       <xs:element name="variable" type="xs:string" />
     </xs:choice>
   </xs:group>
+
+  <!-- namespaces element -->
+  <xs:element name="namespaces">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="namespace" minOccurs="0" maxOccurs="unbounded" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  
+  <!-- namespace element -->
+  <xs:element name="namespace">
+    <xs:complexType>
+      <xs:attribute name="prefix" type="xs:string" />
+      <xs:attribute name="uri" type="xs:anyURI" />
+    </xs:complexType>
+  </xs:element>
   
   <!-- resultset element -->
   <xs:element name="resultSet">
@@ -62,35 +87,48 @@
       <xs:choice>
         <xs:element name="boolean" type="xs:boolean" />
         <xs:sequence>
-          <xs:element name="variables">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element name="variable" type="xs:string" />
-              </xs:sequence>
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="results">
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element name="result">
-                  <xs:complexType>
-                    <xs:sequence>
-                      <xs:element name="binding">
-                        <xs:complexType>
-                          <xs:sequence>
-                            <xs:group ref="node" maxOccurs="1" minOccurs="0" />
-                          </xs:sequence>
-                          <xs:attribute name="name" type="xs:string" />
-                        </xs:complexType>
-                      </xs:element>
-                    </xs:sequence>
-                  </xs:complexType>
-                </xs:element>
-              </xs:sequence>
-            </xs:complexType>
-          </xs:element>
+          <xs:element ref="variables" minOccurs="1" maxOccurs="1" />
+          <xs:element ref="results" minOccurs="1" maxOccurs="1" />
         </xs:sequence>
       </xs:choice>
     </xs:complexType>
   </xs:element>
+  
+  <!-- variables element -->
+  <xs:element name="variables">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="variable" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  
+  <!-- results element -->
+  <xs:element name="results">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="result" minOccurs="0" maxOccurs="unbounded" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  
+  <!-- result element -->
+  <xs:element name="result">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="binding" minOccurs="0" maxOccurs="unbounded" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  
+  <!-- binding element -->
+  <xs:element name="binding">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:group ref="node" maxOccurs="1" minOccurs="0" />
+      </xs:sequence>
+      <xs:attribute name="name" type="xs:string" />
+    </xs:complexType>
+  </xs:element>
+  
 </xs:schema>

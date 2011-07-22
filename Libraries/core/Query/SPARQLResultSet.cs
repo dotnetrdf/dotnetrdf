@@ -93,6 +93,8 @@ namespace VDS.RDF.Query
         private bool _result = false;
         private SparqlResultsType _type = SparqlResultsType.Unknown;
 
+        private ResultSetDeserializationInfo _dsInfo;
+
         /// <summary>
         /// Creates an Empty Sparql Result Set
         /// </summary>
@@ -147,8 +149,13 @@ namespace VDS.RDF.Query
 
         private SparqlResultSet(SerializationInfo info, StreamingContext context)
         {
-            this._variables.AddRange((List<String>)info.GetValue("variables", typeof(List<String>)));
-            this._results.AddRange((List<SparqlResult>)info.GetValue("results", typeof(List<SparqlResult>)));
+            this._dsInfo = new ResultSetDeserializationInfo(info, context);
+        }
+
+        [OnDeserialized]
+        private void OnDeserialized(StreamingContext context)
+        {
+            if (this._dsInfo != null) this._dsInfo.Apply(this);
         }
 
         #region Properties
@@ -528,6 +535,7 @@ namespace VDS.RDF.Query
 
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
+            info.AddValue("type", this._type);
             info.AddValue("variables", this._variables);
             info.AddValue("results", this._results);
         }

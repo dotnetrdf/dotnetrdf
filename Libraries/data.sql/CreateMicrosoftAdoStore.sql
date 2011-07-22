@@ -751,7 +751,7 @@ GRANT SELECT, INSERT ON NODES TO rdf_readinsert;
 
 GRANT SELECT, INSERT, DELETE ON GRAPHS TO rdf_readwrite;
 GRANT SELECT, INSERT, DELETE ON QUADS TO rdf_readwrite;
-GRANT SELECT, INSERT, DELETE ON NODES TO rdf_readwrite;
+GRANT SELECT, INSERT ON NODES TO rdf_readwrite;
 
 -- Grant Table and View related permissions for rdf_admin
 

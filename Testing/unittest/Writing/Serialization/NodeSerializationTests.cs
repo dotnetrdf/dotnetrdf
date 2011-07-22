@@ -6,6 +6,7 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
+using System.Xml;
 using System.Xml.Serialization;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Parsing;
@@ -16,6 +17,8 @@ namespace VDS.RDF.Test.Writing.Serialization
     [TestClass]
     public class NodeSerializationTests
     {
+        #region Methods that perform the actual test logic
+
         private void TestSerializationXml(INode n, Type t, bool fullEquality)
         {
             Console.WriteLine("Input: " + n.ToString());
@@ -84,6 +87,42 @@ namespace VDS.RDF.Test.Writing.Serialization
             }
         }
 
+        private void TestSerializationDataContract(INode n, Type t, bool fullEquality)
+        {
+            Console.WriteLine("Input: " + n.ToString());
+
+            StringWriter writer = new StringWriter();
+            DataContractSerializer serializer = new DataContractSerializer(t);
+            serializer.WriteObject(new XmlTextWriter(writer), n);
+            Console.WriteLine("Serialized Form:");
+            Console.WriteLine(writer.ToString());
+
+            INode m = serializer.ReadObject(XmlTextReader.Create(new StringReader(writer.ToString()))) as INode;
+            Console.WriteLine("Deserialized Form: " + m.ToString());
+            Console.WriteLine();
+
+            if (fullEquality)
+            {
+                Assert.AreEqual(n, m, "Nodes should be equal");
+            }
+            else
+            {
+                Assert.AreEqual(n.ToString(), m.ToString(), "String forms should be equal");
+            }
+        }
+
+        private void TestSerializationDataContract(IEnumerable<INode> nodes, Type t, bool fullEquality)
+        {
+            foreach (INode n in nodes)
+            {
+                this.TestSerializationDataContract(n, t, fullEquality);
+            }
+        }
+
+        #endregion
+
+        #region Unit Tests for Blank Nodes
+
         [TestMethod]
         public void SerializationXmlBlankNodes()
         {
@@ -99,6 +138,18 @@ namespace VDS.RDF.Test.Writing.Serialization
             INode b = g.CreateBlankNode();
             this.TestSerializationBinary(b, false);
         }
+
+        [TestMethod]
+        public void SerializationDataContractBlankNodes()
+        {
+            Graph g = new Graph();
+            INode b = g.CreateBlankNode();
+            this.TestSerializationDataContract(b, typeof(BlankNode), false);
+        }
+
+        #endregion
+
+        #region Unit Tests for Literal Nodes
 
         private IEnumerable<INode> GetLiteralNodes()
         {
@@ -129,6 +180,16 @@ namespace VDS.RDF.Test.Writing.Serialization
             this.TestSerializationBinary(this.GetLiteralNodes(), true);
         }
 
+        [TestMethod]
+        public void SerializationDataContractLiteralNodes()
+        {
+            this.TestSerializationDataContract(this.GetLiteralNodes(), typeof(LiteralNode), true);
+        }
+
+        #endregion
+
+        #region Unit Tests for URI Nodes
+
         private IEnumerable<INode> GetUriNodes()
         {
             Graph g = new Graph();
@@ -155,6 +216,16 @@ namespace VDS.RDF.Test.Writing.Serialization
         {
             this.TestSerializationBinary(this.GetUriNodes(), true);
         }
+
+        [TestMethod]
+        public void SerializationDataContractUriNodes()
+        {
+            this.TestSerializationDataContract(this.GetUriNodes(), typeof(UriNode), true);
+        }
+
+        #endregion
+
+        #region Unit Tests for Graph Literals
 
         private IEnumerable<INode> GetGraphLiteralNodes()
         {
@@ -186,6 +257,16 @@ namespace VDS.RDF.Test.Writing.Serialization
             this.TestSerializationBinary(this.GetGraphLiteralNodes(), true);
         }
 
+        [TestMethod]
+        public void SerializationDataContractGraphLiteralNodes()
+        {
+            this.TestSerializationDataContract(this.GetGraphLiteralNodes(), typeof(GraphLiteralNode), true);
+        }
+
+        #endregion
+
+        #region Unit Tests for Variables
+
         private IEnumerable<INode> GetVariableNodes()
         {
             Graph g = new Graph();
@@ -212,5 +293,13 @@ namespace VDS.RDF.Test.Writing.Serialization
         {
             this.TestSerializationBinary(this.GetVariableNodes(), true);
         }
+
+        [TestMethod]
+        public void SerializationDataContractVariableNodes()
+        {
+            this.TestSerializationDataContract(this.GetVariableNodes(), typeof(VariableNode), true);
+        }
+
+        #endregion
     }
 }

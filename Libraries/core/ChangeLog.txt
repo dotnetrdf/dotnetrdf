@@ -39,6 +39,9 @@ Added
  - Added formatters for RDF/XML and SPARQL XML Results
 
 Changed
+- Dependency Changes
+ - OpenLink.Data.Virtuoso.dll removed as dependency - Virtuoso support now in seperate dotNetRDF.Data.Virtuoso.dll library
+ - Updated to latest Json.Net release - now using Newtonsoft.Json.Net35.dll as the standard build has moved to .Net 4.0
 - Bug Fixes
  - SPARQL Tokeniser allows more than one ORDER BY keyword
  - Turtle Parser now permits nested collections i.e. ( "item" ( "subcollection" ) )

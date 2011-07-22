@@ -47,6 +47,7 @@ using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
 using VDS.RDF.Parsing;
+using VDS.RDF.Writing.Serialization;
 
 namespace VDS.RDF
 {
@@ -79,9 +80,9 @@ namespace VDS.RDF
         /// </summary>
         protected BlankNodeMapper _bnodemapper;
 
-        private List<Triple> _temp;
-
         private TripleEventHandler TripleAddedHandler, TripleRemovedHandler;
+
+        private GraphDeserializationInfo _dsInfo;
 
         #endregion
 
@@ -121,17 +122,13 @@ namespace VDS.RDF
         protected BaseGraph(SerializationInfo info, StreamingContext context)
             : this()
         {
-            this._temp = (List<Triple>)info.GetValue("triples", typeof(List<Triple>));
+            this._dsInfo = new GraphDeserializationInfo(info, context);   
         }
 
         [OnDeserialized]
         private void OnDeserialized(StreamingContext context)
         {
-            if (this._temp != null)
-            {
-                this.Assert(this._temp);
-                this._temp = null;
-            }
+            if (this._dsInfo != null) this._dsInfo.Apply(this);
         }
 
         #endregion
@@ -1209,7 +1206,11 @@ namespace VDS.RDF
 
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
+            info.AddValue("base", this.BaseUri.ToSafeString());
             info.AddValue("triples", this.Triples.ToList(), typeof(List<Triple>));
+            IEnumerable<KeyValuePair<String,String>> ns = from p in this.NamespaceMap.Prefixes
+                                                          select new KeyValuePair<String,String>(p, this.NamespaceMap.GetNamespaceUri(p).ToString());
+            info.AddValue("namespaces", ns.ToList(), typeof(List<KeyValuePair<String, String>>));
         }
 
         #endregion
@@ -1224,6 +1225,35 @@ namespace VDS.RDF
         public void ReadXml(XmlReader reader)
         {
             XmlSerializer tripleDeserializer = new XmlSerializer(typeof(Triple));
+            reader.Read();
+            if (reader.Name.Equals("namespaces"))
+            {
+                if (!reader.IsEmptyElement)
+                {
+                    reader.Read();
+                    while (reader.Name.Equals("namespace"))
+                    {
+                        if (reader.MoveToAttribute("prefix"))
+                        {
+                            String prefix = reader.Value;
+                            if (reader.MoveToAttribute("uri"))
+                            {
+                                Uri u = new Uri(reader.Value);
+                                this.NamespaceMap.AddNamespace(prefix, u);
+                                reader.Read();
+                            }
+                            else
+                            {
+                                throw new RdfParseException("Expected a uri attribute on a <namespace> element");
+                            }
+                        }
+                        else
+                        {
+                            throw new RdfParseException("Expected a prefix attribute on a <namespace> element");
+                        }
+                    }
+                }
+            }
             reader.Read();
             if (reader.Name.Equals("triples"))
             {
@@ -1247,13 +1277,32 @@ namespace VDS.RDF
             }
             else
             {
-                throw new RdfParseException("Expected a <triples> element inside a <graph> element");
+                throw new RdfParseException("Expected a <triples> element inside a <graph> element but got a <" + reader.Name + "> element instead");
             }
         }
 
         public void WriteXml(XmlWriter writer)
         {
             XmlSerializer tripleSerializer = new XmlSerializer(typeof(Triple));
+
+            //Serialize Base Uri
+            if (this.BaseUri != null)
+            {
+                writer.WriteAttributeString("base", this.BaseUri.ToString());
+            }
+
+            //Serialize Namespace Map
+            writer.WriteStartElement("namespaces");
+            foreach (String prefix in this.NamespaceMap.Prefixes)
+            {
+                writer.WriteStartElement("namespace");
+                writer.WriteAttributeString("prefix", prefix);
+                writer.WriteAttributeString("uri", this.NamespaceMap.GetNamespaceUri(prefix).ToString());
+                writer.WriteEndElement();
+            }
+            writer.WriteEndElement();
+
+            //Serialize Triples
             writer.WriteStartElement("triples");
             foreach (Triple t in this.Triples)
             {
