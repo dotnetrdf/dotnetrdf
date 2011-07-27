@@ -33,7 +33,7 @@ namespace VDS.OWL.Term.Entity
         }
     }
 
-    public interface ITypeLiteral
+    public interface ITypedLiteral
         : ILiteral
     {
         INamedDataType DataType

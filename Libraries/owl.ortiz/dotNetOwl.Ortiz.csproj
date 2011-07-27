@@ -89,11 +89,13 @@
     <Compile Include="Term\Entity\Properties.cs" />
     <Compile Include="Term\Entity\Restrictions.cs" />
     <Compile Include="Term\Entity\Types.cs" />
+    <Compile Include="Term\Function\IFunction.cs" />
+    <Compile Include="Term\Function\IFunctionAtom.cs" />
     <Compile Include="Term\Query\IQueryAtom.cs" />
     <Compile Include="Term\Conjunctions.cs" />
     <Compile Include="Term\ITerm.cs" />
     <Compile Include="Term\ITermCollection.cs" />
-    <Compile Include="Term\ITermVisitor.cs" />
+    <Compile Include="Term\Visitor\ITermVisitor.cs" />
     <Compile Include="Term\NamedTerm.cs" />
     <Compile Include="Term\Query\IQueryOptional.cs" />
     <Compile Include="Term\Query\QueryConjunctions.cs" />
