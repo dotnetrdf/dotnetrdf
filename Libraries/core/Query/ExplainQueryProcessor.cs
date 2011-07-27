@@ -178,7 +178,7 @@ namespace VDS.RDF.Query
     public class ExplainQueryProcessor : LeviathanQueryProcessor
     {
         private ThreadSafeValue<int> _depthCounter;
-        private ThreadSafeReference<Stack<DateTime>> _startTimes;
+        private ThreadIsolatedReference<Stack<DateTime>> _startTimes;
         private ExplanationLevel _level = ExplanationLevel.Default;
         private SparqlFormatter _formatter = new SparqlFormatter();
 
@@ -186,7 +186,7 @@ namespace VDS.RDF.Query
             : base(dataset)
         {
             this._depthCounter = new ThreadSafeValue<int>(() => 0);
-            this._startTimes = new ThreadSafeReference<Stack<DateTime>>(() => new Stack<DateTime>());
+            this._startTimes = new ThreadIsolatedReference<Stack<DateTime>>(() => new Stack<DateTime>());
         }
 
         public ExplainQueryProcessor(ISparqlDataset dataset, ExplanationLevel level)

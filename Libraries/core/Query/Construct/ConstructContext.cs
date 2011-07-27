@@ -11,7 +11,7 @@ namespace VDS.RDF.Query.Construct
     /// </summary>
     public class ConstructContext
     {
-        private static ThreadSafeReference<NodeFactory> _globalFactory = new ThreadSafeReference<NodeFactory>(() => new NodeFactory());
+        private static ThreadIsolatedReference<NodeFactory> _globalFactory = new ThreadIsolatedReference<NodeFactory>(() => new NodeFactory());
         private ISet _s;
         private INodeFactory _factory;
         private IGraph _g;

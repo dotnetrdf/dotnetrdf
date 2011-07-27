@@ -48,19 +48,19 @@ namespace VDS.RDF.Query.Datasets
         /// <summary>
         /// Reference to the Active Graph being used for executing a SPARQL Query
         /// </summary>
-        private readonly ThreadSafeReference<IGraph> _activeGraph;
+        private readonly ThreadIsolatedReference<IGraph> _activeGraph;
         /// <summary>
         /// Default Graph for executing SPARQL Queries against
         /// </summary>
-        private readonly ThreadSafeReference<IGraph> _defaultGraph;
+        private readonly ThreadIsolatedReference<IGraph> _defaultGraph;
         /// <summary>
         /// Stack of Default Graph References used for executing a SPARQL Query when a Query may choose to change the Default Graph from the Dataset defined one
         /// </summary>
-        private readonly ThreadSafeReference<Stack<IGraph>> _defaultGraphs;
+        private readonly ThreadIsolatedReference<Stack<IGraph>> _defaultGraphs;
         /// <summary>
         /// Stack of Active Graph References used for executing a SPARQL Query when there are nested GRAPH Clauses
         /// </summary>
-        private readonly ThreadSafeReference<Stack<IGraph>> _activeGraphs;
+        private readonly ThreadIsolatedReference<Stack<IGraph>> _activeGraphs;
 
         private readonly bool _unionDefaultGraph = true;
         private readonly Uri _defaultGraphUri;
@@ -70,10 +70,10 @@ namespace VDS.RDF.Query.Datasets
         /// </summary>
         public BaseDataset()
         {
-            this._activeGraph = new ThreadSafeReference<IGraph>();
-            this._defaultGraph = new ThreadSafeReference<IGraph>(this.InitDefaultGraph);
-            this._defaultGraphs = new ThreadSafeReference<Stack<IGraph>>(this.InitGraphStack);
-            this._activeGraphs = new ThreadSafeReference<Stack<IGraph>>(this.InitGraphStack);
+            this._activeGraph = new ThreadIsolatedReference<IGraph>();
+            this._defaultGraph = new ThreadIsolatedReference<IGraph>(this.InitDefaultGraph);
+            this._defaultGraphs = new ThreadIsolatedReference<Stack<IGraph>>(this.InitGraphStack);
+            this._activeGraphs = new ThreadIsolatedReference<Stack<IGraph>>(this.InitGraphStack);
         }
 
         /// <summary>

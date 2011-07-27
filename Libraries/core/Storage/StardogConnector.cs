@@ -42,9 +42,6 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
-#if !NO_WEB
-using System.Web;
-#endif
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
@@ -78,17 +75,9 @@ namespace VDS.RDF.Storage
     /// Has full support for Stardog Transactions, connection is in auto-commit mode by default i.e. all write operations (Delete/Save/Update) will create and use a dedicated transaction for their operation.  You can manage Transactions using the <see cref="StardogConnector.Begin">Begin()</see>, <see cref="StardogConnector.Commit">Commit()</see> and <see cref="StardogConnector.Rollback">Rollback()</see> methods.
     /// </para>
     /// <para>
-    /// Transactions are always scoped to Managed Threads so each Thread has access to an independent and isolated transaction should you desire.  Attempting to start a new transaction when there is already an existing transaction on the thread will cause an error as will committing/rolling back a transaction when there is none on the current thread.  While the connector allows for multiple transactions and concurrency naturally be mindful that Stardog currently is MRSW (Multiple Reader Single Writer) safe only and you should ensure you adhere to that when using it as the connector will not enforce it for you.
+    /// The connector maintains a single transaction which is shared across all threads since Stardog is currently provides only MRSW (Multiple Reader Single Writer) concurrency and does not permit multiple transactions to occur simultaneously.  In the case where you are not managed transactions yourself each thread will attempt to auto-commit using different transactions which may fail.
     /// </para>
     /// </remarks>
-    /// <threadsafety instance="true">
-    /// <para>
-    /// The StardogConnector is designed to be thread safe, each threads transactions are isolated from each other.  A thread may only have one active transaction at any one time, an <see cref="RdfStorageException">RdfStorageException</see> will be thrown if a thread violates this rule.
-    /// </para>
-    /// <para>
-    /// <strong>Note:</strong> As per the remarks Stardog currently is only MRSW safe, this connector does not enforce this so please be mindful of this when coding
-    /// </para>
-    /// </threadsafety>
     public class StardogConnector : IQueryableGenericIOManager, IConfigurationSerializable
     {
         private String _baseUri;
@@ -98,7 +87,7 @@ namespace VDS.RDF.Storage
         private bool _hasCredentials = false;
         private StardogReasoningMode _reasoning = StardogReasoningMode.None;
 
-        private ThreadSafeReference<String> _activeTrans = new ThreadSafeReference<string>();
+        private String _activeTrans = null;
 
         private StringBuilder _output = new StringBuilder();
         private SparqlFormatter _sparqlFormatter = new SparqlFormatter();
@@ -209,7 +198,7 @@ namespace VDS.RDF.Storage
             {
                 HttpWebRequest request;
 
-                String tID = (this._activeTrans.Value == null) ? String.Empty : "/" + this._activeTrans.Value;
+                String tID = (this._activeTrans == null) ? String.Empty : "/" + this._activeTrans;
 
                 //Create the Request
                 Dictionary<String, String> queryParams = new Dictionary<string, string>();
@@ -345,7 +334,7 @@ namespace VDS.RDF.Storage
                 HttpWebRequest request;
                 Dictionary<String, String> serviceParams = new Dictionary<string, string>();
 
-                String tID = (this._activeTrans.Value == null) ? String.Empty : "/" + this._activeTrans.Value;
+                String tID = (this._activeTrans == null) ? String.Empty : "/" + this._activeTrans;
                 String requestUri = this._kb + tID + "/query";
                 SparqlParameterizedString construct = new SparqlParameterizedString();
                 if (!graphUri.Equals(String.Empty))
@@ -421,7 +410,7 @@ namespace VDS.RDF.Storage
                 }
 
                 //Get a Transaction ID, if there is no active Transaction then this operation will be auto-committed
-                tID = (this._activeTrans.Value != null) ? this._activeTrans.Value : this.BeginTransaction();
+                tID = (this._activeTrans != null) ? this._activeTrans : this.BeginTransaction();
 
                 HttpWebRequest request = this.CreateRequest(this._kb + "/" + tID + "/add", MimeTypesHelper.Any, "POST", new Dictionary<string,string>());
                 request.ContentType = MimeTypesHelper.TriG[0];
@@ -450,7 +439,7 @@ namespace VDS.RDF.Storage
                 }
 
                 //Commit Transaction only if in auto-commit mode (active transaction will be null)
-                if (this._activeTrans.Value == null)
+                if (this._activeTrans == null)
                 {
                     try
                     {
@@ -475,7 +464,7 @@ namespace VDS.RDF.Storage
                 //and in auto-commit mode
                 if (tID != null)
                 {
-                    if (this._activeTrans.Value == null)
+                    if (this._activeTrans == null)
                     {
                         try
                         {
@@ -507,7 +496,7 @@ namespace VDS.RDF.Storage
             try
             {
                 //Get a Transaction ID, if there is no active Transaction then this operation will be auto-committed
-                tID = (this._activeTrans.Value != null) ? this._activeTrans.Value : this.BeginTransaction();
+                tID = (this._activeTrans != null) ? this._activeTrans : this.BeginTransaction();
 
                 //First do the Removals
                 if (removals != null)
@@ -556,7 +545,7 @@ namespace VDS.RDF.Storage
                 }
 
                 //Commit Transaction only if in auto-commit mode (active transaction will be null)
-                if (this._activeTrans.Value == null)
+                if (this._activeTrans == null)
                 {
                     try
                     {
@@ -580,7 +569,7 @@ namespace VDS.RDF.Storage
                 //and in auto-commit mode
                 if (tID != null)
                 {
-                    if (this._activeTrans.Value == null)
+                    if (this._activeTrans == null)
                     {
                         try
                         {
@@ -645,7 +634,7 @@ namespace VDS.RDF.Storage
             try
             {
                 //Get a Transaction ID, if there is no active Transaction then this operation will be auto-committed
-                tID = (this._activeTrans.Value != null) ? this._activeTrans.Value : this.BeginTransaction();
+                tID = (this._activeTrans != null) ? this._activeTrans : this.BeginTransaction();
 
                 HttpWebRequest request;
                 if (!graphUri.Equals(String.Empty))
@@ -676,7 +665,7 @@ namespace VDS.RDF.Storage
                 }
 
                 //Commit Transaction only if in auto-commit mode (active transaction will be null)
-                if (this._activeTrans.Value == null)
+                if (this._activeTrans == null)
                 {
                     try
                     {
@@ -701,7 +690,7 @@ namespace VDS.RDF.Storage
                 //and in auto-commit mode
                 if (tID != null)
                 {
-                    if (this._activeTrans.Value == null)
+                    if (this._activeTrans == null)
                     {
                         try
                         {
@@ -886,9 +875,9 @@ namespace VDS.RDF.Storage
             }
 
             //Reset the Active Transaction on this Thread if the IDs match up
-            if (this._activeTrans.Value != null && this._activeTrans.Value.Equals(tID))
+            if (this._activeTrans != null && this._activeTrans.Equals(tID))
             {
-                this._activeTrans.Value = null;
+                this._activeTrans = null;
             }
         }
 
@@ -902,26 +891,28 @@ namespace VDS.RDF.Storage
             }
 
             //Reset the Active Transaction on this Thread if the IDs match up
-            if (this._activeTrans.Value != null && this._activeTrans.Value.Equals(tID))
+            if (this._activeTrans != null && this._activeTrans.Equals(tID))
             {
-                this._activeTrans.Value = null;
+                this._activeTrans = null;
             }
         }
 
         /// <summary>
         /// Begins a new Transaction
         /// </summary>
-        /// <exception cref="RdfStorageException">Thrown if there is already an active Transaction on the current Thread</exception>
         /// <remarks>
-        /// Transactions are scoped to Managed Threads
+        /// A single transaction
         /// </remarks>
         public void Begin()
         {
-            if (this._activeTrans.Value != null)
+            lock (this._activeTrans)
             {
-                throw new RdfStorageException("Cannot start a new Transaction on the current Thread as there is already an active Transaction on this Thread");
+                if (this._activeTrans != null)
+                {
+                    throw new RdfStorageException("Cannot start a new Transaction as there is already an active Transaction");
+                }
+                this._activeTrans = this.BeginTransaction();
             }
-            this._activeTrans.Value = this.BeginTransaction();
         }
 
         /// <summary>
@@ -933,11 +924,14 @@ namespace VDS.RDF.Storage
         /// </remarks>
         public void Commit()
         {
-            if (this._activeTrans.Value == null)
+            lock (this._activeTrans)
             {
-                throw new RdfStorageException("Cannot commit a Transaction on the current Thread as there is no active Transaction on this Thread");
+                if (this._activeTrans == null)
+                {
+                    throw new RdfStorageException("Cannot commit a Transaction as there is currently no active Transaction");
+                }
+                this.CommitTransaction(this._activeTrans);
             }
-            this.CommitTransaction(this._activeTrans.Value);
         }
 
         /// <summary>
@@ -949,11 +943,14 @@ namespace VDS.RDF.Storage
         /// </remarks>
         public void Rollback()
         {
-            if (this._activeTrans.Value == null)
+            lock (this._activeTrans)
             {
-                throw new RdfStorageException("Cannot rollback a Transaction on the current Thread as there is no active Transaction on this Thread");
+                if (this._activeTrans == null)
+                {
+                    throw new RdfStorageException("Cannot rollback a Transaction on the as there is currently no active Transaction");
+                }
+                this.RollbackTransaction(this._activeTrans);
             }
-            this.RollbackTransaction(this._activeTrans.Value);
         }
 
         #endregion
