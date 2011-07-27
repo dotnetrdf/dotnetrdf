@@ -62,6 +62,9 @@
     <Compile Include="Term\Axiom\Properties.cs" />
     <Compile Include="Term\Axiom\Ranges.cs" />
     <Compile Include="Term\Axiom\Subs.cs" />
+    <Compile Include="Term\Builtins\Classes.cs" />
+    <Compile Include="Term\Builtins\DataTypes.cs" />
+    <Compile Include="Term\Builtins\Properties.cs" />
     <Compile Include="Term\Entity\DataTypes.cs" />
     <Compile Include="Term\Entity\IAnnotationProperty.cs" />
     <Compile Include="Term\Entity\IClassExpression.cs" />
