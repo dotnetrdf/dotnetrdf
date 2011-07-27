@@ -1,0 +1,112 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{F039182B-076B-4A0C-B99C-A6285DB097F3}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VDS.OWL</RootNamespace>
+    <AssemblyName>dotNetOWL</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\dotNetOWL.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Term\Axiom\Annotations.cs" />
+    <Compile Include="Term\Axiom\Assertions.cs" />
+    <Compile Include="Term\Axiom\Axioms.cs" />
+    <Compile Include="Term\Axiom\Domains.cs" />
+    <Compile Include="Term\Axiom\Entities.cs" />
+    <Compile Include="Term\Axiom\Functionals.cs" />
+    <Compile Include="Term\Axiom\IDataTypeDefinition.cs" />
+    <Compile Include="Term\Axiom\IDeclaration.cs" />
+    <Compile Include="Term\Axiom\IFunctional.cs" />
+    <Compile Include="Term\Axiom\IAnnotation.cs" />
+    <Compile Include="Term\Axiom\IAssertion.cs" />
+    <Compile Include="Term\Axiom\IAxiom.cs" />
+    <Compile Include="Term\Axiom\Properties.cs" />
+    <Compile Include="Term\Axiom\Ranges.cs" />
+    <Compile Include="Term\Axiom\Subs.cs" />
+    <Compile Include="Term\Entity\DataTypes.cs" />
+    <Compile Include="Term\Entity\IAnnotationProperty.cs" />
+    <Compile Include="Term\Entity\IClassExpression.cs" />
+    <Compile Include="Term\Entity\IEntity.cs" />
+    <Compile Include="Term\Entity\IPropertyExpression.cs" />
+    <Compile Include="Term\Entity\IDataProperty.cs" />
+    <Compile Include="Term\Entity\IDataType.cs" />
+    <Compile Include="Term\Entity\IFacet.cs" />
+    <Compile Include="Term\Entity\IIndividualExpression.cs" />
+    <Compile Include="Term\Entity\ILiteralExpression.cs" />
+    <Compile Include="Term\Entity\INamedEntity.cs" />
+    <Compile Include="Term\Entity\Individuals.cs" />
+    <Compile Include="Term\Entity\IObjectProperty.cs" />
+    <Compile Include="Term\Entity\IOneOf.cs" />
+    <Compile Include="Term\Entity\IRestriction.cs" />
+    <Compile Include="Term\Entity\IValue.cs" />
+    <Compile Include="Term\Entity\IVariable.cs" />
+    <Compile Include="Term\Entity\Lists.cs" />
+    <Compile Include="Term\Entity\Literals.cs" />
+    <Compile Include="Term\Entity\NamedAnnotationProperties.cs" />
+    <Compile Include="Term\Entity\NamedClass.cs" />
+    <Compile Include="Term\Entity\NamedDataProperty.cs" />
+    <Compile Include="Term\Entity\NamedObjectProperties.cs" />
+    <Compile Include="Term\Entity\ObjectExpressions.cs" />
+    <Compile Include="Term\Entity\Properties.cs" />
+    <Compile Include="Term\Entity\Restrictions.cs" />
+    <Compile Include="Term\Entity\Types.cs" />
+    <Compile Include="Term\Query\IQueryAtom.cs" />
+    <Compile Include="Term\Conjunctions.cs" />
+    <Compile Include="Term\ITerm.cs" />
+    <Compile Include="Term\ITermCollection.cs" />
+    <Compile Include="Term\ITermVisitor.cs" />
+    <Compile Include="Term\NamedTerm.cs" />
+    <Compile Include="Term\Query\IQueryOptional.cs" />
+    <Compile Include="Term\Query\QueryConjunctions.cs" />
+    <Compile Include="Term\Query\QuerySubclassing.cs" />
+    <Compile Include="Term\Rule\IRule.cs" />
+    <Compile Include="Term\Rule\IRuleAtom.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
