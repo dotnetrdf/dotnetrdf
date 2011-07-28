@@ -43,6 +43,7 @@ using System.Net;
 using System.Text;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
+using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
 
 namespace VDS.RDF.Storage
@@ -124,12 +125,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        /// <summary>
-        /// Makes a SPARQL Query against the underlying Store
-        /// </summary>
-        /// <param name="sparqlQuery">SPARQL Query</param>
-        /// <returns></returns>
-        public override object Query(string sparqlQuery)
+        public override void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery)
         {
             try
             {
@@ -196,19 +192,15 @@ namespace VDS.RDF.Storage
                     {
                         //ASK/SELECT should return SPARQL Results
                         ISparqlResultsReader resreader = MimeTypesHelper.GetSparqlParser(ctype, q.QueryType == SparqlQueryType.Ask);
-                        SparqlResultSet results = new SparqlResultSet();
-                        resreader.Load(results, data);
+                        resreader.Load(resultsHandler, data);
                         response.Close();
-                        return results;
                     }
                     else
                     {
                         //CONSTRUCT/DESCRIBE should return a Graph
                         IRdfReader rdfreader = MimeTypesHelper.GetParser(ctype);
-                        Graph g = new Graph();
-                        rdfreader.Load(g, data);
+                        rdfreader.Load(rdfHandler, data);
                         response.Close();
-                        return g;
                     }
                 }
             }
@@ -243,6 +235,27 @@ namespace VDS.RDF.Storage
                 {
                     throw new RdfQueryException("A HTTP error occurred while querying the Store", webEx);
                 }
+            }
+        }
+
+        /// <summary>
+        /// Makes a SPARQL Query against the underlying Store
+        /// </summary>
+        /// <param name="sparqlQuery">SPARQL Query</param>
+        /// <returns></returns>
+        public override object Query(string sparqlQuery)
+        {
+            Graph g = new Graph();
+            SparqlResultSet results = new SparqlResultSet();
+            this.Query(new GraphHandler(g), new ResultSetHandler(results), sparqlQuery);
+
+            if (results.ResultsType != SparqlResultsType.Unknown)
+            {
+                return results;
+            }
+            else
+            {
+                return g;
             }
         }
 
