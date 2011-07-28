@@ -80,6 +80,8 @@ namespace VDS.RDF.Storage
     /// </remarks>
     public class StardogConnector : IQueryableGenericIOManager, IConfigurationSerializable
     {
+        public const String AnonymousUser = "anonymous";
+
         private String _baseUri;
         private String _kb;
         private String _username;
@@ -104,6 +106,7 @@ namespace VDS.RDF.Storage
             this._baseUri = baseUri;
             if (!this._baseUri.EndsWith("/")) this._baseUri += "/";
             this._kb = kbID;
+            this._reasoning = reasoning;
 
             //Prep the writer
             this._writer.HighSpeedModePermitted = true;
@@ -128,7 +131,7 @@ namespace VDS.RDF.Storage
         /// <param name="password">Password</param>
         /// <param name="reasoning">Reasoning Mode</param>
         public StardogConnector(String baseUri, String kbID, StardogReasoningMode reasoning, String username, String password)
-            : this(baseUri, kbID)
+            : this(baseUri, kbID, reasoning)
         {
             this._username = username;
             this._pwd = password;
@@ -969,7 +972,14 @@ namespace VDS.RDF.Storage
         /// <returns></returns>
         public override string ToString()
         {
-            return "[Stardog] Knowledge Base '" + this._kb + "' on Server '" + this._baseUri + "'";
+            String mode = String.Empty;
+            switch (this._reasoning)
+            {
+                case StardogReasoningMode.QL:
+                    mode = " (OWL QL Reasoning)";
+                    break;
+            }
+            return "[Stardog] Knowledge Base '" + this._kb + "' on Server '" + this._baseUri + "'" + mode;
         }
 
         /// <summary>
@@ -985,13 +995,24 @@ namespace VDS.RDF.Storage
             INode genericManager = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.ClassGenericManager);
             INode server = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyServer);
             INode store = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyStore);
+            INode loadMode = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyLoadMode);
 
+            //Add Core config
             context.Graph.Assert(new Triple(manager, rdfType, genericManager));
             context.Graph.Assert(new Triple(manager, rdfsLabel, context.Graph.CreateLiteralNode(this.ToString())));
             context.Graph.Assert(new Triple(manager, dnrType, context.Graph.CreateLiteralNode(this.GetType().FullName)));
             context.Graph.Assert(new Triple(manager, server, context.Graph.CreateLiteralNode(this._baseUri)));
             context.Graph.Assert(new Triple(manager, store, context.Graph.CreateLiteralNode(this._kb)));
 
+            //Add reasoning mode
+            switch (this._reasoning)
+            {
+                case StardogReasoningMode.QL:
+                    context.Graph.Assert(new Triple(manager, loadMode, context.Graph.CreateLiteralNode("QL")));
+                    break;
+            }
+
+            //Add User Credentials
             if (this._username != null && this._pwd != null)
             {
                 INode username = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyUser);

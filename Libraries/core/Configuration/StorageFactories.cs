@@ -419,13 +419,28 @@ namespace VDS.RDF.Configuration
                     //Get User Credentials
                     ConfigurationLoader.GetUsernameAndPassword(g, objNode, true, out user, out pwd);
 
+                    //Get Reasoning Mode
+                    StardogReasoningMode reasoning = StardogReasoningMode.None;
+                    String mode = ConfigurationLoader.GetConfigurationString(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyLoadMode));
+                    if (mode != null)
+                    {
+                        try
+                        {
+                            reasoning = (StardogReasoningMode)Enum.Parse(typeof(StardogReasoningMode), mode);
+                        }
+                        catch
+                        {
+                            reasoning = StardogReasoningMode.None;
+                        }
+                    }
+
                     if (user != null && pwd != null)
                     {
-                        manager = new StardogConnector(server, store, user, pwd);
+                        manager = new StardogConnector(server, store, reasoning, user, pwd);
                     }
                     else
                     {
-                        manager = new StardogConnector(server, store);
+                        manager = new StardogConnector(server, store, reasoning);
                     }
                     break;
 

@@ -80,6 +80,7 @@
             this.lblDatasetFile = new System.Windows.Forms.Label();
             this.lblDatasetFileIntro = new System.Windows.Forms.Label();
             this.tabMicrosoftAdo = new System.Windows.Forms.TabPage();
+            this.btnConnectMicrosoftAdo = new System.Windows.Forms.Button();
             this.txtMicrosoftAdoPassword = new System.Windows.Forms.TextBox();
             this.label11 = new System.Windows.Forms.Label();
             this.txtMicrosoftAdoUser = new System.Windows.Forms.TextBox();
@@ -157,7 +158,9 @@
             this.label9 = new System.Windows.Forms.Label();
             this.textBox10 = new System.Windows.Forms.TextBox();
             this.label10 = new System.Windows.Forms.Label();
-            this.btnConnectMicrosoftAdo = new System.Windows.Forms.Button();
+            this.chkStardogAnonUser = new System.Windows.Forms.CheckBox();
+            this.lblStardogReasoning = new System.Windows.Forms.Label();
+            this.cboStardogReasoning = new System.Windows.Forms.ComboBox();
             this.tabStores.SuspendLayout();
             this.tabAllegroGraph.SuspendLayout();
             this.tabDydra.SuspendLayout();
@@ -709,6 +712,16 @@
             this.tabMicrosoftAdo.Text = "Microsoft SQL Server";
             this.tabMicrosoftAdo.UseVisualStyleBackColor = true;
             // 
+            // btnConnectMicrosoftAdo
+            // 
+            this.btnConnectMicrosoftAdo.Location = new System.Drawing.Point(297, 123);
+            this.btnConnectMicrosoftAdo.Name = "btnConnectMicrosoftAdo";
+            this.btnConnectMicrosoftAdo.Size = new System.Drawing.Size(172, 23);
+            this.btnConnectMicrosoftAdo.TabIndex = 18;
+            this.btnConnectMicrosoftAdo.Text = "Connect to Microsoft SQL Server";
+            this.btnConnectMicrosoftAdo.UseVisualStyleBackColor = true;
+            this.btnConnectMicrosoftAdo.Click += new System.EventHandler(this.btnConnectMicrosoftAdo_Click);
+            // 
             // txtMicrosoftAdoPassword
             // 
             this.txtMicrosoftAdoPassword.Location = new System.Drawing.Point(78, 107);
@@ -1021,6 +1034,9 @@
             // 
             // tabStardog
             // 
+            this.tabStardog.Controls.Add(this.cboStardogReasoning);
+            this.tabStardog.Controls.Add(this.lblStardogReasoning);
+            this.tabStardog.Controls.Add(this.chkStardogAnonUser);
             this.tabStardog.Controls.Add(this.txtStardogPassword);
             this.tabStardog.Controls.Add(this.lblStardogPassword);
             this.tabStardog.Controls.Add(this.txtStardogUsername);
@@ -1039,35 +1055,35 @@
             // 
             // txtStardogPassword
             // 
-            this.txtStardogPassword.Location = new System.Drawing.Point(70, 89);
+            this.txtStardogPassword.Location = new System.Drawing.Point(70, 107);
             this.txtStardogPassword.Name = "txtStardogPassword";
             this.txtStardogPassword.PasswordChar = '*';
             this.txtStardogPassword.Size = new System.Drawing.Size(100, 20);
-            this.txtStardogPassword.TabIndex = 18;
+            this.txtStardogPassword.TabIndex = 10;
             // 
             // lblStardogPassword
             // 
             this.lblStardogPassword.AutoSize = true;
-            this.lblStardogPassword.Location = new System.Drawing.Point(4, 92);
+            this.lblStardogPassword.Location = new System.Drawing.Point(4, 110);
             this.lblStardogPassword.Name = "lblStardogPassword";
             this.lblStardogPassword.Size = new System.Drawing.Size(56, 13);
-            this.lblStardogPassword.TabIndex = 17;
+            this.lblStardogPassword.TabIndex = 9;
             this.lblStardogPassword.Text = "Password:";
             // 
             // txtStardogUsername
             // 
-            this.txtStardogUsername.Location = new System.Drawing.Point(70, 63);
+            this.txtStardogUsername.Location = new System.Drawing.Point(70, 81);
             this.txtStardogUsername.Name = "txtStardogUsername";
             this.txtStardogUsername.Size = new System.Drawing.Size(100, 20);
-            this.txtStardogUsername.TabIndex = 16;
+            this.txtStardogUsername.TabIndex = 8;
             // 
             // lblStardogUsername
             // 
             this.lblStardogUsername.AutoSize = true;
-            this.lblStardogUsername.Location = new System.Drawing.Point(4, 66);
+            this.lblStardogUsername.Location = new System.Drawing.Point(4, 84);
             this.lblStardogUsername.Name = "lblStardogUsername";
             this.lblStardogUsername.Size = new System.Drawing.Size(58, 13);
-            this.lblStardogUsername.TabIndex = 15;
+            this.lblStardogUsername.TabIndex = 7;
             this.lblStardogUsername.Text = "Username:";
             // 
             // txtStardogStore
@@ -1075,7 +1091,7 @@
             this.txtStardogStore.Location = new System.Drawing.Point(70, 37);
             this.txtStardogStore.Name = "txtStardogStore";
             this.txtStardogStore.Size = new System.Drawing.Size(100, 20);
-            this.txtStardogStore.TabIndex = 14;
+            this.txtStardogStore.TabIndex = 3;
             this.txtStardogStore.Text = "store";
             // 
             // lblStardogStore
@@ -1084,7 +1100,7 @@
             this.lblStardogStore.Location = new System.Drawing.Point(4, 40);
             this.lblStardogStore.Name = "lblStardogStore";
             this.lblStardogStore.Size = new System.Drawing.Size(49, 13);
-            this.lblStardogStore.TabIndex = 13;
+            this.lblStardogStore.TabIndex = 2;
             this.lblStardogStore.Text = "Store ID:";
             // 
             // btnConnectStardog
@@ -1092,7 +1108,7 @@
             this.btnConnectStardog.Location = new System.Drawing.Point(357, 126);
             this.btnConnectStardog.Name = "btnConnectStardog";
             this.btnConnectStardog.Size = new System.Drawing.Size(113, 23);
-            this.btnConnectStardog.TabIndex = 19;
+            this.btnConnectStardog.TabIndex = 11;
             this.btnConnectStardog.Text = "Connect to Stardog";
             this.btnConnectStardog.UseVisualStyleBackColor = true;
             this.btnConnectStardog.Click += new System.EventHandler(this.btnConnectStardog_Click);
@@ -1102,7 +1118,7 @@
             this.txtStardogServer.Location = new System.Drawing.Point(113, 8);
             this.txtStardogServer.Name = "txtStardogServer";
             this.txtStardogServer.Size = new System.Drawing.Size(354, 20);
-            this.txtStardogServer.TabIndex = 12;
+            this.txtStardogServer.TabIndex = 1;
             this.txtStardogServer.Text = "http://localhost";
             // 
             // lblStardogServer
@@ -1111,7 +1127,7 @@
             this.lblStardogServer.Location = new System.Drawing.Point(4, 11);
             this.lblStardogServer.Name = "lblStardogServer";
             this.lblStardogServer.Size = new System.Drawing.Size(103, 13);
-            this.lblStardogServer.TabIndex = 11;
+            this.lblStardogServer.TabIndex = 0;
             this.lblStardogServer.Text = "Stardog Server URI:";
             // 
             // tabTalis
@@ -1423,15 +1439,37 @@
             this.label10.TabIndex = 0;
             this.label10.Text = "Virtuoso Server:";
             // 
-            // btnConnectMicrosoftAdo
+            // chkStardogAnonUser
             // 
-            this.btnConnectMicrosoftAdo.Location = new System.Drawing.Point(297, 123);
-            this.btnConnectMicrosoftAdo.Name = "btnConnectMicrosoftAdo";
-            this.btnConnectMicrosoftAdo.Size = new System.Drawing.Size(172, 23);
-            this.btnConnectMicrosoftAdo.TabIndex = 18;
-            this.btnConnectMicrosoftAdo.Text = "Connect to Microsoft SQL Server";
-            this.btnConnectMicrosoftAdo.UseVisualStyleBackColor = true;
-            this.btnConnectMicrosoftAdo.Click += new System.EventHandler(this.btnConnectMicrosoftAdo_Click);
+            this.chkStardogAnonUser.AutoSize = true;
+            this.chkStardogAnonUser.Location = new System.Drawing.Point(7, 58);
+            this.chkStardogAnonUser.Name = "chkStardogAnonUser";
+            this.chkStardogAnonUser.Size = new System.Drawing.Size(134, 17);
+            this.chkStardogAnonUser.TabIndex = 6;
+            this.chkStardogAnonUser.Text = "Use Anonymous User?";
+            this.chkStardogAnonUser.UseVisualStyleBackColor = true;
+            this.chkStardogAnonUser.CheckedChanged += new System.EventHandler(this.chkStardogAnonUser_CheckedChanged);
+            // 
+            // lblStardogReasoning
+            // 
+            this.lblStardogReasoning.AutoSize = true;
+            this.lblStardogReasoning.Location = new System.Drawing.Point(199, 40);
+            this.lblStardogReasoning.Name = "lblStardogReasoning";
+            this.lblStardogReasoning.Size = new System.Drawing.Size(122, 13);
+            this.lblStardogReasoning.TabIndex = 4;
+            this.lblStardogReasoning.Text = "Query Reasoning Mode:";
+            // 
+            // cboStardogReasoning
+            // 
+            this.cboStardogReasoning.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboStardogReasoning.FormattingEnabled = true;
+            this.cboStardogReasoning.Items.AddRange(new object[] {
+            "None",
+            "OWL QL"});
+            this.cboStardogReasoning.Location = new System.Drawing.Point(327, 37);
+            this.cboStardogReasoning.Name = "cboStardogReasoning";
+            this.cboStardogReasoning.Size = new System.Drawing.Size(121, 21);
+            this.cboStardogReasoning.TabIndex = 5;
             // 
             // fclsGenericStoreConnection
             // 
@@ -1625,5 +1663,8 @@
         private System.Windows.Forms.TextBox textBox10;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Button btnConnectMicrosoftAdo;
+        private System.Windows.Forms.CheckBox chkStardogAnonUser;
+        private System.Windows.Forms.ComboBox cboStardogReasoning;
+        private System.Windows.Forms.Label lblStardogReasoning;
     }
 }

@@ -41,6 +41,8 @@ namespace VDS.RDF.Utilities.StoreManager
         public fclsGenericStoreConnection()
         {
             InitializeComponent();
+
+            this.cboStardogReasoning.SelectedIndex = 0;
         }
 
         /// <summary>
@@ -368,13 +370,29 @@ namespace VDS.RDF.Utilities.StoreManager
             }
             else
             {
-                if (!this.txtStardogUsername.Text.Equals(String.Empty) && !this.txtStardogPassword.Equals(String.Empty))
+                StardogReasoningMode mode = StardogReasoningMode.None;
+                switch (this.cboStardogReasoning.Items[this.cboStardogReasoning.SelectedIndex].ToString())
                 {
-                    this._manager = new StardogConnector(this.txtStardogServer.Text, this.txtStardogStore.Text, this.txtStardogUsername.Text, this.txtStardogPassword.Text);
+                    case "OWL QL":
+                        mode = StardogReasoningMode.QL;
+                        break;
+                    case "None":
+                    default:
+                        mode = StardogReasoningMode.None;
+                        break;
+                }
+
+                if (this.chkStardogAnonUser.Checked)
+                {
+                    this._manager = new StardogConnector(this.txtStardogServer.Text, this.txtStardogStore.Text, mode, StardogConnector.AnonymousUser, StardogConnector.AnonymousUser);
+                }
+                else if (!this.txtStardogUsername.Text.Equals(String.Empty) && !this.txtStardogPassword.Equals(String.Empty))
+                {
+                    this._manager = new StardogConnector(this.txtStardogServer.Text, this.txtStardogStore.Text, mode, this.txtStardogUsername.Text, this.txtStardogPassword.Text);
                 }
                 else
                 {
-                    this._manager = new StardogConnector(this.txtStardogServer.Text, this.txtStardogStore.Text);
+                    this._manager = new StardogConnector(this.txtStardogServer.Text, this.txtStardogStore.Text, mode);
                 }
 
                 this.DialogResult = DialogResult.OK;
@@ -437,6 +455,12 @@ namespace VDS.RDF.Utilities.StoreManager
                 this.DialogResult = DialogResult.OK;
                 this.Close();
             }
+        }
+
+        private void chkStardogAnonUser_CheckedChanged(object sender, EventArgs e)
+        {
+            this.txtStardogPassword.Enabled = !this.chkStardogAnonUser.Checked;
+            this.txtStardogUsername.Enabled = !this.chkStardogAnonUser.Checked;
         }
 
     }
