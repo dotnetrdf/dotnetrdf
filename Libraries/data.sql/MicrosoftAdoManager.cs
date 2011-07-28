@@ -16,47 +16,65 @@ namespace VDS.RDF.Storage
     {
         private String _connString;
         private String _server, _db, _user, _password;
+        private bool _encrypt = false;
         private IEnumerable<IAlgebraOptimiser> _optimisers;
 
-        public MicrosoftAdoManager(String server, String db, String user, String password)
-            : base(CreateConnection(server, db, user, password))
+        public const String DefaultServer = "localhost";
+
+        public MicrosoftAdoManager(String server, String db, String user, String password, bool encrypt)
+            : base(CreateConnection(server, db, user, password, encrypt))
         {
-            this._connString = CreateConnectionString(server, db, user, password);
+            this._connString = CreateConnectionString(server, db, user, password, encrypt);
             this._server = server;
             this._db = db;
             this._user = user;
             this._password = password;
+            this._encrypt = encrypt;
         }
 
-        public MicrosoftAdoManager(String db, String user, String password)
-            : this("localhost", db, user, password) { }
+        public MicrosoftAdoManager(String server, String db, String user, String password)
+            : this(server, db, user, password, false) { }
 
-        public MicrosoftAdoManager(String db)
-            : this("localhost", db, null, null) { }
+        public MicrosoftAdoManager(String db, String user, String password, bool encrypt)
+            : this(DefaultServer, db, user, password, encrypt) { }
+
+        public MicrosoftAdoManager(String db, String user, String password)
+            : this(db, user, password, false) { }
+
+        public MicrosoftAdoManager(String server, String db, bool encrypt)
+            : this(server, db, null, null, encrypt) { }
 
         public MicrosoftAdoManager(String server, String db)
-            : this(server, db, null, null) { }
+            : this(server, db, false) { }
 
-        private static String CreateConnectionString(String server, String db, String user, String password)
+        public MicrosoftAdoManager(String db, bool encrypt)
+            : this(DefaultServer, db, encrypt) { }
+
+        public MicrosoftAdoManager(String db)
+            : this(db, false) { }
+
+        private static String CreateConnectionString(String server, String db, String user, String password, bool encrypt)
         {
             if (server == null) throw new ArgumentNullException("server", "Server cannot be null, use localhost for a server on the local machine or use an overload which does not take the server argument");
             if (db == null) throw new ArgumentNullException("db", "Database cannot be null");
             if (user == null && password != null) throw new ArgumentNullException("user", "User cannot be null if password is specified, use null for both arguments to use Windows Integrated Authentication");
             if (user != null && password == null) throw new ArgumentNullException("password", "Password cannot be null if user is specified, use null for both arguments to use Windows Integrated Authentication or use String.Empty for password if you have no password");
 
+            String enc = encrypt ? "Encrypt=True;" : String.Empty;
+
             if (user != null && password != null)
             {
-                return "Data Source=" + server + ";Initial Catalog=" + db + ";User ID=" + user + ";Password=" + password + ";MultipleActiveResultSets=True;";
+                return "Data Source=" + server + ";Initial Catalog=" + db + ";User ID=" + user + ";Password=" + password + ";MultipleActiveResultSets=True;" + enc;
             }
             else
             {
-                return "Data Source=" + server + ";Initial Catalog=" + db + ";Trusted_Connection=True;MultipleActiveResultSets=True;";
+                return "Data Source=" + server + ";Initial Catalog=" + db + ";Trusted_Connection=True;MultipleActiveResultSets=True;" + enc;
             }
         }
 
-        private static SqlConnection CreateConnection(String server, String db, String user, String password)
+        private static SqlConnection CreateConnection(String server, String db, String user, String password, bool encrypt)
         {
-            return new SqlConnection(CreateConnectionString(server, db, user, password));
+            return new SqlConnection(CreateConnectionString(server, db, user, password, encrypt));
         }
 
         protected internal override SqlCommand GetCommand()

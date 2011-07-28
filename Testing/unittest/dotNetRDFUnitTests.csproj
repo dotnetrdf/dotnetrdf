@@ -182,6 +182,7 @@
     <Compile Include="Storage\SesameTests.cs" />
     <Compile Include="EventTests.cs" />
     <Compile Include="Storage\Sql\AdoDatasetTests.cs" />
+    <Compile Include="Storage\Sql\AdoStoreAzureTests.cs" />
     <Compile Include="Storage\Sql\AdoStoreBasic.cs" />
     <Compile Include="Storage\Sql\AdoStoreVirtualRdf.cs" />
     <Compile Include="Storage\Sql\AdoTransactionalUpdateTests.cs" />
