@@ -120,8 +120,19 @@ namespace VDS.RDF.Test.Writing
         [TestMethod]
         public void WritingFormattingGraphs()
         {
+            List<IGraph> graphs = new List<IGraph>();
             Graph g = new Graph();
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+            graphs.Add(g);
+            g = new Graph();
+            g.LoadFromFile("InferenceTest.ttl");
+            graphs.Add(g);
+            g = new Graph();
+            g.LoadFromFile("cyrillic.rdf");
+            graphs.Add(g);
+            g = new Graph();
+            g.LoadFromFile("complex-collections.nt");
+            graphs.Add(g);
 
             List<IGraphFormatter> formatters = new List<IGraphFormatter>()
             {
@@ -138,28 +149,32 @@ namespace VDS.RDF.Test.Writing
             {
                 IGraphFormatter formatter = formatters[i];
 
-                StringBuilder output = new StringBuilder();
-                output.AppendLine(formatter.FormatGraphHeader(g));
-                foreach (Triple t in g.Triples)
+                foreach (IGraph graph in graphs)
                 {
-                    output.AppendLine(formatter.Format(t));
+                    Console.WriteLine("Testing Graph " + (graph.BaseUri != null ? graph.BaseUri.ToString() : String.Empty));
+                    StringBuilder output = new StringBuilder();
+                    output.AppendLine(formatter.FormatGraphHeader(graph));
+                    foreach (Triple t in graph.Triples)
+                    {
+                        output.AppendLine(formatter.Format(t));
+                    }
+                    output.AppendLine(formatter.FormatGraphFooter());
+
+                    Console.WriteLine(output.ToString());
+
+                    //Try parsing to check it round trips
+                    Graph h = new Graph();
+                    IRdfReader parser = parsers[i];
+                    parser.Load(h, new StringReader(output.ToString()));
+
+                    GraphDiffReport diff = graph.Difference(h);
+                    if (!diff.AreEqual)
+                    {
+                        TestTools.ShowDifferences(diff);
+                    }
+
+                    Assert.AreEqual(graph, h, "Graphs should be equal after round tripping");
                 }
-                output.AppendLine(formatter.FormatGraphFooter());
-
-                Console.WriteLine(output.ToString());
-
-                //Try parsing to check it round trips
-                Graph h = new Graph();
-                IRdfReader parser = parsers[i];
-                parser.Load(h, new StringReader(output.ToString()));
-
-                GraphDiffReport diff = g.Difference(h);
-                if (!diff.AreEqual)
-                {
-                    TestTools.ShowDifferences(diff);
-                }
-
-                Assert.AreEqual(g, h, "Graphs should be equal after round tripping");
             }
             Console.WriteLine();
         }

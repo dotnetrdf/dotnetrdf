@@ -22,9 +22,6 @@ namespace VDS.RDF.Writing.Formatting
         /// Generates a header section assuming no variables
         /// </summary>
         /// <returns></returns>
-        /// <remarks>
-        /// Formatter should assume a boolean result set if this overload is called
-        /// </remarks>
         String FormatResultSetHeader();
 
         /// <summary>
