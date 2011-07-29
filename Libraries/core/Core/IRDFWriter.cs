@@ -38,6 +38,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF
 {
@@ -235,5 +236,23 @@ namespace VDS.RDF.Writing
             set;
         }
     }
+
+    /// <summary>
+    /// Interface for writers which use formatters from the Formatting namespace
+    /// </summary>
+    public interface IFormatterBasedWriter
+    {
+        /// <summary>
+        /// Gets the Type for the Triple Formatter this writer uses
+        /// </summary>
+        /// <remarks>
+        /// This should be the type descriptor for a type that implements <see cref="ITripleFormatter">ITripleFormatter</see>
+        /// </remarks>
+        Type TripleFormatterType
+        {
+            get;
+        }
+    }
+
 
 }
