@@ -1,10 +1,37 @@
+-- Create our Hashing Functions
+CREATE FUNCTION Hash (@text nvarchar(MAX))
+RETURNS bigint
+AS
+BEGIN
+	DECLARE @hash bigint;
+	IF NOT @text IS NULL
+		SET @hash = HashBytes('MD5', @text);
+	ELSE
+		SET @hash = 0;
+	RETURN @hash;
+END
+
+GO
+
+CREATE FUNCTION NodeHash (@nodeType tinyint, @nodeValue NVARCHAR(MAX), @nodeMeta NVARCHAR(MAX))
+RETURNS bigint
+AS
+BEGIN
+	DECLARE @text nvarchar(MAX);
+	SET @text = STR(@nodeType) + '-' + @nodeValue;
+	IF NOT @nodeMeta IS NULL
+		SET @text = @text + '-' + @nodeMeta;
+	RETURN dbo.Hash(@text);
+END
+GO
+
 -- Create the Graphs Table
 CREATE TABLE GRAPHS (graphID INT IDENTITY(1,1) CONSTRAINT GraphPKey PRIMARY KEY,
 					 graphUri NVARCHAR(MAX) NULL,
-					 graphUriIndex AS CAST(graphUri AS NVARCHAR(450)));
-					 
--- Create Indexes on the Graphs Table
-CREATE INDEX GraphIndexUri ON GRAPHS (graphUriIndex);
+					 graphUriHash BIGINT NOT NULL);
+
+-- Create Index on Graphs Table against the Hash
+CREATE INDEX GraphsIndexUri ON GRAPHS (graphUriHash);
 					 
 -- Create the Quads Table
 CREATE TABLE QUADS (subjectID INT NOT NULL,
@@ -35,7 +62,7 @@ CREATE TABLE NODES (nodeID INT IDENTITY(1,1) CONSTRAINT NodePKey PRIMARY KEY,
 					nodeType TINYINT NOT NULL,
 					nodeValue NVARCHAR(MAX) COLLATE Latin1_General_BIN NOT NULL,
 					nodeMeta NVARCHAR(MAX) COLLATE Latin1_General_BIN NULL,
-					nodeValueIndex AS CAST(nodeValue AS NVARCHAR(450)));
+					nodeHash BIGINT NOT NULL);
 					
 CREATE TABLE BNODES (bnodeID INT IDENTITY(1,1) CONSTRAINT BNodePKey PRIMARY KEY,
 					 graphID INT NOT NULL);
@@ -43,7 +70,7 @@ CREATE TABLE BNODES (bnodeID INT IDENTITY(1,1) CONSTRAINT BNodePKey PRIMARY KEY,
 -- Create Indexes on the Nodes Table
 CREATE INDEX NodesIndexType ON NODES (nodeType);
 
-CREATE INDEX NodesIndexValue ON NODES (nodeValueIndex);
+CREATE INDEX NodesIndexHash ON NODES (nodeHash);
        
 -- Start Stored Procedures Creation
 
@@ -85,21 +112,7 @@ AS
 BEGIN
   SET NOCOUNT ON;
   DECLARE @id int;
-    
-  IF @graphUri IS NULL
-    SET @id = (SELECT graphID FROM GRAPHS WHERE graphUriIndex IS NULL AND graphUri IS NULL);
-  ELSE
-    IF LEN(@graphUri) > 450
-      BEGIN
-		-- Get the value for use with the coarse index
-	    DECLARE @partialValue nvarchar(450);
-		SET @partialValue = SUBSTRING(@graphUri, 0, 449);
-	    SET @partialValue = @partialValue + '%';
-	    
-		SET @id = (SELECT graphID FROM GRAPHS WHERE graphUriIndex LIKE @partialValue AND graphUri=@graphUri);
-	  END
-	ELSE
-	  SET @id = (SELECT graphID FROM GRAPHS WHERE graphUriIndex=@graphUri AND graphUri=@graphUri);
+  SET @id = (SELECT graphID FROM GRAPHS WHERE graphUriHash=dbo.Hash(@graphUri));
   RETURN @id;
 END
   
@@ -113,7 +126,7 @@ BEGIN
   EXEC @id = GetGraphID @graphUri;
   IF @id = 0
     BEGIN
-      INSERT INTO GRAPHS (graphUri) VALUES (@graphUri);
+      INSERT INTO GRAPHS (graphUri, graphUriHash) VALUES (@graphUri, dbo.Hash(@graphUri));
       RETURN SCOPE_IDENTITY();
     END
   ELSE
@@ -246,30 +259,7 @@ BEGIN
 	SET NOCOUNT ON;
 	
 	DECLARE @id int;
-	IF LEN(@nodeValue) > 450
-	  BEGIN
-	    -- Get the value for use with the coarse index
-	    DECLARE @partialValue nvarchar(450);
-		SET @partialValue = SUBSTRING(@nodeValue, 0, 449);
-	    SET @partialValue = @partialValue + '%';
-	
-	    --PRINT 'Using Coarse Value Index Lookup';
-	    IF @nodeMeta IS NULL
-          SET @id = (SELECT nodeID FROM NODES
-	      WHERE nodeType=@nodeType AND nodeValueIndex LIKE @partialValue AND nodeValue=@nodeValue AND nodeMeta IS NULL);
-	    ELSE
-	      SET @id = (SELECT nodeID FROM NODES
-	      WHERE nodeType=@nodeType AND nodeValueIndex LIKE @partialValue AND nodeValue=@nodeValue AND nodeMeta=@nodeMeta);  
-	  END
-	ELSE
-	  BEGIN
-	    --PRINT 'Using Direct Value Lookup';
-	    IF @nodeMeta IS NULL
-	      SET @id = (SELECT nodeID FROM NODES WHERE nodeType=@nodeType AND nodeValueIndex=@nodeValue AND nodeMeta IS NULL);
-	    ELSE
-	      SET @id = (SELECT nodeID FROM NODES WHERE nodeType=@nodeType AND nodeValueIndex=@nodeValue AND nodeMeta=@nodeMeta);
-	  END
-	  
+	SET @id = (SELECT nodeID FROM NODES WHERE nodeType=@nodeType AND nodeHash=dbo.NodeHash(@nodeType, @nodeValue, @nodeMeta));
 	RETURN @id;
 END
 
@@ -290,7 +280,7 @@ BEGIN
 			INSERT INTO BNODES (graphID) VALUES (0);
 			SET @nodeValue = STR('_:' + SCOPE_IDENTITY());
 	    END
-	    INSERT INTO NODES (nodeType, nodeValue, nodeMeta) VALUES (@nodeType, @nodeValue, @nodeMeta);
+	    INSERT INTO NODES (nodeType, nodeValue, nodeMeta, nodeHash) VALUES (@nodeType, @nodeValue, @nodeMeta, dbo.NodeHash(@nodeType, @nodeValue, @nodeMeta));
 	    RETURN SCOPE_IDENTITY();
 	  END
 	ELSE

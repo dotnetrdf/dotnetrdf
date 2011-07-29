@@ -93,7 +93,9 @@ namespace VDS.RDF.Web
                     {
                         if (context.Request.Url.AbsolutePath.EndsWith(ext)) filePath = context.Request.Url.AbsolutePath.Substring(0, context.Request.Url.AbsolutePath.Length - ext.Length);
                     }
-                    context.RewritePath(filePath, context.Request.PathInfo, context.Request.Url.Query, true);
+                    String query = context.Request.Url.Query;
+                    if (query.StartsWith("?")) query = query.Substring(1);
+                    context.RewritePath(filePath, context.Request.PathInfo, query, true);
                 }
             }
         }
