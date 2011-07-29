@@ -16,16 +16,16 @@ namespace VDS.RDF.Test.Storage
 
         public const String DydraAccount = "rvesse",
                             DydraRepository = "test",
-                            DydraApiKeyFIle = "dydra-api-key.txt";
+                            DydraApiKeyFile = "dydra-api-key.txt";
 
         private DydraConnector GetConnection()
         {
             if (this._apiKey == null)
             {
                 //Read in API Key if not yet read
-                if (File.Exists(DydraApiKeyFIle))
+                if (File.Exists(DydraApiKeyFile))
                 {
-                    using (StreamReader reader = new StreamReader(DydraApiKeyFIle))
+                    using (StreamReader reader = new StreamReader(DydraApiKeyFile))
                     {
                         this._apiKey = reader.ReadToEnd();
                         reader.Close();
@@ -33,7 +33,7 @@ namespace VDS.RDF.Test.Storage
                 }
                 else
                 {
-                    Assert.Fail("You must specify your Dydra API Key in the " + DydraApiKeyFIle + " file found in the resources directory");
+                    Assert.Fail("You must specify your Dydra API Key in the " + DydraApiKeyFile + " file found in the resources directory");
                 }
             }
 
@@ -117,6 +117,56 @@ namespace VDS.RDF.Test.Storage
         }
 
         [TestMethod]
+        public void StorageDydraDeleteGraph()
+        {
+            try
+            {
+                Options.HttpDebugging = true;
+
+                Graph orig = new Graph();
+                orig.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+
+                DydraConnector dydra = this.GetConnection();
+                dydra.SaveGraph(orig);
+
+                Graph g = new Graph();
+                dydra.LoadGraph(g, orig.BaseUri);
+
+                if (orig.Triples.Count == g.Triples.Count)
+                {
+                    GraphDiffReport report = orig.Difference(g);
+                    if (!report.AreEqual)
+                    {
+                        TestTools.ShowDifferences(report);
+                    }
+                    Assert.AreEqual(orig, g, "Graphs should be equal");
+                }
+                else
+                {
+                    Assert.IsTrue(g.HasSubGraph(orig), "Original Graph should be a sub-graph of retrieved Graph");
+                }
+
+                //Now delete the Graph
+                dydra.DeleteGraph(orig.BaseUri);
+
+                //And retrieve it again
+                g = new Graph();
+                dydra.LoadGraph(g, orig.BaseUri);
+
+                Assert.IsTrue(g.IsEmpty, "Graph should be empty as was deleted from repository");
+                Assert.AreNotEqual(orig, g, "Graphs should not be equal");
+            }
+            catch (Exception ex)
+            {
+                TestTools.ReportError("Error", ex, true);
+            }
+            finally
+            {
+                Options.HttpDebugging = false;
+            }
+        }
+
+        [TestMethod]
         public void StorageDydraListGraphs()
         {
             DydraConnector dydra = this.GetConnection();
@@ -149,6 +199,39 @@ namespace VDS.RDF.Test.Storage
                 else
                 {
                     Assert.Fail("Did not get a SPARQL Result Set as expected");
+                }
+            }
+            catch (Exception ex)
+            {
+                TestTools.ReportError("Error", ex, true);
+            }
+            finally
+            {
+                Options.HttpFullDebugging = false;
+                Options.HttpDebugging = false;
+            }
+        }
+
+        [TestMethod]
+        public void StorageDydraConstructQuery()
+        {
+            try
+            {
+                Options.HttpDebugging = true;
+                //Options.HttpFullDebugging = true;
+
+                DydraConnector dydra = this.GetConnection();
+                Object results = dydra.Query("CONSTRUCT { ?s a ?type } WHERE { ?s a ?type }");
+                if (results is IGraph)
+                {
+                    IGraph g = (IGraph)results;
+                    TestTools.ShowResults(g);
+
+                    Assert.IsFalse(g.IsEmpty, "Graph should not be empty");
+                }
+                else
+                {
+                    Assert.Fail("Did not get a Graph as expected");
                 }
             }
             catch (Exception ex)

@@ -22,7 +22,7 @@ namespace VDS.RDF.Storage
         public const String DefaultServer = "localhost";
 
         public MicrosoftAdoManager(String server, String db, String user, String password, bool encrypt)
-            : base(CreateConnection(server, db, user, password, encrypt))
+            : base(CreateConnectionParameters(server, db, user, password, encrypt))
         {
             this._connString = CreateConnectionString(server, db, user, password, encrypt);
             this._server = server;
@@ -72,9 +72,20 @@ namespace VDS.RDF.Storage
             }
         }
 
-        private static SqlConnection CreateConnection(String server, String db, String user, String password, bool encrypt)
+        private static Dictionary<String,String> CreateConnectionParameters(String server, String db, String user, String password, bool encrypt)
         {
-            return new SqlConnection(CreateConnectionString(server, db, user, password, encrypt));
+            Dictionary<String, String> ps = new Dictionary<String, String>();
+            ps.Add("server", server);
+            ps.Add("db", db);
+            ps.Add("user", user);
+            ps.Add("password", password);
+            ps.Add("encrypt", encrypt.ToString());
+            return ps;
+        }
+
+        protected override SqlConnection CreateConnection(Dictionary<string,string> parameters)
+        {
+            return new SqlConnection(CreateConnectionString(parameters["server"], parameters["db"], parameters["user"], parameters["password"], Boolean.Parse(parameters["encrypt"])));
         }
 
         protected internal override SqlCommand GetCommand()
@@ -94,34 +105,25 @@ namespace VDS.RDF.Storage
             return new SqlDataAdapter();
         }
 
-        protected override int EnsureSetup(SqlConnection connection)
+        protected override int EnsureSetup(Dictionary<String,String> parameters)
         {
-            Stream s = Assembly.GetExecutingAssembly().GetManifestResourceStream("VDS.RDF.Storage.CreateMicrosoftAdoStore.sql");
+            Stream s = Assembly.GetExecutingAssembly().GetManifestResourceStream("VDS.RDF.Storage.CreateMicrosoftAdoHashStore.sql");
             if (s != null)
             {
-                String commands;
-                using (StreamReader reader = new StreamReader(s))
-                {
-                    commands = reader.ReadToEnd();
-                    reader.Close();
-                }
-
-                SqlCommand cmd = this.GetCommand();
-                cmd.Connection = this.Connection as SqlConnection;
-                cmd.CommandType = CommandType.Text;
-                cmd.CommandText = commands;
                 try
                 {
-                    cmd.ExecuteNonQuery();
+                    this.ExecuteSqlFromResource("VDS.RDF.Storage.CreateMicrosoftAdoHashStore.sql");
 
                     //Now try and add the user to the rdf_readwrite role
-                    if (this._user != null)
+                    if (parameters["user"] != null)
                     {
                         try
                         {
+                            SqlCommand cmd = new SqlCommand();
+                            cmd.Connection = this.Connection;
                             cmd.CommandText = "EXEC sp_addrolemember 'rdf_readwrite', @user;";
                             cmd.Parameters.Add(this.GetParameter("user"));
-                            cmd.Parameters["user"].Value = this._user;
+                            cmd.Parameters["user"].Value = parameters["user"];
                             cmd.ExecuteNonQuery();
 
                             //Succeeded - return 1

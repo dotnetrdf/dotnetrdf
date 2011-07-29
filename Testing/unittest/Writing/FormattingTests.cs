@@ -144,10 +144,10 @@ namespace VDS.RDF.Test.Writing
                 new RdfXmlParser()
             };
 
-            Console.WriteLine("Using Formatter " + formatters.GetType().ToString());
             for (int i = 0; i < formatters.Count; i++)
             {
                 IGraphFormatter formatter = formatters[i];
+                Console.WriteLine("Using Formatter " + formatter.GetType().ToString());
 
                 foreach (IGraph graph in graphs)
                 {

@@ -51,6 +51,21 @@ namespace VDS.RDF.Test.Storage
         }
 
         [TestMethod]
+        public void StorageAdoMicrosoftAutoSetup()
+        {
+            try
+            {
+                //MicrosoftAdoManager manager = new MicrosoftAdoManager("blank", "example", "password");
+                MicrosoftAdoManager manager = new MicrosoftAdoManager("NOTTM-LT\\SQLEXPRESS", "blank", "example", "password");
+                manager.Dispose();
+            }
+            catch (Exception ex)
+            {
+                TestTools.ReportError("Error", ex, true);
+            }
+        }
+
+        [TestMethod]
         public void StorageAdoMicrosoftLoadGraph()
         {
             MicrosoftAdoManager manager = new MicrosoftAdoManager("adostore", "example", "password");

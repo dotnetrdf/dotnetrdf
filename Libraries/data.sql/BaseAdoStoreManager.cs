@@ -38,7 +38,10 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Text;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
@@ -75,16 +78,18 @@ namespace VDS.RDF.Storage
         private LeviathanQueryProcessor _queryProcessor;
         private SparqlUpdateParser _updateParser;
         private LeviathanUpdateProcessor _updateProcessor;
+        private Dictionary<String, String> _parameters;
 
         #region Constructor and Destructor
 
         /// <summary>
         /// Creates a new ADO Store
         /// </summary>
-        /// <param name="connection">Database Connection</param>
-        public BaseAdoStore(TConn connection)
+        /// <param name="parameters">Parameters for the connection</param>
+        public BaseAdoStore(Dictionary<String,String> parameters)
         {
-            this._connection = connection;
+            this._parameters = parameters;
+            this._connection = this.CreateConnection(parameters);
             this._connection.Open();
 
             //Do a Version Check
@@ -102,6 +107,8 @@ namespace VDS.RDF.Storage
         #endregion
 
         #region Abstract Implementation
+
+        protected abstract TConn CreateConnection(Dictionary<String, String> parameters);
 
         /// <summary>
         /// Gets a Command for sending SQL Commands to the underlying Database
@@ -127,7 +134,103 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="connection">Database Connection</param>
         /// <returns>The Version of the Database Schema</returns>
-        protected abstract int EnsureSetup(TConn connection);
+        protected abstract int EnsureSetup(Dictionary<String,String> parameters);
+
+        #region Script Execution Functions
+
+        /// <summary>
+        /// Executes the SQL from an embedded resource
+        /// </summary>
+        /// <param name="resource">Embedded Resource Name</param>
+        /// <remarks>
+        /// Assumes that the resource is embedded in this assembly
+        /// </remarks>
+        protected void ExecuteSqlFromResource(String resource)
+        {
+            this.ExecuteSqlFromResource(Assembly.GetExecutingAssembly(), resource);
+        }
+
+        /// <summary>
+        /// Executes the SQL from an embedded resource
+        /// </summary>
+        /// <param name="assm">Assembly</param>
+        /// <param name="resource">Embedded Resource Name</param>
+        /// <remarks>
+        /// <para>
+        /// Heavily adapted from code used in <a href="http://www.bugnetproject.com">BugNet</a>
+        /// </para>
+        /// </remarks>
+        protected void ExecuteSqlFromResource(Assembly assm, String resource)
+        {
+            Stream stream = assm.GetManifestResourceStream(resource);
+            if (stream == null)
+            {
+                throw new RdfStorageException("Cannot execute an SQL script from an embedded resource as was unable to load the requested resource '" + resource + "'");
+            }
+
+            List<String> statements = new List<String>();
+            
+            using (StreamReader reader = new StreamReader(stream))
+            {
+                String statement;
+                do
+                {
+                    statement = this.ReadNextStatementFromStream(reader);
+                    if (statement != null)
+                    {
+                        statements.Add(statement);
+                    }
+                } while (statement != null);
+                reader.Close();
+            }
+
+            foreach (String cmd in statements)
+            {
+                TCommand command = this.GetCommand();
+                command.Connection = this._connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = cmd;
+                command.ExecuteNonQuery();
+            }
+        }
+
+        /// <summary>
+        /// Reads the next statement from stream.
+        /// </summary>
+        /// <param name="reader">Stream to read from</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// <para>
+        /// Taken from code used in <a href="http://www.bugnetproject.com">BugNet</a>
+        /// </para>
+        /// </remarks>
+        private String ReadNextStatementFromStream(StreamReader reader)
+        {
+            StringBuilder sb = new StringBuilder();
+            String line;
+
+            while (true)
+            {
+                line = reader.ReadLine();
+                if (line == null)
+                {
+                    if (sb.Length > 0)
+                    {
+                        return sb.ToString();
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+                if (line.TrimEnd().ToUpper() == "GO") break;
+
+                sb.AppendLine(line);
+            }
+            return sb.ToString();
+        }
+
+        #endregion
 
         #endregion
 
@@ -189,7 +292,7 @@ namespace VDS.RDF.Storage
                 catch (TException)
                 {
                     //If this check errors then not a legacy store so may just be not set up yet
-                    return this.EnsureSetup(this._connection);
+                    return this.EnsureSetup(this._parameters);
                 }
             }
         }
@@ -211,7 +314,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Gets the Connection to the underlying database
         /// </summary>
-        internal DbConnection Connection
+        internal TConn Connection
         {
             get
             {
@@ -1425,7 +1528,7 @@ namespace VDS.RDF.Storage
     public abstract class BaseAdoSqlClientStore
         : BaseAdoStore<SqlConnection, SqlCommand, SqlParameter, SqlDataAdapter, SqlException>
     {
-        public BaseAdoSqlClientStore(SqlConnection connection)
-            : base(connection) { }
+        public BaseAdoSqlClientStore(Dictionary<String,String> parameters)
+            : base(parameters) { }
     }
 }
