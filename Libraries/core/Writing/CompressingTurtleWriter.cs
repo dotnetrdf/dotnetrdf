@@ -54,7 +54,7 @@ namespace VDS.RDF.Writing
     /// </remarks>
     /// <threadsafety instance="true">Designed to be Thread Safe - should be able to call the Save() method from multiple threads on different Graphs without issue</threadsafety>
     public class CompressingTurtleWriter 
-        : IRdfWriter, IPrettyPrintingWriter, IHighSpeedWriter, ICompressingWriter, INamespaceWriter
+        : IRdfWriter, IPrettyPrintingWriter, IHighSpeedWriter, ICompressingWriter, INamespaceWriter, IFormatterBasedWriter
     {
         private bool _prettyprint = true;
         private bool _allowHiSpeed = true;
@@ -146,6 +146,14 @@ namespace VDS.RDF.Writing
             set
             {
                 this._defaultNamespaces = value;
+            }
+        }
+
+        public Type TripleFormatterType
+        {
+            get
+            {
+                return typeof(TurtleFormatter);
             }
         }
 
