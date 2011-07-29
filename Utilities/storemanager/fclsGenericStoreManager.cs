@@ -114,6 +114,18 @@ namespace VDS.RDF.Utilities.StoreManager
             this.AddTask<IGraph>(task, this.ViewGraphCallback);
         }
 
+        private void PreviewGraph(String graphUri)
+        {
+            PreviewGraphTask task = new PreviewGraphTask(this._manager, graphUri, Properties.Settings.Default.PreviewSize);
+            this.AddTask<IGraph>(task, this.PreviewGraphCallback);
+        }
+
+        private void CountTriples(String graphUri)
+        {
+            CountTriplesTask task = new CountTriplesTask(this._manager, graphUri);
+            this.AddTask<TaskValueResult<int>>(task, this.CountTriplesCallback);
+        }
+
         private void DeleteGraph(String graphUri)
         {
             DeleteGraphTask task = new DeleteGraphTask(this._manager, graphUri);
@@ -357,6 +369,7 @@ namespace VDS.RDF.Utilities.StoreManager
             if (this.lvwGraphs.SelectedItems.Count > 0)
             {
                 this.mnuDeleteGraph.Enabled = this._manager.DeleteSupported;
+                this.mnuPreviewGraph.Text = String.Format("Preview first {0} Triples", Properties.Settings.Default.PreviewSize);
             }
             else
             {
@@ -419,6 +432,13 @@ namespace VDS.RDF.Utilities.StoreManager
                         this.mnuViewErrors.Enabled = graphsTask.Error != null;
                         this.mnuViewResults.Enabled = false;
                         this.mnuCancel.Enabled = graphsTask.IsCancellable;
+                    }
+                    else if (tag is CountTriplesTask)
+                    {
+                        CountTriplesTask countTask = (CountTriplesTask)tag;
+                        this.mnuViewErrors.Enabled = countTask.Error != null;
+                        this.mnuViewResults.Enabled = false;
+                        this.mnuCancel.Enabled = countTask.IsCancellable;
                     }
                     else if (tag is ITask<IGraph>)
                     {
@@ -488,6 +508,12 @@ namespace VDS.RDF.Utilities.StoreManager
                     fclsTaskInformation<IEnumerable<Uri>> listInfo = new fclsTaskInformation<IEnumerable<Uri>>((ListGraphsTask)tag, this._manager.ToString());
                     listInfo.MdiParent = this.MdiParent;
                     listInfo.Show();
+                }
+                else if (tag is CountTriplesTask)
+                {
+                    fclsTaskInformation<TaskValueResult<int>> countInfo = new fclsTaskInformation<TaskValueResult<int>>((CountTriplesTask)tag, this._manager.ToString());
+                    countInfo.MdiParent = this.MdiParent;
+                    countInfo.Show();
                 }
                 else if (tag is ITask<IGraph>)
                 {
@@ -717,6 +743,46 @@ namespace VDS.RDF.Utilities.StoreManager
             }
         }
 
+        private void PreviewGraphCallback(ITask<IGraph> task)
+        {
+            if (task.State == TaskState.Completed && task.Result != null)
+            {
+                GraphViewerForm graphViewer = new GraphViewerForm(task.Result, this._manager.ToString());
+                CrossThreadSetMdiParent(graphViewer);
+                CrossThreadShow(graphViewer);
+            }
+            else
+            {
+                if (task.Error != null)
+                {
+                    CrossThreadMessage("Preview Graph Failed due to the following error: " + task.Error.Message, "Preview Graph Failed", MessageBoxIcon.Error);
+                }
+                else
+                {
+                    CrossThreadMessage("Preview Graph Failed due to an unknown error", "Preview Graph Failed", MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        private void CountTriplesCallback(ITask<TaskValueResult<int>> task)
+        {
+            if (task.State == TaskState.Completed && task.Result != null)
+            {
+                MessageBox.Show(task.Information, "Triples Counted", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else
+            {
+                if (task.Error != null)
+                {
+                    CrossThreadMessage("Count Triples Failed due to the following error: " + task.Error.Message, "Count Triples Failed", MessageBoxIcon.Error);
+                }
+                else
+                {
+                    CrossThreadMessage("Count Triples Failed due to an unknown error", "Count Triples Failed", MessageBoxIcon.Error);
+                }
+            }
+        }
+
         private void DeleteGraphCallback(ITask<TaskResult> task)
         {
             if (task.State == TaskState.Completed)
@@ -888,6 +954,28 @@ namespace VDS.RDF.Utilities.StoreManager
         protected override void OnClosed(EventArgs e)
         {
             this._manager.Dispose();
+        }
+
+        private void mnuPreviewGraph_Click(object sender, EventArgs e)
+        {
+            if (this.lvwGraphs.Items.Count > 0)
+            {
+                String graphUri = this.lvwGraphs.SelectedItems[0].Text;
+                if (graphUri.Equals("Default Graph")) graphUri = null;
+
+                this.PreviewGraph(graphUri);
+            }
+        }
+
+        private void mnuCountTriples_Click(object sender, EventArgs e)
+        {
+            if (this.lvwGraphs.Items.Count > 0)
+            {
+                String graphUri = this.lvwGraphs.SelectedItems[0].Text;
+                if (graphUri.Equals("Default Graph")) graphUri = null;
+
+                this.CountTriples(graphUri);
+            }
         }
     }
 

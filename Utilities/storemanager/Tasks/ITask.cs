@@ -35,6 +35,25 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         }
     }
 
+    public class TaskValueResult<T>
+        where T : struct
+    {
+        private T? _value;
+
+        public TaskValueResult(T? value)
+        {
+            this._value = value;
+        }
+
+        public T? Value
+        {
+            get
+            {
+                return this._value;
+            }
+        }
+    }
+
     public delegate void TaskCallback<T>(ITask<T> task) where T : class;
 
     public delegate void TaskStateChanged();

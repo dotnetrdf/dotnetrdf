@@ -181,6 +181,8 @@
     <Compile Include="StoreUpgrader.cs" />
     <Compile Include="Tasks\BaseImportTask.cs" />
     <Compile Include="Tasks\BaseTask.cs" />
+    <Compile Include="Tasks\CountTriplesTask.cs" />
+    <Compile Include="Tasks\PreviewGraphTask.cs" />
     <Compile Include="Tasks\DeleteGraphTask.cs" />
     <Compile Include="Tasks\ExportTask.cs" />
     <Compile Include="Tasks\ImportTasks.cs" />

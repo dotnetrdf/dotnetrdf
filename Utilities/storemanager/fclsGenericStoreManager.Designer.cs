@@ -38,6 +38,7 @@
             this.colGraphURI = new System.Windows.Forms.ColumnHeader();
             this.mnuGraphs = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.mnuViewGraph = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuPreviewGraph = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuDeleteGraph = new System.Windows.Forms.ToolStripMenuItem();
             this.tabSparqlQuery = new System.Windows.Forms.TabPage();
@@ -98,6 +99,7 @@
             this.ofdQuery = new System.Windows.Forms.OpenFileDialog();
             this.sfdQuery = new System.Windows.Forms.SaveFileDialog();
             this.sfdExport = new System.Windows.Forms.SaveFileDialog();
+            this.mnuCountTriples = new System.Windows.Forms.ToolStripMenuItem();
             this.tabFunctions.SuspendLayout();
             this.tabGraphs.SuspendLayout();
             this.mnuGraphs.SuspendLayout();
@@ -190,28 +192,37 @@
             // 
             this.mnuGraphs.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuViewGraph,
+            this.mnuPreviewGraph,
+            this.mnuCountTriples,
             this.toolStripMenuItem1,
             this.mnuDeleteGraph});
             this.mnuGraphs.Name = "mnuGraphs";
-            this.mnuGraphs.Size = new System.Drawing.Size(143, 54);
+            this.mnuGraphs.Size = new System.Drawing.Size(194, 120);
             this.mnuGraphs.Opening += new System.ComponentModel.CancelEventHandler(this.mnuGraphs_Opening);
             // 
             // mnuViewGraph
             // 
             this.mnuViewGraph.Name = "mnuViewGraph";
-            this.mnuViewGraph.Size = new System.Drawing.Size(142, 22);
+            this.mnuViewGraph.Size = new System.Drawing.Size(193, 22);
             this.mnuViewGraph.Text = "View Graph";
             this.mnuViewGraph.Click += new System.EventHandler(this.mnuViewGraph_Click);
+            // 
+            // mnuPreviewGraph
+            // 
+            this.mnuPreviewGraph.Name = "mnuPreviewGraph";
+            this.mnuPreviewGraph.Size = new System.Drawing.Size(193, 22);
+            this.mnuPreviewGraph.Text = "Preview first {0} Triples";
+            this.mnuPreviewGraph.Click += new System.EventHandler(this.mnuPreviewGraph_Click);
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(139, 6);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(190, 6);
             // 
             // mnuDeleteGraph
             // 
             this.mnuDeleteGraph.Name = "mnuDeleteGraph";
-            this.mnuDeleteGraph.Size = new System.Drawing.Size(142, 22);
+            this.mnuDeleteGraph.Size = new System.Drawing.Size(193, 22);
             this.mnuDeleteGraph.Text = "Delete Graph";
             this.mnuDeleteGraph.Click += new System.EventHandler(this.mnuDeleteGraph_Click);
             // 
@@ -785,6 +796,13 @@
             // 
             this.sfdExport.Title = "Export Store As...";
             // 
+            // mnuCountTriples
+            // 
+            this.mnuCountTriples.Name = "mnuCountTriples";
+            this.mnuCountTriples.Size = new System.Drawing.Size(193, 22);
+            this.mnuCountTriples.Text = "Count Triples";
+            this.mnuCountTriples.Click += new System.EventHandler(this.mnuCountTriples_Click);
+            // 
             // fclsGenericStoreManager
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -897,5 +915,7 @@
         private System.Windows.Forms.CheckBox chkRemoveOldTasks;
         private System.Windows.Forms.NumericUpDown numPageSize;
         private System.Windows.Forms.CheckBox chkPageQuery;
+        private System.Windows.Forms.ToolStripMenuItem mnuPreviewGraph;
+        private System.Windows.Forms.ToolStripMenuItem mnuCountTriples;
     }
 }
