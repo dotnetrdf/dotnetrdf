@@ -1,0 +1,195 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>BugNET.SubversionHooks</name>
+    </assembly>
+    <members>
+        <member name="M:BugNET.SubversionHooks.CommandExecutor.RunCommand(System.String,System.String)">
+            <summary>
+            Runs a seperate process and returns the standard outout and error text. This is intended for command line apps only.
+            If the process does not end in 5minutes it will be killed.
+            </summary>
+            <param name="command"></param>
+            <param name="args"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BugNET.SubversionHooks.CommandExecutor.RunCommand(System.String,System.String,System.Boolean)">
+            <summary>
+            Runs the command.
+            </summary>
+            <param name="command">The command.</param>
+            <param name="args">The args.</param>
+            <param name="echoCommand">if set to <c>true</c> [echo command].</param>
+            <returns></returns>
+        </member>
+        <member name="M:BugNET.SubversionHooks.CommandExecutor.RunCommand(System.String,System.String,System.Int32,System.Boolean)">
+            <summary>
+            Runs a seperate process and returns the standard outout and error text. This is intended for command line apps only.
+            </summary>
+            <param name="command"></param>
+            <param name="args"></param>
+            <param name="killAfterSeconds"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BugNET.SubversionHooks.CommandExecutor.CommandProcess_ErrorDataReceived(System.Object,System.Diagnostics.DataReceivedEventArgs)">
+            <summary>
+            Event handler to capture error data. At least one of the output streams has to be read asyncronously
+            to avoid a deadlock.
+            </summary>
+            <param name="sender"></param>
+            <param name="e"></param>
+        </member>
+        <member name="M:BugNET.SubversionHooks.IssueTrackerIntegration.UpdateIssueTrackerFromRevision(System.String,System.String)">
+            <summary>
+            Updates the issue tracker from revision.
+            </summary>
+            <param name="repository">The repository.</param>
+            <param name="revision">The revision.</param>
+        </member>
+        <member name="M:BugNET.SubversionHooks.IssueTrackerIntegration.GetRepositoryName(System.String)">
+            <summary>
+            Gets the name of the repository from the directory name repository.
+            </summary>
+            <param name="repositoryPath">The repository path.</param>
+            <returns></returns>
+        </member>
+        <member name="M:BugNET.SubversionHooks.Program.Main(System.String[])">
+            <summary>
+            Mains the specified args.
+            </summary>
+            <param name="args">The args.</param>
+        </member>
+        <member name="T:BugNET.SubversionHooks.WebServices.BugNetServices">
+            <remarks/>
+        </member>
+        <member name="M:BugNET.SubversionHooks.WebServices.BugNetServices.#ctor">
+            <remarks/>
+        </member>
+        <member name="M:BugNET.SubversionHooks.WebServices.BugNetServices.LogIn(System.String,System.String)">
+            <remarks/>
+        </member>
+        <member name="M:BugNET.SubversionHooks.WebServices.BugNetServices.LogInAsync(System.String,System.String)">
+            <remarks/>
+        </member>
+        <member name="M:BugNET.SubversionHooks.WebServices.BugNetServices.LogInAsync(System.String,System.String,System.Object)">
+            <remarks/>
+        </member>
+        <member name="M:BugNET.SubversionHooks.WebServices.BugNetServices.LogOut">
+            <remarks/>
+        </member>
+        <member name="M:BugNET.SubversionHooks.WebServices.BugNetServices.LogOutAsync">
+            <remarks/>
+        </member>
+        <member name="M:BugNET.SubversionHooks.WebServices.BugNetServices.LogOutAsync(System.Object)">
+            <remarks/>
+        </member>
+        <member name="M:BugNET.SubversionHooks.WebServices.BugNetServices.CreateNewIssueRevision(System.Int32,System.Int32,System.String,System.String,System.String,System.String)">
+            <remarks/>
+        </member>
+        <member name="M:BugNET.SubversionHooks.WebServices.BugNetServices.CreateNewIssueRevisionAsync(System.Int32,System.Int32,System.String,System.String,System.String,System.String)">
+            <remarks/>
+        </member>
+        <member name="M:BugNET.SubversionHooks.WebServices.BugNetServices.CreateNewIssueRevisionAsync(System.Int32,System.Int32,System.String,System.String,System.String,System.String,System.Object)">
+            <remarks/>
+        </member>
+        <member name="M:BugNET.SubversionHooks.WebServices.BugNetServices.ChangeTreeNode(System.String,System.String,System.String)">
+            <remarks/>
+        </member>
+        <member name="M:BugNET.SubversionHooks.WebServices.BugNetServices.ChangeTreeNodeAsync(System.String,System.String,System.String)">
+            <remarks/>
+        </member>
+        <member name="M:BugNET.SubversionHooks.WebServices.BugNetServices.ChangeTreeNodeAsync(System.String,System.String,System.String,System.Object)">
+            <remarks/>
+        </member>
+        <member name="M:BugNET.SubversionHooks.WebServices.BugNetServices.MoveNode(System.String,System.String,System.String,System.String)">
+            <remarks/>
+        </member>
+        <member name="M:BugNET.SubversionHooks.WebServices.BugNetServices.MoveNodeAsync(System.String,System.String,System.String,System.String)">
+            <remarks/>
+        </member>
+        <member name="M:BugNET.SubversionHooks.WebServices.BugNetServices.MoveNodeAsync(System.String,System.String,System.String,System.String,System.Object)">
+            <remarks/>
+        </member>
+        <member name="M:BugNET.SubversionHooks.WebServices.BugNetServices.AddCategory(System.String,System.String,System.String)">
+            <remarks/>
+        </member>
+        <member name="M:BugNET.SubversionHooks.WebServices.BugNetServices.AddCategoryAsync(System.String,System.String,System.String)">
+            <remarks/>
+        </member>
+        <member name="M:BugNET.SubversionHooks.WebServices.BugNetServices.AddCategoryAsync(System.String,System.String,System.String,System.Object)">
+            <remarks/>
+        </member>
+        <member name="M:BugNET.SubversionHooks.WebServices.BugNetServices.DeleteCategory(System.String)">
+            <remarks/>
+        </member>
+        <member name="M:BugNET.SubversionHooks.WebServices.BugNetServices.DeleteCategoryAsync(System.String)">
+            <remarks/>
+        </member>
+        <member name="M:BugNET.SubversionHooks.WebServices.BugNetServices.DeleteCategoryAsync(System.String,System.Object)">
+            <remarks/>
+        </member>
+        <member name="M:BugNET.SubversionHooks.WebServices.BugNetServices.CancelAsync(System.Object)">
+            <remarks/>
+        </member>
+        <member name="E:BugNET.SubversionHooks.WebServices.BugNetServices.LogInCompleted">
+            <remarks/>
+        </member>
+        <member name="E:BugNET.SubversionHooks.WebServices.BugNetServices.LogOutCompleted">
+            <remarks/>
+        </member>
+        <member name="E:BugNET.SubversionHooks.WebServices.BugNetServices.CreateNewIssueRevisionCompleted">
+            <remarks/>
+        </member>
+        <member name="E:BugNET.SubversionHooks.WebServices.BugNetServices.ChangeTreeNodeCompleted">
+            <remarks/>
+        </member>
+        <member name="E:BugNET.SubversionHooks.WebServices.BugNetServices.MoveNodeCompleted">
+            <remarks/>
+        </member>
+        <member name="E:BugNET.SubversionHooks.WebServices.BugNetServices.AddCategoryCompleted">
+            <remarks/>
+        </member>
+        <member name="E:BugNET.SubversionHooks.WebServices.BugNetServices.DeleteCategoryCompleted">
+            <remarks/>
+        </member>
+        <member name="T:BugNET.SubversionHooks.WebServices.LogInCompletedEventHandler">
+            <remarks/>
+        </member>
+        <member name="T:BugNET.SubversionHooks.WebServices.LogInCompletedEventArgs">
+            <remarks/>
+        </member>
+        <member name="P:BugNET.SubversionHooks.WebServices.LogInCompletedEventArgs.Result">
+            <remarks/>
+        </member>
+        <member name="T:BugNET.SubversionHooks.WebServices.LogOutCompletedEventHandler">
+            <remarks/>
+        </member>
+        <member name="T:BugNET.SubversionHooks.WebServices.CreateNewIssueRevisionCompletedEventHandler">
+            <remarks/>
+        </member>
+        <member name="T:BugNET.SubversionHooks.WebServices.CreateNewIssueRevisionCompletedEventArgs">
+            <remarks/>
+        </member>
+        <member name="P:BugNET.SubversionHooks.WebServices.CreateNewIssueRevisionCompletedEventArgs.Result">
+            <remarks/>
+        </member>
+        <member name="T:BugNET.SubversionHooks.WebServices.ChangeTreeNodeCompletedEventHandler">
+            <remarks/>
+        </member>
+        <member name="T:BugNET.SubversionHooks.WebServices.MoveNodeCompletedEventHandler">
+            <remarks/>
+        </member>
+        <member name="T:BugNET.SubversionHooks.WebServices.AddCategoryCompletedEventHandler">
+            <remarks/>
+        </member>
+        <member name="T:BugNET.SubversionHooks.WebServices.AddCategoryCompletedEventArgs">
+            <remarks/>
+        </member>
+        <member name="P:BugNET.SubversionHooks.WebServices.AddCategoryCompletedEventArgs.Result">
+            <remarks/>
+        </member>
+        <member name="T:BugNET.SubversionHooks.WebServices.DeleteCategoryCompletedEventHandler">
+            <remarks/>
+        </member>
+    </members>
+</doc>
