@@ -602,7 +602,6 @@ namespace VDS.RDF.Query
                         while (reader.Name.Equals("result"))
                         {
                             this._results.Add(reader.DeserializeResult());
-                            reader.Read();
                         }
                     }
                     else
