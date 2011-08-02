@@ -116,7 +116,8 @@ namespace VDS.RDF.Query.Expressions.Functions
                 }
             }
 
-            bool exists = this._result.Sets.Any(s => joinVars.All(v => x[v] == null || s[v] == null || x[v].Equals(s[v])));
+            //bool exists = this._result.Sets.Any(s => joinVars.All(v => x[v] == null || s[v] == null || x[v].Equals(s[v])));
+            bool exists = this._result.Sets.Any(s => s.IsCompatibleWith(x, joinVars));
             if (this._mustExist)
             {
                 //If an EXISTS then return the value of exists i.e. are there any compatible solutions

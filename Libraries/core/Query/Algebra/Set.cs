@@ -44,7 +44,8 @@ namespace VDS.RDF.Query.Algebra
     /// <summary>
     /// Represents one possible set of values which is a solution to the query
     /// </summary>
-    public sealed class Set : BaseSet, IEquatable<Set>
+    public sealed class Set 
+        : BaseSet, IEquatable<Set>
     {
         private Dictionary<String, INode> _values;
 
@@ -176,6 +177,11 @@ namespace VDS.RDF.Query.Algebra
             return this._values.ContainsKey(variable);
         }
 
+        public override bool IsCompatibleWith(ISet s, IEnumerable<string> vars)
+        {
+            return vars.All(v => this[v] == null || s[v] == null || this[v].Equals(s[v]));
+        }
+
         /// <summary>
         /// Gets the Variables in the Set
         /// </summary>
@@ -249,48 +255,179 @@ namespace VDS.RDF.Query.Algebra
         }
     }
 
+    // <summary>
+    // Represents one possible set of values which is a solution to the query where those values are the result of joining two possible sets
+    // </summary>
+    //public sealed class JoinedSet 
+    //    : BaseSet, IEquatable<JoinedSet>
+    //{
+    //    private ISet _lhs, _rhs;
+
+    //    public JoinedSet(ISet x, ISet y)
+    //    {
+    //        this._lhs = new Set(x);
+    //        this._rhs = y;
+    //    }
+
+    //    public override void Add(string variable, INode value)
+    //    {
+    //        Joined Sets are left associative so always add to the LHS set
+    //        this._lhs.Add(variable, value);
+    //    }
+
+    //    public override bool ContainsVariable(string variable)
+    //    {
+    //        return this._lhs.ContainsVariable(variable) || this._rhs.ContainsVariable(variable);
+    //    }
+
+    //    public override bool IsCompatibleWith(ISet s, IEnumerable<string> vars)
+    //    {
+    //        return vars.All(v => this[v] == null || s[v] == null || this[v].Equals(s[v]));
+    //    }
+
+    //    public override void Remove(string variable)
+    //    {
+    //        this._lhs.Remove(variable);
+    //        this._rhs.Remove(variable);
+    //    }
+
+    //    public override INode this[string variable]
+    //    {
+    //        get 
+    //        {
+    //            INode temp = this._lhs[variable];
+    //            return (temp != null ? temp : this._rhs[variable]);
+    //        }
+    //    }
+
+    //    public override IEnumerable<INode> Values
+    //    {
+    //        get 
+    //        {
+    //            return (from v in this.Variables
+    //                    select this[v]);
+    //        }
+    //    }
+
+    //    public override IEnumerable<string> Variables
+    //    {
+    //        get 
+    //        {
+    //            return this._lhs.Variables.Concat(this._rhs.Variables).Distinct();
+    //        }
+    //    }
+
+    //    public override ISet Join(ISet other)
+    //    {
+    //        return new JoinedSet(other, this);
+    //    }
+
+    //    public override ISet Copy()
+    //    {
+    //        return new Set(this);
+    //        return new CopiedSet(this);
+    //    }
+
+    //    public override int GetHashCode()
+    //    {
+    //        return this.ToString().GetHashCode();
+    //    }
+
+    //    public override string ToString()
+    //    {
+    //        StringBuilder output = new StringBuilder();
+    //        foreach (String v in this.Variables)
+    //        {
+    //            if (output.Length > 0) output.Append(" , ");
+    //            output.Append("?" + v + " = " + this[v].ToSafeString());
+    //        }
+    //        return output.ToString();
+    //    }
+
+    //    public bool Equals(JoinedSet other)
+    //    {
+    //        return this.Equals((ISet)other);
+    //    }
+    //}
+
     /// <summary>
-    /// Represents one possible set of values which is a solution to the query where those values are the result of joining two possible sets
+    /// Represents one possible set of values which is a solution to the query where those values are the result of joining one or more possible sets
     /// </summary>
-    public sealed class JoinedSet : BaseSet, IEquatable<JoinedSet>
+    public sealed class JoinedSet
+        : BaseSet, IEquatable<JoinedSet>
     {
-        private ISet _lhs, _rhs;
+        private List<ISet> _sets = new List<ISet>();
+        private bool _added = false;
 
         public JoinedSet(ISet x, ISet y)
         {
-            this._lhs = new Set(x);
-            this._rhs = y;
+            this._sets.Add(x);
+            this._sets.Add(y);
+        }
+
+        internal JoinedSet(ISet x, IEnumerable<ISet> ys)
+        {
+            this._sets.Add(x);
+            this._sets.AddRange(ys);
+        }
+
+        internal JoinedSet(JoinedSet x)
+        {
+            this._sets.AddRange(x._sets);
         }
 
         public override void Add(string variable, INode value)
         {
-            //Joined Sets are left associative so always add to the LHS set
-            this._lhs.Add(variable, value);
+            //When we first add to the joined set we create a new empty set to make the adds into as
+            //we cannot add into the existing sets since they may well be being used in multiple
+            //places and trying to do so will break things horribly
+            if (!this._added)
+            {
+                this._sets.Insert(0, new Set());
+                this._added = true;
+            }
+            //Joined Sets are thus left associative so always add to the leftmost set
+            this._sets[0].Add(variable, value);
         }
 
         public override bool ContainsVariable(string variable)
         {
-            return this._lhs.ContainsVariable(variable) || this._rhs.ContainsVariable(variable);
+            return this._sets.Any(s => s.ContainsVariable(variable));
+        }
+
+        public override bool IsCompatibleWith(ISet s, IEnumerable<string> vars)
+        {
+            return vars.All(v => this[v] == null || s[v] == null || this[v].Equals(s[v]));
         }
 
         public override void Remove(string variable)
         {
-            this._lhs.Remove(variable);
-            this._rhs.Remove(variable);
+            this._sets.ForEach(s => s.Remove(variable));
         }
 
         public override INode this[string variable]
         {
-            get 
+            get
             {
-                INode temp = this._lhs[variable];
-                return (temp != null ? temp : this._rhs[variable]);
+                INode temp = null;
+                int i = 0;
+
+                //Find the first set that has a value for the variable and return it
+                do
+                {
+                    temp = this._sets[i][variable];
+                    if (temp != null) return temp;
+                    i++;
+                } while (i < this._sets.Count - 1);
+
+                //Return null if no sets have a value for the variable
+                return null;
             }
         }
 
         public override IEnumerable<INode> Values
         {
-            get 
+            get
             {
                 return (from v in this.Variables
                         select this[v]);
@@ -299,21 +436,22 @@ namespace VDS.RDF.Query.Algebra
 
         public override IEnumerable<string> Variables
         {
-            get 
+            get
             {
-                return this._lhs.Variables.Concat(this._rhs.Variables).Distinct();
+                return (from s in this._sets
+                        from v in s.Variables
+                        select v).Distinct();
             }
         }
 
         public override ISet Join(ISet other)
         {
-            return new JoinedSet(other, this);
+            return new JoinedSet(other, this._sets);
         }
 
         public override ISet Copy()
         {
-            return new Set(this);
-            //return new CopiedSet(this);
+            return new JoinedSet(this);
         }
 
         public override int GetHashCode()

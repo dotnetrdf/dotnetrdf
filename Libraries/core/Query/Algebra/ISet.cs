@@ -48,6 +48,9 @@ namespace VDS.RDF.Query.Algebra
 
         bool ContainsVariable(string variable);
 
+        
+        bool IsCompatibleWith(ISet s, IEnumerable<String> vars);
+
         int ID 
         { 
             get; 
@@ -86,6 +89,8 @@ namespace VDS.RDF.Query.Algebra
         public abstract void Add(string variable, INode value);
 
         public abstract bool ContainsVariable(string variable);
+
+        public abstract bool IsCompatibleWith(ISet s, IEnumerable<String> vars);
 
         /// <summary>
         /// Gets/Sets the ID of the Set
