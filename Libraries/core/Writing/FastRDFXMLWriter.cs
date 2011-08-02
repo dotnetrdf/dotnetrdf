@@ -44,6 +44,7 @@ using System.Xml;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Writing.Contexts;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Writing
 {
@@ -60,7 +61,7 @@ namespace VDS.RDF.Writing
     /// </remarks>
     [Obsolete("This writer is obsoleted in favour of the RdfXmlWriter and the PrettyRdfXmlWriter as both are now faster than this writer", false)]
     public class FastRdfXmlWriter 
-        : IRdfWriter, IPrettyPrintingWriter, ICompressingWriter, IDtdWriter, INamespaceWriter
+        : IRdfWriter, IPrettyPrintingWriter, ICompressingWriter, IDtdWriter, INamespaceWriter, IFormatterBasedWriter
     {
         private bool _prettyprint = true;
         private int _compressionLevel = WriterCompressionLevel.High;
@@ -159,6 +160,14 @@ namespace VDS.RDF.Writing
             set
             {
                 this._defaultNamespaces = value;
+            }
+        }
+
+        public Type TripleFormatterType
+        {
+            get
+            {
+                return typeof(RdfXmlFormatter);
             }
         }
 

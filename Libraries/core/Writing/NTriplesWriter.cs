@@ -47,7 +47,8 @@ namespace VDS.RDF.Writing
     /// Class for generating RDF in NTriples Concrete Syntax
     /// </summary>
     /// <threadsafety instance="true">Designed to be Thread Safe - should be able to call the Save() method from multiple threads on different Graphs without issue</threadsafety>
-    public class NTriplesWriter : IRdfWriter
+    public class NTriplesWriter 
+        : IRdfWriter, IFormatterBasedWriter
     {
         private bool _sort = false;
 
@@ -63,6 +64,14 @@ namespace VDS.RDF.Writing
             set
             {
                 this._sort = value;
+            }
+        }
+
+        public Type TripleFormatterType
+        {
+            get
+            {
+                return typeof(NTriplesFormatter);
             }
         }
 

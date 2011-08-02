@@ -50,7 +50,8 @@ namespace VDS.RDF.Writing
     /// <summary>
     /// Class for serializing a Triple Store in the NQuads (NTriples plus context) syntax
     /// </summary>
-    public class NQuadsWriter : IStoreWriter, IPrettyPrintingWriter
+    public class NQuadsWriter 
+        : IStoreWriter, IPrettyPrintingWriter, IFormatterBasedWriter
     {
         private int _threads = 4;
         private bool _prettyPrint = true;
@@ -70,6 +71,14 @@ namespace VDS.RDF.Writing
             set
             {
                 this._prettyPrint = value;
+            }
+        }
+
+        public Type TripleFormatterType
+        {
+            get
+            {
+                return typeof(NQuadsFormatter);
             }
         }
 

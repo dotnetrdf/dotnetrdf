@@ -51,7 +51,8 @@ namespace VDS.RDF.Writing
     /// Similar in speed to the <see cref="CompressingTurtleWriter">CompressingTurtleWriter</see> but doesn't use the full Blank Node and Collection syntax compressions
     /// </remarks>
     /// <threadsafety instance="true">Designed to be Thread Safe - should be able to call the Save() method from multiple threads on different Graphs without issue</threadsafety>
-    public class TurtleWriter : IRdfWriter, IPrettyPrintingWriter, IHighSpeedWriter
+    public class TurtleWriter 
+        : IRdfWriter, IPrettyPrintingWriter, IHighSpeedWriter, IFormatterBasedWriter
     {
         private bool _prettyprint = true;
         private bool _allowhispeed = false;
@@ -84,6 +85,14 @@ namespace VDS.RDF.Writing
             set
             {
                 this._allowhispeed = value;
+            }
+        }
+
+        public Type TripleFormatterType
+        {
+            get
+            {
+                return typeof(TurtleFormatter);
             }
         }
 

@@ -42,6 +42,7 @@ using System.Xml;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Writing.Contexts;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Writing
 {
@@ -57,7 +58,7 @@ namespace VDS.RDF.Writing
     /// </para>
     /// </remarks>
     public class PrettyRdfXmlWriter 
-        : IRdfWriter, IPrettyPrintingWriter, ICompressingWriter, IDtdWriter, INamespaceWriter
+        : IRdfWriter, IPrettyPrintingWriter, ICompressingWriter, IDtdWriter, INamespaceWriter, IFormatterBasedWriter
     {
         private bool _prettyprint = true;
         private int _compressionLevel = WriterCompressionLevel.High;
@@ -156,6 +157,14 @@ namespace VDS.RDF.Writing
             set
             {
                 this._defaultNamespaces = value;
+            }
+        }
+
+        public Type TripleFormatterType
+        {
+            get
+            {
+                return typeof(RdfXmlFormatter);
             }
         }
 

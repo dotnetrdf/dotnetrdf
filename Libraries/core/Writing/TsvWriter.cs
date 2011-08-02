@@ -50,9 +50,18 @@ namespace VDS.RDF.Writing
     /// <summary>
     /// Class for generating TSV files from RDF Graphs
     /// </summary>
-    public class TsvWriter : IRdfWriter
+    public class TsvWriter 
+        : IRdfWriter, IFormatterBasedWriter
     {
         private TsvFormatter _formatter = new TsvFormatter();
+
+        public Type TripleFormatterType
+        {
+            get
+            {
+                return this._formatter.GetType();
+            }
+        }
 
         /// <summary>
         /// Saves a Graph to TSV format
@@ -133,10 +142,19 @@ namespace VDS.RDF.Writing
     /// <summary>
     /// Class for generating TSV output from RDF Datasets
     /// </summary>
-    public class TsvStoreWriter : IStoreWriter
+    public class TsvStoreWriter 
+        : IStoreWriter, IFormatterBasedWriter
     {
         private int _threads = 4;
         private TsvFormatter _formatter = new TsvFormatter();
+
+        public Type TripleFormatterType
+        {
+            get
+            {
+                return this._formatter.GetType();
+            }
+        }
 
         /// <summary>
         /// Saves a Triple Store to TSV format

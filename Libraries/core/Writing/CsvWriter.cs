@@ -50,9 +50,18 @@ namespace VDS.RDF.Writing
     /// <summary>
     /// Class for generating CSV output from RDF Graphs
     /// </summary>
-    public class CsvWriter : IRdfWriter
+    public class CsvWriter 
+        : IRdfWriter, IFormatterBasedWriter
     {
         private CsvFormatter _formatter = new CsvFormatter();
+
+        public Type TripleFormatterType
+        {
+            get
+            {
+                return _formatter.GetType();
+            }
+        }
 
         /// <summary>
         /// Saves a Graph to CSV format
@@ -152,10 +161,19 @@ namespace VDS.RDF.Writing
     /// <summary>
     /// Class for generating CSV output from RDF Datasets
     /// </summary>
-    public class CsvStoreWriter : IStoreWriter
+    public class CsvStoreWriter 
+        : IStoreWriter, IFormatterBasedWriter
     {
         private int _threads = 4;
         private CsvFormatter _formatter = new CsvFormatter();
+
+        public Type TripleFormatterType
+        {
+            get
+            {
+                return _formatter.GetType();
+            }
+        }
 
         /// <summary>
         /// Saves a Triple Store to CSV Format
