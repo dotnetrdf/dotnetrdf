@@ -48,6 +48,8 @@ Changed
  - Fixes to AllegroGraphConnector to support 4.x HTTP protocol changes based on bug reports from Sascha Dech
 - Query
  - Further refactored the Leviathan engine to make it even easier to extend
+  - The majority of methods on the engine can now be overridden
+  - Abstracted Set to an interface
  - RDF and Results Handler may now be used to process query results in all places where an IGraph or SparqlResultSet can be returned
    i.e. new overloads for all relevant query related methods
  - Describe API Changes
