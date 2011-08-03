@@ -431,7 +431,7 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">Uri of the Graph to update</param>
         /// <param name="additions">Triples to be added</param>
         /// <param name="removals">Triples to be removed</param>
-        public void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
+        public virtual void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
             this.UpdateGraph(graphUri.ToSafeString(), additions, removals);
         }
@@ -442,7 +442,7 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">Uri of the Graph to update</param>
         /// <param name="additions">Triples to be added</param>
         /// <param name="removals">Triples to be removed</param>
-        public void UpdateGraph(String graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
+        public virtual void UpdateGraph(String graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
             try
             {
@@ -549,7 +549,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Returns that Updates are supported on Sesame HTTP Protocol supporting Stores
         /// </summary>
-        public bool UpdateSupported
+        public virtual bool UpdateSupported
         {
             get 
             {
@@ -561,7 +561,7 @@ namespace VDS.RDF.Storage
         /// Deletes a Graph from the Sesame store
         /// </summary>
         /// <param name="graphUri">URI of the Graph to delete</param>
-        public void DeleteGraph(Uri graphUri)
+        public virtual void DeleteGraph(Uri graphUri)
         {
             this.DeleteGraph(graphUri.ToSafeString());
         }
@@ -570,7 +570,7 @@ namespace VDS.RDF.Storage
         /// Deletes a Graph from the Sesame store
         /// </summary>
         /// <param name="graphUri">URI of the Graph to delete</param>
-        public void DeleteGraph(String graphUri)
+        public virtual void DeleteGraph(String graphUri)
         {
             try
             {
@@ -622,7 +622,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Returns that deleting graphs from the Sesame store is supported
         /// </summary>
-        public bool DeleteSupported
+        public virtual bool DeleteSupported
         {
             get
             {

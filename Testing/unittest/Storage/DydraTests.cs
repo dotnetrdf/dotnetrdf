@@ -116,7 +116,7 @@ namespace VDS.RDF.Test.Storage
             }
         }
 
-        [TestMethod]
+        [TestMethod,ExpectedException(typeof(NotSupportedException))]
         public void StorageDydraDeleteGraph()
         {
             try
@@ -155,6 +155,10 @@ namespace VDS.RDF.Test.Storage
 
                 Assert.IsTrue(g.IsEmpty, "Graph should be empty as was deleted from repository");
                 Assert.AreNotEqual(orig, g, "Graphs should not be equal");
+            }
+            catch (NotSupportedException)
+            {
+                throw;
             }
             catch (Exception ex)
             {

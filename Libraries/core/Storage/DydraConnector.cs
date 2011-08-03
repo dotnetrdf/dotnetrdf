@@ -51,7 +51,8 @@ namespace VDS.RDF.Storage
     /// <summary>
     /// Class for connecting to repositories hosted on Dydra
     /// </summary>
-    public class DydraConnector : SesameHttpProtocolConnector
+    public class DydraConnector
+        : SesameHttpProtocolConnector
     {
         private const String DydraBaseUri = "http://dydra.com/";
         private const String DydraApiKeyPassword = "X";
@@ -123,6 +124,24 @@ namespace VDS.RDF.Storage
             {
                 throw new RdfStorageException("An error occurred while attempting to retrieve the Graph List from the Store, see inner exception for details", ex);
             }
+        }
+
+        public override bool DeleteSupported
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        public override void DeleteGraph(string graphUri)
+        {
+            throw new NotSupportedException("Dydra does not yet properly support deleting graphs via HTTP");
+        }
+
+        public override void DeleteGraph(Uri graphUri)
+        {
+            throw new NotSupportedException("Dydra does not yet properly support deleting graphs via HTTP");
         }
 
         public override void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery)
