@@ -33,7 +33,9 @@ Added
   - Added a ParallelEvaluationOptimiser which transforms the algebra into a parallel executable form where possible
   - Added an IdentityFilterOptimiser which applies Identity Filter optimisations
 - Storage
- - Added initial support for Dydra (somewhat buggy)
+ - Added initial support for Dydra
+  - Deleting Graphs from Dydra is not yet supported pending a bug fix at Dydra's end
+ - Added revised SQL backend in seperate dotNetRDF.Data.Sql.dll library
 - Writing
  - Added additional interfaces to Formatting namespace
  - Added formatters for RDF/XML and SPARQL XML Results
