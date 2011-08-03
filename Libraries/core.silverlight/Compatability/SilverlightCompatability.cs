@@ -45,6 +45,7 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using HtmlAgilityPack;
+using VDS.RDF.Query;
 
 namespace VDS.RDF
 {
@@ -252,6 +253,10 @@ namespace VDS.RDF
             return results;
         }
     }
+
+    public delegate void SparqlResultsCallback(SparqlResultSet results, Object state);
+
+    public delegate void GraphCallback(IGraph g, Object state);
 }
 
 #endif

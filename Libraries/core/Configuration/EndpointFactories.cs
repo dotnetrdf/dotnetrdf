@@ -77,6 +77,7 @@ namespace VDS.RDF.Configuration
 
                     break;
 
+#if !SILVERLIGHT
                 case FederatedEndpoint:
                     IEnumerable<INode> endpoints = ConfigurationLoader.GetConfigurationData(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyEndpoint));
                     foreach (INode e in endpoints)
@@ -99,6 +100,7 @@ namespace VDS.RDF.Configuration
                         }
                     }
                     break;
+#endif
             }
 
             if (endpoint != null)
@@ -150,7 +152,9 @@ namespace VDS.RDF.Configuration
             switch (t.FullName)
             {
                 case Endpoint:
+#if !SILVERLIGHT
                 case FederatedEndpoint:
+#endif
                     return true;
                 default:
                     return false;

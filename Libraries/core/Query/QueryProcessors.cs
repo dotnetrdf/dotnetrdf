@@ -165,6 +165,8 @@ namespace VDS.RDF.Query
 
 #endif
 
+#if !SILVERLIGHT
+
     /// <summary>
     /// A SPARQL Query Processor where the query is processed by passing it to a remote SPARQL endpoint
     /// </summary>
@@ -263,4 +265,6 @@ namespace VDS.RDF.Query
             }
         }
     }
+
+#endif
 }

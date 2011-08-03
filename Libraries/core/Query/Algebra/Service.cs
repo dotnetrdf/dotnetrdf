@@ -81,6 +81,9 @@ namespace VDS.RDF.Query.Algebra
             bool bypassSilent = false;
             try
             {
+#if SILVERLIGHT
+                throw new PlatformNotSupportedException("SERVICE is not currently supported under Silverlight");
+#else
                 SparqlRemoteEndpoint endpoint;
                 Uri endpointUri;
                 String baseUri = (context.Query.BaseUri == null) ? String.Empty : context.Query.BaseUri.ToString();
@@ -213,7 +216,7 @@ namespace VDS.RDF.Query.Algebra
 
                     return context.OutputMultiset;
                 }
-
+#endif
             }
             catch (Exception ex)
             {

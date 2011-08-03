@@ -237,6 +237,8 @@ namespace VDS.RDF.Query
 
         #region Query Methods
 
+#if !SILVERLIGHT
+
         /// <summary>
         /// Makes a Query where the expected Result is a <see cref="SparqlResultSet">SparqlResultSet</see> i.e. SELECT and ASK Queries
         /// </summary>
@@ -403,21 +405,9 @@ namespace VDS.RDF.Query
             }
         }
 
-        /// <summary>
-        /// Makes a Query where the expected Result is a SparqlResultSet ie. SELECT and ASK Queries
-        /// </summary>
-        /// <param name="sparqlQuery">SPARQL Query String</param>
-        /// <returns>A Sparql Result Set</returns>
-        /// <remarks>Allows for implementation of asynchronous querying</remarks>
-        public delegate SparqlResultSet AsyncQueryWithResultSet(String sparqlQuery);
+#endif
 
-        /// <summary>
-        /// Delegate for making a Query where the expected Result is an RDF Graph ie. CONSTRUCT and DESCRIBE Queries
-        /// </summary>
-        /// <param name="sparqlQuery">Sparql Query String</param>
-        /// <returns>RDF Graph</returns>
-        /// <remarks>Allows for implementation of asynchronous querying</remarks>
-        public delegate IGraph AsyncQueryWithResultGraph(String sparqlQuery);
+#if !SILVERLIGHT
 
         /// <summary>
         /// Internal method which builds the Query Uri and executes it via GET/POST as appropriate
@@ -589,6 +579,63 @@ namespace VDS.RDF.Query
             return httpResponse;
         }
 
+#else
+        public void QueryWithResultSet(String query, SparqlResultsCallback callback, Object state)
+        {
+            //REQ: Implement this for use under Silverlight/Windows Phone 7
+            HttpWebRequest request = WebRequest.CreateHttp(this.Uri);
+            request.Method = "POST";
+            request.Accept = MimeTypesHelper.HttpSparqlAcceptHeader;
+
+            request.BeginGetRequestStream(result =>
+            {
+                Stream stream = request.EndGetRequestStream(result);
+                using (StreamWriter writer = new StreamWriter(stream))
+                {
+                    writer.Write("query=");
+                    writer.Write(HttpUtility.UrlEncode(query));
+                    writer.Close();
+                }
+
+                request.BeginGetResponse(innerResult =>
+                    {
+                        HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(innerResult);
+                        ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParser(response.ContentType, false);
+                        SparqlResultSet rset = new SparqlResultSet();
+                        parser.Load(rset, new StreamReader(response.GetResponseStream()));
+
+                        callback(rset, state);
+                    }, null);
+            }, null);
+
+        }
+
+        public void QueryWithResultGraph(String query, GraphCallback callback, Object state)
+        {
+            //REQ: Implement this for use under Silverlight/Windows Phone 7
+            throw new NotImplementedException();
+        }
+
+        
+#endif
+
+
+        /// <summary>
+        /// Makes a Query where the expected Result is a SparqlResultSet ie. SELECT and ASK Queries
+        /// </summary>
+        /// <param name="sparqlQuery">SPARQL Query String</param>
+        /// <returns>A Sparql Result Set</returns>
+        /// <remarks>Allows for implementation of asynchronous querying</remarks>
+        public delegate SparqlResultSet AsyncQueryWithResultSet(String sparqlQuery);
+
+        /// <summary>
+        /// Delegate for making a Query where the expected Result is an RDF Graph ie. CONSTRUCT and DESCRIBE Queries
+        /// </summary>
+        /// <param name="sparqlQuery">Sparql Query String</param>
+        /// <returns>RDF Graph</returns>
+        /// <remarks>Allows for implementation of asynchronous querying</remarks>
+        public delegate IGraph AsyncQueryWithResultGraph(String sparqlQuery);
+
         #endregion
 
         /// <summary>
@@ -622,6 +669,8 @@ namespace VDS.RDF.Query
             base.SerializeConfiguration(context);
         }
     }
+
+#if !SILVERLIGHT
 
     /// <summary>
     /// A Class for connecting to multiple remote SPARQL Endpoints and federating queries over them with the data merging done locally
@@ -1105,4 +1154,6 @@ namespace VDS.RDF.Query
             }
         }
     }
+
+#endif
 }

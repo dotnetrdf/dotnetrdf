@@ -134,6 +134,7 @@ namespace VDS.RDF.Configuration
 
 #endif
 
+#if !SILVERLIGHT
                 case RemoteQueryProcessor:
                     INode endpointObj = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyEndpoint));
                     if (endpointObj == null) return false;
@@ -147,6 +148,7 @@ namespace VDS.RDF.Configuration
                         throw new DotNetRdfConfigurationException("Unable to load the Remote Query Processor identified by the Node '" + objNode.ToSafeString() + "' as the value given for the dnr:endpoint property points to an Object that cannot be loaded as an object which is a SparqlRemoteEndpoint");
                     }
                     break;
+#endif
 
                 case PelletQueryProcessor:
                     String server = ConfigurationLoader.GetConfigurationValue(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyServer));

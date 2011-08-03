@@ -70,6 +70,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// <returns></returns>
         public Object Query(String sparqlQuery)
         {
+#if !SILVERLIGHT
             SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(new Uri(this._sparqlUri));
 
             using (HttpWebResponse response = endpoint.QueryRaw(sparqlQuery))
@@ -94,10 +95,14 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
                 }
                 response.Close();
             }
+#else
+            throw new PlatformNotSupportedException("Not currently supported on Silverlight/Windows Phone 7");
+#endif
         }
 
         public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery)
         {
+#if !SILVERLIGHT
             SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(new Uri(this._sparqlUri));
 
             using (HttpWebResponse response = endpoint.QueryRaw(sparqlQuery))
@@ -114,6 +119,9 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
                 }
                 response.Close();
             }
+#else
+            throw new PlatformNotSupportedException("Not currently supported under Silverlight/Windows Phone 7");
+#endif
         }
     }
 }
