@@ -455,6 +455,7 @@ namespace VDS.RDF.Storage.Virtualisation
             return this._value.ToString();
         }
 
+#if !SILVERLIGHT
         public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             throw new NotImplementedException("This INode implementation does not support Serialization");
@@ -474,6 +475,7 @@ namespace VDS.RDF.Storage.Virtualisation
         {
             throw new NotImplementedException("This INode implementation does not support XML Serialization");
         }
+#endif
     }
 
     public abstract class BaseVirtualBlankNode<TNodeID, TGraphID>

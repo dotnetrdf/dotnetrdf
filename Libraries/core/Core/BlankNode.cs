@@ -45,8 +45,11 @@ namespace VDS.RDF
     /// <summary>
     /// Abstract Base Class for Blank Nodes
     /// </summary>
+#if !SILVERLIGHT
     [Serializable,XmlRoot(ElementName="bnode")]
-    public abstract class BaseBlankNode : BaseNode, IBlankNode, IEquatable<BaseBlankNode>, IComparable<BaseBlankNode>
+#endif
+    public abstract class BaseBlankNode
+        : BaseNode, IBlankNode, IEquatable<BaseBlankNode>, IComparable<BaseBlankNode>
     {
         private String _id;
         private bool _autoassigned = false;
@@ -98,6 +101,8 @@ namespace VDS.RDF
             : base(null, NodeType.Blank)
         { }
 
+#if !SILVERLIGHT
+
         protected BaseBlankNode(SerializationInfo info, StreamingContext context)
             : base(null, NodeType.Blank)
         {
@@ -106,6 +111,8 @@ namespace VDS.RDF
             //Compute Hash Code
             this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
         }
+
+#endif
 
         /// <summary>
         /// Returns the Internal Blank Node ID this Node has in the Graph
@@ -392,6 +399,8 @@ namespace VDS.RDF
             return "_:" + this._id;
         }
 
+#if !SILVERLIGHT
+
         #region ISerializable Members
 
         public sealed override void GetObjectData(SerializationInfo info, StreamingContext context)
@@ -416,13 +425,18 @@ namespace VDS.RDF
         }
 
         #endregion
+
+#endif
     }
 
     /// <summary>
     /// Class for representing Blank RDF Nodes
     /// </summary>
+#if !SILVERLIGHT
     [Serializable,XmlRoot(ElementName = "bnode")]
-    public class BlankNode : BaseBlankNode, IEquatable<BlankNode>, IComparable<BlankNode>
+#endif
+    public class BlankNode 
+        : BaseBlankNode, IEquatable<BlankNode>, IComparable<BlankNode>
     {
         /// <summary>
         /// Internal Only Constructor for Blank Nodes
@@ -450,8 +464,10 @@ namespace VDS.RDF
             : base()
         { }
 
+#if !SILVERLIGHT
         protected BlankNode(SerializationInfo info, StreamingContext context)
             : base(info, context) { }
+#endif
 
         /// <summary>
         /// Implementation of Compare To for Blank Nodes

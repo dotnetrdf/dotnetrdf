@@ -44,15 +44,23 @@ using System.Xml.Serialization;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Writing.Formatting;
+#if !SILVERLIGHT
 using VDS.RDF.Writing.Serialization;
+#endif
 
 namespace VDS.RDF.Query
 {
     /// <summary>
     /// Class for representing a Row of a Sparql Result Set
     /// </summary>
+#if !SILVERLIGHT
     [Serializable,XmlRoot(ElementName="result")]
-    public sealed class SparqlResult : IEnumerable<KeyValuePair<String, INode>>, ISerializable, IXmlSerializable
+#endif
+    public sealed class SparqlResult 
+        : IEnumerable<KeyValuePair<String, INode>>
+#if !SILVERLIGHT
+        , ISerializable, IXmlSerializable
+#endif
     {
         private Dictionary<String, INode> _resultValues = new Dictionary<string, INode>();
 
@@ -74,10 +82,12 @@ namespace VDS.RDF.Query
             }
         }
 
+#if !SILVERLIGHT
         private SparqlResult(SerializationInfo info, StreamingContext context)
         {
             this._resultValues = (Dictionary<String,INode>)info.GetValue("bindings", typeof(Dictionary<String, INode>));
         }
+#endif
 
         /// <summary>
         /// Gets the Value that is bound to the given Variable
@@ -385,6 +395,7 @@ namespace VDS.RDF.Query
 
         #endregion
 
+#if !SILVERLIGHT
         #region Serialization
 
         public void GetObjectData(SerializationInfo info, StreamingContext context)
@@ -443,5 +454,6 @@ namespace VDS.RDF.Query
         }
 
         #endregion
+#endif
     }
 }

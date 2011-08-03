@@ -47,15 +47,23 @@ using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
 using VDS.RDF.Parsing;
+#if !SILVERLIGHT
 using VDS.RDF.Writing.Serialization;
+#endif
 
 namespace VDS.RDF
 {
     /// <summary>
     /// Abstract Base Implementation of the <see cref="IGraph">IGraph</see> interface
     /// </summary>
+#if !SILVERLIGHT
     [Serializable,XmlRoot(ElementName="graph")]
-    public abstract class BaseGraph : IGraph, ISerializable
+#endif
+    public abstract class BaseGraph 
+        : IGraph
+#if !SILVERLIGHT
+        ,ISerializable
+#endif
     {
         #region Variables
 
@@ -81,8 +89,9 @@ namespace VDS.RDF
         protected BlankNodeMapper _bnodemapper;
 
         private TripleEventHandler TripleAddedHandler, TripleRemovedHandler;
-
+#if !SILVERLIGHT
         private GraphDeserializationInfo _dsInfo;
+#endif
 
         #endregion
 
@@ -119,6 +128,7 @@ namespace VDS.RDF
         protected BaseGraph()
             : this(new IndexedTripleCollection()) { }
 
+#if !SILVERLIGHT
         protected BaseGraph(SerializationInfo info, StreamingContext context)
             : this()
         {
@@ -130,6 +140,7 @@ namespace VDS.RDF
         {
             if (this._dsInfo != null) this._dsInfo.Apply(this);
         }
+#endif
 
         #endregion
 
@@ -1202,6 +1213,8 @@ namespace VDS.RDF
             this.DetachEventHandlers(this._triples);
         }
 
+#if !SILVERLIGHT
+
         #region ISerializable Members
 
         public void GetObjectData(SerializationInfo info, StreamingContext context)
@@ -1312,5 +1325,7 @@ namespace VDS.RDF
         }
 
         #endregion
+
+#endif
     }
 }

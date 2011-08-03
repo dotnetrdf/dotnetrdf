@@ -43,8 +43,11 @@ namespace VDS.RDF
     /// <summary>
     /// Abstract Base Class for Variable Nodes
     /// </summary>
+#if !SILVERLIGHT
     [Serializable,XmlRoot(ElementName="variable")]
-    public abstract class BaseVariableNode : BaseNode, IVariableNode, IEquatable<BaseVariableNode>, IComparable<BaseVariableNode>
+#endif
+    public abstract class BaseVariableNode
+        : BaseNode, IVariableNode, IEquatable<BaseVariableNode>, IComparable<BaseVariableNode>
     {
         private String _var;
 
@@ -70,12 +73,16 @@ namespace VDS.RDF
         protected BaseVariableNode()
             : base(null, NodeType.Variable) { }
 
+#if !SILVERLIGHT
+
         protected BaseVariableNode(SerializationInfo info, StreamingContext context)
             : base(null, NodeType.Variable)
         {
             this._var = info.GetString("name");
             this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
         }
+
+#endif
 
         /// <summary>
         /// Gets the Variable Name
@@ -348,6 +355,8 @@ namespace VDS.RDF
             return this.CompareTo((IVariableNode)other);
         }
 
+#if !SILVERLIGHT
+
         public sealed override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("name", this._var);
@@ -363,13 +372,18 @@ namespace VDS.RDF
         {
             writer.WriteValue(this._var);
         }
+
+#endif
     }
 
     /// <summary>
     /// Class representing Variable Nodes (only used for N3)
     /// </summary>
+#if !SILVERLIGHT
     [Serializable,XmlRoot(ElementName="variable")]
-    public class VariableNode : BaseVariableNode, IEquatable<VariableNode>, IComparable<VariableNode>
+#endif
+    public class VariableNode
+        : BaseVariableNode, IEquatable<VariableNode>, IComparable<VariableNode>
     {
         /// <summary>
         /// Creates a new Variable Node
@@ -382,8 +396,10 @@ namespace VDS.RDF
         protected VariableNode()
             : base() { }
 
+#if !SILVERLIGHT
         protected VariableNode(SerializationInfo info, StreamingContext context)
             : base(info, context) { }
+#endif
 
         /// <summary>
         /// Compares this Node to another Variable Node

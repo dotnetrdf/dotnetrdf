@@ -48,7 +48,9 @@ namespace VDS.RDF
     /// Class for representing RDF Graphs
     /// </summary>
     /// <threadsafety instance="false">Safe for multi-threaded read-only access but unsafe if one/more threads may modify the Graph by using the <see cref="Graph.Assert">Assert</see>, <see cref="Graph.Retract">Retract</see> or <see cref="BaseGraph.Merge">Merge</see> methods</threadsafety>
+#if !SILVERLIGHT
     [Serializable,XmlRoot(ElementName="graph")]
+#endif
     public class Graph : BaseGraph
     {
         #region Constructor
@@ -107,8 +109,10 @@ namespace VDS.RDF
             if (emptyNamespaceMap) this._nsmapper.Clear();
         }
 
+#if !SILVERLIGHT
         protected Graph(SerializationInfo info, StreamingContext context)
             : base(info, context) { }
+#endif
 
         #endregion
 

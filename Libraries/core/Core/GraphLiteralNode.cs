@@ -38,15 +38,20 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
+#if !SILVERLIGHT
 using VDS.RDF.Writing.Serialization;
+#endif
 
 namespace VDS.RDF
 {
     /// <summary>
     /// Abstract Base Class for Graph Literal Nodes
     /// </summary>
+#if !SILVERLIGHT
     [Serializable,XmlRoot(ElementName="graphliteral")]
-    public abstract class BaseGraphLiteralNode : BaseNode, IGraphLiteralNode, IEquatable<BaseGraphLiteralNode>, IComparable<BaseGraphLiteralNode>
+#endif
+    public abstract class BaseGraphLiteralNode
+        : BaseNode, IGraphLiteralNode, IEquatable<BaseGraphLiteralNode>, IComparable<BaseGraphLiteralNode>
     {
         private IGraph _subgraph;
 
@@ -77,6 +82,7 @@ namespace VDS.RDF
             this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
         }
 
+#if !SILVERLIGHT
         protected BaseGraphLiteralNode(SerializationInfo info, StreamingContext context)
             : base(null, NodeType.GraphLiteral)
         {
@@ -84,6 +90,7 @@ namespace VDS.RDF
             //Compute Hash Code
             this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
         }
+#endif
 
         protected BaseGraphLiteralNode()
             : base(null, NodeType.GraphLiteral) { }
@@ -336,6 +343,7 @@ namespace VDS.RDF
             return this.CompareTo((IGraphLiteralNode)other);
         }
 
+#if !SILVERLIGHT
         #region Serialization
 
         public sealed override void GetObjectData(SerializationInfo info, StreamingContext context)
@@ -357,13 +365,17 @@ namespace VDS.RDF
         }
 
         #endregion
+#endif
     }
 
     /// <summary>
     /// Class for representing Graph Literal Nodes which are supported in highly expressive RDF syntaxes like Notation 3
     /// </summary>
+#if !SILVERLIGHT
     [Serializable,XmlRoot(ElementName="graphliteral")]
-    public class GraphLiteralNode : BaseGraphLiteralNode, IEquatable<GraphLiteralNode>, IComparable<GraphLiteralNode>
+#endif
+    public class GraphLiteralNode 
+        : BaseGraphLiteralNode, IEquatable<GraphLiteralNode>, IComparable<GraphLiteralNode>
     {
         /// <summary>
         /// Creates a new Graph Literal Node in the given Graph which represents the given Subgraph
@@ -380,8 +392,10 @@ namespace VDS.RDF
         protected internal GraphLiteralNode(IGraph g, IGraph subgraph)
             : base(g, subgraph) { }
 
+#if !SILVERLIGHT
         protected GraphLiteralNode(SerializationInfo info, StreamingContext context)
             : base(info, context) { }
+#endif
 
         protected GraphLiteralNode()
             : base() { }

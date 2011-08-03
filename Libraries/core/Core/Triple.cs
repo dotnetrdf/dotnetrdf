@@ -43,15 +43,23 @@ using System.Xml.Schema;
 using System.Xml.Serialization;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing.Formatting;
+#if !SILVERLIGHT
 using VDS.RDF.Writing.Serialization;
+#endif
 
 namespace VDS.RDF
 {
     /// <summary>
     /// Class for representing RDF Triples in memory
     /// </summary>
+#if !SILVERLIGHT
     [Serializable,XmlRoot(ElementName="triple")]
-    public sealed class Triple : IComparable<Triple>, ISerializable, IXmlSerializable
+#endif
+    public sealed class Triple
+        : IComparable<Triple>
+#if !SILVERLIGHT
+        , ISerializable, IXmlSerializable
+#endif
     {
         private INode _subject, _predicate, _object;
         private ITripleContext _context = null;
@@ -154,6 +162,7 @@ namespace VDS.RDF
         private Triple()
         { }
 
+#if !SILVERLIGHT
         private Triple(SerializationInfo info, StreamingContext context)
         {
             this._subject = (INode)info.GetValue("s", typeof(INode));
@@ -163,6 +172,7 @@ namespace VDS.RDF
             //Compute Hash Code
             this._hashcode = (this._subject.GetHashCode().ToString() + this._predicate.GetHashCode().ToString() + this._object.GetHashCode().ToString()).GetHashCode();
         }
+#endif
 
         /// <summary>
         /// Gets the Subject of the Triple
@@ -492,6 +502,8 @@ namespace VDS.RDF
             }
         }
 
+#if !SILVERLIGHT
+
         #region ISerializable Members
 
         public void GetObjectData(SerializationInfo info, StreamingContext context)
@@ -529,5 +541,7 @@ namespace VDS.RDF
         }
 
         #endregion
+
+#endif
     }
 }

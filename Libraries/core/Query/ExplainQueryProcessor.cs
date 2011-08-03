@@ -355,10 +355,12 @@ namespace VDS.RDF.Query
             {
                 System.Diagnostics.Debug.WriteLine(output);
             }
+#if !SILVERLIGHT
             if (this.HasFlag(ExplanationLevel.OutputToTrace))
             {
                 System.Diagnostics.Trace.WriteLine(output);
             }
+#endif
         }
 
         private void ExplainEvaluationStart(ISparqlAlgebra algebra, SparqlEvaluationContext context)

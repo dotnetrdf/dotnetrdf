@@ -46,8 +46,11 @@ namespace VDS.RDF
     /// <summary>
     /// Abstract Base Class for Literal Nodes
     /// </summary>
+#if !SILVERLIGHT
     [Serializable,XmlRoot(ElementName="literal")]
-    public abstract class BaseLiteralNode : BaseNode, ILiteralNode, IEquatable<BaseLiteralNode>, IComparable<BaseLiteralNode>, IXmlSerializable
+#endif
+    public abstract class BaseLiteralNode 
+        : BaseNode, ILiteralNode, IEquatable<BaseLiteralNode>, IComparable<BaseLiteralNode>
     {
         private String _value;
         private String _language = String.Empty;
@@ -181,6 +184,7 @@ namespace VDS.RDF
         protected BaseLiteralNode()
             : base(null, NodeType.Literal) { }
 
+#if !SILVERLIGHT
         protected BaseLiteralNode(SerializationInfo info, StreamingContext context)
             : base(null, NodeType.Literal)
         {
@@ -206,6 +210,8 @@ namespace VDS.RDF
                     throw new RdfParseException("Unable to deserialize a Literal Node");
             }
         }
+
+#endif
 
         /// <summary>
         /// Gives the String Value of the Literal
@@ -508,6 +514,8 @@ namespace VDS.RDF
             return this.CompareTo((ILiteralNode)other);
         }
 
+#if !SILVERLIGHT
+
         #region ISerializable Members
 
         public sealed override void GetObjectData(SerializationInfo info, StreamingContext context)
@@ -587,12 +595,16 @@ namespace VDS.RDF
         }
 
         #endregion
+
+#endif
     }
 
     /// <summary>
     /// Class for representing Literal Nodes
     /// </summary>
+#if !SILVERLIGHT
     [Serializable,XmlRoot(ElementName="literal")]
+#endif
     public class LiteralNode : BaseLiteralNode, IEquatable<LiteralNode>, IComparable<LiteralNode>
     {
         /// <summary>
@@ -660,8 +672,10 @@ namespace VDS.RDF
         protected LiteralNode()
             : base() { }
 
+#if !SILVERLIGHT
         protected LiteralNode(SerializationInfo info, StreamingContext context)
             : base(info, context) { }
+#endif
 
         /// <summary>
         /// Implementation of Compare To for Literal Nodes
@@ -690,8 +704,11 @@ namespace VDS.RDF
     /// <summary>
     /// Class for representing Literal Nodes where the Literal values are not normalized
     /// </summary>
+#if !SILVERLIGHT
     [Serializable,XmlRoot(ElementName="literal")]
-    class NonNormalizedLiteralNode : LiteralNode, IComparable<NonNormalizedLiteralNode>
+#endif
+    class NonNormalizedLiteralNode 
+        : LiteralNode, IComparable<NonNormalizedLiteralNode>
     {
         /// <summary>
         /// Internal Only Constructor for Literal Nodes
@@ -722,8 +739,10 @@ namespace VDS.RDF
         protected NonNormalizedLiteralNode()
             : base() { }
 
+#if !SILVERLIGHT
         protected NonNormalizedLiteralNode(SerializationInfo info, StreamingContext context)
             : base(info, context) { }
+#endif
 
         /// <summary>
         /// Implementation of Compare To for Literal Nodes

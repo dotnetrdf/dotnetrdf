@@ -80,8 +80,10 @@ namespace VDS.RDF
         : IComparable<INode>, IComparable<IBlankNode>, IComparable<IGraphLiteralNode>, IComparable<ILiteralNode>,
           IComparable<IUriNode>, IComparable<IVariableNode>,
           IEquatable<INode>, IEquatable<IBlankNode>, IEquatable<IGraphLiteralNode>, IEquatable<ILiteralNode>,
-          IEquatable<IUriNode>, IEquatable<IVariableNode>,
-          ISerializable, IXmlSerializable
+          IEquatable<IUriNode>, IEquatable<IVariableNode>
+#if !SILVERLIGHT
+          ,ISerializable, IXmlSerializable
+#endif
     {
         /// <summary>
         /// Nodes have a Type

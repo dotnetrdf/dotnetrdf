@@ -709,7 +709,7 @@ namespace VDS.RDF.Parsing
             if (!reader.Name.Equals("triple")) throw Error("Unexpected </" + reader.Name + "> encountered, expected a </triple> element", reader);
 
             //Assert the resulting Triple
-            if (!handler.HandleTriple(new Triple(subj, pred, obj, graphUri))) throw ParserHelper.Stop();
+            if (!handler.HandleTriple(new Triple(subj, pred, obj, graphUri))) ParserHelper.Stop();
         }
 
         private INode TryParseNode(XmlReader reader, IRdfHandler handler, TripleSegment segment)

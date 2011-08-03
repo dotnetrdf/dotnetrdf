@@ -96,7 +96,11 @@ namespace VDS.RDF.Writing.Formatting
             }
             else
             {
+#if !SILVERLIGHT
                 qname = u.Segments.LastOrDefault();
+#else
+                qname = u.Segments().LastOrDefault();
+#endif
                 if (qname == null) throw new RdfOutputException(WriterErrorMessages.UnreducablePropertyURIUnserializable);
                 ns = u.ToString().Substring(0, u.ToString().Length - qname.Length);
             }

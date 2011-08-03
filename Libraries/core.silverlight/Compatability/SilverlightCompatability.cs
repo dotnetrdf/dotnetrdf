@@ -134,19 +134,24 @@ namespace VDS.RDF
         /// <returns>HTTP Response</returns>
         public static HttpWebResponse GetResponse(this HttpWebRequest request)
         {
-            AutoResetEvent syncRequest = new AutoResetEvent(false);
+            ManualResetEvent syncRequest = new ManualResetEvent(false);
             HttpWebResponse response = null;
 
             //Wait for Server Response
             request.BeginGetResponse(result =>
                 {
-                response = (HttpWebResponse)request.EndGetResponse(result);
-                syncRequest.Set();
-
+                    try
+                    {
+                        response = (HttpWebResponse)request.EndGetResponse(result);
+                    }
+                    finally
+                    {
+                        syncRequest.Set();
+                    }
                 },
             null);
 
-            syncRequest.WaitOne();
+            //syncRequest.WaitOne();
             return response;
         }
 
@@ -157,17 +162,24 @@ namespace VDS.RDF
         /// <returns>Request Stream</returns>
         public static Stream GetRequestStream(this HttpWebRequest request)
         {
-            AutoResetEvent syncRequest = new AutoResetEvent(false);
+            ManualResetEvent syncRequest = new ManualResetEvent(false);
             Stream stream = null;
 
             //Get the Request Stream
             request.BeginGetRequestStream(result =>
                 {
-                    stream = request.EndGetRequestStream(result);
+                    try
+                    {
+                        stream = request.EndGetRequestStream(result);
+                    }
+                    finally
+                    {
+                        syncRequest.Set();
+                    }
                 },
             null);
 
-            syncRequest.WaitOne();
+            //syncRequest.WaitOne();
             return stream;
         }
 

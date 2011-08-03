@@ -318,6 +318,8 @@ namespace VDS.RDF
         /// </remarks>
         public abstract bool Equals(IVariableNode other);
 
+#if !SILVERLIGHT
+
         public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             throw new NotImplementedException("This INode implementation does not support Serialization");
@@ -337,5 +339,7 @@ namespace VDS.RDF
         {
             throw new NotImplementedException("This INode implementation does not support XML Serialization");
         }
+
+#endif
     }
 }

@@ -30,8 +30,11 @@ namespace VDS.RDF
     /// Note that the wrapper does not automatically dispose of the wrapped graph when the wrapper is Dispose, this is by design since disposing of the wrapped Graph can have unintended consequences
     /// </para>
     /// </remarks>
+#if !SILVERLIGHT
     [Serializable,XmlRoot(ElementName="graph")]
-    public class GraphPersistenceWrapper : IGraph, ITransactionalGraph
+#endif
+    public class GraphPersistenceWrapper 
+        : IGraph, ITransactionalGraph
     {
         /// <summary>
         /// Underlying Graph this is a wrapper around
@@ -87,6 +90,7 @@ namespace VDS.RDF
             this._alwaysQueueActions = alwaysQueueActions;
         }
 
+#if !SILVERLIGHT
         protected GraphPersistenceWrapper(SerializationInfo info, StreamingContext context)
             : this()
         {
@@ -102,6 +106,8 @@ namespace VDS.RDF
                 this._temp = null;
             }
         }
+
+#endif
 
         /// <summary>
         /// Destructor for the wrapper to ensure that <see cref="Dispose">Dispose()</see> is called and thus that persistence happens
@@ -1306,6 +1312,8 @@ namespace VDS.RDF
             this.Flush();
         }
 
+#if !SILVERLIGHT
+
         #region ISerializable Members
 
         public void GetObjectData(SerializationInfo info, StreamingContext context)
@@ -1364,6 +1372,8 @@ namespace VDS.RDF
         }
 
         #endregion
+
+#endif
     }
 
 #if !NO_STORAGE
