@@ -47,6 +47,7 @@
     <Compile Include="AdoEnumerators.cs" />
     <Compile Include="AdoObjectFactory.cs" />
     <Compile Include="AdoOptimiser.cs" />
+    <Compile Include="AdoSchema.cs" />
     <Compile Include="AdoStoreWriteCache.cs" />
     <Compile Include="BaseAdoStoreManager.cs" />
     <Compile Include="MicrosoftAdoManager.cs" />

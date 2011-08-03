@@ -136,6 +136,13 @@ namespace VDS.RDF.Storage
         /// <returns>The Version of the Database Schema</returns>
         protected abstract int EnsureSetup(Dictionary<String,String> parameters);
 
+        /// <summary>
+        /// Allows the derived implementation to check whether an upgrade to the database schema is required and apply it if necessary
+        /// </summary>
+        /// <param name="currVersion">Current Version</param>
+        /// <returns></returns>
+        protected abstract int CheckForUpgrades(int currVersion);
+
         #region Script Execution Functions
 
         /// <summary>
@@ -265,10 +272,16 @@ namespace VDS.RDF.Storage
                 {
                     case 1:
                         //OK
-                        return version;
+                        break;
                     default:
                         throw new RdfStorageException("Unknown ADO Store Version");
                 }
+
+                //Allow the derived class to apply updates if it so desires
+                version = this.CheckForUpgrades(version);
+
+                //Return the final version
+                return version;
             }
             catch (TException ex)
             {
@@ -295,6 +308,32 @@ namespace VDS.RDF.Storage
                     return this.EnsureSetup(this._parameters);
                 }
             }
+        }
+
+        /// <summary>
+        /// Checks the Schema of the Store
+        /// </summary>
+        /// <returns></returns>
+        /// <remarks>
+        /// <para>
+        /// As the ADO Store is designed entirely in terms of stored procedures the underlying database schema is up to the implementor, two different schemas are provided in the library by default.
+        /// </para>
+        /// <para>
+        /// This method should report the name of the schema, this may refer to one of the inbuilt schemas or may refer to a custom implemented schema.
+        /// </para>
+        /// </remarks>
+        public String CheckSchema()
+        {
+            TCommand cmd = this.GetCommand();
+            cmd.CommandText = "GetSchema";
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.Add(this.GetParameter("RC"));
+            cmd.Parameters["RC"].DbType = DbType.String;
+            cmd.Parameters["RC"].Direction = ParameterDirection.ReturnValue;
+            cmd.Connection = this._connection;
+            cmd.ExecuteNonQuery();
+
+            return (String)cmd.Parameters["RC"].Value;
         }
 
         public void ClearStore()

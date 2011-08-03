@@ -105,6 +105,18 @@ namespace VDS.RDF.Storage
             return new SqlDataAdapter();
         }
 
+        protected override int CheckForUpgrades(int currVersion)
+        {
+            switch (currVersion)
+            {
+                case 1:
+                    //Note - In future versions this may take upgrade actions on the database
+                    return currVersion;
+                default:
+                    return currVersion;
+            }
+        }
+
         protected override int EnsureSetup(Dictionary<String,String> parameters)
         {
             Stream s = Assembly.GetExecutingAssembly().GetManifestResourceStream("VDS.RDF.Storage.CreateMicrosoftAdoHashStore.sql");
