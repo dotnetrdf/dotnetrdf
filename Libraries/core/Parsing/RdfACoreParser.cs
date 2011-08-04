@@ -379,7 +379,11 @@ namespace VDS.RDF.Parsing
                 try
                 {
                     Graph g = new Graph();
+#if !SILVERLIGHT
                     UriLoader.Load(g, u);
+#else
+                    throw new PlatformNotSupportedException("The @profile attribute is not currently supported under Silverlight/Windows Phone 7");
+#endif
 
                     String prefixQuery = "PREFIX rdfa: <" + RdfAParser.RdfANamespace + "> SELECT SAMPLE(?prefix) AS ?NamespacePrefix SAMPLE(?uri) AS ?NamespaceURI WHERE { ?s rdfa:prefix ?prefix ; rdfa:uri ?uri } GROUP BY ?s HAVING (COUNT(?prefix) = 1 && COUNT(?uri) = 1)";
                     String termQuery = "PREFIX rdfa: <" + RdfAParser.RdfANamespace + "> SELECT SAMPLE(?term) AS ?Term SAMPLE(?uri) AS ?URI WHERE {?s rdfa:term ?term ; rdfa:uri ?uri } GROUP BY ?s HAVING (COUNT(?term) = 1 && COUNT(?uri) = 1)";

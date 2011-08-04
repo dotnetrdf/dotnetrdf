@@ -135,6 +135,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
             XmlReaderSettings settings = new XmlReaderSettings();
 #if SILVERLIGHT
             settings.DtdProcessing = DtdProcessing.Parse;
+            //settings.XmlResolver = new Xml
 #else
             settings.ProhibitDtd = false;
 #endif

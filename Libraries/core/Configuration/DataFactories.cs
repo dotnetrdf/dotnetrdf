@@ -223,11 +223,19 @@ namespace VDS.RDF.Configuration
             {
                 if (source.NodeType == NodeType.Uri)
                 {
+#if !SILVERLIGHT
                     UriLoader.Load(output, ((IUriNode)source).Uri);
+#else
+                    throw new PlatformNotSupportedException("Loading Data into a Graph from a remote URI is not currently supported under Silverlight/Windows Phone 7");
+#endif
                 }
                 else if (source.NodeType == NodeType.Literal)
                 {
+#if !SILVERLIGHT
                     UriLoader.Load(output, new Uri(((ILiteralNode)source).Value));
+#else
+                    throw new PlatformNotSupportedException("Loading Data into a Graph from a remote URI is not currently supported under Silverlight/Windows Phone 7");
+#endif
                 }
                 else
                 {
@@ -307,7 +315,9 @@ namespace VDS.RDF.Configuration
                              SqlTripleStore = "VDS.RDF.SqlTripleStore",
                              ThreadedSqlTripleStore = "VDS.RDF.ThreadedSqlTripleStore",
                              OnDemandTripleStore = "VDS.RDF.OnDemandTripleStore",
+#if !SILVERLIGHT
                              WebDemandTripleStore = "VDS.RDF.WebDemandTripleStore",
+#endif
                              NativeTripleStore = "VDS.RDF.NativeTripleStore";
 
 
@@ -340,9 +350,11 @@ namespace VDS.RDF.Configuration
                     store = new TripleStore();
                     break;
 
+#if !SILVERLIGHT
                 case WebDemandTripleStore:
                     store = new WebDemandTripleStore();
                     break;
+#endif
 
 #if !NO_DATA && !NO_STORAGE
 
@@ -485,7 +497,9 @@ namespace VDS.RDF.Configuration
                 case SqlTripleStore:
                 case ThreadedSqlTripleStore:
                 case OnDemandTripleStore:
+#if !SILVERLIGHT
                 case WebDemandTripleStore:
+#endif
                 case NativeTripleStore:
                      return true;
                 default:

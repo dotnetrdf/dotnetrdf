@@ -152,11 +152,18 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="graphUri">Graph to add</param>
         /// <param name="mergeIfExists">Whether the Graph should be merged with an existing Graph with the same Base Uri</param>
+        /// <remarks>
+        /// <strong>Important:</strong> Under Silverlight/Windows Phone 7 this will happen asynchronously so the Graph may not be immediatedly available in the store
+        /// </remarks>
         public virtual void AddFromUri(Uri graphUri, bool mergeIfExists)
         {
             Graph g = new Graph();
+#if !SILVERLIGHT
             UriLoader.Load(g, graphUri);
             this._graphs.Add(g, mergeIfExists);
+#else
+            UriLoader.Load(g, graphUri, (gr, _) => { this._graphs.Add(gr, mergeIfExists); }, null);
+#endif
         }
 
         /// <summary>

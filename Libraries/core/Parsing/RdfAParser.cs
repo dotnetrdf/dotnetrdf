@@ -1313,7 +1313,11 @@ namespace VDS.RDF.Parsing
                     {
                         try
                         {
+#if !SILVERLIGHT
                             UriLoader.Load(g, new Uri(profile));
+#else
+                            throw new PlatformNotSupportedException("The @profile attribute is not currently supported under Silverlight/Windows Phone 7");
+#endif
                         }
                         catch
                         {

@@ -579,10 +579,11 @@ namespace VDS.RDF.Query
             return httpResponse;
         }
 
-#else
+#endif
+
         public void QueryWithResultSet(String query, SparqlResultsCallback callback, Object state)
         {
-            HttpWebRequest request = WebRequest.CreateHttp(this.Uri);
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this.Uri);
             request.Method = "POST";
             request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
             request.Accept = MimeTypesHelper.HttpSparqlAcceptHeader;
@@ -637,7 +638,7 @@ namespace VDS.RDF.Query
 
         public void QueryWithResultGraph(String query, GraphCallback callback, Object state)
         {
-            HttpWebRequest request = WebRequest.CreateHttp(this.Uri);
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this.Uri);
             request.Method = "POST";
             request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
             request.Accept = MimeTypesHelper.HttpSparqlAcceptHeader;
@@ -689,9 +690,7 @@ namespace VDS.RDF.Query
             }, null);
         }
 
-        
-#endif
-
+#if !SILVERLIGHT
 
         /// <summary>
         /// Makes a Query where the expected Result is a SparqlResultSet ie. SELECT and ASK Queries
@@ -708,6 +707,8 @@ namespace VDS.RDF.Query
         /// <returns>RDF Graph</returns>
         /// <remarks>Allows for implementation of asynchronous querying</remarks>
         public delegate IGraph AsyncQueryWithResultGraph(String sparqlQuery);
+
+#endif
 
         #endregion
 

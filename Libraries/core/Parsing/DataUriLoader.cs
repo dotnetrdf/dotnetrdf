@@ -89,7 +89,11 @@ namespace VDS.RDF.Parsing
             if (!u.Scheme.Equals("data"))
             {
                 //Invoke the normal URI Loader if not a data: URI
+#if !SILVERLIGHT
                 UriLoader.Load(handler, u);
+#else
+                UriLoader.Load(handler, u, (_,_1) => { }, null);
+#endif
                 return;
             }
 

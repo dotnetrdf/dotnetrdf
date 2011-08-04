@@ -33,6 +33,7 @@ terms.
 
 */
 
+#if !SILVERLIGHT
 
 using System;
 using System.Collections.Generic;
@@ -142,3 +143,5 @@ namespace VDS.RDF
         }
     }
 }
+
+#endif

@@ -41,8 +41,6 @@ using System.Text;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Storage.Params;
 
-//SLV: Implement a version of the UriLoader that makes the requests asynchronously?
-
 namespace VDS.RDF.Parsing
 {
     /// <summary>
@@ -57,7 +55,7 @@ namespace VDS.RDF.Parsing
     /// If you wish to completely control the Cache you can implement your own <see cref="IUriLoaderCache">IUriLoaderCache</see> implementation and use it by setting the <see cref="UriLoader.Cache">Cache</see> property
     /// </para>
     /// </remarks>
-    public static class UriLoader
+    public static partial class UriLoader
     {
         private static String _userAgent;
 
@@ -151,6 +149,8 @@ namespace VDS.RDF.Parsing
                 _userAgent = value;
             }
         }
+
+#if !SILVERLIGHT
 
         /// <summary>
         /// Attempts to load a RDF Graph from the given URI into the given Graph
@@ -337,7 +337,7 @@ namespace VDS.RDF.Parsing
                 HttpWebRequest httpRequest;
                 httpRequest = (HttpWebRequest)WebRequest.Create(u);
 
-                //Want to ask for RDF/XML, Turtle, Notation 3 or NTriples
+                //Want to ask for RDF formats
                 if (parser != null)
                 {
                     //If a non-null parser set up a HTTP Header that is just for the given parser
@@ -469,7 +469,7 @@ namespace VDS.RDF.Parsing
             catch (UriFormatException uriEx)
             {
                 //Uri Format Invalid
-                throw new RdfException("Unable to load from the given URI '" + u.ToString() + "' since it's format was invalid", uriEx);
+                throw new RdfParseException("Unable to load from the given URI '" + u.ToString() + "' since it's format was invalid", uriEx);
             }
             catch (WebException webEx)
             {
@@ -705,6 +705,8 @@ namespace VDS.RDF.Parsing
         {
             UriLoader.Load(handler, u, (IStoreReader)null);
         }
+
+#endif
 
         #region Warning Events
 

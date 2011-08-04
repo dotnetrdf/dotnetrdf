@@ -707,6 +707,8 @@ namespace VDS.RDF
             FileLoader.Load(g, file);
         }
 
+#if !SILVERLIGHT
+
         /// <summary>
         /// Loads RDF data from a URI into a Graph
         /// </summary>
@@ -733,6 +735,10 @@ namespace VDS.RDF
         {
             UriLoader.Load(g, u);
         }
+
+#endif
+
+        //REQ: Add LoadFromUri extensions that do the loading asychronously for use on Silverlight/Windows Phone 7
 
         /// <summary>
         /// Loads RDF data from a String into a Graph
@@ -850,6 +856,8 @@ namespace VDS.RDF
             FileLoader.Load(store, file);
         }
 
+#if !SILVERLIGHT
+
         /// <summary>
         /// Loads an RDF dataset from a URI into a Triple Store
         /// </summary>
@@ -876,6 +884,8 @@ namespace VDS.RDF
         {
             UriLoader.Load(store, u);
         }
+
+#endif
 
         /// <summary>
         /// Loads an RDF dataset from a String into a Triple Store

@@ -253,10 +253,6 @@ namespace VDS.RDF
             return results;
         }
     }
-
-    public delegate void SparqlResultsCallback(SparqlResultSet results, Object state);
-
-    public delegate void GraphCallback(IGraph g, Object state);
 }
 
 #endif
