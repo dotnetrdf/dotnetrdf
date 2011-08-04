@@ -582,10 +582,17 @@ namespace VDS.RDF.Query
 #else
         public void QueryWithResultSet(String query, SparqlResultsCallback callback, Object state)
         {
-            //REQ: Implement this for use under Silverlight/Windows Phone 7
             HttpWebRequest request = WebRequest.CreateHttp(this.Uri);
             request.Method = "POST";
+            request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
             request.Accept = MimeTypesHelper.HttpSparqlAcceptHeader;
+
+#if DEBUG
+            if (Options.HttpDebugging)
+            {
+                Tools.HttpDebugRequest(request);
+            }
+#endif
 
             request.BeginGetRequestStream(result =>
             {
@@ -594,12 +601,30 @@ namespace VDS.RDF.Query
                 {
                     writer.Write("query=");
                     writer.Write(HttpUtility.UrlEncode(query));
+
+                    foreach (String u in this.DefaultGraphs)
+                    {
+                        writer.Write("&default-graph-uri=");
+                        writer.Write(Uri.EscapeDataString(u));
+                    }
+                    foreach (String u in this.NamedGraphs)
+                    {
+                        writer.Write("&named-graph-uri=");
+                        writer.Write(Uri.EscapeDataString(u));
+                    }
+
                     writer.Close();
                 }
 
                 request.BeginGetResponse(innerResult =>
                     {
                         HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(innerResult);
+#if DEBUG
+                        if (Options.HttpDebugging)
+                        {
+                            Tools.HttpDebugResponse(response);
+                        }
+#endif
                         ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParser(response.ContentType, false);
                         SparqlResultSet rset = new SparqlResultSet();
                         parser.Load(rset, new StreamReader(response.GetResponseStream()));
@@ -612,8 +637,56 @@ namespace VDS.RDF.Query
 
         public void QueryWithResultGraph(String query, GraphCallback callback, Object state)
         {
-            //REQ: Implement this for use under Silverlight/Windows Phone 7
-            throw new NotImplementedException();
+            HttpWebRequest request = WebRequest.CreateHttp(this.Uri);
+            request.Method = "POST";
+            request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
+            request.Accept = MimeTypesHelper.HttpSparqlAcceptHeader;
+
+#if DEBUG
+            if (Options.HttpDebugging)
+            {
+                Tools.HttpDebugRequest(request);
+            }
+#endif
+
+            request.BeginGetRequestStream(result =>
+            {
+                Stream stream = request.EndGetRequestStream(result);
+                using (StreamWriter writer = new StreamWriter(stream))
+                {
+                    writer.Write("query=");
+                    writer.Write(HttpUtility.UrlEncode(query));
+
+                    foreach (String u in this.DefaultGraphs)
+                    {
+                        writer.Write("&default-graph-uri=");
+                        writer.Write(Uri.EscapeDataString(u));
+                    }
+                    foreach (String u in this.NamedGraphs)
+                    {
+                        writer.Write("&named-graph-uri=");
+                        writer.Write(Uri.EscapeDataString(u));
+                    }
+
+                    writer.Close();
+                }
+
+                request.BeginGetResponse(innerResult =>
+                {
+                    HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(innerResult);
+#if DEBUG
+                    if (Options.HttpDebugging)
+                    {
+                        Tools.HttpDebugResponse(response);
+                    }
+#endif
+                    IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
+                    Graph g = new Graph();
+                    parser.Load(g, new StreamReader(response.GetResponseStream()));
+
+                    callback(g, state);
+                }, null);
+            }, null);
         }
 
         

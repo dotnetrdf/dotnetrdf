@@ -227,7 +227,7 @@
     <copy overwrite="true" todir="../bin/windowsphone-nightly" file="Libraries/core.windowsphone/bin/Debug/dotNetRDF.WindowsPhone.dll" />
     <copy overwrite="true" todir="../bin/windowsphone-nightly" file="Libraries/core.windowsphone/bin/Debug/dotNetRDF.WindowsPhone.xml" />
     <copy overwrite="true" todir="../bin/windowsphone-nightly" file="Libraries/core.windowsphone/bin/Debug/HtmlAgilityPack.WindowsPhone.dll" />
-    <copy overwrite="true" todir="../bin/windowsphone-nightly" file="Libraries/core.windowsphone/bin/Debug/Newtonsoft.Json.Silverlight.dll" />
+    <copy overwrite="true" todir="../bin/windowsphone-nightly" file="Libraries/core.windowsphone/bin/Debug/Newtonsoft.Json.WindowsPhone.dll" />
   </target>
 
   <target name="build-lite" description="Copy the latest Lite build to the Lite Nightly Build directory" unless="${dotnetrdf.nobuild}" depends="compile-lite">
