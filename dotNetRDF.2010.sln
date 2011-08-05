@@ -12,6 +12,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.Silverlight.2010", "Libraries\core.silverlight\dotNetRDF.Silverlight.2010.csproj", "{854A789B-BA35-4A1B-9449-CAD40953F0E5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "slv-tests", "Testing\slv-tests\slv-tests.csproj", "{BC34E699-8A80-4D18-8757-8F4C19F3C63F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,6 +34,10 @@ Global
 		{854A789B-BA35-4A1B-9449-CAD40953F0E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{854A789B-BA35-4A1B-9449-CAD40953F0E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{854A789B-BA35-4A1B-9449-CAD40953F0E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC34E699-8A80-4D18-8757-8F4C19F3C63F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC34E699-8A80-4D18-8757-8F4C19F3C63F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC34E699-8A80-4D18-8757-8F4C19F3C63F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC34E699-8A80-4D18-8757-8F4C19F3C63F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -37,10 +37,11 @@ namespace wp7_tests
             Dispatcher.BeginInvoke(() =>
                 {
                     TurtleFormatter formatter = new TurtleFormatter(g.NamespaceMap);
-                    this.ResultsText.Text = g.Triples.Count + " Triple(s) returned\n";
+                    this.ResultsSummary.Text = g.Triples.Count + " Triple(s) returned";
+                    this.ResultsList.Items.Clear();
                     foreach (Triple t in g.Triples)
                     {
-                        this.ResultsText.Text += t.ToString(formatter);
+                        this.ResultsList.Items.Add(t.ToString(formatter));
                     }
                 });
         }
@@ -50,21 +51,22 @@ namespace wp7_tests
             Dispatcher.BeginInvoke(() =>
                 {
                     SparqlFormatter formatter = new SparqlFormatter();
-                    this.ResultsText.Text = results.Count + " Result(s) returned\n";
+                    this.ResultsSummary.Text = results.Count + " Result(s) returned";
+                    this.ResultsList.Items.Clear();
 
                     switch (results.ResultsType)
                     {
                         case SparqlResultsType.Boolean:
-                            this.ResultsText.Text += formatter.FormatBooleanResult(results.Result);
+                            this.ResultsList.Items.Add(formatter.FormatBooleanResult(results.Result));
                             break;
                         case SparqlResultsType.VariableBindings:
                             foreach (SparqlResult r in results)
                             {
-                                this.ResultsText.Text += r.ToString(formatter) + "\n";
+                                this.ResultsList.Items.Add(r.ToString(formatter));
                             }
                             break;
                         default:
-                            this.ResultsText.Text += "Unknown Results Type";
+                            this.ResultsList.Items.Add("Unknown Results Type");
                             break;
                     }
                 });

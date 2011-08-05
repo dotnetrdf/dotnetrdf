@@ -28,19 +28,27 @@
 
         <!--ContentPanel - place additional content here-->
         <StackPanel Grid.Row="1">
-            <Button x:Name="RemoteSparqlTest1" Click="RemoteSparqlTest1_Click">
-                <TextBlock>Test SELECT Query</TextBlock>
-            </Button>
-            <Button x:Name="RemoteSparqlTest2" Click="RemoteSparqlTest2_Click">
-                <TextBlock>Test CONSTRUCT Query</TextBlock>
-            </Button>
-            <Button x:Name="UriLoaderTest1" Click="UriLoaderTest1_Click">
-                <TextBlock>Test UriLoader.Load() for Graph</TextBlock>
-            </Button>
-            
-            <ScrollViewer Height="386" ScrollViewer.VerticalScrollBarVisibility="Visible" ScrollViewer.HorizontalScrollBarVisibility="Auto">
-                <TextBlock x:Name="ResultsText"></TextBlock>
+            <ScrollViewer Height="150" ScrollViewer.VerticalScrollBarVisibility="Visible">
+                <StackPanel Height="250">
+                    <TextBlock Margin="10,0,10,0">Scroll this area to see more available tests...</TextBlock>
+                    <Button x:Name="RemoteSparqlTest1" Click="RemoteSparqlTest1_Click">
+                        <TextBlock>Test SELECT Query</TextBlock>
+                    </Button>
+                    <Button x:Name="RemoteSparqlTest2" Click="RemoteSparqlTest2_Click">
+                        <TextBlock>Test CONSTRUCT Query</TextBlock>
+                    </Button>
+                    <Button x:Name="UriLoaderTest1" Click="UriLoaderTest1_Click">
+                        <TextBlock>Test UriLoader.Load() for Graph</TextBlock>
+                    </Button>
+                </StackPanel>
             </ScrollViewer>
+
+            <TextBlock x:Name="ResultsSummary" Margin="10,0,10,0">
+                Results will appear here
+            </TextBlock>
+            <ListBox x:Name="ResultsList" Margin="10,0,10,0">
+                
+            </ListBox>
         </StackPanel>
     </Grid>
  
