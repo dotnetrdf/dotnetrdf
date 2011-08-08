@@ -48,7 +48,6 @@ namespace VDS.RDF.Query.Algebra
 
         bool ContainsVariable(string variable);
 
-        
         bool IsCompatibleWith(ISet s, IEnumerable<String> vars);
 
         int ID 

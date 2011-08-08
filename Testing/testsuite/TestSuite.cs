@@ -135,7 +135,7 @@ namespace dotNetRDFTest
             //Call the RDFa Test Suite
             //RdfATestSuite.Main(args);
             Console.SetOut(stdout);
-            Console.WriteLine("RDFa Tests Done");
+            //Console.WriteLine("RDFa Tests Done");
 
             //Call the TriG Test Suite
             //TriGTestSuite.Main(args);

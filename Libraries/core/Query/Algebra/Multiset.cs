@@ -142,8 +142,8 @@ namespace VDS.RDF.Query.Algebra
                 //For sets to be compatible for every joinable variable they must either have a null for the
                 //variable in one of the sets or if they have values the values must be equal
 
-                //IEnumerable<ISet> ys = other.Sets.Where(s => joinVars.All(v => x[v] == null || s[v] == null || x[v].Equals(s[v])));
-                IEnumerable<ISet> ys = other.Sets.Where(s => s.IsCompatibleWith(x, joinVars));
+                IEnumerable<ISet> ys = other.Sets.Where(s => joinVars.All(v => x[v] == null || s[v] == null || x[v].Equals(s[v])));
+                //IEnumerable<ISet> ys = other.Sets.Where(s => s.IsCompatibleWith(x, joinVars));
 
                 foreach (ISet y in ys)
                 {
@@ -205,8 +205,8 @@ namespace VDS.RDF.Query.Algebra
             {
                 foreach (ISet x in this.Sets)
                 {
-                    //IEnumerable<ISet> ys = other.Sets.Where(s => joinVars.All(v => x[v] == null || s[v] == null || x[v].Equals(s[v])));
-                    IEnumerable<ISet> ys = other.Sets.Where(s => s.IsCompatibleWith(x, joinVars));
+                    IEnumerable<ISet> ys = other.Sets.Where(s => joinVars.All(v => x[v] == null || s[v] == null || x[v].Equals(s[v])));
+                    //IEnumerable<ISet> ys = other.Sets.Where(s => s.IsCompatibleWith(x, joinVars));
                     bool standalone = false;
                     int i = 0;
                     foreach (ISet y in ys)
@@ -279,8 +279,8 @@ namespace VDS.RDF.Query.Algebra
             foreach (ISet x in this.Sets)
             {
                 //New ExistsJoin() logic based on the improved Join() logic
-                //bool exists = other.Sets.Any(s => joinVars.All(v => x[v] == null || s[v] == null || x[v].Equals(s[v])));
-                bool exists = other.Sets.Any(s => s.IsCompatibleWith(x, joinVars));
+                bool exists = other.Sets.Any(s => joinVars.All(v => x[v] == null || s[v] == null || x[v].Equals(s[v])));
+                //bool exists = other.Sets.Any(s => s.IsCompatibleWith(x, joinVars));
 
                 if (exists)
                 {

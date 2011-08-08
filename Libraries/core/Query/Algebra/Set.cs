@@ -62,7 +62,7 @@ namespace VDS.RDF.Query.Algebra
         /// </summary>
         /// <param name="x">A Set</param>
         /// <param name="y">A Set</param>
-        private Set(ISet x, ISet y)
+        internal Set(ISet x, ISet y)
         {
             this._values = new Dictionary<string, INode>();
             foreach (String var in x.Variables)
@@ -208,8 +208,8 @@ namespace VDS.RDF.Query.Algebra
 
         public override ISet Join(ISet other)
         {
-            //return new Set(this, other);
-            return new JoinedSet(other, this);
+            return new Set(this, other);
+            //return new JoinedSet(other, this);
         }
 
         public override ISet Copy()
@@ -446,12 +446,14 @@ namespace VDS.RDF.Query.Algebra
 
         public override ISet Join(ISet other)
         {
-            return new JoinedSet(other, this._sets);
+            return new Set(this, other);
+            //return new JoinedSet(other, this._sets);
         }
 
         public override ISet Copy()
         {
-            return new JoinedSet(this);
+            return new Set(this);
+            //return new JoinedSet(this);
         }
 
         public override int GetHashCode()
