@@ -20,7 +20,7 @@ namespace VDS.RDF.LinkedData
         private ExpansionCache _cache;
         private int _threadsToUse = 4;
         private const int ThreadPollingInterval = 250;
-        private const int HttpRequestInterval = 250;
+        private const int HttpRequestInterval = 1000;
 
         /// <summary>
         /// Creates a new Expansion Loader which uses the default Cache directory
