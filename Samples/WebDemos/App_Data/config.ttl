@@ -57,6 +57,15 @@
 							    dnr:stylesheet "/demos/sparql.css" ;
 							    dnr:usingGraph _:config .
 							    
+<dotnetrdf:/demos/sampleDataset> a dnr:HttpHandler ;
+								 dnr:type "VDS.RDF.Web.DatasetHandler" ;
+								 dnr:stylesheet "/demos/sparql.css" ;
+								 dnr:usingDataset [ a dnr:SparqlDataset ;
+												  dnr:type "VDS.RDF.Query.Datasets.InMemoryDataset";
+												  dnr:usingStore [ a dnr:TripleStore ;
+																   dnr:type "VDS.RDF.TripleStore" ;
+																   dnr:usingGraph _:config ] ] .
+							    
 <dotnetrdf:/demos/wildcard/*> a dnr:HttpHandler ;
 							  dnr:type "VDS.RDF.Web.WildcardGraphHandler" ;
 							  dnr:stylesheet "/demos/sparql.css" ;

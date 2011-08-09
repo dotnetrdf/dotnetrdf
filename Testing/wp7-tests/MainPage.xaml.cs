@@ -91,6 +91,24 @@ namespace wp7_tests
                 });
         }
 
+        private void TripleStoreCallback(ITripleStore store, Object state)
+        {
+            Dispatcher.BeginInvoke(() =>
+                {
+                    TurtleFormatter formatter = new TurtleFormatter(new NamespaceMapper());
+                    this.ResultsSummary.Text = store.Graphs.Count + " Graph(s) with " + store.Graphs.Sum(g => g.Triples.Count) + " Triple(s)";
+                    this.ResultsList.Items.Clear();
+                    foreach (IGraph g in store.Graphs)
+                    {
+                        this.ResultsList.Items.Add("Graph " + formatter.FormatUri(g.BaseUri));
+                        foreach (Triple t in g.Triples)
+                        {
+                            this.ResultsList.Items.Add(t.ToString(formatter));
+                        }
+                    }
+                });
+        }
+
         #endregion
 
         #region Test Methods
@@ -118,7 +136,7 @@ namespace wp7_tests
 
         private void UriLoaderTest3_Click(object sender, RoutedEventArgs e)
         {
-            System.Windows.MessageBox.Show("This Test is not yet implemented");
+            UriLoader.Load(new TripleStore(), new Uri("http://localhost/demos/sampleDataset"), this.TripleStoreCallback, null);
         }
 
         #endregion
