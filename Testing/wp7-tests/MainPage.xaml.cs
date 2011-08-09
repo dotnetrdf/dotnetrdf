@@ -12,6 +12,7 @@ using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
 using VDS.RDF;
 using VDS.RDF.Parsing;
+using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
 using VDS.RDF.Writing.Formatting;
 
@@ -73,6 +74,23 @@ namespace wp7_tests
             
         }
 
+        private void RdfHandlerCallback(IRdfHandler handler, Object state)
+        {
+            Dispatcher.BeginInvoke(() =>
+                {
+                    this.ResultsList.Items.Clear();
+
+                    if (handler is CountHandler)
+                    {
+                        this.ResultsSummary.Text = "Handler counted " + ((CountHandler)handler).Count + " Triple(s)";
+                    }
+                    else
+                    {
+                        this.ResultsSummary.Text = "Parsing with " + handler.GetType().Name + " Completed";
+                    }
+                });
+        }
+
         #endregion
 
         #region Test Methods
@@ -90,6 +108,17 @@ namespace wp7_tests
         private void UriLoaderTest1_Click(object sender, RoutedEventArgs e)
         {
             UriLoader.Load(new Graph(), new Uri("http://dbpedia.org/resource/Ilkeston"), this.GraphCallback, null);
+        }
+
+        private void UriLoaderTest2_Click(object sender, RoutedEventArgs e)
+        {
+            CountHandler handler = new CountHandler();
+            UriLoader.Load(handler, new Uri("http://dbpedia.org/resource/Ilkeston"), this.RdfHandlerCallback, null);
+        }
+
+        private void UriLoaderTest3_Click(object sender, RoutedEventArgs e)
+        {
+            System.Windows.MessageBox.Show("This Test is not yet implemented");
         }
 
         #endregion

@@ -29,7 +29,7 @@
         <!--ContentPanel - place additional content here-->
         <StackPanel Grid.Row="1">
             <ScrollViewer Height="150" ScrollViewer.VerticalScrollBarVisibility="Visible">
-                <StackPanel Height="250">
+                <StackPanel Height="500">
                     <TextBlock Margin="10,0,10,0">Scroll this area to see more available tests...</TextBlock>
                     <Button x:Name="RemoteSparqlTest1" Click="RemoteSparqlTest1_Click">
                         <TextBlock>Test SELECT Query</TextBlock>
@@ -39,6 +39,12 @@
                     </Button>
                     <Button x:Name="UriLoaderTest1" Click="UriLoaderTest1_Click">
                         <TextBlock>Test UriLoader.Load() for Graph</TextBlock>
+                    </Button>
+                    <Button x:Name="UriLoaderTest2" Click="UriLoaderTest2_Click">
+                        <TextBlock>Test UriLoader.Load() with Count Handler</TextBlock>
+                    </Button>
+                    <Button x:Name="UriLoaderTest3" Click="UriLoaderTest3_Click">
+                        <TextBlock>Test UriLoader.Load() for Triple Store</TextBlock>
                     </Button>
                 </StackPanel>
             </ScrollViewer>

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using VDS.RDF.Parsing.Handlers;
+using VDS.RDF.Storage.Params;
 
 namespace VDS.RDF.Parsing
 {
@@ -158,7 +159,18 @@ namespace VDS.RDF.Parsing
             catch (UriFormatException uriEx)
             {
                 //URI Format Invalid
-                throw new RdfParseException("Unable to load from the given URI '" + u.ToString() + "' since it's format was invalid", uriEx);
+                throw new RdfParseException("Unable to load from the given URI '" + u.ToString() + "' since it's format was invalid, see inner exception for details", uriEx);
+            }
+            catch (WebException webEx)
+            {
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                }
+#endif
+
+                throw new WebException("A HTTP Error occurrred resolving the URI '" + u.ToString() + "', see inner exception for details", webEx);
             }
         }
 
@@ -169,7 +181,9 @@ namespace VDS.RDF.Parsing
 
         public static void Load(ITripleStore store, Uri u, IStoreReader parser, TripleStoreCallback callback, Object state)
         {
-            throw new NotImplementedException();
+            if (store == null) throw new RdfParseException("Cannot read a RDF dataset into a null Triple Store");
+            if (u == null) throw new RdfParseException("Cannot read a RDF dataset from a null URI");
+            UriLoader.Load(new StoreHandler(store), u, parser, (_, s) => callback(store, s), state);
         }
 
         public static void Load(ITripleStore store, Uri u, TripleStoreCallback callback, Object state)
@@ -179,7 +193,133 @@ namespace VDS.RDF.Parsing
 
         public static void Load(IRdfHandler handler, Uri u, IStoreReader parser, RdfHandlerCallback callback, Object state)
         {
-            throw new NotImplementedException();
+            if (u == null) throw new RdfParseException("Cannot read a RDF dataset from a null URI");
+            if (handler == null) throw new RdfParseException("Cannot read a RDF dataset using a null RDF handler");
+
+            try
+            {
+#if SILVERLIGHT
+                if (u.IsFile())
+#else
+                if (u.IsFile)
+#endif
+                {
+                    //Invoke FileLoader instead
+                    RaiseWarning("This is a file: URI so invoking the FileLoader instead");
+                    if (Path.DirectorySeparatorChar == '/')
+                    {
+                        FileLoader.Load(handler, u.ToString().Substring(7), parser);
+                    }
+                    else
+                    {
+                        FileLoader.Load(handler, u.ToString().Substring(8), parser);
+                    }
+                    //FileLoader.Load() will run synchronously so once this completes we can invoke the callback
+                    callback(handler, state);
+                    return;
+                }
+                if (u.Scheme.Equals("data"))
+                {
+                    //Invoke DataUriLoader instead
+                    RaiseWarning("This is a data: URI so invoking the DataUriLoader instead");
+                    DataUriLoader.Load(handler, u);
+                    //After DataUriLoader.Load() has run (which happens synchronously) can invoke the callback
+                    callback(handler, state);
+                    return;
+                }
+
+                //Sanitise the URI to remove any Fragment ID
+                u = Tools.StripUriFragment(u);
+
+                //Setup the Request
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(u);
+
+                //Want to ask for RDF dataset formats
+                if (parser != null)
+                {
+                    //If a non-null parser set up a HTTP Header that is just for the given parser
+                    request.Accept = MimeTypesHelper.CustomHttpAcceptHeader(parser);
+                }
+                else
+                {
+                    request.Accept = MimeTypesHelper.HttpAcceptHeader;
+                }
+
+                //Use HTTP GET
+                request.Method = "GET";
+#if !SILVERLIGHT
+                request.Timeout = Options.UriLoaderTimeout;
+#endif
+                if (_userAgent != null && !_userAgent.Equals(String.Empty))
+                {
+                    request.UserAgent = _userAgent;
+                }
+
+#if DEBUG
+                //HTTP Debugging
+                if (Options.HttpDebugging)
+                {
+                    Tools.HttpDebugRequest(request);
+                }
+#endif
+
+                request.BeginGetResponse(result =>
+                {
+                    using (HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(result))
+                    {
+#if DEBUG
+                        if (Options.HttpDebugging)
+                        {
+                            Tools.HttpDebugResponse(response);
+                        }
+#endif
+
+                        //Get a Parser and load the RDF
+                        if (parser == null)
+                        {
+                            try
+                            {
+                                //Only need to auto-detect the parser if a specific one wasn't specified
+                                parser = MimeTypesHelper.GetStoreParser(response.ContentType);
+                                parser.Warning += RaiseWarning;
+                                parser.Load(handler, new StreamParams(response.GetResponseStream()));
+                            }
+                            catch (RdfParserSelectionException selEx)
+                            {
+                                String data = new StreamReader(response.GetResponseStream()).ReadToEnd();
+                                parser = StringParser.GetDatasetParser(data);
+                                parser.Warning += RaiseStoreWarning;
+                                parser.Load(handler, new TextReaderParams(new StringReader(data)));
+                            }
+                        }
+                        else
+                        {
+                            parser.Warning += RaiseStoreWarning;
+                            parser.Load(handler, new StreamParams(response.GetResponseStream()));
+                        }
+
+                        //Finally can invoke the callback
+                        callback(handler, state);
+                    }
+                }, null);
+            }
+            catch (UriFormatException uriEx)
+            {
+                //Uri Format Invalid
+                throw new RdfException("Unable to load from the given URI '" + u.ToString() + "' since it's format was invalid, see inner exception for details", uriEx);
+            }
+            catch (WebException webEx)
+            {
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                }
+#endif
+                //Some sort of HTTP Error occurred
+                throw new WebException("A HTTP Error occurred resolving the URI '" + u.ToString() + "', see innner exception for details", webEx);
+
+            }
         }
 
         public static void LoadDataset(IRdfHandler handler, Uri u, RdfHandlerCallback callback, Object state)

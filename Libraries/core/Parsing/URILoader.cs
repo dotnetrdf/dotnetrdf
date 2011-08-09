@@ -533,7 +533,7 @@ namespace VDS.RDF.Parsing
         /// </remarks>
         public static void Load(ITripleStore store, Uri u, IStoreReader parser)
         {
-            if (store == null) throw new RdfParseException("Cannot read a RDF dataset into a null Graph");
+            if (store == null) throw new RdfParseException("Cannot read a RDF dataset into a null Triple Store");
             if (u == null) throw new RdfParseException("Cannot read a RDF dataset from a null URI");
             UriLoader.Load(new StoreHandler(store), u, parser);
         }
@@ -570,7 +570,7 @@ namespace VDS.RDF.Parsing
         public static void Load(IRdfHandler handler, Uri u, IStoreReader parser)
         {
             if (u == null) throw new RdfParseException("Cannot read a RDF dataset from a null URI");
-            if (handler == null) throw new RdfParseException("Cannot read RDF using a null RDF handler");
+            if (handler == null) throw new RdfParseException("Cannot read a RDF dataset using a null RDF handler");
 
             try
             {
@@ -653,6 +653,7 @@ namespace VDS.RDF.Parsing
                         {
                             String data = new StreamReader(httpResponse.GetResponseStream()).ReadToEnd();
                             parser = StringParser.GetDatasetParser(data);
+                            parser.Warning += RaiseStoreWarning;
                             parser.Load(handler, new TextReaderParams(new StringReader(data)));
                         }
                     }
@@ -666,7 +667,7 @@ namespace VDS.RDF.Parsing
             catch (UriFormatException uriEx)
             {
                 //Uri Format Invalid
-                throw new RdfException("Unable to load from the given URI '" + u.ToString() + "' since it's format was invalid", uriEx);
+                throw new RdfException("Unable to load from the given URI '" + u.ToString() + "' since it's format was invalid, see inner exception for details", uriEx);
             }
             catch (WebException webEx)
             {
@@ -677,17 +678,7 @@ namespace VDS.RDF.Parsing
                 }
 #endif
                 //Some sort of HTTP Error occurred
-                throw new WebException("A HTTP Error occurred resolving the URI '" + u.ToString() + "'", webEx);
-            }
-            catch (RdfException)
-            {
-                //Some problem with the RDF or Parsing thereof
-                throw;
-            }
-            catch (Exception)
-            {
-                //Other Exception
-                throw;
+                throw new WebException("A HTTP Error occurred resolving the URI '" + u.ToString() + "', see innner exception for details", webEx);
             }
         }
 
