@@ -14,6 +14,7 @@ using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
+using VDS.RDF.Update;
 using VDS.RDF.Writing.Formatting;
 
 namespace wp7_tests
@@ -21,14 +22,16 @@ namespace wp7_tests
     public partial class MainPage : PhoneApplicationPage
     {
         private SparqlRemoteEndpoint _endpoint;
+        private SparqlRemoteUpdateEndpoint _updateEndpoint;
 
         // Constructor
         public MainPage()
         {
             InitializeComponent();
 
-            //Set up our test endpoint
+            //Set up our test endpoints
             this._endpoint = new SparqlRemoteEndpoint(new Uri("http://dbpedia.org/sparql"), "http://dbpedia.org");
+            this._updateEndpoint = new SparqlRemoteUpdateEndpoint(new Uri("http://localhost/demos/server/update"));
         }
 
         #region Callbacks
@@ -109,6 +112,15 @@ namespace wp7_tests
                 });
         }
 
+        private void UpdateCallback(Object state)
+        {
+            Dispatcher.BeginInvoke(() =>
+                {
+                    this.ResultsList.Items.Clear();
+                    this.ResultsSummary.Text = "Update Completed OK";
+                });
+        }
+
         #endregion
 
         #region Test Methods
@@ -137,6 +149,17 @@ namespace wp7_tests
         private void UriLoaderTest3_Click(object sender, RoutedEventArgs e)
         {
             UriLoader.Load(new TripleStore(), new Uri("http://localhost/demos/sampleDataset"), this.TripleStoreCallback, null);
+        }
+
+        private void UriLoaderTest4_Click(object sender, RoutedEventArgs e)
+        {
+            CountHandler handler = new CountHandler();
+            UriLoader.LoadDataset(handler, new Uri("http://localhost/demos/sampleDataset"), this.RdfHandlerCallback, null);
+        }
+
+        private void RemoteSparqlUpdateTest1_Click(object sender, RoutedEventArgs e)
+        {
+            this._updateEndpoint.Update("LOAD <http://dbpedia.org/resource/Ilkeston> INTO GRAPH <http://example.org/ilson>", this.UpdateCallback, null);
         }
 
         #endregion

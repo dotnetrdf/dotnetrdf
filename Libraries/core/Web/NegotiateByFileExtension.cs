@@ -84,6 +84,17 @@ namespace VDS.RDF.Web
                 {
                     //Get the File Extension and see if it is for an RDF format
                     String ext = context.Request.Url.AbsolutePath.Substring(context.Request.Url.AbsolutePath.LastIndexOf("."));
+                    switch (ext)
+                    {
+                        case ".aspx":
+                        case ".asmx":
+                        case ".ashx":
+                        case ".axd":
+                            //The above file extensions are special to ASP.Net and so may not actually exist as files
+                            //so we need to ignore them for the purposes of negotiating by file extension
+                            return;
+                    }
+
                     List<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions(MimeTypesHelper.GetMimeTypes(ext)).ToList();
                     if (defs.Count == 0) return;
 

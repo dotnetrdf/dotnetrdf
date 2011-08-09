@@ -69,6 +69,8 @@ namespace VDS.RDF.Update
         public SparqlRemoteUpdateEndpoint(String endpointUri)
             : this(new Uri(endpointUri)) { }
 
+#if !SILVERLIGHT
+
         /// <summary>
         /// Makes an update request to the remote endpoint
         /// </summary>
@@ -167,6 +169,51 @@ namespace VDS.RDF.Update
                 //Some sort of HTTP Error occurred
                 throw new SparqlUpdateException("A HTTP Error occurred when trying to make the SPARQL Update", webEx);
             }
+        }
+
+#endif
+
+        public void Update(String sparqlUpdate, UpdateCallback callback, Object state)
+        {
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this.Uri);
+            request.Method = "POST";
+            request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
+            request.Accept = MimeTypesHelper.Any;
+
+#if DEBUG
+            if (Options.HttpDebugging)
+            {
+                Tools.HttpDebugRequest(request);
+            }
+#endif
+
+            request.BeginGetRequestStream(result =>
+                {
+                    Stream stream = request.EndGetRequestStream(result);
+                    using (StreamWriter writer = new StreamWriter(stream))
+                    {
+                        writer.Write("update=");
+                        writer.Write(HttpUtility.UrlEncode(sparqlUpdate));
+
+                        writer.Close();
+                    }
+
+                    request.BeginGetResponse(innerResult =>
+                        {
+                            using (HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(innerResult))
+                            {
+#if DEBUG
+                                if (Options.HttpDebugging)
+                                {
+                                    Tools.HttpDebugResponse(response);
+                                }
+#endif
+
+                                response.Close();
+                                callback(state);
+                            }
+                        }, null);
+                }, null);
         }
     }
 }

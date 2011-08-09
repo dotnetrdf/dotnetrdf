@@ -46,6 +46,12 @@
                     <Button x:Name="UriLoaderTest3" Click="UriLoaderTest3_Click">
                         <TextBlock>Test UriLoader.Load() for Triple Store</TextBlock>
                     </Button>
+                    <Button x:Name="UriLoaderTest4" Click="UriLoaderTest4_Click">
+                        <TextBlock>Test UriLoader.Load() with Handler for Triple Store</TextBlock>
+                    </Button>
+                    <Button x:Name="RemoteSparqlUpdateTest1" Click="RemoteSparqlUpdateTest1_Click">
+                        <TextBlock>Test Remote SPARQL Update</TextBlock>
+                    </Button>
                 </StackPanel>
             </ScrollViewer>
 

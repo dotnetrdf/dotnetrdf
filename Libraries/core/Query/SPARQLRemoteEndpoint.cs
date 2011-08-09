@@ -640,18 +640,21 @@ namespace VDS.RDF.Query
 
                 request.BeginGetResponse(innerResult =>
                     {
-                        HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(innerResult);
-#if DEBUG
-                        if (Options.HttpDebugging)
+                        using (HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(innerResult))
                         {
-                            Tools.HttpDebugResponse(response);
-                        }
+#if DEBUG
+                            if (Options.HttpDebugging)
+                            {
+                                Tools.HttpDebugResponse(response);
+                            }
 #endif
-                        ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParser(response.ContentType, false);
-                        SparqlResultSet rset = new SparqlResultSet();
-                        parser.Load(rset, new StreamReader(response.GetResponseStream()));
+                            ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParser(response.ContentType, false);
+                            SparqlResultSet rset = new SparqlResultSet();
+                            parser.Load(rset, new StreamReader(response.GetResponseStream()));
 
-                        callback(rset, state);
+                            response.Close();
+                            callback(rset, state);
+                        }
                     }, null);
             }, null);
 

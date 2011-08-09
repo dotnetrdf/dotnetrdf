@@ -19,4 +19,6 @@ namespace VDS.RDF
     public delegate void SparqlResultsHandlerCallback(ISparqlResultsHandler handler, Object state);
 
     public delegate void QueryCallback(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, Object state);
+
+    public delegate void UpdateCallback(Object state);
 }
