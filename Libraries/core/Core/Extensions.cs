@@ -1184,6 +1184,5 @@ namespace VDS.RDF
 
             return factory.CreateLiteralNode(s, new Uri(XmlSpecsHelper.XmlSchemaDataTypeString));
         }
-
     }
 }

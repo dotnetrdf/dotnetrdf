@@ -55,7 +55,7 @@ namespace VDS.RDF.Writing
         /// <summary>
         /// Creates a new GraphVizGenerator
         /// </summary>
-        /// <param name="format">Format for the Output</param>
+        /// <param name="format">Format for the Output (svg is default)</param>
         /// <remarks>Only use this form if you're certain that dot.exe is in your PATH otherwise the code will throw an error</remarks>
         public GraphVizGenerator(String format)
         {
