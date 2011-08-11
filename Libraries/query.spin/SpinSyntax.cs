@@ -109,6 +109,8 @@ namespace VDS.RDF.Query.Spin
         public static IGraph ToSpinRdf(this SparqlQuery query)
         {
             Graph g = new Graph();
+            g.NamespaceMap.AddNamespace("spin", new Uri(SpinNamespace));
+            g.NamespaceMap.AddNamespace("sp", new Uri(SpinSparqlSyntaxNamespace));
             query.ToSpinRdf(g);
             return g;            
         }
@@ -267,7 +269,12 @@ namespace VDS.RDF.Query.Spin
             else if (pattern.IsGraph)
             {
                 g.Assert(new Triple(p, g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType)), g.CreateUriNode(new Uri(SpinClassNamedGraph))));
-                g.Assert(new Triple(p, g.CreateUriNode(new Uri(SpinPropertyGraphNameNode)), pattern.GraphSpecifier.ToSpinRdf(g, varTable)));
+                INode gSpec = pattern.GraphSpecifier.ToSpinRdf(g, varTable);
+                g.Assert(new Triple(p, g.CreateUriNode(new Uri(SpinPropertyGraphNameNode)), gSpec));
+                if (gSpec is IBlankNode)
+                {
+                    g.Assert(new Triple(gSpec, g.CreateUriNode(new Uri(SpinPropertyVariableName)), pattern.GraphSpecifier.Value.Substring(1).ToLiteral(g)));
+                }
                 ps = g.CreateBlankNode();
                 g.Assert(new Triple(p, g.CreateUriNode(new Uri(SpinPropertyElements)), ps));
             }
@@ -535,29 +542,6 @@ namespace VDS.RDF.Query.Spin
                     return varTable[t.Value];
                 default:
                     throw new SpinException("Unable to convert a Graph/Service Specifier which is not a QName/URI/Variable to SPIN RDF Syntax");
-            }
-        }
-    }
-
-    internal class SpinVariableTable
-    {
-        private Dictionary<String, INode> _vars = new Dictionary<string, INode>();
-        private IGraph _g;
-
-        public SpinVariableTable(IGraph g)
-        {
-            this._g = g;
-        }
-
-        public INode this[String var]
-        {
-            get 
-            {
-                if (!this._vars.ContainsKey(var))
-                {
-                    this._vars.Add(var, this._g.CreateBlankNode());
-                }
-                return this._vars[var];
             }
         }
     }

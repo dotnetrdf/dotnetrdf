@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("dotNetRDF SPIN")]
-[assembly: AssemblyDescription("A library which provides a full SPIN implementation using dotNetRDF's Leviathan SPARQL engine")]
+[assembly: AssemblyTitle("dotNetRDF Full Text SPARQL")]
+[assembly: AssemblyDescription("Provides full text SPARQL capabilities using Lucene.Net to dotNetRDF's query engine")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Visual Design Studios")]
-[assembly: AssemblyProduct("dotNetRDF.Query.SPIN")]
-[assembly: AssemblyCopyright("Copyright © Robert Vesse 2010")]
+[assembly: AssemblyProduct("dotNetRDF.Query.FullText")]
+[assembly: AssemblyCopyright("Copyright © Robert Vesse 2011")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("e2b905e0-5527-4bc8-8011-5413744bb1c6")]
+[assembly: Guid("adcd96c4-cc89-4d91-91ae-43fa4f8049e4")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -34,6 +34,3 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("0.1.0.*")]
 [assembly: AssemblyFileVersion("0.1.0.0")]
-
-//TODO: Remove once finished
-[assembly: InternalsVisibleTo("spin-tests")]

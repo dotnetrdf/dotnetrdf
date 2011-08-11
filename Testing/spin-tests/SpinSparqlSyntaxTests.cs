@@ -20,6 +20,7 @@ namespace VDS.RDF.Test.Spin
     {
         private const String SpinToRdfServiceUri = "http://spinservices.org:8080/spin/sparqlmotion?id=sparql2spin&format=turtle&text=";
         private SparqlQueryParser _parser = new SparqlQueryParser();
+        private int _dumpFile = 1;
 
         private IGraph GetSpinRdf(SparqlQuery q)
         {
@@ -55,7 +56,7 @@ namespace VDS.RDF.Test.Spin
             CompressingTurtleWriter writer = new CompressingTurtleWriter(WriterCompressionLevel.High);
 
             //Show our representation
-            Console.WriteLine("Our Representation:");
+            Console.WriteLine("Our Representation (" + g.Triples.Count + " Triple(s)):");
             foreach (Triple t in g.Triples.OrderBy(x => x))
             {
                 Console.WriteLine(t.ToString(formatter));
@@ -90,7 +91,7 @@ namespace VDS.RDF.Test.Spin
             CompressingTurtleWriter writer = new CompressingTurtleWriter(WriterCompressionLevel.High);
 
             //Show our representation
-            Console.WriteLine("Our Representation:");
+            Console.WriteLine("Our Representation (" + g.Triples.Count + " Triple(s)):");
             foreach (Triple t in g.Triples.OrderBy(x => x))
             {
                 Console.WriteLine(t.ToString(formatter));
@@ -105,14 +106,15 @@ namespace VDS.RDF.Test.Spin
 
             Console.WriteLine(new String('-', 30));
 
-            //Get and Show TopBraid Representation
+            //Get TopBraid Representation
             Console.WriteLine();
-            Console.WriteLine("TopBraid's Representation:");
             IGraph h = this.GetSpinRdf(q);
 
             //Delete the Text Triple from TopBraid's response
             h.Retract(h.GetTriplesWithPredicate(h.CreateUriNode(new Uri(SpinSyntax.SpinPropertyText))));
 
+            //Show TopBraid's representation
+            Console.WriteLine("TopBraid's Representation (" + h.Triples.Count + " Triple(s)):");
             foreach (Triple t in h.Triples.OrderBy(x => x))
             {
                 Console.WriteLine(t.ToString(formatter));
@@ -130,6 +132,13 @@ namespace VDS.RDF.Test.Spin
             if (!report.AreEqual)
             {
                 TestTools.ShowDifferences(report);
+
+                //Dump two graphs as SVG so we can visually see the difference (hopefully)
+                GraphVizGenerator generator = new GraphVizGenerator("svg");
+                generator.Generate(g, "dump" + (_dumpFile++) + ".svg", false);
+                generator.Generate(h, "dump" + (_dumpFile++) + ".svg", false);
+                Console.WriteLine("Dumped SVGs of graphs as 'dump" + (_dumpFile - 2) + ".svg' and 'dump" + (_dumpFile - 1) + ".svg'");
+
                 Assert.Fail("RDF Representation should be equal");
             }
         }
