@@ -124,6 +124,9 @@ namespace VDS.RDF
                 //Define HTML
                 _mimeTypes.Add(new MimeTypeDefinition("HTML", W3CFormatsNamespace + "RDFa", Html, new String[] { DefaultHtmlExtension, DefaultXHtmlExtension, ".htm" }, typeof(RdfAParser), null, null, typeof(HtmlWriter), null, typeof(SparqlHtmlWriter)));
 
+                //Define GraphViz DOT
+                _mimeTypes.Add(new MimeTypeDefinition("GraphViz DOT", new String[] { "text/vnd.graphviz" }, new String[] { ".gv", ".dot" }, null, null, null, typeof(GraphVizWriter), null, null));
+
                 //Q: Define SPARQL Query?
 
                 _init = true;
@@ -205,7 +208,12 @@ namespace VDS.RDF
 
             //Create any new defintions
             IEnumerable<String> newTypes = mimeTypes.Where(t => !GetDefinitions(t).Any());
-            AddDefinition(new MimeTypeDefinition(String.Empty, newTypes, fileExtensions));
+            if (newTypes.Any())
+            {
+                MimeTypeDefinition newDef = new MimeTypeDefinition(String.Empty, newTypes, fileExtensions);
+                newDef.RdfParserType = parser.GetType();
+                AddDefinition(newDef);
+            }
         }
 
         public static void RegisterParser(IStoreReader parser, IEnumerable<String> mimeTypes, IEnumerable<String> fileExtensions)
@@ -231,7 +239,12 @@ namespace VDS.RDF
 
             //Create any new defintions
             IEnumerable<String> newTypes = mimeTypes.Where(t => !GetDefinitions(t).Any());
-            AddDefinition(new MimeTypeDefinition(String.Empty, newTypes, fileExtensions));
+            if (newTypes.Any())
+            {
+                MimeTypeDefinition newDef = new MimeTypeDefinition(String.Empty, newTypes, fileExtensions);
+                newDef.RdfDatasetParserType = parser.GetType();
+                AddDefinition(newDef);
+            }
         }
 
         public static void RegisterParser(ISparqlResultsReader parser, IEnumerable<String> mimeTypes, IEnumerable<String> fileExtensions)
@@ -257,7 +270,12 @@ namespace VDS.RDF
 
             //Create any new defintions
             IEnumerable<String> newTypes = mimeTypes.Where(t => !GetDefinitions(t).Any());
-            AddDefinition(new MimeTypeDefinition(String.Empty, newTypes, fileExtensions));
+            if (newTypes.Any())
+            {
+                MimeTypeDefinition newDef = new MimeTypeDefinition(String.Empty, newTypes, fileExtensions);
+                newDef.SparqlResultsParserType = parser.GetType();
+                AddDefinition(newDef);
+            }
         }
 
         public static void RegisterWriter(IRdfWriter writer, IEnumerable<String> mimeTypes, IEnumerable<String> fileExtensions)
@@ -283,7 +301,12 @@ namespace VDS.RDF
 
             //Create any new defintions
             IEnumerable<String> newTypes = mimeTypes.Where(t => !GetDefinitions(t).Any());
-            AddDefinition(new MimeTypeDefinition(String.Empty, newTypes, fileExtensions));
+            if (newTypes.Any())
+            {
+                MimeTypeDefinition newDef = new MimeTypeDefinition(String.Empty, newTypes, fileExtensions);
+                newDef.RdfWriterType = writer.GetType();
+                AddDefinition(newDef);
+            }
         }
 
         public static void RegisterWriter(IStoreWriter writer, IEnumerable<String> mimeTypes, IEnumerable<String> fileExtensions)
@@ -309,7 +332,12 @@ namespace VDS.RDF
 
             //Create any new defintions
             IEnumerable<String> newTypes = mimeTypes.Where(t => !GetDefinitions(t).Any());
-            AddDefinition(new MimeTypeDefinition(String.Empty, newTypes, fileExtensions));
+            if (newTypes.Any())
+            {
+                MimeTypeDefinition newDef = new MimeTypeDefinition(String.Empty, newTypes, fileExtensions);
+                newDef.RdfDatasetWriterType = writer.GetType();
+                AddDefinition(newDef);
+            }
         }
 
         public static void RegisterWriter(ISparqlResultsWriter writer, IEnumerable<String> mimeTypes, IEnumerable<String> fileExtensions)
@@ -335,7 +363,12 @@ namespace VDS.RDF
 
             //Create any new defintions
             IEnumerable<String> newTypes = mimeTypes.Where(t => !GetDefinitions(t).Any());
-            AddDefinition(new MimeTypeDefinition(String.Empty, newTypes, fileExtensions));
+            if (newTypes.Any())
+            {
+                MimeTypeDefinition newDef = new MimeTypeDefinition(String.Empty, newTypes, fileExtensions);
+                newDef.SparqlResultsWriterType = writer.GetType();
+                AddDefinition(newDef);
+            }
         }
 
         /// <summary>
