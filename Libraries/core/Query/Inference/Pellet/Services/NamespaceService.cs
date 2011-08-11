@@ -57,6 +57,8 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
 
         }
 
+#if !SILVERLIGHT
+
         /// <summary>
         /// Gets the Namespaces used in the Knowledge Base
         /// </summary>
@@ -115,6 +117,13 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
             {
                 throw new RdfReasoningException("Error occurred while parsing Namespace Service results", ex);
             }
+        }
+
+#endif
+
+        public void GetNamespaces(NamespaceCallback callback, Object state)
+        {
+            throw new NotImplementedException();
         }
     }
 }

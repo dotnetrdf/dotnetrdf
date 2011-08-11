@@ -64,6 +64,8 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
             }
         }
 
+#if !SILVERLIGHT
+
         /// <summary>
         /// Gets a list of lists expressing clusters within the Knowledge Base
         /// </summary>
@@ -203,6 +205,28 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
 #endif
                 throw new RdfReasoningException("A HTTP error occurred while communicating with the Pellet Server", webEx);
             }
+        }
+
+#endif
+
+        public void Cluster(int number, PelletClusterServiceCallback callback, Object state)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Cluster(int number, String type, PelletClusterServiceCallback callback, Object state)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ClusterRaw(int number, GraphCallback callback, Object state)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CluserRaw(int number, String type, GraphCallback callback, Object state)
+        {
+            throw new NotImplementedException();
         }
     }
 }

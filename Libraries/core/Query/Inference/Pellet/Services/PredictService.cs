@@ -69,6 +69,8 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
             }
         }
 
+#if !SILVERLIGHT
+
         /// <summary>
         /// Gets the list of Predictions for the given Individual and Property
         /// </summary>
@@ -134,6 +136,18 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
 #endif
                 throw new RdfReasoningException("A HTTP error occurred while communicating with the Pellet Server", webEx);
             }
+        }
+
+#endif
+
+        public void Predict(String individual, String property, NodeListCallback callback, Object state)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void PredictRaw(String individual, String property, GraphCallback callback, Object state)
+        {
+            throw new NotImplementedException();
         }
     }
 }

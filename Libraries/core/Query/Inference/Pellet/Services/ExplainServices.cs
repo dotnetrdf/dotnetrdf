@@ -71,6 +71,8 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
             }
         }
 
+#if !SILVERLIGHT
+
         /// <summary>
         /// Gets a Graph explaining the result of the SPARQL Query
         /// </summary>
@@ -118,6 +120,13 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
                 throw new RdfReasoningException("A HTTP error occurred while communicating with the Pellet Server", webEx);
             }
         }
+
+#endif
+
+        public void Explain(String sparqlQuery, GraphCallback callback, Object state)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     /// <summary>
@@ -133,6 +142,8 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         internal ExplainUnsatService(String name, JObject obj)
             : base(name, obj) { }
 
+#if !SILVERLIGHT
+
         /// <summary>
         /// Gets a Graph explaining why a Class is unsatisfiable
         /// </summary>
@@ -145,6 +156,13 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
             this._baseQuery.SetUri("o", new Uri(OwlHelper.OwlNothing));
 
             return base.Explain(this._baseQuery.ToString());
+        }
+
+#endif
+
+        public void ExplainUnsatisfiable(INode cls, GraphCallback callback, Object state)
+        {
+            throw new NotImplementedException();
         }
     }
 
@@ -161,6 +179,8 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         internal ExplainInstanceService(String name, JObject obj)
             : base(name, obj) { }
 
+#if !SILVERLIGHT
+
         /// <summary>
         /// Gets a Graph explaining why an Instance is of the given Class
         /// </summary>
@@ -174,6 +194,13 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
             this._baseQuery.SetParameter("o", cls);
 
             return base.Explain(this._baseQuery.ToString());
+        }
+
+#endif
+
+        public void ExplainInstance(INode instance, INode cls, GraphCallback callback, Object state)
+        {
+            throw new NotImplementedException();
         }
     }
 
@@ -190,6 +217,8 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         internal ExplainSubclassService(String name, JObject obj)
             : base(name, obj) { }
 
+#if !SILVERLIGHT
+
         /// <summary>
         /// Gets a Graph explaining why the given Class is a subclass of the given Super Class
         /// </summary>
@@ -203,6 +232,13 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
             this._baseQuery.SetParameter("o", superclass);
 
             return base.Explain(this._baseQuery.ToString());
+        }
+
+#endif
+
+        public void ExplainSubclass(INode subclass, INode superclass, GraphCallback callback, Object state)
+        {
+            throw new NotImplementedException();
         }
     }
 
@@ -219,6 +255,8 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         internal ExplainInconsistentService(String name, JObject obj)
             : base(name, obj) { }
 
+#if !SILVERLIGHT
+
         /// <summary>
         /// Gets a Graph explaining why the Knowledge Base is inconsistent
         /// </summary>
@@ -226,6 +264,13 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         public IGraph ExplainInconsistent()
         {
             return base.Explain(String.Empty);
+        }
+
+#endif
+
+        public void ExplainInconsistent(GraphCallback callback, Object state)
+        {
+            throw new NotImplementedException();
         }
     }
 
@@ -241,6 +286,8 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// <param name="obj">JSON Object</param>
         internal ExplainPropertyService(String name, JObject obj)
             : base(name, obj) { }
+
+#if !SILVERLIGHT
 
         /// <summary>
         /// Gets a Graph explaining why the given Triple was derived
@@ -265,6 +312,18 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         public IGraph ExplainProperty(Triple t)
         {
             return this.ExplainProperty(t.Subject, t.Predicate, t.Object);
+        }
+
+#endif
+
+        public void ExplainProperty(INode subj, INode pred, INode obj, GraphCallback callback, Object state)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ExplainProprety(Triple t, GraphCallback callback, Object state)
+        {
+            this.ExplainProperty(t.Subject, t.Predicate, t.Object, callback, state);
         }
     }
 }

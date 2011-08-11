@@ -62,6 +62,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
             this._searchUri = this.Endpoint.Uri.Substring(0, this.Endpoint.Uri.IndexOf('{'));
         }
 
+#if !SILVERLIGHT
 
         /// <summary>
         /// Gets the list of Search Results which match the given search term
@@ -138,6 +139,13 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
             {
                 throw new RdfReasoningException("Error occurred while parsing Search Results from the Search Service", ex);
             }
+        }
+
+#endif
+
+        public void Search(PelletSearchServiceCallback callback, Object state)
+        {
+            throw new NotImplementedException();
         }
     }
 

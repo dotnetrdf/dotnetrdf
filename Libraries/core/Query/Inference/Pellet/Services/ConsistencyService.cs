@@ -55,6 +55,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         internal ConsistencyService(String name, JObject obj)
             : base(name, obj) { }
 
+#if !SILVERLIGHT
         /// <summary>
         /// Returns whether the Knowledge Base is consistent
         /// </summary>
@@ -99,6 +100,12 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
 #endif
                 throw new RdfReasoningException("A HTTP error occurred while communicating with the Pellet Server", webEx);
             }
+        }
+#endif
+
+        public void IsConsistent(PelletConsistencyCallback callback, Object state)
+        {
+            throw new NotImplementedException();
         }
     }
 }

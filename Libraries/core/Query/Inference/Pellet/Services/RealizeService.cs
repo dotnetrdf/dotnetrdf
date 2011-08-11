@@ -57,6 +57,8 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         internal RealizeService(String name, JObject obj)
             : base(name, obj) { }
 
+#if !SILVERLIGHT
+
         /// <summary>
         /// Gets the Graph which comprises the class hierarchy and individuals of those classes
         /// </summary>
@@ -102,6 +104,13 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
 #endif
                 throw new RdfReasoningException("A HTTP error occurred while communicating with the Pellet Server", webEx);
             }
+        }
+
+#endif
+
+        public void Realize(GraphCallback callback, Object state)
+        {
+            throw new NotImplementedException();
         }
     }
 }

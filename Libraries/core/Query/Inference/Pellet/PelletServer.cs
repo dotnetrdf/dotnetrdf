@@ -87,6 +87,7 @@ namespace VDS.RDF.Query.Inference.Pellet
         /// </summary>
         private void Discover()
         {
+#if !SILVERLIGHT
             try
             {
                 //Make the request to the Server Root URL to get the JSON description of the server
@@ -138,6 +139,9 @@ namespace VDS.RDF.Query.Inference.Pellet
             {
                 throw new RdfReasoningException("Error while attempting to discover Knowledge Bases on a Pellet Server");
             }
+#else
+            throw new PlatformNotSupportedException("Pellet Server integration is not yet supported under Silverlight/Windows Phone 7");
+#endif
         }
 
         /// <summary>

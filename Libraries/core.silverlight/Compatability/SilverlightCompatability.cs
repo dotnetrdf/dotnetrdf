@@ -129,62 +129,6 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the HTTP Response asychronously for compatability with Silverlight
-        /// </summary>
-        /// <param name="request">HTTP Request</param>
-        /// <returns>HTTP Response</returns>
-        public static HttpWebResponse GetResponse(this HttpWebRequest request)
-        {
-            ManualResetEvent syncRequest = new ManualResetEvent(false);
-            HttpWebResponse response = null;
-
-            //Wait for Server Response
-            request.BeginGetResponse(result =>
-                {
-                    try
-                    {
-                        response = (HttpWebResponse)request.EndGetResponse(result);
-                    }
-                    finally
-                    {
-                        syncRequest.Set();
-                    }
-                },
-            null);
-
-            //syncRequest.WaitOne();
-            return response;
-        }
-
-        /// <summary>
-        /// Gets the HTTP Request Stream asynchronously for compatability with Silverlight
-        /// </summary>
-        /// <param name="request">HTTP Request</param>
-        /// <returns>Request Stream</returns>
-        public static Stream GetRequestStream(this HttpWebRequest request)
-        {
-            ManualResetEvent syncRequest = new ManualResetEvent(false);
-            Stream stream = null;
-
-            //Get the Request Stream
-            request.BeginGetRequestStream(result =>
-                {
-                    try
-                    {
-                        stream = request.EndGetRequestStream(result);
-                    }
-                    finally
-                    {
-                        syncRequest.Set();
-                    }
-                },
-            null);
-
-            //syncRequest.WaitOne();
-            return stream;
-        }
-
-        /// <summary>
         /// Removes all items from a List which return true for the given function
         /// </summary>
         /// <typeparam name="T">Type</typeparam>

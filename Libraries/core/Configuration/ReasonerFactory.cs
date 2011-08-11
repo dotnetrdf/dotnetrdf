@@ -47,7 +47,9 @@ namespace VDS.RDF.Configuration
     public class ReasonerFactory : IObjectFactory
     {
         private const String OwlReasonerWrapperType = "VDS.RDF.Query.Inference.OwlReasonerWrapper";
+#if !SILVERLIGHT
         private const String PelletReasonerType = "VDS.RDF.Query.Inference.PelletReasoner";
+#endif
 
         /// <summary>
         /// Tries to load a Reasoner based on information from the Configuration Graph
@@ -64,6 +66,7 @@ namespace VDS.RDF.Configuration
 
             switch (targetType.FullName)
             {
+#if !SILVERLIGHT
                 case PelletReasonerType:
                     String server = ConfigurationLoader.GetConfigurationValue(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyServer));
                     if (server == null) return false;
@@ -72,6 +75,7 @@ namespace VDS.RDF.Configuration
 
                     output = new PelletReasoner(new Uri(server), kb);
                     break;
+#endif
 
                 case OwlReasonerWrapperType:
                     INode reasonerNode = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyOwlReasoner));
@@ -149,7 +153,9 @@ namespace VDS.RDF.Configuration
             switch (t.FullName)
             {
                 case OwlReasonerWrapperType:
+#if !SILVERLIGHT
                 case PelletReasonerType:
+#endif
                     return true;
                 default:
                     return false;

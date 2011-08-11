@@ -69,6 +69,8 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
             }
         }
 
+#if !SILVERLIGHT
+
         /// <summary>
         /// Gets a list of key value pairs listing Similar Individuals and their Similarity scores
         /// </summary>
@@ -159,6 +161,18 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
                 response.Close();
                 return g;
             }
+        }
+
+#endif
+
+        public void Similarity(int number, String individual, PelletSimilarityServiceCallback callback, Object state)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SimilarityRaw(int number, String individual, GraphCallback callback, Object state)
+        {
+            throw new NotImplementedException();
         }
     }
 }
