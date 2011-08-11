@@ -21,7 +21,8 @@ namespace VDS.RDF.Test.Writing
             new FastRdfXmlWriter(WriterCompressionLevel.High),
             new FastRdfXmlWriter(WriterCompressionLevel.High, false),
             new PrettyRdfXmlWriter(WriterCompressionLevel.High),
-            new PrettyRdfXmlWriter(WriterCompressionLevel.High, false)
+            new PrettyRdfXmlWriter(WriterCompressionLevel.High, false),
+            new PrettyRdfXmlWriter(WriterCompressionLevel.High, true, false)
         };
 
         private IRdfReader _parser = new RdfXmlParser();

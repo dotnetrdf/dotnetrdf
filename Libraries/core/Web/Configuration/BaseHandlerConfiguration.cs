@@ -91,6 +91,7 @@ namespace VDS.RDF.Web.Configuration
         protected bool _writerHighSpeed = true;
         protected bool _writerDtds = false;
         protected bool _writerMultiThreading = true;
+        protected bool _writerAttributes = true;
 
         protected INamespaceMapper _defaultNamespaces = new NamespaceMapper();
 
@@ -175,7 +176,9 @@ namespace VDS.RDF.Web.Configuration
             this._writerHighSpeed = ConfigurationLoader.GetConfigurationBoolean(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyHighSpeedWriting), this._writerHighSpeed);
             this._writerMultiThreading = ConfigurationLoader.GetConfigurationBoolean(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyMultiThreadedWriting), this._writerMultiThreading);
             this._writerPrettyPrinting = ConfigurationLoader.GetConfigurationBoolean(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyPrettyPrinting), this._writerPrettyPrinting);
+            this._writerAttributes = ConfigurationLoader.GetConfigurationBoolean(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyAttributeWriting), this._writerAttributes);
 
+            //Load in the Default Namespaces if specified
             INode nsNode = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyImportNamespacesFrom));
             if (nsNode != null)
             {
@@ -310,6 +313,14 @@ namespace VDS.RDF.Web.Configuration
             get
             {
                 return this._writerDtds;
+            }
+        }
+
+        public bool WriterUseAttributes
+        {
+            get
+            {
+                return this._writerAttributes;
             }
         }
 

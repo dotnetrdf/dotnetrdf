@@ -205,7 +205,7 @@ namespace VDS.RDF.Web
             //Return the Results
             if (result is SparqlResultSet)
             {
-                ISparqlResultsWriter sparqlwriter = null;      
+                ISparqlResultsWriter sparqlWriter = null;      
        
                 //Try and get a MIME Type Definition using the HTTP Requests Accept Header
                 if (acceptTypes != null)
@@ -225,21 +225,20 @@ namespace VDS.RDF.Web
                 }
                 
                 //Set up the Writer appropriately
-                sparqlwriter = definition.GetSparqlResultsWriter();
-
+                sparqlWriter = definition.GetSparqlResultsWriter();
                 context.Response.ContentType = definition.CanonicalMimeType;
-                HandlerHelper.ApplyWriterOptions(sparqlwriter, config);
+                HandlerHelper.ApplyWriterOptions(sparqlWriter, config);
 
                 //Clear any existing Response
                 context.Response.Clear();
 
                 //Send Result Set to Client
                 context.Response.ContentEncoding = definition.Encoding;
-                sparqlwriter.Save((SparqlResultSet)result, new StreamWriter(context.Response.OutputStream, definition.Encoding));
+                sparqlWriter.Save((SparqlResultSet)result, new StreamWriter(context.Response.OutputStream, definition.Encoding));
             }
             else if (result is IGraph)
             {
-                IRdfWriter rdfwriter = null;
+                IRdfWriter rdfWriter = null;
 
                 //Try and get a MIME Type Definition using the HTTP Requests Accept Header
                 if (acceptTypes != null)
@@ -249,17 +248,17 @@ namespace VDS.RDF.Web
                 if (definition == null)
                 {
                     //If no appropriate definition then use the GetWriter method instead
-                    rdfwriter = MimeTypesHelper.GetWriter(acceptTypes, out ctype);
+                    rdfWriter = MimeTypesHelper.GetWriter(acceptTypes, out ctype);
                 }
                 else
                 {
-                    rdfwriter = definition.GetRdfWriter();
+                    rdfWriter = definition.GetRdfWriter();
                 }
 
                 //Setup the writer
                 if (definition != null) ctype = definition.CanonicalMimeType;
                 context.Response.ContentType = ctype;
-                HandlerHelper.ApplyWriterOptions(rdfwriter, config);
+                HandlerHelper.ApplyWriterOptions(rdfWriter, config);
 
                 //Clear any existing Response
                 context.Response.Clear();
@@ -268,33 +267,36 @@ namespace VDS.RDF.Web
                 if (definition != null)
                 {
                     context.Response.ContentEncoding = definition.Encoding;
-                    rdfwriter.Save((IGraph)result, new StreamWriter(context.Response.OutputStream, definition.Encoding));
+                    rdfWriter.Save((IGraph)result, new StreamWriter(context.Response.OutputStream, definition.Encoding));
                 }
                 else 
                 {
-                    rdfwriter.Save((IGraph)result, new StreamWriter(context.Response.OutputStream));
+                    rdfWriter.Save((IGraph)result, new StreamWriter(context.Response.OutputStream));
                 }
             }
             else if (result is ITripleStore)
             {
-                IStoreWriter storewriter = null;
+                IStoreWriter storeWriter = null;
 
                 //Try and get a MIME Type Definition using the HTTP Requests Accept Header
                 if (acceptTypes != null)
                 {
                     definition = MimeTypesHelper.GetDefinitions(acceptTypes).FirstOrDefault(d => d.CanWriteRdfDatasets);
-                    storewriter = definition.GetRdfDatasetWriter();
-                } 
+                }
                 if (definition == null)
                 {
                     //If no appropriate definition then use the GetStoreWriter method instead
-                    storewriter = MimeTypesHelper.GetStoreWriter(acceptTypes, out ctype);
+                    storeWriter = MimeTypesHelper.GetStoreWriter(acceptTypes, out ctype);
+                }
+                else
+                {
+                    storeWriter = definition.GetRdfDatasetWriter();
                 }
 
                 //Setup the writer
                 if (definition != null) ctype = definition.CanonicalMimeType;
                 context.Response.ContentType = ctype;
-                HandlerHelper.ApplyWriterOptions(storewriter, config);
+                HandlerHelper.ApplyWriterOptions(storeWriter, config);
 
                 //Clear any existing Response
                 context.Response.Clear();
@@ -303,11 +305,11 @@ namespace VDS.RDF.Web
                 if (definition != null) 
                 {
                     context.Response.ContentEncoding = definition.Encoding;
-                    storewriter.Save((ITripleStore)result, new VDS.RDF.Storage.Params.StreamParams(context.Response.OutputStream, definition.Encoding));
+                    storeWriter.Save((ITripleStore)result, new VDS.RDF.Storage.Params.StreamParams(context.Response.OutputStream, definition.Encoding));
                 } 
                 else
                 {
-                    storewriter.Save((ITripleStore)result, new VDS.RDF.Storage.Params.StreamParams(context.Response.OutputStream));
+                    storeWriter.Save((ITripleStore)result, new VDS.RDF.Storage.Params.StreamParams(context.Response.OutputStream));
                 }
             }
             else if (result is ISparqlDataset)
@@ -344,6 +346,10 @@ namespace VDS.RDF.Web
                 if (writer is IDtdWriter)
                 {
                     ((IDtdWriter)writer).UseDtd = config.WriterUseDtds;
+                }
+                if (writer is IAttributeWriter)
+                {
+                    ((IAttributeWriter)writer).UseAttributes = config.WriterUseAttributes;
                 }
                 if (writer is IHighSpeedWriter)
                 {

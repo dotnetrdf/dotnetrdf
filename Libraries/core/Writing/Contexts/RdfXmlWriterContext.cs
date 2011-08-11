@@ -69,6 +69,7 @@ namespace VDS.RDF.Writing.Contexts
         /// </summary>
         private NestedNamespaceMapper _nsmapper = new NestedNamespaceMapper(true);
         private bool _useDTD = Options.UseDtd;
+        private bool _useAttributes = true;
 
         private int _compressionLevel = WriterCompressionLevel.Default;
 
@@ -268,6 +269,21 @@ namespace VDS.RDF.Writing.Contexts
             set
             {
                 this._useDTD = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets/Sets whether attributes are used to encode the predicates and objects of triples with simple literal properties
+        /// </summary>
+        public bool UseAttributes
+        {
+            get
+            {
+                return this._useAttributes;
+            }
+            set
+            {
+                this._useAttributes = value;
             }
         }
 

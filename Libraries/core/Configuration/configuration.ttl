@@ -567,6 +567,11 @@ dnr:dtdWriting a rdf:Property ;
 				rdfs:label "DTD Writing" ;
 				rdfs:comment "Specifies whether supporting writers should use DTDs in their output.  Default is true for most writers" ;
 				rdfs:range xsd:boolean .
+				
+dnr:attributeWriting a rdf:Property ;
+					   rdfs:label "Attribute Writing" ;
+					   rdfs:comment "Specifies whether supporting writers should use attributes to compress their output where they have the choice between using attributes or elements.  Default is true for most writers" ;
+					   rdfs:range xsd:boolean .
 
 dnr:multiThreadedWriting a rdf:Property ;
 							rdfs:label "Multi-Threaded Writing" ;

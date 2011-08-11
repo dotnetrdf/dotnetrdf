@@ -58,11 +58,13 @@ namespace VDS.RDF.Writing
     /// </para>
     /// </remarks>
     public class PrettyRdfXmlWriter 
-        : IRdfWriter, IPrettyPrintingWriter, ICompressingWriter, IDtdWriter, INamespaceWriter, IFormatterBasedWriter
+        : IRdfWriter, IPrettyPrintingWriter, ICompressingWriter, IDtdWriter,
+        INamespaceWriter, IFormatterBasedWriter, IAttributeWriter
     {
         private bool _prettyprint = true;
         private int _compressionLevel = WriterCompressionLevel.High;
         private bool _useDTD = Options.UseDtd;
+        private bool _useAttributes = true;
         private INamespaceMapper _defaultNamespaces = new NamespaceMapper();
 
         /// <summary>
@@ -83,7 +85,6 @@ namespace VDS.RDF.Writing
             this._compressionLevel = compressionLevel;
         }
 
-        
         /// <summary>
         /// Creates a new RDF/XML Writer
         /// </summary>
@@ -93,6 +94,18 @@ namespace VDS.RDF.Writing
             : this(compressionLevel)
         {
             this._useDTD = useDtd;
+        }
+
+        /// <summary>
+        /// Creates a new RDF/XML Writer
+        /// </summary>
+        /// <param name="compressionLevel">Compression Level</param>
+        /// <param name="useDtd">Whether to use DTDs to further compress output</param>
+        /// <param name="useAttributes">Whether to use attributes to encode triples with simple literal objects where possible</param>
+        public PrettyRdfXmlWriter(int compressionLevel, bool useDtd, bool useAttributes)
+            : this(compressionLevel, useDtd)
+        {
+            this._useAttributes = useAttributes;
         }
 
         /// <summary>
@@ -142,6 +155,21 @@ namespace VDS.RDF.Writing
             set
             {
                 this._useDTD = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets/Sets whether triples which have a literal object will be expressed as attributes rather than elements where possible (defaults to true)
+        /// </summary>
+        public bool UseAttributes
+        {
+            get
+            {
+                return this._useAttributes;
+            }
+            set
+            {
+                this._useAttributes = value;
             }
         }
 
@@ -221,6 +249,7 @@ namespace VDS.RDF.Writing
             RdfXmlWriterContext context = new RdfXmlWriterContext(g, output);
             context.CompressionLevel = this._compressionLevel;
             context.UseDtd = this._useDTD;
+            context.UseAttributes = this._useAttributes;
             context.Writer.WriteStartDocument();
 
             if (context.UseDtd)
@@ -429,7 +458,7 @@ namespace VDS.RDF.Writing
                 subj = ts.First().Subject;
                 if (allowRdfDescription)
                 {
-                    //Crete rdf:Description Node
+                    //Create rdf:Description Node
                     context.Writer.WriteStartElement("rdf", "Description", NamespaceMapper.RDF);
                 }
                 else
@@ -452,29 +481,34 @@ namespace VDS.RDF.Writing
                 }
             }
 
-            //Next find any simple literals we can attach directly to the Subject Node
-            List<Triple> simpleLiterals = new List<Triple>();
-            HashSet<INode> simpleLiteralPredicates = new HashSet<INode>();
-            foreach (Triple t in ts)
+            //If use of attributes is enabled we'll encode triples with simple literal objects
+            //as attributes on the subject node directly
+            if (context.UseAttributes)
             {
-                if (t.Object.NodeType == NodeType.Literal)
+                //Next find any simple literals we can attach directly to the Subject Node
+                List<Triple> simpleLiterals = new List<Triple>();
+                HashSet<INode> simpleLiteralPredicates = new HashSet<INode>();
+                foreach (Triple t in ts)
                 {
-                    ILiteralNode lit = (ILiteralNode)t.Object;
-                    if (lit.DataType == null && lit.Language.Equals(String.Empty))
+                    if (t.Object.NodeType == NodeType.Literal)
                     {
-                        if (!simpleLiteralPredicates.Contains(t.Predicate))
+                        ILiteralNode lit = (ILiteralNode)t.Object;
+                        if (lit.DataType == null && lit.Language.Equals(String.Empty))
                         {
-                            simpleLiteralPredicates.Add(t.Predicate);
-                            simpleLiterals.Add(t);
+                            if (!simpleLiteralPredicates.Contains(t.Predicate))
+                            {
+                                simpleLiteralPredicates.Add(t.Predicate);
+                                simpleLiterals.Add(t);
+                            }
                         }
                     }
                 }
-            }
 
-            //Now go ahead and attach these to the Subject Node as attributes
-            this.GenerateSimpleLiteralAttributes(context, simpleLiterals);
-            simpleLiterals.ForEach(t => context.TriplesDone.Add(t));
-            simpleLiterals.ForEach(t => ts.Remove(t));
+                //Now go ahead and attach these to the Subject Node as attributes
+                this.GenerateSimpleLiteralAttributes(context, simpleLiterals);
+                simpleLiterals.ForEach(t => context.TriplesDone.Add(t));
+                simpleLiterals.ForEach(t => ts.Remove(t));
+            }
 
             //Then generate Predicate Output for each remaining Triple
             foreach (Triple t in ts)

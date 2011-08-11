@@ -49,7 +49,8 @@ namespace VDS.RDF.Update
     /// The Leviathan Update Processor simply invokes the <see cref="SparqlUpdateCommand.Evaluate">Evaluate</see> method of the SPARQL Commands it is asked to process.  Derived implementations may override the relevant virtual protected methods to substitute their own evaluation of an update for our default standards compliant implementations.
     /// </para>
     /// </remarks>
-    public class LeviathanUpdateProcessor : ISparqlUpdateProcessor
+    public class LeviathanUpdateProcessor 
+        : ISparqlUpdateProcessor
     {
         private ISparqlDataset _dataset;
 #if !NO_RWLOCK

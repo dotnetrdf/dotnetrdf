@@ -133,6 +133,18 @@ namespace VDS.RDF.Writing
     }
 
     /// <summary>
+    /// Interface for Writers that can use attributes (e.g. XML or HTML based writers) which allows you to control whether the writer will choose to use attributes to encode data which could otherwise be expressed as elements
+    /// </summary>
+    public interface IAttributeWriter
+    {
+        bool UseAttributes
+        {
+            get;
+            set;
+        }
+    }
+
+    /// <summary>
     /// Interface for Writers that support the use of Namespaces and allows a set of Default Namespaces to be defined
     /// </summary>
     public interface INamespaceWriter
