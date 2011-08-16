@@ -44,12 +44,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Algebra\BaseFullTextOperator.cs" />
+    <Compile Include="Algebra\FullTextQuery.cs" />
+    <Compile Include="Algebra\FullTextSearch.cs" />
     <Compile Include="Expressions\FullTextFunctionFactory.cs" />
     <Compile Include="Expressions\Functions\TextMatchFunction.cs" />
+    <Compile Include="FullTextExtensions.cs" />
     <Compile Include="FullText\Indexing\BaseFullTextIndexer.cs" />
     <Compile Include="FullText\Indexing\IFullTextIndexer.cs" />
     <Compile Include="FullText\Search\IFullTextSearchProvider.cs" />
     <Compile Include="FullText\Search\IFullTextSearchResult.cs" />
+    <Compile Include="Optimisation\FullTextOptimiser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
