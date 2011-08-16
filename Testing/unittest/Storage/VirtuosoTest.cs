@@ -4,9 +4,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using OpenLink.Data.Virtuoso;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
+using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
 using VDS.RDF.Storage;
 using VDS.RDF.Writing.Formatting;
@@ -81,9 +81,32 @@ namespace VDS.RDF.Test.Storage
                 Assert.AreEqual(h.Triples.Count, i.Triples.Count);
                 Assert.AreEqual(h, i);
             }
-            catch (VirtuosoException virtEx)
+            catch (Exception ex)
             {
-                TestTools.ReportError("Virtuoso Error", virtEx, true);
+                TestTools.ReportError("Other Error", ex, true);
+            }
+        }
+
+        [TestMethod]
+        public void StorageVirtuosoLoadGraphWithNullHandler()
+        {
+            NTriplesFormatter formatter = new NTriplesFormatter();
+            try
+            {
+                VirtuosoManager manager = new VirtuosoManager("DB", VirtuosoTestUsername, VirtuosoTestPassword);
+                Assert.IsNotNull(manager);
+
+                Console.WriteLine("Got the Virtuoso Manager OK");
+
+                //Add the Test Date to Virtuoso
+                Graph testData = new Graph();
+                FileLoader.Load(testData, "Turtle.ttl");
+                testData.BaseUri = new Uri("http://example.org/virtuoso/tests/null");
+                manager.SaveGraph(testData);
+                Console.WriteLine("Saved the Test Data to Virtuoso");
+
+                NullHandler handler = new NullHandler();
+                manager.LoadGraph(handler, testData.BaseUri);
             }
             catch (Exception ex)
             {
@@ -158,10 +181,6 @@ namespace VDS.RDF.Test.Storage
                 {
                     Console.WriteLine("Graphs are equal");
                 }
-            }
-            catch (VirtuosoException virtEx)
-            {
-                TestTools.ReportError("Virtuoso Error", virtEx, true);
             }
             catch (Exception ex)
             {
@@ -244,10 +263,6 @@ namespace VDS.RDF.Test.Storage
 
                 Assert.IsTrue(i.IsEmpty, "Retrieved Graph should be empty as it should have been deleted from the Store");
             }
-            catch (VirtuosoException virtEx)
-            {
-                TestTools.ReportError("Virtuoso Error", virtEx, true);
-            }
             catch (Exception ex)
             {
                 TestTools.ReportError("Other Error", ex, true);
@@ -328,10 +343,6 @@ namespace VDS.RDF.Test.Storage
 
                 TestTools.CompareGraphs(j, k, false);
             }
-            catch (VirtuosoException virtEx)
-            {
-                TestTools.ReportError("Virtuoso Error", virtEx, true);
-            }
             catch (Exception ex)
             {
                 TestTools.ReportError("Other Error", ex, true);
@@ -366,12 +377,6 @@ namespace VDS.RDF.Test.Storage
                     Console.WriteLine(t.ToString());
                 }
                 Console.WriteLine();
-            }
-            catch (VirtuosoException virtEx)
-            {
-                timer.Stop();
-                Console.WriteLine(timer.ElapsedMilliseconds + "ms Elapsed");
-                TestTools.ReportError("Virtuoso Error", virtEx, true);
             }
             catch (Exception ex)
             {
@@ -417,10 +422,6 @@ namespace VDS.RDF.Test.Storage
 
                 Assert.IsTrue(h.Triples.Contains(additions[0]), "Added Triple should be in the retrieved Graph");
                 Assert.IsFalse(h.Triples.Contains(removals[0]), "Removed Triple should not be in the retrieved Graph");
-            }
-            catch (VirtuosoException virtEx)
-            {
-                TestTools.ReportError("Virtuoso Error", virtEx, true);
             }
             catch (Exception ex)
             {
@@ -523,10 +524,6 @@ namespace VDS.RDF.Test.Storage
             {
                 TestTools.ReportError("RDF Query Error", queryEx, true);
             }
-            catch (VirtuosoException virtEx)
-            {
-                TestTools.ReportError("Virtuoso Error", virtEx, true);
-            }
             catch (Exception ex)
             {
                 TestTools.ReportError("Other Error", ex, true);
@@ -569,10 +566,6 @@ namespace VDS.RDF.Test.Storage
             catch (RdfQueryException queryEx)
             {
                 TestTools.ReportError("RDF Query Error", queryEx, true);
-            }
-            catch (VirtuosoException virtEx)
-            {
-                TestTools.ReportError("Virtuoso Error", virtEx, true);
             }
             catch (Exception ex)
             {
@@ -671,10 +664,6 @@ namespace VDS.RDF.Test.Storage
                 {
                     Assert.Fail("Returned an object of type '" + loadedObj.GetType().FullName + "' when deserializing");
                 }
-            }
-            catch (VirtuosoException virtEx)
-            {
-                TestTools.ReportError("Virtuoso Error", virtEx, true);
             }
             catch (DotNetRdfConfigurationException configEx)
             {

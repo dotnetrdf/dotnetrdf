@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
 using VDS.RDF.Storage;
 
@@ -105,6 +106,35 @@ namespace VDS.RDF.Test.Storage
                 {
                     Assert.IsTrue(g.HasSubGraph(orig), "Original Graph should be a sub-graph of retrieved Graph");
                 }
+            }
+            catch (Exception ex)
+            {
+                TestTools.ReportError("Error", ex, true);
+            }
+            finally
+            {
+                Options.HttpDebugging = false;
+            }
+        }
+
+        [TestMethod]
+        public void StorageDydraLoadGraphWithHandler()
+        {
+            try
+            {
+                Options.HttpDebugging = true;
+
+                Graph orig = new Graph();
+                orig.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+                orig.BaseUri = new Uri("http://example.org/dydra/tests/counting");
+
+                DydraConnector dydra = this.GetConnection();
+                dydra.SaveGraph(orig);
+
+                CountHandler handler = new CountHandler();
+                dydra.LoadGraph(handler, orig.BaseUri);
+
+                Assert.AreEqual(orig.Triples.Count, handler.Count, "Triple Counts should be equal");
             }
             catch (Exception ex)
             {

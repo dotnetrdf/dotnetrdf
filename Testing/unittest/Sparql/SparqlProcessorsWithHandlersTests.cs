@@ -8,6 +8,7 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
+using VDS.RDF.Storage;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Test.Sparql
@@ -105,13 +106,13 @@ namespace VDS.RDF.Test.Sparql
         {
             this.TestResultCountHandler(processor, "SELECT * WHERE { ?s a ?type }");
             this.TestResultCountHandler(processor, "PREFIX rdfs: <" + NamespaceMapper.RDFS + "> SELECT * WHERE { ?child rdfs:subClassOf ?parent }");
-            this.TestCountHandler(processor, "CONSTRUCT WHERE { ?s a ?type }");
+            this.TestCountHandler(processor, "CONSTRUCT { ?s a ?type } WHERE { ?s a ?type }");
             this.TestCountHandler(processor, "PREFIX rdfs: <" + NamespaceMapper.RDFS + "> CONSTRUCT WHERE { ?child rdfs:subClassOf ?parent }");
         }
 
         private void TestGraphHandlers(ISparqlQueryProcessor processor)
         {
-            this.TestGraphHandler(processor, "CONSTRUCT WHERE { ?s ?p ?o }");
+            this.TestGraphHandler(processor, "CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }");
             this.TestGraphHandler(processor, "PREFIX rdfs: <" + NamespaceMapper.RDFS + "> CONSTRUCT WHERE { ?s a ?type ; rdfs:subClassOf ?parent }");
         }
 
@@ -122,7 +123,7 @@ namespace VDS.RDF.Test.Sparql
 
         private void TestWriteThroughHandlers(ISparqlQueryProcessor processor)
         {
-            this.TestWriteThroughHandler(processor, "CONSTRUCT WHERE { ?s ?p ?o }");
+            this.TestWriteThroughHandler(processor, "CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }");
             this.TestWriteThroughHandler(processor, "PREFIX rdfs: <" + NamespaceMapper.RDFS + "> CONSTRUCT WHERE { ?s a ?type ; rdfs:subClassOf ?parent }");
         }
 
@@ -253,18 +254,54 @@ namespace VDS.RDF.Test.Sparql
             this.TestCountHandlers(this._pellet);
         }
 
-        [TestMethod]
-        public void SparqlWithHandlersPelletGraph()
+        //[TestMethod]
+        //public void SparqlWithHandlersPelletGraph()
+        //{
+        //    this.EnsurePelletReady();
+        //    this.TestGraphHandlers(this._pellet);
+        //}
+
+        //[TestMethod]
+        //public void SparqlWithHandlersPelletWriteThrough()
+        //{
+        //    this.EnsurePelletReady();
+        //    this.TestWriteThroughHandlers(this._pellet);
+        //}
+
+        #endregion
+
+        #region Generic Tests
+
+        private ISparqlQueryProcessor _generic;
+
+        private void EnsureGenericReady()
         {
-            this.EnsurePelletReady();
-            this.TestGraphHandlers(this._pellet);
+            this.EnsureLeviathanReady();
+            if (this._generic == null)
+            {
+                this._generic = new GenericQueryProcessor(new InMemoryManager(this._dataset));
+            }
         }
 
         [TestMethod]
-        public void SparqlWithHandlersPelletWriteThrough()
+        public void SparqlWithHandlersGenericCount()
         {
-            this.EnsurePelletReady();
-            this.TestWriteThroughHandlers(this._pellet);
+            this.EnsureGenericReady();
+            this.TestCountHandlers(this._generic);
+        }
+
+        [TestMethod]
+        public void SparqlWithHandlersGenericGraph()
+        {
+            this.EnsureGenericReady();
+            this.TestGraphHandlers(this._generic);
+        }
+
+        [TestMethod]
+        public void SparqlWithHandlersGenericWriteThrough()
+        {
+            this.EnsureGenericReady();
+            this.TestWriteThroughHandlers(this._generic);
         }
 
         #endregion

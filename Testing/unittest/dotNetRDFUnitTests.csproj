@@ -52,10 +52,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Dependencies\Newtonsoft.Json.Net35.dll</HintPath>
     </Reference>
-    <Reference Include="OpenLink.Data.Virtuoso, Version=6.2.3128.1, Culture=neutral, PublicKeyToken=6654f6917d07cb95, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Dependencies\OpenLink.Data.Virtuoso.dll</HintPath>
-    </Reference>
     <Reference Include="SemWeb, Version=1.0.7.0, Culture=neutral, PublicKeyToken=3e1051c7e190e42e, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Dependencies\SemWeb.dll</HintPath>

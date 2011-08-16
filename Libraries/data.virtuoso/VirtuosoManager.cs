@@ -71,7 +71,8 @@ namespace VDS.RDF.Storage
     /// You can use a null Uri or an empty String as a Uri to indicate that operations should affect the Default Graph.  Where the argument is only a Graph a null <see cref="IGraph.BaseUri">BaseUri</see> property indicates that the Graph affects the Default Graph
     /// </para>
     /// </remarks>
-    public class VirtuosoManager : IUpdateableGenericIOManager, IConfigurationSerializable, IDisposable
+    public class VirtuosoManager
+        : IUpdateableGenericIOManager, IConfigurationSerializable, IDisposable
     {
         /// <summary>
         /// Default Port for Virtuoso Servers
@@ -121,8 +122,7 @@ namespace VDS.RDF.Storage
             this._dbport = port;
 
             //Create the Connection Object
-            this._db = new VirtuosoConnection();
-            this._db.ConnectionString = "Server=" + this._dbserver + ":" + this._dbport + ";Database=" + this._dbname + ";uid=" + this._dbuser + ";pwd=" + this._dbpwd + ";Charset=utf-8";
+            this._db = new VirtuosoConnection("Server=" + this._dbserver + ":" + this._dbport + ";Database=" + this._dbname + ";uid=" + this._dbuser + ";pwd=" + this._dbpwd + ";Charset=utf-8");
         }
 
         /// <summary>
@@ -146,8 +146,7 @@ namespace VDS.RDF.Storage
         /// </remarks>
         public VirtuosoManager(String connectionString)
         {
-            this._db = new VirtuosoConnection();
-            this._db.ConnectionString = connectionString;
+            this._db = new VirtuosoConnection(connectionString);
             this._customConnString = true;
         }
 

@@ -41,7 +41,8 @@ namespace VDS.RDF.Parsing.Handlers
     /// <remarks>
     /// Useful if you simply want to parse some RDF to see if it parses and don't care about the actual data being parsed
     /// </remarks>
-    public class NullHandler : BaseRdfHandler
+    public class NullHandler 
+        : BaseRdfHandler
     {
         /// <summary>
         /// Creates a new Null Handler
