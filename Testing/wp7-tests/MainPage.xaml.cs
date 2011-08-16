@@ -54,6 +54,13 @@ namespace wp7_tests
         {
             Dispatcher.BeginInvoke(() =>
                 {
+                    DateTime? start = state as DateTime?;
+                    if (start != null)
+                    {
+                        TimeSpan elapsed = DateTime.Now - start.Value;
+                        //Do what you want with the execution time...
+                    }
+
                     SparqlFormatter formatter = new SparqlFormatter();
                     this.ResultsSummary.Text = results.Count + " Result(s) returned";
                     this.ResultsList.Items.Clear();
