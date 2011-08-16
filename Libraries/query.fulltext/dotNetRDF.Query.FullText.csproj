@@ -45,6 +45,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Expressions\FullTextFunctionFactory.cs" />
+    <Compile Include="Expressions\Functions\TextMatchFunction.cs" />
+    <Compile Include="FullText\Indexing\BaseFullTextIndexer.cs" />
+    <Compile Include="FullText\Indexing\IFullTextIndexer.cs" />
+    <Compile Include="FullText\Search\IFullTextSearchProvider.cs" />
+    <Compile Include="FullText\Search\IFullTextSearchResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -52,9 +57,6 @@
       <Project>{BFBAC159-1E60-4D03-8ACA-D34E31EB83BF}</Project>
       <Name>dotNetRDF</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Expressions\Functions\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
