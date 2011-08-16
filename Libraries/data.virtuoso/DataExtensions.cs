@@ -13,7 +13,7 @@ namespace VDS.RDF.Storage
     {
         internal static String ToSafeString(this Object obj)
         {
-            return (obj != null ? obj.ToSafeString() : String.Empty);
+            return (obj != null ? obj.ToString() : String.Empty);
         }
 
         internal static void EnsureObjectFactory(this ConfigurationSerializationContext context, Type factoryType)
