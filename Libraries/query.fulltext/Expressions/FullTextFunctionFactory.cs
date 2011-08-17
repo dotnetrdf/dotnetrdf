@@ -8,16 +8,15 @@ namespace VDS.RDF.Query.Expressions
     public class FullTextFunctionFactory
         : ISparqlCustomExpressionFactory
     {
-        private const String TextMatchFunctionUri = "http://jena.hpl.hp.com/ARQ/property#textMatch";
 
         public bool TryCreateExpression(Uri u, List<ISparqlExpression> args, Dictionary<string, ISparqlExpression> scalarArguments, out ISparqlExpression expr)
         {
-            switch (u.ToString())
-            {
-                case TextMatchFunctionUri:
-                    //TODO: Implement returning a TextMatch Function
-                    break;
-            }
+            //TODO: Add support for FullTextMatchFunction and FullTextSearchFunction
+
+            //switch (u.ToString())
+            //{
+
+            //}
 
             expr = null;
             return false;

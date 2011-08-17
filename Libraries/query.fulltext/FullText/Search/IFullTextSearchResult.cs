@@ -18,7 +18,7 @@ namespace VDS.RDF.Query.FullText.Search
         }
     }
 
-    public class FullTextSearchResult
+    public sealed class FullTextSearchResult
         : IFullTextSearchResult
     {
         public FullTextSearchResult(INode n, double score)

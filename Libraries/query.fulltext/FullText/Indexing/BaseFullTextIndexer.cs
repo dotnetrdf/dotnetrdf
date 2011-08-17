@@ -9,6 +9,16 @@ namespace VDS.RDF.Query.FullText.Indexing
     public abstract class BaseFullTextIndexer
         : IFullTextIndexer
     {
+        ~BaseFullTextIndexer()
+        {
+            this.Dispose(false);
+        }
+
+        public abstract IndexingMode IndexingMode
+        {
+            get;
+        }
+
         public abstract void Index(Triple t);
 
         public void Index(IGraph g)
@@ -46,5 +56,20 @@ namespace VDS.RDF.Query.FullText.Indexing
                 this.Unindex(g);
             }
         }
+
+        public virtual void Flush() { }
+
+        public void Dispose()
+        {
+            this.Dispose(true);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (disposing) GC.SuppressFinalize(this);
+            this.DisposeInternal();
+        }
+
+        protected virtual void DisposeInternal() { }
     }
 }

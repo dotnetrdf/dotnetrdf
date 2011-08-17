@@ -46,6 +46,17 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
+        /// Gets the Full Text Search provider to use
+        /// </summary>
+        public IFullTextSearchProvider SearchProvider
+        {
+            get
+            {
+                return this._provider;
+            }
+        }
+
+        /// <summary>
         /// Gets the Node/Variable that results must match or are bound to as appropriate
         /// </summary>
         public PatternItem MatchItem
@@ -75,6 +86,17 @@ namespace VDS.RDF.Query.Algebra
             get
             {
                 return this._searchVar;
+            }
+        }
+
+        /// <summary>
+        /// Gets the Score Threshold (returns NaN if no threshold)
+        /// </summary>
+        public double ScoreThreshold
+        {
+            get
+            {
+                return this._scoreThreshold;
             }
         }
 
@@ -108,12 +130,10 @@ namespace VDS.RDF.Query.Algebra
 
             //Then check that the score variable is not already bound, if so error
             //If a Score Variable is provided and it is OK then we'll bind scores at a later stage
-            bool bindScores = false;
             if (this._scoreVar != null)
             {
                 if (this._scoreVar.VariableName == null) throw new RdfQueryException("Queries using full text search that wish to return result scores must provide a variable");
                 if (this._scoreVar.VariableName != null && context.InputMultiset.ContainsVariable(this._scoreVar.VariableName)) throw new RdfQueryException("Queries using full text search that wish to return result scores must use an unbound variable to do so");
-                bindScores = true;
             }
 
             //Next ensure that the search text is a node and not a variable

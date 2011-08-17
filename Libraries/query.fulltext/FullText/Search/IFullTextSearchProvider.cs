@@ -8,7 +8,11 @@ namespace VDS.RDF.Query.FullText.Search
     /// <summary>
     /// Interface for classes that provide full text search capability
     /// </summary>
+    /// <remarks>
+    /// The <strong>Match()</strong> methods may allow for provider specific query syntaxes depending on the the underlying provider
+    /// </remarks>
     public interface IFullTextSearchProvider
+        : IDisposable
     {
         /// <summary>
         /// Searches for matches for specific text
@@ -17,41 +21,21 @@ namespace VDS.RDF.Query.FullText.Search
         /// <param name="scoreThreshold"></param>
         /// <param name="limit"></param>
         /// <returns></returns>
-        IEnumerable<IFullTextSearchResult> Search(String text, double scoreThreshold, int limit);
+        IEnumerable<IFullTextSearchResult> Match(String text, double scoreThreshold, int limit);
 
         /// <summary>
         /// Searches for matches for specific text
         /// </summary>
-        IEnumerable<IFullTextSearchResult> Search(String text, double scoreThreshold);
+        IEnumerable<IFullTextSearchResult> Match(String text, double scoreThreshold);
 
         /// <summary>
         /// Searches for matches for specific text
         /// </summary>
-        IEnumerable<IFullTextSearchResult> Search(String text, int limit);
+        IEnumerable<IFullTextSearchResult> Match(String text, int limit);
 
         /// <summary>
         /// Searches for matches for specific text
         /// </summary>
-        IEnumerable<IFullTextSearchResult> Search(String text);
-
-        /// <summary>
-        /// Searches for matches using the underlying full text search systems own query syntax
-        /// </summary>
-        IEnumerable<IFullTextSearchResult> Query(String query, double scoreThreshold, int limit);
-
-        /// <summary>
-        /// Searches for matches using the underlying full text search systems own query syntax
-        /// </summary>
-        IEnumerable<IFullTextSearchResult> Query(String query, double scoreThreshold);
-
-        /// <summary>
-        /// Searches for matches using the underlying full text search systems own query syntax
-        /// </summary>
-        IEnumerable<IFullTextSearchResult> Query(String query, int limit);
-
-        /// <summary>
-        /// Searches for matches using the underlying full text search systems own query syntax
-        /// </summary>
-        IEnumerable<IFullTextSearchResult> Query(String query);
+        IEnumerable<IFullTextSearchResult> Match(String text);
     }
 }

@@ -9,6 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		alexandria.testrunconfig = alexandria.testrunconfig
 		dotNetRDF.Alexandria.vsmdi = dotNetRDF.Alexandria.vsmdi
+		dotNetRDF.Experimental1.vsmdi = dotNetRDF.Experimental1.vsmdi
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.Alexandria.MongoDB", "..\..\Trunk\Libraries\alexandria.mongodb\dotNetRDF.Alexandria.MongoDB.csproj", "{5976AA06-893B-4E0D-BDED-19A8515E809C}"
@@ -63,9 +64,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.Query.FullText", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.Query.Geo", "Libraries\query.geo\dotNetRDF.Query.Geo.csproj", "{DF32A6A8-F459-4F7D-9B74-12C4852139C8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "fulltext-tests", "Testing\fulltext-tests\fulltext-tests.csproj", "{9E89B88B-9F97-4BC7-B658-5AF24E6CBC43}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
-		CategoryFile = dotNetRDF.Experimental3.vsmdi
+		CategoryFile = dotNetRDF.Experimental1.vsmdi
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -152,6 +155,10 @@ Global
 		{DF32A6A8-F459-4F7D-9B74-12C4852139C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DF32A6A8-F459-4F7D-9B74-12C4852139C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DF32A6A8-F459-4F7D-9B74-12C4852139C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9E89B88B-9F97-4BC7-B658-5AF24E6CBC43}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E89B88B-9F97-4BC7-B658-5AF24E6CBC43}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E89B88B-9F97-4BC7-B658-5AF24E6CBC43}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E89B88B-9F97-4BC7-B658-5AF24E6CBC43}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -165,6 +172,7 @@ Global
 		{16C2BF86-F81A-42E0-BAA1-CFFF4FB17B21} = {2DF4013D-8291-43F4-B9FA-2E7116311002}
 		{9AD4F1E2-62C0-4D3F-9DE9-7989E8ABA66B} = {2DF4013D-8291-43F4-B9FA-2E7116311002}
 		{10CD378D-9490-4032-A615-20991215C7EC} = {2DF4013D-8291-43F4-B9FA-2E7116311002}
+		{9E89B88B-9F97-4BC7-B658-5AF24E6CBC43} = {2DF4013D-8291-43F4-B9FA-2E7116311002}
 		{6CDCEDB4-8D4F-4C51-B0CF-30B37D1518E3} = {E021F329-0B14-42DF-BA6A-E7912B9348BB}
 		{5976AA06-893B-4E0D-BDED-19A8515E809C} = {E021F329-0B14-42DF-BA6A-E7912B9348BB}
 		{7F08E710-7ED8-4135-A5FF-AE6CD20C4D4B} = {622A9AAA-2C61-49E2-9469-0A7F61011EE0}
