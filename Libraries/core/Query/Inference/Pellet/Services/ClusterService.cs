@@ -211,22 +211,118 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
 
         public void Cluster(int number, PelletClusterServiceCallback callback, Object state)
         {
-            throw new NotImplementedException();
+            this.ClusterRaw(number, (g, s) =>
+                {
+                    //Build the List of Lists
+                    List<List<INode>> clusters = new List<List<INode>>();
+                    foreach (INode clusterNode in g.Triples.SubjectNodes.Distinct())
+                    {
+                        List<INode> cluster = new List<INode>();
+                        foreach (Triple t in g.GetTriplesWithSubject(clusterNode))
+                        {
+                            cluster.Add(t.Object);
+                        }
+                        cluster = cluster.Distinct().ToList();
+                        clusters.Add(cluster);
+                    }
+
+                    callback(clusters, s);
+                }, state);
         }
 
         public void Cluster(int number, String type, PelletClusterServiceCallback callback, Object state)
         {
-            throw new NotImplementedException();
+            this.ClusterRaw(number, type, (g, s) =>
+                {
+                    //Build the List of Lists
+                    List<List<INode>> clusters = new List<List<INode>>();
+                    foreach (INode clusterNode in g.Triples.SubjectNodes.Distinct())
+                    {
+                        List<INode> cluster = new List<INode>();
+                        foreach (Triple t in g.GetTriplesWithSubject(clusterNode))
+                        {
+                            cluster.Add(t.Object);
+                        }
+                        cluster = cluster.Distinct().ToList();
+                        clusters.Add(cluster);
+                    }
+
+                    callback(clusters, s);
+                }, state);
         }
 
         public void ClusterRaw(int number, GraphCallback callback, Object state)
         {
-            throw new NotImplementedException();
+            if (number < 2) throw new RdfReasoningException("Pellet Server requires the number of Clusters to be at least 2");
+
+            String requestUri = this._clusterUri + number + "/";
+
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(requestUri);
+            request.Method = this.Endpoint.HttpMethods.First();
+            request.Accept = MimeTypesHelper.CustomHttpAcceptHeader(this.MimeTypes.Where(type => !type.Equals("text/json")), MimeTypesHelper.SupportedRdfMimeTypes);
+
+#if DEBUG
+            if (Options.HttpDebugging)
+            {
+                Tools.HttpDebugRequest(request);
+            }
+#endif
+
+            request.BeginGetResponse(result =>
+                {
+                    using (HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(result))
+                    {
+#if DEBUG
+                        if (Options.HttpDebugging)
+                        {
+                            Tools.HttpDebugResponse(response);
+                        }
+#endif
+                        IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
+                        Graph g = new Graph();
+                        parser.Load(g, new StreamReader(response.GetResponseStream()));
+
+                        response.Close();
+                        callback(g, state);
+                    }
+                }, null);
         }
 
-        public void CluserRaw(int number, String type, GraphCallback callback, Object state)
+        public void ClusterRaw(int number, String type, GraphCallback callback, Object state)
         {
-            throw new NotImplementedException();
+            if (number < 2) throw new RdfReasoningException("Pellet Server requires the number of Clusters to be at least 2");
+
+            String requestUri = this._clusterUri + number + "/" + type;
+
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(requestUri);
+            request.Method = this.Endpoint.HttpMethods.First();
+            request.Accept = MimeTypesHelper.CustomHttpAcceptHeader(this.MimeTypes.Where(t => !t.Equals("text/json")), MimeTypesHelper.SupportedRdfMimeTypes);
+
+#if DEBUG
+            if (Options.HttpDebugging)
+            {
+                Tools.HttpDebugRequest(request);
+            }
+#endif
+
+            request.BeginGetResponse(result =>
+                {
+                    using (HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(result))
+                    {
+#if DEBUG
+                        if (Options.HttpDebugging)
+                        {
+                            Tools.HttpDebugResponse(response);
+                        }
+#endif
+                        IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
+                        Graph g = new Graph();
+                        parser.Load(g, new StreamReader(response.GetResponseStream()));
+
+                        response.Close();
+                        callback(g, state);
+                    }
+                }, null);
         }
     }
 }

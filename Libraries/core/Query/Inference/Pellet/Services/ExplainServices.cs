@@ -39,6 +39,9 @@ using System.Linq;
 using System.Net;
 using Newtonsoft.Json.Linq;
 using VDS.RDF.Parsing;
+#if !NO_WEB
+using System.Web;
+#endif
 
 namespace VDS.RDF.Query.Inference.Pellet.Services
 {
@@ -51,7 +54,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// <summary>
         /// Base Query for use with the Explain Service
         /// </summary>
-        protected SparqlParameterizedString _baseQuery = new SparqlParameterizedString("SELECT * WHERE {@s @p @o . }");
+        protected SparqlParameterizedString _baseQuery = new SparqlParameterizedString("SELECT * WHERE { @s @p @o . }");
 
         /// <summary>
         /// Creates a new Explain Service
@@ -80,7 +83,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// <returns></returns>
         public IGraph Explain(String sparqlQuery)
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this._explainUri);
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this._explainUri + "?query=" + HttpUtility.UrlEncode(sparqlQuery));
             request.Method = this.Endpoint.HttpMethods.First();
             request.Accept = MimeTypesHelper.CustomHttpAcceptHeader(this.MimeTypes, MimeTypesHelper.SupportedRdfMimeTypes);
 
@@ -125,7 +128,35 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
 
         public void Explain(String sparqlQuery, GraphCallback callback, Object state)
         {
-            throw new NotImplementedException();
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this._explainUri + "?query=" + HttpUtility.UrlEncode(sparqlQuery));
+            request.Method = this.Endpoint.HttpMethods.First();
+            request.Accept = MimeTypesHelper.CustomHttpAcceptHeader(this.MimeTypes, MimeTypesHelper.SupportedRdfMimeTypes);
+
+#if DEBUG
+            if (Options.HttpDebugging)
+            {
+                Tools.HttpDebugRequest(request);
+            }
+#endif
+
+            request.BeginGetResponse(result =>
+                {
+                    using (HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(result))
+                    {
+#if DEBUG
+                        if (Options.HttpDebugging)
+                        {
+                            Tools.HttpDebugResponse(response);
+                        }
+#endif
+                        IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
+                        Graph g = new Graph();
+                        parser.Load(g, new StreamReader(response.GetResponseStream()));
+
+                        response.Close();
+                        callback(g, state);
+                    }
+                }, null);
         }
     }
 
@@ -162,7 +193,11 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
 
         public void ExplainUnsatisfiable(INode cls, GraphCallback callback, Object state)
         {
-            throw new NotImplementedException();
+            this._baseQuery.SetParameter("s", cls);
+            this._baseQuery.SetUri("p", new Uri(NamespaceMapper.RDFS + "subClassOf"));
+            this._baseQuery.SetUri("o", new Uri(OwlHelper.OwlNothing));
+
+            base.Explain(this._baseQuery.ToString(), callback, state);
         }
     }
 
@@ -200,7 +235,11 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
 
         public void ExplainInstance(INode instance, INode cls, GraphCallback callback, Object state)
         {
-            throw new NotImplementedException();
+            this._baseQuery.SetParameter("s", instance);
+            this._baseQuery.SetUri("p", new Uri(RdfSpecsHelper.RdfType));
+            this._baseQuery.SetParameter("o", cls);
+
+            base.Explain(this._baseQuery.ToString(), callback, state);
         }
     }
 
@@ -238,7 +277,11 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
 
         public void ExplainSubclass(INode subclass, INode superclass, GraphCallback callback, Object state)
         {
-            throw new NotImplementedException();
+            this._baseQuery.SetParameter("s", subclass);
+            this._baseQuery.SetUri("p", new Uri(NamespaceMapper.RDFS + "subClassOf"));
+            this._baseQuery.SetParameter("o", superclass);
+
+            base.Explain(this._baseQuery.ToString(), callback, state);
         }
     }
 
@@ -270,7 +313,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
 
         public void ExplainInconsistent(GraphCallback callback, Object state)
         {
-            throw new NotImplementedException();
+            base.Explain(String.Empty, callback, state);
         }
     }
 
@@ -318,7 +361,11 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
 
         public void ExplainProperty(INode subj, INode pred, INode obj, GraphCallback callback, Object state)
         {
-            throw new NotImplementedException();
+            this._baseQuery.SetParameter("s", subj);
+            this._baseQuery.SetParameter("p", pred);
+            this._baseQuery.SetParameter("o", obj);
+
+            base.Explain(this._baseQuery.ToString(), callback, state);
         }
 
         public void ExplainProprety(Triple t, GraphCallback callback, Object state)

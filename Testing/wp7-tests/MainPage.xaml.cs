@@ -200,9 +200,51 @@ namespace wp7_tests
         {
             PelletServer server = new PelletServer("http://ps.clarkparsia.com", (svr,_) =>
                 {
-                    Type target = typeof(ClassifyService);
-                    ClassifyService svc = svr.KnowledgeBases.First(kb => kb.SupportsService(target)).GetService<ClassifyService>();
+                    ClassifyService svc = svr.KnowledgeBases.First(kb => kb.SupportsService<ClassifyService>()).GetService<ClassifyService>();
                     svc.Classify(this.GraphCallback, null);
+                }, null);
+        }
+
+        private void PelletClusterTest_Click(object sender, RoutedEventArgs e)
+        {
+            PelletServer server = new PelletServer("http://ps.clarkparsia.com", (svr, _) =>
+                {
+                    ClusterService svc = svr.KnowledgeBases.First(kb => kb.SupportsService<ClusterService>()).GetService<ClusterService>();
+                    svc.ClusterRaw(3, this.GraphCallback, null);
+                }, null);
+        }
+
+        private void PelletConsistencyTest_Click(object sender, RoutedEventArgs e)
+        {
+            PelletServer server = new PelletServer("http://ps.clarkparsia.com", (svr, _) =>
+                {
+                    ConsistencyService svc = svr.KnowledgeBases.First(kb => kb.SupportsService<ConsistencyService>()).GetService<ConsistencyService>();
+                    svc.IsConsistent((ok, s) =>
+                        {
+                            Dispatcher.BeginInvoke(() =>
+                                {
+                                    this.ResultsList.Items.Clear();
+                                    this.ResultsSummary.Text = "Knowledge Base is " + (ok ? "consistent" : "NOT consistent");
+                                });
+                        }, null);
+                }, null);
+        }
+
+        private void PelletExplainTest_Click(object sender, RoutedEventArgs e)
+        {
+            PelletServer server = new PelletServer("http://ps.clarkparsia.com", (svr, _) =>
+                {
+                    ExplainService svc = svr.KnowledgeBases.First(kb => kb.SupportsService<ExplainService>()).GetService<ExplainService>();
+                    svc.Explain("SELECT * WHERE { ?s a ?type }", this.GraphCallback, null);
+                }, null);
+        }
+
+        private void PelletICVTest_Click(object sender, RoutedEventArgs e)
+        {
+            PelletServer server = new PelletServer("http://ps.clarkparsia.com", (svr, _) =>
+                {
+                    IntegrityConstraintValidationService svc = svr.KnowledgeBases.First(kb => kb.SupportsService<IntegrityConstraintValidationService>()).GetService<IntegrityConstraintValidationService>();
+                    svc.Validate(this.TripleStoreCallback, null;
                 }, null);
         }
     }

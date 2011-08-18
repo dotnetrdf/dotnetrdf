@@ -101,6 +101,18 @@ namespace VDS.RDF.Query.Inference.Pellet
         /// <summary>
         /// Gets whether a Service is supported by the Knowledge Base
         /// </summary>
+        /// <typeparam name="T">Service Type</typeparam>
+        /// <returns></returns>
+        public bool SupportsService<T>()
+            where T : PelletService
+        {
+            Type target = typeof(T);
+            return this._services.Any(s => target.Equals(s.GetType()));
+        }
+
+        /// <summary>
+        /// Gets whether a Service is supported by the Knowledge Base
+        /// </summary>
         /// <param name="name">Service Name</param>
         /// <returns></returns>
         public bool SupportsService(String name)

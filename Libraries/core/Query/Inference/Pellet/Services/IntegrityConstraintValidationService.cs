@@ -68,7 +68,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this.Endpoint.Uri);
             request.Method = this.Endpoint.HttpMethods.First();
-            request.ContentType = MimeTypesHelper.CustomHttpAcceptHeader(this.MimeTypes, MimeTypesHelper.SupportedRdfDatasetMimeTypes);
+            request.Accept = MimeTypesHelper.CustomHttpAcceptHeader(this.MimeTypes, MimeTypesHelper.SupportedRdfDatasetMimeTypes);
 
 #if DEBUG
             if (Options.HttpDebugging)
@@ -112,7 +112,36 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
 
         public void Validate(TripleStoreCallback callback, Object state)
         {
-            throw new NotImplementedException();
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this.Endpoint.Uri);
+            request.Method = this.Endpoint.HttpMethods.First();
+            request.Accept = MimeTypesHelper.CustomHttpAcceptHeader(this.MimeTypes, MimeTypesHelper.SupportedRdfDatasetMimeTypes);
+
+#if DEBUG
+            if (Options.HttpDebugging)
+            {
+                Tools.HttpDebugRequest(request);
+            }
+#endif
+
+            request.BeginGetResponse(result =>
+                {
+                    using (HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(result))
+                    {
+#if DEBUG
+                        if (Options.HttpDebugging)
+                        {
+                            Tools.HttpDebugResponse(response);
+                        }
+#endif
+                        IStoreReader parser = MimeTypesHelper.GetStoreParser(response.ContentType);
+                        TripleStore store = new TripleStore();
+                        StreamParams parameters = new StreamParams(response.GetResponseStream());
+                        parser.Load(store, parameters);
+
+                        response.Close();
+                        callback(store, state);
+                    }
+                }, null);
         }
 
     }

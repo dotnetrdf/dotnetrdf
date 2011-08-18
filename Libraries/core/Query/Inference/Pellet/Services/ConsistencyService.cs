@@ -63,7 +63,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this.Endpoint.Uri);
             request.Method = this.Endpoint.HttpMethods.First();
-            request.ContentType = MimeTypesHelper.HttpSparqlAcceptHeader;
+            request.Accept = MimeTypesHelper.HttpSparqlAcceptHeader;
 
 #if DEBUG
             if (Options.HttpDebugging)
@@ -105,7 +105,35 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
 
         public void IsConsistent(PelletConsistencyCallback callback, Object state)
         {
-            throw new NotImplementedException();
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this.Endpoint.Uri);
+            request.Method = this.Endpoint.HttpMethods.First();
+            request.Accept = MimeTypesHelper.HttpSparqlAcceptHeader;
+
+#if DEBUG
+            if (Options.HttpDebugging)
+            {
+                Tools.HttpDebugRequest(request);
+            }
+#endif
+
+            request.BeginGetResponse(result =>
+                {
+                    using (HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(result))
+                    {
+#if DEBUG
+                        if (Options.HttpDebugging)
+                        {
+                            Tools.HttpDebugResponse(response);
+                        }
+#endif
+                        ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParser(response.ContentType);
+                        SparqlResultSet results = new SparqlResultSet();
+                        parser.Load(results, new StreamReader(response.GetResponseStream()));
+
+                        //Expect a boolean result set
+                        callback(results.Result, state);
+                    }
+                }, null);
         }
     }
 }

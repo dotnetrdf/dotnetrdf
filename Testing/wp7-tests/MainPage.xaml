@@ -58,6 +58,18 @@
                     <Button x:Name="PelletClassifyTest" Click="PelletClassifyTest_Click">
                         <TextBlock>Test Pellet Server Classify Service</TextBlock>
                     </Button>
+                    <Button x:Name="PelletClusterTest" Click="PelletClusterTest_Click">
+                        <TextBlock>Test Pellet Server Cluster Service</TextBlock>
+                    </Button>
+                    <Button x:Name="PelletConsistencyTest" Click="PelletConsistencyTest_Click">
+                        <TextBlock>Test Pellet Server Consistency Service</TextBlock>
+                    </Button>
+                    <Button x:Name="PelletExplainTest" Click="PelletExplainTest_Click">
+                        <TextBlock>Test Pellet Server Explain Service</TextBlock>
+                    </Button>
+                    <Button x:Name="PelletICVTest" Click="PelletICVTest_Click">
+                        <TextBlock>Test Pellet Server ICV Test</TextBlock>
+                    </Button>
                 </StackPanel>
             </ScrollViewer>
 
