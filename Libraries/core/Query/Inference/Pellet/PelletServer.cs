@@ -55,6 +55,7 @@ namespace VDS.RDF.Query.Inference.Pellet
         /// </summary>
         private const String ServerDescriptionFormat = "text/json";
 
+#if !SILVERLIGHT
         /// <summary>
         /// Creates a new connection to a Pellet Server
         /// </summary>
@@ -81,13 +82,41 @@ namespace VDS.RDF.Query.Inference.Pellet
 
             this.Discover();
         }
+#endif
+        /// <summary>
+        /// Creates a new connection to a Pellet Server
+        /// </summary>
+        /// <param name="serverUri">Server URI</param>
+        public PelletServer(Uri serverUri, PelletServerReadyCallback callback, Object state)
+        {
+            if (serverUri == null) throw new ArgumentNullException("serverUri", "A Server URI must be specified in order to connect to a Pellet Server");
+            this._serverUri = serverUri.ToString();
+            if (!this._serverUri.EndsWith("/")) this._serverUri += "/";
+
+            this.Discover(callback, state);
+        }
+
+        /// <summary>
+        /// Creates a new connection to a Pellet Server
+        /// </summary>
+        /// <param name="serverUri">Server URI</param>
+        public PelletServer(String serverUri, PelletServerReadyCallback callback, Object state)
+        {
+            if (serverUri == null) throw new ArgumentNullException("serverUri", "A Server URI must be specified in order to connect to a Pellet Server");
+            if (serverUri.Equals(String.Empty)) throw new ArgumentException("Server URI cannot be the empty string", "serverUri");
+            this._serverUri = serverUri;
+            if (!this._serverUri.EndsWith("/")) this._serverUri += "/";
+
+            this.Discover(callback, state);
+        }
+
+#if !SILVERLIGHT
 
         /// <summary>
         /// Discovers the Knowledge Bases on a Server
         /// </summary>
         private void Discover()
         {
-#if !SILVERLIGHT
             try
             {
                 //Make the request to the Server Root URL to get the JSON description of the server
@@ -113,6 +142,7 @@ namespace VDS.RDF.Query.Inference.Pellet
                         Tools.HttpDebugResponse(response);
                     }
 #endif
+                    //Get and parse the JSON
                     jsonText = new StreamReader(response.GetResponseStream()).ReadToEnd();
                     json = JObject.Parse(jsonText);
 
@@ -139,9 +169,50 @@ namespace VDS.RDF.Query.Inference.Pellet
             {
                 throw new RdfReasoningException("Error while attempting to discover Knowledge Bases on a Pellet Server");
             }
-#else
-            throw new PlatformNotSupportedException("Pellet Server integration is not yet supported under Silverlight/Windows Phone 7");
+        }
+
 #endif
+        private void Discover(PelletServerReadyCallback callback, Object state)
+        {
+            //Make the request to the Server Root URL to get the JSON description of the server
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this._serverUri);
+            request.Method = "GET";
+            request.Accept = ServerDescriptionFormat;
+
+
+#if DEBUG
+            if (Options.HttpDebugging)
+            {
+                Tools.HttpDebugRequest(request);
+            }
+#endif
+
+            //Get the response and parse the JSON
+            String jsonText;
+            JObject json;
+            request.BeginGetResponse(result =>
+                {
+                    HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(result);
+#if DEBUG
+                    if (Options.HttpDebugging)
+                    {
+                        Tools.HttpDebugResponse(response);
+                    }
+#endif
+                    //Get and parse the JSON
+                    jsonText = new StreamReader(response.GetResponseStream()).ReadToEnd();
+                    json = JObject.Parse(jsonText);
+
+                    response.Close();
+
+                    JToken kbs = json.SelectToken("knowledge-bases");
+                    foreach (JToken kb in kbs.Children())
+                    {
+                        this._kbs.Add(new KnowledgeBase(kb));
+                    }
+
+                    callback(this, state);
+                }, null);
         }
 
         /// <summary>

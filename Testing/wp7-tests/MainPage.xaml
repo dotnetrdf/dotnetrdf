@@ -29,7 +29,7 @@
         <!--ContentPanel - place additional content here-->
         <StackPanel Grid.Row="1">
             <ScrollViewer Height="150" ScrollViewer.VerticalScrollBarVisibility="Visible">
-                <StackPanel Height="500">
+                <StackPanel Height="750">
                     <TextBlock Margin="10,0,10,0">Scroll this area to see more available tests...</TextBlock>
                     <Button x:Name="RemoteSparqlTest1" Click="RemoteSparqlTest1_Click">
                         <TextBlock>Test SELECT Query</TextBlock>
@@ -51,6 +51,9 @@
                     </Button>
                     <Button x:Name="RemoteSparqlUpdateTest1" Click="RemoteSparqlUpdateTest1_Click">
                         <TextBlock>Test Remote SPARQL Update</TextBlock>
+                    </Button>
+                    <Button x:Name="PelletServerTest" Click="PelletServerTest_Click">
+                        <TextBlock>Test Pellet Server connection</TextBlock>
                     </Button>
                 </StackPanel>
             </ScrollViewer>

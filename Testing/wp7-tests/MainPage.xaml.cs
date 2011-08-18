@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -14,6 +15,7 @@ using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
+using VDS.RDF.Query.Inference.Pellet;
 using VDS.RDF.Update;
 using VDS.RDF.Writing.Formatting;
 
@@ -128,6 +130,23 @@ namespace wp7_tests
                 });
         }
 
+        private void PelletServerReadyCallback(PelletServer server, Object state)
+        {
+            Dispatcher.BeginInvoke(() =>
+                {
+                    this.ResultsSummary.Text = server.KnowledgeBases.Count() + " Knowledge Bases available";
+                    this.ResultsList.Items.Clear();
+                    foreach (KnowledgeBase kb in server.KnowledgeBases)
+                    {
+                        this.ResultsList.Items.Add(kb.Name);
+                        foreach (PelletService svc in kb.Services)
+                        {
+                            this.ResultsList.Items.Add(kb.Name + "/" + svc.Name);
+                        }
+                    }
+                });
+        }
+
         #endregion
 
         #region Test Methods
@@ -170,5 +189,10 @@ namespace wp7_tests
         }
 
         #endregion
+
+        private void PelletServerTest_Click(object sender, RoutedEventArgs e)
+        {
+            PelletServer server = new PelletServer("http://ps.clarkparsia.com", this.PelletServerReadyCallback, null);
+        }
     }
 }

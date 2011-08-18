@@ -31,6 +31,8 @@ namespace VDS.RDF
 
 namespace VDS.RDF.Query.Inference.Pellet
 {
+    public delegate void PelletServerReadyCallback(PelletServer server, Object state);
+
     public delegate void PelletConsistencyCallback(bool isConsistent, Object state);
 
     public delegate void PelletSearchServiceCallback(List<SearchServiceResult> results, Object state);
