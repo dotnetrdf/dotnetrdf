@@ -244,7 +244,7 @@ namespace wp7_tests
             PelletServer server = new PelletServer("http://ps.clarkparsia.com", (svr, _) =>
                 {
                     IntegrityConstraintValidationService svc = svr.KnowledgeBases.First(kb => kb.SupportsService<IntegrityConstraintValidationService>()).GetService<IntegrityConstraintValidationService>();
-                    svc.Validate(this.TripleStoreCallback, null;
+                    svc.Validate(this.TripleStoreCallback, null);
                 }, null);
         }
     }

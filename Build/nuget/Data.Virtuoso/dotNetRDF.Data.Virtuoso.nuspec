@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>dotNetRDF.Data.Virtuoso</id>
+    <version>0.5.0</version>
+    <authors>RobVesse</authors>
+    <owners>RobVesse</owners>
+    <licenseUrl>http://www.opensource.org/licenses/MIT</licenseUrl>
+    <projectUrl>http://www.dotnetrdf.org</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>dotNetRDF.Data.Virtuoso provides support for using OpenLink Virtuoso as a backend triplestore with dotNetRDF</description>
+    <tags>RDF Semantic Web SPARQL Virtuoso OpenLink</tags>
+    <dependencies>
+	<dependency id="dotNetRDF" version="0.5.0" />
+    </dependencies>
+  </metadata>
+</package>

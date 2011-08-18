@@ -85,7 +85,7 @@
     <Compile Include="Storage\SqlIOTests.cs" />
     <Compile Include="Storage\TalisTest.cs" />
     <Compile Include="TestTools.cs" />
-    <Compile Include="UpdateTests.cs" />
+    <Compile Include="Update\UpdateTests.cs" />
     <Compile Include="Storage\VirtuosoTest.cs" />
     <Compile Include="Writing\WriterTests.cs" />
   </ItemGroup>
@@ -192,7 +192,7 @@
     <Compile Include="Writing\CollectionCompressionTests.cs" />
     <Compile Include="Writing\FormattingTests.cs" />
     <Compile Include="Interop\JenaInteropTests.cs" />
-    <Compile Include="PelletTests.cs" />
+    <Compile Include="Query\PelletTests.cs" />
     <Compile Include="Parsing\RdfATests.cs" />
     <Compile Include="Parsing\RdfXmlTests.cs" />
     <Compile Include="Sparql\DefaultGraphTests.cs" />
