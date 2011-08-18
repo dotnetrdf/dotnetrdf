@@ -124,6 +124,17 @@ namespace VDS.RDF.Query.Inference.Pellet
             return null;
         }
 
+        public T GetService<T>()
+            where T : PelletService
+        {
+            Type target = typeof(T);
+            foreach (PelletService svc in this._services)
+            {
+                if (target.Equals(svc.GetType())) return (T)svc;
+            }
+            return (T)null;
+        }
+
         /// <summary>
         /// Gets the first available Service with the given name for this Knowledge Base
         /// </summary>

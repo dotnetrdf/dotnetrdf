@@ -8,7 +8,7 @@
     <!--Application Resources-->
     <Application.Resources>
         <Style TargetType="TextBlock">
-            <Setter Property="FontSize" Value="20" />
+            <Setter Property="FontSize" Value="10" />
         </Style>
     </Application.Resources>
 

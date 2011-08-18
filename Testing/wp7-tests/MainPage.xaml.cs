@@ -16,6 +16,7 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Inference.Pellet;
+using VDS.RDF.Query.Inference.Pellet.Services;
 using VDS.RDF.Update;
 using VDS.RDF.Writing.Formatting;
 
@@ -193,6 +194,16 @@ namespace wp7_tests
         private void PelletServerTest_Click(object sender, RoutedEventArgs e)
         {
             PelletServer server = new PelletServer("http://ps.clarkparsia.com", this.PelletServerReadyCallback, null);
+        }
+
+        private void PelletClassifyTest_Click(object sender, RoutedEventArgs e)
+        {
+            PelletServer server = new PelletServer("http://ps.clarkparsia.com", (svr,_) =>
+                {
+                    Type target = typeof(ClassifyService);
+                    ClassifyService svc = svr.KnowledgeBases.First(kb => kb.SupportsService(target)).GetService<ClassifyService>();
+                    svc.Classify(this.GraphCallback, null);
+                }, null);
         }
     }
 }

@@ -89,10 +89,9 @@ namespace wp7_tests
         // Code to execute on Unhandled Exceptions
         private void Application_UnhandledException(object sender, ApplicationUnhandledExceptionEventArgs e)
         {
-            App.Current.RootVisual.Dispatcher.BeginInvoke(() =>
-                {
-                    System.Windows.MessageBox.Show("Error - " + e.ExceptionObject.Message, "Test Failed", MessageBoxButton.OK);
-                });
+            System.Diagnostics.Debug.WriteLine(e.ExceptionObject.Message);
+            System.Diagnostics.Debug.WriteLine(e.ExceptionObject.StackTrace);
+            e.Handled = true;
         }
 
         #region Phone application initialization

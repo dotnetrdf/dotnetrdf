@@ -62,7 +62,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this.Endpoint.Uri);
             request.Method = this.Endpoint.HttpMethods.First();
-            request.ContentType = MimeTypesHelper.CustomHttpAcceptHeader(this.MimeTypes, MimeTypesHelper.SupportedRdfMimeTypes);
+            request.Accept = MimeTypesHelper.CustomHttpAcceptHeader(this.MimeTypes, MimeTypesHelper.SupportedRdfMimeTypes);
 
 #if DEBUG
             if (Options.HttpDebugging)
@@ -105,7 +105,36 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
 
         public void Classify(GraphCallback callback, Object state)
         {
-            throw new NotImplementedException();
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this.Endpoint.Uri);
+            request.Method = this.Endpoint.HttpMethods.First();
+            request.Accept = MimeTypesHelper.CustomHttpAcceptHeader(this.MimeTypes, MimeTypesHelper.SupportedRdfMimeTypes);
+
+#if DEBUG
+            if (Options.HttpDebugging)
+            {
+                Tools.HttpDebugRequest(request);
+            }
+#endif
+
+            request.BeginGetResponse(result =>
+                {
+                    using (HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(result))
+                    {
+#if DEBUG
+                        if (Options.HttpDebugging)
+                        {
+                            Tools.HttpDebugResponse(response);
+                        }
+#endif
+
+                        IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
+                        Graph g = new Graph();
+                        parser.Load(g, new StreamReader(response.GetResponseStream()));
+
+                        response.Close();
+                        callback(g, state);
+                    }                  
+                }, null);
         }
     }
 }
