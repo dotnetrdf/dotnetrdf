@@ -126,6 +126,15 @@ namespace VDS.RDF.Test.Writing.Serialization
         }
 
         [TestMethod]
+        public void SerializationXmlGraph4()
+        {
+            Graph g = new Graph();
+            g.LoadFromFile("complex-collections.nt");
+
+            this.TestGraphSerializationXml(g);
+        }
+
+        [TestMethod]
         public void SerializationBinaryGraph()
         {
             Graph g = new Graph();
@@ -148,6 +157,15 @@ namespace VDS.RDF.Test.Writing.Serialization
         {
             Graph g = new Graph();
             UriLoader.Load(g, new Uri("http://dbpedia.org/resource/Ilkeston"));
+
+            this.TestGraphSerializationBinary(g);
+        }
+
+        [TestMethod]
+        public void SerializationBinaryGraph4()
+        {
+            Graph g = new Graph();
+            g.LoadFromFile("complex-collections.nt");
 
             this.TestGraphSerializationBinary(g);
         }
@@ -180,6 +198,15 @@ namespace VDS.RDF.Test.Writing.Serialization
         }
 
         [TestMethod]
+        public void SerializationDataContractGraph4()
+        {
+            Graph g = new Graph();
+            g.LoadFromFile("complex-collections.nt");
+
+            this.TestGraphSerializationDataContract(g);
+        }
+
+        [TestMethod, ExpectedException(typeof(JsonSerializationException))]
         public void SerializationJsonGraph()
         {
             Graph g = new Graph();
