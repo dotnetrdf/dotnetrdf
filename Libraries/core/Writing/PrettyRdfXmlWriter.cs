@@ -578,12 +578,11 @@ namespace VDS.RDF.Writing
             //First generate the Predicate Node
             UriRefType outType;
             String uriref = this.GenerateUriRef(context, p.Uri, UriRefType.QName, out outType);
+            String tempPrefix = null, tempUri = null;
             if (outType != UriRefType.QName)
             {
                 //Need to generate a temporary namespace
-                String tempPrefix, tempUri;
                 this.GenerateTemporaryNamespace(context, p, out tempPrefix, out tempUri);
-                context.Writer.WriteAttributeString("xmlns", tempPrefix, null, tempUri);
                 uriref = this.GenerateUriRef(context, p.Uri, UriRefType.QName, out outType);
                 if (outType != UriRefType.QName) throw new RdfOutputException(WriterErrorMessages.UnreducablePropertyURIUnserializable);
             }
@@ -598,6 +597,10 @@ namespace VDS.RDF.Writing
             {
                 //Create an element in the default namespace
                 context.Writer.WriteStartElement(uriref);
+            }
+            if (tempPrefix != null && tempUri != null)
+            {
+                context.Writer.WriteAttributeString("xmlns", tempPrefix, null, tempUri);
             }
 
             //Then generate the Object Output

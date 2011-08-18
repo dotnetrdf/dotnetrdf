@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
@@ -14,7 +15,10 @@ namespace VDS.RDF.Test.Sparql
     public class RemoteEndpoints
     {
         const String TestQueryUri = "http://localhost/demos/leviathan/";
-        const String TestUpdateUri = "http://localhost/demos/server/update";
+        const String TestServerUpdateUri = "http://localhost/demos/server/update";
+        const String TestServerQueryUri = "http://localhost/demos/server/query";
+
+        const int AsyncTimeout = 10000;
 
         [TestMethod]
         public void SparqlRemoteEndpointLongQuery()
@@ -56,7 +60,7 @@ namespace VDS.RDF.Test.Sparql
                 input.AppendLine("LOAD <http://dbpedia.org/resource/Ilkeston>");
                 input.AppendLine(new String('#', 2048));
 
-                SparqlRemoteUpdateEndpoint endpoint = new SparqlRemoteUpdateEndpoint(new Uri(TestUpdateUri));
+                SparqlRemoteUpdateEndpoint endpoint = new SparqlRemoteUpdateEndpoint(new Uri(TestServerUpdateUri));
                 endpoint.Update(input.ToString());
             }
             finally
@@ -93,6 +97,58 @@ namespace VDS.RDF.Test.Sparql
             SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(new Uri(TestQueryUri));
             WriteThroughHandler handler = new WriteThroughHandler(typeof(NTriplesFormatter), Console.Out, false);
             endpoint.QueryWithResultGraph(handler, "CONSTRUCT WHERE { ?s ?p ?o }");
+        }
+
+        [TestMethod]
+        public void SparqlRemoteEndpointAsyncApiQueryWithResultSet()
+        {
+            SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(new Uri(TestQueryUri));
+            ManualResetEvent signal = new ManualResetEvent(false);
+            endpoint.QueryWithResultSet("SELECT * WHERE { ?s ?p ?o }", (r, s) =>
+            {
+                TestTools.ShowResults(r);
+                signal.Set();
+                signal.Close();
+            }, null);
+
+            Thread.Sleep(AsyncTimeout);
+            Assert.IsTrue(signal.SafeWaitHandle.IsClosed, "WaitHandle should be closed");
+        }
+
+        [TestMethod]
+        public void SparqlRemoteEndpointAsyncApiQueryWithResultGraph()
+        {
+            SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(new Uri(TestQueryUri));
+            ManualResetEvent signal = new ManualResetEvent(false);
+            endpoint.QueryWithResultGraph("CONSTRUCT WHERE { ?s ?p ?o }", (r, s) =>
+            {
+                TestTools.ShowResults(r);
+                signal.Set();
+                signal.Close();
+            }, null);
+
+            Thread.Sleep(AsyncTimeout);
+            Assert.IsTrue(signal.SafeWaitHandle.IsClosed, "Wait Handle should be closed");
+        }
+
+        [TestMethod]
+        public void SparqlRemoteEndpointAsyncApiUpdate()
+        {
+            SparqlRemoteUpdateEndpoint endpoint = new SparqlRemoteUpdateEndpoint(new Uri(TestServerUpdateUri));
+            ManualResetEvent signal = new ManualResetEvent(false);
+            endpoint.Update("LOAD <http://dbpedia.org/resource/Ilkeston> INTO GRAPH <http://example.org/async/graph>", s =>
+            {
+                signal.Set();
+                signal.Close();
+            }, null);
+
+            Thread.Sleep(AsyncTimeout);
+            Assert.IsTrue(signal.SafeWaitHandle.IsClosed, "Wait Handle should be closed");
+
+            //Check that the Graph was really loaded
+            SparqlRemoteEndpoint queryEndpoint = new SparqlRemoteEndpoint(new Uri(TestServerQueryUri));
+            IGraph g = queryEndpoint.QueryWithResultGraph("CONSTRUCT FROM <http://example.org/async/graph> WHERE { ?s ?p ?o }");
+            Assert.IsFalse(g.IsEmpty, "Graph should not be empty");
         }
     }
 }
