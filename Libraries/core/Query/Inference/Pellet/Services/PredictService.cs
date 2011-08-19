@@ -142,12 +142,48 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
 
         public void Predict(String individual, String property, NodeListCallback callback, Object state)
         {
-            throw new NotImplementedException();
+            this.PredictRaw(individual, property, (g, s) =>
+                {
+                    List<INode> predictions = (from t in g.Triples
+                                               select t.Object).Distinct().ToList();
+
+                    callback(predictions, state);
+                }, state);
         }
 
         public void PredictRaw(String individual, String property, GraphCallback callback, Object state)
         {
-            throw new NotImplementedException();
+            String requestUri = this._predictUri + individual + "/" + property;
+
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(requestUri);
+            request.Method = this.Endpoint.HttpMethods.First();
+            request.Accept = MimeTypesHelper.CustomHttpAcceptHeader(this.MimeTypes.Where(t => !t.Equals("text/json")), MimeTypesHelper.SupportedRdfMimeTypes);
+
+#if DEBUG
+            if (Options.HttpDebugging)
+            {
+                Tools.HttpDebugRequest(request);
+            }
+#endif
+
+            request.BeginGetResponse(result =>
+                {
+                    using (HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(result))
+                    {
+#if DEBUG
+                        if (Options.HttpDebugging)
+                        {
+                            Tools.HttpDebugResponse(response);
+                        }
+#endif
+                        IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
+                        Graph g = new Graph();
+                        parser.Load(g, new StreamReader(response.GetResponseStream()));
+
+                        response.Close();
+                        callback(g, state);
+                    }
+                }, null);
         }
     }
 }

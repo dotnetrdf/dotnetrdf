@@ -42,6 +42,7 @@ using System.Net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using VDS.RDF.Parsing;
+using VDS.RDF.Parsing.Handlers;
 
 namespace VDS.RDF.Query.Inference.Pellet.Services
 {
@@ -122,12 +123,56 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
 
         public void Query(String sparqlQuery, GraphCallback graphCallback, SparqlResultsCallback resultsCallback, Object state)
         {
-            throw new NotImplementedException();
+            Graph g = new Graph();
+            SparqlResultSet results = new SparqlResultSet();
+
+            this.Query(new GraphHandler(g), new ResultSetHandler(results), sparqlQuery, (gh, rh, _) =>
+                {
+                    if (results.ResultsType != SparqlResultsType.Unknown)
+                    {
+                        resultsCallback(results, state);
+                    }
+                    else
+                    {
+                        graphCallback(g, state);
+                    }
+                }, state);
         }
 
         public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery, QueryCallback callback, Object state)
         {
-            throw new NotImplementedException();
+            SparqlQueryParser parser = new SparqlQueryParser();
+            SparqlQuery q = parser.ParseFromString(sparqlQuery);
+
+            SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(new Uri(this._sparqlUri));
+            switch (q.QueryType)
+            {
+                case SparqlQueryType.Ask:
+                case SparqlQueryType.Select:
+                case SparqlQueryType.SelectAll:
+                case SparqlQueryType.SelectAllDistinct:
+                case SparqlQueryType.SelectAllReduced:
+                case SparqlQueryType.SelectDistinct:
+                case SparqlQueryType.SelectReduced:
+                    endpoint.QueryWithResultSet(sparqlQuery, (rs, _) =>
+                        {
+                            resultsHandler.Apply(rs);
+                            callback(rdfHandler, resultsHandler, state);
+                        }, state);
+                    break;
+                case SparqlQueryType.Construct:
+                case SparqlQueryType.Describe:
+                case SparqlQueryType.DescribeAll:
+                    endpoint.QueryWithResultGraph(sparqlQuery, (g, _) =>
+                        {
+                            rdfHandler.Apply(g);
+                            callback(rdfHandler, resultsHandler, state);
+                        }, state);
+                    break;
+
+                default:
+                    throw new RdfQueryException("Cannot execute unknown query types against Pellet Server");
+            }
         }
     }
 }

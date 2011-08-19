@@ -143,9 +143,63 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
 
 #endif
 
-        public void Search(PelletSearchServiceCallback callback, Object state)
+        public void Search(String text, PelletSearchServiceCallback callback, Object state)
         {
-            throw new NotImplementedException();
+            String search = this._searchUri + "?search=" + Uri.EscapeDataString(text);
+
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(search);
+            request.Method = this.Endpoint.HttpMethods.First();
+            request.Accept = "text/json";
+
+#if DEBUG
+            if (Options.HttpDebugging)
+            {
+                Tools.HttpDebugRequest(request);
+            }
+#endif
+
+            String jsonText;
+            JArray json;
+            request.BeginGetResponse(result =>
+                {
+                    using (HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(result))
+                    {
+#if DEBUG
+                        if (Options.HttpDebugging)
+                        {
+                            Tools.HttpDebugResponse(response);
+                        }
+#endif
+                        jsonText = new StreamReader(response.GetResponseStream()).ReadToEnd();
+                        json = JArray.Parse(jsonText);
+
+                        response.Close();
+
+                        //Parse the Response into Search Results
+
+                        List<SearchServiceResult> results = new List<SearchServiceResult>();
+
+                        foreach (JToken res in json.Children())
+                        {
+                            JToken hit = res.SelectToken("hit");
+                            String type = (String)hit.SelectToken("type");
+                            INode node;
+                            if (type.ToLower().Equals("uri"))
+                            {
+                                node = new UriNode(null, new Uri((String)hit.SelectToken("value")));
+                            }
+                            else
+                            {
+                                node = new BlankNode(null, (String)hit.SelectToken("value"));
+                            }
+                            double score = (double)res.SelectToken("score");
+
+                            results.Add(new SearchServiceResult(node, score));
+                        }
+
+                        callback(results, state);
+                    }
+                }, null);
         }
     }
 

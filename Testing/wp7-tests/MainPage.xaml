@@ -29,7 +29,7 @@
         <!--ContentPanel - place additional content here-->
         <StackPanel Grid.Row="1">
             <ScrollViewer Height="150" ScrollViewer.VerticalScrollBarVisibility="Visible">
-                <StackPanel Height="1000">
+                <StackPanel Height="1500">
                     <TextBlock Margin="10,0,10,0">Scroll this area to see more available tests...</TextBlock>
                     <Button x:Name="RemoteSparqlTest1" Click="RemoteSparqlTest1_Click">
                         <TextBlock>Test SELECT Query</TextBlock>
@@ -68,7 +68,25 @@
                         <TextBlock>Test Pellet Server Explain Service</TextBlock>
                     </Button>
                     <Button x:Name="PelletICVTest" Click="PelletICVTest_Click">
-                        <TextBlock>Test Pellet Server ICV Test</TextBlock>
+                        <TextBlock>Test Pellet Server ICV Service</TextBlock>
+                    </Button>
+                    <Button x:Name="PelletNamespaceTest" Click="PelletNamespaceTest_Click">
+                        <TextBlock>Test Pellet Server Namespace Service</TextBlock>
+                    </Button>
+                    <Button x:Name="PelletPredictTest" Click="PelletPredictTest_Click">
+                        <TextBlock>Test Pellet Predict Service</TextBlock>
+                    </Button>
+                    <Button x:Name="PelletQueryTest" Click="PelletQueryTest_Click">
+                        <TextBlock>Test Pellet Query Service</TextBlock>
+                    </Button>
+                    <Button x:Name="PelletRealizeTest" Click="PelletRealizeTest_Click">
+                        <TextBlock>Test Pellet Realize Service</TextBlock>
+                    </Button>
+                    <Button x:Name="PelletSearchTest" Click="PelletSearchTest_Click">
+                        <TextBlock>Test Pellet Search Service</TextBlock>
+                    </Button>
+                    <Button x:Name="PelletSimilarityTest" Click="PelletSimilarityTest_Click">
+                        <TextBlock>Test Pellet Similarity Service</TextBlock>
                     </Button>
                 </StackPanel>
             </ScrollViewer>

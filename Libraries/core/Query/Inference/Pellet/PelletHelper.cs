@@ -48,7 +48,7 @@ namespace VDS.RDF.Query.Inference.Pellet
         public const String ServiceServerDescription = "ps-discovery",
                             ServiceKBDescription = "kb-discovery",
                             ServiceRealize = "realize",
-                            ServiceNamespaces = "ns-service",
+                            ServiceNamespaces = "ns-prefix",
                             ServiceQuery = "query",
                             ServiceConsistency = "consistency",
                             ServiceExplainUnsat = "explain-unsat",

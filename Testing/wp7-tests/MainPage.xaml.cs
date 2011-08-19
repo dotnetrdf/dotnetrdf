@@ -27,14 +27,19 @@ namespace wp7_tests
         private SparqlRemoteEndpoint _endpoint;
         private SparqlRemoteUpdateEndpoint _updateEndpoint;
 
+        public const String TestRemoteQueryEndpoint = "http://dbpedia.org/sparql",
+                            TestRemoteQueryEndpointDefaultGraph = "http://dbpedia.org",
+                            TestRemoteUpdateEndpoint = "http://localhost/demos/server/update",
+                            TestPelletServer = "http://ps.clarkparsia.com";
+
         // Constructor
         public MainPage()
         {
             InitializeComponent();
 
             //Set up our test endpoints
-            this._endpoint = new SparqlRemoteEndpoint(new Uri("http://dbpedia.org/sparql"), "http://dbpedia.org");
-            this._updateEndpoint = new SparqlRemoteUpdateEndpoint(new Uri("http://localhost/demos/server/update"));
+            this._endpoint = new SparqlRemoteEndpoint(new Uri(TestRemoteQueryEndpoint), TestRemoteQueryEndpointDefaultGraph);
+            this._updateEndpoint = new SparqlRemoteUpdateEndpoint(new Uri(TestRemoteUpdateEndpoint));
         }
 
         #region Callbacks
@@ -148,6 +153,47 @@ namespace wp7_tests
                 });
         }
 
+        private void NamespaceCallback(INamespaceMapper nsmap, Object state)
+        {
+            Dispatcher.BeginInvoke(() =>
+                {
+                    this.ResultsSummary.Text = nsmap.Prefixes.Count() + " Namespaces defined";
+                    this.ResultsList.Items.Clear();
+                    foreach (String prefix in nsmap.Prefixes)
+                    {
+                        this.ResultsList.Items.Add(prefix + ": <" + nsmap.GetNamespaceUri(prefix).ToString() + ">");
+                    }
+                });
+        }
+
+        private void NodeListCallback(List<INode> nodes, Object state)
+        {
+            Dispatcher.BeginInvoke(() =>
+                {
+                    this.ResultsSummary.Text = nodes.Count + " Node(s) returned";
+                    this.ResultsList.Items.Clear();
+                    NTriplesFormatter formatter = new NTriplesFormatter();
+                    foreach (INode n in nodes)
+                    {
+                        this.ResultsList.Items.Add(n.ToString(formatter));
+                    }
+                });
+        }
+
+        private void PelletSearchCallback(List<SearchServiceResult> results, Object state)
+        {
+            Dispatcher.BeginInvoke(() =>
+                {
+                    this.ResultsSummary.Text = results.Count + " Result(s) returned";
+                    this.ResultsList.Items.Clear();
+                    NTriplesFormatter formatter = new NTriplesFormatter();
+                    foreach (SearchServiceResult res in results)
+                    {
+                        this.ResultsList.Items.Add("Score " + res.Score + " " + res.Node.ToString(formatter));
+                    }
+                });
+        }
+
         #endregion
 
         #region Test Methods
@@ -193,12 +239,12 @@ namespace wp7_tests
 
         private void PelletServerTest_Click(object sender, RoutedEventArgs e)
         {
-            PelletServer server = new PelletServer("http://ps.clarkparsia.com", this.PelletServerReadyCallback, null);
+            PelletServer.Connect(TestPelletServer, this.PelletServerReadyCallback, null);
         }
 
         private void PelletClassifyTest_Click(object sender, RoutedEventArgs e)
         {
-            PelletServer server = new PelletServer("http://ps.clarkparsia.com", (svr,_) =>
+            PelletServer.Connect(TestPelletServer, (svr,_) =>
                 {
                     ClassifyService svc = svr.KnowledgeBases.First(kb => kb.SupportsService<ClassifyService>()).GetService<ClassifyService>();
                     svc.Classify(this.GraphCallback, null);
@@ -207,7 +253,7 @@ namespace wp7_tests
 
         private void PelletClusterTest_Click(object sender, RoutedEventArgs e)
         {
-            PelletServer server = new PelletServer("http://ps.clarkparsia.com", (svr, _) =>
+            PelletServer.Connect(TestPelletServer, (svr, _) =>
                 {
                     ClusterService svc = svr.KnowledgeBases.First(kb => kb.SupportsService<ClusterService>()).GetService<ClusterService>();
                     svc.ClusterRaw(3, this.GraphCallback, null);
@@ -216,7 +262,7 @@ namespace wp7_tests
 
         private void PelletConsistencyTest_Click(object sender, RoutedEventArgs e)
         {
-            PelletServer server = new PelletServer("http://ps.clarkparsia.com", (svr, _) =>
+            PelletServer.Connect(TestPelletServer, (svr, _) =>
                 {
                     ConsistencyService svc = svr.KnowledgeBases.First(kb => kb.SupportsService<ConsistencyService>()).GetService<ConsistencyService>();
                     svc.IsConsistent((ok, s) =>
@@ -232,7 +278,7 @@ namespace wp7_tests
 
         private void PelletExplainTest_Click(object sender, RoutedEventArgs e)
         {
-            PelletServer server = new PelletServer("http://ps.clarkparsia.com", (svr, _) =>
+            PelletServer.Connect(TestPelletServer, (svr, _) =>
                 {
                     ExplainService svc = svr.KnowledgeBases.First(kb => kb.SupportsService<ExplainService>()).GetService<ExplainService>();
                     svc.Explain("SELECT * WHERE { ?s a ?type }", this.GraphCallback, null);
@@ -241,10 +287,64 @@ namespace wp7_tests
 
         private void PelletICVTest_Click(object sender, RoutedEventArgs e)
         {
-            PelletServer server = new PelletServer("http://ps.clarkparsia.com", (svr, _) =>
+            PelletServer.Connect(TestPelletServer, (svr, _) =>
                 {
                     IntegrityConstraintValidationService svc = svr.KnowledgeBases.First(kb => kb.SupportsService<IntegrityConstraintValidationService>()).GetService<IntegrityConstraintValidationService>();
                     svc.Validate(this.TripleStoreCallback, null);
+                }, null);
+        }
+
+        private void PelletNamespaceTest_Click(object sender, RoutedEventArgs e)
+        {
+            PelletServer.Connect(TestPelletServer, (svr, _) =>
+            {
+                NamespaceService svc = svr.KnowledgeBases.First(kb => kb.SupportsService<NamespaceService>()).GetService<NamespaceService>();
+                svc.GetNamespaces(this.NamespaceCallback, null);
+            }, null);
+        }
+
+        private void PelletPredictTest_Click(object sender, RoutedEventArgs e)
+        {
+            PelletServer.Connect(TestPelletServer, (svr, _) =>
+                {
+                    PredictService svc = svr.KnowledgeBases.First(kb => kb.SupportsService<PredictService>()).GetService<PredictService>();
+                    svc.Predict("wine:DAnjou", "wine:locatedIn", this.NodeListCallback, null);
+                }, null);
+        }
+
+        private void PelletQueryTest_Click(object sender, RoutedEventArgs e)
+        {
+            PelletServer.Connect(TestPelletServer, (svr, _) =>
+                {
+                    QueryService svc = svr.KnowledgeBases.First(kb => kb.SupportsService<QueryService>()).GetService<QueryService>();
+                    svc.Query("SELECT * WHERE { ?s a ?type }", this.GraphCallback, this.SparqlResultsCallback, null);
+                }, null);
+        }
+
+        private void PelletRealizeTest_Click(object sender, RoutedEventArgs e)
+        {
+            PelletServer.Connect(TestPelletServer, (svr, _) =>
+                {
+                    RealizeService svc = svr.KnowledgeBases.First(kb => kb.SupportsService<RealizeService>()).GetService<RealizeService>();
+                    svc.Realize(this.GraphCallback, null);
+                }, null);
+        }
+
+        private void PelletSearchTest_Click(object sender, RoutedEventArgs e)
+        {
+            PelletServer.Connect(TestPelletServer, (svr, _) =>
+                {
+                    SearchService svc = svr.KnowledgeBases.First(kb => kb.SupportsService<SearchService>()).GetService<SearchService>();
+                    svc.Search("cabernet", this.PelletSearchCallback, null);
+                }, null);
+        }
+
+        private void PelletSimilarityTest_Click(object sender, RoutedEventArgs e)
+        {
+            PelletServer.Connect(TestPelletServer, (svr, _) =>
+                {
+                    SimilarityService svc = svr.KnowledgeBases.First(kb => kb.SupportsService<SimilarityService>()).GetService<SimilarityService>();
+                    svc.SimilarityRaw(5, "wine:Red", this.GraphCallback, null);
                 }, null);
         }
     }

@@ -167,12 +167,69 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
 
         public void Similarity(int number, String individual, PelletSimilarityServiceCallback callback, Object state)
         {
-            throw new NotImplementedException();
+            this.SimilarityRaw(number, individual, (g, _) =>
+                {
+                    List<KeyValuePair<INode, double>> similarities = new List<KeyValuePair<INode, double>>();
+
+                    SparqlParameterizedString query = new SparqlParameterizedString();
+                    query.Namespaces = g.NamespaceMap;
+                    query.CommandText = "SELECT ?ind ?similarity WHERE { ?s cp:isSimilarTo ?ind ; cp:similarityValue ?similarity }";
+
+                    Object results = g.ExecuteQuery(query);
+                    if (results is SparqlResultSet)
+                    {
+                        foreach (SparqlResult r in (SparqlResultSet)results)
+                        {
+                            if (r["similarity"].NodeType == NodeType.Literal)
+                            {
+                                similarities.Add(new KeyValuePair<INode, double>(r["ind"], Convert.ToDouble(((ILiteralNode)r["similarity"]).Value)));
+                            }
+                        }
+
+                        callback(similarities, state);
+                    }
+                    else
+                    {
+                        throw new RdfReasoningException("Unable to extract the Similarity Information from the Similarity Graph returned by Pellet Server");
+                    }
+            }, null);
         }
 
         public void SimilarityRaw(int number, String individual, GraphCallback callback, Object state)
         {
-            throw new NotImplementedException();
+            if (number < 1) throw new RdfReasoningException("Pellet Server requires the number of Similar Individuals to be at least 1");
+
+            String requestUri = this._similarityUri + number + "/" + individual;
+
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(requestUri);
+            request.Method = this.Endpoint.HttpMethods.First();
+            request.Accept = MimeTypesHelper.CustomHttpAcceptHeader(this.MimeTypes.Where(t => !t.Equals("text/json")), MimeTypesHelper.SupportedRdfMimeTypes);
+
+#if DEBUG
+            if (Options.HttpDebugging)
+            {
+                Tools.HttpDebugRequest(request);
+            }
+#endif
+
+            request.BeginGetResponse(result =>
+                {
+                    using (HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(result))
+                    {
+#if DEBUG
+                        if (Options.HttpDebugging)
+                        {
+                            Tools.HttpDebugResponse(response);
+                        }
+#endif
+                        IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
+                        Graph g = new Graph();
+                        parser.Load(g, new StreamReader(response.GetResponseStream()));
+
+                        response.Close();
+                        callback(g, state);
+                    }
+                }, null);
         }
     }
 }

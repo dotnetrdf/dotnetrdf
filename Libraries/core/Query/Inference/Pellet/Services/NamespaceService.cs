@@ -123,7 +123,44 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
 
         public void GetNamespaces(NamespaceCallback callback, Object state)
         {
-            throw new NotImplementedException();
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this.Endpoint.Uri);
+            request.Method = this.Endpoint.HttpMethods.First();
+            request.Accept = "text/json";
+
+#if DEBUG
+            if (Options.HttpDebugging)
+            {
+                Tools.HttpDebugRequest(request);
+            }
+#endif
+
+            String jsonText;
+            JObject json;
+            request.BeginGetResponse(result =>
+                {
+                    using (HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(result))
+                    {
+#if DEBUG
+                        if (Options.HttpDebugging)
+                        {
+                            Tools.HttpDebugResponse(response);
+                        }
+#endif
+                        jsonText = new StreamReader(response.GetResponseStream()).ReadToEnd();
+                        json = JObject.Parse(jsonText);
+
+                        response.Close();
+                    }
+
+                    //Parse the Response into a NamespaceMapper
+                    NamespaceMapper nsmap = new NamespaceMapper(true);
+                    foreach (JProperty nsDef in json.Properties())
+                    {
+                        nsmap.AddNamespace(nsDef.Name, new Uri((String)nsDef.Value));
+                    }
+
+                    callback(nsmap, state);
+                }, null);
         }
     }
 }
