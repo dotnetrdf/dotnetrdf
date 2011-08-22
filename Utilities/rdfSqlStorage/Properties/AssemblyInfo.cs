@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("rdfSqlMigrate")]
-[assembly: AssemblyDescription("A tool for migrating the legacy dotNetRDF SQL store format to the newer ADO store format")]
+[assembly: AssemblyTitle("rdfSqlStorage")]
+[assembly: AssemblyDescription("A tool for managing SQL stores created with dotNetRDF")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Visual Design Studios")]
-[assembly: AssemblyProduct("rdfSqlMigrate")]
+[assembly: AssemblyProduct("rdfSqlStorage")]
 [assembly: AssemblyCopyright("Copyright © Robert Vesse 2011")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
