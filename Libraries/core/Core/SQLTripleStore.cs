@@ -49,8 +49,8 @@ namespace VDS.RDF
     /// <summary>
     /// Class for representing Triple Stores which are automatically stored to a backing SQL Store as it is modified
     /// </summary>
-    [Obsolete("Direct SQL Backed Stores are considered obsolete and are not recommended for anything other than small scale prototyping and will be removed in future versions", false)] 
-    public class SqlTripleStore : TripleStore, IFlushableStore
+    [Obsolete("The legacy SQL store format and related classes are officially deprecated - please see http://www.dotnetrdf.org?content.asp?pageID=dotNetRDF%20Store#migration for details on upgrading to the new ADO store format", false)] 
+    public class SqlTripleStore : TripleStore, ITransactionalStore
     {
         /// <summary>
         /// Store Manager which manages the IO to the Triple Store
@@ -245,7 +245,7 @@ namespace VDS.RDF
     /// Class for representing Triple Stores which are automatically stored to a backing SQL Store as it is modified, use this class with large Stores to load them more efficiently
     /// </summary>
     /// <remarks>Uses multi-threaded loading to improve initial Load Times</remarks>
-    [Obsolete("Direct SQL Backed Stores are considered obsolete and are not recommended for anything other than small scale prototyping and will be removed in future versions", false)]
+    [Obsolete("The legacy SQL store format and related classes are officially deprecated - please see http://www.dotnetrdf.org?content.asp?pageID=dotNetRDF%20Store#migration for details on upgrading to the new ADO store format", false)]
     public class ThreadedSqlTripleStore :  SqlTripleStore
     {
         private int _loadThreads = 8;

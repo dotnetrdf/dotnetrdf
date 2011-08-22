@@ -58,7 +58,7 @@ namespace VDS.RDF
     /// If you wish to alter the Store you must manipulate the Store directly using the <see cref="VirtuosoManager">VirtuosoManager</see> or by issuing SPARQL Update commands using the <see cref="VirtuosoTripleStore.ExecuteUpdate">ExecuteUpdate()</see> method.
     /// </para>
     /// </remarks>
-    [Obsolete("This class is considered obsolete, use the more general NativeTripleStore instead", false)]
+    [Obsolete("The NativeTripleStore is obsolete, please use the PersistentTripleStore instead which supercedes this class and provides more useful behaviour", false)]
     public class VirtuosoTripleStore : BaseTripleStore, INativelyQueryableStore, IUpdateableTripleStore
     {
         private VirtuosoManager _manager;

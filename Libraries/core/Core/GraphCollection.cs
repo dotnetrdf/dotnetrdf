@@ -44,7 +44,8 @@ namespace VDS.RDF
     /// <summary>
     /// Wrapper class for Graph Collections
     /// </summary>
-    public class GraphCollection : BaseGraphCollection, IEnumerable<IGraph>
+    public class GraphCollection 
+        : BaseGraphCollection, IEnumerable<IGraph>
     {
         /// <summary>
         /// Constant used as the URI for Default Graphs (which is the Graph with the Null Base URI) for the purposes of getting a Hash Code for the Graph URI

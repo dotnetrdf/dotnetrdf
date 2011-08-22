@@ -46,7 +46,7 @@ Added
 Changed
 - Dependency Changes
  - OpenLink.Data.Virtuoso.dll removed as dependency - Virtuoso support now in seperate dotNetRDF.Data.Virtuoso.dll library
- - Updated to latest Json.Net release - now using Newtonsoft.Json.Net35.dll as the standard build has moved to .Net 4.0
+ - Updated to latest Json.Net release - now using Newtonsoft.Json.Net35.dll as the standard build of Json.Net has moved to .Net 4.0
 - Bug Fixes
  - SPARQL Tokeniser allows more than one ORDER BY keyword
  - Turtle Parser now permits nested collections i.e. ( "item" ( "subcollection" ) )
@@ -54,6 +54,7 @@ Changed
  - Fixed a configuration bug with BaseDatasetHandlerConfiguration
  - Fixed a bug where NegotiateByFileExtension module could cause special ASP.Net extensions like .axd to not be respected properly
  - Fixed a bug where attempts to use synchronous HTTP on Silverlight/WP7 would hang applications
+ - Fixed a bug where temporary namespace generation for properties would fail in PrettyRdfXmlWriter
 - Query
  - Further refactored the Leviathan engine to make it even easier to extend
   - The majority of methods on the engine can now be overridden
@@ -71,6 +72,18 @@ Changed
   - Added more overloads for LoadGraph() which load using an IRdfHandler
 
 Removed
+- Marked various things as obsolete but usable
+ - All ISqlIOManager related classes
+ - GenericReader, GenericWriter and GenericStoreWriter
+ - TalisTripleStore and VirtuosoTripleStore
+ - SparqlQuery.Evaluate() methods
+- Marked some classes previously marked obsolete as unusable
+ - BackgroundPersistedGraph
+ - BlockingStreamReader
+ - Old form of ToCache() method on IUriLoader interface
+ - Old form of GraphPattern.Optimise() method
+ - QueryText property of SparqlParameterizedString
+ - Old form of WriterHelper.FindCollections() method
 
    
 

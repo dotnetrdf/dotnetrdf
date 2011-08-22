@@ -58,7 +58,7 @@ namespace VDS.RDF
     /// If you wish to alter the Store you must use either work exclusively with <see cref="TalisGraph">TalisGraph</see> instances or manipulate the Store directly using the <see cref="TalisPlatformConnector">TalisPlatformConnector</see>.
     /// </para>
     /// </remarks>
-    [Obsolete("This class is considered obsolete, use the more general NativeTripleStore instead",false)]
+    [Obsolete("The NativeTripleStore is obsolete, please use the PersistentTripleStore instead which supercedes this class and provides more useful behaviour", false)]
     public class TalisTripleStore : BaseTripleStore, INativelyQueryableStore
     {
         private TalisPlatformConnector _talis;

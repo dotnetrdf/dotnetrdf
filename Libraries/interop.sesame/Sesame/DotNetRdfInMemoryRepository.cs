@@ -65,9 +65,9 @@ namespace VDS.RDF.Interop.Sesame
         {
             if (this._store != null)
             {
-                if (this._store is IFlushableStore)
+                if (this._store is ITransactionalStore)
                 {
-                    ((IFlushableStore)this._store).Flush();
+                    ((ITransactionalStore)this._store).Flush();
                 }
                 this._store.Dispose();
             }
@@ -173,9 +173,9 @@ namespace VDS.RDF.Interop.Sesame
 
         public override void commit()
         {
-            if (this._store is IFlushableStore)
+            if (this._store is ITransactionalStore)
             {
-                ((IFlushableStore)this._store).Flush();
+                ((ITransactionalStore)this._store).Flush();
             }
         }
 

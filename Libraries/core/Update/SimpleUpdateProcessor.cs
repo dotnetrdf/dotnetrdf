@@ -67,9 +67,9 @@ namespace VDS.RDF.Update
         /// </summary>
         public virtual void Flush()
         {
-            if (this._store is IFlushableStore)
+            if (this._store is ITransactionalStore)
             {
-                ((IFlushableStore)this._store).Flush();
+                ((ITransactionalStore)this._store).Flush();
             }
         }
 

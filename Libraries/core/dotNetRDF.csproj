@@ -223,6 +223,7 @@
     <Compile Include="Core\NestedNamespaceMapper.cs" />
     <Compile Include="Core\NodeFactory.cs" />
     <Compile Include="Core\PersistenceAction.cs" />
+    <Compile Include="Core\PersistentTripleStore.cs" />
     <Compile Include="Core\SubGraphMatcher.cs" />
     <Compile Include="Core\GraphMatcher.cs" />
     <Compile Include="Core\QueryableGraph.cs" />
@@ -245,6 +246,7 @@
     <Compile Include="Ontology\OntologyProperty.cs" />
     <Compile Include="Ontology\OntologyResource.cs" />
     <Compile Include="Ontology\ReasonerGraph.cs" />
+    <Compile Include="Parsing\Handlers\AnyHandler.cs" />
     <Compile Include="Parsing\UriLoaderAsync.cs" />
     <Compile Include="Parsing\BlockingTextReader.cs" />
     <Compile Include="Parsing\Contexts\BaseParserContext.cs" />

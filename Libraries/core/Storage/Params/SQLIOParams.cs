@@ -45,7 +45,7 @@ namespace VDS.RDF.Storage.Params
     /// <summary>
     /// Interface for Store Parameters where the Parameter is a <see cref="ISqlIOManager">ISqlIOManager</see>
     /// </summary>
-    [Obsolete("Direct SQL Backed Stores are considered obsolete and are not recommended for anything other than small scale prototyping and will be removed in future versions", false)]
+    [Obsolete("The legacy SQL store format and related classes are officially deprecated - please see http://www.dotnetrdf.org?content.asp?pageID=dotNetRDF%20Store#migration for details on upgrading to the new ADO store format", false)]
     public interface ISQLIOParams : IStoreParams 
     {
         /// <summary>
@@ -59,7 +59,7 @@ namespace VDS.RDF.Storage.Params
     /// <summary>
     /// Store Parameters for Readers &amp; Writers which use SQL based storage where the main Parameter is a <see cref="ISqlIOManager">ISqlIOManager</see>
     /// </summary>
-    [Obsolete("Direct SQL Backed Stores are considered obsolete and are not recommended for anything other than small scale prototyping and will be removed in future versions", false)]
+    [Obsolete("The legacy SQL store format and related classes are officially deprecated - please see http://www.dotnetrdf.org?content.asp?pageID=dotNetRDF%20Store#migration for details on upgrading to the new ADO store format", false)]
     public class SqlIOParams : ISQLIOParams
     {
         /// <summary>
@@ -120,7 +120,7 @@ namespace VDS.RDF.Storage.Params
     /// <summary>
     /// Store Parameters for multi-threaded Readers &amp; Writers which use SQL based storage where the main Parameter is a <see cref="IThreadedSqlIOManager">IThreadedSqlIOManager</see>
     /// </summary>
-    [Obsolete("Direct SQL Backed Stores are considered obsolete and are not recommended for anything other than small scale prototyping and will be removed in future versions", false)]
+    [Obsolete("The legacy SQL store format and related classes are officially deprecated - please see http://www.dotnetrdf.org?content.asp?pageID=dotNetRDF%20Store#migration for details on upgrading to the new ADO store format", false)]
     public class ThreadedSqlIOParams : SqlIOParams
     {
         private IThreadedSqlIOManager _threadedmanager;

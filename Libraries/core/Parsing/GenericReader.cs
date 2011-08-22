@@ -46,6 +46,7 @@ namespace VDS.RDF.Parsing
     /// <summary>
     /// Class for reading RDF Graphs from an arbitrary Store into arbitrary Graphs
     /// </summary>
+    [Obsolete("The GenericReader is considered obsolete - use the LoadGraph() method of an IGenericIOManager directly instead", false)]
     public class GenericReader
     {
         private IGenericIOManager _manager;

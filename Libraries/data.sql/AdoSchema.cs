@@ -21,6 +21,9 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// A simple schema that uses partial value indexes to speed up Node ID lookups
         /// </summary>
+        /// <remarks>
+        /// <strong>Note:</strong> Uses features only available in SQL Server 2005 and later versions
+        /// </remarks>
         Simple,
         /// <summary>
         /// A more advanced schema that uses MD5 hash based indexes to provide better Node ID lookup speed

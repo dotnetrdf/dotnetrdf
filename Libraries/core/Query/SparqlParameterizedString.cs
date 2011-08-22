@@ -139,7 +139,7 @@ namespace VDS.RDF.Query
         /// <summary>
         /// Gets/Sets the parameterized Query Text
         /// </summary>
-        [Obsolete("Deprecated - Use the more descriptive synonym CommandText instead")]
+        [Obsolete("Deprecated - Use the more descriptive synonym CommandText instead",true)]
         public String QueryText
         {
             get

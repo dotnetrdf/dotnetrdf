@@ -48,7 +48,7 @@ namespace VDS.RDF
     /// A Thread Safe version of <see cref="SqlGraph">SqlGraph</see> which represents a RDF Graph which is automatically persisted to a SQL based backing store as it is modified
     /// </summary>
     /// <threadsafety instance="true">Should be safe for almost any concurrent read and write access scenario, internally managed using a <see cref="ReaderWriterLockSlim">ReaderWriterLockSlim</see>.  If you encounter any sort of Threading/Concurrency issue please report to the <a href="mailto:dotnetrdf-bugs@lists.sourceforge.net">dotNetRDF Bugs Mailing List</a></threadsafety>
-    [Obsolete("Direct SQL Backed Stores are considered obsolete and are not recommended for anything other than small scale prototyping and will be removed in future versions", false)]   
+    [Obsolete("The legacy SQL store format and related classes are officially deprecated - please see http://www.dotnetrdf.org?content.asp?pageID=dotNetRDF%20Store#migration for details on upgrading to the new ADO store format", false)]   
     public class ThreadSafeSqlGraph : ThreadSafeGraph
     {
         private String _graphID = String.Empty;

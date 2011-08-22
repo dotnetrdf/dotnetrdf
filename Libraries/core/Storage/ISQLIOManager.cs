@@ -52,13 +52,13 @@ namespace VDS.RDF.Storage
     /// Designed to allow for arbitrary database formats to be used and then implemented by simply implementing this interface and providing it to the relevant classes which use SQL Stores.  It has also been designed such that 1 Manager instance may be used across multiple Graphs to facilitate the implementation of a <see cref="SqlTripleStore">SqlTripleStore</see>.
     /// </para>
     /// <para>
-    /// The design of this interface assumes fairly fine grained data storage in the SQL Store, generally it will be necessary as a minimum to implement most of the methods (except perhaps the Namespace related methods.  If your SQL Store implements storage in a way that is not easy to support with this interface consider implementing the <see cref="IGenericIOManager">IGenericIOManager</see> interface instead.
+    /// The design of this interface assumes fairly fine grained data storage in the SQL Store, generally it will be necessary as a minimum to implement most of the methods (except perhaps the Namespace related methods).  If your SQL Store implements storage in a way that is not easy to support with this interface consider implementing the <see cref="IGenericIOManager">IGenericIOManager</see> interface instead.
     /// </para>
     /// <para>
     /// While the interface does not define any methods related to the creation/destruction of a Store we recommend that the constructor of implementations of this class should set up the necessary database tables if it determines that they do not exist.
     /// </para>
     /// </remarks>
-    [Obsolete("Direct SQL Backed Stores are considered obsolete and are not recommended for anything other than small scale prototyping and will be removed in future versions", false)]
+    [Obsolete("The legacy SQL store format and related classes are officially deprecated - please see http://www.dotnetrdf.org?content.asp?pageID=dotNetRDF%20Store#migration for details on upgrading to the new ADO store format", false)]
     public interface ISqlIOManager : IDisposable
     {
         /// <summary>
@@ -285,7 +285,7 @@ namespace VDS.RDF.Storage
     /// <summary>
     /// Interface for classes which provide the Read/Write functionality for a SQL Store in a Thread Safe way
     /// </summary>
-    [Obsolete("Direct SQL Backed Stores are considered obsolete and are not recommended for anything other than small scale prototyping and will be removed in future versions", false)]
+    [Obsolete("The legacy SQL store format and related classes are officially deprecated - please see http://www.dotnetrdf.org?content.asp?pageID=dotNetRDF%20Store#migration for details on upgrading to the new ADO store format", false)]
     public interface IThreadedSqlIOManager : ISqlIOManager
     {
         /// <summary>
@@ -301,7 +301,7 @@ namespace VDS.RDF.Storage
     /// <summary>
     /// Marker interface for classes which implement SQL Stores using the dotNetRDF Store Format
     /// </summary>
-    [Obsolete("Direct SQL Backed Stores are considered obsolete and are not recommended for anything other than small scale prototyping and will be removed in future versions", false)]
+    [Obsolete("The legacy SQL store format and related classes are officially deprecated - please see http://www.dotnetrdf.org?content.asp?pageID=dotNetRDF%20Store#migration for details on upgrading to the new ADO store format", false)]
     public interface IDotNetRDFStoreManager : ISqlIOManager, IGenericIOManager
     {
 

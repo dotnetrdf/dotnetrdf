@@ -46,6 +46,7 @@ namespace VDS.RDF.Writing
     /// <summary>
     /// Class for writing RDF Graphs to an arbitrary Store from an arbitrary Graphs
     /// </summary>
+    [Obsolete("The GenericWriter is considered obsolete - use the SaveGraph() method of an IGenericIOManager directly instead", false)]
     public class GenericWriter
     {
         private IGenericIOManager _manager;

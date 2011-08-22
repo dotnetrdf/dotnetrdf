@@ -316,9 +316,9 @@ namespace VDS.RDF.Query.Datasets
         /// </summary>
         protected override void FlushInternal()
         {
-            if (this._store is IFlushableStore)
+            if (this._store is ITransactionalStore)
             {
-                ((IFlushableStore)this._store).Flush();
+                ((ITransactionalStore)this._store).Flush();
             }
         }
     }

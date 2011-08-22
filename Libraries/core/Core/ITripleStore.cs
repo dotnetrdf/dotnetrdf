@@ -46,7 +46,8 @@ namespace VDS.RDF
     /// Interface for Triple Stores
     /// </summary>
     /// <remarks>A Triple Store may be a representation of some storage backed actual store or just a temporary collection of Graphs created for working with.  Note that an implementation is not required to provide a definitive view of a Triple Store and may only provide a limited/partial snapshot of the underlying store.  Check the documentation for the various implementations to see what type of view of a Triple Store they actually provide.</remarks>
-    public interface ITripleStore : IDisposable
+    public interface ITripleStore 
+        : IDisposable
     {
         #region Properties
 
@@ -173,7 +174,8 @@ namespace VDS.RDF
     /// All the Selection Methods which do not specify a subset of Graphs on such a Triple Store <strong>should</strong> operate over the <see cref="IInMemoryQueryableStore.QueryTriples">QueryTriples</see> enumerable
     /// </para>
     /// </remarks>
-    public interface IInMemoryQueryableStore : ITripleStore
+    public interface IInMemoryQueryableStore
+        : ITripleStore
     {
         /// <summary>
         /// Returns whether a given Triple is contained anywhere in the Query Triples
@@ -501,7 +503,8 @@ namespace VDS.RDF
     /// <remarks>
     /// A Natively Queryable store will typically not load its Graphs and Triples into memory as this is generally unecessary.
     /// </remarks>
-    public interface INativelyQueryableStore : ITripleStore
+    public interface INativelyQueryableStore 
+        : ITripleStore
     {
         /// <summary>
         /// Executes a Sparql Query on the Triple Store
@@ -527,7 +530,8 @@ namespace VDS.RDF
     /// It is the responsibility of the Store class to ensure that commands are permissible before invoking them
     /// </para>
     /// </remarks>
-    public interface IUpdateableTripleStore : ITripleStore
+    public interface IUpdateableTripleStore
+        : ITripleStore
     {
         /// <summary>
         /// Executes an Update against the Triple Store
@@ -554,7 +558,8 @@ namespace VDS.RDF
     /// <summary>
     /// Interface for Triple Stores which can have a <see cref="InferenceEngine">InferenceEngine</see> attached to them
     /// </summary>
-    public interface IInferencingTripleStore : ITripleStore
+    public interface IInferencingTripleStore
+        : ITripleStore
     {
         /// <summary>
         /// Adds an Inference Engine to the Triple Store
@@ -584,9 +589,10 @@ namespace VDS.RDF
     }
 
     /// <summary>
-    /// Interface for Triple Stores which are backed by some storage layer that may delay persistence and thus require flushing to ensure changes are persisted to the backing store
+    /// Interface for Triple Stores which are backed by some storage layer that may delay persistence and thus require flushing to ensure changes are persisted to the backing store, as a by produce such stores will typically have some notion of transactionality
     /// </summary>
-    public interface IFlushableStore : ITripleStore
+    public interface ITransactionalStore
+        : ITripleStore
     {
         /// <summary>
         /// Flushes any outstanding changes to the underlying store
