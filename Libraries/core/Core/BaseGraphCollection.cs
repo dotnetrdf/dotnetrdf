@@ -44,7 +44,8 @@ namespace VDS.RDF
     /// Abstract Base Class for Graph Collections
     /// </summary>
     /// <remarks>Designed to allow the underlying storage of a Graph Collection to be changed at a later date without affecting classes that use it</remarks>
-    public abstract class BaseGraphCollection : IEnumerable<IGraph>, IDisposable
+    public abstract class BaseGraphCollection 
+        : IEnumerable<IGraph>, IDisposable
     {
         /// <summary>
         /// Checks whether the Graph with the given Uri exists in this Graph Collection
@@ -136,7 +137,7 @@ namespace VDS.RDF
         /// Helper method which raises the <see cref="GraphAdded">Graph Added</see> event manually
         /// </summary>
         /// <param name="g">Graph</param>
-        protected void RaiseGraphAdded(IGraph g)
+        protected virtual void RaiseGraphAdded(IGraph g)
         {
             GraphEventHandler d = this.GraphAdded;
             if (d != null)
@@ -149,7 +150,7 @@ namespace VDS.RDF
         /// Helper method which raises the <see cref="GraphRemoved">Graph Removed</see> event manually
         /// </summary>
         /// <param name="g">Graph</param>
-        protected void RaiseGraphRemoved(IGraph g)
+        protected virtual void RaiseGraphRemoved(IGraph g)
         {
             GraphEventHandler d = this.GraphRemoved;
             if (d != null)

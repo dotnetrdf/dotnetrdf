@@ -176,6 +176,7 @@
     <Compile Include="Storage\DydraTests.cs" />
     <Compile Include="Storage\FourStoreTest.cs" />
     <Compile Include="Storage\FusekiTest.cs" />
+    <Compile Include="Storage\PersistentTripleStoreTests.cs" />
     <Compile Include="Storage\SesameTests.cs" />
     <Compile Include="EventTests.cs" />
     <Compile Include="Storage\Sql\AdoDatasetTests.cs" />

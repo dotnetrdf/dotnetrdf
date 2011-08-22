@@ -150,53 +150,53 @@ namespace VDS.RDF.Interop.SemWeb
         {
             //Implement as a SPARQL SELECT
             SparqlParameterizedString queryString = new SparqlParameterizedString();
-            queryString.QueryText = "SELECT * WHERE {";
+            queryString.CommandText = "SELECT * WHERE {";
 
             int p = 0;
             foreach (Statement stmt in graph)
             {
                 //Add Subject
-                queryString.QueryText += "\n";
+                queryString.CommandText += "\n";
                 if (stmt.Subject is Variable)
                 {
-                    queryString.QueryText += stmt.Subject.ToString();
+                    queryString.CommandText += stmt.Subject.ToString();
                 }
                 else
                 {
-                    queryString.QueryText += "@param" + p;
+                    queryString.CommandText += "@param" + p;
                     queryString.SetParameter("param" + p, SemWebConverter.FromSemWeb(stmt.Subject, this._mapping));
                     p++;
                 }
-                queryString.QueryText += " ";
+                queryString.CommandText += " ";
 
                 //Add Predicate
                 if (stmt.Predicate is Variable)
                 {
-                    queryString.QueryText += stmt.Predicate.ToString();
+                    queryString.CommandText += stmt.Predicate.ToString();
                 }
                 else
                 {
-                    queryString.QueryText += "@param" + p;
+                    queryString.CommandText += "@param" + p;
                     queryString.SetParameter("param" + p, SemWebConverter.FromSemWeb(stmt.Predicate, this._mapping));
                     p++;
                 }
-                queryString.QueryText += " ";
+                queryString.CommandText += " ";
 
                 //Add Object
                 if (stmt.Object is Variable)
                 {
-                    queryString.QueryText += stmt.Object.ToString();
+                    queryString.CommandText += stmt.Object.ToString();
                 }
                 else
                 {
-                    queryString.QueryText += "@param" + p;
+                    queryString.CommandText += "@param" + p;
                     queryString.SetParameter("param" + p, SemWebConverter.FromSemWeb(stmt.Object, this._mapping));
                     p++;
                 }
-                queryString.QueryText += " .";
+                queryString.CommandText += " .";
             }
 
-            queryString.QueryText += "}";
+            queryString.CommandText += "}";
 
             //Execute the Query and convert the Results
             Object results = this._store.ExecuteQuery(queryString.ToString());

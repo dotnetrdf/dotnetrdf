@@ -159,7 +159,7 @@ namespace VDS.RDF.Test.Sparql
             //Examine limited parts of the Query to see why it doesn't work properly
             SparqlParameterizedString unionClause = new SparqlParameterizedString();
             unionClause.Namespaces = q.NamespaceMap;
-            unionClause.QueryText = "SELECT * WHERE { ?person foaf:name ?name . { ?person ex:healthplan ?plan . } UNION { ?person ex:department ?dept . } }";
+            unionClause.CommandText = "SELECT * WHERE { ?person foaf:name ?name . { ?person ex:healthplan ?plan . } UNION { ?person ex:department ?dept . } }";
             SparqlQuery unionQuery = parser.ParseFromString(unionClause);
 
             Console.WriteLine("UNION Clause Only");
@@ -180,7 +180,7 @@ namespace VDS.RDF.Test.Sparql
             //Try the Optional Clause
             SparqlParameterizedString optionalClause = new SparqlParameterizedString();
             optionalClause.Namespaces = q.NamespaceMap;
-            optionalClause.QueryText = "SELECT * WHERE { OPTIONAL { ?person a foaf:Person . GRAPH ?g { [] foaf:depiction ?img ; foaf:name ?name } } }";
+            optionalClause.CommandText = "SELECT * WHERE { OPTIONAL { ?person a foaf:Person . GRAPH ?g { [] foaf:depiction ?img ; foaf:name ?name } } }";
             SparqlQuery optionalQuery = parser.ParseFromString(optionalClause);
 
             Console.WriteLine("OPTIONAL Clause Only");
@@ -201,7 +201,7 @@ namespace VDS.RDF.Test.Sparql
             //Try the full Query with a SELECT * to examine all the values
             SparqlParameterizedString fullQuery = new SparqlParameterizedString();
             fullQuery.Namespaces = q.NamespaceMap;
-            fullQuery.QueryText = "SELECT * WHERE { ?person foaf:name ?name . { ?person ex:healthplan ?plan . } UNION { ?person ex:department ?dept . } OPTIONAL { ?person a foaf:Person . GRAPH ?g { [] foaf:depiction ?img ; foaf:name ?name } } }";
+            fullQuery.CommandText = "SELECT * WHERE { ?person foaf:name ?name . { ?person ex:healthplan ?plan . } UNION { ?person ex:department ?dept . } OPTIONAL { ?person a foaf:Person . GRAPH ?g { [] foaf:depiction ?img ; foaf:name ?name } } }";
             SparqlQuery q2 = parser.ParseFromString(fullQuery);
 
             Console.WriteLine("Full Query as a SELECT *");

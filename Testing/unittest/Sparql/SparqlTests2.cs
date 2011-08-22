@@ -995,7 +995,7 @@ namespace VDS.RDF.Test
         {
             SparqlParameterizedString query = new SparqlParameterizedString();
             query.Namespaces.AddNamespace("rdfs", new Uri(NamespaceMapper.RDFS));
-            query.QueryText = "SELECT * WHERE {?s ?p ?label . FILTER(ISLITERAL(?label) && LANGMATCHES(LANG(?label), \"en\")) } LIMIT 5";
+            query.CommandText = "SELECT * WHERE {?s ?p ?label . FILTER(ISLITERAL(?label) && LANGMATCHES(LANG(?label), \"en\")) } LIMIT 5";
 
             TripleStore store = new TripleStore();
             Graph g = new Graph();
