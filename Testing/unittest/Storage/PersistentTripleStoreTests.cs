@@ -43,7 +43,7 @@ namespace VDS.RDF.Test.Storage
         }
 
         [TestMethod]
-        public void StoragePersistentTripleStoreContains()
+        public void StoragePersistentTripleStoreMemContains()
         {
             InMemoryManager manager = new InMemoryManager();
             this.EnsureTestDataset(manager);
@@ -70,7 +70,49 @@ namespace VDS.RDF.Test.Storage
         }
 
         [TestMethod]
-        public void StoragePersistentTripleStoreAddGraphFlushed()
+        public void StoragePersistentTripleStoreMemGetGraph()
+        {
+            InMemoryManager manager = new InMemoryManager();
+            this.EnsureTestDataset(manager);
+
+            PersistentTripleStore store = new PersistentTripleStore(manager);
+            try
+            {
+                Graph aExpected = new Graph();
+                aExpected.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+                aExpected.Retract(aExpected.Triples.Where(t => !t.IsGroundTriple));
+                aExpected.BaseUri = new Uri(TestGraphUri1);
+                IGraph aActual = store.Graph(aExpected.BaseUri);
+                Assert.AreEqual(aExpected, aActual, "Graph 1 should be equal when retrieved using Graph()");
+                aActual = store.Graphs[aExpected.BaseUri];
+                Assert.AreEqual(aExpected, aActual, "Graph 1 should be equal when retrieved using Graphs[]");
+
+                Graph bExpected = new Graph();
+                bExpected.LoadFromFile("InferenceTest.ttl");
+                bExpected.Retract(bExpected.Triples.Where(t => !t.IsGroundTriple));
+                bExpected.BaseUri = new Uri(TestGraphUri2);
+                IGraph bActual = store.Graph(bExpected.BaseUri);
+                Assert.AreEqual(bExpected, bActual, "Graph 2 should be equal when retrieved using Graph()");
+                bActual = store.Graphs[bExpected.BaseUri];
+                Assert.AreEqual(bExpected, bActual, "Graph 2 should be equal when retrieved using Graphs[]");
+
+                Graph cExpected = new Graph();
+                cExpected.LoadFromEmbeddedResource("VDS.RDF.Query.Optimisation.OptimiserStats.ttl");
+                cExpected.Retract(cExpected.Triples.Where(t => !t.IsGroundTriple));
+                cExpected.BaseUri = new Uri(TestGraphUri3);
+                IGraph cActual = store.Graph(cExpected.BaseUri);
+                Assert.AreEqual(cExpected, cActual, "Graph 3 should be equal when retrieved using Graph()");
+                cActual = store.Graphs[cExpected.BaseUri];
+                Assert.AreEqual(cExpected, cActual, "Graph 3 should be equal when retrieved using Graphs[]");
+            }
+            finally
+            {
+                store.Dispose();
+            }
+        }
+
+        [TestMethod]
+        public void StoragePersistentTripleStoreMemAddGraphFlushed()
         {
             InMemoryManager manager = new InMemoryManager();
             this.EnsureTestDataset(manager);
@@ -97,7 +139,7 @@ namespace VDS.RDF.Test.Storage
         }
 
         [TestMethod]
-        public void StoragePersistentTripleStoreAddGraphDiscarded()
+        public void StoragePersistentTripleStoreMemAddGraphDiscarded()
         {
             InMemoryManager manager = new InMemoryManager();
             this.EnsureTestDataset(manager);

@@ -99,8 +99,8 @@ namespace VDS.RDF
     {
         private IGenericIOManager _manager;
         private TripleEventHandler TripleAddedHandler, TripleRemovedHandler;
-        private List<TriplePersistenceAction> _actions = new List<TriplePersistenceAction>();
-        private List<GraphPersistenceAction> _graphActions = new List<GraphPersistenceAction>();
+        private List<TripleStorePersistenceAction> _actions = new List<TripleStorePersistenceAction>();
+        private bool _persisting = false;
 
         public PersistentGraphCollection(IGenericIOManager manager)
         {
@@ -109,75 +109,47 @@ namespace VDS.RDF
 
             this.TripleAddedHandler = new TripleEventHandler(this.OnTripleAsserted);
             this.TripleRemovedHandler = new TripleEventHandler(this.OnTripleRetracted);
-
-            ////If the Manager supports Triple Level updates we'll watch all updates to the 
-            ////Graph and Flush()/Discard() them when appropriate
-            ////Note that for Managers that don't support this we just watch graph level
-            ////actions instead and
-            //if (this._manager.UpdateSupported)
-            //{
-            //    this.GraphAdded += new GraphEventHandler((sender, args) =>
-            //    {
-            //        this.AttachHandlers(args.Graph);
-            //        if (!this.ContainsInternal(args.Graph.BaseUri))
-            //        {
-            //            //When a new graph is introduced that does not exist in the underlying store
-            //            //be sure to persist the initial triples
-            //            foreach (Triple t in args.Graph.Triples)
-            //            {
-            //                this._actions.Add(new TriplePersistenceAction(t));
-            //            }
-            //        }
-            //    });
-            //    this.GraphRemoved += new GraphEventHandler((sender, args) =>
-            //    {
-            //        this.DetachHandlers(args.Graph);
-            //    });
-            //}
-            //else
-            //{
-            //    this.GraphAdded += new GraphEventHandler((sender, args) =>
-            //        {
-            //            this._graphActions.Add(new GraphPersistenceAction(args.Graph, GraphPersistenceActionType.Added));
-            //        });
-            //    this.GraphRemoved += new GraphEventHandler((sender, args) =>
-            //        {
-            //            this._graphActions.Add(new GraphPersistenceAction(args.Graph, GraphPersistenceActionType.Deleted));
-            //        });
-            //}
         }
 
         protected override void RaiseGraphAdded(IGraph g)
         {
-            if (this._manager.UpdateSupported)
+            if (!this._persisting)
             {
-                this.AttachHandlers(g);
-                if (!this.ContainsInternal(g.BaseUri))
+                if (this._manager.UpdateSupported)
                 {
-                    //When a new graph is introduced that does not exist in the underlying store
-                    //be sure to persist the initial triples
-                    foreach (Triple t in g.Triples)
+                    this.AttachHandlers(g);
+                    if (!this.ContainsInternal(g.BaseUri))
                     {
-                        this._actions.Add(new TriplePersistenceAction(t));
+                        //When a new graph is introduced that does not exist in the underlying store
+                        //be sure to persist the initial triples
+                        this._actions.Add(new TripleStorePersistenceAction(new GraphPersistenceAction(g, GraphPersistenceActionType.Added)));
+                        foreach (Triple t in g.Triples)
+                        {
+                            this._actions.Add(new TripleStorePersistenceAction(new TriplePersistenceAction(t)));
+                        }
                     }
                 }
-            }
-            else
-            {
-                this._graphActions.Add(new GraphPersistenceAction(g, GraphPersistenceActionType.Added));
+                else
+                {
+                    this._actions.Add(new TripleStorePersistenceAction(new GraphPersistenceAction(g, GraphPersistenceActionType.Added)));
+                }
             }
             base.RaiseGraphAdded(g);
         }
 
         protected override void RaiseGraphRemoved(IGraph g)
         {
-            if (this._manager.UpdateSupported)
+            if (!this._persisting)
             {
-                this.DetachHandlers(g);
-            }
-            else
-            {
-                this._graphActions.Add(new GraphPersistenceAction(g, GraphPersistenceActionType.Deleted));
+                if (this._manager.UpdateSupported)
+                {
+                    this.DetachHandlers(g);
+                    this._actions.Add(new TripleStorePersistenceAction(new GraphPersistenceAction(g, GraphPersistenceActionType.Deleted)));
+                }
+                else
+                {
+                    this._actions.Add(new TripleStorePersistenceAction(new GraphPersistenceAction(g, GraphPersistenceActionType.Deleted)));
+                }
             }
             base.RaiseGraphRemoved(g);
         }
@@ -258,56 +230,89 @@ namespace VDS.RDF
 
         private void OnTripleAsserted(Object sender, TripleEventArgs args)
         {
-            this._actions.Add(new TriplePersistenceAction(args.Triple));
+            if (!this._persisting)
+            {
+                this._actions.Add(new TripleStorePersistenceAction(new TriplePersistenceAction(args.Triple)));
+            }
         }
 
         private void OnTripleRetracted(Object sender, TripleEventArgs args)
         {
-            this._actions.Add(new TriplePersistenceAction(args.Triple, true));
+            if (!this._persisting)
+            {
+                this._actions.Add(new TripleStorePersistenceAction(new TriplePersistenceAction(args.Triple, true)));
+            }
         }
 
         internal void Flush()
         {
-            //Read-Only managers have no persistence
-            if (this._manager.IsReadOnly) return;
-
-            if (this._manager.UpdateSupported)
+            try
             {
+                this._persisting = true;
+
+                //Read-Only managers have no persistence
+                if (this._manager.IsReadOnly) return;
+
+                //No actions means no persistence necessary
                 if (this._actions.Count == 0) return;
 
-                //Persist based on Triple level actions
-                //First group Triple together based on Graph URI
-                while (this._actions.Count > 0)
+                if (this._manager.UpdateSupported)
                 {
-                    Queue<TriplePersistenceAction> actions = new Queue<TriplePersistenceAction>();
-                    Uri currUri = this._actions[0].Triple.GraphUri;
-                    actions.Enqueue(this._actions[0]);
-                    this._actions.RemoveAt(0);
-
-                    for (int i = 0; i < this._actions.Count; i++)
+                    //Persist based on Triple level actions
+                    //First group Triple together based on Graph URI
+                    while (this._actions.Count > 0)
                     {
-                        if (EqualityHelper.AreUrisEqual(currUri, this._actions[i].Triple.GraphUri))
-                        {
-                            actions.Enqueue(this._actions[i]);
-                            this._actions.RemoveAt(i);
-                            i--;
-                        }
-                    }
+                        TripleStorePersistenceAction action = this._actions[0];
 
-                    //Split the Triples for this Graph into batches of adds and deletes to ensure
-                    //accurate persistence of the actions
-                    bool toDelete = false;
-                    List<Triple> batch = new List<Triple>();
-                    while (actions.Count > 0)
-                    {
-                        TriplePersistenceAction next = actions.Dequeue();
-                        if (next.IsDelete != toDelete)
+                        if (action.IsTripleAction)
                         {
+                            Queue<TriplePersistenceAction> actions = new Queue<TriplePersistenceAction>();
+                            Uri currUri = action.TripleAction.Triple.GraphUri;
+                            actions.Enqueue(this._actions[0].TripleAction);
+                            this._actions.RemoveAt(0);
+
+                            //Find all the Triple actions related to this Graph up to the next non-Triple action
+                            for (int i = 0; i < this._actions.Count && this._actions[i].IsTripleAction; i++)
+                            {
+                                if (EqualityHelper.AreUrisEqual(currUri, this._actions[i].TripleAction.Triple.GraphUri))
+                                {
+                                    actions.Enqueue(this._actions[i].TripleAction);
+                                    this._actions.RemoveAt(i);
+                                    i--;
+                                }
+                            }
+
+                            //Split the Triple Actions for this Graph into batches of adds and deletes to ensure
+                            //accurate persistence of the actions
+                            bool toDelete = false;
+                            List<Triple> batch = new List<Triple>();
+                            while (actions.Count > 0)
+                            {
+                                TriplePersistenceAction next = actions.Dequeue();
+                                if (next.IsDelete != toDelete)
+                                {
+                                    if (batch.Count > 0)
+                                    {
+                                        //Process a batch whenever we find a switch between additions and removals
+                                        //This ensures that regardless of the logic in UpdateGraph() we force
+                                        //additions and removals to happen in the order we care about
+                                        if (toDelete)
+                                        {
+                                            this._manager.UpdateGraph(currUri, null, batch);
+                                        }
+                                        else
+                                        {
+                                            this._manager.UpdateGraph(currUri, batch, null);
+                                        }
+                                        batch.Clear();
+                                    }
+                                    toDelete = next.IsDelete;
+                                }
+                                batch.Add(next.Triple);
+                            }
+                            //Ensure the final batch (if any) gets processed
                             if (batch.Count > 0)
                             {
-                                //Process a batch whenever we find a switch between additions and removals
-                                //This ensures that regardless of the logic in UpdateGraph() we force
-                                //additions and removals to happen in the order we care about
                                 if (toDelete)
                                 {
                                     this._manager.UpdateGraph(currUri, null, batch);
@@ -316,149 +321,196 @@ namespace VDS.RDF
                                 {
                                     this._manager.UpdateGraph(currUri, batch, null);
                                 }
-                                batch.Clear();
                             }
-                            toDelete = next.IsDelete;
-                        }
-                        batch.Add(next.Triple);
-                    }
-                    //Ensure the final batch (if any) gets processed
-                    if (batch.Count > 0)
-                    {
-                        if (toDelete)
-                        {
-                            this._manager.UpdateGraph(currUri, null, batch);
                         }
                         else
                         {
-                            this._manager.UpdateGraph(currUri, batch, null);
+                            switch (action.GraphAction.Action)
+                            {
+                                case GraphPersistenceActionType.Added:
+                                    //No need to do anything in-memory as will be in the graph collection
+                                    //Call SaveGraph() with an empty graph to create the relevant graph
+                                    //If Triples were added these will be persisted separately with
+                                    //TriplePersistenceActions
+                                    Graph g = new Graph();
+                                    g.BaseUri = action.GraphAction.Graph.BaseUri;
+                                    this._manager.SaveGraph(g);
+                                    break;
+
+                                case GraphPersistenceActionType.Deleted:
+                                    //No need to do anything in-memory as won't be in the graph collection
+                                    //If DeleteGraph() is supported call it to delete the relevant graph
+                                    if (this._manager.DeleteSupported)
+                                    {
+                                        this._manager.DeleteGraph(action.GraphAction.Graph.BaseUri);
+                                    }
+                                    break;
+                            }
+                            this._actions.RemoveAt(0);
+                        }
+                    }
+                }
+                else
+                {
+                    //Persist based on Graph level actions
+                    foreach (TripleStorePersistenceAction action in this._actions)
+                    {
+                        if (action.IsGraphAction)
+                        {
+                            if (action.GraphAction.Action == GraphPersistenceActionType.Added)
+                            {
+                                this._manager.SaveGraph(action.GraphAction.Graph);
+                            }
+                            else if (action.GraphAction.Action == GraphPersistenceActionType.Deleted && this._manager.DeleteSupported)
+                            {
+                                //Can only delete graphs if deletion is supported
+                                this._manager.DeleteGraph(action.GraphAction.Graph.BaseUri);
+                            }
                         }
                     }
                 }
             }
-            else
+            finally
             {
-                if (this._graphActions.Count == 0) return;
-
-                //Persist based on Graph level actions
-                foreach (GraphPersistenceAction action in this._graphActions)
-                {
-                    if (action.Action == GraphPersistenceActionType.Added)
-                    {
-                        this._manager.SaveGraph(action.Graph);
-                    }
-                    else if (action.Action == GraphPersistenceActionType.Deleted && this._manager.DeleteSupported)
-                    {
-                        //Can only delete graphs if deletion is supported
-                        this._manager.DeleteGraph(action.Graph.BaseUri);
-                    }
-                }
+                this._persisting = false;
             }
         }
 
         internal void Discard()
         {
-            //Read-Only managers have no persistence
-            if (this._manager.IsReadOnly) return;
-
-            if (this._manager.UpdateSupported)
+            try 
             {
+                this._persisting = true;
+
+                //Read-Only managers have no persistence
+                if (this._manager.IsReadOnly) return;
+
+                //No actions mean no persistence necessary
                 if (this._actions.Count == 0) return;
 
-                //Persist based on Triple level actions
-                //First group Triple together based on Graph URI
-
-                //Important - For discard we reverse the list of actions 
+                //Important - For discard we reverse the list of actions so that we
+                //rollback the actions in appropriate order
                 this._actions.Reverse();
 
-                while (this._actions.Count > 0)
+                if (this._manager.UpdateSupported)
                 {
-                    Queue<TriplePersistenceAction> actions = new Queue<TriplePersistenceAction>();
-                    Uri currUri = this._actions[0].Triple.GraphUri;
-                    actions.Enqueue(this._actions[0]);
-                    this._actions.RemoveAt(0);
-
-                    for (int i = 0; i < this._actions.Count; i++)
+                    //Persist based on Triple level actions
+                    //First group Triple together based on Graph URI
+                    while (this._actions.Count > 0)
                     {
-                        if (EqualityHelper.AreUrisEqual(currUri, this._actions[i].Triple.GraphUri))
-                        {
-                            actions.Enqueue(this._actions[i]);
-                            this._actions.RemoveAt(i);
-                            i--;
-                        }
-                    }
+                        TripleStorePersistenceAction action = this._actions[0];
 
-                    //Split the Triples for this Graph into batches of adds and deletes to ensure
-                    //accurate persistence of the actions
-                    bool toDelete = false;
-                    List<Triple> batch = new List<Triple>();
-                    while (actions.Count > 0)
-                    {
-                        TriplePersistenceAction next = actions.Dequeue();
-                        if (next.IsDelete != toDelete)
+                        if (action.IsTripleAction)
                         {
+                            Queue<TriplePersistenceAction> actions = new Queue<TriplePersistenceAction>();
+                            Uri currUri = this._actions[0].TripleAction.Triple.GraphUri;
+                            actions.Enqueue(this._actions[0].TripleAction);
+                            this._actions.RemoveAt(0);
+
+                            //Find all the Triple actions related to this Graph up to the next non-Triple action
+                            for (int i = 0; i < this._actions.Count && this._actions[i].IsTripleAction; i++)
+                            {
+                                if (EqualityHelper.AreUrisEqual(currUri, this._actions[i].TripleAction.Triple.GraphUri))
+                                {
+                                    actions.Enqueue(this._actions[i].TripleAction);
+                                    this._actions.RemoveAt(i);
+                                    i--;
+                                }
+                            }
+
+                            //Split the Triples for this Graph into batches of adds and deletes to ensure
+                            //accurate persistence of the actions
+                            bool toDelete = false;
+                            List<Triple> batch = new List<Triple>();
+                            while (actions.Count > 0)
+                            {
+                                TriplePersistenceAction next = actions.Dequeue();
+                                if (next.IsDelete != toDelete)
+                                {
+                                    if (batch.Count > 0)
+                                    {
+                                        //Process a batch whenever we find a switch between additions and removals
+                                        //This ensures that regardless of the logic in UpdateGraph() we force
+                                        //additions and removals to happen in the order we care about
+
+                                        //Important - For discard we flip the actions in order to reverse them
+                                        //i.e. additions become removals and vice versa
+                                        //Also for discard we only need to alter the in-memory state not actually
+                                        //do any persistence since the actions will never have been persisted
+                                        if (toDelete)
+                                        {
+                                            this[currUri].Assert(batch);
+                                        }
+                                        else
+                                        {
+                                            this[currUri].Retract(batch);
+                                        }
+                                        batch.Clear();
+                                    }
+                                    toDelete = next.IsDelete;
+                                }
+                                batch.Add(next.Triple);
+                            }
+                            //Ensure the final batch (if any) gets processed
                             if (batch.Count > 0)
                             {
-                                //Process a batch whenever we find a switch between additions and removals
-                                //This ensures that regardless of the logic in UpdateGraph() we force
-                                //additions and removals to happen in the order we care about
-
                                 //Important - For discard we flip the actions in order to reverse them
                                 //i.e. additions become removals and vice versa
+                                //Also for discard we only need to alter the in-memory state not actually
+                                //do any persistence since the actions will never have been persisted
                                 if (toDelete)
                                 {
-                                    this._manager.UpdateGraph(currUri, batch, null);
+                                    this[currUri].Assert(batch);
                                 }
                                 else
                                 {
-                                    this._manager.UpdateGraph(currUri, null, batch);
+                                    this[currUri].Retract(batch);
                                 }
-                                batch.Clear();
                             }
-                            toDelete = next.IsDelete;
-                        }
-                        batch.Add(next.Triple);
-                    }
-                    //Ensure the final batch (if any) gets processed
-                    if (batch.Count > 0)
-                    {
-                        //Important - For discard we flip the actions in order to reverse them
-                        //i.e. additions become removals and vice versa
-                        if (toDelete)
-                        {
-                            this._manager.UpdateGraph(currUri, batch, null);
                         }
                         else
                         {
-                            this._manager.UpdateGraph(currUri, null, batch);
+                            switch (action.GraphAction.Action)
+                            {
+                                case GraphPersistenceActionType.Added:
+                                    //Need to remove from being in-memory
+                                    this.Remove(action.GraphAction.Graph.BaseUri);
+                                    break;
+
+                                case GraphPersistenceActionType.Deleted:
+                                    //Need to add back into memory
+                                    this.Add(action.GraphAction.Graph, false);
+                                    break;
+                            }
+                            this._actions.RemoveAt(0);
                         }
                     }
                 }
-            }
-            else
-            {
-                if (this._graphActions.Count == 0) return;
-
-                //Persist based on Graph level actions
-
-                //Important - For discard we reverse the list of actions 
-                this._graphActions.Reverse();
-
-                foreach (GraphPersistenceAction action in this._graphActions)
+                else
                 {
-                    //Important - For discard we flip the actions in order to reverse them
-                    //i.e. additions become removals and vice versa
+                    //Persist based on Graph level actions
+                    foreach (TripleStorePersistenceAction action in this._actions)
+                    {
+                        //Important - For discard we flip the actions in order to reverse them
+                        //i.e. additions become removals and vice versa
 
-                    if (action.Action == GraphPersistenceActionType.Added && this._manager.DeleteSupported)
-                    {
-                        //Can only delete graphs if deletion is supported
-                        this._manager.DeleteGraph(action.Graph.BaseUri);
-                    }
-                    else if (action.Action == GraphPersistenceActionType.Deleted)
-                    {
-                        this._manager.SaveGraph(action.Graph);
+                        if (action.IsGraphAction)
+                        {
+                            if (action.GraphAction.Action == GraphPersistenceActionType.Added)
+                            {
+                                this.Remove(action.GraphAction.Graph.BaseUri);
+                            }
+                            else if (action.GraphAction.Action == GraphPersistenceActionType.Deleted)
+                            {
+                                this.Add(action.GraphAction.Graph, false);
+                            }
+                        }
                     }
                 }
+            } 
+            finally 
+            {
+                this._persisting = false;
             }
         }
     }

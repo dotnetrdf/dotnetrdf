@@ -155,4 +155,52 @@ namespace VDS.RDF
             }
         }
     }
+
+    public class TripleStorePersistenceAction
+    {
+        private GraphPersistenceAction _graphAction;
+        private TriplePersistenceAction _tripleAction;
+
+        public TripleStorePersistenceAction(GraphPersistenceAction graphAction)
+        {
+            this._graphAction = graphAction;
+        }
+
+        public TripleStorePersistenceAction(TriplePersistenceAction tripleAction)
+        {
+            this._tripleAction = tripleAction;
+        }
+
+        public bool IsGraphAction
+        {
+            get
+            {
+                return this._graphAction != null;
+            }
+        }
+
+        public bool IsTripleAction
+        {
+            get
+            {
+                return this._tripleAction != null;
+            }
+        }
+
+        public GraphPersistenceAction GraphAction
+        {
+            get
+            {
+                return this._graphAction;
+            }
+        }
+
+        public TriplePersistenceAction TripleAction
+        {
+            get
+            {
+                return this._tripleAction;
+            }
+        }
+    }
 }
