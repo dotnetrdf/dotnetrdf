@@ -100,6 +100,7 @@ namespace VDS.RDF
         private IGenericIOManager _manager;
         private TripleEventHandler TripleAddedHandler, TripleRemovedHandler;
         private List<TripleStorePersistenceAction> _actions = new List<TripleStorePersistenceAction>();
+        private HashSet<String> _removedGraphs = new HashSet<string>();
         private bool _persisting = false;
 
         public PersistentGraphCollection(IGenericIOManager manager)
@@ -141,6 +142,7 @@ namespace VDS.RDF
         {
             if (!this._persisting)
             {
+                this._removedGraphs.Add(g.BaseUri.ToSafeString());
                 if (this._manager.UpdateSupported)
                 {
                     this.DetachHandlers(g);
@@ -160,7 +162,7 @@ namespace VDS.RDF
             {
                 return true;
             }
-            else
+            else if (!this._removedGraphs.Contains(graphUri.ToSafeString()))
             {
                 //Try and load the Graph and return true if anything is returned
                 Graph g = new Graph();
@@ -176,6 +178,10 @@ namespace VDS.RDF
                 {
                     return false;
                 }
+            }
+            else
+            {
+                return false;
             }
         }
 
@@ -249,6 +255,7 @@ namespace VDS.RDF
             try
             {
                 this._persisting = true;
+                this._removedGraphs.Clear();
 
                 //Read-Only managers have no persistence
                 if (this._manager.IsReadOnly) return;
@@ -381,6 +388,7 @@ namespace VDS.RDF
             try 
             {
                 this._persisting = true;
+                this._removedGraphs.Clear();
 
                 //Read-Only managers have no persistence
                 if (this._manager.IsReadOnly) return;

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Storage;
 
 namespace VDS.RDF.Test.Storage
@@ -42,10 +43,10 @@ namespace VDS.RDF.Test.Storage
             PersistentTripleStore store = new PersistentTripleStore(null);
         }
 
-        [TestMethod]
-        public void StoragePersistentTripleStoreMemContains()
+        #region Contains Tests
+
+        private void TestContains(IGenericIOManager manager)
         {
-            InMemoryManager manager = new InMemoryManager();
             this.EnsureTestDataset(manager);
 
             PersistentTripleStore store = new PersistentTripleStore(manager);
@@ -70,9 +71,18 @@ namespace VDS.RDF.Test.Storage
         }
 
         [TestMethod]
-        public void StoragePersistentTripleStoreMemGetGraph()
+        public void StoragePersistentTripleStoreMemContains()
         {
             InMemoryManager manager = new InMemoryManager();
+            this.TestContains(manager);
+        }
+
+        #endregion
+
+        #region Get Graph Tests
+
+        private void TestGetGraph(IGenericIOManager manager)
+        {
             this.EnsureTestDataset(manager);
 
             PersistentTripleStore store = new PersistentTripleStore(manager);
@@ -112,9 +122,18 @@ namespace VDS.RDF.Test.Storage
         }
 
         [TestMethod]
-        public void StoragePersistentTripleStoreMemAddGraphFlushed()
+        public void StoragePersistentTripleStoreMemGetGraph()
         {
             InMemoryManager manager = new InMemoryManager();
+            this.TestGetGraph(manager);
+        }
+
+        #endregion
+
+        #region Add Graph Tests
+
+        private void TestAddGraphFlushed(IGenericIOManager manager)
+        {
             this.EnsureTestDataset(manager);
 
             PersistentTripleStore store = new PersistentTripleStore(manager);
@@ -139,9 +158,14 @@ namespace VDS.RDF.Test.Storage
         }
 
         [TestMethod]
-        public void StoragePersistentTripleStoreMemAddGraphDiscarded()
+        public void StoragePersistentTripleStoreMemAddGraphFlushed()
         {
             InMemoryManager manager = new InMemoryManager();
+            this.TestAddGraphFlushed(manager);
+        }
+
+        private void TestAddGraphDiscarded(IGenericIOManager manager)
+        {
             this.EnsureTestDataset(manager);
 
             PersistentTripleStore store = new PersistentTripleStore(manager);
@@ -166,5 +190,82 @@ namespace VDS.RDF.Test.Storage
                 store.Dispose();
             }
         }
+
+        [TestMethod]
+        public void StoragePersistentTripleStoreMemAddGraphDiscarded()
+        {
+            InMemoryManager manager = new InMemoryManager();
+            this.TestAddGraphDiscarded(manager);
+        }
+
+        #endregion
+
+        #region Remove Graph Tests
+
+        private void TestRemoveGraphFlushed(IGenericIOManager manager)
+        {
+            this.EnsureTestDataset(manager);
+
+            PersistentTripleStore store = new PersistentTripleStore(manager);
+            try
+            {
+                Uri toRemove = new Uri(TestGraphUri1);
+                Assert.IsTrue(store.HasGraph(toRemove), "In-memory view should contain the Graph we wish to remove");
+
+                store.Remove(toRemove);
+                Assert.IsFalse(store.HasGraph(toRemove), "In-memory view should no longer contain the Graph we removed prior to the Flush/Discard operation");
+                store.Flush();
+
+                Assert.IsFalse(store.HasGraph(toRemove), "In-Memory view should no longer contain the Graph we removed after Flushing");
+                AnyHandler handler = new AnyHandler();
+                manager.LoadGraph(handler, toRemove);
+                Assert.IsFalse(handler.Any, "Attempting to load Graph from underlying store should return nothing after the Flush() operation");
+            }
+            finally
+            {
+                store.Dispose();
+            }
+        }
+
+        [TestMethod]
+        public void StoragePersistentTripleStoreMemRemoveGraphFlushed()
+        {
+            InMemoryManager manager = new InMemoryManager();
+            this.TestRemoveGraphFlushed(manager);
+        }
+
+        private void TestRemoveGraphDiscarded(IGenericIOManager manager)
+        {
+            this.EnsureTestDataset(manager);
+
+            PersistentTripleStore store = new PersistentTripleStore(manager);
+            try
+            {
+                Uri toRemove = new Uri(TestGraphUri1);
+                Assert.IsTrue(store.HasGraph(toRemove), "In-memory view should contain the Graph we wish to remove");
+
+                store.Remove(toRemove);
+                Assert.IsFalse(store.HasGraph(toRemove), "In-memory view should no longer contain the Graph we removed prior to the Flush/Discard operation");
+                store.Discard();
+
+                Assert.IsTrue(store.HasGraph(toRemove), "In-Memory view should still contain the Graph we removed as we Discarded that change");
+                AnyHandler handler = new AnyHandler();
+                manager.LoadGraph(handler, toRemove);
+                Assert.IsTrue(handler.Any, "Attempting to load Graph from underlying store should return something as the Discard() prevented the removal being persisted");
+            }
+            finally
+            {
+                store.Dispose();
+            }
+        }
+
+        [TestMethod]
+        public void StoragePersistentTripleStoreMemRemoveGraphDiscarded()
+        {
+            InMemoryManager manager = new InMemoryManager();
+            this.TestRemoveGraphDiscarded(manager);
+        }
+
+        #endregion
     }
 }
