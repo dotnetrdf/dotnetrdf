@@ -17,7 +17,8 @@ namespace VDS.RDF.Test.Storage.Sql
 
         private IGenericIOManager GetConnection()
         {
-            return new MicrosoftAdoManager(AzureDatabaseServer + ".database.windows.net", AzureDatabase, AzureUsername + "@" + AzureDatabaseServer, AzurePassword, true);
+            return new AzureAdoManager(AzureDatabaseServer, AzureDatabase, AzureUsername, AzurePassword);
+            //return new MicrosoftAdoManager(AzureDatabaseServer + ".database.windows.net", AzureDatabase, AzureUsername + "@" + AzureDatabaseServer, AzurePassword, true);
         }
 
         [TestMethod]

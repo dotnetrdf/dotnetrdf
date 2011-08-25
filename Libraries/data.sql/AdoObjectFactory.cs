@@ -11,7 +11,8 @@ namespace VDS.RDF.Configuration
 {
     public class AdoObjectFactory : IObjectFactory
     {
-        private const String MicrosoftAdoManager = "VDS.RDF.Storage.MicrosoftAdoManager",
+        private const String AzureAdoManager = "VDS.RDF.Storage.AzureAdoManager",
+                             MicrosoftAdoManager = "VDS.RDF.Storage.MicrosoftAdoManager",
                              MicrosoftAdoDataset = "VDS.RDF.Query.Datasets.MicrosoftAdoDataset",
                              MicrosoftAdoOptimiser = "VDS.RDF.Query.Optimisation.MicrosoftAdoOptimiser";
 
@@ -49,6 +50,7 @@ namespace VDS.RDF.Configuration
                     }
                     break;
 
+                case AzureAdoManager:
                 case MicrosoftAdoManager:
                     //Get Server and Database details
                     String server = ConfigurationLoader.GetConfigurationString(g, objNode, propServer);
@@ -63,10 +65,18 @@ namespace VDS.RDF.Configuration
                     //Create the Manager
                     if (user != null && pwd != null)
                     {
-                        obj = new MicrosoftAdoManager(server, db, user, pwd);
+                        if (targetType.FullName.Equals(MicrosoftAdoManager))
+                        {
+                            obj = new MicrosoftAdoManager(server, db, user, pwd);
+                        }
+                        else
+                        {
+                            obj = new AzureAdoManager(server, db, user, pwd);
+                        }
                     }
                     else
                     {
+                        if (targetType.FullName.Equals(AzureAdoManager)) throw new DotNetRdfConfigurationException("Unable to load the object identified by the Node '" + objNode.ToString() + "' as an AzureAdoManager as the required dnr:user and dnr:password properties were missing");
                         obj = new MicrosoftAdoManager(server, db);
                     }
                     break;
@@ -99,6 +109,7 @@ namespace VDS.RDF.Configuration
         {
             switch (t.FullName)
             {
+                case AzureAdoManager:
                 case MicrosoftAdoDataset:
                 case MicrosoftAdoManager:
                 case MicrosoftAdoOptimiser:

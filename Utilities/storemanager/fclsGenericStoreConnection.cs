@@ -435,11 +435,11 @@ namespace VDS.RDF.Utilities.StoreManager
         {
             if (this.txtMicrosoftAdoServer.Text.Equals(String.Empty))
             {
-                this.ParameterRequired("Database Server", "Microsoft SQL Server");
+                this.ParameterRequired("Database Server", "SQL Server");
             }
             else if (this.txtMicrosoftAdoDb.Text.Equals(String.Empty))
             {
-                this.ParameterRequired("Database", "Microsoft SQL Server");
+                this.ParameterRequired("Database", "SQL Server");
             }
             else
             {
@@ -457,11 +457,41 @@ namespace VDS.RDF.Utilities.StoreManager
             }
         }
 
+        private void btnConnectAzure_Click(object sender, EventArgs e)
+        {
+            if (this.txtAzureServer.Text.Equals(String.Empty))
+            {
+                this.ParameterRequired("Database Server", "SQL Azure");
+            }
+            else if (this.txtAzureDatabase.Text.Equals(String.Empty))
+            {
+                this.ParameterRequired("Database", "SQL Azure");
+            }
+            else if (this.txtAzureUsername.Text.Equals(String.Empty))
+            {
+                this.ParameterRequired("Username", "SQL Azure");
+            }
+            else if (this.txtAzurePassword.Text.Equals(String.Empty))
+            {
+                this.ParameterRequired("Password", "SQL Azure");
+            }
+            else
+            {
+                this._manager = new AzureAdoManager(this.txtAzureServer.Text, this.txtAzureDatabase.Text, this.txtAzureUsername.Text, this.txtAzurePassword.Text);
+                this.DialogResult = DialogResult.OK;
+                this.Close();
+            }
+        }
+
         private void chkStardogAnonUser_CheckedChanged(object sender, EventArgs e)
         {
             this.txtStardogPassword.Enabled = !this.chkStardogAnonUser.Checked;
             this.txtStardogUsername.Enabled = !this.chkStardogAnonUser.Checked;
         }
 
+        private void txtAzureDatabase_TextChanged(object sender, EventArgs e)
+        {
+            this.lblAzureUsernameSuffix.Text = "@" + this.txtAzureDatabase.Text;
+        }
     }
 }

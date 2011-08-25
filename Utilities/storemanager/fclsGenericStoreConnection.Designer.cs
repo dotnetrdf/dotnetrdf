@@ -79,6 +79,19 @@
             this.txtDatasetFile = new System.Windows.Forms.TextBox();
             this.lblDatasetFile = new System.Windows.Forms.Label();
             this.lblDatasetFileIntro = new System.Windows.Forms.Label();
+            this.tabAzureAdo = new System.Windows.Forms.TabPage();
+            this.lblAzureUsernameSuffix = new System.Windows.Forms.Label();
+            this.lblAzureServerSuffix = new System.Windows.Forms.Label();
+            this.btnConnectAzure = new System.Windows.Forms.Button();
+            this.txtAzurePassword = new System.Windows.Forms.TextBox();
+            this.lblAzurePassword = new System.Windows.Forms.Label();
+            this.txtAzureUsername = new System.Windows.Forms.TextBox();
+            this.lblAzureUsername = new System.Windows.Forms.Label();
+            this.txtAzureDatabase = new System.Windows.Forms.TextBox();
+            this.lblAzureDatabase = new System.Windows.Forms.Label();
+            this.txtAzureServer = new System.Windows.Forms.TextBox();
+            this.lblAzureServer = new System.Windows.Forms.Label();
+            this.lblAzureIntro = new System.Windows.Forms.Label();
             this.tabMicrosoftAdo = new System.Windows.Forms.TabPage();
             this.btnConnectMicrosoftAdo = new System.Windows.Forms.Button();
             this.txtMicrosoftAdoPassword = new System.Windows.Forms.TextBox();
@@ -115,6 +128,9 @@
             this.lblSparqlHttpServer = new System.Windows.Forms.Label();
             this.lblSparqlHttpIntro = new System.Windows.Forms.Label();
             this.tabStardog = new System.Windows.Forms.TabPage();
+            this.cboStardogReasoning = new System.Windows.Forms.ComboBox();
+            this.lblStardogReasoning = new System.Windows.Forms.Label();
+            this.chkStardogAnonUser = new System.Windows.Forms.CheckBox();
             this.txtStardogPassword = new System.Windows.Forms.TextBox();
             this.lblStardogPassword = new System.Windows.Forms.Label();
             this.txtStardogUsername = new System.Windows.Forms.TextBox();
@@ -158,9 +174,6 @@
             this.label9 = new System.Windows.Forms.Label();
             this.textBox10 = new System.Windows.Forms.TextBox();
             this.label10 = new System.Windows.Forms.Label();
-            this.chkStardogAnonUser = new System.Windows.Forms.CheckBox();
-            this.lblStardogReasoning = new System.Windows.Forms.Label();
-            this.cboStardogReasoning = new System.Windows.Forms.ComboBox();
             this.tabStores.SuspendLayout();
             this.tabAllegroGraph.SuspendLayout();
             this.tabDydra.SuspendLayout();
@@ -169,6 +182,7 @@
             this.tabInMemory.SuspendLayout();
             this.tabJoseki.SuspendLayout();
             this.tabDataset.SuspendLayout();
+            this.tabAzureAdo.SuspendLayout();
             this.tabMicrosoftAdo.SuspendLayout();
             this.tabSesame.SuspendLayout();
             this.tabSparqlEndpoint.SuspendLayout();
@@ -187,6 +201,7 @@
             this.tabStores.Controls.Add(this.tabInMemory);
             this.tabStores.Controls.Add(this.tabJoseki);
             this.tabStores.Controls.Add(this.tabDataset);
+            this.tabStores.Controls.Add(this.tabAzureAdo);
             this.tabStores.Controls.Add(this.tabMicrosoftAdo);
             this.tabStores.Controls.Add(this.tabSesame);
             this.tabStores.Controls.Add(this.tabSparqlEndpoint);
@@ -692,6 +707,134 @@
             this.lblDatasetFileIntro.Text = "Allows you to view a RDF Dataset File in one of the formats supported by dotNetRD" +
                 "F - NQuads, TriG or TriX -  as a read-only Store.";
             // 
+            // tabAzureAdo
+            // 
+            this.tabAzureAdo.Controls.Add(this.lblAzureUsernameSuffix);
+            this.tabAzureAdo.Controls.Add(this.lblAzureServerSuffix);
+            this.tabAzureAdo.Controls.Add(this.btnConnectAzure);
+            this.tabAzureAdo.Controls.Add(this.txtAzurePassword);
+            this.tabAzureAdo.Controls.Add(this.lblAzurePassword);
+            this.tabAzureAdo.Controls.Add(this.txtAzureUsername);
+            this.tabAzureAdo.Controls.Add(this.lblAzureUsername);
+            this.tabAzureAdo.Controls.Add(this.txtAzureDatabase);
+            this.tabAzureAdo.Controls.Add(this.lblAzureDatabase);
+            this.tabAzureAdo.Controls.Add(this.txtAzureServer);
+            this.tabAzureAdo.Controls.Add(this.lblAzureServer);
+            this.tabAzureAdo.Controls.Add(this.lblAzureIntro);
+            this.tabAzureAdo.Location = new System.Drawing.Point(4, 58);
+            this.tabAzureAdo.Name = "tabAzureAdo";
+            this.tabAzureAdo.Size = new System.Drawing.Size(475, 152);
+            this.tabAzureAdo.TabIndex = 14;
+            this.tabAzureAdo.Text = "SQL Azure";
+            this.tabAzureAdo.UseVisualStyleBackColor = true;
+            // 
+            // lblAzureUsernameSuffix
+            // 
+            this.lblAzureUsernameSuffix.AutoSize = true;
+            this.lblAzureUsernameSuffix.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblAzureUsernameSuffix.Location = new System.Drawing.Point(184, 81);
+            this.lblAzureUsernameSuffix.Name = "lblAzureUsernameSuffix";
+            this.lblAzureUsernameSuffix.Size = new System.Drawing.Size(33, 13);
+            this.lblAzureUsernameSuffix.TabIndex = 30;
+            this.lblAzureUsernameSuffix.Text = "@DB";
+            // 
+            // lblAzureServerSuffix
+            // 
+            this.lblAzureServerSuffix.AutoSize = true;
+            this.lblAzureServerSuffix.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblAzureServerSuffix.Location = new System.Drawing.Point(184, 29);
+            this.lblAzureServerSuffix.Name = "lblAzureServerSuffix";
+            this.lblAzureServerSuffix.Size = new System.Drawing.Size(116, 13);
+            this.lblAzureServerSuffix.TabIndex = 29;
+            this.lblAzureServerSuffix.Text = ".database.windows.net";
+            // 
+            // btnConnectAzure
+            // 
+            this.btnConnectAzure.Location = new System.Drawing.Point(297, 120);
+            this.btnConnectAzure.Name = "btnConnectAzure";
+            this.btnConnectAzure.Size = new System.Drawing.Size(172, 23);
+            this.btnConnectAzure.TabIndex = 28;
+            this.btnConnectAzure.Text = "Connect to SQL Azure";
+            this.btnConnectAzure.UseVisualStyleBackColor = true;
+            this.btnConnectAzure.Click += new System.EventHandler(this.btnConnectAzure_Click);
+            // 
+            // txtAzurePassword
+            // 
+            this.txtAzurePassword.Location = new System.Drawing.Point(78, 104);
+            this.txtAzurePassword.Name = "txtAzurePassword";
+            this.txtAzurePassword.PasswordChar = '*';
+            this.txtAzurePassword.Size = new System.Drawing.Size(100, 20);
+            this.txtAzurePassword.TabIndex = 27;
+            // 
+            // lblAzurePassword
+            // 
+            this.lblAzurePassword.AutoSize = true;
+            this.lblAzurePassword.Location = new System.Drawing.Point(12, 107);
+            this.lblAzurePassword.Name = "lblAzurePassword";
+            this.lblAzurePassword.Size = new System.Drawing.Size(56, 13);
+            this.lblAzurePassword.TabIndex = 26;
+            this.lblAzurePassword.Text = "Password:";
+            // 
+            // txtAzureUsername
+            // 
+            this.txtAzureUsername.Location = new System.Drawing.Point(78, 78);
+            this.txtAzureUsername.Name = "txtAzureUsername";
+            this.txtAzureUsername.Size = new System.Drawing.Size(100, 20);
+            this.txtAzureUsername.TabIndex = 25;
+            // 
+            // lblAzureUsername
+            // 
+            this.lblAzureUsername.AutoSize = true;
+            this.lblAzureUsername.Location = new System.Drawing.Point(12, 81);
+            this.lblAzureUsername.Name = "lblAzureUsername";
+            this.lblAzureUsername.Size = new System.Drawing.Size(58, 13);
+            this.lblAzureUsername.TabIndex = 24;
+            this.lblAzureUsername.Text = "Username:";
+            // 
+            // txtAzureDatabase
+            // 
+            this.txtAzureDatabase.Location = new System.Drawing.Point(78, 52);
+            this.txtAzureDatabase.Name = "txtAzureDatabase";
+            this.txtAzureDatabase.Size = new System.Drawing.Size(100, 20);
+            this.txtAzureDatabase.TabIndex = 23;
+            this.txtAzureDatabase.Text = "DB";
+            this.txtAzureDatabase.TextChanged += new System.EventHandler(this.txtAzureDatabase_TextChanged);
+            // 
+            // lblAzureDatabase
+            // 
+            this.lblAzureDatabase.AutoSize = true;
+            this.lblAzureDatabase.Location = new System.Drawing.Point(12, 55);
+            this.lblAzureDatabase.Name = "lblAzureDatabase";
+            this.lblAzureDatabase.Size = new System.Drawing.Size(56, 13);
+            this.lblAzureDatabase.TabIndex = 22;
+            this.lblAzureDatabase.Text = "Database:";
+            // 
+            // txtAzureServer
+            // 
+            this.txtAzureServer.Location = new System.Drawing.Point(108, 26);
+            this.txtAzureServer.MaxLength = 10;
+            this.txtAzureServer.Name = "txtAzureServer";
+            this.txtAzureServer.Size = new System.Drawing.Size(70, 20);
+            this.txtAzureServer.TabIndex = 21;
+            // 
+            // lblAzureServer
+            // 
+            this.lblAzureServer.AutoSize = true;
+            this.lblAzureServer.Location = new System.Drawing.Point(12, 29);
+            this.lblAzureServer.Name = "lblAzureServer";
+            this.lblAzureServer.Size = new System.Drawing.Size(90, 13);
+            this.lblAzureServer.TabIndex = 20;
+            this.lblAzureServer.Text = "Database Server:";
+            // 
+            // lblAzureIntro
+            // 
+            this.lblAzureIntro.AutoSize = true;
+            this.lblAzureIntro.Location = new System.Drawing.Point(6, 10);
+            this.lblAzureIntro.Name = "lblAzureIntro";
+            this.lblAzureIntro.Size = new System.Drawing.Size(334, 13);
+            this.lblAzureIntro.TabIndex = 19;
+            this.lblAzureIntro.Text = "Connect to a database on SQL Azure that uses our ADO Store format";
+            // 
             // tabMicrosoftAdo
             // 
             this.tabMicrosoftAdo.Controls.Add(this.btnConnectMicrosoftAdo);
@@ -709,7 +852,7 @@
             this.tabMicrosoftAdo.Padding = new System.Windows.Forms.Padding(3);
             this.tabMicrosoftAdo.Size = new System.Drawing.Size(475, 152);
             this.tabMicrosoftAdo.TabIndex = 13;
-            this.tabMicrosoftAdo.Text = "Microsoft SQL Server";
+            this.tabMicrosoftAdo.Text = "SQL Server";
             this.tabMicrosoftAdo.UseVisualStyleBackColor = true;
             // 
             // btnConnectMicrosoftAdo
@@ -1052,6 +1195,38 @@
             this.tabStardog.TabIndex = 11;
             this.tabStardog.Text = "Stardog";
             this.tabStardog.UseVisualStyleBackColor = true;
+            // 
+            // cboStardogReasoning
+            // 
+            this.cboStardogReasoning.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboStardogReasoning.FormattingEnabled = true;
+            this.cboStardogReasoning.Items.AddRange(new object[] {
+            "None",
+            "OWL QL"});
+            this.cboStardogReasoning.Location = new System.Drawing.Point(327, 37);
+            this.cboStardogReasoning.Name = "cboStardogReasoning";
+            this.cboStardogReasoning.Size = new System.Drawing.Size(121, 21);
+            this.cboStardogReasoning.TabIndex = 5;
+            // 
+            // lblStardogReasoning
+            // 
+            this.lblStardogReasoning.AutoSize = true;
+            this.lblStardogReasoning.Location = new System.Drawing.Point(199, 40);
+            this.lblStardogReasoning.Name = "lblStardogReasoning";
+            this.lblStardogReasoning.Size = new System.Drawing.Size(122, 13);
+            this.lblStardogReasoning.TabIndex = 4;
+            this.lblStardogReasoning.Text = "Query Reasoning Mode:";
+            // 
+            // chkStardogAnonUser
+            // 
+            this.chkStardogAnonUser.AutoSize = true;
+            this.chkStardogAnonUser.Location = new System.Drawing.Point(7, 58);
+            this.chkStardogAnonUser.Name = "chkStardogAnonUser";
+            this.chkStardogAnonUser.Size = new System.Drawing.Size(134, 17);
+            this.chkStardogAnonUser.TabIndex = 6;
+            this.chkStardogAnonUser.Text = "Use Anonymous User?";
+            this.chkStardogAnonUser.UseVisualStyleBackColor = true;
+            this.chkStardogAnonUser.CheckedChanged += new System.EventHandler(this.chkStardogAnonUser_CheckedChanged);
             // 
             // txtStardogPassword
             // 
@@ -1439,38 +1614,6 @@
             this.label10.TabIndex = 0;
             this.label10.Text = "Virtuoso Server:";
             // 
-            // chkStardogAnonUser
-            // 
-            this.chkStardogAnonUser.AutoSize = true;
-            this.chkStardogAnonUser.Location = new System.Drawing.Point(7, 58);
-            this.chkStardogAnonUser.Name = "chkStardogAnonUser";
-            this.chkStardogAnonUser.Size = new System.Drawing.Size(134, 17);
-            this.chkStardogAnonUser.TabIndex = 6;
-            this.chkStardogAnonUser.Text = "Use Anonymous User?";
-            this.chkStardogAnonUser.UseVisualStyleBackColor = true;
-            this.chkStardogAnonUser.CheckedChanged += new System.EventHandler(this.chkStardogAnonUser_CheckedChanged);
-            // 
-            // lblStardogReasoning
-            // 
-            this.lblStardogReasoning.AutoSize = true;
-            this.lblStardogReasoning.Location = new System.Drawing.Point(199, 40);
-            this.lblStardogReasoning.Name = "lblStardogReasoning";
-            this.lblStardogReasoning.Size = new System.Drawing.Size(122, 13);
-            this.lblStardogReasoning.TabIndex = 4;
-            this.lblStardogReasoning.Text = "Query Reasoning Mode:";
-            // 
-            // cboStardogReasoning
-            // 
-            this.cboStardogReasoning.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboStardogReasoning.FormattingEnabled = true;
-            this.cboStardogReasoning.Items.AddRange(new object[] {
-            "None",
-            "OWL QL"});
-            this.cboStardogReasoning.Location = new System.Drawing.Point(327, 37);
-            this.cboStardogReasoning.Name = "cboStardogReasoning";
-            this.cboStardogReasoning.Size = new System.Drawing.Size(121, 21);
-            this.cboStardogReasoning.TabIndex = 5;
-            // 
             // fclsGenericStoreConnection
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1501,6 +1644,8 @@
             this.tabJoseki.PerformLayout();
             this.tabDataset.ResumeLayout(false);
             this.tabDataset.PerformLayout();
+            this.tabAzureAdo.ResumeLayout(false);
+            this.tabAzureAdo.PerformLayout();
             this.tabMicrosoftAdo.ResumeLayout(false);
             this.tabMicrosoftAdo.PerformLayout();
             this.tabSesame.ResumeLayout(false);
@@ -1666,5 +1811,18 @@
         private System.Windows.Forms.CheckBox chkStardogAnonUser;
         private System.Windows.Forms.ComboBox cboStardogReasoning;
         private System.Windows.Forms.Label lblStardogReasoning;
+        private System.Windows.Forms.TabPage tabAzureAdo;
+        private System.Windows.Forms.Label lblAzureServerSuffix;
+        private System.Windows.Forms.Button btnConnectAzure;
+        private System.Windows.Forms.TextBox txtAzurePassword;
+        private System.Windows.Forms.Label lblAzurePassword;
+        private System.Windows.Forms.TextBox txtAzureUsername;
+        private System.Windows.Forms.Label lblAzureUsername;
+        private System.Windows.Forms.TextBox txtAzureDatabase;
+        private System.Windows.Forms.Label lblAzureDatabase;
+        private System.Windows.Forms.TextBox txtAzureServer;
+        private System.Windows.Forms.Label lblAzureServer;
+        private System.Windows.Forms.Label lblAzureIntro;
+        private System.Windows.Forms.Label lblAzureUsernameSuffix;
     }
 }

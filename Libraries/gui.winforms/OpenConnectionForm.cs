@@ -65,7 +65,7 @@ namespace VDS.RDF.GUI.WinForms
             INode rdfsLabel = g.CreateUriNode(new Uri(NamespaceMapper.RDFS + "label"));
 
             SparqlParameterizedString getConnections = new SparqlParameterizedString();
-            getConnections.QueryText = "SELECT ?obj ?label WHERE { ?obj a @type . OPTIONAL { ?obj @label ?label } } ORDER BY ?label";
+            getConnections.CommandText = "SELECT ?obj ?label WHERE { ?obj a @type . OPTIONAL { ?obj @label ?label } } ORDER BY ?label";
             getConnections.SetParameter("type", genericManager);
             getConnections.SetParameter("label", rdfsLabel);
 
