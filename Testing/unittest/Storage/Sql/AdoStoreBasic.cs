@@ -55,8 +55,8 @@ namespace VDS.RDF.Test.Storage
         {
             try
             {
-                //MicrosoftAdoManager manager = new MicrosoftAdoManager("blank", "example", "password");
-                MicrosoftAdoManager manager = new MicrosoftAdoManager("NOTTM-LT\\SQLEXPRESS", "blank", "example", "password");
+                MicrosoftAdoManager manager = new MicrosoftAdoManager("blank", "example", "password");
+                //MicrosoftAdoManager manager = new MicrosoftAdoManager("NOTTM-LT\\SQLEXPRESS", "blank", "example", "password");
                 manager.Dispose();
             }
             catch (Exception ex)

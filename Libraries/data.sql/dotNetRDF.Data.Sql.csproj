@@ -60,12 +60,18 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="CreateMicrosoftAdoStore.sql" />
-    <EmbeddedResource Include="DropMicrosoftAdoStore.sql" />
+    <EmbeddedResource Include="CreateMicrosoftAdoSimpleStore.sql" />
+    <EmbeddedResource Include="DropMicrosoftAdoSimpleStore.sql" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="CreateMicrosoftAdoHashStore.sql" />
     <EmbeddedResource Include="DropMicrosoftAdoHashStore.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="CreateMicrosoftAdoSimple2000Store.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="DropMicrosoftAdoSimple2000Store.sql" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

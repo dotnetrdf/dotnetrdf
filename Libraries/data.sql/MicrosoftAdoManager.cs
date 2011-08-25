@@ -119,12 +119,41 @@ namespace VDS.RDF.Storage
 
         protected override int EnsureSetup(Dictionary<String,String> parameters)
         {
-            Stream s = Assembly.GetExecutingAssembly().GetManifestResourceStream("VDS.RDF.Storage.CreateMicrosoftAdoHashStore.sql");
+            AdoSchemaDefinition definition = AdoSchemaHelper.DefaultSchema;
+            if (definition == null) throw new RdfStorageException("Unable to setup ADO Store for Microsoft SQL Server as no default schema is currently available from AdoSchemaHelper.DefaultSchema");
+            if (!definition.HasScript(AdoSchemaScriptType.Create, AdoSchemaScriptDatabase.MicrosoftSqlServer)) throw new RdfStorageException("Unable to setup ADO Store for Microsoft SQL Server as the current default schema does not provide a compatible creation script");
+
+            String resource = definition.GetScript(AdoSchemaScriptType.Create, AdoSchemaScriptDatabase.MicrosoftSqlServer);
+            if (resource == null) throw new RdfStorageException("Unable to setup ADO Store for Microsoft SQL Server as the default schema returned a null resource for the creation script");
+
+            //Get the appropriate assembly
+            Assembly assm;
+            if (resource.Contains(","))
+            {
+                //Assembly qualified name so need to do an Assembly.Load()
+                String assmName = resource.Substring(resource.IndexOf(",") + 1).TrimStart();
+                resource = resource.Substring(0, resource.IndexOf(",")).TrimEnd();
+                try
+                {
+                    assm = Assembly.Load(assmName);
+                }
+                catch (Exception ex)
+                {
+                    throw new RdfStorageException("Unable to setup ADO Store for Microsoft SQL Server as the creation script is the resource '" + resource + "' from assembly '" + assmName + "' but this assembly could not be loaded, please see inner exception for details", ex);
+                }
+            }
+            else
+            {
+                //Assume executing assembly
+                assm = Assembly.GetExecutingAssembly();
+            }
+
+            Stream s = assm.GetManifestResourceStream(resource);
             if (s != null)
             {
                 try
                 {
-                    this.ExecuteSqlFromResource("VDS.RDF.Storage.CreateMicrosoftAdoHashStore.sql");
+                    this.ExecuteSql(s);
 
                     //Now try and add the user to the rdf_readwrite role
                     if (parameters["user"] != null)
@@ -158,7 +187,7 @@ namespace VDS.RDF.Storage
             }
             else
             {
-                throw new RdfStorageException("Unable to setup ADO Store for Microsoft SQL Server as database creation script is missing from the DLL");
+                throw new RdfStorageException("Unable to setup ADO Store for Microsoft SQL Server as database creation script is missing from the referenced assembly");
             }
         }
 

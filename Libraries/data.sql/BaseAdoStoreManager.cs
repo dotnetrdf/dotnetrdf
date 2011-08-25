@@ -172,11 +172,23 @@ namespace VDS.RDF.Storage
             Stream stream = assm.GetManifestResourceStream(resource);
             if (stream == null)
             {
-                throw new RdfStorageException("Cannot execute an SQL script from an embedded resource as was unable to load the requested resource '" + resource + "'");
+                throw new RdfStorageException("Cannot execute an SQL script from an embedded resource as requested resource '" + resource + "' could not be loaded");
             }
+            this.ExecuteSql(stream);
+        }
 
+        /// <summary>
+        /// Executes the SQL from a stream
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Heavily adapted from code used in <a href="http://www.bugnetproject.com">BugNet</a>
+        /// </para>
+        /// </remarks>
+        protected void ExecuteSql(Stream stream)
+        {
             List<String> statements = new List<String>();
-            
+
             using (StreamReader reader = new StreamReader(stream))
             {
                 String statement;
