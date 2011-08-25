@@ -752,6 +752,7 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">Graph URI</param>
         public void LoadGraph(IGraph g, Uri graphUri)
         {
+            if (g.IsEmpty) g.BaseUri = graphUri;
             this.LoadGraph(new GraphHandler(g), graphUri);
         }
 

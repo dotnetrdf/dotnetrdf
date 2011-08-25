@@ -6,6 +6,7 @@ using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Storage;
+using VDS.RDF.Test.Storage.Sql;
 
 namespace VDS.RDF.Test.Storage
 {
@@ -103,6 +104,13 @@ namespace VDS.RDF.Test.Storage
             this.TestContains(virtuoso);
         }
 
+        [TestMethod]
+        public void StoragePersistentTripleStoreAdoMicrosoftContains()
+        {
+            MicrosoftAdoManager manager = new MicrosoftAdoManager("adostore", "example", "password");
+            this.TestContains(manager);
+        }
+
         #endregion
 
         #region Get Graph Tests
@@ -168,6 +176,13 @@ namespace VDS.RDF.Test.Storage
             this.TestGetGraph(virtuoso);
         }
 
+        [TestMethod]
+        public void StoragePersistentTripleStoreAdoMicrosoftGetGraph()
+        {
+            MicrosoftAdoManager manager = new MicrosoftAdoManager("adostore", "example", "password");
+            this.TestGetGraph(manager);
+        }
+
         #endregion
 
         #region Add Triples Tests
@@ -224,6 +239,13 @@ namespace VDS.RDF.Test.Storage
             this.TestAddTriplesFlushed(virtuoso);
         }
 
+        [TestMethod]
+        public void StoragePersistentTripleStoreAdoMicrosoftAddTriplesFlushed()
+        {
+            MicrosoftAdoManager manager = new MicrosoftAdoManager("adostore", "example", "password");
+            this.TestAddTriplesFlushed(manager);
+        }
+
         private void TestAddTriplesDiscarded(IGenericIOManager manager)
         {
             this.EnsureGraphDeleted(manager, new Uri(TestGraphUri1));
@@ -274,6 +296,13 @@ namespace VDS.RDF.Test.Storage
         {
             VirtuosoManager virtuoso = new VirtuosoManager("DB", VirtuosoTest.VirtuosoTestUsername, VirtuosoTest.VirtuosoTestPassword);
             this.TestAddTriplesDiscarded(virtuoso);
+        }
+
+        [TestMethod]
+        public void StoragePersistentTripleStoreAdoMicrosoftAddTriplesDiscarded()
+        {
+            MicrosoftAdoManager manager = new MicrosoftAdoManager("adostore", "example", "password");
+            this.TestAddTriplesDiscarded(manager);
         }
 
         #endregion
@@ -332,6 +361,13 @@ namespace VDS.RDF.Test.Storage
             this.TestRemoveTriplesFlushed(virtuoso);
         }
 
+        [TestMethod]
+        public void StoragePersistentTripleStoreAdoMicrosoftRemoveTriplesFlushed()
+        {
+            MicrosoftAdoManager manager = new MicrosoftAdoManager("adostore", "example", "password");
+            this.TestRemoveTriplesFlushed(manager);
+        }
+
         private void TestRemoveTriplesDiscarded(IGenericIOManager manager)
         {
             this.EnsureTestDataset(manager);
@@ -382,6 +418,13 @@ namespace VDS.RDF.Test.Storage
         {
             VirtuosoManager virtuoso = new VirtuosoManager("DB", VirtuosoTest.VirtuosoTestUsername, VirtuosoTest.VirtuosoTestPassword);
             this.TestRemoveTriplesDiscarded(virtuoso);
+        }
+
+        [TestMethod]
+        public void StoragePersistentTripleStoreAdoMicrosoftRemoveTriplesDiscarded()
+        {
+            MicrosoftAdoManager manager = new MicrosoftAdoManager("adostore", "example", "password");
+            this.TestRemoveTriplesDiscarded(manager);
         }
 
         #endregion
@@ -435,6 +478,13 @@ namespace VDS.RDF.Test.Storage
             this.TestAddGraphFlushed(virtuoso);
         }
 
+        [TestMethod]
+        public void StoragePersistentTripleStoreAdoMicrosoftAddGraphFlushed()
+        {
+            MicrosoftAdoManager manager = new MicrosoftAdoManager("adostore", "example", "password");
+            this.TestAddGraphFlushed(manager);
+        }
+
         private void TestAddGraphDiscarded(IGenericIOManager manager)
         {
             this.EnsureTestDataset(manager);
@@ -476,6 +526,7 @@ namespace VDS.RDF.Test.Storage
             InMemoryManager manager = new InMemoryManager();
             this.TestAddGraphDiscarded(manager);
         }
+
         [TestMethod]
         public void StoragePersistentTripleStoreFusekiAddGraphDiscarded()
         {
@@ -488,6 +539,13 @@ namespace VDS.RDF.Test.Storage
         {
             VirtuosoManager virtuoso = new VirtuosoManager("DB", VirtuosoTest.VirtuosoTestUsername, VirtuosoTest.VirtuosoTestPassword);
             this.TestAddGraphDiscarded(virtuoso);
+        }
+
+        [TestMethod]
+        public void StoragePersistentTripleStoreAdoMicrosoftAddGraphDiscarded()
+        {
+            MicrosoftAdoManager manager = new MicrosoftAdoManager("adostore", "example", "password");
+            this.TestAddGraphDiscarded(manager);
         }
 
         #endregion
@@ -510,7 +568,14 @@ namespace VDS.RDF.Test.Storage
 
                 Assert.IsFalse(store.HasGraph(toRemove), "In-Memory view should no longer contain the Graph we removed after Flushing");
                 AnyHandler handler = new AnyHandler();
-                manager.LoadGraph(handler, toRemove);
+                try
+                {
+                    manager.LoadGraph(handler, toRemove);
+                }
+                catch
+                {
+
+                }
                 Assert.IsFalse(handler.Any, "Attempting to load Graph from underlying store should return nothing after the Flush() operation");
             }
             finally
@@ -523,6 +588,27 @@ namespace VDS.RDF.Test.Storage
         public void StoragePersistentTripleStoreMemRemoveGraphFlushed()
         {
             InMemoryManager manager = new InMemoryManager();
+            this.TestRemoveGraphFlushed(manager);
+        }
+
+        [TestMethod]
+        public void StoragePersistentTripleStoreFusekiRemoveGraphFlushed()
+        {
+            FusekiConnector fuseki = new FusekiConnector("http://localhost:3030/dataset/data");
+            this.TestRemoveGraphFlushed(fuseki);
+        }
+
+        [TestMethod]
+        public void StoragePersistentTripleStoreVirtuosoRemoveGraphFlushed()
+        {
+            VirtuosoManager virtuoso = new VirtuosoManager("DB", VirtuosoTest.VirtuosoTestUsername, VirtuosoTest.VirtuosoTestPassword);
+            this.TestRemoveGraphFlushed(virtuoso);
+        }
+
+        [TestMethod]
+        public void StoragePersistentTripleStoreAdoMicrosoftRemoveGraphFlushed()
+        {
+            MicrosoftAdoManager manager = new MicrosoftAdoManager("adostore", "example", "password");
             this.TestRemoveGraphFlushed(manager);
         }
 
@@ -555,6 +641,27 @@ namespace VDS.RDF.Test.Storage
         public void StoragePersistentTripleStoreMemRemoveGraphDiscarded()
         {
             InMemoryManager manager = new InMemoryManager();
+            this.TestRemoveGraphDiscarded(manager);
+        }
+
+        [TestMethod]
+        public void StoragePersistentTripleStoreFusekiRemoveGraphDiscarded()
+        {
+            FusekiConnector fuseki = new FusekiConnector("http://localhost:3030/dataset/data");
+            this.TestRemoveGraphDiscarded(fuseki);
+        }
+
+        [TestMethod]
+        public void StoragePersistentTripleStoreVirtuosoRemoveGraphDiscarded()
+        {
+            VirtuosoManager virtuoso = new VirtuosoManager("DB", VirtuosoTest.VirtuosoTestUsername, VirtuosoTest.VirtuosoTestPassword);
+            this.TestRemoveGraphDiscarded(virtuoso);
+        }
+
+        [TestMethod]
+        public void StoragePersistentTripleStoreAdoMicrosoftRemoveGraphDiscarded()
+        {
+            MicrosoftAdoManager manager = new MicrosoftAdoManager("adostore", "example", "password");
             this.TestRemoveGraphDiscarded(manager);
         }
 
@@ -614,6 +721,13 @@ namespace VDS.RDF.Test.Storage
             this.TestAddThenRemoveGraphFlushed(virtuoso);
         }
 
+        [TestMethod]
+        public void StoragePersistentTripleStoreAdoMicrosoftAddThenRemoveGraphFlushed()
+        {
+            MicrosoftAdoManager manager = new MicrosoftAdoManager("adostore", "example", "password");
+            this.TestAddThenRemoveGraphFlushed(manager);
+        }
+
         private void TestAddThenRemoveGraphDiscarded(IGenericIOManager manager)
         {
             this.EnsureTestDataset(manager);
@@ -664,6 +778,13 @@ namespace VDS.RDF.Test.Storage
         {
             VirtuosoManager virtuoso = new VirtuosoManager("DB", VirtuosoTest.VirtuosoTestUsername, VirtuosoTest.VirtuosoTestPassword);
             this.TestAddThenRemoveGraphDiscarded(virtuoso);
+        }
+
+        [TestMethod]
+        public void StoragePersistentTripleStoreAdoMicrosoftAddThenRemoveGraphDiscarded()
+        {
+            MicrosoftAdoManager manager = new MicrosoftAdoManager("adostore", "example", "password");
+            this.TestAddThenRemoveGraphDiscarded(manager);
         }
 
         #endregion
@@ -721,6 +842,13 @@ namespace VDS.RDF.Test.Storage
             this.TestRemoveThenAddGraphFlushed(virtuoso);
         }
 
+        [TestMethod]
+        public void StoragePersistentTripleStoreAdoMicrosoftRemoveThenAddGraphFlushed()
+        {
+            MicrosoftAdoManager manager = new MicrosoftAdoManager("adostore", "example", "password");
+            this.TestRemoveThenAddGraphFlushed(manager);
+        }
+
         private void TestRemoveThenAddGraphDiscarded(IGenericIOManager manager)
         {
             this.EnsureTestDataset(manager);
@@ -770,6 +898,13 @@ namespace VDS.RDF.Test.Storage
         {
             VirtuosoManager virtuoso = new VirtuosoManager("DB", VirtuosoTest.VirtuosoTestUsername, VirtuosoTest.VirtuosoTestPassword);
             this.TestRemoveThenAddGraphDiscarded(virtuoso);
+        }
+
+        [TestMethod]
+        public void StoragePersistentTripleStoreAdoMicrosoftRemoveThenAddGraphDiscarded()
+        {
+            MicrosoftAdoManager manager = new MicrosoftAdoManager("adostore", "example", "password");
+            this.TestRemoveThenAddGraphDiscarded(manager);
         }
 
         #endregion

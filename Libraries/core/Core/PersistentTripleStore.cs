@@ -179,6 +179,7 @@ namespace VDS.RDF
                     {
                         //If we're going to return true we must also store the Graph in the collection
                         //for later use
+                        g.BaseUri = graphUri;
                         this.Add(g, true);
                         return true;
                     }
