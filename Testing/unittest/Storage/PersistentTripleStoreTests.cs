@@ -170,6 +170,222 @@ namespace VDS.RDF.Test.Storage
 
         #endregion
 
+        #region Add Triples Tests
+
+        private void TestAddTriplesFlushed(IGenericIOManager manager)
+        {
+            this.EnsureGraphDeleted(manager, new Uri(TestGraphUri1));
+            this.EnsureTestDataset(manager);
+
+            PersistentTripleStore store = new PersistentTripleStore(manager);
+            try
+            {
+                IGraph g = store.Graph(new Uri(TestGraphUri1));
+
+                Triple toAdd = new Triple(g.CreateUriNode(new Uri("http://example.org/subject")), g.CreateUriNode(new Uri("http://example.org/predicate")), g.CreateUriNode(new Uri("http://example.org/object")));
+                g.Assert(toAdd);
+
+                Assert.IsTrue(g.ContainsTriple(toAdd), "Added triple should be present in in-memory view prior to Flush/Discard");
+                Graph h = new Graph();
+                manager.LoadGraph(h, g.BaseUri);
+                Assert.IsFalse(h.ContainsTriple(toAdd), "Added triple should not be present in underlying store prior to Flush/Discard");
+
+                store.Flush();
+
+                Assert.IsTrue(g.ContainsTriple(toAdd), "Added triple should be present in in-memory view after Flush");
+                h = new Graph();
+                manager.LoadGraph(h, g.BaseUri);
+                Assert.IsTrue(h.ContainsTriple(toAdd), "Added triple should be present in underlying store after Flush");
+            }
+            finally
+            {
+                store.Dispose();
+            }
+        }
+
+        [TestMethod]
+        public void StoragePersistentTripleStoreMemAddTriplesFlushed()
+        {
+            InMemoryManager manager = new InMemoryManager();
+            this.TestAddTriplesFlushed(manager);
+        }
+
+        [TestMethod]
+        public void StoragePersistentTripleStoreFusekiAddTriplesFlushed()
+        {
+            FusekiConnector fuseki = new FusekiConnector("http://localhost:3030/dataset/data");
+            this.TestAddTriplesFlushed(fuseki);
+        }
+
+        [TestMethod]
+        public void StoragePersistentTripleStoreVirtuosoAddTriplesFlushed()
+        {
+            VirtuosoManager virtuoso = new VirtuosoManager("DB", VirtuosoTest.VirtuosoTestUsername, VirtuosoTest.VirtuosoTestPassword);
+            this.TestAddTriplesFlushed(virtuoso);
+        }
+
+        private void TestAddTriplesDiscarded(IGenericIOManager manager)
+        {
+            this.EnsureGraphDeleted(manager, new Uri(TestGraphUri1));
+            this.EnsureTestDataset(manager);
+
+            PersistentTripleStore store = new PersistentTripleStore(manager);
+            try
+            {
+                IGraph g = store.Graph(new Uri(TestGraphUri1));
+
+                Triple toAdd = new Triple(g.CreateUriNode(new Uri("http://example.org/subject")), g.CreateUriNode(new Uri("http://example.org/predicate")), g.CreateUriNode(new Uri("http://example.org/object")));
+                g.Assert(toAdd);
+
+                Assert.IsTrue(g.ContainsTriple(toAdd), "Added triple should be present in in-memory view prior to Flush/Discard");
+                Graph h = new Graph();
+                manager.LoadGraph(h, g.BaseUri);
+                Assert.IsFalse(h.ContainsTriple(toAdd), "Added triple should not be present in underlying store prior to Flush/Discard");
+
+                store.Discard();
+
+                Assert.IsFalse(g.ContainsTriple(toAdd), "Added triple should not be present in in-memory view after Discard");
+                h = new Graph();
+                manager.LoadGraph(h, g.BaseUri);
+                Assert.IsFalse(h.ContainsTriple(toAdd), "Added triple should not be present in underlying store after Discard");
+            }
+            finally
+            {
+                store.Dispose();
+            }
+        }
+
+        [TestMethod]
+        public void StoragePersistentTripleStoreMemAddTriplesDiscarded()
+        {
+            InMemoryManager manager = new InMemoryManager();
+            this.TestAddTriplesDiscarded(manager);
+        }
+
+        [TestMethod]
+        public void StoragePersistentTripleStoreFusekiAddTriplesDiscarded()
+        {
+            FusekiConnector fuseki = new FusekiConnector("http://localhost:3030/dataset/data");
+            this.TestAddTriplesDiscarded(fuseki);
+        }
+
+        [TestMethod]
+        public void StoragePersistentTripleStoreVirtuosoAddTriplesDiscarded()
+        {
+            VirtuosoManager virtuoso = new VirtuosoManager("DB", VirtuosoTest.VirtuosoTestUsername, VirtuosoTest.VirtuosoTestPassword);
+            this.TestAddTriplesDiscarded(virtuoso);
+        }
+
+        #endregion
+
+        #region Remove Triples Tests
+
+        private void TestRemoveTriplesFlushed(IGenericIOManager manager)
+        {
+            this.EnsureTestDataset(manager);
+
+            PersistentTripleStore store = new PersistentTripleStore(manager);
+            try
+            {
+                IGraph g = store.Graph(new Uri(TestGraphUri1));
+
+                INode rdfType = g.CreateUriNode(new Uri(NamespaceMapper.RDF + "type"));
+                g.Retract(g.GetTriplesWithPredicate(rdfType));
+
+                Assert.IsFalse(g.GetTriplesWithPredicate(rdfType).Any(), "Removed triples should not be present in in-memory view prior to Flush/Discard");
+                Graph h = new Graph();
+                manager.LoadGraph(h, g.BaseUri);
+                Assert.IsTrue(h.GetTriplesWithPredicate(rdfType).Any(), "Removed triples should still be present in underlying store prior to Flush/Discard");
+
+                store.Flush();
+
+                Assert.IsFalse(g.GetTriplesWithPredicate(rdfType).Any(), "Removed triples should not be present in in-memory view after Flush");
+                h = new Graph();
+                manager.LoadGraph(h, g.BaseUri);
+                Assert.IsFalse(h.GetTriplesWithPredicate(rdfType).Any(), "Removed triples should no longer be present in underlying store after Flush");
+
+            }
+            finally
+            {
+                store.Dispose();
+            }
+        }
+
+        [TestMethod]
+        public void StoragePersistentTripleStoreMemRemoveTriplesFlushed()
+        {
+            InMemoryManager manager = new InMemoryManager();
+            this.TestRemoveTriplesFlushed(manager);
+        }
+
+        [TestMethod]
+        public void StoragePersistentTripleStoreFusekiRemoveTriplesFlushed()
+        {
+            FusekiConnector fuseki = new FusekiConnector("http://localhost:3030/dataset/data");
+            this.TestRemoveTriplesFlushed(fuseki);
+        }
+
+        [TestMethod]
+        public void StoragePersistentTripleStoreVirtuosoRemoveTriplesFlushed()
+        {
+            VirtuosoManager virtuoso = new VirtuosoManager("DB", VirtuosoTest.VirtuosoTestUsername, VirtuosoTest.VirtuosoTestPassword);
+            this.TestRemoveTriplesFlushed(virtuoso);
+        }
+
+        private void TestRemoveTriplesDiscarded(IGenericIOManager manager)
+        {
+            this.EnsureTestDataset(manager);
+
+            PersistentTripleStore store = new PersistentTripleStore(manager);
+            try
+            {
+                IGraph g = store.Graph(new Uri(TestGraphUri1));
+
+                INode rdfType = g.CreateUriNode(new Uri(NamespaceMapper.RDF + "type"));
+                g.Retract(g.GetTriplesWithPredicate(rdfType));
+
+                Assert.IsFalse(g.GetTriplesWithPredicate(rdfType).Any(), "Removed triples should not be present in in-memory view prior to Flush/Discard");
+                Graph h = new Graph();
+                manager.LoadGraph(h, g.BaseUri);
+                Assert.IsTrue(h.GetTriplesWithPredicate(rdfType).Any(), "Removed triples should still be present in underlying store prior to Flush/Discard");
+
+                store.Discard();
+
+                Assert.IsTrue(g.GetTriplesWithPredicate(rdfType).Any(), "Removed triples should now be present in in-memory view after Discard");
+                h = new Graph();
+                manager.LoadGraph(h, g.BaseUri);
+                Assert.IsTrue(h.GetTriplesWithPredicate(rdfType).Any(), "Removed triples should still be present in underlying store after Discard");
+
+            }
+            finally
+            {
+                store.Dispose();
+            }
+        }
+
+        [TestMethod]
+        public void StoragePersistentTripleStoreMemRemoveTriplesDiscarded()
+        {
+            InMemoryManager manager = new InMemoryManager();
+            this.TestRemoveTriplesDiscarded(manager);
+        }
+
+        [TestMethod]
+        public void StoragePersistentTripleStoreFusekiRemoveTriplesDiscarded()
+        {
+            FusekiConnector fuseki = new FusekiConnector("http://localhost:3030/dataset/data");
+            this.TestRemoveTriplesDiscarded(fuseki);
+        }
+
+        [TestMethod]
+        public void StoragePersistentTripleStoreVirtuosoRemoveTriplesDiscarded()
+        {
+            VirtuosoManager virtuoso = new VirtuosoManager("DB", VirtuosoTest.VirtuosoTestUsername, VirtuosoTest.VirtuosoTestPassword);
+            this.TestRemoveTriplesDiscarded(virtuoso);
+        }
+
+        #endregion
+
         #region Add Graph Tests
 
         private void TestAddGraphFlushed(IGenericIOManager manager)

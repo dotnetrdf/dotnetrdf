@@ -51,7 +51,8 @@ namespace VDS.RDF
 #if !SILVERLIGHT
     [Serializable,XmlRoot(ElementName="graph")]
 #endif
-    public class Graph : BaseGraph
+    public class Graph 
+        : BaseGraph
     {
         #region Constructor
 
