@@ -49,6 +49,7 @@
     <Compile Include="AdoOptimiser.cs" />
     <Compile Include="AdoSchema.cs" />
     <Compile Include="AdoStoreWriteCache.cs" />
+    <Compile Include="AzureAdoManager.cs" />
     <Compile Include="BaseAdoStoreManager.cs" />
     <Compile Include="MicrosoftAdoManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

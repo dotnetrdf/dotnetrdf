@@ -43,6 +43,7 @@ namespace VDS.RDF.Configuration
                             PropertyEnableUpdates = "dnr:enableUpdates",
                             PropertyAsync = "dnr:async",
                             PropertyLoadMode = "dnr:loadMode",
+                            PropertyEncryptConnection = "dnr:encryptConnection",
                             //Properties for associating Managers with other things
                             PropertySqlManager = "dnr:sqlManager",
                             PropertyGenericManager = "dnr:genericManager",

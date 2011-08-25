@@ -259,7 +259,7 @@ namespace VDS.RDF.Utilities.Web.Deploy
                 foreach (SparqlResult r in rset)
                 {
                     SparqlParameterizedString hasValidRange = new SparqlParameterizedString();
-                    hasValidRange.QueryText = RdfWebDeployHelper.NamespacePrefixes + ValidRangeTest;
+                    hasValidRange.CommandText = RdfWebDeployHelper.NamespacePrefixes + ValidRangeTest;
                     hasValidRange.SetParameter("property", r["property"]);
                     hasValidRange.SetParameter("s", r["s"]);
                     Object temp = store.ExecuteQuery(hasValidRange.ToString());
@@ -284,7 +284,7 @@ namespace VDS.RDF.Utilities.Web.Deploy
                 foreach (SparqlResult r in rset)
                 {
                     SparqlParameterizedString hasValidDomain = new SparqlParameterizedString();
-                    hasValidDomain.QueryText = RdfWebDeployHelper.NamespacePrefixes + ValidDomainTest;
+                    hasValidDomain.CommandText = RdfWebDeployHelper.NamespacePrefixes + ValidDomainTest;
                     hasValidDomain.SetParameter("property", r["property"]);
                     hasValidDomain.SetParameter("s", r["s"]);
                     Object temp = store.ExecuteQuery(hasValidDomain.ToString());

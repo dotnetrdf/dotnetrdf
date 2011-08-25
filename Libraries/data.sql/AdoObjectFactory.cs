@@ -9,7 +9,8 @@ using VDS.RDF.Storage;
 
 namespace VDS.RDF.Configuration
 {
-    public class AdoObjectFactory : IObjectFactory
+    public class AdoObjectFactory 
+        : IObjectFactory
     {
         private const String AzureAdoManager = "VDS.RDF.Storage.AzureAdoManager",
                              MicrosoftAdoManager = "VDS.RDF.Storage.MicrosoftAdoManager",
@@ -62,12 +63,14 @@ namespace VDS.RDF.Configuration
                     String user, pwd;
                     ConfigurationLoader.GetUsernameAndPassword(g, objNode, true, out user, out pwd);
 
+                    bool encrypt = ConfigurationLoader.GetConfigurationBoolean(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyEncryptConnection), false);
+
                     //Create the Manager
                     if (user != null && pwd != null)
                     {
                         if (targetType.FullName.Equals(MicrosoftAdoManager))
                         {
-                            obj = new MicrosoftAdoManager(server, db, user, pwd);
+                            obj = new MicrosoftAdoManager(server, db, user, pwd, encrypt);
                         }
                         else
                         {
@@ -77,7 +80,7 @@ namespace VDS.RDF.Configuration
                     else
                     {
                         if (targetType.FullName.Equals(AzureAdoManager)) throw new DotNetRdfConfigurationException("Unable to load the object identified by the Node '" + objNode.ToString() + "' as an AzureAdoManager as the required dnr:user and dnr:password properties were missing");
-                        obj = new MicrosoftAdoManager(server, db);
+                        obj = new MicrosoftAdoManager(server, db, encrypt);
                     }
                     break;
 

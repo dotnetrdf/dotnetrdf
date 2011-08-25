@@ -253,6 +253,12 @@ dnr:loadMode a rdf:Property ;
 			 rdfs:comment "This property indicates the loading mode.  It is a general purpose property that can be used to indicate additional parameters for Objects, the exact meaning of this property depends on the Object being declared and the Object Factory which loads it" ;
 			 rdfs:domain dnr:GenericIOManager ;
 			 rdfs:domain dnr:TripleStore .
+			 
+dnr:encryptConnection a rdf:Property ;
+					  rdfs:label "Encrypt Connection" ;
+					  rdfs:comment "This property indicates whether the connection needs to be encrypted." ;
+					  rdfs:range xsd:boolean ;
+					  rdfs:domain dnr:GenericIOManager .
 		  
 # Properties to associate connections with other objects
 

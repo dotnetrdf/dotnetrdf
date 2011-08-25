@@ -142,16 +142,16 @@ namespace VDS.RDF.Interop.Sesame
             IEnumerable<Uri> contexts = rarr.ToContexts(this._mapping);
             if (contexts.Any())
             {
-                queryString.QueryText = "SELECT (?s AS ?subj) (?p AS ?pred) (?o AS ?obj)\n";
+                queryString.CommandText = "SELECT (?s AS ?subj) (?p AS ?pred) (?o AS ?obj)\n";
                 foreach (Uri u in contexts)
                 {
-                    queryString.QueryText += "FROM <" + this._formatter.FormatUri(u) + ">\n";
+                    queryString.CommandText += "FROM <" + this._formatter.FormatUri(u) + ">\n";
                 }
-                queryString.QueryText += "WHERE { ?s ?p ?o }";
+                queryString.CommandText += "WHERE { ?s ?p ?o }";
             }
             else
             {
-                queryString.QueryText = "SELECT (?s AS ?subj) (?p AS ?pred) (?o AS ?obj) WHERE { ?s ?p ?o }";
+                queryString.CommandText = "SELECT (?s AS ?subj) (?p AS ?pred) (?o AS ?obj) WHERE { ?s ?p ?o }";
             }
             if (r != null) queryString.SetVariable("s", SesameConverter.FromSesameResource(r, this._mapping));
             if (uri != null) queryString.SetVariable("p", SesameConverter.FromSesameUri(uri, this._mapping));
@@ -178,12 +178,12 @@ namespace VDS.RDF.Interop.Sesame
         public bool hasStatement(org.openrdf.model.Resource r, org.openrdf.model.URI uri, org.openrdf.model.Value v, bool b, params org.openrdf.model.Resource[] rarr)
         {
             SparqlParameterizedString queryString = new SparqlParameterizedString();
-            queryString.QueryText = "ASK";
+            queryString.CommandText = "ASK";
             foreach (Uri u in rarr.ToContexts(this._mapping))
             {
-                queryString.QueryText += "\nFROM <" + this._formatter.FormatUri(u) + ">";
+                queryString.CommandText += "\nFROM <" + this._formatter.FormatUri(u) + ">";
             }
-            queryString.QueryText += "\nWHERE { ?subject ?predicate ?object}";
+            queryString.CommandText += "\nWHERE { ?subject ?predicate ?object}";
             if (r != null) queryString.SetVariable("subject", SesameConverter.FromSesameResource(r, this._mapping));
             if (uri != null) queryString.SetVariable("predicate", SesameConverter.FromSesameUri(uri, this._mapping));
             if (v != null) queryString.SetVariable("object", SesameConverter.FromSesameValue(v, this._mapping));
