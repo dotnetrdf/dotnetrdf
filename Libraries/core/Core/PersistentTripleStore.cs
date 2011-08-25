@@ -52,12 +52,18 @@ namespace VDS.RDF
 
         public void  Flush()
         {
-            ((PersistentGraphCollection)this._graphs).Flush();
+            if (this._graphs != null)
+            {
+                ((PersistentGraphCollection)this._graphs).Flush();
+            }
         }
 
         public void  Discard()
         {
-            ((PersistentGraphCollection)this._graphs).Discard();   
+            if (this._graphs != null)
+            {
+                ((PersistentGraphCollection)this._graphs).Discard();
+            }
         }
 
         #region INativelyQueryableStore Members
@@ -94,7 +100,7 @@ namespace VDS.RDF
         #endregion
     }
 
-    public sealed class PersistentGraphCollection
+    class PersistentGraphCollection
         : GraphCollection
     {
         private IGenericIOManager _manager;
@@ -119,7 +125,7 @@ namespace VDS.RDF
                 if (this._manager.UpdateSupported)
                 {
                     this.AttachHandlers(g);
-                    if (!this.ContainsInternal(g.BaseUri))
+                    if (this._removedGraphs.Contains(g.BaseUri.ToSafeString()) || !this.ContainsInternal(g.BaseUri))
                     {
                         //When a new graph is introduced that does not exist in the underlying store
                         //be sure to persist the initial triples
@@ -166,16 +172,24 @@ namespace VDS.RDF
             {
                 //Try and load the Graph and return true if anything is returned
                 Graph g = new Graph();
-                this._manager.LoadGraph(g, graphUri);
-                if (g.Triples.Count > 0)
+                try
                 {
-                    //If we're going to return true we must also store the Graph in the collection
-                    //for later use
-                    this.Add(g, true);
-                    return true;
+                    this._manager.LoadGraph(g, graphUri);
+                    if (g.Triples.Count > 0)
+                    {
+                        //If we're going to return true we must also store the Graph in the collection
+                        //for later use
+                        this.Add(g, true);
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
                 }
-                else
+                catch
                 {
+                    //If trying to load the Graph errors then it doesn't exist so return false
                     return false;
                 }
             }
@@ -218,8 +232,15 @@ namespace VDS.RDF
         private bool ContainsInternal(Uri graphUri)
         {
             AnyHandler handler = new AnyHandler();
-            this._manager.LoadGraph(handler, graphUri);
-            return handler.Any;
+            try
+            {
+                this._manager.LoadGraph(handler, graphUri);
+                return handler.Any;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         private void AttachHandlers(IGraph g)

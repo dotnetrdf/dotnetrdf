@@ -154,6 +154,7 @@
     <Compile Include="Parsing\StringReaderEncodingTests.cs" />
     <Compile Include="Sparql\AlgebraReverseTranslation.cs" />
     <Compile Include="Sparql\BindingsTests.cs" />
+    <Compile Include="Sparql\BlankNodeVariableTests.cs" />
     <Compile Include="Sparql\ConstructWithOptionalTests.cs" />
     <Compile Include="Sparql\DataTableTests.cs" />
     <Compile Include="Sparql\DefaultGraphTests2.cs" />

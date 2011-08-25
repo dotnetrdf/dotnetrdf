@@ -111,7 +111,7 @@ namespace VDS.RDF.Storage
             {
                 origUri = new Uri(graphUri);
             }
-
+            this.LoadGraph(new GraphHandler(g), graphUri);
             g.BaseUri = origUri;
         }
 
@@ -469,7 +469,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <returns></returns>
         /// <exception cref="NotSupportedException">Thrown since SPARQL Graph Store HTTP Protocol does not support listing graphs</exception>
-        public IEnumerable<Uri> ListGraphs()
+        public virtual IEnumerable<Uri> ListGraphs()
         {
             throw new NotSupportedException("SPARQL HTTP Protocol Connector does not support listing Graphs");
         }
@@ -477,7 +477,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Returns that listing Graphs is not supported
         /// </summary>
-        public bool ListGraphsSupported
+        public virtual bool ListGraphsSupported
         {
             get
             {

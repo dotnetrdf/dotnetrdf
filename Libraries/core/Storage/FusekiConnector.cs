@@ -86,6 +86,50 @@ namespace VDS.RDF.Storage
             this._queryUri = serviceUri.Substring(0, serviceUri.Length - 4) + "query";
         }
 
+        public override bool ListGraphsSupported
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        public override IEnumerable<Uri> ListGraphs()
+        {
+            try
+            {
+                SparqlResultSet results = this.Query("SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } }") as SparqlResultSet;
+                if (results != null)
+                {
+                    List<Uri> uris = new List<Uri>();
+                    foreach (SparqlResult r in results)
+                    {
+                        if (r.HasValue("g"))
+                        {
+                            INode n = r["g"];
+                            if (n != null && n.NodeType == NodeType.Uri)
+                            {
+                                uris.Add(((IUriNode)n).Uri);
+                            }
+                        }
+                    }
+                    return uris;
+                }
+                else
+                {
+                    throw new RdfStorageException("Tried to list graphs from Fuseki but failed to get a SPARQL Result Set as expected");
+                }
+            }
+                catch (RdfStorageException)
+            {
+                    throw;
+                }
+            catch (Exception ex)
+            {
+                throw new RdfStorageException("An error occurred while trying to list graphs, see inner exception for details", ex);
+            }
+        }
+
         /// <summary>
         /// Returns that Triple level updates are supported using Fuseki
         /// </summary>
