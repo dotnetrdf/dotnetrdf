@@ -68,7 +68,8 @@ namespace VDS.RDF.Storage
     /// If the Database specified is not currently a dotNetRDF Store then the appropriate database tables will be created automatically.  If the Database is a dotNetRDF Store which does not use the database format then an <see cref="RdfStorageException">RdfStorageException</see> will be thrown as the database setup will try to recreate the existing tables and thus fail.
     /// </remarks>
     [Obsolete("The legacy SQL store format and related classes are officially deprecated - please see http://www.dotnetrdf.org?content.asp?pageID=dotNetRDF%20Store#migration for details on upgrading to the new ADO store format", false)]
-	public class MicrosoftSqlStoreManager : BaseStoreManager, IDotNetRDFStoreManager
+	public class MicrosoftSqlStoreManager 
+        : BaseStoreManager, IDotNetRDFStoreManager
 	{
         private Dictionary<int, SqlConnection> _dbConnections = new Dictionary<int, SqlConnection>();
         private Dictionary<int, SqlTransaction> _dbTrans = new Dictionary<int, SqlTransaction>();

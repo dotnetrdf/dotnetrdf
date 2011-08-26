@@ -64,7 +64,7 @@ namespace VDS.RDF.Utilities.Data.Sql.Clients.Cmd
 
         private static void ShowUsage()
         {
-            Console.WriteLine("rdfSqlStorages");
+            Console.WriteLine("rdfSqlStorage");
             Console.WriteLine("=============");
             Console.WriteLine();
             Console.WriteLine("Provides command line management of SQL based stores supported by dotNetRDF");

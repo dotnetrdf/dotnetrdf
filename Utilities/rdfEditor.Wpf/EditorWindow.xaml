@@ -124,7 +124,7 @@
                     <MenuItem Header="RDF/JSON Writer" Name="mnuSaveWithRdfJson" Click="mnuSaveWithRdfJson_Click" InputGestureText="Alt+S,5" />
                     <MenuItem Header="XHTML+RDFa Writer" Name="mnuSaveWithRdfa" Click="mnuSaveWithRdfa_Click" InputGestureText="Alt+S,6" />
                     <Separator />
-                    <MenuItem Header="Prompt for Advanced Writer Options" Name="mnuSaveWithPromptOptions" Click="mnuSaveWithPromptOptions_Click" IsCheckable="True" IsChecked="False" />
+                    <MenuItem Header="Prompt for Advanced Writer Options?" Name="mnuSaveWithPromptOptions" Click="mnuSaveWithPromptOptions_Click" IsCheckable="True" IsChecked="False" />
                 </MenuItem>
                 <MenuItem Header="Use BOM for UTF-8 Output" Name="mnuUseBomForUtf8" Click="mnuUseBomForUtf8_Click" IsCheckable="True" IsChecked="True" />
                 <Separator />

@@ -36,5 +36,15 @@ namespace VDS.RDF.Utilities.Data.Sql.Clients.Cmd
         public abstract void ShowUsage();
 
         public abstract void Run(String[] args);
+
+        public void PrintErrorTrace(Exception ex)
+        {
+            do
+            {
+                Console.Error.WriteLine(ex.Message);
+                Console.Error.WriteLine(ex.StackTrace);
+                ex = ex.InnerException;
+            } while (ex != null);
+        }
     }
 }
