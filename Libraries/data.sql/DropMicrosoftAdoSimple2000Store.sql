@@ -8,6 +8,7 @@ DROP TABLE BNODES;
 -- Drop the Stored Procedures
 
 DROP PROCEDURE GetVersion;
+DROP PROCEDURE GetSchemaName;
 
 DROP PROCEDURE ClearStore;
 DROP PROCEDURE ClearStoreFull;
@@ -63,10 +64,6 @@ DROP PROCEDURE GetQuadsWithSubjectObjectData;
 DROP PROCEDURE GetQuadsWithPredicateObject;
 DROP PROCEDURE GetQuadsWithPredicateObjectVirtual;
 DROP PROCEDURE GetQuadsWithPredicateObjectData;
-
--- TEMP - Remove example user from rdf_admin role
-
-EXEC sp_droprolemember 'rdf_admin', 'example';
 
 -- Drop the Roles
 

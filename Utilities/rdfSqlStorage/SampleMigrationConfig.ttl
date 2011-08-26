@@ -3,8 +3,12 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
 @prefix dnr: <http://www.dotnetrdf.org/configuration#>.
 
+# The following definition is required in order to be able to load objects from the new Data.Sql library
+
 [] a dnr:ObjectFactory ;
-   dnr:type "VDS.RDF.Configuration.AdoObjectFactory" .
+   dnr:type "VDS.RDF.Configuration.AdoObjectFactory, dotNetRDF.Data.Sql" .
+
+# The migration source must be an ISqlIOManager instance
 
 <dotnetrdf:migration:source> a dnr:SqlIOManager ;
 								dnr:type "VDS.RDF.Storage.MicrosoftSqlStoreManager" ;
@@ -12,7 +16,11 @@
 								dnr:database "source" ;
 								dnr:user "example" ;
 								dnr:password "password" .
-								
+					
+# While the migration target shown here is the new ADO Store it may actually be any
+# valid IGenericIOManager instance i.e. you can use a migration configuration to migrate from
+# the old SQL store to a full blown triple store e.g. Virtuoso
+			
 <dotnetrdf:migration:target> a dnr:GenericIOManager ;
 								dnr:type "VDS.RDF.Storage.MicrosoftAdoManager, dotNetRDF.Data.Sql" ;
 								dnr:server "localhost" ;

@@ -55,6 +55,14 @@ BEGIN
   RETURN 1;
 END
 
+-- GetSchemaName
+GO
+CREATE PROCEDURE GetSchemaName
+AS
+BEGIN
+  RETURN 'Simple';
+END
+
 -- ClearStore
 GO
 CREATE PROCEDURE ClearStore
@@ -767,6 +775,7 @@ GRANT SELECT, INSERT, DELETE ON NODES TO rdf_admin;
 -- Grant Stored Procedures permissions to roles
 
 GRANT EXECUTE ON GetVersion TO rdf_admin, rdf_readwrite, rdf_readinsert, rdf_readonly;
+GRANT EXECUTE ON GetSchemaName TO rdf_admin, rdf_readwrite, rdf_readinsert, rdf_readonly;
 
 GRANT EXECUTE ON ClearStore TO rdf_admin;
 GRANT EXECUTE ON ClearStoreFull TO rdf_admin;
@@ -827,7 +836,3 @@ GRANT EXECUTE ON GetQuadsWithSubjectObjectData TO rdf_admin, rdf_readwrite, rdf_
 GRANT EXECUTE ON GetQuadsWithPredicateObject TO rdf_admin, rdf_readwrite, rdf_readinsert, rdf_readonly;
 GRANT EXECUTE ON GetQuadsWithPredicateObjectVirtual TO rdf_admin, rdf_readwrite, rdf_readinsert, rdf_readonly;
 GRANT EXECUTE ON GetQuadsWithPredicateObjectData TO rdf_admin, rdf_readwrite, rdf_readinsert, rdf_readonly;
-
--- TEMP Grant rdf_admin role to example user
-
-EXEC sp_addrolemember 'rdf_admin', 'example';

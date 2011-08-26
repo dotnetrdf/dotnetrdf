@@ -48,7 +48,8 @@ namespace VDS.RDF.Query
     /// CONSTRUCT, DESCRIBE or SELECT queries can be used to generate a Graph.  If you use a SELECT query the returned variables must contain ?s, ?p and ?o in order to generate a view correctly
     /// </para>
     /// </remarks>
-    public abstract class BaseSparqlView : Graph
+    public abstract class BaseSparqlView 
+        : Graph
     {
         /// <summary>
         /// SPARQL Query
@@ -300,7 +301,8 @@ namespace VDS.RDF.Query
     /// <summary>
     /// Represents a SPARQL View over an in-memory store
     /// </summary>
-    public class SparqlView : BaseSparqlView
+    public class SparqlView
+        : BaseSparqlView
     {
 
         /// <summary>
@@ -364,7 +366,8 @@ namespace VDS.RDF.Query
     /// <summary>
     /// Represents a SPARQL View over an arbitrary native Triple Store
     /// </summary>
-    public class NativeSparqlView : BaseSparqlView
+    public class NativeSparqlView
+        : BaseSparqlView
     {
         /// <summary>
         /// Creates a new SPARQL View

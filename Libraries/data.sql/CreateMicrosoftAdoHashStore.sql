@@ -82,6 +82,14 @@ BEGIN
   RETURN 1;
 END
 
+-- GetSchemaName
+GO
+CREATE PROCEDURE GetSchemaName
+AS
+BEGIN
+  RETURN 'Hash';
+END
+
 -- ClearStore
 GO
 CREATE PROCEDURE ClearStore
@@ -298,7 +306,7 @@ BEGIN
 	SET @id = SCOPE_IDENTITY();
 	DECLARE @nodeValue nvarchar(MAX);
 	SET @nodeValue = '_:' + LTRIM(STR(@id));
-	INSERT INTO NODES (nodeType, nodeValue) VALUES (0, @nodeValue);
+	INSERT INTO NODES (nodeType, nodeValue, nodeHash) VALUES (0, @nodeValue, dbo.NodeHash(0, @nodeValue, NULL));
 	RETURN SCOPE_IDENTITY();
 END
 
@@ -757,6 +765,7 @@ GRANT SELECT, INSERT, DELETE ON NODES TO rdf_admin;
 -- Grant Stored Procedures permissions to roles
 
 GRANT EXECUTE ON GetVersion TO rdf_admin, rdf_readwrite, rdf_readinsert, rdf_readonly;
+GRANT EXECUTE ON GetSchemaName TO rdf_admin, rdf_readwrite, rdf_readinsert, rdf_readonly;
 
 GRANT EXECUTE ON ClearStore TO rdf_admin;
 GRANT EXECUTE ON ClearStoreFull TO rdf_admin;
@@ -817,7 +826,3 @@ GRANT EXECUTE ON GetQuadsWithSubjectObjectData TO rdf_admin, rdf_readwrite, rdf_
 GRANT EXECUTE ON GetQuadsWithPredicateObject TO rdf_admin, rdf_readwrite, rdf_readinsert, rdf_readonly;
 GRANT EXECUTE ON GetQuadsWithPredicateObjectVirtual TO rdf_admin, rdf_readwrite, rdf_readinsert, rdf_readonly;
 GRANT EXECUTE ON GetQuadsWithPredicateObjectData TO rdf_admin, rdf_readwrite, rdf_readinsert, rdf_readonly;
-
--- TEMP Grant rdf_admin role to example user
-
-EXEC sp_addrolemember 'rdf_admin', 'example';
