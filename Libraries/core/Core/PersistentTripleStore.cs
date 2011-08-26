@@ -4,8 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
+using VDS.RDF.Query;
 using VDS.RDF.Storage;
+using VDS.RDF.Update;
 
 namespace VDS.RDF
 {
@@ -13,6 +16,7 @@ namespace VDS.RDF
     /// Represents an in-memory view of a triple store provided by an <see cref="IGenericIOManager">IGenericIOManager</see> instance where changes to the in-memory view get reflected in the persisted view.
     /// </summary>
     /// <remarks>
+    /// <h3>Persistence Behaviour</h3>
     /// <para>
     /// <strong>Note:</strong> This is a transactional implementation - this means that changes made are not persisted until you either call <see cref="PersistentTripleStore.Flush()">Flush()</see> or you dispose of the instance.
     /// </para>
@@ -22,11 +26,27 @@ namespace VDS.RDF
     /// <para>
     /// The Contains() method of the underlying <see cref="BaseGraphCollection">BaseGraphCollection</see> has been overridden so that invoking Contains causes the Graph from the underlying store to be loaded if it exists, this means that operations like <see cref="PersistentTripleStore.HasGraph()">HasGraph()</see> may be slower than expected or cause applications to stop while they wait to load data from the store.
     /// </para>
+    /// <h3>SPARQL Query Behaviour</h3>
+    /// <para>
+    /// The exact SPARQL Query behaviour will depend on the capabilities of the underlying <see cref="IGenericIOManager">IGenericIOManager</see> instance.  If it also implements the <see cref="IQueryableGenericIOManager">IQueryableGenericIOManager</see> interface then its own SPARQL implementation will be used, note that if you try and make a SPARQL query but the in-memory view has not been synced (via a <see cref="PersistentTripleStore.Flush()">Flush()</see> or <see cref="PersistentTripleStore.Discard()">Discard()</see> call) prior to the query then an <see cref="RdfQueryException">RdfQueryException</see> will be thrown.  If you want to make the query regardless you can do so by invoking the query method on the underlying store directly by accessing it via the <see cref="PersistentTripleStore.UnderlyingStore">UnderlyingStore</see> property.
+    /// </para>
+    /// <para>
+    /// If the underlying store does not support SPARQL itself then SPARQL queries cannot be applied and a <see cref="NotSupportedException">NotSupportedException</see> will be thrown.
+    /// </para>
+    /// <h3>SPARQL Update Behaviour</h3>
+    /// <para>
+    /// Similarly to SPARQL Query support the SPARQL Update behaviour depends on whether the underlying <see cref="IGenericIOManager">IGenericIOManager</see> instance also implements the <see cref="IUpdateableGenericIOManager">IUpdateableGenericIOManager</see> interface.  If it does then its own SPARQL implementation is used, otherwise a <see cref="GenericUpdateProcessor">GenericUpdateProcessor</see> will be used to approximate the SPARQL Update.
+    /// </para>
+    /// <para>
+    /// Please be aware that as with SPARQL Query if the in-memory view is not synced with the underlying store a <see cref="SparqlUpdateException">SparqlUpdateException</see> will be thrown.
+    /// </para>
     /// </remarks>
     public sealed class PersistentTripleStore
         : BaseTripleStore, INativelyQueryableStore, IUpdateableTripleStore, ITransactionalStore
     {
         private IGenericIOManager _manager;
+        private SparqlUpdateParser _updateParser;
+        private GenericUpdateProcessor _updateProcessor;
 
         public PersistentTripleStore(IGenericIOManager manager)
             : base(new PersistentGraphCollection(manager))
@@ -37,6 +57,17 @@ namespace VDS.RDF
         ~PersistentTripleStore()
         {
             this.Dispose(false);
+        }
+
+        /// <summary>
+        /// Gets the underlying store
+        /// </summary>
+        public IGenericIOManager UnderlyingStore
+        {
+            get
+            {
+                return _manager;
+            }
         }
 
         public override void Dispose()
@@ -70,12 +101,34 @@ namespace VDS.RDF
 
         public object ExecuteQuery(string query)
         {
-            throw new NotImplementedException();
+            Graph g = new Graph();
+            SparqlResultSet results = new SparqlResultSet();
+            this.ExecuteQuery(new GraphHandler(g), new ResultSetHandler(results), query);
+            if (results.ResultsType != SparqlResultsType.Unknown)
+            {
+                return results;
+            }
+            else
+            {
+                return g;
+            }
         }
 
         public void ExecuteQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string query)
         {
-            throw new NotImplementedException();
+            if (this._manager is IQueryableGenericIOManager)
+            {
+                if (!((PersistentGraphCollection)this._graphs).IsSynced)
+                {
+                    throw new RdfQueryException("Unable to execute a SPARQL Query as the in-memory view of the store is not synced with the underlying store, please invoked Flush() or Discard() and try again.  Alternatively if you do not want to see in-memory changes reflected in query results you can invoke the Query() method directly on the underlying store by accessing it through the UnderlyingStore property.");
+                }
+
+                ((IQueryableGenericIOManager)this._manager).Query(rdfHandler, resultsHandler, query);
+            }
+            else
+            {
+                throw new NotSupportedException("SPARQL Query is not supported as the underlying store does not support it");
+            }
         }
 
         #endregion
@@ -84,17 +137,32 @@ namespace VDS.RDF
 
         public void ExecuteUpdate(string update)
         {
-            throw new NotImplementedException();
+            if (this._manager is IUpdateableGenericIOManager)
+            {
+                if (!((PersistentGraphCollection)this._graphs).IsSynced)
+                {
+                    throw new SparqlUpdateException("Unable to execute a SPARQL Update as the in-memory view of the store is not synced with the underlying store, please invoked Flush() or Discard() and try again.  Alternatively if you do not want to see in-memory changes reflected in update results you can invoke the Update() method directly on the underlying store by accessing it through the UnderlyingStore property.");
+                }
+
+                ((IUpdateableGenericIOManager)this._manager).Update(update);
+            }
+            else
+            {
+                if (this._updateProcessor == null) this._updateProcessor = new GenericUpdateProcessor(this._manager);
+                if (this._updateParser == null) this._updateParser = new SparqlUpdateParser();
+                SparqlUpdateCommandSet cmds = this._updateParser.ParseFromString(update);
+                this._updateProcessor.ProcessCommandSet(cmds);
+            }
         }
 
-        public void ExecuteUpdate(VDS.RDF.Update.SparqlUpdateCommand update)
+        public void ExecuteUpdate(SparqlUpdateCommand update)
         {
-            throw new NotImplementedException();
+            this.ExecuteUpdate(update.ToString());
         }
 
-        public void ExecuteUpdate(VDS.RDF.Update.SparqlUpdateCommandSet updates)
+        public void ExecuteUpdate(SparqlUpdateCommandSet updates)
         {
-            throw new NotImplementedException();
+            this.ExecuteUpdate(updates.ToString());
         }
 
         #endregion
@@ -200,6 +268,14 @@ namespace VDS.RDF
             }
         }
 
+        protected internal override void Remove(Uri graphUri)
+        {
+            if (this.Contains(graphUri))
+            {
+                base.Remove(graphUri);
+            }
+        }
+
         public override IEnumerable<Uri> GraphUris
         {
             get
@@ -269,6 +345,14 @@ namespace VDS.RDF
             if (!this._persisting)
             {
                 this._actions.Add(new TripleStorePersistenceAction(new TriplePersistenceAction(args.Triple, true)));
+            }
+        }
+
+        internal bool IsSynced
+        {
+            get
+            {
+                return this._actions.Count == 0;
             }
         }
 

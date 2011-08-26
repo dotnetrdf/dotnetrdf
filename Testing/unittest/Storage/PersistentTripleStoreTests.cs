@@ -5,8 +5,10 @@ using System.Text;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Parsing.Handlers;
+using VDS.RDF.Query;
 using VDS.RDF.Storage;
 using VDS.RDF.Test.Storage.Sql;
+using VDS.RDF.Update;
 
 namespace VDS.RDF.Test.Storage
 {
@@ -905,6 +907,352 @@ namespace VDS.RDF.Test.Storage
         {
             MicrosoftAdoManager manager = new MicrosoftAdoManager("adostore", "example", "password");
             this.TestRemoveThenAddGraphDiscarded(manager);
+        }
+
+        #endregion
+
+        #region SPARQL Query Tests
+
+        private void TestQueryUnsynced(IGenericIOManager manager)
+        {
+            this.EnsureTestDataset(manager);
+
+            PersistentTripleStore store = new PersistentTripleStore(manager);
+            try
+            {
+                store.Remove(new Uri(TestGraphUri1));
+
+                store.ExecuteQuery("SELECT * WHERE { ?s ?p ?o }");
+            }
+            finally
+            {
+                store.Discard();
+                store.Dispose();
+            }
+        }
+
+        private void TestQuerySelect(IGenericIOManager manager, String query)
+        {
+            this.EnsureTestDataset(manager);
+
+            PersistentTripleStore store = new PersistentTripleStore(manager);
+            try
+            {
+                SparqlResultSet results = store.ExecuteQuery(query) as SparqlResultSet;
+                if (results == null) Assert.Fail("Did not get a SPARQL Result Set as expected");
+
+                TestTools.ShowResults(results);
+            }
+            finally
+            {
+                store.Dispose();
+            }
+        }
+
+        private void TestQueryAsk(IGenericIOManager manager, String query, bool expected)
+        {
+            this.EnsureTestDataset(manager);
+
+            PersistentTripleStore store = new PersistentTripleStore(manager);
+            try
+            {
+                SparqlResultSet results = store.ExecuteQuery(query) as SparqlResultSet;
+                if (results == null) Assert.Fail("Did not get a SPARQL Result Set as expected");
+
+                TestTools.ShowResults(results);
+
+                Assert.AreEqual(SparqlResultsType.Boolean, results.ResultsType, "Did not get Boolean result as expected");
+                Assert.AreEqual(expected, results.Result, "Boolean Result failed to match");
+            }
+            finally
+            {
+                store.Dispose();
+            }
+        }
+
+        private void TestQueryConstruct(IGenericIOManager manager, String query)
+        {
+            this.EnsureTestDataset(manager);
+
+            PersistentTripleStore store = new PersistentTripleStore(manager);
+            try
+            {
+                IGraph g = store.ExecuteQuery(query) as IGraph;
+                if (g == null) Assert.Fail("Did not get a Graph as expected");
+
+                TestTools.ShowResults(g);
+            }
+            finally
+            {
+                store.Dispose();
+            }
+        }
+
+        private void TestQueryDescribe(IGenericIOManager manager, String query)
+        {
+            this.EnsureTestDataset(manager);
+
+            PersistentTripleStore store = new PersistentTripleStore(manager);
+            try
+            {
+                IGraph g = store.ExecuteQuery(query) as IGraph;
+                if (g == null) Assert.Fail("Did not get a Graph as expected");
+
+                TestTools.ShowResults(g);
+            }
+            finally
+            {
+                store.Dispose();
+            }
+        }
+
+        [TestMethod,ExpectedException(typeof(RdfQueryException))]
+        public void StoragePersistentTripleStoreMemQueryUnsynced()
+        {
+            InMemoryManager manager = new InMemoryManager();
+            this.TestQueryUnsynced(manager);
+        }
+
+        [TestMethod, ExpectedException(typeof(RdfQueryException))]
+        public void StoragePersistentTripleStoreFusekiQueryUnsynced()
+        {
+            FusekiConnector fuseki = new FusekiConnector("http://localhost:3030/dataset/data");
+            this.TestQueryUnsynced(fuseki);
+        }
+
+        [TestMethod, ExpectedException(typeof(RdfQueryException))]
+        public void StoragePersistentTripleStoreVirtuosoQueryUnsynced()
+        {
+            VirtuosoManager virtuoso = new VirtuosoManager("DB", VirtuosoTest.VirtuosoTestUsername, VirtuosoTest.VirtuosoTestPassword);
+            this.TestQueryUnsynced(virtuoso);
+        }
+
+        [TestMethod, ExpectedException(typeof(RdfQueryException))]
+        public void StoragePersistentTripleStoreAdoMicrosoftQueryUnsynced()
+        {
+            MicrosoftAdoManager manager = new MicrosoftAdoManager("adostore", "example", "password");
+            this.TestQueryUnsynced(manager);
+        }
+
+        [TestMethod]
+        public void StoragePersistentTripleStoreMemQuerySelect()
+        {
+            InMemoryManager manager = new InMemoryManager();
+            this.TestQuerySelect(manager, "SELECT * WHERE { ?s a ?type }");
+        }
+
+        [TestMethod]
+        public void StoragePersistentTripleStoreFusekiQuerySelect()
+        {
+            FusekiConnector fuseki = new FusekiConnector("http://localhost:3030/dataset/data");
+            this.TestQuerySelect(fuseki, "SELECT * WHERE { ?s a ?type }");
+        }
+
+        [TestMethod]
+        public void StoragePersistentTripleStoreVirtuosoQuerySelect()
+        {
+            VirtuosoManager virtuoso = new VirtuosoManager("DB", VirtuosoTest.VirtuosoTestUsername, VirtuosoTest.VirtuosoTestPassword);
+            this.TestQuerySelect(virtuoso, "SELECT * WHERE { ?s a ?type }");
+        }
+
+        [TestMethod]
+        public void StoragePersistentTripleStoreAdoMicrosoftQuerySelect()
+        {
+            MicrosoftAdoManager manager = new MicrosoftAdoManager("adostore", "example", "password");
+            this.TestQuerySelect(manager, "SELECT * WHERE { ?s a ?type }");
+        }
+
+        [TestMethod]
+        public void StoragePersistentTripleStoreMemQueryAsk()
+        {
+            InMemoryManager manager = new InMemoryManager();
+            this.TestQueryAsk(manager, "ASK WHERE { ?s a ?type }", true);
+            this.TestQueryAsk(manager, "ASK WHERE { ?s <http://example.org/noSuchThing> ?o }", false);
+        }
+
+        [TestMethod]
+        public void StoragePersistentTripleStoreFusekiQueryAsk()
+        {
+            FusekiConnector fuseki = new FusekiConnector("http://localhost:3030/dataset/data");
+            this.TestQueryAsk(fuseki, "ASK WHERE { GRAPH ?g { ?s a ?type } }", true);
+            this.TestQueryAsk(fuseki, "ASK WHERE { GRAPH ?g { ?s <http://example.org/noSuchThing> ?o } }", false);
+        }
+
+        [TestMethod]
+        public void StoragePersistentTripleStoreVirtuosoQueryAsk()
+        {
+            VirtuosoManager virtuoso = new VirtuosoManager("DB", VirtuosoTest.VirtuosoTestUsername, VirtuosoTest.VirtuosoTestPassword);
+            this.TestQueryAsk(virtuoso, "ASK WHERE { ?s a ?type }", true);
+            this.TestQueryAsk(virtuoso, "ASK WHERE { ?s <http://example.org/noSuchThing> ?o }", false);
+        }
+
+        [TestMethod]
+        public void StoragePersistentTripleStoreAdoMicrosoftQueryAsk()
+        {
+            MicrosoftAdoManager manager = new MicrosoftAdoManager("adostore", "example", "password");
+            this.TestQueryAsk(manager, "ASK WHERE { ?s a ?type }", true);
+            this.TestQueryAsk(manager, "ASK WHERE { ?s <http://example.org/noSuchThing> ?o }", false);
+        }
+
+        [TestMethod]
+        public void StoragePersistentTripleStoreMemQueryConstruct()
+        {
+            InMemoryManager manager = new InMemoryManager();
+            this.TestQueryConstruct(manager, "CONSTRUCT { ?s a ?type } WHERE { ?s a ?type }");
+        }
+
+        [TestMethod]
+        public void StoragePersistentTripleStoreFusekiQueryConstruct()
+        {
+            FusekiConnector fuseki = new FusekiConnector("http://localhost:3030/dataset/data");
+            this.TestQueryConstruct(fuseki, "CONSTRUCT { ?s a ?type } WHERE { ?s a ?type }");
+        }
+
+        [TestMethod]
+        public void StoragePersistentTripleStoreVirtuosoQueryConstruct()
+        {
+            VirtuosoManager virtuoso = new VirtuosoManager("DB", VirtuosoTest.VirtuosoTestUsername, VirtuosoTest.VirtuosoTestPassword);
+            this.TestQueryConstruct(virtuoso, "CONSTRUCT { ?s a ?type } WHERE { ?s a ?type }");
+        }
+
+        [TestMethod]
+        public void StoragePersistentTripleStoreAdoMicrosoftQueryConstruct()
+        {
+            MicrosoftAdoManager manager = new MicrosoftAdoManager("adostore", "example", "password");
+            this.TestQueryConstruct(manager, "CONSTRUCT { ?s a ?type } WHERE { ?s a ?type }");
+        }
+
+        [TestMethod]
+        public void StoragePersistentTripleStoreMemQueryDescribe()
+        {
+            InMemoryManager manager = new InMemoryManager();
+            this.TestQueryDescribe(manager, "DESCRIBE ?type WHERE { ?s a ?type } LIMIT 5");
+        }
+
+        [TestMethod]
+        public void StoragePersistentTripleStoreFusekiQueryDescribe()
+        {
+            FusekiConnector fuseki = new FusekiConnector("http://localhost:3030/dataset/data");
+            this.TestQueryDescribe(fuseki, "DESCRIBE ?type WHERE { GRAPH ?g { ?s a ?type } } LIMIT 5");
+        }
+
+        [TestMethod]
+        public void StoragePersistentTripleStoreVirtuosoQueryDescribe()
+        {
+            VirtuosoManager virtuoso = new VirtuosoManager("DB", VirtuosoTest.VirtuosoTestUsername, VirtuosoTest.VirtuosoTestPassword);
+            this.TestQueryDescribe(virtuoso, "DESCRIBE ?type WHERE { ?s a ?type } LIMIT 5");
+        }
+
+        [TestMethod]
+        public void StoragePersistentTripleStoreAdoMicrosoftQueryDescribe()
+        {
+            MicrosoftAdoManager manager = new MicrosoftAdoManager("adostore", "example", "password");
+            this.TestQueryDescribe(manager, "DESCRIBE ?type WHERE { ?s a ?type } LIMIT 5");
+        }
+
+        #endregion
+
+        #region SPARQL Update Tests
+
+        private void TestUpdateUnsynced(IGenericIOManager manager)
+        {
+            this.EnsureTestDataset(manager);
+
+            PersistentTripleStore store = new PersistentTripleStore(manager);
+            try
+            {
+                store.Remove(new Uri(TestGraphUri1));
+
+                store.ExecuteUpdate("LOAD <http://dbpedia.org/resource/Ilkeston>");
+            }
+            finally
+            {
+                store.Discard();
+                store.Dispose();
+            }
+        }
+
+        private void TestUpdate(IGenericIOManager manager)
+        {
+            this.EnsureTestDataset(manager);
+            Uri updateUri = new Uri("http://example.org/persistence/update/temp");
+            this.EnsureGraphDeleted(manager, updateUri);
+
+            PersistentTripleStore store = new PersistentTripleStore(manager);
+            try
+            {
+                Assert.IsFalse(store.HasGraph(updateUri), "Prior to SPARQL Update our target graph should not exist using HasGraph()");
+                Assert.IsFalse(store.Graphs.Contains(updateUri), "Prior to SPARQL Update out target graph should not exist using Graphs.Contains()");
+                Assert.IsFalse(manager.ListGraphs().Contains(updateUri), "Prior to SPARQL Update our target graph should not exist in the underlying store");
+
+                store.ExecuteUpdate("LOAD <http://dbpedia.org/resource/Ilkeston> INTO GRAPH <" + updateUri.ToString() + ">");
+
+                Assert.IsTrue(store.HasGraph(updateUri), "SPARQL Update should have loaded into our target graph so that HasGraph() returns true");
+                Assert.IsTrue(store.Graphs.Contains(updateUri), "SPARQL Update should have loaded into out target graph so that Graphs.Contains() returns true");
+
+                //Note that SPARQL Updates go directly to the underlying store so the change is persisted immediately
+                Assert.IsTrue(manager.ListGraphs().Contains(updateUri), "SPARQL Update should loaded into our target graph directly in the underlying store");
+            }
+            finally
+            {
+                store.Dispose();
+            }
+        }
+
+        [TestMethod, ExpectedException(typeof(SparqlUpdateException))]
+        public void StoragePersistentTripleStoreMemUpdateUnsynced()
+        {
+            InMemoryManager manager = new InMemoryManager();
+            this.TestUpdateUnsynced(manager);
+        }
+
+        [TestMethod, ExpectedException(typeof(SparqlUpdateException))]
+        public void StoragePersistentTripleStoreFusekiUpdateUnsynced()
+        {
+            FusekiConnector fuseki = new FusekiConnector("http://localhost:3030/dataset/data");
+            this.TestUpdateUnsynced(fuseki);
+        }
+
+        [TestMethod, ExpectedException(typeof(SparqlUpdateException))]
+        public void StoragePersistentTripleStoreVirtuosoUpdateUnsynced()
+        {
+            VirtuosoManager virtuoso = new VirtuosoManager("DB", VirtuosoTest.VirtuosoTestUsername, VirtuosoTest.VirtuosoTestPassword);
+            this.TestUpdateUnsynced(virtuoso);
+        }
+
+        [TestMethod, ExpectedException(typeof(SparqlUpdateException))]
+        public void StoragePersistentTripleStoreAdoMicrosoftUpdateUnsynced()
+        {
+            MicrosoftAdoManager manager = new MicrosoftAdoManager("adostore", "example", "password");
+            this.TestUpdateUnsynced(manager);
+        }
+
+        [TestMethod]
+        public void StoragePersistentTripleStoreMemUpdate()
+        {
+            InMemoryManager manager = new InMemoryManager();
+            this.TestUpdate(manager);
+        }
+
+        [TestMethod]
+        public void StoragePersistentTripleStoreFusekiUpdate()
+        {
+            FusekiConnector fuseki = new FusekiConnector("http://localhost:3030/dataset/data");
+            this.TestUpdate(fuseki);
+        }
+
+        [TestMethod]
+        public void StoragePersistentTripleStoreVirtuosoUpdate()
+        {
+            VirtuosoManager virtuoso = new VirtuosoManager("DB", VirtuosoTest.VirtuosoTestUsername, VirtuosoTest.VirtuosoTestPassword);
+            this.TestUpdate(virtuoso);
+        }
+
+        [TestMethod]
+        public void StoragePersistentTripleStoreAdoMicrosoftUpdate()
+        {
+            MicrosoftAdoManager manager = new MicrosoftAdoManager("adostore", "example", "password");
+            this.TestUpdate(manager);
         }
 
         #endregion
