@@ -74,6 +74,10 @@ namespace VDS.RDF.Utilities.Editor
                 this.mnuUseBomForUtf8.IsChecked = false;
                 Options.UseBomForUtf8 = false;
             }
+            if (Properties.Settings.Default.SaveWithOptionsPrompt)
+            {
+                this.mnuSaveWithPromptOptions.IsChecked = true;
+            }
             if (!Properties.Settings.Default.EnableSymbolSelection)
             {
                 this._manager.IsSymbolSelectionEnabled = false;
@@ -471,8 +475,18 @@ namespace VDS.RDF.Utilities.Editor
 
             try
             {
+                //Check whether the User wants to set advanced options?
+                if (Properties.Settings.Default.SaveWithOptionsPrompt)
+                {
+                    RdfWriterOptionsWindow optPrompt = new RdfWriterOptionsWindow(writer);
+                    optPrompt.Owner = this;
+                    if (optPrompt.ShowDialog() != true) return;
+                }
+
+                //Do the actual save
                 writer.Save(g, this._manager.CurrentFile);
 
+                //Give the user the option of switching to this new file
                 MessageBoxResult res = MessageBox.Show("Would you like to switch editing to the newly created file?", "Switch Editing", MessageBoxButton.YesNo);
                 if (res == MessageBoxResult.Yes)
                 {
@@ -1398,6 +1412,12 @@ namespace VDS.RDF.Utilities.Editor
             {
                 VDS.RDF.Utilities.Editor.App.RecentFiles.Clear();
             }
+        }
+
+        private void mnuSaveWithPromptOptions_Click(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.SaveWithOptionsPrompt = this.mnuSaveWithPromptOptions.IsChecked;
+            Properties.Settings.Default.Save();
         }
 
     }

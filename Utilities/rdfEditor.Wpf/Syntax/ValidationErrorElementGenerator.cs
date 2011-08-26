@@ -46,29 +46,36 @@ namespace VDS.RDF.Utilities.Editor.Syntax
             if (parseEx == null) return -1;
             if (parseEx.StartLine > CurrentContext.Document.LineCount) return -1;
 
-            int offset = CurrentContext.Document.GetOffset(parseEx.StartLine, parseEx.StartPosition);
-            if (offset < startOffset)
+            try
             {
-                int endOffset = CurrentContext.Document.GetOffset(parseEx.EndLine, parseEx.EndPosition);
-                if (startOffset < endOffset)
+                int offset = CurrentContext.Document.GetOffset(parseEx.StartLine, parseEx.StartPosition);
+                if (offset < startOffset)
                 {
-                    return startOffset;
+                    int endOffset = CurrentContext.Document.GetOffset(parseEx.EndLine, parseEx.EndPosition);
+                    if (startOffset < endOffset)
+                    {
+                        return startOffset;
+                    }
+                    else
+                    {
+                        return -1;
+                    }
                 }
                 else
                 {
-                    return -1;
+                    if (offset > 0 && offset > (startOffset + 1) && parseEx.StartLine == parseEx.EndLine && parseEx.StartPosition == parseEx.EndPosition)
+                    {
+                        return offset - 1;
+                    }
+                    else
+                    {
+                        return offset;
+                    }
                 }
             }
-            else
+            catch
             {
-                if (offset > 0 && offset > (startOffset + 1) && parseEx.StartLine == parseEx.EndLine && parseEx.StartPosition == parseEx.EndPosition)
-                {
-                    return offset - 1;
-                }
-                else
-                {
-                    return offset;
-                }
+                return -1;
             }
         }
 

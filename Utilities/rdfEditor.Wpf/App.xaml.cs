@@ -4,6 +4,7 @@ using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using VDS.RDF.Utilities.Editor.Properties;
 
 namespace VDS.RDF.Utilities.Editor
 {
@@ -16,6 +17,7 @@ namespace VDS.RDF.Utilities.Editor
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
+            //Try and get the MRU List
             try
             {
                 String appDataDir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
@@ -32,6 +34,22 @@ namespace VDS.RDF.Utilities.Editor
             catch
             {
                 //Ignore errors here, if this fails then we just won't have a MRU list
+            }
+
+            //Try and upgrade user settings if required
+            try
+            {
+                if (Settings.Default.UpgradeRequired)
+                {
+                    Settings.Default.Upgrade();
+                    Settings.Default.UpgradeRequired = false;
+                    Settings.Default.Save();
+                    Settings.Default.Reload();
+                }
+            }
+            catch
+            {
+                //Ignore errors here, if this fails then we couldn't upgrade user settings for whatever reason
             }
         }
 

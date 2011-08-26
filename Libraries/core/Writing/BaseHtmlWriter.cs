@@ -43,7 +43,8 @@ namespace VDS.RDF.Writing
     /// <summary>
     /// Abstract Base Class for HTML Writers which provides basic implementation of the IHtmlWriter interface
     /// </summary>
-    public abstract class BaseHtmlWriter : IHtmlWriter
+    public abstract class BaseHtmlWriter 
+        : IHtmlWriter
     {
         #region IHtmlWriter Members
 

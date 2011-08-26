@@ -130,6 +130,9 @@
     <Compile Include="PrintPreview.xaml.cs">
       <DependentUpon>PrintPreview.xaml</DependentUpon>
     </Compile>
+    <Compile Include="RdfWriterOptionsWindow.xaml.cs">
+      <DependentUpon>RdfWriterOptionsWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ResultSetWindow.xaml.cs">
       <DependentUpon>ResultSetWindow.xaml</DependentUpon>
     </Compile>
@@ -259,6 +262,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="PrintPreview.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="RdfWriterOptionsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
