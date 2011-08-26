@@ -48,7 +48,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// Creates a new Null Handler
         /// </summary>
         public NullHandler()
-        { }
+            : base(new MockNodeFactory()) { }
 
         /// <summary>
         /// Handles a Triple by doing nothing

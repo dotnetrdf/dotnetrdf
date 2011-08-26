@@ -5,10 +5,16 @@ using System.Text;
 
 namespace VDS.RDF.Parsing.Handlers
 {
+    /// <summary>
+    /// A RDF Handler which just determines whether any Triples are present terminating parsing as soon as the first triple is received
+    /// </summary>
     public class AnyHandler 
         : BaseRdfHandler
     {
         private bool _any = false;
+
+        public AnyHandler()
+            : base(new MockNodeFactory()) { }
 
         public bool Any
         {

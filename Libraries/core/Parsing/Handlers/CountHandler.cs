@@ -38,7 +38,8 @@ namespace VDS.RDF.Parsing.Handlers
     /// <summary>
     /// A RDF Handler which simply counts the Triples
     /// </summary>
-    public class CountHandler : BaseRdfHandler
+    public class CountHandler 
+        : BaseRdfHandler
     {
         private int _counter = 0;
 
@@ -46,6 +47,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// Creates a Handler which counts Triples
         /// </summary>
         public CountHandler()
+            : base(new MockNodeFactory())
         { }
 
         /// <summary>

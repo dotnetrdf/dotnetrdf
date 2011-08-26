@@ -40,9 +40,16 @@ namespace VDS.RDF.Parsing.Handlers
     /// <summary>
     /// A SPARQL Results Handler which just counts Results
     /// </summary>
-    public class ResultCountHandler : BaseResultsHandler
+    /// <remarks>
+    /// <strong>Note: </strong> For a Boolean Result Set the counter will either be 1 for true or 0 for false
+    /// </remarks>
+    public class ResultCountHandler
+        : BaseResultsHandler
     {
         private int _counter = 0;
+
+        public ResultCountHandler()
+            : base(new MockNodeFactory()) { }
 
         /// <summary>
         /// Starts Results Handling and resets the counter to zero
