@@ -113,7 +113,7 @@ namespace VDS.RDF
 
                 //Define RDF/JSON - include SPARQL Parsers to support servers that send back incorrect MIME Type for SPARQL JSON Results
                 //We define this after SPARQL Results JSON to ensure we favour the correct MIME type for it
-                _mimeTypes.Add(new MimeTypeDefinition("RDF/JSON", Json, new String[] { DefaultJsonExtension }, typeof(RdfJsonParser), null, typeof(SparqlJsonParser), typeof(RdfJsonWriter), null, typeof(SparqlJsonWriter)));
+                _mimeTypes.Add(new MimeTypeDefinition("RDF/JSON", Json, new String[] { DefaultRdfJsonExtension, DefaultJsonExtension }, typeof(RdfJsonParser), null, typeof(SparqlJsonParser), typeof(RdfJsonWriter), null, typeof(SparqlJsonWriter)));
 
                 //Define CSV
                 _mimeTypes.Add(new MimeTypeDefinition("CSV", Csv, new String[] { DefaultCsvExtension }, null, null, null, typeof(CsvWriter), typeof(CsvStoreWriter), typeof(SparqlCsvWriter)));
@@ -530,6 +530,10 @@ namespace VDS.RDF
         /// Default File Extension for Json formats
         /// </summary>
         public const String DefaultJsonExtension = "json";
+        /// <summary>
+        /// Default File Extension for RDF/JSON
+        /// </summary>
+        public const String DefaultRdfJsonExtension = "rj";
         /// <summary>
         /// Default File Extension for SPARQL XML Results Format
         /// </summary>
