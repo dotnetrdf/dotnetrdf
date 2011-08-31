@@ -341,6 +341,9 @@
     <None Include="resources\empty-string-rdfxml.rdf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <Content Include="resources\no-gap-prefixes.rq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="resources\now01.rq">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

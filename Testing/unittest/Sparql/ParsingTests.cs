@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -131,6 +132,18 @@ namespace VDS.RDF.Test.Sparql
         public void SparqlParsingPropertyPathsNegatedSetSimpleInAlternative()
         {
             String query = "PREFIX rdfs: <" + NamespaceMapper.RDFS + "> SELECT * WHERE { ?s (rdfs:label|!rdfs:comment) ?o }";
+            TestQuery(query);
+        }
+
+        [TestMethod]
+        public void SparqlParsingNoGapPrefixes()
+        {
+            String query;
+            using (StreamReader reader = new StreamReader("no-gap-prefixes.rq"))
+            {
+                query = reader.ReadToEnd();
+                reader.Close();
+            }
             TestQuery(query);
         }
     }
