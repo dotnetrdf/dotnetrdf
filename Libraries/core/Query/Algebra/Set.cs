@@ -177,6 +177,12 @@ namespace VDS.RDF.Query.Algebra
             return this._values.ContainsKey(variable);
         }
 
+        /// <summary>
+        /// Gets whether the Set is compatible with a given set based on the given variables
+        /// </summary>
+        /// <param name="s">Set</param>
+        /// <param name="vars">Variables</param>
+        /// <returns></returns>
         public override bool IsCompatibleWith(ISet s, IEnumerable<string> vars)
         {
             return vars.All(v => this[v] == null || s[v] == null || this[v].Equals(s[v]));
@@ -206,12 +212,21 @@ namespace VDS.RDF.Query.Algebra
             }
         }
 
+        /// <summary>
+        /// Joins the set to another set
+        /// </summary>
+        /// <param name="other">Other Set</param>
+        /// <returns></returns>
         public override ISet Join(ISet other)
         {
             return new Set(this, other);
             //return new JoinedSet(other, this);
         }
 
+        /// <summary>
+        /// Copies the Set
+        /// </summary>
+        /// <returns></returns>
         public override ISet Copy()
         {
             return new Set(this);
@@ -254,6 +269,8 @@ namespace VDS.RDF.Query.Algebra
             return this.ToString().GetHashCode();
         }
     }
+
+//#if UNFINISHED
 
     // <summary>
     // Represents one possible set of values which is a solution to the query where those values are the result of joining two possible sets
@@ -359,23 +376,42 @@ namespace VDS.RDF.Query.Algebra
         private List<ISet> _sets = new List<ISet>();
         private bool _added = false;
 
+        /// <summary>
+        /// Creates a Joined Set
+        /// </summary>
+        /// <param name="x">Set</param>
+        /// <param name="y">Another Set</param>
         public JoinedSet(ISet x, ISet y)
         {
             this._sets.Add(x);
             this._sets.Add(y);
         }
 
+        /// <summary>
+        /// Creates a Joined Set
+        /// </summary>
+        /// <param name="x">Set</param>
+        /// <param name="ys">Other Set(s)</param>
         internal JoinedSet(ISet x, IEnumerable<ISet> ys)
         {
             this._sets.Add(x);
             this._sets.AddRange(ys);
         }
 
+        /// <summary>
+        /// Creates a Joined Set
+        /// </summary>
+        /// <param name="x">Set</param>
         internal JoinedSet(JoinedSet x)
         {
             this._sets.AddRange(x._sets);
         }
 
+        /// <summary>
+        /// Adds a Value for a Variable to the Set
+        /// </summary>
+        /// <param name="variable">Variable</param>
+        /// <param name="value">Value</param>
         public override void Add(string variable, INode value)
         {
             //When we first add to the joined set we create a new empty set to make the adds into as
@@ -390,21 +426,41 @@ namespace VDS.RDF.Query.Algebra
             this._sets[0].Add(variable, value);
         }
 
+        /// <summary>
+        /// Checks whether the Set contains a given Variable
+        /// </summary>
+        /// <param name="variable">Variable</param>
+        /// <returns></returns>
         public override bool ContainsVariable(string variable)
         {
             return this._sets.Any(s => s.ContainsVariable(variable));
         }
 
+        /// <summary>
+        /// Gets whether the Set is compatible with a given set based on the given variables
+        /// </summary>
+        /// <param name="s">Set</param>
+        /// <param name="vars">Variables</param>
+        /// <returns></returns>
         public override bool IsCompatibleWith(ISet s, IEnumerable<string> vars)
         {
             return vars.All(v => this[v] == null || s[v] == null || this[v].Equals(s[v]));
         }
 
+        /// <summary>
+        /// Removes a Value for a Variable from the Set
+        /// </summary>
+        /// <param name="variable">Variable</param>
         public override void Remove(string variable)
         {
             this._sets.ForEach(s => s.Remove(variable));
         }
 
+        /// <summary>
+        /// Retrieves the Value in this set for the given Variable
+        /// </summary>
+        /// <param name="variable">Variable</param>
+        /// <returns>Either a Node or a null</returns>
         public override INode this[string variable]
         {
             get
@@ -425,6 +481,9 @@ namespace VDS.RDF.Query.Algebra
             }
         }
 
+        /// <summary>
+        /// Gets the Values in the Set
+        /// </summary>
         public override IEnumerable<INode> Values
         {
             get
@@ -434,6 +493,9 @@ namespace VDS.RDF.Query.Algebra
             }
         }
 
+        /// <summary>
+        /// Gets the Variables in the Set
+        /// </summary>
         public override IEnumerable<string> Variables
         {
             get
@@ -444,23 +506,40 @@ namespace VDS.RDF.Query.Algebra
             }
         }
 
+        /// <summary>
+        /// Joins the set to another set
+        /// </summary>
+        /// <param name="other">Other Set</param>
+        /// <returns></returns>
         public override ISet Join(ISet other)
         {
             return new Set(this, other);
             //return new JoinedSet(other, this._sets);
         }
 
+        /// <summary>
+        /// Copies the Set
+        /// </summary>
+        /// <returns></returns>
         public override ISet Copy()
         {
             return new Set(this);
             //return new JoinedSet(this);
         }
 
+        /// <summary>
+        /// Gets the Hash Code of the Set
+        /// </summary>
+        /// <returns></returns>
         public override int GetHashCode()
         {
             return this.ToString().GetHashCode();
         }
 
+        /// <summary>
+        /// Gets the String representation of the Set
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             StringBuilder output = new StringBuilder();
@@ -472,6 +551,11 @@ namespace VDS.RDF.Query.Algebra
             return output.ToString();
         }
 
+        /// <summary>
+        /// Gets whether the Set is equal to another set
+        /// </summary>
+        /// <param name="other">Set to compare with</param>
+        /// <returns></returns>
         public bool Equals(JoinedSet other)
         {
             return this.Equals((ISet)other);

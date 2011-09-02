@@ -98,6 +98,11 @@ namespace VDS.RDF.Storage
             this.LoadGraph(new GraphHandler(g), graphUri);
         }
 
+        /// <summary>
+        /// Loads a Graph from the Store
+        /// </summary>
+        /// <param name="handler">RDF Handler</param>
+        /// <param name="graphUri">Graph URI to load</param>
         public void LoadGraph(IRdfHandler handler, Uri graphUri)
         {
             IGraph g = null;
@@ -125,6 +130,11 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Loads a Graph from the Store
+        /// </summary>
+        /// <param name="handler">RDF Handler</param>
+        /// <param name="graphUri">Graph URI to load</param>
         public void LoadGraph(IRdfHandler handler, String graphUri)
         {
             if (graphUri == null || graphUri.Equals(String.Empty))
@@ -315,6 +325,13 @@ namespace VDS.RDF.Storage
             return this._queryProcessor.ProcessQuery(q);
         }
 
+        /// <summary>
+        /// Makes a SPARQL Query against the Store processing the results with the appropriate processor from those given
+        /// </summary>
+        /// <param name="rdfHandler">RDF Handler</param>
+        /// <param name="resultsHandler">Results Handler</param>
+        /// <param name="sparqlQuery">SPARQL Query</param>
+        /// <returns></returns>
         public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery)
         {
             if (this._queryParser == null) this._queryParser = new SparqlQueryParser();

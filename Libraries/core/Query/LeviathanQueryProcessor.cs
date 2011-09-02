@@ -58,7 +58,8 @@ namespace VDS.RDF.Query
     /// In future releases much of the Leviathan Query engine logic will be moved into this class to make it possible for implementors to override specific bits of the algebra processing but this is not possible at this time
     /// </para>
     /// </remarks>
-    public class LeviathanQueryProcessor : ISparqlQueryProcessor, ISparqlQueryAlgebraProcessor<BaseMultiset, SparqlEvaluationContext>
+    public class LeviathanQueryProcessor 
+        : ISparqlQueryProcessor, ISparqlQueryAlgebraProcessor<BaseMultiset, SparqlEvaluationContext>
     {
         private ISparqlDataset _dataset;
 #if !NO_RWLOCK
@@ -121,6 +122,12 @@ namespace VDS.RDF.Query
             }
         }
 
+        /// <summary>
+        /// Processes a SPARQL Query sending the results to a RDF/SPARQL Results handler as appropriate
+        /// </summary>
+        /// <param name="rdfHandler">RDF Handler</param>
+        /// <param name="resultsHandler">Results Handler</param>
+        /// <param name="query">SPARQL Query</param>
         public void ProcessQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query)
         {
             //Do Handler null checks before evaluating the query
@@ -306,16 +313,29 @@ namespace VDS.RDF.Query
 #endif
         }
 
+        /// <summary>
+        /// Creates a new Evaluation Context
+        /// </summary>
+        /// <returns></returns>
         protected SparqlEvaluationContext GetContext()
         {
             return this.GetContext(null);
         }
 
+        /// <summary>
+        /// Creates a new Evaluation Context for the given Query
+        /// </summary>
+        /// <param name="q">Query</param>
+        /// <returns></returns>
         private SparqlEvaluationContext GetContext(SparqlQuery q)
         {
             return new SparqlEvaluationContext(q, this._dataset, this.GetProcessorForContext());
         }
 
+        /// <summary>
+        /// Gets the Query Processor for a Context
+        /// </summary>
+        /// <returns></returns>
         private ISparqlQueryAlgebraProcessor<BaseMultiset, SparqlEvaluationContext> GetProcessorForContext()
         {
             if (this.GetType().Equals(typeof(LeviathanQueryProcessor)))
@@ -500,6 +520,11 @@ namespace VDS.RDF.Query
             return distinct.Evaluate(context);
         }
 
+        /// <summary>
+        /// Processes an Extend
+        /// </summary>
+        /// <param name="extend">Extend</param>
+        /// <param name="context">SPARQL Evaluation Context</param>
         public virtual BaseMultiset ProcessExtend(Extend extend, SparqlEvaluationContext context)
         {
             if (context == null) context = this.GetContext();
@@ -594,18 +619,36 @@ namespace VDS.RDF.Query
             return minus.Evaluate(context);
         }
 
+        /// <summary>
+        /// Processes a Negated Property Set
+        /// </summary>
+        /// <param name="negPropSet">Negated Property Set</param>
+        /// <param name="context">SPARQL Evaluation Context</param>
+        /// <returns></returns>
         public virtual BaseMultiset ProcessNegatedPropertySet(NegatedPropertySet negPropSet, SparqlEvaluationContext context)
         {
             if (context == null) context = this.GetContext();
             return negPropSet.Evaluate(context);
         }
 
+        /// <summary>
+        /// Processes a Null Operator
+        /// </summary>
+        /// <param name="nullOp">Null Operator</param>
+        /// <param name="context">SPARQL Evaluation Context</param>
+        /// <returns></returns>
         public virtual BaseMultiset ProcessNullOperator(NullOperator nullOp, SparqlEvaluationContext context)
         {
             if (context == null) context = this.GetContext();
             return nullOp.Evaluate(context);
         }
 
+        /// <summary>
+        /// Processes a One or More Path
+        /// </summary>
+        /// <param name="path">Path</param>
+        /// <param name="context">SPARQL Evaluation Context</param>
+        /// <returns></returns>
         public virtual BaseMultiset ProcessOneOrMorePath(OneOrMorePath path, SparqlEvaluationContext context)
         {
             if (context == null) context = this.GetContext();
@@ -634,6 +677,12 @@ namespace VDS.RDF.Query
             return project.Evaluate(context);
         }
 
+        /// <summary>
+        /// Processes a Property Path
+        /// </summary>
+        /// <param name="path">Path</param>
+        /// <param name="context">SPARQL Evaluation Context</param>
+        /// <returns></returns>
         public virtual BaseMultiset ProcessPropertyPath(PropertyPath path, SparqlEvaluationContext context)
         {
             if (context == null) context = this.GetContext();
@@ -695,6 +744,12 @@ namespace VDS.RDF.Query
             return slice.Evaluate(context);
         }
 
+        /// <summary>
+        /// Processes a Subquery
+        /// </summary>
+        /// <param name="subquery">Subquery</param>
+        /// <param name="context">SPARQL Evaluation Context</param>
+        /// <returns></returns>
         public virtual BaseMultiset ProcessSubQuery(SubQuery subquery, SparqlEvaluationContext context)
         {
             if (context == null) context = this.GetContext();
@@ -712,18 +767,35 @@ namespace VDS.RDF.Query
             return union.Evaluate(context);
         }
 
+        /// <summary>
+        /// Processes a Unknown Operator
+        /// </summary>
+        /// <param name="algebra">Unknown Operator</param>
+        /// <param name="context">SPARQL Evaluation Context</param>
         public virtual BaseMultiset ProcessUnknownOperator(ISparqlAlgebra algebra, SparqlEvaluationContext context)
         {
             if (context == null) context = this.GetContext();
             return algebra.Evaluate(context);
         }
 
+        /// <summary>
+        /// Processes a Zero Length Path
+        /// </summary>
+        /// <param name="path">Path</param>
+        /// <param name="context">SPARQL Evaluation Context</param>
+        /// <returns></returns>
         public virtual BaseMultiset ProcessZeroLengthPath(ZeroLengthPath path, SparqlEvaluationContext context)
         {
             if (context == null) context = this.GetContext();
             return path.Evaluate(context);
         }
 
+        /// <summary>
+        /// Processes a Zero or More Path
+        /// </summary>
+        /// <param name="path">Path</param>
+        /// <param name="context">SPARQL Evaluation Context</param>
+        /// <returns></returns>
         public virtual BaseMultiset ProcessZeroOrMorePath(ZeroOrMorePath path, SparqlEvaluationContext context)
         {
             if (context == null) context = this.GetContext();

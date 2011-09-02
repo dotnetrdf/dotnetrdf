@@ -126,6 +126,12 @@ namespace VDS.RDF.Query
         /// <param name="context">Evaluation Context</param>
         TResult ProcessExistsJoin(IExistsJoin existsJoin, TContext context);
 
+        /// <summary>
+        /// Processes an Extend
+        /// </summary>
+        /// <param name="extend">Extend</param>
+        /// <param name="context">Evaluation Context</param>
+        /// <returns></returns>
         TResult ProcessExtend(Extend extend, TContext context);
 
         /// <summary>
@@ -177,10 +183,28 @@ namespace VDS.RDF.Query
         /// <param name="context">Evaluation Context</param>
         TResult ProcessMinus(IMinus minus, TContext context);
 
+        /// <summary>
+        /// Processes a Negated Property Set
+        /// </summary>
+        /// <param name="negPropSet">Negated Property Set</param>
+        /// <param name="context">Evaluation Context</param>
+        /// <returns></returns>
         TResult ProcessNegatedPropertySet(NegatedPropertySet negPropSet, TContext context);
 
+        /// <summary>
+        /// Processes a Null Operator
+        /// </summary>
+        /// <param name="nullOp">Null Operator</param>
+        /// <param name="context">Evaluation Context</param>
+        /// <returns></returns>
         TResult ProcessNullOperator(NullOperator nullOp, TContext context);
 
+        /// <summary>
+        /// Processes a One or More Path
+        /// </summary>
+        /// <param name="path">Path</param>
+        /// <param name="context">Evaluation Context</param>
+        /// <returns></returns>
         TResult ProcessOneOrMorePath(OneOrMorePath path, TContext context);
 
         /// <summary>
@@ -197,6 +221,12 @@ namespace VDS.RDF.Query
         /// <param name="context">Evaluation Context</param>
         TResult ProcessProject(Project project, TContext context);
 
+        /// <summary>
+        /// Processes a Property Path
+        /// </summary>
+        /// <param name="path">Path</param>
+        /// <param name="context">Evaluation Context</param>
+        /// <returns></returns>
         TResult ProcessPropertyPath(PropertyPath path, TContext context);
 
         /// <summary>
@@ -233,7 +263,13 @@ namespace VDS.RDF.Query
         /// <param name="slice">Slice modifier</param>
         /// <param name="context">Evaluation Context</param>
         TResult ProcessSlice(Slice slice, TContext context);
-
+        
+        /// <summary>
+        /// Processes a subquery
+        /// </summary>
+        /// <param name="subquery">Subquery</param>
+        /// <param name="context">Evaluation Context</param>
+        /// <returns></returns>
         TResult ProcessSubQuery(SubQuery subquery, TContext context);
 
         /// <summary>
@@ -243,10 +279,28 @@ namespace VDS.RDF.Query
         /// <param name="context">Evaluation Context</param>
         TResult ProcessUnion(IUnion union, TContext context);
 
+        /// <summary>
+        /// Processes an Unknown Operator
+        /// </summary>
+        /// <param name="algebra">Algebra</param>
+        /// <param name="context">Evaluation Context</param>
+        /// <returns></returns>
         TResult ProcessUnknownOperator(ISparqlAlgebra algebra, TContext context);
 
+        /// <summary>
+        /// Processes a Zero Length Path
+        /// </summary>
+        /// <param name="path">Path</param>
+        /// <param name="context">Evaluation Context</param>
+        /// <returns></returns>
         TResult ProcessZeroLengthPath(ZeroLengthPath path, TContext context);
 
+        /// <summary>
+        /// Processes a Zero or More Path
+        /// </summary>
+        /// <param name="path">Path</param>
+        /// <param name="context">Evaluation Context</param>
+        /// <returns></returns>
         TResult ProcessZeroOrMorePath(ZeroOrMorePath path, TContext context);
     }
 

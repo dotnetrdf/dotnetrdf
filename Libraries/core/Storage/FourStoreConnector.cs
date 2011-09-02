@@ -135,6 +135,11 @@ namespace VDS.RDF.Storage
             this.LoadGraph(g, graphUri.ToSafeString());
         }
 
+        /// <summary>
+        /// Loads a Graph from the 4store instance using an RDF Handler
+        /// </summary>
+        /// <param name="handler">RDF Handler</param>
+        /// <param name="graphUri">URI of the Graph to load</param>
         public void LoadGraph(IRdfHandler handler, Uri graphUri)
         {
             this.LoadGraph(handler, graphUri.ToSafeString());
@@ -144,8 +149,7 @@ namespace VDS.RDF.Storage
         /// Loads a Graph from the 4store instance
         /// </summary>
         /// <param name="g">Graph to load into</param>
-        /// <param name="graphUri">Uri of the Graph to load</param>
-        /// <exception cref="RDFStorageExeception"></exception>
+        /// <param name="graphUri">URI of the Graph to load</param>
         public void LoadGraph(IGraph g, String graphUri)
         {
             if (g.IsEmpty && graphUri != null & !graphUri.Equals(String.Empty))
@@ -155,6 +159,11 @@ namespace VDS.RDF.Storage
             this.LoadGraph(new GraphHandler(g), graphUri);
         }
 
+        /// <summary>
+        /// Loads a Graph from the 4store instance
+        /// </summary>
+        /// <param name="handler">RDF Handler</param>
+        /// <param name="graphUri">URI of the Graph to load</param>
         public void LoadGraph(IRdfHandler handler, String graphUri)
         {
             try
@@ -439,9 +448,9 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Makes a Sparql Query against the underlying 4store Instance
+        /// Makes a SPARQL Query against the underlying 4store Instance
         /// </summary>
-        /// <param name="sparqlQuery">Sparql Query</param>
+        /// <param name="sparqlQuery">SPARQL Query</param>
         /// <returns>A <see cref="Graph">Graph</see> or a <see cref="SparqlResultSet">SparqlResultSet</see></returns>
         /// <remarks>
         /// Depending on the version of <a href="http://librdf.org/rasqal/">RASQAL</a> used and the options it was built with some kinds of queries may not suceed or return unexpected results.
@@ -462,6 +471,12 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Makes a SPARQL Query against the underlying 4store Instance processing the results with the appropriate handler from those provided
+        /// </summary>
+        /// <param name="rdfHandler">RDF Handler</param>
+        /// <param name="resultsHandler">Results Handler</param>
+        /// <param name="sparqlQuery">SPARQL Query</param>
         public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery)
         {
             HttpWebResponse response = this._endpoint.QueryRaw(sparqlQuery);

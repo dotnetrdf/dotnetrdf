@@ -40,7 +40,8 @@ namespace VDS.RDF.Storage.Virtualisation
     /// <summary>
     /// A Virtual RDF Provider is a provider that transforms materialised values into virtual ID values.  These virtual values can be used to do much faster term equality checking and to minimise memory usage when accessing out of memory data.
     /// </summary>
-    /// <typeparam name="T">ID Type</typeparam>
+    /// <typeparam name="TNodeID">Node ID Type</typeparam>
+    /// <typeparam name="TGraphID">Graph ID Type</typeparam>
     /// <remarks>
     /// <para>
     /// An implementation of this is typically in addition to a more general RDF store implementation (such as an <see cref="IGenericIOManager">IGenericIOManager</see>) and was originally designed and intended for use in creating <see cref="VDS.RDF.Query.Datasets.ISparqlDataset">ISparqlDataset</see> instances which allow out of memory data to be queried more efficiently.
@@ -58,6 +59,7 @@ namespace VDS.RDF.Storage.Virtualisation
         /// <summary>
         /// Given a Node ID returns the materialised value in the given Graph
         /// </summary>
+        /// <param name="g">Graph to create the Node in</param>
         /// <param name="id">Node ID</param>
         /// <returns></returns>
         INode GetValue(IGraph g, TNodeID id);
@@ -78,12 +80,40 @@ namespace VDS.RDF.Storage.Virtualisation
         /// </remarks>
         TNodeID GetID(INode value);
 
+        /// <summary>
+        /// Gets the Graph ID for a Graph
+        /// </summary>
+        /// <param name="g">Graph</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Should function as equivalent to the two argument version with the <strong>createIfNotExists</strong> parameter set to false
+        /// </remarks>
         TGraphID GetGraphID(IGraph g);
 
+        /// <summary>
+        /// Gets the Graph ID for a Graph creating it if necessary
+        /// </summary>
+        /// <param name="g">Graph</param>
+        /// <param name="createIfNotExists">Determines whether to create a new Graph ID if there is not already one for the given Graph</param>
+        /// <returns></returns>
         TGraphID GetGraphID(IGraph g, bool createIfNotExists);
 
+        /// <summary>
+        /// Gets the Graph ID for a Graph URI
+        /// </summary>
+        /// <param name="graphUri">Graph URI</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Should function as equivalent to the two argument version with the <strong>createIfNotExists</strong> parameter set to false
+        /// </remarks>
         TGraphID GetGraphID(Uri graphUri);
-
+        
+        /// <summary>
+        /// Gets the Graph ID for a Graph URI
+        /// </summary>
+        /// <param name="graphUri">Graph URI</param>
+        /// <param name="createIfNotExists">Determines whether to create a new Graph ID if there is not already one for the given Graph URI</param>
+        /// <returns></returns>
         TGraphID GetGraphID(Uri graphUri, bool createIfNotExists);
 
         /// <summary>
@@ -120,6 +150,11 @@ namespace VDS.RDF.Storage.Virtualisation
             get;
         }
 
+        /// <summary>
+        /// Loads a Graph creating all the Triples with virtual node values
+        /// </summary>
+        /// <param name="g">Graph to load into</param>
+        /// <param name="graphUri">URI of the Graph to load</param>
         void LoadGraphVirtual(IGraph g, Uri graphUri);
     }
 }

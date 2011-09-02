@@ -465,14 +465,6 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="query">SPARQL Query as an unparsed string</param>
         /// <returns></returns>
-        /// <remarks>
-        /// <para>
-        /// <strong>API Change: </strong> In previous versions of this library implementations were responsible for configuring the default and active graphs themselves.  From 0.3.0 onwards this requirement has been removed and this is now handled directly by the Query itself by invoking the <see cref="IInMemoryQueryableStore.SetActiveGraph">SetActiveGraph()</see> and <see cref="IInMemoryQueryableStore.SetDefaultGraph">SetDefaultGraph()</see> methods as appropriate.
-        /// </para>
-        /// <para>
-        /// <s>Implementations of this should configure the Default and Active Graphs of the Triple Store as required by the Query before invoking the Query's <see cref="SparqlQuery.Evaluate">Evaluate</see> method to run the actual Query</s>
-        /// </para>
-        /// </remarks>
         Object ExecuteQuery(String query);
 
         /// <summary>
@@ -480,25 +472,31 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="query">SPARQL Query as a <see cref="SparqlQuery">SparqlQuery</see> instance</param>
         /// <returns></returns>
-        /// <remarks>
-        /// <para>
-        /// <strong>API Change: </strong> In previous versions of this library implementations were responsible for configuring the default and active graphs themselves.  From 0.3.0 onwards this requirement has been removed and this is now handled directly by the Query itself by invoking the <see cref="IInMemoryQueryableStore.SetActiveGraph">SetActiveGraph()</see> and <see cref="IInMemoryQueryableStore.SetDefaultGraph">SetDefaultGraph()</see> methods as appropriate.
-        /// </para>
-        /// <para>
-        /// <s>Implementations of this should configure the Default and Active Graphs of the Triple Store as required by the Query before invoking the Query's <see cref="SparqlQuery.Evaluate">Evaluate</see> method to run the actual Query</s>
-        /// </para>
-        /// </remarks>
         Object ExecuteQuery(SparqlQuery query);
 
+        /// <summary>
+        /// Executes a SPARQL Query on the Triple Store processing the results with an appropriate handler from those provided
+        /// </summary>
+        /// <param name="rdfHandler">RDF Handler</param>
+        /// <param name="resultsHandler">Results Handler</param>
+        /// <param name="query">SPARQL Query as an unparsed string</param>
+        /// <returns></returns>
         void ExecuteQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String query);
 
+        /// <summary>
+        /// Executes a SPARQL Query on the Triple Store processing the results with an appropriate handler from those provided
+        /// </summary>
+        /// <param name="rdfHandler">RDF Handler</param>
+        /// <param name="resultsHandler">Results Handler</param>
+        /// <param name="query">Parsed SPARQL Query</param>
+        /// <returns></returns>
         void ExecuteQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query);
 
         #endregion
     }
 
     /// <summary>
-    /// Interface for Triple Stores which can be queried natively i.e. the Stores provide their own Sparql implementations
+    /// Interface for Triple Stores which can be queried natively i.e. the Stores provide their own SPARQL implementations
     /// </summary>
     /// <remarks>
     /// A Natively Queryable store will typically not load its Graphs and Triples into memory as this is generally unecessary.
@@ -507,15 +505,21 @@ namespace VDS.RDF
         : ITripleStore
     {
         /// <summary>
-        /// Executes a Sparql Query on the Triple Store
+        /// Executes a SPARQL Query on the Triple Store
         /// </summary>
         /// <param name="query">Sparql Query as unparsed String</param>
         /// <returns></returns>
         /// <remarks>
-        /// This assumes that the Store has access to some native Sparql query processor on/at the Store which will be used to return the results.  Implementations should parse the returned result into a <see cref="SparqlResultSet">SparqlResultSet</see> or <see cref="Graph">Graph</see>.
+        /// This assumes that the Store has access to some native SPARQL query processor on/at the Store which will be used to return the results.  Implementations should parse the returned result into a <see cref="SparqlResultSet">SparqlResultSet</see> or <see cref="Graph">Graph</see>.
         /// </remarks>
         Object ExecuteQuery(String query);
 
+        /// <summary>
+        /// Executes a SPARQL Query on the Triple Store processing the results using an appropriate handler from those provided
+        /// </summary>
+        /// <param name="rdfHandler">RDF Handler</param>
+        /// <param name="resultsHandler">Results Handler</param>
+        /// <param name="query">SPARQL Query as unparsed String</param>
         void ExecuteQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String query);
     }
 

@@ -35,8 +35,6 @@ terms.
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using VDS.RDF.Query.Filters;
 using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Query.Patterns;
@@ -81,7 +79,8 @@ namespace VDS.RDF.Query.Algebra
     /// <summary>
     /// Interface for SPARQL Algebra constructs which are unary operators i.e. they apply over a single inner Algebra
     /// </summary>
-    public interface IUnaryOperator : ISparqlAlgebra
+    public interface IUnaryOperator 
+        : ISparqlAlgebra
     {
         /// <summary>
         /// Gets the Inner Algebra
@@ -105,7 +104,8 @@ namespace VDS.RDF.Query.Algebra
     /// <summary>
     /// Marker Interface for SPARQL Algebra constructs which are terminal operators i.e. they contain no inner algebra operators
     /// </summary>
-    public interface ITerminalOperator : ISparqlAlgebra
+    public interface ITerminalOperator 
+        : ISparqlAlgebra
     {
 
     }
@@ -113,7 +113,8 @@ namespace VDS.RDF.Query.Algebra
     /// <summary>
     /// Represents an Algebra construct which is a BGP
     /// </summary>
-    public interface IBgp : ISparqlAlgebra, ITerminalOperator
+    public interface IBgp 
+        : ISparqlAlgebra, ITerminalOperator
     {
         /// <summary>
         /// Gets the Number of Patterns in the BGP
@@ -135,8 +136,12 @@ namespace VDS.RDF.Query.Algebra
     /// <summary>
     /// Represents an Algebra construct which is a Filter
     /// </summary>
-    public interface IFilter : IUnaryOperator
+    public interface IFilter 
+        : IUnaryOperator
     {
+        /// <summary>
+        /// Gets the Filter
+        /// </summary>
         ISparqlFilter SparqlFilter 
         { 
             get;
@@ -150,7 +155,8 @@ namespace VDS.RDF.Query.Algebra
     /// <remarks>
     /// Specific sub-interfaces are used to mark specific kinds of Join
     /// </remarks>
-    public interface IAbstractJoin : ISparqlAlgebra
+    public interface IAbstractJoin
+        : ISparqlAlgebra
     {
         /// <summary>
         /// Gets the LHS of the Join
@@ -202,7 +208,8 @@ namespace VDS.RDF.Query.Algebra
     /// <summary>
     /// Represents an Algebra construct which is a Join
     /// </summary>
-    public interface IJoin : IAbstractJoin
+    public interface IJoin 
+        : IAbstractJoin
     {
 
     }
@@ -210,7 +217,8 @@ namespace VDS.RDF.Query.Algebra
     /// <summary>
     /// Represents an Algebra construct which is a Left Join
     /// </summary>
-    public interface ILeftJoin : IAbstractJoin
+    public interface ILeftJoin
+        : IAbstractJoin
     {
         /// <summary>
         /// Gets the Filter used on the Join
@@ -224,7 +232,8 @@ namespace VDS.RDF.Query.Algebra
     /// <summary>
     /// Represents an Algebra construct which is a Union
     /// </summary>
-    public interface IUnion : IAbstractJoin
+    public interface IUnion 
+        : IAbstractJoin
     {
 
     }
@@ -232,7 +241,8 @@ namespace VDS.RDF.Query.Algebra
     /// <summary>
     /// Represents an Algebra construct which is a Minus
     /// </summary>
-    public interface IMinus : IAbstractJoin
+    public interface IMinus 
+        : IAbstractJoin
     {
 
     }
@@ -240,7 +250,8 @@ namespace VDS.RDF.Query.Algebra
     /// <summary>
     /// Represents an Algebra construct which is an Exists Join
     /// </summary>
-    public interface IExistsJoin : IAbstractJoin
+    public interface IExistsJoin 
+        : IAbstractJoin
     {
         /// <summary>
         /// Gets whether the Join requires compatible solutions to exist on the RHS

@@ -48,7 +48,8 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
     /// <summary>
     /// Represents the Explain Service provided by a Pellet Server
     /// </summary>
-    public class ExplainService : PelletService
+    public class ExplainService 
+        : PelletService
     {
         private String _explainUri;
         /// <summary>
@@ -126,6 +127,13 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
 
 #endif
 
+        /// <summary>
+        /// Gets a Graph explaining the result of the SPARQL Query
+        /// </summary>
+        /// <param name="sparqlQuery">SPARQL Query</param>
+        /// <param name="callback">Callback to invoke when the operation completes</param>
+        /// <param name="state">State to pass to the callback</param>
+        /// <returns></returns>
         public void Explain(String sparqlQuery, GraphCallback callback, Object state)
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this._explainUri + "?query=" + HttpUtility.UrlEncode(sparqlQuery));
@@ -163,7 +171,8 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
     /// <summary>
     /// Represents the Explan Unsatisfiable Service provided by a Pellet Server
     /// </summary>
-    public class ExplainUnsatService : ExplainService
+    public class ExplainUnsatService 
+        : ExplainService
     {
         /// <summary>
         /// Creates a new Explain Unsatisfiable Service
@@ -191,6 +200,13 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
 
 #endif
 
+        /// <summary>
+        /// Gets a Graph explaining why a Class is unsatisfiable
+        /// </summary>
+        /// <param name="cls">Class</param>
+        /// <param name="callback">Callback to invoke when the operation completes</param>
+        /// <param name="state">State to pass to the callback</param>
+        /// <returns></returns>
         public void ExplainUnsatisfiable(INode cls, GraphCallback callback, Object state)
         {
             this._baseQuery.SetParameter("s", cls);
@@ -204,7 +220,8 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
     /// <summary>
     /// Represents the Explain Instance Service provided by a Pellet Server
     /// </summary>
-    public class ExplainInstanceService : ExplainService
+    public class ExplainInstanceService
+        : ExplainService
     {
         /// <summary>
         /// Creates a new Explain Instance Service
@@ -233,6 +250,14 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
 
 #endif
 
+        /// <summary>
+        /// Gets a Graph explaining why an Instance is of the given Class
+        /// </summary>
+        /// <param name="instance">Instance</param>
+        /// <param name="cls">Class</param>
+        /// <param name="callback">Callback to invoke when the operation completes</param>
+        /// <param name="state">State to pass to the callback</param>
+        /// <returns></returns>
         public void ExplainInstance(INode instance, INode cls, GraphCallback callback, Object state)
         {
             this._baseQuery.SetParameter("s", instance);
@@ -246,7 +271,8 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
     /// <summary>
     /// Represents the Explain Subclass Service provided by a Pellet Server
     /// </summary>
-    public class ExplainSubclassService : ExplainService
+    public class ExplainSubclassService 
+        : ExplainService
     {
         /// <summary>
         /// Creates a new Explain Subclass Service
@@ -275,6 +301,14 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
 
 #endif
 
+        /// <summary>
+        /// Gets a Graph explaining why the given Class is a subclass of the given Super Class
+        /// </summary>
+        /// <param name="subclass">Class</param>
+        /// <param name="superclass">Super Class</param>
+        /// <param name="callback">Callback to invoke when the operation completes</param>
+        /// <param name="state">State to pass to the callback</param>
+        /// <returns></returns>
         public void ExplainSubclass(INode subclass, INode superclass, GraphCallback callback, Object state)
         {
             this._baseQuery.SetParameter("s", subclass);
@@ -288,7 +322,8 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
     /// <summary>
     /// Represents the Explain Inconsistent Service provided by a Pellet Server
     /// </summary>
-    public class ExplainInconsistentService : ExplainService
+    public class ExplainInconsistentService
+        : ExplainService
     {
         /// <summary>
         /// Creates a new Explain Inconsistent Service
@@ -311,6 +346,12 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
 
 #endif
 
+        /// <summary>
+        /// Gets a Graph explaining why the Knowledge Base is inconsistent
+        /// </summary>
+        /// <param name="callback">Callback to invoke when the operation completes</param>
+        /// <param name="state">State to pass to the callback</param>
+        /// <returns></returns>
         public void ExplainInconsistent(GraphCallback callback, Object state)
         {
             base.Explain(String.Empty, callback, state);
@@ -320,7 +361,8 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
     /// <summary>
     /// Represents the Explain Property Service provided by a Pellet Server
     /// </summary>
-    public class ExplainPropertyService : ExplainService
+    public class ExplainPropertyService
+        : ExplainService
     {
         /// <summary>
         /// Creates a new Explain Property Service
@@ -359,6 +401,15 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
 
 #endif
 
+        /// <summary>
+        /// Gets a Graph explaining why the given Triple was derived
+        /// </summary>
+        /// <param name="subj">Subject</param>
+        /// <param name="pred">Predicate</param>
+        /// <param name="obj">Object</param>
+        /// <param name="callback">Callback to invoke when the operation completes</param>
+        /// <param name="state">State to pass to the callback</param>
+        /// <returns></returns>
         public void ExplainProperty(INode subj, INode pred, INode obj, GraphCallback callback, Object state)
         {
             this._baseQuery.SetParameter("s", subj);
@@ -368,6 +419,12 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
             base.Explain(this._baseQuery.ToString(), callback, state);
         }
 
+        /// <summary>
+        /// Gets a Graph explaining why the given Triple was derived
+        /// </summary>
+        /// <param name="t">Triple</param>
+        /// <param name="callback">Callback to invoke when the operation completes</param>
+        /// <param name="state">State to pass to the callback</param>
         public void ExplainProprety(Triple t, GraphCallback callback, Object state)
         {
             this.ExplainProperty(t.Subject, t.Predicate, t.Object, callback, state);

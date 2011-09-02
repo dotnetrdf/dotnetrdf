@@ -92,6 +92,7 @@ namespace VDS.RDF
         /// Creates a new HashTable where the initial capacity at each key is specified
         /// </summary>
         /// <param name="capacity">Initial Capacity at each Key</param>
+        /// <param name="emptyKeys">Empty Keys</param>
         /// <remarks>
         /// Use this if you expect to use this as a true HashTable i.e. there is a 1:Many mapping of keys to values.  Choose a capcity value that seems reasonable for the data you expect to store.
         /// </remarks>

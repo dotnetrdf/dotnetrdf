@@ -45,7 +45,8 @@ namespace VDS.RDF.Query.Optimisation
     /// <summary>
     /// An Algebra Optimiser which implements the Identity Filter optimisation
     /// </summary>
-    public class IdentityFilterOptimiser : IAlgebraOptimiser
+    public class IdentityFilterOptimiser
+        : IAlgebraOptimiser
     {
         private Type _exprType = typeof(NodeExpressionTerm);
 
@@ -105,6 +106,7 @@ namespace VDS.RDF.Query.Optimisation
         /// <param name="expr">Expression</param>
         /// <param name="var">Variable</param>
         /// <param name="term">Term</param>
+        /// <param name="equals">Whether it is an equals expression (true) or a same term expression (false)</param>
         /// <returns></returns>
         private bool IsIdentityExpression(ISparqlExpression expr, out String var, out INode term, out bool equals)
         {
@@ -186,6 +188,11 @@ namespace VDS.RDF.Query.Optimisation
             return true;
         }
 
+        /// <summary>
+        /// Returns that this optimiser is applicable to all updates
+        /// </summary>
+        /// <param name="cmds">Updates</param>
+        /// <returns></returns>
         public bool IsApplicable(SparqlUpdateCommandSet cmds)
         {
             return true;

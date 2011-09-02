@@ -33,11 +33,6 @@ terms.
 
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 namespace VDS.RDF.Query.Describe
 {
     /// <summary>
@@ -57,6 +52,11 @@ namespace VDS.RDF.Query.Describe
         /// <returns></returns>
         IGraph Describe(SparqlEvaluationContext context);
 
+        /// <summary>
+        /// Generates the Description Graph based on the Query Results from the given Evaluation Context passing the resulting Triples to the given RDF Handler
+        /// </summary>
+        /// <param name="handler">RDF Handler</param>
+        /// <param name="context">SPARQL Evaluation Context</param>
         void Describe(IRdfHandler handler, SparqlEvaluationContext context);
     }
 }

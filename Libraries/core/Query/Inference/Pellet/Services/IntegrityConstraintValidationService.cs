@@ -34,12 +34,8 @@ terms.
 */
 
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using VDS.RDF.Storage.Params;
 
@@ -110,6 +106,11 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
 
 #endif
 
+        /// <summary>
+        /// Extracts an RDF Dataset which details the Constraints violated (if any) and whether Constraints are satisified
+        /// </summary>
+        /// <param name="callback">Callback to invoke when the operation completes</param>
+        /// <param name="state">State to pass to the callback</param>
         public void Validate(TripleStoreCallback callback, Object state)
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this.Endpoint.Uri);

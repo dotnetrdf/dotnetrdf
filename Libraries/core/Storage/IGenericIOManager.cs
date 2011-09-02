@@ -37,8 +37,6 @@ terms.
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace VDS.RDF.Storage
 {
@@ -69,7 +67,7 @@ namespace VDS.RDF.Storage
         /// Loads a Graph from the Store
         /// </summary>
         /// <param name="g">Graph to load into</param>
-        /// <param name="graphUri">Uri of the Graph to load</param>
+        /// <param name="graphUri">URI of the Graph to load</param>
         /// <remarks>
         /// <para>
         /// If the Graph being loaded into is Empty then it's Base Uri should become the Uri of the Graph being loaded, otherwise it should be merged into the existing non-empty Graph whose Base Uri should be unaffected.
@@ -80,8 +78,28 @@ namespace VDS.RDF.Storage
         /// </remarks>
         void LoadGraph(IGraph g, String graphUri);
 
+        /// <summary>
+        /// Loads a Graph from the Store using the RDF Handler
+        /// </summary>
+        /// <param name="handler">RDF Handler</param>
+        /// <param name="graphUri">URI of the Graph to load</param>
+        /// <remarks>
+        /// <para>
+        /// Behaviour of this method with regards to non-existent Graphs is up to the implementor, an empty Graph may be returned or an error thrown.  Implementors <strong>should</strong> state in the XML comments for their implementation what behaviour is implemented.
+        /// </para>
+        /// </remarks>
         void LoadGraph(IRdfHandler handler, Uri graphUri);
 
+        /// <summary>
+        /// Loads a Graph from the Store using the RDF Handler
+        /// </summary>
+        /// <param name="handler">RDF Handler</param>
+        /// <param name="graphUri">URI of the Graph to load</param>
+        /// <remarks>
+        /// <para>
+        /// Behaviour of this method with regards to non-existent Graphs is up to the implementor, an empty Graph may be returned or an error thrown.  Implementors <strong>should</strong> state in the XML comments for their implementation what behaviour is implemented.
+        /// </para>
+        /// </remarks>
         void LoadGraph(IRdfHandler handler, String graphUri);
 
         /// <summary>
@@ -230,7 +248,8 @@ namespace VDS.RDF.Storage
     /// <remarks>
     /// Designed to allow for arbitrary Triple Stores to be plugged into the library as required by the end user
     /// </remarks>
-    public interface IQueryableGenericIOManager : IGenericIOManager
+    public interface IQueryableGenericIOManager 
+        : IGenericIOManager
     {
         /// <summary>
         /// Makes a SPARQL Query against the underlying store
@@ -254,7 +273,8 @@ namespace VDS.RDF.Storage
     /// <remarks>
     /// Designed to allow for arbitrary Triple Stores to be plugged into the library as required by the end user
     /// </remarks>
-    public interface IUpdateableGenericIOManager : IQueryableGenericIOManager
+    public interface IUpdateableGenericIOManager
+        : IQueryableGenericIOManager
     {
         /// <summary>
         /// Processes a SPARQL Update command against the underlying Store
@@ -263,11 +283,27 @@ namespace VDS.RDF.Storage
         void Update(String sparqlUpdate);
     }
 
-    public interface IMultiStoreGenericIOManager : IGenericIOManager
+    /// <summary>
+    /// Interfaces for classes which provide the ability to create and delete new stores
+    /// </summary>
+    public interface IMultiStoreGenericIOManager 
+        : IGenericIOManager
     {
+        /// <summary>
+        /// Creates a new Store with the given ID
+        /// </summary>
+        /// <param name="storeID">Store ID</param>
         void CreateStore(string storeID);
 
+        /// <summary>
+        /// Deletes the Store with the given ID
+        /// </summary>
+        /// <param name="storeID">Store ID</param>
         void DeleteStore(string storeID);
+
+#if UNFINISHED
+        IGenericIOManager SwitchStore(string storeID);
+#endif
     }
 }
 

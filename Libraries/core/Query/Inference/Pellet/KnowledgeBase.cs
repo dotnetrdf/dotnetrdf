@@ -136,6 +136,11 @@ namespace VDS.RDF.Query.Inference.Pellet
             return null;
         }
 
+        /// <summary>
+        /// Gets the first available implementation of the desired Service Type
+        /// </summary>
+        /// <typeparam name="T">Desired Service Type</typeparam>
+        /// <returns></returns>
         public T GetService<T>()
             where T : PelletService
         {

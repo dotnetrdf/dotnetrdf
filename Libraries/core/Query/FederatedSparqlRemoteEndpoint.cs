@@ -1,10 +1,44 @@
-﻿#if !SILVERLIGHT
+﻿/*
+
+Copyright Robert Vesse 2009-11
+rvesse@vdesign-studios.com
+
+------------------------------------------------------------------------
+
+This file is part of dotNetRDF.
+
+dotNetRDF is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+dotNetRDF is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with dotNetRDF.  If not, see <http://www.gnu.org/licenses/>.
+
+------------------------------------------------------------------------
+
+dotNetRDF may alternatively be used under the LGPL or MIT License
+
+http://www.gnu.org/licenses/lgpl.html
+http://www.opensource.org/licenses/mit-license.php
+
+If these licenses are not suitable for your intended use please contact
+us at the above stated email address to discuss alternative
+terms.
+
+*/
+
+#if !SILVERLIGHT
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
@@ -21,7 +55,8 @@ namespace VDS.RDF.Query
     /// Queries are federated by executing multiple requesting simultaneously and asynchronously against the endpoints in question with the data then merged locally.  The merging process does not attempt to remove duplicate data it just naively merges the data.
     /// </para>
     /// </remarks>
-    public class FederatedSparqlRemoteEndpoint : SparqlRemoteEndpoint
+    public class FederatedSparqlRemoteEndpoint 
+        : SparqlRemoteEndpoint
     {
         private List<SparqlRemoteEndpoint> _endpoints = new List<SparqlRemoteEndpoint>();
         private bool _ignoreFailedRequests = false;
@@ -171,7 +206,7 @@ namespace VDS.RDF.Query
         /// <summary>
         /// Makes a Query where the expected Result is an RDF Graph ie. CONSTRUCT and DESCRIBE Queries
         /// </summary>
-        /// <param name="sparqlQuery">Sparql Query String</param>
+        /// <param name="sparqlQuery">SPARQL Query String</param>
         /// <returns>RDF Graph</returns>
         /// <remarks>
         /// <para>
@@ -193,6 +228,11 @@ namespace VDS.RDF.Query
             return g;
         }
 
+        /// <summary>
+        /// Makes a Query where the expected result is a Graph i.e. a CONSTRUCT or DESCRIBE query
+        /// </summary>
+        /// <param name="handler">RDF Handler to process the results</param>
+        /// <param name="sparqlQuery">SPARQL Query</param>
         public override void QueryWithResultGraph(IRdfHandler handler, string sparqlQuery)
         {
             //If no endpoints do nothing
@@ -340,6 +380,13 @@ namespace VDS.RDF.Query
             return results;
         }
 
+        /// <summary>
+        /// Makes a Query where the expected Result is a SparqlResultSet ie. SELECT and ASK Queries
+        /// </summary>
+        /// <param name="handler">Results Handler to process the results</param>
+        /// <param name="sparqlQuery">SPARQL Query String</param>
+        /// <exception cref="RdfQueryException">Thrown if any of the requests to the endpoints fail</exception>
+        /// <exception cref="RdfQueryTimeoutException">Thrown if not all the requests complete within the set timeout</exception>
         public override void QueryWithResultSet(ISparqlResultsHandler handler, string sparqlQuery)
         {
             //If no endpoints do nothing

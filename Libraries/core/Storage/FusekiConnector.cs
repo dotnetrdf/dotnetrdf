@@ -86,6 +86,9 @@ namespace VDS.RDF.Storage
             this._queryUri = serviceUri.Substring(0, serviceUri.Length - 4) + "query";
         }
 
+        /// <summary>
+        /// Returns that Listing Graphs is supported
+        /// </summary>
         public override bool ListGraphsSupported
         {
             get
@@ -94,6 +97,10 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Gets the List of Graphs from the store
+        /// </summary>
+        /// <returns></returns>
         public override IEnumerable<Uri> ListGraphs()
         {
             try
@@ -266,6 +273,13 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Executes a SPARQL Query on the Fuseki store processing the results using an appropriate handler from those provided
+        /// </summary>
+        /// <param name="rdfHandler">RDF Handler</param>
+        /// <param name="resultsHandler">Results Handler</param>
+        /// <param name="sparqlQuery">SPARQL Query</param>
+        /// <returns></returns>
         public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery)
         {
             try

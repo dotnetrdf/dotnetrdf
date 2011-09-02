@@ -34,9 +34,6 @@ terms.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
 using VDS.RDF.Writing.Formatting;
 
@@ -125,6 +122,9 @@ namespace VDS.RDF.Writing
     /// </summary>
     public interface IDtdWriter
     {
+        /// <summary>
+        /// Gets/Sets whether DTDs can be used
+        /// </summary>
         bool UseDtd
         {
             get;
@@ -137,6 +137,9 @@ namespace VDS.RDF.Writing
     /// </summary>
     public interface IAttributeWriter
     {
+        /// <summary>
+        /// Gets/Sets whether literal objects can be compressed as attributes
+        /// </summary>
         bool UseAttributes
         {
             get;
@@ -149,6 +152,9 @@ namespace VDS.RDF.Writing
     /// </summary>
     public interface INamespaceWriter
     {
+        /// <summary>
+        /// Gets/Sets the Default Namespaces used for writing
+        /// </summary>
         INamespaceMapper DefaultNamespaces
         {
             get;

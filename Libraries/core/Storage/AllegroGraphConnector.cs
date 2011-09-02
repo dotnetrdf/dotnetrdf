@@ -58,7 +58,8 @@ namespace VDS.RDF.Storage
     /// If you wish to use a Store which is part of the Root Catalog on an AllegroGraph 4.x and higher server you can either use the constructor overloads that omit the <strong>catalogID</strong> parameter or pass in null as the value for that parameter
     /// </para>
     /// </remarks>
-    public class AllegroGraphConnector : SesameHttpProtocolConnector, IConfigurationSerializable, IMultiStoreGenericIOManager
+    public class AllegroGraphConnector
+        : SesameHttpProtocolConnector, IConfigurationSerializable, IMultiStoreGenericIOManager
     {
         private String _catalog;
 
@@ -242,7 +243,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Requests that AllegroGraph deletes a Store
         /// </summary>
-        /// <param name="storeID"></param>
+        /// <param name="storeID">Store ID</param>
         public void DeleteStore(String storeID)
         {
             try

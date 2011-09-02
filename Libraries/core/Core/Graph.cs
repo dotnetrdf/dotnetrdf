@@ -111,6 +111,11 @@ namespace VDS.RDF
         }
 
 #if !SILVERLIGHT
+        /// <summary>
+        /// Deserialization Constructor
+        /// </summary>
+        /// <param name="info">Serialization Information</param>
+        /// <param name="context">Streaming Context</param>
         protected Graph(SerializationInfo info, StreamingContext context)
             : base(info, context) { }
 #endif

@@ -545,146 +545,298 @@ namespace VDS.RDF.Query
             return results;
         }
 
+        /// <summary>
+        /// Processes an Ask
+        /// </summary>
+        /// <param name="ask">Ask</param>
+        /// <param name="context">SPARQL Evaluation Context</param>
         public override BaseMultiset ProcessAsk(Ask ask, SparqlEvaluationContext context)
         {
             return this.ExplainAndEvaluate<Ask>(ask, context, base.ProcessAsk);
         }
 
+        /// <summary>
+        /// Processes a BGP
+        /// </summary>
+        /// <param name="bgp">BGP</param>
+        /// <param name="context">SPARQL Evaluation Context</param>
         public override BaseMultiset ProcessBgp(IBgp bgp, SparqlEvaluationContext context)
         {
             return this.ExplainAndEvaluate<IBgp>(bgp, context, base.ProcessBgp);
         }
 
+        /// <summary>
+        /// Processes a Bindings modifier
+        /// </summary>
+        /// <param name="b">Bindings</param>
+        /// <param name="context">SPARQL Evaluation Context</param>
         public override BaseMultiset ProcessBindings(Bindings b, SparqlEvaluationContext context)
         {
             return this.ExplainAndEvaluate<Bindings>(b, context, base.ProcessBindings);
         }
 
+        /// <summary>
+        /// Processes a Distinct modifier
+        /// </summary>
+        /// <param name="distinct">Distinct modifier</param>
+        /// <param name="context">SPARQL Evaluation Context</param>
         public override BaseMultiset ProcessDistinct(Distinct distinct, SparqlEvaluationContext context)
         {
             return this.ExplainAndEvaluate<Distinct>(distinct, context, base.ProcessDistinct);
         }
 
+        /// <summary>
+        /// Processes an Exists Join
+        /// </summary>
+        /// <param name="existsJoin">Exists Join</param>
+        /// <param name="context">SPARQL Evaluation Context</param>
         public override BaseMultiset ProcessExistsJoin(IExistsJoin existsJoin, SparqlEvaluationContext context)
         {
             return this.ExplainAndEvaluate<IExistsJoin>(existsJoin, context, base.ProcessExistsJoin);
         }
 
+        /// <summary>
+        /// Processes an Extend
+        /// </summary>
+        /// <param name="extend">Extend</param>
+        /// <param name="context">SPARQL Evaluation Context</param>
         public override BaseMultiset ProcessExtend(Extend extend, SparqlEvaluationContext context)
         {
             return this.ExplainAndEvaluate<Extend>(extend, context, base.ProcessExtend);
         }
 
+        /// <summary>
+        /// Processes a Filter
+        /// </summary>
+        /// <param name="filter">Filter</param>
+        /// <param name="context">SPARQL Evaluation Context</param>
         public override BaseMultiset ProcessFilter(IFilter filter, SparqlEvaluationContext context)
         {
             return this.ExplainAndEvaluate<IFilter>(filter, context, base.ProcessFilter);
         }
 
+        /// <summary>
+        /// Processes a Graph
+        /// </summary>
+        /// <param name="graph">Graph</param>
+        /// <param name="context">SPARQL Evaluation Context</param>
         public override BaseMultiset ProcessGraph(Algebra.Graph graph, SparqlEvaluationContext context)
         {
             return this.ExplainAndEvaluate<Algebra.Graph>(graph, context, base.ProcessGraph);
         }
 
+        /// <summary>
+        /// Processes a Group By
+        /// </summary>
+        /// <param name="groupBy">Group By</param>
+        /// <param name="context">SPARQL Evaluation Context</param>
         public override BaseMultiset ProcessGroupBy(GroupBy groupBy, SparqlEvaluationContext context)
         {
             return this.ExplainAndEvaluate<GroupBy>(groupBy, context, base.ProcessGroupBy);
         }
 
+        /// <summary>
+        /// Processes a Having
+        /// </summary>
+        /// <param name="having">Having</param>
+        /// <param name="context">SPARQL Evaluation Context</param>
         public override BaseMultiset ProcessHaving(Having having, SparqlEvaluationContext context)
         {
             return this.ExplainAndEvaluate<Having>(having, context, base.ProcessHaving);
         }
 
+        /// <summary>
+        /// Processes a Join
+        /// </summary>
+        /// <param name="join">Join</param>
+        /// <param name="context">SPARQL Evaluation Context</param>
         public override BaseMultiset ProcessJoin(IJoin join, SparqlEvaluationContext context)
         {
             return this.ExplainAndEvaluate<IJoin>(join, context, base.ProcessJoin);
         }
 
+        /// <summary>
+        /// Processes a LeftJoin
+        /// </summary>
+        /// <param name="leftJoin">Left Join</param>
+        /// <param name="context">SPARQL Evaluation Context</param>
         public override BaseMultiset ProcessLeftJoin(ILeftJoin leftJoin, SparqlEvaluationContext context)
         {
             return this.ExplainAndEvaluate<ILeftJoin>(leftJoin, context, base.ProcessLeftJoin);
         }
 
+        /// <summary>
+        /// Processes a Minus
+        /// </summary>
+        /// <param name="minus">Minus</param>
+        /// <param name="context">SPARQL Evaluation Context</param>
         public override BaseMultiset ProcessMinus(IMinus minus, SparqlEvaluationContext context)
         {
             return this.ExplainAndEvaluate<IMinus>(minus, context, base.ProcessMinus);
         }
 
+        /// <summary>
+        /// Processes a Negated Property Set
+        /// </summary>
+        /// <param name="negPropSet">Negated Property Set</param>
+        /// <param name="context">SPARQL Evaluation Context</param>
+        /// <returns></returns>
         public override BaseMultiset ProcessNegatedPropertySet(NegatedPropertySet negPropSet, SparqlEvaluationContext context)
         {
             return this.ExplainAndEvaluate<NegatedPropertySet>(negPropSet, context, base.ProcessNegatedPropertySet);
         }
 
+        /// <summary>
+        /// Processes a Null Operator
+        /// </summary>
+        /// <param name="nullOp">Null Operator</param>
+        /// <param name="context">SPARQL Evaluation Context</param>
+        /// <returns></returns>
         public override BaseMultiset ProcessNullOperator(NullOperator nullOp, SparqlEvaluationContext context)
         {
             return this.ExplainAndEvaluate<NullOperator>(nullOp, context, base.ProcessNullOperator);
         }
 
+        /// <summary>
+        /// Processes a One or More Path
+        /// </summary>
+        /// <param name="path">Path</param>
+        /// <param name="context">SPARQL Evaluation Context</param>
+        /// <returns></returns>
         public override BaseMultiset ProcessOneOrMorePath(OneOrMorePath path, SparqlEvaluationContext context)
         {
             return this.ExplainAndEvaluate<OneOrMorePath>(path, context, base.ProcessOneOrMorePath);
         }
 
+        /// <summary>
+        /// Processes an Order By
+        /// </summary>
+        /// <param name="orderBy"></param>
+        /// <param name="context">SPARQL Evaluation Context</param>
         public override BaseMultiset ProcessOrderBy(OrderBy orderBy, SparqlEvaluationContext context)
         {
             return this.ExplainAndEvaluate<OrderBy>(orderBy, context, base.ProcessOrderBy);
         }
 
+        /// <summary>
+        /// Processes a Projection
+        /// </summary>
+        /// <param name="project">Projection</param>
+        /// <param name="context">SPARQL Evaluation Context</param>
         public override BaseMultiset ProcessProject(Project project, SparqlEvaluationContext context)
         {
             return this.ExplainAndEvaluate<Project>(project, context, base.ProcessProject);
         }
 
+        /// <summary>
+        /// Processes a Property Path
+        /// </summary>
+        /// <param name="path">Path</param>
+        /// <param name="context">SPARQL Evaluation Context</param>
+        /// <returns></returns>
         public override BaseMultiset ProcessPropertyPath(PropertyPath path, SparqlEvaluationContext context)
         {
             return this.ExplainAndEvaluate<PropertyPath>(path, context, base.ProcessPropertyPath);
         }
 
+        /// <summary>
+        /// Processes a Reduced modifier
+        /// </summary>
+        /// <param name="reduced">Reduced modifier</param>
+        /// <param name="context">SPARQL Evaluation Context</param>
         public override BaseMultiset ProcessReduced(Reduced reduced, SparqlEvaluationContext context)
         {
             return this.ExplainAndEvaluate<Reduced>(reduced, context, base.ProcessReduced);
         }
 
+        /// <summary>
+        /// Processes a Select
+        /// </summary>
+        /// <param name="select">Select</param>
+        /// <param name="context">SPARQL Evaluation Context</param>
         public override BaseMultiset ProcessSelect(Select select, SparqlEvaluationContext context)
         {
             return this.ExplainAndEvaluate<Select>(select, context, base.ProcessSelect);
         }
 
+        /// <summary>
+        /// Processes a Select Distinct Graphs
+        /// </summary>
+        /// <param name="selDistGraphs">Select Distinct Graphs</param>
+        /// <param name="context">SPARQL Evaluation Context</param>
         public override BaseMultiset ProcessSelectDistinctGraphs(SelectDistinctGraphs selDistGraphs, SparqlEvaluationContext context)
         {
             return this.ExplainAndEvaluate<SelectDistinctGraphs>(selDistGraphs, context, base.ProcessSelectDistinctGraphs);
         }
 
+        /// <summary>
+        /// Processes a Service
+        /// </summary>
+        /// <param name="service">Service</param>
+        /// <param name="context">SPARQL Evaluation Context</param>
         public override BaseMultiset ProcessService(Service service, SparqlEvaluationContext context)
         {
             return this.ExplainAndEvaluate<Service>(service, context, base.ProcessService);
         }
 
+        /// <summary>
+        /// Processes a Slice modifier
+        /// </summary>
+        /// <param name="slice">Slice modifier</param>
+        /// <param name="context">SPARQL Evaluation Context</param>
         public override BaseMultiset ProcessSlice(Slice slice, SparqlEvaluationContext context)
         {
             return this.ExplainAndEvaluate<Slice>(slice, context, base.ProcessSlice);
         }
 
+        /// <summary>
+        /// Processes a Subquery
+        /// </summary>
+        /// <param name="subquery">Subquery</param>
+        /// <param name="context">SPARQL Evaluation Context</param>
+        /// <returns></returns>
         public override BaseMultiset ProcessSubQuery(SubQuery subquery, SparqlEvaluationContext context)
         {
             return this.ExplainAndEvaluate<SubQuery>(subquery, context, base.ProcessSubQuery);
         }
 
+        /// <summary>
+        /// Processes a Union
+        /// </summary>
+        /// <param name="union">Union</param>
+        /// <param name="context">SPARQL Evaluation Context</param>
         public override BaseMultiset ProcessUnion(IUnion union, SparqlEvaluationContext context)
         {
             return this.ExplainAndEvaluate<IUnion>(union, context, base.ProcessUnion);
         }
 
+        /// <summary>
+        /// Processes a Unknown Operator
+        /// </summary>
+        /// <param name="algebra">Unknown Operator</param>
+        /// <param name="context">SPARQL Evaluation Context</param>
         public override BaseMultiset ProcessUnknownOperator(ISparqlAlgebra algebra, SparqlEvaluationContext context)
         {
             return this.ExplainAndEvaluate<ISparqlAlgebra>(algebra, context, base.ProcessUnknownOperator);
         }
 
+        /// <summary>
+        /// Processes a Zero Length Path
+        /// </summary>
+        /// <param name="path">Path</param>
+        /// <param name="context">SPARQL Evaluation Context</param>
+        /// <returns></returns>
         public override BaseMultiset ProcessZeroLengthPath(ZeroLengthPath path, SparqlEvaluationContext context)
         {
             return this.ExplainAndEvaluate<ZeroLengthPath>(path, context, base.ProcessZeroLengthPath);
         }
 
+        /// <summary>
+        /// Processes a Zero or More Path
+        /// </summary>
+        /// <param name="path">Path</param>
+        /// <param name="context">SPARQL Evaluation Context</param>
+        /// <returns></returns>
         public override BaseMultiset ProcessZeroOrMorePath(ZeroOrMorePath path, SparqlEvaluationContext context)
         {
             return this.ExplainAndEvaluate<ZeroOrMorePath>(path, context, base.ProcessZeroOrMorePath);

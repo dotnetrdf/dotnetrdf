@@ -1,4 +1,39 @@
-﻿using System;
+﻿/*
+
+Copyright Robert Vesse 2009-11
+rvesse@vdesign-studios.com
+
+------------------------------------------------------------------------
+
+This file is part of dotNetRDF.
+
+dotNetRDF is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+dotNetRDF is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with dotNetRDF.  If not, see <http://www.gnu.org/licenses/>.
+
+------------------------------------------------------------------------
+
+dotNetRDF may alternatively be used under the LGPL or MIT License
+
+http://www.gnu.org/licenses/lgpl.html
+http://www.opensource.org/licenses/mit-license.php
+
+If these licenses are not suitable for your intended use please contact
+us at the above stated email address to discuss alternative
+terms.
+
+*/
+
+using System;
 using System.Collections.Generic;
 #if !NO_DATA
 using System.Data;
@@ -6,7 +41,6 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
@@ -91,6 +125,11 @@ namespace VDS.RDF
         }
 
 #if !SILVERLIGHT
+        /// <summary>
+        /// Deserialization Constructor
+        /// </summary>
+        /// <param name="info">Serialization Information</param>
+        /// <param name="context">Streaming Context</param>
         protected GraphPersistenceWrapper(SerializationInfo info, StreamingContext context)
             : this()
         {
@@ -1316,6 +1355,11 @@ namespace VDS.RDF
 
         #region ISerializable Members
 
+        /// <summary>
+        /// Gets the Serialization Information
+        /// </summary>
+        /// <param name="info">Serialization Information</param>
+        /// <param name="context">Streaming Context</param>
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("triples", this.Triples.ToList(), typeof(List<Triple>));
@@ -1325,11 +1369,19 @@ namespace VDS.RDF
 
         #region IXmlSerializable Members
 
+        /// <summary>
+        /// Gets the Schema for XML serialization
+        /// </summary>
+        /// <returns></returns>
         public XmlSchema GetSchema()
         {
             return null;
         }
 
+        /// <summary>
+        /// Reads the data for XML deserialization
+        /// </summary>
+        /// <param name="reader">XML Reader</param>
         public void ReadXml(XmlReader reader)
         {
             XmlSerializer tripleDeserializer = new XmlSerializer(typeof(Triple));
@@ -1360,6 +1412,10 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Writes the data for XML serialization
+        /// </summary>
+        /// <param name="writer">XML Writer</param>
         public void WriteXml(XmlWriter writer)
         {
             XmlSerializer tripleSerializer = new XmlSerializer(typeof(Triple));
@@ -1381,7 +1437,8 @@ namespace VDS.RDF
     /// <summary>
     /// The Store Graph Persistence Wrapper is a wrapper around another Graph that will be persisted to an underlying store via a provided <see cref="IGenericIOManger">IGenericIOManager</see> implementation
     /// </summary>
-    public class StoreGraphPersistenceWrapper : GraphPersistenceWrapper
+    public class StoreGraphPersistenceWrapper
+        : GraphPersistenceWrapper
     {
         private IGenericIOManager _manager;
 
@@ -1470,8 +1527,6 @@ namespace VDS.RDF
         public StoreGraphPersistenceWrapper(IGenericIOManager manager, Uri graphUri)
             : this(manager, graphUri, false) { }
 
-
-
         /// <summary>
         /// Gets whether the in-use <see cref="IGenericIOManager">IGenericIOMnager</see> supports triple level updates
         /// </summary>
@@ -1529,7 +1584,8 @@ namespace VDS.RDF
     /// <summary>
     /// The File Graph Persistence Wrapper is a wrapper around antoher Graph that will be persisted to a file
     /// </summary>
-    public class FileGraphPersistenceWrapper : GraphPersistenceWrapper
+    public class FileGraphPersistenceWrapper 
+        : GraphPersistenceWrapper
     {
         private String _filename;
 

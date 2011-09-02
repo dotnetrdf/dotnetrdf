@@ -324,6 +324,11 @@ namespace VDS.RDF.Web
             }
         }
 
+        /// <summary>
+        /// Applies the Writer Options from a Handler Configuration to a Writer
+        /// </summary>
+        /// <param name="writer">Writer</param>
+        /// <param name="config">Handler Configuration</param>
         public static void ApplyWriterOptions(Object writer, BaseHandlerConfiguration config)
         {
             if (config != null)

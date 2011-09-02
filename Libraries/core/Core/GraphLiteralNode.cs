@@ -83,6 +83,11 @@ namespace VDS.RDF
         }
 
 #if !SILVERLIGHT
+        /// <summary>
+        /// Deserializer Constructor
+        /// </summary>
+        /// <param name="info">Serialization Information</param>
+        /// <param name="context">Streaming Context</param>
         protected BaseGraphLiteralNode(SerializationInfo info, StreamingContext context)
             : base(null, NodeType.GraphLiteral)
         {
@@ -92,6 +97,9 @@ namespace VDS.RDF
         }
 #endif
 
+        /// <summary>
+        /// Deserialization Only constructor
+        /// </summary>
         protected BaseGraphLiteralNode()
             : base(null, NodeType.GraphLiteral) { }
 
@@ -346,11 +354,20 @@ namespace VDS.RDF
 #if !SILVERLIGHT
         #region Serialization
 
+        /// <summary>
+        /// Gets the Serialization Information
+        /// </summary>
+        /// <param name="info">Serialization Information</param>
+        /// <param name="context">Streaming Context</param>
         public sealed override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("subgraph", this._subgraph);
         }
 
+        /// <summary>
+        /// Reads the data for XML deserialization
+        /// </summary>
+        /// <param name="reader">XML Reader</param>
         public sealed override void ReadXml(XmlReader reader)
         {
             reader.Read();
@@ -359,6 +376,10 @@ namespace VDS.RDF
             this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
         }
 
+        /// <summary>
+        /// Writes the data for XML serialization
+        /// </summary>
+        /// <param name="writer">XML Writer</param>
         public sealed override void WriteXml(XmlWriter writer)
         {
             this._subgraph.SerializeGraph(writer);
@@ -393,10 +414,17 @@ namespace VDS.RDF
             : base(g, subgraph) { }
 
 #if !SILVERLIGHT
+        /// <summary>
+        /// Deserialization Constructor
+        /// </summary>
+        /// <param name="info">Serialization Information</param>
+        /// <param name="context">Streaming Context</param>
         protected GraphLiteralNode(SerializationInfo info, StreamingContext context)
             : base(info, context) { }
 #endif
-
+        /// <summary>
+        /// Deserialization Only Constructor
+        /// </summary>
         protected GraphLiteralNode()
             : base() { }
 

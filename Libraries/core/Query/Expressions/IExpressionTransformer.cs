@@ -33,11 +33,6 @@ terms.
 
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 namespace VDS.RDF.Query.Expressions
 {
     /// <summary>
@@ -45,13 +40,19 @@ namespace VDS.RDF.Query.Expressions
     /// </summary>
     public interface IExpressionTransformer
     {
+        /// <summary>
+        /// Transforms the expression using this transformer
+        /// </summary>
+        /// <param name="expr">Expression</param>
+        /// <returns></returns>
         ISparqlExpression Transform(ISparqlExpression expr);
     }
 
     /// <summary>
     /// Abstract implementation of an Expression Transformer which substitutes primary expressions
     /// </summary>
-    public abstract class PrimaryExpressionSubstituter : IExpressionTransformer
+    public abstract class PrimaryExpressionSubstituter 
+        : IExpressionTransformer
     {
         /// <summary>
         /// Transforms an expression into a form where primary expressions may be substituted

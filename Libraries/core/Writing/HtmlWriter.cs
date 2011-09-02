@@ -57,10 +57,14 @@ namespace VDS.RDF.Writing
     /// If you encode Triples which have values datatyped as XML Literals with this writer then round-trip Graph equality is not guaranteed as the RDFa parser will add appropriate Namespace declarations to elements as required by the specification
     /// </para>
     /// </remarks>
-    public class HtmlWriter : BaseHtmlWriter, IRdfWriter, INamespaceWriter
+    public class HtmlWriter
+        : BaseHtmlWriter, IRdfWriter, INamespaceWriter
     {
         private INamespaceMapper _defaultNamespaces = new NamespaceMapper();
 
+        /// <summary>
+        /// Gets/Sets the Default Namespaces to use for writers
+        /// </summary>
         public INamespaceMapper DefaultNamespaces
         {
             get

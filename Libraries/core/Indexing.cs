@@ -105,7 +105,8 @@ namespace VDS.RDF
     /// <summary>
     /// A Comparer which sorts based on Triple Index Type
     /// </summary>
-    class TripleIndexSorter : IComparer<TripleIndexType>
+    class TripleIndexSorter
+        : IComparer<TripleIndexType>
     {
         /// <summary>
         /// Compares two Triple Index types to see which is greater
@@ -126,8 +127,19 @@ namespace VDS.RDF
         }
     }
 
+    /// <summary>
+    /// Helper Class for indexing related operations
+    /// </summary>
     public static class IndexHelper
     {
+        /// <summary>
+        /// Searches an Index using the given Comparer
+        /// </summary>
+        /// <typeparam name="T">Indexed Object Type</typeparam>
+        /// <param name="index">Index</param>
+        /// <param name="comparer">Comparer to use for binary search</param>
+        /// <param name="search">Item to search for</param>
+        /// <returns></returns>
         public static IEnumerable<T> SearchIndex<T>(this List<T> index, IComparer<T> comparer, T search)
         {
             //If Index is empty then there are no results

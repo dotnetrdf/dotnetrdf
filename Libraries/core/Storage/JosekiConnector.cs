@@ -49,7 +49,6 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
 using VDS.RDF.Update;
-using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Storage
@@ -68,7 +67,8 @@ namespace VDS.RDF.Storage
     /// The Joseki connector permits use in a read-only mode in the event when you only specify a Query Service path to the constructor (or enter null for the Update Service path).  When instantiated in read-only mode any attempt to use the <see cref="JosekiConnector.SaveGraph">SaveGraph</see> or <see cref="JosekiConnector.UpdateGraph">UpdateGraph</see> methods will result in errors and the <see cref="JosekiConnector.UpdateSupported">UpdateSupported</see> property will return false.
     /// </para>
     /// </remarks>
-    public class JosekiConnector : IUpdateableGenericIOManager, IConfigurationSerializable
+    public class JosekiConnector
+        : IUpdateableGenericIOManager, IConfigurationSerializable
     {
         private String _baseUri, _queryService, _updateService;
         private SparqlFormatter _formatter = new SparqlFormatter();
@@ -105,12 +105,17 @@ namespace VDS.RDF.Storage
         /// Loads a Graph from the Joseki store
         /// </summary>
         /// <param name="g">Graph to load into</param>
-        /// <param name="graphUri">Uri of the Graph to load</param>
+        /// <param name="graphUri">URI of the Graph to load</param>
         public void LoadGraph(IGraph g, Uri graphUri)
         {
             this.LoadGraph(g, graphUri.ToSafeString());
         }
 
+        /// <summary>
+        /// Loads a Graph from the Joseki store
+        /// </summary>
+        /// <param name="handler">RDF Handler</param>
+        /// <param name="graphUri">URI of the Graph to load</param>
         public void LoadGraph(IRdfHandler handler, Uri graphUri)
         {
             this.LoadGraph(handler, graphUri.ToSafeString());
@@ -120,7 +125,7 @@ namespace VDS.RDF.Storage
         /// Loads a Graph from the Joseki store
         /// </summary>
         /// <param name="g">Graph to load into</param>
-        /// <param name="graphUri">Uri of the Graph to load</param>
+        /// <param name="graphUri">URI of the Graph to load</param>
         public void LoadGraph(IGraph g, String graphUri)
         {
             if (g.IsEmpty && graphUri != null && !graphUri.Equals(String.Empty))
@@ -130,6 +135,11 @@ namespace VDS.RDF.Storage
             this.LoadGraph(new GraphHandler(g), graphUri);
         }
 
+        /// <summary>
+        /// Loads a Graph from the Joseki store
+        /// </summary>
+        /// <param name="handler">RDF Handler</param>
+        /// <param name="graphUri">URI of the Graph to load</param>
         public void LoadGraph(IRdfHandler handler, String graphUri)
         {
             try
@@ -483,6 +493,13 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Makes a SPARQL Query against the Joseki store processing the results with the appropriate handler from those provided
+        /// </summary>
+        /// <param name="rdfHandler">RDF Handler</param>
+        /// <param name="resultsHandler">Results Handler</param>
+        /// <param name="sparqlQuery">SPARQL Query</param>
+        /// <returns></returns>
         public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery)
         {
             try
