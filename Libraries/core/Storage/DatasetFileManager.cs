@@ -53,7 +53,8 @@ namespace VDS.RDF.Storage
     /// <summary>
     /// Allows you to treat an RDF Dataset File - NQuads, TriG or TriX - as a read-only generic store
     /// </summary>
-    public class DatasetFileManager : IQueryableGenericIOManager, IConfigurationSerializable
+    public class DatasetFileManager 
+        : IQueryableGenericIOManager, IConfigurationSerializable
     {
         private TripleStore _store = new TripleStore();
         private bool _ready = false;
@@ -110,6 +111,12 @@ namespace VDS.RDF.Storage
             return this._store.ExecuteQuery(sparqlQuery);
         }
 
+        /// <summary>
+        /// Makes a query against the in-memory copy of the Stores data processing the results with one of the given handlers
+        /// </summary>
+        /// <param name="rdfHandler">RDF Handler</param>
+        /// <param name="resultsHandler">Results Handler</param>
+        /// <param name="sparqlQuery">SPARQL Query</param>
         public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery)
         {
             this._store.ExecuteQuery(rdfHandler, resultsHandler, sparqlQuery);
@@ -125,6 +132,11 @@ namespace VDS.RDF.Storage
             this.LoadGraph(new GraphHandler(g), graphUri);
         }
 
+        /// <summary>
+        /// Loads a Graph from the Dataset with the given Handler
+        /// </summary>
+        /// <param name="handler">RDF Handler</param>
+        /// <param name="graphUri">URI of the Graph to load</param>
         public void LoadGraph(IRdfHandler handler, Uri graphUri)
         {
             IGraph g = null;
@@ -171,6 +183,11 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Loads a Graph from the Dataset with the given Handler
+        /// </summary>
+        /// <param name="handler">RDF Handler</param>
+        /// <param name="graphUri">URI of the Graph to load</param>
         public void LoadGraph(IRdfHandler handler, String graphUri)
         {
             if (graphUri.Equals(String.Empty))

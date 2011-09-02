@@ -270,6 +270,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             if (this._end != null)
@@ -445,6 +450,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new ArqStringJoinFunction(transformer.Transform(this._sep), this._exprs.Select(e => transformer.Transform(e)));

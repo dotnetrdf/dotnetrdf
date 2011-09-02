@@ -1,11 +1,57 @@
-﻿using System;
+﻿/*
+
+Copyright Robert Vesse 2009-11
+rvesse@vdesign-studios.com
+
+------------------------------------------------------------------------
+
+This file is part of dotNetRDF.
+
+dotNetRDF is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+dotNetRDF is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with dotNetRDF.  If not, see <http://www.gnu.org/licenses/>.
+
+------------------------------------------------------------------------
+
+dotNetRDF may alternatively be used under the LGPL or MIT License
+
+http://www.gnu.org/licenses/lgpl.html
+http://www.opensource.org/licenses/mit-license.php
+
+If these licenses are not suitable for your intended use please contact
+us at the above stated email address to discuss alternative
+terms.
+
+*/
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace VDS.RDF
 {
-    public class LazyIndexedTripleCollection : BaseTripleCollection, IEnumerable<Triple>
+    /// <summary>
+    /// The Lazy Indexed Triple Collection is a variation on the <see cref="IndexedTripleCollection">IndexedTripleCollection</see> which only creates indexes based on the requests actually made
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// For example if you were to ask for all Triples with the URI subject <strong>http://example.org/subject</strong> it would create a subject index only for that lookup, making another query would require a new subject index to be created (ie. in effect the indexes are just result caches for the queries you make).  This means that query requests over graphs using this triple collection can be quite slow but it means the graph uses less memory and is faster to load data as it does not need to create the index as data is entered.
+    /// </para>
+    /// <para>
+    /// <strong>Warning: </strong> This is an experimental implementation and may be refined/removed in future releases, do not rely upon this!
+    /// </para>
+    /// </remarks>
+    public class LazyIndexedTripleCollection
+        : BaseTripleCollection, IEnumerable<Triple>
     {
         /// <summary>
         /// Hash Table storage of Triples
@@ -26,7 +72,7 @@ namespace VDS.RDF
         /// Indexes are stored using our <see cref="HashTable">HashTable</see> structure which is in effect a Dictionary where each Key can have multiple values.  The capacity is the initial number of value slots assigned to each Key, value slots grow automatically as desired but setting an appropriate capacity will allow you to tailor memory usage to your data and may make it possible to store data which would cause <see cref="OutOfMemoryException">OutOfMemoryException</see>'s with the default settings.
         /// </para>
         /// <para>
-        /// For example if you have 1 million triples where no Triples share any Nodes in common then the memory needing to be allocated would be 1,000,000 * 6 * 10 * 4 bytes just for the object references without taking into account all the overhead for the data structures actually.  Whereas if you set the capacity to 1 you reduce your memory requirements by a factor of 10 instantly.
+        /// For example if you have 1 million triples where no Triples share any Nodes in common then the memory needing to be allocated would be 1,000,000 * 6 * 10 * 4 bytes just for the object references without taking into account all the overhead for the data structures themselves.  Whereas if you set the capacity to 1 you reduce your memory requirements by a factor of 10 instantly.
         /// </para>
         /// <para>
         /// <strong>Note:</strong> Always remember that if you have large quantities of triples (1 million plus) then you are often better not loading them directly into memory and there many be better ways of processing the RDF depending on your application.  For example if you just want to do simple things with the data like validate it, count it etc you may be better using a <see cref="IRdfHandler">IRdfHandler</see> to process your data.
@@ -412,7 +458,19 @@ namespace VDS.RDF
         }
     }
 
-    public class ListIndexedTripleCollection : BaseTripleCollection, IEnumerable<Triple>
+    /// <summary>
+    /// The List Indexed Triple Collection is a Triple Collection which uses sorted indices and binary search to return the answers to the queries.  This means that the indices require less memory but they are typically slower than the hash table based indices of the <see cref="IndexedTripleCollection">IndexedTripleCollection</see>
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// List Indexes are created just-in-time but once a type of index has been created it can be used for all such lookups, this differs from the <see cref="LazyIndexedTripleCollection">LazyIndexedTripleCollection</see>
+    /// </para>
+    /// <para>
+    /// <strong>Warning: </strong> This is an experimental implementation and may be refined/removed in future releases, do not rely upon this!
+    /// </para>
+    /// </remarks>
+    public class ListIndexedTripleCollection 
+        : BaseTripleCollection, IEnumerable<Triple>
     {
         private HashTable<int, Triple> _triples;
         private List<Triple> _subjIndex, _predIndex, _objIndex;
@@ -428,6 +486,9 @@ namespace VDS.RDF
                              _varPred = new VariableNode(null, "pred"),
                              _varObj = new VariableNode(null, "obj");
 
+        /// <summary>
+        /// Creates a new List Indexed Triple Collection
+        /// </summary>
         public ListIndexedTripleCollection()
         {
             this._triples = new HashTable<int, Triple>();
@@ -509,6 +570,10 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Adds a Triple to the Collection if it doesn't already exist
+        /// </summary>
+        /// <param name="t">Triple to add</param>
         protected internal override void Add(Triple t)
         {
             int hash = t.GetHashCode();
@@ -528,11 +593,19 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Gets whether a given Triple is contained in the collection
+        /// </summary>
+        /// <param name="t">Triple to test</param>
+        /// <returns></returns>
         public override bool Contains(Triple t)
         {
             return this._triples.Contains(t.GetHashCode(), t);
         }
 
+        /// <summary>
+        /// Gets the number of Triples in the collection
+        /// </summary>
         public override int Count
         {
             get
@@ -541,6 +614,10 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Deletes a Triple from the collection
+        /// </summary>
+        /// <param name="t">Triple to remove</param>
         protected internal override void Delete(Triple t)
         {
             int hash = t.GetHashCode();
@@ -553,6 +630,12 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Gets the given Triple from the Collection
+        /// </summary>
+        /// <param name="t">Triple to retrieve</param>
+        /// <returns></returns>
+        /// <exception cref="KeyNotFoundException">Thrown if the given Triple does not exist in the Triple Collection</exception>
         public override Triple this[Triple t]
         {
             get
@@ -577,36 +660,69 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Gets all the Triples with a given Predicate
+        /// </summary>
+        /// <param name="pred">Predicate</param>
+        /// <returns></returns>
         public override IEnumerable<Triple> WithPredicate(INode pred)
         {
             this.PreparePredicateIndex();
             return this._predIndex.SearchIndex<Triple>(this._p, new Triple(this._varSubj.CopyNode(pred.Graph), pred, this._varObj.CopyNode(pred.Graph)));
         }
 
+        /// <summary>
+        /// Gets all the Triples with a given Predicate and Object
+        /// </summary>
+        /// <param name="pred">Predicate</param>
+        /// <param name="obj">Object</param>
+        /// <returns></returns>
         public override IEnumerable<Triple> WithPredicateObject(INode pred, INode obj)
         {
             this.PreparePredicateIndex();
             return this._predIndex.SearchIndex<Triple>(this._po, new Triple(this._varSubj.CopyNode(pred.Graph), pred, obj));
         }
 
+        /// <summary>
+        /// Gets all the Triples with a given Object
+        /// </summary>
+        /// <param name="obj">Object</param>
+        /// <returns></returns>
         public override IEnumerable<Triple> WithObject(INode obj)
         {
             this.PrepareObjectIndex();
             return this._objIndex.SearchIndex<Triple>(this._o, new Triple(this._varSubj.CopyNode(obj.Graph), this._varPred.CopyNode(obj.Graph), obj));
         }
 
+        /// <summary>
+        /// Gets all the Triples with a given Subject
+        /// </summary>
+        /// <param name="subj">Subject</param>
+        /// <returns></returns>
         public override IEnumerable<Triple> WithSubject(INode subj)
         {
             this.PrepareSubjectIndex();
             return this._subjIndex.SearchIndex<Triple>(this._s, new Triple(subj, this._varPred.CopyNode(subj.Graph), this._varObj.CopyNode(subj.Graph)));
         }
 
+        /// <summary>
+        /// Gets all the Triples with a given Predicate and Object
+        /// </summary>
+        /// <param name="subj">Subject</param>
+        /// <param name="obj">Object</param>
+        /// <returns></returns>
         public override IEnumerable<Triple> WithSubjectObject(INode subj, INode obj)
         {
             this.PrepareObjectIndex();
             return this._objIndex.SearchIndex<Triple>(this._os, new Triple(subj, this._varPred.CopyNode(subj.Graph), obj));
         }
 
+        /// <summary>
+        /// Gets all the Triples with a given Subject and Predicate
+        /// </summary>
+        /// <param name="subj">Subject</param>
+        /// <param name="pred">Predicate</param>
+        /// <returns></returns>
         public override IEnumerable<Triple> WithSubjectPredicate(INode subj, INode pred)
         {
             this.PrepareSubjectIndex();
@@ -649,6 +765,9 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Disposes of a Triple collection
+        /// </summary>
         public override void Dispose()
         {
             this._triples.Clear();

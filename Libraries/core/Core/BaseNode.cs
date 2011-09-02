@@ -1,11 +1,42 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿/*
+
+Copyright Robert Vesse 2009-11
+rvesse@vdesign-studios.com
+
+------------------------------------------------------------------------
+
+This file is part of dotNetRDF.
+
+dotNetRDF is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+dotNetRDF is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with dotNetRDF.  If not, see <http://www.gnu.org/licenses/>.
+
+------------------------------------------------------------------------
+
+dotNetRDF may alternatively be used under the LGPL or MIT License
+
+http://www.gnu.org/licenses/lgpl.html
+http://www.opensource.org/licenses/mit-license.php
+
+If these licenses are not suitable for your intended use please contact
+us at the above stated email address to discuss alternative
+terms.
+
+*/
+
+using System;
 using System.Runtime.Serialization;
-using System.Text;
 using System.Xml;
 using System.Xml.Schema;
-using System.Xml.Serialization;
 using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
 
@@ -320,21 +351,38 @@ namespace VDS.RDF
 
 #if !SILVERLIGHT
 
+        /// <summary>
+        /// Gets the information for serialization
+        /// </summary>
+        /// <param name="info">Serialization Information</param>
+        /// <param name="context">Streaming Context</param>
         public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             throw new NotImplementedException("This INode implementation does not support Serialization");
         }
 
+        /// <summary>
+        /// Gets the schema for XML serialization
+        /// </summary>
+        /// <returns></returns>
         public XmlSchema GetSchema()
         {
             return null;
         }
 
+        /// <summary>
+        /// Reads the data for XML deserialization
+        /// </summary>
+        /// <param name="reader">XML Reader</param>
         public virtual void ReadXml(XmlReader reader)
         {
             throw new NotImplementedException("This INode implementation does not support XML Serialization");
         }
 
+        /// <summary>
+        /// Writes the data for XML serialization
+        /// </summary>
+        /// <param name="writer">XML Writer</param>
         public virtual void WriteXml(XmlWriter writer)
         {
             throw new NotImplementedException("This INode implementation does not support XML Serialization");

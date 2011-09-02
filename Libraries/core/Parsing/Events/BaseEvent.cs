@@ -35,21 +35,33 @@ terms.
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace VDS.RDF.Parsing.Events
 {
-    public abstract class BaseEvent : IEvent
+    /// <summary>
+    /// Abstract Base Class for <see cref="IEvent">IEvent</see> implementations
+    /// </summary>
+    public abstract class BaseEvent 
+        : IEvent
     {
         private int _eventtype;
         private PositionInfo _pos;
 
+        /// <summary>
+        /// Creates a new Event
+        /// </summary>
+        /// <param name="eventType">Event Type</param>
+        /// <param name="info">Position Information</param>
         public BaseEvent(int eventType, PositionInfo info)
         {
             this._eventtype = eventType;
+            this._pos = info;
         }
 
+        /// <summary>
+        /// Creates a new Event
+        /// </summary>
+        /// <param name="eventType">Event Type</param>
         public BaseEvent(int eventType)
             : this(eventType, null) { }
 
@@ -82,7 +94,8 @@ namespace VDS.RDF.Parsing.Events
     /// <summary>
     /// Abstract Base Class for <see cref="IRdfXmlEvent">IRdfXmlEvent</see> implementations
     /// </summary>
-    public abstract class BaseRdfXmlEvent : BaseEvent, IRdfXmlEvent
+    public abstract class BaseRdfXmlEvent 
+        : BaseEvent, IRdfXmlEvent
     {
         private String _sourcexml;
 
@@ -121,7 +134,8 @@ namespace VDS.RDF.Parsing.Events
     /// <summary>
     /// Abstract Base Class for <see cref="IRdfAEvent">IRdfAEvent</see> implementations
     /// </summary>
-    public abstract class BaseRdfAEvent : BaseEvent, IRdfAEvent
+    public abstract class BaseRdfAEvent 
+        : BaseEvent, IRdfAEvent
     {
         private Dictionary<String, String> _attributes;
 

@@ -73,6 +73,11 @@ namespace VDS.RDF.Query.Optimisation
         /// <returns></returns>
         public abstract bool IsApplicable(SparqlQuery q);
 
+        /// <summary>
+        /// Determines whether the Optimiser can be applied to a given Update Command Set
+        /// </summary>
+        /// <param name="cmds">Command Set</param>
+        /// <returns></returns>
         public abstract bool IsApplicable(SparqlUpdateCommandSet cmds);
     }
 }

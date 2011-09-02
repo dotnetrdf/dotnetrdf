@@ -589,7 +589,7 @@ namespace VDS.RDF
     }
 
     /// <summary>
-    /// Interface for Triple Stores which are backed by some storage layer that may delay persistence and thus require flushing to ensure changes are persisted to the backing store, as a by produce such stores will typically have some notion of transactionality
+    /// Interface for Triple Stores which are backed by some storage layer that may delay persistence and thus require flushing to ensure changes are persisted to the backing store, as a by product such stores will typically have some notion of transactionality
     /// </summary>
     public interface ITransactionalStore
         : ITripleStore

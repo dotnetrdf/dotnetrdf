@@ -37,8 +37,6 @@ terms.
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Data;
 using System.Data.Common;
 using System.Threading;
@@ -736,15 +734,20 @@ namespace VDS.RDF.Storage
         /// Loads a Graph from the Store
         /// </summary>
         /// <param name="g">Graph to load into</param>
-        /// <param name="graphUri">Uri of the Graph to load</param>
+        /// <param name="graphUri">URI of the Graph to load</param>
         /// <remarks>
-        /// If the Graph Uri is null or the Graph doesn't exist in the Store nothing will be returned
+        /// If the Graph URI doesn't exist in the Store nothing will be returned
         /// </remarks>
         public virtual void LoadGraph(IGraph g, Uri graphUri)
         {
             this.LoadGraph(new GraphHandler(g), graphUri);
         }
 
+        /// <summary>
+        /// Loads a Graph from the Store using the given RDF Handler
+        /// </summary>
+        /// <param name="handler">RDF Handler</param>
+        /// <param name="graphUri">URI of the Graph to load</param>
         public virtual void LoadGraph(IRdfHandler handler, Uri graphUri)
         {
             try
@@ -783,7 +786,7 @@ namespace VDS.RDF.Storage
         /// <param name="g">Graph to load into</param>
         /// <param name="graphUri">Uri of the Graph to load</param>
         /// <remarks>
-        /// If the Graph Uri is the Empty String or the Graph doesn't exist in the Store nothing will be returned
+        /// If the Graph Uri doesn't exist in the Store nothing will be returned
         /// </remarks>
         public virtual void LoadGraph(IGraph g, String graphUri)
         {
@@ -791,6 +794,11 @@ namespace VDS.RDF.Storage
             this.LoadGraph(g, u);
         }
 
+        /// <summary>
+        /// Loads a Graph from the Store using the given RDF Handler
+        /// </summary>
+        /// <param name="handler">RDF Handler</param>
+        /// <param name="graphUri">URI of the Graph to load</param>
         public virtual void LoadGraph(IRdfHandler handler, String graphUri)
         {
             Uri u = (graphUri.Equals(String.Empty)) ? null : new Uri(graphUri);

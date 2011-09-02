@@ -1,7 +1,40 @@
-﻿using System;
+﻿/*
+
+Copyright Robert Vesse 2009-11
+rvesse@vdesign-studios.com
+
+------------------------------------------------------------------------
+
+This file is part of dotNetRDF.
+
+dotNetRDF is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+dotNetRDF is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with dotNetRDF.  If not, see <http://www.gnu.org/licenses/>.
+
+------------------------------------------------------------------------
+
+dotNetRDF may alternatively be used under the LGPL or MIT License
+
+http://www.gnu.org/licenses/lgpl.html
+http://www.opensource.org/licenses/mit-license.php
+
+If these licenses are not suitable for your intended use please contact
+us at the above stated email address to discuss alternative
+terms.
+
+*/
+
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Parsing.Tokens;
@@ -12,7 +45,8 @@ namespace VDS.RDF.Query.Describe
     /// <summary>
     /// Abstract Base Class for SPARQL Describe Algorithms which provides BNode rewriting functionality
     /// </summary>
-    public abstract class BaseDescribeAlgorithm : ISparqlDescribe
+    public abstract class BaseDescribeAlgorithm
+        : ISparqlDescribe
     {
         /// <summary>
         /// Gets the Description Graph based on the Query Results from the given Evaluation Context
@@ -26,6 +60,11 @@ namespace VDS.RDF.Query.Describe
             return g;
         }
 
+        /// <summary>
+        /// Gets the Description Graph based on the Query Results from the given Evaluation Context passing the resulting Triples to the given RDF Handler
+        /// </summary>
+        /// <param name="handler">RDF Handler</param>
+        /// <param name="context">SPARQL Evaluation Context</param>
         public void Describe(IRdfHandler handler, SparqlEvaluationContext context)
         {
             try
@@ -66,11 +105,18 @@ namespace VDS.RDF.Query.Describe
             }
         }
 
+        /// <summary>
+        /// Generates the Description for each of the Nodes to be described
+        /// </summary>
+        /// <param name="handler">RDF Handler</param>
+        /// <param name="context">SPARQL Evaluation Context</param>
+        /// <param name="nodes">Nodes to be described</param>
         protected abstract void DescribeInternal(IRdfHandler handler, SparqlEvaluationContext context, IEnumerable<INode> nodes);
 
         /// <summary>
         /// Gets the Nodes that the algorithm should generate the descriptions for
         /// </summary>
+        /// <param name="factory">Factory to create Nodes in</param>
         /// <param name="context">SPARQL Evaluation Context</param>
         /// <returns></returns>
         private List<INode> GetNodes(INodeFactory factory, SparqlEvaluationContext context)
@@ -117,7 +163,7 @@ namespace VDS.RDF.Query.Describe
         /// </summary>
         /// <param name="t">Triple</param>
         /// <param name="mapping">Mapping of IDs to new Blank Nodes</param>
-        /// <param name="g">Graph of the Description</param>
+        /// <param name="factory">Factory to create Nodes in</param>
         /// <returns></returns>
         protected Triple RewriteDescribeBNodes(Triple t, Dictionary<String, INode> mapping, INodeFactory factory)
         {

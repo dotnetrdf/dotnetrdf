@@ -97,12 +97,20 @@ namespace VDS.RDF
             this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
         }
 
+        /// <summary>
+        /// Unparameterized Constructor for deserialization usage only
+        /// </summary>
         protected BaseBlankNode()
             : base(null, NodeType.Blank)
         { }
 
 #if !SILVERLIGHT
 
+        /// <summary>
+        /// Deserialization Constructor
+        /// </summary>
+        /// <param name="info">Serialization Information</param>
+        /// <param name="context">Streaming Context</param>
         protected BaseBlankNode(SerializationInfo info, StreamingContext context)
             : base(null, NodeType.Blank)
         {
@@ -403,6 +411,11 @@ namespace VDS.RDF
 
         #region ISerializable Members
 
+        /// <summary>
+        /// Gets the data for serialization
+        /// </summary>
+        /// <param name="info">Serialization Information</param>
+        /// <param name="context">Streaming Context</param>
         public sealed override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("id", this._id);
@@ -412,6 +425,10 @@ namespace VDS.RDF
 
         #region IXmlSerializable Members
 
+        /// <summary>
+        /// Reads the data for XML deserialization
+        /// </summary>
+        /// <param name="reader">XML Reader</param>
         public sealed override void ReadXml(XmlReader reader)
         {
             this._id = reader.ReadElementContentAsString();
@@ -419,6 +436,10 @@ namespace VDS.RDF
             this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
         }
 
+        /// <summary>
+        /// Writes the data for XML serialization
+        /// </summary>
+        /// <param name="writer">XML Writer</param>
         public sealed override void WriteXml(XmlWriter writer)
         {
             writer.WriteString(this._id);
@@ -460,11 +481,19 @@ namespace VDS.RDF
         protected internal BlankNode(INodeFactory factory)
             : base(factory) { }
 
+        /// <summary>
+        /// Constructor for deserialization usage only
+        /// </summary>
         protected BlankNode()
             : base()
         { }
 
 #if !SILVERLIGHT
+        /// <summary>
+        /// Deserialization Constructor
+        /// </summary>
+        /// <param name="info">Serialization Information</param>
+        /// <param name="context">Streaming Context</param>
         protected BlankNode(SerializationInfo info, StreamingContext context)
             : base(info, context) { }
 #endif

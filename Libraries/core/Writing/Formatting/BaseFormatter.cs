@@ -34,9 +34,6 @@ terms.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using VDS.RDF.Query;
 
 namespace VDS.RDF.Writing.Formatting
@@ -44,7 +41,8 @@ namespace VDS.RDF.Writing.Formatting
     /// <summary>
     /// Abstract Base Class for Formatters
     /// </summary>
-    public abstract class BaseFormatter : INodeFormatter, ITripleFormatter, IUriFormatter, ICharFormatter, IResultFormatter
+    public abstract class BaseFormatter
+        : INodeFormatter, ITripleFormatter, IUriFormatter, ICharFormatter, IResultFormatter
     {
         private String _format;
 
@@ -205,6 +203,11 @@ namespace VDS.RDF.Writing.Formatting
             return result.ToString(this);
         }
 
+        /// <summary>
+        /// Formats a SPARQL Boolean Result for the given format
+        /// </summary>
+        /// <param name="result">Boolean Result</param>
+        /// <returns></returns>
         public virtual String FormatBooleanResult(bool result)
         {
             return result.ToString().ToLower();

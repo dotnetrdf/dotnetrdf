@@ -38,7 +38,6 @@ terms.
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Text;
 using VDS.RDF.Configuration;
@@ -51,6 +50,9 @@ namespace VDS.RDF.Storage
     /// <summary>
     /// Class for connecting to repositories hosted on Dydra
     /// </summary>
+    /// <remarks>
+    /// <strong>Warning: </strong> This support is experimental and unstable, Dydra has exhibited many API consistencies, transient HTTP errors and other problems in our testing and we do not recommend that you use our support for it in production.
+    /// </remarks>
     public class DydraConnector
         : SesameHttpProtocolConnector
     {
@@ -59,6 +61,11 @@ namespace VDS.RDF.Storage
         private String _account, _apiKey;
         private SparqlQueryParser _parser = new SparqlQueryParser();
 
+        /// <summary>
+        /// Creates a new connection to Dydra
+        /// </summary>
+        /// <param name="accountID">Account ID</param>
+        /// <param name="repositoryID">Repository ID</param>
         public DydraConnector(String accountID, String repositoryID)
             : base(DydraBaseUri + accountID + "/", repositoryID)
         {
@@ -69,6 +76,12 @@ namespace VDS.RDF.Storage
             //this._postAllQueries = true;
         }
 
+        /// <summary>
+        /// Creates a new connection to Dydra
+        /// </summary>
+        /// <param name="accountID">Account ID</param>
+        /// <param name="repositoryID">Repository ID</param>
+        /// <param name="apiKey">API Key</param>
         public DydraConnector(String accountID, String repositoryID, String apiKey)
             : this(accountID, repositoryID)
         {
@@ -86,6 +99,10 @@ namespace VDS.RDF.Storage
         //    this._hasCredentials = true;
         //}
 
+        /// <summary>
+        /// Lists the Graphs from the Repository
+        /// </summary>
+        /// <returns></returns>
         public override IEnumerable<Uri> ListGraphs()
         {
             try
@@ -126,6 +143,9 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Gets that deleting Graphs is not supported
+        /// </summary>
         public override bool DeleteSupported
         {
             get
@@ -134,16 +154,31 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Throws a <see cref="NotSupportedException">NotSupportedException</see> as bugs with Dydra mean deleting graphs is not currently supportable
+        /// </summary>
+        /// <param name="graphUri">URI of the Graph to delete</param>
         public override void DeleteGraph(string graphUri)
         {
             throw new NotSupportedException("Dydra does not yet properly support deleting graphs via HTTP");
         }
 
+        /// <summary>
+        /// Throws a <see cref="NotSupportedException">NotSupportedException</see> as bugs with Dydra mean deleting graphs is not currently supportable
+        /// </summary>
+        /// <param name="graphUri">URI of the Graph to delete</param>
         public override void DeleteGraph(Uri graphUri)
         {
             throw new NotSupportedException("Dydra does not yet properly support deleting graphs via HTTP");
         }
 
+        /// <summary>
+        /// Makes a SPARQL Query against the underlying Store
+        /// </summary>
+        /// <param name="rdfHandler">RDF Handler</param>
+        /// <param name="resultsHandler">SPARQL Results Handler</param>
+        /// <param name="sparqlQuery">SPARQL Query</param>
+        /// <returns></returns>
         public override void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery)
         {
             try
@@ -349,6 +384,11 @@ namespace VDS.RDF.Storage
             return request;
         }
 
+        /// <summary>
+        /// Escapes queries
+        /// </summary>
+        /// <param name="query">Query</param>
+        /// <returns></returns>
         protected override string EscapeQuery(string query)
         {
             return query;
@@ -409,6 +449,10 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Gets a String representation of the Connection
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return "[Dydra] Repository '" + this._store + "' on Account '" + this._account + "'";

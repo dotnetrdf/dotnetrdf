@@ -86,13 +86,33 @@ namespace VDS.RDF.Web.Configuration
         /// </summary>
         protected bool _corsEnabled = true;
 
+        /// <summary>
+        /// Writer Compression Level
+        /// </summary>
         protected int _writerCompressionLevel = Options.DefaultCompressionLevel;
+        /// <summary>
+        /// Writer Pretty Printing Mode
+        /// </summary>
         protected bool _writerPrettyPrinting = true;
+        /// <summary>
+        /// Writer High Speed Mode permitted?
+        /// </summary>
         protected bool _writerHighSpeed = true;
+        /// <summary>
+        /// XML Writers can use DTDs?
+        /// </summary>
         protected bool _writerDtds = false;
+        /// <summary>
+        /// Multi-threaded writers can write multi-threaded?
+        /// </summary>
         protected bool _writerMultiThreading = true;
+        /// <summary>
+        /// XML Writers can compress literal objects to attributes?
+        /// </summary>
         protected bool _writerAttributes = true;
-
+        /// <summary>
+        /// Default Namespaces for appropriate writers
+        /// </summary>
         protected INamespaceMapper _defaultNamespaces = new NamespaceMapper();
 
         /// <summary>
@@ -300,6 +320,9 @@ namespace VDS.RDF.Web.Configuration
             }
         }
 
+        /// <summary>
+        /// Gets the Writer Compression Level to use
+        /// </summary>
         public int WriterCompressionLevel
         {
             get
@@ -308,6 +331,9 @@ namespace VDS.RDF.Web.Configuration
             }
         }
 
+        /// <summary>
+        /// Gets whether XML Writers can use DTDs
+        /// </summary>
         public bool WriterUseDtds
         {
             get
@@ -316,6 +342,9 @@ namespace VDS.RDF.Web.Configuration
             }
         }
 
+        /// <summary>
+        /// Gets whether XML Writers can compress literal objects as attributes
+        /// </summary>
         public bool WriterUseAttributes
         {
             get
@@ -324,6 +353,9 @@ namespace VDS.RDF.Web.Configuration
             }
         }
 
+        /// <summary>
+        /// Gets whether some writers can use high-speed mode when they detect that Graphs are ill-suited to syntax compression
+        /// </summary>
         public bool WriterHighSpeedMode
         {
             get
@@ -332,6 +364,9 @@ namespace VDS.RDF.Web.Configuration
             }
         }
 
+        /// <summary>
+        /// Gets whether multi-threaded writers are allowed to use multi-threaded mode
+        /// </summary>
         public bool WriterMultiThreading
         {
             get
@@ -340,6 +375,9 @@ namespace VDS.RDF.Web.Configuration
             }
         }
 
+        /// <summary>
+        /// Gets whether Pretty Printing is enabled
+        /// </summary>
         public bool WriterPrettyPrinting
         {
             get
@@ -348,6 +386,9 @@ namespace VDS.RDF.Web.Configuration
             }
         }
 
+        /// <summary>
+        /// Gets the Default Namespaces used for writing
+        /// </summary>
         public INamespaceMapper DefaultNamespaces
         {
             get

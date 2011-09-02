@@ -129,6 +129,11 @@ namespace VDS.RDF
             : this(new IndexedTripleCollection()) { }
 
 #if !SILVERLIGHT
+        /// <summary>
+        /// Creates a Graph from the given Serialization Information
+        /// </summary>
+        /// <param name="info">Serialization Information</param>
+        /// <param name="context">Streaming Context</param>
         protected BaseGraph(SerializationInfo info, StreamingContext context)
             : this()
         {
@@ -1217,6 +1222,11 @@ namespace VDS.RDF
 
         #region ISerializable Members
 
+        /// <summary>
+        /// Gets the Serialization Information for serializing a Graph
+        /// </summary>
+        /// <param name="info">Serialization Information</param>
+        /// <param name="context">Streaming Context</param>
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("base", this.BaseUri.ToSafeString());
@@ -1230,11 +1240,19 @@ namespace VDS.RDF
 
         #region IXmlSerializable Members
 
+        /// <summary>
+        /// Gets the Schema for XML Serialization
+        /// </summary>
+        /// <returns></returns>
         public XmlSchema GetSchema()
         {
             return null;
         }
 
+        /// <summary>
+        /// Reads the data for XML deserialization
+        /// </summary>
+        /// <param name="reader">XML Reader</param>
         public void ReadXml(XmlReader reader)
         {
             XmlSerializer tripleDeserializer = new XmlSerializer(typeof(Triple));
@@ -1294,6 +1312,10 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Writes the data for XML serialization
+        /// </summary>
+        /// <param name="writer">XML Writer</param>
         public void WriteXml(XmlWriter writer)
         {
             XmlSerializer tripleSerializer = new XmlSerializer(typeof(Triple));

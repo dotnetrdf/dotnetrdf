@@ -178,12 +178,11 @@ namespace VDS.RDF.Configuration
             {
                 if (store is IGenericIOManager)
                 {
-                    GenericReader reader = new GenericReader((IGenericIOManager)store);
                     foreach (INode source in sources)
                     {
                         if (source.NodeType == NodeType.Uri || source.NodeType == NodeType.Literal)
                         {
-                            reader.Load(output, source.ToString());
+                            ((IGenericIOManager)store).LoadGraph(output, source.ToString());
                         } 
                         else 
                         {
@@ -318,7 +317,8 @@ namespace VDS.RDF.Configuration
 #if !SILVERLIGHT
                              WebDemandTripleStore = "VDS.RDF.WebDemandTripleStore",
 #endif
-                             NativeTripleStore = "VDS.RDF.NativeTripleStore";
+                             NativeTripleStore = "VDS.RDF.NativeTripleStore",
+                             PersistentTripleStore = "VDS.RDF.PersistentTripleStore";
 
 
         /// <summary>
@@ -410,6 +410,21 @@ namespace VDS.RDF.Configuration
                     }
                     break;
 
+                case PersistentTripleStore:
+                    subObj = ConfigurationLoader.GetConfigurationNode(g, objNode, propGenericManager);
+                    if (subObj == null) return false;
+
+                    temp = ConfigurationLoader.LoadObject(g, subObj);
+                    if (temp is IGenericIOManager)
+                    {
+                        store = new PersistentTripleStore((IGenericIOManager)temp);
+                    }
+                    else
+                    {
+                        throw new DotNetRdfConfigurationException("Unable to load a Persistent Triple Store identified by the Node '" + objNode.ToString() + "' as the value given the for dnr:genericManager property points to an Object which could not be loaded as an object which implements the IGenericIOManager interface");
+                    }
+                    break;
+
 #endif
 
             }
@@ -478,6 +493,12 @@ namespace VDS.RDF.Configuration
                         }
                     }
                 }
+
+                //And as an absolute final step if the store is transactional we'll flush any changes we've made
+                if (store is ITransactionalStore)
+                {
+                    ((ITransactionalStore)store).Flush();
+                }
             }
 
             obj = store;
@@ -501,6 +522,7 @@ namespace VDS.RDF.Configuration
                 case WebDemandTripleStore:
 #endif
                 case NativeTripleStore:
+                case PersistentTripleStore:
                      return true;
                 default:
                     return false;

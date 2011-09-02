@@ -35,7 +35,6 @@ terms.
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -163,25 +162,39 @@ namespace VDS.RDF.Query
         /// </summary>
         Full = OutputAll | ShowAll | AnalyseAll,
 
+        /// <summary>
+        /// Basic Explanation Level with Query Evaluation simulated
+        /// </summary>
         BasicSimulation = Basic | Simulate,
-
+        /// <summary>
+        /// Default Explanation Level with Query Evaluation simulated
+        /// </summary>
         DefaultSimulation = Default | Simulate,
-
+        /// <summary>
+        /// Detailed Explanation Level with Query Evaluation simulated
+        /// </summary>
         DetailedSimulation = Detailed | Simulate,
-
+        /// <summary>
+        /// Full Explanation Level with Query Evaluation simulated
+        /// </summary>
         FullSimulation = Full | Simulate
     }
 
     /// <summary>
     /// A Query Processor which evaluates queries while printing explanations to any/all of Debug, Trace, Console Standard Output and Console Standard Error
     /// </summary>
-    public class ExplainQueryProcessor : LeviathanQueryProcessor
+    public class ExplainQueryProcessor
+        : LeviathanQueryProcessor
     {
         private ThreadIsolatedValue<int> _depthCounter;
         private ThreadIsolatedReference<Stack<DateTime>> _startTimes;
         private ExplanationLevel _level = ExplanationLevel.Default;
         private SparqlFormatter _formatter = new SparqlFormatter();
 
+        /// <summary>
+        /// Creates a new Explain Query Processor that will use the Default Explanation Level
+        /// </summary>
+        /// <param name="dataset">Dataset</param>
         public ExplainQueryProcessor(ISparqlDataset dataset)
             : base(dataset)
         {
@@ -189,18 +202,35 @@ namespace VDS.RDF.Query
             this._startTimes = new ThreadIsolatedReference<Stack<DateTime>>(() => new Stack<DateTime>());
         }
 
+        /// <summary>
+        /// Creates a new Explain Query Processor with the desired Explanation Level
+        /// </summary>
+        /// <param name="dataset">Dataset</param>
+        /// <param name="level">Explanation Level</param>
         public ExplainQueryProcessor(ISparqlDataset dataset, ExplanationLevel level)
             : this(dataset)
         {
             this._level = level;
         }
 
+        /// <summary>
+        /// Creates a new Explain Query Processor that will use the Default Explanation Level
+        /// </summary>
+        /// <param name="store">Triple Store</param>
         public ExplainQueryProcessor(IInMemoryQueryableStore store)
             : this(new InMemoryDataset(store)) { }
 
+        /// <summary>
+        /// Creates a new Explain Query Processor with the desired Explanation Level
+        /// </summary>
+        /// <param name="store">Triple Store</param>
+        /// <param name="level">Explanation Level</param>
         public ExplainQueryProcessor(IInMemoryQueryableStore store, ExplanationLevel level)
             : this(new InMemoryDataset(store), level) { }
 
+        /// <summary>
+        /// Gets/Sets the Explanation Level
+        /// </summary>
         public ExplanationLevel ExplanationLevel
         {
             get 
@@ -213,11 +243,20 @@ namespace VDS.RDF.Query
             }
         }
 
+        /// <summary>
+        /// Determines whether a given Flag is present
+        /// </summary>
+        /// <param name="flag">Flag</param>
+        /// <returns></returns>
         private bool HasFlag(ExplanationLevel flag)
         {
             return ((this._level & flag) == flag);
         }
 
+        /// <summary>
+        /// Prints Analysis
+        /// </summary>
+        /// <param name="algebra">Algebra</param>
         private void PrintAnalysis(ISparqlAlgebra algebra)
         {
             if (algebra is IBgp)
@@ -230,6 +269,10 @@ namespace VDS.RDF.Query
             }
         }
 
+        /// <summary>
+        /// Prints BGP Analysis
+        /// </summary>
+        /// <param name="bgp">Analysis</param>
         private void PrintBgpAnalysis(IBgp bgp)
         {
             if (!this.HasFlag(ExplanationLevel.AnalyseBgps)) return;
@@ -298,6 +341,10 @@ namespace VDS.RDF.Query
             }
         }
 
+        /// <summary>
+        /// Prints Join Analysis
+        /// </summary>
+        /// <param name="join">Join</param>
         private void PrintJoinAnalysis(IAbstractJoin join)
         {
             if (!this.HasFlag(ExplanationLevel.AnalyseJoins)) return;
@@ -336,11 +383,19 @@ namespace VDS.RDF.Query
             }
         }
 
+        /// <summary>
+        /// Prints Expalantions
+        /// </summary>
+        /// <param name="output">StringBuilder to output to</param>
         private void PrintExplanations(StringBuilder output)
         {
             this.PrintExplanations(output.ToString());
         }
 
+        /// <summary>
+        /// Prints Explanations
+        /// </summary>
+        /// <param name="output">String to output</param>
         private void PrintExplanations(String output)
         {
             if (this.HasFlag(ExplanationLevel.OutputToConsoleStdErr))
@@ -363,6 +418,11 @@ namespace VDS.RDF.Query
 #endif
         }
 
+        /// <summary>
+        /// Explains the start of evaluating some algebra operator
+        /// </summary>
+        /// <param name="algebra">Algebra</param>
+        /// <param name="context">Context</param>
         private void ExplainEvaluationStart(ISparqlAlgebra algebra, SparqlEvaluationContext context)
         {
             if (this._level == ExplanationLevel.None) return;
@@ -378,6 +438,12 @@ namespace VDS.RDF.Query
             this.PrintExplanations(output);
         }
 
+        /// <summary>
+        /// Explains the evaluation of some action
+        /// </summary>
+        /// <param name="algebra">Algebra</param>
+        /// <param name="context">Context</param>
+        /// <param name="action">Action</param>
         private void ExplainEvaluationAction(ISparqlAlgebra algebra, SparqlEvaluationContext context, String action)
         {
             if (this._level == ExplanationLevel.None) return;
@@ -391,6 +457,11 @@ namespace VDS.RDF.Query
             this.PrintExplanations(output);
         }
 
+        /// <summary>
+        /// Explains the end of evaluating some algebra operator
+        /// </summary>
+        /// <param name="algebra">Algebra</param>
+        /// <param name="context">Context</param>
         private void ExplainEvaluationEnd(ISparqlAlgebra algebra, SparqlEvaluationContext context)
         {
             if (this._level == ExplanationLevel.None) return;
@@ -406,6 +477,14 @@ namespace VDS.RDF.Query
             this.PrintExplanations(output);
         }
 
+        /// <summary>
+        /// Explains and evaluates some algebra operator
+        /// </summary>
+        /// <typeparam name="T">Algebra Operator Type</typeparam>
+        /// <param name="algebra">Algebra</param>
+        /// <param name="context">Context</param>
+        /// <param name="evaluator">Evaluator Function</param>
+        /// <returns></returns>
         private BaseMultiset ExplainAndEvaluate<T>(T algebra, SparqlEvaluationContext context, Func<T, SparqlEvaluationContext, BaseMultiset> evaluator)
             where T : ISparqlAlgebra
         {

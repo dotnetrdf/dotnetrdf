@@ -118,6 +118,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new ArqMaxFunction(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
@@ -202,6 +207,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new ArqMinFunction(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
@@ -239,6 +249,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return transformer.Transform(this);

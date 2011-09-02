@@ -33,10 +33,6 @@ terms.
 
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Update;
 
@@ -45,7 +41,8 @@ namespace VDS.RDF.Query.Optimisation
     /// <summary>
     /// An Algebra Optimiser that optimises Algebra to use <see cref="LazyBgp">LazyBgp</see>'s wherever possible
     /// </summary>
-    public class LazyBgpOptimiser : BaseAlgebraOptimiser
+    public class LazyBgpOptimiser 
+        : BaseAlgebraOptimiser
     {
         /// <summary>
         /// Optimises an Algebra to a form that uses <see cref="LazyBgp">LazyBgp</see> where possible
@@ -133,6 +130,11 @@ namespace VDS.RDF.Query.Optimisation
                    && q.Bindings == null;
         }
 
+        /// <summary>
+        /// Returns that the optimiser does not apply to SPARQL Updates
+        /// </summary>
+        /// <param name="cmds">Updates</param>
+        /// <returns></returns>
         public override bool IsApplicable(SparqlUpdateCommandSet cmds)
         {
             return false;
@@ -142,7 +144,8 @@ namespace VDS.RDF.Query.Optimisation
     /// <summary>
     /// An Algebra Optimiser that optimises Algebra to use <see cref="AskBgp">AskBgp</see>'s wherever possible
     /// </summary>
-    public class AskBgpOptimiser : BaseAlgebraOptimiser
+    public class AskBgpOptimiser
+        : BaseAlgebraOptimiser
     {
         /// <summary>
         /// Optimises an Algebra to a form that uses <see cref="AskBgp">AskBgp</see> where possible
@@ -227,6 +230,11 @@ namespace VDS.RDF.Query.Optimisation
             return q.QueryType == SparqlQueryType.Ask;
         }
 
+        /// <summary>
+        /// Returns that the optimiser does not apply to SPARQL Updates
+        /// </summary>
+        /// <param name="cmds">Updates</param>
+        /// <returns></returns>
         public override bool IsApplicable(SparqlUpdateCommandSet cmds)
         {
             return false;

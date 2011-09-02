@@ -33,6 +33,8 @@ terms.
 
 */
 
+#if UNFINISHED
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -289,3 +291,5 @@ namespace VDS.RDF.Parsing.Contexts
 
     }
 }
+
+#endif

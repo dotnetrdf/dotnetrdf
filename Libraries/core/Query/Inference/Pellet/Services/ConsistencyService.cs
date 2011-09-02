@@ -38,14 +38,14 @@ using System.Linq;
 using System.IO;
 using System.Net;
 using Newtonsoft.Json.Linq;
-using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Query.Inference.Pellet.Services
 {
     /// <summary>
     /// Represents the Consistency Service provided by a Pellet Server
     /// </summary>
-    public class ConsistencyService : PelletService
+    public class ConsistencyService 
+        : PelletService
     {
         /// <summary>
         /// Creates a new Consistency Service
@@ -103,6 +103,11 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         }
 #endif
 
+        /// <summary>
+        /// Determines whether the Knowledge Base is consistent
+        /// </summary>
+        /// <param name="callback">Callback to invoke when the operation completes</param>
+        /// <param name="state">State to be passed to the callback</param>
         public void IsConsistent(PelletConsistencyCallback callback, Object state)
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this.Endpoint.Uri);

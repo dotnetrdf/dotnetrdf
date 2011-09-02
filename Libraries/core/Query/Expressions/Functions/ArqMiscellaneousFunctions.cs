@@ -153,6 +153,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new ArqSha1SumFunction(transformer.Transform(this._expr));

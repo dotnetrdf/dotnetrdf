@@ -38,9 +38,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text;
 using Newtonsoft.Json.Linq;
-
 
 namespace VDS.RDF.Query.Inference.Pellet.Services
 {
@@ -209,6 +207,12 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
 
 #endif
 
+        /// <summary>
+        /// Gets a list of lists expressing clusters within the Knowledge Base
+        /// </summary>
+        /// <param name="number">Number of Clusters</param>
+        /// <param name="callback">Callback to be invoked when the operation completes</param>
+        /// <param name="state">State to be passed to the callback</param>
         public void Cluster(int number, PelletClusterServiceCallback callback, Object state)
         {
             this.ClusterRaw(number, (g, s) =>
@@ -230,6 +234,13 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
                 }, state);
         }
 
+        /// <summary>
+        /// Gets a list of lists expressing clusters within the Knowledge Base
+        /// </summary>
+        /// <param name="number">Number of Clusters</param>
+        /// <param name="type">QName of a Type to cluster around</param>
+        /// <param name="callback">Callback to be invoked when the operation completes</param>
+        /// <param name="state">State to be passed to the callback</param>
         public void Cluster(int number, String type, PelletClusterServiceCallback callback, Object state)
         {
             this.ClusterRaw(number, type, (g, s) =>
@@ -251,6 +262,12 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
                 }, state);
         }
 
+        /// <summary>
+        /// Gets the raw Cluster Graph for the Knowledge Base
+        /// </summary>
+        /// <param name="number">Number of Clusters</param>
+        /// <param name="callback">Callback to be invoked when the operation completes</param>
+        /// <param name="state">State to be passed to the callback</param>
         public void ClusterRaw(int number, GraphCallback callback, Object state)
         {
             if (number < 2) throw new RdfReasoningException("Pellet Server requires the number of Clusters to be at least 2");
@@ -288,6 +305,13 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
                 }, null);
         }
 
+        /// <summary>
+        /// Gets the raw Cluster Graph for the Knowledge Base
+        /// </summary>
+        /// <param name="number">Number of Clusters</param>
+        /// <param name="type">QName of a Type to Cluster around</param>
+        /// <param name="callback">Callback to be invoked when the operation completes</param>
+        /// <param name="state">State to be passed to the callback</param>
         public void ClusterRaw(int number, String type, GraphCallback callback, Object state)
         {
             if (number < 2) throw new RdfReasoningException("Pellet Server requires the number of Clusters to be at least 2");

@@ -103,6 +103,11 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         }
 #endif
 
+        /// <summary>
+        /// Extracts the Graph which comprises the class hierarchy
+        /// </summary>
+        /// <param name="callback">Callback for when the operation completes</param>
+        /// <param name="state">State to be passed to the callback</param>
         public void Classify(GraphCallback callback, Object state)
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this.Endpoint.Uri);
