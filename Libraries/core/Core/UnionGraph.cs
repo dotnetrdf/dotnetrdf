@@ -16,7 +16,8 @@ namespace VDS.RDF
     /// All Assert and Retract operations are directed only to the Default Graph while a Clear() operation will clear all Graphs in the Union
     /// </para>
     /// </remarks>
-    public class UnionGraph : Graph
+    public class UnionGraph 
+        : Graph
     {
         private IGraph _default;
         private List<IGraph> _graphs;

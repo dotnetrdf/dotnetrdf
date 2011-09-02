@@ -44,7 +44,8 @@ namespace VDS.RDF
     /// <summary>
     /// Basic Triple Collection which is not indexed
     /// </summary>
-    public class TripleCollection : BaseTripleCollection, IEnumerable<Triple>
+    public class TripleCollection 
+        : BaseTripleCollection, IEnumerable<Triple>
     {
         /// <summary>
         /// Underlying Storage of the Triple Collection
@@ -291,7 +292,8 @@ namespace VDS.RDF
     /// <summary>
     /// Thread Safe Triple Collection
     /// </summary>
-    public class ThreadSafeTripleCollection : TripleCollection, IEnumerable<Triple>
+    public class ThreadSafeTripleCollection 
+        : TripleCollection, IEnumerable<Triple>
     {
         private ReaderWriterLockSlim _lockManager = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
 
@@ -523,7 +525,8 @@ namespace VDS.RDF
     /// Note: This is a change from the 0.1.x API behaviour where the <see cref="Options.FullTripleIndexing">FullTripleIndexing</see> option was disabled by default, from the 0.2.0 release onwards this is enabled by default.
     /// </para>
     /// </remarks>
-    public class IndexedTripleCollection : BaseTripleCollection, IEnumerable<Triple>
+    public class IndexedTripleCollection 
+        : BaseTripleCollection, IEnumerable<Triple>
     {
         /// <summary>
         /// Hash Table storage of Triples
@@ -876,6 +879,12 @@ namespace VDS.RDF
             this._subjIndex.Clear();
             this._predIndex.Clear();
             this._objIndex.Clear();
+
+            //If full indexing is on then we need to clear the compound indices
+            //Note that while the default value for _fullyIndexed is false the constructor
+            //will alter this based on the Options.FullTripleIndexing property which defaults
+            //to true so unless the user explicitly disables this prior to instantiating the triple
+            //collection we will almost certainly be using compound indices
             if (this._fullyIndexed)
             {
                 this._subjPredIndex.Clear();
@@ -903,7 +912,8 @@ namespace VDS.RDF
     /// <remarks>
     /// Using the indexed Triple Collection requires more memory but is considerably faster for a lot of the lookup operations you would typically want to do - in essence we trade some memory consumption for performance.
     /// </remarks>
-    public class IndexedThreadSafeTripleCollection : IndexedTripleCollection, IEnumerable<Triple>
+    public class IndexedThreadSafeTripleCollection 
+        : IndexedTripleCollection, IEnumerable<Triple>
     {
         private ReaderWriterLockSlim _lockManager = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
 

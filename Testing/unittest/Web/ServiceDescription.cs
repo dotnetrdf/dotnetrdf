@@ -69,20 +69,19 @@ namespace VDS.RDF.Test.Web
             }
         }
 
-        //Test Commented out as this functionality has been disabled to play nice with the Service Description specs for the time being
-        //[TestMethod]
-        //public void ServiceDescriptionDescriptionUriSparqlServer()
-        //{
-        //    Console.WriteLine("Making an request for the Service Description from the web demos SPARQL Server at http://localhost/demos/server/description");
-        //    Console.WriteLine();
+        [TestMethod]
+        public void ServiceDescriptionDescriptionUriSparqlServer()
+        {
+            Console.WriteLine("Making an request for the Service Description from the web demos SPARQL Server at http://localhost/demos/server/description");
+            Console.WriteLine();
 
-        //    NTriplesFormatter formatter = new NTriplesFormatter();
-        //    Graph g = new Graph();
-        //    UriLoader.Load(g, new Uri("http://localhost/demos/server/description"));
-        //    TestTools.ShowGraph(g);
+            NTriplesFormatter formatter = new NTriplesFormatter();
+            Graph g = new Graph();
+            UriLoader.Load(g, new Uri("http://localhost/demos/server/description"));
+            TestTools.ShowGraph(g);
 
-        //    Assert.IsFalse(g.IsEmpty, "A non-empty Service Description Graph should have been returned");
-        //}
+            Assert.IsFalse(g.IsEmpty, "A non-empty Service Description Graph should have been returned");
+        }
 
         [TestMethod]
         public void ServiceDescriptionOptionsRequestOnQueryHandler()

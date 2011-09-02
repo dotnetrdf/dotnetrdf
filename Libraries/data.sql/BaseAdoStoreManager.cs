@@ -152,7 +152,7 @@ namespace VDS.RDF.Storage
         /// <remarks>
         /// Assumes that the resource is embedded in this assembly
         /// </remarks>
-        protected void ExecuteSqlFromResource(String resource)
+        protected internal void ExecuteSqlFromResource(String resource)
         {
             this.ExecuteSqlFromResource(Assembly.GetExecutingAssembly(), resource);
         }
@@ -167,7 +167,7 @@ namespace VDS.RDF.Storage
         /// Heavily adapted from code used in <a href="http://www.bugnetproject.com">BugNet</a>
         /// </para>
         /// </remarks>
-        protected void ExecuteSqlFromResource(Assembly assm, String resource)
+        protected internal void ExecuteSqlFromResource(Assembly assm, String resource)
         {
             Stream stream = assm.GetManifestResourceStream(resource);
             if (stream == null)
@@ -185,7 +185,7 @@ namespace VDS.RDF.Storage
         /// Heavily adapted from code used in <a href="http://www.bugnetproject.com">BugNet</a>
         /// </para>
         /// </remarks>
-        protected void ExecuteSql(Stream stream)
+        protected internal void ExecuteSql(Stream stream)
         {
             List<String> statements = new List<String>();
 
@@ -337,15 +337,10 @@ namespace VDS.RDF.Storage
         public String CheckSchema()
         {
             TCommand cmd = this.GetCommand();
-            cmd.CommandText = "GetSchema";
+            cmd.CommandText = "GetSchemaName";
             cmd.CommandType = CommandType.StoredProcedure;
-            cmd.Parameters.Add(this.GetParameter("RC"));
-            cmd.Parameters["RC"].DbType = DbType.String;
-            cmd.Parameters["RC"].Direction = ParameterDirection.ReturnValue;
             cmd.Connection = this._connection;
-            cmd.ExecuteNonQuery();
-
-            return (String)cmd.Parameters["RC"].Value;
+            return (String)cmd.ExecuteScalar();
         }
 
         public void ClearStore()

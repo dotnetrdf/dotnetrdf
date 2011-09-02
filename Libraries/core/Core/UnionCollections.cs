@@ -48,7 +48,8 @@ namespace VDS.RDF
     /// The union consists of a <em>Base</em> collection which is the collection that Triples can actually be added to and deleted from and any number of additional collections which are read-only as far as the union is concerned (this does not mean they cannot be altered elsewhere by other code)
     /// </para>
     /// </remarks>
-    public class UnionTripleCollection : BaseTripleCollection
+    public class UnionTripleCollection 
+        : BaseTripleCollection
     {
         private List<BaseTripleCollection> _collections = new List<BaseTripleCollection>();
         private BaseTripleCollection _baseCollection;

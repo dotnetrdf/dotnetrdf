@@ -60,7 +60,7 @@ GO
 CREATE PROCEDURE GetSchemaName
 AS
 BEGIN
-  RETURN 'Simple 2000';
+  SELECT 'Simple 2000';
 END
 
 -- ClearStore

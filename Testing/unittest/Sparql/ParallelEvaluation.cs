@@ -103,7 +103,14 @@ namespace VDS.RDF.Test.Sparql
         [TestMethod]
         public void SparqlParallelEvaluationJoin2()
         {
-            this.TestQuery("SELECT * WHERE { ?s ?p ?o { ?x ?y ?z } { ?a ?b ?c } }");
+            try
+            {
+                this.TestQuery("SELECT * WHERE { ?s ?p ?o { ?x ?y ?z } { ?a ?b ?c } }");
+            }
+            catch (OutOfMemoryException outEx)
+            {
+                TestTools.ReportError("Out of Memory", outEx, false);
+            }
         }
     }
 }

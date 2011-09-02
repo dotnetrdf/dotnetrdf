@@ -10,7 +10,7 @@ using VDS.RDF.Storage;
 namespace VDS.RDF.Utilities.Data.Sql.Clients.Cmd
 {
     public class Migrate
-        : ManagementAction
+        : BaseManagementAction
     {
         private bool _verify = false, _halt = false;
 

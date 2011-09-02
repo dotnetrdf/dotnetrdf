@@ -5,15 +5,15 @@ using System.Text;
 
 namespace VDS.RDF.Utilities.Data.Sql.Clients.Cmd
 {
-    public abstract class ManagementAction
+    public abstract class BaseManagementAction
     {
-        public ManagementAction(String name, String descrip)
+        public BaseManagementAction(String name, String descrip)
         {
             this.Name = name;
             this.Description = descrip;
         }
 
-        public ManagementAction(String name)
+        public BaseManagementAction(String name)
             : this(name, String.Empty) { }
 
         public String Name

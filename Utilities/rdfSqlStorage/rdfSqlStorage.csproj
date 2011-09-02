@@ -39,7 +39,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BaseConnectAction.cs" />
+    <Compile Include="Create.cs" />
+    <Compile Include="Drop.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="ListGraphs.cs" />
     <Compile Include="ManagementAction.cs" />
     <Compile Include="Migrate.cs" />
     <Compile Include="Program.cs" />

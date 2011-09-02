@@ -8,22 +8,29 @@ namespace VDS.RDF.Utilities.Data.Sql.Clients.Cmd
 {
     class Program
     {
-        private static Dictionary<String, ManagementAction> _modes = new Dictionary<string, ManagementAction>();
+        private static Dictionary<String, BaseManagementAction> _modes = new Dictionary<string, BaseManagementAction>();
 
         static void Main(string[] args)
         {
             try
             {
                 //Load the available modes
-                Type target = typeof(ManagementAction);
+                Type target = typeof(BaseManagementAction);
                 foreach (Type t in Assembly.GetExecutingAssembly().GetTypes())
                 {
                     if (target.IsAssignableFrom(t) && !target.Equals(t))
                     {
-                        ManagementAction action = Activator.CreateInstance(t) as ManagementAction;
-                        if (action != null)
+                        try
                         {
-                            _modes.Add(action.Name, action);
+                            BaseManagementAction action = Activator.CreateInstance(t) as BaseManagementAction;
+                            if (action != null)
+                            {
+                                _modes.Add(action.Name, action);
+                            }
+                        }
+                        catch
+                        {
+                            //Ignore errors here
                         }
                     }
                 }
@@ -38,7 +45,7 @@ namespace VDS.RDF.Utilities.Data.Sql.Clients.Cmd
 
                     if (_modes.ContainsKey(mode))
                     {
-                        ManagementAction action = _modes[mode];
+                        BaseManagementAction action = _modes[mode];
                         if (args.Length - 1 >= action.MinimumArguments)
                         {
                             action.Run(args);
@@ -74,9 +81,9 @@ namespace VDS.RDF.Utilities.Data.Sql.Clients.Cmd
             Console.WriteLine("Available Modes");
             Console.WriteLine("---------------");
             Console.WriteLine();
-            foreach (ManagementAction action in _modes.Values)
+            foreach (BaseManagementAction action in _modes.Values)
             {
-                Console.WriteLine(action.Name + " " + action.Description);
+                Console.WriteLine(action.Name + " -> " + action.Description);
             }
             Console.WriteLine();
             Console.WriteLine("To see options for a specific mode type rdfSqlStorage mode -help");

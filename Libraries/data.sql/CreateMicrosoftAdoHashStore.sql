@@ -87,7 +87,7 @@ GO
 CREATE PROCEDURE GetSchemaName
 AS
 BEGIN
-  RETURN 'Hash';
+  SELECT 'Hash';
 END
 
 -- ClearStore
