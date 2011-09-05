@@ -95,7 +95,6 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
                     response.Close();
                     return g;
                 }
-                response.Close();
             }
         }
 

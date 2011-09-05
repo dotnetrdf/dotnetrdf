@@ -6,7 +6,8 @@ using VDS.RDF.Storage;
 
 namespace VDS.RDF.Utilities.StoreManager.Tasks
 {
-    class ViewGraphTask : NonCancellableTask<IGraph>
+    class ViewGraphTask 
+        : NonCancellableTask<IGraph>
     {
         private IGenericIOManager _manager;
         private String _graphUri;

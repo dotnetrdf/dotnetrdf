@@ -43,7 +43,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Abstract Base class for unary numeric functions in the Leviathan Function Library
     /// </summary>
-    public abstract class BaseUnaryLeviathanNumericFunction : BaseUnaryArithmeticExpression
+    public abstract class BaseUnaryLeviathanNumericFunction 
+        : BaseUnaryArithmeticExpression
     {
         /// <summary>
         /// Creates a new Leviathan Unary Numeric function
@@ -126,7 +127,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Abstract Base class for binary numeric functions in the Leviathan Function Library
     /// </summary>
-    public abstract class BaseBinaryLeviathanNumericFunction : BaseBinaryArithmeticExpression
+    public abstract class BaseBinaryLeviathanNumericFunction
+        : BaseBinaryArithmeticExpression
     {
         /// <summary>
         /// Creates a new Leviathan Binary Numeric function
@@ -214,7 +216,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the Leviathan lfn:sq() function
     /// </summary>
-    public class LeviathanSquareFunction : BaseUnaryLeviathanNumericFunction
+    public class LeviathanSquareFunction 
+        : BaseUnaryLeviathanNumericFunction
     {
         /// <summary>
         /// Creates a new Leviathan Square Function
@@ -273,6 +276,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new LeviathanSquareFunction(transformer.Transform(this._expr));
@@ -282,7 +290,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the Leviathan lfn:cube() function
     /// </summary>
-    public class LeviathanCubeFunction : BaseUnaryLeviathanNumericFunction
+    public class LeviathanCubeFunction
+        : BaseUnaryLeviathanNumericFunction
     {
         /// <summary>
         /// Creates a new Leviathan Cube Function
@@ -341,6 +350,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new LeviathanCubeFunction(transformer.Transform(this._expr));
@@ -350,7 +364,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the Leviathan lfn:sqrt() function
     /// </summary>
-    public class LeviathanSquareRootFunction : BaseUnaryLeviathanNumericFunction
+    public class LeviathanSquareRootFunction
+        : BaseUnaryLeviathanNumericFunction
     {
         /// <summary>
         /// Creates a new Leviathan Square Root Function
@@ -409,6 +424,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new LeviathanSquareRootFunction(transformer.Transform(this._expr));
@@ -418,7 +438,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the Leviathan lfn:ln() function
     /// </summary>
-    public class LeviathanNaturalLogFunction : BaseUnaryLeviathanNumericFunction
+    public class LeviathanNaturalLogFunction
+        : BaseUnaryLeviathanNumericFunction
     {
         /// <summary>
         /// Creates a new Leviathan Natural Logarithm Function
@@ -477,6 +498,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new LeviathanNaturalLogFunction(transformer.Transform(this._expr));
@@ -486,7 +512,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the Leviathan lfn:e() function
     /// </summary>
-    public class LeviathanEFunction : BaseUnaryLeviathanNumericFunction
+    public class LeviathanEFunction 
+        : BaseUnaryLeviathanNumericFunction
     {
         /// <summary>
         /// Creates a new Leviathan E Function
@@ -545,6 +572,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new LeviathanEFunction(transformer.Transform(this._expr));
@@ -554,7 +586,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the Leviathan lfn:ten() function
     /// </summary>
-    public class LeviathanTenFunction : BaseUnaryLeviathanNumericFunction
+    public class LeviathanTenFunction 
+        : BaseUnaryLeviathanNumericFunction
     {
         /// <summary>
         /// Creates a new Leviathan Ten Function
@@ -613,6 +646,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new LeviathanTenFunction(transformer.Transform(this._expr));
@@ -622,7 +660,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the Leviathan lfn:factorial() function
     /// </summary>
-    public class LeviathanFactorialFunction : BaseUnaryLeviathanNumericFunction
+    public class LeviathanFactorialFunction 
+        : BaseUnaryLeviathanNumericFunction
     {
         /// <summary>
         /// Creates a new Leviathan Factorial Function
@@ -697,6 +736,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new LeviathanFactorialFunction(transformer.Transform(this._expr));
@@ -706,7 +750,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the Leviathan lfn:reciprocal() function
     /// </summary>
-    public class LeviathanReciprocalFunction : BaseUnaryLeviathanNumericFunction
+    public class LeviathanReciprocalFunction
+        : BaseUnaryLeviathanNumericFunction
     {
         /// <summary>
         /// Creates a new Leviathan Reciprocal Function
@@ -765,6 +810,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new LeviathanReciprocalFunction(transformer.Transform(this._expr));
@@ -774,7 +824,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the Leviathan lfn:pow() function
     /// </summary>
-    public class LeviathanPowerFunction : BaseBinaryLeviathanNumericFunction
+    public class LeviathanPowerFunction
+        : BaseBinaryLeviathanNumericFunction
     {
         /// <summary>
         /// Creates a new Leviathan Power Function
@@ -837,6 +888,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new LeviathanPowerFunction(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
@@ -846,7 +902,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the Leviathan lfn:root() function
     /// </summary>
-    public class LeviathanRootFunction : BaseBinaryLeviathanNumericFunction
+    public class LeviathanRootFunction 
+        : BaseBinaryLeviathanNumericFunction
     {
         /// <summary>
         /// Creates a new Leviathan Root Function
@@ -909,6 +966,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new LeviathanRootFunction(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
@@ -918,7 +980,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the Leviathan lfn:log() function
     /// </summary>
-    public class LeviathanLogFunction : BaseBinaryLeviathanNumericFunction
+    public class LeviathanLogFunction 
+        : BaseBinaryLeviathanNumericFunction
     {
         private bool _log10 = false;
 
@@ -1000,6 +1063,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             if (this._log10)
@@ -1016,7 +1084,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the Leviathan lfn:pythagoras() function
     /// </summary>
-    public class LeviathanPyathagoreanDistanceFunction : BaseBinaryLeviathanNumericFunction
+    public class LeviathanPyathagoreanDistanceFunction 
+        : BaseBinaryLeviathanNumericFunction
     {
         /// <summary>
         /// Creates a new Leviathan Pythagorean Distance Function
@@ -1079,6 +1148,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new LeviathanPyathagoreanDistanceFunction(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
@@ -1088,7 +1162,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the Leviathan lfn:rnd() function
     /// </summary>
-    public class LeviathanRandomFunction : BaseBinaryLeviathanNumericFunction
+    public class LeviathanRandomFunction
+        : BaseBinaryLeviathanNumericFunction
     {
         private Random _rnd = new Random();
         private int _args = 0;
@@ -1194,6 +1269,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new LeviathanRandomFunction(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));

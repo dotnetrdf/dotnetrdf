@@ -18,7 +18,7 @@ namespace VDS.RDF
     /// <remarks>
     /// <h3>Persistence Behaviour</h3>
     /// <para>
-    /// <strong>Note:</strong> This is a transactional implementation - this means that changes made are not persisted until you either call <see cref="PersistentTripleStore.Flush()">Flush()</see> or you dispose of the instance.
+    /// <strong>Note:</strong> This is a transactional implementation - this means that changes made are not persisted until you either call <see cref="PersistentTripleStore.Flush()">Flush()</see> or you dispose of the instance.  Alternatively you may invoke the <see cref="PersistentTripleStore.Discard()">Discard()</see> method to throw away changes made to the in-memory state.
     /// </para>
     /// <para>
     /// The actual level of persistence provided will vary according to the <see cref="IGenericIOManager">IGenericIOManager</see> instance you use.  For example if the <see cref="IGenericIOManager.DeleteGraph()">DeleteGraph()</see> method is not supported then Graph removals won't persist in the underlying store.  Similarily an instance which is read-only will allow you to pull out existing graphs from the store but won't persist any changes.
@@ -40,6 +40,10 @@ namespace VDS.RDF
     /// <para>
     /// Please be aware that as with SPARQL Query if the in-memory view is not synced with the underlying store a <see cref="SparqlUpdateException">SparqlUpdateException</see> will be thrown.
     /// </para>
+    /// <h3>Other Notes</h3>
+    /// <para>
+    /// It is possible for the in-memory view of the triple store to get out of sync with the underlying store if that store is being modified by other processes or other code not utilising the <see cref="PersistentTripleStore">PersistentTripleStore</see> instance that you have created.  Currently there is no means to resync the in-memory view with the underlying view so you should be careful of using this class in scenarios where your underlying store may be modified.
+    /// </para>
     /// </remarks>
     public sealed class PersistentTripleStore
         : BaseTripleStore, INativelyQueryableStore, IUpdateableTripleStore, ITransactionalStore
@@ -48,6 +52,13 @@ namespace VDS.RDF
         private SparqlUpdateParser _updateParser;
         private GenericUpdateProcessor _updateProcessor;
 
+        /// <summary>
+        /// Creates a new in-memory view of some underlying store represented by the <see cref="IGenericIOManager">IGenericIOManager</see> instance
+        /// </summary>
+        /// <param name="manager">IO Manager</param>
+        /// <remarks>
+        /// Please see the remarks for this class for notes on exact behaviour of this class
+        /// </remarks>
         public PersistentTripleStore(IGenericIOManager manager)
             : base(new PersistentGraphCollection(manager))
         {
@@ -70,6 +81,12 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Disposes of the Triple Store flushing any outstanding changes to the underlying store
+        /// </summary>
+        /// <remarks>
+        /// If you do not want to persist changes you have please ensure you call <see cref="PersistentTripleStore.Discard()">Discard()</see> prior to disposing of the instance
+        /// </remarks>
         public override void Dispose()
         {
             this.Dispose(true);
@@ -81,6 +98,9 @@ namespace VDS.RDF
             this.Flush();
         }
 
+        /// <summary>
+        /// Flushes any outstanding changes to the underlying store
+        /// </summary>
         public void  Flush()
         {
             if (this._graphs != null)
@@ -89,6 +109,9 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Discards any outstanding changes returning the in-memory view of the store to the state it was in after the last Flush/Discard operation
+        /// </summary>
         public void  Discard()
         {
             if (this._graphs != null)
@@ -99,6 +122,11 @@ namespace VDS.RDF
 
         #region INativelyQueryableStore Members
 
+        /// <summary>
+        /// Executes a SPARQL Query on the Triple Store
+        /// </summary>
+        /// <param name="query">Sparql Query as unparsed String</param>
+        /// <returns></returns>
         public object ExecuteQuery(string query)
         {
             Graph g = new Graph();
@@ -114,6 +142,12 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Executes a SPARQL Query on the Triple Store processing the results using an appropriate handler from those provided
+        /// </summary>
+        /// <param name="rdfHandler">RDF Handler</param>
+        /// <param name="resultsHandler">Results Handler</param>
+        /// <param name="query">SPARQL Query as unparsed String</param>
         public void ExecuteQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string query)
         {
             if (this._manager is IQueryableGenericIOManager)
@@ -135,6 +169,13 @@ namespace VDS.RDF
 
         #region IUpdateableTripleStore Members
 
+        /// <summary>
+        /// Executes an Update against the Triple Store
+        /// </summary>
+        /// <param name="update">SPARQL Update Command(s)</param>
+        /// <remarks>
+        /// As per the SPARQL 1.1 Update specification the command string may be a sequence of commands
+        /// </remarks>
         public void ExecuteUpdate(string update)
         {
             if (this._manager is IUpdateableGenericIOManager)
@@ -155,11 +196,19 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Executes a single Update Command against the Triple Store
+        /// </summary>
+        /// <param name="update">SPARQL Update Command</param>
         public void ExecuteUpdate(SparqlUpdateCommand update)
         {
             this.ExecuteUpdate(update.ToString());
         }
 
+        /// <summary>
+        /// Executes a set of Update Commands against the Triple Store
+        /// </summary>
+        /// <param name="updates">SPARQL Update Command Set</param>
         public void ExecuteUpdate(SparqlUpdateCommandSet updates)
         {
             this.ExecuteUpdate(updates.ToString());
@@ -168,6 +217,9 @@ namespace VDS.RDF
         #endregion
     }
 
+    /// <summary>
+    /// Internal implementation of a Graph Collection for use by the <see cref="PersistentTripleStore">PersistentTripleStore</see>
+    /// </summary>
     class PersistentGraphCollection
         : GraphCollection
     {

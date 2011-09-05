@@ -181,10 +181,18 @@ namespace VDS.RDF
             this._hashcode = (this._nodetype + this.ToString() + DataTypedLiteralHashCodeSalt).GetHashCode();
         }
 
+        /// <summary>
+        /// Deserialization Only Constructor
+        /// </summary>
         protected BaseLiteralNode()
             : base(null, NodeType.Literal) { }
 
 #if !SILVERLIGHT
+        /// <summary>
+        /// Deserialization Constructor
+        /// </summary>
+        /// <param name="info">Serialization Information</param>
+        /// <param name="context">Streaming Context</param>
         protected BaseLiteralNode(SerializationInfo info, StreamingContext context)
             : base(null, NodeType.Literal)
         {
@@ -518,6 +526,11 @@ namespace VDS.RDF
 
         #region ISerializable Members
 
+        /// <summary>
+        /// Gets the serialization information
+        /// </summary>
+        /// <param name="info">Serialization Information</param>
+        /// <param name="context">Streaming Context</param>
         public sealed override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("value", this._value);
@@ -541,6 +554,10 @@ namespace VDS.RDF
 
         #region IXmlSerializable Members
 
+        /// <summary>
+        /// Reads the data for XML deserialization
+        /// </summary>
+        /// <param name="reader">XML Reader</param>
         public sealed override void ReadXml(XmlReader reader)
         {
             if (reader.HasAttributes)
@@ -581,6 +598,10 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Writes the data for XML serialization
+        /// </summary>
+        /// <param name="writer">XML Writer</param>
         public sealed override void WriteXml(XmlWriter writer)
         {
             if (this._datatype != null)
@@ -605,7 +626,8 @@ namespace VDS.RDF
 #if !SILVERLIGHT
     [Serializable,XmlRoot(ElementName="literal")]
 #endif
-    public class LiteralNode : BaseLiteralNode, IEquatable<LiteralNode>, IComparable<LiteralNode>
+    public class LiteralNode
+        : BaseLiteralNode, IEquatable<LiteralNode>, IComparable<LiteralNode>
     {
         /// <summary>
         /// Constants used to add salt to the hashes of different Literal Nodes
@@ -669,10 +691,18 @@ namespace VDS.RDF
         protected internal LiteralNode(IGraph g, String literal, Uri datatype, bool normalize)
             : base(g, literal, datatype, normalize) { }
 
+        /// <summary>
+        /// Deserialization Only Constructor
+        /// </summary>
         protected LiteralNode()
             : base() { }
 
 #if !SILVERLIGHT
+        /// <summary>
+        /// Deserialization Constructor
+        /// </summary>
+        /// <param name="info">Serialization Information</param>
+        /// <param name="context">Streaming Context</param>
         protected LiteralNode(SerializationInfo info, StreamingContext context)
             : base(info, context) { }
 #endif
@@ -736,10 +766,18 @@ namespace VDS.RDF
         protected internal NonNormalizedLiteralNode(IGraph g, String literal, Uri datatype)
             : base(g, literal, datatype, false) { }
 
+        /// <summary>
+        /// Deserialization Only Constructor
+        /// </summary>
         protected NonNormalizedLiteralNode()
             : base() { }
 
 #if !SILVERLIGHT
+        /// <summary>
+        /// Deserialization Constructor
+        /// </summary>
+        /// <param name="info">Serialization Information</param>
+        /// <param name="context">Streaming Context</param>
         protected NonNormalizedLiteralNode(SerializationInfo info, StreamingContext context)
             : base(info, context) { }
 #endif

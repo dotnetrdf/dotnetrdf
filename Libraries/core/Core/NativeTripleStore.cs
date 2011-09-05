@@ -69,9 +69,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Executes a Sparql Query against the underlying Store
+        /// Executes a SPARQL Query against the underlying Store
         /// </summary>
-        /// <param name="query">Sparql Query</param>
+        /// <param name="query">SPARQL Query</param>
         /// <returns></returns>
         /// <exception cref="RdfParseException">The Query Results are returned in an unexpected format</exception>
         /// <exception cref="RdfStorageException">There is a problem accessing the underlying store</exception>
@@ -80,6 +80,13 @@ namespace VDS.RDF
             return this._manager.Query(query);
         }
 
+        /// <summary>
+        /// Executes a SPARQL Query against the underlying Store processing the results with an appropriate handler from those provided
+        /// </summary>
+        /// <param name="rdfHandler">RDF Handler</param>
+        /// <param name="resultsHandler">SPARQL Results Handler</param>
+        /// <param name="query">SPARQL Query</param>
+        /// <returns></returns>
         public void ExecuteQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string query)
         {
             this._manager.Query(rdfHandler, resultsHandler, query);

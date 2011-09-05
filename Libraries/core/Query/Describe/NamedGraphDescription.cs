@@ -35,18 +35,22 @@ terms.
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using VDS.RDF.Parsing;
-using VDS.RDF.Query.Algebra;
 
 namespace VDS.RDF.Query.Describe
 {
     /// <summary>
     /// Computes a Description for all the results such that the description is the merge of all the Graphs named with a resulting URI
     /// </summary>
-    public class NamedGraphDescription : BaseDescribeAlgorithm
+    public class NamedGraphDescription 
+        : BaseDescribeAlgorithm
     {
+        /// <summary>
+        /// Generates the Description for each of the Nodes to be described
+        /// </summary>
+        /// <param name="handler">RDF Handler</param>
+        /// <param name="context">SPARQL Evaluation Context</param>
+        /// <param name="nodes">Nodes to be described</param>
         protected override void DescribeInternal(IRdfHandler handler, SparqlEvaluationContext context, IEnumerable<INode> nodes)
         {
             //Rewrite Blank Node IDs for DESCRIBE Results

@@ -67,6 +67,9 @@ namespace VDS.RDF.Writing
             }
         }
 
+        /// <summary>
+        /// Gets the type of the Triple Formatter used by this writer
+        /// </summary>
         public Type TripleFormatterType
         {
             get

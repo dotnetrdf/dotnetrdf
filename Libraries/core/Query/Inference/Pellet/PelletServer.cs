@@ -83,11 +83,24 @@ namespace VDS.RDF.Query.Inference.Pellet
             this.Discover();
         }
 #endif
+
+        /// <summary>
+        /// Connects to a Pellet Server instance asynchronously invoking the callback when the connection is ready
+        /// </summary>
+        /// <param name="serverUri">Server URI</param>
+        /// <param name="callback">Callback to invoke when the connection is ready</param>
+        /// <param name="state">State to pass to the callback</param>
         public static void Connect(Uri serverUri, PelletServerReadyCallback callback, Object state)
         {
             new PelletServer(serverUri, callback, state);
         }
 
+        /// <summary>
+        /// Connects to a Pellet Server instance asynchronously invoking the callback when the connection is ready
+        /// </summary>
+        /// <param name="serverUri">Server URI</param>
+        /// <param name="callback">Callback to invoke when the connection is ready</param>
+        /// <param name="state">State to pass to the callback</param>
         public static void Connect(String serverUri, PelletServerReadyCallback callback, Object state)
         {
             new PelletServer(serverUri, callback, state);
@@ -97,6 +110,8 @@ namespace VDS.RDF.Query.Inference.Pellet
         /// Creates a new connection to a Pellet Server
         /// </summary>
         /// <param name="serverUri">Server URI</param>
+        /// <param name="callback">Callback to invoke when the connection is ready</param>
+        /// <param name="state">State to pass to the callback</param>
         private PelletServer(Uri serverUri, PelletServerReadyCallback callback, Object state)
         {
             if (serverUri == null) throw new ArgumentNullException("serverUri", "A Server URI must be specified in order to connect to a Pellet Server");
@@ -110,6 +125,8 @@ namespace VDS.RDF.Query.Inference.Pellet
         /// Creates a new connection to a Pellet Server
         /// </summary>
         /// <param name="serverUri">Server URI</param>
+        /// <param name="callback">Callback to invoke when the connection is ready</param>
+        /// <param name="state">State to pass to the callback</param>
         private PelletServer(String serverUri, PelletServerReadyCallback callback, Object state)
         {
             if (serverUri == null) throw new ArgumentNullException("serverUri", "A Server URI must be specified in order to connect to a Pellet Server");
@@ -182,6 +199,11 @@ namespace VDS.RDF.Query.Inference.Pellet
         }
 
 #endif
+        /// <summary>
+        /// Discovers the Knowledge Bases on a Server asynchronously
+        /// </summary>
+        /// <param name="callback">Callback to invoke when the operation completes</param>
+        /// <param name="state"></param>
         private void Discover(PelletServerReadyCallback callback, Object state)
         {
             //Make the request to the Server Root URL to get the JSON description of the server

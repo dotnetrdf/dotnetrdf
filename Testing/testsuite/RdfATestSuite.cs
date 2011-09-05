@@ -79,8 +79,8 @@ namespace dotNetRDFTest
                 int testsPassed = 0;
                 int testsFailed = 0;
                 String[] files = Directory.GetFiles("rdfa_tests");
-                //RdfAParser parser = new RdfAParser(RdfASyntax.AutoDetectLegacy);
-                XHtmlPlusRdfAParser parser = new XHtmlPlusRdfAParser();
+                RdfAParser parser = new RdfAParser(RdfASyntax.AutoDetectLegacy);
+                //XHtmlPlusRdfAParser parser = new XHtmlPlusRdfAParser();
                 parser.Warning += new RdfReaderWarning(parser_Warning);
                 SparqlQueryParser queryparser = new SparqlQueryParser();
                 bool passed, passDesired;

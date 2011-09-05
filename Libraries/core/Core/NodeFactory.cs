@@ -34,9 +34,6 @@ terms.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace VDS.RDF
 {
@@ -214,6 +211,7 @@ namespace VDS.RDF
         /// Gets a Graph Reference for the given Graph URI and indicates whether this was a new Graph reference
         /// </summary>
         /// <param name="graphUri">Graph URI</param>
+        /// <param name="created">Indicates whether the returned reference was newly created</param>
         /// <returns></returns>
         public IGraph TryGetGraph(Uri graphUri, out bool created)
         {
@@ -235,9 +233,6 @@ namespace VDS.RDF
         /// <summary>
         /// Resets the Factory so any Graphs with contents are emptied
         /// </summary>
-        /// <remarks>
-        /// May be useful if your use of this class requires that you
-        /// </remarks>
         public void Reset()
         {
             foreach (IGraph g in this._store.Graphs)

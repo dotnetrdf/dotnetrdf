@@ -156,21 +156,35 @@ namespace VDS.RDF
         }
     }
 
+    /// <summary>
+    /// Represents an action on a Triple Store that is queued for persistence
+    /// </summary>
     public class TripleStorePersistenceAction
     {
         private GraphPersistenceAction _graphAction;
         private TriplePersistenceAction _tripleAction;
 
+        /// <summary>
+        /// Creates a new persistence action that pertains to a Graph
+        /// </summary>
+        /// <param name="graphAction">Graph Action</param>
         public TripleStorePersistenceAction(GraphPersistenceAction graphAction)
         {
             this._graphAction = graphAction;
         }
 
+        /// <summary>
+        /// Creates a new persistence action that pertains to a Triple
+        /// </summary>
+        /// <param name="tripleAction">Triple Action</param>
         public TripleStorePersistenceAction(TriplePersistenceAction tripleAction)
         {
             this._tripleAction = tripleAction;
         }
 
+        /// <summary>
+        /// Gets whether this action pertains to a Graph
+        /// </summary>
         public bool IsGraphAction
         {
             get
@@ -179,6 +193,9 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Gets whether this action peratins to a Triple
+        /// </summary>
         public bool IsTripleAction
         {
             get
@@ -187,6 +204,9 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Gets the Graph Action (if any)
+        /// </summary>
         public GraphPersistenceAction GraphAction
         {
             get
@@ -195,6 +215,9 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Gets the Triple Action (if any)
+        /// </summary>
         public TriplePersistenceAction TripleAction
         {
             get

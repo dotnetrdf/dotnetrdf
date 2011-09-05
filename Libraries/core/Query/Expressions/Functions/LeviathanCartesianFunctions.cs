@@ -43,7 +43,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the Leviathan lfn:cartesian() function
     /// </summary>
-    public class LeviathanCartesianFunction : BaseArithmeticExpression
+    public class LeviathanCartesianFunction
+        : BaseArithmeticExpression
     {
         private ISparqlExpression _x1, _y1, _z1, _x2, _y2, _z2;
         private bool _3d = false;
@@ -244,6 +245,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             if (this._3d)

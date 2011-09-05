@@ -44,7 +44,8 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
     /// <summary>
     /// Represents the Namespace Service provided by a Pellet Server knowledge base
     /// </summary>
-    public class NamespaceService : PelletService
+    public class NamespaceService
+        : PelletService
     {
         /// <summary>
         /// Creates a new Namespace Service
@@ -121,6 +122,11 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
 
 #endif
 
+        /// <summary>
+        /// Gets the Namespaces used in the Knowledge Base
+        /// </summary>
+        /// <param name="callback">Callback to invoke when the operation completes</param>
+        /// <param name="state">State to be passed to the callback</param>
         public void GetNamespaces(NamespaceCallback callback, Object state)
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this.Endpoint.Uri);

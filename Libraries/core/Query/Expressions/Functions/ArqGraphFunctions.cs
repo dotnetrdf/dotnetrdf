@@ -43,7 +43,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the ARQ afn:bnode() function
     /// </summary>
-    public class ArqBNodeFunction : BaseUnaryExpression
+    public class ArqBNodeFunction 
+        : BaseUnaryExpression
     {
         /// <summary>
         /// Creates a new ARQ BNode function
@@ -135,7 +136,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the ARQ afn:localname() function
     /// </summary>
-    public class ArqLocalNameFunction : BaseUnaryExpression
+    public class ArqLocalNameFunction 
+        : BaseUnaryExpression
     {
         /// <summary>
         /// Creates a new ARQ Local Name function
@@ -238,7 +240,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the ARQ namespace() function
     /// </summary>
-    public class ArqNamespaceFunction : BaseUnaryExpression
+    public class ArqNamespaceFunction 
+        : BaseUnaryExpression
     {
         /// <summary>
         /// Creates a new ARQ Namespace function

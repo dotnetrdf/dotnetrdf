@@ -46,7 +46,8 @@ namespace VDS.RDF.Query.Expressions
     /// <summary>
     /// Class representing Variable value expressions
     /// </summary>
-    public class VariableExpressionTerm : ISparqlNumericExpression
+    public class VariableExpressionTerm 
+        : ISparqlNumericExpression
     {
         private String _name;
 
@@ -293,7 +294,8 @@ namespace VDS.RDF.Query.Expressions
     /// <summary>
     /// Class for representing Node Terms
     /// </summary>
-    public class NodeExpressionTerm : ISparqlExpression
+    public class NodeExpressionTerm
+        : ISparqlExpression
     {
         /// <summary>
         /// Node this Term represents
@@ -407,7 +409,8 @@ namespace VDS.RDF.Query.Expressions
     /// <summary>
     /// Class for representing Boolean Terms
     /// </summary>
-    public class BooleanExpressionTerm : ISparqlExpression
+    public class BooleanExpressionTerm
+        : ISparqlExpression
     {
         private bool _value;
         private INode _node;
@@ -506,7 +509,8 @@ namespace VDS.RDF.Query.Expressions
     /// <summary>
     /// Class for representing Fixed Numeric Terms
     /// </summary>
-    public class NumericExpressionTerm : ISparqlNumericExpression
+    public class NumericExpressionTerm
+        : ISparqlNumericExpression
     {
         private long _intvalue = 0;
         private decimal _decvalue = Decimal.Zero;
@@ -757,7 +761,8 @@ namespace VDS.RDF.Query.Expressions
     /// <summary>
     /// Class for representing Graph Pattern Terms (as used in EXISTS/NOT EXISTS)
     /// </summary>
-    public class GraphPatternExpressionTerm : ISparqlExpression
+    public class GraphPatternExpressionTerm
+        : ISparqlExpression
     {
         private GraphPattern _pattern;
 

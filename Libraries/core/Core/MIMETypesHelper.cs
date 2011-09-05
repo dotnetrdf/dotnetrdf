@@ -180,11 +180,11 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Registers a Parser as the default RDF Parser for all the given MIME types and updates relevant definitions to include the MIME types and file extensions
+        /// Registers a parser as the default RDF Parser for all the given MIME types and updates relevant definitions to include the MIME types and file extensions
         /// </summary>
-        /// <param name="parser"></param>
-        /// <param name="mimeTypes"></param>
-        /// <param name="fileExtensions"></param>
+        /// <param name="parser">RDF Parser</param>
+        /// <param name="mimeTypes">MIME Types</param>
+        /// <param name="fileExtensions">File Extensions</param>
         public static void RegisterParser(IRdfReader parser, IEnumerable<String> mimeTypes, IEnumerable<String> fileExtensions)
         {
             if (!_init) Init();
@@ -216,6 +216,12 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Registers a parser as the default RDF Dataset Parser for all the given MIME types and updates relevant definitions to include the MIME types and file extensions
+        /// </summary>
+        /// <param name="parser">RDF Dataset Parser</param>
+        /// <param name="mimeTypes">MIME Types</param>
+        /// <param name="fileExtensions">File Extensions</param>
         public static void RegisterParser(IStoreReader parser, IEnumerable<String> mimeTypes, IEnumerable<String> fileExtensions)
         {
             if (!_init) Init();
@@ -247,6 +253,12 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Registers a parser as the default SPARQL Rsults Parser for all the given MIME types and updates relevant definitions to include the MIME types and file extensions
+        /// </summary>
+        /// <param name="parser">SPARQL Results Parser</param>
+        /// <param name="mimeTypes">MIME Types</param>
+        /// <param name="fileExtensions">File Extensions</param>
         public static void RegisterParser(ISparqlResultsReader parser, IEnumerable<String> mimeTypes, IEnumerable<String> fileExtensions)
         {
             if (!_init) Init();
@@ -278,6 +290,12 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Registers a writer as the default RDF Writer for all the given MIME types and updates relevant definitions to include the MIME types and file extensions
+        /// </summary>
+        /// <param name="writer">RDF Writer</param>
+        /// <param name="mimeTypes">MIME Types</param>
+        /// <param name="fileExtensions">File Extensions</param>
         public static void RegisterWriter(IRdfWriter writer, IEnumerable<String> mimeTypes, IEnumerable<String> fileExtensions)
         {
             if (!_init) Init();
@@ -309,6 +327,12 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Registers a writer as the default RDF Dataset Writer for all the given MIME types and updates relevant definitions to include the MIME types and file extensions
+        /// </summary>
+        /// <param name="writer">RDF Dataset Writer</param>
+        /// <param name="mimeTypes">MIME Types</param>
+        /// <param name="fileExtensions">File Extensions</param>
         public static void RegisterWriter(IStoreWriter writer, IEnumerable<String> mimeTypes, IEnumerable<String> fileExtensions)
         {
             if (!_init) Init();
@@ -340,6 +364,12 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Registers a writer as the default SPARQL Results Writer for all the given MIME types and updates relevant definitions to include the MIME types and file extensions
+        /// </summary>
+        /// <param name="writer">SPARQL Results Writer</param>
+        /// <param name="mimeTypes">MIME Types</param>
+        /// <param name="fileExtensions">File Extensions</param>
         public static void RegisterWriter(ISparqlResultsWriter writer, IEnumerable<String> mimeTypes, IEnumerable<String> fileExtensions)
         {
             if (!_init) Init();

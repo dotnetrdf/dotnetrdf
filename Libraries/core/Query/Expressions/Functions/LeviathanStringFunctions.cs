@@ -48,7 +48,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the Leviathan lfn:md5hash() function
     /// </summary>
-    public class LeviathanMD5HashFunction : BaseHashFunction
+    public class LeviathanMD5HashFunction 
+        : BaseHashFunction
     {
         /// <summary>
         /// Creates a new Leviathan MD5 Hash function
@@ -77,13 +78,19 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new LeviathanMD5HashFunction(transformer.Transform(this._expr));
         }
     }
 #else
-    public class LeviathanMD5HashFunction : BaseHashLibFunction
+    public class LeviathanMD5HashFunction 
+    : BaseHashLibFunction
     {
         /// <summary>
         /// Creates a new Leviathan MD5() Function
@@ -112,6 +119,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             return "<" + LeviathanFunctionFactory.LeviathanFunctionsNamespace + LeviathanFunctionFactory.MD5Hash + ">(" + this._expr.ToString() + ")";
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new LeviathanMD5HashFunction(transformer.Transform(this._expr));
@@ -122,7 +134,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the Leviathan lfn:sha256hash() function
     /// </summary>
-    public class LeviathanSha256HashFunction : BaseHashFunction
+    public class LeviathanSha256HashFunction 
+        : BaseHashFunction
     {
         /// <summary>
         /// Creates a new Leviathan SHA 256 Hash function
@@ -151,6 +164,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new LeviathanSha256HashFunction(transformer.Transform(this._expr));

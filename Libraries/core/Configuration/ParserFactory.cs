@@ -34,14 +34,16 @@ terms.
 */
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 
 namespace VDS.RDF.Configuration
 {
-    public class ParserFactory : IObjectFactory
+    /// <summary>
+    /// Object Factory used by the Configuration API to load parsers from configuration graphs
+    /// </summary>
+    public class ParserFactory 
+        : IObjectFactory
     {
         private Type[] _parserTypes = new Type[]
         {
@@ -50,6 +52,14 @@ namespace VDS.RDF.Configuration
             typeof(ISparqlResultsReader)
         };
 
+        /// <summary>
+        /// Tries to load a Parser based on information from the Configuration Graph
+        /// </summary>
+        /// <param name="g">Configuration Graph</param>
+        /// <param name="objNode">Object Node</param>
+        /// <param name="targetType">Target Type</param>
+        /// <param name="obj">Output Object</param>
+        /// <returns></returns>
         public bool TryLoadObject(IGraph g, INode objNode, Type targetType, out object obj)
         {
             obj = null;
@@ -65,6 +75,11 @@ namespace VDS.RDF.Configuration
             }
         }
 
+        /// <summary>
+        /// Gets whether this Factory can load objects of the given Type
+        /// </summary>
+        /// <param name="t">Type</param>
+        /// <returns></returns>
         public bool CanLoadObject(Type t)
         {
             //We can load any object which implements any parser interface and has a public unparameterized constructor
@@ -84,6 +99,9 @@ namespace VDS.RDF.Configuration
         }
     }
 
+    /// <summary>
+    /// Object Factory used by the Configuration API to load writers from configuration graphs
+    /// </summary>
     public class WriterFactory : IObjectFactory
     {
         private Type[] _writerTypes = new Type[]
@@ -93,6 +111,14 @@ namespace VDS.RDF.Configuration
             typeof(ISparqlResultsWriter)
         };
 
+        /// <summary>
+        /// Tries to load a Writer based on information from the Configuration Graph
+        /// </summary>
+        /// <param name="g">Configuration Graph</param>
+        /// <param name="objNode">Object Node</param>
+        /// <param name="targetType">Target Type</param>
+        /// <param name="obj">Output Object</param>
+        /// <returns></returns>
         public bool TryLoadObject(IGraph g, INode objNode, Type targetType, out object obj)
         {
             obj = null;
@@ -108,6 +134,11 @@ namespace VDS.RDF.Configuration
             }
         }
 
+        /// <summary>
+        /// Gets whether this Factory can load objects of the given Type
+        /// </summary>
+        /// <param name="t">Type</param>
+        /// <returns></returns>
         public bool CanLoadObject(Type t)
         {
             //We can load any object which implements any writer interface and has a public unparameterized constructor

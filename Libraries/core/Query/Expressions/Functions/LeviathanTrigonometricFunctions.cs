@@ -34,16 +34,14 @@ terms.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace VDS.RDF.Query.Expressions.Functions
 {
     /// <summary>
     /// Abstract Base Class for Unary Trigonometric Functions in the Leviathan Function Library
     /// </summary>
-    public abstract class BaseUnaryLeviathanTrigonometricFunction : BaseUnaryLeviathanNumericFunction
+    public abstract class BaseUnaryLeviathanTrigonometricFunction
+        : BaseUnaryLeviathanNumericFunction
     {
         /// <summary>
         /// Trigonometric function
@@ -108,7 +106,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the Leviathan lfn:degrees-to-radians() function
     /// </summary>
-    public class LeviathanDegreesToRadiansFunction : BaseUnaryLeviathanNumericFunction
+    public class LeviathanDegreesToRadiansFunction 
+        : BaseUnaryLeviathanNumericFunction
     {
         /// <summary>
         /// Creates a new Leviathan Degrees to Radians Function
@@ -167,6 +166,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new LeviathanDegreesToRadiansFunction(transformer.Transform(this._expr));
@@ -176,7 +180,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the Leviathan lfn:radians-to-degrees() function
     /// </summary>
-    public class LeviathanRadiansToDegreesFunction : BaseUnaryLeviathanNumericFunction
+    public class LeviathanRadiansToDegreesFunction
+        : BaseUnaryLeviathanNumericFunction
     {
         /// <summary>
         /// Creates a new Leviathan Radians to Degrees Function
@@ -235,6 +240,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new LeviathanRadiansToDegreesFunction(transformer.Transform(this._expr));
@@ -244,7 +254,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the Leviathan lfn:sin() or lfn:sin-1 function
     /// </summary>
-    public class LeviathanSineFunction : BaseUnaryLeviathanTrigonometricFunction
+    public class LeviathanSineFunction 
+        : BaseUnaryLeviathanTrigonometricFunction
     {
         private bool _inverse = false;
 
@@ -308,6 +319,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new LeviathanSineFunction(transformer.Transform(this._expr), this._inverse);
@@ -317,7 +333,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the Leviathan lfn:cos() or lfn:cos-1 function
     /// </summary>
-    public class LeviathanCosineFunction : BaseUnaryLeviathanTrigonometricFunction
+    public class LeviathanCosineFunction
+        : BaseUnaryLeviathanTrigonometricFunction
     {
         private bool _inverse = false;
 
@@ -381,6 +398,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new LeviathanCosineFunction(transformer.Transform(this._expr), this._inverse);
@@ -390,7 +412,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the Leviathan lfn:tan() or lfn:tan-1 function
     /// </summary>
-    public class LeviathanTangentFunction : BaseUnaryLeviathanTrigonometricFunction
+    public class LeviathanTangentFunction
+        : BaseUnaryLeviathanTrigonometricFunction
     {
         private bool _inverse = false;
 
@@ -454,6 +477,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new LeviathanTangentFunction(transformer.Transform(this._expr), this._inverse);
@@ -463,7 +491,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the Leviathan lfn:sec() or lfn:sec-1 function
     /// </summary>
-    public class LeviathanSecantFunction : BaseUnaryLeviathanTrigonometricFunction
+    public class LeviathanSecantFunction 
+        : BaseUnaryLeviathanTrigonometricFunction
     {
         private bool _inverse = false;
         private static Func<double, double> _secant = ( d => (1 / Math.Cos(d)) );
@@ -529,6 +558,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new LeviathanSecantFunction(transformer.Transform(this._expr), this._inverse);
@@ -538,7 +572,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the Leviathan lfn:cosec() or lfn:cosec-1 function
     /// </summary>
-    public class LeviathanCosecantFunction : BaseUnaryLeviathanTrigonometricFunction
+    public class LeviathanCosecantFunction
+        : BaseUnaryLeviathanTrigonometricFunction
     {
         private bool _inverse = false;
         private static Func<double, double> _cosecant = ( d => (1 / Math.Sin(d)) );
@@ -604,6 +639,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new LeviathanCosecantFunction(transformer.Transform(this._expr), this._inverse);
@@ -613,7 +653,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the Leviathan lfn:cot() or lfn:cot-1 function
     /// </summary>
-    public class LeviathanCotangentFunction : BaseUnaryLeviathanTrigonometricFunction
+    public class LeviathanCotangentFunction
+        : BaseUnaryLeviathanTrigonometricFunction
     {
         private bool _inverse = false;
         private static Func<double, double> _cotangent = ( d => (Math.Cos(d) / Math.Sin(d)) );
@@ -679,6 +720,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new LeviathanCotangentFunction(transformer.Transform(this._expr), this._inverse);

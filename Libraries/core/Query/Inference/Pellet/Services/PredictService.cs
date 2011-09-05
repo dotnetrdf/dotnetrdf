@@ -38,7 +38,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text;
 using Newtonsoft.Json.Linq;
 
 namespace VDS.RDF.Query.Inference.Pellet.Services
@@ -46,7 +45,8 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
     /// <summary>
     /// Represents the Predict Service of a Pellet Knowledge Base
     /// </summary>
-    public class PredictService : PelletService
+    public class PredictService
+        : PelletService
     {
 
         private String _predictUri;
@@ -140,6 +140,13 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
 
 #endif
 
+        /// <summary>
+        /// Gets the list of Predictions for the given Individual and Property
+        /// </summary>
+        /// <param name="individual">QName of an Inidividual</param>
+        /// <param name="property">QName of a Property</param>
+        /// <param name="callback">Callback to invoke when the operation completes</param>
+        /// <param name="state">State to pass to the callback</param>
         public void Predict(String individual, String property, NodeListCallback callback, Object state)
         {
             this.PredictRaw(individual, property, (g, s) =>
@@ -151,6 +158,13 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
                 }, state);
         }
 
+        /// <summary>
+        /// Gets the Raw Predictions Graph from the Knowledge Base
+        /// </summary>
+        /// <param name="individual">QName of an Individual</param>
+        /// <param name="property">QName of a Property</param>
+        /// <param name="callback">Callback to invoke when the operation completes</param>
+        /// <param name="state">State to pass to the callback</param>
         public void PredictRaw(String individual, String property, GraphCallback callback, Object state)
         {
             String requestUri = this._predictUri + individual + "/" + property;
