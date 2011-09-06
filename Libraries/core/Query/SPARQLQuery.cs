@@ -798,6 +798,12 @@ namespace VDS.RDF.Query
             return this.Evaluate(new InMemoryDataset(data));
         }
 
+        /// <summary>
+        /// Evaluates the SPARQL Query against the given Triple Store processing the results with the appropriate handler from those provided
+        /// </summary>
+        /// <param name="rdfHandler">RDF Handler</param>
+        /// <param name="resultsHandler">Results Handler</param>
+        /// <param name="data">Triple Store</param>
         [Obsolete("This method is considered obsolete, you should create an ISparqlQueryProcessor instance and invoke the ProcessQuery() method instead",false)]
         public void Evaluate(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, IInMemoryQueryableStore data)
         {
@@ -818,6 +824,12 @@ namespace VDS.RDF.Query
             return processor.ProcessQuery(this);
         }
 
+        /// <summary>
+        /// Evaluates the SPARQL Query against the given Dataset processing the results with an appropriate handler form those provided
+        /// </summary>
+        /// <param name="rdfHandler">RDF Handler</param>
+        /// <param name="resultsHandler">Results Handler</param>
+        /// <param name="dataset">Dataset</param>
         [Obsolete("This method is considered obsolete, you should create an ISparqlQueryProcessor instance and invoke the ProcessQuery() method instead",false)]
         public void Evaluate(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, ISparqlDataset dataset)
         {

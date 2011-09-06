@@ -41,7 +41,8 @@ namespace VDS.RDF.Parsing.Handlers
     /// <summary>
     /// A SPARQL Results Handler which loads Results into a <see cref="SparqlResultSet">SparqlResultSet</see>
     /// </summary>
-    public class ResultSetHandler : BaseResultsHandler
+    public class ResultSetHandler
+        : BaseResultsHandler
     {
         private SparqlResultSet _results;
 
@@ -102,7 +103,8 @@ namespace VDS.RDF.Parsing.Handlers
     /// <summary>
     /// A SPARQL Results Handler which allows you to load multiple Result Sets into a single <see cref="SparqlResultSet">SparqlResultSet</see> which the standard <see cref="ResultSetHandler">ResultSetHandler</see> does not permit
     /// </summary>
-    public class MergingResultSetHandler : ResultSetHandler
+    public class MergingResultSetHandler
+        : ResultSetHandler
     {
         /// <summary>
         /// Creates a new Merging Result Set Handler
@@ -111,6 +113,9 @@ namespace VDS.RDF.Parsing.Handlers
         public MergingResultSetHandler(SparqlResultSet results)
             : base(results) { }
 
+        /// <summary>
+        /// Overrides the base classes logic to avoid the empty check on the Result Set thus allowing multiple result sets to be merged
+        /// </summary>
         protected override void StartResultsInternal()
         {
             //Don't do an empty check

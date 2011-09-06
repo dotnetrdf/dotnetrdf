@@ -43,7 +43,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Class representing the SPARQL IF function
     /// </summary>
-    public class IfElseFunction : ISparqlExpression
+    public class IfElseFunction 
+        : ISparqlExpression
     {
         private ISparqlExpression _condition, _ifBranch, _elseBranch;
 
@@ -163,6 +164,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new IfElseFunction(transformer.Transform(this._condition), transformer.Transform(this._ifBranch), transformer.Transform(this._elseBranch));

@@ -43,7 +43,8 @@ namespace VDS.RDF.Query.Expressions
     /// <summary>
     /// Class representing Arithmetic Addition expressions
     /// </summary>
-    public class AdditionExpression : BaseBinaryArithmeticExpression
+    public class AdditionExpression 
+        : BaseBinaryArithmeticExpression
     {
         /// <summary>
         /// Creates a new Addition Expression
@@ -137,6 +138,11 @@ namespace VDS.RDF.Query.Expressions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new AdditionExpression(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
@@ -146,7 +152,8 @@ namespace VDS.RDF.Query.Expressions
     /// <summary>
     /// Class representing Arithmetic Subtraction expressions
     /// </summary>
-    public class SubtractionExpression : BaseBinaryArithmeticExpression
+    public class SubtractionExpression
+        : BaseBinaryArithmeticExpression
     {
         /// <summary>
         /// Creates a new Subtraction Expression
@@ -240,6 +247,11 @@ namespace VDS.RDF.Query.Expressions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new SubtractionExpression(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
@@ -249,7 +261,8 @@ namespace VDS.RDF.Query.Expressions
     /// <summary>
     /// Class representing Arithmetic Multiplication expressions
     /// </summary>
-    public class MultiplicationExpression : BaseBinaryArithmeticExpression
+    public class MultiplicationExpression 
+        : BaseBinaryArithmeticExpression
     {
         /// <summary>
         /// Creates a new Multiplication Expression
@@ -343,6 +356,11 @@ namespace VDS.RDF.Query.Expressions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new MultiplicationExpression(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
@@ -352,7 +370,8 @@ namespace VDS.RDF.Query.Expressions
     /// <summary>
     /// Class representing Arithmetic Division expressions
     /// </summary>
-    public class DivisionExpression : BaseBinaryArithmeticExpression
+    public class DivisionExpression
+        : BaseBinaryArithmeticExpression
     {
         /// <summary>
         /// Creates a new Division Expression
@@ -453,6 +472,11 @@ namespace VDS.RDF.Query.Expressions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new DivisionExpression(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
@@ -462,7 +486,8 @@ namespace VDS.RDF.Query.Expressions
     /// <summary>
     /// Class representing Unary Minus expressions (sign of numeric expression is reversed)
     /// </summary>
-    public class MinusExpression : BaseUnaryArithmeticExpression
+    public class MinusExpression 
+        : BaseUnaryArithmeticExpression
     {
         /// <summary>
         /// Creates a new Unary Minus Expression
@@ -574,6 +599,11 @@ namespace VDS.RDF.Query.Expressions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new MinusExpression(transformer.Transform(this._expr));

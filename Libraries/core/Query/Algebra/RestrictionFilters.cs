@@ -36,7 +36,6 @@ terms.
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Functions;
 using VDS.RDF.Query.Filters;
@@ -48,12 +47,19 @@ namespace VDS.RDF.Query.Algebra
     /// <summary>
     /// Abstract Base Class for specialised Filters which restrict the value of a variable to some values
     /// </summary>
-    public abstract class VariableRestrictionFilter : IFilter
+    public abstract class VariableRestrictionFilter 
+        : IFilter
     {
         private ISparqlAlgebra _pattern;
         private String _var;
         private ISparqlFilter _filter;
 
+        /// <summary>
+        /// Creates a new Variable Restriction Filter
+        /// </summary>
+        /// <param name="pattern">Algebra the filter applies over</param>
+        /// <param name="var">Variable to restrict on</param>
+        /// <param name="filter">Filter to use</param>
         public VariableRestrictionFilter(ISparqlAlgebra pattern, String var, ISparqlFilter filter)
         {
             this._pattern = pattern;
@@ -159,10 +165,18 @@ namespace VDS.RDF.Query.Algebra
     /// <summary>
     /// Abstract Base Class for specialised Filters which restrict the value of a variable to a single value
     /// </summary>
-    public abstract class SingleValueRestrictionFilter : VariableRestrictionFilter
+    public abstract class SingleValueRestrictionFilter 
+        : VariableRestrictionFilter
     {
         private NodeExpressionTerm _term;
 
+        /// <summary>
+        /// Creates a new Single Value Restriction Filter
+        /// </summary>
+        /// <param name="pattern">Algebra the filter applies over</param>
+        /// <param name="var">Variable to restrict on</param>
+        /// <param name="term">Value to restrict to</param>
+        /// <param name="filter">Filter to use</param>
         public SingleValueRestrictionFilter(ISparqlAlgebra pattern, String var, NodeExpressionTerm term, ISparqlFilter filter)
             : base(pattern, var, filter)
         {
@@ -278,12 +292,14 @@ namespace VDS.RDF.Query.Algebra
     /// <summary>
     /// Represents a special case Filter where the Filter restricts a variable to just one value i.e. FILTER(?x = &lt;value&gt;)
     /// </summary>
-    public class IdentityFilter : SingleValueRestrictionFilter
+    public class IdentityFilter 
+        : SingleValueRestrictionFilter
     {
         /// <summary>
         /// Creates a new Identity Filter
         /// </summary>
         /// <param name="pattern">Algebra the Filter applies over</param>
+        /// <param name="var">Variable to restrict on</param>
         /// <param name="term">Expression Term</param>
         public IdentityFilter(ISparqlAlgebra pattern, String var, NodeExpressionTerm term)
             : base(pattern, var, term, new UnaryExpressionFilter(new EqualsExpression(new VariableExpressionTerm(var), term))) { }
@@ -309,12 +325,14 @@ namespace VDS.RDF.Query.Algebra
     /// <summary>
     /// Represents a special case Filter where the Filter is supposed to restrict a variable to just one value i.e. FILTER(SAMETERM(?x, &lt;value&gt;))
     /// </summary>
-    public class SameTermFilter : SingleValueRestrictionFilter
+    public class SameTermFilter
+        : SingleValueRestrictionFilter
     {
         /// <summary>
         /// Creates a new Same Term Filter
         /// </summary>
         /// <param name="pattern">Algebra the Filter applies over</param>
+        /// <param name="var">Variable to restrict on</param>
         /// <param name="term">Expression Term</param>
         public SameTermFilter(ISparqlAlgebra pattern, String var, NodeExpressionTerm term)
             : base(pattern, var, term, new UnaryExpressionFilter(new SameTermFunction(new VariableExpressionTerm(var), term))) { }

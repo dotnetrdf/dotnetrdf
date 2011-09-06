@@ -47,7 +47,8 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
     /// <summary>
     /// Represents the Search Service provided by a Pellet Server
     /// </summary>
-    public class SearchService : PelletService
+    public class SearchService
+        : PelletService
     {
         private String _searchUri;
 
@@ -143,6 +144,12 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
 
 #endif
 
+        /// <summary>
+        /// Gets the list of Search Results which match the given search term
+        /// </summary>
+        /// <param name="text">Search Term</param>
+        /// <param name="callback">Callback to invoke when the operation completes</param>
+        /// <param name="state">State to pass to the callback</param>
         public void Search(String text, PelletSearchServiceCallback callback, Object state)
         {
             String search = this._searchUri + "?search=" + Uri.EscapeDataString(text);

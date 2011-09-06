@@ -33,6 +33,8 @@ terms.
 
 */
 
+#if UNFINISHED
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -145,3 +147,5 @@ namespace VDS.RDF.Parsing.Events.RdfA
         }
     }
 }
+
+#endif

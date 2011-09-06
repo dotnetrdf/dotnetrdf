@@ -10,7 +10,8 @@ namespace VDS.RDF.Writing.Formatting
     /// <summary>
     /// A formatter which formats triples for RDF/XML output
     /// </summary>
-    public class RdfXmlFormatter : IGraphFormatter
+    public class RdfXmlFormatter 
+        : IGraphFormatter
     {
         private QNameOutputMapper _mapper;
 
@@ -20,6 +21,11 @@ namespace VDS.RDF.Writing.Formatting
 <rdf:RDF xmlns:rdf=""" + NamespaceMapper.RDF + "\"";
         }
 
+        /// <summary>
+        /// Formats a Graph Header by creating an <strong>&lt;rdf:RDF&gt;</strong> element and adding namespace definitions
+        /// </summary>
+        /// <param name="g">Graph</param>
+        /// <returns></returns>
         public string FormatGraphHeader(IGraph g)
         {
             this._mapper = new QNameOutputMapper(g.NamespaceMap);
@@ -47,6 +53,11 @@ namespace VDS.RDF.Writing.Formatting
             return output.ToString();
         }
 
+        /// <summary>
+        /// Formats a Graph Header by creating an <strong>&lt;rdf:RDF&gt;</strong> element and adding namespace definitions
+        /// </summary>
+        /// <param name="namespaces">Namespaces</param>
+        /// <returns></returns>
         public string FormatGraphHeader(INamespaceMapper namespaces)
         {
             this._mapper = new QNameOutputMapper(namespaces);
@@ -70,11 +81,18 @@ namespace VDS.RDF.Writing.Formatting
             return output.ToString();
         }
 
+        /// <summary>
+        /// Formats a Graph Header by creating an <strong>&lt;rdf:RDF&gt;</strong> element
+        /// </summary>
         public string FormatGraphHeader()
         {
             return this.GetGraphHeaderBase() + ">";
         }
 
+        /// <summary>
+        /// Formats a Graph Footer by closing the <strong>&lt;rdf:RDF&gt;</strong> element
+        /// </summary>
+        /// <returns></returns>
         public string FormatGraphFooter()
         {
             this._mapper = null;
@@ -106,6 +124,11 @@ namespace VDS.RDF.Writing.Formatting
             }
         }
 
+        /// <summary>
+        /// Formats a Triple as a <strong>&lt;rdf:Description&gt;</strong> element
+        /// </summary>
+        /// <param name="t">Triple</param>
+        /// <returns></returns>
         public string Format(Triple t)
         {
             StringBuilder output = new StringBuilder();
@@ -201,6 +224,10 @@ namespace VDS.RDF.Writing.Formatting
             return output.ToString();
         }
 
+        /// <summary>
+        /// Gets the String description of this formatter
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return "RDF/XML";

@@ -6,7 +6,8 @@ using VDS.RDF.Query;
 
 namespace VDS.RDF.Writing.Formatting
 {
-    public class SparqlXmlFormatter : IResultSetFormatter
+    public class SparqlXmlFormatter 
+        : IResultSetFormatter
     {
         private String GetBaseHeader()
         {

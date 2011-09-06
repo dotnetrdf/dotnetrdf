@@ -55,6 +55,11 @@ namespace VDS.RDF.Query.Optimisation
     public class ParallelEvaluationOptimiser 
         : IAlgebraOptimiser
     {
+        /// <summary>
+        /// Optimises the algebra to use parallelised variants of <see cref="Join">Join</see> and <see cref="Union">Union</see> where possible
+        /// </summary>
+        /// <param name="algebra">Algebra</param>
+        /// <returns></returns>
         public ISparqlAlgebra Optimise(ISparqlAlgebra algebra)
         {
             if (algebra is IAbstractJoin)

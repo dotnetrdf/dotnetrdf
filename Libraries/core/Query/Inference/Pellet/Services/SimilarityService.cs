@@ -38,16 +38,15 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text;
 using Newtonsoft.Json.Linq;
-using VDS.RDF.Query;
 
 namespace VDS.RDF.Query.Inference.Pellet.Services
 {
     /// <summary>
     /// Represents the Similarity Service provided by a Pellet Knowledge Base
     /// </summary>
-    public class SimilarityService : PelletService
+    public class SimilarityService
+        : PelletService
     {
         private String _similarityUri;
 
@@ -165,6 +164,13 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
 
 #endif
 
+        /// <summary>
+        /// Gets a list of key value pairs listing Similar Individuals and their Similarity scores
+        /// </summary>
+        /// <param name="number">Number of Similar Individuals</param>
+        /// <param name="individual">QName of a Individual to find Similar Individuals to</param>
+        /// <param name="callback">Callback to invoke when the operation completes</param>
+        /// <param name="state">State to pass to the callback</param>
         public void Similarity(int number, String individual, PelletSimilarityServiceCallback callback, Object state)
         {
             this.SimilarityRaw(number, individual, (g, _) =>
@@ -195,6 +201,13 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
             }, null);
         }
 
+        /// <summary>
+        /// Gets the raw Similarity Graph for the Knowledge Base
+        /// </summary>
+        /// <param name="number">Number of Similar Individuals</param>
+        /// <param name="individual">QName of a Individual to find Similar Individuals to</param>
+        /// <param name="callback">Callback to invoke when the operation completes</param>
+        /// <param name="state">State to pass to the callback</param>
         public void SimilarityRaw(int number, String individual, GraphCallback callback, Object state)
         {
             if (number < 1) throw new RdfReasoningException("Pellet Server requires the number of Similar Individuals to be at least 1");

@@ -1125,12 +1125,17 @@ namespace VDS.RDF.Writing.Formatting
         /// </summary>
         /// <param name="result">SPARQL Result</param>
         /// <returns></returns>
-        public virtual String Format(SparqlResult result)
+        public override String Format(SparqlResult result)
         {
             return result.ToString(this);
         }
 
-        public virtual String FormatBooleanResult(bool result)
+        /// <summary>
+        /// Formats a Boolean Result
+        /// </summary>
+        /// <param name="result">Boolean Result</param>
+        /// <returns></returns>
+        public override String FormatBooleanResult(bool result)
         {
             return result.ToString().ToLower();
         }

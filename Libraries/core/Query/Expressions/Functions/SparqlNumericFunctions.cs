@@ -39,7 +39,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the SPARQL ABS() Function
     /// </summary>
-    public class AbsFunction : XPathAbsoluteFunction
+    public class AbsFunction 
+        : XPathAbsoluteFunction
     {
         /// <summary>
         /// Creates a new SPARQL ABS() Function
@@ -68,6 +69,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             return SparqlSpecsHelper.SparqlKeywordAbs + "(" + this._expr.ToString() + ")";
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new AbsFunction(transformer.Transform(this._expr));
@@ -77,7 +83,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the SPARQL CEIL() Function
     /// </summary>
-    public class CeilFunction : XPathCeilingFunction
+    public class CeilFunction 
+        : XPathCeilingFunction
     {
         /// <summary>
         /// Creates a new SPARQL CEIL() Function
@@ -106,6 +113,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             return SparqlSpecsHelper.SparqlKeywordCeil + "(" + this._expr.ToString() + ")";
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new CeilFunction(transformer.Transform(this._expr));
@@ -115,7 +127,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the SPARQL FLOOR() Function
     /// </summary>
-    public class FloorFunction : XPathFloorFunction
+    public class FloorFunction
+        : XPathFloorFunction
     {
         /// <summary>
         /// Creates a new SPARQL FLOOR() Function
@@ -144,6 +157,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             return SparqlSpecsHelper.SparqlKeywordFloor + "(" + this._expr.ToString() + ")";
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new FloorFunction(transformer.Transform(this._expr));
@@ -153,7 +171,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the SPARQL RAND() Function
     /// </summary>
-    public class RandFunction : BaseArithmeticExpression
+    public class RandFunction
+        : BaseArithmeticExpression
     {
         private Random _rnd = new Random();
 
@@ -227,6 +246,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             return SparqlSpecsHelper.SparqlKeywordRand + "()";
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return this;
@@ -236,7 +260,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the SPARQL ROUND() Function
     /// </summary>
-    public class RoundFunction : XPathRoundFunction
+    public class RoundFunction 
+        : XPathRoundFunction
     {
         /// <summary>
         /// Creates a new SPARQL ROUND() Function
@@ -265,6 +290,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             return SparqlSpecsHelper.SparqlKeywordRound + "(" + this._expr.ToString() + ")";
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new RoundFunction(transformer.Transform(this._expr));
@@ -274,7 +304,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the SPARQL ISNUMERIC() Function
     /// </summary>
-    public class IsNumericFunction : BaseUnaryExpression
+    public class IsNumericFunction 
+        : BaseUnaryExpression
     {
         /// <summary>
         /// Creates a new SPARQL ISNUMERIC() Function
@@ -406,6 +437,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             return SparqlSpecsHelper.SparqlKeywordIsNumeric + "(" + this._expr.ToString() + ")";
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new IsNumericFunction(transformer.Transform(this._expr));

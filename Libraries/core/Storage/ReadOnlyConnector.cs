@@ -38,7 +38,6 @@ terms.
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
@@ -53,7 +52,8 @@ namespace VDS.RDF.Storage
     /// This is useful if you want to allow some code read-only access to a mutable store and ensure that it cannot modify the store via the manager instance
     /// </para>
     /// </remarks>
-    public class ReadOnlyConnector : IGenericIOManager, IConfigurationSerializable
+    public class ReadOnlyConnector 
+        : IGenericIOManager, IConfigurationSerializable
     {
         private IGenericIOManager _manager;
 
@@ -88,11 +88,21 @@ namespace VDS.RDF.Storage
             this._manager.LoadGraph(g, graphUri);
         }
 
+        /// <summary>
+        /// Loads a Graph from the underlying Store
+        /// </summary>
+        /// <param name="handler">RDF Handler</param>
+        /// <param name="graphUri">URI of the Graph to load</param>
         public void LoadGraph(IRdfHandler handler, Uri graphUri)
         {
             this._manager.LoadGraph(handler, graphUri);
         }
 
+        /// <summary>
+        /// Loads a Graph from the underlying Store
+        /// </summary>
+        /// <param name="handler">RDF Handler</param>
+        /// <param name="graphUri">URI of the Graph to load</param>
         public void LoadGraph(IRdfHandler handler, String graphUri)
         {
             this._manager.LoadGraph(handler, graphUri);
@@ -278,7 +288,8 @@ namespace VDS.RDF.Storage
     /// This is useful if you want to allow some code read-only access to a mutable store and ensure that it cannot modify the store via the manager instance
     /// </para>
     /// </remarks>
-    public class QueryableReadOnlyConnector : ReadOnlyConnector, IQueryableGenericIOManager
+    public class QueryableReadOnlyConnector
+        : ReadOnlyConnector, IQueryableGenericIOManager
     {
         private IQueryableGenericIOManager _queryManager;
 
@@ -302,6 +313,13 @@ namespace VDS.RDF.Storage
             return this._queryManager.Query(sparqlQuery);
         }
 
+        /// <summary>
+        /// Executes a SPARQL Query on the underlying Store processing the results with an appropriate handler from those provided
+        /// </summary>
+        /// <param name="rdfHandler">RDF Handler</param>
+        /// <param name="resultsHandler">Results Handler</param>
+        /// <param name="sparqlQuery">SPARQL Query</param>
+        /// <returns></returns>
         public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery)
         {
             this._queryManager.Query(rdfHandler, resultsHandler, sparqlQuery);

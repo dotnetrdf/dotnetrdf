@@ -173,6 +173,12 @@ namespace VDS.RDF.Update
 
 #endif
 
+        /// <summary>
+        /// Makes an update request asynchronously to the remote endpoint
+        /// </summary>
+        /// <param name="sparqlUpdate">SPARQL Update</param>
+        /// <param name="callback">Callback to invoke when the update completes</param>
+        /// <param name="state">State to pass to the callback</param>
         public void Update(String sparqlUpdate, UpdateCallback callback, Object state)
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this.Uri);

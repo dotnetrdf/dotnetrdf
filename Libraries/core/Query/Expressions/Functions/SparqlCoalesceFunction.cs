@@ -43,7 +43,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Class representing the SPARQL COALESCE() function
     /// </summary>
-    public class CoalesceFunction : ISparqlExpression
+    public class CoalesceFunction 
+        : ISparqlExpression
     {
         private List<ISparqlExpression> _expressions = new List<ISparqlExpression>();
 
@@ -164,6 +165,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new CoalesceFunction(this._expressions.Select(e => transformer.Transform(e)));

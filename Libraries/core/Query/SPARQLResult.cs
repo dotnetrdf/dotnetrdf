@@ -398,16 +398,29 @@ namespace VDS.RDF.Query
 #if !SILVERLIGHT
         #region Serialization
 
+        /// <summary>
+        /// Gets the data for serialization
+        /// </summary>
+        /// <param name="info">Serialization Information</param>
+        /// <param name="context">Streaming Context</param>
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("bindings", this._resultValues);
         }
 
+        /// <summary>
+        /// Gets the schema for XML serialization
+        /// </summary>
+        /// <returns></returns>
         public XmlSchema GetSchema()
         {
             return null;
         }
 
+        /// <summary>
+        /// Writes the data for XML serialization (.Net serialization not the official SPARQL results serialization)
+        /// </summary>
+        /// <param name="writer">XML Writer</param>
         public void WriteXml(XmlWriter writer)
         {
             //writer.WriteStartElement("bindings");
@@ -421,6 +434,10 @@ namespace VDS.RDF.Query
             //writer.WriteEndElement();
         }
 
+        /// <summary>
+        /// Reads the data for XML deserialization (.Net serialization not the official SPARQL results serialization)
+        /// </summary>
+        /// <param name="reader">XML Reader</param>
         public void ReadXml(XmlReader reader)
         {
             //<result> may be empty

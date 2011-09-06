@@ -45,7 +45,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Abstract base class for SPARQL Functions which operate on Sets
     /// </summary>
-    public abstract class SparqlSetFunction : ISparqlExpression
+    public abstract class SparqlSetFunction
+        : ISparqlExpression
     {
         /// <summary>
         /// Variable Expression Term that the Set function applies to
@@ -135,13 +136,19 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// <returns></returns>
         public abstract override string ToString();
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public abstract ISparqlExpression Transform(IExpressionTransformer transformer);
     }
 
     /// <summary>
     /// Class representing the SPARQL IN set function
     /// </summary>
-    public class SparqlInFunction : SparqlSetFunction
+    public class SparqlInFunction 
+        : SparqlSetFunction
     {
         /// <summary>
         /// Creates a new SPARQL IN function
@@ -229,6 +236,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             return output.ToString();
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new SparqlInFunction(transformer.Transform(this._expr), this._expressions.Select(e => transformer.Transform(e)));
@@ -238,7 +250,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Class representing the SPARQL NOT IN set function
     /// </summary>
-    public class SparqlNotInFunction : SparqlSetFunction
+    public class SparqlNotInFunction
+        : SparqlSetFunction
     {
         /// <summary>
         /// Creates a new SPARQL NOT IN function
@@ -324,6 +337,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             return output.ToString();
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new SparqlNotInFunction(transformer.Transform(this._expr), this._expressions.Select(e => transformer.Transform(e)));

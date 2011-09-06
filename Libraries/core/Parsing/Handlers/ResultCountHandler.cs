@@ -48,6 +48,9 @@ namespace VDS.RDF.Parsing.Handlers
     {
         private int _counter = 0;
 
+        /// <summary>
+        /// Creates a new Result Count Handler
+        /// </summary>
         public ResultCountHandler()
             : base(new MockNodeFactory()) { }
 

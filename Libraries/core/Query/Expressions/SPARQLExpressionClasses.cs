@@ -48,7 +48,8 @@ namespace VDS.RDF.Query.Expressions
     /// <summary>
     /// Class representing Conditional Or expressions
     /// </summary>
-    public class OrExpression : BaseBinaryExpression
+    public class OrExpression
+        : BaseBinaryExpression
     {
         /// <summary>
         /// Creates a new Conditional Or Expression
@@ -145,6 +146,11 @@ namespace VDS.RDF.Query.Expressions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new OrExpression(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
@@ -154,7 +160,8 @@ namespace VDS.RDF.Query.Expressions
     /// <summary>
     /// Class representing Conditional And expressions
     /// </summary>
-    public class AndExpression : BaseBinaryExpression
+    public class AndExpression
+        : BaseBinaryExpression
     {
         /// <summary>
         /// Creates a new Conditional And Expression
@@ -251,6 +258,11 @@ namespace VDS.RDF.Query.Expressions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new AndExpression(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
@@ -260,7 +272,8 @@ namespace VDS.RDF.Query.Expressions
     /// <summary>
     /// Class representing Negation Expressions
     /// </summary>
-    public class NegationExpression : BaseUnaryExpression
+    public class NegationExpression
+        : BaseUnaryExpression
     {
         /// <summary>
         /// Creates a new Negation Expression
@@ -310,6 +323,11 @@ namespace VDS.RDF.Query.Expressions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new NegationExpression(transformer.Transform(this._expr));
@@ -323,7 +341,8 @@ namespace VDS.RDF.Query.Expressions
     /// <summary>
     /// Class representing Relational Equality expressions
     /// </summary>
-    public class EqualsExpression : BaseBinaryExpression
+    public class EqualsExpression
+        : BaseBinaryExpression
     {
         /// <summary>
         /// Creates a new Equality Expression
@@ -395,6 +414,11 @@ namespace VDS.RDF.Query.Expressions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new EqualsExpression(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
@@ -404,7 +428,8 @@ namespace VDS.RDF.Query.Expressions
     /// <summary>
     /// Class representing Relational Non-Equality expressions
     /// </summary>
-    public class NotEqualsExpression : BaseBinaryExpression
+    public class NotEqualsExpression
+        : BaseBinaryExpression
     {
         /// <summary>
         /// Creates a new Non-Equality Expression
@@ -476,6 +501,11 @@ namespace VDS.RDF.Query.Expressions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new NotEqualsExpression(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
@@ -485,7 +515,8 @@ namespace VDS.RDF.Query.Expressions
     /// <summary>
     /// Class representing Relational Less Than Expressions
     /// </summary>
-    public class LessThanExpression : BaseBinaryExpression
+    public class LessThanExpression 
+        : BaseBinaryExpression
     {
         private SparqlNodeComparer _comparer = new SparqlNodeComparer();
 
@@ -562,6 +593,11 @@ namespace VDS.RDF.Query.Expressions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new LessThanExpression(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
@@ -571,7 +607,8 @@ namespace VDS.RDF.Query.Expressions
     /// <summary>
     /// Class representing Relational Less Than or Equal To Expressions
     /// </summary>
-    public class LessThanOrEqualToExpression : BaseBinaryExpression
+    public class LessThanOrEqualToExpression
+        : BaseBinaryExpression
     {
         private SparqlNodeComparer _comparer = new SparqlNodeComparer();
 
@@ -659,6 +696,11 @@ namespace VDS.RDF.Query.Expressions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new LessThanOrEqualToExpression(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
@@ -668,7 +710,8 @@ namespace VDS.RDF.Query.Expressions
     /// <summary>
     /// Class representing Relational Greater Than Expressions
     /// </summary>
-    public class GreaterThanExpression : BaseBinaryExpression
+    public class GreaterThanExpression 
+        : BaseBinaryExpression
     {
         private SparqlNodeComparer _comparer = new SparqlNodeComparer();
 
@@ -746,17 +789,22 @@ namespace VDS.RDF.Query.Expressions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new GreaterThanExpression(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
         }
-
     }
 
     /// <summary>
     /// Class representing Relational Greater Than or Equal To Expressions
     /// </summary>
-    public class GreaterThanOrEqualToExpression : BaseBinaryExpression
+    public class GreaterThanOrEqualToExpression
+        : BaseBinaryExpression
     {
         private SparqlNodeComparer _comparer = new SparqlNodeComparer();
 
@@ -844,6 +892,11 @@ namespace VDS.RDF.Query.Expressions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new GreaterThanOrEqualToExpression(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));

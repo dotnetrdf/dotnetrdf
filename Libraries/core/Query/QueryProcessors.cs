@@ -42,7 +42,8 @@ namespace VDS.RDF.Query
     /// <summary>
     /// A SPARQL Query Processor where the query is processed by passing it to the <see cref="INativelyQueryableStore.ExecuteQuery">ExecuteQuery()</see> method of an <see cref="INativelyQueryableStore">INativelyQueryableStore</see>
     /// </summary>
-    public class SimpleQueryProcessor : ISparqlQueryProcessor
+    public class SimpleQueryProcessor 
+        : ISparqlQueryProcessor
     {
         private INativelyQueryableStore _store;
 
@@ -80,6 +81,12 @@ namespace VDS.RDF.Query
             }
         }
 
+        /// <summary>
+        /// Processes a SPARQL Query passing the results to the RDF or Results handler as appropriate
+        /// </summary>
+        /// <param name="rdfHandler">RDF Handler</param>
+        /// <param name="resultsHandler">Results Handler</param>
+        /// <param name="query">SPARQL Query</param>
         public void ProcessQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query)
         {
             query.QueryExecutionTime = null;
@@ -105,7 +112,8 @@ namespace VDS.RDF.Query
     /// <summary>
     /// A SPARQL Query Processor where the query is processed by passing it to the <see cref="IGenericIOManager.Query">Query()</see> method of an <see cref="IQueryableGenericIOManager">IQueryableGenericIOManager</see>
     /// </summary>
-    public class GenericQueryProcessor : ISparqlQueryProcessor
+    public class GenericQueryProcessor 
+        : ISparqlQueryProcessor
     {
         private IQueryableGenericIOManager _manager;
 
@@ -143,6 +151,12 @@ namespace VDS.RDF.Query
             }
         }
 
+        /// <summary>
+        /// Processes a SPARQL Query passing the results to the RDF or Results handler as appropriate
+        /// </summary>
+        /// <param name="rdfHandler">RDF Handler</param>
+        /// <param name="resultsHandler">Results Handler</param>
+        /// <param name="query">SPARQL Query</param>
         public void ProcessQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query)
         {
             query.QueryExecutionTime = null;
@@ -170,7 +184,8 @@ namespace VDS.RDF.Query
     /// <summary>
     /// A SPARQL Query Processor where the query is processed by passing it to a remote SPARQL endpoint
     /// </summary>
-    public class RemoteQueryProcessor : ISparqlQueryProcessor
+    public class RemoteQueryProcessor 
+        : ISparqlQueryProcessor
     {
         private SparqlRemoteEndpoint _endpoint;
 
@@ -227,13 +242,18 @@ namespace VDS.RDF.Query
             }
         }
 
+        /// <summary>
+        /// Processes a SPARQL Query passing the results to the RDF or Results handler as appropriate
+        /// </summary>
+        /// <param name="rdfHandler">RDF Handler</param>
+        /// <param name="resultsHandler">Results Handler</param>
+        /// <param name="query">SPARQL Query</param>
         public void ProcessQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query)
         {
             query.QueryExecutionTime = null;
             query.QueryTime = -1;
             query.QueryTimeTicks = -1;
             DateTime start = DateTime.Now;
-            Object temp;
             try
             {
                 switch (query.QueryType)

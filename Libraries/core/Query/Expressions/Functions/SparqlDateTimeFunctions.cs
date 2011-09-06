@@ -40,7 +40,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the SPARQL NOW() Function
     /// </summary>
-    public class NowFunction : ArqNowFunction
+    public class NowFunction 
+        : ArqNowFunction
     {
         /// <summary>
         /// Creates a new SPARQL NOW() Function
@@ -72,7 +73,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the SPARQL YEAR() Function
     /// </summary>
-    public class YearFunction : XPathYearFromDateTimeFunction
+    public class YearFunction
+        : XPathYearFromDateTimeFunction
     {
         /// <summary>
         /// Creates a new SPARQL YEAR() Function
@@ -101,6 +103,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             return SparqlSpecsHelper.SparqlKeywordYear + "(" + this._expr.ToString() + ")";
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new YearFunction(transformer.Transform(this._expr));
@@ -110,7 +117,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the SPARQL MONTH() Function
     /// </summary>
-    public class MonthFunction : XPathMonthFromDateTimeFunction
+    public class MonthFunction 
+        : XPathMonthFromDateTimeFunction
     {
         /// <summary>
         /// Creates a new SPARQL YEAR() Function
@@ -139,6 +147,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             return SparqlSpecsHelper.SparqlKeywordMonth + "(" + this._expr.ToString() + ")";
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new MonthFunction(transformer.Transform(this._expr));
@@ -148,7 +161,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the SPARQL DAY() Function
     /// </summary>
-    public class DayFunction : XPathDayFromDateTimeFunction
+    public class DayFunction 
+        : XPathDayFromDateTimeFunction
     {
         /// <summary>
         /// Creates a new SPARQL DAY() Function
@@ -177,6 +191,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             return SparqlSpecsHelper.SparqlKeywordDay + "(" + this._expr.ToString() + ")";
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new DayFunction(transformer.Transform(this._expr));
@@ -186,7 +205,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the SPARQL HOURS() Function
     /// </summary>
-    public class HoursFunction : XPathHoursFromDateTimeFunction
+    public class HoursFunction 
+        : XPathHoursFromDateTimeFunction
     {
         /// <summary>
         /// Creates a new SPARQL HOURS() Function
@@ -215,6 +235,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             return SparqlSpecsHelper.SparqlKeywordHours + "(" + this._expr.ToString() + ")";
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new HoursFunction(transformer.Transform(this._expr));
@@ -224,7 +249,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the SPARQL MINUTES() Function
     /// </summary>
-    public class MinutesFunction : XPathMinutesFromDateTimeFunction
+    public class MinutesFunction 
+        : XPathMinutesFromDateTimeFunction
     {
         /// <summary>
         /// Creates a new SPARQL MINUTES() Function
@@ -253,6 +279,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             return SparqlSpecsHelper.SparqlKeywordMinutes + "(" + this._expr.ToString() + ")";
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new MinutesFunction(transformer.Transform(this._expr));
@@ -262,7 +293,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the SPARQL SECONDS() Function
     /// </summary>
-    public class SecondsFunction : XPathSecondsFromDateTimeFunction
+    public class SecondsFunction 
+        : XPathSecondsFromDateTimeFunction
     {
         /// <summary>
         /// Creates a new SPARQL SECONDS() Function
@@ -291,6 +323,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             return SparqlSpecsHelper.SparqlKeywordSeconds + "(" + this._expr.ToString() + ")";
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new SecondsFunction(transformer.Transform(this._expr));
@@ -300,7 +337,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the SPARQL TIMEZONE() Function
     /// </summary>
-    public class TimezoneFunction : XPathTimezoneFromDateTimeFunction
+    public class TimezoneFunction
+        : XPathTimezoneFromDateTimeFunction
     {
         /// <summary>
         /// Creates a new SPARQL TIMEZONE() Function
@@ -351,6 +389,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             return SparqlSpecsHelper.SparqlKeywordTimezone + "(" + this._expr.ToString() + ")";
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new TimezoneFunction(transformer.Transform(this._expr));
@@ -360,7 +403,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the SPARQL TZ() Function
     /// </summary>
-    public class TZFunction : BaseUnaryExpression
+    public class TZFunction 
+        : BaseUnaryExpression
     {
         /// <summary>
         /// Creates a new SPARQL TZ() Function
@@ -477,6 +521,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             return SparqlSpecsHelper.SparqlKeywordTz + "(" + this._expr.ToString() + ")";
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new TZFunction(transformer.Transform(this._expr));

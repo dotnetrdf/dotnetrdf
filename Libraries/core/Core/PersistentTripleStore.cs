@@ -65,6 +65,12 @@ namespace VDS.RDF
             this._manager = manager;
         }
 
+        /// <summary>
+        /// Finalizer which ensures that the instance is properly disposed of thereby persisting any outstanding changes to the underlying store
+        /// </summary>
+        /// <remarks>
+        /// If you do not wish to persist your changes you must call <see cref="PersistentTripleStore.Discard()">Discard()</see> prior to disposing of this instance or allowing it to go out of scope such that the finalizer gets called
+        /// </remarks>
         ~PersistentTripleStore()
         {
             this.Dispose(false);

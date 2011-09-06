@@ -35,9 +35,6 @@ terms.
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using VDS.RDF.Query.Algebra;
 using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Query.Describe
@@ -50,8 +47,15 @@ namespace VDS.RDF.Query.Describe
     /// The Description returned is all the Triples for which a Value is the Subject or Object - this description does not expand any Blank Nodes
     /// </para>
     /// </remarks>
-    public class SimpleSubjectObjectDescription : BaseDescribeAlgorithm
+    public class SimpleSubjectObjectDescription 
+        : BaseDescribeAlgorithm
     {
+        /// <summary>
+        /// Generates the Description for each of the Nodes to be described
+        /// </summary>
+        /// <param name="handler">RDF Handler</param>
+        /// <param name="context">SPARQL Evaluation Context</param>
+        /// <param name="nodes">Nodes to be described</param>
         protected override void DescribeInternal(IRdfHandler handler, SparqlEvaluationContext context, IEnumerable<INode> nodes)
         {
             //Rewrite Blank Node IDs for DESCRIBE Results

@@ -94,6 +94,11 @@ namespace VDS.RDF.Storage
             this.LoadGraph(g, graphUri.ToSafeString());
         }
 
+        /// <summary>
+        /// Loads a Graph from the Protocol Server
+        /// </summary>
+        /// <param name="handler">RDF Handler</param>
+        /// <param name="graphUri">URI of the Graph to load</param>
         public virtual void LoadGraph(IRdfHandler handler, Uri graphUri)
         {
             this.LoadGraph(handler, graphUri.ToSafeString());
@@ -115,6 +120,11 @@ namespace VDS.RDF.Storage
             g.BaseUri = origUri;
         }
 
+        /// <summary>
+        /// Loads a Graph from the Protocol Server
+        /// </summary>
+        /// <param name="handler">RDF Handler</param>
+        /// <param name="graphUri">URI of the Graph to load</param>
         public virtual void LoadGraph(IRdfHandler handler, String graphUri)
         {
             String retrievalUri = this._serviceUri;

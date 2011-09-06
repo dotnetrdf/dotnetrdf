@@ -69,7 +69,8 @@ namespace VDS.RDF.Storage
     /// <remarks>
     /// This class is effectively a read-only wrapper around a <see cref="SparqlRemoteEndpoint">SparqlRemoteEndpoint</see> using it with it's default settings, if you only need to query an endpoint and require more control over the settings used to access the endpoint you should use that class directly or use the constructors which allow you to provide your own pre-configure <see cref="SparqlRemoteEndpoint">SparqlRemoteEndpoint</see> instance
     /// </remarks>
-    public class SparqlConnector : IQueryableGenericIOManager, IConfigurationSerializable
+    public class SparqlConnector
+        : IQueryableGenericIOManager, IConfigurationSerializable
     {
         private SparqlRemoteEndpoint _endpoint;
         private SparqlConnectorLoadMethod _mode = SparqlConnectorLoadMethod.Construct;
@@ -179,6 +180,13 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Makes a Query against the SPARQL Endpoint processing the results with an appropriate handler from those provided
+        /// </summary>
+        /// <param name="rdfHandler">RDF Handler</param>
+        /// <param name="resultsHandler">Results Handler</param>
+        /// <param name="sparqlQuery">SPARQL Query</param>
+        /// <returns></returns>
         public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery)
         {
             if (!this._skipLocalParsing)
@@ -250,6 +258,11 @@ namespace VDS.RDF.Storage
             this.LoadGraph(g, graphUri.ToSafeString());
         }
 
+        /// <summary>
+        /// Loads a Graph from the SPARQL Endpoint
+        /// </summary>
+        /// <param name="handler">RDF Handler</param>
+        /// <param name="graphUri">URI of the Graph to load</param>
         public void LoadGraph(IRdfHandler handler, Uri graphUri)
         {
             this.LoadGraph(handler, graphUri.ToSafeString());
@@ -269,6 +282,11 @@ namespace VDS.RDF.Storage
             this.LoadGraph(new GraphHandler(g), graphUri);
         }
 
+        /// <summary>
+        /// Loads a Graph from the SPARQL Endpoint
+        /// </summary>
+        /// <param name="handler">RDF Handler</param>
+        /// <param name="graphUri">URI of the Graph to load</param>
         public void LoadGraph(IRdfHandler handler, String graphUri)
         {
             String query;

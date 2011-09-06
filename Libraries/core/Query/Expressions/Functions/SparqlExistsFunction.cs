@@ -46,7 +46,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents an EXIST/NOT EXIST clause used as a Function in an Expression
     /// </summary>
-    public class ExistsFunction : ISparqlExpression
+    public class ExistsFunction 
+        : ISparqlExpression
     {
         private GraphPattern _pattern;
         private bool _mustExist;
@@ -225,6 +226,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             ISparqlExpression temp = transformer.Transform(new GraphPatternExpressionTerm(this._pattern));

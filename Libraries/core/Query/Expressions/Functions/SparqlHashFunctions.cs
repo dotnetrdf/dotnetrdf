@@ -48,7 +48,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the SPARQL MD5() Function
     /// </summary>
-    public class MD5HashFunction : LeviathanMD5HashFunction
+    public class MD5HashFunction 
+        : LeviathanMD5HashFunction
     {
         /// <summary>
         /// Creates a new MD5() Function
@@ -77,6 +78,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             return SparqlSpecsHelper.SparqlKeywordMD5 + "(" + this._expr.ToString() + ")";
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new MD5HashFunction(transformer.Transform(this._expr));
@@ -117,6 +123,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             return SparqlSpecsHelper.SparqlKeywordMD5 + "(" + this._expr.ToString() + ")";
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new MD5HashFunction(transformer.Transform(this._expr));
@@ -128,7 +139,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the SPARQL SHA1() Function
     /// </summary>
-    public class Sha1HashFunction : BaseHashFunction
+    public class Sha1HashFunction
+        : BaseHashFunction
     {
         /// <summary>
         /// Creates a new SHA1() Function
@@ -157,6 +169,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             return SparqlSpecsHelper.SparqlKeywordSha1 + "(" + this._expr.ToString() + ")";
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new Sha1HashFunction(transformer.Transform(this._expr));
@@ -166,7 +183,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the SPARQL SHA224() Function
     /// </summary>
-    public class Sha224HashFunction : BaseHashLibFunction
+    public class Sha224HashFunction 
+        : BaseHashLibFunction
     {        
         /// <summary>
         /// Creates a new SHA224() Function
@@ -195,6 +213,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             return SparqlSpecsHelper.SparqlKeywordSha224 + "(" + this._expr.ToString() + ")";
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new Sha224HashFunction(transformer.Transform(this._expr));
@@ -204,7 +227,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the SPARQL SHA256() Function
     /// </summary>
-    public class Sha256HashFunction : LeviathanSha256HashFunction
+    public class Sha256HashFunction 
+        : LeviathanSha256HashFunction
     {
         /// <summary>
         /// Creates a new SHA256() Function
@@ -233,6 +257,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             return SparqlSpecsHelper.SparqlKeywordSha256 + "(" + this._expr.ToString() + ")";
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new Sha256HashFunction(transformer.Transform(this._expr));
@@ -273,6 +302,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             return SparqlSpecsHelper.SparqlKeywordSha384 + "(" + this._expr.ToString() + ")";
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new Sha384HashFunction(transformer.Transform(this._expr));
@@ -282,7 +316,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the SPARQL SHA512() Function
     /// </summary>
-    public class Sha512HashFunction : BaseHashFunction
+    public class Sha512HashFunction 
+        : BaseHashFunction
     {
         /// <summary>
         /// Creates a new SHA512() Function
@@ -311,6 +346,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             return SparqlSpecsHelper.SparqlKeywordSha512 + "(" + this._expr.ToString() + ")";
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new Sha512HashFunction(transformer.Transform(this._expr));
@@ -322,7 +362,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the SPARQL SHA384() Function
     /// </summary>
-    public class Sha384HashFunction : BaseHashLibFunction
+    public class Sha384HashFunction 
+        : BaseHashLibFunction
     {
         /// <summary>
         /// Creates a new SHA384() Function
@@ -351,6 +392,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             return SparqlSpecsHelper.SparqlKeywordSha384 + "(" + this._expr.ToString() + ")";
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new Sha384HashFunction(transformer.Transform(this._expr));
@@ -360,7 +406,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the SPARQL SHA512() Function
     /// </summary>
-    public class Sha512HashFunction : BaseHashLibFunction
+    public class Sha512HashFunction 
+        : BaseHashLibFunction
     {
         /// <summary>
         /// Creates a new SHA512() Function
@@ -389,6 +436,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             return SparqlSpecsHelper.SparqlKeywordSha512 + "(" + this._expr.ToString() + ")";
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new Sha512HashFunction(transformer.Transform(this._expr));

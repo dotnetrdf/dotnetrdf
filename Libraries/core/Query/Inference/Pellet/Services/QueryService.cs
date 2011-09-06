@@ -98,6 +98,12 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
             }
         }
 
+        /// <summary>
+        /// Processes a SPARQL Query against the Knowledge Base passing the results to the RDF or Results handler as appropriate
+        /// </summary>
+        /// <param name="rdfHandler">RDF Handler</param>
+        /// <param name="resultsHandler">Results Handler</param>
+        /// <param name="sparqlQuery">SPARQL Query</param>
         public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery)
         {
             SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(new Uri(this._sparqlUri));
@@ -120,6 +126,14 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
 
 #endif
 
+        /// <summary>
+        /// Makes a SPARQL Query against the Knowledge Base
+        /// </summary>
+        /// <param name="sparqlQuery">SPARQL Query</param>
+        /// <param name="graphCallback">Callback to invoke for queries that return a Graph</param>
+        /// <param name="resultsCallback">Callback to invoke for queries that return a Result Set</param>
+        /// <param name="state">State to pass to whichever callback function is invoked</param>
+        /// <returns></returns>
         public void Query(String sparqlQuery, GraphCallback graphCallback, SparqlResultsCallback resultsCallback, Object state)
         {
             Graph g = new Graph();
@@ -138,6 +152,14 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
                 }, state);
         }
 
+        /// <summary>
+        /// Processes a SPARQL Query against the Knowledge Base passing the results to the RDF or Results handler as appropriate
+        /// </summary>
+        /// <param name="rdfHandler">RDF Handler</param>
+        /// <param name="resultsHandler">Results Handler</param>
+        /// <param name="sparqlQuery">SPARQL Query</param>
+        /// <param name="callback">Callback to invoke once handling of results has completed</param>
+        /// <param name="state">State to pass to the callback</param>
         public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery, QueryCallback callback, Object state)
         {
             SparqlQueryParser parser = new SparqlQueryParser();

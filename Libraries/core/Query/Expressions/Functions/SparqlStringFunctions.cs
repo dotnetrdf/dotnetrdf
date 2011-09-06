@@ -39,7 +39,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Abstract Base Class for SPARQL String Testing functions which take two arguments
     /// </summary>
-    public abstract class BaseBinarySparqlStringFunction : BaseBinaryExpression
+    public abstract class BaseBinarySparqlStringFunction 
+        : BaseBinaryExpression
     {
         /// <summary>
         /// Creates a new Base Binary SPARQL String Function
@@ -174,7 +175,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the SPARQL CONCAT function
     /// </summary>
-    public class ConcatFunction : ISparqlExpression
+    public class ConcatFunction 
+        : ISparqlExpression
     {
         private List<ISparqlExpression> _exprs = new List<ISparqlExpression>();
 
@@ -322,6 +324,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new ConcatFunction(this._exprs.Select(e => transformer.Transform(e)));
@@ -331,7 +338,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the SPARQL CONTAINS function
     /// </summary>
-    public class ContainsFunction : BaseBinarySparqlStringFunction
+    public class ContainsFunction
+        : BaseBinarySparqlStringFunction
     {
         /// <summary>
         /// Creates a new SPARQL CONTAINS function
@@ -372,6 +380,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             return SparqlSpecsHelper.SparqlKeywordContains + "(" + this._leftExpr.ToString() + ", " + this._rightExpr.ToString() + ")";
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new ContainsFunction(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
@@ -381,7 +394,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the SPARQL ENCODE_FOR_URI Function
     /// </summary>
-    public class EncodeForUriFunction : BaseUnaryXPathStringFunction
+    public class EncodeForUriFunction 
+        : BaseUnaryXPathStringFunction
     {
         /// <summary>
         /// Creates a new Encode for URI function
@@ -420,6 +434,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new EncodeForUriFunction(transformer.Transform(this._expr));
@@ -429,7 +448,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the SPARQL LCASE Function
     /// </summary>
-    public class LCaseFunction : BaseUnaryXPathStringFunction
+    public class LCaseFunction
+        : BaseUnaryXPathStringFunction
     {
         /// <summary>
         /// Creates a new LCASE function
@@ -475,6 +495,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             return SparqlSpecsHelper.SparqlKeywordLCase + "(" + this._expr.ToString() + ")";
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new LCaseFunction(transformer.Transform(this._expr));
@@ -484,7 +509,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the SPARQL STRENDS Function
     /// </summary>
-    public class StrEndsFunction : BaseBinarySparqlStringFunction
+    public class StrEndsFunction
+        : BaseBinarySparqlStringFunction
     {
         /// <summary>
         /// Creates a new STRENDS() function
@@ -525,6 +551,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             return SparqlSpecsHelper.SparqlKeywordStrEnds + "(" + this._leftExpr.ToString() + ", " + this._rightExpr.ToString() + ")";
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new StrEndsFunction(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
@@ -534,7 +565,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the SPARQL STRLEN Function
     /// </summary>
-    public class StrLenFunction : BaseUnaryXPathStringFunction
+    public class StrLenFunction 
+        : BaseUnaryXPathStringFunction
     {
         /// <summary>
         /// Creates a new STRLEN() function
@@ -573,6 +605,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             return SparqlSpecsHelper.SparqlKeywordStrLen + "(" + this._expr.ToString() + ")";
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new StrLenFunction(transformer.Transform(this._expr));
@@ -582,7 +619,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the SPARQL STRSTARTS Function
     /// </summary>
-    public class StrStartsFunction : BaseBinarySparqlStringFunction
+    public class StrStartsFunction 
+        : BaseBinarySparqlStringFunction
     {
         /// <summary>
         /// Creates a new STRSTARTS() function
@@ -623,6 +661,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             return SparqlSpecsHelper.SparqlKeywordStrStarts + "(" + this._leftExpr.ToString() + ", " + this._rightExpr.ToString() + ")";
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new StrStartsFunction(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
@@ -632,7 +675,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the SPARQL SUBSTR Function
     /// </summary>
-    public class SubStrFunction : ISparqlExpression
+    public class SubStrFunction
+        : ISparqlExpression
     {
         private ISparqlExpression _expr, _start, _length;
 
@@ -892,6 +936,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             if (this._length != null)
@@ -908,7 +957,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the SPARQL UCASE Function
     /// </summary>
-    public class UCaseFunction : BaseUnaryXPathStringFunction
+    public class UCaseFunction
+        : BaseUnaryXPathStringFunction
     {
         /// <summary>
         /// Creates a new UCASE() function
@@ -954,6 +1004,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             return SparqlSpecsHelper.SparqlKeywordUCase + "(" + this._expr.ToString() + ")";
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new UCaseFunction(transformer.Transform(this._expr));

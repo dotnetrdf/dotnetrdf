@@ -548,6 +548,11 @@ namespace VDS.RDF.Query
 
         #region Serialization
 
+        /// <summary>
+        /// Gets the data for serialization
+        /// </summary>
+        /// <param name="info">Serialization Information</param>
+        /// <param name="context">Streaming Context</param>
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("type", this._type);
@@ -555,11 +560,19 @@ namespace VDS.RDF.Query
             info.AddValue("results", this._results);
         }
 
+        /// <summary>
+        /// Gets the schema for XML serialization
+        /// </summary>
+        /// <returns></returns>
         public XmlSchema GetSchema()
         {
             return null;
         }
 
+        /// <summary>
+        /// Writes the data for XML serialization (.Net serialization not the official SPARQL results serialization)
+        /// </summary>
+        /// <param name="writer">XML Writer</param>
         public void WriteXml(XmlWriter writer)
         {
             switch (this._type)
@@ -592,6 +605,10 @@ namespace VDS.RDF.Query
             }
         }
 
+        /// <summary>
+        /// Reads the data for XML deserialization (.Net serialization not the official SPARQL results serialization)
+        /// </summary>
+        /// <param name="reader">XML Reader</param>
         public void ReadXml(XmlReader reader)
         {
             reader.Read();

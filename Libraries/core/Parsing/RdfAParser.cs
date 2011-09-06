@@ -101,7 +101,9 @@ namespace VDS.RDF.Parsing
         /// </summary>
         public const String RdfANamespace = "http://www.w3.org/ns/rdfa#";
 
-        //RDFa Version Constants
+        /// <summary>
+        /// RDFa Version Constants
+        /// </summary>
         public const String XHtmlPlusRdfA11Version = "XHTML+RDFa 1.1",
                              HtmlPlusRdfA11Version = "HTML+RDFa 1.1",
                              XHtmlPlusRdfA10Version = "XHTML+RDFa 1.0",

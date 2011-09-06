@@ -45,7 +45,8 @@ namespace VDS.RDF.Query.Algebra
     /// <summary>
     /// Represents the Projection step of Query Evaluation
     /// </summary>
-    public class Project : IUnaryOperator
+    public class Project 
+        : IUnaryOperator
     {
         private ISparqlAlgebra _pattern;
         private List<SparqlVariable> _variables = new List<SparqlVariable>();
@@ -305,7 +306,8 @@ namespace VDS.RDF.Query.Algebra
     /// <remarks>
     /// Selection trims variables from the Multiset that are not needed in the final output.  This is separate from <see cref="Project">Project</see> so that all Variables are available for Ordering and Having clauses
     /// </remarks>
-    public class Select : IUnaryOperator
+    public class Select
+        : IUnaryOperator
     {
         private ISparqlAlgebra _pattern;
         private List<SparqlVariable> _variables = new List<SparqlVariable>();
@@ -461,7 +463,8 @@ namespace VDS.RDF.Query.Algebra
     /// <remarks>
     /// Used only for ASK queries.  Turns the final Multiset into either an <see cref="IdentityMultiset">IdentityMultiset</see> if the ASK succeeds or a <see cref="NullMultiset">NullMultiset</see> if the ASK fails
     /// </remarks>
-    public class Ask : IUnaryOperator
+    public class Ask 
+        : IUnaryOperator
     {
         private ISparqlAlgebra _pattern;
 
@@ -509,6 +512,9 @@ namespace VDS.RDF.Query.Algebra
             return context.OutputMultiset;
         }
 
+        /// <summary>
+        /// Gets the Inner Algebra
+        /// </summary>
         public ISparqlAlgebra InnerAlgebra
         {
             get

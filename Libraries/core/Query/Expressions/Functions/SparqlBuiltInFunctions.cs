@@ -190,6 +190,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             return SparqlSpecsHelper.SparqlKeywordBNode + "(" + this._expr.ToSafeString() + ")";
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new BNodeFunction(transformer.Transform(this._expr));
@@ -248,7 +253,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Class representing the SPARQL BOUND() function
     /// </summary>
-    public class BoundFunction : BaseUnaryExpression
+    public class BoundFunction 
+        : BaseUnaryExpression
     {
         /// <summary>
         /// Creates a new Bound() function expression
@@ -299,6 +305,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new BoundFunction((VariableExpressionTerm)transformer.Transform(this._expr));
@@ -308,7 +319,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Class representing the SPARQL Datatype() function
     /// </summary>
-    public class DataTypeFunction : BaseUnaryExpression
+    public class DataTypeFunction
+        : BaseUnaryExpression
     {
         /// <summary>
         /// Creates a new Datatype() function expression
@@ -403,6 +415,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new DataTypeFunction(transformer.Transform(this._expr));
@@ -412,7 +429,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Class representing the SPARQL IRI() function
     /// </summary>
-    public class IriFunction : BaseUnaryExpression
+    public class IriFunction
+        : BaseUnaryExpression
     {
         /// <summary>
         /// Creates a new IRI() function expression
@@ -513,6 +531,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new IriFunction(transformer.Transform(this._expr));
@@ -522,7 +545,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Class representing the Sparql IsBlank() function
     /// </summary>
-    public class IsBlankFunction : BaseUnaryExpression
+    public class IsBlankFunction 
+        : BaseUnaryExpression
     {
         /// <summary>
         /// Creates a new IsBlank() function expression
@@ -580,6 +604,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new IsBlankFunction(transformer.Transform(this._expr));
@@ -589,7 +618,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Class representing the Sparql IsIRI() function
     /// </summary>
-    public class IsIriFunction : BaseUnaryExpression
+    public class IsIriFunction 
+        : BaseUnaryExpression
     {
         /// <summary>
         /// Creates a new IsIRI() function expression
@@ -648,6 +678,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new IsIriFunction(transformer.Transform(this._expr));
@@ -657,7 +692,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Class representing the Sparql IsLiteral() function
     /// </summary>
-    public class IsLiteralFunction : BaseUnaryExpression
+    public class IsLiteralFunction
+        : BaseUnaryExpression
     {
         /// <summary>
         /// Creates a new IsLiteral() function expression
@@ -716,6 +752,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new IsLiteralFunction(transformer.Transform(this._expr));
@@ -725,7 +766,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Class representing the Sparql IsURI() function
     /// </summary>
-    public class IsUriFunction : IsIriFunction
+    public class IsUriFunction 
+        : IsIriFunction
     {
         /// <summary>
         /// Creates a new IsURI() function expression
@@ -754,6 +796,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new IsUriFunction(transformer.Transform(this._expr));
@@ -763,7 +810,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Class representing the Sparql Lang() function
     /// </summary>
-    public class LangFunction : BaseUnaryExpression
+    public class LangFunction 
+        : BaseUnaryExpression
     {
         /// <summary>
         /// Creates a new Lang() function expression
@@ -844,6 +892,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new LangFunction(transformer.Transform(this._expr));
@@ -853,7 +906,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Class representing the Sparql LangMatches() function
     /// </summary>
-    public class LangMatchesFunction : BaseBinaryExpression
+    public class LangMatchesFunction
+        : BaseBinaryExpression
     {
         /// <summary>
         /// Creates a new LangMatches() function expression
@@ -940,6 +994,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new LangMatchesFunction(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
@@ -949,7 +1008,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Class representing the Sparql SameTerm() function
     /// </summary>
-    public class SameTermFunction : BaseBinaryExpression
+    public class SameTermFunction
+        : BaseBinaryExpression
     {
         /// <summary>
         /// Creates a new SameTerm() function expression
@@ -1019,6 +1079,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new SameTermFunction(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
@@ -1028,7 +1093,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Class representing the Sparql Str() function
     /// </summary>
-    public class StrFunction : BaseUnaryExpression
+    public class StrFunction
+        : BaseUnaryExpression
     {
         /// <summary>
         /// Creates a new Str() function expression
@@ -1110,6 +1176,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new StrFunction(transformer.Transform(this._expr));
@@ -1119,7 +1190,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Class representing the Sparql StrDt() function
     /// </summary>
-    public class StrDtFunction : BaseBinaryExpression
+    public class StrDtFunction
+        : BaseBinaryExpression
     {
         /// <summary>
         /// Creates a new STRDT() function expression
@@ -1230,6 +1302,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new StrDtFunction(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
@@ -1239,7 +1316,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Class representing the Sparql StrDt() function
     /// </summary>
-    public class StrLangFunction : BaseBinaryExpression
+    public class StrLangFunction 
+        : BaseBinaryExpression
     {
         /// <summary>
         /// Creates a new STRLANG() function expression
@@ -1365,6 +1443,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new StrLangFunction(transformer.Transform(this._leftExpr), transformer.Transform(this._rightExpr));
@@ -1374,7 +1457,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Class representing the Sparql Regex() function
     /// </summary>
-    public class RegexFunction : ISparqlExpression
+    public class RegexFunction 
+        : ISparqlExpression
     {
         private String _pattern = null;
         private RegexOptions _options = RegexOptions.None;
@@ -1670,6 +1754,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             if (this._optionExpr != null)

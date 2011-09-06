@@ -203,6 +203,9 @@ namespace VDS.RDF.Update
             }
         }
 
+        /// <summary>
+        /// Gets/Sets the Algebra Optimisers to be applied to portions of updates that require queries to be made
+        /// </summary>
         public IEnumerable<IAlgebraOptimiser> AlgebraOptimisers
         {
             get

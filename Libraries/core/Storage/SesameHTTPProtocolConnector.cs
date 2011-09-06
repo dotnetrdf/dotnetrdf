@@ -59,7 +59,8 @@ namespace VDS.RDF.Storage
     /// See <a href="http://www.openrdf.org/doc/sesame2/system/ch08.html">here</a> for the protocol specification
     /// </para>
     /// </remarks>
-    public class SesameHttpProtocolConnector : IQueryableGenericIOManager, IConfigurationSerializable
+    public class SesameHttpProtocolConnector 
+        : IQueryableGenericIOManager, IConfigurationSerializable
     {
         /// <summary>
         /// Base Uri for the Store
@@ -82,9 +83,21 @@ namespace VDS.RDF.Storage
         /// </summary>
         protected bool _hasCredentials = false;
 
+        /// <summary>
+        /// Repositories Prefix
+        /// </summary>
         protected String _repositoriesPrefix = "repositories/";
+        /// <summary>
+        /// Query Path Prefix
+        /// </summary>
         protected String _queryPath = String.Empty;
+        /// <summary>
+        /// Whether to do full encoding of contexts
+        /// </summary>
         protected bool _fullContextEncoding = true;
+        /// <summary>
+        /// Whether queries should always be posted
+        /// </summary>
         protected bool _postAllQueries = false;
 
         private StringBuilder _output = new StringBuilder();
@@ -131,7 +144,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Makes a SPARQL Query against the underlying Store
         /// </summary>
-        /// <param name="sparqlQuery">Sparql Query</param>
+        /// <param name="sparqlQuery">SPARQL Query</param>
         /// <returns></returns>
         public virtual object Query(String sparqlQuery)
         {
@@ -149,6 +162,13 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Makes a SPARQL Query against the underlying Store processing the results with an appropriate handler from those provided
+        /// </summary>
+        /// <param name="rdfHandler">RDF Handler</param>
+        /// <param name="resultsHandler">Results Handler</param>
+        /// <param name="sparqlQuery">SPARQL Query</param>
+        /// <returns></returns>
         public virtual void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery)
         {
             try
@@ -280,12 +300,18 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="g">Graph to load into</param>
         /// <param name="graphUri">Uri of the Graph to load</param>
-        /// <remarks>If a Null Uri is specified then the entire contents of the Store will be loaded</remarks>
+        /// <remarks>If a Null Uri is specified then the default graph (statements with no context in Sesame parlance) will be loaded</remarks>
         public void LoadGraph(IGraph g, Uri graphUri)
         {
             this.LoadGraph(g, graphUri.ToSafeString());
         }
 
+        /// <summary>
+        /// Loads a Graph from the Store
+        /// </summary>
+        /// <param name="handler">RDF Handler</param>
+        /// <param name="graphUri">Uri of the Graph to load</param>
+        /// <remarks>If a Null Uri is specified then the default graph (statements with no context in Sesame parlance) will be loaded</remarks>
         public void LoadGraph(IRdfHandler handler, Uri graphUri)
         {
             this.LoadGraph(handler, graphUri.ToSafeString());
@@ -296,7 +322,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="g">Graph to load into</param>
         /// <param name="graphUri">Uri of the Graph to load</param>
-        /// <remarks>If an empty Uri is specified then the entire contents of the Store will be loaded</remarks>
+        /// <remarks>If a Null/Empty Uri is specified then the default graph (statements with no context in Sesame parlance) will be loaded</remarks>
         public void LoadGraph(IGraph g, String graphUri)
         {
             if (g.IsEmpty && graphUri != null && !graphUri.Equals(String.Empty))
@@ -306,6 +332,12 @@ namespace VDS.RDF.Storage
             this.LoadGraph(new GraphHandler(g), graphUri);
         }
 
+        /// <summary>
+        /// Loads a Graph from the Store
+        /// </summary>
+        /// <param name="handler">RDF Handler</param>
+        /// <param name="graphUri">Uri of the Graph to load</param>
+        /// <remarks>If a Null/Empty Uri is specified then the default graph (statements with no context in Sesame parlance) will be loaded</remarks>
         public void LoadGraph(IRdfHandler handler, String graphUri)
         {
             try
